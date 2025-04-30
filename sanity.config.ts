@@ -15,6 +15,7 @@ import { schema } from "./sanity/schema";
 import { resolve } from "@/sanity/presentation/resolve";
 import { structure } from "./sanity/structure";
 import { codeInput } from "@sanity/code-input";
+import {documentInternationalization} from '@sanity/document-internationalization'
 
 export default defineConfig({
   basePath: "/studio",
@@ -37,5 +38,14 @@ export default defineConfig({
     // https://www.sanity.io/docs/the-vision-plugin
     visionTool({ defaultApiVersion: apiVersion }),
     codeInput(),
+      documentInternationalization({
+          supportedLanguages: [
+              {id: 'en', title: 'English'},
+              {id: 'es', title: 'Español'},
+              {id: 'fr', title: 'Français'},
+              {id: 'ar', title: 'العربية'},
+          ],
+          schemaTypes: ['page'],
+      })
   ],
 });

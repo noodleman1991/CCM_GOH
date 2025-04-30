@@ -1,0 +1,142 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id                String   @id
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  createdAt         DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id
+  name          String?
+  email         String?   @unique
+  password      String?
+  emailVerified DateTime?
+  username      String?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  bio           String?
+
+  // Global role (default: community_member)
+  role Role @default(community_member)
+
+  // User's membership in communities with specific roles
+  communityMemberships UserCommunity[]
+
+  // Content created by user
+  createdContent Content[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  community_member
+  community_editor
+  team_editor
+  admin
+}
+
+enum CommunityType {
+  REGIONAL
+  SPECIAL
+}
+
+enum RegionalCommunityName {
+  SUB_SAHARAN_AFRICA
+  NORTHERN_AFRICA_AND_WESTERN_ASIA
+  CENTRAL_AND_SOUTHERN_ASIA
+  EASTERN_AND_SOUTH_EASTERN_ASIA
+  LATIN_AMERICA_AND_THE_CARIBBEAN
+  OCEANIA
+  EUROPE_AND_NORTH_AMERICA
+}
+
+enum SpecialCommunityName {
+  YOUTH
+  INDIGENOUS
+  FARMER_AND_FISHER
+}
+
+model Community {
+  id          String  @id @default(uuid())
+  name        String
+  description String?
+
+  // Discriminator pattern
+  type         CommunityType
+  // If regional, which region
+  regionalName RegionalCommunityName?
+  // If special, which special category
+  specialName  SpecialCommunityName?
+
+  // Community members with their specific roles
+  members UserCommunity[]
+
+  // Content related to this community
+  contents Content[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Join table with role information for user-community relationship
+model UserCommunity {
+  userId      String
+  communityId String
+  role        Role   @default(community_member)
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  community Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+
+  // Define composite primary key
+  @@id([userId, communityId])
+}
+
+model Content {
+  id    String @id @default(uuid())
+  title String
+  body  String
+
+  // Which community this content belongs to
+  communityId String
+  community   Community @relation(fields: [communityId], references: [id])
+
+  // Who created this content
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
