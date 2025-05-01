@@ -23,17 +23,48 @@ export default defineType({
   ],
   fields: [
     defineField({ name: "title", type: "string", group: "content" }),
-    defineField({
-      name: "slug",
-      title: "Slug",
-      type: "slug",
-      group: "settings",
-      options: {
-        source: "title",
-        maxLength: 96,
-      },
-      validation: (Rule) => Rule.required(),
-    }),
+    // defineField({
+    //   name: "slug",
+    //   title: "Slug",
+    //   type: "slug",
+    //   group: "settings",
+    //   options: {
+    //     source: "title",
+    //     maxLength: 96,
+    //   },
+    //   validation: (Rule) => Rule.required(),
+    // }),
+      defineField({
+          name: "slug",
+          title: "Slug",
+          type: "slug",
+          group: "settings",
+          options: {
+              source: "title",
+              maxLength: 96,
+              isUnique: async (slug, context) => {
+                  if (!context.document?.language) return true;
+                  const { document, getClient } = context;
+                  const client = getClient({ apiVersion: '2023-05-22' });
+
+                  const id = context.document._id; // todo: make sure functional
+                  const language = document.language;
+
+                  const query = `*[_type == "page" && slug.current == $slug && language == $language && _id != $id][0]._id`;
+                  const result = await client.fetch(query, { slug, language, id });
+
+                  return !result;
+              }
+          },
+          validation: (Rule) => Rule.required(),
+      }),
+      defineField({
+          name: "language",
+          type: "string",
+          readOnly: true,
+          hidden: true,
+          group: "settings",
+      }),
     defineField({
       name: "blocks",
       type: "array",

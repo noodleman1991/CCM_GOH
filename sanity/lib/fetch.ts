@@ -13,29 +13,79 @@ import {
   POSTS_SLUGS_QUERYResult,
 } from "@/sanity.types";
 
+// export const fetchSanityPageBySlug = async ({
+//   slug,
+// }: {
+//   slug: string;
+// }): Promise<PAGE_QUERYResult> => {
+//   const { data } = await sanityFetch({
+//     query: PAGE_QUERY,
+//     params: { slug },
+//   });
+//
+//   return data;
+// };
+
 export const fetchSanityPageBySlug = async ({
-  slug,
-}: {
-  slug: string;
+                                                slug,
+                                                locale = 'en',
+                                            }: {
+    slug: string;
+    locale?: string; // Make it optional with ?
 }): Promise<PAGE_QUERYResult> => {
-  const { data } = await sanityFetch({
-    query: PAGE_QUERY,
-    params: { slug },
-  });
-
-  return data;
-};
-
-export const fetchSanityPagesStaticParams =
-  async (): Promise<PAGES_SLUGS_QUERYResult> => {
     const { data } = await sanityFetch({
-      query: PAGES_SLUGS_QUERY,
-      perspective: "published",
-      stega: false,
+        query: PAGE_QUERY,
+        params: {
+            slug,
+            language: locale
+        },
     });
 
     return data;
-  };
+};
+
+// export const fetchSanityPagesStaticParams =
+//   async (): Promise<PAGES_SLUGS_QUERYResult> => {
+//     const { data } = await sanityFetch({
+//       query: PAGES_SLUGS_QUERY,
+//       perspective: "published",
+//       stega: false,
+//     });
+//
+//     return data;
+//   };
+
+export const fetchSanityPagesStaticParams = async () => {
+    const { data } = await sanityFetch({
+        query: `*[_type == "page" && defined(slug)]{
+      _id,
+      slug { current },
+      language
+    }`,
+        perspective: "published",
+        stega: false,
+    });
+
+    return data;
+};
+
+export const fetchTranslationsForPage = async (pageId: string) => {
+    const { data } = await sanityFetch({
+        query: `
+      *[_type == "translation.metadata" && references($pageId)][0]{
+        "translations": translations[].value->{
+          _id,
+          language,
+          slug
+        }
+      }.translations`,
+        params: { pageId },
+        perspective: "published",
+        stega: false,
+    });
+
+    return data;
+};
 
 export const fetchSanityPosts = async (): Promise<POSTS_QUERYResult> => {
   const { data } = await sanityFetch({

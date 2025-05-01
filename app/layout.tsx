@@ -7,7 +7,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import {notFound} from 'next/navigation';
 import {routing} from '@/i18n/routing';
-
+import { rtlLocales } from '@/i18n/routing';
 
 const isProduction = process.env.NEXT_PUBLIC_SITE_ENV === "production";
 
@@ -44,11 +44,12 @@ export default async function LocaleLayout({
     params: Promise<{locale: string}>;
 }) {
     const {locale} = await params;
+    const isRtl = rtlLocales.includes(locale);
     // if (!hasLocale(routing.locales, locale)) {
     //     notFound();
     // }
     return (
-        <html lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'} suppressHydrationWarning>
+        <html lang={locale} dir={isRtl ? 'rtl' : 'ltr'} suppressHydrationWarning>
         <link rel="icon" href="/favicon.ico" />
         <body
             className={cn(
