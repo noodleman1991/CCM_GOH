@@ -96,16 +96,21 @@ export const fetchSanityPosts = async (): Promise<POSTS_QUERYResult> => {
 };
 
 export const fetchSanityPostBySlug = async ({
-  slug,
-}: {
-  slug: string;
+                                                slug,
+                                                locale = 'en',
+                                            }: {
+    slug: string;
+    locale?: string;
 }): Promise<POST_QUERYResult> => {
-  const { data } = await sanityFetch({
-    query: POST_QUERY,
-    params: { slug },
-  });
+    const { data } = await sanityFetch({
+        query: POST_QUERY,
+        params: {
+            slug,
+            language: locale
+        },
+    });
 
-  return data;
+    return data;
 };
 
 export const fetchSanityPostsStaticParams =

@@ -12,41 +12,59 @@ import LogoCloud1 from "@/components/blocks/logo-cloud/logo-cloud-1";
 import FAQs from "@/components/blocks/faqs";
 import FormNewsletter from "@/components/blocks/forms/newsletter";
 import AllPosts from "@/components/blocks/all-posts";
+import { isRTL } from "@/i18n/i18n-helpers";
 
 type Block = NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number];
 
+interface BlocksProps {
+    blocks: Block[];
+    locale: string;
+    translations?: Array<{
+        language: string;
+        path: string;
+        title: string;
+    }>;
+}
+
 const componentMap: {
-  [K in Block["_type"]]: React.ComponentType<Extract<Block, { _type: K }>>;
+    [K in Block["_type"]]: React.ComponentType<Extract<Block, { _type: K }> & { locale?: string; isRTL?: boolean }>;
 } = {
-  "hero-1": Hero1,
-  "hero-2": Hero2,
-  "section-header": SectionHeader,
-  "split-row": SplitRow,
-  "grid-row": GridRow,
-  "carousel-1": Carousel1,
-  "carousel-2": Carousel2,
-  "timeline-row": TimelineRow,
-  "cta-1": Cta1,
-  "logo-cloud-1": LogoCloud1,
-  faqs: FAQs,
-  "form-newsletter": FormNewsletter,
-  "all-posts": AllPosts,
+    "hero-1": Hero1,
+    "hero-2": Hero2,
+    "section-header": SectionHeader,
+    "split-row": SplitRow,
+    "grid-row": GridRow,
+    "carousel-1": Carousel1,
+    "carousel-2": Carousel2,
+    "timeline-row": TimelineRow,
+    "cta-1": Cta1,
+    "logo-cloud-1": LogoCloud1,
+    faqs: FAQs,
+    "form-newsletter": FormNewsletter,
+    "all-posts": AllPosts,
 };
 
-export default function Blocks({ blocks }: { blocks: Block[] }) {
-  return (
-    <>
-      {blocks?.map((block) => {
-        const Component = componentMap[block._type];
-        if (!Component) {
-          // Fallback for development/debugging of new component types
-          console.warn(
-            `No component implemented for block type: ${block._type}`
-          );
-          return <div data-type={block._type} key={block._key} />;
-        }
-        return <Component {...(block as any)} key={block._key} />;
-      })}
-    </>
-  );
+export default function Blocks({ blocks, locale, translations }: BlocksProps) {
+    const rtl = isRTL(locale);
+
+    return (
+        <div dir={rtl ? 'rtl' : 'ltr'}>
+            {blocks?.map((block) => {
+                const Component = componentMap[block._type];
+                if (!Component) {
+                    console.warn(
+                        `No component implemented for block type: ${block._type}`
+                    );
+                    return <div data-type={block._type} key={block._key} />;
+                }
+                return <Component
+                    {...(block as any)}
+                    key={block._key}
+                    locale={locale}
+                    isRTL={rtl}
+                />;
+            })}
+        </div>
+    );
 }
+
