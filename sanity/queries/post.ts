@@ -1,7 +1,6 @@
 import { groq } from "next-sanity";
 
-export const POST_QUERY = groq`*[_type == "post" && slug.current == $slug && language == $language][0]{
-    title,
+export const POST_QUERY = groq`*[_type == "post" && slug.current == $slug && language == $language][0]{    title,
     slug,
     image{
       ...,

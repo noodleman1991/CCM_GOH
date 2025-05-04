@@ -1,6 +1,8 @@
 import { defineField, defineType } from "sanity";
 import { Files } from "lucide-react";
 import { orderRankField } from "@sanity/orderable-document-list";
+import { isUniqueOtherThanLanguage } from '@/sanity/lib/isUniqueOtherThanLanguage';
+import { routing } from '@/i18n/routing';
 
 export default defineType({
   name: "page",
@@ -23,17 +25,6 @@ export default defineType({
   ],
   fields: [
     defineField({ name: "title", type: "string", group: "content" }),
-    // defineField({
-    //   name: "slug",
-    //   title: "Slug",
-    //   type: "slug",
-    //   group: "settings",
-    //   options: {
-    //     source: "title",
-    //     maxLength: 96,
-    //   },
-    //   validation: (Rule) => Rule.required(),
-    // }),
       defineField({
           name: "slug",
           title: "Slug",
@@ -42,19 +33,7 @@ export default defineType({
           options: {
               source: "title",
               maxLength: 96,
-              isUnique: async (slug, context) => {
-                  if (!context.document?.language) return true;
-                  const { document, getClient } = context;
-                  const client = getClient({ apiVersion: '2023-05-22' });
-
-                  const id = context.document._id; // todo: make sure functional
-                  const language = document.language;
-
-                  const query = `*[_type == "page" && slug.current == $slug && language == $language && _id != $id][0]._id`;
-                  const result = await client.fetch(query, { slug, language, id });
-
-                  return !result;
-              }
+              isUnique: isUniqueOtherThanLanguage,
           },
           validation: (Rule) => Rule.required(),
       }),
@@ -62,7 +41,6 @@ export default defineType({
           name: "language",
           type: "string",
           readOnly: true,
-          hidden: true,
           group: "settings",
       }),
     defineField({
@@ -153,31 +131,60 @@ export default defineType({
         },
       },
     }),
-    defineField({
-      name: "meta_title",
-      title: "Meta Title",
-      type: "string",
-      group: "seo",
-    }),
-    defineField({
-      name: "meta_description",
-      title: "Meta Description",
-      type: "text",
-      group: "seo",
-    }),
-    defineField({
-      name: "noindex",
-      title: "No Index",
-      type: "boolean",
-      initialValue: false,
-      group: "seo",
-    }),
-    defineField({
-      name: "ogImage",
-      title: "Open Graph Image - [1200x630]",
-      type: "image",
-      group: "seo",
-    }),
-    orderRankField({ type: "page" }),
+      defineField({
+          name: "meta_title",
+          title: "Meta Title",
+          type: "string",
+          group: "seo",
+      }),
+      defineField({
+          name: "meta_description",
+          title: "Meta Description",
+          type: "text",
+          group: "seo",
+          rows: 3,
+      }),
+      defineField({
+          name: "noindex",
+          title: "No Index",
+          type: "boolean",
+          initialValue: false,
+          group: "seo",
+      }),
+      defineField({
+          name: "ogImage",
+          title: "Open Graph Image - [1200x630]",
+          type: "image",
+          group: "seo",
+          fields: [
+              {
+                  name: "alt",
+                  type: "object",
+                  title: "Alternative Text",
+                  fields: routing.locales.map((locale) => ({
+                      name: locale,
+                      title: `Alt Text (${locale.toUpperCase()})`,
+                      type: "string",
+                  })),
+              },
+          ],
+      }),
+      orderRankField({ type: "page" }),
   ],
+    preview: {
+        select: {
+            title: 'title',
+            language: 'language',
+            media: 'image',
+        },
+        prepare(select) {
+            const {title, language, media} = select
+
+            return {
+                title,
+                subtitle: language ? language.toUpperCase() : 'EN',
+                media,
+            }
+        },
+    }
 });

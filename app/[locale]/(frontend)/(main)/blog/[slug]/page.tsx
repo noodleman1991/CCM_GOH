@@ -17,18 +17,18 @@ export async function generateStaticParams() {
   }));
 }
 
-export async function generateMetadata(props: {
-  params: Promise<{ slug: string }>;
-}) {
-  const params = await props.params;
-  const post = await fetchSanityPostBySlug({ slug: params.slug });
-
-  if (!post) {
-    notFound();
-  }
-
-  return generatePageMetadata({ page: post, slug: `/blog/${params.slug}` });
-}
+// export async function generateMetadata(props: {
+//   params: Promise<{ slug: string }>;
+// }) {
+//   const params = await props.params;
+//   const post = await fetchSanityPostBySlug({ slug: params.slug });
+//
+//   if (!post) {
+//     notFound();
+//   }
+//
+//   return generatePageMetadata({ page: post, slug: `/blog/${params.slug}` });
+// }
 
 export default async function PostPage(props: {
   params: Promise<{ slug: string }>;

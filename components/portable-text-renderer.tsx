@@ -5,6 +5,12 @@ import { YouTubeEmbed } from "@next/third-parties/google";
 import { Highlight, themes } from "prism-react-renderer";
 import { CopyButton } from "@/components/ui/copy-button";
 
+
+interface PortableTextRendererProps extends PortableTextProps {
+    locale?: string;
+    isRTL?: boolean;
+}
+
 const portableTextComponents: PortableTextProps["components"] = {
   types: {
     image: ({ value }) => {
@@ -148,12 +154,98 @@ const portableTextComponents: PortableTextProps["components"] = {
   },
 };
 
-const PortableTextRenderer = ({
-  value,
-}: {
-  value: PortableTextProps["value"];
-}) => {
-  return <PortableText value={value} components={portableTextComponents} />;
+// RTL version of portableTextComponents
+const rtlPortableTextComponents: PortableTextProps["components"] = {
+    types: {
+        image: portableTextComponents.types!.image,
+        youtube: portableTextComponents.types!.youtube,
+        code: portableTextComponents.types!.code,
+    },
+    block: {
+        normal: ({ children }) => (
+            <p style={{ marginBottom: "1rem", direction: "rtl", textAlign: "right" }}>{children}</p>
+        ),
+        h1: ({ children }) => (
+            <h1 style={{ marginBottom: "1rem", marginTop: "1rem", direction: "rtl", textAlign: "right" }}>{children}</h1>
+        ),
+        h2: ({ children }) => (
+            <h2 style={{ marginBottom: "1rem", marginTop: "1rem", direction: "rtl", textAlign: "right" }}>{children}</h2>
+        ),
+        h3: ({ children }) => (
+            <h3 style={{ marginBottom: "1rem", marginTop: "1rem", direction: "rtl", textAlign: "right" }}>{children}</h3>
+        ),
+        h4: ({ children }) => (
+            <h4 style={{ marginBottom: "1rem", marginTop: "1rem", direction: "rtl", textAlign: "right" }}>{children}</h4>
+        ),
+        h5: ({ children }) => (
+            <h5 style={{ marginBottom: "1rem", marginTop: "1rem", direction: "rtl", textAlign: "right" }}>{children}</h5>
+        ),
+    },
+    marks: {
+        link: portableTextComponents.marks!.link,
+    },
+    list: {
+        bullet: ({ children }) => (
+            <ul
+                style={{
+                    paddingRight: "1.5rem",
+                    paddingLeft: "0",
+                    marginBottom: "1rem",
+                    listStyleType: "disc",
+                    listStylePosition: "inside",
+                    direction: "rtl",
+                    textAlign: "right",
+                }}
+            >
+                {children}
+            </ul>
+        ),
+        number: ({ children }) => (
+            <ol
+                style={{
+                    paddingRight: "1.5rem",
+                    paddingLeft: "0",
+                    marginBottom: "1rem",
+                    listStyleType: "decimal",
+                    listStylePosition: "inside",
+                    direction: "rtl",
+                    textAlign: "right",
+                }}
+            >
+                {children}
+            </ol>
+        ),
+    },
+    listItem: {
+        // Keep the same listItem from the original but add RTL
+        bullet: ({ children }) => (
+            <li style={{ marginBottom: "0.5rem", direction: "rtl", textAlign: "right" }}>{children}</li>
+        ),
+        number: ({ children }) => (
+            <li style={{ marginBottom: "0.5rem", direction: "rtl", textAlign: "right" }}>{children}</li>
+        ),
+    },
 };
+
+const PortableTextRenderer = ({
+                                  value,
+                                  locale = 'en',
+                                  isRTL = false,
+                              }: PortableTextRendererProps) => {
+    const shouldUseRTL = isRTL || locale === 'ar';
+
+    const components = shouldUseRTL ? rtlPortableTextComponents : portableTextComponents;
+
+    return <PortableText value={value} components={components} />;
+};
+
+// const PortableTextRenderer = ({
+//   value,
+// }: {
+//   value: PortableTextProps["value"];
+// }) => {
+//   return <PortableText value={value} components={portableTextComponents} />;
+// };
+
 
 export default PortableTextRenderer;

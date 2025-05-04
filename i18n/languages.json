@@ -1,0 +1,11 @@
+{
+  "i18n": {
+    "languages": [
+      { "id": "en", "title": "English", "isDefault": true },
+      { "id": "es", "title": "Español" },
+      { "id": "fr", "title": "Français" },
+      { "id": "ar", "title": "العربية", "dir": "rtl" }
+    ],
+    "base": "en"
+  }
+}
