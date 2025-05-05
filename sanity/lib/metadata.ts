@@ -3,15 +3,27 @@ import { PAGE_QUERYResult, POST_QUERYResult } from "@/sanity.types";
 const isProduction = process.env.NEXT_PUBLIC_SITE_ENV === "production";
 
 export function generatePageMetadata({
-                                         page,
-                                         slug,
-                                     }: {
+                                                         page,
+                                                         slug,
+                                                         locale = 'en',
+                                                     }: {
     page: PAGE_QUERYResult | POST_QUERYResult;
     slug: string;
+    locale?: string;
 }) {
+    let title = '';
+
+    if (page?.meta_title) {
+        if (typeof page.meta_title === 'object') {
+            title = (page.meta_title[locale] || page.meta_title['en'] || '');
+        } else {
+            title = page.meta_title;
+        }
+    }
+
     return {
-        title: page?.meta_title,
-        description: page?.meta_description,
+        title,
+        description: page?.meta_description || '',
         openGraph: {
             images: [
                 {

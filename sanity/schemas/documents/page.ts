@@ -159,13 +159,8 @@ export default defineType({
           fields: [
               {
                   name: "alt",
-                  type: "object",
+                  type: "string",
                   title: "Alternative Text",
-                  fields: routing.locales.map((locale) => ({
-                      name: locale,
-                      title: `Alt Text (${locale.toUpperCase()})`,
-                      type: "string",
-                  })),
               },
           ],
       }),
