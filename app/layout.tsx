@@ -10,9 +10,19 @@ import { Separator } from "@/components/ui/separator";
 import { Toaster } from "@/components/ui/sonner";
 
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
+import { getLocale, getMessages } from "next-intl/server";
+import { ClerkProvider } from '@clerk/nextjs';
+import { arSA, esES, frFR, enGB } from '@clerk/localizations';
 // import { notFound } from 'next/navigation';
 // import { routing } from '@/i18n/routing';
 import { rtlLocales } from '@/i18n/routing';
+
+const clerkLocalizationsMap = {
+    en: enGB,
+    fr: frFR,
+    es: esES,
+    ar: arSA,
+};
 
 interface RootLayoutProps {
     children: React.ReactNode;
@@ -54,7 +64,14 @@ export default async function LocaleLayout({
     params: Promise<{locale: string}>;
 }) {
     const {locale} = await params;
+    //const locale = await getLocale();
     const isRtl = rtlLocales.includes(locale);
+
+    // Providing all messages to the client - todo: nuance
+    const messages = await getMessages();
+
+    const clerkLocalization = clerkLocalizationsMap[locale as keyof typeof clerkLocalizationsMap] || enGB;
+
     // if (!hasLocale(routing.locales, locale)) {
     //     notFound();
     // }
@@ -67,29 +84,32 @@ export default async function LocaleLayout({
                 fontSans.variable
             )}
         >
-        <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-        >
-            <SidebarProvider>
-                <AppSidebar />
-                <SidebarInset className="overflow-hidden">
-                    <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-                        <div className="flex items-center gap-2 px-4">
-                            <SidebarTrigger className="-ml-1" />
-                            <Separator orientation="vertical" className="mr-2 h-4" />
-                        </div>
-                    </header>
-                        {/*<NextIntlClientProvider>{children}</NextIntlClientProvider>*/}
-                    <div className="flex flex-1 flex-col gap-4 p-4 pt-0 overflow-x-hidden w-full">
-                        {children}
-                    </div>
-                </SidebarInset>
-            </SidebarProvider>
-        </ThemeProvider>
-        <Toaster position="top-center" richColors />
+        <ClerkProvider localization={clerkLocalization}>
+            <NextIntlClientProvider messages={messages}>
+                <ThemeProvider
+                    attribute="class"
+                    defaultTheme="system"
+                    enableSystem
+                    disableTransitionOnChange
+                >
+                    <SidebarProvider>
+                        <AppSidebar />
+                        <SidebarInset className="overflow-hidden">
+                            <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+                                <div className="flex items-center gap-2 px-4">
+                                    <SidebarTrigger className="-ml-1" />
+                                    <Separator orientation="vertical" className="mr-2 h-4" />
+                                </div>
+                            </header>
+                            <div className="flex flex-1 flex-col gap-4 p-4 pt-0 overflow-x-hidden w-full">
+                                {children}
+                            </div>
+                        </SidebarInset>
+                    </SidebarProvider>
+                </ThemeProvider>
+                <Toaster position="top-center" richColors />
+            </NextIntlClientProvider>
+        </ClerkProvider>
         </body>
         </html>
     );

@@ -1,0 +1,126 @@
+{
+  "app": {
+    "name": "Your App Name",
+    "tagline": "Your app's tagline or description"
+  },
+  "navigation": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "profile": "Profile",
+    "settings": "Settings",
+    "login": "Log in",
+    "signup": "Sign up",
+    "logout": "Log out"
+  },
+  "auth": {
+    "welcome": "Welcome back",
+    "emailPlaceholder": "Email address",
+    "passwordPlaceholder": "Password",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "createAccount": "Create an account",
+    "continueWith": "Continue with {provider}"
+  },
+  "errors": {
+    "general": "Something went wrong",
+    "notFound": "Page not found",
+    "unauthorized": "You need to log in to access this page",
+    "forbidden": "You don't have permission to access this page",
+    "validation": {
+      "required": "{field} is required",
+      "email": "Please enter a valid email address",
+      "minLength": "{field} must be at least {length} characters",
+      "maxLength": "{field} cannot exceed {length} characters"
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "dashboard": {
+    "greeting": "Hello, {name}",
+    "summary": "Here's your summary",
+    "recentActivity": "Recent Activity",
+    "noActivity": "No recent activity",
+    "viewAll": "View all"
+  },
+  "settings": {
+    "title": "Settings",
+    "account": "Account",
+    "profile": "Profile",
+    "appearance": "Appearance",
+    "notifications": "Notifications",
+    "language": "Language",
+    "theme": {
+      "title": "Theme",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
+    },
+    "privacy": "Privacy",
+    "security": "Security"
+  },
+  "notifications": {
+    "success": "Success!",
+    "error": "Error!",
+    "info": "Information",
+    "warning": "Warning"
+  },
+  "dates": {
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "tomorrow": "Tomorrow",
+    "days": {
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday",
+      "sunday": "Sunday"
+    },
+    "months": {
+      "january": "January",
+      "february": "February",
+      "march": "March",
+      "april": "April",
+      "may": "May",
+      "june": "June",
+      "july": "July",
+      "august": "August",
+      "september": "September",
+      "october": "October",
+      "november": "November",
+      "december": "December"
+    },
+    "formats": {
+      "short": "MMM D, YYYY",
+      "long": "MMMM D, YYYY",
+      "time": "h:mm A"
+    }
+  },
+  "forms": {
+    "name": "Name",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "address": "Address",
+    "phone": "Phone number",
+    "submit": "Submit",
+    "reset": "Reset"
+  }
+}
