@@ -5,6 +5,7 @@ import { LogOut } from "lucide-react"
 import { NavUser } from "@/components/nav-user"
 import { useClerkUser } from "@/hooks/use-clerk-user"
 import { cn } from "@/lib/utils"
+import { useEffect, useState } from 'react'
 import {
     SidebarMenu,
     SidebarMenuButton,
@@ -22,6 +23,37 @@ import { Button } from "@/components/ui/button"
 export function AuthNavUser({ isRTL = false }: { isRTL?: boolean }) {
     const { userData } = useClerkUser()
     const { signOut } = useClerk()
+    const [mounted, setMounted] = useState(false)
+
+    useEffect(() => {
+        setMounted(true)
+    }, [])
+
+    // Prevent hydration mismatch by showing consistent loading state on server
+    if (!mounted) {
+        return (
+            <SidebarMenu>
+                <SidebarMenuItem>
+                    <SidebarMenuButton
+                        size="lg"
+                        className={cn(
+                            "data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground",
+                            isRTL && "flex-row-reverse"
+                        )}
+                        disabled
+                    >
+                        <div className={cn(
+                            "grid flex-1 text-sm leading-tight",
+                            isRTL ? "text-right" : "text-left"
+                        )}>
+                            <div className="h-4 bg-gray-200 rounded animate-pulse mb-1"></div>
+                            <div className="h-3 bg-gray-200 rounded animate-pulse w-3/4"></div>
+                        </div>
+                    </SidebarMenuButton>
+                </SidebarMenuItem>
+            </SidebarMenu>
+        )
+    }
 
     return (
         <>

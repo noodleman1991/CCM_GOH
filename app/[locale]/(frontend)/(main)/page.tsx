@@ -15,9 +15,19 @@ export async function generateStaticParams() {
     }));
 }
 
-export async function generateMetadata() {
-    const page = await fetchSanityPageBySlug({ slug: "index" });
+// export async function generateMetadata() {
+//     const page = await fetchSanityPageBySlug({ slug: "index" });
+//
+//     return generatePageMetadata({ page, slug: "index" });
+// }
 
+export async function generateMetadata({
+                                           params
+                                       }: {
+    params: Promise<{ locale: string }>
+}) {
+    const { locale } = await params;
+    const page = await fetchSanityPageBySlug({ slug: "index", locale });
     return generatePageMetadata({ page, slug: "index" });
 }
 
