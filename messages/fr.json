@@ -1,0 +1,117 @@
+{
+  "profile": {
+    "noName": "Sans nom",
+    "editProfile": "Modifier le Profil",
+    "contact": "Contact",
+    "basicInfo": "Informations de Base",
+    "bio": "À propos",
+    "under18": "Moins de 18 ans",
+    "above18": "18 ans ou plus",
+    "edit": {
+      "pageTitle": "Modifier le Profil",
+      "pageDescription": "Mettre à jour vos informations de profil",
+      "saveSuccess": "Profil mis à jour avec succès",
+      "saveError": "Échec de la mise à jour du profil",
+      "basicInfo": {
+        "title": "Informations de Base",
+        "description": "Ces informations seront affichées sur votre profil public"
+      },
+      "workInfo": {
+        "title": "Informations Professionnelles",
+        "description": "Parlez-nous de votre parcours professionnel et de votre expertise"
+      },
+      "social": {
+        "title": "Liens Sociaux",
+        "description": "Ajoutez des liens vers vos profils de médias sociaux et votre site web personnel"
+      },
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "username": "Nom d'utilisateur",
+      "usernameHint": "Ceci sera utilisé dans l'URL de votre profil",
+      "bio": "Biographie",
+      "ageGroup": "Groupe d'Âge",
+      "selectAge": "Sélectionnez votre groupe d'âge",
+      "under18": "Moins de 18 ans",
+      "above18": "18 ans ou plus",
+      "country": "Pays",
+      "city": "Ville/Village",
+      "workTypes": {
+        "label": "Quels types de travail faites-vous?",
+        "description": "Sélectionnez tous ceux qui s'appliquent",
+        "research": "Recherche",
+        "policy": "Politique",
+        "livedExperience": "Expert par mon propre vécu",
+        "ngo": "ONG",
+        "communityOrg": "Organisation communautaire",
+        "education": "Éducation ou enseignement"
+      },
+      "expertise": {
+        "label": "Quels sont vos domaines d'expertise?",
+        "description": "Sélectionnez tous ceux qui s'appliquent",
+        "climate": "Changement Climatique",
+        "mentalHealth": "Santé Mentale",
+        "health": "Santé"
+      },
+      "organization": "Organisation",
+      "position": "Poste",
+      "workBio": "Biographie Professionnelle",
+      "personalWebsite": "Site Web Personnel ou Blog",
+      "linkedin": "Profil LinkedIn",
+      "twitter": "Identifiant Twitter",
+      "cancel": "Annuler",
+      "save": "Enregistrer les Modifications"
+    },
+    "work": {
+      "title": "Détails Professionnels",
+      "workBio": "Biographie Professionnelle",
+      "workTypes": "Types de Travail",
+      "expertiseAreas": "Domaines d'Expertise",
+      "types": {
+        "research": "Recherche",
+        "policy": "Politique",
+        "livedExperience": "Expert par vécu",
+        "ngo": "ONG",
+        "communityOrg": "Organisation communautaire",
+        "education": "Éducation ou enseignement"
+      },
+      "expertise": {
+        "climate": "Changement Climatique",
+        "mentalHealth": "Santé Mentale",
+        "health": "Santé"
+      }
+    },
+    "recentWork": {
+      "title": "Travaux Récents",
+      "addWork": "Ajouter un Travail",
+      "noWorks": "Aucun travail récent à afficher",
+      "ongoing": "En cours",
+      "present": "Présent"
+    },
+    "communities": {
+      "title": "Centre Communautaire",
+      "regionalCommunities": "Communautés Régionales",
+      "specialGroups": "Groupes Spéciaux",
+      "noCommunities": "N'est membre d'aucune communauté",
+      "regional": {
+        "subSaharanAfrica": "Afrique Subsaharienne",
+        "northernAfricaWesternAsia": "Afrique du Nord et Asie Occidentale",
+        "centralSouthernAsia": "Asie Centrale et Méridionale",
+        "easternSouthEasternAsia": "Asie Orientale et Sud-Est Asiatique",
+        "latinAmericaCaribbean": "Amérique Latine et Caraïbes",
+        "oceania": "Océanie",
+        "europeNorthAmerica": "Europe et Amérique du Nord"
+      },
+      "special": {
+        "youth": "Jeunesse",
+        "indigenous": "Autochtone",
+        "farmerFisher": "Petits agriculteurs"
+      }
+    },
+    "social": {
+      "title": "Connecter",
+      "website": "Site Web Personnel",
+      "linkedin": "LinkedIn",
+      "twitter": "Twitter"
+    }
+  }
+}

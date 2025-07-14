@@ -142,13 +142,24 @@ exports.Prisma.SessionScalarFieldEnum = {
 
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
-  name: 'name',
   email: 'email',
-  password: 'password',
   emailVerified: 'emailVerified',
-  username: 'username',
   image: 'image',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  username: 'username',
   bio: 'bio',
+  ageGroup: 'ageGroup',
+  country: 'country',
+  city: 'city',
+  workTypes: 'workTypes',
+  expertiseAreas: 'expertiseAreas',
+  organization: 'organization',
+  position: 'position',
+  workBio: 'workBio',
+  personalWebsite: 'personalWebsite',
+  linkedinProfile: 'linkedinProfile',
+  twitterHandle: 'twitterHandle',
   role: 'role',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -181,6 +192,19 @@ exports.Prisma.ContentScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.RecentWorkScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  link: 'link',
+  isOngoing: 'isOngoing',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -195,11 +219,31 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
+exports.AgeGroup = exports.$Enums.AgeGroup = {
+  UNDER_18: 'UNDER_18',
+  ABOVE_18: 'ABOVE_18'
+};
+
 exports.Role = exports.$Enums.Role = {
   community_member: 'community_member',
   community_editor: 'community_editor',
   team_editor: 'team_editor',
   admin: 'admin'
+};
+
+exports.WorkType = exports.$Enums.WorkType = {
+  RESEARCH: 'RESEARCH',
+  POLICY: 'POLICY',
+  LIVED_EXPERIENCE_EXPERT: 'LIVED_EXPERIENCE_EXPERT',
+  NGO: 'NGO',
+  COMMUNITY_ORGANIZATION: 'COMMUNITY_ORGANIZATION',
+  EDUCATION_TEACHING: 'EDUCATION_TEACHING'
+};
+
+exports.ExpertiseArea = exports.$Enums.ExpertiseArea = {
+  CLIMATE_CHANGE: 'CLIMATE_CHANGE',
+  MENTAL_HEALTH: 'MENTAL_HEALTH',
+  HEALTH: 'HEALTH'
 };
 
 exports.CommunityType = exports.$Enums.CommunityType = {
@@ -229,7 +273,8 @@ exports.Prisma.ModelName = {
   User: 'User',
   Community: 'Community',
   UserCommunity: 'UserCommunity',
-  Content: 'Content'
+  Content: 'Content',
+  RecentWork: 'RecentWork'
 };
 
 /**

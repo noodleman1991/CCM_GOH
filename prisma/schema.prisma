@@ -38,15 +38,32 @@ model Session {
 
 model User {
   id            String    @id
-  name          String?
   email         String?   @unique
-  password      String?
   emailVerified DateTime?
-  username      String?
   image         String?
   accounts      Account[]
   sessions      Session[]
-  bio           String?
+
+  // Profile Information
+  firstName String?
+  lastName  String?
+  username  String?   @unique
+  bio       String?
+  ageGroup  AgeGroup?
+  country   String?
+  city      String?
+
+  // Work Details
+  workTypes      WorkType[]
+  expertiseAreas ExpertiseArea[]
+  organization   String?
+  position       String?
+  workBio        String?
+
+  // Social Links
+  personalWebsite String?
+  linkedinProfile String?
+  twitterHandle   String?
 
   // Global role (default: community_member)
   role Role @default(community_member)
@@ -57,8 +74,31 @@ model User {
   // Content created by user
   createdContent Content[]
 
+  // Recent work projects
+  recentWork RecentWork[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+enum AgeGroup {
+  UNDER_18
+  ABOVE_18
+}
+
+enum WorkType {
+  RESEARCH
+  POLICY
+  LIVED_EXPERIENCE_EXPERT
+  NGO
+  COMMUNITY_ORGANIZATION
+  EDUCATION_TEACHING
+}
+
+enum ExpertiseArea {
+  CLIMATE_CHANGE
+  MENTAL_HEALTH
+  HEALTH
 }
 
 enum Role {
@@ -136,6 +176,23 @@ model Content {
   // Who created this content
   authorId String
   author   User   @relation(fields: [authorId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model RecentWork {
+  id          String    @id @default(uuid())
+  title       String
+  description String
+  link        String?
+  isOngoing   Boolean   @default(false)
+  startDate   DateTime
+  endDate     DateTime?
+
+  // Who created this work
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
