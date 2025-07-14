@@ -43,12 +43,46 @@ export type UserCommunity = $Result.DefaultSelection<Prisma.$UserCommunityPayloa
  * 
  */
 export type Content = $Result.DefaultSelection<Prisma.$ContentPayload>
+/**
+ * Model RecentWork
+ * 
+ */
+export type RecentWork = $Result.DefaultSelection<Prisma.$RecentWorkPayload>
 
 /**
  * Enums
  */
 export namespace $Enums {
-  export const Role: {
+  export const AgeGroup: {
+  UNDER_18: 'UNDER_18',
+  ABOVE_18: 'ABOVE_18'
+};
+
+export type AgeGroup = (typeof AgeGroup)[keyof typeof AgeGroup]
+
+
+export const WorkType: {
+  RESEARCH: 'RESEARCH',
+  POLICY: 'POLICY',
+  LIVED_EXPERIENCE_EXPERT: 'LIVED_EXPERIENCE_EXPERT',
+  NGO: 'NGO',
+  COMMUNITY_ORGANIZATION: 'COMMUNITY_ORGANIZATION',
+  EDUCATION_TEACHING: 'EDUCATION_TEACHING'
+};
+
+export type WorkType = (typeof WorkType)[keyof typeof WorkType]
+
+
+export const ExpertiseArea: {
+  CLIMATE_CHANGE: 'CLIMATE_CHANGE',
+  MENTAL_HEALTH: 'MENTAL_HEALTH',
+  HEALTH: 'HEALTH'
+};
+
+export type ExpertiseArea = (typeof ExpertiseArea)[keyof typeof ExpertiseArea]
+
+
+export const Role: {
   community_member: 'community_member',
   community_editor: 'community_editor',
   team_editor: 'team_editor',
@@ -88,6 +122,18 @@ export const SpecialCommunityName: {
 export type SpecialCommunityName = (typeof SpecialCommunityName)[keyof typeof SpecialCommunityName]
 
 }
+
+export type AgeGroup = $Enums.AgeGroup
+
+export const AgeGroup: typeof $Enums.AgeGroup
+
+export type WorkType = $Enums.WorkType
+
+export const WorkType: typeof $Enums.WorkType
+
+export type ExpertiseArea = $Enums.ExpertiseArea
+
+export const ExpertiseArea: typeof $Enums.ExpertiseArea
 
 export type Role = $Enums.Role
 
@@ -289,6 +335,16 @@ export class PrismaClient<
     * ```
     */
   get content(): Prisma.ContentDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.recentWork`: Exposes CRUD operations for the **RecentWork** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more RecentWorks
+    * const recentWorks = await prisma.recentWork.findMany()
+    * ```
+    */
+  get recentWork(): Prisma.RecentWorkDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -734,7 +790,8 @@ export namespace Prisma {
     User: 'User',
     Community: 'Community',
     UserCommunity: 'UserCommunity',
-    Content: 'Content'
+    Content: 'Content',
+    RecentWork: 'RecentWork'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -753,7 +810,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "account" | "session" | "user" | "community" | "userCommunity" | "content"
+      modelProps: "account" | "session" | "user" | "community" | "userCommunity" | "content" | "recentWork"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1201,6 +1258,80 @@ export namespace Prisma {
           }
         }
       }
+      RecentWork: {
+        payload: Prisma.$RecentWorkPayload<ExtArgs>
+        fields: Prisma.RecentWorkFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.RecentWorkFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecentWorkPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.RecentWorkFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecentWorkPayload>
+          }
+          findFirst: {
+            args: Prisma.RecentWorkFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecentWorkPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.RecentWorkFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecentWorkPayload>
+          }
+          findMany: {
+            args: Prisma.RecentWorkFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecentWorkPayload>[]
+          }
+          create: {
+            args: Prisma.RecentWorkCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecentWorkPayload>
+          }
+          createMany: {
+            args: Prisma.RecentWorkCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.RecentWorkCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecentWorkPayload>[]
+          }
+          delete: {
+            args: Prisma.RecentWorkDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecentWorkPayload>
+          }
+          update: {
+            args: Prisma.RecentWorkUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecentWorkPayload>
+          }
+          deleteMany: {
+            args: Prisma.RecentWorkDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.RecentWorkUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.RecentWorkUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecentWorkPayload>[]
+          }
+          upsert: {
+            args: Prisma.RecentWorkUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RecentWorkPayload>
+          }
+          aggregate: {
+            args: Prisma.RecentWorkAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateRecentWork>
+          }
+          groupBy: {
+            args: Prisma.RecentWorkGroupByArgs<ExtArgs>
+            result: $Utils.Optional<RecentWorkGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.RecentWorkCountArgs<ExtArgs>
+            result: $Utils.Optional<RecentWorkCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1291,6 +1422,7 @@ export namespace Prisma {
     community?: CommunityOmit
     userCommunity?: UserCommunityOmit
     content?: ContentOmit
+    recentWork?: RecentWorkOmit
   }
 
   /* Types for Logging */
@@ -1389,6 +1521,7 @@ export namespace Prisma {
     sessions: number
     communityMemberships: number
     createdContent: number
+    recentWork: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1396,6 +1529,7 @@ export namespace Prisma {
     sessions?: boolean | UserCountOutputTypeCountSessionsArgs
     communityMemberships?: boolean | UserCountOutputTypeCountCommunityMembershipsArgs
     createdContent?: boolean | UserCountOutputTypeCountCreatedContentArgs
+    recentWork?: boolean | UserCountOutputTypeCountRecentWorkArgs
   }
 
   // Custom InputTypes
@@ -1435,6 +1569,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountCreatedContentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ContentWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountRecentWorkArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RecentWorkWhereInput
   }
 
 
@@ -3735,13 +3876,22 @@ export namespace Prisma {
 
   export type UserMinAggregateOutputType = {
     id: string | null
-    name: string | null
     email: string | null
-    password: string | null
     emailVerified: Date | null
-    username: string | null
     image: string | null
+    firstName: string | null
+    lastName: string | null
+    username: string | null
     bio: string | null
+    ageGroup: $Enums.AgeGroup | null
+    country: string | null
+    city: string | null
+    organization: string | null
+    position: string | null
+    workBio: string | null
+    personalWebsite: string | null
+    linkedinProfile: string | null
+    twitterHandle: string | null
     role: $Enums.Role | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -3749,13 +3899,22 @@ export namespace Prisma {
 
   export type UserMaxAggregateOutputType = {
     id: string | null
-    name: string | null
     email: string | null
-    password: string | null
     emailVerified: Date | null
-    username: string | null
     image: string | null
+    firstName: string | null
+    lastName: string | null
+    username: string | null
     bio: string | null
+    ageGroup: $Enums.AgeGroup | null
+    country: string | null
+    city: string | null
+    organization: string | null
+    position: string | null
+    workBio: string | null
+    personalWebsite: string | null
+    linkedinProfile: string | null
+    twitterHandle: string | null
     role: $Enums.Role | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -3763,13 +3922,24 @@ export namespace Prisma {
 
   export type UserCountAggregateOutputType = {
     id: number
-    name: number
     email: number
-    password: number
     emailVerified: number
-    username: number
     image: number
+    firstName: number
+    lastName: number
+    username: number
     bio: number
+    ageGroup: number
+    country: number
+    city: number
+    workTypes: number
+    expertiseAreas: number
+    organization: number
+    position: number
+    workBio: number
+    personalWebsite: number
+    linkedinProfile: number
+    twitterHandle: number
     role: number
     createdAt: number
     updatedAt: number
@@ -3779,13 +3949,22 @@ export namespace Prisma {
 
   export type UserMinAggregateInputType = {
     id?: true
-    name?: true
     email?: true
-    password?: true
     emailVerified?: true
-    username?: true
     image?: true
+    firstName?: true
+    lastName?: true
+    username?: true
     bio?: true
+    ageGroup?: true
+    country?: true
+    city?: true
+    organization?: true
+    position?: true
+    workBio?: true
+    personalWebsite?: true
+    linkedinProfile?: true
+    twitterHandle?: true
     role?: true
     createdAt?: true
     updatedAt?: true
@@ -3793,13 +3972,22 @@ export namespace Prisma {
 
   export type UserMaxAggregateInputType = {
     id?: true
-    name?: true
     email?: true
-    password?: true
     emailVerified?: true
-    username?: true
     image?: true
+    firstName?: true
+    lastName?: true
+    username?: true
     bio?: true
+    ageGroup?: true
+    country?: true
+    city?: true
+    organization?: true
+    position?: true
+    workBio?: true
+    personalWebsite?: true
+    linkedinProfile?: true
+    twitterHandle?: true
     role?: true
     createdAt?: true
     updatedAt?: true
@@ -3807,13 +3995,24 @@ export namespace Prisma {
 
   export type UserCountAggregateInputType = {
     id?: true
-    name?: true
     email?: true
-    password?: true
     emailVerified?: true
-    username?: true
     image?: true
+    firstName?: true
+    lastName?: true
+    username?: true
     bio?: true
+    ageGroup?: true
+    country?: true
+    city?: true
+    workTypes?: true
+    expertiseAreas?: true
+    organization?: true
+    position?: true
+    workBio?: true
+    personalWebsite?: true
+    linkedinProfile?: true
+    twitterHandle?: true
     role?: true
     createdAt?: true
     updatedAt?: true
@@ -3894,13 +4093,24 @@ export namespace Prisma {
 
   export type UserGroupByOutputType = {
     id: string
-    name: string | null
     email: string | null
-    password: string | null
     emailVerified: Date | null
-    username: string | null
     image: string | null
+    firstName: string | null
+    lastName: string | null
+    username: string | null
     bio: string | null
+    ageGroup: $Enums.AgeGroup | null
+    country: string | null
+    city: string | null
+    workTypes: $Enums.WorkType[]
+    expertiseAreas: $Enums.ExpertiseArea[]
+    organization: string | null
+    position: string | null
+    workBio: string | null
+    personalWebsite: string | null
+    linkedinProfile: string | null
+    twitterHandle: string | null
     role: $Enums.Role
     createdAt: Date
     updatedAt: Date
@@ -3925,13 +4135,24 @@ export namespace Prisma {
 
   export type UserSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    name?: boolean
     email?: boolean
-    password?: boolean
     emailVerified?: boolean
-    username?: boolean
     image?: boolean
+    firstName?: boolean
+    lastName?: boolean
+    username?: boolean
     bio?: boolean
+    ageGroup?: boolean
+    country?: boolean
+    city?: boolean
+    workTypes?: boolean
+    expertiseAreas?: boolean
+    organization?: boolean
+    position?: boolean
+    workBio?: boolean
+    personalWebsite?: boolean
+    linkedinProfile?: boolean
+    twitterHandle?: boolean
     role?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -3939,18 +4160,30 @@ export namespace Prisma {
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     communityMemberships?: boolean | User$communityMembershipsArgs<ExtArgs>
     createdContent?: boolean | User$createdContentArgs<ExtArgs>
+    recentWork?: boolean | User$recentWorkArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    name?: boolean
     email?: boolean
-    password?: boolean
     emailVerified?: boolean
-    username?: boolean
     image?: boolean
+    firstName?: boolean
+    lastName?: boolean
+    username?: boolean
     bio?: boolean
+    ageGroup?: boolean
+    country?: boolean
+    city?: boolean
+    workTypes?: boolean
+    expertiseAreas?: boolean
+    organization?: boolean
+    position?: boolean
+    workBio?: boolean
+    personalWebsite?: boolean
+    linkedinProfile?: boolean
+    twitterHandle?: boolean
     role?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -3958,13 +4191,24 @@ export namespace Prisma {
 
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    name?: boolean
     email?: boolean
-    password?: boolean
     emailVerified?: boolean
-    username?: boolean
     image?: boolean
+    firstName?: boolean
+    lastName?: boolean
+    username?: boolean
     bio?: boolean
+    ageGroup?: boolean
+    country?: boolean
+    city?: boolean
+    workTypes?: boolean
+    expertiseAreas?: boolean
+    organization?: boolean
+    position?: boolean
+    workBio?: boolean
+    personalWebsite?: boolean
+    linkedinProfile?: boolean
+    twitterHandle?: boolean
     role?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -3972,24 +4216,36 @@ export namespace Prisma {
 
   export type UserSelectScalar = {
     id?: boolean
-    name?: boolean
     email?: boolean
-    password?: boolean
     emailVerified?: boolean
-    username?: boolean
     image?: boolean
+    firstName?: boolean
+    lastName?: boolean
+    username?: boolean
     bio?: boolean
+    ageGroup?: boolean
+    country?: boolean
+    city?: boolean
+    workTypes?: boolean
+    expertiseAreas?: boolean
+    organization?: boolean
+    position?: boolean
+    workBio?: boolean
+    personalWebsite?: boolean
+    linkedinProfile?: boolean
+    twitterHandle?: boolean
     role?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "password" | "emailVerified" | "username" | "image" | "bio" | "role" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "emailVerified" | "image" | "firstName" | "lastName" | "username" | "bio" | "ageGroup" | "country" | "city" | "workTypes" | "expertiseAreas" | "organization" | "position" | "workBio" | "personalWebsite" | "linkedinProfile" | "twitterHandle" | "role" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     accounts?: boolean | User$accountsArgs<ExtArgs>
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     communityMemberships?: boolean | User$communityMembershipsArgs<ExtArgs>
     createdContent?: boolean | User$createdContentArgs<ExtArgs>
+    recentWork?: boolean | User$recentWorkArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -4002,16 +4258,28 @@ export namespace Prisma {
       sessions: Prisma.$SessionPayload<ExtArgs>[]
       communityMemberships: Prisma.$UserCommunityPayload<ExtArgs>[]
       createdContent: Prisma.$ContentPayload<ExtArgs>[]
+      recentWork: Prisma.$RecentWorkPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      name: string | null
       email: string | null
-      password: string | null
       emailVerified: Date | null
-      username: string | null
       image: string | null
+      firstName: string | null
+      lastName: string | null
+      username: string | null
       bio: string | null
+      ageGroup: $Enums.AgeGroup | null
+      country: string | null
+      city: string | null
+      workTypes: $Enums.WorkType[]
+      expertiseAreas: $Enums.ExpertiseArea[]
+      organization: string | null
+      position: string | null
+      workBio: string | null
+      personalWebsite: string | null
+      linkedinProfile: string | null
+      twitterHandle: string | null
       role: $Enums.Role
       createdAt: Date
       updatedAt: Date
@@ -4413,6 +4681,7 @@ export namespace Prisma {
     sessions<T extends User$sessionsArgs<ExtArgs> = {}>(args?: Subset<T, User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     communityMemberships<T extends User$communityMembershipsArgs<ExtArgs> = {}>(args?: Subset<T, User$communityMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserCommunityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     createdContent<T extends User$createdContentArgs<ExtArgs> = {}>(args?: Subset<T, User$createdContentArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    recentWork<T extends User$recentWorkArgs<ExtArgs> = {}>(args?: Subset<T, User$recentWorkArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecentWorkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4443,13 +4712,24 @@ export namespace Prisma {
    */
   interface UserFieldRefs {
     readonly id: FieldRef<"User", 'String'>
-    readonly name: FieldRef<"User", 'String'>
     readonly email: FieldRef<"User", 'String'>
-    readonly password: FieldRef<"User", 'String'>
     readonly emailVerified: FieldRef<"User", 'DateTime'>
-    readonly username: FieldRef<"User", 'String'>
     readonly image: FieldRef<"User", 'String'>
+    readonly firstName: FieldRef<"User", 'String'>
+    readonly lastName: FieldRef<"User", 'String'>
+    readonly username: FieldRef<"User", 'String'>
     readonly bio: FieldRef<"User", 'String'>
+    readonly ageGroup: FieldRef<"User", 'AgeGroup'>
+    readonly country: FieldRef<"User", 'String'>
+    readonly city: FieldRef<"User", 'String'>
+    readonly workTypes: FieldRef<"User", 'WorkType[]'>
+    readonly expertiseAreas: FieldRef<"User", 'ExpertiseArea[]'>
+    readonly organization: FieldRef<"User", 'String'>
+    readonly position: FieldRef<"User", 'String'>
+    readonly workBio: FieldRef<"User", 'String'>
+    readonly personalWebsite: FieldRef<"User", 'String'>
+    readonly linkedinProfile: FieldRef<"User", 'String'>
+    readonly twitterHandle: FieldRef<"User", 'String'>
     readonly role: FieldRef<"User", 'Role'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
@@ -4934,6 +5214,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ContentScalarFieldEnum | ContentScalarFieldEnum[]
+  }
+
+  /**
+   * User.recentWork
+   */
+  export type User$recentWorkArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecentWork
+     */
+    select?: RecentWorkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecentWork
+     */
+    omit?: RecentWorkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecentWorkInclude<ExtArgs> | null
+    where?: RecentWorkWhereInput
+    orderBy?: RecentWorkOrderByWithRelationInput | RecentWorkOrderByWithRelationInput[]
+    cursor?: RecentWorkWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: RecentWorkScalarFieldEnum | RecentWorkScalarFieldEnum[]
   }
 
   /**
@@ -8225,6 +8529,1129 @@ export namespace Prisma {
 
 
   /**
+   * Model RecentWork
+   */
+
+  export type AggregateRecentWork = {
+    _count: RecentWorkCountAggregateOutputType | null
+    _min: RecentWorkMinAggregateOutputType | null
+    _max: RecentWorkMaxAggregateOutputType | null
+  }
+
+  export type RecentWorkMinAggregateOutputType = {
+    id: string | null
+    title: string | null
+    description: string | null
+    link: string | null
+    isOngoing: boolean | null
+    startDate: Date | null
+    endDate: Date | null
+    userId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type RecentWorkMaxAggregateOutputType = {
+    id: string | null
+    title: string | null
+    description: string | null
+    link: string | null
+    isOngoing: boolean | null
+    startDate: Date | null
+    endDate: Date | null
+    userId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type RecentWorkCountAggregateOutputType = {
+    id: number
+    title: number
+    description: number
+    link: number
+    isOngoing: number
+    startDate: number
+    endDate: number
+    userId: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type RecentWorkMinAggregateInputType = {
+    id?: true
+    title?: true
+    description?: true
+    link?: true
+    isOngoing?: true
+    startDate?: true
+    endDate?: true
+    userId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type RecentWorkMaxAggregateInputType = {
+    id?: true
+    title?: true
+    description?: true
+    link?: true
+    isOngoing?: true
+    startDate?: true
+    endDate?: true
+    userId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type RecentWorkCountAggregateInputType = {
+    id?: true
+    title?: true
+    description?: true
+    link?: true
+    isOngoing?: true
+    startDate?: true
+    endDate?: true
+    userId?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type RecentWorkAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RecentWork to aggregate.
+     */
+    where?: RecentWorkWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RecentWorks to fetch.
+     */
+    orderBy?: RecentWorkOrderByWithRelationInput | RecentWorkOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: RecentWorkWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RecentWorks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RecentWorks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned RecentWorks
+    **/
+    _count?: true | RecentWorkCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: RecentWorkMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: RecentWorkMaxAggregateInputType
+  }
+
+  export type GetRecentWorkAggregateType<T extends RecentWorkAggregateArgs> = {
+        [P in keyof T & keyof AggregateRecentWork]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateRecentWork[P]>
+      : GetScalarType<T[P], AggregateRecentWork[P]>
+  }
+
+
+
+
+  export type RecentWorkGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RecentWorkWhereInput
+    orderBy?: RecentWorkOrderByWithAggregationInput | RecentWorkOrderByWithAggregationInput[]
+    by: RecentWorkScalarFieldEnum[] | RecentWorkScalarFieldEnum
+    having?: RecentWorkScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: RecentWorkCountAggregateInputType | true
+    _min?: RecentWorkMinAggregateInputType
+    _max?: RecentWorkMaxAggregateInputType
+  }
+
+  export type RecentWorkGroupByOutputType = {
+    id: string
+    title: string
+    description: string
+    link: string | null
+    isOngoing: boolean
+    startDate: Date
+    endDate: Date | null
+    userId: string
+    createdAt: Date
+    updatedAt: Date
+    _count: RecentWorkCountAggregateOutputType | null
+    _min: RecentWorkMinAggregateOutputType | null
+    _max: RecentWorkMaxAggregateOutputType | null
+  }
+
+  type GetRecentWorkGroupByPayload<T extends RecentWorkGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<RecentWorkGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof RecentWorkGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], RecentWorkGroupByOutputType[P]>
+            : GetScalarType<T[P], RecentWorkGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type RecentWorkSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    description?: boolean
+    link?: boolean
+    isOngoing?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["recentWork"]>
+
+  export type RecentWorkSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    description?: boolean
+    link?: boolean
+    isOngoing?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["recentWork"]>
+
+  export type RecentWorkSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    description?: boolean
+    link?: boolean
+    isOngoing?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["recentWork"]>
+
+  export type RecentWorkSelectScalar = {
+    id?: boolean
+    title?: boolean
+    description?: boolean
+    link?: boolean
+    isOngoing?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type RecentWorkOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "link" | "isOngoing" | "startDate" | "endDate" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["recentWork"]>
+  export type RecentWorkInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type RecentWorkIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type RecentWorkIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $RecentWorkPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "RecentWork"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      title: string
+      description: string
+      link: string | null
+      isOngoing: boolean
+      startDate: Date
+      endDate: Date | null
+      userId: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["recentWork"]>
+    composites: {}
+  }
+
+  type RecentWorkGetPayload<S extends boolean | null | undefined | RecentWorkDefaultArgs> = $Result.GetResult<Prisma.$RecentWorkPayload, S>
+
+  type RecentWorkCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<RecentWorkFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: RecentWorkCountAggregateInputType | true
+    }
+
+  export interface RecentWorkDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['RecentWork'], meta: { name: 'RecentWork' } }
+    /**
+     * Find zero or one RecentWork that matches the filter.
+     * @param {RecentWorkFindUniqueArgs} args - Arguments to find a RecentWork
+     * @example
+     * // Get one RecentWork
+     * const recentWork = await prisma.recentWork.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends RecentWorkFindUniqueArgs>(args: SelectSubset<T, RecentWorkFindUniqueArgs<ExtArgs>>): Prisma__RecentWorkClient<$Result.GetResult<Prisma.$RecentWorkPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one RecentWork that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {RecentWorkFindUniqueOrThrowArgs} args - Arguments to find a RecentWork
+     * @example
+     * // Get one RecentWork
+     * const recentWork = await prisma.recentWork.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends RecentWorkFindUniqueOrThrowArgs>(args: SelectSubset<T, RecentWorkFindUniqueOrThrowArgs<ExtArgs>>): Prisma__RecentWorkClient<$Result.GetResult<Prisma.$RecentWorkPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RecentWork that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RecentWorkFindFirstArgs} args - Arguments to find a RecentWork
+     * @example
+     * // Get one RecentWork
+     * const recentWork = await prisma.recentWork.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends RecentWorkFindFirstArgs>(args?: SelectSubset<T, RecentWorkFindFirstArgs<ExtArgs>>): Prisma__RecentWorkClient<$Result.GetResult<Prisma.$RecentWorkPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RecentWork that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RecentWorkFindFirstOrThrowArgs} args - Arguments to find a RecentWork
+     * @example
+     * // Get one RecentWork
+     * const recentWork = await prisma.recentWork.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends RecentWorkFindFirstOrThrowArgs>(args?: SelectSubset<T, RecentWorkFindFirstOrThrowArgs<ExtArgs>>): Prisma__RecentWorkClient<$Result.GetResult<Prisma.$RecentWorkPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more RecentWorks that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RecentWorkFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all RecentWorks
+     * const recentWorks = await prisma.recentWork.findMany()
+     * 
+     * // Get first 10 RecentWorks
+     * const recentWorks = await prisma.recentWork.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const recentWorkWithIdOnly = await prisma.recentWork.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends RecentWorkFindManyArgs>(args?: SelectSubset<T, RecentWorkFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecentWorkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a RecentWork.
+     * @param {RecentWorkCreateArgs} args - Arguments to create a RecentWork.
+     * @example
+     * // Create one RecentWork
+     * const RecentWork = await prisma.recentWork.create({
+     *   data: {
+     *     // ... data to create a RecentWork
+     *   }
+     * })
+     * 
+     */
+    create<T extends RecentWorkCreateArgs>(args: SelectSubset<T, RecentWorkCreateArgs<ExtArgs>>): Prisma__RecentWorkClient<$Result.GetResult<Prisma.$RecentWorkPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many RecentWorks.
+     * @param {RecentWorkCreateManyArgs} args - Arguments to create many RecentWorks.
+     * @example
+     * // Create many RecentWorks
+     * const recentWork = await prisma.recentWork.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends RecentWorkCreateManyArgs>(args?: SelectSubset<T, RecentWorkCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many RecentWorks and returns the data saved in the database.
+     * @param {RecentWorkCreateManyAndReturnArgs} args - Arguments to create many RecentWorks.
+     * @example
+     * // Create many RecentWorks
+     * const recentWork = await prisma.recentWork.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many RecentWorks and only return the `id`
+     * const recentWorkWithIdOnly = await prisma.recentWork.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends RecentWorkCreateManyAndReturnArgs>(args?: SelectSubset<T, RecentWorkCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecentWorkPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a RecentWork.
+     * @param {RecentWorkDeleteArgs} args - Arguments to delete one RecentWork.
+     * @example
+     * // Delete one RecentWork
+     * const RecentWork = await prisma.recentWork.delete({
+     *   where: {
+     *     // ... filter to delete one RecentWork
+     *   }
+     * })
+     * 
+     */
+    delete<T extends RecentWorkDeleteArgs>(args: SelectSubset<T, RecentWorkDeleteArgs<ExtArgs>>): Prisma__RecentWorkClient<$Result.GetResult<Prisma.$RecentWorkPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one RecentWork.
+     * @param {RecentWorkUpdateArgs} args - Arguments to update one RecentWork.
+     * @example
+     * // Update one RecentWork
+     * const recentWork = await prisma.recentWork.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends RecentWorkUpdateArgs>(args: SelectSubset<T, RecentWorkUpdateArgs<ExtArgs>>): Prisma__RecentWorkClient<$Result.GetResult<Prisma.$RecentWorkPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more RecentWorks.
+     * @param {RecentWorkDeleteManyArgs} args - Arguments to filter RecentWorks to delete.
+     * @example
+     * // Delete a few RecentWorks
+     * const { count } = await prisma.recentWork.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends RecentWorkDeleteManyArgs>(args?: SelectSubset<T, RecentWorkDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RecentWorks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RecentWorkUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many RecentWorks
+     * const recentWork = await prisma.recentWork.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends RecentWorkUpdateManyArgs>(args: SelectSubset<T, RecentWorkUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RecentWorks and returns the data updated in the database.
+     * @param {RecentWorkUpdateManyAndReturnArgs} args - Arguments to update many RecentWorks.
+     * @example
+     * // Update many RecentWorks
+     * const recentWork = await prisma.recentWork.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more RecentWorks and only return the `id`
+     * const recentWorkWithIdOnly = await prisma.recentWork.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends RecentWorkUpdateManyAndReturnArgs>(args: SelectSubset<T, RecentWorkUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecentWorkPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one RecentWork.
+     * @param {RecentWorkUpsertArgs} args - Arguments to update or create a RecentWork.
+     * @example
+     * // Update or create a RecentWork
+     * const recentWork = await prisma.recentWork.upsert({
+     *   create: {
+     *     // ... data to create a RecentWork
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the RecentWork we want to update
+     *   }
+     * })
+     */
+    upsert<T extends RecentWorkUpsertArgs>(args: SelectSubset<T, RecentWorkUpsertArgs<ExtArgs>>): Prisma__RecentWorkClient<$Result.GetResult<Prisma.$RecentWorkPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of RecentWorks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RecentWorkCountArgs} args - Arguments to filter RecentWorks to count.
+     * @example
+     * // Count the number of RecentWorks
+     * const count = await prisma.recentWork.count({
+     *   where: {
+     *     // ... the filter for the RecentWorks we want to count
+     *   }
+     * })
+    **/
+    count<T extends RecentWorkCountArgs>(
+      args?: Subset<T, RecentWorkCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], RecentWorkCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a RecentWork.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RecentWorkAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends RecentWorkAggregateArgs>(args: Subset<T, RecentWorkAggregateArgs>): Prisma.PrismaPromise<GetRecentWorkAggregateType<T>>
+
+    /**
+     * Group by RecentWork.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RecentWorkGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends RecentWorkGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: RecentWorkGroupByArgs['orderBy'] }
+        : { orderBy?: RecentWorkGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, RecentWorkGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRecentWorkGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the RecentWork model
+   */
+  readonly fields: RecentWorkFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for RecentWork.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__RecentWorkClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the RecentWork model
+   */
+  interface RecentWorkFieldRefs {
+    readonly id: FieldRef<"RecentWork", 'String'>
+    readonly title: FieldRef<"RecentWork", 'String'>
+    readonly description: FieldRef<"RecentWork", 'String'>
+    readonly link: FieldRef<"RecentWork", 'String'>
+    readonly isOngoing: FieldRef<"RecentWork", 'Boolean'>
+    readonly startDate: FieldRef<"RecentWork", 'DateTime'>
+    readonly endDate: FieldRef<"RecentWork", 'DateTime'>
+    readonly userId: FieldRef<"RecentWork", 'String'>
+    readonly createdAt: FieldRef<"RecentWork", 'DateTime'>
+    readonly updatedAt: FieldRef<"RecentWork", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * RecentWork findUnique
+   */
+  export type RecentWorkFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecentWork
+     */
+    select?: RecentWorkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecentWork
+     */
+    omit?: RecentWorkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecentWorkInclude<ExtArgs> | null
+    /**
+     * Filter, which RecentWork to fetch.
+     */
+    where: RecentWorkWhereUniqueInput
+  }
+
+  /**
+   * RecentWork findUniqueOrThrow
+   */
+  export type RecentWorkFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecentWork
+     */
+    select?: RecentWorkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecentWork
+     */
+    omit?: RecentWorkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecentWorkInclude<ExtArgs> | null
+    /**
+     * Filter, which RecentWork to fetch.
+     */
+    where: RecentWorkWhereUniqueInput
+  }
+
+  /**
+   * RecentWork findFirst
+   */
+  export type RecentWorkFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecentWork
+     */
+    select?: RecentWorkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecentWork
+     */
+    omit?: RecentWorkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecentWorkInclude<ExtArgs> | null
+    /**
+     * Filter, which RecentWork to fetch.
+     */
+    where?: RecentWorkWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RecentWorks to fetch.
+     */
+    orderBy?: RecentWorkOrderByWithRelationInput | RecentWorkOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RecentWorks.
+     */
+    cursor?: RecentWorkWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RecentWorks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RecentWorks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RecentWorks.
+     */
+    distinct?: RecentWorkScalarFieldEnum | RecentWorkScalarFieldEnum[]
+  }
+
+  /**
+   * RecentWork findFirstOrThrow
+   */
+  export type RecentWorkFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecentWork
+     */
+    select?: RecentWorkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecentWork
+     */
+    omit?: RecentWorkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecentWorkInclude<ExtArgs> | null
+    /**
+     * Filter, which RecentWork to fetch.
+     */
+    where?: RecentWorkWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RecentWorks to fetch.
+     */
+    orderBy?: RecentWorkOrderByWithRelationInput | RecentWorkOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RecentWorks.
+     */
+    cursor?: RecentWorkWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RecentWorks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RecentWorks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RecentWorks.
+     */
+    distinct?: RecentWorkScalarFieldEnum | RecentWorkScalarFieldEnum[]
+  }
+
+  /**
+   * RecentWork findMany
+   */
+  export type RecentWorkFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecentWork
+     */
+    select?: RecentWorkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecentWork
+     */
+    omit?: RecentWorkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecentWorkInclude<ExtArgs> | null
+    /**
+     * Filter, which RecentWorks to fetch.
+     */
+    where?: RecentWorkWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RecentWorks to fetch.
+     */
+    orderBy?: RecentWorkOrderByWithRelationInput | RecentWorkOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing RecentWorks.
+     */
+    cursor?: RecentWorkWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RecentWorks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RecentWorks.
+     */
+    skip?: number
+    distinct?: RecentWorkScalarFieldEnum | RecentWorkScalarFieldEnum[]
+  }
+
+  /**
+   * RecentWork create
+   */
+  export type RecentWorkCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecentWork
+     */
+    select?: RecentWorkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecentWork
+     */
+    omit?: RecentWorkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecentWorkInclude<ExtArgs> | null
+    /**
+     * The data needed to create a RecentWork.
+     */
+    data: XOR<RecentWorkCreateInput, RecentWorkUncheckedCreateInput>
+  }
+
+  /**
+   * RecentWork createMany
+   */
+  export type RecentWorkCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many RecentWorks.
+     */
+    data: RecentWorkCreateManyInput | RecentWorkCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * RecentWork createManyAndReturn
+   */
+  export type RecentWorkCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecentWork
+     */
+    select?: RecentWorkSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecentWork
+     */
+    omit?: RecentWorkOmit<ExtArgs> | null
+    /**
+     * The data used to create many RecentWorks.
+     */
+    data: RecentWorkCreateManyInput | RecentWorkCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecentWorkIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * RecentWork update
+   */
+  export type RecentWorkUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecentWork
+     */
+    select?: RecentWorkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecentWork
+     */
+    omit?: RecentWorkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecentWorkInclude<ExtArgs> | null
+    /**
+     * The data needed to update a RecentWork.
+     */
+    data: XOR<RecentWorkUpdateInput, RecentWorkUncheckedUpdateInput>
+    /**
+     * Choose, which RecentWork to update.
+     */
+    where: RecentWorkWhereUniqueInput
+  }
+
+  /**
+   * RecentWork updateMany
+   */
+  export type RecentWorkUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update RecentWorks.
+     */
+    data: XOR<RecentWorkUpdateManyMutationInput, RecentWorkUncheckedUpdateManyInput>
+    /**
+     * Filter which RecentWorks to update
+     */
+    where?: RecentWorkWhereInput
+    /**
+     * Limit how many RecentWorks to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * RecentWork updateManyAndReturn
+   */
+  export type RecentWorkUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecentWork
+     */
+    select?: RecentWorkSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecentWork
+     */
+    omit?: RecentWorkOmit<ExtArgs> | null
+    /**
+     * The data used to update RecentWorks.
+     */
+    data: XOR<RecentWorkUpdateManyMutationInput, RecentWorkUncheckedUpdateManyInput>
+    /**
+     * Filter which RecentWorks to update
+     */
+    where?: RecentWorkWhereInput
+    /**
+     * Limit how many RecentWorks to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecentWorkIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * RecentWork upsert
+   */
+  export type RecentWorkUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecentWork
+     */
+    select?: RecentWorkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecentWork
+     */
+    omit?: RecentWorkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecentWorkInclude<ExtArgs> | null
+    /**
+     * The filter to search for the RecentWork to update in case it exists.
+     */
+    where: RecentWorkWhereUniqueInput
+    /**
+     * In case the RecentWork found by the `where` argument doesn't exist, create a new RecentWork with this data.
+     */
+    create: XOR<RecentWorkCreateInput, RecentWorkUncheckedCreateInput>
+    /**
+     * In case the RecentWork was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<RecentWorkUpdateInput, RecentWorkUncheckedUpdateInput>
+  }
+
+  /**
+   * RecentWork delete
+   */
+  export type RecentWorkDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecentWork
+     */
+    select?: RecentWorkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecentWork
+     */
+    omit?: RecentWorkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecentWorkInclude<ExtArgs> | null
+    /**
+     * Filter which RecentWork to delete.
+     */
+    where: RecentWorkWhereUniqueInput
+  }
+
+  /**
+   * RecentWork deleteMany
+   */
+  export type RecentWorkDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RecentWorks to delete
+     */
+    where?: RecentWorkWhereInput
+    /**
+     * Limit how many RecentWorks to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * RecentWork without action
+   */
+  export type RecentWorkDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RecentWork
+     */
+    select?: RecentWorkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RecentWork
+     */
+    omit?: RecentWorkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecentWorkInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -8269,13 +9696,24 @@ export namespace Prisma {
 
   export const UserScalarFieldEnum: {
     id: 'id',
-    name: 'name',
     email: 'email',
-    password: 'password',
     emailVerified: 'emailVerified',
-    username: 'username',
     image: 'image',
+    firstName: 'firstName',
+    lastName: 'lastName',
+    username: 'username',
     bio: 'bio',
+    ageGroup: 'ageGroup',
+    country: 'country',
+    city: 'city',
+    workTypes: 'workTypes',
+    expertiseAreas: 'expertiseAreas',
+    organization: 'organization',
+    position: 'position',
+    workBio: 'workBio',
+    personalWebsite: 'personalWebsite',
+    linkedinProfile: 'linkedinProfile',
+    twitterHandle: 'twitterHandle',
     role: 'role',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -8318,6 +9756,22 @@ export namespace Prisma {
   };
 
   export type ContentScalarFieldEnum = (typeof ContentScalarFieldEnum)[keyof typeof ContentScalarFieldEnum]
+
+
+  export const RecentWorkScalarFieldEnum: {
+    id: 'id',
+    title: 'title',
+    description: 'description',
+    link: 'link',
+    isOngoing: 'isOngoing',
+    startDate: 'startDate',
+    endDate: 'endDate',
+    userId: 'userId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type RecentWorkScalarFieldEnum = (typeof RecentWorkScalarFieldEnum)[keyof typeof RecentWorkScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -8392,6 +9846,48 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'AgeGroup'
+   */
+  export type EnumAgeGroupFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AgeGroup'>
+    
+
+
+  /**
+   * Reference to a field of type 'AgeGroup[]'
+   */
+  export type ListEnumAgeGroupFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AgeGroup[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'WorkType[]'
+   */
+  export type ListEnumWorkTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'WorkType'
+   */
+  export type EnumWorkTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkType'>
+    
+
+
+  /**
+   * Reference to a field of type 'ExpertiseArea[]'
+   */
+  export type ListEnumExpertiseAreaFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ExpertiseArea[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'ExpertiseArea'
+   */
+  export type EnumExpertiseAreaFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ExpertiseArea'>
+    
+
+
+  /**
    * Reference to a field of type 'Role'
    */
   export type EnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role'>
@@ -8444,6 +9940,13 @@ export namespace Prisma {
    * Reference to a field of type 'SpecialCommunityName[]'
    */
   export type ListEnumSpecialCommunityNameFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SpecialCommunityName[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -8617,13 +10120,24 @@ export namespace Prisma {
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
     id?: StringFilter<"User"> | string
-    name?: StringNullableFilter<"User"> | string | null
     email?: StringNullableFilter<"User"> | string | null
-    password?: StringNullableFilter<"User"> | string | null
     emailVerified?: DateTimeNullableFilter<"User"> | Date | string | null
-    username?: StringNullableFilter<"User"> | string | null
     image?: StringNullableFilter<"User"> | string | null
+    firstName?: StringNullableFilter<"User"> | string | null
+    lastName?: StringNullableFilter<"User"> | string | null
+    username?: StringNullableFilter<"User"> | string | null
     bio?: StringNullableFilter<"User"> | string | null
+    ageGroup?: EnumAgeGroupNullableFilter<"User"> | $Enums.AgeGroup | null
+    country?: StringNullableFilter<"User"> | string | null
+    city?: StringNullableFilter<"User"> | string | null
+    workTypes?: EnumWorkTypeNullableListFilter<"User">
+    expertiseAreas?: EnumExpertiseAreaNullableListFilter<"User">
+    organization?: StringNullableFilter<"User"> | string | null
+    position?: StringNullableFilter<"User"> | string | null
+    workBio?: StringNullableFilter<"User"> | string | null
+    personalWebsite?: StringNullableFilter<"User"> | string | null
+    linkedinProfile?: StringNullableFilter<"User"> | string | null
+    twitterHandle?: StringNullableFilter<"User"> | string | null
     role?: EnumRoleFilter<"User"> | $Enums.Role
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
@@ -8631,17 +10145,29 @@ export namespace Prisma {
     sessions?: SessionListRelationFilter
     communityMemberships?: UserCommunityListRelationFilter
     createdContent?: ContentListRelationFilter
+    recentWork?: RecentWorkListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
     id?: SortOrder
-    name?: SortOrderInput | SortOrder
     email?: SortOrderInput | SortOrder
-    password?: SortOrderInput | SortOrder
     emailVerified?: SortOrderInput | SortOrder
-    username?: SortOrderInput | SortOrder
     image?: SortOrderInput | SortOrder
+    firstName?: SortOrderInput | SortOrder
+    lastName?: SortOrderInput | SortOrder
+    username?: SortOrderInput | SortOrder
     bio?: SortOrderInput | SortOrder
+    ageGroup?: SortOrderInput | SortOrder
+    country?: SortOrderInput | SortOrder
+    city?: SortOrderInput | SortOrder
+    workTypes?: SortOrder
+    expertiseAreas?: SortOrder
+    organization?: SortOrderInput | SortOrder
+    position?: SortOrderInput | SortOrder
+    workBio?: SortOrderInput | SortOrder
+    personalWebsite?: SortOrderInput | SortOrder
+    linkedinProfile?: SortOrderInput | SortOrder
+    twitterHandle?: SortOrderInput | SortOrder
     role?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -8649,20 +10175,32 @@ export namespace Prisma {
     sessions?: SessionOrderByRelationAggregateInput
     communityMemberships?: UserCommunityOrderByRelationAggregateInput
     createdContent?: ContentOrderByRelationAggregateInput
+    recentWork?: RecentWorkOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
     id?: string
     email?: string
+    username?: string
     AND?: UserWhereInput | UserWhereInput[]
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
-    name?: StringNullableFilter<"User"> | string | null
-    password?: StringNullableFilter<"User"> | string | null
     emailVerified?: DateTimeNullableFilter<"User"> | Date | string | null
-    username?: StringNullableFilter<"User"> | string | null
     image?: StringNullableFilter<"User"> | string | null
+    firstName?: StringNullableFilter<"User"> | string | null
+    lastName?: StringNullableFilter<"User"> | string | null
     bio?: StringNullableFilter<"User"> | string | null
+    ageGroup?: EnumAgeGroupNullableFilter<"User"> | $Enums.AgeGroup | null
+    country?: StringNullableFilter<"User"> | string | null
+    city?: StringNullableFilter<"User"> | string | null
+    workTypes?: EnumWorkTypeNullableListFilter<"User">
+    expertiseAreas?: EnumExpertiseAreaNullableListFilter<"User">
+    organization?: StringNullableFilter<"User"> | string | null
+    position?: StringNullableFilter<"User"> | string | null
+    workBio?: StringNullableFilter<"User"> | string | null
+    personalWebsite?: StringNullableFilter<"User"> | string | null
+    linkedinProfile?: StringNullableFilter<"User"> | string | null
+    twitterHandle?: StringNullableFilter<"User"> | string | null
     role?: EnumRoleFilter<"User"> | $Enums.Role
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
@@ -8670,17 +10208,29 @@ export namespace Prisma {
     sessions?: SessionListRelationFilter
     communityMemberships?: UserCommunityListRelationFilter
     createdContent?: ContentListRelationFilter
-  }, "id" | "email">
+    recentWork?: RecentWorkListRelationFilter
+  }, "id" | "email" | "username">
 
   export type UserOrderByWithAggregationInput = {
     id?: SortOrder
-    name?: SortOrderInput | SortOrder
     email?: SortOrderInput | SortOrder
-    password?: SortOrderInput | SortOrder
     emailVerified?: SortOrderInput | SortOrder
-    username?: SortOrderInput | SortOrder
     image?: SortOrderInput | SortOrder
+    firstName?: SortOrderInput | SortOrder
+    lastName?: SortOrderInput | SortOrder
+    username?: SortOrderInput | SortOrder
     bio?: SortOrderInput | SortOrder
+    ageGroup?: SortOrderInput | SortOrder
+    country?: SortOrderInput | SortOrder
+    city?: SortOrderInput | SortOrder
+    workTypes?: SortOrder
+    expertiseAreas?: SortOrder
+    organization?: SortOrderInput | SortOrder
+    position?: SortOrderInput | SortOrder
+    workBio?: SortOrderInput | SortOrder
+    personalWebsite?: SortOrderInput | SortOrder
+    linkedinProfile?: SortOrderInput | SortOrder
+    twitterHandle?: SortOrderInput | SortOrder
     role?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -8694,13 +10244,24 @@ export namespace Prisma {
     OR?: UserScalarWhereWithAggregatesInput[]
     NOT?: UserScalarWhereWithAggregatesInput | UserScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"User"> | string
-    name?: StringNullableWithAggregatesFilter<"User"> | string | null
     email?: StringNullableWithAggregatesFilter<"User"> | string | null
-    password?: StringNullableWithAggregatesFilter<"User"> | string | null
     emailVerified?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
-    username?: StringNullableWithAggregatesFilter<"User"> | string | null
     image?: StringNullableWithAggregatesFilter<"User"> | string | null
+    firstName?: StringNullableWithAggregatesFilter<"User"> | string | null
+    lastName?: StringNullableWithAggregatesFilter<"User"> | string | null
+    username?: StringNullableWithAggregatesFilter<"User"> | string | null
     bio?: StringNullableWithAggregatesFilter<"User"> | string | null
+    ageGroup?: EnumAgeGroupNullableWithAggregatesFilter<"User"> | $Enums.AgeGroup | null
+    country?: StringNullableWithAggregatesFilter<"User"> | string | null
+    city?: StringNullableWithAggregatesFilter<"User"> | string | null
+    workTypes?: EnumWorkTypeNullableListFilter<"User">
+    expertiseAreas?: EnumExpertiseAreaNullableListFilter<"User">
+    organization?: StringNullableWithAggregatesFilter<"User"> | string | null
+    position?: StringNullableWithAggregatesFilter<"User"> | string | null
+    workBio?: StringNullableWithAggregatesFilter<"User"> | string | null
+    personalWebsite?: StringNullableWithAggregatesFilter<"User"> | string | null
+    linkedinProfile?: StringNullableWithAggregatesFilter<"User"> | string | null
+    twitterHandle?: StringNullableWithAggregatesFilter<"User"> | string | null
     role?: EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
@@ -8896,6 +10457,86 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Content"> | Date | string
   }
 
+  export type RecentWorkWhereInput = {
+    AND?: RecentWorkWhereInput | RecentWorkWhereInput[]
+    OR?: RecentWorkWhereInput[]
+    NOT?: RecentWorkWhereInput | RecentWorkWhereInput[]
+    id?: StringFilter<"RecentWork"> | string
+    title?: StringFilter<"RecentWork"> | string
+    description?: StringFilter<"RecentWork"> | string
+    link?: StringNullableFilter<"RecentWork"> | string | null
+    isOngoing?: BoolFilter<"RecentWork"> | boolean
+    startDate?: DateTimeFilter<"RecentWork"> | Date | string
+    endDate?: DateTimeNullableFilter<"RecentWork"> | Date | string | null
+    userId?: StringFilter<"RecentWork"> | string
+    createdAt?: DateTimeFilter<"RecentWork"> | Date | string
+    updatedAt?: DateTimeFilter<"RecentWork"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type RecentWorkOrderByWithRelationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    link?: SortOrderInput | SortOrder
+    isOngoing?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrderInput | SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type RecentWorkWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: RecentWorkWhereInput | RecentWorkWhereInput[]
+    OR?: RecentWorkWhereInput[]
+    NOT?: RecentWorkWhereInput | RecentWorkWhereInput[]
+    title?: StringFilter<"RecentWork"> | string
+    description?: StringFilter<"RecentWork"> | string
+    link?: StringNullableFilter<"RecentWork"> | string | null
+    isOngoing?: BoolFilter<"RecentWork"> | boolean
+    startDate?: DateTimeFilter<"RecentWork"> | Date | string
+    endDate?: DateTimeNullableFilter<"RecentWork"> | Date | string | null
+    userId?: StringFilter<"RecentWork"> | string
+    createdAt?: DateTimeFilter<"RecentWork"> | Date | string
+    updatedAt?: DateTimeFilter<"RecentWork"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type RecentWorkOrderByWithAggregationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    link?: SortOrderInput | SortOrder
+    isOngoing?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrderInput | SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: RecentWorkCountOrderByAggregateInput
+    _max?: RecentWorkMaxOrderByAggregateInput
+    _min?: RecentWorkMinOrderByAggregateInput
+  }
+
+  export type RecentWorkScalarWhereWithAggregatesInput = {
+    AND?: RecentWorkScalarWhereWithAggregatesInput | RecentWorkScalarWhereWithAggregatesInput[]
+    OR?: RecentWorkScalarWhereWithAggregatesInput[]
+    NOT?: RecentWorkScalarWhereWithAggregatesInput | RecentWorkScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"RecentWork"> | string
+    title?: StringWithAggregatesFilter<"RecentWork"> | string
+    description?: StringWithAggregatesFilter<"RecentWork"> | string
+    link?: StringNullableWithAggregatesFilter<"RecentWork"> | string | null
+    isOngoing?: BoolWithAggregatesFilter<"RecentWork"> | boolean
+    startDate?: DateTimeWithAggregatesFilter<"RecentWork"> | Date | string
+    endDate?: DateTimeNullableWithAggregatesFilter<"RecentWork"> | Date | string | null
+    userId?: StringWithAggregatesFilter<"RecentWork"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"RecentWork"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"RecentWork"> | Date | string
+  }
+
   export type AccountCreateInput = {
     id: string
     type: string
@@ -9057,13 +10698,24 @@ export namespace Prisma {
 
   export type UserCreateInput = {
     id: string
-    name?: string | null
     email?: string | null
-    password?: string | null
     emailVerified?: Date | string | null
-    username?: string | null
     image?: string | null
+    firstName?: string | null
+    lastName?: string | null
+    username?: string | null
     bio?: string | null
+    ageGroup?: $Enums.AgeGroup | null
+    country?: string | null
+    city?: string | null
+    workTypes?: UserCreateworkTypesInput | $Enums.WorkType[]
+    expertiseAreas?: UserCreateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    organization?: string | null
+    position?: string | null
+    workBio?: string | null
+    personalWebsite?: string | null
+    linkedinProfile?: string | null
+    twitterHandle?: string | null
     role?: $Enums.Role
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -9071,17 +10723,29 @@ export namespace Prisma {
     sessions?: SessionCreateNestedManyWithoutUserInput
     communityMemberships?: UserCommunityCreateNestedManyWithoutUserInput
     createdContent?: ContentCreateNestedManyWithoutAuthorInput
+    recentWork?: RecentWorkCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
     id: string
-    name?: string | null
     email?: string | null
-    password?: string | null
     emailVerified?: Date | string | null
-    username?: string | null
     image?: string | null
+    firstName?: string | null
+    lastName?: string | null
+    username?: string | null
     bio?: string | null
+    ageGroup?: $Enums.AgeGroup | null
+    country?: string | null
+    city?: string | null
+    workTypes?: UserCreateworkTypesInput | $Enums.WorkType[]
+    expertiseAreas?: UserCreateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    organization?: string | null
+    position?: string | null
+    workBio?: string | null
+    personalWebsite?: string | null
+    linkedinProfile?: string | null
+    twitterHandle?: string | null
     role?: $Enums.Role
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -9089,17 +10753,29 @@ export namespace Prisma {
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     communityMemberships?: UserCommunityUncheckedCreateNestedManyWithoutUserInput
     createdContent?: ContentUncheckedCreateNestedManyWithoutAuthorInput
+    recentWork?: RecentWorkUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
-    password?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    username?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
+    ageGroup?: NullableEnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    workTypes?: UserUpdateworkTypesInput | $Enums.WorkType[]
+    expertiseAreas?: UserUpdateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    workBio?: NullableStringFieldUpdateOperationsInput | string | null
+    personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterHandle?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9107,17 +10783,29 @@ export namespace Prisma {
     sessions?: SessionUpdateManyWithoutUserNestedInput
     communityMemberships?: UserCommunityUpdateManyWithoutUserNestedInput
     createdContent?: ContentUpdateManyWithoutAuthorNestedInput
+    recentWork?: RecentWorkUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
-    password?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    username?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
+    ageGroup?: NullableEnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    workTypes?: UserUpdateworkTypesInput | $Enums.WorkType[]
+    expertiseAreas?: UserUpdateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    workBio?: NullableStringFieldUpdateOperationsInput | string | null
+    personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterHandle?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9125,17 +10813,29 @@ export namespace Prisma {
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     communityMemberships?: UserCommunityUncheckedUpdateManyWithoutUserNestedInput
     createdContent?: ContentUncheckedUpdateManyWithoutAuthorNestedInput
+    recentWork?: RecentWorkUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
     id: string
-    name?: string | null
     email?: string | null
-    password?: string | null
     emailVerified?: Date | string | null
-    username?: string | null
     image?: string | null
+    firstName?: string | null
+    lastName?: string | null
+    username?: string | null
     bio?: string | null
+    ageGroup?: $Enums.AgeGroup | null
+    country?: string | null
+    city?: string | null
+    workTypes?: UserCreateworkTypesInput | $Enums.WorkType[]
+    expertiseAreas?: UserCreateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    organization?: string | null
+    position?: string | null
+    workBio?: string | null
+    personalWebsite?: string | null
+    linkedinProfile?: string | null
+    twitterHandle?: string | null
     role?: $Enums.Role
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -9143,13 +10843,24 @@ export namespace Prisma {
 
   export type UserUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
-    password?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    username?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
+    ageGroup?: NullableEnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    workTypes?: UserUpdateworkTypesInput | $Enums.WorkType[]
+    expertiseAreas?: UserUpdateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    workBio?: NullableStringFieldUpdateOperationsInput | string | null
+    personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterHandle?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9157,13 +10868,24 @@ export namespace Prisma {
 
   export type UserUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
-    password?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    username?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
+    ageGroup?: NullableEnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    workTypes?: UserUpdateworkTypesInput | $Enums.WorkType[]
+    expertiseAreas?: UserUpdateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    workBio?: NullableStringFieldUpdateOperationsInput | string | null
+    personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterHandle?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9358,6 +11080,96 @@ export namespace Prisma {
     body?: StringFieldUpdateOperationsInput | string
     communityId?: StringFieldUpdateOperationsInput | string
     authorId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RecentWorkCreateInput = {
+    id?: string
+    title: string
+    description: string
+    link?: string | null
+    isOngoing?: boolean
+    startDate: Date | string
+    endDate?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutRecentWorkInput
+  }
+
+  export type RecentWorkUncheckedCreateInput = {
+    id?: string
+    title: string
+    description: string
+    link?: string | null
+    isOngoing?: boolean
+    startDate: Date | string
+    endDate?: Date | string | null
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type RecentWorkUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    link?: NullableStringFieldUpdateOperationsInput | string | null
+    isOngoing?: BoolFieldUpdateOperationsInput | boolean
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutRecentWorkNestedInput
+  }
+
+  export type RecentWorkUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    link?: NullableStringFieldUpdateOperationsInput | string | null
+    isOngoing?: BoolFieldUpdateOperationsInput | boolean
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RecentWorkCreateManyInput = {
+    id?: string
+    title: string
+    description: string
+    link?: string | null
+    isOngoing?: boolean
+    startDate: Date | string
+    endDate?: Date | string | null
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type RecentWorkUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    link?: NullableStringFieldUpdateOperationsInput | string | null
+    isOngoing?: BoolFieldUpdateOperationsInput | boolean
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RecentWorkUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    link?: NullableStringFieldUpdateOperationsInput | string | null
+    isOngoing?: BoolFieldUpdateOperationsInput | boolean
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -9583,6 +11395,29 @@ export namespace Prisma {
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
+  export type EnumAgeGroupNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.AgeGroup | EnumAgeGroupFieldRefInput<$PrismaModel> | null
+    in?: $Enums.AgeGroup[] | ListEnumAgeGroupFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.AgeGroup[] | ListEnumAgeGroupFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumAgeGroupNullableFilter<$PrismaModel> | $Enums.AgeGroup | null
+  }
+
+  export type EnumWorkTypeNullableListFilter<$PrismaModel = never> = {
+    equals?: $Enums.WorkType[] | ListEnumWorkTypeFieldRefInput<$PrismaModel> | null
+    has?: $Enums.WorkType | EnumWorkTypeFieldRefInput<$PrismaModel> | null
+    hasEvery?: $Enums.WorkType[] | ListEnumWorkTypeFieldRefInput<$PrismaModel>
+    hasSome?: $Enums.WorkType[] | ListEnumWorkTypeFieldRefInput<$PrismaModel>
+    isEmpty?: boolean
+  }
+
+  export type EnumExpertiseAreaNullableListFilter<$PrismaModel = never> = {
+    equals?: $Enums.ExpertiseArea[] | ListEnumExpertiseAreaFieldRefInput<$PrismaModel> | null
+    has?: $Enums.ExpertiseArea | EnumExpertiseAreaFieldRefInput<$PrismaModel> | null
+    hasEvery?: $Enums.ExpertiseArea[] | ListEnumExpertiseAreaFieldRefInput<$PrismaModel>
+    hasSome?: $Enums.ExpertiseArea[] | ListEnumExpertiseAreaFieldRefInput<$PrismaModel>
+    isEmpty?: boolean
+  }
+
   export type EnumRoleFilter<$PrismaModel = never> = {
     equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
     in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
@@ -9614,6 +11449,12 @@ export namespace Prisma {
     none?: ContentWhereInput
   }
 
+  export type RecentWorkListRelationFilter = {
+    every?: RecentWorkWhereInput
+    some?: RecentWorkWhereInput
+    none?: RecentWorkWhereInput
+  }
+
   export type AccountOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -9630,15 +11471,30 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type RecentWorkOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type UserCountOrderByAggregateInput = {
     id?: SortOrder
-    name?: SortOrder
     email?: SortOrder
-    password?: SortOrder
     emailVerified?: SortOrder
-    username?: SortOrder
     image?: SortOrder
+    firstName?: SortOrder
+    lastName?: SortOrder
+    username?: SortOrder
     bio?: SortOrder
+    ageGroup?: SortOrder
+    country?: SortOrder
+    city?: SortOrder
+    workTypes?: SortOrder
+    expertiseAreas?: SortOrder
+    organization?: SortOrder
+    position?: SortOrder
+    workBio?: SortOrder
+    personalWebsite?: SortOrder
+    linkedinProfile?: SortOrder
+    twitterHandle?: SortOrder
     role?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -9646,13 +11502,22 @@ export namespace Prisma {
 
   export type UserMaxOrderByAggregateInput = {
     id?: SortOrder
-    name?: SortOrder
     email?: SortOrder
-    password?: SortOrder
     emailVerified?: SortOrder
-    username?: SortOrder
     image?: SortOrder
+    firstName?: SortOrder
+    lastName?: SortOrder
+    username?: SortOrder
     bio?: SortOrder
+    ageGroup?: SortOrder
+    country?: SortOrder
+    city?: SortOrder
+    organization?: SortOrder
+    position?: SortOrder
+    workBio?: SortOrder
+    personalWebsite?: SortOrder
+    linkedinProfile?: SortOrder
+    twitterHandle?: SortOrder
     role?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -9660,13 +11525,22 @@ export namespace Prisma {
 
   export type UserMinOrderByAggregateInput = {
     id?: SortOrder
-    name?: SortOrder
     email?: SortOrder
-    password?: SortOrder
     emailVerified?: SortOrder
-    username?: SortOrder
     image?: SortOrder
+    firstName?: SortOrder
+    lastName?: SortOrder
+    username?: SortOrder
     bio?: SortOrder
+    ageGroup?: SortOrder
+    country?: SortOrder
+    city?: SortOrder
+    organization?: SortOrder
+    position?: SortOrder
+    workBio?: SortOrder
+    personalWebsite?: SortOrder
+    linkedinProfile?: SortOrder
+    twitterHandle?: SortOrder
     role?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -9684,6 +11558,16 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type EnumAgeGroupNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AgeGroup | EnumAgeGroupFieldRefInput<$PrismaModel> | null
+    in?: $Enums.AgeGroup[] | ListEnumAgeGroupFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.AgeGroup[] | ListEnumAgeGroupFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumAgeGroupNullableWithAggregatesFilter<$PrismaModel> | $Enums.AgeGroup | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumAgeGroupNullableFilter<$PrismaModel>
+    _max?: NestedEnumAgeGroupNullableFilter<$PrismaModel>
   }
 
   export type EnumRoleWithAggregatesFilter<$PrismaModel = never> = {
@@ -9838,6 +11722,58 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type RecentWorkCountOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    link?: SortOrder
+    isOngoing?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RecentWorkMaxOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    link?: SortOrder
+    isOngoing?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RecentWorkMinOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    link?: SortOrder
+    isOngoing?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
   export type UserCreateNestedOneWithoutAccountsInput = {
     create?: XOR<UserCreateWithoutAccountsInput, UserUncheckedCreateWithoutAccountsInput>
     connectOrCreate?: UserCreateOrConnectWithoutAccountsInput
@@ -9886,6 +11822,14 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSessionsInput, UserUpdateWithoutSessionsInput>, UserUncheckedUpdateWithoutSessionsInput>
   }
 
+  export type UserCreateworkTypesInput = {
+    set: $Enums.WorkType[]
+  }
+
+  export type UserCreateexpertiseAreasInput = {
+    set: $Enums.ExpertiseArea[]
+  }
+
   export type AccountCreateNestedManyWithoutUserInput = {
     create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
@@ -9912,6 +11856,13 @@ export namespace Prisma {
     connectOrCreate?: ContentCreateOrConnectWithoutAuthorInput | ContentCreateOrConnectWithoutAuthorInput[]
     createMany?: ContentCreateManyAuthorInputEnvelope
     connect?: ContentWhereUniqueInput | ContentWhereUniqueInput[]
+  }
+
+  export type RecentWorkCreateNestedManyWithoutUserInput = {
+    create?: XOR<RecentWorkCreateWithoutUserInput, RecentWorkUncheckedCreateWithoutUserInput> | RecentWorkCreateWithoutUserInput[] | RecentWorkUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: RecentWorkCreateOrConnectWithoutUserInput | RecentWorkCreateOrConnectWithoutUserInput[]
+    createMany?: RecentWorkCreateManyUserInputEnvelope
+    connect?: RecentWorkWhereUniqueInput | RecentWorkWhereUniqueInput[]
   }
 
   export type AccountUncheckedCreateNestedManyWithoutUserInput = {
@@ -9942,8 +11893,29 @@ export namespace Prisma {
     connect?: ContentWhereUniqueInput | ContentWhereUniqueInput[]
   }
 
+  export type RecentWorkUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<RecentWorkCreateWithoutUserInput, RecentWorkUncheckedCreateWithoutUserInput> | RecentWorkCreateWithoutUserInput[] | RecentWorkUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: RecentWorkCreateOrConnectWithoutUserInput | RecentWorkCreateOrConnectWithoutUserInput[]
+    createMany?: RecentWorkCreateManyUserInputEnvelope
+    connect?: RecentWorkWhereUniqueInput | RecentWorkWhereUniqueInput[]
+  }
+
   export type NullableDateTimeFieldUpdateOperationsInput = {
     set?: Date | string | null
+  }
+
+  export type NullableEnumAgeGroupFieldUpdateOperationsInput = {
+    set?: $Enums.AgeGroup | null
+  }
+
+  export type UserUpdateworkTypesInput = {
+    set?: $Enums.WorkType[]
+    push?: $Enums.WorkType | $Enums.WorkType[]
+  }
+
+  export type UserUpdateexpertiseAreasInput = {
+    set?: $Enums.ExpertiseArea[]
+    push?: $Enums.ExpertiseArea | $Enums.ExpertiseArea[]
   }
 
   export type EnumRoleFieldUpdateOperationsInput = {
@@ -10006,6 +11978,20 @@ export namespace Prisma {
     deleteMany?: ContentScalarWhereInput | ContentScalarWhereInput[]
   }
 
+  export type RecentWorkUpdateManyWithoutUserNestedInput = {
+    create?: XOR<RecentWorkCreateWithoutUserInput, RecentWorkUncheckedCreateWithoutUserInput> | RecentWorkCreateWithoutUserInput[] | RecentWorkUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: RecentWorkCreateOrConnectWithoutUserInput | RecentWorkCreateOrConnectWithoutUserInput[]
+    upsert?: RecentWorkUpsertWithWhereUniqueWithoutUserInput | RecentWorkUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: RecentWorkCreateManyUserInputEnvelope
+    set?: RecentWorkWhereUniqueInput | RecentWorkWhereUniqueInput[]
+    disconnect?: RecentWorkWhereUniqueInput | RecentWorkWhereUniqueInput[]
+    delete?: RecentWorkWhereUniqueInput | RecentWorkWhereUniqueInput[]
+    connect?: RecentWorkWhereUniqueInput | RecentWorkWhereUniqueInput[]
+    update?: RecentWorkUpdateWithWhereUniqueWithoutUserInput | RecentWorkUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: RecentWorkUpdateManyWithWhereWithoutUserInput | RecentWorkUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: RecentWorkScalarWhereInput | RecentWorkScalarWhereInput[]
+  }
+
   export type AccountUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
@@ -10060,6 +12046,20 @@ export namespace Prisma {
     update?: ContentUpdateWithWhereUniqueWithoutAuthorInput | ContentUpdateWithWhereUniqueWithoutAuthorInput[]
     updateMany?: ContentUpdateManyWithWhereWithoutAuthorInput | ContentUpdateManyWithWhereWithoutAuthorInput[]
     deleteMany?: ContentScalarWhereInput | ContentScalarWhereInput[]
+  }
+
+  export type RecentWorkUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<RecentWorkCreateWithoutUserInput, RecentWorkUncheckedCreateWithoutUserInput> | RecentWorkCreateWithoutUserInput[] | RecentWorkUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: RecentWorkCreateOrConnectWithoutUserInput | RecentWorkCreateOrConnectWithoutUserInput[]
+    upsert?: RecentWorkUpsertWithWhereUniqueWithoutUserInput | RecentWorkUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: RecentWorkCreateManyUserInputEnvelope
+    set?: RecentWorkWhereUniqueInput | RecentWorkWhereUniqueInput[]
+    disconnect?: RecentWorkWhereUniqueInput | RecentWorkWhereUniqueInput[]
+    delete?: RecentWorkWhereUniqueInput | RecentWorkWhereUniqueInput[]
+    connect?: RecentWorkWhereUniqueInput | RecentWorkWhereUniqueInput[]
+    update?: RecentWorkUpdateWithWhereUniqueWithoutUserInput | RecentWorkUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: RecentWorkUpdateManyWithWhereWithoutUserInput | RecentWorkUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: RecentWorkScalarWhereInput | RecentWorkScalarWhereInput[]
   }
 
   export type UserCommunityCreateNestedManyWithoutCommunityInput = {
@@ -10214,6 +12214,24 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCreatedContentInput, UserUpdateWithoutCreatedContentInput>, UserUncheckedUpdateWithoutCreatedContentInput>
   }
 
+  export type UserCreateNestedOneWithoutRecentWorkInput = {
+    create?: XOR<UserCreateWithoutRecentWorkInput, UserUncheckedCreateWithoutRecentWorkInput>
+    connectOrCreate?: UserCreateOrConnectWithoutRecentWorkInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
+  export type UserUpdateOneRequiredWithoutRecentWorkNestedInput = {
+    create?: XOR<UserCreateWithoutRecentWorkInput, UserUncheckedCreateWithoutRecentWorkInput>
+    connectOrCreate?: UserCreateOrConnectWithoutRecentWorkInput
+    upsert?: UserUpsertWithoutRecentWorkInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutRecentWorkInput, UserUpdateWithoutRecentWorkInput>, UserUncheckedUpdateWithoutRecentWorkInput>
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -10361,6 +12379,13 @@ export namespace Prisma {
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
+  export type NestedEnumAgeGroupNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.AgeGroup | EnumAgeGroupFieldRefInput<$PrismaModel> | null
+    in?: $Enums.AgeGroup[] | ListEnumAgeGroupFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.AgeGroup[] | ListEnumAgeGroupFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumAgeGroupNullableFilter<$PrismaModel> | $Enums.AgeGroup | null
+  }
+
   export type NestedEnumRoleFilter<$PrismaModel = never> = {
     equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
     in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
@@ -10380,6 +12405,16 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumAgeGroupNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AgeGroup | EnumAgeGroupFieldRefInput<$PrismaModel> | null
+    in?: $Enums.AgeGroup[] | ListEnumAgeGroupFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.AgeGroup[] | ListEnumAgeGroupFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumAgeGroupNullableWithAggregatesFilter<$PrismaModel> | $Enums.AgeGroup | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumAgeGroupNullableFilter<$PrismaModel>
+    _max?: NestedEnumAgeGroupNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumRoleWithAggregatesFilter<$PrismaModel = never> = {
@@ -10443,38 +12478,75 @@ export namespace Prisma {
     _max?: NestedEnumSpecialCommunityNameNullableFilter<$PrismaModel>
   }
 
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
   export type UserCreateWithoutAccountsInput = {
     id: string
-    name?: string | null
     email?: string | null
-    password?: string | null
     emailVerified?: Date | string | null
-    username?: string | null
     image?: string | null
+    firstName?: string | null
+    lastName?: string | null
+    username?: string | null
     bio?: string | null
+    ageGroup?: $Enums.AgeGroup | null
+    country?: string | null
+    city?: string | null
+    workTypes?: UserCreateworkTypesInput | $Enums.WorkType[]
+    expertiseAreas?: UserCreateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    organization?: string | null
+    position?: string | null
+    workBio?: string | null
+    personalWebsite?: string | null
+    linkedinProfile?: string | null
+    twitterHandle?: string | null
     role?: $Enums.Role
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
     communityMemberships?: UserCommunityCreateNestedManyWithoutUserInput
     createdContent?: ContentCreateNestedManyWithoutAuthorInput
+    recentWork?: RecentWorkCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
     id: string
-    name?: string | null
     email?: string | null
-    password?: string | null
     emailVerified?: Date | string | null
-    username?: string | null
     image?: string | null
+    firstName?: string | null
+    lastName?: string | null
+    username?: string | null
     bio?: string | null
+    ageGroup?: $Enums.AgeGroup | null
+    country?: string | null
+    city?: string | null
+    workTypes?: UserCreateworkTypesInput | $Enums.WorkType[]
+    expertiseAreas?: UserCreateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    organization?: string | null
+    position?: string | null
+    workBio?: string | null
+    personalWebsite?: string | null
+    linkedinProfile?: string | null
+    twitterHandle?: string | null
     role?: $Enums.Role
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     communityMemberships?: UserCommunityUncheckedCreateNestedManyWithoutUserInput
     createdContent?: ContentUncheckedCreateNestedManyWithoutAuthorInput
+    recentWork?: RecentWorkUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -10495,70 +12567,118 @@ export namespace Prisma {
 
   export type UserUpdateWithoutAccountsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
-    password?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    username?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
+    ageGroup?: NullableEnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    workTypes?: UserUpdateworkTypesInput | $Enums.WorkType[]
+    expertiseAreas?: UserUpdateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    workBio?: NullableStringFieldUpdateOperationsInput | string | null
+    personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterHandle?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
     communityMemberships?: UserCommunityUpdateManyWithoutUserNestedInput
     createdContent?: ContentUpdateManyWithoutAuthorNestedInput
+    recentWork?: RecentWorkUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
-    password?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    username?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
+    ageGroup?: NullableEnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    workTypes?: UserUpdateworkTypesInput | $Enums.WorkType[]
+    expertiseAreas?: UserUpdateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    workBio?: NullableStringFieldUpdateOperationsInput | string | null
+    personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterHandle?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     communityMemberships?: UserCommunityUncheckedUpdateManyWithoutUserNestedInput
     createdContent?: ContentUncheckedUpdateManyWithoutAuthorNestedInput
+    recentWork?: RecentWorkUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutSessionsInput = {
     id: string
-    name?: string | null
     email?: string | null
-    password?: string | null
     emailVerified?: Date | string | null
-    username?: string | null
     image?: string | null
+    firstName?: string | null
+    lastName?: string | null
+    username?: string | null
     bio?: string | null
+    ageGroup?: $Enums.AgeGroup | null
+    country?: string | null
+    city?: string | null
+    workTypes?: UserCreateworkTypesInput | $Enums.WorkType[]
+    expertiseAreas?: UserCreateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    organization?: string | null
+    position?: string | null
+    workBio?: string | null
+    personalWebsite?: string | null
+    linkedinProfile?: string | null
+    twitterHandle?: string | null
     role?: $Enums.Role
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountCreateNestedManyWithoutUserInput
     communityMemberships?: UserCommunityCreateNestedManyWithoutUserInput
     createdContent?: ContentCreateNestedManyWithoutAuthorInput
+    recentWork?: RecentWorkCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
     id: string
-    name?: string | null
     email?: string | null
-    password?: string | null
     emailVerified?: Date | string | null
-    username?: string | null
     image?: string | null
+    firstName?: string | null
+    lastName?: string | null
+    username?: string | null
     bio?: string | null
+    ageGroup?: $Enums.AgeGroup | null
+    country?: string | null
+    city?: string | null
+    workTypes?: UserCreateworkTypesInput | $Enums.WorkType[]
+    expertiseAreas?: UserCreateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    organization?: string | null
+    position?: string | null
+    workBio?: string | null
+    personalWebsite?: string | null
+    linkedinProfile?: string | null
+    twitterHandle?: string | null
     role?: $Enums.Role
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     communityMemberships?: UserCommunityUncheckedCreateNestedManyWithoutUserInput
     createdContent?: ContentUncheckedCreateNestedManyWithoutAuthorInput
+    recentWork?: RecentWorkUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -10579,36 +12699,60 @@ export namespace Prisma {
 
   export type UserUpdateWithoutSessionsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
-    password?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    username?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
+    ageGroup?: NullableEnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    workTypes?: UserUpdateworkTypesInput | $Enums.WorkType[]
+    expertiseAreas?: UserUpdateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    workBio?: NullableStringFieldUpdateOperationsInput | string | null
+    personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterHandle?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUpdateManyWithoutUserNestedInput
     communityMemberships?: UserCommunityUpdateManyWithoutUserNestedInput
     createdContent?: ContentUpdateManyWithoutAuthorNestedInput
+    recentWork?: RecentWorkUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
-    password?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    username?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
+    ageGroup?: NullableEnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    workTypes?: UserUpdateworkTypesInput | $Enums.WorkType[]
+    expertiseAreas?: UserUpdateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    workBio?: NullableStringFieldUpdateOperationsInput | string | null
+    personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterHandle?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     communityMemberships?: UserCommunityUncheckedUpdateManyWithoutUserNestedInput
     createdContent?: ContentUncheckedUpdateManyWithoutAuthorNestedInput
+    recentWork?: RecentWorkUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AccountCreateWithoutUserInput = {
@@ -10718,6 +12862,40 @@ export namespace Prisma {
 
   export type ContentCreateManyAuthorInputEnvelope = {
     data: ContentCreateManyAuthorInput | ContentCreateManyAuthorInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type RecentWorkCreateWithoutUserInput = {
+    id?: string
+    title: string
+    description: string
+    link?: string | null
+    isOngoing?: boolean
+    startDate: Date | string
+    endDate?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type RecentWorkUncheckedCreateWithoutUserInput = {
+    id?: string
+    title: string
+    description: string
+    link?: string | null
+    isOngoing?: boolean
+    startDate: Date | string
+    endDate?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type RecentWorkCreateOrConnectWithoutUserInput = {
+    where: RecentWorkWhereUniqueInput
+    create: XOR<RecentWorkCreateWithoutUserInput, RecentWorkUncheckedCreateWithoutUserInput>
+  }
+
+  export type RecentWorkCreateManyUserInputEnvelope = {
+    data: RecentWorkCreateManyUserInput | RecentWorkCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -10836,6 +13014,38 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Content"> | Date | string
   }
 
+  export type RecentWorkUpsertWithWhereUniqueWithoutUserInput = {
+    where: RecentWorkWhereUniqueInput
+    update: XOR<RecentWorkUpdateWithoutUserInput, RecentWorkUncheckedUpdateWithoutUserInput>
+    create: XOR<RecentWorkCreateWithoutUserInput, RecentWorkUncheckedCreateWithoutUserInput>
+  }
+
+  export type RecentWorkUpdateWithWhereUniqueWithoutUserInput = {
+    where: RecentWorkWhereUniqueInput
+    data: XOR<RecentWorkUpdateWithoutUserInput, RecentWorkUncheckedUpdateWithoutUserInput>
+  }
+
+  export type RecentWorkUpdateManyWithWhereWithoutUserInput = {
+    where: RecentWorkScalarWhereInput
+    data: XOR<RecentWorkUpdateManyMutationInput, RecentWorkUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type RecentWorkScalarWhereInput = {
+    AND?: RecentWorkScalarWhereInput | RecentWorkScalarWhereInput[]
+    OR?: RecentWorkScalarWhereInput[]
+    NOT?: RecentWorkScalarWhereInput | RecentWorkScalarWhereInput[]
+    id?: StringFilter<"RecentWork"> | string
+    title?: StringFilter<"RecentWork"> | string
+    description?: StringFilter<"RecentWork"> | string
+    link?: StringNullableFilter<"RecentWork"> | string | null
+    isOngoing?: BoolFilter<"RecentWork"> | boolean
+    startDate?: DateTimeFilter<"RecentWork"> | Date | string
+    endDate?: DateTimeNullableFilter<"RecentWork"> | Date | string | null
+    userId?: StringFilter<"RecentWork"> | string
+    createdAt?: DateTimeFilter<"RecentWork"> | Date | string
+    updatedAt?: DateTimeFilter<"RecentWork"> | Date | string
+  }
+
   export type UserCommunityCreateWithoutCommunityInput = {
     role?: $Enums.Role
     user: UserCreateNestedOneWithoutCommunityMembershipsInput
@@ -10918,36 +13128,60 @@ export namespace Prisma {
 
   export type UserCreateWithoutCommunityMembershipsInput = {
     id: string
-    name?: string | null
     email?: string | null
-    password?: string | null
     emailVerified?: Date | string | null
-    username?: string | null
     image?: string | null
+    firstName?: string | null
+    lastName?: string | null
+    username?: string | null
     bio?: string | null
+    ageGroup?: $Enums.AgeGroup | null
+    country?: string | null
+    city?: string | null
+    workTypes?: UserCreateworkTypesInput | $Enums.WorkType[]
+    expertiseAreas?: UserCreateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    organization?: string | null
+    position?: string | null
+    workBio?: string | null
+    personalWebsite?: string | null
+    linkedinProfile?: string | null
+    twitterHandle?: string | null
     role?: $Enums.Role
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     createdContent?: ContentCreateNestedManyWithoutAuthorInput
+    recentWork?: RecentWorkCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCommunityMembershipsInput = {
     id: string
-    name?: string | null
     email?: string | null
-    password?: string | null
     emailVerified?: Date | string | null
-    username?: string | null
     image?: string | null
+    firstName?: string | null
+    lastName?: string | null
+    username?: string | null
     bio?: string | null
+    ageGroup?: $Enums.AgeGroup | null
+    country?: string | null
+    city?: string | null
+    workTypes?: UserCreateworkTypesInput | $Enums.WorkType[]
+    expertiseAreas?: UserCreateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    organization?: string | null
+    position?: string | null
+    workBio?: string | null
+    personalWebsite?: string | null
+    linkedinProfile?: string | null
+    twitterHandle?: string | null
     role?: $Enums.Role
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     createdContent?: ContentUncheckedCreateNestedManyWithoutAuthorInput
+    recentWork?: RecentWorkUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCommunityMembershipsInput = {
@@ -10997,36 +13231,60 @@ export namespace Prisma {
 
   export type UserUpdateWithoutCommunityMembershipsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
-    password?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    username?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
+    ageGroup?: NullableEnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    workTypes?: UserUpdateworkTypesInput | $Enums.WorkType[]
+    expertiseAreas?: UserUpdateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    workBio?: NullableStringFieldUpdateOperationsInput | string | null
+    personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterHandle?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     createdContent?: ContentUpdateManyWithoutAuthorNestedInput
+    recentWork?: RecentWorkUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCommunityMembershipsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
-    password?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    username?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
+    ageGroup?: NullableEnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    workTypes?: UserUpdateworkTypesInput | $Enums.WorkType[]
+    expertiseAreas?: UserUpdateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    workBio?: NullableStringFieldUpdateOperationsInput | string | null
+    personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterHandle?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     createdContent?: ContentUncheckedUpdateManyWithoutAuthorNestedInput
+    recentWork?: RecentWorkUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type CommunityUpsertWithoutMembersInput = {
@@ -11095,36 +13353,60 @@ export namespace Prisma {
 
   export type UserCreateWithoutCreatedContentInput = {
     id: string
-    name?: string | null
     email?: string | null
-    password?: string | null
     emailVerified?: Date | string | null
-    username?: string | null
     image?: string | null
+    firstName?: string | null
+    lastName?: string | null
+    username?: string | null
     bio?: string | null
+    ageGroup?: $Enums.AgeGroup | null
+    country?: string | null
+    city?: string | null
+    workTypes?: UserCreateworkTypesInput | $Enums.WorkType[]
+    expertiseAreas?: UserCreateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    organization?: string | null
+    position?: string | null
+    workBio?: string | null
+    personalWebsite?: string | null
+    linkedinProfile?: string | null
+    twitterHandle?: string | null
     role?: $Enums.Role
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     communityMemberships?: UserCommunityCreateNestedManyWithoutUserInput
+    recentWork?: RecentWorkCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCreatedContentInput = {
     id: string
-    name?: string | null
     email?: string | null
-    password?: string | null
     emailVerified?: Date | string | null
-    username?: string | null
     image?: string | null
+    firstName?: string | null
+    lastName?: string | null
+    username?: string | null
     bio?: string | null
+    ageGroup?: $Enums.AgeGroup | null
+    country?: string | null
+    city?: string | null
+    workTypes?: UserCreateworkTypesInput | $Enums.WorkType[]
+    expertiseAreas?: UserCreateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    organization?: string | null
+    position?: string | null
+    workBio?: string | null
+    personalWebsite?: string | null
+    linkedinProfile?: string | null
+    twitterHandle?: string | null
     role?: $Enums.Role
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     communityMemberships?: UserCommunityUncheckedCreateNestedManyWithoutUserInput
+    recentWork?: RecentWorkUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCreatedContentInput = {
@@ -11180,36 +13462,192 @@ export namespace Prisma {
 
   export type UserUpdateWithoutCreatedContentInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
-    password?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    username?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
+    ageGroup?: NullableEnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    workTypes?: UserUpdateworkTypesInput | $Enums.WorkType[]
+    expertiseAreas?: UserUpdateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    workBio?: NullableStringFieldUpdateOperationsInput | string | null
+    personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterHandle?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     communityMemberships?: UserCommunityUpdateManyWithoutUserNestedInput
+    recentWork?: RecentWorkUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedContentInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
-    password?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    username?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
+    ageGroup?: NullableEnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    workTypes?: UserUpdateworkTypesInput | $Enums.WorkType[]
+    expertiseAreas?: UserUpdateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    workBio?: NullableStringFieldUpdateOperationsInput | string | null
+    personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterHandle?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     communityMemberships?: UserCommunityUncheckedUpdateManyWithoutUserNestedInput
+    recentWork?: RecentWorkUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutRecentWorkInput = {
+    id: string
+    email?: string | null
+    emailVerified?: Date | string | null
+    image?: string | null
+    firstName?: string | null
+    lastName?: string | null
+    username?: string | null
+    bio?: string | null
+    ageGroup?: $Enums.AgeGroup | null
+    country?: string | null
+    city?: string | null
+    workTypes?: UserCreateworkTypesInput | $Enums.WorkType[]
+    expertiseAreas?: UserCreateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    organization?: string | null
+    position?: string | null
+    workBio?: string | null
+    personalWebsite?: string | null
+    linkedinProfile?: string | null
+    twitterHandle?: string | null
+    role?: $Enums.Role
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    communityMemberships?: UserCommunityCreateNestedManyWithoutUserInput
+    createdContent?: ContentCreateNestedManyWithoutAuthorInput
+  }
+
+  export type UserUncheckedCreateWithoutRecentWorkInput = {
+    id: string
+    email?: string | null
+    emailVerified?: Date | string | null
+    image?: string | null
+    firstName?: string | null
+    lastName?: string | null
+    username?: string | null
+    bio?: string | null
+    ageGroup?: $Enums.AgeGroup | null
+    country?: string | null
+    city?: string | null
+    workTypes?: UserCreateworkTypesInput | $Enums.WorkType[]
+    expertiseAreas?: UserCreateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    organization?: string | null
+    position?: string | null
+    workBio?: string | null
+    personalWebsite?: string | null
+    linkedinProfile?: string | null
+    twitterHandle?: string | null
+    role?: $Enums.Role
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    communityMemberships?: UserCommunityUncheckedCreateNestedManyWithoutUserInput
+    createdContent?: ContentUncheckedCreateNestedManyWithoutAuthorInput
+  }
+
+  export type UserCreateOrConnectWithoutRecentWorkInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutRecentWorkInput, UserUncheckedCreateWithoutRecentWorkInput>
+  }
+
+  export type UserUpsertWithoutRecentWorkInput = {
+    update: XOR<UserUpdateWithoutRecentWorkInput, UserUncheckedUpdateWithoutRecentWorkInput>
+    create: XOR<UserCreateWithoutRecentWorkInput, UserUncheckedCreateWithoutRecentWorkInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutRecentWorkInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutRecentWorkInput, UserUncheckedUpdateWithoutRecentWorkInput>
+  }
+
+  export type UserUpdateWithoutRecentWorkInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    ageGroup?: NullableEnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    workTypes?: UserUpdateworkTypesInput | $Enums.WorkType[]
+    expertiseAreas?: UserUpdateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    workBio?: NullableStringFieldUpdateOperationsInput | string | null
+    personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterHandle?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    communityMemberships?: UserCommunityUpdateManyWithoutUserNestedInput
+    createdContent?: ContentUpdateManyWithoutAuthorNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutRecentWorkInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    ageGroup?: NullableEnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    workTypes?: UserUpdateworkTypesInput | $Enums.WorkType[]
+    expertiseAreas?: UserUpdateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    workBio?: NullableStringFieldUpdateOperationsInput | string | null
+    personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
+    twitterHandle?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    communityMemberships?: UserCommunityUncheckedUpdateManyWithoutUserNestedInput
+    createdContent?: ContentUncheckedUpdateManyWithoutAuthorNestedInput
   }
 
   export type AccountCreateManyUserInput = {
@@ -11243,6 +13681,18 @@ export namespace Prisma {
     title: string
     body: string
     communityId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type RecentWorkCreateManyUserInput = {
+    id?: string
+    title: string
+    description: string
+    link?: string | null
+    isOngoing?: boolean
+    startDate: Date | string
+    endDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -11348,6 +13798,42 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     body?: StringFieldUpdateOperationsInput | string
     communityId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RecentWorkUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    link?: NullableStringFieldUpdateOperationsInput | string | null
+    isOngoing?: BoolFieldUpdateOperationsInput | boolean
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RecentWorkUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    link?: NullableStringFieldUpdateOperationsInput | string | null
+    isOngoing?: BoolFieldUpdateOperationsInput | boolean
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RecentWorkUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    link?: NullableStringFieldUpdateOperationsInput | string | null
+    isOngoing?: BoolFieldUpdateOperationsInput | boolean
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

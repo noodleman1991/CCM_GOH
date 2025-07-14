@@ -51,7 +51,7 @@ export default async function SettingsLayout({
     if (!dbUser) {
         // This is where you'd create the user in your DB or redirect to onboarding
         redirect("/complete-profile");
-    }
+    } //todo: fix complete-profile redirect logic
 
     return (
         <>

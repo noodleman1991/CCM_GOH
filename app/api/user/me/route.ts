@@ -35,7 +35,8 @@ export async function GET(request: NextRequest) {
         switch (qs) {
             case 'profile':
                 fields = {
-                    name: true,
+                    firstName: true,
+                    lastName: true,
                     email: true,
                     bio: true,
                     image: true,
@@ -59,12 +60,12 @@ export async function GET(request: NextRequest) {
                     },
                 };
                 break;
-            case 'security':
-                fields = {
-                    id: true,
-                    password: true,
-                };
-                break;
+            // case 'security': //todo: understand in context
+            //     fields = {
+            //         id: true,
+            //         password: true,
+            //     };
+            //     break;
             case 'role':
                 fields = {
                     role: true,
@@ -147,7 +148,7 @@ export async function POST(request: NextRequest) {
         const qs = request?.nextUrl?.search?.slice(1);
 
         if (qs === 'profile') {
-            if (!req?.name) {
+            if (!req?.firstName || !req?.lastName) {
                 return NextResponse.json(
                     { error: t('errors.nameRequired') },
                     { status: 400 }
@@ -158,7 +159,8 @@ export async function POST(request: NextRequest) {
                     id: userId,
                 },
                 data: {
-                    name: req?.name || null,
+                    firstName: req?.name || null,
+                    lastName: req?.name || null,
                     bio: req?.bio || null,
                     image: req?.image || null,
                 },
@@ -295,25 +297,25 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        if (qs === 'security') {
-            // Add password update logic here if needed
-            if (req?.password) {
-                // You would hash the password here
-                await prisma.user.update({
-                    where: {
-                        id: userId,
-                    },
-                    data: {
-                        password: req.password, // In reality, you'd hash this
-                    },
-                });
-
-                return NextResponse.json(
-                    { message: t('success.passwordUpdated') },
-                    { status: 200 }
-                );
-            }
-        }
+        // if (qs === 'security') { //todo: understand in context
+        //     // Add password update logic here if needed
+        //     if (req?.password) {
+        //         // You would hash the password here
+        //         await prisma.user.update({
+        //             where: {
+        //                 id: userId,
+        //             },
+        //             data: {
+        //                 password: req.password, // In reality, you'd hash this
+        //             },
+        //         });
+        //
+        //         return NextResponse.json(
+        //             { message: t('success.passwordUpdated') },
+        //             { status: 200 }
+        //         );
+        //     }
+        // }
 
         return NextResponse.json(
             { error: t('errors.updateFailed') },

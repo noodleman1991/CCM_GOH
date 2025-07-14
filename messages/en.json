@@ -122,5 +122,158 @@
     "phone": "Phone number",
     "submit": "Submit",
     "reset": "Reset"
+  },
+  "profile": {
+    "noName": "No name",
+    "editProfile": "Edit Profile",
+    "contact": "Contact",
+    "basicInfo": "Basic Information",
+    "bio": "About",
+    "under18": "Under 18",
+    "above18": "18 or above",
+    "edit": {
+      "pageTitle": "Edit Profile",
+      "pageDescription": "Update your profile information",
+      "saveSuccess": "Profile updated successfully",
+      "saveError": "Failed to update profile",
+      "basicInfo": {
+        "title": "Basic Information",
+        "description": "This information will be displayed on your public profile"
+      },
+      "workInfo": {
+        "title": "Work Information",
+        "description": "Tell us about your professional background and expertise"
+      },
+      "social": {
+        "title": "Social Links",
+        "description": "Add links to your social media profiles and personal website"
+      },
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "username": "Username",
+      "usernameHint": "This will be used in your profile URL",
+      "bio": "Bio",
+      "ageGroup": "Age Group",
+      "selectAge": "Select your age group",
+      "under18": "Under 18",
+      "above18": "18 or above",
+      "country": "Country",
+      "city": "City/Town",
+      "workTypes": {
+        "label": "Which of the following types of work do you do?",
+        "description": "Select all that apply",
+        "research": "Research",
+        "policy": "Policy",
+        "livedExperience": "Expert through my own lived experience",
+        "ngo": "NGO",
+        "communityOrg": "Community organization",
+        "education": "Education or teaching"
+      },
+      "expertise": {
+        "label": "Which of the following areas of expertise do you have?",
+        "description": "Select all that apply",
+        "climate": "Climate Change",
+        "mentalHealth": "Mental Health",
+        "health": "Health"
+      },
+      "organization": "Organization",
+      "position": "Position",
+      "workBio": "Work Bio",
+      "personalWebsite": "Personal Website or Blog",
+      "linkedin": "LinkedIn Profile",
+      "twitter": "Twitter Handle",
+      "cancel": "Cancel",
+      "save": "Save Changes",
+      "profilePicture": {
+        "title": "Profile Picture",
+        "description": "Upload a profile picture to help others recognize you",
+        "changePhoto": "Change Photo",
+        "uploading": "Uploading...",
+        "uploadSuccess": "Profile picture updated successfully",
+        "uploadError": "Failed to upload profile picture",
+        "invalidFileType": "Please select an image file",
+        "fileTooLarge": "Image must be less than 5MB",
+        "requirements": "JPG, PNG or GIF. Max 5MB."
+      }
+    },
+    "work": {
+      "title": "Work Details",
+      "workBio": "Work Bio",
+      "workTypes": "Types of Work",
+      "expertiseAreas": "Areas of Expertise",
+      "types": {
+        "research": "Research",
+        "policy": "Policy",
+        "livedExperience": "Expert through lived experience",
+        "ngo": "NGO",
+        "communityOrg": "Community organization",
+        "education": "Education or teaching"
+      },
+      "expertise": {
+        "climate": "Climate Change",
+        "mentalHealth": "Mental Health",
+        "health": "Health"
+      }
+    },
+    "recentWork": {
+      "title": "Recent Work",
+      "addWork": "Add Work",
+      "noWorks": "No recent work to display",
+      "ongoing": "Ongoing",
+      "present": "Present",
+      "form": {
+        "title": "Add Recent Work",
+        "description": "Share your recent projects and achievements (maximum 5 entries)",
+        "saveSuccess": "Work added successfully",
+        "saveError": "Failed to add work",
+        "workTitle": "Project Title",
+        "workTitlePlaceholder": "e.g., Climate Change Research Project",
+        "workDescription": "Description",
+        "workDescriptionPlaceholder": "Describe your role, achievements, and impact...",
+        "workDescriptionHint": "Maximum 1000 characters",
+        "workLink": "Project Link (optional)",
+        "workLinkHint": "Link to project website, publication, or portfolio",
+        "startDate": "Start Date",
+        "endDate": "End Date",
+        "ongoing": "This is ongoing",
+        "ongoingDescription": "Check if you're currently working on this project",
+        "cancel": "Cancel",
+        "save": "Add Work"
+      }
+    },
+    "communities": {
+      "title": "Community Hub",
+      "regionalCommunities": "Regional Communities",
+      "specialGroups": "Special Groups",
+      "noCommunities": "Not a member of any communities",
+      "regional": {
+        "subSaharanAfrica": "Sub-Saharan Africa",
+        "northernAfricaWesternAsia": "Northern Africa and Western Asia",
+        "centralSouthernAsia": "Central and Southern Asia",
+        "easternSouthEasternAsia": "Eastern and South-Eastern Asia",
+        "latinAmericaCaribbean": "Latin America and the Caribbean",
+        "oceania": "Oceania",
+        "europeNorthAmerica": "Europe and North America"
+      },
+      "special": {
+        "youth": "Youth",
+        "indigenous": "Indigenous",
+        "farmerFisher": "Smallholder farmers"
+      }
+    },
+    "social": {
+      "title": "Connect",
+      "website": "Personal Website",
+      "linkedin": "LinkedIn",
+      "twitter": "Twitter"
+    }
+  },
+  "profiles": {
+    "pageTitle": "Community Members",
+    "pageDescription": "Discover and connect with members of our community",
+    "searchPlaceholder": "Search by name, username, or bio...",
+    "search": "Search",
+    "noResults": "No profiles found. Try adjusting your search.",
+    "unnamed": "Unnamed User"
   }
 }

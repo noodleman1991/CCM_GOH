@@ -1,0 +1,117 @@
+{
+  "profile": {
+    "noName": "Sin nombre",
+    "editProfile": "Editar Perfil",
+    "contact": "Contacto",
+    "basicInfo": "Información Básica",
+    "bio": "Acerca de",
+    "under18": "Menor de 18",
+    "above18": "18 o mayor",
+    "edit": {
+      "pageTitle": "Editar Perfil",
+      "pageDescription": "Actualiza tu información de perfil",
+      "saveSuccess": "Perfil actualizado exitosamente",
+      "saveError": "Error al actualizar el perfil",
+      "basicInfo": {
+        "title": "Información Básica",
+        "description": "Esta información se mostrará en tu perfil público"
+      },
+      "workInfo": {
+        "title": "Información Laboral",
+        "description": "Cuéntanos sobre tu experiencia profesional y expertise"
+      },
+      "social": {
+        "title": "Enlaces Sociales",
+        "description": "Agrega enlaces a tus perfiles de redes sociales y sitio web personal"
+      },
+      "firstName": "Nombre",
+      "lastName": "Apellido",
+      "username": "Nombre de usuario",
+      "usernameHint": "Esto se usará en la URL de tu perfil",
+      "bio": "Biografía",
+      "ageGroup": "Grupo de Edad",
+      "selectAge": "Selecciona tu grupo de edad",
+      "under18": "Menor de 18",
+      "above18": "18 o mayor",
+      "country": "País",
+      "city": "Ciudad/Pueblo",
+      "workTypes": {
+        "label": "¿Cuál de los siguientes tipos de trabajo realizas?",
+        "description": "Selecciona todos los que apliquen",
+        "research": "Investigación",
+        "policy": "Política",
+        "livedExperience": "Experto a través de mi propia experiencia vivida",
+        "ngo": "ONG",
+        "communityOrg": "Organización comunitaria",
+        "education": "Educación o enseñanza"
+      },
+      "expertise": {
+        "label": "¿Cuáles de las siguientes áreas de experiencia tienes?",
+        "description": "Selecciona todas las que apliquen",
+        "climate": "Cambio Climático",
+        "mentalHealth": "Salud Mental",
+        "health": "Salud"
+      },
+      "organization": "Organización",
+      "position": "Posición",
+      "workBio": "Biografía Laboral",
+      "personalWebsite": "Sitio Web Personal o Blog",
+      "linkedin": "Perfil de LinkedIn",
+      "twitter": "Usuario de Twitter",
+      "cancel": "Cancelar",
+      "save": "Guardar Cambios"
+    },
+    "work": {
+      "title": "Detalles Laborales",
+      "workBio": "Biografía Laboral",
+      "workTypes": "Tipos de Trabajo",
+      "expertiseAreas": "Áreas de Experiencia",
+      "types": {
+        "research": "Investigación",
+        "policy": "Política",
+        "livedExperience": "Experto por experiencia vivida",
+        "ngo": "ONG",
+        "communityOrg": "Organización comunitaria",
+        "education": "Educación o enseñanza"
+      },
+      "expertise": {
+        "climate": "Cambio Climático",
+        "mentalHealth": "Salud Mental",
+        "health": "Salud"
+      }
+    },
+    "recentWork": {
+      "title": "Trabajo Reciente",
+      "addWork": "Agregar Trabajo",
+      "noWorks": "No hay trabajos recientes para mostrar",
+      "ongoing": "En curso",
+      "present": "Presente"
+    },
+    "communities": {
+      "title": "Centro Comunitario",
+      "regionalCommunities": "Comunidades Regionales",
+      "specialGroups": "Grupos Especiales",
+      "noCommunities": "No es miembro de ninguna comunidad",
+      "regional": {
+        "subSaharanAfrica": "África Subsahariana",
+        "northernAfricaWesternAsia": "África del Norte y Asia Occidental",
+        "centralSouthernAsia": "Asia Central y Meridional",
+        "easternSouthEasternAsia": "Asia Oriental y Sudoriental",
+        "latinAmericaCaribbean": "América Latina y el Caribe",
+        "oceania": "Oceanía",
+        "europeNorthAmerica": "Europa y América del Norte"
+      },
+      "special": {
+        "youth": "Juventud",
+        "indigenous": "Indígena",
+        "farmerFisher": "Pequeños agricultores"
+      }
+    },
+    "social": {
+      "title": "Conectar",
+      "website": "Sitio Web Personal",
+      "linkedin": "LinkedIn",
+      "twitter": "Twitter"
+    }
+  }
+}
