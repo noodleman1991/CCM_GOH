@@ -1,5 +1,3 @@
-import Header from "@/components/header";
-import Footer from "@/components/footer";
 import { DisableDraftMode } from "@/components/disable-draft-mode";
 import { VisualEditing } from "next-sanity";
 import { draftMode } from "next/headers";
@@ -12,7 +10,6 @@ export default async function MainLayout({
 }) {
   return (
     <>
-      <Header />
       <main>{children}</main>
       <SanityLive />
       {(await draftMode()).isEnabled && (
@@ -21,7 +18,6 @@ export default async function MainLayout({
           <VisualEditing />
         </>
       )}
-      <Footer />
     </>
   );
 }
