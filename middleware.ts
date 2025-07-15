@@ -7,10 +7,11 @@ const withLocale = (path: string) => `/:locale${path.startsWith('/') ? '' : '/'}
 
 const isPublicRoute = createRouteMatcher([
     withLocale('/'),
-    withLocale('(frontend)/(main)/:path*'),
-    withLocale('(frontend)/sign-in'),
-    withLocale('(frontend)/sign-up'),
-    withLocale('(frontend)/api/(.*)')
+    withLocale('/(main)/:path*'),
+    withLocale('/sign-in'),
+    withLocale('/sign-up'),
+    '/api/(.*)',
+    '/api/webhooks/(.*)'
 ])
 
 const isOnboardingRoute = createRouteMatcher([withLocale('/onboarding')])
@@ -18,6 +19,10 @@ const isOnboardingRoute = createRouteMatcher([withLocale('/onboarding')])
 const intlMiddleware = createIntlMiddleware(routing)
 
 export default clerkMiddleware(async (auth, req: NextRequest) => {
+    // Handle webhook routes - skip all middleware //todo: is middleware properly configured?
+    if (req.nextUrl.pathname.startsWith('/api/webhooks/')) {
+        return NextResponse.next()
+    }
     const intlResponse = intlMiddleware(req)
     if (intlResponse) return intlResponse
 
