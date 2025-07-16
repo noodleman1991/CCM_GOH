@@ -36,19 +36,8 @@ export default defineConfig({
       },
       resolve,
     }),
-    // Vision is a tool that lets you query your content with GROQ in the studio
-    // https://www.sanity.io/docs/the-vision-plugin
     visionTool({ defaultApiVersion: apiVersion }),
     codeInput(),
-    // documentInternationalization({
-    //       supportedLanguages: [
-    //           {id: 'en', title: 'English'},
-    //           {id: 'es', title: 'Español'},
-    //           {id: 'fr', title: 'Français'},
-    //           {id: 'ar', title: 'العربية'},
-    //       ],
-    //       schemaTypes: ['page'],
-    // })
     documentInternationalization({
         supportedLanguages: routing.locales.map(locale => ({
             id: locale,
@@ -56,7 +45,7 @@ export default defineConfig({
                     locale === 'fr' ? 'Français' :
                     locale === 'es' ? 'Español' : 'English'
         })),
-        schemaTypes: ['page', 'post'],
+        schemaTypes: ['page', 'regionalCommunityPage', 'post'],
         languageField: 'language',
         weakReferences: true,
     })

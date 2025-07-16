@@ -7,7 +7,7 @@ export default defineType({
   icon: TextQuote,
   title: "Split Card",
   description:
-    "Column with tag line, title and content body. Part of a split cards.",
+    "Column with tag.ts line, title and content body. Part of a split cards.",
   fields: [
     defineField({
       name: "tagLine",

@@ -6,7 +6,7 @@ export default defineType({
   type: "object",
   icon: TextQuote,
   title: "Split Content",
-  description: "Column with tag line, title and content body.",
+  description: "Column with tag.ts line, title and content body.",
   fields: [
     defineField({
       name: "sticky",

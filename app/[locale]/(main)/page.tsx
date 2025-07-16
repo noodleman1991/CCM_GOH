@@ -3,9 +3,7 @@ import { fetchSanityPageBySlug } from "@/sanity/lib/fetch";
 import { generatePageMetadata } from "@/sanity/lib/metadata";
 import MissingSanityPage from "@/components/ui/missing-sanity-page";
 
-import { Metadata } from 'next'
 import { routing } from '@/i18n/routing';
-// import { i18n } from '@/i18n/languages.json'
 
 // Generate static params for all locales
 export async function generateStaticParams() {
@@ -24,24 +22,24 @@ export async function generateStaticParams() {
 export async function generateMetadata({
                                            params
                                        }: {
-    params: Promise<{ locale: string }>
+    params: Promise<{ slug: string, locale: string }>
 }) {
-    const { locale } = await params;
-    const page = await fetchSanityPageBySlug({ slug: "index", locale });
-    return generatePageMetadata({ page, slug: "index" });
+    const { slug, locale } = await params;
+    const page = await fetchSanityPageBySlug({ slug, locale });
+    return generatePageMetadata({ page, slug });
 }
 
-export default async function IndexPage(props: { params: { locale: string } }) {
-    const { locale } = await props.params;
+export default async function IndexPage(props: { params: { slug: string, locale: string } }) {
+    const { slug, locale } = await props.params;
 
     // Fetch page with locale parameter
     const page = await fetchSanityPageBySlug({
-        slug: "index",
+        slug,
         locale,
     });
 
     if (!page) {
-        return MissingSanityPage({ document: "page", slug: "index" });
+        return MissingSanityPage({ document: "page", slug: slug });
     }
 
     // const translations = i18n.languages.map((lang) => {

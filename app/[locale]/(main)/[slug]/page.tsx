@@ -1,7 +1,10 @@
 import Blocks from "@/components/blocks";
+import Hero1 from "@/components/blocks/hero/hero-1"
 import {
   fetchSanityPageBySlug,
+  fetchSanityRCPageBySlug,
   fetchSanityPagesStaticParams,
+  fetchSanityRCPagesStaticParams,
   fetchTranslationsForPage,
 } from "@/sanity/lib/fetch";
 import { notFound } from "next/navigation";
@@ -16,7 +19,7 @@ import { generatePageMetadata } from "@/sanity/lib/metadata";
 // }
 
 export async function generateStaticParams() {
-    const pages = await fetchSanityPagesStaticParams();
+    const pages = await fetchSanityRCPagesStaticParams();
     const params = [];
 
     for (const page of pages) {
@@ -61,7 +64,7 @@ export async function generateMetadata({
 }) {
     const { slug, locale } = await params;
 
-    const page = await fetchSanityPageBySlug({ slug, locale });
+    const page = await fetchSanityRCPageBySlug({ slug, locale });
 
     if (!page) {
         notFound();
@@ -76,11 +79,17 @@ export default async function Page({
     params: { locale: string; slug: string }
 }) {
     const { locale, slug } = await params;
-    const page = await fetchSanityPageBySlug({ slug, locale });
+    const page = await fetchSanityRCPageBySlug({ slug, locale });
 
     if (!page) {
         notFound();
     }
 
-    return <Blocks blocks={page?.blocks ?? []} locale={locale}/>;
+
+
+    return
+    {
+        // <Hero1 title={page?.welcome}></Hero1>
+        <Blocks blocks={page?.blocks ?? []} locale={locale}/>;
+    }
 }

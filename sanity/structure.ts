@@ -1,5 +1,5 @@
 import { orderableDocumentListDeskItem } from "@sanity/orderable-document-list";
-import { Files, BookA, User, ListCollapse, Quote } from "lucide-react";
+import { Files, MapPinned, BookA, User, ListCollapse, Quote } from "lucide-react";
 
 export const structure = (S: any, context: any) =>
   S.list()
@@ -12,6 +12,13 @@ export const structure = (S: any, context: any) =>
         S,
         context,
       }),
+        orderableDocumentListDeskItem({
+            type: "regionalCommunityPage",
+            title: "Regional Community Pages",
+            icon: MapPinned,
+            S,
+            context,
+        }),
       S.listItem()
         .title("Posts")
         .schemaType("post")

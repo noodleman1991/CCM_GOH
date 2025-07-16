@@ -1,13 +1,14 @@
 import { defineField, defineType } from "sanity";
-import { Files } from "lucide-react";
+import { MapPinned } from "lucide-react";
 import { orderRankField } from "@sanity/orderable-document-list";
 import { isUniqueOtherThanLanguage } from '@/sanity/lib/isUniqueOtherThanLanguage';
+import hero1 from "@/sanity/schemas/blocks/hero/hero-1";
 
 export default defineType({
-  name: "page",
+  name: "regionalCommunityPage",
   type: "document",
-  title: "Page",
-  icon: Files,
+  title: "Regional Community Page",
+  icon: MapPinned,
   groups: [
     {
       name: "content",
@@ -41,6 +42,18 @@ export default defineType({
           type: "string",
           readOnly: true,
           group: "settings",
+      }),
+      defineField({
+          name: "titleHero",
+          title: "Welcome Hero",
+          type: "hero-1",
+          group: "content",
+      }),
+      defineField({
+          name: "listHero",
+          title: "Sign Up Prompt Hero",
+          type: "hero-1",
+          group: "content",
       }),
     defineField({
       name: "blocks",

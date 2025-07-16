@@ -13,7 +13,7 @@ export default defineType({
       name: "tagLine",
       title: "Tag Line",
       description:
-        "A short tag line to display under the title, e.g. date, location, job title, etc.",
+        "A short tag.ts line to display under the title, e.g. date, location, job title, etc.",
       type: "string",
     }),
     defineField({

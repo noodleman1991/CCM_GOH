@@ -69,7 +69,7 @@ export declare type Args<T, F extends Operation> = T extends {
 export declare type Args_3<T, F extends Operation> = Args<T, F>;
 
 /**
- * Original `quaint::ValueType` enum tag from Prisma's `quaint`.
+ * Original `quaint::ValueType` enum tag.ts from Prisma's `quaint`.
  * Query arguments marked with this type are sanitized before being sent to the database.
  * Notice while a query argument may be `null`, `ArgType` is guaranteed to be defined.
  */
@@ -1527,7 +1527,7 @@ export declare function getPrismaClient(config: GetPrismaClientConfig): {
          */
         $executeRawInternal(transaction: PrismaPromiseTransaction | undefined, clientMethod: string, args: RawQueryArgs, middlewareArgsMapper?: MiddlewareArgsMapper<unknown, unknown>): Promise<number>;
         /**
-         * Executes a raw query provided through a safe tag function
+         * Executes a raw query provided through a safe tag.ts function
          * @see https://github.com/prisma/prisma/issues/7142
          *
          * @param query
@@ -1556,7 +1556,7 @@ export declare function getPrismaClient(config: GetPrismaClientConfig): {
          */
         $queryRawInternal(transaction: PrismaPromiseTransaction | undefined, clientMethod: string, args: RawQueryArgs, middlewareArgsMapper?: MiddlewareArgsMapper<unknown, unknown>): Promise<any>;
         /**
-         * Executes a raw query provided through a safe tag function
+         * Executes a raw query provided through a safe tag.ts function
          * @see https://github.com/prisma/prisma/issues/7142
          *
          * @param query
