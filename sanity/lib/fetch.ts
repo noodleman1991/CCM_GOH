@@ -1,5 +1,6 @@
 import { sanityFetch } from "@/sanity/lib/live";
 import { PAGE_QUERY, PAGES_SLUGS_QUERY } from "@/sanity/queries/page";
+import { REGIONAL_COMMUNITY_PAGE_QUERY } from "@/sanity/queries/regional-community-page";
 import {
   POST_QUERY,
   POSTS_QUERY,
@@ -31,10 +32,28 @@ export const fetchSanityPageBySlug = async ({
                                                 locale = 'en',
                                             }: {
     slug: string;
-    locale?: string; // Make it optional with ?
+    locale?: string;
 }): Promise<PAGE_QUERYResult> => {
     const { data } = await sanityFetch({
         query: PAGE_QUERY,
+        params: {
+            slug,
+            language: locale
+        },
+    });
+
+    return data;
+};
+
+export const fetchSanityRCPageBySlug = async ({
+                                                slug,
+                                                locale = 'en',
+                                            }: {
+    slug: string;
+    locale?: string;
+}): Promise<PAGE_QUERYResult> => {
+    const { data } = await sanityFetch({
+        query: REGIONAL_COMMUNITY_PAGE_QUERY,
         params: {
             slug,
             language: locale
@@ -58,6 +77,20 @@ export const fetchSanityPageBySlug = async ({
 export const fetchSanityPagesStaticParams = async () => {
     const { data } = await sanityFetch({
         query: `*[_type == "page" && defined(slug)]{
+      _id,
+      slug { current },
+      language
+    }`,
+        perspective: "published",
+        stega: false,
+    });
+
+    return data;
+};
+
+export const fetchSanityRCPagesStaticParams = async () => {
+    const { data } = await sanityFetch({
+        query: `*[_type == "regionalCommunityPage" && defined(slug)]{
       _id,
       slug { current },
       language

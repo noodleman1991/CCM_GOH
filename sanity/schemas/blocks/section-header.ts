@@ -6,7 +6,7 @@ export default defineType({
   name: "section-header",
   type: "object",
   title: "Section Header",
-  description: "A section header with a tag line, title, and description",
+  description: "A section header with a tag.ts line, title, and description",
   icon: LetterText,
   fields: [
     defineField({
