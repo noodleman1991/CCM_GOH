@@ -1,4 +1,3 @@
-// sanity/schemas/documents/case-study.ts
 import { defineField, defineType } from "sanity";
 import { FileSearch } from "lucide-react";
 import { isUniqueOtherThanLanguage } from '@/sanity/lib/isUniqueOtherThanLanguage';
@@ -59,7 +58,7 @@ export default defineType({
                         return `Title in ${language} is required`;
                     }
                     return true;
-                }),
+            }),
         }),
         defineField({
             name: "subtitle",

@@ -112,6 +112,23 @@
       "website": "Site Web Personnel",
       "linkedin": "LinkedIn",
       "twitter": "Twitter"
+    },
+    "profilePicture": {
+      "title": "Photo de Profil",
+      "description": "Téléchargez une photo de profil pour personnaliser votre compte",
+      "uploadPhoto": "Télécharger Photo",
+      "changePhoto": "Changer Photo",
+      "uploading": "Téléchargement...",
+      "requirements": "JPG, PNG ou WebP. Max 5MB.",
+      "altText": "Photo de profil",
+      "uploadSuccess": "Photo de profil mise à jour avec succès",
+      "removeSuccess": "Photo de profil supprimée avec succès",
+      "errors": {
+        "invalidFileType": "Veuillez télécharger une image JPG, PNG ou WebP",
+        "fileTooLarge": "La taille du fichier doit être inférieure à 5MB",
+        "uploadError": "Échec du téléchargement de l'image. Veuillez réessayer.",
+        "removeError": "Échec de la suppression de l'image. Veuillez réessayer."
+      }
     }
   }
 }

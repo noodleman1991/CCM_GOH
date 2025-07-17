@@ -124,7 +124,10 @@ export default function ProfileEditForm({ initialData, onSubmitAction }: Profile
                     currentImage={form.watch("image")}
                     firstName={form.watch("firstName")}
                     lastName={form.watch("lastName")}
-                    onImageChangeAction={(url) => form.setValue("image", url)}
+                    //onImageChangeAction={(url) => form.setValue("image", url)} //todo: which one works?
+                    onImageChangeAction={async (url) => {
+                        form.setValue("image", url)
+                    }}
                 />
 
                 {/* Basic Information */}

@@ -1,4 +1,3 @@
-// sanity/schemas/documents/project.ts
 import { defineField, defineType } from "sanity";
 import { FolderOpen } from "lucide-react";
 import { orderRankField } from "@sanity/orderable-document-list";
