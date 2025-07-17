@@ -1,21 +1,30 @@
 import { type SchemaTypeDefinition } from "sanity";
+
 // documents
 import page from "./schemas/documents/page";
+import regionalCommunityPage from "./schemas/documents/regional-community-page"; //hub
 import post from "./schemas/documents/post";
 import author from "./schemas/documents/author";
 import category from "./schemas/documents/category";
 import faq from "./schemas/documents/faq";
 import testimonial from "./schemas/documents/testimonial";
-// hub
-import regionalCommunityPage from "./schemas/documents/regional-community-page";
+
+import tag from "./schemas/documents/tag";
+import organization from "./schemas/documents/organization";
+import project from "./schemas/documents/project";
+import newsPost from "./schemas/documents/news-post";
+import externalSource from "./schemas/documents/external-source";
+import caseStudy from "./schemas/documents/case-study";
 
 // Schema UI shared objects
 import blockContent from "./schemas/blocks/shared/block-content";
+import styledBlockContent from "./schemas/blocks/shared/styled-block-content";
 import link from "./schemas/blocks/shared/link";
 import { colorVariant } from "./schemas/blocks/shared/color-variant";
 import { buttonVariant } from "./schemas/blocks/shared/button-variant";
 import sectionPadding from "./schemas/blocks/shared/section-padding";
-// Schema UI objects
+
+// Schema UI objects (existing blocks)
 import hero1 from "./schemas/blocks/hero/hero-1";
 import hero2 from "./schemas/blocks/hero/hero-2";
 import sectionHeader from "./schemas/blocks/section-header";
@@ -41,45 +50,55 @@ import newsletter from "./schemas/blocks/forms/newsletter";
 import allPosts from "./schemas/blocks/all-posts";
 
 export const schema: { types: SchemaTypeDefinition[] } = {
-  types: [
-    // documents
-    page,
-    post,
-    author,
-    category,
-    faq,
-    testimonial,
-    // hub
-    regionalCommunityPage,
-    // shared objects
-    blockContent,
-    link,
-    colorVariant,
-    buttonVariant,
-    sectionPadding,
-    // blocks
-    hero1,
-    hero2,
-    sectionHeader,
-    splitRow,
-    splitContent,
-    splitCardsList,
-    splitCard,
-    splitImage,
-    splitInfoList,
-    splitInfo,
-    gridCard,
-    pricingCard,
-    gridPost,
-    gridRow,
-    carousel1,
-    carousel2,
-    timelineRow,
-    timelinesOne,
-    cta1,
-    logoCloud1,
-    faqs,
-    newsletter,
-    allPosts,
-  ],
+    types: [
+        // documents
+        page,
+        post,
+        author,
+        category,
+        faq,
+        testimonial,
+        tag,
+        organization,
+        project,
+        newsPost,
+        externalSource,
+        caseStudy,
+        // hub
+        regionalCommunityPage,
+        // shared objects
+        blockContent,
+        styledBlockContent,
+        link,
+        colorVariant,
+        buttonVariant,
+        sectionPadding,
+        // blocks
+        hero1,
+        hero2,
+        sectionHeader,
+        splitRow,
+        splitContent,
+        splitCardsList,
+        splitCard,
+        splitImage,
+        splitInfoList,
+        splitInfo,
+        gridCard,
+        pricingCard,
+        gridPost,
+        gridRow,
+        carousel1,
+        carousel2,
+        timelineRow,
+        timelinesOne,
+        cta1,
+        logoCloud1,
+        faqs,
+        newsletter,
+        allPosts,
+    ],
 };
+
+
+

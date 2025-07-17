@@ -17,6 +17,10 @@ export default defineType({
             title: "Metadata",
         },
         {
+            name: "affiliations",
+            title: "Affiliations",
+        },
+        {
             name: "seo",
             title: "SEO",
         },
@@ -26,17 +30,35 @@ export default defineType({
         },
     ],
     fields: [
+        // Document language
+        defineField({
+            name: "language",
+            type: "string",
+            readOnly: true,
+            hidden: true,
+            group: "settings",
+        }),
         defineField({
             name: "title",
             title: "Title",
             type: "object",
             group: "content",
             fields: [
-                { name: "en", title: "English", type: "string", validation: (Rule) => Rule.required() },
+                { name: "en", title: "English", type: "string" },
                 { name: "es", title: "Español", type: "string" },
                 { name: "fr", title: "Français", type: "string" },
                 { name: "ar", title: "العربية", type: "string" },
             ],
+            validation: (Rule) =>
+                Rule.custom((title: unknown, context) => {
+                    const language = String(context?.document?.language || "en");
+                    const localizedTitle = title as Record<string, string | undefined>;
+
+                    if (!localizedTitle?.[language]) {
+                        return `Title in ${language} is required`;
+                    }
+                    return true;
+            }),
         }),
         defineField({
             name: "subtitle",
@@ -56,18 +78,11 @@ export default defineType({
             type: "slug",
             group: "settings",
             options: {
-                source: "title.en",
+                source: (doc: any) => doc.title?.[doc.language || 'en'] || doc.title?.en,
                 maxLength: 96,
                 isUnique: isUniqueOtherThanLanguage,
             },
             validation: (Rule) => Rule.required(),
-        }),
-        defineField({
-            name: "language",
-            type: "string",
-            readOnly: true,
-            hidden: true,
-            group: "settings",
         }),
         defineField({
             name: "excerpt",
@@ -81,6 +96,14 @@ export default defineType({
                 { name: "ar", title: "العربية", type: "text", rows: 3 },
             ],
         }),
+        // Content - single language per document
+        defineField({
+            name: "content",
+            title: "Content",
+            type: "styled-block-content",
+            group: "content",
+            validation: (Rule) => Rule.required(),
+        }),
         defineField({
             name: "author",
             title: "Author",
@@ -88,36 +111,6 @@ export default defineType({
             group: "metadata",
             to: { type: "author" },
             validation: (Rule) => Rule.required(),
-        }),
-        defineField({
-            name: "organization",
-            title: "Organization/Affiliation",
-            type: "reference",
-            group: "metadata",
-            to: { type: "organization" },
-        }),
-        defineField({
-            name: "location",
-            title: "Location",
-            type: "object",
-            group: "metadata",
-            fields: [
-                {
-                    name: "country",
-                    title: "Country",
-                    type: "string",
-                },
-                {
-                    name: "city",
-                    title: "City",
-                    type: "string",
-                },
-                {
-                    name: "region",
-                    title: "Region",
-                    type: "string",
-                },
-            ],
         }),
         defineField({
             name: "publishedAt",
@@ -137,30 +130,85 @@ export default defineType({
             fields: [
                 {
                     name: "alt",
-                    type: "object",
+                    type: "string",
                     title: "Alternative Text",
-                    fields: [
-                        { name: "en", title: "English", type: "string" },
-                        { name: "es", title: "Español", type: "string" },
-                        { name: "fr", title: "Français", type: "string" },
-                        { name: "ar", title: "العربية", type: "string" },
-                    ],
                 },
             ],
         }),
+        // Affiliations
+        defineField({
+            name: "organizations",
+            title: "Organizations",
+            type: "array",
+            group: "affiliations",
+            of: [
+                {
+                    type: "reference",
+                    to: [{ type: "organization" }],
+                },
+            ],
+            description: "Organizations affiliated with this news post",
+        }),
+        defineField({
+            name: "projects",
+            title: "Projects",
+            type: "array",
+            group: "affiliations",
+            of: [
+                {
+                    type: "reference",
+                    to: [{ type: "project" }],
+                },
+            ],
+            description: "Projects related to this news post",
+        }),
+        // Location using Google Maps plugin
+        defineField({
+            name: "location",
+            title: "Location",
+            type: "geopoint",
+            group: "metadata",
+            description: "Primary location related to this news",
+        }),
+        defineField({
+            name: "locationDetails",
+            title: "Location Details",
+            type: "object",
+            group: "metadata",
+            fields: [
+                {
+                    name: "city",
+                    title: "City",
+                    type: "string",
+                },
+                {
+                    name: "country",
+                    title: "Country",
+                    type: "string",
+                },
+                {
+                    name: "region",
+                    title: "Region",
+                    type: "string",
+                },
+            ],
+        }),
+        // Tags using the tags plugin
         defineField({
             name: "tags",
             title: "Tags",
-            type: "array",
+            type: "tags",
             group: "metadata",
-            of: [{ type: "reference", to: { type: "tag" } }],
-            validation: (Rule) => Rule.unique(),
-        }),
-        defineField({
-            name: "body",
-            title: "Body",
-            type: "styled-block-content",
-            group: "content",
+            options: {
+                includeFromReference: "tag",
+                includeFromRelated: "tags",
+                customLabel: "label",
+                customValue: "value",
+                onCreate: (value: string) => ({
+                    _type: "reference",
+                    _ref: "tag-id", // This would need to be created via API
+                }),
+            },
         }),
         defineField({
             name: "sources",
@@ -194,6 +242,12 @@ export default defineType({
                             type: "date",
                         },
                     ],
+                    preview: {
+                        select: {
+                            title: "title",
+                            subtitle: "publisher",
+                        },
+                    },
                 },
             ],
         }),
@@ -204,29 +258,19 @@ export default defineType({
             group: "settings",
             initialValue: false,
         }),
+        // SEO fields remain language-specific
         defineField({
             name: "meta_title",
             title: "Meta Title",
-            type: "object",
+            type: "string",
             group: "seo",
-            fields: [
-                { name: "en", title: "English", type: "string" },
-                { name: "es", title: "Español", type: "string" },
-                { name: "fr", title: "Français", type: "string" },
-                { name: "ar", title: "العربية", type: "string" },
-            ],
         }),
         defineField({
             name: "meta_description",
             title: "Meta Description",
-            type: "object",
+            type: "text",
             group: "seo",
-            fields: [
-                { name: "en", title: "English", type: "text", rows: 3 },
-                { name: "es", title: "Español", type: "text", rows: 3 },
-                { name: "fr", title: "Français", type: "text", rows: 3 },
-                { name: "ar", title: "العربية", type: "text", rows: 3 },
-            ],
+            rows: 3,
         }),
         defineField({
             name: "noindex",
@@ -244,16 +288,21 @@ export default defineType({
     ],
     preview: {
         select: {
-            title: "title.en",
-            author: "author.name",
+            title: "title",
             media: "image",
             language: "language",
             publishedAt: "publishedAt",
+            authorName: "author.name",
         },
-        prepare({ title, author, media, language, publishedAt }) {
+        prepare({ title, media, language, publishedAt, authorName }) {
+            const lang = language || 'en';
+            const displayTitle = title?.[lang] || title?.en || "Untitled Post";
+
             return {
-                title: title || "Untitled Post",
-                subtitle: `${language ? language.toUpperCase() : 'EN'} | ${author || 'No author'} | ${publishedAt ? new Date(publishedAt).toLocaleDateString() : 'Draft'}`,
+                title: displayTitle,
+                subtitle: `${lang.toUpperCase()} | ${authorName || 'No author'} | ${
+                    publishedAt ? new Date(publishedAt).toLocaleDateString() : 'Draft'
+                }`,
                 media,
             };
         },

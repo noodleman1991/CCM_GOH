@@ -160,6 +160,13 @@ export default defineType({
             ],
         }),
         defineField({
+            name: "regionalCommunity",
+            title: "Regional Community",
+            type: "reference",
+            to: [{ type: "regionalCommunity" }],
+            description: "Which regional community does this organization belong to?",
+        }),
+        defineField({
             name: "socialMedia",
             title: "Social Media",
             type: "object",

@@ -268,6 +268,23 @@
       "twitter": "Twitter"
     }
   },
+  "profilePicture": {
+    "title": "Profile Picture",
+    "description": "Upload a profile picture to personalize your account",
+    "uploadPhoto": "Upload Photo",
+    "changePhoto": "Change Photo",
+    "uploading": "Uploading...",
+    "requirements": "JPG, PNG or WebP. Max 5MB.",
+    "altText": "Profile picture",
+    "uploadSuccess": "Profile picture updated successfully",
+    "removeSuccess": "Profile picture removed successfully",
+    "errors": {
+      "invalidFileType": "Please upload a JPG, PNG, or WebP image",
+      "fileTooLarge": "File size must be less than 5MB",
+      "uploadError": "Failed to upload image. Please try again.",
+      "removeError": "Failed to remove image. Please try again."
+    }
+  },
   "profiles": {
     "pageTitle": "Community Members",
     "pageDescription": "Discover and connect with members of our community",
