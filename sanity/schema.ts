@@ -4,17 +4,20 @@ import { type SchemaTypeDefinition } from "sanity";
 import page from "./schemas/documents/page";
 import regionalCommunityPage from "./schemas/documents/regional-community-page"; //hub
 import post from "./schemas/documents/post";
+import report from "./schemas/documents/report";
 import author from "./schemas/documents/author";
 import category from "./schemas/documents/category";
 import faq from "./schemas/documents/faq";
 import testimonial from "./schemas/documents/testimonial";
 
 import tag from "./schemas/documents/tag";
+import regionalCommunity from "./schemas/documents/regional-community";
 import organization from "./schemas/documents/organization";
 import project from "./schemas/documents/project";
 import newsPost from "./schemas/documents/news-post";
 import externalSource from "./schemas/documents/external-source";
 import caseStudy from "./schemas/documents/case-study";
+
 
 // Schema UI shared objects
 import blockContent from "./schemas/blocks/shared/block-content";
@@ -39,6 +42,7 @@ import gridCard from "./schemas/blocks/grid/grid-card";
 import pricingCard from "./schemas/blocks/grid/pricing-card";
 import gridPost from "./schemas/blocks/grid/grid-post";
 import gridRow from "./schemas/blocks/grid/grid-row";
+import reportsGrid from "@/sanity/schemas/blocks/grid/reports-grid";
 import carousel1 from "./schemas/blocks/carousel/carousel-1";
 import carousel2 from "./schemas/blocks/carousel/carousel-2";
 import timelineRow from "./schemas/blocks/timeline/timeline-row";
@@ -64,6 +68,9 @@ export const schema: { types: SchemaTypeDefinition[] } = {
         newsPost,
         externalSource,
         caseStudy,
+        // ADD THESE
+        regionalCommunity, // ADD THIS
+        report, // ADD THIS IF YOU HAVE THE FILE
         // hub
         regionalCommunityPage,
         // shared objects
@@ -88,6 +95,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
         pricingCard,
         gridPost,
         gridRow,
+        reportsGrid,
         carousel1,
         carousel2,
         timelineRow,
@@ -99,6 +107,3 @@ export const schema: { types: SchemaTypeDefinition[] } = {
         allPosts,
     ],
 };
-
-
-

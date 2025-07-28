@@ -176,12 +176,24 @@ export default defineType({
         }),
         defineField({
             name: "tags",
-            title: "Focus Areas",
+            title: "Tags",
             type: "tags",
             options: {
                 includeFromReference: "tag",
-                customLabel: "label.en",
-                customValue: "value.current",
+                includeFromRelated: "tags", // This enables autocomplete from other documents with tags
+                customLabel: "label.en", // This should match your tag document structure
+                customValue: "value.current", // This should match your tag document structure
+                onCreate: (inputValue: string) => ({
+                    label: { en: inputValue },
+                    value: { current: inputValue.toLowerCase().replace(/\W/g, '-') }
+                }),
+                checkValid: (inputValue: string, currentValues: string[]) => {
+                    return (
+                        !!inputValue &&
+                        inputValue.trim() === inputValue &&
+                        !currentValues.includes(inputValue.toLowerCase().replace(/\W/g, '-'))
+                    );
+                }
             },
         }),
         defineField({
