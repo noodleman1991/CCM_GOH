@@ -13,33 +13,43 @@ export async function generateStaticParams() {
     }));
 }
 
-// export async function generateMetadata() {
-//     const page = await fetchSanityPageBySlug({ slug: "index" });
-//
-//     return generatePageMetadata({ page, slug: "index" });
-// }
+export async function generateMetadata() {
+    const page = await fetchSanityPageBySlug({ slug: "index" });
 
-export async function generateMetadata({
-                                           params
-                                       }: {
-    params: Promise<{ slug: string, locale: string }>
-}) {
-    const { slug, locale } = await params;
-    const page = await fetchSanityPageBySlug({ slug, locale });
-    return generatePageMetadata({ page, slug });
+    return generatePageMetadata({ page, slug: "index" });
 }
 
-export default async function IndexPage(props: { params: { slug: string, locale: string } }) {
-    const { slug, locale } = await props.params;
+// export async function generateMetadata({
+//                                            params
+//                                        }: {
+//     params: Promise<{ slug: string, locale: string }>
+// }) {
+//     const { slug, locale } = await params;
+//     const page = await fetchSanityPageBySlug({ slug, locale });
+//     return generatePageMetadata({ page, slug });
+// }
 
-    // Fetch page with locale parameter
+// export default async function IndexPage(props: { params: { slug: string, locale: string } }) {
+//     const { slug, locale } = await props.params;
+//
+//     // Fetch page with locale parameter
+//     const page = await fetchSanityPageBySlug({
+//         slug,
+//         locale,
+//     });
+
+export default async function IndexPage(props: { params: { locale: string } }) {
+    const { locale } = await props.params;
+
+    // For home page, use "index" as the slug
     const page = await fetchSanityPageBySlug({
-        slug,
+        slug: "index",
         locale,
     });
 
     if (!page) {
-        return MissingSanityPage({ document: "page", slug: slug });
+        //return MissingSanityPage({ document: "page", slug: slug });
+        return MissingSanityPage({ document: "page", slug: "index" });
     }
 
     // const translations = i18n.languages.map((lang) => {
@@ -52,7 +62,6 @@ export default async function IndexPage(props: { params: { slug: string, locale:
 
     return (
         <>
-            {/* You could add a Header component with language switcher here */}
             <Blocks
                 blocks={page?.blocks ?? []}
                 locale={locale}

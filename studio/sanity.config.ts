@@ -16,6 +16,7 @@ import { resolve } from "@/sanity/presentation/resolve";
 import { structure } from "./sanity/structure";
 import { codeInput } from "@sanity/code-input";
 import { documentInternationalization } from '@sanity/document-internationalization'
+import { tags } from 'sanity-plugin-tags'
 
 import { routing } from './i18n/routing'
 
@@ -48,6 +49,9 @@ export default defineConfig({
         schemaTypes: ['page', 'regionalCommunityPage', 'post'],
         languageField: 'language',
         weakReferences: true,
-    })
+    }),
+    tags({
+          // Plugin configuration options
+    }),
   ],
 });
