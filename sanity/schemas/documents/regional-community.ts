@@ -221,7 +221,7 @@ export default defineType({
         },
         prepare({ title, subtitle, media, active, featured }) {
             return {
-                title: `${featured ? "⭐ " : ""}${title || "Untitled Region"}`,
+                title: `${featured ? "⭐ " : ""}${title || "An Untitled Region"}`,
                 subtitle: `${active ? "🟢" : "🔴"} ${subtitle || "No code"}`,
                 media,
             };
