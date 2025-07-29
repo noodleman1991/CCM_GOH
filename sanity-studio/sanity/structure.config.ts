@@ -1,4 +1,3 @@
-// sanity/structure.ts
 import { orderableDocumentListDeskItem } from "@sanity/orderable-document-list";
 import {
     Files,

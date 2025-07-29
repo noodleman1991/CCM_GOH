@@ -24,7 +24,7 @@ export default async function StudioLayout({
 }) {
     const { locale } = await params;
 
-    // For now, force English for studio, but keep locale structure for future expansion
+    // For now, force English for studio, but keep locale structureConfig for future expansion
     const studioLocale = STUDIO_DEFAULT_LOCALE;
 
     // Get messages for the studio locale (currently just English)
