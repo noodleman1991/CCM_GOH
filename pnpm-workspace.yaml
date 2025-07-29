@@ -1,5 +1,7 @@
 packages:
   - sanity-studio
+  - 'apps/*'
+  - 'packages/*'
 onlyBuiltDependencies:
   - '@clerk/shared'
   - '@prisma/client'

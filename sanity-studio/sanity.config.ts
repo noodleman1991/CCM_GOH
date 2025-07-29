@@ -10,7 +10,7 @@ import { presentationTool } from "sanity/presentation";
 import { apiVersion, dataset, projectId } from "./sanity/env";
 import { schema } from "./sanity/schema";
 import { resolve } from "./sanity/presentation/resolve";
-import { structure } from "./sanity/structure";
+import { structure } from "./sanity/structure.config";
 import { codeInput } from "@sanity/code-input";
 import { documentInternationalization } from '@sanity/document-internationalization'
 import { tags } from 'sanity-plugin-tags'

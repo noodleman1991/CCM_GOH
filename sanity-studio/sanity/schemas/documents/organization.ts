@@ -200,8 +200,8 @@ export default defineType({
             options: {
                 includeFromReference: "tag",
                 includeFromRelated: "tags", // This enables autocomplete from other documents with tags
-                customLabel: "label.en", // This should match your tag document structure
-                customValue: "value.current", // This should match your tag document structure
+                customLabel: "label.en", // This should match your tag document structureConfig
+                customValue: "value.current", // This should match your tag document structureConfig
                 onCreate: (inputValue: string) => ({
                     label: { en: inputValue },
                     value: { current: inputValue.toLowerCase().replace(/\W/g, '-') }
