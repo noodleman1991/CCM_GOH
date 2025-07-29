@@ -20,6 +20,7 @@
     "@hookform/resolvers": "^5.0.1",
     "@next/third-parties": "^15.3.1",
     "@portabletext/react": "^3.2.1",
+    "@portabletext/types": "^2.0.13",
     "@prisma/client": "6.6.0",
     "@radix-ui/react-accordion": "^1.2.8",
     "@radix-ui/react-avatar": "^1.1.7",
@@ -37,6 +38,7 @@
     "@sanity/preview-url-secret": "^2.1.8",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
     "embla-carousel-react": "^8.6.0",
     "install": "^0.13.0",
     "lucide-react": "^0.503.0",
@@ -50,7 +52,7 @@
     "react-dom": "19.1.0",
     "react-hook-form": "^7.56.1",
     "resend": "^4.4.0",
-    "sanity": "^4.1.1",
+    "sanity": "3.99.0",
     "sharp": "^0.34.3",
     "sonner": "^2.0.3",
     "svix": "^1.69.0",
@@ -74,5 +76,11 @@
     "tailwindcss": "^4.1.4",
     "typescript": "^5.8.3",
     "vite": "^6.3.4"
+  },
+  "pnpm": {
+    "overrides": {
+      "sanity": "3.99.0",
+      "@sanity/types": "3.99.0"
+    }
   }
 }
