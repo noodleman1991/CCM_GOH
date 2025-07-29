@@ -1,0 +1,153 @@
+import { defineField, defineType } from "sanity";
+import { FileText } from "lucide-react";
+
+export default defineType({
+  name: "post",
+  title: "Post",
+  type: "document",
+  icon: FileText,
+  groups: [
+    {
+      name: "content",
+      title: "Content",
+    },
+    {
+      name: "seo",
+      title: "SEO",
+    },
+    {
+      name: "settings",
+      title: "Settings",
+    },
+  ],
+  fields: [
+    defineField({
+      name: "title",
+      title: "Title",
+      type: "string",
+      group: "content",
+      validation: (Rule) => Rule.required(),
+    }),
+    // defineField({
+    //   name: "slug",
+    //   title: "Slug",
+    //   type: "slug",
+    //   group: "settings",
+    //   options: {
+    //     source: "title",
+    //     maxLength: 96,
+    //   },
+    //   validation: (Rule) => Rule.required(),
+    // }),
+      defineField({
+          name: "slug",
+          title: "Slug",
+          type: "slug",
+          group: "settings",
+          options: {
+              source: "title",
+              maxLength: 96,
+              isUnique: async (slug, context) => {
+                  if (!context.document?.language) return true;
+                  const { document, getClient } = context;
+                  const client = getClient({ apiVersion: '2023-05-22' });
+
+                  const id = context.document._id;
+                  const language = document.language;
+
+                  const query = `*[_type == "post" && slug.current == $slug && language == $language && _id != $id][0]._id`;
+                  const result = await client.fetch(query, { slug, language, id });
+
+                  return !result;
+              }
+          },
+          validation: (Rule) => Rule.required(),
+      }),
+      defineField({
+          name: "language",
+          type: "string",
+          readOnly: true,
+          hidden: true,
+          group: "settings",
+      }),
+    defineField({
+      name: "excerpt",
+      title: "Excerpt",
+      type: "text",
+      group: "content",
+    }),
+    defineField({
+      name: "author",
+      title: "Author",
+      type: "reference",
+      group: "settings",
+      to: { type: "author" },
+    }),
+    defineField({
+      name: "image",
+      title: "Image",
+      type: "image",
+      group: "settings",
+      options: {
+        hotspot: true,
+      },
+      fields: [
+        {
+          name: "alt",
+          type: "string",
+          title: "Alternative Text",
+        },
+      ],
+    }),
+    defineField({
+      name: "categories",
+      title: "Categories",
+      type: "array",
+      group: "settings",
+      of: [{ type: "reference", to: { type: "category" } }],
+    }),
+    defineField({
+      name: "body",
+      title: "Body",
+      type: "block-content",
+      group: "content",
+    }),
+    defineField({
+      name: "meta_title",
+      title: "Meta Title",
+      type: "string",
+      group: "seo",
+    }),
+    defineField({
+      name: "meta_description",
+      title: "Meta Description",
+      type: "text",
+      group: "seo",
+    }),
+    defineField({
+      name: "noindex",
+      title: "No Index",
+      type: "boolean",
+      initialValue: false,
+      group: "seo",
+    }),
+    defineField({
+      name: "ogImage",
+      title: "Open Graph Image - [1200x630]",
+      type: "image",
+      group: "seo",
+    }),
+  ],
+
+  preview: {
+    select: {
+      title: "title",
+      author: "author.name",
+      media: "image",
+    },
+    prepare(selection) {
+      const { author } = selection;
+      return { ...selection, subtitle: author && `by ${author}` };
+    },
+  },
+});
