@@ -15,7 +15,11 @@ import { allPostsQuery } from "./all-posts";
 
 export const REGIONAL_COMMUNITY_PAGE_QUERY = groq`
   *[_type == "regionalCommunityPage" && slug.current == $slug && language == $language][0]{
-    welcomeHero {
+    _id,
+    title,
+    slug,
+    language,
+    titleHero {
       ${hero1Query}
     },
     listHero {
@@ -34,7 +38,7 @@ export const REGIONAL_COMMUNITY_PAGE_QUERY = groq`
       ${logoCloud1Query},
       ${faqsQuery},
       ${formNewsletterQuery},
-      ${allPostsQuery},
+      ${allPostsQuery}
     },
     meta_title,
     meta_description,
@@ -49,7 +53,8 @@ export const REGIONAL_COMMUNITY_PAGE_QUERY = groq`
             height
           }
         }
-      }
+      },
+      alt
     }
   }
 `;
@@ -57,6 +62,7 @@ export const REGIONAL_COMMUNITY_PAGE_QUERY = groq`
 
 export const PAGES_SLUGS_QUERY = groq`
   *[_type == "regionalCommunityPage" && defined(slug)]{
+    _id,
     slug,
     language
   }
