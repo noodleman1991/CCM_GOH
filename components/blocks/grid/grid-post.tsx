@@ -4,7 +4,7 @@ import Image from "next/image";
 import { urlFor } from "@/sanity/lib/image";
 import { ChevronRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { PAGE_QUERYResult, ColorVariant } from "@/sanity.types";
+import { PAGE_QUERYResult, ColorVariant } from "@/sanity.types"; //todo: what is the issue with colorVariant?
 
 type Block = NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number];
 type GridRow = Extract<Block, { _type: "grid-row" }>;
@@ -12,7 +12,7 @@ type GridColumn = NonNullable<NonNullable<GridRow["columns"]>>[number];
 type GridPost = Extract<GridColumn, { _type: "grid-post" }>;
 
 interface GridPostProps extends Omit<NonNullable<GridPost>, "_type" | "_key"> {
-  color?: ColorVariant;
+  color?: string;
 }
 
 export default function GridPost({ color, post }: GridPostProps) {

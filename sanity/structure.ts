@@ -1,4 +1,3 @@
-// sanity/structure.ts
 import { orderableDocumentListDeskItem } from "@sanity/orderable-document-list";
 import {
     Files,
@@ -7,6 +6,7 @@ import {
     ListCollapse,
     Quote,
     Tag,
+    Glasses,
     Building,
     FolderOpen,
     FileText,
@@ -137,7 +137,22 @@ export const structure = (S: any, context: any) =>
                             }),
                         ])
                 ),
-
+            // Reports & Agendas
+            S.listItem()
+                .title("Reports & Agendas")
+                .child(
+                    S.list()
+                        .title("Reports & Agendas")
+                        .items([
+                            orderableDocumentListDeskItem({
+                                type: "report",
+                                title: "Reports",
+                                icon: Glasses,
+                                S,
+                                context,
+                            }),
+                        ])
+                ),
             // Taxonomies
             S.divider(),
             S.listItem()

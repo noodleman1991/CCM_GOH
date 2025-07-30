@@ -36,6 +36,7 @@ export default defineType({
         { type: "grid-card" },
         { type: "grid-post" },
         { type: "pricing-card" },
+        { type: "grid-report" },
       ],
       options: {
         insertMenu: {
@@ -54,11 +55,12 @@ export default defineType({
     select: {
       title: "columns.0.title",
       postTitle: "columns.0.post.title",
+      reportTitle: "columns.0.report.title.en",
     },
-    prepare({ title, postTitle }) {
+    prepare({ title, postTitle, reportTitle }) {
       return {
         title: "Grid Row",
-        subtitle: title || postTitle,
+        subtitle: title || postTitle || reportTitle,
       };
     },
   },

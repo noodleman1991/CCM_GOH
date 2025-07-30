@@ -12,7 +12,7 @@ type GridColumn = NonNullable<NonNullable<GridRow["columns"]>>[number];
 type GridCard = Extract<GridColumn, { _type: "grid-card" }>;
 
 interface GridCardProps extends Omit<GridCard, "_type" | "_key"> {
-  color?: ColorVariant;
+  color?: string; //todo: what is the issue with colorVariant?
 }
 
 export default function GridCard({
