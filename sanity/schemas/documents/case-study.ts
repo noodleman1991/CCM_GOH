@@ -203,18 +203,22 @@ export default defineType({
             ],
             description: "Projects related to this case study",
         }),
-        // Tags using the tags plugin
         defineField({
             name: "tags",
             title: "Tags",
-            type: "tags",
-            group: "metadata",
+            type: "array",
+            of: [
+                {
+                    type: "reference",
+                    to: [{ type: "tag" }],
+                },
+            ],
             options: {
-                includeFromReference: "tag",
-                includeFromRelated: "tags",
-                customLabel: "label",
-                customValue: "value",
+                layout: "tags",
+                sortable: true,
             },
+            validation: (Rule) => Rule.max(15),
+            description: "Type to search existing tags or create new ones.",
         }),
         defineField({
             name: "image",

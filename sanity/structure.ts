@@ -59,6 +59,7 @@ export const structure = (S: any, context: any) =>
                                 .child(
                                     S.documentTypeList("newsPost")
                                         .title("News Posts")
+                                        .apiVersion('v2025-02-19')
                                         .defaultOrdering([{ field: "publishedAt", direction: "desc" }])
                                         .filter('_type == "newsPost"')
                                 ),
@@ -97,6 +98,7 @@ export const structure = (S: any, context: any) =>
                                 .child(
                                     S.documentTypeList("caseStudy")
                                         .title("Pending Review")
+                                        .apiVersion('v2025-02-19')
                                         .filter('_type == "caseStudy" && status == "pending"')
                                 ),
                             S.listItem()
@@ -105,6 +107,7 @@ export const structure = (S: any, context: any) =>
                                 .child(
                                     S.documentTypeList("caseStudy")
                                         .title("Approved Case Studies")
+                                        .apiVersion('v2025-02-19')
                                         .filter('_type == "caseStudy" && status == "approved"')
                                 ),
                         ])

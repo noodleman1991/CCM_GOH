@@ -85,11 +85,31 @@ export default defineType({
             title: "label.en",
             subtitle: "category",
             value: "value.current",
+            color: "color",
         },
-        prepare({ title, subtitle, value }) {
+        prepare({ title, subtitle, value, color }: {
+            title?: string;
+            subtitle?: string;
+            value?: string;
+            color?: string;
+        }) {
+            const colorEmoji: Record<string, string> = {
+                "#3b82f6": "🔵", // Blue
+                "#10b981": "🟢", // Green  
+                "#ef4444": "🔴", // Red
+                "#f59e0b": "🟡", // Yellow
+                "#8b5cf6": "🟣", // Purple
+                "#ec4899": "🩷", // Pink
+                "#6366f1": "🟦", // Indigo
+                "#6b7280": "⚫", // Gray
+                "#f97316": "🟠", // Orange
+                "#14b8a6": "🔵", // Teal
+            };
+
             return {
-                title: title || "Untitled Tag",
+                title: `${colorEmoji[color || "#3b82f6"] || "🏷️"} ${title || "Untitled Tag"}`,
                 subtitle: `${subtitle || "topic"} | ${value || "no-slug"}`,
+                media: Tag,
             };
         },
     },

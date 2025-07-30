@@ -78,18 +78,27 @@ export default async function Page({
                                    }: {
     params: { locale: string; slug: string }
 }) {
-    const { locale, slug } = await params;
-    const page = await fetchSanityRCPageBySlug({ slug, locale });
+    const {locale, slug} = await params;
+    const page = await fetchSanityRCPageBySlug({slug, locale});
 
     if (!page) {
         notFound();
     }
 
+    return (
+        <>
+            {/* Use titleHero to match your schema */}
+            {page.titleHero && (
+                <Hero1 {...page.titleHero} locale={locale} />
+            )}
 
+            {/* Render listHero if it exists */}
+            {page.listHero && (
+                <Hero1 {...page.listHero} locale={locale} />
+            )}
 
-    return
-    {
-        // <Hero1 title={page?.welcome}></Hero1>
-        <Blocks blocks={page?.blocks ?? []} locale={locale}/>;
-    }
+            {/* Render blocks */}
+            <Blocks blocks={page.blocks ?? []} locale={locale} />
+        </>
+    );
 }

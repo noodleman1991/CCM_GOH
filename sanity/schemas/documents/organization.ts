@@ -196,24 +196,19 @@ export default defineType({
         defineField({
             name: "tags",
             title: "Tags",
-            type: "tags",
+            type: "array",
+            of: [
+                {
+                    type: "reference",
+                    to: [{ type: "tag" }],
+                },
+            ],
             options: {
-                includeFromReference: "tag",
-                includeFromRelated: "tags", // This enables autocomplete from other documents with tags
-                customLabel: "label.en", // This should match your tag document structure
-                customValue: "value.current", // This should match your tag document structure
-                onCreate: (inputValue: string) => ({
-                    label: { en: inputValue },
-                    value: { current: inputValue.toLowerCase().replace(/\W/g, '-') }
-                }),
-                checkValid: (inputValue: string, currentValues: string[]) => {
-                    return (
-                        !!inputValue &&
-                        inputValue.trim() === inputValue &&
-                        !currentValues.includes(inputValue.toLowerCase().replace(/\W/g, '-'))
-                    );
-                }
+                layout: "tags",
+                sortable: true,
             },
+            validation: (Rule) => Rule.max(15),
+            description: "Type to search existing tags or create new ones.",
         }),
         defineField({
             name: "verified",

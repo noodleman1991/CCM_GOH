@@ -158,13 +158,19 @@ export default defineType({
         defineField({
             name: "tags",
             title: "Tags",
-            type: "tags",
+            type: "array",
+            of: [
+                {
+                    type: "reference",
+                    to: [{ type: "tag" }],
+                },
+            ],
             options: {
-                includeFromReference: "tag",
-                includeFromRelated: "tags",
-                customLabel: "label.en",
-                customValue: "value.current",
+                layout: "tags",
+                sortable: true,
             },
+            validation: (Rule) => Rule.max(15),
+            description: "Type to search existing tags or create new ones.",
         }),
         orderRankField({ type: "project" }),
     ],

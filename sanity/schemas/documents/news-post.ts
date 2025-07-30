@@ -193,22 +193,22 @@ export default defineType({
                 },
             ],
         }),
-        // Tags using the tags plugin
         defineField({
             name: "tags",
             title: "Tags",
-            type: "tags",
-            group: "metadata",
+            type: "array",
+            of: [
+                {
+                    type: "reference",
+                    to: [{ type: "tag" }],
+                },
+            ],
             options: {
-                includeFromReference: "tag",
-                includeFromRelated: "tags",
-                customLabel: "label",
-                customValue: "value",
-                onCreate: (value: string) => ({
-                    _type: "reference",
-                    _ref: "tag-id", // This would need to be created via API
-                }),
+                layout: "tags",
+                sortable: true,
             },
+            validation: (Rule) => Rule.max(15),
+            description: "Type to search existing tags or create new ones.",
         }),
         defineField({
             name: "sources",

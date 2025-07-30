@@ -76,6 +76,23 @@ export default defineType({
       type: "text",
       group: "content",
     }),
+      defineField({
+          name: "tags",
+          title: "Tags",
+          type: "array",
+          of: [
+              {
+                  type: "reference",
+                  to: [{ type: "tag" }],
+              },
+          ],
+          options: {
+              layout: "tags",
+              sortable: true,
+          },
+          validation: (Rule) => Rule.max(15),
+          description: "Type to search existing tags or create new ones.",
+      }),
     defineField({
       name: "author",
       title: "Author",
