@@ -12,7 +12,9 @@ import LogoCloud1 from "@/components/blocks/logo-cloud/logo-cloud-1";
 import FAQs from "@/components/blocks/faqs";
 import FormNewsletter from "@/components/blocks/forms/newsletter";
 import AllPosts from "@/components/blocks/all-posts";
+// import ReportsGrid from "@/components/blocks/grid/grid-report";
 import { isRTL } from "@/i18n/i18n-helpers";
+// import gridReport from "@/sanity/schemas/blocks/grid/grid-report"; //todo: what is the diff between reportsgrid and gridreports in schemas???
 
 type Block = NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number];
 
@@ -24,10 +26,15 @@ interface BlocksProps {
         path: string;
         title: string;
     }>;
+    userId?: string;
 }
 
 const componentMap: {
-    [K in Block["_type"]]: React.ComponentType<Extract<Block, { _type: K }> & { locale?: string; isRTL?: boolean }>;
+    [K in Block["_type"]]: React.ComponentType<Extract<Block, { _type: K }> & {
+        locale?: string;
+        isRTL?: boolean;
+        userId?: string;
+    }>;
 } = {
     "hero-1": Hero1,
     "hero-2": Hero2,
@@ -42,9 +49,10 @@ const componentMap: {
     faqs: FAQs,
     "form-newsletter": FormNewsletter,
     "all-posts": AllPosts,
+    // "gridReport": ReportsGrid,
 };
 
-export default function Blocks({ blocks, locale, translations }: BlocksProps) {
+export default function Blocks({ blocks, locale, translations, userId }: BlocksProps) {
     const rtl = isRTL(locale);
 
     return (
@@ -57,14 +65,16 @@ export default function Blocks({ blocks, locale, translations }: BlocksProps) {
                     );
                     return <div data-type={block._type} key={block._key} />;
                 }
-                return <Component
-                    {...(block as any)}
-                    key={block._key}
-                    locale={locale}
-                    isRTL={rtl}
-                />;
+                return (
+                    <Component
+                        {...(block as any)}
+                        key={block._key}
+                        locale={locale}
+                        isRTL={rtl}
+                        userId={userId} // Pass userId for download tracking
+                    />
+                );
             })}
         </div>
     );
 }
-

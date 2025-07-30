@@ -5,27 +5,61 @@ import { PAGE_QUERYResult } from "@/sanity.types";
 import GridCard from "./grid-card";
 import PricingCard from "./pricing-card";
 import GridPost from "./grid-post";
+import GridReport from "./grid-report";
 
 type Block = NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number];
 type GridRow = Extract<Block, { _type: "grid-row" }>;
 type GridColumn = NonNullable<NonNullable<GridRow["columns"]>[number]>;
 
-const componentMap: {
-  [K in GridColumn["_type"]]: React.ComponentType<
-    Extract<GridColumn, { _type: K }>
-  >;
-} = {
-  "grid-card": GridCard,
-  "pricing-card": PricingCard,
-  "grid-post": GridPost,
+type GridReportType = {
+    _type: "grid-report";
+    _key: string;
+    report: any;
+    showTags?: boolean;
+    showDownloadButtons?: boolean;
+    showMetadata?: boolean;
 };
+
+type ExtendedGridColumn = GridColumn | GridReportType;
+
+// todo: fix type workaround
+// const componentMap: {
+//   [K in GridColumn["_type"]]: React.ComponentType<
+//      Extract<GridColumn, { _type: K }> & {
+//         color?: string;
+//         locale?: string;
+//         userId?: string;
+//     }
+//     >;
+// } = {
+//     "grid-card": GridCard,
+//     "pricing-card": PricingCard,
+//     "grid-post": GridPost,
+//     "grid-report": GridReport,
+// };
+
+const componentMap: {
+    [K in ExtendedGridColumn["_type"]]: React.ComponentType<any>;
+} = {
+    "grid-card": GridCard,
+    "pricing-card": PricingCard,
+    "grid-post": GridPost,
+    "grid-report": GridReport,
+};
+
+interface GridRowProps extends GridRow {
+    locale?: string;
+    userId?: string;
+}
 
 export default function GridRow({
   padding,
   colorVariant,
   gridColumns,
   columns,
-}: GridRow) {
+  locale,
+  userId,
+}: GridRowProps) {
   const color = stegaClean(colorVariant);
 
   return (
@@ -47,7 +81,13 @@ export default function GridRow({
               return <div data-type={column._type} key={column._key} />;
             }
             return (
-              <Component {...(column as any)} color={color} key={column._key} />
+                  <Component
+                      {...(column as any)}
+                      color={color}
+                      key={column._key}
+                      locale={locale} // NEW: Pass locale
+                      userId={userId} // NEW: Pass userId
+                  />
             );
           })}
         </div>

@@ -42,7 +42,7 @@ import gridCard from "./schemas/blocks/grid/grid-card";
 import pricingCard from "./schemas/blocks/grid/pricing-card";
 import gridPost from "./schemas/blocks/grid/grid-post";
 import gridRow from "./schemas/blocks/grid/grid-row";
-import reportsGrid from "@/sanity/schemas/blocks/grid/reports-grid";
+import gridReport from "./schemas/blocks/grid/grid-report";
 import carousel1 from "./schemas/blocks/carousel/carousel-1";
 import carousel2 from "./schemas/blocks/carousel/carousel-2";
 import timelineRow from "./schemas/blocks/timeline/timeline-row";
@@ -68,9 +68,8 @@ export const schema: { types: SchemaTypeDefinition[] } = {
         newsPost,
         externalSource,
         caseStudy,
-        // ADD THESE
-        regionalCommunity, // ADD THIS
-        report, // ADD THIS IF YOU HAVE THE FILE
+        regionalCommunity,
+        report,
         // hub
         regionalCommunityPage,
         // shared objects
@@ -95,7 +94,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
         pricingCard,
         gridPost,
         gridRow,
-        reportsGrid,
+        gridReport,
         carousel1,
         carousel2,
         timelineRow,
