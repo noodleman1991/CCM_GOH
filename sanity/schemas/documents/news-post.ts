@@ -162,7 +162,7 @@ export default defineType({
             ],
             description: "Projects related to this news post",
         }),
-        // Location using Google Maps plugin
+        // Location using Google Maps plugins
         defineField({
             name: "location",
             title: "Location",

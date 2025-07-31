@@ -1,304 +1,125 @@
-'use client';
+// components/GridReportComponent.tsx
 
 import React from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
-import { Download, Calendar, Building, FileText, Eye, AlertCircle } from 'lucide-react';
-import { GridReport } from '@/types/report';
-import { formatFileSize, formatDate } from '@/lib/utils';
+import { GridReport, ReportFile, LocalizedString } from '@/types/report';
 
-interface GridReportProps {
-    data?: GridReport; // Make optional to handle undefined
-    locale: string;
+interface Props {
+    data: GridReport;
+    locale: keyof LocalizedString;
     userId?: string;
 }
 
-const languageLabels = {
-    en: { label: 'English', flag: '🇬🇧' },
-    es: { label: 'Español', flag: '🇪🇸' },
-    fr: { label: 'Français', flag: '🇫🇷' },
-    ar: { label: 'العربية', flag: '🇸🇦' },
-};
+export const GridReportComponent: React.FC<Props> = ({ data, locale, userId }) => {
+    if (!data) return null;
 
-const reportTypeLabels = {
-    annual: 'Annual Report',
-    research: 'Research Report',
-    policy: 'Policy Brief',
-    technical: 'Technical Report',
-    'case-study': 'Case Study',
-    whitepaper: 'White Paper',
-    guidelines: 'Guidelines',
-    agenda: 'Meeting Agenda',
-    minutes: 'Meeting Minutes',
-    other: 'Other',
-};
+    const { report, showTags = true, showMetadata = true, showDownloadButtons = true } = data;
 
-// ADD THIS FUNCTION for download tracking
-const trackReportDownload = async (
-    reportId: string,
-    fileLanguage: string,
-    userId?: string
-): Promise<void> => {
-    try {
-        const event = {
-            reportId,
-            fileLanguage,
-            userId,
-            sessionId: crypto.randomUUID(),
-            timestamp: new Date().toISOString(),
-            userAgent: typeof window !== 'undefined' ? window.navigator.userAgent : undefined,
-            referer: typeof window !== 'undefined' ? window.document.referrer : undefined,
-        };
-
-        await fetch('/api/analytics/download', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(event),
-        });
-    } catch (error) {
-        console.error('Download tracking error:', error);
-        // Don't throw - tracking failures shouldn't break downloads
-    }
-};
-
-export default function GridReportComponent({
-                                                data,
-                                                locale = 'en',
-                                                userId
-                                            }: GridReportProps) {
-
-    // ADD ERROR HANDLING: Check if data exists and has required properties
-    if (!data) {
-        return (
-            <Card className="h-full flex flex-col">
-                <CardContent className="flex-1 flex items-center justify-center p-6">
-                    <div className="text-center text-muted-foreground">
-                        <AlertCircle className="h-8 w-8 mx-auto mb-2" />
-                        <p>Report data not available</p>
-                    </div>
-                </CardContent>
-            </Card>
-        );
-    }
-
-    // ADD SAFE DESTRUCTURING: Provide defaults for undefined properties
-    const {
-        report,
-        showTags = false,
-        showDownloadButtons = false,
-        showMetadata = false
-    } = data;
-
-    // ADD ADDITIONAL SAFETY CHECK: Ensure report exists
-    if (!report) {
-        return (
-            <Card className="h-full flex flex-col">
-                <CardContent className="flex-1 flex items-center justify-center p-6">
-                    <div className="text-center text-muted-foreground">
-                        <AlertCircle className="h-8 w-8 mx-auto mb-2" />
-                        <p>Report information not found</p>
-                    </div>
-                </CardContent>
-            </Card>
-        );
-    }
-
-    // ADD SAFE PROPERTY ACCESS: Handle potentially undefined nested properties
-    const title = report.title?.[locale as keyof typeof report.title] || report.title?.en || 'Untitled Report';
-    const description = report.description?.[locale as keyof typeof report.description] || report.description?.en;
-
-    // ADD THIS FUNCTION for handling downloads
-    const handleDownload = async (fileUrl: string, language: string, filename: string) => {
-        try {
-            // Track the download
-            await trackReportDownload(report._id, language, userId);
-
-            // Create a temporary link to trigger download
-            const link = document.createElement('a');
-            link.href = fileUrl;
-            link.download = filename;
-            link.target = '_blank';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        } catch (error) {
-            console.error('Download failed:', error);
-            // Fallback to direct navigation
-            window.open(fileUrl, '_blank');
-        }
+    const getLocalizedText = (text?: LocalizedString): string => {
+        return text?.[locale] || text?.en || '';
     };
 
+    const files: ReportFile[] = report.files || [];
+
     return (
-        <Card className="h-full flex flex-col hover:shadow-lg transition-shadow duration-300">
-            {/* Cover Image */}
-            {report.coverImage?.asset && (
-                <div className="relative aspect-[16/9] overflow-hidden rounded-t-lg">
-                    <Image
-                        src={report.coverImage.asset.url}
-                        alt={report.coverImage.alt || title}
-                        fill
-                        className="object-cover transition-transform duration-300 hover:scale-105"
-                        placeholder="blur"
-                        blurDataURL={report.coverImage.asset.metadata?.lqip}
-                    />
-                    {report.featured && (
-                        <Badge className="absolute top-2 right-2" variant="secondary">
-                            Featured
-                        </Badge>
-                    )}
-                </div>
+        <article className="rounded-lg border bg-white p-4 shadow-sm">
+            {/* Report Cover */}
+            {report.coverImage?.asset?.url && (
+                <img
+                    src={report.coverImage.asset.url}
+                    alt={report.coverImage.alt || ''}
+                    className="mb-4 w-full rounded object-cover"
+                />
             )}
 
-            <CardHeader className="flex-none">
-                <div className="space-y-2">
-                    {/* Report Type & Year */}
-                    {showMetadata && (
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <FileText className="h-4 w-4" />
-                            <span>{reportTypeLabels[report.reportType] || 'Report'}</span>
-                            {report.year && (
-                                <>
-                                    <Calendar className="h-4 w-4 ml-2" />
-                                    <span>{report.year}</span>
-                                </>
-                            )}
-                        </div>
-                    )}
+            {/* Title */}
+            <h2 className="text-lg font-semibold">{getLocalizedText(report.title)}</h2>
 
-                    {/* Title */}
-                    <h3 className="font-semibold text-lg leading-tight line-clamp-2">
-                        {title}
-                    </h3>
+            {/* Subtitle */}
+            {report.subtitle && <p className="text-sm text-gray-500">{getLocalizedText(report.subtitle)}</p>}
 
-                    {/* Description */}
-                    {description && (
-                        <p className="text-sm text-muted-foreground line-clamp-3">
-                            {description}
-                        </p>
-                    )}
-                </div>
-            </CardHeader>
+            {/*/!* Metadata *!/*/}
+            {/*{showMetadata && (*/}
+            {/*    <div className="mt-2 text-sm text-gray-600 space-y-1">*/}
+            {/*        {report.year && <div>📅 {report.year}</div>}*/}
 
-            <CardContent className="flex-1">
-                {/* Organizations */}
-                {showMetadata && report.organizations && report.organizations.length > 0 && (
-                    <div className="mb-4">
-                        <div className="flex items-center gap-2 mb-2">
-                            <Building className="h-4 w-4 text-muted-foreground" />
-                            <span className="text-sm font-medium">Organizations</span>
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                            {report.organizations.slice(0, 3).map((org) => (
-                                <Badge key={org._id} variant="outline" className="text-xs">
-                                    {org.name}
-                                </Badge>
-                            ))}
-                            {report.organizations.length > 3 && (
-                                <Badge variant="outline" className="text-xs">
-                                    +{report.organizations.length - 3} more
-                                </Badge>
-                            )}
-                        </div>
-                    </div>
-                )}
+            {/*        {report.organizations?.length > 0 && (*/}
+            {/*            <div>*/}
+            {/*                🏢{' '}*/}
+            {/*                {report.organizations.map((org) => (*/}
+            {/*                    <span key={org._id} className="mr-2">*/}
+            {/*      {org.name}*/}
+            {/*    </span>*/}
+            {/*                ))}*/}
+            {/*            </div>*/}
+            {/*        )}*/}
 
-                {/* Tags */}
-                {showTags && report.tags && report.tags.length > 0 && (
-                    <div className="mb-4">
-                        <div className="flex flex-wrap gap-2">
-                            {report.tags.slice(0, 4).map((tag) => (
-                                <Badge
-                                    key={tag._id}
-                                    variant="secondary"
-                                    className="text-xs"
-                                    style={{ backgroundColor: `${tag.color}20`, color: tag.color }}
-                                >
-                                    {tag.label?.[locale as keyof typeof tag.label] || tag.label?.en || 'Tag'}
-                                </Badge>
-                            ))}
-                            {report.tags.length > 4 && (
-                                <Badge variant="secondary" className="text-xs">
-                                    +{report.tags.length - 4}
-                                </Badge>
-                            )}
-                        </div>
-                    </div>
-                )}
+            {/*        {report.authors?.length > 0 && (*/}
+            {/*            <div>*/}
+            {/*                ✍️{' '}*/}
+            {/*                {report.authors.map((author, i) => (*/}
+            {/*                    <span key={i}>*/}
+            {/*      {author.name}*/}
+            {/*                        {i < report.authors.length - 1 && ', '}*/}
+            {/*    </span>*/}
+            {/*                ))}*/}
+            {/*            </div>*/}
+            {/*        )}*/}
+            {/*    </div>*/}
+            {/*)}*/}
 
-                {/* Download Statistics */}
-                {showMetadata && (
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                        <div className="flex items-center gap-1">
-                            <Download className="h-4 w-4" />
-                            <span>{report.downloadCount || 0} downloads</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                            <Eye className="h-4 w-4" />
-                            <span>{report.files?.length || 0} languages</span>
-                        </div>
-                    </div>
-                )}
-            </CardContent>
+            {/* Description */}
+            {report.description && (
+                <p className="mt-3 text-sm text-gray-700">{getLocalizedText(report.description)}</p>
+            )}
 
-            <CardFooter className="flex-none pt-0">
-                {/* Download Buttons */}
-                {showDownloadButtons && report.files && report.files.length > 0 && (
-                    <div className="w-full">
-                        <div className="grid grid-cols-2 gap-2">
-                            {report.files.map((file) => {
-                                const lang = languageLabels[file.language];
-                                // Use R2 URL if available, fallback to Sanity file
-                                const fileUrl = file.fileUrl || file.file?.asset?.url;
-                                const filename = file.file?.asset?.originalFilename || `${title}_${file.language}.pdf`;
+            {/*/!* Tags *!/*/}
+            {/*{showTags && report.tags?.length > 0 && (*/}
+            {/*    <div className="mt-3 flex flex-wrap gap-2">*/}
+            {/*        {report.tags.map((tag) => (*/}
+            {/*            <span*/}
+            {/*                key={tag._id}*/}
+            {/*                className="inline-block rounded bg-gray-100 px-2 py-1 text-xs text-gray-700"*/}
+            {/*            >*/}
+            {/*  {getLocalizedText(tag.label)}*/}
+            {/*</span>*/}
+            {/*        ))}*/}
+            {/*    </div>*/}
+            {/*)}*/}
 
-                                if (!fileUrl || !lang) return null;
+            {/* Files */}
+            {showDownloadButtons && files.length > 0 && (
+                <div className="mt-4">
+                    <h4 className="mb-2 font-medium">Downloads:</h4>
+                    <ul className="space-y-2">
+                        {files.map((file, i) => (
+                            <li key={i} className="flex items-center justify-between text-sm">
+                                <div>
+                                    <span className="font-medium">{file.language.toUpperCase()}</span>{' '}
+                                    {file.file?.asset?.originalFilename && (
+                                        <span className="text-gray-500">({file.file.asset.originalFilename})</span>
+                                    )}
+                                    {file.fileSize && (
+                                        <span className="ml-2 text-gray-400">• {file.fileSize.toFixed(2)} MB</span>
+                                    )}
+                                </div>
 
-                                return (
-                                    <Button
-                                        key={file.language}
-                                        variant="outline"
-                                        size="sm"
-                                        className="flex items-center gap-2 text-xs"
-                                        onClick={() => handleDownload(fileUrl, file.language, filename)}
+                                {file.fileUrl && (
+                                    <a
+                                        href={file.fileUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="rounded bg-blue-600 px-3 py-1 text-white text-xs hover:bg-blue-700"
                                     >
-                                        <span>{lang.flag}</span>
-                                        <Download className="h-3 w-3" />
-                                        <span className="truncate">{lang.label}</span>
-                                        {file.fileSize && (
-                                            <span className="text-muted-foreground">
-                                                ({formatFileSize(file.fileSize * 1024 * 1024)})
-                                            </span>
-                                        )}
-                                    </Button>
-                                );
-                            })}
-                        </div>
-
-                        {/* View Details Link */}
-                        {report.slug?.current && (
-                            <Link href={`/reports/${report.slug.current}`} className="mt-3 block">
-                                <Button variant="ghost" size="sm" className="w-full">
-                                    View Details
-                                </Button>
-                            </Link>
-                        )}
-                    </div>
-                )}
-
-                {/* Fallback if no download buttons */}
-                {!showDownloadButtons && report.slug?.current && (
-                    <Link href={`/reports/${report.slug.current}`} className="w-full">
-                        <Button variant="default" size="sm" className="w-full">
-                            View Report
-                        </Button>
-                    </Link>
-                )}
-            </CardFooter>
-        </Card>
+                                        Download
+                                    </a>
+                                )}
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
+        </article>
     );
-}
+};
+
+export default GridReportComponent;

@@ -1,5 +1,12 @@
+export interface LocalizedString {
+    en: string;
+    es?: string;
+    fr?: string;
+    ar?: string;
+}
+
 export interface ReportFile {
-    language: 'en' | 'es' | 'fr' | 'ar';
+    language: string;
     file?: {
         asset?: {
             _id: string;
@@ -9,34 +16,20 @@ export interface ReportFile {
             mimeType: string;
         };
     };
-    fileUrl?: string; // Cloudflare R2 URL
+    fileUrl?: string; // R2 URL
     fileSize?: number; // Size in MB
     pages?: number;
 }
 
-export interface ReportAuthor {
-    name: string;
-    organization?: {
-        _id: string;
-        name: string;
-        slug: { current: string };
-    };
-}
-
-export interface ReportTag {
+export interface Tag {
     _id: string;
-    label: {
-        en: string;
-        es?: string;
-        fr?: string;
-        ar?: string;
-    };
-    value: { current: string };
+    label: LocalizedString;
+    value: string;
     color: string;
-    category: 'topic' | 'location' | 'method' | 'audience' | 'impact' | 'other';
+    category: string;
 }
 
-export interface ReportOrganization {
+export interface Organization {
     _id: string;
     name: string;
     slug: { current: string };
@@ -48,33 +41,31 @@ export interface ReportOrganization {
     };
 }
 
-export interface LocalizedText {
-    en: string;
-    es?: string;
-    fr?: string;
-    ar?: string;
+export interface Author {
+    name: string;
+    organization?: Organization;
 }
 
 export interface Report {
     _id: string;
-    title: LocalizedText;
-    subtitle?: LocalizedText;
-    description?: LocalizedText;
+    title: LocalizedString;
+    subtitle?: LocalizedString;
+    description?: LocalizedString;
     slug: { current: string };
-    reportType: 'annual' | 'research' | 'policy' | 'technical' | 'case-study' | 'whitepaper' | 'guidelines' | 'other';
-    year: number;
-    publishDate: string;
-    downloadCount: number;
-    featured: boolean;
-    accessLevel: 'public' | 'registered' | 'members';
+    reportType: 'annual' | 'research' | 'policy' | 'technical' | 'case-study' | 'whitepaper' | 'guidelines' | 'agenda' | 'minutes' | 'other';
+    year?: number;
+    publishDate?: string;
+    downloadCount?: number;
+    featured?: boolean;
+    accessLevel?: 'public' | 'registered' | 'members';
     coverImage?: {
         asset?: {
             _id: string;
             url: string;
             mimeType: string;
-            metadata: {
-                lqip: string;
-                dimensions: {
+            metadata?: {
+                lqip?: string;
+                dimensions?: {
                     width: number;
                     height: number;
                 };
@@ -82,22 +73,41 @@ export interface Report {
         };
         alt?: string;
     };
-    files: ReportFile[];
-    tags?: ReportTag[];
-    organizations?: ReportOrganization[];
-    authors?: ReportAuthor[];
+    files?: ReportFile[];
+    tags?: Tag[];
+    organizations?: Organization[];
+    authors?: Author[];
 }
 
 export interface GridReport {
     _type: 'grid-report';
     _key: string;
-    showTags: boolean;
-    showDownloadButtons: boolean;
-    showMetadata: boolean;
     report: Report;
+    showTags?: boolean;
+    showDownloadButtons?: boolean;
+    showMetadata?: boolean;
 }
 
-// Cloudflare R2 Types
+export interface DownloadEvent {
+    reportId: string;
+    fileLanguage: string;
+    userId?: string;
+    sessionId: string;
+    timestamp: string;
+    userAgent?: string;
+    referer?: string;
+    ipAddress?: string;
+}
+
+export interface R2FileMetadata {
+    filename: string;
+    size: number;
+    mimeType: string;
+    language: string;
+    reportId: string;
+    uploadedAt?: string;
+}
+
 export interface R2UploadResponse {
     success: boolean;
     result?: {
@@ -113,22 +123,3 @@ export interface R2UploadResponse {
     }>;
 }
 
-export interface R2FileMetadata {
-    filename: string;
-    size: number;
-    mimeType: string;
-    language: string;
-    reportId: string;
-    uploadedAt: string;
-}
-
-// Download tracking
-export interface DownloadEvent {
-    reportId: string;
-    fileLanguage: string;
-    userId?: string;
-    sessionId: string;
-    timestamp: string;
-    userAgent?: string;
-    referer?: string;
-}

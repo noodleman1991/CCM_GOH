@@ -35,20 +35,14 @@ export const gridReportQuery = groq`
         },
         alt
       },
-      files[]{
+      translations[]{
         language,
-        file{
-          asset->{
-            _id,
-            url,
-            originalFilename,
-            size,
-            mimeType
-          }
-        },
-        fileUrl,
         fileSize,
-        pages
+        pages,
+        "url": report.asset->url,
+        "filename": asset->originalFilename,
+        "mimeType": asset->mimeType,
+        "id": asset->_id
       },
       tags[]->{
         _id,

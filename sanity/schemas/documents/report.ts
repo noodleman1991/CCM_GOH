@@ -105,13 +105,19 @@ export default defineType({
             validation: (Rule) => Rule.required(),
         }),
         defineField({
-            name: "files",
-            title: "Report Files",
+            name: "translations",
+            title: "Report Translations",
             type: "array",
             group: "files",
             of: [
                 {
-                    type: "object",
+                    type: "file",
+                    name: "reportFile",
+                    title: "Translated Report",
+                    options: {
+                        accept: "application/pdf",
+                        storeOriginalFilename: true,
+                    },
                     fields: [
                         {
                             name: "language",
@@ -128,22 +134,6 @@ export default defineType({
                             validation: (Rule) => Rule.required(),
                         },
                         {
-                            name: "file",
-                            title: "File",
-                            type: "file",
-                            options: {
-                                accept: ".pdf,.doc,.docx,.xlsx,.pptx",
-                            },
-                            validation: (Rule) => Rule.required(),
-                        },
-                        {
-                            name: "fileUrl",
-                            title: "R2 File URL",
-                            type: "url",
-                            description: "URL from Cloudflare R2 storage",
-                            readOnly: true,
-                        },
-                        {
                             name: "fileSize",
                             title: "File Size (MB)",
                             type: "number",
@@ -155,33 +145,11 @@ export default defineType({
                             type: "number",
                         },
                     ],
-                    preview: {
-                        select: {
-                            title: "language",
-                            subtitle: "file.asset.originalFilename",
-                            size: "fileSize",
-                        },
-                        prepare({ title, subtitle, size }) {
-                            const lang = {
-                                en: "🇬🇧 English",
-                                es: "🇪🇸 Español",
-                                fr: "🇫🇷 Français",
-                                ar: "🇸🇦 العربية",
-                            };
-
-                            const label = lang[title as keyof typeof lang] || title;
-
-                            return {
-                                title: label,
-                                subtitle: `${subtitle || "No file"} ${size ? `(${size.toFixed(1)} MB)` : ""}`,
-                            };
-                        }
-                    },
                 },
             ],
             validation: (Rule) => Rule.required().min(1),
         }),
-        defineField({
+    defineField({
             name: "authors",
             title: "Authors",
             type: "array",

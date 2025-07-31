@@ -3,6 +3,7 @@ import { Webhook } from 'svix'
 import { headers } from 'next/headers'
 import { prisma } from '@/lib/prisma'
 import { NextResponse } from 'next/server'
+import { clerkClient } from '@clerk/nextjs/server'
 
 // Webhook event types we care about
 type UserCreatedEvent = {
@@ -83,6 +84,10 @@ function getPrimaryEmail(emailAddresses: Array<{ email_address: string; verifica
 // Event handlers
 async function handleUserCreated(event: UserCreatedEvent) {
     const { id, email_addresses, first_name, last_name, username, image_url } = event.data
+    // Get avatar URL from Clerk public metadata if available //todo: should review (next 3 lines, alt prisma create)
+    const clerkClientInstance = await clerkClient()
+    const clerkUser = await clerkClientInstance.users.getUser(id)
+    const avatarUrl = clerkUser.publicMetadata?.avatarUrl as string | undefined || image_url
 
     try {
         // Check if user already exists (idempotency)
@@ -95,7 +100,20 @@ async function handleUserCreated(event: UserCreatedEvent) {
             return { action: 'skipped', reason: 'user_already_exists' }
         }
 
-        // Create user in database
+        // // Create user in database
+        // const user = await prisma.user.create({
+        //     data: {
+        //         id,
+        //         email: getPrimaryEmail(email_addresses),
+        //         firstName: first_name,
+        //         lastName: last_name,
+        //         username: username,
+        //         image: image_url,
+        //         emailVerified: email_addresses.some(email => email.verification?.status === 'verified')
+        //             ? new Date()
+        //             : null,
+        //     }
+        // })
         const user = await prisma.user.create({
             data: {
                 id,
@@ -103,7 +121,7 @@ async function handleUserCreated(event: UserCreatedEvent) {
                 firstName: first_name,
                 lastName: last_name,
                 username: username,
-                image: image_url,
+                image: avatarUrl,
                 emailVerified: email_addresses.some(email => email.verification?.status === 'verified')
                     ? new Date()
                     : null,

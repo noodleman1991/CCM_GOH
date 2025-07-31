@@ -38,7 +38,7 @@ export async function generateStaticParams() {
 
         // Add translations if they exist
         try {
-            const translations = await fetchTranslationsForPage(page._id);
+            const translations = page?._id ? await fetchTranslationsForPage(page._id) : [];
             if (translations?.length > 0) {
                 for (const translation of translations) {
                     if (translation.language && translation.slug?.current) {
