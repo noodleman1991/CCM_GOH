@@ -166,3 +166,87 @@ export const fetchSanityPostsStaticParams =
 
     return data;
   };
+
+export const fetchRegionalCommunityReports = async ({
+                                                        slug,
+                                                        limit = 6
+                                                    }: {
+    slug: string;
+    limit?: number;
+}) => {
+    const { data } = await sanityFetch({
+        query: `*[_type == "report" && references(*[_type == "regionalCommunity" && slug.current == $slug][0]._id)] | order(publishDate desc, featured desc)[0...${limit}]{
+            _id,
+            title,
+            subtitle,
+            description,
+            slug,
+            reportType,
+            year,
+            publishDate,
+            downloadCount,
+            featured,
+            accessLevel,
+            coverImage{
+                asset->{
+                    _id,
+                    url,
+                    mimeType,
+                    metadata {
+                        lqip,
+                        dimensions {
+                            width,
+                            height
+                        }
+                    }
+                },
+                alt
+            },
+            files[]{
+                language,
+                file{
+                    asset->{
+                        _id,
+                        url,
+                        originalFilename,
+                        size,
+                        mimeType
+                    }
+                },
+                fileUrl,
+                fileSize,
+                pages
+            },
+            tags[]->{
+                _id,
+                label,
+                value,
+                color,
+                category
+            },
+            organizations[]->{
+                _id,
+                name,
+                slug,
+                logo{
+                    asset->{
+                        _id,
+                        url
+                    }
+                }
+            },
+            authors[]{
+                name,
+                organization->{
+                    name,
+                    slug
+                }
+            }
+        }`,
+        params: { slug },
+        perspective: "published",
+        stega: false,
+    });
+
+    return data;
+};

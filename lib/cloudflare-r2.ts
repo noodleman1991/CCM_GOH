@@ -1,3 +1,5 @@
+import { S3Client, PutObjectCommand, DeleteObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { R2UploadResponse, R2FileMetadata, DownloadEvent } from '@/types/report';
 
 interface R2Config {
@@ -6,26 +8,64 @@ interface R2Config {
     secretAccessKey: string;
     bucketName: string;
     publicUrl: string;
+    endpoint: string;
 }
 
 class CloudflareR2Service {
     private config: R2Config;
+    private s3Client: S3Client;
 
     constructor() {
+        // Use your existing environment variable names
         this.config = {
             accountId: process.env.CLOUDFLARE_ACCOUNT_ID!,
             accessKeyId: process.env.CLOUDFLARE_R2_ACCESS_KEY_ID!,
             secretAccessKey: process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY!,
             bucketName: process.env.CLOUDFLARE_R2_BUCKET_NAME!,
             publicUrl: process.env.CLOUDFLARE_R2_PUBLIC_URL!,
+            // Use your existing endpoint or build it from account ID
+            endpoint: process.env.CLOUDFLARE_R2_ENDPOINT ||
+                `https://${process.env.CLOUDFLARE_ACCOUNT_ID}.r2.cloudflarestorage.com`,
         };
 
-        // Validate required environment variables
-        Object.entries(this.config).forEach(([key, value]) => {
-            if (!value) {
-                throw new Error(`Missing required environment variable: ${key}`);
-            }
+        console.log('R2 Config loaded:', {
+            accountId: this.config.accountId?.substring(0, 8) + '...',
+            bucketName: this.config.bucketName,
+            endpoint: this.config.endpoint,
+            publicUrl: this.config.publicUrl,
+            hasAccessKey: !!this.config.accessKeyId,
+            hasSecretKey: !!this.config.secretAccessKey,
         });
+
+        // Validate required environment variables
+        const requiredVars = {
+            'CLOUDFLARE_ACCOUNT_ID': this.config.accountId,
+            'CLOUDFLARE_R2_ACCESS_KEY_ID': this.config.accessKeyId,
+            'CLOUDFLARE_R2_SECRET_ACCESS_KEY': this.config.secretAccessKey,
+            'CLOUDFLARE_R2_BUCKET_NAME': this.config.bucketName,
+            'CLOUDFLARE_R2_PUBLIC_URL': this.config.publicUrl,
+        };
+
+        const missingVars = Object.entries(requiredVars)
+            .filter(([_, value]) => !value)
+            .map(([key, _]) => key);
+
+        if (missingVars.length > 0) {
+            throw new Error(`Missing required environment variables: ${missingVars.join(', ')}`);
+        }
+
+        // Initialize S3 client for R2
+        this.s3Client = new S3Client({
+            region: "auto",
+            endpoint: this.config.endpoint,
+            credentials: {
+                accessKeyId: this.config.accessKeyId,
+                secretAccessKey: this.config.secretAccessKey,
+            },
+            forcePathStyle: true, // Important for R2
+        });
+
+        console.log('S3Client initialized successfully');
     }
 
     /**
@@ -36,44 +76,48 @@ class CloudflareR2Service {
         metadata: Omit<R2FileMetadata, 'uploadedAt'>
     ): Promise<R2UploadResponse> {
         try {
+            console.log('Starting file upload:', metadata);
+
             const filename = this.generateFilename(metadata);
-            const formData = new FormData();
+
+            let body: Buffer;
+            let contentType: string;
 
             if (file instanceof File) {
-                formData.append('file', file, filename);
+                body = Buffer.from(await file.arrayBuffer());
+                contentType = file.type || 'application/octet-stream';
             } else {
-                formData.append('file', new Blob([file]), filename);
+                body = file;
+                contentType = metadata.mimeType || 'application/octet-stream';
             }
 
-            // Add metadata
-            formData.append('metadata', JSON.stringify({
-                ...metadata,
-                uploadedAt: new Date().toISOString(),
-            }));
+            console.log('Upload details:', {
+                filename,
+                contentType,
+                bodySize: body.length,
+                bucket: this.config.bucketName
+            });
 
-            const response = await fetch(
-                `https://api.cloudflare.com/client/v4/accounts/${this.config.accountId}/r2/buckets/${this.config.bucketName}/objects/${filename}`,
-                {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `Bearer ${this.config.accessKeyId}`,
-                        'X-Auth-Email': process.env.CLOUDFLARE_EMAIL!,
-                        'X-Auth-Key': this.config.secretAccessKey,
-                    },
-                    body: formData,
-                }
-            );
+            const command = new PutObjectCommand({
+                Bucket: this.config.bucketName,
+                Key: filename,
+                Body: body,
+                ContentType: contentType,
+                Metadata: {
+                    originalFilename: metadata.filename,
+                    language: metadata.language,
+                    reportId: metadata.reportId,
+                    uploadedAt: new Date().toISOString(),
+                },
+            });
 
-            const result = await response.json();
-
-            if (!response.ok) {
-                throw new Error(`R2 upload failed: ${JSON.stringify(result)}`);
-            }
+            const result = await this.s3Client.send(command);
+            console.log('Upload successful:', result);
 
             return {
                 success: true,
                 result: {
-                    id: result.result?.id || filename,
+                    id: filename,
                     filename: filename,
                     uploaded: new Date().toISOString(),
                     requireSignedURLs: false,
@@ -90,6 +134,30 @@ class CloudflareR2Service {
                 }]
             };
         }
+    }
+
+    /**
+     * Upload buffer with specific key
+     */
+    async uploadBuffer(
+        buffer: Buffer,
+        key: string,
+        contentType: string = 'application/octet-stream'
+    ): Promise<string> {
+        console.log('Uploading buffer:', { key, contentType, size: buffer.length });
+
+        const command = new PutObjectCommand({
+            Bucket: this.config.bucketName,
+            Key: key,
+            Body: buffer,
+            ContentType: contentType,
+            CacheControl: "public, max-age=31536000", // 1 year cache for assets
+        });
+
+        const result = await this.s3Client.send(command);
+        console.log('Buffer upload result:', result);
+
+        return this.getPublicUrl(key);
     }
 
     /**
@@ -115,9 +183,12 @@ class CloudflareR2Service {
      * Generate a signed URL for private files
      */
     async getSignedUrl(filename: string, expiresIn: number = 3600): Promise<string> {
-        // This would typically use AWS SDK or similar
-        // For now, returning public URL
-        return this.getPublicUrl(filename);
+        const command = new GetObjectCommand({
+            Bucket: this.config.bucketName,
+            Key: filename,
+        });
+
+        return await getSignedUrl(this.s3Client as any, command, { expiresIn }); //todo: remove type assertion
     }
 
     /**
@@ -125,19 +196,16 @@ class CloudflareR2Service {
      */
     async deleteFile(filename: string): Promise<boolean> {
         try {
-            const response = await fetch(
-                `https://api.cloudflare.com/client/v4/accounts/${this.config.accountId}/r2/buckets/${this.config.bucketName}/objects/${filename}`,
-                {
-                    method: 'DELETE',
-                    headers: {
-                        'Authorization': `Bearer ${this.config.accessKeyId}`,
-                        'X-Auth-Email': process.env.CLOUDFLARE_EMAIL!,
-                        'X-Auth-Key': this.config.secretAccessKey,
-                    },
-                }
-            );
+            console.log('Deleting file:', filename);
 
-            return response.ok;
+            const command = new DeleteObjectCommand({
+                Bucket: this.config.bucketName,
+                Key: filename,
+            });
+
+            await this.s3Client.send(command);
+            console.log('File deleted successfully:', filename);
+            return true;
         } catch (error) {
             console.error('R2 delete error:', error);
             return false;
@@ -145,11 +213,17 @@ class CloudflareR2Service {
     }
 
     /**
+     * Delete multiple files
+     */
+    async deleteFiles(filenames: string[]): Promise<boolean[]> {
+        return Promise.all(filenames.map(filename => this.deleteFile(filename)));
+    }
+
+    /**
      * Track download event
      */
     async trackDownload(event: DownloadEvent): Promise<void> {
         try {
-            // Store download tracking data (could be in database, analytics service, etc.)
             await fetch('/api/analytics/download', {
                 method: 'POST',
                 headers: {

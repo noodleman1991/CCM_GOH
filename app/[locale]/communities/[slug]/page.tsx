@@ -1,0 +1,77 @@
+// todo: userId may be undefined? (no-!)
+import { fetchSanityRCPageBySlug, fetchRegionalCommunityReports } from '@/sanity/lib/fetch';
+import RegionalReportsGrid from '@/components/blocks/grid/regional-reports-grid';
+import { auth } from '@clerk/nextjs/server';
+import Blocks from '@/components/blocks/index'
+import { notFound } from "next/navigation";
+
+
+export default async function RegionalCommunityPage({
+                                                        params: { locale, slug }
+                                                    }: {
+    params: { locale: string; slug: string }
+}) {
+    // Your existing fetches
+    const pageData = await fetchSanityRCPageBySlug({ slug, locale });
+
+    // Add this new fetch for reports
+    const reportsData = await fetchRegionalCommunityReports({ slug, limit: 6 });
+
+    // Get user ID for download tracking
+    const { userId } = await auth();
+
+    if (!pageData) {
+        notFound();
+    }
+
+    return (
+        <main>
+            {/* Your existing titleHero */}
+            {pageData.titleHero && (
+                <Blocks
+                    blocks={[pageData.titleHero]}
+                    locale={locale}
+                    userId={userId!}
+                />
+            )}
+
+            {/* Your existing first two blocks */}
+            {pageData.blocks?.slice(0, 2) && (
+                <Blocks
+                    blocks={pageData.blocks.slice(0, 2)}
+                    locale={locale}
+                    userId={userId!}
+                />
+            )}
+
+            {/* NEW: Reports Grid as 3rd component */}
+            <RegionalReportsGrid
+                reports={reportsData || []}
+                regionalCommunitySlug={slug}
+                locale={locale}
+                userId={userId!}
+                showHeader={true}
+                showViewAllButton={true}
+                maxReports={6}
+            />
+
+            {/* Your existing remaining blocks */}
+            {pageData.blocks?.slice(2) && (
+                <Blocks
+                    blocks={pageData.blocks.slice(2)}
+                    locale={locale}
+                    userId={userId!}
+                />
+            )}
+
+            {/* Your existing listHero */}
+            {pageData.listHero && (
+                <Blocks
+                    blocks={[pageData.listHero]}
+                    locale={locale}
+                    userId={userId!}
+                />
+            )}
+        </main>
+    );
+}

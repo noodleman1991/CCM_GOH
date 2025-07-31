@@ -4,7 +4,7 @@ import { FileDown } from "lucide-react";
 export default defineType({
     name: "reports-grid",
     type: "object",
-    title: "Reports Grid",
+    title: "reports Grid",
     icon: FileDown,
     fields: [
         defineField({
@@ -46,8 +46,8 @@ export default defineType({
             options: {
                 list: [
                     { title: "Manual Selection", value: "manual" },
-                    { title: "Latest Reports", value: "latest" },
-                    { title: "Featured Reports", value: "featured" },
+                    { title: "Latest reports", value: "latest" },
+                    { title: "Featured reports", value: "featured" },
                     { title: "By Type", value: "type" },
                     { title: "By Tag", value: "tag" },
                 ],
@@ -56,7 +56,7 @@ export default defineType({
         }),
         defineField({
             name: "reports",
-            title: "Reports",
+            title: "reports",
             type: "array",
             of: [
                 {
@@ -93,7 +93,7 @@ export default defineType({
         }),
         defineField({
             name: "limit",
-            title: "Number of Reports",
+            title: "Number of reports",
             type: "number",
             validation: (Rule) => Rule.min(1).max(6),
             initialValue: 6,
@@ -150,14 +150,14 @@ export default defineType({
         }) {
             const typeLabels = {
                 manual: "Manual Selection",
-                latest: "Latest Reports",
-                featured: "Featured Reports",
+                latest: "Latest reports",
+                featured: "Featured reports",
                 type: `By Type: ${reportType || "All"}`,
                 tag: "By Tag",
             };
 
             return {
-                title: title || "Reports Grid",
+                title: title || "reports Grid",
                 subtitle: `${typeLabels[displayType]} ${
                     displayType === "manual" ? `(${reportsCount || 0} reports)` : ""
                 }`,

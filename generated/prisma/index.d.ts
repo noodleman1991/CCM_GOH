@@ -48,6 +48,16 @@ export type Content = $Result.DefaultSelection<Prisma.$ContentPayload>
  * 
  */
 export type RecentWork = $Result.DefaultSelection<Prisma.$RecentWorkPayload>
+/**
+ * Model DownloadEvent
+ * 
+ */
+export type DownloadEvent = $Result.DefaultSelection<Prisma.$DownloadEventPayload>
+/**
+ * Model ReportMetadata
+ * 
+ */
+export type ReportMetadata = $Result.DefaultSelection<Prisma.$ReportMetadataPayload>
 
 /**
  * Enums
@@ -167,7 +177,7 @@ export const SpecialCommunityName: typeof $Enums.SpecialCommunityName
  */
 export class PrismaClient<
   ClientOptions extends Prisma.PrismaClientOptions = Prisma.PrismaClientOptions,
-  U = 'log' extends keyof ClientOptions ? ClientOptions['log'] extends Array<Prisma.LogLevel | Prisma.LogDefinition> ? Prisma.GetEvents<ClientOptions['log']> : never : never,
+  const U = 'log' extends keyof ClientOptions ? ClientOptions['log'] extends Array<Prisma.LogLevel | Prisma.LogDefinition> ? Prisma.GetEvents<ClientOptions['log']> : never : never,
   ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
 > {
   [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['other'] }
@@ -345,6 +355,26 @@ export class PrismaClient<
     * ```
     */
   get recentWork(): Prisma.RecentWorkDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.downloadEvent`: Exposes CRUD operations for the **DownloadEvent** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more DownloadEvents
+    * const downloadEvents = await prisma.downloadEvent.findMany()
+    * ```
+    */
+  get downloadEvent(): Prisma.DownloadEventDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.reportMetadata`: Exposes CRUD operations for the **ReportMetadata** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ReportMetadata
+    * const reportMetadata = await prisma.reportMetadata.findMany()
+    * ```
+    */
+  get reportMetadata(): Prisma.ReportMetadataDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -367,7 +397,7 @@ export namespace Prisma {
   export import PrismaClientValidationError = runtime.PrismaClientValidationError
 
   /**
-   * Re-export of sql-template-tag.ts
+   * Re-export of sql-template-tag
    */
   export import sql = runtime.sqltag
   export import empty = runtime.empty
@@ -403,8 +433,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.6.0
-   * Query Engine version: f676762280b54cd07c770017ed3711ddde35f37a
+   * Prisma Client JS version: 6.13.0
+   * Query Engine version: 361e86d0ea4987e9f53a565309b3eed797a6bcbd
    */
   export type PrismaVersion = {
     client: string
@@ -791,7 +821,9 @@ export namespace Prisma {
     Community: 'Community',
     UserCommunity: 'UserCommunity',
     Content: 'Content',
-    RecentWork: 'RecentWork'
+    RecentWork: 'RecentWork',
+    DownloadEvent: 'DownloadEvent',
+    ReportMetadata: 'ReportMetadata'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -810,7 +842,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "account" | "session" | "user" | "community" | "userCommunity" | "content" | "recentWork"
+      modelProps: "account" | "session" | "user" | "community" | "userCommunity" | "content" | "recentWork" | "downloadEvent" | "reportMetadata"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1332,6 +1364,154 @@ export namespace Prisma {
           }
         }
       }
+      DownloadEvent: {
+        payload: Prisma.$DownloadEventPayload<ExtArgs>
+        fields: Prisma.DownloadEventFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.DownloadEventFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DownloadEventPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.DownloadEventFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DownloadEventPayload>
+          }
+          findFirst: {
+            args: Prisma.DownloadEventFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DownloadEventPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.DownloadEventFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DownloadEventPayload>
+          }
+          findMany: {
+            args: Prisma.DownloadEventFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DownloadEventPayload>[]
+          }
+          create: {
+            args: Prisma.DownloadEventCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DownloadEventPayload>
+          }
+          createMany: {
+            args: Prisma.DownloadEventCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.DownloadEventCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DownloadEventPayload>[]
+          }
+          delete: {
+            args: Prisma.DownloadEventDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DownloadEventPayload>
+          }
+          update: {
+            args: Prisma.DownloadEventUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DownloadEventPayload>
+          }
+          deleteMany: {
+            args: Prisma.DownloadEventDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.DownloadEventUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.DownloadEventUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DownloadEventPayload>[]
+          }
+          upsert: {
+            args: Prisma.DownloadEventUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DownloadEventPayload>
+          }
+          aggregate: {
+            args: Prisma.DownloadEventAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateDownloadEvent>
+          }
+          groupBy: {
+            args: Prisma.DownloadEventGroupByArgs<ExtArgs>
+            result: $Utils.Optional<DownloadEventGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.DownloadEventCountArgs<ExtArgs>
+            result: $Utils.Optional<DownloadEventCountAggregateOutputType> | number
+          }
+        }
+      }
+      ReportMetadata: {
+        payload: Prisma.$ReportMetadataPayload<ExtArgs>
+        fields: Prisma.ReportMetadataFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ReportMetadataFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportMetadataPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ReportMetadataFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportMetadataPayload>
+          }
+          findFirst: {
+            args: Prisma.ReportMetadataFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportMetadataPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ReportMetadataFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportMetadataPayload>
+          }
+          findMany: {
+            args: Prisma.ReportMetadataFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportMetadataPayload>[]
+          }
+          create: {
+            args: Prisma.ReportMetadataCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportMetadataPayload>
+          }
+          createMany: {
+            args: Prisma.ReportMetadataCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ReportMetadataCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportMetadataPayload>[]
+          }
+          delete: {
+            args: Prisma.ReportMetadataDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportMetadataPayload>
+          }
+          update: {
+            args: Prisma.ReportMetadataUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportMetadataPayload>
+          }
+          deleteMany: {
+            args: Prisma.ReportMetadataDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ReportMetadataUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ReportMetadataUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportMetadataPayload>[]
+          }
+          upsert: {
+            args: Prisma.ReportMetadataUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportMetadataPayload>
+          }
+          aggregate: {
+            args: Prisma.ReportMetadataAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateReportMetadata>
+          }
+          groupBy: {
+            args: Prisma.ReportMetadataGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ReportMetadataGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ReportMetadataCountArgs<ExtArgs>
+            result: $Utils.Optional<ReportMetadataCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1375,16 +1555,24 @@ export namespace Prisma {
     /**
      * @example
      * ```
-     * // Defaults to stdout
+     * // Shorthand for `emit: 'stdout'`
      * log: ['query', 'info', 'warn', 'error']
      * 
-     * // Emit as events
+     * // Emit as events only
      * log: [
-     *   { emit: 'stdout', level: 'query' },
-     *   { emit: 'stdout', level: 'info' },
-     *   { emit: 'stdout', level: 'warn' }
-     *   { emit: 'stdout', level: 'error' }
+     *   { emit: 'event', level: 'query' },
+     *   { emit: 'event', level: 'info' },
+     *   { emit: 'event', level: 'warn' }
+     *   { emit: 'event', level: 'error' }
      * ]
+     * 
+     * / Emit as events and log to stdout
+     * og: [
+     *  { emit: 'stdout', level: 'query' },
+     *  { emit: 'stdout', level: 'info' },
+     *  { emit: 'stdout', level: 'warn' }
+     *  { emit: 'stdout', level: 'error' }
+     * 
      * ```
      * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/logging#the-log-option).
      */
@@ -1423,6 +1611,8 @@ export namespace Prisma {
     userCommunity?: UserCommunityOmit
     content?: ContentOmit
     recentWork?: RecentWorkOmit
+    downloadEvent?: DownloadEventOmit
+    reportMetadata?: ReportMetadataOmit
   }
 
   /* Types for Logging */
@@ -1432,10 +1622,15 @@ export namespace Prisma {
     emit: 'stdout' | 'event'
   }
 
-  export type GetLogType<T extends LogLevel | LogDefinition> = T extends LogDefinition ? T['emit'] extends 'event' ? T['level'] : never : never
-  export type GetEvents<T extends any> = T extends Array<LogLevel | LogDefinition> ?
-    GetLogType<T[0]> | GetLogType<T[1]> | GetLogType<T[2]> | GetLogType<T[3]>
-    : never
+  export type CheckIsLogLevel<T> = T extends LogLevel ? T : never;
+
+  export type GetLogType<T> = CheckIsLogLevel<
+    T extends LogDefinition ? T['level'] : T
+  >;
+
+  export type GetEvents<T extends any[]> = T extends Array<LogLevel | LogDefinition>
+    ? GetLogType<T[number]>
+    : never;
 
   export type QueryEvent = {
     timestamp: Date
@@ -9652,6 +9847,2108 @@ export namespace Prisma {
 
 
   /**
+   * Model DownloadEvent
+   */
+
+  export type AggregateDownloadEvent = {
+    _count: DownloadEventCountAggregateOutputType | null
+    _min: DownloadEventMinAggregateOutputType | null
+    _max: DownloadEventMaxAggregateOutputType | null
+  }
+
+  export type DownloadEventMinAggregateOutputType = {
+    id: string | null
+    reportId: string | null
+    fileLanguage: string | null
+    userId: string | null
+    sessionId: string | null
+    userAgent: string | null
+    referer: string | null
+    ipAddress: string | null
+    timestamp: Date | null
+    createdAt: Date | null
+  }
+
+  export type DownloadEventMaxAggregateOutputType = {
+    id: string | null
+    reportId: string | null
+    fileLanguage: string | null
+    userId: string | null
+    sessionId: string | null
+    userAgent: string | null
+    referer: string | null
+    ipAddress: string | null
+    timestamp: Date | null
+    createdAt: Date | null
+  }
+
+  export type DownloadEventCountAggregateOutputType = {
+    id: number
+    reportId: number
+    fileLanguage: number
+    userId: number
+    sessionId: number
+    userAgent: number
+    referer: number
+    ipAddress: number
+    timestamp: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type DownloadEventMinAggregateInputType = {
+    id?: true
+    reportId?: true
+    fileLanguage?: true
+    userId?: true
+    sessionId?: true
+    userAgent?: true
+    referer?: true
+    ipAddress?: true
+    timestamp?: true
+    createdAt?: true
+  }
+
+  export type DownloadEventMaxAggregateInputType = {
+    id?: true
+    reportId?: true
+    fileLanguage?: true
+    userId?: true
+    sessionId?: true
+    userAgent?: true
+    referer?: true
+    ipAddress?: true
+    timestamp?: true
+    createdAt?: true
+  }
+
+  export type DownloadEventCountAggregateInputType = {
+    id?: true
+    reportId?: true
+    fileLanguage?: true
+    userId?: true
+    sessionId?: true
+    userAgent?: true
+    referer?: true
+    ipAddress?: true
+    timestamp?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type DownloadEventAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DownloadEvent to aggregate.
+     */
+    where?: DownloadEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DownloadEvents to fetch.
+     */
+    orderBy?: DownloadEventOrderByWithRelationInput | DownloadEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: DownloadEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DownloadEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DownloadEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned DownloadEvents
+    **/
+    _count?: true | DownloadEventCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: DownloadEventMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: DownloadEventMaxAggregateInputType
+  }
+
+  export type GetDownloadEventAggregateType<T extends DownloadEventAggregateArgs> = {
+        [P in keyof T & keyof AggregateDownloadEvent]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateDownloadEvent[P]>
+      : GetScalarType<T[P], AggregateDownloadEvent[P]>
+  }
+
+
+
+
+  export type DownloadEventGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DownloadEventWhereInput
+    orderBy?: DownloadEventOrderByWithAggregationInput | DownloadEventOrderByWithAggregationInput[]
+    by: DownloadEventScalarFieldEnum[] | DownloadEventScalarFieldEnum
+    having?: DownloadEventScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: DownloadEventCountAggregateInputType | true
+    _min?: DownloadEventMinAggregateInputType
+    _max?: DownloadEventMaxAggregateInputType
+  }
+
+  export type DownloadEventGroupByOutputType = {
+    id: string
+    reportId: string
+    fileLanguage: string
+    userId: string | null
+    sessionId: string
+    userAgent: string | null
+    referer: string | null
+    ipAddress: string | null
+    timestamp: Date
+    createdAt: Date
+    _count: DownloadEventCountAggregateOutputType | null
+    _min: DownloadEventMinAggregateOutputType | null
+    _max: DownloadEventMaxAggregateOutputType | null
+  }
+
+  type GetDownloadEventGroupByPayload<T extends DownloadEventGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<DownloadEventGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof DownloadEventGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], DownloadEventGroupByOutputType[P]>
+            : GetScalarType<T[P], DownloadEventGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type DownloadEventSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    reportId?: boolean
+    fileLanguage?: boolean
+    userId?: boolean
+    sessionId?: boolean
+    userAgent?: boolean
+    referer?: boolean
+    ipAddress?: boolean
+    timestamp?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["downloadEvent"]>
+
+  export type DownloadEventSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    reportId?: boolean
+    fileLanguage?: boolean
+    userId?: boolean
+    sessionId?: boolean
+    userAgent?: boolean
+    referer?: boolean
+    ipAddress?: boolean
+    timestamp?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["downloadEvent"]>
+
+  export type DownloadEventSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    reportId?: boolean
+    fileLanguage?: boolean
+    userId?: boolean
+    sessionId?: boolean
+    userAgent?: boolean
+    referer?: boolean
+    ipAddress?: boolean
+    timestamp?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["downloadEvent"]>
+
+  export type DownloadEventSelectScalar = {
+    id?: boolean
+    reportId?: boolean
+    fileLanguage?: boolean
+    userId?: boolean
+    sessionId?: boolean
+    userAgent?: boolean
+    referer?: boolean
+    ipAddress?: boolean
+    timestamp?: boolean
+    createdAt?: boolean
+  }
+
+  export type DownloadEventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "reportId" | "fileLanguage" | "userId" | "sessionId" | "userAgent" | "referer" | "ipAddress" | "timestamp" | "createdAt", ExtArgs["result"]["downloadEvent"]>
+
+  export type $DownloadEventPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "DownloadEvent"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      reportId: string
+      fileLanguage: string
+      userId: string | null
+      sessionId: string
+      userAgent: string | null
+      referer: string | null
+      ipAddress: string | null
+      timestamp: Date
+      createdAt: Date
+    }, ExtArgs["result"]["downloadEvent"]>
+    composites: {}
+  }
+
+  type DownloadEventGetPayload<S extends boolean | null | undefined | DownloadEventDefaultArgs> = $Result.GetResult<Prisma.$DownloadEventPayload, S>
+
+  type DownloadEventCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<DownloadEventFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: DownloadEventCountAggregateInputType | true
+    }
+
+  export interface DownloadEventDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['DownloadEvent'], meta: { name: 'DownloadEvent' } }
+    /**
+     * Find zero or one DownloadEvent that matches the filter.
+     * @param {DownloadEventFindUniqueArgs} args - Arguments to find a DownloadEvent
+     * @example
+     * // Get one DownloadEvent
+     * const downloadEvent = await prisma.downloadEvent.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends DownloadEventFindUniqueArgs>(args: SelectSubset<T, DownloadEventFindUniqueArgs<ExtArgs>>): Prisma__DownloadEventClient<$Result.GetResult<Prisma.$DownloadEventPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one DownloadEvent that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {DownloadEventFindUniqueOrThrowArgs} args - Arguments to find a DownloadEvent
+     * @example
+     * // Get one DownloadEvent
+     * const downloadEvent = await prisma.downloadEvent.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends DownloadEventFindUniqueOrThrowArgs>(args: SelectSubset<T, DownloadEventFindUniqueOrThrowArgs<ExtArgs>>): Prisma__DownloadEventClient<$Result.GetResult<Prisma.$DownloadEventPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DownloadEvent that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DownloadEventFindFirstArgs} args - Arguments to find a DownloadEvent
+     * @example
+     * // Get one DownloadEvent
+     * const downloadEvent = await prisma.downloadEvent.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends DownloadEventFindFirstArgs>(args?: SelectSubset<T, DownloadEventFindFirstArgs<ExtArgs>>): Prisma__DownloadEventClient<$Result.GetResult<Prisma.$DownloadEventPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DownloadEvent that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DownloadEventFindFirstOrThrowArgs} args - Arguments to find a DownloadEvent
+     * @example
+     * // Get one DownloadEvent
+     * const downloadEvent = await prisma.downloadEvent.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends DownloadEventFindFirstOrThrowArgs>(args?: SelectSubset<T, DownloadEventFindFirstOrThrowArgs<ExtArgs>>): Prisma__DownloadEventClient<$Result.GetResult<Prisma.$DownloadEventPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more DownloadEvents that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DownloadEventFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all DownloadEvents
+     * const downloadEvents = await prisma.downloadEvent.findMany()
+     * 
+     * // Get first 10 DownloadEvents
+     * const downloadEvents = await prisma.downloadEvent.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const downloadEventWithIdOnly = await prisma.downloadEvent.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends DownloadEventFindManyArgs>(args?: SelectSubset<T, DownloadEventFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DownloadEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a DownloadEvent.
+     * @param {DownloadEventCreateArgs} args - Arguments to create a DownloadEvent.
+     * @example
+     * // Create one DownloadEvent
+     * const DownloadEvent = await prisma.downloadEvent.create({
+     *   data: {
+     *     // ... data to create a DownloadEvent
+     *   }
+     * })
+     * 
+     */
+    create<T extends DownloadEventCreateArgs>(args: SelectSubset<T, DownloadEventCreateArgs<ExtArgs>>): Prisma__DownloadEventClient<$Result.GetResult<Prisma.$DownloadEventPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many DownloadEvents.
+     * @param {DownloadEventCreateManyArgs} args - Arguments to create many DownloadEvents.
+     * @example
+     * // Create many DownloadEvents
+     * const downloadEvent = await prisma.downloadEvent.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends DownloadEventCreateManyArgs>(args?: SelectSubset<T, DownloadEventCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many DownloadEvents and returns the data saved in the database.
+     * @param {DownloadEventCreateManyAndReturnArgs} args - Arguments to create many DownloadEvents.
+     * @example
+     * // Create many DownloadEvents
+     * const downloadEvent = await prisma.downloadEvent.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many DownloadEvents and only return the `id`
+     * const downloadEventWithIdOnly = await prisma.downloadEvent.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends DownloadEventCreateManyAndReturnArgs>(args?: SelectSubset<T, DownloadEventCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DownloadEventPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a DownloadEvent.
+     * @param {DownloadEventDeleteArgs} args - Arguments to delete one DownloadEvent.
+     * @example
+     * // Delete one DownloadEvent
+     * const DownloadEvent = await prisma.downloadEvent.delete({
+     *   where: {
+     *     // ... filter to delete one DownloadEvent
+     *   }
+     * })
+     * 
+     */
+    delete<T extends DownloadEventDeleteArgs>(args: SelectSubset<T, DownloadEventDeleteArgs<ExtArgs>>): Prisma__DownloadEventClient<$Result.GetResult<Prisma.$DownloadEventPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one DownloadEvent.
+     * @param {DownloadEventUpdateArgs} args - Arguments to update one DownloadEvent.
+     * @example
+     * // Update one DownloadEvent
+     * const downloadEvent = await prisma.downloadEvent.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends DownloadEventUpdateArgs>(args: SelectSubset<T, DownloadEventUpdateArgs<ExtArgs>>): Prisma__DownloadEventClient<$Result.GetResult<Prisma.$DownloadEventPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more DownloadEvents.
+     * @param {DownloadEventDeleteManyArgs} args - Arguments to filter DownloadEvents to delete.
+     * @example
+     * // Delete a few DownloadEvents
+     * const { count } = await prisma.downloadEvent.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends DownloadEventDeleteManyArgs>(args?: SelectSubset<T, DownloadEventDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DownloadEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DownloadEventUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many DownloadEvents
+     * const downloadEvent = await prisma.downloadEvent.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends DownloadEventUpdateManyArgs>(args: SelectSubset<T, DownloadEventUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DownloadEvents and returns the data updated in the database.
+     * @param {DownloadEventUpdateManyAndReturnArgs} args - Arguments to update many DownloadEvents.
+     * @example
+     * // Update many DownloadEvents
+     * const downloadEvent = await prisma.downloadEvent.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more DownloadEvents and only return the `id`
+     * const downloadEventWithIdOnly = await prisma.downloadEvent.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends DownloadEventUpdateManyAndReturnArgs>(args: SelectSubset<T, DownloadEventUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DownloadEventPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one DownloadEvent.
+     * @param {DownloadEventUpsertArgs} args - Arguments to update or create a DownloadEvent.
+     * @example
+     * // Update or create a DownloadEvent
+     * const downloadEvent = await prisma.downloadEvent.upsert({
+     *   create: {
+     *     // ... data to create a DownloadEvent
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the DownloadEvent we want to update
+     *   }
+     * })
+     */
+    upsert<T extends DownloadEventUpsertArgs>(args: SelectSubset<T, DownloadEventUpsertArgs<ExtArgs>>): Prisma__DownloadEventClient<$Result.GetResult<Prisma.$DownloadEventPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of DownloadEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DownloadEventCountArgs} args - Arguments to filter DownloadEvents to count.
+     * @example
+     * // Count the number of DownloadEvents
+     * const count = await prisma.downloadEvent.count({
+     *   where: {
+     *     // ... the filter for the DownloadEvents we want to count
+     *   }
+     * })
+    **/
+    count<T extends DownloadEventCountArgs>(
+      args?: Subset<T, DownloadEventCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], DownloadEventCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a DownloadEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DownloadEventAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends DownloadEventAggregateArgs>(args: Subset<T, DownloadEventAggregateArgs>): Prisma.PrismaPromise<GetDownloadEventAggregateType<T>>
+
+    /**
+     * Group by DownloadEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DownloadEventGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends DownloadEventGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: DownloadEventGroupByArgs['orderBy'] }
+        : { orderBy?: DownloadEventGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, DownloadEventGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetDownloadEventGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the DownloadEvent model
+   */
+  readonly fields: DownloadEventFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for DownloadEvent.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__DownloadEventClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the DownloadEvent model
+   */
+  interface DownloadEventFieldRefs {
+    readonly id: FieldRef<"DownloadEvent", 'String'>
+    readonly reportId: FieldRef<"DownloadEvent", 'String'>
+    readonly fileLanguage: FieldRef<"DownloadEvent", 'String'>
+    readonly userId: FieldRef<"DownloadEvent", 'String'>
+    readonly sessionId: FieldRef<"DownloadEvent", 'String'>
+    readonly userAgent: FieldRef<"DownloadEvent", 'String'>
+    readonly referer: FieldRef<"DownloadEvent", 'String'>
+    readonly ipAddress: FieldRef<"DownloadEvent", 'String'>
+    readonly timestamp: FieldRef<"DownloadEvent", 'DateTime'>
+    readonly createdAt: FieldRef<"DownloadEvent", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * DownloadEvent findUnique
+   */
+  export type DownloadEventFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DownloadEvent
+     */
+    select?: DownloadEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DownloadEvent
+     */
+    omit?: DownloadEventOmit<ExtArgs> | null
+    /**
+     * Filter, which DownloadEvent to fetch.
+     */
+    where: DownloadEventWhereUniqueInput
+  }
+
+  /**
+   * DownloadEvent findUniqueOrThrow
+   */
+  export type DownloadEventFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DownloadEvent
+     */
+    select?: DownloadEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DownloadEvent
+     */
+    omit?: DownloadEventOmit<ExtArgs> | null
+    /**
+     * Filter, which DownloadEvent to fetch.
+     */
+    where: DownloadEventWhereUniqueInput
+  }
+
+  /**
+   * DownloadEvent findFirst
+   */
+  export type DownloadEventFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DownloadEvent
+     */
+    select?: DownloadEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DownloadEvent
+     */
+    omit?: DownloadEventOmit<ExtArgs> | null
+    /**
+     * Filter, which DownloadEvent to fetch.
+     */
+    where?: DownloadEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DownloadEvents to fetch.
+     */
+    orderBy?: DownloadEventOrderByWithRelationInput | DownloadEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DownloadEvents.
+     */
+    cursor?: DownloadEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DownloadEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DownloadEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DownloadEvents.
+     */
+    distinct?: DownloadEventScalarFieldEnum | DownloadEventScalarFieldEnum[]
+  }
+
+  /**
+   * DownloadEvent findFirstOrThrow
+   */
+  export type DownloadEventFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DownloadEvent
+     */
+    select?: DownloadEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DownloadEvent
+     */
+    omit?: DownloadEventOmit<ExtArgs> | null
+    /**
+     * Filter, which DownloadEvent to fetch.
+     */
+    where?: DownloadEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DownloadEvents to fetch.
+     */
+    orderBy?: DownloadEventOrderByWithRelationInput | DownloadEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DownloadEvents.
+     */
+    cursor?: DownloadEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DownloadEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DownloadEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DownloadEvents.
+     */
+    distinct?: DownloadEventScalarFieldEnum | DownloadEventScalarFieldEnum[]
+  }
+
+  /**
+   * DownloadEvent findMany
+   */
+  export type DownloadEventFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DownloadEvent
+     */
+    select?: DownloadEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DownloadEvent
+     */
+    omit?: DownloadEventOmit<ExtArgs> | null
+    /**
+     * Filter, which DownloadEvents to fetch.
+     */
+    where?: DownloadEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DownloadEvents to fetch.
+     */
+    orderBy?: DownloadEventOrderByWithRelationInput | DownloadEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing DownloadEvents.
+     */
+    cursor?: DownloadEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DownloadEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DownloadEvents.
+     */
+    skip?: number
+    distinct?: DownloadEventScalarFieldEnum | DownloadEventScalarFieldEnum[]
+  }
+
+  /**
+   * DownloadEvent create
+   */
+  export type DownloadEventCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DownloadEvent
+     */
+    select?: DownloadEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DownloadEvent
+     */
+    omit?: DownloadEventOmit<ExtArgs> | null
+    /**
+     * The data needed to create a DownloadEvent.
+     */
+    data: XOR<DownloadEventCreateInput, DownloadEventUncheckedCreateInput>
+  }
+
+  /**
+   * DownloadEvent createMany
+   */
+  export type DownloadEventCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many DownloadEvents.
+     */
+    data: DownloadEventCreateManyInput | DownloadEventCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * DownloadEvent createManyAndReturn
+   */
+  export type DownloadEventCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DownloadEvent
+     */
+    select?: DownloadEventSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DownloadEvent
+     */
+    omit?: DownloadEventOmit<ExtArgs> | null
+    /**
+     * The data used to create many DownloadEvents.
+     */
+    data: DownloadEventCreateManyInput | DownloadEventCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * DownloadEvent update
+   */
+  export type DownloadEventUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DownloadEvent
+     */
+    select?: DownloadEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DownloadEvent
+     */
+    omit?: DownloadEventOmit<ExtArgs> | null
+    /**
+     * The data needed to update a DownloadEvent.
+     */
+    data: XOR<DownloadEventUpdateInput, DownloadEventUncheckedUpdateInput>
+    /**
+     * Choose, which DownloadEvent to update.
+     */
+    where: DownloadEventWhereUniqueInput
+  }
+
+  /**
+   * DownloadEvent updateMany
+   */
+  export type DownloadEventUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update DownloadEvents.
+     */
+    data: XOR<DownloadEventUpdateManyMutationInput, DownloadEventUncheckedUpdateManyInput>
+    /**
+     * Filter which DownloadEvents to update
+     */
+    where?: DownloadEventWhereInput
+    /**
+     * Limit how many DownloadEvents to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * DownloadEvent updateManyAndReturn
+   */
+  export type DownloadEventUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DownloadEvent
+     */
+    select?: DownloadEventSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DownloadEvent
+     */
+    omit?: DownloadEventOmit<ExtArgs> | null
+    /**
+     * The data used to update DownloadEvents.
+     */
+    data: XOR<DownloadEventUpdateManyMutationInput, DownloadEventUncheckedUpdateManyInput>
+    /**
+     * Filter which DownloadEvents to update
+     */
+    where?: DownloadEventWhereInput
+    /**
+     * Limit how many DownloadEvents to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * DownloadEvent upsert
+   */
+  export type DownloadEventUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DownloadEvent
+     */
+    select?: DownloadEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DownloadEvent
+     */
+    omit?: DownloadEventOmit<ExtArgs> | null
+    /**
+     * The filter to search for the DownloadEvent to update in case it exists.
+     */
+    where: DownloadEventWhereUniqueInput
+    /**
+     * In case the DownloadEvent found by the `where` argument doesn't exist, create a new DownloadEvent with this data.
+     */
+    create: XOR<DownloadEventCreateInput, DownloadEventUncheckedCreateInput>
+    /**
+     * In case the DownloadEvent was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<DownloadEventUpdateInput, DownloadEventUncheckedUpdateInput>
+  }
+
+  /**
+   * DownloadEvent delete
+   */
+  export type DownloadEventDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DownloadEvent
+     */
+    select?: DownloadEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DownloadEvent
+     */
+    omit?: DownloadEventOmit<ExtArgs> | null
+    /**
+     * Filter which DownloadEvent to delete.
+     */
+    where: DownloadEventWhereUniqueInput
+  }
+
+  /**
+   * DownloadEvent deleteMany
+   */
+  export type DownloadEventDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DownloadEvents to delete
+     */
+    where?: DownloadEventWhereInput
+    /**
+     * Limit how many DownloadEvents to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * DownloadEvent without action
+   */
+  export type DownloadEventDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DownloadEvent
+     */
+    select?: DownloadEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DownloadEvent
+     */
+    omit?: DownloadEventOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ReportMetadata
+   */
+
+  export type AggregateReportMetadata = {
+    _count: ReportMetadataCountAggregateOutputType | null
+    _avg: ReportMetadataAvgAggregateOutputType | null
+    _sum: ReportMetadataSumAggregateOutputType | null
+    _min: ReportMetadataMinAggregateOutputType | null
+    _max: ReportMetadataMaxAggregateOutputType | null
+  }
+
+  export type ReportMetadataAvgAggregateOutputType = {
+    downloadCount: number | null
+  }
+
+  export type ReportMetadataSumAggregateOutputType = {
+    downloadCount: number | null
+  }
+
+  export type ReportMetadataMinAggregateOutputType = {
+    id: string | null
+    sanityId: string | null
+    downloadCount: number | null
+    lastDownloadedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ReportMetadataMaxAggregateOutputType = {
+    id: string | null
+    sanityId: string | null
+    downloadCount: number | null
+    lastDownloadedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ReportMetadataCountAggregateOutputType = {
+    id: number
+    sanityId: number
+    downloadCount: number
+    lastDownloadedAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ReportMetadataAvgAggregateInputType = {
+    downloadCount?: true
+  }
+
+  export type ReportMetadataSumAggregateInputType = {
+    downloadCount?: true
+  }
+
+  export type ReportMetadataMinAggregateInputType = {
+    id?: true
+    sanityId?: true
+    downloadCount?: true
+    lastDownloadedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ReportMetadataMaxAggregateInputType = {
+    id?: true
+    sanityId?: true
+    downloadCount?: true
+    lastDownloadedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ReportMetadataCountAggregateInputType = {
+    id?: true
+    sanityId?: true
+    downloadCount?: true
+    lastDownloadedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ReportMetadataAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ReportMetadata to aggregate.
+     */
+    where?: ReportMetadataWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReportMetadata to fetch.
+     */
+    orderBy?: ReportMetadataOrderByWithRelationInput | ReportMetadataOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ReportMetadataWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReportMetadata from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReportMetadata.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ReportMetadata
+    **/
+    _count?: true | ReportMetadataCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ReportMetadataAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ReportMetadataSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ReportMetadataMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ReportMetadataMaxAggregateInputType
+  }
+
+  export type GetReportMetadataAggregateType<T extends ReportMetadataAggregateArgs> = {
+        [P in keyof T & keyof AggregateReportMetadata]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateReportMetadata[P]>
+      : GetScalarType<T[P], AggregateReportMetadata[P]>
+  }
+
+
+
+
+  export type ReportMetadataGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReportMetadataWhereInput
+    orderBy?: ReportMetadataOrderByWithAggregationInput | ReportMetadataOrderByWithAggregationInput[]
+    by: ReportMetadataScalarFieldEnum[] | ReportMetadataScalarFieldEnum
+    having?: ReportMetadataScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ReportMetadataCountAggregateInputType | true
+    _avg?: ReportMetadataAvgAggregateInputType
+    _sum?: ReportMetadataSumAggregateInputType
+    _min?: ReportMetadataMinAggregateInputType
+    _max?: ReportMetadataMaxAggregateInputType
+  }
+
+  export type ReportMetadataGroupByOutputType = {
+    id: string
+    sanityId: string
+    downloadCount: number
+    lastDownloadedAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: ReportMetadataCountAggregateOutputType | null
+    _avg: ReportMetadataAvgAggregateOutputType | null
+    _sum: ReportMetadataSumAggregateOutputType | null
+    _min: ReportMetadataMinAggregateOutputType | null
+    _max: ReportMetadataMaxAggregateOutputType | null
+  }
+
+  type GetReportMetadataGroupByPayload<T extends ReportMetadataGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ReportMetadataGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ReportMetadataGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ReportMetadataGroupByOutputType[P]>
+            : GetScalarType<T[P], ReportMetadataGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ReportMetadataSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    sanityId?: boolean
+    downloadCount?: boolean
+    lastDownloadedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["reportMetadata"]>
+
+  export type ReportMetadataSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    sanityId?: boolean
+    downloadCount?: boolean
+    lastDownloadedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["reportMetadata"]>
+
+  export type ReportMetadataSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    sanityId?: boolean
+    downloadCount?: boolean
+    lastDownloadedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["reportMetadata"]>
+
+  export type ReportMetadataSelectScalar = {
+    id?: boolean
+    sanityId?: boolean
+    downloadCount?: boolean
+    lastDownloadedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ReportMetadataOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sanityId" | "downloadCount" | "lastDownloadedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["reportMetadata"]>
+
+  export type $ReportMetadataPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ReportMetadata"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      sanityId: string
+      downloadCount: number
+      lastDownloadedAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["reportMetadata"]>
+    composites: {}
+  }
+
+  type ReportMetadataGetPayload<S extends boolean | null | undefined | ReportMetadataDefaultArgs> = $Result.GetResult<Prisma.$ReportMetadataPayload, S>
+
+  type ReportMetadataCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ReportMetadataFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ReportMetadataCountAggregateInputType | true
+    }
+
+  export interface ReportMetadataDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ReportMetadata'], meta: { name: 'ReportMetadata' } }
+    /**
+     * Find zero or one ReportMetadata that matches the filter.
+     * @param {ReportMetadataFindUniqueArgs} args - Arguments to find a ReportMetadata
+     * @example
+     * // Get one ReportMetadata
+     * const reportMetadata = await prisma.reportMetadata.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ReportMetadataFindUniqueArgs>(args: SelectSubset<T, ReportMetadataFindUniqueArgs<ExtArgs>>): Prisma__ReportMetadataClient<$Result.GetResult<Prisma.$ReportMetadataPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ReportMetadata that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ReportMetadataFindUniqueOrThrowArgs} args - Arguments to find a ReportMetadata
+     * @example
+     * // Get one ReportMetadata
+     * const reportMetadata = await prisma.reportMetadata.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ReportMetadataFindUniqueOrThrowArgs>(args: SelectSubset<T, ReportMetadataFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ReportMetadataClient<$Result.GetResult<Prisma.$ReportMetadataPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ReportMetadata that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportMetadataFindFirstArgs} args - Arguments to find a ReportMetadata
+     * @example
+     * // Get one ReportMetadata
+     * const reportMetadata = await prisma.reportMetadata.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ReportMetadataFindFirstArgs>(args?: SelectSubset<T, ReportMetadataFindFirstArgs<ExtArgs>>): Prisma__ReportMetadataClient<$Result.GetResult<Prisma.$ReportMetadataPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ReportMetadata that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportMetadataFindFirstOrThrowArgs} args - Arguments to find a ReportMetadata
+     * @example
+     * // Get one ReportMetadata
+     * const reportMetadata = await prisma.reportMetadata.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ReportMetadataFindFirstOrThrowArgs>(args?: SelectSubset<T, ReportMetadataFindFirstOrThrowArgs<ExtArgs>>): Prisma__ReportMetadataClient<$Result.GetResult<Prisma.$ReportMetadataPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ReportMetadata that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportMetadataFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ReportMetadata
+     * const reportMetadata = await prisma.reportMetadata.findMany()
+     * 
+     * // Get first 10 ReportMetadata
+     * const reportMetadata = await prisma.reportMetadata.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const reportMetadataWithIdOnly = await prisma.reportMetadata.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ReportMetadataFindManyArgs>(args?: SelectSubset<T, ReportMetadataFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportMetadataPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ReportMetadata.
+     * @param {ReportMetadataCreateArgs} args - Arguments to create a ReportMetadata.
+     * @example
+     * // Create one ReportMetadata
+     * const ReportMetadata = await prisma.reportMetadata.create({
+     *   data: {
+     *     // ... data to create a ReportMetadata
+     *   }
+     * })
+     * 
+     */
+    create<T extends ReportMetadataCreateArgs>(args: SelectSubset<T, ReportMetadataCreateArgs<ExtArgs>>): Prisma__ReportMetadataClient<$Result.GetResult<Prisma.$ReportMetadataPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ReportMetadata.
+     * @param {ReportMetadataCreateManyArgs} args - Arguments to create many ReportMetadata.
+     * @example
+     * // Create many ReportMetadata
+     * const reportMetadata = await prisma.reportMetadata.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ReportMetadataCreateManyArgs>(args?: SelectSubset<T, ReportMetadataCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ReportMetadata and returns the data saved in the database.
+     * @param {ReportMetadataCreateManyAndReturnArgs} args - Arguments to create many ReportMetadata.
+     * @example
+     * // Create many ReportMetadata
+     * const reportMetadata = await prisma.reportMetadata.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ReportMetadata and only return the `id`
+     * const reportMetadataWithIdOnly = await prisma.reportMetadata.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ReportMetadataCreateManyAndReturnArgs>(args?: SelectSubset<T, ReportMetadataCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportMetadataPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ReportMetadata.
+     * @param {ReportMetadataDeleteArgs} args - Arguments to delete one ReportMetadata.
+     * @example
+     * // Delete one ReportMetadata
+     * const ReportMetadata = await prisma.reportMetadata.delete({
+     *   where: {
+     *     // ... filter to delete one ReportMetadata
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ReportMetadataDeleteArgs>(args: SelectSubset<T, ReportMetadataDeleteArgs<ExtArgs>>): Prisma__ReportMetadataClient<$Result.GetResult<Prisma.$ReportMetadataPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ReportMetadata.
+     * @param {ReportMetadataUpdateArgs} args - Arguments to update one ReportMetadata.
+     * @example
+     * // Update one ReportMetadata
+     * const reportMetadata = await prisma.reportMetadata.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ReportMetadataUpdateArgs>(args: SelectSubset<T, ReportMetadataUpdateArgs<ExtArgs>>): Prisma__ReportMetadataClient<$Result.GetResult<Prisma.$ReportMetadataPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ReportMetadata.
+     * @param {ReportMetadataDeleteManyArgs} args - Arguments to filter ReportMetadata to delete.
+     * @example
+     * // Delete a few ReportMetadata
+     * const { count } = await prisma.reportMetadata.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ReportMetadataDeleteManyArgs>(args?: SelectSubset<T, ReportMetadataDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ReportMetadata.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportMetadataUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ReportMetadata
+     * const reportMetadata = await prisma.reportMetadata.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ReportMetadataUpdateManyArgs>(args: SelectSubset<T, ReportMetadataUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ReportMetadata and returns the data updated in the database.
+     * @param {ReportMetadataUpdateManyAndReturnArgs} args - Arguments to update many ReportMetadata.
+     * @example
+     * // Update many ReportMetadata
+     * const reportMetadata = await prisma.reportMetadata.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ReportMetadata and only return the `id`
+     * const reportMetadataWithIdOnly = await prisma.reportMetadata.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ReportMetadataUpdateManyAndReturnArgs>(args: SelectSubset<T, ReportMetadataUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportMetadataPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ReportMetadata.
+     * @param {ReportMetadataUpsertArgs} args - Arguments to update or create a ReportMetadata.
+     * @example
+     * // Update or create a ReportMetadata
+     * const reportMetadata = await prisma.reportMetadata.upsert({
+     *   create: {
+     *     // ... data to create a ReportMetadata
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ReportMetadata we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ReportMetadataUpsertArgs>(args: SelectSubset<T, ReportMetadataUpsertArgs<ExtArgs>>): Prisma__ReportMetadataClient<$Result.GetResult<Prisma.$ReportMetadataPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ReportMetadata.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportMetadataCountArgs} args - Arguments to filter ReportMetadata to count.
+     * @example
+     * // Count the number of ReportMetadata
+     * const count = await prisma.reportMetadata.count({
+     *   where: {
+     *     // ... the filter for the ReportMetadata we want to count
+     *   }
+     * })
+    **/
+    count<T extends ReportMetadataCountArgs>(
+      args?: Subset<T, ReportMetadataCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ReportMetadataCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ReportMetadata.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportMetadataAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ReportMetadataAggregateArgs>(args: Subset<T, ReportMetadataAggregateArgs>): Prisma.PrismaPromise<GetReportMetadataAggregateType<T>>
+
+    /**
+     * Group by ReportMetadata.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportMetadataGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ReportMetadataGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ReportMetadataGroupByArgs['orderBy'] }
+        : { orderBy?: ReportMetadataGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ReportMetadataGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetReportMetadataGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ReportMetadata model
+   */
+  readonly fields: ReportMetadataFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ReportMetadata.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ReportMetadataClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ReportMetadata model
+   */
+  interface ReportMetadataFieldRefs {
+    readonly id: FieldRef<"ReportMetadata", 'String'>
+    readonly sanityId: FieldRef<"ReportMetadata", 'String'>
+    readonly downloadCount: FieldRef<"ReportMetadata", 'Int'>
+    readonly lastDownloadedAt: FieldRef<"ReportMetadata", 'DateTime'>
+    readonly createdAt: FieldRef<"ReportMetadata", 'DateTime'>
+    readonly updatedAt: FieldRef<"ReportMetadata", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ReportMetadata findUnique
+   */
+  export type ReportMetadataFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportMetadata
+     */
+    select?: ReportMetadataSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportMetadata
+     */
+    omit?: ReportMetadataOmit<ExtArgs> | null
+    /**
+     * Filter, which ReportMetadata to fetch.
+     */
+    where: ReportMetadataWhereUniqueInput
+  }
+
+  /**
+   * ReportMetadata findUniqueOrThrow
+   */
+  export type ReportMetadataFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportMetadata
+     */
+    select?: ReportMetadataSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportMetadata
+     */
+    omit?: ReportMetadataOmit<ExtArgs> | null
+    /**
+     * Filter, which ReportMetadata to fetch.
+     */
+    where: ReportMetadataWhereUniqueInput
+  }
+
+  /**
+   * ReportMetadata findFirst
+   */
+  export type ReportMetadataFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportMetadata
+     */
+    select?: ReportMetadataSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportMetadata
+     */
+    omit?: ReportMetadataOmit<ExtArgs> | null
+    /**
+     * Filter, which ReportMetadata to fetch.
+     */
+    where?: ReportMetadataWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReportMetadata to fetch.
+     */
+    orderBy?: ReportMetadataOrderByWithRelationInput | ReportMetadataOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ReportMetadata.
+     */
+    cursor?: ReportMetadataWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReportMetadata from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReportMetadata.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ReportMetadata.
+     */
+    distinct?: ReportMetadataScalarFieldEnum | ReportMetadataScalarFieldEnum[]
+  }
+
+  /**
+   * ReportMetadata findFirstOrThrow
+   */
+  export type ReportMetadataFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportMetadata
+     */
+    select?: ReportMetadataSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportMetadata
+     */
+    omit?: ReportMetadataOmit<ExtArgs> | null
+    /**
+     * Filter, which ReportMetadata to fetch.
+     */
+    where?: ReportMetadataWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReportMetadata to fetch.
+     */
+    orderBy?: ReportMetadataOrderByWithRelationInput | ReportMetadataOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ReportMetadata.
+     */
+    cursor?: ReportMetadataWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReportMetadata from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReportMetadata.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ReportMetadata.
+     */
+    distinct?: ReportMetadataScalarFieldEnum | ReportMetadataScalarFieldEnum[]
+  }
+
+  /**
+   * ReportMetadata findMany
+   */
+  export type ReportMetadataFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportMetadata
+     */
+    select?: ReportMetadataSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportMetadata
+     */
+    omit?: ReportMetadataOmit<ExtArgs> | null
+    /**
+     * Filter, which ReportMetadata to fetch.
+     */
+    where?: ReportMetadataWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReportMetadata to fetch.
+     */
+    orderBy?: ReportMetadataOrderByWithRelationInput | ReportMetadataOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ReportMetadata.
+     */
+    cursor?: ReportMetadataWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReportMetadata from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReportMetadata.
+     */
+    skip?: number
+    distinct?: ReportMetadataScalarFieldEnum | ReportMetadataScalarFieldEnum[]
+  }
+
+  /**
+   * ReportMetadata create
+   */
+  export type ReportMetadataCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportMetadata
+     */
+    select?: ReportMetadataSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportMetadata
+     */
+    omit?: ReportMetadataOmit<ExtArgs> | null
+    /**
+     * The data needed to create a ReportMetadata.
+     */
+    data: XOR<ReportMetadataCreateInput, ReportMetadataUncheckedCreateInput>
+  }
+
+  /**
+   * ReportMetadata createMany
+   */
+  export type ReportMetadataCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ReportMetadata.
+     */
+    data: ReportMetadataCreateManyInput | ReportMetadataCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ReportMetadata createManyAndReturn
+   */
+  export type ReportMetadataCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportMetadata
+     */
+    select?: ReportMetadataSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportMetadata
+     */
+    omit?: ReportMetadataOmit<ExtArgs> | null
+    /**
+     * The data used to create many ReportMetadata.
+     */
+    data: ReportMetadataCreateManyInput | ReportMetadataCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ReportMetadata update
+   */
+  export type ReportMetadataUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportMetadata
+     */
+    select?: ReportMetadataSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportMetadata
+     */
+    omit?: ReportMetadataOmit<ExtArgs> | null
+    /**
+     * The data needed to update a ReportMetadata.
+     */
+    data: XOR<ReportMetadataUpdateInput, ReportMetadataUncheckedUpdateInput>
+    /**
+     * Choose, which ReportMetadata to update.
+     */
+    where: ReportMetadataWhereUniqueInput
+  }
+
+  /**
+   * ReportMetadata updateMany
+   */
+  export type ReportMetadataUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ReportMetadata.
+     */
+    data: XOR<ReportMetadataUpdateManyMutationInput, ReportMetadataUncheckedUpdateManyInput>
+    /**
+     * Filter which ReportMetadata to update
+     */
+    where?: ReportMetadataWhereInput
+    /**
+     * Limit how many ReportMetadata to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ReportMetadata updateManyAndReturn
+   */
+  export type ReportMetadataUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportMetadata
+     */
+    select?: ReportMetadataSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportMetadata
+     */
+    omit?: ReportMetadataOmit<ExtArgs> | null
+    /**
+     * The data used to update ReportMetadata.
+     */
+    data: XOR<ReportMetadataUpdateManyMutationInput, ReportMetadataUncheckedUpdateManyInput>
+    /**
+     * Filter which ReportMetadata to update
+     */
+    where?: ReportMetadataWhereInput
+    /**
+     * Limit how many ReportMetadata to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ReportMetadata upsert
+   */
+  export type ReportMetadataUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportMetadata
+     */
+    select?: ReportMetadataSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportMetadata
+     */
+    omit?: ReportMetadataOmit<ExtArgs> | null
+    /**
+     * The filter to search for the ReportMetadata to update in case it exists.
+     */
+    where: ReportMetadataWhereUniqueInput
+    /**
+     * In case the ReportMetadata found by the `where` argument doesn't exist, create a new ReportMetadata with this data.
+     */
+    create: XOR<ReportMetadataCreateInput, ReportMetadataUncheckedCreateInput>
+    /**
+     * In case the ReportMetadata was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ReportMetadataUpdateInput, ReportMetadataUncheckedUpdateInput>
+  }
+
+  /**
+   * ReportMetadata delete
+   */
+  export type ReportMetadataDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportMetadata
+     */
+    select?: ReportMetadataSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportMetadata
+     */
+    omit?: ReportMetadataOmit<ExtArgs> | null
+    /**
+     * Filter which ReportMetadata to delete.
+     */
+    where: ReportMetadataWhereUniqueInput
+  }
+
+  /**
+   * ReportMetadata deleteMany
+   */
+  export type ReportMetadataDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ReportMetadata to delete
+     */
+    where?: ReportMetadataWhereInput
+    /**
+     * Limit how many ReportMetadata to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ReportMetadata without action
+   */
+  export type ReportMetadataDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportMetadata
+     */
+    select?: ReportMetadataSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportMetadata
+     */
+    omit?: ReportMetadataOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -9772,6 +12069,34 @@ export namespace Prisma {
   };
 
   export type RecentWorkScalarFieldEnum = (typeof RecentWorkScalarFieldEnum)[keyof typeof RecentWorkScalarFieldEnum]
+
+
+  export const DownloadEventScalarFieldEnum: {
+    id: 'id',
+    reportId: 'reportId',
+    fileLanguage: 'fileLanguage',
+    userId: 'userId',
+    sessionId: 'sessionId',
+    userAgent: 'userAgent',
+    referer: 'referer',
+    ipAddress: 'ipAddress',
+    timestamp: 'timestamp',
+    createdAt: 'createdAt'
+  };
+
+  export type DownloadEventScalarFieldEnum = (typeof DownloadEventScalarFieldEnum)[keyof typeof DownloadEventScalarFieldEnum]
+
+
+  export const ReportMetadataScalarFieldEnum: {
+    id: 'id',
+    sanityId: 'sanityId',
+    downloadCount: 'downloadCount',
+    lastDownloadedAt: 'lastDownloadedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ReportMetadataScalarFieldEnum = (typeof ReportMetadataScalarFieldEnum)[keyof typeof ReportMetadataScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -10537,6 +12862,142 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"RecentWork"> | Date | string
   }
 
+  export type DownloadEventWhereInput = {
+    AND?: DownloadEventWhereInput | DownloadEventWhereInput[]
+    OR?: DownloadEventWhereInput[]
+    NOT?: DownloadEventWhereInput | DownloadEventWhereInput[]
+    id?: StringFilter<"DownloadEvent"> | string
+    reportId?: StringFilter<"DownloadEvent"> | string
+    fileLanguage?: StringFilter<"DownloadEvent"> | string
+    userId?: StringNullableFilter<"DownloadEvent"> | string | null
+    sessionId?: StringFilter<"DownloadEvent"> | string
+    userAgent?: StringNullableFilter<"DownloadEvent"> | string | null
+    referer?: StringNullableFilter<"DownloadEvent"> | string | null
+    ipAddress?: StringNullableFilter<"DownloadEvent"> | string | null
+    timestamp?: DateTimeFilter<"DownloadEvent"> | Date | string
+    createdAt?: DateTimeFilter<"DownloadEvent"> | Date | string
+  }
+
+  export type DownloadEventOrderByWithRelationInput = {
+    id?: SortOrder
+    reportId?: SortOrder
+    fileLanguage?: SortOrder
+    userId?: SortOrderInput | SortOrder
+    sessionId?: SortOrder
+    userAgent?: SortOrderInput | SortOrder
+    referer?: SortOrderInput | SortOrder
+    ipAddress?: SortOrderInput | SortOrder
+    timestamp?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type DownloadEventWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: DownloadEventWhereInput | DownloadEventWhereInput[]
+    OR?: DownloadEventWhereInput[]
+    NOT?: DownloadEventWhereInput | DownloadEventWhereInput[]
+    reportId?: StringFilter<"DownloadEvent"> | string
+    fileLanguage?: StringFilter<"DownloadEvent"> | string
+    userId?: StringNullableFilter<"DownloadEvent"> | string | null
+    sessionId?: StringFilter<"DownloadEvent"> | string
+    userAgent?: StringNullableFilter<"DownloadEvent"> | string | null
+    referer?: StringNullableFilter<"DownloadEvent"> | string | null
+    ipAddress?: StringNullableFilter<"DownloadEvent"> | string | null
+    timestamp?: DateTimeFilter<"DownloadEvent"> | Date | string
+    createdAt?: DateTimeFilter<"DownloadEvent"> | Date | string
+  }, "id">
+
+  export type DownloadEventOrderByWithAggregationInput = {
+    id?: SortOrder
+    reportId?: SortOrder
+    fileLanguage?: SortOrder
+    userId?: SortOrderInput | SortOrder
+    sessionId?: SortOrder
+    userAgent?: SortOrderInput | SortOrder
+    referer?: SortOrderInput | SortOrder
+    ipAddress?: SortOrderInput | SortOrder
+    timestamp?: SortOrder
+    createdAt?: SortOrder
+    _count?: DownloadEventCountOrderByAggregateInput
+    _max?: DownloadEventMaxOrderByAggregateInput
+    _min?: DownloadEventMinOrderByAggregateInput
+  }
+
+  export type DownloadEventScalarWhereWithAggregatesInput = {
+    AND?: DownloadEventScalarWhereWithAggregatesInput | DownloadEventScalarWhereWithAggregatesInput[]
+    OR?: DownloadEventScalarWhereWithAggregatesInput[]
+    NOT?: DownloadEventScalarWhereWithAggregatesInput | DownloadEventScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"DownloadEvent"> | string
+    reportId?: StringWithAggregatesFilter<"DownloadEvent"> | string
+    fileLanguage?: StringWithAggregatesFilter<"DownloadEvent"> | string
+    userId?: StringNullableWithAggregatesFilter<"DownloadEvent"> | string | null
+    sessionId?: StringWithAggregatesFilter<"DownloadEvent"> | string
+    userAgent?: StringNullableWithAggregatesFilter<"DownloadEvent"> | string | null
+    referer?: StringNullableWithAggregatesFilter<"DownloadEvent"> | string | null
+    ipAddress?: StringNullableWithAggregatesFilter<"DownloadEvent"> | string | null
+    timestamp?: DateTimeWithAggregatesFilter<"DownloadEvent"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"DownloadEvent"> | Date | string
+  }
+
+  export type ReportMetadataWhereInput = {
+    AND?: ReportMetadataWhereInput | ReportMetadataWhereInput[]
+    OR?: ReportMetadataWhereInput[]
+    NOT?: ReportMetadataWhereInput | ReportMetadataWhereInput[]
+    id?: StringFilter<"ReportMetadata"> | string
+    sanityId?: StringFilter<"ReportMetadata"> | string
+    downloadCount?: IntFilter<"ReportMetadata"> | number
+    lastDownloadedAt?: DateTimeNullableFilter<"ReportMetadata"> | Date | string | null
+    createdAt?: DateTimeFilter<"ReportMetadata"> | Date | string
+    updatedAt?: DateTimeFilter<"ReportMetadata"> | Date | string
+  }
+
+  export type ReportMetadataOrderByWithRelationInput = {
+    id?: SortOrder
+    sanityId?: SortOrder
+    downloadCount?: SortOrder
+    lastDownloadedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ReportMetadataWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    sanityId?: string
+    AND?: ReportMetadataWhereInput | ReportMetadataWhereInput[]
+    OR?: ReportMetadataWhereInput[]
+    NOT?: ReportMetadataWhereInput | ReportMetadataWhereInput[]
+    downloadCount?: IntFilter<"ReportMetadata"> | number
+    lastDownloadedAt?: DateTimeNullableFilter<"ReportMetadata"> | Date | string | null
+    createdAt?: DateTimeFilter<"ReportMetadata"> | Date | string
+    updatedAt?: DateTimeFilter<"ReportMetadata"> | Date | string
+  }, "id" | "sanityId">
+
+  export type ReportMetadataOrderByWithAggregationInput = {
+    id?: SortOrder
+    sanityId?: SortOrder
+    downloadCount?: SortOrder
+    lastDownloadedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ReportMetadataCountOrderByAggregateInput
+    _avg?: ReportMetadataAvgOrderByAggregateInput
+    _max?: ReportMetadataMaxOrderByAggregateInput
+    _min?: ReportMetadataMinOrderByAggregateInput
+    _sum?: ReportMetadataSumOrderByAggregateInput
+  }
+
+  export type ReportMetadataScalarWhereWithAggregatesInput = {
+    AND?: ReportMetadataScalarWhereWithAggregatesInput | ReportMetadataScalarWhereWithAggregatesInput[]
+    OR?: ReportMetadataScalarWhereWithAggregatesInput[]
+    NOT?: ReportMetadataScalarWhereWithAggregatesInput | ReportMetadataScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ReportMetadata"> | string
+    sanityId?: StringWithAggregatesFilter<"ReportMetadata"> | string
+    downloadCount?: IntWithAggregatesFilter<"ReportMetadata"> | number
+    lastDownloadedAt?: DateTimeNullableWithAggregatesFilter<"ReportMetadata"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"ReportMetadata"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ReportMetadata"> | Date | string
+  }
+
   export type AccountCreateInput = {
     id: string
     type: string
@@ -11174,6 +13635,160 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type DownloadEventCreateInput = {
+    id?: string
+    reportId: string
+    fileLanguage: string
+    userId?: string | null
+    sessionId: string
+    userAgent?: string | null
+    referer?: string | null
+    ipAddress?: string | null
+    timestamp?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type DownloadEventUncheckedCreateInput = {
+    id?: string
+    reportId: string
+    fileLanguage: string
+    userId?: string | null
+    sessionId: string
+    userAgent?: string | null
+    referer?: string | null
+    ipAddress?: string | null
+    timestamp?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type DownloadEventUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reportId?: StringFieldUpdateOperationsInput | string
+    fileLanguage?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionId?: StringFieldUpdateOperationsInput | string
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    referer?: NullableStringFieldUpdateOperationsInput | string | null
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DownloadEventUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reportId?: StringFieldUpdateOperationsInput | string
+    fileLanguage?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionId?: StringFieldUpdateOperationsInput | string
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    referer?: NullableStringFieldUpdateOperationsInput | string | null
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DownloadEventCreateManyInput = {
+    id?: string
+    reportId: string
+    fileLanguage: string
+    userId?: string | null
+    sessionId: string
+    userAgent?: string | null
+    referer?: string | null
+    ipAddress?: string | null
+    timestamp?: Date | string
+    createdAt?: Date | string
+  }
+
+  export type DownloadEventUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reportId?: StringFieldUpdateOperationsInput | string
+    fileLanguage?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionId?: StringFieldUpdateOperationsInput | string
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    referer?: NullableStringFieldUpdateOperationsInput | string | null
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DownloadEventUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reportId?: StringFieldUpdateOperationsInput | string
+    fileLanguage?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionId?: StringFieldUpdateOperationsInput | string
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    referer?: NullableStringFieldUpdateOperationsInput | string | null
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReportMetadataCreateInput = {
+    id?: string
+    sanityId: string
+    downloadCount?: number
+    lastDownloadedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ReportMetadataUncheckedCreateInput = {
+    id?: string
+    sanityId: string
+    downloadCount?: number
+    lastDownloadedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ReportMetadataUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sanityId?: StringFieldUpdateOperationsInput | string
+    downloadCount?: IntFieldUpdateOperationsInput | number
+    lastDownloadedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReportMetadataUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sanityId?: StringFieldUpdateOperationsInput | string
+    downloadCount?: IntFieldUpdateOperationsInput | number
+    lastDownloadedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReportMetadataCreateManyInput = {
+    id?: string
+    sanityId: string
+    downloadCount?: number
+    lastDownloadedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ReportMetadataUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sanityId?: StringFieldUpdateOperationsInput | string
+    downloadCount?: IntFieldUpdateOperationsInput | number
+    lastDownloadedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReportMetadataUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sanityId?: StringFieldUpdateOperationsInput | string
+    downloadCount?: IntFieldUpdateOperationsInput | number
+    lastDownloadedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -11774,6 +14389,107 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
+  export type DownloadEventCountOrderByAggregateInput = {
+    id?: SortOrder
+    reportId?: SortOrder
+    fileLanguage?: SortOrder
+    userId?: SortOrder
+    sessionId?: SortOrder
+    userAgent?: SortOrder
+    referer?: SortOrder
+    ipAddress?: SortOrder
+    timestamp?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type DownloadEventMaxOrderByAggregateInput = {
+    id?: SortOrder
+    reportId?: SortOrder
+    fileLanguage?: SortOrder
+    userId?: SortOrder
+    sessionId?: SortOrder
+    userAgent?: SortOrder
+    referer?: SortOrder
+    ipAddress?: SortOrder
+    timestamp?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type DownloadEventMinOrderByAggregateInput = {
+    id?: SortOrder
+    reportId?: SortOrder
+    fileLanguage?: SortOrder
+    userId?: SortOrder
+    sessionId?: SortOrder
+    userAgent?: SortOrder
+    referer?: SortOrder
+    ipAddress?: SortOrder
+    timestamp?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type ReportMetadataCountOrderByAggregateInput = {
+    id?: SortOrder
+    sanityId?: SortOrder
+    downloadCount?: SortOrder
+    lastDownloadedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ReportMetadataAvgOrderByAggregateInput = {
+    downloadCount?: SortOrder
+  }
+
+  export type ReportMetadataMaxOrderByAggregateInput = {
+    id?: SortOrder
+    sanityId?: SortOrder
+    downloadCount?: SortOrder
+    lastDownloadedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ReportMetadataMinOrderByAggregateInput = {
+    id?: SortOrder
+    sanityId?: SortOrder
+    downloadCount?: SortOrder
+    lastDownloadedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ReportMetadataSumOrderByAggregateInput = {
+    downloadCount?: SortOrder
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
   export type UserCreateNestedOneWithoutAccountsInput = {
     create?: XOR<UserCreateWithoutAccountsInput, UserUncheckedCreateWithoutAccountsInput>
     connectOrCreate?: UserCreateOrConnectWithoutAccountsInput
@@ -12232,6 +14948,14 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutRecentWorkInput, UserUpdateWithoutRecentWorkInput>, UserUncheckedUpdateWithoutRecentWorkInput>
   }
 
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -12489,6 +15213,33 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
   }
 
   export type UserCreateWithoutAccountsInput = {
