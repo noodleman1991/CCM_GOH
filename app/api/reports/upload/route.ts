@@ -1,55 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
-import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
-import { v4 as uuidv4 } from "uuid";
+import { r2Service, uploadReportFile, deleteReportByUrl } from "@/lib/cloudflare-r2";
 import { prisma } from "@/lib/prisma";
 
-// Initialize R2 client for reports bucket
-const r2Client = new S3Client({
-    region: "auto",
-    endpoint: process.env.CLOUDFLARE_R2_ENDPOINT!,
-    credentials: {
-        accessKeyId: process.env.CLOUDFLARE_R2_ACCESS_KEY_ID!,
-        secretAccessKey: process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY!,
-    },
-});
-
-const REPORTS_BUCKET = process.env.CLOUDFLARE_R2_REPORT_BUCKET!;
-const REPORTS_PUBLIC_URL = process.env.CLOUDFLARE_R2_REPORT_PUBLIC_URL!;
 const MAX_FILE_SIZE = parseInt(process.env.MAX_FILE_SIZE || '50000000'); // 50MB
 const ALLOWED_FILE_TYPES = (process.env.ALLOWED_FILE_TYPES || 'pdf,doc,docx,xls,xlsx,ppt,pptx').split(',');
 
-async function uploadToR2(
-    buffer: Buffer,
-    key: string,
-    contentType: string,
-    metadata?: Record<string, string>
-): Promise<string> {
-    await r2Client.send(
-        new PutObjectCommand({
-            Bucket: REPORTS_BUCKET,
-            Key: key,
-            Body: buffer,
-            ContentType: contentType,
-            CacheControl: "public, max-age=31536000", // 1 year cache
-            Metadata: metadata,
-        })
-    );
-
-    return `${REPORTS_PUBLIC_URL}/${key}`;
-}
-
-async function deleteFromR2(key: string) {
-    try {
-        await r2Client.send(
-            new DeleteObjectCommand({
-                Bucket: REPORTS_BUCKET,
-                Key: key,
-            })
-        );
-    } catch (error) {
-        console.error("Failed to delete from R2:", error);
-    }
+interface UploadResponse {
+    success: boolean;
+    fileUrl?: string;
+    fileKey?: string;
+    fileSize?: number;
+    originalFilename?: string;
+    mimeType?: string;
+    language?: string;
+    reportId?: string;
+    error?: string;
 }
 
 function isValidFileType(filename: string, mimeType: string): boolean {
@@ -57,26 +23,13 @@ function isValidFileType(filename: string, mimeType: string): boolean {
     return extension ? ALLOWED_FILE_TYPES.includes(extension) : false;
 }
 
-function sanitizeFilename(filename: string): string {
-    return filename
-        .replace(/[^a-zA-Z0-9.-]/g, '_')
-        .replace(/_{2,}/g, '_')
-        .toLowerCase();
-}
-
-function generateFileKey(reportId: string, language: string, filename: string): string {
-    const timestamp = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
-    const sanitized = sanitizeFilename(filename);
-    return `reports/${reportId}/${language}/${timestamp}_${uuidv4().slice(0, 8)}_${sanitized}`;
-}
-
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest): Promise<NextResponse<UploadResponse>> {
     try {
         const { userId } = await auth();
 
         if (!userId) {
             return NextResponse.json(
-                { error: "Unauthorized" },
+                { success: false, error: "Unauthorized" },
                 { status: 401 }
             );
         }
@@ -89,77 +42,65 @@ export async function POST(request: NextRequest) {
         // Validation
         if (!file) {
             return NextResponse.json(
-                { error: "No file provided" },
+                { success: false, error: "No file provided" },
                 { status: 400 }
             );
         }
 
         if (!reportId || !language) {
             return NextResponse.json(
-                { error: "Report ID and language are required" },
+                { success: false, error: "Report ID and language are required" },
                 { status: 400 }
             );
         }
 
         if (!['en', 'es', 'fr', 'ar'].includes(language)) {
             return NextResponse.json(
-                { error: "Invalid language. Must be: en, es, fr, ar" },
+                { success: false, error: "Invalid language. Must be: en, es, fr, ar" },
                 { status: 400 }
             );
         }
 
         if (!isValidFileType(file.name, file.type)) {
             return NextResponse.json(
-                { error: `Invalid file type. Allowed types: ${ALLOWED_FILE_TYPES.join(', ')}` },
+                { success: false, error: `Invalid file type. Allowed types: ${ALLOWED_FILE_TYPES.join(', ')}` },
                 { status: 400 }
             );
         }
 
         if (file.size > MAX_FILE_SIZE) {
             return NextResponse.json(
-                { error: `File too large. Maximum size is ${Math.round(MAX_FILE_SIZE / 1024 / 1024)}MB` },
+                { success: false, error: `File too large. Maximum size is ${Math.round(MAX_FILE_SIZE / 1024 / 1024)}MB` },
                 { status: 400 }
             );
         }
 
-        // Generate file key and convert to buffer
-        const fileKey = generateFileKey(reportId, language, file.name);
-        const arrayBuffer = await file.arrayBuffer();
-        const buffer = Buffer.from(arrayBuffer);
-
         // Upload to R2
-        const fileUrl = await uploadToR2(
-            buffer,
-            fileKey,
-            file.type,
-            {
-                reportId,
-                language,
-                originalFilename: file.name,
-                uploadedBy: userId,
-                uploadedAt: new Date().toISOString(),
-            }
-        );
+        const uploadResult = await uploadReportFile(file, reportId, language);
+
+        if (!uploadResult.success) {
+            throw new Error(uploadResult.error || 'Upload failed');
+        }
 
         // Calculate file size in MB
         const fileSizeMB = file.size / (1024 * 1024);
 
         // Update or create report metadata
-        // await prisma.reportMetadata.upsert({ //todo: uncomment after prisma type gen
-        //     where: { sanityId: reportId },
-        //     create: {
-        //         sanityId: reportId,
-        //         downloadCount: 0,
-        //     },
-        //     update: {
-        //         updatedAt: new Date(),
-        //     }
-        // });
+        await prisma.reportMetadata.upsert({
+            where: { sanityId: reportId },
+            create: {
+                sanityId: reportId,
+                downloadCount: 0,
+            },
+            update: {
+                updatedAt: new Date(),
+            }
+        });
 
         return NextResponse.json({
             success: true,
-            fileUrl,
-            fileKey,
+            fileUrl: uploadResult.url!,
+            fileKey: uploadResult.key!,
             fileSize: fileSizeMB,
             originalFilename: file.name,
             mimeType: file.type,
@@ -170,13 +111,13 @@ export async function POST(request: NextRequest) {
     } catch (error) {
         console.error("Report upload error:", error);
         return NextResponse.json(
-            { error: "Failed to upload report file" },
+            { success: false, error: "Failed to upload report file" },
             { status: 500 }
         );
     }
 }
 
-export async function DELETE(request: NextRequest) {
+export async function DELETE(request: NextRequest): Promise<NextResponse> {
     try {
         const { userId } = await auth();
 
@@ -188,17 +129,24 @@ export async function DELETE(request: NextRequest) {
         }
 
         const { searchParams } = new URL(request.url);
-        const fileKey = searchParams.get('fileKey');
+        const fileUrl = searchParams.get('fileUrl');
 
-        if (!fileKey) {
+        if (!fileUrl) {
             return NextResponse.json(
-                { error: "File key is required" },
+                { error: "File URL is required" },
                 { status: 400 }
             );
         }
 
         // Delete from R2
-        await deleteFromR2(fileKey);
+        const success = await deleteReportByUrl(fileUrl);
+
+        if (!success) {
+            return NextResponse.json(
+                { error: "Failed to delete file" },
+                { status: 500 }
+            );
+        }
 
         return NextResponse.json({ success: true });
 

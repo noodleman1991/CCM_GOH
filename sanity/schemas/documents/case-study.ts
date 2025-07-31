@@ -254,7 +254,7 @@ export default defineType({
                 },
             ],
         }),
-        // Location using Google Maps plugin
+        // Location using Google Maps plugins
         defineField({
             name: "studyLocation",
             title: "Primary Study Location",

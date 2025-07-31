@@ -1,8 +1,8 @@
 import { S3Client, PutObjectCommand, DeleteObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { R2UploadResponse, R2FileMetadata, DownloadEvent } from '@/types/report';
 
-interface R2Config {
+// Types
+export interface R2Config {
     accountId: string;
     accessKeyId: string;
     secretAccessKey: string;
@@ -11,39 +11,96 @@ interface R2Config {
     endpoint: string;
 }
 
+export interface R2UploadResponse {
+    success: boolean;
+    url?: string;
+    key?: string;
+    error?: string;
+}
+
+export interface R2FileMetadata {
+    filename: string;
+    size: number;
+    mimeType: string;
+    language?: string;
+    reportId?: string;
+    uploadedAt?: string;
+}
+
+export interface DownloadEvent {
+    reportId: string;
+    fileLanguage: string;
+    userId?: string;
+    sessionId: string;
+    timestamp: string;
+    userAgent?: string;
+    referer?: string;
+    ipAddress?: string;
+}
+
 class CloudflareR2Service {
-    private config: R2Config;
-    private s3Client: S3Client;
+    private avatarConfig: R2Config;
+    private reportConfig: R2Config;
+    private avatarS3Client: S3Client;
+    private reportS3Client: S3Client;
 
     constructor() {
-        // Use your existing environment variable names
-        this.config = {
-            accountId: process.env.CLOUDFLARE_ACCOUNT_ID!,
+        // Avatar bucket configuration
+        this.avatarConfig = {
+            accountId: process.env.CLOUDFLARE_R2_ACCOUNT_ID!,
             accessKeyId: process.env.CLOUDFLARE_R2_ACCESS_KEY_ID!,
             secretAccessKey: process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY!,
             bucketName: process.env.CLOUDFLARE_R2_BUCKET_NAME!,
             publicUrl: process.env.CLOUDFLARE_R2_PUBLIC_URL!,
-            // Use your existing endpoint or build it from account ID
-            endpoint: process.env.CLOUDFLARE_R2_ENDPOINT ||
-                `https://${process.env.CLOUDFLARE_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+            endpoint: process.env.CLOUDFLARE_R2_ENDPOINT!,
         };
 
-        console.log('R2 Config loaded:', {
-            accountId: this.config.accountId?.substring(0, 8) + '...',
-            bucketName: this.config.bucketName,
-            endpoint: this.config.endpoint,
-            publicUrl: this.config.publicUrl,
-            hasAccessKey: !!this.config.accessKeyId,
-            hasSecretKey: !!this.config.secretAccessKey,
-        });
+        // Report bucket configuration
+        this.reportConfig = {
+            accountId: process.env.CLOUDFLARE_R2_ACCOUNT_ID!,
+            accessKeyId: process.env.CLOUDFLARE_R2_ACCESS_KEY_ID!,
+            secretAccessKey: process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY!,
+            bucketName: process.env.CLOUDFLARE_R2_REPORT_BUCKET!,
+            publicUrl: process.env.CLOUDFLARE_R2_REPORT_PUBLIC_URL!,
+            endpoint: process.env.CLOUDFLARE_R2_ENDPOINT!,
+        };
 
         // Validate required environment variables
+        this.validateConfig();
+
+        // Initialize S3 clients for both buckets
+        this.avatarS3Client = new S3Client({
+            region: "auto",
+            endpoint: this.avatarConfig.endpoint,
+            credentials: {
+                accessKeyId: this.avatarConfig.accessKeyId,
+                secretAccessKey: this.avatarConfig.secretAccessKey,
+            },
+            forcePathStyle: true,
+        });
+
+        this.reportS3Client = new S3Client({
+            region: "auto",
+            endpoint: this.reportConfig.endpoint,
+            credentials: {
+                accessKeyId: this.reportConfig.accessKeyId,
+                secretAccessKey: this.reportConfig.secretAccessKey,
+            },
+            forcePathStyle: true,
+        });
+
+        console.log('R2 Service initialized for both avatar and report buckets');
+    }
+
+    private validateConfig() {
         const requiredVars = {
-            'CLOUDFLARE_ACCOUNT_ID': this.config.accountId,
-            'CLOUDFLARE_R2_ACCESS_KEY_ID': this.config.accessKeyId,
-            'CLOUDFLARE_R2_SECRET_ACCESS_KEY': this.config.secretAccessKey,
-            'CLOUDFLARE_R2_BUCKET_NAME': this.config.bucketName,
-            'CLOUDFLARE_R2_PUBLIC_URL': this.config.publicUrl,
+            'CLOUDFLARE_R2_ACCOUNT_ID': this.avatarConfig.accountId,
+            'CLOUDFLARE_R2_ACCESS_KEY_ID': this.avatarConfig.accessKeyId,
+            'CLOUDFLARE_R2_SECRET_ACCESS_KEY': this.avatarConfig.secretAccessKey,
+            'CLOUDFLARE_R2_BUCKET_NAME': this.avatarConfig.bucketName,
+            'CLOUDFLARE_R2_PUBLIC_URL': this.avatarConfig.publicUrl,
+            'CLOUDFLARE_R2_REPORT_BUCKET': this.reportConfig.bucketName,
+            'CLOUDFLARE_R2_REPORT_PUBLIC_URL': this.reportConfig.publicUrl,
         };
 
         const missingVars = Object.entries(requiredVars)
@@ -53,230 +110,179 @@ class CloudflareR2Service {
         if (missingVars.length > 0) {
             throw new Error(`Missing required environment variables: ${missingVars.join(', ')}`);
         }
-
-        // Initialize S3 client for R2
-        this.s3Client = new S3Client({
-            region: "auto",
-            endpoint: this.config.endpoint,
-            credentials: {
-                accessKeyId: this.config.accessKeyId,
-                secretAccessKey: this.config.secretAccessKey,
-            },
-            forcePathStyle: true, // Important for R2
-        });
-
-        console.log('S3Client initialized successfully');
     }
 
     /**
-     * Upload a file to Cloudflare R2
+     * Upload avatar image
      */
-    async uploadFile(
-        file: File | Buffer,
-        metadata: Omit<R2FileMetadata, 'uploadedAt'>
+    async uploadAvatar(
+        buffer: Buffer,
+        userId: string,
+        filename: string,
+        contentType: string
     ): Promise<R2UploadResponse> {
         try {
-            console.log('Starting file upload:', metadata);
-
-            const filename = this.generateFilename(metadata);
-
-            let body: Buffer;
-            let contentType: string;
-
-            if (file instanceof File) {
-                body = Buffer.from(await file.arrayBuffer());
-                contentType = file.type || 'application/octet-stream';
-            } else {
-                body = file;
-                contentType = metadata.mimeType || 'application/octet-stream';
-            }
-
-            console.log('Upload details:', {
-                filename,
-                contentType,
-                bodySize: body.length,
-                bucket: this.config.bucketName
-            });
+            const key = `avatars/${userId}/${Date.now()}-${filename}`;
 
             const command = new PutObjectCommand({
-                Bucket: this.config.bucketName,
-                Key: filename,
-                Body: body,
+                Bucket: this.avatarConfig.bucketName,
+                Key: key,
+                Body: buffer,
                 ContentType: contentType,
-                Metadata: {
-                    originalFilename: metadata.filename,
-                    language: metadata.language,
-                    reportId: metadata.reportId,
-                    uploadedAt: new Date().toISOString(),
-                },
+                CacheControl: "public, max-age=31536000",
             });
 
-            const result = await this.s3Client.send(command);
-            console.log('Upload successful:', result);
+            await this.avatarS3Client.send(command);
+            const url = `${this.avatarConfig.publicUrl}/${key}`;
 
             return {
                 success: true,
-                result: {
-                    id: filename,
-                    filename: filename,
-                    uploaded: new Date().toISOString(),
-                    requireSignedURLs: false,
-                    variants: [],
-                }
+                url,
+                key,
             };
         } catch (error) {
-            console.error('R2 upload error:', error);
+            console.error('Avatar upload error:', error);
             return {
                 success: false,
-                errors: [{
-                    code: 500,
-                    message: error instanceof Error ? error.message : 'Unknown upload error'
-                }]
+                error: error instanceof Error ? error.message : 'Upload failed',
             };
         }
     }
 
     /**
-     * Upload buffer with specific key
+     * Upload report file
      */
-    async uploadBuffer(
+    async uploadReport(
         buffer: Buffer,
-        key: string,
-        contentType: string = 'application/octet-stream'
-    ): Promise<string> {
-        console.log('Uploading buffer:', { key, contentType, size: buffer.length });
-
-        const command = new PutObjectCommand({
-            Bucket: this.config.bucketName,
-            Key: key,
-            Body: buffer,
-            ContentType: contentType,
-            CacheControl: "public, max-age=31536000", // 1 year cache for assets
-        });
-
-        const result = await this.s3Client.send(command);
-        console.log('Buffer upload result:', result);
-
-        return this.getPublicUrl(key);
-    }
-
-    /**
-     * Generate a structured filename for R2 storage
-     */
-    private generateFilename(metadata: Omit<R2FileMetadata, 'uploadedAt'>): string {
-        const timestamp = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
-        const sanitizedFilename = metadata.filename
-            .replace(/[^a-zA-Z0-9.-]/g, '_')
-            .toLowerCase();
-
-        return `reports/${metadata.reportId}/${metadata.language}/${timestamp}_${sanitizedFilename}`;
-    }
-
-    /**
-     * Get public URL for a file
-     */
-    getPublicUrl(filename: string): string {
-        return `${this.config.publicUrl}/${filename}`;
-    }
-
-    /**
-     * Generate a signed URL for private files
-     */
-    async getSignedUrl(filename: string, expiresIn: number = 3600): Promise<string> {
-        const command = new GetObjectCommand({
-            Bucket: this.config.bucketName,
-            Key: filename,
-        });
-
-        return await getSignedUrl(this.s3Client as any, command, { expiresIn }); //todo: remove type assertion
-    }
-
-    /**
-     * Delete a file from R2
-     */
-    async deleteFile(filename: string): Promise<boolean> {
+        reportId: string,
+        language: string,
+        filename: string,
+        contentType: string
+    ): Promise<R2UploadResponse> {
         try {
-            console.log('Deleting file:', filename);
+            const timestamp = new Date().toISOString().split('T')[0];
+            const sanitizedFilename = filename.replace(/[^a-zA-Z0-9.-]/g, '_').toLowerCase();
+            const key = `reports/${reportId}/${language}/${timestamp}_${sanitizedFilename}`;
 
-            const command = new DeleteObjectCommand({
-                Bucket: this.config.bucketName,
-                Key: filename,
+            const command = new PutObjectCommand({
+                Bucket: this.reportConfig.bucketName,
+                Key: key,
+                Body: buffer,
+                ContentType: contentType,
+                CacheControl: "public, max-age=31536000",
+                Metadata: {
+                    reportId,
+                    language,
+                    originalFilename: filename,
+                    uploadedAt: new Date().toISOString(),
+                },
             });
 
-            await this.s3Client.send(command);
-            console.log('File deleted successfully:', filename);
+            await this.reportS3Client.send(command);
+            const url = `${this.reportConfig.publicUrl}/${key}`;
+
+            return {
+                success: true,
+                url,
+                key,
+            };
+        } catch (error) {
+            console.error('Report upload error:', error);
+            return {
+                success: false,
+                error: error instanceof Error ? error.message : 'Upload failed',
+            };
+        }
+    }
+
+    /**
+     * Delete avatar
+     */
+    async deleteAvatar(key: string): Promise<boolean> {
+        try {
+            const command = new DeleteObjectCommand({
+                Bucket: this.avatarConfig.bucketName,
+                Key: key,
+            });
+
+            await this.avatarS3Client.send(command);
             return true;
         } catch (error) {
-            console.error('R2 delete error:', error);
+            console.error('Avatar delete error:', error);
             return false;
         }
     }
 
     /**
-     * Delete multiple files
+     * Delete report
      */
-    async deleteFiles(filenames: string[]): Promise<boolean[]> {
-        return Promise.all(filenames.map(filename => this.deleteFile(filename)));
+    async deleteReport(key: string): Promise<boolean> {
+        try {
+            const command = new DeleteObjectCommand({
+                Bucket: this.reportConfig.bucketName,
+                Key: key,
+            });
+
+            await this.reportS3Client.send(command);
+            return true;
+        } catch (error) {
+            console.error('Report delete error:', error);
+            return false;
+        }
     }
 
     /**
-     * Track download event
+     * Get signed URL for private access
      */
-    async trackDownload(event: DownloadEvent): Promise<void> {
-        try {
-            await fetch('/api/analytics/download', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(event),
-            });
-        } catch (error) {
-            console.error('Download tracking error:', error);
-            // Don't throw - tracking failures shouldn't break downloads
-        }
+    async getSignedUrl(key: string, expiresIn: number = 3600, isReport: boolean = false): Promise<string> {
+        const client = isReport ? this.reportS3Client : this.avatarS3Client;
+        const bucket = isReport ? this.reportConfig.bucketName : this.avatarConfig.bucketName;
+
+        const command = new GetObjectCommand({
+            Bucket: bucket,
+            Key: key,
+        });
+
+        return await getSignedUrl(client as any, command, { expiresIn });
+    }
+
+    /**
+     * Extract key from URL
+     */
+    extractKeyFromUrl(url: string, isReport: boolean = false): string | null {
+        const publicUrl = isReport ? this.reportConfig.publicUrl : this.avatarConfig.publicUrl;
+        if (!url.includes(publicUrl)) return null;
+        return url.replace(`${publicUrl}/`, '');
     }
 }
 
 // Singleton instance
 export const r2Service = new CloudflareR2Service();
 
-// Utility functions
+// Helper functions
+export const uploadAvatarFile = async (
+    file: File,
+    userId: string
+): Promise<R2UploadResponse> => {
+    const buffer = Buffer.from(await file.arrayBuffer());
+    return r2Service.uploadAvatar(buffer, userId, file.name, file.type);
+};
+
 export const uploadReportFile = async (
     file: File,
     reportId: string,
     language: string
 ): Promise<R2UploadResponse> => {
-    const metadata: Omit<R2FileMetadata, 'uploadedAt'> = {
-        filename: file.name,
-        size: file.size,
-        mimeType: file.type,
-        language,
-        reportId,
-    };
-
-    return r2Service.uploadFile(file, metadata);
+    const buffer = Buffer.from(await file.arrayBuffer());
+    return r2Service.uploadReport(buffer, reportId, language, file.name, file.type);
 };
 
-export const getReportFileUrl = (reportId: string, language: string, filename: string): string => {
-    const structuredFilename = `reports/${reportId}/${language}/${filename}`;
-    return r2Service.getPublicUrl(structuredFilename);
+export const deleteAvatarByUrl = async (url: string): Promise<boolean> => {
+    const key = r2Service.extractKeyFromUrl(url, false);
+    return key ? r2Service.deleteAvatar(key) : false;
 };
 
-export const trackReportDownload = async (
-    reportId: string,
-    fileLanguage: string,
-    userId?: string
-): Promise<void> => {
-    const event: DownloadEvent = {
-        reportId,
-        fileLanguage,
-        userId,
-        sessionId: crypto.randomUUID(),
-        timestamp: new Date().toISOString(),
-        userAgent: typeof window !== 'undefined' ? window.navigator.userAgent : undefined,
-        referer: typeof window !== 'undefined' ? window.document.referrer : undefined,
-    };
-
-    await r2Service.trackDownload(event);
+export const deleteReportByUrl = async (url: string): Promise<boolean> => {
+    const key = r2Service.extractKeyFromUrl(url, true);
+    return key ? r2Service.deleteReport(key) : false;
 };
