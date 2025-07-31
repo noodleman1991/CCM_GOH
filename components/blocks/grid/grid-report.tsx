@@ -6,13 +6,12 @@ import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
-import { Download, Calendar, Building, FileText, Eye } from 'lucide-react';
+import { Download, Calendar, Building, FileText, Eye, AlertCircle } from 'lucide-react';
 import { GridReport } from '@/types/report';
-import { trackReportDownload } from '@/lib/cloudflare-r2';
 import { formatFileSize, formatDate } from '@/lib/utils';
 
 interface GridReportProps {
-    data: GridReport;
+    data?: GridReport; // Make optional to handle undefined
     locale: string;
     userId?: string;
 }
@@ -32,7 +31,39 @@ const reportTypeLabels = {
     'case-study': 'Case Study',
     whitepaper: 'White Paper',
     guidelines: 'Guidelines',
+    agenda: 'Meeting Agenda',
+    minutes: 'Meeting Minutes',
     other: 'Other',
+};
+
+// ADD THIS FUNCTION for download tracking
+const trackReportDownload = async (
+    reportId: string,
+    fileLanguage: string,
+    userId?: string
+): Promise<void> => {
+    try {
+        const event = {
+            reportId,
+            fileLanguage,
+            userId,
+            sessionId: crypto.randomUUID(),
+            timestamp: new Date().toISOString(),
+            userAgent: typeof window !== 'undefined' ? window.navigator.userAgent : undefined,
+            referer: typeof window !== 'undefined' ? window.document.referrer : undefined,
+        };
+
+        await fetch('/api/analytics/download', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(event),
+        });
+    } catch (error) {
+        console.error('Download tracking error:', error);
+        // Don't throw - tracking failures shouldn't break downloads
+    }
 };
 
 export default function GridReportComponent({
@@ -40,11 +71,48 @@ export default function GridReportComponent({
                                                 locale = 'en',
                                                 userId
                                             }: GridReportProps) {
-    const { report, showTags, showDownloadButtons, showMetadata } = data;
 
-    const title = report.title[locale as keyof typeof report.title] || report.title.en;
+    // ADD ERROR HANDLING: Check if data exists and has required properties
+    if (!data) {
+        return (
+            <Card className="h-full flex flex-col">
+                <CardContent className="flex-1 flex items-center justify-center p-6">
+                    <div className="text-center text-muted-foreground">
+                        <AlertCircle className="h-8 w-8 mx-auto mb-2" />
+                        <p>Report data not available</p>
+                    </div>
+                </CardContent>
+            </Card>
+        );
+    }
+
+    // ADD SAFE DESTRUCTURING: Provide defaults for undefined properties
+    const {
+        report,
+        showTags = false,
+        showDownloadButtons = false,
+        showMetadata = false
+    } = data;
+
+    // ADD ADDITIONAL SAFETY CHECK: Ensure report exists
+    if (!report) {
+        return (
+            <Card className="h-full flex flex-col">
+                <CardContent className="flex-1 flex items-center justify-center p-6">
+                    <div className="text-center text-muted-foreground">
+                        <AlertCircle className="h-8 w-8 mx-auto mb-2" />
+                        <p>Report information not found</p>
+                    </div>
+                </CardContent>
+            </Card>
+        );
+    }
+
+    // ADD SAFE PROPERTY ACCESS: Handle potentially undefined nested properties
+    const title = report.title?.[locale as keyof typeof report.title] || report.title?.en || 'Untitled Report';
     const description = report.description?.[locale as keyof typeof report.description] || report.description?.en;
 
+    // ADD THIS FUNCTION for handling downloads
     const handleDownload = async (fileUrl: string, language: string, filename: string) => {
         try {
             // Track the download
@@ -76,7 +144,7 @@ export default function GridReportComponent({
                         fill
                         className="object-cover transition-transform duration-300 hover:scale-105"
                         placeholder="blur"
-                        blurDataURL={report.coverImage.asset.metadata.lqip}
+                        blurDataURL={report.coverImage.asset.metadata?.lqip}
                     />
                     {report.featured && (
                         <Badge className="absolute top-2 right-2" variant="secondary">
@@ -92,7 +160,7 @@ export default function GridReportComponent({
                     {showMetadata && (
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
                             <FileText className="h-4 w-4" />
-                            <span>{reportTypeLabels[report.reportType]}</span>
+                            <span>{reportTypeLabels[report.reportType] || 'Report'}</span>
                             {report.year && (
                                 <>
                                     <Calendar className="h-4 w-4 ml-2" />
@@ -150,7 +218,7 @@ export default function GridReportComponent({
                                     className="text-xs"
                                     style={{ backgroundColor: `${tag.color}20`, color: tag.color }}
                                 >
-                                    {tag.label[locale as keyof typeof tag.label] || tag.label.en}
+                                    {tag.label?.[locale as keyof typeof tag.label] || tag.label?.en || 'Tag'}
                                 </Badge>
                             ))}
                             {report.tags.length > 4 && (
@@ -167,11 +235,11 @@ export default function GridReportComponent({
                     <div className="flex items-center gap-4 text-sm text-muted-foreground">
                         <div className="flex items-center gap-1">
                             <Download className="h-4 w-4" />
-                            <span>{report.downloadCount} downloads</span>
+                            <span>{report.downloadCount || 0} downloads</span>
                         </div>
                         <div className="flex items-center gap-1">
                             <Eye className="h-4 w-4" />
-                            <span>{report.files.length} languages</span>
+                            <span>{report.files?.length || 0} languages</span>
                         </div>
                     </div>
                 )}
@@ -184,10 +252,11 @@ export default function GridReportComponent({
                         <div className="grid grid-cols-2 gap-2">
                             {report.files.map((file) => {
                                 const lang = languageLabels[file.language];
+                                // Use R2 URL if available, fallback to Sanity file
                                 const fileUrl = file.fileUrl || file.file?.asset?.url;
                                 const filename = file.file?.asset?.originalFilename || `${title}_${file.language}.pdf`;
 
-                                if (!fileUrl) return null;
+                                if (!fileUrl || !lang) return null;
 
                                 return (
                                     <Button
@@ -202,8 +271,8 @@ export default function GridReportComponent({
                                         <span className="truncate">{lang.label}</span>
                                         {file.fileSize && (
                                             <span className="text-muted-foreground">
-                        ({formatFileSize(file.fileSize * 1024 * 1024)})
-                      </span>
+                                                ({formatFileSize(file.fileSize * 1024 * 1024)})
+                                            </span>
                                         )}
                                     </Button>
                                 );
@@ -211,16 +280,18 @@ export default function GridReportComponent({
                         </div>
 
                         {/* View Details Link */}
-                        <Link href={`/reports/${report.slug.current}`} className="mt-3 block">
-                            <Button variant="ghost" size="sm" className="w-full">
-                                View Details
-                            </Button>
-                        </Link>
+                        {report.slug?.current && (
+                            <Link href={`/reports/${report.slug.current}`} className="mt-3 block">
+                                <Button variant="ghost" size="sm" className="w-full">
+                                    View Details
+                                </Button>
+                            </Link>
+                        )}
                     </div>
                 )}
 
                 {/* Fallback if no download buttons */}
-                {!showDownloadButtons && (
+                {!showDownloadButtons && report.slug?.current && (
                     <Link href={`/reports/${report.slug.current}`} className="w-full">
                         <Button variant="default" size="sm" className="w-full">
                             View Report

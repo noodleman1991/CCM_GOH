@@ -137,16 +137,16 @@ export const structure = (S: any, context: any) =>
                             }),
                         ])
                 ),
-            // Reports & Agendas
+            // reports & Agendas
             S.listItem()
-                .title("Reports & Agendas")
+                .title("reports & Agendas")
                 .child(
                     S.list()
-                        .title("Reports & Agendas")
+                        .title("reports & Agendas")
                         .items([
                             orderableDocumentListDeskItem({
                                 type: "report",
-                                title: "Reports",
+                                title: "reports",
                                 icon: Glasses,
                                 S,
                                 context,

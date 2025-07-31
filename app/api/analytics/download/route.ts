@@ -1,48 +1,85 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { auth } from '@clerk/nextjs/server';
+import { prisma } from '@/lib/prisma';
 import { client } from '@/sanity/lib/client';
 import { DownloadEvent } from '@/types/report';
 
+// function getClientIP(request: NextRequest): string {
+//     const forwarded = request.headers.get('x-forwarded-for');
+//     const realIP = request.headers.get('x-real-ip');
+//
+//     if (forwarded) {
+//         return forwarded.split(',')[0].trim();
+//     }
+//
+//     if (realIP) {
+//         return realIP.trim();
+//     }
+//
+//     return 'unknown';
+// }
+
 export async function POST(request: NextRequest) {
     try {
-        const downloadEvent: DownloadEvent = await request.json();
+        const { userId } = await auth();
+        const body: DownloadEvent = await request.json();
 
         // Validate required fields
-        if (!downloadEvent.reportId || !downloadEvent.fileLanguage) {
+        if (!body.reportId || !body.fileLanguage) {
             return NextResponse.json(
-                { error: 'Missing required fields: reportId and fileLanguage' },
+                { error: 'Missing required fields: reportId, fileLanguage' },
                 { status: 400 }
             );
         }
 
-        // Update download count in Sanity
-        await client
-            .patch(downloadEvent.reportId)
-            .inc({ downloadCount: 1 })
-            .commit();
-
-        // Store detailed analytics (you might want to use a dedicated analytics service)
-        // For now, we'll just log it - in production, consider using services like:
-        // - Google Analytics 4
-        // - Mixpanel
-        // - PostHog
-        // - Your own database
-
-        console.log('Download tracked:', {
-            reportId: downloadEvent.reportId,
-            language: downloadEvent.fileLanguage,
-            timestamp: downloadEvent.timestamp,
-            userId: downloadEvent.userId || 'anonymous',
-            userAgent: downloadEvent.userAgent?.substring(0, 100), // Truncate for privacy
+        // Store download event in database
+        const downloadEvent = await prisma.downloadEvent.create({
+            data: {
+                reportId: body.reportId,
+                fileLanguage: body.fileLanguage,
+                userId: userId || body.userId,
+                sessionId: body.sessionId,
+                userAgent: body.userAgent,
+                referer: body.referer,
+                ipAddress: getClientIP(request),
+                timestamp: new Date(body.timestamp),
+            },
         });
 
-        // Optional: Store in a separate analytics database
-        // await analyticsDb.insert('downloads', downloadEvent);
+        // Update report metadata in our database
+        await prisma.reportMetadata.upsert({
+            where: { sanityId: body.reportId },
+            create: {
+                sanityId: body.reportId,
+                downloadCount: 1,
+                lastDownloadedAt: new Date(),
+            },
+            update: {
+                downloadCount: {
+                    increment: 1,
+                },
+                lastDownloadedAt: new Date(),
+            },
+        });
 
-        return NextResponse.json({ success: true });
+        // Also update Sanity for consistency
+        try {
+            await client
+                .patch(body.reportId)
+                .inc({ downloadCount: 1 })
+                .commit();
+        } catch (sanityError) {
+            console.error('Failed to update Sanity download count:', sanityError);
+            // Don't fail the request if Sanity update fails
+        }
+
+        return NextResponse.json({
+            success: true,
+            eventId: downloadEvent.id,
+        });
 
     } catch (error) {
         console.error('Download tracking error:', error);
-
         return NextResponse.json(
             { error: 'Failed to track download' },
             { status: 500 }
@@ -50,60 +87,175 @@ export async function POST(request: NextRequest) {
     }
 }
 
-// Optional: GET endpoint for analytics dashboard
 export async function GET(request: NextRequest) {
     try {
+        const { userId } = await auth();
+
+        if (!userId) {
+            return NextResponse.json(
+                { error: 'Unauthorized' },
+                { status: 401 }
+            );
+        }
+
         const { searchParams } = new URL(request.url);
         const reportId = searchParams.get('reportId');
         const timeframe = searchParams.get('timeframe') || '30d';
+        const groupBy = searchParams.get('groupBy') || 'day';
 
-        if (!reportId) {
-            return NextResponse.json(
-                { error: 'reportId parameter is required' },
-                { status: 400 }
-            );
+        // Calculate date range
+        const now = new Date();
+        const startDate = new Date();
+
+        switch (timeframe) {
+            case '7d':
+                startDate.setDate(now.getDate() - 7);
+                break;
+            case '30d':
+                startDate.setDate(now.getDate() - 30);
+                break;
+            case '90d':
+                startDate.setDate(now.getDate() - 90);
+                break;
+            case '1y':
+                startDate.setFullYear(now.getFullYear() - 1);
+                break;
+            default:
+                startDate.setDate(now.getDate() - 30);
         }
 
-        // Get download statistics from Sanity
-        const report = await client.fetch(
-            `*[_type == "report" && _id == $reportId][0]{
-        _id,
-        title,
-        downloadCount,
-        files[].language
-      }`,
-            { reportId }
-        );
-
-        if (!report) {
-            return NextResponse.json(
-                { error: 'Report not found' },
-                { status: 404 }
-            );
-        }
-
-        // In a real implementation, you'd query your analytics database here
-        // For now, return basic info from Sanity
-        const analytics = {
-            reportId: report._id,
-            title: report.title,
-            totalDownloads: report.downloadCount || 0,
-            availableLanguages: report.files?.map((f: any) => f.language) || [],
-            timeframe,
-            // todo: In production, add more detailed analytics:
-            // downloadsByLanguage: {...},
-            // downloadsByCountry: {...},
-            // downloadsByDate: {...},
+        // Build where clause
+        const whereClause: any = {
+            timestamp: {
+                gte: startDate,
+                lte: now,
+            },
         };
 
-        return NextResponse.json(analytics);
+        if (reportId) {
+            whereClause.reportId = reportId;
+        }
+
+        // Get download statistics
+        const [totalDownloads, uniqueUsers, downloadsByLanguage, downloadsByDay] = await Promise.all([
+            // Total downloads
+            prisma.downloadEvent.count({
+                where: whereClause,
+            }),
+
+            // Unique users
+            prisma.downloadEvent.groupBy({
+                by: ['userId'],
+                where: whereClause,
+                _count: true,
+            }),
+
+            // Downloads by language
+            prisma.downloadEvent.groupBy({
+                by: ['fileLanguage'],
+                where: whereClause,
+                _count: {
+                    id: true,
+                },
+                orderBy: {
+                    _count: {
+                        id: 'desc',
+                    },
+                },
+            }),
+
+            // Downloads by day (simplified - you might want to use raw SQL for better date grouping)
+            prisma.downloadEvent.findMany({
+                where: whereClause,
+                select: {
+                    timestamp: true,
+                    reportId: true,
+                },
+                orderBy: {
+                    timestamp: 'asc',
+                },
+            }),
+        ]);
+
+        // Process downloads by day
+        const downloadsByDayMap = new Map<string, number>();
+        downloadsByDay.forEach(event => {
+            const dateKey = event.timestamp.toISOString().split('T')[0];
+            downloadsByDayMap.set(dateKey, (downloadsByDayMap.get(dateKey) || 0) + 1);
+        });
+
+        const downloadsByDayArray = Array.from(downloadsByDayMap.entries()).map(([date, count]) => ({
+            date,
+            downloads: count,
+        }));
+
+        return NextResponse.json({
+            success: true,
+            analytics: {
+                totalDownloads,
+                uniqueUsers: uniqueUsers.length,
+                downloadsByLanguage: downloadsByLanguage.map(item => ({
+                    language: item.fileLanguage,
+                    count: item._count.id,
+                })),
+                downloadsByDay: downloadsByDayArray,
+                timeframe,
+                reportId,
+            },
+        });
 
     } catch (error) {
-        console.error('Analytics fetch error:', error);
-
+        console.error('Analytics error:', error);
         return NextResponse.json(
-            { error: 'Failed to fetch analytics' },
+            { error: 'Failed to get analytics' },
             { status: 500 }
         );
     }
 }
+
+// Helper function to get client IP
+function getClientIP(request: NextRequest): string {
+    const forwarded = request.headers.get('x-forwarded-for');
+    const realIP = request.headers.get('x-real-ip');
+
+    if (forwarded) {
+        return forwarded.split(',')[0].trim();
+    }
+
+    if (realIP) {
+        return realIP.trim();
+    }
+
+    return 'unknown';
+}
+
+// Prisma schema additions needed:
+/*
+Add to your schema.prisma:
+
+model DownloadEvent {
+  id           String   @id @default(cuid())
+  reportId     String
+  fileLanguage String
+  userId       String?
+  sessionId    String
+  userAgent    String?
+  referer      String?
+  ipAddress    String?
+  timestamp    DateTime
+  createdAt    DateTime @default(now())
+
+  @@map("download_events")
+}
+
+model Report {
+  id                String    @id @default(cuid())
+  sanityId          String    @unique
+  downloadCount     Int       @default(0)
+  lastDownloadedAt  DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@map("reports")
+}
+*/
