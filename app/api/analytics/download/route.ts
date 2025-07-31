@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/prisma';
 import { client } from '@/sanity/lib/client';
-import { DownloadEvent } from '@/types/report';
+// import { DownloadEvent } from '@/types/report';
 
 // function getClientIP(request: NextRequest): string {
 //     const forwarded = request.headers.get('x-forwarded-for');
@@ -19,73 +19,73 @@ import { DownloadEvent } from '@/types/report';
 //     return 'unknown';
 // }
 
-export async function POST(request: NextRequest) {
-    try {
-        const { userId } = await auth();
-        const body: DownloadEvent = await request.json();
-
-        // Validate required fields
-        if (!body.reportId || !body.fileLanguage) {
-            return NextResponse.json(
-                { error: 'Missing required fields: reportId, fileLanguage' },
-                { status: 400 }
-            );
-        }
-
-        // Store download event in database
-        const downloadEvent = await prisma.downloadEvent.create({
-            data: {
-                reportId: body.reportId,
-                fileLanguage: body.fileLanguage,
-                userId: userId || body.userId,
-                sessionId: body.sessionId,
-                userAgent: body.userAgent,
-                referer: body.referer,
-                ipAddress: getClientIP(request),
-                timestamp: new Date(body.timestamp),
-            },
-        });
-
-        // Update report metadata in our database
-        await prisma.reportMetadata.upsert({
-            where: { sanityId: body.reportId },
-            create: {
-                sanityId: body.reportId,
-                downloadCount: 1,
-                lastDownloadedAt: new Date(),
-            },
-            update: {
-                downloadCount: {
-                    increment: 1,
-                },
-                lastDownloadedAt: new Date(),
-            },
-        });
-
-        // Also update Sanity for consistency
-        try {
-            await client
-                .patch(body.reportId)
-                .inc({ downloadCount: 1 })
-                .commit();
-        } catch (sanityError) {
-            console.error('Failed to update Sanity download count:', sanityError);
-            // Don't fail the request if Sanity update fails
-        }
-
-        return NextResponse.json({
-            success: true,
-            eventId: downloadEvent.id,
-        });
-
-    } catch (error) {
-        console.error('Download tracking error:', error);
-        return NextResponse.json(
-            { error: 'Failed to track download' },
-            { status: 500 }
-        );
-    }
-}
+// export async function POST(request: NextRequest) {
+//     try {
+//         const { userId } = await auth();
+//         const body: DownloadEvent = await request.json();
+//
+//         // Validate required fields
+//         if (!body.reportId || !body.fileLanguage) {
+//             return NextResponse.json(
+//                 { error: 'Missing required fields: reportId, fileLanguage' },
+//                 { status: 400 }
+//             );
+//         }
+//
+//         // Store download event in database
+//         const downloadEvent = await prisma.downloadEvent.create({
+//             data: {
+//                 reportId: body.reportId,
+//                 fileLanguage: body.fileLanguage,
+//                 userId: userId || body.userId,
+//                 sessionId: body.sessionId,
+//                 userAgent: body.userAgent,
+//                 referer: body.referer,
+//                 ipAddress: getClientIP(request),
+//                 timestamp: new Date(body.timestamp),
+//             },
+//         });
+//
+//         // Update report metadata in our database
+//         await prisma.reportMetadata.upsert({
+//             where: { sanityId: body.reportId },
+//             create: {
+//                 sanityId: body.reportId,
+//                 downloadCount: 1,
+//                 lastDownloadedAt: new Date(),
+//             },
+//             update: {
+//                 downloadCount: {
+//                     increment: 1,
+//                 },
+//                 lastDownloadedAt: new Date(),
+//             },
+//         });
+//
+//         // Also update Sanity for consistency
+//         try {
+//             await client
+//                 .patch(body.reportId)
+//                 .inc({ downloadCount: 1 })
+//                 .commit();
+//         } catch (sanityError) {
+//             console.error('Failed to update Sanity download count:', sanityError);
+//             // Don't fail the request if Sanity update fails
+//         }
+//
+//         return NextResponse.json({
+//             success: true,
+//             eventId: downloadEvent.id,
+//         });
+//
+//     } catch (error) {
+//         console.error('Download tracking error:', error);
+//         return NextResponse.json(
+//             { error: 'Failed to track download' },
+//             { status: 500 }
+//         );
+//     }
+// } //todo: is this needed?
 
 export async function GET(request: NextRequest) {
     try {

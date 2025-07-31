@@ -8,7 +8,7 @@ import {
 } from "@/sanity/queries/post";
 import {
   PAGE_QUERYResult,
-  PAGES_SLUGS_QUERYResult,
+  // PAGES_SLUGS_QUERYResult,
   POST_QUERYResult,
   POSTS_QUERYResult,
   POSTS_SLUGS_QUERYResult,
@@ -184,7 +184,7 @@ export const fetchRegionalCommunityReports = async ({
             reportType,
             year,
             publishDate,
-            downloadCount,
+            totalDownloadCount,
             featured,
             accessLevel,
             coverImage{
@@ -202,14 +202,19 @@ export const fetchRegionalCommunityReports = async ({
                 },
                 alt
             },
-            translations[]{
+            files[]{
                 language,
-                fileSize,
-                pages,
-                "url": asset->url,
-                "filename": asset->originalFilename,
-                "mimeType": asset->mimeType,
-                "id": asset->_id
+                file{
+                    asset->{
+                        _id,
+                        url,
+                        originalFilename,
+                        size,
+                        mimeType
+                    }
+                },
+                downloadCount,
+                lastDownloaded
             },
             tags[]->{
                 _id,
@@ -222,19 +227,20 @@ export const fetchRegionalCommunityReports = async ({
                 _id,
                 name,
                 slug,
+                acronym,
                 logo{
                     asset->{
                         _id,
                         url
-                    }
+                    },
+                    alt
                 }
             },
-            authors[]{
+            regionalCommunities[]->{
+                _id,
                 name,
-                organization->{
-                    name,
-                    slug
-                }
+                slug,
+                code
             }
         }`,
         params: { slug },

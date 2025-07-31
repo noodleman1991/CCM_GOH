@@ -5,26 +5,27 @@ export interface LocalizedString {
     ar?: string;
 }
 
+export interface SanityAsset {
+    _id: string;
+    url: string;
+    originalFilename?: string;
+    size?: number;
+    mimeType: string;
+}
+
 export interface ReportFile {
-    language: string;
-    file?: {
-        asset?: {
-            _id: string;
-            url: string;
-            originalFilename: string;
-            size: number;
-            mimeType: string;
-        };
+    language: 'en' | 'es' | 'fr' | 'ar';
+    file: {
+        asset: SanityAsset;
     };
-    fileUrl?: string; // R2 URL
-    fileSize?: number; // Size in MB
-    pages?: number;
+    downloadCount?: number;
+    lastDownloaded?: string;
 }
 
 export interface Tag {
     _id: string;
     label: LocalizedString;
-    value: string;
+    value: { current: string };
     color: string;
     category: string;
 }
@@ -33,18 +34,36 @@ export interface Organization {
     _id: string;
     name: string;
     slug: { current: string };
+    acronym?: string;
     logo?: {
         asset?: {
             _id: string;
             url: string;
         };
+        alt?: string;
     };
 }
 
-export interface Author {
-    name: string;
-    organization?: Organization;
+export interface RegionalCommunity {
+    _id: string;
+    name: LocalizedString;
+    slug: { current: string };
+    code: string;
 }
+
+export type ReportType =
+    | 'annual'
+    | 'research'
+    | 'policy'
+    | 'technical'
+    | 'case-study'
+    | 'whitepaper'
+    | 'guidelines'
+    | 'agenda'
+    | 'minutes'
+    | 'other';
+
+export type AccessLevel = 'public' | 'registered' | 'members';
 
 export interface Report {
     _id: string;
@@ -52,12 +71,12 @@ export interface Report {
     subtitle?: LocalizedString;
     description?: LocalizedString;
     slug: { current: string };
-    reportType: 'annual' | 'research' | 'policy' | 'technical' | 'case-study' | 'whitepaper' | 'guidelines' | 'agenda' | 'minutes' | 'other';
+    reportType: ReportType;
     year?: number;
     publishDate?: string;
-    downloadCount?: number;
+    totalDownloadCount?: number;
     featured?: boolean;
-    accessLevel?: 'public' | 'registered' | 'members';
+    accessLevel?: AccessLevel;
     coverImage?: {
         asset?: {
             _id: string;
@@ -73,10 +92,10 @@ export interface Report {
         };
         alt?: string;
     };
-    files?: ReportFile[];
+    files: ReportFile[];
     tags?: Tag[];
     organizations?: Organization[];
-    authors?: Author[];
+    regionalCommunities?: RegionalCommunity[];
 }
 
 export interface GridReport {
@@ -88,38 +107,51 @@ export interface GridReport {
     showMetadata?: boolean;
 }
 
-export interface DownloadEvent {
+export interface DownloadTrackingData {
     reportId: string;
     fileLanguage: string;
     userId?: string;
-    sessionId: string;
-    timestamp: string;
-    userAgent?: string;
-    referer?: string;
-    ipAddress?: string;
 }
 
-export interface R2FileMetadata {
-    filename: string;
-    size: number;
-    mimeType: string;
-    language: string;
-    reportId: string;
-    uploadedAt?: string;
+// Utility types for components
+export interface ReportCardProps {
+    report: Report;
+    locale: string; // Changed from keyof LocalizedString to string
+    showTags?: boolean;
+    showDownloadButtons?: boolean;
+    showMetadata?: boolean;
+    userId?: string;
+    className?: string;
 }
 
-export interface R2UploadResponse {
-    success: boolean;
-    result?: {
-        id: string;
-        filename: string;
-        uploaded: string;
-        requireSignedURLs: boolean;
-        variants: string[];
-    };
-    errors?: Array<{
-        code: number;
-        message: string;
-    }>;
-}
+// Language configuration
+export const SUPPORTED_LANGUAGES = ['en', 'es', 'fr', 'ar'] as const;
+export type SupportedLanguage = typeof SUPPORTED_LANGUAGES[number];
 
+export const LANGUAGE_NAMES: Record<SupportedLanguage, string> = {
+    en: 'English',
+    es: 'Español',
+    fr: 'Français',
+    ar: 'العربية',
+};
+
+export const LANGUAGE_FLAGS: Record<SupportedLanguage, string> = {
+    en: '🇺🇸',
+    es: '🇪🇸',
+    fr: '🇫🇷',
+    ar: '🇸🇦',
+};
+
+// Report type labels
+export const REPORT_TYPE_LABELS: Record<ReportType, string> = {
+    annual: 'Annual Report',
+    research: 'Research Report',
+    policy: 'Policy Brief',
+    technical: 'Technical Report',
+    'case-study': 'Case Study Report',
+    whitepaper: 'White Paper',
+    guidelines: 'Guidelines',
+    agenda: 'Meeting Agenda',
+    minutes: 'Meeting Minutes',
+    other: 'Other',
+};

@@ -14,7 +14,7 @@ export default defineType({
         },
         {
             name: "files",
-            title: "Files",
+            title: "Files & Downloads",
         },
         {
             name: "metadata",
@@ -33,6 +33,7 @@ export default defineType({
                 { name: "fr", title: "Français", type: "string" },
                 { name: "ar", title: "العربية", type: "string" },
             ],
+            validation: (Rule) => Rule.required(),
         }),
         defineField({
             name: "slug",
@@ -85,39 +86,18 @@ export default defineType({
                 },
             ],
         }),
+
+        // FILES USING SANITY FILE TYPE
         defineField({
-            name: "reportType",
-            title: "Report Type",
-            type: "string",
-            group: "metadata",
-            options: {
-                list: [
-                    { title: "Annual Report", value: "annual" },
-                    { title: "Research Report", value: "research" },
-                    { title: "Policy Brief", value: "policy" },
-                    { title: "Technical Report", value: "technical" },
-                    { title: "Case Study Report", value: "case-study" },
-                    { title: "White Paper", value: "whitepaper" },
-                    { title: "Guidelines", value: "guidelines" },
-                    { title: "Other", value: "other" },
-                ],
-            },
-            validation: (Rule) => Rule.required(),
-        }),
-        defineField({
-            name: "translations",
-            title: "Report Translations",
+            name: "files",
+            title: "Report Files",
             type: "array",
             group: "files",
             of: [
                 {
-                    type: "file",
+                    type: "object",
                     name: "reportFile",
-                    title: "Translated Report",
-                    options: {
-                        accept: "application/pdf",
-                        storeOriginalFilename: true,
-                    },
+                    title: "Report File",
                     fields: [
                         {
                             name: "language",
@@ -134,46 +114,80 @@ export default defineType({
                             validation: (Rule) => Rule.required(),
                         },
                         {
-                            name: "fileSize",
-                            title: "File Size (MB)",
+                            name: "file",
+                            title: "File",
+                            type: "file",
+                            options: {
+                                accept: ".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx",
+                                storeOriginalFilename: true,
+                            },
+                            validation: (Rule) => Rule.required(),
+                        },
+                        {
+                            name: "downloadCount",
+                            title: "Download Count",
                             type: "number",
+                            initialValue: 0,
                             readOnly: true,
                         },
                         {
-                            name: "pages",
-                            title: "Number of Pages",
-                            type: "number",
+                            name: "lastDownloaded",
+                            title: "Last Downloaded",
+                            type: "datetime",
+                            readOnly: true,
                         },
                     ],
+                    preview: {
+                        select: {
+                            language: "language",
+                            downloadCount: "downloadCount",
+                            fileName: "file.asset.originalFilename",
+                            fileSize: "file.asset.size",
+                        },
+                        prepare({ language, downloadCount, fileName, fileSize }) {
+                            const languageNames = {
+                                en: "🇺🇸 English",
+                                es: "🇪🇸 Español",
+                                fr: "🇫🇷 Français",
+                                ar: "🇸🇦 العربية",
+                            };
+
+                            const sizeText = fileSize ? `${(fileSize / (1024 * 1024)).toFixed(2)}MB` : "Unknown size";
+                            const downloads = downloadCount || 0;
+
+                            return {
+                                title: `${languageNames[language as keyof typeof languageNames] || language}`,
+                                subtitle: `${fileName || 'No filename'} • ${sizeText} • ${downloads} downloads`,
+                            };
+                        },
+                    },
                 },
             ],
             validation: (Rule) => Rule.required().min(1),
         }),
-    defineField({
-            name: "authors",
-            title: "Authors",
-            type: "array",
+
+        defineField({
+            name: "reportType",
+            title: "Report Type",
+            type: "string",
             group: "metadata",
-            of: [
-                {
-                    type: "object",
-                    fields: [
-                        {
-                            name: "name",
-                            title: "Name",
-                            type: "string",
-                            validation: (Rule) => Rule.required(),
-                        },
-                        {
-                            name: "organization",
-                            title: "Organization",
-                            type: "reference",
-                            to: [{ type: "organization" }],
-                        },
-                    ],
-                },
-            ],
+            options: {
+                list: [
+                    { title: "Annual Report", value: "annual" },
+                    { title: "Research Report", value: "research" },
+                    { title: "Policy Brief", value: "policy" },
+                    { title: "Technical Report", value: "technical" },
+                    { title: "Case Study Report", value: "case-study" },
+                    { title: "White Paper", value: "whitepaper" },
+                    { title: "Guidelines", value: "guidelines" },
+                    { title: "Meeting Agenda", value: "agenda" },
+                    { title: "Meeting Minutes", value: "minutes" },
+                    { title: "Other", value: "other" },
+                ],
+            },
+            validation: (Rule) => Rule.required(),
         }),
+
         defineField({
             name: "publishDate",
             title: "Publication Date",
@@ -181,6 +195,7 @@ export default defineType({
             group: "metadata",
             validation: (Rule) => Rule.required(),
         }),
+
         defineField({
             name: "year",
             title: "Year",
@@ -188,6 +203,7 @@ export default defineType({
             group: "metadata",
             validation: (Rule) => Rule.required().min(2000).max(2050),
         }),
+
         defineField({
             name: "organizations",
             title: "Publishing Organizations",
@@ -200,18 +216,7 @@ export default defineType({
                 },
             ],
         }),
-        defineField({
-            name: "projects",
-            title: "Related Projects",
-            type: "array",
-            group: "metadata",
-            of: [
-                {
-                    type: "reference",
-                    to: [{ type: "project" }],
-                },
-            ],
-        }),
+
         defineField({
             name: "regionalCommunities",
             title: "Regional Communities",
@@ -224,6 +229,7 @@ export default defineType({
                 },
             ],
         }),
+
         defineField({
             name: "tags",
             title: "Tags",
@@ -239,16 +245,18 @@ export default defineType({
                 sortable: true,
             },
             validation: (Rule) => Rule.max(15),
-            description: "Type to search existing tags or create new ones.",
         }),
+
+        // ANALYTICS FIELDS
         defineField({
-            name: "downloadCount",
-            title: "Download Count",
+            name: "totalDownloadCount",
+            title: "Total Download Count",
             type: "number",
             group: "metadata",
             readOnly: true,
             initialValue: 0,
         }),
+
         defineField({
             name: "featured",
             title: "Featured Report",
@@ -256,6 +264,7 @@ export default defineType({
             group: "metadata",
             initialValue: false,
         }),
+
         defineField({
             name: "accessLevel",
             title: "Access Level",
@@ -270,6 +279,7 @@ export default defineType({
             },
             initialValue: "public",
         }),
+
         orderRankField({ type: "report" }),
     ],
     preview: {
@@ -279,8 +289,9 @@ export default defineType({
             media: "coverImage",
             year: "year",
             featured: "featured",
+            downloadCount: "totalDownloadCount",
         },
-        prepare({ title, subtitle, media, year, featured }) {
+        prepare({ title, subtitle, media, year, featured, downloadCount }) {
             const typeLabels = {
                 annual: "Annual Report",
                 research: "Research Report",
@@ -289,14 +300,17 @@ export default defineType({
                 "case-study": "Case Study Report",
                 whitepaper: "White Paper",
                 guidelines: "Guidelines",
+                agenda: "Meeting Agenda",
+                minutes: "Meeting Minutes",
                 other: "Other",
             };
 
             const reportTypeLabel = typeLabels[subtitle as keyof typeof typeLabels] || subtitle;
+            const downloads = downloadCount || 0;
 
             return {
                 title: `${featured ? "⭐ " : ""}${title || "Untitled Report"}`,
-                subtitle: `${reportTypeLabel} | ${year || "No year"}`,
+                subtitle: `${reportTypeLabel} | ${year || "No year"} | ${downloads} downloads`,
                 media,
             };
         }
