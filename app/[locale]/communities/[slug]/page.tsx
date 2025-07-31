@@ -44,11 +44,10 @@ export default async function RegionalCommunityPage({
                 />
             )}
 
-            {/* NEW: Reports Grid as 3rd component */}
             <RegionalReportsGrid
                 reports={reportsData || []}
                 regionalCommunitySlug={slug}
-                locale={locale}
+                locale={locale.toString()}
                 userId={userId!}
                 showHeader={true}
                 showViewAllButton={true}

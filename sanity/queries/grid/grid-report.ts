@@ -17,7 +17,7 @@ export const gridReportQuery = groq`
       reportType,
       year,
       publishDate,
-      downloadCount,
+      totalDownloadCount,
       featured,
       accessLevel,
       coverImage{
@@ -35,14 +35,19 @@ export const gridReportQuery = groq`
         },
         alt
       },
-      translations[]{
+      files[]{
         language,
-        fileSize,
-        pages,
-        "url": report.asset->url,
-        "filename": asset->originalFilename,
-        "mimeType": asset->mimeType,
-        "id": asset->_id
+        file{
+          asset->{
+            _id,
+            url,
+            originalFilename,
+            size,
+            mimeType
+          }
+        },
+        downloadCount,
+        lastDownloaded
       },
       tags[]->{
         _id,
@@ -55,19 +60,20 @@ export const gridReportQuery = groq`
         _id,
         name,
         slug,
+        acronym,
         logo{
           asset->{
             _id,
             url
-          }
+          },
+          alt
         }
       },
-      authors[]{
+      regionalCommunities[]->{
+        _id,
         name,
-        organization->{
-          name,
-          slug
-        }
+        slug,
+        code
       }
     }
   }

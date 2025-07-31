@@ -5,6 +5,7 @@ import SectionContainer from '@/components/ui/section-container';
 import GridReportComponent from '@/components/blocks/grid/grid-report';
 import { Report } from '@/types/report';
 import { FileDown, ArrowRight } from 'lucide-react';
+import { LocalizedString} from '@/types/report'
 
 interface RegionalReportsGridProps {
     reports: Report[];
