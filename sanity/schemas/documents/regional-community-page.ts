@@ -2,7 +2,6 @@ import { defineField, defineType } from "sanity";
 import { MapPinned } from "lucide-react";
 import { orderRankField } from "@sanity/orderable-document-list";
 import { isUniqueOtherThanLanguage } from '@/sanity/lib/isUniqueOtherThanLanguage';
-import hero1 from "@/sanity/schemas/blocks/hero/hero-1";
 
 export default defineType({
   name: "regionalCommunityPage",

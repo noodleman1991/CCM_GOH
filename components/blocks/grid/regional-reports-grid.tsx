@@ -3,9 +3,8 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import SectionContainer from '@/components/ui/section-container';
 import GridReportComponent from '@/components/blocks/grid/grid-report';
-import { Report } from '@/types/report';
+import { Report, LocalizedString } from '@/types/report';
 import { FileDown, ArrowRight } from 'lucide-react';
-import { LocalizedString} from '@/types/report'
 
 interface RegionalReportsGridProps {
     reports: Report[];
@@ -90,14 +89,12 @@ export default function RegionalReportsGrid({
                 {displayReports.map((report) => (
                     <GridReportComponent
                         key={report._id}
-                        data={{
-                            _type: 'grid-report',
-                            _key: report._id,
-                            report,
-                            showTags: true,
-                            showDownloadButtons: true,
-                            showMetadata: true,
-                        }}
+                        _type="grid-report"
+                        _key={report._id}
+                        report={report}
+                        showTags={true}
+                        showDownloadButtons={true}
+                        showMetadata={true}
                         locale={locale}
                         userId={userId}
                     />

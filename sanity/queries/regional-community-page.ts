@@ -136,7 +136,7 @@ export const REGIONAL_COMMUNITY_PAGE_QUERY = groq`
   }
 `;
 
-export const PAGES_SLUGS_QUERY = groq`
+export const RCPAGES_SLUGS_QUERY = groq`
   *[_type == "regionalCommunityPage" && defined(slug)]{
     _id,
     slug,
