@@ -28,15 +28,14 @@ export default defineType({
       },
       initialValue: "grid-cols-3",
     }),
-    // add only the blocks you need
     defineField({
       name: "columns",
       type: "array",
       of: [
         { type: "grid-card" },
         { type: "grid-post" },
-        { type: "pricing-card" },
         { type: "grid-report" },
+        { type: "grid-case-study" },
       ],
       options: {
         insertMenu: {

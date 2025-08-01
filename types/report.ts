@@ -1,3 +1,9 @@
+import type { Organization } from './case-study'
+
+export type SupportedLanguage = 'en' | 'es' | 'fr' | 'ar';
+
+export type AccessLevel = 'public' | 'registered' | 'members';
+
 export interface LocalizedString {
     en: string;
     es?: string;
@@ -5,73 +11,65 @@ export interface LocalizedString {
     ar?: string;
 }
 
-export interface SanityAsset {
-    _id: string;
-    url: string;
-    originalFilename?: string;
-    size?: number;
-    mimeType: string;
-}
-
 export interface ReportFile {
-    language: 'en' | 'es' | 'fr' | 'ar';
-    file: {
-        asset: SanityAsset;
+    language: SupportedLanguage;
+    file?: {
+        asset?: {
+            _id: string;
+            url: string;
+            originalFilename?: string;
+            size?: number;
+            mimeType?: string;
+        };
     };
     downloadCount?: number;
     lastDownloaded?: string;
 }
 
-export interface Tag {
+export interface ReportTag {
     _id: string;
     label: LocalizedString;
-    value: { current: string };
+    value: {
+        current: string;
+    };
     color: string;
-    category: string;
+    category?: string;
 }
 
-export interface Organization {
-    _id: string;
-    name: string;
-    slug: { current: string };
-    acronym?: string;
-    logo?: {
-        asset?: {
-            _id: string;
-            url: string;
-        };
-        alt?: string;
-    };
-}
+// export interface Organization {
+//     _id: string;
+//     name: string;
+//     slug: {
+//         current: string;
+//     };
+//     acronym?: string;
+//     logo?: {
+//         asset?: {
+//             _id: string;
+//             url: string;
+//         };
+//         alt?: string;
+//     };
+// }
 
 export interface RegionalCommunity {
     _id: string;
     name: LocalizedString;
-    slug: { current: string };
     code: string;
+    slug: {
+        current: string;
+    };
 }
-
-export type ReportType =
-    | 'annual'
-    | 'research'
-    | 'policy'
-    | 'technical'
-    | 'case-study'
-    | 'whitepaper'
-    | 'guidelines'
-    | 'agenda'
-    | 'minutes'
-    | 'other';
-
-export type AccessLevel = 'public' | 'registered' | 'members';
 
 export interface Report {
     _id: string;
     title: LocalizedString;
     subtitle?: LocalizedString;
     description?: LocalizedString;
-    slug: { current: string };
-    reportType: ReportType;
+    slug: {
+        current: string;
+    };
+    reportType: string;
     year?: number;
     publishDate?: string;
     totalDownloadCount?: number;
@@ -81,7 +79,7 @@ export interface Report {
         asset?: {
             _id: string;
             url: string;
-            mimeType: string;
+            mimeType?: string;
             metadata?: {
                 lqip?: string;
                 dimensions?: {
@@ -92,58 +90,45 @@ export interface Report {
         };
         alt?: string;
     };
-    files: ReportFile[];
-    tags?: Tag[];
+    files?: ReportFile[];
+    tags?: ReportTag[];
     organizations?: Organization[];
     regionalCommunities?: RegionalCommunity[];
 }
 
-export interface GridReport {
-    _type: 'grid-report';
-    _key: string;
+export interface ReportCardProps {
     report: Report;
+    locale?: string;
+    userId?: string;
     showTags?: boolean;
     showDownloadButtons?: boolean;
     showMetadata?: boolean;
+    className?: string;
 }
 
 export interface DownloadTrackingData {
     reportId: string;
-    fileLanguage: string;
+    fileLanguage: SupportedLanguage;
     userId?: string;
 }
 
-// Utility types for components
-export interface ReportCardProps {
-    report: Report;
-    locale: string; // Changed from keyof LocalizedString to string
-    showTags?: boolean;
-    showDownloadButtons?: boolean;
-    showMetadata?: boolean;
-    userId?: string;
-    className?: string;
-}
-
-// Language configuration
-export const SUPPORTED_LANGUAGES = ['en', 'es', 'fr', 'ar'] as const;
-export type SupportedLanguage = typeof SUPPORTED_LANGUAGES[number];
-
+// Language display constants
 export const LANGUAGE_NAMES: Record<SupportedLanguage, string> = {
     en: 'English',
     es: 'Español',
     fr: 'Français',
-    ar: 'العربية',
+    ar: 'العربية'
 };
 
 export const LANGUAGE_FLAGS: Record<SupportedLanguage, string> = {
     en: '🇺🇸',
     es: '🇪🇸',
     fr: '🇫🇷',
-    ar: '🇸🇦',
+    ar: '🇸🇦'
 };
 
 // Report type labels
-export const REPORT_TYPE_LABELS: Record<ReportType, string> = {
+export const REPORT_TYPE_LABELS: Record<string, string> = {
     annual: 'Annual Report',
     research: 'Research Report',
     policy: 'Policy Brief',
@@ -153,5 +138,5 @@ export const REPORT_TYPE_LABELS: Record<ReportType, string> = {
     guidelines: 'Guidelines',
     agenda: 'Meeting Agenda',
     minutes: 'Meeting Minutes',
-    other: 'Other',
+    other: 'Other'
 };

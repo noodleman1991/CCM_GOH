@@ -1,11 +1,9 @@
 import React from 'react';
 import Image from 'next/image';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import {
     FileDown,
-    Download,
     Calendar,
     Building,
     Eye,
@@ -15,123 +13,40 @@ import {
 import { urlFor } from '@/sanity/lib/image';
 import {
     Report,
-    ReportFile,
-    SupportedLanguage,
-    ReportCardProps
+    SupportedLanguage
 } from '@/types/report';
 import {
     getLocalizedText,
     getAvailableLanguages,
-    getFileByLanguage,
-    formatFileSize,
-    getLanguageDisplay,
     getReportTypeLabel,
     canAccessReport
 } from '@/lib/report-utils';
-import { useDownloadTracking } from '@/hooks/use-download-tracking';
 import { cn } from '@/lib/utils';
+import { DownloadSection } from './grid-report-download';
 
-interface DownloadButtonProps {
-    file: ReportFile;
-    report: Report;
-    locale: string; // Changed from SupportedLanguage to string
-    userId?: string;
-    disabled?: boolean;
-    variant?: 'default' | 'outline' | 'ghost';
-    size?: 'sm' | 'default' | 'lg';
-}
-
-function DownloadButton({
-                            file,
-                            report,
-                            locale,
-                            userId,
-                            disabled = false,
-                            variant = 'default',
-                            size = 'sm'
-                        }: DownloadButtonProps) {
-    const { download, isFileDownloading, error } = useDownloadTracking({
-        userId,
-        onDownloadError: (error, reportId, language) => {
-            console.error(`Download failed for ${reportId} (${language}):`, error);
-        }
-    });
-
-    const isDownloading = isFileDownloading(report._id, file.language);
-    const fileSize = formatFileSize(file.file?.asset?.size);
-    const languageDisplay = getLanguageDisplay(file.language);
-
-    const handleDownload = async (e: React.MouseEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
-
-        try {
-            await download(file, report);
-        } catch (error) {
-            // Error is already handled by the hook
-        }
-    };
-
-    return (
-        <Button
-            variant={variant}
-            size={size}
-            onClick={handleDownload}
-            disabled={disabled || isDownloading}
-            className={cn(
-                "gap-2 transition-all",
-                isDownloading && "animate-pulse",
-                error && "border-red-200 text-red-600"
-            )}
-            title={`Download ${languageDisplay}${fileSize ? ` (${fileSize})` : ''}`}
-        >
-            {isDownloading ? (
-                <>
-                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                    <span className="hidden sm:inline">Downloading...</span>
-                </>
-            ) : (
-                <>
-                    <Download className="h-4 w-4" />
-                    <span className="hidden sm:inline">{languageDisplay}</span>
-                    <span className="sm:hidden">{file.language.toUpperCase()}</span>
-                    {fileSize && (
-                        <span className="hidden md:inline text-xs opacity-70">
-                            ({fileSize})
-                        </span>
-                    )}
-                </>
-            )}
-        </Button>
-    );
-}
-
+// Updated interface to match what grid-row actually passes
 interface GridReportComponentProps {
-    data: {
-        _type: 'grid-report';
-        _key: string;
-        report: Report;
-        showTags?: boolean;
-        showDownloadButtons?: boolean;
-        showMetadata?: boolean;
-    };
+    _type: 'grid-report';
+    _key: string;
+    report: Report;
+    showTags?: boolean;
+    showDownloadButtons?: boolean;
+    showMetadata?: boolean;
     locale: string;
     userId?: string;
     className?: string;
+    color?: string;
 }
 
 export default function GridReportComponent({
-                                                data,
+                                                report,
+                                                showTags = true,
+                                                showDownloadButtons = true,
+                                                showMetadata = true,
                                                 locale,
                                                 userId,
                                                 className
                                             }: GridReportComponentProps) {
-    const {
-        report,
-        showTags = true,
-        showDownloadButtons = true,
-        showMetadata = true
-    } = data;
     if (!report) return null;
 
     const title = getLocalizedText(report.title, locale);
@@ -149,10 +64,7 @@ export default function GridReportComponent({
 
     return (
         <Card className={cn(
-            "group relative flex flex-col h-full transition-all duration-200",
-            "hover:shadow-lg hover:shadow-primary/10 hover:border-primary/20",
-            !canAccess && "opacity-90",
-            className
+            "flex w-full flex-col justify-between overflow-hidden transition ease-in-out group border rounded-3xl p-4 hover:border-primary",
         )}>
             {/* Access restriction overlay */}
             {!canAccess && (
@@ -168,7 +80,7 @@ export default function GridReportComponent({
 
             {/* Cover Image */}
             {report.coverImage?.asset?.url && (
-                <div className="relative aspect-[16/9] overflow-hidden rounded-t-lg">
+                <div className="mb-4 relative h-[15rem] sm:h-[20rem] md:h-[25rem] lg:h-[9.5rem] xl:h-[12rem] rounded-2xl overflow-hidden">
                     <Image
                         src={urlFor(report.coverImage).width(400).height(225).url()}
                         alt={report.coverImage.alt || title}
@@ -278,55 +190,16 @@ export default function GridReportComponent({
             </CardContent>
 
             <CardFooter className="pt-0">
-                {/* Download buttons */}
-                {showDownloadButtons && hasFiles && canAccess && (
-                    <div className="w-full space-y-2">
-                        <div className="flex items-center gap-1 text-xs text-muted-foreground mb-2">
-                            <FileDown className="h-3 w-3" />
-                            <span>Available in {availableLanguages.length} language{availableLanguages.length !== 1 ? 's' : ''}</span>
-                        </div>
-
-                        <div className="flex flex-wrap gap-2">
-                            {availableLanguages.map(language => {
-                                const file = getFileByLanguage(report, language);
-                                if (!file) return null;
-
-                                return (
-                                    <DownloadButton
-                                        key={language}
-                                        file={file}
-                                        report={report}
-                                        locale={locale}
-                                        userId={userId}
-                                        variant="outline"
-                                        size="sm"
-                                    />
-                                );
-                            })}
-                        </div>
-                    </div>
-                )}
-
-                {/* No files available message */}
-                {!hasFiles && (
-                    <div className="w-full text-center text-sm text-muted-foreground">
-                        <AlertCircle className="h-4 w-4 mx-auto mb-1" />
-                        <span>No files available</span>
-                    </div>
-                )}
-
-                {/* Access restricted message */}
-                {!canAccess && hasFiles && (
-                    <div className="w-full text-center text-sm text-muted-foreground">
-                        <Lock className="h-4 w-4 mx-auto mb-1" />
-                        <span>
-                            {report.accessLevel === 'registered'
-                                ? 'Sign in to download'
-                                : 'Members only'
-                            }
-                        </span>
-                    </div>
-                )}
+                {/* Download section - Client Component */}
+                <DownloadSection
+                    report={report}
+                    availableLanguages={availableLanguages}
+                    hasFiles={hasFiles}
+                    canAccess={canAccess}
+                    showDownloadButtons={showDownloadButtons}
+                    locale={locale}
+                    userId={userId}
+                />
             </CardFooter>
         </Card>
     );

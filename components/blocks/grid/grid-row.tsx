@@ -3,13 +3,29 @@ import SectionContainer from "@/components/ui/section-container";
 import { stegaClean } from "next-sanity";
 import { PAGE_QUERYResult } from "@/sanity.types";
 import GridCard from "./grid-card";
-import PricingCard from "./pricing-card";
 import GridPost from "./grid-post";
+// import PricingCard from "./pricing-card";
 import GridReport from "./grid-report";
+import GridCaseStudy from "./grid-case-study";
 
 type Block = NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number];
 type GridRow = Extract<Block, { _type: "grid-row" }>;
-type GridColumn = NonNullable<NonNullable<GridRow["columns"]>[number]>;
+
+// Define our own types to avoid Sanity's union type issues
+type GridCardType = {
+    _type: "grid-card";
+    _key: string;
+    title?: string;
+    excerpt?: string;
+    image?: any;
+    link?: any;
+};
+
+type GridPostType = {
+    _type: "grid-post";
+    _key: string;
+    post?: any;
+};
 
 type GridReportType = {
     _type: "grid-report";
@@ -20,78 +36,86 @@ type GridReportType = {
     showMetadata?: boolean;
 };
 
-type ExtendedGridColumn = GridColumn | GridReportType;
+type GridCaseStudyType = {
+    _type: "grid-case-study";
+    _key: string;
+    caseStudy: any;
+    showTags?: boolean;
+    showAuthors?: boolean;
+    showMetadata?: boolean;
+    customExcerpt?: string;
+};
 
-// todo: fix type workaround
-// const componentMap: {
-//   [K in GridColumn["_type"]]: React.ComponentType<
-//      Extract<GridColumn, { _type: K }> & {
-//         color?: string;
-//         locale?: string;
-//         userId?: string;
-//     }
-//     >;
-// } = {
-//     "grid-card": GridCard,
-//     "pricing-card": PricingCard,
-//     "grid-post": GridPost,
-//     "grid-report": GridReport,
-// };
+// Union of all possible grid column types
+type ExtendedGridColumn = GridCardType | GridPostType | GridReportType | GridCaseStudyType;
 
-const componentMap: {
-    [K in ExtendedGridColumn["_type"]]: React.ComponentType<any>;
-} = {
+// Simplified component map with explicit type union
+const componentMap: Record<string, React.ComponentType<any>> = {
     "grid-card": GridCard,
-    "pricing-card": PricingCard,
     "grid-post": GridPost,
     "grid-report": GridReport,
+    "grid-case-study": GridCaseStudy,
 };
 
 interface GridRowProps extends GridRow {
     locale?: string;
     userId?: string;
+    rowId?: string;
 }
 
 export default function GridRow({
-  padding,
-  colorVariant,
-  gridColumns,
-  columns,
-  locale,
-  userId,
-}: GridRowProps) {
-  const color = stegaClean(colorVariant);
+                                    padding,
+                                    colorVariant,
+                                    gridColumns,
+                                    columns,
+                                    locale,
+                                    userId,
+                                    rowId,
+                                }: GridRowProps) {
+    const color = stegaClean(colorVariant);
 
-  return (
-    <SectionContainer color={color} padding={padding}>
-      {columns && columns?.length > 0 && (
-        <div
-          className={cn(
-            `grid grid-cols-1 gap-6`,
-            `lg:${stegaClean(gridColumns)}`
-          )}
-        >
-          {columns.map((column) => {
-            const Component = componentMap[column._type];
-            if (!Component) {
-              // Fallback for development/debugging of new component types
-              console.warn(
-                `No component implemented for grid column type: ${column._type}`
-              );
-              return <div data-type={column._type} key={column._key} />;
-            }
-            return (
-                  <Component
-                      {...(column as any)}
-                      color={color}
-                      key={column._key}
-                      locale={locale} // NEW: Pass locale
-                      userId={userId} // NEW: Pass userId
-                  />
-            );
-          })}
-        </div>
-      )}
-    </SectionContainer>
-  );
+    return (
+        <SectionContainer color={color} padding={padding}>
+            {columns && columns?.length > 0 && (
+                <div
+                    className={cn(
+                        `grid grid-cols-1 gap-6`,
+                        `lg:${stegaClean(gridColumns)}`
+                    )}
+                >
+                    {columns.map((column, index) => {
+                        // Type guard to ensure column has required properties
+                        if (!column || typeof column !== 'object' || !('_type' in column) || !column._type) {
+                            console.warn('Invalid column object:', column);
+                            return null;
+                        }
+
+                        const Component = componentMap[column._type];
+
+                        const uniqueKey = column._key
+                            ? `${rowId || 'row'}-${column._key}`
+                            : `${rowId || 'row'}-${column._type}-${index}`;
+
+                        if (!Component) {
+                            // Fallback for development/debugging of new component types
+                            console.warn(
+                                `No component implemented for grid column type: ${column._type}`
+                            );
+                            return <div data-type={column._type} key={uniqueKey} />;
+                        }
+
+                        return (
+                            <Component
+                                {...(column as any)}
+                                color={color}
+                                key={uniqueKey}
+                                locale={locale || 'en'}
+                                userId={userId}
+                            />
+                        );
+                    })}
+                </div>
+            )}
+        </SectionContainer>
+    );
 }

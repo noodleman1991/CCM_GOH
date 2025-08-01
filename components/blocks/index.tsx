@@ -12,7 +12,6 @@ import LogoCloud1 from "@/components/blocks/logo-cloud/logo-cloud-1";
 import FAQs from "@/components/blocks/faqs";
 import FormNewsletter from "@/components/blocks/forms/newsletter";
 import AllPosts from "@/components/blocks/all-posts";
-// import ReportsGrid from "@/components/blocks/grid/grid-report";
 import { isRTL } from "@/i18n/i18n-helpers";
 // import gridReport from "@/sanity/schemas/blocks/grid/grid-report"; //todo: what is the diff between reportsgrid and gridreports in schemas???
 
@@ -49,7 +48,6 @@ const componentMap: {
     faqs: FAQs,
     "form-newsletter": FormNewsletter,
     "all-posts": AllPosts,
-    // "gridReport": ReportsGrid,
 };
 
 export default function Blocks({ blocks, locale, translations, userId }: BlocksProps) {

@@ -3,6 +3,8 @@ import { gridCardQuery } from "@/sanity/queries/grid/grid-card";
 import { pricingCardQuery } from "@/sanity/queries/grid/pricing-card";
 import { gridPostQuery } from "@/sanity/queries/grid/grid-post";
 import { gridReportQuery } from "@/sanity/queries/grid/grid-report";
+import { gridCaseStudyQuery } from "@/sanity/queries/grid/grid-case-study";
+
 
 // @sanity-typegen-ignore
 export const gridRowQuery = groq`
@@ -14,9 +16,11 @@ export const gridRowQuery = groq`
     gridColumns,
     columns[]{
       ${gridCardQuery},
-      ${pricingCardQuery},
       ${gridPostQuery},
       ${gridReportQuery},
+      ${gridCaseStudyQuery},
     },
   }
 `;
+
+// ${pricingCardQuery},
