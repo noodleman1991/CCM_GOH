@@ -1,3 +1,5 @@
+// sanity/queries/grid/grid-case-study.ts
+
 import { groq } from "next-sanity";
 import { sanityFetch } from "@/sanity/lib/live";
 import { CaseStudy, CaseStudySearchParams, SupportedLanguage } from '@/types/case-study';
@@ -95,7 +97,7 @@ const CASE_STUDY_DETAIL_PROJECTION = groq`
 
 // ===== GRID/BLOCK QUERIES =====
 
-// Updated gridCaseStudyQuery - only fetch approved case studies
+// Fixed gridCaseStudyQuery - proper filtering syntax
 export const gridCaseStudyQuery = groq`
   _type == "grid-case-study" => {
     _type,
@@ -107,10 +109,13 @@ export const gridCaseStudyQuery = groq`
     showLocation,
     customExcerpt,
     customLayout,
-    // Filter case study by status during reference resolution
-    caseStudy->[status == "approved"][0]{
-      ${CASE_STUDY_PROJECTION}
-    }
+    // Properly filter case study by status - use select for conditional referencing
+    "caseStudy": select(
+      caseStudy->status == "approved" => caseStudy->{
+        ${CASE_STUDY_PROJECTION}
+      },
+      null
+    )
   }
 `;
 
