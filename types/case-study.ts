@@ -1,7 +1,11 @@
-export const SUPPORTED_LANGUAGES = ['en', 'es', 'fr', 'ar'] as const;
-export type SupportedLanguage = typeof SUPPORTED_LANGUAGES[number];
+export type SupportedLanguage = 'en' | 'es' | 'fr' | 'ar';
 
-// LocalizedString type for multilingual content
+export type CaseStudyStatus = 'pending' | 'reviewing' | 'approved' | 'rejected' | 'revision';
+
+export type AuthorRole = 'lead' | 'coauthor' | 'contributor' | 'advisor';
+
+export type GridCardLayout = 'default' | 'compact' | 'featured' | 'minimal';
+
 export interface LocalizedString {
     en?: string;
     es?: string;
@@ -9,339 +13,268 @@ export interface LocalizedString {
     ar?: string;
 }
 
-// Case Study Status - Updated to match schema
-export const CASE_STUDY_STATUSES = ['pending', 'reviewing', 'approved', 'rejected', 'revision', 'published'] as const;
-export type CaseStudyStatus = typeof CASE_STUDY_STATUSES[number];
+export interface LocalizedTags {
+    en?: Tag[];
+    es?: Tag[];
+    fr?: Tag[];
+    ar?: Tag[];
+}
 
-export const CASE_STUDY_STATUS_LABELS: Record<CaseStudyStatus, string> = {
-    pending: 'Pending Review',
-    reviewing: 'Under Review',
-    approved: 'Approved',
-    rejected: 'Rejected',
-    revision: 'Needs Revision',
-    published: 'Published',
-};
-
-// Author Roles
-export const AUTHOR_ROLES = ['lead', 'coauthor', 'contributor', 'advisor'] as const;
-export type AuthorRole = typeof AUTHOR_ROLES[number];
-
-export const AUTHOR_ROLE_LABELS: Record<AuthorRole, string> = {
-    lead: 'Lead Author',
-    coauthor: 'Co-Author',
-    contributor: 'Contributor',
-    advisor: 'Advisor',
-};
-
-// Translation Status
-export const TRANSLATION_STATUSES = ['progress', 'review', 'complete'] as const;
-export type TranslationStatus = typeof TRANSLATION_STATUSES[number];
-
-export const TRANSLATION_STATUS_LABELS: Record<TranslationStatus, string> = {
-    progress: 'In Progress',
-    review: 'Under Review',
-    complete: 'Complete',
-};
-
-// Organization Types
-export const ORGANIZATION_TYPES = [
-    'ngo', 'research', 'university', 'government',
-    'international', 'company', 'community', 'foundation', 'other'
-] as const;
-export type OrganizationType = typeof ORGANIZATION_TYPES[number];
-
-// Base Sanity Document interface
-interface SanityDocument {
+export interface Tag {
     _id: string;
-    _type: string;
-    _createdAt: string;
-    _updatedAt: string;
-    _rev: string;
-}
-
-// Enhanced Sanity Image interface - matches schema and queries
-export interface SanityImage {
-    asset?: {
-        _id: string;
-        url: string;
-        mimeType?: string;
-        metadata?: {
-            lqip?: string;
-            dimensions?: {
-                width: number;
-                height: number;
-            };
-        };
+    label: LocalizedString;
+    value: {
+        current: string;
     };
-    alt?: string;
-    caption?: string;
+    color?: string;
+    category?: string;
 }
 
-// Sanity Reference interface
-export interface SanityReference<T = any> {
-    _type: 'reference';
-    _ref: string;
-    _weak?: boolean;
-}
-
-// Geopoint interface
-export interface Geopoint {
-    lat: number;
-    lng: number;
-    alt?: number;
-}
-
-// Study Period
-export interface StudyPeriod {
-    startDate?: string;
-    endDate?: string;
-}
-
-// Study Area - Updated to match schema
-export interface StudyArea {
-    location: Geopoint;
-    name: string;
-    description?: string;
-}
-
-// Organization interface
-export interface Organization extends SanityDocument {
-    _type: 'organization';
+export interface Organization {
+    _id: string;
     name: string;
     slug: {
         current: string;
     };
     acronym?: string;
-    type: OrganizationType;
-    description?: LocalizedString;
-    logo?: SanityImage;
-    website?: string;
-    email?: string;
-    headquarters?: Geopoint;
-    offices?: Array<{
-        location?: Geopoint;
-        name?: string;
-        address?: string;
-        isPrimary: boolean;
-    }>;
-    regionalCommunity?: SanityReference;
-    socialMedia?: {
-        twitter?: string;
-        linkedin?: string;
-        facebook?: string;
-        instagram?: string;
+    logo?: {
+        asset?: {
+            _id: string;
+            url: string;
+        };
+        alt?: string;
     };
-    tags?: SanityReference[];
-    verified: boolean;
-    orderRank?: string;
 }
 
-// Project interface
-export interface Project extends SanityDocument {
-    _type: 'project';
+export interface Project {
+    _id: string;
     name: string;
     slug: {
         current: string;
     };
 }
 
-// Tag interface
-export interface ReportTag extends SanityDocument {
-    _type: 'tag';
-    label: LocalizedString;
-    value: string;
-    color?: string;
-    category?: string;
-}
-
-// Author interface
-export interface Author extends SanityDocument {
-    _type: 'author';
+export interface Author {
+    _id: string;
     name: string;
-    email?: string;
-    bio?: LocalizedString;
-    avatar?: SanityImage;
+    slug: {
+        current: string;
+    };
 }
 
-// Case Study Author (inline object in case study)
 export interface CaseStudyAuthor {
     userId?: string;
     name: string;
     email?: string;
     role: AuthorRole;
-    affiliation?: SanityReference<Organization> | Organization;
+    affiliation?: Organization;
 }
 
-// Case Study Translation reference - Updated to match schema
-export interface CaseStudyTranslation {
-    language: Exclude<SupportedLanguage, 'en'>; // Only es, fr, ar since en is base
-    status: TranslationStatus;
-    document: SanityReference<CaseStudy> | CaseStudy;
+export interface StudyPeriod {
+    startDate?: string;
+    endDate?: string;
 }
 
-// Portable Text type for content
-export interface PortableTextBlock {
-    _key: string;
-    _type: string;
-    [key: string]: any;
+export interface StudyArea {
+    location: {
+        lat: number;
+        lng: number;
+        alt?: number;
+    };
+    name: string;
+    description?: string;
 }
 
-// Main Case Study interface - Updated to match schema
-export interface CaseStudy extends SanityDocument {
-    _type: 'caseStudy';
+export interface CaseStudy {
+    _id: string;
     language: SupportedLanguage;
     title: LocalizedString;
+    excerpt: LocalizedString;
     slug: {
         current: string;
     };
-    excerpt: LocalizedString;
-    content: PortableTextBlock[]; // Portable Text array
 
-    // Submission tracking
+    // Metadata
     submittedBy?: string;
     submittedAt?: string;
 
-    // Authors and affiliations
+    // People and organizations
     authors: CaseStudyAuthor[];
-    organizations?: (SanityReference<Organization> | Organization)[];
-    projects?: (SanityReference<Project> | Project)[];
-    tags?: (SanityReference<ReportTag> | ReportTag)[];
+    organizations?: Organization[];
+    projects?: Project[];
+    tags?: LocalizedTags;
 
     // Media
-    image?: SanityImage;
+    image?: {
+        asset?: {
+            _id: string;
+            url: string;
+            mimeType?: string;
+            metadata?: {
+                lqip?: string;
+                dimensions?: {
+                    width: number;
+                    height: number;
+                };
+            };
+        };
+        alt?: string;
+        caption?: string;
+    };
 
-    // Study details - Updated field names to match schema
+    // Study details
     studyPeriod?: StudyPeriod;
-    studyLocation?: Geopoint;
+    studyLocation?: {
+        lat: number;
+        lng: number;
+        alt?: number;
+    };
     studyAreas?: StudyArea[];
 
     // Editorial workflow
     status: CaseStudyStatus;
     reviewNotes?: string;
-    reviewedBy?: SanityReference<Author> | Author;
+    reviewedBy?: Author;
     reviewedAt?: string;
     publishedAt?: string;
-    featured: boolean;
+    featured?: boolean;
 
-    // SEO - Updated field names to match schema
+    // SEO
     seoTitle?: string;
     seoDescription?: string;
     canonicalUrl?: string;
-
-    // Translation management - Updated to match schema
-    baseDocument?: SanityReference<CaseStudy> | CaseStudy;
-    translations?: CaseStudyTranslation[];
 }
 
-// Resolved Case Study (when references are populated)
-export interface ResolvedCaseStudy extends Omit<CaseStudy, 'organizations' | 'projects' | 'tags' | 'reviewedBy' | 'authors' | 'baseDocument' | 'translations'> {
+// For when references are fully resolved in queries
+export interface ResolvedCaseStudy extends Omit<CaseStudy, 'organizations' | 'projects' | 'reviewedBy' | 'authors'> {
     organizations?: Organization[];
     projects?: Project[];
-    tags?: ReportTag[];
     reviewedBy?: Author;
     authors: Array<CaseStudyAuthor & {
         affiliation?: Organization;
     }>;
-    baseDocument?: CaseStudy;
-    translations?: Array<CaseStudyTranslation & {
-        document: CaseStudy;
-    }>;
 }
 
-// Grid Case Study interface
 export interface GridCaseStudy {
     _type: 'grid-case-study';
     _key: string;
+    caseStudy: CaseStudy;
     showTags: boolean;
     showAuthors: boolean;
     showMetadata: boolean;
-    customExcerpt?: string;
-    caseStudy: SanityReference<CaseStudy> | CaseStudy;
+    showStudyPeriod: boolean;
+    showLocation: boolean;
+    customExcerpt?: LocalizedString;
+    customLayout: GridCardLayout;
+    priority?: number;
 }
 
-// Resolved Grid Case Study
-export interface ResolvedGridCaseStudy extends Omit<GridCaseStudy, 'caseStudy'> {
-    caseStudy: ResolvedCaseStudy;
+export interface CaseStudyCardProps {
+    gridItem: GridCaseStudy;
+    locale: SupportedLanguage;
+    userId?: string;
+    className?: string;
+    color?: string;
 }
 
-// Utility types for different query contexts
-export type CaseStudyCard = Pick<
-    ResolvedCaseStudy,
-    | '_id'
-    | 'language'
-    | 'title'
-    | 'excerpt'
-    | 'slug'
-    | 'publishedAt'
-    | 'featured'
-    | 'image'
-    | 'authors'
-    | 'tags'
-    | 'status'
->;
+// Language display constants
+export const LANGUAGE_NAMES: Record<SupportedLanguage, string> = {
+    en: 'English',
+    es: 'Español',
+    fr: 'Français',
+    ar: 'العربية'
+};
 
-export type CaseStudyPreview = Pick<
-    ResolvedCaseStudy,
-    | '_id'
-    | 'language'
-    | 'title'
-    | 'excerpt'
-    | 'slug'
-    | 'status'
-    | 'publishedAt'
-    | 'featured'
-    | 'image'
->;
+export const LANGUAGE_FLAGS: Record<SupportedLanguage, string> = {
+    en: '🇺🇸',
+    es: '🇪🇸',
+    fr: '🇫🇷',
+    ar: '🇸🇦'
+};
 
-// Helper function to get localized content
-export function getLocalizedContent<T extends LocalizedString>(
-    content: T,
+// Status labels - matching your schema configuration
+export const STATUS_LABELS: Record<CaseStudyStatus, string> = {
+    pending: 'Pending Review',
+    reviewing: 'Under Review',
+    approved: 'Approved (Published)',
+    rejected: 'Rejected',
+    revision: 'Needs Revision'
+};
+
+export const STATUS_EMOJIS: Record<CaseStudyStatus, string> = {
+    pending: '📝',
+    reviewing: '👀',
+    approved: '✅',
+    rejected: '❌',
+    revision: '📋'
+};
+
+// Author role labels - matching your schema configuration
+export const AUTHOR_ROLE_LABELS: Record<AuthorRole, string> = {
+    lead: 'Lead Author',
+    coauthor: 'Co-Author',
+    contributor: 'Contributor',
+    advisor: 'Advisor'
+};
+
+export const AUTHOR_ROLE_EMOJIS: Record<AuthorRole, string> = {
+    lead: '👑',
+    coauthor: '✍️',
+    contributor: '🤝',
+    advisor: '🎓'
+};
+
+// Grid layout labels
+export const GRID_LAYOUT_LABELS: Record<GridCardLayout, string> = {
+    default: 'Default',
+    compact: 'Compact',
+    featured: 'Featured',
+    minimal: 'Minimal'
+};
+
+export const GRID_LAYOUT_EMOJIS: Record<GridCardLayout, string> = {
+    default: '📄',
+    compact: '📦',
+    featured: '⭐',
+    minimal: '📝'
+};
+
+// Helper functions
+export function getLocalizedContent(
+    content: LocalizedString | undefined,
     language: SupportedLanguage,
     fallback: SupportedLanguage = 'en'
 ): string {
-    return content[language] || content[fallback] || Object.values(content).find(v => v) || '';
+    if (!content) return '';
+    return content[language] || content[fallback] || content.en || '';
 }
 
-// Helper function to get display title for any language
 export function getCaseStudyTitle(
-    caseStudy: { title: LocalizedString; language: SupportedLanguage },
+    caseStudy: Pick<CaseStudy, 'title' | 'language'>,
     preferredLanguage?: SupportedLanguage
 ): string {
     const lang = preferredLanguage || caseStudy.language;
     return getLocalizedContent(caseStudy.title, lang);
 }
 
-// Helper function to get display excerpt for any language
 export function getCaseStudyExcerpt(
-    caseStudy: { excerpt: LocalizedString; language: SupportedLanguage },
-    customExcerpt?: string,
+    caseStudy: Pick<CaseStudy, 'excerpt' | 'language'>,
+    customExcerpt?: LocalizedString,
     preferredLanguage?: SupportedLanguage
 ): string {
-    if (customExcerpt) return customExcerpt;
-
     const lang = preferredLanguage || caseStudy.language;
+
+    if (customExcerpt) {
+        return getLocalizedContent(customExcerpt, lang);
+    }
+
     return getLocalizedContent(caseStudy.excerpt, lang);
 }
 
-// Helper function to check if case study is published
 export function isCaseStudyPublished(caseStudy: Pick<CaseStudy, 'status'>): boolean {
-    return caseStudy.status === 'published';
+    return caseStudy.status === 'approved';
 }
 
-// Helper function to check if case study is available for translation
-export function canTranslateCaseStudy(caseStudy: Pick<CaseStudy, 'language' | 'status'>): boolean {
-    return caseStudy.language === 'en' && ['approved', 'published'].includes(caseStudy.status);
-}
-
-// Helper function to get available translations
-export function getAvailableTranslations(caseStudy: Pick<CaseStudy, 'translations'>): SupportedLanguage[] {
-    if (!caseStudy.translations) return [];
-    return caseStudy.translations
-        .filter(t => t.status === 'complete')
-        .map(t => t.language);
-}
-
-// Helper function to get case study URL
 export function getCaseStudyUrl(
     caseStudy: Pick<CaseStudy, 'slug' | 'language'>,
     targetLanguage?: SupportedLanguage
@@ -353,4 +286,67 @@ export function getCaseStudyUrl(
     return lang === 'en'
         ? `${baseUrl}/${slug}`
         : `/${lang}${baseUrl}/${slug}`;
+}
+
+export function formatStudyPeriod(studyPeriod: StudyPeriod | undefined): string {
+    if (!studyPeriod) return '';
+
+    const { startDate, endDate } = studyPeriod;
+
+    if (!startDate && !endDate) return '';
+
+    const formatDate = (dateString: string) => {
+        return new Date(dateString).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short'
+        });
+    };
+
+    if (startDate && endDate) {
+        return `${formatDate(startDate)} - ${formatDate(endDate)}`;
+    }
+
+    if (startDate) {
+        return `From ${formatDate(startDate)}`;
+    }
+
+    if (endDate) {
+        return `Until ${formatDate(endDate)}`;
+    }
+
+    return '';
+}
+
+export function getLeadAuthor(authors: CaseStudyAuthor[]): CaseStudyAuthor | undefined {
+    return authors.find(author => author.role === 'lead');
+}
+
+export function getAuthorsByRole(authors: CaseStudyAuthor[]): Record<AuthorRole, CaseStudyAuthor[]> {
+    return authors.reduce((acc, author) => {
+        if (!acc[author.role]) {
+            acc[author.role] = [];
+        }
+        acc[author.role].push(author);
+        return acc;
+    }, {} as Record<AuthorRole, CaseStudyAuthor[]>);
+}
+
+export function formatLocation(location: { lat: number; lng: number; alt?: number } | undefined): string {
+    if (!location) return '';
+
+    const { lat, lng } = location;
+    return `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+}
+
+// Type guards
+export function isGridCaseStudy(item: any): item is GridCaseStudy {
+    return item && item._type === 'grid-case-study';
+}
+
+export function hasValidCaseStudy(gridItem: GridCaseStudy): boolean {
+    return !!(gridItem.caseStudy && gridItem.caseStudy._id);
+}
+
+export function shouldShowField(gridItem: GridCaseStudy, field: keyof Pick<GridCaseStudy, 'showTags' | 'showAuthors' | 'showMetadata' | 'showStudyPeriod' | 'showLocation'>): boolean {
+    return gridItem[field] === true;
 }

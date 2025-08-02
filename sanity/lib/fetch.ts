@@ -457,7 +457,7 @@ export const fetchCaseStudiesByStatus = async ({
     return data;
 };
 
-// Fetch translations for a case study
+// Fetch translations for a case study - UPDATED
 export const fetchCaseStudyTranslations = async (caseStudyId: string) => {
     const { data } = await sanityFetch({
         query: `*[_type == "caseStudy" && _id == $caseStudyId][0]{
@@ -471,7 +471,7 @@ export const fetchCaseStudyTranslations = async (caseStudyId: string) => {
       },
       translations[]{
         language,
-        status,
+        translationStatus,
         document->{
           _id,
           language,
@@ -489,7 +489,7 @@ export const fetchCaseStudyTranslations = async (caseStudyId: string) => {
     return data;
 };
 
-// Fetch approved case studies by regional community with RTL ordering support
+// Fetch approved case studies by regional community with RTL ordering support - UPDATED
 export const fetchApprovedCaseStudiesByRC = async ({
                                                        slug,
                                                        limit = 12,
@@ -566,13 +566,7 @@ export const fetchApprovedCaseStudiesByRC = async ({
         name,
         slug
       },
-      tags[]->{
-        _id,
-        label,
-        value,
-        color,
-        category
-      },
+      tags,
       studyPeriod,
       studyLocation,
       studyAreas[]{
@@ -589,7 +583,7 @@ export const fetchApprovedCaseStudiesByRC = async ({
     return data;
 };
 
-// Search case studies
+// Search case studies - UPDATED
 export const searchCaseStudies = async ({
                                             searchTerm,
                                             language,
@@ -620,9 +614,15 @@ export const searchCaseStudies = async ({
     )`);
     }
 
+    // Updated tag filtering for field-level localized tags
     if (tags && tags.length > 0) {
-        const tagFilter = tags.map(tag => `references(*[_type == "tag" && value == "${tag}"][0]._id)`).join(' || ');
-        filters.push(`(${tagFilter})`);
+        const tagFilters = tags.map(tag => `(
+      defined(tags.en) && "${tag}" in tags.en[]->value.current ||
+      defined(tags.es) && "${tag}" in tags.es[]->value.current ||
+      defined(tags.fr) && "${tag}" in tags.fr[]->value.current ||
+      defined(tags.ar) && "${tag}" in tags.ar[]->value.current
+    )`);
+        filters.push(`(${tagFilters.join(' || ')})`);
     }
 
     const { data } = await sanityFetch({
@@ -658,12 +658,7 @@ export const searchCaseStudies = async ({
           acronym
         }
       },
-      tags[]->{
-        _id,
-        label,
-        value,
-        color
-      }
+      tags
     }`,
         params: { limit },
         perspective: "published",
