@@ -1,9 +1,101 @@
 import { groq } from "next-sanity";
 import { sanityFetch } from "@/sanity/lib/live";
+import { CaseStudy, CaseStudySearchParams, SupportedLanguage } from '@/types/case-study';
+
+// ===== SHARED CASE STUDY PROJECTION =====
+const CASE_STUDY_PROJECTION = groq`
+  _id,
+  title,
+  excerpt,
+  slug,
+  status,
+  publishedAt,
+  submittedAt,
+  submittedBy,
+  featured,
+  image{
+    asset->{
+      _id,
+      url,
+      mimeType,
+      metadata {
+        lqip,
+        dimensions {
+          width,
+          height
+        }
+      }
+    },
+    alt,
+    caption
+  },
+  authors[]{
+    userId,
+    name,
+    email,
+    role,
+    affiliation->{
+      _id,
+      name,
+      slug,
+      acronym,
+      logo{
+        asset->{
+          _id,
+          url
+        },
+        alt
+      }
+    }
+  },
+  organizations[]->{
+    _id,
+    name,
+    slug,
+    acronym,
+    logo{
+      asset->{
+        _id,
+        url
+      },
+      alt
+    }
+  },
+  projects[]->{
+    _id,
+    name,
+    slug
+  },
+  tags[]->{
+    _id,
+    label,
+    value,
+    color
+  },
+  studyPeriod,
+  studyLocation,
+  studyAreas[]{
+    location,
+    name,
+    description
+  }
+`;
+
+const CASE_STUDY_DETAIL_PROJECTION = groq`
+  ${CASE_STUDY_PROJECTION},
+  // Additional fields for detail view
+  content,
+  seoTitle,
+  seoDescription,
+  canonicalUrl,
+  reviewNotes,
+  reviewedBy,
+  reviewedAt
+`;
 
 // ===== GRID/BLOCK QUERIES =====
 
-// Fixed gridCaseStudyQuery - only fetch approved case studies (field-level)
+// Updated gridCaseStudyQuery - only fetch approved case studies
 export const gridCaseStudyQuery = groq`
   _type == "grid-case-study" => {
     _type,
@@ -17,377 +109,78 @@ export const gridCaseStudyQuery = groq`
     customLayout,
     // Filter case study by status during reference resolution
     caseStudy->[status == "approved"][0]{
-      _id,
-      title,
-      excerpt,
-      slug,
-      status,
-      publishedAt,
-      featured,
-      image{
-        asset->{
-          _id,
-          url,
-          mimeType,
-          metadata {
-            lqip,
-            dimensions {
-              width,
-              height
-            }
-          }
-        },
-        alt,
-        caption
-      },
-      authors[]{
-        userId,
-        name,
-        email,
-        role,
-        affiliation->{
-          _id,
-          name,
-          slug,
-          acronym,
-          logo{
-            asset->{
-              _id,
-              url
-            },
-            alt
-          }
-        }
-      },
-      organizations[]->{
-        _id,
-        name,
-        slug,
-        acronym,
-        logo{
-          asset->{
-            _id,
-            url
-          },
-          alt
-        }
-      },
-      projects[]->{
-        _id,
-        name,
-        slug
-      },
-      tags[]->{
-        _id,
-        label,
-        value,
-        color
-      },
-      studyPeriod,
-      studyLocation,
-      studyAreas[]{
-        location,
-        name,
-        description
-      }
+      ${CASE_STUDY_PROJECTION}
     }
   }
 `;
 
-// ===== CASE STUDY QUERIES (Field-Level) =====
+// ===== BASIC CASE STUDY QUERIES =====
 
-// Query for approved case studies (field-level localization)
+// Query for approved case studies only (public-facing)
 export const APPROVED_CASE_STUDIES_QUERY = groq`
   *[_type == "caseStudy" && status == "approved"] | order(publishedAt desc, featured desc)[0...$limit]{
-    _id,
-    title,
-    excerpt,
-    slug,
-    status,
-    publishedAt,
-    featured,
-    image{
-      asset->{
-        _id,
-        url,
-        mimeType,
-        metadata {
-          lqip,
-          dimensions {
-            width,
-            height
-          }
-        }
-      },
-      alt,
-      caption
-    },
-    authors[]{
-      userId,
-      name,
-      email,
-      role,
-      affiliation->{
-        _id,
-        name,
-        slug,
-        acronym,
-        logo{
-          asset->{
-            _id,
-            url
-          },
-          alt
-        }
-      }
-    },
-    organizations[]->{
-      _id,
-      name,
-      slug,
-      acronym,
-      logo{
-        asset->{
-          _id,
-          url
-        },
-        alt
-      }
-    },
-    projects[]->{
-      _id,
-      name,
-      slug
-    },
-    tags[]->{
-      _id,
-      label,
-      value,
-      color
-    },
-    studyPeriod,
-    studyLocation,
-    studyAreas[]{
-      location,
-      name,
-      description
-    }
+    ${CASE_STUDY_PROJECTION}
   }
 `;
 
-// Query for case study by slug (field-level)
+// Query for case study by slug (approved only)
 export const CASE_STUDY_BY_SLUG_QUERY = groq`
   *[_type == "caseStudy" && slug.current == $slug && status == "approved"][0]{
-    _id,
-    title,
-    excerpt,
-    content,
-    slug,
-    status,
-    publishedAt,
-    submittedAt,
-    submittedBy,
-    featured,
-    image{
-      asset->{
-        _id,
-        url,
-        mimeType,
-        metadata {
-          lqip,
-          dimensions {
-            width,
-            height
-          }
-        }
-      },
-      alt,
-      caption
-    },
-    authors[]{
-      userId,
-      name,
-      email,
-      role,
-      affiliation->{
-        _id,
-        name,
-        slug,
-        acronym,
-        logo{
-          asset->{
-            _id,
-            url
-          },
-          alt
-        }
-      }
-    },
-    organizations[]->{
-      _id,
-      name,
-      slug,
-      acronym,
-      logo{
-        asset->{
-          _id,
-          url
-        },
-        alt
-      }
-    },
-    projects[]->{
-      _id,
-      name,
-      slug
-    },
-    tags[]->{
-      _id,
-      label,
-      value,
-      color
-    },
-    studyPeriod,
-    studyLocation,
-    studyAreas[]{
-      location,
-      name,
-      description
-    },
-    // SEO fields
-    seoTitle,
-    seoDescription,
-    canonicalUrl
+    ${CASE_STUDY_DETAIL_PROJECTION}
   }
 `;
 
-// Query for featured case studies (field-level)
+// Query for featured case studies (approved only)
 export const FEATURED_CASE_STUDIES_QUERY = groq`
   *[_type == "caseStudy" && status == "approved" && featured == true] | order(publishedAt desc)[0...$limit]{
-    _id,
-    title,
-    excerpt,
-    slug,
-    publishedAt,
-    image{
-      asset->{
-        _id,
-        url,
-        mimeType,
-        metadata {
-          lqip,
-          dimensions {
-            width,
-            height
-          }
-        }
-      },
-      alt,
-      caption
-    },
-    authors[]{
-      name,
-      role,
-      affiliation->{
-        name,
-        acronym
-      }
-    },
-    tags[]->{
-      _id,
-      label,
-      value,
-      color
-    }
+    ${CASE_STUDY_PROJECTION}
   }
 `;
 
-// Query for approved case studies by regional community (field-level)
+// Query for approved case studies by regional community
 export const APPROVED_CASE_STUDIES_BY_RC_QUERY = groq`
   *[_type == "caseStudy" && status == "approved" && references(*[_type == "regionalCommunity" && slug.current == $slug][0]._id)] | order(publishedAt desc, featured desc)[0...$limit]{
-    _id,
-    title,
-    excerpt,
-    slug,
-    status,
-    publishedAt,
-    featured,
-    image{
-      asset->{
-        _id,
-        url,
-        mimeType,
-        metadata {
-          lqip,
-          dimensions {
-            width,
-            height
-          }
-        }
-      },
-      alt,
-      caption
-    },
-    authors[]{
-      userId,
-      name,
-      email,
-      role,
-      affiliation->{
-        _id,
-        name,
-        slug,
-        acronym,
-        logo{
-          asset->{
-            _id,
-            url
-          },
-          alt
-        }
-      }
-    },
-    organizations[]->{
-      _id,
-      name,
-      slug,
-      acronym,
-      logo{
-        asset->{
-          _id,
-          url
-        },
-        alt
-      }
-    },
-    projects[]->{
-      _id,
-      name,
-      slug
-    },
-    tags[]->{
-      _id,
-      label,
-      value,
-      color
-    },
-    studyPeriod,
-    studyLocation,
-    studyAreas[]{
-      location,
-      name,
-      description
-    }
+    ${CASE_STUDY_PROJECTION}
   }
 `;
 
-// ===== FETCH FUNCTIONS (Updated for Field-Level) =====
+// Query for approved case studies by organization
+export const APPROVED_CASE_STUDIES_BY_ORG_QUERY = groq`
+  *[_type == "caseStudy" && status == "approved" && references(*[_type == "organization" && slug.current == $slug][0]._id)] | order(publishedAt desc, featured desc)[0...$limit]{
+    ${CASE_STUDY_PROJECTION}
+  }
+`;
+
+// Query for approved case studies by project
+export const APPROVED_CASE_STUDIES_BY_PROJECT_QUERY = groq`
+  *[_type == "caseStudy" && status == "approved" && references(*[_type == "project" && slug.current == $slug][0]._id)] | order(publishedAt desc, featured desc)[0...$limit]{
+    ${CASE_STUDY_PROJECTION}
+  }
+`;
+
+// ===== ADMIN QUERIES (Include all statuses) =====
+
+// Admin query for all case studies (regardless of status)
+export const ALL_CASE_STUDIES_ADMIN_QUERY = groq`
+  *[_type == "caseStudy"] | order(submittedAt desc, publishedAt desc)[0...$limit]{
+    ${CASE_STUDY_PROJECTION}
+  }
+`;
+
+// Admin query for case studies by status
+export const CASE_STUDIES_BY_STATUS_QUERY = groq`
+  *[_type == "caseStudy" && status == $status] | order(submittedAt desc)[0...$limit]{
+    ${CASE_STUDY_PROJECTION}
+  }
+`;
+
+// ===== FETCH FUNCTIONS =====
 
 export const fetchApprovedCaseStudies = async ({
                                                    limit = 12,
                                                }: {
     limit?: number;
-} = {}) => {
+} = {}): Promise<CaseStudy[]> => {
     const { data } = await sanityFetch({
         query: APPROVED_CASE_STUDIES_QUERY,
         params: { limit },
@@ -395,14 +188,14 @@ export const fetchApprovedCaseStudies = async ({
         stega: false,
     });
 
-    return data;
+    return data || [];
 };
 
 export const fetchCaseStudyBySlug = async ({
                                                slug,
                                            }: {
     slug: string;
-}) => {
+}): Promise<CaseStudy | null> => {
     const { data } = await sanityFetch({
         query: CASE_STUDY_BY_SLUG_QUERY,
         params: { slug },
@@ -417,7 +210,7 @@ export const fetchFeaturedCaseStudies = async ({
                                                    limit = 3,
                                                }: {
     limit?: number;
-} = {}) => {
+} = {}): Promise<CaseStudy[]> => {
     const { data } = await sanityFetch({
         query: FEATURED_CASE_STUDIES_QUERY,
         params: { limit },
@@ -425,7 +218,7 @@ export const fetchFeaturedCaseStudies = async ({
         stega: false,
     });
 
-    return data;
+    return data || [];
 };
 
 export const fetchRegionalCommunityCaseStudies = async ({
@@ -434,7 +227,7 @@ export const fetchRegionalCommunityCaseStudies = async ({
                                                         }: {
     slug: string;
     limit?: number;
-}) => {
+}): Promise<CaseStudy[]> => {
     const { data } = await sanityFetch({
         query: APPROVED_CASE_STUDIES_BY_RC_QUERY,
         params: { slug, limit },
@@ -442,30 +235,59 @@ export const fetchRegionalCommunityCaseStudies = async ({
         stega: false,
     });
 
-    return data;
+    return data || [];
 };
 
-// Fixed search function for field-level localization
+export const fetchOrganizationCaseStudies = async ({
+                                                       slug,
+                                                       limit = 6
+                                                   }: {
+    slug: string;
+    limit?: number;
+}): Promise<CaseStudy[]> => {
+    const { data } = await sanityFetch({
+        query: APPROVED_CASE_STUDIES_BY_ORG_QUERY,
+        params: { slug, limit },
+        perspective: "published",
+        stega: false,
+    });
+
+    return data || [];
+};
+
+export const fetchProjectCaseStudies = async ({
+                                                  slug,
+                                                  limit = 6
+                                              }: {
+    slug: string;
+    limit?: number;
+}): Promise<CaseStudy[]> => {
+    const { data } = await sanityFetch({
+        query: APPROVED_CASE_STUDIES_BY_PROJECT_QUERY,
+        params: { slug, limit },
+        perspective: "published",
+        stega: false,
+    });
+
+    return data || [];
+};
+
+// Search function for approved case studies only
 export const searchCaseStudies = async ({
                                             searchTerm,
                                             locale = 'en',
                                             tags,
                                             limit = 20,
-                                        }: {
-    searchTerm?: string;
-    locale?: string;
-    tags?: string[];
-    limit?: number;
-}) => {
+                                        }: CaseStudySearchParams): Promise<CaseStudy[]> => {
     let filters = [`_type == "caseStudy"`, `status == "approved"`];
 
     if (searchTerm) {
         filters.push(`(
-            title.${locale} match "${searchTerm}*" ||
-            title.en match "${searchTerm}*" ||
-            excerpt.${locale} match "${searchTerm}*" ||
-            excerpt.en match "${searchTerm}*"
-        )`);
+      title.${locale} match "${searchTerm}*" ||
+      title.en match "${searchTerm}*" ||
+      excerpt.${locale} match "${searchTerm}*" ||
+      excerpt.en match "${searchTerm}*"
+    )`);
     }
 
     if (tags && tags.length > 0) {
@@ -475,60 +297,59 @@ export const searchCaseStudies = async ({
 
     const { data } = await sanityFetch({
         query: `*[${filters.join(' && ')}] | order(featured desc, publishedAt desc)[0...$limit]{
-            _id,
-            title,
-            excerpt,
-            slug,
-            publishedAt,
-            featured,
-            image{
-                asset->{
-                    _id,
-                    url,
-                    mimeType,
-                    metadata {
-                        lqip,
-                        dimensions {
-                            width,
-                            height
-                        }
-                    }
-                },
-                alt,
-                caption
-            },
-            authors[]{
-                name,
-                role,
-                affiliation->{
-                    name,
-                    acronym
-                }
-            },
-            tags[]->{
-                _id,
-                label,
-                value,
-                color
-            }
-        }`,
+      ${CASE_STUDY_PROJECTION}
+    }`,
         params: { limit },
         perspective: "published",
         stega: false,
     });
 
-    return data;
+    return data || [];
 };
 
-export const fetchCaseStudiesStaticParams = async () => {
+// Static params for approved case studies only
+export const fetchCaseStudiesStaticParams = async (): Promise<{ slug: string }[]> => {
     const { data } = await sanityFetch({
         query: `*[_type == "caseStudy" && status == "approved" && defined(slug)]{
-            _id,
-            slug { current }
-        }`,
+      "slug": slug.current
+    }`,
         perspective: "published",
         stega: false,
     });
 
-    return data;
+    return data || [];
+};
+
+// ===== ADMIN FUNCTIONS (Use with caution - includes all statuses) =====
+
+export const fetchAllCaseStudiesAdmin = async ({
+                                                   limit = 50,
+                                               }: {
+    limit?: number;
+} = {}): Promise<CaseStudy[]> => {
+    const { data } = await sanityFetch({
+        query: ALL_CASE_STUDIES_ADMIN_QUERY,
+        params: { limit },
+        perspective: "previewDrafts", // Include drafts for admin
+        stega: false,
+    });
+
+    return data || [];
+};
+
+export const fetchCaseStudiesByStatusAdmin = async ({
+                                                        status,
+                                                        limit = 50,
+                                                    }: {
+    status: string;
+    limit?: number;
+}): Promise<CaseStudy[]> => {
+    const { data } = await sanityFetch({
+        query: CASE_STUDIES_BY_STATUS_QUERY,
+        params: { status, limit },
+        perspective: "previewDrafts", // Include drafts for admin
+        stega: false,
+    });
+
+    return data || [];
 };

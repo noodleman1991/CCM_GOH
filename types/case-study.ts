@@ -15,6 +15,13 @@ export interface CaseStudyAuthor {
         name: string;
         slug: { current: string };
         acronym?: string;
+        logo?: {
+            asset?: {
+                _id: string;
+                url: string;
+            };
+            alt?: string;
+        };
     };
 }
 
@@ -23,6 +30,19 @@ export interface Organization {
     name: string;
     slug: { current: string };
     acronym?: string;
+    logo?: {
+        asset?: {
+            _id: string;
+            url: string;
+        };
+        alt?: string;
+    };
+}
+
+export interface Project {
+    _id: string;
+    name: string;
+    slug: { current: string };
 }
 
 export interface Tag {
@@ -32,6 +52,38 @@ export interface Tag {
     color?: string;
 }
 
+export interface StudyArea {
+    location: {
+        lat: number;
+        lng: number;
+        alt?: number
+    };
+    name: string;
+    description?: string;
+}
+
+export interface StudyPeriod {
+    startDate?: string;
+    endDate?: string;
+}
+
+export interface CaseStudyImage {
+    asset?: {
+        _id: string;
+        url: string;
+        mimeType?: string;
+        metadata?: {
+            lqip?: string;
+            dimensions?: {
+                width: number;
+                height: number
+            };
+        };
+    };
+    alt?: string;
+    caption?: string;
+}
+
 export interface CaseStudy {
     _id: string;
     title: LocalizedString; // Field-level localized object
@@ -39,37 +91,29 @@ export interface CaseStudy {
     slug: { current: string };
     status: 'pending' | 'approved' | 'rejected' | 'revision';
     publishedAt?: string;
+    submittedAt?: string;
+    submittedBy?: string;
     featured?: boolean;
-    image?: {
-        asset?: {
-            _id: string;
-            url: string;
-            mimeType?: string;
-            metadata?: {
-                lqip?: string;
-                dimensions?: { width: number; height: number };
-            };
-        };
-        alt?: string;
-        caption?: string;
-    };
+    image?: CaseStudyImage;
     authors: CaseStudyAuthor[];
     organizations?: Organization[];
+    projects?: Project[];
     tags?: Tag[];
-    studyPeriod?: {
-        startDate?: string;
-        endDate?: string;
-    };
+    studyPeriod?: StudyPeriod;
     studyLocation?: {
         lat: number;
         lng: number;
         alt?: number;
     };
-    studyAreas?: Array<{
-        location: { lat: number; lng: number; alt?: number };
-        name: string;
-        description?: string;
-    }>;
+    studyAreas?: StudyArea[];
+    // SEO fields
+    seoTitle?: string;
+    seoDescription?: string;
+    canonicalUrl?: string;
+    // Review fields
+    reviewNotes?: string;
+    reviewedBy?: string;
+    reviewedAt?: string;
 }
 
 export interface GridCaseStudyComponentProps {
@@ -91,3 +135,45 @@ export interface GridCaseStudyComponentProps {
 }
 
 export type SupportedLanguage = 'en' | 'es' | 'fr' | 'ar';
+
+export type CaseStudyStatus = 'pending' | 'approved' | 'rejected' | 'revision';
+
+export type UserRole = 'guest' | 'user' | 'admin';
+
+// For search and filtering
+export interface CaseStudySearchParams {
+    searchTerm?: string;
+    locale?: SupportedLanguage;
+    tags?: string[];
+    status?: CaseStudyStatus[];
+    featured?: boolean;
+    authorId?: string;
+    organizationId?: string;
+    projectId?: string;
+    limit?: number;
+    offset?: number;
+}
+
+// For API responses
+export interface CaseStudyListResponse {
+    data: CaseStudy[];
+    total: number;
+    hasMore: boolean;
+    nextOffset?: number;
+}
+
+// For form submissions
+export interface CaseStudyFormData {
+    title: LocalizedString;
+    excerpt?: LocalizedString;
+    authors: Omit<CaseStudyAuthor, 'affiliation'> & { affiliationId?: string }[];
+    organizationIds?: string[];
+    projectIds?: string[];
+    tagIds?: string[];
+    studyPeriod?: StudyPeriod;
+    studyLocation?: CaseStudy['studyLocation'];
+    studyAreas?: StudyArea[];
+    image?: File;
+    imageAlt?: string;
+    imageCaption?: string;
+}

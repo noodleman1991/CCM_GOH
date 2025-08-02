@@ -8,18 +8,18 @@ import {
     Building,
     Users,
     MapPin,
+    Lock
 } from 'lucide-react';
 import { urlFor } from '@/sanity/lib/image';
 import { cn } from '@/lib/utils';
 import {
-    getCaseStudyTitle,
-    getCaseStudyExcerpt,
+    getLocalizedText,
     getCaseStudyUrl,
     getPrimaryAuthor,
     getStudyLocationText,
     formatCaseStudyDate,
     isRTL,
-    getLocalizedTagLabel
+    canAccessCaseStudy
 } from '@/lib/case-study-utils';
 import { GridCaseStudyComponentProps, SupportedLanguage } from '@/types/case-study';
 
@@ -45,8 +45,10 @@ export default function GridCaseStudyComponent({
     const supportedLocale = locale as SupportedLanguage;
 
     // Get localized content
-    const title = getCaseStudyTitle(caseStudy, supportedLocale);
-    const excerpt = getCaseStudyExcerpt(caseStudy, customExcerpt, supportedLocale);
+    const title = getLocalizedText(caseStudy.title, supportedLocale);
+    const excerpt = customExcerpt
+        ? getLocalizedText(customExcerpt, supportedLocale)
+        : getLocalizedText(caseStudy.excerpt, supportedLocale);
     const caseStudyUrl = getCaseStudyUrl(caseStudy, supportedLocale);
 
     // Get metadata
@@ -54,6 +56,7 @@ export default function GridCaseStudyComponent({
     const publishDate = caseStudy.publishedAt ? new Date(caseStudy.publishedAt) : null;
     const locationText = getStudyLocationText(caseStudy);
     const isRTLLocale = isRTL(locale);
+    const canAccess = canAccessCaseStudy(caseStudy.status, userId ? 'user' : 'guest');
 
     // Localized text helpers
     const getMoreText = (count: number) => {
@@ -118,6 +121,18 @@ export default function GridCaseStudyComponent({
                 isRTLLocale && "rtl",
                 className
             )} style={{ borderColor: color }}>
+                {/* Access restriction overlay */}
+                {!canAccess && (
+                    <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-10 rounded-lg">
+                        <div className="text-center text-white p-4">
+                            <Lock className="h-8 w-8 mx-auto mb-2" />
+                            <p className="text-sm font-medium">
+                                {caseStudy.status === 'pending' ? 'Under Review' : 'Access Restricted'}
+                            </p>
+                        </div>
+                    </div>
+                )}
+
                 {/* Cover Image */}
                 {caseStudy.image?.asset?.url && (
                     <div className="mb-4 relative h-[15rem] sm:h-[20rem] md:h-[25rem] lg:h-[9.5rem] xl:h-[12rem] rounded-2xl overflow-hidden">
@@ -247,7 +262,7 @@ export default function GridCaseStudyComponent({
                             {caseStudy.tags.slice(0, 3).map((tag) => {
                                 if (!tag._id) return null;
 
-                                const tagLabel = getLocalizedTagLabel(tag, supportedLocale);
+                                const tagLabel = getLocalizedText(tag.label, supportedLocale, tag.value?.current || 'Tag');
 
                                 return (
                                     <Badge

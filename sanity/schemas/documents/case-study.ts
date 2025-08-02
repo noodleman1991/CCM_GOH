@@ -53,25 +53,10 @@ export default defineType({
         { name: "content", title: "Content" },
         { name: "metadata", title: "Metadata" },
         { name: "affiliations", title: "Affiliations" },
-        { name: "review", title: "Review" },
+        { name: "review", title: "Review & Publishing" },
         { name: "seo", title: "SEO" },
     ],
     fields: [
-        // // Language selection
-        // defineField({
-        //     name: "language",
-        //     title: "Language",
-        //     type: "string",
-        //     options: {
-        //         list: supportedLanguages.map(lang => ({
-        //             value: lang.id,
-        //             title: `${lang.flag} ${lang.title}`
-        //         })),
-        //     },
-        //     initialValue: "en",
-        //     validation: (Rule) => Rule.required(),
-        // }),
-
         // Content fields
         createLocalizedField("title", "Title", "string", true),
 
@@ -304,7 +289,7 @@ export default defineType({
             validation: (Rule) => Rule.max(5),
         }),
 
-        // Review workflow
+        // Review workflow and publishing
         defineField({
             name: "status",
             title: "Publication Status",
@@ -313,6 +298,28 @@ export default defineType({
             options: { list: statusOptions },
             initialValue: "pending",
             validation: (Rule) => Rule.required(),
+            description: "Only 'approved' case studies will be visible to the public",
+        }),
+
+        defineField({
+            name: "featured",
+            title: "Featured Case Study",
+            type: "boolean",
+            group: "review",
+            initialValue: false,
+            description: "Featured case studies appear in highlighted sections",
+        }),
+
+        defineField({
+            name: "publishedAt",
+            title: "Published At",
+            type: "datetime",
+            group: "review",
+            hidden: ({ document }) => {
+                const status = document?.status as string;
+                return status !== "approved";
+            },
+            description: "Automatically set when status changes to 'approved'",
         }),
 
         defineField({
@@ -321,6 +328,7 @@ export default defineType({
             type: "text",
             group: "review",
             rows: 4,
+            description: "Internal notes for editors and reviewers",
         }),
 
         defineField({
@@ -347,25 +355,6 @@ export default defineType({
             },
         }),
 
-        defineField({
-            name: "publishedAt",
-            title: "Published At",
-            type: "datetime",
-            group: "review",
-            hidden: ({ document }) => {
-                const status = document?.status as string;
-                return status !== "approved";
-            },
-        }),
-
-        defineField({
-            name: "featured",
-            title: "Featured Case Study",
-            type: "boolean",
-            group: "review",
-            initialValue: false,
-        }),
-
         // SEO fields
         defineField({
             name: "seoTitle",
@@ -373,6 +362,7 @@ export default defineType({
             type: "string",
             group: "seo",
             validation: (Rule) => Rule.max(60),
+            description: "Override the default title for search engines",
         }),
 
         defineField({
@@ -382,6 +372,7 @@ export default defineType({
             group: "seo",
             rows: 3,
             validation: (Rule) => Rule.max(160),
+            description: "Description for search engines and social sharing",
         }),
 
         defineField({
@@ -389,6 +380,7 @@ export default defineType({
             title: "Canonical URL",
             type: "url",
             group: "seo",
+            description: "If this case study was published elsewhere first",
         }),
     ],
 
@@ -397,17 +389,15 @@ export default defineType({
             title: "title",
             status: "status",
             media: "image",
-            language: "language",
+            featured: "featured",
         },
-        prepare({ title, status, media, language }: {
+        prepare({ title, status, media, featured }: {
             title?: Record<string, string>;
             status?: string;
             media?: any;
-            language?: string;
+            featured?: boolean;
         }) {
-            const lang = language || "en";
-            const langConfig = supportedLanguages.find(l => l.id === lang);
-            const displayTitle = title?.[lang] || title?.en || "Untitled Case Study";
+            const displayTitle = title?.en || "Untitled Case Study";
 
             const statusEmojis: Record<string, string> = {
                 pending: "📝",
@@ -417,7 +407,8 @@ export default defineType({
             };
 
             const statusEmoji = statusEmojis[status || "pending"] || "📝";
-            const subtitle = `${langConfig?.flag || "🌐"} ${langConfig?.title || lang.toUpperCase()} | ${statusEmoji} ${status || "pending"}`;
+            const featuredIcon = featured ? "⭐ " : "";
+            const subtitle = `${featuredIcon}${statusEmoji} ${status || "pending"}`;
 
             return {
                 title: displayTitle,
@@ -434,14 +425,22 @@ export default defineType({
             by: [{ field: "publishedAt", direction: "desc" }],
         },
         {
+            title: "Submitted Date (Newest)",
+            name: "submittedDateDesc",
+            by: [{ field: "submittedAt", direction: "desc" }],
+        },
+        {
             title: "Status",
             name: "statusAsc",
             by: [{ field: "status", direction: "asc" }],
         },
         {
-            title: "Language",
-            name: "languageAsc",
-            by: [{ field: "language", direction: "asc" }],
+            title: "Featured First",
+            name: "featuredFirst",
+            by: [
+                { field: "featured", direction: "desc" },
+                { field: "publishedAt", direction: "desc" }
+            ],
         },
         {
             title: "Title (A-Z)",
