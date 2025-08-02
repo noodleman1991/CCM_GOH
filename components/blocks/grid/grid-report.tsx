@@ -24,7 +24,6 @@ import {
 import { cn } from '@/lib/utils';
 import { DownloadSection } from './grid-report-download';
 
-// Updated interface to match what grid-row actually passes
 interface GridReportComponentProps {
     _type: 'grid-report';
     _key: string;

@@ -43,11 +43,11 @@ export default defineConfig({
         documentInternationalization({
             supportedLanguages: routing.locales.map(locale => ({
                 id: locale,
-                title:  locale === 'ar' ? 'العربية' :
-                    locale === 'fr' ? 'Français' :
-                        locale === 'es' ? 'Español' : 'English'
+                title:      locale === 'ar' ? 'العربية' :
+                            locale === 'fr' ? 'Français' :
+                            locale === 'es' ? 'Español' : 'English'
             })),
-            schemaTypes: ['page', 'regionalCommunityPage', 'post'],
+            schemaTypes: ['page', 'regionalCommunityPage', 'post', 'caseStudy'],
             languageField: 'language',
             weakReferences: true,
         }),
