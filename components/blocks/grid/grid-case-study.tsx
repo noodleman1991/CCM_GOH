@@ -10,80 +10,49 @@ import {
     MapPin,
 } from 'lucide-react';
 import { urlFor } from '@/sanity/lib/image';
-import {
-    CaseStudy,
-    SupportedLanguage,
-    LocalizedString
-} from '@/types/case-study';
-
+import { cn } from '@/lib/utils';
 import {
     getCaseStudyTitle,
     getCaseStudyExcerpt,
     getCaseStudyUrl,
     getPrimaryAuthor,
-    getLocalizedTags,
     getStudyLocationText,
     formatCaseStudyDate,
-    getLocalizedStatus,
     isRTL,
-    getLocalizedText
+    getLocalizedTagLabel
 } from '@/lib/case-study-utils';
-import { cn } from '@/lib/utils';
-
-interface GridCaseStudyComponentProps {
-    gridItem: {
-        _type: 'grid-case-study';
-        _key: string;
-        showTags: boolean;
-        showAuthors: boolean;
-        showMetadata: boolean;
-        showStudyPeriod?: boolean;
-        showLocation?: boolean;
-        customExcerpt?: LocalizedString; // Fixed: should be LocalizedString, not string
-        customLayout?: 'default' | 'compact' | 'featured' | 'minimal';
-        priority?: number;
-        caseStudy: CaseStudy;
-    };
-    locale: SupportedLanguage;
-    className?: string;
-    color?: string;
-}
+import { GridCaseStudyComponentProps, SupportedLanguage } from '@/types/case-study';
 
 export default function GridCaseStudyComponent({
-                                                   gridItem,
+                                                   caseStudy,
+                                                   showTags = true,
+                                                   showAuthors = true,
+                                                   showMetadata = true,
+                                                   showStudyPeriod = false,
+                                                   showLocation = false,
+                                                   customExcerpt,
+                                                   customLayout = 'default',
                                                    locale,
+                                                   userId,
                                                    className,
                                                    color
                                                }: GridCaseStudyComponentProps) {
     // Early return if no data
-    if (!gridItem?.caseStudy) {
+    if (!caseStudy) {
         return null;
     }
 
-    // Destructure grid item properties
-    const {
-        caseStudy,
-        showTags = true,
-        showAuthors = true,
-        showMetadata = true,
-        showStudyPeriod = false,
-        showLocation = false,
-        customExcerpt,
-        customLayout = 'default'
-    } = gridItem;
+    const supportedLocale = locale as SupportedLanguage;
 
-    // Get localized content with safe fallbacks
-    const title = getCaseStudyTitle(caseStudy, locale);
-    const excerpt = getCaseStudyExcerpt(caseStudy, customExcerpt, locale); // Now type-safe
-    const caseStudyUrl = getCaseStudyUrl(caseStudy, locale);
+    // Get localized content
+    const title = getCaseStudyTitle(caseStudy, supportedLocale);
+    const excerpt = getCaseStudyExcerpt(caseStudy, customExcerpt, supportedLocale);
+    const caseStudyUrl = getCaseStudyUrl(caseStudy, supportedLocale);
 
-    // Get metadata safely
+    // Get metadata
     const primaryAuthor = getPrimaryAuthor(caseStudy);
-    const publishDate = caseStudy?.publishedAt ? new Date(caseStudy.publishedAt) : null;
+    const publishDate = caseStudy.publishedAt ? new Date(caseStudy.publishedAt) : null;
     const locationText = getStudyLocationText(caseStudy);
-
-    // Get localized tags for current locale
-    const localizedTags = getLocalizedTags(caseStudy?.tags, locale);
     const isRTLLocale = isRTL(locale);
 
     // Localized text helpers
@@ -94,7 +63,7 @@ export default function GridCaseStudyComponent({
             fr: 'autres',
             ar: 'آخرين'
         };
-        return `+${count} ${moreTexts[locale]}`;
+        return `+${count} ${moreTexts[supportedLocale] || 'more'}`;
     };
 
     const getCaseStudyTypeText = () => {
@@ -104,7 +73,7 @@ export default function GridCaseStudyComponent({
             fr: 'Étude de Cas',
             ar: 'دراسة حالة'
         };
-        return typeTexts[locale];
+        return typeTexts[supportedLocale] || 'Case Study';
     };
 
     const getFeaturedText = () => {
@@ -114,7 +83,7 @@ export default function GridCaseStudyComponent({
             fr: 'En vedette',
             ar: 'مميز'
         };
-        return featuredTexts[locale];
+        return featuredTexts[supportedLocale] || 'Featured';
     };
 
     const getStudyPeriodText = () => {
@@ -124,14 +93,14 @@ export default function GridCaseStudyComponent({
             fr: 'Période d\'Étude: ',
             ar: 'فترة الدراسة: '
         };
-        return periodTexts[locale];
+        return periodTexts[supportedLocale] || 'Study Period: ';
     };
 
     // Layout-based styling
     const getLayoutClasses = () => {
         switch (customLayout) {
             case 'compact':
-                return 'h-auto p-3';
+                return 'p-3';
             case 'featured':
                 return 'border-2 border-primary shadow-lg p-6';
             case 'minimal':
@@ -144,13 +113,13 @@ export default function GridCaseStudyComponent({
     return (
         <Link href={caseStudyUrl}>
             <Card className={cn(
-                "flex w-full flex-col justify-between overflow-hidden transition ease-in-out group border rounded-3xl hover:border-primary cursor-pointer",
+                "flex w-full flex-col justify-between overflow-hidden transition ease-in-out group border rounded-3xl hover:border-primary",
                 getLayoutClasses(),
                 isRTLLocale && "rtl",
                 className
             )} style={{ borderColor: color }}>
                 {/* Cover Image */}
-                {caseStudy?.image?.asset?.url && (
+                {caseStudy.image?.asset?.url && (
                     <div className="mb-4 relative h-[15rem] sm:h-[20rem] md:h-[25rem] lg:h-[9.5rem] xl:h-[12rem] rounded-2xl overflow-hidden">
                         <Image
                             src={urlFor(caseStudy.image).width(400).height(225).url()}
@@ -171,25 +140,13 @@ export default function GridCaseStudyComponent({
                         </div>
 
                         {/* Featured badge */}
-                        {caseStudy?.featured && (
+                        {caseStudy.featured && (
                             <div className={cn(
                                 "absolute top-3",
                                 isRTLLocale ? "left-3" : "right-3"
                             )}>
                                 <Badge className="bg-yellow-500 text-black">
                                     ⭐ {getFeaturedText()}
-                                </Badge>
-                            </div>
-                        )}
-
-                        {/* Language indicator if different from requested locale */}
-                        {caseStudy?.language && caseStudy.language !== locale && (
-                            <div className={cn(
-                                "absolute bottom-3",
-                                isRTLLocale ? "left-3" : "right-3"
-                            )}>
-                                <Badge variant="outline" className="bg-white/90 text-xs">
-                                    {caseStudy.language.toUpperCase()}
                                 </Badge>
                             </div>
                         )}
@@ -233,7 +190,7 @@ export default function GridCaseStudyComponent({
                                 )}>
                                     <Calendar className="h-3 w-3" />
                                     <span>
-                                        {formatCaseStudyDate(publishDate, locale)}
+                                        {formatCaseStudyDate(publishDate, supportedLocale)}
                                     </span>
                                 </div>
                             )}
@@ -247,20 +204,20 @@ export default function GridCaseStudyComponent({
                                     <Users className="h-3 w-3" />
                                     <span className="line-clamp-1">
                                         {primaryAuthor.name}
-                                        {caseStudy?.authors && caseStudy.authors.length > 1 && ` ${getMoreText(caseStudy.authors.length - 1)}`}
+                                        {caseStudy.authors && caseStudy.authors.length > 1 && ` ${getMoreText(caseStudy.authors.length - 1)}`}
                                     </span>
                                 </div>
                             )}
 
                             {/* Organizations */}
-                            {caseStudy?.organizations && caseStudy.organizations.length > 0 && (
+                            {caseStudy.organizations && caseStudy.organizations.length > 0 && (
                                 <div className={cn(
                                     "flex items-center gap-1",
                                     isRTLLocale && "flex-row-reverse"
                                 )}>
                                     <Building className="h-3 w-3" />
                                     <span className="line-clamp-1">
-                                        {caseStudy.organizations.slice(0, 2).map(org => org?.name).filter(Boolean).join(', ')}
+                                        {caseStudy.organizations.slice(0, 2).map(org => org.name).filter(Boolean).join(', ')}
                                         {caseStudy.organizations.length > 2 && ` ${getMoreText(caseStudy.organizations.length - 2)}`}
                                     </span>
                                 </div>
@@ -281,16 +238,16 @@ export default function GridCaseStudyComponent({
                         </div>
                     )}
 
-                    {/* Tags - Handle LocalizedTags properly */}
-                    {showTags && localizedTags.length > 0 && (
+                    {/* Tags */}
+                    {showTags && caseStudy.tags && caseStudy.tags.length > 0 && (
                         <div className={cn(
                             "flex flex-wrap gap-1 mt-3",
                             isRTLLocale && "justify-end"
                         )}>
-                            {localizedTags.slice(0, 3).map((tag) => {
-                                if (!tag?._id) return null;
+                            {caseStudy.tags.slice(0, 3).map((tag) => {
+                                if (!tag._id) return null;
 
-                                const tagLabel = getLocalizedText(tag.label, locale, tag.value?.current || 'Tag');
+                                const tagLabel = getLocalizedTagLabel(tag, supportedLocale);
 
                                 return (
                                     <Badge
@@ -306,9 +263,9 @@ export default function GridCaseStudyComponent({
                                     </Badge>
                                 );
                             })}
-                            {localizedTags.length > 3 && (
+                            {caseStudy.tags.length > 3 && (
                                 <Badge variant="outline" className="text-xs">
-                                    {getMoreText(localizedTags.length - 3)}
+                                    {getMoreText(caseStudy.tags.length - 3)}
                                 </Badge>
                             )}
                         </div>
@@ -317,7 +274,7 @@ export default function GridCaseStudyComponent({
 
                 <CardFooter className="pt-0">
                     {/* Study period if available and enabled */}
-                    {showStudyPeriod && caseStudy?.studyPeriod && (caseStudy.studyPeriod.startDate || caseStudy.studyPeriod.endDate) && (
+                    {showStudyPeriod && caseStudy.studyPeriod && (caseStudy.studyPeriod.startDate || caseStudy.studyPeriod.endDate) && (
                         <div className={cn(
                             "text-xs text-muted-foreground mb-2",
                             isRTLLocale && "text-right"
@@ -329,7 +286,7 @@ export default function GridCaseStudyComponent({
                     )}
 
                     {/* Status indicator for non-approved case studies */}
-                    {caseStudy?.status && caseStudy.status !== 'approved' && (
+                    {caseStudy.status && caseStudy.status !== 'approved' && (
                         <div className={cn(
                             "text-xs",
                             isRTLLocale && "text-right"
@@ -337,14 +294,13 @@ export default function GridCaseStudyComponent({
                             <Badge
                                 variant={
                                     caseStudy.status === 'pending' ? 'secondary' :
-                                        caseStudy.status === 'reviewing' ? 'default' :
-                                            caseStudy.status === 'revision' ? 'destructive' :
-                                                caseStudy.status === 'rejected' ? 'destructive' :
-                                                    'outline'
+                                        caseStudy.status === 'revision' ? 'destructive' :
+                                            caseStudy.status === 'rejected' ? 'destructive' :
+                                                'outline'
                                 }
                                 className="text-xs"
                             >
-                                {getLocalizedStatus(caseStudy.status, locale)}
+                                {caseStudy.status}
                             </Badge>
                         </div>
                     )}

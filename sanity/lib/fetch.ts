@@ -3,9 +3,8 @@ import { PAGE_QUERY, PAGES_SLUGS_QUERY } from "@/sanity/queries/page";
 import { REGIONAL_COMMUNITY_PAGE_QUERY } from "@/sanity/queries/regional-community-page";
 import {
     CASE_STUDY_BY_SLUG_QUERY,
-    PUBLISHED_CASE_STUDIES_QUERY,
+    APPROVED_CASE_STUDIES_QUERY,
     FEATURED_CASE_STUDIES_QUERY,
-    CASE_STUDIES_BY_LANGUAGE_QUERY,
     APPROVED_CASE_STUDIES_BY_RC_QUERY,
 } from "@/sanity/queries/grid/grid-case-study";
 import {
@@ -295,33 +294,39 @@ export const fetchCaseStudyBySlug = async ({
     return data;
 };
 
-export const fetchPublishedCaseStudies = async ({
-                                                    limit = 12,
-                                                    locale = 'en',
-                                                }: {
+export const fetchApprovedCaseStudies = async ({
+                                                   limit = 12,
+                                                   language = 'en', // Renamed from locale to match query parameter
+                                               }: {
     limit?: number;
-    locale?: string;
+    language?: string; // Should match your supported languages
 } = {}) => {
     const { data } = await sanityFetch({
-        query: PUBLISHED_CASE_STUDIES_QUERY,
-        params: { limit },
-        perspective: "published",
+        query: APPROVED_CASE_STUDIES_QUERY,
+        params: {
+            limit,
+            language // Added missing language parameter
+        },
+        perspective: "published", // Changed from "approved" to standard perspective
         stega: false,
     });
 
     return data;
 };
 
-export const fetchCaseStudiesByLanguage = async ({
-                                                     language,
-                                                     limit = 12,
-                                                 }: {
-    language: string;
+export const fetchApprovedCaseStudiesByLocale = async ({
+                                                           limit = 12,
+                                                           locale = 'en',
+                                                       }: {
     limit?: number;
-}) => {
+    locale?: string;
+} = {}) => {
     const { data } = await sanityFetch({
-        query: CASE_STUDIES_BY_LANGUAGE_QUERY,
-        params: { language, limit },
+        query: APPROVED_CASE_STUDIES_QUERY,
+        params: {
+            limit,
+            language: locale // Map locale to language parameter
+        },
         perspective: "published",
         stega: false,
     });
@@ -667,3 +672,44 @@ export const searchCaseStudies = async ({
 
     return data;
 };
+
+// is good?
+// export const fetchSanityPageBySlug = async ({
+//                                                 slug,
+//                                             }: {
+//     slug: string;
+// }) => {
+//     const { data } = await sanityFetch({
+//         query: PAGE_QUERY,
+//         params: { slug },
+//     });
+//
+//     return data;
+// };
+//
+// export const fetchCaseStudyBySlug = async ({
+//                                                slug,
+//                                            }: {
+//     slug: string;
+// }) => {
+//     const { data } = await sanityFetch({
+//         query: CASE_STUDY_BY_SLUG_QUERY,
+//         params: { slug },
+//     });
+//
+//     return data;
+// };
+//
+// // Remove language filtering from all fetch functions
+// export const fetchSanityPostBySlug = async ({
+//                                                 slug,
+//                                             }: {
+//     slug: string;
+// }) => {
+//     const { data } = await sanityFetch({
+//         query: POST_QUERY,
+//         params: { slug },
+//     });
+//
+//     return data;
+// };
