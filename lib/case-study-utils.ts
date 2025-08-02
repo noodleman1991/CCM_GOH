@@ -1,4 +1,4 @@
-import { CaseStudy, LocalizedString, SupportedLanguage, Tag, CaseStudyAuthor } from '@/types/case-study';
+import { CaseStudy, LocalizedString, SupportedLanguage, CaseStudyAuthor } from '@/types/case-study';
 
 export function getLocalizedText(
     text: LocalizedString | undefined,
@@ -74,6 +74,62 @@ export function isRTL(locale: string): boolean {
     return locale === 'ar';
 }
 
-export function getLocalizedTagLabel(tag: Tag, locale: SupportedLanguage): string {
+export function getLocalizedTagLabel(tag: { label: LocalizedString; value?: { current: string } }, locale: SupportedLanguage): string {
     return getLocalizedText(tag.label, locale, tag.value?.current || 'Tag');
+}
+
+export function canAccessCaseStudy(status: string, userRole: 'guest' | 'user' | 'admin'): boolean {
+    // Only approved case studies are accessible to all users
+    if (status === 'approved') return true;
+
+    // Admins can see all case studies
+    if (userRole === 'admin') return true;
+
+    // Regular users and guests can only see approved case studies
+    return false;
+}
+
+export function getCaseStudyStatusLabel(status: string, locale: SupportedLanguage): string {
+    const statusLabels = {
+        en: {
+            pending: 'Under Review',
+            approved: 'Published',
+            rejected: 'Rejected',
+            revision: 'Needs Revision'
+        },
+        es: {
+            pending: 'En Revisión',
+            approved: 'Publicado',
+            rejected: 'Rechazado',
+            revision: 'Necesita Revisión'
+        },
+        fr: {
+            pending: 'En Révision',
+            approved: 'Publié',
+            rejected: 'Rejeté',
+            revision: 'Révision Nécessaire'
+        },
+        ar: {
+            pending: 'قيد المراجعة',
+            approved: 'منشور',
+            rejected: 'مرفوض',
+            revision: 'يحتاج مراجعة'
+        }
+    };
+
+    return statusLabels[locale]?.[status as keyof typeof statusLabels[typeof locale]] || status;
+}
+
+export function getAvailableLanguages(caseStudy: CaseStudy): SupportedLanguage[] {
+    const languages: SupportedLanguage[] = [];
+
+    if (caseStudy.title) {
+        Object.keys(caseStudy.title).forEach(lang => {
+            if (caseStudy.title[lang as SupportedLanguage]) {
+                languages.push(lang as SupportedLanguage);
+            }
+        });
+    }
+
+    return languages;
 }
