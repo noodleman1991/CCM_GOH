@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { createClient } from "@sanity/client";
 import { v4 as uuidv4 } from "uuid";
 
@@ -19,6 +19,15 @@ export async function POST(request: NextRequest) {
             return NextResponse.json(
                 { error: "Unauthorized" },
                 { status: 401 }
+            );
+        }
+
+        // Get full user data from Clerk
+        const clerkUser = await currentUser();
+        if (!clerkUser) {
+            return NextResponse.json(
+                { error: "User not found" },
+                { status: 404 }
             );
         }
 
@@ -52,32 +61,40 @@ export async function POST(request: NextRequest) {
                 current: `${slug}-${uuidv4().slice(0, 8)}`,
             },
             excerpt: data.excerpt,
-            submittedBy: data.submittedBy,
-            authors: data.authors,
+            content: data.content,
+
+            // User information from Clerk
+            submittedBy: userId,
+            submittedAt: new Date().toISOString(),
+
+            // Authors with enhanced user data
+            authors: data.authors.map((author: any, index: number) => ({
+                _key: uuidv4(),
+                userId: author.userId || (index === 0 ? userId : undefined), // First author is submitter
+                name: author.name,
+                email: author.email,
+                role: author.role,
+                // Add Clerk user data for the submitter
+                ...(index === 0 && {
+                    clerkUserId: userId,
+                    clerkImageUrl: clerkUser.imageUrl,
+                    clerkUsername: clerkUser.username,
+                })
+            })),
+
             tags: data.tags.map((tagId: string) => ({
                 _type: "reference",
                 _ref: tagId,
             })),
-            content: Object.entries(data.content).map(([lang, text]) => {
-                if (!text) return null;
-                return {
-                    _type: "block",
-                    _key: uuidv4(),
-                    style: "normal",
-                    children: [
-                        {
-                            _type: "span",
-                            _key: uuidv4(),
-                            text: text as string,
-                            marks: [],
-                        },
-                    ],
-                    markDefs: [],
-                };
-            }).filter(Boolean),
+
             studyPeriod: data.studyPeriod,
             location: data.location,
+
+            // Default status for review workflow
             status: "pending",
+            featured: false,
+
+            // Metadata
             _createdAt: new Date().toISOString(),
         };
 
@@ -89,10 +106,12 @@ export async function POST(request: NextRequest) {
             );
 
             if (existingOrg) {
-                caseStudyDoc.organization = {
-                    _type: "reference",
-                    _ref: existingOrg._id,
-                };
+                caseStudyDoc.organizations = [
+                    {
+                        _type: "reference",
+                        _ref: existingOrg._id,
+                    }
+                ];
             } else {
                 // Create a new organization
                 const newOrg = await sanityClient.create({
@@ -109,10 +128,12 @@ export async function POST(request: NextRequest) {
                     type: "other",
                 });
 
-                caseStudyDoc.organization = {
-                    _type: "reference",
-                    _ref: newOrg._id,
-                };
+                caseStudyDoc.organizations = [
+                    {
+                        _type: "reference",
+                        _ref: newOrg._id,
+                    }
+                ];
             }
         }
 
@@ -129,24 +150,31 @@ export async function POST(request: NextRequest) {
                     _type: "reference",
                     _ref: asset._id,
                 },
+                alt: `Featured image for ${data.title.en}`,
             };
         }
 
         // Create the case study document in Sanity
         const result = await sanityClient.create(caseStudyDoc);
 
-        // Send notification email to admins (optional)
-        // You can implement this using your email service
+        // Log submission for tracking
+        console.log(`Case study submitted by user ${userId} (${clerkUser.emailAddresses[0]?.emailAddress}): ${result._id}`);
 
         return NextResponse.json({
             success: true,
             id: result._id,
-            message: "Case study submitted successfully. It will be reviewed by our team.",
+            slug: result.slug.current,
+            status: result.status,
+            message: "Case study submitted successfully. It will be reviewed by our team before publication.",
         });
+
     } catch (error) {
         console.error("Failed to submit case study:", error);
         return NextResponse.json(
-            { error: "Failed to submit case study" },
+            {
+                error: "Failed to submit case study",
+                details: process.env.NODE_ENV === 'development' ? error : undefined
+            },
             { status: 500 }
         );
     }

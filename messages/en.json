@@ -292,5 +292,93 @@
     "search": "Search",
     "noResults": "No profiles found. Try adjusting your search.",
     "unnamed": "Unnamed User"
+  },
+  "caseStudySubmission": {
+    "pageTitle": "Submit Case Study",
+    "pageDescription": "Share your research and insights with our global multilingual community",
+    "title": "Submit Your Case Study",
+    "description": "Share your research with our global community in English, Spanish, French, or Arabic. Help us make knowledge accessible to researchers worldwide."
+  },
+  "caseStudyForm": {
+    "sections": {
+      "basicInfo": "Basic Information",
+      "content": "Content & Details",
+      "authors": "Authors & Contributors",
+      "classification": "Tags & Classification",
+      "location": "Study Location",
+      "timeline": "Study Period"
+    },
+    "fields": {
+      "title": "Title",
+      "subtitle": "Subtitle",
+      "excerpt": "Excerpt",
+      "content": "Full Content",
+      "featuredImage": "Featured Image",
+      "organization": "Associated Organization",
+      "authors": "Research Team",
+      "tags": "Tags",
+      "country": "Country",
+      "city": "City",
+      "region": "Region/State",
+      "startDate": "Start Date",
+      "endDate": "End Date"
+    },
+    "placeholders": {
+      "title": "Enter title in {language}",
+      "subtitle": "Enter subtitle in {language}",
+      "excerpt": "Brief summary in {language}",
+      "content": "Detailed case study content in {language}",
+      "organization": "Enter organization name",
+      "authorName": "Full name",
+      "authorEmail": "Email address",
+      "country": "Enter country",
+      "city": "Enter city",
+      "region": "Enter region"
+    },
+    "descriptions": {
+      "excerpt": "These summaries help researchers worldwide discover your work. Required in all four languages.",
+      "content": "Write your case study in any language you prefer. At least one language version is required.",
+      "organization": "If this case study is associated with a specific organization, enter its name here.",
+      "tags": "Select at least one tag to help categorize your case study.",
+      "endDate": "Leave empty if the study is ongoing",
+      "image": "Upload a high-quality image to represent your case study (max 10MB)",
+      "multilingual": "Our platform serves researchers in 4 languages. You can submit in any language, but please help us with titles and excerpts in all languages."
+    },
+    "roles": {
+      "lead": "Lead Author",
+      "coauthor": "Co-Author",
+      "contributor": "Contributor",
+      "advisor": "Advisor"
+    },
+    "actions": {
+      "addAuthor": "Add Author",
+      "removeAuthor": "Remove Author",
+      "uploadImage": "Upload Image",
+      "submit": "Submit Case Study",
+      "submitting": "Submitting..."
+    },
+    "validation": {
+      "titleRequired": "Title is required in all four languages to help our global community",
+      "excerptMinLength": "Excerpt must be at least 50 characters in all languages",
+      "contentMinLength": "Please provide detailed content in at least one language (minimum 200 characters)",
+      "authorNameRequired": "Author name is required",
+      "invalidEmail": "Invalid email address",
+      "oneAuthorRequired": "At least one author is required",
+      "oneTagRequired": "At least one tag is required",
+      "invalidImageType": "Please upload a valid image file (JPEG, PNG, or WebP)",
+      "imageTooLarge": "Image size must be less than 10MB"
+    },
+    "status": {
+      "draft": "Draft",
+      "submitting": "Submitting...",
+      "submitted": "Submitted for Review"
+    },
+    "messages": {
+      "submitSuccess": "¡Gracias! Thank you! Merci! شكرا! Your case study has been submitted and will be reviewed by our team.",
+      "submitError": "Failed to submit case study. Please try again.",
+      "loginRequired": "You must be logged in to submit a case study",
+      "reviewNote": "Your case study will be reviewed by our multilingual editorial team before publication.",
+      "multilingualWelcome": "Welcome to our global community! Submit in any language and help us reach researchers worldwide."
+    }
   }
 }
