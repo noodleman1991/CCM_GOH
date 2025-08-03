@@ -160,11 +160,9 @@ export default function CaseStudySubmissionLayout({
                     </div>
                 </div>
 
-                {/* Form Component */}
+                {/* Form Component?? */}
                 <CaseStudyForm
-                    availableTags={availableTags}
-                    currentLanguage={currentLanguage}
-                    sectionRefs={sectionRefs}
+                    locale = {'en'}
                     userId={userId}
                 />
             </div>
