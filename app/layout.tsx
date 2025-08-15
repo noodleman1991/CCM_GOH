@@ -14,6 +14,22 @@ import { arSA, esES, frFR, enGB } from '@clerk/localizations';
 // import { routing } from '@/i18n/routing';
 import { rtlLocales } from '@/i18n/routing';
 import ConditionalSidebarLayout from "@/components/conditional-sidebar-layout";
+import { Poppins, Lato } from "next/font/google";
+
+const poppins = Poppins({
+    subsets: ["latin"],
+    weight: ["400", "500", "600", "700"],
+    variable: "--font-poppins",
+    display: "swap",
+});
+
+const lato = Lato({
+    subsets: ["latin"],
+    weight: ["300", "400", "700"],
+    variable: "--font-lato",
+    display: "swap",
+});
+
 
 const clerkLocalizationsMap = {
     en: enGB,
@@ -27,8 +43,8 @@ const isProduction = process.env.NEXT_PUBLIC_SITE_ENV === "production";
 export const metadata: Metadata = {
     metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL!),
     title: {
-        template: "%s | Schema UI Starter",
-        default: "Sanity Next.js Website | Schema UI Starter",
+        template: "%s | Connecting Climate Minds",
+        default: "Hub | Connecting Climate Minds",
     },
     openGraph: {
         images: [
@@ -71,14 +87,25 @@ export default async function LocaleLayout({
     // }
 
     return (
-        <html lang={locale} dir={isRtl ? 'rtl' : 'ltr'} suppressHydrationWarning>
+        <html
+            lang={locale}
+            dir={isRtl ? 'rtl' : 'ltr'}
+            className={`${fontSans.variable} ${poppins.variable} ${lato.variable}`}
+            suppressHydrationWarning
+        >
         <head>
             <link rel="icon" href="/favicon.ico" />
         </head>
         <body
+            // className={cn(
+            //     "min-h-screen bg-background font-sans antialiased overscroll-none overflow-x-hidden",
+            //     fontSans.variable
+            // )}
             className={cn(
                 "min-h-screen bg-background font-sans antialiased overscroll-none overflow-x-hidden",
-                fontSans.variable
+                fontSans.variable,
+                poppins.variable,
+                lato.variable
             )}
         >
         <ClerkProvider localization={clerkLocalization}>
