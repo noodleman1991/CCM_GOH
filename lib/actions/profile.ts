@@ -42,6 +42,11 @@ export interface ProfileData {
         regionalName?: string | null
         specialName?: string | null
     }>
+    displayName: string
+    fullName: string
+    initials: string
+    location: string
+    work: string
 }
 
 // Cache profile data for 5 minutes
@@ -66,6 +71,13 @@ const getCachedUserProfile = unstable_cache(
             return null
         }
 
+        const fullName = [user.firstName, user.lastName].filter(Boolean).join(' ')
+        const location = [user.city, user.country].filter(Boolean).join(', ')
+        const work = [user.position, user.organization].filter(Boolean).join(' at ')
+        const displayName = fullName || user.username || 'Unnamed User'
+        const initials = `${user.firstName?.[0] || ''}${user.lastName?.[0] || ''}`.toUpperCase() ||
+            user.username?.[0]?.toUpperCase() || '??'
+
         return {
             id: user.id,
             firstName: user.firstName,
@@ -89,7 +101,13 @@ const getCachedUserProfile = unstable_cache(
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
             recentWork: user.recentWork,
-            communities: user.communityMemberships.map(membership => membership.community)
+            communities: user.communityMemberships.map(membership => membership.community),
+            // CRITICAL: Actually return the computed properties
+            displayName,
+            fullName,
+            initials,
+            location,
+            work
         }
     },
     ['profile'],
@@ -108,15 +126,15 @@ export async function getUserProfile(username: string): Promise<ProfileData | nu
     }
 }
 
-// export async function checkProfileOwnership(profileUserId: string): Promise<boolean> {
-//     try {
-//         const { userId } = auth()
-//         return userId === profileUserId
-//     } catch (error) {
-//         console.error('Error checking profile ownership:', error)
-//         return false
-//     }
-// } todo: what is this???
+export async function checkProfileOwnership(profileUserId: string): Promise<boolean> {
+    try {
+        const { userId } = await auth() // CRITICAL: await auth()
+        return userId === profileUserId
+    } catch (error) {
+        console.error('Error checking profile ownership:', error)
+        return false
+    }
+}
 
 export async function getProfileMetadata(username: string) {
     try {
@@ -147,21 +165,5 @@ export async function getProfileMetadata(username: string) {
     } catch (error) {
         console.error('Error fetching profile metadata:', error)
         return null
-    }
-}
-
-// Helper function to format profile data for display
-export async function formatProfileData(user: ProfileData) {
-    const fullName = [user.firstName, user.lastName].filter(Boolean).join(' ')
-    const location = [user.city, user.country].filter(Boolean).join(', ')
-    const work = [user.position, user.organization].filter(Boolean).join(' at ')
-
-    return {
-        ...user,
-        fullName: fullName || user.username,
-        displayName: fullName || user.username || 'Unnamed User',
-        location,
-        work,
-        initials: `${user.firstName?.[0] || ''}${user.lastName?.[0] || ''}`.toUpperCase() || user.username?.[0]?.toUpperCase() || '??'
     }
 }

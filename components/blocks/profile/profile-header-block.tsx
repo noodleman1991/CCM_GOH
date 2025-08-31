@@ -48,7 +48,7 @@ export default function ProfileHeaderBlock({
                             </h1>
                             {isOwnProfile && (
                                 <Button size="sm" variant="outline" asChild>
-                                    <Link href="/profile/edit">
+                                    <Link href="/dashboard/profile/edit">
                                         <Edit className="h-4 w-4 mr-2" />
                                         {t('editProfile')}
                                     </Link>
