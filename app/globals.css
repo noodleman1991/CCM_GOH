@@ -312,3 +312,18 @@
         font-weight: 500;
     }
 }
+
+/* RTL-specific styles */
+[dir="rtl"] {
+    text-align: right;
+}
+
+[dir="rtl"] .sidebar-text {
+    font-family: 'Noto Sans Arabic', 'Tajawal', sans-serif;
+}
+
+/* Ensure proper Arabic text flow */
+[dir="rtl"] .truncate {
+    direction: rtl;
+    text-align: right;
+}
