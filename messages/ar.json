@@ -1,71 +1,18 @@
 {
   "profile": {
     "noName": "بدون اسم",
+    "unnamed": "مستخدم بدون اسم",
     "editProfile": "تعديل الملف الشخصي",
     "contact": "اتصل",
-    "basicInfo": "المعلومات الأساسية",
-    "bio": "نبذة عني",
+    "basicInfo": "حول",
+    "bio": "حول",
     "under18": "أقل من 18",
     "above18": "18 أو أكثر",
-    "edit": {
-      "pageTitle": "تعديل الملف الشخصي",
-      "pageDescription": "تحديث معلومات ملفك الشخصي",
-      "saveSuccess": "تم تحديث الملف الشخصي بنجاح",
-      "saveError": "فشل في تحديث الملف الشخصي",
-      "basicInfo": {
-        "title": "المعلومات الأساسية",
-        "description": "سيتم عرض هذه المعلومات على ملفك الشخصي العام"
-      },
-      "workInfo": {
-        "title": "معلومات العمل",
-        "description": "أخبرنا عن خلفيتك المهنية وخبرتك"
-      },
-      "social": {
-        "title": "الروابط الاجتماعية",
-        "description": "أضف روابط إلى ملفاتك الشخصية على وسائل التواصل الاجتماعي وموقعك الشخصي"
-      },
-      "firstName": "الاسم الأول",
-      "lastName": "اسم العائلة",
-      "username": "اسم المستخدم",
-      "usernameHint": "سيتم استخدام هذا في رابط ملفك الشخصي",
-      "bio": "السيرة الذاتية",
-      "ageGroup": "الفئة العمرية",
-      "selectAge": "اختر فئتك العمرية",
-      "under18": "أقل من 18",
-      "above18": "18 أو أكثر",
-      "country": "البلد",
-      "city": "المدينة/البلدة",
-      "workTypes": {
-        "label": "ما هي أنواع العمل التي تقوم بها؟",
-        "description": "اختر كل ما ينطبق",
-        "research": "البحث",
-        "policy": "السياسة",
-        "livedExperience": "خبير من خلال تجربتي الشخصية",
-        "ngo": "منظمة غير حكومية",
-        "communityOrg": "منظمة مجتمعية",
-        "education": "التعليم أو التدريس"
-      },
-      "expertise": {
-        "label": "ما هي مجالات الخبرة لديك؟",
-        "description": "اختر كل ما ينطبق",
-        "climate": "التغير المناخي",
-        "mentalHealth": "الصحة النفسية",
-        "health": "الصحة"
-      },
-      "organization": "المنظمة",
-      "position": "المنصب",
-      "workBio": "السيرة المهنية",
-      "personalWebsite": "الموقع الشخصي أو المدونة",
-      "linkedin": "ملف LinkedIn",
-      "twitter": "معرف Twitter",
-      "cancel": "إلغاء",
-      "save": "حفظ التغييرات"
+    "profiles": {
+      "pageTitle": "أعضاء المجتمع"
     },
     "work": {
-      "title": "تفاصيل العمل",
-      "workBio": "السيرة المهنية",
-      "workTypes": "أنواع العمل",
-      "expertiseAreas": "مجالات الخبرة",
+      "title": "الخبرة المهنية",
       "types": {
         "research": "البحث",
         "policy": "السياسة",
@@ -82,16 +29,13 @@
     },
     "recentWork": {
       "title": "الأعمال الحديثة",
-      "addWork": "إضافة عمل",
-      "noWorks": "لا توجد أعمال حديثة للعرض",
       "ongoing": "مستمر",
       "present": "الحاضر"
     },
     "communities": {
-      "title": "المركز المجتمعي",
+      "title": "المجتمعات",
       "regionalCommunities": "المجتمعات الإقليمية",
       "specialGroups": "المجموعات الخاصة",
-      "noCommunities": "ليس عضوًا في أي مجتمعات",
       "regional": {
         "subSaharanAfrica": "أفريقيا جنوب الصحراء",
         "northernAfricaWesternAsia": "شمال أفريقيا وغرب آسيا",
@@ -112,23 +56,6 @@
       "website": "الموقع الشخصي",
       "linkedin": "LinkedIn",
       "twitter": "Twitter"
-    },
-    "profilePicture": {
-      "title": "صورة الملف الشخصي",
-      "description": "قم بتحميل صورة ملف شخصي لتخصيص حسابك",
-      "uploadPhoto": "تحميل صورة",
-      "changePhoto": "تغيير الصورة",
-      "uploading": "جاري التحميل...",
-      "requirements": "JPG، PNG أو WebP. الحد الأقصى 5 ميجابايت.",
-      "altText": "صورة الملف الشخصي",
-      "uploadSuccess": "تم تحديث صورة الملف الشخصي بنجاح",
-      "removeSuccess": "تم حذف صورة الملف الشخصي بنجاح",
-      "errors": {
-        "invalidFileType": "يرجى تحميل صورة بصيغة JPG أو PNG أو WebP",
-        "fileTooLarge": "يجب أن يكون حجم الملف أقل من 5 ميجابايت",
-        "uploadError": "فشل تحميل الصورة. يرجى المحاولة مرة أخرى.",
-        "removeError": "فشل حذف الصورة. يرجى المحاولة مرة أخرى."
-      }
     }
   }
 }
