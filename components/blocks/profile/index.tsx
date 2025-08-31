@@ -4,3 +4,7 @@ export { default as WorkDetailsBlock } from './work-details-block'
 export { default as RecentWorkBlock } from './recent-work-block'
 export { default as CommunityHubBlock } from './community-hub-block'
 export { default as SocialLinksBlock } from './social-links-block'
+
+// New components
+export { ProfileStatistics } from './profile-statistics'
+export { ProfileNavigation } from './profile-navigation'
