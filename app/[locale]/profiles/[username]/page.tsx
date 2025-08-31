@@ -129,7 +129,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                     {isOwnProfile && (
                         <BlurFade delay={BLUR_FADE_DELAY * 8}>
                             <Button asChild>
-                                <Link href="/profile/edit">Edit Profile</Link>
+                                <Link href="/dashboard/profile/edit">Edit Profile</Link>
                             </Button>
                         </BlurFade>
                     )}
