@@ -1,13 +1,161 @@
 {
+  "app": {
+    "name": "اسم تطبيقك",
+    "tagline": "شعار أو وصف تطبيقك"
+  },
+  "navigation": {
+    "home": "الرئيسية",
+    "dashboard": "لوحة التحكم",
+    "profile": "الملف الشخصي",
+    "profiles": "الملفات الشخصية",
+    "settings": "الإعدادات",
+    "login": "تسجيل الدخول",
+    "signup": "إنشاء حساب",
+    "logout": "تسجيل الخروج",
+    "blog": "المدونة",
+    "account": "الحساب",
+    "security": "الأمان",
+    "myCommunities": "مجتمعاتي",
+    "importBookmark": "استيراد العلامات المرجعية",
+    "exportBookmark": "تصدير العلامات المرجعية",
+    "support": "الدعم",
+    "browseProfiles": "تصفح الملفات الشخصية"
+  },
+  "auth": {
+    "welcome": "مرحباً بعودتك",
+    "emailPlaceholder": "عنوان البريد الإلكتروني",
+    "passwordPlaceholder": "كلمة المرور",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "noAccount": "ليس لديك حساب؟",
+    "hasAccount": "لديك حساب بالفعل؟",
+    "createAccount": "إنشاء حساب",
+    "continueWith": "المتابعة باستخدام {provider}"
+  },
+  "errors": {
+    "general": "حدث خطأ ما",
+    "notFound": "الصفحة غير موجودة",
+    "profileNotFound": "الملف الشخصي الذي تبحث عنه غير موجود أو ربما تم حذفه.",
+    "unauthorized": "تحتاج لتسجيل الدخول للوصول إلى هذه الصفحة",
+    "forbidden": "ليس لديك إذن للوصول إلى هذه الصفحة",
+    "validation": {
+      "required": "{field} مطلوب",
+      "email": "يرجى إدخال عنوان بريد إلكتروني صحيح",
+      "minLength": "{field} يجب أن يكون {length} أحرف على الأقل",
+      "maxLength": "{field} لا يمكن أن يتجاوز {length} أحرف"
+    }
+  },
+  "common": {
+    "loading": "جاري التحميل...",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "create": "إنشاء",
+    "search": "بحث",
+    "filter": "تصفية",
+    "sort": "ترتيب",
+    "back": "رجوع",
+    "next": "التالي",
+    "previous": "السابق",
+    "confirm": "تأكيد",
+    "yes": "نعم",
+    "no": "لا"
+  },
+  "dashboard": {
+    "greeting": "أهلاً، {name}",
+    "summary": "هنا ملخصك",
+    "recentActivity": "النشاط الحديث",
+    "noActivity": "لا يوجد نشاط حديث",
+    "viewAll": "عرض الكل",
+    "personalSettings": "الإعدادات الشخصية",
+    "buildingApp": "بناء تطبيقك",
+    "dataFetching": "جلب البيانات"
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "account": "الحساب",
+    "profile": "الملف الشخصي",
+    "appearance": "المظهر",
+    "notifications": "الإشعارات",
+    "language": "اللغة",
+    "theme": {
+      "title": "السمة",
+      "light": "فاتح",
+      "dark": "داكن",
+      "system": "النظام"
+    },
+    "privacy": "الخصوصية",
+    "security": "الأمان"
+  },
+  "notifications": {
+    "success": "نجح!",
+    "error": "خطأ!",
+    "info": "معلومات",
+    "warning": "تحذير"
+  },
+  "dates": {
+    "today": "اليوم",
+    "yesterday": "أمس",
+    "tomorrow": "غداً",
+    "days": {
+      "monday": "الإثنين",
+      "tuesday": "الثلاثاء",
+      "wednesday": "الأربعاء",
+      "thursday": "الخميس",
+      "friday": "الجمعة",
+      "saturday": "السبت",
+      "sunday": "الأحد"
+    },
+    "months": {
+      "january": "يناير",
+      "february": "فبراير",
+      "march": "مارس",
+      "april": "أبريل",
+      "may": "مايو",
+      "june": "يونيو",
+      "july": "يوليو",
+      "august": "أغسطس",
+      "september": "سبتمبر",
+      "october": "أكتوبر",
+      "november": "نوفمبر",
+      "december": "ديسمبر"
+    },
+    "formats": {
+      "short": "MMM D, YYYY",
+      "long": "MMMM D, YYYY",
+      "time": "h:mm A"
+    }
+  },
+  "forms": {
+    "name": "الاسم",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "confirmPassword": "تأكيد كلمة المرور",
+    "address": "العنوان",
+    "phone": "رقم الهاتف",
+    "submit": "إرسال",
+    "reset": "إعادة تعيين"
+  },
   "profile": {
     "noName": "بدون اسم",
     "unnamed": "مستخدم بدون اسم",
     "editProfile": "تعديل الملف الشخصي",
     "contact": "اتصل",
     "basicInfo": "حول",
+    "about": "حول",
+    "skills": "المهارات",
+    "projects": "المشاريع",
+    "location": "الموقع",
+    "memberSince": "عضو منذ",
+    "overview": "نظرة عامة",
     "bio": "حول",
     "under18": "أقل من 18",
     "above18": "18 أو أكثر",
+    "addWork": "إضافة عمل",
+    "noWorks": "لا توجد أعمال حديثة للعرض",
+    "regionalCommunities": "المجتمعات الإقليمية",
+    "specialCommunities": "المجتمعات الخاصة",
+    "noCommunities": "ليس عضواً في أي مجتمعات",
     "profiles": {
       "pageTitle": "أعضاء المجتمع"
     },
@@ -56,6 +204,174 @@
       "website": "الموقع الشخصي",
       "linkedin": "LinkedIn",
       "twitter": "Twitter"
+    },
+    "edit": {
+      "pageTitle": "تعديل الملف الشخصي",
+      "pageDescription": "تحديث معلومات ملفك الشخصي",
+      "saveSuccess": "تم تحديث الملف الشخصي بنجاح",
+      "saveError": "فشل في تحديث الملف الشخصي",
+      "basicInfo": {
+        "title": "المعلومات الأساسية",
+        "description": "سيتم عرض هذه المعلومات على ملفك الشخصي العام"
+      },
+      "workInfo": {
+        "title": "معلومات العمل",
+        "description": "أخبرنا عن خلفيتك المهنية وخبرتك"
+      },
+      "social": {
+        "title": "الروابط الاجتماعية",
+        "description": "أضف روابط إلى ملفاتك الشخصية على وسائل التواصل الاجتماعي وموقعك الشخصي"
+      },
+      "firstName": "الاسم الأول",
+      "lastName": "اسم العائلة",
+      "username": "اسم المستخدم",
+      "usernameHint": "سيتم استخدام هذا في رابط ملفك الشخصي",
+      "bio": "السيرة الذاتية",
+      "ageGroup": "الفئة العمرية",
+      "selectAge": "اختر فئتك العمرية",
+      "under18": "أقل من 18",
+      "above18": "18 أو أكثر",
+      "country": "البلد",
+      "city": "المدينة/البلدة",
+      "workTypes": {
+        "label": "ما هي أنواع العمل التي تقوم بها؟",
+        "description": "اختر كل ما ينطبق",
+        "research": "البحث",
+        "policy": "السياسة",
+        "livedExperience": "خبير من خلال تجربتي الشخصية",
+        "ngo": "منظمة غير حكومية",
+        "communityOrg": "منظمة مجتمعية",
+        "education": "التعليم أو التدريس"
+      },
+      "expertise": {
+        "label": "ما هي مجالات الخبرة لديك؟",
+        "description": "اختر كل ما ينطبق",
+        "climate": "التغير المناخي",
+        "mentalHealth": "الصحة النفسية",
+        "health": "الصحة"
+      },
+      "organization": "المنظمة",
+      "position": "المنصب",
+      "workBio": "السيرة المهنية",
+      "personalWebsite": "الموقع الشخصي أو المدونة",
+      "linkedin": "ملف LinkedIn",
+      "twitter": "معرف Twitter",
+      "cancel": "إلغاء",
+      "save": "حفظ التغييرات"
+    }
+  },
+  "profilePicture": {
+    "title": "صورة الملف الشخصي",
+    "description": "قم بتحميل صورة ملف شخصي لتخصيص حسابك",
+    "uploadPhoto": "تحميل صورة",
+    "changePhoto": "تغيير الصورة",
+    "uploading": "جاري التحميل...",
+    "requirements": "JPG، PNG أو WebP. الحد الأقصى 5 ميجابايت.",
+    "altText": "صورة الملف الشخصي",
+    "uploadSuccess": "تم تحديث صورة الملف الشخصي بنجاح",
+    "removeSuccess": "تم حذف صورة الملف الشخصي بنجاح",
+    "errors": {
+      "invalidFileType": "يرجى تحميل صورة بصيغة JPG أو PNG أو WebP",
+      "fileTooLarge": "يجب أن يكون حجم الملف أقل من 5 ميجابايت",
+      "uploadError": "فشل تحميل الصورة. يرجى المحاولة مرة أخرى.",
+      "removeError": "فشل حذف الصورة. يرجى المحاولة مرة أخرى."
+    }
+  },
+  "profiles": {
+    "pageTitle": "أعضاء المجتمع",
+    "pageDescription": "اكتشف وتواصل مع أعضاء مجتمعنا",
+    "searchPlaceholder": "البحث بالاسم أو اسم المستخدم أو السيرة...",
+    "search": "بحث",
+    "noResults": "لم يتم العثور على ملفات شخصية. جرب تعديل البحث.",
+    "unnamed": "مستخدم بدون اسم",
+    "browseProfiles": "تصفح الملفات الشخصية"
+  },
+  "caseStudySubmission": {
+    "pageTitle": "إرسال دراسة الحالة",
+    "pageDescription": "شارك بحثك ورؤاك مع مجتمعنا العالمي متعدد اللغات",
+    "title": "إرسال دراسة حالتك",
+    "description": "شارك بحثك مع مجتمعنا العالمي باللغة الإنجليزية أو الإسبانية أو الفرنسية أو العربية. ساعدنا في جعل المعرفة متاحة للباحثين في جميع أنحاء العالم."
+  },
+  "caseStudyForm": {
+    "sections": {
+      "basicInfo": "المعلومات الأساسية",
+      "content": "المحتوى والتفاصيل",
+      "authors": "المؤلفون والمساهمون",
+      "classification": "العلامات والتصنيف",
+      "location": "موقع الدراسة",
+      "timeline": "فترة الدراسة"
+    },
+    "fields": {
+      "title": "العنوان",
+      "subtitle": "العنوان الفرعي",
+      "excerpt": "المقطع",
+      "content": "المحتوى الكامل",
+      "featuredImage": "الصورة المميزة",
+      "organization": "المنظمة المرتبطة",
+      "authors": "فريق البحث",
+      "tags": "العلامات",
+      "country": "البلد",
+      "city": "المدينة",
+      "region": "المنطقة/الولاية",
+      "startDate": "تاريخ البداية",
+      "endDate": "تاريخ الانتهاء"
+    },
+    "placeholders": {
+      "title": "أدخل العنوان بـ{language}",
+      "subtitle": "أدخل العنوان الفرعي بـ{language}",
+      "excerpt": "ملخص مختصر بـ{language}",
+      "content": "محتوى دراسة الحالة المفصل بـ{language}",
+      "organization": "أدخل اسم المنظمة",
+      "authorName": "الاسم الكامل",
+      "authorEmail": "عنوان البريد الإلكتروني",
+      "country": "أدخل البلد",
+      "city": "أدخل المدينة",
+      "region": "أدخل المنطقة"
+    },
+    "descriptions": {
+      "excerpt": "تساعد هذه الملخصات الباحثين في جميع أنحاء العالم في اكتشاف عملك. مطلوبة باللغات الأربع.",
+      "content": "اكتب دراسة حالتك بأي لغة تفضلها. مطلوب إصدار واحد على الأقل باللغة.",
+      "organization": "إذا كانت دراسة الحالة هذه مرتبطة بمنظمة معينة، أدخل اسمها هنا.",
+      "tags": "اختر علامة واحدة على الأقل للمساعدة في تصنيف دراسة حالتك.",
+      "endDate": "اتركها فارغة إذا كانت الدراسة مستمرة",
+      "image": "قم بتحميل صورة عالية الجودة لتمثيل دراسة حالتك (الحد الأقصى 10 ميجابايت)",
+      "multilingual": "منصتنا تخدم الباحثين بـ4 لغات. يمكنك الإرسال بأي لغة، ولكن يرجى مساعدتنا بالعناوين والمقتطفات بجميع اللغات."
+    },
+    "roles": {
+      "lead": "المؤلف الرئيسي",
+      "coauthor": "المؤلف المشارك",
+      "contributor": "المساهم",
+      "advisor": "المستشار"
+    },
+    "actions": {
+      "addAuthor": "إضافة مؤلف",
+      "removeAuthor": "إزالة المؤلف",
+      "uploadImage": "تحميل صورة",
+      "submit": "إرسال دراسة الحالة",
+      "submitting": "جاري الإرسال..."
+    },
+    "validation": {
+      "titleRequired": "العنوان مطلوب باللغات الأربع لمساعدة مجتمعنا العالمي",
+      "excerptMinLength": "يجب أن يكون المقطع 50 حرفاً على الأقل بجميع اللغات",
+      "contentMinLength": "يرجى تقديم محتوى مفصل بلغة واحدة على الأقل (200 حرف كحد أدنى)",
+      "authorNameRequired": "اسم المؤلف مطلوب",
+      "invalidEmail": "عنوان بريد إلكتروني غير صحيح",
+      "oneAuthorRequired": "مطلوب مؤلف واحد على الأقل",
+      "oneTagRequired": "مطلوبة علامة واحدة على الأقل",
+      "invalidImageType": "يرجى تحميل ملف صورة صحيح (JPEG، PNG، أو WebP)",
+      "imageTooLarge": "يجب أن يكون حجم الصورة أقل من 10 ميجابايت"
+    },
+    "status": {
+      "draft": "مسودة",
+      "submitting": "جاري الإرسال...",
+      "submitted": "تم الإرسال للمراجعة"
+    },
+    "messages": {
+      "submitSuccess": "¡Gracias! Thank you! Merci! شكرا! تم إرسال دراسة حالتك وسيتم مراجعتها من قبل فريقنا.",
+      "submitError": "فشل إرسال دراسة الحالة. يرجى المحاولة مرة أخرى.",
+      "loginRequired": "يجب أن تكون مسجل الدخول لإرسال دراسة حالة",
+      "reviewNote": "ستتم مراجعة دراسة حالتك من قبل فريقنا التحريري متعدد اللغات قبل النشر.",
+      "multilingualWelcome": "مرحباً بك في مجتمعنا العالمي! أرسل بأي لغة وساعدنا في الوصول للباحثين في جميع أنحاء العالم."
     }
   }
 }

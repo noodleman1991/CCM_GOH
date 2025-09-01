@@ -1,0 +1,61 @@
+{
+  "profile": {
+    "noName": "Sin nombre",
+    "unnamed": "Usuario sin nombre",
+    "editProfile": "Editar Perfil",
+    "contact": "Contacto",
+    "basicInfo": "Acerca de",
+    "bio": "Acerca de",
+    "under18": "Menor de 18",
+    "above18": "18 o mayor",
+    "profiles": {
+      "pageTitle": "Miembros de la Comunidad"
+    },
+    "work": {
+      "title": "Experiencia Profesional",
+      "types": {
+        "research": "Investigación",
+        "policy": "Política",
+        "livedExperience": "Experto por experiencia vivida",
+        "ngo": "ONG",
+        "communityOrg": "Organización comunitaria",
+        "education": "Educación o enseñanza"
+      },
+      "expertise": {
+        "climate": "Cambio Climático",
+        "mentalHealth": "Salud Mental",
+        "health": "Salud"
+      }
+    },
+    "recentWork": {
+      "title": "Trabajo Reciente",
+      "ongoing": "En curso",
+      "present": "Presente"
+    },
+    "communities": {
+      "title": "Comunidades",
+      "regionalCommunities": "Comunidades Regionales",
+      "specialGroups": "Grupos Especiales",
+      "regional": {
+        "subSaharanAfrica": "África Subsahariana",
+        "northernAfricaWesternAsia": "África del Norte y Asia Occidental",
+        "centralSouthernAsia": "Asia Central y Meridional",
+        "easternSouthEasternAsia": "Asia Oriental y Sudoriental",
+        "latinAmericaCaribbean": "América Latina y el Caribe",
+        "oceania": "Oceanía",
+        "europeNorthAmerica": "Europa y América del Norte"
+      },
+      "special": {
+        "youth": "Juventud",
+        "indigenous": "Indígena",
+        "farmerFisher": "Pequeños agricultores"
+      }
+    },
+    "social": {
+      "title": "Conectar",
+      "website": "Sitio Web Personal",
+      "linkedin": "LinkedIn",
+      "twitter": "Twitter"
+    }
+  }
+}
