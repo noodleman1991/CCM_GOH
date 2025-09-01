@@ -1,0 +1,278 @@
+import React from 'react';
+import Image from 'next/image';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
+import {
+    Calendar,
+    Building,
+    Users,
+    MapPin,
+    Lock,
+    AlertCircle
+} from 'lucide-react';
+import { urlFor } from '@/sanity/lib/image';
+import {
+    getLocalizedText,
+    getCaseStudyUrl,
+    getPrimaryAuthor,
+    getStudyLocationText,
+    formatCaseStudyDate,
+    isRTL,
+    canAccessCaseStudy
+} from '@/lib/case-study-utils';
+import { cn } from '@/lib/utils';
+
+interface GridCaseStudyComponentProps {
+    _type: 'grid-case-study';
+    _key: string;
+    caseStudy: any; // Match the any type from grid-report
+    showTags?: boolean;
+    showAuthors?: boolean;
+    showMetadata?: boolean;
+    showStudyPeriod?: boolean;
+    showLocation?: boolean;
+    customExcerpt?: any;
+    customLayout?: string;
+    locale: string;
+    userId?: string;
+    className?: string;
+    color?: string;
+}
+
+export default function GridCaseStudyComponent({
+                                                   caseStudy,
+                                                   showTags = true,
+                                                   showAuthors = true,
+                                                   showMetadata = true,
+                                                   showStudyPeriod = false,
+                                                   showLocation = false,
+                                                   customExcerpt,
+                                                   customLayout = 'default',
+                                                   locale,
+                                                   userId,
+                                                   className
+                                               }: GridCaseStudyComponentProps) {
+    if (!caseStudy) return null;
+
+    const supportedLocale = locale as 'en' | 'es' | 'fr' | 'ar';
+
+    // Get localized content
+    const title = getLocalizedText(caseStudy.title, supportedLocale);
+    const excerpt = customExcerpt
+        ? getLocalizedText(customExcerpt, supportedLocale)
+        : getLocalizedText(caseStudy.excerpt, supportedLocale);
+
+    // Get metadata
+    const primaryAuthor = getPrimaryAuthor(caseStudy);
+    const publishDate = caseStudy.publishedAt ? new Date(caseStudy.publishedAt) : null;
+    const locationText = getStudyLocationText(caseStudy);
+    const isRTLLocale = isRTL(locale);
+    const canAccess = canAccessCaseStudy(caseStudy.status, userId ? 'user' : 'guest');
+
+    // Localized text helpers
+    const getMoreText = (count: number) => {
+        const moreTexts = {
+            en: 'more',
+            es: 'más',
+            fr: 'autres',
+            ar: 'آخرين'
+        };
+        return `+${count} ${moreTexts[supportedLocale] || 'more'}`;
+    };
+
+    const getCaseStudyTypeText = () => {
+        const typeTexts = {
+            en: 'Case Study',
+            es: 'Caso de Estudio',
+            fr: 'Étude de Cas',
+            ar: 'دراسة حالة'
+        };
+        return typeTexts[supportedLocale] || 'Case Study';
+    };
+
+    const getFeaturedText = () => {
+        const featuredTexts = {
+            en: 'Featured',
+            es: 'Destacado',
+            fr: 'En vedette',
+            ar: 'مميز'
+        };
+        return featuredTexts[supportedLocale] || 'Featured';
+    };
+
+    const getStudyPeriodText = () => {
+        const periodTexts = {
+            en: 'Study Period: ',
+            es: 'Período de Estudio: ',
+            fr: 'Période d\'Étude: ',
+            ar: 'فترة الدراسة: '
+        };
+        return periodTexts[supportedLocale] || 'Study Period: ';
+    };
+
+    return (
+        <Card className={cn(
+            "flex w-full flex-col justify-between overflow-hidden transition ease-in-out group border rounded-3xl p-4 hover:border-primary",
+            isRTLLocale && "rtl",
+            className
+        )}>
+            {/* Access restriction overlay */}
+            {!canAccess && (
+                <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-10 rounded-lg">
+                    <div className="text-center text-white p-4">
+                        <Lock className="h-8 w-8 mx-auto mb-2" />
+                        <p className="text-sm font-medium">
+                            {caseStudy.status === 'pending' ? 'Please sign in to download' : 'Members only'}
+                        </p>
+                    </div>
+                </div>
+            )}
+
+            {/* Cover Image */}
+            {caseStudy.image?.asset?.url && (
+                <div className="mb-4 relative h-[15rem] sm:h-[20rem] md:h-[25rem] lg:h-[9.5rem] xl:h-[12rem] rounded-2xl overflow-hidden">
+                    <Image
+                        src={urlFor(caseStudy.image).width(400).height(225).url()}
+                        alt={caseStudy.image.alt || title}
+                        fill
+                        className="object-cover transition-transform duration-200 group-hover:scale-105"
+                        sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                    />
+
+                    {/* Case study type badge */}
+                    <div className="absolute top-3 left-3">
+                        <Badge variant="secondary" className="bg-white/90 text-black">
+                            {getCaseStudyTypeText()}
+                        </Badge>
+                    </div>
+
+                    {/* Featured badge */}
+                    {caseStudy.featured && (
+                        <div className="absolute top-3 right-3">
+                            <Badge className="bg-yellow-500 text-black">
+                                ⭐ {getFeaturedText()}
+                            </Badge>
+                        </div>
+                    )}
+                </div>
+            )}
+
+            <CardHeader className="pb-3">
+                <div className="space-y-2">
+                    {/* Title */}
+                    <h3 className="font-semibold text-lg leading-tight line-clamp-2 group-hover:text-primary transition-colors">
+                        {title}
+                    </h3>
+                </div>
+            </CardHeader>
+
+            <CardContent className="flex-1 pb-3">
+                {/* Description */}
+                {excerpt && (
+                    <p className="text-sm text-muted-foreground line-clamp-3 mb-4">
+                        {excerpt}
+                    </p>
+                )}
+
+                {/* Metadata */}
+                {showMetadata && (
+                    <div className="space-y-2 text-xs text-muted-foreground">
+                        {/* Publication date */}
+                        {publishDate && (
+                            <div className="flex items-center gap-1">
+                                <Calendar className="h-3 w-3" />
+                                <span>
+                                    {formatCaseStudyDate(publishDate, supportedLocale)}
+                                </span>
+                            </div>
+                        )}
+
+                        {/* Primary author */}
+                        {showAuthors && primaryAuthor && (
+                            <div className="flex items-center gap-1">
+                                <Users className="h-3 w-3" />
+                                <span className="line-clamp-1">
+                                    {primaryAuthor.name}
+                                    {caseStudy.authors && caseStudy.authors.length > 1 && ` ${getMoreText(caseStudy.authors.length - 1)}`}
+                                </span>
+                            </div>
+                        )}
+
+                        {/* Organizations */}
+                        {caseStudy.organizations && caseStudy.organizations.length > 0 && (
+                            <div className="flex items-center gap-1">
+                                <Building className="h-3 w-3" />
+                                <span className="line-clamp-1">
+                                    {caseStudy.organizations.map((org: any) => org.name).join(', ')}
+                                </span>
+                            </div>
+                        )}
+
+                        {/* Location - Only show if enabled */}
+                        {showLocation && locationText && (
+                            <div className="flex items-center gap-1">
+                                <MapPin className="h-3 w-3" />
+                                <span className="line-clamp-1">
+                                    {locationText}
+                                </span>
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {/* Tags */}
+                {showTags && caseStudy.tags && caseStudy.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mt-3">
+                        {caseStudy.tags.slice(0, 3).map((tag: any) => (
+                            <Badge
+                                key={tag._id}
+                                variant="outline"
+                                className="text-xs"
+                                style={{
+                                    borderColor: tag.color,
+                                    color: tag.color
+                                }}
+                            >
+                                {getLocalizedText(tag.label, supportedLocale)}
+                            </Badge>
+                        ))}
+                        {caseStudy.tags.length > 3 && (
+                            <Badge variant="outline" className="text-xs">
+                                {getMoreText(caseStudy.tags.length - 3)}
+                            </Badge>
+                        )}
+                    </div>
+                )}
+            </CardContent>
+
+            <CardFooter className="pt-0">
+                {/* Study period if available and enabled */}
+                {showStudyPeriod && caseStudy.studyPeriod && (caseStudy.studyPeriod.startDate || caseStudy.studyPeriod.endDate) && (
+                    <div className="w-full text-center text-sm text-muted-foreground mb-2">
+                        {getStudyPeriodText()}
+                        {caseStudy.studyPeriod.startDate && new Date(caseStudy.studyPeriod.startDate).getFullYear()}
+                        {caseStudy.studyPeriod.endDate && ` - ${new Date(caseStudy.studyPeriod.endDate).getFullYear()}`}
+                    </div>
+                )}
+
+                {/* Status indicator for non-approved case studies */}
+                {caseStudy.status && caseStudy.status !== 'approved' && (
+                    <div className="w-full text-center text-sm text-muted-foreground">
+                        <AlertCircle className="h-4 w-4 mx-auto mb-1" />
+                        <Badge
+                            variant={
+                                caseStudy.status === 'pending' ? 'secondary' :
+                                    caseStudy.status === 'revision' ? 'destructive' :
+                                        caseStudy.status === 'rejected' ? 'destructive' :
+                                            'outline'
+                            }
+                            className="text-xs"
+                        >
+                            {caseStudy.status}
+                        </Badge>
+                    </div>
+                )}
+            </CardFooter>
+        </Card>
+    );
+}

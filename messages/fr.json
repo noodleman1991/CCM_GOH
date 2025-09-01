@@ -1,13 +1,161 @@
 {
+  "app": {
+    "name": "Nom de votre App",
+    "tagline": "Slogan ou description de votre app"
+  },
+  "navigation": {
+    "home": "Accueil",
+    "dashboard": "Tableau de bord",
+    "profile": "Profil",
+    "profiles": "Profils",
+    "settings": "Paramètres",
+    "login": "Se connecter",
+    "signup": "S'inscrire",
+    "logout": "Se déconnecter",
+    "blog": "Blog",
+    "account": "Compte",
+    "security": "Sécurité",
+    "myCommunities": "Mes Communautés",
+    "importBookmark": "Importer les favoris",
+    "exportBookmark": "Exporter les favoris",
+    "support": "Support",
+    "browseProfiles": "Parcourir les Profils"
+  },
+  "auth": {
+    "welcome": "Bon retour",
+    "emailPlaceholder": "Adresse e-mail",
+    "passwordPlaceholder": "Mot de passe",
+    "forgotPassword": "Mot de passe oublié ?",
+    "noAccount": "Pas de compte ?",
+    "hasAccount": "Vous avez déjà un compte ?",
+    "createAccount": "Créer un compte",
+    "continueWith": "Continuer avec {provider}"
+  },
+  "errors": {
+    "general": "Quelque chose a mal tourné",
+    "notFound": "Page non trouvée",
+    "profileNotFound": "Le profil utilisateur que vous recherchez n'existe pas ou a peut-être été supprimé.",
+    "unauthorized": "Vous devez vous connecter pour accéder à cette page",
+    "forbidden": "Vous n'avez pas la permission d'accéder à cette page",
+    "validation": {
+      "required": "{field} est requis",
+      "email": "Veuillez entrer une adresse e-mail valide",
+      "minLength": "{field} doit contenir au moins {length} caractères",
+      "maxLength": "{field} ne peut pas dépasser {length} caractères"
+    }
+  },
+  "common": {
+    "loading": "Chargement...",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "create": "Créer",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "sort": "Trier",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "confirm": "Confirmer",
+    "yes": "Oui",
+    "no": "Non"
+  },
+  "dashboard": {
+    "greeting": "Bonjour, {name}",
+    "summary": "Voici votre résumé",
+    "recentActivity": "Activité Récente",
+    "noActivity": "Aucune activité récente",
+    "viewAll": "Voir tout",
+    "personalSettings": "Paramètres personnels",
+    "buildingApp": "Construction de votre Application",
+    "dataFetching": "Récupération de Données"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "account": "Compte",
+    "profile": "Profil",
+    "appearance": "Apparence",
+    "notifications": "Notifications",
+    "language": "Langue",
+    "theme": {
+      "title": "Thème",
+      "light": "Clair",
+      "dark": "Sombre",
+      "system": "Système"
+    },
+    "privacy": "Confidentialité",
+    "security": "Sécurité"
+  },
+  "notifications": {
+    "success": "Succès !",
+    "error": "Erreur !",
+    "info": "Information",
+    "warning": "Avertissement"
+  },
+  "dates": {
+    "today": "Aujourd'hui",
+    "yesterday": "Hier",
+    "tomorrow": "Demain",
+    "days": {
+      "monday": "Lundi",
+      "tuesday": "Mardi",
+      "wednesday": "Mercredi",
+      "thursday": "Jeudi",
+      "friday": "Vendredi",
+      "saturday": "Samedi",
+      "sunday": "Dimanche"
+    },
+    "months": {
+      "january": "Janvier",
+      "february": "Février",
+      "march": "Mars",
+      "april": "Avril",
+      "may": "Mai",
+      "june": "Juin",
+      "july": "Juillet",
+      "august": "Août",
+      "september": "Septembre",
+      "october": "Octobre",
+      "november": "Novembre",
+      "december": "Décembre"
+    },
+    "formats": {
+      "short": "MMM D, YYYY",
+      "long": "MMMM D, YYYY",
+      "time": "h:mm A"
+    }
+  },
+  "forms": {
+    "name": "Nom",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+    "address": "Adresse",
+    "phone": "Numéro de téléphone",
+    "submit": "Envoyer",
+    "reset": "Réinitialiser"
+  },
   "profile": {
     "noName": "Sans nom",
     "unnamed": "Utilisateur sans nom",
     "editProfile": "Modifier le Profil",
     "contact": "Contact",
     "basicInfo": "À propos",
+    "about": "À propos",
+    "skills": "Compétences",
+    "projects": "Projets",
+    "location": "Localisation",
+    "memberSince": "Membre depuis",
+    "overview": "Aperçu",
     "bio": "À propos",
     "under18": "Moins de 18 ans",
     "above18": "18 ans ou plus",
+    "addWork": "Ajouter un travail",
+    "noWorks": "Aucun travail récent à afficher",
+    "regionalCommunities": "Communautés Régionales",
+    "specialCommunities": "Communautés Spéciales",
+    "noCommunities": "N'est membre d'aucune communauté",
     "profiles": {
       "pageTitle": "Membres de la Communauté"
     },
@@ -56,6 +204,174 @@
       "website": "Site Web Personnel",
       "linkedin": "LinkedIn",
       "twitter": "Twitter"
+    },
+    "edit": {
+      "pageTitle": "Modifier le Profil",
+      "pageDescription": "Mettre à jour vos informations de profil",
+      "saveSuccess": "Profil mis à jour avec succès",
+      "saveError": "Échec de la mise à jour du profil",
+      "basicInfo": {
+        "title": "Informations de Base",
+        "description": "Ces informations seront affichées sur votre profil public"
+      },
+      "workInfo": {
+        "title": "Informations Professionnelles",
+        "description": "Parlez-nous de votre parcours professionnel et de votre expertise"
+      },
+      "social": {
+        "title": "Liens Sociaux",
+        "description": "Ajoutez des liens vers vos profils de médias sociaux et votre site web personnel"
+      },
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "username": "Nom d'utilisateur",
+      "usernameHint": "Ceci sera utilisé dans l'URL de votre profil",
+      "bio": "Biographie",
+      "ageGroup": "Groupe d'Âge",
+      "selectAge": "Sélectionnez votre groupe d'âge",
+      "under18": "Moins de 18 ans",
+      "above18": "18 ans ou plus",
+      "country": "Pays",
+      "city": "Ville/Village",
+      "workTypes": {
+        "label": "Quels types de travail faites-vous?",
+        "description": "Sélectionnez tous ceux qui s'appliquent",
+        "research": "Recherche",
+        "policy": "Politique",
+        "livedExperience": "Expert par mon propre vécu",
+        "ngo": "ONG",
+        "communityOrg": "Organisation communautaire",
+        "education": "Éducation ou enseignement"
+      },
+      "expertise": {
+        "label": "Quels sont vos domaines d'expertise?",
+        "description": "Sélectionnez tous ceux qui s'appliquent",
+        "climate": "Changement Climatique",
+        "mentalHealth": "Santé Mentale",
+        "health": "Santé"
+      },
+      "organization": "Organisation",
+      "position": "Poste",
+      "workBio": "Biographie Professionnelle",
+      "personalWebsite": "Site Web Personnel ou Blog",
+      "linkedin": "Profil LinkedIn",
+      "twitter": "Identifiant Twitter",
+      "cancel": "Annuler",
+      "save": "Enregistrer les Modifications"
+    }
+  },
+  "profilePicture": {
+    "title": "Photo de Profil",
+    "description": "Téléchargez une photo de profil pour personnaliser votre compte",
+    "uploadPhoto": "Télécharger Photo",
+    "changePhoto": "Changer Photo",
+    "uploading": "Téléchargement...",
+    "requirements": "JPG, PNG ou WebP. Max 5MB.",
+    "altText": "Photo de profil",
+    "uploadSuccess": "Photo de profil mise à jour avec succès",
+    "removeSuccess": "Photo de profil supprimée avec succès",
+    "errors": {
+      "invalidFileType": "Veuillez télécharger une image JPG, PNG ou WebP",
+      "fileTooLarge": "La taille du fichier doit être inférieure à 5MB",
+      "uploadError": "Échec du téléchargement de l'image. Veuillez réessayer.",
+      "removeError": "Échec de la suppression de l'image. Veuillez réessayer."
+    }
+  },
+  "profiles": {
+    "pageTitle": "Membres de la Communauté",
+    "pageDescription": "Découvrez et connectez-vous avec les membres de notre communauté",
+    "searchPlaceholder": "Rechercher par nom, nom d'utilisateur ou biographie...",
+    "search": "Rechercher",
+    "noResults": "Aucun profil trouvé. Essayez d'ajuster votre recherche.",
+    "unnamed": "Utilisateur Sans Nom",
+    "browseProfiles": "Parcourir les Profils"
+  },
+  "caseStudySubmission": {
+    "pageTitle": "Soumettre une Étude de Cas",
+    "pageDescription": "Partagez votre recherche et vos idées avec notre communauté mondiale multilingue",
+    "title": "Soumettez votre Étude de Cas",
+    "description": "Partagez votre recherche avec notre communauté mondiale en anglais, espagnol, français ou arabe. Aidez-nous à rendre les connaissances accessibles aux chercheurs du monde entier."
+  },
+  "caseStudyForm": {
+    "sections": {
+      "basicInfo": "Informations de Base",
+      "content": "Contenu et Détails",
+      "authors": "Auteurs et Contributeurs",
+      "classification": "Étiquettes et Classification",
+      "location": "Lieu de l'Étude",
+      "timeline": "Période d'Étude"
+    },
+    "fields": {
+      "title": "Titre",
+      "subtitle": "Sous-titre",
+      "excerpt": "Extrait",
+      "content": "Contenu Complet",
+      "featuredImage": "Image Mise en Avant",
+      "organization": "Organisation Associée",
+      "authors": "Équipe de Recherche",
+      "tags": "Étiquettes",
+      "country": "Pays",
+      "city": "Ville",
+      "region": "Région/État",
+      "startDate": "Date de Début",
+      "endDate": "Date de Fin"
+    },
+    "placeholders": {
+      "title": "Entrez le titre en {language}",
+      "subtitle": "Entrez le sous-titre en {language}",
+      "excerpt": "Résumé bref en {language}",
+      "content": "Contenu détaillé de l'étude de cas en {language}",
+      "organization": "Entrez le nom de l'organisation",
+      "authorName": "Nom complet",
+      "authorEmail": "Adresse e-mail",
+      "country": "Entrez le pays",
+      "city": "Entrez la ville",
+      "region": "Entrez la région"
+    },
+    "descriptions": {
+      "excerpt": "Ces résumés aident les chercheurs du monde entier à découvrir votre travail. Requis dans les quatre langues.",
+      "content": "Écrivez votre étude de cas dans la langue que vous préférez. Au moins une version linguistique est requise.",
+      "organization": "Si cette étude de cas est associée à une organisation spécifique, entrez son nom ici.",
+      "tags": "Sélectionnez au moins une étiquette pour aider à catégoriser votre étude de cas.",
+      "endDate": "Laissez vide si l'étude est en cours",
+      "image": "Téléchargez une image de haute qualité pour représenter votre étude de cas (max 10MB)",
+      "multilingual": "Notre plateforme sert les chercheurs dans 4 langues. Vous pouvez soumettre dans n'importe quelle langue, mais aidez-nous avec les titres et extraits dans toutes les langues."
+    },
+    "roles": {
+      "lead": "Auteur Principal",
+      "coauthor": "Co-Auteur",
+      "contributor": "Contributeur",
+      "advisor": "Conseiller"
+    },
+    "actions": {
+      "addAuthor": "Ajouter un Auteur",
+      "removeAuthor": "Supprimer l'Auteur",
+      "uploadImage": "Télécharger l'Image",
+      "submit": "Soumettre l'Étude de Cas",
+      "submitting": "Envoi en cours..."
+    },
+    "validation": {
+      "titleRequired": "Le titre est requis dans les quatre langues pour aider notre communauté mondiale",
+      "excerptMinLength": "L'extrait doit contenir au moins 50 caractères dans toutes les langues",
+      "contentMinLength": "Veuillez fournir un contenu détaillé dans au moins une langue (minimum 200 caractères)",
+      "authorNameRequired": "Le nom de l'auteur est requis",
+      "invalidEmail": "Adresse e-mail invalide",
+      "oneAuthorRequired": "Au moins un auteur est requis",
+      "oneTagRequired": "Au moins une étiquette est requise",
+      "invalidImageType": "Veuillez télécharger un fichier image valide (JPEG, PNG ou WebP)",
+      "imageTooLarge": "La taille de l'image doit être inférieure à 10MB"
+    },
+    "status": {
+      "draft": "Brouillon",
+      "submitting": "Envoi en cours...",
+      "submitted": "Soumis pour Révision"
+    },
+    "messages": {
+      "submitSuccess": "¡Gracias! Thank you! Merci! شكرا! Votre étude de cas a été soumise et sera examinée par notre équipe.",
+      "submitError": "Échec de la soumission de l'étude de cas. Veuillez réessayer.",
+      "loginRequired": "Vous devez être connecté pour soumettre une étude de cas",
+      "reviewNote": "Votre étude de cas sera examinée par notre équipe éditoriale multilingue avant publication.",
+      "multilingualWelcome": "Bienvenue dans notre communauté mondiale ! Soumettez dans n'importe quelle langue et aidez-nous à atteindre les chercheurs du monde entier."
     }
   }
 }
