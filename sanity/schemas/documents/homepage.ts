@@ -46,106 +46,99 @@ export default defineType({
       name: "language",
       type: "string",
       readOnly: true,
-      hidden: true,
+      //hidden: true,
       group: "settings",
     }),
 
-    // Welcome Hero (special - rendered separately)
+    // Section 1: Hero Welcome - maps to "section_1_hero_welcome"
     defineField({
-      name: "welcomeHero",
-      title: "Welcome Hero",
+      name: "heroWelcome",
+      title: "Hero Welcome Section",
       type: "hero-1",
       group: "content",
+      description: "Welcome to Connecting Climate Minds Hub section"
     }),
 
-    // All other content goes in blocks array (like regional community page)
+    // Section 2: Global Agenda - maps to "section_2_global_agenda"
     defineField({
-      name: "blocks",
-      type: "array",
+      name: "globalAgenda",
+      title: "Global Research & Action Section",
+      type: "split-row",
       group: "content",
-      of: [
-        { type: "hero-1" },
-        { type: "hero-2" },
-        { type: "section-header" },
-        { type: "split-row" },
-        { type: "grid-row" },
-        { type: "carousel-1" },
-        { type: "carousel-2" },
-        { type: "timeline-row" },
-        { type: "cta-1" },
-        { type: "logo-cloud-1" },
-        { type: "faqs" },
-        { type: "form-newsletter" },
-        { type: "all-posts" },
-      ],
-      options: {
-        insertMenu: {
-          groups: [
-            {
-              name: "hero",
-              title: "Hero",
-              of: ["hero-1", "hero-2"],
-            },
-            {
-              name: "logo-cloud",
-              title: "Logo Cloud",
-              of: ["logo-cloud-1"],
-            },
-            {
-              name: "section-header",
-              title: "Section Header",
-              of: ["section-header"],
-            },
-            {
-              name: "grid",
-              title: "Grid",
-              of: ["grid-row"],
-            },
-            {
-              name: "split",
-              title: "Split",
-              of: ["split-row"],
-            },
-            {
-              name: "carousel",
-              title: "Carousel",
-              of: ["carousel-1", "carousel-2"],
-            },
-            {
-              name: "timeline",
-              title: "Timeline",
-              of: ["timeline-row"],
-            },
-            {
-              name: "cta",
-              title: "CTA",
-              of: ["cta-1"],
-            },
-            {
-              name: "faqs",
-              title: "FAQs",
-              of: ["faqs"],
-            },
-            {
-              name: "forms",
-              title: "Forms",
-              of: ["form-newsletter"],
-            },
-            {
-              name: "all-posts",
-              title: "All Posts",
-              of: ["all-posts"],
-            },
-          ],
-          views: [
-            {
-              name: "grid",
-              previewImageUrl: (block) => `/sanity/preview/${block}.jpg`,
-            },
-            { name: "list" },
-          ],
-        },
-      },
+      description: "Prioritizing Global Research and Action section"
+    }),
+
+    // Section 3: How to Use - maps to "section_3_how_to_use"
+    defineField({
+      name: "howToUse",
+      title: "How to Use Hub Section",
+      type: "split-row",
+      group: "content",
+      description: "Your collaborative space section"
+    }),
+
+    // Section 4: Agendas Module - maps to "section_4_agendas_module"
+    defineField({
+      name: "agendasModule",
+      title: "Research Agendas",
+      type: "grid-row",
+      group: "content"
+    }),
+
+    // Section 5: Lived Experiences - maps to "section_5_lived_experiences"
+    defineField({
+      name: "livedExperiences",
+      title: "Lived Experiences Stories",
+      type: "carousel-2",
+      group: "content"
+    }),
+
+    // Section 6: Regional Communities - maps to "section_6_regional_communities"
+    defineField({
+      name: "regionalCommunities",
+      title: "Regional Communities",
+      type: "grid-row",
+      group: "content"
+    }),
+
+    // Section 7: Collaboration - maps to "section_7_collaboration_info"
+    defineField({
+      name: "collaboration",
+      title: "Collaboration Section",
+      type: "split-row",
+      group: "content"
+    }),
+
+    // Section 8: News - maps to "section_8_news"
+    defineField({
+      name: "news",
+      title: "Latest News Section",
+      type: "grid-row",
+      group: "content"
+    }),
+
+    // Section 9: Project Info - maps to "section_9_project_info"
+    defineField({
+      name: "projectInfo",
+      title: "Project Information",
+      type: "split-row",
+      group: "content"
+    }),
+
+    // Section 10: Mental Health Definition - maps to "section_10_mental_health_definition"
+    defineField({
+      name: "mentalHealthDefinition",
+      title: "Mental Health Definition",
+      type: "cta-1",
+      group: "content"
+    }),
+
+    // Section 11: Partner Logos - maps to "section_11_partner_logos"
+    defineField({
+      name: "partnerLogos",
+      title: "Partner Logos",
+      type: "logo-cloud-1",
+      group: "content"
     }),
 
     // SEO Fields
@@ -188,7 +181,7 @@ export default defineType({
     select: {
       title: 'title',
       language: 'language',
-      media: 'welcomeHero.image',
+      media: 'heroWelcome.image',
     },
     prepare(select) {
       const {title, language, media} = select

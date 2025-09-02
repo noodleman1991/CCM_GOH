@@ -21,20 +21,7 @@ export const resolve: PresentationPluginOptions["resolve"] = {
         ],
       }),
     }),
-    page: defineLocations({
-      select: {
-        title: "title",
-        slug: "slug.current",
-      },
-      resolve: (doc) => ({
-        locations: [
-          {
-            title: doc?.title || "Untitled",
-            href: `/${doc?.slug}`,
-          },
-        ],
-      }),
-    }),
+    // Add more locations for other post types
     post: defineLocations({
       select: {
         title: "title",
@@ -56,6 +43,16 @@ export const resolve: PresentationPluginOptions["resolve"] = {
       route: "/",
       filter: `_type == 'homepage' && slug.current == 'index'`,
     },
+    // // Homepage to do: resolve
+    // {
+    //   route: "/",
+    //   filter: `_type == 'homepage' && slug.current == 'index'`,
+    // },
+    //
+    // {
+    //   route: "/",
+    //   filter: `_type == 'page' && slug.current == 'index'`,
+    // },
     {
       route: "/:slug",
       filter: `_type == 'page' && slug.current == $slug`,
