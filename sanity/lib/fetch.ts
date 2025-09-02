@@ -13,6 +13,9 @@ import {
     POSTS_SLUGS_QUERY,
 } from "@/sanity/queries/post";
 import {
+  HOMEPAGE_QUERY,
+} from "@/sanity/queries/homepage";
+import {
     PAGE_QUERYResult,
     // PAGES_SLUGS_QUERYResult,
     POST_QUERYResult,
@@ -713,3 +716,86 @@ export const searchCaseStudies = async ({
 //
 //     return data;
 // };
+
+export const fetchHomepageBySlug = async ({
+  slug,
+  locale = 'en',
+}: {
+  slug: string;
+  locale?: string;
+}) => {
+  const { data } = await sanityFetch({
+    query: HOMEPAGE_QUERY,
+    params: {
+      slug,
+      language: locale
+    },
+  });
+
+  return data;
+};
+
+// export const fetchIndexHomepage = async ({ todo: remove code scraps
+//   locale = 'en',
+// }: {
+//   locale?: string;
+// } = {}) => {
+//   const { data } = await sanityFetch({
+//     query: INDEX_HOMEPAGE_QUERY,
+//     params: {
+//       language: locale
+//     },
+//   });
+//
+//   return data;
+// };
+
+export const fetchTranslationsForHomepage = async (homepageId: string) => {
+  const { data } = await sanityFetch({
+    query: `
+      *[_type == "translation.metadata" && references($homepageId)][0]{
+        "translations": translations[].value->{
+          _id,
+          language,
+          slug
+        }
+      }.translations`,
+    params: { homepageId },
+    perspective: "published",
+    stega: false,
+  });
+
+  return data;
+};
+
+export const fetchSanityHomepageBySlug = async ({
+                                                  slug,
+                                                  locale = 'en',
+                                              }: {
+    slug: string;
+    locale?: string;
+}) => {
+    const { data } = await sanityFetch({
+        query: HOMEPAGE_QUERY,
+        params: {
+            slug,
+            language: locale
+        },
+    });
+
+    return data;
+};
+
+export const fetchSanityHomepageStaticParams = async () => {
+    const { data } = await sanityFetch({
+        query: `*[_type == "homepage" && defined(slug)]{
+      _id,
+      slug { current },
+      language
+    }`,
+        perspective: "published",
+        stega: false,
+    });
+
+    return data;
+};

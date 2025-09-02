@@ -6,6 +6,21 @@ import {
 
 export const resolve: PresentationPluginOptions["resolve"] = {
   locations: {
+    homepage: defineLocations({
+      select: {
+        title: "title",
+        slug: "slug.current",
+        language: "language",
+      },
+      resolve: (doc) => ({
+        locations: [
+          {
+            title: doc?.title || "Homepage",
+            href: doc?.slug === "index" ? "/" : `/${doc?.slug}`,
+          },
+        ],
+      }),
+    }),
     // Add more locations for other post types
     post: defineLocations({
       select: {
@@ -26,8 +41,18 @@ export const resolve: PresentationPluginOptions["resolve"] = {
   mainDocuments: defineDocuments([
     {
       route: "/",
-      filter: `_type == 'page' && slug.current == 'index'`,
+      filter: `_type == 'homepage' && slug.current == 'index'`,
     },
+    // // Homepage to do: resolve
+    // {
+    //   route: "/",
+    //   filter: `_type == 'homepage' && slug.current == 'index'`,
+    // },
+    //
+    // {
+    //   route: "/",
+    //   filter: `_type == 'page' && slug.current == 'index'`,
+    // },
     {
       route: "/:slug",
       filter: `_type == 'page' && slug.current == $slug`,

@@ -12,13 +12,28 @@ import {
     FileText,
     ExternalLink,
     FileSearch,
-    MapPinned
+    MapPinned,
+    Home
 } from "lucide-react";
 
 export const structure = (S: any, context: any) =>
     S.list()
         .title("Content")
         .items([
+            // Homepage - Special section at the top
+            S.listItem()
+                .title("Homepage")
+                .icon(Home)
+                .child(
+                    S.documentTypeList("homepage")
+                        .title("Homepage")
+                        .child((documentId: string) =>
+                            S.document()
+                                .documentId(documentId)
+                                .schemaType("homepage")
+                        )
+                ),
+
             // Website Pages
             S.divider(),
             S.listItem()
@@ -137,22 +152,24 @@ export const structure = (S: any, context: any) =>
                             }),
                         ])
                 ),
-            // reports & Agendas
+
+            // Reports & Agendas
             S.listItem()
-                .title("reports & Agendas")
+                .title("Reports & Agendas")
                 .child(
                     S.list()
-                        .title("reports & Agendas")
+                        .title("Reports & Agendas")
                         .items([
                             orderableDocumentListDeskItem({
                                 type: "report",
-                                title: "reports",
+                                title: "Reports",
                                 icon: Glasses,
                                 S,
                                 context,
                             }),
                         ])
                 ),
+
             // Taxonomies
             S.divider(),
             S.listItem()
