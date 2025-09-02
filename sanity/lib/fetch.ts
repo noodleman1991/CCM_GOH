@@ -14,6 +14,7 @@ import {
 } from "@/sanity/queries/post";
 import {
   HOMEPAGE_QUERY,
+  INDEX_HOMEPAGE_QUERY,
 } from "@/sanity/queries/homepage";
 import {
     PAGE_QUERYResult,
@@ -735,20 +736,20 @@ export const fetchHomepageBySlug = async ({
   return data;
 };
 
-// export const fetchIndexHomepage = async ({ todo: remove code scraps
-//   locale = 'en',
-// }: {
-//   locale?: string;
-// } = {}) => {
-//   const { data } = await sanityFetch({
-//     query: INDEX_HOMEPAGE_QUERY,
-//     params: {
-//       language: locale
-//     },
-//   });
-//
-//   return data;
-// };
+export const fetchIndexHomepage = async ({
+  locale = 'en',
+}: {
+  locale?: string;
+} = {}) => {
+  const { data } = await sanityFetch({
+    query: INDEX_HOMEPAGE_QUERY,
+    params: {
+      language: locale
+    },
+  });
+
+  return data;
+};
 
 export const fetchTranslationsForHomepage = async (homepageId: string) => {
   const { data } = await sanityFetch({
