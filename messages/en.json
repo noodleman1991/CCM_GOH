@@ -1,16 +1,50 @@
 {
   "app": {
-    "name": "Your App Name",
-    "tagline": "Your app's tagline or description"
+    "name": "Connecting Climate Minds Hub",
+    "tagline": "..."
   },
   "navigation": {
     "home": "Home",
     "dashboard": "Dashboard",
     "profile": "Profile",
+    "profiles": "Profiles",
     "settings": "Settings",
     "login": "Log in",
     "signup": "Sign up",
-    "logout": "Log out"
+    "logout": "Log out",
+    "blog": "Blog",
+    "account": "Account",
+    "security": "Security",
+    "myCommunities": "My Communities",
+    "importBookmark": "Import bookmarks",
+    "exportBookmark": "Export bookmarks",
+    "support": "Support",
+    "browseProfiles": "Browse Profiles",
+    "researchAction": "Research & Action",
+    "allOutputs": "All outputs",
+    "globalAgenda": "Global Agenda",
+    "regionalAgendas": "Regional Agendas",
+    "communityAgendas": "Community Agendas",
+    "caseStudies": "Case Studies",
+    "toolkits": "Toolkits",
+    "impactReports": "Impact Reports",
+    "regionalCommunities": "Regional Communities",
+    "collaborate": "Collaborate",
+    "news": "News",
+    "regions": {
+      "subSaharanAfrica": "Sub-Saharan Africa",
+      "northernAfricaWesternAsia": "Northern Africa and Western Asia",
+      "centralSouthernAsia": "Central and Southern Asia",
+      "easternSouthEasternAsia": "Eastern and South-Eastern Asia",
+      "latinAmericaCaribbean": "Latin America and the Caribbean",
+      "oceania": "Oceania",
+      "europeNorthAmerica": "Europe and North America"
+    },
+    "specialGroups": {
+      "youth": "Youth",
+      "indigenous": "Indigenous",
+      "smallholderFarmers": "Smallholder Farmers"
+    }
   },
   "auth": {
     "welcome": "Welcome back",
@@ -25,6 +59,7 @@
   "errors": {
     "general": "Something went wrong",
     "notFound": "Page not found",
+    "profileNotFound": "The user profile you're looking for doesn't exist or may have been deleted.",
     "unauthorized": "You need to log in to access this page",
     "forbidden": "You don't have permission to access this page",
     "validation": {
@@ -56,7 +91,10 @@
     "summary": "Here's your summary",
     "recentActivity": "Recent Activity",
     "noActivity": "No recent activity",
-    "viewAll": "View all"
+    "viewAll": "View all",
+    "personalSettings": "Personal Settings",
+    "buildingApp": "Building your Application",
+    "dataFetching": "Data Fetching"
   },
   "settings": {
     "title": "Settings",
@@ -129,9 +167,20 @@
     "editProfile": "Edit Profile",
     "contact": "Contact",
     "basicInfo": "About",
+    "about": "About",
+    "skills": "Skills",
+    "projects": "Projects",
+    "location": "Location",
+    "memberSince": "Member since",
+    "overview": "Overview",
     "bio": "About",
     "under18": "Under 18",
     "above18": "18 or above",
+    "addWork": "Add work",
+    "noWorks": "No recent works to display",
+    "regionalCommunities": "Regional Communities",
+    "specialCommunities": "Special Communities",
+    "noCommunities": "Not a member of any communities",
     "profiles": {
       "pageTitle": "Community Members"
     },
@@ -180,6 +229,60 @@
       "website": "Personal Website",
       "linkedin": "LinkedIn",
       "twitter": "Twitter"
+    },
+    "edit": {
+      "pageTitle": "Edit Profile",
+      "pageDescription": "Update your profile information",
+      "saveSuccess": "Profile updated successfully",
+      "saveError": "Failed to update profile",
+      "basicInfo": {
+        "title": "Basic Information",
+        "description": "This information will be displayed on your public profile"
+      },
+      "workInfo": {
+        "title": "Work Information",
+        "description": "Tell us about your professional background and expertise"
+      },
+      "social": {
+        "title": "Social Links",
+        "description": "Add links to your social media profiles and personal website"
+      },
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "username": "Username",
+      "usernameHint": "This will be used in your profile URL",
+      "bio": "Bio",
+      "ageGroup": "Age Group",
+      "selectAge": "Select your age group",
+      "under18": "Under 18",
+      "above18": "18 or above",
+      "country": "Country",
+      "city": "City/Town",
+      "workTypes": {
+        "label": "Which of the following types of work do you do?",
+        "description": "Select all that apply",
+        "research": "Research",
+        "policy": "Policy",
+        "livedExperience": "Expert through my own lived experience",
+        "ngo": "NGO",
+        "communityOrg": "Community organization",
+        "education": "Education or teaching"
+      },
+      "expertise": {
+        "label": "Which of the following areas of expertise do you have?",
+        "description": "Select all that apply",
+        "climate": "Climate Change",
+        "mentalHealth": "Mental Health",
+        "health": "Health"
+      },
+      "organization": "Organization",
+      "position": "Position",
+      "workBio": "Work Bio",
+      "personalWebsite": "Personal Website or Blog",
+      "linkedin": "LinkedIn Profile",
+      "twitter": "Twitter Handle",
+      "cancel": "Cancel",
+      "save": "Save Changes"
     }
   },
   "profilePicture": {
@@ -205,7 +308,8 @@
     "searchPlaceholder": "Search by name, username, or bio...",
     "search": "Search",
     "noResults": "No profiles found. Try adjusting your search.",
-    "unnamed": "Unnamed User"
+    "unnamed": "Unnamed User",
+    "browseProfiles": "Browse Profiles"
   },
   "caseStudySubmission": {
     "pageTitle": "Submit Case Study",
