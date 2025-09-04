@@ -4,7 +4,6 @@ import * as React from "react"
 import {
     BookOpen,
     Bot,
-    Command,
     Frame,
     LifeBuoy,
     Map,
@@ -13,6 +12,7 @@ import {
     Settings2,
     SquareTerminal,
 } from "lucide-react"
+import Logo from "@/components/logo"
 
 import { useClerkUser } from "@/hooks/use-clerk-user";
 import { useLocale } from "next-intl"
@@ -173,18 +173,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton size="lg" asChild>
+                        <SidebarMenuButton size="xl" asChild>
                             <a href="#">
-                                <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                                    <Command className="size-4" />
-                                </div>
-                                <div className={cn(
-                                    "grid flex-1 text-sm leading-tight",
-                                    isRTL ? "text-right" : "text-left"
-                                )}>
-                                    <span className="truncate font-medium">Acme Inc</span>
-                                    <span className="truncate text-xs">Enterprise</span>
-                                </div>
+                                {/*<div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">*/}
+                                {/*    <Command className="size-4" />*/}
+                                {/*</div>*/}
+                                {/*<div className={cn(*/}
+                                {/*    "grid flex-1 text-sm leading-tight",*/}
+                                {/*    isRTL ? "text-right" : "text-left"*/}
+                                {/*)}>*/}
+                                {/*    <span className="truncate font-medium">Conne</span>*/}
+                                {/*    <span className="truncate text-xs">Enterprise</span>*/}
+                                {/*</div>*/}
+                                <Logo size="xl" />
                             </a>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
@@ -197,7 +198,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarContent>
             <SidebarFooter>
                 <div className={cn(
-                    "flex items-center p-2 gap-2",
+                    "flex-col items-center p-2 gap-2",
                     isRTL ? "flex-row-reverse" : "flex-row"
                 )}>
                     <AuthNavUser isRTL={isRTL} />

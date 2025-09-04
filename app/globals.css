@@ -85,14 +85,14 @@
     --chart-5: #1f3fad;
 
     /* Sidebar */
-    --sidebar: #fafafa;
-    --sidebar-foreground: #0a0a0a;
-    --sidebar-primary: #171717;
-    --sidebar-primary-foreground: #fafafa;
-    --sidebar-accent: #f5f5f5;
-    --sidebar-accent-foreground: #171717;
-    --sidebar-border: #e5e5e5;
-    --sidebar-ring: #a1a1a1;
+    --sidebar: var(--color-ccm-midnight);
+    --sidebar-foreground: #ffffff;
+    --sidebar-primary: #ffffff;
+    --sidebar-primary-foreground: var(--color-ccm-midnight);
+    --sidebar-accent: rgba(255, 255, 255, 0.1);
+    --sidebar-accent-foreground: #ffffff;
+    --sidebar-border: rgba(255, 255, 255, 0.2);
+    --sidebar-ring: #ffffff;
 
     /* Fonts */
     --font-poppins: 'Poppins', ui-sans-serif, system-ui, sans-serif;
@@ -128,14 +128,14 @@
     --border: hsl(215 27.9% 16.9%);
     --input: hsl(215 27.9% 16.9%);
     --ring: hsl(216 12.2% 83.9%);
-    --sidebar: hsl(240 5.9% 10%);
-    --sidebar-foreground: hsl(240 4.8% 95.9%);
-    --sidebar-primary: hsl(224.3 76.3% 48%);
-    --sidebar-primary-foreground: hsl(0 0% 100%);
-    --sidebar-accent: hsl(240 3.7% 15.9%);
-    --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
-    --sidebar-border: hsl(240 3.7% 15.9%);
-    --sidebar-ring: hsl(217.2 91.2% 59.8%);
+    --sidebar: var(--color-ccm-midnight);
+    --sidebar-foreground: #ffffff;
+    --sidebar-primary: #ffffff;
+    --sidebar-primary-foreground: var(--color-ccm-midnight);
+    --sidebar-accent: rgba(255, 255, 255, 0.1);
+    --sidebar-accent-foreground: #ffffff;
+    --sidebar-border: rgba(255, 255, 255, 0.2);
+    --sidebar-ring: #ffffff;
 }
 
 @theme inline {
@@ -227,7 +227,7 @@
     h1, h2, h3, h4, h5, h6 {
         font-family: Poppins, ui-sans-serif, system-ui, sans-serif;
         font-weight: 700;
-        color: var(--color-ccm-midnight); /* ✅ fixed color reference */
+        color: var(--color-ccm-midnight);
     }
 
     h1 {
@@ -310,6 +310,12 @@
     .menu-item {
         font-family: Poppins, ui-sans-serif, system-ui, sans-serif;
         font-weight: 500;
+    }
+
+    /* Sidebar base font styles */
+    [data-sidebar] {
+        font-family: Poppins, ui-sans-serif, system-ui, sans-serif;
+        font-weight: 700;
     }
 }
 

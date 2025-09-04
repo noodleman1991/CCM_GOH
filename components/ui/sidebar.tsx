@@ -538,6 +538,7 @@ const sidebarMenuButtonVariants = cva(
                 default: "h-8 text-sm",
                 sm: "h-7 text-xs",
                 lg: "h-12 text-sm group-data-[collapsible=icon]:p-0!",
+                xl: "h-22 text-base group-data-[collapsible=icon]:p-0!",
             },
         },
         defaultVariants: {
@@ -572,6 +573,8 @@ function SidebarMenuButton({
             className={cn(
                 sidebarMenuButtonVariants({ variant, size }),
                 isRtl ? "text-right group-has-data-[sidebar=menu-action]/menu-item:pl-8" : "text-left group-has-data-[sidebar=menu-action]/menu-item:pr-8",
+                // Remove hover for xl variant - following best practices by putting it in component
+                size === "xl" && "hover:bg-transparent hover:text-current",
                 className
             )}
             {...props}
