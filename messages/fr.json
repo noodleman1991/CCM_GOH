@@ -19,7 +19,32 @@
     "importBookmark": "Importer les favoris",
     "exportBookmark": "Exporter les favoris",
     "support": "Support",
-    "browseProfiles": "Parcourir les Profils"
+    "browseProfiles": "Parcourir les Profils",
+    "researchAction": "Recherche et Action",
+    "allOutputs": "Tous les résultats",
+    "globalAgenda": "Agenda Global",
+    "regionalAgendas": "Agendas Régionaux",
+    "communityAgendas": "Agendas Communautaires",
+    "caseStudies": "Études de Cas",
+    "toolkits": "Boîtes à Outils",
+    "impactReports": "Rapports d'Impact",
+    "regionalCommunities": "Communautés Régionales",
+    "collaborate": "Collaborer",
+    "news": "Actualités",
+    "regions": {
+      "subSaharanAfrica": "Afrique Subsaharienne",
+      "northernAfricaWesternAsia": "Afrique du Nord et Asie Occidentale",
+      "centralSouthernAsia": "Asie Centrale et Méridionale",
+      "easternSouthEasternAsia": "Asie Orientale et Sud-Est Asiatique",
+      "latinAmericaCaribbean": "Amérique Latine et Caraïbes",
+      "oceania": "Océanie",
+      "europeNorthAmerica": "Europe et Amérique du Nord"
+    },
+    "specialGroups": {
+      "youth": "Jeunesse",
+      "indigenous": "Autochtones",
+      "smallholderFarmers": "Petits Agriculteurs"
+    }
   },
   "auth": {
     "welcome": "Bon retour",

@@ -19,7 +19,32 @@
     "importBookmark": "استيراد العلامات المرجعية",
     "exportBookmark": "تصدير العلامات المرجعية",
     "support": "الدعم",
-    "browseProfiles": "تصفح الملفات الشخصية"
+    "browseProfiles": "تصفح الملفات الشخصية",
+    "researchAction": "البحث والعمل",
+    "allOutputs": "جميع المخرجات",
+    "globalAgenda": "الأجندة العالمية",
+    "regionalAgendas": "الأجندات الإقليمية",
+    "communityAgendas": "أجندات المجتمع",
+    "caseStudies": "دراسات الحالة",
+    "toolkits": "مجموعات الأدوات",
+    "impactReports": "تقارير التأثير",
+    "regionalCommunities": "المجتمعات الإقليمية",
+    "collaborate": "التعاون",
+    "news": "الأخبار",
+    "regions": {
+      "subSaharanAfrica": "أفريقيا جنوب الصحراء",
+      "northernAfricaWesternAsia": "شمال أفريقيا وغرب آسيا",
+      "centralSouthernAsia": "آسيا الوسطى والجنوبية",
+      "easternSouthEasternAsia": "شرق وجنوب شرق آسيا",
+      "latinAmericaCaribbean": "أمريكا اللاتينية والكاريبي",
+      "oceania": "أوقيانوسيا",
+      "europeNorthAmerica": "أوروبا وأمريكا الشمالية"
+    },
+    "specialGroups": {
+      "youth": "الشباب",
+      "indigenous": "السكان الأصليون",
+      "smallholderFarmers": "صغار المزارعين"
+    }
   },
   "auth": {
     "welcome": "مرحباً بعودتك",
