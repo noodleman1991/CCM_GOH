@@ -10,8 +10,16 @@ const isPublicRoute = createRouteMatcher([
     withLocale('/(main)/:path*'),
     withLocale('/sign-in'),
     withLocale('/sign-up'),
-    '/api/(.*)',
     '/api/webhooks/(.*)'
+])
+
+const isProtectedApiRoute = createRouteMatcher([
+    '/api/profile',
+    '/api/profile/(.*)',
+    '/api/account',
+    '/api/account/(.*)',
+    '/api/sync/(.*)',
+    '/api/search/(.*)'
 ])
 
 const isOnboardingRoute = createRouteMatcher([withLocale('/onboarding')])
@@ -19,12 +27,25 @@ const isOnboardingRoute = createRouteMatcher([withLocale('/onboarding')])
 const intlMiddleware = createIntlMiddleware(routing)
 
 export default clerkMiddleware(async (auth, req: NextRequest) => {
-    // Handle webhook routes - skip all middleware //todo: is middleware properly configured?
+    // Handle webhook routes - skip all middleware 
     if (req.nextUrl.pathname.startsWith('/api/webhooks/')) {
         return NextResponse.next()
     }
-    const intlResponse = intlMiddleware(req)
-    if (intlResponse) return intlResponse
+
+    // Handle protected API routes - require authentication but no i18n
+    if (isProtectedApiRoute(req)) {
+        const authResult = await auth()
+        if (!authResult.userId) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+        }
+        return NextResponse.next()
+    }
+
+    // Handle i18n for non-API routes
+    if (!req.nextUrl.pathname.startsWith('/api/')) {
+        const intlResponse = intlMiddleware(req)
+        if (intlResponse) return intlResponse
+    }
 
     const authResult = await auth()
     const { userId, sessionClaims } = authResult

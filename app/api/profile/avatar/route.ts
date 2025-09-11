@@ -100,7 +100,7 @@ export async function POST(request: NextRequest) {
                 data: { image: urls.avatar, updatedAt: new Date() }
             })
 
-            // Auto-sync to Clerk
+            // Enhanced sync to Clerk - update metadata with avatar URLs
             const clerkClientInstance = await clerkClient()
             clerkClientInstance.users.updateUser(userId, {
                 publicMetadata: {
@@ -159,7 +159,7 @@ export async function DELETE(request: NextRequest) {
             data: { image: null, updatedAt: new Date() }
         })
 
-        // Auto-sync to Clerk
+        // Enhanced sync to Clerk - remove avatar from metadata
         const clerkClientInstance = await clerkClient()
         clerkClientInstance.users.updateUser(userId, {
             publicMetadata: {

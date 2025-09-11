@@ -18,9 +18,7 @@ import {
 } from "lucide-react";
 
 import { auth, currentUser } from "@clerk/nextjs/server";
-import { PrismaClient } from "@/generated/prisma";
-
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/prisma";
 
 export default async function SettingsLayout({
                                                  children,
@@ -47,11 +45,43 @@ export default async function SettingsLayout({
         where: { id: userId }
     });
 
-    // If user exists in Clerk but not in Prisma, redirect to onboarding
+    // If user exists in Clerk but not in Prisma, create them
     if (!dbUser) {
-        // This is where you'd create the user in your DB or redirect to onboarding
-        redirect("/complete-profile");
-    } //todo: fix complete-profile redirect logic
+        try {
+            console.log(`🔄 Creating missing user ${userId} in database`)
+            await prisma.user.create({
+                data: {
+                    id: userId,
+                    email: clerkUser.emailAddresses[0]?.emailAddress || null,
+                    firstName: clerkUser.firstName,
+                    lastName: clerkUser.lastName,
+                    username: clerkUser.username,
+                    image: clerkUser.imageUrl,
+                    emailVerified: clerkUser.emailAddresses[0]?.verification?.status === 'verified' 
+                        ? new Date() 
+                        : null,
+                    phoneNumber: clerkUser.phoneNumbers[0]?.phoneNumber || null,
+                    phoneVerified: clerkUser.phoneNumbers[0]?.verification?.status === 'verified' 
+                        ? new Date() 
+                        : null,
+                    // Initialize with default values
+                    workTypes: [],
+                    expertiseAreas: [],
+                    isSearchable: true,
+                    profileVisibility: 'PUBLIC',
+                    showEmail: false,
+                    showPhoneNumber: false,
+                    showWorkDetails: true,
+                    showSocialLinks: true,
+                    showLocation: true,
+                }
+            })
+            console.log(`✅ Successfully created user ${userId} in database`)
+        } catch (error) {
+            console.error(`❌ Failed to create user ${userId}:`, error)
+            redirect("/sign-in");
+        }
+    }
 
     return (
         <>
@@ -68,7 +98,7 @@ export default async function SettingsLayout({
                                             </div>
                                             <div className="flex flex-col truncate">
                                                 <div className="text-base/4 font-medium text-neutral-600 dark:text-neutral-400 truncate">
-                                                    {dbUser.username ?? clerkUser.firstName ?? `User`}
+                                                    {dbUser?.username ?? clerkUser.firstName ?? `User`}
                                                 </div>
                                                 <div className="text-xs/4 text-neutral-600 dark:text-neutral-400 truncate">
                                                     Personal settings
@@ -80,29 +110,29 @@ export default async function SettingsLayout({
                                         <ul>
                                             <li>
                                                 <Link
-                                                    href="/settings/profile"
+                                                    href="/dashboard/profile/edit"
                                                     className="flex gap-2 justify-start items-center px-2 py-1 rounded bg-none hover:bg-neutral-200/50 dark:hover:bg-neutral-800/50"
                                                 >
                                                     <LucideUserPen size={16} className="text-neutral-500" />
-                                                    <span className="">Profile</span>
+                                                    <span className="">Edit Profile</span>
                                                 </Link>
                                             </li>
                                             <li>
                                                 <Link
-                                                    href="/settings/account"
+                                                    href="/dashboard/account"
                                                     className="flex gap-2 justify-start items-center px-2 py-1 rounded bg-none hover:bg-neutral-200/50 dark:hover:bg-neutral-800/50"
                                                 >
                                                     <LucideWalletMinimal size={16} className="text-neutral-500" />
-                                                    <span className="">Account</span>
+                                                    <span className="">Account & Security</span>
                                                 </Link>
                                             </li>
                                             <li>
                                                 <Link
-                                                    href="/settings/security"
+                                                    href="/dashboard/profile/edit"
                                                     className="flex gap-2 justify-start items-center px-2 py-1 rounded bg-none hover:bg-neutral-200/50 dark:hover:bg-neutral-800/50"
                                                 >
                                                     <LucideShieldUser size={16} className="text-neutral-500" />
-                                                    <span className="">Security</span>
+                                                    <span className="">Privacy Settings</span>
                                                 </Link>
                                             </li>
                                             <li>

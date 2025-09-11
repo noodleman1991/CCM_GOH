@@ -186,6 +186,9 @@
     },
     "work": {
       "title": "Experiencia Profesional",
+      "workBio": "Sobre mi trabajo",
+      "workTypes": "Tipos de Trabajo",
+      "expertiseAreas": "Áreas de Especialización",
       "types": {
         "research": "Investigación",
         "policy": "Política",
