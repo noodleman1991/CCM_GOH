@@ -102,6 +102,15 @@ export const Role: {
 export type Role = (typeof Role)[keyof typeof Role]
 
 
+export const ProfileVisibility: {
+  PUBLIC: 'PUBLIC',
+  MEMBERS: 'MEMBERS',
+  PRIVATE: 'PRIVATE'
+};
+
+export type ProfileVisibility = (typeof ProfileVisibility)[keyof typeof ProfileVisibility]
+
+
 export const CommunityType: {
   REGIONAL: 'REGIONAL',
   SPECIAL: 'SPECIAL'
@@ -148,6 +157,10 @@ export const ExpertiseArea: typeof $Enums.ExpertiseArea
 export type Role = $Enums.Role
 
 export const Role: typeof $Enums.Role
+
+export type ProfileVisibility = $Enums.ProfileVisibility
+
+export const ProfileVisibility: typeof $Enums.ProfileVisibility
 
 export type CommunityType = $Enums.CommunityType
 
@@ -209,13 +222,6 @@ export class PrismaClient<
    * Disconnect from the database
    */
   $disconnect(): $Utils.JsPromise<void>;
-
-  /**
-   * Add a middleware
-   * @deprecated since 4.16.0. For new code, prefer client extensions instead.
-   * @see https://pris.ly/d/extensions
-   */
-  $use(cb: Prisma.Middleware): void
 
 /**
    * Executes a prepared raw query and returns the number of affected rows.
@@ -433,8 +439,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.13.0
-   * Query Engine version: 361e86d0ea4987e9f53a565309b3eed797a6bcbd
+   * Prisma Client JS version: 6.16.0
+   * Query Engine version: 1c57fdcd7e44b29b9313256c76699e91c3ac3c43
    */
   export type PrismaVersion = {
     client: string
@@ -1588,6 +1594,10 @@ export namespace Prisma {
       isolationLevel?: Prisma.TransactionIsolationLevel
     }
     /**
+     * Instance of a Driver Adapter, e.g., like one provided by `@prisma/adapter-planetscale`
+     */
+    adapter?: runtime.SqlDriverAdapterFactory | null
+    /**
      * Global configuration for omitting model fields by default.
      * 
      * @example
@@ -1670,25 +1680,6 @@ export namespace Prisma {
     | 'runCommandRaw'
     | 'findRaw'
     | 'groupBy'
-
-  /**
-   * These options are being passed into the middleware as "params"
-   */
-  export type MiddlewareParams = {
-    model?: ModelName
-    action: PrismaAction
-    args: any
-    dataPath: string[]
-    runInTransaction: boolean
-  }
-
-  /**
-   * The `T` type makes sure, that the `return proceed` is not forgotten in the middleware implementation
-   */
-  export type Middleware<T = any> = (
-    params: MiddlewareParams,
-    next: (params: MiddlewareParams) => $Utils.JsPromise<T>,
-  ) => $Utils.JsPromise<T>
 
   // tested in getLogLevel.test.ts
   export function getLogLevel(log: Array<LogLevel | LogDefinition>): LogLevel | undefined;
@@ -4074,6 +4065,8 @@ export namespace Prisma {
     email: string | null
     emailVerified: Date | null
     image: string | null
+    phoneNumber: string | null
+    phoneVerified: Date | null
     firstName: string | null
     lastName: string | null
     username: string | null
@@ -4087,6 +4080,13 @@ export namespace Prisma {
     personalWebsite: string | null
     linkedinProfile: string | null
     twitterHandle: string | null
+    isSearchable: boolean | null
+    profileVisibility: $Enums.ProfileVisibility | null
+    showEmail: boolean | null
+    showPhoneNumber: boolean | null
+    showWorkDetails: boolean | null
+    showSocialLinks: boolean | null
+    showLocation: boolean | null
     role: $Enums.Role | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -4097,6 +4097,8 @@ export namespace Prisma {
     email: string | null
     emailVerified: Date | null
     image: string | null
+    phoneNumber: string | null
+    phoneVerified: Date | null
     firstName: string | null
     lastName: string | null
     username: string | null
@@ -4110,6 +4112,13 @@ export namespace Prisma {
     personalWebsite: string | null
     linkedinProfile: string | null
     twitterHandle: string | null
+    isSearchable: boolean | null
+    profileVisibility: $Enums.ProfileVisibility | null
+    showEmail: boolean | null
+    showPhoneNumber: boolean | null
+    showWorkDetails: boolean | null
+    showSocialLinks: boolean | null
+    showLocation: boolean | null
     role: $Enums.Role | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -4120,6 +4129,8 @@ export namespace Prisma {
     email: number
     emailVerified: number
     image: number
+    phoneNumber: number
+    phoneVerified: number
     firstName: number
     lastName: number
     username: number
@@ -4135,6 +4146,13 @@ export namespace Prisma {
     personalWebsite: number
     linkedinProfile: number
     twitterHandle: number
+    isSearchable: number
+    profileVisibility: number
+    showEmail: number
+    showPhoneNumber: number
+    showWorkDetails: number
+    showSocialLinks: number
+    showLocation: number
     role: number
     createdAt: number
     updatedAt: number
@@ -4147,6 +4165,8 @@ export namespace Prisma {
     email?: true
     emailVerified?: true
     image?: true
+    phoneNumber?: true
+    phoneVerified?: true
     firstName?: true
     lastName?: true
     username?: true
@@ -4160,6 +4180,13 @@ export namespace Prisma {
     personalWebsite?: true
     linkedinProfile?: true
     twitterHandle?: true
+    isSearchable?: true
+    profileVisibility?: true
+    showEmail?: true
+    showPhoneNumber?: true
+    showWorkDetails?: true
+    showSocialLinks?: true
+    showLocation?: true
     role?: true
     createdAt?: true
     updatedAt?: true
@@ -4170,6 +4197,8 @@ export namespace Prisma {
     email?: true
     emailVerified?: true
     image?: true
+    phoneNumber?: true
+    phoneVerified?: true
     firstName?: true
     lastName?: true
     username?: true
@@ -4183,6 +4212,13 @@ export namespace Prisma {
     personalWebsite?: true
     linkedinProfile?: true
     twitterHandle?: true
+    isSearchable?: true
+    profileVisibility?: true
+    showEmail?: true
+    showPhoneNumber?: true
+    showWorkDetails?: true
+    showSocialLinks?: true
+    showLocation?: true
     role?: true
     createdAt?: true
     updatedAt?: true
@@ -4193,6 +4229,8 @@ export namespace Prisma {
     email?: true
     emailVerified?: true
     image?: true
+    phoneNumber?: true
+    phoneVerified?: true
     firstName?: true
     lastName?: true
     username?: true
@@ -4208,6 +4246,13 @@ export namespace Prisma {
     personalWebsite?: true
     linkedinProfile?: true
     twitterHandle?: true
+    isSearchable?: true
+    profileVisibility?: true
+    showEmail?: true
+    showPhoneNumber?: true
+    showWorkDetails?: true
+    showSocialLinks?: true
+    showLocation?: true
     role?: true
     createdAt?: true
     updatedAt?: true
@@ -4291,6 +4336,8 @@ export namespace Prisma {
     email: string | null
     emailVerified: Date | null
     image: string | null
+    phoneNumber: string | null
+    phoneVerified: Date | null
     firstName: string | null
     lastName: string | null
     username: string | null
@@ -4306,6 +4353,13 @@ export namespace Prisma {
     personalWebsite: string | null
     linkedinProfile: string | null
     twitterHandle: string | null
+    isSearchable: boolean
+    profileVisibility: $Enums.ProfileVisibility
+    showEmail: boolean
+    showPhoneNumber: boolean
+    showWorkDetails: boolean
+    showSocialLinks: boolean
+    showLocation: boolean
     role: $Enums.Role
     createdAt: Date
     updatedAt: Date
@@ -4333,6 +4387,8 @@ export namespace Prisma {
     email?: boolean
     emailVerified?: boolean
     image?: boolean
+    phoneNumber?: boolean
+    phoneVerified?: boolean
     firstName?: boolean
     lastName?: boolean
     username?: boolean
@@ -4348,6 +4404,13 @@ export namespace Prisma {
     personalWebsite?: boolean
     linkedinProfile?: boolean
     twitterHandle?: boolean
+    isSearchable?: boolean
+    profileVisibility?: boolean
+    showEmail?: boolean
+    showPhoneNumber?: boolean
+    showWorkDetails?: boolean
+    showSocialLinks?: boolean
+    showLocation?: boolean
     role?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -4364,6 +4427,8 @@ export namespace Prisma {
     email?: boolean
     emailVerified?: boolean
     image?: boolean
+    phoneNumber?: boolean
+    phoneVerified?: boolean
     firstName?: boolean
     lastName?: boolean
     username?: boolean
@@ -4379,6 +4444,13 @@ export namespace Prisma {
     personalWebsite?: boolean
     linkedinProfile?: boolean
     twitterHandle?: boolean
+    isSearchable?: boolean
+    profileVisibility?: boolean
+    showEmail?: boolean
+    showPhoneNumber?: boolean
+    showWorkDetails?: boolean
+    showSocialLinks?: boolean
+    showLocation?: boolean
     role?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -4389,6 +4461,8 @@ export namespace Prisma {
     email?: boolean
     emailVerified?: boolean
     image?: boolean
+    phoneNumber?: boolean
+    phoneVerified?: boolean
     firstName?: boolean
     lastName?: boolean
     username?: boolean
@@ -4404,6 +4478,13 @@ export namespace Prisma {
     personalWebsite?: boolean
     linkedinProfile?: boolean
     twitterHandle?: boolean
+    isSearchable?: boolean
+    profileVisibility?: boolean
+    showEmail?: boolean
+    showPhoneNumber?: boolean
+    showWorkDetails?: boolean
+    showSocialLinks?: boolean
+    showLocation?: boolean
     role?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -4414,6 +4495,8 @@ export namespace Prisma {
     email?: boolean
     emailVerified?: boolean
     image?: boolean
+    phoneNumber?: boolean
+    phoneVerified?: boolean
     firstName?: boolean
     lastName?: boolean
     username?: boolean
@@ -4429,12 +4512,19 @@ export namespace Prisma {
     personalWebsite?: boolean
     linkedinProfile?: boolean
     twitterHandle?: boolean
+    isSearchable?: boolean
+    profileVisibility?: boolean
+    showEmail?: boolean
+    showPhoneNumber?: boolean
+    showWorkDetails?: boolean
+    showSocialLinks?: boolean
+    showLocation?: boolean
     role?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "emailVerified" | "image" | "firstName" | "lastName" | "username" | "bio" | "ageGroup" | "country" | "city" | "workTypes" | "expertiseAreas" | "organization" | "position" | "workBio" | "personalWebsite" | "linkedinProfile" | "twitterHandle" | "role" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "emailVerified" | "image" | "phoneNumber" | "phoneVerified" | "firstName" | "lastName" | "username" | "bio" | "ageGroup" | "country" | "city" | "workTypes" | "expertiseAreas" | "organization" | "position" | "workBio" | "personalWebsite" | "linkedinProfile" | "twitterHandle" | "isSearchable" | "profileVisibility" | "showEmail" | "showPhoneNumber" | "showWorkDetails" | "showSocialLinks" | "showLocation" | "role" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     accounts?: boolean | User$accountsArgs<ExtArgs>
     sessions?: boolean | User$sessionsArgs<ExtArgs>
@@ -4460,6 +4550,8 @@ export namespace Prisma {
       email: string | null
       emailVerified: Date | null
       image: string | null
+      phoneNumber: string | null
+      phoneVerified: Date | null
       firstName: string | null
       lastName: string | null
       username: string | null
@@ -4475,6 +4567,13 @@ export namespace Prisma {
       personalWebsite: string | null
       linkedinProfile: string | null
       twitterHandle: string | null
+      isSearchable: boolean
+      profileVisibility: $Enums.ProfileVisibility
+      showEmail: boolean
+      showPhoneNumber: boolean
+      showWorkDetails: boolean
+      showSocialLinks: boolean
+      showLocation: boolean
       role: $Enums.Role
       createdAt: Date
       updatedAt: Date
@@ -4910,6 +5009,8 @@ export namespace Prisma {
     readonly email: FieldRef<"User", 'String'>
     readonly emailVerified: FieldRef<"User", 'DateTime'>
     readonly image: FieldRef<"User", 'String'>
+    readonly phoneNumber: FieldRef<"User", 'String'>
+    readonly phoneVerified: FieldRef<"User", 'DateTime'>
     readonly firstName: FieldRef<"User", 'String'>
     readonly lastName: FieldRef<"User", 'String'>
     readonly username: FieldRef<"User", 'String'>
@@ -4925,6 +5026,13 @@ export namespace Prisma {
     readonly personalWebsite: FieldRef<"User", 'String'>
     readonly linkedinProfile: FieldRef<"User", 'String'>
     readonly twitterHandle: FieldRef<"User", 'String'>
+    readonly isSearchable: FieldRef<"User", 'Boolean'>
+    readonly profileVisibility: FieldRef<"User", 'ProfileVisibility'>
+    readonly showEmail: FieldRef<"User", 'Boolean'>
+    readonly showPhoneNumber: FieldRef<"User", 'Boolean'>
+    readonly showWorkDetails: FieldRef<"User", 'Boolean'>
+    readonly showSocialLinks: FieldRef<"User", 'Boolean'>
+    readonly showLocation: FieldRef<"User", 'Boolean'>
     readonly role: FieldRef<"User", 'Role'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
@@ -11996,6 +12104,8 @@ export namespace Prisma {
     email: 'email',
     emailVerified: 'emailVerified',
     image: 'image',
+    phoneNumber: 'phoneNumber',
+    phoneVerified: 'phoneVerified',
     firstName: 'firstName',
     lastName: 'lastName',
     username: 'username',
@@ -12011,6 +12121,13 @@ export namespace Prisma {
     personalWebsite: 'personalWebsite',
     linkedinProfile: 'linkedinProfile',
     twitterHandle: 'twitterHandle',
+    isSearchable: 'isSearchable',
+    profileVisibility: 'profileVisibility',
+    showEmail: 'showEmail',
+    showPhoneNumber: 'showPhoneNumber',
+    showWorkDetails: 'showWorkDetails',
+    showSocialLinks: 'showSocialLinks',
+    showLocation: 'showLocation',
     role: 'role',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -12213,6 +12330,27 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+  /**
+   * Reference to a field of type 'ProfileVisibility'
+   */
+  export type EnumProfileVisibilityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProfileVisibility'>
+    
+
+
+  /**
+   * Reference to a field of type 'ProfileVisibility[]'
+   */
+  export type ListEnumProfileVisibilityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProfileVisibility[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Role'
    */
   export type EnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role'>
@@ -12265,13 +12403,6 @@ export namespace Prisma {
    * Reference to a field of type 'SpecialCommunityName[]'
    */
   export type ListEnumSpecialCommunityNameFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SpecialCommunityName[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'Boolean'
-   */
-  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -12448,6 +12579,8 @@ export namespace Prisma {
     email?: StringNullableFilter<"User"> | string | null
     emailVerified?: DateTimeNullableFilter<"User"> | Date | string | null
     image?: StringNullableFilter<"User"> | string | null
+    phoneNumber?: StringNullableFilter<"User"> | string | null
+    phoneVerified?: DateTimeNullableFilter<"User"> | Date | string | null
     firstName?: StringNullableFilter<"User"> | string | null
     lastName?: StringNullableFilter<"User"> | string | null
     username?: StringNullableFilter<"User"> | string | null
@@ -12463,6 +12596,13 @@ export namespace Prisma {
     personalWebsite?: StringNullableFilter<"User"> | string | null
     linkedinProfile?: StringNullableFilter<"User"> | string | null
     twitterHandle?: StringNullableFilter<"User"> | string | null
+    isSearchable?: BoolFilter<"User"> | boolean
+    profileVisibility?: EnumProfileVisibilityFilter<"User"> | $Enums.ProfileVisibility
+    showEmail?: BoolFilter<"User"> | boolean
+    showPhoneNumber?: BoolFilter<"User"> | boolean
+    showWorkDetails?: BoolFilter<"User"> | boolean
+    showSocialLinks?: BoolFilter<"User"> | boolean
+    showLocation?: BoolFilter<"User"> | boolean
     role?: EnumRoleFilter<"User"> | $Enums.Role
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
@@ -12478,6 +12618,8 @@ export namespace Prisma {
     email?: SortOrderInput | SortOrder
     emailVerified?: SortOrderInput | SortOrder
     image?: SortOrderInput | SortOrder
+    phoneNumber?: SortOrderInput | SortOrder
+    phoneVerified?: SortOrderInput | SortOrder
     firstName?: SortOrderInput | SortOrder
     lastName?: SortOrderInput | SortOrder
     username?: SortOrderInput | SortOrder
@@ -12493,6 +12635,13 @@ export namespace Prisma {
     personalWebsite?: SortOrderInput | SortOrder
     linkedinProfile?: SortOrderInput | SortOrder
     twitterHandle?: SortOrderInput | SortOrder
+    isSearchable?: SortOrder
+    profileVisibility?: SortOrder
+    showEmail?: SortOrder
+    showPhoneNumber?: SortOrder
+    showWorkDetails?: SortOrder
+    showSocialLinks?: SortOrder
+    showLocation?: SortOrder
     role?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -12512,6 +12661,8 @@ export namespace Prisma {
     NOT?: UserWhereInput | UserWhereInput[]
     emailVerified?: DateTimeNullableFilter<"User"> | Date | string | null
     image?: StringNullableFilter<"User"> | string | null
+    phoneNumber?: StringNullableFilter<"User"> | string | null
+    phoneVerified?: DateTimeNullableFilter<"User"> | Date | string | null
     firstName?: StringNullableFilter<"User"> | string | null
     lastName?: StringNullableFilter<"User"> | string | null
     bio?: StringNullableFilter<"User"> | string | null
@@ -12526,6 +12677,13 @@ export namespace Prisma {
     personalWebsite?: StringNullableFilter<"User"> | string | null
     linkedinProfile?: StringNullableFilter<"User"> | string | null
     twitterHandle?: StringNullableFilter<"User"> | string | null
+    isSearchable?: BoolFilter<"User"> | boolean
+    profileVisibility?: EnumProfileVisibilityFilter<"User"> | $Enums.ProfileVisibility
+    showEmail?: BoolFilter<"User"> | boolean
+    showPhoneNumber?: BoolFilter<"User"> | boolean
+    showWorkDetails?: BoolFilter<"User"> | boolean
+    showSocialLinks?: BoolFilter<"User"> | boolean
+    showLocation?: BoolFilter<"User"> | boolean
     role?: EnumRoleFilter<"User"> | $Enums.Role
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
@@ -12541,6 +12699,8 @@ export namespace Prisma {
     email?: SortOrderInput | SortOrder
     emailVerified?: SortOrderInput | SortOrder
     image?: SortOrderInput | SortOrder
+    phoneNumber?: SortOrderInput | SortOrder
+    phoneVerified?: SortOrderInput | SortOrder
     firstName?: SortOrderInput | SortOrder
     lastName?: SortOrderInput | SortOrder
     username?: SortOrderInput | SortOrder
@@ -12556,6 +12716,13 @@ export namespace Prisma {
     personalWebsite?: SortOrderInput | SortOrder
     linkedinProfile?: SortOrderInput | SortOrder
     twitterHandle?: SortOrderInput | SortOrder
+    isSearchable?: SortOrder
+    profileVisibility?: SortOrder
+    showEmail?: SortOrder
+    showPhoneNumber?: SortOrder
+    showWorkDetails?: SortOrder
+    showSocialLinks?: SortOrder
+    showLocation?: SortOrder
     role?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -12572,6 +12739,8 @@ export namespace Prisma {
     email?: StringNullableWithAggregatesFilter<"User"> | string | null
     emailVerified?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     image?: StringNullableWithAggregatesFilter<"User"> | string | null
+    phoneNumber?: StringNullableWithAggregatesFilter<"User"> | string | null
+    phoneVerified?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     firstName?: StringNullableWithAggregatesFilter<"User"> | string | null
     lastName?: StringNullableWithAggregatesFilter<"User"> | string | null
     username?: StringNullableWithAggregatesFilter<"User"> | string | null
@@ -12587,6 +12756,13 @@ export namespace Prisma {
     personalWebsite?: StringNullableWithAggregatesFilter<"User"> | string | null
     linkedinProfile?: StringNullableWithAggregatesFilter<"User"> | string | null
     twitterHandle?: StringNullableWithAggregatesFilter<"User"> | string | null
+    isSearchable?: BoolWithAggregatesFilter<"User"> | boolean
+    profileVisibility?: EnumProfileVisibilityWithAggregatesFilter<"User"> | $Enums.ProfileVisibility
+    showEmail?: BoolWithAggregatesFilter<"User"> | boolean
+    showPhoneNumber?: BoolWithAggregatesFilter<"User"> | boolean
+    showWorkDetails?: BoolWithAggregatesFilter<"User"> | boolean
+    showSocialLinks?: BoolWithAggregatesFilter<"User"> | boolean
+    showLocation?: BoolWithAggregatesFilter<"User"> | boolean
     role?: EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
@@ -13162,6 +13338,8 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    phoneNumber?: string | null
+    phoneVerified?: Date | string | null
     firstName?: string | null
     lastName?: string | null
     username?: string | null
@@ -13177,6 +13355,13 @@ export namespace Prisma {
     personalWebsite?: string | null
     linkedinProfile?: string | null
     twitterHandle?: string | null
+    isSearchable?: boolean
+    profileVisibility?: $Enums.ProfileVisibility
+    showEmail?: boolean
+    showPhoneNumber?: boolean
+    showWorkDetails?: boolean
+    showSocialLinks?: boolean
+    showLocation?: boolean
     role?: $Enums.Role
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -13192,6 +13377,8 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    phoneNumber?: string | null
+    phoneVerified?: Date | string | null
     firstName?: string | null
     lastName?: string | null
     username?: string | null
@@ -13207,6 +13394,13 @@ export namespace Prisma {
     personalWebsite?: string | null
     linkedinProfile?: string | null
     twitterHandle?: string | null
+    isSearchable?: boolean
+    profileVisibility?: $Enums.ProfileVisibility
+    showEmail?: boolean
+    showPhoneNumber?: boolean
+    showWorkDetails?: boolean
+    showSocialLinks?: boolean
+    showLocation?: boolean
     role?: $Enums.Role
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -13222,6 +13416,8 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     firstName?: NullableStringFieldUpdateOperationsInput | string | null
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     username?: NullableStringFieldUpdateOperationsInput | string | null
@@ -13237,6 +13433,13 @@ export namespace Prisma {
     personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
     linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
     twitterHandle?: NullableStringFieldUpdateOperationsInput | string | null
+    isSearchable?: BoolFieldUpdateOperationsInput | boolean
+    profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
+    showEmail?: BoolFieldUpdateOperationsInput | boolean
+    showPhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    showWorkDetails?: BoolFieldUpdateOperationsInput | boolean
+    showSocialLinks?: BoolFieldUpdateOperationsInput | boolean
+    showLocation?: BoolFieldUpdateOperationsInput | boolean
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -13252,6 +13455,8 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     firstName?: NullableStringFieldUpdateOperationsInput | string | null
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     username?: NullableStringFieldUpdateOperationsInput | string | null
@@ -13267,6 +13472,13 @@ export namespace Prisma {
     personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
     linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
     twitterHandle?: NullableStringFieldUpdateOperationsInput | string | null
+    isSearchable?: BoolFieldUpdateOperationsInput | boolean
+    profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
+    showEmail?: BoolFieldUpdateOperationsInput | boolean
+    showPhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    showWorkDetails?: BoolFieldUpdateOperationsInput | boolean
+    showSocialLinks?: BoolFieldUpdateOperationsInput | boolean
+    showLocation?: BoolFieldUpdateOperationsInput | boolean
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -13282,6 +13494,8 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    phoneNumber?: string | null
+    phoneVerified?: Date | string | null
     firstName?: string | null
     lastName?: string | null
     username?: string | null
@@ -13297,6 +13511,13 @@ export namespace Prisma {
     personalWebsite?: string | null
     linkedinProfile?: string | null
     twitterHandle?: string | null
+    isSearchable?: boolean
+    profileVisibility?: $Enums.ProfileVisibility
+    showEmail?: boolean
+    showPhoneNumber?: boolean
+    showWorkDetails?: boolean
+    showSocialLinks?: boolean
+    showLocation?: boolean
     role?: $Enums.Role
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -13307,6 +13528,8 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     firstName?: NullableStringFieldUpdateOperationsInput | string | null
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     username?: NullableStringFieldUpdateOperationsInput | string | null
@@ -13322,6 +13545,13 @@ export namespace Prisma {
     personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
     linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
     twitterHandle?: NullableStringFieldUpdateOperationsInput | string | null
+    isSearchable?: BoolFieldUpdateOperationsInput | boolean
+    profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
+    showEmail?: BoolFieldUpdateOperationsInput | boolean
+    showPhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    showWorkDetails?: BoolFieldUpdateOperationsInput | boolean
+    showSocialLinks?: BoolFieldUpdateOperationsInput | boolean
+    showLocation?: BoolFieldUpdateOperationsInput | boolean
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -13332,6 +13562,8 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     firstName?: NullableStringFieldUpdateOperationsInput | string | null
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     username?: NullableStringFieldUpdateOperationsInput | string | null
@@ -13347,6 +13579,13 @@ export namespace Prisma {
     personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
     linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
     twitterHandle?: NullableStringFieldUpdateOperationsInput | string | null
+    isSearchable?: BoolFieldUpdateOperationsInput | boolean
+    profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
+    showEmail?: BoolFieldUpdateOperationsInput | boolean
+    showPhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    showWorkDetails?: BoolFieldUpdateOperationsInput | boolean
+    showSocialLinks?: BoolFieldUpdateOperationsInput | boolean
+    showLocation?: BoolFieldUpdateOperationsInput | boolean
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14033,6 +14272,18 @@ export namespace Prisma {
     isEmpty?: boolean
   }
 
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type EnumProfileVisibilityFilter<$PrismaModel = never> = {
+    equals?: $Enums.ProfileVisibility | EnumProfileVisibilityFieldRefInput<$PrismaModel>
+    in?: $Enums.ProfileVisibility[] | ListEnumProfileVisibilityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ProfileVisibility[] | ListEnumProfileVisibilityFieldRefInput<$PrismaModel>
+    not?: NestedEnumProfileVisibilityFilter<$PrismaModel> | $Enums.ProfileVisibility
+  }
+
   export type EnumRoleFilter<$PrismaModel = never> = {
     equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
     in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
@@ -14095,6 +14346,8 @@ export namespace Prisma {
     email?: SortOrder
     emailVerified?: SortOrder
     image?: SortOrder
+    phoneNumber?: SortOrder
+    phoneVerified?: SortOrder
     firstName?: SortOrder
     lastName?: SortOrder
     username?: SortOrder
@@ -14110,6 +14363,13 @@ export namespace Prisma {
     personalWebsite?: SortOrder
     linkedinProfile?: SortOrder
     twitterHandle?: SortOrder
+    isSearchable?: SortOrder
+    profileVisibility?: SortOrder
+    showEmail?: SortOrder
+    showPhoneNumber?: SortOrder
+    showWorkDetails?: SortOrder
+    showSocialLinks?: SortOrder
+    showLocation?: SortOrder
     role?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -14120,6 +14380,8 @@ export namespace Prisma {
     email?: SortOrder
     emailVerified?: SortOrder
     image?: SortOrder
+    phoneNumber?: SortOrder
+    phoneVerified?: SortOrder
     firstName?: SortOrder
     lastName?: SortOrder
     username?: SortOrder
@@ -14133,6 +14395,13 @@ export namespace Prisma {
     personalWebsite?: SortOrder
     linkedinProfile?: SortOrder
     twitterHandle?: SortOrder
+    isSearchable?: SortOrder
+    profileVisibility?: SortOrder
+    showEmail?: SortOrder
+    showPhoneNumber?: SortOrder
+    showWorkDetails?: SortOrder
+    showSocialLinks?: SortOrder
+    showLocation?: SortOrder
     role?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -14143,6 +14412,8 @@ export namespace Prisma {
     email?: SortOrder
     emailVerified?: SortOrder
     image?: SortOrder
+    phoneNumber?: SortOrder
+    phoneVerified?: SortOrder
     firstName?: SortOrder
     lastName?: SortOrder
     username?: SortOrder
@@ -14156,6 +14427,13 @@ export namespace Prisma {
     personalWebsite?: SortOrder
     linkedinProfile?: SortOrder
     twitterHandle?: SortOrder
+    isSearchable?: SortOrder
+    profileVisibility?: SortOrder
+    showEmail?: SortOrder
+    showPhoneNumber?: SortOrder
+    showWorkDetails?: SortOrder
+    showSocialLinks?: SortOrder
+    showLocation?: SortOrder
     role?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -14183,6 +14461,24 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedEnumAgeGroupNullableFilter<$PrismaModel>
     _max?: NestedEnumAgeGroupNullableFilter<$PrismaModel>
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type EnumProfileVisibilityWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ProfileVisibility | EnumProfileVisibilityFieldRefInput<$PrismaModel>
+    in?: $Enums.ProfileVisibility[] | ListEnumProfileVisibilityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ProfileVisibility[] | ListEnumProfileVisibilityFieldRefInput<$PrismaModel>
+    not?: NestedEnumProfileVisibilityWithAggregatesFilter<$PrismaModel> | $Enums.ProfileVisibility
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumProfileVisibilityFilter<$PrismaModel>
+    _max?: NestedEnumProfileVisibilityFilter<$PrismaModel>
   }
 
   export type EnumRoleWithAggregatesFilter<$PrismaModel = never> = {
@@ -14337,11 +14633,6 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
-  export type BoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
   export type RecentWorkCountOrderByAggregateInput = {
     id?: SortOrder
     title?: SortOrder
@@ -14379,14 +14670,6 @@ export namespace Prisma {
     userId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-  }
-
-  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type DownloadEventCountOrderByAggregateInput = {
@@ -14632,6 +14915,14 @@ export namespace Prisma {
   export type UserUpdateexpertiseAreasInput = {
     set?: $Enums.ExpertiseArea[]
     push?: $Enums.ExpertiseArea | $Enums.ExpertiseArea[]
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
+  export type EnumProfileVisibilityFieldUpdateOperationsInput = {
+    set?: $Enums.ProfileVisibility
   }
 
   export type EnumRoleFieldUpdateOperationsInput = {
@@ -14936,10 +15227,6 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
-  export type BoolFieldUpdateOperationsInput = {
-    set?: boolean
-  }
-
   export type UserUpdateOneRequiredWithoutRecentWorkNestedInput = {
     create?: XOR<UserCreateWithoutRecentWorkInput, UserUncheckedCreateWithoutRecentWorkInput>
     connectOrCreate?: UserCreateOrConnectWithoutRecentWorkInput
@@ -15110,6 +15397,18 @@ export namespace Prisma {
     not?: NestedEnumAgeGroupNullableFilter<$PrismaModel> | $Enums.AgeGroup | null
   }
 
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedEnumProfileVisibilityFilter<$PrismaModel = never> = {
+    equals?: $Enums.ProfileVisibility | EnumProfileVisibilityFieldRefInput<$PrismaModel>
+    in?: $Enums.ProfileVisibility[] | ListEnumProfileVisibilityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ProfileVisibility[] | ListEnumProfileVisibilityFieldRefInput<$PrismaModel>
+    not?: NestedEnumProfileVisibilityFilter<$PrismaModel> | $Enums.ProfileVisibility
+  }
+
   export type NestedEnumRoleFilter<$PrismaModel = never> = {
     equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
     in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
@@ -15139,6 +15438,24 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedEnumAgeGroupNullableFilter<$PrismaModel>
     _max?: NestedEnumAgeGroupNullableFilter<$PrismaModel>
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type NestedEnumProfileVisibilityWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ProfileVisibility | EnumProfileVisibilityFieldRefInput<$PrismaModel>
+    in?: $Enums.ProfileVisibility[] | ListEnumProfileVisibilityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ProfileVisibility[] | ListEnumProfileVisibilityFieldRefInput<$PrismaModel>
+    not?: NestedEnumProfileVisibilityWithAggregatesFilter<$PrismaModel> | $Enums.ProfileVisibility
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumProfileVisibilityFilter<$PrismaModel>
+    _max?: NestedEnumProfileVisibilityFilter<$PrismaModel>
   }
 
   export type NestedEnumRoleWithAggregatesFilter<$PrismaModel = never> = {
@@ -15202,19 +15519,6 @@ export namespace Prisma {
     _max?: NestedEnumSpecialCommunityNameNullableFilter<$PrismaModel>
   }
 
-  export type NestedBoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
-  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
-  }
-
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -15247,6 +15551,8 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    phoneNumber?: string | null
+    phoneVerified?: Date | string | null
     firstName?: string | null
     lastName?: string | null
     username?: string | null
@@ -15262,6 +15568,13 @@ export namespace Prisma {
     personalWebsite?: string | null
     linkedinProfile?: string | null
     twitterHandle?: string | null
+    isSearchable?: boolean
+    profileVisibility?: $Enums.ProfileVisibility
+    showEmail?: boolean
+    showPhoneNumber?: boolean
+    showWorkDetails?: boolean
+    showSocialLinks?: boolean
+    showLocation?: boolean
     role?: $Enums.Role
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -15276,6 +15589,8 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    phoneNumber?: string | null
+    phoneVerified?: Date | string | null
     firstName?: string | null
     lastName?: string | null
     username?: string | null
@@ -15291,6 +15606,13 @@ export namespace Prisma {
     personalWebsite?: string | null
     linkedinProfile?: string | null
     twitterHandle?: string | null
+    isSearchable?: boolean
+    profileVisibility?: $Enums.ProfileVisibility
+    showEmail?: boolean
+    showPhoneNumber?: boolean
+    showWorkDetails?: boolean
+    showSocialLinks?: boolean
+    showLocation?: boolean
     role?: $Enums.Role
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -15321,6 +15643,8 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     firstName?: NullableStringFieldUpdateOperationsInput | string | null
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     username?: NullableStringFieldUpdateOperationsInput | string | null
@@ -15336,6 +15660,13 @@ export namespace Prisma {
     personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
     linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
     twitterHandle?: NullableStringFieldUpdateOperationsInput | string | null
+    isSearchable?: BoolFieldUpdateOperationsInput | boolean
+    profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
+    showEmail?: BoolFieldUpdateOperationsInput | boolean
+    showPhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    showWorkDetails?: BoolFieldUpdateOperationsInput | boolean
+    showSocialLinks?: BoolFieldUpdateOperationsInput | boolean
+    showLocation?: BoolFieldUpdateOperationsInput | boolean
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -15350,6 +15681,8 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     firstName?: NullableStringFieldUpdateOperationsInput | string | null
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     username?: NullableStringFieldUpdateOperationsInput | string | null
@@ -15365,6 +15698,13 @@ export namespace Prisma {
     personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
     linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
     twitterHandle?: NullableStringFieldUpdateOperationsInput | string | null
+    isSearchable?: BoolFieldUpdateOperationsInput | boolean
+    profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
+    showEmail?: BoolFieldUpdateOperationsInput | boolean
+    showPhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    showWorkDetails?: BoolFieldUpdateOperationsInput | boolean
+    showSocialLinks?: BoolFieldUpdateOperationsInput | boolean
+    showLocation?: BoolFieldUpdateOperationsInput | boolean
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -15379,6 +15719,8 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    phoneNumber?: string | null
+    phoneVerified?: Date | string | null
     firstName?: string | null
     lastName?: string | null
     username?: string | null
@@ -15394,6 +15736,13 @@ export namespace Prisma {
     personalWebsite?: string | null
     linkedinProfile?: string | null
     twitterHandle?: string | null
+    isSearchable?: boolean
+    profileVisibility?: $Enums.ProfileVisibility
+    showEmail?: boolean
+    showPhoneNumber?: boolean
+    showWorkDetails?: boolean
+    showSocialLinks?: boolean
+    showLocation?: boolean
     role?: $Enums.Role
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -15408,6 +15757,8 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    phoneNumber?: string | null
+    phoneVerified?: Date | string | null
     firstName?: string | null
     lastName?: string | null
     username?: string | null
@@ -15423,6 +15774,13 @@ export namespace Prisma {
     personalWebsite?: string | null
     linkedinProfile?: string | null
     twitterHandle?: string | null
+    isSearchable?: boolean
+    profileVisibility?: $Enums.ProfileVisibility
+    showEmail?: boolean
+    showPhoneNumber?: boolean
+    showWorkDetails?: boolean
+    showSocialLinks?: boolean
+    showLocation?: boolean
     role?: $Enums.Role
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -15453,6 +15811,8 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     firstName?: NullableStringFieldUpdateOperationsInput | string | null
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     username?: NullableStringFieldUpdateOperationsInput | string | null
@@ -15468,6 +15828,13 @@ export namespace Prisma {
     personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
     linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
     twitterHandle?: NullableStringFieldUpdateOperationsInput | string | null
+    isSearchable?: BoolFieldUpdateOperationsInput | boolean
+    profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
+    showEmail?: BoolFieldUpdateOperationsInput | boolean
+    showPhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    showWorkDetails?: BoolFieldUpdateOperationsInput | boolean
+    showSocialLinks?: BoolFieldUpdateOperationsInput | boolean
+    showLocation?: BoolFieldUpdateOperationsInput | boolean
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -15482,6 +15849,8 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     firstName?: NullableStringFieldUpdateOperationsInput | string | null
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     username?: NullableStringFieldUpdateOperationsInput | string | null
@@ -15497,6 +15866,13 @@ export namespace Prisma {
     personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
     linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
     twitterHandle?: NullableStringFieldUpdateOperationsInput | string | null
+    isSearchable?: BoolFieldUpdateOperationsInput | boolean
+    profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
+    showEmail?: BoolFieldUpdateOperationsInput | boolean
+    showPhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    showWorkDetails?: BoolFieldUpdateOperationsInput | boolean
+    showSocialLinks?: BoolFieldUpdateOperationsInput | boolean
+    showLocation?: BoolFieldUpdateOperationsInput | boolean
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -15882,6 +16258,8 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    phoneNumber?: string | null
+    phoneVerified?: Date | string | null
     firstName?: string | null
     lastName?: string | null
     username?: string | null
@@ -15897,6 +16275,13 @@ export namespace Prisma {
     personalWebsite?: string | null
     linkedinProfile?: string | null
     twitterHandle?: string | null
+    isSearchable?: boolean
+    profileVisibility?: $Enums.ProfileVisibility
+    showEmail?: boolean
+    showPhoneNumber?: boolean
+    showWorkDetails?: boolean
+    showSocialLinks?: boolean
+    showLocation?: boolean
     role?: $Enums.Role
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -15911,6 +16296,8 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    phoneNumber?: string | null
+    phoneVerified?: Date | string | null
     firstName?: string | null
     lastName?: string | null
     username?: string | null
@@ -15926,6 +16313,13 @@ export namespace Prisma {
     personalWebsite?: string | null
     linkedinProfile?: string | null
     twitterHandle?: string | null
+    isSearchable?: boolean
+    profileVisibility?: $Enums.ProfileVisibility
+    showEmail?: boolean
+    showPhoneNumber?: boolean
+    showWorkDetails?: boolean
+    showSocialLinks?: boolean
+    showLocation?: boolean
     role?: $Enums.Role
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -15985,6 +16379,8 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     firstName?: NullableStringFieldUpdateOperationsInput | string | null
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     username?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16000,6 +16396,13 @@ export namespace Prisma {
     personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
     linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
     twitterHandle?: NullableStringFieldUpdateOperationsInput | string | null
+    isSearchable?: BoolFieldUpdateOperationsInput | boolean
+    profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
+    showEmail?: BoolFieldUpdateOperationsInput | boolean
+    showPhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    showWorkDetails?: BoolFieldUpdateOperationsInput | boolean
+    showSocialLinks?: BoolFieldUpdateOperationsInput | boolean
+    showLocation?: BoolFieldUpdateOperationsInput | boolean
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16014,6 +16417,8 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     firstName?: NullableStringFieldUpdateOperationsInput | string | null
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     username?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16029,6 +16434,13 @@ export namespace Prisma {
     personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
     linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
     twitterHandle?: NullableStringFieldUpdateOperationsInput | string | null
+    isSearchable?: BoolFieldUpdateOperationsInput | boolean
+    profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
+    showEmail?: BoolFieldUpdateOperationsInput | boolean
+    showPhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    showWorkDetails?: BoolFieldUpdateOperationsInput | boolean
+    showSocialLinks?: BoolFieldUpdateOperationsInput | boolean
+    showLocation?: BoolFieldUpdateOperationsInput | boolean
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16107,6 +16519,8 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    phoneNumber?: string | null
+    phoneVerified?: Date | string | null
     firstName?: string | null
     lastName?: string | null
     username?: string | null
@@ -16122,6 +16536,13 @@ export namespace Prisma {
     personalWebsite?: string | null
     linkedinProfile?: string | null
     twitterHandle?: string | null
+    isSearchable?: boolean
+    profileVisibility?: $Enums.ProfileVisibility
+    showEmail?: boolean
+    showPhoneNumber?: boolean
+    showWorkDetails?: boolean
+    showSocialLinks?: boolean
+    showLocation?: boolean
     role?: $Enums.Role
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -16136,6 +16557,8 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    phoneNumber?: string | null
+    phoneVerified?: Date | string | null
     firstName?: string | null
     lastName?: string | null
     username?: string | null
@@ -16151,6 +16574,13 @@ export namespace Prisma {
     personalWebsite?: string | null
     linkedinProfile?: string | null
     twitterHandle?: string | null
+    isSearchable?: boolean
+    profileVisibility?: $Enums.ProfileVisibility
+    showEmail?: boolean
+    showPhoneNumber?: boolean
+    showWorkDetails?: boolean
+    showSocialLinks?: boolean
+    showLocation?: boolean
     role?: $Enums.Role
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -16216,6 +16646,8 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     firstName?: NullableStringFieldUpdateOperationsInput | string | null
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     username?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16231,6 +16663,13 @@ export namespace Prisma {
     personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
     linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
     twitterHandle?: NullableStringFieldUpdateOperationsInput | string | null
+    isSearchable?: BoolFieldUpdateOperationsInput | boolean
+    profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
+    showEmail?: BoolFieldUpdateOperationsInput | boolean
+    showPhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    showWorkDetails?: BoolFieldUpdateOperationsInput | boolean
+    showSocialLinks?: BoolFieldUpdateOperationsInput | boolean
+    showLocation?: BoolFieldUpdateOperationsInput | boolean
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16245,6 +16684,8 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     firstName?: NullableStringFieldUpdateOperationsInput | string | null
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     username?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16260,6 +16701,13 @@ export namespace Prisma {
     personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
     linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
     twitterHandle?: NullableStringFieldUpdateOperationsInput | string | null
+    isSearchable?: BoolFieldUpdateOperationsInput | boolean
+    profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
+    showEmail?: BoolFieldUpdateOperationsInput | boolean
+    showPhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    showWorkDetails?: BoolFieldUpdateOperationsInput | boolean
+    showSocialLinks?: BoolFieldUpdateOperationsInput | boolean
+    showLocation?: BoolFieldUpdateOperationsInput | boolean
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16274,6 +16722,8 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    phoneNumber?: string | null
+    phoneVerified?: Date | string | null
     firstName?: string | null
     lastName?: string | null
     username?: string | null
@@ -16289,6 +16739,13 @@ export namespace Prisma {
     personalWebsite?: string | null
     linkedinProfile?: string | null
     twitterHandle?: string | null
+    isSearchable?: boolean
+    profileVisibility?: $Enums.ProfileVisibility
+    showEmail?: boolean
+    showPhoneNumber?: boolean
+    showWorkDetails?: boolean
+    showSocialLinks?: boolean
+    showLocation?: boolean
     role?: $Enums.Role
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -16303,6 +16760,8 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    phoneNumber?: string | null
+    phoneVerified?: Date | string | null
     firstName?: string | null
     lastName?: string | null
     username?: string | null
@@ -16318,6 +16777,13 @@ export namespace Prisma {
     personalWebsite?: string | null
     linkedinProfile?: string | null
     twitterHandle?: string | null
+    isSearchable?: boolean
+    profileVisibility?: $Enums.ProfileVisibility
+    showEmail?: boolean
+    showPhoneNumber?: boolean
+    showWorkDetails?: boolean
+    showSocialLinks?: boolean
+    showLocation?: boolean
     role?: $Enums.Role
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -16348,6 +16814,8 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     firstName?: NullableStringFieldUpdateOperationsInput | string | null
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     username?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16363,6 +16831,13 @@ export namespace Prisma {
     personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
     linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
     twitterHandle?: NullableStringFieldUpdateOperationsInput | string | null
+    isSearchable?: BoolFieldUpdateOperationsInput | boolean
+    profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
+    showEmail?: BoolFieldUpdateOperationsInput | boolean
+    showPhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    showWorkDetails?: BoolFieldUpdateOperationsInput | boolean
+    showSocialLinks?: BoolFieldUpdateOperationsInput | boolean
+    showLocation?: BoolFieldUpdateOperationsInput | boolean
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16377,6 +16852,8 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     firstName?: NullableStringFieldUpdateOperationsInput | string | null
     lastName?: NullableStringFieldUpdateOperationsInput | string | null
     username?: NullableStringFieldUpdateOperationsInput | string | null
@@ -16392,6 +16869,13 @@ export namespace Prisma {
     personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
     linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
     twitterHandle?: NullableStringFieldUpdateOperationsInput | string | null
+    isSearchable?: BoolFieldUpdateOperationsInput | boolean
+    profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
+    showEmail?: BoolFieldUpdateOperationsInput | boolean
+    showPhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    showWorkDetails?: BoolFieldUpdateOperationsInput | boolean
+    showSocialLinks?: BoolFieldUpdateOperationsInput | boolean
+    showLocation?: BoolFieldUpdateOperationsInput | boolean
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string

@@ -140,18 +140,26 @@
 
 import { NextRequest, NextResponse } from "next/server"
 import { auth, clerkClient } from "@clerk/nextjs/server"
-import { prisma } from "@/lib/prisma"
+import { UserService } from "@/lib/services/user.service"
 import { z } from "zod"
+import type { 
+  SupportedLocale, 
+  UserProfileUpdateData,
+  LocalizedQueryOptions 
+} from "@/types/prisma"
 
 const ProfileUpdateSchema = z.object({
+    // Clerk-managed fields (read-only from UI, sync only)
     firstName: z.string().min(1, "First name is required").max(50),
     lastName: z.string().min(1, "Last name is required").max(50),
     username: z.string().min(3, "Username must be at least 3 characters").max(30)
         .regex(/^[a-zA-Z0-9_]+$/, "Username can only contain letters, numbers and underscores"),
-    bio: z.string().max(500, "Bio must be less than 500 characters").optional(),
-    ageGroup: z.enum(["UNDER_18", "ABOVE_18"]).optional(),
-    country: z.string().max(100).optional(),
-    city: z.string().max(100).optional(),
+    
+    // App-managed profile fields - handle null values properly
+    bio: z.string().max(500, "Bio must be less than 500 characters").optional().or(z.literal("")).or(z.null()),
+    ageGroup: z.enum(["UNDER_18", "ABOVE_18"]).optional().or(z.null()),
+    country: z.string().max(100).optional().or(z.literal("")).or(z.null()),
+    city: z.string().max(100).optional().or(z.literal("")).or(z.null()),
     workTypes: z.array(z.enum([
         "RESEARCH",
         "POLICY",
@@ -165,17 +173,39 @@ const ProfileUpdateSchema = z.object({
         "MENTAL_HEALTH",
         "HEALTH"
     ])).default([]),
-    organization: z.string().max(200).optional(),
-    position: z.string().max(200).optional(),
-    workBio: z.string().max(1000, "Work bio must be less than 1000 characters").optional(),
-    personalWebsite: z.string().url("Please enter a valid URL").optional().or(z.literal("")),
-    linkedinProfile: z.string().max(100).optional(),
-    twitterHandle: z.string().max(50).optional(),
-})
+    organization: z.string().max(200).optional().or(z.literal("")).or(z.null()),
+    position: z.string().max(200).optional().or(z.literal("")).or(z.null()),
+    workBio: z.string().max(1000, "Work bio must be less than 1000 characters").optional().or(z.literal("")).or(z.null()),
+    personalWebsite: z.string().url("Please enter a valid URL").optional().or(z.literal("")).or(z.null()),
+    linkedinProfile: z.string().max(100).optional().or(z.literal("")).or(z.null()),
+    twitterHandle: z.string().max(50).optional().or(z.literal("")).or(z.null()),
+    
+    // Privacy Controls
+    isSearchable: z.boolean().default(true),
+    profileVisibility: z.enum(["PUBLIC", "MEMBERS", "PRIVATE"]).default("PUBLIC"),
+    showEmail: z.boolean().default(false),
+    showPhoneNumber: z.boolean().default(false),
+    showWorkDetails: z.boolean().default(true),
+    showSocialLinks: z.boolean().default(true),
+    showLocation: z.boolean().default(true),
+}).transform((data) => ({
+    // Transform empty strings and null values to null for database storage
+    ...data,
+    bio: data.bio || null,
+    ageGroup: data.ageGroup || null,
+    country: data.country || null,
+    city: data.city || null,
+    organization: data.organization || null,
+    position: data.position || null,
+    workBio: data.workBio || null,
+    personalWebsite: data.personalWebsite || null,
+    linkedinProfile: data.linkedinProfile || null,
+    twitterHandle: data.twitterHandle || null,
+}))
 
 type ProfileFormValues = z.infer<typeof ProfileUpdateSchema>
 
-// Background sync to Clerk - fire and forget
+// Enhanced bidirectional sync to Clerk - fire and forget
 async function syncToClerk(userId: string, data: ProfileFormValues) {
     try {
         console.log(`🔄 Background sync to Clerk for user ${userId}`)
@@ -187,6 +217,7 @@ async function syncToClerk(userId: string, data: ProfileFormValues) {
             lastName: data.lastName,
             username: data.username,
             publicMetadata: {
+                // App-managed profile data
                 bio: data.bio || null,
                 ageGroup: data.ageGroup || null,
                 country: data.country || null,
@@ -199,6 +230,17 @@ async function syncToClerk(userId: string, data: ProfileFormValues) {
                 personalWebsite: data.personalWebsite || null,
                 linkedinProfile: data.linkedinProfile || null,
                 twitterHandle: data.twitterHandle || null,
+                
+                // Privacy settings (store in public metadata for search filtering)
+                isSearchable: data.isSearchable,
+                profileVisibility: data.profileVisibility,
+                showEmail: data.showEmail,
+                showPhoneNumber: data.showPhoneNumber,
+                showWorkDetails: data.showWorkDetails,
+                showSocialLinks: data.showSocialLinks,
+                showLocation: data.showLocation,
+                
+                // Sync timestamp
                 lastSyncedAt: new Date().toISOString(),
             }
         })
@@ -210,6 +252,9 @@ async function syncToClerk(userId: string, data: ProfileFormValues) {
     }
 }
 
+/**
+ * Get user profile with i18n support
+ */
 export async function GET(request: NextRequest) {
     try {
         const { userId } = await auth()
@@ -221,46 +266,49 @@ export async function GET(request: NextRequest) {
             )
         }
 
-        const user = await prisma.user.findUnique({
-            where: { id: userId },
-            include: {
-                communityMemberships: {
-                    include: {
-                        community: {
-                            select: {
-                                id: true,
-                                name: true,
-                                type: true,
-                                regionalName: true,
-                                specialName: true,
-                            }
-                        }
-                    }
-                },
-                recentWork: {
-                    orderBy: { startDate: 'desc' },
-                    take: 5
-                }
-            }
-        })
+        // Extract locale from request headers or query params
+        const locale = getLocaleFromRequest(request)
+        const queryOptions: LocalizedQueryOptions = {
+            locale,
+            fallbackLocale: 'en',
+            includeRTL: true
+        }
 
-        if (!user) {
+        const result = await UserService.getUserById(userId, queryOptions)
+
+        if (!result.success) {
+            console.error("Failed to fetch profile:", result.error)
+            return NextResponse.json(
+                { error: "Failed to fetch profile", details: result.error.message },
+                { status: 500 }
+            )
+        }
+
+        if (!result.data) {
             return NextResponse.json(
                 { error: "User not found" },
                 { status: 404 }
             )
         }
 
-        return NextResponse.json(user)
+        // Add locale info to response for client-side RTL handling
+        return NextResponse.json({
+            ...result.data,
+            _locale: locale,
+            _isRTL: locale === 'ar'
+        })
     } catch (error) {
         console.error("Failed to fetch profile:", error)
         return NextResponse.json(
-            { error: "Failed to fetch profile" },
+            { error: "Failed to fetch profile", details: error instanceof Error ? error.message : 'Unknown error' },
             { status: 500 }
         )
     }
 }
 
+/**
+ * Update user profile with type safety and i18n support
+ */
 export async function PUT(request: NextRequest) {
     try {
         const { userId } = await auth()
@@ -275,69 +323,81 @@ export async function PUT(request: NextRequest) {
         const body = await request.json()
         const validatedData = ProfileUpdateSchema.parse(body)
 
-        // Check username availability if username is being changed
-        if (validatedData.username) {
-            const currentUser = await prisma.user.findUnique({
-                where: { id: userId },
-                select: { username: true }
-            })
-
-            if (currentUser?.username !== validatedData.username) {
-                const existingUser = await prisma.user.findFirst({
-                    where: {
-                        username: validatedData.username,
-                        NOT: { id: userId }
-                    }
-                })
-
-                if (existingUser) {
-                    return NextResponse.json(
-                        { error: "Username already taken" },
-                        { status: 400 }
-                    )
-                }
-            }
+        // Extract locale for response
+        const locale = getLocaleFromRequest(request)
+        const queryOptions: LocalizedQueryOptions = {
+            locale,
+            fallbackLocale: 'en',
+            includeRTL: true
         }
 
-        // STEP 1: Update database first (fast response to user)
-        const updatedUser = await prisma.user.update({
-            where: { id: userId },
-            data: {
-                firstName: validatedData.firstName,
-                lastName: validatedData.lastName,
-                username: validatedData.username,
-                bio: validatedData.bio || null,
-                ageGroup: validatedData.ageGroup || null,
-                country: validatedData.country || null,
-                city: validatedData.city || null,
-                workTypes: validatedData.workTypes,
-                expertiseAreas: validatedData.expertiseAreas,
-                organization: validatedData.organization || null,
-                position: validatedData.position || null,
-                workBio: validatedData.workBio || null,
-                personalWebsite: validatedData.personalWebsite || null,
-                linkedinProfile: validatedData.linkedinProfile || null,
-                twitterHandle: validatedData.twitterHandle || null,
-                updatedAt: new Date(),
-            },
-            include: {
-                communityMemberships: {
-                    include: {
-                        community: true
-                    }
-                }
+        // Convert to our TypeScript type
+        const updateData: UserProfileUpdateData = {
+            firstName: validatedData.firstName,
+            lastName: validatedData.lastName,
+            username: validatedData.username,
+            bio: validatedData.bio || null,
+            ageGroup: validatedData.ageGroup || null,
+            country: validatedData.country || null,
+            city: validatedData.city || null,
+            workTypes: validatedData.workTypes,
+            expertiseAreas: validatedData.expertiseAreas,
+            organization: validatedData.organization || null,
+            position: validatedData.position || null,
+            workBio: validatedData.workBio || null,
+            personalWebsite: validatedData.personalWebsite || null,
+            linkedinProfile: validatedData.linkedinProfile || null,
+            twitterHandle: validatedData.twitterHandle || null,
+            isSearchable: validatedData.isSearchable,
+            profileVisibility: validatedData.profileVisibility,
+            showEmail: validatedData.showEmail,
+            showPhoneNumber: validatedData.showPhoneNumber,
+            showWorkDetails: validatedData.showWorkDetails,
+            showSocialLinks: validatedData.showSocialLinks,
+            showLocation: validatedData.showLocation,
+        }
+
+        // STEP 1: Update using type-safe service
+        const result = await UserService.updateUserProfile(userId, updateData, queryOptions)
+
+        if (!result.success) {
+            if (result.error.message.includes('Username already taken')) {
+                return NextResponse.json(
+                    { error: "Username already taken" },
+                    { status: 400 }
+                )
             }
+
+            console.error("Profile update failed:", result.error)
+            return NextResponse.json(
+                { error: "Failed to update profile" },
+                { status: 500 }
+            )
+        }
+
+        // STEP 2: Background sync to Clerk (fire and forget)
+        const { ClerkSyncService } = await import('../../../lib/clerk-sync')
+        ClerkSyncService.syncToClerk(userId, result.data!).catch(() => {
+            // Silent fail - already logged in sync service
         })
 
-        // STEP 2: Sync to Clerk in background (don't await - fire and forget)
-        syncToClerk(userId, validatedData).catch(() => {
-            // Silent fail - already logged in syncToClerk function
+        // STEP 3: Update search index (fire and forget)
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/search/users/webhook`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId, action: 'update' })
+        }).catch((error) => {
+            console.warn(`Search index update failed for user ${userId}:`, error)
         })
 
-        // STEP 3: Return success immediately to user
+        // STEP 4: Return localized response
         return NextResponse.json({
             success: true,
-            user: updatedUser,
+            user: {
+                ...result.data,
+                _locale: locale,
+                _isRTL: locale === 'ar'
+            },
             message: "Profile updated successfully"
         })
 
@@ -367,4 +427,37 @@ export async function PUT(request: NextRequest) {
             { status: 500 }
         )
     }
+}
+
+/**
+ * Extract locale from request headers
+ */
+function getLocaleFromRequest(request: NextRequest): SupportedLocale {
+    // First try the Accept-Language header set by our client
+    const acceptLanguage = request.headers.get('accept-language')
+    if (acceptLanguage && ['en', 'es', 'fr', 'ar'].includes(acceptLanguage)) {
+        return acceptLanguage as SupportedLocale
+    }
+    
+    // Try to parse standard Accept-Language header format
+    if (acceptLanguage) {
+        const preferredLang = acceptLanguage.split(',')[0].split('-')[0].toLowerCase()
+        if (['en', 'es', 'fr', 'ar'].includes(preferredLang)) {
+            return preferredLang as SupportedLocale
+        }
+    }
+    
+    // Try the pathname from the referrer URL to get locale
+    const referer = request.headers.get('referer')
+    if (referer) {
+        const url = new URL(referer)
+        const pathSegments = url.pathname.split('/')
+        const firstSegment = pathSegments[1]
+        if (firstSegment && ['en', 'es', 'fr', 'ar'].includes(firstSegment)) {
+            return firstSegment as SupportedLocale
+        }
+    }
+    
+    // Default to English
+    return 'en'
 }

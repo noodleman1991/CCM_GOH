@@ -11,17 +11,17 @@ import SocialLinksBlock from "@/components/blocks/profile/social-links-block"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 
 interface ProfilePageProps {
-    params: {
+    params: Promise<{
         username: string
         locale: string
-    }
+    }>
 }
 
 export async function generateMetadata({ params }: ProfilePageProps) {
-
+    const resolvedParams = await params
 
     const user = await prisma.user.findUnique({
-        where: { username: params.username },
+        where: { username: resolvedParams.username },
         select: { firstName: true, lastName: true, username: true }
     })
 
@@ -37,12 +37,13 @@ export async function generateMetadata({ params }: ProfilePageProps) {
 }
 
 export default async function ProfilePage({ params }: ProfilePageProps) {
+    const resolvedParams = await params
     const t = await getTranslations('profile')
     const { userId: currentUserId } = await auth()
 
     // Fetch user profile with all related data
     const user = await prisma.user.findUnique({
-        where: { username: params.username },
+        where: { username: resolvedParams.username },
         include: {
             communityMemberships: {
                 include: {

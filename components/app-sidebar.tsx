@@ -227,7 +227,8 @@ import {
     Stethoscope,
     Leaf,
     Brain,
-    Heart
+    Heart,
+    Search
 } from "lucide-react"
 import Logo from "@/components/logo"
 
@@ -259,6 +260,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
     // Research & Action items
     const researchActionItems = [
+        {
+            title: t('search'),
+            url: "/search",
+            icon: Search,
+        },
         {
             title: t('allOutputs'),
             url: "/outputs",

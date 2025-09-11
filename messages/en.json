@@ -28,6 +28,7 @@
     "caseStudies": "Case Studies",
     "toolkits": "Toolkits",
     "impactReports": "Impact Reports",
+    "search": "Search",
     "regionalCommunities": "Regional Communities",
     "collaborate": "Collaborate",
     "news": "News",
@@ -186,6 +187,9 @@
     },
     "work": {
       "title": "Professional Experience",
+      "workBio": "About my work",
+      "workTypes": "Work Types", 
+      "expertiseAreas": "Expertise Areas",
       "types": {
         "research": "Research",
         "policy": "Policy",
@@ -201,12 +205,15 @@
       }
     },
     "recentWork": {
-      "title": "Recent Work",
+      "title": "Recent Work", 
+      "addWork": "Add Work",
+      "noWorks": "No recent work to display",
       "ongoing": "Ongoing",
       "present": "Present"
     },
     "communities": {
       "title": "Communities",
+      "noCommunities": "Not a member of any communities",
       "regionalCommunities": "Regional Communities",
       "specialGroups": "Special Groups",
       "regional": {
@@ -235,6 +242,16 @@
       "pageDescription": "Update your profile information",
       "saveSuccess": "Profile updated successfully",
       "saveError": "Failed to update profile",
+      "clerkInfo": {
+        "title": "Account Information", 
+        "description": "This information is managed through your account settings and can't be changed here. Use the account settings to update email and phone.",
+        "emailNote": "To change your email address, go to your account settings",
+        "phoneNote": "To add or change your phone number, go to your account settings"
+      },
+      "email": "Email Address",
+      "phoneNumber": "Phone Number", 
+      "noEmail": "No email address",
+      "noPhone": "No phone number",
       "basicInfo": {
         "title": "Basic Information",
         "description": "This information will be displayed on your public profile"
@@ -281,8 +298,84 @@
       "personalWebsite": "Personal Website or Blog",
       "linkedin": "LinkedIn Profile",
       "twitter": "Twitter Handle",
+      "privacy": {
+        "title": "Privacy & Search Settings",
+        "description": "Control how your profile appears in search results and what information is visible to others",
+        "searchable": {
+          "title": "Allow others to find me in search",
+          "description": "When enabled, your profile will appear in search results. When disabled, you won't be discoverable through search."
+        },
+        "visibility": {
+          "title": "Profile Visibility",
+          "description": "Choose who can view your full profile information",
+          "public": "Public - Anyone can view your profile",
+          "members": "Members Only - Only community members can view your profile", 
+          "private": "Private - Your profile is not discoverable"
+        },
+        "showInProfile": "Show in profile and search results",
+        "showEmail": {
+          "title": "Show email address",
+          "description": "Display your email address on your profile"
+        },
+        "showPhone": {
+          "title": "Show phone number",
+          "description": "Display your phone number on your profile"
+        },
+        "showWork": {
+          "title": "Show work information",
+          "description": "Display your organization, position, and work bio"
+        },
+        "showSocial": {
+          "title": "Show social links",
+          "description": "Display your website and social media links"
+        },
+        "showLocation": {
+          "title": "Show location",
+          "description": "Display your country and city information"
+        }
+      },
       "cancel": "Cancel",
       "save": "Save Changes"
+    },
+    "account": {
+      "pageTitle": "Account & Security",
+      "pageDescription": "Manage your account settings, login credentials, and security options",
+      "email": {
+        "title": "Email Address",
+        "description": "Update your email address for login and notifications",
+        "current": "Current email:",
+        "new": "New email address",
+        "none": "No email address",
+        "update": "Update Email"
+      },
+      "phone": {
+        "title": "Phone Number",
+        "description": "Update your phone number for two-factor authentication",
+        "current": "Current phone:",
+        "new": "New phone number",
+        "none": "No phone number",
+        "update": "Update Phone"
+      },
+      "password": {
+        "title": "Password",
+        "description": "Change your account password",
+        "current": "Current password",
+        "new": "New password",
+        "confirm": "Confirm new password",
+        "change": "Change Password"
+      },
+      "delete": {
+        "title": "Delete Account",
+        "description": "Permanently delete your account and all associated data. This action cannot be undone.",
+        "button": "Delete Account",
+        "confirm": {
+          "title": "Are you absolutely sure?",
+          "description": "This will permanently delete your account and remove all your data from our servers. This action cannot be undone.",
+          "type": "To confirm, type",
+          "cancel": "Cancel",
+          "delete": "Delete Account"
+        }
+      }
     }
   },
   "profilePicture": {
@@ -397,6 +490,39 @@
       "loginRequired": "You must be logged in to submit a case study",
       "reviewNote": "Your case study will be reviewed by our multilingual editorial team before publication.",
       "multilingualWelcome": "Welcome to our global community! Submit in any language and help us reach researchers worldwide."
+    }
+  },
+  "search": {
+    "pageTitle": "Search",
+    "pageDescription": "Find community members, reports, posts, and case studies",
+    "placeholder": "Search for people, content, or expertise...",
+    "filters": "Filters",
+    "results": "Results",
+    "noResults": "No results found",
+    "noResultsDescription": "Try adjusting your search terms or filters",
+    "people": "People",
+    "reports": "Reports", 
+    "posts": "Posts",
+    "caseStudies": "Case Studies",
+    "comingSoon": "Coming soon",
+    "reportsComingSoon": "Search through reports and documents",
+    "postsComingSoon": "Search through blog posts and articles", 
+    "caseStudiesComingSoon": "Search through case studies",
+    "filters": {
+      "workType": "Work Type",
+      "expertise": "Expertise Areas",
+      "country": "Country",
+      "communities": "Communities", 
+      "role": "Role",
+      "clearAll": "Clear all filters",
+      "showMore": "Show more",
+      "showLess": "Show less"
+    },
+    "stats": {
+      "results": "results",
+      "result": "result",
+      "relevant": "relevant results out of",
+      "foundIn": "Found in"
     }
   }
 }

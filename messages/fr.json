@@ -186,6 +186,9 @@
     },
     "work": {
       "title": "Expérience Professionnelle",
+      "workBio": "À propos de mon travail",
+      "workTypes": "Types de Travail",
+      "expertiseAreas": "Domaines d'Expertise",
       "types": {
         "research": "Recherche",
         "policy": "Politique",
@@ -202,6 +205,8 @@
     },
     "recentWork": {
       "title": "Travaux Récents",
+      "addWork": "Ajouter un Travail",
+      "noWorks": "Aucun travail récent à afficher",
       "ongoing": "En cours",
       "present": "Présent"
     },

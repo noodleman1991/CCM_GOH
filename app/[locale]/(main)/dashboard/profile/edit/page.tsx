@@ -1,7 +1,6 @@
 import { auth } from "@clerk/nextjs/server"
 import { redirect } from "next/navigation"
 import { getTranslations } from 'next-intl/server'
-import { prisma } from "@/lib/prisma"
 import ProfileEditForm from "@/components/blocks/profile/profile-edit-form"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 
@@ -13,40 +12,7 @@ export async function generateMetadata() {
     }
 }
 
-async function updateProfile(data: any) {
-    "use server"
-
-    const { userId } = await auth()
-    if (!userId) {
-        throw new Error("Unauthorized")
-    }
-
-    try {
-        await prisma.user.update({
-            where: { id: userId },
-            data: {
-                firstName: data.firstName,
-                lastName: data.lastName,
-                username: data.username,
-                bio: data.bio,
-                ageGroup: data.ageGroup,
-                country: data.country,
-                city: data.city,
-                workTypes: data.workTypes,
-                expertiseAreas: data.expertiseAreas,
-                organization: data.organization,
-                position: data.position,
-                workBio: data.workBio,
-                personalWebsite: data.personalWebsite,
-                linkedinProfile: data.linkedinProfile,
-                twitterHandle: data.twitterHandle
-            }
-        })
-    } catch (error) {
-        console.error("Failed to update profile:", error)
-        throw new Error("Failed to update profile")
-    }
-}
+// Remove server action - we'll use our TypeScript API service instead
 
 export default async function ProfileEditPage() {
     const t = await getTranslations('profile.edit')
@@ -55,27 +21,6 @@ export default async function ProfileEditPage() {
     if (!userId) {
         redirect('/sign-in')
     }
-
-    const user = await prisma.user.findUnique({
-        where: { id: userId },
-        select: {
-            firstName: true,
-            lastName: true,
-            username: true,
-            bio: true,
-            ageGroup: true,
-            country: true,
-            city: true,
-            workTypes: true,
-            expertiseAreas: true,
-            organization: true,
-            position: true,
-            workBio: true,
-            personalWebsite: true,
-            linkedinProfile: true,
-            twitterHandle: true
-        }
-    })
 
     return (
         <div className="container py-8 max-w-4xl">
@@ -87,7 +32,7 @@ export default async function ProfileEditPage() {
                     </BreadcrumbItem>
                     <BreadcrumbSeparator />
                     <BreadcrumbItem>
-                        <BreadcrumbLink href={`/profile/${user?.username}`}>Profile</BreadcrumbLink>
+                        <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
                     </BreadcrumbItem>
                     <BreadcrumbSeparator />
                     <BreadcrumbItem>
@@ -98,10 +43,8 @@ export default async function ProfileEditPage() {
 
             <h1 className="text-3xl font-bold mb-8">{t('pageTitle')}</h1>
 
-            <ProfileEditForm
-                initialData={user || undefined}
-                onSubmitAction={updateProfile}
-            />
+            {/* Use our TypeScript hook-based form without server action */}
+            <ProfileEditForm />
         </div>
     )
 }

@@ -44,6 +44,10 @@ model User {
   accounts      Account[]
   sessions      Session[]
 
+  // Clerk-managed fields (source of truth: Clerk)
+  phoneNumber   String? // Primary phone from Clerk
+  phoneVerified DateTime? // Phone verification status
+
   // Profile Information
   firstName String?
   lastName  String?
@@ -64,6 +68,15 @@ model User {
   personalWebsite String?
   linkedinProfile String?
   twitterHandle   String?
+
+  // Privacy Controls
+  isSearchable      Boolean           @default(true) // User can be found in search
+  profileVisibility ProfileVisibility @default(PUBLIC) // Profile visibility level
+  showEmail         Boolean           @default(false) // Show email in profile
+  showPhoneNumber   Boolean           @default(false) // Show phone in profile
+  showWorkDetails   Boolean           @default(true) // Show work info in profile
+  showSocialLinks   Boolean           @default(true) // Show social links in profile
+  showLocation      Boolean           @default(true) // Show country/city in profile
 
   // Global role (default: community_member)
   role Role @default(community_member)
@@ -106,6 +119,12 @@ enum Role {
   community_editor
   team_editor
   admin
+}
+
+enum ProfileVisibility {
+  PUBLIC // Visible to everyone
+  MEMBERS // Visible to community members only
+  PRIVATE // Not visible in search/directory
 }
 
 enum CommunityType {

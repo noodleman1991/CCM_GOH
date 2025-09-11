@@ -20,12 +20,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.13.0
- * Query Engine version: 361e86d0ea4987e9f53a565309b3eed797a6bcbd
+ * Prisma Client JS version: 6.16.0
+ * Query Engine version: 1c57fdcd7e44b29b9313256c76699e91c3ac3c43
  */
 Prisma.prismaVersion = {
-  client: "6.13.0",
-  engine: "361e86d0ea4987e9f53a565309b3eed797a6bcbd"
+  client: "6.16.0",
+  engine: "1c57fdcd7e44b29b9313256c76699e91c3ac3c43"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -148,6 +148,8 @@ exports.Prisma.UserScalarFieldEnum = {
   email: 'email',
   emailVerified: 'emailVerified',
   image: 'image',
+  phoneNumber: 'phoneNumber',
+  phoneVerified: 'phoneVerified',
   firstName: 'firstName',
   lastName: 'lastName',
   username: 'username',
@@ -163,6 +165,13 @@ exports.Prisma.UserScalarFieldEnum = {
   personalWebsite: 'personalWebsite',
   linkedinProfile: 'linkedinProfile',
   twitterHandle: 'twitterHandle',
+  isSearchable: 'isSearchable',
+  profileVisibility: 'profileVisibility',
+  showEmail: 'showEmail',
+  showPhoneNumber: 'showPhoneNumber',
+  showWorkDetails: 'showWorkDetails',
+  showSocialLinks: 'showSocialLinks',
+  showLocation: 'showLocation',
   role: 'role',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -247,6 +256,12 @@ exports.Prisma.NullsOrder = {
 exports.AgeGroup = exports.$Enums.AgeGroup = {
   UNDER_18: 'UNDER_18',
   ABOVE_18: 'ABOVE_18'
+};
+
+exports.ProfileVisibility = exports.$Enums.ProfileVisibility = {
+  PUBLIC: 'PUBLIC',
+  MEMBERS: 'MEMBERS',
+  PRIVATE: 'PRIVATE'
 };
 
 exports.Role = exports.$Enums.Role = {

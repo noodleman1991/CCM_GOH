@@ -5,13 +5,28 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 
 const {
+  PrismaClientKnownRequestError,
+  PrismaClientUnknownRequestError,
+  PrismaClientRustPanicError,
+  PrismaClientInitializationError,
+  PrismaClientValidationError,
+  getPrismaClient,
+  sqltag,
+  empty,
+  join,
+  raw,
+  skip,
   Decimal,
+  Debug,
   objectEnumValues,
   makeStrictEnum,
+  Extensions,
+  warnOnce,
+  defineDmmfProperty,
   Public,
   getRuntime,
-  skip
-} = require('./runtime/index-browser.js')
+  createParam,
+} = require('./runtime/wasm-engine-edge.js')
 
 
 const Prisma = {}
@@ -20,79 +35,35 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.13.0
- * Query Engine version: 361e86d0ea4987e9f53a565309b3eed797a6bcbd
+ * Prisma Client JS version: 6.16.0
+ * Query Engine version: 1c57fdcd7e44b29b9313256c76699e91c3ac3c43
  */
 Prisma.prismaVersion = {
-  client: "6.13.0",
-  engine: "361e86d0ea4987e9f53a565309b3eed797a6bcbd"
+  client: "6.16.0",
+  engine: "1c57fdcd7e44b29b9313256c76699e91c3ac3c43"
 }
 
-Prisma.PrismaClientKnownRequestError = () => {
-  const runtimeName = getRuntime().prettyName;
-  throw new Error(`PrismaClientKnownRequestError is unable to run in this browser environment, or has been bundled for the browser (running in ${runtimeName}).
-In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
-)};
-Prisma.PrismaClientUnknownRequestError = () => {
-  const runtimeName = getRuntime().prettyName;
-  throw new Error(`PrismaClientUnknownRequestError is unable to run in this browser environment, or has been bundled for the browser (running in ${runtimeName}).
-In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
-)}
-Prisma.PrismaClientRustPanicError = () => {
-  const runtimeName = getRuntime().prettyName;
-  throw new Error(`PrismaClientRustPanicError is unable to run in this browser environment, or has been bundled for the browser (running in ${runtimeName}).
-In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
-)}
-Prisma.PrismaClientInitializationError = () => {
-  const runtimeName = getRuntime().prettyName;
-  throw new Error(`PrismaClientInitializationError is unable to run in this browser environment, or has been bundled for the browser (running in ${runtimeName}).
-In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
-)}
-Prisma.PrismaClientValidationError = () => {
-  const runtimeName = getRuntime().prettyName;
-  throw new Error(`PrismaClientValidationError is unable to run in this browser environment, or has been bundled for the browser (running in ${runtimeName}).
-In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
-)}
+Prisma.PrismaClientKnownRequestError = PrismaClientKnownRequestError;
+Prisma.PrismaClientUnknownRequestError = PrismaClientUnknownRequestError
+Prisma.PrismaClientRustPanicError = PrismaClientRustPanicError
+Prisma.PrismaClientInitializationError = PrismaClientInitializationError
+Prisma.PrismaClientValidationError = PrismaClientValidationError
 Prisma.Decimal = Decimal
 
 /**
  * Re-export of sql-template-tag
  */
-Prisma.sql = () => {
-  const runtimeName = getRuntime().prettyName;
-  throw new Error(`sqltag is unable to run in this browser environment, or has been bundled for the browser (running in ${runtimeName}).
-In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
-)}
-Prisma.empty = () => {
-  const runtimeName = getRuntime().prettyName;
-  throw new Error(`empty is unable to run in this browser environment, or has been bundled for the browser (running in ${runtimeName}).
-In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
-)}
-Prisma.join = () => {
-  const runtimeName = getRuntime().prettyName;
-  throw new Error(`join is unable to run in this browser environment, or has been bundled for the browser (running in ${runtimeName}).
-In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
-)}
-Prisma.raw = () => {
-  const runtimeName = getRuntime().prettyName;
-  throw new Error(`raw is unable to run in this browser environment, or has been bundled for the browser (running in ${runtimeName}).
-In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
-)}
+Prisma.sql = sqltag
+Prisma.empty = empty
+Prisma.join = join
+Prisma.raw = raw
 Prisma.validator = Public.validator
 
 /**
 * Extensions
 */
-Prisma.getExtensionContext = () => {
-  const runtimeName = getRuntime().prettyName;
-  throw new Error(`Extensions.getExtensionContext is unable to run in this browser environment, or has been bundled for the browser (running in ${runtimeName}).
-In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
-)}
-Prisma.defineExtension = () => {
-  const runtimeName = getRuntime().prettyName;
-  throw new Error(`Extensions.defineExtension is unable to run in this browser environment, or has been bundled for the browser (running in ${runtimeName}).
-In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
-)}
+Prisma.getExtensionContext = Extensions.getExtensionContext
+Prisma.defineExtension = Extensions.defineExtension
 
 /**
  * Shorthand utilities for JSON filtering
@@ -109,10 +80,11 @@ Prisma.NullTypes = {
 
 
 
+
+
 /**
  * Enums
  */
-
 exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   ReadUncommitted: 'ReadUncommitted',
   ReadCommitted: 'ReadCommitted',
@@ -148,6 +120,8 @@ exports.Prisma.UserScalarFieldEnum = {
   email: 'email',
   emailVerified: 'emailVerified',
   image: 'image',
+  phoneNumber: 'phoneNumber',
+  phoneVerified: 'phoneVerified',
   firstName: 'firstName',
   lastName: 'lastName',
   username: 'username',
@@ -163,6 +137,13 @@ exports.Prisma.UserScalarFieldEnum = {
   personalWebsite: 'personalWebsite',
   linkedinProfile: 'linkedinProfile',
   twitterHandle: 'twitterHandle',
+  isSearchable: 'isSearchable',
+  profileVisibility: 'profileVisibility',
+  showEmail: 'showEmail',
+  showPhoneNumber: 'showPhoneNumber',
+  showWorkDetails: 'showWorkDetails',
+  showSocialLinks: 'showSocialLinks',
+  showLocation: 'showLocation',
   role: 'role',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -249,13 +230,6 @@ exports.AgeGroup = exports.$Enums.AgeGroup = {
   ABOVE_18: 'ABOVE_18'
 };
 
-exports.Role = exports.$Enums.Role = {
-  community_member: 'community_member',
-  community_editor: 'community_editor',
-  team_editor: 'team_editor',
-  admin: 'admin'
-};
-
 exports.WorkType = exports.$Enums.WorkType = {
   RESEARCH: 'RESEARCH',
   POLICY: 'POLICY',
@@ -269,6 +243,19 @@ exports.ExpertiseArea = exports.$Enums.ExpertiseArea = {
   CLIMATE_CHANGE: 'CLIMATE_CHANGE',
   MENTAL_HEALTH: 'MENTAL_HEALTH',
   HEALTH: 'HEALTH'
+};
+
+exports.Role = exports.$Enums.Role = {
+  community_member: 'community_member',
+  community_editor: 'community_editor',
+  team_editor: 'team_editor',
+  admin: 'admin'
+};
+
+exports.ProfileVisibility = exports.$Enums.ProfileVisibility = {
+  PUBLIC: 'PUBLIC',
+  MEMBERS: 'MEMBERS',
+  PRIVATE: 'PRIVATE'
 };
 
 exports.CommunityType = exports.$Enums.CommunityType = {
@@ -303,34 +290,83 @@ exports.Prisma.ModelName = {
   DownloadEvent: 'DownloadEvent',
   ReportMetadata: 'ReportMetadata'
 };
-
 /**
- * This is a stub Prisma Client that will error at runtime if called.
+ * Create the Client
  */
-class PrismaClient {
-  constructor() {
-    return new Proxy(this, {
-      get(target, prop) {
-        let message
-        const runtime = getRuntime()
-        if (runtime.isEdge) {
-          message = `PrismaClient is not configured to run in ${runtime.prettyName}. In order to run Prisma Client on edge runtime, either:
-- Use Prisma Accelerate: https://pris.ly/d/accelerate
-- Use Driver Adapters: https://pris.ly/d/driver-adapters
-`;
-        } else {
-          message = 'PrismaClient is unable to run in this browser environment, or has been bundled for the browser (running in `' + runtime.prettyName + '`).'
-        }
-
-        message += `
-If this is unexpected, please open an issue: https://pris.ly/prisma-prisma-bug-report`
-
-        throw new Error(message)
+const config = {
+  "generator": {
+    "name": "client",
+    "provider": {
+      "fromEnvVar": null,
+      "value": "prisma-client-js"
+    },
+    "output": {
+      "value": "/Users/amitlockshinski/WebstormProjects/turbo2/generated/prisma",
+      "fromEnvVar": null
+    },
+    "config": {
+      "engineType": "library"
+    },
+    "binaryTargets": [
+      {
+        "fromEnvVar": null,
+        "value": "darwin-arm64",
+        "native": true
       }
-    })
+    ],
+    "previewFeatures": [],
+    "sourceFilePath": "/Users/amitlockshinski/WebstormProjects/turbo2/prisma/schema.prisma",
+    "isCustomOutput": true
+  },
+  "relativeEnvPaths": {
+    "rootEnvPath": "../../.env",
+    "schemaEnvPath": "../../.env"
+  },
+  "relativePath": "../../prisma",
+  "clientVersion": "6.16.0",
+  "engineVersion": "1c57fdcd7e44b29b9313256c76699e91c3ac3c43",
+  "datasourceNames": [
+    "db"
+  ],
+  "activeProvider": "postgresql",
+  "postinstall": false,
+  "inlineDatasources": {
+    "db": {
+      "url": {
+        "fromEnvVar": "DATABASE_URL",
+        "value": null
+      }
+    }
+  },
+  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel Account {\n  id                String   @id\n  userId            String\n  type              String\n  provider          String\n  providerAccountId String\n  refresh_token     String?\n  access_token      String?\n  expires_at        Int?\n  token_type        String?\n  scope             String?\n  id_token          String?\n  session_state     String?\n  createdAt         DateTime @default(now())\n\n  user User @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@unique([provider, providerAccountId])\n}\n\nmodel Session {\n  id           String   @id\n  sessionToken String   @unique\n  userId       String\n  expires      DateTime\n  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)\n}\n\nmodel User {\n  id            String    @id\n  email         String?   @unique\n  emailVerified DateTime?\n  image         String?\n  accounts      Account[]\n  sessions      Session[]\n\n  // Clerk-managed fields (source of truth: Clerk)\n  phoneNumber   String? // Primary phone from Clerk\n  phoneVerified DateTime? // Phone verification status\n\n  // Profile Information\n  firstName String?\n  lastName  String?\n  username  String?   @unique\n  bio       String?\n  ageGroup  AgeGroup?\n  country   String?\n  city      String?\n\n  // Work Details\n  workTypes      WorkType[]\n  expertiseAreas ExpertiseArea[]\n  organization   String?\n  position       String?\n  workBio        String?\n\n  // Social Links\n  personalWebsite String?\n  linkedinProfile String?\n  twitterHandle   String?\n\n  // Privacy Controls\n  isSearchable      Boolean           @default(true) // User can be found in search\n  profileVisibility ProfileVisibility @default(PUBLIC) // Profile visibility level\n  showEmail         Boolean           @default(false) // Show email in profile\n  showPhoneNumber   Boolean           @default(false) // Show phone in profile\n  showWorkDetails   Boolean           @default(true) // Show work info in profile\n  showSocialLinks   Boolean           @default(true) // Show social links in profile\n  showLocation      Boolean           @default(true) // Show country/city in profile\n\n  // Global role (default: community_member)\n  role Role @default(community_member)\n\n  // User's membership in communities with specific roles\n  communityMemberships UserCommunity[]\n\n  // Content created by user\n  createdContent Content[]\n\n  // Recent work projects\n  recentWork RecentWork[]\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n\nenum AgeGroup {\n  UNDER_18\n  ABOVE_18\n}\n\nenum WorkType {\n  RESEARCH\n  POLICY\n  LIVED_EXPERIENCE_EXPERT\n  NGO\n  COMMUNITY_ORGANIZATION\n  EDUCATION_TEACHING\n}\n\nenum ExpertiseArea {\n  CLIMATE_CHANGE\n  MENTAL_HEALTH\n  HEALTH\n}\n\nenum Role {\n  community_member\n  community_editor\n  team_editor\n  admin\n}\n\nenum ProfileVisibility {\n  PUBLIC // Visible to everyone\n  MEMBERS // Visible to community members only\n  PRIVATE // Not visible in search/directory\n}\n\nenum CommunityType {\n  REGIONAL\n  SPECIAL\n}\n\nenum RegionalCommunityName {\n  SUB_SAHARAN_AFRICA\n  NORTHERN_AFRICA_AND_WESTERN_ASIA\n  CENTRAL_AND_SOUTHERN_ASIA\n  EASTERN_AND_SOUTH_EASTERN_ASIA\n  LATIN_AMERICA_AND_THE_CARIBBEAN\n  OCEANIA\n  EUROPE_AND_NORTH_AMERICA\n}\n\nenum SpecialCommunityName {\n  YOUTH\n  INDIGENOUS\n  FARMER_AND_FISHER\n}\n\nmodel Community {\n  id          String  @id @default(uuid())\n  name        String\n  description String?\n\n  // Discriminator pattern\n  type         CommunityType\n  // If regional, which region\n  regionalName RegionalCommunityName?\n  // If special, which special category\n  specialName  SpecialCommunityName?\n\n  // Community members with their specific roles\n  members UserCommunity[]\n\n  // Content related to this community\n  contents Content[]\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n\n// Join table with role information for user-community relationship\nmodel UserCommunity {\n  userId      String\n  communityId String\n  role        Role   @default(community_member)\n\n  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)\n  community Community @relation(fields: [communityId], references: [id], onDelete: Cascade)\n\n  // Define composite primary key\n  @@id([userId, communityId])\n}\n\nmodel Content {\n  id    String @id @default(uuid())\n  title String\n  body  String\n\n  // Which community this content belongs to\n  communityId String\n  community   Community @relation(fields: [communityId], references: [id])\n\n  // Who created this content\n  authorId String\n  author   User   @relation(fields: [authorId], references: [id])\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n\nmodel RecentWork {\n  id          String    @id @default(uuid())\n  title       String\n  description String\n  link        String?\n  isOngoing   Boolean   @default(false)\n  startDate   DateTime\n  endDate     DateTime?\n\n  // Who created this work\n  userId String\n  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n\nmodel DownloadEvent {\n  id           String   @id @default(cuid())\n  reportId     String // Sanity report ID\n  fileLanguage String // en, es, fr, ar\n  userId       String? // Clerk user ID (optional for anonymous downloads)\n  sessionId    String // Browser session ID\n  userAgent    String? // Browser user agent\n  referer      String? // Referring page\n  ipAddress    String? // User IP address\n  timestamp    DateTime @default(now())\n  createdAt    DateTime @default(now())\n\n  @@index([reportId])\n  @@index([userId])\n  @@index([timestamp])\n  @@map(\"download_events\")\n}\n\nmodel ReportMetadata {\n  id               String    @id @default(cuid())\n  sanityId         String    @unique // Sanity report document ID\n  downloadCount    Int       @default(0)\n  lastDownloadedAt DateTime?\n  createdAt        DateTime  @default(now())\n  updatedAt        DateTime  @updatedAt\n\n  @@map(\"report_metadata\")\n}\n",
+  "inlineSchemaHash": "456781c622f2adf0c9d57c20c31effbc63c0dcbc23657a95cec0b4632abac212",
+  "copyEngine": true
+}
+config.dirname = '/'
+
+config.runtimeDataModel = JSON.parse("{\"models\":{\"Account\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"type\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"provider\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"providerAccountId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"refresh_token\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"access_token\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expires_at\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"token_type\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"scope\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"id_token\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"session_state\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"AccountToUser\"}],\"dbName\":null},\"Session\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"sessionToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expires\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"SessionToUser\"}],\"dbName\":null},\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"emailVerified\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"image\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"accounts\",\"kind\":\"object\",\"type\":\"Account\",\"relationName\":\"AccountToUser\"},{\"name\":\"sessions\",\"kind\":\"object\",\"type\":\"Session\",\"relationName\":\"SessionToUser\"},{\"name\":\"phoneNumber\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phoneVerified\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"firstName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"lastName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"bio\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"ageGroup\",\"kind\":\"enum\",\"type\":\"AgeGroup\"},{\"name\":\"country\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"city\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"workTypes\",\"kind\":\"enum\",\"type\":\"WorkType\"},{\"name\":\"expertiseAreas\",\"kind\":\"enum\",\"type\":\"ExpertiseArea\"},{\"name\":\"organization\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"position\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"workBio\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"personalWebsite\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"linkedinProfile\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"twitterHandle\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"isSearchable\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"profileVisibility\",\"kind\":\"enum\",\"type\":\"ProfileVisibility\"},{\"name\":\"showEmail\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"showPhoneNumber\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"showWorkDetails\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"showSocialLinks\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"showLocation\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"role\",\"kind\":\"enum\",\"type\":\"Role\"},{\"name\":\"communityMemberships\",\"kind\":\"object\",\"type\":\"UserCommunity\",\"relationName\":\"UserToUserCommunity\"},{\"name\":\"createdContent\",\"kind\":\"object\",\"type\":\"Content\",\"relationName\":\"ContentToUser\"},{\"name\":\"recentWork\",\"kind\":\"object\",\"type\":\"RecentWork\",\"relationName\":\"RecentWorkToUser\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Community\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"type\",\"kind\":\"enum\",\"type\":\"CommunityType\"},{\"name\":\"regionalName\",\"kind\":\"enum\",\"type\":\"RegionalCommunityName\"},{\"name\":\"specialName\",\"kind\":\"enum\",\"type\":\"SpecialCommunityName\"},{\"name\":\"members\",\"kind\":\"object\",\"type\":\"UserCommunity\",\"relationName\":\"CommunityToUserCommunity\"},{\"name\":\"contents\",\"kind\":\"object\",\"type\":\"Content\",\"relationName\":\"CommunityToContent\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"UserCommunity\":{\"fields\":[{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"communityId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"role\",\"kind\":\"enum\",\"type\":\"Role\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"UserToUserCommunity\"},{\"name\":\"community\",\"kind\":\"object\",\"type\":\"Community\",\"relationName\":\"CommunityToUserCommunity\"}],\"dbName\":null},\"Content\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"title\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"body\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"communityId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"community\",\"kind\":\"object\",\"type\":\"Community\",\"relationName\":\"CommunityToContent\"},{\"name\":\"authorId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"author\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"ContentToUser\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"RecentWork\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"title\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"link\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"isOngoing\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"startDate\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"endDate\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"RecentWorkToUser\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"DownloadEvent\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"reportId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"fileLanguage\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"sessionId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userAgent\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"referer\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"ipAddress\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"timestamp\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":\"download_events\"},\"ReportMetadata\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"sanityId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"downloadCount\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"lastDownloadedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":\"report_metadata\"}},\"enums\":{},\"types\":{}}")
+defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
+config.engineWasm = {
+  getRuntime: async () => require('./query_engine_bg.js'),
+  getQueryEngineWasmModule: async () => {
+    const loader = (await import('#wasm-engine-loader')).default
+    const engine = (await loader).default
+    return engine
   }
 }
+config.compilerWasm = undefined
 
+config.injectableEdgeEnv = () => ({
+  parsed: {
+    DATABASE_URL: typeof globalThis !== 'undefined' && globalThis['DATABASE_URL'] || typeof process !== 'undefined' && process.env && process.env.DATABASE_URL || undefined
+  }
+})
+
+if (typeof globalThis !== 'undefined' && globalThis['DEBUG'] || typeof process !== 'undefined' && process.env && process.env.DEBUG || undefined) {
+  Debug.enable(typeof globalThis !== 'undefined' && globalThis['DEBUG'] || typeof process !== 'undefined' && process.env && process.env.DEBUG || undefined)
+}
+
+const PrismaClient = getPrismaClient(config)
 exports.PrismaClient = PrismaClient
-
 Object.assign(exports, Prisma)
+

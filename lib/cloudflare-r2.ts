@@ -37,7 +37,7 @@ class CloudflareR2Service {
             endpoint: `https://${accountId}.r2.cloudflarestorage.com`, // Fixed endpoint format
         };
 
-        // Report bucket configuration
+        // Report bucket configuration  
         this.reportConfig = {
             accountId: accountId,
             accessKeyId: process.env.CLOUDFLARE_R2_ACCESS_KEY_ID!,
@@ -50,29 +50,28 @@ class CloudflareR2Service {
         // Validate configuration
         this.validateConfig();
 
-        // Initialize S3 clients with correct R2 configuration
-        // Confidence: 90% - This is the correct S3 client config for R2
-        this.avatarS3Client = new S3Client({
+        // Initialize S3 clients with updated configuration for Next.js 15 compatibility
+        const clientConfig = {
             region: "auto", // R2 uses 'auto' region
-            endpoint: this.avatarConfig.endpoint,
             credentials: {
                 accessKeyId: this.avatarConfig.accessKeyId,
                 secretAccessKey: this.avatarConfig.secretAccessKey,
             },
             forcePathStyle: true, // Important for R2
+            maxAttempts: 3, // Better error recovery
+        };
+
+        this.avatarS3Client = new S3Client({
+            ...clientConfig,
+            endpoint: this.avatarConfig.endpoint,
         });
 
         this.reportS3Client = new S3Client({
-            region: "auto",
+            ...clientConfig,
             endpoint: this.reportConfig.endpoint,
-            credentials: {
-                accessKeyId: this.reportConfig.accessKeyId,
-                secretAccessKey: this.reportConfig.secretAccessKey,
-            },
-            forcePathStyle: true,
         });
 
-        console.log('R2 Service initialized successfully');
+        console.log('✅ R2 Service initialized successfully');
     }
 
     private validateConfig() {
