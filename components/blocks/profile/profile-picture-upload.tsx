@@ -40,12 +40,23 @@ export default function ProfilePictureUpload({
             return
         }
 
-        // Validate file size (max 5MB)
-        const maxSize = 5 * 1024 * 1024 // 5MB in bytes
+        // Validate file size (max 2MB - Clerk recommendation)
+        const maxSize = 2 * 1024 * 1024 // 2MB in bytes
         if (file.size > maxSize) {
             toast.error(t('errors.fileTooLarge'))
             return
         }
+
+        // Validate aspect ratio for optimal 1:1 display
+        const img = new Image()
+        img.onload = () => {
+            const aspectRatio = img.width / img.height
+            if (aspectRatio < 0.8 || aspectRatio > 1.25) {
+                toast.error(t('errors.aspectRatioWarning'))
+                // Continue with upload but warn user
+            }
+        }
+        img.src = URL.createObjectURL(file)
 
         // Create preview
         const reader = new FileReader()

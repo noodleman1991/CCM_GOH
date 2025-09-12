@@ -384,13 +384,14 @@
     "uploadPhoto": "Upload Photo",
     "changePhoto": "Change Photo",
     "uploading": "Uploading...",
-    "requirements": "JPG, PNG or WebP. Max 5MB.",
+    "requirements": "JPG, PNG or WebP. Max 2MB. Recommended: square images (1:1 ratio).",
     "altText": "Profile picture",
     "uploadSuccess": "Profile picture updated successfully",
     "removeSuccess": "Profile picture removed successfully",
     "errors": {
       "invalidFileType": "Please upload a JPG, PNG, or WebP image",
-      "fileTooLarge": "File size must be less than 5MB",
+      "fileTooLarge": "File size must be less than 2MB",
+      "aspectRatioWarning": "For best results, use a square image (1:1 aspect ratio)",
       "uploadError": "Failed to upload image. Please try again.",
       "removeError": "Failed to remove image. Please try again."
     }

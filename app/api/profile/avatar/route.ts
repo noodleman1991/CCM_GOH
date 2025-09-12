@@ -4,8 +4,8 @@ import { prisma } from "@/lib/prisma"
 import { r2Service, deleteAvatarByUrl } from "@/lib/cloudflare-r2"
 import sharp from "sharp"
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
-const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
+const MAX_FILE_SIZE = 2 * 1024 * 1024 // 2MB - Clerk recommended size
+const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp']
 
 interface ImageUrls {
     avatar: string      // 200x200
@@ -30,14 +30,14 @@ export async function POST(request: NextRequest) {
         // Validate file
         if (!ALLOWED_TYPES.includes(file.type)) {
             return NextResponse.json(
-                { error: "Invalid file type. Allowed: JPEG, PNG, WebP, GIF" },
+                { error: "Invalid file type. Allowed: JPEG, PNG, WebP" },
                 { status: 400 }
             )
         }
 
         if (file.size > MAX_FILE_SIZE) {
             return NextResponse.json(
-                { error: "File too large. Maximum size is 5MB" },
+                { error: "File too large. Maximum size is 2MB" },
                 { status: 400 }
             )
         }
@@ -56,6 +56,19 @@ export async function POST(request: NextRequest) {
         const arrayBuffer = await file.arrayBuffer()
         const buffer = Buffer.from(arrayBuffer)
         const urls: ImageUrls = { avatar: '', avatarLarge: '', original: '' }
+
+        // Validate image dimensions for optimal 1:1 aspect ratio
+        let imageMetadata
+        try {
+            imageMetadata = await sharp(buffer).metadata()
+            console.log('Image metadata:', imageMetadata)
+        } catch (metaError) {
+            console.error('Failed to read image metadata:', metaError)
+            return NextResponse.json(
+                { error: "Invalid image file" },
+                { status: 400 }
+            )
+        }
 
         try {
             // Process avatar (200x200)
@@ -101,16 +114,20 @@ export async function POST(request: NextRequest) {
             })
 
             // Enhanced sync to Clerk - update metadata with avatar URLs
-            const clerkClientInstance = await clerkClient()
-            clerkClientInstance.users.updateUser(userId, {
-                publicMetadata: {
-                    avatarUrl: urls.avatar,
-                    avatarUrls: urls,
-                    lastAvatarUpdate: new Date().toISOString(),
-                }
-            }).catch(error => {
-                console.warn(`Failed to sync avatar to Clerk for user ${userId}:`, error)
-            })
+            try {
+                const clerkClientInstance = await clerkClient()
+                await clerkClientInstance.users.updateUser(userId, {
+                    publicMetadata: {
+                        avatarUrl: urls.avatar,
+                        avatarUrls: urls,
+                        lastAvatarUpdate: new Date().toISOString(),
+                    }
+                })
+                console.log(`Avatar synced to Clerk successfully for user ${userId}`)
+            } catch (clerkError) {
+                console.warn(`Failed to sync avatar to Clerk for user ${userId}:`, clerkError)
+                // Don't fail the upload if Clerk sync fails - user still gets the avatar
+            }
 
             // Clean up old avatar
             if (currentUser.image && currentUser.image !== urls.avatar) {
@@ -160,16 +177,20 @@ export async function DELETE(request: NextRequest) {
         })
 
         // Enhanced sync to Clerk - remove avatar from metadata
-        const clerkClientInstance = await clerkClient()
-        clerkClientInstance.users.updateUser(userId, {
-            publicMetadata: {
-                avatarUrl: null,
-                avatarUrls: null,
-                lastAvatarUpdate: new Date().toISOString(),
-            }
-        }).catch(error => {
-            console.warn(`Failed to sync avatar removal to Clerk for user ${userId}:`, error)
-        })
+        try {
+            const clerkClientInstance = await clerkClient()
+            await clerkClientInstance.users.updateUser(userId, {
+                publicMetadata: {
+                    avatarUrl: null,
+                    avatarUrls: null,
+                    lastAvatarUpdate: new Date().toISOString(),
+                }
+            })
+            console.log(`Avatar removal synced to Clerk successfully for user ${userId}`)
+        } catch (clerkError) {
+            console.warn(`Failed to sync avatar removal to Clerk for user ${userId}:`, clerkError)
+            // Don't fail the deletion if Clerk sync fails
+        }
 
         // Delete from storage
         await deleteAvatarByUrl(user.image)
