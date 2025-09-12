@@ -296,13 +296,14 @@
     "uploadPhoto": "Télécharger Photo",
     "changePhoto": "Changer Photo",
     "uploading": "Téléchargement...",
-    "requirements": "JPG, PNG ou WebP. Max 5MB.",
+    "requirements": "JPG, PNG ou WebP. Max 2MB. Recommandé: images carrées (ratio 1:1).",
     "altText": "Photo de profil",
     "uploadSuccess": "Photo de profil mise à jour avec succès",
     "removeSuccess": "Photo de profil supprimée avec succès",
     "errors": {
       "invalidFileType": "Veuillez télécharger une image JPG, PNG ou WebP",
-      "fileTooLarge": "La taille du fichier doit être inférieure à 5MB",
+      "fileTooLarge": "La taille du fichier doit être inférieure à 2MB",
+      "aspectRatioWarning": "Pour de meilleurs résultats, utilisez une image carrée (ratio 1:1)",
       "uploadError": "Échec du téléchargement de l'image. Veuillez réessayer.",
       "removeError": "Échec de la suppression de l'image. Veuillez réessayer."
     }

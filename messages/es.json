@@ -294,13 +294,14 @@
     "uploadPhoto": "Subir Foto",
     "changePhoto": "Cambiar Foto",
     "uploading": "Subiendo...",
-    "requirements": "JPG, PNG o WebP. Máx 5MB.",
+    "requirements": "JPG, PNG o WebP. Máx 2MB. Recomendado: imágenes cuadradas (proporción 1:1).",
     "altText": "Foto de perfil",
     "uploadSuccess": "Foto de perfil actualizada exitosamente",
     "removeSuccess": "Foto de perfil eliminada exitosamente",
     "errors": {
       "invalidFileType": "Por favor sube una imagen JPG, PNG o WebP",
-      "fileTooLarge": "El archivo debe ser menor a 5MB",
+      "fileTooLarge": "El archivo debe ser menor a 2MB",
+      "aspectRatioWarning": "Para mejores resultados, usa una imagen cuadrada (proporción 1:1)",
       "uploadError": "Error al subir la imagen. Por favor intenta de nuevo.",
       "removeError": "Error al eliminar la imagen. Por favor intenta de nuevo."
     }
