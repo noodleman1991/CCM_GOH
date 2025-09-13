@@ -2,11 +2,14 @@ import { cn } from "@/lib/utils";
 import SectionContainer from "@/components/ui/section-container";
 import { stegaClean } from "next-sanity";
 import { PAGE_QUERYResult } from "@/sanity.types";
+import { BackgroundOptionType } from "@/types/background-option";
 import GridCard from "./grid-card";
 import GridPost from "./grid-post";
 // import PricingCard from "./pricing-card";
 import GridReport from "./grid-report";
 import GridCaseStudy from "./grid-case-study";
+import GridNews from "./grid-news";
+import GridLivedExperience from "./grid-lived-experience";
 
 type Block = NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number];
 type GridRow = Extract<Block, { _type: "grid-row" }>;
@@ -55,9 +58,12 @@ const componentMap: Record<string, React.ComponentType<any>> = {
     "grid-post": GridPost,
     "grid-report": GridReport,
     "grid-case-study": GridCaseStudy,
+    "grid-news": GridNews,
+    "grid-lived-experience": GridLivedExperience,
 };
 
 interface GridRowProps extends GridRow {
+    backgroundOption?: BackgroundOptionType | null;
     locale?: string;
     userId?: string;
     rowId?: string;
@@ -66,6 +72,7 @@ interface GridRowProps extends GridRow {
 export default function GridRow({
                                     padding,
                                     colorVariant,
+                                    backgroundOption,
                                     gridColumns,
                                     columns,
                                     locale,
@@ -75,11 +82,11 @@ export default function GridRow({
     const color = stegaClean(colorVariant);
 
     return (
-        <SectionContainer color={color} padding={padding}>
+        <SectionContainer color={color} padding={padding} backgroundOption={backgroundOption}>
             {columns && columns?.length > 0 && (
                 <div
                     className={cn(
-                        `grid grid-cols-1 gap-6`,
+                        `grid grid-cols-1 gap-8`,
                         `lg:${stegaClean(gridColumns)}`
                     )}
                 >
