@@ -24,12 +24,16 @@ export const backgroundOption = defineType({
     defineField({
       name: "color",
       title: "Background Color",
-      type: "color",
+      type: "string",
+      description: "Enter a hex color code (e.g., #205596)",
       hidden: ({ parent }) => parent?.type !== "color",
       validation: (rule) => rule.custom((color, context) => {
         const parent = context.parent as { type?: string };
         if (parent?.type === "color" && !color) {
           return "Background color is required when type is set to 'Solid Color'";
+        }
+        if (color && !/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(color)) {
+          return "Please enter a valid hex color code (e.g., #205596)";
         }
         return true;
       }),
@@ -61,14 +65,26 @@ export const backgroundOption = defineType({
         {
           name: "startColor",
           title: "Start Color",
-          type: "color",
-          validation: (Rule) => Rule.required(),
+          type: "string",
+          description: "Enter a hex color code (e.g., #205596)",
+          validation: (Rule) => Rule.required().custom((color) => {
+            if (color && !/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(color)) {
+              return "Please enter a valid hex color code (e.g., #205596)";
+            }
+            return true;
+          }),
         },
         {
           name: "endColor",
           title: "End Color",
-          type: "color",
-          validation: (Rule) => Rule.required(),
+          type: "string",
+          description: "Enter a hex color code (e.g., #90e0f4)",
+          validation: (Rule) => Rule.required().custom((color) => {
+            if (color && !/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(color)) {
+              return "Please enter a valid hex color code (e.g., #90e0f4)";
+            }
+            return true;
+          }),
         },
       ],
       hidden: ({ parent }) => parent?.type !== "gradient",
@@ -126,10 +142,10 @@ export const backgroundOption = defineType({
     prepare({ type, color, gradient }) {
       let subtitle = type || "None";
 
-      if (type === "color" && color?.hex) {
-        subtitle = `${type} (${color.hex})`;
-      } else if (type === "gradient" && gradient?.startColor?.hex && gradient?.endColor?.hex) {
-        subtitle = `${type} (${gradient.startColor.hex} → ${gradient.endColor.hex})`;
+      if (type === "color" && color) {
+        subtitle = `${type} (${color})`;
+      } else if (type === "gradient" && gradient?.startColor && gradient?.endColor) {
+        subtitle = `${type} (${gradient.startColor} → ${gradient.endColor})`;
       }
 
       return {

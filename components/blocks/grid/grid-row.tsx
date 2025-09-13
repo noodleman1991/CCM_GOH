@@ -2,7 +2,6 @@ import { cn } from "@/lib/utils";
 import SectionContainer from "@/components/ui/section-container";
 import { stegaClean } from "next-sanity";
 import { PAGE_QUERYResult } from "@/sanity.types";
-import { BackgroundOptionType } from "@/types/background-option";
 import GridCard from "./grid-card";
 import GridPost from "./grid-post";
 // import PricingCard from "./pricing-card";
@@ -63,7 +62,6 @@ const componentMap: Record<string, React.ComponentType<any>> = {
 };
 
 interface GridRowProps extends GridRow {
-    backgroundOption?: BackgroundOptionType | null;
     locale?: string;
     userId?: string;
     rowId?: string;
@@ -71,18 +69,15 @@ interface GridRowProps extends GridRow {
 
 export default function GridRow({
                                     padding,
-                                    colorVariant,
-                                    backgroundOption,
+                                    background,
                                     gridColumns,
                                     columns,
                                     locale,
                                     userId,
                                     rowId,
                                 }: GridRowProps) {
-    const color = stegaClean(colorVariant);
-
     return (
-        <SectionContainer color={color} padding={padding} backgroundOption={backgroundOption}>
+        <SectionContainer background={background} padding={padding}>
             {columns && columns?.length > 0 && (
                 <div
                     className={cn(
@@ -114,7 +109,6 @@ export default function GridRow({
                         return (
                             <Component
                                 {...(column as any)}
-                                color={color}
                                 key={uniqueKey}
                                 locale={locale || 'en'}
                                 userId={userId}
