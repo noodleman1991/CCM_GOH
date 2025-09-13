@@ -15,7 +15,8 @@ async function fetchAvailableTags() {
   `)
 }
 
-export async function generateMetadata({ params }: { params: { locale: string } }) {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+    const { locale } = await params
     const t = await getTranslations('caseStudySubmission')
     return {
         title: t('pageTitle'),
@@ -26,8 +27,9 @@ export async function generateMetadata({ params }: { params: { locale: string } 
 export default async function CaseStudySubmitPage({
                                                       params
                                                   }: {
-    params: { locale: string }
+    params: Promise<{ locale: string }>
 }) {
+    const { locale } = await params
     const { userId } = await auth()
 
     if (!userId) {
@@ -42,7 +44,7 @@ export default async function CaseStudySubmitPage({
         <div className="container max-w-7xl py-8">
             <CaseStudySubmissionLayout
                 availableTags={availableTags}
-                locale={params.locale}
+                locale={locale}
                 userId={userId}
             />
         </div>

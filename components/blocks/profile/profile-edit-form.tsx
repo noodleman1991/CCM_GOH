@@ -274,13 +274,8 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                 <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
                 {/* Profile Picture */}
                 <ProfilePictureUpload
-                    currentImage={form.watch("image")}
                     firstName={form.watch("firstName")}
                     lastName={form.watch("lastName")}
-                    //onImageChangeAction={(url) => form.setValue("image", url)} //todo: which one works?
-                    onImageChangeAction={async (url) => {
-                        form.setValue("image", url)
-                    }}
                 />
 
                 {/* Clerk-managed Information */}

@@ -2,121 +2,80 @@
 
 import { useState, useRef } from "react"
 import { useTranslations } from 'next-intl'
+import { useUser } from "@clerk/nextjs"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { toast } from "sonner"
-import { Camera, Upload, X, Loader2 } from "lucide-react"
+import { Camera, X, Loader2 } from "lucide-react"
+import { getOptimizedClerkImageUrl, validateImageFile } from "@/lib/image-utils"
 
 interface ProfilePictureUploadProps {
-    currentImage?: string | null
     firstName?: string | null
     lastName?: string | null
-    onImageChangeAction: (imageUrl: string | null) => Promise<void>
+    onImageChangeAction?: () => Promise<void>
 }
 
 export default function ProfilePictureUpload({
-                                                 currentImage,
                                                  firstName,
                                                  lastName,
                                                  onImageChangeAction,
                                              }: ProfilePictureUploadProps) {
     const t = useTranslations('profile.profilePicture')
+    const { user } = useUser()
     const fileInputRef = useRef<HTMLInputElement>(null)
     const [isUploading, setIsUploading] = useState(false)
-    const [preview, setPreview] = useState<string | null>(currentImage || null)
     const [isRemoving, setIsRemoving] = useState(false)
 
     const initials = `${firstName?.[0] || ''}${lastName?.[0] || ''}`.toUpperCase() || 'U'
 
     const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
-        if (!file) return
+        if (!file || !user) return
 
-        // Validate file type
-        const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
-        if (!validTypes.includes(file.type)) {
-            toast.error(t('errors.invalidFileType'))
+        // Validate file using utility function
+        const validation = validateImageFile(file)
+        if (!validation.valid) {
+            toast.error(validation.error)
             return
         }
 
-        // Validate file size (max 2MB - Clerk recommendation)
-        const maxSize = 2 * 1024 * 1024 // 2MB in bytes
-        if (file.size > maxSize) {
-            toast.error(t('errors.fileTooLarge'))
-            return
-        }
-
-        // Validate aspect ratio for optimal 1:1 display
-        const img = new Image()
-        img.onload = () => {
-            const aspectRatio = img.width / img.height
-            if (aspectRatio < 0.8 || aspectRatio > 1.25) {
-                toast.error(t('errors.aspectRatioWarning'))
-                // Continue with upload but warn user
-            }
-        }
-        img.src = URL.createObjectURL(file)
-
-        // Create preview
-        const reader = new FileReader()
-        reader.onloadend = () => {
-            setPreview(reader.result as string)
-        }
-        reader.readAsDataURL(file)
-
-        // Upload to server
         setIsUploading(true)
         try {
-            const formData = new FormData()
-            formData.append('file', file)
+            // Use Clerk's setProfileImage method directly
+            await user.setProfileImage({ file })
 
-            const response = await fetch('/api/profile/avatar', {
-                method: 'POST',
-                body: formData
-            })
-
-            if (!response.ok) {
-                const error = await response.json().catch(() => ({ message: 'Upload failed' }))
-                throw new Error(error.message || 'Upload failed')
+            // Call optional callback to refresh data
+            if (onImageChangeAction) {
+                await onImageChangeAction()
             }
-
-            const { url } = await response.json()
-
-            // Update profile with new image URL
-            await onImageChangeAction(url)
 
             toast.success(t('uploadSuccess'))
         } catch (error) {
             console.error('Upload error:', error)
             toast.error(t('errors.uploadError'))
-            // Reset preview to current image on error
-            setPreview(currentImage || null)
+        } finally {
+            setIsUploading(false)
             // Reset file input
             if (fileInputRef.current) {
                 fileInputRef.current.value = ''
             }
-        } finally {
-            setIsUploading(false)
         }
     }
 
     const handleRemove = async () => {
+        if (!user) return
+
         setIsRemoving(true)
         try {
-            // Call API to remove avatar
-            const response = await fetch('/api/profile/avatar', {
-                method: 'DELETE'
-            })
+            // Use Clerk's setProfileImage with null to remove image
+            await user.setProfileImage({ file: null })
 
-            if (!response.ok) {
-                throw new Error('Failed to remove avatar')
+            // Call optional callback to refresh data
+            if (onImageChangeAction) {
+                await onImageChangeAction()
             }
 
-            // Update profile to remove image
-            await onImageChangeAction(null)
-
-            setPreview(null)
             if (fileInputRef.current) {
                 fileInputRef.current.value = ''
             }
@@ -130,6 +89,15 @@ export default function ProfilePictureUpload({
         }
     }
 
+    // Generate optimized image URL using Clerk's image optimization
+    const optimizedImageUrl = getOptimizedClerkImageUrl(user?.imageUrl, {
+        width: 200,
+        height: 200,
+        fit: 'crop',
+        quality: 85
+    })
+    const hasImage = user?.hasImage
+
     return (
         <Card>
             <CardHeader>
@@ -140,12 +108,12 @@ export default function ProfilePictureUpload({
                 <div className="flex items-center gap-6">
                     <div className="relative">
                         <Avatar className="h-24 w-24">
-                            <AvatarImage src={preview || undefined} alt={t('altText')} />
+                            <AvatarImage src={optimizedImageUrl} alt={t('altText')} />
                             <AvatarFallback className="text-lg">
                                 {initials}
                             </AvatarFallback>
                         </Avatar>
-                        {preview && (
+                        {hasImage && (
                             <Button
                                 type="button"
                                 size="icon"
@@ -186,7 +154,7 @@ export default function ProfilePictureUpload({
                             ) : (
                                 <>
                                     <Camera className="mr-2 h-4 w-4" />
-                                    {preview ? t('changePhoto') : t('uploadPhoto')}
+                                    {hasImage ? t('changePhoto') : t('uploadPhoto')}
                                 </>
                             )}
                         </Button>
@@ -199,154 +167,3 @@ export default function ProfilePictureUpload({
         </Card>
     )
 }
-// todo: avatar upload - which version works?
-// "use client"
-//
-// import { useState, useRef } from "react"
-// import { useTranslations } from 'next-intl'
-// import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-// import { Button } from "@/components/ui/button"
-// import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-// import { toast } from "sonner"
-// import { Camera, Upload, X } from "lucide-react"
-//
-// interface ProfilePictureUploadProps {
-//     currentImage?: string | null
-//     firstName?: string | null
-//     lastName?: string | null
-//     onImageChangeAction: (imageUrl: string) => void
-// }
-//
-// export default function ProfilePictureUpload({
-//                                                  currentImage,
-//                                                  firstName,
-//                                                  lastName,
-//                                                  onImageChangeAction
-//                                              }: ProfilePictureUploadProps) {
-//     const t = useTranslations('profile.edit.profilePicture')
-//     const fileInputRef = useRef<HTMLInputElement>(null)
-//     const [isUploading, setIsUploading] = useState(false)
-//     const [preview, setPreview] = useState<string | null>(currentImage || null)
-//
-//     const initials = `${firstName?.[0] || ''}${lastName?.[0] || ''}`.toUpperCase()
-//
-//     const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
-//         const file = e.target.files?.[0]
-//         if (!file) return
-//
-//         // Validate file type
-//         if (!file.type.startsWith('image/')) {
-//             toast.error(t('invalidFileType'))
-//             return
-//         }
-//
-//         // Validate file size (max 5MB)
-//         if (file.size > 5 * 1024 * 1024) {
-//             toast.error(t('fileTooLarge'))
-//             return
-//         }
-//
-//         // Create preview
-//         const reader = new FileReader()
-//         reader.onloadend = () => {
-//             setPreview(reader.result as string)
-//         }
-//         reader.readAsDataURL(file)
-//
-//         // Upload to server
-//         setIsUploading(true)
-//         try {
-//             const formData = new FormData()
-//             formData.append('file', file)
-//
-//             const response = await fetch('/api/profile/avatar', {
-//                 method: 'POST',
-//                 body: formData
-//             })
-//
-//             if (!response.ok) {
-//                 throw new Error('Upload failed')
-//             }
-//
-//             const { url } = await response.json()
-//             onImageChangeAction(url)
-//             toast.success(t('uploadSuccess'))
-//         } catch (error) {
-//             console.error('Upload error:', error)
-//             toast.error(t('uploadError'))
-//             setPreview(currentImage || null)
-//         } finally {
-//             setIsUploading(false)
-//         }
-//     }
-//
-//     const handleRemove = () => {
-//         setPreview(null)
-//         onImageChangeAction('')
-//         if (fileInputRef.current) {
-//             fileInputRef.current.value = ''
-//         }
-//     }
-//
-//     return (
-//         <Card>
-//             <CardHeader>
-//                 <CardTitle>{t('title')}</CardTitle>
-//                 <CardDescription>{t('description')}</CardDescription>
-//             </CardHeader>
-//             <CardContent>
-//                 <div className="flex items-center gap-6">
-//                     <div className="relative">
-//                         <Avatar className="h-24 w-24">
-//                             <AvatarImage src={preview || undefined} alt="Profile" />
-//                             <AvatarFallback>{initials || '??'}</AvatarFallback>
-//                         </Avatar>
-//                         {preview && (
-//                             <Button
-//                                 type="button"
-//                                 size="icon"
-//                                 variant="destructive"
-//                                 className="absolute -top-2 -right-2 h-6 w-6 rounded-full"
-//                                 onClick={handleRemove}
-//                             >
-//                                 <X className="h-3 w-3" />
-//                             </Button>
-//                         )}
-//                     </div>
-//
-//                     <div className="flex flex-col gap-2">
-//                         <input
-//                             ref={fileInputRef}
-//                             type="file"
-//                             accept="image/*"
-//                             onChange={handleFileSelect}
-//                             className="hidden"
-//                             disabled={isUploading}
-//                         />
-//                         <Button
-//                             type="button"
-//                             variant="outline"
-//                             onClick={() => fileInputRef.current?.click()}
-//                             disabled={isUploading}
-//                         >
-//                             {isUploading ? (
-//                                 <>
-//                                     <Upload className="mr-2 h-4 w-4 animate-spin" />
-//                                     {t('uploading')}
-//                                 </>
-//                             ) : (
-//                                 <>
-//                                     <Camera className="mr-2 h-4 w-4" />
-//                                     {t('changePhoto')}
-//                                 </>
-//                             )}
-//                         </Button>
-//                         <p className="text-xs text-muted-foreground">
-//                             {t('requirements')}
-//                         </p>
-//                     </div>
-//                 </div>
-//             </CardContent>
-//         </Card>
-//     )
-// }

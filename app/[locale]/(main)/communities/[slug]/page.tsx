@@ -7,10 +7,11 @@ import { notFound } from "next/navigation";
 
 
 export default async function RegionalCommunityPage({
-                                                        params: { locale, slug }
+                                                        params
                                                     }: {
-    params: { locale: string; slug: string }
+    params: Promise<{ locale: string; slug: string }>
 }) {
+    const { locale, slug } = await params
     // Your existing fetches
     const pageData = await fetchSanityRCPageBySlug({ slug, locale });
 

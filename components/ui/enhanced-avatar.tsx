@@ -2,7 +2,7 @@
 
 import { Avatar as BaseAvatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
-import { getImageUrl, generateSrcSet, getAvatarFallback } from "@/lib/image-utils"
+import { getOptimizedClerkImageUrl, generateClerkSrcSet, getAvatarFallback } from "@/lib/image-utils"
 import { useState } from "react"
 
 interface EnhancedAvatarProps {
@@ -22,6 +22,13 @@ const sizeClasses = {
     xl: 'h-24 w-24'
 }
 
+const sizePixels = {
+    sm: 32,
+    md: 40,
+    lg: 64,
+    xl: 96
+}
+
 export function EnhancedAvatar({
                                    image,
                                    firstName,
@@ -33,8 +40,14 @@ export function EnhancedAvatar({
                                }: EnhancedAvatarProps) {
     const [imageError, setImageError] = useState(false)
 
-    const avatarUrl = getImageUrl(image, size === 'xl' ? 'avatarLarge' : 'avatar')
-    const srcSet = generateSrcSet(image)
+    const pixelSize = sizePixels[size]
+    const avatarUrl = getOptimizedClerkImageUrl(image || undefined, {
+        width: pixelSize,
+        height: pixelSize,
+        fit: 'crop',
+        quality: 85
+    })
+    const srcSet = generateClerkSrcSet(image || undefined)
     const fallback = getAvatarFallback(firstName, lastName, username)
 
     return (
