@@ -34,8 +34,8 @@ export default function Hero1({
                     rtl ? "lg:direction-rtl" : ""
                 )}>
                     <div className={cn(
-                        "flex flex-col justify-center p-4 sm:p-5 lg:p-6",
-                        rtl ? "lg:order-2" : "lg:order-1"
+                        "flex flex-col justify-center pl-4 sm:pl-5 lg:pl-6", // Left padding to match grid card content start
+                        rtl ? "lg:order-2 pr-4 sm:pr-5 lg:pr-6 !pl-0" : "lg:order-1" // RTL: right padding instead, important to override
                     )}>
                         {tagLine && (
                             <h1 className="leading-[0] font-sans animate-fade-up [animation-delay:100ms] opacity-0">

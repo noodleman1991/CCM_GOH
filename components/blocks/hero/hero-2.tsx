@@ -19,7 +19,7 @@ export default function Hero2({ background, tagLine, title, body, links, locale 
   return (
     <SectionContainer background={background}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:pt-40">
-        <div className={cn("text-center p-4 sm:p-5 lg:p-6", rtl ? "rtl" : "ltr")}>
+        <div className={cn("text-center", rtl ? "rtl" : "ltr")}>
         {tagLine && (
           <h1 className="leading-[0] font-sans animate-fade-up [animation-delay:100ms] opacity-0">
             <span className="text-base font-semibold">{tagLine}</span>
