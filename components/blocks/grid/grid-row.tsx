@@ -65,11 +65,15 @@ interface GridRowProps extends GridRow {
     locale?: string;
     userId?: string;
     rowId?: string;
+    tagLine?: string;
+    title?: string;
 }
 
 export default function GridRow({
                                     padding,
                                     background,
+                                    tagLine,
+                                    title,
                                     gridColumns,
                                     columns,
                                     locale,
@@ -78,8 +82,25 @@ export default function GridRow({
                                 }: GridRowProps) {
     return (
         <SectionContainer background={background} padding={padding}>
-            {columns && columns?.length > 0 && (
-                <div
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                {/* Grid Header */}
+                {(tagLine || title) && (
+                    <div className="mb-12 text-center">
+                        {tagLine && (
+                            <h1 className="leading-[0] font-sans animate-fade-up [animation-delay:100ms] opacity-0">
+                                <span className="text-base font-semibold">{tagLine}</span>
+                            </h1>
+                        )}
+                        {title && (
+                            <h2 className="mt-6 font-bold leading-[1.1] text-4xl md:text-5xl lg:text-6xl animate-fade-up [animation-delay:200ms] opacity-0">
+                                {title}
+                            </h2>
+                        )}
+                    </div>
+                )}
+
+                {columns && columns?.length > 0 && (
+                    <div
                     className={cn(
                         "grid gap-6",
                         // Modern responsive grid with proper card sizing
@@ -126,7 +147,8 @@ export default function GridRow({
                         );
                     })}
                 </div>
-            )}
+                )}
+            </div>
         </SectionContainer>
     );
 }

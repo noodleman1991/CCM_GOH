@@ -26,12 +26,13 @@ export default function Cta1({
 
   return (
     <SectionContainer background={background} padding={padding}>
-      <div
-        className={cn(
-          align === "center" ? "max-w-[48rem] text-center mx-auto" : undefined,
-          isNarrow ? "max-w-[48rem] mx-auto" : undefined
-        )}
-      >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div
+          className={cn(
+            align === "center" ? "max-w-[48rem] text-center mx-auto" : undefined,
+            isNarrow ? "max-w-[48rem] mx-auto" : undefined
+          )}
+        >
         <div>
           {tagLine && (
             <h1 className="leading-[0] mb-4">
@@ -67,6 +68,7 @@ export default function Cta1({
               ))}
           </div>
         )}
+        </div>
       </div>
     </SectionContainer>
   );

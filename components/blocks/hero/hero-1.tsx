@@ -6,11 +6,15 @@ import { stegaClean } from "next-sanity";
 import PortableTextRenderer from "@/components/portable-text-renderer";
 import { PAGE_QUERYResult } from "@/sanity.types";
 import SectionContainer from "@/components/ui/section-container";
+import { cn } from "@/lib/utils";
+import { isRTL } from "@/i18n/i18n-helpers";
 
 type Hero1Props = Extract<
     NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number],
     { _type: "hero-1" }
->;
+> & {
+    locale?: string;
+};
 
 export default function Hero1({
                                   background,
@@ -19,12 +23,20 @@ export default function Hero1({
                                   body,
                                   image,
                                   links,
+                                  locale = "en",
                               }: Hero1Props) {
+    const rtl = isRTL(locale);
     return (
         <SectionContainer background={background}>
-            <div className="container py-20 lg:pt-40">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                    <div className="flex flex-col justify-center">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:pt-40">
+                <div className={cn(
+                    "grid grid-cols-1 lg:grid-cols-2 gap-6",
+                    rtl ? "lg:direction-rtl" : ""
+                )}>
+                    <div className={cn(
+                        "flex flex-col justify-center p-4 sm:p-5 lg:p-6",
+                        rtl ? "lg:order-2" : "lg:order-1"
+                    )}>
                         {tagLine && (
                             <h1 className="leading-[0] font-sans animate-fade-up [animation-delay:100ms] opacity-0">
                                 <span className="text-base font-semibold">{tagLine}</span>
@@ -60,18 +72,24 @@ export default function Hero1({
                             </div>
                         )}
                     </div>
-                    <div className="flex flex-col justify-center">
+                    <div className={cn(
+                        "flex flex-col justify-center",
+                        rtl ? "lg:order-1" : "lg:order-2"
+                    )}>
                         {image && image.asset?._id && (
-                            <Image
-                                className="rounded-xl animate-fade-up [animation-delay:500ms] opacity-0"
-                                src={urlFor(image).url()}
-                                alt={image.alt || ""}
-                                width={image.asset?.metadata?.dimensions?.width || 800}
-                                height={image.asset?.metadata?.dimensions?.height || 800}
-                                placeholder={image?.asset?.metadata?.lqip ? "blur" : undefined}
-                                blurDataURL={image?.asset?.metadata?.lqip || ""}
-                                quality={100}
-                            />
+                            <div className="relative w-full max-w-full overflow-hidden">
+                                <Image
+                                    className="rounded-xl animate-fade-up [animation-delay:500ms] opacity-0 w-full h-auto object-cover max-w-full"
+                                    src={urlFor(image).url()}
+                                    alt={image.alt || ""}
+                                    width={image.asset?.metadata?.dimensions?.width || 800}
+                                    height={image.asset?.metadata?.dimensions?.height || 800}
+                                    placeholder={image?.asset?.metadata?.lqip ? "blur" : undefined}
+                                    blurDataURL={image?.asset?.metadata?.lqip || ""}
+                                    quality={100}
+                                    style={{ maxWidth: "100%", height: "auto" }}
+                                />
+                            </div>
                         )}
                     </div>
                 </div>
