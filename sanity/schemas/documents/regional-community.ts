@@ -4,7 +4,7 @@ import { orderRankField } from "@sanity/orderable-document-list";
 
 export default defineType({
     name: "regionalCommunity",
-    title: "Regional Community",
+    title: "Community",
     type: "document",
     icon: Globe,
     fields: [
@@ -29,24 +29,6 @@ export default defineType({
                 maxLength: 96,
             },
             validation: (Rule) => Rule.required(),
-        }),
-        defineField({
-            name: "code",
-            title: "Region Code",
-            type: "string",
-            description: "Unique identifier for the region (e.g., SSA, MENA, LAC)",
-            validation: (Rule) => Rule.required(),
-        }),
-        defineField({
-            name: "description",
-            title: "Description",
-            type: "object",
-            fields: [
-                { name: "en", title: "English", type: "text", rows: 3 },
-                { name: "es", title: "Español", type: "text", rows: 3 },
-                { name: "fr", title: "Français", type: "text", rows: 3 },
-                { name: "ar", title: "العربية", type: "text", rows: 3 },
-            ],
         }),
         defineField({
             name: "coverImage",
@@ -75,76 +57,44 @@ export default defineType({
             description: "Define the geographic boundaries of this region",
         }),
         defineField({
-            name: "countries",
-            title: "Countries",
+            name: "members",
+            title: "Authors/Members",
             type: "array",
             of: [
                 {
                     type: "object",
                     fields: [
                         {
-                            name: "name",
-                            title: "Country Name",
-                            type: "string",
+                            name: "person",
+                            title: "Person",
+                            type: "reference",
+                            to: [{ type: "author" }],
                             validation: (Rule) => Rule.required(),
                         },
                         {
-                            name: "code",
-                            title: "Country Code",
+                            name: "role",
+                            title: "Role in Community",
                             type: "string",
-                            description: "ISO 3166-1 alpha-2 code",
-                            validation: (Rule) => Rule.required().length(2),
-                        },
-                        {
-                            name: "isPrimary",
-                            title: "Primary Country",
-                            type: "boolean",
-                            description: "Is this a primary/major country in the region?",
-                            initialValue: false,
+                            description: "Their role or position within this community",
                         },
                     ],
                     preview: {
                         select: {
-                            title: "name",
-                            subtitle: "code",
-                            isPrimary: "isPrimary",
+                            title: "person.name",
+                            subtitle: "role",
+                            media: "person.image",
                         },
-                        prepare({ title, subtitle, isPrimary }) {
+                        prepare({ title, subtitle, media }) {
                             return {
-                                title: `${isPrimary ? "⭐ " : ""}${title}`,
-                                subtitle: subtitle,
+                                title: title || "Untitled Person",
+                                subtitle: subtitle || "No role specified",
+                                media,
                             };
                         },
                     },
                 },
             ],
-        }),
-        defineField({
-            name: "statistics",
-            title: "Regional Statistics",
-            type: "object",
-            fields: [
-                {
-                    name: "population",
-                    title: "Population",
-                    type: "number",
-                },
-                {
-                    name: "organizationCount",
-                    title: "Number of Organizations",
-                    type: "number",
-                },
-                {
-                    name: "projectCount",
-                    title: "Active Projects",
-                    type: "number",
-                },
-                {
-                    name: "lastUpdated",
-                    title: "Last Updated",
-                    type: "date",
-                },
-            ],
+            description: "Members and authors associated with this community",
         }),
         defineField({
             name: "contact",
@@ -175,32 +125,8 @@ export default defineType({
             ],
         }),
         defineField({
-            name: "tags",
-            title: "Tags",
-            type: "array",
-            of: [
-                {
-                    type: "reference",
-                    to: [{ type: "tag" }],
-                    options: {
-                        // filter: '*[_type == "tag"] | order(label.en asc)',
-                        filter: ({ document }) => ({
-                            filter: '*[_type == "tag"] | order(label.en asc)',
-                            params: {}
-                        }),
-                    },
-                },
-            ],
-            options: {
-                layout: "tags",
-                sortable: true,
-            },
-            validation: (Rule) => Rule.max(15),
-            description: "Select existing tags or create new ones.",
-        }),
-        defineField({
             name: "featured",
-            title: "Featured Region",
+            title: "Featured Community",
             type: "boolean",
             initialValue: false,
         }),
@@ -209,22 +135,21 @@ export default defineType({
             title: "Active",
             type: "boolean",
             initialValue: true,
-            description: "Is this regional community currently active?",
+            description: "Is this community currently active?",
         }),
         orderRankField({ type: "regionalCommunity" }),
     ],
     preview: {
         select: {
             title: "name.en",
-            subtitle: "code",
             media: "coverImage",
             active: "active",
             featured: "featured",
         },
-        prepare({ title, subtitle, media, active, featured }) {
+        prepare({ title, media, active, featured }) {
             return {
-                title: `${featured ? "⭐ " : ""}${title || "Untitled Region"}`,
-                subtitle: `${active ? "🟢" : "🔴"} ${subtitle || "No code"}`,
+                title: `${featured ? "⭐ " : ""}${title || "Untitled Community"}`,
+                subtitle: `${active ? "🟢 Active" : "🔴 Inactive"}`,
                 media,
             };
         },

@@ -7,22 +7,34 @@ export default defineType({
   icon: LayoutGrid,
   fields: [
     defineField({
-      name: "post",
+      name: "newsPost",
       type: "reference",
-      title: "Blog Post",
-      description: "Select a blog post to link to.",
-      to: [{ type: "post" }],
+      title: "News Post",
+      description: "Select a news post to display as a card.",
+      to: [{ type: "newsPost" }],
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: "featured",
+      type: "boolean",
+      title: "Featured",
+      description: "Mark this post as featured within the grid",
+      initialValue: false,
     }),
   ],
   preview: {
     select: {
-      title: "post.title",
-      media: "image",
+      title: "newsPost.title.en",
+      subtitle: "newsPost.subtitle.en",
+      media: "newsPost.image",
+      featured: "featured",
+      publishedAt: "newsPost.publishedAt",
     },
-    prepare({ title, media }) {
+    prepare({ title, subtitle, media, featured, publishedAt }) {
+      const date = publishedAt ? new Date(publishedAt).toLocaleDateString() : "Draft";
       return {
-        title: "Grid Card",
-        subtitle: title || "No title",
+        title: `${featured ? "⭐ " : ""}${title || "Untitled News Post"}`,
+        subtitle: `${subtitle || ""} | ${date}`,
         media,
       };
     },

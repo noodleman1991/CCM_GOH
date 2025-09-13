@@ -146,10 +146,10 @@ export default defineType({
                         },
                         prepare({ language, downloadCount, fileName, fileSize }) {
                             const languageNames = {
-                                en: "🇺🇸 English",
-                                es: "🇪🇸 Español",
-                                fr: "🇫🇷 Français",
-                                ar: "🇸🇦 العربية",
+                                en: "English",
+                                es: "Español",
+                                fr: "Français",
+                                ar: "العربية",
                             };
 
                             const sizeText = fileSize ? `${(fileSize / (1024 * 1024)).toFixed(2)}MB` : "Unknown size";

@@ -5,7 +5,6 @@ import {
     SupportedLanguage,
     AccessLevel,
     LANGUAGE_NAMES,
-    LANGUAGE_FLAGS,
     REPORT_TYPE_LABELS,
     DownloadTrackingData
 } from '@/types/report';
@@ -83,12 +82,11 @@ export function formatFileSize(sizeInBytes: number | undefined): string {
 }
 
 /**
- * Get language display name with flag
+ * Get language display name
  */
 export function getLanguageDisplay(language: SupportedLanguage): string {
-    const flag = LANGUAGE_FLAGS[language];
     const name = LANGUAGE_NAMES[language];
-    return `${flag} ${name}`;
+    return name;
 }
 
 /**

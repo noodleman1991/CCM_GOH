@@ -18,6 +18,7 @@ import project from "./schemas/documents/project";
 import newsPost from "./schemas/documents/news-post";
 import externalSource from "./schemas/documents/external-source";
 import caseStudy from "./schemas/documents/case-study";
+import livedExperience from "./schemas/documents/lived-experience";
 
 
 // Schema UI shared objects
@@ -27,6 +28,7 @@ import link from "./schemas/blocks/shared/link";
 import { colorVariant } from "./schemas/blocks/shared/color-variant";
 import { buttonVariant } from "./schemas/blocks/shared/button-variant";
 import sectionPadding from "./schemas/blocks/shared/section-padding";
+import { backgroundOption } from "./schemas/blocks/shared/background-option";
 
 // Schema UI objects (existing blocks)
 import hero1 from "./schemas/blocks/hero/hero-1";
@@ -47,6 +49,7 @@ import gridReport from "./schemas/blocks/grid/grid-report";
 import gridCaseStudy from "./schemas/blocks/grid/grid-case-study";
 import carousel1 from "./schemas/blocks/carousel/carousel-1";
 import carousel2 from "./schemas/blocks/carousel/carousel-2";
+import livedExperiencesCarousel from "./schemas/blocks/carousel/lived-experiences-carousel";
 import timelineRow from "./schemas/blocks/timeline/timeline-row";
 import timelinesOne from "./schemas/blocks/timeline/timelines-1";
 import cta1 from "./schemas/blocks/cta/cta-1";
@@ -71,6 +74,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
         newsPost,
         externalSource,
         caseStudy,
+        livedExperience,
         regionalCommunity,
         report,
         // hub
@@ -82,6 +86,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
         colorVariant,
         buttonVariant,
         sectionPadding,
+        backgroundOption,
         // blocks
         hero1,
         hero2,
@@ -101,6 +106,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
         gridCaseStudy,
         carousel1,
         carousel2,
+        livedExperiencesCarousel,
         timelineRow,
         timelinesOne,
         cta1,

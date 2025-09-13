@@ -80,10 +80,10 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 const languages = [
-    { code: 'en', label: 'English', flag: '🇺🇸' },
-    { code: 'es', label: 'Español', flag: '🇪🇸' },
-    { code: 'fr', label: 'Français', flag: '🇫🇷' },
-    { code: 'ar', label: 'العربية', flag: '🇸🇦' },
+    { code: 'en', label: 'English' },
+    { code: 'es', label: 'Español' },
+    { code: 'fr', label: 'Français' },
+    { code: 'ar', label: 'العربية' },
 ];
 
 const authorRoles = [
@@ -507,7 +507,7 @@ export default function ImprovedCaseStudyForm({
                                                 <div className="grid gap-4">
                                                     {languages.filter(lang => lang.code !== 'en').map((lang) => (
                                                         <div key={lang.code} className="space-y-2">
-                                                            <Label className="text-sm">{lang.flag} {lang.label} Translation</Label>
+                                                            <Label className="text-sm">{lang.label} Translation</Label>
                                                             <Input
                                                                 placeholder={`Title in ${lang.label} (optional)`}
                                                                 value={formData.title?.[lang.code as keyof typeof formData.title] || ''}
@@ -542,7 +542,7 @@ export default function ImprovedCaseStudyForm({
                                                     <SelectContent>
                                                         {languages.map((lang) => (
                                                             <SelectItem key={lang.code} value={lang.code}>
-                                                                {lang.flag} {lang.label}
+                                                                {lang.label}
                                                             </SelectItem>
                                                         ))}
                                                     </SelectContent>
