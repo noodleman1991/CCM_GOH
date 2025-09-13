@@ -22,7 +22,7 @@ export default function Hero1({
                               }: Hero1Props) {
     return (
         <SectionContainer background={background}>
-            <div className="py-20 lg:pt-40">
+            <div className="container py-20 lg:pt-40">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
                     <div className="flex flex-col justify-center">
                         {tagLine && (

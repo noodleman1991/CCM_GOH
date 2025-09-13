@@ -5,11 +5,6 @@ export function getBackgroundStyles(backgroundOption?: BackgroundOptionType | nu
   style?: React.CSSProperties;
   className?: string;
 } {
-  // Debug logging
-  if (process.env.NODE_ENV === "development" && backgroundOption) {
-    console.log("Background option received:", JSON.stringify(backgroundOption, null, 2));
-  }
-
   if (!backgroundOption || backgroundOption.type === "none") {
     return {};
   }

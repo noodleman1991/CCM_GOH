@@ -82,12 +82,18 @@ export default function GridRow({
                 <div
                     className={cn(
                         "grid gap-6",
-                        // Smart responsive grid based on desktop setting
+                        // Modern responsive grid with proper card sizing
                         stegaClean(gridColumns) === "grid-cols-4"
-                            ? "grid-cols-2 md:grid-cols-2 lg:grid-cols-4" // 4 cols setting: mobile 2, tablet 2, desktop 4
-                            : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3", // 2 or 3 cols setting: mobile 1, tablet 2, desktop as set
-                        stegaClean(gridColumns) === "grid-cols-2" && "lg:grid-cols-2" // Override for 2 columns
+                            ? "grid-cols-2 md:grid-cols-2 lg:grid-cols-4" // 4 cols: mobile 2, tablet 2, desktop 4
+                            : stegaClean(gridColumns) === "grid-cols-3"
+                            ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" // 3 cols: mobile 1, tablet 2, desktop 3
+                            : "grid-cols-1 md:grid-cols-2 lg:grid-cols-2" // 2 cols: mobile 1, tablet 2, desktop 2
                     )}
+                    style={{
+                        // Ensure cards don't overflow and maintain consistent height
+                        gridAutoRows: "1fr",
+                        minHeight: "fit-content",
+                    }}
                 >
                     {columns.map((column, index) => {
                         // Type guard to ensure column has required properties

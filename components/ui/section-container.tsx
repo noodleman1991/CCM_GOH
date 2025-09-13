@@ -41,17 +41,17 @@ export default function SectionContainer({
     );
   }
 
-  // Standard layout - no custom background, use default styling
+  // Standard layout - no custom background, preserve original container behavior
   return (
     <div
       className={cn(
-        "relative w-screen -mx-4 my-4", // 15px base margin
+        "relative my-4", // Just add 15px base margin, no layout changes
         padding?.top ? "pt-16 xl:pt-20" : undefined,
         padding?.bottom ? "pb-16 xl:pb-20" : undefined,
         className
       )}
     >
-      <div className="container mx-auto px-4">{children}</div>
+      {children}
     </div>
   );
 }
