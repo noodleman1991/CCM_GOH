@@ -1,53 +1,45 @@
-export interface ImageUrls {
-    avatar: string      // 200x200
-    avatarLarge: string // 400x400
-    original: string    // Original (max 1200x1200)
+/**
+ * Generate optimized Clerk image URL with size and quality parameters
+ */
+export function getOptimizedClerkImageUrl(
+    baseUrl: string | undefined,
+    options: {
+        width?: number
+        height?: number
+        fit?: 'scale-down' | 'crop'
+        quality?: number
+    } = {}
+): string | undefined {
+    if (!baseUrl) return undefined
+
+    const {
+        width = 200,
+        height = 200,
+        fit = 'crop',
+        quality = 85
+    } = options
+
+    const params = new URLSearchParams()
+    params.set('width', width.toString())
+    params.set('height', height.toString())
+    params.set('fit', fit)
+    params.set('quality', quality.toString())
+
+    return `${baseUrl}?${params.toString()}`
 }
 
 /**
- * Get the appropriate image URL based on the required size
+ * Generate srcSet for responsive Clerk images
  */
-export function getImageUrl(
-    baseUrl: string | null | undefined,
-    size: 'avatar' | 'avatarLarge' | 'original' = 'avatar'
-): string | null {
-    if (!baseUrl) return null
-
-    // If it's already a specific size URL, return as is
-    if (baseUrl.includes('-avatar') || baseUrl.includes('-original')) {
-        return baseUrl
-    }
-
-    // For R2 URLs, we can derive the other sizes
-    if (baseUrl.includes('r2.dev') || baseUrl.includes('avatars/')) {
-        const baseKey = baseUrl.replace('-avatar.webp', '').replace('-avatar-large.webp', '').replace('-original.jpg', '')
-
-        switch (size) {
-            case 'avatarLarge':
-                return `${baseKey}-avatar-large.webp`
-            case 'original':
-                return `${baseKey}-original.jpg`
-            default:
-                return `${baseKey}-avatar.webp`
-        }
-    }
-
-    // For other URLs, return the base URL
-    return baseUrl
-}
-
-/**
- * Generate srcSet for responsive images
- */
-export function generateSrcSet(baseUrl: string | null | undefined): string {
+export function generateClerkSrcSet(baseUrl: string | undefined): string {
     if (!baseUrl) return ''
 
-    const avatar = getImageUrl(baseUrl, 'avatar')
-    const avatarLarge = getImageUrl(baseUrl, 'avatarLarge')
+    const avatar1x = getOptimizedClerkImageUrl(baseUrl, { width: 200, height: 200 })
+    const avatar2x = getOptimizedClerkImageUrl(baseUrl, { width: 400, height: 400 })
 
-    if (!avatar || !avatarLarge) return ''
+    if (!avatar1x || !avatar2x) return ''
 
-    return `${avatar} 1x, ${avatarLarge} 2x`
+    return `${avatar1x} 1x, ${avatar2x} 2x`
 }
 
 /**
@@ -66,50 +58,25 @@ export function getAvatarFallback(
 }
 
 /**
- * Validate image file before upload
+ * Validate image file before upload - Clerk compatible
  */
 export function validateImageFile(file: File): { valid: boolean; error?: string } {
-    const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
-    const MAX_SIZE = 5 * 1024 * 1024 // 5MB
+    const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp']
+    const MAX_SIZE = 2 * 1024 * 1024 // 2MB - Clerk recommendation
 
     if (!ALLOWED_TYPES.includes(file.type)) {
         return {
             valid: false,
-            error: 'Invalid file type. Please upload a JPEG, PNG, WebP, or GIF image.'
+            error: 'Invalid file type. Please upload a JPEG, PNG, or WebP image.'
         }
     }
 
     if (file.size > MAX_SIZE) {
         return {
             valid: false,
-            error: 'File too large. Maximum size is 5MB.'
+            error: 'File too large. Maximum size is 2MB.'
         }
     }
 
     return { valid: true }
-}
-
-/**
- * Extract R2 key from URL
- */
-export function extractR2Key(url: string, publicUrl: string): string | null {
-    if (!url.includes(publicUrl)) return null
-    return url.replace(`${publicUrl}/`, '')
-}
-
-/**
- * Get all variant keys from a base key
- */
-export function getVariantKeys(baseKey: string): string[] {
-    // Remove any existing suffix
-    const cleanKey = baseKey
-        .replace('-avatar.webp', '')
-        .replace('-avatar-large.webp', '')
-        .replace('-original.jpg', '')
-
-    return [
-        `${cleanKey}-avatar.webp`,
-        `${cleanKey}-avatar-large.webp`,
-        `${cleanKey}-original.jpg`
-    ]
 }

@@ -10,11 +10,11 @@ import { MapPin, Briefcase, Search } from "lucide-react"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 
 interface ProfilesPageProps {
-    searchParams: {
+    searchParams: Promise<{
         search?: string
         expertise?: string
         work?: string
-    }
+    }>
 }
 
 export async function generateMetadata() {
@@ -26,26 +26,27 @@ export async function generateMetadata() {
 }
 
 export default async function ProfilesPage({ searchParams }: ProfilesPageProps) {
+    const resolvedSearchParams = await searchParams
     const t = await getTranslations('profiles')
 
     // Build the where clause based on search params
     const where: any = {}
 
-    if (searchParams.search) {
+    if (resolvedSearchParams.search) {
         where.OR = [
-            { firstName: { contains: searchParams.search, mode: 'insensitive' } },
-            { lastName: { contains: searchParams.search, mode: 'insensitive' } },
-            { username: { contains: searchParams.search, mode: 'insensitive' } },
-            { bio: { contains: searchParams.search, mode: 'insensitive' } }
+            { firstName: { contains: resolvedSearchParams.search, mode: 'insensitive' } },
+            { lastName: { contains: resolvedSearchParams.search, mode: 'insensitive' } },
+            { username: { contains: resolvedSearchParams.search, mode: 'insensitive' } },
+            { bio: { contains: resolvedSearchParams.search, mode: 'insensitive' } }
         ]
     }
 
-    if (searchParams.expertise) {
-        where.expertiseAreas = { has: searchParams.expertise }
+    if (resolvedSearchParams.expertise) {
+        where.expertiseAreas = { has: resolvedSearchParams.expertise }
     }
 
-    if (searchParams.work) {
-        where.workTypes = { has: searchParams.work }
+    if (resolvedSearchParams.work) {
+        where.workTypes = { has: resolvedSearchParams.work }
     }
 
     const users = await prisma.user.findMany({
@@ -108,7 +109,7 @@ export default async function ProfilesPage({ searchParams }: ProfilesPageProps) 
                             <Input
                                 name="search"
                                 placeholder={t('searchPlaceholder')}
-                                defaultValue={searchParams.search}
+                                defaultValue={resolvedSearchParams.search}
                                 className="pl-10"
                             />
                         </div>
