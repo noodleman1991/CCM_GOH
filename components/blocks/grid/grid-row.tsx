@@ -102,7 +102,7 @@ export default function GridRow({
                 {columns && columns?.length > 0 && (
                     <div
                     className={cn(
-                        "grid gap-6",
+                        "grid gap-6", // Clean grid without negative margins
                         // Modern responsive grid with proper card sizing
                         stegaClean(gridColumns) === "grid-cols-4"
                             ? "grid-cols-2 md:grid-cols-2 lg:grid-cols-4" // 4 cols: mobile 2, tablet 2, desktop 4
