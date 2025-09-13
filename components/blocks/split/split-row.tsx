@@ -32,8 +32,9 @@ export default function SplitRow({
 
   return (
     <SectionContainer color={color} padding={padding}>
-      {splitColumns && splitColumns?.length > 0 && (
-        <div
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {splitColumns && splitColumns?.length > 0 && (
+          <div
           className={cn(
             "grid grid-cols-1 lg:grid-cols-2",
             noGap ? "gap-0" : "gap-12 lg:gap-20"
@@ -58,7 +59,8 @@ export default function SplitRow({
             );
           })}
         </div>
-      )}
+        )}
+      </div>
     </SectionContainer>
   );
 }

@@ -19,6 +19,18 @@ export default defineType({
       description: "Choose a background for this grid section",
     }),
     defineField({
+      name: "tagLine",
+      type: "string",
+      title: "Tag Line",
+      description: "Optional tag line above the title",
+    }),
+    defineField({
+      name: "title",
+      type: "string",
+      title: "Title",
+      description: "Optional title for the grid section",
+    }),
+    defineField({
       name: "gridColumns",
       type: "string",
       title: "Grid Columns",

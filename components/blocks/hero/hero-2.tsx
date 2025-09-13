@@ -4,16 +4,22 @@ import { stegaClean } from "next-sanity";
 import PortableTextRenderer from "@/components/portable-text-renderer";
 import { PAGE_QUERYResult } from "@/sanity.types";
 import SectionContainer from "@/components/ui/section-container";
+import { cn } from "@/lib/utils";
+import { isRTL } from "@/i18n/i18n-helpers";
 
 type Hero2Props = Extract<
   NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number],
   { _type: "hero-2" }
->;
+> & {
+  locale?: string;
+};
 
-export default function Hero2({ background, tagLine, title, body, links }: Hero2Props) {
+export default function Hero2({ background, tagLine, title, body, links, locale = "en" }: Hero2Props) {
+  const rtl = isRTL(locale);
   return (
     <SectionContainer background={background}>
-      <div className="container py-20 lg:pt-40 text-center">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:pt-40">
+        <div className={cn("text-center p-4 sm:p-5 lg:p-6", rtl ? "rtl" : "ltr")}>
         {tagLine && (
           <h1 className="leading-[0] font-sans animate-fade-up [animation-delay:100ms] opacity-0">
             <span className="text-base font-semibold">{tagLine}</span>
@@ -48,6 +54,7 @@ export default function Hero2({ background, tagLine, title, body, links }: Hero2
             ))}
           </div>
         )}
+        </div>
       </div>
     </SectionContainer>
   );
