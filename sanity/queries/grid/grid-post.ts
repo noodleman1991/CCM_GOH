@@ -5,10 +5,12 @@ export const gridPostQuery = groq`
   _type == "grid-post" => {
     _type,
     _key,
-    post->{
+    featured,
+    newsPost->{
+      _id,
       title,
+      subtitle,
       slug,
-      excerpt,
       image{
         asset->{
           _id,
@@ -24,9 +26,10 @@ export const gridPostQuery = groq`
         },
         alt
       },
-      categories[]->{
+      publishedAt,
+      tags[]->{
         _id,
-        title,
+        label,
       },
     },
   }

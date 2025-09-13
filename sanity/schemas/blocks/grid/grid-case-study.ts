@@ -159,8 +159,8 @@ export default defineType({
             // Build subtitle with all relevant info
             const parts: string[] = [];
 
-            // Language flag
-            parts.push(langConfig?.flag || "🌐");
+            // Language indicator
+            parts.push(langConfig?.title || "Content");
 
             // Status
             const statusEmoji = statusEmojis[status || "pending"] || "📝";

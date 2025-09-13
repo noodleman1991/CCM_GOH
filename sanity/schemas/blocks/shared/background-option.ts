@@ -27,11 +27,7 @@ export const backgroundOption = defineType({
       type: "string",
       description: "Enter a hex color code (e.g., #205596)",
       hidden: ({ parent }) => parent?.type !== "color",
-      validation: (rule) => rule.custom((color, context) => {
-        const parent = context.parent as { type?: string };
-        if (parent?.type === "color" && !color) {
-          return "Background color is required when type is set to 'Solid Color'";
-        }
+      validation: (rule) => rule.custom((color) => {
         if (color && !/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(color)) {
           return "Please enter a valid hex color code (e.g., #205596)";
         }
@@ -67,7 +63,7 @@ export const backgroundOption = defineType({
           title: "Start Color",
           type: "string",
           description: "Enter a hex color code (e.g., #205596)",
-          validation: (Rule) => Rule.required().custom((color) => {
+          validation: (Rule) => Rule.custom((color: string) => {
             if (color && !/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(color)) {
               return "Please enter a valid hex color code (e.g., #205596)";
             }
@@ -79,7 +75,7 @@ export const backgroundOption = defineType({
           title: "End Color",
           type: "string",
           description: "Enter a hex color code (e.g., #90e0f4)",
-          validation: (Rule) => Rule.required().custom((color) => {
+          validation: (Rule) => Rule.custom((color: string) => {
             if (color && !/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(color)) {
               return "Please enter a valid hex color code (e.g., #90e0f4)";
             }
@@ -90,8 +86,8 @@ export const backgroundOption = defineType({
       hidden: ({ parent }) => parent?.type !== "gradient",
       validation: (rule) => rule.custom((gradient, context) => {
         const parent = context.parent as { type?: string };
-        if (parent?.type === "gradient" && !gradient) {
-          return "Gradient configuration is required when type is set to 'Gradient'";
+        if (parent?.type === "gradient" && gradient && (!gradient.startColor || !gradient.endColor)) {
+          return "Both start and end colors are required for gradients";
         }
         return true;
       }),
@@ -104,13 +100,7 @@ export const backgroundOption = defineType({
         accept: ".svg"
       },
       hidden: ({ parent }) => parent?.type !== "svg",
-      validation: (rule) => rule.custom((file, context) => {
-        const parent = context.parent as { type?: string };
-        if (parent?.type === "svg" && !file) {
-          return "SVG pattern is required when type is set to 'SVG Pattern'";
-        }
-        return true;
-      }),
+      validation: (rule) => rule.custom(() => true),
     }),
     defineField({
       name: "image",
@@ -124,13 +114,7 @@ export const backgroundOption = defineType({
         },
       ],
       hidden: ({ parent }) => parent?.type !== "image",
-      validation: (rule) => rule.custom((image, context) => {
-        const parent = context.parent as { type?: string };
-        if (parent?.type === "image" && !image) {
-          return "Background image is required when type is set to 'Image'";
-        }
-        return true;
-      }),
+      validation: (rule) => rule.custom(() => true),
     }),
   ],
   preview: {

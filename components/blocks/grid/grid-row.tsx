@@ -81,8 +81,12 @@ export default function GridRow({
             {columns && columns?.length > 0 && (
                 <div
                     className={cn(
-                        `grid grid-cols-1 gap-8`,
-                        `lg:${stegaClean(gridColumns)}`
+                        "grid gap-6",
+                        // Smart responsive grid based on desktop setting
+                        stegaClean(gridColumns) === "grid-cols-4"
+                            ? "grid-cols-2 md:grid-cols-2 lg:grid-cols-4" // 4 cols setting: mobile 2, tablet 2, desktop 4
+                            : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3", // 2 or 3 cols setting: mobile 1, tablet 2, desktop as set
+                        stegaClean(gridColumns) === "grid-cols-2" && "lg:grid-cols-2" // Override for 2 columns
                     )}
                 >
                     {columns.map((column, index) => {

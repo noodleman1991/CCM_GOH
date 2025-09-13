@@ -28,7 +28,7 @@ export default function SectionContainer({
         <div className="container mx-auto px-4">
           <div
             className={cn(
-              "relative",
+              "relative my-4", // 15px base margin (my-4 = 16px, close enough)
               padding?.top ? "pt-16 xl:pt-20" : undefined,
               padding?.bottom ? "pb-16 xl:pb-20" : undefined,
               className
@@ -41,11 +41,11 @@ export default function SectionContainer({
     );
   }
 
-  // Standard layout with Tailwind color classes
+  // Standard layout - no custom background, use default styling
   return (
     <div
       className={cn(
-        `bg-${color} relative w-screen -mx-4`,
+        "relative w-screen -mx-4 my-4", // 15px base margin
         padding?.top ? "pt-16 xl:pt-20" : undefined,
         padding?.bottom ? "pb-16 xl:pb-20" : undefined,
         className
