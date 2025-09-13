@@ -6,7 +6,7 @@ import { SectionPadding, ColorVariant } from "@/sanity.types";
 interface SectionContainerProps {
   color?: ColorVariant | null;
   padding?: SectionPadding | null;
-  backgroundOption?: BackgroundOptionType | null;
+  background?: BackgroundOptionType | null;
   children: React.ReactNode;
   className?: string;
 }
@@ -14,14 +14,14 @@ interface SectionContainerProps {
 export default function SectionContainer({
   color = "background",
   padding,
-  backgroundOption,
+  background,
   children,
   className,
 }: SectionContainerProps) {
-  const backgroundStyles = getBackgroundStyles(backgroundOption);
-  
+  const backgroundStyles = getBackgroundStyles(background);
+
   // If we have a custom background, use full-width layout
-  if (backgroundOption && backgroundOption.type !== "none") {
+  if (background && background.type !== "none") {
     return (
       // Break out of container constraints for full-width background
       <div className={cn("relative w-screen -mx-4", backgroundStyles.className)} style={backgroundStyles.style}>

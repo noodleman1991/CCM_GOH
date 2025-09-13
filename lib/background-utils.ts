@@ -16,27 +16,38 @@ export function getBackgroundStyles(backgroundOption?: BackgroundOptionType | nu
 
   switch (backgroundOption.type) {
     case "color":
-      if (backgroundOption.color?.hex) {
-        // Handle alpha channel if present
-        const alpha = backgroundOption.color.alpha;
-        if (alpha !== undefined && alpha < 1) {
-          // Convert hex to rgba with alpha
-          const hex = backgroundOption.color.hex;
-          const r = parseInt(hex.slice(1, 3), 16);
-          const g = parseInt(hex.slice(3, 5), 16);
-          const b = parseInt(hex.slice(5, 7), 16);
-          return {
-            style: {
-              backgroundColor: `rgba(${r}, ${g}, ${b}, ${alpha})`,
-            },
-          };
-        } else {
-          return {
-            style: {
-              backgroundColor: backgroundOption.color.hex,
-            },
-          };
-        }
+      if (backgroundOption.color) {
+        return {
+          style: {
+            backgroundColor: backgroundOption.color,
+          },
+        };
+      }
+      break;
+
+    case "gradient":
+      if (backgroundOption.gradient?.startColor && backgroundOption.gradient?.endColor) {
+        const direction = backgroundOption.gradient.direction || "to-r";
+
+        // Map Tailwind direction classes to CSS gradient directions
+        const directionMap: Record<string, string> = {
+          "to-r": "to right",
+          "to-l": "to left",
+          "to-b": "to bottom",
+          "to-t": "to top",
+          "to-br": "to bottom right",
+          "to-bl": "to bottom left",
+          "to-tr": "to top right",
+          "to-tl": "to top left",
+        };
+
+        const cssDirection = directionMap[direction] || "to right";
+
+        return {
+          style: {
+            background: `linear-gradient(${cssDirection}, ${backgroundOption.gradient.startColor}, ${backgroundOption.gradient.endColor})`,
+          },
+        };
       }
       break;
 
