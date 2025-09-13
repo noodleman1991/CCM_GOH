@@ -5,6 +5,7 @@ export const hero2Query = groq`
   _type == "hero-2" => {
     _type,
     _key,
+    background,
     tagLine,
     title,
     body[]{

@@ -13,7 +13,7 @@ type Cta1Props = Extract<
 
 export default function Cta1({
   padding,
-  colorVariant,
+  background,
   sectionWidth = "default",
   stackAlign = "left",
   tagLine,
@@ -23,19 +23,16 @@ export default function Cta1({
 }: Cta1Props) {
   const isNarrow = stegaClean(sectionWidth) === "narrow";
   const align = stegaClean(stackAlign);
-  const color = stegaClean(colorVariant);
 
   return (
-    <SectionContainer color={color} padding={padding}>
+    <SectionContainer background={background} padding={padding}>
       <div
         className={cn(
           align === "center" ? "max-w-[48rem] text-center mx-auto" : undefined,
           isNarrow ? "max-w-[48rem] mx-auto" : undefined
         )}
       >
-        <div
-          className={cn(color === "primary" ? "text-background" : undefined)}
-        >
+        <div>
           {tagLine && (
             <h1 className="leading-[0] mb-4">
               <span className="text-base font-semibold">{tagLine}</span>

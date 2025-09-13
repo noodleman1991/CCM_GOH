@@ -2,78 +2,158 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import Image from "next/image";
 import { urlFor } from "@/sanity/lib/image";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Calendar } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { PAGE_QUERYResult, ColorVariant } from "@/sanity.types"; //todo: what is the issue with colorVariant?
+import { PAGE_QUERYResult } from "@/sanity.types";
 
 type Block = NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number];
 type GridRow = Extract<Block, { _type: "grid-row" }>;
 type GridColumn = NonNullable<NonNullable<GridRow["columns"]>>[number];
 type GridPost = Extract<GridColumn, { _type: "grid-post" }>;
 
-interface GridPostProps extends Omit<NonNullable<GridPost>, "_type" | "_key"> {
-  color?: string;
+interface NewsPost {
+  _id: string;
+  title?: { [key: string]: string };
+  subtitle?: { [key: string]: string };
+  slug?: { current: string };
+  image?: {
+    asset?: {
+      _id: string;
+      metadata?: {
+        lqip?: string;
+        dimensions?: {
+          width: number;
+          height: number;
+        };
+      };
+    };
+    alt?: string;
+  };
+  publishedAt?: string;
+  tags?: Array<{
+    _id: string;
+    label?: { [key: string]: string };
+  }>;
 }
 
-export default function GridPost({ color, post }: GridPostProps) {
-  if (!post) return null;
+interface GridPostProps {
+  newsPost?: NewsPost;
+  featured?: boolean;
+  locale?: string;
+  userId?: string;
+}
 
-  const { title, slug, excerpt, image, categories } = post;
+export default function GridPost({ newsPost, featured, locale = "en", userId }: GridPostProps) {
+  if (!newsPost) return null;
+
+  const { title, slug, subtitle, image, publishedAt, tags } = newsPost;
+
+  // Get localized content
+  const localizedTitle = title?.[locale as keyof typeof title] || title?.en || "Untitled";
+  const localizedSubtitle = subtitle?.[locale as keyof typeof subtitle] || subtitle?.en;
+
+  // Format date
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return "";
+    return new Date(dateString).toLocaleDateString(locale === "ar" ? "ar-EG" : locale, {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
 
   return (
     <Link
-      key={title}
-      className="flex w-full rounded-3xl ring-offset-background focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 group"
-      href={`/blog/${slug?.current}`}
+      className={cn(
+        "flex w-full rounded-3xl ring-offset-background focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 group",
+        "transition-all duration-200 hover:scale-[1.02]"
+      )}
+      href={`/news/${slug?.current}`}
     >
-      <div
+      <article
         className={cn(
-          "flex w-full flex-col justify-between overflow-hidden transition ease-in-out group border rounded-3xl p-4 hover:border-primary",
-          color === "primary"
-            ? "group-hover:border-primary-foreground/50"
-            : "group-hover:border-primary"
+          "relative flex w-full flex-col h-full overflow-hidden transition ease-in-out group border rounded-2xl p-4 sm:p-5 lg:p-6 hover:border-primary hover:shadow-lg bg-white",
+          featured && "ring-2 ring-yellow-500/20 border-yellow-500/30"
         )}
       >
-        <div className="flex flex-col">
+        {/* Featured badge */}
+        {featured && (
+          <div className="absolute top-4 right-4 z-10">
+            <Badge variant="secondary" className="bg-yellow-500 text-white">
+              Featured
+            </Badge>
+          </div>
+        )}
+
+        <div className="flex flex-col flex-1">
+          {/* Image */}
           {image && image.asset?._id && (
-            <div className="mb-4 relative h-[15rem] sm:h-[20rem] md:h-[25rem] lg:h-[9.5rem] xl:h-[12rem] rounded-2xl overflow-hidden">
+            <div className="mb-3 sm:mb-4 relative aspect-[4/3] w-full rounded-xl overflow-hidden">
               <Image
                 src={urlFor(image).url()}
-                alt={image.alt || ""}
+                alt={image.alt || localizedTitle}
                 placeholder={image?.asset?.metadata?.lqip ? "blur" : undefined}
                 blurDataURL={image?.asset?.metadata?.lqip || ""}
                 fill
-                style={{
-                  objectFit: "cover",
-                }}
-                sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-                quality={100}
+                className="object-cover group-hover:scale-105 transition-transform duration-300"
+                sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                quality={85}
               />
             </div>
           )}
-          {title && (
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="font-bold text-[1.5rem] leading-[1.2]">{title}</h3>
+
+          {/* Title */}
+          <div className="mb-2 sm:mb-3">
+            <h3 className="font-bold text-lg sm:text-xl leading-tight line-clamp-2 group-hover:text-primary transition-colors">
+              {localizedTitle}
+            </h3>
+          </div>
+
+          {/* Subtitle */}
+          {localizedSubtitle && (
+            <p className="text-muted-foreground text-sm leading-relaxed mb-2 sm:mb-3 line-clamp-2">
+              {localizedSubtitle}
+            </p>
+          )}
+
+          {/* Date */}
+          {publishedAt && (
+            <div className="flex items-center gap-1 text-muted-foreground text-xs sm:text-sm mb-2 sm:mb-3">
+              <Calendar size={12} className="sm:w-4 sm:h-4" />
+              <time dateTime={publishedAt}>{formatDate(publishedAt)}</time>
             </div>
           )}
-          {categories && categories.length > 0 && (
-            <div className="flex flex-wrap gap-2 mb-4">
-              {categories.map((category) => (
-                <Badge key={category._id} color="primary">
-                  {category.title}
+
+          {/* Tags */}
+          {tags && tags.length > 0 && (
+            <div className="flex flex-wrap gap-1 sm:gap-2 mb-3 sm:mb-4">
+              {tags.slice(0, 2).map((tag) => {
+                const tagLabel = tag.label?.[locale as keyof typeof tag.label] || tag.label?.en || "Tag";
+                return (
+                  <Badge key={tag._id} variant="outline" className="text-xs px-2 py-1">
+                    {tagLabel}
+                  </Badge>
+                );
+              })}
+              {tags.length > 2 && (
+                <Badge variant="outline" className="text-xs px-2 py-1">
+                  +{tags.length - 2}
                 </Badge>
-              ))}
+              )}
             </div>
           )}
-          {excerpt && <p>{excerpt}</p>}
         </div>
-        <div className="mt-3 xl:mt-6 w-10 h-10 border rounded-full flex items-center justify-center group-hover:border-primary">
-          <ChevronRight
-            className="text-border group-hover:text-primary"
-            size={24}
-          />
+
+        {/* Read more arrow */}
+        <div className="mt-auto pt-2 sm:pt-3">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 border rounded-full flex items-center justify-center group-hover:border-primary group-hover:bg-primary/5 transition-all duration-200">
+            <ChevronRight
+              className="text-muted-foreground group-hover:text-primary transition-colors"
+              size={16}
+            />
+          </div>
         </div>
-      </div>
+      </article>
     </Link>
   );
 }

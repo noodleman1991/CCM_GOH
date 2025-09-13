@@ -6,7 +6,7 @@ export const cta1Query = groq`
     _type,
     _key,
     padding,
-    colorVariant,
+    background,
     sectionWidth,
     stackAlign,
     tagLine,
