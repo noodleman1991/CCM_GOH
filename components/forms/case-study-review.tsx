@@ -37,10 +37,10 @@ interface CaseStudyReviewProps {
 }
 
 const languages = [
-    { code: 'en', label: 'English', flag: '🇺🇸' },
-    { code: 'es', label: 'Español', flag: '🇪🇸' },
-    { code: 'fr', label: 'Français', flag: '🇫🇷' },
-    { code: 'ar', label: 'العربية', flag: '🇸🇦' },
+    { code: 'en', label: 'English' },
+    { code: 'es', label: 'Español' },
+    { code: 'fr', label: 'Français' },
+    { code: 'ar', label: 'العربية' },
 ] as const
 
 export default function CaseStudyReview({ availableTags, userId }: CaseStudyReviewProps) {
@@ -180,7 +180,7 @@ export default function CaseStudyReview({ availableTags, userId }: CaseStudyRevi
                         {languages.map((lang) => (
                             <div key={lang.code} className="flex items-start gap-3">
                                 <Badge variant="outline" className="shrink-0">
-                                    {lang.flag} {lang.label}
+                                    {lang.label}
                                 </Badge>
                                 <div className="flex-1">
                                     <p className="font-medium">{formData.title[lang.code] || 'Not provided'}</p>
@@ -209,7 +209,7 @@ export default function CaseStudyReview({ availableTags, userId }: CaseStudyRevi
                         <TabsList className="grid w-full grid-cols-4">
                             {languages.map((lang) => (
                                 <TabsTrigger key={lang.code} value={lang.code}>
-                                    {lang.flag} {lang.code.toUpperCase()}
+                                    {lang.code.toUpperCase()}
                                 </TabsTrigger>
                             ))}
                         </TabsList>
@@ -244,7 +244,7 @@ export default function CaseStudyReview({ availableTags, userId }: CaseStudyRevi
                             <span className="text-sm font-medium">Available in:</span>
                             {getContentLanguages().map((lang) => (
                                 <Badge key={lang.code} variant="secondary">
-                                    {lang.flag} {lang.label}
+                                    {lang.label}
                                 </Badge>
                             ))}
                         </div>
@@ -254,7 +254,7 @@ export default function CaseStudyReview({ availableTags, userId }: CaseStudyRevi
                                 <TabsList>
                                     {getContentLanguages().map((lang) => (
                                         <TabsTrigger key={lang.code} value={lang.code}>
-                                            {lang.flag} {lang.label}
+                                            {lang.label}
                                         </TabsTrigger>
                                     ))}
                                 </TabsList>

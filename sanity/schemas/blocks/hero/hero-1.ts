@@ -8,6 +8,12 @@ export default defineType({
   icon: LayoutTemplate,
   fields: [
     defineField({
+      name: "background",
+      type: "background-option",
+      title: "Background",
+      description: "Choose a background for this hero section",
+    }),
+    defineField({
       name: "tagLine",
       type: "string",
     }),

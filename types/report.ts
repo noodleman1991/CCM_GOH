@@ -120,12 +120,6 @@ export const LANGUAGE_NAMES: Record<SupportedLanguage, string> = {
     ar: 'العربية'
 };
 
-export const LANGUAGE_FLAGS: Record<SupportedLanguage, string> = {
-    en: '🇺🇸',
-    es: '🇪🇸',
-    fr: '🇫🇷',
-    ar: '🇸🇦'
-};
 
 // Report type labels
 export const REPORT_TYPE_LABELS: Record<string, string> = {

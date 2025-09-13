@@ -81,10 +81,10 @@ export default defineType({
             validation: (Rule) => Rule.required(),
         }),
         
-        // Excerpt/Description
+        // Description
         defineField({
-            name: "excerpt",
-            title: "Excerpt",
+            name: "description",
+            title: "Description",
             type: "object",
             group: "content",
             description: "Brief description of the lived experience",
@@ -98,8 +98,8 @@ export default defineType({
         
         // Video URL (external link to video platform)
         defineField({
-            name: "videoUrl",
-            title: "Video URL",
+            name: "videoLink",
+            title: "Video Link",
             type: "url",
             group: "video",
             description: "Link to the video (YouTube, Vimeo, etc.)",
@@ -144,14 +144,25 @@ export default defineType({
             initialValue: () => new Date().toISOString(),
         }),
         
-        // Related Regional Community
+        // Author
+        defineField({
+            name: "author",
+            title: "Author",
+            type: "reference",
+            group: "affiliations",
+            to: { type: "author" },
+            description: "The author of this lived experience",
+            validation: (Rule) => Rule.required(),
+        }),
+
+        // Related Community
         defineField({
             name: "relatedCommunity",
-            title: "Related Regional Community",
+            title: "Related Community",
             type: "reference",
             group: "affiliations",
             to: { type: "regionalCommunity" },
-            description: "The regional community this experience relates to",
+            description: "The community this experience relates to",
         }),
         
         // Related Organizations

@@ -34,10 +34,10 @@ const sections: Section[] = [
 ]
 
 const languages = [
-    { code: 'en', label: 'English', flag: '🇺🇸' },
-    { code: 'es', label: 'Español', flag: '🇪🇸' },
-    { code: 'fr', label: 'Français', flag: '🇫🇷' },
-    { code: 'ar', label: 'العربية', flag: '🇸🇦' },
+    { code: 'en', label: 'English' },
+    { code: 'es', label: 'Español' },
+    { code: 'fr', label: 'Français' },
+    { code: 'ar', label: 'العربية' },
 ]
 
 interface CaseStudySubmissionLayoutProps {
@@ -126,7 +126,6 @@ export default function CaseStudySubmissionLayout({
                                     {languages.map((lang) => (
                                         <SelectItem key={lang.code} value={lang.code}>
                                             <div className="flex items-center gap-2">
-                                                <span>{lang.flag}</span>
                                                 <span>{lang.label}</span>
                                             </div>
                                         </SelectItem>
@@ -213,10 +212,10 @@ export default function CaseStudySubmissionLayout({
                                         Multilingual Platform
                                     </div>
                                     <div className="flex flex-wrap gap-1">
-                                        <span className="text-xs">🇺🇸 EN</span>
-                                        <span className="text-xs">🇪🇸 ES</span>
-                                        <span className="text-xs">🇫🇷 FR</span>
-                                        <span className="text-xs">🇸🇦 AR</span>
+                                        <span className="text-xs">EN</span>
+                                        <span className="text-xs">ES</span>
+                                        <span className="text-xs">FR</span>
+                                        <span className="text-xs">AR</span>
                                     </div>
                                     <p className="text-xs text-muted-foreground">
                                         Submit in any language. Titles & excerpts needed in all languages for global reach.

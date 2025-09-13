@@ -13,6 +13,7 @@ export const backgroundOption = defineType({
         list: [
           { title: "None (inherit)", value: "none" },
           { title: "Solid Color", value: "color" },
+          { title: "Gradient", value: "gradient" },
           { title: "SVG Pattern", value: "svg" },
           { title: "Image", value: "image" },
         ],
@@ -29,6 +30,52 @@ export const backgroundOption = defineType({
         const parent = context.parent as { type?: string };
         if (parent?.type === "color" && !color) {
           return "Background color is required when type is set to 'Solid Color'";
+        }
+        return true;
+      }),
+    }),
+    defineField({
+      name: "gradient",
+      title: "Gradient",
+      type: "object",
+      fields: [
+        {
+          name: "direction",
+          title: "Direction",
+          type: "string",
+          options: {
+            list: [
+              { title: "To Right", value: "to-r" },
+              { title: "To Left", value: "to-l" },
+              { title: "To Bottom", value: "to-b" },
+              { title: "To Top", value: "to-t" },
+              { title: "To Bottom Right", value: "to-br" },
+              { title: "To Bottom Left", value: "to-bl" },
+              { title: "To Top Right", value: "to-tr" },
+              { title: "To Top Left", value: "to-tl" },
+            ],
+            layout: "dropdown",
+          },
+          initialValue: "to-r",
+        },
+        {
+          name: "startColor",
+          title: "Start Color",
+          type: "color",
+          validation: (Rule) => Rule.required(),
+        },
+        {
+          name: "endColor",
+          title: "End Color",
+          type: "color",
+          validation: (Rule) => Rule.required(),
+        },
+      ],
+      hidden: ({ parent }) => parent?.type !== "gradient",
+      validation: (rule) => rule.custom((gradient, context) => {
+        const parent = context.parent as { type?: string };
+        if (parent?.type === "gradient" && !gradient) {
+          return "Gradient configuration is required when type is set to 'Gradient'";
         }
         return true;
       }),
@@ -74,13 +121,20 @@ export const backgroundOption = defineType({
     select: {
       type: "type",
       color: "color",
+      gradient: "gradient",
     },
-    prepare({ type, color }) {
+    prepare({ type, color, gradient }) {
+      let subtitle = type || "None";
+
+      if (type === "color" && color?.hex) {
+        subtitle = `${type} (${color.hex})`;
+      } else if (type === "gradient" && gradient?.startColor?.hex && gradient?.endColor?.hex) {
+        subtitle = `${type} (${gradient.startColor.hex} → ${gradient.endColor.hex})`;
+      }
+
       return {
         title: "Background",
-        subtitle: type === "color" && color?.hex ? 
-          `${type} (${color.hex})` : 
-          type || "None",
+        subtitle,
       };
     },
   },

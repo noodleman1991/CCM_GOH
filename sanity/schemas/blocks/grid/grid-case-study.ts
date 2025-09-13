@@ -2,10 +2,10 @@ import { defineField, defineType } from "sanity";
 import { FileSearch } from "lucide-react";
 
 const supportedLanguages = [
-    { id: "en", title: "English", flag: "🇺🇸", isDefault: true },
-    { id: "es", title: "Español", flag: "🇪🇸" },
-    { id: "fr", title: "Français", flag: "🇫🇷" },
-    { id: "ar", title: "العربية", flag: "🇸🇦", isRTL: true },
+    { id: "en", title: "English", isDefault: true },
+    { id: "es", title: "Español" },
+    { id: "fr", title: "Français" },
+    { id: "ar", title: "العربية", isRTL: true },
 ];
 
 const statusOptions = [

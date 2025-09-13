@@ -13,10 +13,10 @@ export default defineType({
       type: "section-padding",
     }),
     defineField({
-      name: "colorVariant",
-      type: "color-variant",
-      title: "Color Variant",
-      description: "Select a background color variant",
+      name: "background",
+      type: "background-option",
+      title: "Background",
+      description: "Choose a background for this CTA section",
     }),
     defineField({
       name: "sectionWidth",
