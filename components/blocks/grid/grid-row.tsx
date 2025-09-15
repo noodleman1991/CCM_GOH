@@ -9,6 +9,7 @@ import GridReport from "./grid-report";
 import GridCaseStudy from "./grid-case-study";
 import GridNews from "./grid-news";
 import GridLivedExperience from "./grid-lived-experience";
+import StyledPortableTextRenderer from "@/components/styled-portable-text-renderer";
 
 type Block = NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number];
 type GridRow = Extract<Block, { _type: "grid-row" }>;
@@ -65,14 +66,12 @@ interface GridRowProps extends GridRow {
     locale?: string;
     userId?: string;
     rowId?: string;
-    tagLine?: string;
-    title?: string;
 }
 
 export default function GridRow({
                                     padding,
                                     background,
-                                    tagLine,
+                                    description,
                                     title,
                                     gridColumns,
                                     columns,
@@ -84,17 +83,17 @@ export default function GridRow({
         <SectionContainer background={background} padding={padding}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Grid Header */}
-                {(tagLine || title) && (
-                    <div className="mb-12 text-center">
-                        {tagLine && (
-                            <h1 className="leading-[0] font-sans animate-fade-up [animation-delay:100ms] opacity-0">
-                                <span className="text-base font-semibold">{tagLine}</span>
-                            </h1>
-                        )}
+                {(description || title) && (
+                    <div className="mb-12 text-start">
                         {title && (
                             <h2 className="mt-6 font-bold leading-[1.1] text-4xl md:text-5xl lg:text-6xl animate-fade-up [animation-delay:200ms] opacity-0">
                                 {title}
                             </h2>
+                        )}
+                        {description && (
+                            <div className="mt-6 animate-fade-up [animation-delay:300ms] opacity-0">
+                                <StyledPortableTextRenderer value={description} locale={locale} />
+                            </div>
                         )}
                     </div>
                 )}

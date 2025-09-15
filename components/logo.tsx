@@ -1,31 +1,43 @@
-// import Link from "next/link";
+import Link from "next/link";
 import Image from 'next/image';
+import { cn } from "@/lib/utils";
 
 export default function Logo({ className = "", size = "default" }) {
-    const sizeVariants = {
-        sm: { width: 64, height: 18 },      // Small - nav bars
-        default: { width: 100, height: 29 }, // Default
-        md: { width: 128, height: 37 },     // Medium
-        lg: { width: 160, height: 46 },     // Large
-        xl: { width: 242, height: 71 }      // Extra large
-    }  as any;
+    // Smart sizing that adapts to container
+    const sizeClasses = {
+        sm: "h-4 w-auto",           // Small - nav bars
+        default: "h-6 w-auto",     // Default
+        md: "h-8 w-auto",          // Medium
+        lg: "w-full h-auto max-h-12",  // Large - sidebar (fit width)
+        xl: "h-16 w-auto"          // Extra large
+    };
 
-    const { width, height } = sizeVariants[size];
+    // Base dimensions for Next.js Image (maintaining aspect ratio)
+    const baseDimensions = {
+        width: 242,
+        height: 83
+    };
 
     return (
-        // <Link
-        //     href="/"
-        //     className={`inline-block transition-opacity hover:opacity-80 ${className}`}
-        //     aria-label="Go to homepage"
-        // >
+        <Link
+            href="/"
+            className={cn(
+                "inline-flex items-center transition-opacity hover:opacity-80",
+                className
+            )}
+            aria-label="Go to homepage"
+        >
             <Image
                 src="/connecting-climate-minds-logo-white.png"
                 alt="Connecting Climate Minds Logo"
-                width={width}
-                height={height}
+                width={baseDimensions.width}
+                height={baseDimensions.height}
                 priority={size === 'default' || size === 'lg'}
-                className="transition-all duration-200"
+                className={cn(
+                    "transition-all duration-200 object-contain",
+                    sizeClasses[size as keyof typeof sizeClasses] || sizeClasses.default
+                )}
             />
-        // </Link>
+        </Link>
     );
 }

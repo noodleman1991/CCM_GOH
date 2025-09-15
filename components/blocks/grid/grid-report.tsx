@@ -106,7 +106,7 @@ export default function GridReportComponent({
                 </div>
             )}
 
-            <CardHeader className="pb-3">
+            <CardHeader className="pb-3 px-0">
                 <div className="space-y-2">
                     {/* Title */}
                     <h3 className="font-semibold text-lg leading-tight line-clamp-2 group-hover:text-primary transition-colors">
@@ -115,17 +115,17 @@ export default function GridReportComponent({
 
                     {/* Subtitle */}
                     {subtitle && (
-                        <p className="text-sm text-muted-foreground line-clamp-1">
+                        <p className="text-sm text-black line-clamp-1">
                             {subtitle}
                         </p>
                     )}
                 </div>
             </CardHeader>
 
-            <CardContent className="flex-1 pb-3">
+            <CardContent className="flex-1 pb-3 px-0">
                 {/* Description */}
                 {description && (
-                    <p className="text-sm text-muted-foreground line-clamp-3 mb-4">
+                    <p className="text-sm text-black line-clamp-3 mb-4">
                         {description}
                     </p>
                 )}
@@ -188,7 +188,7 @@ export default function GridReportComponent({
                 )}
             </CardContent>
 
-            <CardFooter className="pt-0">
+            <CardFooter className="pt-0 px-0">
                 {/* Download section - Client Component */}
                 <DownloadSection
                     report={report}

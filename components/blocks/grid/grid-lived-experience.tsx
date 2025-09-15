@@ -239,7 +239,7 @@ export default function GridLivedExperienceComponent({
             <CardContent className="flex-1 pb-3">
                 {/* Description */}
                 {excerpt && (
-                    <p className="text-sm text-muted-foreground line-clamp-3 mb-4">
+                    <p className="text-sm text-black line-clamp-3 mb-4">
                         {excerpt}
                     </p>
                 )}

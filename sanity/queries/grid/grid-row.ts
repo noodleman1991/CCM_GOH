@@ -13,8 +13,8 @@ export const gridRowQuery = groq`
     _key,
     padding,
     background,
-    tagLine,
     title,
+    description,
     gridColumns,
     columns[]{
       ${gridCardQuery},

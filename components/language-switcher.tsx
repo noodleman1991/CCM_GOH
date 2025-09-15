@@ -6,10 +6,17 @@ import { useRouter, usePathname } from "@/i18n/navigation"
 import { useLocale } from "next-intl"
 import { rtlLocales } from "@/i18n/routing"
 import { useIsMobile } from "@/hooks/use-mobile"
-import { Check, ChevronDown, Globe, X } from "lucide-react"
+import { Check, ChevronDown, ChevronsUpDown, Globe, Languages, X } from "lucide-react"
+import { cn } from "@/lib/utils"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
 import { Drawer, DrawerTrigger, DrawerContent, DrawerClose } from "@/components/ui/drawer"
+import {
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
+    useSidebar,
+} from "@/components/ui/sidebar"
 
 // Define language options with direction info
 const languageOptions = [
@@ -24,6 +31,8 @@ export function LanguageSwitcher() {
     const pathname = usePathname()
     const currentLocale = useLocale()
     const isMobile = useIsMobile()
+    const isRTL = rtlLocales.includes(currentLocale)
+    const { isMobile: sidebarIsMobile } = useSidebar()
 
     // Find the current language display name
     const currentLanguage = languageOptions.find(lang => lang.code === currentLocale) || languageOptions[0]
@@ -76,26 +85,48 @@ export function LanguageSwitcher() {
     }
 
     return (
-        <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="flex items-center gap-2">
-                    <Globe className="h-5 w-5" />
-                    <span>{currentLocale.toUpperCase()}</span>
-                    <ChevronDown className="h-4 w-4" />
-                </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
-                {languageOptions.map(language => (
-                    <DropdownMenuItem
-                        key={language.code}
-                        className="flex items-center justify-between cursor-pointer"
-                        onClick={() => switchLanguage(language.code)}
+        <SidebarMenu>
+            <SidebarMenuItem>
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <SidebarMenuButton
+                            size="lg"
+                            className={cn(
+                                "data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground",
+                                isRTL && "flex-row-reverse"
+                            )}
+                        >
+                            <div className={cn(
+                                "flex flex-1 items-center text-sm leading-tight",
+                                isRTL ? "text-right" : "text-left"
+                            )}>
+                                <span className="truncate" style={{ fontFamily: 'Poppins', fontWeight: 700 }}>
+                                    <span className="hidden sm:inline">{currentLanguage.name}</span>
+                                    <span className="sm:hidden">{currentLocale.toUpperCase()}</span>
+                                </span>
+                            </div>
+                            <Languages className="ml-auto size-4" />
+                        </SidebarMenuButton>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent
+                        className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+                        side={sidebarIsMobile ? "bottom" : "right"}
+                        align="end"
+                        sideOffset={4}
                     >
-                        <span>{language.name}</span>
-                        {language.code === currentLocale && <Check className="h-5 w-5" />}
-                    </DropdownMenuItem>
-                ))}
-            </DropdownMenuContent>
-        </DropdownMenu>
+                        {languageOptions.map(language => (
+                            <DropdownMenuItem
+                                key={language.code}
+                                className="flex items-center justify-between cursor-pointer"
+                                onClick={() => switchLanguage(language.code)}
+                            >
+                                <span>{language.name}</span>
+                                {language.code === currentLocale && <Check className="h-5 w-5" />}
+                            </DropdownMenuItem>
+                        ))}
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </SidebarMenuItem>
+        </SidebarMenu>
     )
 }

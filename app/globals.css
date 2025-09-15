@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @plugin "tailwindcss-animate";
+@plugin 'tailwind-scrollbar';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -224,6 +225,11 @@
         font-family: Lato, ui-sans-serif, system-ui, sans-serif;
     }
 
+    /* Content text elements should default to foreground (black) for prose content */
+    .prose, .prose p, .content, .content p {
+        @apply text-foreground;
+    }
+
     h1, h2, h3, h4, h5, h6 {
         font-family: Poppins, ui-sans-serif, system-ui, sans-serif;
         font-weight: 700;
@@ -316,6 +322,11 @@
     [data-sidebar] {
         font-family: Poppins, ui-sans-serif, system-ui, sans-serif;
         font-weight: 700;
+    }
+
+    /* Ensure sidebar maintains its colors and override content text rules */
+    [data-sidebar] *, [data-sidebar] p, [data-sidebar] span, [data-sidebar] div {
+        color: inherit !important;
     }
 }
 

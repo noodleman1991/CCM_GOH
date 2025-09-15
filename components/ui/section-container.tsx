@@ -20,32 +20,27 @@ export default function SectionContainer({
 }: SectionContainerProps) {
   const backgroundStyles = getBackgroundStyles(background);
 
-  // If we have a custom background, use full-width layout
   if (background && background.type !== "none") {
     return (
-      // Break out of container constraints for full-width background
       <div className={cn("relative w-screen -mx-4", backgroundStyles.className)} style={backgroundStyles.style}>
-        <div className="container mx-auto px-4">
-          <div
-            className={cn(
-              "relative my-4", // 15px base margin (my-4 = 16px, close enough)
-              padding?.top ? "pt-16 xl:pt-20" : undefined,
-              padding?.bottom ? "pb-16 xl:pb-20" : undefined,
-              className
-            )}
-          >
-            {children}
-          </div>
+        <div
+          className={cn(
+            "relative my-4",
+            padding?.top ? "pt-16 xl:pt-20" : undefined,
+            padding?.bottom ? "pb-16 xl:pb-20" : undefined,
+            className
+          )}
+        >
+          {children}
         </div>
       </div>
     );
   }
 
-  // Standard layout - no custom background, preserve original container behavior
   return (
     <div
       className={cn(
-        "relative my-4", // Just add 15px base margin, no layout changes
+        "relative my-4",
         padding?.top ? "pt-16 xl:pt-20" : undefined,
         padding?.bottom ? "pb-16 xl:pb-20" : undefined,
         className
