@@ -43,7 +43,6 @@ const componentMap: {
     "grid-row": GridRow,
     "carousel-1": Carousel1,
     "carousel-2": Carousel2,
-    "lived-experiences-carousel": LivedExperiencesCarousel,
     "timeline-row": TimelineRow,
     "cta-1": Cta1,
     "logo-cloud-1": LogoCloud1,

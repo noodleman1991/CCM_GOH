@@ -73,7 +73,7 @@ interface IndexPageProps {
 export default async function IndexPage({ params }: IndexPageProps) {
     const { locale } = await params;
 
-    let homepage = await fetchSanityHomepageBySlug({
+    const homepage = await fetchSanityHomepageBySlug({
         slug: "index",
         locale,
     });

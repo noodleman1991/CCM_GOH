@@ -11,10 +11,10 @@ interface ErrorBoundaryState {
 }
 
 export class SearchErrorBoundary extends React.Component<
-  React.PropsWithChildren<{}>,
+  React.PropsWithChildren,
   ErrorBoundaryState
 > {
-  constructor(props: React.PropsWithChildren<{}>) {
+  constructor(props: React.PropsWithChildren) {
     super(props)
     this.state = { hasError: false }
   }
@@ -57,10 +57,10 @@ export class SearchErrorBoundary extends React.Component<
 // Alternative functional component version using react-error-boundary
 export function SearchErrorFallback({ 
   error, 
-  resetErrorBoundary 
+  resetErrorBoundaryAction
 }: { 
   error: Error
-  resetErrorBoundary: () => void 
+  resetErrorBoundaryAction: () => void
 }) {
   return (
     <Card className="border-destructive">
@@ -74,7 +74,7 @@ export function SearchErrorFallback({
           Please check that your Algolia configuration is correct.
         </p>
         <Button
-          onClick={resetErrorBoundary}
+          onClick={resetErrorBoundaryAction}
           variant="outline"
           className="gap-2"
         >

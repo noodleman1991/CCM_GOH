@@ -40,6 +40,9 @@ interface Carousel1Props
 }
 
 export default function Carousel1({
+  title,
+  description,
+  background,
   padding,
   colorVariant,
   size = "one",
@@ -51,8 +54,21 @@ export default function Carousel1({
   const stegaSize = stegaClean(size) as CarouselSize;
 
   return (
-    <SectionContainer color={color} padding={padding}>
-      {images && images.length > 0 && (
+    <SectionContainer color={color} padding={padding} background={background}>
+      <div className="flex flex-col space-y-6">
+        {title && (
+          <div className="text-center">
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+              {title}
+            </h2>
+            {description && (
+              <p className="mt-4 text-lg text-muted-foreground">
+                {description}
+              </p>
+            )}
+          </div>
+        )}
+        {images && images.length > 0 && (
         <Carousel>
           <CarouselContent>
             {images.map((image, index) => (
@@ -100,7 +116,8 @@ export default function Carousel1({
             </div>
           )}
         </Carousel>
-      )}
+        )}
+      </div>
     </SectionContainer>
   );
 }

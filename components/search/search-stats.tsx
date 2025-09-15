@@ -23,18 +23,18 @@ export default function SearchStats() {
       <div>
         {areHitsSorted ? (
           <span>
-            <strong className="text-foreground">{formatNumber(nbSortedHits)}</strong> {t('relevant')} <strong className="text-foreground">{formatNumber(nbHits)}</strong>
+            <strong className="text-foreground">{formatNumber(nbSortedHits || 0)}</strong> {t('relevant')} <strong className="text-foreground">{formatNumber(nbHits || 0)}</strong>
           </span>
         ) : (
           <span>
-            <strong className="text-foreground">{formatNumber(nbHits)}</strong>{' '}
-            {nbHits === 1 ? t('result') : t('results')}
+            <strong className="text-foreground">{formatNumber(nbHits || 0)}</strong>{' '}
+            {(nbHits || 0) === 1 ? t('result') : t('results')}
           </span>
         )}
       </div>
       
       <div>
-        {t('foundIn')} {formatTime(processingTimeMS)}
+        {processingTimeMS !== undefined && t('foundIn')} {processingTimeMS !== undefined && formatTime(processingTimeMS)}
       </div>
     </div>
   )

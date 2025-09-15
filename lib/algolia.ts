@@ -46,11 +46,8 @@ export const searchClient = (() => {
       console.warn('Algolia search client not available - missing credentials')
       // Return a dummy client that won't crash but won't work
       return {
-        search: () => Promise.resolve({ hits: [], nbHits: 0 }),
+        search: () => Promise.resolve({ results: [{ hits: [], nbHits: 0 }] }),
         searchForFacetValues: () => Promise.resolve([]),
-        initIndex: () => ({
-          search: () => Promise.resolve({ hits: [], nbHits: 0 }),
-        }),
       } as any
     }
     return algoliasearch(
@@ -61,17 +58,14 @@ export const searchClient = (() => {
     console.error('Failed to initialize Algolia search client:', error)
     // Return dummy client
     return {
-      search: () => Promise.resolve({ hits: [], nbHits: 0 }),
+      search: () => Promise.resolve({ results: [{ hits: [], nbHits: 0 }] }),
       searchForFacetValues: () => Promise.resolve([]),
-      initIndex: () => ({
-        search: () => Promise.resolve({ hits: [], nbHits: 0 }),
-      }),
     } as any
   }
 })()
 
 // Type definitions for search records
-export interface UserSearchRecord {
+export interface UserSearchRecord extends Record<string, unknown> {
   objectID: string
   userId: string
   username: string
@@ -100,6 +94,55 @@ export interface UserSearchRecord {
   communityCount: number
   communities: string[]
   role: string
+}
+
+export interface CaseStudySearchRecord extends Record<string, unknown> {
+  objectID: string
+  contentId: string
+  title: { en: string; es?: string; fr?: string; ar?: string }
+  excerpt?: { en: string; es?: string; fr?: string; ar?: string }
+  slug: string
+  status: 'approved' | 'pending' | 'rejected'
+  featured: boolean
+  publishedAt: number
+  updatedAt: number
+  authors: Array<{
+    name: string
+    role: string
+    affiliation?: string
+  }>
+  tags: string[]
+  studyLocation?: {
+    lat: number
+    lng: number
+    name: string
+  }
+  studyPeriod?: {
+    startDate: string
+    endDate: string
+  }
+  organizations: string[]
+  language: string
+  accessLevel: 'public' | 'registered' | 'members'
+}
+
+export interface ReportSearchRecord extends Record<string, unknown> {
+  objectID: string
+  contentId: string
+  title: { en: string; es?: string; fr?: string; ar?: string }
+  subtitle?: { en: string; es?: string; fr?: string; ar?: string }
+  description?: { en: string; es?: string; fr?: string; ar?: string }
+  slug: string
+  reportType: string
+  year: number
+  publishDate: number
+  totalDownloadCount: number
+  featured: boolean
+  organizations: string[]
+  regionalCommunities: string[]
+  tags: string[]
+  accessLevel: 'public' | 'registered' | 'members'
+  language: string
 }
 
 export interface ContentSearchRecord {
@@ -196,7 +239,7 @@ export const INDEX_SETTINGS = {
     ],
     attributesForFaceting: [
       'workTypes',
-      'expertiseAreas', 
+      'expertiseAreas',
       'country',
       'role',
       'profileVisibility',
@@ -220,12 +263,91 @@ export const INDEX_SETTINGS = {
     attributesToHighlight: [
       'firstName',
       'lastName',
-      'username', 
+      'username',
       'bio',
       'organization',
       'position'
     ],
     attributesToSnippet: ['bio:20'],
+    hitsPerPage: 20,
+    maxValuesPerFacet: 100
+  },
+  case_studies: {
+    searchableAttributes: [
+      'unordered(title.en,title.es,title.fr,title.ar)',
+      'unordered(excerpt.en,excerpt.es,excerpt.fr,excerpt.ar)',
+      'unordered(authors.name)',
+      'unordered(tags)',
+      'unordered(organizations)'
+    ],
+    attributesForFaceting: [
+      'status',
+      'featured',
+      'tags',
+      'accessLevel',
+      'organizations',
+      'language',
+      'authors.role'
+    ],
+    customRanking: [
+      'desc(featured)',
+      'desc(publishedAt)'
+    ],
+    attributesToHighlight: [
+      'title.en',
+      'title.es',
+      'title.fr',
+      'title.ar',
+      'authors.name',
+      'tags'
+    ],
+    attributesToSnippet: [
+      'excerpt.en:30',
+      'excerpt.es:30',
+      'excerpt.fr:30',
+      'excerpt.ar:30'
+    ],
+    hitsPerPage: 20,
+    maxValuesPerFacet: 100
+  },
+  reports: {
+    searchableAttributes: [
+      'unordered(title.en,title.es,title.fr,title.ar)',
+      'unordered(subtitle.en,subtitle.es,subtitle.fr,subtitle.ar)',
+      'unordered(description.en,description.es,description.fr,description.ar)',
+      'unordered(organizations)',
+      'unordered(tags)',
+      'unordered(reportType)'
+    ],
+    attributesForFaceting: [
+      'reportType',
+      'year',
+      'featured',
+      'tags',
+      'accessLevel',
+      'organizations',
+      'regionalCommunities',
+      'language'
+    ],
+    customRanking: [
+      'desc(featured)',
+      'desc(totalDownloadCount)',
+      'desc(publishDate)'
+    ],
+    attributesToHighlight: [
+      'title.en',
+      'title.es',
+      'title.fr',
+      'title.ar',
+      'organizations',
+      'tags'
+    ],
+    attributesToSnippet: [
+      'description.en:30',
+      'description.es:30',
+      'description.fr:30',
+      'description.ar:30'
+    ],
     hitsPerPage: 20,
     maxValuesPerFacet: 100
   }

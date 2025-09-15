@@ -21,6 +21,8 @@ type Carousel2Props = Extract<
 >;
 
 export default function Carousel2({
+  title,
+  description,
   padding,
   colorVariant,
   testimonial,
@@ -29,7 +31,20 @@ export default function Carousel2({
 
   return (
     <SectionContainer color={color} padding={padding}>
-      {testimonial && testimonial.length > 0 && (
+      <div className="flex flex-col space-y-6">
+        {title && (
+          <div className="text-center">
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+              {title}
+            </h2>
+            {description && (
+              <p className="mt-4 text-lg text-muted-foreground">
+                {description}
+              </p>
+            )}
+          </div>
+        )}
+        {testimonial && testimonial.length > 0 && (
         <Carousel>
           <CarouselContent>
             {testimonial.map((item) => (
@@ -83,7 +98,8 @@ export default function Carousel2({
             <CarouselDots />
           </div>
         </Carousel>
-      )}
+        )}
+      </div>
     </SectionContainer>
   );
 }

@@ -33,7 +33,7 @@ const INDEX_SETTINGS = {
     ],
     attributesForFaceting: [
       'workTypes',
-      'expertiseAreas', 
+      'expertiseAreas',
       'country',
       'role',
       'profileVisibility',
@@ -57,12 +57,91 @@ const INDEX_SETTINGS = {
     attributesToHighlight: [
       'firstName',
       'lastName',
-      'username', 
+      'username',
       'bio',
       'organization',
       'position'
     ],
     attributesToSnippet: ['bio:20'],
+    hitsPerPage: 20,
+    maxValuesPerFacet: 100
+  },
+  case_studies: {
+    searchableAttributes: [
+      'unordered(title.en,title.es,title.fr,title.ar)',
+      'unordered(excerpt.en,excerpt.es,excerpt.fr,excerpt.ar)',
+      'unordered(authors.name)',
+      'unordered(tags)',
+      'unordered(organizations)'
+    ],
+    attributesForFaceting: [
+      'status',
+      'featured',
+      'tags',
+      'accessLevel',
+      'organizations',
+      'language',
+      'authors.role'
+    ],
+    customRanking: [
+      'desc(featured)',
+      'desc(publishedAt)'
+    ],
+    attributesToHighlight: [
+      'title.en',
+      'title.es',
+      'title.fr',
+      'title.ar',
+      'authors.name',
+      'tags'
+    ],
+    attributesToSnippet: [
+      'excerpt.en:30',
+      'excerpt.es:30',
+      'excerpt.fr:30',
+      'excerpt.ar:30'
+    ],
+    hitsPerPage: 20,
+    maxValuesPerFacet: 100
+  },
+  reports: {
+    searchableAttributes: [
+      'unordered(title.en,title.es,title.fr,title.ar)',
+      'unordered(subtitle.en,subtitle.es,subtitle.fr,subtitle.ar)',
+      'unordered(description.en,description.es,description.fr,description.ar)',
+      'unordered(organizations)',
+      'unordered(tags)',
+      'unordered(reportType)'
+    ],
+    attributesForFaceting: [
+      'reportType',
+      'year',
+      'featured',
+      'tags',
+      'accessLevel',
+      'organizations',
+      'regionalCommunities',
+      'language'
+    ],
+    customRanking: [
+      'desc(featured)',
+      'desc(totalDownloadCount)',
+      'desc(publishDate)'
+    ],
+    attributesToHighlight: [
+      'title.en',
+      'title.es',
+      'title.fr',
+      'title.ar',
+      'organizations',
+      'tags'
+    ],
+    attributesToSnippet: [
+      'description.en:30',
+      'description.es:30',
+      'description.fr:30',
+      'description.ar:30'
+    ],
     hitsPerPage: 20,
     maxValuesPerFacet: 100
   }
@@ -92,8 +171,10 @@ async function initializeSearch() {
 
     // Initialize users index
     console.log('⚙️  Setting up users index...')
-    const usersIndex = client.initIndex(ALGOLIA_INDICES.USERS)
-    await usersIndex.setSettings(INDEX_SETTINGS.users)
+    await client.setSettings({
+      indexName: ALGOLIA_INDICES.USERS,
+      indexSettings: INDEX_SETTINGS.users
+    })
     console.log('✅ Users index configured')
 
     // Initialize other indices (for future use)
@@ -106,11 +187,23 @@ async function initializeSearch() {
 
     for (const indexName of indicesToCreate) {
       console.log(`⚙️  Creating ${indexName} index...`)
-      const index = client.initIndex(indexName)
-      await index.setSettings({
+
+      let settings = {
         searchableAttributes: ['title', 'content', 'excerpt'],
         attributesForFaceting: ['contentType', 'categories', 'tags', 'language'],
         customRanking: ['desc(publishedAt)', 'desc(downloadCount)']
+      }
+
+      // Use specific settings for case studies and reports
+      if (indexName === ALGOLIA_INDICES.CASE_STUDIES) {
+        settings = INDEX_SETTINGS.case_studies
+      } else if (indexName === ALGOLIA_INDICES.REPORTS) {
+        settings = INDEX_SETTINGS.reports
+      }
+
+      await client.setSettings({
+        indexName,
+        indexSettings: settings
       })
       console.log(`✅ ${indexName} index created`)
     }
@@ -119,7 +212,9 @@ async function initializeSearch() {
     console.log('\nNext steps:')
     console.log('1. Run your application: npm run dev')
     console.log('2. Sync users to search: POST /api/search/users/sync with {"type": "full"}')
-    console.log('3. Visit /search to test the search functionality')
+    console.log('3. Sync case studies: POST /api/search/case-studies/sync with {"type": "full"}')
+    console.log('4. Sync reports: POST /api/search/reports/sync with {"type": "full"}')
+    console.log('5. Visit /search to test the search functionality')
 
   } catch (error) {
     console.error('❌ Failed to initialize search indices:', error)

@@ -22,11 +22,14 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    const usersIndex = algoliaClient.initIndex(ALGOLIA_INDICES.USERS)
+    // Algolia v5: No longer need to initIndex, use client directly
 
     if (action === 'delete') {
       // Remove user from search index
-      await usersIndex.deleteObject(userId)
+      await algoliaClient.deleteObject({
+        indexName: ALGOLIA_INDICES.USERS,
+        objectID: userId
+      })
       console.log(`🗑️ Removed user ${userId} from search index`)
       
       return NextResponse.json({
@@ -54,7 +57,10 @@ export async function POST(request: NextRequest) {
 
     if (!user) {
       // User doesn't exist, remove from index if present
-      await usersIndex.deleteObject(userId)
+      await algoliaClient.deleteObject({
+        indexName: ALGOLIA_INDICES.USERS,
+        objectID: userId
+      })
       return NextResponse.json({
         success: true,
         message: 'User not found, removed from index'
@@ -65,7 +71,10 @@ export async function POST(request: NextRequest) {
     if (shouldIndexUser(user)) {
       try {
         const record = transformUserForIndex(user)
-        await usersIndex.saveObject(record)
+        await algoliaClient.saveObject({
+          indexName: ALGOLIA_INDICES.USERS,
+          body: record
+        })
         
         console.log(`✅ Updated user ${userId} in search index`)
         
@@ -77,7 +86,10 @@ export async function POST(request: NextRequest) {
       } catch (error) {
         console.warn(`Failed to index user ${userId}: ${error}`)
         // Remove from index if transformation failed
-        await usersIndex.deleteObject(userId)
+        await algoliaClient.deleteObject({
+          indexName: ALGOLIA_INDICES.USERS,
+          objectID: userId
+        })
         
         return NextResponse.json({
           success: true,
@@ -88,7 +100,10 @@ export async function POST(request: NextRequest) {
       }
     } else {
       // User should not be indexed, remove if present
-      await usersIndex.deleteObject(userId)
+      await algoliaClient.deleteObject({
+        indexName: ALGOLIA_INDICES.USERS,
+        objectID: userId
+      })
       
       console.log(`🔒 Removed user ${userId} from search index (privacy settings)`)
       

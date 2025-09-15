@@ -5,6 +5,9 @@ export const carousel1Query = groq`
   _type == "carousel-1" => {
     _type,
     _key,
+    title,
+    description,
+    background,
     padding,
     colorVariant,
     size,
