@@ -111,7 +111,7 @@ export default function GridPost({ newsPost, featured, locale = "en", userId }: 
 
           {/* Subtitle */}
           {localizedSubtitle && (
-            <p className="text-muted-foreground text-sm leading-relaxed mb-2 sm:mb-3 line-clamp-2">
+            <p className="text-black text-sm leading-relaxed mb-2 sm:mb-3 line-clamp-2">
               {localizedSubtitle}
             </p>
           )}

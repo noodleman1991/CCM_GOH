@@ -19,7 +19,7 @@ export default function StyledPortableTextRenderer({
                                                    }: StyledPortableTextRendererProps) {
     const components: PortableTextComponents = {
         block: {
-            normal: ({ children }) => <p className={cn("mb-4 last:mb-0", isRTL && "text-right")}>{children}</p>,
+            normal: ({ children }) => <p className={cn("mb-4 last:mb-0 text-black", isRTL && "text-right")}>{children}</p>,
             h1: ({ children }) => <h1 className={cn("text-4xl font-bold mb-6", isRTL && "text-right")}>{children}</h1>,
             h2: ({ children }) => <h2 className={cn("text-3xl font-bold mb-5", isRTL && "text-right")}>{children}</h2>,
             h3: ({ children }) => <h3 className={cn("text-2xl font-bold mb-4", isRTL && "text-right")}>{children}</h3>,
@@ -34,12 +34,12 @@ export default function StyledPortableTextRenderer({
             ),
             // Custom styles
             lead: ({ children }) => (
-                <p className={cn("text-xl leading-relaxed text-muted-foreground mb-6", isRTL && "text-right")}>
+                <p className={cn("text-xl leading-relaxed text-black mb-6", isRTL && "text-right")}>
                     {children}
                 </p>
             ),
             caption: ({ children }) => (
-                <p className={cn("text-sm text-muted-foreground italic mb-2", isRTL && "text-right")}>
+                <p className={cn("text-sm italic text-black mb-2", isRTL && "text-right")}>
                     {children}
                 </p>
             ),

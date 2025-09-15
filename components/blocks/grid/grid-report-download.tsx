@@ -69,7 +69,7 @@ function DownloadButton({
             onClick={handleDownload}
             disabled={disabled || isDownloading}
             className={cn(
-                "gap-2 transition-all",
+                "gap-1 transition-all text-xs px-2 py-1.5 h-auto min-w-0 max-w-full overflow-hidden",
                 isDownloading && "animate-pulse",
                 error && "border-red-200 text-red-600"
             )}
@@ -77,16 +77,15 @@ function DownloadButton({
         >
             {isDownloading ? (
                 <>
-                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                    <span className="hidden sm:inline">Downloading...</span>
+                    <div className="h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent shrink-0" />
+                    <span className="truncate">Downloading...</span>
                 </>
             ) : (
                 <>
-                    <Download className="h-4 w-4" />
-                    <span className="hidden sm:inline">{languageDisplay}</span>
-                    <span className="sm:hidden">{file.language.toUpperCase()}</span>
+                    <Download className="h-3 w-3 shrink-0" />
+                    <span className="truncate">{languageDisplay}</span>
                     {fileSize && (
-                        <span className="hidden md:inline text-xs opacity-70">
+                        <span className="text-xs opacity-70 shrink-0 ml-1">
                             ({fileSize})
                         </span>
                     )}
@@ -119,12 +118,12 @@ export function DownloadSection({
     if (showDownloadButtons && hasFiles && canAccess) {
         return (
             <div className="w-full space-y-2">
-                <div className="flex items-center gap-1 text-xs text-muted-foreground mb-2">
+                <div className="flex items-center gap-1 text-xs text-muted-foreground mb-2 justify-start">
                     <FileDown className="h-3 w-3" />
                     <span>Available in {availableLanguages.length} language{availableLanguages.length !== 1 ? 's' : ''}</span>
                 </div>
 
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-col gap-2">
                     {availableLanguages.map(language => {
                         const file = getFileByLanguage(report, language);
                         if (!file) return null;
