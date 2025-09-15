@@ -191,7 +191,7 @@ export default function SearchResults({ type }: SearchResultsProps) {
     <div>
       <div className="space-y-4">
         {type === 'users' && hits.map((hit) => (
-          <UserResult key={hit.objectID} hit={hit as UserSearchRecord} />
+          <UserResult key={hit.objectID} hit={hit as unknown as UserSearchRecord} />
         ))}
       </div>
       

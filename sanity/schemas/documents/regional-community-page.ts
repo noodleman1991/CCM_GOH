@@ -66,6 +66,7 @@ export default defineType({
         { type: "grid-row" },
         { type: "carousel-1" },
         { type: "carousel-2" },
+        { type: "lived-experiences-carousel" },
         { type: "timeline-row" },
         { type: "cta-1" },
         { type: "logo-cloud-1" },
@@ -104,7 +105,7 @@ export default defineType({
             {
               name: "carousel",
               title: "Carousel",
-              of: ["carousel-1", "carousel-2"],
+              of: ["carousel-1", "carousel-2", "lived-experiences-carousel"],
             },
             {
               name: "timeline",

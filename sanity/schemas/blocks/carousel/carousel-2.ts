@@ -9,6 +9,17 @@ export default defineType({
   description: "A carousel of testimonials",
   fields: [
     defineField({
+      name: "title",
+      title: "Section Title",
+      type: "string",
+    }),
+    defineField({
+      name: "description",
+      title: "Section Description",
+      type: "text",
+      rows: 2,
+    }),
+    defineField({
       name: "padding",
       type: "section-padding",
     }),
@@ -32,12 +43,14 @@ export default defineType({
   ],
   preview: {
     select: {
-      title: "testimonial.0.name",
+      title: "title",
+      subtitle: "description",
+      testimonialName: "testimonial.0.name",
     },
-    prepare({ title }) {
+    prepare({ title, subtitle, testimonialName }) {
       return {
-        title: "Testimonials Carousel",
-        subtitle: title,
+        title: title || "Testimonials Carousel",
+        subtitle: subtitle || testimonialName || "Team testimonials",
       };
     },
   },

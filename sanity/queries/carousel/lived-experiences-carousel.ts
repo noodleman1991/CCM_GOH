@@ -1,5 +1,20 @@
 import { groq } from "next-sanity";
 
+// @sanity-typegen-ignore
+export const livedExperiencesCarouselBlockQuery = groq`
+  _type == "lived-experiences-carousel" => {
+    _type,
+    _key,
+    title,
+    subtitle,
+    background,
+    padding,
+    filterBy,
+    maxItems,
+    featured,
+  }
+`;
+
 export const livedExperiencesCarouselQuery = groq`
   *[_type == "livedExperience" &&
     (!defined($communities) || _id in *[_type == "regionalCommunity" && _id in $communities].members[].person._ref) &&

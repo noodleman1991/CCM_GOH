@@ -9,6 +9,23 @@ export default defineType({
   description: "A carousel of images",
   fields: [
     defineField({
+      name: "title",
+      title: "Section Title",
+      type: "string",
+    }),
+    defineField({
+      name: "description",
+      title: "Section Description",
+      type: "text",
+      rows: 2,
+    }),
+    defineField({
+      name: "background",
+      type: "background-option",
+      title: "Background",
+      description: "Choose a background for this carousel section",
+    }),
+    defineField({
       name: "padding",
       type: "section-padding",
     }),
@@ -68,12 +85,14 @@ export default defineType({
   ],
   preview: {
     select: {
-      title: "images.0.alt",
+      title: "title",
+      subtitle: "description",
+      imageAlt: "images.0.alt",
     },
-    prepare({ title }) {
+    prepare({ title, subtitle, imageAlt }) {
       return {
-        title: "Carousel",
-        subtitle: title,
+        title: title || "Carousel",
+        subtitle: subtitle || imageAlt || "Image carousel",
       };
     },
   },

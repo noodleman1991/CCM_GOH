@@ -21,6 +21,12 @@ export default defineType({
       type: "string",
     }),
     defineField({
+      name: "description",
+      title: "Description",
+      type: "text",
+      rows: 2,
+    }),
+    defineField({
       name: "images",
       type: "array",
       of: [
@@ -42,11 +48,12 @@ export default defineType({
   preview: {
     select: {
       title: "title",
+      subtitle: "description",
     },
-    prepare({ title }) {
+    prepare({ title, subtitle }) {
       return {
-        title: "Logo Cloud",
-        subtitle: title || "No Title",
+        title: title || "Logo Cloud",
+        subtitle: subtitle || "Partner logos",
       };
     },
   },
