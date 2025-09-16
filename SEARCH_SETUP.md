@@ -6,7 +6,7 @@ This guide walks you through setting up the complete search functionality with p
 
 ### 1. Environment Variables
 
-Add these to your `.env.local` file:
+Add these to your `.env` file:
 
 ```bash
 # Algolia Configuration (Required)

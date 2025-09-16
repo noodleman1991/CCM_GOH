@@ -131,7 +131,7 @@ function UserResult({ hit }: { hit: UserSearchRecord }) {
 }
 
 function SearchPagination() {
-  const { pages, currentRefinement, isFirstPage, isLastPage, refine } = usePagination()
+  const { pages, currentRefinement, isFirstPage, isLastPage, refine } = usePagination({}, { skipSuspense: true })
 
   if (pages.length <= 1) return null
 
@@ -173,7 +173,7 @@ function SearchPagination() {
 }
 
 export default function SearchResults({ type }: SearchResultsProps) {
-  const { hits } = useHits()
+  const { hits } = useHits({}, { skipSuspense: true })
   const t = useTranslations('search')
 
   if (hits.length === 0) {
