@@ -33,7 +33,7 @@ function FilterSection({ attribute, title, limit = 8, showMore = true }: FilterS
   })
 
   const [isOpen, setIsOpen] = useState(true)
-  const ft = useTranslations('search.filters')
+  const ft = useTranslations('search.filterOptions')
 
   if (items.length === 0) return null
 
@@ -118,7 +118,7 @@ function ClearFilters() {
 
 export default function SearchFilters() {
   const t = useTranslations('search')
-  const ft = useTranslations('search.filters')
+  const ft = useTranslations('search.filterOptions')
   
   return (
     <div className="space-y-4">

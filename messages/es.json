@@ -406,5 +406,41 @@
       "reviewNote": "Tu estudio de caso será revisado por nuestro equipo editorial multilingüe antes de la publicación.",
       "multilingualWelcome": "¡Bienvenido a nuestra comunidad global! Envía en cualquier idioma y ayúdanos a llegar a investigadores de todo el mundo."
     }
+  },
+  "search": {
+    "pageTitle": "Buscar",
+    "pageDescription": "Encontrar miembros de la comunidad, informes, publicaciones y estudios de caso",
+    "placeholder": "Buscar personas, contenido o expertise...",
+    "searchReports": "Buscar informes y documentos...",
+    "searchCaseStudies": "Buscar estudios de caso...",
+    "search": "Buscar",
+    "filters": "Filtros",
+    "results": "Resultados",
+    "noResults": "No se encontraron resultados",
+    "noResultsDescription": "Intenta ajustar tus términos de búsqueda o filtros",
+    "people": "Personas",
+    "reports": "Informes",
+    "posts": "Publicaciones",
+    "caseStudies": "Estudios de Caso",
+    "comingSoon": "Próximamente",
+    "reportsComingSoon": "Buscar a través de informes y documentos",
+    "postsComingSoon": "Buscar a través de publicaciones de blog y artículos",
+    "caseStudiesComingSoon": "Buscar a través de estudios de caso",
+    "filterOptions": {
+      "workType": "Tipo de Trabajo",
+      "expertise": "Áreas de Expertise",
+      "country": "País",
+      "communities": "Comunidades",
+      "role": "Rol",
+      "clearAll": "Limpiar todos los filtros",
+      "showMore": "Mostrar más",
+      "showLess": "Mostrar menos"
+    },
+    "stats": {
+      "results": "resultados",
+      "result": "resultado",
+      "relevant": "resultados relevantes de",
+      "foundIn": "Encontrado en"
+    }
   }
 }
