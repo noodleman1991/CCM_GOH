@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { getQueryMetadata, type QueryType, type DynamicQueryParams } from "@/lib/dynamic-queries-types";
 import { fetchDynamicContent } from "@/lib/dynamic-queries-client";
-import Blocks from "@/components/blocks/index";
+// Remove Blocks import - handle server components in parent
 import { ManualContentBlock } from "./inserts/manual-content-block";
 import { DynamicContentBlock } from "./inserts/dynamic-content-block";
 import { SeparatorBlock } from "./inserts/separator-block";
@@ -130,7 +130,7 @@ function ContentSection({ section, index, locale, userId, communitySlug }: Conte
         />
       );
 
-    // Handle existing block types
+    // Handle existing block types - these should be rendered by parent server component
     case "hero-1":
     case "hero-2":
     case "section-header":
@@ -145,14 +145,9 @@ function ContentSection({ section, index, locale, userId, communitySlug }: Conte
     case "faqs":
     case "form-newsletter":
     case "all-posts":
-      return (
-        <Blocks
-          blocks={[section as any]}
-          locale={locale}
-          userId={userId}
-          key={section._key}
-        />
-      );
+      // These blocks contain server-only code and should be handled by the parent server component
+      console.warn(`Server block type ${section._type} should be rendered by parent server component`);
+      return null;
 
     default:
       console.warn(`Unknown section type: ${section._type}`);

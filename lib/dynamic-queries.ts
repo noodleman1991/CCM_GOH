@@ -44,10 +44,7 @@ const QUERY_MAPPING = {
   recentCaseStudies: groq`
     *[_type == "caseStudy" &&
       status == "approved" &&
-      (
-        count(organizations[]->[references(*[_type == "regionalCommunity" && slug.current == $communitySlug][0]._id)]) > 0 ||
-        count(tags[]->[value in *[_type == "regionalCommunity" && slug.current == $communitySlug][0].name]) > 0
-      )
+      references(*[_type == "regionalCommunity" && slug.current == $communitySlug][0]._id)
     ] | order(publishedAt desc)[0...$count] {
       _id,
       title,
@@ -165,10 +162,7 @@ const QUERY_MAPPING = {
   featuredCaseStudies: groq`
     *[_type == "caseStudy" &&
       status == "approved" &&
-      (
-        count(organizations[]->[references(*[_type == "regionalCommunity" && slug.current == $communitySlug][0]._id)]) > 0 ||
-        count(tags[]->[value in *[_type == "regionalCommunity" && slug.current == $communitySlug][0].name]) > 0
-      )
+      references(*[_type == "regionalCommunity" && slug.current == $communitySlug][0]._id)
     ] | order(featured desc, publishedAt desc)[0...$count] {
       _id,
       title,

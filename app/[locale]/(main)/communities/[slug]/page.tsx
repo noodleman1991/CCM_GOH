@@ -3,7 +3,7 @@ import { fetchSanityRCPageBySlug, fetchRegionalCommunityReports } from '@/sanity
 import RegionalReportsGrid from '@/components/blocks/grid/regional-reports-grid';
 import { auth } from '@clerk/nextjs/server';
 import Blocks from '@/components/blocks/index'
-import ContentFlow from '@/components/blocks/content-flow';
+import HybridContentFlow from '@/components/blocks/hybrid-content-flow';
 import { notFound } from "next/navigation";
 
 
@@ -39,7 +39,7 @@ export default async function RegionalCommunityPage({
 
             {/* New content flow with structured foundation + strategic inserts */}
             {pageData.contentFlow && (
-                <ContentFlow
+                <HybridContentFlow
                     sections={pageData.contentFlow}
                     locale={locale}
                     userId={userId!}
