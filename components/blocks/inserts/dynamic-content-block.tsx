@@ -18,7 +18,7 @@ interface DynamicContentBlockProps {
     backgroundColor?: "none" | "light-gray" | "dark-gray" | "brand-primary" | "brand-secondary";
     padding?: "none" | "small" | "medium" | "large";
   };
-  data: any[] | null;
+  data: unknown[] | null;
   loading: boolean;
   error: string | null;
   locale: string;
@@ -130,7 +130,7 @@ export function DynamicContentBlock({
         </div>
 
         <div className={getGridClasses(section.displayStyle || "grid")}>
-          {data.map((item, index) => (
+          {data.map((item: any, index) => (
             <ContentCard
               key={item._id || index}
               item={item}
@@ -176,9 +176,8 @@ function ContentCard({
   type,
   displayStyle,
   locale,
-  userId
 }: {
-  item: any;
+  item: unknown;
   type: string;
   displayStyle: string;
   locale: string;
@@ -191,7 +190,7 @@ function ContentCard({
       return (
         <div className={cardClasses}>
           <NewsCard
-            post={item}
+            post={item as any}
             locale={locale}
             variant={displayStyle === "minimal" ? "minimal" : "default"}
           />
@@ -201,7 +200,7 @@ function ContentCard({
       return (
         <div className={cardClasses}>
           <CaseStudyCard
-            caseStudy={item}
+            caseStudy={item as any}
             locale={locale}
             variant={displayStyle === "minimal" ? "minimal" : "default"}
           />
@@ -211,7 +210,7 @@ function ContentCard({
       return (
         <div className={cardClasses}>
           <LivedExperienceCard
-            experience={item}
+            experience={item as any}
             locale={locale}
             variant={displayStyle === "minimal" ? "minimal" : "default"}
           />

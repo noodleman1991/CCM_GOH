@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 
 interface ManualContentBlockProps {
   title?: string;
-  content?: any[];
+  content?: unknown[];
   image?: {
     asset: {
       _ref: string;
@@ -18,7 +18,7 @@ interface ManualContentBlockProps {
   layout?: "left-image" | "right-image" | "full-width" | "content-above" | "image-above";
   backgroundColor?: "none" | "light-gray" | "dark-gray" | "brand-primary" | "brand-secondary";
   padding?: "none" | "small" | "medium" | "large";
-  locale: string;
+  locale?: string;
 }
 
 const backgroundClasses = {
@@ -43,7 +43,6 @@ export function ManualContentBlock({
   layout = "full-width",
   backgroundColor = "none",
   padding = "medium",
-  locale,
 }: ManualContentBlockProps) {
   const bgClass = backgroundClasses[backgroundColor] || "";
   const paddingClass = paddingClasses[padding] || "";
@@ -57,7 +56,7 @@ export function ManualContentBlock({
       )}
       {content && (
         <PortableText
-          value={content}
+          value={content as any}
           components={portableTextComponents}
         />
       )}

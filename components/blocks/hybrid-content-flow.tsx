@@ -1,8 +1,14 @@
 import Blocks from "@/components/blocks/index";
 import ContentFlow from "./content-flow";
 
+interface ContentSection {
+  _type: string;
+  _key: string;
+  [key: string]: unknown;
+}
+
 interface HybridContentFlowProps {
-  sections: any[];
+  sections: ContentSection[];
   locale: string;
   userId: string;
   communitySlug: string;
@@ -29,7 +35,7 @@ export default function HybridContentFlow({
           return (
             <Blocks
               key={key}
-              blocks={[section as any]}
+              blocks={[section as never]}
               locale={locale}
               userId={userId}
             />
