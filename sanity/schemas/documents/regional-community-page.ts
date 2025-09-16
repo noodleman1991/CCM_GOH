@@ -54,13 +54,15 @@ export default defineType({
           type: "hero-1",
           group: "content",
       }),
+    // Main content flow - structured foundation with strategic insertion points
     defineField({
-      name: "blocks",
+      name: "contentFlow",
       type: "array",
+      title: "Content Flow",
       group: "content",
+      description: "Add structured content blocks and custom inserts between fixed elements",
       of: [
-        { type: "hero-1" },
-        { type: "hero-2" },
+        // Core structured elements
         { type: "section-header" },
         { type: "split-row" },
         { type: "grid-row" },
@@ -73,64 +75,39 @@ export default defineType({
         { type: "faqs" },
         { type: "form-newsletter" },
         { type: "all-posts" },
+
+        // Strategic insertion blocks
+        { type: "manualContentInsert" },
+        { type: "dynamicContentInsert" },
+        { type: "separatorBlock" },
       ],
       options: {
         insertMenu: {
           groups: [
             {
-              name: "hero",
-              title: "Hero",
-              of: ["hero-1", "hero-2"],
-            },
-            {
-              name: "logo-cloud",
-              title: "Logo Cloud",
-              of: ["logo-cloud-1"],
-            },
-            {
-              name: "section-header",
-              title: "Section Header",
-              of: ["section-header"],
-            },
-            {
-              name: "grid",
-              title: "Grid",
-              of: ["grid-row"],
-            },
-            {
-              name: "split",
-              title: "Split",
-              of: ["split-row"],
+              name: "structure",
+              title: "Page Structure",
+              of: [
+                "section-header",
+                "split-row",
+                "grid-row",
+                "timeline-row",
+                "cta-1",
+                "logo-cloud-1",
+                "faqs",
+                "form-newsletter",
+                "all-posts"
+              ],
             },
             {
               name: "carousel",
-              title: "Carousel",
+              title: "Carousels",
               of: ["carousel-1", "carousel-2", "lived-experiences-carousel"],
             },
             {
-              name: "timeline",
-              title: "Timeline",
-              of: ["timeline-row"],
-            },
-            {
-              name: "cta",
-              title: "CTA",
-              of: ["cta-1"],
-            },
-            {
-              name: "faqs",
-              title: "FAQs",
-              of: ["faqs"],
-            },
-            {
-              name: "forms",
-              title: "Forms",
-              of: ["form-newsletter"],
-            },
-            {
-              name: "all-posts",
-              title: "All Posts",
-              of: ["all-posts"],
+              name: "inserts",
+              title: "Custom Inserts",
+              of: ["manualContentInsert", "dynamicContentInsert", "separatorBlock"],
             },
           ],
           views: [

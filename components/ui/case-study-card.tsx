@@ -36,7 +36,72 @@ interface CaseStudyCardProps {
     locale?: string;
 }
 
-export default function CaseStudyCard({
+// Wrapper component for dynamic content usage
+export function CaseStudyCard({
+  caseStudy,
+  locale,
+  variant = "default"
+}: {
+  caseStudy: any;
+  locale: string;
+  variant?: "default" | "minimal";
+}) {
+  if (!caseStudy) return null;
+
+  const href = `/${locale}/case-studies/${caseStudy.slug?.current}`;
+
+  if (variant === "minimal") {
+    return (
+      <Link href={href} className="group block">
+        <article className="space-y-2">
+          {caseStudy.image && (
+            <div className="aspect-video bg-gray-100 rounded-md overflow-hidden">
+              <Image
+                src={urlFor(caseStudy.image).width(400).height(225).url()}
+                alt={caseStudy.image.alt || ""}
+                width={400}
+                height={225}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+          )}
+          <div>
+            <h3 className="font-semibold text-sm line-clamp-2 group-hover:text-primary transition-colors">
+              {getLocalizedValue(caseStudy.title, locale)}
+            </h3>
+            {caseStudy.publishedAt && (
+              <p className="text-xs text-muted-foreground mt-1">
+                {formatDate(caseStudy.publishedAt)}
+              </p>
+            )}
+          </div>
+        </article>
+      </Link>
+    );
+  }
+
+  return (
+    <Link href={href} className="group block h-full">
+      <CaseStudyCardComponent
+        title={caseStudy.title}
+        excerpt={caseStudy.excerpt}
+        image={caseStudy.image}
+        tags={caseStudy.tags?.map((tag: any) => ({
+          title: { [locale]: tag.label },
+          color: tag.color
+        }))}
+        authors={caseStudy.authors}
+        publishedAt={caseStudy.publishedAt}
+        locale={locale}
+        featured={caseStudy.featured}
+      />
+    </Link>
+  );
+}
+
+import Link from "next/link";
+
+export default function CaseStudyCardComponent({
                                           title,
                                           subtitle,
                                           excerpt,
