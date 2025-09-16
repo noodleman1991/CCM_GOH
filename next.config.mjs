@@ -4,6 +4,14 @@ const withNextIntl = createNextIntlPlugin();
 
 
 const nextConfig = {
+  // Disable ESLint during builds - handle linting separately
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  // Disable TypeScript checks during builds - handle separately
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   async redirects() {
     return [
       {

@@ -6,7 +6,7 @@ import { type QueryType, type DynamicQueryParams } from "@/lib/dynamic-queries-t
 export async function fetchDynamicContent(
   queryType: QueryType,
   params: DynamicQueryParams
-): Promise<any[] | null> {
+): Promise<unknown[] | null> {
   try {
     const searchParams = new URLSearchParams({
       queryType,

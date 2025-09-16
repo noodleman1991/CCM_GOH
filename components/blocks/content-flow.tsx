@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getQueryMetadata, type QueryType, type DynamicQueryParams } from "@/lib/dynamic-queries-types";
+import type { QueryType } from "@/lib/dynamic-queries-types";
 import { fetchDynamicContent } from "@/lib/dynamic-queries-client";
 // Remove Blocks import - handle server components in parent
 import { ManualContentBlock } from "./inserts/manual-content-block";
@@ -9,7 +9,7 @@ import { DynamicContentBlock } from "./inserts/dynamic-content-block";
 import { SeparatorBlock } from "./inserts/separator-block";
 
 interface ContentFlowProps {
-  sections: any[];
+  sections: ContentSection[];
   locale: string;
   userId: string;
   communitySlug: string;
@@ -28,11 +28,11 @@ interface ContentSection {
   backgroundColor?: "none" | "light-gray" | "dark-gray" | "brand-primary" | "brand-secondary";
   padding?: "none" | "small" | "medium" | "large";
   // Manual content insert properties
-  content?: any[];
-  image?: any;
+  content?: unknown[];
+  image?: unknown;
   layout?: "left-image" | "right-image" | "full-width" | "content-above" | "image-above";
   // Other block properties
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export default function ContentFlow({ sections, locale, userId, communitySlug }: ContentFlowProps) {
@@ -46,7 +46,6 @@ export default function ContentFlow({ sections, locale, userId, communitySlug }:
         <ContentSection
           key={section._key || `section-${index}`}
           section={section}
-          index={index}
           locale={locale}
           userId={userId}
           communitySlug={communitySlug}
@@ -58,14 +57,13 @@ export default function ContentFlow({ sections, locale, userId, communitySlug }:
 
 interface ContentSectionProps {
   section: ContentSection;
-  index: number;
   locale: string;
   userId: string;
   communitySlug: string;
 }
 
-function ContentSection({ section, index, locale, userId, communitySlug }: ContentSectionProps) {
-  const [dynamicData, setDynamicData] = useState<any>(null);
+function ContentSection({ section, locale, userId, communitySlug }: ContentSectionProps) {
+  const [dynamicData, setDynamicData] = useState<unknown[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -102,8 +100,12 @@ function ContentSection({ section, index, locale, userId, communitySlug }: Conte
     case "manualContentInsert":
       return (
         <ManualContentBlock
-          {...section}
-          locale={locale}
+          title={section.title as string}
+          content={section.content as unknown[]}
+          image={section.image as any}
+          layout={section.layout as "left-image" | "right-image" | "full-width" | "content-above" | "image-above"}
+          backgroundColor={section.backgroundColor as "none" | "light-gray" | "dark-gray" | "brand-primary" | "brand-secondary"}
+          padding={section.padding as "none" | "small" | "medium" | "large"}
           key={section._key}
         />
       );
