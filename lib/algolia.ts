@@ -1,10 +1,20 @@
 import { algoliasearch } from 'algoliasearch'
 
+// Load environment variables (for Node.js contexts outside Next.js)
+if (typeof window === 'undefined' && !process.env.VERCEL) {
+  require('dotenv').config()
+}
+
+// Ensure environment variables are available for Next.js client-side
+const ALGOLIA_APP_ID = process.env.ALGOLIA_APP_ID || process.env.NEXT_PUBLIC_ALGOLIA_APP_ID
+const ALGOLIA_API_KEY = process.env.ALGOLIA_API_KEY || process.env.NEXT_PUBLIC_ALGOLIA_API_KEY
+const ALGOLIA_SEARCH_KEY = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY
+
 // Environment validation
 const requiredEnvVars = {
-  ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID,
-  ALGOLIA_API_KEY: process.env.ALGOLIA_API_KEY,
-  NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY: process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY,
+  ALGOLIA_APP_ID: ALGOLIA_APP_ID,
+  ALGOLIA_API_KEY: ALGOLIA_API_KEY,
+  NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY: ALGOLIA_SEARCH_KEY,
 }
 
 // Check for missing environment variables
@@ -19,11 +29,11 @@ if (missingVars.length > 0) {
 // Create the Algolia client with error handling
 export const algoliaClient = (() => {
   try {
-    if (!process.env.ALGOLIA_APP_ID || !process.env.ALGOLIA_API_KEY) {
+    if (!ALGOLIA_APP_ID || !ALGOLIA_API_KEY) {
       console.warn('Algolia admin client not available - missing credentials')
       return null
     }
-    return algoliasearch(process.env.ALGOLIA_APP_ID, process.env.ALGOLIA_API_KEY)
+    return algoliasearch(ALGOLIA_APP_ID, ALGOLIA_API_KEY)
   } catch (error) {
     console.error('Failed to initialize Algolia admin client:', error)
     return null
@@ -42,18 +52,19 @@ export const ALGOLIA_INDICES = {
 // Search client for frontend (uses search-only API key)
 export const searchClient = (() => {
   try {
-    if (!process.env.ALGOLIA_APP_ID || !process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY) {
-      console.warn('Algolia search client not available - missing credentials')
+    if (!ALGOLIA_APP_ID || !ALGOLIA_SEARCH_KEY) {
+      console.warn('Algolia search client not available - missing credentials', {
+        appId: !!ALGOLIA_APP_ID,
+        searchKey: !!ALGOLIA_SEARCH_KEY
+      })
       // Return a dummy client that won't crash but won't work
       return {
         search: () => Promise.resolve({ results: [{ hits: [], nbHits: 0 }] }),
         searchForFacetValues: () => Promise.resolve([]),
       } as any
     }
-    return algoliasearch(
-      process.env.ALGOLIA_APP_ID,
-      process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY
-    )
+    console.log('✅ Algolia search client initialized successfully')
+    return algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY)
   } catch (error) {
     console.error('Failed to initialize Algolia search client:', error)
     // Return dummy client

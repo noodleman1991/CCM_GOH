@@ -6,7 +6,7 @@
  */
 
 const { algoliasearch } = require('algoliasearch')
-require('dotenv').config({ path: '.env.local' })
+require('dotenv').config()
 
 const ALGOLIA_INDICES = {
   USERS: 'users',

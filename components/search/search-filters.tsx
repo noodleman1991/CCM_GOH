@@ -30,7 +30,7 @@ function FilterSection({ attribute, title, limit = 8, showMore = true }: FilterS
     limit,
     showMore,
     sortBy: ['count:desc', 'name:asc']
-  })
+  }, { skipSuspense: true })
 
   const [isOpen, setIsOpen] = useState(true)
   const ft = useTranslations('search.filterOptions')
@@ -98,7 +98,7 @@ function FilterSection({ attribute, title, limit = 8, showMore = true }: FilterS
 }
 
 function ClearFilters() {
-  const { refine, canRefine } = useClearRefinements()
+  const { refine, canRefine } = useClearRefinements({}, { skipSuspense: true })
   const t = useTranslations('search.filters')
 
   if (!canRefine) return null
