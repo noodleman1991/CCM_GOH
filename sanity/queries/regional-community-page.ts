@@ -14,6 +14,9 @@ import { logoCloud1Query } from "./logo-cloud/logo-cloud-1";
 import { faqsQuery } from "./faqs";
 import { formNewsletterQuery } from "./forms/newsletter";
 import { allPostsQuery } from "./all-posts";
+import { manualContentInsertQuery } from "./inserts/manual-content-insert";
+import { dynamicContentInsertQuery } from "./inserts/dynamic-content-insert";
+import { separatorBlockQuery } from "./inserts/separator-block";
 
 export const REGIONAL_COMMUNITY_PAGE_QUERY = groq`
   *[_type == "regionalCommunityPage" && slug.current == $slug && language == $language][0]{
@@ -27,7 +30,7 @@ export const REGIONAL_COMMUNITY_PAGE_QUERY = groq`
     listHero {
       ${hero1Query}
     },
-    blocks[]{
+    contentFlow[]{
       ${hero1Query},
       ${hero2Query},
       ${sectionHeaderQuery},
@@ -41,7 +44,10 @@ export const REGIONAL_COMMUNITY_PAGE_QUERY = groq`
       ${logoCloud1Query},
       ${faqsQuery},
       ${formNewsletterQuery},
-      ${allPostsQuery}
+      ${allPostsQuery},
+      ${manualContentInsertQuery},
+      ${dynamicContentInsertQuery},
+      ${separatorBlockQuery}
     },
     // Get related regional community for reports
     "regionalCommunity": *[_type == "regionalCommunity" && slug.current == $slug][0]{

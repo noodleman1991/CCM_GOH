@@ -57,6 +57,11 @@ import faqs from "./schemas/blocks/faqs";
 import newsletter from "./schemas/blocks/forms/newsletter";
 import allPosts from "./schemas/blocks/all-posts";
 
+// Insert blocks for structured content pattern
+import manualContentInsert from "./schemas/blocks/inserts/manual-content-insert";
+import dynamicContentInsert from "./schemas/blocks/inserts/dynamic-content-insert";
+import separatorBlock from "./schemas/blocks/inserts/separator-block";
+
 export const schema: { types: SchemaTypeDefinition[] } = {
     types: [
         // documents
@@ -112,5 +117,9 @@ export const schema: { types: SchemaTypeDefinition[] } = {
         faqs,
         newsletter,
         allPosts,
+        // insert blocks
+        manualContentInsert,
+        dynamicContentInsert,
+        separatorBlock,
     ],
 };

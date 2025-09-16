@@ -3,6 +3,7 @@ import { fetchSanityRCPageBySlug, fetchRegionalCommunityReports } from '@/sanity
 import RegionalReportsGrid from '@/components/blocks/grid/regional-reports-grid';
 import { auth } from '@clerk/nextjs/server';
 import Blocks from '@/components/blocks/index'
+import ContentFlow from '@/components/blocks/content-flow';
 import { notFound } from "next/navigation";
 
 
@@ -36,32 +37,47 @@ export default async function RegionalCommunityPage({
                 />
             )}
 
-            {/* Your existing first two blocks */}
-            {pageData.blocks?.slice(0, 2) && (
-                <Blocks
-                    blocks={pageData.blocks.slice(0, 2)}
+            {/* New content flow with structured foundation + strategic inserts */}
+            {pageData.contentFlow && (
+                <ContentFlow
+                    sections={pageData.contentFlow}
                     locale={locale}
                     userId={userId!}
+                    communitySlug={slug}
                 />
             )}
 
-            <RegionalReportsGrid
-                reports={reportsData || []}
-                regionalCommunitySlug={slug}
-                locale={locale.toString()}
-                userId={userId!}
-                showHeader={true}
-                showViewAllButton={true}
-                maxReports={6}
-            />
+            {/* Fallback to old blocks if contentFlow doesn't exist (backward compatibility) */}
+            {!pageData.contentFlow && pageData.blocks && (
+                <>
+                    {/* First two blocks */}
+                    {pageData.blocks.slice(0, 2) && (
+                        <Blocks
+                            blocks={pageData.blocks.slice(0, 2)}
+                            locale={locale}
+                            userId={userId!}
+                        />
+                    )}
 
-            {/* Your existing remaining blocks */}
-            {pageData.blocks?.slice(2) && (
-                <Blocks
-                    blocks={pageData.blocks.slice(2)}
-                    locale={locale}
-                    userId={userId!}
-                />
+                    <RegionalReportsGrid
+                        reports={reportsData || []}
+                        regionalCommunitySlug={slug}
+                        locale={locale.toString()}
+                        userId={userId!}
+                        showHeader={true}
+                        showViewAllButton={true}
+                        maxReports={6}
+                    />
+
+                    {/* Remaining blocks */}
+                    {pageData.blocks.slice(2) && (
+                        <Blocks
+                            blocks={pageData.blocks.slice(2)}
+                            locale={locale}
+                            userId={userId!}
+                        />
+                    )}
+                </>
             )}
 
             {/* Your existing listHero */}

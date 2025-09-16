@@ -230,3 +230,37 @@ export default function StyledPortableTextRenderer({
 
     return <PortableText value={value} components={components} />;
 }
+
+// Export the components for reuse
+export const portableTextComponents: PortableTextComponents = {
+    block: {
+        normal: ({ children }) => <p className="mb-4 last:mb-0 text-black">{children}</p>,
+        h1: ({ children }) => <h1 className="text-4xl font-bold mb-6">{children}</h1>,
+        h2: ({ children }) => <h2 className="text-3xl font-bold mb-5">{children}</h2>,
+        h3: ({ children }) => <h3 className="text-2xl font-bold mb-4">{children}</h3>,
+        h4: ({ children }) => <h4 className="text-xl font-bold mb-3">{children}</h4>,
+        blockquote: ({ children }) => (
+            <blockquote className="border-l-4 border-primary pl-6 pr-4 py-2 my-6 italic bg-muted/50 rounded-r-lg">
+                {children}
+            </blockquote>
+        ),
+    },
+    list: {
+        bullet: ({ children }) => <ul className="list-disc pl-6 mb-4 space-y-1">{children}</ul>,
+        number: ({ children }) => <ol className="list-decimal pl-6 mb-4 space-y-1">{children}</ol>,
+    },
+    listItem: {
+        bullet: ({ children }) => <li className="text-black">{children}</li>,
+        number: ({ children }) => <li className="text-black">{children}</li>,
+    },
+    marks: {
+        strong: ({ children }) => <strong className="font-bold">{children}</strong>,
+        em: ({ children }) => <em className="italic">{children}</em>,
+        code: ({ children }) => <code className="bg-muted px-1 py-0.5 rounded text-sm font-mono">{children}</code>,
+        link: ({ children, value }) => (
+            <Link href={value?.href || "#"} className="text-primary hover:underline">
+                {children}
+            </Link>
+        ),
+    },
+};
