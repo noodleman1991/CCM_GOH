@@ -7,6 +7,7 @@ import { useTranslations, useLocale } from "next-intl"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { cn } from "@/lib/utils"
 import { rtlLocales } from "@/i18n/routing"
 import type { OnboardingFormData } from "@/lib/schemas/onboarding-schema"
@@ -49,11 +50,11 @@ export function BasicInfoPanel({ form, content }: BasicInfoPanelProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="flex items-center gap-1">
-                  {content?.fieldLabels?.firstName || t("firstName")}
+                  {content?.fieldLabels?.basicInfo?.firstName || t("firstName")}
                   <span className="text-red-500">*</span>
                 </FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder={content?.fieldPlaceholders?.firstName || t("firstNamePlaceholder")} />
+                  <Input {...field} placeholder={content?.fieldLabels?.basicInfo?.firstNamePlaceholder || t("firstNamePlaceholder")} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -65,11 +66,11 @@ export function BasicInfoPanel({ form, content }: BasicInfoPanelProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="flex items-center gap-1">
-                  {content?.fieldLabels?.lastName || t("lastName")}
+                  {content?.fieldLabels?.basicInfo?.lastName || t("lastName")}
                   <span className="text-red-500">*</span>
                 </FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder={content?.fieldPlaceholders?.lastName || t("lastNamePlaceholder")} />
+                  <Input {...field} placeholder={content?.fieldLabels?.basicInfo?.lastNamePlaceholder || t("lastNamePlaceholder")} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -84,11 +85,11 @@ export function BasicInfoPanel({ form, content }: BasicInfoPanelProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel className="flex items-center gap-1">
-                {content?.fieldLabels?.username || t("username")}
+                {content?.fieldLabels?.basicInfo?.username || t("username")}
                 <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
-                <Input {...field} placeholder={content?.fieldPlaceholders?.username || t("usernamePlaceholder")} />
+                <Input {...field} placeholder={content?.fieldLabels?.basicInfo?.usernamePlaceholder || t("usernamePlaceholder")} />
               </FormControl>
               <FormDescription>
                 {content?.basicInfoFieldHints?.usernameHint || t("usernameHint")}
@@ -104,9 +105,9 @@ export function BasicInfoPanel({ form, content }: BasicInfoPanelProps) {
           name="basicInfo.bio"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{content?.fieldLabels?.bio || t("bio")}</FormLabel>
+              <FormLabel>{content?.fieldLabels?.basicInfo?.bio || t("bio")}</FormLabel>
               <FormControl>
-                <Textarea {...field} rows={3} placeholder={content?.fieldPlaceholders?.bio || t("bioPlaceholder")} />
+                <Textarea {...field} rows={3} placeholder={content?.fieldLabels?.basicInfo?.bioPlaceholder || t("bioPlaceholder")} />
               </FormControl>
               <FormDescription>
                 {content?.basicInfoFieldHints?.bioHint || t("bioHint")}
@@ -122,17 +123,18 @@ export function BasicInfoPanel({ form, content }: BasicInfoPanelProps) {
           name="basicInfo.ageGroup"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{content?.fieldLabels?.ageGroup || t("ageGroup")}</FormLabel>
-              <FormControl>
-                <select
-                  {...field}
-                  className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  <option value="">{content?.fieldPlaceholders?.ageGroup || t("selectAge")}</option>
-                  <option value="UNDER_18">{content?.fieldOptions?.under18 || t("under18")}</option>
-                  <option value="ABOVE_18">{content?.fieldOptions?.above18 || t("above18")}</option>
-                </select>
-              </FormControl>
+              <FormLabel>{content?.fieldLabels?.basicInfo?.ageGroup || t("ageGroup")}</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder={content?.fieldLabels?.basicInfo?.selectAge || t("selectAge")} />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="UNDER_18">{content?.fieldLabels?.basicInfo?.under18 || t("under18")}</SelectItem>
+                  <SelectItem value="ABOVE_18">{content?.fieldLabels?.basicInfo?.above18 || t("above18")}</SelectItem>
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
@@ -146,11 +148,11 @@ export function BasicInfoPanel({ form, content }: BasicInfoPanelProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="flex items-center gap-1">
-                  {content?.fieldLabels?.country || t("country")}
+                  {content?.fieldLabels?.basicInfo?.country || t("country")}
                   <span className="text-red-500">*</span>
                 </FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder={content?.fieldPlaceholders?.country || t("countryPlaceholder")} />
+                  <Input {...field} placeholder={content?.fieldLabels?.basicInfo?.countryPlaceholder || t("countryPlaceholder")} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -162,11 +164,11 @@ export function BasicInfoPanel({ form, content }: BasicInfoPanelProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="flex items-center gap-1">
-                  {content?.fieldLabels?.city || t("city")}
+                  {content?.fieldLabels?.basicInfo?.city || t("city")}
                   <span className="text-red-500">*</span>
                 </FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder={content?.fieldPlaceholders?.city || t("cityPlaceholder")} />
+                  <Input {...field} placeholder={content?.fieldLabels?.basicInfo?.cityPlaceholder || t("cityPlaceholder")} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -180,19 +182,21 @@ export function BasicInfoPanel({ form, content }: BasicInfoPanelProps) {
           name="basicInfo.preferredLanguage"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{content?.fieldLabels?.preferredLanguage || t("preferredLanguage")}</FormLabel>
-              <FormControl>
-                <select
-                  {...field}
-                  className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                >
+              <FormLabel>{content?.fieldLabels?.basicInfo?.preferredLanguage || t("preferredLanguage")}</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder={content?.fieldLabels?.basicInfo?.preferredLanguage || t("preferredLanguage")} />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
                   {languageOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
+                    <SelectItem key={option.value} value={option.value}>
                       {option.label}
-                    </option>
+                    </SelectItem>
                   ))}
-                </select>
-              </FormControl>
+                </SelectContent>
+              </Select>
               <FormDescription>
                 {content?.basicInfoFieldHints?.languageHint || t("languageHint")}
               </FormDescription>

@@ -116,7 +116,7 @@ export function RecentWorkPanel({ form, content }: RecentWorkPanelProps) {
       {/* Existing Work Items */}
       {fields.length > 0 && (
         <div className="space-y-4">
-          <h3 className="text-lg font-medium">{content?.fieldLabels?.yourWork || t("yourWork")}</h3>
+          <h3 className="text-lg font-medium">{content?.fieldLabels?.recentWork?.yourWork || t("yourWork")}</h3>
           {fields.map((item: any, index: number) => (
             <Card key={item.id}>
               <CardHeader className="pb-3">
@@ -176,14 +176,14 @@ export function RecentWorkPanel({ form, content }: RecentWorkPanelProps) {
       <Card>
         <CardHeader>
           <CardTitle>
-            {editingIndex !== null ? (content?.fieldLabels?.editWork || t("editWork")) : (content?.fieldLabels?.addWork || t("addWork"))}
+            {editingIndex !== null ? (content?.fieldLabels?.recentWork?.editWork || t("editWork")) : (content?.fieldLabels?.recentWork?.addWork || t("addWork"))}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="text-sm font-medium flex items-center gap-1">
-                {content?.fieldLabels?.workTitle || t("workTitle")}
+                {content?.fieldLabels?.recentWork?.workTitle || t("workTitle")}
                 <span className="text-red-500">*</span>
               </label>
               <Input
@@ -193,7 +193,7 @@ export function RecentWorkPanel({ form, content }: RecentWorkPanelProps) {
               />
             </div>
             <div>
-              <label className="text-sm font-medium">{content?.fieldLabels?.projectLink || t("projectLink")}</label>
+              <label className="text-sm font-medium">{content?.fieldLabels?.recentWork?.projectLink || t("projectLink")}</label>
               <Input
                 value={formData.link}
                 onChange={(e) => setFormData({ ...formData, link: e.target.value })}
@@ -205,7 +205,7 @@ export function RecentWorkPanel({ form, content }: RecentWorkPanelProps) {
 
           <div>
             <label className="text-sm font-medium flex items-center gap-1">
-              {content?.fieldLabels?.description || t("description")}
+              {content?.fieldLabels?.recentWork?.description || t("description")}
               <span className="text-red-500">*</span>
             </label>
             <Textarea
@@ -219,7 +219,7 @@ export function RecentWorkPanel({ form, content }: RecentWorkPanelProps) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="text-sm font-medium flex items-center gap-1">
-                {content?.fieldLabels?.startDate || t("startDate")}
+                {content?.fieldLabels?.recentWork?.startDate || t("startDate")}
                 <span className="text-red-500">*</span>
               </label>
               <Input
@@ -230,7 +230,7 @@ export function RecentWorkPanel({ form, content }: RecentWorkPanelProps) {
             </div>
             <div>
               <label className="text-sm font-medium">
-                {content?.fieldLabels?.endDate || t("endDate")}
+                {content?.fieldLabels?.recentWork?.endDate || t("endDate")}
                 {!formData.isOngoing && <span className="text-red-500 ml-1">*</span>}
               </label>
               <Input
@@ -253,7 +253,7 @@ export function RecentWorkPanel({ form, content }: RecentWorkPanelProps) {
               })}
             />
             <label htmlFor="ongoing" className="text-sm font-medium">
-              {content?.fieldLabels?.ongoingProject || t("ongoingProject")}
+              {content?.fieldLabels?.recentWork?.ongoingProject || t("ongoingProject")}
             </label>
           </div>
 
@@ -263,7 +263,7 @@ export function RecentWorkPanel({ form, content }: RecentWorkPanelProps) {
               onClick={handleSave}
               disabled={!isFormValid}
             >
-              {editingIndex !== null ? (content?.fieldLabels?.updateWork || t("updateWork")) : (content?.fieldLabels?.addWork || t("addWork"))}
+              {editingIndex !== null ? (content?.fieldLabels?.recentWork?.updateWork || t("updateWork")) : (content?.fieldLabels?.recentWork?.addWork || t("addWork"))}
             </Button>
             {editingIndex !== null && (
               <Button
@@ -271,7 +271,7 @@ export function RecentWorkPanel({ form, content }: RecentWorkPanelProps) {
                 variant="outline"
                 onClick={resetForm}
               >
-                {content?.fieldLabels?.cancel || t("cancel")}
+                {content?.fieldLabels?.recentWork?.cancel || t("cancel")}
               </Button>
             )}
           </div>
@@ -280,8 +280,8 @@ export function RecentWorkPanel({ form, content }: RecentWorkPanelProps) {
 
       {fields.length === 0 && (
         <div className="text-center py-8 text-muted-foreground">
-          <p>{content?.fieldLabels?.noWorkAdded || t("noWorkAdded")}</p>
-          <p className="text-sm">{content?.fieldLabels?.addWorkHint || t("addWorkHint")}</p>
+          <p>{content?.fieldLabels?.recentWork?.noWorkAdded || t("noWorkAdded")}</p>
+          <p className="text-sm">{content?.fieldLabels?.recentWork?.addWorkHint || t("addWorkHint")}</p>
         </div>
       )}
     </div>

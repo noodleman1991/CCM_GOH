@@ -236,21 +236,21 @@ export default defineType({
             approved?: boolean;
             sourceType?: SourceType;
         }) {
-            const typeEmoji = {
-                news: "📰",
-                research: "🔬",
-                blog: "📝",
-                report: "📊",
-                press: "📢",
-                policy: "📋",
-                other: "📄",
+            const typeLabels = {
+                news: "News",
+                research: "Research",
+                blog: "Blog",
+                report: "Report",
+                press: "Press",
+                policy: "Policy",
+                other: "Other",
             };
 
             return {
                 title: title || "Untitled Source",
-                subtitle: `${approved ? '✓' : '⏳'} ${
-                    sourceType && typeEmoji[sourceType] ? typeEmoji[sourceType] : '📄'
-                } ${publisher || 'Unknown'} | ${
+                subtitle: `${approved ? 'Approved' : 'Pending'} | ${
+                    sourceType && typeLabels[sourceType] ? typeLabels[sourceType] : 'Other'
+                } | ${publisher || 'Unknown'} | ${
                     sourceUrl ? new URL(sourceUrl).hostname : 'No URL'
                 }`,
                 media,

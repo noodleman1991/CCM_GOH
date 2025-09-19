@@ -129,11 +129,11 @@ export default defineType({
     },
     prepare({ title, layout, media }) {
       const layoutLabels = {
-        "left-image": "📖 Left Image",
-        "right-image": "📙 Right Image",
-        "full-width": "📄 Full Width",
-        "content-above": "📑 Content Above",
-        "image-above": "🖼️ Image Above",
+        "left-image": "Left Image",
+        "right-image": "Right Image",
+        "full-width": "Full Width",
+        "content-above": "Content Above",
+        "image-above": "Image Above",
       };
 
       return {

@@ -45,7 +45,7 @@ export function AdminOnlyKeyInput(props: AdminOnlyKeyInputProps) {
           </Text>
           <Code size={1}>{value || '(no value)'}</Code>
           <Text size={1}>
-            ⚠️ This key value must match the corresponding Prisma enum values.
+            This key value must match the corresponding Prisma enum values.
             Changes require database migration and developer coordination.
           </Text>
         </Stack>
@@ -65,13 +65,13 @@ export function AdminOnlyKeyInput(props: AdminOnlyKeyInputProps) {
           <Stack space={3}>
             <Stack space={2}>
               <WarningOutlineIcon />
-              <Text weight="semibold">⚠️ Developer Coordination Required</Text>
+              <Text weight="semibold">Developer Coordination Required</Text>
             </Stack>
             <Text size={1}>
               New {schemaType.title?.toLowerCase() || 'items'} will be <strong>inactive</strong> until a developer runs the sync process.
             </Text>
             <Text size={1}>
-              📋 Next steps:
+              Next steps:
               <br />1. Save this {schemaType.title?.toLowerCase() || 'item'} with all translations
               <br />2. Notify your development team
               <br />3. Developer runs: <code>pnpm sanity:sync migrate-enums</code>
@@ -92,7 +92,7 @@ export function AdminOnlyKeyInput(props: AdminOnlyKeyInputProps) {
       />
       <Card padding={2} tone="caution" border>
         <Stack space={2}>
-          <Text size={1} weight="semibold">⚠️ Admin Warning</Text>
+          <Text size={1} weight="semibold">Admin Warning</Text>
           <Text size={1}>
             This key must match Prisma enum values exactly. Changing this value requires:
           </Text>

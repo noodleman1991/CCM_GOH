@@ -20,7 +20,7 @@ export default async function OnboardingLayout({ children }: { children: React.R
     const clerkOnboardingComplete = sessionClaims?.metadata?.onboardingComplete === true
 
     if (user?.onboardingCompleted || clerkOnboardingComplete) {
-        redirect('/')
+        redirect('/account')
     }
 
     return <>{children}</>

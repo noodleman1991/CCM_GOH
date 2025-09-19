@@ -289,7 +289,7 @@ export default defineType({
             const lang = language || 'en';
             const displayTitle = title?.[lang] || title?.en || "Untitled Experience";
             const dateText = publishedAt ? new Date(publishedAt).toLocaleDateString() : 'Draft';
-            const featuredText = featured ? '⭐ ' : '';
+            const featuredText = featured ? 'FEATURED ' : '';
             const communityText = community ? ` | ${community}` : '';
 
             return {

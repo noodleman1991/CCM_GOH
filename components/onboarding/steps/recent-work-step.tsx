@@ -26,6 +26,17 @@ const recentWorkSchema = z.object({
   isOngoing: z.boolean(),
   startDate: z.string().min(1, "Start date is required"),
   endDate: z.string().optional()
+}).refine((data) => {
+  // If ongoing, endDate is not required
+  if (data.isOngoing) return true
+  // If not ongoing and endDate is provided, it should be after startDate
+  if (data.endDate && data.startDate) {
+    return new Date(data.endDate) >= new Date(data.startDate)
+  }
+  return true
+}, {
+  message: "End date must be after start date",
+  path: ["endDate"]
 })
 
 type RecentWorkFormValues = z.infer<typeof recentWorkSchema>
@@ -182,7 +193,6 @@ export function RecentWorkStep({ data, updateDataAction, onNextAction }: RecentW
         ) : (
           <Card className="text-center py-8 border-dashed">
             <CardContent>
-              <div className="text-4xl mb-4">📝</div>
               <h3 className="font-medium mb-2">{t("noWorkTitle")}</h3>
               <p className="text-muted-foreground text-sm mb-4">
                 {t("noWorkDescription")}

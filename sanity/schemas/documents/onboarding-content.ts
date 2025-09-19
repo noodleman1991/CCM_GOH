@@ -1,10 +1,15 @@
-import { defineField, defineType } from 'sanity'
+import { defineField, defineType } from "sanity";
+import { isUniqueOtherThanLanguage } from '@/sanity/lib/isUniqueOtherThanLanguage';
 
 export default defineType({
   name: 'onboardingContent',
   title: 'Onboarding Content',
   type: 'document',
   groups: [
+    {
+      name: 'content',
+      title: 'Content',
+    },
     {
       name: 'welcome',
       title: 'Welcome Step',
@@ -25,30 +30,37 @@ export default defineType({
       name: 'redirectDialog',
       title: 'Redirect Dialog',
     },
+    {
+      name: 'settings',
+      title: 'Settings',
+    },
   ],
   fields: [
-    defineField({
-      name: 'language',
-      title: 'Language',
-      type: 'string',
-      options: {
-        list: [
-          { title: 'English', value: 'en' },
-          { title: 'Español', value: 'es' },
-          { title: 'Français', value: 'fr' },
-          { title: 'العربية', value: 'ar' },
-        ],
-        layout: 'radio',
-      },
-      validation: Rule => Rule.required(),
-      initialValue: 'en',
-    }),
     defineField({
       name: 'title',
       title: 'Content Title',
       type: 'string',
+      group: 'content',
       validation: Rule => Rule.required(),
-      description: 'Internal title for this content (e.g., "Onboarding Content - English")',
+      description: 'Internal title for this content (e.g., "Onboarding Content")',
+    }),
+    defineField({
+      name: "slug",
+      title: "Slug",
+      type: "slug",
+      group: "settings",
+      options: {
+        source: "title",
+        maxLength: 96,
+        isUnique: isUniqueOtherThanLanguage,
+      },
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: "language",
+      type: "string",
+      readOnly: true,
+      group: "settings",
     }),
 
     // Welcome Step Content
@@ -62,6 +74,13 @@ export default defineType({
     defineField({
       name: 'welcomeSubtitle',
       title: 'Welcome Subtitle',
+      type: 'text',
+      group: 'welcome',
+      validation: Rule => Rule.required(),
+    }),
+    defineField({
+      name: 'welcomeDescription',
+      title: 'Welcome Description',
       type: 'text',
       group: 'welcome',
       validation: Rule => Rule.required(),
@@ -88,6 +107,20 @@ export default defineType({
       group: 'welcome',
       of: [{ type: 'string' }],
       validation: Rule => Rule.max(4),
+    }),
+    defineField({
+      name: 'gettingStartedTitle',
+      title: 'Getting Started Title',
+      type: 'string',
+      group: 'welcome',
+      validation: Rule => Rule.required(),
+    }),
+    defineField({
+      name: 'gettingStartedDescription',
+      title: 'Getting Started Description',
+      type: 'text',
+      group: 'welcome',
+      validation: Rule => Rule.required(),
     }),
     defineField({
       name: 'getStartedText',
@@ -444,6 +477,11 @@ export default defineType({
             { name: 'country', title: 'Country', type: 'string', initialValue: 'Country' },
             { name: 'city', title: 'City', type: 'string', initialValue: 'City' },
             { name: 'preferredLanguage', title: 'Preferred Language', type: 'string', initialValue: 'Preferred Language' },
+            { name: 'firstNamePlaceholder', title: 'First Name Placeholder', type: 'string', initialValue: 'Enter your first name' },
+            { name: 'lastNamePlaceholder', title: 'Last Name Placeholder', type: 'string', initialValue: 'Enter your last name' },
+            { name: 'usernamePlaceholder', title: 'Username Placeholder', type: 'string', initialValue: 'Enter a unique username' },
+            { name: 'countryPlaceholder', title: 'Country Placeholder', type: 'string', initialValue: 'Enter your country' },
+            { name: 'cityPlaceholder', title: 'City Placeholder', type: 'string', initialValue: 'Enter your city' },
           ],
         },
         // Work Info Labels
@@ -462,9 +500,13 @@ export default defineType({
             { name: 'workBioPlaceholder', title: 'Work Bio Placeholder', type: 'string', initialValue: 'Describe your professional experience and goals...' },
             { name: 'socialLinks', title: 'Social Links', type: 'string', initialValue: 'Professional Links' },
             { name: 'linkedin', title: 'LinkedIn', type: 'string', initialValue: 'LinkedIn Profile' },
+            { name: 'linkedinPlaceholder', title: 'LinkedIn Placeholder', type: 'string', initialValue: 'https://linkedin.com/in/username' },
             { name: 'portfolio', title: 'Portfolio', type: 'string', initialValue: 'Portfolio' },
+            { name: 'portfolioPlaceholder', title: 'Portfolio Placeholder', type: 'string', initialValue: 'https://yourportfolio.com' },
             { name: 'github', title: 'GitHub', type: 'string', initialValue: 'GitHub Profile' },
+            { name: 'githubPlaceholder', title: 'GitHub Placeholder', type: 'string', initialValue: 'https://github.com/username' },
             { name: 'website', title: 'Website', type: 'string', initialValue: 'Personal Website' },
+            { name: 'websitePlaceholder', title: 'Website Placeholder', type: 'string', initialValue: 'https://yourwebsite.com' },
           ],
         },
         // Recent Work Labels
@@ -569,19 +611,15 @@ export default defineType({
     select: {
       title: 'title',
       language: 'language',
+      media: 'image',
     },
-    prepare(selection) {
-      const { title, language } = selection
-      const languageNames: Record<string, string> = {
-        en: 'English',
-        es: 'Español',
-        fr: 'Français',
-        ar: 'العربية',
-      }
+    prepare(select) {
+      const {title, language, media} = select
+
       return {
-        title: title || 'Onboarding Content',
-        subtitle: `Language: ${languageNames[language] || language || 'Unknown'}`,
-        media: language === 'en' ? '🇺🇸' : language === 'es' ? '🇪🇸' : language === 'fr' ? '🇫🇷' : language === 'ar' ? '🇸🇦' : '🌍',
+        title,
+        subtitle: language ? language.toUpperCase() : 'EN',
+        media,
       }
     },
   },

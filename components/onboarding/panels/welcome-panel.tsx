@@ -23,18 +23,18 @@ export function WelcomePanel({ content }: WelcomePanelProps) {
   const features = [
     {
       icon: Users,
-      title: content?.features?.[0]?.title || t("features.community.title"),
-      description: content?.features?.[0]?.description || t("features.community.description"),
+      title: content?.welcomeFeatures?.[0]?.title || t("features.community.title"),
+      description: content?.welcomeFeatures?.[0]?.description || t("features.community.description"),
     },
     {
       icon: Globe,
-      title: content?.features?.[1]?.title || t("features.global.title"),
-      description: content?.features?.[1]?.description || t("features.global.description"),
+      title: content?.welcomeFeatures?.[1]?.title || t("features.global.title"),
+      description: content?.welcomeFeatures?.[1]?.description || t("features.global.description"),
     },
     {
       icon: Shield,
-      title: content?.features?.[2]?.title || t("features.privacy.title"),
-      description: content?.features?.[2]?.description || t("features.privacy.description"),
+      title: content?.welcomeFeatures?.[2]?.title || t("features.privacy.title"),
+      description: content?.welcomeFeatures?.[2]?.description || t("features.privacy.description"),
     },
   ]
 

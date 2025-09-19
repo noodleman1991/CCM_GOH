@@ -148,8 +148,8 @@ export default defineType({
         },
         prepare({ title, media, active, featured }) {
             return {
-                title: `${featured ? "⭐ " : ""}${title || "Untitled Community"}`,
-                subtitle: `${active ? "🟢 Active" : "🔴 Inactive"}`,
+                title: `${featured ? "FEATURED " : ""}${title || "Untitled Community"}`,
+                subtitle: `${active ? "Active" : "Inactive"}`,
                 media,
             };
         },

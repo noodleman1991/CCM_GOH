@@ -31,52 +31,68 @@ export default function OnboardingRedirectProvider({
   useEffect(() => {
     if (!isLoaded || !user) return
 
-    const shouldShowDialog =
-      // User is authenticated
-      user &&
-      // User hasn't completed onboarding
-      !user.unsafeMetadata?.onboardingComplete &&
-      // User hasn't been shown the dialog in this session
-      !sessionStorage.getItem('onboarding-dialog-shown')
+    // Check onboarding status from our API
+    const checkOnboardingStatus = async () => {
+      try {
+        const response = await fetch('/api/onboarding/status')
+        if (response.ok) {
+          const { completed } = await response.json()
 
-    if (shouldShowDialog) {
-      setIsLoadingContent(true)
+          const shouldShowDialog =
+            // User is authenticated
+            user &&
+            // User hasn't completed onboarding (check Prisma database)
+            !completed &&
+            // User hasn't been shown the dialog in this session
+            !sessionStorage.getItem('onboarding-dialog-shown')
 
-      // Fetch onboarding content from Sanity
-      client
-        .fetch(onboardingContentQueryWithFallback, { locale })
-        .then((data) => {
-          if (data) {
-            setContent({
-              redirectDialogTitle: data.redirectDialogTitle || 'Complete Your Profile',
-              redirectDialogMessage: data.redirectDialogMessage || 'To get the most out of your experience, we recommend completing your profile.',
-              proceedToOnboardingText: data.proceedToOnboardingText || 'Complete Profile',
-              continueToHubText: data.continueToHubText || 'Continue to Hub',
-              oneTimeWaiverText: data.oneTimeWaiverText || 'You can complete this later'
-            })
-            setShowDialog(true)
+          if (shouldShowDialog) {
+            setIsLoadingContent(true)
 
-            // Mark dialog as shown in session storage
-            sessionStorage.setItem('onboarding-dialog-shown', 'true')
+            // Fetch onboarding content from Sanity
+            client
+              .fetch(onboardingContentQueryWithFallback, { locale })
+              .then((data) => {
+                if (data) {
+                  setContent({
+                    redirectDialogTitle: data.redirectDialogTitle || 'Complete Your Profile',
+                    redirectDialogMessage: data.redirectDialogMessage || 'To get the most out of your experience, we recommend completing your profile.',
+                    proceedToOnboardingText: data.proceedToOnboardingText || 'Complete Profile',
+                    continueToHubText: data.continueToHubText || 'Continue to Collaborate',
+                    oneTimeWaiverText: data.oneTimeWaiverText || 'You can complete this later'
+                  })
+                  setShowDialog(true)
+
+                  // Mark dialog as shown in session storage
+                  sessionStorage.setItem('onboarding-dialog-shown', 'true')
+                }
+              })
+              .catch((error) => {
+                console.error('Failed to fetch onboarding content:', error)
+                // Use fallback content if fetch fails
+                setContent({
+                  redirectDialogTitle: 'Complete Your Profile',
+                  redirectDialogMessage: 'To get the most out of your experience, we recommend completing your profile.',
+                  proceedToOnboardingText: 'Complete Profile',
+                  continueToHubText: 'Continue to Collaborate',
+                  oneTimeWaiverText: 'You can complete this later'
+                })
+                setShowDialog(true)
+                sessionStorage.setItem('onboarding-dialog-shown', 'true')
+              })
+              .finally(() => {
+                setIsLoadingContent(false)
+              })
           }
-        })
-        .catch((error) => {
-          console.error('Failed to fetch onboarding content:', error)
-          // Use fallback content if fetch fails
-          setContent({
-            redirectDialogTitle: 'Complete Your Profile',
-            redirectDialogMessage: 'To get the most out of your experience, we recommend completing your profile.',
-            proceedToOnboardingText: 'Complete Profile',
-            continueToHubText: 'Continue to Hub',
-            oneTimeWaiverText: 'You can complete this later'
-          })
-          setShowDialog(true)
-          sessionStorage.setItem('onboarding-dialog-shown', 'true')
-        })
-        .finally(() => {
-          setIsLoadingContent(false)
-        })
+        } else {
+          console.error('Failed to fetch onboarding status')
+        }
+      } catch (error) {
+        console.error('Error checking onboarding status:', error)
+      }
     }
+
+    checkOnboardingStatus()
   }, [isLoaded, user, locale])
 
   const handleDialogClose = () => {

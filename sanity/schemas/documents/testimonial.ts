@@ -110,10 +110,10 @@ export default defineType({
       media: "image",
     },
     prepare({ name, title, rating, community, organization, featured, media }) {
-      const stars = rating ? "⭐".repeat(rating) : "";
-      const featuredText = featured ? "⭐ " : "";
+      const ratingText = rating ? `(${rating}/5)` : "";
+      const featuredText = featured ? "FEATURED " : "";
       const affiliation = organization || community || "";
-      const subtitle = [title, affiliation, stars].filter(Boolean).join(" • ");
+      const subtitle = [title, affiliation, ratingText].filter(Boolean).join(" • ");
 
       return {
         title: `${featuredText}${name || "Unnamed"}`,

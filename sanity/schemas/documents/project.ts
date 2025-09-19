@@ -195,22 +195,11 @@ export default defineType({
             status?: "planning" | "active" | "completed" | "on-hold" | "cancelled";
             acronym?: string;
         }) {
-            const statusEmoji: Record<
-                "planning" | "active" | "completed" | "on-hold" | "cancelled",
-                string
-            > = {
-                planning: "📋",
-                active: "🟢",
-                completed: "✅",
-                "on-hold": "⏸️",
-                cancelled: "❌",
-            };
-
             const safeStatus = status ?? "planning"; // default if undefined
 
             return {
                 title: acronym ? `${acronym} - ${title}` : title || "Untitled Project",
-                subtitle: `${statusEmoji[safeStatus]} ${subtitle || "project"}`,
+                subtitle: `${safeStatus} - ${subtitle || "project"}`,
                 media,
             };
         },
