@@ -13,7 +13,15 @@ import {
     ExternalLink,
     FileSearch,
     MapPinned,
-    Home
+    Home,
+    Heart,
+    Globe,
+    Users,
+    Lightbulb,
+    UserCog,
+    Briefcase,
+    GraduationCap,
+    Languages
 } from "lucide-react";
 
 export const structure = (S: any, context: any) =>
@@ -59,6 +67,80 @@ export const structure = (S: any, context: any) =>
                         ])
                 ),
 
+            // Research & Content
+            S.divider(),
+            S.listItem()
+                .title("Research & Content")
+                .child(
+                    S.list()
+                        .title("Research & Content")
+                        .items([
+                            S.listItem()
+                                .title("Case Studies")
+                                .icon(FileSearch)
+                                .child(
+                                    S.list()
+                                        .title("Case Studies")
+                                        .items([
+                                            S.listItem()
+                                                .title("All Case Studies")
+                                                .schemaType("caseStudy")
+                                                .child(
+                                                    S.documentTypeList("caseStudy")
+                                                        .title("All Case Studies")
+                                                        .defaultOrdering([{ field: "_createdAt", direction: "desc" }])
+                                                ),
+                                            S.listItem()
+                                                .title("Pending Review")
+                                                .schemaType("caseStudy")
+                                                .child(
+                                                    S.documentTypeList("caseStudy")
+                                                        .title("Pending Review")
+                                                        .apiVersion('v2025-02-19')
+                                                        .filter('_type == "caseStudy" && status == "pending"')
+                                                ),
+                                            S.listItem()
+                                                .title("Approved")
+                                                .schemaType("caseStudy")
+                                                .child(
+                                                    S.documentTypeList("caseStudy")
+                                                        .title("Approved Case Studies")
+                                                        .apiVersion('v2025-02-19')
+                                                        .filter('_type == "caseStudy" && status == "approved"')
+                                                ),
+                                        ])
+                                ),
+                            S.listItem()
+                                .title("Reports")
+                                .icon(Glasses)
+                                .child(
+                                    orderableDocumentListDeskItem({
+                                        type: "report",
+                                        title: "Reports",
+                                        icon: Glasses,
+                                        S,
+                                        context,
+                                    })
+                                ),
+                            S.listItem()
+                                .title("Posts (Blog)")
+                                .icon(FileText)
+                                .child(
+                                    S.documentTypeList("post")
+                                        .title("Posts")
+                                        .defaultOrdering([{ field: "_createdAt", direction: "desc" }])
+                                ),
+                            S.listItem()
+                                .title("Lived Experiences")
+                                .icon(Heart)
+                                .child(
+                                    S.documentTypeList("livedExperience")
+                                        .title("Lived Experiences")
+                                        .defaultOrdering([{ field: "_createdAt", direction: "desc" }])
+                                ),
+                        ])
+                ),
+
             // News & External Sources
             S.divider(),
             S.listItem()
@@ -90,43 +172,6 @@ export const structure = (S: any, context: any) =>
                         ])
                 ),
 
-            // Case Studies
-            S.divider(),
-            S.listItem()
-                .title("Case Studies")
-                .icon(FileSearch)
-                .child(
-                    S.list()
-                        .title("Case Studies")
-                        .items([
-                            S.listItem()
-                                .title("All Case Studies")
-                                .schemaType("caseStudy")
-                                .child(
-                                    S.documentTypeList("caseStudy")
-                                        .title("All Case Studies")
-                                        .defaultOrdering([{ field: "_createdAt", direction: "desc" }])
-                                ),
-                            S.listItem()
-                                .title("Pending Review")
-                                .schemaType("caseStudy")
-                                .child(
-                                    S.documentTypeList("caseStudy")
-                                        .title("Pending Review")
-                                        .apiVersion('v2025-02-19')
-                                        .filter('_type == "caseStudy" && status == "pending"')
-                                ),
-                            S.listItem()
-                                .title("Approved")
-                                .schemaType("caseStudy")
-                                .child(
-                                    S.documentTypeList("caseStudy")
-                                        .title("Approved Case Studies")
-                                        .apiVersion('v2025-02-19')
-                                        .filter('_type == "caseStudy" && status == "approved"')
-                                ),
-                        ])
-                ),
 
             // Affiliations
             S.divider(),
@@ -153,17 +198,112 @@ export const structure = (S: any, context: any) =>
                         ])
                 ),
 
-            // Reports & Agendas
+            // User Management & Onboarding
+            S.divider(),
             S.listItem()
-                .title("Reports & Agendas")
+                .title("User Management")
                 .child(
                     S.list()
-                        .title("Reports & Agendas")
+                        .title("User Management")
+                        .items([
+                            S.listItem()
+                                .title("Onboarding Content")
+                                .icon(UserCog)
+                                .child(
+                                    S.list()
+                                        .title("Onboarding Content")
+                                        .items([
+                                            S.listItem()
+                                                .title("English")
+                                                .schemaType("onboardingContent")
+                                                .child(
+                                                    S.documentTypeList("onboardingContent")
+                                                        .title("English Onboarding")
+                                                        .apiVersion('v2025-02-19')
+                                                        .filter('_type == "onboardingContent" && language == "en"')
+                                                ),
+                                            S.listItem()
+                                                .title("Español")
+                                                .schemaType("onboardingContent")
+                                                .child(
+                                                    S.documentTypeList("onboardingContent")
+                                                        .title("Spanish Onboarding")
+                                                        .apiVersion('v2025-02-19')
+                                                        .filter('_type == "onboardingContent" && language == "es"')
+                                                ),
+                                            S.listItem()
+                                                .title("Français")
+                                                .schemaType("onboardingContent")
+                                                .child(
+                                                    S.documentTypeList("onboardingContent")
+                                                        .title("French Onboarding")
+                                                        .apiVersion('v2025-02-19')
+                                                        .filter('_type == "onboardingContent" && language == "fr"')
+                                                ),
+                                            S.listItem()
+                                                .title("العربية")
+                                                .schemaType("onboardingContent")
+                                                .child(
+                                                    S.documentTypeList("onboardingContent")
+                                                        .title("Arabic Onboarding")
+                                                        .apiVersion('v2025-02-19')
+                                                        .filter('_type == "onboardingContent" && language == "ar"')
+                                                ),
+                                            S.listItem()
+                                                .title("All Languages")
+                                                .schemaType("onboardingContent")
+                                                .child(
+                                                    S.documentTypeList("onboardingContent")
+                                                        .title("All Onboarding Content")
+                                                        .defaultOrdering([{ field: "language", direction: "asc" }])
+                                                ),
+                                        ])
+                                ),
+                            S.listItem()
+                                .title("Work Types")
+                                .icon(Briefcase)
+                                .child(
+                                    S.documentTypeList("workType")
+                                        .title("Work Types")
+                                        .defaultOrdering([{ field: "order", direction: "asc" }])
+                                ),
+                            S.listItem()
+                                .title("Expertise Areas")
+                                .icon(GraduationCap)
+                                .child(
+                                    S.documentTypeList("expertiseArea")
+                                        .title("Expertise Areas")
+                                        .defaultOrdering([{ field: "order", direction: "asc" }])
+                                ),
+                        ])
+                ),
+
+            // Communities & Users
+            S.divider(),
+            S.listItem()
+                .title("Communities & Users")
+                .child(
+                    S.list()
+                        .title("Communities & Users")
                         .items([
                             orderableDocumentListDeskItem({
-                                type: "report",
-                                title: "Reports",
-                                icon: Glasses,
+                                type: "regionalCommunity",
+                                title: "Regional Communities",
+                                icon: Globe,
+                                S,
+                                context,
+                            }),
+                            orderableDocumentListDeskItem({
+                                type: "author",
+                                title: "Authors",
+                                icon: User,
+                                S,
+                                context,
+                            }),
+                            orderableDocumentListDeskItem({
+                                type: "testimonial",
+                                title: "Testimonials",
+                                icon: Quote,
                                 S,
                                 context,
                             }),
@@ -195,46 +335,21 @@ export const structure = (S: any, context: any) =>
                         ])
                 ),
 
-            // Blog (Legacy)
+            // Support & Engagement
             S.divider(),
             S.listItem()
-                .title("Blog (Legacy)")
+                .title("Support & Engagement")
                 .child(
                     S.list()
-                        .title("Blog")
+                        .title("Support & Engagement")
                         .items([
-                            S.listItem()
-                                .title("Posts")
-                                .schemaType("post")
-                                .child(
-                                    S.documentTypeList("post")
-                                        .title("Post")
-                                        .defaultOrdering([{ field: "_createdAt", direction: "desc" }])
-                                ),
                             orderableDocumentListDeskItem({
-                                type: "author",
-                                title: "Authors",
-                                icon: User,
+                                type: "faq",
+                                title: "FAQs",
+                                icon: ListCollapse,
                                 S,
                                 context,
                             }),
                         ])
                 ),
-
-            // Support Content
-            S.divider(),
-            orderableDocumentListDeskItem({
-                type: "faq",
-                title: "FAQs",
-                icon: ListCollapse,
-                S,
-                context,
-            }),
-            orderableDocumentListDeskItem({
-                type: "testimonial",
-                title: "Testimonials",
-                icon: Quote,
-                S,
-                context,
-            }),
         ]);

@@ -43,6 +43,25 @@ export default defineType({
       of: [{ type: "link" }],
       validation: (rule) => rule.max(2),
     }),
+    defineField({
+      name: "padding",
+      type: "section-padding",
+      title: "Padding",
+      description: "Add padding to the hero section",
+    }),
+    defineField({
+      name: "imagePosition",
+      type: "string",
+      title: "Image Position",
+      description: "Choose whether the image appears on the left or right of the text",
+      options: {
+        list: [
+          { title: "Right", value: "right" },
+          { title: "Left", value: "left" },
+        ],
+      },
+      initialValue: "right",
+    }),
   ],
   preview: {
     select: {

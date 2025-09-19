@@ -11,9 +11,10 @@ import {
     BarChart3,
     MessageSquare,
     Newspaper,
-    Building2,
+    Info,
     Heart,
     Search,
+    Handshake,
 } from "lucide-react"
 import Logo from "@/components/logo"
 import { useRouter } from "next/navigation"
@@ -46,7 +47,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const t = useTranslations('navigation')
     const router = useRouter()
     const [searchQuery, setSearchQuery] = React.useState("")
-    const [openAccordion, setOpenAccordion] = React.useState<string | null>('research')
+    const [openAccordion, setOpenAccordion] = React.useState<string | null>(null)
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault()
@@ -126,45 +127,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         },
     ];
 
-    const navMain = [
-        {
-            title: t('researchAction'),
-            url: "#",
-            icon: BookOpen,
-            isActive: openAccordion === 'research',
-            items: researchActionItems,
-            onToggle: () => setOpenAccordion(openAccordion === 'research' ? null : 'research')
-        },
-        {
-            title: t('livedExperiences'),
-            url: "/lived-experiences",
-            icon: Heart,
-        },
-        {
-            title: t('regionalCommunities'),
-            url: "#",
-            icon: Globe,
-            isActive: openAccordion === 'regional',
-            items: regionalCommunities,
-            onToggle: () => setOpenAccordion(openAccordion === 'regional' ? null : 'regional')
-        },
-        {
-            title: t('collaborate'),
-            url: "/collaborate",
-            icon: MessageSquare,
-        },
-        {
-            title: t('news'),
-            url: "/news",
-            icon: Newspaper,
-        },
-    ];
 
     const navSecondary = [
         {
             title: t('about'),
             url: "/about",
-            icon: Building2,
+            icon: Info,
         },
         {
             title: t('feedback'),
@@ -193,11 +161,42 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     // ];
 
     const data = React.useMemo(() => ({
-        navMain,
+        navMain: [
+            {
+                title: t('researchAction'),
+                url: "#",
+                icon: BookOpen,
+                isActive: openAccordion === 'research',
+                items: researchActionItems,
+                onToggle: () => setOpenAccordion(openAccordion === 'research' ? null : 'research')
+            },
+            {
+                title: t('livedExperiences'),
+                url: "/lived-experiences",
+                icon: Heart,
+            },
+            {
+                title: t('regionalCommunities'),
+                url: "#",
+                icon: Globe,
+                isActive: openAccordion === 'regional',
+                items: regionalCommunities,
+                onToggle: () => setOpenAccordion(openAccordion === 'regional' ? null : 'regional')
+            },
+            {
+                title: t('collaborate'),
+                url: "/collaborate",
+                icon: Handshake,
+            },
+            {
+                title: t('news'),
+                url: "/news",
+                icon: Newspaper,
+            },
+        ],
         navSecondary,
-        // projects,
         user: userData
-    }), [navMain, navSecondary, userData]);
+    }), [navSecondary, userData, t, openAccordion, researchActionItems, regionalCommunities]);
 
     return (
         <Sidebar
@@ -208,7 +207,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton size="xl" asChild>
+                        <SidebarMenuButton size="xl" asChild className="justify-center p-4">
                             <Logo size="xl" />
                         </SidebarMenuButton>
                     </SidebarMenuItem>
@@ -227,10 +226,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className={cn(
-                                "w-full text-slate-900 placeholder:text-slate-500 bg-white border-gray-300",
+                                "w-full placeholder:text-slate-500 bg-white border-gray-300",
                                 isRTL ? "pr-8" : "pl-8"
                             )}
-                            style={{ color: '#0f172a' }}
+                            style={{ color: '#0B3160' }}
                         />
                     </form>
                 </div>

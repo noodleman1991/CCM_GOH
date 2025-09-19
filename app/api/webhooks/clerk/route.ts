@@ -193,7 +193,7 @@ async function handleUserUpdated(event: UserUpdatedEvent) {
         // Only update app-specific data from Clerk metadata if it exists and was synced FROM our app
         const metadataUpdate: any = {}
         const syncedFromApp = public_metadata?.syncedFrom === 'prisma'
-        
+
         if (syncedFromApp) {
             // These were synced from our app to Clerk, so we trust them
             if (public_metadata?.bio !== undefined) metadataUpdate.bio = public_metadata.bio
@@ -215,6 +215,13 @@ async function handleUserUpdated(event: UserUpdatedEvent) {
             if (public_metadata?.showWorkDetails !== undefined) metadataUpdate.showWorkDetails = public_metadata.showWorkDetails
             if (public_metadata?.showSocialLinks !== undefined) metadataUpdate.showSocialLinks = public_metadata.showSocialLinks
             if (public_metadata?.showLocation !== undefined) metadataUpdate.showLocation = public_metadata.showLocation
+
+            // Handle onboarding completion status
+            if (public_metadata?.onboardingComplete !== undefined) {
+                metadataUpdate.onboardingCompleted = public_metadata.onboardingComplete
+                metadataUpdate.welcomeMessageSeen = true
+                metadataUpdate.onboardingStep = public_metadata.onboardingComplete ? 6 : 0
+            }
         }
 
         // Update user with latest data from Clerk

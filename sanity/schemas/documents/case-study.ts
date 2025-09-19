@@ -289,6 +289,15 @@ export default defineType({
             validation: (Rule) => Rule.max(5),
         }),
 
+        defineField({
+            name: "relatedCommunity",
+            title: "Related Community",
+            type: "reference",
+            group: "affiliations",
+            to: { type: "regionalCommunity" },
+            description: "The community this case study relates to",
+        }),
+
         // Review workflow and publishing
         defineField({
             name: "status",

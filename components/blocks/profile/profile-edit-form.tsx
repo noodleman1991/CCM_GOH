@@ -411,7 +411,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>{t('ageGroup')}</FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <Select onValueChange={field.onChange} value={field.value || ""}>
                                         <FormControl>
                                             <SelectTrigger>
                                                 <SelectValue placeholder={t('selectAge')} />
@@ -706,7 +706,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>{t('privacy.visibility.title')}</FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <Select onValueChange={field.onChange} value={field.value || ""}>
                                         <FormControl>
                                             <SelectTrigger>
                                                 <SelectValue />

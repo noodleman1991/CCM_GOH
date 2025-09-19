@@ -7,7 +7,6 @@ import {
   fetchSanityPostBySlug,
   fetchSanityPostsStaticParams,
 } from "@/sanity/lib/fetch";
-import { generatePageMetadata } from "@/sanity/lib/metadata";
 
 export async function generateStaticParams() {
   const posts = await fetchSanityPostsStaticParams();

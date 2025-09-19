@@ -14,11 +14,11 @@ type Hero2Props = Extract<
   locale?: string;
 };
 
-export default function Hero2({ background, tagLine, title, body, links, locale = "en" }: Hero2Props) {
+export default function Hero2({ background, tagLine, title, body, links, padding, locale = "en" }: Hero2Props & { padding?: any }) {
   const rtl = isRTL(locale);
   return (
-    <SectionContainer background={background}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:pt-40">
+    <SectionContainer background={background} padding={padding}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
         <div className={cn("text-center", rtl ? "rtl" : "ltr")}>
         {tagLine && (
           <h1 className="leading-[0] font-sans animate-fade-up [animation-delay:100ms] opacity-0">

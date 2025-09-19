@@ -32,7 +32,7 @@ export default function Footer() {
           href="/"
           aria-label="Home page"
         >
-          <Logo />
+          <Logo asChild />
         </Link>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-7 text-primary">
           {navItems.map((navItem) => (

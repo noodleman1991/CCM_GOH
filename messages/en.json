@@ -532,5 +532,204 @@
       "relevant": "relevant results out of",
       "foundIn": "Found in"
     }
+  },
+  "onboarding": {
+    "steps": {
+      "welcome": {
+        "title": "Welcome to our Global Community!",
+        "subtitle": "Join climate researchers, activists, and experts from around the world working together to create meaningful change.",
+        "getStarted": "Get Started",
+        "timeEstimate": "This will take about 5 minutes",
+        "features": {
+          "community": {
+            "title": "Global Community",
+            "description": "Connect with climate minds from every continent and background"
+          },
+          "collaborate": {
+            "title": "Collaborate",
+            "description": "Work together on research, advocacy, and actionable solutions"
+          },
+          "expertise": {
+            "title": "Share Expertise",
+            "description": "Contribute your unique perspective and learn from others"
+          },
+          "impact": {
+            "title": "Create Impact",
+            "description": "Turn ideas into action with real-world climate solutions"
+          }
+        },
+        "whatToExpect": {
+          "title": "What to expect during setup:",
+          "step1": "Tell us about yourself and your background",
+          "step2": "Share your work experience and expertise areas",
+          "step3": "Add recent projects to showcase your contributions",
+          "step4": "Choose your privacy and visibility settings"
+        }
+      },
+      "basicInfo": {
+        "title": "Basic Information",
+        "description": "Tell us a bit about yourself. This information will help others find and connect with you.",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "username": "Username",
+        "usernameHint": "This will be used in your profile URL (example.com/profiles/your-username)",
+        "bio": "Bio",
+        "bioPlaceholder": "Tell us about yourself, your interests, and what brings you to our community...",
+        "bioHint": "Share what makes you unique and what you're passionate about",
+        "ageGroup": "Age Group",
+        "selectAge": "Select your age group",
+        "under18": "Under 18",
+        "above18": "18 or above",
+        "country": "Country",
+        "city": "City/Town",
+        "preferredLanguage": "Preferred Language",
+        "languageHint": "Choose your preferred language for the platform",
+        "continue": "Continue"
+      },
+      "workInfo": {
+        "title": "Work Information",
+        "description": "Help us understand your professional background and areas of expertise.",
+        "workTypesLabel": "What type of work do you do?",
+        "workTypesDescription": "Select all that apply",
+        "workTypes": {
+          "research": "Research",
+          "policy": "Policy",
+          "livedExperience": "Expert through lived experience",
+          "ngo": "NGO",
+          "communityOrg": "Community organization",
+          "education": "Education or teaching"
+        },
+        "expertiseLabel": "What are your areas of expertise?",
+        "expertiseDescription": "Select all that apply",
+        "expertise": {
+          "climate": "Climate Change",
+          "mentalHealth": "Mental Health",
+          "health": "Health"
+        },
+        "organization": "Organization",
+        "organizationPlaceholder": "Enter your organization name",
+        "position": "Position",
+        "positionPlaceholder": "Enter your job title or role",
+        "workBio": "Work Bio",
+        "workBioPlaceholder": "Describe your professional experience, current role, and key accomplishments...",
+        "workBioHint": "This helps others understand your professional background and expertise",
+        "socialLinks": "Social Links",
+        "socialLinksDescription": "Add links to help others connect with you professionally",
+        "personalWebsite": "Personal Website",
+        "linkedin": "LinkedIn",
+        "twitter": "Twitter",
+        "continue": "Continue"
+      },
+      "recentWork": {
+        "title": "Recent Work",
+        "description": "Showcase your recent projects, research, or contributions. This helps others understand your current focus and expertise.",
+        "addWork": "Add Work",
+        "editWork": "Edit Work",
+        "noWorkTitle": "No recent work added yet",
+        "noWorkDescription": "Add your recent projects, research, or other contributions to help others understand your expertise.",
+        "workTitle": "Project Title",
+        "workTitlePlaceholder": "Enter the title of your project or work",
+        "workDescription": "Description",
+        "workDescriptionPlaceholder": "Describe what this project involved and its impact...",
+        "workLink": "Project Link",
+        "workLinkHint": "Optional: Link to your project, publication, or portfolio",
+        "isOngoing": "This work is ongoing",
+        "isOngoingHint": "Check this if you're still working on this project",
+        "startDate": "Start Date",
+        "endDate": "End Date",
+        "ongoing": "Ongoing",
+        "viewProject": "View Project",
+        "cancel": "Cancel",
+        "updateWork": "Update Work",
+        "continue": "Continue"
+      },
+      "privacy": {
+        "title": "Privacy & Visibility",
+        "description": "Control how your profile appears to others and what information is visible. You can change these settings anytime.",
+        "searchability": {
+          "title": "Profile Discoverability",
+          "description": "Control whether others can find your profile through search",
+          "allowSearch": "Allow others to find me in search",
+          "searchHint": "When enabled, your profile will appear in search results"
+        },
+        "visibility": {
+          "title": "Profile Visibility",
+          "description": "Choose who can view your profile information",
+          "public": {
+            "title": "Public",
+            "description": "Anyone can view your profile, even without an account"
+          },
+          "members": {
+            "title": "Members Only",
+            "description": "Only community members can view your profile"
+          },
+          "private": {
+            "title": "Private",
+            "description": "Your profile is not discoverable and only visible to you"
+          }
+        },
+        "profileInfo": {
+          "title": "Information Visibility",
+          "description": "Choose what information to display on your profile",
+          "showEmail": "Show email address",
+          "emailHint": "Display your email address on your profile",
+          "showPhone": "Show phone number",
+          "phoneHint": "Display your phone number on your profile",
+          "showWork": "Show work information",
+          "workHint": "Display your organization, position, and work bio",
+          "showSocial": "Show social links",
+          "socialHint": "Display your website and social media links",
+          "showLocation": "Show location",
+          "locationHint": "Display your country and city information"
+        },
+        "continue": "Continue"
+      },
+      "review": {
+        "title": "Almost Ready!",
+        "description": "Review your information below and make any final changes. You can always edit your profile later.",
+        "fields": {
+          "name": "Name",
+          "username": "Username",
+          "location": "Location",
+          "language": "Preferred Language",
+          "bio": "Bio",
+          "workTypes": "Work Types",
+          "expertise": "Expertise Areas",
+          "organization": "Organization",
+          "position": "Position",
+          "workBio": "Work Bio",
+          "socialLinks": "Social Links",
+          "website": "Personal Website",
+          "searchable": "Discoverable in search",
+          "visibility": "Profile visibility",
+          "shownInProfile": "Information shown in profile"
+        },
+        "visibility": {
+          "public": "Public",
+          "members": "Members Only",
+          "private": "Private"
+        },
+        "yes": "Yes",
+        "no": "No",
+        "email": "Email",
+        "phone": "Phone",
+        "workDetails": "Work Details",
+        "socialLinks": "Social Links",
+        "location": "Location",
+        "ongoing": "Ongoing",
+        "viewProject": "View Project",
+        "readyTitle": "You're all set!",
+        "readyDescription": "Welcome to our global community of climate minds. Let's create meaningful change together.",
+        "completeOnboarding": "Complete Setup"
+      }
+    },
+    "title": "Setup Your Profile",
+    "of": "of",
+    "previous": "Previous",
+    "next": "Next",
+    "getStarted": "Get Started",
+    "continue": "Continue",
+    "reviewProfile": "Review Profile",
+    "completeProfile": "Complete Profile"
   }
 }

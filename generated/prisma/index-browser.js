@@ -20,11 +20,11 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.16.0
+ * Prisma Client JS version: 6.16.2
  * Query Engine version: 1c57fdcd7e44b29b9313256c76699e91c3ac3c43
  */
 Prisma.prismaVersion = {
-  client: "6.16.0",
+  client: "6.16.2",
   engine: "1c57fdcd7e44b29b9313256c76699e91c3ac3c43"
 }
 
@@ -165,6 +165,7 @@ exports.Prisma.UserScalarFieldEnum = {
   personalWebsite: 'personalWebsite',
   linkedinProfile: 'linkedinProfile',
   twitterHandle: 'twitterHandle',
+  preferredLanguage: 'preferredLanguage',
   isSearchable: 'isSearchable',
   profileVisibility: 'profileVisibility',
   showEmail: 'showEmail',
@@ -172,6 +173,9 @@ exports.Prisma.UserScalarFieldEnum = {
   showWorkDetails: 'showWorkDetails',
   showSocialLinks: 'showSocialLinks',
   showLocation: 'showLocation',
+  onboardingCompleted: 'onboardingCompleted',
+  onboardingStep: 'onboardingStep',
+  welcomeMessageSeen: 'welcomeMessageSeen',
   role: 'role',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -256,6 +260,13 @@ exports.Prisma.NullsOrder = {
 exports.AgeGroup = exports.$Enums.AgeGroup = {
   UNDER_18: 'UNDER_18',
   ABOVE_18: 'ABOVE_18'
+};
+
+exports.Language = exports.$Enums.Language = {
+  EN: 'EN',
+  ES: 'ES',
+  FR: 'FR',
+  AR: 'AR'
 };
 
 exports.ProfileVisibility = exports.$Enums.ProfileVisibility = {

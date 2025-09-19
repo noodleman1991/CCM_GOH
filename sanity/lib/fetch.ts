@@ -123,21 +123,28 @@ export const fetchSanityPagesStaticParams = async () => {
 // };
 
 export const fetchTranslationsForPage = async (pageId: string) => {
-    const { data } = await sanityFetch({
-        query: `
-      *[_type == "translation.metadata" && references($pageId)][0]{
-        "translations": translations[].value->{
-          _id,
-          language,
-          slug
-        }
-      }.translations`,
-        params: { pageId },
-        perspective: "published",
-        stega: false,
-    });
+    try {
+        const { data } = await sanityFetch({
+            query: `
+        *[_type == "translation.metadata" && references($pageId)][0]{
+          "translations": translations[].value->{
+            _id,
+            language,
+            slug
+          }
+        }.translations`,
+            params: { pageId },
+            perspective: "published",
+            stega: false,
+        });
 
-    return data;
+        return data || [];
+    } catch (error) {
+        // Translation metadata schema doesn't exist or no translations found
+        // This is expected if internationalization isn't fully set up
+        console.warn(`No translation metadata found for page ${pageId}:`, error);
+        return [];
+    }
 };
 
 export const fetchSanityPosts = async (): Promise<POSTS_QUERYResult> => {

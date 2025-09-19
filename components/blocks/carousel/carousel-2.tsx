@@ -72,6 +72,11 @@ export default function Carousel2({
                           <p className="text-xs text-muted-foreground">
                             {item.title}
                           </p>
+                          {((item as any).organization?.name || (item as any).relatedCommunity?.name) && (
+                            <p className="text-xs text-muted-foreground/80">
+                              {(item as any).organization?.name || (item as any).relatedCommunity?.name}
+                            </p>
+                          )}
                         </div>
                       </div>
                       <StarRating rating={item.rating ?? 0} />
