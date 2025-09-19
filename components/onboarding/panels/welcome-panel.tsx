@@ -39,7 +39,10 @@ export function WelcomePanel({ content }: WelcomePanelProps) {
   ]
 
   return (
-    <div className={cn("space-y-8", isRTL && "text-right")} dir={isRTL ? "rtl" : "ltr"}>
+    <div className={cn(
+      "space-y-8",
+      isRTL && "text-right [&_input]:text-right [&_textarea]:text-right"
+    )} dir={isRTL ? "rtl" : "ltr"}>
       {/* Hero Section */}
       <div className="text-center space-y-4">
         <div className={cn("flex justify-center", isRTL && "flex-row-reverse")}>

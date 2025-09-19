@@ -103,7 +103,10 @@ export function RecentWorkPanel({ form, content }: RecentWorkPanelProps) {
     (formData.isOngoing || formData.endDate)
 
   return (
-    <div className={cn("space-y-6", isRTL && "text-right")} dir={isRTL ? "rtl" : "ltr"}>
+    <div className={cn(
+      "space-y-6",
+      isRTL && "text-right [&_input]:text-right [&_textarea]:text-right"
+    )} dir={isRTL ? "rtl" : "ltr"}>
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-gray-900 mb-2">
           {content?.recentWorkTitle || t("title")}
@@ -180,7 +183,7 @@ export function RecentWorkPanel({ form, content }: RecentWorkPanelProps) {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <div>
               <label className="text-sm font-medium flex items-center gap-1">
                 {content?.fieldLabels?.recentWork?.workTitle || t("workTitle")}
@@ -216,7 +219,7 @@ export function RecentWorkPanel({ form, content }: RecentWorkPanelProps) {
             />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <div>
               <label className="text-sm font-medium flex items-center gap-1">
                 {content?.fieldLabels?.recentWork?.startDate || t("startDate")}

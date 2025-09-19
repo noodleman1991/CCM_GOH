@@ -30,7 +30,10 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
   }
 
   return (
-    <div className={cn("space-y-6", isRTL && "text-right")} dir={isRTL ? "rtl" : "ltr"}>
+    <div className={cn(
+      "space-y-6",
+      isRTL && "text-right [&_input]:text-right [&_textarea]:text-right"
+    )} dir={isRTL ? "rtl" : "ltr"}>
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-gray-900 mb-2">
           {content?.workInfoTitle || t("title")}
@@ -56,7 +59,7 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
                   {content?.workInfoFieldHints?.workTypesHint || t("workTypesHint")}
                 </FormDescription>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {workTypes.map((item) => (
                   <FormField
                     key={item._id}
@@ -118,7 +121,7 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
                   {content?.workInfoFieldHints?.expertiseAreasHint || t("expertiseAreasHint")}
                 </FormDescription>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {expertiseAreas.map((item) => (
                   <FormField
                     key={item._id}
@@ -166,7 +169,7 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
         />
 
         {/* Organization & Position */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
           <FormField
             control={form.control}
             name="workInfo.organization"
@@ -216,7 +219,7 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
         {/* Social Links */}
         <div className="space-y-4">
           <h3 className="text-lg font-medium">{content?.fieldLabels?.workInfo?.socialLinks || t("socialLinks")}</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <FormField
               control={form.control}
               name="workInfo.linkedinProfile"

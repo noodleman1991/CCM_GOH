@@ -59,6 +59,9 @@ export default function OnboardingRedirectDialog({
         }
       })
 
+      // Force session reload to ensure metadata is immediately available
+      await user?.reload()
+
       // Redirect to collaborate page
       router.push(`/${locale}/collaborate`)
     } catch (error) {

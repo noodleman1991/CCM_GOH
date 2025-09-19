@@ -104,11 +104,13 @@ export default function UnifiedOnboardingContainer() {
     loadData()
   }, [locale])
 
-  // Update form resolver when schema changes
+  // Update form resolver when schema changes (preserve user data)
   useEffect(() => {
     if (dynamicSchema) {
-      // Reset form with new schema
-      form.reset(defaultOnboardingValues)
+      // Only reset if form is pristine (user hasn't started filling)
+      if (!form.formState.isDirty && Object.keys(form.formState.dirtyFields).length === 0) {
+        form.reset(defaultOnboardingValues)
+      }
     }
   }, [dynamicSchema, form])
 
@@ -187,6 +189,14 @@ export default function UnifiedOnboardingContainer() {
     setValidationError(null)
   }, [currentStep, validateCurrentStep])
 
+  // Helper function to map Sanity IDs to enum keys
+  const mapSanityToEnumKeys = (sanityIds: string[], sanityData: any[]): string[] => {
+    return sanityIds.map(id => {
+      const item = sanityData.find(d => d._id === id)
+      return item?.key || id // Fallback to ID if key not found
+    })
+  }
+
   // Form submission
   const handleSubmit = async (data: any) => {
     setIsSubmitting(true)
@@ -201,7 +211,7 @@ export default function UnifiedOnboardingContainer() {
         return
       }
 
-      // Transform data to match expected format
+      // Transform data to match expected format with proper mapping
       const submissionData = {
         // Basic info
         firstName: data.basicInfo.firstName,
@@ -213,9 +223,9 @@ export default function UnifiedOnboardingContainer() {
         city: data.basicInfo.city,
         preferredLanguage: data.basicInfo.preferredLanguage,
 
-        // Work info
-        workTypes: data.workInfo.workTypes,
-        expertiseAreas: data.workInfo.expertiseAreas,
+        // Work info - map Sanity IDs to enum keys
+        workTypes: mapSanityToEnumKeys(data.workInfo.workTypes || [], userManagementOptions?.workTypes || []),
+        expertiseAreas: mapSanityToEnumKeys(data.workInfo.expertiseAreas || [], userManagementOptions?.expertiseAreas || []),
         organization: data.workInfo.organization,
         position: data.workInfo.position,
         workBio: data.workInfo.workBio,
@@ -254,7 +264,8 @@ export default function UnifiedOnboardingContainer() {
       const result = await response.json()
       console.log('✅ Onboarding completed:', result)
 
-      router.push("/collaborate")
+      // Force page reload to ensure Clerk session is updated
+      window.location.href = `/${locale}/collaborate`
     } catch (error) {
       console.error("Submission error:", error)
       setValidationError("Failed to submit your information. Please try again.")
@@ -288,8 +299,13 @@ export default function UnifiedOnboardingContainer() {
   const CurrentPanel = steps[currentStep].panel
 
   return (
-    <div className={cn("min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4", isRTL && "font-arabic")} dir={isRTL ? "rtl" : "ltr"}>
-      <div className="max-w-4xl mx-auto">
+    <div className={cn(
+      "min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100",
+      "p-2 sm:p-4 md:p-6", // Responsive padding
+      "overflow-x-hidden", // Prevent horizontal scroll
+      isRTL && "font-arabic"
+    )} dir={isRTL ? "rtl" : "ltr"}>
+      <div className="max-w-4xl mx-auto w-full">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)}>
             {/* Progress Header */}
@@ -306,15 +322,26 @@ export default function UnifiedOnboardingContainer() {
             </div>
 
             {/* Step Indicators */}
-            <div className={cn("flex justify-center mb-8", isRTL && "flex-row-reverse")}>
-              <div className={cn("flex space-x-4", isRTL && "space-x-reverse")}>
+            <div className={cn(
+              "flex justify-center mb-6 sm:mb-8",
+              "overflow-x-auto scrollbar-hide", // Allow horizontal scroll on mobile
+              "pb-2", // Space for scroll shadow
+              isRTL && "flex-row-reverse"
+            )}>
+              <div className={cn(
+                "flex space-x-2 sm:space-x-4 px-4", // Smaller spacing on mobile
+                "min-w-max", // Prevent shrinking
+                isRTL && "space-x-reverse"
+              )}>
                 {steps.map((step, index) => (
                   <button
                     key={step.id}
                     type="button"
                     onClick={() => goToStep(index)}
                     className={cn(
-                      "flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
+                      "flex items-center space-x-1 sm:space-x-2",
+                      "px-2 sm:px-3 py-2 rounded-lg text-xs sm:text-sm font-medium",
+                      "transition-colors whitespace-nowrap flex-shrink-0",
                       isRTL && "space-x-reverse",
                       index === currentStep
                         ? "bg-primary text-primary-foreground"
@@ -324,10 +351,10 @@ export default function UnifiedOnboardingContainer() {
                     )}
                   >
                     {index < currentStep ? (
-                      <CheckCircle className="h-4 w-4" />
+                      <CheckCircle className="h-4 w-4 flex-shrink-0" />
                     ) : (
                       <div className={cn(
-                        "w-4 h-4 rounded-full flex items-center justify-center text-xs",
+                        "w-4 h-4 rounded-full flex items-center justify-center text-xs flex-shrink-0",
                         index === currentStep ? "bg-white text-primary" : "bg-gray-300"
                       )}>
                         {index + 1}
@@ -340,8 +367,8 @@ export default function UnifiedOnboardingContainer() {
             </div>
 
             {/* Main Content */}
-            <Card>
-              <CardContent className="p-6">
+            <Card className="w-full max-w-none overflow-hidden">
+              <CardContent className="p-3 sm:p-6">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={currentStep}
@@ -373,15 +400,22 @@ export default function UnifiedOnboardingContainer() {
             )}
 
             {/* Navigation */}
-            <div className={cn("flex justify-between mt-6", isRTL && "flex-row-reverse")}>
+            <div className={cn(
+              "flex flex-col sm:flex-row gap-3 sm:gap-4 mt-6",
+              "sm:justify-between",
+              isRTL && "sm:flex-row-reverse"
+            )}>
               <Button
                 type="button"
                 variant="outline"
                 onClick={prevStep}
                 disabled={currentStep === 0}
-                className={cn("flex items-center space-x-2", isRTL && "space-x-reverse")}
+                className={cn(
+                  "flex items-center justify-center space-x-2 w-full sm:w-auto",
+                  isRTL && "space-x-reverse"
+                )}
               >
-                <ArrowLeft className="h-4 w-4" />
+                <ArrowLeft className={cn("h-4 w-4", isRTL && "rotate-180")} />
                 <span>{getPrevButtonText()}</span>
               </Button>
 
@@ -389,13 +423,16 @@ export default function UnifiedOnboardingContainer() {
                 type={currentStep === steps.length - 1 ? "submit" : "button"}
                 onClick={currentStep === steps.length - 1 ? undefined : nextStep}
                 disabled={isSubmitting}
-                className={cn("flex items-center space-x-2", isRTL && "space-x-reverse")}
+                className={cn(
+                  "flex items-center justify-center space-x-2 w-full sm:w-auto",
+                  isRTL && "space-x-reverse"
+                )}
               >
                 {isSubmitting && (
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-background" />
                 )}
                 <span>{getNextButtonText()}</span>
-                <ArrowRight className="h-4 w-4" />
+                <ArrowRight className={cn("h-4 w-4", isRTL && "rotate-180")} />
               </Button>
             </div>
           </form>

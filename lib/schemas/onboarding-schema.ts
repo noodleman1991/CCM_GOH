@@ -64,7 +64,7 @@ export const createOnboardingSchema = (validationMessages?: any) => {
       personalWebsite: z.string().url(messages.workInfo?.websiteUrl || defaultMessages.workInfo.websiteUrl).optional().or(z.literal(""))
     }),
 
-    // Recent Work Step (Step 3) - Optional but default to empty array
+    // Recent Work Step (Step 3) - Optional step with optional array
     recentWork: z.array(z.object({
       title: z.string()
         .min(1, messages.recentWork?.title || defaultMessages.recentWork.title)
@@ -76,7 +76,7 @@ export const createOnboardingSchema = (validationMessages?: any) => {
       isOngoing: z.boolean(),
       startDate: z.string().min(1, messages.recentWork?.startDate || defaultMessages.recentWork.startDate),
       endDate: z.string().optional()
-    })).default([]),
+    })).optional().default([]),
 
     // Privacy Step (Step 4)
     privacy: z.object({
@@ -146,9 +146,9 @@ export const getStepFieldNames = (step: number): (keyof OnboardingFormData)[] =>
     case 0: return [] // Welcome
     case 1: return ["basicInfo"]
     case 2: return ["workInfo"]
-    case 3: return ["recentWork"]
+    case 3: return [] // Recent work is optional - no validation needed
     case 4: return ["privacy"]
-    case 5: return ["basicInfo", "workInfo", "privacy"] // Review - validate required steps
+    case 5: return ["basicInfo", "workInfo", "privacy"] // Review - validate required steps only
     default: return []
   }
 }
