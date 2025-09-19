@@ -47,7 +47,10 @@ export function PrivacyPanel({ form, content }: PrivacyPanelProps) {
   ]
 
   return (
-    <div className={cn("space-y-6", isRTL && "text-right")} dir={isRTL ? "rtl" : "ltr"}>
+    <div className={cn(
+      "space-y-6",
+      isRTL && "text-right [&_input]:text-right [&_textarea]:text-right"
+    )} dir={isRTL ? "rtl" : "ltr"}>
       <div className="mb-6">
         <div className={cn("flex items-center gap-2 mb-2", isRTL && "flex-row-reverse")}>
           <Shield className="h-5 w-5 text-primary" />

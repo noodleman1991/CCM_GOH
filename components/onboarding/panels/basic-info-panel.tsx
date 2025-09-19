@@ -31,7 +31,10 @@ export function BasicInfoPanel({ form, content }: BasicInfoPanelProps) {
   ]
 
   return (
-    <div className={cn("space-y-6", isRTL && "text-right")} dir={isRTL ? "rtl" : "ltr"}>
+    <div className={cn(
+      "space-y-6",
+      isRTL && "text-right [&_input]:text-right [&_textarea]:text-right"
+    )} dir={isRTL ? "rtl" : "ltr"}>
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-gray-900 mb-2">
           {content?.basicInfoTitle || t("title")}
@@ -43,7 +46,7 @@ export function BasicInfoPanel({ form, content }: BasicInfoPanelProps) {
 
       <div className="space-y-4">
         {/* Name Fields */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
           <FormField
             control={form.control}
             name="basicInfo.firstName"
@@ -141,7 +144,7 @@ export function BasicInfoPanel({ form, content }: BasicInfoPanelProps) {
         />
 
         {/* Location */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
           <FormField
             control={form.control}
             name="basicInfo.country"
