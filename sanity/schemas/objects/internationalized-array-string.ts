@@ -39,10 +39,10 @@ export default defineType({
   ],
   options: {
     list: [
-      { _key: 'en', title: 'English' },
-      { _key: 'es', title: 'Español' },
-      { _key: 'fr', title: 'Français' },
-      { _key: 'ar', title: 'العربية' },
+      { _type: 'localizedString', _key: 'en', title: 'English' },
+      { _type: 'localizedString', _key: 'es', title: 'Español' },
+      { _type: 'localizedString', _key: 'fr', title: 'Français' },
+      { _type: 'localizedString', _key: 'ar', title: 'العربية' },
     ],
     layout: 'list',
   },

@@ -309,7 +309,7 @@ export default defineType({
             const downloads = downloadCount || 0;
 
             return {
-                title: `${featured ? "⭐ " : ""}${title || "Untitled Report"}`,
+                title: `${featured ? "FEATURED " : ""}${title || "Untitled Report"}`,
                 subtitle: `${reportTypeLabel} | ${year || "No year"} | ${downloads} downloads`,
                 media,
             };

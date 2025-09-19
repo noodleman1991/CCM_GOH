@@ -33,7 +33,7 @@ export default defineType({
     prepare({ title, subtitle, media, featured, publishedAt }) {
       const date = publishedAt ? new Date(publishedAt).toLocaleDateString() : "Draft";
       return {
-        title: `${featured ? "⭐ " : ""}${title || "Untitled News Post"}`,
+        title: `${featured ? "FEATURED " : ""}${title || "Untitled News Post"}`,
         subtitle: `${subtitle || ""} | ${date}`,
         media,
       };

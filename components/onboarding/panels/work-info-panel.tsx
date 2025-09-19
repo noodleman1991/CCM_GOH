@@ -15,8 +15,8 @@ import type { OnboardingFormData } from "@/lib/schemas/onboarding-schema"
 interface WorkInfoPanelProps {
   form: any
   content?: any
-  workTypes?: Array<{ _id: string; title: any; description?: any }>
-  expertiseAreas?: Array<{ _id: string; title: any; description?: any }>
+  workTypes?: Array<{ _id: string; key: string; label: string; description?: string }>
+  expertiseAreas?: Array<{ _id: string; key: string; label: string; description?: string }>
   isSubmitting?: boolean
 }
 
@@ -25,10 +25,8 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
   const locale = useLocale()
   const isRTL = rtlLocales.includes(locale)
 
-  const getLocalizedText = (item: any, fallback: string) => {
-    if (!item) return fallback
-    if (typeof item === 'string') return item
-    return item[locale] || item['en'] || item.labelFallback || fallback
+  const getLocalizedText = (text: string | undefined, fallback: string) => {
+    return text || fallback
   }
 
   return (
@@ -51,7 +49,7 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
             <FormItem>
               <div className="mb-4">
                 <FormLabel className="text-base flex items-center gap-1">
-                  {content?.fieldLabels?.workTypes || t("workTypes")}
+                  {content?.fieldLabels?.workInfo?.workTypes || t("workTypes")}
                   <span className="text-red-500">*</span>
                 </FormLabel>
                 <FormDescription>
@@ -86,7 +84,7 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
                           </FormControl>
                           <div className="space-y-1 leading-none">
                             <FormLabel className="font-normal">
-                              {getLocalizedText(item.title, `Work Type ${item._id}`)}
+                              {getLocalizedText(item.label, `Work Type ${item.key || item._id}`)}
                             </FormLabel>
                             {item.description && (
                               <FormDescription>
@@ -113,7 +111,7 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
             <FormItem>
               <div className="mb-4">
                 <FormLabel className="text-base flex items-center gap-1">
-                  {content?.fieldLabels?.expertiseAreas || t("expertiseAreas")}
+                  {content?.fieldLabels?.workInfo?.expertiseAreas || t("expertiseAreas")}
                   <span className="text-red-500">*</span>
                 </FormLabel>
                 <FormDescription>
@@ -148,7 +146,7 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
                           </FormControl>
                           <div className="space-y-1 leading-none">
                             <FormLabel className="font-normal">
-                              {getLocalizedText(item.title, `Expertise ${item._id}`)}
+                              {getLocalizedText(item.label, `Expertise ${item.key || item._id}`)}
                             </FormLabel>
                             {item.description && (
                               <FormDescription>
@@ -174,9 +172,9 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
             name="workInfo.organization"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{content?.fieldLabels?.organization || t("organization")}</FormLabel>
+                <FormLabel>{content?.fieldLabels?.workInfo?.organization || t("organization")}</FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder={content?.fieldPlaceholders?.organization || t("organizationPlaceholder")} />
+                  <Input {...field} placeholder={content?.fieldLabels?.workInfo?.organizationPlaceholder || t("organizationPlaceholder")} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -187,9 +185,9 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
             name="workInfo.position"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{content?.fieldLabels?.position || t("position")}</FormLabel>
+                <FormLabel>{content?.fieldLabels?.workInfo?.position || t("position")}</FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder={content?.fieldPlaceholders?.position || t("positionPlaceholder")} />
+                  <Input {...field} placeholder={content?.fieldLabels?.workInfo?.positionPlaceholder || t("positionPlaceholder")} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -203,9 +201,9 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
           name="workInfo.workBio"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{content?.fieldLabels?.workBio || t("workBio")}</FormLabel>
+              <FormLabel>{content?.fieldLabels?.workInfo?.workBio || t("workBio")}</FormLabel>
               <FormControl>
-                <Textarea {...field} rows={4} placeholder={content?.fieldPlaceholders?.workBio || t("workBioPlaceholder")} />
+                <Textarea {...field} rows={4} placeholder={content?.fieldLabels?.workInfo?.workBioPlaceholder || t("workBioPlaceholder")} />
               </FormControl>
               <FormDescription>
                 {content?.workInfoFieldHints?.workBioHint || t("workBioHint")}
@@ -217,16 +215,16 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
 
         {/* Social Links */}
         <div className="space-y-4">
-          <h3 className="text-lg font-medium">{content?.fieldLabels?.socialLinks || t("socialLinks")}</h3>
+          <h3 className="text-lg font-medium">{content?.fieldLabels?.workInfo?.socialLinks || t("socialLinks")}</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormField
               control={form.control}
               name="workInfo.linkedinProfile"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{content?.fieldLabels?.linkedin || t("linkedin")}</FormLabel>
+                  <FormLabel>{content?.fieldLabels?.workInfo?.linkedin || t("linkedin")}</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder={content?.fieldPlaceholders?.linkedin || "https://linkedin.com/in/username"} />
+                    <Input {...field} placeholder={content?.fieldLabels?.workInfo?.linkedinPlaceholder || "https://linkedin.com/in/username"} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -237,9 +235,9 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
               name="workInfo.portfolio"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{content?.fieldLabels?.portfolio || t("portfolio")}</FormLabel>
+                  <FormLabel>{content?.fieldLabels?.workInfo?.portfolio || t("portfolio")}</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder={content?.fieldPlaceholders?.portfolio || "https://yourportfolio.com"} />
+                    <Input {...field} placeholder={content?.fieldLabels?.workInfo?.portfolioPlaceholder || "https://yourportfolio.com"} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -250,9 +248,9 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
               name="workInfo.githubProfile"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{content?.fieldLabels?.github || t("github")}</FormLabel>
+                  <FormLabel>{content?.fieldLabels?.workInfo?.github || t("github")}</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder={content?.fieldPlaceholders?.github || "https://github.com/username"} />
+                    <Input {...field} placeholder={content?.fieldLabels?.workInfo?.githubPlaceholder || "https://github.com/username"} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -263,9 +261,9 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
               name="workInfo.personalWebsite"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{content?.fieldLabels?.website || t("website")}</FormLabel>
+                  <FormLabel>{content?.fieldLabels?.workInfo?.website || t("website")}</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder={content?.fieldPlaceholders?.website || "https://yourwebsite.com"} />
+                    <Input {...field} placeholder={content?.fieldLabels?.workInfo?.websitePlaceholder || "https://yourwebsite.com"} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

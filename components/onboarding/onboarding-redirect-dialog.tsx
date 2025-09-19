@@ -59,8 +59,8 @@ export default function OnboardingRedirectDialog({
         }
       })
 
-      // Redirect to hub
-      router.push(`/${locale}/hub`)
+      // Redirect to collaborate page
+      router.push(`/${locale}/collaborate`)
     } catch (error) {
       console.error('Failed to update user metadata:', error)
       setIsProcessing(false)

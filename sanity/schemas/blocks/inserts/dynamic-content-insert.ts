@@ -106,27 +106,19 @@ export default defineType({
     },
     prepare({ queryType, displayStyle, itemCount, title }) {
       const queryLabels = {
-        recentNews: "📰 Recent News",
-        recentCaseStudies: "📊 Recent Case Studies",
-        recentLivedExperiences: "🎥 Recent Lived Experiences",
-        featuredNews: "⭐ Featured News",
-        featuredCaseStudies: "⭐ Featured Case Studies",
-        featuredLivedExperiences: "⭐ Featured Lived Experiences",
-      };
-
-      const styleEmojis = {
-        grid: "⏹️",
-        carousel: "🎠",
-        list: "📋",
-        minimal: "🎯",
+        recentNews: "Recent News",
+        recentCaseStudies: "Recent Case Studies",
+        recentLivedExperiences: "Recent Lived Experiences",
+        featuredNews: "Featured News",
+        featuredCaseStudies: "Featured Case Studies",
+        featuredLivedExperiences: "Featured Lived Experiences",
       };
 
       const queryLabel = queryLabels[queryType as keyof typeof queryLabels] || queryType;
-      const styleEmoji = styleEmojis[displayStyle as keyof typeof styleEmojis] || "📄";
 
       return {
         title: title || `Dynamic: ${queryLabel}`,
-        subtitle: `${styleEmoji} ${displayStyle} | ${itemCount} items`,
+        subtitle: `${displayStyle} | ${itemCount} items`,
         media: Database,
       };
     },

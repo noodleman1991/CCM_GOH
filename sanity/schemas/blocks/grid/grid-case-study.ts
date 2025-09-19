@@ -9,10 +9,10 @@ const supportedLanguages = [
 ];
 
 const statusOptions = [
-    { title: "📝 Pending Review", value: "pending" },
-    { title: "❌ Rejected", value: "rejected" },
-    { title: "📋 Needs Revision", value: "revision" },
-    { title: "✅ Approved (Published)", value: "approved" },
+    { title: "Pending Review", value: "pending" },
+    { title: "Rejected", value: "rejected" },
+    { title: "Needs Revision", value: "revision" },
+    { title: "Approved (Published)", value: "approved" },
 ];
 
 export default defineType({
@@ -140,22 +140,6 @@ export default defineType({
             // Get localized title
             const localizedTitle = title?.[lang] || title?.en || "Untitled Case Study";
 
-            // Status indicators matching your main schema
-            const statusEmojis: Record<string, string> = {
-                pending: "📝",
-                approved: "✅",
-                rejected: "❌",
-                revision: "📋",
-            };
-
-            // Layout indicators
-            const layoutEmojis: Record<string, string> = {
-                default: "",
-                compact: "📦",
-                featured: "⭐",
-                minimal: "📄",
-            };
-
             // Build subtitle with all relevant info
             const parts: string[] = [];
 
@@ -163,38 +147,36 @@ export default defineType({
             parts.push(langConfig?.title || "Content");
 
             // Status
-            const statusEmoji = statusEmojis[status || "pending"] || "📝";
-            parts.push(`${statusEmoji} ${status || "pending"}`);
+            parts.push(status || "pending");
 
             // Layout if not default
             if (layout && layout !== "default") {
-                const layoutEmoji = layoutEmojis[layout] || "";
-                parts.push(`${layoutEmoji} ${layout}`);
+                parts.push(layout);
             }
 
             // Priority if set
             if (priority !== undefined && priority > 0) {
-                parts.push(`🔢 ${priority}`);
+                parts.push(`Priority: ${priority}`);
             }
 
             // Featured indicator
             if (featured) {
-                parts.push("🌟 Featured");
+                parts.push("Featured");
             }
 
             // Custom excerpt indicator
             const hasCustomExcerpt = customExcerpt && Object.values(customExcerpt).some(excerpt => excerpt);
             if (hasCustomExcerpt) {
-                parts.push("✏️ Custom");
+                parts.push("Custom Excerpt");
             }
 
             // Authors count
             if (authors && authors.length > 0) {
                 const leadAuthor = authors.find(a => a.role === "lead");
                 if (leadAuthor) {
-                    parts.push(`👑 ${leadAuthor.name}`);
+                    parts.push(`Lead: ${leadAuthor.name}`);
                 } else {
-                    parts.push(`👥 ${authors.length} author${authors.length > 1 ? 's' : ''}`);
+                    parts.push(`${authors.length} author${authors.length > 1 ? 's' : ''}`);
                 }
             }
 

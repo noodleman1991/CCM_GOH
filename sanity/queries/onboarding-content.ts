@@ -12,11 +12,14 @@ export const onboardingContentQuery = groq`
     // Welcome Step Content
     welcomeTitle,
     welcomeSubtitle,
+    welcomeDescription,
     welcomeFeatures[] {
       title,
       description
     },
     welcomeSteps,
+    gettingStartedTitle,
+    gettingStartedDescription,
     getStartedText,
     timeEstimate,
 
@@ -56,7 +59,22 @@ export const onboardingContentQuery = groq`
     redirectDialogMessage,
     proceedToOnboardingText,
     continueToHubText,
-    oneTimeWaiverText
+    oneTimeWaiverText,
+
+    // Navigation Texts
+    navigationTexts,
+
+    // Validation Messages
+    validationMessages,
+
+    // Field Labels and Placeholders
+    fieldLabels,
+
+    // Privacy Field Labels
+    privacyFieldLabels,
+
+    // Visibility Options Labels
+    visibilityLabels
   }
 `
 
@@ -75,8 +93,11 @@ export const onboardingContentQueryWithFallback = groq`
     // Welcome Step
     welcomeTitle,
     welcomeSubtitle,
+    welcomeDescription,
     welcomeFeatures,
     welcomeSteps,
+    gettingStartedTitle,
+    gettingStartedDescription,
     getStartedText,
     timeEstimate,
 
@@ -116,6 +137,21 @@ export const onboardingContentQueryWithFallback = groq`
     redirectDialogMessage,
     proceedToOnboardingText,
     continueToHubText,
-    oneTimeWaiverText
+    oneTimeWaiverText,
+
+    // Navigation Texts
+    navigationTexts,
+
+    // Validation Messages
+    validationMessages,
+
+    // Field Labels and Placeholders
+    fieldLabels,
+
+    // Privacy Field Labels
+    privacyFieldLabels,
+
+    // Visibility Options Labels
+    visibilityLabels
   }
 `

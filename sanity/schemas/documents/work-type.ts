@@ -72,7 +72,6 @@ export default defineType({
       return {
         title: displayLabel,
         subtitle: `Key: ${key}${!isActive ? ' (Inactive)' : ''}`,
-        media: isActive ? '✅' : '❌',
       }
     },
   },

@@ -32,7 +32,6 @@ import { RecentWorkPanel } from "./panels/recent-work-panel"
 import { PrivacyPanel } from "./panels/privacy-panel"
 import { ReviewPanel } from "./panels/review-panel"
 
-import { submitOnboardingData } from "@/lib/actions/onboarding"
 import { fetchOnboardingContent } from "@/lib/actions/sanity"
 import { fetchUserManagementOptions } from "@/lib/actions/sync-user-management"
 
@@ -238,8 +237,24 @@ export default function UnifiedOnboardingContainer() {
         showLocation: data.privacy.showLocation
       }
 
-      await submitOnboardingData(submissionData)
-      router.push("/dashboard")
+      // Submit to our new API endpoint
+      const response = await fetch('/api/onboarding/complete', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(submissionData)
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Submission failed')
+      }
+
+      const result = await response.json()
+      console.log('✅ Onboarding completed:', result)
+
+      router.push("/collaborate")
     } catch (error) {
       console.error("Submission error:", error)
       setValidationError("Failed to submit your information. Please try again.")

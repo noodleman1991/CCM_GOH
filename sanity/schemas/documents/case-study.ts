@@ -19,10 +19,10 @@ const authorRoles = [
 
 // Status configuration
 const statusOptions = [
-    { title: "📝 Pending Review", value: "pending" },
-    { title: "❌ Rejected", value: "rejected" },
-    { title: "📋 Needs Revision", value: "revision" },
-    { title: "✅ Approved (Published)", value: "approved" },
+    { title: "Pending Review", value: "pending" },
+    { title: "Rejected", value: "rejected" },
+    { title: "Needs Revision", value: "revision" },
+    { title: "Approved (Published)", value: "approved" },
 ];
 
 // Helper function for localized fields
@@ -178,15 +178,7 @@ export default defineType({
                         role?: string;
                         affiliation?: string;
                     }) {
-                        const roleEmojis = {
-                            lead: "👑",
-                            coauthor: "✍️",
-                            contributor: "🤝",
-                            advisor: "🎓",
-                        };
-
-                        const roleEmoji = roleEmojis[role as keyof typeof roleEmojis] || "📝";
-                        const subtitle = `${roleEmoji} ${role || "Unknown"}${affiliation ? ` - ${affiliation}` : ""}`;
+                        const subtitle = `${role || "Unknown"}${affiliation ? ` - ${affiliation}` : ""}`;
 
                         return {
                             title: name || "Unknown Author",
@@ -408,16 +400,8 @@ export default defineType({
         }) {
             const displayTitle = title?.en || "Untitled Case Study";
 
-            const statusEmojis: Record<string, string> = {
-                pending: "📝",
-                approved: "✅",
-                rejected: "❌",
-                revision: "📋",
-            };
-
-            const statusEmoji = statusEmojis[status || "pending"] || "📝";
-            const featuredIcon = featured ? "⭐ " : "";
-            const subtitle = `${featuredIcon}${statusEmoji} ${status || "pending"}`;
+            const featuredIcon = featured ? "Featured " : "";
+            const subtitle = `${featuredIcon}${status || "pending"}`;
 
             return {
                 title: displayTitle,
