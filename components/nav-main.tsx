@@ -63,36 +63,21 @@ export function NavMain({
                   </CollapsibleTrigger>
                   <CollapsibleContent>
                     <SidebarMenuSub>
-                      {item.items?.map((subItem, index) => {
-                        // Check if this is the Regional Communities accordion
-                        const isRegionalCommunity = item.title && (item.title.toLowerCase().includes('regional') || item.title.toLowerCase().includes('communities'))
-                        return (
-                          <SidebarMenuSubItem
-                            key={subItem.title}
-                            className={cn(
-                              isRegionalCommunity && "mb-0.5"
-                            )}
+                      {item.items?.map((subItem, index) => (
+                        <SidebarMenuSubItem key={subItem.title}>
+                          <SidebarMenuSubButton
+                            asChild
+                            className="h-auto py-1 [&>span:last-child]:whitespace-normal [&>span:last-child]:break-words [&>span:last-child]:truncate-none [&>span:last-child]:hyphens-auto"
                           >
-                            <SidebarMenuSubButton
-                              asChild
-                              className={cn(
-                                isRegionalCommunity && "min-h-fit py-1 h-auto"
-                              )}
-                            >
-                              <a href={subItem.url}>
-                                {subItem.icon && <subItem.icon />}
-                                <span className={cn(
-                                  isRegionalCommunity
-                                    ? "whitespace-normal break-words leading-tight overflow-wrap-break-word hyphens-auto"
-                                    : ""
-                                )}>
-                                  {subItem.title}
-                                </span>
-                              </a>
-                            </SidebarMenuSubButton>
-                          </SidebarMenuSubItem>
-                        )
-                      })}
+                            <a href={subItem.url}>
+                              {subItem.icon && <subItem.icon />}
+                              <span className="leading-tight">
+                                {subItem.title}
+                              </span>
+                            </a>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                      ))}
                     </SidebarMenuSub>
                   </CollapsibleContent>
                 </SidebarMenuItem>

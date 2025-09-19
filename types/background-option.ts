@@ -1,6 +1,7 @@
 // Background option type definition for manual extension of Sanity types
 export interface BackgroundOptionType {
-  type?: "none" | "color" | "gradient" | "svg" | "image";
+  type?: "none" | "ccm-palette" | "color" | "gradient" | "svg" | "image";
+  ccmColor?: "ccm-sky" | "ccm-water" | "ccm-sea" | "ccm-midnight";
   color?: string; // Hex color string (e.g., "#205596")
   gradient?: {
     direction?: "to-r" | "to-l" | "to-b" | "to-t" | "to-br" | "to-bl" | "to-tr" | "to-tl";

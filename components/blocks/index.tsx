@@ -66,7 +66,7 @@ export default function Blocks({ blocks, locale, translations, userId }: BlocksP
                 }
                 return (
                     <Component
-                        {...(block as any)}
+                        {...(block as any)} // eslint-disable-line @typescript-eslint/no-explicit-any
                         key={block._key}
                         locale={locale}
                         isRTL={rtl}

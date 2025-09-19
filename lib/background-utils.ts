@@ -10,6 +10,22 @@ export function getBackgroundStyles(backgroundOption?: BackgroundOptionType | nu
   }
 
   switch (backgroundOption.type) {
+    case "ccm-palette":
+      if (backgroundOption.ccmColor) {
+        const ccmColorMap = {
+          "ccm-sky": "#9BC6DA",
+          "ccm-water": "#4186C3",
+          "ccm-sea": "#205596",
+          "ccm-midnight": "#0B3160",
+        };
+        return {
+          style: {
+            backgroundColor: ccmColorMap[backgroundOption.ccmColor as keyof typeof ccmColorMap],
+          },
+        };
+      }
+      break;
+
     case "color":
       if (backgroundOption.color) {
         return {

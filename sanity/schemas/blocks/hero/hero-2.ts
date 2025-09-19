@@ -31,6 +31,12 @@ export default defineType({
       of: [{ type: "link" }],
       validation: (rule) => rule.max(2),
     }),
+    defineField({
+      name: "padding",
+      type: "section-padding",
+      title: "Padding",
+      description: "Add padding to the hero section",
+    }),
   ],
   preview: {
     select: {

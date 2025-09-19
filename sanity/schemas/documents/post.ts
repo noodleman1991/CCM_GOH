@@ -124,6 +124,14 @@ export default defineType({
       of: [{ type: "reference", to: { type: "category" } }],
     }),
     defineField({
+      name: "relatedCommunity",
+      title: "Related Community",
+      type: "reference",
+      group: "settings",
+      to: { type: "regionalCommunity" },
+      description: "The community this post relates to",
+    }),
+    defineField({
       name: "body",
       title: "Body",
       type: "block-content",

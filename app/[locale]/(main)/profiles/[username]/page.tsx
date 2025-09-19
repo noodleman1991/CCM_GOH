@@ -1,6 +1,5 @@
-import { notFound, redirect } from "next/navigation"
+import { notFound } from "next/navigation"
 import { getTranslations } from 'next-intl/server'
-import { Suspense } from "react"
 import { auth } from "@clerk/nextjs/server"
 import { BlurFade } from "@/components/magicui/blur-fade"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"

@@ -9,11 +9,15 @@ import SectionContainer from "@/components/ui/section-container";
 import { cn } from "@/lib/utils";
 import { isRTL } from "@/i18n/i18n-helpers";
 
-type Hero1Props = Extract<
+type Hero1BaseProps = Extract<
     NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number],
     { _type: "hero-1" }
-> & {
+>;
+
+type Hero1Props = Omit<Hero1BaseProps, 'imagePosition'> & {
     locale?: string;
+    padding?: any;
+    imagePosition?: "left" | "right" | string | null;
 };
 
 export default function Hero1({
@@ -23,19 +27,25 @@ export default function Hero1({
                                   body,
                                   image,
                                   links,
+                                  padding,
+                                  imagePosition = "right",
                                   locale = "en",
                               }: Hero1Props) {
     const rtl = isRTL(locale);
+    const isImageRight = imagePosition === "right" || imagePosition === null;
+
     return (
-        <SectionContainer background={background}>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:pt-40">
+        <SectionContainer background={background} padding={padding}>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
                 <div className={cn(
                     "grid grid-cols-1 lg:grid-cols-2 gap-6",
                     rtl ? "lg:direction-rtl" : ""
                 )}>
                     <div className={cn(
                         "flex flex-col justify-start",
-                        rtl ? "lg:order-2" : "lg:order-1"
+                        rtl
+                            ? isImageRight ? "lg:order-1" : "lg:order-2"
+                            : isImageRight ? "lg:order-1" : "lg:order-2"
                     )}>
                         {tagLine && (
                             <h1 className="leading-[0] font-sans animate-fade-up [animation-delay:100ms] opacity-0">
@@ -74,7 +84,9 @@ export default function Hero1({
                     </div>
                     <div className={cn(
                         "flex flex-col justify-center",
-                        rtl ? "lg:order-1" : "lg:order-2"
+                        rtl
+                            ? isImageRight ? "lg:order-2" : "lg:order-1"
+                            : isImageRight ? "lg:order-2" : "lg:order-1"
                     )}>
                         {image && image.asset?._id && (
                             <div className="relative w-full max-w-full overflow-hidden">

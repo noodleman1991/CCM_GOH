@@ -69,6 +69,9 @@ model User {
   linkedinProfile String?
   twitterHandle   String?
 
+  // Preferences
+  preferredLanguage Language @default(EN) // User's preferred language
+
   // Privacy Controls
   isSearchable      Boolean           @default(true) // User can be found in search
   profileVisibility ProfileVisibility @default(PUBLIC) // Profile visibility level
@@ -77,6 +80,11 @@ model User {
   showWorkDetails   Boolean           @default(true) // Show work info in profile
   showSocialLinks   Boolean           @default(true) // Show social links in profile
   showLocation      Boolean           @default(true) // Show country/city in profile
+
+  // Onboarding Status
+  onboardingCompleted Boolean @default(false) // Has user completed onboarding
+  onboardingStep      Int     @default(0) // Current onboarding step (0-5)
+  welcomeMessageSeen  Boolean @default(false) // Has user seen welcome message
 
   // Global role (default: community_member)
   role Role @default(community_member)
@@ -97,6 +105,13 @@ model User {
 enum AgeGroup {
   UNDER_18
   ABOVE_18
+}
+
+enum Language {
+  EN // English
+  ES // Spanish
+  FR // French
+  AR // Arabic
 }
 
 enum WorkType {

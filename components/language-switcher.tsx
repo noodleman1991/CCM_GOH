@@ -67,13 +67,23 @@ export function LanguageSwitcher() {
                                 <Button
                                     key={language.code}
                                     variant="ghost"
-                                    className="justify-start gap-2"
+                                    className={cn(
+                                        "gap-2",
+                                        language.isRTL ? "justify-end flex-row-reverse" : "justify-start"
+                                    )}
                                     onClick={() => switchLanguage(language.code)}
                                 >
                                     <Globe className="h-5 w-5" />
-                                    <span>{language.name}</span>
+                                    <span className={cn(
+                                        language.isRTL && "text-right"
+                                    )} dir={language.isRTL ? "rtl" : "ltr"}>
+                                        {language.name}
+                                    </span>
                                     {language.code === currentLocale && (
-                                        <Check className="h-5 w-5 ml-auto" />
+                                        <Check className={cn(
+                                            "h-5 w-5",
+                                            language.isRTL ? "mr-auto" : "ml-auto"
+                                        )} />
                                     )}
                                 </Button>
                             ))}
@@ -98,14 +108,21 @@ export function LanguageSwitcher() {
                         >
                             <div className={cn(
                                 "flex flex-1 items-center text-sm leading-tight",
-                                isRTL ? "text-right" : "text-left"
+                                currentLanguage.isRTL ? "text-right justify-end" : "text-left"
                             )}>
-                                <span className="truncate" style={{ fontFamily: 'Poppins', fontWeight: 700 }}>
+                                <span
+                                    className="truncate"
+                                    style={{ fontFamily: 'Poppins', fontWeight: 700 }}
+                                    dir={currentLanguage.isRTL ? "rtl" : "ltr"}
+                                >
                                     <span className="hidden sm:inline">{currentLanguage.name}</span>
                                     <span className="sm:hidden">{currentLocale.toUpperCase()}</span>
                                 </span>
                             </div>
-                            <Languages className="ml-auto size-4" />
+                            <Languages className={cn(
+                                "size-4",
+                                currentLanguage.isRTL ? "mr-auto" : "ml-auto"
+                            )} />
                         </SidebarMenuButton>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
@@ -117,10 +134,17 @@ export function LanguageSwitcher() {
                         {languageOptions.map(language => (
                             <DropdownMenuItem
                                 key={language.code}
-                                className="flex items-center justify-between cursor-pointer"
+                                className={cn(
+                                    "flex items-center justify-between cursor-pointer",
+                                    language.isRTL && "flex-row-reverse text-right"
+                                )}
                                 onClick={() => switchLanguage(language.code)}
                             >
-                                <span>{language.name}</span>
+                                <span className={cn(
+                                    language.isRTL && "text-right"
+                                )} dir={language.isRTL ? "rtl" : "ltr"}>
+                                    {language.name}
+                                </span>
                                 {language.code === currentLocale && <Check className="h-5 w-5" />}
                             </DropdownMenuItem>
                         ))}

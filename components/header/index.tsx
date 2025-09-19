@@ -25,18 +25,26 @@ const navItems = [
 export default function Header() {
   return (
     <header className="sticky top-0 w-full border-border/40 bg-background/95 z-50">
-      <div className="container flex items-center justify-between h-14">
-        <Link href="/" aria-label="Home page">
-          <Logo />
+      <div className="container flex items-center justify-between h-16 px-4">
+        {/* Mobile menu - positioned absolute left */}
+        <div className="flex items-center xl:hidden absolute left-4">
+          <ModeToggle />
+          <MobileNav navItems={navItems} />
+        </div>
+
+        {/* Logo - centered on mobile, left-aligned on desktop */}
+        <Link href="/" aria-label="Home page" className="flex-shrink-0 mx-auto xl:mx-0">
+          <Logo asChild />
         </Link>
+
+        {/* Desktop navigation - right side */}
         <div className="hidden xl:flex gap-7 items-center justify-between">
           <DesktopNav navItems={navItems} />
           <ModeToggle />
         </div>
-        <div className="flex items-center xl:hidden">
-          <ModeToggle />
-          <MobileNav navItems={navItems} />
-        </div>
+
+        {/* Spacer for mobile to balance centering */}
+        <div className="w-20 xl:hidden"></div>
       </div>
     </header>
   );

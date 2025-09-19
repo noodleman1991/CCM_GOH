@@ -29,7 +29,7 @@ export async function generateStaticParams() {
             const translations = homepage?._id ? await fetchTranslationsForPage(homepage._id) : [];
             if (translations?.length > 0) {
                 for (const translation of translations) {
-                    if (translation.language && translation.slug?.current) {
+                    if (translation && translation.language && translation.slug?.current) {
                         params.push({
                             locale: translation.language,
                         });

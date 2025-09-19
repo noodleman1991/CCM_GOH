@@ -10,6 +10,7 @@ import { ClerkProvider } from '@clerk/nextjs';
 import { arSA, esES, frFR, enGB } from '@clerk/localizations';
 import { rtlLocales } from '@/i18n/routing';
 import { Poppins, Lato } from "next/font/google";
+import OnboardingRedirectProvider from '@/components/onboarding/onboarding-redirect-provider';
 
 const poppins = Poppins({
     subsets: ["latin"],
@@ -92,7 +93,9 @@ export default async function LocaleLayout({
                         enableSystem
                         disableTransitionOnChange
                     >
-                        {children}
+                        <OnboardingRedirectProvider>
+                            {children}
+                        </OnboardingRedirectProvider>
                     </ThemeProvider>
                     <Toaster position="top-center" richColors />
                 </NextIntlClientProvider>

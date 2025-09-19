@@ -162,7 +162,7 @@ export default defineType({
             type: "reference",
             group: "affiliations",
             to: { type: "regionalCommunity" },
-            description: "The community this experience relates to",
+            description: "The community this lived experience relates to",
         }),
         
         // Related Organizations

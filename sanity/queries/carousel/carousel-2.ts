@@ -47,6 +47,19 @@ export const carousel2Query = groq`
         }
       },
       rating,
+      featured,
+      relatedCommunity->{
+        _id,
+        name
+      },
+      organization->{
+        _id,
+        name
+      },
+      project->{
+        _id,
+        name
+      },
     },
   }
 `;

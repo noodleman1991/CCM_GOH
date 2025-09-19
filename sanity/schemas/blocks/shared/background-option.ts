@@ -12,7 +12,8 @@ export const backgroundOption = defineType({
       options: {
         list: [
           { title: "None (inherit)", value: "none" },
-          { title: "Solid Color", value: "color" },
+          { title: "CCM Color Palette", value: "ccm-palette" },
+          { title: "Custom Color", value: "color" },
           { title: "Gradient", value: "gradient" },
           { title: "SVG Pattern", value: "svg" },
           { title: "Image", value: "image" },
@@ -22,8 +23,23 @@ export const backgroundOption = defineType({
       initialValue: "none",
     }),
     defineField({
+      name: "ccmColor",
+      title: "CCM Color",
+      type: "string",
+      options: {
+        list: [
+          { title: "CCM Sky", value: "ccm-sky" },
+          { title: "CCM Water", value: "ccm-water" },
+          { title: "CCM Sea", value: "ccm-sea" },
+          { title: "CCM Midnight", value: "ccm-midnight" },
+        ],
+        layout: "dropdown",
+      },
+      hidden: ({ parent }) => parent?.type !== "ccm-palette",
+    }),
+    defineField({
       name: "color",
-      title: "Background Color",
+      title: "Custom Background Color",
       type: "string",
       description: "Enter a hex color code (e.g., #205596)",
       hidden: ({ parent }) => parent?.type !== "color",
@@ -120,16 +136,25 @@ export const backgroundOption = defineType({
   preview: {
     select: {
       type: "type",
+      ccmColor: "ccmColor",
       color: "color",
       gradient: "gradient",
     },
-    prepare({ type, color, gradient }) {
+    prepare({ type, ccmColor, color, gradient }) {
       let subtitle = type || "None";
 
-      if (type === "color" && color) {
-        subtitle = `${type} (${color})`;
+      if (type === "ccm-palette" && ccmColor) {
+        const colorMap = {
+          "ccm-sky": "#9BC6DA",
+          "ccm-water": "#4186C3",
+          "ccm-sea": "#205596",
+          "ccm-midnight": "#0B3160",
+        };
+        subtitle = `CCM ${ccmColor.replace("ccm-", "").replace("-", " ").toUpperCase()} (${colorMap[ccmColor as keyof typeof colorMap]})`;
+      } else if (type === "color" && color) {
+        subtitle = `Custom Color (${color})`;
       } else if (type === "gradient" && gradient?.startColor && gradient?.endColor) {
-        subtitle = `${type} (${gradient.startColor} → ${gradient.endColor})`;
+        subtitle = `Gradient (${gradient.startColor} → ${gradient.endColor})`;
       }
 
       return {

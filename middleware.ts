@@ -62,7 +62,7 @@ export default clerkMiddleware(async (auth, req: NextRequest) => {
 
     if (
         userId &&
-        !sessionClaims?.metadata?.onboardingComplete &&
+        !(sessionClaims?.unsafeMetadata as any)?.onboardingComplete &&
         !isOnboardingRoute(req) &&
         !isPublicRoute(req)
     ) {

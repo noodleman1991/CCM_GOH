@@ -17,7 +17,7 @@ export default async function NotFound() {
                     </div>
                     <CardTitle className="text-2xl">{t('notFound')}</CardTitle>
                     <CardDescription className="text-base">
-                        The user profile you're looking for doesn't exist or may have been removed.
+                        The user profile you&apos;re looking for doesn&apos;t exist or may have been removed.
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="pt-6">

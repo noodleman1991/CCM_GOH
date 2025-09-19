@@ -19,6 +19,9 @@ import newsPost from "./schemas/documents/news-post";
 import externalSource from "./schemas/documents/external-source";
 import caseStudy from "./schemas/documents/case-study";
 import livedExperience from "./schemas/documents/lived-experience";
+import onboardingContent from "./schemas/documents/onboarding-content";
+import workType from "./schemas/documents/work-type";
+import expertiseArea from "./schemas/documents/expertise-area";
 
 
 // Schema UI shared objects
@@ -29,6 +32,10 @@ import { colorVariant } from "./schemas/blocks/shared/color-variant";
 import { buttonVariant } from "./schemas/blocks/shared/button-variant";
 import sectionPadding from "./schemas/blocks/shared/section-padding";
 import { backgroundOption } from "./schemas/blocks/shared/background-option";
+
+// Internationalized objects
+import internationalizedArrayString from "./schemas/objects/internationalized-array-string";
+import internationalizedArrayText from "./schemas/objects/internationalized-array-text";
 
 // Schema UI objects (existing blocks)
 import hero1 from "./schemas/blocks/hero/hero-1";
@@ -81,6 +88,10 @@ export const schema: { types: SchemaTypeDefinition[] } = {
         livedExperience,
         regionalCommunity,
         report,
+        // onboarding & user management
+        onboardingContent,
+        workType,
+        expertiseArea,
         // hub
         regionalCommunityPage,
         // shared objects
@@ -91,6 +102,9 @@ export const schema: { types: SchemaTypeDefinition[] } = {
         buttonVariant,
         sectionPadding,
         backgroundOption,
+        // internationalized objects
+        internationalizedArrayString,
+        internationalizedArrayText,
         // blocks
         hero1,
         hero2,

@@ -47,7 +47,7 @@ export default defineConfig({
                             locale === 'fr' ? 'Français' :
                             locale === 'es' ? 'Español' : 'English'
             })),
-            schemaTypes: ['page', 'regionalCommunityPage', 'post', 'caseStudy', 'homepage'],
+            schemaTypes: ['page', 'regionalCommunityPage', 'post', 'caseStudy', 'homepage', 'onboardingContent'],
             languageField: 'language',
             weakReferences: true,
         }),

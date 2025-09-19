@@ -444,5 +444,204 @@
       "relevant": "résultats pertinents sur",
       "foundIn": "Trouvé dans"
     }
+  },
+  "onboarding": {
+    "steps": {
+      "welcome": {
+        "title": "Bienvenue dans notre Communauté Mondiale !",
+        "subtitle": "Rejoignez les chercheurs climatiques, activistes et experts du monde entier travaillant ensemble pour créer un changement significatif.",
+        "getStarted": "Commencer",
+        "timeEstimate": "Cela prendra environ 5 minutes",
+        "features": {
+          "community": {
+            "title": "Communauté Mondiale",
+            "description": "Connectez-vous avec des esprits climatiques de tous les continents et horizons"
+          },
+          "collaborate": {
+            "title": "Collaborer",
+            "description": "Travaillez ensemble sur la recherche, le plaidoyer et les solutions concrètes"
+          },
+          "expertise": {
+            "title": "Partager l'Expertise",
+            "description": "Contribuez avec votre perspective unique et apprenez des autres"
+          },
+          "impact": {
+            "title": "Créer un Impact",
+            "description": "Transformez les idées en action avec des solutions climatiques réelles"
+          }
+        },
+        "whatToExpect": {
+          "title": "À quoi s'attendre pendant la configuration :",
+          "step1": "Parlez-nous de vous et de votre background",
+          "step2": "Partagez votre expérience professionnelle et domaines d'expertise",
+          "step3": "Ajoutez des projets récents pour présenter vos contributions",
+          "step4": "Choisissez vos paramètres de confidentialité et de visibilité"
+        }
+      },
+      "basicInfo": {
+        "title": "Informations de Base",
+        "description": "Parlez-nous un peu de vous. Ces informations aideront les autres à vous trouver et à se connecter avec vous.",
+        "firstName": "Prénom",
+        "lastName": "Nom",
+        "username": "Nom d'utilisateur",
+        "usernameHint": "Ceci sera utilisé dans l'URL de votre profil (exemple.com/profiles/votre-nom-utilisateur)",
+        "bio": "Biographie",
+        "bioPlaceholder": "Parlez-nous de vous, de vos intérêts et de ce qui vous amène dans notre communauté...",
+        "bioHint": "Partagez ce qui vous rend unique et ce qui vous passionne",
+        "ageGroup": "Groupe d'Âge",
+        "selectAge": "Sélectionnez votre groupe d'âge",
+        "under18": "Moins de 18 ans",
+        "above18": "18 ans ou plus",
+        "country": "Pays",
+        "city": "Ville/Village",
+        "preferredLanguage": "Langue Préférée",
+        "languageHint": "Choisissez votre langue préférée pour la plateforme",
+        "continue": "Continuer"
+      },
+      "workInfo": {
+        "title": "Informations Professionnelles",
+        "description": "Aidez-nous à comprendre votre parcours professionnel et vos domaines d'expertise.",
+        "workTypesLabel": "Quel type de travail faites-vous ?",
+        "workTypesDescription": "Sélectionnez tous ceux qui s'appliquent",
+        "workTypes": {
+          "research": "Recherche",
+          "policy": "Politique",
+          "livedExperience": "Expert par expérience vécue",
+          "ngo": "ONG",
+          "communityOrg": "Organisation communautaire",
+          "education": "Éducation ou enseignement"
+        },
+        "expertiseLabel": "Quels sont vos domaines d'expertise ?",
+        "expertiseDescription": "Sélectionnez tous ceux qui s'appliquent",
+        "expertise": {
+          "climate": "Changement Climatique",
+          "mentalHealth": "Santé Mentale",
+          "health": "Santé"
+        },
+        "organization": "Organisation",
+        "organizationPlaceholder": "Entrez le nom de votre organisation",
+        "position": "Poste",
+        "positionPlaceholder": "Entrez votre titre ou rôle professionnel",
+        "workBio": "Biographie Professionnelle",
+        "workBioPlaceholder": "Décrivez votre expérience professionnelle, rôle actuel et accomplissements clés...",
+        "workBioHint": "Cela aide les autres à comprendre votre parcours professionnel et votre expertise",
+        "socialLinks": "Liens Sociaux",
+        "socialLinksDescription": "Ajoutez des liens pour aider les autres à se connecter avec vous professionnellement",
+        "personalWebsite": "Site Web Personnel",
+        "linkedin": "LinkedIn",
+        "twitter": "Twitter",
+        "continue": "Continuer"
+      },
+      "recentWork": {
+        "title": "Travaux Récents",
+        "description": "Présentez vos projets récents, recherches ou contributions. Cela aide les autres à comprendre votre focus actuel et votre expertise.",
+        "addWork": "Ajouter un Travail",
+        "editWork": "Modifier le Travail",
+        "noWorkTitle": "Aucun travail récent ajouté pour le moment",
+        "noWorkDescription": "Ajoutez vos projets récents, recherches ou autres contributions pour aider les autres à comprendre votre expertise.",
+        "workTitle": "Titre du Projet",
+        "workTitlePlaceholder": "Entrez le titre de votre projet ou travail",
+        "workDescription": "Description",
+        "workDescriptionPlaceholder": "Décrivez ce que ce projet impliquait et son impact...",
+        "workLink": "Lien du Projet",
+        "workLinkHint": "Optionnel : Lien vers votre projet, publication ou portfolio",
+        "isOngoing": "Ce travail est en cours",
+        "isOngoingHint": "Cochez ceci si vous travaillez encore sur ce projet",
+        "startDate": "Date de Début",
+        "endDate": "Date de Fin",
+        "ongoing": "En cours",
+        "viewProject": "Voir le Projet",
+        "cancel": "Annuler",
+        "updateWork": "Mettre à jour le Travail",
+        "continue": "Continuer"
+      },
+      "privacy": {
+        "title": "Confidentialité et Visibilité",
+        "description": "Contrôlez comment votre profil apparaît aux autres et quelles informations sont visibles. Vous pouvez modifier ces paramètres à tout moment.",
+        "searchability": {
+          "title": "Découvrabilité du Profil",
+          "description": "Contrôlez si les autres peuvent trouver votre profil via la recherche",
+          "allowSearch": "Permettre aux autres de me trouver dans la recherche",
+          "searchHint": "Lorsque activé, votre profil apparaîtra dans les résultats de recherche"
+        },
+        "visibility": {
+          "title": "Visibilité du Profil",
+          "description": "Choisissez qui peut voir les informations de votre profil",
+          "public": {
+            "title": "Public",
+            "description": "Tout le monde peut voir votre profil, même sans compte"
+          },
+          "members": {
+            "title": "Membres Seulement",
+            "description": "Seuls les membres de la communauté peuvent voir votre profil"
+          },
+          "private": {
+            "title": "Privé",
+            "description": "Votre profil n'est pas découvrable et seulement visible par vous"
+          }
+        },
+        "profileInfo": {
+          "title": "Visibilité des Informations",
+          "description": "Choisissez quelles informations afficher sur votre profil",
+          "showEmail": "Afficher l'adresse e-mail",
+          "emailHint": "Afficher votre adresse e-mail sur votre profil",
+          "showPhone": "Afficher le numéro de téléphone",
+          "phoneHint": "Afficher votre numéro de téléphone sur votre profil",
+          "showWork": "Afficher les informations professionnelles",
+          "workHint": "Afficher votre organisation, poste et biographie professionnelle",
+          "showSocial": "Afficher les liens sociaux",
+          "socialHint": "Afficher votre site web et liens de médias sociaux",
+          "showLocation": "Afficher la localisation",
+          "locationHint": "Afficher les informations de votre pays et ville"
+        },
+        "continue": "Continuer"
+      },
+      "review": {
+        "title": "Presque Prêt !",
+        "description": "Examinez vos informations ci-dessous et apportez les dernières modifications. Vous pouvez toujours modifier votre profil plus tard.",
+        "fields": {
+          "name": "Nom",
+          "username": "Nom d'utilisateur",
+          "location": "Localisation",
+          "language": "Langue Préférée",
+          "bio": "Biographie",
+          "workTypes": "Types de Travail",
+          "expertise": "Domaines d'Expertise",
+          "organization": "Organisation",
+          "position": "Poste",
+          "workBio": "Biographie Professionnelle",
+          "socialLinks": "Liens Sociaux",
+          "website": "Site Web Personnel",
+          "searchable": "Découvrable dans la recherche",
+          "visibility": "Visibilité du profil",
+          "shownInProfile": "Informations affichées dans le profil"
+        },
+        "visibility": {
+          "public": "Public",
+          "members": "Membres Seulement",
+          "private": "Privé"
+        },
+        "yes": "Oui",
+        "no": "Non",
+        "email": "E-mail",
+        "phone": "Téléphone",
+        "workDetails": "Détails du Travail",
+        "socialLinks": "Liens Sociaux",
+        "location": "Localisation",
+        "ongoing": "En cours",
+        "viewProject": "Voir le Projet",
+        "readyTitle": "Vous êtes prêt !",
+        "readyDescription": "Bienvenue dans notre communauté mondiale d'esprits climatiques. Créons un changement significatif ensemble.",
+        "completeOnboarding": "Terminer la Configuration"
+      }
+    },
+    "title": "Configurer votre Profil",
+    "of": "de",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "getStarted": "Commencer",
+    "continue": "Continuer",
+    "reviewProfile": "Réviser le Profil",
+    "completeProfile": "Terminer le Profil"
   }
 }
