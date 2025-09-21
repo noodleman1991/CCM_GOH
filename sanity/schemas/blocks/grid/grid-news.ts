@@ -1,7 +1,7 @@
 import { defineField, defineType } from "sanity";
 import { FileText } from "lucide-react";
 
-export const gridNews = defineType({
+export default defineType({
     name: "grid-news",
     title: "Grid News",
     type: "object",

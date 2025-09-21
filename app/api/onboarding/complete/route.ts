@@ -46,23 +46,98 @@ const OnboardingSchema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
+    // Ensure we always return JSON, even for early errors
     const { userId } = await auth()
     if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+      console.error('❌ Onboarding API: Unauthorized access attempt')
+      return NextResponse.json({
+        success: false,
+        error: "Unauthorized",
+        code: "AUTH_REQUIRED"
+      }, {
+        status: 401,
+        headers: { 'Content-Type': 'application/json' }
+      })
     }
 
-    const body = await request.json()
-    const validatedData = OnboardingSchema.parse(body)
+    // Parse request body with error handling
+    let body
+    try {
+      body = await request.json()
+    } catch (parseError) {
+      console.error('❌ Onboarding API: Invalid JSON in request body:', parseError)
+      return NextResponse.json({
+        success: false,
+        error: "Invalid JSON in request body",
+        code: "INVALID_JSON"
+      }, {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      })
+    }
 
     console.log(`📥 Processing onboarding completion for user ${userId}`)
 
+    // Validate data with detailed error messages
+    let validatedData
+    try {
+      validatedData = OnboardingSchema.parse(body)
+    } catch (validationError) {
+      console.error('❌ Onboarding API: Validation failed:', validationError)
+      if (validationError instanceof z.ZodError) {
+        return NextResponse.json({
+          success: false,
+          error: "Validation failed",
+          code: "VALIDATION_ERROR",
+          details: validationError.errors.map(err => ({
+            field: err.path.join('.'),
+            message: err.message,
+            code: err.code
+          }))
+        }, {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' }
+        })
+      }
+      // Re-throw unknown validation errors
+      return NextResponse.json({
+        success: false,
+        error: "Validation failed",
+        code: "UNKNOWN_VALIDATION_ERROR"
+      }, {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      })
+    }
+
     // Check if user exists in database
-    const existingUser = await prisma.user.findUnique({
-      where: { id: userId }
-    })
+    let existingUser
+    try {
+      existingUser = await prisma.user.findUnique({
+        where: { id: userId }
+      })
+    } catch (dbError) {
+      console.error('❌ Onboarding API: Database error checking user:', dbError)
+      return NextResponse.json({
+        success: false,
+        error: "Database connection error",
+        code: "DB_CONNECTION_ERROR"
+      }, {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      })
+    }
 
     if (!existingUser) {
-      return NextResponse.json({ error: "User not found in database" }, { status: 404 })
+      console.error(`❌ Onboarding API: User ${userId} not found in database`)
+      return NextResponse.json({
+        success: false,
+        error: "User not found in database",
+        code: "USER_NOT_FOUND"
+      }, {
+        status: 404,
+        headers: { 'Content-Type': 'application/json' }
+      })
     }
 
     // Update user in Prisma with onboarding data
@@ -180,17 +255,17 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('❌ Error completing onboarding:', error)
 
-    if (error instanceof z.ZodError) {
-      return NextResponse.json({
-        error: "Validation failed",
-        details: error.errors
-      }, { status: 400 })
-    }
-
+    // Ensure we always return valid JSON
     return NextResponse.json({
+      success: false,
       error: "Internal server error",
-      message: error instanceof Error ? error.message : "Unknown error"
-    }, { status: 500 })
+      code: "INTERNAL_ERROR",
+      message: error instanceof Error ? error.message : "Unknown error occurred",
+      timestamp: new Date().toISOString()
+    }, {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    })
   }
 }
 

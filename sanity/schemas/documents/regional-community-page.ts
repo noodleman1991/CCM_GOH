@@ -14,6 +14,10 @@ export default defineType({
       title: "Content",
     },
     {
+      name: "template",
+      title: "Template",
+    },
+    {
       name: "seo",
       title: "SEO",
     },
@@ -37,6 +41,15 @@ export default defineType({
           validation: (Rule) => Rule.required(),
       }),
       defineField({
+          name: "regionalCommunity",
+          title: "Regional Community",
+          type: "reference",
+          to: [{ type: "regionalCommunity" }],
+          group: "template",
+          description: "Link to the regional community for dynamic content filtering",
+          validation: (Rule) => Rule.required(),
+      }),
+      defineField({
           name: "language",
           type: "string",
           readOnly: true,
@@ -54,13 +67,141 @@ export default defineType({
           type: "hero-1",
           group: "content",
       }),
+      defineField({
+          name: "useTemplate",
+          title: "Use Regional Community Template",
+          type: "boolean",
+          group: "template",
+          initialValue: true,
+          description: "Use the structured template with fixed blocks and dynamic content, or use custom content flow",
+      }),
+      defineField({
+          name: "templateConfiguration",
+          title: "Template Configuration",
+          type: "object",
+          group: "template",
+          hidden: ({ document }) => !Boolean(document?.useTemplate),
+          fields: [
+              {
+                  name: "gridReportsConfig",
+                  title: "Grid Reports Configuration",
+                  type: "object",
+                  fields: [
+                      {
+                          name: "showFeatured",
+                          title: "Show Featured Reports",
+                          type: "boolean",
+                          initialValue: true,
+                      },
+                      {
+                          name: "maxItems",
+                          title: "Maximum Reports",
+                          type: "number",
+                          initialValue: 6,
+                          validation: (Rule) => Rule.min(1).max(12),
+                      },
+                      {
+                          name: "title",
+                          title: "Section Title",
+                          type: "string",
+                          initialValue: "Recent Reports",
+                      },
+                  ],
+              },
+              {
+                  name: "gridCaseStudiesConfig",
+                  title: "Grid Case Studies Configuration",
+                  type: "object",
+                  fields: [
+                      {
+                          name: "showFeatured",
+                          title: "Show Featured Case Studies",
+                          type: "boolean",
+                          initialValue: true,
+                      },
+                      {
+                          name: "maxItems",
+                          title: "Maximum Case Studies",
+                          type: "number",
+                          initialValue: 6,
+                          validation: (Rule) => Rule.min(1).max(12),
+                      },
+                      {
+                          name: "title",
+                          title: "Section Title",
+                          type: "string",
+                          initialValue: "Case Studies",
+                      },
+                  ],
+              },
+              {
+                  name: "livedExperiencesConfig",
+                  title: "Lived Experiences Configuration",
+                  type: "object",
+                  fields: [
+                      {
+                          name: "showFeatured",
+                          title: "Show Featured Only",
+                          type: "boolean",
+                          initialValue: false,
+                      },
+                      {
+                          name: "maxItems",
+                          title: "Maximum Experiences",
+                          type: "number",
+                          initialValue: 10,
+                          validation: (Rule) => Rule.min(1).max(20),
+                      },
+                      {
+                          name: "title",
+                          title: "Section Title",
+                          type: "string",
+                          initialValue: "Community Voices",
+                      },
+                  ],
+              },
+          ],
+      }),
+      defineField({
+          name: "templateInserts",
+          title: "Template Content Inserts",
+          type: "array",
+          group: "template",
+          hidden: ({ document }) => !Boolean(document?.useTemplate),
+          description: "Add custom content between template blocks",
+          of: [
+              { type: "manualContentInsert" },
+              { type: "dynamicContentInsert" },
+              { type: "separatorBlock" },
+              { type: "section-header" },
+              { type: "split-row" },
+              { type: "cta-1" },
+          ],
+          options: {
+              insertMenu: {
+                  groups: [
+                      {
+                          name: "inserts",
+                          title: "Content Inserts",
+                          of: ["manualContentInsert", "dynamicContentInsert", "separatorBlock"],
+                      },
+                      {
+                          name: "structure",
+                          title: "Additional Sections",
+                          of: ["section-header", "split-row", "cta-1"],
+                      },
+                  ],
+              },
+          },
+      }),
     // Main content flow - structured foundation with strategic insertion points
     defineField({
       name: "contentFlow",
       type: "array",
-      title: "Content Flow",
+      title: "Custom Content Flow",
       group: "content",
-      description: "Add structured content blocks and custom inserts between fixed elements",
+      hidden: ({ document }) => Boolean(document?.useTemplate),
+      description: "Add structured content blocks and custom inserts between fixed elements (disabled when using template)",
       of: [
         // Core structured elements
         { type: "section-header" },

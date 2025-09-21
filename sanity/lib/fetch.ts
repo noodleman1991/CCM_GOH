@@ -268,22 +268,6 @@ export const fetchRegionalCommunityReports = async ({
     return data;
 };
 
-export const fetchRegionalCommunityCaseStudies = async ({
-                                                            slug,
-                                                            limit = 6
-                                                        }: {
-    slug: string;
-    limit?: number;
-}) => {
-    const { data } = await sanityFetch({
-        query: APPROVED_CASE_STUDIES_BY_RC_QUERY,
-        params: { slug, limit },
-        perspective: "published",
-        stega: false,
-    });
-
-    return data;
-};
 
 // ===== CASE STUDY FETCH FUNCTIONS =====
 
@@ -807,3 +791,19 @@ export const fetchSanityHomepageStaticParams = async () => {
 
     return data;
 };
+
+// Re-export the new regional community query functions
+export {
+    fetchRegionalCommunityCaseStudiesBySlug,
+    fetchRegionalCommunityCaseStudies
+} from "@/sanity/queries/regional-community-case-studies";
+
+export {
+    fetchRegionalCommunityNewsBySlug,
+    fetchRegionalCommunityNews
+} from "@/sanity/queries/regional-community-news";
+
+export {
+    fetchRegionalCommunityLivedExperiencesBySlug,
+    fetchRegionalCommunityLivedExperiences
+} from "@/sanity/queries/regional-community-lived-experiences";
