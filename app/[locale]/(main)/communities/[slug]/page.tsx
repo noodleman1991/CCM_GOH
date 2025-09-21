@@ -4,6 +4,7 @@ import RegionalReportsGrid from '@/components/blocks/grid/regional-reports-grid'
 import { auth } from '@clerk/nextjs/server';
 import Blocks from '@/components/blocks/index'
 import HybridContentFlow from '@/components/blocks/hybrid-content-flow';
+import RegionalCommunityTemplate from '@/components/templates/regional-community-template';
 import { notFound } from "next/navigation";
 
 
@@ -37,8 +38,19 @@ export default async function RegionalCommunityPage({
                 />
             )}
 
-            {/* New content flow with structured foundation + strategic inserts */}
-            {pageData.contentFlow && (
+            {/* Template Mode - New structured template with dynamic content */}
+            {pageData.useTemplate && pageData.regionalCommunity && (
+                <RegionalCommunityTemplate
+                    regionalCommunity={pageData.regionalCommunity}
+                    templateConfiguration={pageData.templateConfiguration}
+                    templateInserts={pageData.templateInserts || []}
+                    locale={locale}
+                    userId={userId!}
+                />
+            )}
+
+            {/* Custom Content Flow Mode - New content flow with strategic inserts */}
+            {!pageData.useTemplate && pageData.contentFlow && (
                 <HybridContentFlow
                     sections={pageData.contentFlow}
                     locale={locale}
@@ -47,8 +59,8 @@ export default async function RegionalCommunityPage({
                 />
             )}
 
-            {/* Fallback to old blocks if contentFlow doesn't exist (backward compatibility) */}
-            {!pageData.contentFlow && pageData.blocks && (
+            {/* Legacy Mode - Fallback to old blocks (backward compatibility) */}
+            {!pageData.useTemplate && !pageData.contentFlow && pageData.blocks && (
                 <>
                     {/* First two blocks */}
                     {pageData.blocks.slice(0, 2) && (

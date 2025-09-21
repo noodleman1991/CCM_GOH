@@ -23,12 +23,42 @@ export const REGIONAL_COMMUNITY_PAGE_QUERY = groq`
     _id,
     title,
     slug,
+    regionalCommunity->{
+      _id,
+      name,
+      slug,
+      coverImage{
+        asset->{
+          _id,
+          url,
+          metadata {
+            lqip,
+            dimensions {
+              width,
+              height
+            }
+          }
+        },
+        alt
+      }
+    },
     language,
     titleHero {
       ${hero1Query}
     },
     listHero {
       ${hero1Query}
+    },
+    
+    useTemplate,
+    templateConfiguration,
+    templateInserts[]{
+      ${manualContentInsertQuery},
+      ${dynamicContentInsertQuery},
+      ${separatorBlockQuery},
+      ${sectionHeaderQuery},
+      ${splitRowQuery},
+      ${cta1Query}
     },
     contentFlow[]{
       ${hero1Query},

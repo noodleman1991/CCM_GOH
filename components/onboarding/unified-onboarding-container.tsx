@@ -247,21 +247,65 @@ export default function UnifiedOnboardingContainer() {
         showLocation: data.privacy.showLocation
       }
 
-      // Submit to our new API endpoint
-      const response = await fetch('/api/onboarding/complete', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(submissionData)
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Submission failed')
+      // Submit to our new API endpoint with robust error handling
+      let response
+      try {
+        response = await fetch('/api/onboarding/complete', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(submissionData)
+        })
+      } catch (networkError) {
+        console.error('❌ Network error during onboarding submission:', networkError)
+        throw new Error('Network connection failed. Please check your internet connection and try again.')
       }
 
-      const result = await response.json()
+      // Handle HTTP errors
+      if (!response.ok) {
+        let errorData
+        try {
+          const contentType = response.headers.get('content-type')
+          if (contentType && contentType.includes('application/json')) {
+            errorData = await response.json()
+          } else {
+            // Response is not JSON (likely HTML error page)
+            const htmlText = await response.text()
+            console.error('❌ Received HTML instead of JSON:', htmlText.substring(0, 200))
+            throw new Error('Server returned an unexpected response format. Please try again or contact support.')
+          }
+        } catch (parseError) {
+          console.error('❌ Error parsing error response:', parseError)
+          throw new Error(`Server error (${response.status}). Please try again or contact support.`)
+        }
+
+        // Handle specific error codes
+        if (errorData.code === 'AUTH_REQUIRED') {
+          throw new Error('You need to be logged in to complete onboarding.')
+        } else if (errorData.code === 'VALIDATION_ERROR') {
+          const fieldErrors = errorData.details?.map((d: any) => `${d.field}: ${d.message}`).join(', ')
+          throw new Error(`Please correct the following: ${fieldErrors}`)
+        } else if (errorData.code === 'USER_NOT_FOUND') {
+          throw new Error('Your user account was not found. Please refresh and try again.')
+        } else {
+          throw new Error(errorData.error || `Server error (${response.status}). Please try again.`)
+        }
+      }
+
+      // Parse successful response
+      let result
+      try {
+        result = await response.json()
+      } catch (parseError) {
+        console.error('❌ Error parsing success response:', parseError)
+        throw new Error('Onboarding may have completed, but we received an unexpected response. Please refresh to check your status.')
+      }
+
+      if (!result.success) {
+        throw new Error(result.error || 'Onboarding submission failed')
+      }
+
       console.log('✅ Onboarding completed:', result)
 
       // Force page reload to ensure Clerk session is updated

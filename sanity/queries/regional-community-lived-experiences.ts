@@ -1,0 +1,159 @@
+import { groq } from "next-sanity";
+import { sanityFetch } from "@/sanity/lib/live";
+
+export const REGIONAL_COMMUNITY_LIVED_EXPERIENCES_QUERY = groq`
+  *[_type == "livedExperience" &&
+    (!defined($regionalCommunityId) || references($regionalCommunityId)) &&
+    (!defined($featured) || $featured == false || featured == true) &&
+    publishedAt <= now()
+  ] | order(featured desc, publishedAt desc) [0...$limit] {
+    _id,
+    _type,
+    title,
+    description,
+    videoLink,
+    thumbnail{
+      asset->{
+        _id,
+        url,
+        mimeType,
+        metadata {
+          lqip,
+          dimensions {
+            width,
+            height
+          }
+        }
+      },
+      alt
+    },
+    duration,
+    publishedAt,
+    featured,
+    author->{
+      _id,
+      name,
+      image,
+      organizationalAffiliation
+    },
+    relatedCommunity->{
+      _id,
+      name,
+      slug
+    },
+    tags[]->{
+      _id,
+      label,
+      value,
+      color,
+      category
+    },
+    language,
+    transcription,
+    subtitles,
+    views,
+    slug
+  }
+`;
+
+export const fetchRegionalCommunityLivedExperiences = async ({
+  regionalCommunityId,
+  limit = 10,
+  featured = false
+}: {
+  regionalCommunityId?: string;
+  limit?: number;
+  featured?: boolean;
+}) => {
+  const { data } = await sanityFetch({
+    query: REGIONAL_COMMUNITY_LIVED_EXPERIENCES_QUERY,
+    params: {
+      regionalCommunityId,
+      limit,
+      featured: featured ? true : undefined
+    },
+    perspective: "published",
+    stega: false,
+  });
+
+  return data;
+};
+
+// Query specifically for lived experiences by community slug
+export const REGIONAL_COMMUNITY_LIVED_EXPERIENCES_BY_SLUG_QUERY = groq`
+  *[_type == "livedExperience" &&
+    references(*[_type == "regionalCommunity" && slug.current == $slug][0]._id) &&
+    (!defined($featured) || $featured == false || featured == true) &&
+    publishedAt <= now()
+  ] | order(featured desc, publishedAt desc) [0...$limit] {
+    _id,
+    _type,
+    title,
+    description,
+    videoLink,
+    thumbnail{
+      asset->{
+        _id,
+        url,
+        mimeType,
+        metadata {
+          lqip,
+          dimensions {
+            width,
+            height
+          }
+        }
+      },
+      alt
+    },
+    duration,
+    publishedAt,
+    featured,
+    author->{
+      _id,
+      name,
+      image,
+      organizationalAffiliation
+    },
+    relatedCommunity->{
+      _id,
+      name,
+      slug
+    },
+    tags[]->{
+      _id,
+      label,
+      value,
+      color,
+      category
+    },
+    language,
+    transcription,
+    subtitles,
+    views,
+    slug
+  }
+`;
+
+export const fetchRegionalCommunityLivedExperiencesBySlug = async ({
+  slug,
+  limit = 10,
+  featured = false
+}: {
+  slug: string;
+  limit?: number;
+  featured?: boolean;
+}) => {
+  const { data } = await sanityFetch({
+    query: REGIONAL_COMMUNITY_LIVED_EXPERIENCES_BY_SLUG_QUERY,
+    params: {
+      slug,
+      limit,
+      featured: featured ? true : undefined
+    },
+    perspective: "published",
+    stega: false,
+  });
+
+  return data;
+};

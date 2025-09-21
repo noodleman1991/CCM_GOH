@@ -48,6 +48,8 @@ export default defineType({
         { type: "grid-post" },
         { type: "grid-report" },
         { type: "grid-case-study" },
+        { type: "grid-news" },
+        { type: "grid-lived-experience" },
       ],
       options: {
         insertMenu: {

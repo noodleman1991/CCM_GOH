@@ -1,7 +1,7 @@
 import { defineField, defineType } from "sanity";
 import { Video } from "lucide-react";
 
-export const gridLivedExperience = defineType({
+export default defineType({
     name: "grid-lived-experience",
     title: "Grid Lived Experience",
     type: "object",

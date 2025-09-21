@@ -53,6 +53,8 @@ import gridPost from "./schemas/blocks/grid/grid-post";
 import gridRow from "./schemas/blocks/grid/grid-row";
 import gridReport from "./schemas/blocks/grid/grid-report";
 import gridCaseStudy from "./schemas/blocks/grid/grid-case-study";
+import gridNews from "./schemas/blocks/grid/grid-news";
+import gridLivedExperience from "./schemas/blocks/grid/grid-lived-experience";
 import carousel1 from "./schemas/blocks/carousel/carousel-1";
 import carousel2 from "./schemas/blocks/carousel/carousel-2";
 import livedExperiencesCarousel from "./schemas/blocks/carousel/lived-experiences-carousel";
@@ -121,6 +123,8 @@ export const schema: { types: SchemaTypeDefinition[] } = {
         gridRow,
         gridReport,
         gridCaseStudy,
+        gridNews,
+        gridLivedExperience,
         carousel1,
         carousel2,
         livedExperiencesCarousel,
