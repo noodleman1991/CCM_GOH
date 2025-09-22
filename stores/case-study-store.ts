@@ -1,5 +1,7 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { persist, createJSONStorage } from 'zustand/middleware'
+import { client } from '@/sanity/lib/client'
+import type { PortableTextBlock } from '@portabletext/types'
 
 export interface LocalizedString {
     en: string
@@ -12,6 +14,11 @@ export interface CaseStudyAuthor {
     name: string
     email: string
     role: 'lead' | 'coauthor' | 'contributor' | 'advisor'
+    userId?: string
+    affiliation?: {
+        _ref: string
+        _type: 'reference'
+    }
 }
 
 export interface StudyPeriod {
@@ -20,21 +27,31 @@ export interface StudyPeriod {
 }
 
 export interface StudyLocation {
-    country?: string
-    city?: string
-    region?: string
+    lat?: number
+    lng?: number
+    alt?: number
+}
+
+export interface StudyArea {
+    location: StudyLocation
+    name: string
+    description?: string
 }
 
 export interface CaseStudyFormData {
     title: LocalizedString
-    subtitle: Partial<LocalizedString>
     excerpt: LocalizedString
-    content: Partial<LocalizedString>
+    topic?: string
+    content?: PortableTextBlock[]
     authors: CaseStudyAuthor[]
     organizationName?: string
     tags: string[]
     studyPeriod: StudyPeriod
-    location: StudyLocation
+    studyLocation?: StudyLocation
+    studyAreas?: StudyArea[]
+    organizations?: string[]
+    projects?: string[]
+    relatedCommunity?: string
     image?: File
     imagePreview?: string
 }
@@ -48,6 +65,12 @@ export interface CaseStudyStore {
     isSubmitting: boolean
     selectedTags: string[]
     currentLanguage: string
+
+    // Draft management
+    isDraftSaving: boolean
+    lastSaved?: Date
+    draftId?: string
+    hasPendingChanges: boolean
 
     // Actions
     setFormData: (data: Partial<CaseStudyFormData>) => void
@@ -63,6 +86,12 @@ export interface CaseStudyStore {
     removeAuthor: (index: number) => void
     updateAuthor: (index: number, author: Partial<CaseStudyAuthor>) => void
 
+    // Draft management
+    saveDraft: (userId: string) => Promise<void>
+    loadDraft: (userId: string) => Promise<boolean>
+    deleteDraft: () => Promise<void>
+    markChanges: () => void
+
     // Reset
     resetForm: () => void
 
@@ -73,14 +102,18 @@ export interface CaseStudyStore {
 
 const initialFormData: CaseStudyFormData = {
     title: { en: '', es: '', fr: '', ar: '' },
-    subtitle: { en: '', es: '', fr: '', ar: '' },
     excerpt: { en: '', es: '', fr: '', ar: '' },
-    content: { en: '', es: '', fr: '', ar: '' },
+    topic: '',
+    content: undefined,
     authors: [],
     organizationName: '',
     tags: [],
     studyPeriod: {},
-    location: {},
+    studyLocation: undefined,
+    studyAreas: [],
+    organizations: [],
+    projects: [],
+    relatedCommunity: '',
 }
 
 export const useCaseStudyStore = create<CaseStudyStore>()(
@@ -92,16 +125,22 @@ export const useCaseStudyStore = create<CaseStudyStore>()(
             isSubmitting: false,
             selectedTags: [],
             currentLanguage: 'en',
+            isDraftSaving: false,
+            lastSaved: undefined,
+            draftId: undefined,
+            hasPendingChanges: false,
 
             // Actions
             setFormData: (data) =>
                 set((state) => ({
-                    formData: { ...state.formData, ...data }
+                    formData: { ...state.formData, ...data },
+                    hasPendingChanges: true
                 })),
 
             updateField: (field, value) =>
                 set((state) => ({
-                    formData: { ...state.formData, [field]: value }
+                    formData: { ...state.formData, [field]: value },
+                    hasPendingChanges: true
                 })),
 
             setCurrentStep: (step) => set({ currentStep: step }),
@@ -111,7 +150,8 @@ export const useCaseStudyStore = create<CaseStudyStore>()(
             setSelectedTags: (tags) =>
                 set((state) => ({
                     selectedTags: tags,
-                    formData: { ...state.formData, tags }
+                    formData: { ...state.formData, tags },
+                    hasPendingChanges: true
                 })),
 
             setCurrentLanguage: (language) => set({ currentLanguage: language }),
@@ -122,7 +162,8 @@ export const useCaseStudyStore = create<CaseStudyStore>()(
                         ...state.formData,
                         image: file || undefined,
                         imagePreview: preview || undefined
-                    }
+                    },
+                    hasPendingChanges: true
                 })),
 
             addAuthor: (author) =>
@@ -130,7 +171,8 @@ export const useCaseStudyStore = create<CaseStudyStore>()(
                     formData: {
                         ...state.formData,
                         authors: [...state.formData.authors, author]
-                    }
+                    },
+                    hasPendingChanges: true
                 })),
 
             removeAuthor: (index) =>
@@ -138,7 +180,8 @@ export const useCaseStudyStore = create<CaseStudyStore>()(
                     formData: {
                         ...state.formData,
                         authors: state.formData.authors.filter((_, i) => i !== index)
-                    }
+                    },
+                    hasPendingChanges: true
                 })),
 
             updateAuthor: (index, updatedAuthor) =>
@@ -148,8 +191,102 @@ export const useCaseStudyStore = create<CaseStudyStore>()(
                         authors: state.formData.authors.map((author, i) =>
                             i === index ? { ...author, ...updatedAuthor } : author
                         )
-                    }
+                    },
+                    hasPendingChanges: true
                 })),
+
+            markChanges: () => set({ hasPendingChanges: true }),
+
+            // Draft management
+            saveDraft: async (userId: string) => {
+                const state = get()
+                if (!state.hasPendingChanges && state.draftId) return
+
+                set({ isDraftSaving: true })
+
+                try {
+                    const draftData = {
+                        _type: 'caseStudyDraft',
+                        userId,
+                        lastSaved: new Date().toISOString(),
+                        ...state.formData,
+                        // Convert File to asset reference if image exists
+                        image: state.formData.image ? undefined : state.formData.image,
+                        formMetadata: {
+                            currentStep: state.currentStep,
+                            completedSections: [], // Can be implemented based on validation
+                            organizationName: state.formData.organizationName,
+                        }
+                    }
+
+                    let result
+                    if (state.draftId) {
+                        // Update existing draft
+                        result = await client.patch(state.draftId).set(draftData).commit()
+                    } else {
+                        // Create new draft
+                        result = await client.create(draftData)
+                    }
+
+                    set({
+                        draftId: result._id,
+                        lastSaved: new Date(),
+                        hasPendingChanges: false,
+                        isDraftSaving: false
+                    })
+                } catch (error) {
+                    console.error('Failed to save draft:', error)
+                    set({ isDraftSaving: false })
+                    throw error
+                }
+            },
+
+            loadDraft: async (userId: string) => {
+                try {
+                    const draft = await client.fetch(`
+                        *[_type == "caseStudyDraft" && userId == $userId][0]
+                    `, { userId })
+
+                    if (draft) {
+                        const { _id, userId: draftUserId, lastSaved, formMetadata, ...draftData } = draft
+
+                        set({
+                            formData: {
+                                ...initialFormData,
+                                ...draftData,
+                                organizationName: formMetadata?.organizationName
+                            },
+                            draftId: _id,
+                            lastSaved: new Date(lastSaved),
+                            currentStep: formMetadata?.currentStep || 'form',
+                            hasPendingChanges: false,
+                            selectedTags: draftData.tags || []
+                        })
+                        return true
+                    }
+                    return false
+                } catch (error) {
+                    console.error('Failed to load draft:', error)
+                    return false
+                }
+            },
+
+            deleteDraft: async () => {
+                const { draftId } = get()
+                if (!draftId) return
+
+                try {
+                    await client.delete(draftId)
+                    set({
+                        draftId: undefined,
+                        lastSaved: undefined,
+                        hasPendingChanges: false
+                    })
+                } catch (error) {
+                    console.error('Failed to delete draft:', error)
+                    throw error
+                }
+            },
 
             resetForm: () =>
                 set({
@@ -157,7 +294,11 @@ export const useCaseStudyStore = create<CaseStudyStore>()(
                     currentStep: 'form',
                     isSubmitting: false,
                     selectedTags: [],
-                    currentLanguage: 'en'
+                    currentLanguage: 'en',
+                    isDraftSaving: false,
+                    lastSaved: undefined,
+                    draftId: undefined,
+                    hasPendingChanges: false
                 }),
 
             // Validation
@@ -171,23 +312,24 @@ export const useCaseStudyStore = create<CaseStudyStore>()(
                 const { formData } = get()
                 const errors: string[] = []
 
-                // Check required title fields
-                const languages = ['en', 'es', 'fr', 'ar'] as const
-                languages.forEach(lang => {
-                    if (!formData.title[lang]?.trim()) {
-                        errors.push(`Title in ${lang.toUpperCase()} is required`)
-                    }
-                    if (!formData.excerpt[lang]?.trim() || formData.excerpt[lang].length < 50) {
-                        errors.push(`Excerpt in ${lang.toUpperCase()} must be at least 50 characters`)
-                    }
-                })
+                // Check required title fields (at least English)
+                if (!formData.title.en?.trim()) {
+                    errors.push('English title is required')
+                }
 
-                // Check at least one content language
-                const hasContent = languages.some(lang =>
-                    formData.content[lang] && formData.content[lang]!.length >= 200
-                )
-                if (!hasContent) {
-                    errors.push('Please provide detailed content in at least one language (minimum 200 characters)')
+                // Check excerpt (at least English)
+                if (!formData.excerpt.en?.trim() || formData.excerpt.en.length < 50) {
+                    errors.push('English excerpt must be at least 50 characters')
+                }
+
+                // Check topic
+                if (!formData.topic?.trim()) {
+                    errors.push('Topic/domain is required')
+                }
+
+                // Check content (Portable Text)
+                if (!formData.content || formData.content.length === 0) {
+                    errors.push('Case study content is required')
                 }
 
                 // Check authors
@@ -214,11 +356,20 @@ export const useCaseStudyStore = create<CaseStudyStore>()(
         }),
         {
             name: 'case-study-submission',
+            storage: createJSONStorage(() => localStorage),
+            skipHydration: true, // Important for Next.js SSR
             partialize: (state) => ({
-                formData: state.formData,
+                formData: {
+                    ...state.formData,
+                    // Don't persist File objects - they can't be serialized
+                    image: undefined,
+                    imagePreview: state.formData.imagePreview
+                },
                 selectedTags: state.selectedTags,
                 currentLanguage: state.currentLanguage,
-                currentStep: state.currentStep
+                currentStep: state.currentStep,
+                draftId: state.draftId,
+                lastSaved: state.lastSaved
             })
         }
     )

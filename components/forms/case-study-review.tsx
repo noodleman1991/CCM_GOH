@@ -115,9 +115,10 @@ export default function CaseStudyReview({ availableTags, userId }: CaseStudyRevi
     }
 
     const getContentLanguages = () => {
-        return languages.filter(lang =>
-            formData.content[lang.code] && formData.content[lang.code]!.length >= 200
-        )
+        // Since content is now PortableText blocks, we just check if content exists
+        return formData.content && formData.content.length > 0
+            ? [{ code: 'en', label: 'English' }]
+            : []
     }
 
     return (
@@ -184,9 +185,9 @@ export default function CaseStudyReview({ availableTags, userId }: CaseStudyRevi
                                 </Badge>
                                 <div className="flex-1">
                                     <p className="font-medium">{formData.title[lang.code] || 'Not provided'}</p>
-                                    {formData.subtitle[lang.code] && (
-                                        <p className="text-sm text-muted-foreground mt-1">
-                                            {formData.subtitle[lang.code]}
+                                    {formData.excerpt[lang.code] && (
+                                        <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                                            {formData.excerpt[lang.code]}
                                         </p>
                                     )}
                                 </div>
@@ -249,34 +250,37 @@ export default function CaseStudyReview({ availableTags, userId }: CaseStudyRevi
                             ))}
                         </div>
 
-                        {getContentLanguages().length > 0 ? (
-                            <Tabs defaultValue={getContentLanguages()[0]?.code} className="w-full">
-                                <TabsList>
-                                    {getContentLanguages().map((lang) => (
-                                        <TabsTrigger key={lang.code} value={lang.code}>
-                                            {lang.label}
-                                        </TabsTrigger>
-                                    ))}
-                                </TabsList>
-                                {getContentLanguages().map((lang) => (
-                                    <TabsContent key={lang.code} value={lang.code} className="mt-4">
-                                        <div className="bg-muted/50 p-4 rounded-lg max-h-60 overflow-y-auto">
-                                            <p className="text-sm leading-relaxed whitespace-pre-wrap">
-                                                {formData.content[lang.code]}
-                                            </p>
-                                            <div className="flex justify-between items-center mt-2 text-xs text-muted-foreground border-t pt-2">
-                                                <span>{lang.label} content</span>
-                                                <span>{formData.content[lang.code]?.length || 0} characters</span>
-                                            </div>
-                                        </div>
-                                    </TabsContent>
-                                ))}
-                            </Tabs>
+                        {formData.content && formData.content.length > 0 ? (
+                            <div className="bg-muted/50 p-4 rounded-lg max-h-60 overflow-y-auto">
+                                <div className="prose prose-sm max-w-none">
+                                    <p className="text-sm leading-relaxed">
+                                        {/* Display a simplified preview of the PortableText content */}
+                                        {formData.content.map((block, index) => {
+                                            if (block._type === 'block' && block.children) {
+                                                return (
+                                                    <span key={index}>
+                                                        {block.children.map((child: any, childIndex: number) => (
+                                                            <span key={childIndex}>{child.text}</span>
+                                                        )).slice(0, 3).join(' ')}
+                                                        {index < formData.content!.length - 1 ? ' ' : ''}
+                                                    </span>
+                                                )
+                                            }
+                                            return null
+                                        })}
+                                        {formData.content.length > 3 && '...'}
+                                    </p>
+                                </div>
+                                <div className="flex justify-between items-center mt-2 text-xs text-muted-foreground border-t pt-2">
+                                    <span>Rich text content</span>
+                                    <span>{formData.content.length} blocks</span>
+                                </div>
+                            </div>
                         ) : (
                             <Alert variant="destructive">
                                 <AlertCircle className="h-4 w-4" />
                                 <AlertDescription>
-                                    No content provided. Please add detailed content in at least one language.
+                                    No content provided. Please add detailed content for your case study.
                                 </AlertDescription>
                             </Alert>
                         )}
@@ -322,14 +326,12 @@ export default function CaseStudyReview({ availableTags, userId }: CaseStudyRevi
                             </div>
                         )}
 
-                        {(formData.location.country || formData.location.city) && (
+                        {formData.studyLocation && (
                             <div className="flex items-center gap-2">
                                 <MapPin className="w-4 h-4 text-muted-foreground" />
                                 <span className="text-sm">
-                  {[formData.location.city, formData.location.region, formData.location.country]
-                      .filter(Boolean)
-                      .join(', ')}
-                </span>
+                                    Location: {formData.studyLocation.lat?.toFixed(4)}, {formData.studyLocation.lng?.toFixed(4)}
+                                </span>
                             </div>
                         )}
 

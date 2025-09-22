@@ -1,7 +1,7 @@
 import { defineField, defineType } from "sanity";
-import { FileSearch } from "lucide-react";
+import { FileEdit } from "lucide-react";
 
-// Language configuration
+// Re-use the same configuration as the main case study schema
 const supportedLanguages = [
     { id: "en", title: "English", isDefault: true },
     { id: "es", title: "Español" },
@@ -9,7 +9,6 @@ const supportedLanguages = [
     { id: "ar", title: "العربية", isRTL: true },
 ];
 
-// Role configuration
 const authorRoles = [
     { title: "Lead Author", value: "lead" },
     { title: "Co-Author", value: "coauthor" },
@@ -17,7 +16,6 @@ const authorRoles = [
     { title: "Advisor", value: "advisor" },
 ];
 
-// Topic/Domain configuration for case study categorization
 const topicOptions = [
     { title: "Climate Change & Environment", value: "climate-environment" },
     { title: "Mental Health & Wellbeing", value: "mental-health" },
@@ -37,70 +35,53 @@ const topicOptions = [
     { title: "Other", value: "other" },
 ];
 
-// Status configuration
-const statusOptions = [
-    { title: "Pending Review", value: "pending" },
-    { title: "Rejected", value: "rejected" },
-    { title: "Needs Revision", value: "revision" },
-    { title: "Approved (Published)", value: "approved" },
-];
-
 // Helper function for localized fields
 const createLocalizedField = (name: string, title: string, type: string = "string", required: boolean = false) => {
-    const validation = required ? (Rule: any) => Rule.required() : undefined;
-
     return defineField({
         name,
         title,
         type: "object",
-        group: "content",
         fields: supportedLanguages.map(lang => ({
             name: lang.id,
             title: lang.title,
             type,
-            validation: lang.isDefault && required ? validation : undefined,
         })),
-        validation: required ? (Rule: any) => Rule.required() : undefined,
     });
 };
 
 export default defineType({
-    name: "caseStudy",
-    title: "Case Study",
+    name: "caseStudyDraft",
+    title: "Case Study Draft",
     type: "document",
-    icon: FileSearch,
-    groups: [
-        { name: "content", title: "Content" },
-        { name: "metadata", title: "Metadata" },
-        { name: "affiliations", title: "Affiliations" },
-        { name: "review", title: "Review & Publishing" },
-        { name: "seo", title: "SEO" },
-    ],
+    icon: FileEdit,
+    description: "Auto-saved draft of case study submissions",
     fields: [
-        // Content fields
-        createLocalizedField("title", "Title", "string", true),
-
+        // User identification
         defineField({
-            name: "slug",
-            title: "Slug",
-            type: "slug",
-            group: "content",
-            options: {
-                source: "title.en",
-                maxLength: 96,
-            },
+            name: "userId",
+            title: "User ID",
+            type: "string",
+            description: "Clerk User ID of the draft owner",
             validation: (Rule) => Rule.required(),
         }),
 
+        defineField({
+            name: "lastSaved",
+            title: "Last Saved",
+            type: "datetime",
+            description: "When this draft was last updated",
+            validation: (Rule) => Rule.required(),
+        }),
+
+        // Content fields - same structure as main case study but without validation
+        createLocalizedField("title", "Title"),
         createLocalizedField("excerpt", "Excerpt", "text"),
 
         defineField({
             name: "topic",
             title: "Topic/Domain",
             type: "string",
-            group: "content",
             options: { list: topicOptions },
-            validation: (Rule) => Rule.required(),
             description: "Primary topic or domain this case study belongs to",
         }),
 
@@ -108,8 +89,6 @@ export default defineType({
             name: "content",
             title: "Case Study Content",
             type: "styled-block-content",
-            group: "content",
-            validation: (Rule) => Rule.required(),
             description: "The main content of your case study with rich text formatting",
         }),
 
@@ -117,14 +96,12 @@ export default defineType({
             name: "image",
             title: "Featured Image",
             type: "image",
-            group: "content",
             options: { hotspot: true },
             fields: [
                 {
                     name: "alt",
                     type: "string",
                     title: "Alternative Text",
-                    validation: (Rule) => Rule.required(),
                 },
                 {
                     name: "caption",
@@ -138,38 +115,17 @@ export default defineType({
             name: "tags",
             title: "Tags",
             type: "array",
-            group: "content",
             of: [{ type: "reference", to: [{ type: "tag" }] }],
             options: {
                 layout: "tags",
                 sortable: true,
             },
-            validation: (Rule) => Rule.max(15),
-        }),
-
-        // Metadata fields
-        defineField({
-            name: "submittedBy",
-            title: "Submitted By",
-            type: "string",
-            group: "metadata",
-            description: "Clerk User ID of the submitter",
-            readOnly: true,
-        }),
-
-        defineField({
-            name: "submittedAt",
-            title: "Submitted At",
-            type: "datetime",
-            group: "metadata",
-            readOnly: true,
         }),
 
         defineField({
             name: "authors",
             title: "Authors",
             type: "array",
-            group: "metadata",
             of: [{
                 type: "object",
                 fields: [
@@ -183,13 +139,11 @@ export default defineType({
                         name: "name",
                         title: "Full Name",
                         type: "string",
-                        validation: (Rule) => Rule.required().min(2).max(100),
                     },
                     {
                         name: "email",
                         title: "Email",
                         type: "email",
-                        validation: (Rule) => Rule.email(),
                     },
                     {
                         name: "role",
@@ -197,7 +151,6 @@ export default defineType({
                         type: "string",
                         options: { list: authorRoles },
                         initialValue: "coauthor",
-                        validation: (Rule) => Rule.required(),
                     },
                     {
                         name: "affiliation",
@@ -218,7 +171,6 @@ export default defineType({
                         affiliation?: string;
                     }) {
                         const subtitle = `${role || "Unknown"}${affiliation ? ` - ${affiliation}` : ""}`;
-
                         return {
                             title: name || "Unknown Author",
                             subtitle,
@@ -226,14 +178,12 @@ export default defineType({
                     },
                 },
             }],
-            validation: (Rule) => Rule.required().min(1).max(10),
         }),
 
         defineField({
             name: "studyPeriod",
             title: "Study Period",
             type: "object",
-            group: "metadata",
             fields: [
                 {
                     name: "startDate",
@@ -246,28 +196,18 @@ export default defineType({
                     type: "date",
                 },
             ],
-            validation: (Rule) => Rule.custom((studyPeriod: { startDate?: string; endDate?: string } | undefined) => {
-                if (studyPeriod?.startDate && studyPeriod?.endDate) {
-                    if (new Date(studyPeriod.startDate) > new Date(studyPeriod.endDate)) {
-                        return "Start date must be before end date";
-                    }
-                }
-                return true;
-            }),
         }),
 
         defineField({
             name: "studyLocation",
             title: "Primary Study Location",
             type: "geopoint",
-            group: "metadata",
         }),
 
         defineField({
             name: "studyAreas",
             title: "Additional Study Areas",
             type: "array",
-            group: "metadata",
             of: [{
                 type: "object",
                 fields: [
@@ -275,20 +215,17 @@ export default defineType({
                         name: "location",
                         title: "Location",
                         type: "geopoint",
-                        validation: (Rule) => Rule.required(),
                     },
                     {
                         name: "name",
                         title: "Area Name",
                         type: "string",
-                        validation: (Rule) => Rule.required().max(100),
                     },
                     {
                         name: "description",
                         title: "Description",
                         type: "text",
                         rows: 2,
-                        validation: (Rule) => Rule.max(200),
                     },
                 ],
                 preview: {
@@ -298,129 +235,57 @@ export default defineType({
                     },
                 },
             }],
-            validation: (Rule) => Rule.max(10),
         }),
 
-        // Affiliations
         defineField({
             name: "organizations",
             title: "Associated Organizations",
             type: "array",
-            group: "affiliations",
             of: [{ type: "reference", to: [{ type: "organization" }] }],
-            validation: (Rule) => Rule.max(5),
         }),
 
         defineField({
             name: "projects",
             title: "Related Projects",
             type: "array",
-            group: "affiliations",
             of: [{ type: "reference", to: [{ type: "project" }] }],
-            validation: (Rule) => Rule.max(5),
         }),
 
         defineField({
             name: "relatedCommunity",
             title: "Related Community",
             type: "reference",
-            group: "affiliations",
             to: { type: "regionalCommunity" },
             description: "The community this case study relates to",
         }),
 
-        // Review workflow and publishing
+        // Metadata for form state
         defineField({
-            name: "status",
-            title: "Publication Status",
-            type: "string",
-            group: "review",
-            options: { list: statusOptions },
-            initialValue: "pending",
-            validation: (Rule) => Rule.required(),
-            description: "Only 'approved' case studies will be visible to the public",
-        }),
-
-        defineField({
-            name: "featured",
-            title: "Featured Case Study",
-            type: "boolean",
-            group: "review",
-            initialValue: false,
-            description: "Featured case studies appear in highlighted sections",
-        }),
-
-        defineField({
-            name: "publishedAt",
-            title: "Published At",
-            type: "datetime",
-            group: "review",
-            hidden: ({ document }) => {
-                const status = document?.status as string;
-                return status !== "approved";
-            },
-            description: "Automatically set when status changes to 'approved'",
-        }),
-
-        defineField({
-            name: "reviewNotes",
-            title: "Editorial Notes",
-            type: "text",
-            group: "review",
-            rows: 4,
-            description: "Internal notes for editors and reviewers",
-        }),
-
-        defineField({
-            name: "reviewedBy",
-            title: "Reviewed By",
-            type: "reference",
-            group: "review",
-            to: { type: "author" },
-            hidden: ({ document }) => {
-                const status = document?.status as string;
-                return !status || !["approved", "rejected", "revision"].includes(status);
-            },
-        }),
-
-        defineField({
-            name: "reviewedAt",
-            title: "Review Completed",
-            type: "datetime",
-            group: "review",
-            readOnly: true,
-            hidden: ({ document }) => {
-                const status = document?.status as string;
-                return !status || !["approved", "rejected", "revision"].includes(status);
-            },
-        }),
-
-        // SEO fields
-        defineField({
-            name: "seoTitle",
-            title: "SEO Title",
-            type: "string",
-            group: "seo",
-            validation: (Rule) => Rule.max(60),
-            description: "Override the default title for search engines",
-        }),
-
-        defineField({
-            name: "seoDescription",
-            title: "SEO Description",
-            type: "text",
-            group: "seo",
-            rows: 3,
-            validation: (Rule) => Rule.max(160),
-            description: "Description for search engines and social sharing",
-        }),
-
-        defineField({
-            name: "canonicalUrl",
-            title: "Canonical URL",
-            type: "url",
-            group: "seo",
-            description: "If this case study was published elsewhere first",
+            name: "formMetadata",
+            title: "Form Metadata",
+            type: "object",
+            description: "Additional form state information",
+            fields: [
+                {
+                    name: "currentStep",
+                    title: "Current Step",
+                    type: "string",
+                    description: "Current form step when saved",
+                },
+                {
+                    name: "completedSections",
+                    title: "Completed Sections",
+                    type: "array",
+                    of: [{ type: "string" }],
+                    description: "List of completed form sections",
+                },
+                {
+                    name: "organizationName",
+                    title: "Organization Name",
+                    type: "string",
+                    description: "Free text organization name if not selecting existing",
+                },
+            ],
         }),
     ],
 
@@ -428,54 +293,34 @@ export default defineType({
         select: {
             title: "title",
             topic: "topic",
-            status: "status",
-            media: "image",
-            featured: "featured",
+            lastSaved: "lastSaved",
+            userId: "userId",
         },
-        prepare({ title, topic, status, media, featured }: {
+        prepare({ title, topic, lastSaved, userId }: {
             title?: Record<string, string>;
             topic?: string;
-            status?: string;
-            media?: any;
-            featured?: boolean;
+            lastSaved?: string;
+            userId?: string;
         }) {
-            const displayTitle = title?.en || "Untitled Case Study";
+            const displayTitle = title?.en || "Untitled Draft";
             const topicLabel = topicOptions.find(t => t.value === topic)?.title || topic;
+            const savedDate = lastSaved ? new Date(lastSaved).toLocaleDateString() : "";
 
-            const featuredIcon = featured ? "Featured " : "";
-            const subtitle = `${featuredIcon}${status || "pending"}${topicLabel ? ` • ${topicLabel}` : ""}`;
+            const subtitle = `Draft${topicLabel ? ` • ${topicLabel}` : ""}${savedDate ? ` • ${savedDate}` : ""}`;
 
             return {
                 title: displayTitle,
                 subtitle,
-                media,
+                description: `User: ${userId?.slice(0, 8)}...`,
             };
         },
     },
 
     orderings: [
         {
-            title: "Published Date (Newest)",
-            name: "publishedDateDesc",
-            by: [{ field: "publishedAt", direction: "desc" }],
-        },
-        {
-            title: "Submitted Date (Newest)",
-            name: "submittedDateDesc",
-            by: [{ field: "submittedAt", direction: "desc" }],
-        },
-        {
-            title: "Status",
-            name: "statusAsc",
-            by: [{ field: "status", direction: "asc" }],
-        },
-        {
-            title: "Featured First",
-            name: "featuredFirst",
-            by: [
-                { field: "featured", direction: "desc" },
-                { field: "publishedAt", direction: "desc" }
-            ],
+            title: "Last Saved (Newest)",
+            name: "lastSavedDesc",
+            by: [{ field: "lastSaved", direction: "desc" }],
         },
         {
             title: "Title (A-Z)",

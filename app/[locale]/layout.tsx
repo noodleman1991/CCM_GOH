@@ -11,6 +11,7 @@ import { arSA, esES, frFR, enGB } from '@clerk/localizations';
 import { rtlLocales } from '@/i18n/routing';
 import { Poppins, Lato } from "next/font/google";
 import OnboardingRedirectProvider from '@/components/onboarding/onboarding-redirect-provider';
+import RevisionAlertProvider from '@/components/submissions/revision-alert-provider';
 
 const poppins = Poppins({
     subsets: ["latin"],
@@ -94,7 +95,9 @@ export default async function LocaleLayout({
                         disableTransitionOnChange
                     >
                         <OnboardingRedirectProvider>
-                            {children}
+                            <RevisionAlertProvider>
+                                {children}
+                            </RevisionAlertProvider>
                         </OnboardingRedirectProvider>
                     </ThemeProvider>
                     <Toaster position="top-center" richColors />

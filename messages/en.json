@@ -91,16 +91,6 @@
     "yes": "Yes",
     "no": "No"
   },
-  "dashboard": {
-    "greeting": "Hello, {name}",
-    "summary": "Here's your summary",
-    "recentActivity": "Recent Activity",
-    "noActivity": "No recent activity",
-    "viewAll": "View all",
-    "personalSettings": "Personal Settings",
-    "buildingApp": "Building your Application",
-    "dataFetching": "Data Fetching"
-  },
   "settings": {
     "title": "Settings",
     "account": "Account",
@@ -495,6 +485,104 @@
       "loginRequired": "You must be logged in to submit a case study",
       "reviewNote": "Your case study will be reviewed by our multilingual editorial team before publication.",
       "multilingualWelcome": "Welcome to our global community! Submit in any language and help us reach researchers worldwide."
+    }
+  },
+  "dashboard": {
+    "greeting": "Hello, {name}",
+    "summary": "Here's your summary",
+    "recentActivity": "Recent Activity",
+    "noActivity": "No recent activity",
+    "viewAll": "View all",
+    "personalSettings": "Personal Settings",
+    "buildingApp": "Building your Application",
+    "dataFetching": "Data Fetching",
+    "submissions": {
+      "pageTitle": "My Submissions",
+      "pageDescription": "Manage your case study submissions and drafts",
+      "title": "My Submissions",
+      "description": "Manage your case study submissions and drafts",
+      "newCaseStudy": "New Case Study",
+      "status": {
+        "pending": "Pending Review",
+        "approved": "Published",
+        "rejected": "Rejected",
+        "revision": "Needs Revision"
+      },
+      "tabs": {
+        "submissions": "Submissions",
+        "drafts": "Drafts"
+      },
+      "actions": {
+        "edit": "Edit & Resubmit",
+        "view": "View Published",
+        "continue": "Continue Writing",
+        "underReview": "Under Review"
+      },
+      "empty": {
+        "submissions": {
+          "title": "No submissions yet",
+          "description": "Start by submitting your first case study to share your research with the community.",
+          "action": "Submit Case Study"
+        },
+        "drafts": {
+          "title": "No drafts saved",
+          "description": "Your draft case studies will appear here automatically as you work on them."
+        }
+      },
+      "alerts": {
+        "revision": {
+          "title": "Action Required",
+          "description": "You have {count} case stud{plural} that need{singular} revision based on editor feedback.",
+          "editorFeedback": "Editor feedback:"
+        }
+      }
+    }
+  },
+  "caseStudies": {
+    "pageTitle": "Case Studies",
+    "pageDescription": "Explore research and insights from our global community",
+    "featured": "Featured Case Studies",
+    "browseByTopic": "Browse by Topic",
+    "viewAll": "View All",
+    "noResults": "No case studies found",
+    "filters": {
+      "all": "All Topics",
+      "featured": "Featured",
+      "recent": "Recently Published"
+    },
+    "topics": {
+      "climate-environment": "Climate Change & Environment",
+      "mental-health": "Mental Health & Wellbeing",
+      "community-health": "Community Health & Social Care",
+      "youth-education": "Youth Engagement & Education",
+      "policy-governance": "Policy Research & Governance",
+      "technology-innovation": "Technology & Innovation",
+      "economic-development": "Economic Development",
+      "cultural-arts": "Cultural Heritage & Arts",
+      "food-agriculture": "Food Security & Agriculture",
+      "urban-planning": "Urban Planning & Infrastructure",
+      "human-rights": "Human Rights & Social Justice",
+      "migration": "Migration & Displacement",
+      "gender-equality": "Gender Equality",
+      "disaster-resilience": "Disaster Risk & Resilience",
+      "digital-inclusion": "Digital Inclusion",
+      "other": "Other"
+    },
+    "meta": {
+      "authors": "author",
+      "authorsPlural": "authors",
+      "readTime": "min read",
+      "publishedAt": "Published",
+      "submittedAt": "Submitted"
+    }
+  },
+  "revisionAlert": {
+    "title": "Action Required: Revision Needed",
+    "description": "You have {count} case stud{plural} that need{singular} revision based on editor feedback.",
+    "editorFeedback": "Editor feedback:",
+    "actions": {
+      "remindLater": "Remind Me Later",
+      "viewSubmissions": "View & Edit Submissions"
     }
   },
   "search": {
