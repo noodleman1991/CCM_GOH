@@ -56,7 +56,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
         skills: user.workTypes.length > 0 || user.expertiseAreas.length > 0,
         projects: user.recentWork.length > 0,
         communities: user.communities.length > 0,
-        contact: !!(user.personalWebsite || user.linkedinProfile || user.twitterHandle)
+        contact: !!(user.personalWebsite || user.linkedinProfile || user.otherSocialLinks.length > 0)
     }
 
     return (
@@ -352,19 +352,17 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                                                 </a>
                                             </div>
                                         )}
-                                        {user.twitterHandle && (
-                                            <div className="flex items-center gap-2">
+                                        {user.otherSocialLinks.map((link, index) => (
+                                            <div key={index} className="flex items-center gap-2">
                                                 <a
-                                                    href={user.twitterHandle.startsWith('http')
-                                                        ? user.twitterHandle
-                                                        : `https://twitter.com/${user.twitterHandle.replace('@', '')}`}
+                                                    href={link.url}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
                                                 >
-                                                    <Badge variant="outline">Twitter</Badge>
+                                                    <Badge variant="outline">{link.platform}</Badge>
                                                 </a>
                                             </div>
-                                        )}
+                                        ))}
                                     </div>
                                 </CardContent>
                             </Card>

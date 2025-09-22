@@ -8,14 +8,14 @@ import { useTranslations } from 'next-intl'
 interface SocialLinksBlockProps {
     personalWebsite?: string | null
     linkedinProfile?: string | null
-    twitterHandle?: string | null
+    otherSocialLinks?: Array<{platform: string, url: string}>
     className?: string
 }
 
 export default function SocialLinksBlock({
                                              personalWebsite,
                                              linkedinProfile,
-                                             twitterHandle,
+                                             otherSocialLinks = [],
                                              className
                                          }: SocialLinksBlockProps) {
     const t = useTranslations('profile.social')
@@ -34,15 +34,12 @@ export default function SocialLinksBlock({
             formatUrl: (handle: string) =>
                 handle.startsWith('http') ? handle : `https://linkedin.com/in/${handle}`
         },
-        {
-            icon: Twitter,
-            label: t('twitter'),
-            url: twitterHandle,
-            formatUrl: (handle: string) =>
-                handle.startsWith('http')
-                    ? handle
-                    : `https://twitter.com/${handle.replace('@', '')}`
-        }
+        ...otherSocialLinks.map(link => ({
+            icon: ExternalLink,
+            label: link.platform,
+            url: link.url,
+            formatUrl: (url: string) => url
+        }))
     ].filter(link => link.url)
 
     if (links.length === 0) return null

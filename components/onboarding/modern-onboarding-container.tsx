@@ -13,6 +13,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { AlertCircle } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { rtlLocales } from "@/i18n/routing"
+import { useUserProfile } from "@/hooks/use-user-profile"
 
 import { ModernProgressSidebar } from "./modern-progress-sidebar"
 import { ModernContentArea } from "./modern-content-area"
@@ -44,6 +45,9 @@ export function ModernOnboardingContainer({
   const locale = useLocale()
   const isRTL = rtlLocales.includes(locale)
 
+  // User profile hook for data loading
+  const { user, loading: userLoading, error: userError } = useUserProfile()
+
   // Form and state management
   const [currentStep, setCurrentStep] = useState(0)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -55,9 +59,85 @@ export function ModernOnboardingContainer({
 
   const form = useForm({
     resolver: zodResolver(dynamicSchema),
-    defaultValues: defaultOnboardingValues,
+    defaultValues: {
+      ...defaultOnboardingValues,
+      // Pre-populate with existing user data if available
+      basicInfo: {
+        ...defaultOnboardingValues.basicInfo,
+        firstName: user?.firstName || defaultOnboardingValues.basicInfo.firstName,
+        lastName: user?.lastName || defaultOnboardingValues.basicInfo.lastName,
+        username: user?.username || defaultOnboardingValues.basicInfo.username,
+        bio: user?.bio || defaultOnboardingValues.basicInfo.bio,
+        ageGroup: user?.ageGroup || defaultOnboardingValues.basicInfo.ageGroup,
+        country: user?.country || defaultOnboardingValues.basicInfo.country,
+        city: user?.city || defaultOnboardingValues.basicInfo.city,
+        preferredLanguage: (locale as "EN" | "ES" | "FR" | "AR") || defaultOnboardingValues.basicInfo.preferredLanguage,
+      },
+      workInfo: {
+        ...defaultOnboardingValues.workInfo,
+        workTypes: user?.workTypes || defaultOnboardingValues.workInfo.workTypes,
+        expertiseAreas: user?.expertiseAreas || defaultOnboardingValues.workInfo.expertiseAreas,
+        organization: user?.organization || defaultOnboardingValues.workInfo.organization,
+        position: user?.position || defaultOnboardingValues.workInfo.position,
+        workBio: user?.workBio || defaultOnboardingValues.workInfo.workBio,
+        linkedinProfile: user?.linkedinProfile || defaultOnboardingValues.workInfo.linkedinProfile,
+        otherSocialLinks: defaultOnboardingValues.workInfo.otherSocialLinks,
+        personalWebsite: user?.personalWebsite || defaultOnboardingValues.workInfo.personalWebsite,
+      },
+      privacy: {
+        ...defaultOnboardingValues.privacy,
+        isSearchable: user?.isSearchable ?? defaultOnboardingValues.privacy.isSearchable,
+        profileVisibility: user?.profileVisibility || defaultOnboardingValues.privacy.profileVisibility,
+        showEmail: user?.showEmail ?? defaultOnboardingValues.privacy.showEmail,
+        showPhoneNumber: user?.showPhoneNumber ?? defaultOnboardingValues.privacy.showPhoneNumber,
+        showWorkDetails: user?.showWorkDetails ?? defaultOnboardingValues.privacy.showWorkDetails,
+        showSocialLinks: user?.showSocialLinks ?? defaultOnboardingValues.privacy.showSocialLinks,
+        showLocation: user?.showLocation ?? defaultOnboardingValues.privacy.showLocation,
+      }
+    },
     mode: "onChange"
   })
+
+  // Update form when user data loads
+  useEffect(() => {
+    if (user && !userLoading) {
+      form.reset({
+        ...defaultOnboardingValues,
+        basicInfo: {
+          ...defaultOnboardingValues.basicInfo,
+          firstName: user.firstName || defaultOnboardingValues.basicInfo.firstName,
+          lastName: user.lastName || defaultOnboardingValues.basicInfo.lastName,
+          username: user.username || defaultOnboardingValues.basicInfo.username,
+          bio: user.bio || defaultOnboardingValues.basicInfo.bio,
+          ageGroup: user.ageGroup || defaultOnboardingValues.basicInfo.ageGroup,
+          country: user.country || defaultOnboardingValues.basicInfo.country,
+          city: user.city || defaultOnboardingValues.basicInfo.city,
+          preferredLanguage: (locale as "EN" | "ES" | "FR" | "AR") || defaultOnboardingValues.basicInfo.preferredLanguage,
+        },
+        workInfo: {
+          ...defaultOnboardingValues.workInfo,
+          workTypes: user.workTypes || defaultOnboardingValues.workInfo.workTypes,
+          expertiseAreas: user.expertiseAreas || defaultOnboardingValues.workInfo.expertiseAreas,
+          organization: user.organization || defaultOnboardingValues.workInfo.organization,
+          position: user.position || defaultOnboardingValues.workInfo.position,
+          workBio: user.workBio || defaultOnboardingValues.workInfo.workBio,
+          linkedinProfile: user.linkedinProfile || defaultOnboardingValues.workInfo.linkedinProfile,
+          otherSocialLinks: defaultOnboardingValues.workInfo.otherSocialLinks,
+          personalWebsite: user.personalWebsite || defaultOnboardingValues.workInfo.personalWebsite,
+        },
+        privacy: {
+          ...defaultOnboardingValues.privacy,
+          isSearchable: user.isSearchable ?? defaultOnboardingValues.privacy.isSearchable,
+          profileVisibility: user.profileVisibility || defaultOnboardingValues.privacy.profileVisibility,
+          showEmail: user.showEmail ?? defaultOnboardingValues.privacy.showEmail,
+          showPhoneNumber: user.showPhoneNumber ?? defaultOnboardingValues.privacy.showPhoneNumber,
+          showWorkDetails: user.showWorkDetails ?? defaultOnboardingValues.privacy.showWorkDetails,
+          showSocialLinks: user.showSocialLinks ?? defaultOnboardingValues.privacy.showSocialLinks,
+          showLocation: user.showLocation ?? defaultOnboardingValues.privacy.showLocation,
+        }
+      })
+    }
+  }, [user, userLoading, form, locale])
 
   // Steps configuration
   const steps = [
@@ -176,8 +256,7 @@ export function ModernOnboardingContainer({
         position: data.workInfo.position,
         workBio: data.workInfo.workBio,
         linkedinProfile: data.workInfo.linkedinProfile,
-        portfolio: data.workInfo.portfolio,
-        githubProfile: data.workInfo.githubProfile,
+        otherSocialLinks: data.workInfo.otherSocialLinks || [],
         personalWebsite: data.workInfo.personalWebsite,
 
         // Recent work
@@ -271,7 +350,7 @@ export function ModernOnboardingContainer({
 
   return (
     <div className={cn(
-      "flex h-screen bg-gray-50 overflow-hidden",
+      "flex h-screen bg-gray-50",
       isRTL && "font-arabic"
     )} dir={isRTL ? "rtl" : "ltr"}>
       {/* Mobile sidebar overlay */}
@@ -328,6 +407,8 @@ export function ModernOnboardingContainer({
               form={form}
               content={sanityContent}
               isSubmitting={isSubmitting}
+              workTypes={userManagementOptions?.workTypes || []}
+              expertiseAreas={userManagementOptions?.expertiseAreas || []}
               {...(userManagementOptions && { userManagementOptions })}
             />
           </ModernContentArea>

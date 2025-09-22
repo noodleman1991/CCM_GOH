@@ -164,7 +164,7 @@ exports.Prisma.UserScalarFieldEnum = {
   workBio: 'workBio',
   personalWebsite: 'personalWebsite',
   linkedinProfile: 'linkedinProfile',
-  twitterHandle: 'twitterHandle',
+  otherSocialLinks: 'otherSocialLinks',
   preferredLanguage: 'preferredLanguage',
   isSearchable: 'isSearchable',
   profileVisibility: 'profileVisibility',
@@ -248,6 +248,11 @@ exports.Prisma.SortOrder = {
   desc: 'desc'
 };
 
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
+};
+
 exports.Prisma.QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
@@ -256,6 +261,12 @@ exports.Prisma.QueryMode = {
 exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
+};
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
 };
 exports.AgeGroup = exports.$Enums.AgeGroup = {
   UNDER_18: 'UNDER_18',

@@ -4103,7 +4103,6 @@ export namespace Prisma {
     workBio: string | null
     personalWebsite: string | null
     linkedinProfile: string | null
-    twitterHandle: string | null
     preferredLanguage: $Enums.Language | null
     isSearchable: boolean | null
     profileVisibility: $Enums.ProfileVisibility | null
@@ -4139,7 +4138,6 @@ export namespace Prisma {
     workBio: string | null
     personalWebsite: string | null
     linkedinProfile: string | null
-    twitterHandle: string | null
     preferredLanguage: $Enums.Language | null
     isSearchable: boolean | null
     profileVisibility: $Enums.ProfileVisibility | null
@@ -4177,7 +4175,7 @@ export namespace Prisma {
     workBio: number
     personalWebsite: number
     linkedinProfile: number
-    twitterHandle: number
+    otherSocialLinks: number
     preferredLanguage: number
     isSearchable: number
     profileVisibility: number
@@ -4223,7 +4221,6 @@ export namespace Prisma {
     workBio?: true
     personalWebsite?: true
     linkedinProfile?: true
-    twitterHandle?: true
     preferredLanguage?: true
     isSearchable?: true
     profileVisibility?: true
@@ -4259,7 +4256,6 @@ export namespace Prisma {
     workBio?: true
     personalWebsite?: true
     linkedinProfile?: true
-    twitterHandle?: true
     preferredLanguage?: true
     isSearchable?: true
     profileVisibility?: true
@@ -4297,7 +4293,7 @@ export namespace Prisma {
     workBio?: true
     personalWebsite?: true
     linkedinProfile?: true
-    twitterHandle?: true
+    otherSocialLinks?: true
     preferredLanguage?: true
     isSearchable?: true
     profileVisibility?: true
@@ -4422,7 +4418,7 @@ export namespace Prisma {
     workBio: string | null
     personalWebsite: string | null
     linkedinProfile: string | null
-    twitterHandle: string | null
+    otherSocialLinks: JsonValue | null
     preferredLanguage: $Enums.Language
     isSearchable: boolean
     profileVisibility: $Enums.ProfileVisibility
@@ -4479,7 +4475,7 @@ export namespace Prisma {
     workBio?: boolean
     personalWebsite?: boolean
     linkedinProfile?: boolean
-    twitterHandle?: boolean
+    otherSocialLinks?: boolean
     preferredLanguage?: boolean
     isSearchable?: boolean
     profileVisibility?: boolean
@@ -4523,7 +4519,7 @@ export namespace Prisma {
     workBio?: boolean
     personalWebsite?: boolean
     linkedinProfile?: boolean
-    twitterHandle?: boolean
+    otherSocialLinks?: boolean
     preferredLanguage?: boolean
     isSearchable?: boolean
     profileVisibility?: boolean
@@ -4561,7 +4557,7 @@ export namespace Prisma {
     workBio?: boolean
     personalWebsite?: boolean
     linkedinProfile?: boolean
-    twitterHandle?: boolean
+    otherSocialLinks?: boolean
     preferredLanguage?: boolean
     isSearchable?: boolean
     profileVisibility?: boolean
@@ -4599,7 +4595,7 @@ export namespace Prisma {
     workBio?: boolean
     personalWebsite?: boolean
     linkedinProfile?: boolean
-    twitterHandle?: boolean
+    otherSocialLinks?: boolean
     preferredLanguage?: boolean
     isSearchable?: boolean
     profileVisibility?: boolean
@@ -4616,7 +4612,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "emailVerified" | "image" | "phoneNumber" | "phoneVerified" | "firstName" | "lastName" | "username" | "bio" | "ageGroup" | "country" | "city" | "workTypes" | "expertiseAreas" | "organization" | "position" | "workBio" | "personalWebsite" | "linkedinProfile" | "twitterHandle" | "preferredLanguage" | "isSearchable" | "profileVisibility" | "showEmail" | "showPhoneNumber" | "showWorkDetails" | "showSocialLinks" | "showLocation" | "onboardingCompleted" | "onboardingStep" | "welcomeMessageSeen" | "role" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "emailVerified" | "image" | "phoneNumber" | "phoneVerified" | "firstName" | "lastName" | "username" | "bio" | "ageGroup" | "country" | "city" | "workTypes" | "expertiseAreas" | "organization" | "position" | "workBio" | "personalWebsite" | "linkedinProfile" | "otherSocialLinks" | "preferredLanguage" | "isSearchable" | "profileVisibility" | "showEmail" | "showPhoneNumber" | "showWorkDetails" | "showSocialLinks" | "showLocation" | "onboardingCompleted" | "onboardingStep" | "welcomeMessageSeen" | "role" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     accounts?: boolean | User$accountsArgs<ExtArgs>
     sessions?: boolean | User$sessionsArgs<ExtArgs>
@@ -4658,7 +4654,7 @@ export namespace Prisma {
       workBio: string | null
       personalWebsite: string | null
       linkedinProfile: string | null
-      twitterHandle: string | null
+      otherSocialLinks: Prisma.JsonValue | null
       preferredLanguage: $Enums.Language
       isSearchable: boolean
       profileVisibility: $Enums.ProfileVisibility
@@ -5121,7 +5117,7 @@ export namespace Prisma {
     readonly workBio: FieldRef<"User", 'String'>
     readonly personalWebsite: FieldRef<"User", 'String'>
     readonly linkedinProfile: FieldRef<"User", 'String'>
-    readonly twitterHandle: FieldRef<"User", 'String'>
+    readonly otherSocialLinks: FieldRef<"User", 'Json'>
     readonly preferredLanguage: FieldRef<"User", 'Language'>
     readonly isSearchable: FieldRef<"User", 'Boolean'>
     readonly profileVisibility: FieldRef<"User", 'ProfileVisibility'>
@@ -12220,7 +12216,7 @@ export namespace Prisma {
     workBio: 'workBio',
     personalWebsite: 'personalWebsite',
     linkedinProfile: 'linkedinProfile',
-    twitterHandle: 'twitterHandle',
+    otherSocialLinks: 'otherSocialLinks',
     preferredLanguage: 'preferredLanguage',
     isSearchable: 'isSearchable',
     profileVisibility: 'profileVisibility',
@@ -12328,6 +12324,14 @@ export namespace Prisma {
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+  export const NullableJsonNullValueInput: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull
+  };
+
+  export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
   export const QueryMode: {
     default: 'default',
     insensitive: 'insensitive'
@@ -12342,6 +12346,15 @@ export namespace Prisma {
   };
 
   export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+  export const JsonNullValueFilter: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull,
+    AnyNull: typeof AnyNull
+  };
+
+  export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
   /**
@@ -12430,6 +12443,20 @@ export namespace Prisma {
    * Reference to a field of type 'ExpertiseArea'
    */
   export type EnumExpertiseAreaFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ExpertiseArea'>
+    
+
+
+  /**
+   * Reference to a field of type 'Json'
+   */
+  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+  /**
+   * Reference to a field of type 'QueryMode'
+   */
+  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
 
 
@@ -12713,7 +12740,7 @@ export namespace Prisma {
     workBio?: StringNullableFilter<"User"> | string | null
     personalWebsite?: StringNullableFilter<"User"> | string | null
     linkedinProfile?: StringNullableFilter<"User"> | string | null
-    twitterHandle?: StringNullableFilter<"User"> | string | null
+    otherSocialLinks?: JsonNullableFilter<"User">
     preferredLanguage?: EnumLanguageFilter<"User"> | $Enums.Language
     isSearchable?: BoolFilter<"User"> | boolean
     profileVisibility?: EnumProfileVisibilityFilter<"User"> | $Enums.ProfileVisibility
@@ -12756,7 +12783,7 @@ export namespace Prisma {
     workBio?: SortOrderInput | SortOrder
     personalWebsite?: SortOrderInput | SortOrder
     linkedinProfile?: SortOrderInput | SortOrder
-    twitterHandle?: SortOrderInput | SortOrder
+    otherSocialLinks?: SortOrderInput | SortOrder
     preferredLanguage?: SortOrder
     isSearchable?: SortOrder
     profileVisibility?: SortOrder
@@ -12802,7 +12829,7 @@ export namespace Prisma {
     workBio?: StringNullableFilter<"User"> | string | null
     personalWebsite?: StringNullableFilter<"User"> | string | null
     linkedinProfile?: StringNullableFilter<"User"> | string | null
-    twitterHandle?: StringNullableFilter<"User"> | string | null
+    otherSocialLinks?: JsonNullableFilter<"User">
     preferredLanguage?: EnumLanguageFilter<"User"> | $Enums.Language
     isSearchable?: BoolFilter<"User"> | boolean
     profileVisibility?: EnumProfileVisibilityFilter<"User"> | $Enums.ProfileVisibility
@@ -12845,7 +12872,7 @@ export namespace Prisma {
     workBio?: SortOrderInput | SortOrder
     personalWebsite?: SortOrderInput | SortOrder
     linkedinProfile?: SortOrderInput | SortOrder
-    twitterHandle?: SortOrderInput | SortOrder
+    otherSocialLinks?: SortOrderInput | SortOrder
     preferredLanguage?: SortOrder
     isSearchable?: SortOrder
     profileVisibility?: SortOrder
@@ -12891,7 +12918,7 @@ export namespace Prisma {
     workBio?: StringNullableWithAggregatesFilter<"User"> | string | null
     personalWebsite?: StringNullableWithAggregatesFilter<"User"> | string | null
     linkedinProfile?: StringNullableWithAggregatesFilter<"User"> | string | null
-    twitterHandle?: StringNullableWithAggregatesFilter<"User"> | string | null
+    otherSocialLinks?: JsonNullableWithAggregatesFilter<"User">
     preferredLanguage?: EnumLanguageWithAggregatesFilter<"User"> | $Enums.Language
     isSearchable?: BoolWithAggregatesFilter<"User"> | boolean
     profileVisibility?: EnumProfileVisibilityWithAggregatesFilter<"User"> | $Enums.ProfileVisibility
@@ -13494,7 +13521,7 @@ export namespace Prisma {
     workBio?: string | null
     personalWebsite?: string | null
     linkedinProfile?: string | null
-    twitterHandle?: string | null
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
     preferredLanguage?: $Enums.Language
     isSearchable?: boolean
     profileVisibility?: $Enums.ProfileVisibility
@@ -13537,7 +13564,7 @@ export namespace Prisma {
     workBio?: string | null
     personalWebsite?: string | null
     linkedinProfile?: string | null
-    twitterHandle?: string | null
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
     preferredLanguage?: $Enums.Language
     isSearchable?: boolean
     profileVisibility?: $Enums.ProfileVisibility
@@ -13580,7 +13607,7 @@ export namespace Prisma {
     workBio?: NullableStringFieldUpdateOperationsInput | string | null
     personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
     linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
-    twitterHandle?: NullableStringFieldUpdateOperationsInput | string | null
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
     preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     isSearchable?: BoolFieldUpdateOperationsInput | boolean
     profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
@@ -13623,7 +13650,7 @@ export namespace Prisma {
     workBio?: NullableStringFieldUpdateOperationsInput | string | null
     personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
     linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
-    twitterHandle?: NullableStringFieldUpdateOperationsInput | string | null
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
     preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     isSearchable?: BoolFieldUpdateOperationsInput | boolean
     profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
@@ -13666,7 +13693,7 @@ export namespace Prisma {
     workBio?: string | null
     personalWebsite?: string | null
     linkedinProfile?: string | null
-    twitterHandle?: string | null
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
     preferredLanguage?: $Enums.Language
     isSearchable?: boolean
     profileVisibility?: $Enums.ProfileVisibility
@@ -13704,7 +13731,7 @@ export namespace Prisma {
     workBio?: NullableStringFieldUpdateOperationsInput | string | null
     personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
     linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
-    twitterHandle?: NullableStringFieldUpdateOperationsInput | string | null
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
     preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     isSearchable?: BoolFieldUpdateOperationsInput | boolean
     profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
@@ -13742,7 +13769,7 @@ export namespace Prisma {
     workBio?: NullableStringFieldUpdateOperationsInput | string | null
     personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
     linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
-    twitterHandle?: NullableStringFieldUpdateOperationsInput | string | null
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
     preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     isSearchable?: BoolFieldUpdateOperationsInput | boolean
     profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
@@ -14439,6 +14466,29 @@ export namespace Prisma {
     hasSome?: $Enums.ExpertiseArea[] | ListEnumExpertiseAreaFieldRefInput<$PrismaModel>
     isEmpty?: boolean
   }
+  export type JsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
 
   export type EnumLanguageFilter<$PrismaModel = never> = {
     equals?: $Enums.Language | EnumLanguageFieldRefInput<$PrismaModel>
@@ -14548,7 +14598,7 @@ export namespace Prisma {
     workBio?: SortOrder
     personalWebsite?: SortOrder
     linkedinProfile?: SortOrder
-    twitterHandle?: SortOrder
+    otherSocialLinks?: SortOrder
     preferredLanguage?: SortOrder
     isSearchable?: SortOrder
     profileVisibility?: SortOrder
@@ -14588,7 +14638,6 @@ export namespace Prisma {
     workBio?: SortOrder
     personalWebsite?: SortOrder
     linkedinProfile?: SortOrder
-    twitterHandle?: SortOrder
     preferredLanguage?: SortOrder
     isSearchable?: SortOrder
     profileVisibility?: SortOrder
@@ -14624,7 +14673,6 @@ export namespace Prisma {
     workBio?: SortOrder
     personalWebsite?: SortOrder
     linkedinProfile?: SortOrder
-    twitterHandle?: SortOrder
     preferredLanguage?: SortOrder
     isSearchable?: SortOrder
     profileVisibility?: SortOrder
@@ -14667,6 +14715,32 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedEnumAgeGroupNullableFilter<$PrismaModel>
     _max?: NestedEnumAgeGroupNullableFilter<$PrismaModel>
+  }
+  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedJsonNullableFilter<$PrismaModel>
+    _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
   export type EnumLanguageWithAggregatesFilter<$PrismaModel = never> = {
@@ -15655,6 +15729,29 @@ export namespace Prisma {
     _min?: NestedEnumAgeGroupNullableFilter<$PrismaModel>
     _max?: NestedEnumAgeGroupNullableFilter<$PrismaModel>
   }
+  export type NestedJsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
 
   export type NestedEnumLanguageWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.Language | EnumLanguageFieldRefInput<$PrismaModel>
@@ -15793,7 +15890,7 @@ export namespace Prisma {
     workBio?: string | null
     personalWebsite?: string | null
     linkedinProfile?: string | null
-    twitterHandle?: string | null
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
     preferredLanguage?: $Enums.Language
     isSearchable?: boolean
     profileVisibility?: $Enums.ProfileVisibility
@@ -15835,7 +15932,7 @@ export namespace Prisma {
     workBio?: string | null
     personalWebsite?: string | null
     linkedinProfile?: string | null
-    twitterHandle?: string | null
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
     preferredLanguage?: $Enums.Language
     isSearchable?: boolean
     profileVisibility?: $Enums.ProfileVisibility
@@ -15893,7 +15990,7 @@ export namespace Prisma {
     workBio?: NullableStringFieldUpdateOperationsInput | string | null
     personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
     linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
-    twitterHandle?: NullableStringFieldUpdateOperationsInput | string | null
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
     preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     isSearchable?: BoolFieldUpdateOperationsInput | boolean
     profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
@@ -15935,7 +16032,7 @@ export namespace Prisma {
     workBio?: NullableStringFieldUpdateOperationsInput | string | null
     personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
     linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
-    twitterHandle?: NullableStringFieldUpdateOperationsInput | string | null
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
     preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     isSearchable?: BoolFieldUpdateOperationsInput | boolean
     profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
@@ -15977,7 +16074,7 @@ export namespace Prisma {
     workBio?: string | null
     personalWebsite?: string | null
     linkedinProfile?: string | null
-    twitterHandle?: string | null
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
     preferredLanguage?: $Enums.Language
     isSearchable?: boolean
     profileVisibility?: $Enums.ProfileVisibility
@@ -16019,7 +16116,7 @@ export namespace Prisma {
     workBio?: string | null
     personalWebsite?: string | null
     linkedinProfile?: string | null
-    twitterHandle?: string | null
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
     preferredLanguage?: $Enums.Language
     isSearchable?: boolean
     profileVisibility?: $Enums.ProfileVisibility
@@ -16077,7 +16174,7 @@ export namespace Prisma {
     workBio?: NullableStringFieldUpdateOperationsInput | string | null
     personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
     linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
-    twitterHandle?: NullableStringFieldUpdateOperationsInput | string | null
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
     preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     isSearchable?: BoolFieldUpdateOperationsInput | boolean
     profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
@@ -16119,7 +16216,7 @@ export namespace Prisma {
     workBio?: NullableStringFieldUpdateOperationsInput | string | null
     personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
     linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
-    twitterHandle?: NullableStringFieldUpdateOperationsInput | string | null
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
     preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     isSearchable?: BoolFieldUpdateOperationsInput | boolean
     profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
@@ -16532,7 +16629,7 @@ export namespace Prisma {
     workBio?: string | null
     personalWebsite?: string | null
     linkedinProfile?: string | null
-    twitterHandle?: string | null
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
     preferredLanguage?: $Enums.Language
     isSearchable?: boolean
     profileVisibility?: $Enums.ProfileVisibility
@@ -16574,7 +16671,7 @@ export namespace Prisma {
     workBio?: string | null
     personalWebsite?: string | null
     linkedinProfile?: string | null
-    twitterHandle?: string | null
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
     preferredLanguage?: $Enums.Language
     isSearchable?: boolean
     profileVisibility?: $Enums.ProfileVisibility
@@ -16661,7 +16758,7 @@ export namespace Prisma {
     workBio?: NullableStringFieldUpdateOperationsInput | string | null
     personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
     linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
-    twitterHandle?: NullableStringFieldUpdateOperationsInput | string | null
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
     preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     isSearchable?: BoolFieldUpdateOperationsInput | boolean
     profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
@@ -16703,7 +16800,7 @@ export namespace Prisma {
     workBio?: NullableStringFieldUpdateOperationsInput | string | null
     personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
     linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
-    twitterHandle?: NullableStringFieldUpdateOperationsInput | string | null
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
     preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     isSearchable?: BoolFieldUpdateOperationsInput | boolean
     profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
@@ -16809,7 +16906,7 @@ export namespace Prisma {
     workBio?: string | null
     personalWebsite?: string | null
     linkedinProfile?: string | null
-    twitterHandle?: string | null
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
     preferredLanguage?: $Enums.Language
     isSearchable?: boolean
     profileVisibility?: $Enums.ProfileVisibility
@@ -16851,7 +16948,7 @@ export namespace Prisma {
     workBio?: string | null
     personalWebsite?: string | null
     linkedinProfile?: string | null
-    twitterHandle?: string | null
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
     preferredLanguage?: $Enums.Language
     isSearchable?: boolean
     profileVisibility?: $Enums.ProfileVisibility
@@ -16944,7 +17041,7 @@ export namespace Prisma {
     workBio?: NullableStringFieldUpdateOperationsInput | string | null
     personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
     linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
-    twitterHandle?: NullableStringFieldUpdateOperationsInput | string | null
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
     preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     isSearchable?: BoolFieldUpdateOperationsInput | boolean
     profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
@@ -16986,7 +17083,7 @@ export namespace Prisma {
     workBio?: NullableStringFieldUpdateOperationsInput | string | null
     personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
     linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
-    twitterHandle?: NullableStringFieldUpdateOperationsInput | string | null
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
     preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     isSearchable?: BoolFieldUpdateOperationsInput | boolean
     profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
@@ -17028,7 +17125,7 @@ export namespace Prisma {
     workBio?: string | null
     personalWebsite?: string | null
     linkedinProfile?: string | null
-    twitterHandle?: string | null
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
     preferredLanguage?: $Enums.Language
     isSearchable?: boolean
     profileVisibility?: $Enums.ProfileVisibility
@@ -17070,7 +17167,7 @@ export namespace Prisma {
     workBio?: string | null
     personalWebsite?: string | null
     linkedinProfile?: string | null
-    twitterHandle?: string | null
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
     preferredLanguage?: $Enums.Language
     isSearchable?: boolean
     profileVisibility?: $Enums.ProfileVisibility
@@ -17128,7 +17225,7 @@ export namespace Prisma {
     workBio?: NullableStringFieldUpdateOperationsInput | string | null
     personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
     linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
-    twitterHandle?: NullableStringFieldUpdateOperationsInput | string | null
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
     preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     isSearchable?: BoolFieldUpdateOperationsInput | boolean
     profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
@@ -17170,7 +17267,7 @@ export namespace Prisma {
     workBio?: NullableStringFieldUpdateOperationsInput | string | null
     personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
     linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
-    twitterHandle?: NullableStringFieldUpdateOperationsInput | string | null
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
     preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     isSearchable?: BoolFieldUpdateOperationsInput | boolean
     profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility

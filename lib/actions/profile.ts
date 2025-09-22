@@ -22,7 +22,7 @@ export interface ProfileData {
     workBio?: string | null
     personalWebsite?: string | null
     linkedinProfile?: string | null
-    twitterHandle?: string | null
+    otherSocialLinks: Array<{platform: string, url: string}>
     role: string
     createdAt: Date
     updatedAt: Date
@@ -96,7 +96,7 @@ const getCachedUserProfile = unstable_cache(
             workBio: user.workBio,
             personalWebsite: user.personalWebsite,
             linkedinProfile: user.linkedinProfile,
-            twitterHandle: user.twitterHandle,
+            otherSocialLinks: (user.otherSocialLinks as Array<{platform: string, url: string}>) || [],
             role: user.role,
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,

@@ -153,7 +153,7 @@ export function ReviewStep({ data }: ReviewStepProps) {
           )}
 
           {/* Social Links */}
-          {(data.personalWebsite || data.linkedinProfile || data.twitterHandle) && (
+          {(data.personalWebsite || data.linkedinProfile || data.otherSocialLinks.length > 0) && (
             <>
               <Separator />
               <div>
@@ -175,11 +175,11 @@ export function ReviewStep({ data }: ReviewStepProps) {
                       LinkedIn: linkedin.com/in/{data.linkedinProfile}
                     </p>
                   )}
-                  {data.twitterHandle && (
-                    <p className="text-sm text-muted-foreground">
-                      Twitter: twitter.com/{data.twitterHandle}
+                  {data.otherSocialLinks.map((link, index) => (
+                    <p key={index} className="text-sm text-muted-foreground">
+                      {link.platform}: {link.url}
                     </p>
-                  )}
+                  ))}
                 </div>
               </div>
             </>

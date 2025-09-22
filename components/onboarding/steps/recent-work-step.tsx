@@ -78,7 +78,7 @@ export function RecentWorkStep({ data, updateDataAction, onNextAction }: RecentW
       endDate: values.isOngoing ? undefined : values.endDate
     }
 
-    let updatedWork = [...data.recentWork]
+    const updatedWork = [...data.recentWork]
 
     if (editingIndex !== null) {
       updatedWork[editingIndex] = newWork

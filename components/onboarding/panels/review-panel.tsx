@@ -190,8 +190,8 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
             )}
 
             {/* Social Links */}
-            {(formData.workInfo.linkedinProfile || formData.workInfo.portfolio ||
-              formData.workInfo.githubProfile || formData.workInfo.personalWebsite) && (
+            {(formData.workInfo.linkedinProfile || formData.workInfo.personalWebsite ||
+              (formData.workInfo.otherSocialLinks && formData.workInfo.otherSocialLinks.length > 0)) && (
               <div>
                 <p className="text-sm font-medium text-gray-500 mb-2">{content?.reviewFieldLabels?.socialLinks || t("socialLinks")}</p>
                 <div className="space-y-2">
@@ -206,28 +206,6 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
                       LinkedIn
                     </a>
                   )}
-                  {formData.workInfo.portfolio && (
-                    <a
-                      href={formData.workInfo.portfolio}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={cn("flex items-center gap-2 text-primary hover:underline", isRTL && "flex-row-reverse")}
-                    >
-                      <ExternalLink className="h-4 w-4" />
-                      Portfolio
-                    </a>
-                  )}
-                  {formData.workInfo.githubProfile && (
-                    <a
-                      href={formData.workInfo.githubProfile}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={cn("flex items-center gap-2 text-primary hover:underline", isRTL && "flex-row-reverse")}
-                    >
-                      <ExternalLink className="h-4 w-4" />
-                      GitHub
-                    </a>
-                  )}
                   {formData.workInfo.personalWebsite && (
                     <a
                       href={formData.workInfo.personalWebsite}
@@ -239,6 +217,20 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
                       Website
                     </a>
                   )}
+                  {formData.workInfo.otherSocialLinks?.map((link: {platform: string, url: string}, index: number) => (
+                    link.platform && link.url && (
+                      <a
+                        key={index}
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={cn("flex items-center gap-2 text-primary hover:underline", isRTL && "flex-row-reverse")}
+                      >
+                        <ExternalLink className="h-4 w-4" />
+                        {link.platform}
+                      </a>
+                    )
+                  ))}
                 </div>
               </div>
             )}

@@ -41,7 +41,7 @@ export interface OnboardingData {
   // Social Links
   personalWebsite: string
   linkedinProfile: string
-  twitterHandle: string
+  otherSocialLinks: Array<{platform: string, url: string}>
 
   // Recent Work
   recentWork: Array<{
@@ -102,7 +102,7 @@ export default function OnboardingContainer() {
     workBio: "",
     personalWebsite: "",
     linkedinProfile: "",
-    twitterHandle: "",
+    otherSocialLinks: [],
     recentWork: [],
     isSearchable: true,
     profileVisibility: "PUBLIC",
