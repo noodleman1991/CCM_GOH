@@ -654,5 +654,153 @@
     "continue": "متابعة",
     "reviewProfile": "مراجعة الملف الشخصي",
     "completeProfile": "إكمال الملف الشخصي"
+  },
+  "caseStudyForm": {
+    "sections": {
+      "basicInfo": "المعلومات الأساسية",
+      "content": "المحتوى والتفاصيل",
+      "authors": "المؤلفون والمساهمون",
+      "classification": "العلامات والتصنيف",
+      "location": "موقع الدراسة",
+      "timeline": "فترة الدراسة"
+    },
+    "fields": {
+      "title": "العنوان",
+      "subtitle": "العنوان الفرعي",
+      "excerpt": "الملخص",
+      "content": "المحتوى الكامل",
+      "featuredImage": "الصورة المميزة",
+      "organization": "المنظمة المرتبطة",
+      "authors": "فريق البحث",
+      "tags": "العلامات",
+      "country": "البلد",
+      "city": "المدينة",
+      "region": "المنطقة/الولاية",
+      "startDate": "تاريخ البداية",
+      "endDate": "تاريخ النهاية"
+    },
+    "roles": {
+      "lead": "المؤلف الرئيسي",
+      "coauthor": "مؤلف مشارك",
+      "contributor": "مساهم",
+      "advisor": "مستشار"
+    },
+    "actions": {
+      "addAuthor": "إضافة مؤلف",
+      "removeAuthor": "إزالة مؤلف",
+      "uploadImage": "رفع صورة",
+      "submit": "إرسال دراسة الحالة",
+      "submitting": "جاري الإرسال..."
+    },
+    "status": {
+      "draft": "مسودة",
+      "submitting": "جاري الإرسال...",
+      "submitted": "تم الإرسال للمراجعة"
+    },
+    "messages": {
+      "submitSuccess": "شكراً! تم إرسال دراسة الحالة الخاصة بك وستتم مراجعتها من قبل فريقنا.",
+      "submitError": "فشل في إرسال دراسة الحالة. يرجى المحاولة مرة أخرى.",
+      "loginRequired": "يجب تسجيل الدخول لإرسال دراسة حالة",
+      "reviewNote": "ستتم مراجعة دراسة الحالة الخاصة بك من قبل فريقنا التحريري متعدد اللغات قبل النشر.",
+      "multilingualWelcome": "مرحباً بك في مجتمعنا العالمي! أرسل بأي لغة وساعدنا في الوصول إلى الباحثين في جميع أنحاء العالم."
+    }
+  },
+  "dashboard": {
+    "greeting": "مرحباً، {name}",
+    "summary": "ملخصك هنا",
+    "recentActivity": "النشاط الأخير",
+    "noActivity": "لا يوجد نشاط حديث",
+    "viewAll": "عرض الكل",
+    "personalSettings": "الإعدادات الشخصية",
+    "buildingApp": "بناء تطبيقك",
+    "dataFetching": "جلب البيانات",
+    "submissions": {
+      "pageTitle": "مراسلاتي",
+      "pageDescription": "إدارة مراسلات ومسودات دراسات الحالة الخاصة بك",
+      "title": "مراسلاتي",
+      "description": "إدارة مراسلات ومسودات دراسات الحالة الخاصة بك",
+      "newCaseStudy": "دراسة حالة جديدة",
+      "status": {
+        "pending": "قيد المراجعة",
+        "approved": "منشور",
+        "rejected": "مرفوض",
+        "revision": "يحتاج تنقيح"
+      },
+      "tabs": {
+        "submissions": "المراسلات",
+        "drafts": "المسودات"
+      },
+      "actions": {
+        "edit": "تحرير وإعادة إرسال",
+        "view": "عرض المنشور",
+        "continue": "متابعة الكتابة",
+        "underReview": "قيد المراجعة"
+      },
+      "empty": {
+        "submissions": {
+          "title": "لا توجد مراسلات بعد",
+          "description": "ابدأ بإرسال دراسة الحالة الأولى لمشاركة بحثك مع المجتمع.",
+          "action": "إرسال دراسة حالة"
+        },
+        "drafts": {
+          "title": "لا توجد مسودات محفوظة",
+          "description": "ستظهر مسودات دراسات الحالة الخاصة بك هنا تلقائياً أثناء العمل عليها."
+        }
+      },
+      "alerts": {
+        "revision": {
+          "title": "مطلوب إجراء",
+          "description": "لديك {count} دراسة حالة تحتاج تنقيح بناءً على ملاحظات المحرر.",
+          "editorFeedback": "ملاحظات المحرر:"
+        }
+      }
+    }
+  },
+  "caseStudies": {
+    "pageTitle": "دراسات الحالة",
+    "pageDescription": "استكشف البحوث والرؤى من مجتمعنا العالمي",
+    "featured": "دراسات الحالة المميزة",
+    "browseByTopic": "تصفح حسب الموضوع",
+    "viewAll": "عرض الكل",
+    "noResults": "لم يتم العثور على دراسات حالة",
+    "filters": {
+      "all": "جميع المواضيع",
+      "featured": "مميز",
+      "recent": "منشور حديثاً"
+    },
+    "topics": {
+      "climate-environment": "تغير المناخ والبيئة",
+      "mental-health": "الصحة النفسية والرفاهية",
+      "community-health": "صحة المجتمع والرعاية الاجتماعية",
+      "youth-education": "مشاركة الشباب والتعليم",
+      "policy-governance": "بحوث السياسات والحوكمة",
+      "technology-innovation": "التكنولوجيا والابتكار",
+      "economic-development": "التنمية الاقتصادية",
+      "cultural-arts": "التراث الثقافي والفنون",
+      "food-agriculture": "الأمن الغذائي والزراعة",
+      "urban-planning": "التخطيط الحضري والبنية التحتية",
+      "human-rights": "حقوق الإنسان والعدالة الاجتماعية",
+      "migration": "الهجرة والنزوح",
+      "gender-equality": "المساواة بين الجنسين",
+      "disaster-resilience": "مخاطر الكوارث والمرونة",
+      "digital-inclusion": "الشمول الرقمي",
+      "other": "أخرى"
+    },
+    "meta": {
+      "authors": "مؤلف",
+      "authorsPlural": "مؤلفون",
+      "readTime": "دقيقة قراءة",
+      "publishedAt": "منشور",
+      "submittedAt": "مرسل"
+    }
+  },
+  "revisionAlert": {
+    "title": "مطلوب إجراء: تنقيح مطلوب",
+    "description": "لديك {count} دراسة حالة تحتاج تنقيح بناءً على ملاحظات المحرر.",
+    "editorFeedback": "ملاحظات المحرر:",
+    "actions": {
+      "remindLater": "تذكيرني لاحقاً",
+      "viewSubmissions": "عرض وتحرير المراسلات"
+    }
   }
 }

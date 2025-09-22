@@ -18,6 +18,12 @@ import { codeInput } from "@sanity/code-input";
 import { documentInternationalization } from '@sanity/document-internationalization'
 
 import { routing } from './i18n/routing'
+import {
+  approveCaseStudyAction,
+  requestRevisionAction,
+  rejectCaseStudyAction,
+  previewCaseStudyAction
+} from './sanity/actions'
 
 
 
@@ -28,6 +34,21 @@ export default defineConfig({
     dataset,
     // Add and edit the content schema in the './sanity/schema' folder
     schema,
+    document: {
+      actions: (prev, context) => {
+        // Add custom actions for case studies
+        if (context.schemaType === 'caseStudy') {
+          return [
+            ...prev,
+            approveCaseStudyAction,
+            requestRevisionAction,
+            rejectCaseStudyAction,
+            previewCaseStudyAction
+          ]
+        }
+        return prev
+      }
+    },
     plugins: [
         structureTool({ structure }),
         presentationTool({

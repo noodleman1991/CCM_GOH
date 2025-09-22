@@ -18,6 +18,7 @@ import project from "./schemas/documents/project";
 import newsPost from "./schemas/documents/news-post";
 import externalSource from "./schemas/documents/external-source";
 import caseStudy from "./schemas/documents/case-study";
+import caseStudyDraft from "./schemas/documents/case-study-draft";
 import livedExperience from "./schemas/documents/lived-experience";
 import onboardingContent from "./schemas/documents/onboarding-content";
 import workType from "./schemas/documents/work-type";
@@ -87,6 +88,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
         newsPost,
         externalSource,
         caseStudy,
+        caseStudyDraft,
         livedExperience,
         regionalCommunity,
         report,
