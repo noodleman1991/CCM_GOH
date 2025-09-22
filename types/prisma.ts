@@ -143,7 +143,7 @@ export interface UserProfileUpdateData {
   workBio?: string | null
   personalWebsite?: string | null
   linkedinProfile?: string | null
-  twitterHandle?: string | null
+  otherSocialLinks?: Array<{platform: string, url: string}>
   isSearchable?: boolean
   profileVisibility?: ProfileVisibility
   showEmail?: boolean

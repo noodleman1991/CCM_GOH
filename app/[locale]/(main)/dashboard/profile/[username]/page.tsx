@@ -129,11 +129,11 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                     />
 
                     {/* Social Links */}
-                    {(user.personalWebsite || user.linkedinProfile || user.twitterHandle) && (
+                    {(user.personalWebsite || user.linkedinProfile || (user.otherSocialLinks && Array.isArray(user.otherSocialLinks) && user.otherSocialLinks.length > 0)) && (
                         <SocialLinksBlock
                             personalWebsite={user.personalWebsite}
                             linkedinProfile={user.linkedinProfile}
-                            twitterHandle={user.twitterHandle}
+                            otherSocialLinks={Array.isArray(user.otherSocialLinks) ? user.otherSocialLinks as Array<{platform: string, url: string}> : []}
                         />
                     )}
                 </div>

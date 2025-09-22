@@ -306,3 +306,39 @@ export async function fetchUserManagementOptions() {
     }
   }
 }
+
+// Fetch user management options with locale support
+export async function fetchUserManagementOptionsWithLocale(locale: string = 'en') {
+  try {
+    const response = await sanityFetch({
+      query: `{
+        "workTypes": *[_type == "workType" && isActive == true] | order(order asc, key asc) {
+          _id,
+          key,
+          "label": coalesce(label[_key == $locale][0].value, label[_key == "en"][0].value, key),
+          "description": coalesce(description[_key == $locale][0].value, description[_key == "en"][0].value, ""),
+          order
+        },
+        "expertiseAreas": *[_type == "expertiseArea" && isActive == true] | order(order asc, key asc) {
+          _id,
+          key,
+          "label": coalesce(label[_key == $locale][0].value, label[_key == "en"][0].value, key),
+          "description": coalesce(description[_key == $locale][0].value, description[_key == "en"][0].value, ""),
+          order
+        }
+      }`,
+      params: { locale }
+    })
+
+    return {
+      workTypes: response.data?.workTypes || [],
+      expertiseAreas: response.data?.expertiseAreas || []
+    }
+  } catch (error) {
+    console.error('Error fetching localized user management options:', error)
+    return {
+      workTypes: [],
+      expertiseAreas: []
+    }
+  }
+}

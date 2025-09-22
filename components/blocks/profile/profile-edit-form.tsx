@@ -54,7 +54,10 @@ const profileSchema = z.object({
     workBio: z.string().max(1000, "Work bio must be less than 1000 characters").optional(),
     personalWebsite: z.string().url("Please enter a valid URL").optional().or(z.literal("")),
     linkedinProfile: z.string().optional(),
-    twitterHandle: z.string().optional(),
+    otherSocialLinks: z.array(z.object({
+        platform: z.string().min(1),
+        url: z.string().url()
+    })).optional(),
     
     // Privacy Controls
     isSearchable: z.boolean().default(true),
@@ -113,7 +116,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
             workBio: user?.workBio || initialData?.workBio || "",
             personalWebsite: user?.personalWebsite || initialData?.personalWebsite || "",
             linkedinProfile: user?.linkedinProfile || initialData?.linkedinProfile || "",
-            twitterHandle: user?.twitterHandle || initialData?.twitterHandle || "",
+            otherSocialLinks: user?.otherSocialLinks || initialData?.otherSocialLinks || [],
             // Privacy Controls
             isSearchable: user?.isSearchable ?? initialData?.isSearchable ?? true,
             profileVisibility: user?.profileVisibility || initialData?.profileVisibility || "PUBLIC",
@@ -144,7 +147,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                 workBio: user.workBio || "",
                 personalWebsite: user.personalWebsite || "",
                 linkedinProfile: user.linkedinProfile || "",
-                twitterHandle: user.twitterHandle || "",
+                otherSocialLinks: user.otherSocialLinks || [],
                 isSearchable: user.isSearchable ?? true,
                 profileVisibility: user.profileVisibility || "PUBLIC",
                 showEmail: user.showEmail ?? false,
@@ -194,7 +197,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                     workBio: values.workBio?.trim() || null,
                     personalWebsite: values.personalWebsite?.trim() || null,
                     linkedinProfile: values.linkedinProfile?.trim() || null,
-                    twitterHandle: values.twitterHandle?.trim() || null,
+                    otherSocialLinks: values.otherSocialLinks || [],
                     isSearchable: values.isSearchable,
                     profileVisibility: values.profileVisibility,
                     showEmail: values.showEmail,
@@ -646,22 +649,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                             )}
                         />
 
-                        <FormField
-                            control={form.control}
-                            name="twitterHandle"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>{t('twitter')}</FormLabel>
-                                    <FormControl>
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-sm text-muted-foreground">twitter.com/</span>
-                                            <Input {...field} placeholder="yourhandle" />
-                                        </div>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+{/* Twitter field removed - now using otherSocialLinks */}
                     </CardContent>
                 </Card>
 

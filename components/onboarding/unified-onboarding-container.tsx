@@ -230,8 +230,7 @@ export default function UnifiedOnboardingContainer() {
         position: data.workInfo.position,
         workBio: data.workInfo.workBio,
         linkedinProfile: data.workInfo.linkedinProfile,
-        portfolio: data.workInfo.portfolio,
-        githubProfile: data.workInfo.githubProfile,
+        otherSocialLinks: data.workInfo.otherSocialLinks || [],
         personalWebsite: data.workInfo.personalWebsite,
 
         // Recent work
@@ -264,21 +263,7 @@ export default function UnifiedOnboardingContainer() {
 
       // Handle HTTP errors
       if (!response.ok) {
-        let errorData
-        try {
-          const contentType = response.headers.get('content-type')
-          if (contentType && contentType.includes('application/json')) {
-            errorData = await response.json()
-          } else {
-            // Response is not JSON (likely HTML error page)
-            const htmlText = await response.text()
-            console.error('❌ Received HTML instead of JSON:', htmlText.substring(0, 200))
-            throw new Error('Server returned an unexpected response format. Please try again or contact support.')
-          }
-        } catch (parseError) {
-          console.error('❌ Error parsing error response:', parseError)
-          throw new Error(`Server error (${response.status}). Please try again or contact support.`)
-        }
+        const errorData = await response.json()
 
         // Handle specific error codes
         if (errorData.code === 'AUTH_REQUIRED') {
@@ -294,13 +279,7 @@ export default function UnifiedOnboardingContainer() {
       }
 
       // Parse successful response
-      let result
-      try {
-        result = await response.json()
-      } catch (parseError) {
-        console.error('❌ Error parsing success response:', parseError)
-        throw new Error('Onboarding may have completed, but we received an unexpected response. Please refresh to check your status.')
-      }
+      const result = await response.json()
 
       if (!result.success) {
         throw new Error(result.error || 'Onboarding submission failed')

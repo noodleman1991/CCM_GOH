@@ -39,10 +39,13 @@ const workInfoSchema = z.object({
   workBio: z.string().max(1000, "Work bio must be less than 1000 characters").optional(),
   personalWebsite: z.string().url("Please enter a valid URL").optional().or(z.literal("")),
   linkedinProfile: z.string().optional(),
-  twitterHandle: z.string().optional()
+  otherSocialLinks: z.array(z.object({
+    platform: z.string().min(1, "Platform name is required"),
+    url: z.string().url("Please enter a valid URL")
+  })).default([])
 })
 
-type WorkInfoFormValues = z.infer<typeof workInfoSchema>
+// Form values will be inferred from schema
 
 interface WorkInfoStepProps {
   data: OnboardingData
@@ -70,17 +73,17 @@ export function WorkInfoStep({
   const locale = useLocale()
   const isRTL = rtlLocales.includes(locale)
 
-  const form = useForm<WorkInfoFormValues>({
+  const form = useForm({
     resolver: zodResolver(workInfoSchema),
     defaultValues: {
-      workTypes: data.workTypes as WorkInfoFormValues["workTypes"],
-      expertiseAreas: data.expertiseAreas as WorkInfoFormValues["expertiseAreas"],
+      workTypes: data.workTypes,
+      expertiseAreas: data.expertiseAreas,
       organization: data.organization,
       position: data.position,
       workBio: data.workBio,
       personalWebsite: data.personalWebsite,
       linkedinProfile: data.linkedinProfile,
-      twitterHandle: data.twitterHandle
+      otherSocialLinks: data.otherSocialLinks
     }
   })
 
@@ -88,26 +91,26 @@ export function WorkInfoStep({
   const watchedValues = useWatch({
     control: form.control,
     defaultValue: {
-      workTypes: data.workTypes as WorkInfoFormValues["workTypes"],
-      expertiseAreas: data.expertiseAreas as WorkInfoFormValues["expertiseAreas"],
+      workTypes: data.workTypes,
+      expertiseAreas: data.expertiseAreas,
       organization: data.organization,
       position: data.position,
       workBio: data.workBio,
       personalWebsite: data.personalWebsite,
       linkedinProfile: data.linkedinProfile,
-      twitterHandle: data.twitterHandle
+      otherSocialLinks: data.otherSocialLinks
     }
   })
 
   // Memoize the update function to prevent infinite loops
-  const memoizedUpdateDataAction = useCallback((values: WorkInfoFormValues) => {
+  const memoizedUpdateDataAction = useCallback((values: Partial<OnboardingData>) => {
     updateDataAction(values)
   }, [updateDataAction])
 
   // Update parent data when watched values change
   useEffect(() => {
     if (watchedValues) {
-      memoizedUpdateDataAction(watchedValues as WorkInfoFormValues)
+      memoizedUpdateDataAction(watchedValues as Partial<OnboardingData>)
     }
   }, [watchedValues, memoizedUpdateDataAction])
 
@@ -190,13 +193,13 @@ export function WorkInfoStep({
                           >
                             <FormControl>
                               <Checkbox
-                                checked={field.value?.includes(option.value as any)}
+                                checked={field.value?.includes(option.value)}
                                 onCheckedChange={(checked) => {
                                   return checked
                                     ? field.onChange([...field.value, option.value])
                                     : field.onChange(
                                         field.value?.filter(
-                                          (value: any) => value !== option.value
+                                          (value: string) => value !== option.value
                                         )
                                       )
                                 }}
@@ -246,13 +249,13 @@ export function WorkInfoStep({
                           >
                             <FormControl>
                               <Checkbox
-                                checked={field.value?.includes(option.value as any)}
+                                checked={field.value?.includes(option.value)}
                                 onCheckedChange={(checked) => {
                                   return checked
                                     ? field.onChange([...field.value, option.value])
                                     : field.onChange(
                                         field.value?.filter(
-                                          (value: any) => value !== option.value
+                                          (value: string) => value !== option.value
                                         )
                                       )
                                 }}
@@ -356,22 +359,64 @@ export function WorkInfoStep({
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="twitterHandle"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("twitter")}</FormLabel>
-                  <FormControl>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm text-muted-foreground">twitter.com/</span>
-                      <Input {...field} placeholder="yourhandle" />
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {/* Other Social Links */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <FormLabel>Other Social Links</FormLabel>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    const currentLinks = form.getValues("otherSocialLinks") || []
+                    form.setValue("otherSocialLinks", [...currentLinks, { platform: "", url: "" }])
+                  }}
+                >
+                  Add Link
+                </Button>
+              </div>
+
+              {form.watch("otherSocialLinks")?.map((_: {platform: string, url: string}, index: number) => (
+                <div key={index} className="flex gap-2 items-start">
+                  <FormField
+                    control={form.control}
+                    name={`otherSocialLinks.${index}.platform`}
+                    render={({ field }) => (
+                      <FormItem className="flex-1">
+                        <FormControl>
+                          <Input {...field} placeholder="Platform (e.g., Twitter, GitHub)" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name={`otherSocialLinks.${index}.url`}
+                    render={({ field }) => (
+                      <FormItem className="flex-[2]">
+                        <FormControl>
+                          <Input {...field} placeholder="https://..." />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      const currentLinks = form.getValues("otherSocialLinks") || []
+                      form.setValue("otherSocialLinks", currentLinks.filter((_: {platform: string, url: string}, i: number) => i !== index))
+                    }}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    Remove
+                  </Button>
+                </div>
+              ))}
+            </div>
           </div>
 
         </div>

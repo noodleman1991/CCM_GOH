@@ -135,7 +135,7 @@ async function handleUserCreated(event: UserCreatedEvent): Promise<any> {
                 workBio: public_metadata?.workBio || null,
                 personalWebsite: public_metadata?.personalWebsite || null,
                 linkedinProfile: public_metadata?.linkedinProfile || null,
-                twitterHandle: public_metadata?.twitterHandle || null,
+                otherSocialLinks: public_metadata?.otherSocialLinks || null,
 
                 // Privacy settings from metadata (with defaults)
                 isSearchable: public_metadata?.isSearchable ?? true,
@@ -207,7 +207,7 @@ async function handleUserUpdated(event: UserUpdatedEvent) {
             if (public_metadata?.workBio !== undefined) metadataUpdate.workBio = public_metadata.workBio
             if (public_metadata?.personalWebsite !== undefined) metadataUpdate.personalWebsite = public_metadata.personalWebsite
             if (public_metadata?.linkedinProfile !== undefined) metadataUpdate.linkedinProfile = public_metadata.linkedinProfile
-            if (public_metadata?.twitterHandle !== undefined) metadataUpdate.twitterHandle = public_metadata.twitterHandle
+            if (public_metadata?.otherSocialLinks !== undefined) metadataUpdate.otherSocialLinks = public_metadata.otherSocialLinks
             if (public_metadata?.isSearchable !== undefined) metadataUpdate.isSearchable = public_metadata.isSearchable
             if (public_metadata?.profileVisibility !== undefined) metadataUpdate.profileVisibility = public_metadata.profileVisibility
             if (public_metadata?.showEmail !== undefined) metadataUpdate.showEmail = public_metadata.showEmail

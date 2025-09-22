@@ -21,7 +21,10 @@ const OnboardingSchema = z.object({
   workBio: z.string().max(1000).optional(),
   personalWebsite: z.string().url().optional().or(z.literal("")),
   linkedinProfile: z.string().max(100).optional(),
-  twitterHandle: z.string().max(50).optional(),
+  otherSocialLinks: z.array(z.object({
+    platform: z.string().min(1),
+    url: z.string().url()
+  })).default([]),
 
   // Recent Work
   recentWork: z.array(z.object({
@@ -161,7 +164,7 @@ export async function POST(request: NextRequest) {
         workBio: validatedData.workBio,
         personalWebsite: validatedData.personalWebsite,
         linkedinProfile: validatedData.linkedinProfile,
-        twitterHandle: validatedData.twitterHandle,
+        otherSocialLinks: validatedData.otherSocialLinks,
 
         // Privacy settings
         isSearchable: validatedData.isSearchable,
@@ -217,7 +220,7 @@ export async function POST(request: NextRequest) {
         workBio: validatedData.workBio,
         personalWebsite: validatedData.personalWebsite,
         linkedinProfile: validatedData.linkedinProfile,
-        twitterHandle: validatedData.twitterHandle,
+        otherSocialLinks: validatedData.otherSocialLinks,
 
         // Privacy settings
         isSearchable: validatedData.isSearchable,
@@ -255,7 +258,21 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('❌ Error completing onboarding:', error)
 
-    // Ensure we always return valid JSON
+    // Handle specific Prisma errors
+    if (error instanceof Error && error.message.includes('P2002')) {
+      // Unique constraint violation - likely username conflict
+      return NextResponse.json({
+        success: false,
+        error: "Username is already taken. Please choose a different username.",
+        code: "USERNAME_TAKEN",
+        timestamp: new Date().toISOString()
+      }, {
+        status: 409,
+        headers: { 'Content-Type': 'application/json' }
+      })
+    }
+
+    // Ensure we always return valid JSON for other errors
     return NextResponse.json({
       success: false,
       error: "Internal server error",
@@ -295,7 +312,7 @@ export async function GET() {
         workBio: true,
         personalWebsite: true,
         linkedinProfile: true,
-        twitterHandle: true,
+        otherSocialLinks: true,
         isSearchable: true,
         profileVisibility: true,
         showEmail: true,

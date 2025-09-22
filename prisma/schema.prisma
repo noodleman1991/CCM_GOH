@@ -65,9 +65,9 @@ model User {
   workBio        String?
 
   // Social Links
-  personalWebsite String?
-  linkedinProfile String?
-  twitterHandle   String?
+  personalWebsite  String?
+  linkedinProfile  String?
+  otherSocialLinks Json? // Array of {platform: string, url: string}
 
   // Preferences
   preferredLanguage Language @default(EN) // User's preferred language

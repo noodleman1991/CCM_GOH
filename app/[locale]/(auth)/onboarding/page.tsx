@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
 import { client } from "@/sanity/lib/client"
 import { onboardingContentQueryWithFallback } from "@/sanity/queries/onboarding-content"
+import { fetchUserManagementOptionsWithLocale } from "@/lib/actions/sync-user-management"
 
 import { ModernOnboardingContainer } from "@/components/onboarding/modern-onboarding-container"
 import { Card, CardContent } from "@/components/ui/card"
@@ -20,18 +21,21 @@ export default function OnboardingPage() {
     useEffect(() => {
         const loadData = async () => {
             try {
-                // Load Sanity content
-                const content = await client.fetch(onboardingContentQueryWithFallback, { locale })
-                setSanityContent(content)
+                // Load Sanity content and user management options in parallel
+                const [content, userManagement] = await Promise.all([
+                    client.fetch(onboardingContentQueryWithFallback, { locale }),
+                    fetchUserManagementOptionsWithLocale(locale)
+                ])
 
-                // For now, set minimal user management options
-                // This would typically come from your API or Sanity
+                setSanityContent(content)
+                setUserManagementOptions(userManagement)
+            } catch (error) {
+                console.error('Failed to load onboarding data:', error)
+                // Set fallback empty options if fetch fails
                 setUserManagementOptions({
                     workTypes: [],
                     expertiseAreas: []
                 })
-            } catch (error) {
-                console.error('Failed to load onboarding data:', error)
             } finally {
                 setIsLoading(false)
             }

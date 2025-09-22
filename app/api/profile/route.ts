@@ -178,7 +178,10 @@ const ProfileUpdateSchema = z.object({
     workBio: z.string().max(1000, "Work bio must be less than 1000 characters").optional().or(z.literal("")).or(z.null()),
     personalWebsite: z.string().url("Please enter a valid URL").optional().or(z.literal("")).or(z.null()),
     linkedinProfile: z.string().max(100).optional().or(z.literal("")).or(z.null()),
-    twitterHandle: z.string().max(50).optional().or(z.literal("")).or(z.null()),
+    otherSocialLinks: z.array(z.object({
+        platform: z.string().min(1),
+        url: z.string().url()
+    })).optional().default([]),
     
     // Privacy Controls
     isSearchable: z.boolean().default(true),
@@ -200,7 +203,7 @@ const ProfileUpdateSchema = z.object({
     workBio: data.workBio || null,
     personalWebsite: data.personalWebsite || null,
     linkedinProfile: data.linkedinProfile || null,
-    twitterHandle: data.twitterHandle || null,
+    otherSocialLinks: data.otherSocialLinks || [],
 }))
 
 type ProfileFormValues = z.infer<typeof ProfileUpdateSchema>
@@ -229,7 +232,7 @@ async function syncToClerk(userId: string, data: ProfileFormValues) {
                 workBio: data.workBio || null,
                 personalWebsite: data.personalWebsite || null,
                 linkedinProfile: data.linkedinProfile || null,
-                twitterHandle: data.twitterHandle || null,
+                otherSocialLinks: data.otherSocialLinks || [],
                 
                 // Privacy settings (store in public metadata for search filtering)
                 isSearchable: data.isSearchable,
@@ -347,7 +350,7 @@ export async function PUT(request: NextRequest) {
             workBio: validatedData.workBio || null,
             personalWebsite: validatedData.personalWebsite || null,
             linkedinProfile: validatedData.linkedinProfile || null,
-            twitterHandle: validatedData.twitterHandle || null,
+            otherSocialLinks: validatedData.otherSocialLinks || [],
             isSearchable: validatedData.isSearchable,
             profileVisibility: validatedData.profileVisibility,
             showEmail: validatedData.showEmail,

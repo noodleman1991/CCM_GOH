@@ -27,7 +27,10 @@ const onboardingSchema = z.object({
   // Social Links
   personalWebsite: z.string().url().optional().or(z.literal("")),
   linkedinProfile: z.string().optional(),
-  twitterHandle: z.string().optional(),
+  otherSocialLinks: z.array(z.object({
+    platform: z.string().min(1),
+    url: z.string().url()
+  })).optional().default([]),
 
   // Recent Work
   recentWork: z.array(z.object({
@@ -117,7 +120,7 @@ export async function completeOnboarding(data: z.infer<typeof onboardingSchema>)
           workBio: validatedData.workBio || null,
           personalWebsite: validatedData.personalWebsite || null,
           linkedinProfile: validatedData.linkedinProfile || null,
-          twitterHandle: validatedData.twitterHandle || null,
+          otherSocialLinks: validatedData.otherSocialLinks || [],
           isSearchable: validatedData.isSearchable,
           profileVisibility: validatedData.profileVisibility,
           showEmail: validatedData.showEmail,
@@ -146,7 +149,7 @@ export async function completeOnboarding(data: z.infer<typeof onboardingSchema>)
           workBio: validatedData.workBio || null,
           personalWebsite: validatedData.personalWebsite || null,
           linkedinProfile: validatedData.linkedinProfile || null,
-          twitterHandle: validatedData.twitterHandle || null,
+          otherSocialLinks: validatedData.otherSocialLinks || [],
           isSearchable: validatedData.isSearchable,
           profileVisibility: validatedData.profileVisibility,
           showEmail: validatedData.showEmail,

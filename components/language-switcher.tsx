@@ -1,12 +1,12 @@
 // components/language-switcher.tsx
 "use client"
 
-import React, { useCallback } from "react"
+import React, { useCallback, useTransition } from "react"
 import { useRouter, usePathname } from "@/i18n/navigation"
 import { useLocale } from "next-intl"
 import { rtlLocales } from "@/i18n/routing"
 import { useIsMobile } from "@/hooks/use-mobile"
-import { Check, ChevronDown, ChevronsUpDown, Globe, Languages, X } from "lucide-react"
+import { Check, ChevronDown, Globe, Languages, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
@@ -33,14 +33,17 @@ export function LanguageSwitcher() {
     const isMobile = useIsMobile()
     const isRTL = rtlLocales.includes(currentLocale)
     const { isMobile: sidebarIsMobile } = useSidebar()
+    const [isPending, startTransition] = useTransition()
 
     // Find the current language display name
     const currentLanguage = languageOptions.find(lang => lang.code === currentLocale) || languageOptions[0]
 
     // Handle language change
     const switchLanguage = useCallback((locale: string) => {
-        router.push(pathname, { locale })
-    }, [router, pathname])
+         startTransition(() => {
+                 router.replace(pathname, { locale })
+             })
+     }, [router, pathname])
 
     if (isMobile) {
         return (
@@ -72,6 +75,7 @@ export function LanguageSwitcher() {
                                         language.isRTL ? "justify-end flex-row-reverse" : "justify-start"
                                     )}
                                     onClick={() => switchLanguage(language.code)}
+                                    disabled={isPending}
                                 >
                                     <Globe className="h-5 w-5" />
                                     <span className={cn(
@@ -139,6 +143,7 @@ export function LanguageSwitcher() {
                                     language.isRTL && "flex-row-reverse text-right"
                                 )}
                                 onClick={() => switchLanguage(language.code)}
+                                disabled={isPending}
                             >
                                 <span className={cn(
                                     language.isRTL && "text-right"

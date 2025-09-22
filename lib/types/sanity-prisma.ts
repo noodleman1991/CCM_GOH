@@ -285,7 +285,7 @@ export interface OnboardingFormData {
   workBio?: string
   personalWebsite?: string
   linkedinProfile?: string
-  twitterHandle?: string
+  otherSocialLinks?: Array<{platform: string, url: string}>
 
   // Recent Work
   recentWork: {

@@ -17,9 +17,8 @@ const defaultMessages = {
     expertiseAreas: "Please select at least one expertise area",
     workBio: "Work bio must be less than 1000 characters",
     linkedinUrl: "Please enter a valid LinkedIn URL",
-    portfolioUrl: "Please enter a valid portfolio URL",
-    githubUrl: "Please enter a valid GitHub URL",
-    websiteUrl: "Please enter a valid website URL"
+    websiteUrl: "Please enter a valid website URL",
+    socialLinkUrl: "Please enter a valid URL"
   },
   recentWork: {
     title: "Title is required",
@@ -59,9 +58,11 @@ export const createOnboardingSchema = (validationMessages?: any) => {
       position: z.string().optional(),
       workBio: z.string().max(1000, messages.workInfo?.workBio || defaultMessages.workInfo.workBio).optional(),
       linkedinProfile: z.string().url(messages.workInfo?.linkedinUrl || defaultMessages.workInfo.linkedinUrl).optional().or(z.literal("")),
-      portfolio: z.string().url(messages.workInfo?.portfolioUrl || defaultMessages.workInfo.portfolioUrl).optional().or(z.literal("")),
-      githubProfile: z.string().url(messages.workInfo?.githubUrl || defaultMessages.workInfo.githubUrl).optional().or(z.literal("")),
-      personalWebsite: z.string().url(messages.workInfo?.websiteUrl || defaultMessages.workInfo.websiteUrl).optional().or(z.literal(""))
+      personalWebsite: z.string().url(messages.workInfo?.websiteUrl || defaultMessages.workInfo.websiteUrl).optional().or(z.literal("")),
+      otherSocialLinks: z.array(z.object({
+        platform: z.string().min(1, "Platform name is required"),
+        url: z.string().url(messages.workInfo?.socialLinkUrl || defaultMessages.workInfo.socialLinkUrl)
+      })).optional().default([])
     }),
 
     // Recent Work Step (Step 3) - Optional step with optional array
@@ -124,9 +125,8 @@ export const defaultOnboardingValues: OnboardingFormData = {
     position: "",
     workBio: "",
     linkedinProfile: "",
-    portfolio: "",
-    githubProfile: "",
-    personalWebsite: ""
+    personalWebsite: "",
+    otherSocialLinks: []
   },
   recentWork: [],
   privacy: {

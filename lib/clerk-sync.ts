@@ -39,7 +39,7 @@ export class ClerkSyncService {
           workBio: userData.workBio,
           personalWebsite: userData.personalWebsite,
           linkedinProfile: userData.linkedinProfile,
-          twitterHandle: userData.twitterHandle,
+          otherSocialLinks: userData.otherSocialLinks || [],
           
           // Privacy settings
           isSearchable: userData.isSearchable,
@@ -103,7 +103,7 @@ export class ClerkSyncService {
           workBio: metadata?.workBio || null,
           personalWebsite: metadata?.personalWebsite || null,
           linkedinProfile: metadata?.linkedinProfile || null,
-          twitterHandle: metadata?.twitterHandle || null,
+          otherSocialLinks: metadata?.otherSocialLinks || [],
           
           // Privacy settings
           isSearchable: metadata?.isSearchable ?? true,
@@ -138,7 +138,7 @@ export class ClerkSyncService {
           ...(metadata?.workBio !== undefined && { workBio: metadata.workBio }),
           ...(metadata?.personalWebsite !== undefined && { personalWebsite: metadata.personalWebsite }),
           ...(metadata?.linkedinProfile !== undefined && { linkedinProfile: metadata.linkedinProfile }),
-          ...(metadata?.twitterHandle !== undefined && { twitterHandle: metadata.twitterHandle }),
+          ...(metadata?.otherSocialLinks !== undefined && { otherSocialLinks: metadata.otherSocialLinks }),
           
           // Update privacy settings
           ...(metadata?.isSearchable !== undefined && { isSearchable: metadata.isSearchable }),
