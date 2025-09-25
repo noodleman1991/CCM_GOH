@@ -20,6 +20,7 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { format } from 'date-fns'
+import { getLocalizedTitle, getLocalizedExcerpt, getLocalizedText } from '@/lib/localization-utils'
 
 interface CaseStudy {
   _id: string
@@ -61,11 +62,11 @@ export default function CaseStudiesListing({
   const [scrollPosition, setScrollPosition] = useState(0)
 
   const getTitle = (caseStudy: CaseStudy) => {
-    return caseStudy.title[locale] || caseStudy.title.en || 'Untitled'
+    return getLocalizedTitle(caseStudy.title, locale)
   }
 
   const getExcerpt = (caseStudy: CaseStudy) => {
-    return caseStudy.excerpt[locale] || caseStudy.excerpt.en || ''
+    return getLocalizedExcerpt(caseStudy.excerpt, locale)
   }
 
   const getAuthorInitials = (author: { name: string }) => {
@@ -201,7 +202,7 @@ export default function CaseStudiesListing({
               <div className="flex flex-wrap gap-1 mt-3">
                 {caseStudy.tags.slice(0, 3).map((tag) => (
                   <Badge key={tag._id} variant="secondary" className="text-xs">
-                    {tag.title[locale] || tag.title.en || tag.value}
+                    {getLocalizedText(tag.title, locale, tag.value)}
                   </Badge>
                 ))}
                 {caseStudy.tags.length > 3 && (
@@ -340,7 +341,7 @@ export default function CaseStudiesListing({
                       <div className="flex gap-1">
                         {caseStudy.tags.slice(0, 2).map((tag) => (
                           <Badge key={tag._id} variant="secondary" className="text-xs">
-                            {tag.title[locale] || tag.title.en || tag.value}
+                            {getLocalizedText(tag.title, locale, tag.value)}
                           </Badge>
                         ))}
                       </div>

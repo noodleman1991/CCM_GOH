@@ -4,8 +4,8 @@ import { groq } from "next-sanity";
 import { sanityFetch } from "@/sanity/lib/live";
 import { CaseStudy, CaseStudySearchParams, SupportedLanguage } from '@/types/case-study';
 
-// ===== SHARED CASE STUDY PROJECTION =====
-const CASE_STUDY_PROJECTION = groq`
+// ===== SHARED CASE STUDY PROJECTION FRAGMENT =====
+const CASE_STUDY_PROJECTION_FRAGMENT = `
   _id,
   title,
   excerpt,
@@ -83,9 +83,8 @@ const CASE_STUDY_PROJECTION = groq`
   }
 `;
 
-const CASE_STUDY_DETAIL_PROJECTION = groq`
-  ${CASE_STUDY_PROJECTION},
-  // Additional fields for detail view
+const CASE_STUDY_DETAIL_PROJECTION_FRAGMENT = `
+  ${CASE_STUDY_PROJECTION_FRAGMENT},
   content,
   seoTitle,
   seoDescription,
@@ -112,7 +111,7 @@ export const gridCaseStudyQuery = groq`
     // Properly filter case study by status - use select for conditional referencing
     "caseStudy": select(
       caseStudy->status == "approved" => caseStudy->{
-        ${CASE_STUDY_PROJECTION}
+        ${CASE_STUDY_PROJECTION_FRAGMENT}
       },
       null
     )
@@ -124,42 +123,42 @@ export const gridCaseStudyQuery = groq`
 // Query for approved case studies only (public-facing)
 export const APPROVED_CASE_STUDIES_QUERY = groq`
   *[_type == "caseStudy" && status == "approved"] | order(publishedAt desc, featured desc)[0...$limit]{
-    ${CASE_STUDY_PROJECTION}
+    ${CASE_STUDY_PROJECTION_FRAGMENT}
   }
 `;
 
 // Query for case study by slug (approved only)
 export const CASE_STUDY_BY_SLUG_QUERY = groq`
   *[_type == "caseStudy" && slug.current == $slug && status == "approved"][0]{
-    ${CASE_STUDY_DETAIL_PROJECTION}
+    ${CASE_STUDY_DETAIL_PROJECTION_FRAGMENT}
   }
 `;
 
 // Query for featured case studies (approved only)
 export const FEATURED_CASE_STUDIES_QUERY = groq`
   *[_type == "caseStudy" && status == "approved" && featured == true] | order(publishedAt desc)[0...$limit]{
-    ${CASE_STUDY_PROJECTION}
+    ${CASE_STUDY_PROJECTION_FRAGMENT}
   }
 `;
 
 // Query for approved case studies by regional community
 export const APPROVED_CASE_STUDIES_BY_RC_QUERY = groq`
   *[_type == "caseStudy" && status == "approved" && references(*[_type == "regionalCommunity" && slug.current == $slug][0]._id)] | order(publishedAt desc, featured desc)[0...$limit]{
-    ${CASE_STUDY_PROJECTION}
+    ${CASE_STUDY_PROJECTION_FRAGMENT}
   }
 `;
 
 // Query for approved case studies by organization
 export const APPROVED_CASE_STUDIES_BY_ORG_QUERY = groq`
   *[_type == "caseStudy" && status == "approved" && references(*[_type == "organization" && slug.current == $slug][0]._id)] | order(publishedAt desc, featured desc)[0...$limit]{
-    ${CASE_STUDY_PROJECTION}
+    ${CASE_STUDY_PROJECTION_FRAGMENT}
   }
 `;
 
 // Query for approved case studies by project
 export const APPROVED_CASE_STUDIES_BY_PROJECT_QUERY = groq`
   *[_type == "caseStudy" && status == "approved" && references(*[_type == "project" && slug.current == $slug][0]._id)] | order(publishedAt desc, featured desc)[0...$limit]{
-    ${CASE_STUDY_PROJECTION}
+    ${CASE_STUDY_PROJECTION_FRAGMENT}
   }
 `;
 
@@ -168,14 +167,14 @@ export const APPROVED_CASE_STUDIES_BY_PROJECT_QUERY = groq`
 // Admin query for all case studies (regardless of status)
 export const ALL_CASE_STUDIES_ADMIN_QUERY = groq`
   *[_type == "caseStudy"] | order(submittedAt desc, publishedAt desc)[0...$limit]{
-    ${CASE_STUDY_PROJECTION}
+    ${CASE_STUDY_PROJECTION_FRAGMENT}
   }
 `;
 
 // Admin query for case studies by status
 export const CASE_STUDIES_BY_STATUS_QUERY = groq`
   *[_type == "caseStudy" && status == $status] | order(submittedAt desc)[0...$limit]{
-    ${CASE_STUDY_PROJECTION}
+    ${CASE_STUDY_PROJECTION_FRAGMENT}
   }
 `;
 
@@ -302,7 +301,7 @@ export const searchCaseStudies = async ({
 
     const { data } = await sanityFetch({
         query: `*[${filters.join(' && ')}] | order(featured desc, publishedAt desc)[0...$limit]{
-      ${CASE_STUDY_PROJECTION}
+      ${CASE_STUDY_PROJECTION_FRAGMENT}
     }`,
         params: { limit },
         perspective: "published",
