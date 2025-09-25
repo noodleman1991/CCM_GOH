@@ -19,18 +19,16 @@ import {
   MapPin,
   Users,
   Building,
-  ExternalLink,
   Share2,
   Bookmark,
   Download,
   Star,
-  Tag,
-  Globe
+  Tag
 } from 'lucide-react'
 
 import { portableTextComponents } from '@/components/portable-text/portable-text-components'
-import { cn } from '@/lib/utils'
 import { format } from 'date-fns'
+import { getLocalizedTitle, getLocalizedExcerpt, getLocalizedText } from '@/lib/localization-utils'
 
 // Fetch single case study by slug
 async function fetchCaseStudy(slug: string) {
@@ -188,11 +186,11 @@ async function CaseStudyContent({ locale, slug }: { locale: string; slug: string
     : []
 
   const getTitle = (title: Record<string, string>) => {
-    return title[locale] || title.en || 'Untitled'
+    return getLocalizedTitle(title, locale)
   }
 
   const getExcerpt = (excerpt: Record<string, string>) => {
-    return excerpt[locale] || excerpt.en || ''
+    return getLocalizedExcerpt(excerpt, locale)
   }
 
   const getAuthorInitials = (author: { name: string }) => {
@@ -437,7 +435,7 @@ async function CaseStudyContent({ locale, slug }: { locale: string; slug: string
                 <div className="flex flex-wrap gap-2">
                   {caseStudy.tags.map((tag: any) => (
                     <Badge key={tag._id} variant="secondary">
-                      {tag.title[locale] || tag.title.en || tag.value}
+                      {getLocalizedText(tag.title, locale, tag.value)}
                     </Badge>
                   ))}
                 </div>

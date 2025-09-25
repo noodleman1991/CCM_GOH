@@ -1089,7 +1089,7 @@ export const fetchFeaturedCaseStudies = async ({
 
 export const fetchCaseStudiesStaticParams = async () => {
     const { data } = await sanityFetch({
-        query: `*[_type == "caseStudy" && status == "published" && defined(slug)]{
+        query: `*[_type == "caseStudy" && status == "approved" && defined(slug)]{
       _id,
       slug { current },
       language
@@ -1338,7 +1338,7 @@ export const searchCaseStudies = async ({
     tags?: string[];
     limit?: number;
 }) => {
-    let filters = [`_type == "caseStudy"`, `status == "published"`];
+    let filters = [`_type == "caseStudy"`, `status == "approved"`];
 
     if (language) {
         filters.push(`language == "${language}"`);
