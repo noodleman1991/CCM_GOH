@@ -15,6 +15,8 @@
     /* Font family variables */
     --font-poppins: Poppins, ui-sans-serif, system-ui, sans-serif;
     --font-lato: Lato, ui-sans-serif, system-ui, sans-serif;
+    --font-lalezar: Lalezar, ui-sans-serif, system-ui, sans-serif;
+    --font-tajawal: Tajawal, ui-sans-serif, system-ui, sans-serif;
     --font-sans: var(--font-lato);
     --font-heading: var(--font-poppins);
 
@@ -98,6 +100,8 @@
     /* Fonts */
     --font-poppins: 'Poppins', ui-sans-serif, system-ui, sans-serif;
     --font-lato: 'Lato', ui-sans-serif, system-ui, sans-serif;
+    --font-lalezar: 'Lalezar', ui-sans-serif, system-ui, sans-serif;
+    --font-tajawal: 'Tajawal', ui-sans-serif, system-ui, sans-serif;
 
     /* Radius + shadow */
     --radius: 0.625rem;
@@ -179,6 +183,8 @@
     --font-heading: Poppins, ui-sans-serif, system-ui, sans-serif;
     --font-body: Lato, ui-sans-serif, system-ui, sans-serif;
     --font-sans: Lato, ui-sans-serif, system-ui, sans-serif;
+    --font-arabic-heading: Lalezar, ui-sans-serif, system-ui, sans-serif;
+    --font-arabic-body: Tajawal, ui-sans-serif, system-ui, sans-serif;
 
     /* 🎨 CCM color palette */
     --color-ccm-sky: #9BC6DA;
@@ -225,6 +231,12 @@
         font-family: Lato, ui-sans-serif, system-ui, sans-serif;
     }
 
+    /* Arabic body font */
+    [dir="rtl"] body {
+        font-family: Tajawal, ui-sans-serif, system-ui, sans-serif;
+        font-weight: 400;
+    }
+
     /* Content text elements should default to foreground (black) for prose content */
     .prose, .prose p, .content, .content p {
         @apply text-foreground;
@@ -234,6 +246,12 @@
         font-family: Poppins, ui-sans-serif, system-ui, sans-serif;
         font-weight: 700;
         color: var(--color-ccm-midnight);
+    }
+
+    /* Arabic heading fonts */
+    [dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3, [dir="rtl"] h4, [dir="rtl"] h5, [dir="rtl"] h6 {
+        font-family: Lalezar, ui-sans-serif, system-ui, sans-serif;
+        font-weight: 400;
     }
 
     h1 {
@@ -300,13 +318,32 @@
     input[type="submit"],
     input[type="reset"] {
         font-family: Poppins, ui-sans-serif, system-ui, sans-serif;
-        font-weight: 500;
+        font-weight: 700;
+    }
+
+    /* Arabic button fonts */
+    [dir="rtl"] button,
+    [dir="rtl"] [role="button"],
+    [dir="rtl"] .btn,
+    [dir="rtl"] input[type="button"],
+    [dir="rtl"] input[type="submit"],
+    [dir="rtl"] input[type="reset"] {
+        font-family: Lalezar, ui-sans-serif, system-ui, sans-serif;
+        font-weight: 400;
     }
 
     input:not([type="button"]):not([type="submit"]):not([type="reset"]),
     textarea,
     select {
         font-family: Lato, ui-sans-serif, system-ui, sans-serif;
+    }
+
+    /* Arabic input fonts */
+    [dir="rtl"] input:not([type="button"]):not([type="submit"]):not([type="reset"]),
+    [dir="rtl"] textarea,
+    [dir="rtl"] select {
+        font-family: Tajawal, ui-sans-serif, system-ui, sans-serif;
+        font-weight: 400;
     }
 
     .badge,
@@ -336,7 +373,8 @@
 }
 
 [dir="rtl"] .sidebar-text {
-    font-family: 'Noto Sans Arabic', 'Tajawal', sans-serif;
+    font-family: Tajawal, ui-sans-serif, system-ui, sans-serif;
+    font-weight: 400;
 }
 
 /* Ensure proper Arabic text flow */

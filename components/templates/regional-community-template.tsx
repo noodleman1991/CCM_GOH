@@ -1,6 +1,6 @@
 import React from 'react';
 import Blocks from '@/components/blocks/index';
-import { fetchRegionalCommunityReports } from '@/sanity/queries/regional-community-page';
+import { fetchRegionalCommunityReports } from '@/sanity/lib/fetch';
 import { fetchRegionalCommunityCaseStudiesBySlug } from '@/sanity/queries/regional-community-case-studies';
 import { fetchRegionalCommunityLivedExperiencesBySlug } from '@/sanity/queries/regional-community-lived-experiences';
 

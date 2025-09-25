@@ -184,90 +184,833 @@ export const fetchSanityPostsStaticParams =
         return data;
     };
 
+/**
+ * Fetch reports for a regional community using featured-first then recent logic
+ * @param slug - Regional community slug
+ * @param limit - Maximum number of reports to return
+ * @returns Array of reports with featured items first, then recent items
+ */
 export const fetchRegionalCommunityReports = async ({
-                                                        slug,
-                                                        limit = 6
-                                                    }: {
+    slug,
+    limit = 6
+}: {
     slug: string;
     limit?: number;
 }) => {
-    const { data } = await sanityFetch({
-        query: `*[_type == "report" && references(*[_type == "regionalCommunity" && slug.current == $slug][0]._id)] | order(publishDate desc, featured desc)[0...${limit}]{
-            _id,
-            title,
-            subtitle,
-            description,
-            slug,
-            reportType,
-            year,
-            publishDate,
-            totalDownloadCount,
-            featured,
-            accessLevel,
-            coverImage{
-                asset->{
-                    _id,
-                    url,
-                    mimeType,
-                    metadata {
-                        lqip,
-                        dimensions {
-                            width,
-                            height
-                        }
-                    }
-                },
-                alt
-            },
-            files[]{
-                language,
-                file{
+    try {
+        // First, get the regional community ID
+        const { data: community } = await sanityFetch({
+            query: `*[_type == "regionalCommunity" && slug.current == $slug][0]{_id}`,
+            params: { slug },
+            perspective: "published",
+            stega: false,
+        });
+
+        if (!community?._id) {
+            return [];
+        }
+
+        const regionalCommunityId = community._id;
+        let items: any[] = [];
+
+        // First get featured reports
+        const { data: featuredReports } = await sanityFetch({
+            query: `*[_type == "report" && featured == true && references($regionalCommunityId)] | order(publishDate desc)[0...${limit}]{
+                _id,
+                title,
+                subtitle,
+                description,
+                slug,
+                reportType,
+                year,
+                publishDate,
+                totalDownloadCount,
+                featured,
+                accessLevel,
+                coverImage{
                     asset->{
                         _id,
                         url,
-                        originalFilename,
-                        size,
-                        mimeType
-                    }
-                },
-                downloadCount,
-                lastDownloaded
-            },
-            tags[]->{
-                _id,
-                label,
-                value,
-                color,
-                category
-            },
-            organizations[]->{
-                _id,
-                name,
-                slug,
-                acronym,
-                logo{
-                    asset->{
-                        _id,
-                        url
+                        mimeType,
+                        metadata {
+                            lqip,
+                            dimensions {
+                                width,
+                                height
+                            }
+                        }
                     },
                     alt
+                },
+                files[]{
+                    language,
+                    file{
+                        asset->{
+                            _id,
+                            url,
+                            originalFilename,
+                            size,
+                            mimeType
+                        }
+                    },
+                    downloadCount,
+                    lastDownloaded
+                },
+                tags[]->{
+                    _id,
+                    label,
+                    value,
+                    color,
+                    category
+                },
+                organizations[]->{
+                    _id,
+                    name,
+                    slug,
+                    acronym,
+                    logo{
+                        asset->{
+                            _id,
+                            url
+                        },
+                        alt
+                    }
+                },
+                regionalCommunities[]->{
+                    _id,
+                    name,
+                    slug,
+                    code
                 }
-            },
-            regionalCommunities[]->{
-                _id,
-                name,
-                slug,
-                code
-            }
-        }`,
-        params: { slug },
-        perspective: "published",
-        stega: false,
-    });
+            }`,
+            params: { regionalCommunityId },
+            perspective: "published",
+            stega: false,
+        });
 
-    return data;
+        items = featuredReports || [];
+
+        // If we need more items, get recent non-featured reports
+        if (items.length < limit) {
+            const remainingCount = limit - items.length;
+            const featuredIds = items.map((item: any) => item._id);
+
+            const { data: recentReports } = await sanityFetch({
+                query: `*[_type == "report" && !(_id in $featuredIds) && references($regionalCommunityId)] | order(publishDate desc)[0...${remainingCount}]{
+                    _id,
+                    title,
+                    subtitle,
+                    description,
+                    slug,
+                    reportType,
+                    year,
+                    publishDate,
+                    totalDownloadCount,
+                    featured,
+                    accessLevel,
+                    coverImage{
+                        asset->{
+                            _id,
+                            url,
+                            mimeType,
+                            metadata {
+                                lqip,
+                                dimensions {
+                                    width,
+                                    height
+                                }
+                            }
+                        },
+                        alt
+                    },
+                    files[]{
+                        language,
+                        file{
+                            asset->{
+                                _id,
+                                url,
+                                originalFilename,
+                                size,
+                                mimeType
+                            }
+                        },
+                        downloadCount,
+                        lastDownloaded
+                    },
+                    tags[]->{
+                        _id,
+                        label,
+                        value,
+                        color,
+                        category
+                    },
+                    organizations[]->{
+                        _id,
+                        name,
+                        slug,
+                        acronym,
+                        logo{
+                            asset->{
+                                _id,
+                                url
+                            },
+                            alt
+                        }
+                    },
+                    regionalCommunities[]->{
+                        _id,
+                        name,
+                        slug,
+                        code
+                    }
+                }`,
+                params: { featuredIds, regionalCommunityId },
+                perspective: "published",
+                stega: false,
+            });
+
+            items = [...items, ...(recentReports || [])];
+        }
+
+        return items;
+    } catch (error) {
+        console.error('Error fetching regional community reports:', error);
+        return [];
+    }
 };
 
+
+// ===== TEMPLATE-SPECIFIC DYNAMIC FETCH FUNCTIONS =====
+
+/**
+ * Fetch dynamic news for regional community template
+ * @param regionalCommunityId - Regional community ID
+ * @param mode - Fetching mode (featured-first or recent)
+ * @param maxItems - Maximum number of items to return
+ * @returns Array of news posts with featured items first when applicable
+ */
+export const fetchDynamicNews = async ({
+    regionalCommunityId,
+    mode = "dynamic-featured",
+    maxItems = 6
+}: {
+    regionalCommunityId: string;
+    mode?: "dynamic-featured" | "dynamic-recent";
+    maxItems?: number;
+}) => {
+    try {
+        let items: any[] = [];
+
+        if (mode === "dynamic-featured") {
+            // First get featured news
+            const { data: featuredNews } = await sanityFetch({
+                query: `*[_type == "newsPost" && featured == true && references($regionalCommunityId)] | order(publishedAt desc)[0...${maxItems}]{
+                    _id,
+                    title,
+                    subtitle,
+                    excerpt,
+                    slug,
+                    image{
+                        asset->{
+                            _id,
+                            url,
+                            metadata {
+                                lqip,
+                                dimensions {
+                                    width,
+                                    height
+                                }
+                            }
+                        },
+                        alt
+                    },
+                    author->{
+                        _id,
+                        name,
+                        image{
+                            asset->{
+                                _id,
+                                url
+                            }
+                        }
+                    },
+                    publishedAt,
+                    organizations[]->{
+                        _id,
+                        name
+                    },
+                    locationDetails,
+                    tags[]->{
+                        _id,
+                        label,
+                        color
+                    },
+                    featured
+                }`,
+                params: { regionalCommunityId },
+                perspective: "published",
+                stega: false,
+            });
+
+            items = featuredNews || [];
+
+            // If we need more items, get recent non-featured news
+            if (items.length < maxItems) {
+                const remainingCount = maxItems - items.length;
+                const featuredIds = items.map((item: any) => item._id);
+
+                const { data: recentNews } = await sanityFetch({
+                    query: `*[_type == "newsPost" && !(_id in $featuredIds) && references($regionalCommunityId)] | order(publishedAt desc)[0...${remainingCount}]{
+                        _id,
+                        title,
+                        subtitle,
+                        excerpt,
+                        slug,
+                        image{
+                            asset->{
+                                _id,
+                                url,
+                                metadata {
+                                    lqip,
+                                    dimensions {
+                                        width,
+                                        height
+                                    }
+                                }
+                            },
+                            alt
+                        },
+                        author->{
+                            _id,
+                            name,
+                            image{
+                                asset->{
+                                    _id,
+                                    url
+                                }
+                            }
+                        },
+                        publishedAt,
+                        organizations[]->{
+                            _id,
+                            name
+                        },
+                        locationDetails,
+                        tags[]->{
+                            _id,
+                            label,
+                            color
+                        },
+                        featured
+                    }`,
+                    params: { featuredIds, regionalCommunityId },
+                    perspective: "published",
+                    stega: false,
+                });
+
+                items = [...items, ...(recentNews || [])];
+            }
+        } else {
+            // Just get recent news
+            const { data } = await sanityFetch({
+                query: `*[_type == "newsPost" && references($regionalCommunityId)] | order(publishedAt desc)[0...${maxItems}]{
+                    _id,
+                    title,
+                    subtitle,
+                    excerpt,
+                    slug,
+                    image{
+                        asset->{
+                            _id,
+                            url,
+                            metadata {
+                                lqip,
+                                dimensions {
+                                    width,
+                                    height
+                                }
+                            }
+                        },
+                        alt
+                    },
+                    author->{
+                        _id,
+                        name,
+                        image{
+                            asset->{
+                                _id,
+                                url
+                            }
+                        }
+                    },
+                    publishedAt,
+                    organizations[]->{
+                        _id,
+                        name
+                    },
+                    locationDetails,
+                    tags[]->{
+                        _id,
+                        label,
+                        color
+                    },
+                    featured
+                }`,
+                params: { regionalCommunityId },
+                perspective: "published",
+                stega: false,
+            });
+
+            items = data || [];
+        }
+
+        return items;
+    } catch (error) {
+        console.error('Error fetching dynamic news:', error);
+        return [];
+    }
+};
+
+/**
+ * Fetch dynamic case studies for regional community template
+ * @param regionalCommunityId - Regional community ID
+ * @param mode - Fetching mode (featured-first or recent)
+ * @param maxItems - Maximum number of items to return
+ * @returns Array of case studies (approved only) with featured items first when applicable
+ */
+export const fetchDynamicCaseStudies = async ({
+    regionalCommunityId,
+    mode = "dynamic-featured",
+    maxItems = 6
+}: {
+    regionalCommunityId: string;
+    mode?: "dynamic-featured" | "dynamic-recent";
+    maxItems?: number;
+}) => {
+    try {
+        let items: any[] = [];
+
+        if (mode === "dynamic-featured") {
+            // First get featured case studies (approved only)
+            const { data: featuredCaseStudies } = await sanityFetch({
+                query: `*[_type == "caseStudy" && status == "approved" && featured == true && references($regionalCommunityId)] | order(publishedAt desc)[0...${maxItems}]{
+                    _id,
+                    title,
+                    excerpt,
+                    slug,
+                    status,
+                    publishedAt,
+                    featured,
+                    image{
+                        asset->{
+                            _id,
+                            url,
+                            mimeType,
+                            metadata {
+                                lqip,
+                                dimensions {
+                                    width,
+                                    height
+                                }
+                            }
+                        },
+                        alt,
+                        caption
+                    },
+                    authors[]{
+                        userId,
+                        name,
+                        email,
+                        role,
+                        affiliation->{
+                            _id,
+                            name,
+                            slug,
+                            acronym,
+                            logo{
+                                asset->{
+                                    _id,
+                                    url
+                                },
+                                alt
+                            }
+                        }
+                    },
+                    organizations[]->{
+                        _id,
+                        name,
+                        slug,
+                        acronym,
+                        logo{
+                            asset->{
+                                _id,
+                                url
+                            },
+                            alt
+                        }
+                    },
+                    tags[]->{
+                        _id,
+                        label,
+                        value,
+                        color
+                    },
+                    studyPeriod,
+                    studyLocation
+                }`,
+                params: { regionalCommunityId },
+                perspective: "published",
+                stega: false,
+            });
+
+            items = featuredCaseStudies || [];
+
+            // If we need more items, get recent non-featured case studies
+            if (items.length < maxItems) {
+                const remainingCount = maxItems - items.length;
+                const featuredIds = items.map((item: any) => item._id);
+
+                const { data: recentCaseStudies } = await sanityFetch({
+                    query: `*[_type == "caseStudy" && status == "approved" && !(_id in $featuredIds) && references($regionalCommunityId)] | order(publishedAt desc)[0...${remainingCount}]{
+                        _id,
+                        title,
+                        excerpt,
+                        slug,
+                        status,
+                        publishedAt,
+                        featured,
+                        image{
+                            asset->{
+                                _id,
+                                url,
+                                mimeType,
+                                metadata {
+                                    lqip,
+                                    dimensions {
+                                        width,
+                                        height
+                                    }
+                                }
+                            },
+                            alt,
+                            caption
+                        },
+                        authors[]{
+                            userId,
+                            name,
+                            email,
+                            role,
+                            affiliation->{
+                                _id,
+                                name,
+                                slug,
+                                acronym,
+                                logo{
+                                    asset->{
+                                        _id,
+                                        url
+                                    },
+                                    alt
+                                }
+                            }
+                        },
+                        organizations[]->{
+                            _id,
+                            name,
+                            slug,
+                            acronym,
+                            logo{
+                                asset->{
+                                    _id,
+                                    url
+                                },
+                                alt
+                            }
+                        },
+                        tags[]->{
+                            _id,
+                            label,
+                            value,
+                            color
+                        },
+                        studyPeriod,
+                        studyLocation
+                    }`,
+                    params: { featuredIds, regionalCommunityId },
+                    perspective: "published",
+                    stega: false,
+                });
+
+                items = [...items, ...(recentCaseStudies || [])];
+            }
+        } else {
+            // Just get recent case studies (approved only)
+            const { data } = await sanityFetch({
+                query: `*[_type == "caseStudy" && status == "approved" && references($regionalCommunityId)] | order(publishedAt desc)[0...${maxItems}]{
+                    _id,
+                    title,
+                    excerpt,
+                    slug,
+                    status,
+                    publishedAt,
+                    featured,
+                    image{
+                        asset->{
+                            _id,
+                            url,
+                            mimeType,
+                            metadata {
+                                lqip,
+                                dimensions {
+                                    width,
+                                    height
+                                }
+                            }
+                        },
+                        alt,
+                        caption
+                    },
+                    authors[]{
+                        userId,
+                        name,
+                        email,
+                        role,
+                        affiliation->{
+                            _id,
+                            name,
+                            slug,
+                            acronym,
+                            logo{
+                                asset->{
+                                    _id,
+                                    url
+                                },
+                                alt
+                            }
+                        }
+                    },
+                    organizations[]->{
+                        _id,
+                        name,
+                        slug,
+                        acronym,
+                        logo{
+                            asset->{
+                                _id,
+                                url
+                            },
+                            alt
+                        }
+                    },
+                    tags[]->{
+                        _id,
+                        label,
+                        value,
+                        color
+                    },
+                    studyPeriod,
+                    studyLocation
+                }`,
+                params: { regionalCommunityId },
+                perspective: "published",
+                stega: false,
+            });
+
+            items = data || [];
+        }
+
+        return items;
+    } catch (error) {
+        console.error('Error fetching dynamic case studies:', error);
+        return [];
+    }
+};
+
+/**
+ * Fetch dynamic lived experiences for regional community template
+ * @param regionalCommunityId - Regional community ID
+ * @param mode - Fetching mode (featured-first or recent)
+ * @param maxItems - Maximum number of items to return
+ * @returns Array of lived experiences with featured items first when applicable
+ */
+export const fetchDynamicLivedExperiences = async ({
+    regionalCommunityId,
+    mode = "dynamic-featured",
+    maxItems = 10
+}: {
+    regionalCommunityId: string;
+    mode?: "dynamic-featured" | "dynamic-recent";
+    maxItems?: number;
+}) => {
+    try {
+        let items: any[] = [];
+
+        if (mode === "dynamic-featured") {
+            // First get featured lived experiences
+            const { data: featuredExperiences } = await sanityFetch({
+                query: `*[_type == "livedExperience" && featured == true && relatedCommunity._ref == $regionalCommunityId] | order(publishedAt desc)[0...${maxItems}]{
+                    _id,
+                    title,
+                    excerpt,
+                    slug,
+                    thumbnail{
+                        asset->{
+                            _id,
+                            url,
+                            mimeType,
+                            metadata {
+                                lqip,
+                                dimensions {
+                                    width,
+                                    height
+                                }
+                            }
+                        },
+                        alt
+                    },
+                    videoUrl,
+                    duration,
+                    publishedAt,
+                    relatedCommunity->{
+                        _id,
+                        name,
+                        slug
+                    },
+                    organizations[]->{
+                        _id,
+                        name,
+                        slug,
+                        acronym
+                    },
+                    tags[]->{
+                        _id,
+                        label,
+                        value,
+                        color
+                    },
+                    featured
+                }`,
+                params: { regionalCommunityId },
+                perspective: "published",
+                stega: false,
+            });
+
+            items = featuredExperiences || [];
+
+            // If we need more items, get recent non-featured experiences
+            if (items.length < maxItems) {
+                const remainingCount = maxItems - items.length;
+                const featuredIds = items.map((item: any) => item._id);
+
+                const { data: recentExperiences } = await sanityFetch({
+                    query: `*[_type == "livedExperience" && !(_id in $featuredIds) && relatedCommunity._ref == $regionalCommunityId] | order(publishedAt desc)[0...${remainingCount}]{
+                        _id,
+                        title,
+                        excerpt,
+                        slug,
+                        thumbnail{
+                            asset->{
+                                _id,
+                                url,
+                                mimeType,
+                                metadata {
+                                    lqip,
+                                    dimensions {
+                                        width,
+                                        height
+                                    }
+                                }
+                            },
+                            alt
+                        },
+                        videoUrl,
+                        duration,
+                        publishedAt,
+                        relatedCommunity->{
+                            _id,
+                            name,
+                            slug
+                        },
+                        organizations[]->{
+                            _id,
+                            name,
+                            slug,
+                            acronym
+                        },
+                        tags[]->{
+                            _id,
+                            label,
+                            value,
+                            color
+                        },
+                        featured
+                    }`,
+                    params: { featuredIds, regionalCommunityId },
+                    perspective: "published",
+                    stega: false,
+                });
+
+                items = [...items, ...(recentExperiences || [])];
+            }
+        } else {
+            // Just get recent lived experiences
+            const { data } = await sanityFetch({
+                query: `*[_type == "livedExperience" && relatedCommunity._ref == $regionalCommunityId] | order(publishedAt desc)[0...${maxItems}]{
+                    _id,
+                    title,
+                    excerpt,
+                    slug,
+                    thumbnail{
+                        asset->{
+                            _id,
+                            url,
+                            mimeType,
+                            metadata {
+                                lqip,
+                                dimensions {
+                                    width,
+                                    height
+                                }
+                            }
+                        },
+                        alt
+                    },
+                    videoUrl,
+                    duration,
+                    publishedAt,
+                    relatedCommunity->{
+                        _id,
+                        name,
+                        slug
+                    },
+                    organizations[]->{
+                        _id,
+                        name,
+                        slug,
+                        acronym
+                    },
+                    tags[]->{
+                        _id,
+                        label,
+                        value,
+                        color
+                    },
+                    featured
+                }`,
+                params: { regionalCommunityId },
+                perspective: "published",
+                stega: false,
+            });
+
+            items = data || [];
+        }
+
+        return items;
+    } catch (error) {
+        console.error('Error fetching dynamic lived experiences:', error);
+        return [];
+    }
+};
 
 // ===== CASE STUDY FETCH FUNCTIONS =====
 

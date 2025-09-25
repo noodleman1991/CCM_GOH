@@ -10,6 +10,15 @@ export const pricingCardQuery = groq`
     price,
     list[],
     excerpt,
-    link,
+    link{
+      title,
+      href,
+      target,
+      buttonVariant{
+        variant,
+        size,
+        stroke
+      }
+    },
   }
 `;

@@ -44,7 +44,16 @@ export const hero1Query = groq`
       },
       alt
     },
-    links,
+    links[]{
+      title,
+      href,
+      target,
+      buttonVariant{
+        variant,
+        size,
+        stroke
+      }
+    },
     padding,
     imagePosition,
   }

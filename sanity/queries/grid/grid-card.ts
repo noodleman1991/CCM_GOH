@@ -23,6 +23,15 @@ export const gridCardQuery = groq`
       },
       alt
     },
-    link,
+    link{
+      title,
+      href,
+      target,
+      buttonVariant{
+        variant,
+        size,
+        stroke
+      }
+    },
   }
 `;

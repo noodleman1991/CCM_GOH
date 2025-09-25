@@ -3,7 +3,8 @@ import { gridCardQuery } from "@/sanity/queries/grid/grid-card";
 import { gridPostQuery } from "@/sanity/queries/grid/grid-post";
 import { gridReportQuery } from "@/sanity/queries/grid/grid-report";
 import { gridCaseStudyQuery } from "@/sanity/queries/grid/grid-case-study";
-
+import { gridNewsQuery } from "@/sanity/queries/grid/grid-news";
+import { gridLivedExperienceQuery } from "@/sanity/queries/grid/grid-lived-experience";
 
 // @sanity-typegen-ignore
 export const gridRowQuery = groq`
@@ -20,6 +21,8 @@ export const gridRowQuery = groq`
       ${gridPostQuery},
       ${gridReportQuery},
       ${gridCaseStudyQuery},
+      ${gridNewsQuery},
+      ${gridLivedExperienceQuery},
     },
   }
 `;

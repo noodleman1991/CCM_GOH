@@ -29,6 +29,9 @@ import expertiseArea from "./schemas/documents/expertise-area";
 import blockContent from "./schemas/blocks/shared/block-content";
 import styledBlockContent from "./schemas/blocks/shared/styled-block-content";
 import link from "./schemas/blocks/shared/link";
+// New block types for portable text
+import breakBlock from "./schemas/blocks/break";
+import infoBox from "./schemas/blocks/info-box";
 import { colorVariant } from "./schemas/blocks/shared/color-variant";
 import { buttonVariant } from "./schemas/blocks/shared/button-variant";
 import sectionPadding from "./schemas/blocks/shared/section-padding";
@@ -102,6 +105,9 @@ export const schema: { types: SchemaTypeDefinition[] } = {
         blockContent,
         styledBlockContent,
         link,
+        // portable text block types
+        breakBlock,
+        infoBox,
         colorVariant,
         buttonVariant,
         sectionPadding,
