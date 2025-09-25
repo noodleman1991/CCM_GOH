@@ -26,17 +26,7 @@ export default defineType({
     defineField({
       name: "buttonVariant",
       title: "Button Variant",
-      type: "string",
-      options: {
-        list: [
-          { title: "Default", value: "default" },
-          { title: "Outline", value: "outline" },
-          { title: "Secondary", value: "secondary" },
-          { title: "Ghost", value: "ghost" },
-          { title: "Link", value: "link" },
-        ],
-      },
-      initialValue: "default",
+      type: "button-variant",
     }),
     defineField({
       name: "target",

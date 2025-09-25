@@ -1,121 +1,62 @@
-import { defineQuery } from "next-sanity";
+import { groq } from "next-sanity";
 
-export const GRID_NEWS_QUERY = defineQuery(`
-    *[_type == "grid-news" && _id == $id][0] {
-        _type,
+// @sanity-typegen-ignore
+export const gridNewsQuery = groq`
+  _type == "grid-news" => {
+    _type,
+    _key,
+    showTags,
+    showAuthor,
+    showMetadata,
+    showLocation,
+    customExcerpt,
+    newsPost->{
+      _id,
+      title,
+      subtitle,
+      excerpt,
+      slug,
+      image{
+        asset->{
+          _id,
+          url,
+          mimeType,
+          metadata {
+            lqip,
+            dimensions {
+              width,
+              height
+            }
+          }
+        },
+        alt
+      },
+      author->{
         _id,
-        showTags,
-        showAuthor,
-        showMetadata,
-        showLocation,
-        customExcerpt,
-        newsPost-> {
+        name,
+        image{
+          asset->{
             _id,
-            _type,
-            title,
-            subtitle,
-            excerpt,
-            slug,
-            image {
-                asset-> {
-                    _id,
-                    url,
-                    metadata {
-                        lqip,
-                        dimensions {
-                            width,
-                            height
-                        }
-                    }
-                },
-                alt
-            },
-            author-> {
-                _id,
-                name,
-                image {
-                    asset-> {
-                        _id,
-                        url
-                    }
-                }
-            },
-            publishedAt,
-            organizations[]-> {
-                _id,
-                name
-            },
-            locationDetails {
-                city,
-                country,
-                region
-            },
-            tags[]-> {
-                _id,
-                label,
-                color
-            },
-            featured
+            url
+          },
+          alt
         }
-    }
-`);
-
-export const GRID_NEWS_LIST_QUERY = defineQuery(`
-    *[_type == "grid-news"] {
-        _type,
+      },
+      publishedAt,
+      organizations[]->{
         _id,
-        showTags,
-        showAuthor,
-        showMetadata,
-        showLocation,
-        customExcerpt,
-        newsPost-> {
-            _id,
-            _type,
-            title,
-            subtitle,
-            excerpt,
-            slug,
-            image {
-                asset-> {
-                    _id,
-                    url,
-                    metadata {
-                        lqip,
-                        dimensions {
-                            width,
-                            height
-                        }
-                    }
-                },
-                alt
-            },
-            author-> {
-                _id,
-                name,
-                image {
-                    asset-> {
-                        _id,
-                        url
-                    }
-                }
-            },
-            publishedAt,
-            organizations[]-> {
-                _id,
-                name
-            },
-            locationDetails {
-                city,
-                country,
-                region
-            },
-            tags[]-> {
-                _id,
-                label,
-                color
-            },
-            featured
-        }
+        name,
+        slug,
+        acronym
+      },
+      locationDetails,
+      tags[]->{
+        _id,
+        label,
+        value,
+        color
+      },
+      featured
     }
-`);
+  }
+`;

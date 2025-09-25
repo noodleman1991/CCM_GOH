@@ -14,7 +14,6 @@ import { apiVersion, dataset, projectId } from "./sanity/env";
 import { schema } from "./sanity/schema";
 import { resolve } from "@/sanity/presentation/resolve";
 import { structure } from "./sanity/structure";
-import { codeInput } from "@sanity/code-input";
 import { documentInternationalization } from '@sanity/document-internationalization'
 
 import { routing } from './i18n/routing'
@@ -60,7 +59,6 @@ export default defineConfig({
             resolve,
         }),
         visionTool({ defaultApiVersion: apiVersion }),
-        codeInput(),
         documentInternationalization({
             supportedLanguages: routing.locales.map(locale => ({
                 id: locale,

@@ -29,6 +29,15 @@ export const cta1Query = groq`
         }
       }
     },
-    links,
+    links[]{
+      title,
+      href,
+      target,
+      buttonVariant{
+        variant,
+        size,
+        stroke
+      }
+    },
   }
 `;

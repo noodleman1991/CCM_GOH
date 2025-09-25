@@ -12,6 +12,15 @@ export const sectionHeaderQuery = groq`
     tagLine,
     title,
     description,
-    link,
+    link{
+      title,
+      href,
+      target,
+      buttonVariant{
+        variant,
+        size,
+        stroke
+      }
+    },
   }
 `;

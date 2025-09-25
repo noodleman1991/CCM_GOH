@@ -28,6 +28,15 @@ export const splitContentQuery = groq`
         }
       }
     },
-    link,
+    link{
+      title,
+      href,
+      target,
+      buttonVariant{
+        variant,
+        size,
+        stroke
+      }
+    },
   }
 `;

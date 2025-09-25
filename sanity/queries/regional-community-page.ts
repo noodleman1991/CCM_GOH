@@ -43,23 +43,25 @@ export const REGIONAL_COMMUNITY_PAGE_QUERY = groq`
       }
     },
     language,
-    titleHero {
-      ${hero1Query}
-    },
-    listHero {
-      ${hero1Query}
-    },
-    
     useTemplate,
-    templateConfiguration,
-    templateInserts[]{
-      ${manualContentInsertQuery},
-      ${dynamicContentInsertQuery},
-      ${separatorBlockQuery},
-      ${sectionHeaderQuery},
-      ${splitRowQuery},
+
+    // Template Components
+    welcomeHero {
+      ${hero1Query}
+    },
+    whyJoinCTA {
       ${cta1Query}
     },
+    reportsGrid,
+    newsGrid,
+    caseStudiesGrid,
+    livedExperiencesCarousel,
+    testimonialsBlock,
+    logoCloud {
+      ${logoCloud1Query}
+    },
+
+    // Custom Content Flow (when not using template)
     contentFlow[]{
       ${hero1Query},
       ${hero2Query},
@@ -79,82 +81,7 @@ export const REGIONAL_COMMUNITY_PAGE_QUERY = groq`
       ${dynamicContentInsertQuery},
       ${separatorBlockQuery}
     },
-    // Get related regional community for reports
-    "regionalCommunity": *[_type == "regionalCommunity" && slug.current == $slug][0]{
-      _id,
-      name,
-      code,
-      slug
-    },
-    // Get latest reports for this regional community
-    "latestReports": *[_type == "report" && references(*[_type == "regionalCommunity" && slug.current == $slug][0]._id)] | order(publishDate desc)[0...6]{
-      _id,
-      title,
-      subtitle,
-      description,
-      slug,
-      reportType,
-      year,
-      publishDate,
-      downloadCount,
-      featured,
-      accessLevel,
-      coverImage{
-        asset->{
-          _id,
-          url,
-          mimeType,
-          metadata {
-            lqip,
-            dimensions {
-              width,
-              height
-            }
-          }
-        },
-        alt
-      },
-      files[]{
-        language,
-        file{
-          asset->{
-            _id,
-            url,
-            originalFilename,
-            size,
-            mimeType
-          }
-        },
-        fileUrl,
-        fileSize,
-        pages
-      },
-      tags[]->{
-        _id,
-        label,
-        value,
-        color,
-        category
-      },
-      organizations[]->{
-        _id,
-        name,
-        slug,
-        logo{
-          asset->{
-            _id,
-            url
-          }
-        }
-      },
-      authors[]{
-        name,
-        organization->{
-          name,
-          slug
-        }
-      }
-    },
+
     meta_title,
     meta_description,
     noindex,
@@ -182,89 +109,3 @@ export const RCPAGES_SLUGS_QUERY = groq`
   }
 `;
 
-// Query specifically for reports in a regional community
-// Add this function to your existing sanity/lib/fetch.ts file:
-
-export const fetchRegionalCommunityReports = async ({
-                                                        slug,
-                                                        limit = 6
-                                                    }: {
-    slug: string;
-    limit?: number;
-}) => {
-    const { data } = await sanityFetch({
-        query: `*[_type == "report" && references(*[_type == "regionalCommunity" && slug.current == $slug][0]._id)] | order(publishDate desc, featured desc)[0...${limit}]{
-            _id,
-            title,
-            subtitle,
-            description,
-            slug,
-            reportType,
-            year,
-            publishDate,
-            downloadCount,
-            featured,
-            accessLevel,
-            coverImage{
-                asset->{
-                    _id,
-                    url,
-                    mimeType,
-                    metadata {
-                        lqip,
-                        dimensions {
-                            width,
-                            height
-                        }
-                    }
-                },
-                alt
-            },
-            files[]{
-                language,
-                file{
-                    asset->{
-                        _id,
-                        url,
-                        originalFilename,
-                        size,
-                        mimeType
-                    }
-                },
-                fileUrl,
-                fileSize,
-                pages
-            },
-            tags[]->{
-                _id,
-                label,
-                value,
-                color,
-                category
-            },
-            organizations[]->{
-                _id,
-                name,
-                slug,
-                logo{
-                    asset->{
-                        _id,
-                        url
-                    }
-                }
-            },
-            authors[]{
-                name,
-                organization->{
-                    name,
-                    slug
-                }
-            }
-        }`,
-        params: { slug },
-        perspective: "published",
-        stega: false,
-    });
-
-    return data;
-};

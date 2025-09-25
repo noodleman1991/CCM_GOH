@@ -5,18 +5,28 @@ import { urlFor } from "@/sanity/lib/image";
 import { getLocalizedValue } from '@/i18n/i18n-helpers';
 import { Check } from "lucide-react";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { useReadMore, getVisibleContent } from "@/hooks/useReadMore";
+import type { PortableTextBlock } from '@portabletext/types';
 
 interface StyledPortableTextRendererProps {
-    value: any;
+    value: PortableTextBlock[];
     locale?: string;
     isRTL?: boolean;
+    enableReadMore?: boolean;
 }
 
 export default function StyledPortableTextRenderer({
                                                        value,
                                                        locale = 'en',
-                                                       isRTL = false
+                                                       isRTL = false,
+                                                       enableReadMore = true
                                                    }: StyledPortableTextRendererProps) {
+
+    // Read more functionality
+    const readMoreState = useReadMore(value);
+    const visibleContent = enableReadMore ? getVisibleContent(readMoreState) : value;
+    const { isExpanded, toggleExpanded, hasReadMoreBreak } = readMoreState;
     const components: PortableTextComponents = {
         block: {
             normal: ({ children }) => <p className={cn("mb-4 last:mb-0 text-black", isRTL && "text-right")}>{children}</p>,
@@ -43,35 +53,10 @@ export default function StyledPortableTextRenderer({
                     {children}
                 </p>
             ),
-            highlight: ({ children }) => (
-                <div className="bg-yellow-100 dark:bg-yellow-900/30 px-4 py-3 rounded-md mb-4">
-                    {children}
-                </div>
-            ),
-            infoBox: ({ children }) => (
-                <div className={cn(
-                    "bg-blue-50 dark:bg-blue-900/30 p-4 rounded-lg border-l-4 border-blue-500 mb-4",
-                    isRTL && "border-l-0 border-r-4"
-                )}>
-                    {children}
-                </div>
-            ),
-            warningBox: ({ children }) => (
-                <div className={cn(
-                    "bg-red-50 dark:bg-red-900/30 p-4 rounded-lg border-l-4 border-red-500 mb-4",
-                    isRTL && "border-l-0 border-r-4"
-                )}>
-                    {children}
-                </div>
-            ),
-            successBox: ({ children }) => (
-                <div className={cn(
-                    "bg-green-50 dark:bg-green-900/30 p-4 rounded-lg border-l-4 border-green-500 mb-4",
-                    isRTL && "border-l-0 border-r-4"
-                )}>
-                    {children}
-                </div>
-            ),
+            // Removed highlight, infoBox, warningBox, successBox from blocks
+            // These are now handled differently:
+            // - highlight is now a mark (inline)
+            // - info boxes are now custom block objects
             sidebarNote: ({ children }) => (
                 <aside className={cn(
                     "bg-muted p-4 rounded-lg text-sm ml-8 mb-4",
@@ -117,9 +102,6 @@ export default function StyledPortableTextRenderer({
             em: ({ children }) => <em className="italic">{children}</em>,
             underline: ({ children }) => <span className="underline">{children}</span>,
             "strike-through": ({ children }) => <s className="line-through">{children}</s>,
-            code: ({ children }) => (
-                <code className="bg-muted px-1.5 py-0.5 rounded text-sm font-mono">{children}</code>
-            ),
             highlight: ({ children }) => (
                 <mark className="bg-yellow-200 dark:bg-yellow-800/50 px-1 rounded">{children}</mark>
             ),
@@ -153,6 +135,103 @@ export default function StyledPortableTextRenderer({
             },
         },
         types: {
+            // Break/separator blocks
+            break: ({ value }) => {
+                const style = value?.style || 'hr';
+
+                switch (style) {
+                    case 'hr':
+                        return <hr className="my-8 border-t border-gray-300 dark:border-gray-600" />;
+                    case 'readMore':
+                        // Interactive read more button - only show if read more is enabled and not expanded
+                        if (!enableReadMore || isExpanded) {
+                            return null;
+                        }
+                        return (
+                            <div className="my-8 text-center">
+                                <Button
+                                    variant="invert"
+                                    size="wide"
+                                    stroke="light"
+                                    onClick={toggleExpanded}
+                                    className={cn(
+                                        "transition-all duration-200 hover:scale-105",
+                                        isRTL && "font-arabic-heading"
+                                    )}
+                                >
+                                    {locale === 'ar' ? 'اقرأ المزيد' :
+                                     locale === 'es' ? 'Leer más' :
+                                     locale === 'fr' ? 'Lire la suite' :
+                                     'Read More'}
+                                </Button>
+                            </div>
+                        );
+                    case 'section':
+                        return (
+                            <div className="my-12">
+                                <div className="text-center">
+                                    <span className="text-2xl text-muted-foreground">§</span>
+                                </div>
+                                <hr className="mt-4 border-t-2 border-gray-300 dark:border-gray-600 w-24 mx-auto" />
+                            </div>
+                        );
+                    case 'chapter':
+                        return (
+                            <div className="my-16">
+                                <div className="text-center">
+                                    <span className="text-3xl text-muted-foreground">※</span>
+                                </div>
+                                <hr className="mt-6 border-t-4 border-gray-300 dark:border-gray-600 w-32 mx-auto" />
+                            </div>
+                        );
+                    default:
+                        return <hr className="my-8 border-t border-gray-300 dark:border-gray-600" />;
+                }
+            },
+            // Info box blocks (now proper custom blocks)
+            infoBox: ({ value }) => {
+                const variant = value?.variant || 'info';
+                const content = value?.content;
+
+                if (!content) return null;
+
+                const variantStyles = {
+                    info: {
+                        container: cn(
+                            "bg-blue-50 dark:bg-blue-900/30 border-l-4 border-blue-500",
+                            isRTL && "border-l-0 border-r-4"
+                        ),
+                        icon: "ℹ️"
+                    },
+                    warning: {
+                        container: cn(
+                            "bg-red-50 dark:bg-red-900/30 border-l-4 border-red-500",
+                            isRTL && "border-l-0 border-r-4"
+                        ),
+                        icon: "⚠️"
+                    },
+                    success: {
+                        container: cn(
+                            "bg-green-50 dark:bg-green-900/30 border-l-4 border-green-500",
+                            isRTL && "border-l-0 border-r-4"
+                        ),
+                        icon: "✅"
+                    }
+                };
+
+                const styles = variantStyles[variant as keyof typeof variantStyles] || variantStyles.info;
+
+                return (
+                    <div className={cn("p-4 rounded-lg mb-4", styles.container)}>
+                        <div className="flex items-start gap-3">
+                            <span className="text-lg mt-0.5 flex-shrink-0">{styles.icon}</span>
+                            <div className="flex-1">
+                                <PortableText value={content} components={components} />
+                            </div>
+                        </div>
+                    </div>
+                );
+            },
             image: ({ value }) => {
                 if (!value?.asset?._ref) return null;
 
@@ -206,29 +285,36 @@ export default function StyledPortableTextRenderer({
                     </figure>
                 );
             },
-            code: ({ value }) => (
-                <div className="my-6">
-                    {value.filename && (
-                        <div className="bg-muted px-4 py-2 rounded-t-lg text-sm font-mono text-muted-foreground">
-                            {value.filename}
-                        </div>
-                    )}
-                    <pre className={cn(
-                        "bg-muted p-4 overflow-x-auto text-sm",
-                        value.filename ? "rounded-b-lg" : "rounded-lg"
-                    )}>
-            <code className={`language-${value.language || "plaintext"}`}>
-              {value.code}
-            </code>
-          </pre>
-                </div>
-            ),
         },
     };
 
-    if (!value) return null;
+    if (!value || !Array.isArray(value)) return null;
 
-    return <PortableText value={value} components={components} />;
+    return (
+        <div>
+            <PortableText value={visibleContent} components={components} />
+            {/* Show read more button at the end if content is truncated */}
+            {enableReadMore && hasReadMoreBreak && !isExpanded && (
+                <div className="mt-8 text-center">
+                    <Button
+                        variant="invert"
+                        size="wide"
+                        stroke="light"
+                        onClick={toggleExpanded}
+                        className={cn(
+                            "transition-all duration-200 hover:scale-105",
+                            isRTL && "font-arabic-heading"
+                        )}
+                    >
+                        {locale === 'ar' ? 'اقرأ المزيد' :
+                         locale === 'es' ? 'Leer más' :
+                         locale === 'fr' ? 'Lire la suite' :
+                         'Read More'}
+                    </Button>
+                </div>
+            )}
+        </div>
+    );
 }
 
 // Export the components for reuse
@@ -256,7 +342,9 @@ export const portableTextComponents: PortableTextComponents = {
     marks: {
         strong: ({ children }) => <strong className="font-bold">{children}</strong>,
         em: ({ children }) => <em className="italic">{children}</em>,
-        code: ({ children }) => <code className="bg-muted px-1 py-0.5 rounded text-sm font-mono">{children}</code>,
+        highlight: ({ children }) => (
+            <mark className="bg-yellow-200 dark:bg-yellow-800/50 px-1 rounded">{children}</mark>
+        ),
         link: ({ children, value }) => (
             <Link href={value?.href || "#"} className="text-primary hover:underline">
                 {children}
