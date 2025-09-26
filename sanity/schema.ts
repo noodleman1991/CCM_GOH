@@ -75,6 +75,9 @@ import manualContentInsert from "./schemas/blocks/inserts/manual-content-insert"
 import dynamicContentInsert from "./schemas/blocks/inserts/dynamic-content-insert";
 import separatorBlock from "./schemas/blocks/inserts/separator-block";
 
+// Stub objects to prevent crashes
+import codeStub from "./schemas/objects/code-stub";
+
 export const schema: { types: SchemaTypeDefinition[] } = {
     types: [
         // documents
@@ -147,5 +150,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
         manualContentInsert,
         dynamicContentInsert,
         separatorBlock,
+        // stub objects (to prevent crashes)
+        codeStub,
     ],
 };
