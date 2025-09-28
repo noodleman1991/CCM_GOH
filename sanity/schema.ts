@@ -75,8 +75,8 @@ import manualContentInsert from "./schemas/blocks/inserts/manual-content-insert"
 import dynamicContentInsert from "./schemas/blocks/inserts/dynamic-content-insert";
 import separatorBlock from "./schemas/blocks/inserts/separator-block";
 
-// Stub objects to prevent crashes
-import codeStub from "./schemas/objects/code-stub";
+// Code input is now provided by @sanity/code-input plugin
+
 
 export const schema: { types: SchemaTypeDefinition[] } = {
     types: [
@@ -150,7 +150,5 @@ export const schema: { types: SchemaTypeDefinition[] } = {
         manualContentInsert,
         dynamicContentInsert,
         separatorBlock,
-        // stub objects (to prevent crashes)
-        codeStub,
     ],
 };

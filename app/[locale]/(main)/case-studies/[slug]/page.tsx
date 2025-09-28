@@ -26,7 +26,7 @@ import {
   Tag
 } from 'lucide-react'
 
-import { portableTextComponents } from '@/components/portable-text/portable-text-components'
+import { portableTextComponents } from "@/components/portable-text-renderer"
 import { format } from 'date-fns'
 import { getLocalizedTitle, getLocalizedExcerpt, getLocalizedText } from '@/lib/localization-utils'
 
@@ -332,9 +332,13 @@ async function CaseStudyContent({ locale, slug }: { locale: string; slug: string
         <div className="lg:col-span-2">
           <div className="prose prose-lg max-w-none prose-headings:tracking-tight prose-headings:font-bold prose-p:leading-relaxed prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-strong:font-semibold prose-code:text-primary prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded">
             {caseStudy.content && (
+              // <PortableText
+              //   value={caseStudy.content}
+              //   components={portableTextComponents(locale)}
+              // />
               <PortableText
-                value={caseStudy.content}
-                components={portableTextComponents(locale)}
+                  value={caseStudy.content as any}
+                  components={portableTextComponents(locale)}
               />
             )}
           </div>

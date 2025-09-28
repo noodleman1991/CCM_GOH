@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { PortableText } from "@portabletext/react";
-import { portableTextComponents } from "@/components/styled-portable-text-renderer";
+import { portableTextComponents } from "@/components/portable-text-renderer";
 import { urlFor } from "@/sanity/lib/image";
 import { cn } from "@/lib/utils";
 
@@ -43,6 +43,7 @@ export function ManualContentBlock({
   layout = "full-width",
   backgroundColor = "none",
   padding = "medium",
+  locale = "en",
 }: ManualContentBlockProps) {
   const bgClass = backgroundClasses[backgroundColor] || "";
   const paddingClass = paddingClasses[padding] || "";
@@ -57,7 +58,7 @@ export function ManualContentBlock({
       {content && (
         <PortableText
           value={content as any}
-          components={portableTextComponents}
+          components={portableTextComponents(locale)}
         />
       )}
     </div>

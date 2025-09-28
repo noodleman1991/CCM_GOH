@@ -9,7 +9,7 @@ import GridReport from "./grid-report";
 import GridCaseStudy from "./grid-case-study";
 import GridNews from "./grid-news";
 import GridLivedExperience from "./grid-lived-experience";
-import StyledPortableTextRenderer from "@/components/styled-portable-text-renderer";
+import PortableTextRenderer from "@/components/portable-text-renderer";
 
 type Block = NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number];
 type GridRow = Extract<Block, { _type: "grid-row" }>;
@@ -92,7 +92,7 @@ export default function GridRow({
                         )}
                         {description && (
                             <div className="mt-6 animate-fade-up [animation-delay:300ms] opacity-0">
-                                <StyledPortableTextRenderer value={description} locale={locale} />
+                                <PortableTextRenderer value={description} locale={locale} />
                             </div>
                         )}
                     </div>
