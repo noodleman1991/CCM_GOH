@@ -6,6 +6,7 @@ import page from "./schemas/documents/page";
 import regionalCommunityPage from "./schemas/documents/regional-community-page"; //hub
 import post from "./schemas/documents/post";
 import report from "./schemas/documents/report";
+import agenda from "./schemas/documents/agenda";
 import author from "./schemas/documents/author";
 import category from "./schemas/documents/category";
 import faq from "./schemas/documents/faq";
@@ -56,6 +57,7 @@ import gridCard from "./schemas/blocks/grid/grid-card";
 import gridPost from "./schemas/blocks/grid/grid-post";
 import gridRow from "./schemas/blocks/grid/grid-row";
 import gridReport from "./schemas/blocks/grid/grid-report";
+import gridAgenda from "./schemas/blocks/grid/grid-agenda";
 import gridCaseStudy from "./schemas/blocks/grid/grid-case-study";
 import gridNews from "./schemas/blocks/grid/grid-news";
 import gridLivedExperience from "./schemas/blocks/grid/grid-lived-experience";
@@ -98,6 +100,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
         livedExperience,
         regionalCommunity,
         report,
+        agenda,
         // onboarding & user management
         onboardingContent,
         workType,
@@ -133,6 +136,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
         gridPost,
         gridRow,
         gridReport,
+        gridAgenda,
         gridCaseStudy,
         gridNews,
         gridLivedExperience,

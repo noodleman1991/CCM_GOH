@@ -21,7 +21,8 @@ import {
     UserCog,
     Briefcase,
     GraduationCap,
-    Languages
+    Languages,
+    Calendar
 } from "lucide-react";
 
 export const structure = (S: any, context: any) =>
@@ -118,6 +119,18 @@ export const structure = (S: any, context: any) =>
                                         type: "report",
                                         title: "Reports",
                                         icon: Glasses,
+                                        S,
+                                        context,
+                                    })
+                                ),
+                            S.listItem()
+                                .title("Agendas")
+                                .icon(Calendar)
+                                .child(
+                                    orderableDocumentListDeskItem({
+                                        type: "agenda",
+                                        title: "Agendas",
+                                        icon: Calendar,
                                         S,
                                         context,
                                     })
