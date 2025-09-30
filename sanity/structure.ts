@@ -112,18 +112,6 @@ export const structure = (S: any, context: any) =>
                                         ])
                                 ),
                             S.listItem()
-                                .title("Reports")
-                                .icon(Glasses)
-                                .child(
-                                    orderableDocumentListDeskItem({
-                                        type: "report",
-                                        title: "Reports",
-                                        icon: Glasses,
-                                        S,
-                                        context,
-                                    })
-                                ),
-                            S.listItem()
                                 .title("Agendas")
                                 .icon(Calendar)
                                 .child(

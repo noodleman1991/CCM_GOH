@@ -91,8 +91,8 @@ export default defineType({
     }),
     // Dynamic Grid Configurations
     defineField({
-      name: "reportsGrid",
-      title: "Reports Grid Section",
+      name: "agendasGrid",
+      title: "Agendas Grid Section",
       type: "object",
       group: "template",
       hidden: ({ document }) => !Boolean(document?.useTemplate),
@@ -138,7 +138,7 @@ export default defineType({
           name: "title",
           title: "Section Title",
           type: "string",
-          initialValue: "Reports",
+          initialValue: "Agendas",
           hidden: ({ parent }) => !Boolean(parent?.showTitle),
         },
         {
@@ -155,11 +155,11 @@ export default defineType({
         },
         {
           name: "manualItems",
-          title: "Manual Report Selection",
+          title: "Manual Agenda Selection",
           type: "array",
-          of: [{ type: "grid-report" }],
+          of: [{ type: "grid-agenda" }],
           hidden: ({ parent }) => parent?.mode !== "manual",
-          description: "Manually select specific reports to display",
+          description: "Manually select specific agendas to display",
         },
       ],
     }),

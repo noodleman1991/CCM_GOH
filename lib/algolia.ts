@@ -45,6 +45,7 @@ export const ALGOLIA_INDICES = {
   USERS: 'users',
   SANITY_CONTENT: 'sanity_content',
   REPORTS: 'reports',
+  AGENDAS: 'agendas',
   POSTS: 'posts',
   CASE_STUDIES: 'case_studies'
 } as const
@@ -145,6 +146,25 @@ export interface ReportSearchRecord extends Record<string, unknown> {
   description?: { en: string; es?: string; fr?: string; ar?: string }
   slug: string
   reportType: string
+  year: number
+  publishDate: number
+  totalDownloadCount: number
+  featured: boolean
+  organizations: string[]
+  regionalCommunities: string[]
+  tags: string[]
+  accessLevel: 'public' | 'registered' | 'members'
+  language: string
+}
+
+export interface AgendaSearchRecord extends Record<string, unknown> {
+  objectID: string
+  contentId: string
+  title: { en: string; es?: string; fr?: string; ar?: string }
+  subtitle?: { en: string; es?: string; fr?: string; ar?: string }
+  description?: { en: string; es?: string; fr?: string; ar?: string }
+  slug: string
+  agendaType: string
   year: number
   publishDate: number
   totalDownloadCount: number
@@ -332,6 +352,47 @@ export const INDEX_SETTINGS = {
     ],
     attributesForFaceting: [
       'reportType',
+      'year',
+      'featured',
+      'tags',
+      'accessLevel',
+      'organizations',
+      'regionalCommunities',
+      'language'
+    ],
+    customRanking: [
+      'desc(featured)',
+      'desc(totalDownloadCount)',
+      'desc(publishDate)'
+    ],
+    attributesToHighlight: [
+      'title.en',
+      'title.es',
+      'title.fr',
+      'title.ar',
+      'organizations',
+      'tags'
+    ],
+    attributesToSnippet: [
+      'description.en:30',
+      'description.es:30',
+      'description.fr:30',
+      'description.ar:30'
+    ],
+    hitsPerPage: 20,
+    maxValuesPerFacet: 100
+  },
+  agendas: {
+    searchableAttributes: [
+      'unordered(title.en,title.es,title.fr,title.ar)',
+      'unordered(subtitle.en,subtitle.es,subtitle.fr,subtitle.ar)',
+      'unordered(description.en,description.es,description.fr,description.ar)',
+      'unordered(organizations)',
+      'unordered(tags)',
+      'unordered(agendaType)'
+    ],
+    attributesForFaceting: [
+      'agendaType',
       'year',
       'featured',
       'tags',

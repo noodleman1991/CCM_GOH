@@ -1,7 +1,7 @@
 import { groq } from "next-sanity";
 import { gridCardQuery } from "@/sanity/queries/grid/grid-card";
 import { gridPostQuery } from "@/sanity/queries/grid/grid-post";
-import { gridReportQuery } from "@/sanity/queries/grid/grid-report";
+import { gridAgendaQuery } from "@/sanity/queries/grid/grid-agenda";
 import { gridCaseStudyQuery } from "@/sanity/queries/grid/grid-case-study";
 import { gridNewsQuery } from "@/sanity/queries/grid/grid-news";
 import { gridLivedExperienceQuery } from "@/sanity/queries/grid/grid-lived-experience";
@@ -19,7 +19,7 @@ export const gridRowQuery = groq`
     columns[]{
       ${gridCardQuery},
       ${gridPostQuery},
-      ${gridReportQuery},
+      ${gridAgendaQuery},
       ${gridCaseStudyQuery},
       ${gridNewsQuery},
       ${gridLivedExperienceQuery},
