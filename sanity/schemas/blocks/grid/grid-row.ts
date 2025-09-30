@@ -46,7 +46,7 @@ export default defineType({
       of: [
         { type: "grid-card" },
         { type: "grid-post" },
-        { type: "grid-report" },
+        { type: "grid-agenda" },
         { type: "grid-case-study" },
         { type: "grid-news" },
         { type: "grid-lived-experience" },
@@ -68,12 +68,12 @@ export default defineType({
     select: {
       title: "columns.0.title",
       postTitle: "columns.0.post.title",
-      reportTitle: "columns.0.report.title.en",
+      agendaTitle: "columns.0.agenda.title.en",
     },
-    prepare({ title, postTitle, reportTitle }) {
+    prepare({ title, postTitle, agendaTitle }) {
       return {
         title: "Grid Row",
-        subtitle: title || postTitle || reportTitle,
+        subtitle: title || postTitle || agendaTitle,
       };
     },
   },

@@ -185,12 +185,12 @@ export const fetchSanityPostsStaticParams =
     };
 
 /**
- * Fetch reports for a regional community using featured-first then recent logic
+ * Fetch agendas for a regional community using featured-first then recent logic
  * @param slug - Regional community slug
- * @param limit - Maximum number of reports to return
- * @returns Array of reports with featured items first, then recent items
+ * @param limit - Maximum number of agendas to return
+ * @returns Array of agendas with featured items first, then recent items
  */
-export const fetchRegionalCommunityReports = async ({
+export const fetchRegionalCommunityAgendas = async ({
     slug,
     limit = 6
 }: {
@@ -213,15 +213,15 @@ export const fetchRegionalCommunityReports = async ({
         const regionalCommunityId = community._id;
         let items: any[] = [];
 
-        // First get featured reports
-        const { data: featuredReports } = await sanityFetch({
-            query: `*[_type == "report" && featured == true && references($regionalCommunityId)] | order(publishDate desc)[0...${limit}]{
+        // First get featured agendas
+        const { data: featuredAgendas } = await sanityFetch({
+            query: `*[_type == "agenda" && featured == true && references($regionalCommunityId)] | order(publishDate desc)[0...${limit}]{
                 _id,
                 title,
                 subtitle,
                 description,
                 slug,
-                reportType,
+                agendaType,
                 year,
                 publishDate,
                 totalDownloadCount,
@@ -288,21 +288,21 @@ export const fetchRegionalCommunityReports = async ({
             stega: false,
         });
 
-        items = featuredReports || [];
+        items = featuredAgendas || [];
 
-        // If we need more items, get recent non-featured reports
+        // If we need more items, get recent non-featured agendas
         if (items.length < limit) {
             const remainingCount = limit - items.length;
             const featuredIds = items.map((item: any) => item._id);
 
-            const { data: recentReports } = await sanityFetch({
-                query: `*[_type == "report" && !(_id in $featuredIds) && references($regionalCommunityId)] | order(publishDate desc)[0...${remainingCount}]{
+            const { data: recentAgendas } = await sanityFetch({
+                query: `*[_type == "agenda" && !(_id in $featuredIds) && references($regionalCommunityId)] | order(publishDate desc)[0...${remainingCount}]{
                     _id,
                     title,
                     subtitle,
                     description,
                     slug,
-                    reportType,
+                    agendaType,
                     year,
                     publishDate,
                     totalDownloadCount,
@@ -369,12 +369,12 @@ export const fetchRegionalCommunityReports = async ({
                 stega: false,
             });
 
-            items = [...items, ...(recentReports || [])];
+            items = [...items, ...(recentAgendas || [])];
         }
 
         return items;
     } catch (error) {
-        console.error('Error fetching regional community reports:', error);
+        console.error('Error fetching regional community agendas:', error);
         return [];
     }
 };
