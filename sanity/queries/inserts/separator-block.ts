@@ -1,5 +1,6 @@
 import { groq } from "next-sanity";
 
+// @sanity-typegen-ignore
 export const separatorBlockQuery = groq`
   _type == "separatorBlock" => {
     _type,

@@ -1,5 +1,6 @@
 // todo: userId may be undefined? (no-!)
-import { fetchSanityRCPageBySlug, fetchRegionalCommunityReports } from '@/sanity/lib/fetch';
+import { fetchSanityRCPageBySlug, fetchRegionalCommunityAgendas } from '@/sanity/lib/fetch';
+import { fetchRegionalCommunityTeamMembers } from '@/sanity/queries/regional-community-team';
 import RegionalReportsGrid from '@/components/blocks/grid/regional-reports-grid';
 import { auth } from '@clerk/nextjs/server';
 import Blocks from '@/components/blocks/index'
@@ -17,8 +18,16 @@ export default async function RegionalCommunityPage({
     // Your existing fetches
     const pageData = await fetchSanityRCPageBySlug({ slug, locale });
 
-    // Add this new fetch for reports
-    const reportsData = await fetchRegionalCommunityReports({ slug, limit: 6 });
+    // Fetch agendas for the regional community
+    const reportsData = await fetchRegionalCommunityAgendas({ slug, limit: 6 });
+
+    // Fetch team members if in dynamic mode
+    const teamMembers = pageData?.teamGrid?.mode === 'dynamic' && pageData?.regionalCommunity?._id
+        ? await fetchRegionalCommunityTeamMembers({
+            communityId: pageData.regionalCommunity._id,
+            limit: 20
+          })
+        : null;
 
     // Get user ID for download tracking
     const { userId } = await auth();
@@ -44,6 +53,8 @@ export default async function RegionalCommunityPage({
                     regionalCommunity={pageData.regionalCommunity}
                     templateConfiguration={pageData.templateConfiguration}
                     templateInserts={pageData.templateInserts || []}
+                    teamGrid={pageData.teamGrid}
+                    teamMembers={teamMembers}
                     locale={locale}
                     userId={userId!}
                 />

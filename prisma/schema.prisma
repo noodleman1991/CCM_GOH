@@ -232,31 +232,39 @@ model RecentWork {
   updatedAt DateTime @updatedAt
 }
 
-model DownloadEvent {
-  id           String   @id @default(cuid())
-  reportId     String // Sanity report ID
-  fileLanguage String // en, es, fr, ar
-  userId       String? // Clerk user ID (optional for anonymous downloads)
-  sessionId    String // Browser session ID
-  userAgent    String? // Browser user agent
-  referer      String? // Referring page
-  ipAddress    String? // User IP address
-  timestamp    DateTime @default(now())
-  createdAt    DateTime @default(now())
+enum ContentType {
+  REPORT
+  AGENDA
+}
 
-  @@index([reportId])
+model DownloadEvent {
+  id           String      @id @default(cuid())
+  contentType  ContentType @default(REPORT) // Type of content being downloaded
+  contentId    String      // Sanity document ID (report or agenda)
+  fileLanguage String      // en, es, fr, ar
+  userId       String?     // Clerk user ID (optional for anonymous downloads)
+  sessionId    String      // Browser session ID
+  userAgent    String?     // Browser user agent
+  referer      String?     // Referring page
+  ipAddress    String?     // User IP address
+  timestamp    DateTime    @default(now())
+  createdAt    DateTime    @default(now())
+
+  @@index([contentType, contentId])
   @@index([userId])
   @@index([timestamp])
   @@map("download_events")
 }
 
-model ReportMetadata {
-  id               String    @id @default(cuid())
-  sanityId         String    @unique // Sanity report document ID
-  downloadCount    Int       @default(0)
+model ContentMetadata {
+  id               String      @id @default(cuid())
+  contentType      ContentType // Type of content (report or agenda)
+  sanityId         String      // Sanity document ID
+  downloadCount    Int         @default(0)
   lastDownloadedAt DateTime?
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
 
-  @@map("report_metadata")
+  @@unique([contentType, sanityId])
+  @@map("content_metadata")
 }

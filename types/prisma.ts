@@ -1,11 +1,11 @@
-import type { 
-  User, 
-  Community, 
-  UserCommunity, 
-  Content, 
-  RecentWork, 
-  DownloadEvent, 
-  ReportMetadata,
+import type {
+  User,
+  Community,
+  UserCommunity,
+  Content,
+  RecentWork,
+  DownloadEvent,
+  ContentMetadata,
   AgeGroup,
   WorkType,
   ExpertiseArea,
@@ -14,6 +14,7 @@ import type {
   CommunityType,
   RegionalCommunityName,
   SpecialCommunityName,
+  ContentType,
   Prisma
 } from '@/generated/prisma'
 
@@ -117,7 +118,7 @@ export interface CommunityQueryResult extends PaginatedResult<LocalizedCommunity
 
 // Analytics and reporting types
 export interface DownloadAnalytics extends DownloadEvent {
-  report?: ReportMetadata
+  content?: ContentMetadata
 }
 
 export interface UserAnalytics {

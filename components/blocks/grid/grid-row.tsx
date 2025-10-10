@@ -14,7 +14,6 @@ import PortableTextRenderer from "@/components/portable-text-renderer";
 type Block = NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number];
 type GridRow = Extract<Block, { _type: "grid-row" }>;
 
-// Define our own types to avoid Sanity's union type issues
 type GridCardType = {
     _type: "grid-card";
     _key: string;

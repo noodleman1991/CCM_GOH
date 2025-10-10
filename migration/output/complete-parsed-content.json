@@ -1,0 +1,240 @@
+{
+  "homepage": {
+    "_type": "homepage",
+    "_id": "homepage-en",
+    "language": "en",
+    "title": {
+      "en": "Home"
+    },
+    "sections": {}
+  },
+  "regionalCommunityPages": [
+    {
+      "_type": "regionalCommunityPage",
+      "title": "Central and Southern Asia Regional Community",
+      "slug": {
+        "current": "central-and-southern-asia"
+      },
+      "language": "en",
+      "useTemplate": true
+    },
+    {
+      "_type": "regionalCommunityPage",
+      "title": "Eastern and South Eastern Asia Regional Community",
+      "slug": {
+        "current": "eastern-and-south-eastern-asia"
+      },
+      "language": "en",
+      "useTemplate": true
+    },
+    {
+      "_type": "regionalCommunityPage",
+      "title": "Europe and Northern America Regional Community",
+      "slug": {
+        "current": "europe-and-northern-america"
+      },
+      "language": "en",
+      "useTemplate": true,
+      "_teamMembers": [
+        {
+          "name": "Britt Wray",
+          "title": "Dr.",
+          "region": "europe-and-northern-america"
+        },
+        {
+          "name": "Kyle Hill",
+          "title": "Dr.",
+          "region": "europe-and-northern-america"
+        },
+        {
+          "name": "Philippa Clery",
+          "title": "Dr.",
+          "region": "europe-and-northern-america"
+        }
+      ]
+    },
+    {
+      "_type": "regionalCommunityPage",
+      "title": "Latin America and the Caribbean Regional Community",
+      "slug": {
+        "current": "latin-america-and-the-caribbean"
+      },
+      "language": "en",
+      "useTemplate": true,
+      "_teamMembers": [
+        {
+          "name": "Enrique Da Barrios",
+          "title": "Professor",
+          "region": "latin-america-and-the-caribbean"
+        },
+        {
+          "name": "Martha Rosa Munoz",
+          "title": "Dr.",
+          "region": "latin-america-and-the-caribbean"
+        },
+        {
+          "name": "Fresia Hernandez",
+          "title": "Dr.",
+          "region": "latin-america-and-the-caribbean"
+        },
+        {
+          "name": "Clemencia Ramirez",
+          "title": "Dr.",
+          "region": "latin-america-and-the-caribbean"
+        },
+        {
+          "name": "Jonathan Sherin",
+          "title": "Professor",
+          "region": "latin-america-and-the-caribbean"
+        }
+      ]
+    },
+    {
+      "_type": "regionalCommunityPage",
+      "title": "Northern Africa and Western Asia Regional Community",
+      "slug": {
+        "current": "northern-africa-and-western-asia"
+      },
+      "language": "en",
+      "useTemplate": true,
+      "_teamMembers": [
+        {
+          "name": "Yaroup Ajlouni",
+          "title": "Dr.",
+          "region": "northern-africa-and-western-asia"
+        },
+        {
+          "name": "Duha Al Omari",
+          "title": "Dr.",
+          "region": "northern-africa-and-western-asia"
+        },
+        {
+          "name": "Rouba Katrina",
+          "title": "Dr.",
+          "region": "northern-africa-and-western-asia"
+        }
+      ]
+    },
+    {
+      "_type": "regionalCommunityPage",
+      "title": "Oceania Regional Community",
+      "slug": {
+        "current": "oceania"
+      },
+      "language": "en",
+      "useTemplate": true
+    },
+    {
+      "_type": "regionalCommunityPage",
+      "title": "Sub-Saharan Africa Regional Community",
+      "slug": {
+        "current": "sub-saharan-africa"
+      },
+      "language": "en",
+      "useTemplate": true,
+      "_teamMembers": [
+        {
+          "name": "Elvis Tata's Lived Experience",
+          "title": "Dr.",
+          "region": "sub-saharan-africa"
+        },
+        {
+          "name": "Rouba Katrina",
+          "title": "Dr.",
+          "region": "sub-saharan-africa"
+        }
+      ]
+    }
+  ],
+  "organizations": [
+    "Climate Cares Centre",
+    "Khan University",
+    "Mind Institute",
+    "University of Science",
+    "Salle University",
+    "Kong University",
+    "Technological University",
+    "Policy Institute",
+    "University of Minnesota",
+    "Hopkins University",
+    "University of Rio Grande",
+    "Federal University",
+    "World Health Organization",
+    "University of Melbourne",
+    "University of Auckland",
+    "The University",
+    "Cook University",
+    "University of Nigeria",
+    "University of Botswana",
+    "University of Nairobi",
+    "University of South Africa",
+    "Claretian University"
+  ],
+  "teamMembers": [
+    {
+      "name": "Britt Wray",
+      "title": "Dr.",
+      "region": "europe-and-northern-america"
+    },
+    {
+      "name": "Kyle Hill",
+      "title": "Dr.",
+      "region": "europe-and-northern-america"
+    },
+    {
+      "name": "Philippa Clery",
+      "title": "Dr.",
+      "region": "europe-and-northern-america"
+    },
+    {
+      "name": "Enrique Da Barrios",
+      "title": "Professor",
+      "region": "latin-america-and-the-caribbean"
+    },
+    {
+      "name": "Martha Rosa Munoz",
+      "title": "Dr.",
+      "region": "latin-america-and-the-caribbean"
+    },
+    {
+      "name": "Fresia Hernandez",
+      "title": "Dr.",
+      "region": "latin-america-and-the-caribbean"
+    },
+    {
+      "name": "Clemencia Ramirez",
+      "title": "Dr.",
+      "region": "latin-america-and-the-caribbean"
+    },
+    {
+      "name": "Jonathan Sherin",
+      "title": "Professor",
+      "region": "latin-america-and-the-caribbean"
+    },
+    {
+      "name": "Yaroup Ajlouni",
+      "title": "Dr.",
+      "region": "northern-africa-and-western-asia"
+    },
+    {
+      "name": "Duha Al Omari",
+      "title": "Dr.",
+      "region": "northern-africa-and-western-asia"
+    },
+    {
+      "name": "Rouba Katrina",
+      "title": "Dr.",
+      "region": "northern-africa-and-western-asia"
+    },
+    {
+      "name": "Elvis Tata's Lived Experience",
+      "title": "Dr.",
+      "region": "sub-saharan-africa"
+    },
+    {
+      "name": "Rouba Katrina",
+      "title": "Dr.",
+      "region": "sub-saharan-africa"
+    }
+  ]
+}

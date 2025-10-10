@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import SectionContainer from '@/components/ui/section-container';
 import GridReportComponent from '@/components/blocks/grid/grid-report';
-import { Report, LocalizedString } from '@/types/report';
+import { Report } from '@/types/report';
 import { FileDown, ArrowRight } from 'lucide-react';
 
 interface RegionalReportsGridProps {

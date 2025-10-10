@@ -1,0 +1,836 @@
+[
+  {
+    "groupId": "regional-central-and-southern-asia-central-and-southern-asia-18-03",
+    "baseName": "Central and Southern Asia 18-03",
+    "title": "Central and Southern Asia 18-03",
+    "type": "regional",
+    "region": "central-and-southern-asia",
+    "versions": {
+      "full": [
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents//Full%20RRAA%20Central%20and%20Southern%20Asia%2018-03%20(1.pdf",
+          "filename": "Full RRAA Central and Southern Asia 18-03 (1.pdf"
+        },
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/Full%20RRAA%20Central%20and%20Southern%20Asia%2018-03.pdf",
+          "filename": "Full RRAA Central and Southern Asia 18-03.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "regional-central-and-southern-asia-central-and-southern-asia-regional-agenda",
+    "baseName": "Central and Southern Asia Regional Agenda",
+    "title": "Central and Southern Asia Regional Agenda",
+    "type": "regional",
+    "region": "central-and-southern-asia",
+    "versions": {
+      "summary": [
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents//Central%20and%20Southern%20Asia%20Regional%20Research%20and%20Action%20Agenda%20Summary-compressed.pdf",
+          "filename": "Central and Southern Asia Regional Research and Action Agenda Summary-compressed.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "regional-eastern-and-south-eastern-asia-eastern-and-south-eastern-asia-17-03",
+    "baseName": "Eastern and South-Eastern Asia 17-03",
+    "title": "Eastern and South-Eastern Asia 17-03",
+    "type": "regional",
+    "region": "eastern-and-south-eastern-asia",
+    "versions": {
+      "full": [
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents//Full%20RRAA%20Eastern%20and%20South-Eastern%20Asia%2017-03%20(1.pdf",
+          "filename": "Full RRAA Eastern and South-Eastern Asia 17-03 (1.pdf"
+        },
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/Full%20RRAA%20Eastern%20and%20South-Eastern%20Asia%2017-03.pdf",
+          "filename": "Full RRAA Eastern and South-Eastern Asia 17-03.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "regional-eastern-and-south-eastern-asia-eastern-and-south-eastern-asia-regional-agenda",
+    "baseName": "Eastern and South-Eastern Asia Regional Agenda",
+    "title": "Eastern and South-Eastern Asia Regional Agenda",
+    "type": "regional",
+    "region": "eastern-and-south-eastern-asia",
+    "versions": {
+      "summary": [
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents//Eastern%20and%20South%20Eastern%20Asia%20Regional%20Research%20and%20Action%20Agenda%20Summary-compressed.pdf",
+          "filename": "Eastern and South Eastern Asia Regional Research and Action Agenda Summary-compressed.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "regional-europe-and-northern-america-europe-and-northern-america-18-03",
+    "baseName": "Europe and Northern America 18-03",
+    "title": "Europe and Northern America 18-03",
+    "type": "regional",
+    "region": "europe-and-northern-america",
+    "versions": {
+      "full": [
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents//Full%20RRAA%20Europe%20and%20Northern%20America%2018-03%20(1.pdf",
+          "filename": "Full RRAA Europe and Northern America 18-03 (1.pdf"
+        },
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/Full%20RRAA%20Europe%20and%20Northern%20America%2018-03.pdf",
+          "filename": "Full RRAA Europe and Northern America 18-03.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "regional-eastern-and-south-eastern-asia-europe-and-northern-america-regional-agenda",
+    "baseName": "Europe and Northern America Regional Agenda",
+    "title": "Europe and Northern America Regional Agenda",
+    "type": "regional",
+    "region": "eastern-and-south-eastern-asia",
+    "versions": {
+      "summary": [
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents//Europe%20and%20Northern%20America%20Regional%20Research%20and%20Action%20Agenda%20Summary-compressed.pdf",
+          "filename": "Europe and Northern America Regional Research and Action Agenda Summary-compressed.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "regional-latin-america-and-the-caribbean--summary",
+    "baseName": "(summary",
+    "title": "(summary",
+    "type": "regional",
+    "region": "latin-america-and-the-caribbean",
+    "versions": {
+      "summary": [
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/LAC%20(summary_compressed.pdf",
+          "filename": "LAC (summary_compressed.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "regional-latin-america-and-the-caribbean-ccm-latin-america-summary",
+    "baseName": "CCM Latin America Summary",
+    "title": "CCM Latin America Summary",
+    "type": "regional",
+    "region": "latin-america-and-the-caribbean",
+    "versions": {
+      "summary": [
+        {
+          "language": "fr",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/CCM%20Latin%20America%20Summary-FR.pdf",
+          "filename": "CCM Latin America Summary-FR.pdf"
+        },
+        {
+          "language": "es",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/CCM%20Latin%20America%20Summary-ES.pdf",
+          "filename": "CCM Latin America Summary-ES.pdf"
+        },
+        {
+          "language": "pt",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/CCM%20Latin%20America%20Summary-PT.pdf",
+          "filename": "CCM Latin America Summary-PT.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "regional-latin-america-and-the-caribbean-ccm-latin-america-full",
+    "baseName": "CCM Latin America Full",
+    "title": "CCM Latin America Full",
+    "type": "regional",
+    "region": "latin-america-and-the-caribbean",
+    "versions": {
+      "full": [
+        {
+          "language": "fr",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/CCM%20Latin%20America%20Full-FR.pdf",
+          "filename": "CCM Latin America Full-FR.pdf"
+        },
+        {
+          "language": "es",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/CCM%20Latin%20America%20Full-ES.pdf",
+          "filename": "CCM Latin America Full-ES.pdf"
+        },
+        {
+          "language": "pt",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/CCM%20Latin%20America%20Full-PT.pdf",
+          "filename": "CCM Latin America Full-PT.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "regional-northern-africa-and-western-asia-northern-africa-and-western-asia-18-03",
+    "baseName": "Northern Africa and Western Asia 18-03",
+    "title": "Northern Africa and Western Asia 18-03",
+    "type": "regional",
+    "region": "northern-africa-and-western-asia",
+    "versions": {
+      "full": [
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents//Full%20RRAA%20Northern%20Africa%20and%20Western%20Asia%2018-03%20(1.pdf",
+          "filename": "Full RRAA Northern Africa and Western Asia 18-03 (1.pdf"
+        },
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/Full%20RRAA%20Northern%20Africa%20and%20Western%20Asia%2018-03.pdf",
+          "filename": "Full RRAA Northern Africa and Western Asia 18-03.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "regional-eastern-and-south-eastern-asia-northern-africa-and-western-asia-regional-agenda",
+    "baseName": "Northern Africa and Western Asia Regional Agenda",
+    "title": "Northern Africa and Western Asia Regional Agenda",
+    "type": "regional",
+    "region": "eastern-and-south-eastern-asia",
+    "versions": {
+      "summary": [
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents//Northern%20Africa%20and%20Western%20Asia%20Regional%20Research%20and%20Action%20Agenda%20Summary-compressed.pdf",
+          "filename": "Northern Africa and Western Asia Regional Research and Action Agenda Summary-compressed.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "regional-northern-africa-and-western-asia-ccm-northern-africa-summary",
+    "baseName": "CCM Northern Africa Summary",
+    "title": "CCM Northern Africa Summary",
+    "type": "regional",
+    "region": "northern-africa-and-western-asia",
+    "versions": {
+      "summary": [
+        {
+          "language": "ar",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/CCM%20Northern%20Africa%20Summary-AR.pdf",
+          "filename": "CCM Northern Africa Summary-AR.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "regional-northern-africa-and-western-asia-ccm-northern-africa-full",
+    "baseName": "CCM Northern Africa Full",
+    "title": "CCM Northern Africa Full",
+    "type": "regional",
+    "region": "northern-africa-and-western-asia",
+    "versions": {
+      "full": [
+        {
+          "language": "ar",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/CCM%20Northern%20Africa%20Full-AR.pdf",
+          "filename": "CCM Northern Africa Full-AR.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "regional-oceania-oceania-17-03",
+    "baseName": "Oceania 17-03",
+    "title": "Oceania 17-03",
+    "type": "regional",
+    "region": "oceania",
+    "versions": {
+      "full": [
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents//Full%20RRAA%20Oceania%2017-03%20(1.pdf",
+          "filename": "Full RRAA Oceania 17-03 (1.pdf"
+        },
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/Full%20RRAA%20Oceania%2017-03.pdf",
+          "filename": "Full RRAA Oceania 17-03.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "regional-eastern-and-south-eastern-asia-oceania-regional-agenda",
+    "baseName": "Oceania Regional Agenda",
+    "title": "Oceania Regional Agenda",
+    "type": "regional",
+    "region": "eastern-and-south-eastern-asia",
+    "versions": {
+      "summary": [
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents//Oceania%20Regional%20Research%20and%20Action%20Agenda%20Summary-compressed.pdf",
+          "filename": "Oceania Regional Research and Action Agenda Summary-compressed.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "regional-sub-saharan-africa-sub-saharan-africa-17-03",
+    "baseName": "Sub-Saharan Africa 17-03",
+    "title": "Sub-Saharan Africa 17-03",
+    "type": "regional",
+    "region": "sub-saharan-africa",
+    "versions": {
+      "full": [
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents//Full%20RRAA%20Sub-Saharan%20Africa%2017-03%20(1.pdf",
+          "filename": "Full RRAA Sub-Saharan Africa 17-03 (1.pdf"
+        },
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/Full%20RRAA%20Sub-Saharan%20Africa%2017-03.pdf",
+          "filename": "Full RRAA Sub-Saharan Africa 17-03.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "regional-sub-saharan-africa-sub-saharan-africa-regional-agenda",
+    "baseName": "Sub-Saharan Africa Regional Agenda",
+    "title": "Sub-Saharan Africa Regional Agenda",
+    "type": "regional",
+    "region": "sub-saharan-africa",
+    "versions": {
+      "summary": [
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents//Sub-Saharan%20Africa%20Regional%20Research%20and%20Action%20Agenda%20Summary-compressed.pdf",
+          "filename": "Sub-Saharan Africa Regional Research and Action Agenda Summary-compressed.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "report-global-ccm-sub-saharan-summary",
+    "baseName": "CCM Sub-saharan Summary",
+    "title": "CCM Sub-saharan Summary",
+    "type": "report",
+    "versions": {
+      "summary": [
+        {
+          "language": "fr",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/CCM%20Sub-saharan%20Summary-FR.pdf",
+          "filename": "CCM Sub-saharan Summary-FR.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "report-global-ccm-sub-saharan-full",
+    "baseName": "CCM Sub-saharan full",
+    "title": "CCM Sub-saharan full",
+    "type": "report",
+    "versions": {
+      "full": [
+        {
+          "language": "fr",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/CCM%20Sub-saharan%20full-FR.pdf",
+          "filename": "CCM Sub-saharan full-FR.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "regional-eastern-and-south-eastern-asia-ccm-global-research-and-action-agenda--compressed",
+    "baseName": "CCM Global Research and Action Agenda (compressed",
+    "title": "CCM Global Research and Action Agenda (compressed",
+    "type": "regional",
+    "region": "eastern-and-south-eastern-asia",
+    "versions": {
+      "full": [
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents//CCM%20Global%20Research%20and%20Action%20Agenda%20(compressed.pdf",
+          "filename": "CCM Global Research and Action Agenda (compressed.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "community-global-youth--summary-v2",
+    "baseName": "Youth (summary v2",
+    "title": "Youth (summary v2",
+    "type": "community",
+    "versions": {
+      "summary": [
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/Youth%20(summary_v2_compressed.pdf",
+          "filename": "Youth (summary_v2_compressed.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "community-global-youth-18-03",
+    "baseName": "youth 18-03",
+    "title": "youth 18-03",
+    "type": "community",
+    "versions": {
+      "full": [
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/Full%20TRAA%20youth%2018-03.pdf",
+          "filename": "Full TRAA youth 18-03.pdf"
+        },
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents//Full%20TRAA%20youth%2018-03%20(1.pdf",
+          "filename": "Full TRAA youth 18-03 (1.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "community-global-indigenous--summary-v2",
+    "baseName": "Indigenous (summary v2",
+    "title": "Indigenous (summary v2",
+    "type": "community",
+    "versions": {
+      "summary": [
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/Indigenous%20(summary_v2_compressed.pdf",
+          "filename": "Indigenous (summary_v2_compressed.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "community-global-indigenous-18-03",
+    "baseName": "Indigenous 18-03",
+    "title": "Indigenous 18-03",
+    "type": "community",
+    "versions": {
+      "full": [
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/Full%20TRAA%20Indigenous%2018-03.pdf",
+          "filename": "Full TRAA Indigenous 18-03.pdf"
+        },
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents//Full%20TRAA%20Indigenous%2018-03%20(1.pdf",
+          "filename": "Full TRAA Indigenous 18-03 (1.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "community-global-farmers--summary-v2",
+    "baseName": "Farmers (summary v2",
+    "title": "Farmers (summary v2",
+    "type": "community",
+    "versions": {
+      "summary": [
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/Farmers%20(summary_v2_compressed.pdf",
+          "filename": "Farmers (summary_v2_compressed.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "community-global-farmers-18-03",
+    "baseName": "farmers 18-03",
+    "title": "farmers 18-03",
+    "type": "community",
+    "versions": {
+      "full": [
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/Full%20TRAA%20farmers%2018-03.pdf",
+          "filename": "Full TRAA farmers 18-03.pdf"
+        },
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents//Full%20TRAA%20farmers%2018-03%20(1.pdf",
+          "filename": "Full TRAA farmers 18-03 (1.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "regional-eastern-and-south-eastern-asia-research-toolkit",
+    "baseName": "Research Toolkit",
+    "title": "Research Toolkit",
+    "type": "regional",
+    "region": "eastern-and-south-eastern-asia",
+    "versions": {
+      "full": [
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/Research%20Toolkit_compressed.pdf",
+          "filename": "Research Toolkit_compressed.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "toolkit-global-humanitarian-toolkit-v2",
+    "baseName": "Humanitarian Toolkit v2",
+    "title": "Humanitarian Toolkit v2",
+    "type": "toolkit",
+    "versions": {
+      "full": [
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/Humanitarian_Toolkit_v2_compressed.pdf",
+          "filename": "Humanitarian_Toolkit_v2_compressed.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "toolkit-global-le-toolkit",
+    "baseName": "LE Toolkit",
+    "title": "LE Toolkit",
+    "type": "toolkit",
+    "versions": {
+      "full": [
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/LE%20Toolkit_compressed.pdf",
+          "filename": "LE Toolkit_compressed.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "report-global-regional-impact-report-v4",
+    "baseName": "Regional Impact Report v4",
+    "title": "Regional Impact Report v4",
+    "type": "report",
+    "versions": {
+      "full": [
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/Regional_Impact_Report_v4_compressed.pdf",
+          "filename": "Regional_Impact_Report_v4_compressed.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "report-global-thematic-impact-report-v5",
+    "baseName": "Thematic Impact Report v5",
+    "title": "Thematic Impact Report v5",
+    "type": "report",
+    "versions": {
+      "full": [
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/Thematic_Impact_Report_v5_compressed.pdf",
+          "filename": "Thematic_Impact_Report_v5_compressed.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "global-global-global-event-impact-report-v4",
+    "baseName": "Global Event Impact Report v4",
+    "title": "Global Event Impact Report v4",
+    "type": "global",
+    "versions": {
+      "full": [
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/Global_Event_Impact_Report_v4_compressed.pdf",
+          "filename": "Global_Event_Impact_Report_v4_compressed.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "regional-eastern-and-south-eastern-asia-youth-agenda",
+    "baseName": "Youth Agenda",
+    "title": "Youth Agenda",
+    "type": "regional",
+    "region": "eastern-and-south-eastern-asia",
+    "versions": {
+      "summary": [
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents//Youth%20Research%20and%20Action%20Agenda%20Summary-compressed.pdf",
+          "filename": "Youth Research and Action Agenda Summary-compressed.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "regional-eastern-and-south-eastern-asia-indigenous-communities-agenda",
+    "baseName": "Indigenous Communities Agenda",
+    "title": "Indigenous Communities Agenda",
+    "type": "regional",
+    "region": "eastern-and-south-eastern-asia",
+    "versions": {
+      "summary": [
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents//Indigenous%20Communities%20Research%20and%20Action%20Agenda%20Summary-compressed.pdf",
+          "filename": "Indigenous Communities Research and Action Agenda Summary-compressed.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "community-global-ccm-indigenous-summary",
+    "baseName": "CCM Indigenous Summary",
+    "title": "CCM Indigenous Summary",
+    "type": "community",
+    "versions": {
+      "summary": [
+        {
+          "language": "es",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/CCM%20Indigenous%20Summary-ES.pdf",
+          "filename": "CCM Indigenous Summary-ES.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "community-global-ccm-indigenous-full",
+    "baseName": "CCM Indigenous Full",
+    "title": "CCM Indigenous Full",
+    "type": "community",
+    "versions": {
+      "full": [
+        {
+          "language": "es",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/CCM%20Indigenous%20Full-ES.pdf",
+          "filename": "CCM Indigenous Full-ES.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "regional-eastern-and-south-eastern-asia-small-farmers-and-fisher-peoples-agenda",
+    "baseName": "Small Farmers and Fisher Peoples Agenda",
+    "title": "Small Farmers and Fisher Peoples Agenda",
+    "type": "regional",
+    "region": "eastern-and-south-eastern-asia",
+    "versions": {
+      "summary": [
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents//Small%20Farmers%20and%20Fisher%20Peoples%20Research%20and%20Action%20Agenda%20Summary-compressed.pdf",
+          "filename": "Small Farmers and Fisher Peoples Research and Action Agenda Summary-compressed.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "regional-eastern-and-south-eastern-asia-connecting-climate-minds-global-research-and-action-agenda--arabic",
+    "baseName": "Connecting Climate Minds Global Research and Action Agenda (Arabic",
+    "title": "Connecting Climate Minds Global Research and Action Agenda (Arabic",
+    "type": "regional",
+    "region": "eastern-and-south-eastern-asia",
+    "versions": {
+      "full": [
+        {
+          "language": "ar",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/Connecting%20Climate%20Minds%20Global%20Research%20and%20Action%20Agenda%20(Arabic.pdf",
+          "filename": "Connecting Climate Minds Global Research and Action Agenda (Arabic.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "regional-eastern-and-south-eastern-asia-connecting-climate-minds-global-research-and-action-agenda--spanish",
+    "baseName": "Connecting Climate Minds Global Research and Action Agenda (Spanish",
+    "title": "Connecting Climate Minds Global Research and Action Agenda (Spanish",
+    "type": "regional",
+    "region": "eastern-and-south-eastern-asia",
+    "versions": {
+      "full": [
+        {
+          "language": "es",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/Connecting%20Climate%20Minds%20Global%20Research%20and%20Action%20Agenda%20(Spanish.pdf",
+          "filename": "Connecting Climate Minds Global Research and Action Agenda (Spanish.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "regional-eastern-and-south-eastern-asia-connecting-climate-minds-global-research-and-action-agenda--portuguese",
+    "baseName": "Connecting Climate Minds Global Research and Action Agenda (Portuguese",
+    "title": "Connecting Climate Minds Global Research and Action Agenda (Portuguese",
+    "type": "regional",
+    "region": "eastern-and-south-eastern-asia",
+    "versions": {
+      "full": [
+        {
+          "language": "pt",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/Connecting%20Climate%20Minds%20Global%20Research%20and%20Action%20Agenda%20(Portuguese.pdf",
+          "filename": "Connecting Climate Minds Global Research and Action Agenda (Portuguese.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "regional-eastern-and-south-eastern-asia-connecting-climate-minds-global-research-and-action-agenda--french",
+    "baseName": "Connecting Climate Minds Global Research and Action Agenda (French",
+    "title": "Connecting Climate Minds Global Research and Action Agenda (French",
+    "type": "regional",
+    "region": "eastern-and-south-eastern-asia",
+    "versions": {
+      "full": [
+        {
+          "language": "fr",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/Connecting%20Climate%20Minds%20Global%20Research%20and%20Action%20Agenda%20(French.pdf",
+          "filename": "Connecting Climate Minds Global Research and Action Agenda (French.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "regional-eastern-and-south-eastern-asia-ccm-global-agenda",
+    "baseName": "CCM Global Agenda",
+    "title": "CCM Global Agenda",
+    "type": "regional",
+    "region": "eastern-and-south-eastern-asia",
+    "versions": {
+      "summary": [
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents//CCM%20Global%20Research%20and%20Action%20Agenda%20Summary%20Slide%20Deck.pdf",
+          "filename": "CCM Global Research and Action Agenda Summary Slide Deck.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "regional-sub-saharan-africa--summary",
+    "baseName": "(summary",
+    "title": "(summary",
+    "type": "regional",
+    "region": "sub-saharan-africa",
+    "versions": {
+      "summary": [
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/SSA%20(summary_compressed.pdf",
+          "filename": "SSA (summary_compressed.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "regional-northern-africa-and-western-asia-mena--summary",
+    "baseName": "MENA (summary",
+    "title": "MENA (summary",
+    "type": "regional",
+    "region": "northern-africa-and-western-asia",
+    "versions": {
+      "summary": [
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/MENA%20(summary_compressed.pdf",
+          "filename": "MENA (summary_compressed.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "regional-central-and-southern-asia--summary",
+    "baseName": "(summary",
+    "title": "(summary",
+    "type": "regional",
+    "region": "central-and-southern-asia",
+    "versions": {
+      "summary": [
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/CSA%20(summary_compressed.pdf",
+          "filename": "CSA (summary_compressed.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "regional-eastern-and-south-eastern-asia--summary",
+    "baseName": "(summary",
+    "title": "(summary",
+    "type": "regional",
+    "region": "eastern-and-south-eastern-asia",
+    "versions": {
+      "summary": [
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/ESEA%20(summary_compressed.pdf",
+          "filename": "ESEA (summary_compressed.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "regional-latin-america-and-the-caribbean-latin-america-and-the-caribbean-17-03",
+    "baseName": "Latin America and the Caribbean 17-03",
+    "title": "Latin America and the Caribbean 17-03",
+    "type": "regional",
+    "region": "latin-america-and-the-caribbean",
+    "versions": {
+      "full": [
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/Full%20RRAA%20Latin%20America%20and%20the%20Caribbean%2017-03.pdf",
+          "filename": "Full RRAA Latin America and the Caribbean 17-03.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "regional-oceania-oceania--summary",
+    "baseName": "Oceania (summary",
+    "title": "Oceania (summary",
+    "type": "regional",
+    "region": "oceania",
+    "versions": {
+      "summary": [
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/Oceania%20(summary_compressed.pdf",
+          "filename": "Oceania (summary_compressed.pdf"
+        }
+      ]
+    }
+  },
+  {
+    "groupId": "regional-europe-and-northern-america--summary",
+    "baseName": "(summary",
+    "title": "(summary",
+    "type": "regional",
+    "region": "europe-and-northern-america",
+    "versions": {
+      "summary": [
+        {
+          "language": "en",
+          "url": "https://nbswmzwquzluimyqnfsf.supabase.co/storage/v1/object/public/documents/ENA%20(summary_compressed.pdf",
+          "filename": "ENA (summary_compressed.pdf"
+        }
+      ]
+    }
+  }
+]

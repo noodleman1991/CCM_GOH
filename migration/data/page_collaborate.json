@@ -1,0 +1,37 @@
+{
+  "url": "http://hub.connectingclimateminds.org/collaborate",
+  "title": "Connecting Climate Minds",
+  "description": "Climate Change Community Platform",
+  "content": "<div class=\"rhc-theme-light rhc-banner\"><div class=\"rhc-banner__content\"><div class=\"rhc-banner__content__message\">We respect your digital privacy. That's why we strictly limit our use of cookies to those that are essential for the smooth functioning of our platform and do not collect private data. For more detailed information, please visit our <a class=\"chakra-link css-spn4bz\" href=\"/privacy-policy\">privacy policy</a>.</div><button class=\"rhc-banner__content__secondary\">More</button><button class=\"rhc-banner__content__secondary\">Decline</button><button class=\"rhc-banner__content__primary\">Accept</button></div></div>",
+  "images": [
+    "http://hub.connectingclimateminds.org/ccmLogoWhiteCrop.webp",
+    "http://hub.connectingclimateminds.org/ccmLogoNavy.webp"
+  ],
+  "links": [
+    "http://hub.connectingclimateminds.org/research-and-action/",
+    "http://hub.connectingclimateminds.org/research-and-action/global-agenda",
+    "http://hub.connectingclimateminds.org/research-and-action/regional-agendas/",
+    "http://hub.connectingclimateminds.org/research-and-action/community-agendas/",
+    "http://hub.connectingclimateminds.org/research-and-action/case-studies/",
+    "http://hub.connectingclimateminds.org/research-and-action/toolkits/",
+    "http://hub.connectingclimateminds.org/research-and-action/impact-reports/",
+    "http://hub.connectingclimateminds.org/en/lived-experiences/",
+    "http://hub.connectingclimateminds.org/rc/sub-saharan-africa/",
+    "http://hub.connectingclimateminds.org/rc/northern-africa-and-western-asia/",
+    "http://hub.connectingclimateminds.org/rc/central-and-southern-asia/",
+    "http://hub.connectingclimateminds.org/rc/eastern-and-south-eastern-asia/",
+    "http://hub.connectingclimateminds.org/rc/latin-america-and-the-caribbean/",
+    "http://hub.connectingclimateminds.org/rc/oceania/",
+    "http://hub.connectingclimateminds.org/rc/europe-and-northern-america/",
+    "http://hub.connectingclimateminds.org/collaborate/",
+    "http://hub.connectingclimateminds.org/news/",
+    "http://hub.connectingclimateminds.org/privacy-policy",
+    "http://hub.connectingclimateminds.org/privacy-policy"
+  ],
+  "metadata": {
+    "viewport": "width=device-width, initial-scale=1",
+    "description": "Climate Change Community Platform",
+    "pdfs": [],
+    "scrapedAt": "2025-10-07T21:17:17.443Z"
+  }
+}

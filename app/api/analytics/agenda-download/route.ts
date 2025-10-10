@@ -3,6 +3,11 @@ import { auth } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/prisma';
 import { client } from '@/sanity/lib/client';
 
+interface DownloadEvent {
+    timestamp: Date;
+    contentId: string;
+}
+
 export async function GET(request: NextRequest) {
     try {
         const { userId } = await auth();
@@ -40,34 +45,32 @@ export async function GET(request: NextRequest) {
                 startDate.setDate(now.getDate() - 30);
         }
 
-        // Build where clause
-        const whereClause: any = {
+        // Build where clause for generalized DownloadEvent
+        const whereClause = {
+            contentType: 'AGENDA' as const,
             timestamp: {
                 gte: startDate,
                 lte: now,
             },
+            ...(agendaId && { contentId: agendaId }),
         };
-
-        if (agendaId) {
-            whereClause.agendaId = agendaId;
-        }
 
         // Get download statistics
         const [totalDownloads, uniqueUsers, downloadsByLanguage, downloadsByDay] = await Promise.all([
             // Total downloads
-            prisma.agendaDownloadEvent.count({
+            prisma.downloadEvent.count({
                 where: whereClause,
             }),
 
             // Unique users
-            prisma.agendaDownloadEvent.groupBy({
+            prisma.downloadEvent.groupBy({
                 by: ['userId'],
                 where: whereClause,
                 _count: true,
             }),
 
             // Downloads by language
-            prisma.agendaDownloadEvent.groupBy({
+            prisma.downloadEvent.groupBy({
                 by: ['fileLanguage'],
                 where: whereClause,
                 _count: {
@@ -80,12 +83,12 @@ export async function GET(request: NextRequest) {
                 },
             }),
 
-            // Downloads by day (simplified - you might want to use raw SQL for better date grouping)
-            prisma.agendaDownloadEvent.findMany({
+            // Downloads by day
+            prisma.downloadEvent.findMany({
                 where: whereClause,
                 select: {
                     timestamp: true,
-                    agendaId: true,
+                    contentId: true,
                 },
                 orderBy: {
                     timestamp: 'asc',
@@ -95,7 +98,7 @@ export async function GET(request: NextRequest) {
 
         // Process downloads by day
         const downloadsByDayMap = new Map<string, number>();
-        downloadsByDay.forEach(event => {
+        downloadsByDay.forEach((event: DownloadEvent) => {
             const dateKey = event.timestamp.toISOString().split('T')[0];
             downloadsByDayMap.set(dateKey, (downloadsByDayMap.get(dateKey) || 0) + 1);
         });
@@ -110,7 +113,7 @@ export async function GET(request: NextRequest) {
             analytics: {
                 totalDownloads,
                 uniqueUsers: uniqueUsers.length,
-                downloadsByLanguage: downloadsByLanguage.map(item => ({
+                downloadsByLanguage: downloadsByLanguage.map((item: { fileLanguage: string; _count: { id: number } }) => ({
                     language: item.fileLanguage,
                     count: item._count.id,
                 })),

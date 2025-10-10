@@ -4,6 +4,7 @@ import { hero2Query } from "./hero/hero-2";
 import { sectionHeaderQuery } from "./section-header";
 import { splitRowQuery } from "./split/split-row";
 import { gridRowQuery } from "./grid/grid-row";
+import { teamGridQuery } from "./team-grid";
 import { carousel1Query } from "./carousel/carousel-1";
 import { carousel2Query } from "./carousel/carousel-2";
 import { timelineQuery } from "./timeline";
@@ -21,6 +22,7 @@ export const PAGE_QUERY = groq`
       ${sectionHeaderQuery},
       ${splitRowQuery},
       ${gridRowQuery},
+      ${teamGridQuery},
       ${carousel1Query},
       ${carousel2Query},
       ${timelineQuery},

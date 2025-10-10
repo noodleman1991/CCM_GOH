@@ -68,6 +68,7 @@ function isServerBlock(type: string): boolean {
     "section-header",
     "split-row",
     "grid-row",
+    "team-grid",
     "carousel-1",
     "carousel-2",
     "lived-experiences-carousel",
