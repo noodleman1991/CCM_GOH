@@ -1,5 +1,6 @@
 import { groq } from "next-sanity";
 
+// @sanity-typegen-ignore
 export const manualContentInsertQuery = groq`
   _type == "manualContentInsert" => {
     _type,

@@ -1,0 +1,39 @@
+{
+  "name": "ccm-hub-migration",
+  "version": "1.0.0",
+  "description": "Migration scripts for Connecting Climate Minds Hub to Sanity",
+  "type": "module",
+  "scripts": {
+    "scrape": "tsx scripts/1-scrape-content.ts",
+    "download-assets": "tsx scripts/2-download-assets.ts",
+    "inventory": "tsx scripts/3-generate-inventory.ts",
+    "parse-html": "tsx scripts/4-parse-html-content.ts",
+    "group-pdfs": "tsx scripts/5-group-pdfs.ts",
+    "convert": "tsx scripts/6-convert-to-ndjson.ts",
+    "upload-assets": "tsx scripts/7-upload-assets.ts",
+    "import": "tsx scripts/8-import-content.ts",
+    "validate": "tsx scripts/9-validate.ts",
+    "all": "pnpm scrape && pnpm download-assets && pnpm inventory && pnpm parse-html && pnpm group-pdfs && pnpm convert && pnpm upload-assets && pnpm import && pnpm validate"
+  },
+  "dependencies": {
+    "@sanity/client": "^6.22.5",
+    "@sanity/image-url": "^1.1.0",
+    "@portabletext/to-html": "^2.0.13",
+    "playwright": "^1.48.0",
+    "cheerio": "^1.0.0",
+    "turndown": "^7.2.0",
+    "jsdom": "^25.0.1",
+    "dotenv": "^16.4.5",
+    "p-queue": "^8.0.1",
+    "fs-extra": "^11.2.0",
+    "csv-writer": "^1.6.0",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.7",
+    "@types/turndown": "^5.0.5",
+    "@types/fs-extra": "^11.0.4",
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.3"
+  }
+}

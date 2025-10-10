@@ -89,6 +89,99 @@ export default defineType({
       hidden: ({ document }) => !Boolean(document?.useTemplate),
       description: "Call-to-action for joining the regional community",
     }),
+
+    // Team Members Section
+    defineField({
+      name: "teamGrid",
+      title: "Team Members Grid",
+      type: "object",
+      group: "template",
+      hidden: ({ document }) => !Boolean(document?.useTemplate),
+      description: "Display team members for this regional community",
+      fields: [
+        {
+          name: "mode",
+          title: "Content Mode",
+          type: "string",
+          options: {
+            list: [
+              { title: "Manual Selection", value: "manual" },
+              { title: "Dynamic - From Community Members", value: "dynamic" },
+            ],
+            layout: "radio",
+          },
+          initialValue: "dynamic",
+        },
+        {
+          name: "manualMembers",
+          title: "Manual Member Selection",
+          type: "array",
+          of: [
+            {
+              type: "reference",
+              to: [{ type: "author" }],
+            },
+          ],
+          hidden: ({ parent }) => parent?.mode !== "manual",
+          description: "Manually select team members to display",
+        },
+        {
+          name: "gridColumns",
+          title: "Grid Columns",
+          type: "string",
+          options: {
+            list: [
+              { title: "2 Columns", value: "grid-cols-2" },
+              { title: "3 Columns", value: "grid-cols-3" },
+              { title: "4 Columns", value: "grid-cols-4" },
+              { title: "5 Columns", value: "grid-cols-5" },
+            ],
+            layout: "radio",
+          },
+          initialValue: "grid-cols-4",
+        },
+        {
+          name: "showTitle",
+          title: "Show Section Title",
+          type: "boolean",
+          initialValue: true,
+        },
+        {
+          name: "title",
+          title: "Section Title",
+          type: "string",
+          initialValue: "Our Team",
+          hidden: ({ parent }) => !Boolean(parent?.showTitle),
+        },
+        {
+          name: "showDescription",
+          title: "Show Description",
+          type: "boolean",
+          initialValue: false,
+        },
+        {
+          name: "description",
+          title: "Description",
+          type: "styled-block-content",
+          hidden: ({ parent }) => !Boolean(parent?.showDescription),
+        },
+        {
+          name: "displayRole",
+          title: "Display Role",
+          type: "boolean",
+          initialValue: true,
+          description: "Show member's role in the community",
+        },
+        {
+          name: "displayAffiliation",
+          title: "Display Affiliation",
+          type: "boolean",
+          initialValue: true,
+          description: "Show member's organizational affiliation",
+        },
+      ],
+    }),
+
     // Dynamic Grid Configurations
     defineField({
       name: "agendasGrid",
@@ -423,6 +516,7 @@ export default defineType({
         { type: "section-header" },
         { type: "split-row" },
         { type: "grid-row" },
+        { type: "team-grid" },
         { type: "carousel-1" },
         { type: "carousel-2" },
         { type: "lived-experiences-carousel" },
@@ -448,6 +542,7 @@ export default defineType({
                 "section-header",
                 "split-row",
                 "grid-row",
+                "team-grid",
                 "timeline-row",
                 "cta-1",
                 "logo-cloud-1",

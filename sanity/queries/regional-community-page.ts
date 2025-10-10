@@ -17,6 +17,7 @@ import { allPostsQuery } from "./all-posts";
 import { manualContentInsertQuery } from "./inserts/manual-content-insert";
 import { dynamicContentInsertQuery } from "./inserts/dynamic-content-insert";
 import { separatorBlockQuery } from "./inserts/separator-block";
+import { teamGridQuery } from "./team-grid";
 
 export const REGIONAL_COMMUNITY_PAGE_QUERY = groq`
   *[_type == "regionalCommunityPage" && slug.current == $slug && language == $language][0]{
@@ -52,6 +53,43 @@ export const REGIONAL_COMMUNITY_PAGE_QUERY = groq`
     whyJoinCTA {
       ${cta1Query}
     },
+    teamGrid {
+      mode,
+      manualMembers[]->{
+        _id,
+        name,
+        slug,
+        image {
+          asset->{
+            _id,
+            url,
+            metadata {
+              lqip,
+              dimensions {
+                width,
+                height
+              }
+            }
+          },
+          alt
+        },
+        organizationalAffiliation,
+        communityMemberships[] {
+          community->{
+            _id,
+            name
+          },
+          role
+        }
+      },
+      gridColumns,
+      showTitle,
+      title,
+      showDescription,
+      description,
+      displayRole,
+      displayAffiliation
+    },
     reportsGrid,
     newsGrid,
     caseStudiesGrid,
@@ -68,6 +106,7 @@ export const REGIONAL_COMMUNITY_PAGE_QUERY = groq`
       ${sectionHeaderQuery},
       ${splitRowQuery},
       ${gridRowQuery},
+      ${teamGridQuery},
       ${carousel1Query},
       ${carousel2Query},
       ${livedExperiencesCarouselBlockQuery},

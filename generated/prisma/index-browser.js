@@ -223,7 +223,8 @@ exports.Prisma.RecentWorkScalarFieldEnum = {
 
 exports.Prisma.DownloadEventScalarFieldEnum = {
   id: 'id',
-  reportId: 'reportId',
+  contentType: 'contentType',
+  contentId: 'contentId',
   fileLanguage: 'fileLanguage',
   userId: 'userId',
   sessionId: 'sessionId',
@@ -234,8 +235,9 @@ exports.Prisma.DownloadEventScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
-exports.Prisma.ReportMetadataScalarFieldEnum = {
+exports.Prisma.ContentMetadataScalarFieldEnum = {
   id: 'id',
+  contentType: 'contentType',
   sanityId: 'sanityId',
   downloadCount: 'downloadCount',
   lastDownloadedAt: 'lastDownloadedAt',
@@ -329,6 +331,11 @@ exports.SpecialCommunityName = exports.$Enums.SpecialCommunityName = {
   FARMER_AND_FISHER: 'FARMER_AND_FISHER'
 };
 
+exports.ContentType = exports.$Enums.ContentType = {
+  REPORT: 'REPORT',
+  AGENDA: 'AGENDA'
+};
+
 exports.Prisma.ModelName = {
   Account: 'Account',
   Session: 'Session',
@@ -338,7 +345,7 @@ exports.Prisma.ModelName = {
   Content: 'Content',
   RecentWork: 'RecentWork',
   DownloadEvent: 'DownloadEvent',
-  ReportMetadata: 'ReportMetadata'
+  ContentMetadata: 'ContentMetadata'
 };
 
 /**

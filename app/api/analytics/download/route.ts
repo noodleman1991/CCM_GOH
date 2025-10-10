@@ -124,17 +124,15 @@ export async function GET(request: NextRequest) {
                 startDate.setDate(now.getDate() - 30);
         }
 
-        // Build where clause
-        const whereClause: any = {
+        // Build where clause for generalized DownloadEvent
+        const whereClause = {
+            contentType: 'REPORT' as const,
             timestamp: {
                 gte: startDate,
                 lte: now,
             },
+            ...(reportId && { contentId: reportId }),
         };
-
-        if (reportId) {
-            whereClause.reportId = reportId;
-        }
 
         // Get download statistics
         const [totalDownloads, uniqueUsers, downloadsByLanguage, downloadsByDay] = await Promise.all([
@@ -164,12 +162,12 @@ export async function GET(request: NextRequest) {
                 },
             }),
 
-            // Downloads by day (simplified - you might want to use raw SQL for better date grouping)
+            // Downloads by day
             prisma.downloadEvent.findMany({
                 where: whereClause,
                 select: {
                     timestamp: true,
-                    reportId: true,
+                    contentId: true,
                 },
                 orderBy: {
                     timestamp: 'asc',

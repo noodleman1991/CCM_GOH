@@ -4,6 +4,7 @@ import Hero2 from "@/components/blocks/hero/hero-2";
 import SectionHeader from "@/components/blocks/section-header";
 import SplitRow from "@/components/blocks/split/split-row";
 import GridRow from "@/components/blocks/grid/grid-row";
+import TeamGrid from "@/components/blocks/grid/team-grid";
 import Carousel1 from "@/components/blocks/carousel/carousel-1";
 import Carousel2 from "@/components/blocks/carousel/carousel-2";
 import LivedExperiencesCarousel from "@/components/blocks/carousel/lived-experiences-carousel";
@@ -29,20 +30,16 @@ interface BlocksProps {
     userId?: string;
 }
 
-const componentMap: {
-    [K in Block["_type"]]: React.ComponentType<Extract<Block, { _type: K }> & {
-        locale?: string;
-        isRTL?: boolean;
-        userId?: string;
-    }>;
-} = {
+const componentMap: Record<string, React.ComponentType<any>> = {
     "hero-1": Hero1,
     "hero-2": Hero2,
     "section-header": SectionHeader,
     "split-row": SplitRow,
     "grid-row": GridRow,
+    "team-grid": TeamGrid,
     "carousel-1": Carousel1,
     "carousel-2": Carousel2,
+    "lived-experiences-carousel": LivedExperiencesCarousel,
     "timeline-row": TimelineRow,
     "cta-1": Cta1,
     "logo-cloud-1": LogoCloud1,
@@ -51,7 +48,7 @@ const componentMap: {
     "all-posts": AllPosts,
 };
 
-export default function Blocks({ blocks, locale, translations, userId }: BlocksProps) {
+export default function Blocks({ blocks, locale, userId }: BlocksProps) {
     const rtl = isRTL(locale);
 
     return (

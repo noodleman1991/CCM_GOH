@@ -1,4 +1,4 @@
-import { defineField, defineType } from "sanity";
+ import { defineField, defineType } from "sanity";
 import { Quote } from "lucide-react";
 
 export default defineType({

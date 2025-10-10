@@ -1,0 +1,50 @@
+[
+  {
+    "file": "organizations.ndjson",
+    "total": 22,
+    "succeeded": 22,
+    "failed": 0,
+    "skipped": 0,
+    "errors": []
+  },
+  {
+    "file": "regional-communities.ndjson",
+    "total": 7,
+    "succeeded": 7,
+    "failed": 0,
+    "skipped": 0,
+    "errors": []
+  },
+  {
+    "file": "authors.ndjson",
+    "total": 12,
+    "succeeded": 12,
+    "failed": 0,
+    "skipped": 0,
+    "errors": []
+  },
+  {
+    "file": "agendas.ndjson",
+    "total": 24,
+    "succeeded": 24,
+    "failed": 0,
+    "skipped": 0,
+    "errors": []
+  },
+  {
+    "file": "homepage.ndjson",
+    "total": 1,
+    "succeeded": 1,
+    "failed": 0,
+    "skipped": 0,
+    "errors": []
+  },
+  {
+    "file": "regional-community-pages.ndjson",
+    "total": 7,
+    "succeeded": 7,
+    "failed": 0,
+    "skipped": 0,
+    "errors": []
+  }
+]

@@ -1,14 +1,21 @@
 'use client'
 
 import { useState, useCallback } from 'react';
-import { ReportFile, Report } from '@/types/report';
+import type { ReportFile, Report } from '@/types/report';
+import type { AgendaFile, Agenda } from '@/types/agenda';
 import { downloadFile, validateReport } from '@/lib/report-utils';
+
+// Generic file type that works for both Report and Agenda
+type DownloadableFile = ReportFile | AgendaFile;
+
+// Generic content type that works for both Report and Agenda
+type DownloadableContent = Report | Agenda;
 
 interface UseDownloadTrackingOptions {
     userId?: string;
-    onDownloadStart?: (reportId: string, language: string) => void;
-    onDownloadComplete?: (reportId: string, language: string) => void;
-    onDownloadError?: (error: Error, reportId: string, language: string) => void;
+    onDownloadStart?: (contentId: string, language: string) => void;
+    onDownloadComplete?: (contentId: string, language: string) => void;
+    onDownloadError?: (error: Error, contentId: string, language: string) => void;
 }
 
 interface DownloadState {
@@ -27,20 +34,20 @@ export function useDownloadTracking(options: UseDownloadTrackingOptions = {}) {
     const { userId, onDownloadStart, onDownloadComplete, onDownloadError } = options;
 
     const download = useCallback(async (
-        file: ReportFile,
-        report: Report
+        file: DownloadableFile,
+        content: DownloadableContent
     ): Promise<void> => {
         // Validate inputs
-        if (!report || !report._id) {
-            const error = new Error('Invalid report data: missing report ID');
-            const reportId = report?._id || 'unknown';
-            onDownloadError?.(error, reportId, file.language);
+        if (!content || !content._id) {
+            const error = new Error('Invalid content data: missing content ID');
+            const contentId = content?._id || 'unknown';
+            onDownloadError?.(error, contentId, file.language);
             throw error;
         }
 
         if (!file.file?.asset?.url) {
             const error = new Error('No download URL available for this file');
-            onDownloadError?.(error, report._id, file.language);
+            onDownloadError?.(error, content._id, file.language);
             throw error;
         }
 
@@ -50,7 +57,7 @@ export function useDownloadTracking(options: UseDownloadTrackingOptions = {}) {
         //     throw error;
         // } //todo: !!uncomment!!
 
-        const fileKey = `${report._id}-${file.language}`;
+        const fileKey = `${content._id}-${file.language}`;
 
         // Update state to show download is starting
         setState(prev => ({
@@ -60,11 +67,11 @@ export function useDownloadTracking(options: UseDownloadTrackingOptions = {}) {
             error: null,
         }));
 
-        onDownloadStart?.(report._id, file.language);
+        onDownloadStart?.(content._id, file.language);
 
         try {
-            await downloadFile(file, report._id, userId);
-            onDownloadComplete?.(report._id, file.language);
+            await downloadFile(file, content._id, userId);
+            onDownloadComplete?.(content._id, file.language);
 
         } catch (error) {
             const downloadError = error instanceof Error
@@ -76,7 +83,7 @@ export function useDownloadTracking(options: UseDownloadTrackingOptions = {}) {
                 error: downloadError.message,
             }));
 
-            onDownloadError?.(downloadError, report._id, file.language);
+            onDownloadError?.(downloadError, content._id, file.language);
             throw downloadError;
 
         } finally {
@@ -94,8 +101,8 @@ export function useDownloadTracking(options: UseDownloadTrackingOptions = {}) {
         }
     }, [userId, onDownloadStart, onDownloadComplete, onDownloadError]);
 
-    const isFileDownloading = useCallback((reportId: string, language: string): boolean => {
-        const fileKey = `${reportId}-${language}`;
+    const isFileDownloading = useCallback((contentId: string, language: string): boolean => {
+        const fileKey = `${contentId}-${language}`;
         return state.downloadingFiles.has(fileKey);
     }, [state.downloadingFiles]);
 

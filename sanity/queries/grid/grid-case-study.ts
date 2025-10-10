@@ -97,6 +97,7 @@ const CASE_STUDY_DETAIL_PROJECTION_FRAGMENT = `
 // ===== GRID/BLOCK QUERIES =====
 
 // Fixed gridCaseStudyQuery - proper filtering syntax
+// @sanity-typegen-ignore
 export const gridCaseStudyQuery = groq`
   _type == "grid-case-study" => {
     _type,

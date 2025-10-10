@@ -1,0 +1,856 @@
+[
+  {
+    "_type": "regionalCommunityPage",
+    "_id": "regional-community-page-central-and-southern-asia",
+    "title": "Central and Southern Asia Regional Community",
+    "slug": {
+      "_type": "slug",
+      "current": "central-and-southern-asia"
+    },
+    "regionalCommunity": {
+      "_type": "reference",
+      "_ref": "regional-community-central-and-southern-asia"
+    },
+    "language": "en",
+    "useTemplate": true,
+    "welcomeHero": {
+      "_type": "hero-1",
+      "title": "Welcome to the Central and Southern Asia regional community of practice",
+      "body": [
+        {
+          "_type": "block",
+          "_key": "block-rwzmsygt4",
+          "style": "normal",
+          "children": [
+            {
+              "_type": "span",
+              "text": "This is a connected, supported and engaged space that brings together the latest Connecting Climate Minds project outputs, events, news, resources and people working in climate change and mental health in the region.",
+              "marks": []
+            }
+          ],
+          "markDefs": []
+        }
+      ]
+    },
+    "whyJoinCTA": {
+      "_type": "cta-1",
+      "title": "Why Join Our Regional Community?",
+      "body": [
+        {
+          "_type": "block",
+          "_key": "block-7gkg4ovyk",
+          "style": "normal",
+          "listItem": "bullet",
+          "children": [
+            {
+              "_type": "span",
+              "text": "Stay up to date with the latest climate change and mental health resources in Central and Southern Asia.",
+              "marks": []
+            }
+          ],
+          "markDefs": []
+        },
+        {
+          "_type": "block",
+          "_key": "block-ebq7rsk6z",
+          "style": "normal",
+          "listItem": "bullet",
+          "children": [
+            {
+              "_type": "span",
+              "text": "Connect with other people across disciplines, sectors and countries interested in changing the landscape of climate change and mental health research and policy\n.",
+              "marks": []
+            }
+          ],
+          "markDefs": []
+        },
+        {
+          "_type": "block",
+          "_key": "block-un6c1tw5q",
+          "style": "normal",
+          "listItem": "bullet",
+          "children": [
+            {
+              "_type": "span",
+              "text": "Find opportunities to get involved: whether you are a researcher, policymaker, health professional, teacher, community organiser - your skills and expertise are needed.",
+              "marks": []
+            }
+          ],
+          "markDefs": []
+        }
+      ]
+    },
+    "teamGrid": {
+      "mode": "dynamic",
+      "gridColumns": "grid-cols-4",
+      "showTitle": true,
+      "title": "Our Team",
+      "showDescription": false,
+      "displayRole": true,
+      "displayAffiliation": true
+    },
+    "agendasGrid": {
+      "mode": "dynamic-featured",
+      "gridColumns": "grid-cols-3",
+      "maxItems": 6,
+      "showTitle": true,
+      "title": "Agendas",
+      "showDescription": false
+    },
+    "newsGrid": {
+      "mode": "dynamic-recent",
+      "gridColumns": "grid-cols-3",
+      "maxItems": 6,
+      "showTitle": true,
+      "title": "News & Updates",
+      "showDescription": false
+    },
+    "caseStudiesGrid": {
+      "mode": "dynamic-featured",
+      "gridColumns": "grid-cols-3",
+      "maxItems": 6,
+      "showTitle": true,
+      "title": "Case Studies",
+      "showDescription": false
+    },
+    "livedExperiencesCarousel": {
+      "mode": "dynamic-featured",
+      "maxItems": 10,
+      "showTitle": true,
+      "title": "Community Voices",
+      "showDescription": false
+    }
+  },
+  {
+    "_type": "regionalCommunityPage",
+    "_id": "regional-community-page-eastern-and-south-eastern-asia",
+    "title": "Eastern and South Eastern Asia Regional Community",
+    "slug": {
+      "_type": "slug",
+      "current": "eastern-and-south-eastern-asia"
+    },
+    "regionalCommunity": {
+      "_type": "reference",
+      "_ref": "regional-community-eastern-and-south-eastern-asia"
+    },
+    "language": "en",
+    "useTemplate": true,
+    "welcomeHero": {
+      "_type": "hero-1",
+      "title": "Welcome to the Eastern and South-Eastern Asia regional community of practice",
+      "body": [
+        {
+          "_type": "block",
+          "_key": "block-sdzrkhdwk",
+          "style": "normal",
+          "children": [
+            {
+              "_type": "span",
+              "text": "This is a connected, supported and engaged space that brings together the latest Connecting Climate Minds project outputs, events, news, resources and people working in climate change and mental health in the region.",
+              "marks": []
+            }
+          ],
+          "markDefs": []
+        }
+      ]
+    },
+    "whyJoinCTA": {
+      "_type": "cta-1",
+      "title": "Why Join Our Regional Community?",
+      "body": [
+        {
+          "_type": "block",
+          "_key": "block-jnqgu6iet",
+          "style": "normal",
+          "listItem": "bullet",
+          "children": [
+            {
+              "_type": "span",
+              "text": "Stay up to date with the latest climate change and mental health resources in Eastern and South-Eastern Asia.",
+              "marks": []
+            }
+          ],
+          "markDefs": []
+        },
+        {
+          "_type": "block",
+          "_key": "block-u4am25xcr",
+          "style": "normal",
+          "listItem": "bullet",
+          "children": [
+            {
+              "_type": "span",
+              "text": "Connect with other people across disciplines, sectors and countries interested in changing the landscape of climate change and mental health research and policy\n.",
+              "marks": []
+            }
+          ],
+          "markDefs": []
+        },
+        {
+          "_type": "block",
+          "_key": "block-zrfr7mty1",
+          "style": "normal",
+          "listItem": "bullet",
+          "children": [
+            {
+              "_type": "span",
+              "text": "Find opportunities to get involved: whether you are a researcher, policymaker, health professional, teacher, community organiser - your skills and expertise are needed.",
+              "marks": []
+            }
+          ],
+          "markDefs": []
+        }
+      ]
+    },
+    "teamGrid": {
+      "mode": "dynamic",
+      "gridColumns": "grid-cols-4",
+      "showTitle": true,
+      "title": "Our Team",
+      "showDescription": false,
+      "displayRole": true,
+      "displayAffiliation": true
+    },
+    "agendasGrid": {
+      "mode": "dynamic-featured",
+      "gridColumns": "grid-cols-3",
+      "maxItems": 6,
+      "showTitle": true,
+      "title": "Agendas",
+      "showDescription": false
+    },
+    "newsGrid": {
+      "mode": "dynamic-recent",
+      "gridColumns": "grid-cols-3",
+      "maxItems": 6,
+      "showTitle": true,
+      "title": "News & Updates",
+      "showDescription": false
+    },
+    "caseStudiesGrid": {
+      "mode": "dynamic-featured",
+      "gridColumns": "grid-cols-3",
+      "maxItems": 6,
+      "showTitle": true,
+      "title": "Case Studies",
+      "showDescription": false
+    },
+    "livedExperiencesCarousel": {
+      "mode": "dynamic-featured",
+      "maxItems": 10,
+      "showTitle": true,
+      "title": "Community Voices",
+      "showDescription": false
+    }
+  },
+  {
+    "_type": "regionalCommunityPage",
+    "_id": "regional-community-page-europe-and-northern-america",
+    "title": "Europe and Northern America Regional Community",
+    "slug": {
+      "_type": "slug",
+      "current": "europe-and-northern-america"
+    },
+    "regionalCommunity": {
+      "_type": "reference",
+      "_ref": "regional-community-europe-and-northern-america"
+    },
+    "language": "en",
+    "useTemplate": true,
+    "welcomeHero": {
+      "_type": "hero-1",
+      "title": "Welcome to the Europe and Northern America regional community of practice",
+      "body": [
+        {
+          "_type": "block",
+          "_key": "block-dwulrjkn6",
+          "style": "normal",
+          "children": [
+            {
+              "_type": "span",
+              "text": "This is a connected, supported and engaged space that brings together the latest Connecting Climate Minds project outputs, events, news, resources and people working in climate change and mental health in the region.",
+              "marks": []
+            }
+          ],
+          "markDefs": []
+        }
+      ]
+    },
+    "whyJoinCTA": {
+      "_type": "cta-1",
+      "title": "Why Join Our Regional Community?",
+      "body": [
+        {
+          "_type": "block",
+          "_key": "block-nmwvn8c2j",
+          "style": "normal",
+          "listItem": "bullet",
+          "children": [
+            {
+              "_type": "span",
+              "text": "Stay up to date with the latest climate change and mental health resources in Europe and Northern America.",
+              "marks": []
+            }
+          ],
+          "markDefs": []
+        },
+        {
+          "_type": "block",
+          "_key": "block-kt0fx70v2",
+          "style": "normal",
+          "listItem": "bullet",
+          "children": [
+            {
+              "_type": "span",
+              "text": "Connect with other people across disciplines, sectors and countries interested in changing the landscape of climate change and mental health research and policy\n.",
+              "marks": []
+            }
+          ],
+          "markDefs": []
+        },
+        {
+          "_type": "block",
+          "_key": "block-vzjl0ht45",
+          "style": "normal",
+          "listItem": "bullet",
+          "children": [
+            {
+              "_type": "span",
+              "text": "Find opportunities to get involved: whether you are a researcher, policymaker, health professional, teacher, community organiser - your skills and expertise are needed.",
+              "marks": []
+            }
+          ],
+          "markDefs": []
+        }
+      ]
+    },
+    "teamGrid": {
+      "mode": "dynamic",
+      "gridColumns": "grid-cols-4",
+      "showTitle": true,
+      "title": "Our Team",
+      "showDescription": false,
+      "displayRole": true,
+      "displayAffiliation": true
+    },
+    "agendasGrid": {
+      "mode": "dynamic-featured",
+      "gridColumns": "grid-cols-3",
+      "maxItems": 6,
+      "showTitle": true,
+      "title": "Agendas",
+      "showDescription": false
+    },
+    "newsGrid": {
+      "mode": "dynamic-recent",
+      "gridColumns": "grid-cols-3",
+      "maxItems": 6,
+      "showTitle": true,
+      "title": "News & Updates",
+      "showDescription": false
+    },
+    "caseStudiesGrid": {
+      "mode": "dynamic-featured",
+      "gridColumns": "grid-cols-3",
+      "maxItems": 6,
+      "showTitle": true,
+      "title": "Case Studies",
+      "showDescription": false
+    },
+    "livedExperiencesCarousel": {
+      "mode": "dynamic-featured",
+      "maxItems": 10,
+      "showTitle": true,
+      "title": "Community Voices",
+      "showDescription": false
+    }
+  },
+  {
+    "_type": "regionalCommunityPage",
+    "_id": "regional-community-page-latin-america-and-the-caribbean",
+    "title": "Latin America and the Caribbean Regional Community",
+    "slug": {
+      "_type": "slug",
+      "current": "latin-america-and-the-caribbean"
+    },
+    "regionalCommunity": {
+      "_type": "reference",
+      "_ref": "regional-community-latin-america-and-the-caribbean"
+    },
+    "language": "en",
+    "useTemplate": true,
+    "welcomeHero": {
+      "_type": "hero-1",
+      "title": "Welcome to the Latin America and the Caribbean regional community of practice",
+      "body": [
+        {
+          "_type": "block",
+          "_key": "block-plflfuh82",
+          "style": "normal",
+          "children": [
+            {
+              "_type": "span",
+              "text": "This is a connected, supported and engaged space that brings together the latest Connecting Climate Minds project outputs, events, news, resources and people working in climate change and mental health in the region.",
+              "marks": []
+            }
+          ],
+          "markDefs": []
+        }
+      ]
+    },
+    "whyJoinCTA": {
+      "_type": "cta-1",
+      "title": "Why Join Our Regional Community?",
+      "body": [
+        {
+          "_type": "block",
+          "_key": "block-c5eyzhd1l",
+          "style": "normal",
+          "listItem": "bullet",
+          "children": [
+            {
+              "_type": "span",
+              "text": "Stay up to date with the latest climate change and mental health resources in Latin America and the Caribbean.",
+              "marks": []
+            }
+          ],
+          "markDefs": []
+        },
+        {
+          "_type": "block",
+          "_key": "block-ube3rfnen",
+          "style": "normal",
+          "listItem": "bullet",
+          "children": [
+            {
+              "_type": "span",
+              "text": "Connect with other people across disciplines, sectors and countries interested in changing the landscape of climate change and mental health research and policy\n.",
+              "marks": []
+            }
+          ],
+          "markDefs": []
+        },
+        {
+          "_type": "block",
+          "_key": "block-j39iecdeq",
+          "style": "normal",
+          "listItem": "bullet",
+          "children": [
+            {
+              "_type": "span",
+              "text": "Find opportunities to get involved: whether you are a researcher, policymaker, health professional, teacher, community organiser - your skills and expertise are needed.",
+              "marks": []
+            }
+          ],
+          "markDefs": []
+        }
+      ]
+    },
+    "teamGrid": {
+      "mode": "dynamic",
+      "gridColumns": "grid-cols-4",
+      "showTitle": true,
+      "title": "Our Team",
+      "showDescription": false,
+      "displayRole": true,
+      "displayAffiliation": true
+    },
+    "agendasGrid": {
+      "mode": "dynamic-featured",
+      "gridColumns": "grid-cols-3",
+      "maxItems": 6,
+      "showTitle": true,
+      "title": "Agendas",
+      "showDescription": false
+    },
+    "newsGrid": {
+      "mode": "dynamic-recent",
+      "gridColumns": "grid-cols-3",
+      "maxItems": 6,
+      "showTitle": true,
+      "title": "News & Updates",
+      "showDescription": false
+    },
+    "caseStudiesGrid": {
+      "mode": "dynamic-featured",
+      "gridColumns": "grid-cols-3",
+      "maxItems": 6,
+      "showTitle": true,
+      "title": "Case Studies",
+      "showDescription": false
+    },
+    "livedExperiencesCarousel": {
+      "mode": "dynamic-featured",
+      "maxItems": 10,
+      "showTitle": true,
+      "title": "Community Voices",
+      "showDescription": false
+    }
+  },
+  {
+    "_type": "regionalCommunityPage",
+    "_id": "regional-community-page-northern-africa-and-western-asia",
+    "title": "Northern Africa and Western Asia Regional Community",
+    "slug": {
+      "_type": "slug",
+      "current": "northern-africa-and-western-asia"
+    },
+    "regionalCommunity": {
+      "_type": "reference",
+      "_ref": "regional-community-northern-africa-and-western-asia"
+    },
+    "language": "en",
+    "useTemplate": true,
+    "welcomeHero": {
+      "_type": "hero-1",
+      "title": "Welcome to the Northern Africa and Western Asia regional community of practice",
+      "body": [
+        {
+          "_type": "block",
+          "_key": "block-ya1br5u43",
+          "style": "normal",
+          "children": [
+            {
+              "_type": "span",
+              "text": "This is a connected, supported and engaged space that brings together the latest Connecting Climate Minds project outputs, events, news, resources and people working in climate change and mental health in the region.",
+              "marks": []
+            }
+          ],
+          "markDefs": []
+        }
+      ]
+    },
+    "whyJoinCTA": {
+      "_type": "cta-1",
+      "title": "Why Join Our Regional Community?",
+      "body": [
+        {
+          "_type": "block",
+          "_key": "block-qtymxktcx",
+          "style": "normal",
+          "listItem": "bullet",
+          "children": [
+            {
+              "_type": "span",
+              "text": "Stay up to date with the latest climate change and mental health resources in Northern Africa and Western Asia.",
+              "marks": []
+            }
+          ],
+          "markDefs": []
+        },
+        {
+          "_type": "block",
+          "_key": "block-6fyqqubso",
+          "style": "normal",
+          "listItem": "bullet",
+          "children": [
+            {
+              "_type": "span",
+              "text": "Connect with other people across disciplines, sectors and countries interested in changing the landscape of climate change and mental health research and policy\n.",
+              "marks": []
+            }
+          ],
+          "markDefs": []
+        },
+        {
+          "_type": "block",
+          "_key": "block-04s2avd9m",
+          "style": "normal",
+          "listItem": "bullet",
+          "children": [
+            {
+              "_type": "span",
+              "text": "Find opportunities to get involved: whether you are a researcher, policymaker, health professional, teacher, community organiser - your skills and expertise are needed.",
+              "marks": []
+            }
+          ],
+          "markDefs": []
+        }
+      ]
+    },
+    "teamGrid": {
+      "mode": "dynamic",
+      "gridColumns": "grid-cols-4",
+      "showTitle": true,
+      "title": "Our Team",
+      "showDescription": false,
+      "displayRole": true,
+      "displayAffiliation": true
+    },
+    "agendasGrid": {
+      "mode": "dynamic-featured",
+      "gridColumns": "grid-cols-3",
+      "maxItems": 6,
+      "showTitle": true,
+      "title": "Agendas",
+      "showDescription": false
+    },
+    "newsGrid": {
+      "mode": "dynamic-recent",
+      "gridColumns": "grid-cols-3",
+      "maxItems": 6,
+      "showTitle": true,
+      "title": "News & Updates",
+      "showDescription": false
+    },
+    "caseStudiesGrid": {
+      "mode": "dynamic-featured",
+      "gridColumns": "grid-cols-3",
+      "maxItems": 6,
+      "showTitle": true,
+      "title": "Case Studies",
+      "showDescription": false
+    },
+    "livedExperiencesCarousel": {
+      "mode": "dynamic-featured",
+      "maxItems": 10,
+      "showTitle": true,
+      "title": "Community Voices",
+      "showDescription": false
+    }
+  },
+  {
+    "_type": "regionalCommunityPage",
+    "_id": "regional-community-page-oceania",
+    "title": "Oceania Regional Community",
+    "slug": {
+      "_type": "slug",
+      "current": "oceania"
+    },
+    "regionalCommunity": {
+      "_type": "reference",
+      "_ref": "regional-community-oceania"
+    },
+    "language": "en",
+    "useTemplate": true,
+    "welcomeHero": {
+      "_type": "hero-1",
+      "title": "Welcome to the Oceania regional community of practice",
+      "body": [
+        {
+          "_type": "block",
+          "_key": "block-x8f6leuil",
+          "style": "normal",
+          "children": [
+            {
+              "_type": "span",
+              "text": "This is a connected, supported and engaged space that brings together the latest Connecting Climate Minds project outputs, events, news, resources and people working in climate change and mental health in the region.",
+              "marks": []
+            }
+          ],
+          "markDefs": []
+        }
+      ]
+    },
+    "whyJoinCTA": {
+      "_type": "cta-1",
+      "title": "Why Join Our Regional Community?",
+      "body": [
+        {
+          "_type": "block",
+          "_key": "block-0jd7hv3ms",
+          "style": "normal",
+          "listItem": "bullet",
+          "children": [
+            {
+              "_type": "span",
+              "text": "Stay up to date with the latest climate change and mental health resources in Oceania.",
+              "marks": []
+            }
+          ],
+          "markDefs": []
+        },
+        {
+          "_type": "block",
+          "_key": "block-afksx7b4x",
+          "style": "normal",
+          "listItem": "bullet",
+          "children": [
+            {
+              "_type": "span",
+              "text": "Connect with other people across disciplines, sectors and countries interested in changing the landscape of climate change and mental health research and policy\n.",
+              "marks": []
+            }
+          ],
+          "markDefs": []
+        },
+        {
+          "_type": "block",
+          "_key": "block-ox3vq06se",
+          "style": "normal",
+          "listItem": "bullet",
+          "children": [
+            {
+              "_type": "span",
+              "text": "Find opportunities to get involved: whether you are a researcher, policymaker, health professional, teacher, community organiser - your skills and expertise are needed.",
+              "marks": []
+            }
+          ],
+          "markDefs": []
+        }
+      ]
+    },
+    "teamGrid": {
+      "mode": "dynamic",
+      "gridColumns": "grid-cols-4",
+      "showTitle": true,
+      "title": "Our Team",
+      "showDescription": false,
+      "displayRole": true,
+      "displayAffiliation": true
+    },
+    "agendasGrid": {
+      "mode": "dynamic-featured",
+      "gridColumns": "grid-cols-3",
+      "maxItems": 6,
+      "showTitle": true,
+      "title": "Agendas",
+      "showDescription": false
+    },
+    "newsGrid": {
+      "mode": "dynamic-recent",
+      "gridColumns": "grid-cols-3",
+      "maxItems": 6,
+      "showTitle": true,
+      "title": "News & Updates",
+      "showDescription": false
+    },
+    "caseStudiesGrid": {
+      "mode": "dynamic-featured",
+      "gridColumns": "grid-cols-3",
+      "maxItems": 6,
+      "showTitle": true,
+      "title": "Case Studies",
+      "showDescription": false
+    },
+    "livedExperiencesCarousel": {
+      "mode": "dynamic-featured",
+      "maxItems": 10,
+      "showTitle": true,
+      "title": "Community Voices",
+      "showDescription": false
+    }
+  },
+  {
+    "_type": "regionalCommunityPage",
+    "_id": "regional-community-page-sub-saharan-africa",
+    "title": "Sub-Saharan Africa Regional Community",
+    "slug": {
+      "_type": "slug",
+      "current": "sub-saharan-africa"
+    },
+    "regionalCommunity": {
+      "_type": "reference",
+      "_ref": "regional-community-sub-saharan-africa"
+    },
+    "language": "en",
+    "useTemplate": true,
+    "welcomeHero": {
+      "_type": "hero-1",
+      "title": "Welcome to the Sub-Saharan Africa regional community of practice",
+      "body": [
+        {
+          "_type": "block",
+          "_key": "block-zulpikcw3",
+          "style": "normal",
+          "children": [
+            {
+              "_type": "span",
+              "text": "This is a connected, supported and engaged space that brings together the latest Connecting Climate Minds project outputs, events, news, resources and people working in climate change and mental health in the region.",
+              "marks": []
+            }
+          ],
+          "markDefs": []
+        }
+      ]
+    },
+    "whyJoinCTA": {
+      "_type": "cta-1",
+      "title": "Why Join Our Regional Community?",
+      "body": [
+        {
+          "_type": "block",
+          "_key": "block-fzezr1spm",
+          "style": "normal",
+          "listItem": "bullet",
+          "children": [
+            {
+              "_type": "span",
+              "text": "Stay up to date with the latest climate change and mental health resources in Sub-Saharan Africa.",
+              "marks": []
+            }
+          ],
+          "markDefs": []
+        },
+        {
+          "_type": "block",
+          "_key": "block-fluh1k544",
+          "style": "normal",
+          "listItem": "bullet",
+          "children": [
+            {
+              "_type": "span",
+              "text": "Connect with other people across disciplines, sectors and countries interested in changing the landscape of climate change and mental health research and policy\n.",
+              "marks": []
+            }
+          ],
+          "markDefs": []
+        },
+        {
+          "_type": "block",
+          "_key": "block-r5zpqdgqm",
+          "style": "normal",
+          "listItem": "bullet",
+          "children": [
+            {
+              "_type": "span",
+              "text": "Find opportunities to get involved: whether you are a researcher, policymaker, health professional, teacher, community organiser - your skills and expertise are needed.",
+              "marks": []
+            }
+          ],
+          "markDefs": []
+        }
+      ]
+    },
+    "teamGrid": {
+      "mode": "dynamic",
+      "gridColumns": "grid-cols-4",
+      "showTitle": true,
+      "title": "Our Team",
+      "showDescription": false,
+      "displayRole": true,
+      "displayAffiliation": true
+    },
+    "agendasGrid": {
+      "mode": "dynamic-featured",
+      "gridColumns": "grid-cols-3",
+      "maxItems": 6,
+      "showTitle": true,
+      "title": "Agendas",
+      "showDescription": false
+    },
+    "newsGrid": {
+      "mode": "dynamic-recent",
+      "gridColumns": "grid-cols-3",
+      "maxItems": 6,
+      "showTitle": true,
+      "title": "News & Updates",
+      "showDescription": false
+    },
+    "caseStudiesGrid": {
+      "mode": "dynamic-featured",
+      "gridColumns": "grid-cols-3",
+      "maxItems": 6,
+      "showTitle": true,
+      "title": "Case Studies",
+      "showDescription": false
+    },
+    "livedExperiencesCarousel": {
+      "mode": "dynamic-featured",
+      "maxItems": 10,
+      "showTitle": true,
+      "title": "Community Voices",
+      "showDescription": false
+    }
+  }
+]

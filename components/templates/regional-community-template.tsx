@@ -1,6 +1,7 @@
 import React from 'react';
 import Blocks from '@/components/blocks/index';
-import { fetchRegionalCommunityReports } from '@/sanity/lib/fetch';
+import TeamGrid from '@/components/blocks/grid/team-grid';
+import { fetchRegionalCommunityAgendas } from '@/sanity/lib/fetch';
 import { fetchRegionalCommunityCaseStudiesBySlug } from '@/sanity/queries/regional-community-case-studies';
 import { fetchRegionalCommunityLivedExperiencesBySlug } from '@/sanity/queries/regional-community-lived-experiences';
 
@@ -35,6 +36,8 @@ interface RegionalCommunityTemplateProps {
   regionalCommunity: RegionalCommunity;
   templateConfiguration?: TemplateConfig;
   templateInserts?: any[];
+  teamGrid?: any;
+  teamMembers?: any[];
   locale: string;
   userId: string;
 }
@@ -43,6 +46,8 @@ export default async function RegionalCommunityTemplate({
   regionalCommunity,
   templateConfiguration,
   templateInserts = [],
+  teamGrid,
+  teamMembers,
   locale,
   userId
 }: RegionalCommunityTemplateProps) {
@@ -54,7 +59,7 @@ export default async function RegionalCommunityTemplate({
     caseStudiesData,
     livedExperiencesData
   ] = await Promise.all([
-    fetchRegionalCommunityReports({
+    fetchRegionalCommunityAgendas({
       slug: communitySlug,
       limit: templateConfiguration?.gridReportsConfig?.maxItems || 6
     }),
@@ -164,6 +169,16 @@ export default async function RegionalCommunityTemplate({
 
   return (
     <div className="regional-community-template">
+      {/* Team Grid Section - Rendered separately for better control */}
+      {teamGrid && (
+        <TeamGrid
+          teamGrid={teamGrid}
+          members={teamMembers}
+          regionalCommunityId={regionalCommunity._id}
+          locale={locale}
+        />
+      )}
+
       <Blocks
         blocks={allBlocks}
         locale={locale}
