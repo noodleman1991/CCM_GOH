@@ -30,7 +30,7 @@ export async function generateStaticParams() {
 // }
 
 export default async function PostPage(props: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string; locale: string }>;
 }) {
   const params = await props.params;
   const post = await fetchSanityPostBySlug(params);
@@ -62,7 +62,7 @@ export default async function PostPage(props: {
         <article className="max-w-3xl mx-auto">
           <Breadcrumbs links={links} />
           <PostHero {...post} />
-          {post.body && <PortableTextRenderer value={post.body} />}
+          {post.body && <PortableTextRenderer value={post.body} locale={params.locale} />}
         </article>
       </div>
     </section>

@@ -16,6 +16,7 @@ type SplitContent = Extract<
 
 interface SplitContentProps extends SplitContent {
   noGap?: boolean;
+  locale?: string;
 }
 
 export default function SplitContent({
@@ -26,6 +27,7 @@ export default function SplitContent({
   title,
   body,
   link,
+  locale = "en",
 }: SplitContentProps) {
   return (
     <div
@@ -51,7 +53,7 @@ export default function SplitContent({
             },
             title
           )}
-        {body && <PortableTextRenderer value={body} />}
+        {body && <PortableTextRenderer value={body} locale={locale} />}
         {link?.href && (
           <div className="flex flex-col">
             <Button

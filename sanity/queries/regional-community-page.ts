@@ -48,10 +48,114 @@ export const REGIONAL_COMMUNITY_PAGE_QUERY = groq`
 
     // Template Components
     welcomeHero {
-      ${hero1Query}
+      _type,
+      _key,
+      background{
+        ...,
+      },
+      tagLine,
+      title,
+      body[]{
+        ...,
+        _type == "image" => {
+          ...,
+          asset->{
+            _id,
+            url,
+            mimeType,
+            metadata {
+              lqip,
+              dimensions {
+                width,
+                height
+              }
+            }
+          }
+        }
+      },
+      image{
+        ...,
+        asset->{
+          _id,
+          url,
+          mimeType,
+          metadata {
+            lqip,
+            dimensions {
+              width,
+              height
+            }
+          }
+        },
+        alt
+      },
+      links[]{
+        title,
+        href,
+        target,
+        buttonVariant{
+          variant,
+          size,
+          stroke
+        }
+      },
+      padding,
+      imagePosition,
     },
     whyJoinCTA {
-      ${hero1Query}
+      _type,
+      _key,
+      background{
+        ...,
+      },
+      tagLine,
+      title,
+      body[]{
+        ...,
+        _type == "image" => {
+          ...,
+          asset->{
+            _id,
+            url,
+            mimeType,
+            metadata {
+              lqip,
+              dimensions {
+                width,
+                height
+              }
+            }
+          }
+        }
+      },
+      image{
+        ...,
+        asset->{
+          _id,
+          url,
+          mimeType,
+          metadata {
+            lqip,
+            dimensions {
+              width,
+              height
+            }
+          }
+        },
+        alt
+      },
+      links[]{
+        title,
+        href,
+        target,
+        buttonVariant{
+          variant,
+          size,
+          stroke
+        }
+      },
+      padding,
+      imagePosition,
     },
     teamGrid {
       mode,

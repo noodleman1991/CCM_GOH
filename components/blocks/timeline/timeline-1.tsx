@@ -11,6 +11,7 @@ type Timeline1 = NonNullable<NonNullable<TimelineRow["timelines"]>>[number];
 
 interface Timeline1Props extends Timeline1 {
   color?: ColorVariant;
+  locale?: string;
 }
 
 export default function Timeline1({
@@ -18,6 +19,7 @@ export default function Timeline1({
   title,
   tagLine,
   body,
+  locale = "en",
 }: Timeline1Props) {
   const ref = useRef(null);
   const isInView = useInView(ref);
@@ -92,7 +94,7 @@ export default function Timeline1({
               delay: 0.7,
             }}
           >
-            <PortableTextRenderer value={body} />
+            <PortableTextRenderer value={body} locale={locale} />
           </motion.div>
         )}
       </div>

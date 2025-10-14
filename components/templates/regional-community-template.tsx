@@ -148,6 +148,16 @@ export default async function RegionalCommunityTemplate({
     });
   }
 
+  // Debug whyJoinCTA vs welcomeHero
+  console.log('=== HERO COMPARISON DEBUG ===');
+  console.log('welcomeHero:', JSON.stringify(welcomeHero, null, 2));
+  console.log('whyJoinCTA:', JSON.stringify(whyJoinCTA, null, 2));
+  console.log('welcomeHero.title:', welcomeHero?.title);
+  console.log('welcomeHero.body:', welcomeHero?.body);
+  console.log('whyJoinCTA.title:', whyJoinCTA?.title);
+  console.log('whyJoinCTA.body:', whyJoinCTA?.body);
+  console.log('whyJoinCTA condition result:', !!(whyJoinCTA && (whyJoinCTA.title || whyJoinCTA.body)));
+
   // Add Why Join Hero Block if configured (now supports images!)
   if (whyJoinCTA && (whyJoinCTA.title || whyJoinCTA.body)) {
     templateBlocks.push({
@@ -262,6 +272,11 @@ export default async function RegionalCommunityTemplate({
       ...logoCloud,
     });
   }
+
+  // Final debug: show what blocks are about to be rendered
+  console.log('=== FINAL TEMPLATE BLOCKS ===');
+  console.log('Total blocks:', templateBlocks.length);
+  console.log('Block types and keys:', templateBlocks.map(b => ({ type: b._type, key: b._key })));
 
   return (
     <div className="regional-community-template">

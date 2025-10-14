@@ -16,12 +16,17 @@ type SplitInfoList = Extract<
 >;
 type SplitInfoItem = NonNullable<SplitInfoList["list"]>[number];
 
+interface SplitInfoItemProps extends SplitInfoItem {
+  locale?: string;
+}
+
 export default function SplitCardsItem({
   image,
   title,
   body,
   tags,
-}: SplitInfoItem) {
+  locale = "en",
+}: SplitInfoItemProps) {
   const ref = useRef(null);
   const isInView = useInView(ref, {
     amount: 1,
@@ -63,7 +68,7 @@ export default function SplitCardsItem({
             <div className="text-xl font-semibold leading-[1.1]">{title}</div>
           )}
         </div>
-        {body && <PortableTextRenderer value={body} />}
+        {body && <PortableTextRenderer value={body} locale={locale} />}
       </div>
       {tags && (
         <div

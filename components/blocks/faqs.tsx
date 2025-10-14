@@ -12,9 +12,11 @@ import { PAGE_QUERYResult } from "@/sanity.types";
 type FAQProps = Extract<
   NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number],
   { _type: "faqs" }
->;
+> & {
+  locale?: string;
+};
 
-export default function FAQs({ padding, colorVariant, faqs }: FAQProps) {
+export default function FAQs({ padding, colorVariant, faqs, locale = "en" }: FAQProps) {
   const color = stegaClean(colorVariant);
   return (
     <SectionContainer color={color} padding={padding}>
@@ -24,7 +26,7 @@ export default function FAQs({ padding, colorVariant, faqs }: FAQProps) {
             <AccordionItem key={faq.title} value={`item-${faq._id}`}>
               <AccordionTrigger>{faq.title}</AccordionTrigger>
               <AccordionContent>
-                <PortableTextRenderer value={faq.body || []} />
+                <PortableTextRenderer value={faq.body || []} locale={locale} />
               </AccordionContent>
             </AccordionItem>
           ))}
