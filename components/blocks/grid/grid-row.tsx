@@ -6,6 +6,7 @@ import GridCard from "./grid-card";
 import GridPost from "./grid-post";
 // import PricingCard from "./pricing-card";
 import GridReport from "./grid-report";
+import GridAgenda from "./grid-agenda";
 import GridCaseStudy from "./grid-case-study";
 import GridNews from "./grid-news";
 import GridLivedExperience from "./grid-lived-experience";
@@ -56,6 +57,7 @@ const componentMap: Record<string, React.ComponentType<any>> = {
     "grid-card": GridCard,
     "grid-post": GridPost,
     "grid-report": GridReport,
+    "grid-agenda": GridAgenda,
     "grid-case-study": GridCaseStudy,
     "grid-news": GridNews,
     "grid-lived-experience": GridLivedExperience,
@@ -97,7 +99,7 @@ export default function GridRow({
                     </div>
                 )}
 
-                {columns && columns?.length > 0 && (
+                {columns && columns?.length > 0 ? (
                     <div
                     className={cn(
                         "grid gap-6", // Clean grid without negative margins
@@ -145,6 +147,11 @@ export default function GridRow({
                         );
                     })}
                 </div>
+                ) : (
+                    <div className="text-center py-12 text-muted-foreground">
+                        <p className="text-lg">No content available yet.</p>
+                        <p className="text-sm mt-2">Check back soon for updates.</p>
+                    </div>
                 )}
             </div>
         </SectionContainer>

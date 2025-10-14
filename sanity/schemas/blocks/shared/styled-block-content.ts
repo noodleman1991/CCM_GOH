@@ -1,8 +1,6 @@
 import { defineType, defineArrayMember } from "sanity";
 import { SquarePlay } from "lucide-react";
 import { YouTubePreview } from "@/sanity/schemas/previews/youtube-preview";
-import breakSchema from "../break";
-import infoBoxSchema from "../info-box";
 
 export default defineType({
     title: "Styled Block Content",
@@ -150,6 +148,32 @@ export default defineType({
             },
             components: {
                 preview: YouTubePreview,
+            },
+        }),
+        defineArrayMember({
+            name: "code",
+            type: "code",
+            options: {
+                withFilename: true,
+                language: "typescript",
+                languageAlternatives: [
+                    { title: "TypeScript", value: "typescript" },
+                    { title: "JavaScript", value: "javascript" },
+                    { title: "JSX", value: "jsx" },
+                    { title: "TSX", value: "tsx" },
+                    { title: "HTML", value: "html" },
+                    { title: "CSS", value: "css" },
+                    { title: "SCSS", value: "scss" },
+                    { title: "JSON", value: "json" },
+                    { title: "Python", value: "python" },
+                    { title: "PHP", value: "php" },
+                    { title: "Ruby", value: "ruby" },
+                    { title: "Shell", value: "shell" },
+                    { title: "Markdown", value: "markdown" },
+                    { title: "YAML", value: "yaml" },
+                    { title: "GraphQL", value: "graphql" },
+                    { title: "SQL", value: "sql" },
+                ],
             },
         }),
     ],

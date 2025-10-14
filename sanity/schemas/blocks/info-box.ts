@@ -1,5 +1,5 @@
 import { defineType } from "sanity";
-import { AlertTriangle, Info, CheckCircle } from "lucide-react";
+import { Info } from "lucide-react";
 
 export default defineType({
     name: "infoBox",

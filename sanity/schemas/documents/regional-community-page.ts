@@ -83,11 +83,11 @@ export default defineType({
     }),
     defineField({
       name: "whyJoinCTA",
-      title: "Why Join Regional Community CTA",
-      type: "cta-1",
+      title: "Why Join Regional Community Hero",
+      type: "hero-1",
       group: "template",
       hidden: ({ document }) => !Boolean(document?.useTemplate),
-      description: "Call-to-action for joining the regional community",
+      description: "Hero section with image support for joining the regional community (supports buttons and image positioning)",
     }),
 
     // Team Members Section

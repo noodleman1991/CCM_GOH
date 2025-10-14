@@ -51,7 +51,7 @@ export const REGIONAL_COMMUNITY_PAGE_QUERY = groq`
       ${hero1Query}
     },
     whyJoinCTA {
-      ${cta1Query}
+      ${hero1Query}
     },
     teamGrid {
       mode,
@@ -90,10 +90,131 @@ export const REGIONAL_COMMUNITY_PAGE_QUERY = groq`
       displayRole,
       displayAffiliation
     },
-    reportsGrid,
-    newsGrid,
-    caseStudiesGrid,
-    livedExperiencesCarousel,
+    agendasGrid {
+      mode,
+      gridColumns,
+      maxItems,
+      showTitle,
+      title,
+      showDescription,
+      description,
+      manualItems[]->{
+        _id,
+        title,
+        subtitle,
+        description,
+        slug,
+        agendaType,
+        year,
+        publishDate,
+        coverImage {
+          asset->{
+            _id,
+            url,
+            metadata {
+              lqip,
+              dimensions {
+                width,
+                height
+              }
+            }
+          },
+          alt
+        }
+      }
+    },
+    newsGrid {
+      mode,
+      gridColumns,
+      maxItems,
+      showTitle,
+      title,
+      showDescription,
+      description,
+      manualItems[]->{
+        _id,
+        title,
+        subtitle,
+        excerpt,
+        slug,
+        publishedAt,
+        image {
+          asset->{
+            _id,
+            url,
+            metadata {
+              lqip,
+              dimensions {
+                width,
+                height
+              }
+            }
+          },
+          alt
+        }
+      }
+    },
+    caseStudiesGrid {
+      mode,
+      gridColumns,
+      maxItems,
+      showTitle,
+      title,
+      showDescription,
+      description,
+      manualItems[]->{
+        _id,
+        title,
+        excerpt,
+        slug,
+        publishedAt,
+        image {
+          asset->{
+            _id,
+            url,
+            metadata {
+              lqip,
+              dimensions {
+                width,
+                height
+              }
+            }
+          },
+          alt
+        }
+      }
+    },
+    livedExperiencesCarousel {
+      mode,
+      maxItems,
+      showTitle,
+      title,
+      showDescription,
+      description,
+      manualItems[]->{
+        _id,
+        title,
+        excerpt,
+        slug,
+        thumbnail {
+          asset->{
+            _id,
+            url,
+            metadata {
+              lqip,
+              dimensions {
+                width,
+                height
+              }
+            }
+          },
+          alt
+        },
+        videoUrl,
+        duration,
+        publishedAt
+      }
+    },
     testimonialsBlock,
     logoCloud {
       ${logoCloud1Query}

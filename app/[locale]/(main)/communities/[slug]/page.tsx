@@ -1,5 +1,5 @@
 // todo: userId may be undefined? (no-!)
-import { fetchSanityRCPageBySlug, fetchRegionalCommunityAgendas } from '@/sanity/lib/fetch';
+import { fetchSanityRCPageBySlug, fetchRegionalCommunityAgendas, fetchSanityRCPagesStaticParams } from '@/sanity/lib/fetch';
 import { fetchRegionalCommunityTeamMembers } from '@/sanity/queries/regional-community-team';
 import RegionalReportsGrid from '@/components/blocks/grid/regional-reports-grid';
 import { auth } from '@clerk/nextjs/server';
@@ -8,6 +8,18 @@ import HybridContentFlow from '@/components/blocks/hybrid-content-flow';
 import RegionalCommunityTemplate from '@/components/templates/regional-community-template';
 import { notFound } from "next/navigation";
 
+export async function generateStaticParams() {
+    const data = await fetchSanityRCPagesStaticParams();
+
+    if (!data || data.length === 0) {
+        return [];
+    }
+
+    return data.map((page: any) => ({
+        locale: page.language || 'en',
+        slug: page.slug?.current || page.slug,
+    }));
+}
 
 export default async function RegionalCommunityPage({
                                                         params
@@ -15,13 +27,24 @@ export default async function RegionalCommunityPage({
     params: Promise<{ locale: string; slug: string }>
 }) {
     const { locale, slug } = await params
-    // Your existing fetches
+
+    // Validate params
+    if (!slug || !locale) {
+        notFound();
+    }
+
+    // Fetch page data
     const pageData = await fetchSanityRCPageBySlug({ slug, locale });
 
-    // Fetch agendas for the regional community
+    // If no page data found, show 404
+    if (!pageData) {
+        notFound();
+    }
+
+    // Fetch agendas for the regional community (legacy mode support)
     const reportsData = await fetchRegionalCommunityAgendas({ slug, limit: 6 });
 
-    // Fetch team members if in dynamic mode
+    // Fetch team members if in dynamic mode and regional community exists
     const teamMembers = pageData?.teamGrid?.mode === 'dynamic' && pageData?.regionalCommunity?._id
         ? await fetchRegionalCommunityTeamMembers({
             communityId: pageData.regionalCommunity._id,
@@ -31,10 +54,6 @@ export default async function RegionalCommunityPage({
 
     // Get user ID for download tracking
     const { userId } = await auth();
-
-    if (!pageData) {
-        notFound();
-    }
 
     return (
         <main>
@@ -51,8 +70,13 @@ export default async function RegionalCommunityPage({
             {pageData.useTemplate && pageData.regionalCommunity && (
                 <RegionalCommunityTemplate
                     regionalCommunity={pageData.regionalCommunity}
-                    templateConfiguration={pageData.templateConfiguration}
-                    templateInserts={pageData.templateInserts || []}
+                    agendasGrid={pageData.agendasGrid}
+                    newsGrid={pageData.newsGrid}
+                    caseStudiesGrid={pageData.caseStudiesGrid}
+                    livedExperiencesCarousel={pageData.livedExperiencesCarousel}
+                    welcomeHero={pageData.welcomeHero}
+                    whyJoinCTA={pageData.whyJoinCTA}
+                    logoCloud={pageData.logoCloud}
                     teamGrid={pageData.teamGrid}
                     teamMembers={teamMembers}
                     locale={locale}

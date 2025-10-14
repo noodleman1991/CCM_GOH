@@ -4,7 +4,7 @@ import { sanityFetch } from "@/sanity/lib/live";
 export const REGIONAL_COMMUNITY_NEWS_QUERY = groq`
   *[_type == "newsPost" &&
     (!defined($regionalCommunityId) || references($regionalCommunityId)) &&
-    (!defined($featured) || $featured == false || featured == true) &&
+    (!$featured || featured == true) &&
     publishedAt <= now()
   ] | order(featured desc, publishedAt desc) [0...$limit] {
     _id,
@@ -85,7 +85,7 @@ export const fetchRegionalCommunityNews = async ({
     params: {
       regionalCommunityId,
       limit,
-      featured: featured ? true : undefined
+      featured
     },
     perspective: "published",
     stega: false,
@@ -98,7 +98,7 @@ export const fetchRegionalCommunityNews = async ({
 export const REGIONAL_COMMUNITY_NEWS_BY_SLUG_QUERY = groq`
   *[_type == "newsPost" &&
     references(*[_type == "regionalCommunity" && slug.current == $slug][0]._id) &&
-    (!defined($featured) || $featured == false || featured == true) &&
+    (!$featured || featured == true) &&
     publishedAt <= now()
   ] | order(featured desc, publishedAt desc) [0...$limit] {
     _id,
@@ -179,7 +179,7 @@ export const fetchRegionalCommunityNewsBySlug = async ({
     params: {
       slug,
       limit,
-      featured: featured ? true : undefined
+      featured
     },
     perspective: "published",
     stega: false,
