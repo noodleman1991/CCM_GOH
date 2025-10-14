@@ -18,7 +18,9 @@ import { PAGE_QUERYResult } from "@/sanity.types";
 type Carousel2Props = Extract<
   NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number],
   { _type: "carousel-2" }
->;
+> & {
+  locale?: string;
+};
 
 export default function Carousel2({
   title,
@@ -26,6 +28,7 @@ export default function Carousel2({
   padding,
   colorVariant,
   testimonial,
+  locale = "en",
 }: Carousel2Props) {
   const color = stegaClean(colorVariant);
 
@@ -82,7 +85,7 @@ export default function Carousel2({
                       <StarRating rating={item.rating ?? 0} />
                       {item.body && (
                         <div className="text-sm mt-2 line-clamp-4">
-                          <PortableTextRenderer value={item.body} />
+                          <PortableTextRenderer value={item.body} locale={locale} />
                         </div>
                       )}
                     </div>

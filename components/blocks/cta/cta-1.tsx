@@ -9,7 +9,9 @@ import { PAGE_QUERYResult } from "@/sanity.types";
 type Cta1Props = Extract<
   NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number],
   { _type: "cta-1" }
->;
+> & {
+  locale?: string;
+};
 
 export default function Cta1({
   padding,
@@ -20,6 +22,7 @@ export default function Cta1({
   title,
   body,
   links,
+  locale = "en",
 }: Cta1Props) {
   const isNarrow = stegaClean(sectionWidth) === "narrow";
   const align = stegaClean(stackAlign);
@@ -40,7 +43,7 @@ export default function Cta1({
             </h1>
           )}
           <h2 className="mb-4">{title}</h2>
-          {body && <PortableTextRenderer value={body} />}
+          {body && <PortableTextRenderer value={body} locale={locale} />}
         </div>
         {links && links.length > 0 && (
           <div

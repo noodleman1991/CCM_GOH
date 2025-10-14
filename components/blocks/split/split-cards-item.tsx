@@ -15,6 +15,7 @@ type SplitCardItem = NonNullable<NonNullable<SplitCardsList["list"]>[number]>;
 
 interface SplitCardsItemProps extends SplitCardItem {
   color?: ColorVariant;
+  locale?: string;
 }
 
 export default function SplitCardsItem({
@@ -22,6 +23,7 @@ export default function SplitCardsItem({
   tagLine,
   title,
   body,
+  locale = "en",
 }: SplitCardsItemProps) {
   const ref = useRef(null);
   const isInView = useInView(ref, {
@@ -66,7 +68,7 @@ export default function SplitCardsItem({
             isInView ? "text-background" : "text-foreground"
           )}
         >
-          <PortableTextRenderer value={body} />
+          <PortableTextRenderer value={body} locale={locale} />
         </div>
       )}
     </motion.div>

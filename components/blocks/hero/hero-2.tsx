@@ -32,7 +32,7 @@ export default function Hero2({ background, tagLine, title, body, links, padding
         )}
         {body && (
           <div className="text-lg mt-6 max-w-2xl mx-auto animate-fade-up [animation-delay:300ms] opacity-0">
-            <PortableTextRenderer value={body} />
+            <PortableTextRenderer value={body} locale={locale} />
           </div>
         )}
         {links && links.length > 0 && (
