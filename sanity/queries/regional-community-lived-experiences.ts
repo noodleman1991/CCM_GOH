@@ -4,7 +4,7 @@ import { sanityFetch } from "@/sanity/lib/live";
 export const REGIONAL_COMMUNITY_LIVED_EXPERIENCES_QUERY = groq`
   *[_type == "livedExperience" &&
     (!defined($regionalCommunityId) || references($regionalCommunityId)) &&
-    (!defined($featured) || $featured == false || featured == true) &&
+    (!$featured || featured == true) &&
     publishedAt <= now()
   ] | order(featured desc, publishedAt desc) [0...$limit] {
     _id,
@@ -70,7 +70,7 @@ export const fetchRegionalCommunityLivedExperiences = async ({
     params: {
       regionalCommunityId,
       limit,
-      featured: featured ? true : undefined
+      featured
     },
     perspective: "published",
     stega: false,
@@ -83,7 +83,7 @@ export const fetchRegionalCommunityLivedExperiences = async ({
 export const REGIONAL_COMMUNITY_LIVED_EXPERIENCES_BY_SLUG_QUERY = groq`
   *[_type == "livedExperience" &&
     references(*[_type == "regionalCommunity" && slug.current == $slug][0]._id) &&
-    (!defined($featured) || $featured == false || featured == true) &&
+    (!$featured || featured == true) &&
     publishedAt <= now()
   ] | order(featured desc, publishedAt desc) [0...$limit] {
     _id,
@@ -149,7 +149,7 @@ export const fetchRegionalCommunityLivedExperiencesBySlug = async ({
     params: {
       slug,
       limit,
-      featured: featured ? true : undefined
+      featured
     },
     perspective: "published",
     stega: false,

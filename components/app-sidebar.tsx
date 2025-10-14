@@ -96,6 +96,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     ];
 
     // Regional Communities items (no icons, good overflow handling)
+    // URLs match exact slugs in Sanity to prevent 404s
     const regionalCommunities = [
         {
             title: t('regions.subSaharanAfrica'),
@@ -103,19 +104,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         },
         {
             title: t('regions.northernAfricaWesternAsia'),
-            url: "/communities/northern-africa-western-asia",
+            url: "/communities/northern-africa-and-western-asia",
         },
         {
             title: t('regions.centralSouthernAsia'),
-            url: "/communities/central-southern-asia",
+            url: "/communities/central-and-southern-asia",
         },
         {
             title: t('regions.easternSouthEasternAsia'),
-            url: "/communities/eastern-south-eastern-asia",
+            url: "/communities/eastern-and-south-eastern-asia",
         },
         {
             title: t('regions.latinAmericaCaribbean'),
-            url: "/communities/latin-america-caribbean",
+            url: "/communities/latin-america-and-the-caribbean",
         },
         {
             title: t('regions.oceania'),
@@ -123,7 +124,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         },
         {
             title: t('regions.europeNorthAmerica'),
-            url: "/communities/europe-north-america",
+            url: "/communities/europe-and-northern-america",
         },
     ];
 

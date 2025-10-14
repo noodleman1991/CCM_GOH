@@ -75,7 +75,11 @@ export const fetchSanityRCPageBySlug = async ({
 
 export const fetchSanityRCPagesStaticParams = async () => {
     const { data } = await sanityFetch({
-        query: PAGES_SLUGS_QUERY,
+        query: `*[_type == "regionalCommunityPage" && defined(slug)]{
+      _id,
+      slug { current },
+      language
+    }`,
         perspective: "published",
         stega: false,
     });

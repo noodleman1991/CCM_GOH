@@ -4,7 +4,7 @@ import { sanityFetch } from "@/sanity/lib/live";
 export const REGIONAL_COMMUNITY_CASE_STUDIES_QUERY = groq`
   *[_type == "caseStudy" &&
     (!defined($regionalCommunityId) || references($regionalCommunityId)) &&
-    (!defined($featured) || $featured == false || featured == true) &&
+    (!$featured || featured == true) &&
     status == "approved"
   ] | order(featured desc, publishedAt desc) [0...$limit] {
     _id,
@@ -87,7 +87,7 @@ export const fetchRegionalCommunityCaseStudies = async ({
     params: {
       regionalCommunityId,
       limit,
-      featured: featured ? true : undefined
+      featured
     },
     perspective: "published",
     stega: false,
@@ -100,7 +100,7 @@ export const fetchRegionalCommunityCaseStudies = async ({
 export const REGIONAL_COMMUNITY_CASE_STUDIES_BY_SLUG_QUERY = groq`
   *[_type == "caseStudy" &&
     references(*[_type == "regionalCommunity" && slug.current == $slug][0]._id) &&
-    (!defined($featured) || $featured == false || featured == true) &&
+    (!$featured || featured == true) &&
     status == "approved"
   ] | order(featured desc, publishedAt desc) [0...$limit] {
     _id,
@@ -183,7 +183,7 @@ export const fetchRegionalCommunityCaseStudiesBySlug = async ({
     params: {
       slug,
       limit,
-      featured: featured ? true : undefined
+      featured
     },
     perspective: "published",
     stega: false,

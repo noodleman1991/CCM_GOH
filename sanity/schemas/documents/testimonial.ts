@@ -1,4 +1,5 @@
- import { defineField, defineType } from "sanity";
+import { defineField, defineType } from "sanity";
+import { orderRankField } from "@sanity/orderable-document-list";
 import { Quote } from "lucide-react";
 
 export default defineType({
@@ -97,6 +98,7 @@ export default defineType({
       initialValue: false,
       description: "Mark as featured to highlight in testimonial sections",
     }),
+      orderRankField({ type: "testimonial" }),
   ],
 
   preview: {

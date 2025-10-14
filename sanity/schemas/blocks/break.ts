@@ -1,5 +1,5 @@
 import { defineType } from "sanity";
-import { Minus, MoreHorizontal } from "lucide-react";
+import { Minus } from "lucide-react";
 
 export default defineType({
     name: "break",
