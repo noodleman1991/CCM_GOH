@@ -6,7 +6,7 @@ import {
     ListCollapse,
     Quote,
     Tag,
-    Glasses,
+    Newspaper,
     Building,
     FolderOpen,
     FileText,
@@ -16,13 +16,9 @@ import {
     Home,
     Heart,
     Globe,
-    Users,
-    Lightbulb,
     UserCog,
     Briefcase,
     GraduationCap,
-    Languages,
-    Calendar
 } from "lucide-react";
 
 export const structure = (S: any, context: any) =>
@@ -113,24 +109,24 @@ export const structure = (S: any, context: any) =>
                                 ),
                             S.listItem()
                                 .title("Agendas")
-                                .icon(Calendar)
+                                .icon(FileText)
                                 .child(
                                     orderableDocumentListDeskItem({
                                         type: "agenda",
                                         title: "Agendas",
-                                        icon: Calendar,
+                                        icon: FileText,
                                         S,
                                         context,
                                     })
                                 ),
-                            S.listItem()
-                                .title("Posts (Blog)")
-                                .icon(FileText)
-                                .child(
-                                    S.documentTypeList("post")
-                                        .title("Posts")
-                                        .defaultOrdering([{ field: "_createdAt", direction: "desc" }])
-                                ),
+                            // S.listItem()
+                            //     .title("Posts (Blog)")
+                            //     .icon(Newspaper)
+                            //     .child(
+                            //         S.documentTypeList("post")
+                            //             .title("Posts")
+                            //             .defaultOrdering([{ field: "_createdAt", direction: "desc" }])
+                            //     ),
                             S.listItem()
                                 .title("Lived Experiences")
                                 .icon(Heart)
