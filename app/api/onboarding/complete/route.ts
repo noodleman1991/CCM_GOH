@@ -3,6 +3,9 @@ import { auth, clerkClient } from "@clerk/nextjs/server"
 import { prisma } from "@/lib/prisma"
 import { z } from "zod"
 
+// Force Node.js runtime for Prisma and Clerk compatibility with Fluid Compute
+export const runtime = 'nodejs'
+
 const OnboardingSchema = z.object({
   // Basic Info
   firstName: z.string().min(1).max(50),

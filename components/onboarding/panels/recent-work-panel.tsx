@@ -185,19 +185,21 @@ export function RecentWorkPanel({ form, content }: RecentWorkPanelProps) {
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <div>
-              <label className="text-sm font-medium flex items-center gap-1">
+              <label htmlFor="work-title" className="text-sm font-medium flex items-center gap-1">
                 {content?.fieldLabels?.recentWork?.workTitle || t("workTitle")}
                 <span className="text-red-500">*</span>
               </label>
               <Input
+                id="work-title"
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                 placeholder={content?.fieldPlaceholders?.workTitle || t("workTitlePlaceholder")}
               />
             </div>
             <div>
-              <label className="text-sm font-medium">{content?.fieldLabels?.recentWork?.projectLink || t("projectLink")}</label>
+              <label htmlFor="work-link" className="text-sm font-medium">{content?.fieldLabels?.recentWork?.projectLink || t("projectLink")}</label>
               <Input
+                id="work-link"
                 value={formData.link}
                 onChange={(e) => setFormData({ ...formData, link: e.target.value })}
                 placeholder={content?.fieldPlaceholders?.projectLink || "https://..."}
@@ -207,11 +209,12 @@ export function RecentWorkPanel({ form, content }: RecentWorkPanelProps) {
           </div>
 
           <div>
-            <label className="text-sm font-medium flex items-center gap-1">
+            <label htmlFor="work-description" className="text-sm font-medium flex items-center gap-1">
               {content?.fieldLabels?.recentWork?.description || t("description")}
               <span className="text-red-500">*</span>
             </label>
             <Textarea
+              id="work-description"
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               placeholder={content?.fieldPlaceholders?.description || t("descriptionPlaceholder")}
@@ -221,22 +224,24 @@ export function RecentWorkPanel({ form, content }: RecentWorkPanelProps) {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <div>
-              <label className="text-sm font-medium flex items-center gap-1">
+              <label htmlFor="work-start-date" className="text-sm font-medium flex items-center gap-1">
                 {content?.fieldLabels?.recentWork?.startDate || t("startDate")}
                 <span className="text-red-500">*</span>
               </label>
               <Input
+                id="work-start-date"
                 type="date"
                 value={formData.startDate}
                 onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
               />
             </div>
             <div>
-              <label className="text-sm font-medium">
+              <label htmlFor="work-end-date" className="text-sm font-medium">
                 {content?.fieldLabels?.recentWork?.endDate || t("endDate")}
                 {!formData.isOngoing && <span className="text-red-500 ml-1">*</span>}
               </label>
               <Input
+                id="work-end-date"
                 type="date"
                 value={formData.endDate}
                 onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
