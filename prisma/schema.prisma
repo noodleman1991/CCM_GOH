@@ -22,8 +22,7 @@ model Account {
   id_token          String?
   session_state     String?
   createdAt         DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -37,69 +36,122 @@ model Session {
 }
 
 model User {
-  id            String    @id
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
-
-  // Clerk-managed fields (source of truth: Clerk)
-  phoneNumber   String? // Primary phone from Clerk
-  phoneVerified DateTime? // Phone verification status
-
-  // Profile Information
-  firstName String?
-  lastName  String?
-  username  String?   @unique
-  bio       String?
-  ageGroup  AgeGroup?
-  country   String?
-  city      String?
-
-  // Work Details
-  workTypes      WorkType[]
-  expertiseAreas ExpertiseArea[]
-  organization   String?
-  position       String?
-  workBio        String?
-
-  // Social Links
-  personalWebsite  String?
-  linkedinProfile  String?
-  otherSocialLinks Json? // Array of {platform: string, url: string}
-
-  // Preferences
-  preferredLanguage Language @default(EN) // User's preferred language
-
-  // Privacy Controls
-  isSearchable      Boolean           @default(true) // User can be found in search
-  profileVisibility ProfileVisibility @default(PUBLIC) // Profile visibility level
-  showEmail         Boolean           @default(false) // Show email in profile
-  showPhoneNumber   Boolean           @default(false) // Show phone in profile
-  showWorkDetails   Boolean           @default(true) // Show work info in profile
-  showSocialLinks   Boolean           @default(true) // Show social links in profile
-  showLocation      Boolean           @default(true) // Show country/city in profile
-
-  // Onboarding Status
-  onboardingCompleted Boolean @default(false) // Has user completed onboarding
-  onboardingStep      Int     @default(0) // Current onboarding step (0-5)
-  welcomeMessageSeen  Boolean @default(false) // Has user seen welcome message
-
-  // Global role (default: community_member)
-  role Role @default(community_member)
-
-  // User's membership in communities with specific roles
+  id                   String            @id
+  email                String?           @unique
+  emailVerified        DateTime?
+  username             String?           @unique
+  image                String?
+  bio                  String?
+  role                 Role              @default(community_member)
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAt
+  ageGroup             AgeGroup?
+  city                 String?
+  country              String?
+  expertiseAreas       ExpertiseArea[]
+  firstName            String?
+  lastName             String?
+  linkedinProfile      String?
+  organization         String?
+  personalWebsite      String?
+  position             String?
+  workBio              String?
+  workTypes            WorkType[]
+  isSearchable         Boolean           @default(true)
+  profileVisibility    ProfileVisibility @default(PUBLIC)
+  showEmail            Boolean           @default(false)
+  showLocation         Boolean           @default(true)
+  showSocialLinks      Boolean           @default(true)
+  showWorkDetails      Boolean           @default(true)
+  phoneNumber          String?
+  phoneVerified        DateTime?
+  showPhoneNumber      Boolean           @default(false)
+  onboardingCompleted  Boolean           @default(false)
+  onboardingStep       Int               @default(0)
+  preferredLanguage    Language          @default(EN)
+  welcomeMessageSeen   Boolean           @default(false)
+  otherSocialLinks     Json?
+  accounts             Account[]
+  createdContent       Content[]
+  recentWork           RecentWork[]
+  sessions             Session[]
   communityMemberships UserCommunity[]
+}
 
-  // Content created by user
-  createdContent Content[]
+model Community {
+  id           String                 @id @default(uuid())
+  name         String
+  description  String?
+  type         CommunityType
+  regionalName RegionalCommunityName?
+  specialName  SpecialCommunityName?
+  createdAt    DateTime               @default(now())
+  updatedAt    DateTime               @updatedAt
+  contents     Content[]
+  members      UserCommunity[]
+}
 
-  // Recent work projects
-  recentWork RecentWork[]
+model UserCommunity {
+  userId      String
+  communityId String
+  role        Role      @default(community_member)
+  community   Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  @@id([userId, communityId])
+}
+
+model Content {
+  id          String    @id @default(uuid())
+  title       String
+  body        String
+  communityId String
+  authorId    String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  author      User      @relation(fields: [authorId], references: [id])
+  community   Community @relation(fields: [communityId], references: [id])
+}
+
+model RecentWork {
+  id          String    @id @default(uuid())
+  title       String
+  description String
+  link        String?
+  isOngoing   Boolean   @default(false)
+  startDate   DateTime
+  endDate     DateTime?
+  userId      String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model DownloadEvent {
+  id           String   @id @default(cuid())
+  reportId     String
+  fileLanguage String
+  userId       String?
+  sessionId    String
+  userAgent    String?
+  referer      String?
+  ipAddress    String?
+  timestamp    DateTime @default(now())
+  createdAt    DateTime @default(now())
+
+  @@index([userId])
+  @@index([timestamp])
+  @@index([reportId])
+  @@map("download_events")
+}
+
+model report_metadata {
+  id               String    @id
+  sanityId         String    @unique
+  downloadCount    Int       @default(0)
+  lastDownloadedAt DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime
 }
 
 enum AgeGroup {
@@ -108,10 +160,10 @@ enum AgeGroup {
 }
 
 enum Language {
-  EN // English
-  ES // Spanish
-  FR // French
-  AR // Arabic
+  EN
+  ES
+  FR
+  AR
 }
 
 enum WorkType {
@@ -137,9 +189,9 @@ enum Role {
 }
 
 enum ProfileVisibility {
-  PUBLIC // Visible to everyone
-  MEMBERS // Visible to community members only
-  PRIVATE // Not visible in search/directory
+  PUBLIC
+  MEMBERS
+  PRIVATE
 }
 
 enum CommunityType {
@@ -161,110 +213,4 @@ enum SpecialCommunityName {
   YOUTH
   INDIGENOUS
   FARMER_AND_FISHER
-}
-
-model Community {
-  id          String  @id @default(uuid())
-  name        String
-  description String?
-
-  // Discriminator pattern
-  type         CommunityType
-  // If regional, which region
-  regionalName RegionalCommunityName?
-  // If special, which special category
-  specialName  SpecialCommunityName?
-
-  // Community members with their specific roles
-  members UserCommunity[]
-
-  // Content related to this community
-  contents Content[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-// Join table with role information for user-community relationship
-model UserCommunity {
-  userId      String
-  communityId String
-  role        Role   @default(community_member)
-
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  community Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
-
-  // Define composite primary key
-  @@id([userId, communityId])
-}
-
-model Content {
-  id    String @id @default(uuid())
-  title String
-  body  String
-
-  // Which community this content belongs to
-  communityId String
-  community   Community @relation(fields: [communityId], references: [id])
-
-  // Who created this content
-  authorId String
-  author   User   @relation(fields: [authorId], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model RecentWork {
-  id          String    @id @default(uuid())
-  title       String
-  description String
-  link        String?
-  isOngoing   Boolean   @default(false)
-  startDate   DateTime
-  endDate     DateTime?
-
-  // Who created this work
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-enum ContentType {
-  REPORT
-  AGENDA
-}
-
-model DownloadEvent {
-  id           String      @id @default(cuid())
-  contentType  ContentType @default(REPORT) // Type of content being downloaded
-  contentId    String      // Sanity document ID (report or agenda)
-  fileLanguage String      // en, es, fr, ar
-  userId       String?     // Clerk user ID (optional for anonymous downloads)
-  sessionId    String      // Browser session ID
-  userAgent    String?     // Browser user agent
-  referer      String?     // Referring page
-  ipAddress    String?     // User IP address
-  timestamp    DateTime    @default(now())
-  createdAt    DateTime    @default(now())
-
-  @@index([contentType, contentId])
-  @@index([userId])
-  @@index([timestamp])
-  @@map("download_events")
-}
-
-model ContentMetadata {
-  id               String      @id @default(cuid())
-  contentType      ContentType // Type of content (report or agenda)
-  sanityId         String      // Sanity document ID
-  downloadCount    Int         @default(0)
-  lastDownloadedAt DateTime?
-  createdAt        DateTime    @default(now())
-  updatedAt        DateTime    @updatedAt
-
-  @@unique([contentType, sanityId])
-  @@map("content_metadata")
 }

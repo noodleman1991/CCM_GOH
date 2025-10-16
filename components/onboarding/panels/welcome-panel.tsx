@@ -59,7 +59,7 @@ export function WelcomePanel({ content }: WelcomePanelProps) {
       </div>
 
       {/* Features Grid */}
-      <div className="grid md:grid-cols-3 gap-6 mt-12">
+      <div className="grid grid-cols-1 gap-6 mt-12">
         {features.map((feature, index) => (
           <div
             key={index}
@@ -73,8 +73,8 @@ export function WelcomePanel({ content }: WelcomePanelProps) {
                 <feature.icon className="h-6 w-6 text-primary" />
               </div>
             </div>
-            <h3 className="font-semibold text-gray-900">{feature.title}</h3>
-            <p className="text-sm text-gray-600">{feature.description}</p>
+            <h3 className="font-semibold text-base text-gray-900">{feature.title}</h3>
+            <p className="text-sm text-gray-600 break-words">{feature.description}</p>
           </div>
         ))}
       </div>

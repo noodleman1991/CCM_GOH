@@ -69,8 +69,8 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
   }
 
   return (
-    <div className={cn("space-y-6", isRTL && "text-right")} dir={isRTL ? "rtl" : "ltr"}>
-      <div className="mb-6">
+    <div className={cn("space-y-5", isRTL && "text-right")} dir={isRTL ? "rtl" : "ltr"}>
+      <div className="mb-5">
         <h2 className="text-2xl font-bold text-gray-900 mb-2">
           {content?.reviewTitle || t("title")}
         </h2>

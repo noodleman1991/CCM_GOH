@@ -46,44 +46,27 @@ export default function OnboardingPage() {
 
     if (isLoading) {
         return (
-            <div className="h-screen bg-gray-50 flex">
-                {/* Sidebar skeleton */}
-                <div className="w-80 bg-white border-r border-gray-200 p-6">
-                    <div className="space-y-4">
-                        <Skeleton className="h-8 w-48" />
-                        <Skeleton className="h-2 w-full" />
-                        <div className="space-y-3 mt-8">
-                            {[1, 2, 3, 4, 5, 6].map((i) => (
-                                <div key={i} className="flex items-center gap-3">
-                                    <Skeleton className="h-8 w-8 rounded-full" />
-                                    <div className="space-y-2">
-                                        <Skeleton className="h-4 w-24" />
-                                        <Skeleton className="h-3 w-32" />
+            <div className="h-screen bg-gray-50">
+                {/* Content skeleton */}
+                <div className="flex-1 overflow-y-auto">
+                    <div className="w-full px-4 sm:px-6 md:w-full md:px-6 lg:max-w-[1649px] lg:mx-auto py-8">
+                        <Card>
+                            <CardContent className="p-8">
+                                <div className="space-y-6">
+                                    <Skeleton className="h-8 w-64" />
+                                    <Skeleton className="h-4 w-96" />
+                                    <div className="space-y-4">
+                                        {[1, 2, 3].map((i) => (
+                                            <div key={i} className="space-y-2">
+                                                <Skeleton className="h-4 w-24" />
+                                                <Skeleton className="h-10 w-full" />
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
-                            ))}
-                        </div>
+                            </CardContent>
+                        </Card>
                     </div>
-                </div>
-
-                {/* Content skeleton */}
-                <div className="flex-1 p-8">
-                    <Card>
-                        <CardContent className="p-8">
-                            <div className="space-y-6">
-                                <Skeleton className="h-8 w-64" />
-                                <Skeleton className="h-4 w-96" />
-                                <div className="space-y-4">
-                                    {[1, 2, 3].map((i) => (
-                                        <div key={i} className="space-y-2">
-                                            <Skeleton className="h-4 w-24" />
-                                            <Skeleton className="h-10 w-full" />
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
                 </div>
             </div>
         )

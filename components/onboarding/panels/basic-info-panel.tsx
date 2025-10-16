@@ -1,8 +1,9 @@
 "use client"
 
-import React from "react"
+import React, { useTransition } from "react"
 import { UseFormReturn } from "react-hook-form"
 import { useTranslations, useLocale } from "next-intl"
+import { useRouter, usePathname } from "@/i18n/navigation"
 
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -22,20 +23,23 @@ export function BasicInfoPanel({ form, content }: BasicInfoPanelProps) {
   const t = useTranslations("onboarding.steps.basicInfo")
   const locale = useLocale()
   const isRTL = rtlLocales.includes(locale)
+  const router = useRouter()
+  const pathname = usePathname()
+  const [isPending, startTransition] = useTransition()
 
   const languageOptions = [
-    { value: "EN", label: "English" },
-    { value: "ES", label: "Español" },
-    { value: "FR", label: "Français" },
-    { value: "AR", label: "العربية" }
+    { value: "EN", label: "English", isRTL: false },
+    { value: "ES", label: "Español", isRTL: false },
+    { value: "FR", label: "Français", isRTL: false },
+    { value: "AR", label: "العربية", isRTL: true }
   ]
 
   return (
     <div className={cn(
-      "space-y-6",
+      "space-y-5",
       isRTL && "text-right [&_input]:text-right [&_textarea]:text-right"
     )} dir={isRTL ? "rtl" : "ltr"}>
-      <div className="mb-6">
+      <div className="mb-5">
         <h2 className="text-2xl font-bold text-gray-900 mb-2">
           {content?.basicInfoTitle || t("title")}
         </h2>
@@ -186,7 +190,17 @@ export function BasicInfoPanel({ form, content }: BasicInfoPanelProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>{content?.fieldLabels?.basicInfo?.preferredLanguage || t("preferredLanguage")}</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select
+                onValueChange={(value) => {
+                  field.onChange(value)
+                  // Switch the site language
+                  const newLocale = value.toLowerCase()
+                  startTransition(() => {
+                    router.replace(pathname, { locale: newLocale })
+                  })
+                }}
+                defaultValue={field.value}
+              >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder={content?.fieldLabels?.basicInfo?.preferredLanguage || t("preferredLanguage")} />
@@ -194,7 +208,12 @@ export function BasicInfoPanel({ form, content }: BasicInfoPanelProps) {
                 </FormControl>
                 <SelectContent>
                   {languageOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
+                    <SelectItem
+                      key={option.value}
+                      value={option.value}
+                      className={cn(option.isRTL && "flex-row-reverse text-right")}
+                      dir={option.isRTL ? "rtl" : "ltr"}
+                    >
                       {option.label}
                     </SelectItem>
                   ))}
