@@ -15,7 +15,6 @@ import { cn } from "@/lib/utils"
 import { rtlLocales } from "@/i18n/routing"
 import { useUserProfile } from "@/hooks/use-user-profile"
 
-import { ModernProgressSidebar } from "./modern-progress-sidebar"
 import { ModernContentArea } from "./modern-content-area"
 import { WelcomePanel } from "./panels/welcome-panel"
 import { BasicInfoPanel } from "./panels/basic-info-panel"
@@ -52,7 +51,6 @@ export function ModernOnboardingContainer({
   const [currentStep, setCurrentStep] = useState(0)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [validationError, setValidationError] = useState<string | null>(null)
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   // Create dynamic schema
   const dynamicSchema = createOnboardingSchema(sanityContent?.validationMessages)
@@ -350,31 +348,9 @@ export function ModernOnboardingContainer({
 
   return (
     <div className={cn(
-      "flex h-screen bg-gray-50",
+      "h-screen bg-gray-50",
       isRTL && "font-arabic"
     )} dir={isRTL ? "rtl" : "ltr"}>
-      {/* Mobile sidebar overlay */}
-      {isMobileMenuOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
-          onClick={() => setIsMobileMenuOpen(false)}
-        />
-      )}
-
-      {/* Progress Sidebar */}
-      <div className={cn(
-        "fixed inset-y-0 z-50 transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0",
-        isRTL ? "right-0" : "left-0",
-        isMobileMenuOpen ? "translate-x-0" : (isRTL ? "translate-x-full" : "-translate-x-full"),
-        "lg:block"
-      )}>
-        <ModernProgressSidebar
-          currentStep={currentStep}
-          totalSteps={steps.length}
-          className="lg:w-80 w-72" // Slightly narrower on mobile
-        />
-      </div>
-
       {/* Main Content */}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="flex-1 flex flex-col">
@@ -415,23 +391,6 @@ export function ModernOnboardingContainer({
         </form>
       </Form>
 
-      {/* Mobile menu button */}
-      <button
-        className={cn(
-          "fixed top-4 z-60 lg:hidden bg-white rounded-lg p-3 shadow-lg border border-gray-200",
-          "hover:bg-gray-50 transition-colors duration-200",
-          "flex items-center gap-2 text-sm font-medium text-gray-700",
-          isRTL ? "right-4" : "left-4"
-        )}
-        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-      >
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-        <span className="hidden sm:inline">
-          Step {currentStep + 1} of {steps.length}
-        </span>
-      </button>
     </div>
   )
 }

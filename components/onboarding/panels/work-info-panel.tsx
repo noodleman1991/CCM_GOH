@@ -34,10 +34,10 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
 
   return (
     <div className={cn(
-      "space-y-6",
+      "space-y-5",
       isRTL && "text-right [&_input]:text-right [&_textarea]:text-right"
     )} dir={isRTL ? "rtl" : "ltr"}>
-      <div className="mb-6">
+      <div className="mb-5">
         <h2 className="text-2xl font-bold text-gray-900 mb-2">
           {content?.workInfoTitle || t("title")}
         </h2>
@@ -62,7 +62,7 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
                   {content?.workInfoFieldHints?.workTypesHint || t("workTypesHint")}
                 </FormDescription>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-4">
                 {workTypes.map((item) => (
                   <FormField
                     key={item._id}
@@ -72,7 +72,13 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
                       return (
                         <FormItem
                           key={item._id}
-                          className="flex flex-row items-start space-x-3 space-y-0"
+                          className={cn(
+                            "flex flex-row items-start gap-3 space-y-0 p-4 rounded-lg border-2 transition-all hover:bg-gray-50",
+                            isRTL && "flex-row-reverse"
+                          )}
+                          style={{
+                            borderColor: field.value?.includes(item._id) ? 'rgb(59 130 246)' : 'rgb(229 231 235)'
+                          }}
                         >
                           <FormControl>
                             <Checkbox
@@ -88,12 +94,12 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
                               }}
                             />
                           </FormControl>
-                          <div className="space-y-1 leading-none">
-                            <FormLabel className="font-normal">
+                          <div className="space-y-1 leading-none flex-1">
+                            <FormLabel className="font-medium text-base">
                               {getLocalizedText(item.label, `Work Type ${item.key || item._id}`)}
                             </FormLabel>
                             {item.description && (
-                              <FormDescription>
+                              <FormDescription className="text-sm">
                                 {getLocalizedText(item.description, '')}
                               </FormDescription>
                             )}
@@ -124,7 +130,7 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
                   {content?.workInfoFieldHints?.expertiseAreasHint || t("expertiseAreasHint")}
                 </FormDescription>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-4">
                 {expertiseAreas.map((item) => (
                   <FormField
                     key={item._id}
@@ -134,7 +140,13 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
                       return (
                         <FormItem
                           key={item._id}
-                          className="flex flex-row items-start space-x-3 space-y-0"
+                          className={cn(
+                            "flex flex-row items-start gap-3 space-y-0 p-4 rounded-lg border-2 transition-all hover:bg-gray-50",
+                            isRTL && "flex-row-reverse"
+                          )}
+                          style={{
+                            borderColor: field.value?.includes(item._id) ? 'rgb(59 130 246)' : 'rgb(229 231 235)'
+                          }}
                         >
                           <FormControl>
                             <Checkbox
@@ -150,12 +162,12 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
                               }}
                             />
                           </FormControl>
-                          <div className="space-y-1 leading-none">
-                            <FormLabel className="font-normal">
+                          <div className="space-y-1 leading-none flex-1">
+                            <FormLabel className="font-medium text-base">
                               {getLocalizedText(item.label, `Expertise ${item.key || item._id}`)}
                             </FormLabel>
                             {item.description && (
-                              <FormDescription>
+                              <FormDescription className="text-sm">
                                 {getLocalizedText(item.description, '')}
                               </FormDescription>
                             )}
@@ -172,7 +184,7 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
         />
 
         {/* Organization & Position */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+        <div className="grid grid-cols-1 gap-4">
           <FormField
             control={form.control}
             name="workInfo.organization"
@@ -224,7 +236,7 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
           <h3 className="text-lg font-medium">{content?.fieldLabels?.workInfo?.socialLinks || t("socialLinks")}</h3>
 
           {/* Fixed Social Links */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+          <div className="grid grid-cols-1 gap-4">
             <FormField
               control={form.control}
               name="workInfo.linkedinProfile"
@@ -255,7 +267,7 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
 
           {/* Other Social Links */}
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
+            <div className={cn("flex items-center justify-between", isRTL && "flex-row-reverse")}>
               <FormLabel>{content?.fieldLabels?.workInfo?.otherLinks || "Other Professional Links"}</FormLabel>
               <Button
                 type="button"
@@ -272,7 +284,7 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
             </div>
 
             {form.watch("workInfo.otherSocialLinks")?.map((_: {platform: string, url: string}, index: number) => (
-              <div key={index} className="flex gap-2 items-start">
+              <div key={index} className={cn("flex gap-2 items-start", isRTL && "flex-row-reverse")}>
                 <FormField
                   control={form.control}
                   name={`workInfo.otherSocialLinks.${index}.platform`}

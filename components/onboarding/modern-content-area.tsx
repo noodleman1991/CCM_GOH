@@ -23,6 +23,12 @@ interface ModernContentAreaProps {
   className?: string
 }
 
+// Convert numbers to Arabic-Indic numerals
+const toArabicNumerals = (num: number): string => {
+  const arabicNumerals = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩']
+  return num.toString().split('').map(digit => arabicNumerals[parseInt(digit)]).join('')
+}
+
 export function ModernContentArea({
   children,
   currentStep,
@@ -72,8 +78,15 @@ export function ModernContentArea({
     )} dir={isRTL ? "rtl" : "ltr"}>
       {/* Main content area */}
       <div className="flex-1 overflow-y-auto">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-4 sm:py-8 lg:pt-8 pt-16"> {/* Add top padding for mobile menu */}
-          <Card className="shadow-sm border-0 bg-white/80 backdrop-blur-sm">
+        <div className="w-full px-4 sm:px-6 md:w-full md:px-6 lg:max-w-[1649px] lg:mx-auto lg:px-0 py-4 sm:py-6 lg:py-8">
+          {/* Step indicator */}
+          <div className="mb-4 text-sm text-gray-600">
+            {locale === 'ar'
+              ? `خطوة ${toArabicNumerals(currentStep + 1)} من ${toArabicNumerals(totalSteps)}`
+              : `Step ${currentStep + 1} of ${totalSteps}`}
+          </div>
+
+          <Card className="shadow-sm border-0 bg-white">
             <CardContent className="p-4 sm:p-6 lg:p-8">
               <AnimatePresence mode="wait" custom={1}>
                 <motion.div
@@ -97,56 +110,113 @@ export function ModernContentArea({
       </div>
 
       {/* Action bar */}
-      <div className="border-t border-gray-200 bg-white px-4 sm:px-6 py-3 sm:py-4">
-        <div className="max-w-3xl mx-auto">
-          <div className={cn(
-            "flex items-center justify-between",
-            isRTL && "flex-row-reverse"
-          )}>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onPreviousAction}
-              disabled={!canGoPrevious || currentStep === 0}
-              className={cn(
-                "flex items-center gap-2",
-                isRTL && "flex-row-reverse"
-              )}
-            >
-              <ArrowLeft className={cn("h-4 w-4", isRTL && "rotate-180")} />
-              {t("back")}
-            </Button>
+      <div className="border-t border-gray-200 bg-white px-4 sm:px-6 py-4 sm:py-5">
+        <div className="w-full md:w-full md:px-6 lg:max-w-[1649px] lg:mx-auto">
+          {/* Progress dots */}
+          <div className="flex justify-center gap-1.5 mb-4">
+            {Array.from({ length: totalSteps }).map((_, index) => (
+              <div
+                key={index}
+                className={cn(
+                  "w-1.5 h-1.5 rounded-full transition-all duration-200",
+                  index === currentStep
+                    ? "bg-primary w-6"
+                    : index < currentStep
+                    ? "bg-primary/40"
+                    : "bg-gray-300"
+                )}
+              />
+            ))}
+          </div>
 
-            <div className="flex items-center gap-2 text-sm text-gray-500">
-              <span>{currentStep + 1}</span>
-              <span>/</span>
-              <span>{totalSteps}</span>
-            </div>
+          <div className="flex items-center justify-between">
+            {isRTL ? (
+              <>
+                {/* RTL: Next button on the left */}
+                <Button
+                  type={isLastStep ? "submit" : "button"}
+                  onClick={handleNext}
+                  disabled={!canGoNext || isSubmitting}
+                  className="flex items-center gap-2 min-w-[120px] flex-row-reverse"
+                >
+                  {isSubmitting && (
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+                  )}
+                  <span>
+                    {isSubmitting
+                      ? t("submitting")
+                      : isLastStep
+                        ? t("steps.review.completeOnboarding")
+                        : t("next")
+                    }
+                  </span>
+                  {!isSubmitting && (
+                    <ArrowRight className="h-4 w-4 rotate-180" />
+                  )}
+                </Button>
 
-            <Button
-              type={isLastStep ? "submit" : "button"}
-              onClick={handleNext}
-              disabled={!canGoNext || isSubmitting}
-              className={cn(
-                "flex items-center gap-2 min-w-[120px]",
-                isRTL && "flex-row-reverse"
-              )}
-            >
-              {isSubmitting && (
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
-              )}
-              <span>
-                {isSubmitting
-                  ? t("submitting")
-                  : isLastStep
-                    ? t("steps.review.completeOnboarding")
-                    : t("next")
-                }
-              </span>
-              {!isSubmitting && (
-                <ArrowRight className={cn("h-4 w-4", isRTL && "rotate-180")} />
-              )}
-            </Button>
+                <div className="hidden lg:flex items-center gap-2 text-sm text-gray-500">
+                  <span>{toArabicNumerals(currentStep + 1)}</span>
+                  <span>/</span>
+                  <span>{toArabicNumerals(totalSteps)}</span>
+                </div>
+
+                {/* RTL: Back button on the right */}
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={onPreviousAction}
+                  disabled={!canGoPrevious || currentStep === 0}
+                  className="flex items-center gap-2 flex-row-reverse"
+                >
+                  <ArrowLeft className="h-4 w-4 rotate-180" />
+                  {t("back")}
+                </Button>
+              </>
+            ) : (
+              <>
+                {/* LTR: Back button on the left */}
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={onPreviousAction}
+                  disabled={!canGoPrevious || currentStep === 0}
+                  className="flex items-center gap-2"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                  {t("back")}
+                </Button>
+
+                <div className="hidden lg:flex items-center gap-2 text-sm text-gray-500">
+                  <span>{currentStep + 1}</span>
+                  <span>/</span>
+                  <span>{totalSteps}</span>
+                </div>
+
+                {/* LTR: Next button on the right */}
+                <Button
+                  type={isLastStep ? "submit" : "button"}
+                  onClick={handleNext}
+                  disabled={!canGoNext || isSubmitting}
+                  className="flex items-center gap-2 min-w-[120px]"
+                >
+                  {isSubmitting && (
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+                  )}
+                  <span>
+                    {isSubmitting
+                      ? t("submitting")
+                      : isLastStep
+                        ? t("steps.review.completeOnboarding")
+                        : t("next")
+                    }
+                  </span>
+                  {!isSubmitting && (
+                    <ArrowRight className="h-4 w-4" />
+                  )}
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </div>

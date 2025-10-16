@@ -104,10 +104,10 @@ export function RecentWorkPanel({ form, content }: RecentWorkPanelProps) {
 
   return (
     <div className={cn(
-      "space-y-6",
+      "space-y-5",
       isRTL && "text-right [&_input]:text-right [&_textarea]:text-right"
     )} dir={isRTL ? "rtl" : "ltr"}>
-      <div className="mb-6">
+      <div className="mb-5">
         <h2 className="text-2xl font-bold text-gray-900 mb-2">
           {content?.recentWorkTitle || t("title")}
         </h2>
@@ -245,7 +245,7 @@ export function RecentWorkPanel({ form, content }: RecentWorkPanelProps) {
             </div>
           </div>
 
-          <div className="flex items-center space-x-2">
+          <div className={cn("flex items-center gap-2", isRTL && "flex-row-reverse")}>
             <Checkbox
               id="ongoing"
               checked={formData.isOngoing}
