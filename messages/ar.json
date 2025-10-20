@@ -70,7 +70,11 @@
       "required": "{field} مطلوب",
       "email": "يرجى إدخال عنوان بريد إلكتروني صحيح",
       "minLength": "{field} يجب أن يكون {length} أحرف على الأقل",
-      "maxLength": "{field} لا يمكن أن يتجاوز {length} أحرف"
+      "maxLength": "{field} لا يمكن أن يتجاوز {length} أحرف",
+      "invalidUrl": "يرجى إدخال عنوان URL صالح يبدأ بـ http:// أو https://",
+      "urlProtocolRequired": "يجب أن يبدأ عنوان URL بـ http:// أو https://",
+      "requiredFields": "يرجى إكمال جميع الحقول المطلوبة قبل المتابعة.",
+      "chooseLanguage": "يرجى اختيار لغتك المفضلة"
     }
   },
   "common": {
@@ -537,6 +541,10 @@
         "portfolioPlaceholder": "https://yourportfolio.com",
         "website": "الموقع الشخصي",
         "websitePlaceholder": "https://yourwebsite.com",
+        "otherLinks": "روابط مهنية أخرى",
+        "otherLinksHint": "أضف روابط لملفاتك المهنية (تويتر، GitHub، معرض الأعمال، إلخ)",
+        "platformPlaceholder": "اسم المنصة (مثل تويتر، GitHub)",
+        "urlPlaceholder": "https://example.com/yourprofile",
         "continue": "متابعة"
       },
       "recentWork": {

@@ -147,38 +147,38 @@ exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
   emailVerified: 'emailVerified',
+  username: 'username',
   image: 'image',
-  phoneNumber: 'phoneNumber',
-  phoneVerified: 'phoneVerified',
+  bio: 'bio',
+  role: 'role',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  ageGroup: 'ageGroup',
+  city: 'city',
+  country: 'country',
+  expertiseAreas: 'expertiseAreas',
   firstName: 'firstName',
   lastName: 'lastName',
-  username: 'username',
-  bio: 'bio',
-  ageGroup: 'ageGroup',
-  country: 'country',
-  city: 'city',
-  workTypes: 'workTypes',
-  expertiseAreas: 'expertiseAreas',
+  linkedinProfile: 'linkedinProfile',
   organization: 'organization',
+  personalWebsite: 'personalWebsite',
   position: 'position',
   workBio: 'workBio',
-  personalWebsite: 'personalWebsite',
-  linkedinProfile: 'linkedinProfile',
-  otherSocialLinks: 'otherSocialLinks',
-  preferredLanguage: 'preferredLanguage',
+  workTypes: 'workTypes',
   isSearchable: 'isSearchable',
   profileVisibility: 'profileVisibility',
   showEmail: 'showEmail',
-  showPhoneNumber: 'showPhoneNumber',
-  showWorkDetails: 'showWorkDetails',
-  showSocialLinks: 'showSocialLinks',
   showLocation: 'showLocation',
+  showSocialLinks: 'showSocialLinks',
+  showWorkDetails: 'showWorkDetails',
+  phoneNumber: 'phoneNumber',
+  phoneVerified: 'phoneVerified',
+  showPhoneNumber: 'showPhoneNumber',
   onboardingCompleted: 'onboardingCompleted',
   onboardingStep: 'onboardingStep',
+  preferredLanguage: 'preferredLanguage',
   welcomeMessageSeen: 'welcomeMessageSeen',
-  role: 'role',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  otherSocialLinks: 'otherSocialLinks'
 };
 
 exports.Prisma.CommunityScalarFieldEnum = {
@@ -223,8 +223,7 @@ exports.Prisma.RecentWorkScalarFieldEnum = {
 
 exports.Prisma.DownloadEventScalarFieldEnum = {
   id: 'id',
-  contentType: 'contentType',
-  contentId: 'contentId',
+  reportId: 'reportId',
   fileLanguage: 'fileLanguage',
   userId: 'userId',
   sessionId: 'sessionId',
@@ -235,9 +234,8 @@ exports.Prisma.DownloadEventScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
-exports.Prisma.ContentMetadataScalarFieldEnum = {
+exports.Prisma.Report_metadataScalarFieldEnum = {
   id: 'id',
-  contentType: 'contentType',
   sanityId: 'sanityId',
   downloadCount: 'downloadCount',
   lastDownloadedAt: 'lastDownloadedAt',
@@ -270,9 +268,22 @@ exports.Prisma.JsonNullValueFilter = {
   JsonNull: Prisma.JsonNull,
   AnyNull: Prisma.AnyNull
 };
+exports.Role = exports.$Enums.Role = {
+  community_member: 'community_member',
+  community_editor: 'community_editor',
+  team_editor: 'team_editor',
+  admin: 'admin'
+};
+
 exports.AgeGroup = exports.$Enums.AgeGroup = {
   UNDER_18: 'UNDER_18',
   ABOVE_18: 'ABOVE_18'
+};
+
+exports.ProfileVisibility = exports.$Enums.ProfileVisibility = {
+  PUBLIC: 'PUBLIC',
+  MEMBERS: 'MEMBERS',
+  PRIVATE: 'PRIVATE'
 };
 
 exports.Language = exports.$Enums.Language = {
@@ -282,17 +293,10 @@ exports.Language = exports.$Enums.Language = {
   AR: 'AR'
 };
 
-exports.ProfileVisibility = exports.$Enums.ProfileVisibility = {
-  PUBLIC: 'PUBLIC',
-  MEMBERS: 'MEMBERS',
-  PRIVATE: 'PRIVATE'
-};
-
-exports.Role = exports.$Enums.Role = {
-  community_member: 'community_member',
-  community_editor: 'community_editor',
-  team_editor: 'team_editor',
-  admin: 'admin'
+exports.ExpertiseArea = exports.$Enums.ExpertiseArea = {
+  CLIMATE_CHANGE: 'CLIMATE_CHANGE',
+  MENTAL_HEALTH: 'MENTAL_HEALTH',
+  HEALTH: 'HEALTH'
 };
 
 exports.WorkType = exports.$Enums.WorkType = {
@@ -302,12 +306,6 @@ exports.WorkType = exports.$Enums.WorkType = {
   NGO: 'NGO',
   COMMUNITY_ORGANIZATION: 'COMMUNITY_ORGANIZATION',
   EDUCATION_TEACHING: 'EDUCATION_TEACHING'
-};
-
-exports.ExpertiseArea = exports.$Enums.ExpertiseArea = {
-  CLIMATE_CHANGE: 'CLIMATE_CHANGE',
-  MENTAL_HEALTH: 'MENTAL_HEALTH',
-  HEALTH: 'HEALTH'
 };
 
 exports.CommunityType = exports.$Enums.CommunityType = {
@@ -331,11 +329,6 @@ exports.SpecialCommunityName = exports.$Enums.SpecialCommunityName = {
   FARMER_AND_FISHER: 'FARMER_AND_FISHER'
 };
 
-exports.ContentType = exports.$Enums.ContentType = {
-  REPORT: 'REPORT',
-  AGENDA: 'AGENDA'
-};
-
 exports.Prisma.ModelName = {
   Account: 'Account',
   Session: 'Session',
@@ -345,7 +338,7 @@ exports.Prisma.ModelName = {
   Content: 'Content',
   RecentWork: 'RecentWork',
   DownloadEvent: 'DownloadEvent',
-  ContentMetadata: 'ContentMetadata'
+  report_metadata: 'report_metadata'
 };
 
 /**

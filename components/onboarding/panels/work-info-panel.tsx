@@ -41,7 +41,7 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
         <h2 className="text-2xl font-bold text-gray-900 mb-2">
           {content?.workInfoTitle || t("title")}
         </h2>
-        <p className="text-muted-foreground">
+        <p className="text-lg text-muted-foreground">
           {content?.workInfoDescription || t("description")}
         </p>
       </div>

@@ -111,7 +111,7 @@ export function RecentWorkPanel({ form, content }: RecentWorkPanelProps) {
         <h2 className="text-2xl font-bold text-gray-900 mb-2">
           {content?.recentWorkTitle || t("title")}
         </h2>
-        <p className="text-muted-foreground">
+        <p className="text-lg text-muted-foreground">
           {content?.recentWorkDescription || t("description")}
         </p>
       </div>

@@ -41,6 +41,7 @@ export function ModernOnboardingContainer({
 }: ModernOnboardingContainerProps) {
   const router = useRouter()
   const t = useTranslations("onboarding")
+  const validationT = useTranslations("errors.validation")
   const locale = useLocale()
   const isRTL = rtlLocales.includes(locale)
 
@@ -54,6 +55,24 @@ export function ModernOnboardingContainer({
 
   // Create dynamic schema
   const dynamicSchema = createOnboardingSchema(sanityContent?.validationMessages)
+
+  // Helper function to map Sanity IDs to enum keys (for submission)
+  const mapSanityToEnumKeys = (sanityIds: string[], sanityData: any[]): string[] => {
+    return sanityIds.map(id => {
+      const item = sanityData.find(d => d._id === id)
+      return item?.key || id
+    })
+  }
+
+  // Helper function to reverse map enum keys to Sanity IDs (for pre-population)
+  const mapEnumKeysToSanityIds = (enumKeys: string[], sanityData: any[]): string[] => {
+    return enumKeys
+      .map(enumKey => {
+        const item = sanityData.find(d => d.key === enumKey)
+        return item?._id
+      })
+      .filter(Boolean) as string[] // Remove any undefined values
+  }
 
   const form = useForm({
     resolver: zodResolver(dynamicSchema),
@@ -69,12 +88,16 @@ export function ModernOnboardingContainer({
         ageGroup: user?.ageGroup || defaultOnboardingValues.basicInfo.ageGroup,
         country: user?.country || defaultOnboardingValues.basicInfo.country,
         city: user?.city || defaultOnboardingValues.basicInfo.city,
-        preferredLanguage: (locale as "EN" | "ES" | "FR" | "AR") || defaultOnboardingValues.basicInfo.preferredLanguage,
+        preferredLanguage: (locale.toUpperCase() as "EN" | "ES" | "FR" | "AR") || defaultOnboardingValues.basicInfo.preferredLanguage,
       },
       workInfo: {
         ...defaultOnboardingValues.workInfo,
-        workTypes: user?.workTypes || defaultOnboardingValues.workInfo.workTypes,
-        expertiseAreas: user?.expertiseAreas || defaultOnboardingValues.workInfo.expertiseAreas,
+        workTypes: user?.workTypes
+          ? mapEnumKeysToSanityIds(user.workTypes, userManagementOptions?.workTypes || [])
+          : defaultOnboardingValues.workInfo.workTypes,
+        expertiseAreas: user?.expertiseAreas
+          ? mapEnumKeysToSanityIds(user.expertiseAreas, userManagementOptions?.expertiseAreas || [])
+          : defaultOnboardingValues.workInfo.expertiseAreas,
         organization: user?.organization || defaultOnboardingValues.workInfo.organization,
         position: user?.position || defaultOnboardingValues.workInfo.position,
         workBio: user?.workBio || defaultOnboardingValues.workInfo.workBio,
@@ -110,12 +133,16 @@ export function ModernOnboardingContainer({
           ageGroup: user.ageGroup || defaultOnboardingValues.basicInfo.ageGroup,
           country: user.country || defaultOnboardingValues.basicInfo.country,
           city: user.city || defaultOnboardingValues.basicInfo.city,
-          preferredLanguage: (locale as "EN" | "ES" | "FR" | "AR") || defaultOnboardingValues.basicInfo.preferredLanguage,
+          preferredLanguage: (locale.toUpperCase() as "EN" | "ES" | "FR" | "AR") || defaultOnboardingValues.basicInfo.preferredLanguage,
         },
         workInfo: {
           ...defaultOnboardingValues.workInfo,
-          workTypes: user.workTypes || defaultOnboardingValues.workInfo.workTypes,
-          expertiseAreas: user.expertiseAreas || defaultOnboardingValues.workInfo.expertiseAreas,
+          workTypes: user.workTypes
+            ? mapEnumKeysToSanityIds(user.workTypes, userManagementOptions?.workTypes || [])
+            : defaultOnboardingValues.workInfo.workTypes,
+          expertiseAreas: user.expertiseAreas
+            ? mapEnumKeysToSanityIds(user.expertiseAreas, userManagementOptions?.expertiseAreas || [])
+            : defaultOnboardingValues.workInfo.expertiseAreas,
           organization: user.organization || defaultOnboardingValues.workInfo.organization,
           position: user.position || defaultOnboardingValues.workInfo.position,
           workBio: user.workBio || defaultOnboardingValues.workInfo.workBio,
@@ -189,11 +216,11 @@ export function ModernOnboardingContainer({
     if (!isValid) {
       const errors = form.formState.errors
       console.log("Validation errors:", errors)
-      setValidationError("Please complete all required fields before continuing.")
+      setValidationError(validationT("requiredFields"))
     }
 
     return isValid
-  }, [currentStep, form])
+  }, [currentStep, form, validationT])
 
   // Navigation handlers
   const nextStep = useCallback(async () => {
@@ -213,14 +240,6 @@ export function ModernOnboardingContainer({
     }
   }, [currentStep])
 
-  // Helper function to map Sanity IDs to enum keys
-  const mapSanityToEnumKeys = (sanityIds: string[], sanityData: any[]): string[] => {
-    return sanityIds.map(id => {
-      const item = sanityData.find(d => d._id === id)
-      return item?.key || id
-    })
-  }
-
   // Form submission
   const handleSubmit = async (data: any) => {
     setIsSubmitting(true)
@@ -231,7 +250,7 @@ export function ModernOnboardingContainer({
       const isValid = await form.trigger(["basicInfo", "workInfo", "privacy"])
 
       if (!isValid) {
-        setValidationError("Please complete all required fields before submitting.")
+        setValidationError(validationT("requiredFields"))
         return
       }
 

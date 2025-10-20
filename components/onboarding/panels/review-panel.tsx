@@ -16,8 +16,8 @@ import type { OnboardingFormData } from "@/lib/schemas/onboarding-schema"
 interface ReviewPanelProps {
   form: any
   content?: any
-  workTypes?: Array<{ _id: string; title: any }>
-  expertiseAreas?: Array<{ _id: string; title: any }>
+  workTypes?: Array<{ _id: string; label: any }>
+  expertiseAreas?: Array<{ _id: string; label: any }>
   isSubmitting?: boolean
 }
 
@@ -28,20 +28,32 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
 
   const formData = form.watch()
 
-  const getLocalizedText = (item: any, fallback: string) => {
-    if (!item) return fallback
-    if (typeof item === 'string') return item
-    return item[locale] || item['en'] || fallback
+  const getLocalizedText = (labelArray: any, fallback: string) => {
+    if (!labelArray) return fallback
+    if (typeof labelArray === 'string') return labelArray
+
+    // Sanity returns: [{_key: 'en', value: 'Label'}, {_key: 'es', value: 'Etiqueta'}]
+    if (Array.isArray(labelArray)) {
+      const localizedItem = labelArray.find((item: any) => item._key === locale)
+      if (localizedItem?.value) return localizedItem.value
+
+      const enItem = labelArray.find((item: any) => item._key === 'en')
+      if (enItem?.value) return enItem.value
+
+      if (labelArray[0]?.value) return labelArray[0].value
+    }
+
+    return fallback
   }
 
   const getWorkTypeTitle = (id: any) => {
     const workType = workTypes.find((wt: any) => wt._id === id)
-    return workType ? getLocalizedText(workType.title, `Work Type ${id}`) : id
+    return workType ? getLocalizedText(workType.label, `Work Type ${id}`) : id
   }
 
   const getExpertiseAreaTitle = (id: any) => {
     const area = expertiseAreas.find((ea: any) => ea._id === id)
-    return area ? getLocalizedText(area.title, `Expertise ${id}`) : id
+    return area ? getLocalizedText(area.label, `Expertise ${id}`) : id
   }
 
   const formatDate = (dateString: string) => {
@@ -74,7 +86,7 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
         <h2 className="text-2xl font-bold text-gray-900 mb-2">
           {content?.reviewTitle || t("title")}
         </h2>
-        <p className="text-muted-foreground">
+        <p className="text-lg text-muted-foreground">
           {content?.reviewDescription || t("description")}
         </p>
       </div>
@@ -143,11 +155,21 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
             <div>
               <p className="text-sm font-medium text-gray-500 mb-2">{content?.reviewFieldLabels?.workTypes || t("workTypes")}</p>
               <div className={cn("flex flex-wrap gap-2", isRTL && "flex-row-reverse")}>
-                {formData.workInfo.workTypes.map((id: any) => (
-                  <Badge key={id} variant="secondary">
-                    {getWorkTypeTitle(id)}
-                  </Badge>
-                ))}
+                {[...new Set(formData.workInfo.workTypes)]
+                  .map((id: any, index: number) => {
+                    const workType = workTypes.find((wt: any) => wt._id === id)
+                    if (!workType) return null
+                    const title = getLocalizedText(workType.label, null)
+                    if (!title) return null
+                    return { id, title, index }
+                  })
+                  .filter(Boolean)
+                  .map((item: any) => (
+                    <Badge key={`${item.id}-${item.index}`} variant="secondary">
+                      {item.title}
+                    </Badge>
+                  ))
+                }
               </div>
             </div>
 
@@ -155,11 +177,21 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
             <div>
               <p className="text-sm font-medium text-gray-500 mb-2">{content?.reviewFieldLabels?.expertiseAreas || t("expertiseAreas")}</p>
               <div className={cn("flex flex-wrap gap-2", isRTL && "flex-row-reverse")}>
-                {formData.workInfo.expertiseAreas.map((id: any) => (
-                  <Badge key={id} variant="outline">
-                    {getExpertiseAreaTitle(id)}
-                  </Badge>
-                ))}
+                {[...new Set(formData.workInfo.expertiseAreas)]
+                  .map((id: any, index: number) => {
+                    const area = expertiseAreas.find((ea: any) => ea._id === id)
+                    if (!area) return null
+                    const title = getLocalizedText(area.label, null)
+                    if (!title) return null
+                    return { id, title, index }
+                  })
+                  .filter(Boolean)
+                  .map((item: any) => (
+                    <Badge key={`${item.id}-${item.index}`} variant="outline">
+                      {item.title}
+                    </Badge>
+                  ))
+                }
               </div>
             </div>
 

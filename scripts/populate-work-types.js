@@ -220,24 +220,6 @@ const expertiseAreas = [
     ],
     order: 5,
     isActive: true
-  },
-  {
-    _type: 'expertiseArea',
-    key: 'ECONOMIC_DEVELOPMENT',
-    label: [
-      { _key: 'en', value: 'Economic Development' },
-      { _key: 'es', value: 'Desarrollo Económico' },
-      { _key: 'fr', value: 'Développement Économique' },
-      { _key: 'ar', value: 'التنمية الاقتصادية' }
-    ],
-    description: [
-      { _key: 'en', value: 'Economic empowerment, poverty reduction, workforce development' },
-      { _key: 'es', value: 'Empoderamiento económico, reducción de pobreza, desarrollo de fuerza laboral' },
-      { _key: 'fr', value: 'Autonomisation économique, réduction de la pauvreté, développement de la main-d\'œuvre' },
-      { _key: 'ar', value: 'التمكين الاقتصادي وتقليل الفقر وتطوير القوى العاملة' }
-    ],
-    order: 6,
-    isActive: true
   }
 ]
 

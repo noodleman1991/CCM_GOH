@@ -54,10 +54,10 @@ export type RecentWork = $Result.DefaultSelection<Prisma.$RecentWorkPayload>
  */
 export type DownloadEvent = $Result.DefaultSelection<Prisma.$DownloadEventPayload>
 /**
- * Model ContentMetadata
+ * Model report_metadata
  * 
  */
-export type ContentMetadata = $Result.DefaultSelection<Prisma.$ContentMetadataPayload>
+export type report_metadata = $Result.DefaultSelection<Prisma.$report_metadataPayload>
 
 /**
  * Enums
@@ -150,14 +150,6 @@ export const SpecialCommunityName: {
 
 export type SpecialCommunityName = (typeof SpecialCommunityName)[keyof typeof SpecialCommunityName]
 
-
-export const ContentType: {
-  REPORT: 'REPORT',
-  AGENDA: 'AGENDA'
-};
-
-export type ContentType = (typeof ContentType)[keyof typeof ContentType]
-
 }
 
 export type AgeGroup = $Enums.AgeGroup
@@ -195,10 +187,6 @@ export const RegionalCommunityName: typeof $Enums.RegionalCommunityName
 export type SpecialCommunityName = $Enums.SpecialCommunityName
 
 export const SpecialCommunityName: typeof $Enums.SpecialCommunityName
-
-export type ContentType = $Enums.ContentType
-
-export const ContentType: typeof $Enums.ContentType
 
 /**
  * ##  Prisma Client ʲˢ
@@ -399,14 +387,14 @@ export class PrismaClient<
   get downloadEvent(): Prisma.DownloadEventDelegate<ExtArgs, ClientOptions>;
 
   /**
-   * `prisma.contentMetadata`: Exposes CRUD operations for the **ContentMetadata** model.
+   * `prisma.report_metadata`: Exposes CRUD operations for the **report_metadata** model.
     * Example usage:
     * ```ts
-    * // Fetch zero or more ContentMetadata
-    * const contentMetadata = await prisma.contentMetadata.findMany()
+    * // Fetch zero or more Report_metadata
+    * const report_metadata = await prisma.report_metadata.findMany()
     * ```
     */
-  get contentMetadata(): Prisma.ContentMetadataDelegate<ExtArgs, ClientOptions>;
+  get report_metadata(): Prisma.report_metadataDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -855,7 +843,7 @@ export namespace Prisma {
     Content: 'Content',
     RecentWork: 'RecentWork',
     DownloadEvent: 'DownloadEvent',
-    ContentMetadata: 'ContentMetadata'
+    report_metadata: 'report_metadata'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -874,7 +862,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "account" | "session" | "user" | "community" | "userCommunity" | "content" | "recentWork" | "downloadEvent" | "contentMetadata"
+      modelProps: "account" | "session" | "user" | "community" | "userCommunity" | "content" | "recentWork" | "downloadEvent" | "report_metadata"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1470,77 +1458,77 @@ export namespace Prisma {
           }
         }
       }
-      ContentMetadata: {
-        payload: Prisma.$ContentMetadataPayload<ExtArgs>
-        fields: Prisma.ContentMetadataFieldRefs
+      report_metadata: {
+        payload: Prisma.$report_metadataPayload<ExtArgs>
+        fields: Prisma.report_metadataFieldRefs
         operations: {
           findUnique: {
-            args: Prisma.ContentMetadataFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ContentMetadataPayload> | null
+            args: Prisma.report_metadataFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$report_metadataPayload> | null
           }
           findUniqueOrThrow: {
-            args: Prisma.ContentMetadataFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ContentMetadataPayload>
+            args: Prisma.report_metadataFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$report_metadataPayload>
           }
           findFirst: {
-            args: Prisma.ContentMetadataFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ContentMetadataPayload> | null
+            args: Prisma.report_metadataFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$report_metadataPayload> | null
           }
           findFirstOrThrow: {
-            args: Prisma.ContentMetadataFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ContentMetadataPayload>
+            args: Prisma.report_metadataFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$report_metadataPayload>
           }
           findMany: {
-            args: Prisma.ContentMetadataFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ContentMetadataPayload>[]
+            args: Prisma.report_metadataFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$report_metadataPayload>[]
           }
           create: {
-            args: Prisma.ContentMetadataCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ContentMetadataPayload>
+            args: Prisma.report_metadataCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$report_metadataPayload>
           }
           createMany: {
-            args: Prisma.ContentMetadataCreateManyArgs<ExtArgs>
+            args: Prisma.report_metadataCreateManyArgs<ExtArgs>
             result: BatchPayload
           }
           createManyAndReturn: {
-            args: Prisma.ContentMetadataCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ContentMetadataPayload>[]
+            args: Prisma.report_metadataCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$report_metadataPayload>[]
           }
           delete: {
-            args: Prisma.ContentMetadataDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ContentMetadataPayload>
+            args: Prisma.report_metadataDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$report_metadataPayload>
           }
           update: {
-            args: Prisma.ContentMetadataUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ContentMetadataPayload>
+            args: Prisma.report_metadataUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$report_metadataPayload>
           }
           deleteMany: {
-            args: Prisma.ContentMetadataDeleteManyArgs<ExtArgs>
+            args: Prisma.report_metadataDeleteManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateMany: {
-            args: Prisma.ContentMetadataUpdateManyArgs<ExtArgs>
+            args: Prisma.report_metadataUpdateManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateManyAndReturn: {
-            args: Prisma.ContentMetadataUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ContentMetadataPayload>[]
+            args: Prisma.report_metadataUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$report_metadataPayload>[]
           }
           upsert: {
-            args: Prisma.ContentMetadataUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ContentMetadataPayload>
+            args: Prisma.report_metadataUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$report_metadataPayload>
           }
           aggregate: {
-            args: Prisma.ContentMetadataAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateContentMetadata>
+            args: Prisma.Report_metadataAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateReport_metadata>
           }
           groupBy: {
-            args: Prisma.ContentMetadataGroupByArgs<ExtArgs>
-            result: $Utils.Optional<ContentMetadataGroupByOutputType>[]
+            args: Prisma.report_metadataGroupByArgs<ExtArgs>
+            result: $Utils.Optional<Report_metadataGroupByOutputType>[]
           }
           count: {
-            args: Prisma.ContentMetadataCountArgs<ExtArgs>
-            result: $Utils.Optional<ContentMetadataCountAggregateOutputType> | number
+            args: Prisma.report_metadataCountArgs<ExtArgs>
+            result: $Utils.Optional<Report_metadataCountAggregateOutputType> | number
           }
         }
       }
@@ -1648,7 +1636,7 @@ export namespace Prisma {
     content?: ContentOmit
     recentWork?: RecentWorkOmit
     downloadEvent?: DownloadEventOmit
-    contentMetadata?: ContentMetadataOmit
+    report_metadata?: report_metadataOmit
   }
 
   /* Types for Logging */
@@ -1730,18 +1718,18 @@ export namespace Prisma {
 
   export type UserCountOutputType = {
     accounts: number
-    sessions: number
-    communityMemberships: number
     createdContent: number
     recentWork: number
+    sessions: number
+    communityMemberships: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     accounts?: boolean | UserCountOutputTypeCountAccountsArgs
-    sessions?: boolean | UserCountOutputTypeCountSessionsArgs
-    communityMemberships?: boolean | UserCountOutputTypeCountCommunityMembershipsArgs
     createdContent?: boolean | UserCountOutputTypeCountCreatedContentArgs
     recentWork?: boolean | UserCountOutputTypeCountRecentWorkArgs
+    sessions?: boolean | UserCountOutputTypeCountSessionsArgs
+    communityMemberships?: boolean | UserCountOutputTypeCountCommunityMembershipsArgs
   }
 
   // Custom InputTypes
@@ -1765,20 +1753,6 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
-  export type UserCountOutputTypeCountSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: SessionWhereInput
-  }
-
-  /**
-   * UserCountOutputType without action
-   */
-  export type UserCountOutputTypeCountCommunityMembershipsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: UserCommunityWhereInput
-  }
-
-  /**
-   * UserCountOutputType without action
-   */
   export type UserCountOutputTypeCountCreatedContentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ContentWhereInput
   }
@@ -1790,19 +1764,33 @@ export namespace Prisma {
     where?: RecentWorkWhereInput
   }
 
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SessionWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountCommunityMembershipsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserCommunityWhereInput
+  }
+
 
   /**
    * Count Type CommunityCountOutputType
    */
 
   export type CommunityCountOutputType = {
-    members: number
     contents: number
+    members: number
   }
 
   export type CommunityCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    members?: boolean | CommunityCountOutputTypeCountMembersArgs
     contents?: boolean | CommunityCountOutputTypeCountContentsArgs
+    members?: boolean | CommunityCountOutputTypeCountMembersArgs
   }
 
   // Custom InputTypes
@@ -1819,15 +1807,15 @@ export namespace Prisma {
   /**
    * CommunityCountOutputType without action
    */
-  export type CommunityCountOutputTypeCountMembersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: UserCommunityWhereInput
+  export type CommunityCountOutputTypeCountContentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ContentWhereInput
   }
 
   /**
    * CommunityCountOutputType without action
    */
-  export type CommunityCountOutputTypeCountContentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ContentWhereInput
+  export type CommunityCountOutputTypeCountMembersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserCommunityWhereInput
   }
 
 
@@ -4100,108 +4088,108 @@ export namespace Prisma {
     id: string | null
     email: string | null
     emailVerified: Date | null
-    image: string | null
-    phoneNumber: string | null
-    phoneVerified: Date | null
-    firstName: string | null
-    lastName: string | null
     username: string | null
+    image: string | null
     bio: string | null
-    ageGroup: $Enums.AgeGroup | null
-    country: string | null
-    city: string | null
-    organization: string | null
-    position: string | null
-    workBio: string | null
-    personalWebsite: string | null
-    linkedinProfile: string | null
-    preferredLanguage: $Enums.Language | null
-    isSearchable: boolean | null
-    profileVisibility: $Enums.ProfileVisibility | null
-    showEmail: boolean | null
-    showPhoneNumber: boolean | null
-    showWorkDetails: boolean | null
-    showSocialLinks: boolean | null
-    showLocation: boolean | null
-    onboardingCompleted: boolean | null
-    onboardingStep: number | null
-    welcomeMessageSeen: boolean | null
     role: $Enums.Role | null
     createdAt: Date | null
     updatedAt: Date | null
+    ageGroup: $Enums.AgeGroup | null
+    city: string | null
+    country: string | null
+    firstName: string | null
+    lastName: string | null
+    linkedinProfile: string | null
+    organization: string | null
+    personalWebsite: string | null
+    position: string | null
+    workBio: string | null
+    isSearchable: boolean | null
+    profileVisibility: $Enums.ProfileVisibility | null
+    showEmail: boolean | null
+    showLocation: boolean | null
+    showSocialLinks: boolean | null
+    showWorkDetails: boolean | null
+    phoneNumber: string | null
+    phoneVerified: Date | null
+    showPhoneNumber: boolean | null
+    onboardingCompleted: boolean | null
+    onboardingStep: number | null
+    preferredLanguage: $Enums.Language | null
+    welcomeMessageSeen: boolean | null
   }
 
   export type UserMaxAggregateOutputType = {
     id: string | null
     email: string | null
     emailVerified: Date | null
-    image: string | null
-    phoneNumber: string | null
-    phoneVerified: Date | null
-    firstName: string | null
-    lastName: string | null
     username: string | null
+    image: string | null
     bio: string | null
-    ageGroup: $Enums.AgeGroup | null
-    country: string | null
-    city: string | null
-    organization: string | null
-    position: string | null
-    workBio: string | null
-    personalWebsite: string | null
-    linkedinProfile: string | null
-    preferredLanguage: $Enums.Language | null
-    isSearchable: boolean | null
-    profileVisibility: $Enums.ProfileVisibility | null
-    showEmail: boolean | null
-    showPhoneNumber: boolean | null
-    showWorkDetails: boolean | null
-    showSocialLinks: boolean | null
-    showLocation: boolean | null
-    onboardingCompleted: boolean | null
-    onboardingStep: number | null
-    welcomeMessageSeen: boolean | null
     role: $Enums.Role | null
     createdAt: Date | null
     updatedAt: Date | null
+    ageGroup: $Enums.AgeGroup | null
+    city: string | null
+    country: string | null
+    firstName: string | null
+    lastName: string | null
+    linkedinProfile: string | null
+    organization: string | null
+    personalWebsite: string | null
+    position: string | null
+    workBio: string | null
+    isSearchable: boolean | null
+    profileVisibility: $Enums.ProfileVisibility | null
+    showEmail: boolean | null
+    showLocation: boolean | null
+    showSocialLinks: boolean | null
+    showWorkDetails: boolean | null
+    phoneNumber: string | null
+    phoneVerified: Date | null
+    showPhoneNumber: boolean | null
+    onboardingCompleted: boolean | null
+    onboardingStep: number | null
+    preferredLanguage: $Enums.Language | null
+    welcomeMessageSeen: boolean | null
   }
 
   export type UserCountAggregateOutputType = {
     id: number
     email: number
     emailVerified: number
-    image: number
-    phoneNumber: number
-    phoneVerified: number
-    firstName: number
-    lastName: number
     username: number
+    image: number
     bio: number
-    ageGroup: number
-    country: number
-    city: number
-    workTypes: number
-    expertiseAreas: number
-    organization: number
-    position: number
-    workBio: number
-    personalWebsite: number
-    linkedinProfile: number
-    otherSocialLinks: number
-    preferredLanguage: number
-    isSearchable: number
-    profileVisibility: number
-    showEmail: number
-    showPhoneNumber: number
-    showWorkDetails: number
-    showSocialLinks: number
-    showLocation: number
-    onboardingCompleted: number
-    onboardingStep: number
-    welcomeMessageSeen: number
     role: number
     createdAt: number
     updatedAt: number
+    ageGroup: number
+    city: number
+    country: number
+    expertiseAreas: number
+    firstName: number
+    lastName: number
+    linkedinProfile: number
+    organization: number
+    personalWebsite: number
+    position: number
+    workBio: number
+    workTypes: number
+    isSearchable: number
+    profileVisibility: number
+    showEmail: number
+    showLocation: number
+    showSocialLinks: number
+    showWorkDetails: number
+    phoneNumber: number
+    phoneVerified: number
+    showPhoneNumber: number
+    onboardingCompleted: number
+    onboardingStep: number
+    preferredLanguage: number
+    welcomeMessageSeen: number
+    otherSocialLinks: number
     _all: number
   }
 
@@ -4218,108 +4206,108 @@ export namespace Prisma {
     id?: true
     email?: true
     emailVerified?: true
-    image?: true
-    phoneNumber?: true
-    phoneVerified?: true
-    firstName?: true
-    lastName?: true
     username?: true
+    image?: true
     bio?: true
-    ageGroup?: true
-    country?: true
-    city?: true
-    organization?: true
-    position?: true
-    workBio?: true
-    personalWebsite?: true
-    linkedinProfile?: true
-    preferredLanguage?: true
-    isSearchable?: true
-    profileVisibility?: true
-    showEmail?: true
-    showPhoneNumber?: true
-    showWorkDetails?: true
-    showSocialLinks?: true
-    showLocation?: true
-    onboardingCompleted?: true
-    onboardingStep?: true
-    welcomeMessageSeen?: true
     role?: true
     createdAt?: true
     updatedAt?: true
+    ageGroup?: true
+    city?: true
+    country?: true
+    firstName?: true
+    lastName?: true
+    linkedinProfile?: true
+    organization?: true
+    personalWebsite?: true
+    position?: true
+    workBio?: true
+    isSearchable?: true
+    profileVisibility?: true
+    showEmail?: true
+    showLocation?: true
+    showSocialLinks?: true
+    showWorkDetails?: true
+    phoneNumber?: true
+    phoneVerified?: true
+    showPhoneNumber?: true
+    onboardingCompleted?: true
+    onboardingStep?: true
+    preferredLanguage?: true
+    welcomeMessageSeen?: true
   }
 
   export type UserMaxAggregateInputType = {
     id?: true
     email?: true
     emailVerified?: true
-    image?: true
-    phoneNumber?: true
-    phoneVerified?: true
-    firstName?: true
-    lastName?: true
     username?: true
+    image?: true
     bio?: true
-    ageGroup?: true
-    country?: true
-    city?: true
-    organization?: true
-    position?: true
-    workBio?: true
-    personalWebsite?: true
-    linkedinProfile?: true
-    preferredLanguage?: true
-    isSearchable?: true
-    profileVisibility?: true
-    showEmail?: true
-    showPhoneNumber?: true
-    showWorkDetails?: true
-    showSocialLinks?: true
-    showLocation?: true
-    onboardingCompleted?: true
-    onboardingStep?: true
-    welcomeMessageSeen?: true
     role?: true
     createdAt?: true
     updatedAt?: true
+    ageGroup?: true
+    city?: true
+    country?: true
+    firstName?: true
+    lastName?: true
+    linkedinProfile?: true
+    organization?: true
+    personalWebsite?: true
+    position?: true
+    workBio?: true
+    isSearchable?: true
+    profileVisibility?: true
+    showEmail?: true
+    showLocation?: true
+    showSocialLinks?: true
+    showWorkDetails?: true
+    phoneNumber?: true
+    phoneVerified?: true
+    showPhoneNumber?: true
+    onboardingCompleted?: true
+    onboardingStep?: true
+    preferredLanguage?: true
+    welcomeMessageSeen?: true
   }
 
   export type UserCountAggregateInputType = {
     id?: true
     email?: true
     emailVerified?: true
-    image?: true
-    phoneNumber?: true
-    phoneVerified?: true
-    firstName?: true
-    lastName?: true
     username?: true
+    image?: true
     bio?: true
-    ageGroup?: true
-    country?: true
-    city?: true
-    workTypes?: true
-    expertiseAreas?: true
-    organization?: true
-    position?: true
-    workBio?: true
-    personalWebsite?: true
-    linkedinProfile?: true
-    otherSocialLinks?: true
-    preferredLanguage?: true
-    isSearchable?: true
-    profileVisibility?: true
-    showEmail?: true
-    showPhoneNumber?: true
-    showWorkDetails?: true
-    showSocialLinks?: true
-    showLocation?: true
-    onboardingCompleted?: true
-    onboardingStep?: true
-    welcomeMessageSeen?: true
     role?: true
     createdAt?: true
     updatedAt?: true
+    ageGroup?: true
+    city?: true
+    country?: true
+    expertiseAreas?: true
+    firstName?: true
+    lastName?: true
+    linkedinProfile?: true
+    organization?: true
+    personalWebsite?: true
+    position?: true
+    workBio?: true
+    workTypes?: true
+    isSearchable?: true
+    profileVisibility?: true
+    showEmail?: true
+    showLocation?: true
+    showSocialLinks?: true
+    showWorkDetails?: true
+    phoneNumber?: true
+    phoneVerified?: true
+    showPhoneNumber?: true
+    onboardingCompleted?: true
+    onboardingStep?: true
+    preferredLanguage?: true
+    welcomeMessageSeen?: true
+    otherSocialLinks?: true
     _all?: true
   }
 
@@ -4413,38 +4401,38 @@ export namespace Prisma {
     id: string
     email: string | null
     emailVerified: Date | null
-    image: string | null
-    phoneNumber: string | null
-    phoneVerified: Date | null
-    firstName: string | null
-    lastName: string | null
     username: string | null
+    image: string | null
     bio: string | null
-    ageGroup: $Enums.AgeGroup | null
-    country: string | null
-    city: string | null
-    workTypes: $Enums.WorkType[]
-    expertiseAreas: $Enums.ExpertiseArea[]
-    organization: string | null
-    position: string | null
-    workBio: string | null
-    personalWebsite: string | null
-    linkedinProfile: string | null
-    otherSocialLinks: JsonValue | null
-    preferredLanguage: $Enums.Language
-    isSearchable: boolean
-    profileVisibility: $Enums.ProfileVisibility
-    showEmail: boolean
-    showPhoneNumber: boolean
-    showWorkDetails: boolean
-    showSocialLinks: boolean
-    showLocation: boolean
-    onboardingCompleted: boolean
-    onboardingStep: number
-    welcomeMessageSeen: boolean
     role: $Enums.Role
     createdAt: Date
     updatedAt: Date
+    ageGroup: $Enums.AgeGroup | null
+    city: string | null
+    country: string | null
+    expertiseAreas: $Enums.ExpertiseArea[]
+    firstName: string | null
+    lastName: string | null
+    linkedinProfile: string | null
+    organization: string | null
+    personalWebsite: string | null
+    position: string | null
+    workBio: string | null
+    workTypes: $Enums.WorkType[]
+    isSearchable: boolean
+    profileVisibility: $Enums.ProfileVisibility
+    showEmail: boolean
+    showLocation: boolean
+    showSocialLinks: boolean
+    showWorkDetails: boolean
+    phoneNumber: string | null
+    phoneVerified: Date | null
+    showPhoneNumber: boolean
+    onboardingCompleted: boolean
+    onboardingStep: number
+    preferredLanguage: $Enums.Language
+    welcomeMessageSeen: boolean
+    otherSocialLinks: JsonValue | null
     _count: UserCountAggregateOutputType | null
     _avg: UserAvgAggregateOutputType | null
     _sum: UserSumAggregateOutputType | null
@@ -4470,43 +4458,43 @@ export namespace Prisma {
     id?: boolean
     email?: boolean
     emailVerified?: boolean
-    image?: boolean
-    phoneNumber?: boolean
-    phoneVerified?: boolean
-    firstName?: boolean
-    lastName?: boolean
     username?: boolean
+    image?: boolean
     bio?: boolean
-    ageGroup?: boolean
-    country?: boolean
-    city?: boolean
-    workTypes?: boolean
-    expertiseAreas?: boolean
-    organization?: boolean
-    position?: boolean
-    workBio?: boolean
-    personalWebsite?: boolean
-    linkedinProfile?: boolean
-    otherSocialLinks?: boolean
-    preferredLanguage?: boolean
-    isSearchable?: boolean
-    profileVisibility?: boolean
-    showEmail?: boolean
-    showPhoneNumber?: boolean
-    showWorkDetails?: boolean
-    showSocialLinks?: boolean
-    showLocation?: boolean
-    onboardingCompleted?: boolean
-    onboardingStep?: boolean
-    welcomeMessageSeen?: boolean
     role?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    ageGroup?: boolean
+    city?: boolean
+    country?: boolean
+    expertiseAreas?: boolean
+    firstName?: boolean
+    lastName?: boolean
+    linkedinProfile?: boolean
+    organization?: boolean
+    personalWebsite?: boolean
+    position?: boolean
+    workBio?: boolean
+    workTypes?: boolean
+    isSearchable?: boolean
+    profileVisibility?: boolean
+    showEmail?: boolean
+    showLocation?: boolean
+    showSocialLinks?: boolean
+    showWorkDetails?: boolean
+    phoneNumber?: boolean
+    phoneVerified?: boolean
+    showPhoneNumber?: boolean
+    onboardingCompleted?: boolean
+    onboardingStep?: boolean
+    preferredLanguage?: boolean
+    welcomeMessageSeen?: boolean
+    otherSocialLinks?: boolean
     accounts?: boolean | User$accountsArgs<ExtArgs>
-    sessions?: boolean | User$sessionsArgs<ExtArgs>
-    communityMemberships?: boolean | User$communityMembershipsArgs<ExtArgs>
     createdContent?: boolean | User$createdContentArgs<ExtArgs>
     recentWork?: boolean | User$recentWorkArgs<ExtArgs>
+    sessions?: boolean | User$sessionsArgs<ExtArgs>
+    communityMemberships?: boolean | User$communityMembershipsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -4514,123 +4502,123 @@ export namespace Prisma {
     id?: boolean
     email?: boolean
     emailVerified?: boolean
-    image?: boolean
-    phoneNumber?: boolean
-    phoneVerified?: boolean
-    firstName?: boolean
-    lastName?: boolean
     username?: boolean
+    image?: boolean
     bio?: boolean
-    ageGroup?: boolean
-    country?: boolean
-    city?: boolean
-    workTypes?: boolean
-    expertiseAreas?: boolean
-    organization?: boolean
-    position?: boolean
-    workBio?: boolean
-    personalWebsite?: boolean
-    linkedinProfile?: boolean
-    otherSocialLinks?: boolean
-    preferredLanguage?: boolean
-    isSearchable?: boolean
-    profileVisibility?: boolean
-    showEmail?: boolean
-    showPhoneNumber?: boolean
-    showWorkDetails?: boolean
-    showSocialLinks?: boolean
-    showLocation?: boolean
-    onboardingCompleted?: boolean
-    onboardingStep?: boolean
-    welcomeMessageSeen?: boolean
     role?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    ageGroup?: boolean
+    city?: boolean
+    country?: boolean
+    expertiseAreas?: boolean
+    firstName?: boolean
+    lastName?: boolean
+    linkedinProfile?: boolean
+    organization?: boolean
+    personalWebsite?: boolean
+    position?: boolean
+    workBio?: boolean
+    workTypes?: boolean
+    isSearchable?: boolean
+    profileVisibility?: boolean
+    showEmail?: boolean
+    showLocation?: boolean
+    showSocialLinks?: boolean
+    showWorkDetails?: boolean
+    phoneNumber?: boolean
+    phoneVerified?: boolean
+    showPhoneNumber?: boolean
+    onboardingCompleted?: boolean
+    onboardingStep?: boolean
+    preferredLanguage?: boolean
+    welcomeMessageSeen?: boolean
+    otherSocialLinks?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     email?: boolean
     emailVerified?: boolean
-    image?: boolean
-    phoneNumber?: boolean
-    phoneVerified?: boolean
-    firstName?: boolean
-    lastName?: boolean
     username?: boolean
+    image?: boolean
     bio?: boolean
-    ageGroup?: boolean
-    country?: boolean
-    city?: boolean
-    workTypes?: boolean
-    expertiseAreas?: boolean
-    organization?: boolean
-    position?: boolean
-    workBio?: boolean
-    personalWebsite?: boolean
-    linkedinProfile?: boolean
-    otherSocialLinks?: boolean
-    preferredLanguage?: boolean
-    isSearchable?: boolean
-    profileVisibility?: boolean
-    showEmail?: boolean
-    showPhoneNumber?: boolean
-    showWorkDetails?: boolean
-    showSocialLinks?: boolean
-    showLocation?: boolean
-    onboardingCompleted?: boolean
-    onboardingStep?: boolean
-    welcomeMessageSeen?: boolean
     role?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    ageGroup?: boolean
+    city?: boolean
+    country?: boolean
+    expertiseAreas?: boolean
+    firstName?: boolean
+    lastName?: boolean
+    linkedinProfile?: boolean
+    organization?: boolean
+    personalWebsite?: boolean
+    position?: boolean
+    workBio?: boolean
+    workTypes?: boolean
+    isSearchable?: boolean
+    profileVisibility?: boolean
+    showEmail?: boolean
+    showLocation?: boolean
+    showSocialLinks?: boolean
+    showWorkDetails?: boolean
+    phoneNumber?: boolean
+    phoneVerified?: boolean
+    showPhoneNumber?: boolean
+    onboardingCompleted?: boolean
+    onboardingStep?: boolean
+    preferredLanguage?: boolean
+    welcomeMessageSeen?: boolean
+    otherSocialLinks?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectScalar = {
     id?: boolean
     email?: boolean
     emailVerified?: boolean
-    image?: boolean
-    phoneNumber?: boolean
-    phoneVerified?: boolean
-    firstName?: boolean
-    lastName?: boolean
     username?: boolean
+    image?: boolean
     bio?: boolean
-    ageGroup?: boolean
-    country?: boolean
-    city?: boolean
-    workTypes?: boolean
-    expertiseAreas?: boolean
-    organization?: boolean
-    position?: boolean
-    workBio?: boolean
-    personalWebsite?: boolean
-    linkedinProfile?: boolean
-    otherSocialLinks?: boolean
-    preferredLanguage?: boolean
-    isSearchable?: boolean
-    profileVisibility?: boolean
-    showEmail?: boolean
-    showPhoneNumber?: boolean
-    showWorkDetails?: boolean
-    showSocialLinks?: boolean
-    showLocation?: boolean
-    onboardingCompleted?: boolean
-    onboardingStep?: boolean
-    welcomeMessageSeen?: boolean
     role?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    ageGroup?: boolean
+    city?: boolean
+    country?: boolean
+    expertiseAreas?: boolean
+    firstName?: boolean
+    lastName?: boolean
+    linkedinProfile?: boolean
+    organization?: boolean
+    personalWebsite?: boolean
+    position?: boolean
+    workBio?: boolean
+    workTypes?: boolean
+    isSearchable?: boolean
+    profileVisibility?: boolean
+    showEmail?: boolean
+    showLocation?: boolean
+    showSocialLinks?: boolean
+    showWorkDetails?: boolean
+    phoneNumber?: boolean
+    phoneVerified?: boolean
+    showPhoneNumber?: boolean
+    onboardingCompleted?: boolean
+    onboardingStep?: boolean
+    preferredLanguage?: boolean
+    welcomeMessageSeen?: boolean
+    otherSocialLinks?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "emailVerified" | "image" | "phoneNumber" | "phoneVerified" | "firstName" | "lastName" | "username" | "bio" | "ageGroup" | "country" | "city" | "workTypes" | "expertiseAreas" | "organization" | "position" | "workBio" | "personalWebsite" | "linkedinProfile" | "otherSocialLinks" | "preferredLanguage" | "isSearchable" | "profileVisibility" | "showEmail" | "showPhoneNumber" | "showWorkDetails" | "showSocialLinks" | "showLocation" | "onboardingCompleted" | "onboardingStep" | "welcomeMessageSeen" | "role" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "emailVerified" | "username" | "image" | "bio" | "role" | "createdAt" | "updatedAt" | "ageGroup" | "city" | "country" | "expertiseAreas" | "firstName" | "lastName" | "linkedinProfile" | "organization" | "personalWebsite" | "position" | "workBio" | "workTypes" | "isSearchable" | "profileVisibility" | "showEmail" | "showLocation" | "showSocialLinks" | "showWorkDetails" | "phoneNumber" | "phoneVerified" | "showPhoneNumber" | "onboardingCompleted" | "onboardingStep" | "preferredLanguage" | "welcomeMessageSeen" | "otherSocialLinks", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     accounts?: boolean | User$accountsArgs<ExtArgs>
-    sessions?: boolean | User$sessionsArgs<ExtArgs>
-    communityMemberships?: boolean | User$communityMembershipsArgs<ExtArgs>
     createdContent?: boolean | User$createdContentArgs<ExtArgs>
     recentWork?: boolean | User$recentWorkArgs<ExtArgs>
+    sessions?: boolean | User$sessionsArgs<ExtArgs>
+    communityMemberships?: boolean | User$communityMembershipsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -4640,47 +4628,47 @@ export namespace Prisma {
     name: "User"
     objects: {
       accounts: Prisma.$AccountPayload<ExtArgs>[]
-      sessions: Prisma.$SessionPayload<ExtArgs>[]
-      communityMemberships: Prisma.$UserCommunityPayload<ExtArgs>[]
       createdContent: Prisma.$ContentPayload<ExtArgs>[]
       recentWork: Prisma.$RecentWorkPayload<ExtArgs>[]
+      sessions: Prisma.$SessionPayload<ExtArgs>[]
+      communityMemberships: Prisma.$UserCommunityPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       email: string | null
       emailVerified: Date | null
-      image: string | null
-      phoneNumber: string | null
-      phoneVerified: Date | null
-      firstName: string | null
-      lastName: string | null
       username: string | null
+      image: string | null
       bio: string | null
-      ageGroup: $Enums.AgeGroup | null
-      country: string | null
-      city: string | null
-      workTypes: $Enums.WorkType[]
-      expertiseAreas: $Enums.ExpertiseArea[]
-      organization: string | null
-      position: string | null
-      workBio: string | null
-      personalWebsite: string | null
-      linkedinProfile: string | null
-      otherSocialLinks: Prisma.JsonValue | null
-      preferredLanguage: $Enums.Language
-      isSearchable: boolean
-      profileVisibility: $Enums.ProfileVisibility
-      showEmail: boolean
-      showPhoneNumber: boolean
-      showWorkDetails: boolean
-      showSocialLinks: boolean
-      showLocation: boolean
-      onboardingCompleted: boolean
-      onboardingStep: number
-      welcomeMessageSeen: boolean
       role: $Enums.Role
       createdAt: Date
       updatedAt: Date
+      ageGroup: $Enums.AgeGroup | null
+      city: string | null
+      country: string | null
+      expertiseAreas: $Enums.ExpertiseArea[]
+      firstName: string | null
+      lastName: string | null
+      linkedinProfile: string | null
+      organization: string | null
+      personalWebsite: string | null
+      position: string | null
+      workBio: string | null
+      workTypes: $Enums.WorkType[]
+      isSearchable: boolean
+      profileVisibility: $Enums.ProfileVisibility
+      showEmail: boolean
+      showLocation: boolean
+      showSocialLinks: boolean
+      showWorkDetails: boolean
+      phoneNumber: string | null
+      phoneVerified: Date | null
+      showPhoneNumber: boolean
+      onboardingCompleted: boolean
+      onboardingStep: number
+      preferredLanguage: $Enums.Language
+      welcomeMessageSeen: boolean
+      otherSocialLinks: Prisma.JsonValue | null
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -5076,10 +5064,10 @@ export namespace Prisma {
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     accounts<T extends User$accountsArgs<ExtArgs> = {}>(args?: Subset<T, User$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    sessions<T extends User$sessionsArgs<ExtArgs> = {}>(args?: Subset<T, User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    communityMemberships<T extends User$communityMembershipsArgs<ExtArgs> = {}>(args?: Subset<T, User$communityMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserCommunityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     createdContent<T extends User$createdContentArgs<ExtArgs> = {}>(args?: Subset<T, User$createdContentArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     recentWork<T extends User$recentWorkArgs<ExtArgs> = {}>(args?: Subset<T, User$recentWorkArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RecentWorkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    sessions<T extends User$sessionsArgs<ExtArgs> = {}>(args?: Subset<T, User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    communityMemberships<T extends User$communityMembershipsArgs<ExtArgs> = {}>(args?: Subset<T, User$communityMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserCommunityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5112,38 +5100,38 @@ export namespace Prisma {
     readonly id: FieldRef<"User", 'String'>
     readonly email: FieldRef<"User", 'String'>
     readonly emailVerified: FieldRef<"User", 'DateTime'>
-    readonly image: FieldRef<"User", 'String'>
-    readonly phoneNumber: FieldRef<"User", 'String'>
-    readonly phoneVerified: FieldRef<"User", 'DateTime'>
-    readonly firstName: FieldRef<"User", 'String'>
-    readonly lastName: FieldRef<"User", 'String'>
     readonly username: FieldRef<"User", 'String'>
+    readonly image: FieldRef<"User", 'String'>
     readonly bio: FieldRef<"User", 'String'>
-    readonly ageGroup: FieldRef<"User", 'AgeGroup'>
-    readonly country: FieldRef<"User", 'String'>
-    readonly city: FieldRef<"User", 'String'>
-    readonly workTypes: FieldRef<"User", 'WorkType[]'>
-    readonly expertiseAreas: FieldRef<"User", 'ExpertiseArea[]'>
-    readonly organization: FieldRef<"User", 'String'>
-    readonly position: FieldRef<"User", 'String'>
-    readonly workBio: FieldRef<"User", 'String'>
-    readonly personalWebsite: FieldRef<"User", 'String'>
-    readonly linkedinProfile: FieldRef<"User", 'String'>
-    readonly otherSocialLinks: FieldRef<"User", 'Json'>
-    readonly preferredLanguage: FieldRef<"User", 'Language'>
-    readonly isSearchable: FieldRef<"User", 'Boolean'>
-    readonly profileVisibility: FieldRef<"User", 'ProfileVisibility'>
-    readonly showEmail: FieldRef<"User", 'Boolean'>
-    readonly showPhoneNumber: FieldRef<"User", 'Boolean'>
-    readonly showWorkDetails: FieldRef<"User", 'Boolean'>
-    readonly showSocialLinks: FieldRef<"User", 'Boolean'>
-    readonly showLocation: FieldRef<"User", 'Boolean'>
-    readonly onboardingCompleted: FieldRef<"User", 'Boolean'>
-    readonly onboardingStep: FieldRef<"User", 'Int'>
-    readonly welcomeMessageSeen: FieldRef<"User", 'Boolean'>
     readonly role: FieldRef<"User", 'Role'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
+    readonly ageGroup: FieldRef<"User", 'AgeGroup'>
+    readonly city: FieldRef<"User", 'String'>
+    readonly country: FieldRef<"User", 'String'>
+    readonly expertiseAreas: FieldRef<"User", 'ExpertiseArea[]'>
+    readonly firstName: FieldRef<"User", 'String'>
+    readonly lastName: FieldRef<"User", 'String'>
+    readonly linkedinProfile: FieldRef<"User", 'String'>
+    readonly organization: FieldRef<"User", 'String'>
+    readonly personalWebsite: FieldRef<"User", 'String'>
+    readonly position: FieldRef<"User", 'String'>
+    readonly workBio: FieldRef<"User", 'String'>
+    readonly workTypes: FieldRef<"User", 'WorkType[]'>
+    readonly isSearchable: FieldRef<"User", 'Boolean'>
+    readonly profileVisibility: FieldRef<"User", 'ProfileVisibility'>
+    readonly showEmail: FieldRef<"User", 'Boolean'>
+    readonly showLocation: FieldRef<"User", 'Boolean'>
+    readonly showSocialLinks: FieldRef<"User", 'Boolean'>
+    readonly showWorkDetails: FieldRef<"User", 'Boolean'>
+    readonly phoneNumber: FieldRef<"User", 'String'>
+    readonly phoneVerified: FieldRef<"User", 'DateTime'>
+    readonly showPhoneNumber: FieldRef<"User", 'Boolean'>
+    readonly onboardingCompleted: FieldRef<"User", 'Boolean'>
+    readonly onboardingStep: FieldRef<"User", 'Int'>
+    readonly preferredLanguage: FieldRef<"User", 'Language'>
+    readonly welcomeMessageSeen: FieldRef<"User", 'Boolean'>
+    readonly otherSocialLinks: FieldRef<"User", 'Json'>
   }
     
 
@@ -5556,54 +5544,6 @@ export namespace Prisma {
   }
 
   /**
-   * User.sessions
-   */
-  export type User$sessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Session
-     */
-    select?: SessionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Session
-     */
-    omit?: SessionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: SessionInclude<ExtArgs> | null
-    where?: SessionWhereInput
-    orderBy?: SessionOrderByWithRelationInput | SessionOrderByWithRelationInput[]
-    cursor?: SessionWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: SessionScalarFieldEnum | SessionScalarFieldEnum[]
-  }
-
-  /**
-   * User.communityMemberships
-   */
-  export type User$communityMembershipsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the UserCommunity
-     */
-    select?: UserCommunitySelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the UserCommunity
-     */
-    omit?: UserCommunityOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: UserCommunityInclude<ExtArgs> | null
-    where?: UserCommunityWhereInput
-    orderBy?: UserCommunityOrderByWithRelationInput | UserCommunityOrderByWithRelationInput[]
-    cursor?: UserCommunityWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: UserCommunityScalarFieldEnum | UserCommunityScalarFieldEnum[]
-  }
-
-  /**
    * User.createdContent
    */
   export type User$createdContentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5649,6 +5589,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: RecentWorkScalarFieldEnum | RecentWorkScalarFieldEnum[]
+  }
+
+  /**
+   * User.sessions
+   */
+  export type User$sessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session
+     */
+    select?: SessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Session
+     */
+    omit?: SessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SessionInclude<ExtArgs> | null
+    where?: SessionWhereInput
+    orderBy?: SessionOrderByWithRelationInput | SessionOrderByWithRelationInput[]
+    cursor?: SessionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SessionScalarFieldEnum | SessionScalarFieldEnum[]
+  }
+
+  /**
+   * User.communityMemberships
+   */
+  export type User$communityMembershipsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserCommunity
+     */
+    select?: UserCommunitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserCommunity
+     */
+    omit?: UserCommunityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserCommunityInclude<ExtArgs> | null
+    where?: UserCommunityWhereInput
+    orderBy?: UserCommunityOrderByWithRelationInput | UserCommunityOrderByWithRelationInput[]
+    cursor?: UserCommunityWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UserCommunityScalarFieldEnum | UserCommunityScalarFieldEnum[]
   }
 
   /**
@@ -5858,8 +5846,8 @@ export namespace Prisma {
     specialName?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    members?: boolean | Community$membersArgs<ExtArgs>
     contents?: boolean | Community$contentsArgs<ExtArgs>
+    members?: boolean | Community$membersArgs<ExtArgs>
     _count?: boolean | CommunityCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["community"]>
 
@@ -5898,8 +5886,8 @@ export namespace Prisma {
 
   export type CommunityOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "type" | "regionalName" | "specialName" | "createdAt" | "updatedAt", ExtArgs["result"]["community"]>
   export type CommunityInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    members?: boolean | Community$membersArgs<ExtArgs>
     contents?: boolean | Community$contentsArgs<ExtArgs>
+    members?: boolean | Community$membersArgs<ExtArgs>
     _count?: boolean | CommunityCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type CommunityIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -5908,8 +5896,8 @@ export namespace Prisma {
   export type $CommunityPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Community"
     objects: {
-      members: Prisma.$UserCommunityPayload<ExtArgs>[]
       contents: Prisma.$ContentPayload<ExtArgs>[]
+      members: Prisma.$UserCommunityPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -6314,8 +6302,8 @@ export namespace Prisma {
    */
   export interface Prisma__CommunityClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    members<T extends Community$membersArgs<ExtArgs> = {}>(args?: Subset<T, Community$membersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserCommunityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     contents<T extends Community$contentsArgs<ExtArgs> = {}>(args?: Subset<T, Community$contentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    members<T extends Community$membersArgs<ExtArgs> = {}>(args?: Subset<T, Community$membersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserCommunityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6741,30 +6729,6 @@ export namespace Prisma {
   }
 
   /**
-   * Community.members
-   */
-  export type Community$membersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the UserCommunity
-     */
-    select?: UserCommunitySelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the UserCommunity
-     */
-    omit?: UserCommunityOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: UserCommunityInclude<ExtArgs> | null
-    where?: UserCommunityWhereInput
-    orderBy?: UserCommunityOrderByWithRelationInput | UserCommunityOrderByWithRelationInput[]
-    cursor?: UserCommunityWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: UserCommunityScalarFieldEnum | UserCommunityScalarFieldEnum[]
-  }
-
-  /**
    * Community.contents
    */
   export type Community$contentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6786,6 +6750,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ContentScalarFieldEnum | ContentScalarFieldEnum[]
+  }
+
+  /**
+   * Community.members
+   */
+  export type Community$membersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserCommunity
+     */
+    select?: UserCommunitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserCommunity
+     */
+    omit?: UserCommunityOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserCommunityInclude<ExtArgs> | null
+    where?: UserCommunityWhereInput
+    orderBy?: UserCommunityOrderByWithRelationInput | UserCommunityOrderByWithRelationInput[]
+    cursor?: UserCommunityWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UserCommunityScalarFieldEnum | UserCommunityScalarFieldEnum[]
   }
 
   /**
@@ -6955,24 +6943,24 @@ export namespace Prisma {
     userId?: boolean
     communityId?: boolean
     role?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
     community?: boolean | CommunityDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["userCommunity"]>
 
   export type UserCommunitySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     userId?: boolean
     communityId?: boolean
     role?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
     community?: boolean | CommunityDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["userCommunity"]>
 
   export type UserCommunitySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     userId?: boolean
     communityId?: boolean
     role?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
     community?: boolean | CommunityDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["userCommunity"]>
 
   export type UserCommunitySelectScalar = {
@@ -6983,23 +6971,23 @@ export namespace Prisma {
 
   export type UserCommunityOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"userId" | "communityId" | "role", ExtArgs["result"]["userCommunity"]>
   export type UserCommunityInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
     community?: boolean | CommunityDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type UserCommunityIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
     community?: boolean | CommunityDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type UserCommunityIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
     community?: boolean | CommunityDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }
 
   export type $UserCommunityPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "UserCommunity"
     objects: {
-      user: Prisma.$UserPayload<ExtArgs>
       community: Prisma.$CommunityPayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       userId: string
@@ -7399,8 +7387,8 @@ export namespace Prisma {
    */
   export interface Prisma__UserCommunityClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     community<T extends CommunityDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CommunityDefaultArgs<ExtArgs>>): Prisma__CommunityClient<$Result.GetResult<Prisma.$CommunityPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -8027,8 +8015,8 @@ export namespace Prisma {
     authorId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    community?: boolean | CommunityDefaultArgs<ExtArgs>
     author?: boolean | UserDefaultArgs<ExtArgs>
+    community?: boolean | CommunityDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["content"]>
 
   export type ContentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -8039,8 +8027,8 @@ export namespace Prisma {
     authorId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    community?: boolean | CommunityDefaultArgs<ExtArgs>
     author?: boolean | UserDefaultArgs<ExtArgs>
+    community?: boolean | CommunityDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["content"]>
 
   export type ContentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -8051,8 +8039,8 @@ export namespace Prisma {
     authorId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    community?: boolean | CommunityDefaultArgs<ExtArgs>
     author?: boolean | UserDefaultArgs<ExtArgs>
+    community?: boolean | CommunityDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["content"]>
 
   export type ContentSelectScalar = {
@@ -8067,23 +8055,23 @@ export namespace Prisma {
 
   export type ContentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "body" | "communityId" | "authorId" | "createdAt" | "updatedAt", ExtArgs["result"]["content"]>
   export type ContentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    community?: boolean | CommunityDefaultArgs<ExtArgs>
     author?: boolean | UserDefaultArgs<ExtArgs>
+    community?: boolean | CommunityDefaultArgs<ExtArgs>
   }
   export type ContentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    community?: boolean | CommunityDefaultArgs<ExtArgs>
     author?: boolean | UserDefaultArgs<ExtArgs>
+    community?: boolean | CommunityDefaultArgs<ExtArgs>
   }
   export type ContentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    community?: boolean | CommunityDefaultArgs<ExtArgs>
     author?: boolean | UserDefaultArgs<ExtArgs>
+    community?: boolean | CommunityDefaultArgs<ExtArgs>
   }
 
   export type $ContentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Content"
     objects: {
-      community: Prisma.$CommunityPayload<ExtArgs>
       author: Prisma.$UserPayload<ExtArgs>
+      community: Prisma.$CommunityPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -8487,8 +8475,8 @@ export namespace Prisma {
    */
   export interface Prisma__ContentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    community<T extends CommunityDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CommunityDefaultArgs<ExtArgs>>): Prisma__CommunityClient<$Result.GetResult<Prisma.$CommunityPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     author<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    community<T extends CommunityDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CommunityDefaultArgs<ExtArgs>>): Prisma__CommunityClient<$Result.GetResult<Prisma.$CommunityPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -10074,8 +10062,7 @@ export namespace Prisma {
 
   export type DownloadEventMinAggregateOutputType = {
     id: string | null
-    contentType: $Enums.ContentType | null
-    contentId: string | null
+    reportId: string | null
     fileLanguage: string | null
     userId: string | null
     sessionId: string | null
@@ -10088,8 +10075,7 @@ export namespace Prisma {
 
   export type DownloadEventMaxAggregateOutputType = {
     id: string | null
-    contentType: $Enums.ContentType | null
-    contentId: string | null
+    reportId: string | null
     fileLanguage: string | null
     userId: string | null
     sessionId: string | null
@@ -10102,8 +10088,7 @@ export namespace Prisma {
 
   export type DownloadEventCountAggregateOutputType = {
     id: number
-    contentType: number
-    contentId: number
+    reportId: number
     fileLanguage: number
     userId: number
     sessionId: number
@@ -10118,8 +10103,7 @@ export namespace Prisma {
 
   export type DownloadEventMinAggregateInputType = {
     id?: true
-    contentType?: true
-    contentId?: true
+    reportId?: true
     fileLanguage?: true
     userId?: true
     sessionId?: true
@@ -10132,8 +10116,7 @@ export namespace Prisma {
 
   export type DownloadEventMaxAggregateInputType = {
     id?: true
-    contentType?: true
-    contentId?: true
+    reportId?: true
     fileLanguage?: true
     userId?: true
     sessionId?: true
@@ -10146,8 +10129,7 @@ export namespace Prisma {
 
   export type DownloadEventCountAggregateInputType = {
     id?: true
-    contentType?: true
-    contentId?: true
+    reportId?: true
     fileLanguage?: true
     userId?: true
     sessionId?: true
@@ -10233,8 +10215,7 @@ export namespace Prisma {
 
   export type DownloadEventGroupByOutputType = {
     id: string
-    contentType: $Enums.ContentType
-    contentId: string
+    reportId: string
     fileLanguage: string
     userId: string | null
     sessionId: string
@@ -10264,8 +10245,7 @@ export namespace Prisma {
 
   export type DownloadEventSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    contentType?: boolean
-    contentId?: boolean
+    reportId?: boolean
     fileLanguage?: boolean
     userId?: boolean
     sessionId?: boolean
@@ -10278,8 +10258,7 @@ export namespace Prisma {
 
   export type DownloadEventSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    contentType?: boolean
-    contentId?: boolean
+    reportId?: boolean
     fileLanguage?: boolean
     userId?: boolean
     sessionId?: boolean
@@ -10292,8 +10271,7 @@ export namespace Prisma {
 
   export type DownloadEventSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    contentType?: boolean
-    contentId?: boolean
+    reportId?: boolean
     fileLanguage?: boolean
     userId?: boolean
     sessionId?: boolean
@@ -10306,8 +10284,7 @@ export namespace Prisma {
 
   export type DownloadEventSelectScalar = {
     id?: boolean
-    contentType?: boolean
-    contentId?: boolean
+    reportId?: boolean
     fileLanguage?: boolean
     userId?: boolean
     sessionId?: boolean
@@ -10318,15 +10295,14 @@ export namespace Prisma {
     createdAt?: boolean
   }
 
-  export type DownloadEventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "contentType" | "contentId" | "fileLanguage" | "userId" | "sessionId" | "userAgent" | "referer" | "ipAddress" | "timestamp" | "createdAt", ExtArgs["result"]["downloadEvent"]>
+  export type DownloadEventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "reportId" | "fileLanguage" | "userId" | "sessionId" | "userAgent" | "referer" | "ipAddress" | "timestamp" | "createdAt", ExtArgs["result"]["downloadEvent"]>
 
   export type $DownloadEventPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "DownloadEvent"
     objects: {}
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      contentType: $Enums.ContentType
-      contentId: string
+      reportId: string
       fileLanguage: string
       userId: string | null
       sessionId: string
@@ -10759,8 +10735,7 @@ export namespace Prisma {
    */
   interface DownloadEventFieldRefs {
     readonly id: FieldRef<"DownloadEvent", 'String'>
-    readonly contentType: FieldRef<"DownloadEvent", 'ContentType'>
-    readonly contentId: FieldRef<"DownloadEvent", 'String'>
+    readonly reportId: FieldRef<"DownloadEvent", 'String'>
     readonly fileLanguage: FieldRef<"DownloadEvent", 'String'>
     readonly userId: FieldRef<"DownloadEvent", 'String'>
     readonly sessionId: FieldRef<"DownloadEvent", 'String'>
@@ -11136,28 +11111,27 @@ export namespace Prisma {
 
 
   /**
-   * Model ContentMetadata
+   * Model report_metadata
    */
 
-  export type AggregateContentMetadata = {
-    _count: ContentMetadataCountAggregateOutputType | null
-    _avg: ContentMetadataAvgAggregateOutputType | null
-    _sum: ContentMetadataSumAggregateOutputType | null
-    _min: ContentMetadataMinAggregateOutputType | null
-    _max: ContentMetadataMaxAggregateOutputType | null
+  export type AggregateReport_metadata = {
+    _count: Report_metadataCountAggregateOutputType | null
+    _avg: Report_metadataAvgAggregateOutputType | null
+    _sum: Report_metadataSumAggregateOutputType | null
+    _min: Report_metadataMinAggregateOutputType | null
+    _max: Report_metadataMaxAggregateOutputType | null
   }
 
-  export type ContentMetadataAvgAggregateOutputType = {
+  export type Report_metadataAvgAggregateOutputType = {
     downloadCount: number | null
   }
 
-  export type ContentMetadataSumAggregateOutputType = {
+  export type Report_metadataSumAggregateOutputType = {
     downloadCount: number | null
   }
 
-  export type ContentMetadataMinAggregateOutputType = {
+  export type Report_metadataMinAggregateOutputType = {
     id: string | null
-    contentType: $Enums.ContentType | null
     sanityId: string | null
     downloadCount: number | null
     lastDownloadedAt: Date | null
@@ -11165,9 +11139,8 @@ export namespace Prisma {
     updatedAt: Date | null
   }
 
-  export type ContentMetadataMaxAggregateOutputType = {
+  export type Report_metadataMaxAggregateOutputType = {
     id: string | null
-    contentType: $Enums.ContentType | null
     sanityId: string | null
     downloadCount: number | null
     lastDownloadedAt: Date | null
@@ -11175,9 +11148,8 @@ export namespace Prisma {
     updatedAt: Date | null
   }
 
-  export type ContentMetadataCountAggregateOutputType = {
+  export type Report_metadataCountAggregateOutputType = {
     id: number
-    contentType: number
     sanityId: number
     downloadCount: number
     lastDownloadedAt: number
@@ -11187,17 +11159,16 @@ export namespace Prisma {
   }
 
 
-  export type ContentMetadataAvgAggregateInputType = {
+  export type Report_metadataAvgAggregateInputType = {
     downloadCount?: true
   }
 
-  export type ContentMetadataSumAggregateInputType = {
+  export type Report_metadataSumAggregateInputType = {
     downloadCount?: true
   }
 
-  export type ContentMetadataMinAggregateInputType = {
+  export type Report_metadataMinAggregateInputType = {
     id?: true
-    contentType?: true
     sanityId?: true
     downloadCount?: true
     lastDownloadedAt?: true
@@ -11205,9 +11176,8 @@ export namespace Prisma {
     updatedAt?: true
   }
 
-  export type ContentMetadataMaxAggregateInputType = {
+  export type Report_metadataMaxAggregateInputType = {
     id?: true
-    contentType?: true
     sanityId?: true
     downloadCount?: true
     lastDownloadedAt?: true
@@ -11215,9 +11185,8 @@ export namespace Prisma {
     updatedAt?: true
   }
 
-  export type ContentMetadataCountAggregateInputType = {
+  export type Report_metadataCountAggregateInputType = {
     id?: true
-    contentType?: true
     sanityId?: true
     downloadCount?: true
     lastDownloadedAt?: true
@@ -11226,154 +11195,149 @@ export namespace Prisma {
     _all?: true
   }
 
-  export type ContentMetadataAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Report_metadataAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which ContentMetadata to aggregate.
+     * Filter which report_metadata to aggregate.
      */
-    where?: ContentMetadataWhereInput
+    where?: report_metadataWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of ContentMetadata to fetch.
+     * Determine the order of report_metadata to fetch.
      */
-    orderBy?: ContentMetadataOrderByWithRelationInput | ContentMetadataOrderByWithRelationInput[]
+    orderBy?: report_metadataOrderByWithRelationInput | report_metadataOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
      */
-    cursor?: ContentMetadataWhereUniqueInput
+    cursor?: report_metadataWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` ContentMetadata from the position of the cursor.
+     * Take `±n` report_metadata from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` ContentMetadata.
+     * Skip the first `n` report_metadata.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Count returned ContentMetadata
+     * Count returned report_metadata
     **/
-    _count?: true | ContentMetadataCountAggregateInputType
+    _count?: true | Report_metadataCountAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to average
     **/
-    _avg?: ContentMetadataAvgAggregateInputType
+    _avg?: Report_metadataAvgAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to sum
     **/
-    _sum?: ContentMetadataSumAggregateInputType
+    _sum?: Report_metadataSumAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the minimum value
     **/
-    _min?: ContentMetadataMinAggregateInputType
+    _min?: Report_metadataMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the maximum value
     **/
-    _max?: ContentMetadataMaxAggregateInputType
+    _max?: Report_metadataMaxAggregateInputType
   }
 
-  export type GetContentMetadataAggregateType<T extends ContentMetadataAggregateArgs> = {
-        [P in keyof T & keyof AggregateContentMetadata]: P extends '_count' | 'count'
+  export type GetReport_metadataAggregateType<T extends Report_metadataAggregateArgs> = {
+        [P in keyof T & keyof AggregateReport_metadata]: P extends '_count' | 'count'
       ? T[P] extends true
         ? number
-        : GetScalarType<T[P], AggregateContentMetadata[P]>
-      : GetScalarType<T[P], AggregateContentMetadata[P]>
+        : GetScalarType<T[P], AggregateReport_metadata[P]>
+      : GetScalarType<T[P], AggregateReport_metadata[P]>
   }
 
 
 
 
-  export type ContentMetadataGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ContentMetadataWhereInput
-    orderBy?: ContentMetadataOrderByWithAggregationInput | ContentMetadataOrderByWithAggregationInput[]
-    by: ContentMetadataScalarFieldEnum[] | ContentMetadataScalarFieldEnum
-    having?: ContentMetadataScalarWhereWithAggregatesInput
+  export type report_metadataGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: report_metadataWhereInput
+    orderBy?: report_metadataOrderByWithAggregationInput | report_metadataOrderByWithAggregationInput[]
+    by: Report_metadataScalarFieldEnum[] | Report_metadataScalarFieldEnum
+    having?: report_metadataScalarWhereWithAggregatesInput
     take?: number
     skip?: number
-    _count?: ContentMetadataCountAggregateInputType | true
-    _avg?: ContentMetadataAvgAggregateInputType
-    _sum?: ContentMetadataSumAggregateInputType
-    _min?: ContentMetadataMinAggregateInputType
-    _max?: ContentMetadataMaxAggregateInputType
+    _count?: Report_metadataCountAggregateInputType | true
+    _avg?: Report_metadataAvgAggregateInputType
+    _sum?: Report_metadataSumAggregateInputType
+    _min?: Report_metadataMinAggregateInputType
+    _max?: Report_metadataMaxAggregateInputType
   }
 
-  export type ContentMetadataGroupByOutputType = {
+  export type Report_metadataGroupByOutputType = {
     id: string
-    contentType: $Enums.ContentType
     sanityId: string
     downloadCount: number
     lastDownloadedAt: Date | null
     createdAt: Date
     updatedAt: Date
-    _count: ContentMetadataCountAggregateOutputType | null
-    _avg: ContentMetadataAvgAggregateOutputType | null
-    _sum: ContentMetadataSumAggregateOutputType | null
-    _min: ContentMetadataMinAggregateOutputType | null
-    _max: ContentMetadataMaxAggregateOutputType | null
+    _count: Report_metadataCountAggregateOutputType | null
+    _avg: Report_metadataAvgAggregateOutputType | null
+    _sum: Report_metadataSumAggregateOutputType | null
+    _min: Report_metadataMinAggregateOutputType | null
+    _max: Report_metadataMaxAggregateOutputType | null
   }
 
-  type GetContentMetadataGroupByPayload<T extends ContentMetadataGroupByArgs> = Prisma.PrismaPromise<
+  type GetReport_metadataGroupByPayload<T extends report_metadataGroupByArgs> = Prisma.PrismaPromise<
     Array<
-      PickEnumerable<ContentMetadataGroupByOutputType, T['by']> &
+      PickEnumerable<Report_metadataGroupByOutputType, T['by']> &
         {
-          [P in ((keyof T) & (keyof ContentMetadataGroupByOutputType))]: P extends '_count'
+          [P in ((keyof T) & (keyof Report_metadataGroupByOutputType))]: P extends '_count'
             ? T[P] extends boolean
               ? number
-              : GetScalarType<T[P], ContentMetadataGroupByOutputType[P]>
-            : GetScalarType<T[P], ContentMetadataGroupByOutputType[P]>
+              : GetScalarType<T[P], Report_metadataGroupByOutputType[P]>
+            : GetScalarType<T[P], Report_metadataGroupByOutputType[P]>
         }
       >
     >
 
 
-  export type ContentMetadataSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type report_metadataSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    contentType?: boolean
     sanityId?: boolean
     downloadCount?: boolean
     lastDownloadedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-  }, ExtArgs["result"]["contentMetadata"]>
+  }, ExtArgs["result"]["report_metadata"]>
 
-  export type ContentMetadataSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type report_metadataSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    contentType?: boolean
     sanityId?: boolean
     downloadCount?: boolean
     lastDownloadedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-  }, ExtArgs["result"]["contentMetadata"]>
+  }, ExtArgs["result"]["report_metadata"]>
 
-  export type ContentMetadataSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type report_metadataSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    contentType?: boolean
     sanityId?: boolean
     downloadCount?: boolean
     lastDownloadedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-  }, ExtArgs["result"]["contentMetadata"]>
+  }, ExtArgs["result"]["report_metadata"]>
 
-  export type ContentMetadataSelectScalar = {
+  export type report_metadataSelectScalar = {
     id?: boolean
-    contentType?: boolean
     sanityId?: boolean
     downloadCount?: boolean
     lastDownloadedAt?: boolean
@@ -11381,149 +11345,148 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type ContentMetadataOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "contentType" | "sanityId" | "downloadCount" | "lastDownloadedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["contentMetadata"]>
+  export type report_metadataOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sanityId" | "downloadCount" | "lastDownloadedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["report_metadata"]>
 
-  export type $ContentMetadataPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "ContentMetadata"
+  export type $report_metadataPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "report_metadata"
     objects: {}
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      contentType: $Enums.ContentType
       sanityId: string
       downloadCount: number
       lastDownloadedAt: Date | null
       createdAt: Date
       updatedAt: Date
-    }, ExtArgs["result"]["contentMetadata"]>
+    }, ExtArgs["result"]["report_metadata"]>
     composites: {}
   }
 
-  type ContentMetadataGetPayload<S extends boolean | null | undefined | ContentMetadataDefaultArgs> = $Result.GetResult<Prisma.$ContentMetadataPayload, S>
+  type report_metadataGetPayload<S extends boolean | null | undefined | report_metadataDefaultArgs> = $Result.GetResult<Prisma.$report_metadataPayload, S>
 
-  type ContentMetadataCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<ContentMetadataFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: ContentMetadataCountAggregateInputType | true
+  type report_metadataCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<report_metadataFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: Report_metadataCountAggregateInputType | true
     }
 
-  export interface ContentMetadataDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ContentMetadata'], meta: { name: 'ContentMetadata' } }
+  export interface report_metadataDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['report_metadata'], meta: { name: 'report_metadata' } }
     /**
-     * Find zero or one ContentMetadata that matches the filter.
-     * @param {ContentMetadataFindUniqueArgs} args - Arguments to find a ContentMetadata
+     * Find zero or one Report_metadata that matches the filter.
+     * @param {report_metadataFindUniqueArgs} args - Arguments to find a Report_metadata
      * @example
-     * // Get one ContentMetadata
-     * const contentMetadata = await prisma.contentMetadata.findUnique({
+     * // Get one Report_metadata
+     * const report_metadata = await prisma.report_metadata.findUnique({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUnique<T extends ContentMetadataFindUniqueArgs>(args: SelectSubset<T, ContentMetadataFindUniqueArgs<ExtArgs>>): Prisma__ContentMetadataClient<$Result.GetResult<Prisma.$ContentMetadataPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findUnique<T extends report_metadataFindUniqueArgs>(args: SelectSubset<T, report_metadataFindUniqueArgs<ExtArgs>>): Prisma__report_metadataClient<$Result.GetResult<Prisma.$report_metadataPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find one ContentMetadata that matches the filter or throw an error with `error.code='P2025'`
+     * Find one Report_metadata that matches the filter or throw an error with `error.code='P2025'`
      * if no matches were found.
-     * @param {ContentMetadataFindUniqueOrThrowArgs} args - Arguments to find a ContentMetadata
+     * @param {report_metadataFindUniqueOrThrowArgs} args - Arguments to find a Report_metadata
      * @example
-     * // Get one ContentMetadata
-     * const contentMetadata = await prisma.contentMetadata.findUniqueOrThrow({
+     * // Get one Report_metadata
+     * const report_metadata = await prisma.report_metadata.findUniqueOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUniqueOrThrow<T extends ContentMetadataFindUniqueOrThrowArgs>(args: SelectSubset<T, ContentMetadataFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ContentMetadataClient<$Result.GetResult<Prisma.$ContentMetadataPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findUniqueOrThrow<T extends report_metadataFindUniqueOrThrowArgs>(args: SelectSubset<T, report_metadataFindUniqueOrThrowArgs<ExtArgs>>): Prisma__report_metadataClient<$Result.GetResult<Prisma.$report_metadataPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first ContentMetadata that matches the filter.
+     * Find the first Report_metadata that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ContentMetadataFindFirstArgs} args - Arguments to find a ContentMetadata
+     * @param {report_metadataFindFirstArgs} args - Arguments to find a Report_metadata
      * @example
-     * // Get one ContentMetadata
-     * const contentMetadata = await prisma.contentMetadata.findFirst({
+     * // Get one Report_metadata
+     * const report_metadata = await prisma.report_metadata.findFirst({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirst<T extends ContentMetadataFindFirstArgs>(args?: SelectSubset<T, ContentMetadataFindFirstArgs<ExtArgs>>): Prisma__ContentMetadataClient<$Result.GetResult<Prisma.$ContentMetadataPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findFirst<T extends report_metadataFindFirstArgs>(args?: SelectSubset<T, report_metadataFindFirstArgs<ExtArgs>>): Prisma__report_metadataClient<$Result.GetResult<Prisma.$report_metadataPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first ContentMetadata that matches the filter or
+     * Find the first Report_metadata that matches the filter or
      * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ContentMetadataFindFirstOrThrowArgs} args - Arguments to find a ContentMetadata
+     * @param {report_metadataFindFirstOrThrowArgs} args - Arguments to find a Report_metadata
      * @example
-     * // Get one ContentMetadata
-     * const contentMetadata = await prisma.contentMetadata.findFirstOrThrow({
+     * // Get one Report_metadata
+     * const report_metadata = await prisma.report_metadata.findFirstOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirstOrThrow<T extends ContentMetadataFindFirstOrThrowArgs>(args?: SelectSubset<T, ContentMetadataFindFirstOrThrowArgs<ExtArgs>>): Prisma__ContentMetadataClient<$Result.GetResult<Prisma.$ContentMetadataPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findFirstOrThrow<T extends report_metadataFindFirstOrThrowArgs>(args?: SelectSubset<T, report_metadataFindFirstOrThrowArgs<ExtArgs>>): Prisma__report_metadataClient<$Result.GetResult<Prisma.$report_metadataPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find zero or more ContentMetadata that matches the filter.
+     * Find zero or more Report_metadata that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ContentMetadataFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @param {report_metadataFindManyArgs} args - Arguments to filter and select certain fields only.
      * @example
-     * // Get all ContentMetadata
-     * const contentMetadata = await prisma.contentMetadata.findMany()
+     * // Get all Report_metadata
+     * const report_metadata = await prisma.report_metadata.findMany()
      * 
-     * // Get first 10 ContentMetadata
-     * const contentMetadata = await prisma.contentMetadata.findMany({ take: 10 })
+     * // Get first 10 Report_metadata
+     * const report_metadata = await prisma.report_metadata.findMany({ take: 10 })
      * 
      * // Only select the `id`
-     * const contentMetadataWithIdOnly = await prisma.contentMetadata.findMany({ select: { id: true } })
+     * const report_metadataWithIdOnly = await prisma.report_metadata.findMany({ select: { id: true } })
      * 
      */
-    findMany<T extends ContentMetadataFindManyArgs>(args?: SelectSubset<T, ContentMetadataFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContentMetadataPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+    findMany<T extends report_metadataFindManyArgs>(args?: SelectSubset<T, report_metadataFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$report_metadataPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
     /**
-     * Create a ContentMetadata.
-     * @param {ContentMetadataCreateArgs} args - Arguments to create a ContentMetadata.
+     * Create a Report_metadata.
+     * @param {report_metadataCreateArgs} args - Arguments to create a Report_metadata.
      * @example
-     * // Create one ContentMetadata
-     * const ContentMetadata = await prisma.contentMetadata.create({
+     * // Create one Report_metadata
+     * const Report_metadata = await prisma.report_metadata.create({
      *   data: {
-     *     // ... data to create a ContentMetadata
+     *     // ... data to create a Report_metadata
      *   }
      * })
      * 
      */
-    create<T extends ContentMetadataCreateArgs>(args: SelectSubset<T, ContentMetadataCreateArgs<ExtArgs>>): Prisma__ContentMetadataClient<$Result.GetResult<Prisma.$ContentMetadataPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    create<T extends report_metadataCreateArgs>(args: SelectSubset<T, report_metadataCreateArgs<ExtArgs>>): Prisma__report_metadataClient<$Result.GetResult<Prisma.$report_metadataPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Create many ContentMetadata.
-     * @param {ContentMetadataCreateManyArgs} args - Arguments to create many ContentMetadata.
+     * Create many Report_metadata.
+     * @param {report_metadataCreateManyArgs} args - Arguments to create many Report_metadata.
      * @example
-     * // Create many ContentMetadata
-     * const contentMetadata = await prisma.contentMetadata.createMany({
+     * // Create many Report_metadata
+     * const report_metadata = await prisma.report_metadata.createMany({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      *     
      */
-    createMany<T extends ContentMetadataCreateManyArgs>(args?: SelectSubset<T, ContentMetadataCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    createMany<T extends report_metadataCreateManyArgs>(args?: SelectSubset<T, report_metadataCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Create many ContentMetadata and returns the data saved in the database.
-     * @param {ContentMetadataCreateManyAndReturnArgs} args - Arguments to create many ContentMetadata.
+     * Create many Report_metadata and returns the data saved in the database.
+     * @param {report_metadataCreateManyAndReturnArgs} args - Arguments to create many Report_metadata.
      * @example
-     * // Create many ContentMetadata
-     * const contentMetadata = await prisma.contentMetadata.createManyAndReturn({
+     * // Create many Report_metadata
+     * const report_metadata = await prisma.report_metadata.createManyAndReturn({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      * 
-     * // Create many ContentMetadata and only return the `id`
-     * const contentMetadataWithIdOnly = await prisma.contentMetadata.createManyAndReturn({
+     * // Create many Report_metadata and only return the `id`
+     * const report_metadataWithIdOnly = await prisma.report_metadata.createManyAndReturn({
      *   select: { id: true },
      *   data: [
      *     // ... provide data here
@@ -11533,28 +11496,28 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    createManyAndReturn<T extends ContentMetadataCreateManyAndReturnArgs>(args?: SelectSubset<T, ContentMetadataCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContentMetadataPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+    createManyAndReturn<T extends report_metadataCreateManyAndReturnArgs>(args?: SelectSubset<T, report_metadataCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$report_metadataPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
     /**
-     * Delete a ContentMetadata.
-     * @param {ContentMetadataDeleteArgs} args - Arguments to delete one ContentMetadata.
+     * Delete a Report_metadata.
+     * @param {report_metadataDeleteArgs} args - Arguments to delete one Report_metadata.
      * @example
-     * // Delete one ContentMetadata
-     * const ContentMetadata = await prisma.contentMetadata.delete({
+     * // Delete one Report_metadata
+     * const Report_metadata = await prisma.report_metadata.delete({
      *   where: {
-     *     // ... filter to delete one ContentMetadata
+     *     // ... filter to delete one Report_metadata
      *   }
      * })
      * 
      */
-    delete<T extends ContentMetadataDeleteArgs>(args: SelectSubset<T, ContentMetadataDeleteArgs<ExtArgs>>): Prisma__ContentMetadataClient<$Result.GetResult<Prisma.$ContentMetadataPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    delete<T extends report_metadataDeleteArgs>(args: SelectSubset<T, report_metadataDeleteArgs<ExtArgs>>): Prisma__report_metadataClient<$Result.GetResult<Prisma.$report_metadataPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Update one ContentMetadata.
-     * @param {ContentMetadataUpdateArgs} args - Arguments to update one ContentMetadata.
+     * Update one Report_metadata.
+     * @param {report_metadataUpdateArgs} args - Arguments to update one Report_metadata.
      * @example
-     * // Update one ContentMetadata
-     * const contentMetadata = await prisma.contentMetadata.update({
+     * // Update one Report_metadata
+     * const report_metadata = await prisma.report_metadata.update({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -11564,30 +11527,30 @@ export namespace Prisma {
      * })
      * 
      */
-    update<T extends ContentMetadataUpdateArgs>(args: SelectSubset<T, ContentMetadataUpdateArgs<ExtArgs>>): Prisma__ContentMetadataClient<$Result.GetResult<Prisma.$ContentMetadataPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    update<T extends report_metadataUpdateArgs>(args: SelectSubset<T, report_metadataUpdateArgs<ExtArgs>>): Prisma__report_metadataClient<$Result.GetResult<Prisma.$report_metadataPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Delete zero or more ContentMetadata.
-     * @param {ContentMetadataDeleteManyArgs} args - Arguments to filter ContentMetadata to delete.
+     * Delete zero or more Report_metadata.
+     * @param {report_metadataDeleteManyArgs} args - Arguments to filter Report_metadata to delete.
      * @example
-     * // Delete a few ContentMetadata
-     * const { count } = await prisma.contentMetadata.deleteMany({
+     * // Delete a few Report_metadata
+     * const { count } = await prisma.report_metadata.deleteMany({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      * 
      */
-    deleteMany<T extends ContentMetadataDeleteManyArgs>(args?: SelectSubset<T, ContentMetadataDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    deleteMany<T extends report_metadataDeleteManyArgs>(args?: SelectSubset<T, report_metadataDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more ContentMetadata.
+     * Update zero or more Report_metadata.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ContentMetadataUpdateManyArgs} args - Arguments to update one or more rows.
+     * @param {report_metadataUpdateManyArgs} args - Arguments to update one or more rows.
      * @example
-     * // Update many ContentMetadata
-     * const contentMetadata = await prisma.contentMetadata.updateMany({
+     * // Update many Report_metadata
+     * const report_metadata = await prisma.report_metadata.updateMany({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -11597,14 +11560,14 @@ export namespace Prisma {
      * })
      * 
      */
-    updateMany<T extends ContentMetadataUpdateManyArgs>(args: SelectSubset<T, ContentMetadataUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    updateMany<T extends report_metadataUpdateManyArgs>(args: SelectSubset<T, report_metadataUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more ContentMetadata and returns the data updated in the database.
-     * @param {ContentMetadataUpdateManyAndReturnArgs} args - Arguments to update many ContentMetadata.
+     * Update zero or more Report_metadata and returns the data updated in the database.
+     * @param {report_metadataUpdateManyAndReturnArgs} args - Arguments to update many Report_metadata.
      * @example
-     * // Update many ContentMetadata
-     * const contentMetadata = await prisma.contentMetadata.updateManyAndReturn({
+     * // Update many Report_metadata
+     * const report_metadata = await prisma.report_metadata.updateManyAndReturn({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -11613,8 +11576,8 @@ export namespace Prisma {
      *   ]
      * })
      * 
-     * // Update zero or more ContentMetadata and only return the `id`
-     * const contentMetadataWithIdOnly = await prisma.contentMetadata.updateManyAndReturn({
+     * // Update zero or more Report_metadata and only return the `id`
+     * const report_metadataWithIdOnly = await prisma.report_metadata.updateManyAndReturn({
      *   select: { id: true },
      *   where: {
      *     // ... provide filter here
@@ -11627,56 +11590,56 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    updateManyAndReturn<T extends ContentMetadataUpdateManyAndReturnArgs>(args: SelectSubset<T, ContentMetadataUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContentMetadataPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+    updateManyAndReturn<T extends report_metadataUpdateManyAndReturnArgs>(args: SelectSubset<T, report_metadataUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$report_metadataPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
     /**
-     * Create or update one ContentMetadata.
-     * @param {ContentMetadataUpsertArgs} args - Arguments to update or create a ContentMetadata.
+     * Create or update one Report_metadata.
+     * @param {report_metadataUpsertArgs} args - Arguments to update or create a Report_metadata.
      * @example
-     * // Update or create a ContentMetadata
-     * const contentMetadata = await prisma.contentMetadata.upsert({
+     * // Update or create a Report_metadata
+     * const report_metadata = await prisma.report_metadata.upsert({
      *   create: {
-     *     // ... data to create a ContentMetadata
+     *     // ... data to create a Report_metadata
      *   },
      *   update: {
      *     // ... in case it already exists, update
      *   },
      *   where: {
-     *     // ... the filter for the ContentMetadata we want to update
+     *     // ... the filter for the Report_metadata we want to update
      *   }
      * })
      */
-    upsert<T extends ContentMetadataUpsertArgs>(args: SelectSubset<T, ContentMetadataUpsertArgs<ExtArgs>>): Prisma__ContentMetadataClient<$Result.GetResult<Prisma.$ContentMetadataPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    upsert<T extends report_metadataUpsertArgs>(args: SelectSubset<T, report_metadataUpsertArgs<ExtArgs>>): Prisma__report_metadataClient<$Result.GetResult<Prisma.$report_metadataPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
 
     /**
-     * Count the number of ContentMetadata.
+     * Count the number of Report_metadata.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ContentMetadataCountArgs} args - Arguments to filter ContentMetadata to count.
+     * @param {report_metadataCountArgs} args - Arguments to filter Report_metadata to count.
      * @example
-     * // Count the number of ContentMetadata
-     * const count = await prisma.contentMetadata.count({
+     * // Count the number of Report_metadata
+     * const count = await prisma.report_metadata.count({
      *   where: {
-     *     // ... the filter for the ContentMetadata we want to count
+     *     // ... the filter for the Report_metadata we want to count
      *   }
      * })
     **/
-    count<T extends ContentMetadataCountArgs>(
-      args?: Subset<T, ContentMetadataCountArgs>,
+    count<T extends report_metadataCountArgs>(
+      args?: Subset<T, report_metadataCountArgs>,
     ): Prisma.PrismaPromise<
       T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
-          : GetScalarType<T['select'], ContentMetadataCountAggregateOutputType>
+          : GetScalarType<T['select'], Report_metadataCountAggregateOutputType>
         : number
     >
 
     /**
-     * Allows you to perform aggregations operations on a ContentMetadata.
+     * Allows you to perform aggregations operations on a Report_metadata.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ContentMetadataAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @param {Report_metadataAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
      * @example
      * // Ordered by age ascending
      * // Where email contains prisma.io
@@ -11696,13 +11659,13 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends ContentMetadataAggregateArgs>(args: Subset<T, ContentMetadataAggregateArgs>): Prisma.PrismaPromise<GetContentMetadataAggregateType<T>>
+    aggregate<T extends Report_metadataAggregateArgs>(args: Subset<T, Report_metadataAggregateArgs>): Prisma.PrismaPromise<GetReport_metadataAggregateType<T>>
 
     /**
-     * Group by ContentMetadata.
+     * Group by Report_metadata.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ContentMetadataGroupByArgs} args - Group by arguments.
+     * @param {report_metadataGroupByArgs} args - Group by arguments.
      * @example
      * // Group by city, order by createdAt, get count
      * const result = await prisma.user.groupBy({
@@ -11717,14 +11680,14 @@ export namespace Prisma {
      * 
     **/
     groupBy<
-      T extends ContentMetadataGroupByArgs,
+      T extends report_metadataGroupByArgs,
       HasSelectOrTake extends Or<
         Extends<'skip', Keys<T>>,
         Extends<'take', Keys<T>>
       >,
       OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: ContentMetadataGroupByArgs['orderBy'] }
-        : { orderBy?: ContentMetadataGroupByArgs['orderBy'] },
+        ? { orderBy: report_metadataGroupByArgs['orderBy'] }
+        : { orderBy?: report_metadataGroupByArgs['orderBy'] },
       OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
       ByFields extends MaybeTupleToUnion<T['by']>,
       ByValid extends Has<ByFields, OrderFields>,
@@ -11773,20 +11736,20 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, ContentMetadataGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetContentMetadataGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+    >(args: SubsetIntersection<T, report_metadataGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetReport_metadataGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
   /**
-   * Fields of the ContentMetadata model
+   * Fields of the report_metadata model
    */
-  readonly fields: ContentMetadataFieldRefs;
+  readonly fields: report_metadataFieldRefs;
   }
 
   /**
-   * The delegate class that acts as a "Promise-like" for ContentMetadata.
+   * The delegate class that acts as a "Promise-like" for report_metadata.
    * Why is this prefixed with `Prisma__`?
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export interface Prisma__ContentMetadataClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+  export interface Prisma__report_metadataClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -11814,379 +11777,378 @@ export namespace Prisma {
 
 
   /**
-   * Fields of the ContentMetadata model
+   * Fields of the report_metadata model
    */
-  interface ContentMetadataFieldRefs {
-    readonly id: FieldRef<"ContentMetadata", 'String'>
-    readonly contentType: FieldRef<"ContentMetadata", 'ContentType'>
-    readonly sanityId: FieldRef<"ContentMetadata", 'String'>
-    readonly downloadCount: FieldRef<"ContentMetadata", 'Int'>
-    readonly lastDownloadedAt: FieldRef<"ContentMetadata", 'DateTime'>
-    readonly createdAt: FieldRef<"ContentMetadata", 'DateTime'>
-    readonly updatedAt: FieldRef<"ContentMetadata", 'DateTime'>
+  interface report_metadataFieldRefs {
+    readonly id: FieldRef<"report_metadata", 'String'>
+    readonly sanityId: FieldRef<"report_metadata", 'String'>
+    readonly downloadCount: FieldRef<"report_metadata", 'Int'>
+    readonly lastDownloadedAt: FieldRef<"report_metadata", 'DateTime'>
+    readonly createdAt: FieldRef<"report_metadata", 'DateTime'>
+    readonly updatedAt: FieldRef<"report_metadata", 'DateTime'>
   }
     
 
   // Custom InputTypes
   /**
-   * ContentMetadata findUnique
+   * report_metadata findUnique
    */
-  export type ContentMetadataFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type report_metadataFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ContentMetadata
+     * Select specific fields to fetch from the report_metadata
      */
-    select?: ContentMetadataSelect<ExtArgs> | null
+    select?: report_metadataSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the ContentMetadata
+     * Omit specific fields from the report_metadata
      */
-    omit?: ContentMetadataOmit<ExtArgs> | null
+    omit?: report_metadataOmit<ExtArgs> | null
     /**
-     * Filter, which ContentMetadata to fetch.
+     * Filter, which report_metadata to fetch.
      */
-    where: ContentMetadataWhereUniqueInput
+    where: report_metadataWhereUniqueInput
   }
 
   /**
-   * ContentMetadata findUniqueOrThrow
+   * report_metadata findUniqueOrThrow
    */
-  export type ContentMetadataFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type report_metadataFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ContentMetadata
+     * Select specific fields to fetch from the report_metadata
      */
-    select?: ContentMetadataSelect<ExtArgs> | null
+    select?: report_metadataSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the ContentMetadata
+     * Omit specific fields from the report_metadata
      */
-    omit?: ContentMetadataOmit<ExtArgs> | null
+    omit?: report_metadataOmit<ExtArgs> | null
     /**
-     * Filter, which ContentMetadata to fetch.
+     * Filter, which report_metadata to fetch.
      */
-    where: ContentMetadataWhereUniqueInput
+    where: report_metadataWhereUniqueInput
   }
 
   /**
-   * ContentMetadata findFirst
+   * report_metadata findFirst
    */
-  export type ContentMetadataFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type report_metadataFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ContentMetadata
+     * Select specific fields to fetch from the report_metadata
      */
-    select?: ContentMetadataSelect<ExtArgs> | null
+    select?: report_metadataSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the ContentMetadata
+     * Omit specific fields from the report_metadata
      */
-    omit?: ContentMetadataOmit<ExtArgs> | null
+    omit?: report_metadataOmit<ExtArgs> | null
     /**
-     * Filter, which ContentMetadata to fetch.
+     * Filter, which report_metadata to fetch.
      */
-    where?: ContentMetadataWhereInput
+    where?: report_metadataWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of ContentMetadata to fetch.
+     * Determine the order of report_metadata to fetch.
      */
-    orderBy?: ContentMetadataOrderByWithRelationInput | ContentMetadataOrderByWithRelationInput[]
+    orderBy?: report_metadataOrderByWithRelationInput | report_metadataOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for ContentMetadata.
+     * Sets the position for searching for report_metadata.
      */
-    cursor?: ContentMetadataWhereUniqueInput
+    cursor?: report_metadataWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` ContentMetadata from the position of the cursor.
+     * Take `±n` report_metadata from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` ContentMetadata.
+     * Skip the first `n` report_metadata.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of ContentMetadata.
+     * Filter by unique combinations of report_metadata.
      */
-    distinct?: ContentMetadataScalarFieldEnum | ContentMetadataScalarFieldEnum[]
+    distinct?: Report_metadataScalarFieldEnum | Report_metadataScalarFieldEnum[]
   }
 
   /**
-   * ContentMetadata findFirstOrThrow
+   * report_metadata findFirstOrThrow
    */
-  export type ContentMetadataFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type report_metadataFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ContentMetadata
+     * Select specific fields to fetch from the report_metadata
      */
-    select?: ContentMetadataSelect<ExtArgs> | null
+    select?: report_metadataSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the ContentMetadata
+     * Omit specific fields from the report_metadata
      */
-    omit?: ContentMetadataOmit<ExtArgs> | null
+    omit?: report_metadataOmit<ExtArgs> | null
     /**
-     * Filter, which ContentMetadata to fetch.
+     * Filter, which report_metadata to fetch.
      */
-    where?: ContentMetadataWhereInput
+    where?: report_metadataWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of ContentMetadata to fetch.
+     * Determine the order of report_metadata to fetch.
      */
-    orderBy?: ContentMetadataOrderByWithRelationInput | ContentMetadataOrderByWithRelationInput[]
+    orderBy?: report_metadataOrderByWithRelationInput | report_metadataOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for ContentMetadata.
+     * Sets the position for searching for report_metadata.
      */
-    cursor?: ContentMetadataWhereUniqueInput
+    cursor?: report_metadataWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` ContentMetadata from the position of the cursor.
+     * Take `±n` report_metadata from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` ContentMetadata.
+     * Skip the first `n` report_metadata.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of ContentMetadata.
+     * Filter by unique combinations of report_metadata.
      */
-    distinct?: ContentMetadataScalarFieldEnum | ContentMetadataScalarFieldEnum[]
+    distinct?: Report_metadataScalarFieldEnum | Report_metadataScalarFieldEnum[]
   }
 
   /**
-   * ContentMetadata findMany
+   * report_metadata findMany
    */
-  export type ContentMetadataFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type report_metadataFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ContentMetadata
+     * Select specific fields to fetch from the report_metadata
      */
-    select?: ContentMetadataSelect<ExtArgs> | null
+    select?: report_metadataSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the ContentMetadata
+     * Omit specific fields from the report_metadata
      */
-    omit?: ContentMetadataOmit<ExtArgs> | null
+    omit?: report_metadataOmit<ExtArgs> | null
     /**
-     * Filter, which ContentMetadata to fetch.
+     * Filter, which report_metadata to fetch.
      */
-    where?: ContentMetadataWhereInput
+    where?: report_metadataWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of ContentMetadata to fetch.
+     * Determine the order of report_metadata to fetch.
      */
-    orderBy?: ContentMetadataOrderByWithRelationInput | ContentMetadataOrderByWithRelationInput[]
+    orderBy?: report_metadataOrderByWithRelationInput | report_metadataOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for listing ContentMetadata.
+     * Sets the position for listing report_metadata.
      */
-    cursor?: ContentMetadataWhereUniqueInput
+    cursor?: report_metadataWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` ContentMetadata from the position of the cursor.
+     * Take `±n` report_metadata from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` ContentMetadata.
+     * Skip the first `n` report_metadata.
      */
     skip?: number
-    distinct?: ContentMetadataScalarFieldEnum | ContentMetadataScalarFieldEnum[]
+    distinct?: Report_metadataScalarFieldEnum | Report_metadataScalarFieldEnum[]
   }
 
   /**
-   * ContentMetadata create
+   * report_metadata create
    */
-  export type ContentMetadataCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type report_metadataCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ContentMetadata
+     * Select specific fields to fetch from the report_metadata
      */
-    select?: ContentMetadataSelect<ExtArgs> | null
+    select?: report_metadataSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the ContentMetadata
+     * Omit specific fields from the report_metadata
      */
-    omit?: ContentMetadataOmit<ExtArgs> | null
+    omit?: report_metadataOmit<ExtArgs> | null
     /**
-     * The data needed to create a ContentMetadata.
+     * The data needed to create a report_metadata.
      */
-    data: XOR<ContentMetadataCreateInput, ContentMetadataUncheckedCreateInput>
+    data: XOR<report_metadataCreateInput, report_metadataUncheckedCreateInput>
   }
 
   /**
-   * ContentMetadata createMany
+   * report_metadata createMany
    */
-  export type ContentMetadataCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type report_metadataCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to create many ContentMetadata.
+     * The data used to create many report_metadata.
      */
-    data: ContentMetadataCreateManyInput | ContentMetadataCreateManyInput[]
+    data: report_metadataCreateManyInput | report_metadataCreateManyInput[]
     skipDuplicates?: boolean
   }
 
   /**
-   * ContentMetadata createManyAndReturn
+   * report_metadata createManyAndReturn
    */
-  export type ContentMetadataCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type report_metadataCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ContentMetadata
+     * Select specific fields to fetch from the report_metadata
      */
-    select?: ContentMetadataSelectCreateManyAndReturn<ExtArgs> | null
+    select?: report_metadataSelectCreateManyAndReturn<ExtArgs> | null
     /**
-     * Omit specific fields from the ContentMetadata
+     * Omit specific fields from the report_metadata
      */
-    omit?: ContentMetadataOmit<ExtArgs> | null
+    omit?: report_metadataOmit<ExtArgs> | null
     /**
-     * The data used to create many ContentMetadata.
+     * The data used to create many report_metadata.
      */
-    data: ContentMetadataCreateManyInput | ContentMetadataCreateManyInput[]
+    data: report_metadataCreateManyInput | report_metadataCreateManyInput[]
     skipDuplicates?: boolean
   }
 
   /**
-   * ContentMetadata update
+   * report_metadata update
    */
-  export type ContentMetadataUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type report_metadataUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ContentMetadata
+     * Select specific fields to fetch from the report_metadata
      */
-    select?: ContentMetadataSelect<ExtArgs> | null
+    select?: report_metadataSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the ContentMetadata
+     * Omit specific fields from the report_metadata
      */
-    omit?: ContentMetadataOmit<ExtArgs> | null
+    omit?: report_metadataOmit<ExtArgs> | null
     /**
-     * The data needed to update a ContentMetadata.
+     * The data needed to update a report_metadata.
      */
-    data: XOR<ContentMetadataUpdateInput, ContentMetadataUncheckedUpdateInput>
+    data: XOR<report_metadataUpdateInput, report_metadataUncheckedUpdateInput>
     /**
-     * Choose, which ContentMetadata to update.
+     * Choose, which report_metadata to update.
      */
-    where: ContentMetadataWhereUniqueInput
+    where: report_metadataWhereUniqueInput
   }
 
   /**
-   * ContentMetadata updateMany
+   * report_metadata updateMany
    */
-  export type ContentMetadataUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type report_metadataUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to update ContentMetadata.
+     * The data used to update report_metadata.
      */
-    data: XOR<ContentMetadataUpdateManyMutationInput, ContentMetadataUncheckedUpdateManyInput>
+    data: XOR<report_metadataUpdateManyMutationInput, report_metadataUncheckedUpdateManyInput>
     /**
-     * Filter which ContentMetadata to update
+     * Filter which report_metadata to update
      */
-    where?: ContentMetadataWhereInput
+    where?: report_metadataWhereInput
     /**
-     * Limit how many ContentMetadata to update.
+     * Limit how many report_metadata to update.
      */
     limit?: number
   }
 
   /**
-   * ContentMetadata updateManyAndReturn
+   * report_metadata updateManyAndReturn
    */
-  export type ContentMetadataUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type report_metadataUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ContentMetadata
+     * Select specific fields to fetch from the report_metadata
      */
-    select?: ContentMetadataSelectUpdateManyAndReturn<ExtArgs> | null
+    select?: report_metadataSelectUpdateManyAndReturn<ExtArgs> | null
     /**
-     * Omit specific fields from the ContentMetadata
+     * Omit specific fields from the report_metadata
      */
-    omit?: ContentMetadataOmit<ExtArgs> | null
+    omit?: report_metadataOmit<ExtArgs> | null
     /**
-     * The data used to update ContentMetadata.
+     * The data used to update report_metadata.
      */
-    data: XOR<ContentMetadataUpdateManyMutationInput, ContentMetadataUncheckedUpdateManyInput>
+    data: XOR<report_metadataUpdateManyMutationInput, report_metadataUncheckedUpdateManyInput>
     /**
-     * Filter which ContentMetadata to update
+     * Filter which report_metadata to update
      */
-    where?: ContentMetadataWhereInput
+    where?: report_metadataWhereInput
     /**
-     * Limit how many ContentMetadata to update.
+     * Limit how many report_metadata to update.
      */
     limit?: number
   }
 
   /**
-   * ContentMetadata upsert
+   * report_metadata upsert
    */
-  export type ContentMetadataUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type report_metadataUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ContentMetadata
+     * Select specific fields to fetch from the report_metadata
      */
-    select?: ContentMetadataSelect<ExtArgs> | null
+    select?: report_metadataSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the ContentMetadata
+     * Omit specific fields from the report_metadata
      */
-    omit?: ContentMetadataOmit<ExtArgs> | null
+    omit?: report_metadataOmit<ExtArgs> | null
     /**
-     * The filter to search for the ContentMetadata to update in case it exists.
+     * The filter to search for the report_metadata to update in case it exists.
      */
-    where: ContentMetadataWhereUniqueInput
+    where: report_metadataWhereUniqueInput
     /**
-     * In case the ContentMetadata found by the `where` argument doesn't exist, create a new ContentMetadata with this data.
+     * In case the report_metadata found by the `where` argument doesn't exist, create a new report_metadata with this data.
      */
-    create: XOR<ContentMetadataCreateInput, ContentMetadataUncheckedCreateInput>
+    create: XOR<report_metadataCreateInput, report_metadataUncheckedCreateInput>
     /**
-     * In case the ContentMetadata was found with the provided `where` argument, update it with this data.
+     * In case the report_metadata was found with the provided `where` argument, update it with this data.
      */
-    update: XOR<ContentMetadataUpdateInput, ContentMetadataUncheckedUpdateInput>
+    update: XOR<report_metadataUpdateInput, report_metadataUncheckedUpdateInput>
   }
 
   /**
-   * ContentMetadata delete
+   * report_metadata delete
    */
-  export type ContentMetadataDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type report_metadataDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ContentMetadata
+     * Select specific fields to fetch from the report_metadata
      */
-    select?: ContentMetadataSelect<ExtArgs> | null
+    select?: report_metadataSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the ContentMetadata
+     * Omit specific fields from the report_metadata
      */
-    omit?: ContentMetadataOmit<ExtArgs> | null
+    omit?: report_metadataOmit<ExtArgs> | null
     /**
-     * Filter which ContentMetadata to delete.
+     * Filter which report_metadata to delete.
      */
-    where: ContentMetadataWhereUniqueInput
+    where: report_metadataWhereUniqueInput
   }
 
   /**
-   * ContentMetadata deleteMany
+   * report_metadata deleteMany
    */
-  export type ContentMetadataDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type report_metadataDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which ContentMetadata to delete
+     * Filter which report_metadata to delete
      */
-    where?: ContentMetadataWhereInput
+    where?: report_metadataWhereInput
     /**
-     * Limit how many ContentMetadata to delete.
+     * Limit how many report_metadata to delete.
      */
     limit?: number
   }
 
   /**
-   * ContentMetadata without action
+   * report_metadata without action
    */
-  export type ContentMetadataDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type report_metadataDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ContentMetadata
+     * Select specific fields to fetch from the report_metadata
      */
-    select?: ContentMetadataSelect<ExtArgs> | null
+    select?: report_metadataSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the ContentMetadata
+     * Omit specific fields from the report_metadata
      */
-    omit?: ContentMetadataOmit<ExtArgs> | null
+    omit?: report_metadataOmit<ExtArgs> | null
   }
 
 
@@ -12237,38 +12199,38 @@ export namespace Prisma {
     id: 'id',
     email: 'email',
     emailVerified: 'emailVerified',
+    username: 'username',
     image: 'image',
-    phoneNumber: 'phoneNumber',
-    phoneVerified: 'phoneVerified',
+    bio: 'bio',
+    role: 'role',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    ageGroup: 'ageGroup',
+    city: 'city',
+    country: 'country',
+    expertiseAreas: 'expertiseAreas',
     firstName: 'firstName',
     lastName: 'lastName',
-    username: 'username',
-    bio: 'bio',
-    ageGroup: 'ageGroup',
-    country: 'country',
-    city: 'city',
-    workTypes: 'workTypes',
-    expertiseAreas: 'expertiseAreas',
+    linkedinProfile: 'linkedinProfile',
     organization: 'organization',
+    personalWebsite: 'personalWebsite',
     position: 'position',
     workBio: 'workBio',
-    personalWebsite: 'personalWebsite',
-    linkedinProfile: 'linkedinProfile',
-    otherSocialLinks: 'otherSocialLinks',
-    preferredLanguage: 'preferredLanguage',
+    workTypes: 'workTypes',
     isSearchable: 'isSearchable',
     profileVisibility: 'profileVisibility',
     showEmail: 'showEmail',
-    showPhoneNumber: 'showPhoneNumber',
-    showWorkDetails: 'showWorkDetails',
-    showSocialLinks: 'showSocialLinks',
     showLocation: 'showLocation',
+    showSocialLinks: 'showSocialLinks',
+    showWorkDetails: 'showWorkDetails',
+    phoneNumber: 'phoneNumber',
+    phoneVerified: 'phoneVerified',
+    showPhoneNumber: 'showPhoneNumber',
     onboardingCompleted: 'onboardingCompleted',
     onboardingStep: 'onboardingStep',
+    preferredLanguage: 'preferredLanguage',
     welcomeMessageSeen: 'welcomeMessageSeen',
-    role: 'role',
-    createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    otherSocialLinks: 'otherSocialLinks'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -12328,8 +12290,7 @@ export namespace Prisma {
 
   export const DownloadEventScalarFieldEnum: {
     id: 'id',
-    contentType: 'contentType',
-    contentId: 'contentId',
+    reportId: 'reportId',
     fileLanguage: 'fileLanguage',
     userId: 'userId',
     sessionId: 'sessionId',
@@ -12343,9 +12304,8 @@ export namespace Prisma {
   export type DownloadEventScalarFieldEnum = (typeof DownloadEventScalarFieldEnum)[keyof typeof DownloadEventScalarFieldEnum]
 
 
-  export const ContentMetadataScalarFieldEnum: {
+  export const Report_metadataScalarFieldEnum: {
     id: 'id',
-    contentType: 'contentType',
     sanityId: 'sanityId',
     downloadCount: 'downloadCount',
     lastDownloadedAt: 'lastDownloadedAt',
@@ -12353,7 +12313,7 @@ export namespace Prisma {
     updatedAt: 'updatedAt'
   };
 
-  export type ContentMetadataScalarFieldEnum = (typeof ContentMetadataScalarFieldEnum)[keyof typeof ContentMetadataScalarFieldEnum]
+  export type Report_metadataScalarFieldEnum = (typeof Report_metadataScalarFieldEnum)[keyof typeof Report_metadataScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -12445,6 +12405,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Role'
+   */
+  export type EnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role'>
+    
+
+
+  /**
+   * Reference to a field of type 'Role[]'
+   */
+  export type ListEnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role[]'>
+    
+
+
+  /**
    * Reference to a field of type 'AgeGroup'
    */
   export type EnumAgeGroupFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AgeGroup'>
@@ -12455,20 +12429,6 @@ export namespace Prisma {
    * Reference to a field of type 'AgeGroup[]'
    */
   export type ListEnumAgeGroupFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AgeGroup[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'WorkType[]'
-   */
-  export type ListEnumWorkTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkType[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'WorkType'
-   */
-  export type EnumWorkTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkType'>
     
 
 
@@ -12487,30 +12447,16 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Json'
+   * Reference to a field of type 'WorkType[]'
    */
-  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+  export type ListEnumWorkTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkType[]'>
     
 
 
   /**
-   * Reference to a field of type 'QueryMode'
+   * Reference to a field of type 'WorkType'
    */
-  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
-    
-
-
-  /**
-   * Reference to a field of type 'Language'
-   */
-  export type EnumLanguageFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Language'>
-    
-
-
-  /**
-   * Reference to a field of type 'Language[]'
-   */
-  export type ListEnumLanguageFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Language[]'>
+  export type EnumWorkTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkType'>
     
 
 
@@ -12536,16 +12482,30 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Role'
+   * Reference to a field of type 'Language'
    */
-  export type EnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role'>
+  export type EnumLanguageFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Language'>
     
 
 
   /**
-   * Reference to a field of type 'Role[]'
+   * Reference to a field of type 'Language[]'
    */
-  export type ListEnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role[]'>
+  export type ListEnumLanguageFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Language[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Json'
+   */
+  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+  /**
+   * Reference to a field of type 'QueryMode'
+   */
+  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
 
 
@@ -12588,20 +12548,6 @@ export namespace Prisma {
    * Reference to a field of type 'SpecialCommunityName[]'
    */
   export type ListEnumSpecialCommunityNameFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SpecialCommunityName[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'ContentType'
-   */
-  export type EnumContentTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ContentType'>
-    
-
-
-  /**
-   * Reference to a field of type 'ContentType[]'
-   */
-  export type ListEnumContentTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ContentType[]'>
     
 
 
@@ -12777,86 +12723,86 @@ export namespace Prisma {
     id?: StringFilter<"User"> | string
     email?: StringNullableFilter<"User"> | string | null
     emailVerified?: DateTimeNullableFilter<"User"> | Date | string | null
-    image?: StringNullableFilter<"User"> | string | null
-    phoneNumber?: StringNullableFilter<"User"> | string | null
-    phoneVerified?: DateTimeNullableFilter<"User"> | Date | string | null
-    firstName?: StringNullableFilter<"User"> | string | null
-    lastName?: StringNullableFilter<"User"> | string | null
     username?: StringNullableFilter<"User"> | string | null
+    image?: StringNullableFilter<"User"> | string | null
     bio?: StringNullableFilter<"User"> | string | null
-    ageGroup?: EnumAgeGroupNullableFilter<"User"> | $Enums.AgeGroup | null
-    country?: StringNullableFilter<"User"> | string | null
-    city?: StringNullableFilter<"User"> | string | null
-    workTypes?: EnumWorkTypeNullableListFilter<"User">
-    expertiseAreas?: EnumExpertiseAreaNullableListFilter<"User">
-    organization?: StringNullableFilter<"User"> | string | null
-    position?: StringNullableFilter<"User"> | string | null
-    workBio?: StringNullableFilter<"User"> | string | null
-    personalWebsite?: StringNullableFilter<"User"> | string | null
-    linkedinProfile?: StringNullableFilter<"User"> | string | null
-    otherSocialLinks?: JsonNullableFilter<"User">
-    preferredLanguage?: EnumLanguageFilter<"User"> | $Enums.Language
-    isSearchable?: BoolFilter<"User"> | boolean
-    profileVisibility?: EnumProfileVisibilityFilter<"User"> | $Enums.ProfileVisibility
-    showEmail?: BoolFilter<"User"> | boolean
-    showPhoneNumber?: BoolFilter<"User"> | boolean
-    showWorkDetails?: BoolFilter<"User"> | boolean
-    showSocialLinks?: BoolFilter<"User"> | boolean
-    showLocation?: BoolFilter<"User"> | boolean
-    onboardingCompleted?: BoolFilter<"User"> | boolean
-    onboardingStep?: IntFilter<"User"> | number
-    welcomeMessageSeen?: BoolFilter<"User"> | boolean
     role?: EnumRoleFilter<"User"> | $Enums.Role
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
+    ageGroup?: EnumAgeGroupNullableFilter<"User"> | $Enums.AgeGroup | null
+    city?: StringNullableFilter<"User"> | string | null
+    country?: StringNullableFilter<"User"> | string | null
+    expertiseAreas?: EnumExpertiseAreaNullableListFilter<"User">
+    firstName?: StringNullableFilter<"User"> | string | null
+    lastName?: StringNullableFilter<"User"> | string | null
+    linkedinProfile?: StringNullableFilter<"User"> | string | null
+    organization?: StringNullableFilter<"User"> | string | null
+    personalWebsite?: StringNullableFilter<"User"> | string | null
+    position?: StringNullableFilter<"User"> | string | null
+    workBio?: StringNullableFilter<"User"> | string | null
+    workTypes?: EnumWorkTypeNullableListFilter<"User">
+    isSearchable?: BoolFilter<"User"> | boolean
+    profileVisibility?: EnumProfileVisibilityFilter<"User"> | $Enums.ProfileVisibility
+    showEmail?: BoolFilter<"User"> | boolean
+    showLocation?: BoolFilter<"User"> | boolean
+    showSocialLinks?: BoolFilter<"User"> | boolean
+    showWorkDetails?: BoolFilter<"User"> | boolean
+    phoneNumber?: StringNullableFilter<"User"> | string | null
+    phoneVerified?: DateTimeNullableFilter<"User"> | Date | string | null
+    showPhoneNumber?: BoolFilter<"User"> | boolean
+    onboardingCompleted?: BoolFilter<"User"> | boolean
+    onboardingStep?: IntFilter<"User"> | number
+    preferredLanguage?: EnumLanguageFilter<"User"> | $Enums.Language
+    welcomeMessageSeen?: BoolFilter<"User"> | boolean
+    otherSocialLinks?: JsonNullableFilter<"User">
     accounts?: AccountListRelationFilter
-    sessions?: SessionListRelationFilter
-    communityMemberships?: UserCommunityListRelationFilter
     createdContent?: ContentListRelationFilter
     recentWork?: RecentWorkListRelationFilter
+    sessions?: SessionListRelationFilter
+    communityMemberships?: UserCommunityListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
     id?: SortOrder
     email?: SortOrderInput | SortOrder
     emailVerified?: SortOrderInput | SortOrder
-    image?: SortOrderInput | SortOrder
-    phoneNumber?: SortOrderInput | SortOrder
-    phoneVerified?: SortOrderInput | SortOrder
-    firstName?: SortOrderInput | SortOrder
-    lastName?: SortOrderInput | SortOrder
     username?: SortOrderInput | SortOrder
+    image?: SortOrderInput | SortOrder
     bio?: SortOrderInput | SortOrder
-    ageGroup?: SortOrderInput | SortOrder
-    country?: SortOrderInput | SortOrder
-    city?: SortOrderInput | SortOrder
-    workTypes?: SortOrder
-    expertiseAreas?: SortOrder
-    organization?: SortOrderInput | SortOrder
-    position?: SortOrderInput | SortOrder
-    workBio?: SortOrderInput | SortOrder
-    personalWebsite?: SortOrderInput | SortOrder
-    linkedinProfile?: SortOrderInput | SortOrder
-    otherSocialLinks?: SortOrderInput | SortOrder
-    preferredLanguage?: SortOrder
-    isSearchable?: SortOrder
-    profileVisibility?: SortOrder
-    showEmail?: SortOrder
-    showPhoneNumber?: SortOrder
-    showWorkDetails?: SortOrder
-    showSocialLinks?: SortOrder
-    showLocation?: SortOrder
-    onboardingCompleted?: SortOrder
-    onboardingStep?: SortOrder
-    welcomeMessageSeen?: SortOrder
     role?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    ageGroup?: SortOrderInput | SortOrder
+    city?: SortOrderInput | SortOrder
+    country?: SortOrderInput | SortOrder
+    expertiseAreas?: SortOrder
+    firstName?: SortOrderInput | SortOrder
+    lastName?: SortOrderInput | SortOrder
+    linkedinProfile?: SortOrderInput | SortOrder
+    organization?: SortOrderInput | SortOrder
+    personalWebsite?: SortOrderInput | SortOrder
+    position?: SortOrderInput | SortOrder
+    workBio?: SortOrderInput | SortOrder
+    workTypes?: SortOrder
+    isSearchable?: SortOrder
+    profileVisibility?: SortOrder
+    showEmail?: SortOrder
+    showLocation?: SortOrder
+    showSocialLinks?: SortOrder
+    showWorkDetails?: SortOrder
+    phoneNumber?: SortOrderInput | SortOrder
+    phoneVerified?: SortOrderInput | SortOrder
+    showPhoneNumber?: SortOrder
+    onboardingCompleted?: SortOrder
+    onboardingStep?: SortOrder
+    preferredLanguage?: SortOrder
+    welcomeMessageSeen?: SortOrder
+    otherSocialLinks?: SortOrderInput | SortOrder
     accounts?: AccountOrderByRelationAggregateInput
-    sessions?: SessionOrderByRelationAggregateInput
-    communityMemberships?: UserCommunityOrderByRelationAggregateInput
     createdContent?: ContentOrderByRelationAggregateInput
     recentWork?: RecentWorkOrderByRelationAggregateInput
+    sessions?: SessionOrderByRelationAggregateInput
+    communityMemberships?: UserCommunityOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -12868,79 +12814,79 @@ export namespace Prisma {
     NOT?: UserWhereInput | UserWhereInput[]
     emailVerified?: DateTimeNullableFilter<"User"> | Date | string | null
     image?: StringNullableFilter<"User"> | string | null
-    phoneNumber?: StringNullableFilter<"User"> | string | null
-    phoneVerified?: DateTimeNullableFilter<"User"> | Date | string | null
-    firstName?: StringNullableFilter<"User"> | string | null
-    lastName?: StringNullableFilter<"User"> | string | null
     bio?: StringNullableFilter<"User"> | string | null
-    ageGroup?: EnumAgeGroupNullableFilter<"User"> | $Enums.AgeGroup | null
-    country?: StringNullableFilter<"User"> | string | null
-    city?: StringNullableFilter<"User"> | string | null
-    workTypes?: EnumWorkTypeNullableListFilter<"User">
-    expertiseAreas?: EnumExpertiseAreaNullableListFilter<"User">
-    organization?: StringNullableFilter<"User"> | string | null
-    position?: StringNullableFilter<"User"> | string | null
-    workBio?: StringNullableFilter<"User"> | string | null
-    personalWebsite?: StringNullableFilter<"User"> | string | null
-    linkedinProfile?: StringNullableFilter<"User"> | string | null
-    otherSocialLinks?: JsonNullableFilter<"User">
-    preferredLanguage?: EnumLanguageFilter<"User"> | $Enums.Language
-    isSearchable?: BoolFilter<"User"> | boolean
-    profileVisibility?: EnumProfileVisibilityFilter<"User"> | $Enums.ProfileVisibility
-    showEmail?: BoolFilter<"User"> | boolean
-    showPhoneNumber?: BoolFilter<"User"> | boolean
-    showWorkDetails?: BoolFilter<"User"> | boolean
-    showSocialLinks?: BoolFilter<"User"> | boolean
-    showLocation?: BoolFilter<"User"> | boolean
-    onboardingCompleted?: BoolFilter<"User"> | boolean
-    onboardingStep?: IntFilter<"User"> | number
-    welcomeMessageSeen?: BoolFilter<"User"> | boolean
     role?: EnumRoleFilter<"User"> | $Enums.Role
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
+    ageGroup?: EnumAgeGroupNullableFilter<"User"> | $Enums.AgeGroup | null
+    city?: StringNullableFilter<"User"> | string | null
+    country?: StringNullableFilter<"User"> | string | null
+    expertiseAreas?: EnumExpertiseAreaNullableListFilter<"User">
+    firstName?: StringNullableFilter<"User"> | string | null
+    lastName?: StringNullableFilter<"User"> | string | null
+    linkedinProfile?: StringNullableFilter<"User"> | string | null
+    organization?: StringNullableFilter<"User"> | string | null
+    personalWebsite?: StringNullableFilter<"User"> | string | null
+    position?: StringNullableFilter<"User"> | string | null
+    workBio?: StringNullableFilter<"User"> | string | null
+    workTypes?: EnumWorkTypeNullableListFilter<"User">
+    isSearchable?: BoolFilter<"User"> | boolean
+    profileVisibility?: EnumProfileVisibilityFilter<"User"> | $Enums.ProfileVisibility
+    showEmail?: BoolFilter<"User"> | boolean
+    showLocation?: BoolFilter<"User"> | boolean
+    showSocialLinks?: BoolFilter<"User"> | boolean
+    showWorkDetails?: BoolFilter<"User"> | boolean
+    phoneNumber?: StringNullableFilter<"User"> | string | null
+    phoneVerified?: DateTimeNullableFilter<"User"> | Date | string | null
+    showPhoneNumber?: BoolFilter<"User"> | boolean
+    onboardingCompleted?: BoolFilter<"User"> | boolean
+    onboardingStep?: IntFilter<"User"> | number
+    preferredLanguage?: EnumLanguageFilter<"User"> | $Enums.Language
+    welcomeMessageSeen?: BoolFilter<"User"> | boolean
+    otherSocialLinks?: JsonNullableFilter<"User">
     accounts?: AccountListRelationFilter
-    sessions?: SessionListRelationFilter
-    communityMemberships?: UserCommunityListRelationFilter
     createdContent?: ContentListRelationFilter
     recentWork?: RecentWorkListRelationFilter
+    sessions?: SessionListRelationFilter
+    communityMemberships?: UserCommunityListRelationFilter
   }, "id" | "email" | "username">
 
   export type UserOrderByWithAggregationInput = {
     id?: SortOrder
     email?: SortOrderInput | SortOrder
     emailVerified?: SortOrderInput | SortOrder
-    image?: SortOrderInput | SortOrder
-    phoneNumber?: SortOrderInput | SortOrder
-    phoneVerified?: SortOrderInput | SortOrder
-    firstName?: SortOrderInput | SortOrder
-    lastName?: SortOrderInput | SortOrder
     username?: SortOrderInput | SortOrder
+    image?: SortOrderInput | SortOrder
     bio?: SortOrderInput | SortOrder
-    ageGroup?: SortOrderInput | SortOrder
-    country?: SortOrderInput | SortOrder
-    city?: SortOrderInput | SortOrder
-    workTypes?: SortOrder
-    expertiseAreas?: SortOrder
-    organization?: SortOrderInput | SortOrder
-    position?: SortOrderInput | SortOrder
-    workBio?: SortOrderInput | SortOrder
-    personalWebsite?: SortOrderInput | SortOrder
-    linkedinProfile?: SortOrderInput | SortOrder
-    otherSocialLinks?: SortOrderInput | SortOrder
-    preferredLanguage?: SortOrder
-    isSearchable?: SortOrder
-    profileVisibility?: SortOrder
-    showEmail?: SortOrder
-    showPhoneNumber?: SortOrder
-    showWorkDetails?: SortOrder
-    showSocialLinks?: SortOrder
-    showLocation?: SortOrder
-    onboardingCompleted?: SortOrder
-    onboardingStep?: SortOrder
-    welcomeMessageSeen?: SortOrder
     role?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    ageGroup?: SortOrderInput | SortOrder
+    city?: SortOrderInput | SortOrder
+    country?: SortOrderInput | SortOrder
+    expertiseAreas?: SortOrder
+    firstName?: SortOrderInput | SortOrder
+    lastName?: SortOrderInput | SortOrder
+    linkedinProfile?: SortOrderInput | SortOrder
+    organization?: SortOrderInput | SortOrder
+    personalWebsite?: SortOrderInput | SortOrder
+    position?: SortOrderInput | SortOrder
+    workBio?: SortOrderInput | SortOrder
+    workTypes?: SortOrder
+    isSearchable?: SortOrder
+    profileVisibility?: SortOrder
+    showEmail?: SortOrder
+    showLocation?: SortOrder
+    showSocialLinks?: SortOrder
+    showWorkDetails?: SortOrder
+    phoneNumber?: SortOrderInput | SortOrder
+    phoneVerified?: SortOrderInput | SortOrder
+    showPhoneNumber?: SortOrder
+    onboardingCompleted?: SortOrder
+    onboardingStep?: SortOrder
+    preferredLanguage?: SortOrder
+    welcomeMessageSeen?: SortOrder
+    otherSocialLinks?: SortOrderInput | SortOrder
     _count?: UserCountOrderByAggregateInput
     _avg?: UserAvgOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
@@ -12955,38 +12901,38 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"User"> | string
     email?: StringNullableWithAggregatesFilter<"User"> | string | null
     emailVerified?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
-    image?: StringNullableWithAggregatesFilter<"User"> | string | null
-    phoneNumber?: StringNullableWithAggregatesFilter<"User"> | string | null
-    phoneVerified?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
-    firstName?: StringNullableWithAggregatesFilter<"User"> | string | null
-    lastName?: StringNullableWithAggregatesFilter<"User"> | string | null
     username?: StringNullableWithAggregatesFilter<"User"> | string | null
+    image?: StringNullableWithAggregatesFilter<"User"> | string | null
     bio?: StringNullableWithAggregatesFilter<"User"> | string | null
-    ageGroup?: EnumAgeGroupNullableWithAggregatesFilter<"User"> | $Enums.AgeGroup | null
-    country?: StringNullableWithAggregatesFilter<"User"> | string | null
-    city?: StringNullableWithAggregatesFilter<"User"> | string | null
-    workTypes?: EnumWorkTypeNullableListFilter<"User">
-    expertiseAreas?: EnumExpertiseAreaNullableListFilter<"User">
-    organization?: StringNullableWithAggregatesFilter<"User"> | string | null
-    position?: StringNullableWithAggregatesFilter<"User"> | string | null
-    workBio?: StringNullableWithAggregatesFilter<"User"> | string | null
-    personalWebsite?: StringNullableWithAggregatesFilter<"User"> | string | null
-    linkedinProfile?: StringNullableWithAggregatesFilter<"User"> | string | null
-    otherSocialLinks?: JsonNullableWithAggregatesFilter<"User">
-    preferredLanguage?: EnumLanguageWithAggregatesFilter<"User"> | $Enums.Language
-    isSearchable?: BoolWithAggregatesFilter<"User"> | boolean
-    profileVisibility?: EnumProfileVisibilityWithAggregatesFilter<"User"> | $Enums.ProfileVisibility
-    showEmail?: BoolWithAggregatesFilter<"User"> | boolean
-    showPhoneNumber?: BoolWithAggregatesFilter<"User"> | boolean
-    showWorkDetails?: BoolWithAggregatesFilter<"User"> | boolean
-    showSocialLinks?: BoolWithAggregatesFilter<"User"> | boolean
-    showLocation?: BoolWithAggregatesFilter<"User"> | boolean
-    onboardingCompleted?: BoolWithAggregatesFilter<"User"> | boolean
-    onboardingStep?: IntWithAggregatesFilter<"User"> | number
-    welcomeMessageSeen?: BoolWithAggregatesFilter<"User"> | boolean
     role?: EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
+    ageGroup?: EnumAgeGroupNullableWithAggregatesFilter<"User"> | $Enums.AgeGroup | null
+    city?: StringNullableWithAggregatesFilter<"User"> | string | null
+    country?: StringNullableWithAggregatesFilter<"User"> | string | null
+    expertiseAreas?: EnumExpertiseAreaNullableListFilter<"User">
+    firstName?: StringNullableWithAggregatesFilter<"User"> | string | null
+    lastName?: StringNullableWithAggregatesFilter<"User"> | string | null
+    linkedinProfile?: StringNullableWithAggregatesFilter<"User"> | string | null
+    organization?: StringNullableWithAggregatesFilter<"User"> | string | null
+    personalWebsite?: StringNullableWithAggregatesFilter<"User"> | string | null
+    position?: StringNullableWithAggregatesFilter<"User"> | string | null
+    workBio?: StringNullableWithAggregatesFilter<"User"> | string | null
+    workTypes?: EnumWorkTypeNullableListFilter<"User">
+    isSearchable?: BoolWithAggregatesFilter<"User"> | boolean
+    profileVisibility?: EnumProfileVisibilityWithAggregatesFilter<"User"> | $Enums.ProfileVisibility
+    showEmail?: BoolWithAggregatesFilter<"User"> | boolean
+    showLocation?: BoolWithAggregatesFilter<"User"> | boolean
+    showSocialLinks?: BoolWithAggregatesFilter<"User"> | boolean
+    showWorkDetails?: BoolWithAggregatesFilter<"User"> | boolean
+    phoneNumber?: StringNullableWithAggregatesFilter<"User"> | string | null
+    phoneVerified?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+    showPhoneNumber?: BoolWithAggregatesFilter<"User"> | boolean
+    onboardingCompleted?: BoolWithAggregatesFilter<"User"> | boolean
+    onboardingStep?: IntWithAggregatesFilter<"User"> | number
+    preferredLanguage?: EnumLanguageWithAggregatesFilter<"User"> | $Enums.Language
+    welcomeMessageSeen?: BoolWithAggregatesFilter<"User"> | boolean
+    otherSocialLinks?: JsonNullableWithAggregatesFilter<"User">
   }
 
   export type CommunityWhereInput = {
@@ -13001,8 +12947,8 @@ export namespace Prisma {
     specialName?: EnumSpecialCommunityNameNullableFilter<"Community"> | $Enums.SpecialCommunityName | null
     createdAt?: DateTimeFilter<"Community"> | Date | string
     updatedAt?: DateTimeFilter<"Community"> | Date | string
-    members?: UserCommunityListRelationFilter
     contents?: ContentListRelationFilter
+    members?: UserCommunityListRelationFilter
   }
 
   export type CommunityOrderByWithRelationInput = {
@@ -13014,8 +12960,8 @@ export namespace Prisma {
     specialName?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    members?: UserCommunityOrderByRelationAggregateInput
     contents?: ContentOrderByRelationAggregateInput
+    members?: UserCommunityOrderByRelationAggregateInput
   }
 
   export type CommunityWhereUniqueInput = Prisma.AtLeast<{
@@ -13030,8 +12976,8 @@ export namespace Prisma {
     specialName?: EnumSpecialCommunityNameNullableFilter<"Community"> | $Enums.SpecialCommunityName | null
     createdAt?: DateTimeFilter<"Community"> | Date | string
     updatedAt?: DateTimeFilter<"Community"> | Date | string
-    members?: UserCommunityListRelationFilter
     contents?: ContentListRelationFilter
+    members?: UserCommunityListRelationFilter
   }, "id">
 
   export type CommunityOrderByWithAggregationInput = {
@@ -13069,16 +13015,16 @@ export namespace Prisma {
     userId?: StringFilter<"UserCommunity"> | string
     communityId?: StringFilter<"UserCommunity"> | string
     role?: EnumRoleFilter<"UserCommunity"> | $Enums.Role
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
     community?: XOR<CommunityScalarRelationFilter, CommunityWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
   export type UserCommunityOrderByWithRelationInput = {
     userId?: SortOrder
     communityId?: SortOrder
     role?: SortOrder
-    user?: UserOrderByWithRelationInput
     community?: CommunityOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
   }
 
   export type UserCommunityWhereUniqueInput = Prisma.AtLeast<{
@@ -13089,8 +13035,8 @@ export namespace Prisma {
     userId?: StringFilter<"UserCommunity"> | string
     communityId?: StringFilter<"UserCommunity"> | string
     role?: EnumRoleFilter<"UserCommunity"> | $Enums.Role
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
     community?: XOR<CommunityScalarRelationFilter, CommunityWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "userId_communityId">
 
   export type UserCommunityOrderByWithAggregationInput = {
@@ -13122,8 +13068,8 @@ export namespace Prisma {
     authorId?: StringFilter<"Content"> | string
     createdAt?: DateTimeFilter<"Content"> | Date | string
     updatedAt?: DateTimeFilter<"Content"> | Date | string
-    community?: XOR<CommunityScalarRelationFilter, CommunityWhereInput>
     author?: XOR<UserScalarRelationFilter, UserWhereInput>
+    community?: XOR<CommunityScalarRelationFilter, CommunityWhereInput>
   }
 
   export type ContentOrderByWithRelationInput = {
@@ -13134,8 +13080,8 @@ export namespace Prisma {
     authorId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    community?: CommunityOrderByWithRelationInput
     author?: UserOrderByWithRelationInput
+    community?: CommunityOrderByWithRelationInput
   }
 
   export type ContentWhereUniqueInput = Prisma.AtLeast<{
@@ -13149,8 +13095,8 @@ export namespace Prisma {
     authorId?: StringFilter<"Content"> | string
     createdAt?: DateTimeFilter<"Content"> | Date | string
     updatedAt?: DateTimeFilter<"Content"> | Date | string
-    community?: XOR<CommunityScalarRelationFilter, CommunityWhereInput>
     author?: XOR<UserScalarRelationFilter, UserWhereInput>
+    community?: XOR<CommunityScalarRelationFilter, CommunityWhereInput>
   }, "id">
 
   export type ContentOrderByWithAggregationInput = {
@@ -13264,8 +13210,7 @@ export namespace Prisma {
     OR?: DownloadEventWhereInput[]
     NOT?: DownloadEventWhereInput | DownloadEventWhereInput[]
     id?: StringFilter<"DownloadEvent"> | string
-    contentType?: EnumContentTypeFilter<"DownloadEvent"> | $Enums.ContentType
-    contentId?: StringFilter<"DownloadEvent"> | string
+    reportId?: StringFilter<"DownloadEvent"> | string
     fileLanguage?: StringFilter<"DownloadEvent"> | string
     userId?: StringNullableFilter<"DownloadEvent"> | string | null
     sessionId?: StringFilter<"DownloadEvent"> | string
@@ -13278,8 +13223,7 @@ export namespace Prisma {
 
   export type DownloadEventOrderByWithRelationInput = {
     id?: SortOrder
-    contentType?: SortOrder
-    contentId?: SortOrder
+    reportId?: SortOrder
     fileLanguage?: SortOrder
     userId?: SortOrderInput | SortOrder
     sessionId?: SortOrder
@@ -13295,8 +13239,7 @@ export namespace Prisma {
     AND?: DownloadEventWhereInput | DownloadEventWhereInput[]
     OR?: DownloadEventWhereInput[]
     NOT?: DownloadEventWhereInput | DownloadEventWhereInput[]
-    contentType?: EnumContentTypeFilter<"DownloadEvent"> | $Enums.ContentType
-    contentId?: StringFilter<"DownloadEvent"> | string
+    reportId?: StringFilter<"DownloadEvent"> | string
     fileLanguage?: StringFilter<"DownloadEvent"> | string
     userId?: StringNullableFilter<"DownloadEvent"> | string | null
     sessionId?: StringFilter<"DownloadEvent"> | string
@@ -13309,8 +13252,7 @@ export namespace Prisma {
 
   export type DownloadEventOrderByWithAggregationInput = {
     id?: SortOrder
-    contentType?: SortOrder
-    contentId?: SortOrder
+    reportId?: SortOrder
     fileLanguage?: SortOrder
     userId?: SortOrderInput | SortOrder
     sessionId?: SortOrder
@@ -13329,8 +13271,7 @@ export namespace Prisma {
     OR?: DownloadEventScalarWhereWithAggregatesInput[]
     NOT?: DownloadEventScalarWhereWithAggregatesInput | DownloadEventScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"DownloadEvent"> | string
-    contentType?: EnumContentTypeWithAggregatesFilter<"DownloadEvent"> | $Enums.ContentType
-    contentId?: StringWithAggregatesFilter<"DownloadEvent"> | string
+    reportId?: StringWithAggregatesFilter<"DownloadEvent"> | string
     fileLanguage?: StringWithAggregatesFilter<"DownloadEvent"> | string
     userId?: StringNullableWithAggregatesFilter<"DownloadEvent"> | string | null
     sessionId?: StringWithAggregatesFilter<"DownloadEvent"> | string
@@ -13341,22 +13282,20 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"DownloadEvent"> | Date | string
   }
 
-  export type ContentMetadataWhereInput = {
-    AND?: ContentMetadataWhereInput | ContentMetadataWhereInput[]
-    OR?: ContentMetadataWhereInput[]
-    NOT?: ContentMetadataWhereInput | ContentMetadataWhereInput[]
-    id?: StringFilter<"ContentMetadata"> | string
-    contentType?: EnumContentTypeFilter<"ContentMetadata"> | $Enums.ContentType
-    sanityId?: StringFilter<"ContentMetadata"> | string
-    downloadCount?: IntFilter<"ContentMetadata"> | number
-    lastDownloadedAt?: DateTimeNullableFilter<"ContentMetadata"> | Date | string | null
-    createdAt?: DateTimeFilter<"ContentMetadata"> | Date | string
-    updatedAt?: DateTimeFilter<"ContentMetadata"> | Date | string
+  export type report_metadataWhereInput = {
+    AND?: report_metadataWhereInput | report_metadataWhereInput[]
+    OR?: report_metadataWhereInput[]
+    NOT?: report_metadataWhereInput | report_metadataWhereInput[]
+    id?: StringFilter<"report_metadata"> | string
+    sanityId?: StringFilter<"report_metadata"> | string
+    downloadCount?: IntFilter<"report_metadata"> | number
+    lastDownloadedAt?: DateTimeNullableFilter<"report_metadata"> | Date | string | null
+    createdAt?: DateTimeFilter<"report_metadata"> | Date | string
+    updatedAt?: DateTimeFilter<"report_metadata"> | Date | string
   }
 
-  export type ContentMetadataOrderByWithRelationInput = {
+  export type report_metadataOrderByWithRelationInput = {
     id?: SortOrder
-    contentType?: SortOrder
     sanityId?: SortOrder
     downloadCount?: SortOrder
     lastDownloadedAt?: SortOrderInput | SortOrder
@@ -13364,46 +13303,42 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
-  export type ContentMetadataWhereUniqueInput = Prisma.AtLeast<{
+  export type report_metadataWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    contentType_sanityId?: ContentMetadataContentTypeSanityIdCompoundUniqueInput
-    AND?: ContentMetadataWhereInput | ContentMetadataWhereInput[]
-    OR?: ContentMetadataWhereInput[]
-    NOT?: ContentMetadataWhereInput | ContentMetadataWhereInput[]
-    contentType?: EnumContentTypeFilter<"ContentMetadata"> | $Enums.ContentType
-    sanityId?: StringFilter<"ContentMetadata"> | string
-    downloadCount?: IntFilter<"ContentMetadata"> | number
-    lastDownloadedAt?: DateTimeNullableFilter<"ContentMetadata"> | Date | string | null
-    createdAt?: DateTimeFilter<"ContentMetadata"> | Date | string
-    updatedAt?: DateTimeFilter<"ContentMetadata"> | Date | string
-  }, "id" | "contentType_sanityId">
+    sanityId?: string
+    AND?: report_metadataWhereInput | report_metadataWhereInput[]
+    OR?: report_metadataWhereInput[]
+    NOT?: report_metadataWhereInput | report_metadataWhereInput[]
+    downloadCount?: IntFilter<"report_metadata"> | number
+    lastDownloadedAt?: DateTimeNullableFilter<"report_metadata"> | Date | string | null
+    createdAt?: DateTimeFilter<"report_metadata"> | Date | string
+    updatedAt?: DateTimeFilter<"report_metadata"> | Date | string
+  }, "id" | "sanityId">
 
-  export type ContentMetadataOrderByWithAggregationInput = {
+  export type report_metadataOrderByWithAggregationInput = {
     id?: SortOrder
-    contentType?: SortOrder
     sanityId?: SortOrder
     downloadCount?: SortOrder
     lastDownloadedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    _count?: ContentMetadataCountOrderByAggregateInput
-    _avg?: ContentMetadataAvgOrderByAggregateInput
-    _max?: ContentMetadataMaxOrderByAggregateInput
-    _min?: ContentMetadataMinOrderByAggregateInput
-    _sum?: ContentMetadataSumOrderByAggregateInput
+    _count?: report_metadataCountOrderByAggregateInput
+    _avg?: report_metadataAvgOrderByAggregateInput
+    _max?: report_metadataMaxOrderByAggregateInput
+    _min?: report_metadataMinOrderByAggregateInput
+    _sum?: report_metadataSumOrderByAggregateInput
   }
 
-  export type ContentMetadataScalarWhereWithAggregatesInput = {
-    AND?: ContentMetadataScalarWhereWithAggregatesInput | ContentMetadataScalarWhereWithAggregatesInput[]
-    OR?: ContentMetadataScalarWhereWithAggregatesInput[]
-    NOT?: ContentMetadataScalarWhereWithAggregatesInput | ContentMetadataScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"ContentMetadata"> | string
-    contentType?: EnumContentTypeWithAggregatesFilter<"ContentMetadata"> | $Enums.ContentType
-    sanityId?: StringWithAggregatesFilter<"ContentMetadata"> | string
-    downloadCount?: IntWithAggregatesFilter<"ContentMetadata"> | number
-    lastDownloadedAt?: DateTimeNullableWithAggregatesFilter<"ContentMetadata"> | Date | string | null
-    createdAt?: DateTimeWithAggregatesFilter<"ContentMetadata"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"ContentMetadata"> | Date | string
+  export type report_metadataScalarWhereWithAggregatesInput = {
+    AND?: report_metadataScalarWhereWithAggregatesInput | report_metadataScalarWhereWithAggregatesInput[]
+    OR?: report_metadataScalarWhereWithAggregatesInput[]
+    NOT?: report_metadataScalarWhereWithAggregatesInput | report_metadataScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"report_metadata"> | string
+    sanityId?: StringWithAggregatesFilter<"report_metadata"> | string
+    downloadCount?: IntWithAggregatesFilter<"report_metadata"> | number
+    lastDownloadedAt?: DateTimeNullableWithAggregatesFilter<"report_metadata"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"report_metadata"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"report_metadata"> | Date | string
   }
 
   export type AccountCreateInput = {
@@ -13569,286 +13504,286 @@ export namespace Prisma {
     id: string
     email?: string | null
     emailVerified?: Date | string | null
-    image?: string | null
-    phoneNumber?: string | null
-    phoneVerified?: Date | string | null
-    firstName?: string | null
-    lastName?: string | null
     username?: string | null
+    image?: string | null
     bio?: string | null
-    ageGroup?: $Enums.AgeGroup | null
-    country?: string | null
-    city?: string | null
-    workTypes?: UserCreateworkTypesInput | $Enums.WorkType[]
-    expertiseAreas?: UserCreateexpertiseAreasInput | $Enums.ExpertiseArea[]
-    organization?: string | null
-    position?: string | null
-    workBio?: string | null
-    personalWebsite?: string | null
-    linkedinProfile?: string | null
-    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
-    preferredLanguage?: $Enums.Language
-    isSearchable?: boolean
-    profileVisibility?: $Enums.ProfileVisibility
-    showEmail?: boolean
-    showPhoneNumber?: boolean
-    showWorkDetails?: boolean
-    showSocialLinks?: boolean
-    showLocation?: boolean
-    onboardingCompleted?: boolean
-    onboardingStep?: number
-    welcomeMessageSeen?: boolean
     role?: $Enums.Role
     createdAt?: Date | string
     updatedAt?: Date | string
+    ageGroup?: $Enums.AgeGroup | null
+    city?: string | null
+    country?: string | null
+    expertiseAreas?: UserCreateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    firstName?: string | null
+    lastName?: string | null
+    linkedinProfile?: string | null
+    organization?: string | null
+    personalWebsite?: string | null
+    position?: string | null
+    workBio?: string | null
+    workTypes?: UserCreateworkTypesInput | $Enums.WorkType[]
+    isSearchable?: boolean
+    profileVisibility?: $Enums.ProfileVisibility
+    showEmail?: boolean
+    showLocation?: boolean
+    showSocialLinks?: boolean
+    showWorkDetails?: boolean
+    phoneNumber?: string | null
+    phoneVerified?: Date | string | null
+    showPhoneNumber?: boolean
+    onboardingCompleted?: boolean
+    onboardingStep?: number
+    preferredLanguage?: $Enums.Language
+    welcomeMessageSeen?: boolean
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutUserInput
-    sessions?: SessionCreateNestedManyWithoutUserInput
-    communityMemberships?: UserCommunityCreateNestedManyWithoutUserInput
     createdContent?: ContentCreateNestedManyWithoutAuthorInput
     recentWork?: RecentWorkCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    communityMemberships?: UserCommunityCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
     id: string
     email?: string | null
     emailVerified?: Date | string | null
-    image?: string | null
-    phoneNumber?: string | null
-    phoneVerified?: Date | string | null
-    firstName?: string | null
-    lastName?: string | null
     username?: string | null
+    image?: string | null
     bio?: string | null
-    ageGroup?: $Enums.AgeGroup | null
-    country?: string | null
-    city?: string | null
-    workTypes?: UserCreateworkTypesInput | $Enums.WorkType[]
-    expertiseAreas?: UserCreateexpertiseAreasInput | $Enums.ExpertiseArea[]
-    organization?: string | null
-    position?: string | null
-    workBio?: string | null
-    personalWebsite?: string | null
-    linkedinProfile?: string | null
-    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
-    preferredLanguage?: $Enums.Language
-    isSearchable?: boolean
-    profileVisibility?: $Enums.ProfileVisibility
-    showEmail?: boolean
-    showPhoneNumber?: boolean
-    showWorkDetails?: boolean
-    showSocialLinks?: boolean
-    showLocation?: boolean
-    onboardingCompleted?: boolean
-    onboardingStep?: number
-    welcomeMessageSeen?: boolean
     role?: $Enums.Role
     createdAt?: Date | string
     updatedAt?: Date | string
+    ageGroup?: $Enums.AgeGroup | null
+    city?: string | null
+    country?: string | null
+    expertiseAreas?: UserCreateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    firstName?: string | null
+    lastName?: string | null
+    linkedinProfile?: string | null
+    organization?: string | null
+    personalWebsite?: string | null
+    position?: string | null
+    workBio?: string | null
+    workTypes?: UserCreateworkTypesInput | $Enums.WorkType[]
+    isSearchable?: boolean
+    profileVisibility?: $Enums.ProfileVisibility
+    showEmail?: boolean
+    showLocation?: boolean
+    showSocialLinks?: boolean
+    showWorkDetails?: boolean
+    phoneNumber?: string | null
+    phoneVerified?: Date | string | null
+    showPhoneNumber?: boolean
+    onboardingCompleted?: boolean
+    onboardingStep?: number
+    preferredLanguage?: $Enums.Language
+    welcomeMessageSeen?: boolean
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
-    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
-    communityMemberships?: UserCommunityUncheckedCreateNestedManyWithoutUserInput
     createdContent?: ContentUncheckedCreateNestedManyWithoutAuthorInput
     recentWork?: RecentWorkUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    communityMemberships?: UserCommunityUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    phoneVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    firstName?: NullableStringFieldUpdateOperationsInput | string | null
-    lastName?: NullableStringFieldUpdateOperationsInput | string | null
     username?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
-    ageGroup?: NullableEnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup | null
-    country?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: NullableStringFieldUpdateOperationsInput | string | null
-    workTypes?: UserUpdateworkTypesInput | $Enums.WorkType[]
-    expertiseAreas?: UserUpdateexpertiseAreasInput | $Enums.ExpertiseArea[]
-    organization?: NullableStringFieldUpdateOperationsInput | string | null
-    position?: NullableStringFieldUpdateOperationsInput | string | null
-    workBio?: NullableStringFieldUpdateOperationsInput | string | null
-    personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
-    linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
-    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
-    preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    isSearchable?: BoolFieldUpdateOperationsInput | boolean
-    profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
-    showEmail?: BoolFieldUpdateOperationsInput | boolean
-    showPhoneNumber?: BoolFieldUpdateOperationsInput | boolean
-    showWorkDetails?: BoolFieldUpdateOperationsInput | boolean
-    showSocialLinks?: BoolFieldUpdateOperationsInput | boolean
-    showLocation?: BoolFieldUpdateOperationsInput | boolean
-    onboardingCompleted?: BoolFieldUpdateOperationsInput | boolean
-    onboardingStep?: IntFieldUpdateOperationsInput | number
-    welcomeMessageSeen?: BoolFieldUpdateOperationsInput | boolean
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ageGroup?: NullableEnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    expertiseAreas?: UserUpdateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    workBio?: NullableStringFieldUpdateOperationsInput | string | null
+    workTypes?: UserUpdateworkTypesInput | $Enums.WorkType[]
+    isSearchable?: BoolFieldUpdateOperationsInput | boolean
+    profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
+    showEmail?: BoolFieldUpdateOperationsInput | boolean
+    showLocation?: BoolFieldUpdateOperationsInput | boolean
+    showSocialLinks?: BoolFieldUpdateOperationsInput | boolean
+    showWorkDetails?: BoolFieldUpdateOperationsInput | boolean
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    showPhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    onboardingCompleted?: BoolFieldUpdateOperationsInput | boolean
+    onboardingStep?: IntFieldUpdateOperationsInput | number
+    preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
+    welcomeMessageSeen?: BoolFieldUpdateOperationsInput | boolean
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutUserNestedInput
-    sessions?: SessionUpdateManyWithoutUserNestedInput
-    communityMemberships?: UserCommunityUpdateManyWithoutUserNestedInput
     createdContent?: ContentUpdateManyWithoutAuthorNestedInput
     recentWork?: RecentWorkUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    communityMemberships?: UserCommunityUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    phoneVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    firstName?: NullableStringFieldUpdateOperationsInput | string | null
-    lastName?: NullableStringFieldUpdateOperationsInput | string | null
     username?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
-    ageGroup?: NullableEnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup | null
-    country?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: NullableStringFieldUpdateOperationsInput | string | null
-    workTypes?: UserUpdateworkTypesInput | $Enums.WorkType[]
-    expertiseAreas?: UserUpdateexpertiseAreasInput | $Enums.ExpertiseArea[]
-    organization?: NullableStringFieldUpdateOperationsInput | string | null
-    position?: NullableStringFieldUpdateOperationsInput | string | null
-    workBio?: NullableStringFieldUpdateOperationsInput | string | null
-    personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
-    linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
-    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
-    preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    isSearchable?: BoolFieldUpdateOperationsInput | boolean
-    profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
-    showEmail?: BoolFieldUpdateOperationsInput | boolean
-    showPhoneNumber?: BoolFieldUpdateOperationsInput | boolean
-    showWorkDetails?: BoolFieldUpdateOperationsInput | boolean
-    showSocialLinks?: BoolFieldUpdateOperationsInput | boolean
-    showLocation?: BoolFieldUpdateOperationsInput | boolean
-    onboardingCompleted?: BoolFieldUpdateOperationsInput | boolean
-    onboardingStep?: IntFieldUpdateOperationsInput | number
-    welcomeMessageSeen?: BoolFieldUpdateOperationsInput | boolean
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ageGroup?: NullableEnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    expertiseAreas?: UserUpdateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    workBio?: NullableStringFieldUpdateOperationsInput | string | null
+    workTypes?: UserUpdateworkTypesInput | $Enums.WorkType[]
+    isSearchable?: BoolFieldUpdateOperationsInput | boolean
+    profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
+    showEmail?: BoolFieldUpdateOperationsInput | boolean
+    showLocation?: BoolFieldUpdateOperationsInput | boolean
+    showSocialLinks?: BoolFieldUpdateOperationsInput | boolean
+    showWorkDetails?: BoolFieldUpdateOperationsInput | boolean
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    showPhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    onboardingCompleted?: BoolFieldUpdateOperationsInput | boolean
+    onboardingStep?: IntFieldUpdateOperationsInput | number
+    preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
+    welcomeMessageSeen?: BoolFieldUpdateOperationsInput | boolean
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
-    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
-    communityMemberships?: UserCommunityUncheckedUpdateManyWithoutUserNestedInput
     createdContent?: ContentUncheckedUpdateManyWithoutAuthorNestedInput
     recentWork?: RecentWorkUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    communityMemberships?: UserCommunityUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
     id: string
     email?: string | null
     emailVerified?: Date | string | null
-    image?: string | null
-    phoneNumber?: string | null
-    phoneVerified?: Date | string | null
-    firstName?: string | null
-    lastName?: string | null
     username?: string | null
+    image?: string | null
     bio?: string | null
-    ageGroup?: $Enums.AgeGroup | null
-    country?: string | null
-    city?: string | null
-    workTypes?: UserCreateworkTypesInput | $Enums.WorkType[]
-    expertiseAreas?: UserCreateexpertiseAreasInput | $Enums.ExpertiseArea[]
-    organization?: string | null
-    position?: string | null
-    workBio?: string | null
-    personalWebsite?: string | null
-    linkedinProfile?: string | null
-    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
-    preferredLanguage?: $Enums.Language
-    isSearchable?: boolean
-    profileVisibility?: $Enums.ProfileVisibility
-    showEmail?: boolean
-    showPhoneNumber?: boolean
-    showWorkDetails?: boolean
-    showSocialLinks?: boolean
-    showLocation?: boolean
-    onboardingCompleted?: boolean
-    onboardingStep?: number
-    welcomeMessageSeen?: boolean
     role?: $Enums.Role
     createdAt?: Date | string
     updatedAt?: Date | string
+    ageGroup?: $Enums.AgeGroup | null
+    city?: string | null
+    country?: string | null
+    expertiseAreas?: UserCreateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    firstName?: string | null
+    lastName?: string | null
+    linkedinProfile?: string | null
+    organization?: string | null
+    personalWebsite?: string | null
+    position?: string | null
+    workBio?: string | null
+    workTypes?: UserCreateworkTypesInput | $Enums.WorkType[]
+    isSearchable?: boolean
+    profileVisibility?: $Enums.ProfileVisibility
+    showEmail?: boolean
+    showLocation?: boolean
+    showSocialLinks?: boolean
+    showWorkDetails?: boolean
+    phoneNumber?: string | null
+    phoneVerified?: Date | string | null
+    showPhoneNumber?: boolean
+    onboardingCompleted?: boolean
+    onboardingStep?: number
+    preferredLanguage?: $Enums.Language
+    welcomeMessageSeen?: boolean
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type UserUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    phoneVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    firstName?: NullableStringFieldUpdateOperationsInput | string | null
-    lastName?: NullableStringFieldUpdateOperationsInput | string | null
     username?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
-    ageGroup?: NullableEnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup | null
-    country?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: NullableStringFieldUpdateOperationsInput | string | null
-    workTypes?: UserUpdateworkTypesInput | $Enums.WorkType[]
-    expertiseAreas?: UserUpdateexpertiseAreasInput | $Enums.ExpertiseArea[]
-    organization?: NullableStringFieldUpdateOperationsInput | string | null
-    position?: NullableStringFieldUpdateOperationsInput | string | null
-    workBio?: NullableStringFieldUpdateOperationsInput | string | null
-    personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
-    linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
-    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
-    preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    isSearchable?: BoolFieldUpdateOperationsInput | boolean
-    profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
-    showEmail?: BoolFieldUpdateOperationsInput | boolean
-    showPhoneNumber?: BoolFieldUpdateOperationsInput | boolean
-    showWorkDetails?: BoolFieldUpdateOperationsInput | boolean
-    showSocialLinks?: BoolFieldUpdateOperationsInput | boolean
-    showLocation?: BoolFieldUpdateOperationsInput | boolean
-    onboardingCompleted?: BoolFieldUpdateOperationsInput | boolean
-    onboardingStep?: IntFieldUpdateOperationsInput | number
-    welcomeMessageSeen?: BoolFieldUpdateOperationsInput | boolean
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ageGroup?: NullableEnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    expertiseAreas?: UserUpdateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    workBio?: NullableStringFieldUpdateOperationsInput | string | null
+    workTypes?: UserUpdateworkTypesInput | $Enums.WorkType[]
+    isSearchable?: BoolFieldUpdateOperationsInput | boolean
+    profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
+    showEmail?: BoolFieldUpdateOperationsInput | boolean
+    showLocation?: BoolFieldUpdateOperationsInput | boolean
+    showSocialLinks?: BoolFieldUpdateOperationsInput | boolean
+    showWorkDetails?: BoolFieldUpdateOperationsInput | boolean
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    showPhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    onboardingCompleted?: BoolFieldUpdateOperationsInput | boolean
+    onboardingStep?: IntFieldUpdateOperationsInput | number
+    preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
+    welcomeMessageSeen?: BoolFieldUpdateOperationsInput | boolean
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type UserUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    phoneVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    firstName?: NullableStringFieldUpdateOperationsInput | string | null
-    lastName?: NullableStringFieldUpdateOperationsInput | string | null
     username?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
-    ageGroup?: NullableEnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup | null
-    country?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: NullableStringFieldUpdateOperationsInput | string | null
-    workTypes?: UserUpdateworkTypesInput | $Enums.WorkType[]
-    expertiseAreas?: UserUpdateexpertiseAreasInput | $Enums.ExpertiseArea[]
-    organization?: NullableStringFieldUpdateOperationsInput | string | null
-    position?: NullableStringFieldUpdateOperationsInput | string | null
-    workBio?: NullableStringFieldUpdateOperationsInput | string | null
-    personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
-    linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
-    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
-    preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    isSearchable?: BoolFieldUpdateOperationsInput | boolean
-    profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
-    showEmail?: BoolFieldUpdateOperationsInput | boolean
-    showPhoneNumber?: BoolFieldUpdateOperationsInput | boolean
-    showWorkDetails?: BoolFieldUpdateOperationsInput | boolean
-    showSocialLinks?: BoolFieldUpdateOperationsInput | boolean
-    showLocation?: BoolFieldUpdateOperationsInput | boolean
-    onboardingCompleted?: BoolFieldUpdateOperationsInput | boolean
-    onboardingStep?: IntFieldUpdateOperationsInput | number
-    welcomeMessageSeen?: BoolFieldUpdateOperationsInput | boolean
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ageGroup?: NullableEnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    expertiseAreas?: UserUpdateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    workBio?: NullableStringFieldUpdateOperationsInput | string | null
+    workTypes?: UserUpdateworkTypesInput | $Enums.WorkType[]
+    isSearchable?: BoolFieldUpdateOperationsInput | boolean
+    profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
+    showEmail?: BoolFieldUpdateOperationsInput | boolean
+    showLocation?: BoolFieldUpdateOperationsInput | boolean
+    showSocialLinks?: BoolFieldUpdateOperationsInput | boolean
+    showWorkDetails?: BoolFieldUpdateOperationsInput | boolean
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    showPhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    onboardingCompleted?: BoolFieldUpdateOperationsInput | boolean
+    onboardingStep?: IntFieldUpdateOperationsInput | number
+    preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
+    welcomeMessageSeen?: BoolFieldUpdateOperationsInput | boolean
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type CommunityCreateInput = {
@@ -13860,8 +13795,8 @@ export namespace Prisma {
     specialName?: $Enums.SpecialCommunityName | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    members?: UserCommunityCreateNestedManyWithoutCommunityInput
     contents?: ContentCreateNestedManyWithoutCommunityInput
+    members?: UserCommunityCreateNestedManyWithoutCommunityInput
   }
 
   export type CommunityUncheckedCreateInput = {
@@ -13873,8 +13808,8 @@ export namespace Prisma {
     specialName?: $Enums.SpecialCommunityName | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    members?: UserCommunityUncheckedCreateNestedManyWithoutCommunityInput
     contents?: ContentUncheckedCreateNestedManyWithoutCommunityInput
+    members?: UserCommunityUncheckedCreateNestedManyWithoutCommunityInput
   }
 
   export type CommunityUpdateInput = {
@@ -13886,8 +13821,8 @@ export namespace Prisma {
     specialName?: NullableEnumSpecialCommunityNameFieldUpdateOperationsInput | $Enums.SpecialCommunityName | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    members?: UserCommunityUpdateManyWithoutCommunityNestedInput
     contents?: ContentUpdateManyWithoutCommunityNestedInput
+    members?: UserCommunityUpdateManyWithoutCommunityNestedInput
   }
 
   export type CommunityUncheckedUpdateInput = {
@@ -13899,8 +13834,8 @@ export namespace Prisma {
     specialName?: NullableEnumSpecialCommunityNameFieldUpdateOperationsInput | $Enums.SpecialCommunityName | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    members?: UserCommunityUncheckedUpdateManyWithoutCommunityNestedInput
     contents?: ContentUncheckedUpdateManyWithoutCommunityNestedInput
+    members?: UserCommunityUncheckedUpdateManyWithoutCommunityNestedInput
   }
 
   export type CommunityCreateManyInput = {
@@ -13938,8 +13873,8 @@ export namespace Prisma {
 
   export type UserCommunityCreateInput = {
     role?: $Enums.Role
-    user: UserCreateNestedOneWithoutCommunityMembershipsInput
     community: CommunityCreateNestedOneWithoutMembersInput
+    user: UserCreateNestedOneWithoutCommunityMembershipsInput
   }
 
   export type UserCommunityUncheckedCreateInput = {
@@ -13950,8 +13885,8 @@ export namespace Prisma {
 
   export type UserCommunityUpdateInput = {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    user?: UserUpdateOneRequiredWithoutCommunityMembershipsNestedInput
     community?: CommunityUpdateOneRequiredWithoutMembersNestedInput
+    user?: UserUpdateOneRequiredWithoutCommunityMembershipsNestedInput
   }
 
   export type UserCommunityUncheckedUpdateInput = {
@@ -13982,8 +13917,8 @@ export namespace Prisma {
     body: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    community: CommunityCreateNestedOneWithoutContentsInput
     author: UserCreateNestedOneWithoutCreatedContentInput
+    community: CommunityCreateNestedOneWithoutContentsInput
   }
 
   export type ContentUncheckedCreateInput = {
@@ -14002,8 +13937,8 @@ export namespace Prisma {
     body?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    community?: CommunityUpdateOneRequiredWithoutContentsNestedInput
     author?: UserUpdateOneRequiredWithoutCreatedContentNestedInput
+    community?: CommunityUpdateOneRequiredWithoutContentsNestedInput
   }
 
   export type ContentUncheckedUpdateInput = {
@@ -14136,8 +14071,7 @@ export namespace Prisma {
 
   export type DownloadEventCreateInput = {
     id?: string
-    contentType?: $Enums.ContentType
-    contentId: string
+    reportId: string
     fileLanguage: string
     userId?: string | null
     sessionId: string
@@ -14150,8 +14084,7 @@ export namespace Prisma {
 
   export type DownloadEventUncheckedCreateInput = {
     id?: string
-    contentType?: $Enums.ContentType
-    contentId: string
+    reportId: string
     fileLanguage: string
     userId?: string | null
     sessionId: string
@@ -14164,8 +14097,7 @@ export namespace Prisma {
 
   export type DownloadEventUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    contentType?: EnumContentTypeFieldUpdateOperationsInput | $Enums.ContentType
-    contentId?: StringFieldUpdateOperationsInput | string
+    reportId?: StringFieldUpdateOperationsInput | string
     fileLanguage?: StringFieldUpdateOperationsInput | string
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     sessionId?: StringFieldUpdateOperationsInput | string
@@ -14178,8 +14110,7 @@ export namespace Prisma {
 
   export type DownloadEventUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    contentType?: EnumContentTypeFieldUpdateOperationsInput | $Enums.ContentType
-    contentId?: StringFieldUpdateOperationsInput | string
+    reportId?: StringFieldUpdateOperationsInput | string
     fileLanguage?: StringFieldUpdateOperationsInput | string
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     sessionId?: StringFieldUpdateOperationsInput | string
@@ -14192,8 +14123,7 @@ export namespace Prisma {
 
   export type DownloadEventCreateManyInput = {
     id?: string
-    contentType?: $Enums.ContentType
-    contentId: string
+    reportId: string
     fileLanguage: string
     userId?: string | null
     sessionId: string
@@ -14206,8 +14136,7 @@ export namespace Prisma {
 
   export type DownloadEventUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    contentType?: EnumContentTypeFieldUpdateOperationsInput | $Enums.ContentType
-    contentId?: StringFieldUpdateOperationsInput | string
+    reportId?: StringFieldUpdateOperationsInput | string
     fileLanguage?: StringFieldUpdateOperationsInput | string
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     sessionId?: StringFieldUpdateOperationsInput | string
@@ -14220,8 +14149,7 @@ export namespace Prisma {
 
   export type DownloadEventUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    contentType?: EnumContentTypeFieldUpdateOperationsInput | $Enums.ContentType
-    contentId?: StringFieldUpdateOperationsInput | string
+    reportId?: StringFieldUpdateOperationsInput | string
     fileLanguage?: StringFieldUpdateOperationsInput | string
     userId?: NullableStringFieldUpdateOperationsInput | string | null
     sessionId?: StringFieldUpdateOperationsInput | string
@@ -14232,29 +14160,26 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type ContentMetadataCreateInput = {
-    id?: string
-    contentType: $Enums.ContentType
+  export type report_metadataCreateInput = {
+    id: string
     sanityId: string
     downloadCount?: number
     lastDownloadedAt?: Date | string | null
     createdAt?: Date | string
-    updatedAt?: Date | string
+    updatedAt: Date | string
   }
 
-  export type ContentMetadataUncheckedCreateInput = {
-    id?: string
-    contentType: $Enums.ContentType
+  export type report_metadataUncheckedCreateInput = {
+    id: string
     sanityId: string
     downloadCount?: number
     lastDownloadedAt?: Date | string | null
     createdAt?: Date | string
-    updatedAt?: Date | string
+    updatedAt: Date | string
   }
 
-  export type ContentMetadataUpdateInput = {
+  export type report_metadataUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    contentType?: EnumContentTypeFieldUpdateOperationsInput | $Enums.ContentType
     sanityId?: StringFieldUpdateOperationsInput | string
     downloadCount?: IntFieldUpdateOperationsInput | number
     lastDownloadedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -14262,9 +14187,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type ContentMetadataUncheckedUpdateInput = {
+  export type report_metadataUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    contentType?: EnumContentTypeFieldUpdateOperationsInput | $Enums.ContentType
     sanityId?: StringFieldUpdateOperationsInput | string
     downloadCount?: IntFieldUpdateOperationsInput | number
     lastDownloadedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -14272,19 +14196,17 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type ContentMetadataCreateManyInput = {
-    id?: string
-    contentType: $Enums.ContentType
+  export type report_metadataCreateManyInput = {
+    id: string
     sanityId: string
     downloadCount?: number
     lastDownloadedAt?: Date | string | null
     createdAt?: Date | string
-    updatedAt?: Date | string
+    updatedAt: Date | string
   }
 
-  export type ContentMetadataUpdateManyMutationInput = {
+  export type report_metadataUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    contentType?: EnumContentTypeFieldUpdateOperationsInput | $Enums.ContentType
     sanityId?: StringFieldUpdateOperationsInput | string
     downloadCount?: IntFieldUpdateOperationsInput | number
     lastDownloadedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -14292,9 +14214,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type ContentMetadataUncheckedUpdateManyInput = {
+  export type report_metadataUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    contentType?: EnumContentTypeFieldUpdateOperationsInput | $Enums.ContentType
     sanityId?: StringFieldUpdateOperationsInput | string
     downloadCount?: IntFieldUpdateOperationsInput | number
     lastDownloadedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -14523,19 +14444,18 @@ export namespace Prisma {
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
+  export type EnumRoleFilter<$PrismaModel = never> = {
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
+  }
+
   export type EnumAgeGroupNullableFilter<$PrismaModel = never> = {
     equals?: $Enums.AgeGroup | EnumAgeGroupFieldRefInput<$PrismaModel> | null
     in?: $Enums.AgeGroup[] | ListEnumAgeGroupFieldRefInput<$PrismaModel> | null
     notIn?: $Enums.AgeGroup[] | ListEnumAgeGroupFieldRefInput<$PrismaModel> | null
     not?: NestedEnumAgeGroupNullableFilter<$PrismaModel> | $Enums.AgeGroup | null
-  }
-
-  export type EnumWorkTypeNullableListFilter<$PrismaModel = never> = {
-    equals?: $Enums.WorkType[] | ListEnumWorkTypeFieldRefInput<$PrismaModel> | null
-    has?: $Enums.WorkType | EnumWorkTypeFieldRefInput<$PrismaModel> | null
-    hasEvery?: $Enums.WorkType[] | ListEnumWorkTypeFieldRefInput<$PrismaModel>
-    hasSome?: $Enums.WorkType[] | ListEnumWorkTypeFieldRefInput<$PrismaModel>
-    isEmpty?: boolean
   }
 
   export type EnumExpertiseAreaNullableListFilter<$PrismaModel = never> = {
@@ -14545,35 +14465,13 @@ export namespace Prisma {
     hasSome?: $Enums.ExpertiseArea[] | ListEnumExpertiseAreaFieldRefInput<$PrismaModel>
     isEmpty?: boolean
   }
-  export type JsonNullableFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonNullableFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
 
-  export type JsonNullableFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-  }
-
-  export type EnumLanguageFilter<$PrismaModel = never> = {
-    equals?: $Enums.Language | EnumLanguageFieldRefInput<$PrismaModel>
-    in?: $Enums.Language[] | ListEnumLanguageFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Language[] | ListEnumLanguageFieldRefInput<$PrismaModel>
-    not?: NestedEnumLanguageFilter<$PrismaModel> | $Enums.Language
+  export type EnumWorkTypeNullableListFilter<$PrismaModel = never> = {
+    equals?: $Enums.WorkType[] | ListEnumWorkTypeFieldRefInput<$PrismaModel> | null
+    has?: $Enums.WorkType | EnumWorkTypeFieldRefInput<$PrismaModel> | null
+    hasEvery?: $Enums.WorkType[] | ListEnumWorkTypeFieldRefInput<$PrismaModel>
+    hasSome?: $Enums.WorkType[] | ListEnumWorkTypeFieldRefInput<$PrismaModel>
+    isEmpty?: boolean
   }
 
   export type BoolFilter<$PrismaModel = never> = {
@@ -14599,29 +14497,40 @@ export namespace Prisma {
     not?: NestedIntFilter<$PrismaModel> | number
   }
 
-  export type EnumRoleFilter<$PrismaModel = never> = {
-    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
+  export type EnumLanguageFilter<$PrismaModel = never> = {
+    equals?: $Enums.Language | EnumLanguageFieldRefInput<$PrismaModel>
+    in?: $Enums.Language[] | ListEnumLanguageFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Language[] | ListEnumLanguageFieldRefInput<$PrismaModel>
+    not?: NestedEnumLanguageFilter<$PrismaModel> | $Enums.Language
+  }
+  export type JsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
   export type AccountListRelationFilter = {
     every?: AccountWhereInput
     some?: AccountWhereInput
     none?: AccountWhereInput
-  }
-
-  export type SessionListRelationFilter = {
-    every?: SessionWhereInput
-    some?: SessionWhereInput
-    none?: SessionWhereInput
-  }
-
-  export type UserCommunityListRelationFilter = {
-    every?: UserCommunityWhereInput
-    some?: UserCommunityWhereInput
-    none?: UserCommunityWhereInput
   }
 
   export type ContentListRelationFilter = {
@@ -14636,15 +14545,19 @@ export namespace Prisma {
     none?: RecentWorkWhereInput
   }
 
+  export type SessionListRelationFilter = {
+    every?: SessionWhereInput
+    some?: SessionWhereInput
+    none?: SessionWhereInput
+  }
+
+  export type UserCommunityListRelationFilter = {
+    every?: UserCommunityWhereInput
+    some?: UserCommunityWhereInput
+    none?: UserCommunityWhereInput
+  }
+
   export type AccountOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type SessionOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type UserCommunityOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -14656,42 +14569,50 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type SessionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type UserCommunityOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type UserCountOrderByAggregateInput = {
     id?: SortOrder
     email?: SortOrder
     emailVerified?: SortOrder
-    image?: SortOrder
-    phoneNumber?: SortOrder
-    phoneVerified?: SortOrder
-    firstName?: SortOrder
-    lastName?: SortOrder
     username?: SortOrder
+    image?: SortOrder
     bio?: SortOrder
-    ageGroup?: SortOrder
-    country?: SortOrder
-    city?: SortOrder
-    workTypes?: SortOrder
-    expertiseAreas?: SortOrder
-    organization?: SortOrder
-    position?: SortOrder
-    workBio?: SortOrder
-    personalWebsite?: SortOrder
-    linkedinProfile?: SortOrder
-    otherSocialLinks?: SortOrder
-    preferredLanguage?: SortOrder
-    isSearchable?: SortOrder
-    profileVisibility?: SortOrder
-    showEmail?: SortOrder
-    showPhoneNumber?: SortOrder
-    showWorkDetails?: SortOrder
-    showSocialLinks?: SortOrder
-    showLocation?: SortOrder
-    onboardingCompleted?: SortOrder
-    onboardingStep?: SortOrder
-    welcomeMessageSeen?: SortOrder
     role?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    ageGroup?: SortOrder
+    city?: SortOrder
+    country?: SortOrder
+    expertiseAreas?: SortOrder
+    firstName?: SortOrder
+    lastName?: SortOrder
+    linkedinProfile?: SortOrder
+    organization?: SortOrder
+    personalWebsite?: SortOrder
+    position?: SortOrder
+    workBio?: SortOrder
+    workTypes?: SortOrder
+    isSearchable?: SortOrder
+    profileVisibility?: SortOrder
+    showEmail?: SortOrder
+    showLocation?: SortOrder
+    showSocialLinks?: SortOrder
+    showWorkDetails?: SortOrder
+    phoneNumber?: SortOrder
+    phoneVerified?: SortOrder
+    showPhoneNumber?: SortOrder
+    onboardingCompleted?: SortOrder
+    onboardingStep?: SortOrder
+    preferredLanguage?: SortOrder
+    welcomeMessageSeen?: SortOrder
+    otherSocialLinks?: SortOrder
   }
 
   export type UserAvgOrderByAggregateInput = {
@@ -14702,70 +14623,70 @@ export namespace Prisma {
     id?: SortOrder
     email?: SortOrder
     emailVerified?: SortOrder
-    image?: SortOrder
-    phoneNumber?: SortOrder
-    phoneVerified?: SortOrder
-    firstName?: SortOrder
-    lastName?: SortOrder
     username?: SortOrder
+    image?: SortOrder
     bio?: SortOrder
-    ageGroup?: SortOrder
-    country?: SortOrder
-    city?: SortOrder
-    organization?: SortOrder
-    position?: SortOrder
-    workBio?: SortOrder
-    personalWebsite?: SortOrder
-    linkedinProfile?: SortOrder
-    preferredLanguage?: SortOrder
-    isSearchable?: SortOrder
-    profileVisibility?: SortOrder
-    showEmail?: SortOrder
-    showPhoneNumber?: SortOrder
-    showWorkDetails?: SortOrder
-    showSocialLinks?: SortOrder
-    showLocation?: SortOrder
-    onboardingCompleted?: SortOrder
-    onboardingStep?: SortOrder
-    welcomeMessageSeen?: SortOrder
     role?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    ageGroup?: SortOrder
+    city?: SortOrder
+    country?: SortOrder
+    firstName?: SortOrder
+    lastName?: SortOrder
+    linkedinProfile?: SortOrder
+    organization?: SortOrder
+    personalWebsite?: SortOrder
+    position?: SortOrder
+    workBio?: SortOrder
+    isSearchable?: SortOrder
+    profileVisibility?: SortOrder
+    showEmail?: SortOrder
+    showLocation?: SortOrder
+    showSocialLinks?: SortOrder
+    showWorkDetails?: SortOrder
+    phoneNumber?: SortOrder
+    phoneVerified?: SortOrder
+    showPhoneNumber?: SortOrder
+    onboardingCompleted?: SortOrder
+    onboardingStep?: SortOrder
+    preferredLanguage?: SortOrder
+    welcomeMessageSeen?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
     id?: SortOrder
     email?: SortOrder
     emailVerified?: SortOrder
-    image?: SortOrder
-    phoneNumber?: SortOrder
-    phoneVerified?: SortOrder
-    firstName?: SortOrder
-    lastName?: SortOrder
     username?: SortOrder
+    image?: SortOrder
     bio?: SortOrder
-    ageGroup?: SortOrder
-    country?: SortOrder
-    city?: SortOrder
-    organization?: SortOrder
-    position?: SortOrder
-    workBio?: SortOrder
-    personalWebsite?: SortOrder
-    linkedinProfile?: SortOrder
-    preferredLanguage?: SortOrder
-    isSearchable?: SortOrder
-    profileVisibility?: SortOrder
-    showEmail?: SortOrder
-    showPhoneNumber?: SortOrder
-    showWorkDetails?: SortOrder
-    showSocialLinks?: SortOrder
-    showLocation?: SortOrder
-    onboardingCompleted?: SortOrder
-    onboardingStep?: SortOrder
-    welcomeMessageSeen?: SortOrder
     role?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    ageGroup?: SortOrder
+    city?: SortOrder
+    country?: SortOrder
+    firstName?: SortOrder
+    lastName?: SortOrder
+    linkedinProfile?: SortOrder
+    organization?: SortOrder
+    personalWebsite?: SortOrder
+    position?: SortOrder
+    workBio?: SortOrder
+    isSearchable?: SortOrder
+    profileVisibility?: SortOrder
+    showEmail?: SortOrder
+    showLocation?: SortOrder
+    showSocialLinks?: SortOrder
+    showWorkDetails?: SortOrder
+    phoneNumber?: SortOrder
+    phoneVerified?: SortOrder
+    showPhoneNumber?: SortOrder
+    onboardingCompleted?: SortOrder
+    onboardingStep?: SortOrder
+    preferredLanguage?: SortOrder
+    welcomeMessageSeen?: SortOrder
   }
 
   export type UserSumOrderByAggregateInput = {
@@ -14786,6 +14707,16 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
+  export type EnumRoleWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoleWithAggregatesFilter<$PrismaModel> | $Enums.Role
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumRoleFilter<$PrismaModel>
+    _max?: NestedEnumRoleFilter<$PrismaModel>
+  }
+
   export type EnumAgeGroupNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.AgeGroup | EnumAgeGroupFieldRefInput<$PrismaModel> | null
     in?: $Enums.AgeGroup[] | ListEnumAgeGroupFieldRefInput<$PrismaModel> | null
@@ -14794,42 +14725,6 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedEnumAgeGroupNullableFilter<$PrismaModel>
     _max?: NestedEnumAgeGroupNullableFilter<$PrismaModel>
-  }
-  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
-
-  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedJsonNullableFilter<$PrismaModel>
-    _max?: NestedJsonNullableFilter<$PrismaModel>
-  }
-
-  export type EnumLanguageWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.Language | EnumLanguageFieldRefInput<$PrismaModel>
-    in?: $Enums.Language[] | ListEnumLanguageFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Language[] | ListEnumLanguageFieldRefInput<$PrismaModel>
-    not?: NestedEnumLanguageWithAggregatesFilter<$PrismaModel> | $Enums.Language
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumLanguageFilter<$PrismaModel>
-    _max?: NestedEnumLanguageFilter<$PrismaModel>
   }
 
   export type BoolWithAggregatesFilter<$PrismaModel = never> = {
@@ -14866,14 +14761,40 @@ export namespace Prisma {
     _max?: NestedIntFilter<$PrismaModel>
   }
 
-  export type EnumRoleWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumRoleWithAggregatesFilter<$PrismaModel> | $Enums.Role
+  export type EnumLanguageWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Language | EnumLanguageFieldRefInput<$PrismaModel>
+    in?: $Enums.Language[] | ListEnumLanguageFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Language[] | ListEnumLanguageFieldRefInput<$PrismaModel>
+    not?: NestedEnumLanguageWithAggregatesFilter<$PrismaModel> | $Enums.Language
     _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumRoleFilter<$PrismaModel>
-    _max?: NestedEnumRoleFilter<$PrismaModel>
+    _min?: NestedEnumLanguageFilter<$PrismaModel>
+    _max?: NestedEnumLanguageFilter<$PrismaModel>
+  }
+  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedJsonNullableFilter<$PrismaModel>
+    _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
   export type EnumCommunityTypeFilter<$PrismaModel = never> = {
@@ -15057,17 +14978,9 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
-  export type EnumContentTypeFilter<$PrismaModel = never> = {
-    equals?: $Enums.ContentType | EnumContentTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.ContentType[] | ListEnumContentTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.ContentType[] | ListEnumContentTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumContentTypeFilter<$PrismaModel> | $Enums.ContentType
-  }
-
   export type DownloadEventCountOrderByAggregateInput = {
     id?: SortOrder
-    contentType?: SortOrder
-    contentId?: SortOrder
+    reportId?: SortOrder
     fileLanguage?: SortOrder
     userId?: SortOrder
     sessionId?: SortOrder
@@ -15080,8 +14993,7 @@ export namespace Prisma {
 
   export type DownloadEventMaxOrderByAggregateInput = {
     id?: SortOrder
-    contentType?: SortOrder
-    contentId?: SortOrder
+    reportId?: SortOrder
     fileLanguage?: SortOrder
     userId?: SortOrder
     sessionId?: SortOrder
@@ -15094,8 +15006,7 @@ export namespace Prisma {
 
   export type DownloadEventMinOrderByAggregateInput = {
     id?: SortOrder
-    contentType?: SortOrder
-    contentId?: SortOrder
+    reportId?: SortOrder
     fileLanguage?: SortOrder
     userId?: SortOrder
     sessionId?: SortOrder
@@ -15106,24 +15017,8 @@ export namespace Prisma {
     createdAt?: SortOrder
   }
 
-  export type EnumContentTypeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.ContentType | EnumContentTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.ContentType[] | ListEnumContentTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.ContentType[] | ListEnumContentTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumContentTypeWithAggregatesFilter<$PrismaModel> | $Enums.ContentType
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumContentTypeFilter<$PrismaModel>
-    _max?: NestedEnumContentTypeFilter<$PrismaModel>
-  }
-
-  export type ContentMetadataContentTypeSanityIdCompoundUniqueInput = {
-    contentType: $Enums.ContentType
-    sanityId: string
-  }
-
-  export type ContentMetadataCountOrderByAggregateInput = {
+  export type report_metadataCountOrderByAggregateInput = {
     id?: SortOrder
-    contentType?: SortOrder
     sanityId?: SortOrder
     downloadCount?: SortOrder
     lastDownloadedAt?: SortOrder
@@ -15131,13 +15026,12 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
-  export type ContentMetadataAvgOrderByAggregateInput = {
+  export type report_metadataAvgOrderByAggregateInput = {
     downloadCount?: SortOrder
   }
 
-  export type ContentMetadataMaxOrderByAggregateInput = {
+  export type report_metadataMaxOrderByAggregateInput = {
     id?: SortOrder
-    contentType?: SortOrder
     sanityId?: SortOrder
     downloadCount?: SortOrder
     lastDownloadedAt?: SortOrder
@@ -15145,9 +15039,8 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
-  export type ContentMetadataMinOrderByAggregateInput = {
+  export type report_metadataMinOrderByAggregateInput = {
     id?: SortOrder
-    contentType?: SortOrder
     sanityId?: SortOrder
     downloadCount?: SortOrder
     lastDownloadedAt?: SortOrder
@@ -15155,7 +15048,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
-  export type ContentMetadataSumOrderByAggregateInput = {
+  export type report_metadataSumOrderByAggregateInput = {
     downloadCount?: SortOrder
   }
 
@@ -15207,12 +15100,12 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSessionsInput, UserUpdateWithoutSessionsInput>, UserUncheckedUpdateWithoutSessionsInput>
   }
 
-  export type UserCreateworkTypesInput = {
-    set: $Enums.WorkType[]
-  }
-
   export type UserCreateexpertiseAreasInput = {
     set: $Enums.ExpertiseArea[]
+  }
+
+  export type UserCreateworkTypesInput = {
+    set: $Enums.WorkType[]
   }
 
   export type AccountCreateNestedManyWithoutUserInput = {
@@ -15220,20 +15113,6 @@ export namespace Prisma {
     connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
     createMany?: AccountCreateManyUserInputEnvelope
     connect?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
-  }
-
-  export type SessionCreateNestedManyWithoutUserInput = {
-    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
-    createMany?: SessionCreateManyUserInputEnvelope
-    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-  }
-
-  export type UserCommunityCreateNestedManyWithoutUserInput = {
-    create?: XOR<UserCommunityCreateWithoutUserInput, UserCommunityUncheckedCreateWithoutUserInput> | UserCommunityCreateWithoutUserInput[] | UserCommunityUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: UserCommunityCreateOrConnectWithoutUserInput | UserCommunityCreateOrConnectWithoutUserInput[]
-    createMany?: UserCommunityCreateManyUserInputEnvelope
-    connect?: UserCommunityWhereUniqueInput | UserCommunityWhereUniqueInput[]
   }
 
   export type ContentCreateNestedManyWithoutAuthorInput = {
@@ -15250,25 +15129,25 @@ export namespace Prisma {
     connect?: RecentWorkWhereUniqueInput | RecentWorkWhereUniqueInput[]
   }
 
-  export type AccountUncheckedCreateNestedManyWithoutUserInput = {
-    create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
-    createMany?: AccountCreateManyUserInputEnvelope
-    connect?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
-  }
-
-  export type SessionUncheckedCreateNestedManyWithoutUserInput = {
+  export type SessionCreateNestedManyWithoutUserInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
     createMany?: SessionCreateManyUserInputEnvelope
     connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
   }
 
-  export type UserCommunityUncheckedCreateNestedManyWithoutUserInput = {
+  export type UserCommunityCreateNestedManyWithoutUserInput = {
     create?: XOR<UserCommunityCreateWithoutUserInput, UserCommunityUncheckedCreateWithoutUserInput> | UserCommunityCreateWithoutUserInput[] | UserCommunityUncheckedCreateWithoutUserInput[]
     connectOrCreate?: UserCommunityCreateOrConnectWithoutUserInput | UserCommunityCreateOrConnectWithoutUserInput[]
     createMany?: UserCommunityCreateManyUserInputEnvelope
     connect?: UserCommunityWhereUniqueInput | UserCommunityWhereUniqueInput[]
+  }
+
+  export type AccountUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
+    createMany?: AccountCreateManyUserInputEnvelope
+    connect?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
   }
 
   export type ContentUncheckedCreateNestedManyWithoutAuthorInput = {
@@ -15285,17 +15164,30 @@ export namespace Prisma {
     connect?: RecentWorkWhereUniqueInput | RecentWorkWhereUniqueInput[]
   }
 
+  export type SessionUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
+    createMany?: SessionCreateManyUserInputEnvelope
+    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+  }
+
+  export type UserCommunityUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<UserCommunityCreateWithoutUserInput, UserCommunityUncheckedCreateWithoutUserInput> | UserCommunityCreateWithoutUserInput[] | UserCommunityUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserCommunityCreateOrConnectWithoutUserInput | UserCommunityCreateOrConnectWithoutUserInput[]
+    createMany?: UserCommunityCreateManyUserInputEnvelope
+    connect?: UserCommunityWhereUniqueInput | UserCommunityWhereUniqueInput[]
+  }
+
   export type NullableDateTimeFieldUpdateOperationsInput = {
     set?: Date | string | null
   }
 
-  export type NullableEnumAgeGroupFieldUpdateOperationsInput = {
-    set?: $Enums.AgeGroup | null
+  export type EnumRoleFieldUpdateOperationsInput = {
+    set?: $Enums.Role
   }
 
-  export type UserUpdateworkTypesInput = {
-    set?: $Enums.WorkType[]
-    push?: $Enums.WorkType | $Enums.WorkType[]
+  export type NullableEnumAgeGroupFieldUpdateOperationsInput = {
+    set?: $Enums.AgeGroup | null
   }
 
   export type UserUpdateexpertiseAreasInput = {
@@ -15303,8 +15195,9 @@ export namespace Prisma {
     push?: $Enums.ExpertiseArea | $Enums.ExpertiseArea[]
   }
 
-  export type EnumLanguageFieldUpdateOperationsInput = {
-    set?: $Enums.Language
+  export type UserUpdateworkTypesInput = {
+    set?: $Enums.WorkType[]
+    push?: $Enums.WorkType | $Enums.WorkType[]
   }
 
   export type BoolFieldUpdateOperationsInput = {
@@ -15323,8 +15216,8 @@ export namespace Prisma {
     divide?: number
   }
 
-  export type EnumRoleFieldUpdateOperationsInput = {
-    set?: $Enums.Role
+  export type EnumLanguageFieldUpdateOperationsInput = {
+    set?: $Enums.Language
   }
 
   export type AccountUpdateManyWithoutUserNestedInput = {
@@ -15339,34 +15232,6 @@ export namespace Prisma {
     update?: AccountUpdateWithWhereUniqueWithoutUserInput | AccountUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: AccountUpdateManyWithWhereWithoutUserInput | AccountUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: AccountScalarWhereInput | AccountScalarWhereInput[]
-  }
-
-  export type SessionUpdateManyWithoutUserNestedInput = {
-    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
-    upsert?: SessionUpsertWithWhereUniqueWithoutUserInput | SessionUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: SessionCreateManyUserInputEnvelope
-    set?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    disconnect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    delete?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
-    update?: SessionUpdateWithWhereUniqueWithoutUserInput | SessionUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: SessionUpdateManyWithWhereWithoutUserInput | SessionUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
-  }
-
-  export type UserCommunityUpdateManyWithoutUserNestedInput = {
-    create?: XOR<UserCommunityCreateWithoutUserInput, UserCommunityUncheckedCreateWithoutUserInput> | UserCommunityCreateWithoutUserInput[] | UserCommunityUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: UserCommunityCreateOrConnectWithoutUserInput | UserCommunityCreateOrConnectWithoutUserInput[]
-    upsert?: UserCommunityUpsertWithWhereUniqueWithoutUserInput | UserCommunityUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: UserCommunityCreateManyUserInputEnvelope
-    set?: UserCommunityWhereUniqueInput | UserCommunityWhereUniqueInput[]
-    disconnect?: UserCommunityWhereUniqueInput | UserCommunityWhereUniqueInput[]
-    delete?: UserCommunityWhereUniqueInput | UserCommunityWhereUniqueInput[]
-    connect?: UserCommunityWhereUniqueInput | UserCommunityWhereUniqueInput[]
-    update?: UserCommunityUpdateWithWhereUniqueWithoutUserInput | UserCommunityUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: UserCommunityUpdateManyWithWhereWithoutUserInput | UserCommunityUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: UserCommunityScalarWhereInput | UserCommunityScalarWhereInput[]
   }
 
   export type ContentUpdateManyWithoutAuthorNestedInput = {
@@ -15397,21 +15262,7 @@ export namespace Prisma {
     deleteMany?: RecentWorkScalarWhereInput | RecentWorkScalarWhereInput[]
   }
 
-  export type AccountUncheckedUpdateManyWithoutUserNestedInput = {
-    create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
-    upsert?: AccountUpsertWithWhereUniqueWithoutUserInput | AccountUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: AccountCreateManyUserInputEnvelope
-    set?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
-    disconnect?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
-    delete?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
-    connect?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
-    update?: AccountUpdateWithWhereUniqueWithoutUserInput | AccountUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: AccountUpdateManyWithWhereWithoutUserInput | AccountUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: AccountScalarWhereInput | AccountScalarWhereInput[]
-  }
-
-  export type SessionUncheckedUpdateManyWithoutUserNestedInput = {
+  export type SessionUpdateManyWithoutUserNestedInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
     upsert?: SessionUpsertWithWhereUniqueWithoutUserInput | SessionUpsertWithWhereUniqueWithoutUserInput[]
@@ -15425,7 +15276,7 @@ export namespace Prisma {
     deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
   }
 
-  export type UserCommunityUncheckedUpdateManyWithoutUserNestedInput = {
+  export type UserCommunityUpdateManyWithoutUserNestedInput = {
     create?: XOR<UserCommunityCreateWithoutUserInput, UserCommunityUncheckedCreateWithoutUserInput> | UserCommunityCreateWithoutUserInput[] | UserCommunityUncheckedCreateWithoutUserInput[]
     connectOrCreate?: UserCommunityCreateOrConnectWithoutUserInput | UserCommunityCreateOrConnectWithoutUserInput[]
     upsert?: UserCommunityUpsertWithWhereUniqueWithoutUserInput | UserCommunityUpsertWithWhereUniqueWithoutUserInput[]
@@ -15437,6 +15288,20 @@ export namespace Prisma {
     update?: UserCommunityUpdateWithWhereUniqueWithoutUserInput | UserCommunityUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: UserCommunityUpdateManyWithWhereWithoutUserInput | UserCommunityUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: UserCommunityScalarWhereInput | UserCommunityScalarWhereInput[]
+  }
+
+  export type AccountUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
+    upsert?: AccountUpsertWithWhereUniqueWithoutUserInput | AccountUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: AccountCreateManyUserInputEnvelope
+    set?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
+    disconnect?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
+    delete?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
+    connect?: AccountWhereUniqueInput | AccountWhereUniqueInput[]
+    update?: AccountUpdateWithWhereUniqueWithoutUserInput | AccountUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: AccountUpdateManyWithWhereWithoutUserInput | AccountUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: AccountScalarWhereInput | AccountScalarWhereInput[]
   }
 
   export type ContentUncheckedUpdateManyWithoutAuthorNestedInput = {
@@ -15467,11 +15332,32 @@ export namespace Prisma {
     deleteMany?: RecentWorkScalarWhereInput | RecentWorkScalarWhereInput[]
   }
 
-  export type UserCommunityCreateNestedManyWithoutCommunityInput = {
-    create?: XOR<UserCommunityCreateWithoutCommunityInput, UserCommunityUncheckedCreateWithoutCommunityInput> | UserCommunityCreateWithoutCommunityInput[] | UserCommunityUncheckedCreateWithoutCommunityInput[]
-    connectOrCreate?: UserCommunityCreateOrConnectWithoutCommunityInput | UserCommunityCreateOrConnectWithoutCommunityInput[]
-    createMany?: UserCommunityCreateManyCommunityInputEnvelope
+  export type SessionUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
+    upsert?: SessionUpsertWithWhereUniqueWithoutUserInput | SessionUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: SessionCreateManyUserInputEnvelope
+    set?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    disconnect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    delete?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+    update?: SessionUpdateWithWhereUniqueWithoutUserInput | SessionUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: SessionUpdateManyWithWhereWithoutUserInput | SessionUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
+  }
+
+  export type UserCommunityUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<UserCommunityCreateWithoutUserInput, UserCommunityUncheckedCreateWithoutUserInput> | UserCommunityCreateWithoutUserInput[] | UserCommunityUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserCommunityCreateOrConnectWithoutUserInput | UserCommunityCreateOrConnectWithoutUserInput[]
+    upsert?: UserCommunityUpsertWithWhereUniqueWithoutUserInput | UserCommunityUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: UserCommunityCreateManyUserInputEnvelope
+    set?: UserCommunityWhereUniqueInput | UserCommunityWhereUniqueInput[]
+    disconnect?: UserCommunityWhereUniqueInput | UserCommunityWhereUniqueInput[]
+    delete?: UserCommunityWhereUniqueInput | UserCommunityWhereUniqueInput[]
     connect?: UserCommunityWhereUniqueInput | UserCommunityWhereUniqueInput[]
+    update?: UserCommunityUpdateWithWhereUniqueWithoutUserInput | UserCommunityUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: UserCommunityUpdateManyWithWhereWithoutUserInput | UserCommunityUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: UserCommunityScalarWhereInput | UserCommunityScalarWhereInput[]
   }
 
   export type ContentCreateNestedManyWithoutCommunityInput = {
@@ -15481,7 +15367,7 @@ export namespace Prisma {
     connect?: ContentWhereUniqueInput | ContentWhereUniqueInput[]
   }
 
-  export type UserCommunityUncheckedCreateNestedManyWithoutCommunityInput = {
+  export type UserCommunityCreateNestedManyWithoutCommunityInput = {
     create?: XOR<UserCommunityCreateWithoutCommunityInput, UserCommunityUncheckedCreateWithoutCommunityInput> | UserCommunityCreateWithoutCommunityInput[] | UserCommunityUncheckedCreateWithoutCommunityInput[]
     connectOrCreate?: UserCommunityCreateOrConnectWithoutCommunityInput | UserCommunityCreateOrConnectWithoutCommunityInput[]
     createMany?: UserCommunityCreateManyCommunityInputEnvelope
@@ -15495,6 +15381,13 @@ export namespace Prisma {
     connect?: ContentWhereUniqueInput | ContentWhereUniqueInput[]
   }
 
+  export type UserCommunityUncheckedCreateNestedManyWithoutCommunityInput = {
+    create?: XOR<UserCommunityCreateWithoutCommunityInput, UserCommunityUncheckedCreateWithoutCommunityInput> | UserCommunityCreateWithoutCommunityInput[] | UserCommunityUncheckedCreateWithoutCommunityInput[]
+    connectOrCreate?: UserCommunityCreateOrConnectWithoutCommunityInput | UserCommunityCreateOrConnectWithoutCommunityInput[]
+    createMany?: UserCommunityCreateManyCommunityInputEnvelope
+    connect?: UserCommunityWhereUniqueInput | UserCommunityWhereUniqueInput[]
+  }
+
   export type EnumCommunityTypeFieldUpdateOperationsInput = {
     set?: $Enums.CommunityType
   }
@@ -15505,20 +15398,6 @@ export namespace Prisma {
 
   export type NullableEnumSpecialCommunityNameFieldUpdateOperationsInput = {
     set?: $Enums.SpecialCommunityName | null
-  }
-
-  export type UserCommunityUpdateManyWithoutCommunityNestedInput = {
-    create?: XOR<UserCommunityCreateWithoutCommunityInput, UserCommunityUncheckedCreateWithoutCommunityInput> | UserCommunityCreateWithoutCommunityInput[] | UserCommunityUncheckedCreateWithoutCommunityInput[]
-    connectOrCreate?: UserCommunityCreateOrConnectWithoutCommunityInput | UserCommunityCreateOrConnectWithoutCommunityInput[]
-    upsert?: UserCommunityUpsertWithWhereUniqueWithoutCommunityInput | UserCommunityUpsertWithWhereUniqueWithoutCommunityInput[]
-    createMany?: UserCommunityCreateManyCommunityInputEnvelope
-    set?: UserCommunityWhereUniqueInput | UserCommunityWhereUniqueInput[]
-    disconnect?: UserCommunityWhereUniqueInput | UserCommunityWhereUniqueInput[]
-    delete?: UserCommunityWhereUniqueInput | UserCommunityWhereUniqueInput[]
-    connect?: UserCommunityWhereUniqueInput | UserCommunityWhereUniqueInput[]
-    update?: UserCommunityUpdateWithWhereUniqueWithoutCommunityInput | UserCommunityUpdateWithWhereUniqueWithoutCommunityInput[]
-    updateMany?: UserCommunityUpdateManyWithWhereWithoutCommunityInput | UserCommunityUpdateManyWithWhereWithoutCommunityInput[]
-    deleteMany?: UserCommunityScalarWhereInput | UserCommunityScalarWhereInput[]
   }
 
   export type ContentUpdateManyWithoutCommunityNestedInput = {
@@ -15535,7 +15414,7 @@ export namespace Prisma {
     deleteMany?: ContentScalarWhereInput | ContentScalarWhereInput[]
   }
 
-  export type UserCommunityUncheckedUpdateManyWithoutCommunityNestedInput = {
+  export type UserCommunityUpdateManyWithoutCommunityNestedInput = {
     create?: XOR<UserCommunityCreateWithoutCommunityInput, UserCommunityUncheckedCreateWithoutCommunityInput> | UserCommunityCreateWithoutCommunityInput[] | UserCommunityUncheckedCreateWithoutCommunityInput[]
     connectOrCreate?: UserCommunityCreateOrConnectWithoutCommunityInput | UserCommunityCreateOrConnectWithoutCommunityInput[]
     upsert?: UserCommunityUpsertWithWhereUniqueWithoutCommunityInput | UserCommunityUpsertWithWhereUniqueWithoutCommunityInput[]
@@ -15563,10 +15442,18 @@ export namespace Prisma {
     deleteMany?: ContentScalarWhereInput | ContentScalarWhereInput[]
   }
 
-  export type UserCreateNestedOneWithoutCommunityMembershipsInput = {
-    create?: XOR<UserCreateWithoutCommunityMembershipsInput, UserUncheckedCreateWithoutCommunityMembershipsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutCommunityMembershipsInput
-    connect?: UserWhereUniqueInput
+  export type UserCommunityUncheckedUpdateManyWithoutCommunityNestedInput = {
+    create?: XOR<UserCommunityCreateWithoutCommunityInput, UserCommunityUncheckedCreateWithoutCommunityInput> | UserCommunityCreateWithoutCommunityInput[] | UserCommunityUncheckedCreateWithoutCommunityInput[]
+    connectOrCreate?: UserCommunityCreateOrConnectWithoutCommunityInput | UserCommunityCreateOrConnectWithoutCommunityInput[]
+    upsert?: UserCommunityUpsertWithWhereUniqueWithoutCommunityInput | UserCommunityUpsertWithWhereUniqueWithoutCommunityInput[]
+    createMany?: UserCommunityCreateManyCommunityInputEnvelope
+    set?: UserCommunityWhereUniqueInput | UserCommunityWhereUniqueInput[]
+    disconnect?: UserCommunityWhereUniqueInput | UserCommunityWhereUniqueInput[]
+    delete?: UserCommunityWhereUniqueInput | UserCommunityWhereUniqueInput[]
+    connect?: UserCommunityWhereUniqueInput | UserCommunityWhereUniqueInput[]
+    update?: UserCommunityUpdateWithWhereUniqueWithoutCommunityInput | UserCommunityUpdateWithWhereUniqueWithoutCommunityInput[]
+    updateMany?: UserCommunityUpdateManyWithWhereWithoutCommunityInput | UserCommunityUpdateManyWithWhereWithoutCommunityInput[]
+    deleteMany?: UserCommunityScalarWhereInput | UserCommunityScalarWhereInput[]
   }
 
   export type CommunityCreateNestedOneWithoutMembersInput = {
@@ -15575,12 +15462,10 @@ export namespace Prisma {
     connect?: CommunityWhereUniqueInput
   }
 
-  export type UserUpdateOneRequiredWithoutCommunityMembershipsNestedInput = {
+  export type UserCreateNestedOneWithoutCommunityMembershipsInput = {
     create?: XOR<UserCreateWithoutCommunityMembershipsInput, UserUncheckedCreateWithoutCommunityMembershipsInput>
     connectOrCreate?: UserCreateOrConnectWithoutCommunityMembershipsInput
-    upsert?: UserUpsertWithoutCommunityMembershipsInput
     connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCommunityMembershipsInput, UserUpdateWithoutCommunityMembershipsInput>, UserUncheckedUpdateWithoutCommunityMembershipsInput>
   }
 
   export type CommunityUpdateOneRequiredWithoutMembersNestedInput = {
@@ -15591,10 +15476,12 @@ export namespace Prisma {
     update?: XOR<XOR<CommunityUpdateToOneWithWhereWithoutMembersInput, CommunityUpdateWithoutMembersInput>, CommunityUncheckedUpdateWithoutMembersInput>
   }
 
-  export type CommunityCreateNestedOneWithoutContentsInput = {
-    create?: XOR<CommunityCreateWithoutContentsInput, CommunityUncheckedCreateWithoutContentsInput>
-    connectOrCreate?: CommunityCreateOrConnectWithoutContentsInput
-    connect?: CommunityWhereUniqueInput
+  export type UserUpdateOneRequiredWithoutCommunityMembershipsNestedInput = {
+    create?: XOR<UserCreateWithoutCommunityMembershipsInput, UserUncheckedCreateWithoutCommunityMembershipsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCommunityMembershipsInput
+    upsert?: UserUpsertWithoutCommunityMembershipsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCommunityMembershipsInput, UserUpdateWithoutCommunityMembershipsInput>, UserUncheckedUpdateWithoutCommunityMembershipsInput>
   }
 
   export type UserCreateNestedOneWithoutCreatedContentInput = {
@@ -15603,12 +15490,10 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
-  export type CommunityUpdateOneRequiredWithoutContentsNestedInput = {
+  export type CommunityCreateNestedOneWithoutContentsInput = {
     create?: XOR<CommunityCreateWithoutContentsInput, CommunityUncheckedCreateWithoutContentsInput>
     connectOrCreate?: CommunityCreateOrConnectWithoutContentsInput
-    upsert?: CommunityUpsertWithoutContentsInput
     connect?: CommunityWhereUniqueInput
-    update?: XOR<XOR<CommunityUpdateToOneWithWhereWithoutContentsInput, CommunityUpdateWithoutContentsInput>, CommunityUncheckedUpdateWithoutContentsInput>
   }
 
   export type UserUpdateOneRequiredWithoutCreatedContentNestedInput = {
@@ -15617,6 +15502,14 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutCreatedContentInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCreatedContentInput, UserUpdateWithoutCreatedContentInput>, UserUncheckedUpdateWithoutCreatedContentInput>
+  }
+
+  export type CommunityUpdateOneRequiredWithoutContentsNestedInput = {
+    create?: XOR<CommunityCreateWithoutContentsInput, CommunityUncheckedCreateWithoutContentsInput>
+    connectOrCreate?: CommunityCreateOrConnectWithoutContentsInput
+    upsert?: CommunityUpsertWithoutContentsInput
+    connect?: CommunityWhereUniqueInput
+    update?: XOR<XOR<CommunityUpdateToOneWithWhereWithoutContentsInput, CommunityUpdateWithoutContentsInput>, CommunityUncheckedUpdateWithoutContentsInput>
   }
 
   export type UserCreateNestedOneWithoutRecentWorkInput = {
@@ -15631,10 +15524,6 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutRecentWorkInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutRecentWorkInput, UserUpdateWithoutRecentWorkInput>, UserUncheckedUpdateWithoutRecentWorkInput>
-  }
-
-  export type EnumContentTypeFieldUpdateOperationsInput = {
-    set?: $Enums.ContentType
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -15784,18 +15673,18 @@ export namespace Prisma {
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
+  export type NestedEnumRoleFilter<$PrismaModel = never> = {
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
+  }
+
   export type NestedEnumAgeGroupNullableFilter<$PrismaModel = never> = {
     equals?: $Enums.AgeGroup | EnumAgeGroupFieldRefInput<$PrismaModel> | null
     in?: $Enums.AgeGroup[] | ListEnumAgeGroupFieldRefInput<$PrismaModel> | null
     notIn?: $Enums.AgeGroup[] | ListEnumAgeGroupFieldRefInput<$PrismaModel> | null
     not?: NestedEnumAgeGroupNullableFilter<$PrismaModel> | $Enums.AgeGroup | null
-  }
-
-  export type NestedEnumLanguageFilter<$PrismaModel = never> = {
-    equals?: $Enums.Language | EnumLanguageFieldRefInput<$PrismaModel>
-    in?: $Enums.Language[] | ListEnumLanguageFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Language[] | ListEnumLanguageFieldRefInput<$PrismaModel>
-    not?: NestedEnumLanguageFilter<$PrismaModel> | $Enums.Language
   }
 
   export type NestedBoolFilter<$PrismaModel = never> = {
@@ -15810,11 +15699,11 @@ export namespace Prisma {
     not?: NestedEnumProfileVisibilityFilter<$PrismaModel> | $Enums.ProfileVisibility
   }
 
-  export type NestedEnumRoleFilter<$PrismaModel = never> = {
-    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
+  export type NestedEnumLanguageFilter<$PrismaModel = never> = {
+    equals?: $Enums.Language | EnumLanguageFieldRefInput<$PrismaModel>
+    in?: $Enums.Language[] | ListEnumLanguageFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Language[] | ListEnumLanguageFieldRefInput<$PrismaModel>
+    not?: NestedEnumLanguageFilter<$PrismaModel> | $Enums.Language
   }
 
   export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -15831,6 +15720,16 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
+  export type NestedEnumRoleWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoleWithAggregatesFilter<$PrismaModel> | $Enums.Role
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumRoleFilter<$PrismaModel>
+    _max?: NestedEnumRoleFilter<$PrismaModel>
+  }
+
   export type NestedEnumAgeGroupNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.AgeGroup | EnumAgeGroupFieldRefInput<$PrismaModel> | null
     in?: $Enums.AgeGroup[] | ListEnumAgeGroupFieldRefInput<$PrismaModel> | null
@@ -15839,39 +15738,6 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedEnumAgeGroupNullableFilter<$PrismaModel>
     _max?: NestedEnumAgeGroupNullableFilter<$PrismaModel>
-  }
-  export type NestedJsonNullableFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
-        Required<NestedJsonNullableFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
-
-  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-  }
-
-  export type NestedEnumLanguageWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.Language | EnumLanguageFieldRefInput<$PrismaModel>
-    in?: $Enums.Language[] | ListEnumLanguageFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Language[] | ListEnumLanguageFieldRefInput<$PrismaModel>
-    not?: NestedEnumLanguageWithAggregatesFilter<$PrismaModel> | $Enums.Language
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumLanguageFilter<$PrismaModel>
-    _max?: NestedEnumLanguageFilter<$PrismaModel>
   }
 
   export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
@@ -15919,14 +15785,37 @@ export namespace Prisma {
     not?: NestedFloatFilter<$PrismaModel> | number
   }
 
-  export type NestedEnumRoleWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumRoleWithAggregatesFilter<$PrismaModel> | $Enums.Role
+  export type NestedEnumLanguageWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Language | EnumLanguageFieldRefInput<$PrismaModel>
+    in?: $Enums.Language[] | ListEnumLanguageFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Language[] | ListEnumLanguageFieldRefInput<$PrismaModel>
+    not?: NestedEnumLanguageWithAggregatesFilter<$PrismaModel> | $Enums.Language
     _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumRoleFilter<$PrismaModel>
-    _max?: NestedEnumRoleFilter<$PrismaModel>
+    _min?: NestedEnumLanguageFilter<$PrismaModel>
+    _max?: NestedEnumLanguageFilter<$PrismaModel>
+  }
+  export type NestedJsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
   export type NestedEnumCommunityTypeFilter<$PrismaModel = never> = {
@@ -15980,105 +15869,88 @@ export namespace Prisma {
     _max?: NestedEnumSpecialCommunityNameNullableFilter<$PrismaModel>
   }
 
-  export type NestedEnumContentTypeFilter<$PrismaModel = never> = {
-    equals?: $Enums.ContentType | EnumContentTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.ContentType[] | ListEnumContentTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.ContentType[] | ListEnumContentTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumContentTypeFilter<$PrismaModel> | $Enums.ContentType
-  }
-
-  export type NestedEnumContentTypeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.ContentType | EnumContentTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.ContentType[] | ListEnumContentTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.ContentType[] | ListEnumContentTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumContentTypeWithAggregatesFilter<$PrismaModel> | $Enums.ContentType
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumContentTypeFilter<$PrismaModel>
-    _max?: NestedEnumContentTypeFilter<$PrismaModel>
-  }
-
   export type UserCreateWithoutAccountsInput = {
     id: string
     email?: string | null
     emailVerified?: Date | string | null
-    image?: string | null
-    phoneNumber?: string | null
-    phoneVerified?: Date | string | null
-    firstName?: string | null
-    lastName?: string | null
     username?: string | null
+    image?: string | null
     bio?: string | null
-    ageGroup?: $Enums.AgeGroup | null
-    country?: string | null
-    city?: string | null
-    workTypes?: UserCreateworkTypesInput | $Enums.WorkType[]
-    expertiseAreas?: UserCreateexpertiseAreasInput | $Enums.ExpertiseArea[]
-    organization?: string | null
-    position?: string | null
-    workBio?: string | null
-    personalWebsite?: string | null
-    linkedinProfile?: string | null
-    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
-    preferredLanguage?: $Enums.Language
-    isSearchable?: boolean
-    profileVisibility?: $Enums.ProfileVisibility
-    showEmail?: boolean
-    showPhoneNumber?: boolean
-    showWorkDetails?: boolean
-    showSocialLinks?: boolean
-    showLocation?: boolean
-    onboardingCompleted?: boolean
-    onboardingStep?: number
-    welcomeMessageSeen?: boolean
     role?: $Enums.Role
     createdAt?: Date | string
     updatedAt?: Date | string
-    sessions?: SessionCreateNestedManyWithoutUserInput
-    communityMemberships?: UserCommunityCreateNestedManyWithoutUserInput
+    ageGroup?: $Enums.AgeGroup | null
+    city?: string | null
+    country?: string | null
+    expertiseAreas?: UserCreateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    firstName?: string | null
+    lastName?: string | null
+    linkedinProfile?: string | null
+    organization?: string | null
+    personalWebsite?: string | null
+    position?: string | null
+    workBio?: string | null
+    workTypes?: UserCreateworkTypesInput | $Enums.WorkType[]
+    isSearchable?: boolean
+    profileVisibility?: $Enums.ProfileVisibility
+    showEmail?: boolean
+    showLocation?: boolean
+    showSocialLinks?: boolean
+    showWorkDetails?: boolean
+    phoneNumber?: string | null
+    phoneVerified?: Date | string | null
+    showPhoneNumber?: boolean
+    onboardingCompleted?: boolean
+    onboardingStep?: number
+    preferredLanguage?: $Enums.Language
+    welcomeMessageSeen?: boolean
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
     createdContent?: ContentCreateNestedManyWithoutAuthorInput
     recentWork?: RecentWorkCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    communityMemberships?: UserCommunityCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
     id: string
     email?: string | null
     emailVerified?: Date | string | null
-    image?: string | null
-    phoneNumber?: string | null
-    phoneVerified?: Date | string | null
-    firstName?: string | null
-    lastName?: string | null
     username?: string | null
+    image?: string | null
     bio?: string | null
-    ageGroup?: $Enums.AgeGroup | null
-    country?: string | null
-    city?: string | null
-    workTypes?: UserCreateworkTypesInput | $Enums.WorkType[]
-    expertiseAreas?: UserCreateexpertiseAreasInput | $Enums.ExpertiseArea[]
-    organization?: string | null
-    position?: string | null
-    workBio?: string | null
-    personalWebsite?: string | null
-    linkedinProfile?: string | null
-    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
-    preferredLanguage?: $Enums.Language
-    isSearchable?: boolean
-    profileVisibility?: $Enums.ProfileVisibility
-    showEmail?: boolean
-    showPhoneNumber?: boolean
-    showWorkDetails?: boolean
-    showSocialLinks?: boolean
-    showLocation?: boolean
-    onboardingCompleted?: boolean
-    onboardingStep?: number
-    welcomeMessageSeen?: boolean
     role?: $Enums.Role
     createdAt?: Date | string
     updatedAt?: Date | string
-    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
-    communityMemberships?: UserCommunityUncheckedCreateNestedManyWithoutUserInput
+    ageGroup?: $Enums.AgeGroup | null
+    city?: string | null
+    country?: string | null
+    expertiseAreas?: UserCreateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    firstName?: string | null
+    lastName?: string | null
+    linkedinProfile?: string | null
+    organization?: string | null
+    personalWebsite?: string | null
+    position?: string | null
+    workBio?: string | null
+    workTypes?: UserCreateworkTypesInput | $Enums.WorkType[]
+    isSearchable?: boolean
+    profileVisibility?: $Enums.ProfileVisibility
+    showEmail?: boolean
+    showLocation?: boolean
+    showSocialLinks?: boolean
+    showWorkDetails?: boolean
+    phoneNumber?: string | null
+    phoneVerified?: Date | string | null
+    showPhoneNumber?: boolean
+    onboardingCompleted?: boolean
+    onboardingStep?: number
+    preferredLanguage?: $Enums.Language
+    welcomeMessageSeen?: boolean
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
     createdContent?: ContentUncheckedCreateNestedManyWithoutAuthorInput
     recentWork?: RecentWorkUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    communityMemberships?: UserCommunityUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -16101,168 +15973,168 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    phoneVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    firstName?: NullableStringFieldUpdateOperationsInput | string | null
-    lastName?: NullableStringFieldUpdateOperationsInput | string | null
     username?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
-    ageGroup?: NullableEnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup | null
-    country?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: NullableStringFieldUpdateOperationsInput | string | null
-    workTypes?: UserUpdateworkTypesInput | $Enums.WorkType[]
-    expertiseAreas?: UserUpdateexpertiseAreasInput | $Enums.ExpertiseArea[]
-    organization?: NullableStringFieldUpdateOperationsInput | string | null
-    position?: NullableStringFieldUpdateOperationsInput | string | null
-    workBio?: NullableStringFieldUpdateOperationsInput | string | null
-    personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
-    linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
-    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
-    preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    isSearchable?: BoolFieldUpdateOperationsInput | boolean
-    profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
-    showEmail?: BoolFieldUpdateOperationsInput | boolean
-    showPhoneNumber?: BoolFieldUpdateOperationsInput | boolean
-    showWorkDetails?: BoolFieldUpdateOperationsInput | boolean
-    showSocialLinks?: BoolFieldUpdateOperationsInput | boolean
-    showLocation?: BoolFieldUpdateOperationsInput | boolean
-    onboardingCompleted?: BoolFieldUpdateOperationsInput | boolean
-    onboardingStep?: IntFieldUpdateOperationsInput | number
-    welcomeMessageSeen?: BoolFieldUpdateOperationsInput | boolean
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    sessions?: SessionUpdateManyWithoutUserNestedInput
-    communityMemberships?: UserCommunityUpdateManyWithoutUserNestedInput
+    ageGroup?: NullableEnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    expertiseAreas?: UserUpdateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    workBio?: NullableStringFieldUpdateOperationsInput | string | null
+    workTypes?: UserUpdateworkTypesInput | $Enums.WorkType[]
+    isSearchable?: BoolFieldUpdateOperationsInput | boolean
+    profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
+    showEmail?: BoolFieldUpdateOperationsInput | boolean
+    showLocation?: BoolFieldUpdateOperationsInput | boolean
+    showSocialLinks?: BoolFieldUpdateOperationsInput | boolean
+    showWorkDetails?: BoolFieldUpdateOperationsInput | boolean
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    showPhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    onboardingCompleted?: BoolFieldUpdateOperationsInput | boolean
+    onboardingStep?: IntFieldUpdateOperationsInput | number
+    preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
+    welcomeMessageSeen?: BoolFieldUpdateOperationsInput | boolean
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
     createdContent?: ContentUpdateManyWithoutAuthorNestedInput
     recentWork?: RecentWorkUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    communityMemberships?: UserCommunityUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    phoneVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    firstName?: NullableStringFieldUpdateOperationsInput | string | null
-    lastName?: NullableStringFieldUpdateOperationsInput | string | null
     username?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
-    ageGroup?: NullableEnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup | null
-    country?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: NullableStringFieldUpdateOperationsInput | string | null
-    workTypes?: UserUpdateworkTypesInput | $Enums.WorkType[]
-    expertiseAreas?: UserUpdateexpertiseAreasInput | $Enums.ExpertiseArea[]
-    organization?: NullableStringFieldUpdateOperationsInput | string | null
-    position?: NullableStringFieldUpdateOperationsInput | string | null
-    workBio?: NullableStringFieldUpdateOperationsInput | string | null
-    personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
-    linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
-    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
-    preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    isSearchable?: BoolFieldUpdateOperationsInput | boolean
-    profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
-    showEmail?: BoolFieldUpdateOperationsInput | boolean
-    showPhoneNumber?: BoolFieldUpdateOperationsInput | boolean
-    showWorkDetails?: BoolFieldUpdateOperationsInput | boolean
-    showSocialLinks?: BoolFieldUpdateOperationsInput | boolean
-    showLocation?: BoolFieldUpdateOperationsInput | boolean
-    onboardingCompleted?: BoolFieldUpdateOperationsInput | boolean
-    onboardingStep?: IntFieldUpdateOperationsInput | number
-    welcomeMessageSeen?: BoolFieldUpdateOperationsInput | boolean
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
-    communityMemberships?: UserCommunityUncheckedUpdateManyWithoutUserNestedInput
+    ageGroup?: NullableEnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    expertiseAreas?: UserUpdateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    workBio?: NullableStringFieldUpdateOperationsInput | string | null
+    workTypes?: UserUpdateworkTypesInput | $Enums.WorkType[]
+    isSearchable?: BoolFieldUpdateOperationsInput | boolean
+    profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
+    showEmail?: BoolFieldUpdateOperationsInput | boolean
+    showLocation?: BoolFieldUpdateOperationsInput | boolean
+    showSocialLinks?: BoolFieldUpdateOperationsInput | boolean
+    showWorkDetails?: BoolFieldUpdateOperationsInput | boolean
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    showPhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    onboardingCompleted?: BoolFieldUpdateOperationsInput | boolean
+    onboardingStep?: IntFieldUpdateOperationsInput | number
+    preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
+    welcomeMessageSeen?: BoolFieldUpdateOperationsInput | boolean
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
     createdContent?: ContentUncheckedUpdateManyWithoutAuthorNestedInput
     recentWork?: RecentWorkUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    communityMemberships?: UserCommunityUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutSessionsInput = {
     id: string
     email?: string | null
     emailVerified?: Date | string | null
-    image?: string | null
-    phoneNumber?: string | null
-    phoneVerified?: Date | string | null
-    firstName?: string | null
-    lastName?: string | null
     username?: string | null
+    image?: string | null
     bio?: string | null
-    ageGroup?: $Enums.AgeGroup | null
-    country?: string | null
-    city?: string | null
-    workTypes?: UserCreateworkTypesInput | $Enums.WorkType[]
-    expertiseAreas?: UserCreateexpertiseAreasInput | $Enums.ExpertiseArea[]
-    organization?: string | null
-    position?: string | null
-    workBio?: string | null
-    personalWebsite?: string | null
-    linkedinProfile?: string | null
-    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
-    preferredLanguage?: $Enums.Language
-    isSearchable?: boolean
-    profileVisibility?: $Enums.ProfileVisibility
-    showEmail?: boolean
-    showPhoneNumber?: boolean
-    showWorkDetails?: boolean
-    showSocialLinks?: boolean
-    showLocation?: boolean
-    onboardingCompleted?: boolean
-    onboardingStep?: number
-    welcomeMessageSeen?: boolean
     role?: $Enums.Role
     createdAt?: Date | string
     updatedAt?: Date | string
+    ageGroup?: $Enums.AgeGroup | null
+    city?: string | null
+    country?: string | null
+    expertiseAreas?: UserCreateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    firstName?: string | null
+    lastName?: string | null
+    linkedinProfile?: string | null
+    organization?: string | null
+    personalWebsite?: string | null
+    position?: string | null
+    workBio?: string | null
+    workTypes?: UserCreateworkTypesInput | $Enums.WorkType[]
+    isSearchable?: boolean
+    profileVisibility?: $Enums.ProfileVisibility
+    showEmail?: boolean
+    showLocation?: boolean
+    showSocialLinks?: boolean
+    showWorkDetails?: boolean
+    phoneNumber?: string | null
+    phoneVerified?: Date | string | null
+    showPhoneNumber?: boolean
+    onboardingCompleted?: boolean
+    onboardingStep?: number
+    preferredLanguage?: $Enums.Language
+    welcomeMessageSeen?: boolean
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutUserInput
-    communityMemberships?: UserCommunityCreateNestedManyWithoutUserInput
     createdContent?: ContentCreateNestedManyWithoutAuthorInput
     recentWork?: RecentWorkCreateNestedManyWithoutUserInput
+    communityMemberships?: UserCommunityCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
     id: string
     email?: string | null
     emailVerified?: Date | string | null
-    image?: string | null
-    phoneNumber?: string | null
-    phoneVerified?: Date | string | null
-    firstName?: string | null
-    lastName?: string | null
     username?: string | null
+    image?: string | null
     bio?: string | null
-    ageGroup?: $Enums.AgeGroup | null
-    country?: string | null
-    city?: string | null
-    workTypes?: UserCreateworkTypesInput | $Enums.WorkType[]
-    expertiseAreas?: UserCreateexpertiseAreasInput | $Enums.ExpertiseArea[]
-    organization?: string | null
-    position?: string | null
-    workBio?: string | null
-    personalWebsite?: string | null
-    linkedinProfile?: string | null
-    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
-    preferredLanguage?: $Enums.Language
-    isSearchable?: boolean
-    profileVisibility?: $Enums.ProfileVisibility
-    showEmail?: boolean
-    showPhoneNumber?: boolean
-    showWorkDetails?: boolean
-    showSocialLinks?: boolean
-    showLocation?: boolean
-    onboardingCompleted?: boolean
-    onboardingStep?: number
-    welcomeMessageSeen?: boolean
     role?: $Enums.Role
     createdAt?: Date | string
     updatedAt?: Date | string
+    ageGroup?: $Enums.AgeGroup | null
+    city?: string | null
+    country?: string | null
+    expertiseAreas?: UserCreateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    firstName?: string | null
+    lastName?: string | null
+    linkedinProfile?: string | null
+    organization?: string | null
+    personalWebsite?: string | null
+    position?: string | null
+    workBio?: string | null
+    workTypes?: UserCreateworkTypesInput | $Enums.WorkType[]
+    isSearchable?: boolean
+    profileVisibility?: $Enums.ProfileVisibility
+    showEmail?: boolean
+    showLocation?: boolean
+    showSocialLinks?: boolean
+    showWorkDetails?: boolean
+    phoneNumber?: string | null
+    phoneVerified?: Date | string | null
+    showPhoneNumber?: boolean
+    onboardingCompleted?: boolean
+    onboardingStep?: number
+    preferredLanguage?: $Enums.Language
+    welcomeMessageSeen?: boolean
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
-    communityMemberships?: UserCommunityUncheckedCreateNestedManyWithoutUserInput
     createdContent?: ContentUncheckedCreateNestedManyWithoutAuthorInput
     recentWork?: RecentWorkUncheckedCreateNestedManyWithoutUserInput
+    communityMemberships?: UserCommunityUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -16285,84 +16157,84 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    phoneVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    firstName?: NullableStringFieldUpdateOperationsInput | string | null
-    lastName?: NullableStringFieldUpdateOperationsInput | string | null
     username?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
-    ageGroup?: NullableEnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup | null
-    country?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: NullableStringFieldUpdateOperationsInput | string | null
-    workTypes?: UserUpdateworkTypesInput | $Enums.WorkType[]
-    expertiseAreas?: UserUpdateexpertiseAreasInput | $Enums.ExpertiseArea[]
-    organization?: NullableStringFieldUpdateOperationsInput | string | null
-    position?: NullableStringFieldUpdateOperationsInput | string | null
-    workBio?: NullableStringFieldUpdateOperationsInput | string | null
-    personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
-    linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
-    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
-    preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    isSearchable?: BoolFieldUpdateOperationsInput | boolean
-    profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
-    showEmail?: BoolFieldUpdateOperationsInput | boolean
-    showPhoneNumber?: BoolFieldUpdateOperationsInput | boolean
-    showWorkDetails?: BoolFieldUpdateOperationsInput | boolean
-    showSocialLinks?: BoolFieldUpdateOperationsInput | boolean
-    showLocation?: BoolFieldUpdateOperationsInput | boolean
-    onboardingCompleted?: BoolFieldUpdateOperationsInput | boolean
-    onboardingStep?: IntFieldUpdateOperationsInput | number
-    welcomeMessageSeen?: BoolFieldUpdateOperationsInput | boolean
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ageGroup?: NullableEnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    expertiseAreas?: UserUpdateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    workBio?: NullableStringFieldUpdateOperationsInput | string | null
+    workTypes?: UserUpdateworkTypesInput | $Enums.WorkType[]
+    isSearchable?: BoolFieldUpdateOperationsInput | boolean
+    profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
+    showEmail?: BoolFieldUpdateOperationsInput | boolean
+    showLocation?: BoolFieldUpdateOperationsInput | boolean
+    showSocialLinks?: BoolFieldUpdateOperationsInput | boolean
+    showWorkDetails?: BoolFieldUpdateOperationsInput | boolean
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    showPhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    onboardingCompleted?: BoolFieldUpdateOperationsInput | boolean
+    onboardingStep?: IntFieldUpdateOperationsInput | number
+    preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
+    welcomeMessageSeen?: BoolFieldUpdateOperationsInput | boolean
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutUserNestedInput
-    communityMemberships?: UserCommunityUpdateManyWithoutUserNestedInput
     createdContent?: ContentUpdateManyWithoutAuthorNestedInput
     recentWork?: RecentWorkUpdateManyWithoutUserNestedInput
+    communityMemberships?: UserCommunityUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    phoneVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    firstName?: NullableStringFieldUpdateOperationsInput | string | null
-    lastName?: NullableStringFieldUpdateOperationsInput | string | null
     username?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
-    ageGroup?: NullableEnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup | null
-    country?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: NullableStringFieldUpdateOperationsInput | string | null
-    workTypes?: UserUpdateworkTypesInput | $Enums.WorkType[]
-    expertiseAreas?: UserUpdateexpertiseAreasInput | $Enums.ExpertiseArea[]
-    organization?: NullableStringFieldUpdateOperationsInput | string | null
-    position?: NullableStringFieldUpdateOperationsInput | string | null
-    workBio?: NullableStringFieldUpdateOperationsInput | string | null
-    personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
-    linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
-    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
-    preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    isSearchable?: BoolFieldUpdateOperationsInput | boolean
-    profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
-    showEmail?: BoolFieldUpdateOperationsInput | boolean
-    showPhoneNumber?: BoolFieldUpdateOperationsInput | boolean
-    showWorkDetails?: BoolFieldUpdateOperationsInput | boolean
-    showSocialLinks?: BoolFieldUpdateOperationsInput | boolean
-    showLocation?: BoolFieldUpdateOperationsInput | boolean
-    onboardingCompleted?: BoolFieldUpdateOperationsInput | boolean
-    onboardingStep?: IntFieldUpdateOperationsInput | number
-    welcomeMessageSeen?: BoolFieldUpdateOperationsInput | boolean
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ageGroup?: NullableEnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    expertiseAreas?: UserUpdateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    workBio?: NullableStringFieldUpdateOperationsInput | string | null
+    workTypes?: UserUpdateworkTypesInput | $Enums.WorkType[]
+    isSearchable?: BoolFieldUpdateOperationsInput | boolean
+    profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
+    showEmail?: BoolFieldUpdateOperationsInput | boolean
+    showLocation?: BoolFieldUpdateOperationsInput | boolean
+    showSocialLinks?: BoolFieldUpdateOperationsInput | boolean
+    showWorkDetails?: BoolFieldUpdateOperationsInput | boolean
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    showPhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    onboardingCompleted?: BoolFieldUpdateOperationsInput | boolean
+    onboardingStep?: IntFieldUpdateOperationsInput | number
+    preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
+    welcomeMessageSeen?: BoolFieldUpdateOperationsInput | boolean
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
-    communityMemberships?: UserCommunityUncheckedUpdateManyWithoutUserNestedInput
     createdContent?: ContentUncheckedUpdateManyWithoutAuthorNestedInput
     recentWork?: RecentWorkUncheckedUpdateManyWithoutUserNestedInput
+    communityMemberships?: UserCommunityUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AccountCreateWithoutUserInput = {
@@ -16402,48 +16274,6 @@ export namespace Prisma {
 
   export type AccountCreateManyUserInputEnvelope = {
     data: AccountCreateManyUserInput | AccountCreateManyUserInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type SessionCreateWithoutUserInput = {
-    id: string
-    sessionToken: string
-    expires: Date | string
-  }
-
-  export type SessionUncheckedCreateWithoutUserInput = {
-    id: string
-    sessionToken: string
-    expires: Date | string
-  }
-
-  export type SessionCreateOrConnectWithoutUserInput = {
-    where: SessionWhereUniqueInput
-    create: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput>
-  }
-
-  export type SessionCreateManyUserInputEnvelope = {
-    data: SessionCreateManyUserInput | SessionCreateManyUserInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type UserCommunityCreateWithoutUserInput = {
-    role?: $Enums.Role
-    community: CommunityCreateNestedOneWithoutMembersInput
-  }
-
-  export type UserCommunityUncheckedCreateWithoutUserInput = {
-    communityId: string
-    role?: $Enums.Role
-  }
-
-  export type UserCommunityCreateOrConnectWithoutUserInput = {
-    where: UserCommunityWhereUniqueInput
-    create: XOR<UserCommunityCreateWithoutUserInput, UserCommunityUncheckedCreateWithoutUserInput>
-  }
-
-  export type UserCommunityCreateManyUserInputEnvelope = {
-    data: UserCommunityCreateManyUserInput | UserCommunityCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -16509,6 +16339,48 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type SessionCreateWithoutUserInput = {
+    id: string
+    sessionToken: string
+    expires: Date | string
+  }
+
+  export type SessionUncheckedCreateWithoutUserInput = {
+    id: string
+    sessionToken: string
+    expires: Date | string
+  }
+
+  export type SessionCreateOrConnectWithoutUserInput = {
+    where: SessionWhereUniqueInput
+    create: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput>
+  }
+
+  export type SessionCreateManyUserInputEnvelope = {
+    data: SessionCreateManyUserInput | SessionCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UserCommunityCreateWithoutUserInput = {
+    role?: $Enums.Role
+    community: CommunityCreateNestedOneWithoutMembersInput
+  }
+
+  export type UserCommunityUncheckedCreateWithoutUserInput = {
+    communityId: string
+    role?: $Enums.Role
+  }
+
+  export type UserCommunityCreateOrConnectWithoutUserInput = {
+    where: UserCommunityWhereUniqueInput
+    create: XOR<UserCommunityCreateWithoutUserInput, UserCommunityUncheckedCreateWithoutUserInput>
+  }
+
+  export type UserCommunityCreateManyUserInputEnvelope = {
+    data: UserCommunityCreateManyUserInput | UserCommunityCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type AccountUpsertWithWhereUniqueWithoutUserInput = {
     where: AccountWhereUniqueInput
     update: XOR<AccountUpdateWithoutUserInput, AccountUncheckedUpdateWithoutUserInput>
@@ -16542,57 +16414,6 @@ export namespace Prisma {
     id_token?: StringNullableFilter<"Account"> | string | null
     session_state?: StringNullableFilter<"Account"> | string | null
     createdAt?: DateTimeFilter<"Account"> | Date | string
-  }
-
-  export type SessionUpsertWithWhereUniqueWithoutUserInput = {
-    where: SessionWhereUniqueInput
-    update: XOR<SessionUpdateWithoutUserInput, SessionUncheckedUpdateWithoutUserInput>
-    create: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput>
-  }
-
-  export type SessionUpdateWithWhereUniqueWithoutUserInput = {
-    where: SessionWhereUniqueInput
-    data: XOR<SessionUpdateWithoutUserInput, SessionUncheckedUpdateWithoutUserInput>
-  }
-
-  export type SessionUpdateManyWithWhereWithoutUserInput = {
-    where: SessionScalarWhereInput
-    data: XOR<SessionUpdateManyMutationInput, SessionUncheckedUpdateManyWithoutUserInput>
-  }
-
-  export type SessionScalarWhereInput = {
-    AND?: SessionScalarWhereInput | SessionScalarWhereInput[]
-    OR?: SessionScalarWhereInput[]
-    NOT?: SessionScalarWhereInput | SessionScalarWhereInput[]
-    id?: StringFilter<"Session"> | string
-    sessionToken?: StringFilter<"Session"> | string
-    userId?: StringFilter<"Session"> | string
-    expires?: DateTimeFilter<"Session"> | Date | string
-  }
-
-  export type UserCommunityUpsertWithWhereUniqueWithoutUserInput = {
-    where: UserCommunityWhereUniqueInput
-    update: XOR<UserCommunityUpdateWithoutUserInput, UserCommunityUncheckedUpdateWithoutUserInput>
-    create: XOR<UserCommunityCreateWithoutUserInput, UserCommunityUncheckedCreateWithoutUserInput>
-  }
-
-  export type UserCommunityUpdateWithWhereUniqueWithoutUserInput = {
-    where: UserCommunityWhereUniqueInput
-    data: XOR<UserCommunityUpdateWithoutUserInput, UserCommunityUncheckedUpdateWithoutUserInput>
-  }
-
-  export type UserCommunityUpdateManyWithWhereWithoutUserInput = {
-    where: UserCommunityScalarWhereInput
-    data: XOR<UserCommunityUpdateManyMutationInput, UserCommunityUncheckedUpdateManyWithoutUserInput>
-  }
-
-  export type UserCommunityScalarWhereInput = {
-    AND?: UserCommunityScalarWhereInput | UserCommunityScalarWhereInput[]
-    OR?: UserCommunityScalarWhereInput[]
-    NOT?: UserCommunityScalarWhereInput | UserCommunityScalarWhereInput[]
-    userId?: StringFilter<"UserCommunity"> | string
-    communityId?: StringFilter<"UserCommunity"> | string
-    role?: EnumRoleFilter<"UserCommunity"> | $Enums.Role
   }
 
   export type ContentUpsertWithWhereUniqueWithoutAuthorInput = {
@@ -16656,24 +16477,55 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"RecentWork"> | Date | string
   }
 
-  export type UserCommunityCreateWithoutCommunityInput = {
-    role?: $Enums.Role
-    user: UserCreateNestedOneWithoutCommunityMembershipsInput
+  export type SessionUpsertWithWhereUniqueWithoutUserInput = {
+    where: SessionWhereUniqueInput
+    update: XOR<SessionUpdateWithoutUserInput, SessionUncheckedUpdateWithoutUserInput>
+    create: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput>
   }
 
-  export type UserCommunityUncheckedCreateWithoutCommunityInput = {
-    userId: string
-    role?: $Enums.Role
+  export type SessionUpdateWithWhereUniqueWithoutUserInput = {
+    where: SessionWhereUniqueInput
+    data: XOR<SessionUpdateWithoutUserInput, SessionUncheckedUpdateWithoutUserInput>
   }
 
-  export type UserCommunityCreateOrConnectWithoutCommunityInput = {
+  export type SessionUpdateManyWithWhereWithoutUserInput = {
+    where: SessionScalarWhereInput
+    data: XOR<SessionUpdateManyMutationInput, SessionUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type SessionScalarWhereInput = {
+    AND?: SessionScalarWhereInput | SessionScalarWhereInput[]
+    OR?: SessionScalarWhereInput[]
+    NOT?: SessionScalarWhereInput | SessionScalarWhereInput[]
+    id?: StringFilter<"Session"> | string
+    sessionToken?: StringFilter<"Session"> | string
+    userId?: StringFilter<"Session"> | string
+    expires?: DateTimeFilter<"Session"> | Date | string
+  }
+
+  export type UserCommunityUpsertWithWhereUniqueWithoutUserInput = {
     where: UserCommunityWhereUniqueInput
-    create: XOR<UserCommunityCreateWithoutCommunityInput, UserCommunityUncheckedCreateWithoutCommunityInput>
+    update: XOR<UserCommunityUpdateWithoutUserInput, UserCommunityUncheckedUpdateWithoutUserInput>
+    create: XOR<UserCommunityCreateWithoutUserInput, UserCommunityUncheckedCreateWithoutUserInput>
   }
 
-  export type UserCommunityCreateManyCommunityInputEnvelope = {
-    data: UserCommunityCreateManyCommunityInput | UserCommunityCreateManyCommunityInput[]
-    skipDuplicates?: boolean
+  export type UserCommunityUpdateWithWhereUniqueWithoutUserInput = {
+    where: UserCommunityWhereUniqueInput
+    data: XOR<UserCommunityUpdateWithoutUserInput, UserCommunityUncheckedUpdateWithoutUserInput>
+  }
+
+  export type UserCommunityUpdateManyWithWhereWithoutUserInput = {
+    where: UserCommunityScalarWhereInput
+    data: XOR<UserCommunityUpdateManyMutationInput, UserCommunityUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type UserCommunityScalarWhereInput = {
+    AND?: UserCommunityScalarWhereInput | UserCommunityScalarWhereInput[]
+    OR?: UserCommunityScalarWhereInput[]
+    NOT?: UserCommunityScalarWhereInput | UserCommunityScalarWhereInput[]
+    userId?: StringFilter<"UserCommunity"> | string
+    communityId?: StringFilter<"UserCommunity"> | string
+    role?: EnumRoleFilter<"UserCommunity"> | $Enums.Role
   }
 
   export type ContentCreateWithoutCommunityInput = {
@@ -16704,20 +16556,24 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type UserCommunityUpsertWithWhereUniqueWithoutCommunityInput = {
+  export type UserCommunityCreateWithoutCommunityInput = {
+    role?: $Enums.Role
+    user: UserCreateNestedOneWithoutCommunityMembershipsInput
+  }
+
+  export type UserCommunityUncheckedCreateWithoutCommunityInput = {
+    userId: string
+    role?: $Enums.Role
+  }
+
+  export type UserCommunityCreateOrConnectWithoutCommunityInput = {
     where: UserCommunityWhereUniqueInput
-    update: XOR<UserCommunityUpdateWithoutCommunityInput, UserCommunityUncheckedUpdateWithoutCommunityInput>
     create: XOR<UserCommunityCreateWithoutCommunityInput, UserCommunityUncheckedCreateWithoutCommunityInput>
   }
 
-  export type UserCommunityUpdateWithWhereUniqueWithoutCommunityInput = {
-    where: UserCommunityWhereUniqueInput
-    data: XOR<UserCommunityUpdateWithoutCommunityInput, UserCommunityUncheckedUpdateWithoutCommunityInput>
-  }
-
-  export type UserCommunityUpdateManyWithWhereWithoutCommunityInput = {
-    where: UserCommunityScalarWhereInput
-    data: XOR<UserCommunityUpdateManyMutationInput, UserCommunityUncheckedUpdateManyWithoutCommunityInput>
+  export type UserCommunityCreateManyCommunityInputEnvelope = {
+    data: UserCommunityCreateManyCommunityInput | UserCommunityCreateManyCommunityInput[]
+    skipDuplicates?: boolean
   }
 
   export type ContentUpsertWithWhereUniqueWithoutCommunityInput = {
@@ -16736,93 +16592,20 @@ export namespace Prisma {
     data: XOR<ContentUpdateManyMutationInput, ContentUncheckedUpdateManyWithoutCommunityInput>
   }
 
-  export type UserCreateWithoutCommunityMembershipsInput = {
-    id: string
-    email?: string | null
-    emailVerified?: Date | string | null
-    image?: string | null
-    phoneNumber?: string | null
-    phoneVerified?: Date | string | null
-    firstName?: string | null
-    lastName?: string | null
-    username?: string | null
-    bio?: string | null
-    ageGroup?: $Enums.AgeGroup | null
-    country?: string | null
-    city?: string | null
-    workTypes?: UserCreateworkTypesInput | $Enums.WorkType[]
-    expertiseAreas?: UserCreateexpertiseAreasInput | $Enums.ExpertiseArea[]
-    organization?: string | null
-    position?: string | null
-    workBio?: string | null
-    personalWebsite?: string | null
-    linkedinProfile?: string | null
-    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
-    preferredLanguage?: $Enums.Language
-    isSearchable?: boolean
-    profileVisibility?: $Enums.ProfileVisibility
-    showEmail?: boolean
-    showPhoneNumber?: boolean
-    showWorkDetails?: boolean
-    showSocialLinks?: boolean
-    showLocation?: boolean
-    onboardingCompleted?: boolean
-    onboardingStep?: number
-    welcomeMessageSeen?: boolean
-    role?: $Enums.Role
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    accounts?: AccountCreateNestedManyWithoutUserInput
-    sessions?: SessionCreateNestedManyWithoutUserInput
-    createdContent?: ContentCreateNestedManyWithoutAuthorInput
-    recentWork?: RecentWorkCreateNestedManyWithoutUserInput
+  export type UserCommunityUpsertWithWhereUniqueWithoutCommunityInput = {
+    where: UserCommunityWhereUniqueInput
+    update: XOR<UserCommunityUpdateWithoutCommunityInput, UserCommunityUncheckedUpdateWithoutCommunityInput>
+    create: XOR<UserCommunityCreateWithoutCommunityInput, UserCommunityUncheckedCreateWithoutCommunityInput>
   }
 
-  export type UserUncheckedCreateWithoutCommunityMembershipsInput = {
-    id: string
-    email?: string | null
-    emailVerified?: Date | string | null
-    image?: string | null
-    phoneNumber?: string | null
-    phoneVerified?: Date | string | null
-    firstName?: string | null
-    lastName?: string | null
-    username?: string | null
-    bio?: string | null
-    ageGroup?: $Enums.AgeGroup | null
-    country?: string | null
-    city?: string | null
-    workTypes?: UserCreateworkTypesInput | $Enums.WorkType[]
-    expertiseAreas?: UserCreateexpertiseAreasInput | $Enums.ExpertiseArea[]
-    organization?: string | null
-    position?: string | null
-    workBio?: string | null
-    personalWebsite?: string | null
-    linkedinProfile?: string | null
-    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
-    preferredLanguage?: $Enums.Language
-    isSearchable?: boolean
-    profileVisibility?: $Enums.ProfileVisibility
-    showEmail?: boolean
-    showPhoneNumber?: boolean
-    showWorkDetails?: boolean
-    showSocialLinks?: boolean
-    showLocation?: boolean
-    onboardingCompleted?: boolean
-    onboardingStep?: number
-    welcomeMessageSeen?: boolean
-    role?: $Enums.Role
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
-    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
-    createdContent?: ContentUncheckedCreateNestedManyWithoutAuthorInput
-    recentWork?: RecentWorkUncheckedCreateNestedManyWithoutUserInput
+  export type UserCommunityUpdateWithWhereUniqueWithoutCommunityInput = {
+    where: UserCommunityWhereUniqueInput
+    data: XOR<UserCommunityUpdateWithoutCommunityInput, UserCommunityUncheckedUpdateWithoutCommunityInput>
   }
 
-  export type UserCreateOrConnectWithoutCommunityMembershipsInput = {
-    where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutCommunityMembershipsInput, UserUncheckedCreateWithoutCommunityMembershipsInput>
+  export type UserCommunityUpdateManyWithWhereWithoutCommunityInput = {
+    where: UserCommunityScalarWhereInput
+    data: XOR<UserCommunityUpdateManyMutationInput, UserCommunityUncheckedUpdateManyWithoutCommunityInput>
   }
 
   export type CommunityCreateWithoutMembersInput = {
@@ -16854,99 +16637,93 @@ export namespace Prisma {
     create: XOR<CommunityCreateWithoutMembersInput, CommunityUncheckedCreateWithoutMembersInput>
   }
 
-  export type UserUpsertWithoutCommunityMembershipsInput = {
-    update: XOR<UserUpdateWithoutCommunityMembershipsInput, UserUncheckedUpdateWithoutCommunityMembershipsInput>
+  export type UserCreateWithoutCommunityMembershipsInput = {
+    id: string
+    email?: string | null
+    emailVerified?: Date | string | null
+    username?: string | null
+    image?: string | null
+    bio?: string | null
+    role?: $Enums.Role
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    ageGroup?: $Enums.AgeGroup | null
+    city?: string | null
+    country?: string | null
+    expertiseAreas?: UserCreateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    firstName?: string | null
+    lastName?: string | null
+    linkedinProfile?: string | null
+    organization?: string | null
+    personalWebsite?: string | null
+    position?: string | null
+    workBio?: string | null
+    workTypes?: UserCreateworkTypesInput | $Enums.WorkType[]
+    isSearchable?: boolean
+    profileVisibility?: $Enums.ProfileVisibility
+    showEmail?: boolean
+    showLocation?: boolean
+    showSocialLinks?: boolean
+    showWorkDetails?: boolean
+    phoneNumber?: string | null
+    phoneVerified?: Date | string | null
+    showPhoneNumber?: boolean
+    onboardingCompleted?: boolean
+    onboardingStep?: number
+    preferredLanguage?: $Enums.Language
+    welcomeMessageSeen?: boolean
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    createdContent?: ContentCreateNestedManyWithoutAuthorInput
+    recentWork?: RecentWorkCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutCommunityMembershipsInput = {
+    id: string
+    email?: string | null
+    emailVerified?: Date | string | null
+    username?: string | null
+    image?: string | null
+    bio?: string | null
+    role?: $Enums.Role
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    ageGroup?: $Enums.AgeGroup | null
+    city?: string | null
+    country?: string | null
+    expertiseAreas?: UserCreateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    firstName?: string | null
+    lastName?: string | null
+    linkedinProfile?: string | null
+    organization?: string | null
+    personalWebsite?: string | null
+    position?: string | null
+    workBio?: string | null
+    workTypes?: UserCreateworkTypesInput | $Enums.WorkType[]
+    isSearchable?: boolean
+    profileVisibility?: $Enums.ProfileVisibility
+    showEmail?: boolean
+    showLocation?: boolean
+    showSocialLinks?: boolean
+    showWorkDetails?: boolean
+    phoneNumber?: string | null
+    phoneVerified?: Date | string | null
+    showPhoneNumber?: boolean
+    onboardingCompleted?: boolean
+    onboardingStep?: number
+    preferredLanguage?: $Enums.Language
+    welcomeMessageSeen?: boolean
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    createdContent?: ContentUncheckedCreateNestedManyWithoutAuthorInput
+    recentWork?: RecentWorkUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutCommunityMembershipsInput = {
+    where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutCommunityMembershipsInput, UserUncheckedCreateWithoutCommunityMembershipsInput>
-    where?: UserWhereInput
-  }
-
-  export type UserUpdateToOneWithWhereWithoutCommunityMembershipsInput = {
-    where?: UserWhereInput
-    data: XOR<UserUpdateWithoutCommunityMembershipsInput, UserUncheckedUpdateWithoutCommunityMembershipsInput>
-  }
-
-  export type UserUpdateWithoutCommunityMembershipsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    phoneVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    firstName?: NullableStringFieldUpdateOperationsInput | string | null
-    lastName?: NullableStringFieldUpdateOperationsInput | string | null
-    username?: NullableStringFieldUpdateOperationsInput | string | null
-    bio?: NullableStringFieldUpdateOperationsInput | string | null
-    ageGroup?: NullableEnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup | null
-    country?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: NullableStringFieldUpdateOperationsInput | string | null
-    workTypes?: UserUpdateworkTypesInput | $Enums.WorkType[]
-    expertiseAreas?: UserUpdateexpertiseAreasInput | $Enums.ExpertiseArea[]
-    organization?: NullableStringFieldUpdateOperationsInput | string | null
-    position?: NullableStringFieldUpdateOperationsInput | string | null
-    workBio?: NullableStringFieldUpdateOperationsInput | string | null
-    personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
-    linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
-    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
-    preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    isSearchable?: BoolFieldUpdateOperationsInput | boolean
-    profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
-    showEmail?: BoolFieldUpdateOperationsInput | boolean
-    showPhoneNumber?: BoolFieldUpdateOperationsInput | boolean
-    showWorkDetails?: BoolFieldUpdateOperationsInput | boolean
-    showSocialLinks?: BoolFieldUpdateOperationsInput | boolean
-    showLocation?: BoolFieldUpdateOperationsInput | boolean
-    onboardingCompleted?: BoolFieldUpdateOperationsInput | boolean
-    onboardingStep?: IntFieldUpdateOperationsInput | number
-    welcomeMessageSeen?: BoolFieldUpdateOperationsInput | boolean
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    accounts?: AccountUpdateManyWithoutUserNestedInput
-    sessions?: SessionUpdateManyWithoutUserNestedInput
-    createdContent?: ContentUpdateManyWithoutAuthorNestedInput
-    recentWork?: RecentWorkUpdateManyWithoutUserNestedInput
-  }
-
-  export type UserUncheckedUpdateWithoutCommunityMembershipsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    phoneVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    firstName?: NullableStringFieldUpdateOperationsInput | string | null
-    lastName?: NullableStringFieldUpdateOperationsInput | string | null
-    username?: NullableStringFieldUpdateOperationsInput | string | null
-    bio?: NullableStringFieldUpdateOperationsInput | string | null
-    ageGroup?: NullableEnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup | null
-    country?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: NullableStringFieldUpdateOperationsInput | string | null
-    workTypes?: UserUpdateworkTypesInput | $Enums.WorkType[]
-    expertiseAreas?: UserUpdateexpertiseAreasInput | $Enums.ExpertiseArea[]
-    organization?: NullableStringFieldUpdateOperationsInput | string | null
-    position?: NullableStringFieldUpdateOperationsInput | string | null
-    workBio?: NullableStringFieldUpdateOperationsInput | string | null
-    personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
-    linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
-    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
-    preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    isSearchable?: BoolFieldUpdateOperationsInput | boolean
-    profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
-    showEmail?: BoolFieldUpdateOperationsInput | boolean
-    showPhoneNumber?: BoolFieldUpdateOperationsInput | boolean
-    showWorkDetails?: BoolFieldUpdateOperationsInput | boolean
-    showSocialLinks?: BoolFieldUpdateOperationsInput | boolean
-    showLocation?: BoolFieldUpdateOperationsInput | boolean
-    onboardingCompleted?: BoolFieldUpdateOperationsInput | boolean
-    onboardingStep?: IntFieldUpdateOperationsInput | number
-    welcomeMessageSeen?: BoolFieldUpdateOperationsInput | boolean
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
-    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
-    createdContent?: ContentUncheckedUpdateManyWithoutAuthorNestedInput
-    recentWork?: RecentWorkUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type CommunityUpsertWithoutMembersInput = {
@@ -16984,6 +16761,190 @@ export namespace Prisma {
     contents?: ContentUncheckedUpdateManyWithoutCommunityNestedInput
   }
 
+  export type UserUpsertWithoutCommunityMembershipsInput = {
+    update: XOR<UserUpdateWithoutCommunityMembershipsInput, UserUncheckedUpdateWithoutCommunityMembershipsInput>
+    create: XOR<UserCreateWithoutCommunityMembershipsInput, UserUncheckedCreateWithoutCommunityMembershipsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutCommunityMembershipsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutCommunityMembershipsInput, UserUncheckedUpdateWithoutCommunityMembershipsInput>
+  }
+
+  export type UserUpdateWithoutCommunityMembershipsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    username?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ageGroup?: NullableEnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    expertiseAreas?: UserUpdateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    workBio?: NullableStringFieldUpdateOperationsInput | string | null
+    workTypes?: UserUpdateworkTypesInput | $Enums.WorkType[]
+    isSearchable?: BoolFieldUpdateOperationsInput | boolean
+    profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
+    showEmail?: BoolFieldUpdateOperationsInput | boolean
+    showLocation?: BoolFieldUpdateOperationsInput | boolean
+    showSocialLinks?: BoolFieldUpdateOperationsInput | boolean
+    showWorkDetails?: BoolFieldUpdateOperationsInput | boolean
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    showPhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    onboardingCompleted?: BoolFieldUpdateOperationsInput | boolean
+    onboardingStep?: IntFieldUpdateOperationsInput | number
+    preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
+    welcomeMessageSeen?: BoolFieldUpdateOperationsInput | boolean
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    createdContent?: ContentUpdateManyWithoutAuthorNestedInput
+    recentWork?: RecentWorkUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutCommunityMembershipsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    username?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ageGroup?: NullableEnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    expertiseAreas?: UserUpdateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    workBio?: NullableStringFieldUpdateOperationsInput | string | null
+    workTypes?: UserUpdateworkTypesInput | $Enums.WorkType[]
+    isSearchable?: BoolFieldUpdateOperationsInput | boolean
+    profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
+    showEmail?: BoolFieldUpdateOperationsInput | boolean
+    showLocation?: BoolFieldUpdateOperationsInput | boolean
+    showSocialLinks?: BoolFieldUpdateOperationsInput | boolean
+    showWorkDetails?: BoolFieldUpdateOperationsInput | boolean
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    showPhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    onboardingCompleted?: BoolFieldUpdateOperationsInput | boolean
+    onboardingStep?: IntFieldUpdateOperationsInput | number
+    preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
+    welcomeMessageSeen?: BoolFieldUpdateOperationsInput | boolean
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    createdContent?: ContentUncheckedUpdateManyWithoutAuthorNestedInput
+    recentWork?: RecentWorkUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutCreatedContentInput = {
+    id: string
+    email?: string | null
+    emailVerified?: Date | string | null
+    username?: string | null
+    image?: string | null
+    bio?: string | null
+    role?: $Enums.Role
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    ageGroup?: $Enums.AgeGroup | null
+    city?: string | null
+    country?: string | null
+    expertiseAreas?: UserCreateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    firstName?: string | null
+    lastName?: string | null
+    linkedinProfile?: string | null
+    organization?: string | null
+    personalWebsite?: string | null
+    position?: string | null
+    workBio?: string | null
+    workTypes?: UserCreateworkTypesInput | $Enums.WorkType[]
+    isSearchable?: boolean
+    profileVisibility?: $Enums.ProfileVisibility
+    showEmail?: boolean
+    showLocation?: boolean
+    showSocialLinks?: boolean
+    showWorkDetails?: boolean
+    phoneNumber?: string | null
+    phoneVerified?: Date | string | null
+    showPhoneNumber?: boolean
+    onboardingCompleted?: boolean
+    onboardingStep?: number
+    preferredLanguage?: $Enums.Language
+    welcomeMessageSeen?: boolean
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    recentWork?: RecentWorkCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    communityMemberships?: UserCommunityCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutCreatedContentInput = {
+    id: string
+    email?: string | null
+    emailVerified?: Date | string | null
+    username?: string | null
+    image?: string | null
+    bio?: string | null
+    role?: $Enums.Role
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    ageGroup?: $Enums.AgeGroup | null
+    city?: string | null
+    country?: string | null
+    expertiseAreas?: UserCreateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    firstName?: string | null
+    lastName?: string | null
+    linkedinProfile?: string | null
+    organization?: string | null
+    personalWebsite?: string | null
+    position?: string | null
+    workBio?: string | null
+    workTypes?: UserCreateworkTypesInput | $Enums.WorkType[]
+    isSearchable?: boolean
+    profileVisibility?: $Enums.ProfileVisibility
+    showEmail?: boolean
+    showLocation?: boolean
+    showSocialLinks?: boolean
+    showWorkDetails?: boolean
+    phoneNumber?: string | null
+    phoneVerified?: Date | string | null
+    showPhoneNumber?: boolean
+    onboardingCompleted?: boolean
+    onboardingStep?: number
+    preferredLanguage?: $Enums.Language
+    welcomeMessageSeen?: boolean
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    recentWork?: RecentWorkUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    communityMemberships?: UserCommunityUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutCreatedContentInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutCreatedContentInput, UserUncheckedCreateWithoutCreatedContentInput>
+  }
+
   export type CommunityCreateWithoutContentsInput = {
     id?: string
     name: string
@@ -17013,93 +16974,99 @@ export namespace Prisma {
     create: XOR<CommunityCreateWithoutContentsInput, CommunityUncheckedCreateWithoutContentsInput>
   }
 
-  export type UserCreateWithoutCreatedContentInput = {
-    id: string
-    email?: string | null
-    emailVerified?: Date | string | null
-    image?: string | null
-    phoneNumber?: string | null
-    phoneVerified?: Date | string | null
-    firstName?: string | null
-    lastName?: string | null
-    username?: string | null
-    bio?: string | null
-    ageGroup?: $Enums.AgeGroup | null
-    country?: string | null
-    city?: string | null
-    workTypes?: UserCreateworkTypesInput | $Enums.WorkType[]
-    expertiseAreas?: UserCreateexpertiseAreasInput | $Enums.ExpertiseArea[]
-    organization?: string | null
-    position?: string | null
-    workBio?: string | null
-    personalWebsite?: string | null
-    linkedinProfile?: string | null
-    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
-    preferredLanguage?: $Enums.Language
-    isSearchable?: boolean
-    profileVisibility?: $Enums.ProfileVisibility
-    showEmail?: boolean
-    showPhoneNumber?: boolean
-    showWorkDetails?: boolean
-    showSocialLinks?: boolean
-    showLocation?: boolean
-    onboardingCompleted?: boolean
-    onboardingStep?: number
-    welcomeMessageSeen?: boolean
-    role?: $Enums.Role
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    accounts?: AccountCreateNestedManyWithoutUserInput
-    sessions?: SessionCreateNestedManyWithoutUserInput
-    communityMemberships?: UserCommunityCreateNestedManyWithoutUserInput
-    recentWork?: RecentWorkCreateNestedManyWithoutUserInput
-  }
-
-  export type UserUncheckedCreateWithoutCreatedContentInput = {
-    id: string
-    email?: string | null
-    emailVerified?: Date | string | null
-    image?: string | null
-    phoneNumber?: string | null
-    phoneVerified?: Date | string | null
-    firstName?: string | null
-    lastName?: string | null
-    username?: string | null
-    bio?: string | null
-    ageGroup?: $Enums.AgeGroup | null
-    country?: string | null
-    city?: string | null
-    workTypes?: UserCreateworkTypesInput | $Enums.WorkType[]
-    expertiseAreas?: UserCreateexpertiseAreasInput | $Enums.ExpertiseArea[]
-    organization?: string | null
-    position?: string | null
-    workBio?: string | null
-    personalWebsite?: string | null
-    linkedinProfile?: string | null
-    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
-    preferredLanguage?: $Enums.Language
-    isSearchable?: boolean
-    profileVisibility?: $Enums.ProfileVisibility
-    showEmail?: boolean
-    showPhoneNumber?: boolean
-    showWorkDetails?: boolean
-    showSocialLinks?: boolean
-    showLocation?: boolean
-    onboardingCompleted?: boolean
-    onboardingStep?: number
-    welcomeMessageSeen?: boolean
-    role?: $Enums.Role
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
-    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
-    communityMemberships?: UserCommunityUncheckedCreateNestedManyWithoutUserInput
-    recentWork?: RecentWorkUncheckedCreateNestedManyWithoutUserInput
-  }
-
-  export type UserCreateOrConnectWithoutCreatedContentInput = {
-    where: UserWhereUniqueInput
+  export type UserUpsertWithoutCreatedContentInput = {
+    update: XOR<UserUpdateWithoutCreatedContentInput, UserUncheckedUpdateWithoutCreatedContentInput>
     create: XOR<UserCreateWithoutCreatedContentInput, UserUncheckedCreateWithoutCreatedContentInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutCreatedContentInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutCreatedContentInput, UserUncheckedUpdateWithoutCreatedContentInput>
+  }
+
+  export type UserUpdateWithoutCreatedContentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    username?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ageGroup?: NullableEnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    expertiseAreas?: UserUpdateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    workBio?: NullableStringFieldUpdateOperationsInput | string | null
+    workTypes?: UserUpdateworkTypesInput | $Enums.WorkType[]
+    isSearchable?: BoolFieldUpdateOperationsInput | boolean
+    profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
+    showEmail?: BoolFieldUpdateOperationsInput | boolean
+    showLocation?: BoolFieldUpdateOperationsInput | boolean
+    showSocialLinks?: BoolFieldUpdateOperationsInput | boolean
+    showWorkDetails?: BoolFieldUpdateOperationsInput | boolean
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    showPhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    onboardingCompleted?: BoolFieldUpdateOperationsInput | boolean
+    onboardingStep?: IntFieldUpdateOperationsInput | number
+    preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
+    welcomeMessageSeen?: BoolFieldUpdateOperationsInput | boolean
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    recentWork?: RecentWorkUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    communityMemberships?: UserCommunityUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutCreatedContentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    username?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ageGroup?: NullableEnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    expertiseAreas?: UserUpdateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    workBio?: NullableStringFieldUpdateOperationsInput | string | null
+    workTypes?: UserUpdateworkTypesInput | $Enums.WorkType[]
+    isSearchable?: BoolFieldUpdateOperationsInput | boolean
+    profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
+    showEmail?: BoolFieldUpdateOperationsInput | boolean
+    showLocation?: BoolFieldUpdateOperationsInput | boolean
+    showSocialLinks?: BoolFieldUpdateOperationsInput | boolean
+    showWorkDetails?: BoolFieldUpdateOperationsInput | boolean
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    showPhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    onboardingCompleted?: BoolFieldUpdateOperationsInput | boolean
+    onboardingStep?: IntFieldUpdateOperationsInput | number
+    preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
+    welcomeMessageSeen?: BoolFieldUpdateOperationsInput | boolean
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    recentWork?: RecentWorkUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    communityMemberships?: UserCommunityUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type CommunityUpsertWithoutContentsInput = {
@@ -17137,183 +17104,88 @@ export namespace Prisma {
     members?: UserCommunityUncheckedUpdateManyWithoutCommunityNestedInput
   }
 
-  export type UserUpsertWithoutCreatedContentInput = {
-    update: XOR<UserUpdateWithoutCreatedContentInput, UserUncheckedUpdateWithoutCreatedContentInput>
-    create: XOR<UserCreateWithoutCreatedContentInput, UserUncheckedCreateWithoutCreatedContentInput>
-    where?: UserWhereInput
-  }
-
-  export type UserUpdateToOneWithWhereWithoutCreatedContentInput = {
-    where?: UserWhereInput
-    data: XOR<UserUpdateWithoutCreatedContentInput, UserUncheckedUpdateWithoutCreatedContentInput>
-  }
-
-  export type UserUpdateWithoutCreatedContentInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    phoneVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    firstName?: NullableStringFieldUpdateOperationsInput | string | null
-    lastName?: NullableStringFieldUpdateOperationsInput | string | null
-    username?: NullableStringFieldUpdateOperationsInput | string | null
-    bio?: NullableStringFieldUpdateOperationsInput | string | null
-    ageGroup?: NullableEnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup | null
-    country?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: NullableStringFieldUpdateOperationsInput | string | null
-    workTypes?: UserUpdateworkTypesInput | $Enums.WorkType[]
-    expertiseAreas?: UserUpdateexpertiseAreasInput | $Enums.ExpertiseArea[]
-    organization?: NullableStringFieldUpdateOperationsInput | string | null
-    position?: NullableStringFieldUpdateOperationsInput | string | null
-    workBio?: NullableStringFieldUpdateOperationsInput | string | null
-    personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
-    linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
-    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
-    preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    isSearchable?: BoolFieldUpdateOperationsInput | boolean
-    profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
-    showEmail?: BoolFieldUpdateOperationsInput | boolean
-    showPhoneNumber?: BoolFieldUpdateOperationsInput | boolean
-    showWorkDetails?: BoolFieldUpdateOperationsInput | boolean
-    showSocialLinks?: BoolFieldUpdateOperationsInput | boolean
-    showLocation?: BoolFieldUpdateOperationsInput | boolean
-    onboardingCompleted?: BoolFieldUpdateOperationsInput | boolean
-    onboardingStep?: IntFieldUpdateOperationsInput | number
-    welcomeMessageSeen?: BoolFieldUpdateOperationsInput | boolean
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    accounts?: AccountUpdateManyWithoutUserNestedInput
-    sessions?: SessionUpdateManyWithoutUserNestedInput
-    communityMemberships?: UserCommunityUpdateManyWithoutUserNestedInput
-    recentWork?: RecentWorkUpdateManyWithoutUserNestedInput
-  }
-
-  export type UserUncheckedUpdateWithoutCreatedContentInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    phoneVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    firstName?: NullableStringFieldUpdateOperationsInput | string | null
-    lastName?: NullableStringFieldUpdateOperationsInput | string | null
-    username?: NullableStringFieldUpdateOperationsInput | string | null
-    bio?: NullableStringFieldUpdateOperationsInput | string | null
-    ageGroup?: NullableEnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup | null
-    country?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: NullableStringFieldUpdateOperationsInput | string | null
-    workTypes?: UserUpdateworkTypesInput | $Enums.WorkType[]
-    expertiseAreas?: UserUpdateexpertiseAreasInput | $Enums.ExpertiseArea[]
-    organization?: NullableStringFieldUpdateOperationsInput | string | null
-    position?: NullableStringFieldUpdateOperationsInput | string | null
-    workBio?: NullableStringFieldUpdateOperationsInput | string | null
-    personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
-    linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
-    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
-    preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    isSearchable?: BoolFieldUpdateOperationsInput | boolean
-    profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
-    showEmail?: BoolFieldUpdateOperationsInput | boolean
-    showPhoneNumber?: BoolFieldUpdateOperationsInput | boolean
-    showWorkDetails?: BoolFieldUpdateOperationsInput | boolean
-    showSocialLinks?: BoolFieldUpdateOperationsInput | boolean
-    showLocation?: BoolFieldUpdateOperationsInput | boolean
-    onboardingCompleted?: BoolFieldUpdateOperationsInput | boolean
-    onboardingStep?: IntFieldUpdateOperationsInput | number
-    welcomeMessageSeen?: BoolFieldUpdateOperationsInput | boolean
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
-    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
-    communityMemberships?: UserCommunityUncheckedUpdateManyWithoutUserNestedInput
-    recentWork?: RecentWorkUncheckedUpdateManyWithoutUserNestedInput
-  }
-
   export type UserCreateWithoutRecentWorkInput = {
     id: string
     email?: string | null
     emailVerified?: Date | string | null
-    image?: string | null
-    phoneNumber?: string | null
-    phoneVerified?: Date | string | null
-    firstName?: string | null
-    lastName?: string | null
     username?: string | null
+    image?: string | null
     bio?: string | null
-    ageGroup?: $Enums.AgeGroup | null
-    country?: string | null
-    city?: string | null
-    workTypes?: UserCreateworkTypesInput | $Enums.WorkType[]
-    expertiseAreas?: UserCreateexpertiseAreasInput | $Enums.ExpertiseArea[]
-    organization?: string | null
-    position?: string | null
-    workBio?: string | null
-    personalWebsite?: string | null
-    linkedinProfile?: string | null
-    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
-    preferredLanguage?: $Enums.Language
-    isSearchable?: boolean
-    profileVisibility?: $Enums.ProfileVisibility
-    showEmail?: boolean
-    showPhoneNumber?: boolean
-    showWorkDetails?: boolean
-    showSocialLinks?: boolean
-    showLocation?: boolean
-    onboardingCompleted?: boolean
-    onboardingStep?: number
-    welcomeMessageSeen?: boolean
     role?: $Enums.Role
     createdAt?: Date | string
     updatedAt?: Date | string
+    ageGroup?: $Enums.AgeGroup | null
+    city?: string | null
+    country?: string | null
+    expertiseAreas?: UserCreateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    firstName?: string | null
+    lastName?: string | null
+    linkedinProfile?: string | null
+    organization?: string | null
+    personalWebsite?: string | null
+    position?: string | null
+    workBio?: string | null
+    workTypes?: UserCreateworkTypesInput | $Enums.WorkType[]
+    isSearchable?: boolean
+    profileVisibility?: $Enums.ProfileVisibility
+    showEmail?: boolean
+    showLocation?: boolean
+    showSocialLinks?: boolean
+    showWorkDetails?: boolean
+    phoneNumber?: string | null
+    phoneVerified?: Date | string | null
+    showPhoneNumber?: boolean
+    onboardingCompleted?: boolean
+    onboardingStep?: number
+    preferredLanguage?: $Enums.Language
+    welcomeMessageSeen?: boolean
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountCreateNestedManyWithoutUserInput
+    createdContent?: ContentCreateNestedManyWithoutAuthorInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     communityMemberships?: UserCommunityCreateNestedManyWithoutUserInput
-    createdContent?: ContentCreateNestedManyWithoutAuthorInput
   }
 
   export type UserUncheckedCreateWithoutRecentWorkInput = {
     id: string
     email?: string | null
     emailVerified?: Date | string | null
-    image?: string | null
-    phoneNumber?: string | null
-    phoneVerified?: Date | string | null
-    firstName?: string | null
-    lastName?: string | null
     username?: string | null
+    image?: string | null
     bio?: string | null
-    ageGroup?: $Enums.AgeGroup | null
-    country?: string | null
-    city?: string | null
-    workTypes?: UserCreateworkTypesInput | $Enums.WorkType[]
-    expertiseAreas?: UserCreateexpertiseAreasInput | $Enums.ExpertiseArea[]
-    organization?: string | null
-    position?: string | null
-    workBio?: string | null
-    personalWebsite?: string | null
-    linkedinProfile?: string | null
-    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
-    preferredLanguage?: $Enums.Language
-    isSearchable?: boolean
-    profileVisibility?: $Enums.ProfileVisibility
-    showEmail?: boolean
-    showPhoneNumber?: boolean
-    showWorkDetails?: boolean
-    showSocialLinks?: boolean
-    showLocation?: boolean
-    onboardingCompleted?: boolean
-    onboardingStep?: number
-    welcomeMessageSeen?: boolean
     role?: $Enums.Role
     createdAt?: Date | string
     updatedAt?: Date | string
+    ageGroup?: $Enums.AgeGroup | null
+    city?: string | null
+    country?: string | null
+    expertiseAreas?: UserCreateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    firstName?: string | null
+    lastName?: string | null
+    linkedinProfile?: string | null
+    organization?: string | null
+    personalWebsite?: string | null
+    position?: string | null
+    workBio?: string | null
+    workTypes?: UserCreateworkTypesInput | $Enums.WorkType[]
+    isSearchable?: boolean
+    profileVisibility?: $Enums.ProfileVisibility
+    showEmail?: boolean
+    showLocation?: boolean
+    showSocialLinks?: boolean
+    showWorkDetails?: boolean
+    phoneNumber?: string | null
+    phoneVerified?: Date | string | null
+    showPhoneNumber?: boolean
+    onboardingCompleted?: boolean
+    onboardingStep?: number
+    preferredLanguage?: $Enums.Language
+    welcomeMessageSeen?: boolean
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    createdContent?: ContentUncheckedCreateNestedManyWithoutAuthorInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     communityMemberships?: UserCommunityUncheckedCreateNestedManyWithoutUserInput
-    createdContent?: ContentUncheckedCreateNestedManyWithoutAuthorInput
   }
 
   export type UserCreateOrConnectWithoutRecentWorkInput = {
@@ -17336,84 +17208,84 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    phoneVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    firstName?: NullableStringFieldUpdateOperationsInput | string | null
-    lastName?: NullableStringFieldUpdateOperationsInput | string | null
     username?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
-    ageGroup?: NullableEnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup | null
-    country?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: NullableStringFieldUpdateOperationsInput | string | null
-    workTypes?: UserUpdateworkTypesInput | $Enums.WorkType[]
-    expertiseAreas?: UserUpdateexpertiseAreasInput | $Enums.ExpertiseArea[]
-    organization?: NullableStringFieldUpdateOperationsInput | string | null
-    position?: NullableStringFieldUpdateOperationsInput | string | null
-    workBio?: NullableStringFieldUpdateOperationsInput | string | null
-    personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
-    linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
-    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
-    preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    isSearchable?: BoolFieldUpdateOperationsInput | boolean
-    profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
-    showEmail?: BoolFieldUpdateOperationsInput | boolean
-    showPhoneNumber?: BoolFieldUpdateOperationsInput | boolean
-    showWorkDetails?: BoolFieldUpdateOperationsInput | boolean
-    showSocialLinks?: BoolFieldUpdateOperationsInput | boolean
-    showLocation?: BoolFieldUpdateOperationsInput | boolean
-    onboardingCompleted?: BoolFieldUpdateOperationsInput | boolean
-    onboardingStep?: IntFieldUpdateOperationsInput | number
-    welcomeMessageSeen?: BoolFieldUpdateOperationsInput | boolean
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ageGroup?: NullableEnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    expertiseAreas?: UserUpdateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    workBio?: NullableStringFieldUpdateOperationsInput | string | null
+    workTypes?: UserUpdateworkTypesInput | $Enums.WorkType[]
+    isSearchable?: BoolFieldUpdateOperationsInput | boolean
+    profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
+    showEmail?: BoolFieldUpdateOperationsInput | boolean
+    showLocation?: BoolFieldUpdateOperationsInput | boolean
+    showSocialLinks?: BoolFieldUpdateOperationsInput | boolean
+    showWorkDetails?: BoolFieldUpdateOperationsInput | boolean
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    showPhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    onboardingCompleted?: BoolFieldUpdateOperationsInput | boolean
+    onboardingStep?: IntFieldUpdateOperationsInput | number
+    preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
+    welcomeMessageSeen?: BoolFieldUpdateOperationsInput | boolean
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUpdateManyWithoutUserNestedInput
+    createdContent?: ContentUpdateManyWithoutAuthorNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     communityMemberships?: UserCommunityUpdateManyWithoutUserNestedInput
-    createdContent?: ContentUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutRecentWorkInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    phoneVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    firstName?: NullableStringFieldUpdateOperationsInput | string | null
-    lastName?: NullableStringFieldUpdateOperationsInput | string | null
     username?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
-    ageGroup?: NullableEnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup | null
-    country?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: NullableStringFieldUpdateOperationsInput | string | null
-    workTypes?: UserUpdateworkTypesInput | $Enums.WorkType[]
-    expertiseAreas?: UserUpdateexpertiseAreasInput | $Enums.ExpertiseArea[]
-    organization?: NullableStringFieldUpdateOperationsInput | string | null
-    position?: NullableStringFieldUpdateOperationsInput | string | null
-    workBio?: NullableStringFieldUpdateOperationsInput | string | null
-    personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
-    linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
-    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
-    preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
-    isSearchable?: BoolFieldUpdateOperationsInput | boolean
-    profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
-    showEmail?: BoolFieldUpdateOperationsInput | boolean
-    showPhoneNumber?: BoolFieldUpdateOperationsInput | boolean
-    showWorkDetails?: BoolFieldUpdateOperationsInput | boolean
-    showSocialLinks?: BoolFieldUpdateOperationsInput | boolean
-    showLocation?: BoolFieldUpdateOperationsInput | boolean
-    onboardingCompleted?: BoolFieldUpdateOperationsInput | boolean
-    onboardingStep?: IntFieldUpdateOperationsInput | number
-    welcomeMessageSeen?: BoolFieldUpdateOperationsInput | boolean
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    ageGroup?: NullableEnumAgeGroupFieldUpdateOperationsInput | $Enums.AgeGroup | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    expertiseAreas?: UserUpdateexpertiseAreasInput | $Enums.ExpertiseArea[]
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinProfile?: NullableStringFieldUpdateOperationsInput | string | null
+    organization?: NullableStringFieldUpdateOperationsInput | string | null
+    personalWebsite?: NullableStringFieldUpdateOperationsInput | string | null
+    position?: NullableStringFieldUpdateOperationsInput | string | null
+    workBio?: NullableStringFieldUpdateOperationsInput | string | null
+    workTypes?: UserUpdateworkTypesInput | $Enums.WorkType[]
+    isSearchable?: BoolFieldUpdateOperationsInput | boolean
+    profileVisibility?: EnumProfileVisibilityFieldUpdateOperationsInput | $Enums.ProfileVisibility
+    showEmail?: BoolFieldUpdateOperationsInput | boolean
+    showLocation?: BoolFieldUpdateOperationsInput | boolean
+    showSocialLinks?: BoolFieldUpdateOperationsInput | boolean
+    showWorkDetails?: BoolFieldUpdateOperationsInput | boolean
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    showPhoneNumber?: BoolFieldUpdateOperationsInput | boolean
+    onboardingCompleted?: BoolFieldUpdateOperationsInput | boolean
+    onboardingStep?: IntFieldUpdateOperationsInput | number
+    preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
+    welcomeMessageSeen?: BoolFieldUpdateOperationsInput | boolean
+    otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    createdContent?: ContentUncheckedUpdateManyWithoutAuthorNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     communityMemberships?: UserCommunityUncheckedUpdateManyWithoutUserNestedInput
-    createdContent?: ContentUncheckedUpdateManyWithoutAuthorNestedInput
   }
 
   export type AccountCreateManyUserInput = {
@@ -17429,17 +17301,6 @@ export namespace Prisma {
     id_token?: string | null
     session_state?: string | null
     createdAt?: Date | string
-  }
-
-  export type SessionCreateManyUserInput = {
-    id: string
-    sessionToken: string
-    expires: Date | string
-  }
-
-  export type UserCommunityCreateManyUserInput = {
-    communityId: string
-    role?: $Enums.Role
   }
 
   export type ContentCreateManyAuthorInput = {
@@ -17461,6 +17322,17 @@ export namespace Prisma {
     endDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type SessionCreateManyUserInput = {
+    id: string
+    sessionToken: string
+    expires: Date | string
+  }
+
+  export type UserCommunityCreateManyUserInput = {
+    communityId: string
+    role?: $Enums.Role
   }
 
   export type AccountUpdateWithoutUserInput = {
@@ -17506,39 +17378,6 @@ export namespace Prisma {
     id_token?: NullableStringFieldUpdateOperationsInput | string | null
     session_state?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type SessionUpdateWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    sessionToken?: StringFieldUpdateOperationsInput | string
-    expires?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type SessionUncheckedUpdateWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    sessionToken?: StringFieldUpdateOperationsInput | string
-    expires?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type SessionUncheckedUpdateManyWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    sessionToken?: StringFieldUpdateOperationsInput | string
-    expires?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type UserCommunityUpdateWithoutUserInput = {
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    community?: CommunityUpdateOneRequiredWithoutMembersNestedInput
-  }
-
-  export type UserCommunityUncheckedUpdateWithoutUserInput = {
-    communityId?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-  }
-
-  export type UserCommunityUncheckedUpdateManyWithoutUserInput = {
-    communityId?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
   }
 
   export type ContentUpdateWithoutAuthorInput = {
@@ -17604,9 +17443,37 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type UserCommunityCreateManyCommunityInput = {
-    userId: string
-    role?: $Enums.Role
+  export type SessionUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionToken?: StringFieldUpdateOperationsInput | string
+    expires?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SessionUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionToken?: StringFieldUpdateOperationsInput | string
+    expires?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SessionUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionToken?: StringFieldUpdateOperationsInput | string
+    expires?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserCommunityUpdateWithoutUserInput = {
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    community?: CommunityUpdateOneRequiredWithoutMembersNestedInput
+  }
+
+  export type UserCommunityUncheckedUpdateWithoutUserInput = {
+    communityId?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  }
+
+  export type UserCommunityUncheckedUpdateManyWithoutUserInput = {
+    communityId?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
   }
 
   export type ContentCreateManyCommunityInput = {
@@ -17618,19 +17485,9 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
-  export type UserCommunityUpdateWithoutCommunityInput = {
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    user?: UserUpdateOneRequiredWithoutCommunityMembershipsNestedInput
-  }
-
-  export type UserCommunityUncheckedUpdateWithoutCommunityInput = {
-    userId?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-  }
-
-  export type UserCommunityUncheckedUpdateManyWithoutCommunityInput = {
-    userId?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  export type UserCommunityCreateManyCommunityInput = {
+    userId: string
+    role?: $Enums.Role
   }
 
   export type ContentUpdateWithoutCommunityInput = {
@@ -17658,6 +17515,21 @@ export namespace Prisma {
     authorId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserCommunityUpdateWithoutCommunityInput = {
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    user?: UserUpdateOneRequiredWithoutCommunityMembershipsNestedInput
+  }
+
+  export type UserCommunityUncheckedUpdateWithoutCommunityInput = {
+    userId?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  }
+
+  export type UserCommunityUncheckedUpdateManyWithoutCommunityInput = {
+    userId?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
   }
 
 
