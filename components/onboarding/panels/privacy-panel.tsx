@@ -56,7 +56,7 @@ export function PrivacyPanel({ form, content }: PrivacyPanelProps) {
           <Shield className="h-5 w-5 text-primary" />
           <h2 className="text-2xl font-bold text-gray-900">{content?.privacyTitle || t("title")}</h2>
         </div>
-        <p className="text-muted-foreground">
+        <p className="text-lg text-muted-foreground">
           {content?.privacyDescription || t("description")}
         </p>
       </div>
@@ -73,10 +73,10 @@ export function PrivacyPanel({ form, content }: PrivacyPanelProps) {
               control={form.control}
               name="privacy.isSearchable"
               render={({ field }) => (
-                <FormItem className={cn("flex flex-row items-center justify-between", isRTL && "flex-row-reverse")}>
-                  <div className="space-y-0.5">
-                    <FormLabel className="text-base">{content?.privacyFieldLabels?.allowSearch || t("searchability.allowSearch")}</FormLabel>
-                    <FormDescription>{content?.privacyFieldLabels?.searchHint || t("searchability.searchHint")}</FormDescription>
+                <FormItem className={cn("flex flex-row items-start justify-between gap-6", isRTL && "flex-row-reverse")}>
+                  <div className="space-y-0.5 flex-1">
+                    <FormLabel className="leading-normal text-base">{content?.privacyFieldLabels?.allowSearch || t("searchability.allowSearch")}</FormLabel>
+                    <FormDescription className="leading-normal">{content?.privacyFieldLabels?.searchHint || t("searchability.searchHint")}</FormDescription>
                   </div>
                   <FormControl>
                     <Switch
@@ -148,10 +148,10 @@ export function PrivacyPanel({ form, content }: PrivacyPanelProps) {
               control={form.control}
               name="privacy.showEmail"
               render={({ field }) => (
-                <FormItem className={cn("flex flex-row items-center justify-between", isRTL && "flex-row-reverse")}>
-                  <div className="space-y-0.5">
-                    <FormLabel>{content?.privacyFieldLabels?.showEmail || t("profileInfo.showEmail")}</FormLabel>
-                    <FormDescription className="text-xs">{content?.privacyFieldLabels?.emailHint || t("profileInfo.emailHint")}</FormDescription>
+                <FormItem className={cn("flex flex-row items-start justify-between gap-6", isRTL && "flex-row-reverse")}>
+                  <div className="space-y-0.5 flex-1">
+                    <FormLabel className="leading-normal">{content?.privacyFieldLabels?.showEmail || t("profileInfo.showEmail")}</FormLabel>
+                    <FormDescription className="text-xs leading-normal">{content?.privacyFieldLabels?.emailHint || t("profileInfo.emailHint")}</FormDescription>
                   </div>
                   <FormControl>
                     <Switch
@@ -167,10 +167,10 @@ export function PrivacyPanel({ form, content }: PrivacyPanelProps) {
               control={form.control}
               name="privacy.showPhoneNumber"
               render={({ field }) => (
-                <FormItem className={cn("flex flex-row items-center justify-between", isRTL && "flex-row-reverse")}>
-                  <div className="space-y-0.5">
-                    <FormLabel>{content?.privacyFieldLabels?.showPhone || t("profileInfo.showPhone")}</FormLabel>
-                    <FormDescription className="text-xs">{content?.privacyFieldLabels?.phoneHint || t("profileInfo.phoneHint")}</FormDescription>
+                <FormItem className={cn("flex flex-row items-start justify-between gap-6", isRTL && "flex-row-reverse")}>
+                  <div className="space-y-0.5 flex-1">
+                    <FormLabel className="leading-normal">{content?.privacyFieldLabels?.showPhone || t("profileInfo.showPhone")}</FormLabel>
+                    <FormDescription className="text-xs leading-normal">{content?.privacyFieldLabels?.phoneHint || t("profileInfo.phoneHint")}</FormDescription>
                   </div>
                   <FormControl>
                     <Switch
@@ -186,10 +186,10 @@ export function PrivacyPanel({ form, content }: PrivacyPanelProps) {
               control={form.control}
               name="privacy.showWorkDetails"
               render={({ field }) => (
-                <FormItem className={cn("flex flex-row items-center justify-between", isRTL && "flex-row-reverse")}>
-                  <div className="space-y-0.5">
-                    <FormLabel>{content?.privacyFieldLabels?.showWork || t("profileInfo.showWork")}</FormLabel>
-                    <FormDescription className="text-xs">{content?.privacyFieldLabels?.workHint || t("profileInfo.workHint")}</FormDescription>
+                <FormItem className={cn("flex flex-row items-start justify-between gap-6", isRTL && "flex-row-reverse")}>
+                  <div className="space-y-0.5 flex-1">
+                    <FormLabel className="leading-normal">{content?.privacyFieldLabels?.showWork || t("profileInfo.showWork")}</FormLabel>
+                    <FormDescription className="text-xs leading-normal">{content?.privacyFieldLabels?.workHint || t("profileInfo.workHint")}</FormDescription>
                   </div>
                   <FormControl>
                     <Switch
@@ -205,10 +205,10 @@ export function PrivacyPanel({ form, content }: PrivacyPanelProps) {
               control={form.control}
               name="privacy.showSocialLinks"
               render={({ field }) => (
-                <FormItem className={cn("flex flex-row items-center justify-between", isRTL && "flex-row-reverse")}>
-                  <div className="space-y-0.5">
-                    <FormLabel>{content?.privacyFieldLabels?.showSocial || t("profileInfo.showSocial")}</FormLabel>
-                    <FormDescription className="text-xs">{content?.privacyFieldLabels?.socialHint || t("profileInfo.socialHint")}</FormDescription>
+                <FormItem className={cn("flex flex-row items-start justify-between gap-6", isRTL && "flex-row-reverse")}>
+                  <div className="space-y-0.5 flex-1">
+                    <FormLabel className="leading-normal">{content?.privacyFieldLabels?.showSocial || t("profileInfo.showSocial")}</FormLabel>
+                    <FormDescription className="text-xs leading-normal">{content?.privacyFieldLabels?.socialHint || t("profileInfo.socialHint")}</FormDescription>
                   </div>
                   <FormControl>
                     <Switch
@@ -224,10 +224,10 @@ export function PrivacyPanel({ form, content }: PrivacyPanelProps) {
               control={form.control}
               name="privacy.showLocation"
               render={({ field }) => (
-                <FormItem className={cn("flex flex-row items-center justify-between", isRTL && "flex-row-reverse")}>
-                  <div className="space-y-0.5">
-                    <FormLabel>{content?.privacyFieldLabels?.showLocation || t("profileInfo.showLocation")}</FormLabel>
-                    <FormDescription className="text-xs">{content?.privacyFieldLabels?.locationHint || t("profileInfo.locationHint")}</FormDescription>
+                <FormItem className={cn("flex flex-row items-start justify-between gap-6", isRTL && "flex-row-reverse")}>
+                  <div className="space-y-0.5 flex-1">
+                    <FormLabel className="leading-normal">{content?.privacyFieldLabels?.showLocation || t("profileInfo.showLocation")}</FormLabel>
+                    <FormDescription className="text-xs leading-normal">{content?.privacyFieldLabels?.locationHint || t("profileInfo.locationHint")}</FormDescription>
                   </div>
                   <FormControl>
                     <Switch

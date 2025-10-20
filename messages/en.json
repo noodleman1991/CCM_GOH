@@ -71,7 +71,11 @@
       "required": "{field} is required",
       "email": "Please enter a valid email address",
       "minLength": "{field} must be at least {length} characters",
-      "maxLength": "{field} cannot exceed {length} characters"
+      "maxLength": "{field} cannot exceed {length} characters",
+      "invalidUrl": "Please enter a valid URL starting with http:// or https://",
+      "urlProtocolRequired": "URL must start with http:// or https://",
+      "requiredFields": "Please complete all required fields before continuing.",
+      "chooseLanguage": "Please choose your preferred language"
     }
   },
   "common": {
@@ -717,6 +721,10 @@
         "githubPlaceholder": "https://github.com/username",
         "portfolio": "Portfolio",
         "portfolioPlaceholder": "https://yourportfolio.com",
+        "otherLinks": "Other Professional Links",
+        "otherLinksHint": "Add links to your professional profiles (Twitter, GitHub, Portfolio, etc.)",
+        "platformPlaceholder": "Platform name (e.g., Twitter, GitHub)",
+        "urlPlaceholder": "https://example.com/yourprofile",
         "continue": "Continue"
       },
       "recentWork": {

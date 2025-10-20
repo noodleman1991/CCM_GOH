@@ -78,7 +78,7 @@ export function ModernContentArea({
     )} dir={isRTL ? "rtl" : "ltr"}>
       {/* Main content area */}
       <div className="flex-1 overflow-y-auto">
-        <div className="w-full px-4 sm:px-6 md:w-full md:px-6 lg:max-w-[1649px] lg:mx-auto lg:px-0 py-4 sm:py-6 lg:py-8">
+        <div className="w-full px-4 sm:px-6 md:px-6 lg:max-w-[960px] lg:mx-auto lg:px-0 py-4 sm:py-6 lg:py-8">
           {/* Step indicator */}
           <div className="mb-4 text-sm text-gray-600">
             {locale === 'ar'
@@ -111,7 +111,7 @@ export function ModernContentArea({
 
       {/* Action bar */}
       <div className="border-t border-gray-200 bg-white px-4 sm:px-6 py-4 sm:py-5">
-        <div className="w-full md:w-full md:px-6 lg:max-w-[1649px] lg:mx-auto">
+        <div className="w-full md:px-6 lg:max-w-[960px] lg:mx-auto">
           {/* Progress dots */}
           <div className="flex justify-center gap-1.5 mb-4">
             {Array.from({ length: totalSteps }).map((_, index) => (
@@ -155,12 +155,6 @@ export function ModernContentArea({
                   )}
                 </Button>
 
-                <div className="hidden lg:flex items-center gap-2 text-sm text-gray-500">
-                  <span>{toArabicNumerals(currentStep + 1)}</span>
-                  <span>/</span>
-                  <span>{toArabicNumerals(totalSteps)}</span>
-                </div>
-
                 {/* RTL: Back button on the right */}
                 <Button
                   type="button"
@@ -186,12 +180,6 @@ export function ModernContentArea({
                   <ArrowLeft className="h-4 w-4" />
                   {t("back")}
                 </Button>
-
-                <div className="hidden lg:flex items-center gap-2 text-sm text-gray-500">
-                  <span>{currentStep + 1}</span>
-                  <span>/</span>
-                  <span>{totalSteps}</span>
-                </div>
 
                 {/* LTR: Next button on the right */}
                 <Button

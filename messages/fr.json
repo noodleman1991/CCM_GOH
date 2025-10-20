@@ -70,7 +70,11 @@
       "required": "{field} est requis",
       "email": "Veuillez entrer une adresse e-mail valide",
       "minLength": "{field} doit contenir au moins {length} caractères",
-      "maxLength": "{field} ne peut pas dépasser {length} caractères"
+      "maxLength": "{field} ne peut pas dépasser {length} caractères",
+      "invalidUrl": "Veuillez entrer une URL valide commençant par http:// ou https://",
+      "urlProtocolRequired": "L'URL doit commencer par http:// ou https://",
+      "requiredFields": "Veuillez remplir tous les champs requis avant de continuer.",
+      "chooseLanguage": "Veuillez choisir votre langue préférée"
     }
   },
   "common": {
@@ -543,6 +547,10 @@
         "portfolioPlaceholder": "https://yourportfolio.com",
         "website": "Site Web Personnel",
         "websitePlaceholder": "https://yourwebsite.com",
+        "otherLinks": "Autres Liens Professionnels",
+        "otherLinksHint": "Ajoutez des liens vers vos profils professionnels (Twitter, GitHub, Portfolio, etc.)",
+        "platformPlaceholder": "Nom de la plateforme (ex., Twitter, GitHub)",
+        "urlPlaceholder": "https://exemple.com/votre-profil",
         "continue": "Continuer"
       },
       "recentWork": {

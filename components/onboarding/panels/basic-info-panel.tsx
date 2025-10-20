@@ -43,7 +43,7 @@ export function BasicInfoPanel({ form, content }: BasicInfoPanelProps) {
         <h2 className="text-2xl font-bold text-gray-900 mb-2">
           {content?.basicInfoTitle || t("title")}
         </h2>
-        <p className="text-muted-foreground">
+        <p className="text-lg text-muted-foreground">
           {content?.basicInfoDescription || t("description")}
         </p>
       </div>
@@ -137,7 +137,7 @@ export function BasicInfoPanel({ form, content }: BasicInfoPanelProps) {
                     <SelectValue placeholder={content?.fieldLabels?.basicInfo?.selectAge || t("selectAge")} />
                   </SelectTrigger>
                 </FormControl>
-                <SelectContent>
+                <SelectContent dir={isRTL ? "rtl" : "ltr"} className={cn(isRTL && "text-right")}>
                   <SelectItem value="UNDER_18">{content?.fieldLabels?.basicInfo?.under18 || t("under18")}</SelectItem>
                   <SelectItem value="ABOVE_18">{content?.fieldLabels?.basicInfo?.above18 || t("above18")}</SelectItem>
                 </SelectContent>

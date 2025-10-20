@@ -47,7 +47,9 @@ export const createOnboardingSchema = (validationMessages?: any) => {
       ageGroup: z.enum(["UNDER_18", "ABOVE_18"]).optional(),
       country: z.string().min(1, messages.basicInfo?.country || defaultMessages.basicInfo.country),
       city: z.string().min(1, messages.basicInfo?.city || defaultMessages.basicInfo.city),
-      preferredLanguage: z.enum(["EN", "ES", "FR", "AR"])
+      preferredLanguage: z.enum(["EN", "ES", "FR", "AR"], {
+        errorMap: () => ({ message: "Please choose your preferred language" })
+      })
     }),
 
     // Work Info Step (Step 2)
