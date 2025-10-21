@@ -17,26 +17,6 @@ const authorRoles = [
     { title: "Advisor", value: "advisor" },
 ];
 
-// Topic/Domain configuration for case study categorization
-const topicOptions = [
-    { title: "Climate Change & Environment", value: "climate-environment" },
-    { title: "Mental Health & Wellbeing", value: "mental-health" },
-    { title: "Community Health & Social Care", value: "community-health" },
-    { title: "Youth Engagement & Education", value: "youth-education" },
-    { title: "Policy Research & Governance", value: "policy-governance" },
-    { title: "Technology & Innovation", value: "technology-innovation" },
-    { title: "Economic Development", value: "economic-development" },
-    { title: "Cultural Heritage & Arts", value: "cultural-arts" },
-    { title: "Food Security & Agriculture", value: "food-agriculture" },
-    { title: "Urban Planning & Infrastructure", value: "urban-planning" },
-    { title: "Human Rights & Social Justice", value: "human-rights" },
-    { title: "Migration & Displacement", value: "migration" },
-    { title: "Gender Equality", value: "gender-equality" },
-    { title: "Disaster Risk & Resilience", value: "disaster-resilience" },
-    { title: "Digital Inclusion", value: "digital-inclusion" },
-    { title: "Other", value: "other" },
-];
-
 // Status configuration
 const statusOptions = [
     { title: "Pending Review", value: "pending" },
@@ -93,16 +73,6 @@ export default defineType({
         }),
 
         createLocalizedField("excerpt", "Excerpt", "text"),
-
-        defineField({
-            name: "topic",
-            title: "Topic/Domain",
-            type: "string",
-            group: "content",
-            options: { list: topicOptions },
-            validation: (Rule) => Rule.required(),
-            description: "Primary topic or domain this case study belongs to",
-        }),
 
         defineField({
             name: "content",
@@ -257,10 +227,31 @@ export default defineType({
         }),
 
         defineField({
+            name: "locationText",
+            title: "Study Location (Text)",
+            type: "object",
+            group: "metadata",
+            fields: [
+                {
+                    name: "country",
+                    title: "Country",
+                    type: "string",
+                },
+                {
+                    name: "city",
+                    title: "City/Region",
+                    type: "string",
+                },
+            ],
+            description: "Text description of the study location",
+        }),
+
+        defineField({
             name: "studyLocation",
-            title: "Primary Study Location",
+            title: "Primary Study Location (Map)",
             type: "geopoint",
             group: "metadata",
+            description: "Geographic coordinates for map display",
         }),
 
         defineField({
@@ -427,23 +418,19 @@ export default defineType({
     preview: {
         select: {
             title: "title",
-            topic: "topic",
             status: "status",
             media: "image",
             featured: "featured",
         },
-        prepare({ title, topic, status, media, featured }: {
+        prepare({ title, status, media, featured }: {
             title?: Record<string, string>;
-            topic?: string;
             status?: string;
             media?: any;
             featured?: boolean;
         }) {
             const displayTitle = title?.en || "Untitled Case Study";
-            const topicLabel = topicOptions.find(t => t.value === topic)?.title || topic;
-
-            const featuredIcon = featured ? "Featured " : "";
-            const subtitle = `${featuredIcon}${status || "pending"}${topicLabel ? ` • ${topicLabel}` : ""}`;
+            const featuredIcon = featured ? "⭐ " : "";
+            const subtitle = `${featuredIcon}${status || "pending"}`;
 
             return {
                 title: displayTitle,

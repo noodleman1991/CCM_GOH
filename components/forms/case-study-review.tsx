@@ -30,7 +30,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 interface CaseStudyReviewProps {
     availableTags: Array<{
         _id: string
-        title: Record<string, string>
+        label: Record<string, string>
         value: { current: string }
     }>
     userId: string

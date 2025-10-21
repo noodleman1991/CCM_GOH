@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/prisma';
-import { client } from '@/sanity/lib/client';
 
 interface DownloadEvent {
     timestamp: Date;
@@ -22,7 +21,6 @@ export async function GET(request: NextRequest) {
         const { searchParams } = new URL(request.url);
         const agendaId = searchParams.get('agendaId');
         const timeframe = searchParams.get('timeframe') || '30d';
-        const groupBy = searchParams.get('groupBy') || 'day';
 
         // Calculate date range
         const now = new Date();
@@ -130,50 +128,3 @@ export async function GET(request: NextRequest) {
         );
     }
 }
-
-// Helper function to get client IP
-function getClientIP(request: NextRequest): string {
-    const forwarded = request.headers.get('x-forwarded-for');
-    const realIP = request.headers.get('x-real-ip');
-
-    if (forwarded) {
-        return forwarded.split(',')[0].trim();
-    }
-
-    if (realIP) {
-        return realIP.trim();
-    }
-
-    return 'unknown';
-}
-
-// Prisma schema additions needed:
-/*
-Add to your schema.prisma:
-
-model AgendaDownloadEvent {
-  id           String   @id @default(cuid())
-  agendaId     String
-  fileLanguage String
-  userId       String?
-  sessionId    String
-  userAgent    String?
-  referer      String?
-  ipAddress    String?
-  timestamp    DateTime
-  createdAt    DateTime @default(now())
-
-  @@map("agenda_download_events")
-}
-
-model Agenda {
-  id                String    @id @default(cuid())
-  sanityId          String    @unique
-  downloadCount     Int       @default(0)
-  lastDownloadedAt  DateTime?
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
-
-  @@map("agendas")
-}
-*/
