@@ -46,12 +46,18 @@ interface CaseStudySubmissionLayoutProps {
         label: Record<string, string>
         value: { current: string }
     }>
+    regionalCommunities: Array<{
+        _id: string
+        name: Record<string, string>
+        slug: { current: string }
+    }>
     locale: string
     userId: string
 }
 
 export default function CaseStudySubmissionLayout({
                                                       availableTags,
+                                                      regionalCommunities,
                                                       locale,
                                                       userId
                                                   }: CaseStudySubmissionLayoutProps) {
@@ -164,83 +170,8 @@ export default function CaseStudySubmissionLayout({
                     locale={'en'}
                     userId={userId}
                     availableTags={availableTags}
+                    regionalCommunities={regionalCommunities}
                 />
-            </div>
-
-            {/* Navigation Sidebar - Only show for form step */}
-            <div className="w-64 shrink-0">
-                <div className="sticky top-8">
-                    <Card>
-                        <CardHeader className="pb-3">
-                            <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
-                                On this page
-                            </CardTitle>
-                        </CardHeader>
-                        <div className="px-6 pb-6">
-                            <nav className="space-y-1">
-                                {sections.map((section) => (
-                                    <button
-                                        key={section.id}
-                                        onClick={() => scrollToSection(section.id)}
-                                        className={cn(
-                                            "flex items-center gap-3 w-full text-left py-2 px-3 rounded-md text-sm transition-colors",
-                                            "hover:bg-accent hover:text-accent-foreground",
-                                            activeSection === section.id
-                                                ? "bg-accent text-accent-foreground font-medium"
-                                                : "text-muted-foreground"
-                                        )}
-                                    >
-                                        {section.icon}
-                                        <span className="flex-1">{section.title}</span>
-                                        {section.required && (
-                                            <Badge variant="secondary" className="text-xs">
-                                                Required
-                                            </Badge>
-                                        )}
-                                        <ChevronRight
-                                            className={cn(
-                                                "w-4 h-4 transition-transform",
-                                                activeSection === section.id ? "rotate-90" : ""
-                                            )}
-                                        />
-                                    </button>
-                                ))}
-                            </nav>
-
-                            <div className="mt-6 pt-6 border-t">
-                                <div className="space-y-3">
-                                    <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                                        Multilingual Platform
-                                    </div>
-                                    <div className="flex flex-wrap gap-1">
-                                        <span className="text-xs">EN</span>
-                                        <span className="text-xs">ES</span>
-                                        <span className="text-xs">FR</span>
-                                        <span className="text-xs">AR</span>
-                                    </div>
-                                    <p className="text-xs text-muted-foreground">
-                                        Submit in any language. Titles & excerpts needed in all languages for global reach.
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div className="mt-4 pt-4 border-t">
-                                <div className="space-y-3">
-                                    <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                                        Submission Status
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                                        <span className="text-sm text-muted-foreground">Draft</span>
-                                    </div>
-                                    <p className="text-xs text-muted-foreground">
-                                        Your case study will be reviewed by our editorial team before publication.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </Card>
-                </div>
             </div>
         </div>
     )

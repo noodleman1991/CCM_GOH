@@ -52,6 +52,16 @@ export async function POST(request: NextRequest) {
             .replace(/-+/g, '-')
             .trim();
 
+        // Prepare location data
+        let studyLocation = null;
+        if (data.studyLocation && data.studyLocation.lat && data.studyLocation.lng) {
+            studyLocation = {
+                _type: 'geopoint',
+                lat: data.studyLocation.lat,
+                lng: data.studyLocation.lng
+            };
+        }
+
         // Prepare the case study document
         const caseStudyDoc: any = {
             _type: "caseStudy",
@@ -61,7 +71,7 @@ export async function POST(request: NextRequest) {
                 current: `${slug}-${uuidv4().slice(0, 8)}`,
             },
             excerpt: data.excerpt,
-            content: data.content,
+            content: data.content, // Already in portable text format from editor
 
             // User information from Clerk
             submittedBy: userId,
@@ -88,7 +98,8 @@ export async function POST(request: NextRequest) {
             })),
 
             studyPeriod: data.studyPeriod,
-            location: data.location,
+            locationText: data.locationText,
+            studyLocation: studyLocation,
 
             // Default status for review workflow
             status: "pending",
@@ -97,6 +108,14 @@ export async function POST(request: NextRequest) {
             // Metadata
             _createdAt: new Date().toISOString(),
         };
+
+        // Add regional community reference if provided
+        if (data.relatedCommunity && data.relatedCommunity !== '') {
+            caseStudyDoc.relatedCommunity = {
+                _type: "reference",
+                _ref: data.relatedCommunity,
+            };
+        }
 
         // If organization name is provided, try to find or create it
         if (data.organizationName) {

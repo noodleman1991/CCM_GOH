@@ -5,6 +5,8 @@ import * as z from 'zod';
 import { useUser } from '@clerk/nextjs';
 import { toast } from 'sonner';
 import { useCaseStudyStore } from '@/stores/case-study-store';
+import PortableTextEditor from '@/components/forms/portable-text-editor';
+import { geocodeLocation } from '@/lib/geocoding';
 import {
     Accordion,
     AccordionContent,
@@ -56,24 +58,37 @@ const formSchema = z.object({
         fr: z.string().optional(),
         ar: z.string().optional(),
     }),
-    content: z.string().min(500, "Please share the details of your case study (at least 500 characters)"),
-    contentLanguage: z.enum(['en', 'es', 'fr', 'ar'], {
-        required_error: "Please select the language you're writing in",
-    }),
+    content: z.any().refine((val) => {
+        // Portable text validation - check if it's an array with at least some content
+        if (!Array.isArray(val)) return false;
+        if (val.length === 0) return false;
+        // Check if there's actual text content
+        const hasText = val.some(block =>
+            block._type === 'block' &&
+            block.children &&
+            block.children.some((child: any) => child.text && child.text.trim().length > 0)
+        );
+        return hasText;
+    }, "Please provide detailed content for your case study"),
     authors: z.array(z.object({
         name: z.string().min(2, "Please enter the author's full name"),
         email: z.string().email("Please enter a valid email address").optional().or(z.literal('')),
         role: z.enum(['lead', 'coauthor', 'contributor', 'advisor']),
     })).min(1, "At least one author is required"),
     organizationName: z.string().optional(),
+    relatedCommunity: z.string().optional(),
     tags: z.array(z.string()).min(1, "Please select at least one relevant topic"),
     studyPeriod: z.object({
         startDate: z.string().optional(),
         endDate: z.string().optional(),
     }).optional(),
-    location: z.object({
+    locationText: z.object({
         country: z.string().optional(),
         city: z.string().optional(),
+    }).optional(),
+    studyLocation: z.object({
+        lat: z.number().optional(),
+        lng: z.number().optional(),
     }).optional(),
     image: z.any().optional(),
 });
@@ -138,6 +153,11 @@ interface ImprovedCaseStudyFormProps {
         label: Record<string, string>;
         value: { current: string };
     }>;
+    regionalCommunities: Array<{
+        _id: string;
+        name: Record<string, string>;
+        slug: { current: string };
+    }>;
     onSuccess?: (id: string) => void;
 }
 
@@ -145,7 +165,7 @@ const sections = [
     { id: 'basic', title: 'Basic Information', icon: FileText, required: true },
     { id: 'content', title: 'Case Study Details', icon: FileText, required: true },
     { id: 'authors', title: 'Authors & Team', icon: Users, required: true },
-    { id: 'topics', title: 'Topics & Tags', icon: Tag, required: true },
+    { id: 'topics', title: 'Regional Community & Tags', icon: Tag, required: true },
     { id: 'context', title: 'Context & Location', icon: MapPin, required: false },
 ];
 
@@ -153,11 +173,14 @@ export default function ImprovedCaseStudyForm({
                                                   userId,
                                                   locale = 'en',
                                                   availableTags,
+                                                  regionalCommunities,
                                                   onSuccess
                                               }: ImprovedCaseStudyFormProps) {
     const { user } = useUser();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
+    const [selectedCommunity, setSelectedCommunity] = useState<string>('');
+    const [isGeocoding, setIsGeocoding] = useState(false);
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [completedSections, setCompletedSections] = useState<Set<string>>(new Set());
@@ -168,17 +191,18 @@ export default function ImprovedCaseStudyForm({
     const [formData, setFormData] = useState<Partial<FormData>>({
         title: { en: '', es: '', fr: '', ar: '' },
         excerpt: { en: '', es: '', fr: '', ar: '' },
-        content: '',
-        contentLanguage: 'en' as const,
+        content: [],
         authors: user ? [{
             name: user.fullName || '',
             email: user.emailAddresses[0]?.emailAddress || '',
             role: 'lead' as const,
         }] : [],
         organizationName: '',
+        relatedCommunity: '',
         tags: [],
         studyPeriod: { startDate: '', endDate: '' },
-        location: { country: '', city: '' },
+        locationText: { country: '', city: '' },
+        studyLocation: { lat: undefined, lng: undefined },
     });
 
     const [errors, setErrors] = useState<Record<string, string>>({});
@@ -272,16 +296,20 @@ export default function ImprovedCaseStudyForm({
             excerptLength: formData.excerpt?.en?.length || 0
         });
 
-        // Content section
-        const hasContent = formData.content && formData.content.length >= 500 && formData.contentLanguage;
+        // Content section - check for portable text content
+        const hasContent = Array.isArray(formData.content) &&
+            formData.content.length > 0 &&
+            formData.content.some(block =>
+                block._type === 'block' &&
+                block.children &&
+                block.children.some((child: any) => child.text && child.text.trim().length > 0)
+            );
         if (hasContent) {
             newCompleted.add('content');
         }
         console.log('📝 Content section:', hasContent ? '✅' : '❌', {
             hasContent: !!formData.content,
-            contentLength: formData.content?.length || 0,
-            hasLanguage: !!formData.contentLanguage,
-            language: formData.contentLanguage
+            contentBlocks: Array.isArray(formData.content) ? formData.content.length : 0
         });
 
         // Authors section
@@ -453,15 +481,17 @@ export default function ImprovedCaseStudyForm({
                 setFormData({
                     title: { en: '', es: '', fr: '', ar: '' },
                     excerpt: { en: '', es: '', fr: '', ar: '' },
-                    content: '',
-                    contentLanguage: 'en' as const,
+                    content: [],
                     authors: [],
                     organizationName: '',
+                    relatedCommunity: '',
                     tags: [],
                     studyPeriod: { startDate: '', endDate: '' },
-                    location: { country: '', city: '' },
+                    locationText: { country: '', city: '' },
+                    studyLocation: { lat: undefined, lng: undefined },
                 });
                 setSelectedTags([]);
+                setSelectedCommunity('');
                 setImageFile(null);
                 setImagePreview(null);
                 setSubmissionStep('form');
@@ -636,41 +666,20 @@ export default function ImprovedCaseStudyForm({
 
                                 {section.id === 'content' && (
                                     <div className="space-y-6">
-                                        <div className="flex gap-4">
-                                            <div className="w-48">
-                                                <Label>Writing Language *</Label>
-                                                <Select
-                                                    value={formData.contentLanguage || 'en'}
-                                                    onValueChange={(value) => updateFormData('contentLanguage', value)}
-                                                >
-                                                    <SelectTrigger className="mt-2">
-                                                        <SelectValue placeholder="Select language" />
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        {languages.map((lang) => (
-                                                            <SelectItem key={lang.code} value={lang.code}>
-                                                                {lang.label}
-                                                            </SelectItem>
-                                                        ))}
-                                                    </SelectContent>
-                                                </Select>
-                                            </div>
-                                        </div>
-
                                         <div>
-                                            <Label>Case Study Details *</Label>
+                                            <Label>Case Study Content *</Label>
+                                            <p className="text-sm text-muted-foreground mb-3">
+                                                Use the formatting toolbar to style your content with headings, lists, links, and images. Write in any language you prefer.
+                                            </p>
                                             <div className="mt-2">
-                                                <SimpleRichTextEditor
-                                                    value={formData.content || ''}
-                                                    onChange={(value) => updateFormData('content', value)}
-                                                    language={formData.contentLanguage}
+                                                <PortableTextEditor
+                                                    value={formData.content || []}
+                                                    onChangeAction={(value) => updateFormData('content', value)}
+                                                    language={locale}
                                                     placeholder="Share the details of your case study - methodology, findings, challenges, successes, and lessons learned..."
                                                     maxLength={20000}
                                                 />
                                             </div>
-                                            <p className="text-sm text-muted-foreground mt-1">
-                                                Tell your story! Include methodology, findings, challenges, and lessons learned (minimum 500 characters)
-                                            </p>
                                             {errors['content'] && (
                                                 <p className="text-sm text-destructive mt-1">{errors['content']}</p>
                                             )}
@@ -715,7 +724,7 @@ export default function ImprovedCaseStudyForm({
                                                         />
                                                         <Label
                                                             htmlFor="image-upload"
-                                                            className="cursor-pointer inline-flex items-center px-4 py-2 bg-[#0B3160] text-white rounded-md text-sm hover:bg-[#0B3160]/90 font-poppins"
+                                                            className="cursor-pointer inline-flex items-center px-4 py-2 bg-[#0B3160] text-white rounded-md text-sm hover:bg-[#0B3160]/90 font-poppins font-bold"
                                                         >
                                                             Choose Image
                                                         </Label>
@@ -816,12 +825,58 @@ export default function ImprovedCaseStudyForm({
 
                                 {section.id === 'topics' && (
                                     <div className="space-y-6">
+                                        {/* Regional Community Selector */}
                                         <div>
-                                            <Label className="text-base font-medium mb-4 block">
-                                                Select Relevant Topics *
+                                            <Label className="text-base font-medium mb-2 block">
+                                                Associated Regional Community (Optional)
                                             </Label>
-                                            <p className="text-sm text-muted-foreground mb-4">
-                                                Choose topics that best describe your case study to help others discover it
+                                            <p className="text-sm text-muted-foreground mb-3">
+                                                Connect your case study to a specific regional community if relevant
+                                            </p>
+                                            <Select
+                                                value={selectedCommunity}
+                                                onValueChange={(value) => {
+                                                    setSelectedCommunity(value);
+                                                    updateFormData('relatedCommunity', value);
+                                                }}
+                                            >
+                                                <SelectTrigger className="w-full">
+                                                    <SelectValue placeholder="Select a community (optional)" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {regionalCommunities.map((community) => {
+                                                        const communityName = community.name?.[locale as keyof typeof community.name] || community.name?.en || 'Untitled';
+                                                        return (
+                                                            <SelectItem key={community._id} value={community._id}>
+                                                                {communityName}
+                                                            </SelectItem>
+                                                        );
+                                                    })}
+                                                </SelectContent>
+                                            </Select>
+                                            {selectedCommunity && (
+                                                <Button
+                                                    type="button"
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    onClick={() => {
+                                                        setSelectedCommunity('');
+                                                        updateFormData('relatedCommunity', '');
+                                                    }}
+                                                    className="mt-2"
+                                                >
+                                                    Clear selection
+                                                </Button>
+                                            )}
+                                        </div>
+
+                                        {/* Tags Selector */}
+                                        <div>
+                                            <Label className="text-base font-medium mb-2 block">
+                                                Select Relevant Tags *
+                                            </Label>
+                                            <p className="text-sm text-muted-foreground mb-3">
+                                                Choose tags that best describe your case study to help others discover it
                                             </p>
                                             <div className="flex flex-wrap gap-2">
                                                 {availableTags.map((tag) => {
@@ -844,7 +899,7 @@ export default function ImprovedCaseStudyForm({
                                             </div>
                                             {selectedTags.length === 0 && (
                                                 <p className="text-sm text-destructive mt-2">
-                                                    Please select at least one topic
+                                                    Please select at least one tag
                                                 </p>
                                             )}
                                         </div>
@@ -857,25 +912,64 @@ export default function ImprovedCaseStudyForm({
                                             Help others understand the context of your work (all fields optional)
                                         </p>
 
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            <div>
-                                                <Label>Country</Label>
-                                                <Input
-                                                    value={formData.location?.country || ''}
-                                                    onChange={(e) => updateFormData('location.country', e.target.value)}
-                                                    placeholder="Where was this study conducted?"
-                                                    className="mt-2"
-                                                />
+                                        <div className="space-y-4">
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                <div>
+                                                    <Label>Country</Label>
+                                                    <Input
+                                                        value={formData.locationText?.country || ''}
+                                                        onChange={(e) => updateFormData('locationText.country', e.target.value)}
+                                                        placeholder="Where was this study conducted?"
+                                                        className="mt-2"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <Label>City/Region</Label>
+                                                    <Input
+                                                        value={formData.locationText?.city || ''}
+                                                        onChange={(e) => updateFormData('locationText.city', e.target.value)}
+                                                        placeholder="Specific location"
+                                                        className="mt-2"
+                                                    />
+                                                </div>
                                             </div>
-                                            <div>
-                                                <Label>City/Region</Label>
-                                                <Input
-                                                    value={formData.location?.city || ''}
-                                                    onChange={(e) => updateFormData('location.city', e.target.value)}
-                                                    placeholder="Specific location"
-                                                    className="mt-2"
-                                                />
-                                            </div>
+
+                                            {formData.locationText?.country && formData.locationText?.city && (
+                                                <Button
+                                                    type="button"
+                                                    variant="outline"
+                                                    size="sm"
+                                                    onClick={async () => {
+                                                        if (!formData.locationText?.country || !formData.locationText?.city) return;
+
+                                                        setIsGeocoding(true);
+                                                        toast.info('Searching for location...');
+
+                                                        const result = await geocodeLocation(
+                                                            formData.locationText.city,
+                                                            formData.locationText.country
+                                                        );
+
+                                                        setIsGeocoding(false);
+
+                                                        if (result.success && result.location) {
+                                                            updateFormData('studyLocation', result.location);
+                                                            toast.success(`Location found! (${result.location.lat.toFixed(4)}, ${result.location.lng.toFixed(4)})`);
+                                                        } else {
+                                                            toast.error(result.error || 'Could not find location');
+                                                        }
+                                                    }}
+                                                    disabled={isGeocoding}
+                                                >
+                                                    {isGeocoding ? 'Searching...' : '📍 Find on Map'}
+                                                </Button>
+                                            )}
+
+                                            {formData.studyLocation?.lat && formData.studyLocation?.lng && (
+                                                <p className="text-sm text-muted-foreground">
+                                                    ✓ Location coordinates: {formData.studyLocation.lat.toFixed(4)}, {formData.studyLocation.lng.toFixed(4)}
+                                                </p>
+                                            )}
                                         </div>
 
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

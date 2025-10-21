@@ -15,6 +15,17 @@ async function fetchAvailableTags() {
   `)
 }
 
+// Fetch available regional communities
+async function fetchRegionalCommunities() {
+    return await client.fetch(`
+    *[_type == "regionalCommunity" && active == true] | order(name.en asc) {
+      _id,
+      name,
+      slug
+    }
+  `)
+}
+
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
     const { locale } = await params
     const t = await getTranslations({ locale, namespace: 'caseStudySubmission' })
@@ -36,14 +47,16 @@ export default async function CaseStudySubmitPage({
         redirect('/sign-in')
     }
 
-    const [availableTags] = await Promise.all([
-        fetchAvailableTags()
+    const [availableTags, regionalCommunities] = await Promise.all([
+        fetchAvailableTags(),
+        fetchRegionalCommunities()
     ])
 
     return (
         <div className="container max-w-7xl py-8">
             <CaseStudySubmissionLayout
                 availableTags={availableTags}
+                regionalCommunities={regionalCommunities}
                 locale={locale}
                 userId={userId}
             />
