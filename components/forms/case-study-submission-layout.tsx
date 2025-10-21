@@ -43,7 +43,7 @@ const languages = [
 interface CaseStudySubmissionLayoutProps {
     availableTags: Array<{
         _id: string
-        title: Record<string, string>
+        label: Record<string, string>
         value: { current: string }
     }>
     locale: string
@@ -159,10 +159,11 @@ export default function CaseStudySubmissionLayout({
                     </div>
                 </div>
 
-                {/* Form Component?? */}
+                {/* Form Component */}
                 <CaseStudyForm
-                    locale = {'en'}
+                    locale={'en'}
                     userId={userId}
+                    availableTags={availableTags}
                 />
             </div>
 

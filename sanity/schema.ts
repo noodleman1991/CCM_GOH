@@ -56,6 +56,7 @@ import splitInfo from "./schemas/blocks/split/split-info";
 import gridCard from "./schemas/blocks/grid/grid-card";
 import gridPost from "./schemas/blocks/grid/grid-post";
 import gridRow from "./schemas/blocks/grid/grid-row";
+import gridReport from "./schemas/blocks/grid/grid-report";
 import gridAgenda from "./schemas/blocks/grid/grid-agenda";
 import gridCaseStudy from "./schemas/blocks/grid/grid-case-study";
 import gridNews from "./schemas/blocks/grid/grid-news";
@@ -135,6 +136,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
         gridCard,
         gridPost,
         gridRow,
+        gridReport,
         gridAgenda,
         gridCaseStudy,
         gridNews,

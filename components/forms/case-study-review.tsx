@@ -110,7 +110,7 @@ export default function CaseStudyReview({ availableTags, userId }: CaseStudyRevi
     const getSelectedTagsInfo = () => {
         return formData.tags.map(tagId => {
             const tag = availableTags.find(t => t._id === tagId)
-            return tag ? tag.title.en || tag.value.current : tagId
+            return tag ? tag.label?.en || tag.value.current : tagId
         })
     }
 

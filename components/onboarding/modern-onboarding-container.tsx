@@ -378,7 +378,6 @@ export function ModernOnboardingContainer({
             totalSteps={steps.length}
             onNextAction={nextStep}
             onPreviousAction={prevStep}
-            onSubmit={() => form.handleSubmit(handleSubmit)()}
             isSubmitting={isSubmitting}
             canGoNext={true}
             canGoPrevious={currentStep > 0}

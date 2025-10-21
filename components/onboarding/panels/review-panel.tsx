@@ -159,7 +159,7 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
                   .map((id: any, index: number) => {
                     const workType = workTypes.find((wt: any) => wt._id === id)
                     if (!workType) return null
-                    const title = getLocalizedText(workType.label, null)
+                    const title = getLocalizedText(workType.label, "")
                     if (!title) return null
                     return { id, title, index }
                   })
@@ -181,7 +181,7 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
                   .map((id: any, index: number) => {
                     const area = expertiseAreas.find((ea: any) => ea._id === id)
                     if (!area) return null
-                    const title = getLocalizedText(area.label, null)
+                    const title = getLocalizedText(area.label, "")
                     if (!title) return null
                     return { id, title, index }
                   })

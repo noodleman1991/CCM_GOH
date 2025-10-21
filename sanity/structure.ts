@@ -6,7 +6,6 @@ import {
     ListCollapse,
     Quote,
     Tag,
-    Newspaper,
     Building,
     FolderOpen,
     FileText,
@@ -93,7 +92,7 @@ export const structure = (S: any, context: any) =>
                                                 .child(
                                                     S.documentTypeList("caseStudy")
                                                         .title("Pending Review")
-                                                        .apiVersion('v2025-02-19')
+                                                        .apiVersion('2024-10-31')
                                                         .filter('_type == "caseStudy" && status == "pending"')
                                                 ),
                                             S.listItem()
@@ -102,7 +101,7 @@ export const structure = (S: any, context: any) =>
                                                 .child(
                                                     S.documentTypeList("caseStudy")
                                                         .title("Approved Case Studies")
-                                                        .apiVersion('v2025-02-19')
+                                                        .apiVersion('2024-10-31')
                                                         .filter('_type == "caseStudy" && status == "approved"')
                                                 ),
                                         ])
@@ -111,14 +110,25 @@ export const structure = (S: any, context: any) =>
                                 .title("Agendas")
                                 .icon(FileText)
                                 .child(
-                                    orderableDocumentListDeskItem({
-                                        type: "agenda",
-                                        title: "Agendas",
-                                        icon: FileText,
-                                        S,
-                                        context,
-                                    })
-                                ),
+                                    S.documentTypeList("agenda")
+                                        .title("Agendas")
+                                        .defaultOrdering([{ field: "_createdAt", direction: "desc" }])
+                                    // S.documentList()
+                                    //     .title("Agendas")
+                                    //     .filter('_type == "agenda"')
+                                    //     .params({})
+                                    //     .defaultOrdering([
+                                    //         {
+                                    //             field: 'regionalCommunities', //or regionalCommunities[]
+                                    //             direction: 'desc'
+                                    //         },
+                                    //         {
+                                    //             field: '_createdAt',
+                                    //             direction: 'desc'
+                                    //         }
+                                    //     ])
+
+                        ),
                             // S.listItem()
                             //     .title("Posts (Blog)")
                             //     .icon(Newspaper)
@@ -153,7 +163,7 @@ export const structure = (S: any, context: any) =>
                                 .child(
                                     S.documentTypeList("newsPost")
                                         .title("News Posts")
-                                        .apiVersion('v2025-02-19')
+                                        .apiVersion('2024-10-31')
                                         .defaultOrdering([{ field: "publishedAt", direction: "desc" }])
                                         .filter('_type == "newsPost"')
                                 ),
@@ -216,7 +226,7 @@ export const structure = (S: any, context: any) =>
                                                 .child(
                                                     S.documentTypeList("onboardingContent")
                                                         .title("English Onboarding")
-                                                        .apiVersion('v2025-02-19')
+                                                        .apiVersion('2024-10-31')
                                                         .filter('_type == "onboardingContent" && language == "en"')
                                                 ),
                                             S.listItem()
@@ -225,7 +235,7 @@ export const structure = (S: any, context: any) =>
                                                 .child(
                                                     S.documentTypeList("onboardingContent")
                                                         .title("Spanish Onboarding")
-                                                        .apiVersion('v2025-02-19')
+                                                        .apiVersion('2024-10-31')
                                                         .filter('_type == "onboardingContent" && language == "es"')
                                                 ),
                                             S.listItem()
@@ -234,7 +244,7 @@ export const structure = (S: any, context: any) =>
                                                 .child(
                                                     S.documentTypeList("onboardingContent")
                                                         .title("French Onboarding")
-                                                        .apiVersion('v2025-02-19')
+                                                        .apiVersion('2024-10-31')
                                                         .filter('_type == "onboardingContent" && language == "fr"')
                                                 ),
                                             S.listItem()
@@ -243,7 +253,7 @@ export const structure = (S: any, context: any) =>
                                                 .child(
                                                     S.documentTypeList("onboardingContent")
                                                         .title("Arabic Onboarding")
-                                                        .apiVersion('v2025-02-19')
+                                                        .apiVersion('2024-10-31')
                                                         .filter('_type == "onboardingContent" && language == "ar"')
                                                 ),
                                             S.listItem()

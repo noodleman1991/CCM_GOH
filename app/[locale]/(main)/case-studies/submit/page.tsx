@@ -7,9 +7,9 @@ import CaseStudySubmissionLayout from "@/components/forms/case-study-submission-
 // Fetch available tags for the form
 async function fetchAvailableTags() {
     return await client.fetch(`
-    *[_type == "tag"] | order(title.en asc) {
+    *[_type == "tag"] | order(label.en asc) {
       _id,
-      title,
+      label,
       value
     }
   `)

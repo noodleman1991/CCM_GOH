@@ -20,7 +20,8 @@ const isProtectedApiRoute = createRouteMatcher([
     '/api/account/(.*)',
     '/api/sync/(.*)',
     '/api/search/(.*)',
-    '/api/onboarding/(.*)'
+    '/api/onboarding/(.*)',
+    '/api/case-studies/submit',
 ])
 
 const isOnboardingRoute = createRouteMatcher([withLocale('/onboarding')])
