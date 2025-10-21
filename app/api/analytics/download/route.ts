@@ -124,14 +124,13 @@ export async function GET(request: NextRequest) {
                 startDate.setDate(now.getDate() - 30);
         }
 
-        // Build where clause for generalized DownloadEvent
+        // Build where clause - reportId field now contains agenda IDs
         const whereClause = {
-            contentType: 'REPORT' as const,
             timestamp: {
                 gte: startDate,
                 lte: now,
             },
-            ...(reportId && { contentId: reportId }),
+            ...(reportId && { reportId: reportId }),
         };
 
         // Get download statistics
@@ -167,7 +166,7 @@ export async function GET(request: NextRequest) {
                 where: whereClause,
                 select: {
                     timestamp: true,
-                    contentId: true,
+                    reportId: true, // reportId now contains agenda IDs
                 },
                 orderBy: {
                     timestamp: 'asc',

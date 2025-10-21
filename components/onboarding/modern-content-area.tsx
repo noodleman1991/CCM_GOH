@@ -16,7 +16,6 @@ interface ModernContentAreaProps {
   totalSteps: number
   onNextAction: () => void
   onPreviousAction: () => void
-  onSubmit?: () => void
   isSubmitting?: boolean
   canGoNext?: boolean
   canGoPrevious?: boolean
@@ -35,7 +34,6 @@ export function ModernContentArea({
   totalSteps,
   onNextAction,
   onPreviousAction,
-  onSubmit,
   isSubmitting = false,
   canGoNext = true,
   canGoPrevious = true,
@@ -64,11 +62,9 @@ export function ModernContentArea({
   }
 
   const handleNext = () => {
-    if (isLastStep && onSubmit) {
-      onSubmit()
-    } else {
-      onNextAction()
-    }
+    // This only runs on navigation steps (not on review/last step)
+    // Review step has no onClick handler - uses native form submission via type="submit"
+    onNextAction()
   }
 
   return (
@@ -135,7 +131,7 @@ export function ModernContentArea({
                 {/* RTL: Next button on the left */}
                 <Button
                   type={isLastStep ? "submit" : "button"}
-                  onClick={handleNext}
+                  onClick={isLastStep ? undefined : handleNext}
                   disabled={!canGoNext || isSubmitting}
                   className="flex items-center gap-2 min-w-[120px] flex-row-reverse"
                 >
@@ -184,7 +180,7 @@ export function ModernContentArea({
                 {/* LTR: Next button on the right */}
                 <Button
                   type={isLastStep ? "submit" : "button"}
-                  onClick={handleNext}
+                  onClick={isLastStep ? undefined : handleNext}
                   disabled={!canGoNext || isSubmitting}
                   className="flex items-center gap-2 min-w-[120px]"
                 >

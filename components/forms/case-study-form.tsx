@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useUser } from '@clerk/nextjs';
 import { toast } from 'sonner';
+import { useCaseStudyStore } from '@/stores/case-study-store';
 import {
     Accordion,
     AccordionContent,
@@ -61,7 +62,7 @@ const formSchema = z.object({
     }),
     authors: z.array(z.object({
         name: z.string().min(2, "Please enter the author's full name"),
-        email: z.string().email("Please enter a valid email address"),
+        email: z.string().email("Please enter a valid email address").optional().or(z.literal('')),
         role: z.enum(['lead', 'coauthor', 'contributor', 'advisor']),
     })).min(1, "At least one author is required"),
     organizationName: z.string().optional(),
@@ -87,19 +88,10 @@ const languages = [
 ];
 
 const authorRoles = [
-    { value: 'lead', label: 'Lead Author', description: 'Primary researcher' },
-    { value: 'coauthor', label: 'Co-Author', description: 'Equal contributor' },
-    { value: 'contributor', label: 'Contributor', description: 'Supporting role' },
-    { value: 'advisor', label: 'Advisor', description: 'Guidance provider' },
-];
-
-// Mock tags - replace with actual API call
-const availableTags = [
-    { _id: '1', title: { en: 'Climate Change', es: 'Cambio Climático', fr: 'Changement Climatique', ar: 'تغير المناخ' } },
-    { _id: '2', title: { en: 'Mental Health', es: 'Salud Mental', fr: 'Santé Mentale', ar: 'الصحة النفسية' } },
-    { _id: '3', title: { en: 'Community Health', es: 'Salud Comunitaria', fr: 'Santé Communautaire', ar: 'صحة المجتمع' } },
-    { _id: '4', title: { en: 'Youth Engagement', es: 'Participación Juvenil', fr: 'Engagement des Jeunes', ar: 'مشاركة الشباب' } },
-    { _id: '5', title: { en: 'Policy Research', es: 'Investigación de Políticas', fr: 'Recherche Politique', ar: 'بحوث السياسات' } },
+    { value: 'lead', label: 'Lead Author' },
+    { value: 'coauthor', label: 'Co-Author' },
+    { value: 'contributor', label: 'Contributor' },
+    { value: 'advisor', label: 'Advisor' },
 ];
 
 // Rich Text Editor Component (simplified)
@@ -108,7 +100,7 @@ const SimpleRichTextEditor = ({
                                   onChange,
                                   language = 'en',
                                   placeholder,
-                                  maxLength = 10000
+                                  maxLength = 20000
                               }: {
     value: string;
     onChange: (value: string) => void;
@@ -141,6 +133,11 @@ const SimpleRichTextEditor = ({
 interface ImprovedCaseStudyFormProps {
     userId: string;
     locale: string;
+    availableTags: Array<{
+        _id: string;
+        label: Record<string, string>;
+        value: { current: string };
+    }>;
     onSuccess?: (id: string) => void;
 }
 
@@ -155,6 +152,7 @@ const sections = [
 export default function ImprovedCaseStudyForm({
                                                   userId,
                                                   locale = 'en',
+                                                  availableTags,
                                                   onSuccess
                                               }: ImprovedCaseStudyFormProps) {
     const { user } = useUser();
@@ -184,6 +182,60 @@ export default function ImprovedCaseStudyForm({
     });
 
     const [errors, setErrors] = useState<Record<string, string>>({});
+    const [isHydrated, setIsHydrated] = useState(false);
+
+    // Load saved draft from localStorage on mount (client-side only)
+    useEffect(() => {
+        const savedData = localStorage.getItem('case-study-submission');
+        if (savedData) {
+            try {
+                const parsed = JSON.parse(savedData);
+                if (parsed.state?.formData) {
+                    const savedFormData = parsed.state.formData;
+                    // Ensure contentLanguage has a default
+                    if (!savedFormData.contentLanguage) {
+                        savedFormData.contentLanguage = 'en';
+                    }
+                    setFormData(savedFormData);
+                    setSelectedTags(parsed.state.selectedTags || []);
+                    // Restore imagePreview from the correct location
+                    if (parsed.state.imagePreview) {
+                        setImagePreview(parsed.state.imagePreview);
+                    }
+                    console.log('📋 Draft restored from localStorage');
+                    toast.info('Your previous draft has been restored');
+                }
+            } catch (error) {
+                console.error('Failed to load draft:', error);
+            }
+        }
+        setIsHydrated(true);
+    }, []);
+
+    // Auto-save to localStorage on form changes (debounced)
+    useEffect(() => {
+        if (!isHydrated) return; // Don't save on initial mount
+
+        const timeoutId = setTimeout(() => {
+            try {
+                const dataToSave = {
+                    state: {
+                        formData: formData,
+                        selectedTags,
+                        imagePreview, // Keep separate from formData
+                        currentLanguage: 'en',
+                        currentStep: 'form'
+                    }
+                };
+                localStorage.setItem('case-study-submission', JSON.stringify(dataToSave));
+                console.log('💾 Draft auto-saved');
+            } catch (error) {
+                console.error('Failed to save draft:', error);
+            }
+        }, 1000); // Debounce 1 second
+
+        return () => clearTimeout(timeoutId);
+    }, [formData, selectedTags, imagePreview, isHydrated]);
 
     // Validation
     const validateForm = () => {
@@ -210,29 +262,52 @@ export default function ImprovedCaseStudyForm({
         const newCompleted = new Set<string>();
 
         // Basic section
-        if (formData.title?.en && formData.excerpt?.en && (formData.excerpt.en?.length || 0) >= 100) {
+        const hasBasic = formData.title?.en && formData.excerpt?.en && (formData.excerpt.en?.length || 0) >= 100;
+        if (hasBasic) {
             newCompleted.add('basic');
         }
+        console.log('📝 Basic section:', hasBasic ? '✅' : '❌', {
+            hasTitle: !!formData.title?.en,
+            hasExcerpt: !!formData.excerpt?.en,
+            excerptLength: formData.excerpt?.en?.length || 0
+        });
 
         // Content section
-        if (formData.content && formData.content.length >= 500 && formData.contentLanguage) {
+        const hasContent = formData.content && formData.content.length >= 500 && formData.contentLanguage;
+        if (hasContent) {
             newCompleted.add('content');
         }
+        console.log('📝 Content section:', hasContent ? '✅' : '❌', {
+            hasContent: !!formData.content,
+            contentLength: formData.content?.length || 0,
+            hasLanguage: !!formData.contentLanguage,
+            language: formData.contentLanguage
+        });
 
         // Authors section
-        if (formData.authors && formData.authors.length > 0 &&
-            formData.authors.every(author => author.name && author.email && author.role)) {
+        const hasAuthors = formData.authors && formData.authors.length > 0 &&
+            formData.authors.every(author => author.name && author.role);
+        if (hasAuthors) {
             newCompleted.add('authors');
         }
+        console.log('📝 Authors section:', hasAuthors ? '✅' : '❌', {
+            count: formData.authors?.length || 0,
+            allValid: formData.authors?.every(author => author.name && author.role)
+        });
 
         // Topics section
-        if (selectedTags.length > 0) {
+        const hasTopics = selectedTags.length > 0;
+        if (hasTopics) {
             newCompleted.add('topics');
         }
+        console.log('📝 Topics section:', hasTopics ? '✅' : '❌', {
+            tagCount: selectedTags.length
+        });
 
         // Context section (optional)
         newCompleted.add('context');
 
+        console.log('📊 Total completed sections:', newCompleted.size, '/', 4, 'required');
         setCompletedSections(newCompleted);
     }, [formData, selectedTags]);
 
@@ -320,6 +395,8 @@ export default function ImprovedCaseStudyForm({
         setSubmissionStep('submitting');
 
         try {
+            console.log('📤 Submitting case study...');
+
             // Prepare submission data
             const submissionData = {
                 ...formData,
@@ -332,14 +409,43 @@ export default function ImprovedCaseStudyForm({
                 })),
             };
 
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            // Create FormData for multipart submission
+            const apiFormData = new FormData();
+            apiFormData.append('data', JSON.stringify(submissionData));
+
+            // Add image if present
+            if (imageFile) {
+                apiFormData.append('image', imageFile);
+                console.log('📷 Image attached:', imageFile.name, `(${(imageFile.size / 1024).toFixed(2)} KB)`);
+            }
+
+            // Submit to API
+            console.log('🚀 Sending to /api/case-studies/submit...');
+            const response = await fetch('/api/case-studies/submit', {
+                method: 'POST',
+                body: apiFormData,
+            });
+
+            console.log('📡 Response status:', response.status, response.statusText);
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                console.error('❌ Submission failed:', errorData);
+                throw new Error(errorData.message || errorData.error || 'Submission failed');
+            }
+
+            const result = await response.json();
+            console.log('✅ Case study created:', result);
+
+            // Clear saved draft from localStorage
+            localStorage.removeItem('case-study-submission');
+            console.log('🗑️ Draft cleared from localStorage');
 
             setSubmissionStep('success');
             toast.success('Thank you! Your case study has been submitted for review.');
 
             if (onSuccess) {
-                onSuccess('mock-id');
+                onSuccess(result.id);
             }
 
             // Reset form after delay
@@ -363,8 +469,9 @@ export default function ImprovedCaseStudyForm({
             }, 3000);
 
         } catch (error) {
-            console.error('Submission error:', error);
-            toast.error('Something went wrong. Please try again.');
+            console.error('💥 Submission error:', error);
+            const errorMessage = error instanceof Error ? error.message : 'Something went wrong. Please try again.';
+            toast.error(errorMessage);
             setSubmissionStep('form');
         } finally {
             setIsSubmitting(false);
@@ -558,7 +665,7 @@ export default function ImprovedCaseStudyForm({
                                                     onChange={(value) => updateFormData('content', value)}
                                                     language={formData.contentLanguage}
                                                     placeholder="Share the details of your case study - methodology, findings, challenges, successes, and lessons learned..."
-                                                    maxLength={10000}
+                                                    maxLength={20000}
                                                 />
                                             </div>
                                             <p className="text-sm text-muted-foreground mt-1">
@@ -608,7 +715,7 @@ export default function ImprovedCaseStudyForm({
                                                         />
                                                         <Label
                                                             htmlFor="image-upload"
-                                                            className="cursor-pointer inline-flex items-center px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm hover:bg-primary/90"
+                                                            className="cursor-pointer inline-flex items-center px-4 py-2 bg-[#0B3160] text-white rounded-md text-sm hover:bg-[#0B3160]/90 font-poppins"
                                                         >
                                                             Choose Image
                                                         </Label>
@@ -648,7 +755,7 @@ export default function ImprovedCaseStudyForm({
                                                             />
                                                         </div>
                                                         <div>
-                                                            <Label>Email Address *</Label>
+                                                            <Label>Email Address (optional)</Label>
                                                             <Input
                                                                 value={author.email || ''}
                                                                 onChange={(e) => updateAuthor(index, 'email', e.target.value)}
@@ -669,17 +776,14 @@ export default function ImprovedCaseStudyForm({
                                                                 <SelectContent>
                                                                     {authorRoles.map((role) => (
                                                                         <SelectItem key={role.value} value={role.value}>
-                                                                            <div>
-                                                                                <div className="font-medium">{role.label}</div>
-                                                                                <div className="text-xs text-muted-foreground">{role.description}</div>
-                                                                            </div>
+                                                                            {role.label}
                                                                         </SelectItem>
                                                                     ))}
                                                                 </SelectContent>
                                                             </Select>
                                                         </div>
                                                     </div>
-                                                    {index > 0 && (
+                                                    {formData.authors && formData.authors.length > 1 && (
                                                         <Button
                                                             type="button"
                                                             variant="ghost"
@@ -722,7 +826,7 @@ export default function ImprovedCaseStudyForm({
                                             <div className="flex flex-wrap gap-2">
                                                 {availableTags.map((tag) => {
                                                     const isSelected = selectedTags.includes(tag._id);
-                                                    const tagTitle = tag.title[locale as keyof typeof tag.title] || tag.title.en;
+                                                    const tagLabel = tag.label?.[locale as keyof typeof tag.label] || tag.label?.en || 'Untitled';
 
                                                     return (
                                                         <Button
@@ -733,7 +837,7 @@ export default function ImprovedCaseStudyForm({
                                                             onClick={() => handleTagToggle(tag._id)}
                                                             className="h-auto py-2"
                                                         >
-                                                            {tagTitle}
+                                                            {tagLabel}
                                                         </Button>
                                                     );
                                                 })}
@@ -809,6 +913,7 @@ export default function ImprovedCaseStudyForm({
 
             <div className="flex justify-center">
                 <Button
+                    type="button"
                     onClick={handleSubmit}
                     disabled={isSubmitting || completedSections.size < 4}
                     size="lg"

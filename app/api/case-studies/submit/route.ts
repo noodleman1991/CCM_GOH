@@ -6,8 +6,8 @@ import { v4 as uuidv4 } from "uuid";
 const sanityClient = createClient({
     projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
     dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
-    apiVersion: "2024-01-01",
-    token: process.env.SANITY_API_WRITE_TOKEN,
+    apiVersion: "2024-10-31",
+    token: process.env.SANITY_API_EDITOR_TOKEN,
     useCdn: false,
 });
 
@@ -169,10 +169,19 @@ export async function POST(request: NextRequest) {
         });
 
     } catch (error) {
-        console.error("Failed to submit case study:", error);
+        console.error("❌ Failed to submit case study:", error);
+        console.error("Error details:", {
+            message: error instanceof Error ? error.message : 'Unknown error',
+            stack: error instanceof Error ? error.stack : undefined,
+            projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
+            dataset: process.env.NEXT_PUBLIC_SANITY_DATASET,
+            hasToken: !!process.env.SANITY_API_EDITOR_TOKEN
+        });
+
         return NextResponse.json(
             {
                 error: "Failed to submit case study",
+                message: error instanceof Error ? error.message : 'An unknown error occurred',
                 details: process.env.NODE_ENV === 'development' ? error : undefined
             },
             { status: 500 }
