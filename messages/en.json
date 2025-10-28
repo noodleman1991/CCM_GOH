@@ -409,6 +409,32 @@
     "title": "Submit Your Case Study",
     "description": "Share your research with our global community in English, Spanish, French, or Arabic. Help us make knowledge accessible to researchers worldwide."
   },
+  "caseStudy": {
+    "pageTitle": "Case Studies",
+    "featured": "Featured",
+    "readMore": "Read More",
+    "downloadStudy": "Download Study",
+    "shareStudy": "Share Study",
+    "studyPeriod": "Study Period",
+    "location": "Location",
+    "organization": "Organization",
+    "authors": "Authors",
+    "tags": "Tags",
+    "relatedStudies": "Related Studies",
+    "status": {
+      "approved": "Approved",
+      "pending": "Pending Review",
+      "rejected": "Rejected",
+      "revision": "Needs Revision"
+    },
+    "filters": {
+      "byStatus": "By Status",
+      "byAuthor": "By Author",
+      "byOrganization": "By Organization",
+      "byTag": "By Tag",
+      "featured": "Featured Only"
+    }
+  },
   "caseStudyForm": {
     "sections": {
       "basicInfo": "Basic Information",
@@ -591,9 +617,10 @@
   },
   "search": {
     "pageTitle": "Search",
-    "pageDescription": "Find community members, reports, posts, and case studies",
+    "pageDescription": "Find community members, agendas, news, posts, and case studies",
     "placeholder": "Search for people, content, or expertise...",
-    "searchReports": "Search reports and documents...",
+    "searchAgendas": "Search agendas and documents...",
+    "searchNews": "Search news posts...",
     "searchCaseStudies": "Search case studies...",
     "search": "Search",
     "filters": "Filters",
@@ -601,11 +628,13 @@
     "noResults": "No results found",
     "noResultsDescription": "Try adjusting your search terms or filters",
     "people": "People",
-    "reports": "Reports",
+    "agendas": "Agendas",
+    "news": "News",
     "posts": "Posts",
     "caseStudies": "Case Studies",
     "comingSoon": "Coming soon",
-    "reportsComingSoon": "Search through reports and documents",
+    "agendasComingSoon": "Search through agendas and documents",
+    "newsComingSoon": "Search through news posts",
     "postsComingSoon": "Search through blog posts and articles",
     "caseStudiesComingSoon": "Search through case studies",
     "filterOptions": {

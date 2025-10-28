@@ -325,6 +325,32 @@
     "title": "إرسال دراسة حالتك",
     "description": "شارك بحثك مع مجتمعنا العالمي باللغة الإنجليزية أو الإسبانية أو الفرنسية أو العربية. ساعدنا في جعل المعرفة متاحة للباحثين في جميع أنحاء العالم."
   },
+  "caseStudy": {
+    "pageTitle": "دراسات الحالة",
+    "featured": "مميز",
+    "readMore": "اقرأ المزيد",
+    "downloadStudy": "تحميل الدراسة",
+    "shareStudy": "مشاركة الدراسة",
+    "studyPeriod": "فترة الدراسة",
+    "location": "الموقع",
+    "organization": "المنظمة",
+    "authors": "المؤلفون",
+    "tags": "الوسوم",
+    "relatedStudies": "دراسات ذات صلة",
+    "status": {
+      "approved": "معتمد",
+      "pending": "قيد المراجعة",
+      "rejected": "مرفوض",
+      "revision": "يحتاج إلى مراجعة"
+    },
+    "filters": {
+      "byStatus": "حسب الحالة",
+      "byAuthor": "حسب المؤلف",
+      "byOrganization": "حسب المنظمة",
+      "byTag": "حسب الوسم",
+      "featured": "المميزة فقط"
+    }
+  },
   "caseStudyForm": {
     "sections": {
       "basicInfo": "المعلومات الأساسية",
@@ -409,9 +435,10 @@
   },
   "search": {
     "pageTitle": "البحث",
-    "pageDescription": "العثور على أعضاء المجتمع والتقارير والمنشورات ودراسات الحالة",
+    "pageDescription": "العثور على أعضاء المجتمع والأجندات والأخبار والمنشورات ودراسات الحالة",
     "placeholder": "البحث عن الأشخاص أو المحتوى أو الخبرة...",
-    "searchReports": "البحث في التقارير والوثائق...",
+    "searchAgendas": "البحث في الأجندات والوثائق...",
+    "searchNews": "البحث في الأخبار...",
     "searchCaseStudies": "البحث في دراسات الحالة...",
     "search": "بحث",
     "filters": "المرشحات",
@@ -419,11 +446,13 @@
     "noResults": "لم يتم العثور على نتائج",
     "noResultsDescription": "حاول تعديل مصطلحات البحث أو المرشحات",
     "people": "الأشخاص",
-    "reports": "التقارير",
+    "agendas": "الأجندات",
+    "news": "الأخبار",
     "posts": "المنشورات",
     "caseStudies": "دراسات الحالة",
     "comingSoon": "قريباً",
-    "reportsComingSoon": "البحث في التقارير والوثائق",
+    "agendasComingSoon": "البحث في الأجندات والوثائق",
+    "newsComingSoon": "البحث في الأخبار",
     "postsComingSoon": "البحث في منشورات المدونة والمقالات",
     "caseStudiesComingSoon": "البحث في دراسات الحالة",
     "filterOptions": {

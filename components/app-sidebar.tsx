@@ -227,10 +227,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className={cn(
-                                "w-full placeholder:text-slate-500 bg-white border-gray-300",
+                                "w-full placeholder:text-slate-500 bg-white border-gray-300 text-slate-900",
                                 isRTL ? "pr-8" : "pl-8"
                             )}
-                            style={{ color: '#0B3160' }}
                         />
                     </form>
                 </div>

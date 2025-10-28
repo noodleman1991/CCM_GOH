@@ -329,6 +329,32 @@
     "title": "Envía tu Estudio de Caso",
     "description": "Comparte tu investigación con nuestra comunidad global en inglés, español, francés o árabe. Ayúdanos a hacer el conocimiento accesible a investigadores de todo el mundo."
   },
+  "caseStudy": {
+    "pageTitle": "Estudios de Caso",
+    "featured": "Destacado",
+    "readMore": "Leer Más",
+    "downloadStudy": "Descargar Estudio",
+    "shareStudy": "Compartir Estudio",
+    "studyPeriod": "Período de Estudio",
+    "location": "Ubicación",
+    "organization": "Organización",
+    "authors": "Autores",
+    "tags": "Etiquetas",
+    "relatedStudies": "Estudios Relacionados",
+    "status": {
+      "approved": "Aprobado",
+      "pending": "Pendiente de Revisión",
+      "rejected": "Rechazado",
+      "revision": "Necesita Revisión"
+    },
+    "filters": {
+      "byStatus": "Por Estado",
+      "byAuthor": "Por Autor",
+      "byOrganization": "Por Organización",
+      "byTag": "Por Etiqueta",
+      "featured": "Solo Destacados"
+    }
+  },
   "caseStudyForm": {
     "sections": {
       "basicInfo": "Información Básica",
@@ -413,9 +439,10 @@
   },
   "search": {
     "pageTitle": "Buscar",
-    "pageDescription": "Encontrar miembros de la comunidad, informes, publicaciones y estudios de caso",
+    "pageDescription": "Encontrar miembros de la comunidad, agendas, noticias, publicaciones y estudios de caso",
     "placeholder": "Buscar personas, contenido o expertise...",
-    "searchReports": "Buscar informes y documentos...",
+    "searchAgendas": "Buscar agendas y documentos...",
+    "searchNews": "Buscar noticias...",
     "searchCaseStudies": "Buscar estudios de caso...",
     "search": "Buscar",
     "filters": "Filtros",
@@ -423,11 +450,13 @@
     "noResults": "No se encontraron resultados",
     "noResultsDescription": "Intenta ajustar tus términos de búsqueda o filtros",
     "people": "Personas",
-    "reports": "Informes",
+    "agendas": "Agendas",
+    "news": "Noticias",
     "posts": "Publicaciones",
     "caseStudies": "Estudios de Caso",
     "comingSoon": "Próximamente",
-    "reportsComingSoon": "Buscar a través de informes y documentos",
+    "agendasComingSoon": "Buscar a través de agendas y documentos",
+    "newsComingSoon": "Buscar a través de noticias",
     "postsComingSoon": "Buscar a través de publicaciones de blog y artículos",
     "caseStudiesComingSoon": "Buscar a través de estudios de caso",
     "filterOptions": {

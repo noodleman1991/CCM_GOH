@@ -11,7 +11,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { useState } from 'react'
 
 interface ContentSearchFiltersProps {
-  type: 'case-studies' | 'reports'
+  type: 'case-studies' | 'agendas' | 'news'
 }
 
 function FilterSection({ title, children }: { title: string; children: React.ReactNode }) {
@@ -171,11 +171,11 @@ export default function ContentSearchFilters({ type }: ContentSearchFiltersProps
             </>
           )}
 
-          {type === 'reports' && (
+          {type === 'agendas' && (
             <>
               <RefinementListFilter
-                attribute="reportType"
-                title="Report Type"
+                attribute="agendaType"
+                title="Agenda Type"
                 limit={10}
               />
               <YearRangeFilter />
@@ -202,11 +202,48 @@ export default function ContentSearchFilters({ type }: ContentSearchFiltersProps
             </>
           )}
 
-          <RefinementListFilter
-            attribute="accessLevel"
-            title="Access Level"
-            limit={3}
-          />
+          {type === 'news' && (
+            <>
+              <RefinementListFilter
+                attribute="author.name"
+                title="Author"
+                limit={8}
+              />
+              <RefinementListFilter
+                attribute="organizations"
+                title="Organizations"
+                limit={8}
+              />
+              <RefinementListFilter
+                attribute="projects"
+                title="Projects"
+                limit={8}
+              />
+              <RefinementListFilter
+                attribute="tags"
+                title="Tags"
+                limit={10}
+              />
+              <RefinementListFilter
+                attribute="location.country"
+                title="Country"
+                limit={10}
+              />
+              <RefinementListFilter
+                attribute="featured"
+                title="Featured"
+                limit={2}
+              />
+            </>
+          )}
+
+          {type !== 'news' && (
+            <RefinementListFilter
+              attribute="accessLevel"
+              title="Access Level"
+              limit={3}
+            />
+          )}
         </CardContent>
       </Card>
     </div>
