@@ -44,14 +44,15 @@ export const algoliaClient = (() => {
 export const ALGOLIA_INDICES = {
   USERS: 'users',
   SANITY_CONTENT: 'sanity_content',
-  REPORTS: 'reports',
   AGENDAS: 'agendas',
   POSTS: 'posts',
-  CASE_STUDIES: 'case_studies'
+  CASE_STUDIES: 'case_studies',
+  NEWS: 'news'
 } as const
 
 // Search client for frontend (uses search-only API key)
-export const searchClient = (() => {
+// Create the base search client (without debouncing)
+const baseSearchClient = (() => {
   try {
     if (!ALGOLIA_APP_ID || !ALGOLIA_SEARCH_KEY) {
       console.warn('Algolia search client not available - missing credentials', {
@@ -75,6 +76,44 @@ export const searchClient = (() => {
     } as any
   }
 })()
+
+/**
+ * Creates a debounced version of the search client
+ * This improves performance by delaying search requests until the user stops typing
+ */
+function createDebouncedSearchClient(client: any, delay: number = 300) {
+  let timerId: NodeJS.Timeout | undefined
+
+  return {
+    ...client,
+    search(requests: any[]) {
+      // If there's an empty query (initial load), don't debounce
+      const hasQuery = requests.some(req => req.query && req.query.length > 0)
+
+      if (!hasQuery) {
+        return client.search(requests)
+      }
+
+      // Clear existing timer
+      if (timerId) {
+        clearTimeout(timerId)
+      }
+
+      // Return a promise that resolves after the debounce delay
+      return new Promise((resolve, reject) => {
+        timerId = setTimeout(() => {
+          client
+            .search(requests)
+            .then(resolve)
+            .catch(reject)
+        }, delay)
+      })
+    }
+  }
+}
+
+// Export debounced search client with 300ms delay
+export const searchClient = createDebouncedSearchClient(baseSearchClient, 300)
 
 // Type definitions for search records
 export interface UserSearchRecord extends Record<string, unknown> {
@@ -138,25 +177,6 @@ export interface CaseStudySearchRecord extends Record<string, unknown> {
   accessLevel: 'public' | 'registered' | 'members'
 }
 
-export interface ReportSearchRecord extends Record<string, unknown> {
-  objectID: string
-  contentId: string
-  title: { en: string; es?: string; fr?: string; ar?: string }
-  subtitle?: { en: string; es?: string; fr?: string; ar?: string }
-  description?: { en: string; es?: string; fr?: string; ar?: string }
-  slug: string
-  reportType: string
-  year: number
-  publishDate: number
-  totalDownloadCount: number
-  featured: boolean
-  organizations: string[]
-  regionalCommunities: string[]
-  tags: string[]
-  accessLevel: 'public' | 'registered' | 'members'
-  language: string
-}
-
 export interface AgendaSearchRecord extends Record<string, unknown> {
   objectID: string
   contentId: string
@@ -173,6 +193,33 @@ export interface AgendaSearchRecord extends Record<string, unknown> {
   regionalCommunities: string[]
   tags: string[]
   accessLevel: 'public' | 'registered' | 'members'
+  language: string
+}
+
+export interface NewsSearchRecord extends Record<string, unknown> {
+  objectID: string
+  contentId: string
+  title: { en: string; es?: string; fr?: string; ar?: string }
+  subtitle?: { en: string; es?: string; fr?: string; ar?: string }
+  excerpt?: { en: string; es?: string; fr?: string; ar?: string }
+  slug: string
+  publishedAt: number
+  updatedAt: number
+  author: {
+    name: string
+    id: string
+  }
+  featured: boolean
+  tags: string[]
+  organizations: string[]
+  projects: string[]
+  location?: {
+    city?: string
+    country?: string
+    lat?: number
+    lng?: number
+  }
+  accessLevel: 'public'
   language: string
 }
 
@@ -341,47 +388,6 @@ export const INDEX_SETTINGS = {
     hitsPerPage: 20,
     maxValuesPerFacet: 100
   },
-  reports: {
-    searchableAttributes: [
-      'unordered(title.en,title.es,title.fr,title.ar)',
-      'unordered(subtitle.en,subtitle.es,subtitle.fr,subtitle.ar)',
-      'unordered(description.en,description.es,description.fr,description.ar)',
-      'unordered(organizations)',
-      'unordered(tags)',
-      'unordered(reportType)'
-    ],
-    attributesForFaceting: [
-      'reportType',
-      'year',
-      'featured',
-      'tags',
-      'accessLevel',
-      'organizations',
-      'regionalCommunities',
-      'language'
-    ],
-    customRanking: [
-      'desc(featured)',
-      'desc(totalDownloadCount)',
-      'desc(publishDate)'
-    ],
-    attributesToHighlight: [
-      'title.en',
-      'title.es',
-      'title.fr',
-      'title.ar',
-      'organizations',
-      'tags'
-    ],
-    attributesToSnippet: [
-      'description.en:30',
-      'description.es:30',
-      'description.fr:30',
-      'description.ar:30'
-    ],
-    hitsPerPage: 20,
-    maxValuesPerFacet: 100
-  },
   agendas: {
     searchableAttributes: [
       'unordered(title.en,title.es,title.fr,title.ar)',
@@ -419,6 +425,47 @@ export const INDEX_SETTINGS = {
       'description.es:30',
       'description.fr:30',
       'description.ar:30'
+    ],
+    hitsPerPage: 20,
+    maxValuesPerFacet: 100
+  },
+  news: {
+    searchableAttributes: [
+      'unordered(title.en,title.es,title.fr,title.ar)',
+      'unordered(subtitle.en,subtitle.es,subtitle.fr,subtitle.ar)',
+      'unordered(excerpt.en,excerpt.es,excerpt.fr,excerpt.ar)',
+      'unordered(author.name)',
+      'unordered(tags)',
+      'unordered(organizations)',
+      'unordered(projects)'
+    ],
+    attributesForFaceting: [
+      'featured',
+      'tags',
+      'organizations',
+      'projects',
+      'language',
+      'location.country',
+      'author.name'
+    ],
+    customRanking: [
+      'desc(featured)',
+      'desc(publishedAt)'
+    ],
+    attributesToHighlight: [
+      'title.en',
+      'title.es',
+      'title.fr',
+      'title.ar',
+      'author.name',
+      'tags',
+      'organizations'
+    ],
+    attributesToSnippet: [
+      'excerpt.en:30',
+      'excerpt.es:30',
+      'excerpt.fr:30',
+      'excerpt.ar:30'
     ],
     hitsPerPage: 20,
     maxValuesPerFacet: 100
