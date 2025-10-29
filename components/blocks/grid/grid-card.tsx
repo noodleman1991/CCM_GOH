@@ -13,6 +13,7 @@ type GridCard = Extract<GridColumn, { _type: "grid-card" }>;
 
 interface GridCardProps extends Omit<GridCard, "_type" | "_key"> {
   color?: string; //todo: what is the issue with colorVariant?
+  cardVariant?: string;
 }
 
 export default function GridCard({
@@ -21,25 +22,27 @@ export default function GridCard({
   excerpt,
   image,
   link,
+  cardVariant = "classic",
 }: GridCardProps) {
+  const aspectRatioClass = cardVariant === "wide" ? "aspect-video" : "aspect-[3/2]";
   return (
     <Link
       key={title}
-      className="flex w-full rounded-3xl ring-offset-background focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 group"
+      className="flex w-full h-full rounded-3xl ring-offset-background focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 group"
       href={link?.href ?? "#"}
       target={link?.target ? "_blank" : undefined}
     >
       <div
         className={cn(
-          "flex w-full flex-col justify-between overflow-hidden transition ease-in-out border rounded-3xl p-4",
+          "flex w-full flex-col justify-between overflow-hidden transition ease-in-out border rounded-3xl p-6",
           color === "primary"
             ? "group-hover:border-primary-foreground/50"
             : "group-hover:border-primary"
         )}
       >
-        <div>
+        <div className="w-full min-w-0">
           {image && image.asset?._id && (
-            <div className="mb-4 relative h-[15rem] sm:h-[20rem] md:h-[25rem] lg:h-[9.5rem] xl:h-[12rem] rounded-2xl overflow-hidden">
+            <div className={cn("mb-4 relative rounded-2xl overflow-hidden w-full max-w-full", aspectRatioClass)}>
               <Image
                 src={urlFor(image).url()}
                 alt={image.alt || ""}
@@ -53,11 +56,11 @@ export default function GridCard({
             </div>
           )}
           <div
-            className={cn(color === "primary" ? "text-background" : undefined)}
+            className={cn("break-words", color === "primary" ? "text-background" : undefined)}
           >
             {title && (
               <div className="flex justify-between items-center mb-4">
-                <h3 className="font-bold text-2xl">{title}</h3>
+                <h3 className="font-bold text-2xl break-words">{title}</h3>
               </div>
             )}
             {excerpt && <p>{excerpt}</p>}
@@ -65,8 +68,9 @@ export default function GridCard({
         </div>
         <Button
           className="mt-6"
-          size="lg"
-          variant={stegaClean(link?.buttonVariant)}
+          variant={stegaClean(link?.buttonVariant?.variant)}
+          size={stegaClean(link?.buttonVariant?.size) || "lg"}
+          stroke={stegaClean(link?.buttonVariant?.stroke)}
           asChild
         >
           <div>{link?.title ?? "Learn More"}</div>

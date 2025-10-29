@@ -65,7 +65,7 @@ export default function GridPost({ newsPost, featured, locale = "en", userId }: 
   return (
     <Link
       className={cn(
-        "flex w-full rounded-3xl ring-offset-background focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 group",
+        "flex w-full h-full rounded-3xl ring-offset-background focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 group",
         "transition-all duration-200 hover:scale-[1.02]"
       )}
       href={`/news/${slug?.current}`}

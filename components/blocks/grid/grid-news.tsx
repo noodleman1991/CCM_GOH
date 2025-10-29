@@ -83,6 +83,7 @@ interface GridNewsComponentProps {
     userId?: string;
     className?: string;
     color?: string;
+    cardVariant?: string;
 }
 
 // Helper function to get localized text
@@ -116,9 +117,12 @@ export default function GridNewsComponent({
                                              customExcerpt,
                                              locale,
                                              userId,
-                                             className
+                                             className,
+                                             cardVariant = "classic",
                                          }: GridNewsComponentProps) {
     if (!newsPost) return null;
+
+    const aspectRatioClass = cardVariant === "wide" ? "aspect-video" : "aspect-[3/2]";
 
     const supportedLocale = locale as 'en' | 'es' | 'fr' | 'ar';
 
@@ -173,12 +177,12 @@ export default function GridNewsComponent({
 
     return (
         <Card className={cn(
-            "flex w-full flex-col justify-between overflow-hidden transition ease-in-out group border rounded-3xl p-4 hover:border-primary",
+            "flex w-full h-full flex-col justify-between overflow-hidden transition ease-in-out group border rounded-3xl p-6 hover:border-primary",
             className
         )}>
             {/* Cover Image */}
             {newsPost.image?.asset?.url && (
-                <div className="mb-4 relative h-[15rem] sm:h-[20rem] md:h-[25rem] lg:h-[9.5rem] xl:h-[12rem] rounded-2xl overflow-hidden">
+                <div className={cn("mb-4 relative rounded-2xl overflow-hidden w-full max-w-full min-w-0", aspectRatioClass)}>
                     <Image
                         src={urlFor(newsPost.image).width(400).height(225).url()}
                         alt={newsPost.image.alt || title}

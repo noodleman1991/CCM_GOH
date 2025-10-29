@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { urlFor } from "@/sanity/lib/image";
 import { PAGE_QUERYResult } from "@/sanity.types";
+import { cn } from "@/lib/utils";
 
 type Block = NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number];
 type SplitRow = Extract<Block, { _type: "split-row" }>;
@@ -11,7 +12,7 @@ type SplitImage = Extract<
 
 export default function SplitImage({ image }: SplitImage) {
   return image && image.asset?._id ? (
-    <div className="relative h-[25rem] sm:h-[30rem] md:h-[25rem] lg:h-full rounded-lg overflow-hidden">
+    <div className="relative rounded-lg overflow-hidden lg:h-full aspect-[3/2] w-full max-w-full min-w-0">
       <Image
         src={urlFor(image).url()}
         alt={image.alt || ""}

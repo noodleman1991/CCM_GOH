@@ -37,6 +37,7 @@ interface GridCaseStudyComponentProps {
     userId?: string;
     className?: string;
     color?: string;
+    cardVariant?: string;
 }
 
 export default function GridCaseStudyComponent({
@@ -50,9 +51,12 @@ export default function GridCaseStudyComponent({
                                                    customLayout = 'default',
                                                    locale,
                                                    userId,
-                                                   className
+                                                   className,
+                                                   cardVariant = "classic",
                                                }: GridCaseStudyComponentProps) {
     if (!caseStudy) return null;
+
+    const aspectRatioClass = cardVariant === "wide" ? "aspect-video" : "aspect-[3/2]";
 
     const supportedLocale = locale as 'en' | 'es' | 'fr' | 'ar';
 
@@ -112,7 +116,7 @@ export default function GridCaseStudyComponent({
 
     return (
         <Card className={cn(
-            "flex w-full flex-col justify-between overflow-hidden transition ease-in-out group border rounded-3xl p-4 hover:border-primary",
+            "flex w-full h-full flex-col justify-between overflow-hidden transition ease-in-out group border rounded-3xl p-6 hover:border-primary",
             isRTLLocale && "rtl",
             className
         )}>
@@ -130,7 +134,7 @@ export default function GridCaseStudyComponent({
 
             {/* Cover Image */}
             {caseStudy.image?.asset?.url && (
-                <div className="mb-4 relative h-[15rem] sm:h-[20rem] md:h-[25rem] lg:h-[9.5rem] xl:h-[12rem] rounded-2xl overflow-hidden">
+                <div className={cn("mb-4 relative rounded-2xl overflow-hidden w-full max-w-full min-w-0", aspectRatioClass)}>
                     <Image
                         src={urlFor(caseStudy.image).width(400).height(225).url()}
                         alt={caseStudy.image.alt || title}

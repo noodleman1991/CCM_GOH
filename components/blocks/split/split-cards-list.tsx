@@ -17,7 +17,7 @@ export default function SplitCardsList({ color, list }: SplitCardsListProps) {
   const colorParent = stegaClean(color);
 
   return (
-    <div className="flex flex-col justify-center gap-12">
+    <div className="flex flex-col justify-center gap-6 md:gap-8 lg:gap-10">
       {list &&
         list.length > 0 &&
         list.map((item, index) => (

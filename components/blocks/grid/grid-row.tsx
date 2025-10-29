@@ -75,14 +75,16 @@ export default function GridRow({
                                     description,
                                     title,
                                     gridColumns,
+                                    cardVariant,
                                     columns,
                                     locale,
                                     userId,
                                     rowId,
                                 }: GridRowProps) {
+    const variant = stegaClean(cardVariant) || "classic";
     return (
         <SectionContainer background={background} padding={padding}>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 overflow-x-hidden">
                 {/* Grid Header */}
                 {(description || title) && (
                     <div className="mb-12 text-start">
@@ -102,13 +104,15 @@ export default function GridRow({
                 {columns && columns?.length > 0 ? (
                     <div
                     className={cn(
-                        "grid gap-6", // Clean grid without negative margins
-                        // Modern responsive grid with proper card sizing
-                        stegaClean(gridColumns) === "grid-cols-4"
-                            ? "grid-cols-2 md:grid-cols-2 lg:grid-cols-4" // 4 cols: mobile 2, tablet 2, desktop 4
+                        "grid gap-4 md:gap-6 lg:gap-8", // Clean grid without negative margins
+                        // Grid columns based on variant and gridColumns setting
+                        variant === "wide"
+                            ? "grid-cols-1 lg:grid-cols-2" // Wide cards: max 2 columns
+                            : stegaClean(gridColumns) === "grid-cols-4"
+                            ? "grid-cols-2 md:grid-cols-2 lg:grid-cols-4" // Classic 4 cols: mobile 2, tablet 2, desktop 4
                             : stegaClean(gridColumns) === "grid-cols-3"
-                            ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" // 3 cols: mobile 1, tablet 2, desktop 3
-                            : "grid-cols-1 md:grid-cols-2 lg:grid-cols-2" // 2 cols: mobile 1, tablet 2, desktop 2
+                            ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" // Classic 3 cols: mobile 1, tablet 2, desktop 3
+                            : "grid-cols-1 md:grid-cols-2 lg:grid-cols-2" // Classic 2 cols: mobile 1, tablet 2, desktop 2
                     )}
                     style={{
                         // Ensure cards don't overflow and maintain consistent height
@@ -138,12 +142,14 @@ export default function GridRow({
                         }
 
                         return (
-                            <Component
-                                {...(column as any)}
-                                key={uniqueKey}
-                                locale={locale || 'en'}
-                                userId={userId}
-                            />
+                            <div key={uniqueKey} className="min-w-0 h-full flex">
+                                <Component
+                                    {...(column as any)}
+                                    locale={locale || 'en'}
+                                    userId={userId}
+                                    cardVariant={variant}
+                                />
+                            </div>
                         );
                     })}
                 </div>

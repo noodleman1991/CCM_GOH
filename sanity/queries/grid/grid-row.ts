@@ -16,6 +16,7 @@ export const gridRowQuery = groq`
     title,
     description,
     gridColumns,
+    cardVariant,
     columns[]{
       ${gridCardQuery},
       ${gridPostQuery},

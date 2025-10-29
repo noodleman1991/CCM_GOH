@@ -18,12 +18,12 @@ export default function Hero2({ background, tagLine, title, body, links, padding
   const rtl = isRTL(locale);
   return (
     <SectionContainer background={background} padding={padding}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
-        <div className={cn("text-center", rtl ? "rtl" : "ltr")}>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center" dir={rtl ? "rtl" : "ltr"}>
         {tagLine && (
-          <h1 className="leading-[0] font-sans animate-fade-up [animation-delay:100ms] opacity-0">
-            <span className="text-base font-semibold">{tagLine}</span>
-          </h1>
+          <p className="text-base font-semibold font-sans animate-fade-up [animation-delay:100ms] opacity-0">
+            {tagLine}
+          </p>
         )}
         {title && (
           <h2 className="mt-6 font-bold leading-[1.1] text-4xl md:text-5xl lg:text-6xl animate-fade-up [animation-delay:200ms] opacity-0">
@@ -40,7 +40,9 @@ export default function Hero2({ background, tagLine, title, body, links, padding
             {links.map((link) => (
               <Button
                 key={link.title}
-                variant={stegaClean(link?.buttonVariant)}
+                variant={stegaClean(link?.buttonVariant?.variant)}
+                size={stegaClean(link?.buttonVariant?.size) || "lg"}
+                stroke={stegaClean(link?.buttonVariant?.stroke)}
                 asChild
               >
                 <Link
