@@ -41,6 +41,20 @@ export default defineType({
       initialValue: "grid-cols-3",
     }),
     defineField({
+      name: "cardVariant",
+      type: "string",
+      title: "Card Variant",
+      description: "Choose the card layout variant for this grid row",
+      options: {
+        list: [
+          { title: "Classic (3:2 - Vertical)", value: "classic" },
+          { title: "Wide (16:9 - Horizontal)", value: "wide" },
+        ],
+        layout: "radio",
+      },
+      initialValue: "classic",
+    }),
+    defineField({
       name: "columns",
       type: "array",
       of: [

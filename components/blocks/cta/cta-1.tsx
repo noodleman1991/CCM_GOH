@@ -38,9 +38,9 @@ export default function Cta1({
         >
         <div>
           {tagLine && (
-            <h1 className="leading-[0] mb-4">
-              <span className="text-base font-semibold">{tagLine}</span>
-            </h1>
+            <p className="text-base font-semibold mb-4">
+              {tagLine}
+            </p>
           )}
           <h2 className="mb-4">{title}</h2>
           {body && <PortableTextRenderer value={body} locale={locale} />}
@@ -57,7 +57,9 @@ export default function Cta1({
               links.map((link) => (
                 <Button
                   key={link.title}
-                  variant={stegaClean(link?.buttonVariant)}
+                  variant={stegaClean(link?.buttonVariant?.variant)}
+                  size={stegaClean(link?.buttonVariant?.size) || "lg"}
+                  stroke={stegaClean(link?.buttonVariant?.stroke)}
                   asChild
                 >
                   <Link

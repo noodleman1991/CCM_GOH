@@ -35,6 +35,7 @@ interface GridReportComponentProps {
     userId?: string;
     className?: string;
     color?: string;
+    cardVariant?: string;
 }
 
 export default function GridReportComponent({
@@ -44,9 +45,12 @@ export default function GridReportComponent({
                                                 showMetadata = true,
                                                 locale,
                                                 userId,
-                                                className
+                                                className,
+                                                cardVariant = "classic",
                                             }: GridReportComponentProps) {
     if (!report) return null;
+
+    const aspectRatioClass = cardVariant === "wide" ? "aspect-video" : "aspect-[3/2]";
 
     const title = getLocalizedText(report.title, locale);
     const subtitle = getLocalizedText(report.subtitle, locale);
@@ -63,7 +67,7 @@ export default function GridReportComponent({
 
     return (
         <Card className={cn(
-            "flex w-full flex-col justify-between overflow-hidden transition ease-in-out group border rounded-3xl p-4 hover:border-primary",
+            "flex w-full h-full flex-col justify-between overflow-hidden transition ease-in-out group border rounded-3xl p-6 hover:border-primary",
         )}>
             {/* Access restriction overlay */}
             {!canAccess && (
@@ -79,7 +83,7 @@ export default function GridReportComponent({
 
             {/* Cover Image */}
             {report.coverImage?.asset?.url && (
-                <div className="mb-4 relative h-[15rem] sm:h-[20rem] md:h-[25rem] lg:h-[9.5rem] xl:h-[12rem] rounded-2xl overflow-hidden">
+                <div className={cn("mb-4 relative rounded-2xl overflow-hidden w-full max-w-full min-w-0", aspectRatioClass)}>
                     <Image
                         src={urlFor(report.coverImage).width(400).height(225).url()}
                         alt={report.coverImage.alt || title}

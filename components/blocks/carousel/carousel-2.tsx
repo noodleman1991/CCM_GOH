@@ -34,10 +34,10 @@ export default function Carousel2({
 
   return (
     <SectionContainer color={color} padding={padding}>
-      <div className="flex flex-col space-y-6">
+      <div className="flex flex-col space-y-6 overflow-hidden">
         {title && (
           <div className="text-center">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl break-words">
               {title}
             </h2>
             {description && (
@@ -53,10 +53,10 @@ export default function Carousel2({
             {testimonial.map((item) => (
               <CarouselItem
                 key={item._id}
-                className="pl-2 md:pl-4 md:basis-1/3"
+                className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3 min-w-0"
               >
-                <Card className="h-full">
-                  <CardContent className="flex flex-col justify-between p-4 h-full">
+                <Card className="h-full overflow-hidden">
+                  <CardContent className="flex flex-col justify-between p-6 h-full">
                     <div>
                       <div className="flex items-center mb-2">
                         <Avatar className="w-10 h-10 mr-3">

@@ -25,9 +25,9 @@ export default function SectionContainer({
       <div className={cn("relative w-screen -mx-4", backgroundStyles.className)} style={backgroundStyles.style}>
         <div
           className={cn(
-            "relative my-4",
-            padding?.top ? "pt-16 xl:pt-20" : undefined,
-            padding?.bottom ? "pb-16 xl:pb-20" : undefined,
+            "relative my-8 lg:my-10 xl:my-12",
+            padding?.top ? "pt-12 xl:pt-16" : undefined,
+            padding?.bottom ? "pb-12 xl:pb-16" : undefined,
             className
           )}
         >
@@ -40,9 +40,9 @@ export default function SectionContainer({
   return (
     <div
       className={cn(
-        "relative my-4",
-        padding?.top ? "pt-16 xl:pt-20" : undefined,
-        padding?.bottom ? "pb-16 xl:pb-20" : undefined,
+        "relative my-8 lg:my-10 xl:my-12",
+        padding?.top ? "pt-12 xl:pt-16" : undefined,
+        padding?.bottom ? "pb-12 xl:pb-16" : undefined,
         className
       )}
     >

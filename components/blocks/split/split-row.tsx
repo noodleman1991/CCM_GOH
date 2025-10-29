@@ -32,12 +32,12 @@ export default function SplitRow({
 
   return (
     <SectionContainer color={color} padding={padding}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 overflow-x-hidden">
         {splitColumns && splitColumns?.length > 0 && (
           <div
           className={cn(
             "grid grid-cols-1 lg:grid-cols-2",
-            noGap ? "gap-0" : "gap-12 lg:gap-20"
+            noGap ? "gap-0" : "gap-4 md:gap-6 lg:gap-8"
           )}
         >
           {splitColumns?.map((column) => {
@@ -50,12 +50,13 @@ export default function SplitRow({
               return <div data-type={column._type} key={column._key} />;
             }
             return (
-              <Component
-                {...(column as any)}
-                color={color}
-                noGap={noGap}
-                key={column._key}
-              />
+              <div key={column._key} className="min-w-0">
+                <Component
+                  {...(column as any)}
+                  color={color}
+                  noGap={noGap}
+                />
+              </div>
             );
           })}
         </div>

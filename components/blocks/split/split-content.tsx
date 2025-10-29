@@ -2,7 +2,6 @@ import { cn } from "@/lib/utils";
 import PortableTextRenderer from "@/components/portable-text-renderer";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import TagLine from "@/components/ui/tag-line";
 import { createElement } from "react";
 import { stegaClean } from "next-sanity";
 import { PAGE_QUERYResult } from "@/sanity.types";
@@ -33,33 +32,38 @@ export default function SplitContent({
     <div
       className={cn(
         !sticky ? "flex flex-col justify-center" : undefined,
-        padding?.top ? "pt-16 xl:pt-20" : undefined,
-        padding?.bottom ? "pb-16 xl:pb-20" : undefined
+        padding?.top ? "pt-8 lg:pt-12 xl:pt-16" : undefined,
+        padding?.bottom ? "pb-8 lg:pb-12 xl:pb-16" : undefined
       )}
     >
       <div
         className={cn(
-          "flex flex-col items-start",
+          "flex flex-col items-start overflow-hidden",
           sticky ? "lg:sticky lg:top-56" : undefined,
           noGap ? "px-10" : undefined
         )}
       >
-        {tagLine && <TagLine title={tagLine} element="h2" />}
+        {tagLine && <p className="text-base font-semibold break-words">{tagLine}</p>}
         {title &&
           createElement(
-            tagLine ? "h3" : "h2",
+            "h2",
             {
-              className: cn("my-4 font-semibold leading-[1.2]"),
+              className: cn("my-4 font-semibold leading-[1.2] break-words"),
             },
             title
           )}
-        {body && <PortableTextRenderer value={body} locale={locale} />}
+        {body && (
+          <div className="break-words w-full">
+            <PortableTextRenderer value={body} locale={locale} />
+          </div>
+        )}
         {link?.href && (
           <div className="flex flex-col">
             <Button
-              className="mt-2"
-              variant={stegaClean(link?.buttonVariant)}
-              size="lg"
+              className="mt-6"
+              variant={stegaClean(link?.buttonVariant?.variant)}
+              size={stegaClean(link?.buttonVariant?.size) || "lg"}
+              stroke={stegaClean(link?.buttonVariant?.stroke)}
               asChild
             >
               <Link

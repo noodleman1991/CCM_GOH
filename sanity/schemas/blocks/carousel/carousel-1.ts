@@ -65,6 +65,20 @@ export default defineType({
       description: "Choose how to indicate carousel progress and position",
     }),
     defineField({
+      name: "cardVariant",
+      type: "string",
+      title: "Card Variant",
+      description: "Choose the card layout variant for carousel items",
+      options: {
+        list: [
+          { title: "Classic (3:2 - Vertical)", value: "classic" },
+          { title: "Wide (16:9 - Horizontal)", value: "wide" },
+        ],
+        layout: "radio",
+      },
+      initialValue: "classic",
+    }),
+    defineField({
       name: "images",
       type: "array",
       of: [

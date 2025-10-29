@@ -13,6 +13,7 @@ export const carousel1Query = groq`
     size,
     orientation,
     indicators,
+    cardVariant,
     images[]{
       asset->{
         _id,
