@@ -20,8 +20,9 @@ export default function FAQs({ padding, colorVariant, faqs, locale = "en" }: FAQ
   const color = stegaClean(colorVariant);
   return (
     <SectionContainer color={color} padding={padding}>
-      {faqs && faqs?.length > 0 && (
-        <Accordion className="space-y-4" type="multiple">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        {faqs && faqs?.length > 0 && (
+          <Accordion className="space-y-4" type="multiple">
           {faqs.map((faq) => (
             <AccordionItem key={faq.title} value={`item-${faq._id}`}>
               <AccordionTrigger>{faq.title}</AccordionTrigger>
@@ -31,7 +32,8 @@ export default function FAQs({ padding, colorVariant, faqs, locale = "en" }: FAQ
             </AccordionItem>
           ))}
         </Accordion>
-      )}
+        )}
+      </div>
     </SectionContainer>
   );
 }
