@@ -55,19 +55,20 @@ export default function Carousel1({
 
   return (
     <SectionContainer color={color} padding={padding} background={background}>
-      <div className="flex flex-col space-y-6">
-        {title && (
-          <div className="text-center">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-              {title}
-            </h2>
-            {description && (
-              <p className="mt-4 text-lg text-muted-foreground">
-                {description}
-              </p>
-            )}
-          </div>
-        )}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col space-y-6">
+          {title && (
+            <div className="text-center">
+              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+                {title}
+              </h2>
+              {description && (
+                <p className="mt-4 text-lg text-muted-foreground">
+                  {description}
+                </p>
+              )}
+            </div>
+          )}
         {images && images.length > 0 && (
         <Carousel>
           <CarouselContent>
@@ -117,6 +118,7 @@ export default function Carousel1({
           )}
         </Carousel>
         )}
+        </div>
       </div>
     </SectionContainer>
   );

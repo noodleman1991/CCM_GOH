@@ -264,7 +264,7 @@ export default function LivedExperiencesCarousel({
 
   return (
     <SectionContainer background={background} padding={padding}>
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         {(title || subtitle) && (
           <div className="text-center mb-12">

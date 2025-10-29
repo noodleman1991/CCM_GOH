@@ -27,17 +27,19 @@ export default function LogoCloud1({
       padding={padding}
       className="overflow-hidden"
     >
-      <div className="text-center mb-8">
-        {title && (
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl animate-fade-up [animation-delay:100ms] opacity-0">
-            {title}
-          </h2>
-        )}
-        {description && (
-          <p className="mt-4 text-lg text-muted-foreground animate-fade-up [animation-delay:200ms] opacity-0">
-            {description}
-          </p>
-        )}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-8">
+          {title && (
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl animate-fade-up [animation-delay:100ms] opacity-0">
+              {title}
+            </h2>
+          )}
+          {description && (
+            <p className="mt-4 text-lg text-muted-foreground animate-fade-up [animation-delay:200ms] opacity-0">
+              {description}
+            </p>
+          )}
+        </div>
       </div>
       <div className="flex relative overflow-hidden before:absolute before:left-0 before:top-0 before:z-10 before:h-full before:w-10 before:bg-linear-to-r before:from-background before:to-transparent before:content-[''] after:absolute after:right-0 after:top-0 after:h-full after:w-10 after:bg-linear-to-l after:from-background after:to-transparent after:content-['']">
         <motion.div

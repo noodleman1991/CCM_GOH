@@ -34,19 +34,20 @@ export default function Carousel2({
 
   return (
     <SectionContainer color={color} padding={padding}>
-      <div className="flex flex-col space-y-6 overflow-hidden">
-        {title && (
-          <div className="text-center">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl break-words">
-              {title}
-            </h2>
-            {description && (
-              <p className="mt-4 text-lg text-muted-foreground">
-                {description}
-              </p>
-            )}
-          </div>
-        )}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col space-y-6 overflow-hidden">
+          {title && (
+            <div className="text-center">
+              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl break-words">
+                {title}
+              </h2>
+              {description && (
+                <p className="mt-4 text-lg text-muted-foreground">
+                  {description}
+                </p>
+              )}
+            </div>
+          )}
         {testimonial && testimonial.length > 0 && (
         <Carousel>
           <CarouselContent>
@@ -107,6 +108,7 @@ export default function Carousel2({
           </div>
         </Carousel>
         )}
+        </div>
       </div>
     </SectionContainer>
   );

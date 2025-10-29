@@ -24,12 +24,13 @@ export default function SectionHeader({
 
   return (
     <SectionContainer color={color} padding={padding}>
-      <div
-        className={cn(
-          align === "center" ? "max-w-[48rem] text-center mx-auto" : undefined,
-          isNarrow ? "max-w-[48rem] mx-auto" : undefined
-        )}
-      >
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div
+          className={cn(
+            align === "center" ? "max-w-[48rem] text-center mx-auto" : undefined,
+            isNarrow ? "max-w-[48rem] mx-auto" : undefined
+          )}
+        >
         <div
           className={cn(color === "primary" ? "text-background" : undefined)}
         >
@@ -41,6 +42,7 @@ export default function SectionHeader({
           <h2 className="text-3xl md:text-5xl mb-4">{title}</h2>
         </div>
         <p>{description}</p>
+        </div>
       </div>
     </SectionContainer>
   );
