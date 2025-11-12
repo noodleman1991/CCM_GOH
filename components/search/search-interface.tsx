@@ -12,7 +12,7 @@ import ContentSearchFilters from './content-search-filters'
 import SearchStats from './search-stats'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
-import { Users, FileText, BookOpen, Briefcase, Newspaper } from 'lucide-react'
+import { Users, FileText, Briefcase, Newspaper } from 'lucide-react'
 import { useTranslations, useLocale } from 'next-intl'
 import { SearchErrorBoundary } from './search-error-boundary'
 import { useAuth } from '@clerk/nextjs'
@@ -56,7 +56,7 @@ export default function SearchInterface() {
   return (
     <div className="space-y-6" dir={isRTL ? 'rtl' : 'ltr'}>
       <Tabs defaultValue="users" className="w-full">
-        <TabsList className="grid w-full grid-cols-5 max-w-3xl mx-auto">
+        <TabsList className="grid w-full grid-cols-4 max-w-3xl mx-auto">
           <TabsTrigger value="users" className="flex items-center gap-2">
             <Users className="h-4 w-4" />
             {t('people')}
@@ -81,15 +81,6 @@ export default function SearchInterface() {
             {!isLoading && counts.news > 0 && (
               <Badge variant="secondary" className="ms-1 text-xs">
                 {counts.news}
-              </Badge>
-            )}
-          </TabsTrigger>
-          <TabsTrigger value="posts" className="flex items-center gap-2">
-            <BookOpen className="h-4 w-4" />
-            {t('posts')}
-            {!isLoading && counts.posts > 0 && (
-              <Badge variant="secondary" className="ms-1 text-xs">
-                {counts.posts}
               </Badge>
             )}
           </TabsTrigger>
@@ -129,9 +120,9 @@ export default function SearchInterface() {
                     root: 'w-full',
                     form: 'relative',
                     input: 'flex h-12 w-full rounded-md border border-input bg-background px-4 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
-                    submit: 'absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground',
-                    reset: 'absolute right-12 top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground',
-                    loadingIndicator: 'absolute right-2 top-1/2 -translate-y-1/2',
+                    submit: `absolute ${isRTL ? 'left-2' : 'right-2'} top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground`,
+                    reset: `absolute ${isRTL ? 'left-12' : 'right-12'} top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground`,
+                    loadingIndicator: `absolute ${isRTL ? 'left-2' : 'right-2'} top-1/2 -translate-y-1/2`,
                   }}
                   submitIconComponent={() => (
                     <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -191,9 +182,9 @@ export default function SearchInterface() {
                       root: 'w-full',
                       form: 'relative',
                       input: 'flex h-12 w-full rounded-md border border-input bg-background px-4 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
-                      submit: 'absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground',
-                      reset: 'absolute right-12 top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground',
-                      loadingIndicator: 'absolute right-2 top-1/2 -translate-y-1/2',
+                      submit: `absolute ${isRTL ? 'left-2' : 'right-2'} top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground`,
+                      reset: `absolute ${isRTL ? 'left-12' : 'right-12'} top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground`,
+                      loadingIndicator: `absolute ${isRTL ? 'left-2' : 'right-2'} top-1/2 -translate-y-1/2`,
                     }}
                     submitIconComponent={() => (
                       <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -253,9 +244,9 @@ export default function SearchInterface() {
                       root: 'w-full',
                       form: 'relative',
                       input: 'flex h-12 w-full rounded-md border border-input bg-background px-4 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
-                      submit: 'absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground',
-                      reset: 'absolute right-12 top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground',
-                      loadingIndicator: 'absolute right-2 top-1/2 -translate-y-1/2',
+                      submit: `absolute ${isRTL ? 'left-2' : 'right-2'} top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground`,
+                      reset: `absolute ${isRTL ? 'left-12' : 'right-12'} top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground`,
+                      loadingIndicator: `absolute ${isRTL ? 'left-2' : 'right-2'} top-1/2 -translate-y-1/2`,
                     }}
                     submitIconComponent={() => (
                       <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -290,14 +281,6 @@ export default function SearchInterface() {
           </SearchErrorBoundary>
         </TabsContent>
 
-        <TabsContent value="posts">
-          <div className="text-center py-12">
-            <BookOpen className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">{t('posts')} {t('search')}</h3>
-            <p className="text-muted-foreground">{t('comingSoon')} - {t('postsComingSoon')}</p>
-          </div>
-        </TabsContent>
-
         {/* Case Studies Search */}
         <TabsContent value="case-studies">
           <SearchErrorBoundary>
@@ -323,9 +306,9 @@ export default function SearchInterface() {
                       root: 'w-full',
                       form: 'relative',
                       input: 'flex h-12 w-full rounded-md border border-input bg-background px-4 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
-                      submit: 'absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground',
-                      reset: 'absolute right-12 top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground',
-                      loadingIndicator: 'absolute right-2 top-1/2 -translate-y-1/2',
+                      submit: `absolute ${isRTL ? 'left-2' : 'right-2'} top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground`,
+                      reset: `absolute ${isRTL ? 'left-12' : 'right-12'} top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground`,
+                      loadingIndicator: `absolute ${isRTL ? 'left-2' : 'right-2'} top-1/2 -translate-y-1/2`,
                     }}
                     submitIconComponent={() => (
                       <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

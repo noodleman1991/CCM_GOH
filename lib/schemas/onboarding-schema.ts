@@ -56,6 +56,7 @@ export const createOnboardingSchema = (validationMessages?: any) => {
     workInfo: z.object({
       workTypes: z.array(z.string()).min(1, messages.workInfo?.workTypes || defaultMessages.workInfo.workTypes),
       expertiseAreas: z.array(z.string()).min(1, messages.workInfo?.expertiseAreas || defaultMessages.workInfo.expertiseAreas),
+      communityIds: z.array(z.string()).max(10).optional().default([]),
       organization: z.string().optional(),
       position: z.string().optional(),
       workBio: z.string().max(1000, messages.workInfo?.workBio || defaultMessages.workInfo.workBio).optional(),
@@ -128,7 +129,8 @@ export const defaultOnboardingValues: OnboardingFormData = {
     workBio: "",
     linkedinProfile: "",
     personalWebsite: "",
-    otherSocialLinks: []
+    otherSocialLinks: [],
+    communityIds: []
   },
   recentWork: [],
   privacy: {

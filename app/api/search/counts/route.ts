@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
-import { algoliaClient, ALGOLIA_INDICES } from '@/lib/algolia'
+import { algoliaClient, ALGOLIA_INDICES, AlgoliaSearchResult } from '@/lib/algolia'
 
 /**
  * GET endpoint to retrieve search result counts across all indices
@@ -102,13 +102,13 @@ export async function GET(request: NextRequest) {
       }).catch(() => ({ results: [{ nbHits: 0 }] })) // Gracefully handle missing index
     ])
 
-    // Extract counts from results
+    // Extract counts from results with proper typing
     const counts = {
-      users: usersResult.results[0]?.nbHits || 0,
-      agendas: agendasResult.results[0]?.nbHits || 0,
-      news: newsResult.results[0]?.nbHits || 0,
-      caseStudies: caseStudiesResult.results[0]?.nbHits || 0,
-      posts: postsResult.results[0]?.nbHits || 0
+      users: (usersResult.results[0] as AlgoliaSearchResult)?.nbHits || 0,
+      agendas: (agendasResult.results[0] as AlgoliaSearchResult)?.nbHits || 0,
+      news: (newsResult.results[0] as AlgoliaSearchResult)?.nbHits || 0,
+      caseStudies: (caseStudiesResult.results[0] as AlgoliaSearchResult)?.nbHits || 0,
+      posts: (postsResult.results[0] as AlgoliaSearchResult)?.nbHits || 0
     }
 
     return NextResponse.json({

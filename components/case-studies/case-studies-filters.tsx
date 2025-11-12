@@ -75,7 +75,7 @@ export default function CaseStudiesFilters({ currentFilters }: CaseStudiesFilter
   const updateFilter = (key: string, value: string | undefined) => {
     const params = new URLSearchParams(searchParams.toString())
 
-    if (value && value !== '') {
+    if (value && value !== '' && value !== 'all') {
       params.set(key, value)
     } else {
       params.delete(key)
@@ -145,7 +145,7 @@ export default function CaseStudiesFilters({ currentFilters }: CaseStudiesFilter
               </div>
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Topics</SelectItem>
+              <SelectItem value="all">All Topics</SelectItem>
               {topicOptions.map((topic) => (
                 <SelectItem key={topic.value} value={topic.value}>
                   {topic.label}
@@ -200,7 +200,7 @@ export default function CaseStudiesFilters({ currentFilters }: CaseStudiesFilter
                       <SelectValue placeholder={t('tagPlaceholder')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">All Tags</SelectItem>
+                      <SelectItem value="all">All Tags</SelectItem>
                       {/* These would be loaded from your tags */}
                       <SelectItem value="tag1">Tag 1</SelectItem>
                       <SelectItem value="tag2">Tag 2</SelectItem>
@@ -222,7 +222,7 @@ export default function CaseStudiesFilters({ currentFilters }: CaseStudiesFilter
                       <SelectValue placeholder={t('communityPlaceholder')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">All Communities</SelectItem>
+                      <SelectItem value="all">All Communities</SelectItem>
                       {/* These would be loaded from your communities */}
                       <SelectItem value="community1">Community 1</SelectItem>
                       <SelectItem value="community2">Community 2</SelectItem>

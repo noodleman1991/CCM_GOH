@@ -71,6 +71,8 @@ model User {
   preferredLanguage    Language          @default(EN)
   welcomeMessageSeen   Boolean           @default(false)
   otherSocialLinks     Json?
+  lastLoginAt          DateTime?
+  profileCompleteness  Int               @default(0)
   accounts             Account[]
   createdContent       Content[]
   recentWork           RecentWork[]
@@ -179,6 +181,8 @@ enum ExpertiseArea {
   CLIMATE_CHANGE
   MENTAL_HEALTH
   HEALTH
+  EDUCATION
+  SOCIAL_JUSTICE
 }
 
 enum Role {

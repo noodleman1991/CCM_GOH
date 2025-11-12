@@ -60,18 +60,22 @@ export default function GridCaseStudyComponent({
 
     const supportedLocale = locale as 'en' | 'es' | 'fr' | 'ar';
 
-    // Get localized content
-    const title = getLocalizedText(caseStudy.title, supportedLocale);
+    // Get localized content - handle both object and string formats
+    const title = typeof caseStudy.title === 'string'
+        ? caseStudy.title
+        : getLocalizedText(caseStudy.title, supportedLocale);
+
     const excerpt = customExcerpt
-        ? getLocalizedText(customExcerpt, supportedLocale)
-        : getLocalizedText(caseStudy.excerpt, supportedLocale);
+        ? (typeof customExcerpt === 'string' ? customExcerpt : getLocalizedText(customExcerpt, supportedLocale))
+        : (typeof caseStudy.excerpt === 'string' ? caseStudy.excerpt : getLocalizedText(caseStudy.excerpt, supportedLocale));
 
     // Get metadata
     const primaryAuthor = getPrimaryAuthor(caseStudy);
     const publishDate = caseStudy.publishedAt ? new Date(caseStudy.publishedAt) : null;
     const locationText = getStudyLocationText(caseStudy);
     const isRTLLocale = isRTL(locale);
-    const canAccess = canAccessCaseStudy(caseStudy.status, userId ? 'user' : 'guest');
+    // All approved case studies are public - no access restrictions
+    const canAccess = true;
 
     // Localized text helpers
     const getMoreText = (count: number) => {

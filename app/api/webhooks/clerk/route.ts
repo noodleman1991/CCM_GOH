@@ -66,7 +66,18 @@ type UserDeletedEvent = {
     type: 'user.deleted'
 }
 
-type ClerkWebhookEvent = UserCreatedEvent | UserUpdatedEvent | UserDeletedEvent
+type SessionCreatedEvent = {
+    data: {
+        id: string
+        user_id: string
+        status: string
+        created_at: number
+    }
+    object: 'event'
+    type: 'session.created'
+}
+
+type ClerkWebhookEvent = UserCreatedEvent | UserUpdatedEvent | UserDeletedEvent | SessionCreatedEvent
 
 function getPrimaryEmail(emailAddresses: Array<{ email_address: string; verification?: { status: string } }>): string | null {
     const verifiedEmail = emailAddresses.find(email => email.verification?.status === 'verified')
@@ -149,6 +160,16 @@ async function handleUserCreated(event: UserCreatedEvent): Promise<any> {
         })
 
         console.log(`✅ Created user: ${user.id}`)
+
+        // Trigger Algolia sync (fire and forget)
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/search/users/webhook`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: user.id, action: 'update' })
+        }).catch((error) => {
+            console.warn(`Algolia sync failed for new user ${user.id}:`, error)
+        })
+
         return { action: 'created', userId: user.id }
 
     } catch (error) {
@@ -202,6 +223,8 @@ async function handleUserUpdated(event: UserUpdatedEvent) {
             if (public_metadata?.city !== undefined) metadataUpdate.city = public_metadata.city
             if (public_metadata?.workTypes !== undefined) metadataUpdate.workTypes = public_metadata.workTypes
             if (public_metadata?.expertiseAreas !== undefined) metadataUpdate.expertiseAreas = public_metadata.expertiseAreas
+            // Store communityIds for later processing (cannot be directly updated on user model)
+            if (public_metadata?.communityIds !== undefined) metadataUpdate._communityIds = public_metadata.communityIds
             if (public_metadata?.organization !== undefined) metadataUpdate.organization = public_metadata.organization
             if (public_metadata?.position !== undefined) metadataUpdate.position = public_metadata.position
             if (public_metadata?.workBio !== undefined) metadataUpdate.workBio = public_metadata.workBio
@@ -224,6 +247,10 @@ async function handleUserUpdated(event: UserUpdatedEvent) {
             }
         }
 
+        // Extract communityIds before updating (it's not a direct field on User)
+        const communityIds = metadataUpdate._communityIds
+        delete metadataUpdate._communityIds
+
         // Update user with latest data from Clerk
         const user = await prisma.user.update({
             where: { id },
@@ -233,7 +260,51 @@ async function handleUserUpdated(event: UserUpdatedEvent) {
             }
         })
 
+        // Handle community memberships separately if provided
+        if (Array.isArray(communityIds)) {
+            try {
+                // Delete existing memberships
+                await prisma.userCommunity.deleteMany({
+                    where: { userId: id }
+                })
+
+                // Create new memberships if any
+                if (communityIds.length > 0) {
+                    const communities = await prisma.community.findMany({
+                        where: {
+                            id: { in: communityIds }
+                        }
+                    })
+
+                    if (communities.length === communityIds.length) {
+                        await prisma.userCommunity.createMany({
+                            data: communityIds.map(communityId => ({
+                                userId: id,
+                                communityId,
+                                role: 'community_member' as const
+                            }))
+                        })
+                        console.log(`✅ Updated ${communityIds.length} community memberships for user ${id}`)
+                    } else {
+                        console.warn(`⚠️ Some communities not found for user ${id}`)
+                    }
+                }
+            } catch (error) {
+                console.error(`❌ Failed to update community memberships for user ${id}:`, error)
+            }
+        }
+
         console.log(`✅ Updated user: ${user.id}`)
+
+        // Trigger Algolia sync (fire and forget)
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/search/users/webhook`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: user.id, action: 'update' })
+        }).catch((error) => {
+            console.warn(`Algolia sync failed for updated user ${user.id}:`, error)
+        })
+
         return { action: 'updated', userId: user.id }
 
     } catch (error) {
@@ -260,10 +331,52 @@ async function handleUserDeleted(event: UserDeletedEvent) {
         })
 
         console.log(`✅ Deleted user: ${id}`)
+
+        // Trigger Algolia sync to remove from index (fire and forget)
+        fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/search/users/webhook`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: id, action: 'delete' })
+        }).catch((error) => {
+            console.warn(`Algolia sync failed for deleted user ${id}:`, error)
+        })
+
         return { action: 'deleted', userId: id }
 
     } catch (error) {
         console.error(`❌ Failed to delete user ${id}:`, error)
+        throw error
+    }
+}
+
+async function handleSessionCreated(event: SessionCreatedEvent) {
+    const { user_id } = event.data
+
+    try {
+        console.log(`📥 Updating last login for user ${user_id}`)
+
+        const existingUser = await prisma.user.findUnique({
+            where: { id: user_id }
+        })
+
+        if (!existingUser) {
+            console.log(`User ${user_id} doesn't exist, skipping login tracking`)
+            return { action: 'skipped', reason: 'user_not_found' }
+        }
+
+        // Update last login timestamp
+        await prisma.user.update({
+            where: { id: user_id },
+            data: {
+                lastLoginAt: new Date()
+            }
+        })
+
+        console.log(`✅ Updated last login for user: ${user_id}`)
+        return { action: 'login_tracked', userId: user_id }
+
+    } catch (error) {
+        console.error(`❌ Failed to update last login for user ${user_id}:`, error)
         throw error
     }
 }
@@ -307,6 +420,9 @@ export async function POST(req: Request) {
                 break
             case 'user.deleted':
                 result = await handleUserDeleted(evt)
+                break
+            case 'session.created':
+                result = await handleSessionCreated(evt)
                 break
             default:
                 console.log(`Ignoring event type: ${type}`)

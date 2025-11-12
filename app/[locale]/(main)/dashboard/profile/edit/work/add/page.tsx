@@ -56,7 +56,7 @@ export default async function AddRecentWorkPage() {
                 throw new Error("Failed to create recent work")
             }
 
-            redirect(`/profile/${user?.username}`)
+            redirect(`/profiles/${user?.username}`)
         } catch (error) {
             console.error("Failed to create recent work:", error)
             throw error
@@ -84,7 +84,7 @@ export default async function AddRecentWorkPage() {
 
             <RecentWorkForm
                 onSubmitAction={createRecentWork}
-                onCancelAction={() => redirect(`/profile/${user?.username}`)}
+                onCancelAction={() => redirect(`/profiles/${user?.username}`)}
             />
         </div>
     )

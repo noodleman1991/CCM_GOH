@@ -178,7 +178,9 @@ exports.Prisma.UserScalarFieldEnum = {
   onboardingStep: 'onboardingStep',
   preferredLanguage: 'preferredLanguage',
   welcomeMessageSeen: 'welcomeMessageSeen',
-  otherSocialLinks: 'otherSocialLinks'
+  otherSocialLinks: 'otherSocialLinks',
+  lastLoginAt: 'lastLoginAt',
+  profileCompleteness: 'profileCompleteness'
 };
 
 exports.Prisma.CommunityScalarFieldEnum = {
@@ -296,7 +298,9 @@ exports.Language = exports.$Enums.Language = {
 exports.ExpertiseArea = exports.$Enums.ExpertiseArea = {
   CLIMATE_CHANGE: 'CLIMATE_CHANGE',
   MENTAL_HEALTH: 'MENTAL_HEALTH',
-  HEALTH: 'HEALTH'
+  HEALTH: 'HEALTH',
+  EDUCATION: 'EDUCATION',
+  SOCIAL_JUSTICE: 'SOCIAL_JUSTICE'
 };
 
 exports.WorkType = exports.$Enums.WorkType = {

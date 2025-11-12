@@ -8,8 +8,27 @@ import type {
   SupportedLocale 
 } from '@/types/prisma'
 
+interface Community {
+  id: string
+  name: any
+  type: string
+  regionalName: string | null
+}
+
+interface RecentWork {
+  id: string
+  title: string
+  description: string | null
+  link: string | null
+  startDate: Date
+  endDate: Date | null
+  isOngoing: boolean
+}
+
 interface UseUserProfileReturn {
   user: LocalizedUser | null
+  communities: Community[]
+  recentWork: RecentWork[]
   loading: boolean
   error: string | null
   updating: boolean
@@ -32,10 +51,12 @@ interface ApiResponse {
  */
 export function useUserProfile(): UseUserProfileReturn {
   const [user, setUser] = useState<LocalizedUser | null>(null)
+  const [communities, setCommunities] = useState<Community[]>([])
+  const [recentWork, setRecentWork] = useState<RecentWork[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [updating, setUpdating] = useState(false)
-  
+
   const locale = useLocale() as SupportedLocale
   const { user: clerkUser, isLoaded } = useUser()
   const currentIsRTL = isRTL(locale)
@@ -74,8 +95,13 @@ export function useUserProfile(): UseUserProfileReturn {
         }
       }
 
-      const profileData: LocalizedUser & { _locale: SupportedLocale; _isRTL: boolean } = await response.json()
-      
+      const profileData: LocalizedUser & {
+        _locale: SupportedLocale
+        _isRTL: boolean
+        availableCommunities?: Community[]
+        recentWork?: RecentWork[]
+      } = await response.json()
+
       // Ensure the profile has all required computed fields
       const enhancedProfile: LocalizedUser = {
         ...profileData,
@@ -83,8 +109,16 @@ export function useUserProfile(): UseUserProfileReturn {
         fullName: profileData.fullName || generateFullName(profileData),
         initials: profileData.initials || generateInitials(profileData)
       }
-      
+
       setUser(enhancedProfile)
+
+      // Set communities and recent work from API response
+      if (profileData.availableCommunities) {
+        setCommunities(profileData.availableCommunities)
+      }
+      if (profileData.recentWork) {
+        setRecentWork(profileData.recentWork)
+      }
     } catch (err) {
       console.error('Failed to fetch profile:', err)
       setError(err instanceof Error ? err.message : 'Failed to fetch profile')
@@ -173,6 +207,8 @@ export function useUserProfile(): UseUserProfileReturn {
 
   return {
     user,
+    communities,
+    recentWork,
     loading,
     error,
     updating,

@@ -80,7 +80,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         },
         {
             title: t('caseStudies'),
-            url: "/case-studies",
+            url: "/research-and-action/case-studies",
             icon: BookOpen,
         },
         {

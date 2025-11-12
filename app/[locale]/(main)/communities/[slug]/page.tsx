@@ -1,7 +1,7 @@
 // todo: userId may be undefined? (no-!)
 import { fetchSanityRCPageBySlug, fetchRegionalCommunityAgendas, fetchSanityRCPagesStaticParams } from '@/sanity/lib/fetch';
 import { fetchRegionalCommunityTeamMembers } from '@/sanity/queries/regional-community-team';
-import RegionalReportsGrid from '@/components/blocks/grid/regional-reports-grid';
+import RegionalAgendasGrid from '@/components/blocks/grid/regional-agendas-grid';
 import { auth } from '@clerk/nextjs/server';
 import Blocks from '@/components/blocks/index'
 import HybridContentFlow from '@/components/blocks/hybrid-content-flow';
@@ -106,7 +106,7 @@ export default async function RegionalCommunityPage({
                         />
                     )}
 
-                    <RegionalReportsGrid
+                    <RegionalAgendasGrid
                         reports={reportsData || []}
                         regionalCommunitySlug={slug}
                         locale={locale.toString()}

@@ -1,4 +1,3 @@
-// path changed form app/[locale]/profile/work/add/page.tsx
 import { auth } from "@clerk/nextjs/server"
 import { redirect } from "next/navigation"
 import { getTranslations } from 'next-intl/server'
@@ -57,7 +56,7 @@ export default async function AddRecentWorkPage() {
                 throw new Error("Failed to create recent work")
             }
 
-            redirect(`/profile/${user?.username}`)
+            redirect(`/profiles/${user?.username}`)
         } catch (error) {
             console.error("Failed to create recent work:", error)
             throw error

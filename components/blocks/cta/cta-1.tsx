@@ -57,9 +57,9 @@ export default function Cta1({
               links.map((link) => (
                 <Button
                   key={link.title}
-                  variant={stegaClean(link?.buttonVariant?.variant)}
-                  size={stegaClean(link?.buttonVariant?.size) || "lg"}
-                  stroke={stegaClean(link?.buttonVariant?.stroke)}
+                  variant={stegaClean((link?.buttonVariant as any)?.variant)}
+                  size={stegaClean((link?.buttonVariant as any)?.size) || "lg"}
+                  stroke={stegaClean((link?.buttonVariant as any)?.stroke)}
                   asChild
                 >
                   <Link

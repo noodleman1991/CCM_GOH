@@ -81,7 +81,7 @@ export default function GridRow({
                                     userId,
                                     rowId,
                                 }: GridRowProps) {
-    const variant = stegaClean(cardVariant) || "classic";
+    const variant = (stegaClean(cardVariant) as "classic" | "wide" | null) || "classic";
     return (
         <SectionContainer background={background} padding={padding}>
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 overflow-x-hidden">

@@ -1,4 +1,4 @@
-import { defineField, defineType } from "sanity";
+ import { defineField, defineType } from "sanity";
 import { Globe } from "lucide-react";
 import { orderRankField } from "@sanity/orderable-document-list";
 

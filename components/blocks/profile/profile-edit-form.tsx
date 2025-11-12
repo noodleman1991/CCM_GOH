@@ -4,7 +4,8 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useTranslations, useLocale } from 'next-intl'
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
+import { useForm, useFieldArray } from "react-hook-form"
+import { format } from "date-fns"
 import * as z from "zod"
 import { useUserProfile } from "@/hooks/use-user-profile"
 import type { UserProfileUpdateData, SupportedLocale } from "@/types/prisma"
@@ -12,14 +13,17 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Switch } from "@/components/ui/switch"
 import { toast } from "sonner"
-import { Loader2, Shield, CheckCircle, XCircle, ExternalLink, RefreshCcw } from "lucide-react"
+import { Loader2, Shield, CheckCircle, XCircle, ExternalLink, Plus, Edit, Trash2, Calendar } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 import ProfilePictureUpload from "@/components/blocks/profile/profile-picture-upload"
+import { CommunitySelector } from "@/components/profile/community-selector"
 
 const profileSchema = z.object({
     // Clerk-managed fields (update Clerk directly)
@@ -27,10 +31,10 @@ const profileSchema = z.object({
     lastName: z.string().min(1, "Last name is required").max(50),
     username: z.string().min(3, "Username must be at least 3 characters").max(30)
         .regex(/^[a-zA-Z0-9_]+$/, "Username can only contain letters, numbers and underscores"),
-    
+
     // Profile image
     image: z.string().optional(),
-    
+
     // App-managed profile fields
     bio: z.string().max(500, "Bio must be less than 500 characters").optional(),
     ageGroup: z.enum(["UNDER_18", "ABOVE_18"]).optional(),
@@ -43,12 +47,14 @@ const profileSchema = z.object({
         "NGO",
         "COMMUNITY_ORGANIZATION",
         "EDUCATION_TEACHING"
-    ])),
+    ])).min(1, "Please select at least one work type"),
     expertiseAreas: z.array(z.enum([
         "CLIMATE_CHANGE",
         "MENTAL_HEALTH",
-        "HEALTH"
-    ])),
+        "HEALTH",
+        "EDUCATION",
+        "SOCIAL_JUSTICE"
+    ])).min(1, "Please select at least one expertise area"),
     organization: z.string().optional(),
     position: z.string().optional(),
     workBio: z.string().max(1000, "Work bio must be less than 1000 characters").optional(),
@@ -58,7 +64,20 @@ const profileSchema = z.object({
         platform: z.string().min(1),
         url: z.string().url()
     })).optional(),
-    
+
+    // Recent Work
+    recentWork: z.array(z.object({
+        title: z.string().min(1, "Title is required").max(100),
+        description: z.string().min(1, "Description is required").max(500),
+        link: z.string().url("Please enter a valid URL").optional().or(z.literal("")),
+        startDate: z.string().min(1, "Start date is required"),
+        endDate: z.string().optional(),
+        isOngoing: z.boolean().optional()
+    })).optional().default([]),
+
+    // Community memberships
+    communityIds: z.array(z.string()).optional().default([]),
+
     // Privacy Controls
     isSearchable: z.boolean().default(true),
     profileVisibility: z.enum(["PUBLIC", "MEMBERS", "PRIVATE"]).default("PUBLIC"),
@@ -90,16 +109,28 @@ interface ProfileEditFormProps {
 export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
     const { initialData, onSubmitAction } = props
     const t = useTranslations('profile.edit')
+    const tCommunities = useTranslations('profile.communities')
+    const tRecentWork = useTranslations('profile.recentWork')
     const locale = useLocale() as SupportedLocale
     const router = useRouter()
     const [isSubmitting, setIsSubmitting] = useState(false)
-    const [isSyncing, setIsSyncing] = useState(false)
-    
+    const [communities, setCommunities] = useState<any[]>([])
+    const [editingWorkIndex, setEditingWorkIndex] = useState<number | null>(null)
+    const [workFormData, setWorkFormData] = useState({
+        title: "",
+        description: "",
+        link: "",
+        isOngoing: false,
+        startDate: "",
+        endDate: ""
+    })
+
     // Use the new TypeScript hook with i18n support
-    const { user, loading, error, updating, updateProfile, refreshProfile, isRTL } = useUserProfile()
+    const { user, communities: availableCommunities, recentWork: existingRecentWork, loading, error, updating, updateProfile, refreshProfile, isRTL } = useUserProfile()
 
     const form = useForm<ProfileFormValues>({
         resolver: zodResolver(profileSchema),
+        mode: 'onChange',
         defaultValues: {
             firstName: user?.firstName || initialData?.firstName || "",
             lastName: user?.lastName || initialData?.lastName || "",
@@ -117,6 +148,8 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
             personalWebsite: user?.personalWebsite || initialData?.personalWebsite || "",
             linkedinProfile: user?.linkedinProfile || initialData?.linkedinProfile || "",
             otherSocialLinks: user?.otherSocialLinks || initialData?.otherSocialLinks || [],
+            recentWork: [], // Will be populated by API fetch
+            communityIds: [], // Will be populated by API fetch
             // Privacy Controls
             isSearchable: user?.isSearchable ?? initialData?.isSearchable ?? true,
             profileVisibility: user?.profileVisibility || initialData?.profileVisibility || "PUBLIC",
@@ -128,9 +161,30 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
         }
     })
 
+    // useFieldArray for recent work
+    const { fields: workFields, append: appendWork, update: updateWork, remove: removeWork } = useFieldArray({
+        control: form.control,
+        name: "recentWork"
+    })
+
     // Update form when user data changes
     useEffect(() => {
-        if (user && !loading) {
+        if (user && !loading && availableCommunities.length > 0) {
+            // Map community memberships to IDs
+            // Type assertion: transformToLocalizedUser includes relations via spread
+            const userWithRelations = user as any
+            const communityIds = userWithRelations.communityMemberships?.map((m: any) => m.communityId) || []
+
+            // Map recent work to form format
+            const recentWorkFormatted = existingRecentWork.map((work: any) => ({
+                title: work.title,
+                description: work.description || "",
+                link: work.link || "",
+                startDate: work.startDate ? new Date(work.startDate).toISOString().split('T')[0] : "",
+                endDate: work.endDate ? new Date(work.endDate).toISOString().split('T')[0] : "",
+                isOngoing: work.isOngoing || false
+            }))
+
             form.reset({
                 firstName: user.firstName || "",
                 lastName: user.lastName || "",
@@ -148,6 +202,9 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                 personalWebsite: user.personalWebsite || "",
                 linkedinProfile: user.linkedinProfile || "",
                 otherSocialLinks: user.otherSocialLinks || [],
+                // Use data from hook
+                recentWork: recentWorkFormatted,
+                communityIds: communityIds,
                 isSearchable: user.isSearchable ?? true,
                 profileVisibility: user.profileVisibility || "PUBLIC",
                 showEmail: user.showEmail ?? false,
@@ -157,7 +214,79 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                 showLocation: user.showLocation ?? true
             })
         }
-    }, [user, loading, form])
+    }, [user, loading, availableCommunities, existingRecentWork, form])
+
+    // Set available communities for the selector
+    useEffect(() => {
+        if (availableCommunities.length > 0) {
+            setCommunities(availableCommunities)
+        }
+    }, [availableCommunities])
+
+    // Handler for community selection changes - now just updates form state
+    const handleCommunityChange = (communityIds: string[]) => {
+        form.setValue('communityIds', communityIds, { shouldDirty: true })
+    }
+
+    // Recent work form handlers
+    const resetWorkForm = () => {
+        setWorkFormData({
+            title: "",
+            description: "",
+            link: "",
+            isOngoing: false,
+            startDate: "",
+            endDate: ""
+        })
+        setEditingWorkIndex(null)
+    }
+
+    const handleEditWork = (index: number) => {
+        const item = workFields[index] as any
+        setWorkFormData({
+            title: item.title,
+            description: item.description,
+            link: item.link || "",
+            isOngoing: item.isOngoing,
+            startDate: item.startDate,
+            endDate: item.endDate || ""
+        })
+        setEditingWorkIndex(index)
+    }
+
+    const handleSaveWork = () => {
+        if (!workFormData.title || !workFormData.description || !workFormData.startDate) {
+            return
+        }
+
+        const workItem = {
+            title: workFormData.title,
+            description: workFormData.description,
+            link: workFormData.link,
+            isOngoing: workFormData.isOngoing,
+            startDate: workFormData.startDate,
+            endDate: workFormData.isOngoing ? "" : workFormData.endDate
+        }
+
+        if (editingWorkIndex !== null) {
+            updateWork(editingWorkIndex, workItem)
+        } else {
+            appendWork(workItem)
+        }
+
+        resetWorkForm()
+    }
+
+    const formatDate = (dateString: string) => {
+        try {
+            return format(new Date(dateString), "MMM yyyy")
+        } catch {
+            return dateString
+        }
+    }
+
+    const isWorkFormValid = workFormData.title && workFormData.description && workFormData.startDate &&
+        (workFormData.isOngoing || workFormData.endDate)
 
     const workTypeOptions = [
         { value: "RESEARCH", label: t('workTypes.research') },
@@ -171,7 +300,9 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
     const expertiseOptions = [
         { value: "CLIMATE_CHANGE", label: t('expertise.climate') },
         { value: "MENTAL_HEALTH", label: t('expertise.mentalHealth') },
-        { value: "HEALTH", label: t('expertise.health') }
+        { value: "HEALTH", label: t('expertise.health') },
+        { value: "EDUCATION", label: t('expertise.education') },
+        { value: "SOCIAL_JUSTICE", label: t('expertise.socialJustice') }
     ]
 
     async function handleSubmit(values: ProfileFormValues) {
@@ -205,6 +336,8 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                     showWorkDetails: values.showWorkDetails,
                     showSocialLinks: values.showSocialLinks,
                     showLocation: values.showLocation,
+                    communityIds: values.communityIds || [],
+                    recentWork: values.recentWork || [],
                 }
 
                 const success = await updateProfile(updateData)
@@ -214,39 +347,12 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
             }
             
             toast.success(t('saveSuccess'))
-            router.push(`/profile/${values.username}`)
+            router.push(`/${locale}/profiles/${values.username}`)
         } catch (error) {
             console.error('Profile submission error:', error)
             toast.error(error instanceof Error ? error.message : t('saveError'))
         } finally {
             setIsSubmitting(false)
-        }
-    }
-
-    // Manual sync function
-    async function handleSync() {
-        setIsSyncing(true)
-        try {
-            const response = await fetch('/api/sync/clerk', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ direction: 'bidirectional' })
-            })
-
-            if (!response.ok) {
-                throw new Error('Sync failed')
-            }
-
-            const result = await response.json()
-            toast.success('Profile synced successfully')
-            
-            // Refresh the profile data
-            await refreshProfile()
-        } catch (error) {
-            console.error('Sync error:', error)
-            toast.error('Failed to sync profile')
-        } finally {
-            setIsSyncing(false)
         }
     }
 
@@ -293,20 +399,6 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                        {/* Sync Button */}
-                        <div className="flex justify-end">
-                            <Button
-                                type="button"
-                                variant="outline"
-                                size="sm"
-                                onClick={handleSync}
-                                disabled={isSyncing}
-                            >
-                                {isSyncing && <Loader2 className="mr-2 h-3 w-3 animate-spin" />}
-                                <RefreshCcw className="mr-2 h-3 w-3" />
-                                Sync Data
-                            </Button>
-                        </div>
                         {/* Email Display */}
                         <div className="space-y-2">
                             <label className="text-sm font-medium">{t('email')}</label>
@@ -608,6 +700,203 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                                 </FormItem>
                             )}
                         />
+                    </CardContent>
+                </Card>
+
+                {/* Regional Communities */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle>{tCommunities('title') || 'Regional Communities'}</CardTitle>
+                        <CardDescription>
+                            {tCommunities('description') || 'Select the regional communities you want to join'}
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <CommunitySelector
+                            selectedCommunities={form.watch('communityIds') || []}
+                            availableCommunities={communities}
+                            onChangeAction={handleCommunityChange}
+                            showCard={false}
+                            isRTL={isRTL}
+                        />
+                    </CardContent>
+                </Card>
+
+                {/* Recent Work */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle>{tRecentWork('title')}</CardTitle>
+                        <CardDescription>{tRecentWork('description')}</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        {/* Existing Work Items */}
+                        {workFields.length > 0 && (
+                            <div className="space-y-4">
+                                {workFields.map((item: any, index: number) => (
+                                    <Card key={item.id}>
+                                        <CardHeader className="pb-3">
+                                            <div className={cn("flex items-start justify-between", isRTL && "flex-row-reverse")}>
+                                                <div className="space-y-1">
+                                                    <CardTitle className="text-lg">{item.title}</CardTitle>
+                                                    <div className={cn("flex items-center gap-2 text-sm text-muted-foreground", isRTL && "flex-row-reverse")}>
+                                                        <Calendar className="h-4 w-4" />
+                                                        <span>
+                                                            {formatDate(item.startDate)} - {item.isOngoing ? tRecentWork('ongoing') : formatDate(item.endDate || "")}
+                                                        </span>
+                                                        {item.isOngoing && (
+                                                            <Badge variant="secondary">{tRecentWork('ongoing')}</Badge>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                                <div className={cn("flex gap-2", isRTL && "flex-row-reverse")}>
+                                                    <Button
+                                                        type="button"
+                                                        variant="outline"
+                                                        size="sm"
+                                                        onClick={() => handleEditWork(index)}
+                                                    >
+                                                        <Edit className="h-4 w-4" />
+                                                    </Button>
+                                                    <Button
+                                                        type="button"
+                                                        variant="outline"
+                                                        size="sm"
+                                                        onClick={() => removeWork(index)}
+                                                    >
+                                                        <Trash2 className="h-4 w-4" />
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        </CardHeader>
+                                        <CardContent>
+                                            <p className="text-gray-700 mb-3">{item.description}</p>
+                                            {item.link && (
+                                                <a
+                                                    href={item.link}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className={cn("inline-flex items-center gap-1 text-primary hover:underline", isRTL && "flex-row-reverse")}
+                                                >
+                                                    <ExternalLink className="h-4 w-4" />
+                                                    {tRecentWork('viewProject')}
+                                                </a>
+                                            )}
+                                        </CardContent>
+                                    </Card>
+                                ))}
+                            </div>
+                        )}
+
+                        {/* Add/Edit Form */}
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>
+                                    {editingWorkIndex !== null ? tRecentWork('editWork') : tRecentWork('addWork')}
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                                    <div>
+                                        <label htmlFor="work-title" className="text-sm font-medium flex items-center gap-1">
+                                            {tRecentWork('workTitle')}
+                                            <span className="text-red-500">*</span>
+                                        </label>
+                                        <Input
+                                            id="work-title"
+                                            value={workFormData.title}
+                                            onChange={(e) => setWorkFormData({ ...workFormData, title: e.target.value })}
+                                            placeholder={tRecentWork('workTitlePlaceholder')}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label htmlFor="work-link" className="text-sm font-medium">{tRecentWork('projectLink')}</label>
+                                        <Input
+                                            id="work-link"
+                                            value={workFormData.link}
+                                            onChange={(e) => setWorkFormData({ ...workFormData, link: e.target.value })}
+                                            placeholder="https://..."
+                                            type="url"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label htmlFor="work-description" className="text-sm font-medium flex items-center gap-1">
+                                        {tRecentWork('workDescription')}
+                                        <span className="text-red-500">*</span>
+                                    </label>
+                                    <Textarea
+                                        id="work-description"
+                                        value={workFormData.description}
+                                        onChange={(e) => setWorkFormData({ ...workFormData, description: e.target.value })}
+                                        placeholder={tRecentWork('descriptionPlaceholder')}
+                                        rows={3}
+                                    />
+                                </div>
+
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                                    <div>
+                                        <label htmlFor="work-start-date" className="text-sm font-medium flex items-center gap-1">
+                                            {tRecentWork('startDate')}
+                                            <span className="text-red-500">*</span>
+                                        </label>
+                                        <Input
+                                            id="work-start-date"
+                                            type="date"
+                                            value={workFormData.startDate}
+                                            onChange={(e) => setWorkFormData({ ...workFormData, startDate: e.target.value })}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label htmlFor="work-end-date" className="text-sm font-medium">
+                                            {tRecentWork('endDate')}
+                                            {!workFormData.isOngoing && <span className="text-red-500 ml-1">*</span>}
+                                        </label>
+                                        <Input
+                                            id="work-end-date"
+                                            type="date"
+                                            value={workFormData.endDate}
+                                            onChange={(e) => setWorkFormData({ ...workFormData, endDate: e.target.value })}
+                                            disabled={workFormData.isOngoing}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className={cn("flex items-center gap-2", isRTL && "flex-row-reverse")}>
+                                    <Checkbox
+                                        id="ongoing"
+                                        checked={workFormData.isOngoing}
+                                        onCheckedChange={(checked) => setWorkFormData({
+                                            ...workFormData,
+                                            isOngoing: !!checked,
+                                            endDate: checked ? "" : workFormData.endDate
+                                        })}
+                                    />
+                                    <label htmlFor="ongoing" className="text-sm font-medium">
+                                        {tRecentWork('ongoingProject')}
+                                    </label>
+                                </div>
+
+                                <div className={cn("flex gap-2 pt-4", isRTL && "flex-row-reverse")}>
+                                    <Button
+                                        type="button"
+                                        onClick={handleSaveWork}
+                                        disabled={!isWorkFormValid}
+                                    >
+                                        {editingWorkIndex !== null ? tRecentWork('updateWork') : tRecentWork('addWork')}
+                                    </Button>
+                                    {editingWorkIndex !== null && (
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            onClick={resetWorkForm}
+                                        >
+                                            {tRecentWork('cancel')}
+                                        </Button>
+                                    )}
+                                </div>
+                            </CardContent>
+                        </Card>
                     </CardContent>
                 </Card>
 

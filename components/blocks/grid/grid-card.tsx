@@ -68,9 +68,9 @@ export default function GridCard({
         </div>
         <Button
           className="mt-6"
-          variant={stegaClean(link?.buttonVariant?.variant)}
-          size={stegaClean(link?.buttonVariant?.size) || "lg"}
-          stroke={stegaClean(link?.buttonVariant?.stroke)}
+          variant={stegaClean((link?.buttonVariant as any)?.variant)}
+          size={stegaClean((link?.buttonVariant as any)?.size) || "lg"}
+          stroke={stegaClean((link?.buttonVariant as any)?.stroke)}
           asChild
         >
           <div>{link?.title ?? "Learn More"}</div>

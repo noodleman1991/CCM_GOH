@@ -115,6 +115,25 @@ function createDebouncedSearchClient(client: any, delay: number = 300) {
 // Export debounced search client with 300ms delay
 export const searchClient = createDebouncedSearchClient(baseSearchClient, 300)
 
+// Algolia v5 search result type
+export interface AlgoliaSearchResult<T = unknown> {
+  hits: T[]
+  nbHits: number
+  page: number
+  nbPages: number
+  hitsPerPage: number
+  processingTimeMS: number
+  exhaustiveNbHits: boolean
+  exhaustiveTypo: boolean
+  exhaustive: {
+    nbHits: boolean
+    typo: boolean
+  }
+  query: string
+  params: string
+  renderingContent?: Record<string, unknown>
+}
+
 // Type definitions for search records
 export interface UserSearchRecord extends Record<string, unknown> {
   objectID: string
@@ -335,7 +354,6 @@ export const INDEX_SETTINGS = {
     ],
     customRanking: [
       'desc(lastActiveAt)',
-      'desc(communityCount)',
       'desc(joinedAt)'
     ],
     attributesToHighlight: [

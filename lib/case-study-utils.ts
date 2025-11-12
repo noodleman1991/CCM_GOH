@@ -78,14 +78,15 @@ export function getLocalizedTagLabel(tag: { label: LocalizedString; value?: { cu
     return getLocalizedText(tag.label, locale, tag.value?.current || 'Tag');
 }
 
-export function canAccessCaseStudy(status: string, userRole: 'guest' | 'user' | 'admin'): boolean {
-    // Only approved case studies are accessible to all users
+export function canAccessCaseStudy(status: string, userRole: 'guest' | 'user' | 'admin' = 'guest'): boolean {
+    // ALL approved case studies are completely public - accessible to everyone
+    // No authentication required, no restrictions
     if (status === 'approved') return true;
 
-    // Admins can see all case studies
+    // Admins can see all case studies regardless of status (for review purposes)
     if (userRole === 'admin') return true;
 
-    // Regular users and guests can only see approved case studies
+    // Non-approved case studies (pending, revision, rejected) are only visible to admins
     return false;
 }
 
