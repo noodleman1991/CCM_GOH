@@ -67,7 +67,7 @@ export default async function RegionalCommunityPage({
             )}
 
             {/* Template Mode - New structured template with dynamic content */}
-            {pageData.useTemplate && pageData.regionalCommunity && (
+            {pageData.useTemplate && pageData.regionalCommunity?._id && (
                 <RegionalCommunityTemplate
                     regionalCommunity={pageData.regionalCommunity}
                     agendasGrid={pageData.agendasGrid}

@@ -135,7 +135,7 @@ async function createCaseStudiesIndexPage(lang, imageRegistry) {
             _key: 'submit-link',
             _type: 'link',
             title: translate('Submit Case Study', lang),
-            href: `/${lang}/case-studies/submit`,
+            href: `/${lang}/research-and-action/case-studies/submit`,
             buttonVariant: { variant: 'primary' }
           }]
         }]

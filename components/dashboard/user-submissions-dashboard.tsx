@@ -309,7 +309,7 @@ export default function UserSubmissionsDashboard({
         </div>
 
         <Button asChild className="flex items-center gap-2">
-          <Link href={`/${locale}/case-studies/submit`}>
+          <Link href={`/${locale}/research-and-action/case-studies/submit`}>
             <Plus className="w-4 h-4" />
             New Case Study
           </Link>
@@ -397,7 +397,7 @@ export default function UserSubmissionsDashboard({
                   </p>
                 </div>
                 <Button asChild>
-                  <Link href={`/${locale}/case-studies/submit`}>
+                  <Link href={`/${locale}/research-and-action/case-studies/submit`}>
                     <Plus className="w-4 h-4 mr-2" />
                     Submit Case Study
                   </Link>

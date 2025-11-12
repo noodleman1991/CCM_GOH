@@ -266,7 +266,7 @@ export const fetchRegionalCommunityAgendas = async ({
                     value,
                     color,
                     category
-                },
+                }[_id != null],
                 organizations[]->{
                     _id,
                     name,
@@ -279,13 +279,13 @@ export const fetchRegionalCommunityAgendas = async ({
                         },
                         alt
                     }
-                },
+                }[_id != null],
                 regionalCommunities[]->{
                     _id,
                     name,
                     slug,
                     code
-                }
+                }[_id != null]
             }`,
             params: { regionalCommunityId },
             perspective: "published",
@@ -347,7 +347,7 @@ export const fetchRegionalCommunityAgendas = async ({
                         value,
                         color,
                         category
-                    },
+                    }[_id != null],
                     organizations[]->{
                         _id,
                         name,
@@ -360,13 +360,13 @@ export const fetchRegionalCommunityAgendas = async ({
                             },
                             alt
                         }
-                    },
+                    }[_id != null],
                     regionalCommunities[]->{
                         _id,
                         name,
                         slug,
                         code
-                    }
+                    }[_id != null]
                 }`,
                 params: { featuredIds, regionalCommunityId },
                 perspective: "published",

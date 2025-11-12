@@ -187,7 +187,7 @@ export function DashboardClient({
                       {t('submitCaseStudyDescription')}
                     </CardDescription>
                     <Button asChild variant="outline" className="w-full">
-                      <Link href={`/${locale}/case-studies/submit`}>
+                      <Link href={`/${locale}/research-and-action/case-studies/submit`}>
                         {t('submit')}
                         <ArrowRight className={cn("w-4 h-4", rtl ? "mr-2" : "ml-2")} />
                       </Link>

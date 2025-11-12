@@ -234,9 +234,9 @@ export default function GridLivedExperienceComponent({
             <CardHeader className="pb-3">
                 <div className="space-y-2">
                     {/* Title */}
-                    <h3 className="font-semibold text-lg leading-tight line-clamp-2 group-hover:text-primary transition-colors">
+                    <h4 className="font-semibold text-lg leading-tight line-clamp-5 group-hover:text-primary transition-colors">
                         {title}
-                    </h3>
+                    </h4>
                 </div>
             </CardHeader>
 

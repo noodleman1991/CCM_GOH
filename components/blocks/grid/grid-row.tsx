@@ -39,6 +39,15 @@ type GridReportType = {
     showMetadata?: boolean;
 };
 
+type GridAgendaType = {
+    _type: "grid-agenda";
+    _key: string;
+    agenda: any;
+    showTags?: boolean;
+    showDownloadButtons?: boolean;
+    showMetadata?: boolean;
+};
+
 type GridCaseStudyType = {
     _type: "grid-case-study";
     _key: string;
@@ -50,7 +59,7 @@ type GridCaseStudyType = {
 };
 
 // Union of all possible grid column types
-type ExtendedGridColumn = GridCardType | GridPostType | GridReportType | GridCaseStudyType;
+type ExtendedGridColumn = GridCardType | GridPostType | GridReportType | GridAgendaType | GridCaseStudyType;
 
 // Simplified component map with explicit type union
 const componentMap: Record<string, React.ComponentType<any>> = {
@@ -89,9 +98,9 @@ export default function GridRow({
                 {(description || title) && (
                     <div className="mb-12 text-start">
                         {title && (
-                            <h2 className="mt-6 font-bold leading-[1.1] text-4xl md:text-5xl lg:text-6xl animate-fade-up [animation-delay:200ms] opacity-0">
+                            <h3 className="mt-6 font-bold leading-[1.1] text-2xl md:text-3xl lg:text-4xl animate-fade-up [animation-delay:200ms] opacity-0">
                                 {title}
-                            </h2>
+                            </h3>
                         )}
                         {description && (
                             <div className="mt-6 animate-fade-up [animation-delay:300ms] opacity-0">

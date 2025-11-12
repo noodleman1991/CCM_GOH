@@ -60,22 +60,22 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const researchActionItems = [
         {
             title: t('allOutputs'),
-            url: "/outputs",
+            url: "/research-and-action/all-outputs",
             icon: FileText,
         },
         {
             title: t('globalAgenda'),
-            url: "/global-agenda",
+            url: "/research-and-action/global-agenda",
             icon: Globe,
         },
         {
             title: t('regionalAgendas'),
-            url: "/regional-agendas",
+            url: "/research-and-action/regional-agendas",
             icon: MapPin,
         },
         {
             title: t('communityAgendas'),
-            url: "/community-agendas",
+            url: "/research-and-action/community-agendas",
             icon: Users,
         },
         {
@@ -85,12 +85,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         },
         {
             title: t('toolkits'),
-            url: "/toolkits",
+            url: "/research-and-action/toolkits",
             icon: Lightbulb,
         },
         {
             title: t('impactReports'),
-            url: "/impact-reports",
+            url: "/research-and-action/impact-reports",
             icon: BarChart3,
         },
     ];
