@@ -150,7 +150,9 @@ export function WorkInfoStep({
     : [
         { value: "CLIMATE_CHANGE", label: t("expertise.climate") },
         { value: "MENTAL_HEALTH", label: t("expertise.mentalHealth") },
-        { value: "HEALTH", label: t("expertise.health") }
+        { value: "HEALTH", label: t("expertise.health") },
+        { value: "EDUCATION", label: t("expertise.education") },
+        { value: "SOCIAL_JUSTICE", label: t("expertise.socialJustice") }
       ]
 
   return (

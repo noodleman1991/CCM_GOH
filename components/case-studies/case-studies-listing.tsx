@@ -70,6 +70,7 @@ export default function CaseStudiesListing({
   }
 
   const getAuthorInitials = (author: { name: string }) => {
+    if (!author?.name || typeof author.name !== 'string') return 'NA'
     return author.name
       .split(' ')
       .map(n => n[0])
@@ -97,7 +98,7 @@ export default function CaseStudiesListing({
       compact && "min-w-[300px]",
       layout === 'horizontal-scroll' && "flex-shrink-0"
     )}>
-      <Link href={`/${locale}/case-studies/${caseStudy.slug}`}>
+      <Link href={`/${locale}/research-and-action/case-studies/${caseStudy.slug}`}>
         <div className="relative">
           {/* Image */}
           <div className={cn(
@@ -282,7 +283,7 @@ export default function CaseStudiesListing({
       <div className={cn("space-y-4", className)}>
         {caseStudies.map((caseStudy) => (
           <Card key={caseStudy._id} className="overflow-hidden">
-            <Link href={`/${locale}/case-studies/${caseStudy.slug}`}>
+            <Link href={`/${locale}/research-and-action/case-studies/${caseStudy.slug}`}>
               <div className="flex">
                 {/* Image */}
                 <div className="relative w-48 h-32 flex-shrink-0 bg-muted">

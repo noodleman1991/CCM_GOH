@@ -5,15 +5,18 @@
  * Run this script after setting up your Algolia environment variables
  */
 
-const { algoliasearch } = require('algoliasearch')
-require('dotenv').config()
+import { algoliasearch } from 'algoliasearch'
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 const ALGOLIA_INDICES = {
   USERS: 'users',
   SANITY_CONTENT: 'sanity_content',
-  REPORTS: 'reports',
+  AGENDAS: 'agendas',
   POSTS: 'posts',
-  CASE_STUDIES: 'case_studies'
+  CASE_STUDIES: 'case_studies',
+  NEWS: 'news'
 }
 
 const INDEX_SETTINGS = {
@@ -51,7 +54,6 @@ const INDEX_SETTINGS = {
     ],
     customRanking: [
       'desc(lastActiveAt)',
-      'desc(communityCount)',
       'desc(joinedAt)'
     ],
     attributesToHighlight: [
@@ -103,47 +105,6 @@ const INDEX_SETTINGS = {
     ],
     hitsPerPage: 20,
     maxValuesPerFacet: 100
-  },
-  reports: {
-    searchableAttributes: [
-      'unordered(title.en,title.es,title.fr,title.ar)',
-      'unordered(subtitle.en,subtitle.es,subtitle.fr,subtitle.ar)',
-      'unordered(description.en,description.es,description.fr,description.ar)',
-      'unordered(organizations)',
-      'unordered(tags)',
-      'unordered(reportType)'
-    ],
-    attributesForFaceting: [
-      'reportType',
-      'year',
-      'featured',
-      'tags',
-      'accessLevel',
-      'organizations',
-      'regionalCommunities',
-      'language'
-    ],
-    customRanking: [
-      'desc(featured)',
-      'desc(totalDownloadCount)',
-      'desc(publishDate)'
-    ],
-    attributesToHighlight: [
-      'title.en',
-      'title.es',
-      'title.fr',
-      'title.ar',
-      'organizations',
-      'tags'
-    ],
-    attributesToSnippet: [
-      'description.en:30',
-      'description.es:30',
-      'description.fr:30',
-      'description.ar:30'
-    ],
-    hitsPerPage: 20,
-    maxValuesPerFacet: 100
   }
 }
 
@@ -180,9 +141,10 @@ async function initializeSearch() {
     // Initialize other indices (for future use)
     const indicesToCreate = [
       ALGOLIA_INDICES.SANITY_CONTENT,
-      ALGOLIA_INDICES.REPORTS,
+      ALGOLIA_INDICES.AGENDAS,
       ALGOLIA_INDICES.POSTS,
-      ALGOLIA_INDICES.CASE_STUDIES
+      ALGOLIA_INDICES.CASE_STUDIES,
+      ALGOLIA_INDICES.NEWS
     ]
 
     for (const indexName of indicesToCreate) {
@@ -194,11 +156,9 @@ async function initializeSearch() {
         customRanking: ['desc(publishedAt)', 'desc(downloadCount)']
       }
 
-      // Use specific settings for case studies and reports
+      // Use specific settings for case studies
       if (indexName === ALGOLIA_INDICES.CASE_STUDIES) {
         settings = INDEX_SETTINGS.case_studies
-      } else if (indexName === ALGOLIA_INDICES.REPORTS) {
-        settings = INDEX_SETTINGS.reports
       }
 
       await client.setSettings({
@@ -213,7 +173,7 @@ async function initializeSearch() {
     console.log('1. Run your application: npm run dev')
     console.log('2. Sync users to search: POST /api/search/users/sync with {"type": "full"}')
     console.log('3. Sync case studies: POST /api/search/case-studies/sync with {"type": "full"}')
-    console.log('4. Sync reports: POST /api/search/reports/sync with {"type": "full"}')
+    console.log('4. Sync agendas: POST /api/search/agendas/sync with {"type": "full"}')
     console.log('5. Visit /search to test the search functionality')
 
   } catch (error) {

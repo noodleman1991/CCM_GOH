@@ -3,6 +3,9 @@
 import { prisma } from "@/lib/prisma"
 import { auth } from '@clerk/nextjs/server'
 import { unstable_cache } from 'next/cache'
+import { UserService } from '@/lib/services/user.service'
+import { getLocale } from 'next-intl/server'
+import type { SupportedLocale } from '@/types/prisma'
 
 export interface ProfileData {
     id: string
@@ -49,33 +52,41 @@ export interface ProfileData {
     work: string
 }
 
-// Cache profile data for 5 minutes
-const getCachedUserProfile = unstable_cache(
-    async (username: string): Promise<ProfileData | null> => {
-        const user = await prisma.user.findUnique({
-            where: { username },
-            include: {
-                recentWork: {
-                    orderBy: { startDate: 'desc' },
-                    take: 5
-                },
-                communityMemberships: {
-                    include: {
-                        community: true
-                    }
-                }
-            }
-        })
+/**
+ * Get user profile with privacy enforcement
+ * Uses UserService.getUserForProfile which:
+ * - Enforces privacy at query level (profile visibility)
+ * - Redacts private fields based on user settings (showEmail, showWorkDetails, etc.)
+ * - Only transmits data that the viewer is allowed to see
+ */
+export async function getUserProfile(username: string): Promise<ProfileData | null> {
+    try {
+        // Get current user ID (viewer)
+        const { userId: viewerId } = await auth()
 
-        if (!user) {
+        // Get locale for internationalization
+        const locale = await getLocale() as SupportedLocale
+
+        // Use privacy-aware query
+        const result = await UserService.getUserForProfile(
+            username,
+            viewerId || null,
+            { locale }
+        )
+
+        if (!result.success || !result.data) {
             return null
         }
 
+        const user = result.data as any // Type assertion for relations
+
+        // Compute derived fields
         const fullName = [user.firstName, user.lastName].filter(Boolean).join(' ')
         const location = [user.city, user.country].filter(Boolean).join(', ')
         const work = [user.position, user.organization].filter(Boolean).join(' at ')
-        const displayName = fullName || user.username || 'Unnamed User'
-        const initials = `${user.firstName?.[0] || ''}${user.lastName?.[0] || ''}`.toUpperCase() ||
+        const displayName = user.displayName || fullName || user.username || 'Unnamed User'
+        const initials = user.initials ||
+            `${user.firstName?.[0] || ''}${user.lastName?.[0] || ''}`.toUpperCase() ||
             user.username?.[0]?.toUpperCase() || '??'
 
         return {
@@ -84,42 +95,30 @@ const getCachedUserProfile = unstable_cache(
             lastName: user.lastName,
             username: user.username,
             image: user.image,
-            email: user.email,
+            email: user.email, // Already redacted by getUserForProfile if showEmail=false
             bio: user.bio,
             ageGroup: user.ageGroup,
-            country: user.country,
-            city: user.city,
-            workTypes: user.workTypes,
-            expertiseAreas: user.expertiseAreas,
-            organization: user.organization,
-            position: user.position,
-            workBio: user.workBio,
-            personalWebsite: user.personalWebsite,
-            linkedinProfile: user.linkedinProfile,
+            country: user.country, // Already redacted if showLocation=false
+            city: user.city, // Already redacted if showLocation=false
+            workTypes: user.workTypes || [],
+            expertiseAreas: user.expertiseAreas || [],
+            organization: user.organization, // Already redacted if showWorkDetails=false
+            position: user.position, // Already redacted if showWorkDetails=false
+            workBio: user.workBio, // Already redacted if showWorkDetails=false
+            personalWebsite: user.personalWebsite, // Already redacted if showSocialLinks=false
+            linkedinProfile: user.linkedinProfile, // Already redacted if showSocialLinks=false
             otherSocialLinks: (user.otherSocialLinks as Array<{platform: string, url: string}>) || [],
             role: user.role,
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
-            recentWork: user.recentWork,
-            communities: user.communityMemberships.map(membership => membership.community),
-            // CRITICAL: Actually return the computed properties
+            recentWork: user.recentWork || [],
+            communities: user.communityMemberships?.map((cm: any) => cm.community) || [],
             displayName,
             fullName,
             initials,
             location,
             work
         }
-    },
-    ['profile'],
-    {
-        revalidate: 300, // 5 minutes
-        tags: ['profile']
-    }
-)
-
-export async function getUserProfile(username: string): Promise<ProfileData | null> {
-    try {
-        return await getCachedUserProfile(username)
     } catch (error) {
         console.error('Error fetching user profile:', error)
         return null

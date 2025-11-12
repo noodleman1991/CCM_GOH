@@ -14,11 +14,18 @@ const OnboardingSchema = z.object({
   bio: z.string().max(500).optional(),
   country: z.string().max(100).optional(),
   city: z.string().max(100).optional(),
-  preferredLanguage: z.enum(["EN", "ES", "FR", "AR"]).optional(),
+  preferredLanguage: z.enum(["EN", "ES", "FR", "AR"], {
+    errorMap: () => ({ message: "Please choose your preferred language" })
+  }).optional(),
 
   // Work Info
-  workTypes: z.array(z.enum(["RESEARCH", "POLICY", "LIVED_EXPERIENCE_EXPERT", "NGO", "COMMUNITY_ORGANIZATION", "EDUCATION_TEACHING"])).default([]),
-  expertiseAreas: z.array(z.enum(["CLIMATE_CHANGE", "MENTAL_HEALTH", "HEALTH"])).default([]),
+  workTypes: z.array(z.enum(["RESEARCH", "POLICY", "LIVED_EXPERIENCE_EXPERT", "NGO", "COMMUNITY_ORGANIZATION", "EDUCATION_TEACHING"], {
+    errorMap: () => ({ message: "Please select the types of work you do" })
+  })).default([]),
+  expertiseAreas: z.array(z.enum(["CLIMATE_CHANGE", "MENTAL_HEALTH", "HEALTH", "EDUCATION", "SOCIAL_JUSTICE"], {
+    errorMap: () => ({ message: "Please select your areas of expertise" })
+  })).default([]),
+  communityIds: z.array(z.string()).max(10).default([]),
   organization: z.string().max(200).optional(),
   position: z.string().max(200).optional(),
   workBio: z.string().max(1000).optional(),
@@ -41,7 +48,9 @@ const OnboardingSchema = z.object({
 
   // Privacy Settings
   isSearchable: z.boolean().default(true),
-  profileVisibility: z.enum(["PUBLIC", "MEMBERS", "PRIVATE"]).default("PUBLIC"),
+  profileVisibility: z.enum(["PUBLIC", "MEMBERS", "PRIVATE"], {
+    errorMap: () => ({ message: "Please choose who can see your profile" })
+  }).default("PUBLIC"),
   showEmail: z.boolean().default(false),
   showPhoneNumber: z.boolean().default(false),
   showWorkDetails: z.boolean().default(true),
@@ -207,6 +216,34 @@ export async function POST(request: NextRequest) {
       })
     }
 
+    // Handle community memberships
+    if (validatedData.communityIds && validatedData.communityIds.length > 0) {
+      // Delete existing community memberships
+      await prisma.userCommunity.deleteMany({
+        where: { userId }
+      })
+
+      // Verify all communities exist
+      const communities = await prisma.community.findMany({
+        where: {
+          id: { in: validatedData.communityIds }
+        }
+      })
+
+      if (communities.length === validatedData.communityIds.length) {
+        // Create new community memberships
+        await prisma.userCommunity.createMany({
+          data: validatedData.communityIds.map(communityId => ({
+            userId,
+            communityId,
+            role: 'community_member' as const
+          }))
+        })
+      } else {
+        console.warn(`⚠️ Some communities not found for user ${userId}`)
+      }
+    }
+
     // Sync data to Clerk metadata following the established pattern
     const clerkUpdateData = {
       public_metadata: {
@@ -218,6 +255,7 @@ export async function POST(request: NextRequest) {
         preferredLanguage: validatedData.preferredLanguage,
         workTypes: validatedData.workTypes,
         expertiseAreas: validatedData.expertiseAreas,
+        communityIds: validatedData.communityIds,
         organization: validatedData.organization,
         position: validatedData.position,
         workBio: validatedData.workBio,
@@ -316,6 +354,19 @@ export async function GET() {
         personalWebsite: true,
         linkedinProfile: true,
         otherSocialLinks: true,
+        communityMemberships: {
+          select: {
+            communityId: true,
+            community: {
+              select: {
+                id: true,
+                name: true,
+                type: true,
+                regionalName: true
+              }
+            }
+          }
+        },
         isSearchable: true,
         profileVisibility: true,
         showEmail: true,

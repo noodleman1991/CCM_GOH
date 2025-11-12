@@ -3,7 +3,8 @@
  * Provides clean URL routing with ?q= parameter format
  */
 
-import type { UiState } from 'instantsearch.js'
+// Define UiState type locally since it's not exported by react-instantsearch
+type UiState = Record<string, any>
 
 interface RouteState {
   q?: string

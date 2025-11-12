@@ -43,7 +43,8 @@
       "easternSouthEasternAsia": "Eastern and South-Eastern Asia",
       "latinAmericaCaribbean": "Latin America and the Caribbean",
       "oceania": "Oceania",
-      "europeNorthAmerica": "Europe and North America"
+      "europeNorthAmerica": "Europe and North America",
+      "noRegionalCommunity": "No Regional Community"
     },
     "specialGroups": {
       "youth": "Youth",
@@ -68,14 +69,14 @@
     "unauthorized": "You need to log in to access this page",
     "forbidden": "You don't have permission to access this page",
     "validation": {
-      "required": "{field} is required",
-      "email": "Please enter a valid email address",
-      "minLength": "{field} must be at least {length} characters",
-      "maxLength": "{field} cannot exceed {length} characters",
-      "invalidUrl": "Please enter a valid URL starting with http:// or https://",
-      "urlProtocolRequired": "URL must start with http:// or https://",
-      "requiredFields": "Please complete all required fields before continuing.",
-      "chooseLanguage": "Please choose your preferred language"
+      "required": "We'd love to know your {field}",
+      "email": "Please share a valid email address so we can stay in touch",
+      "minLength": "Could you add a bit more detail? We need at least {length} characters for {field}",
+      "maxLength": "Let's keep {field} under {length} characters to make it easier to read",
+      "invalidUrl": "Please share a complete web address starting with http:// or https://",
+      "urlProtocolRequired": "Web addresses should start with http:// or https://",
+      "requiredFields": "Just a few more details and you're all set! Please fill in the highlighted fields.",
+      "chooseLanguage": "Please choose your preferred language so we can provide the best experience"
     }
   },
   "common": {
@@ -194,24 +195,45 @@
         "livedExperience": "Expert through lived experience",
         "ngo": "NGO",
         "communityOrg": "Community organization",
+        "communityorganization": "Community organization",
         "education": "Education or teaching"
       },
       "expertise": {
         "climate": "Climate Change",
         "mentalHealth": "Mental Health",
-        "health": "Health"
+        "health": "Health",
+        "education": "Education",
+        "socialJustice": "Social Justice"
       }
     },
     "recentWork": {
-      "title": "Recent Work", 
+      "title": "Recent Work",
       "addWork": "Add Work",
+      "editWork": "Edit Work",
+      "viewProject": "View Project",
+      "updateWork": "Update Work",
+      "cancel": "Cancel",
       "noWorks": "No recent work to display",
       "ongoing": "Ongoing",
-      "present": "Present"
+      "present": "Present",
+      "description": "Share your projects and contributions to help others understand your work",
+      "workTitle": "Project Title",
+      "workTitlePlaceholder": "Enter your project or work title",
+      "workDescription": "Description",
+      "descriptionPlaceholder": "Tell us about this project and its impact...",
+      "projectLink": "Project Link",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "ongoingProject": "This work is ongoing"
     },
     "communities": {
       "title": "Communities",
+      "description": "Select the regional communities you'd like to join",
+      "saved": "Communities updated successfully",
+      "error": "Failed to update communities",
       "noCommunities": "Not a member of any communities",
+      "noneSelected": "No communities selected yet",
+      "noCommunitiesAvailable": "No communities available at this time",
       "regionalCommunities": "Regional Communities",
       "specialGroups": "Special Groups",
       "regional": {
@@ -241,8 +263,8 @@
       "saveSuccess": "Profile updated successfully",
       "saveError": "Failed to update profile",
       "clerkInfo": {
-        "title": "Account Information", 
-        "description": "This information is managed through your account settings and can't be changed here. Use the account settings to update email and phone.",
+        "title": "Account Information",
+        "description": "This information is managed through your account settings and can't be changed here. Your profile changes are automatically synced when you save.",
         "emailNote": "To change your email address, go to your account settings",
         "phoneNote": "To add or change your phone number, go to your account settings"
       },
@@ -288,7 +310,9 @@
         "description": "Select all that apply",
         "climate": "Climate Change",
         "mentalHealth": "Mental Health",
-        "health": "Health"
+        "health": "Health",
+        "education": "Education",
+        "socialJustice": "Social Justice"
       },
       "organization": "Organization",
       "position": "Position",
@@ -518,6 +542,35 @@
     }
   },
   "dashboard": {
+    "pageTitle": "Dashboard - Connecting Climate Minds Hub",
+    "pageDescription": "Your personal hub for managing your profile, connecting with the community, and sharing your work",
+    "welcome": "Welcome, {name}",
+    "subtitle": "Your hub for collaboration and impact",
+    "editProfile": "Edit Profile",
+    "anonymousUser": "Anonymous User",
+    "completeProfileMessage": "Complete your profile to increase visibility and connect with more collaborators",
+    "quickActions": "Quick Actions",
+    "manageProfile": "Manage Profile",
+    "manageProfileDescription": "Update your information, expertise, and work history",
+    "viewProfile": "View Profile",
+    "submitCaseStudy": "Submit Case Study",
+    "submitCaseStudyDescription": "Share your climate action work with the community",
+    "submit": "Submit",
+    "collaborate": "Collaborate",
+    "collaborateDescription": "Find and connect with climate minds worldwide",
+    "findCollaborators": "Find Collaborators",
+    "accountSettings": "Account Settings",
+    "accountSettingsDescription": "Manage your account preferences and security",
+    "manageAccount": "Manage Account",
+    "recentWork": "Recent Work",
+    "ongoing": "Ongoing",
+    "yourCommunity": "Your Community",
+    "visitCommunity": "Visit Community",
+    "recentNews": "Recent News",
+    "viewAllNews": "View All News",
+    "joinCommunityTitle": "Join a Regional Community",
+    "joinCommunityDescription": "Connect with climate minds in your region and stay updated on local initiatives",
+    "exploreCommunities": "Explore Communities",
     "greeting": "Hello, {name}",
     "summary": "Here's your summary",
     "recentActivity": "Recent Activity",
@@ -569,13 +622,32 @@
     }
   },
   "caseStudies": {
+    "title": "Case Studies",
+    "description": "Explore research and insights from our global community",
     "pageTitle": "Case Studies",
     "pageDescription": "Explore research and insights from our global community",
     "featured": "Featured Case Studies",
+    "recent": "Recently Published",
     "browseByTopic": "Browse by Topic",
     "viewAll": "View All",
+    "searchButton": "Search",
+    "submitButton": "Submit Case Study",
+    "searchResults": "Search Results",
+    "resultsFound": "results found",
     "noResults": "No case studies found",
+    "noResultsDescription": "Try adjusting your search or filters to find what you're looking for.",
+    "clearFilters": "Clear all filters",
     "filters": {
+      "searchPlaceholder": "Search case studies...",
+      "topicPlaceholder": "All Topics",
+      "tagPlaceholder": "All Tags",
+      "communityPlaceholder": "All Communities",
+      "filters": "Filters",
+      "tag": "Tags",
+      "community": "Community",
+      "activeFilters": "Active filters",
+      "clearAll": "Clear all",
+      "updating": "Updating...",
       "all": "All Topics",
       "featured": "Featured",
       "recent": "Recently Published"
@@ -605,6 +677,25 @@
       "publishedAt": "Published",
       "submittedAt": "Submitted"
     }
+  },
+  "caseStudy": {
+    "backToCaseStudies": "Back to Case Studies"
+  },
+  "livedExperiences": {
+    "title": "Lived Experiences",
+    "description": "Watch and learn from personal stories of climate impact from communities around the world",
+    "pageTitle": "Lived Experiences",
+    "pageDescription": "Watch and learn from personal stories of climate impact from communities around the world",
+    "searchPlaceholder": "Search lived experiences...",
+    "filters": "Filters",
+    "filterByRegion": "Filter by Region",
+    "filterByTag": "Filter by Tag",
+    "selectAll": "Select All",
+    "deselectAll": "Deselect All",
+    "clearFilters": "Clear Filters",
+    "noResults": "No videos found matching your filters",
+    "video": "video",
+    "videos": "videos"
   },
   "revisionAlert": {
     "title": "Action Required: Revision Needed",
@@ -652,6 +743,60 @@
       "result": "result",
       "relevant": "relevant results out of",
       "foundIn": "Found in"
+    }
+  },
+  "collaborate": {
+    "pageTitle": "Collaborate",
+    "pageDescription": "Connect with community members and discover potential collaborators",
+    "searchPlaceholder": "Search for collaborators by name, expertise, or organization...",
+    "noResults": "No collaborators found matching your search",
+    "noResultsDescription": "Try adjusting your search or filters to find members",
+    "regionalCommunities": "Regional Communities",
+    "allCommunities": "All Communities",
+    "filters": {
+      "title": "Filters",
+      "communities": "Communities",
+      "workTypes": "Work Types",
+      "expertise": "Expertise",
+      "selectAll": "Select All",
+      "clearFilters": "Deselect All",
+      "selectedCount": "{selected} of {total} selected",
+      "applyFilters": "Apply filters",
+      "showCommunities": "Show communities",
+      "hideCommunities": "Hide communities"
+    },
+    "carousel": {
+      "expand": "Expand",
+      "collapse": "Collapse",
+      "viewAll": "View all",
+      "showMore": "Show more",
+      "loadMore": "Load more",
+      "noMembers": "No members in this community yet"
+    },
+    "userCard": {
+      "viewProfile": "View profile",
+      "profileCompleteness": "Profile {percentage}% complete",
+      "lastActive": "Last active {time}",
+      "recentProjects": "{count, plural, =1 {Recent project} other {Recent projects}}",
+      "moreProjects": "more",
+      "never": "Never",
+      "justNow": "Just now",
+      "minutesAgo": "{count} min ago",
+      "hoursAgo": "{count}h ago",
+      "daysAgo": "{count}d ago",
+      "weeksAgo": "{count}w ago",
+      "monthsAgo": "{count}mo ago"
+    },
+    "stats": {
+      "totalMembers": "{count} members",
+      "member": "member",
+      "members": "members",
+      "showing": "Showing {count} of {total}"
+    },
+    "activeFilters": {
+      "title": "Active filters:",
+      "search": "Search: {query}",
+      "clear": "Reset All Filters"
     }
   },
   "onboarding": {
@@ -730,7 +875,9 @@
         "expertise": {
           "climate": "Climate Change",
           "mentalHealth": "Mental Health",
-          "health": "Health"
+          "health": "Health",
+          "education": "Education",
+          "socialJustice": "Social Justice"
         },
         "organization": "Organization",
         "organizationPlaceholder": "Enter your organization name",
@@ -741,6 +888,8 @@
         "workBioHint": "This helps others understand your professional background and expertise",
         "workTypesHint": "Select all types of work that apply to your professional activities",
         "expertiseAreasHint": "Choose the areas where you have knowledge, experience, or specialization",
+        "regionalCommunities": "Regional Communities",
+        "regionalCommunitiesHint": "Select the regional communities you'd like to join",
         "socialLinks": "Social Links",
         "socialLinksDescription": "Add links to help others connect with you professionally",
         "personalWebsite": "Personal Website",

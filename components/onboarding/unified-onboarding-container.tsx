@@ -49,6 +49,7 @@ export default function UnifiedOnboardingContainer() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [sanityContent, setSanityContent] = useState<any>(null)
   const [userManagementOptions, setUserManagementOptions] = useState<any>(null)
+  const [communities, setCommunities] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [validationError, setValidationError] = useState<string | null>(null)
   const [dynamicSchema, setDynamicSchema] = useState<any>(null)
@@ -81,13 +82,64 @@ export default function UnifiedOnboardingContainer() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [content, options] = await Promise.all([
+        const [content, options, communitiesRes, existingDataRes] = await Promise.all([
           fetchOnboardingContent(locale),
-          fetchUserManagementOptions()
+          fetchUserManagementOptions(),
+          fetch('/api/communities').then(r => r.json()),
+          fetch('/api/onboarding/complete').then(r => r.json()).catch(() => null)
         ])
 
         setSanityContent(content)
         setUserManagementOptions(options)
+        if (communitiesRes.success) {
+          setCommunities(communitiesRes.data || [])
+        }
+
+        // If user has existing data, populate the form
+        if (existingDataRes?.success && existingDataRes?.user) {
+          const userData = existingDataRes.user
+
+          // Populate form with existing data
+          form.reset({
+            basicInfo: {
+              firstName: userData.firstName || '',
+              lastName: userData.lastName || '',
+              username: userData.username || '',
+              bio: userData.bio || '',
+              country: userData.country || '',
+              city: userData.city || '',
+              preferredLanguage: userData.preferredLanguage || undefined
+            },
+            workInfo: {
+              workTypes: userData.workTypes || [],
+              expertiseAreas: userData.expertiseAreas || [],
+              communityIds: userData.communityMemberships?.map((m: any) => m.communityId) || [],
+              organization: userData.organization || '',
+              position: userData.position || '',
+              workBio: userData.workBio || '',
+              personalWebsite: userData.personalWebsite || '',
+              linkedinProfile: userData.linkedinProfile || '',
+              otherSocialLinks: userData.otherSocialLinks || []
+            },
+            recentWork: userData.recentWork?.map((work: any) => ({
+              title: work.title,
+              description: work.description || '',
+              link: work.link || '',
+              isOngoing: work.isOngoing || false,
+              startDate: work.startDate ? new Date(work.startDate).toISOString().split('T')[0] : '',
+              endDate: work.endDate ? new Date(work.endDate).toISOString().split('T')[0] : ''
+            })) || [],
+            privacySettings: {
+              isSearchable: userData.isSearchable ?? true,
+              profileVisibility: userData.profileVisibility || 'PUBLIC',
+              showEmail: userData.showEmail ?? false,
+              showPhoneNumber: userData.showPhoneNumber ?? false,
+              showWorkDetails: userData.showWorkDetails ?? true,
+              showSocialLinks: userData.showSocialLinks ?? true,
+              showLocation: userData.showLocation ?? true
+            }
+          })
+        }
 
         // Create dynamic schema with Sanity validation messages
         const schema = createOnboardingSchema(content?.validationMessages)
@@ -226,6 +278,7 @@ export default function UnifiedOnboardingContainer() {
         // Work info - map Sanity IDs to enum keys
         workTypes: mapSanityToEnumKeys(data.workInfo.workTypes || [], userManagementOptions?.workTypes || []),
         expertiseAreas: mapSanityToEnumKeys(data.workInfo.expertiseAreas || [], userManagementOptions?.expertiseAreas || []),
+        communityIds: data.workInfo.communityIds || [],
         organization: data.workInfo.organization,
         position: data.workInfo.position,
         workBio: data.workInfo.workBio,
@@ -405,6 +458,7 @@ export default function UnifiedOnboardingContainer() {
                       content={sanityContent}
                       workTypes={userManagementOptions?.workTypes}
                       expertiseAreas={userManagementOptions?.expertiseAreas}
+                      communities={communities}
                       isSubmitting={isSubmitting}
                     />
                   </motion.div>

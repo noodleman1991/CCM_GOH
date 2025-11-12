@@ -34,6 +34,7 @@
     "livedExperiences": "التجارب المعيشة",
     "about": "حول",
     "feedback": "التعليقات",
+    "search": "بحث",
     "searchPlaceholder": "البحث...",
     "regions": {
       "subSaharanAfrica": "أفريقيا جنوب الصحراء",
@@ -42,7 +43,8 @@
       "easternSouthEasternAsia": "شرق وجنوب شرق آسيا",
       "latinAmericaCaribbean": "أمريكا اللاتينية والكاريبي",
       "oceania": "أوقيانوسيا",
-      "europeNorthAmerica": "أوروبا وأمريكا الشمالية"
+      "europeNorthAmerica": "أوروبا وأمريكا الشمالية",
+      "noRegionalCommunity": "بدون مجتمع إقليمي"
     },
     "specialGroups": {
       "youth": "الشباب",
@@ -67,14 +69,14 @@
     "unauthorized": "تحتاج لتسجيل الدخول للوصول إلى هذه الصفحة",
     "forbidden": "ليس لديك إذن للوصول إلى هذه الصفحة",
     "validation": {
-      "required": "{field} مطلوب",
-      "email": "يرجى إدخال عنوان بريد إلكتروني صحيح",
-      "minLength": "{field} يجب أن يكون {length} أحرف على الأقل",
-      "maxLength": "{field} لا يمكن أن يتجاوز {length} أحرف",
-      "invalidUrl": "يرجى إدخال عنوان URL صالح يبدأ بـ http:// أو https://",
-      "urlProtocolRequired": "يجب أن يبدأ عنوان URL بـ http:// أو https://",
-      "requiredFields": "يرجى إكمال جميع الحقول المطلوبة قبل المتابعة.",
-      "chooseLanguage": "يرجى اختيار لغتك المفضلة"
+      "required": "نود معرفة {field} الخاص بك",
+      "email": "يرجى مشاركة عنوان بريد إلكتروني صالح حتى نتمكن من البقاء على اتصال",
+      "minLength": "هل يمكنك إضافة المزيد من التفاصيل؟ نحتاج إلى {length} حرفاً على الأقل لـ {field}",
+      "maxLength": "دعنا نبقي {field} أقل من {length} حرفاً لتسهيل القراءة",
+      "invalidUrl": "يرجى مشاركة عنوان ويب كامل يبدأ بـ http:// أو https://",
+      "urlProtocolRequired": "يجب أن تبدأ عناوين الويب بـ http:// أو https://",
+      "requiredFields": "بضعة تفاصيل أخرى وستكون جاهزاً! يرجى ملء الحقول المميزة.",
+      "chooseLanguage": "يرجى اختيار لغتك المفضلة حتى نتمكن من تقديم أفضل تجربة"
     }
   },
   "common": {
@@ -95,14 +97,55 @@
     "no": "لا"
   },
   "dashboard": {
-    "greeting": "أهلاً، {name}",
-    "summary": "هنا ملخصك",
-    "recentActivity": "النشاط الحديث",
+    "greeting": "مرحباً، {name}",
+    "summary": "ملخصك هنا",
+    "recentActivity": "النشاط الأخير",
     "noActivity": "لا يوجد نشاط حديث",
     "viewAll": "عرض الكل",
     "personalSettings": "الإعدادات الشخصية",
     "buildingApp": "بناء تطبيقك",
-    "dataFetching": "جلب البيانات"
+    "dataFetching": "جلب البيانات",
+    "submissions": {
+      "pageTitle": "مراسلاتي",
+      "pageDescription": "إدارة مراسلات ومسودات دراسات الحالة الخاصة بك",
+      "title": "مراسلاتي",
+      "description": "إدارة مراسلات ومسودات دراسات الحالة الخاصة بك",
+      "newCaseStudy": "دراسة حالة جديدة",
+      "status": {
+        "pending": "قيد المراجعة",
+        "approved": "منشور",
+        "rejected": "مرفوض",
+        "revision": "يحتاج تنقيح"
+      },
+      "tabs": {
+        "submissions": "المراسلات",
+        "drafts": "المسودات"
+      },
+      "actions": {
+        "edit": "تحرير وإعادة إرسال",
+        "view": "عرض المنشور",
+        "continue": "متابعة الكتابة",
+        "underReview": "قيد المراجعة"
+      },
+      "empty": {
+        "submissions": {
+          "title": "لا توجد مراسلات بعد",
+          "description": "ابدأ بإرسال دراسة الحالة الأولى لمشاركة بحثك مع المجتمع.",
+          "action": "إرسال دراسة حالة"
+        },
+        "drafts": {
+          "title": "لا توجد مسودات محفوظة",
+          "description": "ستظهر مسودات دراسات الحالة الخاصة بك هنا تلقائياً أثناء العمل عليها."
+        }
+      },
+      "alerts": {
+        "revision": {
+          "title": "مطلوب إجراء",
+          "description": "لديك {count} دراسة حالة تحتاج تنقيح بناءً على ملاحظات المحرر.",
+          "editorFeedback": "ملاحظات المحرر:"
+        }
+      }
+    }
   },
   "settings": {
     "title": "الإعدادات",
@@ -200,21 +243,45 @@
         "livedExperience": "خبير من التجربة المعاشة",
         "ngo": "منظمة غير حكومية",
         "communityOrg": "منظمة مجتمعية",
+        "communityorganization": "منظمة مجتمعية",
         "education": "التعليم أو التدريس"
       },
       "expertise": {
         "climate": "التغير المناخي",
         "mentalHealth": "الصحة النفسية",
-        "health": "الصحة"
+        "health": "الصحة",
+        "education": "التعليم",
+        "socialJustice": "العدالة الاجتماعية"
       }
     },
     "recentWork": {
       "title": "الأعمال الحديثة",
+      "addWork": "إضافة عمل",
+      "editWork": "تحرير العمل",
+      "viewProject": "عرض المشروع",
+      "updateWork": "تحديث العمل",
+      "cancel": "إلغاء",
+      "noWorks": "لا توجد أعمال حديثة للعرض",
       "ongoing": "مستمر",
-      "present": "الحاضر"
+      "present": "الحاضر",
+      "description": "شارك مشاريعك ومساهماتك لمساعدة الآخرين على فهم عملك",
+      "workTitle": "عنوان المشروع",
+      "workTitlePlaceholder": "أدخل عنوان مشروعك أو عملك",
+      "workDescription": "الوصف",
+      "descriptionPlaceholder": "أخبرنا عن هذا المشروع وتأثيره...",
+      "projectLink": "رابط المشروع",
+      "startDate": "تاريخ البداية",
+      "endDate": "تاريخ الانتهاء",
+      "ongoingProject": "هذا العمل مستمر"
     },
     "communities": {
       "title": "المجتمعات",
+      "description": "اختر المجتمعات الإقليمية التي ترغب في الانضمام إليها",
+      "saved": "تم تحديث المجتمعات بنجاح",
+      "error": "فشل في تحديث المجتمعات",
+      "noCommunities": "ليس عضواً في أي مجتمع",
+      "noneSelected": "لم يتم تحديد أي مجتمعات بعد",
+      "noCommunitiesAvailable": "لا توجد مجتمعات متاحة حالياً",
       "regionalCommunities": "المجتمعات الإقليمية",
       "specialGroups": "المجموعات الخاصة",
       "regional": {
@@ -243,6 +310,16 @@
       "pageDescription": "تحديث معلومات ملفك الشخصي",
       "saveSuccess": "تم تحديث الملف الشخصي بنجاح",
       "saveError": "فشل في تحديث الملف الشخصي",
+      "clerkInfo": {
+        "title": "معلومات الحساب",
+        "description": "تُدار هذه المعلومات من خلال إعدادات حسابك ولا يمكن تغييرها هنا. يتم مزامنة تغييرات ملفك الشخصي تلقائيًا عند الحفظ.",
+        "emailNote": "لتغيير عنوان بريدك الإلكتروني، انتقل إلى إعدادات حسابك",
+        "phoneNote": "لإضافة رقم هاتفك أو تغييره، انتقل إلى إعدادات حسابك"
+      },
+      "email": "عنوان البريد الإلكتروني",
+      "phoneNumber": "رقم الهاتف",
+      "noEmail": "لا يوجد بريد إلكتروني",
+      "noPhone": "لا يوجد رقم هاتف",
       "basicInfo": {
         "title": "المعلومات الأساسية",
         "description": "سيتم عرض هذه المعلومات على ملفك الشخصي العام"
@@ -281,7 +358,45 @@
         "description": "اختر كل ما ينطبق",
         "climate": "التغير المناخي",
         "mentalHealth": "الصحة النفسية",
-        "health": "الصحة"
+        "health": "الصحة",
+        "education": "التعليم",
+        "socialJustice": "العدالة الاجتماعية"
+      },
+      "privacy": {
+        "title": "إعدادات الخصوصية والبحث",
+        "description": "تحكم في كيفية ظهور ملفك الشخصي في نتائج البحث والمعلومات المرئية للآخرين",
+        "searchable": {
+          "title": "السماح للآخرين بالعثور علي في البحث",
+          "description": "عند التمكين، سيظهر ملفك الشخصي في نتائج البحث. عند التعطيل، لن يمكن اكتشافك من خلال البحث."
+        },
+        "visibility": {
+          "title": "رؤية الملف الشخصي",
+          "description": "اختر من يمكنه عرض معلومات ملفك الشخصي الكاملة",
+          "public": "عام - يمكن لأي شخص عرض ملفك الشخصي",
+          "members": "الأعضاء فقط - يمكن لأعضاء المجتمع فقط عرض ملفك الشخصي",
+          "private": "خاص - ملفك الشخصي غير قابل للاكتشاف"
+        },
+        "showInProfile": "إظهار في الملف الشخصي ونتائج البحث",
+        "showEmail": {
+          "title": "إظهار عنوان البريد الإلكتروني",
+          "description": "عرض عنوان بريدك الإلكتروني على ملفك الشخصي"
+        },
+        "showPhone": {
+          "title": "إظهار رقم الهاتف",
+          "description": "عرض رقم هاتفك على ملفك الشخصي"
+        },
+        "showWork": {
+          "title": "إظهار معلومات العمل",
+          "description": "عرض منظمتك ومنصبك وسيرتك المهنية"
+        },
+        "showSocial": {
+          "title": "إظهار الروابط الاجتماعية",
+          "description": "عرض موقعك الشخصي وروابط وسائل التواصل الاجتماعي"
+        },
+        "showLocation": {
+          "title": "إظهار الموقع",
+          "description": "عرض بلدك ومعلومات المدينة"
+        }
       },
       "organization": "المنظمة",
       "position": "المنصب",
@@ -326,30 +441,23 @@
     "description": "شارك بحثك مع مجتمعنا العالمي باللغة الإنجليزية أو الإسبانية أو الفرنسية أو العربية. ساعدنا في جعل المعرفة متاحة للباحثين في جميع أنحاء العالم."
   },
   "caseStudy": {
-    "pageTitle": "دراسات الحالة",
-    "featured": "مميز",
-    "readMore": "اقرأ المزيد",
-    "downloadStudy": "تحميل الدراسة",
-    "shareStudy": "مشاركة الدراسة",
-    "studyPeriod": "فترة الدراسة",
-    "location": "الموقع",
-    "organization": "المنظمة",
-    "authors": "المؤلفون",
-    "tags": "الوسوم",
-    "relatedStudies": "دراسات ذات صلة",
-    "status": {
-      "approved": "معتمد",
-      "pending": "قيد المراجعة",
-      "rejected": "مرفوض",
-      "revision": "يحتاج إلى مراجعة"
-    },
-    "filters": {
-      "byStatus": "حسب الحالة",
-      "byAuthor": "حسب المؤلف",
-      "byOrganization": "حسب المنظمة",
-      "byTag": "حسب الوسم",
-      "featured": "المميزة فقط"
-    }
+    "backToCaseStudies": "العودة إلى دراسات الحالة"
+  },
+  "livedExperiences": {
+    "title": "التجارب المعيشية",
+    "description": "شاهد وتعلم من القصص الشخصية حول تأثير المناخ من المجتمعات حول العالم",
+    "pageTitle": "التجارب المعيشية",
+    "pageDescription": "شاهد وتعلم من القصص الشخصية حول تأثير المناخ من المجتمعات حول العالم",
+    "searchPlaceholder": "البحث عن التجارب المعيشية...",
+    "filters": "الفلاتر",
+    "filterByRegion": "تصفية حسب المنطقة",
+    "filterByTag": "تصفية حسب الوسم",
+    "selectAll": "تحديد الكل",
+    "deselectAll": "إلغاء تحديد الكل",
+    "clearFilters": "مسح الفلاتر",
+    "noResults": "لم يتم العثور على فيديوهات تطابق الفلاتر الخاصة بك",
+    "video": "فيديو",
+    "videos": "فيديوهات"
   },
   "caseStudyForm": {
     "sections": {
@@ -363,7 +471,7 @@
     "fields": {
       "title": "العنوان",
       "subtitle": "العنوان الفرعي",
-      "excerpt": "المقطع",
+      "excerpt": "الملخص",
       "content": "المحتوى الكامل",
       "featuredImage": "الصورة المميزة",
       "organization": "المنظمة المرتبطة",
@@ -373,52 +481,20 @@
       "city": "المدينة",
       "region": "المنطقة/الولاية",
       "startDate": "تاريخ البداية",
-      "endDate": "تاريخ الانتهاء"
-    },
-    "placeholders": {
-      "title": "أدخل العنوان بـ{language}",
-      "subtitle": "أدخل العنوان الفرعي بـ{language}",
-      "excerpt": "ملخص مختصر بـ{language}",
-      "content": "محتوى دراسة الحالة المفصل بـ{language}",
-      "organization": "أدخل اسم المنظمة",
-      "authorName": "الاسم الكامل",
-      "authorEmail": "عنوان البريد الإلكتروني",
-      "country": "أدخل البلد",
-      "city": "أدخل المدينة",
-      "region": "أدخل المنطقة"
-    },
-    "descriptions": {
-      "excerpt": "تساعد هذه الملخصات الباحثين في جميع أنحاء العالم في اكتشاف عملك. مطلوبة باللغات الأربع.",
-      "content": "اكتب دراسة حالتك بأي لغة تفضلها. مطلوب إصدار واحد على الأقل باللغة.",
-      "organization": "إذا كانت دراسة الحالة هذه مرتبطة بمنظمة معينة، أدخل اسمها هنا.",
-      "tags": "اختر علامة واحدة على الأقل للمساعدة في تصنيف دراسة حالتك.",
-      "endDate": "اتركها فارغة إذا كانت الدراسة مستمرة",
-      "image": "قم بتحميل صورة عالية الجودة لتمثيل دراسة حالتك (الحد الأقصى 10 ميجابايت)",
-      "multilingual": "منصتنا تخدم الباحثين بـ4 لغات. يمكنك الإرسال بأي لغة، ولكن يرجى مساعدتنا بالعناوين والمقتطفات بجميع اللغات."
+      "endDate": "تاريخ النهاية"
     },
     "roles": {
       "lead": "المؤلف الرئيسي",
-      "coauthor": "المؤلف المشارك",
-      "contributor": "المساهم",
-      "advisor": "المستشار"
+      "coauthor": "مؤلف مشارك",
+      "contributor": "مساهم",
+      "advisor": "مستشار"
     },
     "actions": {
       "addAuthor": "إضافة مؤلف",
-      "removeAuthor": "إزالة المؤلف",
-      "uploadImage": "تحميل صورة",
+      "removeAuthor": "إزالة مؤلف",
+      "uploadImage": "رفع صورة",
       "submit": "إرسال دراسة الحالة",
       "submitting": "جاري الإرسال..."
-    },
-    "validation": {
-      "titleRequired": "العنوان مطلوب باللغات الأربع لمساعدة مجتمعنا العالمي",
-      "excerptMinLength": "يجب أن يكون المقطع 50 حرفاً على الأقل بجميع اللغات",
-      "contentMinLength": "يرجى تقديم محتوى مفصل بلغة واحدة على الأقل (200 حرف كحد أدنى)",
-      "authorNameRequired": "اسم المؤلف مطلوب",
-      "invalidEmail": "عنوان بريد إلكتروني غير صحيح",
-      "oneAuthorRequired": "مطلوب مؤلف واحد على الأقل",
-      "oneTagRequired": "مطلوبة علامة واحدة على الأقل",
-      "invalidImageType": "يرجى تحميل ملف صورة صحيح (JPEG، PNG، أو WebP)",
-      "imageTooLarge": "يجب أن يكون حجم الصورة أقل من 10 ميجابايت"
     },
     "status": {
       "draft": "مسودة",
@@ -426,11 +502,11 @@
       "submitted": "تم الإرسال للمراجعة"
     },
     "messages": {
-      "submitSuccess": "¡Gracias! Thank you! Merci! شكرا! تم إرسال دراسة حالتك وسيتم مراجعتها من قبل فريقنا.",
-      "submitError": "فشل إرسال دراسة الحالة. يرجى المحاولة مرة أخرى.",
-      "loginRequired": "يجب أن تكون مسجل الدخول لإرسال دراسة حالة",
-      "reviewNote": "ستتم مراجعة دراسة حالتك من قبل فريقنا التحريري متعدد اللغات قبل النشر.",
-      "multilingualWelcome": "مرحباً بك في مجتمعنا العالمي! أرسل بأي لغة وساعدنا في الوصول للباحثين في جميع أنحاء العالم."
+      "submitSuccess": "شكراً! تم إرسال دراسة الحالة الخاصة بك وستتم مراجعتها من قبل فريقنا.",
+      "submitError": "فشل في إرسال دراسة الحالة. يرجى المحاولة مرة أخرى.",
+      "loginRequired": "يجب تسجيل الدخول لإرسال دراسة حالة",
+      "reviewNote": "ستتم مراجعة دراسة الحالة الخاصة بك من قبل فريقنا التحريري متعدد اللغات قبل النشر.",
+      "multilingualWelcome": "مرحباً بك في مجتمعنا العالمي! أرسل بأي لغة وساعدنا في الوصول إلى الباحثين في جميع أنحاء العالم."
     }
   },
   "search": {
@@ -470,6 +546,60 @@
       "result": "نتيجة",
       "relevant": "نتائج ذات صلة من",
       "foundIn": "موجود في"
+    }
+  },
+  "collaborate": {
+    "pageTitle": "التعاون",
+    "pageDescription": "تواصل مع أعضاء المجتمع واكتشف متعاونين محتملين",
+    "searchPlaceholder": "البحث عن متعاونين بالاسم أو الخبرة أو المنظمة...",
+    "noResults": "لم يتم العثور على متعاونين مطابقين لبحثك",
+    "noResultsDescription": "حاول تعديل بحثك أو الفلاتر للعثور على الأعضاء",
+    "regionalCommunities": "المجتمعات الإقليمية",
+    "allCommunities": "جميع المجتمعات",
+    "filters": {
+      "title": "الفلاتر",
+      "communities": "المجتمعات",
+      "workTypes": "أنواع العمل",
+      "expertise": "الخبرة",
+      "selectAll": "تحديد الكل",
+      "clearFilters": "إلغاء تحديد الكل",
+      "selectedCount": "{selected} من {total} محدد",
+      "applyFilters": "تطبيق الفلاتر",
+      "showCommunities": "إظهار المجتمعات",
+      "hideCommunities": "إخفاء المجتمعات"
+    },
+    "carousel": {
+      "expand": "توسيع",
+      "collapse": "طي",
+      "viewAll": "عرض الكل",
+      "showMore": "عرض المزيد",
+      "loadMore": "تحميل المزيد",
+      "noMembers": "لا يوجد أعضاء في هذا المجتمع بعد"
+    },
+    "userCard": {
+      "viewProfile": "عرض الملف الشخصي",
+      "profileCompleteness": "الملف الشخصي مكتمل بنسبة {percentage}%",
+      "lastActive": "آخر نشاط {time}",
+      "recentProjects": "{count, plural, =1 {مشروع حديث} other {مشاريع حديثة}}",
+      "moreProjects": "المزيد",
+      "never": "أبداً",
+      "justNow": "الآن",
+      "minutesAgo": "منذ {count} دقيقة",
+      "hoursAgo": "منذ {count} ساعة",
+      "daysAgo": "منذ {count} يوم",
+      "weeksAgo": "منذ {count} أسبوع",
+      "monthsAgo": "منذ {count} شهر"
+    },
+    "stats": {
+      "totalMembers": "{count} أعضاء",
+      "member": "عضو",
+      "members": "أعضاء",
+      "showing": "عرض {count} من {total}"
+    },
+    "activeFilters": {
+      "title": "الفلاتر النشطة:",
+      "search": "البحث: {query}",
+      "clear": "إعادة تعيين جميع الفلاتر"
     }
   },
   "onboarding": {
@@ -559,6 +689,8 @@
         "workBioHint": "هذا يساعد الآخرين على فهم خلفيتك المهنية وخبرتك",
         "workTypesHint": "اختر جميع أنواع العمل التي تنطبق على أنشطتك المهنية",
         "expertiseAreasHint": "اختر المجالات التي لديك فيها معرفة أو خبرة أو تخصص",
+        "regionalCommunities": "المجتمعات الإقليمية",
+        "regionalCommunitiesHint": "اختر المجتمعات الإقليمية التي ترغب في الانضمام إليها",
         "socialLinks": "الروابط الاجتماعية",
         "socialLinksDescription": "أضف روابط لمساعدة الآخرين على التواصل معك مهنياً",
         "personalWebsite": "الموقع الشخصي",
@@ -578,7 +710,7 @@
       },
       "recentWork": {
         "title": "الأعمال الحديثة",
-        "description": "اعرض مشاريعك الحديثة أو أبحاثك أو مساهماتك. هذا يساعد الآخرين على فهم تركيزك الحالي وخبرتك.",
+        "description": "الوصف",
         "addWork": "إضافة عمل",
         "editWork": "تعديل العمل",
         "yourWork": "أعمالك الحديثة",
@@ -588,7 +720,6 @@
         "noWorkDescription": "أضف مشاريعك الحديثة أو أبحاثك أو مساهمات أخرى لمساعدة الآخرين على فهم خبرتك.",
         "workTitle": "عنوان المشروع",
         "workTitlePlaceholder": "أدخل عنوان مشروعك أو عملك",
-        "description": "الوصف",
         "descriptionPlaceholder": "صف ما تضمنه هذا المشروع وتأثيره...",
         "workDescription": "الوصف",
         "workDescriptionPlaceholder": "صف ما تضمنه هذا المشروع وتأثيره...",
@@ -704,8 +835,6 @@
         "email": "البريد الإلكتروني",
         "phone": "الهاتف",
         "workDetails": "تفاصيل العمل",
-        "socialLinks": "الروابط الاجتماعية",
-        "location": "الموقع",
         "ongoing": "مستمر",
         "viewProject": "عرض المشروع",
         "readyTitle": "أنت جاهز!",
@@ -734,118 +863,36 @@
     "reviewProfile": "مراجعة الملف الشخصي",
     "completeProfile": "إكمال الملف الشخصي"
   },
-  "caseStudyForm": {
-    "sections": {
-      "basicInfo": "المعلومات الأساسية",
-      "content": "المحتوى والتفاصيل",
-      "authors": "المؤلفون والمساهمون",
-      "classification": "العلامات والتصنيف",
-      "location": "موقع الدراسة",
-      "timeline": "فترة الدراسة"
-    },
-    "fields": {
-      "title": "العنوان",
-      "subtitle": "العنوان الفرعي",
-      "excerpt": "الملخص",
-      "content": "المحتوى الكامل",
-      "featuredImage": "الصورة المميزة",
-      "organization": "المنظمة المرتبطة",
-      "authors": "فريق البحث",
-      "tags": "العلامات",
-      "country": "البلد",
-      "city": "المدينة",
-      "region": "المنطقة/الولاية",
-      "startDate": "تاريخ البداية",
-      "endDate": "تاريخ النهاية"
-    },
-    "roles": {
-      "lead": "المؤلف الرئيسي",
-      "coauthor": "مؤلف مشارك",
-      "contributor": "مساهم",
-      "advisor": "مستشار"
-    },
-    "actions": {
-      "addAuthor": "إضافة مؤلف",
-      "removeAuthor": "إزالة مؤلف",
-      "uploadImage": "رفع صورة",
-      "submit": "إرسال دراسة الحالة",
-      "submitting": "جاري الإرسال..."
-    },
-    "status": {
-      "draft": "مسودة",
-      "submitting": "جاري الإرسال...",
-      "submitted": "تم الإرسال للمراجعة"
-    },
-    "messages": {
-      "submitSuccess": "شكراً! تم إرسال دراسة الحالة الخاصة بك وستتم مراجعتها من قبل فريقنا.",
-      "submitError": "فشل في إرسال دراسة الحالة. يرجى المحاولة مرة أخرى.",
-      "loginRequired": "يجب تسجيل الدخول لإرسال دراسة حالة",
-      "reviewNote": "ستتم مراجعة دراسة الحالة الخاصة بك من قبل فريقنا التحريري متعدد اللغات قبل النشر.",
-      "multilingualWelcome": "مرحباً بك في مجتمعنا العالمي! أرسل بأي لغة وساعدنا في الوصول إلى الباحثين في جميع أنحاء العالم."
-    }
-  },
-  "dashboard": {
-    "greeting": "مرحباً، {name}",
-    "summary": "ملخصك هنا",
-    "recentActivity": "النشاط الأخير",
-    "noActivity": "لا يوجد نشاط حديث",
-    "viewAll": "عرض الكل",
-    "personalSettings": "الإعدادات الشخصية",
-    "buildingApp": "بناء تطبيقك",
-    "dataFetching": "جلب البيانات",
-    "submissions": {
-      "pageTitle": "مراسلاتي",
-      "pageDescription": "إدارة مراسلات ومسودات دراسات الحالة الخاصة بك",
-      "title": "مراسلاتي",
-      "description": "إدارة مراسلات ومسودات دراسات الحالة الخاصة بك",
-      "newCaseStudy": "دراسة حالة جديدة",
-      "status": {
-        "pending": "قيد المراجعة",
-        "approved": "منشور",
-        "rejected": "مرفوض",
-        "revision": "يحتاج تنقيح"
-      },
-      "tabs": {
-        "submissions": "المراسلات",
-        "drafts": "المسودات"
-      },
-      "actions": {
-        "edit": "تحرير وإعادة إرسال",
-        "view": "عرض المنشور",
-        "continue": "متابعة الكتابة",
-        "underReview": "قيد المراجعة"
-      },
-      "empty": {
-        "submissions": {
-          "title": "لا توجد مراسلات بعد",
-          "description": "ابدأ بإرسال دراسة الحالة الأولى لمشاركة بحثك مع المجتمع.",
-          "action": "إرسال دراسة حالة"
-        },
-        "drafts": {
-          "title": "لا توجد مسودات محفوظة",
-          "description": "ستظهر مسودات دراسات الحالة الخاصة بك هنا تلقائياً أثناء العمل عليها."
-        }
-      },
-      "alerts": {
-        "revision": {
-          "title": "مطلوب إجراء",
-          "description": "لديك {count} دراسة حالة تحتاج تنقيح بناءً على ملاحظات المحرر.",
-          "editorFeedback": "ملاحظات المحرر:"
-        }
-      }
-    }
-  },
   "caseStudies": {
+    "title": "دراسات الحالة",
+    "description": "استكشف الأبحاث والرؤى من مجتمعنا العالمي",
     "pageTitle": "دراسات الحالة",
-    "pageDescription": "استكشف البحوث والرؤى من مجتمعنا العالمي",
-    "featured": "دراسات الحالة المميزة",
+    "pageDescription": "استكشف الأبحاث والرؤى من مجتمعنا العالمي",
+    "featured": "دراسات حالة مميزة",
+    "recent": "المنشورة مؤخراً",
     "browseByTopic": "تصفح حسب الموضوع",
     "viewAll": "عرض الكل",
+    "searchButton": "بحث",
+    "submitButton": "تقديم دراسة حالة",
+    "searchResults": "نتائج البحث",
+    "resultsFound": "النتائج الموجودة",
     "noResults": "لم يتم العثور على دراسات حالة",
+    "noResultsDescription": "حاول تعديل بحثك أو الفلاتر للعثور على ما تبحث عنه.",
+    "clearFilters": "مسح جميع الفلاتر",
     "filters": {
+      "searchPlaceholder": "البحث في دراسات الحالة...",
+      "topicPlaceholder": "جميع المواضيع",
+      "tagPlaceholder": "جميع العلامات",
+      "communityPlaceholder": "جميع المجتمعات",
+      "filters": "الفلاتر",
+      "tag": "العلامات",
+      "community": "المجتمع",
+      "activeFilters": "الفلاتر النشطة",
+      "clearAll": "مسح الكل",
+      "updating": "جاري التحديث...",
       "all": "جميع المواضيع",
-      "featured": "مميز",
-      "recent": "منشور حديثاً"
+      "featured": "مميزة",
+      "recent": "المنشورة مؤخراً"
     },
     "topics": {
       "climate-environment": "تغير المناخ والبيئة",
@@ -869,8 +916,8 @@
       "authors": "مؤلف",
       "authorsPlural": "مؤلفون",
       "readTime": "دقيقة قراءة",
-      "publishedAt": "منشور",
-      "submittedAt": "مرسل"
+      "publishedAt": "نُشر في",
+      "submittedAt": "قُدم في"
     }
   },
   "revisionAlert": {

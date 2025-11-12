@@ -150,6 +150,15 @@ export interface UserProfileUpdateData {
   showWorkDetails?: boolean
   showSocialLinks?: boolean
   showLocation?: boolean
+  communityIds?: string[]
+  recentWork?: Array<{
+    title: string
+    description: string
+    link?: string
+    startDate: string
+    endDate?: string
+    isOngoing?: boolean
+  }>
 }
 
 export interface CommunityCreateData {

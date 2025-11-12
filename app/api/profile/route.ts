@@ -141,11 +141,13 @@
 import { NextRequest, NextResponse } from "next/server"
 import { auth, clerkClient } from "@clerk/nextjs/server"
 import { UserService } from "@/lib/services/user.service"
+import { calculateProfileCompleteness } from "@/lib/profile-completeness"
+import { prisma } from "@/lib/prisma"
 import { z } from "zod"
-import type { 
-  SupportedLocale, 
+import type {
+  SupportedLocale,
   UserProfileUpdateData,
-  LocalizedQueryOptions 
+  LocalizedQueryOptions
 } from "@/types/prisma"
 
 const ProfileUpdateSchema = z.object({
@@ -157,7 +159,9 @@ const ProfileUpdateSchema = z.object({
     
     // App-managed profile fields - handle null values properly
     bio: z.string().max(500, "Bio must be less than 500 characters").optional().or(z.literal("")).or(z.null()),
-    ageGroup: z.enum(["UNDER_18", "ABOVE_18"]).optional().or(z.null()),
+    ageGroup: z.enum(["UNDER_18", "ABOVE_18"], {
+        errorMap: () => ({ message: "Please select your age group" })
+    }).optional().or(z.null()),
     country: z.string().max(100).optional().or(z.literal("")).or(z.null()),
     city: z.string().max(100).optional().or(z.literal("")).or(z.null()),
     workTypes: z.array(z.enum([
@@ -167,12 +171,18 @@ const ProfileUpdateSchema = z.object({
         "NGO",
         "COMMUNITY_ORGANIZATION",
         "EDUCATION_TEACHING"
-    ])).default([]),
+    ], {
+        errorMap: () => ({ message: "Please select the types of work you do" })
+    })).default([]),
     expertiseAreas: z.array(z.enum([
         "CLIMATE_CHANGE",
         "MENTAL_HEALTH",
-        "HEALTH"
-    ])).default([]),
+        "HEALTH",
+        "EDUCATION",
+        "SOCIAL_JUSTICE"
+    ], {
+        errorMap: () => ({ message: "Please select valid expertise areas" })
+    })).default([]),
     organization: z.string().max(200).optional().or(z.literal("")).or(z.null()),
     position: z.string().max(200).optional().or(z.literal("")).or(z.null()),
     workBio: z.string().max(1000, "Work bio must be less than 1000 characters").optional().or(z.literal("")).or(z.null()),
@@ -182,10 +192,25 @@ const ProfileUpdateSchema = z.object({
         platform: z.string().min(1),
         url: z.string().url()
     })).optional().default([]),
-    
+
+    // Recent Work
+    recentWork: z.array(z.object({
+        title: z.string().min(1, "Title is required").max(100),
+        description: z.string().min(1, "Description is required").max(500),
+        link: z.string().url("Please enter a valid URL").optional().or(z.literal("")),
+        startDate: z.string().min(1, "Start date is required"),
+        endDate: z.string().optional().or(z.literal("")),
+        isOngoing: z.boolean().optional()
+    })).optional().default([]),
+
+    // Community memberships
+    communityIds: z.array(z.string()).optional().default([]),
+
     // Privacy Controls
     isSearchable: z.boolean().default(true),
-    profileVisibility: z.enum(["PUBLIC", "MEMBERS", "PRIVATE"]).default("PUBLIC"),
+    profileVisibility: z.enum(["PUBLIC", "MEMBERS", "PRIVATE"], {
+        errorMap: () => ({ message: "Please choose who can see your profile" })
+    }).default("PUBLIC"),
     showEmail: z.boolean().default(false),
     showPhoneNumber: z.boolean().default(false),
     showWorkDetails: z.boolean().default(true),
@@ -204,6 +229,8 @@ const ProfileUpdateSchema = z.object({
     personalWebsite: data.personalWebsite || null,
     linkedinProfile: data.linkedinProfile || null,
     otherSocialLinks: data.otherSocialLinks || [],
+    recentWork: data.recentWork || [],
+    communityIds: data.communityIds || [],
 }))
 
 type ProfileFormValues = z.infer<typeof ProfileUpdateSchema>
@@ -277,7 +304,21 @@ export async function GET(request: NextRequest) {
             includeRTL: true
         }
 
-        const result = await UserService.getUserById(userId, queryOptions)
+        // Parallelize queries for better performance
+        const [result, availableCommunities] = await Promise.all([
+            UserService.getUserById(userId, queryOptions),
+            // Fetch available communities in parallel
+            prisma.community.findMany({
+                where: { type: 'REGIONAL' },
+                select: {
+                    id: true,
+                    name: true,
+                    type: true,
+                    regionalName: true
+                },
+                orderBy: { name: 'asc' }
+            })
+        ])
 
         if (!result.success) {
             console.error("Failed to fetch profile:", result.error)
@@ -294,9 +335,16 @@ export async function GET(request: NextRequest) {
             )
         }
 
-        // Add locale info to response for client-side RTL handling
+        // Recent work is already included in getUserById result (no duplicate query needed)
+        // Use the recentWork from result.data instead of fetching again
+        // Type assertion: transformToLocalizedUser includes relations via spread
+        const recentWork = (result.data as any).recentWork || []
+
+        // Return data at root level (matching working pattern)
         return NextResponse.json({
             ...result.data,
+            availableCommunities,  // List of all available communities
+            recentWork,  // User's recent work (from getUserById, already fetched)
             _locale: locale,
             _isRTL: locale === 'ar'
         })
@@ -358,6 +406,8 @@ export async function PUT(request: NextRequest) {
             showWorkDetails: validatedData.showWorkDetails,
             showSocialLinks: validatedData.showSocialLinks,
             showLocation: validatedData.showLocation,
+            communityIds: validatedData.communityIds || [],
+            recentWork: validatedData.recentWork || [],
         }
 
         // STEP 1: Update using type-safe service
@@ -377,6 +427,43 @@ export async function PUT(request: NextRequest) {
                 { status: 500 }
             )
         }
+
+        // STEP 1.5: Calculate and update profile completeness
+        const updatedUser = result.data
+        const completeness = calculateProfileCompleteness({
+            firstName: updatedUser.firstName,
+            lastName: updatedUser.lastName,
+            username: updatedUser.username,
+            email: updatedUser.email,
+            image: updatedUser.image,
+            bio: updatedUser.bio,
+            ageGroup: updatedUser.ageGroup,
+            country: updatedUser.country,
+            city: updatedUser.city,
+            organization: updatedUser.organization,
+            position: updatedUser.position,
+            workBio: updatedUser.workBio,
+            workTypes: updatedUser.workTypes,
+            expertiseAreas: updatedUser.expertiseAreas,
+            personalWebsite: updatedUser.personalWebsite,
+            linkedinProfile: updatedUser.linkedinProfile,
+            phoneNumber: updatedUser.phoneNumber
+        })
+
+        console.log(`[Profile Completeness] User ${userId} calculated: ${completeness}%`)
+
+        // Update the profileCompleteness field in database
+        await prisma.user.update({
+            where: { id: userId },
+            data: { profileCompleteness: completeness }
+        })
+
+        // Update the result data to include the new completeness
+        if (result.data) {
+            result.data.profileCompleteness = completeness
+        }
+
+        // STEP 1.6: Recent work and community memberships are now handled in the main update above
 
         // STEP 2: Background sync to Clerk (fire and forget)
         const { ClerkSyncService } = await import('../../../lib/clerk-sync')

@@ -21,7 +21,7 @@ export default function ProfilePictureUpload({
                                                  lastName,
                                                  onImageChangeAction,
                                              }: ProfilePictureUploadProps) {
-    const t = useTranslations('profile.profilePicture')
+    const t = useTranslations('profilePicture')
     const { user } = useUser()
     const fileInputRef = useRef<HTMLInputElement>(null)
     const [isUploading, setIsUploading] = useState(false)

@@ -96,7 +96,9 @@ export type WorkType = (typeof WorkType)[keyof typeof WorkType]
 export const ExpertiseArea: {
   CLIMATE_CHANGE: 'CLIMATE_CHANGE',
   MENTAL_HEALTH: 'MENTAL_HEALTH',
-  HEALTH: 'HEALTH'
+  HEALTH: 'HEALTH',
+  EDUCATION: 'EDUCATION',
+  SOCIAL_JUSTICE: 'SOCIAL_JUSTICE'
 };
 
 export type ExpertiseArea = (typeof ExpertiseArea)[keyof typeof ExpertiseArea]
@@ -4078,10 +4080,12 @@ export namespace Prisma {
 
   export type UserAvgAggregateOutputType = {
     onboardingStep: number | null
+    profileCompleteness: number | null
   }
 
   export type UserSumAggregateOutputType = {
     onboardingStep: number | null
+    profileCompleteness: number | null
   }
 
   export type UserMinAggregateOutputType = {
@@ -4117,6 +4121,8 @@ export namespace Prisma {
     onboardingStep: number | null
     preferredLanguage: $Enums.Language | null
     welcomeMessageSeen: boolean | null
+    lastLoginAt: Date | null
+    profileCompleteness: number | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -4152,6 +4158,8 @@ export namespace Prisma {
     onboardingStep: number | null
     preferredLanguage: $Enums.Language | null
     welcomeMessageSeen: boolean | null
+    lastLoginAt: Date | null
+    profileCompleteness: number | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -4190,16 +4198,20 @@ export namespace Prisma {
     preferredLanguage: number
     welcomeMessageSeen: number
     otherSocialLinks: number
+    lastLoginAt: number
+    profileCompleteness: number
     _all: number
   }
 
 
   export type UserAvgAggregateInputType = {
     onboardingStep?: true
+    profileCompleteness?: true
   }
 
   export type UserSumAggregateInputType = {
     onboardingStep?: true
+    profileCompleteness?: true
   }
 
   export type UserMinAggregateInputType = {
@@ -4235,6 +4247,8 @@ export namespace Prisma {
     onboardingStep?: true
     preferredLanguage?: true
     welcomeMessageSeen?: true
+    lastLoginAt?: true
+    profileCompleteness?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -4270,6 +4284,8 @@ export namespace Prisma {
     onboardingStep?: true
     preferredLanguage?: true
     welcomeMessageSeen?: true
+    lastLoginAt?: true
+    profileCompleteness?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -4308,6 +4324,8 @@ export namespace Prisma {
     preferredLanguage?: true
     welcomeMessageSeen?: true
     otherSocialLinks?: true
+    lastLoginAt?: true
+    profileCompleteness?: true
     _all?: true
   }
 
@@ -4433,6 +4451,8 @@ export namespace Prisma {
     preferredLanguage: $Enums.Language
     welcomeMessageSeen: boolean
     otherSocialLinks: JsonValue | null
+    lastLoginAt: Date | null
+    profileCompleteness: number
     _count: UserCountAggregateOutputType | null
     _avg: UserAvgAggregateOutputType | null
     _sum: UserSumAggregateOutputType | null
@@ -4490,6 +4510,8 @@ export namespace Prisma {
     preferredLanguage?: boolean
     welcomeMessageSeen?: boolean
     otherSocialLinks?: boolean
+    lastLoginAt?: boolean
+    profileCompleteness?: boolean
     accounts?: boolean | User$accountsArgs<ExtArgs>
     createdContent?: boolean | User$createdContentArgs<ExtArgs>
     recentWork?: boolean | User$recentWorkArgs<ExtArgs>
@@ -4534,6 +4556,8 @@ export namespace Prisma {
     preferredLanguage?: boolean
     welcomeMessageSeen?: boolean
     otherSocialLinks?: boolean
+    lastLoginAt?: boolean
+    profileCompleteness?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -4572,6 +4596,8 @@ export namespace Prisma {
     preferredLanguage?: boolean
     welcomeMessageSeen?: boolean
     otherSocialLinks?: boolean
+    lastLoginAt?: boolean
+    profileCompleteness?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectScalar = {
@@ -4610,9 +4636,11 @@ export namespace Prisma {
     preferredLanguage?: boolean
     welcomeMessageSeen?: boolean
     otherSocialLinks?: boolean
+    lastLoginAt?: boolean
+    profileCompleteness?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "emailVerified" | "username" | "image" | "bio" | "role" | "createdAt" | "updatedAt" | "ageGroup" | "city" | "country" | "expertiseAreas" | "firstName" | "lastName" | "linkedinProfile" | "organization" | "personalWebsite" | "position" | "workBio" | "workTypes" | "isSearchable" | "profileVisibility" | "showEmail" | "showLocation" | "showSocialLinks" | "showWorkDetails" | "phoneNumber" | "phoneVerified" | "showPhoneNumber" | "onboardingCompleted" | "onboardingStep" | "preferredLanguage" | "welcomeMessageSeen" | "otherSocialLinks", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "emailVerified" | "username" | "image" | "bio" | "role" | "createdAt" | "updatedAt" | "ageGroup" | "city" | "country" | "expertiseAreas" | "firstName" | "lastName" | "linkedinProfile" | "organization" | "personalWebsite" | "position" | "workBio" | "workTypes" | "isSearchable" | "profileVisibility" | "showEmail" | "showLocation" | "showSocialLinks" | "showWorkDetails" | "phoneNumber" | "phoneVerified" | "showPhoneNumber" | "onboardingCompleted" | "onboardingStep" | "preferredLanguage" | "welcomeMessageSeen" | "otherSocialLinks" | "lastLoginAt" | "profileCompleteness", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     accounts?: boolean | User$accountsArgs<ExtArgs>
     createdContent?: boolean | User$createdContentArgs<ExtArgs>
@@ -4669,6 +4697,8 @@ export namespace Prisma {
       preferredLanguage: $Enums.Language
       welcomeMessageSeen: boolean
       otherSocialLinks: Prisma.JsonValue | null
+      lastLoginAt: Date | null
+      profileCompleteness: number
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -5132,6 +5162,8 @@ export namespace Prisma {
     readonly preferredLanguage: FieldRef<"User", 'Language'>
     readonly welcomeMessageSeen: FieldRef<"User", 'Boolean'>
     readonly otherSocialLinks: FieldRef<"User", 'Json'>
+    readonly lastLoginAt: FieldRef<"User", 'DateTime'>
+    readonly profileCompleteness: FieldRef<"User", 'Int'>
   }
     
 
@@ -12230,7 +12262,9 @@ export namespace Prisma {
     onboardingStep: 'onboardingStep',
     preferredLanguage: 'preferredLanguage',
     welcomeMessageSeen: 'welcomeMessageSeen',
-    otherSocialLinks: 'otherSocialLinks'
+    otherSocialLinks: 'otherSocialLinks',
+    lastLoginAt: 'lastLoginAt',
+    profileCompleteness: 'profileCompleteness'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -12755,6 +12789,8 @@ export namespace Prisma {
     preferredLanguage?: EnumLanguageFilter<"User"> | $Enums.Language
     welcomeMessageSeen?: BoolFilter<"User"> | boolean
     otherSocialLinks?: JsonNullableFilter<"User">
+    lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    profileCompleteness?: IntFilter<"User"> | number
     accounts?: AccountListRelationFilter
     createdContent?: ContentListRelationFilter
     recentWork?: RecentWorkListRelationFilter
@@ -12798,6 +12834,8 @@ export namespace Prisma {
     preferredLanguage?: SortOrder
     welcomeMessageSeen?: SortOrder
     otherSocialLinks?: SortOrderInput | SortOrder
+    lastLoginAt?: SortOrderInput | SortOrder
+    profileCompleteness?: SortOrder
     accounts?: AccountOrderByRelationAggregateInput
     createdContent?: ContentOrderByRelationAggregateInput
     recentWork?: RecentWorkOrderByRelationAggregateInput
@@ -12844,6 +12882,8 @@ export namespace Prisma {
     preferredLanguage?: EnumLanguageFilter<"User"> | $Enums.Language
     welcomeMessageSeen?: BoolFilter<"User"> | boolean
     otherSocialLinks?: JsonNullableFilter<"User">
+    lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    profileCompleteness?: IntFilter<"User"> | number
     accounts?: AccountListRelationFilter
     createdContent?: ContentListRelationFilter
     recentWork?: RecentWorkListRelationFilter
@@ -12887,6 +12927,8 @@ export namespace Prisma {
     preferredLanguage?: SortOrder
     welcomeMessageSeen?: SortOrder
     otherSocialLinks?: SortOrderInput | SortOrder
+    lastLoginAt?: SortOrderInput | SortOrder
+    profileCompleteness?: SortOrder
     _count?: UserCountOrderByAggregateInput
     _avg?: UserAvgOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
@@ -12933,6 +12975,8 @@ export namespace Prisma {
     preferredLanguage?: EnumLanguageWithAggregatesFilter<"User"> | $Enums.Language
     welcomeMessageSeen?: BoolWithAggregatesFilter<"User"> | boolean
     otherSocialLinks?: JsonNullableWithAggregatesFilter<"User">
+    lastLoginAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+    profileCompleteness?: IntWithAggregatesFilter<"User"> | number
   }
 
   export type CommunityWhereInput = {
@@ -13536,6 +13580,8 @@ export namespace Prisma {
     preferredLanguage?: $Enums.Language
     welcomeMessageSeen?: boolean
     otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
+    lastLoginAt?: Date | string | null
+    profileCompleteness?: number
     accounts?: AccountCreateNestedManyWithoutUserInput
     createdContent?: ContentCreateNestedManyWithoutAuthorInput
     recentWork?: RecentWorkCreateNestedManyWithoutUserInput
@@ -13579,6 +13625,8 @@ export namespace Prisma {
     preferredLanguage?: $Enums.Language
     welcomeMessageSeen?: boolean
     otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
+    lastLoginAt?: Date | string | null
+    profileCompleteness?: number
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     createdContent?: ContentUncheckedCreateNestedManyWithoutAuthorInput
     recentWork?: RecentWorkUncheckedCreateNestedManyWithoutUserInput
@@ -13622,6 +13670,8 @@ export namespace Prisma {
     preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     welcomeMessageSeen?: BoolFieldUpdateOperationsInput | boolean
     otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    profileCompleteness?: IntFieldUpdateOperationsInput | number
     accounts?: AccountUpdateManyWithoutUserNestedInput
     createdContent?: ContentUpdateManyWithoutAuthorNestedInput
     recentWork?: RecentWorkUpdateManyWithoutUserNestedInput
@@ -13665,6 +13715,8 @@ export namespace Prisma {
     preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     welcomeMessageSeen?: BoolFieldUpdateOperationsInput | boolean
     otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    profileCompleteness?: IntFieldUpdateOperationsInput | number
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     createdContent?: ContentUncheckedUpdateManyWithoutAuthorNestedInput
     recentWork?: RecentWorkUncheckedUpdateManyWithoutUserNestedInput
@@ -13708,6 +13760,8 @@ export namespace Prisma {
     preferredLanguage?: $Enums.Language
     welcomeMessageSeen?: boolean
     otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
+    lastLoginAt?: Date | string | null
+    profileCompleteness?: number
   }
 
   export type UserUpdateManyMutationInput = {
@@ -13746,6 +13800,8 @@ export namespace Prisma {
     preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     welcomeMessageSeen?: BoolFieldUpdateOperationsInput | boolean
     otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    profileCompleteness?: IntFieldUpdateOperationsInput | number
   }
 
   export type UserUncheckedUpdateManyInput = {
@@ -13784,6 +13840,8 @@ export namespace Prisma {
     preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     welcomeMessageSeen?: BoolFieldUpdateOperationsInput | boolean
     otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    profileCompleteness?: IntFieldUpdateOperationsInput | number
   }
 
   export type CommunityCreateInput = {
@@ -14613,10 +14671,13 @@ export namespace Prisma {
     preferredLanguage?: SortOrder
     welcomeMessageSeen?: SortOrder
     otherSocialLinks?: SortOrder
+    lastLoginAt?: SortOrder
+    profileCompleteness?: SortOrder
   }
 
   export type UserAvgOrderByAggregateInput = {
     onboardingStep?: SortOrder
+    profileCompleteness?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
@@ -14652,6 +14713,8 @@ export namespace Prisma {
     onboardingStep?: SortOrder
     preferredLanguage?: SortOrder
     welcomeMessageSeen?: SortOrder
+    lastLoginAt?: SortOrder
+    profileCompleteness?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -14687,10 +14750,13 @@ export namespace Prisma {
     onboardingStep?: SortOrder
     preferredLanguage?: SortOrder
     welcomeMessageSeen?: SortOrder
+    lastLoginAt?: SortOrder
+    profileCompleteness?: SortOrder
   }
 
   export type UserSumOrderByAggregateInput = {
     onboardingStep?: SortOrder
+    profileCompleteness?: SortOrder
   }
 
   export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -15905,6 +15971,8 @@ export namespace Prisma {
     preferredLanguage?: $Enums.Language
     welcomeMessageSeen?: boolean
     otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
+    lastLoginAt?: Date | string | null
+    profileCompleteness?: number
     createdContent?: ContentCreateNestedManyWithoutAuthorInput
     recentWork?: RecentWorkCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -15947,6 +16015,8 @@ export namespace Prisma {
     preferredLanguage?: $Enums.Language
     welcomeMessageSeen?: boolean
     otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
+    lastLoginAt?: Date | string | null
+    profileCompleteness?: number
     createdContent?: ContentUncheckedCreateNestedManyWithoutAuthorInput
     recentWork?: RecentWorkUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -16005,6 +16075,8 @@ export namespace Prisma {
     preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     welcomeMessageSeen?: BoolFieldUpdateOperationsInput | boolean
     otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    profileCompleteness?: IntFieldUpdateOperationsInput | number
     createdContent?: ContentUpdateManyWithoutAuthorNestedInput
     recentWork?: RecentWorkUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -16047,6 +16119,8 @@ export namespace Prisma {
     preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     welcomeMessageSeen?: BoolFieldUpdateOperationsInput | boolean
     otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    profileCompleteness?: IntFieldUpdateOperationsInput | number
     createdContent?: ContentUncheckedUpdateManyWithoutAuthorNestedInput
     recentWork?: RecentWorkUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -16089,6 +16163,8 @@ export namespace Prisma {
     preferredLanguage?: $Enums.Language
     welcomeMessageSeen?: boolean
     otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
+    lastLoginAt?: Date | string | null
+    profileCompleteness?: number
     accounts?: AccountCreateNestedManyWithoutUserInput
     createdContent?: ContentCreateNestedManyWithoutAuthorInput
     recentWork?: RecentWorkCreateNestedManyWithoutUserInput
@@ -16131,6 +16207,8 @@ export namespace Prisma {
     preferredLanguage?: $Enums.Language
     welcomeMessageSeen?: boolean
     otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
+    lastLoginAt?: Date | string | null
+    profileCompleteness?: number
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     createdContent?: ContentUncheckedCreateNestedManyWithoutAuthorInput
     recentWork?: RecentWorkUncheckedCreateNestedManyWithoutUserInput
@@ -16189,6 +16267,8 @@ export namespace Prisma {
     preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     welcomeMessageSeen?: BoolFieldUpdateOperationsInput | boolean
     otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    profileCompleteness?: IntFieldUpdateOperationsInput | number
     accounts?: AccountUpdateManyWithoutUserNestedInput
     createdContent?: ContentUpdateManyWithoutAuthorNestedInput
     recentWork?: RecentWorkUpdateManyWithoutUserNestedInput
@@ -16231,6 +16311,8 @@ export namespace Prisma {
     preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     welcomeMessageSeen?: BoolFieldUpdateOperationsInput | boolean
     otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    profileCompleteness?: IntFieldUpdateOperationsInput | number
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     createdContent?: ContentUncheckedUpdateManyWithoutAuthorNestedInput
     recentWork?: RecentWorkUncheckedUpdateManyWithoutUserNestedInput
@@ -16673,6 +16755,8 @@ export namespace Prisma {
     preferredLanguage?: $Enums.Language
     welcomeMessageSeen?: boolean
     otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
+    lastLoginAt?: Date | string | null
+    profileCompleteness?: number
     accounts?: AccountCreateNestedManyWithoutUserInput
     createdContent?: ContentCreateNestedManyWithoutAuthorInput
     recentWork?: RecentWorkCreateNestedManyWithoutUserInput
@@ -16715,6 +16799,8 @@ export namespace Prisma {
     preferredLanguage?: $Enums.Language
     welcomeMessageSeen?: boolean
     otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
+    lastLoginAt?: Date | string | null
+    profileCompleteness?: number
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     createdContent?: ContentUncheckedCreateNestedManyWithoutAuthorInput
     recentWork?: RecentWorkUncheckedCreateNestedManyWithoutUserInput
@@ -16808,6 +16894,8 @@ export namespace Prisma {
     preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     welcomeMessageSeen?: BoolFieldUpdateOperationsInput | boolean
     otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    profileCompleteness?: IntFieldUpdateOperationsInput | number
     accounts?: AccountUpdateManyWithoutUserNestedInput
     createdContent?: ContentUpdateManyWithoutAuthorNestedInput
     recentWork?: RecentWorkUpdateManyWithoutUserNestedInput
@@ -16850,6 +16938,8 @@ export namespace Prisma {
     preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     welcomeMessageSeen?: BoolFieldUpdateOperationsInput | boolean
     otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    profileCompleteness?: IntFieldUpdateOperationsInput | number
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     createdContent?: ContentUncheckedUpdateManyWithoutAuthorNestedInput
     recentWork?: RecentWorkUncheckedUpdateManyWithoutUserNestedInput
@@ -16892,6 +16982,8 @@ export namespace Prisma {
     preferredLanguage?: $Enums.Language
     welcomeMessageSeen?: boolean
     otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
+    lastLoginAt?: Date | string | null
+    profileCompleteness?: number
     accounts?: AccountCreateNestedManyWithoutUserInput
     recentWork?: RecentWorkCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -16934,6 +17026,8 @@ export namespace Prisma {
     preferredLanguage?: $Enums.Language
     welcomeMessageSeen?: boolean
     otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
+    lastLoginAt?: Date | string | null
+    profileCompleteness?: number
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     recentWork?: RecentWorkUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -17021,6 +17115,8 @@ export namespace Prisma {
     preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     welcomeMessageSeen?: BoolFieldUpdateOperationsInput | boolean
     otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    profileCompleteness?: IntFieldUpdateOperationsInput | number
     accounts?: AccountUpdateManyWithoutUserNestedInput
     recentWork?: RecentWorkUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -17063,6 +17159,8 @@ export namespace Prisma {
     preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     welcomeMessageSeen?: BoolFieldUpdateOperationsInput | boolean
     otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    profileCompleteness?: IntFieldUpdateOperationsInput | number
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     recentWork?: RecentWorkUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -17140,6 +17238,8 @@ export namespace Prisma {
     preferredLanguage?: $Enums.Language
     welcomeMessageSeen?: boolean
     otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
+    lastLoginAt?: Date | string | null
+    profileCompleteness?: number
     accounts?: AccountCreateNestedManyWithoutUserInput
     createdContent?: ContentCreateNestedManyWithoutAuthorInput
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -17182,6 +17282,8 @@ export namespace Prisma {
     preferredLanguage?: $Enums.Language
     welcomeMessageSeen?: boolean
     otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
+    lastLoginAt?: Date | string | null
+    profileCompleteness?: number
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     createdContent?: ContentUncheckedCreateNestedManyWithoutAuthorInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -17240,6 +17342,8 @@ export namespace Prisma {
     preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     welcomeMessageSeen?: BoolFieldUpdateOperationsInput | boolean
     otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    profileCompleteness?: IntFieldUpdateOperationsInput | number
     accounts?: AccountUpdateManyWithoutUserNestedInput
     createdContent?: ContentUpdateManyWithoutAuthorNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -17282,6 +17386,8 @@ export namespace Prisma {
     preferredLanguage?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
     welcomeMessageSeen?: BoolFieldUpdateOperationsInput | boolean
     otherSocialLinks?: NullableJsonNullValueInput | InputJsonValue
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    profileCompleteness?: IntFieldUpdateOperationsInput | number
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     createdContent?: ContentUncheckedUpdateManyWithoutAuthorNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput

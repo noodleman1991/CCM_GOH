@@ -18,6 +18,7 @@ const isProtectedApiRoute = createRouteMatcher([
     '/api/profile/(.*)',
     '/api/account',
     '/api/account/(.*)',
+    '/api/users/(.*)',
     '/api/sync/(.*)',
     '/api/search/(.*)',
     '/api/onboarding/(.*)',

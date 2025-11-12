@@ -18,11 +18,13 @@ interface WorkInfoPanelProps {
   content?: any
   workTypes?: Array<{ _id: string; key: string; label: string; description?: string; order?: number }>
   expertiseAreas?: Array<{ _id: string; key: string; label: string; description?: string; order?: number }>
+  communities?: Array<{ id: string; name: string; regionalName: string | null; type: string }>
   isSubmitting?: boolean
 }
 
-export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = [] }: WorkInfoPanelProps) {
+export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = [], communities = [] }: WorkInfoPanelProps) {
   const t = useTranslations("onboarding.steps.workInfo")
+  const tNav = useTranslations("navigation")
   const locale = useLocale()
   const isRTL = rtlLocales.includes(locale)
 
@@ -171,6 +173,68 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
                                 {getLocalizedText(item.description, '')}
                               </FormDescription>
                             )}
+                          </div>
+                        </FormItem>
+                      )
+                    }}
+                  />
+                ))}
+              </div>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* Regional Communities */}
+        <FormField
+          control={form.control}
+          name="workInfo.communityIds"
+          render={() => (
+            <FormItem>
+              <div className="mb-4">
+                <FormLabel className="text-base">
+                  {content?.fieldLabels?.workInfo?.regionalCommunities || t("regionalCommunities")}
+                </FormLabel>
+                <FormDescription>
+                  {content?.workInfoFieldHints?.communitiesDescription || t("regionalCommunitiesHint")}
+                </FormDescription>
+              </div>
+              <div className="grid grid-cols-1 gap-4">
+                {communities.filter(c => c.type === 'REGIONAL').map((community) => (
+                  <FormField
+                    key={community.id}
+                    control={form.control}
+                    name="workInfo.communityIds"
+                    render={({ field }) => {
+                      return (
+                        <FormItem
+                          key={community.id}
+                          className={cn(
+                            "flex flex-row items-start gap-3 space-y-0 p-4 rounded-lg border-2 transition-all hover:bg-gray-50",
+                            isRTL && "flex-row-reverse"
+                          )}
+                          style={{
+                            borderColor: field.value?.includes(community.id) ? 'rgb(59 130 246)' : 'rgb(229 231 235)'
+                          }}
+                        >
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value?.includes(community.id)}
+                              onCheckedChange={(checked) => {
+                                return checked
+                                  ? field.onChange([...field.value, community.id])
+                                  : field.onChange(
+                                      field.value?.filter(
+                                        (value: any) => value !== community.id
+                                      )
+                                    )
+                              }}
+                            />
+                          </FormControl>
+                          <div className="space-y-1 leading-none flex-1">
+                            <FormLabel className="font-medium text-base">
+                              {tNav(`regions.${community.regionalName?.toLowerCase().replace(/ /g, '').replace(/&/g, 'And')}`) || community.regionalName || community.name}
+                            </FormLabel>
                           </div>
                         </FormItem>
                       )
