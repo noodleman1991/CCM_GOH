@@ -112,13 +112,13 @@ export default function GridAgendaComponent({
             <CardHeader className="pb-3 px-0">
                 <div className="space-y-2">
                     {/* Title */}
-                    <h3 className="font-semibold text-lg leading-tight line-clamp-2 group-hover:text-primary transition-colors">
+                    <h3 className="font-semibold text-lg leading-tight line-clamp-4 group-hover:text-primary transition-colors">
                         {title}
                     </h3>
 
                     {/* Subtitle */}
                     {subtitle && (
-                        <p className="text-sm text-black line-clamp-1">
+                        <p className="text-sm text-black line-clamp-3">
                             {subtitle}
                         </p>
                     )}
@@ -128,7 +128,7 @@ export default function GridAgendaComponent({
             <CardContent className="flex-1 pb-3 px-0">
                 {/* Description */}
                 {description && (
-                    <p className="text-sm text-black line-clamp-3 mb-4">
+                    <p className="text-sm text-black line-clamp-14 mb-4">
                         {description}
                     </p>
                 )}

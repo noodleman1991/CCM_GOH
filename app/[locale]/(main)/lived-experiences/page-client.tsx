@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge'
 import { getLocalizedText } from '@/lib/localization-utils'
 import { rtlLocales } from '@/i18n/routing'
 import { cn } from '@/lib/utils'
+import Image from "next/image";
 
 interface LivedExperiencesPageClientProps {
   initialCommunityVideos: Record<string, any[]>
@@ -140,15 +141,39 @@ export default function LivedExperiencesPageClient({
 
   return (
     <div className="container max-w-7xl py-8 space-y-8">
-      {/* Header */}
-      <div className="space-y-2">
-        <h1 className="text-3xl lg:text-4xl font-bold tracking-tight">
-          {t('title')}
-        </h1>
-        <p className="text-lg text-muted-foreground max-w-2xl">
-          {t('description')}
-        </p>
-      </div>
+        {/* Header */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div
+                dir={isRTL ? "rtl" : "ltr"}
+                className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center"
+            >
+                {/* Text Content - Always first in DOM */}
+                <div className="flex flex-col justify-start min-w-0 w-full space-y-2 text-center lg:text-start">
+                    <h1 className="text-4xl lg:text-5xl font-bold tracking-tight">
+                        {t("title")}
+                    </h1>
+                    <p className="text-lg text-muted-foreground max-w-2xl mx-auto lg:mx-0">
+                        {t("description")}
+                    </p>
+                </div>
+
+                {/* Image */}
+                <div className="flex flex-col justify-center min-w-0 w-full">
+                    <div className="relative w-full max-w-md mx-auto overflow-hidden">
+                        <Image
+                            className="rounded-xl animate-fade-up [animation-delay:500ms] opacity-0 w-full h-auto object-cover"
+                            src="/illustrations/hubLivedExperiencespng.png"
+                            alt="A figure jumping off a book - illustration"
+                            width={800}
+                            height={800}
+                            quality={100}
+                            priority
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
       {/* Search and Filters */}
       <div className="space-y-4">
@@ -307,9 +332,9 @@ export default function LivedExperiencesPageClient({
                       )}
                     </div>
                     <div className="space-y-2">
-                      <h3 className="font-semibold line-clamp-2">
+                      <h5 className="font-semibold line-clamp-4">
                         {getLocalizedText(video.title, locale, video.title)}
-                      </h3>
+                      </h5>
                       {video.tags && video.tags.length > 0 && (
                         <div className="flex flex-wrap gap-1">
                           {video.tags.slice(0, 3).map((tag: string) => (

@@ -55,19 +55,19 @@ export const REGIONAL_COMMUNITY_CASE_STUDIES_QUERY = groq`
           url
         }
       }
-    },
+    }[_id != null],
     tags[]->{
       _id,
       label,
       value,
       color,
       category
-    },
+    }[_id != null],
     relatedCommunities[]->{
       _id,
       name,
       slug
-    },
+    }[_id != null],
     downloads,
     views
   }
@@ -151,19 +151,19 @@ export const REGIONAL_COMMUNITY_CASE_STUDIES_BY_SLUG_QUERY = groq`
           url
         }
       }
-    },
+    }[_id != null],
     tags[]->{
       _id,
       label,
       value,
       color,
       category
-    },
+    }[_id != null],
     relatedCommunities[]->{
       _id,
       name,
       slug
-    },
+    }[_id != null],
     downloads,
     views
   }

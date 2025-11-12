@@ -53,9 +53,9 @@ export default function Hero1({
                             </p>
                         )}
                         {title && (
-                            <h2 className="mt-6 font-bold leading-[1.1] text-4xl md:text-5xl lg:text-6xl animate-fade-up [animation-delay:200ms] opacity-0">
+                            <h3 className="mt-6 font-bold leading-[1.1] text-2xl md:text-4xl lg:text-5xl animate-fade-up [animation-delay:200ms] opacity-0">
                                 {title}
-                            </h2>
+                            </h3>
                         )}
                         {body && (
                             <div className="text-lg mt-6 animate-fade-up [animation-delay:300ms] opacity-0">

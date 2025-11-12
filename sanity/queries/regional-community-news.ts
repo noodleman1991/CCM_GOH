@@ -46,7 +46,7 @@ export const REGIONAL_COMMUNITY_NEWS_QUERY = groq`
           url
         }
       }
-    },
+    }[_id != null],
     locationDetails{
       city,
       country,
@@ -59,12 +59,12 @@ export const REGIONAL_COMMUNITY_NEWS_QUERY = groq`
       value,
       color,
       category
-    },
+    }[_id != null],
     relatedCommunities[]->{
       _id,
       name,
       slug
-    },
+    }[_id != null],
     language,
     priority,
     views
@@ -140,7 +140,7 @@ export const REGIONAL_COMMUNITY_NEWS_BY_SLUG_QUERY = groq`
           url
         }
       }
-    },
+    }[_id != null],
     locationDetails{
       city,
       country,
@@ -153,12 +153,12 @@ export const REGIONAL_COMMUNITY_NEWS_BY_SLUG_QUERY = groq`
       value,
       color,
       category
-    },
+    }[_id != null],
     relatedCommunities[]->{
       _id,
       name,
       slug
-    },
+    }[_id != null],
     language,
     priority,
     views

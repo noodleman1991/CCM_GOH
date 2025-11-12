@@ -28,11 +28,11 @@ interface CarouselConfig {
 }
 
 interface RegionalCommunity {
-  _id: string;
+  _id: string | null;
   name: any;
   slug: {
     current: string;
-  };
+  } | null;
   coverImage?: any;
 }
 
@@ -66,8 +66,13 @@ export default async function RegionalCommunityTemplate({
   userId
 }: RegionalCommunityTemplateProps) {
   // Validate regional community data
-  if (!regionalCommunity || !regionalCommunity.slug?.current) {
-    console.error('Regional community template: Invalid regional community data');
+  if (!regionalCommunity || !regionalCommunity._id || !regionalCommunity.slug?.current) {
+    console.error('Regional community template: Invalid regional community data', {
+      hasRegionalCommunity: !!regionalCommunity,
+      hasId: !!regionalCommunity?._id,
+      hasSlug: !!regionalCommunity?.slug?.current,
+      regionalCommunityId: regionalCommunity?._id
+    });
     return null;
   }
 
@@ -177,14 +182,17 @@ export default async function RegionalCommunityTemplate({
       gridColumns: agendasGrid?.gridColumns || 'grid-cols-3',
       background: { type: 'none' },
       padding: { top: 'lg', bottom: 'lg' },
-      columns: agendasData?.length ? agendasData.slice(0, agendasLimit).map((agenda: any) => ({
-        _type: 'grid-agenda',
-        _key: `agenda-${agenda._id}`,
-        agenda: agenda,
-        showTags: true,
-        showMetadata: true,
-        showDownloadCount: true
-      })) : []
+      columns: agendasData?.length ? agendasData
+        .filter((agenda: any) => agenda && agenda._id)
+        .slice(0, agendasLimit)
+        .map((agenda: any) => ({
+          _type: 'grid-agenda',
+          _key: `agenda-${agenda._id}`,
+          agenda: agenda,
+          showTags: true,
+          showMetadata: true,
+          showDownloadCount: true
+        })) : []
     });
   }
 
@@ -198,13 +206,16 @@ export default async function RegionalCommunityTemplate({
       gridColumns: newsGrid?.gridColumns || 'grid-cols-3',
       background: { type: 'none' },
       padding: { top: 'lg', bottom: 'lg' },
-      columns: newsData?.length ? newsData.slice(0, newsLimit).map((news: any) => ({
-        _type: 'grid-news',
-        _key: `news-${news._id}`,
-        post: news,
-        showTags: true,
-        showMetadata: true
-      })) : []
+      columns: newsData?.length ? newsData
+        .filter((news: any) => news && news._id)
+        .slice(0, newsLimit)
+        .map((news: any) => ({
+          _type: 'grid-news',
+          _key: `news-${news._id}`,
+          post: news,
+          showTags: true,
+          showMetadata: true
+        })) : []
     });
   }
 
@@ -218,14 +229,17 @@ export default async function RegionalCommunityTemplate({
       gridColumns: caseStudiesGrid?.gridColumns || 'grid-cols-3',
       background: { type: 'none' },
       padding: { top: 'lg', bottom: 'lg' },
-      columns: caseStudiesData?.length ? caseStudiesData.slice(0, caseStudiesLimit).map((caseStudy: any) => ({
-        _type: 'grid-case-study',
-        _key: `case-study-${caseStudy._id}`,
-        caseStudy: caseStudy,
-        showTags: true,
-        showAuthors: true,
-        showMetadata: true
-      })) : []
+      columns: caseStudiesData?.length ? caseStudiesData
+        .filter((caseStudy: any) => caseStudy && caseStudy._id)
+        .slice(0, caseStudiesLimit)
+        .map((caseStudy: any) => ({
+          _type: 'grid-case-study',
+          _key: `case-study-${caseStudy._id}`,
+          caseStudy: caseStudy,
+          showTags: true,
+          showAuthors: true,
+          showMetadata: true
+        })) : []
     });
   }
 
@@ -240,7 +254,7 @@ export default async function RegionalCommunityTemplate({
       background: { type: 'muted' },
       padding: { top: 'xl', bottom: 'xl' },
       filterBy: {
-        communities: [regionalCommunity._id],
+        communities: regionalCommunity._id ? [regionalCommunity._id] : [],
         tags: [],
         authors: []
       },
@@ -256,11 +270,11 @@ export default async function RegionalCommunityTemplate({
       _key: 'template-team-grid',
       ...teamGrid,
       // Pass regionalCommunity reference for dynamic member fetching and role display
-      regionalCommunity: {
+      regionalCommunity: regionalCommunity._id ? {
         _id: regionalCommunity._id,
         name: regionalCommunity.name,
         slug: regionalCommunity.slug
-      },
+      } : null,
     });
   }
 

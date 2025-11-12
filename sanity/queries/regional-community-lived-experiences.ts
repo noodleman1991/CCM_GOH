@@ -47,7 +47,7 @@ export const REGIONAL_COMMUNITY_LIVED_EXPERIENCES_QUERY = groq`
       value,
       color,
       category
-    },
+    }[_id != null],
     language,
     transcription,
     subtitles,
@@ -126,7 +126,7 @@ export const REGIONAL_COMMUNITY_LIVED_EXPERIENCES_BY_SLUG_QUERY = groq`
       value,
       color,
       category
-    },
+    }[_id != null],
     language,
     transcription,
     subtitles,
