@@ -14,42 +14,113 @@ export default function OnboardingPage() {
     const params = useParams()
     const locale = params.locale as string || 'en'
 
-    const [sanityContent, setSanityContent] = useState<any>(null)
-    const [userManagementOptions, setUserManagementOptions] = useState<any>(null)
-    const [isLoading, setIsLoading] = useState(true)
+    // Single state object to prevent race conditions
+    const [data, setData] = useState<{
+        content: any | null
+        options: any | null
+        loading: boolean
+    }>({
+        content: null,
+        options: null,
+        loading: true
+    })
 
     useEffect(() => {
+        const abortController = new AbortController()
+
         const loadData = async () => {
             try {
-                // Load Sanity content, user management options, and communities in parallel
-                const [content, userManagement, communitiesResponse] = await Promise.all([
+                console.log(`[Onboarding] Loading data for locale: ${locale}`)
+
+                // Load Sanity content and user management options first
+                const [content, userManagement] = await Promise.all([
                     client.fetch(onboardingContentQueryWithFallback, { locale }),
-                    fetchUserManagementOptionsWithLocale(locale),
-                    fetch('/api/communities?type=REGIONAL')
+                    fetchUserManagementOptionsWithLocale(locale)
                 ])
 
-                setSanityContent(content)
-                setUserManagementOptions({
-                    ...userManagement,
-                    communities: communitiesResponse.ok ? await communitiesResponse.json() : []
+                // Load communities separately with better error handling
+                let communities: any[] = []
+                try {
+                    const communitiesResponse = await fetch('/api/communities', {
+                        signal: abortController.signal,
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+
+                    if (communitiesResponse.ok) {
+                        const contentType = communitiesResponse.headers.get('content-type')
+                        if (contentType && contentType.includes('application/json')) {
+                            const communitiesData = await communitiesResponse.json()
+                            communities = communitiesData.data || communitiesData || []
+                            console.log('[Onboarding] Communities data:', {
+                                count: communities.length,
+                                source: communitiesData.source
+                            })
+                        } else {
+                            console.error('[Onboarding] Communities API returned non-JSON response')
+                            const text = await communitiesResponse.text()
+                            console.error('[Onboarding] Response (first 200 chars):', text.substring(0, 200))
+                        }
+                    } else {
+                        console.error('[Onboarding] Communities API returned error:', {
+                            status: communitiesResponse.status,
+                            statusText: communitiesResponse.statusText
+                        })
+                    }
+                } catch (communitiesError) {
+                    console.error('[Onboarding] Failed to fetch communities:', communitiesError)
+                    // Continue with empty communities array
+                }
+
+                // Log what we received for debugging
+                console.log('[Onboarding] Data loaded:', {
+                    hasContent: !!content,
+                    workTypesCount: userManagement?.workTypes?.length || 0,
+                    expertiseAreasCount: userManagement?.expertiseAreas?.length || 0,
+                    communitiesCount: communities.length,
+                    contentLanguage: content?.language
+                })
+
+                // Single atomic state update - prevents race condition
+                setData({
+                    content: content,
+                    options: {
+                        ...userManagement,
+                        communities
+                    },
+                    loading: false
                 })
             } catch (error) {
-                console.error('Failed to load onboarding data:', error)
-                // Set fallback empty options if fetch fails
-                setUserManagementOptions({
-                    workTypes: [],
-                    expertiseAreas: [],
-                    communities: []
+                // Don't log if it's just an abort
+                if (error instanceof Error && error.name === 'AbortError') {
+                    console.log('[Onboarding] Data loading aborted')
+                    return
+                }
+
+                console.error('[Onboarding] Failed to load onboarding data:', error)
+                console.error('[Onboarding] Error details:', {
+                    message: error instanceof Error ? error.message : String(error),
+                    type: error instanceof Error ? error.name : typeof error
                 })
-            } finally {
-                setIsLoading(false)
+
+                // Set fallback empty options if fetch fails
+                setData(prev => ({
+                    ...prev,
+                    loading: false
+                }))
             }
         }
 
         loadData()
+
+        // Cleanup function to abort fetch on unmount
+        return () => {
+            abortController.abort()
+        }
     }, [locale])
 
-    if (isLoading) {
+    if (data.loading) {
         return (
             <div className="h-screen bg-gray-50">
                 {/* Content skeleton */}
@@ -79,8 +150,8 @@ export default function OnboardingPage() {
 
     return (
         <ModernOnboardingContainer
-            userManagementOptions={userManagementOptions}
-            sanityContent={sanityContent}
+            userManagementOptions={data.options}
+            sanityContent={data.content}
         />
     )
 }
