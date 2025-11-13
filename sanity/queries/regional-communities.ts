@@ -1,5 +1,5 @@
 import { groq } from "next-sanity";
-import { sanityFetch } from "@/sanity/lib/live";
+import { client } from "@/sanity/lib/client";
 
 /**
  * Query to fetch all active regional communities with i18n names
@@ -20,12 +20,16 @@ export const REGIONAL_COMMUNITIES_QUERY = groq`
 
 /**
  * Fetch all active regional communities from Sanity
+ * Uses client.fetch instead of sanityFetch - works in API routes
  */
 export async function getRegionalCommunities() {
-  const { data } = await sanityFetch({
-    query: REGIONAL_COMMUNITIES_QUERY,
-    tags: ['regionalCommunity']
-  });
-
-  return data;
+  try {
+    console.log('[RegionalCommunities] Fetching from Sanity...')
+    const data = await client.fetch(REGIONAL_COMMUNITIES_QUERY);
+    console.log('[RegionalCommunities] Fetched:', data?.length || 0, 'communities')
+    return data;
+  } catch (error) {
+    console.error('[RegionalCommunities] Error fetching from Sanity:', error);
+    return [];
+  }
 }

@@ -30,8 +30,13 @@ const isOnboardingRoute = createRouteMatcher([withLocale('/onboarding')])
 const intlMiddleware = createIntlMiddleware(routing)
 
 export default clerkMiddleware(async (auth, req: NextRequest) => {
-    // Handle webhook routes - skip all middleware 
+    // Handle webhook routes - skip all middleware
     if (req.nextUrl.pathname.startsWith('/api/webhooks/')) {
+        return NextResponse.next()
+    }
+
+    // Handle public API routes - no authentication required, no i18n
+    if (req.nextUrl.pathname.startsWith('/api/communities')) {
         return NextResponse.next()
     }
 
