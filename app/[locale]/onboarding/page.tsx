@@ -21,20 +21,25 @@ export default function OnboardingPage() {
     useEffect(() => {
         const loadData = async () => {
             try {
-                // Load Sanity content and user management options in parallel
-                const [content, userManagement] = await Promise.all([
+                // Load Sanity content, user management options, and communities in parallel
+                const [content, userManagement, communitiesResponse] = await Promise.all([
                     client.fetch(onboardingContentQueryWithFallback, { locale }),
-                    fetchUserManagementOptionsWithLocale(locale)
+                    fetchUserManagementOptionsWithLocale(locale),
+                    fetch('/api/communities?type=REGIONAL')
                 ])
 
                 setSanityContent(content)
-                setUserManagementOptions(userManagement)
+                setUserManagementOptions({
+                    ...userManagement,
+                    communities: communitiesResponse.ok ? await communitiesResponse.json() : []
+                })
             } catch (error) {
                 console.error('Failed to load onboarding data:', error)
                 // Set fallback empty options if fetch fails
                 setUserManagementOptions({
                     workTypes: [],
-                    expertiseAreas: []
+                    expertiseAreas: [],
+                    communities: []
                 })
             } finally {
                 setIsLoading(false)

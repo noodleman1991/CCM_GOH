@@ -53,13 +53,17 @@
     }
   },
   "auth": {
-    "welcome": "Welcome back",
+    "welcome": "Welcome!",
+    "welcomeBack": "Welcome back",
+    "signUpOrSignIn": "Sign up or Sign in",
+    "signIn": "Sign In",
+    "signOut": "Sign out",
+    "createAccount": "Create account",
     "emailPlaceholder": "Email address",
     "passwordPlaceholder": "Password",
     "forgotPassword": "Forgot password?",
     "noAccount": "Don't have an account?",
     "hasAccount": "Already have an account?",
-    "createAccount": "Create an account",
     "continueWith": "Continue with {provider}"
   },
   "errors": {

@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { getTranslations } from 'next-intl/server'
+//import { getTranslations } from 'next-intl/server'
 import Image from 'next/image'
 import { fetchCaseStudyBySlug, fetchCaseStudiesStaticParams } from '@/sanity/queries/grid/grid-case-study'
 import { Badge } from '@/components/ui/badge'

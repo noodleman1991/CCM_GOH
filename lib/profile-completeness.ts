@@ -22,6 +22,8 @@ type ProfileData = {
   personalWebsite?: string | null
   linkedinProfile?: string | null
   phoneNumber?: string | null
+  communityMemberships?: any[] | null
+  recentWork?: any[] | null
 }
 
 /**
@@ -29,30 +31,34 @@ type ProfileData = {
  * Total should add up to 100
  */
 const FIELD_WEIGHTS = {
-  // Core identity fields (30%)
-  firstName: 5,
-  lastName: 5,
-  username: 5,
-  email: 5,
-  image: 10,
+  // Core identity fields (25%)
+  firstName: 4,
+  lastName: 4,
+  username: 4,
+  email: 4,
+  image: 9,
 
   // Bio and personal info (20%)
-  bio: 10,
-  ageGroup: 5,
-  country: 3,
-  city: 2,
+  bio: 8,
+  ageGroup: 4,  // Added - was missing!
+  country: 4,
+  city: 4,
 
   // Professional information (30%)
   organization: 5,
   position: 5,
-  workBio: 10,
-  workTypes: 5,
-  expertiseAreas: 5,
+  workBio: 8,
+  workTypes: 6,
+  expertiseAreas: 6,
 
-  // Contact and social (20%)
-  personalWebsite: 5,
-  linkedinProfile: 5,
-  phoneNumber: 10,
+  // Contact and social (15%)
+  personalWebsite: 4,
+  linkedinProfile: 4,
+  phoneNumber: 7,
+
+  // Community and engagement (10%)
+  communityMemberships: 5,  // Added - regional communities
+  recentWork: 5,  // Added - recent projects/work
 } as const
 
 /**

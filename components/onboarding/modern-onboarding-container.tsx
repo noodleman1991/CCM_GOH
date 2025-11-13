@@ -403,6 +403,7 @@ export function ModernOnboardingContainer({
               isSubmitting={isSubmitting}
               workTypes={userManagementOptions?.workTypes || []}
               expertiseAreas={userManagementOptions?.expertiseAreas || []}
+              communities={userManagementOptions?.communities || []}
               {...(userManagementOptions && { userManagementOptions })}
             />
           </ModernContentArea>

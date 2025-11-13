@@ -53,13 +53,17 @@
     }
   },
   "auth": {
-    "welcome": "مرحباً بعودتك",
+    "welcome": "أهلاً وسهلاً!",
+    "welcomeBack": "مرحباً بعودتك",
+    "signUpOrSignIn": "سجّل أو سجّل الدخول",
+    "signIn": "تسجيل الدخول",
+    "signOut": "تسجيل الخروج",
+    "createAccount": "إنشاء حساب",
     "emailPlaceholder": "عنوان البريد الإلكتروني",
     "passwordPlaceholder": "كلمة المرور",
     "forgotPassword": "نسيت كلمة المرور؟",
     "noAccount": "ليس لديك حساب؟",
     "hasAccount": "لديك حساب بالفعل؟",
-    "createAccount": "إنشاء حساب",
     "continueWith": "المتابعة باستخدام {provider}"
   },
   "errors": {
