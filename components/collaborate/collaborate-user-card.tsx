@@ -47,6 +47,19 @@ export function CollaborateUserCard({ user, className }: CollaborateUserCardProp
   const locale = useLocale()
   const isRTL = locale === 'ar'
 
+  // Map work type enum values to translation keys
+  const getWorkTypeKey = (workType: string): string => {
+    const keyMap: Record<string, string> = {
+      'RESEARCH': 'research',
+      'POLICY': 'policy',
+      'LIVED_EXPERIENCE_EXPERT': 'livedExperience',
+      'NGO': 'ngo',
+      'COMMUNITY_ORGANIZATION': 'communityOrg',
+      'EDUCATION_TEACHING': 'education'
+    }
+    return keyMap[workType] || workType.toLowerCase().replace(/_/g, '')
+  }
+
   // Map expertise enum values to translation keys
   const getExpertiseKey = (expertise: string): string => {
     const keyMap: Record<string, string> = {
@@ -132,7 +145,7 @@ export function CollaborateUserCard({ user, className }: CollaborateUserCardProp
               <div className="flex flex-wrap gap-1.5">
                 {user.workTypes.slice(0, 3).map((workType: string) => (
                   <Badge key={workType} variant="secondary" className="text-xs">
-                    {tWorkTypes(workType.toLowerCase().replace(/_/g, ''))}
+                    {tWorkTypes(getWorkTypeKey(workType))}
                   </Badge>
                 ))}
                 {user.workTypes.length > 3 && (

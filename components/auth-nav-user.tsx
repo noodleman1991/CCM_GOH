@@ -6,6 +6,7 @@ import { NavUser } from "@/components/nav-user"
 import { useClerkUser } from "@/hooks/use-clerk-user"
 import { cn } from "@/lib/utils"
 import { useEffect, useState } from 'react'
+import { useTranslations } from 'next-intl'
 import {
     SidebarMenu,
     SidebarMenuButton,
@@ -21,6 +22,7 @@ import {
 import { Button } from "@/components/ui/button"
 
 export function AuthNavUser({ isRTL = false }: { isRTL?: boolean }) {
+    const t = useTranslations('auth')
     const { userData } = useClerkUser()
     const { signOut } = useClerk()
     const [mounted, setMounted] = useState(false)
@@ -70,7 +72,7 @@ export function AuthNavUser({ isRTL = false }: { isRTL?: boolean }) {
                             className={cn(isRTL && "flex-row-reverse text-right")}
                         >
                             <LogOut className={cn(isRTL && "ml-2 mr-0")} />
-                            Sign out
+                            {t('signOut')}
                         </DropdownMenuItem>
                     )}
                 />
@@ -92,8 +94,8 @@ export function AuthNavUser({ isRTL = false }: { isRTL?: boolean }) {
                                         "grid flex-1 text-sm leading-tight",
                                         isRTL ? "text-right" : "text-left"
                                     )}>
-                                        <span className="truncate font-medium">Welcome</span>
-                                        <span className="truncate text-xs">Sign in to get started</span>
+                                        <span className="truncate text-large">{t('welcome')}</span>
+                                        <span className="truncate text-medium">{t('signUpOrSignIn')}</span>
                                     </div>
                                 </SidebarMenuButton>
                             </DropdownMenuTrigger>
@@ -112,7 +114,7 @@ export function AuthNavUser({ isRTL = false }: { isRTL?: boolean }) {
                                             )}
                                             variant="outline"
                                         >
-                                            Sign In
+                                            {t('signIn')}
                                         </Button>
                                     </SignInButton>
 
@@ -125,7 +127,7 @@ export function AuthNavUser({ isRTL = false }: { isRTL?: boolean }) {
                                                 isRTL ? "justify-end" : "justify-start"
                                             )}
                                         >
-                                            Create account
+                                            {t('createAccount')}
                                         </Button>
                                     </SignUpButton>
                                 </div>

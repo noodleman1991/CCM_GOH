@@ -53,13 +53,17 @@
     }
   },
   "auth": {
-    "welcome": "Bon retour",
+    "welcome": "Bienvenue !",
+    "welcomeBack": "Bon retour",
+    "signUpOrSignIn": "S'inscrire ou Se connecter",
+    "signIn": "Se connecter",
+    "signOut": "Se déconnecter",
+    "createAccount": "Créer un compte",
     "emailPlaceholder": "Adresse e-mail",
     "passwordPlaceholder": "Mot de passe",
     "forgotPassword": "Mot de passe oublié ?",
     "noAccount": "Pas de compte ?",
     "hasAccount": "Vous avez déjà un compte ?",
-    "createAccount": "Créer un compte",
     "continueWith": "Continuer avec {provider}"
   },
   "errors": {

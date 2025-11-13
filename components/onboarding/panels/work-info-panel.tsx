@@ -29,9 +29,18 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
   const isRTL = rtlLocales.includes(locale)
 
   const getLocalizedText = (text: string | undefined, fallback: string) => {
-    // Since we're now using the locale-aware fetch that already returns the localized text,
-    // we just need to return the text directly or fallback
     return text || fallback
+  }
+
+  // Map regional name enum values to translation keys (same as profile-edit and collaborate)
+  const REGIONAL_NAME_TO_TRANSLATION_KEY: Record<string, string> = {
+    'SUB_SAHARAN_AFRICA': 'subSaharanAfrica',
+    'NORTHERN_AFRICA_AND_WESTERN_ASIA': 'northernAfricaWesternAsia',
+    'CENTRAL_AND_SOUTHERN_ASIA': 'centralSouthernAsia',
+    'EASTERN_AND_SOUTH_EASTERN_ASIA': 'easternSouthEasternAsia',
+    'LATIN_AMERICA_AND_THE_CARIBBEAN': 'latinAmericaCaribbean',
+    'OCEANIA': 'oceania',
+    'EUROPE_AND_NORTH_AMERICA': 'europeNorthAmerica'
   }
 
   return (
@@ -233,7 +242,9 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
                           </FormControl>
                           <div className="space-y-1 leading-none flex-1">
                             <FormLabel className="font-medium text-base">
-                              {tNav(`regions.${community.regionalName?.toLowerCase().replace(/ /g, '').replace(/&/g, 'And')}`) || community.regionalName || community.name}
+                              {community.regionalName && REGIONAL_NAME_TO_TRANSLATION_KEY[community.regionalName]
+                                ? tNav(`regions.${REGIONAL_NAME_TO_TRANSLATION_KEY[community.regionalName]}`)
+                                : community.name}
                             </FormLabel>
                           </div>
                         </FormItem>

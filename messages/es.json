@@ -53,13 +53,17 @@
     }
   },
   "auth": {
-    "welcome": "Bienvenido de vuelta",
+    "welcome": "¡Bienvenido!",
+    "welcomeBack": "Bienvenido de vuelta",
+    "signUpOrSignIn": "Regístrate o Inicia sesión",
+    "signIn": "Iniciar sesión",
+    "signOut": "Cerrar sesión",
+    "createAccount": "Crear cuenta",
     "emailPlaceholder": "Dirección de correo electrónico",
     "passwordPlaceholder": "Contraseña",
     "forgotPassword": "¿Olvidaste tu contraseña?",
     "noAccount": "¿No tienes una cuenta?",
     "hasAccount": "¿Ya tienes una cuenta?",
-    "createAccount": "Crear una cuenta",
     "continueWith": "Continuar con {provider}"
   },
   "errors": {
