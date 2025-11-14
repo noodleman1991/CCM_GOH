@@ -112,7 +112,7 @@ export async function GET() {
 
             const fallbackCommunities = FALLBACK_COMMUNITIES
                 .map(community => {
-                    const dbId = regionalNameToId.get(community.regionalName)
+                    const dbId = regionalNameToId.get(community.regionalName as any)
 
                     // Only include if we have a matching database record
                     if (!dbId) {

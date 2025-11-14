@@ -52,6 +52,10 @@
       "smallholderFarmers": "Smallholder Farmers"
     }
   },
+  "navUser": {
+    "account": "Account",
+    "logout": "Log out"
+  },
   "auth": {
     "welcome": "Welcome!",
     "welcomeBack": "Welcome back",
@@ -549,7 +553,7 @@
     "pageTitle": "Dashboard - Connecting Climate Minds Hub",
     "pageDescription": "Your personal hub for managing your profile, connecting with the community, and sharing your work",
     "welcome": "Welcome, {name}",
-    "subtitle": "Your hub for collaboration and impact",
+    "subtitle": "",
     "editProfile": "Edit Profile",
     "anonymousUser": "Anonymous User",
     "completeProfileMessage": "Complete your profile to increase visibility and connect with more collaborators",

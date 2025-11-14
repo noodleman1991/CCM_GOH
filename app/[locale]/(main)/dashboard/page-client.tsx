@@ -114,9 +114,6 @@ export function DashboardClient({
                 <h1 className="text-3xl md:text-4xl font-bold">
                   {t('welcome', { name: displayName })}
                 </h1>
-                <p className="text-muted-foreground mt-2">
-                  {t('subtitle')}
-                </p>
               </div>
             </div>
             <Button asChild size="lg">
@@ -128,7 +125,7 @@ export function DashboardClient({
           </div>
 
           {/* Profile Completeness */}
-          <div className="mt-8 max-w-2xl">
+          <div className="mt-8 w-full max-w-3xl">
             <ProfileCompletenessIndicator
               percentage={user.profileCompleteness}
               size="lg"
@@ -151,89 +148,89 @@ export function DashboardClient({
             <div>
               <h2 className="text-2xl font-bold mb-6">{t('quickActions')}</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Card className="group hover:shadow-lg transition-shadow">
+                <Card className="group hover:shadow-lg transition-shadow min-h-[220px] flex flex-col">
                   <CardHeader>
-                    <div className="flex items-center gap-3">
-                      <div className="p-3 rounded-lg bg-blue-500/10">
+                    <div className={cn("flex items-center gap-3", rtl && "flex-row-reverse")}>
+                      <div className="p-3 rounded-lg bg-blue-500/10 flex-shrink-0">
                         <User className="w-6 h-6 text-blue-500" />
                       </div>
                       <CardTitle>{t('manageProfile')}</CardTitle>
                     </div>
                   </CardHeader>
-                  <CardContent>
-                    <CardDescription className="mb-4">
+                  <CardContent className="flex-1 flex flex-col">
+                    <CardDescription className="mb-4 flex-1">
                       {t('manageProfileDescription')}
                     </CardDescription>
-                    <Button asChild variant="outline" className="w-full">
-                      <Link href={`/${locale}/dashboard/profile/edit`}>
-                        {t('viewProfile')}
-                        <ArrowRight className={cn("w-4 h-4", rtl ? "mr-2" : "ml-2")} />
+                    <Button asChild variant="outline" className="w-full mt-auto">
+                      <Link href={`/${locale}/dashboard/profile/edit`} className={cn("flex items-center justify-center gap-2", rtl && "flex-row-reverse")}>
+                        <span>{t('viewProfile')}</span>
+                        <ArrowRight className="w-4 h-4" />
                       </Link>
                     </Button>
                   </CardContent>
                 </Card>
 
-                <Card className="group hover:shadow-lg transition-shadow">
+                <Card className="group hover:shadow-lg transition-shadow min-h-[220px] flex flex-col">
                   <CardHeader>
-                    <div className="flex items-center gap-3">
-                      <div className="p-3 rounded-lg bg-green-500/10">
+                    <div className={cn("flex items-center gap-3", rtl && "flex-row-reverse")}>
+                      <div className="p-3 rounded-lg bg-green-500/10 flex-shrink-0">
                         <Upload className="w-6 h-6 text-green-500" />
                       </div>
                       <CardTitle>{t('submitCaseStudy')}</CardTitle>
                     </div>
                   </CardHeader>
-                  <CardContent>
-                    <CardDescription className="mb-4">
+                  <CardContent className="flex-1 flex flex-col">
+                    <CardDescription className="mb-4 flex-1">
                       {t('submitCaseStudyDescription')}
                     </CardDescription>
-                    <Button asChild variant="outline" className="w-full">
-                      <Link href={`/${locale}/research-and-action/case-studies/submit`}>
-                        {t('submit')}
-                        <ArrowRight className={cn("w-4 h-4", rtl ? "mr-2" : "ml-2")} />
+                    <Button asChild variant="outline" className="w-full mt-auto">
+                      <Link href={`/${locale}/research-and-action/case-studies/submit`} className={cn("flex items-center justify-center gap-2", rtl && "flex-row-reverse")}>
+                        <span>{t('submit')}</span>
+                        <ArrowRight className="w-4 h-4" />
                       </Link>
                     </Button>
                   </CardContent>
                 </Card>
 
-                <Card className="group hover:shadow-lg transition-shadow">
+                <Card className="group hover:shadow-lg transition-shadow min-h-[220px] flex flex-col">
                   <CardHeader>
-                    <div className="flex items-center gap-3">
-                      <div className="p-3 rounded-lg bg-purple-500/10">
+                    <div className={cn("flex items-center gap-3", rtl && "flex-row-reverse")}>
+                      <div className="p-3 rounded-lg bg-purple-500/10 flex-shrink-0">
                         <Users className="w-6 h-6 text-purple-500" />
                       </div>
                       <CardTitle>{t('collaborate')}</CardTitle>
                     </div>
                   </CardHeader>
-                  <CardContent>
-                    <CardDescription className="mb-4">
+                  <CardContent className="flex-1 flex flex-col">
+                    <CardDescription className="mb-4 flex-1">
                       {t('collaborateDescription')}
                     </CardDescription>
-                    <Button asChild variant="outline" className="w-full">
-                      <Link href={`/${locale}/collaborate`}>
-                        {t('findCollaborators')}
-                        <ArrowRight className={cn("w-4 h-4", rtl ? "mr-2" : "ml-2")} />
+                    <Button asChild variant="outline" className="w-full mt-auto">
+                      <Link href={`/${locale}/collaborate`} className={cn("flex items-center justify-center gap-2", rtl && "flex-row-reverse")}>
+                        <span>{t('findCollaborators')}</span>
+                        <ArrowRight className="w-4 h-4" />
                       </Link>
                     </Button>
                   </CardContent>
                 </Card>
 
-                <Card className="group hover:shadow-lg transition-shadow">
+                <Card className="group hover:shadow-lg transition-shadow min-h-[220px] flex flex-col">
                   <CardHeader>
-                    <div className="flex items-center gap-3">
-                      <div className="p-3 rounded-lg bg-orange-500/10">
+                    <div className={cn("flex items-center gap-3", rtl && "flex-row-reverse")}>
+                      <div className="p-3 rounded-lg bg-orange-500/10 flex-shrink-0">
                         <Settings className="w-6 h-6 text-orange-500" />
                       </div>
                       <CardTitle>{t('accountSettings')}</CardTitle>
                     </div>
                   </CardHeader>
-                  <CardContent>
-                    <CardDescription className="mb-4">
+                  <CardContent className="flex-1 flex flex-col">
+                    <CardDescription className="mb-4 flex-1">
                       {t('accountSettingsDescription')}
                     </CardDescription>
-                    <Button asChild variant="outline" className="w-full">
-                      <Link href={`/${locale}/dashboard/settings`}>
-                        {t('manageAccount')}
-                        <ArrowRight className={cn("w-4 h-4", rtl ? "mr-2" : "ml-2")} />
+                    <Button asChild variant="outline" className="w-full mt-auto">
+                      <Link href={`/${locale}/dashboard/settings`} className={cn("flex items-center justify-center gap-2", rtl && "flex-row-reverse")}>
+                        <span>{t('manageAccount')}</span>
+                        <ArrowRight className="w-4 h-4" />
                       </Link>
                     </Button>
                   </CardContent>

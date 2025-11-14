@@ -1,8 +1,9 @@
 import { auth } from "@clerk/nextjs/server"
 import { redirect } from "next/navigation"
-import { getTranslations } from 'next-intl/server'
+import { getTranslations, getLocale } from 'next-intl/server'
 import ProfileEditForm from "@/components/blocks/profile/profile-edit-form"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
+import { fetchUserManagementOptionsWithLocale } from "@/lib/actions/sync-user-management"
 
 export async function generateMetadata() {
     const t = await getTranslations('profile.edit')
@@ -20,6 +21,24 @@ export default async function ProfileEditPage() {
 
     if (!userId) {
         redirect('/sign-in')
+    }
+
+    // Fetch user management options from Sanity (with fallback)
+    const locale = await getLocale()
+    const userManagementOptions = await fetchUserManagementOptionsWithLocale(locale)
+
+    // Fetch communities from API
+    let communities: any[] = []
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/communities`, {
+            cache: 'no-store'
+        })
+        if (response.ok) {
+            const data = await response.json()
+            communities = data.data || []
+        }
+    } catch (error) {
+        console.error('[ProfileEditPage] Failed to fetch communities:', error)
     }
 
     return (
@@ -43,8 +62,11 @@ export default async function ProfileEditPage() {
 
             <h1 className="text-3xl font-bold mb-8">{t('pageTitle')}</h1>
 
-            {/* Use our TypeScript hook-based form without server action */}
-            <ProfileEditForm />
+            {/* Pass Sanity data to form with fallback support */}
+            <ProfileEditForm
+                userManagementOptions={userManagementOptions}
+                availableCommunitiesData={communities}
+            />
         </div>
     )
 }
