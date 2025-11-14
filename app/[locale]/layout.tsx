@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import "../globals.css";
 import { cn } from "@/lib/utils";
 
@@ -86,6 +87,18 @@ export default async function LocaleLayout({
                 lato.variable
             )}
         >
+            <Script
+                src="https://plausible.io/js/pa-3hEF5jJ5x-S__sKhqgipY.js"
+                strategy="afterInteractive"
+                async
+            />
+            <Script id="plausible-init" strategy="afterInteractive">
+                {`
+                    window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)};
+                    plausible.init=plausible.init||function(i){plausible.o=i||{}};
+                    plausible.init();
+                `}
+            </Script>
             <ClerkProvider localization={clerkLocalization}>
                 <NextIntlClientProvider messages={messages}>
                     <ThemeProvider
