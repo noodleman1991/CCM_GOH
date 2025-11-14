@@ -15,7 +15,7 @@
 
 import fs from 'fs';
 import path from 'path';
-import { Clerk } from '@clerk/clerk-sdk-node';
+import { createClerkClient } from '@clerk/backend';
 import { Resend } from 'resend';
 import { PrismaClient } from '../generated/prisma/index.js';
 import * as dotenv from 'dotenv';
@@ -38,9 +38,9 @@ const CONFIG = {
 };
 
 // Initialize clients
-const clerk = Clerk({ secretKey: process.env.CLERK_SECRET_KEY });
-const resend = new Resend(process.env.RESEND_API_KEY);
-const prisma = new PrismaClient();
+const clerk = CONFIG.DRY_RUN ? null : createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY });
+const resend = CONFIG.DRY_RUN ? null : new Resend(process.env.RESEND_API_KEY);
+const prisma = CONFIG.DRY_RUN ? null : new PrismaClient();
 
 // ============ MIGRATION STATS ============
 const stats = {
@@ -784,7 +784,9 @@ async function main() {
   console.log(`📄 Migration results saved to: ${resultsFile}\n`);
 
   // Cleanup
-  await prisma.$disconnect();
+  if (prisma) {
+    await prisma.$disconnect();
+  }
   console.log('✨ Migration complete!\n');
 }
 
