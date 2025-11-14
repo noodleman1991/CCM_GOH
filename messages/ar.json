@@ -52,6 +52,10 @@
       "smallholderFarmers": "صغار المزارعين"
     }
   },
+  "navUser": {
+    "account": "الحساب",
+    "logout": "تسجيل الخروج"
+  },
   "auth": {
     "welcome": "أهلاً وسهلاً!",
     "welcomeBack": "مرحباً بعودتك",
@@ -102,6 +106,7 @@
   },
   "dashboard": {
     "greeting": "مرحباً، {name}",
+    "subtitle": "",
     "summary": "ملخصك هنا",
     "recentActivity": "النشاط الأخير",
     "noActivity": "لا يوجد نشاط حديث",

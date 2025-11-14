@@ -124,11 +124,9 @@ export async function syncWorkTypesToSanity() {
     console.log('Starting work types sync to Sanity...')
 
     // Get existing work types from Sanity
-    const response = await sanityFetch({
-      query: allUserManagementOptionsQuery
-    })
+    const response = await sanityClient.fetch(allUserManagementOptionsQuery)
 
-    const existingData = response.data
+    const existingData = response
     const existingWorkTypeKeys = new Set(
       existingData.workTypes?.map((wt: any) => wt.key) || []
     )
@@ -193,11 +191,9 @@ export async function syncExpertiseAreasToSanity() {
     console.log('Starting expertise areas sync to Sanity...')
 
     // Get existing expertise areas from Sanity
-    const response = await sanityFetch({
-      query: allUserManagementOptionsQuery
-    })
+    const response = await sanityClient.fetch(allUserManagementOptionsQuery)
 
-    const existingData = response.data
+    const existingData = response
     const existingExpertiseKeys = new Set(
       existingData.expertiseAreas?.map((ea: any) => ea.key) || []
     )
@@ -284,11 +280,9 @@ export async function validateUserManagementSync() {
   try {
     console.log('Validating user management sync...')
 
-    const response = await sanityFetch({
-      query: allUserManagementOptionsQuery
-    })
+    const response = await sanityClient.fetch(allUserManagementOptionsQuery)
 
-    const sanityData = response.data
+    const sanityData = response
     const sanityWorkTypeKeys = new Set(
       sanityData.workTypes?.map((wt: any) => wt.key) || []
     )
@@ -335,13 +329,11 @@ export async function validateUserManagementSync() {
 // Fetch user management options for onboarding
 export async function fetchUserManagementOptions() {
   try {
-    const response = await sanityFetch({
-      query: allUserManagementOptionsQuery
-    })
+    const response = await sanityClient.fetch(allUserManagementOptionsQuery)
 
     return {
-      workTypes: response.data?.workTypes || [],
-      expertiseAreas: response.data?.expertiseAreas || []
+      workTypes: response?.workTypes || [],
+      expertiseAreas: response?.expertiseAreas || []
     }
   } catch (error) {
     console.error('Error fetching user management options:', error)

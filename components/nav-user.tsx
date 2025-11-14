@@ -5,6 +5,10 @@ import {
     ChevronsUpDown,
     LogOut,
 } from "lucide-react"
+import { useTranslations, useLocale } from "next-intl"
+import Link from "next/link"
+import { cn } from "@/lib/utils"
+import { rtlLocales } from "@/i18n/routing"
 
 import {
     Avatar,
@@ -41,6 +45,9 @@ export function NavUser({
 }) {
     const { isMobile } = useSidebar()
     const [open, setOpen] = useState(false)
+    const t = useTranslations("navUser")
+    const locale = useLocale()
+    const isRTL = rtlLocales.includes(locale)
 
     const closeMenu = () => setOpen(false)
 
@@ -59,45 +66,47 @@ export function NavUser({
                                     {user.name.substring(0, 2).toUpperCase()}
                                 </AvatarFallback>
                             </Avatar>
-                            <div className="grid flex-1 text-left text-sm leading-tight">
+                            <div className={cn("grid flex-1 text-sm leading-tight", isRTL ? "text-right" : "text-left")}>
                                 <span className="truncate font-medium">{user.name}</span>
                                 <span className="truncate text-xs">{user.email}</span>
                             </div>
-                            <ChevronsUpDown className="ml-auto size-4" />
+                            <ChevronsUpDown className={cn("size-4", isRTL ? "mr-auto" : "ml-auto")} />
                         </SidebarMenuButton>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
                         className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-                        side={isMobile ? "bottom" : "right"}
+                        side={isMobile ? "bottom" : (isRTL ? "left" : "right")}
                         align="end"
                         sideOffset={4}
                     >
                         <DropdownMenuLabel className="p-0 font-normal">
-                            <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                            <div className={cn("flex items-center gap-2 px-1 py-1.5 text-sm", isRTL ? "flex-row-reverse text-right" : "text-left")}>
                                 <Avatar className="h-8 w-8 rounded-lg">
                                     <AvatarImage src={user.avatar} alt={user.name} />
                                     <AvatarFallback className="rounded-lg">
                                         {user.name.substring(0, 2).toUpperCase()}
                                     </AvatarFallback>
                                 </Avatar>
-                                <div className="grid flex-1 text-left text-sm leading-tight">
+                                <div className={cn("grid flex-1 text-sm leading-tight", isRTL ? "text-right" : "text-left")}>
                                     <span className="truncate font-medium">{user.name}</span>
                                     <span className="truncate text-xs">{user.email}</span>
                                 </div>
                             </div>
                         </DropdownMenuLabel>
                         <DropdownMenuGroup>
-                            <DropdownMenuItem>
-                                <BadgeCheck />
-                                Account
+                            <DropdownMenuItem asChild>
+                                <Link href={`/${locale}/dashboard`} className={cn("flex items-center gap-2", isRTL && "flex-row-reverse")}>
+                                    <BadgeCheck className="size-4" />
+                                    <span>{t("account")}</span>
+                                </Link>
                             </DropdownMenuItem>
                         </DropdownMenuGroup>
                         {renderLogout ? (
                             renderLogout(closeMenu)
                         ) : (
-                            <DropdownMenuItem>
-                                <LogOut />
-                                Log out
+                            <DropdownMenuItem className={cn(isRTL && "flex-row-reverse")}>
+                                <LogOut className="size-4" />
+                                <span>{t("logout")}</span>
                             </DropdownMenuItem>
                         )}
                     </DropdownMenuContent>

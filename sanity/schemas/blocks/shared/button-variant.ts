@@ -1,14 +1,14 @@
 import { defineType } from "sanity";
 
 export const BUTTON_VARIANTS = [
-  { title: "Default (CCM Sea)", value: "default" },
-  { title: "Inverted (White)", value: "invert" },
-  { title: "Light Inverted (CCM Sea)", value: "light-invert" },
+  { title: "Primary (Sea Blue)", value: "default" },
+  { title: "Light (White Background)", value: "invert" },
+  { title: "Secondary (Water Blue)", value: "light-invert" },
   { title: "Outline", value: "outline" },
-  { title: "Secondary", value: "secondary" },
+  { title: "Neutral (Gray)", value: "secondary" },
   { title: "Ghost", value: "ghost" },
   { title: "Link", value: "link" },
-  { title: "Destructive", value: "destructive" },
+  { title: "Destructive (Red)", value: "destructive" },
 ];
 
 export const BUTTON_SIZES = [

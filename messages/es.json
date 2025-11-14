@@ -52,6 +52,10 @@
       "smallholderFarmers": "Pequeños Agricultores"
     }
   },
+  "navUser": {
+    "account": "Cuenta",
+    "logout": "Cerrar sesión"
+  },
   "auth": {
     "welcome": "¡Bienvenido!",
     "welcomeBack": "Bienvenido de vuelta",
@@ -104,7 +108,7 @@
     "pageTitle": "Panel - Connecting Climate Minds Hub",
     "pageDescription": "Tu centro personal para gestionar tu perfil, conectar con la comunidad y compartir tu trabajo",
     "welcome": "Bienvenido/a, {name}",
-    "subtitle": "Tu centro para la colaboración y el impacto",
+    "subtitle": "",
     "editProfile": "Editar Perfil",
     "anonymousUser": "Usuario Anónimo",
     "completeProfileMessage": "Completa tu perfil para aumentar la visibilidad y conectar con más colaboradores",

@@ -104,10 +104,36 @@ interface ProfileEditFormProps {
         emailVerified?: Date | null
     }
     onSubmitAction?: (data: ProfileFormValues) => Promise<void>
+    // Sanity-sourced data with fallback support
+    userManagementOptions?: {
+        workTypes: Array<{
+            _id: string
+            key: string
+            label: string
+            description?: string
+        }>
+        expertiseAreas: Array<{
+            _id: string
+            key: string
+            label: string
+            description?: string
+        }>
+    }
+    availableCommunitiesData?: Array<{
+        id: string
+        slug: string
+        name: {
+            en: string
+            es?: string
+            fr?: string
+            ar?: string
+        }
+        regionalName: string
+    }>
 }
 
 export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
-    const { initialData, onSubmitAction } = props
+    const { initialData, onSubmitAction, userManagementOptions, availableCommunitiesData } = props
     const t = useTranslations('profile.edit')
     const tCommunities = useTranslations('profile.communities')
     const tRecentWork = useTranslations('profile.recentWork')
@@ -288,22 +314,39 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
     const isWorkFormValid = workFormData.title && workFormData.description && workFormData.startDate &&
         (workFormData.isOngoing || workFormData.endDate)
 
-    const workTypeOptions = [
-        { value: "RESEARCH", label: t('workTypes.research') },
-        { value: "POLICY", label: t('workTypes.policy') },
-        { value: "LIVED_EXPERIENCE_EXPERT", label: t('workTypes.livedExperience') },
-        { value: "NGO", label: t('workTypes.ngo') },
-        { value: "COMMUNITY_ORGANIZATION", label: t('workTypes.communityOrg') },
-        { value: "EDUCATION_TEACHING", label: t('workTypes.education') }
-    ]
+    // Use Sanity data if available, otherwise fallback to hardcoded translations
+    const workTypeOptions = userManagementOptions?.workTypes && userManagementOptions.workTypes.length > 0
+        ? userManagementOptions.workTypes.map(wt => ({
+            value: wt.key,
+            label: wt.label,
+            description: wt.description
+          }))
+        : [
+            { value: "RESEARCH", label: t('workTypes.research') },
+            { value: "POLICY", label: t('workTypes.policy') },
+            { value: "LIVED_EXPERIENCE_EXPERT", label: t('workTypes.livedExperience') },
+            { value: "NGO", label: t('workTypes.ngo') },
+            { value: "COMMUNITY_ORGANIZATION", label: t('workTypes.communityOrg') },
+            { value: "EDUCATION_TEACHING", label: t('workTypes.education') }
+          ]
 
-    const expertiseOptions = [
-        { value: "CLIMATE_CHANGE", label: t('expertise.climate') },
-        { value: "MENTAL_HEALTH", label: t('expertise.mentalHealth') },
-        { value: "HEALTH", label: t('expertise.health') },
-        { value: "EDUCATION", label: t('expertise.education') },
-        { value: "SOCIAL_JUSTICE", label: t('expertise.socialJustice') }
-    ]
+    const expertiseOptions = userManagementOptions?.expertiseAreas && userManagementOptions.expertiseAreas.length > 0
+        ? userManagementOptions.expertiseAreas.map(ea => ({
+            value: ea.key,
+            label: ea.label,
+            description: ea.description
+          }))
+        : [
+            { value: "CLIMATE_CHANGE", label: t('expertise.climate') },
+            { value: "MENTAL_HEALTH", label: t('expertise.mentalHealth') },
+            { value: "HEALTH", label: t('expertise.health') },
+            { value: "EDUCATION", label: t('expertise.education') },
+            { value: "SOCIAL_JUSTICE", label: t('expertise.socialJustice') }
+          ]
+
+    // Log data source for debugging
+    console.log('[ProfileEditForm] Work types source:', userManagementOptions?.workTypes?.length ? 'sanity' : 'fallback')
+    console.log('[ProfileEditForm] Expertise areas source:', userManagementOptions?.expertiseAreas?.length ? 'sanity' : 'fallback')
 
     async function handleSubmit(values: ProfileFormValues) {
         setIsSubmitting(true)
