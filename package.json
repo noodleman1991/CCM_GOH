@@ -21,6 +21,7 @@
     "@anthropic-ai/sdk": "^0.68.0",
     "@aws-sdk/client-s3": "^3.891.0",
     "@aws-sdk/s3-request-presigner": "^3.891.0",
+    "@clerk/backend": "^2.22.0",
     "@clerk/localizations": "^3.25.1",
     "@clerk/nextjs": "^6.32.0",
     "@hookform/resolvers": "^5.2.2",
