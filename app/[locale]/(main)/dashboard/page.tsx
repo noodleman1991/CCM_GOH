@@ -59,6 +59,86 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
   })
 
   if (!user) {
+    // Webhook delayed - create user now to prevent infinite redirect loop
+    console.log(`⏳ Dashboard: User ${userId} not in Prisma yet - creating from Clerk to prevent flickering`)
+
+    try {
+      const { clerkClient } = await import('@clerk/nextjs/server')
+      const clerkUser = await (await clerkClient()).users.getUser(userId)
+
+      await prisma.user.create({
+        data: {
+          id: userId,
+          email: clerkUser.primaryEmailAddress?.emailAddress || null,
+          firstName: clerkUser.firstName,
+          lastName: clerkUser.lastName,
+          username: clerkUser.username,
+          image: clerkUser.imageUrl,
+          emailVerified: clerkUser.primaryEmailAddress?.verification?.status === 'verified' ? new Date() : null,
+          phoneNumber: clerkUser.primaryPhoneNumber?.phoneNumber || null,
+          phoneVerified: clerkUser.primaryPhoneNumber?.verification?.status === 'verified' ? new Date() : null,
+          workTypes: [],
+          expertiseAreas: [],
+          isSearchable: true,
+          profileVisibility: 'PUBLIC',
+          showEmail: false,
+          showPhoneNumber: false,
+          showWorkDetails: true,
+          showSocialLinks: true,
+          showLocation: true,
+          onboardingCompleted: false
+        }
+      })
+
+      console.log(`✅ Dashboard: Created user ${userId} successfully`)
+
+      // Re-fetch with includes for the page
+      user = await prisma.user.findUnique({
+        where: { id: userId },
+        include: {
+          communityMemberships: {
+            include: {
+              community: true
+            }
+          },
+          recentWork: {
+            orderBy: {
+              startDate: 'desc'
+            },
+            take: 3
+          }
+        }
+      })
+    } catch (createError: any) {
+      // If unique constraint error, user was just created by webhook - refetch
+      if (createError.code === 'P2002') {
+        console.log(`⚠️ Dashboard: User ${userId} created by webhook during fetch - retrying`)
+        user = await prisma.user.findUnique({
+          where: { id: userId },
+          include: {
+            communityMemberships: {
+              include: {
+                community: true
+              }
+            },
+            recentWork: {
+              orderBy: {
+                startDate: 'desc'
+              },
+              take: 3
+            }
+          }
+        })
+      } else {
+        console.error(`❌ Dashboard: Failed to create user ${userId}:`, createError)
+        throw createError
+      }
+    }
+  }
+
+  // At this point, user definitely exists
+  if (!user) {
+    // Should never happen, but safety check
     redirect(`/${locale}/sign-in`)
   }
 
