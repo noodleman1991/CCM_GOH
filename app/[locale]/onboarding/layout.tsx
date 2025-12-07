@@ -17,7 +17,7 @@ export default async function OnboardingLayout({ children }: { children: React.R
 
     // Also check Clerk metadata as fallback
     const { sessionClaims } = await auth()
-    const clerkOnboardingComplete = sessionClaims?.metadata?.onboardingComplete === true
+    const clerkOnboardingComplete = sessionClaims?.publicMetadata?.onboardingCompleted === true
 
     if (user?.onboardingCompleted || clerkOnboardingComplete) {
         redirect('/account')

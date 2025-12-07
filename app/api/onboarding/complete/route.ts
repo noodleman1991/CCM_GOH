@@ -144,15 +144,47 @@ export async function POST(request: NextRequest) {
     }
 
     if (!existingUser) {
-      console.error(`❌ Onboarding API: User ${userId} not found in database`)
-      return NextResponse.json({
-        success: false,
-        error: "User not found in database",
-        code: "USER_NOT_FOUND"
-      }, {
-        status: 404,
-        headers: { 'Content-Type': 'application/json' }
-      })
+      // Webhook delayed - create user now to prevent errors
+      console.log(`⚠️ Onboarding API: User ${userId} not found - webhook may be delayed. Creating user now.`)
+
+      try {
+        const clerkUser = await (await clerkClient()).users.getUser(userId)
+
+        existingUser = await prisma.user.create({
+          data: {
+            id: userId,
+            email: clerkUser.primaryEmailAddress?.emailAddress || null,
+            firstName: clerkUser.firstName,
+            lastName: clerkUser.lastName,
+            username: clerkUser.username,
+            image: clerkUser.imageUrl,
+            emailVerified: clerkUser.primaryEmailAddress?.verification?.status === 'verified' ? new Date() : null,
+            phoneNumber: clerkUser.primaryPhoneNumber?.phoneNumber || null,
+            phoneVerified: clerkUser.primaryPhoneNumber?.verification?.status === 'verified' ? new Date() : null,
+            workTypes: [],
+            expertiseAreas: [],
+            isSearchable: true,
+            profileVisibility: 'PUBLIC',
+            showEmail: false,
+            showPhoneNumber: false,
+            showWorkDetails: true,
+            showSocialLinks: true,
+            showLocation: true,
+          }
+        })
+
+        console.log(`✅ Onboarding API: Created user ${userId} successfully`)
+      } catch (createError) {
+        console.error(`❌ Onboarding API: Failed to create user ${userId}:`, createError)
+        return NextResponse.json({
+          success: false,
+          error: "Failed to create user account. Please try again.",
+          code: "USER_CREATION_FAILED"
+        }, {
+          status: 500,
+          headers: { 'Content-Type': 'application/json' }
+        })
+      }
     }
 
     // Update user in Prisma with onboarding data
@@ -244,44 +276,16 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Sync data to Clerk metadata following the established pattern
+    // Sync ONLY essential fields to Clerk metadata
+    // All user data lives in Prisma - we only store minimal metadata in Clerk
     const clerkUpdateData = {
-      public_metadata: {
-
-        // App-specific data
-        bio: validatedData.bio,
-        country: validatedData.country,
-        city: validatedData.city,
-        preferredLanguage: validatedData.preferredLanguage,
-        workTypes: validatedData.workTypes,
-        expertiseAreas: validatedData.expertiseAreas,
-        communityIds: validatedData.communityIds,
-        organization: validatedData.organization,
-        position: validatedData.position,
-        workBio: validatedData.workBio,
-        personalWebsite: validatedData.personalWebsite,
-        linkedinProfile: validatedData.linkedinProfile,
-        otherSocialLinks: validatedData.otherSocialLinks,
-
-        // Privacy settings
-        isSearchable: validatedData.isSearchable,
-        profileVisibility: validatedData.profileVisibility,
-        showEmail: validatedData.showEmail,
-        showPhoneNumber: validatedData.showPhoneNumber,
-        showWorkDetails: validatedData.showWorkDetails,
-        showSocialLinks: validatedData.showSocialLinks,
-        showLocation: validatedData.showLocation,
-
-        // Onboarding status
+      publicMetadata: {
         onboardingCompleted: true,
-
-        // Mark as synced from Prisma so webhook knows this is authoritative
-        syncedFrom: 'prisma',
-        lastSyncedAt: new Date().toISOString()
+        preferredLanguage: validatedData.preferredLanguage || 'EN'
       }
     }
 
-    // Update Clerk user data
+    // Update Clerk user with minimal metadata
     await (await clerkClient()).users.updateUser(userId, clerkUpdateData)
 
     console.log(`✅ Onboarding completed for user ${userId}`)

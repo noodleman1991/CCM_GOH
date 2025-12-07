@@ -40,32 +40,34 @@ export default function OnboardingRedirectDialog({
 
   const handleProceedToOnboarding = () => {
     setIsProcessing(true)
+    onOpenChangeAction(false) // Close dialog FIRST (fixes disappear issue)
     router.push(`/${locale}/onboarding`)
   }
 
   const handleContinueToHub = async () => {
     if (!isWaiving) return
-
     setIsProcessing(true)
 
     try {
-      // Update user metadata to mark onboarding as complete (waived)
-      await user?.update({
-        unsafeMetadata: {
-          ...user.unsafeMetadata,
-          onboardingComplete: true,
-          onboardingWaived: true,
-          onboardingCompletedAt: new Date().toISOString()
-        }
+      // Close dialog FIRST (fixes the "doesn't disappear" bug)
+      onOpenChangeAction(false)
+
+      // Call API to update both Clerk and Prisma
+      const response = await fetch('/api/onboarding/waive', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
       })
 
-      // Force session reload to ensure metadata is immediately available
-      await user?.reload()
+      if (!response.ok) {
+        throw new Error('Failed to waive onboarding')
+      }
 
-      // Redirect to collaborate page
+      // Navigate using Next.js router
       router.push(`/${locale}/collaborate`)
+      router.refresh() // Refresh server components with new session
     } catch (error) {
-      console.error('Failed to update user metadata:', error)
+      console.error('Failed to waive onboarding:', error)
+      onOpenChangeAction(true) // Re-open dialog on error
       setIsProcessing(false)
     }
   }

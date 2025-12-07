@@ -352,8 +352,10 @@ export function ModernOnboardingContainer({
       // Show success message
       toast.success("Welcome! Your profile has been set up successfully.")
 
-      // Force page reload to ensure Clerk session is updated
-      window.location.href = `/${locale}/collaborate`
+      // Navigate using Next.js router (NOT window.location)
+      // router.refresh() tells Next.js to re-fetch server components with fresh session
+      router.push(`/${locale}/collaborate`)
+      router.refresh() // This gets fresh session data from Clerk
     } catch (error) {
       console.error("Submission error:", error)
       setValidationError(error instanceof Error ? error.message : "Failed to submit your information. Please try again.")

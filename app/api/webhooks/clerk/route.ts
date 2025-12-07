@@ -117,7 +117,8 @@ async function handleUserCreated(event: UserCreatedEvent): Promise<any> {
         const phoneData = getPrimaryPhone(phone_numbers || [])
         const profileImage = getProfileImage(image_url, profile_image_url)
 
-        // Create user with enhanced data from Clerk
+        // Create user with Clerk auth data only
+        // All profile/work data is managed in Prisma, not in Clerk metadata
         const user = await prisma.user.create({
             data: {
                 id,
@@ -134,28 +135,16 @@ async function handleUserCreated(event: UserCreatedEvent): Promise<any> {
                 phoneNumber: phoneData.phone,
                 phoneVerified: phoneData.verified ? new Date() : null,
 
-                // App-specific data from Clerk metadata
-                bio: public_metadata?.bio || null,
-                ageGroup: public_metadata?.ageGroup || null,
-                country: public_metadata?.country || null,
-                city: public_metadata?.city || null,
-                workTypes: public_metadata?.workTypes || [],
-                expertiseAreas: public_metadata?.expertiseAreas || [],
-                organization: public_metadata?.organization || null,
-                position: public_metadata?.position || null,
-                workBio: public_metadata?.workBio || null,
-                personalWebsite: public_metadata?.personalWebsite || null,
-                linkedinProfile: public_metadata?.linkedinProfile || null,
-                otherSocialLinks: public_metadata?.otherSocialLinks || null,
-
-                // Privacy settings from metadata (with defaults)
-                isSearchable: public_metadata?.isSearchable ?? true,
-                profileVisibility: public_metadata?.profileVisibility || 'PUBLIC',
-                showEmail: public_metadata?.showEmail ?? false,
-                showPhoneNumber: public_metadata?.showPhoneNumber ?? false,
-                showWorkDetails: public_metadata?.showWorkDetails ?? true,
-                showSocialLinks: public_metadata?.showSocialLinks ?? true,
-                showLocation: public_metadata?.showLocation ?? true,
+                // Only defaults - no metadata from Clerk
+                workTypes: [],
+                expertiseAreas: [],
+                isSearchable: true,
+                profileVisibility: 'PUBLIC',
+                showEmail: false,
+                showPhoneNumber: false,
+                showWorkDetails: true,
+                showSocialLinks: true,
+                showLocation: true,
             }
         })
 
@@ -211,47 +200,18 @@ async function handleUserUpdated(event: UserUpdatedEvent) {
             updatedAt: new Date(),
         }
 
-        // Only update app-specific data from Clerk metadata if it exists and was synced FROM our app
+        // Only sync essential onboarding metadata from Clerk
+        // All user profile data is managed exclusively in Prisma
         const metadataUpdate: any = {}
-        const syncedFromApp = public_metadata?.syncedFrom === 'prisma'
 
-        if (syncedFromApp) {
-            // These were synced from our app to Clerk, so we trust them
-            if (public_metadata?.bio !== undefined) metadataUpdate.bio = public_metadata.bio
-            if (public_metadata?.ageGroup !== undefined) metadataUpdate.ageGroup = public_metadata.ageGroup
-            if (public_metadata?.country !== undefined) metadataUpdate.country = public_metadata.country
-            if (public_metadata?.city !== undefined) metadataUpdate.city = public_metadata.city
-            if (public_metadata?.workTypes !== undefined) metadataUpdate.workTypes = public_metadata.workTypes
-            if (public_metadata?.expertiseAreas !== undefined) metadataUpdate.expertiseAreas = public_metadata.expertiseAreas
-            // Store communityIds for later processing (cannot be directly updated on user model)
-            if (public_metadata?.communityIds !== undefined) metadataUpdate._communityIds = public_metadata.communityIds
-            if (public_metadata?.organization !== undefined) metadataUpdate.organization = public_metadata.organization
-            if (public_metadata?.position !== undefined) metadataUpdate.position = public_metadata.position
-            if (public_metadata?.workBio !== undefined) metadataUpdate.workBio = public_metadata.workBio
-            if (public_metadata?.personalWebsite !== undefined) metadataUpdate.personalWebsite = public_metadata.personalWebsite
-            if (public_metadata?.linkedinProfile !== undefined) metadataUpdate.linkedinProfile = public_metadata.linkedinProfile
-            if (public_metadata?.otherSocialLinks !== undefined) metadataUpdate.otherSocialLinks = public_metadata.otherSocialLinks
-            if (public_metadata?.isSearchable !== undefined) metadataUpdate.isSearchable = public_metadata.isSearchable
-            if (public_metadata?.profileVisibility !== undefined) metadataUpdate.profileVisibility = public_metadata.profileVisibility
-            if (public_metadata?.showEmail !== undefined) metadataUpdate.showEmail = public_metadata.showEmail
-            if (public_metadata?.showPhoneNumber !== undefined) metadataUpdate.showPhoneNumber = public_metadata.showPhoneNumber
-            if (public_metadata?.showWorkDetails !== undefined) metadataUpdate.showWorkDetails = public_metadata.showWorkDetails
-            if (public_metadata?.showSocialLinks !== undefined) metadataUpdate.showSocialLinks = public_metadata.showSocialLinks
-            if (public_metadata?.showLocation !== undefined) metadataUpdate.showLocation = public_metadata.showLocation
-
-            // Handle onboarding completion status
-            if (public_metadata?.onboardingComplete !== undefined) {
-                metadataUpdate.onboardingCompleted = public_metadata.onboardingComplete
-                metadataUpdate.welcomeMessageSeen = true
-                metadataUpdate.onboardingStep = public_metadata.onboardingComplete ? 6 : 0
-            }
+        // Handle onboarding completion status
+        if (public_metadata?.onboardingCompleted !== undefined) {
+            metadataUpdate.onboardingCompleted = public_metadata.onboardingCompleted
+            metadataUpdate.welcomeMessageSeen = true
+            metadataUpdate.onboardingStep = public_metadata.onboardingCompleted ? 6 : 0
         }
 
-        // Extract communityIds before updating (it's not a direct field on User)
-        const communityIds = metadataUpdate._communityIds
-        delete metadataUpdate._communityIds
-
-        // Update user with latest data from Clerk
+        // Update user with Clerk auth data + minimal metadata
         const user = await prisma.user.update({
             where: { id },
             data: {
@@ -259,40 +219,6 @@ async function handleUserUpdated(event: UserUpdatedEvent) {
                 ...metadataUpdate
             }
         })
-
-        // Handle community memberships separately if provided
-        if (Array.isArray(communityIds)) {
-            try {
-                // Delete existing memberships
-                await prisma.userCommunity.deleteMany({
-                    where: { userId: id }
-                })
-
-                // Create new memberships if any
-                if (communityIds.length > 0) {
-                    const communities = await prisma.community.findMany({
-                        where: {
-                            id: { in: communityIds }
-                        }
-                    })
-
-                    if (communities.length === communityIds.length) {
-                        await prisma.userCommunity.createMany({
-                            data: communityIds.map(communityId => ({
-                                userId: id,
-                                communityId,
-                                role: 'community_member' as const
-                            }))
-                        })
-                        console.log(`✅ Updated ${communityIds.length} community memberships for user ${id}`)
-                    } else {
-                        console.warn(`⚠️ Some communities not found for user ${id}`)
-                    }
-                }
-            } catch (error) {
-                console.error(`❌ Failed to update community memberships for user ${id}:`, error)
-            }
-        }
 
         console.log(`✅ Updated user: ${user.id}`)
 
