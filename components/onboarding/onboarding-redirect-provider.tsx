@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useUser } from '@clerk/nextjs'
-import { useParams } from 'next/navigation'
+import { useParams, usePathname } from 'next/navigation'
 import { client } from '@/sanity/lib/client'
 import { onboardingContentQueryWithFallback } from '@/sanity/queries/onboarding-content'
 import OnboardingRedirectDialog from './onboarding-redirect-dialog'
@@ -22,6 +22,7 @@ export default function OnboardingRedirectProvider({
 }) {
   const { user, isLoaded } = useUser()
   const params = useParams()
+  const pathname = usePathname()
   const locale = params.locale as string || 'en'
 
   const [showDialog, setShowDialog] = useState(false)
@@ -44,7 +45,9 @@ export default function OnboardingRedirectProvider({
             // User hasn't completed onboarding (check Prisma database)
             !completed &&
             // User hasn't been shown the dialog in this session
-            !sessionStorage.getItem('onboarding-dialog-shown')
+            !sessionStorage.getItem('onboarding-dialog-shown') &&
+            // User is NOT already on the onboarding page
+            !pathname?.includes('/onboarding')
 
           if (shouldShowDialog) {
             setIsLoadingContent(true)

@@ -187,6 +187,32 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Check if webhook data was incomplete - fetch from Clerk if needed
+    if (existingUser && (!existingUser.firstName || !existingUser.lastName || !existingUser.username)) {
+      console.log(`⚠️ Onboarding API: User ${userId} has incomplete data (firstName: "${existingUser.firstName}", lastName: "${existingUser.lastName}", username: "${existingUser.username}") - fetching from Clerk`)
+
+      try {
+        const clerkUser = await (await clerkClient()).users.getUser(userId)
+
+        // Update with fresh Clerk data, preserving existing values if present
+        existingUser = await prisma.user.update({
+          where: { id: userId },
+          data: {
+            firstName: existingUser.firstName || clerkUser.firstName,
+            lastName: existingUser.lastName || clerkUser.lastName,
+            username: existingUser.username || clerkUser.username,
+            email: existingUser.email || clerkUser.primaryEmailAddress?.emailAddress || null,
+            image: existingUser.image || clerkUser.imageUrl,
+          }
+        })
+
+        console.log(`✅ Onboarding API: Updated user ${userId} with Clerk data - firstName: "${existingUser.firstName}", lastName: "${existingUser.lastName}", username: "${existingUser.username}"`)
+      } catch (clerkError) {
+        console.error(`❌ Onboarding API: Failed to fetch from Clerk for user ${userId}:`, clerkError)
+        // Continue anyway - onboarding form data will fill in the gaps
+      }
+    }
+
     // Update user in Prisma with onboarding data
     const updatedUser = await prisma.user.update({
       where: { id: userId },

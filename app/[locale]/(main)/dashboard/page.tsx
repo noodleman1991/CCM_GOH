@@ -41,7 +41,7 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
   }
 
   // Fetch user with all relevant data
-  const user = await prisma.user.findUnique({
+  let user = await prisma.user.findUnique({
     where: { id: userId },
     include: {
       communityMemberships: {
