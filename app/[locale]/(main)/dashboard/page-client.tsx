@@ -228,7 +228,7 @@ export function DashboardClient({
                       {t('accountSettingsDescription')}
                     </CardDescription>
                     <Button asChild variant="outline" className="w-full mt-auto">
-                      <Link href={`/${locale}/dashboard/settings`} className={cn("flex items-center justify-center gap-2", rtl && "flex-row-reverse")}>
+                      <Link href={`/${locale}/dashboard/account`} className={cn("flex items-center justify-center gap-2", rtl && "flex-row-reverse")}>
                         <span>{t('manageAccount')}</span>
                         <ArrowRight className="w-4 h-4" />
                       </Link>

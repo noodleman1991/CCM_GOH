@@ -271,45 +271,45 @@ export default function AccountManagement({ initialData }: AccountManagementProp
       </Card>
 
       {/* Phone Management */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Phone className="h-4 w-4" />
-            {t('phone.title')}
-          </CardTitle>
-          <CardDescription>{t('phone.description')}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="text-sm">
-              <strong>{t('phone.current')}</strong>
-              <p>{accountInfo?.primaryPhoneNumber?.phoneNumber || t('phone.none')}</p>
-            </div>
-            
-            <Form {...phoneForm}>
-              <form onSubmit={phoneForm.handleSubmit(handlePhoneUpdate)} className="space-y-4">
-                <FormField
-                  control={phoneForm.control}
-                  name="phone"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{t('phone.new')}</FormLabel>
-                      <FormControl>
-                        <Input {...field} type="tel" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <Button type="submit" disabled={loading}>
-                  {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  {t('phone.update')}
-                </Button>
-              </form>
-            </Form>
-          </div>
-        </CardContent>
-      </Card>
+      {/*<Card>*/}
+      {/*  <CardHeader>*/}
+      {/*    <CardTitle className="flex items-center gap-2">*/}
+      {/*      <Phone className="h-4 w-4" />*/}
+      {/*      {t('phone.title')}*/}
+      {/*    </CardTitle>*/}
+      {/*    <CardDescription>{t('phone.description')}</CardDescription>*/}
+      {/*  </CardHeader>*/}
+      {/*  <CardContent>*/}
+      {/*    <div className="space-y-4">*/}
+      {/*      <div className="text-sm">*/}
+      {/*        <strong>{t('phone.current')}</strong>*/}
+      {/*        <p>{accountInfo?.primaryPhoneNumber?.phoneNumber || t('phone.none')}</p>*/}
+      {/*      </div>*/}
+      {/*      */}
+      {/*      <Form {...phoneForm}>*/}
+      {/*        <form onSubmit={phoneForm.handleSubmit(handlePhoneUpdate)} className="space-y-4">*/}
+      {/*          <FormField*/}
+      {/*            control={phoneForm.control}*/}
+      {/*            name="phone"*/}
+      {/*            render={({ field }) => (*/}
+      {/*              <FormItem>*/}
+      {/*                <FormLabel>{t('phone.new')}</FormLabel>*/}
+      {/*                <FormControl>*/}
+      {/*                  <Input {...field} type="tel" />*/}
+      {/*                </FormControl>*/}
+      {/*                <FormMessage />*/}
+      {/*              </FormItem>*/}
+      {/*            )}*/}
+      {/*          />*/}
+      {/*          <Button type="submit" disabled={loading}>*/}
+      {/*            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}*/}
+      {/*            {t('phone.update')}*/}
+      {/*          </Button>*/}
+      {/*        </form>*/}
+      {/*      </Form>*/}
+      {/*    </div>*/}
+      {/*  </CardContent>*/}
+      {/*</Card>*/}
 
       {/* Password Management */}
       <Card>
