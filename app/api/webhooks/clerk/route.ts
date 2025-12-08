@@ -102,6 +102,10 @@ function getProfileImage(imageUrl: string | null, profileImageUrl: string | null
 async function handleUserCreated(event: UserCreatedEvent): Promise<any> {
     const { id, email_addresses, phone_numbers, first_name, last_name, username, image_url, profile_image_url, public_metadata } = event.data
 
+    // Move these outside try block so they're accessible in catch (email conflict handler)
+    const phoneData = getPrimaryPhone(phone_numbers || [])
+    const profileImage = getProfileImage(image_url, profile_image_url)
+
     try {
         console.log(`📥 Creating user ${id} from Clerk webhook`)
         console.log(`[Webhook Debug] user.created - firstName: "${first_name}", lastName: "${last_name}", username: "${username}", email: ${email_addresses[0]?.email_address}`)
@@ -114,9 +118,6 @@ async function handleUserCreated(event: UserCreatedEvent): Promise<any> {
             console.log(`User ${id} already exists, updating instead`)
             return handleUserUpdated(event as any)
         }
-
-        const phoneData = getPrimaryPhone(phone_numbers || [])
-        const profileImage = getProfileImage(image_url, profile_image_url)
 
         // Create user with Clerk auth data only
         // All profile/work data is managed in Prisma, not in Clerk metadata
