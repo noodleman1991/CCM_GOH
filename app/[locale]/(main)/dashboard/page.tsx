@@ -62,10 +62,11 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
     // Webhook delayed - create user now to prevent infinite redirect loop
     console.log(`⏳ Dashboard: User ${userId} not in Prisma yet - creating from Clerk to prevent flickering`)
 
-    try {
-      const { clerkClient } = await import('@clerk/nextjs/server')
-      const clerkUser = await (await clerkClient()).users.getUser(userId)
+    // Fetch Clerk user OUTSIDE try block so it's accessible in catch
+    const { clerkClient } = await import('@clerk/nextjs/server')
+    const clerkUser = await (await clerkClient()).users.getUser(userId)
 
+    try {
       await prisma.user.create({
         data: {
           id: userId,
