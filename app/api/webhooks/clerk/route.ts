@@ -162,7 +162,55 @@ async function handleUserCreated(event: UserCreatedEvent): Promise<any> {
 
         return { action: 'created', userId: user.id }
 
-    } catch (error) {
+    } catch (error: any) {
+        // Handle email conflict (P2002) gracefully
+        if (error.code === 'P2002' && error.meta?.target?.includes('email')) {
+            const emailAddress = getPrimaryEmail(email_addresses)
+            console.log(`⚠️ Email ${emailAddress} already exists, checking for existing user`)
+
+            // Find user by email
+            const existingUserByEmail = await prisma.user.findUnique({
+                where: { email: emailAddress }
+            })
+
+            if (existingUserByEmail) {
+                // Check if it's the same Clerk ID or different
+                if (existingUserByEmail.id === id) {
+                    console.log(`✅ User ${id} already exists with same email, skipping creation`)
+                    return { action: 'skipped', reason: 'user_already_exists', userId: id }
+                } else {
+                    // Different Clerk ID with same email - can happen during testing or user recreated account
+                    console.warn(`⚠️ Email conflict: New Clerk ID ${id} vs existing user ${existingUserByEmail.id}`)
+                    console.log(`🔄 Updating existing user ${existingUserByEmail.id} with new Clerk data`)
+
+                    // Update the existing user with new Clerk ID and data
+                    const updatedUser = await prisma.user.update({
+                        where: { id: existingUserByEmail.id },
+                        data: {
+                            firstName: first_name || existingUserByEmail.firstName,
+                            lastName: last_name || existingUserByEmail.lastName,
+                            username: username || existingUserByEmail.username,
+                            image: profileImage || existingUserByEmail.image,
+                            emailVerified: email_addresses.some(email => email.verification?.status === 'verified')
+                                ? existingUserByEmail.emailVerified || new Date()
+                                : existingUserByEmail.emailVerified,
+                            phoneNumber: phoneData.phone || existingUserByEmail.phoneNumber,
+                            phoneVerified: phoneData.verified ? new Date() : existingUserByEmail.phoneVerified,
+                            updatedAt: new Date()
+                        }
+                    })
+
+                    console.log(`✅ Updated existing user: ${updatedUser.id}`)
+                    return { action: 'updated_existing', userId: existingUserByEmail.id }
+                }
+            } else {
+                // Email constraint failed but we can't find the user - log and rethrow
+                console.error(`❌ Email constraint failed but user not found by email: ${emailAddress}`)
+                throw error
+            }
+        }
+
+        // Other errors - log and rethrow
         console.error(`❌ Failed to create user ${id}:`, error)
         throw error
     }
