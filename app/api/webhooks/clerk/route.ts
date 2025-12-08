@@ -386,6 +386,23 @@ export async function POST(req: Request) {
         const { type } = evt
         console.log(`📥 Processing webhook: ${type}`)
 
+        // Environment validation: Prevent cross-environment data pollution
+        // This protects against dev/prod sharing the same database
+        const isDevelopment = process.env.NODE_ENV === 'development'
+        const isTestKey = process.env.CLERK_SECRET_KEY?.startsWith('sk_test_')
+
+        if (isDevelopment !== isTestKey) {
+            console.warn(`⚠️ Cross-environment webhook detected and blocked`)
+            console.warn(`   NODE_ENV: ${process.env.NODE_ENV}`)
+            console.warn(`   Clerk Key Type: ${isTestKey ? 'test' : 'live'}`)
+            console.warn(`   Event Type: ${type}`)
+            return NextResponse.json({
+                success: true,
+                action: 'ignored',
+                reason: 'cross_environment_protection'
+            })
+        }
+
         let result
         switch (type) {
             case 'user.created':
