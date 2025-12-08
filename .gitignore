@@ -40,3 +40,6 @@ next-env.d.ts
 
 # migration logs
 migration-log-*.json
+
+# prisma generated client (should be generated at build time with correct DATABASE_URL)
+/generated

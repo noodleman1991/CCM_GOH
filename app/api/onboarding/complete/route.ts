@@ -12,6 +12,7 @@ const OnboardingSchema = z.object({
   lastName: z.string().min(1).max(50),
   username: z.string().min(3).max(30).regex(/^[a-zA-Z0-9_]+$/),
   bio: z.string().max(500).optional(),
+  ageGroup: z.enum(["UNDER_18", "ABOVE_18"]).optional(),
   country: z.string().max(100).optional(),
   city: z.string().max(100).optional(),
   preferredLanguage: z.enum(["EN", "ES", "FR", "AR"], {
@@ -222,6 +223,7 @@ export async function POST(request: NextRequest) {
         lastName: validatedData.lastName,
         username: validatedData.username,
         bio: validatedData.bio,
+        ageGroup: validatedData.ageGroup,
         country: validatedData.country,
         city: validatedData.city,
         preferredLanguage: validatedData.preferredLanguage,
@@ -276,29 +278,41 @@ export async function POST(request: NextRequest) {
 
     // Handle community memberships
     if (validatedData.communityIds && validatedData.communityIds.length > 0) {
+      console.log(`📋 Processing ${validatedData.communityIds.length} community IDs for user ${userId}:`, validatedData.communityIds)
+
       // Delete existing community memberships
       await prisma.userCommunity.deleteMany({
         where: { userId }
       })
 
-      // Verify all communities exist
+      // Verify which communities exist
       const communities = await prisma.community.findMany({
         where: {
           id: { in: validatedData.communityIds }
-        }
+        },
+        select: { id: true, name: true, type: true }
       })
 
-      if (communities.length === validatedData.communityIds.length) {
-        // Create new community memberships
+      const foundIds = communities.map(c => c.id)
+      const missingIds = validatedData.communityIds.filter(id => !foundIds.includes(id))
+
+      if (missingIds.length > 0) {
+        console.warn(`⚠️ Communities not found for user ${userId}:`, missingIds)
+        console.log(`✓ Found ${communities.length} valid communities:`, communities.map(c => `${c.name} (${c.type})`))
+      }
+
+      // Create memberships for ALL valid communities (save what we can)
+      if (communities.length > 0) {
         await prisma.userCommunity.createMany({
-          data: validatedData.communityIds.map(communityId => ({
+          data: communities.map(community => ({
             userId,
-            communityId,
+            communityId: community.id,
             role: 'community_member' as const
           }))
         })
+        console.log(`✅ Created ${communities.length} community memberships for user ${userId}`)
       } else {
-        console.warn(`⚠️ Some communities not found for user ${userId}`)
+        console.error(`❌ No valid communities found for user ${userId} from IDs:`, validatedData.communityIds)
       }
     }
 
