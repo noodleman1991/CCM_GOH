@@ -113,22 +113,53 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
       // If unique constraint error, user was just created by webhook - refetch
       if (createError.code === 'P2002') {
         console.log(`⚠️ Dashboard: User ${userId} created by webhook during fetch - retrying`)
-        user = await prisma.user.findUnique({
-          where: { id: userId },
-          include: {
-            communityMemberships: {
+
+        // Check if email conflict specifically
+        if (createError.meta?.target?.includes('email')) {
+          console.log(`⚠️ Dashboard: Email conflict detected, finding user by email`)
+          const existingUser = await prisma.user.findUnique({
+            where: { email: clerkUser.primaryEmailAddress?.emailAddress || '' }
+          })
+
+          if (existingUser) {
+            console.log(`✅ Dashboard: Found existing user by email: ${existingUser.id}`)
+            // Use the existing user instead
+            user = await prisma.user.findUnique({
+              where: { id: existingUser.id },
               include: {
-                community: true
+                communityMemberships: {
+                  include: {
+                    community: true
+                  }
+                },
+                recentWork: {
+                  orderBy: {
+                    startDate: 'desc'
+                  },
+                  take: 3
+                }
               }
-            },
-            recentWork: {
-              orderBy: {
-                startDate: 'desc'
-              },
-              take: 3
-            }
+            })
           }
-        })
+        } else {
+          // Other P2002 error, try original user ID
+          user = await prisma.user.findUnique({
+            where: { id: userId },
+            include: {
+              communityMemberships: {
+                include: {
+                  community: true
+                }
+              },
+              recentWork: {
+                orderBy: {
+                  startDate: 'desc'
+                },
+                take: 3
+              }
+            }
+          })
+        }
       } else {
         console.error(`❌ Dashboard: Failed to create user ${userId}:`, createError)
         throw createError
