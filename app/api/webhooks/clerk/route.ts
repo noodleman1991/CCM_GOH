@@ -104,6 +104,7 @@ async function handleUserCreated(event: UserCreatedEvent): Promise<any> {
 
     try {
         console.log(`📥 Creating user ${id} from Clerk webhook`)
+        console.log(`[Webhook Debug] user.created - firstName: "${first_name}", lastName: "${last_name}", username: "${username}", email: ${email_addresses[0]?.email_address}`)
 
         const existingUser = await prisma.user.findUnique({
             where: { id }
@@ -172,6 +173,7 @@ async function handleUserUpdated(event: UserUpdatedEvent) {
 
     try {
         console.log(`📥 Updating user ${id} from Clerk webhook`)
+        console.log(`[Webhook Debug] user.updated - firstName: "${first_name}", lastName: "${last_name}", username: "${username}", email: ${email_addresses[0]?.email_address}`)
 
         const existingUser = await prisma.user.findUnique({
             where: { id }
