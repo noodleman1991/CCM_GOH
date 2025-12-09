@@ -58,120 +58,59 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
     }
   })
 
+  // If user doesn't exist, webhook is still processing - wait and retry once
   if (!user) {
-    // Webhook delayed - create user now to prevent infinite redirect loop
-    console.log(`⏳ Dashboard: User ${userId} not in Prisma yet - creating from Clerk to prevent flickering`)
+    console.log(`⏳ Dashboard: User ${userId} not in Prisma yet - waiting for webhook...`)
 
-    // Fetch Clerk user OUTSIDE try block so it's accessible in catch
-    const { clerkClient } = await import('@clerk/nextjs/server')
-    const clerkUser = await (await clerkClient()).users.getUser(userId)
+    // Wait 1 second for webhook to complete
+    await new Promise(resolve => setTimeout(resolve, 1000))
 
-    try {
-      await prisma.user.create({
-        data: {
-          id: userId,
-          email: clerkUser.primaryEmailAddress?.emailAddress || null,
-          firstName: clerkUser.firstName,
-          lastName: clerkUser.lastName,
-          username: clerkUser.username,
-          image: clerkUser.imageUrl,
-          emailVerified: clerkUser.primaryEmailAddress?.verification?.status === 'verified' ? new Date() : null,
-          phoneNumber: clerkUser.primaryPhoneNumber?.phoneNumber || null,
-          phoneVerified: clerkUser.primaryPhoneNumber?.verification?.status === 'verified' ? new Date() : null,
-          workTypes: [],
-          expertiseAreas: [],
-          isSearchable: true,
-          profileVisibility: 'PUBLIC',
-          showEmail: false,
-          showPhoneNumber: false,
-          showWorkDetails: true,
-          showSocialLinks: true,
-          showLocation: true,
-          onboardingCompleted: false
-        }
-      })
-
-      console.log(`✅ Dashboard: Created user ${userId} successfully`)
-
-      // Re-fetch with includes for the page
-      user = await prisma.user.findUnique({
-        where: { id: userId },
-        include: {
-          communityMemberships: {
-            include: {
-              community: true
-            }
+    // Retry fetch
+    user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        communityMemberships: {
+          include: {
+            community: true
+          }
+        },
+        recentWork: {
+          orderBy: {
+            startDate: 'desc'
           },
-          recentWork: {
-            orderBy: {
-              startDate: 'desc'
-            },
-            take: 3
-          }
+          take: 3
         }
-      })
-    } catch (createError: any) {
-      // If unique constraint error, user was just created by webhook - refetch
-      if (createError.code === 'P2002') {
-        console.log(`⚠️ Dashboard: User ${userId} created by webhook during fetch - retrying`)
-
-        // Check if email conflict specifically
-        if (createError.meta?.target?.includes('email')) {
-          console.log(`⚠️ Dashboard: Email conflict detected, finding user by email`)
-          const existingUser = await prisma.user.findUnique({
-            where: { email: clerkUser.primaryEmailAddress?.emailAddress || '' }
-          })
-
-          if (existingUser) {
-            console.log(`✅ Dashboard: Found existing user by email: ${existingUser.id}`)
-            // Use the existing user instead
-            user = await prisma.user.findUnique({
-              where: { id: existingUser.id },
-              include: {
-                communityMemberships: {
-                  include: {
-                    community: true
-                  }
-                },
-                recentWork: {
-                  orderBy: {
-                    startDate: 'desc'
-                  },
-                  take: 3
-                }
-              }
-            })
-          }
-        } else {
-          // Other P2002 error, try original user ID
-          user = await prisma.user.findUnique({
-            where: { id: userId },
-            include: {
-              communityMemberships: {
-                include: {
-                  community: true
-                }
-              },
-              recentWork: {
-                orderBy: {
-                  startDate: 'desc'
-                },
-                take: 3
-              }
-            }
-          })
-        }
-      } else {
-        console.error(`❌ Dashboard: Failed to create user ${userId}:`, createError)
-        throw createError
       }
-    }
-  }
+    })
 
-  // At this point, user definitely exists
-  if (!user) {
-    // Should never happen, but safety check
-    redirect(`/${locale}/sign-in`)
+    // If still not found after retry, show setup message
+    if (!user) {
+      console.log(`⚠️ Dashboard: User ${userId} still not found after retry - webhook may be delayed`)
+      return (
+        <div className="container mx-auto py-16 px-4">
+          <div className="max-w-md mx-auto text-center space-y-6">
+            <div className="animate-pulse">
+              <div className="w-16 h-16 mx-auto mb-4 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+            </div>
+            <h2 className="text-2xl font-bold">Setting up your account...</h2>
+            <p className="text-gray-600">
+              We're preparing your dashboard. This usually takes just a few seconds.
+            </p>
+            <a
+              href={`/${locale}/dashboard`}
+              className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Refresh Page
+            </a>
+            <p className="text-sm text-gray-500">
+              If this message persists, please contact support.
+            </p>
+          </div>
+        </div>
+      )
+    }
+
+    console.log(`✅ Dashboard: Found user ${userId} after retry`)
   }
 
   // Calculate profile completeness

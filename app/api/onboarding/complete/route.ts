@@ -146,43 +146,75 @@ export async function POST(request: NextRequest) {
 
     if (!existingUser) {
       // Webhook delayed - create user now to prevent errors
-      console.log(`⚠️ Onboarding API: User ${userId} not found - webhook may be delayed. Creating user now.`)
+      console.log(`⚠️ Onboarding API: User ${userId} not found - fetching from Clerk`)
 
       try {
         const clerkUser = await (await clerkClient()).users.getUser(userId)
 
-        existingUser = await prisma.user.create({
-          data: {
-            id: userId,
-            email: clerkUser.primaryEmailAddress?.emailAddress || null,
-            firstName: clerkUser.firstName,
-            lastName: clerkUser.lastName,
-            username: clerkUser.username,
-            image: clerkUser.imageUrl,
-            emailVerified: clerkUser.primaryEmailAddress?.verification?.status === 'verified' ? new Date() : null,
-            phoneNumber: clerkUser.primaryPhoneNumber?.phoneNumber || null,
-            phoneVerified: clerkUser.primaryPhoneNumber?.verification?.status === 'verified' ? new Date() : null,
-            workTypes: [],
-            expertiseAreas: [],
-            isSearchable: true,
-            profileVisibility: 'PUBLIC',
-            showEmail: false,
-            showPhoneNumber: false,
-            showWorkDetails: true,
-            showSocialLinks: true,
-            showLocation: true,
-          }
-        })
+        // Try to create user, but handle P2002 (unique constraint) gracefully
+        try {
+          existingUser = await prisma.user.create({
+            data: {
+              id: userId,
+              email: clerkUser.primaryEmailAddress?.emailAddress || null,
+              firstName: clerkUser.firstName,
+              lastName: clerkUser.lastName,
+              username: clerkUser.username,
+              image: clerkUser.imageUrl,
+              emailVerified: clerkUser.primaryEmailAddress?.verification?.status === 'verified' ? new Date() : null,
+              phoneNumber: clerkUser.primaryPhoneNumber?.phoneNumber || null,
+              phoneVerified: clerkUser.primaryPhoneNumber?.verification?.status === 'verified' ? new Date() : null,
+              workTypes: [],
+              expertiseAreas: [],
+              isSearchable: true,
+              profileVisibility: 'PUBLIC',
+              showEmail: false,
+              showPhoneNumber: false,
+              showWorkDetails: true,
+              showSocialLinks: true,
+              showLocation: true,
+            }
+          })
 
-        console.log(`✅ Onboarding API: Created user ${userId} successfully`)
-      } catch (createError) {
-        console.error(`❌ Onboarding API: Failed to create user ${userId}:`, createError)
+          console.log(`✅ Onboarding API: Created user ${userId} successfully`)
+        } catch (createError: any) {
+          // Handle P2002 (unique constraint) gracefully - webhook likely just created the user
+          if (createError.code === 'P2002') {
+            console.log(`✓ Onboarding API: User ${userId} created by webhook during request - refetching`)
+
+            // Try to fetch by user ID first
+            existingUser = await prisma.user.findUnique({
+              where: { id: userId }
+            })
+
+            // If not found by ID, try by email (in case of ID mismatch)
+            if (!existingUser && clerkUser.primaryEmailAddress?.emailAddress) {
+              existingUser = await prisma.user.findUnique({
+                where: { email: clerkUser.primaryEmailAddress.emailAddress }
+              })
+
+              if (existingUser) {
+                console.log(`✓ Onboarding API: Found user by email instead: ${existingUser.id}`)
+              }
+            }
+
+            // If still not found, something is wrong
+            if (!existingUser) {
+              throw new Error('User creation conflict - please wait a moment and try again')
+            }
+          } else {
+            // Re-throw other errors
+            throw createError
+          }
+        }
+      } catch (error) {
+        console.error(`❌ Onboarding API: Failed to set up user ${userId}:`, error)
         return NextResponse.json({
           success: false,
-          error: "Failed to create user account. Please try again.",
-          code: "USER_CREATION_FAILED"
+          error: "Failed to set up your account. Please wait a moment and try again.",
+          code: "USER_SETUP_FAILED"
         }, {
-          status: 500,
+          status: 503, // 503 = Service Unavailable (temporary issue)
           headers: { 'Content-Type': 'application/json' }
         })
       }
