@@ -25,6 +25,10 @@ const isProtectedApiRoute = createRouteMatcher([
     '/api/case-studies/submit',
 ])
 
+const isProtectedRoute = createRouteMatcher([
+    withLocale('/(main)/dashboard/:path*'),
+])
+
 const isOnboardingRoute = createRouteMatcher([withLocale('/onboarding')])
 
 const intlMiddleware = createIntlMiddleware(routing)
@@ -76,6 +80,11 @@ export default clerkMiddleware(async (auth, req: NextRequest) => {
     ) {
         const onboardingUrl = new URL('/onboarding', req.url)
         return NextResponse.redirect(onboardingUrl)
+    }
+
+    // Explicitly protect dashboard routes
+    if (isProtectedRoute(req) && !userId) {
+        return authResult.redirectToSignIn({ returnBackUrl: req.url })
     }
 
     return NextResponse.next()
