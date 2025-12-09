@@ -119,7 +119,9 @@ export default async function OnboardingPage({ params }: { params: Promise<{ loc
     // Fetch communities from API (server-side)
     let communities: any[] = []
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/communities`, {
+        const baseUrl = process.env.NEXT_PUBLIC_APP_URL
+            || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
+        const response = await fetch(`${baseUrl}/api/communities`, {
             cache: 'no-store',
             headers: { 'Content-Type': 'application/json' }
         })

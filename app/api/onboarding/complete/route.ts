@@ -246,11 +246,11 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Update user in Prisma with onboarding data
-    const updatedUser = await prisma.user.update({
+    // Update user in Prisma with onboarding data - use upsert for race condition safety
+    const updatedUser = await prisma.user.upsert({
       where: { id: userId },
-      data: {
-        // Basic information
+      update: {
+        // Update if user exists (normal case - webhook created)
         firstName: validatedData.firstName,
         lastName: validatedData.lastName,
         username: validatedData.username,
@@ -282,6 +282,39 @@ export async function POST(request: NextRequest) {
         // Mark onboarding as completed
         onboardingCompleted: true,
         updatedAt: new Date()
+      },
+      create: {
+        // Create if webhook delayed (rare case)
+        id: userId,
+        email: existingUser?.email || null,
+        firstName: validatedData.firstName,
+        lastName: validatedData.lastName,
+        username: validatedData.username,
+        bio: validatedData.bio,
+        ageGroup: validatedData.ageGroup,
+        country: validatedData.country,
+        city: validatedData.city,
+        preferredLanguage: validatedData.preferredLanguage,
+        image: null,
+        workTypes: validatedData.workTypes,
+        expertiseAreas: validatedData.expertiseAreas,
+        organization: validatedData.organization,
+        position: validatedData.position,
+        workBio: validatedData.workBio,
+        personalWebsite: validatedData.personalWebsite,
+        linkedinProfile: validatedData.linkedinProfile,
+        otherSocialLinks: validatedData.otherSocialLinks,
+        isSearchable: validatedData.isSearchable,
+        profileVisibility: validatedData.profileVisibility,
+        showEmail: validatedData.showEmail,
+        showPhoneNumber: validatedData.showPhoneNumber,
+        showWorkDetails: validatedData.showWorkDetails,
+        showSocialLinks: validatedData.showSocialLinks,
+        showLocation: validatedData.showLocation,
+        onboardingCompleted: true,
+        emailVerified: null,
+        phoneNumber: null,
+        phoneVerified: null
       }
     })
 
@@ -385,6 +418,19 @@ export async function POST(request: NextRequest) {
         timestamp: new Date().toISOString()
       }, {
         status: 409,
+        headers: { 'Content-Type': 'application/json' }
+      })
+    }
+
+    if (error instanceof Error && error.message.includes('P2025')) {
+      // No record found for update - webhook hasn't created user yet
+      return NextResponse.json({
+        success: false,
+        error: "Your account is still being set up. Please wait a moment and try again.",
+        code: "ACCOUNT_SETUP_IN_PROGRESS",
+        timestamp: new Date().toISOString()
+      }, {
+        status: 503,
         headers: { 'Content-Type': 'application/json' }
       })
     }
