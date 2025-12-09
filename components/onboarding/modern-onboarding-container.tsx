@@ -13,8 +13,6 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { AlertCircle } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { rtlLocales } from "@/i18n/routing"
-import { useUserProfile } from "@/hooks/use-user-profile"
-
 import { ModernContentArea } from "./modern-content-area"
 import { WelcomePanel } from "./panels/welcome-panel"
 import { BasicInfoPanel } from "./panels/basic-info-panel"
@@ -31,11 +29,13 @@ import {
 } from "@/lib/schemas/onboarding-schema"
 
 interface ModernOnboardingContainerProps {
+  initialData?: any
   userManagementOptions: any
   sanityContent: any
 }
 
 export function ModernOnboardingContainer({
+  initialData,
   userManagementOptions,
   sanityContent
 }: ModernOnboardingContainerProps) {
@@ -45,8 +45,8 @@ export function ModernOnboardingContainer({
   const locale = useLocale()
   const isRTL = rtlLocales.includes(locale)
 
-  // User profile hook for data loading
-  const { user, loading: userLoading, error: userError } = useUserProfile()
+  // Use initialData passed from server component
+  const user = initialData
 
   // Form and state management
   const [currentStep, setCurrentStep] = useState(0)
@@ -78,7 +78,7 @@ export function ModernOnboardingContainer({
     resolver: zodResolver(dynamicSchema),
     defaultValues: {
       ...defaultOnboardingValues,
-      // Pre-populate with existing user data if available
+      // Pre-populate with user data from server
       basicInfo: {
         ...defaultOnboardingValues.basicInfo,
         firstName: user?.firstName || defaultOnboardingValues.basicInfo.firstName,
@@ -88,7 +88,7 @@ export function ModernOnboardingContainer({
         ageGroup: user?.ageGroup || defaultOnboardingValues.basicInfo.ageGroup,
         country: user?.country || defaultOnboardingValues.basicInfo.country,
         city: user?.city || defaultOnboardingValues.basicInfo.city,
-        preferredLanguage: (locale.toUpperCase() as "EN" | "ES" | "FR" | "AR") || defaultOnboardingValues.basicInfo.preferredLanguage,
+        preferredLanguage: user?.preferredLanguage || (locale.toUpperCase() as "EN" | "ES" | "FR" | "AR") || defaultOnboardingValues.basicInfo.preferredLanguage,
       },
       workInfo: {
         ...defaultOnboardingValues.workInfo,
@@ -98,13 +98,15 @@ export function ModernOnboardingContainer({
         expertiseAreas: user?.expertiseAreas
           ? mapEnumKeysToSanityIds(user.expertiseAreas, userManagementOptions?.expertiseAreas || [])
           : defaultOnboardingValues.workInfo.expertiseAreas,
+        communityIds: user?.communityIds || defaultOnboardingValues.workInfo.communityIds,
         organization: user?.organization || defaultOnboardingValues.workInfo.organization,
         position: user?.position || defaultOnboardingValues.workInfo.position,
         workBio: user?.workBio || defaultOnboardingValues.workInfo.workBio,
         linkedinProfile: user?.linkedinProfile || defaultOnboardingValues.workInfo.linkedinProfile,
-        otherSocialLinks: defaultOnboardingValues.workInfo.otherSocialLinks,
+        otherSocialLinks: user?.otherSocialLinks || defaultOnboardingValues.workInfo.otherSocialLinks,
         personalWebsite: user?.personalWebsite || defaultOnboardingValues.workInfo.personalWebsite,
       },
+      recentWork: user?.recentWork || defaultOnboardingValues.recentWork,
       privacy: {
         ...defaultOnboardingValues.privacy,
         isSearchable: user?.isSearchable ?? defaultOnboardingValues.privacy.isSearchable,
@@ -118,51 +120,6 @@ export function ModernOnboardingContainer({
     },
     mode: "onChange"
   })
-
-  // Update form when user data loads
-  useEffect(() => {
-    if (user && !userLoading) {
-      form.reset({
-        ...defaultOnboardingValues,
-        basicInfo: {
-          ...defaultOnboardingValues.basicInfo,
-          firstName: user.firstName || defaultOnboardingValues.basicInfo.firstName,
-          lastName: user.lastName || defaultOnboardingValues.basicInfo.lastName,
-          username: user.username || defaultOnboardingValues.basicInfo.username,
-          bio: user.bio || defaultOnboardingValues.basicInfo.bio,
-          ageGroup: user.ageGroup || defaultOnboardingValues.basicInfo.ageGroup,
-          country: user.country || defaultOnboardingValues.basicInfo.country,
-          city: user.city || defaultOnboardingValues.basicInfo.city,
-          preferredLanguage: (locale.toUpperCase() as "EN" | "ES" | "FR" | "AR") || defaultOnboardingValues.basicInfo.preferredLanguage,
-        },
-        workInfo: {
-          ...defaultOnboardingValues.workInfo,
-          workTypes: user.workTypes
-            ? mapEnumKeysToSanityIds(user.workTypes, userManagementOptions?.workTypes || [])
-            : defaultOnboardingValues.workInfo.workTypes,
-          expertiseAreas: user.expertiseAreas
-            ? mapEnumKeysToSanityIds(user.expertiseAreas, userManagementOptions?.expertiseAreas || [])
-            : defaultOnboardingValues.workInfo.expertiseAreas,
-          organization: user.organization || defaultOnboardingValues.workInfo.organization,
-          position: user.position || defaultOnboardingValues.workInfo.position,
-          workBio: user.workBio || defaultOnboardingValues.workInfo.workBio,
-          linkedinProfile: user.linkedinProfile || defaultOnboardingValues.workInfo.linkedinProfile,
-          otherSocialLinks: defaultOnboardingValues.workInfo.otherSocialLinks,
-          personalWebsite: user.personalWebsite || defaultOnboardingValues.workInfo.personalWebsite,
-        },
-        privacy: {
-          ...defaultOnboardingValues.privacy,
-          isSearchable: user.isSearchable ?? defaultOnboardingValues.privacy.isSearchable,
-          profileVisibility: user.profileVisibility || defaultOnboardingValues.privacy.profileVisibility,
-          showEmail: user.showEmail ?? defaultOnboardingValues.privacy.showEmail,
-          showPhoneNumber: user.showPhoneNumber ?? defaultOnboardingValues.privacy.showPhoneNumber,
-          showWorkDetails: user.showWorkDetails ?? defaultOnboardingValues.privacy.showWorkDetails,
-          showSocialLinks: user.showSocialLinks ?? defaultOnboardingValues.privacy.showSocialLinks,
-          showLocation: user.showLocation ?? defaultOnboardingValues.privacy.showLocation,
-        }
-      })
-    }
-  }, [user, userLoading, form, locale])
 
   // Steps configuration
   const steps = [
@@ -269,6 +226,7 @@ export function ModernOnboardingContainer({
         // Work info - map Sanity IDs to enum keys
         workTypes: mapSanityToEnumKeys(data.workInfo.workTypes || [], userManagementOptions?.workTypes || []),
         expertiseAreas: mapSanityToEnumKeys(data.workInfo.expertiseAreas || [], userManagementOptions?.expertiseAreas || []),
+        communityIds: data.workInfo.communityIds || [],
         organization: data.workInfo.organization,
         position: data.workInfo.position,
         workBio: data.workInfo.workBio,
