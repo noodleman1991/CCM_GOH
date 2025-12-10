@@ -65,10 +65,10 @@ const FALLBACK_COMMUNITIES = [
         }
     },
     {
-        slug: 'europe-and-northern-america',
-        regionalName: 'EUROPE_AND_NORTHERN_AMERICA',
+        slug: 'europe-and-north-america',
+        regionalName: 'EUROPE_AND_NORTH_AMERICA',
         name: {
-            en: 'Europe and Northern America',
+            en: 'Europe and North America',
             es: 'Europa y América del Norte',
             fr: 'Europe et Amérique du Nord',
             ar: 'أوروبا وأمريكا الشمالية'

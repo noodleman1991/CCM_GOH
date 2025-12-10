@@ -247,76 +247,161 @@ export async function POST(request: NextRequest) {
     }
 
     // Update user in Prisma with onboarding data - use upsert for race condition safety
-    const updatedUser = await prisma.user.upsert({
-      where: { id: userId },
-      update: {
-        // Update if user exists (normal case - webhook created)
-        firstName: validatedData.firstName,
-        lastName: validatedData.lastName,
-        username: validatedData.username,
-        bio: validatedData.bio,
-        ageGroup: validatedData.ageGroup,
-        country: validatedData.country,
-        city: validatedData.city,
-        preferredLanguage: validatedData.preferredLanguage,
+    let updatedUser
+    try {
+      updatedUser = await prisma.user.upsert({
+        where: { id: userId },
+        update: {
+          // Update if user exists (normal case - webhook created)
+          firstName: validatedData.firstName,
+          lastName: validatedData.lastName,
+          username: validatedData.username,
+          bio: validatedData.bio,
+          ageGroup: validatedData.ageGroup,
+          country: validatedData.country,
+          city: validatedData.city,
+          preferredLanguage: validatedData.preferredLanguage,
 
-        // Work information
-        workTypes: validatedData.workTypes,
-        expertiseAreas: validatedData.expertiseAreas,
-        organization: validatedData.organization,
-        position: validatedData.position,
-        workBio: validatedData.workBio,
-        personalWebsite: validatedData.personalWebsite,
-        linkedinProfile: validatedData.linkedinProfile,
-        otherSocialLinks: validatedData.otherSocialLinks,
+          // Work information
+          workTypes: validatedData.workTypes,
+          expertiseAreas: validatedData.expertiseAreas,
+          organization: validatedData.organization,
+          position: validatedData.position,
+          workBio: validatedData.workBio,
+          personalWebsite: validatedData.personalWebsite,
+          linkedinProfile: validatedData.linkedinProfile,
+          otherSocialLinks: validatedData.otherSocialLinks,
 
-        // Privacy settings
-        isSearchable: validatedData.isSearchable,
-        profileVisibility: validatedData.profileVisibility,
-        showEmail: validatedData.showEmail,
-        showPhoneNumber: validatedData.showPhoneNumber,
-        showWorkDetails: validatedData.showWorkDetails,
-        showSocialLinks: validatedData.showSocialLinks,
-        showLocation: validatedData.showLocation,
+          // Privacy settings
+          isSearchable: validatedData.isSearchable,
+          profileVisibility: validatedData.profileVisibility,
+          showEmail: validatedData.showEmail,
+          showPhoneNumber: validatedData.showPhoneNumber,
+          showWorkDetails: validatedData.showWorkDetails,
+          showSocialLinks: validatedData.showSocialLinks,
+          showLocation: validatedData.showLocation,
 
-        // Mark onboarding as completed
-        onboardingCompleted: true,
-        updatedAt: new Date()
-      },
-      create: {
-        // Create if webhook delayed (rare case)
-        id: userId,
-        email: existingUser?.email || null,
-        firstName: validatedData.firstName,
-        lastName: validatedData.lastName,
-        username: validatedData.username,
-        bio: validatedData.bio,
-        ageGroup: validatedData.ageGroup,
-        country: validatedData.country,
-        city: validatedData.city,
-        preferredLanguage: validatedData.preferredLanguage,
-        image: null,
-        workTypes: validatedData.workTypes,
-        expertiseAreas: validatedData.expertiseAreas,
-        organization: validatedData.organization,
-        position: validatedData.position,
-        workBio: validatedData.workBio,
-        personalWebsite: validatedData.personalWebsite,
-        linkedinProfile: validatedData.linkedinProfile,
-        otherSocialLinks: validatedData.otherSocialLinks,
-        isSearchable: validatedData.isSearchable,
-        profileVisibility: validatedData.profileVisibility,
-        showEmail: validatedData.showEmail,
-        showPhoneNumber: validatedData.showPhoneNumber,
-        showWorkDetails: validatedData.showWorkDetails,
-        showSocialLinks: validatedData.showSocialLinks,
-        showLocation: validatedData.showLocation,
-        onboardingCompleted: true,
-        emailVerified: null,
-        phoneNumber: null,
-        phoneVerified: null
+          // Mark onboarding as completed
+          onboardingCompleted: true,
+          updatedAt: new Date()
+        },
+        create: {
+          // Create if webhook delayed (rare case)
+          id: userId,
+          email: existingUser?.email || null,
+          firstName: validatedData.firstName,
+          lastName: validatedData.lastName,
+          username: validatedData.username,
+          bio: validatedData.bio,
+          ageGroup: validatedData.ageGroup,
+          country: validatedData.country,
+          city: validatedData.city,
+          preferredLanguage: validatedData.preferredLanguage,
+          image: null,
+          workTypes: validatedData.workTypes,
+          expertiseAreas: validatedData.expertiseAreas,
+          organization: validatedData.organization,
+          position: validatedData.position,
+          workBio: validatedData.workBio,
+          personalWebsite: validatedData.personalWebsite,
+          linkedinProfile: validatedData.linkedinProfile,
+          otherSocialLinks: validatedData.otherSocialLinks,
+          isSearchable: validatedData.isSearchable,
+          profileVisibility: validatedData.profileVisibility,
+          showEmail: validatedData.showEmail,
+          showPhoneNumber: validatedData.showPhoneNumber,
+          showWorkDetails: validatedData.showWorkDetails,
+          showSocialLinks: validatedData.showSocialLinks,
+          showLocation: validatedData.showLocation,
+          onboardingCompleted: true,
+          emailVerified: null,
+          phoneNumber: null,
+          phoneVerified: null
+        }
+      })
+    } catch (upsertError: any) {
+      // Handle email conflict - old user exists with same email but different Clerk ID
+      if (upsertError.code === 'P2002' && upsertError.meta?.target?.includes('email')) {
+        const email = existingUser?.email || null
+        console.log(`⚠️ Onboarding: Email ${email} conflict - cleaning up old user`)
+
+        const oldUser = await prisma.user.findUnique({ where: { email: email! } })
+        if (oldUser && oldUser.id !== userId) {
+          console.log(`🗑️ Onboarding: Deleting old user ${oldUser.id}, will create new ${userId}`)
+          await prisma.user.delete({ where: { id: oldUser.id } })
+
+          // Retry upsert - will now succeed
+          updatedUser = await prisma.user.upsert({
+            where: { id: userId },
+            update: {
+              firstName: validatedData.firstName,
+              lastName: validatedData.lastName,
+              username: validatedData.username,
+              bio: validatedData.bio,
+              ageGroup: validatedData.ageGroup,
+              country: validatedData.country,
+              city: validatedData.city,
+              preferredLanguage: validatedData.preferredLanguage,
+              workTypes: validatedData.workTypes,
+              expertiseAreas: validatedData.expertiseAreas,
+              organization: validatedData.organization,
+              position: validatedData.position,
+              workBio: validatedData.workBio,
+              personalWebsite: validatedData.personalWebsite,
+              linkedinProfile: validatedData.linkedinProfile,
+              otherSocialLinks: validatedData.otherSocialLinks,
+              isSearchable: validatedData.isSearchable,
+              profileVisibility: validatedData.profileVisibility,
+              showEmail: validatedData.showEmail,
+              showPhoneNumber: validatedData.showPhoneNumber,
+              showWorkDetails: validatedData.showWorkDetails,
+              showSocialLinks: validatedData.showSocialLinks,
+              showLocation: validatedData.showLocation,
+              onboardingCompleted: true,
+              updatedAt: new Date()
+            },
+            create: {
+              id: userId,
+              email: existingUser?.email || null,
+              firstName: validatedData.firstName,
+              lastName: validatedData.lastName,
+              username: validatedData.username,
+              bio: validatedData.bio,
+              ageGroup: validatedData.ageGroup,
+              country: validatedData.country,
+              city: validatedData.city,
+              preferredLanguage: validatedData.preferredLanguage,
+              image: null,
+              workTypes: validatedData.workTypes,
+              expertiseAreas: validatedData.expertiseAreas,
+              organization: validatedData.organization,
+              position: validatedData.position,
+              workBio: validatedData.workBio,
+              personalWebsite: validatedData.personalWebsite,
+              linkedinProfile: validatedData.linkedinProfile,
+              otherSocialLinks: validatedData.otherSocialLinks,
+              isSearchable: validatedData.isSearchable,
+              profileVisibility: validatedData.profileVisibility,
+              showEmail: validatedData.showEmail,
+              showPhoneNumber: validatedData.showPhoneNumber,
+              showWorkDetails: validatedData.showWorkDetails,
+              showSocialLinks: validatedData.showSocialLinks,
+              showLocation: validatedData.showLocation,
+              onboardingCompleted: true,
+              emailVerified: null,
+              phoneNumber: null,
+              phoneVerified: null
+            }
+          })
+
+          console.log(`✅ Onboarding: Created user ${updatedUser.id} after cleanup`)
+        } else {
+          throw upsertError
+        }
+      } else {
+        throw upsertError
       }
-    })
+    }
 
     // Create recent work entries
     if (validatedData.recentWork && validatedData.recentWork.length > 0) {

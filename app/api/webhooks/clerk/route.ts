@@ -180,29 +180,41 @@ async function handleUserCreated(event: UserCreatedEvent): Promise<any> {
                     console.log(`✅ User ${id} already exists with same email, skipping creation`)
                     return { action: 'skipped', reason: 'user_already_exists', userId: id }
                 } else {
-                    // Different Clerk ID with same email - can happen during testing or user recreated account
-                    console.warn(`⚠️ Email conflict: New Clerk ID ${id} vs existing user ${existingUserByEmail.id}`)
-                    console.log(`🔄 Updating existing user ${existingUserByEmail.id} with new Clerk data`)
+                    // Different Clerk ID with same email - user re-registered
+                    console.warn(`⚠️ Webhook: Email conflict - New Clerk ID ${id} vs existing user ${existingUserByEmail.id}`)
+                    console.log(`🗑️ Webhook: Deleting old user ${existingUserByEmail.id}, creating new ${id}`)
 
-                    // Update the existing user with new Clerk ID and data
-                    const updatedUser = await prisma.user.update({
-                        where: { id: existingUserByEmail.id },
+                    // Delete old user and create new one with new Clerk ID
+                    await prisma.user.delete({ where: { id: existingUserByEmail.id } })
+
+                    // Retry user creation with same data
+                    const user = await prisma.user.create({
                         data: {
-                            firstName: first_name || existingUserByEmail.firstName,
-                            lastName: last_name || existingUserByEmail.lastName,
-                            username: username || existingUserByEmail.username,
-                            image: profileImage || existingUserByEmail.image,
+                            id,
+                            email: getPrimaryEmail(email_addresses),
+                            firstName: first_name,
+                            lastName: last_name,
+                            username: username,
+                            image: profileImage,
                             emailVerified: email_addresses.some(email => email.verification?.status === 'verified')
-                                ? existingUserByEmail.emailVerified || new Date()
-                                : existingUserByEmail.emailVerified,
-                            phoneNumber: phoneData.phone || existingUserByEmail.phoneNumber,
-                            phoneVerified: phoneData.verified ? new Date() : existingUserByEmail.phoneVerified,
-                            updatedAt: new Date()
+                                ? new Date()
+                                : null,
+                            phoneNumber: phoneData.phone,
+                            phoneVerified: phoneData.verified ? new Date() : null,
+                            workTypes: [],
+                            expertiseAreas: [],
+                            isSearchable: true,
+                            profileVisibility: 'PUBLIC',
+                            showEmail: false,
+                            showPhoneNumber: false,
+                            showWorkDetails: true,
+                            showSocialLinks: true,
+                            showLocation: true,
                         }
                     })
 
-                    console.log(`✅ Updated existing user: ${updatedUser.id}`)
-                    return { action: 'updated_existing', userId: existingUserByEmail.id }
+                    console.log(`✅ Webhook: Created user ${user.id} after cleanup`)
+                    return { action: 'created_after_cleanup', userId: user.id }
                 }
             } else {
                 // Email constraint failed but we can't find the user - log and rethrow

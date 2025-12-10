@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from '../generated/prisma/index.js'
 
 // Support runtime DATABASE_URL override for production seeding
 const DATABASE_URL = process.env.DATABASE_URL_OVERRIDE || process.env.DATABASE_URL
