@@ -48,7 +48,7 @@ const REGIONAL_COMMUNITIES = [
     name: 'Europe and Northern America',
     description: 'Community for climate and mental health professionals in Europe and Northern America',
     type: CommunityType.REGIONAL,
-    regionalName: RegionalCommunityName.EUROPE_AND_NORTHERN_AMERICA
+    regionalName: RegionalCommunityName.EUROPE_AND_NORTH_AMERICA
   }
 ]
 

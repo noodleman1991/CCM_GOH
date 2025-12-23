@@ -1,12 +1,3 @@
-/**
- * Middleware (Edge Runtime)
- *
- * Keeping as middleware.ts (not migrating to proxy.ts) because:
- * - Clerk authentication optimized for Edge runtime
- * - next-intl i18n benefits from Edge performance
- * - proxy.ts only supports Node.js runtime (no Edge support)
- * - Next.js 16+ continues middleware.ts support for Edge use cases
- */
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 import createIntlMiddleware from 'next-intl/middleware'
 import { routing } from './i18n/routing'
@@ -83,7 +74,7 @@ export default clerkMiddleware(async (auth, req: NextRequest) => {
 
     if (
         userId &&
-        !(sessionClaims?.publicMetadata as { onboardingCompleted?: boolean })?.onboardingCompleted &&
+        !sessionClaims?.publicMetadata?.onboardingCompleted &&
         !isOnboardingRoute(req) &&
         !isPublicRoute(req)
     ) {

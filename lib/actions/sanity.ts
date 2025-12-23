@@ -170,12 +170,12 @@ export async function revalidateSanityCache(tags: string[] = []) {
 
   if (tags.length === 0) {
     // Revalidate all Sanity content
-    revalidateTag('onboarding-content')
-    revalidateTag('work-types')
-    revalidateTag('expertise-areas')
-    revalidateTag('user-management')
+    revalidateTag('onboarding-content', "max")
+    revalidateTag('work-types', "max")
+    revalidateTag('expertise-areas', "max")
+    revalidateTag('user-management', "max")
   } else {
-    tags.forEach(tag => revalidateTag(tag))
+    tags.forEach(tag => revalidateTag(tag, "max"))
   }
 }
 
