@@ -40,6 +40,19 @@ interface Filters {
 
 interface CaseStudiesFiltersProps {
   currentFilters: Filters
+  tags?: Array<{
+    _id: string
+    label: Record<string, string> | string
+    value: string
+    color?: string
+    caseStudyCount?: number
+  }>
+  communities?: Array<{
+    _id: string
+    name: Record<string, string> | string
+    slug: string
+    caseStudyCount?: number
+  }>
 }
 
 const topicOptions = [
@@ -61,7 +74,11 @@ const topicOptions = [
   { value: 'other', label: 'Other' },
 ]
 
-export default function CaseStudiesFilters({ currentFilters }: CaseStudiesFiltersProps) {
+export default function CaseStudiesFilters({
+  currentFilters,
+  tags = [],
+  communities = []
+}: CaseStudiesFiltersProps) {
   const locale = useLocale()
   const t = useTranslations('caseStudies.filters')
   const router = useRouter()
@@ -71,6 +88,22 @@ export default function CaseStudiesFilters({ currentFilters }: CaseStudiesFilter
 
   const [searchValue, setSearchValue] = useState(currentFilters.search || '')
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false)
+
+  // Helper function to get localized text
+  const getLocalizedValue = (value: Record<string, string> | string, locale: string) => {
+    if (typeof value === 'string') return value
+    return value[locale] || value['en'] || Object.values(value)[0] || ''
+  }
+
+  // Get localized tag label
+  const getTagLabel = (tag: typeof tags[0]) => {
+    return getLocalizedValue(tag.label, locale)
+  }
+
+  // Get localized community name
+  const getCommunityName = (community: typeof communities[0]) => {
+    return getLocalizedValue(community.name, locale)
+  }
 
   const updateFilter = (key: string, value: string | undefined) => {
     const params = new URLSearchParams(searchParams.toString())
@@ -187,48 +220,66 @@ export default function CaseStudiesFilters({ currentFilters }: CaseStudiesFilter
                 <Separator />
 
                 {/* Tag Filter */}
-                <div className="space-y-2">
-                  <label className="text-sm font-medium flex items-center gap-2">
-                    <Tag className="w-4 h-4" />
-                    {t('tag')}
-                  </label>
-                  <Select
-                    value={currentFilters.tag || ''}
-                    onValueChange={(value) => updateFilter('tag', value)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder={t('tagPlaceholder')} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Tags</SelectItem>
-                      {/* These would be loaded from your tags */}
-                      <SelectItem value="tag1">Tag 1</SelectItem>
-                      <SelectItem value="tag2">Tag 2</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                {tags.length > 0 && (
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium flex items-center gap-2">
+                      <Tag className="w-4 h-4" />
+                      {t('tag')}
+                    </label>
+                    <Select
+                      value={currentFilters.tag || ''}
+                      onValueChange={(value) => updateFilter('tag', value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder={t('tagPlaceholder')} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Tags</SelectItem>
+                        {tags.map((tag) => (
+                          <SelectItem key={tag._id} value={tag.value}>
+                            {getTagLabel(tag)}
+                            {tag.caseStudyCount !== undefined && tag.caseStudyCount > 0 && (
+                              <span className="ml-1 text-xs text-muted-foreground">
+                                ({tag.caseStudyCount})
+                              </span>
+                            )}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
 
                 {/* Community Filter */}
-                <div className="space-y-2">
-                  <label className="text-sm font-medium flex items-center gap-2">
-                    <MapPin className="w-4 h-4" />
-                    {t('community')}
-                  </label>
-                  <Select
-                    value={currentFilters.community || ''}
-                    onValueChange={(value) => updateFilter('community', value)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder={t('communityPlaceholder')} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Communities</SelectItem>
-                      {/* These would be loaded from your communities */}
-                      <SelectItem value="community1">Community 1</SelectItem>
-                      <SelectItem value="community2">Community 2</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                {communities.length > 0 && (
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium flex items-center gap-2">
+                      <MapPin className="w-4 h-4" />
+                      {t('community')}
+                    </label>
+                    <Select
+                      value={currentFilters.community || ''}
+                      onValueChange={(value) => updateFilter('community', value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder={t('communityPlaceholder')} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Communities</SelectItem>
+                        {communities.map((community) => (
+                          <SelectItem key={community._id} value={getCommunityName(community)}>
+                            {getCommunityName(community)}
+                            {community.caseStudyCount !== undefined && community.caseStudyCount > 0 && (
+                              <span className="ml-1 text-xs text-muted-foreground">
+                                ({community.caseStudyCount})
+                              </span>
+                            )}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
               </div>
             </PopoverContent>
           </Popover>
@@ -272,7 +323,9 @@ export default function CaseStudiesFilters({ currentFilters }: CaseStudiesFilter
             {currentFilters.tag && (
               <Badge variant="secondary" className="flex items-center gap-1">
                 <Tag className="w-3 h-3" />
-                {currentFilters.tag}
+                {tags.find(t => t.value === currentFilters.tag)
+                  ? getTagLabel(tags.find(t => t.value === currentFilters.tag)!)
+                  : currentFilters.tag}
                 <Button
                   variant="ghost"
                   size="sm"

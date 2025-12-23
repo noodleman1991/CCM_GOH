@@ -56,7 +56,8 @@ export default function GridCaseStudyComponent({
                                                }: GridCaseStudyComponentProps) {
     if (!caseStudy) return null;
 
-    const aspectRatioClass = cardVariant === "wide" ? "aspect-video" : "aspect-[3/2]";
+    // Use aspect-video (16:9) for all variants to match Sanity image dimensions
+    const aspectRatioClass = "aspect-video";
 
     const supportedLocale = locale as 'en' | 'es' | 'fr' | 'ar';
 

@@ -951,5 +951,48 @@
       "publishedAt": "Publicado",
       "submittedAt": "Enviado"
     }
+  },
+  "news": {
+    "title": "Noticias",
+    "pageTitle": "Noticias",
+    "pageDescription": "Mantente informado con las últimas noticias de nuestra comunidad global",
+    "description": "Mantente informado con las últimas noticias, historias y actualizaciones de nuestra comunidad global de acción climática",
+    "featured": "Noticias Destacadas",
+    "latest": "Últimas Noticias",
+    "readMore": "Leer más",
+    "publishedOn": "Publicado el",
+    "by": "por",
+    "in": "en",
+    "noNews": "No se encontraron artículos de noticias",
+    "noNewsDescription": "Vuelve pronto para actualizaciones de nuestra comunidad",
+    "searchResults": "Resultados de Búsqueda",
+    "resultsFound": "resultados encontrados",
+    "noResults": "No se encontraron noticias",
+    "noResultsDescription": "Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas",
+    "clearFilters": "Limpiar todos los filtros",
+    "backToNews": "Volver a Noticias",
+    "relatedNews": "Noticias Relacionadas",
+    "sources": "Fuentes",
+    "filters": {
+      "searchPlaceholder": "Buscar noticias...",
+      "dateRange": "Rango de Fechas",
+      "dateFrom": "Desde",
+      "dateTo": "Hasta",
+      "tags": "Etiquetas",
+      "tagsPlaceholder": "Todas las Etiquetas",
+      "community": "Región",
+      "communityPlaceholder": "Todas las Regiones",
+      "clearAll": "Limpiar todo",
+      "activeFilters": "Filtros activos",
+      "updating": "Actualizando...",
+      "filters": "Filtros"
+    },
+    "metadata": {
+      "author": "Autor",
+      "organization": "Organización",
+      "project": "Proyecto",
+      "location": "Ubicación",
+      "publishDate": "Publicado"
+    }
   }
 }

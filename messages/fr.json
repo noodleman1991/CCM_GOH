@@ -951,5 +951,48 @@
       "publishedAt": "Publié",
       "submittedAt": "Soumis"
     }
+  },
+  "news": {
+    "title": "Actualités",
+    "pageTitle": "Actualités",
+    "pageDescription": "Restez informé des dernières nouvelles de notre communauté mondiale",
+    "description": "Restez informé des dernières nouvelles, histoires et mises à jour de notre communauté mondiale d'action climatique",
+    "featured": "Actualités en Vedette",
+    "latest": "Dernières Actualités",
+    "readMore": "Lire la suite",
+    "publishedOn": "Publié le",
+    "by": "par",
+    "in": "à",
+    "noNews": "Aucun article de presse trouvé",
+    "noNewsDescription": "Revenez bientôt pour des mises à jour de notre communauté",
+    "searchResults": "Résultats de Recherche",
+    "resultsFound": "résultats trouvés",
+    "noResults": "Aucune actualité trouvée",
+    "noResultsDescription": "Essayez d'ajuster votre recherche ou vos filtres pour trouver ce que vous cherchez",
+    "clearFilters": "Effacer tous les filtres",
+    "backToNews": "Retour aux Actualités",
+    "relatedNews": "Actualités Connexes",
+    "sources": "Sources",
+    "filters": {
+      "searchPlaceholder": "Rechercher des actualités...",
+      "dateRange": "Plage de Dates",
+      "dateFrom": "De",
+      "dateTo": "À",
+      "tags": "Étiquettes",
+      "tagsPlaceholder": "Toutes les Étiquettes",
+      "community": "Région",
+      "communityPlaceholder": "Toutes les Régions",
+      "clearAll": "Tout effacer",
+      "activeFilters": "Filtres actifs",
+      "updating": "Mise à jour...",
+      "filters": "Filtres"
+    },
+    "metadata": {
+      "author": "Auteur",
+      "organization": "Organisation",
+      "project": "Projet",
+      "location": "Emplacement",
+      "publishDate": "Publié"
+    }
   }
 }

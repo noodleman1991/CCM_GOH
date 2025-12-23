@@ -16,5 +16,5 @@ export const urlFor = (source: SanityImageSource) => {
     return imageBuilder;
   }
 
-  return imageBuilder.format("webp").fit("crop");
+  return imageBuilder.format("webp").fit("max");
 };
