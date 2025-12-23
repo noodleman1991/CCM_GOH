@@ -9,6 +9,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Plus, Search, ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import { getLocalizedText } from '@/lib/localization-utils'
+import { fetchCaseStudyTags, fetchCaseStudyCommunities } from '@/sanity/queries/case-study-queries'
 
 // Fetch approved case studies by regional community
 async function fetchCaseStudiesByRegion() {
@@ -118,6 +119,33 @@ async function fetchFilteredCaseStudies(filters: {
   return await client.fetch(query)
 }
 
+// Wrapper component to fetch filter data
+async function CaseStudiesFiltersWrapper({
+  locale,
+  currentFilters
+}: {
+  locale: string
+  currentFilters: {
+    topic?: string
+    tag?: string
+    community?: string
+    search?: string
+  }
+}) {
+  const [tags, communities] = await Promise.all([
+    fetchCaseStudyTags(),
+    fetchCaseStudyCommunities()
+  ])
+
+  return (
+    <CaseStudiesFilters
+      currentFilters={currentFilters}
+      tags={tags}
+      communities={communities}
+    />
+  )
+}
+
 function LoadingSkeleton() {
   return (
     <div className="space-y-12">
@@ -186,7 +214,8 @@ export default async function RegionalCaseStudiesPage({
 
       {/* Filters */}
       <Suspense fallback={<Skeleton className="h-16 w-full" />}>
-        <CaseStudiesFilters
+        <CaseStudiesFiltersWrapper
+          locale={locale}
           currentFilters={{
             topic: typeof topic === 'string' ? topic : undefined,
             tag: typeof tag === 'string' ? tag : undefined,

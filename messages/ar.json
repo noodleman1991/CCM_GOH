@@ -937,5 +937,48 @@
       "remindLater": "تذكيرني لاحقاً",
       "viewSubmissions": "عرض وتحرير المراسلات"
     }
+  },
+  "news": {
+    "title": "الأخبار",
+    "pageTitle": "الأخبار",
+    "pageDescription": "ابق على اطلاع بأحدث الأخبار من مجتمعنا العالمي",
+    "description": "ابق على اطلاع بأحدث الأخبار والقصص والتحديثات من مجتمع العمل المناخي العالمي",
+    "featured": "الأخبار المميزة",
+    "latest": "أحدث الأخبار",
+    "readMore": "اقرأ المزيد",
+    "publishedOn": "نُشر في",
+    "by": "بواسطة",
+    "in": "في",
+    "noNews": "لم يتم العثور على مقالات إخبارية",
+    "noNewsDescription": "تحقق مرة أخرى قريباً للحصول على تحديثات من مجتمعنا",
+    "searchResults": "نتائج البحث",
+    "resultsFound": "نتائج وجدت",
+    "noResults": "لم يتم العثور على أخبار",
+    "noResultsDescription": "حاول تعديل بحثك أو المرشحات للعثور على ما تبحث عنه",
+    "clearFilters": "مسح جميع المرشحات",
+    "backToNews": "العودة إلى الأخبار",
+    "relatedNews": "الأخبار ذات الصلة",
+    "sources": "المصادر",
+    "filters": {
+      "searchPlaceholder": "البحث في الأخبار...",
+      "dateRange": "نطاق التاريخ",
+      "dateFrom": "من",
+      "dateTo": "إلى",
+      "tags": "العلامات",
+      "tagsPlaceholder": "جميع العلامات",
+      "community": "المنطقة",
+      "communityPlaceholder": "جميع المناطق",
+      "clearAll": "مسح الكل",
+      "activeFilters": "المرشحات النشطة",
+      "updating": "جاري التحديث...",
+      "filters": "المرشحات"
+    },
+    "metadata": {
+      "author": "المؤلف",
+      "organization": "المنظمة",
+      "project": "المشروع",
+      "location": "الموقع",
+      "publishDate": "تاريخ النشر"
+    }
   }
 }
