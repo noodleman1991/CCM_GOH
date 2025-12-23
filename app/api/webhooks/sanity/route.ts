@@ -76,7 +76,7 @@ function handleCacheInvalidation(payload: SanityWebhookPayload) {
   // Revalidate the appropriate cache tags
   tagsToRevalidate.forEach(tag => {
     try {
-      revalidateTag(tag)
+      revalidateTag(tag, "max")
       console.log(`✅ Cache tag revalidated: ${tag}`)
     } catch (error) {
       console.error(`❌ Error revalidating cache tag ${tag}:`, error)

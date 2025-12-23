@@ -13,7 +13,12 @@ export async function POST() {
   try {
     // Get user's preferred language (default to EN if not set)
     const clerkUser = await (await clerkClient()).users.getUser(userId)
-    const preferredLanguage = clerkUser.publicMetadata?.preferredLanguage as string || 'EN'
+    const preferredLanguageStr = (clerkUser.publicMetadata?.preferredLanguage as string) || 'EN'
+
+    // Ensure the language value matches the Prisma Language enum
+    const preferredLanguage = ['EN', 'ES', 'FR', 'AR'].includes(preferredLanguageStr)
+      ? preferredLanguageStr as 'EN' | 'ES' | 'FR' | 'AR'
+      : 'EN' as const
 
     // Update Prisma database
     await prisma.user.update({

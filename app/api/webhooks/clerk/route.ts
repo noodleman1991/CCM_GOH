@@ -79,9 +79,9 @@ type SessionCreatedEvent = {
 
 type ClerkWebhookEvent = UserCreatedEvent | UserUpdatedEvent | UserDeletedEvent | SessionCreatedEvent
 
-function getPrimaryEmail(emailAddresses: Array<{ email_address: string; verification?: { status: string } }>): string | null {
+function getPrimaryEmail(emailAddresses: Array<{ email_address: string; verification?: { status: string } }>): string | undefined {
     const verifiedEmail = emailAddresses.find(email => email.verification?.status === 'verified')
-    return verifiedEmail?.email_address || emailAddresses[0]?.email_address || null
+    return verifiedEmail?.email_address || emailAddresses[0]?.email_address
 }
 
 function getPrimaryPhone(phoneNumbers: Array<{ phone_number: string; verification?: { status: string } }>): { phone: string | null, verified: boolean } {

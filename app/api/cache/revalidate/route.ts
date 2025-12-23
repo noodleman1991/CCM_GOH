@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
     if (all) {
       for (const tag of AVAILABLE_TAGS) {
         try {
-          revalidateTag(tag)
+          revalidateTag(tag, "max")
           results.revalidatedTags.push(tag)
           console.log(`✅ Revalidated cache tag: ${tag}`)
         } catch (error) {
@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
         }
 
         try {
-          revalidateTag(tag)
+          revalidateTag(tag, "max")
           results.revalidatedTags.push(tag)
           console.log(`✅ Revalidated cache tag: ${tag}`)
         } catch (error) {
