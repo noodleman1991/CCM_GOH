@@ -1,4 +1,6 @@
-import React from 'react';
+"use client";
+
+import React, { useState } from 'react';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
@@ -21,6 +23,7 @@ import {
     canAccessCaseStudy
 } from '@/lib/case-study-utils';
 import { cn } from '@/lib/utils';
+import { CaseStudyModal } from '@/components/blocks/case-study-modal';
 
 interface GridCaseStudyComponentProps {
     _type: 'grid-case-study';
@@ -54,6 +57,8 @@ export default function GridCaseStudyComponent({
                                                    className,
                                                    cardVariant = "classic",
                                                }: GridCaseStudyComponentProps) {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
     if (!caseStudy) return null;
 
     // Use aspect-video (16:9) for all variants to match Sanity image dimensions
@@ -120,11 +125,15 @@ export default function GridCaseStudyComponent({
     };
 
     return (
-        <Card className={cn(
-            "flex w-full h-full flex-col justify-between overflow-hidden transition ease-in-out group border rounded-3xl p-6 hover:border-primary",
-            isRTLLocale && "rtl",
-            className
-        )}>
+        <>
+            <Card
+                className={cn(
+                    "flex w-full h-full flex-col justify-between overflow-hidden transition ease-in-out group border rounded-3xl p-6 hover:border-primary cursor-pointer",
+                    isRTLLocale && "rtl",
+                    className
+                )}
+                onClick={() => setIsModalOpen(true)}
+            >
             {/* Access restriction overlay */}
             {!canAccess && (
                 <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-10 rounded-lg">
@@ -283,5 +292,13 @@ export default function GridCaseStudyComponent({
                 )}
             </CardFooter>
         </Card>
+
+        <CaseStudyModal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            caseStudy={caseStudy}
+            locale={locale}
+        />
+        </>
     );
 }

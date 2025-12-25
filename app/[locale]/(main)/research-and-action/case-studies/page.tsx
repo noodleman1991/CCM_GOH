@@ -55,8 +55,8 @@ async function fetchCaseStudiesByRegion() {
 // Fetch filtered case studies
 async function fetchFilteredCaseStudies(filters: {
   topic?: string
-  tag?: string
-  community?: string
+  tags?: string[]
+  communities?: string[]
   search?: string
 }) {
   const conditions: string[] = ['_type == "caseStudy"', 'status == "approved"']
@@ -65,12 +65,14 @@ async function fetchFilteredCaseStudies(filters: {
     conditions.push(`topic == "${filters.topic}"`)
   }
 
-  if (filters.tag) {
-    conditions.push(`"${filters.tag}" in tags[]->value.current`)
+  if (filters.tags && filters.tags.length > 0) {
+    const tagConditions = filters.tags.map(tag => `"${tag}" in tags[]->value.current`)
+    conditions.push(`(${tagConditions.join(' || ')})`)
   }
 
-  if (filters.community) {
-    conditions.push(`relatedCommunity->name == "${filters.community}"`)
+  if (filters.communities && filters.communities.length > 0) {
+    const communityConditions = filters.communities.map(slug => `relatedCommunity->slug.current == "${slug}"`)
+    conditions.push(`(${communityConditions.join(' || ')})`)
   }
 
   if (filters.search) {
@@ -127,8 +129,8 @@ async function CaseStudiesFiltersWrapper({
   locale: string
   currentFilters: {
     topic?: string
-    tag?: string
-    community?: string
+    tags?: string[]
+    communities?: string[]
     search?: string
   }
 }) {
@@ -186,8 +188,15 @@ export default async function RegionalCaseStudiesPage({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
   const { locale } = await params
-  const { topic, tag, community, search } = await searchParams
+  const { topic, tags, communities, search } = await searchParams
   const t = await getTranslations({ locale, namespace: 'caseStudies' })
+
+  // Helper to convert param to array
+  const toArray = (param: string | string[] | undefined): string[] | undefined => {
+    if (!param) return undefined
+    if (Array.isArray(param)) return param
+    return [param]
+  }
 
   return (
     <div className="container max-w-7xl py-8 space-y-8">
@@ -218,8 +227,8 @@ export default async function RegionalCaseStudiesPage({
           locale={locale}
           currentFilters={{
             topic: typeof topic === 'string' ? topic : undefined,
-            tag: typeof tag === 'string' ? tag : undefined,
-            community: typeof community === 'string' ? community : undefined,
+            tags: toArray(tags),
+            communities: toArray(communities),
             search: typeof search === 'string' ? search : undefined
           }}
         />
@@ -231,8 +240,8 @@ export default async function RegionalCaseStudiesPage({
           locale={locale}
           filters={{
             topic: typeof topic === 'string' ? topic : undefined,
-            tag: typeof tag === 'string' ? tag : undefined,
-            community: typeof community === 'string' ? community : undefined,
+            tags: toArray(tags),
+            communities: toArray(communities),
             search: typeof search === 'string' ? search : undefined
           }}
         />
@@ -248,15 +257,15 @@ async function RegionalCaseStudiesContent({
   locale: string
   filters: {
     topic?: string
-    tag?: string
-    community?: string
+    tags?: string[]
+    communities?: string[]
     search?: string
   }
 }) {
   const t = await getTranslations({ locale, namespace: 'caseStudies' })
 
   // If filters are applied, show filtered results
-  if (filters.topic || filters.tag || filters.community || filters.search) {
+  if (filters.topic || (filters.tags && filters.tags.length > 0) || (filters.communities && filters.communities.length > 0) || filters.search) {
     const filteredCaseStudies = await fetchFilteredCaseStudies(filters)
 
     const getFilterSummary = () => {

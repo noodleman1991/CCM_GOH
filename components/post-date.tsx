@@ -1,16 +1,22 @@
-"use client";
-import { useEffect, useState } from "react";
-import { formatDate } from "@/lib/utils";
+// Server component - NO "use client"
 
-export default function PostDate({ date }: { date: string }) {
-  const [postDate, setPostDate] = useState<string>("");
+export default function PostDate({
+  date,
+  locale = "en"
+}: {
+  date: string;
+  locale?: string;
+}) {
+  // Format on server - same result on client
+  const formattedDate = new Intl.DateTimeFormat(locale, {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  }).format(new Date(date));
 
-  useEffect(() => {
-    if (date) {
-      const formattedDate = formatDate(date);
-      setPostDate(formattedDate);
-    }
-  }, [date]);
-
-  return <div>{postDate}</div>;
+  return (
+    <time dateTime={date}>
+      {formattedDate}
+    </time>
+  );
 }

@@ -9,14 +9,14 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-[var(--color-ccm-sea)] text-white shadow-sm hover:bg-[var(--color-ccm-sea)]/90",
-        invert: "bg-white text-[var(--color-ccm-midnight)] shadow-sm hover:bg-white/90",
-        "light-invert": "bg-[var(--color-ccm-water)] text-white shadow-sm hover:bg-[var(--color-ccm-water)]/90",
-        destructive: "bg-destructive text-destructive-foreground shadow-xs hover:bg-destructive/90",
-        outline: "border border-input bg-background shadow-xs hover:bg-accent hover:text-accent-foreground",
-        secondary: "bg-muted text-foreground shadow-xs hover:bg-muted/80 border border-border",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
+        default: "bg-[var(--color-ccm-sea)] text-white shadow-md hover:bg-[var(--color-ccm-sea)]/90 hover:shadow-lg",
+        invert: "bg-white text-[var(--color-ccm-midnight)] shadow-md border-2 border-[var(--color-ccm-midnight)]/20 hover:bg-gray-50 hover:shadow-lg hover:border-[var(--color-ccm-midnight)]/30",
+        "light-invert": "bg-[var(--color-ccm-sky)] text-[var(--color-ccm-midnight)] shadow-sm hover:bg-[var(--color-ccm-sky)]/80",
+        destructive: "bg-destructive text-destructive-foreground shadow-md hover:bg-destructive/90 hover:shadow-lg",
+        outline: "border border-[var(--color-ccm-sea)] bg-transparent text-[var(--color-ccm-sea)] shadow-sm hover:bg-[var(--color-ccm-sea)]/10 hover:border-[var(--color-ccm-sea)]/80",
+        secondary: "bg-[var(--color-ccm-water)]/15 text-[var(--color-ccm-midnight)] border-2 border-[var(--color-ccm-water)]/30 shadow-sm hover:bg-[var(--color-ccm-water)]/25 hover:border-[var(--color-ccm-water)]/50",
+        ghost: "bg-transparent text-[var(--color-ccm-sea)] hover:bg-[var(--color-ccm-sea)]/10 hover:text-[var(--color-ccm-midnight)]",
+        link: "text-[var(--color-ccm-sea)] underline-offset-4 hover:underline hover:text-[var(--color-ccm-midnight)]",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",

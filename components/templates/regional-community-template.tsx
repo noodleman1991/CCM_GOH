@@ -10,10 +10,13 @@ interface GridConfig {
   mode?: 'manual' | 'dynamic-featured' | 'dynamic-recent';
   gridColumns?: string;
   maxItems?: number;
+  initialDisplayCount?: number;
   showTitle?: boolean;
   title?: string;
+  subtitle?: string;
   showDescription?: boolean;
   description?: any;
+  headerImage?: any;
   manualItems?: any[];
 }
 
@@ -22,8 +25,11 @@ interface CarouselConfig {
   maxItems?: number;
   showTitle?: boolean;
   title?: string;
+  subtitle?: string;
   showDescription?: boolean;
   description?: any;
+  background?: any;
+  padding?: any;
   manualItems?: any[];
 }
 
@@ -92,7 +98,7 @@ export default async function RegionalCommunityTemplate({
   const newsLimit = newsGrid?.maxItems || 6;
 
   // Fetch dynamic content based on grid configuration
-  const [
+  let [
     agendasData,
     caseStudiesData,
     livedExperiencesData,
@@ -126,6 +132,48 @@ export default async function RegionalCommunityTemplate({
           featured: newsMode === 'dynamic-featured'
         })
   ]);
+
+  // Intelligent fallback: if featured mode but no results, fetch recent items
+  // This ensures grids never appear empty when data exists
+
+  // Fallback for lived experiences
+  if (livedExpMode === 'dynamic-featured' && (!livedExperiencesData || livedExperiencesData.length === 0)) {
+    console.log('No featured lived experiences found, falling back to recent');
+    livedExperiencesData = await fetchRegionalCommunityLivedExperiencesBySlug({
+      slug: communitySlug,
+      limit: livedExpLimit,
+      featured: false
+    });
+  }
+
+  // Fallback for case studies
+  if (caseStudiesMode === 'dynamic-featured' && (!caseStudiesData || caseStudiesData.length === 0)) {
+    console.log('No featured case studies found, falling back to recent');
+    caseStudiesData = await fetchRegionalCommunityCaseStudiesBySlug({
+      slug: communitySlug,
+      limit: caseStudiesLimit,
+      featured: false
+    });
+  }
+
+  // Fallback for news
+  if (newsMode === 'dynamic-featured' && (!newsData || newsData.length === 0)) {
+    console.log('No featured news found, falling back to recent');
+    newsData = await fetchRegionalCommunityNewsBySlug({
+      slug: communitySlug,
+      limit: newsLimit,
+      featured: false
+    });
+  }
+
+  // Fallback for agendas (if it uses featured mode)
+  if (agendasMode === 'dynamic-featured' && (!agendasData || agendasData.length === 0)) {
+    console.log('No featured agendas found, falling back to recent');
+    agendasData = await fetchRegionalCommunityAgendas({
+      slug: communitySlug,
+      limit: agendasLimit
+    });
+  }
 
   // Create template blocks array for Blocks component
   const templateBlocks = [];
@@ -178,8 +226,11 @@ export default async function RegionalCommunityTemplate({
       _type: 'grid-row',
       _key: 'template-agendas-grid',
       title: agendasGrid?.title || 'Agendas',
+      subtitle: agendasGrid?.subtitle,
+      headerImage: agendasGrid?.headerImage,
       description: agendasGrid?.showDescription ? agendasGrid.description : undefined,
       gridColumns: agendasGrid?.gridColumns || 'grid-cols-3',
+      initialDisplayCount: agendasGrid?.initialDisplayCount,
       background: { type: 'none' },
       padding: { top: 'lg', bottom: 'lg' },
       columns: agendasData?.length ? agendasData
@@ -196,37 +247,17 @@ export default async function RegionalCommunityTemplate({
     });
   }
 
-  // Add News Grid - render if configured, show empty state if no data
-  if (newsGrid?.showTitle !== false) {
-    templateBlocks.push({
-      _type: 'grid-row',
-      _key: 'template-news-grid',
-      title: newsGrid?.title || 'News & Updates',
-      description: newsGrid?.showDescription ? newsGrid.description : undefined,
-      gridColumns: newsGrid?.gridColumns || 'grid-cols-3',
-      background: { type: 'none' },
-      padding: { top: 'lg', bottom: 'lg' },
-      columns: newsData?.length ? newsData
-        .filter((news: any) => news && news._id)
-        .slice(0, newsLimit)
-        .map((news: any) => ({
-          _type: 'grid-news',
-          _key: `news-${news._id}`,
-          post: news,
-          showTags: true,
-          showMetadata: true
-        })) : []
-    });
-  }
-
   // Add Case Studies Grid - render if configured, show empty state if no data
   if (caseStudiesGrid?.showTitle !== false) {
     templateBlocks.push({
       _type: 'grid-row',
       _key: 'template-case-studies-grid',
       title: caseStudiesGrid?.title || 'Case Studies',
+      subtitle: caseStudiesGrid?.subtitle,
+      headerImage: caseStudiesGrid?.headerImage,
       description: caseStudiesGrid?.showDescription ? caseStudiesGrid.description : undefined,
       gridColumns: caseStudiesGrid?.gridColumns || 'grid-cols-3',
+      initialDisplayCount: caseStudiesGrid?.initialDisplayCount,
       background: { type: 'none' },
       padding: { top: 'lg', bottom: 'lg' },
       columns: caseStudiesData?.length ? caseStudiesData
@@ -243,16 +274,68 @@ export default async function RegionalCommunityTemplate({
     });
   }
 
-  // Add Lived Experiences Carousel - only if lived experiences exist and carousel is configured to show
-  if (livedExperiencesData && livedExperiencesData.length > 0 && livedExperiencesCarousel?.showTitle !== false) {
+  // Add News Grid - render if configured, show empty state if no data (includes both newsPost and externalSource)
+  if (newsGrid?.showTitle !== false) {
+    templateBlocks.push({
+      _type: 'grid-row',
+      _key: 'template-news-grid',
+      title: newsGrid?.title || 'News & Updates',
+      subtitle: newsGrid?.subtitle,
+      headerImage: newsGrid?.headerImage,
+      description: newsGrid?.showDescription ? newsGrid.description : undefined,
+      gridColumns: newsGrid?.gridColumns || 'grid-cols-3',
+      initialDisplayCount: newsGrid?.initialDisplayCount,
+      background: { type: 'none' },
+      padding: { top: 'lg', bottom: 'lg' },
+      columns: newsData?.length ? newsData
+        .filter((news: any) => news && news._id)
+        .slice(0, newsLimit)
+        .map((news: any) => {
+          // Check if it's an external source or news post
+          if (news._type === 'externalSource') {
+            return {
+              _type: 'grid-external-source',
+              _key: `external-source-${news._id}`,
+              externalSource: news,
+              showTags: true,
+              showMetadata: true
+            };
+          } else {
+            return {
+              _type: 'grid-news',
+              _key: `news-${news._id}`,
+              newsPost: news,
+              showTags: true,
+              showMetadata: true
+            };
+          }
+        }) : []
+    });
+  }
+
+  // Add Lived Experiences Carousel - render if configured (even if no data for empty state)
+  if (livedExperiencesCarousel?.showTitle !== false) {
+    // Debug: Check data before passing to carousel
+    console.log('DEBUG: Lived Experiences Data Before Carousel:', {
+      hasData: !!livedExperiencesData,
+      count: livedExperiencesData?.length || 0,
+      firstItem: livedExperiencesData?.[0]?._id || 'none',
+      mode: livedExpMode,
+      limit: livedExpLimit
+    });
+
     templateBlocks.push({
       _type: 'lived-experiences-carousel',
       _key: 'template-lived-experiences',
       title: livedExperiencesCarousel?.title || 'Community Voices',
+      subtitle: livedExperiencesCarousel?.subtitle || 'Hear directly from community members about their experiences',
       description: livedExperiencesCarousel?.showDescription ? livedExperiencesCarousel.description : undefined,
-      subtitle: 'Hear directly from community members about their experiences',
-      background: { type: 'muted' },
-      padding: { top: 'xl', bottom: 'xl' },
+      background: livedExperiencesCarousel?.background || { type: 'muted' },
+      padding: livedExperiencesCarousel?.padding || { top: 'xl', bottom: 'xl' },
+
+      // ✅ FIX: Pass the fetched data to the carousel component
+      experiences: livedExperiencesData || [],
+
       filterBy: {
         communities: regionalCommunity._id ? [regionalCommunity._id] : [],
         tags: [],

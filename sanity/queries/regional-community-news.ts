@@ -94,12 +94,16 @@ export const fetchRegionalCommunityNews = async ({
   return data;
 };
 
-// Query specifically for news by community slug
+// Query specifically for news by community slug (combines newsPost and externalSource)
 export const REGIONAL_COMMUNITY_NEWS_BY_SLUG_QUERY = groq`
-  *[_type == "newsPost" &&
+  *[
+    (_type == "newsPost" || _type == "externalSource") &&
     references(*[_type == "regionalCommunity" && slug.current == $slug][0]._id) &&
     (!$featured || featured == true) &&
-    publishedAt <= now()
+    (
+      (_type == "newsPost" && publishedAt <= now()) ||
+      (_type == "externalSource" && approved == true)
+    )
   ] | order(featured desc, publishedAt desc) [0...$limit] {
     _id,
     _type,
@@ -161,7 +165,11 @@ export const REGIONAL_COMMUNITY_NEWS_BY_SLUG_QUERY = groq`
     }[_id != null],
     language,
     priority,
-    views
+    views,
+    // External source specific fields
+    sourceUrl,
+    publisher,
+    sourceType
   }
 `;
 

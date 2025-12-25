@@ -72,6 +72,17 @@ export default defineType({
       description: "Use the structured template with fixed blocks and dynamic content, or use custom content flow",
     }),
 
+    defineField({
+      name: "divider_template_start",
+      title: "═══ TEMPLATE BLOCKS BELOW ═══",
+      type: "string",
+      group: "template",
+      hidden: ({ document }) => !Boolean(document?.useTemplate),
+      components: {
+        input: () => null,
+      },
+    }),
+
     // Template Components
     defineField({
       name: "welcomeHero",
@@ -81,6 +92,18 @@ export default defineType({
       hidden: ({ document }) => !Boolean(document?.useTemplate),
       description: "Welcome hero section",
     }),
+
+    defineField({
+      name: "divider_after_welcome",
+      title: "─────────────────",
+      type: "string",
+      group: "template",
+      hidden: ({ document }) => !Boolean(document?.useTemplate),
+      components: {
+        input: () => null,
+      },
+    }),
+
     defineField({
       name: "whyJoinCTA",
       title: "Why Join Regional Community Hero",
@@ -88,6 +111,438 @@ export default defineType({
       group: "template",
       hidden: ({ document }) => !Boolean(document?.useTemplate),
       description: "Hero section with image support for joining the regional community (supports buttons and image positioning)",
+    }),
+
+    defineField({
+      name: "divider_after_whyjoin",
+      title: "─────────────────",
+      type: "string",
+      group: "template",
+      hidden: ({ document }) => !Boolean(document?.useTemplate),
+      components: {
+        input: () => null,
+      },
+    }),
+
+    // Dynamic Grid Configurations
+    defineField({
+      name: "agendasGrid",
+      title: "Agendas Grid Section",
+      type: "object",
+      group: "template",
+      hidden: ({ document }) => !Boolean(document?.useTemplate),
+      fields: [
+        {
+          name: "mode",
+          title: "Content Mode",
+          type: "string",
+          options: {
+            list: [
+              { title: "Manual Selection", value: "manual" },
+              { title: "Dynamic - Featured First", value: "dynamic-featured" },
+              { title: "Dynamic - Recent First", value: "dynamic-recent" },
+            ],
+            layout: "radio",
+          },
+          initialValue: "dynamic-featured",
+        },
+        {
+          name: "gridColumns",
+          title: "Grid Columns",
+          type: "string",
+          options: {
+            list: COLS_VARIANTS.map(({ title, value }) => ({ title, value })),
+            layout: "radio",
+          },
+          initialValue: "grid-cols-3",
+        },
+        {
+          name: "maxItems",
+          title: "Maximum Items",
+          type: "number",
+          initialValue: 6,
+          validation: (Rule) => Rule.min(1).max(12),
+        },
+        {
+          name: "initialDisplayCount",
+          title: "Initial Display Count",
+          type: "number",
+          initialValue: 3,
+          validation: (Rule) => Rule.min(1).max(12),
+          description: "Number of items to show initially (rest shown on 'View More')",
+        },
+        {
+          name: "showTitle",
+          title: "Show Section Title",
+          type: "boolean",
+          initialValue: true,
+        },
+        {
+          name: "title",
+          title: "Section Title",
+          type: "string",
+          initialValue: "Agendas",
+          hidden: ({ parent }) => !Boolean(parent?.showTitle),
+        },
+        {
+          name: "subtitle",
+          title: "Section Subtitle",
+          type: "string",
+          hidden: ({ parent }) => !Boolean(parent?.showTitle),
+        },
+        {
+          name: "showDescription",
+          title: "Show Description",
+          type: "boolean",
+          initialValue: false,
+        },
+        {
+          name: "description",
+          title: "Section Description",
+          type: "styled-block-content",
+          hidden: ({ parent }) => !Boolean(parent?.showDescription),
+        },
+        {
+          name: "headerImage",
+          title: "Header Image",
+          type: "image",
+          description: "Small engaging image displayed next to section title",
+          options: {
+            hotspot: true,
+          },
+          fields: [
+            {
+              name: "alt",
+              type: "string",
+              title: "Alternative Text",
+            },
+          ],
+        },
+        {
+          name: "manualItems",
+          title: "Manual Agenda Selection",
+          type: "array",
+          of: [{ type: "grid-agenda" }],
+          hidden: ({ parent }) => parent?.mode !== "manual",
+          description: "Manually select specific agendas to display",
+        },
+      ],
+    }),
+
+    defineField({
+      name: "divider_after_agendas",
+      title: "─────────────────",
+      type: "string",
+      group: "template",
+      hidden: ({ document }) => !Boolean(document?.useTemplate),
+      components: {
+        input: () => null,
+      },
+    }),
+
+    defineField({
+      name: "caseStudiesGrid",
+      title: "Case Studies Grid Section",
+      type: "object",
+      group: "template",
+      hidden: ({ document }) => !Boolean(document?.useTemplate),
+      fields: [
+        {
+          name: "mode",
+          title: "Content Mode",
+          type: "string",
+          options: {
+            list: [
+              { title: "Manual Selection", value: "manual" },
+              { title: "Dynamic - Featured First", value: "dynamic-featured" },
+              { title: "Dynamic - Recent First", value: "dynamic-recent" },
+            ],
+            layout: "radio",
+          },
+          initialValue: "dynamic-featured",
+        },
+        {
+          name: "gridColumns",
+          title: "Grid Columns",
+          type: "string",
+          options: {
+            list: COLS_VARIANTS.map(({ title, value }) => ({ title, value })),
+            layout: "radio",
+          },
+          initialValue: "grid-cols-3",
+        },
+        {
+          name: "maxItems",
+          title: "Maximum Items",
+          type: "number",
+          initialValue: 6,
+          validation: (Rule) => Rule.min(1).max(12),
+        },
+        {
+          name: "initialDisplayCount",
+          title: "Initial Display Count",
+          type: "number",
+          initialValue: 3,
+          validation: (Rule) => Rule.min(1).max(12),
+          description: "Number of items to show initially (rest shown on 'View More')",
+        },
+        {
+          name: "showTitle",
+          title: "Show Section Title",
+          type: "boolean",
+          initialValue: true,
+        },
+        {
+          name: "title",
+          title: "Section Title",
+          type: "string",
+          initialValue: "Case Studies",
+          hidden: ({ parent }) => !Boolean(parent?.showTitle),
+        },
+        {
+          name: "subtitle",
+          title: "Section Subtitle",
+          type: "string",
+          hidden: ({ parent }) => !Boolean(parent?.showTitle),
+        },
+        {
+          name: "showDescription",
+          title: "Show Description",
+          type: "boolean",
+          initialValue: false,
+        },
+        {
+          name: "description",
+          title: "Section Description",
+          type: "styled-block-content",
+          hidden: ({ parent }) => !Boolean(parent?.showDescription),
+        },
+        {
+          name: "headerImage",
+          title: "Header Image",
+          type: "image",
+          description: "Small engaging image displayed next to section title",
+          options: {
+            hotspot: true,
+          },
+          fields: [
+            {
+              name: "alt",
+              type: "string",
+              title: "Alternative Text",
+            },
+          ],
+        },
+        {
+          name: "manualItems",
+          title: "Manual Case Studies Selection",
+          type: "array",
+          of: [{ type: "grid-case-study" }],
+          hidden: ({ parent }) => parent?.mode !== "manual",
+          description: "Manually select specific case studies to display",
+        },
+      ],
+    }),
+
+    defineField({
+      name: "divider_after_casestudies",
+      title: "─────────────────",
+      type: "string",
+      group: "template",
+      hidden: ({ document }) => !Boolean(document?.useTemplate),
+      components: {
+        input: () => null,
+      },
+    }),
+
+    defineField({
+      name: "newsGrid",
+      title: "News Grid Section",
+      type: "object",
+      group: "template",
+      hidden: ({ document }) => !Boolean(document?.useTemplate),
+      fields: [
+        {
+          name: "mode",
+          title: "Content Mode",
+          type: "string",
+          options: {
+            list: [
+              { title: "Manual Selection", value: "manual" },
+              { title: "Dynamic - Featured First", value: "dynamic-featured" },
+              { title: "Dynamic - Recent First", value: "dynamic-recent" },
+            ],
+            layout: "radio",
+          },
+          initialValue: "dynamic-featured",
+        },
+        {
+          name: "gridColumns",
+          title: "Grid Columns",
+          type: "string",
+          options: {
+            list: COLS_VARIANTS.map(({ title, value }) => ({ title, value })),
+            layout: "radio",
+          },
+          initialValue: "grid-cols-3",
+        },
+        {
+          name: "maxItems",
+          title: "Maximum Items",
+          type: "number",
+          initialValue: 6,
+          validation: (Rule) => Rule.min(1).max(12),
+        },
+        {
+          name: "initialDisplayCount",
+          title: "Initial Display Count",
+          type: "number",
+          initialValue: 3,
+          validation: (Rule) => Rule.min(1).max(12),
+          description: "Number of items to show initially (rest shown on 'View More')",
+        },
+        {
+          name: "showTitle",
+          title: "Show Section Title",
+          type: "boolean",
+          initialValue: true,
+        },
+        {
+          name: "title",
+          title: "Section Title",
+          type: "string",
+          initialValue: "News & Updates",
+          hidden: ({ parent }) => !Boolean(parent?.showTitle),
+        },
+        {
+          name: "subtitle",
+          title: "Section Subtitle",
+          type: "string",
+          hidden: ({ parent }) => !Boolean(parent?.showTitle),
+        },
+        {
+          name: "showDescription",
+          title: "Show Description",
+          type: "boolean",
+          initialValue: false,
+        },
+        {
+          name: "description",
+          title: "Section Description",
+          type: "styled-block-content",
+          hidden: ({ parent }) => !Boolean(parent?.showDescription),
+        },
+        {
+          name: "headerImage",
+          title: "Header Image",
+          type: "image",
+          description: "Small engaging image displayed next to section title",
+          options: {
+            hotspot: true,
+          },
+          fields: [
+            {
+              name: "alt",
+              type: "string",
+              title: "Alternative Text",
+            },
+          ],
+        },
+        {
+          name: "manualItems",
+          title: "Manual News Selection",
+          type: "array",
+          of: [{ type: "grid-news" }],
+          hidden: ({ parent }) => parent?.mode !== "manual",
+          description: "Manually select specific news posts to display",
+        },
+      ],
+    }),
+
+    defineField({
+      name: "divider_after_news",
+      title: "─────────────────",
+      type: "string",
+      group: "template",
+      hidden: ({ document }) => !Boolean(document?.useTemplate),
+      components: {
+        input: () => null,
+      },
+    }),
+
+    defineField({
+      name: "livedExperiencesCarousel",
+      title: "Lived Experiences Carousel Section",
+      type: "object",
+      group: "template",
+      hidden: ({ document }) => !Boolean(document?.useTemplate),
+      fields: [
+        {
+          name: "mode",
+          title: "Content Mode",
+          type: "string",
+          options: {
+            list: [
+              { title: "Manual Selection", value: "manual" },
+              { title: "Dynamic - Featured First", value: "dynamic-featured" },
+              { title: "Dynamic - Recent First", value: "dynamic-recent" },
+            ],
+            layout: "radio",
+          },
+          initialValue: "dynamic-featured",
+        },
+        {
+          name: "maxItems",
+          title: "Maximum Items",
+          type: "number",
+          initialValue: 10,
+          validation: (Rule) => Rule.min(1).max(20),
+        },
+        {
+          name: "showTitle",
+          title: "Show Section Title",
+          type: "boolean",
+          initialValue: true,
+        },
+        {
+          name: "title",
+          title: "Section Title",
+          type: "string",
+          initialValue: "Community Voices",
+          hidden: ({ parent }) => !Boolean(parent?.showTitle),
+        },
+        {
+          name: "showDescription",
+          title: "Show Description",
+          type: "boolean",
+          initialValue: false,
+        },
+        {
+          name: "description",
+          title: "Section Description",
+          type: "styled-block-content",
+          hidden: ({ parent }) => !Boolean(parent?.showDescription),
+        },
+        {
+          name: "manualItems",
+          title: "Manual Lived Experiences Selection",
+          type: "array",
+          of: [{ type: "grid-lived-experience" }],
+          hidden: ({ parent }) => parent?.mode !== "manual",
+          description: "Manually select specific lived experiences to display",
+        },
+      ],
+    }),
+
+    defineField({
+      name: "divider_after_livedexp",
+      title: "─────────────────",
+      type: "string",
+      group: "template",
+      hidden: ({ document }) => !Boolean(document?.useTemplate),
+      components: {
+        input: () => null,
+      },
     }),
 
     // Team Members Section
@@ -182,319 +637,17 @@ export default defineType({
       ],
     }),
 
-    // Dynamic Grid Configurations
     defineField({
-      name: "agendasGrid",
-      title: "Agendas Grid Section",
-      type: "object",
+      name: "divider_after_team",
+      title: "─────────────────",
+      type: "string",
       group: "template",
       hidden: ({ document }) => !Boolean(document?.useTemplate),
-      fields: [
-        {
-          name: "mode",
-          title: "Content Mode",
-          type: "string",
-          options: {
-            list: [
-              { title: "Manual Selection", value: "manual" },
-              { title: "Dynamic - Featured First", value: "dynamic-featured" },
-              { title: "Dynamic - Recent First", value: "dynamic-recent" },
-            ],
-            layout: "radio",
-          },
-          initialValue: "dynamic-featured",
-        },
-        {
-          name: "gridColumns",
-          title: "Grid Columns",
-          type: "string",
-          options: {
-            list: COLS_VARIANTS.map(({ title, value }) => ({ title, value })),
-            layout: "radio",
-          },
-          initialValue: "grid-cols-3",
-        },
-        {
-          name: "maxItems",
-          title: "Maximum Items",
-          type: "number",
-          initialValue: 6,
-          validation: (Rule) => Rule.min(1).max(12),
-        },
-        {
-          name: "showTitle",
-          title: "Show Section Title",
-          type: "boolean",
-          initialValue: true,
-        },
-        {
-          name: "title",
-          title: "Section Title",
-          type: "string",
-          initialValue: "Agendas",
-          hidden: ({ parent }) => !Boolean(parent?.showTitle),
-        },
-        {
-          name: "showDescription",
-          title: "Show Description",
-          type: "boolean",
-          initialValue: false,
-        },
-        {
-          name: "description",
-          title: "Section Description",
-          type: "styled-block-content",
-          hidden: ({ parent }) => !Boolean(parent?.showDescription),
-        },
-        {
-          name: "manualItems",
-          title: "Manual Agenda Selection",
-          type: "array",
-          of: [{ type: "grid-agenda" }],
-          hidden: ({ parent }) => parent?.mode !== "manual",
-          description: "Manually select specific agendas to display",
-        },
-      ],
+      components: {
+        input: () => null,
+      },
     }),
-    defineField({
-      name: "newsGrid",
-      title: "News Grid Section",
-      type: "object",
-      group: "template",
-      hidden: ({ document }) => !Boolean(document?.useTemplate),
-      fields: [
-        {
-          name: "mode",
-          title: "Content Mode",
-          type: "string",
-          options: {
-            list: [
-              { title: "Manual Selection", value: "manual" },
-              { title: "Dynamic - Featured First", value: "dynamic-featured" },
-              { title: "Dynamic - Recent First", value: "dynamic-recent" },
-            ],
-            layout: "radio",
-          },
-          initialValue: "dynamic-featured",
-        },
-        {
-          name: "gridColumns",
-          title: "Grid Columns",
-          type: "string",
-          options: {
-            list: COLS_VARIANTS.map(({ title, value }) => ({ title, value })),
-            layout: "radio",
-          },
-          initialValue: "grid-cols-3",
-        },
-        {
-          name: "maxItems",
-          title: "Maximum Items",
-          type: "number",
-          initialValue: 6,
-          validation: (Rule) => Rule.min(1).max(12),
-        },
-        {
-          name: "showTitle",
-          title: "Show Section Title",
-          type: "boolean",
-          initialValue: true,
-        },
-        {
-          name: "title",
-          title: "Section Title",
-          type: "string",
-          initialValue: "News & Updates",
-          hidden: ({ parent }) => !Boolean(parent?.showTitle),
-        },
-        {
-          name: "showDescription",
-          title: "Show Description",
-          type: "boolean",
-          initialValue: false,
-        },
-        {
-          name: "description",
-          title: "Section Description",
-          type: "styled-block-content",
-          hidden: ({ parent }) => !Boolean(parent?.showDescription),
-        },
-        {
-          name: "manualItems",
-          title: "Manual News Selection",
-          type: "array",
-          of: [{ type: "grid-news" }],
-          hidden: ({ parent }) => parent?.mode !== "manual",
-          description: "Manually select specific news posts to display",
-        },
-      ],
-    }),
-    defineField({
-      name: "caseStudiesGrid",
-      title: "Case Studies Grid Section",
-      type: "object",
-      group: "template",
-      hidden: ({ document }) => !Boolean(document?.useTemplate),
-      fields: [
-        {
-          name: "mode",
-          title: "Content Mode",
-          type: "string",
-          options: {
-            list: [
-              { title: "Manual Selection", value: "manual" },
-              { title: "Dynamic - Featured First", value: "dynamic-featured" },
-              { title: "Dynamic - Recent First", value: "dynamic-recent" },
-            ],
-            layout: "radio",
-          },
-          initialValue: "dynamic-featured",
-        },
-        {
-          name: "gridColumns",
-          title: "Grid Columns",
-          type: "string",
-          options: {
-            list: COLS_VARIANTS.map(({ title, value }) => ({ title, value })),
-            layout: "radio",
-          },
-          initialValue: "grid-cols-3",
-        },
-        {
-          name: "maxItems",
-          title: "Maximum Items",
-          type: "number",
-          initialValue: 6,
-          validation: (Rule) => Rule.min(1).max(12),
-        },
-        {
-          name: "showTitle",
-          title: "Show Section Title",
-          type: "boolean",
-          initialValue: true,
-        },
-        {
-          name: "title",
-          title: "Section Title",
-          type: "string",
-          initialValue: "Case Studies",
-          hidden: ({ parent }) => !Boolean(parent?.showTitle),
-        },
-        {
-          name: "showDescription",
-          title: "Show Description",
-          type: "boolean",
-          initialValue: false,
-        },
-        {
-          name: "description",
-          title: "Section Description",
-          type: "styled-block-content",
-          hidden: ({ parent }) => !Boolean(parent?.showDescription),
-        },
-        {
-          name: "manualItems",
-          title: "Manual Case Studies Selection",
-          type: "array",
-          of: [{ type: "grid-case-study" }],
-          hidden: ({ parent }) => parent?.mode !== "manual",
-          description: "Manually select specific case studies to display",
-        },
-      ],
-    }),
-    defineField({
-      name: "livedExperiencesCarousel",
-      title: "Lived Experiences Carousel Section",
-      type: "object",
-      group: "template",
-      hidden: ({ document }) => !Boolean(document?.useTemplate),
-      fields: [
-        {
-          name: "mode",
-          title: "Content Mode",
-          type: "string",
-          options: {
-            list: [
-              { title: "Manual Selection", value: "manual" },
-              { title: "Dynamic - Featured First", value: "dynamic-featured" },
-              { title: "Dynamic - Recent First", value: "dynamic-recent" },
-            ],
-            layout: "radio",
-          },
-          initialValue: "dynamic-featured",
-        },
-        {
-          name: "maxItems",
-          title: "Maximum Items",
-          type: "number",
-          initialValue: 10,
-          validation: (Rule) => Rule.min(1).max(20),
-        },
-        {
-          name: "showTitle",
-          title: "Show Section Title",
-          type: "boolean",
-          initialValue: true,
-        },
-        {
-          name: "title",
-          title: "Section Title",
-          type: "string",
-          initialValue: "Community Voices",
-          hidden: ({ parent }) => !Boolean(parent?.showTitle),
-        },
-        {
-          name: "showDescription",
-          title: "Show Description",
-          type: "boolean",
-          initialValue: false,
-        },
-        {
-          name: "description",
-          title: "Section Description",
-          type: "styled-block-content",
-          hidden: ({ parent }) => !Boolean(parent?.showDescription),
-        },
-        {
-          name: "manualItems",
-          title: "Manual Lived Experiences Selection",
-          type: "array",
-          of: [{ type: "grid-lived-experience" }],
-          hidden: ({ parent }) => parent?.mode !== "manual",
-          description: "Manually select specific lived experiences to display",
-        },
-      ],
-    }),
-    defineField({
-      name: "testimonialsBlock",
-      title: "Testimonials Section",
-      type: "object",
-      group: "template",
-      hidden: ({ document }) => !Boolean(document?.useTemplate),
-      fields: [
-        {
-          name: "showSection",
-          title: "Show Testimonials Section",
-          type: "boolean",
-          initialValue: true,
-        },
-        {
-          name: "title",
-          title: "Section Title",
-          type: "string",
-          initialValue: "What Our Community Says",
-          hidden: ({ parent }) => !Boolean(parent?.showSection),
-        },
-        {
-          name: "testimonials",
-          title: "Testimonials",
-          type: "array",
-          of: [{ type: "reference", to: [{ type: "testimonial" }] }],
-          hidden: ({ parent }) => !Boolean(parent?.showSection),
-          validation: (Rule) => Rule.max(6),
-        },
-      ],
-    }),
+
     defineField({
       name: "logoCloud",
       title: "Logo Cloud Section",
@@ -503,6 +656,19 @@ export default defineType({
       hidden: ({ document }) => !Boolean(document?.useTemplate),
       description: "Partner organizations logo cloud",
     }),
+
+    // Section dividers for Sanity CMS editor organization (visual only)
+    defineField({
+      name: "divider_after_logo",
+      title: "═══ TEMPLATE BLOCKS ABOVE ═══",
+      type: "string",
+      group: "template",
+      hidden: ({ document }) => !Boolean(document?.useTemplate),
+      components: {
+        input: () => null,
+      },
+    }),
+
     // Main content flow - structured foundation with strategic insertion points
     defineField({
       name: "contentFlow",

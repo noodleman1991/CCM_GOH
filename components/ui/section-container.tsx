@@ -22,7 +22,7 @@ export default function SectionContainer({
 
   if (background && background.type !== "none") {
     return (
-      <div className={cn("relative w-screen -mx-4", backgroundStyles.className)} style={backgroundStyles.style}>
+      <div className={cn("relative w-screen -ml-4 -mr-4", backgroundStyles.className)} style={backgroundStyles.style}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div
             className={cn(

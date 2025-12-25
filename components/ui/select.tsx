@@ -5,11 +5,16 @@ import * as SelectPrimitive from "@radix-ui/react-select"
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { useStableId } from "@/lib/use-stable-id"
 
 function Select({
+  id,
   ...props
-}: React.ComponentProps<typeof SelectPrimitive.Root>) {
-  return <SelectPrimitive.Root data-slot="select" {...props} />
+}: React.ComponentProps<typeof SelectPrimitive.Root> & {
+  id?: string
+}) {
+  const stableId = useStableId('select', id)
+  return <SelectPrimitive.Root data-slot="select" id={stableId} {...props} />
 }
 
 function SelectGroup({

@@ -236,10 +236,10 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                             <Card>
                                 <CardContent className="pt-6">
                                     <div className="flex items-center justify-between mb-4">
-                                        <h2 className="text-xl font-semibold">{t('recentWork')}</h2>
+                                        <h2 className="text-xl font-semibold">{t('recentWork.title')}</h2>
                                         {isOwnProfile && (
                                             <Button variant="outline" size="sm" asChild>
-                                                <Link href="/profile/work/add">{t('addWork')}</Link>
+                                                <Link href="/profile/work/add">{t('recentWork.addWork')}</Link>
                                             </Button>
                                         )}
                                     </div>

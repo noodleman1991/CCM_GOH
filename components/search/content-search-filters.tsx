@@ -70,8 +70,9 @@ function YearRangeFilter() {
   if (!range) return null
 
   const currentYear = new Date().getFullYear()
-  const minYear = range.min || 2000
-  const maxYear = range.max || currentYear
+  // Validate range values to prevent infinity display
+  const minYear = (range.min && isFinite(range.min)) ? range.min : 2000
+  const maxYear = (range.max && isFinite(range.max)) ? range.max : currentYear
 
   return (
     <FilterSection title="Year Range">

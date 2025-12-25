@@ -162,6 +162,15 @@ export default defineType({
             ],
             description: "Projects related to this news post",
         }),
+        defineField({
+            name: "relatedCommunity",
+            title: "Regional Community",
+            type: "reference",
+            group: "affiliations",
+            to: [{ type: "regionalCommunity" }],
+            description: "Regional community this news post belongs to",
+            validation: (Rule) => Rule.required(),
+        }),
         // Location using Google Maps plugins
         defineField({
             name: "location",

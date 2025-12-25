@@ -198,10 +198,26 @@ export const REGIONAL_COMMUNITY_PAGE_QUERY = groq`
       mode,
       gridColumns,
       maxItems,
+      initialDisplayCount,
       showTitle,
       title,
+      subtitle,
       showDescription,
       description,
+      headerImage {
+        asset->{
+          _id,
+          url,
+          metadata {
+            lqip,
+            dimensions {
+              width,
+              height
+            }
+          }
+        },
+        alt
+      },
       manualItems[]->{
         _id,
         title,
@@ -231,17 +247,35 @@ export const REGIONAL_COMMUNITY_PAGE_QUERY = groq`
       mode,
       gridColumns,
       maxItems,
+      initialDisplayCount,
       showTitle,
       title,
+      subtitle,
       showDescription,
       description,
+      headerImage {
+        asset->{
+          _id,
+          url,
+          metadata {
+            lqip,
+            dimensions {
+              width,
+              height
+            }
+          }
+        },
+        alt
+      },
       manualItems[]->{
         _id,
+        _type,
         title,
         subtitle,
         excerpt,
         slug,
         publishedAt,
+        featured,
         image {
           asset->{
             _id,
@@ -255,17 +289,74 @@ export const REGIONAL_COMMUNITY_PAGE_QUERY = groq`
             }
           },
           alt
-        }
+        },
+        author->{
+          _id,
+          name,
+          image,
+          organizationalAffiliation
+        },
+        organizations[]->{
+          _id,
+          name,
+          slug,
+          logo {
+            asset->{
+              _id,
+              url
+            }
+          }
+        }[_id != null],
+        locationDetails {
+          city,
+          country,
+          region,
+          coordinates
+        },
+        tags[]->{
+          _id,
+          label,
+          value,
+          color,
+          category
+        }[_id != null],
+        relatedCommunities[]->{
+          _id,
+          name,
+          slug
+        }[_id != null],
+        language,
+        priority,
+        views,
+        sourceUrl,
+        publisher,
+        sourceType
       }
     },
     caseStudiesGrid {
       mode,
       gridColumns,
       maxItems,
+      initialDisplayCount,
       showTitle,
       title,
+      subtitle,
       showDescription,
       description,
+      headerImage {
+        asset->{
+          _id,
+          url,
+          metadata {
+            lqip,
+            dimensions {
+              width,
+              height
+            }
+          }
+        },
+        alt
+      },
       manualItems[]->{
         _id,
         title,

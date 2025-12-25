@@ -23,7 +23,7 @@ export async function fetchCaseStudyTags() {
 
 /**
  * Fetch regional communities that have case studies
- * Returns communities with localized names and case study counts
+ * Returns communities with localized names, slugs, and case study counts
  */
 export async function fetchCaseStudyCommunities() {
   return await client.fetch(

@@ -6,6 +6,8 @@ import { useState, useTransition } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Label } from '@/components/ui/label'
 import {
   Select,
   SelectContent,
@@ -33,8 +35,8 @@ import { cn } from '@/lib/utils'
 
 interface Filters {
   topic?: string
-  tag?: string
-  community?: string
+  tags?: string[]
+  communities?: string[]
   search?: string
 }
 
@@ -119,6 +121,24 @@ export default function CaseStudiesFilters({
     })
   }
 
+  const toggleArrayFilter = (key: string, value: string) => {
+    const params = new URLSearchParams(searchParams.toString())
+    const currentValues = params.getAll(key)
+
+    if (currentValues.includes(value)) {
+      // Remove the value
+      params.delete(key)
+      currentValues.filter(v => v !== value).forEach(v => params.append(key, v))
+    } else {
+      // Add the value
+      params.append(key, value)
+    }
+
+    startTransition(() => {
+      router.push(`${pathname}?${params.toString()}`)
+    })
+  }
+
   const clearAllFilters = () => {
     setSearchValue('')
     startTransition(() => {
@@ -132,7 +152,12 @@ export default function CaseStudiesFilters({
   }
 
   const getActiveFiltersCount = () => {
-    return Object.values(currentFilters).filter(Boolean).length
+    let count = 0
+    if (currentFilters.topic) count++
+    if (currentFilters.tags && currentFilters.tags.length > 0) count += currentFilters.tags.length
+    if (currentFilters.communities && currentFilters.communities.length > 0) count += currentFilters.communities.length
+    if (currentFilters.search) count++
+    return count
   }
 
   const hasActiveFilters = getActiveFiltersCount() > 0
@@ -172,9 +197,13 @@ export default function CaseStudiesFilters({
             onValueChange={(value) => updateFilter('topic', value)}
           >
             <SelectTrigger className="w-full sm:w-[200px]">
-              <div className="flex items-center gap-2">
-                <BookOpen className="w-4 h-4" />
-                <SelectValue placeholder={t('topicPlaceholder')} />
+              <div className="flex items-center gap-2 min-w-0">
+                <BookOpen className="w-4 h-4 flex-shrink-0" />
+                <span className="truncate">
+                  {currentFilters.topic
+                    ? topicOptions.find(t => t.value === currentFilters.topic)?.label || t('topicPlaceholder')
+                    : t('topicPlaceholder')}
+                </span>
               </div>
             </SelectTrigger>
             <SelectContent>
@@ -226,27 +255,28 @@ export default function CaseStudiesFilters({
                       <Tag className="w-4 h-4" />
                       {t('tag')}
                     </label>
-                    <Select
-                      value={currentFilters.tag || ''}
-                      onValueChange={(value) => updateFilter('tag', value)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder={t('tagPlaceholder')} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Tags</SelectItem>
-                        {tags.map((tag) => (
-                          <SelectItem key={tag._id} value={tag.value}>
+                    <div className="max-h-48 overflow-y-auto space-y-2">
+                      {tags.map((tag) => (
+                        <div key={tag._id} className="flex items-center space-x-2">
+                          <Checkbox
+                            id={`tag-${tag._id}`}
+                            checked={currentFilters.tags?.includes(tag.value) || false}
+                            onCheckedChange={() => toggleArrayFilter('tags', tag.value)}
+                          />
+                          <Label
+                            htmlFor={`tag-${tag._id}`}
+                            className="text-sm font-normal cursor-pointer flex-1"
+                          >
                             {getTagLabel(tag)}
                             {tag.caseStudyCount !== undefined && tag.caseStudyCount > 0 && (
                               <span className="ml-1 text-xs text-muted-foreground">
                                 ({tag.caseStudyCount})
                               </span>
                             )}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                          </Label>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )}
 
@@ -257,27 +287,28 @@ export default function CaseStudiesFilters({
                       <MapPin className="w-4 h-4" />
                       {t('community')}
                     </label>
-                    <Select
-                      value={currentFilters.community || ''}
-                      onValueChange={(value) => updateFilter('community', value)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder={t('communityPlaceholder')} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Communities</SelectItem>
-                        {communities.map((community) => (
-                          <SelectItem key={community._id} value={getCommunityName(community)}>
+                    <div className="max-h-48 overflow-y-auto space-y-2">
+                      {communities.map((community) => (
+                        <div key={community._id} className="flex items-center space-x-2">
+                          <Checkbox
+                            id={`community-${community._id}`}
+                            checked={currentFilters.communities?.includes(community.slug) || false}
+                            onCheckedChange={() => toggleArrayFilter('communities', community.slug)}
+                          />
+                          <Label
+                            htmlFor={`community-${community._id}`}
+                            className="text-sm font-normal cursor-pointer flex-1"
+                          >
                             {getCommunityName(community)}
                             {community.caseStudyCount !== undefined && community.caseStudyCount > 0 && (
                               <span className="ml-1 text-xs text-muted-foreground">
                                 ({community.caseStudyCount})
                               </span>
                             )}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                          </Label>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
@@ -320,37 +351,41 @@ export default function CaseStudiesFilters({
               </Badge>
             )}
 
-            {currentFilters.tag && (
-              <Badge variant="secondary" className="flex items-center gap-1">
-                <Tag className="w-3 h-3" />
-                {tags.find(t => t.value === currentFilters.tag)
-                  ? getTagLabel(tags.find(t => t.value === currentFilters.tag)!)
-                  : currentFilters.tag}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => updateFilter('tag', undefined)}
-                  className="h-4 w-4 p-0 ml-1"
-                >
-                  <X className="w-3 h-3" />
-                </Button>
-              </Badge>
-            )}
+            {currentFilters.tags && currentFilters.tags.map((tagValue) => {
+              const tag = tags.find(t => t.value === tagValue)
+              return (
+                <Badge key={tagValue} variant="secondary" className="flex items-center gap-1">
+                  <Tag className="w-3 h-3" />
+                  {tag ? getTagLabel(tag) : tagValue}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => toggleArrayFilter('tags', tagValue)}
+                    className="h-4 w-4 p-0 ml-1"
+                  >
+                    <X className="w-3 h-3" />
+                  </Button>
+                </Badge>
+              )
+            })}
 
-            {currentFilters.community && (
-              <Badge variant="secondary" className="flex items-center gap-1">
-                <MapPin className="w-3 h-3" />
-                {currentFilters.community}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => updateFilter('community', undefined)}
-                  className="h-4 w-4 p-0 ml-1"
-                >
-                  <X className="w-3 h-3" />
-                </Button>
-              </Badge>
-            )}
+            {currentFilters.communities && currentFilters.communities.map((communitySlug) => {
+              const community = communities.find(c => c.slug === communitySlug)
+              return (
+                <Badge key={communitySlug} variant="secondary" className="flex items-center gap-1">
+                  <MapPin className="w-3 h-3" />
+                  {community ? getCommunityName(community) : communitySlug}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => toggleArrayFilter('communities', communitySlug)}
+                    className="h-4 w-4 p-0 ml-1"
+                  >
+                    <X className="w-3 h-3" />
+                  </Button>
+                </Badge>
+              )
+            })}
 
             <Button
               variant="ghost"
