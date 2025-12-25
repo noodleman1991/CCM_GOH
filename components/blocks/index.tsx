@@ -63,8 +63,8 @@ export default function Blocks({ blocks, locale, userId }: BlocksProps) {
                 }
                 return (
                     <Component
-                        {...(block as any)} // eslint-disable-line @typescript-eslint/no-explicit-any
                         key={block._key}
+                        {...(block as any)} // eslint-disable-line @typescript-eslint/no-explicit-any
                         locale={locale}
                         isRTL={rtl}
                         userId={userId} // Pass userId for download tracking

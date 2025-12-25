@@ -135,6 +135,14 @@ export default defineType({
             description: "Projects mentioned or related to this source",
         }),
         defineField({
+            name: "relatedCommunity",
+            title: "Regional Community",
+            type: "reference",
+            group: "affiliations",
+            to: [{ type: "regionalCommunity" }],
+            description: "Regional community this external source belongs to (optional)",
+        }),
+        defineField({
             name: "authors",
             title: "Authors",
             type: "array",

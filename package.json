@@ -13,7 +13,8 @@
     "db:seed": "node prisma/seed.ts",
     "db:seed-prod": "tsx prisma/seed-production.ts",
     "sanity:sync": "node scripts/sync-prisma-sanity.js",
-    "sanity:populate": "node scripts/migrate-onboarding-to-sanity.mjs"
+    "sanity:populate": "node scripts/migrate-onboarding-to-sanity.mjs",
+    "sync:search": "node scripts/sync-all-search.js"
   },
   "prisma": {
     "seed": "node prisma/seed.ts"

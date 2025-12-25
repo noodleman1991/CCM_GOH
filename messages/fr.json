@@ -443,6 +443,9 @@
   "caseStudy": {
     "backToCaseStudies": "Retour aux Études de Cas"
   },
+  "caseStudies": {
+    "viewAll": "Voir toutes les études de cas"
+  },
   "livedExperiences": {
     "title": "Expériences Vécues",
     "description": "L’expérience vécue est une source fondamentale d’expertise à exploiter pour aborder les conséquences du changement climatique sur la santé mentale. Écouter et apprendre de diverses personnes et communautés directement touchées par les défis interdépendants du changement climatique et de la santé mentale est fondamental pour créer des recherches et des actions efficaces. Il est important de noter que les expériences vécues aident tous les efforts à cette intersection à générer des solutions réalisables pour et avec les groupes les plus touchés, conduisant à une recherche et une action plus inclusives. Les histoires présentées ci-dessous, et les idées qu’elles contiennent, reflètent un engagement à aller au-delà de la tokenisation et à valoriser et valoriser la contribution des expériences vécues à ce domaine en pleine croissance.",
@@ -985,7 +988,8 @@
       "clearAll": "Tout effacer",
       "activeFilters": "Filtres actifs",
       "updating": "Mise à jour...",
-      "filters": "Filtres"
+      "filters": "Filtres",
+      "advancedFilters": "Filtres Avancés"
     },
     "metadata": {
       "author": "Auteur",

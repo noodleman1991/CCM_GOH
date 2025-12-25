@@ -120,9 +120,9 @@ export default function SearchInterface() {
                     root: 'w-full',
                     form: 'relative',
                     input: 'flex h-12 w-full rounded-md border border-input bg-background px-4 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
-                    submit: `absolute ${isRTL ? 'left-2' : 'right-2'} top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground`,
-                    reset: `absolute ${isRTL ? 'left-12' : 'right-12'} top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground`,
-                    loadingIndicator: `absolute ${isRTL ? 'left-2' : 'right-2'} top-1/2 -translate-y-1/2`,
+                    submit: 'absolute end-2 top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground',
+                    reset: 'absolute end-12 top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground',
+                    loadingIndicator: 'absolute end-2 top-1/2 -translate-y-1/2',
                   }}
                   submitIconComponent={() => (
                     <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -182,9 +182,9 @@ export default function SearchInterface() {
                       root: 'w-full',
                       form: 'relative',
                       input: 'flex h-12 w-full rounded-md border border-input bg-background px-4 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
-                      submit: `absolute ${isRTL ? 'left-2' : 'right-2'} top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground`,
-                      reset: `absolute ${isRTL ? 'left-12' : 'right-12'} top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground`,
-                      loadingIndicator: `absolute ${isRTL ? 'left-2' : 'right-2'} top-1/2 -translate-y-1/2`,
+                      submit: 'absolute end-2 top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground',
+                      reset: 'absolute end-12 top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground',
+                      loadingIndicator: 'absolute end-2 top-1/2 -translate-y-1/2',
                     }}
                     submitIconComponent={() => (
                       <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -230,7 +230,7 @@ export default function SearchInterface() {
             >
               <Configure
                 hitsPerPage={20}
-                filters="accessLevel:public"
+                filters={generateContentFilters()}
                 attributesToHighlight={['title.en', 'title.es', 'title.fr', 'title.ar', 'author.name', 'tags', 'organizations']}
                 attributesToSnippet={['excerpt.en:30', 'excerpt.es:30', 'excerpt.fr:30', 'excerpt.ar:30']}
               />
@@ -244,9 +244,9 @@ export default function SearchInterface() {
                       root: 'w-full',
                       form: 'relative',
                       input: 'flex h-12 w-full rounded-md border border-input bg-background px-4 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
-                      submit: `absolute ${isRTL ? 'left-2' : 'right-2'} top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground`,
-                      reset: `absolute ${isRTL ? 'left-12' : 'right-12'} top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground`,
-                      loadingIndicator: `absolute ${isRTL ? 'left-2' : 'right-2'} top-1/2 -translate-y-1/2`,
+                      submit: 'absolute end-2 top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground',
+                      reset: 'absolute end-12 top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground',
+                      loadingIndicator: 'absolute end-2 top-1/2 -translate-y-1/2',
                     }}
                     submitIconComponent={() => (
                       <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -306,9 +306,9 @@ export default function SearchInterface() {
                       root: 'w-full',
                       form: 'relative',
                       input: 'flex h-12 w-full rounded-md border border-input bg-background px-4 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
-                      submit: `absolute ${isRTL ? 'left-2' : 'right-2'} top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground`,
-                      reset: `absolute ${isRTL ? 'left-12' : 'right-12'} top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground`,
-                      loadingIndicator: `absolute ${isRTL ? 'left-2' : 'right-2'} top-1/2 -translate-y-1/2`,
+                      submit: 'absolute end-2 top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground',
+                      reset: 'absolute end-12 top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground',
+                      loadingIndicator: 'absolute end-2 top-1/2 -translate-y-1/2',
                     }}
                     submitIconComponent={() => (
                       <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

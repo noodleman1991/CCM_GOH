@@ -4,8 +4,17 @@ import * as React from "react"
 import * as PopoverPrimitive from "@radix-ui/react-popover"
 
 import { cn } from "@/lib/utils"
+import { useStableId } from "@/lib/use-stable-id"
 
-const Popover = PopoverPrimitive.Root
+function Popover({
+  id,
+  ...props
+}: React.ComponentProps<typeof PopoverPrimitive.Root> & {
+  id?: string
+}) {
+  const stableId = useStableId('popover', id)
+  return <PopoverPrimitive.Root id={stableId} {...props} />
+}
 
 const PopoverTrigger = PopoverPrimitive.Trigger
 

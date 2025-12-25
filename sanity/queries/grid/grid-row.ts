@@ -14,9 +14,25 @@ export const gridRowQuery = groq`
     padding,
     background,
     title,
+    subtitle,
     description,
     gridColumns,
     cardVariant,
+    initialDisplayCount,
+    headerImage {
+      asset->{
+        _id,
+        url,
+        metadata {
+          lqip,
+          dimensions {
+            width,
+            height
+          }
+        }
+      },
+      alt
+    },
     columns[]{
       ${gridCardQuery},
       ${gridPostQuery},
