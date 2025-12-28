@@ -235,7 +235,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 {/*</div>*/}
             </SidebarHeader>
             <SidebarContent>
-                <NavMain items={data.navMain} openAccordion={openAccordion} setOpenAccordion={setOpenAccordion} />
+                <NavMain items={data.navMain} openAccordion={openAccordion} setOpenAccordionAction={setOpenAccordion} />
                 {/* <NavProjects projects={data.projects} /> */}
                 <NavSecondary items={data.navSecondary} className="mt-auto" />
             </SidebarContent>

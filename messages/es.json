@@ -460,7 +460,8 @@
     "clearFilters": "Limpiar Filtros",
     "noResults": "No se encontraron videos que coincidan con tus filtros",
     "video": "video",
-    "videos": "videos"
+    "videos": "videos",
+    "tags": "Etiquetas"
   },
   "caseStudyForm": {
     "sections": {

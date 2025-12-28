@@ -7,5 +7,10 @@ export const allPostsQuery = groq`
     _key,
     padding,
     colorVariant,
+    mode,
+    limit,
+    manualPosts[]->{
+      _ref
+    },
   }
 `;

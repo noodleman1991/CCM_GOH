@@ -706,7 +706,8 @@
     "clearFilters": "Clear Filters",
     "noResults": "No videos found matching your filters",
     "video": "video",
-    "videos": "videos"
+    "videos": "videos",
+    "tags": "Tags"
   },
   "revisionAlert": {
     "title": "Action Required: Revision Needed",

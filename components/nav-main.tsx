@@ -23,7 +23,7 @@ import {
 export function NavMain({
   items,
   openAccordion,
-  setOpenAccordion,
+  setOpenAccordionAction,
 }: {
   items: {
     title: string
@@ -38,7 +38,7 @@ export function NavMain({
     onToggle?: () => void
   }[]
   openAccordion?: string | null
-  setOpenAccordion?: (value: string | null) => void
+  setOpenAccordionAction?: (value: string | null) => void
 }) {
   return (
     <SidebarGroup>
@@ -52,6 +52,7 @@ export function NavMain({
                 asChild
                 open={item.isActive}
                 onOpenChange={item.onToggle}
+                suppressHydrationWarning
               >
                 <SidebarMenuItem>
                   <CollapsibleTrigger asChild>

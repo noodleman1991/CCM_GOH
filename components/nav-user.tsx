@@ -34,14 +34,14 @@ import { useState } from "react"
 
 export function NavUser({
                             user,
-                            renderLogout,
+                            renderLogoutAction,
                         }: {
     user: {
         name: string
         email: string
         avatar: string
     }
-    renderLogout?: (closeMenu?: () => void) => React.ReactNode
+    renderLogoutAction?: (closeMenu?: () => void) => React.ReactNode
 }) {
     const { isMobile } = useSidebar()
     const [open, setOpen] = useState(false)
@@ -53,7 +53,7 @@ export function NavUser({
 
     return (
         <SidebarMenu>
-            <SidebarMenuItem>
+            <SidebarMenuItem suppressHydrationWarning>
                 <DropdownMenu open={open} onOpenChange={setOpen}>
                     <DropdownMenuTrigger asChild>
                         <SidebarMenuButton
@@ -101,8 +101,8 @@ export function NavUser({
                                 </Link>
                             </DropdownMenuItem>
                         </DropdownMenuGroup>
-                        {renderLogout ? (
-                            renderLogout(closeMenu)
+                        {renderLogoutAction ? (
+                            renderLogoutAction(closeMenu)
                         ) : (
                             <DropdownMenuItem className={cn(isRTL && "flex-row-reverse")}>
                                 <LogOut className="size-4" />

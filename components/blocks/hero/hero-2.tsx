@@ -17,7 +17,7 @@ type Hero2Props = Extract<
 export default function Hero2({ background, tagLine, title, body, links, padding, locale = "en" }: Hero2Props & { padding?: any }) {
   const rtl = isRTL(locale);
   return (
-    <SectionContainer background={background} padding={padding}>
+    <SectionContainer background={background as any} padding={padding}>
       <div className="text-center">
       {tagLine && (
         <p className="text-base font-semibold font-sans animate-fade-up [animation-delay:100ms] opacity-0">

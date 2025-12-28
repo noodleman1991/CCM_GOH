@@ -54,7 +54,7 @@ export default function Carousel1({
   const stegaSize = stegaClean(size) as CarouselSize;
 
   return (
-    <SectionContainer color={color} padding={padding} background={background}>
+    <SectionContainer color={color} padding={padding} background={background as any}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col space-y-6">
           {title && (

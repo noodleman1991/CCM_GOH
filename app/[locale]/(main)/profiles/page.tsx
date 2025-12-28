@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import { getTranslations } from 'next-intl/server'
 import { prisma } from "@/lib/prisma"
 import Link from "next/link"
@@ -17,7 +18,7 @@ interface ProfilesPageProps {
     }>
 }
 
-export async function generateMetadata() {
+export async function generateMetadata(): Promise<Metadata> {
     const t = await getTranslations('profiles')
     return {
         title: t('pageTitle'),

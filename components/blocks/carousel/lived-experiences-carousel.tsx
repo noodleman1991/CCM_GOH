@@ -6,7 +6,6 @@ import SectionContainer from "@/components/ui/section-container";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Play, Calendar, User } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import { urlFor } from "@/sanity/lib/image";
 import { stegaClean } from "next-sanity";
 import { BackgroundOptionType } from "@/types/background-option";
@@ -191,12 +190,12 @@ function LivedExperienceCard({
           )}
         </div>
 
-        {/* Tags */}
+        {/* Tags - Show 2 tags + count */}
         {experience.tags && experience.tags.length > 0 && (
           <div className="flex flex-wrap gap-2 mt-4">
             {experience.tags
               .filter((tag) => tag && tag.label) // Filter out null tags
-              .slice(0, 4)
+              .slice(0, 2)
               .map((tag) => {
               const tagLabel = tag.label?.[locale as keyof typeof tag.label] || tag.label?.en || "Tag";
               return (
@@ -208,9 +207,9 @@ function LivedExperienceCard({
                 </span>
               );
             })}
-            {experience.tags.length > 4 && (
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border-2 bg-gray-100 text-gray-700 border-gray-300">
-                +{experience.tags.length - 4} more
+            {experience.tags.length > 2 && (
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
+                +{experience.tags.length - 2}
               </span>
             )}
           </div>
@@ -231,9 +230,9 @@ export default function LivedExperiencesCarousel({
   experiences = [],
   locale = "en",
 }: LivedExperiencesCarouselProps) {
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [itemsPerView, setItemsPerView] = useState(3);
-  const [selectedVideo, setSelectedVideo] = useState<{ url: string; title: string } | null>(null);
+  const [selectedVideo, setSelectedVideo] = useState<LivedExperience | null>(null);
+  const [scrollContainerRef, setScrollContainerRef] = useState<HTMLDivElement | null>(null);
 
   // Update items per view based on screen size
   useEffect(() => {
@@ -252,19 +251,25 @@ export default function LivedExperiencesCarousel({
     return () => window.removeEventListener("resize", updateItemsPerView);
   }, []);
 
-  const totalSlides = Math.max(0, experiences.length - itemsPerView + 1);
-  const canGoNext = currentIndex < totalSlides - 1;
-  const canGoPrev = currentIndex > 0;
+  const canNavigate = experiences.length > itemsPerView;
 
-  const goToNext = () => {
-    if (canGoNext) {
-      setCurrentIndex(currentIndex + 1);
+  const scrollToNext = () => {
+    if (scrollContainerRef) {
+      const cardWidth = scrollContainerRef.scrollWidth / experiences.length;
+      scrollContainerRef.scrollBy({
+        left: cardWidth * (locale === 'ar' ? -1 : 1),
+        behavior: 'smooth'
+      });
     }
   };
 
-  const goToPrev = () => {
-    if (canGoPrev) {
-      setCurrentIndex(currentIndex - 1);
+  const scrollToPrev = () => {
+    if (scrollContainerRef) {
+      const cardWidth = scrollContainerRef.scrollWidth / experiences.length;
+      scrollContainerRef.scrollBy({
+        left: cardWidth * (locale === 'ar' ? 1 : -1),
+        behavior: 'smooth'
+      });
     }
   };
 
@@ -326,6 +331,7 @@ export default function LivedExperiencesCarousel({
         <div className="relative">
           {/* Carousel Content with Horizontal Scroll */}
           <div
+            ref={setScrollContainerRef}
             className="overflow-x-auto scrollbar-hide pb-4"
             style={{
               scrollSnapType: 'x mandatory',
@@ -335,12 +341,7 @@ export default function LivedExperiencesCarousel({
             <div className="flex gap-6">
               {experiences.map((experience) => {
                 const handleClick = () => {
-                  if (experience.videoLink) {
-                    const experienceTitle = experience.title?.[locale as keyof typeof experience.title] ||
-                                          experience.title?.en ||
-                                          "Lived Experience";
-                    setSelectedVideo({ url: experience.videoLink, title: experienceTitle });
-                  }
+                  setSelectedVideo(experience);
                 };
 
                 return (
@@ -349,62 +350,39 @@ export default function LivedExperiencesCarousel({
                     className="flex-none w-full md:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)]"
                     style={{ scrollSnapAlign: 'start' }}
                   >
-                    {experience.slug?.current ? (
-                      <Link
-                        href={`/lived-experiences/${experience.slug.current}`}
-                        className="block h-full"
-                      >
-                        <LivedExperienceCard experience={experience} locale={locale} />
-                      </Link>
-                    ) : (
-                      <LivedExperienceCard
-                        experience={experience}
-                        locale={locale}
-                        onClick={handleClick}
-                      />
-                    )}
+                    <LivedExperienceCard
+                      experience={experience}
+                      locale={locale}
+                      onClick={handleClick}
+                    />
                   </div>
                 );
               })}
             </div>
           </div>
 
-          {/* Navigation Arrows - Bottom Center */}
-          <div className="flex justify-center items-center gap-2 mt-6">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={locale === 'ar' ? goToNext : goToPrev}
-              disabled={locale === 'ar' ? !canGoNext : !canGoPrev}
-              className="rounded-full"
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </Button>
+          {/* Navigation Arrows - Only show if there are more items than visible */}
+          {canNavigate && (
+            <div className="flex justify-center items-center gap-4 mt-6">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={scrollToPrev}
+                className="rounded-full"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </Button>
 
-            {/* Indicators */}
-            <div className="flex gap-2 mx-4">
-              {Array.from({ length: totalSlides }).map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentIndex(index)}
-                  className={cn(
-                    "w-2 h-2 rounded-full transition-colors",
-                    index === currentIndex ? "bg-blue-600" : "bg-gray-300"
-                  )}
-                />
-              ))}
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={scrollToNext}
+                className="rounded-full"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </Button>
             </div>
-
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={locale === 'ar' ? goToPrev : goToNext}
-              disabled={locale === 'ar' ? !canGoPrev : !canGoNext}
-              className="rounded-full"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </Button>
-          </div>
+          )}
         </div>
       </div>
 
@@ -413,8 +391,7 @@ export default function LivedExperiencesCarousel({
         <VideoModal
           isOpen={!!selectedVideo}
           onClose={() => setSelectedVideo(null)}
-          videoUrl={selectedVideo.url}
-          title={selectedVideo.title}
+          experience={selectedVideo}
           locale={locale}
         />
       )}

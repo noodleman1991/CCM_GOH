@@ -35,7 +35,7 @@ export default function Hero1({
     const isImageRight = imagePosition === "right" || imagePosition === null;
 
     return (
-        <SectionContainer background={background} padding={padding}>
+        <SectionContainer background={background as any} padding={padding}>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 lg:gap-8">
                 <div className={cn(
                     "flex flex-col justify-start min-w-0 w-full",

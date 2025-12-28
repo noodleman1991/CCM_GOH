@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { X } from "lucide-react";
+import { X, User, Calendar, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   Dialog,
@@ -9,11 +9,56 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useTranslations } from "next-intl";
+
+interface LivedExperience {
+  _id: string;
+  _type: string;
+  title?: {
+    en?: string;
+    es?: string;
+    fr?: string;
+    ar?: string;
+  };
+  description?: {
+    en?: string;
+    es?: string;
+    fr?: string;
+    ar?: string;
+  };
+  videoLink?: string;
+  duration?: string;
+  publishedAt?: string;
+  author?: {
+    _id: string;
+    name: string;
+    organizationalAffiliation?: string;
+  };
+  relatedCommunity?: {
+    _id: string;
+    name?: {
+      en?: string;
+      es?: string;
+      fr?: string;
+      ar?: string;
+    };
+  };
+  tags?: Array<{
+    _id: string;
+    label?: {
+      en?: string;
+      es?: string;
+      fr?: string;
+      ar?: string;
+    };
+  }>;
+}
 
 interface VideoModalProps {
   isOpen: boolean;
   onClose: () => void;
-  videoUrl: string;
+  experience?: LivedExperience;
+  videoUrl?: string;
   title?: string;
   locale: string;
 }
@@ -47,15 +92,48 @@ function getEmbedUrl(url: string): string {
   return url;
 }
 
+function getLocalizedText(obj: any, locale: string): string {
+  if (!obj) return "";
+  if (typeof obj === "string") return obj;
+  return obj[locale] || obj["en"] || "";
+}
+
 export function VideoModal({
   isOpen,
   onClose,
+  experience,
   videoUrl,
   title,
   locale,
 }: VideoModalProps) {
+  const t = useTranslations("livedExperiences");
   const isRTL = locale === "ar";
-  const embedUrl = getEmbedUrl(videoUrl);
+
+  // Get video URL and title from experience or props
+  const url = experience?.videoLink || videoUrl || "";
+  const displayTitle = experience
+    ? getLocalizedText(experience.title, locale)
+    : title || "";
+  const description = experience
+    ? getLocalizedText(experience.description, locale)
+    : null;
+  const communityName = experience?.relatedCommunity?.name
+    ? getLocalizedText(experience.relatedCommunity.name, locale)
+    : null;
+
+  const embedUrl = getEmbedUrl(url);
+
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return "";
+    return new Date(dateString).toLocaleDateString(
+      locale === "ar" ? "ar-EG" : locale,
+      {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }
+    );
+  };
 
   // Close on ESC key
   useEffect(() => {
@@ -80,26 +158,101 @@ export function VideoModal({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent
-        className={cn(
-          "max-w-5xl p-0",
-          isRTL && "font-arabic"
-        )}
+        className={cn("max-w-5xl p-0", isRTL && "font-arabic")}
         dir={isRTL ? "rtl" : "ltr"}
       >
         <DialogHeader className="sr-only">
-          <DialogTitle>{title || "Video"}</DialogTitle>
+          <DialogTitle>{displayTitle || "Video"}</DialogTitle>
         </DialogHeader>
 
         {/* Video Container */}
-        <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-black">
+        <div className="relative aspect-video w-full overflow-hidden rounded-t-lg bg-black">
           <iframe
             src={embedUrl}
-            title={title || "Video player"}
+            title={displayTitle || "Video player"}
             className="absolute inset-0 h-full w-full"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
           />
         </div>
+
+        {/* Content Section - Only show if experience data is available */}
+        {experience && (
+          <div className="p-6 space-y-4 max-h-[40vh] overflow-y-auto">
+            {/* Title */}
+            {displayTitle && (
+              <h2 className="text-2xl font-bold">{displayTitle}</h2>
+            )}
+
+            {/* Metadata Row */}
+            <div
+              className={cn(
+                "flex flex-wrap gap-4 text-sm text-gray-600",
+                isRTL && "flex-row-reverse"
+              )}
+            >
+              {experience.author && (
+                <div className="flex items-center gap-2">
+                  <User className="w-4 h-4" />
+                  <span>{experience.author.name}</span>
+                  {experience.author.organizationalAffiliation && (
+                    <span className="text-gray-400">
+                      • {experience.author.organizationalAffiliation}
+                    </span>
+                  )}
+                </div>
+              )}
+
+              {experience.publishedAt && (
+                <div className="flex items-center gap-2">
+                  <Calendar className="w-4 h-4" />
+                  <span>{formatDate(experience.publishedAt)}</span>
+                </div>
+              )}
+
+              {communityName && (
+                <div className="flex items-center gap-2">
+                  <MapPin className="w-4 h-4" />
+                  <span className="text-blue-600 font-medium">
+                    {communityName}
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {/* Description */}
+            {description && (
+              <div>
+                <p className="text-gray-700 leading-relaxed">{description}</p>
+              </div>
+            )}
+
+            {/* Tags */}
+            {experience.tags && experience.tags.length > 0 && (
+              <div>
+                <h3 className="text-sm font-semibold text-gray-900 mb-2">
+                  {t("tags")}
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {experience.tags.map((tag) => {
+                    const tagLabel = tag.label
+                      ? getLocalizedText(tag.label, locale)
+                      : "";
+                    if (!tagLabel) return null;
+                    return (
+                      <span
+                        key={tag._id}
+                        className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border-2 bg-[var(--color-ccm-water)]/10 text-[var(--color-ccm-midnight)] border-[var(--color-ccm-water)]/30"
+                      >
+                        {tagLabel}
+                      </span>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Close Button */}
         <button

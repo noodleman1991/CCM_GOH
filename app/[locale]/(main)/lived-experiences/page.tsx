@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import { Suspense } from 'react'
 import { getTranslations } from 'next-intl/server'
 import { client } from '@/sanity/lib/client'
@@ -42,7 +43,7 @@ function LoadingSkeleton() {
   )
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'livedExperiences' })
 

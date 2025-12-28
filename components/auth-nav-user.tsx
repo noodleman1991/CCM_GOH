@@ -63,7 +63,7 @@ export function AuthNavUser({ isRTL = false }: { isRTL?: boolean }) {
                 <NavUser
                     user={userData}
                     //isRTL={isRTL}
-                    renderLogout={(closeMenu) => (
+                    renderLogoutAction={(closeMenu) => (
                         <DropdownMenuItem
                             onClick={() => {
                                 closeMenu?.()
@@ -80,7 +80,7 @@ export function AuthNavUser({ isRTL = false }: { isRTL?: boolean }) {
 
             <SignedOut>
                 <SidebarMenu>
-                    <SidebarMenuItem>
+                    <SidebarMenuItem suppressHydrationWarning>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <SidebarMenuButton

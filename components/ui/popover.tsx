@@ -12,8 +12,10 @@ function Popover({
 }: React.ComponentProps<typeof PopoverPrimitive.Root> & {
   id?: string
 }) {
+  // Note: stableId is generated but not used on Root (Radix doesn't support id on Root)
+  // It's kept for consistency with the API but currently unused
   const stableId = useStableId('popover', id)
-  return <PopoverPrimitive.Root id={stableId} {...props} />
+  return <PopoverPrimitive.Root {...props} />
 }
 
 const PopoverTrigger = PopoverPrimitive.Trigger
