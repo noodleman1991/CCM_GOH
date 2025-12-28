@@ -76,11 +76,10 @@ const componentMap: Record<string, React.ComponentType<any>> = {
     "grid-external-source": GridExternalSource,
 };
 
-interface GridRowProps extends GridRow {
+interface GridRowProps extends Omit<GridRow, 'initialDisplayCount' | 'headerImage'> {
     locale?: string;
     userId?: string;
     rowId?: string;
-    subtitle?: string;
     headerImage?: any;
     initialDisplayCount?: number;
 }
@@ -104,12 +103,12 @@ export default function GridRow({
     const isRTL = locale === "ar";
 
     return (
-        <SectionContainer background={background} padding={padding}>
+        <SectionContainer background={background as any} padding={padding}>
             <div className="overflow-x-hidden">
                 {/* Grid Header - using GridSectionHeader component */}
                 <GridSectionHeader
                     title={title || undefined}
-                    subtitle={subtitle}
+                    subtitle={subtitle || undefined}
                     description={description || undefined}
                     headerImage={headerImage}
                     locale={locale || "en"}

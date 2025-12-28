@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 // import Blocks from "@/components/blocks";
 // import { fetchSanityPageBySlug } from "@/sanity/lib/fetch";
 // import { generatePageMetadata } from "@/sanity/lib/metadata";
@@ -13,7 +14,7 @@
 //     }));
 // }
 //
-// export async function generateMetadata() {
+// export async function generateMetadata(): Promise<Metadata> {
 //     const page = await fetchSanityPageBySlug({ slug: "index" });
 //
 //     return generatePageMetadata({ page, slug: "index" });
@@ -82,7 +83,7 @@ export async function generateStaticParams() {
     }));
 }
 
-export async function generateMetadata() {
+export async function generateMetadata(): Promise<Metadata> {
     const page = await fetchSanityPageBySlug({ slug: "index" });
     return generatePageMetadata({ page, slug: "index" });
 }

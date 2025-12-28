@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import Blocks from "@/components/blocks";
 import Hero1 from "@/components/blocks/hero/hero-1"
 import {

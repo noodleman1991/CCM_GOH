@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import { auth } from "@clerk/nextjs/server"
 import { redirect } from "next/navigation"
 import { getTranslations } from 'next-intl/server'
@@ -5,7 +6,7 @@ import { prisma } from "@/lib/prisma"
 import RecentWorkForm from "@/components/blocks/profile/recent-work-form"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 
-export async function generateMetadata() {
+export async function generateMetadata(): Promise<Metadata> {
     const t = await getTranslations('profile.recentWork')
     return {
         title: t('addWork'),

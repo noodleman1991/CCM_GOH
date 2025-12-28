@@ -53,16 +53,16 @@ export default function Blocks({ blocks, locale, userId }: BlocksProps) {
 
     // Filter out PortableText blocks that should not be rendered here
     // PortableText blocks have _type: "block" and are meant for PortableTextRenderer
-    const pageBlocks = blocks?.filter(block => {
-        if (block._type === 'block') {
+    const pageBlocks = (blocks?.filter(block => {
+        if ((block as any)._type === 'block') {
             console.warn(
                 'PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component.',
-                block._key
+                (block as any)._key
             );
             return false;
         }
         return true;
-    }) || [];
+    }) || []) as Exclude<typeof blocks, { _type: 'block' }>;
 
     return (
         <div dir={rtl ? 'rtl' : 'ltr'}>

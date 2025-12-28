@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import { auth } from "@clerk/nextjs/server"
 import { redirect } from "next/navigation"
 import { getTranslations, getLocale } from 'next-intl/server'
@@ -5,7 +6,7 @@ import ProfileEditForm from "@/components/blocks/profile/profile-edit-form"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 import { fetchUserManagementOptionsWithLocale } from "@/lib/actions/sync-user-management"
 
-export async function generateMetadata() {
+export async function generateMetadata(): Promise<Metadata> {
     const t = await getTranslations('profile.edit')
     return {
         title: t('pageTitle'),

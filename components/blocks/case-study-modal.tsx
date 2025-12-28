@@ -1,7 +1,7 @@
 "use client";
 
-import { Dialog, DialogContent, DialogClose, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { X, ExternalLink, Calendar, Users, MapPin, ArrowLeft } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Calendar, Users, MapPin, ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -44,17 +44,6 @@ export function CaseStudyModal({ isOpen, onClose, caseStudy, locale }: CaseStudy
         <DialogHeader className="sr-only">
           <DialogTitle>{title || "Case Study"}</DialogTitle>
         </DialogHeader>
-
-        {/* Close Button - RTL aware */}
-        <DialogClose
-          className={cn(
-            "absolute top-4 z-50 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 bg-background p-2",
-            isRTL ? "left-4" : "right-4"
-          )}
-        >
-          <X className="h-6 w-6" />
-          <span className="sr-only">Close</span>
-        </DialogClose>
 
         {/* Case Study Content */}
         <div className="p-8 space-y-6">

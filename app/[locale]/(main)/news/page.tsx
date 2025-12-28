@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import { Suspense } from 'react'
 import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'

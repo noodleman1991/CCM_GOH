@@ -28,7 +28,7 @@ export default function Cta1({
   const align = stegaClean(stackAlign);
 
   return (
-    <SectionContainer background={background} padding={padding}>
+    <SectionContainer background={background as any} padding={padding}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div
           className={cn(

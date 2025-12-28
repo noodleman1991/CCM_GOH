@@ -469,7 +469,8 @@
     "clearFilters": "مسح الفلاتر",
     "noResults": "لم يتم العثور على فيديوهات تطابق الفلاتر الخاصة بك",
     "video": "فيديو",
-    "videos": "فيديوهات"
+    "videos": "فيديوهات",
+    "tags": "العلامات"
   },
   "caseStudyForm": {
     "sections": {

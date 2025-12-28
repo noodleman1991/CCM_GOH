@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import Blocks from "@/components/blocks";
 import Homepage from "@/components/pages/homepage";
 import {

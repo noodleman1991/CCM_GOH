@@ -11,6 +11,7 @@ import { getLocalizedText } from '@/lib/localization-utils'
 import { rtlLocales } from '@/i18n/routing'
 import { cn } from '@/lib/utils'
 import Image from "next/image";
+import SectionContainer from "@/components/ui/section-container";
 
 interface LivedExperiencesPageClientProps {
   initialCommunityVideos: Record<string, any[]>
@@ -140,9 +141,9 @@ export default function LivedExperiencesPageClient({
   const totalVideos = Object.values(filteredCommunityVideos).flat().length
 
   return (
-    <div className="container max-w-7xl py-8 space-y-8">
+    <div className="py-8 space-y-8">
         {/* Header */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <SectionContainer>
             <div
                 dir={isRTL ? "rtl" : "ltr"}
                 className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center"
@@ -172,7 +173,7 @@ export default function LivedExperiencesPageClient({
                     </div>
                 </div>
             </div>
-        </div>
+        </SectionContainer>
 
 
       {/* Search and Filters */}

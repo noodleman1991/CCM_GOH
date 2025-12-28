@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import { Suspense } from 'react'
 import { getTranslations } from 'next-intl/server'
 import { client } from '@/sanity/lib/client'
@@ -272,8 +273,8 @@ async function RegionalCaseStudiesContent({
       const parts: string[] = []
       if (filters.search) parts.push(`"${filters.search}"`)
       if (filters.topic) parts.push(filters.topic)
-      if (filters.tag) parts.push(`Tag: ${filters.tag}`)
-      if (filters.community) parts.push(filters.community)
+      if (filters.tags && filters.tags.length > 0) parts.push(`Tag: ${filters.tags[0]}`)
+      if (filters.communities && filters.communities.length > 0) parts.push(filters.communities[0])
       return parts.join(' • ')
     }
 
