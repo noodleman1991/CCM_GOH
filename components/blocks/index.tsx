@@ -51,9 +51,22 @@ const componentMap: Record<string, React.ComponentType<any>> = {
 export default function Blocks({ blocks, locale, userId }: BlocksProps) {
     const rtl = isRTL(locale);
 
+    // Filter out PortableText blocks that should not be rendered here
+    // PortableText blocks have _type: "block" and are meant for PortableTextRenderer
+    const pageBlocks = blocks?.filter(block => {
+        if (block._type === 'block') {
+            console.warn(
+                'PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component.',
+                block._key
+            );
+            return false;
+        }
+        return true;
+    }) || [];
+
     return (
         <div dir={rtl ? 'rtl' : 'ltr'}>
-            {blocks?.map((block) => {
+            {pageBlocks.map((block) => {
                 const Component = componentMap[block._type];
                 if (!Component) {
                     console.warn(

@@ -105,7 +105,7 @@ export default function GridRow({
 
     return (
         <SectionContainer background={background} padding={padding}>
-            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 overflow-x-hidden">
+            <div className="overflow-x-hidden">
                 {/* Grid Header - using GridSectionHeader component */}
                 <GridSectionHeader
                     title={title || undefined}

@@ -32,7 +32,7 @@ export default function SplitRow({
 
   return (
     <SectionContainer color={color} padding={padding}>
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 overflow-x-hidden">
+      <div className="overflow-x-hidden">
         {splitColumns && splitColumns?.length > 0 && (
           <div
           className={cn(
