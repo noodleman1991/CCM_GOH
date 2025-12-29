@@ -35,7 +35,9 @@ export function CaseStudyModal({ isOpen, onClose, caseStudy, locale }: CaseStudy
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent
         className={cn(
-          "max-w-4xl w-full max-h-[90vh] p-0 overflow-y-auto",
+          "w-[95vw] max-w-sm sm:max-w-lg md:max-w-2xl lg:max-w-3xl xl:max-w-4xl",
+          "max-h-[95vh] overflow-y-auto",
+          "p-0",
           isRTL && "rtl"
         )}
         dir={isRTL ? "rtl" : "ltr"}
@@ -135,6 +137,95 @@ export function CaseStudyModal({ isOpen, onClose, caseStudy, locale }: CaseStudy
               isRTL={isRTL}
             />
           )}
+
+          <Separator />
+
+          {/* Study Metadata Section */}
+          <div className="space-y-4">
+            {/* Study Period */}
+            {caseStudy.studyPeriod && (
+              <div>
+                <h3 className="text-sm font-semibold text-gray-900 mb-2">
+                  {t('studyPeriod')}
+                </h3>
+                <p className="text-sm text-gray-600">
+                  {formatCaseStudyDate(new Date(caseStudy.studyPeriod.startDate), supportedLocale)}
+                  {caseStudy.studyPeriod.endDate && (
+                    <> – {formatCaseStudyDate(new Date(caseStudy.studyPeriod.endDate), supportedLocale)}</>
+                  )}
+                </p>
+              </div>
+            )}
+
+            {/* Organizations */}
+            {caseStudy.organizations && caseStudy.organizations.length > 0 && (
+              <div>
+                <h3 className="text-sm font-semibold text-gray-900 mb-2">
+                  {t('organizations')}
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {caseStudy.organizations.map((org: any) => (
+                    <Badge key={org._id} variant="outline">
+                      {org.name}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Projects */}
+            {caseStudy.projects && caseStudy.projects.length > 0 && (
+              <div>
+                <h3 className="text-sm font-semibold text-gray-900 mb-2">
+                  {t('relatedProjects')}
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {caseStudy.projects.map((project: any) => (
+                    <Badge key={project._id} variant="outline">
+                      {project.name}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Study Areas */}
+            {caseStudy.studyAreas && caseStudy.studyAreas.length > 0 && (
+              <div>
+                <h3 className="text-sm font-semibold text-gray-900 mb-2">
+                  {t('studyAreas')}
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {caseStudy.studyAreas.map((area: any) => (
+                    <Badge key={area} variant="secondary">
+                      {area.replace(/_/g, ' ')}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* All Authors */}
+            {caseStudy.authors && caseStudy.authors.length > 1 && (
+              <div>
+                <h3 className="text-sm font-semibold text-gray-900 mb-2">
+                  {t('allAuthors')}
+                </h3>
+                <div className="space-y-2">
+                  {caseStudy.authors.map((author: any) => (
+                    <div key={author._id} className="flex items-center gap-2">
+                      <div className="text-sm">
+                        <p className="font-medium">{author.name}</p>
+                        {author.affiliation && (
+                          <p className="text-gray-600">{author.affiliation}</p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
 
           {/* Link back to case studies listing */}
           <div className="flex justify-center pt-4 border-t">

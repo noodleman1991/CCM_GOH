@@ -954,7 +954,12 @@
       "readTime": "min de lecture",
       "publishedAt": "Publié",
       "submittedAt": "Soumis"
-    }
+    },
+    "studyPeriod": "Période d'Étude",
+    "organizations": "Organisations",
+    "relatedProjects": "Projets Connexes",
+    "studyAreas": "Domaines d'Étude",
+    "allAuthors": "Tous les Auteurs"
   },
   "news": {
     "title": "Actualités",

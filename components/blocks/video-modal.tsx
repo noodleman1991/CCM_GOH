@@ -158,7 +158,12 @@ export function VideoModal({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent
-        className={cn("max-w-5xl p-0", isRTL && "font-arabic")}
+        className={cn(
+          "w-[95vw] max-w-sm sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl",
+          "max-h-[95vh] overflow-y-auto",
+          "p-0",
+          isRTL && "font-arabic"
+        )}
         dir={isRTL ? "rtl" : "ltr"}
       >
         <DialogHeader className="sr-only">
@@ -178,7 +183,7 @@ export function VideoModal({
 
         {/* Content Section - Only show if experience data is available */}
         {experience && (
-          <div className="p-6 space-y-4 max-h-[40vh] overflow-y-auto">
+          <div className="p-6 space-y-4">
             {/* Title */}
             {displayTitle && (
               <h2 className="text-2xl font-bold">{displayTitle}</h2>
@@ -234,20 +239,20 @@ export function VideoModal({
                   {t("tags")}
                 </h3>
                 <div className="flex flex-wrap gap-2">
-                  {experience.tags.map((tag) => {
-                    const tagLabel = tag.label
-                      ? getLocalizedText(tag.label, locale)
-                      : "";
-                    if (!tagLabel) return null;
-                    return (
-                      <span
-                        key={tag._id}
-                        className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border-2 bg-[var(--color-ccm-water)]/10 text-[var(--color-ccm-midnight)] border-[var(--color-ccm-water)]/30"
-                      >
-                        {tagLabel}
-                      </span>
-                    );
-                  })}
+                  {experience.tags
+                    .filter((tag) => tag && tag.label)
+                    .map((tag) => {
+                      const tagLabel = getLocalizedText(tag.label, locale);
+                      if (!tagLabel) return null;
+                      return (
+                        <span
+                          key={tag._id}
+                          className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border-2 bg-[var(--color-ccm-water)]/10 text-[var(--color-ccm-midnight)] border-[var(--color-ccm-water)]/30"
+                        >
+                          {tagLabel}
+                        </span>
+                      );
+                    })}
                 </div>
               </div>
             )}

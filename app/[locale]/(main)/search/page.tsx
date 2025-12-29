@@ -4,7 +4,7 @@ import { getTranslations } from 'next-intl/server'
 import SearchInterface from '@/components/search/search-interface'
 import { Skeleton } from '@/components/ui/skeleton'
 
-export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
   const t = await getTranslations('search')
   return {

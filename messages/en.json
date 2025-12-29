@@ -684,7 +684,12 @@
       "readTime": "min read",
       "publishedAt": "Published",
       "submittedAt": "Submitted"
-    }
+    },
+    "studyPeriod": "Study Period",
+    "organizations": "Organizations",
+    "relatedProjects": "Related Projects",
+    "studyAreas": "Study Areas",
+    "allAuthors": "All Authors"
   },
   "caseStudy": {
     "backToCaseStudies": "Back to Case Studies"

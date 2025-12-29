@@ -59,7 +59,7 @@ export async function generateMetadata({
     params
 }: {
     params: Promise<{ slug: string[]; locale: string }> // Catch-all route: slug is array
-}) {
+}): Promise<Metadata> {
     const { slug: slugArray, locale } = await params;
     const slug = slugArray.join('/'); // Join array to create full slug path
 
