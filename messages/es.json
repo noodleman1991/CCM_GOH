@@ -954,7 +954,12 @@
       "readTime": "min de lectura",
       "publishedAt": "Publicado",
       "submittedAt": "Enviado"
-    }
+    },
+    "studyPeriod": "Período de Estudio",
+    "organizations": "Organizaciones",
+    "relatedProjects": "Proyectos Relacionados",
+    "studyAreas": "Áreas de Estudio",
+    "allAuthors": "Todos los Autores"
   },
   "news": {
     "title": "Noticias",

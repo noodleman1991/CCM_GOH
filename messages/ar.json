@@ -931,7 +931,12 @@
       "readTime": "دقيقة قراءة",
       "publishedAt": "نُشر في",
       "submittedAt": "قُدم في"
-    }
+    },
+    "studyPeriod": "فترة الدراسة",
+    "organizations": "المنظمات",
+    "relatedProjects": "المشاريع ذات الصلة",
+    "studyAreas": "مجالات الدراسة",
+    "allAuthors": "جميع المؤلفين"
   },
   "revisionAlert": {
     "title": "مطلوب إجراء: تنقيح مطلوب",

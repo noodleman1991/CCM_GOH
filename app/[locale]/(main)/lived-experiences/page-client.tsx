@@ -175,9 +175,10 @@ export default function LivedExperiencesPageClient({
             </div>
         </SectionContainer>
 
-
-      {/* Search and Filters */}
-      <div className="space-y-4">
+      {/* Search, Filters, and Results Container */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        {/* Search and Filters */}
+        <div className="space-y-4">
         {/* Search Bar */}
         <div className="relative">
           <Search className={cn(
@@ -352,6 +353,7 @@ export default function LivedExperiencesPageClient({
             </section>
           ))
         )}
+      </div>
       </div>
     </div>
   )

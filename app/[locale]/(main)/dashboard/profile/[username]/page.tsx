@@ -18,7 +18,7 @@ interface ProfilePageProps {
     }>
 }
 
-export async function generateMetadata({ params }: ProfilePageProps) {
+export async function generateMetadata({ params }: ProfilePageProps): Promise<Metadata> {
     const resolvedParams = await params
 
     const user = await prisma.user.findUnique({
