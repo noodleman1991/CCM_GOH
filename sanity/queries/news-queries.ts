@@ -110,7 +110,7 @@ export async function fetchRegularNews(filters?: {
   }
 
   if (filters?.community) {
-    conditions.push(`locationDetails.region match "${filters.community}*"`);
+    conditions.push(`relatedCommunity->slug.current == "${filters.community}"`);
   }
 
   if (filters?.dateFrom) {
@@ -166,7 +166,7 @@ export async function fetchAllNews(filters?: {
   }
 
   if (filters?.community) {
-    conditions.push(`locationDetails.region match "${filters.community}*"`);
+    conditions.push(`relatedCommunity->slug.current == "${filters.community}"`);
   }
 
   if (filters?.dateFrom) {
@@ -256,7 +256,7 @@ export async function fetchRegionalCommunities() {
         _id,
         name,
         "slug": slug.current,
-        "newsCount": count(*[_type == "newsPost" && locationDetails.region match ^.name.en + "*"])
+        "newsCount": count(*[_type == "newsPost" && relatedCommunity._ref == ^._id])
       }
     `
   );
@@ -338,7 +338,7 @@ export async function getNewsCount(filters?: {
   }
 
   if (filters?.community) {
-    conditions.push(`locationDetails.region match "${filters.community}*"`);
+    conditions.push(`relatedCommunity->slug.current == "${filters.community}"`);
   }
 
   if (filters?.dateFrom) {

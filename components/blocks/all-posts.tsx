@@ -9,11 +9,14 @@ import { PAGE_QUERYResult } from "@/sanity.types";
 import { client } from "@/sanity/lib/client";
 import { groq } from "next-sanity";
 import { urlFor } from "@/sanity/lib/image";
+import { getLocalizedField } from "@/lib/localization-utils";
 
 type AllPostsProps = Extract<
   NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number],
   { _type: "all-posts" }
->;
+> & {
+  locale?: string;
+};
 
 // Shared fragment for news post fields
 const NEWS_POST_FIELDS = groq`
@@ -121,7 +124,9 @@ export default async function AllPosts({
   mode,
   limit,
   manualPosts,
+  locale = "en",
 }: AllPostsProps) {
+  const supportedLocale = locale as 'en' | 'es' | 'fr' | 'ar';
   const color = stegaClean(colorVariant);
   const displayMode = stegaClean(mode) || "featured";
   const displayLimit = stegaClean(limit) || 6;
@@ -143,8 +148,13 @@ export default async function AllPosts({
     <SectionContainer color={color} padding={padding}>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {posts.map((post: any) => {
-          const title = typeof post.title === 'string' ? post.title : post.title?.en || '';
-          const excerpt = typeof post.excerpt === 'string' ? post.excerpt : post.excerpt?.en || '';
+          // Extract localized content
+          const title = typeof post.title === 'string'
+            ? post.title
+            : getLocalizedField(post.title, supportedLocale, '');
+          const excerpt = typeof post.excerpt === 'string'
+            ? post.excerpt
+            : getLocalizedField(post.excerpt, supportedLocale, '');
           const imageUrl = post.image?.asset?.url || (post.image?.asset ? urlFor(post.image).width(600).url() : null);
 
           return (
@@ -189,11 +199,16 @@ export default async function AllPosts({
                   )}
                   {post.tags && post.tags.length > 0 && (
                     <div className="flex flex-wrap gap-2 mt-3">
-                      {post.tags.slice(0, 3).map((tag: any) => (
-                        <Badge key={tag._id} variant="secondary" style={{ backgroundColor: tag.color ? `${tag.color}20` : undefined }}>
-                          {typeof tag.label === 'string' ? tag.label : tag.label?.en || ''}
-                        </Badge>
-                      ))}
+                      {post.tags.slice(0, 3).map((tag: any) => {
+                        const tagLabel = typeof tag.label === 'string'
+                          ? tag.label
+                          : getLocalizedField(tag.label, supportedLocale, '');
+                        return (
+                          <Badge key={tag._id} variant="secondary" style={{ backgroundColor: tag.color ? `${tag.color}20` : undefined }}>
+                            {tagLabel}
+                          </Badge>
+                        );
+                      })}
                     </div>
                   )}
                 </CardContent>

@@ -13,7 +13,7 @@ type SplitColumn = NonNullable<NonNullable<SplitRow["splitColumns"]>[number]>;
 
 const componentMap: {
   [K in SplitColumn["_type"]]: React.ComponentType<
-    Extract<SplitColumn, { _type: K }>
+    Extract<SplitColumn, { _type: K }> & { locale?: string }
   >;
 } = {
   "split-content": SplitContent,
@@ -27,7 +27,8 @@ export default function SplitRow({
   colorVariant,
   noGap,
   splitColumns,
-}: SplitRow) {
+  locale = "en",
+}: SplitRow & { locale?: string }) {
   const color = stegaClean(colorVariant);
 
   return (
@@ -55,6 +56,7 @@ export default function SplitRow({
                   {...(column as any)}
                   color={color}
                   noGap={noGap}
+                  locale={locale}
                 />
               </div>
             );

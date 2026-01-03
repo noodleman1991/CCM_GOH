@@ -27,10 +27,13 @@ const NEWS_QUERY = `*[_type == "newsPost" && publishedAt <= now()] | order(publi
 
 export async function POST(request: NextRequest) {
   try {
+    // Check internal secret auth or Clerk auth
+    const authHeader = request.headers.get('authorization')
+    const internalSecret = process.env.INTERNAL_SYNC_SECRET
     const { userId } = await auth()
 
-    // Only allow authenticated users (could restrict to admins later)
-    if (!userId) {
+    // Allow if either internal secret matches OR user is authenticated
+    if (authHeader !== `Bearer ${internalSecret}` && !userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 

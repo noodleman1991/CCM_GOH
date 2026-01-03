@@ -376,7 +376,7 @@ export default async function RegionalCommunityTemplate({
   console.log('Block types and keys:', templateBlocks.map(b => ({ type: b._type, key: b._key })));
 
   return (
-    <div className="regional-community-template">
+    <>
       {/* Render all template blocks in order */}
       {templateBlocks.length > 0 && (
         <Blocks
@@ -385,6 +385,6 @@ export default async function RegionalCommunityTemplate({
           userId={userId}
         />
       )}
-    </div>
+    </>
   );
 }

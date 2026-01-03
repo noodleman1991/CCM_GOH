@@ -5,6 +5,7 @@ import { stegaClean } from "next-sanity";
 import Link from "next/link";
 import PortableTextRenderer from "@/components/portable-text-renderer";
 import { PAGE_QUERYResult } from "@/sanity.types";
+import { getLocalizedField, getLocalizedPortableText } from "@/lib/localization-utils";
 
 type Cta1Props = Extract<
   NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number],
@@ -27,6 +28,20 @@ export default function Cta1({
   const isNarrow = stegaClean(sectionWidth) === "narrow";
   const align = stegaClean(stackAlign);
 
+  const supportedLocale = (locale || "en") as 'en' | 'es' | 'fr' | 'ar';
+
+  const localizedTagLine = typeof tagLine === 'string'
+    ? tagLine
+    : getLocalizedField(tagLine, supportedLocale, '');
+
+  const localizedTitle = typeof title === 'string'
+    ? title
+    : getLocalizedField(title, supportedLocale, '');
+
+  const localizedBody = Array.isArray(body)
+    ? body
+    : getLocalizedPortableText(body, supportedLocale);
+
   return (
     <SectionContainer background={background as any} padding={padding}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -37,13 +52,13 @@ export default function Cta1({
           )}
         >
         <div>
-          {tagLine && (
+          {localizedTagLine && (
             <p className="text-base font-semibold mb-4">
-              {tagLine}
+              {localizedTagLine}
             </p>
           )}
-          <h2 className="mb-4">{title}</h2>
-          {body && <PortableTextRenderer value={body} locale={locale} />}
+          <h2 className="mb-4">{localizedTitle}</h2>
+          {localizedBody && <PortableTextRenderer value={localizedBody} locale={locale} />}
         </div>
         {links && links.length > 0 && (
           <div

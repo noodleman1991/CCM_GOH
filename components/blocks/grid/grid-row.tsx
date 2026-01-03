@@ -14,6 +14,7 @@ import GridExternalSource from "./grid-external-source";
 import PortableTextRenderer from "@/components/portable-text-renderer";
 import { GridSectionHeader } from "./grid-section-header";
 import { ExpandableGrid } from "./expandable-grid";
+import { getLocalizedField } from "@/lib/localization-utils";
 
 type Block = NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number];
 type GridRow = Extract<Block, { _type: "grid-row" }>;
@@ -102,13 +103,23 @@ export default function GridRow({
     const variant = (stegaClean(cardVariant) as "classic" | "wide" | null) || "classic";
     const isRTL = locale === "ar";
 
+    const supportedLocale = (locale || "en") as 'en' | 'es' | 'fr' | 'ar';
+
+    const localizedTitle = typeof title === 'string'
+        ? title
+        : getLocalizedField(title, supportedLocale, '');
+
+    const localizedSubtitle = typeof subtitle === 'string'
+        ? subtitle
+        : getLocalizedField(subtitle, supportedLocale, '');
+
     return (
         <SectionContainer background={background as any} padding={padding}>
             <div className="overflow-x-hidden">
                 {/* Grid Header - using GridSectionHeader component */}
                 <GridSectionHeader
-                    title={title || undefined}
-                    subtitle={subtitle || undefined}
+                    title={localizedTitle || undefined}
+                    subtitle={localizedSubtitle || undefined}
                     description={description || undefined}
                     headerImage={headerImage}
                     locale={locale || "en"}

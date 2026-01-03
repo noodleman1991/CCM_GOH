@@ -3,10 +3,11 @@ import { PortableText } from "@portabletext/react";
 import { portableTextComponents } from "@/components/portable-text-renderer";
 import { urlFor } from "@/sanity/lib/image";
 import { cn } from "@/lib/utils";
+import { getLocalizedField, getLocalizedPortableText, type SupportedLocale } from "@/lib/localization-utils";
 
 interface ManualContentBlockProps {
-  title?: string;
-  content?: unknown[];
+  title?: string | Record<string, string>;
+  content?: unknown[] | Record<string, unknown[]>;
   image?: {
     asset: {
       _ref: string;
@@ -48,16 +49,25 @@ export function ManualContentBlock({
   const bgClass = backgroundClasses[backgroundColor] || "";
   const paddingClass = paddingClasses[padding] || "";
 
+  // Extract localized content
+  const supportedLocale = locale as SupportedLocale;
+  const localizedTitle = typeof title === 'string'
+    ? title
+    : getLocalizedField(title, supportedLocale, '');
+  const localizedContent = Array.isArray(content)
+    ? content
+    : getLocalizedPortableText(content, supportedLocale);
+
   const renderContent = () => (
     <div className="prose prose-lg max-w-none">
-      {title && (
+      {localizedTitle && (
         <h2 className="text-3xl font-bold tracking-tight text-gray-900 mb-6">
-          {title}
+          {localizedTitle}
         </h2>
       )}
-      {content && (
+      {localizedContent && localizedContent.length > 0 && (
         <PortableText
-          value={content as any}
+          value={localizedContent as any}
           components={portableTextComponents(locale)}
         />
       )}
@@ -71,7 +81,7 @@ export function ManualContentBlock({
       <div className="relative">
         <Image
           src={urlFor(image.asset).width(800).height(600).url()}
-          alt={image.alt || title || ""}
+          alt={image.alt || localizedTitle || ""}
           width={800}
           height={600}
           className="rounded-lg object-cover w-full h-auto"
@@ -88,7 +98,7 @@ export function ManualContentBlock({
 
   return (
     <section className={cn("w-full", bgClass, paddingClass)}>
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         {layout === "full-width" && (
           <div className="max-w-4xl mx-auto">
             {renderContent()}

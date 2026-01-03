@@ -313,6 +313,7 @@ async function RegionalCaseStudiesContent({
                   customLayout="default"
                   locale={locale}
                   cardVariant="classic"
+                  disableModal={true}
                 />
               </Link>
             ))}
@@ -403,6 +404,7 @@ async function RegionalCaseStudiesContent({
                   customLayout="default"
                   locale={locale}
                   cardVariant="classic"
+                  disableModal={true}
                 />
               </Link>
             ))}

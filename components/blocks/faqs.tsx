@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/accordion";
 import PortableTextRenderer from "@/components/portable-text-renderer";
 import { PAGE_QUERYResult } from "@/sanity.types";
+import { getLocalizedField, getLocalizedPortableText } from "@/lib/localization-utils";
 
 type FAQProps = Extract<
   NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number],
@@ -18,19 +19,32 @@ type FAQProps = Extract<
 
 export default function FAQs({ padding, colorVariant, faqs, locale = "en" }: FAQProps) {
   const color = stegaClean(colorVariant);
+
+  const supportedLocale = (locale || "en") as 'en' | 'es' | 'fr' | 'ar';
+
   return (
     <SectionContainer color={color} padding={padding}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {faqs && faqs?.length > 0 && (
           <Accordion className="space-y-4" type="multiple">
-          {faqs.map((faq) => (
-            <AccordionItem key={faq.title} value={`item-${faq._id}`}>
-              <AccordionTrigger>{faq.title}</AccordionTrigger>
-              <AccordionContent>
-                <PortableTextRenderer value={faq.body || []} locale={locale} />
-              </AccordionContent>
-            </AccordionItem>
-          ))}
+          {faqs.map((faq) => {
+            const localizedTitle = typeof faq.title === 'string'
+              ? faq.title
+              : getLocalizedField(faq.title, supportedLocale, '');
+
+            const localizedBody = Array.isArray(faq.body)
+              ? faq.body
+              : getLocalizedPortableText(faq.body, supportedLocale);
+
+            return (
+              <AccordionItem key={faq._id} value={`item-${faq._id}`}>
+                <AccordionTrigger>{localizedTitle}</AccordionTrigger>
+                <AccordionContent>
+                  <PortableTextRenderer value={localizedBody || []} locale={locale} />
+                </AccordionContent>
+              </AccordionItem>
+            );
+          })}
         </Accordion>
         )}
       </div>

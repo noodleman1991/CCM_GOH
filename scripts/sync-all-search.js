@@ -15,6 +15,9 @@
  *   npm run sync:search
  */
 
+import dotenv from 'dotenv'
+dotenv.config({ path: '.env.local' })
+
 async function syncAll() {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
 
@@ -36,7 +39,8 @@ async function syncAll() {
       const response = await fetch(`${baseUrl}${endpoint.path}`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.INTERNAL_SYNC_SECRET}`
         },
         body: JSON.stringify({ mode: 'full' })
       })

@@ -11,6 +11,7 @@ import { stegaClean } from "next-sanity";
 import { BackgroundOptionType } from "@/types/background-option";
 import { SectionPadding } from "@/sanity.types";
 import { VideoModal } from "@/components/blocks/video-modal";
+import { getLocalizedField } from "@/lib/localization-utils";
 
 interface LivedExperience {
   _id: string;
@@ -57,6 +58,7 @@ interface LivedExperience {
       fr?: string;
       ar?: string;
     };
+    color?: string;
   }>;
   featured?: boolean;
   slug?: {
@@ -108,6 +110,25 @@ function LivedExperienceCard({
     });
   };
 
+  // Extract YouTube video ID from videoLink
+  const getYouTubeThumbnail = (videoLink?: string): string | null => {
+    if (!videoLink) return null;
+
+    // Match various YouTube URL formats
+    const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+    const match = videoLink.match(regExp);
+    const videoId = (match && match[7].length === 11) ? match[7] : null;
+
+    if (videoId) {
+      return `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
+    }
+    return null;
+  };
+
+  const thumbnailUrl = experience.thumbnail?.asset?._id
+    ? urlFor(experience.thumbnail).url()
+    : getYouTubeThumbnail(experience.videoLink);
+
   return (
     <div
       className="group relative bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer flex flex-col h-full"
@@ -115,10 +136,10 @@ function LivedExperienceCard({
     >
       {/* Thumbnail with Play Button Overlay */}
       <div className="relative aspect-video bg-gray-100 flex-shrink-0">
-        {experience.thumbnail?.asset?._id ? (
+        {thumbnailUrl ? (
           <Image
-            src={urlFor(experience.thumbnail).url()}
-            alt={experience.thumbnail.alt || title}
+            src={thumbnailUrl}
+            alt={experience.thumbnail?.alt || title}
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-300"
           />
@@ -194,22 +215,30 @@ function LivedExperienceCard({
         {experience.tags && experience.tags.length > 0 && (
           <div className="flex flex-wrap gap-2 mt-4">
             {experience.tags
-              .filter((tag) => tag && tag.label) // Filter out null tags
+              .filter((tag) => tag && tag.label && tag.color) // Filter out null tags and tags without color
               .slice(0, 2)
               .map((tag) => {
-              const tagLabel = tag.label?.[locale as keyof typeof tag.label] || tag.label?.en || "Tag";
+              const supportedLocale = locale as 'en' | 'es' | 'fr' | 'ar';
+              const tagLabel = typeof tag.label === 'string'
+                ? tag.label
+                : getLocalizedField(tag.label, supportedLocale, "Tag");
               return (
                 <span
                   key={tag._id}
-                  className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border-2 bg-[var(--color-ccm-water)]/10 text-[var(--color-ccm-midnight)] border-[var(--color-ccm-water)]/30"
+                  className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border-2"
+                  style={{
+                    borderColor: tag.color,
+                    color: tag.color,
+                    backgroundColor: `${tag.color}10`
+                  }}
                 >
                   {tagLabel}
                 </span>
               );
             })}
-            {experience.tags.length > 2 && (
+            {experience.tags.filter((tag) => tag && tag.label && tag.color).length > 2 && (
               <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
-                +{experience.tags.length - 2}
+                +{experience.tags.filter((tag) => tag && tag.label && tag.color).length - 2}
               </span>
             )}
           </div>

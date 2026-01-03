@@ -100,12 +100,13 @@ function ContentSection({ section, locale, userId, communitySlug }: ContentSecti
     case "manualContentInsert":
       return (
         <ManualContentBlock
-          title={section.title as string}
-          content={section.content as unknown[]}
+          title={section.title}
+          content={section.content}
           image={section.image as any}
           layout={section.layout as "left-image" | "right-image" | "full-width" | "content-above" | "image-above"}
           backgroundColor={section.backgroundColor as "none" | "light-gray" | "dark-gray" | "brand-primary" | "brand-secondary"}
           padding={section.padding as "none" | "small" | "medium" | "large"}
+          locale={locale}
           key={section._key}
         />
       );

@@ -194,3 +194,120 @@ export function createLocalizationHelper(defaultLocale: SupportedLocale = 'en') 
  * Default localization helper instance
  */
 export const localization = createLocalizationHelper('en')
+
+/**
+ * Get localized PortableText content with fallback
+ * Handles content stored as localized objects {en, es, fr, ar}
+ *
+ * @param content - PortableText content object (either localized object or direct array)
+ * @param locale - Target locale
+ * @returns The localized PortableText array or empty array
+ */
+export function getLocalizedPortableText(
+  content: any | null | undefined,
+  locale: SupportedLocale
+): any[] {
+  if (!content) {
+    return []
+  }
+
+  // If it's already an array, return it (non-localized content)
+  if (Array.isArray(content)) {
+    return content
+  }
+
+  // If it's a localized object {en, es, fr, ar}
+  if (typeof content === 'object') {
+    // Try requested locale first
+    if (content[locale] && Array.isArray(content[locale])) {
+      return content[locale]
+    }
+
+    // Fallback to English
+    if (content.en && Array.isArray(content.en)) {
+      return content.en
+    }
+
+    // Fallback to any available language
+    for (const key of ['es', 'fr', 'ar']) {
+      if (content[key] && Array.isArray(content[key])) {
+        return content[key]
+      }
+    }
+  }
+
+  return []
+}
+
+/**
+ * Check if a field has translation for a specific locale
+ *
+ * @param field - Localized field object
+ * @param locale - Locale to check
+ * @returns true if translation exists and is non-empty
+ */
+export function hasTranslation(
+  field: LocalizedString | Record<string, any> | null | undefined,
+  locale: SupportedLocale
+): boolean {
+  if (!field || typeof field !== 'object') {
+    return false
+  }
+
+  const value = field[locale]
+
+  // For strings
+  if (typeof value === 'string') {
+    return value.trim().length > 0
+  }
+
+  // For PortableText arrays
+  if (Array.isArray(value)) {
+    return value.length > 0
+  }
+
+  return false
+}
+
+/**
+ * Extract localized field with proper type handling
+ * Works for both simple strings and complex objects like PortableText
+ *
+ * @param field - Localized field (string or PortableText)
+ * @param locale - Target locale
+ * @param fallback - Optional fallback value
+ * @returns The localized value or fallback
+ */
+export function getLocalizedField<T = any>(
+  field: Record<string, T> | T | null | undefined,
+  locale: SupportedLocale,
+  fallback?: T
+): T | undefined {
+  if (!field) {
+    return fallback
+  }
+
+  // If field is not an object, return it as-is (already localized)
+  if (typeof field !== 'object' || Array.isArray(field)) {
+    return field as T
+  }
+
+  // Try requested locale first
+  if (locale in field && field[locale as keyof typeof field] !== undefined) {
+    return field[locale as keyof typeof field] as T
+  }
+
+  // Fallback to English
+  if ('en' in field && field.en !== undefined) {
+    return field.en as T
+  }
+
+  // Fallback to any available language
+  for (const key of ['es', 'fr', 'ar']) {
+    if (key in field && field[key as keyof typeof field] !== undefined) {
+      return field[key as keyof typeof field] as T
+    }
+  }
+
+  return fallback
+}

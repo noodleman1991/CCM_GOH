@@ -8,6 +8,7 @@ import { PAGE_QUERYResult } from "@/sanity.types";
 import SectionContainer from "@/components/ui/section-container";
 import { cn } from "@/lib/utils";
 import { isRTL } from "@/i18n/i18n-helpers";
+import { getLocalizedField, getLocalizedPortableText } from "@/lib/localization-utils";
 
 type Hero1BaseProps = Extract<
     NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number],
@@ -33,6 +34,20 @@ export default function Hero1({
                               }: Hero1Props) {
     const rtl = isRTL(locale);
     const isImageRight = imagePosition === "right" || imagePosition === null;
+    const supportedLocale = locale as 'en' | 'es' | 'fr' | 'ar';
+
+    // Extract localized content
+    const localizedTagLine = typeof tagLine === 'string'
+        ? tagLine
+        : getLocalizedField(tagLine, supportedLocale, '');
+
+    const localizedTitle = typeof title === 'string'
+        ? title
+        : getLocalizedField(title, supportedLocale, '');
+
+    const localizedBody = Array.isArray(body)
+        ? body
+        : getLocalizedPortableText(body, supportedLocale);
 
     return (
         <SectionContainer background={background as any} padding={padding}>
@@ -43,19 +58,19 @@ export default function Hero1({
                         ? isImageRight ? "lg:order-1" : "lg:order-2"
                         : isImageRight ? "lg:order-1" : "lg:order-2"
                 )}>
-                    {tagLine && (
+                    {localizedTagLine && (
                         <p className="text-base font-semibold font-sans animate-fade-up [animation-delay:100ms] opacity-0">
-                            {tagLine}
+                            {localizedTagLine}
                         </p>
                     )}
-                    {title && (
+                    {localizedTitle && (
                         <h3 className="mt-6 font-bold leading-[1.1] text-2xl md:text-4xl lg:text-5xl animate-fade-up [animation-delay:200ms] opacity-0">
-                            {title}
+                            {localizedTitle}
                         </h3>
                     )}
-                    {body && (
+                    {localizedBody && (
                         <div className="text-lg mt-6 animate-fade-up [animation-delay:300ms] opacity-0">
-                            <PortableTextRenderer value={body} locale={locale} />
+                            <PortableTextRenderer value={localizedBody} locale={locale} />
                         </div>
                     )}
                     {links && links.length > 0 && (

@@ -9,49 +9,202 @@ export default defineType({
   fields: [
     defineField({
       name: "title",
-      type: "string",
+      type: "object",
       title: "Block Title",
-      validation: (Rule) => Rule.required().max(100),
+      description: "Localized title for the content block",
+      fields: [
+        {
+          name: "en",
+          type: "string",
+          title: "English",
+          validation: (Rule) => Rule.required().max(100),
+        },
+        {
+          name: "es",
+          type: "string",
+          title: "Español",
+          validation: (Rule) => Rule.max(100),
+        },
+        {
+          name: "fr",
+          type: "string",
+          title: "Français",
+          validation: (Rule) => Rule.max(100),
+        },
+        {
+          name: "ar",
+          type: "string",
+          title: "العربية",
+          validation: (Rule) => Rule.max(100),
+        },
+      ],
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: "content",
-      type: "array",
+      type: "object",
       title: "Content",
-      of: [{
-        type: "block",
-        styles: [
-          { title: "Normal", value: "normal" },
-          { title: "H2", value: "h2" },
-          { title: "H3", value: "h3" },
-          { title: "H4", value: "h4" },
-          { title: "Quote", value: "blockquote" },
-        ],
-        lists: [
-          { title: "Bullet", value: "bullet" },
-          { title: "Numbered", value: "number" },
-        ],
-        marks: {
-          decorators: [
-            { title: "Strong", value: "strong" },
-            { title: "Emphasis", value: "em" },
-          ],
-          annotations: [
-            {
-              name: "link",
-              type: "object",
-              title: "URL",
-              fields: [
+      description: "Localized rich text content",
+      fields: [
+        {
+          name: "en",
+          type: "array",
+          title: "English Content",
+          of: [{
+            type: "block",
+            styles: [
+              { title: "Normal", value: "normal" },
+              { title: "H2", value: "h2" },
+              { title: "H3", value: "h3" },
+              { title: "H4", value: "h4" },
+              { title: "Quote", value: "blockquote" },
+            ],
+            lists: [
+              { title: "Bullet", value: "bullet" },
+              { title: "Numbered", value: "number" },
+            ],
+            marks: {
+              decorators: [
+                { title: "Strong", value: "strong" },
+                { title: "Emphasis", value: "em" },
+              ],
+              annotations: [
                 {
+                  name: "link",
+                  type: "object",
                   title: "URL",
-                  name: "href",
-                  type: "url",
+                  fields: [
+                    {
+                      title: "URL",
+                      name: "href",
+                      type: "url",
+                    },
+                  ],
                 },
               ],
             },
-          ],
+          }],
+          validation: (Rule) => Rule.required().min(1),
         },
-      }],
-      validation: (Rule) => Rule.required().min(1),
+        {
+          name: "es",
+          type: "array",
+          title: "Spanish Content",
+          of: [{
+            type: "block",
+            styles: [
+              { title: "Normal", value: "normal" },
+              { title: "H2", value: "h2" },
+              { title: "H3", value: "h3" },
+              { title: "H4", value: "h4" },
+              { title: "Quote", value: "blockquote" },
+            ],
+            lists: [
+              { title: "Bullet", value: "bullet" },
+              { title: "Numbered", value: "number" },
+            ],
+            marks: {
+              decorators: [
+                { title: "Strong", value: "strong" },
+                { title: "Emphasis", value: "em" },
+              ],
+              annotations: [
+                {
+                  name: "link",
+                  type: "object",
+                  title: "URL",
+                  fields: [
+                    {
+                      title: "URL",
+                      name: "href",
+                      type: "url",
+                    },
+                  ],
+                },
+              ],
+            },
+          }],
+        },
+        {
+          name: "fr",
+          type: "array",
+          title: "French Content",
+          of: [{
+            type: "block",
+            styles: [
+              { title: "Normal", value: "normal" },
+              { title: "H2", value: "h2" },
+              { title: "H3", value: "h3" },
+              { title: "H4", value: "h4" },
+              { title: "Quote", value: "blockquote" },
+            ],
+            lists: [
+              { title: "Bullet", value: "bullet" },
+              { title: "Numbered", value: "number" },
+            ],
+            marks: {
+              decorators: [
+                { title: "Strong", value: "strong" },
+                { title: "Emphasis", value: "em" },
+              ],
+              annotations: [
+                {
+                  name: "link",
+                  type: "object",
+                  title: "URL",
+                  fields: [
+                    {
+                      title: "URL",
+                      name: "href",
+                      type: "url",
+                    },
+                  ],
+                },
+              ],
+            },
+          }],
+        },
+        {
+          name: "ar",
+          type: "array",
+          title: "Arabic Content",
+          of: [{
+            type: "block",
+            styles: [
+              { title: "Normal", value: "normal" },
+              { title: "H2", value: "h2" },
+              { title: "H3", value: "h3" },
+              { title: "H4", value: "h4" },
+              { title: "Quote", value: "blockquote" },
+            ],
+            lists: [
+              { title: "Bullet", value: "bullet" },
+              { title: "Numbered", value: "number" },
+            ],
+            marks: {
+              decorators: [
+                { title: "Strong", value: "strong" },
+                { title: "Emphasis", value: "em" },
+              ],
+              annotations: [
+                {
+                  name: "link",
+                  type: "object",
+                  title: "URL",
+                  fields: [
+                    {
+                      title: "URL",
+                      name: "href",
+                      type: "url",
+                    },
+                  ],
+                },
+              ],
+            },
+          }],
+        },
+      ],
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: "image",
@@ -122,7 +275,7 @@ export default defineType({
   ],
   preview: {
     select: {
-      title: "title",
+      title: "title.en",
       layout: "layout",
       media: "image",
     },

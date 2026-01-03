@@ -13,6 +13,7 @@ import Image from "next/image";
 import { urlFor } from "@/sanity/lib/image";
 import { cn } from "@/lib/utils";
 import { PAGE_QUERYResult } from "@/sanity.types";
+import { getLocalizedField } from "@/lib/localization-utils";
 
 const CAROUSEL_SIZES = {
   one: "basis-full",
@@ -37,6 +38,7 @@ interface Carousel1Props
   extends Omit<NonNullable<Carousel1>, "_type" | "_key"> {
   size: CarouselSize | null;
   indicators: "none" | "dots" | "count" | null;
+  locale?: string;
 }
 
 export default function Carousel1({
@@ -48,23 +50,34 @@ export default function Carousel1({
   size = "one",
   indicators = "none",
   images,
+  locale = "en",
 }: Carousel1Props) {
   const color = stegaClean(colorVariant);
   const stegaIndicators = stegaClean(indicators);
   const stegaSize = stegaClean(size) as CarouselSize;
 
+  const supportedLocale = (locale || "en") as 'en' | 'es' | 'fr' | 'ar';
+
+  const localizedTitle = typeof title === 'string'
+    ? title
+    : getLocalizedField(title, supportedLocale, '');
+
+  const localizedDescription = typeof description === 'string'
+    ? description
+    : getLocalizedField(description, supportedLocale, '');
+
   return (
     <SectionContainer color={color} padding={padding} background={background as any}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col space-y-6">
-          {title && (
+          {localizedTitle && (
             <div className="text-center">
               <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-                {title}
+                {localizedTitle}
               </h2>
-              {description && (
+              {localizedDescription && (
                 <p className="mt-4 text-lg text-muted-foreground">
-                  {description}
+                  {localizedDescription}
                 </p>
               )}
             </div>
