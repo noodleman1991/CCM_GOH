@@ -90,9 +90,9 @@ export async function POST(request: NextRequest) {
     try {
       const record = transformAgendaForIndex(agenda)
       if (record) {
-        await algoliaClient.saveObject({
+        await algoliaClient.saveObjects({
           indexName: ALGOLIA_INDICES.AGENDAS,
-          body: record
+          objects: [record]
         })
 
         console.log(`✅ Updated agenda ${_id} in search index`)

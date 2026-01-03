@@ -335,11 +335,12 @@ export const INDEX_SETTINGS = {
       'unordered(communities)'
     ],
     attributesForFaceting: [
+      'filterOnly(isSearchable)',
+      'filterOnly(profileVisibility)',
       'workTypes',
       'expertiseAreas',
       'country',
       'role',
-      'profileVisibility',
       'communities'
     ],
     ranking: [
@@ -377,10 +378,10 @@ export const INDEX_SETTINGS = {
       'unordered(organizations)'
     ],
     attributesForFaceting: [
-      'status',
+      'filterOnly(status)',
+      'filterOnly(accessLevel)',
       'featured',
       'tags',
-      'accessLevel',
       'organizations',
       'language',
       'authors.role'
@@ -416,11 +417,11 @@ export const INDEX_SETTINGS = {
       'unordered(agendaType)'
     ],
     attributesForFaceting: [
+      'filterOnly(accessLevel)',
       'agendaType',
       'year',
       'featured',
       'tags',
-      'accessLevel',
       'organizations',
       'regionalCommunities',
       'language'
@@ -458,6 +459,7 @@ export const INDEX_SETTINGS = {
       'unordered(projects)'
     ],
     attributesForFaceting: [
+      'filterOnly(accessLevel)',
       'featured',
       'tags',
       'organizations',

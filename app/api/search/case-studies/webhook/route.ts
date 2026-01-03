@@ -89,9 +89,9 @@ export async function POST(request: NextRequest) {
       try {
         const record = transformCaseStudyForIndex(caseStudy)
         if (record) {
-          await algoliaClient.saveObject({
+          await algoliaClient.saveObjects({
             indexName: ALGOLIA_INDICES.CASE_STUDIES,
-            body: record
+            objects: [record]
           })
 
           console.log(`✅ Updated case study ${_id} in search index`)

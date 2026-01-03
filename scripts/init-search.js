@@ -35,11 +35,12 @@ const INDEX_SETTINGS = {
       'unordered(communities)'
     ],
     attributesForFaceting: [
+      'filterOnly(isSearchable)',
+      'filterOnly(profileVisibility)',
       'workTypes',
       'expertiseAreas',
       'country',
       'role',
-      'profileVisibility',
       'communities'
     ],
     ranking: [
@@ -77,10 +78,10 @@ const INDEX_SETTINGS = {
       'unordered(organizations)'
     ],
     attributesForFaceting: [
-      'status',
+      'filterOnly(status)',
+      'filterOnly(accessLevel)',
       'featured',
       'tags',
-      'accessLevel',
       'organizations',
       'language',
       'authors.role'
@@ -95,6 +96,88 @@ const INDEX_SETTINGS = {
       'title.fr',
       'title.ar',
       'authors.name',
+      'tags'
+    ],
+    attributesToSnippet: [
+      'excerpt.en:30',
+      'excerpt.es:30',
+      'excerpt.fr:30',
+      'excerpt.ar:30'
+    ],
+    hitsPerPage: 20,
+    maxValuesPerFacet: 100
+  },
+  agendas: {
+    searchableAttributes: [
+      'unordered(title.en,title.es,title.fr,title.ar)',
+      'unordered(subtitle.en,subtitle.es,subtitle.fr,subtitle.ar)',
+      'unordered(description.en,description.es,description.fr,description.ar)',
+      'unordered(organizations)',
+      'unordered(tags)',
+      'unordered(agendaType)'
+    ],
+    attributesForFaceting: [
+      'filterOnly(accessLevel)',
+      'agendaType',
+      'year',
+      'featured',
+      'tags',
+      'organizations',
+      'regionalCommunities',
+      'language'
+    ],
+    customRanking: [
+      'desc(featured)',
+      'desc(totalDownloadCount)',
+      'desc(publishDate)'
+    ],
+    attributesToHighlight: [
+      'title.en',
+      'title.es',
+      'title.fr',
+      'title.ar',
+      'organizations',
+      'tags'
+    ],
+    attributesToSnippet: [
+      'description.en:30',
+      'description.es:30',
+      'description.fr:30',
+      'description.ar:30'
+    ],
+    hitsPerPage: 20,
+    maxValuesPerFacet: 100
+  },
+  news: {
+    searchableAttributes: [
+      'unordered(title.en,title.es,title.fr,title.ar)',
+      'unordered(subtitle.en,subtitle.es,subtitle.fr,subtitle.ar)',
+      'unordered(excerpt.en,excerpt.es,excerpt.fr,excerpt.ar)',
+      'unordered(author.name)',
+      'unordered(tags)',
+      'unordered(organizations)',
+      'unordered(projects)'
+    ],
+    attributesForFaceting: [
+      'filterOnly(accessLevel)',
+      'featured',
+      'tags',
+      'organizations',
+      'projects',
+      'language',
+      'location.country',
+      'author.name'
+    ],
+    customRanking: [
+      'desc(featured)',
+      'desc(publishedAt)'
+    ],
+    attributesToHighlight: [
+      'title.en',
+      'title.es',
+      'title.fr',
+      'title.ar',
+      'author.name',
       'tags'
     ],
     attributesToSnippet: [
@@ -156,9 +239,13 @@ async function initializeSearch() {
         customRanking: ['desc(publishedAt)', 'desc(downloadCount)']
       }
 
-      // Use specific settings for case studies
+      // Use specific settings for each index
       if (indexName === ALGOLIA_INDICES.CASE_STUDIES) {
         settings = INDEX_SETTINGS.case_studies
+      } else if (indexName === ALGOLIA_INDICES.AGENDAS) {
+        settings = INDEX_SETTINGS.agendas
+      } else if (indexName === ALGOLIA_INDICES.NEWS) {
+        settings = INDEX_SETTINGS.news
       }
 
       await client.setSettings({
