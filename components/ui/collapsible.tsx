@@ -1,17 +1,38 @@
-import dynamic from 'next/dynamic'
+"use client"
 
-// Client-only rendering to avoid hydration mismatches with Radix UI's useId()
-export const Collapsible = dynamic(
-  () => import('./collapsible-client').then(mod => mod.Collapsible),
-  { ssr: false }
-)
+import * as CollapsiblePrimitive from "@radix-ui/react-collapsible"
+import { useStableId } from "@/lib/use-stable-id"
 
-export const CollapsibleTrigger = dynamic(
-  () => import('./collapsible-client').then(mod => mod.CollapsibleTrigger),
-  { ssr: false }
-)
+function Collapsible({
+  id,
+  ...props
+}: React.ComponentProps<typeof CollapsiblePrimitive.Root> & {
+  id?: string
+}) {
+  const stableId = useStableId('collapsible', id)
+  return <CollapsiblePrimitive.Root data-slot="collapsible" id={stableId} {...props} />
+}
 
-export const CollapsibleContent = dynamic(
-  () => import('./collapsible-client').then(mod => mod.CollapsibleContent),
-  { ssr: false }
-)
+function CollapsibleTrigger({
+  ...props
+}: React.ComponentProps<typeof CollapsiblePrimitive.CollapsibleTrigger>) {
+  return (
+    <CollapsiblePrimitive.CollapsibleTrigger
+      data-slot="collapsible-trigger"
+      {...props}
+    />
+  )
+}
+
+function CollapsibleContent({
+  ...props
+}: React.ComponentProps<typeof CollapsiblePrimitive.CollapsibleContent>) {
+  return (
+    <CollapsiblePrimitive.CollapsibleContent
+      data-slot="collapsible-content"
+      {...props}
+    />
+  )
+}
+
+export { Collapsible, CollapsibleTrigger, CollapsibleContent }
