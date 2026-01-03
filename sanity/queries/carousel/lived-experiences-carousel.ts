@@ -43,7 +43,8 @@ export const livedExperiencesCarouselQuery = groq`
     },
     tags[] -> {
       _id,
-      label
+      label,
+      color
     },
     featured,
     slug

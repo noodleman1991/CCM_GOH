@@ -7,6 +7,7 @@ import Blocks from '@/components/blocks/index'
 import HybridContentFlow from '@/components/blocks/hybrid-content-flow';
 import RegionalCommunityTemplate from '@/components/templates/regional-community-template';
 import { notFound } from "next/navigation";
+import { isRTL } from "@/i18n/i18n-helpers";
 
 export async function generateStaticParams() {
     const data = await fetchSanityRCPagesStaticParams();
@@ -55,8 +56,11 @@ export default async function RegionalCommunityPage({
     // Get user ID for download tracking
     const { userId } = await auth();
 
+    // Determine text direction
+    const rtl = isRTL(locale);
+
     return (
-        <main>
+        <main dir={rtl ? 'rtl' : 'ltr'}>
             {/* Your existing titleHero */}
             {pageData.titleHero && (
                 <Blocks

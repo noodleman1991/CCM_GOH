@@ -41,20 +41,44 @@ export default defineType({
     }),
     defineField({
       name: "tagLine",
-      type: "string",
+      type: "object",
+      title: "Tag Line",
+      description: "Localized tag line text",
+      fields: [
+        { name: "en", title: "English", type: "string" },
+        { name: "es", title: "Español", type: "string" },
+        { name: "fr", title: "Français", type: "string" },
+        { name: "ar", title: "العربية", type: "string" },
+      ],
     }),
     defineField({
       name: "title",
-      type: "string",
+      type: "object",
+      title: "Title",
+      description: "Localized section title",
+      fields: [
+        { name: "en", title: "English", type: "string" },
+        { name: "es", title: "Español", type: "string" },
+        { name: "fr", title: "Français", type: "string" },
+        { name: "ar", title: "العربية", type: "string" },
+      ],
     }),
     defineField({
       name: "description",
-      type: "text",
+      type: "object",
+      title: "Description",
+      description: "Localized section description",
+      fields: [
+        { name: "en", title: "English", type: "text" },
+        { name: "es", title: "Español", type: "text" },
+        { name: "fr", title: "Français", type: "text" },
+        { name: "ar", title: "العربية", type: "text" },
+      ],
     }),
   ],
   preview: {
     select: {
-      title: "title",
+      title: "title.en",
     },
     prepare({ title }) {
       return {

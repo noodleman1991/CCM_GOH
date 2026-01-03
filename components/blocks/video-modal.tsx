@@ -51,6 +51,7 @@ interface LivedExperience {
       fr?: string;
       ar?: string;
     };
+    color?: string;
   }>;
 }
 
@@ -242,12 +243,20 @@ export function VideoModal({
                   {experience.tags
                     .filter((tag) => tag && tag.label)
                     .map((tag) => {
+                      // Skip tags without color field
+                      if (!tag.color) return null;
+
                       const tagLabel = getLocalizedText(tag.label, locale);
                       if (!tagLabel) return null;
                       return (
                         <span
                           key={tag._id}
-                          className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border-2 bg-[var(--color-ccm-water)]/10 text-[var(--color-ccm-midnight)] border-[var(--color-ccm-water)]/30"
+                          className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border-2"
+                          style={{
+                            borderColor: tag.color,
+                            color: tag.color,
+                            backgroundColor: `${tag.color}10`
+                          }}
                         >
                           {tagLabel}
                         </span>

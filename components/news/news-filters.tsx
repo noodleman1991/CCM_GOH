@@ -298,7 +298,7 @@ export default function NewsFilters({ currentFilters, tags = [], communities = [
                         <SelectContent>
                           <SelectItem value="all">{t('communityPlaceholder')}</SelectItem>
                           {communities.map((community) => (
-                            <SelectItem key={community._id} value={getCommunityName(community)}>
+                            <SelectItem key={community._id} value={community.slug}>
                               {getCommunityName(community)}
                               {community.newsCount !== undefined && (
                                 <span className="ml-1 text-xs text-muted-foreground">

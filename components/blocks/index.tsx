@@ -65,7 +65,7 @@ export default function Blocks({ blocks, locale, userId }: BlocksProps) {
     }) || []) as Exclude<typeof blocks, { _type: 'block' }>;
 
     return (
-        <div dir={rtl ? 'rtl' : 'ltr'}>
+        <>
             {pageBlocks.map((block) => {
                 const Component = componentMap[block._type];
                 if (!Component) {
@@ -84,6 +84,6 @@ export default function Blocks({ blocks, locale, userId }: BlocksProps) {
                     />
                 );
             })}
-        </div>
+        </>
     );
 }

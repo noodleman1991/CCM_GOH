@@ -41,6 +41,7 @@ interface GridCaseStudyComponentProps {
     className?: string;
     color?: string;
     cardVariant?: string;
+    disableModal?: boolean;
 }
 
 export default function GridCaseStudyComponent({
@@ -56,6 +57,7 @@ export default function GridCaseStudyComponent({
                                                    userId,
                                                    className,
                                                    cardVariant = "classic",
+                                                   disableModal = false,
                                                }: GridCaseStudyComponentProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -132,7 +134,7 @@ export default function GridCaseStudyComponent({
                     isRTLLocale && "rtl",
                     className
                 )}
-                onClick={() => setIsModalOpen(true)}
+                onClick={() => !disableModal && setIsModalOpen(true)}
             >
             {/* Access restriction overlay */}
             {!canAccess && (
@@ -241,19 +243,24 @@ export default function GridCaseStudyComponent({
                 {/* Tags */}
                 {showTags && caseStudy.tags && caseStudy.tags.length > 0 && (
                     <div className="flex flex-wrap gap-1 mt-3">
-                        {caseStudy.tags.slice(0, 3).map((tag: any) => (
-                            <Badge
-                                key={tag._id}
-                                variant="outline"
-                                className="text-xs"
-                                style={{
-                                    borderColor: tag.color,
-                                    color: tag.color
-                                }}
-                            >
-                                {getLocalizedText(tag.label, supportedLocale)}
-                            </Badge>
-                        ))}
+                        {caseStudy.tags.slice(0, 3).map((tag: any) => {
+                            // Skip null or incomplete tags
+                            if (!tag || !tag.color) return null;
+
+                            return (
+                                <Badge
+                                    key={tag._id}
+                                    variant="outline"
+                                    className="text-xs"
+                                    style={{
+                                        borderColor: tag.color,
+                                        color: tag.color
+                                    }}
+                                >
+                                    {getLocalizedText(tag.label, supportedLocale)}
+                                </Badge>
+                            );
+                        })}
                         {caseStudy.tags.length > 3 && (
                             <Badge variant="outline" className="text-xs">
                                 {getMoreText(caseStudy.tags.length - 3)}
@@ -293,12 +300,14 @@ export default function GridCaseStudyComponent({
             </CardFooter>
         </Card>
 
-        <CaseStudyModal
-            isOpen={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
-            caseStudy={caseStudy}
-            locale={locale}
-        />
+        {!disableModal && (
+            <CaseStudyModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                caseStudy={caseStudy}
+                locale={locale}
+            />
+        )}
         </>
     );
 }

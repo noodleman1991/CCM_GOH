@@ -21,39 +21,38 @@ export default function SectionContainer({
   const backgroundStyles = getBackgroundStyles(background);
   const hasBackground = background && background.type !== "none";
 
-  // Common padding classes
+  // Vertical padding only
   const verticalPadding = cn(
     "my-8 lg:my-10 xl:my-12",
     padding?.top ? "pt-12 xl:pt-16" : undefined,
-    padding?.bottom ? "pb-12 xl:pb-16" : undefined,
+    padding?.bottom ? "pb-12 xl:pb-16" : undefined, // Fixed typo: was pt-16
   );
 
   if (hasBackground) {
     return (
-      <div
-        className={cn(
-          "relative w-full grid grid-cols-[1fr_min(theme(maxWidth.6xl),100%)_1fr]",
-          "[&>*]:col-start-2",
-          verticalPadding,
-          backgroundStyles.className
-        )}
-        style={backgroundStyles.style}
-      >
-        {/* Full-width background */}
+      <section className={cn("relative w-full -mx-4", verticalPadding)}>
+        {/* Full-width background - positioned relative to section which has height */}
         <div
-          className="absolute inset-0 -z-10 col-span-full row-span-full"
+          className={cn(
+            "absolute inset-0 w-full",
+            backgroundStyles.className
+          )}
+          style={backgroundStyles.style}
           aria-hidden="true"
         />
 
-        {/* Content constrained to middle column */}
-        <div className={cn("px-4 sm:px-6 lg:px-8", className)}>
+        {/* Centered content with horizontal padding restored and increased to compensate for -mx-4 */}
+        <div className={cn(
+          "relative mx-auto max-w-6xl px-8 sm:px-10 lg:px-12",
+          className
+        )}>
           {children}
         </div>
-      </div>
+      </section>
     );
   }
 
-  // No background: simple centered container
+  // No background: simple centered container with horizontal padding
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className={cn("relative", verticalPadding, className)}>

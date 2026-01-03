@@ -36,7 +36,8 @@ export function CaseStudyModal({ isOpen, onClose, caseStudy, locale }: CaseStudy
       <DialogContent
         className={cn(
           "w-[95vw] max-w-sm sm:max-w-lg md:max-w-2xl lg:max-w-3xl xl:max-w-4xl",
-          "max-h-[95vh] overflow-y-auto",
+          "h-[95vh]",
+          "flex flex-col",
           "p-0",
           isRTL && "rtl"
         )}
@@ -48,7 +49,7 @@ export function CaseStudyModal({ isOpen, onClose, caseStudy, locale }: CaseStudy
         </DialogHeader>
 
         {/* Case Study Content */}
-        <div className="p-8 space-y-6">
+        <div className="overflow-y-auto flex-1 p-8 space-y-6">
           {/* Header */}
           <div className="space-y-4">
             {/* Featured badge */}
@@ -94,18 +95,23 @@ export function CaseStudyModal({ isOpen, onClose, caseStudy, locale }: CaseStudy
             {/* Tags */}
             {caseStudy.tags && caseStudy.tags.length > 0 && (
               <div className="flex flex-wrap gap-2">
-                {caseStudy.tags.map((tag: any) => (
-                  <Badge
-                    key={tag._id}
-                    variant="outline"
-                    style={{
-                      borderColor: tag.color,
-                      color: tag.color
-                    }}
-                  >
-                    {getLocalizedText(tag.label, supportedLocale)}
-                  </Badge>
-                ))}
+                {caseStudy.tags.map((tag: any) => {
+                  // Skip null or incomplete tags
+                  if (!tag || !tag.color) return null;
+
+                  return (
+                    <Badge
+                      key={tag._id}
+                      variant="outline"
+                      style={{
+                        borderColor: tag.color,
+                        color: tag.color
+                      }}
+                    >
+                      {getLocalizedText(tag.label, supportedLocale)}
+                    </Badge>
+                  );
+                })}
               </div>
             )}
           </div>

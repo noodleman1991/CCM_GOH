@@ -32,7 +32,7 @@ function FilterSection({ attribute, title, limit = 8, showMore = true }: FilterS
     sortBy: ['count:desc', 'name:asc']
   }, { skipSuspense: true })
 
-  const [isOpen, setIsOpen] = useState(true)
+  const [isOpen, setIsOpen] = useState(false)
   const ft = useTranslations('search.filterOptions')
 
   if (items.length === 0) return null

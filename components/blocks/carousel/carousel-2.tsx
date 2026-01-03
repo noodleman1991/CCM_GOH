@@ -14,6 +14,7 @@ import { urlFor } from "@/sanity/lib/image";
 import { StarRating } from "@/components/ui/star-rating";
 import PortableTextRenderer from "@/components/portable-text-renderer";
 import { PAGE_QUERYResult } from "@/sanity.types";
+import { getLocalizedField } from "@/lib/localization-utils";
 
 type Carousel2Props = Extract<
   NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number],
@@ -32,18 +33,28 @@ export default function Carousel2({
 }: Carousel2Props) {
   const color = stegaClean(colorVariant);
 
+  const supportedLocale = (locale || "en") as 'en' | 'es' | 'fr' | 'ar';
+
+  const localizedTitle = typeof title === 'string'
+    ? title
+    : getLocalizedField(title, supportedLocale, '');
+
+  const localizedDescription = typeof description === 'string'
+    ? description
+    : getLocalizedField(description, supportedLocale, '');
+
   return (
     <SectionContainer color={color} padding={padding}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col space-y-6 overflow-hidden">
-          {title && (
+          {localizedTitle && (
             <div className="text-center">
               <h2 className="text-3xl font-bold tracking-tight sm:text-4xl break-words">
-                {title}
+                {localizedTitle}
               </h2>
-              {description && (
+              {localizedDescription && (
                 <p className="mt-4 text-lg text-muted-foreground">
-                  {description}
+                  {localizedDescription}
                 </p>
               )}
             </div>

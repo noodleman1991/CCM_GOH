@@ -117,6 +117,31 @@ export default defineType({
             validation: (Rule) => Rule.max(15),
         }),
 
+        defineField({
+            name: "topic",
+            title: "Topic",
+            type: "string",
+            description: "Main topic category for this case study",
+            group: "content",
+            options: {
+                list: [
+                    { title: "Climate Change & Environment", value: "climate-environment" },
+                    { title: "Mental Health & Wellbeing", value: "mental-health" },
+                    { title: "Food Security & Agriculture", value: "food-security" },
+                    { title: "Health & Medicine", value: "health-medicine" },
+                    { title: "Education & Learning", value: "education" },
+                    { title: "Community Development", value: "community-development" },
+                    { title: "Economic Development", value: "economic-development" },
+                    { title: "Technology & Innovation", value: "technology-innovation" },
+                    { title: "Policy & Governance", value: "policy-governance" },
+                    { title: "Youth Engagement", value: "youth-engagement" },
+                    { title: "Indigenous Knowledge", value: "indigenous-knowledge" },
+                    { title: "Other", value: "other" },
+                ],
+            },
+            validation: (Rule) => Rule.required(),
+        }),
+
         // Metadata fields
         defineField({
             name: "submittedBy",

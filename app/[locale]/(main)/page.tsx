@@ -10,6 +10,7 @@ import {
 import { generatePageMetadata } from "@/sanity/lib/metadata";
 import MissingSanityPage from "@/components/ui/missing-sanity-page";
 import { routing } from '@/i18n/routing';
+import { isRTL } from "@/i18n/i18n-helpers";
 
 export async function generateStaticParams() {
     const homepages = await fetchSanityHomepageStaticParams();
@@ -74,6 +75,9 @@ interface IndexPageProps {
 export default async function IndexPage({ params }: IndexPageProps) {
     const { locale } = await params;
 
+    // Determine text direction for RTL languages
+    const rtl = isRTL(locale);
+
     const homepage = await fetchSanityHomepageBySlug({
         slug: "index",
         locale,
@@ -94,11 +98,11 @@ export default async function IndexPage({ params }: IndexPageProps) {
     }
 
     return (
-        <>
+        <main dir={rtl ? 'rtl' : 'ltr'}>
             <Blocks
                 blocks={page?.blocks ?? []}
                 locale={locale}
             />
-        </>
+        </main>
     );
 }

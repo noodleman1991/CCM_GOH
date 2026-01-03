@@ -6,11 +6,14 @@ import { urlFor } from "@/sanity/lib/image";
 import { Fragment } from "react";
 import { motion } from "motion/react";
 import { PAGE_QUERYResult } from "@/sanity.types";
+import { getLocalizedField } from "@/lib/localization-utils";
 
 type LogoCloud1Props = Extract<
   NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number],
   { _type: "logo-cloud-1" }
->;
+> & {
+  locale?: string;
+};
 
 export default function LogoCloud1({
   padding,
@@ -18,8 +21,19 @@ export default function LogoCloud1({
   title,
   description,
   images,
+  locale = "en",
 }: LogoCloud1Props) {
   const color = stegaClean(colorVariant);
+
+  const supportedLocale = (locale || "en") as 'en' | 'es' | 'fr' | 'ar';
+
+  const localizedTitle = typeof title === 'string'
+    ? title
+    : getLocalizedField(title, supportedLocale, '');
+
+  const localizedDescription = typeof description === 'string'
+    ? description
+    : getLocalizedField(description, supportedLocale, '');
 
   return (
     <SectionContainer
@@ -29,14 +43,14 @@ export default function LogoCloud1({
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-8">
-          {title && (
+          {localizedTitle && (
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl animate-fade-up [animation-delay:100ms] opacity-0">
-              {title}
+              {localizedTitle}
             </h2>
           )}
-          {description && (
+          {localizedDescription && (
             <p className="mt-4 text-lg text-muted-foreground animate-fade-up [animation-delay:200ms] opacity-0">
-              {description}
+              {localizedDescription}
             </p>
           )}
         </div>

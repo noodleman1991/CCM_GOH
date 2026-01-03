@@ -5,6 +5,7 @@ import Link from "next/link";
 import { createElement } from "react";
 import { stegaClean } from "next-sanity";
 import { PAGE_QUERYResult } from "@/sanity.types";
+import { getLocalizedField, getLocalizedPortableText } from "@/lib/localization-utils";
 
 type Block = NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number];
 type SplitRow = Extract<Block, { _type: "split-row" }>;
@@ -28,6 +29,21 @@ export default function SplitContent({
   link,
   locale = "en",
 }: SplitContentProps) {
+  const supportedLocale = locale as 'en' | 'es' | 'fr' | 'ar';
+
+  // Extract localized content
+  const localizedTagLine = typeof tagLine === 'string'
+    ? tagLine
+    : getLocalizedField(tagLine, supportedLocale, '');
+
+  const localizedTitle = typeof title === 'string'
+    ? title
+    : getLocalizedField(title, supportedLocale, '');
+
+  const localizedBody = Array.isArray(body)
+    ? body
+    : getLocalizedPortableText(body, supportedLocale);
+
   return (
     <div
       className={cn(
@@ -43,18 +59,18 @@ export default function SplitContent({
           noGap ? "px-10" : undefined
         )}
       >
-        {tagLine && <p className="text-base font-semibold break-words">{tagLine}</p>}
-        {title &&
+        {localizedTagLine && <p className="text-base font-semibold break-words">{localizedTagLine}</p>}
+        {localizedTitle &&
           createElement(
             "h2",
             {
               className: cn("my-4 font-semibold leading-[1.2] break-words"),
             },
-            title
+            localizedTitle
           )}
-        {body && (
+        {localizedBody && (
           <div className="break-words w-full">
-            <PortableTextRenderer value={body} locale={locale} />
+            <PortableTextRenderer value={localizedBody} locale={locale} />
           </div>
         )}
         {link?.href && (

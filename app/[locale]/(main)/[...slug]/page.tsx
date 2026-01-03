@@ -10,6 +10,7 @@ import {
 } from "@/sanity/lib/fetch";
 import { notFound } from "next/navigation";
 import { generatePageMetadata } from "@/sanity/lib/metadata";
+import { isRTL } from "@/i18n/i18n-helpers";
 
 export async function generateStaticParams() {
     // Fetch both regional community pages AND generic pages
@@ -98,8 +99,11 @@ export default async function Page({
         notFound();
     }
 
+    // Determine text direction for RTL languages
+    const rtl = isRTL(locale);
+
     return (
-        <>
+        <main dir={rtl ? 'rtl' : 'ltr'}>
             {/* Regional Community Page specific heros */}
             {!isGenericPage && page.titleHero && (
                 <Hero1 {...page.titleHero} locale={locale} />
@@ -111,6 +115,6 @@ export default async function Page({
 
             {/* Render blocks (works for both page types) */}
             <Blocks blocks={page.blocks ?? []} locale={locale} />
-        </>
+        </main>
     );
 }

@@ -78,6 +78,10 @@ import manualContentInsert from "./schemas/blocks/inserts/manual-content-insert"
 import dynamicContentInsert from "./schemas/blocks/inserts/dynamic-content-insert";
 import separatorBlock from "./schemas/blocks/inserts/separator-block";
 
+// Reference-based blocks (Option 3: Dynamic References)
+import regionalCommunityList from "./schemas/blocks/regional-community-list";
+import documentReferenceList from "./schemas/blocks/document-reference-list";
+
 // Code input is now provided by @sanity/code-input plugin
 
 
@@ -156,5 +160,8 @@ export const schema: { types: SchemaTypeDefinition[] } = {
         manualContentInsert,
         dynamicContentInsert,
         separatorBlock,
+        // reference-based blocks
+        regionalCommunityList,
+        documentReferenceList,
     ],
 };

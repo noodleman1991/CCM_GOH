@@ -52,7 +52,6 @@ export function NavMain({
                 asChild
                 open={item.isActive}
                 onOpenChange={item.onToggle}
-                suppressHydrationWarning
               >
                 <SidebarMenuItem>
                   <CollapsibleTrigger asChild>
