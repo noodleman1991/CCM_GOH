@@ -71,11 +71,11 @@ export async function POST(request: NextRequest) {
     if (shouldIndexUser(user)) {
       try {
         const record = transformUserForIndex(user)
-        await algoliaClient.saveObject({
+        await algoliaClient.saveObjects({
           indexName: ALGOLIA_INDICES.USERS,
-          body: record
+          objects: [record]
         })
-        
+
         console.log(`✅ Updated user ${userId} in search index`)
         
         return NextResponse.json({
