@@ -31,8 +31,7 @@ const isProtectedApiRoute = createRouteMatcher([
     '/api/account',
     '/api/account/(.*)',
     '/api/users/(.*)',
-    '/api/sync/(.*)',
-    '/api/search/(.*)',
+    // Removed: '/api/search/(.*)' - sync routes have internal auth
     '/api/onboarding/(.*)',
     '/api/case-studies/submit',
 ])
@@ -48,6 +47,11 @@ const intlMiddleware = createIntlMiddleware(routing)
 export const proxy = clerkMiddleware(async (auth, req: NextRequest) => {
     // Handle webhook routes - skip all middleware
     if (req.nextUrl.pathname.startsWith('/api/webhooks/')) {
+        return NextResponse.next()
+    }
+
+    // Handle sync routes - skip Clerk auth, they have internal Bearer token auth
+    if (req.nextUrl.pathname.match(/^\/api\/search\/.*\/sync$/)) {
         return NextResponse.next()
     }
 

@@ -51,8 +51,8 @@ async function syncAll() {
 
       const result = await response.json()
 
-      console.log(`✅ ${endpoint.name}: ${result.count || 0} records indexed`)
-      results.push({ name: endpoint.name, success: true, count: result.count || 0 })
+      console.log(`✅ ${endpoint.name}: ${result.indexed || 0} records indexed`)
+      results.push({ name: endpoint.name, success: true, count: result.indexed || 0 })
     } catch (error) {
       console.error(`❌ ${endpoint.name}: ${error.message}`)
       results.push({ name: endpoint.name, success: false, error: error.message })

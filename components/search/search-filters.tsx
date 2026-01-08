@@ -99,7 +99,7 @@ function FilterSection({ attribute, title, limit = 8, showMore = true }: FilterS
 
 function ClearFilters() {
   const { refine, canRefine } = useClearRefinements({}, { skipSuspense: true })
-  const t = useTranslations('search.filters')
+  const t = useTranslations('search.filterOptions')
 
   if (!canRefine) return null
 
