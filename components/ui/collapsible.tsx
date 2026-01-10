@@ -1,7 +1,6 @@
 "use client"
 
 import * as CollapsiblePrimitive from "@radix-ui/react-collapsible"
-import { useStableId } from "@/lib/use-stable-id"
 
 function Collapsible({
   id,
@@ -9,8 +8,8 @@ function Collapsible({
 }: React.ComponentProps<typeof CollapsiblePrimitive.Root> & {
   id?: string
 }) {
-  const stableId = useStableId('collapsible', id)
-  return <CollapsiblePrimitive.Root data-slot="collapsible" id={stableId} {...props} />
+  // Radix UI handles IDs internally - removed useStableId to fix hydration errors
+  return <CollapsiblePrimitive.Root data-slot="collapsible" id={id} {...props} />
 }
 
 function CollapsibleTrigger({
