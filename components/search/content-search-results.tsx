@@ -7,7 +7,7 @@ import { FileText, Briefcase, Calendar, Download, Star, Building2, MapPin } from
 import Link from 'next/link'
 import { CaseStudySearchRecord, AgendaSearchRecord, NewsSearchRecord } from '@/lib/algolia'
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination'
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
 import { format } from 'date-fns'
 
 interface ContentSearchResultsProps {
@@ -15,6 +15,7 @@ interface ContentSearchResultsProps {
 }
 
 function CaseStudyResult({ hit }: { hit: CaseStudySearchRecord }) {
+  const locale = useLocale()
   const getLocalizedTitle = (title: any) => {
     if (typeof title === 'string') return title
     return title?.en || title?.es || title?.fr || title?.ar || 'Untitled'
@@ -40,7 +41,7 @@ function CaseStudyResult({ hit }: { hit: CaseStudySearchRecord }) {
               <div>
                 <h3 className="font-semibold text-lg">
                   <Link
-                    href={`/case-studies/${hit.slug}`}
+                    href={`/${locale}/research-and-action/case-studies/${hit.slug}`}
                     className="hover:underline text-primary"
                   >
                     {getLocalizedTitle(hit.title)}
@@ -134,6 +135,7 @@ function CaseStudyResult({ hit }: { hit: CaseStudySearchRecord }) {
 }
 
 function AgendaResult({ hit }: { hit: AgendaSearchRecord }) {
+  const locale = useLocale()
   const getLocalizedTitle = (title: any) => {
     if (typeof title === 'string') return title
     return title?.en || title?.es || title?.fr || title?.ar || 'Untitled'
@@ -163,6 +165,11 @@ function AgendaResult({ hit }: { hit: AgendaSearchRecord }) {
     return labels[type] || type
   }
 
+  // Agendas don't have detail pages - link to parent community or fallback
+  const agendaHref = hit.regionalCommunity?.slug
+    ? `/${locale}/communities/${hit.regionalCommunity.slug}`
+    : `/${locale}/research-and-action`
+
   return (
     <Card className="hover:shadow-md transition-shadow">
       <CardContent className="p-6">
@@ -178,7 +185,7 @@ function AgendaResult({ hit }: { hit: AgendaSearchRecord }) {
               <div>
                 <h3 className="font-semibold text-lg">
                   <Link
-                    href={`/agendas/${hit.slug}`}
+                    href={agendaHref}
                     className="hover:underline text-primary"
                   >
                     {getLocalizedTitle(hit.title)}
@@ -267,6 +274,7 @@ function AgendaResult({ hit }: { hit: AgendaSearchRecord }) {
 }
 
 function NewsResult({ hit }: { hit: NewsSearchRecord }) {
+  const locale = useLocale()
   const getLocalizedTitle = (title: any) => {
     if (typeof title === 'string') return title
     return title?.en || title?.es || title?.fr || title?.ar || 'Untitled'
@@ -296,7 +304,7 @@ function NewsResult({ hit }: { hit: NewsSearchRecord }) {
               <div>
                 <h3 className="font-semibold text-lg">
                   <Link
-                    href={`/news/${hit.slug}`}
+                    href={`/${locale}/news/${hit.slug}`}
                     className="hover:underline text-primary"
                   >
                     {getLocalizedTitle(hit.title)}

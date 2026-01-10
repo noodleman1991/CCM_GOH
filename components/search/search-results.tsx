@@ -9,13 +9,14 @@ import { MapPin, Briefcase, Building } from 'lucide-react'
 import Link from 'next/link'
 import { UserSearchRecord } from '@/lib/algolia'
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination'
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
 
 interface SearchResultsProps {
   type: 'users' | 'content'
 }
 
 function UserResult({ hit }: { hit: UserSearchRecord }) {
+  const locale = useLocale()
   const getInitials = (firstName?: string, lastName?: string) => {
     return `${firstName?.[0] || ''}${lastName?.[0] || ''}`.toUpperCase()
   }
@@ -37,8 +38,8 @@ function UserResult({ hit }: { hit: UserSearchRecord }) {
             <div className="flex items-start justify-between">
               <div>
                 <h3 className="font-semibold text-lg">
-                  <Link 
-                    href={`/profiles/${hit.username}`}
+                  <Link
+                    href={`/${locale}/profiles/${hit.username}`}
                     className="hover:underline text-primary"
                   >
                     {hit.fullName || hit.username}
