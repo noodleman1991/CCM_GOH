@@ -361,9 +361,12 @@
         font-weight: 700;
     }
 
-    /* Ensure sidebar maintains its colors and override content text rules */
-    [data-sidebar] *, [data-sidebar] p, [data-sidebar] span, [data-sidebar] div {
-        color: inherit !important;
+    /* Sidebar navigation text inherits white color - excludes form inputs */
+    [data-sidebar] a,
+    [data-sidebar] [data-sidebar-menu-button],
+    [data-sidebar] [data-sidebar-menu-item],
+    [data-sidebar] [data-slot="sidebar-menu-button"] {
+        color: inherit;
     }
 }
 

@@ -141,7 +141,48 @@
     "viewAll": "Voir tout",
     "personalSettings": "Paramètres personnels",
     "buildingApp": "Construction de votre Application",
-    "dataFetching": "Récupération de Données"
+    "dataFetching": "Récupération de Données",
+    "submissions": {
+      "pageTitle": "Mes Soumissions",
+      "pageDescription": "Gérez vos soumissions d'études de cas et vos brouillons",
+      "title": "Mes Soumissions",
+      "description": "Gérez vos soumissions d'études de cas et vos brouillons",
+      "newCaseStudy": "Nouvelle Étude de Cas",
+      "status": {
+        "pending": "En Attente de Révision",
+        "approved": "Publié",
+        "rejected": "Rejeté",
+        "revision": "Révision Requise"
+      },
+      "tabs": {
+        "submissions": "Soumissions",
+        "drafts": "Brouillons"
+      },
+      "actions": {
+        "edit": "Modifier et Resoumettre",
+        "view": "Voir Publié",
+        "continue": "Continuer l'Écriture",
+        "underReview": "En Révision"
+      },
+      "empty": {
+        "submissions": {
+          "title": "Pas encore de soumissions",
+          "description": "Commencez par soumettre votre première étude de cas pour partager vos recherches avec la communauté.",
+          "action": "Soumettre une Étude de Cas"
+        },
+        "drafts": {
+          "title": "Aucun brouillon enregistré",
+          "description": "Vos brouillons d'études de cas apparaîtront ici automatiquement pendant que vous y travaillez."
+        }
+      },
+      "alerts": {
+        "revision": {
+          "title": "Action Requise",
+          "description": "Vous avez {count} étude{plural} de cas qui nécessite{singular} une révision basée sur les commentaires de l'éditeur.",
+          "editorFeedback": "Commentaires de l'éditeur:"
+        }
+      }
+    }
   },
   "settings": {
     "title": "Paramètres",
@@ -405,6 +446,46 @@
       "twitter": "Identifiant Twitter",
       "cancel": "Annuler",
       "save": "Enregistrer les Modifications"
+    },
+    "account": {
+      "pageTitle": "Compte et Sécurité",
+      "pageDescription": "Gérez les paramètres de votre compte, vos identifiants de connexion et vos options de sécurité",
+      "email": {
+        "title": "Adresse E-mail",
+        "description": "Mettez à jour votre adresse e-mail pour la connexion et les notifications",
+        "current": "E-mail actuel:",
+        "new": "Nouvelle adresse e-mail",
+        "none": "Aucune adresse e-mail",
+        "update": "Mettre à jour l'E-mail"
+      },
+      "phone": {
+        "title": "Numéro de Téléphone",
+        "description": "Mettez à jour votre numéro de téléphone pour l'authentification à deux facteurs",
+        "current": "Téléphone actuel:",
+        "new": "Nouveau numéro de téléphone",
+        "none": "Aucun numéro de téléphone",
+        "update": "Mettre à jour le Téléphone"
+      },
+      "password": {
+        "title": "Mot de passe",
+        "description": "Changez le mot de passe de votre compte",
+        "current": "Mot de passe actuel",
+        "new": "Nouveau mot de passe",
+        "confirm": "Confirmer le nouveau mot de passe",
+        "change": "Changer le Mot de passe"
+      },
+      "delete": {
+        "title": "Supprimer le Compte",
+        "description": "Supprimez définitivement votre compte et toutes les données associées. Cette action est irréversible.",
+        "button": "Supprimer le Compte",
+        "confirm": {
+          "title": "Êtes-vous absolument sûr?",
+          "description": "Cela supprimera définitivement votre compte et supprimera toutes vos données de nos serveurs. Cette action est irréversible.",
+          "type": "Pour confirmer, tapez",
+          "cancel": "Annuler",
+          "delete": "Supprimer le Compte"
+        }
+      }
     }
   },
   "profilePicture": {
@@ -711,7 +792,9 @@
         "expertise": {
           "climate": "Changement Climatique",
           "mentalHealth": "Santé Mentale",
-          "health": "Santé"
+          "health": "Santé",
+          "education": "Éducation",
+          "socialJustice": "Justice Sociale"
         },
         "organization": "Organisation",
         "organizationPlaceholder": "Entrez le nom de votre organisation",
@@ -957,6 +1040,15 @@
     "relatedProjects": "Projets Connexes",
     "studyAreas": "Domaines d'Étude",
     "allAuthors": "Tous les Auteurs"
+  },
+  "revisionAlert": {
+    "title": "Action Requise: Révision Nécessaire",
+    "description": "Vous avez {count} étude{plural} de cas qui nécessite{singular} une révision basée sur les commentaires de l'éditeur.",
+    "editorFeedback": "Commentaires de l'éditeur:",
+    "actions": {
+      "remindLater": "Me Rappeler Plus Tard",
+      "viewSubmissions": "Voir et Modifier les Soumissions"
+    }
   },
   "news": {
     "title": "Actualités",

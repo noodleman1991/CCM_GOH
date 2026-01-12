@@ -1,50 +1,43 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@clerk/nextjs/server'
-import { algoliaClient, ALGOLIA_INDICES, AlgoliaSearchResult } from '@/lib/algolia'
+import { algoliaClient, ALGOLIA_INDICES } from '@/lib/algolia'
 
 /**
  * GET endpoint to retrieve search result counts across all indices
  * Returns counts for: users, agendas, news, posts, case-studies
- * User counts are privacy-aware based on authentication status
+ * This endpoint is PUBLIC - authentication is optional for enhanced filtering
  */
 export async function GET(request: NextRequest) {
   try {
     // Check if Algolia client is available
     if (!algoliaClient) {
+      console.error('[Search Counts API] Algolia client is null - missing ALGOLIA_APP_ID or ALGOLIA_API_KEY')
       return NextResponse.json({
-        error: 'Search service not available - missing Algolia configuration'
-      }, { status: 503 })
+        success: false,
+        error: 'Search service not available - missing Algolia configuration',
+        counts: { users: 0, agendas: 0, news: 0, caseStudies: 0, posts: 0 },
+        authenticated: false
+      }, { status: 200 })
     }
 
-    // Get authentication status
-    const { userId } = await auth()
-    const isSignedIn = !!userId
+    // Try to get authentication status (optional - don't block if not authenticated)
+    let isSignedIn = false
+    try {
+      const { auth } = await import('@clerk/nextjs/server')
+      const authResult = await auth()
+      isSignedIn = !!authResult.userId
+    } catch (authError) {
+      // Auth failed - continue as unauthenticated
+      console.warn('[Search Counts API] Auth check failed, continuing as unauthenticated:', authError)
+    }
 
     // Generate privacy-aware filters for user search
     const generateUserFilters = () => {
-      const baseFilters = ['isSearchable:true']  // Only users who opted in
-
+      const baseFilters = ['isSearchable:true']
       if (!isSignedIn) {
-        // Unauthenticated users only see PUBLIC profiles
         baseFilters.push('profileVisibility:PUBLIC')
       } else {
-        // Authenticated users see PUBLIC + MEMBERS profiles
         baseFilters.push('(profileVisibility:PUBLIC OR profileVisibility:MEMBERS)')
       }
-
-      return baseFilters.join(' AND ')
-    }
-
-    // Generate content filters (agendas, news, case studies)
-    const generateContentFilters = () => {
-      const baseFilters = []
-
-      if (!isSignedIn) {
-        baseFilters.push('accessLevel:public')
-      } else {
-        baseFilters.push('accessLevel:public OR accessLevel:registered')
-      }
-
       return baseFilters.join(' AND ')
     }
 
@@ -64,51 +57,68 @@ export async function GET(request: NextRequest) {
           hitsPerPage: 0,
           filters: generateUserFilters()
         }]
+      }).catch((e) => {
+        console.warn('[Search Counts API] Users search failed:', e.message)
+        return { results: [{ nbHits: 0 }] }
       }),
-      // Agendas - with content filters
+      // Agendas - count all
       algoliaClient.search({
         requests: [{
           indexName: ALGOLIA_INDICES.AGENDAS,
           query: '',
-          hitsPerPage: 0,
-          filters: generateContentFilters()
+          hitsPerPage: 0
         }]
+      }).catch((e) => {
+        console.warn('[Search Counts API] Agendas search failed:', e.message)
+        return { results: [{ nbHits: 0 }] }
       }),
-      // News - always public
+      // News - count all
       algoliaClient.search({
         requests: [{
           indexName: ALGOLIA_INDICES.NEWS,
           query: '',
-          hitsPerPage: 0,
-          filters: 'accessLevel:public'
+          hitsPerPage: 0
         }]
+      }).catch((e) => {
+        console.warn('[Search Counts API] News search failed:', e.message)
+        return { results: [{ nbHits: 0 }] }
       }),
-      // Case Studies - approved and with content filters
+      // Case Studies - count all
       algoliaClient.search({
         requests: [{
           indexName: ALGOLIA_INDICES.CASE_STUDIES,
           query: '',
-          hitsPerPage: 0,
-          filters: `status:approved AND ${generateContentFilters()}`
+          hitsPerPage: 0
         }]
+      }).catch((e) => {
+        console.warn('[Search Counts API] Case studies search failed:', e.message)
+        return { results: [{ nbHits: 0 }] }
       }),
-      // Posts - placeholder (index may not exist yet)
+      // Posts - placeholder
       algoliaClient.search({
         requests: [{
           indexName: ALGOLIA_INDICES.POSTS,
           query: '',
           hitsPerPage: 0
         }]
-      }).catch(() => ({ results: [{ nbHits: 0 }] })) // Gracefully handle missing index
+      }).catch((e) => {
+        console.warn('[Search Counts API] Posts search failed:', e.message)
+        return { results: [{ nbHits: 0 }] }
+      })
     ])
 
-    // Extract counts from results with proper typing
+    // Extract counts from results - Algolia v5 response structure
+    const getCount = (result: any): number => {
+      const firstResult = result?.results?.[0]
+      return firstResult?.nbHits ?? firstResult?.totalHits ?? 0
+    }
+
     const counts = {
-      users: (usersResult.results[0] as AlgoliaSearchResult)?.nbHits || 0,
-      agendas: (agendasResult.results[0] as AlgoliaSearchResult)?.nbHits || 0,
-      news: (newsResult.results[0] as AlgoliaSearchResult)?.nbHits || 0,
-      caseStudies: (caseStudiesResult.results[0] as AlgoliaSearchResult)?.nbHits || 0,
-      posts: (postsResult.results[0] as AlgoliaSearchResult)?.nbHits || 0
+      users: getCount(usersResult),
+      agendas: getCount(agendasResult),
+      news: getCount(newsResult),
+      caseStudies: getCount(caseStudiesResult),
+      posts: getCount(postsResult)
     }
 
     return NextResponse.json({
@@ -118,13 +128,16 @@ export async function GET(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Failed to get search counts:', error)
+    console.error('[Search Counts API] Failed to get search counts:', error)
     return NextResponse.json(
       {
+        success: false,
         error: 'Failed to get search counts',
-        details: error instanceof Error ? error.message : 'Unknown error'
+        details: error instanceof Error ? error.message : 'Unknown error',
+        counts: { users: 0, agendas: 0, news: 0, caseStudies: 0, posts: 0 },
+        authenticated: false
       },
-      { status: 500 }
+      { status: 200 }
     )
   }
 }

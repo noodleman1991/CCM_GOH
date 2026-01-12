@@ -5,6 +5,81 @@ import { onboardingContentQueryWithFallback } from "@/sanity/queries/onboarding-
 import { fetchUserManagementOptionsWithLocale } from "@/lib/actions/sync-user-management"
 import { prisma } from "@/lib/prisma"
 import { OnboardingClient } from "./onboarding-client"
+import { getRegionalCommunities } from "@/sanity/queries/regional-communities"
+
+// Fallback communities with multilingual names (all 4 languages)
+const FALLBACK_COMMUNITIES = [
+    {
+        slug: 'sub-saharan-africa',
+        regionalName: 'SUB_SAHARAN_AFRICA',
+        name: {
+            en: 'Sub-Saharan Africa',
+            es: 'África subsahariana',
+            fr: 'Afrique subsaharienne',
+            ar: 'أفريقيا جنوب الصحراء'
+        }
+    },
+    {
+        slug: 'northern-africa-and-western-asia',
+        regionalName: 'NORTHERN_AFRICA_AND_WESTERN_ASIA',
+        name: {
+            en: 'Northern Africa and Western Asia',
+            es: 'África del Norte y Asia Occidental',
+            fr: 'Afrique du Nord et Asie occidentale',
+            ar: 'شمال أفريقيا وغرب آسيا'
+        }
+    },
+    {
+        slug: 'central-and-southern-asia',
+        regionalName: 'CENTRAL_AND_SOUTHERN_ASIA',
+        name: {
+            en: 'Central and Southern Asia',
+            es: 'Asia Central y del Sur',
+            fr: 'Asie centrale et du Sud',
+            ar: 'وسط وجنوب آسيا'
+        }
+    },
+    {
+        slug: 'eastern-and-south-eastern-asia',
+        regionalName: 'EASTERN_AND_SOUTH_EASTERN_ASIA',
+        name: {
+            en: 'Eastern and South-Eastern Asia',
+            es: 'Asia Oriental y Sudoriental',
+            fr: 'Asie de l\'Est et du Sud-Est',
+            ar: 'شرق وجنوب شرق آسيا'
+        }
+    },
+    {
+        slug: 'latin-america-and-the-caribbean',
+        regionalName: 'LATIN_AMERICA_AND_THE_CARIBBEAN',
+        name: {
+            en: 'Latin America and the Caribbean',
+            es: 'América Latina y el Caribe',
+            fr: 'Amérique latine et Caraïbes',
+            ar: 'أمريكا اللاتينية والكاريبي'
+        }
+    },
+    {
+        slug: 'oceania',
+        regionalName: 'OCEANIA',
+        name: {
+            en: 'Oceania',
+            es: 'Oceanía',
+            fr: 'Océanie',
+            ar: 'أوقيانوسيا'
+        }
+    },
+    {
+        slug: 'europe-and-north-america',
+        regionalName: 'EUROPE_AND_NORTH_AMERICA',
+        name: {
+            en: 'Europe and North America',
+            es: 'Europa y América del Norte',
+            fr: 'Europe et Amérique du Nord',
+            ar: 'أوروبا وأمريكا الشمالية'
+        }
+    }
+]
 
 export default async function OnboardingPage({ params }: { params: Promise<{ locale: string }> }) {
     const { locale } = await params
@@ -116,23 +191,64 @@ export default async function OnboardingPage({ params }: { params: Promise<{ loc
         fetchUserManagementOptionsWithLocale(locale)
     ])
 
-    // Fetch communities from API (server-side)
+    // Fetch communities directly from Prisma/Sanity (avoids HTTP self-call issues)
     let communities: any[] = []
     try {
-        const baseUrl = process.env.NEXT_PUBLIC_APP_URL
-            || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
-        const response = await fetch(`${baseUrl}/api/communities`, {
-            cache: 'no-store',
-            headers: { 'Content-Type': 'application/json' }
+        // Fetch communities from Sanity (source of truth for names and translations)
+        const sanityCommunities = await getRegionalCommunities()
+
+        // Fetch from database to get IDs for joining with user profiles
+        const dbCommunities = await prisma.community.findMany({
+            where: { type: 'REGIONAL' },
+            select: {
+                id: true,
+                name: true,
+                regionalName: true
+            }
         })
 
-        if (response.ok) {
-            const data = await response.json()
-            communities = data.data || []
-            console.log('[Onboarding] Communities loaded:', communities.length)
+        // Create a map of regionalName -> database ID
+        const regionalNameToId = new Map(
+            dbCommunities.map(c => [c.regionalName, c.id])
+        )
+
+        // If Sanity is empty, use hardcoded fallback with multilingual support
+        if (!sanityCommunities || sanityCommunities.length === 0) {
+            console.warn('[Onboarding] ⚠️ No communities in Sanity, using hardcoded fallback')
+            communities = FALLBACK_COMMUNITIES
+                .map(community => {
+                    const dbId = regionalNameToId.get(community.regionalName as any)
+                    if (!dbId) return null
+                    return {
+                        id: dbId,
+                        slug: community.slug,
+                        name: community.name,
+                        type: 'REGIONAL',
+                        regionalName: community.regionalName
+                    }
+                })
+                .filter(Boolean)
         } else {
-            console.error('[Onboarding] Communities API error:', response.status)
+            // Merge Sanity data with database IDs
+            communities = sanityCommunities
+                .map((community: any) => {
+                    const regionalName = community.slug
+                        .replace(/-/g, '_')
+                        .toUpperCase()
+                    const dbId = regionalNameToId.get(regionalName)
+                    if (!dbId) return null
+                    return {
+                        id: dbId,
+                        slug: community.slug,
+                        name: community.name,
+                        type: 'REGIONAL',
+                        regionalName
+                    }
+                })
+                .filter(Boolean)
         }
+
+        console.log('[Onboarding] Communities loaded:', communities.length)
     } catch (error) {
         console.error('[Onboarding] Failed to fetch communities:', error)
     }

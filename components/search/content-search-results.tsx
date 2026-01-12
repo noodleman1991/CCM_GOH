@@ -9,6 +9,7 @@ import { CaseStudySearchRecord, AgendaSearchRecord, NewsSearchRecord } from '@/l
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination'
 import { useTranslations, useLocale } from 'next-intl'
 import { format } from 'date-fns'
+import { getLocalizedTitle, getLocalizedExcerpt, getLocalizedText } from '@/lib/localization-utils'
 
 interface ContentSearchResultsProps {
   type: 'case-studies' | 'agendas' | 'news'
@@ -16,15 +17,6 @@ interface ContentSearchResultsProps {
 
 function CaseStudyResult({ hit }: { hit: CaseStudySearchRecord }) {
   const locale = useLocale()
-  const getLocalizedTitle = (title: any) => {
-    if (typeof title === 'string') return title
-    return title?.en || title?.es || title?.fr || title?.ar || 'Untitled'
-  }
-
-  const getLocalizedExcerpt = (excerpt: any) => {
-    if (typeof excerpt === 'string') return excerpt
-    return excerpt?.en || excerpt?.es || excerpt?.fr || excerpt?.ar || ''
-  }
 
   return (
     <Card className="hover:shadow-md transition-shadow">
@@ -44,7 +36,7 @@ function CaseStudyResult({ hit }: { hit: CaseStudySearchRecord }) {
                     href={`/${locale}/research-and-action/case-studies/${hit.slug}`}
                     className="hover:underline text-primary"
                   >
-                    {getLocalizedTitle(hit.title)}
+                    {getLocalizedTitle(hit.title, locale)}
                   </Link>
                 </h3>
                 {hit.featured && (
@@ -56,9 +48,9 @@ function CaseStudyResult({ hit }: { hit: CaseStudySearchRecord }) {
               </div>
             </div>
 
-            {getLocalizedExcerpt(hit.excerpt) && (
+            {getLocalizedExcerpt(hit.excerpt, locale) && (
               <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
-                {getLocalizedExcerpt(hit.excerpt)}
+                {getLocalizedExcerpt(hit.excerpt, locale)}
               </p>
             )}
 
@@ -136,15 +128,6 @@ function CaseStudyResult({ hit }: { hit: CaseStudySearchRecord }) {
 
 function AgendaResult({ hit }: { hit: AgendaSearchRecord }) {
   const locale = useLocale()
-  const getLocalizedTitle = (title: any) => {
-    if (typeof title === 'string') return title
-    return title?.en || title?.es || title?.fr || title?.ar || 'Untitled'
-  }
-
-  const getLocalizedDescription = (description: any) => {
-    if (typeof description === 'string') return description
-    return description?.en || description?.es || description?.fr || description?.ar || ''
-  }
 
   const formatDate = (timestamp: number) => {
     return format(new Date(timestamp), 'MMM yyyy')
@@ -205,11 +188,11 @@ function AgendaResult({ hit }: { hit: AgendaSearchRecord }) {
                       onClick={handleDownloadClick}
                       className="hover:underline text-primary text-left"
                     >
-                      {getLocalizedTitle(hit.title)}
+                      {getLocalizedTitle(hit.title, locale)}
                     </button>
                   ) : (
                     <span className="text-primary">
-                      {getLocalizedTitle(hit.title)}
+                      {getLocalizedTitle(hit.title, locale)}
                     </span>
                   )}
                 </h3>
@@ -230,9 +213,17 @@ function AgendaResult({ hit }: { hit: AgendaSearchRecord }) {
               </div>
             </div>
 
-            {getLocalizedDescription(hit.description) && (
+            {/* Subtitle */}
+            {getLocalizedText(hit.subtitle, locale, '') && (
+              <p className="text-sm font-medium text-muted-foreground mb-2">
+                {getLocalizedText(hit.subtitle, locale, '')}
+              </p>
+            )}
+
+            {/* Description */}
+            {getLocalizedText(hit.description, locale, '') && (
               <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
-                {getLocalizedDescription(hit.description)}
+                {getLocalizedText(hit.description, locale, '')}
               </p>
             )}
 
@@ -297,15 +288,6 @@ function AgendaResult({ hit }: { hit: AgendaSearchRecord }) {
 
 function NewsResult({ hit }: { hit: NewsSearchRecord }) {
   const locale = useLocale()
-  const getLocalizedTitle = (title: any) => {
-    if (typeof title === 'string') return title
-    return title?.en || title?.es || title?.fr || title?.ar || 'Untitled'
-  }
-
-  const getLocalizedExcerpt = (excerpt: any) => {
-    if (typeof excerpt === 'string') return excerpt
-    return excerpt?.en || excerpt?.es || excerpt?.fr || excerpt?.ar || ''
-  }
 
   const formatDate = (timestamp: number) => {
     return format(new Date(timestamp), 'MMM d, yyyy')
@@ -329,7 +311,7 @@ function NewsResult({ hit }: { hit: NewsSearchRecord }) {
                     href={`/${locale}/news/${hit.slug}`}
                     className="hover:underline text-primary"
                   >
-                    {getLocalizedTitle(hit.title)}
+                    {getLocalizedTitle(hit.title, locale)}
                   </Link>
                 </h3>
                 <div className="flex items-center gap-2 mt-1">
@@ -346,9 +328,17 @@ function NewsResult({ hit }: { hit: NewsSearchRecord }) {
               </div>
             </div>
 
-            {getLocalizedExcerpt(hit.excerpt) && (
+            {/* Subtitle */}
+            {getLocalizedText(hit.subtitle, locale, '') && (
+              <p className="text-sm font-medium text-muted-foreground mb-2">
+                {getLocalizedText(hit.subtitle, locale, '')}
+              </p>
+            )}
+
+            {/* Excerpt */}
+            {getLocalizedExcerpt(hit.excerpt, locale) && (
               <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
-                {getLocalizedExcerpt(hit.excerpt)}
+                {getLocalizedExcerpt(hit.excerpt, locale)}
               </p>
             )}
 

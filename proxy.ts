@@ -60,6 +60,11 @@ export const proxy = clerkMiddleware(async (auth, req: NextRequest) => {
         return NextResponse.next()
     }
 
+    // Handle search counts - public endpoint (auth is optional for enhanced filtering)
+    if (req.nextUrl.pathname === '/api/search/counts') {
+        return NextResponse.next()
+    }
+
     // Handle protected API routes - require authentication but no i18n
     if (isProtectedApiRoute(req)) {
         const authResult = await auth()

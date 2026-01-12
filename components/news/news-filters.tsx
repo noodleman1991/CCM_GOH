@@ -34,6 +34,7 @@ import { cn } from '@/lib/utils'
 import { format } from 'date-fns'
 import type { NewsFilters as NewsFiltersType } from '@/lib/news-utils'
 import { getLocalizedValue } from '@/i18n/i18n-helpers'
+import { useIsMobile } from '@/hooks/use-mobile'
 
 interface NewsFiltersProps {
   currentFilters: NewsFiltersType
@@ -59,6 +60,7 @@ export default function NewsFilters({ currentFilters, tags = [], communities = [
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const [isPending, startTransition] = useTransition()
+  const isMobile = useIsMobile()
 
   const [searchValue, setSearchValue] = useState(currentFilters.search || '')
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false)
@@ -89,6 +91,17 @@ export default function NewsFilters({ currentFilters, tags = [], communities = [
       params.delete(key)
     }
 
+    startTransition(() => {
+      router.push(`${pathname}?${params.toString()}`)
+    })
+  }
+
+  const clearDateFilters = () => {
+    setDateFrom(undefined)
+    setDateTo(undefined)
+    const params = new URLSearchParams(searchParams.toString())
+    params.delete('dateFrom')
+    params.delete('dateTo')
     startTransition(() => {
       router.push(`${pathname}?${params.toString()}`)
     })
@@ -170,53 +183,132 @@ export default function NewsFilters({ currentFilters, tags = [], communities = [
           {/* Second Row: Date Range and Advanced Filters */}
           <div className="flex flex-col sm:flex-row gap-2">
             {/* Date From */}
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={cn(
-                    "justify-start text-left font-normal flex-1",
-                    !dateFrom && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {dateFrom ? format(dateFrom, "PPP") : t('dateFrom')}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0 z-[60]" align="start">
-                <Calendar
-                  mode="single"
-                  selected={dateFrom}
-                  onSelect={handleDateFromChange}
-                  initialFocus
+            {isMobile ? (
+              <div className="flex-1 relative">
+                <CalendarIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                <input
+                  type="date"
+                  value={dateFrom ? format(dateFrom, 'yyyy-MM-dd') : ''}
+                  onChange={(e) => handleDateFromChange(e.target.value ? new Date(e.target.value) : undefined)}
+                  className="flex h-10 w-full rounded-md border border-input bg-background pl-10 pr-8 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  placeholder={t('dateFrom')}
                 />
-              </PopoverContent>
-            </Popover>
+                {dateFrom && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6 p-0"
+                    onClick={() => handleDateFromChange(undefined)}
+                  >
+                    <X className="h-3 w-3" />
+                  </Button>
+                )}
+              </div>
+            ) : (
+              <div className="flex-1 relative">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "justify-start text-left font-normal w-full",
+                        !dateFrom && "text-muted-foreground",
+                        dateFrom && "pr-8"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {dateFrom ? format(dateFrom, "PPP") : t('dateFrom')}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0 z-[60]" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={dateFrom}
+                      onSelect={handleDateFromChange}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+                {dateFrom && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6 p-0 z-10"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleDateFromChange(undefined)
+                    }}
+                  >
+                    <X className="h-3 w-3" />
+                  </Button>
+                )}
+              </div>
+            )}
 
             {/* Date To */}
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={cn(
-                    "justify-start text-left font-normal flex-1",
-                    !dateTo && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {dateTo ? format(dateTo, "PPP") : t('dateTo')}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0 z-[60]" align="start">
-                <Calendar
-                  mode="single"
-                  selected={dateTo}
-                  onSelect={handleDateToChange}
-                  initialFocus
-                  disabled={(date: Date) => dateFrom ? date < dateFrom : false}
+            {isMobile ? (
+              <div className="flex-1 relative">
+                <CalendarIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                <input
+                  type="date"
+                  value={dateTo ? format(dateTo, 'yyyy-MM-dd') : ''}
+                  onChange={(e) => handleDateToChange(e.target.value ? new Date(e.target.value) : undefined)}
+                  min={dateFrom ? format(dateFrom, 'yyyy-MM-dd') : undefined}
+                  className="flex h-10 w-full rounded-md border border-input bg-background pl-10 pr-8 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  placeholder={t('dateTo')}
                 />
-              </PopoverContent>
-            </Popover>
+                {dateTo && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6 p-0"
+                    onClick={() => handleDateToChange(undefined)}
+                  >
+                    <X className="h-3 w-3" />
+                  </Button>
+                )}
+              </div>
+            ) : (
+              <div className="flex-1 relative">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "justify-start text-left font-normal w-full",
+                        !dateTo && "text-muted-foreground",
+                        dateTo && "pr-8"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {dateTo ? format(dateTo, "PPP") : t('dateTo')}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0 z-[60]" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={dateTo}
+                      onSelect={handleDateToChange}
+                      initialFocus
+                      disabled={(date: Date) => dateFrom ? date < dateFrom : false}
+                    />
+                  </PopoverContent>
+                </Popover>
+                {dateTo && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6 p-0 z-10"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleDateToChange(undefined)
+                    }}
+                  >
+                    <X className="h-3 w-3" />
+                  </Button>
+                )}
+              </div>
+            )}
 
             {/* Advanced Filters Toggle */}
             <Popover open={showAdvancedFilters} onOpenChange={setShowAdvancedFilters}>
@@ -378,12 +470,7 @@ export default function NewsFilters({ currentFilters, tags = [], communities = [
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => {
-                    setDateFrom(undefined)
-                    setDateTo(undefined)
-                    updateFilter('dateFrom', undefined)
-                    updateFilter('dateTo', undefined)
-                  }}
+                  onClick={clearDateFilters}
                   className="h-4 w-4 p-0 ml-1"
                 >
                   <X className="w-3 h-3" />
