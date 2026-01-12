@@ -141,7 +141,48 @@
     "viewAll": "Ver todo",
     "personalSettings": "Configuración personal",
     "buildingApp": "Construyendo tu Aplicación",
-    "dataFetching": "Obtención de Datos"
+    "dataFetching": "Obtención de Datos",
+    "submissions": {
+      "pageTitle": "Mis Envíos",
+      "pageDescription": "Administra tus envíos de estudios de caso y borradores",
+      "title": "Mis Envíos",
+      "description": "Administra tus envíos de estudios de caso y borradores",
+      "newCaseStudy": "Nuevo Estudio de Caso",
+      "status": {
+        "pending": "Pendiente de Revisión",
+        "approved": "Publicado",
+        "rejected": "Rechazado",
+        "revision": "Necesita Revisión"
+      },
+      "tabs": {
+        "submissions": "Envíos",
+        "drafts": "Borradores"
+      },
+      "actions": {
+        "edit": "Editar y Reenviar",
+        "view": "Ver Publicado",
+        "continue": "Continuar Escribiendo",
+        "underReview": "En Revisión"
+      },
+      "empty": {
+        "submissions": {
+          "title": "Aún no hay envíos",
+          "description": "Comienza enviando tu primer estudio de caso para compartir tu investigación con la comunidad.",
+          "action": "Enviar Estudio de Caso"
+        },
+        "drafts": {
+          "title": "No hay borradores guardados",
+          "description": "Tus borradores de estudios de caso aparecerán aquí automáticamente mientras trabajas en ellos."
+        }
+      },
+      "alerts": {
+        "revision": {
+          "title": "Acción Requerida",
+          "description": "Tienes {count} estudio{plural} de caso que necesita{singular} revisión basada en los comentarios del editor.",
+          "editorFeedback": "Comentarios del editor:"
+        }
+      }
+    }
   },
   "settings": {
     "title": "Configuración",
@@ -405,6 +446,46 @@
       "twitter": "Usuario de Twitter",
       "cancel": "Cancelar",
       "save": "Guardar Cambios"
+    },
+    "account": {
+      "pageTitle": "Cuenta y Seguridad",
+      "pageDescription": "Administra la configuración de tu cuenta, credenciales de inicio de sesión y opciones de seguridad",
+      "email": {
+        "title": "Dirección de Correo Electrónico",
+        "description": "Actualiza tu dirección de correo electrónico para inicio de sesión y notificaciones",
+        "current": "Correo actual:",
+        "new": "Nueva dirección de correo electrónico",
+        "none": "Sin dirección de correo electrónico",
+        "update": "Actualizar Correo"
+      },
+      "phone": {
+        "title": "Número de Teléfono",
+        "description": "Actualiza tu número de teléfono para autenticación de dos factores",
+        "current": "Teléfono actual:",
+        "new": "Nuevo número de teléfono",
+        "none": "Sin número de teléfono",
+        "update": "Actualizar Teléfono"
+      },
+      "password": {
+        "title": "Contraseña",
+        "description": "Cambia la contraseña de tu cuenta",
+        "current": "Contraseña actual",
+        "new": "Nueva contraseña",
+        "confirm": "Confirmar nueva contraseña",
+        "change": "Cambiar Contraseña"
+      },
+      "delete": {
+        "title": "Eliminar Cuenta",
+        "description": "Elimina permanentemente tu cuenta y todos los datos asociados. Esta acción no se puede deshacer.",
+        "button": "Eliminar Cuenta",
+        "confirm": {
+          "title": "¿Estás completamente seguro?",
+          "description": "Esto eliminará permanentemente tu cuenta y eliminará todos tus datos de nuestros servidores. Esta acción no se puede deshacer.",
+          "type": "Para confirmar, escribe",
+          "cancel": "Cancelar",
+          "delete": "Eliminar Cuenta"
+        }
+      }
     }
   },
   "profilePicture": {
@@ -711,7 +792,9 @@
         "expertise": {
           "climate": "Cambio Climático",
           "mentalHealth": "Salud Mental",
-          "health": "Salud"
+          "health": "Salud",
+          "education": "Educación",
+          "socialJustice": "Justicia Social"
         },
         "organization": "Organización",
         "organizationPlaceholder": "Ingresa el nombre de tu organización",
@@ -957,6 +1040,15 @@
     "relatedProjects": "Proyectos Relacionados",
     "studyAreas": "Áreas de Estudio",
     "allAuthors": "Todos los Autores"
+  },
+  "revisionAlert": {
+    "title": "Acción Requerida: Revisión Necesaria",
+    "description": "Tienes {count} estudio{plural} de caso que necesita{singular} revisión basada en los comentarios del editor.",
+    "editorFeedback": "Comentarios del editor:",
+    "actions": {
+      "remindLater": "Recordarme Después",
+      "viewSubmissions": "Ver y Editar Envíos"
+    }
   },
   "news": {
     "title": "Noticias",

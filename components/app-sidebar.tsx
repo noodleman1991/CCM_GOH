@@ -216,7 +216,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
                 {/* Search Box */}
                 <div className="p-2">
-                    <form onSubmit={handleSearch} className="relative">
+                    <form onSubmit={handleSearch} className="relative sidebar-search-input">
                         <Search className={cn(
                             "pointer-events-none absolute top-1/2 size-4 -translate-y-1/2 select-none text-slate-900",
                             isRTL ? "right-2" : "left-2"

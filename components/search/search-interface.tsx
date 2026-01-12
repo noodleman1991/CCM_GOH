@@ -3,27 +3,51 @@
 import { InstantSearchNext } from 'react-instantsearch-nextjs'
 import { searchClient, ALGOLIA_INDICES } from '@/lib/algolia'
 import { createSearchRouting } from '@/lib/search-routing'
-import { SearchBox } from 'react-instantsearch'
+import { CustomSearchBox } from './custom-search-box'
 import { Configure } from 'react-instantsearch'
 import SearchResults from './search-results'
 import SearchFilters from './search-filters'
 import ContentSearchResults from './content-search-results'
 import ContentSearchFilters from './content-search-filters'
 import SearchStats from './search-stats'
+import { SearchHitsReporter } from './search-hits-reporter'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
-import { Users, FileText, Briefcase, Newspaper } from 'lucide-react'
+import { Users, FileText, BookOpen, Newspaper } from 'lucide-react'
 import { useTranslations, useLocale } from 'next-intl'
 import { SearchErrorBoundary } from './search-error-boundary'
 import { useAuth } from '@clerk/nextjs'
-import { useSearchCounts } from '@/hooks/use-search-counts'
+import { useState, useCallback } from 'react'
 
 export default function SearchInterface() {
   const t = useTranslations('search')
   const locale = useLocale()
   const isRTL = locale === 'ar'
   const { isSignedIn } = useAuth()
-  const { counts, isLoading } = useSearchCounts()
+
+  // Track hits count per tab from InstantSearch contexts
+  const [hitsCounts, setHitsCounts] = useState<{
+    agendas: number | null
+    news: number | null
+    caseStudies: number | null
+  }>({
+    agendas: null,
+    news: null,
+    caseStudies: null
+  })
+
+  // Callbacks to update counts from each InstantSearch context
+  const handleAgendasHits = useCallback((nbHits: number) => {
+    setHitsCounts(prev => ({ ...prev, agendas: nbHits }))
+  }, [])
+
+  const handleNewsHits = useCallback((nbHits: number) => {
+    setHitsCounts(prev => ({ ...prev, news: nbHits }))
+  }, [])
+
+  const handleCaseStudiesHits = useCallback((nbHits: number) => {
+    setHitsCounts(prev => ({ ...prev, caseStudies: nbHits }))
+  }, [])
 
   // Generate authentication-aware filters for content (agendas, news, case studies)
   const generateContentFilters = () => {
@@ -71,29 +95,41 @@ export default function SearchInterface() {
           <TabsTrigger value="agendas" className="flex items-center gap-2">
             <FileText className="h-4 w-4" />
             {t('agendas')}
-            {!isLoading && counts.agendas > 0 && (
-              <Badge variant="secondary" className="ms-1 text-xs">
-                {counts.agendas}
+            {hitsCounts.agendas === null ? (
+              <Badge variant="secondary" className="ms-1 text-xs animate-pulse">
+                ...
               </Badge>
-            )}
+            ) : hitsCounts.agendas > 0 ? (
+              <Badge variant="secondary" className="ms-1 text-xs">
+                {hitsCounts.agendas}
+              </Badge>
+            ) : null}
           </TabsTrigger>
           <TabsTrigger value="news" className="flex items-center gap-2">
             <Newspaper className="h-4 w-4" />
             {t('news')}
-            {!isLoading && counts.news > 0 && (
-              <Badge variant="secondary" className="ms-1 text-xs">
-                {counts.news}
+            {hitsCounts.news === null ? (
+              <Badge variant="secondary" className="ms-1 text-xs animate-pulse">
+                ...
               </Badge>
-            )}
+            ) : hitsCounts.news > 0 ? (
+              <Badge variant="secondary" className="ms-1 text-xs">
+                {hitsCounts.news}
+              </Badge>
+            ) : null}
           </TabsTrigger>
           <TabsTrigger value="case-studies" className="flex items-center gap-2">
-            <Briefcase className="h-4 w-4" />
+            <BookOpen className="h-4 w-4" />
             {t('caseStudies')}
-            {!isLoading && counts.caseStudies > 0 && (
-              <Badge variant="secondary" className="ms-1 text-xs">
-                {counts.caseStudies}
+            {hitsCounts.caseStudies === null ? (
+              <Badge variant="secondary" className="ms-1 text-xs animate-pulse">
+                ...
               </Badge>
-            )}
+            ) : hitsCounts.caseStudies > 0 ? (
+              <Badge variant="secondary" className="ms-1 text-xs">
+                {hitsCounts.caseStudies}
+              </Badge>
+            ) : null}
           </TabsTrigger>
         </TabsList>
 
@@ -157,7 +193,7 @@ export default function SearchInterface() {
         */}
 
         {/* Agendas Search */}
-        <TabsContent value="agendas">
+        <TabsContent value="agendas" forceMount className="data-[state=inactive]:hidden">
           <SearchErrorBoundary>
             <InstantSearchNext
               searchClient={searchClient}
@@ -172,31 +208,12 @@ export default function SearchInterface() {
                 attributesToHighlight={['title.en', 'title.es', 'title.fr', 'title.ar', 'organizations', 'tags']}
                 attributesToSnippet={['description.en:30', 'description.es:30', 'description.fr:30', 'description.ar:30']}
               />
+              <SearchHitsReporter onHitsChange={handleAgendasHits} />
 
               <div className="space-y-6">
                 {/* Search Box */}
                 <div className="max-w-2xl mx-auto">
-                  <SearchBox
-                    placeholder={t('searchAgendas')}
-                    classNames={{
-                      root: 'w-full',
-                      form: 'relative',
-                      input: 'flex h-12 w-full rounded-md border border-input bg-background px-3 py-2 text-base text-foreground ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
-                      submit: 'absolute end-2 top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground',
-                      reset: 'absolute end-12 top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground',
-                      loadingIndicator: 'absolute end-2 top-1/2 -translate-y-1/2',
-                    }}
-                    submitIconComponent={() => (
-                      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                      </svg>
-                    )}
-                    resetIconComponent={() => (
-                      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    )}
-                  />
+                  <CustomSearchBox placeholder={t('searchAgendas')} />
                 </div>
 
                 {/* Search Statistics */}
@@ -220,7 +237,7 @@ export default function SearchInterface() {
         </TabsContent>
 
         {/* News Search */}
-        <TabsContent value="news">
+        <TabsContent value="news" forceMount className="data-[state=inactive]:hidden">
           <SearchErrorBoundary>
             <InstantSearchNext
               searchClient={searchClient}
@@ -235,31 +252,12 @@ export default function SearchInterface() {
                 attributesToHighlight={['title.en', 'title.es', 'title.fr', 'title.ar', 'author.name', 'tags', 'organizations']}
                 attributesToSnippet={['excerpt.en:30', 'excerpt.es:30', 'excerpt.fr:30', 'excerpt.ar:30']}
               />
+              <SearchHitsReporter onHitsChange={handleNewsHits} />
 
               <div className="space-y-6">
                 {/* Search Box */}
                 <div className="max-w-2xl mx-auto">
-                  <SearchBox
-                    placeholder={t('searchNews')}
-                    classNames={{
-                      root: 'w-full',
-                      form: 'relative',
-                      input: 'flex h-12 w-full rounded-md border border-input bg-background px-3 py-2 text-base text-foreground ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
-                      submit: 'absolute end-2 top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground',
-                      reset: 'absolute end-12 top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground',
-                      loadingIndicator: 'absolute end-2 top-1/2 -translate-y-1/2',
-                    }}
-                    submitIconComponent={() => (
-                      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                      </svg>
-                    )}
-                    resetIconComponent={() => (
-                      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    )}
-                  />
+                  <CustomSearchBox placeholder={t('searchNews')} />
                 </div>
 
                 {/* Search Statistics */}
@@ -283,7 +281,7 @@ export default function SearchInterface() {
         </TabsContent>
 
         {/* Case Studies Search */}
-        <TabsContent value="case-studies">
+        <TabsContent value="case-studies" forceMount className="data-[state=inactive]:hidden">
           <SearchErrorBoundary>
             <InstantSearchNext
               searchClient={searchClient}
@@ -298,31 +296,12 @@ export default function SearchInterface() {
                 attributesToHighlight={['title.en', 'title.es', 'title.fr', 'title.ar', 'authors.name', 'tags']}
                 attributesToSnippet={['excerpt.en:30', 'excerpt.es:30', 'excerpt.fr:30', 'excerpt.ar:30']}
               />
+              <SearchHitsReporter onHitsChange={handleCaseStudiesHits} />
 
               <div className="space-y-6">
                 {/* Search Box */}
                 <div className="max-w-2xl mx-auto">
-                  <SearchBox
-                    placeholder={t('searchCaseStudies')}
-                    classNames={{
-                      root: 'w-full',
-                      form: 'relative',
-                      input: 'flex h-12 w-full rounded-md border border-input bg-background px-3 py-2 text-base text-foreground ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
-                      submit: 'absolute end-2 top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground',
-                      reset: 'absolute end-12 top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground',
-                      loadingIndicator: 'absolute end-2 top-1/2 -translate-y-1/2',
-                    }}
-                    submitIconComponent={() => (
-                      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                      </svg>
-                    )}
-                    resetIconComponent={() => (
-                      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    )}
-                  />
+                  <CustomSearchBox placeholder={t('searchCaseStudies')} />
                 </div>
 
                 {/* Search Statistics */}

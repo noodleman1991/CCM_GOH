@@ -1,33 +1,38 @@
 'use client'
 
-import { useRefinementList, useRange, useCurrentRefinements } from 'react-instantsearch'
+import { useRefinementList, useCurrentRefinements, Configure } from 'react-instantsearch'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import { X, Filter } from 'lucide-react'
+import { X, Filter, ChevronRight } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
-import { useState } from 'react'
+import { useState, useCallback, useId } from 'react'
 
 interface ContentSearchFiltersProps {
   type: 'case-studies' | 'agendas' | 'news'
 }
 
-function FilterSection({ title, children }: { title: string; children: React.ReactNode }) {
+function FilterSection({ title, children, isEmpty = false }: { title: string; children: React.ReactNode; isEmpty?: boolean }) {
   const [isOpen, setIsOpen] = useState(false)
 
+  // Always render DOM structure - use CSS to hide when empty (prevents hydration mismatch)
   return (
-    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-      <CollapsibleTrigger asChild>
-        <Button variant="ghost" className="w-full justify-start p-0 h-auto">
-          <h4 className="font-medium text-sm">{title}</h4>
-        </Button>
-      </CollapsibleTrigger>
-      <CollapsibleContent className="mt-3">
-        {children}
-      </CollapsibleContent>
-    </Collapsible>
+    <div className={`border-b border-border pb-4 last:border-b-0 last:pb-0 ${isEmpty ? 'hidden' : ''}`}>
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center justify-between w-full text-left py-2 hover:text-foreground/80 transition-colors"
+      >
+        <h4 className="font-medium text-sm">{title}</h4>
+        <ChevronRight className={`h-4 w-4 text-muted-foreground transition-transform ${isOpen ? 'rotate-90' : ''}`} />
+      </button>
+      {isOpen && (
+        <div className="mt-3">
+          {children}
+        </div>
+      )}
+    </div>
   )
 }
 
@@ -38,12 +43,12 @@ function RefinementListFilter({ attribute, title, limit = 10 }: { attribute: str
     sortBy: ['count:desc', 'name:asc']
   }, { skipSuspense: true })
 
-  if (!items || items.length === 0) return null
+  const hasItems = items && items.length > 0
 
   return (
-    <FilterSection title={title}>
+    <FilterSection title={title} isEmpty={!hasItems}>
       <div className="space-y-2">
-        {items.map((item) => (
+        {items?.map((item) => (
           <label key={item.value} className="flex items-center gap-2 cursor-pointer">
             <input
               type="checkbox"
@@ -62,34 +67,128 @@ function RefinementListFilter({ attribute, title, limit = 10 }: { attribute: str
   )
 }
 
-function YearRangeFilter() {
-  const { range, start, refine } = useRange({
-    attribute: 'year',
-  }, { skipSuspense: true })
-
-  if (!range) return null
-
+// Year filter state hook - uses local state that triggers Configure re-render
+function useYearFilterState() {
   const currentYear = new Date().getFullYear()
-  // Validate range values to prevent infinity display
-  const minYear = (range.min && isFinite(range.min)) ? range.min : 2000
-  const maxYear = (range.max && isFinite(range.max)) ? range.max : currentYear
+  const defaultMin = 2000
+  const defaultMax = currentYear
+
+  const [minValue, setMinValue] = useState(defaultMin)
+  const [maxValue, setMaxValue] = useState(defaultMax)
+  const [appliedMin, setAppliedMin] = useState<number | null>(null)
+  const [appliedMax, setAppliedMax] = useState<number | null>(null)
+
+  const applyFilter = useCallback(() => {
+    const clampedMin = Math.max(defaultMin, Math.min(minValue, maxValue))
+    const clampedMax = Math.max(clampedMin, Math.min(maxValue, defaultMax))
+
+    // Only apply filter if different from full range
+    if (clampedMin > defaultMin || clampedMax < defaultMax) {
+      setAppliedMin(clampedMin)
+      setAppliedMax(clampedMax)
+    } else {
+      // Clear filter
+      setAppliedMin(null)
+      setAppliedMax(null)
+    }
+  }, [minValue, maxValue, defaultMin, defaultMax])
+
+  const clearFilter = useCallback(() => {
+    setMinValue(defaultMin)
+    setMaxValue(defaultMax)
+    setAppliedMin(null)
+    setAppliedMax(null)
+  }, [defaultMin, defaultMax])
+
+  const isFiltered = appliedMin !== null || appliedMax !== null
+
+  // Build numeric filters array for Algolia
+  const numericFilters: string[] = []
+  if (appliedMin !== null) {
+    numericFilters.push(`year>=${appliedMin}`)
+  }
+  if (appliedMax !== null) {
+    numericFilters.push(`year<=${appliedMax}`)
+  }
+
+  return {
+    minValue,
+    maxValue,
+    setMinValue,
+    setMaxValue,
+    appliedMin,
+    appliedMax,
+    applyFilter,
+    clearFilter,
+    isFiltered,
+    numericFilters,
+    defaultMin,
+    defaultMax
+  }
+}
+
+interface YearRangeFilterProps {
+  state: ReturnType<typeof useYearFilterState>
+}
+
+function YearRangeFilterUI({ state }: YearRangeFilterProps) {
+  const {
+    minValue,
+    maxValue,
+    setMinValue,
+    setMaxValue,
+    applyFilter,
+    clearFilter,
+    isFiltered,
+    defaultMin,
+    defaultMax
+  } = state
 
   return (
     <FilterSection title="Year Range">
       <div className="space-y-3">
         <div className="flex items-center gap-2">
           <input
-            type="range"
-            min={minYear}
-            max={maxYear}
-            value={start?.[0] || minYear}
-            onChange={(e) => refine([parseInt(e.target.value), start?.[1] || maxYear])}
-            className="flex-1"
+            type="number"
+            min={defaultMin}
+            max={defaultMax}
+            value={minValue}
+            onChange={(e) => setMinValue(parseInt(e.target.value) || defaultMin)}
+            onBlur={applyFilter}
+            onKeyDown={(e) => e.key === 'Enter' && applyFilter()}
+            className="w-20 px-2 py-1 border rounded text-sm"
+          />
+          <span className="text-muted-foreground">to</span>
+          <input
+            type="number"
+            min={defaultMin}
+            max={defaultMax}
+            value={maxValue}
+            onChange={(e) => setMaxValue(parseInt(e.target.value) || defaultMax)}
+            onBlur={applyFilter}
+            onKeyDown={(e) => e.key === 'Enter' && applyFilter()}
+            className="w-20 px-2 py-1 border rounded text-sm"
           />
         </div>
-        <div className="flex items-center justify-between text-sm text-muted-foreground">
-          <span>{start?.[0] || minYear}</span>
-          <span>{start?.[1] || maxYear}</span>
+        <div className="flex gap-2">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={applyFilter}
+            className="text-xs"
+          >
+            Apply
+          </Button>
+          {isFiltered && (
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={clearFilter}
+              className="text-xs"
+            >
+              Clear
+            </Button>
+          )}
         </div>
       </div>
     </FilterSection>
@@ -132,9 +231,15 @@ function ActiveFilters() {
 
 export default function ContentSearchFilters({ type }: ContentSearchFiltersProps) {
   const t = useTranslations('search.filters')
+  const yearFilterState = useYearFilterState()
 
   return (
     <div className="space-y-6">
+      {/* Apply year numeric filters via Configure component */}
+      {type === 'agendas' && yearFilterState.numericFilters.length > 0 && (
+        <Configure numericFilters={yearFilterState.numericFilters} />
+      )}
+
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-lg">Filters</CardTitle>
@@ -179,7 +284,7 @@ export default function ContentSearchFilters({ type }: ContentSearchFiltersProps
                 title="Agenda Type"
                 limit={10}
               />
-              <YearRangeFilter />
+              <YearRangeFilterUI state={yearFilterState} />
               <RefinementListFilter
                 attribute="organizations"
                 title="Organizations"

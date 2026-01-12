@@ -120,50 +120,8 @@ export default function CaseStudySubmissionLayout({
         <div className="flex gap-8">
             {/* Main Content */}
             <div className="flex-1 max-w-4xl">
-                <div className="mb-8">
-                    <div className="flex items-center gap-4 mb-6">
-                        <div className="flex items-center gap-2">
-                            <Globe className="w-5 h-5 text-muted-foreground" />
-                            <Select value={currentLanguage} onValueChange={setCurrentLanguage}>
-                                <SelectTrigger className="w-48">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {languages.map((lang) => (
-                                        <SelectItem key={lang.code} value={lang.code}>
-                                            <div className="flex items-center gap-2">
-                                                <span>{lang.label}</span>
-                                            </div>
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                    </div>
-
-                    <div className="space-y-2">
-                        <h1 className="text-4xl font-bold tracking-tight">{t('title')}</h1>
-                        <p className="text-xl text-muted-foreground">{t('description')}</p>
-                        <p className="text-base text-muted-foreground">
-                            🌍 Submit your case study in any language you prefer. We kindly ask for titles and excerpts in all four languages to help our global community discover your research.
-                        </p>
-                    </div>
-
-                    <div className="flex flex-wrap gap-2 mt-4">
-                        <Badge variant="outline" className="gap-1">
-                            <FileText className="w-3 h-3" />
-                            Research Documentation
-                        </Badge>
-                        <Badge variant="outline" className="gap-1">
-                            <Users className="w-3 h-3" />
-                            Collaborative Submission
-                        </Badge>
-                        <Badge variant="outline" className="gap-1">
-                            <Globe className="w-3 h-3" />
-                            Multilingual Support
-                        </Badge>
-                    </div>
-                </div>
+                {/*<div className="mb-8">*/}
+                {/*</div>*/}
 
                 {/* Form Component */}
                 <CaseStudyForm

@@ -20,6 +20,8 @@ function CollapsibleTrigger({
   return (
     <CollapsiblePrimitive.CollapsibleTrigger
       data-slot="collapsible-trigger"
+      // Suppress hydration warning due to Radix UI useId mismatch in Next.js 16/React 19
+      suppressHydrationWarning
       {...props}
     />
   )
@@ -31,6 +33,8 @@ function CollapsibleContent({
   return (
     <CollapsiblePrimitive.CollapsibleContent
       data-slot="collapsible-content"
+      // Suppress hydration warning due to Radix UI useId mismatch in Next.js 16/React 19
+      suppressHydrationWarning
       {...props}
     />
   )

@@ -31,7 +31,8 @@ function Tooltip({
 function TooltipTrigger({
   ...props
 }: React.ComponentProps<typeof TooltipPrimitive.Trigger>) {
-  return <TooltipPrimitive.Trigger data-slot="tooltip-trigger" {...props} />
+  // Suppress hydration warning due to Radix UI useId mismatch in Next.js 16/React 19
+  return <TooltipPrimitive.Trigger data-slot="tooltip-trigger" suppressHydrationWarning {...props} />
 }
 
 function TooltipContent({

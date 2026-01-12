@@ -1,16 +1,19 @@
 import type { Metadata } from "next"
 import { getTranslations } from 'next-intl/server'
-import { prisma } from "@/lib/prisma"
-import Link from "next/link"
-import { Card, CardContent } from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { MapPin, Briefcase, Search } from "lucide-react"
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
+import { redirect } from 'next/navigation'
+// import { auth } from '@clerk/nextjs/server'
+// import { prisma } from "@/lib/prisma"
+// import Link from "next/link"
+// import { Card, CardContent } from "@/components/ui/card"
+// import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+// import { Badge } from "@/components/ui/badge"
+// import { Input } from "@/components/ui/input"
+// import { Button } from "@/components/ui/button"
+// import { MapPin, Briefcase, Search } from "lucide-react"
+// import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 
 interface ProfilesPageProps {
+    params: Promise<{ locale: string }>
     searchParams: Promise<{
         search?: string
         expertise?: string
@@ -26,8 +29,22 @@ export async function generateMetadata(): Promise<Metadata> {
     }
 }
 
-export default async function ProfilesPage({ searchParams }: ProfilesPageProps) {
+export default async function ProfilesPage({ params }: ProfilesPageProps) {
+    const { locale } = await params
+
+    // Temporarily redirect all users to /collaborate
+    // TODO: Re-enable profiles page when ready
+    redirect(`/${locale}/collaborate`)
+
+    /* PROFILES PAGE FUNCTIONALITY - COMMENTED OUT FOR NOW
     const resolvedSearchParams = await searchParams
+
+    // Require authentication - redirect to collaborate if not logged in
+    const { userId } = await auth()
+    if (!userId) {
+        redirect(`/${locale}/collaborate`)
+    }
+
     const t = await getTranslations('profiles')
 
     // Build the where clause based on search params
@@ -83,7 +100,6 @@ export default async function ProfilesPage({ searchParams }: ProfilesPageProps) 
 
     return (
         <div className="container py-8">
-            {/* Breadcrumbs */}
             <Breadcrumb className="mb-6">
                 <BreadcrumbList>
                     <BreadcrumbItem>
@@ -101,7 +117,6 @@ export default async function ProfilesPage({ searchParams }: ProfilesPageProps) 
                 <p className="text-muted-foreground">{t('pageDescription')}</p>
             </div>
 
-            {/* Search and Filters */}
             <Card className="mb-8">
                 <CardContent className="p-6">
                     <form className="flex flex-col sm:flex-row gap-4">
@@ -119,7 +134,6 @@ export default async function ProfilesPage({ searchParams }: ProfilesPageProps) 
                 </CardContent>
             </Card>
 
-            {/* Profile Grid */}
             {users.length === 0 ? (
                 <Card>
                     <CardContent className="text-center py-12">
@@ -203,4 +217,5 @@ export default async function ProfilesPage({ searchParams }: ProfilesPageProps) 
             )}
         </div>
     )
+    END PROFILES PAGE FUNCTIONALITY */
 }
