@@ -5,6 +5,7 @@ import { getTranslations, getLocale } from 'next-intl/server'
 import ProfileEditForm from "@/components/blocks/profile/profile-edit-form"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 import { fetchUserManagementOptionsWithLocale } from "@/lib/actions/sync-user-management"
+import { prisma } from '@/lib/prisma'
 
 export async function generateMetadata(): Promise<Metadata> {
     const t = await getTranslations('profile.edit')
@@ -28,16 +29,18 @@ export default async function ProfileEditPage() {
     const locale = await getLocale()
     const userManagementOptions = await fetchUserManagementOptionsWithLocale(locale)
 
-    // Fetch communities from API
+    // Fetch communities directly from Prisma (avoid localhost fetch issues in SSR)
     let communities: any[] = []
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/communities`, {
-            cache: 'no-store'
+        communities = await prisma.community.findMany({
+            select: {
+                id: true,
+                name: true,
+                type: true,
+                regionalName: true
+            },
+            orderBy: { name: 'asc' }
         })
-        if (response.ok) {
-            const data = await response.json()
-            communities = data.data || []
-        }
     } catch (error) {
         console.error('[ProfileEditPage] Failed to fetch communities:', error)
     }

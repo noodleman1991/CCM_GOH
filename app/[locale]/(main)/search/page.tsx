@@ -4,6 +4,9 @@ import { getTranslations } from 'next-intl/server'
 import SearchInterface from '@/components/search/search-interface'
 import { Skeleton } from '@/components/ui/skeleton'
 
+// Force dynamic rendering to prevent SSR caching issues with search state
+export const dynamic = "force-dynamic"
+
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
   const t = await getTranslations('search')

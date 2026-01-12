@@ -165,10 +165,26 @@ function AgendaResult({ hit }: { hit: AgendaSearchRecord }) {
     return labels[type] || type
   }
 
-  // Agendas don't have detail pages - link to parent community or fallback
-  const agendaHref = hit.regionalCommunity?.slug
-    ? `/${locale}/communities/${hit.regionalCommunity.slug}`
-    : `/${locale}/research-and-action`
+  // Get download URL - prefer user's locale, fallback to English, then first available
+  const getDownloadUrl = () => {
+    if (!hit.files || hit.files.length === 0) return null
+
+    const localizedFile = hit.files.find(f => f.language === locale)
+    const englishFile = hit.files.find(f => f.language === 'en')
+    const file = localizedFile || englishFile || hit.files[0]
+
+    if (!file?.url) return null
+    return `${file.url}?dl=${file.filename || ''}`
+  }
+
+  const handleDownloadClick = (e: React.MouseEvent) => {
+    const downloadUrl = getDownloadUrl()
+    if (downloadUrl) {
+      window.open(downloadUrl, '_blank')
+    }
+  }
+
+  const downloadUrl = getDownloadUrl()
 
   return (
     <Card className="hover:shadow-md transition-shadow">
@@ -184,12 +200,18 @@ function AgendaResult({ hit }: { hit: AgendaSearchRecord }) {
             <div className="flex items-start justify-between mb-2">
               <div>
                 <h3 className="font-semibold text-lg">
-                  <Link
-                    href={agendaHref}
-                    className="hover:underline text-primary"
-                  >
-                    {getLocalizedTitle(hit.title)}
-                  </Link>
+                  {downloadUrl ? (
+                    <button
+                      onClick={handleDownloadClick}
+                      className="hover:underline text-primary text-left"
+                    >
+                      {getLocalizedTitle(hit.title)}
+                    </button>
+                  ) : (
+                    <span className="text-primary">
+                      {getLocalizedTitle(hit.title)}
+                    </span>
+                  )}
                 </h3>
                 <div className="flex items-center gap-2 mt-1">
                   <Badge variant="outline" className="text-xs">

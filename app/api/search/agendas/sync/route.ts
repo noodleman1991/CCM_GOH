@@ -24,7 +24,13 @@ const AGENDAS_QUERY = `*[_type == "agenda"] {
   },
   files[] {
     language,
-    downloadCount
+    downloadCount,
+    file {
+      asset->{
+        url,
+        originalFilename
+      }
+    }
   },
   _updatedAt
 }`
@@ -118,7 +124,13 @@ export async function POST(request: NextRequest) {
           },
           files[] {
             language,
-            downloadCount
+            downloadCount,
+            file {
+              asset->{
+                url,
+                originalFilename
+              }
+            }
           },
           _updatedAt
         }`,
@@ -244,7 +256,14 @@ function transformAgendaForIndex(agenda: any): AgendaSearchRecord | null {
       regionalCommunities: (agenda.regionalCommunities || []).map((community: any) => community.name).filter(Boolean),
       tags: (agenda.tags || []).map((tag: any) => tag.name).filter(Boolean),
       accessLevel: agenda.accessLevel || 'public',
-      language: 'en' // Default to English, could be enhanced with language detection from files
+      language: 'en', // Default to English, could be enhanced with language detection from files
+      files: (agenda.files || [])
+        .filter((f: any) => f.file?.asset?.url)
+        .map((f: any) => ({
+          language: f.language,
+          url: f.file.asset.url,
+          filename: f.file.asset.originalFilename
+        }))
     }
   } catch (error) {
     console.warn(`Failed to transform agenda ${agenda._id}:`, error)

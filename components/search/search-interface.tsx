@@ -55,8 +55,9 @@ export default function SearchInterface() {
   
   return (
     <div className="space-y-6" dir={isRTL ? 'rtl' : 'ltr'}>
-      <Tabs defaultValue="users" className="w-full">
-        <TabsList className="grid w-full grid-cols-4 max-w-3xl mx-auto">
+      <Tabs defaultValue="agendas" className="w-full">
+        <TabsList className="grid w-full grid-cols-3 max-w-3xl mx-auto">
+          {/* People Search - Commented out (functionality not ready yet)
           <TabsTrigger value="users" className="flex items-center gap-2">
             <Users className="h-4 w-4" />
             {t('people')}
@@ -66,6 +67,7 @@ export default function SearchInterface() {
               </Badge>
             )}
           </TabsTrigger>
+          */}
           <TabsTrigger value="agendas" className="flex items-center gap-2">
             <FileText className="h-4 w-4" />
             {t('agendas')}
@@ -95,7 +97,7 @@ export default function SearchInterface() {
           </TabsTrigger>
         </TabsList>
 
-        {/* Users Search */}
+        {/* Users Search - Commented out (functionality not ready yet)
         <TabsContent value="users">
           <SearchErrorBoundary>
             <InstantSearchNext
@@ -103,6 +105,7 @@ export default function SearchInterface() {
               indexName={ALGOLIA_INDICES.USERS}
               routing={createSearchRouting(ALGOLIA_INDICES.USERS)}
               insights={true}
+              future={{ preserveSharedStateOnUnmount: true }}
             >
             <Configure
               hitsPerPage={20}
@@ -110,9 +113,8 @@ export default function SearchInterface() {
               attributesToHighlight={['firstName', 'lastName', 'username', 'bio', 'organization']}
               attributesToSnippet={['bio:30']}
             />
-            
+
             <div className="space-y-6">
-              {/* Search Box */}
               <div className="max-w-2xl mx-auto">
                 <SearchBox
                   placeholder={t('placeholder')}
@@ -137,17 +139,13 @@ export default function SearchInterface() {
                 />
               </div>
 
-              {/* Search Statistics */}
               <SearchStats />
 
-              {/* Search Content */}
               <div className="flex gap-8">
-                {/* Filters Sidebar */}
                 <div className="w-64 flex-shrink-0">
                   <SearchFilters />
                 </div>
 
-                {/* Results */}
                 <div className="flex-1">
                   <SearchResults type="users" />
                 </div>
@@ -156,6 +154,7 @@ export default function SearchInterface() {
             </InstantSearchNext>
           </SearchErrorBoundary>
         </TabsContent>
+        */}
 
         {/* Agendas Search */}
         <TabsContent value="agendas">
@@ -165,6 +164,7 @@ export default function SearchInterface() {
               indexName={ALGOLIA_INDICES.AGENDAS}
               routing={createSearchRouting(ALGOLIA_INDICES.AGENDAS)}
               insights={true}
+              future={{ preserveSharedStateOnUnmount: true }}
             >
               <Configure
                 hitsPerPage={20}
@@ -181,7 +181,7 @@ export default function SearchInterface() {
                     classNames={{
                       root: 'w-full',
                       form: 'relative',
-                      input: 'flex h-12 w-full rounded-md border border-input bg-background px-4 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
+                      input: 'flex h-12 w-full rounded-md border border-input bg-background px-3 py-2 text-base text-foreground ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
                       submit: 'absolute end-2 top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground',
                       reset: 'absolute end-12 top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground',
                       loadingIndicator: 'absolute end-2 top-1/2 -translate-y-1/2',
@@ -227,6 +227,7 @@ export default function SearchInterface() {
               indexName={ALGOLIA_INDICES.NEWS}
               routing={createSearchRouting(ALGOLIA_INDICES.NEWS)}
               insights={true}
+              future={{ preserveSharedStateOnUnmount: true }}
             >
               <Configure
                 hitsPerPage={20}
@@ -243,7 +244,7 @@ export default function SearchInterface() {
                     classNames={{
                       root: 'w-full',
                       form: 'relative',
-                      input: 'flex h-12 w-full rounded-md border border-input bg-background px-4 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
+                      input: 'flex h-12 w-full rounded-md border border-input bg-background px-3 py-2 text-base text-foreground ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
                       submit: 'absolute end-2 top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground',
                       reset: 'absolute end-12 top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground',
                       loadingIndicator: 'absolute end-2 top-1/2 -translate-y-1/2',
@@ -289,6 +290,7 @@ export default function SearchInterface() {
               indexName={ALGOLIA_INDICES.CASE_STUDIES}
               routing={createSearchRouting(ALGOLIA_INDICES.CASE_STUDIES)}
               insights={true}
+              future={{ preserveSharedStateOnUnmount: true }}
             >
               <Configure
                 hitsPerPage={20}
@@ -305,7 +307,7 @@ export default function SearchInterface() {
                     classNames={{
                       root: 'w-full',
                       form: 'relative',
-                      input: 'flex h-12 w-full rounded-md border border-input bg-background px-4 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
+                      input: 'flex h-12 w-full rounded-md border border-input bg-background px-3 py-2 text-base text-foreground ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
                       submit: 'absolute end-2 top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground',
                       reset: 'absolute end-12 top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground',
                       loadingIndicator: 'absolute end-2 top-1/2 -translate-y-1/2',

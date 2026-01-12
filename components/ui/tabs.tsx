@@ -13,6 +13,9 @@ function Tabs({
     <TabsPrimitive.Root
       data-slot="tabs"
       className={cn("flex flex-col gap-2", className)}
+      // Suppress hydration warning due to Radix UI useId mismatch in Next.js 16/React 19
+      // See: https://github.com/radix-ui/primitives/issues/3700
+      suppressHydrationWarning
       {...props}
     />
   )

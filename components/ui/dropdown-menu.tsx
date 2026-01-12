@@ -9,6 +9,8 @@ import { cn } from "@/lib/utils";
 function DropdownMenu({
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Root>) {
+  // Suppress hydration warning due to Radix UI useId mismatch in Next.js 16/React 19
+  // See: https://github.com/radix-ui/primitives/issues/3700
   return <DropdownMenuPrimitive.Root data-slot="dropdown-menu" {...props} />;
 }
 
