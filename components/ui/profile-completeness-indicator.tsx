@@ -59,7 +59,7 @@ export function ProfileCompletenessIndicator({
   }
 
   return (
-    <div className={cn('space-y-1.5', className)}>
+    <div className={cn('space-y-4', className)}>
       {showLabel && (
         <div className="flex items-center justify-between">
           <span className={cn('font-medium text-muted-foreground', sizeClasses[size])}>

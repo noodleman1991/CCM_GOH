@@ -213,6 +213,11 @@ export interface AgendaSearchRecord extends Record<string, unknown> {
   tags: string[]
   accessLevel: 'public' | 'registered' | 'members'
   language: string
+  files?: Array<{
+    language: string
+    url: string
+    filename?: string
+  }>
 }
 
 export interface NewsSearchRecord extends Record<string, unknown> {

@@ -36,7 +36,7 @@ function RefinementListFilter({ attribute, title, limit = 10 }: { attribute: str
     attribute,
     limit,
     sortBy: ['count:desc', 'name:asc']
-  })
+  }, { skipSuspense: true })
 
   if (!items || items.length === 0) return null
 
@@ -65,7 +65,7 @@ function RefinementListFilter({ attribute, title, limit = 10 }: { attribute: str
 function YearRangeFilter() {
   const { range, start, refine } = useRange({
     attribute: 'year',
-  })
+  }, { skipSuspense: true })
 
   if (!range) return null
 
@@ -97,7 +97,7 @@ function YearRangeFilter() {
 }
 
 function ActiveFilters() {
-  const { items, refine } = useCurrentRefinements()
+  const { items, refine } = useCurrentRefinements({}, { skipSuspense: true })
   const t = useTranslations('search.filters')
 
   if (!items || items.length === 0) return null

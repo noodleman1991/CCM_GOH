@@ -1,5 +1,4 @@
 "use client"
-//todo: uncomment search box,  news
 import * as React from "react"
 import {
     BookOpen,
@@ -15,6 +14,7 @@ import {
     Heart,
     Search,
     Handshake,
+    X,
 } from "lucide-react"
 import Logo from "@/components/logo"
 import { useRouter } from "next/navigation"
@@ -189,11 +189,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 url: "/collaborate",
                 icon: Handshake,
             },
-            // {
-            //     title: t('news'),
-            //     url: "/news",
-            //     icon: Newspaper,
-            // },
+            {
+                title: t('news'),
+                url: "/news",
+                icon: Newspaper,
+            },
         ],
         navSecondary,
         user: userData
@@ -214,25 +214,37 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     </SidebarMenuItem>
                 </SidebarMenu>
 
-                {/*/!* Search Box *!/*/}
-                {/*<div className="p-2">*/}
-                {/*    <form onSubmit={handleSearch} className="relative">*/}
-                {/*        <Search className={cn(*/}
-                {/*            "pointer-events-none absolute top-1/2 size-4 -translate-y-1/2 select-none text-slate-900",*/}
-                {/*            isRTL ? "right-2" : "left-2"*/}
-                {/*        )} />*/}
-                {/*        <SidebarInput*/}
-                {/*            id="search"*/}
-                {/*            placeholder={t('searchPlaceholder')}*/}
-                {/*            value={searchQuery}*/}
-                {/*            onChange={(e) => setSearchQuery(e.target.value)}*/}
-                {/*            className={cn(*/}
-                {/*                "w-full placeholder:text-slate-500 bg-white border-gray-300 text-slate-900",*/}
-                {/*                isRTL ? "pr-8" : "pl-8"*/}
-                {/*            )}*/}
-                {/*        />*/}
-                {/*    </form>*/}
-                {/*</div>*/}
+                {/* Search Box */}
+                <div className="p-2">
+                    <form onSubmit={handleSearch} className="relative">
+                        <Search className={cn(
+                            "pointer-events-none absolute top-1/2 size-4 -translate-y-1/2 select-none text-slate-900",
+                            isRTL ? "right-2" : "left-2"
+                        )} />
+                        <SidebarInput
+                            id="search"
+                            placeholder={t('searchPlaceholder')}
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className={cn(
+                                "w-full placeholder:text-slate-500 bg-white border-gray-300 text-slate-900",
+                                isRTL ? "pr-8 pl-8" : "pl-8 pr-8"
+                            )}
+                        />
+                        {searchQuery && (
+                            <button
+                                type="button"
+                                onClick={() => setSearchQuery("")}
+                                className={cn(
+                                    "absolute top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600",
+                                    isRTL ? "left-2" : "right-2"
+                                )}
+                            >
+                                <X className="size-4" />
+                            </button>
+                        )}
+                    </form>
+                </div>
             </SidebarHeader>
             <SidebarContent>
                 <NavMain items={data.navMain} openAccordion={openAccordion} setOpenAccordionAction={setOpenAccordion} />
