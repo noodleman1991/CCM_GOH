@@ -1,0 +1,80 @@
+import { groq } from "next-sanity";
+
+// @sanity-typegen-ignore
+export const gridReportQuery = groq`
+  _type == "grid-report" => {
+    _type,
+    _key,
+    showTags,
+    showDownloadButtons,
+    showMetadata,
+    report->{
+      _id,
+      title,
+      subtitle,
+      description,
+      slug,
+      reportType,
+      year,
+      publishDate,
+      totalDownloadCount,
+      featured,
+      accessLevel,
+      coverImage{
+        asset->{
+          _id,
+          url,
+          mimeType,
+          metadata {
+            lqip,
+            dimensions {
+              width,
+              height
+            }
+          }
+        },
+        alt
+      },
+      files[]{
+        language,
+        file{
+          asset->{
+            _id,
+            url,
+            originalFilename,
+            size,
+            mimeType
+          }
+        },
+        downloadCount,
+        lastDownloaded
+      },
+      tags[]->{
+        _id,
+        label,
+        value,
+        color,
+        category
+      },
+      organizations[]->{
+        _id,
+        name,
+        slug,
+        acronym,
+        logo{
+          asset->{
+            _id,
+            url
+          },
+          alt
+        }
+      },
+      regionalCommunities[]->{
+        _id,
+        name,
+        slug,
+        code
+      }
+    }
+  }
+`;

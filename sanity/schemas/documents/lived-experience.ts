@@ -1,0 +1,302 @@
+import { defineField, defineType } from "sanity";
+import { Video } from "lucide-react";
+import { isUniqueOtherThanLanguage } from '@/sanity/lib/isUniqueOtherThanLanguage';
+
+export default defineType({
+    name: "livedExperience",
+    title: "Lived Experience",
+    type: "document",
+    icon: Video,
+    groups: [
+        {
+            name: "content",
+            title: "Content",
+        },
+        {
+            name: "video",
+            title: "Video",
+        },
+        {
+            name: "metadata",
+            title: "Metadata",
+        },
+        {
+            name: "affiliations",
+            title: "Affiliations",
+        },
+        {
+            name: "seo",
+            title: "SEO",
+        },
+        {
+            name: "settings",
+            title: "Settings",
+        },
+    ],
+    fields: [
+        // Document language for i18n
+        defineField({
+            name: "language",
+            type: "string",
+            readOnly: true,
+            hidden: true,
+            group: "settings",
+        }),
+        
+        // Title (required in document's language)
+        defineField({
+            name: "title",
+            title: "Title",
+            type: "object",
+            group: "content",
+            fields: [
+                { name: "en", title: "English", type: "string" },
+                { name: "es", title: "Español", type: "string" },
+                { name: "fr", title: "Français", type: "string" },
+                { name: "ar", title: "العربية", type: "string" },
+            ],
+            validation: (Rule) =>
+                Rule.custom((title: unknown, context) => {
+                    const language = String(context?.document?.language || "en");
+                    const localizedTitle = title as Record<string, string | undefined>;
+
+                    if (!localizedTitle?.[language]) {
+                        return `Title in ${language} is required`;
+                    }
+                    return true;
+                }),
+        }),
+        
+        // Slug for URL
+        defineField({
+            name: "slug",
+            title: "Slug",
+            type: "slug",
+            group: "settings",
+            options: {
+                source: (doc: any) => doc.title?.[doc.language || 'en'] || doc.title?.en,
+                maxLength: 96,
+                isUnique: isUniqueOtherThanLanguage,
+            },
+            validation: (Rule) => Rule.required(),
+        }),
+        
+        // Description
+        defineField({
+            name: "description",
+            title: "Description",
+            type: "object",
+            group: "content",
+            description: "Brief description of the lived experience",
+            fields: [
+                { name: "en", title: "English", type: "text", rows: 3 },
+                { name: "es", title: "Español", type: "text", rows: 3 },
+                { name: "fr", title: "Français", type: "text", rows: 3 },
+                { name: "ar", title: "العربية", type: "text", rows: 3 },
+            ],
+        }),
+        
+        // Video URL (external link to video platform)
+        defineField({
+            name: "videoLink",
+            title: "Video Link",
+            type: "url",
+            group: "video",
+            description: "Link to the video (YouTube, Vimeo, etc.)",
+            validation: (Rule) => Rule.required(),
+        }),
+        
+        // Video thumbnail (optional, will fallback to platform thumbnail)
+        defineField({
+            name: "thumbnail",
+            title: "Video Thumbnail",
+            type: "image",
+            group: "video",
+            options: {
+                hotspot: true,
+            },
+            fields: [
+                {
+                    name: "alt",
+                    type: "string",
+                    title: "Alternative Text",
+                },
+            ],
+            description: "Optional custom thumbnail. If not provided, will use platform default.",
+        }),
+        
+        // Duration (optional)
+        defineField({
+            name: "duration",
+            title: "Duration",
+            type: "string",
+            group: "video",
+            description: "Video duration (e.g., '5:30', '1:45:00')",
+            placeholder: "mm:ss or h:mm:ss",
+        }),
+        
+        // Publication date
+        defineField({
+            name: "publishedAt",
+            title: "Published At",
+            type: "datetime",
+            group: "metadata",
+            initialValue: () => new Date().toISOString(),
+        }),
+        
+        // Author
+        defineField({
+            name: "author",
+            title: "Author",
+            type: "reference",
+            group: "affiliations",
+            to: { type: "author" },
+            description: "The author of this lived experience",
+            validation: (Rule) => Rule.required(),
+        }),
+
+        // Related Community
+        defineField({
+            name: "relatedCommunity",
+            title: "Related Community",
+            type: "reference",
+            group: "affiliations",
+            to: { type: "regionalCommunity" },
+            description: "The community this lived experience relates to",
+        }),
+        
+        // Related Organizations
+        defineField({
+            name: "organizations",
+            title: "Organizations",
+            type: "array",
+            group: "affiliations",
+            of: [
+                {
+                    type: "reference",
+                    to: [{ type: "organization" }],
+                },
+            ],
+            description: "Organizations involved in this lived experience",
+        }),
+        
+        // Related Projects
+        defineField({
+            name: "projects",
+            title: "Projects",
+            type: "array",
+            group: "affiliations",
+            of: [
+                {
+                    type: "reference",
+                    to: [{ type: "project" }],
+                },
+            ],
+            description: "Projects related to this lived experience",
+        }),
+        
+        // Tags for categorization
+        defineField({
+            name: "tags",
+            title: "Tags",
+            type: "array",
+            group: "metadata",
+            of: [
+                {
+                    type: "reference",
+                    to: [{ type: "tag" }],
+                },
+            ],
+            options: {
+                layout: "tags",
+                sortable: true,
+            },
+            validation: (Rule) => Rule.max(10),
+            description: "Tags to categorize this lived experience",
+        }),
+        
+        // Featured flag
+        defineField({
+            name: "featured",
+            title: "Featured",
+            type: "boolean",
+            group: "settings",
+            initialValue: false,
+            description: "Mark as featured to highlight in listings",
+        }),
+        
+        // SEO fields
+        defineField({
+            name: "meta_title",
+            title: "Meta Title",
+            type: "string",
+            group: "seo",
+            description: "Custom title for search engines",
+        }),
+        defineField({
+            name: "meta_description",
+            title: "Meta Description",
+            type: "text",
+            group: "seo",
+            rows: 3,
+            description: "Custom description for search engines",
+        }),
+        defineField({
+            name: "noindex",
+            title: "No Index",
+            type: "boolean",
+            initialValue: false,
+            group: "seo",
+            description: "Prevent search engines from indexing this page",
+        }),
+        defineField({
+            name: "ogImage",
+            title: "Open Graph Image - [1200x630]",
+            type: "image",
+            group: "seo",
+            description: "Image for social media sharing",
+        }),
+    ],
+    
+    orderings: [
+        {
+            title: 'Published Date (Newest)',
+            name: 'publishedAtDesc',
+            by: [{ field: 'publishedAt', direction: 'desc' }],
+        },
+        {
+            title: 'Published Date (Oldest)',
+            name: 'publishedAtAsc',
+            by: [{ field: 'publishedAt', direction: 'asc' }],
+        },
+        {
+            title: 'Title A-Z',
+            name: 'titleAsc',
+            by: [{ field: 'title.en', direction: 'asc' }],
+        },
+    ],
+    
+    preview: {
+        select: {
+            title: "title",
+            media: "thumbnail",
+            language: "language",
+            publishedAt: "publishedAt",
+            community: "relatedCommunity.name",
+            featured: "featured",
+        },
+        prepare({ title, media, language, publishedAt, community, featured }) {
+            const lang = language || 'en';
+            const displayTitle = title?.[lang] || title?.en || "Untitled Experience";
+            const dateText = publishedAt ? new Date(publishedAt).toLocaleDateString() : 'Draft';
+            const featuredText = featured ? 'FEATURED ' : '';
+            const communityText = community ? ` | ${community}` : '';
+
+            return {
+                title: `${featuredText}${displayTitle}`,
+                subtitle: `${lang.toUpperCase()} | ${dateText}${communityText}`,
+                media: media || Video,
+            };
+        },
+    },
+});

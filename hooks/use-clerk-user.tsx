@@ -2,6 +2,7 @@
 
 import { useUser } from '@clerk/nextjs';
 import { useCallback } from 'react';
+import { getOptimizedClerkImageUrl } from '@/lib/image-utils';
 
 export interface UserData {
     name: string;
@@ -21,10 +22,18 @@ export function useClerkUser() {
             };
         }
 
+        // Use optimized Clerk image URL
+        const optimizedAvatar = getOptimizedClerkImageUrl(user.imageUrl, {
+            width: 200,
+            height: 200,
+            fit: 'crop',
+            quality: 85
+        });
+
         return {
             name: user.fullName || user.username || "User",
             email: user.primaryEmailAddress?.emailAddress || "",
-            avatar: user.imageUrl || "/avatars/default.jpg",
+            avatar: optimizedAvatar || "/avatars/default.jpg",
         };
     }, [user, isSignedIn, isLoaded]);
 

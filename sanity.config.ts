@@ -1,0 +1,76 @@
+"use client";
+
+/**
+ * This configuration is used to for the Sanity Studio that’s mounted on the `/app/studio/[[...tool]]/page.tsx` route
+ */
+
+import { visionTool } from "@sanity/vision";
+import { defineConfig } from "sanity";
+import { structureTool } from "sanity/structure";
+import { presentationTool } from "sanity/presentation";
+import { codeInput } from "@sanity/code-input";
+
+// Go to https://www.sanity.io/docs/api-versioning to learn how API versioning works
+import { apiVersion, dataset, projectId } from "./sanity/env";
+import { schema } from "./sanity/schema";
+import { resolve } from "@/sanity/presentation/resolve";
+import { structure } from "./sanity/structure";
+import { documentInternationalization } from '@sanity/document-internationalization'
+
+import { routing } from './i18n/routing'
+import {
+  approveCaseStudyAction,
+  requestRevisionAction,
+  rejectCaseStudyAction,
+  previewCaseStudyAction
+} from './sanity/actions'
+
+
+
+export default defineConfig({
+    basePath: "/studio",
+    title: "Connecting Climate Minds CMS",
+    projectId,
+    dataset,
+    // Add and edit the content schema in the './sanity/schema' folder
+    schema,
+    document: {
+      actions: (prev, context) => {
+        // Add custom actions for case studies
+        if (context.schemaType === 'caseStudy') {
+          return [
+            ...prev,
+            approveCaseStudyAction,
+            requestRevisionAction,
+            rejectCaseStudyAction,
+            previewCaseStudyAction
+          ]
+        }
+        return prev
+      }
+    },
+    plugins: [
+        structureTool({ structure }),
+        presentationTool({
+            previewUrl: {
+                draftMode: {
+                    enable: "/api/draft-mode/enable",
+                },
+            },
+            resolve,
+        }),
+        visionTool({ defaultApiVersion: apiVersion }),
+        codeInput(),
+        documentInternationalization({
+            supportedLanguages: routing.locales.map(locale => ({
+                id: locale,
+                title:      locale === 'ar' ? 'العربية' :
+                            locale === 'fr' ? 'Français' :
+                            locale === 'es' ? 'Español' : 'English'
+            })),
+            schemaTypes: ['page', 'regionalCommunityPage', 'post', 'homepage', 'onboardingContent'],
+            languageField: 'language',
+            weakReferences: true,
+        }),
+    ],
+});
