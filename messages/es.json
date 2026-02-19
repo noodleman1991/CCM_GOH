@@ -1,0 +1,1125 @@
+{
+  "app": {
+    "name": "Nombre de tu App",
+    "tagline": "Eslogan o descripción de tu app"
+  },
+  "navigation": {
+    "home": "Inicio",
+    "dashboard": "Panel",
+    "profile": "Perfil",
+    "profiles": "Perfiles",
+    "settings": "Configuración",
+    "login": "Iniciar sesión",
+    "signup": "Registrarse",
+    "logout": "Cerrar sesión",
+    "blog": "Blog",
+    "account": "Cuenta",
+    "security": "Seguridad",
+    "myCommunities": "Mis Comunidades",
+    "importBookmark": "Importar marcadores",
+    "exportBookmark": "Exportar marcadores",
+    "support": "Soporte",
+    "browseProfiles": "Explorar Perfiles",
+    "researchAction": "Investigación y Acción",
+    "allOutputs": "Todos los resultados",
+    "globalAgenda": "Agenda Global",
+    "regionalAgendas": "Agendas Regionales",
+    "communityAgendas": "Agendas Comunitarias",
+    "caseStudies": "Estudios de Caso",
+    "toolkits": "Herramientas",
+    "impactReports": "Informes de Impacto",
+    "regionalCommunities": "Comunidades Regionales",
+    "collaborate": "Colaborar",
+    "news": "Noticias",
+    "livedExperiences": "Experiencias Vividas",
+    "about": "Acerca de",
+    "feedback": "Comentarios",
+    "search": "Buscar",
+    "searchPlaceholder": "Buscar...",
+    "regions": {
+      "subSaharanAfrica": "África Subsahariana",
+      "northernAfricaWesternAsia": "África del Norte y Asia Occidental",
+      "centralSouthernAsia": "Asia Central y Meridional",
+      "easternSouthEasternAsia": "Asia Oriental y Sudoriental",
+      "latinAmericaCaribbean": "América Latina y el Caribe",
+      "oceania": "Oceanía",
+      "europeNorthAmerica": "Europa y América del Norte",
+      "noRegionalCommunity": "Sin Comunidad Regional"
+    },
+    "specialGroups": {
+      "youth": "Juventud",
+      "indigenous": "Indígenas",
+      "smallholderFarmers": "Pequeños Agricultores"
+    }
+  },
+  "navUser": {
+    "account": "Cuenta",
+    "logout": "Cerrar sesión"
+  },
+  "auth": {
+    "welcome": "¡Bienvenido!",
+    "welcomeBack": "Bienvenido de vuelta",
+    "signUpOrSignIn": "Regístrate o Inicia sesión",
+    "signIn": "Iniciar sesión",
+    "signOut": "Cerrar sesión",
+    "createAccount": "Crear cuenta",
+    "emailPlaceholder": "Dirección de correo electrónico",
+    "passwordPlaceholder": "Contraseña",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "noAccount": "¿No tienes una cuenta?",
+    "hasAccount": "¿Ya tienes una cuenta?",
+    "continueWith": "Continuar con {provider}"
+  },
+  "errors": {
+    "general": "Algo salió mal",
+    "notFound": "Página no encontrada",
+    "pageNotFoundTitle": "Hmm, no pudimos encontrar esa página.",
+    "pageNotFoundDescription": "Tal vez revisa la URL o <link>vuelve al inicio</link>.",
+    "errorTitle": "Algo salió mal",
+    "errorDescription": "Ocurrió un error inesperado. Intenta de nuevo o vuelve a la página de inicio.",
+    "tryAgain": "Intentar de nuevo",
+    "goHome": "Ir al inicio",
+    "browseProfiles": "Explorar Perfiles",
+    "backToHome": "Volver al Inicio",
+    "profileNotFound": "El perfil de usuario que buscas no existe o puede haber sido eliminado.",
+    "unauthorized": "Necesitas iniciar sesión para acceder a esta página",
+    "forbidden": "No tienes permisos para acceder a esta página",
+    "validation": {
+      "required": "Nos encantaría conocer tu {field}",
+      "email": "Por favor comparte una dirección de correo válida para mantenernos en contacto",
+      "minLength": "¿Podrías agregar un poco más de detalle? Necesitamos al menos {length} caracteres para {field}",
+      "maxLength": "Mantengamos {field} en menos de {length} caracteres para que sea más fácil de leer",
+      "invalidUrl": "Por favor comparte una dirección web completa que comience con http:// o https://",
+      "urlProtocolRequired": "Las direcciones web deben comenzar con http:// o https://",
+      "requiredFields": "¡Solo algunos detalles más y estarás listo! Por favor completa los campos resaltados.",
+      "chooseLanguage": "Por favor elige tu idioma preferido para brindarte la mejor experiencia"
+    }
+  },
+  "common": {
+    "loading": "Cargando...",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "create": "Crear",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "sort": "Ordenar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "confirm": "Confirmar",
+    "yes": "Sí",
+    "no": "No",
+    "availableInLanguages": "Disponible en {count} {count, plural, one {idioma} other {idiomas}}",
+    "availableIn": "Disponible en:",
+    "noContentYet": "Aún no hay contenido disponible.",
+    "checkBackSoon": "Vuelve pronto para ver las actualizaciones."
+  },
+  "dashboard": {
+    "pageTitle": "Panel - Connecting Climate Minds Hub",
+    "pageDescription": "Tu centro personal para gestionar tu perfil, conectar con la comunidad y compartir tu trabajo",
+    "welcome": "Bienvenido/a, {name}",
+    "subtitle": "",
+    "editProfile": "Editar Perfil",
+    "anonymousUser": "Usuario Anónimo",
+    "completeProfileMessage": "Completa tu perfil para aumentar la visibilidad y conectar con más colaboradores",
+    "quickActions": "Acciones Rápidas",
+    "manageProfile": "Gestionar Perfil",
+    "manageProfileDescription": "Actualiza tu información, experiencia e historial de trabajo",
+    "viewProfile": "Ver Perfil",
+    "submitCaseStudy": "Enviar Caso de Estudio",
+    "submitCaseStudyDescription": "Comparte tu trabajo de acción climática con la comunidad",
+    "submit": "Enviar",
+    "collaborate": "Colaborar",
+    "collaborateDescription": "Encuentra y conecta con mentes climáticas en todo el mundo",
+    "findCollaborators": "Encontrar Colaboradores",
+    "accountSettings": "Configuración de Cuenta",
+    "accountSettingsDescription": "Gestiona tus preferencias de cuenta y seguridad",
+    "manageAccount": "Gestionar Cuenta",
+    "recentWork": "Trabajo Reciente",
+    "ongoing": "En curso",
+    "yourCommunity": "Tu Comunidad",
+    "visitCommunity": "Visitar Comunidad",
+    "recentNews": "Noticias Recientes",
+    "viewAllNews": "Ver Todas las Noticias",
+    "joinCommunityTitle": "Únete a una Comunidad Regional",
+    "joinCommunityDescription": "Conecta con mentes climáticas en tu región y mantente actualizado sobre iniciativas locales",
+    "exploreCommunities": "Explorar Comunidades",
+    "greeting": "Hola, {name}",
+    "summary": "Aquí está tu resumen",
+    "recentActivity": "Actividad Reciente",
+    "noActivity": "Sin actividad reciente",
+    "viewAll": "Ver todo",
+    "personalSettings": "Configuración personal",
+    "buildingApp": "Construyendo tu Aplicación",
+    "dataFetching": "Obtención de Datos",
+    "submissions": {
+      "pageTitle": "Mis Envíos",
+      "pageDescription": "Administra tus envíos de estudios de caso y borradores",
+      "title": "Mis Envíos",
+      "description": "Administra tus envíos de estudios de caso y borradores",
+      "newCaseStudy": "Nuevo Estudio de Caso",
+      "status": {
+        "pending": "Pendiente de Revisión",
+        "approved": "Publicado",
+        "rejected": "Rechazado",
+        "revision": "Necesita Revisión"
+      },
+      "tabs": {
+        "submissions": "Envíos",
+        "drafts": "Borradores"
+      },
+      "actions": {
+        "edit": "Editar y Reenviar",
+        "view": "Ver Publicado",
+        "continue": "Continuar Escribiendo",
+        "underReview": "En Revisión"
+      },
+      "empty": {
+        "submissions": {
+          "title": "Aún no hay envíos",
+          "description": "Comienza enviando tu primer estudio de caso para compartir tu investigación con la comunidad.",
+          "action": "Enviar Estudio de Caso"
+        },
+        "drafts": {
+          "title": "No hay borradores guardados",
+          "description": "Tus borradores de estudios de caso aparecerán aquí automáticamente mientras trabajas en ellos."
+        }
+      },
+      "alerts": {
+        "revision": {
+          "title": "Acción Requerida",
+          "description": "Tienes {count} estudio{plural} de caso que necesita{singular} revisión basada en los comentarios del editor.",
+          "editorFeedback": "Comentarios del editor:"
+        }
+      }
+    }
+  },
+  "settings": {
+    "title": "Configuración",
+    "account": "Cuenta",
+    "profile": "Perfil",
+    "appearance": "Apariencia",
+    "notifications": "Notificaciones",
+    "language": "Idioma",
+    "theme": {
+      "title": "Tema",
+      "light": "Claro",
+      "dark": "Oscuro",
+      "system": "Sistema"
+    },
+    "privacy": "Privacidad",
+    "security": "Seguridad"
+  },
+  "notifications": {
+    "success": "¡Éxito!",
+    "error": "¡Error!",
+    "info": "Información",
+    "warning": "Advertencia"
+  },
+  "dates": {
+    "today": "Hoy",
+    "yesterday": "Ayer",
+    "tomorrow": "Mañana",
+    "days": {
+      "monday": "Lunes",
+      "tuesday": "Martes",
+      "wednesday": "Miércoles",
+      "thursday": "Jueves",
+      "friday": "Viernes",
+      "saturday": "Sábado",
+      "sunday": "Domingo"
+    },
+    "months": {
+      "january": "Enero",
+      "february": "Febrero",
+      "march": "Marzo",
+      "april": "Abril",
+      "may": "Mayo",
+      "june": "Junio",
+      "july": "Julio",
+      "august": "Agosto",
+      "september": "Septiembre",
+      "october": "Octubre",
+      "november": "Noviembre",
+      "december": "Diciembre"
+    },
+    "formats": {
+      "short": "MMM D, YYYY",
+      "long": "MMMM D, YYYY",
+      "time": "h:mm A"
+    }
+  },
+  "forms": {
+    "name": "Nombre",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "confirmPassword": "Confirmar contraseña",
+    "address": "Dirección",
+    "phone": "Número de teléfono",
+    "submit": "Enviar",
+    "reset": "Restablecer"
+  },
+  "profile": {
+    "noName": "Sin nombre",
+    "unnamed": "Usuario sin nombre",
+    "editProfile": "Editar Perfil",
+    "contact": "Contacto",
+    "basicInfo": "Acerca de",
+    "about": "Acerca de",
+    "skills": "Habilidades",
+    "projects": "Proyectos",
+    "location": "Ubicación",
+    "memberSince": "Miembro desde",
+    "overview": "Resumen",
+    "bio": "Acerca de",
+    "under18": "Menor de 18",
+    "above18": "18 o mayor",
+    "addWork": "Agregar trabajo",
+    "noWorks": "No hay trabajos recientes para mostrar",
+    "regionalCommunities": "Comunidades Regionales",
+    "specialCommunities": "Comunidades Especiales",
+    "noCommunities": "No es miembro de ninguna comunidad",
+    "profiles": {
+      "pageTitle": "Miembros de la Comunidad"
+    },
+    "work": {
+      "title": "Experiencia Profesional",
+      "workBio": "Sobre mi trabajo",
+      "workTypes": "Tipos de Trabajo",
+      "expertiseAreas": "Áreas de Especialización",
+      "types": {
+        "research": "Investigación",
+        "policy": "Política",
+        "livedExperience": "Experto por experiencia vivida",
+        "ngo": "ONG",
+        "communityOrg": "Organización comunitaria",
+        "communityorganization": "Organización comunitaria",
+        "education": "Educación o enseñanza"
+      },
+      "expertise": {
+        "climate": "Cambio Climático",
+        "mentalHealth": "Salud Mental",
+        "health": "Salud",
+        "education": "Educación",
+        "socialJustice": "Justicia Social"
+      }
+    },
+    "recentWork": {
+      "title": "Trabajo Reciente",
+      "addWork": "Agregar Trabajo",
+      "editWork": "Editar Trabajo",
+      "viewProject": "Ver Proyecto",
+      "updateWork": "Actualizar Trabajo",
+      "cancel": "Cancelar",
+      "noWorks": "No hay trabajo reciente para mostrar",
+      "ongoing": "En curso",
+      "present": "Presente",
+      "description": "Comparte tus proyectos y contribuciones para ayudar a otros a entender tu trabajo",
+      "workTitle": "Título del Proyecto",
+      "workTitlePlaceholder": "Ingresa el título de tu proyecto o trabajo",
+      "workDescription": "Descripción",
+      "descriptionPlaceholder": "Cuéntanos sobre este proyecto y su impacto...",
+      "projectLink": "Enlace del Proyecto",
+      "startDate": "Fecha de Inicio",
+      "endDate": "Fecha de Fin",
+      "ongoingProject": "Este trabajo está en curso"
+    },
+    "communities": {
+      "title": "Comunidades",
+      "description": "Selecciona las comunidades regionales a las que te gustaría unirte",
+      "saved": "Comunidades actualizadas exitosamente",
+      "error": "Error al actualizar las comunidades",
+      "noCommunities": "No es miembro de ninguna comunidad",
+      "noneSelected": "Aún no hay comunidades seleccionadas",
+      "noCommunitiesAvailable": "No hay comunidades disponibles en este momento",
+      "regionalCommunities": "Comunidades Regionales",
+      "specialGroups": "Grupos Especiales",
+      "regional": {
+        "subSaharanAfrica": "África Subsahariana",
+        "northernAfricaWesternAsia": "África del Norte y Asia Occidental",
+        "centralSouthernAsia": "Asia Central y Meridional",
+        "easternSouthEasternAsia": "Asia Oriental y Sudoriental",
+        "latinAmericaCaribbean": "América Latina y el Caribe",
+        "oceania": "Oceanía",
+        "europeNorthAmerica": "Europa y América del Norte"
+      },
+      "special": {
+        "youth": "Juventud",
+        "indigenous": "Indígena",
+        "farmerFisher": "Pequeños agricultores"
+      }
+    },
+    "social": {
+      "title": "Conectar",
+      "website": "Sitio Web Personal",
+      "linkedin": "LinkedIn",
+      "twitter": "Twitter"
+    },
+    "edit": {
+      "pageTitle": "Editar Perfil",
+      "pageDescription": "Actualiza tu información de perfil",
+      "saveSuccess": "Perfil actualizado exitosamente",
+      "saveError": "Error al actualizar el perfil",
+      "clerkInfo": {
+        "title": "Información de la Cuenta",
+        "description": "Esta información se gestiona a través de la configuración de tu cuenta y no se puede cambiar aquí. Los cambios en tu perfil se sincronizan automáticamente al guardar.",
+        "emailNote": "Para cambiar tu dirección de correo electrónico, ve a la configuración de tu cuenta",
+        "phoneNote": "Para agregar o cambiar tu número de teléfono, ve a la configuración de tu cuenta"
+      },
+      "email": "Correo Electrónico",
+      "phoneNumber": "Número de Teléfono",
+      "noEmail": "Sin correo electrónico",
+      "noPhone": "Sin número de teléfono",
+      "basicInfo": {
+        "title": "Información Básica",
+        "description": "Esta información se mostrará en tu perfil público"
+      },
+      "workInfo": {
+        "title": "Información Laboral",
+        "description": "Cuéntanos sobre tu experiencia profesional y expertise"
+      },
+      "social": {
+        "title": "Enlaces Sociales",
+        "description": "Agrega enlaces a tus perfiles de redes sociales y sitio web personal"
+      },
+      "firstName": "Nombre",
+      "lastName": "Apellido",
+      "username": "Nombre de usuario",
+      "usernameHint": "Esto se usará en la URL de tu perfil",
+      "bio": "Biografía",
+      "ageGroup": "Grupo de Edad",
+      "selectAge": "Selecciona tu grupo de edad",
+      "under18": "Menor de 18",
+      "above18": "18 o mayor",
+      "country": "País",
+      "city": "Ciudad/Pueblo",
+      "workTypes": {
+        "label": "¿Cuál de los siguientes tipos de trabajo realizas?",
+        "description": "Selecciona todos los que apliquen",
+        "research": "Investigación",
+        "policy": "Política",
+        "livedExperience": "Experto a través de mi propia experiencia vivida",
+        "ngo": "ONG",
+        "communityOrg": "Organización comunitaria",
+        "education": "Educación o enseñanza"
+      },
+      "expertise": {
+        "label": "¿Cuáles de las siguientes áreas de experiencia tienes?",
+        "description": "Selecciona todas las que apliquen",
+        "climate": "Cambio Climático",
+        "mentalHealth": "Salud Mental",
+        "health": "Salud",
+        "education": "Educación",
+        "socialJustice": "Justicia Social"
+      },
+      "privacy": {
+        "title": "Configuración de Privacidad y Búsqueda",
+        "description": "Controla cómo aparece tu perfil en los resultados de búsqueda y qué información es visible para otros",
+        "searchable": {
+          "title": "Permitir que otros me encuentren en la búsqueda",
+          "description": "Cuando está habilitado, tu perfil aparecerá en los resultados de búsqueda. Cuando está deshabilitado, no serás descubrible a través de la búsqueda."
+        },
+        "visibility": {
+          "title": "Visibilidad del Perfil",
+          "description": "Elige quién puede ver la información completa de tu perfil",
+          "public": "Público - Cualquiera puede ver tu perfil",
+          "members": "Solo Miembros - Solo los miembros de la comunidad pueden ver tu perfil",
+          "private": "Privado - Tu perfil no es descubrible"
+        },
+        "showInProfile": "Mostrar en perfil y resultados de búsqueda",
+        "showEmail": {
+          "title": "Mostrar dirección de correo electrónico",
+          "description": "Muestra tu dirección de correo electrónico en tu perfil"
+        },
+        "showPhone": {
+          "title": "Mostrar número de teléfono",
+          "description": "Muestra tu número de teléfono en tu perfil"
+        },
+        "showWork": {
+          "title": "Mostrar información laboral",
+          "description": "Muestra tu organización, posición y biografía laboral"
+        },
+        "showSocial": {
+          "title": "Mostrar enlaces sociales",
+          "description": "Muestra tu sitio web y enlaces de redes sociales"
+        },
+        "showLocation": {
+          "title": "Mostrar ubicación",
+          "description": "Muestra tu país e información de ciudad"
+        }
+      },
+      "organization": "Organización",
+      "position": "Posición",
+      "workBio": "Biografía Laboral",
+      "personalWebsite": "Sitio Web Personal o Blog",
+      "linkedin": "Perfil de LinkedIn",
+      "twitter": "Usuario de Twitter",
+      "cancel": "Cancelar",
+      "save": "Guardar Cambios"
+    },
+    "account": {
+      "pageTitle": "Cuenta y Seguridad",
+      "pageDescription": "Administra la configuración de tu cuenta, credenciales de inicio de sesión y opciones de seguridad",
+      "email": {
+        "title": "Dirección de Correo Electrónico",
+        "description": "Actualiza tu dirección de correo electrónico para inicio de sesión y notificaciones",
+        "current": "Correo actual:",
+        "new": "Nueva dirección de correo electrónico",
+        "none": "Sin dirección de correo electrónico",
+        "update": "Actualizar Correo"
+      },
+      "phone": {
+        "title": "Número de Teléfono",
+        "description": "Actualiza tu número de teléfono para autenticación de dos factores",
+        "current": "Teléfono actual:",
+        "new": "Nuevo número de teléfono",
+        "none": "Sin número de teléfono",
+        "update": "Actualizar Teléfono"
+      },
+      "password": {
+        "title": "Contraseña",
+        "description": "Cambia la contraseña de tu cuenta",
+        "current": "Contraseña actual",
+        "new": "Nueva contraseña",
+        "confirm": "Confirmar nueva contraseña",
+        "change": "Cambiar Contraseña"
+      },
+      "delete": {
+        "title": "Eliminar Cuenta",
+        "description": "Elimina permanentemente tu cuenta y todos los datos asociados. Esta acción no se puede deshacer.",
+        "button": "Eliminar Cuenta",
+        "confirm": {
+          "title": "¿Estás completamente seguro?",
+          "description": "Esto eliminará permanentemente tu cuenta y eliminará todos tus datos de nuestros servidores. Esta acción no se puede deshacer.",
+          "type": "Para confirmar, escribe",
+          "cancel": "Cancelar",
+          "delete": "Eliminar Cuenta"
+        }
+      }
+    }
+  },
+  "profilePicture": {
+    "title": "Foto de Perfil",
+    "description": "Sube una foto de perfil para personalizar tu cuenta",
+    "uploadPhoto": "Subir Foto",
+    "changePhoto": "Cambiar Foto",
+    "uploading": "Subiendo...",
+    "requirements": "JPG, PNG o WebP. Máx 2MB. Recomendado: imágenes cuadradas (proporción 1:1).",
+    "altText": "Foto de perfil",
+    "uploadSuccess": "Foto de perfil actualizada exitosamente",
+    "removeSuccess": "Foto de perfil eliminada exitosamente",
+    "errors": {
+      "invalidFileType": "Por favor sube una imagen JPG, PNG o WebP",
+      "fileTooLarge": "El archivo debe ser menor a 2MB",
+      "aspectRatioWarning": "Para mejores resultados, usa una imagen cuadrada (proporción 1:1)",
+      "uploadError": "Error al subir la imagen. Por favor intenta de nuevo.",
+      "removeError": "Error al eliminar la imagen. Por favor intenta de nuevo."
+    }
+  },
+  "profiles": {
+    "pageTitle": "Miembros de la Comunidad",
+    "pageDescription": "Descubre y conecta con miembros de nuestra comunidad",
+    "searchPlaceholder": "Buscar por nombre, usuario o biografía...",
+    "search": "Buscar",
+    "noResults": "No se encontraron perfiles. Intenta ajustar tu búsqueda.",
+    "unnamed": "Usuario Sin Nombre",
+    "browseProfiles": "Explorar Perfiles"
+  },
+  "caseStudySubmission": {
+    "pageTitle": "Enviar Estudio de Caso",
+    "pageDescription": "Comparte tu investigación e ideas con nuestra comunidad global multilingüe",
+    "title": "Envía tu Estudio de Caso",
+    "description": "Comparte tu investigación con nuestra comunidad global en inglés, español, francés o árabe. Ayúdanos a hacer el conocimiento accesible a investigadores de todo el mundo."
+  },
+  "caseStudy": {
+    "backToCaseStudies": "Volver a Estudios de Caso"
+  },
+  "livedExperiences": {
+    "title": "Experiencias Vividas",
+    "description": "La experiencia vivida es una fuente fundamental de conocimientos que se deben tener en cuenta a la hora de abordar las consecuencias del cambio climático para la salud mental. Escuchar y aprender de las distintas personas y comunidades que se ven directamente afectadas por los desafíos interrelacionados del cambio climático y la salud mental es fundamental para generar investigaciones y acciones de impacto. Es importante destacar que las experiencias vividas ayudan a todos los esfuerzos en esta intersección para generar soluciones factibles para y con los grupos más afectados, lo que conduce a una investigación y una acción más inclusivas. Las historias que se muestran a continuación, y las ideas que contienen, reflejan un compromiso de ir más allá de la tokenización y de valorar y elevar la contribución de las experiencias vividas a este campo en crecimiento.",
+    "pageTitle": "Experiencias Vividas",
+    "pageDescription": "Mira y aprende de historias personales sobre el impacto climático de comunidades de todo el mundo",
+    "searchPlaceholder": "Buscar experiencias vividas...",
+    "filters": "Filtros",
+    "filterByRegion": "Filtrar por Región",
+    "filterByTag": "Filtrar por Etiqueta",
+    "selectAll": "Seleccionar Todo",
+    "deselectAll": "Deseleccionar Todo",
+    "clearFilters": "Limpiar Filtros",
+    "noResults": "No se encontraron videos que coincidan con tus filtros",
+    "video": "video",
+    "videos": "videos",
+    "tags": "Etiquetas"
+  },
+  "caseStudyForm": {
+    "sections": {
+      "basicInfo": "Información Básica",
+      "content": "Contenido y Detalles",
+      "authors": "Autores y Contribuidores",
+      "classification": "Etiquetas y Clasificación",
+      "location": "Ubicación del Estudio",
+      "timeline": "Período del Estudio"
+    },
+    "fields": {
+      "title": "Título",
+      "subtitle": "Subtítulo",
+      "excerpt": "Extracto",
+      "content": "Contenido Completo",
+      "featuredImage": "Imagen Destacada",
+      "organization": "Organización Asociada",
+      "authors": "Equipo de Investigación",
+      "tags": "Etiquetas",
+      "country": "País",
+      "city": "Ciudad",
+      "region": "Región/Estado",
+      "startDate": "Fecha de Inicio",
+      "endDate": "Fecha de Fin"
+    },
+    "placeholders": {
+      "title": "Ingresa el título en {language}",
+      "subtitle": "Ingresa el subtítulo en {language}",
+      "excerpt": "Resumen breve en {language}",
+      "content": "Contenido detallado del estudio de caso en {language}",
+      "organization": "Ingresa el nombre de la organización",
+      "authorName": "Nombre completo",
+      "authorEmail": "Dirección de correo electrónico",
+      "country": "Ingresa el país",
+      "city": "Ingresa la ciudad",
+      "region": "Ingresa la región"
+    },
+    "descriptions": {
+      "excerpt": "Estos resúmenes ayudan a investigadores de todo el mundo a descubrir tu trabajo. Requerido en los cuatro idiomas.",
+      "content": "Escribe tu estudio de caso en cualquier idioma que prefieras. Se requiere al menos una versión del idioma.",
+      "organization": "Si este estudio de caso está asociado con una organización específica, ingresa su nombre aquí.",
+      "tags": "Selecciona al menos una etiqueta para ayudar a categorizar tu estudio de caso.",
+      "endDate": "Déjalo vacío si el estudio está en curso",
+      "image": "Sube una imagen de alta calidad para representar tu estudio de caso (máx 10MB)",
+      "multilingual": "Nuestra plataforma sirve a investigadores en 4 idiomas. Puedes enviar en cualquier idioma, pero por favor ayúdanos con títulos y extractos en todos los idiomas."
+    },
+    "roles": {
+      "lead": "Autor Principal",
+      "coauthor": "Co-Autor",
+      "contributor": "Contribuidor",
+      "advisor": "Asesor"
+    },
+    "actions": {
+      "addAuthor": "Agregar Autor",
+      "removeAuthor": "Eliminar Autor",
+      "uploadImage": "Subir Imagen",
+      "submit": "Enviar Estudio de Caso",
+      "submitting": "Enviando..."
+    },
+    "validation": {
+      "titleRequired": "El título es requerido en los cuatro idiomas para ayudar a nuestra comunidad global",
+      "excerptMinLength": "El extracto debe tener al menos 50 caracteres en todos los idiomas",
+      "contentMinLength": "Por favor proporciona contenido detallado en al menos un idioma (mínimo 200 caracteres)",
+      "authorNameRequired": "El nombre del autor es requerido",
+      "invalidEmail": "Dirección de correo electrónico inválida",
+      "oneAuthorRequired": "Se requiere al menos un autor",
+      "oneTagRequired": "Se requiere al menos una etiqueta",
+      "invalidImageType": "Por favor sube un archivo de imagen válido (JPEG, PNG o WebP)",
+      "imageTooLarge": "El tamaño de la imagen debe ser menor a 10MB"
+    },
+    "status": {
+      "draft": "Borrador",
+      "submitting": "Enviando...",
+      "submitted": "Enviado para Revisión"
+    },
+    "messages": {
+      "submitSuccess": "¡Gracias! Thank you! Merci! شكرا! Tu estudio de caso ha sido enviado y será revisado por nuestro equipo.",
+      "submitError": "Error al enviar el estudio de caso. Por favor intenta de nuevo.",
+      "loginRequired": "Debes estar conectado para enviar un estudio de caso",
+      "reviewNote": "Tu estudio de caso será revisado por nuestro equipo editorial multilingüe antes de la publicación.",
+      "multilingualWelcome": "¡Bienvenido a nuestra comunidad global! Envía en cualquier idioma y ayúdanos a llegar a investigadores de todo el mundo."
+    }
+  },
+  "search": {
+    "pageTitle": "Buscar",
+    "pageDescription": "Encontrar miembros de la comunidad, agendas, noticias, publicaciones y estudios de caso",
+    "placeholder": "Buscar personas, contenido o expertise...",
+    "searchAgendas": "Buscar agendas y documentos...",
+    "searchNews": "Buscar noticias...",
+    "searchCaseStudies": "Buscar estudios de caso...",
+    "search": "Buscar",
+    "filters": "Filtros",
+    "results": "Resultados",
+    "noResults": "No se encontraron resultados",
+    "noResultsDescription": "Intenta ajustar tus términos de búsqueda o filtros",
+    "people": "Personas",
+    "agendas": "Agendas",
+    "news": "Noticias",
+    "posts": "Publicaciones",
+    "caseStudies": "Estudios de Caso",
+    "comingSoon": "Próximamente",
+    "agendasComingSoon": "Buscar a través de agendas y documentos",
+    "newsComingSoon": "Buscar a través de noticias",
+    "postsComingSoon": "Buscar a través de publicaciones de blog y artículos",
+    "caseStudiesComingSoon": "Buscar a través de estudios de caso",
+    "filterOptions": {
+      "workType": "Tipo de Trabajo",
+      "expertise": "Áreas de Expertise",
+      "country": "País",
+      "communities": "Comunidades",
+      "role": "Rol",
+      "clearAll": "Limpiar todos los filtros",
+      "showMore": "Mostrar más",
+      "showLess": "Mostrar menos"
+    },
+    "stats": {
+      "results": "resultados",
+      "result": "resultado",
+      "relevant": "resultados relevantes de",
+      "foundIn": "Encontrado en"
+    }
+  },
+  "collaborate": {
+    "pageTitle": "Colaborar",
+    "pageDescription": "Conecta con miembros de la comunidad y descubre potenciales colaboradores",
+    "searchPlaceholder": "Buscar colaboradores por nombre, experiencia u organización...",
+    "noResults": "No se encontraron colaboradores que coincidan con tu búsqueda",
+    "noResultsDescription": "Intenta ajustar tu búsqueda o filtros para encontrar miembros",
+    "regionalCommunities": "Comunidades Regionales",
+    "allCommunities": "Todas las Comunidades",
+    "filters": {
+      "title": "Filtros",
+      "communities": "Comunidades",
+      "workTypes": "Tipos de Trabajo",
+      "expertise": "Experiencia",
+      "selectAll": "Seleccionar Todo",
+      "clearFilters": "Deseleccionar Todo",
+      "selectedCount": "{selected} de {total} seleccionados",
+      "applyFilters": "Aplicar filtros",
+      "showCommunities": "Mostrar comunidades",
+      "hideCommunities": "Ocultar comunidades"
+    },
+    "carousel": {
+      "expand": "Expandir",
+      "collapse": "Colapsar",
+      "viewAll": "Ver todo",
+      "showMore": "Mostrar más",
+      "loadMore": "Cargar más",
+      "noMembers": "Aún no hay miembros en esta comunidad"
+    },
+    "userCard": {
+      "viewProfile": "Ver perfil",
+      "profileCompleteness": "Perfil {percentage}% completo",
+      "lastActive": "Última actividad {time}",
+      "recentProjects": "{count, plural, =1 {Proyecto reciente} other {Proyectos recientes}}",
+      "moreProjects": "más",
+      "never": "Nunca",
+      "justNow": "Justo ahora",
+      "minutesAgo": "hace {count} min",
+      "hoursAgo": "hace {count}h",
+      "daysAgo": "hace {count}d",
+      "weeksAgo": "hace {count}sem",
+      "monthsAgo": "hace {count}mes"
+    },
+    "stats": {
+      "totalMembers": "{count} miembros",
+      "member": "miembro",
+      "members": "miembros",
+      "showing": "Mostrando {count} de {total}"
+    },
+    "activeFilters": {
+      "title": "Filtros activos:",
+      "search": "Búsqueda: {query}",
+      "clear": "Restablecer Todos los Filtros"
+    }
+  },
+  "onboarding": {
+    "steps": {
+      "welcome": {
+        "title": "¡Bienvenido a nuestra Comunidad Global!",
+        "subtitle": "Únete a investigadores del clima, activistas y expertos de todo el mundo trabajando juntos para crear un cambio significativo.",
+        "getStarted": "Comenzar",
+        "timeEstimate": "Esto tomará aproximadamente 5 minutos",
+        "features": {
+          "community": {
+            "title": "Comunidad Global",
+            "description": "Conecta con mentes climáticas de todos los continentes y trasfondos"
+          },
+          "collaborate": {
+            "title": "Colaborar",
+            "description": "Trabajen juntos en investigación, promoción y soluciones accionables"
+          },
+          "expertise": {
+            "title": "Compartir Experiencia",
+            "description": "Contribuye con tu perspectiva única y aprende de otros"
+          },
+          "impact": {
+            "title": "Crear Impacto",
+            "description": "Convierte ideas en acción con soluciones climáticas del mundo real"
+          }
+        },
+        "whatToExpect": {
+          "title": "Qué esperar durante la configuración:",
+          "step1": "Cuéntanos sobre ti y tu trasfondo",
+          "step2": "Comparte tu experiencia laboral y áreas de especialización",
+          "step3": "Agrega proyectos recientes para mostrar tus contribuciones",
+          "step4": "Elige tu configuración de privacidad y visibilidad"
+        }
+      },
+      "basicInfo": {
+        "title": "Información Básica",
+        "description": "Cuéntanos un poco sobre ti. Esta información ayudará a otros a encontrarte y conectar contigo.",
+        "firstName": "Nombre",
+        "lastName": "Apellido",
+        "username": "Nombre de Usuario",
+        "usernameHint": "Esto se usará en la URL de tu perfil (ejemplo.com/profiles/tu-usuario)",
+        "bio": "Biografía",
+        "bioPlaceholder": "Cuéntanos sobre ti, tus intereses y qué te trae a nuestra comunidad...",
+        "bioHint": "Comparte lo que te hace único y lo que te apasiona",
+        "ageGroup": "Grupo de Edad",
+        "selectAge": "Selecciona tu grupo de edad",
+        "under18": "Menor de 18",
+        "above18": "18 o mayor",
+        "country": "País",
+        "city": "Ciudad/Pueblo",
+        "preferredLanguage": "Idioma Preferido",
+        "languageHint": "Elige tu idioma preferido para la plataforma",
+        "firstNamePlaceholder": "Ingresa tu primer nombre",
+        "lastNamePlaceholder": "Ingresa tu apellido",
+        "usernamePlaceholder": "Ingresa un nombre de usuario único",
+        "countryPlaceholder": "Ingresa tu país",
+        "cityPlaceholder": "Ingresa tu ciudad",
+        "continue": "Continuar"
+      },
+      "workInfo": {
+        "title": "Información Laboral",
+        "description": "Ayúdanos a entender tu trasfondo profesional y áreas de especialización.",
+        "workTypesLabel": "¿Qué tipo de trabajo realizas?",
+        "workTypesDescription": "Selecciona todos los que apliquen",
+        "workTypes": {
+          "research": "Investigación",
+          "policy": "Política",
+          "livedExperience": "Experto por experiencia vivida",
+          "ngo": "ONG",
+          "communityOrg": "Organización comunitaria",
+          "education": "Educación o enseñanza"
+        },
+        "expertiseLabel": "¿Cuáles son tus áreas de especialización?",
+        "expertiseDescription": "Selecciona todas las que apliquen",
+        "expertise": {
+          "climate": "Cambio Climático",
+          "mentalHealth": "Salud Mental",
+          "health": "Salud",
+          "education": "Educación",
+          "socialJustice": "Justicia Social"
+        },
+        "organization": "Organización",
+        "organizationPlaceholder": "Ingresa el nombre de tu organización",
+        "position": "Posición",
+        "positionPlaceholder": "Ingresa tu título o rol de trabajo",
+        "workBio": "Biografía Laboral",
+        "workBioPlaceholder": "Describe tu experiencia profesional, rol actual y logros clave...",
+        "workBioHint": "Esto ayuda a otros a entender tu trasfondo profesional y experiencia",
+        "workTypesHint": "Selecciona todos los tipos de trabajo que apliquen a tus actividades profesionales",
+        "expertiseAreasHint": "Elige las áreas donde tienes conocimiento, experiencia o especialización",
+        "regionalCommunities": "Comunidades Regionales",
+        "regionalCommunitiesHint": "Selecciona las comunidades regionales a las que te gustaría unirte",
+        "socialLinks": "Enlaces Sociales",
+        "socialLinksDescription": "Agrega enlaces para ayudar a otros a conectar contigo profesionalmente",
+        "personalWebsite": "Sitio Web Personal",
+        "linkedin": "LinkedIn",
+        "twitter": "Twitter",
+        "github": "GitHub",
+        "githubPlaceholder": "https://github.com/username",
+        "portfolio": "Portafolio",
+        "portfolioPlaceholder": "https://yourportfolio.com",
+        "website": "Sitio Web Personal",
+        "websitePlaceholder": "https://yourwebsite.com",
+        "otherLinks": "Otros Enlaces Profesionales",
+        "otherLinksHint": "Agrega enlaces a tus perfiles profesionales (Twitter, GitHub, Portafolio, etc.)",
+        "platformPlaceholder": "Nombre de la plataforma (ej., Twitter, GitHub)",
+        "urlPlaceholder": "https://ejemplo.com/tuperfil",
+        "continue": "Continuar"
+      },
+      "recentWork": {
+        "title": "Trabajo Reciente",
+        "description": "Descripción",
+        "addWork": "Agregar Trabajo",
+        "editWork": "Editar Trabajo",
+        "yourWork": "Tu Trabajo Reciente",
+        "noWorkAdded": "Aún no se ha agregado trabajo reciente",
+        "addWorkHint": "Agrega tus proyectos recientes, investigación u otras contribuciones para ayudar a otros a entender tu experiencia",
+        "noWorkTitle": "Aún no se ha agregado trabajo reciente",
+        "noWorkDescription": "Agrega tus proyectos recientes, investigación u otras contribuciones para ayudar a otros a entender tu experiencia.",
+        "workTitle": "Título del Proyecto",
+        "workTitlePlaceholder": "Ingresa el título de tu proyecto o trabajo",
+        "descriptionPlaceholder": "Describe en qué consistió este proyecto y su impacto...",
+        "workDescription": "Descripción",
+        "workDescriptionPlaceholder": "Describe en qué consistió este proyecto y su impacto...",
+        "projectLink": "Enlace del Proyecto",
+        "workLink": "Enlace del Proyecto",
+        "workLinkHint": "Opcional: Enlace a tu proyecto, publicación o portafolio",
+        "ongoingProject": "Este trabajo está en curso",
+        "isOngoing": "Este trabajo está en curso",
+        "isOngoingHint": "Marca esto si aún estás trabajando en este proyecto",
+        "startDate": "Fecha de Inicio",
+        "endDate": "Fecha de Fin",
+        "ongoing": "En curso",
+        "viewProject": "Ver Proyecto",
+        "cancel": "Cancelar",
+        "updateWork": "Actualizar Trabajo",
+        "continue": "Continuar"
+      },
+      "privacy": {
+        "title": "Privacidad y Visibilidad",
+        "description": "Controla cómo aparece tu perfil a otros y qué información es visible. Puedes cambiar estas configuraciones en cualquier momento.",
+        "searchability": {
+          "title": "Descubribilidad del Perfil",
+          "description": "Controla si otros pueden encontrar tu perfil a través de búsqueda",
+          "allowSearch": "Permitir que otros me encuentren en búsqueda",
+          "searchHint": "Cuando esté habilitado, tu perfil aparecerá en los resultados de búsqueda"
+        },
+        "visibility": {
+          "title": "Visibilidad del Perfil",
+          "description": "Elige quién puede ver la información de tu perfil",
+          "public": {
+            "title": "Público",
+            "description": "Cualquiera puede ver tu perfil, incluso sin una cuenta"
+          },
+          "members": {
+            "title": "Solo Miembros",
+            "description": "Solo los miembros de la comunidad pueden ver tu perfil"
+          },
+          "private": {
+            "title": "Privado",
+            "description": "Tu perfil no es descubrible y solo visible para ti"
+          }
+        },
+        "profileInfo": {
+          "title": "Visibilidad de Información",
+          "description": "Elige qué información mostrar en tu perfil",
+          "showEmail": "Mostrar dirección de correo electrónico",
+          "emailHint": "Mostrar tu dirección de correo electrónico en tu perfil",
+          "showPhone": "Mostrar número de teléfono",
+          "phoneHint": "Mostrar tu número de teléfono en tu perfil",
+          "showWork": "Mostrar información laboral",
+          "workHint": "Mostrar tu organización, posición y biografía laboral",
+          "showSocial": "Mostrar enlaces sociales",
+          "socialHint": "Mostrar tu sitio web y enlaces de redes sociales",
+          "showLocation": "Mostrar ubicación",
+          "locationHint": "Mostrar información de tu país y ciudad"
+        },
+        "continue": "Continuar"
+      },
+      "review": {
+        "title": "¡Casi Listo!",
+        "description": "Revisa tu información a continuación y realiza cambios finales. Siempre puedes editar tu perfil más tarde.",
+        "basicInfo": "Información Básica",
+        "workInfo": "Trabajo y Experiencia",
+        "recentWork": "Trabajo Reciente",
+        "privacySettings": "Configuración de Privacidad",
+        "name": "Nombre",
+        "username": "Nombre de Usuario",
+        "location": "Ubicación",
+        "language": "Idioma Preferido",
+        "ageGroup": "Grupo de Edad",
+        "bio": "Biografía",
+        "workTypes": "Tipos de Trabajo",
+        "expertiseAreas": "Áreas de Especialización",
+        "organization": "Organización",
+        "position": "Posición",
+        "workBio": "Biografía Laboral",
+        "socialLinks": "Enlaces Sociales",
+        "profileVisibility": "Visibilidad del Perfil",
+        "searchable": "Búsquedable",
+        "showEmail": "Mostrar Correo Electrónico",
+        "showPhone": "Mostrar Teléfono",
+        "showWork": "Mostrar Detalles del Trabajo",
+        "showSocial": "Mostrar Enlaces Sociales",
+        "showLocation": "Mostrar Ubicación",
+        "under18": "Menor de 18",
+        "above18": "18 o mayor",
+        "readyToSubmit": "Listo para Enviar",
+        "submissionNote": "Tu información será guardada y puedes actualizarla más tarde desde la configuración de tu perfil.",
+        "fields": {
+          "name": "Nombre",
+          "username": "Nombre de Usuario",
+          "location": "Ubicación",
+          "language": "Idioma Preferido",
+          "bio": "Biografía",
+          "workTypes": "Tipos de Trabajo",
+          "expertise": "Áreas de Especialización",
+          "organization": "Organización",
+          "position": "Posición",
+          "workBio": "Biografía Laboral",
+          "socialLinks": "Enlaces Sociales",
+          "website": "Sitio Web Personal",
+          "searchable": "Descubrible en búsqueda",
+          "visibility": "Visibilidad del perfil",
+          "shownInProfile": "Información mostrada en el perfil"
+        },
+        "visibility": {
+          "public": "Público",
+          "members": "Solo Miembros",
+          "private": "Privado"
+        },
+        "yes": "Sí",
+        "no": "No",
+        "email": "Correo electrónico",
+        "phone": "Teléfono",
+        "workDetails": "Detalles del Trabajo",
+        "ongoing": "En curso",
+        "viewProject": "Ver Proyecto",
+        "readyTitle": "¡Todo listo!",
+        "readyDescription": "Bienvenido a nuestra comunidad global de mentes climáticas. Creemos un cambio significativo juntos.",
+        "completeOnboarding": "Completar Configuración"
+      }
+    },
+    "title": "Configurar tu Perfil",
+    "of": "de",
+    "previous": "Anterior",
+    "next": "Siguiente",
+    "back": "Atrás",
+    "submit": "Enviar",
+    "submitting": "Enviando...",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "add": "Agregar",
+    "remove": "Remover",
+    "loading": "Cargando...",
+    "required": "Requerido",
+    "optional": "Opcional",
+    "getStarted": "Comenzar",
+    "continue": "Continuar",
+    "reviewProfile": "Revisar Perfil",
+    "completeProfile": "Completar Perfil"
+  },
+  "caseStudies": {
+    "title": "Estudios de Caso",
+    "description": "Explora investigaciones y perspectivas de nuestra comunidad global",
+    "pageTitle": "Estudios de Caso",
+    "pageDescription": "Explora investigaciones y perspectivas de nuestra comunidad global",
+    "featured": "Estudios de Caso Destacados",
+    "recent": "Publicados Recientemente",
+    "browseByTopic": "Navegar por Tema",
+    "viewAll": "Ver Todos",
+    "searchButton": "Buscar",
+    "submitButton": "Enviar Estudio de Caso",
+    "searchResults": "Resultados de Búsqueda",
+    "resultsFound": "resultados encontrados",
+    "noResults": "No se encontraron estudios de caso",
+    "noResultsDescription": "Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.",
+    "clearFilters": "Borrar todos los filtros",
+    "filters": {
+      "searchPlaceholder": "Buscar estudios de caso...",
+      "topicPlaceholder": "Todos los Temas",
+      "tagPlaceholder": "Todas las Etiquetas",
+      "communityPlaceholder": "Todas las Comunidades",
+      "filters": "Filtros",
+      "tag": "Etiquetas",
+      "community": "Comunidad",
+      "activeFilters": "Filtros activos",
+      "clearAll": "Borrar todo",
+      "updating": "Actualizando...",
+      "all": "Todos los Temas",
+      "featured": "Destacados",
+      "recent": "Publicados Recientemente"
+    },
+    "topics": {
+      "climate-environment": "Cambio Climático y Medio Ambiente",
+      "mental-health": "Salud Mental y Bienestar",
+      "community-health": "Salud Comunitaria y Atención Social",
+      "youth-education": "Participación Juvenil y Educación",
+      "policy-governance": "Investigación de Políticas y Gobernanza",
+      "technology-innovation": "Tecnología e Innovación",
+      "economic-development": "Desarrollo Económico",
+      "cultural-arts": "Patrimonio Cultural y Artes",
+      "food-agriculture": "Seguridad Alimentaria y Agricultura",
+      "urban-planning": "Planificación Urbana e Infraestructura",
+      "human-rights": "Derechos Humanos y Justicia Social",
+      "migration": "Migración y Desplazamiento",
+      "gender-equality": "Igualdad de Género",
+      "disaster-resilience": "Riesgo de Desastres y Resiliencia",
+      "digital-inclusion": "Inclusión Digital",
+      "other": "Otro"
+    },
+    "meta": {
+      "authors": "autor",
+      "authorsPlural": "autores",
+      "readTime": "min de lectura",
+      "publishedAt": "Publicado",
+      "submittedAt": "Enviado"
+    },
+    "studyPeriod": "Período de Estudio",
+    "organizations": "Organizaciones",
+    "relatedProjects": "Proyectos Relacionados",
+    "studyAreas": "Áreas de Estudio",
+    "allAuthors": "Todos los Autores"
+  },
+  "revisionAlert": {
+    "title": "Acción Requerida: Revisión Necesaria",
+    "description": "Tienes {count} estudio{plural} de caso que necesita{singular} revisión basada en los comentarios del editor.",
+    "editorFeedback": "Comentarios del editor:",
+    "actions": {
+      "remindLater": "Recordarme Después",
+      "viewSubmissions": "Ver y Editar Envíos"
+    }
+  },
+  "news": {
+    "title": "Noticias",
+    "pageTitle": "Noticias",
+    "pageDescription": "Mantente informado con las últimas noticias de nuestra comunidad global",
+    "description": "Mantente informado con las últimas noticias, historias y actualizaciones de nuestra comunidad global de acción climática",
+    "featured": "Noticias Destacadas",
+    "latest": "Últimas Noticias",
+    "readMore": "Leer más",
+    "publishedOn": "Publicado el",
+    "by": "por",
+    "in": "en",
+    "noNews": "No se encontraron artículos de noticias",
+    "noNewsDescription": "Vuelve pronto para actualizaciones de nuestra comunidad",
+    "searchResults": "Resultados de Búsqueda",
+    "resultsFound": "resultados encontrados",
+    "noResults": "No se encontraron noticias",
+    "noResultsDescription": "Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas",
+    "clearFilters": "Limpiar todos los filtros",
+    "backToNews": "Volver a Noticias",
+    "relatedNews": "Noticias Relacionadas",
+    "sources": "Fuentes",
+    "filters": {
+      "searchPlaceholder": "Buscar noticias...",
+      "dateRange": "Rango de Fechas",
+      "dateFrom": "Desde",
+      "dateTo": "Hasta",
+      "tags": "Etiquetas",
+      "tagsPlaceholder": "Todas las Etiquetas",
+      "community": "Región",
+      "communityPlaceholder": "Todas las Regiones",
+      "clearAll": "Limpiar todo",
+      "activeFilters": "Filtros activos",
+      "updating": "Actualizando...",
+      "filters": "Filtros",
+      "advancedFilters": "Filtros Avanzados"
+    },
+    "metadata": {
+      "author": "Autor",
+      "organization": "Organización",
+      "project": "Proyecto",
+      "location": "Ubicación",
+      "publishDate": "Publicado"
+    }
+  },
+  "regional": {
+    "noLivedExperiences": "Aún no hay experiencias vividas disponibles.",
+    "checkBackVoices": "Vuelve pronto para conocer las voces de la comunidad.",
+    "watchExperience": "Ver Experiencia",
+    "pleaseSignIn": "Inicia sesión para descargar",
+    "membersOnly": "Solo miembros",
+    "downloading": "Descargando...",
+    "noFilesAvailable": "No hay archivos disponibles",
+    "signInToDownload": "Inicia sesión para descargar",
+    "caseStudy": "Estudio de Caso",
+    "featured": "Destacado",
+    "studyPeriod": "Período de estudio: ",
+    "viewMore": "Ver Más",
+    "showLess": "Ver Menos",
+    "ourTeam": "Nuestro Equipo"
+  }
+}
