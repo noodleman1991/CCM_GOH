@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import SectionContainer from "@/components/ui/section-container";
 import { Button } from "@/components/ui/button";
@@ -91,6 +92,7 @@ function LivedExperienceCard({
   locale?: string;
   onClick?: () => void;
 }) {
+  const t = useTranslations('regional');
   const title = experience.title?.[locale as keyof typeof experience.title] ||
                experience.title?.en ||
                "Untitled Experience";
@@ -158,15 +160,15 @@ function LivedExperienceCard({
 
         {/* Duration Badge */}
         {experience.duration && (
-          <div className="absolute bottom-2 right-2 bg-black/80 text-white px-2 py-1 rounded text-sm">
+          <div className="absolute bottom-2 end-2 bg-black/80 text-white px-2 py-1 rounded text-sm">
             {experience.duration}
           </div>
         )}
 
         {/* Featured Badge */}
         {experience.featured && (
-          <div className="absolute top-2 left-2 bg-yellow-500 text-white px-2 py-1 rounded text-sm font-medium">
-            Featured
+          <div className="absolute top-2 start-2 bg-yellow-500 text-white px-2 py-1 rounded text-sm font-medium">
+            {t('featured')}
           </div>
         )}
       </div>
@@ -259,6 +261,7 @@ export default function LivedExperiencesCarousel({
   experiences = [],
   locale = "en",
 }: LivedExperiencesCarouselProps) {
+  const t = useTranslations('regional');
   const [itemsPerView, setItemsPerView] = useState(3);
   const [selectedVideo, setSelectedVideo] = useState<LivedExperience | null>(null);
   const [scrollContainerRef, setScrollContainerRef] = useState<HTMLDivElement | null>(null);
@@ -329,8 +332,8 @@ export default function LivedExperiencesCarousel({
             </div>
           )}
           <div className="text-center py-12 text-muted-foreground">
-            <p className="text-lg">No lived experiences available yet.</p>
-            <p className="text-sm mt-2">Check back soon for community voices.</p>
+            <p className="text-lg">{t('noLivedExperiences')}</p>
+            <p className="text-sm mt-2">{t('checkBackVoices')}</p>
           </div>
         </div>
       </SectionContainer>

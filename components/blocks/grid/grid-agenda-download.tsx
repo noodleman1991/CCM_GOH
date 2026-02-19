@@ -41,6 +41,7 @@ function DownloadButton({
                             variant = 'default',
                             size = 'sm'
                         }: DownloadButtonProps) {
+    const r = useTranslations('regional');
     const { download, isFileDownloading, error } = useDownloadTracking({
         userId,
         onDownloadError: (error, agendaId, language) => {
@@ -79,14 +80,14 @@ function DownloadButton({
             {isDownloading ? (
                 <>
                     <div className="h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent shrink-0" />
-                    <span className="truncate">Downloading...</span>
+                    <span className="truncate">{r('downloading')}</span>
                 </>
             ) : (
                 <>
                     <Download className="h-3 w-3 shrink-0" />
                     <span className="truncate">{languageDisplay}</span>
                     {fileSize && (
-                        <span className="text-xs opacity-70 shrink-0 ml-1">
+                        <span className="text-xs opacity-70 shrink-0 ms-1">
                             ({fileSize})
                         </span>
                     )}
@@ -116,6 +117,7 @@ export function DownloadSection({
                                     userId
                                 }: DownloadSectionProps) {
     const t = useTranslations('common');
+    const r = useTranslations('regional');
     // Download buttons
     if (showDownloadButtons && hasFiles && canAccess) {
         return (
@@ -152,7 +154,7 @@ export function DownloadSection({
         return (
             <div className="w-full text-center text-sm text-muted-foreground">
                 <AlertCircle className="h-4 w-4 mx-auto mb-1" />
-                <span>No files available</span>
+                <span>{r('noFilesAvailable')}</span>
             </div>
         );
     }
@@ -164,8 +166,8 @@ export function DownloadSection({
                 <Lock className="h-4 w-4 mx-auto mb-1" />
                 <span>
                     {agenda.accessLevel === 'registered'
-                        ? 'Sign in to download'
-                        : 'Members only'
+                        ? r('signInToDownload')
+                        : r('membersOnly')
                     }
                 </span>
             </div>

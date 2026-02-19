@@ -1,5 +1,3 @@
-export const revalidate = 120;
-
 import type { Metadata } from "next"
 import Blocks from "@/components/blocks";
 import Homepage from "@/components/pages/homepage";

@@ -1,4 +1,7 @@
+"use client";
+
 import React from 'react';
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
@@ -49,6 +52,7 @@ export default function GridAgendaComponent({
                                             }: GridAgendaComponentProps) {
     if (!agenda) return null;
 
+    const t = useTranslations('regional');
     const aspectRatioClass = cardVariant === "wide" ? "aspect-video" : "aspect-[3/2]";
 
     const title = getLocalizedText(agenda.title, locale);
@@ -74,7 +78,7 @@ export default function GridAgendaComponent({
                     <div className="text-center text-white p-4">
                         <Lock className="h-8 w-8 mx-auto mb-2" />
                         <p className="text-sm font-medium">
-                            {agenda.accessLevel === 'registered' ? 'Please sign in to download' : 'Members only'}
+                            {agenda.accessLevel === 'registered' ? t('pleaseSignIn') : t('membersOnly')}
                         </p>
                     </div>
                 </div>
@@ -92,7 +96,7 @@ export default function GridAgendaComponent({
                     />
 
                     {/* Agenda type badge */}
-                    <div className="absolute top-3 left-3">
+                    <div className="absolute top-3 start-3">
                         <Badge variant="secondary" className="bg-white/90 text-black">
                             {agendaTypeLabel}
                         </Badge>
@@ -100,9 +104,9 @@ export default function GridAgendaComponent({
 
                     {/* Featured badge */}
                     {agenda.featured && (
-                        <div className="absolute top-3 right-3">
+                        <div className="absolute top-3 end-3">
                             <Badge className="bg-yellow-500 text-black">
-                                ⭐ Featured
+                                {'⭐ '}{t('featured')}
                             </Badge>
                         </div>
                     )}

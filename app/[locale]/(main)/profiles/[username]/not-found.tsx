@@ -6,7 +6,6 @@ import { UserX, ArrowLeft } from 'lucide-react'
 
 export default async function NotFound() {
     const t = await getTranslations('errors')
-    const tCommon = await getTranslations('common')
 
     return (
         <div className="container py-16 max-w-2xl mx-auto">
@@ -17,20 +16,20 @@ export default async function NotFound() {
                     </div>
                     <CardTitle className="text-2xl">{t('notFound')}</CardTitle>
                     <CardDescription className="text-base">
-                        The user profile you&apos;re looking for doesn&apos;t exist or may have been removed.
+                        {t('profileNotFound')}
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="pt-6">
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                         <Button asChild variant="default">
                             <Link href="/profiles">
-                                Browse Profiles
+                                {t('browseProfiles')}
                             </Link>
                         </Button>
                         <Button asChild variant="outline">
                             <Link href="/">
                                 <ArrowLeft className="w-4 h-4 mr-2" />
-                                {tCommon('back')} to Home
+                                {t('backToHome')}
                             </Link>
                         </Button>
                     </div>
