@@ -41,7 +41,7 @@ export default function ProfileHeaderBlock({
                                     username={username || null || undefined}
                                     className="h-24 w-24 sm:h-32 sm:w-32">
                     </EnhancedAvatar>
-                    <div className="flex-1 text-center sm:text-left">
+                    <div className="flex-1 text-center sm:text-start">
                         <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-2">
                             <h1 className="text-2xl sm:text-3xl font-bold">
                                 {fullName || t('noName')}
@@ -49,7 +49,7 @@ export default function ProfileHeaderBlock({
                             {isOwnProfile && (
                                 <Button size="sm" variant="outline" asChild>
                                     <Link href="/dashboard/profile/edit">
-                                        <Edit className="h-4 w-4 mr-2" />
+                                        <Edit className="h-4 w-4 me-2" />
                                         {t('editProfile')}
                                     </Link>
                                 </Button>
@@ -63,7 +63,7 @@ export default function ProfileHeaderBlock({
                         {email && !isOwnProfile && (
                             <Button size="sm" variant="outline" asChild>
                                 <a href={`mailto:${email}`}>
-                                    <Mail className="h-4 w-4 mr-2" />
+                                    <Mail className="h-4 w-4 me-2" />
                                     {t('contact')}
                                 </a>
                             </Button>

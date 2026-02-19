@@ -23,16 +23,16 @@ export default async function MainLayout({
             <AppSidebar />
             <SidebarInset className="overflow-hidden">
                 <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-                    <div className={`flex items-center gap-2 px-4 ${isRtl ? 'flex-row-reverse' : ''}`}>
-                        <SidebarTrigger className={isRtl ? "-mr-1" : "-ml-1"} />
+                    <div className="flex items-center gap-2 px-4">
+                        <SidebarTrigger className="-ms-1" />
                         <Separator
                             orientation="vertical"
-                            className={`h-4 ${isRtl ? 'ml-2' : 'mr-2'}`}
+                            className="h-4 me-2"
                         />
                     </div>
                 </header>
-                <div className="flex flex-1 flex-col gap-4 overflow-x-hidden w-full">
-                    <main className="p-4 pt-0">{children}</main>
+                <div className="flex flex-1 flex-col overflow-x-hidden w-full">
+                    <main>{children}</main>
                 </div>
             </SidebarInset>
             <SanityLive />

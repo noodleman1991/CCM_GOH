@@ -108,7 +108,7 @@ export function RecentWorkPanel({ form, content }: RecentWorkPanelProps) {
       isRTL && "text-right [&_input]:text-right [&_textarea]:text-right"
     )} dir={isRTL ? "rtl" : "ltr"}>
       <div className="mb-5">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+        <h2 className="text-2xl font-bold text-foreground mb-2">
           {content?.recentWorkTitle || t("title")}
         </h2>
         <p className="text-lg text-muted-foreground">

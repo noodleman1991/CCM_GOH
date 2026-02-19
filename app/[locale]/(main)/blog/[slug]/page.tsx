@@ -1,3 +1,5 @@
+export const revalidate = 60;
+
 import type { Metadata } from "next"
 import { notFound } from "next/navigation";
 import Breadcrumbs from "@/components/ui/breadcrumbs";

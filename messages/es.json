@@ -102,7 +102,11 @@
     "previous": "Anterior",
     "confirm": "Confirmar",
     "yes": "Sí",
-    "no": "No"
+    "no": "No",
+    "availableInLanguages": "Disponible en {count} {count, plural, one {idioma} other {idiomas}}",
+    "availableIn": "Disponible en:",
+    "noContentYet": "Aún no hay contenido disponible.",
+    "checkBackSoon": "Vuelve pronto para ver las actualizaciones."
   },
   "dashboard": {
     "pageTitle": "Panel - Connecting Climate Minds Hub",

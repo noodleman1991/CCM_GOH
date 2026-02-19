@@ -12,7 +12,7 @@ type SplitImage = Extract<
 
 export default function SplitImage({ image }: SplitImage) {
   return image && image.asset?._id ? (
-    <div className="relative rounded-lg overflow-hidden aspect-[3/2] lg:aspect-auto lg:h-full w-full max-w-full min-w-0">
+    <div className="relative rounded-lg overflow-hidden aspect-[3/2] lg:aspect-[4/3] w-full max-w-full min-w-0">
       <Image
         src={urlFor(image).url()}
         alt={image.alt || ""}
@@ -20,7 +20,7 @@ export default function SplitImage({ image }: SplitImage) {
         blurDataURL={image?.asset?.metadata?.lqip || ""}
         fill
         className="object-cover"
-        sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+        sizes="(min-width: 1024px) 50vw, (min-width: 640px) 50vw, 100vw"
         quality={100}
       />
     </div>

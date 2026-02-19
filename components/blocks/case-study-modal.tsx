@@ -151,10 +151,10 @@ export function CaseStudyModal({ isOpen, onClose, caseStudy, locale }: CaseStudy
             {/* Study Period */}
             {caseStudy.studyPeriod && (
               <div>
-                <h3 className="text-sm font-semibold text-gray-900 mb-2">
+                <h3 className="text-sm font-semibold text-foreground mb-2">
                   {t('studyPeriod')}
                 </h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-muted-foreground">
                   {formatCaseStudyDate(new Date(caseStudy.studyPeriod.startDate), supportedLocale)}
                   {caseStudy.studyPeriod.endDate && (
                     <> – {formatCaseStudyDate(new Date(caseStudy.studyPeriod.endDate), supportedLocale)}</>
@@ -166,7 +166,7 @@ export function CaseStudyModal({ isOpen, onClose, caseStudy, locale }: CaseStudy
             {/* Organizations */}
             {caseStudy.organizations && caseStudy.organizations.length > 0 && (
               <div>
-                <h3 className="text-sm font-semibold text-gray-900 mb-2">
+                <h3 className="text-sm font-semibold text-foreground mb-2">
                   {t('organizations')}
                 </h3>
                 <div className="flex flex-wrap gap-2">
@@ -182,7 +182,7 @@ export function CaseStudyModal({ isOpen, onClose, caseStudy, locale }: CaseStudy
             {/* Projects */}
             {caseStudy.projects && caseStudy.projects.length > 0 && (
               <div>
-                <h3 className="text-sm font-semibold text-gray-900 mb-2">
+                <h3 className="text-sm font-semibold text-foreground mb-2">
                   {t('relatedProjects')}
                 </h3>
                 <div className="flex flex-wrap gap-2">
@@ -198,7 +198,7 @@ export function CaseStudyModal({ isOpen, onClose, caseStudy, locale }: CaseStudy
             {/* Study Areas */}
             {caseStudy.studyAreas && caseStudy.studyAreas.length > 0 && (
               <div>
-                <h3 className="text-sm font-semibold text-gray-900 mb-2">
+                <h3 className="text-sm font-semibold text-foreground mb-2">
                   {t('studyAreas')}
                 </h3>
                 <div className="flex flex-wrap gap-2">
@@ -214,7 +214,7 @@ export function CaseStudyModal({ isOpen, onClose, caseStudy, locale }: CaseStudy
             {/* All Authors */}
             {caseStudy.authors && caseStudy.authors.length > 1 && (
               <div>
-                <h3 className="text-sm font-semibold text-gray-900 mb-2">
+                <h3 className="text-sm font-semibold text-foreground mb-2">
                   {t('allAuthors')}
                 </h3>
                 <div className="space-y-2">
@@ -223,7 +223,7 @@ export function CaseStudyModal({ isOpen, onClose, caseStudy, locale }: CaseStudy
                       <div className="text-sm">
                         <p className="font-medium">{author.name}</p>
                         {author.affiliation && (
-                          <p className="text-gray-600">{author.affiliation}</p>
+                          <p className="text-muted-foreground">{author.affiliation}</p>
                         )}
                       </div>
                     </div>

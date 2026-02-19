@@ -53,11 +53,11 @@ export default function Cta1({
         >
         <div>
           {localizedTagLine && (
-            <p className="text-base font-semibold mb-4">
+            <p className="text-base font-semibold text-ccm-water uppercase tracking-wider mb-4">
               {localizedTagLine}
             </p>
           )}
-          <h2 className="mb-4">{localizedTitle}</h2>
+          <h2 className="mb-4 font-bold font-heading text-3xl md:text-4xl lg:text-5xl text-ccm-midnight">{localizedTitle}</h2>
           {localizedBody && <PortableTextRenderer value={localizedBody} locale={locale} />}
         </div>
         {links && links.length > 0 && (

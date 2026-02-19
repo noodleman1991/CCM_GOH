@@ -296,7 +296,7 @@ export default function PortableTextEditor({
             Link.configure({
                 openOnClick: false,
                 HTMLAttributes: {
-                    class: 'text-blue-600 underline'
+                    class: 'text-ccm-water underline'
                 }
             })
         ],

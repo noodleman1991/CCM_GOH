@@ -59,12 +59,12 @@ export default function SplitContent({
           noGap ? "px-10" : undefined
         )}
       >
-        {localizedTagLine && <p className="text-base font-semibold break-words">{localizedTagLine}</p>}
+        {localizedTagLine && <p className="text-base font-semibold text-ccm-water uppercase tracking-wider break-words">{localizedTagLine}</p>}
         {localizedTitle &&
           createElement(
             "h2",
             {
-              className: cn("my-4 font-semibold leading-[1.2] break-words"),
+              className: cn("my-4 font-bold font-heading text-3xl md:text-4xl lg:text-5xl text-ccm-midnight leading-[1.2] break-words"),
             },
             localizedTitle
           )}

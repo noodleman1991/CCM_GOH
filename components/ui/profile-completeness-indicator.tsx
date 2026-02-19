@@ -30,7 +30,7 @@ export function ProfileCompletenessIndicator({
   // Color based on completion level
   const getColorClass = (pct: number) => {
     if (pct >= 90) return 'bg-green-500'
-    if (pct >= 70) return 'bg-blue-500'
+    if (pct >= 70) return 'bg-ccm-water'
     if (pct >= 40) return 'bg-yellow-500'
     return 'bg-gray-400'
   }

@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import {
     FileDown,
@@ -114,13 +115,14 @@ export function DownloadSection({
                                     locale,
                                     userId
                                 }: DownloadSectionProps) {
+    const t = useTranslations('common');
     // Download buttons
     if (showDownloadButtons && hasFiles && canAccess) {
         return (
             <div className="w-full space-y-2">
                 <div className="flex items-center gap-1 text-xs text-muted-foreground mb-2 justify-start">
                     <FileDown className="h-3 w-3" />
-                    <span>Available in {availableLanguages.length} language{availableLanguages.length !== 1 ? 's' : ''}</span>
+                    <span>{t('availableInLanguages', { count: availableLanguages.length })}</span>
                 </div>
 
                 <div className="flex flex-col gap-2">

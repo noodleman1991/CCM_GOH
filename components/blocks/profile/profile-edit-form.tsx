@@ -421,7 +421,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
     }
 
     return (
-        <div className={`${isRTL ? 'rtl' : 'ltr'} ${isRTL ? 'text-right' : 'text-left'}`} dir={isRTL ? 'rtl' : 'ltr'}>
+        <div className={`${isRTL ? 'rtl' : 'ltr'} text-start`} dir={isRTL ? 'rtl' : 'ltr'}>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
                 {/* Profile Picture */}
@@ -893,7 +893,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                                     <div>
                                         <label htmlFor="work-end-date" className="text-sm font-medium">
                                             {tRecentWork('endDate')}
-                                            {!workFormData.isOngoing && <span className="text-red-500 ml-1">*</span>}
+                                            {!workFormData.isOngoing && <span className="text-red-500 ms-1">*</span>}
                                         </label>
                                         <Input
                                             id="work-end-date"
@@ -1158,7 +1158,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                     </CardContent>
                 </Card>
 
-                <div className={`flex gap-4 ${isRTL ? 'justify-start' : 'justify-end'}`}>
+                <div className="flex gap-4 justify-end">
                     <Button
                         type="button"
                         variant="outline"
@@ -1168,7 +1168,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                         {t('cancel')}
                     </Button>
                     <Button type="submit" disabled={isSubmitting || updating}>
-                        {(isSubmitting || updating) && <Loader2 className={`h-4 w-4 animate-spin ${isRTL ? 'ml-2' : 'mr-2'}`} />}
+                        {(isSubmitting || updating) && <Loader2 className="h-4 w-4 animate-spin me-2" />}
                         {t('save')}
                     </Button>
                 </div>

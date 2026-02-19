@@ -44,7 +44,7 @@ export function LivedExperienceCard({ experience, locale, variant = "default" }:
     return (
       <Link href={href} className="group block">
         <article className="space-y-2">
-          <div className="aspect-video bg-gray-100 rounded-md overflow-hidden relative">
+          <div className="aspect-video bg-muted rounded-md overflow-hidden relative">
             {experience.thumbnail?.asset ? (
               <Image
                 src={urlFor(experience.thumbnail).width(400).height(225).url()}
@@ -54,7 +54,7 @@ export function LivedExperienceCard({ experience, locale, variant = "default" }:
               />
             ) : (
               <div className="w-full h-full bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center">
-                <Play className="w-12 h-12 text-blue-600" />
+                <Play className="w-12 h-12 text-ccm-water" />
               </div>
             )}
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
@@ -101,7 +101,7 @@ export function LivedExperienceCard({ experience, locale, variant = "default" }:
             />
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center">
-              <Play className="w-16 h-16 text-blue-600" />
+              <Play className="w-16 h-16 text-ccm-water" />
             </div>
           )}
 
@@ -109,7 +109,7 @@ export function LivedExperienceCard({ experience, locale, variant = "default" }:
           <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300" />
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center group-hover:bg-white transition-colors duration-300">
-              <Play className="w-6 h-6 text-gray-900 ml-1" />
+              <Play className="w-6 h-6 text-foreground ml-1" />
             </div>
           </div>
 

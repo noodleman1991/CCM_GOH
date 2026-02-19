@@ -76,16 +76,22 @@ const NEWS_POST_FIELDS = groq`
 `;
 
 // Query 1: Fetch Featured News (for hero section)
-export async function fetchFeaturedNews(limit: number = 3) {
+export async function fetchFeaturedNews(limit: number = 3, language?: string) {
+  const conditions = [
+    '_type == "newsPost"',
+    'featured == true',
+    'publishedAt <= now()',
+  ];
+  const orderClause = language
+    ? `order(language == $language desc, publishedAt desc)`
+    : `order(publishedAt desc)`;
   return await client.fetch(
     groq`
-      *[_type == "newsPost" &&
-        featured == true &&
-        publishedAt <= now()
-      ] | order(publishedAt desc)[0...${limit}] {
+      *[${conditions.join(' && ')}] | ${orderClause}[0...${limit}] {
         ${NEWS_POST_FIELDS}
       }
-    `
+    `,
+    language ? { language } : {}
   );
 }
 
@@ -97,6 +103,7 @@ export async function fetchRegularNews(filters?: {
   dateTo?: string;
   search?: string;
   limit?: number;
+  language?: string;
 }) {
   const conditions: string[] = [
     '_type == "newsPost"',
@@ -136,14 +143,17 @@ export async function fetchRegularNews(filters?: {
   }
 
   const limit = filters?.limit || 50;
+  const orderClause = filters?.language
+    ? `order(language == $language desc, publishedAt desc)`
+    : `order(publishedAt desc)`;
 
   const query = groq`
-    *[${conditions.join(' && ')}] | order(publishedAt desc)[0...${limit}] {
+    *[${conditions.join(' && ')}] | ${orderClause}[0...${limit}] {
       ${NEWS_POST_FIELDS}
     }
   `;
 
-  return await client.fetch(query);
+  return await client.fetch(query, filters?.language ? { language: filters.language } : {});
 }
 
 // Query 3: Fetch All News (with filters, includes featured)
@@ -154,6 +164,7 @@ export async function fetchAllNews(filters?: {
   dateTo?: string;
   search?: string;
   limit?: number;
+  language?: string;
 }) {
   const conditions: string[] = [
     '_type == "newsPost"',
@@ -192,14 +203,17 @@ export async function fetchAllNews(filters?: {
   }
 
   const limit = filters?.limit || 50;
+  const orderClause = filters?.language
+    ? `order(language == $language desc, featured desc, publishedAt desc)`
+    : `order(featured desc, publishedAt desc)`;
 
   const query = groq`
-    *[${conditions.join(' && ')}] | order(featured desc, publishedAt desc)[0...${limit}] {
+    *[${conditions.join(' && ')}] | ${orderClause}[0...${limit}] {
       ${NEWS_POST_FIELDS}
     }
   `;
 
-  return await client.fetch(query);
+  return await client.fetch(query, filters?.language ? { language: filters.language } : {});
 }
 
 // Query 4: Fetch News by Slug (for detail page)
@@ -304,14 +318,22 @@ export async function fetchRelatedNews(newsId: string, tags: string[], limit: nu
 }
 
 // Query 8: Fetch Latest News (simple query for recent news)
-export async function fetchLatestNews(limit: number = 10) {
+export async function fetchLatestNews(limit: number = 10, language?: string) {
+  const conditions = [
+    '_type == "newsPost"',
+    'publishedAt <= now()',
+  ];
+  if (language) {
+    conditions.push('language == $language');
+  }
   return await client.fetch(
     groq`
-      *[_type == "newsPost" && publishedAt <= now()]
+      *[${conditions.join(' && ')}]
       | order(publishedAt desc)[0...${limit}] {
         ${NEWS_POST_FIELDS}
       }
-    `
+    `,
+    language ? { language } : {}
   );
 }
 

@@ -10,7 +10,7 @@ import { getMessages } from "next-intl/server";
 import { ClerkProvider } from '@clerk/nextjs';
 import { arSA, esES, frFR, enGB } from '@clerk/localizations';
 import { rtlLocales } from '@/i18n/routing';
-import { Poppins, Lato } from "next/font/google";
+import { Poppins, Lato, Lalezar, Tajawal } from "next/font/google";
 import OnboardingRedirectProvider from '@/components/onboarding/onboarding-redirect-provider';
 import RevisionAlertProvider from '@/components/submissions/revision-alert-provider';
 
@@ -25,6 +25,20 @@ const lato = Lato({
     subsets: ["latin"],
     weight: ["300", "400", "700"],
     variable: "--font-lato",
+    display: "swap",
+});
+
+const lalezar = Lalezar({
+    subsets: ["arabic"],
+    weight: ["400"],
+    variable: "--font-lalezar",
+    display: "swap",
+});
+
+const tajawal = Tajawal({
+    subsets: ["arabic"],
+    weight: ["300", "400", "500", "700"],
+    variable: "--font-tajawal",
     display: "swap",
 });
 
@@ -74,7 +88,7 @@ export default async function LocaleLayout({
         <html
             lang={locale}
             dir={isRtl ? 'rtl' : 'ltr'}
-            className={`${poppins.variable} ${lato.variable}`}
+            className={`${poppins.variable} ${lato.variable} ${lalezar.variable} ${tajawal.variable}`}
             suppressHydrationWarning
         >
         <head>

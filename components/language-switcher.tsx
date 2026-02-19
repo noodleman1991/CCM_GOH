@@ -6,7 +6,7 @@ import { useRouter, usePathname } from "@/i18n/navigation"
 import { useLocale } from "next-intl"
 import { rtlLocales } from "@/i18n/routing"
 import { useIsMobile } from "@/hooks/use-mobile"
-import { Check, ChevronDown, Globe, Languages, X } from "lucide-react"
+import { Check, ChevronDown, Globe, Languages, Loader2, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
@@ -18,13 +18,16 @@ import {
     useSidebar,
 } from "@/components/ui/sidebar"
 
-// Define language options with direction info
+// Define language options with direction and font info
 const languageOptions = [
     { code: "en", name: "English", isRTL: false },
     { code: "es", name: "Español", isRTL: false },
     { code: "fr", name: "Français", isRTL: false },
     { code: "ar", name: "العربية", isRTL: true }
 ]
+
+// Arabic font style using the CSS variable from next/font/google
+const arabicFontStyle = { fontFamily: 'var(--font-tajawal), sans-serif' }
 
 export function LanguageSwitcher() {
     const router = useRouter()
@@ -49,8 +52,8 @@ export function LanguageSwitcher() {
         return (
             <Drawer>
                 <DrawerTrigger asChild>
-                    <Button variant="outline" className="flex items-center gap-2">
-                        <Globe className="h-5 w-5" />
+                    <Button variant="outline" className={cn("flex items-center gap-2", isPending && "opacity-70")}>
+                        {isPending ? <Loader2 className="h-5 w-5 animate-spin" /> : <Globe className="h-5 w-5" />}
                         <span>{currentLocale.toUpperCase()}</span>
                         <ChevronDown className="h-4 w-4" />
                     </Button>
@@ -70,24 +73,20 @@ export function LanguageSwitcher() {
                                 <Button
                                     key={language.code}
                                     variant="ghost"
-                                    className={cn(
-                                        "gap-2",
-                                        language.isRTL ? "justify-end flex-row-reverse" : "justify-start"
-                                    )}
+                                    className="gap-2 justify-start"
+                                    dir={language.isRTL ? "rtl" : "ltr"}
                                     onClick={() => switchLanguage(language.code)}
                                     disabled={isPending}
                                 >
                                     <Globe className="h-5 w-5" />
-                                    <span className={cn(
-                                        language.isRTL && "text-right"
-                                    )} dir={language.isRTL ? "rtl" : "ltr"}>
+                                    <span
+                                        dir={language.isRTL ? "rtl" : "ltr"}
+                                        style={language.isRTL ? arabicFontStyle : undefined}
+                                    >
                                         {language.name}
                                     </span>
                                     {language.code === currentLocale && (
-                                        <Check className={cn(
-                                            "h-5 w-5",
-                                            language.isRTL ? "mr-auto" : "ml-auto"
-                                        )} />
+                                        <Check className="h-5 w-5 ms-auto" />
                                     )}
                                 </Button>
                             ))}
@@ -105,28 +104,23 @@ export function LanguageSwitcher() {
                     <DropdownMenuTrigger asChild>
                         <SidebarMenuButton
                             size="lg"
-                            className={cn(
-                                "data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground",
-                                isRTL && "flex-row-reverse"
-                            )}
+                            className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                         >
-                            <div className={cn(
-                                "flex flex-1 items-center text-sm leading-tight",
-                                currentLanguage.isRTL ? "text-right justify-end" : "text-left"
-                            )}>
-                                <span
-                                    className="truncate"
-                                    style={{ fontFamily: 'Poppins', fontWeight: 700 }}
-                                    dir={currentLanguage.isRTL ? "rtl" : "ltr"}
-                                >
-                                    <span className="hidden sm:inline">{currentLanguage.name}</span>
-                                    <span className="sm:hidden">{currentLocale.toUpperCase()}</span>
-                                </span>
+                            <div className="flex flex-1 items-center text-sm leading-tight">
+                                {isPending ? (
+                                    <Loader2 className="size-4 animate-spin" />
+                                ) : (
+                                    <span
+                                        className="truncate font-bold"
+                                        dir={currentLanguage.isRTL ? "rtl" : "ltr"}
+                                        style={currentLanguage.isRTL ? arabicFontStyle : undefined}
+                                    >
+                                        <span className="hidden sm:inline">{currentLanguage.name}</span>
+                                        <span className="sm:hidden">{currentLocale.toUpperCase()}</span>
+                                    </span>
+                                )}
                             </div>
-                            <Languages className={cn(
-                                "size-4",
-                                currentLanguage.isRTL ? "mr-auto" : "ml-auto"
-                            )} />
+                            <Languages className="size-4 ms-auto" />
                         </SidebarMenuButton>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
@@ -138,16 +132,15 @@ export function LanguageSwitcher() {
                         {languageOptions.map(language => (
                             <DropdownMenuItem
                                 key={language.code}
-                                className={cn(
-                                    "flex items-center justify-between cursor-pointer",
-                                    language.isRTL && "flex-row-reverse text-right"
-                                )}
+                                className="flex items-center justify-between cursor-pointer"
+                                dir={language.isRTL ? "rtl" : "ltr"}
                                 onClick={() => switchLanguage(language.code)}
                                 disabled={isPending}
                             >
-                                <span className={cn(
-                                    language.isRTL && "text-right"
-                                )} dir={language.isRTL ? "rtl" : "ltr"}>
+                                <span
+                                    dir={language.isRTL ? "rtl" : "ltr"}
+                                    style={language.isRTL ? arabicFontStyle : undefined}
+                                >
                                     {language.name}
                                 </span>
                                 {language.code === currentLocale && <Check className="h-5 w-5" />}

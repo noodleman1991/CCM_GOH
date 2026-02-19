@@ -19,6 +19,7 @@ interface ModernContentAreaProps {
   isSubmitting?: boolean
   canGoNext?: boolean
   canGoPrevious?: boolean
+  isConfirmed?: boolean
   className?: string
 }
 
@@ -37,6 +38,7 @@ export function ModernContentArea({
   isSubmitting = false,
   canGoNext = true,
   canGoPrevious = true,
+  isConfirmed = true,
   className
 }: ModernContentAreaProps) {
   const t = useTranslations("onboarding")
@@ -69,20 +71,20 @@ export function ModernContentArea({
 
   return (
     <div className={cn(
-      "flex-1 flex flex-col h-screen bg-gray-50",
+      "flex-1 flex flex-col h-screen bg-muted",
       className
     )} dir={isRTL ? "rtl" : "ltr"}>
       {/* Main content area */}
       <div className="flex-1 overflow-y-auto">
         <div className="w-full px-4 sm:px-6 md:px-6 lg:max-w-[960px] lg:mx-auto lg:px-0 py-4 sm:py-6 lg:py-8">
           {/* Step indicator */}
-          <div className="mb-4 text-sm text-gray-600">
+          <div className="mb-4 text-sm text-muted-foreground">
             {locale === 'ar'
               ? `خطوة ${toArabicNumerals(currentStep + 1)} من ${toArabicNumerals(totalSteps)}`
               : `Step ${currentStep + 1} of ${totalSteps}`}
           </div>
 
-          <Card className="shadow-sm border-0 bg-white">
+          <Card className="shadow-sm border-0 bg-card">
             <CardContent className="p-4 sm:p-6 lg:p-8">
               <AnimatePresence mode="wait" custom={1}>
                 <motion.div
@@ -106,7 +108,7 @@ export function ModernContentArea({
       </div>
 
       {/* Action bar */}
-      <div className="border-t border-gray-200 bg-white px-4 sm:px-6 py-4 sm:py-5">
+      <div className="border-t border-border bg-card px-4 sm:px-6 py-4 sm:py-5">
         <div className="w-full md:px-6 lg:max-w-[960px] lg:mx-auto">
           {/* Progress dots */}
           <div className="flex justify-center gap-1.5 mb-4">
@@ -132,7 +134,7 @@ export function ModernContentArea({
                 <Button
                   type={isLastStep ? "submit" : "button"}
                   onClick={isLastStep ? undefined : handleNext}
-                  disabled={!canGoNext || isSubmitting}
+                  disabled={!canGoNext || isSubmitting || (isLastStep && !isConfirmed)}
                   className="flex items-center gap-2 min-w-[120px] flex-row-reverse"
                 >
                   {isSubmitting && (
@@ -181,7 +183,7 @@ export function ModernContentArea({
                 <Button
                   type={isLastStep ? "submit" : "button"}
                   onClick={isLastStep ? undefined : handleNext}
-                  disabled={!canGoNext || isSubmitting}
+                  disabled={!canGoNext || isSubmitting || (isLastStep && !isConfirmed)}
                   className="flex items-center gap-2 min-w-[120px]"
                 >
                   {isSubmitting && (

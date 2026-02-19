@@ -118,7 +118,7 @@ export default function GridAgendaComponent({
 
                     {/* Subtitle */}
                     {subtitle && (
-                        <p className="text-sm text-black line-clamp-3">
+                        <p className="text-sm text-foreground line-clamp-3">
                             {subtitle}
                         </p>
                     )}
@@ -128,7 +128,7 @@ export default function GridAgendaComponent({
             <CardContent className="flex-1 pb-3 px-0">
                 {/* Description */}
                 {description && (
-                    <p className="text-sm text-black line-clamp-14 mb-4">
+                    <p className="text-sm text-foreground line-clamp-14 mb-4">
                         {description}
                     </p>
                 )}

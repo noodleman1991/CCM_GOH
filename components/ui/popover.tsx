@@ -5,6 +5,7 @@ import * as PopoverPrimitive from "@radix-ui/react-popover"
 
 import { cn } from "@/lib/utils"
 import { useStableId } from "@/lib/use-stable-id"
+import { useDirection } from "@/hooks/use-direction"
 
 function Popover({
   id,
@@ -12,8 +13,6 @@ function Popover({
 }: React.ComponentProps<typeof PopoverPrimitive.Root> & {
   id?: string
 }) {
-  // Note: stableId is generated but not used on Root (Radix doesn't support id on Root)
-  // It's kept for consistency with the API but currently unused
   const stableId = useStableId('popover', id)
   return <PopoverPrimitive.Root {...props} />
 }
@@ -23,10 +22,13 @@ const PopoverTrigger = PopoverPrimitive.Trigger
 const PopoverContent = React.forwardRef<
   React.ElementRef<typeof PopoverPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content>
->(({ className, align = "center", sideOffset = 4, ...props }, ref) => (
+>(({ className, align = "center", sideOffset = 4, ...props }, ref) => {
+  const autoDir = useDirection()
+  return (
   <PopoverPrimitive.Portal>
     <PopoverPrimitive.Content
       ref={ref}
+      dir={autoDir}
       align={align}
       sideOffset={sideOffset}
       className={cn(
@@ -36,7 +38,8 @@ const PopoverContent = React.forwardRef<
       {...props}
     />
   </PopoverPrimitive.Portal>
-))
+  )
+})
 PopoverContent.displayName = PopoverPrimitive.Content.displayName
 
 export { Popover, PopoverTrigger, PopoverContent }

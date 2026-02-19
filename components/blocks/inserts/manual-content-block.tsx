@@ -25,7 +25,7 @@ interface ManualContentBlockProps {
 const backgroundClasses = {
   none: "",
   "light-gray": "bg-gray-50",
-  "dark-gray": "bg-gray-100",
+  "dark-gray": "bg-muted",
   "brand-primary": "bg-primary/5",
   "brand-secondary": "bg-secondary/5",
 };
@@ -61,7 +61,7 @@ export function ManualContentBlock({
   const renderContent = () => (
     <div className="prose prose-lg max-w-none">
       {localizedTitle && (
-        <h2 className="text-3xl font-bold tracking-tight text-gray-900 mb-6">
+        <h2 className="text-3xl font-bold tracking-tight text-foreground mb-6">
           {localizedTitle}
         </h2>
       )}
@@ -88,7 +88,7 @@ export function ManualContentBlock({
           priority={false}
         />
         {image.caption && (
-          <p className="text-sm text-gray-600 mt-2 italic">
+          <p className="text-sm text-muted-foreground mt-2 italic">
             {image.caption}
           </p>
         )}

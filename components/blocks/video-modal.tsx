@@ -193,7 +193,7 @@ export function VideoModal({
             {/* Metadata Row */}
             <div
               className={cn(
-                "flex flex-wrap gap-4 text-sm text-gray-600",
+                "flex flex-wrap gap-4 text-sm text-muted-foreground",
                 isRTL && "flex-row-reverse"
               )}
             >
@@ -202,7 +202,7 @@ export function VideoModal({
                   <User className="w-4 h-4" />
                   <span>{experience.author.name}</span>
                   {experience.author.organizationalAffiliation && (
-                    <span className="text-gray-400">
+                    <span className="text-muted-foreground">
                       • {experience.author.organizationalAffiliation}
                     </span>
                   )}
@@ -219,7 +219,7 @@ export function VideoModal({
               {communityName && (
                 <div className="flex items-center gap-2">
                   <MapPin className="w-4 h-4" />
-                  <span className="text-blue-600 font-medium">
+                  <span className="text-ccm-water font-medium">
                     {communityName}
                   </span>
                 </div>
@@ -229,14 +229,14 @@ export function VideoModal({
             {/* Description */}
             {description && (
               <div>
-                <p className="text-gray-700 leading-relaxed">{description}</p>
+                <p className="text-muted-foreground leading-relaxed">{description}</p>
               </div>
             )}
 
             {/* Tags */}
             {experience.tags && experience.tags.length > 0 && (
               <div>
-                <h3 className="text-sm font-semibold text-gray-900 mb-2">
+                <h3 className="text-sm font-semibold text-foreground mb-2">
                   {t("tags")}
                 </h3>
                 <div className="flex flex-wrap gap-2">

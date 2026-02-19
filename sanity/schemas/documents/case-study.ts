@@ -1,5 +1,6 @@
 import { defineField, defineType } from "sanity";
 import { FileSearch } from "lucide-react";
+import { topicOptions } from "../shared/topic-options";
 
 // Language configuration
 const supportedLanguages = [
@@ -124,20 +125,7 @@ export default defineType({
             description: "Main topic category for this case study",
             group: "content",
             options: {
-                list: [
-                    { title: "Climate Change & Environment", value: "climate-environment" },
-                    { title: "Mental Health & Wellbeing", value: "mental-health" },
-                    { title: "Food Security & Agriculture", value: "food-security" },
-                    { title: "Health & Medicine", value: "health-medicine" },
-                    { title: "Education & Learning", value: "education" },
-                    { title: "Community Development", value: "community-development" },
-                    { title: "Economic Development", value: "economic-development" },
-                    { title: "Technology & Innovation", value: "technology-innovation" },
-                    { title: "Policy & Governance", value: "policy-governance" },
-                    { title: "Youth Engagement", value: "youth-engagement" },
-                    { title: "Indigenous Knowledge", value: "indigenous-knowledge" },
-                    { title: "Other", value: "other" },
-                ],
+                list: [...topicOptions],
             },
             validation: (Rule) => Rule.required(),
         }),
@@ -183,8 +171,12 @@ export default defineType({
                     {
                         name: "email",
                         title: "Email",
-                        type: "email",
-                        validation: (Rule) => Rule.email(),
+                        type: "string",
+                        validation: (Rule) => Rule.custom((value: string | undefined) => {
+                            if (!value || value === '') return true;
+                            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                            return emailRegex.test(value) ? true : 'Must be a valid email address';
+                        }),
                     },
                     {
                         name: "role",

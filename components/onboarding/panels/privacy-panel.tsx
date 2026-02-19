@@ -54,7 +54,7 @@ export function PrivacyPanel({ form, content }: PrivacyPanelProps) {
       <div className="mb-5">
         <div className={cn("flex items-center gap-2 mb-2", isRTL && "flex-row-reverse")}>
           <Shield className="h-5 w-5 text-primary" />
-          <h2 className="text-2xl font-bold text-gray-900">{content?.privacyTitle || t("title")}</h2>
+          <h2 className="text-2xl font-bold text-foreground">{content?.privacyTitle || t("title")}</h2>
         </div>
         <p className="text-lg text-muted-foreground">
           {content?.privacyDescription || t("description")}

@@ -171,10 +171,10 @@ export function WelcomePanel({ content }: WelcomePanelProps) {
             className="object-contain"
           />
         </div>
-        <h2 className="text-2xl font-bold text-gray-900">
+        <h2 className="text-2xl font-bold text-foreground">
           {welcomeTitle}
         </h2>
-        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
           {welcomeDescription}
         </p>
       </div>
@@ -190,22 +190,22 @@ export function WelcomePanel({ content }: WelcomePanelProps) {
             )}
           >
             <div className={cn("flex justify-center", isRTL && "flex-row-reverse")}>
-              <div className="bg-white p-2.5 rounded-full shadow-sm">
+              <div className="bg-card p-2.5 rounded-full shadow-sm">
                 <feature.icon className="h-5 w-5 text-primary" />
               </div>
             </div>
-            <h3 className="font-semibold text-sm text-gray-900">{feature.title}</h3>
-            <p className="text-xs text-gray-600 break-words">{feature.description}</p>
+            <h3 className="font-semibold text-sm text-foreground">{feature.title}</h3>
+            <p className="text-xs text-muted-foreground break-words">{feature.description}</p>
           </div>
         ))}
       </div>
 
       {/* Getting Started */}
       <div className="bg-gradient-to-r from-primary/10 to-primary/5 p-4 rounded-lg">
-        <h3 className={cn("font-semibold text-sm text-gray-900 mb-1.5", isRTL && "text-right")}>
+        <h3 className={cn("font-semibold text-sm text-foreground mb-1.5", isRTL && "text-right")}>
           {gettingStartedTitle}
         </h3>
-        <p className={cn("text-xs text-gray-600", isRTL && "text-right")}>
+        <p className={cn("text-xs text-muted-foreground", isRTL && "text-right")}>
           {gettingStartedDescription}
         </p>
       </div>

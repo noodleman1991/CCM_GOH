@@ -72,7 +72,7 @@ export default function GridPost({ newsPost, featured, locale = "en", userId }: 
     >
       <article
         className={cn(
-          "relative flex w-full flex-col h-full overflow-hidden transition ease-in-out group border rounded-2xl p-4 sm:p-5 lg:p-6 hover:border-primary hover:shadow-lg bg-white",
+          "relative flex w-full flex-col h-full overflow-hidden transition ease-in-out group border rounded-2xl p-4 sm:p-5 lg:p-6 hover:border-primary hover:shadow-lg bg-card",
           featured && "ring-2 ring-yellow-500/20 border-yellow-500/30"
         )}
       >
@@ -111,7 +111,7 @@ export default function GridPost({ newsPost, featured, locale = "en", userId }: 
 
           {/* Subtitle */}
           {localizedSubtitle && (
-            <p className="text-black text-sm leading-relaxed mb-2 sm:mb-3 line-clamp-2">
+            <p className="text-foreground text-sm leading-relaxed mb-2 sm:mb-3 line-clamp-2">
               {localizedSubtitle}
             </p>
           )}

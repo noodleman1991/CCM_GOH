@@ -111,7 +111,6 @@ export default function GridExternalSourceComponent({
 
     // Get metadata
     const publishDate = externalSource.publishedAt ? new Date(externalSource.publishedAt) : null;
-    const isRTLLocale = locale === 'ar';
 
     // Localized text helpers
     const getMoreText = (count: number) => {
@@ -172,16 +171,16 @@ export default function GridExternalSourceComponent({
                         />
 
                         {/* Source type badge */}
-                        <div className="absolute top-3 left-3">
+                        <div className="absolute top-3 start-3">
                             <Badge variant="secondary" className="bg-white/90 text-black">
-                                <ExternalLink className="h-3 w-3 mr-1" />
+                                <ExternalLink className="h-3 w-3 me-1" />
                                 {getSourceTypeText()}
                             </Badge>
                         </div>
 
                         {/* Featured badge */}
                         {externalSource.featured && (
-                            <div className="absolute top-3 right-3">
+                            <div className="absolute top-3 end-3">
                                 <Badge className="bg-yellow-500 text-black">
                                     ⭐ {getFeaturedText()}
                                 </Badge>
@@ -202,7 +201,7 @@ export default function GridExternalSourceComponent({
                 <CardContent className="flex-1 pb-3">
                     {/* Description */}
                     {excerpt && (
-                        <p className="text-sm text-black line-clamp-3 mb-4">
+                        <p className="text-sm text-foreground line-clamp-3 mb-4">
                             {excerpt}
                         </p>
                     )}

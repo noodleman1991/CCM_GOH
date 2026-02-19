@@ -335,8 +335,6 @@ function SidebarRail({ className, ...props }: React.ComponentProps<"button">) {
 }
 
 function SidebarInset({ className, ...props }: React.ComponentProps<"main">) {
-    const { isRtl } = useSidebar()
-
     return (
         <main
             data-slot="sidebar-inset"
@@ -344,14 +342,9 @@ function SidebarInset({ className, ...props }: React.ComponentProps<"main">) {
                 "bg-background relative flex w-full flex-1 flex-col",
                 // General inset styling
                 "md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow-sm",
-                // RTL-aware margin adjustments
-                isRtl ? [
-                    "md:peer-data-[variant=inset]:mr-0",
-                    "md:peer-data-[variant=inset]:peer-data-[state=collapsed]:mr-2"
-                ] : [
-                    "md:peer-data-[variant=inset]:ml-0",
-                    "md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ml-2"
-                ],
+                // Logical margin adjustments (RTL-safe)
+                "md:peer-data-[variant=inset]:ms-0",
+                "md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ms-2",
                 className
             )}
             {...props}
@@ -440,7 +433,6 @@ function SidebarGroupLabel({
                                ...props
                            }: React.ComponentProps<"div"> & { asChild?: boolean }) {
     const Comp = asChild ? Slot : "div"
-    const { isRtl } = useSidebar()
 
     return (
         <Comp
@@ -449,7 +441,7 @@ function SidebarGroupLabel({
             className={cn(
                 "text-sidebar-foreground/70 ring-sidebar-ring flex h-8 shrink-0 items-center rounded-md px-2 text-xs font-medium outline-hidden transition-[margin,opacity] duration-200 ease-linear focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0",
                 "group-data-[collapsible=icon]:-mt-8 group-data-[collapsible=icon]:opacity-0",
-                isRtl ? "text-right" : "text-left",
+                "text-start",
                 className
             )}
             {...props}
@@ -463,7 +455,6 @@ function SidebarGroupAction({
                                 ...props
                             }: React.ComponentProps<"button"> & { asChild?: boolean }) {
     const Comp = asChild ? Slot : "button"
-    const { isRtl } = useSidebar()
 
     return (
         <Comp
@@ -472,7 +463,7 @@ function SidebarGroupAction({
             className={cn(
                 "text-sidebar-foreground ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground flex aspect-square w-5 items-center justify-center rounded-md p-0 outline-hidden transition-transform focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0",
                 "absolute top-3.5",
-                isRtl ? "left-3" : "right-3",
+                "end-3",
                 // Increases the hit area of the button on mobile.
                 "after:absolute after:-inset-2 md:after:hidden",
                 "group-data-[collapsible=icon]:hidden",
@@ -487,15 +478,13 @@ function SidebarGroupContent({
                                  className,
                                  ...props
                              }: React.ComponentProps<"div">) {
-    const { isRtl } = useSidebar()
-
     return (
         <div
             data-slot="sidebar-group-content"
             data-sidebar="group-content"
             className={cn(
                 "w-full text-sm",
-                isRtl ? "text-right" : "text-left",
+                "text-start",
                 className
             )}
             {...props}
@@ -572,7 +561,7 @@ function SidebarMenuButton({
             data-active={isActive}
             className={cn(
                 sidebarMenuButtonVariants({ variant, size }),
-                isRtl ? "text-right group-has-data-[sidebar=menu-action]/menu-item:pl-8" : "text-left group-has-data-[sidebar=menu-action]/menu-item:pr-8",
+                "text-start group-has-data-[sidebar=menu-action]/menu-item:pe-8",
                 // Remove hover for xl variant - following best practices by putting it in component
                 size === "xl" && "hover:bg-transparent hover:text-current",
                 className
@@ -614,7 +603,6 @@ function SidebarMenuAction({
     showOnHover?: boolean
 }) {
     const Comp = asChild ? Slot : "button"
-    const { isRtl } = useSidebar()
 
     return (
         <Comp
@@ -623,7 +611,7 @@ function SidebarMenuAction({
             className={cn(
                 "text-sidebar-foreground ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground peer-hover/menu-button:text-sidebar-accent-foreground flex aspect-square w-5 items-center justify-center rounded-md p-0 outline-hidden transition-transform focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0",
                 "absolute top-1.5",
-                isRtl ? "left-1" : "right-1",
+                "end-1",
                 // Increases the hit area of the button on mobile.
                 "after:absolute after:-inset-2 md:after:hidden",
                 "peer-data-[size=sm]/menu-button:top-1",
@@ -643,8 +631,6 @@ function SidebarMenuBadge({
                               className,
                               ...props
                           }: React.ComponentProps<"div">) {
-    const { isRtl } = useSidebar()
-
     return (
         <div
             data-slot="sidebar-menu-badge"
@@ -652,7 +638,7 @@ function SidebarMenuBadge({
             className={cn(
                 "text-sidebar-foreground pointer-events-none flex h-5 min-w-5 items-center justify-center rounded-md px-1 text-xs font-medium tabular-nums select-none",
                 "absolute",
-                isRtl ? "left-1" : "right-1",
+                "end-1",
                 "peer-hover/menu-button:text-sidebar-accent-foreground peer-data-[active=true]/menu-button:text-sidebar-accent-foreground",
                 "peer-data-[size=sm]/menu-button:top-1",
                 "peer-data-[size=default]/menu-button:top-1.5",
@@ -717,7 +703,8 @@ function SidebarMenuSub({ className, ...props }: React.ComponentProps<"ul">) {
             data-sidebar="menu-sub"
             className={cn(
                 "border-sidebar-border flex min-w-0 flex-col gap-1 px-2.5 py-0.5",
-                isRtl ? "mx-3.5 border-r -translate-x-px" : "mx-3.5 border-l translate-x-px",
+                "mx-3.5 border-s",
+                isRtl ? "-translate-x-px" : "translate-x-px",
                 "group-data-[collapsible=icon]:hidden",
                 className
             )}
@@ -762,7 +749,8 @@ function SidebarMenuSubButton({
             data-active={isActive}
             className={cn(
                 "text-sidebar-foreground ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground active:bg-sidebar-accent active:text-sidebar-accent-foreground [&>svg]:text-sidebar-accent-foreground flex h-7 min-w-0 items-center gap-2 overflow-hidden rounded-md px-2 outline-hidden focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
-                isRtl ? "translate-x-px text-right" : "-translate-x-px text-left",
+                "text-start",
+                isRtl ? "translate-x-px" : "-translate-x-px",
                 "data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground",
                 size === "sm" && "text-xs",
                 size === "md" && "text-sm",

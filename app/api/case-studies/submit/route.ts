@@ -92,9 +92,13 @@ export async function POST(request: NextRequest) {
                 })
             })),
 
+            // A1: Include topic from form
+            topic: data.topic || "other",
+
             tags: data.tags.map((tagId: string) => ({
                 _type: "reference",
                 _ref: tagId,
+                _key: uuidv4(), // A2: Sanity arrays require _key
             })),
 
             studyPeriod: data.studyPeriod,
@@ -104,9 +108,6 @@ export async function POST(request: NextRequest) {
             // Default status for review workflow
             status: "pending",
             featured: false,
-
-            // Metadata
-            _createdAt: new Date().toISOString(),
         };
 
         // Add regional community reference if provided
@@ -201,7 +202,6 @@ export async function POST(request: NextRequest) {
             {
                 error: "Failed to submit case study",
                 message: error instanceof Error ? error.message : 'An unknown error occurred',
-                details: process.env.NODE_ENV === 'development' ? error : undefined
             },
             { status: 500 }
         );
