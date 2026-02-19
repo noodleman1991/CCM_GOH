@@ -1,10 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import React, { useState, useEffect } from 'react';
 import * as z from 'zod';
 import { useUser } from '@clerk/nextjs';
 import { toast } from 'sonner';
-import { useCaseStudyStore } from '@/stores/case-study-store';
+import { topicOptions } from '@/sanity/schemas/shared/topic-options';
 import PortableTextEditor from '@/components/forms/portable-text-editor';
 import { geocodeLocation } from '@/lib/geocoding';
 import {
@@ -70,6 +68,7 @@ const formSchema = z.object({
         );
         return hasText;
     }, "Please provide detailed content for your case study"),
+    topic: z.string().min(1, "Please select a topic"),
     authors: z.array(z.object({
         name: z.string().min(2, "Please enter the author's full name"),
         email: z.string().email("Please enter a valid email address").optional().or(z.literal('')),
@@ -108,42 +107,6 @@ const authorRoles = [
     { value: 'contributor', label: 'Contributor' },
     { value: 'advisor', label: 'Advisor' },
 ];
-
-// Rich Text Editor Component (simplified)
-const SimpleRichTextEditor = ({
-                                  value,
-                                  onChange,
-                                  language = 'en',
-                                  placeholder,
-                                  maxLength = 20000
-                              }: {
-    value: string;
-    onChange: (value: string) => void;
-    language?: string;
-    placeholder?: string;
-    maxLength?: number;
-}) => {
-    const isRTL = language === 'ar';
-
-    return (
-        <div className="border rounded-lg">
-            <div className="border-b bg-muted/50 p-2 text-xs text-muted-foreground">
-                Rich text editor - Use simple formatting like **bold** and *italic*
-            </div>
-            <Textarea
-                value={value}
-                onChange={(e) => onChange(e.target.value)}
-                placeholder={placeholder}
-                className={`min-h-[200px] border-0 resize-none ${isRTL ? 'text-right' : 'text-left'}`}
-                dir={isRTL ? 'rtl' : 'ltr'}
-                maxLength={maxLength}
-            />
-            <div className="border-t p-2 text-xs text-muted-foreground text-right">
-                {value.length}/{maxLength} characters
-            </div>
-        </div>
-    );
-};
 
 interface ImprovedCaseStudyFormProps {
     userId: string;
@@ -185,12 +148,14 @@ export default function ImprovedCaseStudyForm({
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [completedSections, setCompletedSections] = useState<Set<string>>(new Set());
     const [openSection, setOpenSection] = useState<string>('basic');
-    const [submissionStep, setSubmissionStep] = useState<'form' | 'submitting' | 'success'>('form');
+    const [submissionStep, setSubmissionStep] = useState<'form' | 'review' | 'submitting' | 'success'>('form');
+    const [draftSavedAt, setDraftSavedAt] = useState<string | null>(null);
 
     // Form state
     const [formData, setFormData] = useState<Partial<FormData>>({
         title: { en: '', es: '', fr: '', ar: '' },
         excerpt: { en: '', es: '', fr: '', ar: '' },
+        topic: '',
         content: [],
         authors: user ? [{
             name: user.fullName || '',
@@ -222,15 +187,9 @@ export default function ImprovedCaseStudyForm({
                     }
                     setFormData(savedFormData);
                     setSelectedTags(parsed.state.selectedTags || []);
-                    // Restore imagePreview from the correct location
-                    if (parsed.state.imagePreview) {
-                        setImagePreview(parsed.state.imagePreview);
-                    }
-                    console.log('📋 Draft restored from localStorage');
                     toast.info('Your previous draft has been restored');
                 }
-            } catch (error) {
-                console.error('Failed to load draft:', error);
+            } catch {
             }
         }
         setIsHydrated(true);
@@ -246,20 +205,19 @@ export default function ImprovedCaseStudyForm({
                     state: {
                         formData: formData,
                         selectedTags,
-                        imagePreview, // Keep separate from formData
+                        // B3: Exclude imagePreview from localStorage (base64 can exceed 5MB limit)
                         currentLanguage: 'en',
                         currentStep: 'form'
                     }
                 };
                 localStorage.setItem('case-study-submission', JSON.stringify(dataToSave));
-                console.log('💾 Draft auto-saved');
-            } catch (error) {
-                console.error('Failed to save draft:', error);
+                setDraftSavedAt(new Date().toLocaleTimeString());
+            } catch {
             }
         }, 1000); // Debounce 1 second
 
         return () => clearTimeout(timeoutId);
-    }, [formData, selectedTags, imagePreview, isHydrated]);
+    }, [formData, selectedTags, isHydrated]);
 
     // Validation
     const validateForm = () => {
@@ -286,15 +244,10 @@ export default function ImprovedCaseStudyForm({
         const newCompleted = new Set<string>();
 
         // Basic section
-        const hasBasic = formData.title?.en && formData.excerpt?.en && (formData.excerpt.en?.length || 0) >= 100;
+        const hasBasic = formData.title?.en && formData.excerpt?.en && (formData.excerpt.en?.length || 0) >= 100 && !!formData.topic;
         if (hasBasic) {
             newCompleted.add('basic');
         }
-        console.log('📝 Basic section:', hasBasic ? '✅' : '❌', {
-            hasTitle: !!formData.title?.en,
-            hasExcerpt: !!formData.excerpt?.en,
-            excerptLength: formData.excerpt?.en?.length || 0
-        });
 
         // Content section - check for portable text content
         const hasContent = Array.isArray(formData.content) &&
@@ -307,10 +260,6 @@ export default function ImprovedCaseStudyForm({
         if (hasContent) {
             newCompleted.add('content');
         }
-        console.log('📝 Content section:', hasContent ? '✅' : '❌', {
-            hasContent: !!formData.content,
-            contentBlocks: Array.isArray(formData.content) ? formData.content.length : 0
-        });
 
         // Authors section
         const hasAuthors = formData.authors && formData.authors.length > 0 &&
@@ -318,24 +267,15 @@ export default function ImprovedCaseStudyForm({
         if (hasAuthors) {
             newCompleted.add('authors');
         }
-        console.log('📝 Authors section:', hasAuthors ? '✅' : '❌', {
-            count: formData.authors?.length || 0,
-            allValid: formData.authors?.every(author => author.name && author.role)
-        });
 
         // Topics section
         const hasTopics = selectedTags.length > 0;
         if (hasTopics) {
             newCompleted.add('topics');
         }
-        console.log('📝 Topics section:', hasTopics ? '✅' : '❌', {
-            tagCount: selectedTags.length
-        });
 
         // Context section (optional)
         newCompleted.add('context');
-
-        console.log('📊 Total completed sections:', newCompleted.size, '/', 4, 'required');
         setCompletedSections(newCompleted);
     }, [formData, selectedTags]);
 
@@ -346,9 +286,10 @@ export default function ImprovedCaseStudyForm({
             let current: any = updated;
 
             for (let i = 0; i < keys.length - 1; i++) {
-                if (!current[keys[i]]) {
-                    current[keys[i]] = {};
-                }
+                // Deep-clone each nesting level to avoid React state mutation
+                current[keys[i]] = Array.isArray(current[keys[i]])
+                    ? [...current[keys[i]]]
+                    : { ...current[keys[i]] };
                 current = current[keys[i]];
             }
 
@@ -423,11 +364,10 @@ export default function ImprovedCaseStudyForm({
         setSubmissionStep('submitting');
 
         try {
-            console.log('📤 Submitting case study...');
-
             // Prepare submission data
             const submissionData = {
                 ...formData,
+                topic: formData.topic,
                 tags: selectedTags,
                 submittedBy: userId,
                 submittedAt: new Date().toISOString(),
@@ -444,30 +384,21 @@ export default function ImprovedCaseStudyForm({
             // Add image if present
             if (imageFile) {
                 apiFormData.append('image', imageFile);
-                console.log('📷 Image attached:', imageFile.name, `(${(imageFile.size / 1024).toFixed(2)} KB)`);
             }
-
-            // Submit to API
-            console.log('🚀 Sending to /api/case-studies/submit...');
             const response = await fetch('/api/case-studies/submit', {
                 method: 'POST',
                 body: apiFormData,
             });
 
-            console.log('📡 Response status:', response.status, response.statusText);
-
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({}));
-                console.error('❌ Submission failed:', errorData);
                 throw new Error(errorData.message || errorData.error || 'Submission failed');
             }
 
             const result = await response.json();
-            console.log('✅ Case study created:', result);
 
             // Clear saved draft from localStorage
             localStorage.removeItem('case-study-submission');
-            console.log('🗑️ Draft cleared from localStorage');
 
             setSubmissionStep('success');
             toast.success('Thank you! Your case study has been submitted for review.');
@@ -476,30 +407,7 @@ export default function ImprovedCaseStudyForm({
                 onSuccess(result.id);
             }
 
-            // Reset form after delay
-            setTimeout(() => {
-                setFormData({
-                    title: { en: '', es: '', fr: '', ar: '' },
-                    excerpt: { en: '', es: '', fr: '', ar: '' },
-                    content: [],
-                    authors: [],
-                    organizationName: '',
-                    relatedCommunity: '',
-                    tags: [],
-                    studyPeriod: { startDate: '', endDate: '' },
-                    locationText: { country: '', city: '' },
-                    studyLocation: { lat: undefined, lng: undefined },
-                });
-                setSelectedTags([]);
-                setSelectedCommunity('');
-                setImageFile(null);
-                setImagePreview(null);
-                setSubmissionStep('form');
-                setOpenSection('basic');
-            }, 3000);
-
         } catch (error) {
-            console.error('💥 Submission error:', error);
             const errorMessage = error instanceof Error ? error.message : 'Something went wrong. Please try again.';
             toast.error(errorMessage);
             setSubmissionStep('form');
@@ -508,20 +416,196 @@ export default function ImprovedCaseStudyForm({
         }
     };
 
-    // Success screen
+    // Success screen (B2: persistent, no auto-reset)
     if (submissionStep === 'success') {
         return (
-            <div className="max-w-2xl mx-auto text-center py-12">
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <div className="max-w-2xl mx-auto text-center py-12 space-y-6">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
                     <CheckCircle className="w-8 h-8 text-green-600" />
                 </div>
-                <h2 className="text-2xl font-bold mb-4">Thank You!</h2>
-                <p className="text-muted-foreground mb-6">
-                    Your case study has been submitted successfully. Our team will review it and publish it on the platform once approved.
-                </p>
-                <Button onClick={() => setSubmissionStep('form')}>
-                    Submit Another Case Study
-                </Button>
+                <h2 className="text-2xl font-bold">Thank You for Your Contribution!</h2>
+                <div className="space-y-2 text-muted-foreground">
+                    <p>Your case study has been submitted successfully.</p>
+                    <p>Our team will review it and you&apos;ll be notified once it&apos;s published on the platform.</p>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
+                    <Button
+                        variant="outline"
+                        onClick={() => {
+                            setFormData({
+                                title: { en: '', es: '', fr: '', ar: '' },
+                                excerpt: { en: '', es: '', fr: '', ar: '' },
+                                topic: '',
+                                content: [],
+                                authors: [],
+                                organizationName: '',
+                                relatedCommunity: '',
+                                tags: [],
+                                studyPeriod: { startDate: '', endDate: '' },
+                                locationText: { country: '', city: '' },
+                                studyLocation: { lat: undefined, lng: undefined },
+                            });
+                            setSelectedTags([]);
+                            setSelectedCommunity('');
+                            setImageFile(null);
+                            setImagePreview(null);
+                            setSubmissionStep('form');
+                            setOpenSection('basic');
+                        }}
+                    >
+                        <Plus className="w-4 h-4 me-2" />
+                        Submit Another Case Study
+                    </Button>
+                    <Button asChild>
+                        <a href={`/${locale}/dashboard/submissions`}>View My Submissions</a>
+                    </Button>
+                </div>
+            </div>
+        );
+    }
+
+    // B1: Review step
+    if (submissionStep === 'review') {
+        const selectedTopicLabel = topicOptions.find(t => t.value === formData.topic)?.title || formData.topic;
+        return (
+            <div className="max-w-3xl mx-auto space-y-6">
+                <div className="flex items-center justify-between">
+                    <div>
+                        <h2 className="text-2xl font-bold">Review Your Submission</h2>
+                        <p className="text-muted-foreground mt-1">
+                            Please check everything looks correct before submitting
+                        </p>
+                    </div>
+                    <Button variant="outline" onClick={() => setSubmissionStep('form')}>
+                        Go Back to Edit
+                    </Button>
+                </div>
+
+                {/* Title & Topic */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                            <FileText className="w-5 h-5" />
+                            Basic Information
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                        <div>
+                            <p className="text-sm font-medium text-muted-foreground">Title</p>
+                            <p className="font-medium">{formData.title?.en}</p>
+                        </div>
+                        <div>
+                            <p className="text-sm font-medium text-muted-foreground">Topic</p>
+                            <Badge variant="secondary">{selectedTopicLabel}</Badge>
+                        </div>
+                        <div>
+                            <p className="text-sm font-medium text-muted-foreground">Description</p>
+                            <p className="text-sm">{formData.excerpt?.en}</p>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* Authors */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                            <Users className="w-5 h-5" />
+                            Authors ({(formData.authors || []).length})
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="space-y-2">
+                            {(formData.authors || []).map((author, i) => (
+                                <div key={i} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                                    <div>
+                                        <p className="font-medium">{author.name}</p>
+                                        {author.email && <p className="text-sm text-muted-foreground">{author.email}</p>}
+                                    </div>
+                                    <Badge variant="outline">{author.role}</Badge>
+                                </div>
+                            ))}
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* Tags & Community */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                            <Tag className="w-5 h-5" />
+                            Tags &amp; Community
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                        <div className="flex flex-wrap gap-2">
+                            {selectedTags.map(tagId => {
+                                const tag = availableTags.find(t => t._id === tagId);
+                                return (
+                                    <Badge key={tagId} variant="secondary">
+                                        {tag?.label?.[locale as keyof typeof tag.label] || tag?.label?.en || tagId}
+                                    </Badge>
+                                );
+                            })}
+                        </div>
+                        {selectedCommunity && (
+                            <p className="text-sm text-muted-foreground">
+                                Community: {regionalCommunities.find(c => c._id === selectedCommunity)?.name?.en || selectedCommunity}
+                            </p>
+                        )}
+                    </CardContent>
+                </Card>
+
+                {/* Context */}
+                {(formData.locationText?.country || formData.studyPeriod?.startDate) && (
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <MapPin className="w-5 h-5" />
+                                Context
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-2">
+                            {formData.locationText?.country && (
+                                <p className="text-sm">
+                                    Location: {formData.locationText.city && `${formData.locationText.city}, `}{formData.locationText.country}
+                                </p>
+                            )}
+                            {formData.studyPeriod?.startDate && (
+                                <p className="text-sm">
+                                    Period: {formData.studyPeriod.startDate}{formData.studyPeriod.endDate ? ` – ${formData.studyPeriod.endDate}` : ' – Ongoing'}
+                                </p>
+                            )}
+                        </CardContent>
+                    </Card>
+                )}
+
+                {imageFile && (
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Featured Image</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <p className="text-sm text-muted-foreground">{imageFile.name} ({(imageFile.size / 1024).toFixed(0)} KB)</p>
+                        </CardContent>
+                    </Card>
+                )}
+
+                <Separator />
+
+                <div className="flex justify-center gap-4">
+                    <Button variant="outline" onClick={() => setSubmissionStep('form')}>
+                        Go Back to Edit
+                    </Button>
+                    <Button
+                        size="lg"
+                        className="min-w-48"
+                        onClick={handleSubmit}
+                        disabled={isSubmitting}
+                    >
+                        <Send className="w-4 h-4 me-2" />
+                        Confirm &amp; Submit
+                    </Button>
+                </div>
             </div>
         );
     }
@@ -531,7 +615,7 @@ export default function ImprovedCaseStudyForm({
         return (
             <div className="max-w-2xl mx-auto text-center py-12">
                 <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <Clock className="w-8 h-8 text-blue-600 animate-spin" />
+                    <Clock className="w-8 h-8 text-ccm-water animate-spin" />
                 </div>
                 <h2 className="text-2xl font-bold mb-4">Submitting Your Case Study</h2>
                 <p className="text-muted-foreground">
@@ -568,8 +652,8 @@ export default function ImprovedCaseStudyForm({
                                         isCompleted
                                             ? 'bg-green-100 text-green-600'
                                             : isRequired
-                                                ? 'bg-blue-100 text-blue-600'
-                                                : 'bg-gray-100 text-gray-600'
+                                                ? 'bg-blue-100 text-ccm-water'
+                                                : 'bg-muted text-muted-foreground'
                                     }`}>
                                         {isCompleted ? (
                                             <CheckCircle className="w-4 h-4" />
@@ -577,7 +661,7 @@ export default function ImprovedCaseStudyForm({
                                             <section.icon className="w-4 h-4" />
                                         )}
                                     </div>
-                                    <div className="flex-1 text-left">
+                                    <div className="flex-1 text-start">
                                         <div className="font-medium">{section.title}</div>
                                         {isRequired && !isCompleted && (
                                             <div className="text-sm text-muted-foreground">Required</div>
@@ -631,35 +715,56 @@ export default function ImprovedCaseStudyForm({
                                                 )}
                                             </div>
 
-                                            {/* Optional translations section */}
-                                            <div className="border rounded-lg p-4 bg-blue-50/50">
-                                                <h4 className="font-medium mb-3 flex items-center gap-2">
-                                                    <Globe className="w-4 h-4 text-blue-600" />
-                                                    Help us reach more researchers (optional)
-                                                </h4>
-                                                <p className="text-sm text-muted-foreground mb-4">
-                                                    If you can provide translations, it helps researchers who speak other languages discover your work
+                                            <div>
+                                                <Label>Topic / Domain *</Label>
+                                                <Select
+                                                    value={formData.topic || ''}
+                                                    onValueChange={(value) => updateFormData('topic', value)}
+                                                >
+                                                    <SelectTrigger className="mt-2">
+                                                        <SelectValue placeholder="Select the main topic of your case study" />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        {topicOptions.map((option) => (
+                                                            <SelectItem key={option.value} value={option.value}>
+                                                                {option.title}
+                                                            </SelectItem>
+                                                        ))}
+                                                    </SelectContent>
+                                                </Select>
+                                                <p className="text-sm text-muted-foreground mt-1">
+                                                    Choose the primary topic that best describes your case study
                                                 </p>
+                                                {errors['topic'] && (
+                                                    <p className="text-sm text-destructive mt-1">{errors['topic']}</p>
+                                                )}
+                                            </div>
 
-                                                <div className="grid gap-4">
+                                            {/* B4: Optional translations — collapsed by default */}
+                                            <details className="border rounded-lg bg-muted/30">
+                                                <summary className="p-4 cursor-pointer font-medium flex items-center gap-2">
+                                                    <Globe className="w-4 h-4 text-ccm-water" />
+                                                    Add translations to help more researchers discover your work
+                                                </summary>
+                                                <div className="px-4 pb-4 grid gap-4">
                                                     {languages.filter(lang => lang.code !== 'en').map((lang) => (
                                                         <div key={lang.code} className="space-y-2">
                                                             <Label className="text-sm">{lang.label} Translation</Label>
                                                             <Input
-                                                                placeholder={`Title in ${lang.label} (optional)`}
+                                                                placeholder={`Title in ${lang.label}`}
                                                                 value={formData.title?.[lang.code as keyof typeof formData.title] || ''}
                                                                 onChange={(e) => updateFormData(`title.${lang.code}`, e.target.value)}
                                                             />
                                                             <Textarea
                                                                 rows={2}
-                                                                placeholder={`Brief description in ${lang.label} (optional)`}
+                                                                placeholder={`Brief description in ${lang.label}`}
                                                                 value={formData.excerpt?.[lang.code as keyof typeof formData.excerpt] || ''}
                                                                 onChange={(e) => updateFormData(`excerpt.${lang.code}`, e.target.value)}
                                                             />
                                                         </div>
                                                     ))}
                                                 </div>
-                                            </div>
+                                            </details>
                                         </div>
                                     </div>
                                 )}
@@ -700,7 +805,7 @@ export default function ImprovedCaseStudyForm({
                                                             type="button"
                                                             variant="destructive"
                                                             size="sm"
-                                                            className="absolute top-2 right-2"
+                                                            className="absolute top-2 end-2"
                                                             onClick={() => {
                                                                 setImageFile(null);
                                                                 setImagePreview(null);
@@ -712,7 +817,7 @@ export default function ImprovedCaseStudyForm({
                                                 ) : (
                                                     <div>
                                                         <Upload className="w-8 h-8 mx-auto mb-2 text-gray-400" />
-                                                        <p className="text-sm text-gray-600 mb-2">
+                                                        <p className="text-sm text-muted-foreground mb-2">
                                                             Upload an image to represent your case study
                                                         </p>
                                                         <input
@@ -724,7 +829,7 @@ export default function ImprovedCaseStudyForm({
                                                         />
                                                         <Label
                                                             htmlFor="image-upload"
-                                                            className="cursor-pointer inline-flex items-center px-4 py-2 bg-[#0B3160] text-white rounded-md text-sm hover:bg-[#0B3160]/90 font-poppins font-bold"
+                                                            className="cursor-pointer inline-flex items-center px-4 py-2 bg-ccm-midnight text-white rounded-md text-sm hover:bg-ccm-midnight/90 font-heading font-bold"
                                                         >
                                                             Choose Image
                                                         </Label>
@@ -745,7 +850,7 @@ export default function ImprovedCaseStudyForm({
                                                 size="sm"
                                                 onClick={addAuthor}
                                             >
-                                                <Plus className="w-4 h-4 mr-2" />
+                                                <Plus className="w-4 h-4 me-2" />
                                                 Add Author
                                             </Button>
                                         </div>
@@ -800,7 +905,7 @@ export default function ImprovedCaseStudyForm({
                                                             className="mt-4"
                                                             onClick={() => removeAuthor(index)}
                                                         >
-                                                            <X className="w-4 h-4 mr-2" />
+                                                            <X className="w-4 h-4 me-2" />
                                                             Remove Author
                                                         </Button>
                                                     )}
@@ -1005,25 +1110,45 @@ export default function ImprovedCaseStudyForm({
 
             <Separator />
 
-            <div className="flex justify-center">
+            {draftSavedAt && (
+                <p className="text-center text-xs text-muted-foreground">
+                    Draft saved at {draftSavedAt}
+                </p>
+            )}
+
+            <div className="flex justify-center gap-4">
                 <Button
                     type="button"
-                    onClick={handleSubmit}
-                    disabled={isSubmitting || completedSections.size < 4}
+                    variant="outline"
+                    onClick={() => {
+                        try {
+                            const dataToSave = {
+                                state: { formData, selectedTags, currentLanguage: 'en', currentStep: 'form' }
+                            };
+                            localStorage.setItem('case-study-submission', JSON.stringify(dataToSave));
+                            toast.success('Draft saved');
+                        } catch {
+                            toast.error('Could not save draft');
+                        }
+                    }}
+                >
+                    Save Draft
+                </Button>
+                <Button
+                    type="button"
+                    onClick={() => {
+                        if (!validateForm()) {
+                            toast.error('Please fix the highlighted issues before reviewing');
+                            return;
+                        }
+                        setSubmissionStep('review');
+                    }}
+                    disabled={completedSections.size < 4}
                     size="lg"
                     className="min-w-48"
                 >
-                    {isSubmitting ? (
-                        <>
-                            <Clock className="mr-2 h-4 w-4 animate-spin" />
-                            Submitting...
-                        </>
-                    ) : (
-                        <>
-                            <Send className="w-4 h-4 mr-2" />
-                            Submit Case Study
-                        </>
-                    )}
+                    <ChevronRight className="w-4 h-4 me-2" />
+                    Review &amp; Submit
                 </Button>
             </div>
 
@@ -1031,7 +1156,7 @@ export default function ImprovedCaseStudyForm({
                 <div className="text-center">
                     <p className="text-sm text-muted-foreground flex items-center justify-center gap-2">
                         <AlertCircle className="w-4 h-4" />
-                        Please complete all required sections to submit
+                        Please complete all required sections to continue
                     </p>
                 </div>
             )}

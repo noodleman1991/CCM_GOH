@@ -1,3 +1,5 @@
+export const revalidate = 120;
+
 // todo: userId may be undefined? (no-!)
 import { fetchSanityRCPageBySlug, fetchRegionalCommunityAgendas, fetchSanityRCPagesStaticParams } from '@/sanity/lib/fetch';
 import { fetchRegionalCommunityTeamMembers } from '@/sanity/queries/regional-community-team';

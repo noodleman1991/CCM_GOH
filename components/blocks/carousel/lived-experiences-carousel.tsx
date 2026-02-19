@@ -131,11 +131,11 @@ function LivedExperienceCard({
 
   return (
     <div
-      className="group relative bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer flex flex-col h-full"
+      className="group relative bg-card rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer flex flex-col h-full"
       onClick={onClick}
     >
       {/* Thumbnail with Play Button Overlay */}
-      <div className="relative aspect-video bg-gray-100 flex-shrink-0">
+      <div className="relative aspect-video bg-muted flex-shrink-0">
         {thumbnailUrl ? (
           <Image
             src={thumbnailUrl}
@@ -145,14 +145,14 @@ function LivedExperienceCard({
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-100 to-blue-200">
-            <Play className="w-16 h-16 text-blue-600 opacity-60" />
+            <Play className="w-16 h-16 text-ccm-water opacity-60" />
           </div>
         )}
 
         {/* Play Button Overlay */}
         <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <div className="bg-white/90 rounded-full p-4 backdrop-blur-sm">
-            <Play className="w-8 h-8 text-blue-600" />
+            <Play className="w-8 h-8 text-ccm-water" />
           </div>
         </div>
 
@@ -173,24 +173,24 @@ function LivedExperienceCard({
 
       {/* Content */}
       <div className="p-6 flex flex-col flex-grow">
-        <h3 className="font-bold text-lg mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
+        <h3 className="font-bold text-lg mb-2 line-clamp-2 group-hover:text-ccm-water transition-colors">
           {title}
         </h3>
 
         {description && (
-          <p className="text-gray-600 text-sm mb-4 line-clamp-3">
+          <p className="text-muted-foreground text-sm mb-4 line-clamp-3">
             {description}
           </p>
         )}
 
         {/* Metadata */}
-        <div className="space-y-2 text-sm text-gray-500 flex-grow">
+        <div className="space-y-2 text-sm text-muted-foreground flex-grow">
           {experience.author && (
             <div className="flex items-center gap-2">
               <User className="w-4 h-4" />
               <span>{experience.author.name}</span>
               {experience.author.organizationalAffiliation && (
-                <span className="text-gray-400">
+                <span className="text-muted-foreground">
                   • {experience.author.organizationalAffiliation}
                 </span>
               )}
@@ -205,7 +205,7 @@ function LivedExperienceCard({
           )}
 
           {communityName && (
-            <div className="text-blue-600 font-medium">
+            <div className="text-ccm-water font-medium">
               {communityName}
             </div>
           )}
@@ -237,7 +237,7 @@ function LivedExperienceCard({
               );
             })}
             {experience.tags.filter((tag) => tag && tag.label && tag.color).length > 2 && (
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-muted text-muted-foreground">
                 +{experience.tags.filter((tag) => tag && tag.label && tag.color).length - 2}
               </span>
             )}
@@ -322,7 +322,7 @@ export default function LivedExperiencesCarousel({
                 </h2>
               )}
               {subtitle && (
-                <p className="text-lg text-gray-600 max-w-2xl">
+                <p className="text-lg text-muted-foreground max-w-2xl">
                   {subtitle}
                 </p>
               )}
@@ -349,7 +349,7 @@ export default function LivedExperiencesCarousel({
               </h2>
             )}
             {subtitle && (
-              <p className="text-lg text-gray-600 max-w-2xl">
+              <p className="text-lg text-muted-foreground max-w-2xl">
                 {subtitle}
               </p>
             )}

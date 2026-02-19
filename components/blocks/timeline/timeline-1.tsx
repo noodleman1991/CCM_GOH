@@ -25,9 +25,9 @@ export default function Timeline1({
   const isInView = useInView(ref);
 
   return (
-    <div ref={ref} className="relative border-l-2 pl-12 lg:pl-28 py-8">
+    <div ref={ref} className="relative border-s-2 ps-12 lg:ps-28 py-8">
       <motion.div
-        className="absolute w-8 h-8 rounded-full top-[3.5rem] lg:top-[3.75rem] left-[-1.1rem] border-8"
+        className="absolute w-8 h-8 rounded-full top-[3.5rem] lg:top-[3.75rem] start-[-1.1rem] border-8"
         initial={{
           backgroundColor: "hsl(var(--background))",
           opacity: 0.3,

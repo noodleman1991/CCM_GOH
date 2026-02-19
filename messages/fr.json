@@ -102,7 +102,11 @@
     "previous": "Précédent",
     "confirm": "Confirmer",
     "yes": "Oui",
-    "no": "Non"
+    "no": "Non",
+    "availableInLanguages": "Disponible en {count} {count, plural, one {langue} other {langues}}",
+    "availableIn": "Disponible en :",
+    "noContentYet": "Aucun contenu disponible pour le moment.",
+    "checkBackSoon": "Revenez bientôt pour les mises à jour."
   },
   "dashboard": {
     "pageTitle": "Tableau de bord - Connecting Climate Minds Hub",

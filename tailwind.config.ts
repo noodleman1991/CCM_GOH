@@ -71,9 +71,9 @@ const config = {
         },
         extend: {
             fontFamily: {
-                'heading': ['var(--font-heading)', 'Poppins', 'sans-serif'],
-                'body': ['var(--font-sans)', 'Lato', 'sans-serif'],
-                'sans': ['var(--font-sans)', 'Lato', 'sans-serif'], // Will be Lato
+                'heading': ['var(--font-heading)'],
+                'body': ['var(--font-body)'],
+                'sans': ['var(--font-sans)'],
             },
             colors: {
                 // Using your OKLCH colors

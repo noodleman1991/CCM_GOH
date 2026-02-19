@@ -36,7 +36,7 @@ export function NewsCard({ post, locale, variant = "default" }: NewsCardProps) {
       <Link href={href} className="group block">
         <article className="space-y-2">
           {post.image && (
-            <div className="aspect-video bg-gray-100 rounded-md overflow-hidden">
+            <div className="aspect-video bg-muted rounded-md overflow-hidden">
               <img
                 src={post.image.asset?.url}
                 alt={post.image.alt || ""}

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { auth, clerkClient } from "@clerk/nextjs/server"
 import { prisma } from "@/lib/prisma"
 import { z } from "zod"
+import type { ExpertiseArea, WorkType } from "@/generated/prisma"
 
 // Force Node.js runtime for Prisma and Clerk compatibility with Fluid Compute
 export const runtime = 'nodejs'
@@ -19,13 +20,9 @@ const OnboardingSchema = z.object({
     errorMap: () => ({ message: "Please choose your preferred language" })
   }).optional(),
 
-  // Work Info
-  workTypes: z.array(z.enum(["RESEARCH", "POLICY", "LIVED_EXPERIENCE_EXPERT", "NGO", "COMMUNITY_ORGANIZATION", "EDUCATION_TEACHING"], {
-    errorMap: () => ({ message: "Please select the types of work you do" })
-  })).default([]),
-  expertiseAreas: z.array(z.enum(["CLIMATE_CHANGE", "MENTAL_HEALTH", "HEALTH", "EDUCATION", "SOCIAL_JUSTICE"], {
-    errorMap: () => ({ message: "Please select your areas of expertise" })
-  })).default([]),
+  // Work Info — Prisma handles enum validation at DB level
+  workTypes: z.array(z.string()).default([]),
+  expertiseAreas: z.array(z.string()).default([]),
   communityIds: z.array(z.string()).max(10).default([]),
   organization: z.string().max(200).optional(),
   position: z.string().max(200).optional(),
@@ -59,6 +56,36 @@ const OnboardingSchema = z.object({
   showLocation: z.boolean().default(true)
 })
 
+
+/** Build the shared upsert data from validated onboarding input */
+function buildUpsertData(validatedData: z.infer<typeof OnboardingSchema>) {
+  return {
+    firstName: validatedData.firstName,
+    lastName: validatedData.lastName,
+    username: validatedData.username,
+    bio: validatedData.bio,
+    ageGroup: validatedData.ageGroup,
+    country: validatedData.country,
+    city: validatedData.city,
+    preferredLanguage: validatedData.preferredLanguage,
+    workTypes: validatedData.workTypes as WorkType[],
+    expertiseAreas: validatedData.expertiseAreas as ExpertiseArea[],
+    organization: validatedData.organization,
+    position: validatedData.position,
+    workBio: validatedData.workBio,
+    personalWebsite: validatedData.personalWebsite,
+    linkedinProfile: validatedData.linkedinProfile,
+    otherSocialLinks: validatedData.otherSocialLinks,
+    isSearchable: validatedData.isSearchable,
+    profileVisibility: validatedData.profileVisibility,
+    showEmail: validatedData.showEmail,
+    showPhoneNumber: validatedData.showPhoneNumber,
+    showWorkDetails: validatedData.showWorkDetails,
+    showSocialLinks: validatedData.showSocialLinks,
+    showLocation: validatedData.showLocation,
+    onboardingCompleted: true,
+  }
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -247,76 +274,20 @@ export async function POST(request: NextRequest) {
     }
 
     // Update user in Prisma with onboarding data - use upsert for race condition safety
+    const upsertData = buildUpsertData(validatedData)
     let updatedUser
     try {
       updatedUser = await prisma.user.upsert({
         where: { id: userId },
-        update: {
-          // Update if user exists (normal case - webhook created)
-          firstName: validatedData.firstName,
-          lastName: validatedData.lastName,
-          username: validatedData.username,
-          bio: validatedData.bio,
-          ageGroup: validatedData.ageGroup,
-          country: validatedData.country,
-          city: validatedData.city,
-          preferredLanguage: validatedData.preferredLanguage,
-
-          // Work information
-          workTypes: validatedData.workTypes,
-          expertiseAreas: validatedData.expertiseAreas,
-          organization: validatedData.organization,
-          position: validatedData.position,
-          workBio: validatedData.workBio,
-          personalWebsite: validatedData.personalWebsite,
-          linkedinProfile: validatedData.linkedinProfile,
-          otherSocialLinks: validatedData.otherSocialLinks,
-
-          // Privacy settings
-          isSearchable: validatedData.isSearchable,
-          profileVisibility: validatedData.profileVisibility,
-          showEmail: validatedData.showEmail,
-          showPhoneNumber: validatedData.showPhoneNumber,
-          showWorkDetails: validatedData.showWorkDetails,
-          showSocialLinks: validatedData.showSocialLinks,
-          showLocation: validatedData.showLocation,
-
-          // Mark onboarding as completed
-          onboardingCompleted: true,
-          updatedAt: new Date()
-        },
+        update: { ...upsertData, updatedAt: new Date() },
         create: {
-          // Create if webhook delayed (rare case)
           id: userId,
           email: existingUser?.email || null,
-          firstName: validatedData.firstName,
-          lastName: validatedData.lastName,
-          username: validatedData.username,
-          bio: validatedData.bio,
-          ageGroup: validatedData.ageGroup,
-          country: validatedData.country,
-          city: validatedData.city,
-          preferredLanguage: validatedData.preferredLanguage,
           image: null,
-          workTypes: validatedData.workTypes,
-          expertiseAreas: validatedData.expertiseAreas,
-          organization: validatedData.organization,
-          position: validatedData.position,
-          workBio: validatedData.workBio,
-          personalWebsite: validatedData.personalWebsite,
-          linkedinProfile: validatedData.linkedinProfile,
-          otherSocialLinks: validatedData.otherSocialLinks,
-          isSearchable: validatedData.isSearchable,
-          profileVisibility: validatedData.profileVisibility,
-          showEmail: validatedData.showEmail,
-          showPhoneNumber: validatedData.showPhoneNumber,
-          showWorkDetails: validatedData.showWorkDetails,
-          showSocialLinks: validatedData.showSocialLinks,
-          showLocation: validatedData.showLocation,
-          onboardingCompleted: true,
+          ...upsertData,
           emailVerified: null,
           phoneNumber: null,
-          phoneVerified: null
+          phoneVerified: null,
         }
       })
     } catch (upsertError: any) {
@@ -333,64 +304,15 @@ export async function POST(request: NextRequest) {
           // Retry upsert - will now succeed
           updatedUser = await prisma.user.upsert({
             where: { id: userId },
-            update: {
-              firstName: validatedData.firstName,
-              lastName: validatedData.lastName,
-              username: validatedData.username,
-              bio: validatedData.bio,
-              ageGroup: validatedData.ageGroup,
-              country: validatedData.country,
-              city: validatedData.city,
-              preferredLanguage: validatedData.preferredLanguage,
-              workTypes: validatedData.workTypes,
-              expertiseAreas: validatedData.expertiseAreas,
-              organization: validatedData.organization,
-              position: validatedData.position,
-              workBio: validatedData.workBio,
-              personalWebsite: validatedData.personalWebsite,
-              linkedinProfile: validatedData.linkedinProfile,
-              otherSocialLinks: validatedData.otherSocialLinks,
-              isSearchable: validatedData.isSearchable,
-              profileVisibility: validatedData.profileVisibility,
-              showEmail: validatedData.showEmail,
-              showPhoneNumber: validatedData.showPhoneNumber,
-              showWorkDetails: validatedData.showWorkDetails,
-              showSocialLinks: validatedData.showSocialLinks,
-              showLocation: validatedData.showLocation,
-              onboardingCompleted: true,
-              updatedAt: new Date()
-            },
+            update: { ...upsertData, updatedAt: new Date() },
             create: {
               id: userId,
               email: existingUser?.email || null,
-              firstName: validatedData.firstName,
-              lastName: validatedData.lastName,
-              username: validatedData.username,
-              bio: validatedData.bio,
-              ageGroup: validatedData.ageGroup,
-              country: validatedData.country,
-              city: validatedData.city,
-              preferredLanguage: validatedData.preferredLanguage,
               image: null,
-              workTypes: validatedData.workTypes,
-              expertiseAreas: validatedData.expertiseAreas,
-              organization: validatedData.organization,
-              position: validatedData.position,
-              workBio: validatedData.workBio,
-              personalWebsite: validatedData.personalWebsite,
-              linkedinProfile: validatedData.linkedinProfile,
-              otherSocialLinks: validatedData.otherSocialLinks,
-              isSearchable: validatedData.isSearchable,
-              profileVisibility: validatedData.profileVisibility,
-              showEmail: validatedData.showEmail,
-              showPhoneNumber: validatedData.showPhoneNumber,
-              showWorkDetails: validatedData.showWorkDetails,
-              showSocialLinks: validatedData.showSocialLinks,
-              showLocation: validatedData.showLocation,
-              onboardingCompleted: true,
+              ...upsertData,
               emailVerified: null,
               phoneNumber: null,
-              phoneVerified: null
+              phoneVerified: null,
             }
           })
 

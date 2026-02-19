@@ -53,10 +53,7 @@ const createPortableTextComponents = (
               quality={100}
             />
             {caption && (
-              <figcaption className={cn(
-                "text-sm text-muted-foreground mt-2 italic text-center font-body",
-                shouldUseRTL && "text-right"
-              )}>
+              <figcaption className="text-sm text-muted-foreground mt-2 italic text-center font-body">
                 {caption}
               </figcaption>
             )}
@@ -75,10 +72,7 @@ const createPortableTextComponents = (
               <YouTubeEmbed videoid={videoId} params="rel=0" />
             </div>
             {caption && (
-              <figcaption className={cn(
-                "text-sm text-muted-foreground mt-2 italic text-center font-body",
-                shouldUseRTL && "text-right"
-              )}>
+              <figcaption className="text-sm text-muted-foreground mt-2 italic text-center font-body">
                 {caption}
               </figcaption>
             )}
@@ -131,7 +125,7 @@ const createPortableTextComponents = (
 
         switch (style) {
           case 'hr':
-            return <hr className="my-8 border-t border-gray-300 dark:border-gray-600" />;
+            return <hr className="my-8 border-t border-border dark:border-border" />;
           case 'readMore':
             // Read more breaks are handled by the wrapper component
             return null;
@@ -141,7 +135,7 @@ const createPortableTextComponents = (
                 <div className="text-center">
                   <span className="text-2xl text-muted-foreground">§</span>
                 </div>
-                <hr className="mt-4 border-t-2 border-gray-300 dark:border-gray-600 w-24 mx-auto" />
+                <hr className="mt-4 border-t-2 border-border dark:border-border w-24 mx-auto" />
               </div>
             );
           case 'chapter':
@@ -150,11 +144,11 @@ const createPortableTextComponents = (
                 <div className="text-center">
                   <span className="text-3xl text-muted-foreground">※</span>
                 </div>
-                <hr className="mt-6 border-t-4 border-gray-300 dark:border-gray-600 w-32 mx-auto" />
+                <hr className="mt-6 border-t-4 border-border dark:border-border w-32 mx-auto" />
               </div>
             );
           default:
-            return <hr className="my-8 border-t border-gray-300 dark:border-gray-600" />;
+            return <hr className="my-8 border-t border-border dark:border-border" />;
         }
       },
 
@@ -166,18 +160,9 @@ const createPortableTextComponents = (
         if (!content) return null;
 
         const variantStyles = {
-          info: cn(
-            "bg-[#9BC6DA]/10 border-l-4 border-[#4186C3]",
-            shouldUseRTL && "border-l-0 border-r-4"
-          ),
-          warning: cn(
-            "bg-red-50 dark:bg-red-900/30 border-l-4 border-red-500",
-            shouldUseRTL && "border-l-0 border-r-4"
-          ),
-          success: cn(
-            "bg-[#205596]/10 border-l-4 border-[#205596]",
-            shouldUseRTL && "border-l-0 border-r-4"
-          ),
+          info: "bg-ccm-sky/10 border-s-4 border-ccm-water",
+          warning: "bg-red-50 dark:bg-red-900/30 border-s-4 border-red-500",
+          success: "bg-ccm-sea/10 border-s-4 border-ccm-sea",
         };
 
         const styles = variantStyles[variant as keyof typeof variantStyles] || variantStyles.info;
@@ -195,93 +180,63 @@ const createPortableTextComponents = (
     block: {
       // Text blocks with proper typography and RTL support
       normal: ({ children }) => (
-        <p className={cn(
-          "mb-4 last:mb-0 text-black font-body leading-relaxed",
-          shouldUseRTL && "text-right"
-        )}>
+        <p className="mb-4 last:mb-0 text-foreground font-body leading-relaxed text-start">
           {children}
         </p>
       ),
 
       // Headers with CCM colors and font system
       h1: ({ children }) => (
-        <h1 className={cn(
-          "mb-4 mt-4 font-heading text-4xl font-bold text-[#0B3160]",
-          shouldUseRTL && "text-right"
-        )}>
+        <h1 className="mb-4 mt-4 font-heading text-4xl font-bold text-ccm-midnight text-start">
           {children}
         </h1>
       ),
       h2: ({ children }) => (
-        <h2 className={cn(
-          "mb-4 mt-4 font-heading text-3xl font-bold text-[#205596]",
-          shouldUseRTL && "text-right"
-        )}>
+        <h2 className="mb-4 mt-4 font-heading text-3xl font-bold text-ccm-sea text-start">
           {children}
         </h2>
       ),
       h3: ({ children }) => (
-        <h3 className={cn(
-          "mb-4 mt-4 font-heading text-2xl font-bold text-[#205596]",
-          shouldUseRTL && "text-right"
-        )}>
+        <h3 className="mb-4 mt-4 font-heading text-2xl font-bold text-ccm-sea text-start">
           {children}
         </h3>
       ),
       h4: ({ children }) => (
-        <h4 className={cn(
-          "mb-3 mt-3 font-heading text-xl font-bold text-[#4186C3]",
-          shouldUseRTL && "text-right"
-        )}>
+        <h4 className="mb-3 mt-3 font-heading text-xl font-bold text-ccm-water text-start">
           {children}
         </h4>
       ),
       h5: ({ children }) => (
-        <h5 className={cn(
-          "mb-3 mt-3 font-heading text-lg font-bold text-[#4186C3]",
-          shouldUseRTL && "text-right"
-        )}>
+        <h5 className="mb-3 mt-3 font-heading text-lg font-bold text-ccm-water text-start">
           {children}
         </h5>
       ),
 
       // Enhanced blockquotes
       blockquote: ({ children }) => (
-        <blockquote className={cn(
-          "border-l-4 border-[#4186C3] pl-6 py-2 my-6 italic bg-[#9BC6DA]/5 rounded-r-lg font-body",
-          shouldUseRTL && "border-l-0 border-r-4 pl-2 pr-6 rounded-r-none rounded-l-lg text-right"
-        )}>
+        <blockquote className="border-s-4 border-ccm-water ps-6 py-2 my-6 italic bg-ccm-sky/5 rounded-e-lg font-body text-start">
           {children}
         </blockquote>
       ),
 
       // Custom content blocks
       lead: ({ children }) => (
-        <p className={cn(
-          "text-xl leading-relaxed text-black mb-6 font-body",
-          shouldUseRTL && "text-right"
-        )}>
+        <p className="text-xl leading-relaxed text-foreground mb-6 font-body text-start">
           {children}
         </p>
       ),
       caption: ({ children }) => (
-        <p className={cn(
-          "text-sm italic text-black mb-2 font-body",
-          shouldUseRTL && "text-right"
-        )}>
+        <p className="text-sm italic text-foreground mb-2 font-body text-start">
           {children}
         </p>
       ),
       sidebarNote: ({ children }) => (
-        <aside className={cn(
-          "bg-[#9BC6DA]/10 p-4 rounded-lg text-sm mb-4 border-l-2 border-[#4186C3]",
-          shouldUseRTL && "border-l-0 border-r-2 text-right"
-        )}>
+        <aside className="bg-ccm-sky/10 p-4 rounded-lg text-sm mb-4 border-s-2 border-ccm-water text-start">
           {children}
         </aside>
       ),
       cta: ({ children }) => (
-        <div className="bg-[#0B3160] text-white p-6 rounded-lg text-center font-bold mb-4 font-heading">
+        <div className="bg-ccm-midnight text-white p-6 rounded-lg text-center font-bold mb-4 font-heading">
           {children}
         </div>
       ),
@@ -289,18 +244,12 @@ const createPortableTextComponents = (
 
     list: {
       bullet: ({ children }) => (
-        <ul className={cn(
-          "list-disc pl-6 mb-4 font-body leading-relaxed",
-          shouldUseRTL && "pr-6 pl-0 list-inside"
-        )}>
+        <ul className="list-disc ps-6 mb-4 font-body leading-relaxed">
           {children}
         </ul>
       ),
       number: ({ children }) => (
-        <ol className={cn(
-          "list-decimal pl-6 mb-4 font-body leading-relaxed",
-          shouldUseRTL && "pr-6 pl-0 list-inside"
-        )}>
+        <ol className="list-decimal ps-6 mb-4 font-body leading-relaxed">
           {children}
         </ol>
       ),
@@ -313,12 +262,12 @@ const createPortableTextComponents = (
 
     listItem: {
       bullet: ({ children }) => (
-        <li className={cn("mb-2", shouldUseRTL && "text-right")}>
+        <li className="mb-2 text-start">
           {children}
         </li>
       ),
       number: ({ children }) => (
-        <li className={cn("mb-2", shouldUseRTL && "text-right")}>
+        <li className="mb-2 text-start">
           {children}
         </li>
       ),
@@ -334,14 +283,14 @@ const createPortableTextComponents = (
             <div
               className={cn(
                 "w-5 h-5 border-2 rounded flex items-center justify-center mt-0.5 flex-shrink-0",
-                checked ? "bg-[#205596] border-[#205596]" : "border-gray-300"
+                checked ? "bg-ccm-sea border-ccm-sea" : "border-border"
               )}
             >
               {checked && <Check className="w-3 h-3 text-white" />}
             </div>
             <span className={cn(
               checked ? "line-through opacity-60" : "",
-              shouldUseRTL && "text-right"
+              "text-start"
             )}>
               {children}
             </span>
@@ -359,7 +308,7 @@ const createPortableTextComponents = (
 
       // Highlight with CCM colors
       highlight: ({ children }) => (
-        <mark className="bg-[#9BC6DA]/30 px-1 rounded font-body">
+        <mark className="bg-ccm-sky/30 px-1 rounded font-body">
           {children}
         </mark>
       ),
@@ -377,7 +326,7 @@ const createPortableTextComponents = (
             href={value?.href || "#"}
             target={target}
             rel={target ? "noopener noreferrer" : undefined}
-            className="text-[#4186C3] underline hover:text-[#205596] hover:no-underline transition-all font-body"
+            className="text-ccm-water underline hover:text-ccm-sea hover:no-underline transition-all font-body"
           >
             {children}
           </Link>
@@ -400,7 +349,7 @@ const createPortableTextComponents = (
         return (
           <Link
             href={href}
-            className="text-[#4186C3] underline hover:text-[#205596] hover:no-underline transition-all font-body"
+            className="text-ccm-water underline hover:text-ccm-sea hover:no-underline transition-all font-body"
           >
             {children}
           </Link>

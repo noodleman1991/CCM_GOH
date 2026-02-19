@@ -52,16 +52,20 @@ export function ModernOnboardingContainer({
   const [currentStep, setCurrentStep] = useState(0)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [validationError, setValidationError] = useState<string | null>(null)
+  const [isReviewConfirmed, setIsReviewConfirmed] = useState(false)
 
   // Create dynamic schema
   const dynamicSchema = createOnboardingSchema(sanityContent?.validationMessages)
 
   // Helper function to map Sanity IDs to enum keys (for submission)
+  // Filters out IDs that have no matching key to prevent raw Sanity IDs from reaching the API
   const mapSanityToEnumKeys = (sanityIds: string[], sanityData: any[]): string[] => {
-    return sanityIds.map(id => {
-      const item = sanityData.find(d => d._id === id)
-      return item?.key || id
-    })
+    return sanityIds
+      .map(id => {
+        const item = sanityData.find(d => d._id === id)
+        return item?.key
+      })
+      .filter((key): key is string => !!key)
   }
 
   // Helper function to reverse map enum keys to Sanity IDs (for pre-population)
@@ -341,6 +345,7 @@ export function ModernOnboardingContainer({
             isSubmitting={isSubmitting}
             canGoNext={true}
             canGoPrevious={currentStep > 0}
+            isConfirmed={isReviewConfirmed}
           >
             {/* Error Alert */}
             {validationError && (
@@ -365,6 +370,7 @@ export function ModernOnboardingContainer({
               expertiseAreas={userManagementOptions?.expertiseAreas || []}
               communities={userManagementOptions?.communities || []}
               {...(userManagementOptions && { userManagementOptions })}
+              onConfirmationChange={setIsReviewConfirmed}
             />
           </ModernContentArea>
         </form>

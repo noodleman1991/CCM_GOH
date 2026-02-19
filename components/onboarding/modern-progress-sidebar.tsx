@@ -90,7 +90,7 @@ export function ModernProgressSidebar({
 
   return (
     <div className={cn(
-      "bg-white border-r border-gray-200 flex flex-col",
+      "bg-card border-r border-border flex flex-col",
       "w-64 h-screen overflow-y-auto",
       "shadow-sm lg:shadow-none", // Add subtle shadow on mobile
       className
@@ -102,7 +102,7 @@ export function ModernProgressSidebar({
             <Sparkles className="h-5 w-5 text-primary" />
           </div>
           <div>
-            <h2 className="font-semibold text-gray-900">{t("title")}</h2>
+            <h2 className="font-semibold text-foreground">{t("title")}</h2>
             <p className="text-sm text-gray-500">Step {currentStep + 1} of {totalSteps}</p>
           </div>
         </div>
@@ -116,7 +116,7 @@ export function ModernProgressSidebar({
               <span>~2 min left</span>
             </div>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
+          <div className="w-full bg-muted rounded-full h-2">
             <motion.div
               className="bg-primary h-2 rounded-full"
               initial={{ width: 0 }}
@@ -155,7 +155,7 @@ export function ModernProgressSidebar({
                   "flex items-center justify-center w-8 h-8 rounded-full border-2 transition-all",
                   isCompleted && "bg-green-500 border-green-500 text-white",
                   isActive && "bg-primary border-primary text-white",
-                  isUpcoming && "bg-white border-gray-300 text-gray-400"
+                  isUpcoming && "bg-background border-gray-300 text-gray-400"
                 )}>
                   {isCompleted ? (
                     <CheckCircle2 className="h-4 w-4" />
@@ -208,7 +208,7 @@ export function ModernProgressSidebar({
           </p>
           <div className="flex justify-center mt-2 space-x-1">
             {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="w-6 h-6 bg-gray-100 rounded-full border overflow-hidden">
+              <div key={i} className="w-6 h-6 bg-muted rounded-full border overflow-hidden">
                 <div className="w-full h-full bg-gradient-to-br from-blue-400 to-purple-400" />
               </div>
             ))}

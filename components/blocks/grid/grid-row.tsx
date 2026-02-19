@@ -178,8 +178,12 @@ export default function GridRow({
                     </ExpandableGrid>
                 ) : (
                     <div className="text-center py-12 text-muted-foreground">
-                        <p className="text-lg">No content available yet.</p>
-                        <p className="text-sm mt-2">Check back soon for updates.</p>
+                        <p className="text-lg">{
+                            { en: 'No content available yet.', fr: 'Aucun contenu disponible pour le moment.', es: 'Aún no hay contenido disponible.', ar: 'لا يوجد محتوى متاح حالياً.' }[supportedLocale] || 'No content available yet.'
+                        }</p>
+                        <p className="text-sm mt-2">{
+                            { en: 'Check back soon for updates.', fr: 'Revenez bientôt pour les mises à jour.', es: 'Vuelve pronto para ver las actualizaciones.', ar: 'تحقق مرة أخرى قريباً للاطلاع على التحديثات.' }[supportedLocale] || 'Check back soon for updates.'
+                        }</p>
                     </div>
                 )}
             </div>

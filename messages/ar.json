@@ -102,7 +102,11 @@
     "previous": "السابق",
     "confirm": "تأكيد",
     "yes": "نعم",
-    "no": "لا"
+    "no": "لا",
+    "availableInLanguages": "متاح بـ {count} {count, plural, one {لغة} other {لغات}}",
+    "availableIn": "متاح بـ:",
+    "noContentYet": "لا يوجد محتوى متاح حالياً.",
+    "checkBackSoon": "تحقق مرة أخرى قريباً للاطلاع على التحديثات."
   },
   "dashboard": {
     "pageTitle": "لوحة التحكم - Connecting Climate Minds Hub",

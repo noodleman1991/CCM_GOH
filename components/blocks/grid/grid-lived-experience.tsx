@@ -191,8 +191,8 @@ export default function GridLivedExperienceComponent({
                         />
                     ) : (
                         // Fallback gray background with play icon
-                        <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                            <Play className="h-12 w-12 text-gray-400" />
+                        <div className="w-full h-full bg-muted flex items-center justify-center">
+                            <Play className="h-12 w-12 text-muted-foreground" />
                         </div>
                     )}
 
@@ -243,7 +243,7 @@ export default function GridLivedExperienceComponent({
             <CardContent className="flex-1 pb-3">
                 {/* Description */}
                 {excerpt && (
-                    <p className="text-sm text-black line-clamp-3 mb-4">
+                    <p className="text-sm text-foreground line-clamp-3 mb-4">
                         {excerpt}
                     </p>
                 )}

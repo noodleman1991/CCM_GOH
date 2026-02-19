@@ -55,18 +55,18 @@ export default function Hero1({
                 <div className={cn(
                     "flex flex-col justify-start min-w-0 w-full",
                     rtl
-                        ? isImageRight ? "lg:order-1" : "lg:order-2"
+                        ? isImageRight ? "lg:order-2" : "lg:order-1"
                         : isImageRight ? "lg:order-1" : "lg:order-2"
                 )}>
                     {localizedTagLine && (
-                        <p className="text-base font-semibold font-sans animate-fade-up [animation-delay:100ms] opacity-0">
+                        <p className="text-base font-semibold text-ccm-water uppercase tracking-wider animate-fade-up [animation-delay:100ms] opacity-0">
                             {localizedTagLine}
                         </p>
                     )}
                     {localizedTitle && (
-                        <h3 className="mt-6 font-bold leading-[1.1] text-2xl md:text-4xl lg:text-5xl animate-fade-up [animation-delay:200ms] opacity-0">
+                        <h1 className="mt-6 font-bold font-heading leading-[1.1] text-4xl md:text-5xl lg:text-6xl text-ccm-midnight animate-fade-up [animation-delay:200ms] opacity-0">
                             {localizedTitle}
-                        </h3>
+                        </h1>
                     )}
                     {localizedBody && (
                         <div className="text-lg mt-6 animate-fade-up [animation-delay:300ms] opacity-0">
@@ -98,7 +98,7 @@ export default function Hero1({
                 <div className={cn(
                     "flex flex-col justify-center min-w-0 w-full",
                     rtl
-                        ? isImageRight ? "lg:order-2" : "lg:order-1"
+                        ? isImageRight ? "lg:order-1" : "lg:order-2"
                         : isImageRight ? "lg:order-2" : "lg:order-1"
                 )}>
                     {image && image.asset?._id && (
@@ -112,7 +112,7 @@ export default function Hero1({
                                 placeholder={image?.asset?.metadata?.lqip ? "blur" : undefined}
                                 blurDataURL={image?.asset?.metadata?.lqip || ""}
                                 quality={100}
-                                style={{ maxWidth: "100%", height: "auto" }}
+                                sizes="(min-width: 1024px) 50vw, 100vw"
                             />
                         </div>
                     )}

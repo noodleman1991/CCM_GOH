@@ -65,13 +65,13 @@ export default function Carousel2({
             {testimonial.map((item) => (
               <CarouselItem
                 key={item._id}
-                className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3 min-w-0"
+                className="ps-2 md:ps-4 md:basis-1/2 lg:basis-1/3 min-w-0"
               >
                 <Card className="h-full overflow-hidden">
                   <CardContent className="flex flex-col justify-between p-6 h-full">
                     <div>
                       <div className="flex items-center mb-2">
-                        <Avatar className="w-10 h-10 mr-3">
+                        <Avatar className="w-10 h-10 me-3">
                           {item.image && (
                             <AvatarImage
                               src={urlFor(item.image).url()}
@@ -108,11 +108,11 @@ export default function Carousel2({
           </CarouselContent>
           <CarouselPrevious
             variant="secondary"
-            className="-left-3 md:-left-8 xl:-left-12"
+            className="-start-3 md:-start-8 xl:-start-12"
           />
           <CarouselNext
             variant="secondary"
-            className="-right-3 md:-right-8 xl:-right-12"
+            className="-end-3 md:-end-8 xl:-end-12"
           />
           <div className="w-full flex justify-center">
             <CarouselDots />

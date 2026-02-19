@@ -55,7 +55,7 @@ export function CaseStudyCard({
       <Link href={href} className="group block">
         <article className="space-y-2">
           {caseStudy.image && (
-            <div className="aspect-video bg-gray-100 rounded-md overflow-hidden">
+            <div className="aspect-video bg-muted rounded-md overflow-hidden">
               <Image
                 src={urlFor(caseStudy.image).width(400).height(225).url()}
                 alt={caseStudy.image.alt || ""}

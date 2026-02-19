@@ -202,7 +202,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     return (
         <Sidebar
             variant="inset"
-            className={cn(isRTL && "rtl-sidebar")}
             {...props}
         >
             <SidebarHeader>
@@ -217,28 +216,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 {/* Search Box */}
                 <div className="p-2">
                     <form onSubmit={handleSearch} className="relative sidebar-search-input">
-                        <Search className={cn(
-                            "pointer-events-none absolute top-1/2 size-4 -translate-y-1/2 select-none text-slate-900",
-                            isRTL ? "right-2" : "left-2"
-                        )} />
+                        <Search className="pointer-events-none absolute top-1/2 size-4 -translate-y-1/2 select-none text-slate-900 start-2" />
                         <SidebarInput
                             id="search"
                             placeholder={t('searchPlaceholder')}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className={cn(
-                                "w-full placeholder:text-slate-500 bg-white border-gray-300 text-slate-900",
-                                isRTL ? "pr-8 pl-8" : "pl-8 pr-8"
-                            )}
+                            className="w-full placeholder:text-slate-500 bg-background border-gray-300 text-slate-900 ps-8 pe-8"
                         />
                         {searchQuery && (
                             <button
                                 type="button"
                                 onClick={() => setSearchQuery("")}
-                                className={cn(
-                                    "absolute top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600",
-                                    isRTL ? "left-2" : "right-2"
-                                )}
+                                className="absolute top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 end-2"
                             >
                                 <X className="size-4" />
                             </button>

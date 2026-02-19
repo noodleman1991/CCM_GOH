@@ -146,7 +146,7 @@ export default function UserSubmissionsDashboard({
                 </p>
               )}
             </div>
-            <div className="flex items-center gap-2 ml-3">
+            <div className="flex items-center gap-2 ms-3">
               {submission.featured && (
                 <Badge variant="secondary" className="text-xs">
                   Featured
@@ -156,7 +156,7 @@ export default function UserSubmissionsDashboard({
                 variant="outline"
                 className={`text-xs ${statusConfig[submission.status].color}`}
               >
-                <StatusIcon className="w-3 h-3 mr-1" />
+                <StatusIcon className="w-3 h-3 me-1" />
                 {statusConfig[submission.status].label}
               </Badge>
             </div>
@@ -233,7 +233,7 @@ export default function UserSubmissionsDashboard({
             {submission.status === 'approved' && submission.slug && (
               <Button size="sm" variant="outline" asChild>
                 <Link href={`/${locale}/case-studies/${submission.slug}`}>
-                  <Eye className="w-3 h-3 mr-1" />
+                  <Eye className="w-3 h-3 me-1" />
                   View Published
                 </Link>
               </Button>
@@ -241,7 +241,7 @@ export default function UserSubmissionsDashboard({
 
             {submission.status === 'pending' && (
               <Button size="sm" variant="outline" disabled>
-                <Clock className="w-3 h-3 mr-1" />
+                <Clock className="w-3 h-3 me-1" />
                 Under Review
               </Button>
             )}
@@ -266,7 +266,7 @@ export default function UserSubmissionsDashboard({
             )}
           </div>
           <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
-            <FileText className="w-3 h-3 mr-1" />
+            <FileText className="w-3 h-3 me-1" />
             Draft
           </Badge>
         </div>
@@ -290,7 +290,7 @@ export default function UserSubmissionsDashboard({
         </div>
 
         <Button size="sm" className="w-full">
-          <Edit className="w-3 h-3 mr-1" />
+          <Edit className="w-3 h-3 me-1" />
           Continue Writing
         </Button>
       </CardContent>
@@ -364,7 +364,7 @@ export default function UserSubmissionsDashboard({
                       size="sm"
                       onClick={() => setSelectedStatus(status)}
                     >
-                      <Icon className="w-3 h-3 mr-1" />
+                      <Icon className="w-3 h-3 me-1" />
                       {config.label} ({count})
                     </Button>
                   )
@@ -398,7 +398,7 @@ export default function UserSubmissionsDashboard({
                 </div>
                 <Button asChild>
                   <Link href={`/${locale}/research-and-action/case-studies/submit`}>
-                    <Plus className="w-4 h-4 mr-2" />
+                    <Plus className="w-4 h-4 me-2" />
                     Submit Case Study
                   </Link>
                 </Button>

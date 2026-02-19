@@ -189,7 +189,7 @@ export default function GridCaseStudyComponent({
             <CardContent className="flex-1 pb-3 px-0">
                 {/* Description */}
                 {excerpt && (
-                    <p className="text-sm text-black line-clamp-3 mb-4">
+                    <p className="text-sm text-foreground line-clamp-3 mb-4">
                         {excerpt}
                     </p>
                 )}

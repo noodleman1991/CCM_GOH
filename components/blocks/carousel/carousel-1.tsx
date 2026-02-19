@@ -117,11 +117,11 @@ export default function Carousel1({
           </CarouselContent>
           <CarouselPrevious
             variant="secondary"
-            className="-left-3 md:-left-8 xl:-left-12"
+            className="-start-3 md:-start-8 xl:-start-12"
           />
           <CarouselNext
             variant="secondary"
-            className="-right-3 md:-right-8 xl:-right-12"
+            className="-end-3 md:-end-8 xl:-end-12"
           />
           {stegaIndicators !== "none" && (
             <div className="w-full flex justify-center">

@@ -10,7 +10,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: "bg-[var(--color-ccm-sea)] text-white shadow-md hover:bg-[var(--color-ccm-sea)]/90 hover:shadow-lg",
-        invert: "bg-white text-[var(--color-ccm-midnight)] shadow-md border-2 border-[var(--color-ccm-midnight)]/20 hover:bg-gray-50 hover:shadow-lg hover:border-[var(--color-ccm-midnight)]/30",
+        invert: "bg-background text-[var(--color-ccm-midnight)] shadow-md border-2 border-[var(--color-ccm-midnight)]/20 hover:bg-muted hover:shadow-lg hover:border-[var(--color-ccm-midnight)]/30",
         "light-invert": "bg-[var(--color-ccm-sky)] text-[var(--color-ccm-midnight)] shadow-sm hover:bg-[var(--color-ccm-sky)]/80",
         destructive: "bg-destructive text-destructive-foreground shadow-md hover:bg-destructive/90 hover:shadow-lg",
         outline: "border border-[var(--color-ccm-sea)] bg-transparent text-[var(--color-ccm-sea)] shadow-sm hover:bg-[var(--color-ccm-sea)]/10 hover:border-[var(--color-ccm-sea)]/80",

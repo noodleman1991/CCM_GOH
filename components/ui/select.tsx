@@ -6,17 +6,18 @@ import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { useStableId } from "@/lib/use-stable-id"
+import { useDirection } from "@/hooks/use-direction"
 
 function Select({
   id,
+  dir,
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Root> & {
   id?: string
 }) {
-  // Note: stableId is generated but not used on Root (Radix doesn't support id on Root)
-  // It's kept for consistency with the API but currently unused
   const stableId = useStableId('select', id)
-  return <SelectPrimitive.Root data-slot="select" {...props} />
+  const autoDir = useDirection()
+  return <SelectPrimitive.Root data-slot="select" dir={dir ?? autoDir} {...props} />
 }
 
 function SelectGroup({

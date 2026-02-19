@@ -242,11 +242,14 @@ export default function UnifiedOnboardingContainer() {
   }, [currentStep, validateCurrentStep])
 
   // Helper function to map Sanity IDs to enum keys
+  // Filters out IDs that have no matching key to prevent raw Sanity IDs from reaching the API
   const mapSanityToEnumKeys = (sanityIds: string[], sanityData: any[]): string[] => {
-    return sanityIds.map(id => {
-      const item = sanityData.find(d => d._id === id)
-      return item?.key || id // Fallback to ID if key not found
-    })
+    return sanityIds
+      .map(id => {
+        const item = sanityData.find(d => d._id === id)
+        return item?.key
+      })
+      .filter((key): key is string => !!key)
   }
 
   // Form submission
@@ -387,10 +390,10 @@ export default function UnifiedOnboardingContainer() {
             {/* Progress Header */}
             <div className="mb-8">
               <div className={cn("flex items-center justify-between mb-4", isRTL && "flex-row-reverse")}>
-                <h1 className="text-2xl font-bold text-gray-900">
+                <h1 className="text-2xl font-bold text-foreground">
                   {sanityContent?.title || t("title")}
                 </h1>
-                <div className="text-sm text-gray-600">
+                <div className="text-sm text-muted-foreground">
                   {currentStep + 1} / {steps.length}
                 </div>
               </div>
@@ -423,7 +426,7 @@ export default function UnifiedOnboardingContainer() {
                         ? "bg-primary text-primary-foreground"
                         : index < currentStep
                           ? "bg-green-100 text-green-700 hover:bg-green-200"
-                          : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+                          : "bg-muted text-gray-500 hover:bg-gray-200"
                     )}
                   >
                     {index < currentStep ? (
@@ -431,7 +434,7 @@ export default function UnifiedOnboardingContainer() {
                     ) : (
                       <div className={cn(
                         "w-4 h-4 rounded-full flex items-center justify-center text-xs flex-shrink-0",
-                        index === currentStep ? "bg-white text-primary" : "bg-gray-300"
+                        index === currentStep ? "bg-background text-primary" : "bg-gray-300"
                       )}>
                         {index + 1}
                       </div>

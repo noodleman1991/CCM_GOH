@@ -36,14 +36,14 @@ export default function Hero2({ background, tagLine, title, body, links, padding
     <SectionContainer background={background as any} padding={padding}>
       <div className="text-center">
       {localizedTagLine && (
-        <p className="text-base font-semibold font-sans animate-fade-up [animation-delay:100ms] opacity-0">
+        <p className="text-base font-semibold text-ccm-water uppercase tracking-wider animate-fade-up [animation-delay:100ms] opacity-0">
           {localizedTagLine}
         </p>
       )}
       {localizedTitle && (
-        <h2 className="mt-6 font-bold leading-[1.1] text-4xl md:text-5xl lg:text-6xl animate-fade-up [animation-delay:200ms] opacity-0">
+        <h1 className="mt-6 font-bold font-heading leading-[1.1] text-4xl md:text-5xl lg:text-6xl text-ccm-midnight animate-fade-up [animation-delay:200ms] opacity-0">
           {localizedTitle}
-        </h2>
+        </h1>
       )}
       {localizedBody && (
         <div className="text-lg mt-6 max-w-2xl mx-auto animate-fade-up [animation-delay:300ms] opacity-0">

@@ -29,7 +29,7 @@ interface DynamicContentBlockProps {
 const backgroundClasses = {
   none: "",
   "light-gray": "bg-gray-50",
-  "dark-gray": "bg-gray-100",
+  "dark-gray": "bg-muted",
   "brand-primary": "bg-primary/5",
   "brand-secondary": "bg-secondary/5",
 };
@@ -105,10 +105,10 @@ export function DynamicContentBlock({
       <section className={cn("w-full", bgClass, paddingClass)}>
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="text-center">
-            <h2 className="text-3xl font-bold tracking-tight text-gray-900 mb-4">
+            <h2 className="text-3xl font-bold tracking-tight text-foreground mb-4">
               {sectionTitle}
             </h2>
-            <p className="text-gray-600">No content available at this time.</p>
+            <p className="text-muted-foreground">No content available at this time.</p>
           </div>
         </div>
       </section>
@@ -119,11 +119,11 @@ export function DynamicContentBlock({
     <section className={cn("w-full", bgClass, paddingClass)}>
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold tracking-tight text-gray-900 mb-4">
+          <h2 className="text-3xl font-bold tracking-tight text-foreground mb-4">
             {sectionTitle}
           </h2>
           {sectionSubtitle && (
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               {sectionSubtitle}
             </p>
           )}
