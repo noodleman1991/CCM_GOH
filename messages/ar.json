@@ -73,6 +73,14 @@
   "errors": {
     "general": "حدث خطأ ما",
     "notFound": "الصفحة غير موجودة",
+    "pageNotFoundTitle": "هممم، لم نتمكن من العثور على هذه الصفحة.",
+    "pageNotFoundDescription": "تحقق من الرابط، أو <link>ارجع إلى الصفحة الرئيسية</link>.",
+    "errorTitle": "حدث خطأ ما",
+    "errorDescription": "حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى أو العودة إلى الصفحة الرئيسية.",
+    "tryAgain": "حاول مرة أخرى",
+    "goHome": "العودة للرئيسية",
+    "browseProfiles": "تصفح الملفات الشخصية",
+    "backToHome": "العودة للرئيسية",
     "profileNotFound": "الملف الشخصي الذي تبحث عنه غير موجود أو ربما تم حذفه.",
     "unauthorized": "تحتاج لتسجيل الدخول للوصول إلى هذه الصفحة",
     "forbidden": "ليس لديك إذن للوصول إلى هذه الصفحة",
@@ -1097,5 +1105,21 @@
       "location": "الموقع",
       "publishDate": "تاريخ النشر"
     }
+  },
+  "regional": {
+    "noLivedExperiences": "لا تتوفر تجارب حياتية بعد.",
+    "checkBackVoices": "تحقق لاحقاً لسماع أصوات المجتمع.",
+    "watchExperience": "شاهد التجربة",
+    "pleaseSignIn": "يرجى تسجيل الدخول للتحميل",
+    "membersOnly": "للأعضاء فقط",
+    "downloading": "جارٍ التحميل...",
+    "noFilesAvailable": "لا تتوفر ملفات",
+    "signInToDownload": "سجّل الدخول للتحميل",
+    "caseStudy": "دراسة حالة",
+    "featured": "مميز",
+    "studyPeriod": "فترة الدراسة: ",
+    "viewMore": "عرض المزيد",
+    "showLess": "عرض أقل",
+    "ourTeam": "فريقنا"
   }
 }

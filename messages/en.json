@@ -73,6 +73,14 @@
   "errors": {
     "general": "Something went wrong",
     "notFound": "Page not found",
+    "pageNotFoundTitle": "Hmm, we couldn't find that page.",
+    "pageNotFoundDescription": "Maybe check the URL, or <link>go back home</link>.",
+    "errorTitle": "Something went wrong",
+    "errorDescription": "An unexpected error occurred. Please try again or return to the homepage.",
+    "tryAgain": "Try again",
+    "goHome": "Go home",
+    "browseProfiles": "Browse Profiles",
+    "backToHome": "Back to Home",
     "profileNotFound": "The user profile you're looking for doesn't exist or may have been deleted.",
     "unauthorized": "You need to log in to access this page",
     "forbidden": "You don't have permission to access this page",
@@ -1124,5 +1132,21 @@
       "location": "Location",
       "publishDate": "Published"
     }
+  },
+  "regional": {
+    "noLivedExperiences": "No lived experiences available yet.",
+    "checkBackVoices": "Check back soon for community voices.",
+    "watchExperience": "Watch Experience",
+    "pleaseSignIn": "Please sign in to download",
+    "membersOnly": "Members only",
+    "downloading": "Downloading...",
+    "noFilesAvailable": "No files available",
+    "signInToDownload": "Sign in to download",
+    "caseStudy": "Case Study",
+    "featured": "Featured",
+    "studyPeriod": "Study Period: ",
+    "viewMore": "View More",
+    "showLess": "Show Less",
+    "ourTeam": "Our Team"
   }
 }

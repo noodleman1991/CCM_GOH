@@ -3,6 +3,7 @@ import Image from "next/image";
 import { urlFor } from "@/sanity/lib/image";
 import PortableText from "@/components/portable-text-renderer";
 import { fetchRegionalCommunityTeamMembers } from "@/sanity/queries/regional-community-team";
+import { getTranslations } from "next-intl/server";
 
 interface TeamMember {
   _id: string;
@@ -80,10 +81,11 @@ function isBlockProps(props: TeamGridProps): props is TeamGridBlockProps {
 }
 
 export default async function TeamGrid(props: TeamGridProps) {
+  const t = await getTranslations('regional');
   let members: TeamMember[] = [];
   let gridColumns = "grid-cols-4";
   let showTitle = true;
-  let title = "Our Team";
+  let title = "";
   let showDescription = false;
   let description: any = null;
   let displayRole = true;
@@ -97,7 +99,7 @@ export default async function TeamGrid(props: TeamGridProps) {
     mode = props.mode || 'manual';
     gridColumns = props.gridColumns || 'grid-cols-4';
     showTitle = props.showTitle ?? true;
-    title = props.title || 'Our Team';
+    title = props.title || t('ourTeam');
     showDescription = props.showDescription ?? false;
     description = props.description;
     displayRole = props.displayRole ?? true;
@@ -129,7 +131,7 @@ export default async function TeamGrid(props: TeamGridProps) {
     mode = teamGrid.mode || 'manual';
     gridColumns = teamGrid.gridColumns || 'grid-cols-4';
     showTitle = teamGrid.showTitle ?? true;
-    title = teamGrid.title || 'Our Team';
+    title = teamGrid.title || t('ourTeam');
     showDescription = teamGrid.showDescription ?? false;
     description = teamGrid.description;
     displayRole = teamGrid.displayRole ?? true;

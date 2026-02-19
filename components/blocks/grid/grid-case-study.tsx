@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
@@ -60,6 +61,7 @@ export default function GridCaseStudyComponent({
                                                    disableModal = false,
                                                }: GridCaseStudyComponentProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const t = useTranslations('regional');
 
     if (!caseStudy) return null;
 
@@ -97,33 +99,15 @@ export default function GridCaseStudyComponent({
     };
 
     const getCaseStudyTypeText = () => {
-        const typeTexts = {
-            en: 'Case Study',
-            es: 'Caso de Estudio',
-            fr: 'Étude de Cas',
-            ar: 'دراسة حالة'
-        };
-        return typeTexts[supportedLocale] || 'Case Study';
+        return t('caseStudy');
     };
 
     const getFeaturedText = () => {
-        const featuredTexts = {
-            en: 'Featured',
-            es: 'Destacado',
-            fr: 'En vedette',
-            ar: 'مميز'
-        };
-        return featuredTexts[supportedLocale] || 'Featured';
+        return t('featured');
     };
 
     const getStudyPeriodText = () => {
-        const periodTexts = {
-            en: 'Study Period: ',
-            es: 'Período de Estudio: ',
-            fr: 'Période d\'Étude: ',
-            ar: 'فترة الدراسة: '
-        };
-        return periodTexts[supportedLocale] || 'Study Period: ';
+        return t('studyPeriod');
     };
 
     return (
@@ -142,7 +126,7 @@ export default function GridCaseStudyComponent({
                     <div className="text-center text-white p-4">
                         <Lock className="h-8 w-8 mx-auto mb-2" />
                         <p className="text-sm font-medium">
-                            {caseStudy.status === 'pending' ? 'Please sign in to download' : 'Members only'}
+                            {caseStudy.status === 'pending' ? t('pleaseSignIn') : t('membersOnly')}
                         </p>
                     </div>
                 </div>
@@ -160,7 +144,7 @@ export default function GridCaseStudyComponent({
                     />
 
                     {/* Case study type badge */}
-                    <div className="absolute top-3 left-3">
+                    <div className="absolute top-3 start-3">
                         <Badge variant="secondary" className="bg-white/90 text-black">
                             {getCaseStudyTypeText()}
                         </Badge>
@@ -168,7 +152,7 @@ export default function GridCaseStudyComponent({
 
                     {/* Featured badge */}
                     {caseStudy.featured && (
-                        <div className="absolute top-3 right-3">
+                        <div className="absolute top-3 end-3">
                             <Badge className="bg-yellow-500 text-black">
                                 ⭐ {getFeaturedText()}
                             </Badge>

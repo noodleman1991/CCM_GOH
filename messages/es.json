@@ -73,6 +73,14 @@
   "errors": {
     "general": "Algo salió mal",
     "notFound": "Página no encontrada",
+    "pageNotFoundTitle": "Hmm, no pudimos encontrar esa página.",
+    "pageNotFoundDescription": "Tal vez revisa la URL o <link>vuelve al inicio</link>.",
+    "errorTitle": "Algo salió mal",
+    "errorDescription": "Ocurrió un error inesperado. Intenta de nuevo o vuelve a la página de inicio.",
+    "tryAgain": "Intentar de nuevo",
+    "goHome": "Ir al inicio",
+    "browseProfiles": "Explorar Perfiles",
+    "backToHome": "Volver al Inicio",
     "profileNotFound": "El perfil de usuario que buscas no existe o puede haber sido eliminado.",
     "unauthorized": "Necesitas iniciar sesión para acceder a esta página",
     "forbidden": "No tienes permisos para acceder a esta página",
@@ -1097,5 +1105,21 @@
       "location": "Ubicación",
       "publishDate": "Publicado"
     }
+  },
+  "regional": {
+    "noLivedExperiences": "Aún no hay experiencias vividas disponibles.",
+    "checkBackVoices": "Vuelve pronto para conocer las voces de la comunidad.",
+    "watchExperience": "Ver Experiencia",
+    "pleaseSignIn": "Inicia sesión para descargar",
+    "membersOnly": "Solo miembros",
+    "downloading": "Descargando...",
+    "noFilesAvailable": "No hay archivos disponibles",
+    "signInToDownload": "Inicia sesión para descargar",
+    "caseStudy": "Estudio de Caso",
+    "featured": "Destacado",
+    "studyPeriod": "Período de estudio: ",
+    "viewMore": "Ver Más",
+    "showLess": "Ver Menos",
+    "ourTeam": "Nuestro Equipo"
   }
 }

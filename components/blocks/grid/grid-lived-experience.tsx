@@ -1,4 +1,7 @@
+"use client";
+
 import React from 'react';
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
@@ -126,6 +129,7 @@ export default function GridLivedExperienceComponent({
                                                     }: GridLivedExperienceProps) {
     if (!livedExperience) return null;
 
+    const t = useTranslations('regional');
     const aspectRatioClass = cardVariant === "wide" ? "aspect-video" : "aspect-[3/2]";
 
     const supportedLocale = locale as 'en' | 'es' | 'fr' | 'ar';
@@ -199,12 +203,12 @@ export default function GridLivedExperienceComponent({
                     {/* Play button overlay */}
                     <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                         <div className="bg-white/90 rounded-full p-4">
-                            <Play className="h-8 w-8 text-black fill-black ml-1" />
+                            <Play className="h-8 w-8 text-black fill-black ms-1" />
                         </div>
                     </div>
 
                     {/* Experience type badge */}
-                    <div className="absolute top-3 left-3">
+                    <div className="absolute top-3 start-3">
                         <Badge variant="secondary" className="bg-white/90 text-black">
                             {getExperienceTypeText()}
                         </Badge>
@@ -212,7 +216,7 @@ export default function GridLivedExperienceComponent({
 
                     {/* Duration badge */}
                     {livedExperience.duration && (
-                        <div className="absolute top-3 right-3">
+                        <div className="absolute top-3 end-3">
                             <Badge variant="outline" className="bg-black/70 text-white border-white/20">
                                 <Clock className="h-3 w-3 mr-1" />
                                 {livedExperience.duration}
@@ -222,7 +226,7 @@ export default function GridLivedExperienceComponent({
 
                     {/* Featured badge */}
                     {livedExperience.featured && (
-                        <div className="absolute bottom-3 right-3">
+                        <div className="absolute bottom-3 end-3">
                             <Badge className="bg-yellow-500 text-black">
                                 ⭐ {getFeaturedText()}
                             </Badge>
@@ -321,7 +325,7 @@ export default function GridLivedExperienceComponent({
                     rel="noopener noreferrer"
                     className="w-full text-center text-sm text-primary hover:underline"
                 >
-                    Watch Experience
+                    {t('watchExperience')}
                 </a>
             </CardFooter>
         </Card>

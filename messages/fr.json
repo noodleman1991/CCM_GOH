@@ -73,6 +73,14 @@
   "errors": {
     "general": "Quelque chose a mal tourné",
     "notFound": "Page non trouvée",
+    "pageNotFoundTitle": "Hmm, nous n'avons pas trouvé cette page.",
+    "pageNotFoundDescription": "Vérifie peut-être l'adresse, ou <link>retourne à l'accueil</link>.",
+    "errorTitle": "Quelque chose a mal tourné",
+    "errorDescription": "Une erreur inattendue s'est produite. Veuillez réessayer ou retourner à la page d'accueil.",
+    "tryAgain": "Réessayer",
+    "goHome": "Retour à l'accueil",
+    "browseProfiles": "Parcourir les Profils",
+    "backToHome": "Retour à l'Accueil",
     "profileNotFound": "Le profil utilisateur que vous recherchez n'existe pas ou a peut-être été supprimé.",
     "unauthorized": "Vous devez vous connecter pour accéder à cette page",
     "forbidden": "Vous n'avez pas la permission d'accéder à cette page",
@@ -1097,5 +1105,21 @@
       "location": "Emplacement",
       "publishDate": "Publié"
     }
+  },
+  "regional": {
+    "noLivedExperiences": "Aucune expérience vécue disponible pour le moment.",
+    "checkBackVoices": "Revenez bientôt pour découvrir les voix de la communauté.",
+    "watchExperience": "Voir l'Expérience",
+    "pleaseSignIn": "Connectez-vous pour télécharger",
+    "membersOnly": "Réservé aux membres",
+    "downloading": "Téléchargement...",
+    "noFilesAvailable": "Aucun fichier disponible",
+    "signInToDownload": "Connectez-vous pour télécharger",
+    "caseStudy": "Étude de Cas",
+    "featured": "En vedette",
+    "studyPeriod": "Période d'étude : ",
+    "viewMore": "Voir Plus",
+    "showLess": "Voir Moins",
+    "ourTeam": "Notre Équipe"
   }
 }
