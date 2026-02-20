@@ -180,41 +180,19 @@ async function handleUserCreated(event: UserCreatedEvent): Promise<any> {
                     console.log(`✅ User ${id} already exists with same email, skipping creation`)
                     return { action: 'skipped', reason: 'user_already_exists', userId: id }
                 } else {
-                    // Different Clerk ID with same email - user re-registered
-                    console.warn(`⚠️ Webhook: Email conflict - New Clerk ID ${id} vs existing user ${existingUserByEmail.id}`)
-                    console.log(`🗑️ Webhook: Deleting old user ${existingUserByEmail.id}, creating new ${id}`)
+                    // Different Clerk ID with same email - log conflict for manual resolution
+                    // Do NOT auto-delete: would destroy community memberships, recent work, download history
+                    console.error(`🚨 EMAIL CONFLICT: New Clerk user ${id} has email ${emailAddress} which belongs to existing user ${existingUserByEmail.id}`)
+                    console.error(`   Action required: Manually resolve this conflict`)
+                    console.error(`   Old user ID: ${existingUserByEmail.id}, New Clerk ID: ${id}`)
 
-                    // Delete old user and create new one with new Clerk ID
-                    await prisma.user.delete({ where: { id: existingUserByEmail.id } })
-
-                    // Retry user creation with same data
-                    const user = await prisma.user.create({
-                        data: {
-                            id,
-                            email: getPrimaryEmail(email_addresses),
-                            firstName: first_name,
-                            lastName: last_name,
-                            username: username,
-                            image: profileImage,
-                            emailVerified: email_addresses.some(email => email.verification?.status === 'verified')
-                                ? new Date()
-                                : null,
-                            phoneNumber: phoneData.phone,
-                            phoneVerified: phoneData.verified ? new Date() : null,
-                            workTypes: [],
-                            expertiseAreas: [],
-                            isSearchable: true,
-                            profileVisibility: 'PUBLIC',
-                            showEmail: false,
-                            showPhoneNumber: false,
-                            showWorkDetails: true,
-                            showSocialLinks: true,
-                            showLocation: true,
-                        }
-                    })
-
-                    console.log(`✅ Webhook: Created user ${user.id} after cleanup`)
-                    return { action: 'created_after_cleanup', userId: user.id }
+                    return {
+                        action: 'conflict_detected',
+                        reason: 'email_conflict',
+                        existingUserId: existingUserByEmail.id,
+                        newClerkId: id,
+                        email: emailAddress
+                    }
                 }
             } else {
                 // Email constraint failed but we can't find the user - log and rethrow
@@ -382,7 +360,15 @@ export async function POST(req: Request) {
         }
 
         const payload = await req.text()
-        const wh = new Webhook(process.env.CLERK_WEBHOOK_SECRET!)
+        const webhookSecret = process.env.CLERK_WEBHOOK_SECRET
+        if (!webhookSecret) {
+            console.error('CLERK_WEBHOOK_SECRET is not configured')
+            return NextResponse.json(
+                { error: 'Webhook secret not configured' },
+                { status: 500 }
+            )
+        }
+        const wh = new Webhook(webhookSecret)
 
         let evt: ClerkWebhookEvent
         try {
