@@ -5,5 +5,4 @@ import { token } from "./token";
 export const { sanityFetch, SanityLive } = defineLive({
   client,
   serverToken: token,
-  browserToken: token,
 });
