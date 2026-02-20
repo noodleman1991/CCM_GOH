@@ -27,30 +27,8 @@ export class ClerkSyncService {
         lastName: userData.lastName || undefined,
         username: userData.username || undefined,
         publicMetadata: {
-          // App-managed profile data
-          bio: userData.bio,
-          ageGroup: userData.ageGroup,
-          country: userData.country,
-          city: userData.city,
-          workTypes: userData.workTypes,
-          expertiseAreas: userData.expertiseAreas,
-          organization: userData.organization,
-          position: userData.position,
-          workBio: userData.workBio,
-          personalWebsite: userData.personalWebsite,
-          linkedinProfile: userData.linkedinProfile,
-          otherSocialLinks: userData.otherSocialLinks || [],
-          
-          // Privacy settings
-          isSearchable: userData.isSearchable,
-          profileVisibility: userData.profileVisibility,
-          showEmail: userData.showEmail,
-          showPhoneNumber: userData.showPhoneNumber,
-          showWorkDetails: userData.showWorkDetails,
-          showSocialLinks: userData.showSocialLinks,
-          showLocation: userData.showLocation,
-          
-          // Sync timestamp
+          onboardingCompleted: (userData as any).onboardingCompleted,
+          preferredLanguage: (userData as any).preferredLanguage,
           lastSyncedAt: new Date().toISOString(),
           syncedFrom: 'prisma'
         }

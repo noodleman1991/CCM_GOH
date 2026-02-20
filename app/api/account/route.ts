@@ -78,8 +78,26 @@ export async function PUT(request: NextRequest) {
             { status: 400 }
           )
         }
-        
-        // Clerk handles password changes through their API
+        if (!currentPassword) {
+          return NextResponse.json(
+            { error: "Current password is required to change password" },
+            { status: 400 }
+          )
+        }
+
+        // Verify current password before allowing change
+        try {
+          await clerkClientInstance.users.verifyPassword({
+            userId,
+            password: currentPassword,
+          })
+        } catch {
+          return NextResponse.json(
+            { error: "Current password is incorrect" },
+            { status: 403 }
+          )
+        }
+
         await clerkClientInstance.users.updateUser(userId, {
           password: newPassword
         })

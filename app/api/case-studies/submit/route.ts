@@ -3,6 +3,9 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 import { createClient } from "@sanity/client";
 import { v4 as uuidv4 } from "uuid";
 
+const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
+const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp']
+
 const sanityClient = createClient({
     projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
     dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
@@ -159,9 +162,27 @@ export async function POST(request: NextRequest) {
 
         // Handle image upload if provided
         if (imageFile) {
+            if (imageFile.size > MAX_FILE_SIZE) {
+                return NextResponse.json(
+                    { error: "File too large. Maximum size is 5MB." },
+                    { status: 400 }
+                );
+            }
+
+            if (!ALLOWED_IMAGE_TYPES.includes(imageFile.type)) {
+                return NextResponse.json(
+                    { error: "Invalid file type. Allowed: JPEG, PNG, WebP" },
+                    { status: 400 }
+                );
+            }
+
+            const sanitizedFilename = imageFile.name
+                .replace(/[^a-zA-Z0-9._-]/g, '_')
+                .substring(0, 255);
+
             const buffer = await imageFile.arrayBuffer();
             const asset = await sanityClient.assets.upload("image", Buffer.from(buffer), {
-                filename: imageFile.name,
+                filename: sanitizedFilename,
             });
 
             caseStudyDoc.image = {
