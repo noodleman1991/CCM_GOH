@@ -19,12 +19,16 @@ interface SanityWebhookPayload {
   [key: string]: any
 }
 
-// Verify webhook signature (if configured)
+// Verify webhook signature
 async function verifySignature(payload: string, signature: string | null) {
-  // Only verify if webhook secret is configured
   const webhookSecret = process.env.SANITY_WEBHOOK_SECRET
-  if (!webhookSecret || !signature) {
-    return true // Skip verification if not configured
+  if (!webhookSecret) {
+    console.warn('SANITY_WEBHOOK_SECRET not configured — rejecting webhook')
+    return false
+  }
+  if (!signature) {
+    console.warn('Sanity webhook received without signature header')
+    return false
   }
 
   try {

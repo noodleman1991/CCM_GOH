@@ -7,7 +7,7 @@ if (typeof window === 'undefined' && !process.env.VERCEL) {
 
 // Ensure environment variables are available for Next.js client-side
 const ALGOLIA_APP_ID = process.env.ALGOLIA_APP_ID || process.env.NEXT_PUBLIC_ALGOLIA_APP_ID
-const ALGOLIA_API_KEY = process.env.ALGOLIA_API_KEY || process.env.NEXT_PUBLIC_ALGOLIA_API_KEY
+const ALGOLIA_API_KEY = process.env.ALGOLIA_API_KEY
 const ALGOLIA_SEARCH_KEY = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY
 
 // Environment validation
