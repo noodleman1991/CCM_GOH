@@ -2,9 +2,17 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { algoliaClient, ALGOLIA_INDICES, transformUserForIndex, shouldIndexUser } from '@/lib/algolia'
 
+const SEARCH_WEBHOOK_SECRET = process.env.SEARCH_WEBHOOK_SECRET
+
 // This webhook will be called whenever user data changes
 // It can be triggered from profile updates, Clerk webhooks, etc.
 export async function POST(request: NextRequest) {
+  // Verify internal webhook secret
+  const authHeader = request.headers.get('authorization')
+  if (!SEARCH_WEBHOOK_SECRET || authHeader !== `Bearer ${SEARCH_WEBHOOK_SECRET}`) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
   try {
     const body = await request.json()
     const { userId, action = 'update' } = body

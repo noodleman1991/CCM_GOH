@@ -155,7 +155,10 @@ async function handleUserCreated(event: UserCreatedEvent): Promise<any> {
         // Trigger Algolia sync (fire and forget)
         fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/search/users/webhook`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${process.env.SEARCH_WEBHOOK_SECRET}`
+            },
             body: JSON.stringify({ userId: user.id, action: 'update' })
         }).catch((error) => {
             console.warn(`Algolia sync failed for new user ${user.id}:`, error)
@@ -266,7 +269,10 @@ async function handleUserUpdated(event: UserUpdatedEvent) {
         // Trigger Algolia sync (fire and forget)
         fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/search/users/webhook`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${process.env.SEARCH_WEBHOOK_SECRET}`
+            },
             body: JSON.stringify({ userId: user.id, action: 'update' })
         }).catch((error) => {
             console.warn(`Algolia sync failed for updated user ${user.id}:`, error)
@@ -302,7 +308,10 @@ async function handleUserDeleted(event: UserDeletedEvent) {
         // Trigger Algolia sync to remove from index (fire and forget)
         fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/search/users/webhook`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${process.env.SEARCH_WEBHOOK_SECRET}`
+            },
             body: JSON.stringify({ userId: id, action: 'delete' })
         }).catch((error) => {
             console.warn(`Algolia sync failed for deleted user ${id}:`, error)

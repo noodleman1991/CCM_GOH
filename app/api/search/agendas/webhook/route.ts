@@ -2,8 +2,16 @@ import { NextRequest, NextResponse } from 'next/server'
 import { algoliaClient, ALGOLIA_INDICES, AgendaSearchRecord } from '@/lib/algolia'
 import { sanityFetch } from '@/sanity/lib/live'
 
+const SEARCH_WEBHOOK_SECRET = process.env.SEARCH_WEBHOOK_SECRET
+
 // This webhook will be called when agenda data changes in Sanity
 export async function POST(request: NextRequest) {
+  // Verify internal webhook secret
+  const authHeader = request.headers.get('authorization')
+  if (!SEARCH_WEBHOOK_SECRET || authHeader !== `Bearer ${SEARCH_WEBHOOK_SECRET}`) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
   try {
     const body = await request.json()
     const { _id, action = 'update', _type } = body
