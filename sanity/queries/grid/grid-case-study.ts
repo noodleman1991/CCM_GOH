@@ -284,27 +284,34 @@ export const searchCaseStudies = async ({
                                             tags,
                                             limit = 20,
                                         }: CaseStudySearchParams): Promise<CaseStudy[]> => {
+    // Validate locale against whitelist to prevent injection via field name interpolation
+    const validLocales: SupportedLanguage[] = ['en', 'es', 'fr', 'ar'];
+    const safeLocale = validLocales.includes(locale as SupportedLanguage) ? locale : 'en';
+
     let filters = [`_type == "caseStudy"`, `status == "approved"`];
+    const params: Record<string, unknown> = { limit };
 
     if (searchTerm) {
         filters.push(`(
-      title.${locale} match "${searchTerm}*" ||
-      title.en match "${searchTerm}*" ||
-      excerpt.${locale} match "${searchTerm}*" ||
-      excerpt.en match "${searchTerm}*"
+      title.${safeLocale} match $searchPattern ||
+      title.en match $searchPattern ||
+      excerpt.${safeLocale} match $searchPattern ||
+      excerpt.en match $searchPattern
     )`);
+        params.searchPattern = `${searchTerm}*`;
     }
 
+    // Uses $tags array parameter to prevent GROQ injection
     if (tags && tags.length > 0) {
-        const tagFilters = tags.map(tag => `"${tag}" in tags[]->value.current`);
-        filters.push(`(${tagFilters.join(' || ')})`);
+        filters.push(`count((tags[]->value.current)[@ in $tags]) > 0`);
+        params.tags = tags;
     }
 
     const { data } = await sanityFetch({
         query: `*[${filters.join(' && ')}] | order(featured desc, publishedAt desc)[0...$limit]{
       ${CASE_STUDY_PROJECTION_FRAGMENT}
     }`,
-        params: { limit },
+        params,
         perspective: "published",
         stega: false,
     });
