@@ -1,5 +1,6 @@
 import { prisma, safeQuery, createLocalizedQuery } from '@/lib/prisma'
 import { getLocalizedValue, isRTL } from '@/i18n/i18n-helpers'
+import { redactUser } from './user-redaction'
 import type {
   UserWithProfile,
   LocalizedUser,
@@ -165,12 +166,14 @@ export class UserService {
       ])
 
       // Transform users to localized format
-      const localizedUsers = users.map(user => 
+      const localizedUsers = users.map(user =>
         this.transformToLocalizedUser(user, localizedQuery)
       )
+      // Apply privacy redaction to each user for external viewing
+      const redactedUsers = localizedUsers.map(user => redactUser(user, null))
 
       return {
-        data: localizedUsers,
+        data: redactedUsers,
         total,
         page,
         pageSize,
@@ -305,8 +308,8 @@ export class UserService {
   /**
    * Get user for profile viewing with privacy enforcement
    * Implements two-layer privacy:
-   * - Layer 1: Query-level filtering (profile visibility)
-   * - Layer 2: Field-level redaction (specific field privacy)
+   * - Layer 1: Profile-level visibility (post-fetch check)
+   * - Layer 2: Field-level redaction (specific field privacy via redactUser)
    */
   static async getUserForProfile(
     identifier: string,  // username or userId
@@ -316,9 +319,8 @@ export class UserService {
     const localizedQuery = createLocalizedQuery(options)
 
     return safeQuery(async () => {
-      const isOwnProfile = identifier === viewerId
-
-      // Build where clause with privacy filtering
+      // Fetch user by ID or username - don't filter by privacy yet
+      // We need the full user to check if it's their own profile
       const where: Prisma.UserWhereInput = {
         OR: [
           { id: identifier },
@@ -326,20 +328,6 @@ export class UserService {
         ]
       }
 
-      // Layer 1: Profile-level privacy (query filtering)
-      // Don't fetch users with private profiles unless it's the owner viewing
-      if (!isOwnProfile) {
-        where.AND = [
-          { isSearchable: true },
-          {
-            profileVisibility: viewerId
-              ? { in: ['PUBLIC', 'MEMBERS'] }  // Authenticated user can see PUBLIC and MEMBERS
-              : 'PUBLIC'                        // Anonymous user can only see PUBLIC
-          }
-        ]
-      }
-
-      // Fetch user with all necessary relations
       const user = await prisma.user.findFirst({
         where,
         include: {
@@ -357,29 +345,29 @@ export class UserService {
 
       if (!user) return null
 
-      // Layer 2: Field-level redaction (happens in memory, very fast)
-      // Redact sensitive fields based on privacy settings BEFORE sending to client
-      const redactedUser = {
-        ...user,
-        // Redact email if privacy setting disables it (unless own profile)
-        email: (isOwnProfile || user.showEmail) ? user.email : null,
-        // Redact phone number if privacy setting disables it (unless own profile)
-        phoneNumber: (isOwnProfile || user.showPhoneNumber) ? user.phoneNumber : null,
-        // Redact location if privacy setting disables it (unless own profile)
-        city: (isOwnProfile || user.showLocation) ? user.city : null,
-        country: (isOwnProfile || user.showLocation) ? user.country : null,
-        // Redact work details if privacy setting disables it (unless own profile)
-        organization: (isOwnProfile || user.showWorkDetails) ? user.organization : null,
-        position: (isOwnProfile || user.showWorkDetails) ? user.position : null,
-        workBio: (isOwnProfile || user.showWorkDetails) ? user.workBio : null,
-        // Redact social links if privacy setting disables it (unless own profile)
-        personalWebsite: (isOwnProfile || user.showSocialLinks) ? user.personalWebsite : null,
-        linkedinProfile: (isOwnProfile || user.showSocialLinks) ? user.linkedinProfile : null,
-        otherSocialLinks: (isOwnProfile || user.showSocialLinks) ? user.otherSocialLinks : []
+      // Now check ownership — identifier may be a username, so compare against fetched user.id
+      const isOwnProfile = viewerId !== null && user.id === viewerId
+
+      // Layer 1: Profile-level privacy (post-fetch check)
+      if (!isOwnProfile) {
+        // Check if user allows viewing
+        if (!user.isSearchable) return null
+        if (viewerId) {
+          // Authenticated viewer: can see PUBLIC and MEMBERS
+          if (!['PUBLIC', 'MEMBERS'].includes(user.profileVisibility)) return null
+        } else {
+          // Anonymous viewer: can only see PUBLIC
+          if (user.profileVisibility !== 'PUBLIC') return null
+        }
       }
 
-      // Transform to localized format with redacted data
-      return this.transformToLocalizedUser(redactedUser, localizedQuery)
+      // Layer 2: Field-level redaction (only if NOT own profile)
+      if (isOwnProfile) {
+        return this.transformToLocalizedUser(user, localizedQuery)
+      }
+
+      const redacted = redactUser(user, viewerId)
+      return this.transformToLocalizedUser(redacted, localizedQuery)
     })
   }
 
@@ -684,9 +672,11 @@ export class UserService {
       const localizedUsers = users.map(user =>
         this.transformToLocalizedUser(user, localizedQuery)
       )
+      // Apply privacy redaction to each user for external viewing
+      const redactedUsers = localizedUsers.map(user => redactUser(user, null))
 
       return {
-        data: localizedUsers,
+        data: redactedUsers,
         total,
         page,
         pageSize,

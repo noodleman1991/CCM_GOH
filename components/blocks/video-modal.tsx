@@ -64,6 +64,24 @@ interface VideoModalProps {
   locale: string;
 }
 
+const ALLOWED_EMBED_DOMAINS = [
+  'www.youtube.com',
+  'youtube.com',
+  'www.youtube-nocookie.com',
+  'youtu.be',
+  'player.vimeo.com',
+  'vimeo.com',
+]
+
+function isAllowedEmbedUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url)
+    return ALLOWED_EMBED_DOMAINS.includes(parsed.hostname)
+  } catch {
+    return false
+  }
+}
+
 function getEmbedUrl(url: string): string {
   // YouTube embed handling
   if (url.includes("youtube.com") || url.includes("youtu.be")) {
@@ -123,6 +141,7 @@ export function VideoModal({
     : null;
 
   const embedUrl = getEmbedUrl(url);
+  const isAllowed = url ? isAllowedEmbedUrl(url) : false;
 
   const formatDate = (dateString?: string) => {
     if (!dateString) return "";
@@ -173,13 +192,19 @@ export function VideoModal({
 
         {/* Video Container */}
         <div className="relative aspect-video w-full overflow-hidden rounded-t-lg bg-black">
-          <iframe
-            src={embedUrl}
-            title={displayTitle || "Video player"}
-            className="absolute inset-0 h-full w-full"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          />
+          {isAllowed ? (
+            <iframe
+              src={embedUrl}
+              title={displayTitle || "Video player"}
+              className="absolute inset-0 h-full w-full"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center text-white">
+              <p>{t("videoUnavailable")}</p>
+            </div>
+          )}
         </div>
 
         {/* Content Section - Only show if experience data is available */}
