@@ -7,7 +7,7 @@
  * Respects privacy settings and supports RTL
  */
 
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import { useTranslations, useLocale } from 'next-intl'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Card, CardContent } from '@/components/ui/card'
@@ -93,7 +93,7 @@ export function CollaborateUserCard({ user, className }: CollaborateUserCardProp
   }
 
   return (
-    <Link href={`/${locale}/profiles/${user.username}`}>
+    <Link href={`/profiles/${user.username}`}>
       <Card className={cn(
         'h-full hover:shadow-lg transition-shadow cursor-pointer',
         'border-2 hover:border-primary/50',

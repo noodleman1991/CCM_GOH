@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import { Suspense } from 'react'
 import { getTranslations } from 'next-intl/server'
 import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
@@ -156,35 +157,70 @@ export default async function CollaboratePage({ params, searchParams }: Collabor
     }
 
     return (
-      <CollaboratePageClient
-        initialCommunityUsers={communityUsersMap}
-        communities={sortedCommunities}
-        userCommunityIds={userCommunityIds}
-        locale={locale}
-        initialSearch={search}
-        initialFilters={{
-          workTypes: workTypesFilter,
-          expertiseAreas: expertiseFilter,
-          communities: communitiesFilter
-        }}
-      />
+      <Suspense fallback={<CollaborateSkeleton />}>
+        <CollaboratePageClient
+          initialCommunityUsers={communityUsersMap}
+          communities={sortedCommunities}
+          userCommunityIds={userCommunityIds}
+          locale={locale}
+          initialSearch={search}
+          initialFilters={{
+            workTypes: workTypesFilter,
+            expertiseAreas: expertiseFilter,
+            communities: communitiesFilter
+          }}
+        />
+      </Suspense>
     )
   } catch (error) {
     console.error('Collaborate page data fetch error:', error)
     // Return a minimal page with empty data so the client can still render
     return (
-      <CollaboratePageClient
-        initialCommunityUsers={{}}
-        communities={[]}
-        userCommunityIds={[]}
-        locale={locale}
-        initialSearch={search}
-        initialFilters={{
-          workTypes: [],
-          expertiseAreas: [],
-          communities: []
-        }}
-      />
+      <Suspense fallback={<CollaborateSkeleton />}>
+        <CollaboratePageClient
+          initialCommunityUsers={{}}
+          communities={[]}
+          userCommunityIds={[]}
+          locale={locale}
+          initialSearch={search}
+          initialFilters={{
+            workTypes: [],
+            expertiseAreas: [],
+            communities: []
+          }}
+        />
+      </Suspense>
     )
   }
+}
+
+function CollaborateSkeleton() {
+  return (
+    <div className="container mx-auto py-8 px-4">
+      <div className="mb-8">
+        <div className="h-8 w-48 bg-muted animate-pulse rounded" />
+        <div className="h-4 w-72 bg-muted animate-pulse rounded mt-2" />
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <aside className="lg:col-span-1">
+          <div className="h-64 bg-muted animate-pulse rounded" />
+        </aside>
+        <main className="lg:col-span-3">
+          <div className="h-10 bg-muted animate-pulse rounded mb-6" />
+          <div className="space-y-8">
+            {[1, 2, 3].map(i => (
+              <div key={i} className="space-y-4">
+                <div className="h-6 w-40 bg-muted animate-pulse rounded" />
+                <div className="flex gap-4">
+                  {[1, 2, 3].map(j => (
+                    <div key={j} className="h-48 w-80 bg-muted animate-pulse rounded flex-shrink-0" />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </main>
+      </div>
+    </div>
+  )
 }
