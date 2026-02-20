@@ -1,6 +1,5 @@
 # Comprehensive Code Review & Improvement — Implementation Plan
 
-> **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
 **Goal:** Fix all security vulnerabilities, enforce privacy, remove dead code, fix broken features, improve performance, re-enable user search, and add GDPR cookie consent across the Connecting Climate Minds Hub.
 
