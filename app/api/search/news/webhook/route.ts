@@ -4,6 +4,7 @@ import { algoliaClient, ALGOLIA_INDICES, NewsSearchRecord } from '@/lib/algolia'
 import { sanityFetch } from '@/sanity/lib/live'
 
 const secret = process.env.SANITY_WEBHOOK_SECRET
+const SEARCH_WEBHOOK_SECRET = process.env.SEARCH_WEBHOOK_SECRET
 
 /**
  * Transform news post for Algolia indexing
@@ -60,19 +61,29 @@ function transformNewsForIndex(newsPost: any): NewsSearchRecord | null {
  */
 export async function POST(request: NextRequest) {
   try {
-    // Verify webhook signature for security
+    // Check for internal Bearer token auth first
+    const authHeader = request.headers.get('authorization')
+    const hasValidBearerToken = SEARCH_WEBHOOK_SECRET && authHeader === `Bearer ${SEARCH_WEBHOOK_SECRET}`
+
+    // Verify webhook signature for security (Sanity webhook or Bearer token)
     const signature = request.headers.get(SIGNATURE_HEADER_NAME)
     const body = await request.text()
 
-    if (secret && signature) {
-      const validSignature = isValidSignature(body, signature, secret)
-      if (!validSignature) {
-        console.warn('Invalid webhook signature')
-        return NextResponse.json({ error: 'Invalid signature' }, { status: 401 })
+    if (!hasValidBearerToken) {
+      // Fall back to Sanity signature verification
+      if (secret && signature) {
+        const validSignature = isValidSignature(body, signature, secret)
+        if (!validSignature) {
+          console.warn('Invalid webhook signature')
+          return NextResponse.json({ error: 'Invalid signature' }, { status: 401 })
+        }
+      } else if (secret) {
+        console.warn('Missing webhook signature')
+        return NextResponse.json({ error: 'Missing signature' }, { status: 401 })
+      } else {
+        // No Sanity secret configured and no Bearer token - reject
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
       }
-    } else if (secret) {
-      console.warn('Missing webhook signature')
-      return NextResponse.json({ error: 'Missing signature' }, { status: 401 })
     }
 
     // Parse the webhook payload
