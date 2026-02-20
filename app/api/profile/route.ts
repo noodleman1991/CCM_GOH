@@ -474,7 +474,10 @@ export async function PUT(request: NextRequest) {
         // STEP 3: Update search index (fire and forget)
         fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/search/users/webhook`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${process.env.SEARCH_WEBHOOK_SECRET}`
+            },
             body: JSON.stringify({ userId, action: 'update' })
         }).catch((error) => {
             console.warn(`Search index update failed for user ${userId}:`, error)
