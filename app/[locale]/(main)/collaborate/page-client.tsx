@@ -6,9 +6,9 @@
  * Full i18n and RTL support
  */
 
-import { useState, useEffect, useMemo } from 'react'
-import { useTranslations, useLocale } from 'next-intl'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useState, useMemo } from 'react'
+import { useTranslations } from 'next-intl'
+import { useRouter } from '@/i18n/navigation'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -76,7 +76,6 @@ export function CollaboratePageClient({
   const tNav = useTranslations('navigation')
   const tCommon = useTranslations('common')
   const router = useRouter()
-  const searchParams = useSearchParams()
   const isRTL = locale === 'ar'
 
   // Get all community IDs (UUIDs) for filter initialization
@@ -186,7 +185,7 @@ export function CollaboratePageClient({
       expertiseAreas: [...ALL_EXPERTISE_AREAS]
     })
     // Navigate to clean URL (no params) - will trigger server re-render with all data
-    router.push(`/${locale}/collaborate`)
+    router.push('/collaborate')
   }
 
   return (
