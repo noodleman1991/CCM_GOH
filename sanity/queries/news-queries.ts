@@ -110,36 +110,41 @@ export async function fetchRegularNews(filters?: {
     'publishedAt <= now()',
     '(!defined(featured) || featured == false)', // Exclude featured from regular grid
   ];
+  const params: Record<string, unknown> = {};
 
-  // Add filter conditions
+  // Add filter conditions using parameterized values to prevent GROQ injection
   if (filters?.tag) {
-    conditions.push(`"${filters.tag}" in tags[]->value.current`);
+    conditions.push(`$filterTag in tags[]->value.current`);
+    params.filterTag = filters.tag;
   }
 
   if (filters?.community) {
-    conditions.push(`relatedCommunity->slug.current == "${filters.community}"`);
+    conditions.push(`relatedCommunity->slug.current == $filterCommunity`);
+    params.filterCommunity = filters.community;
   }
 
   if (filters?.dateFrom) {
-    conditions.push(`publishedAt >= "${filters.dateFrom}"`);
+    conditions.push(`publishedAt >= $filterDateFrom`);
+    params.filterDateFrom = filters.dateFrom;
   }
 
   if (filters?.dateTo) {
-    conditions.push(`publishedAt <= "${filters.dateTo}"`);
+    conditions.push(`publishedAt <= $filterDateTo`);
+    params.filterDateTo = filters.dateTo;
   }
 
   if (filters?.search) {
-    const searchTerm = filters.search.toLowerCase();
     conditions.push(`(
-      lower(title.en) match "*${searchTerm}*" ||
-      lower(title.es) match "*${searchTerm}*" ||
-      lower(title.fr) match "*${searchTerm}*" ||
-      lower(title.ar) match "*${searchTerm}*" ||
-      lower(excerpt.en) match "*${searchTerm}*" ||
-      lower(excerpt.es) match "*${searchTerm}*" ||
-      lower(excerpt.fr) match "*${searchTerm}*" ||
-      lower(excerpt.ar) match "*${searchTerm}*"
+      lower(title.en) match $searchPattern ||
+      lower(title.es) match $searchPattern ||
+      lower(title.fr) match $searchPattern ||
+      lower(title.ar) match $searchPattern ||
+      lower(excerpt.en) match $searchPattern ||
+      lower(excerpt.es) match $searchPattern ||
+      lower(excerpt.fr) match $searchPattern ||
+      lower(excerpt.ar) match $searchPattern
     )`);
+    params.searchPattern = `*${filters.search.toLowerCase()}*`;
   }
 
   const limit = filters?.limit || 50;
@@ -147,13 +152,17 @@ export async function fetchRegularNews(filters?: {
     ? `order(language == $language desc, publishedAt desc)`
     : `order(publishedAt desc)`;
 
+  if (filters?.language) {
+    params.language = filters.language;
+  }
+
   const query = groq`
     *[${conditions.join(' && ')}] | ${orderClause}[0...${limit}] {
       ${NEWS_POST_FIELDS}
     }
   `;
 
-  return await client.fetch(query, filters?.language ? { language: filters.language } : {});
+  return await client.fetch(query, params);
 }
 
 // Query 3: Fetch All News (with filters, includes featured)
@@ -170,36 +179,41 @@ export async function fetchAllNews(filters?: {
     '_type == "newsPost"',
     'publishedAt <= now()',
   ];
+  const params: Record<string, unknown> = {};
 
-  // Add filter conditions
+  // Add filter conditions using parameterized values to prevent GROQ injection
   if (filters?.tag) {
-    conditions.push(`"${filters.tag}" in tags[]->value.current`);
+    conditions.push(`$filterTag in tags[]->value.current`);
+    params.filterTag = filters.tag;
   }
 
   if (filters?.community) {
-    conditions.push(`relatedCommunity->slug.current == "${filters.community}"`);
+    conditions.push(`relatedCommunity->slug.current == $filterCommunity`);
+    params.filterCommunity = filters.community;
   }
 
   if (filters?.dateFrom) {
-    conditions.push(`publishedAt >= "${filters.dateFrom}"`);
+    conditions.push(`publishedAt >= $filterDateFrom`);
+    params.filterDateFrom = filters.dateFrom;
   }
 
   if (filters?.dateTo) {
-    conditions.push(`publishedAt <= "${filters.dateTo}"`);
+    conditions.push(`publishedAt <= $filterDateTo`);
+    params.filterDateTo = filters.dateTo;
   }
 
   if (filters?.search) {
-    const searchTerm = filters.search.toLowerCase();
     conditions.push(`(
-      lower(title.en) match "*${searchTerm}*" ||
-      lower(title.es) match "*${searchTerm}*" ||
-      lower(title.fr) match "*${searchTerm}*" ||
-      lower(title.ar) match "*${searchTerm}*" ||
-      lower(excerpt.en) match "*${searchTerm}*" ||
-      lower(excerpt.es) match "*${searchTerm}*" ||
-      lower(excerpt.fr) match "*${searchTerm}*" ||
-      lower(excerpt.ar) match "*${searchTerm}*"
+      lower(title.en) match $searchPattern ||
+      lower(title.es) match $searchPattern ||
+      lower(title.fr) match $searchPattern ||
+      lower(title.ar) match $searchPattern ||
+      lower(excerpt.en) match $searchPattern ||
+      lower(excerpt.es) match $searchPattern ||
+      lower(excerpt.fr) match $searchPattern ||
+      lower(excerpt.ar) match $searchPattern
     )`);
+    params.searchPattern = `*${filters.search.toLowerCase()}*`;
   }
 
   const limit = filters?.limit || 50;
@@ -207,13 +221,17 @@ export async function fetchAllNews(filters?: {
     ? `order(language == $language desc, featured desc, publishedAt desc)`
     : `order(featured desc, publishedAt desc)`;
 
+  if (filters?.language) {
+    params.language = filters.language;
+  }
+
   const query = groq`
     *[${conditions.join(' && ')}] | ${orderClause}[0...${limit}] {
       ${NEWS_POST_FIELDS}
     }
   `;
 
-  return await client.fetch(query, filters?.language ? { language: filters.language } : {});
+  return await client.fetch(query, params);
 }
 
 // Query 4: Fetch News by Slug (for detail page)
@@ -350,42 +368,50 @@ export async function getNewsCount(filters?: {
     '_type == "newsPost"',
     'publishedAt <= now()',
   ];
+  const params: Record<string, unknown> = {};
 
   if (filters?.featured !== undefined) {
-    conditions.push(`featured == ${filters.featured}`);
+    conditions.push(`featured == $filterFeatured`);
+    params.filterFeatured = filters.featured;
   }
 
+  // Use parameterized values to prevent GROQ injection
   if (filters?.tag) {
-    conditions.push(`"${filters.tag}" in tags[]->value.current`);
+    conditions.push(`$filterTag in tags[]->value.current`);
+    params.filterTag = filters.tag;
   }
 
   if (filters?.community) {
-    conditions.push(`relatedCommunity->slug.current == "${filters.community}"`);
+    conditions.push(`relatedCommunity->slug.current == $filterCommunity`);
+    params.filterCommunity = filters.community;
   }
 
   if (filters?.dateFrom) {
-    conditions.push(`publishedAt >= "${filters.dateFrom}"`);
+    conditions.push(`publishedAt >= $filterDateFrom`);
+    params.filterDateFrom = filters.dateFrom;
   }
 
   if (filters?.dateTo) {
-    conditions.push(`publishedAt <= "${filters.dateTo}"`);
+    conditions.push(`publishedAt <= $filterDateTo`);
+    params.filterDateTo = filters.dateTo;
   }
 
   if (filters?.search) {
-    const searchTerm = filters.search.toLowerCase();
     conditions.push(`(
-      lower(title.en) match "*${searchTerm}*" ||
-      lower(title.es) match "*${searchTerm}*" ||
-      lower(title.fr) match "*${searchTerm}*" ||
-      lower(title.ar) match "*${searchTerm}*" ||
-      lower(excerpt.en) match "*${searchTerm}*" ||
-      lower(excerpt.es) match "*${searchTerm}*" ||
-      lower(excerpt.fr) match "*${searchTerm}*" ||
-      lower(excerpt.ar) match "*${searchTerm}*"
+      lower(title.en) match $searchPattern ||
+      lower(title.es) match $searchPattern ||
+      lower(title.fr) match $searchPattern ||
+      lower(title.ar) match $searchPattern ||
+      lower(excerpt.en) match $searchPattern ||
+      lower(excerpt.es) match $searchPattern ||
+      lower(excerpt.fr) match $searchPattern ||
+      lower(excerpt.ar) match $searchPattern
     )`);
+    params.searchPattern = `*${filters.search.toLowerCase()}*`;
   }
 
   return await client.fetch(
-    groq`count(*[${conditions.join(' && ')}])`
+    groq`count(*[${conditions.join(' && ')}])`,
+    params
   );
 }
