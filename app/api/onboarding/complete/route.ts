@@ -273,122 +273,122 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Update user in Prisma with onboarding data - use upsert for race condition safety
+    // Wrap all DB operations in a transaction for atomicity
     const upsertData = buildUpsertData(validatedData)
-    let updatedUser
-    try {
-      updatedUser = await prisma.user.upsert({
-        where: { id: userId },
-        update: { ...upsertData, updatedAt: new Date() },
-        create: {
-          id: userId,
-          email: existingUser?.email || null,
-          image: null,
-          ...upsertData,
-          emailVerified: null,
-          phoneNumber: null,
-          phoneVerified: null,
-        }
-      })
-    } catch (upsertError: any) {
-      // Handle email conflict - old user exists with same email but different Clerk ID
-      if (upsertError.code === 'P2002' && upsertError.meta?.target?.includes('email')) {
-        const email = existingUser?.email || null
-        console.log(`⚠️ Onboarding: Email ${email} conflict - cleaning up old user`)
+    const updatedUser = await prisma.$transaction(async (tx) => {
+      // Update user in Prisma with onboarding data - use upsert for race condition safety
+      let user
+      try {
+        user = await tx.user.upsert({
+          where: { id: userId },
+          update: { ...upsertData, updatedAt: new Date() },
+          create: {
+            id: userId,
+            email: existingUser?.email || null,
+            image: null,
+            ...upsertData,
+            emailVerified: null,
+            phoneNumber: null,
+            phoneVerified: null,
+          }
+        })
+      } catch (upsertError: any) {
+        // Handle email conflict - old user exists with same email but different Clerk ID
+        if (upsertError.code === 'P2002' && upsertError.meta?.target?.includes('email')) {
+          const email = existingUser?.email || null
+          console.log(`⚠️ Onboarding: Email ${email} conflict - cleaning up old user`)
 
-        const oldUser = await prisma.user.findUnique({ where: { email: email! } })
-        if (oldUser && oldUser.id !== userId) {
-          console.log(`🗑️ Onboarding: Deleting old user ${oldUser.id}, will create new ${userId}`)
-          await prisma.user.delete({ where: { id: oldUser.id } })
+          const oldUser = await tx.user.findUnique({ where: { email: email! } })
+          if (oldUser && oldUser.id !== userId) {
+            console.log(`🗑️ Onboarding: Deleting old user ${oldUser.id}, will create new ${userId}`)
+            await tx.user.delete({ where: { id: oldUser.id } })
 
-          // Retry upsert - will now succeed
-          updatedUser = await prisma.user.upsert({
-            where: { id: userId },
-            update: { ...upsertData, updatedAt: new Date() },
-            create: {
-              id: userId,
-              email: existingUser?.email || null,
-              image: null,
-              ...upsertData,
-              emailVerified: null,
-              phoneNumber: null,
-              phoneVerified: null,
-            }
-          })
+            // Retry upsert - will now succeed
+            user = await tx.user.upsert({
+              where: { id: userId },
+              update: { ...upsertData, updatedAt: new Date() },
+              create: {
+                id: userId,
+                email: existingUser?.email || null,
+                image: null,
+                ...upsertData,
+                emailVerified: null,
+                phoneNumber: null,
+                phoneVerified: null,
+              }
+            })
 
-          console.log(`✅ Onboarding: Created user ${updatedUser.id} after cleanup`)
+            console.log(`✅ Onboarding: Created user ${user.id} after cleanup`)
+          } else {
+            throw upsertError
+          }
         } else {
           throw upsertError
         }
-      } else {
-        throw upsertError
-      }
-    }
-
-    // Create recent work entries
-    if (validatedData.recentWork && validatedData.recentWork.length > 0) {
-      // Delete existing recent work
-      await prisma.recentWork.deleteMany({
-        where: { userId }
-      })
-
-      // Create new recent work entries
-      await prisma.recentWork.createMany({
-        data: validatedData.recentWork.map((work) => ({
-          userId,
-          title: work.title,
-          description: work.description,
-          link: work.link || null,
-          isOngoing: work.isOngoing,
-          startDate: new Date(work.startDate),
-          endDate: work.endDate ? new Date(work.endDate) : null,
-          createdAt: new Date(),
-          updatedAt: new Date()
-        }))
-      })
-    }
-
-    // Handle community memberships
-    if (validatedData.communityIds && validatedData.communityIds.length > 0) {
-      console.log(`📋 Processing ${validatedData.communityIds.length} community IDs for user ${userId}:`, validatedData.communityIds)
-
-      // Delete existing community memberships
-      await prisma.userCommunity.deleteMany({
-        where: { userId }
-      })
-
-      // Verify which communities exist
-      const communities = await prisma.community.findMany({
-        where: {
-          id: { in: validatedData.communityIds }
-        },
-        select: { id: true, name: true, type: true }
-      })
-
-      const foundIds = communities.map(c => c.id)
-      const missingIds = validatedData.communityIds.filter(id => !foundIds.includes(id))
-
-      if (missingIds.length > 0) {
-        console.warn(`⚠️ Communities not found for user ${userId}:`, missingIds)
-        console.log(`✓ Found ${communities.length} valid communities:`, communities.map(c => `${c.name} (${c.type})`))
       }
 
-      // Create memberships for ALL valid communities (save what we can)
-      if (communities.length > 0) {
-        await prisma.userCommunity.createMany({
-          data: communities.map(community => ({
+      // Create recent work entries
+      if (validatedData.recentWork && validatedData.recentWork.length > 0) {
+        await tx.recentWork.deleteMany({
+          where: { userId }
+        })
+
+        await tx.recentWork.createMany({
+          data: validatedData.recentWork.map((work) => ({
             userId,
-            communityId: community.id,
-            role: 'community_member' as const
+            title: work.title,
+            description: work.description,
+            link: work.link || null,
+            isOngoing: work.isOngoing,
+            startDate: new Date(work.startDate),
+            endDate: work.endDate ? new Date(work.endDate) : null,
+            createdAt: new Date(),
+            updatedAt: new Date()
           }))
         })
-        console.log(`✅ Created ${communities.length} community memberships for user ${userId}`)
-      } else {
-        console.error(`❌ No valid communities found for user ${userId} from IDs:`, validatedData.communityIds)
       }
-    }
 
-    // Sync ONLY essential fields to Clerk metadata
+      // Handle community memberships
+      if (validatedData.communityIds && validatedData.communityIds.length > 0) {
+        console.log(`📋 Processing ${validatedData.communityIds.length} community IDs for user ${userId}:`, validatedData.communityIds)
+
+        await tx.userCommunity.deleteMany({
+          where: { userId }
+        })
+
+        const communities = await tx.community.findMany({
+          where: {
+            id: { in: validatedData.communityIds }
+          },
+          select: { id: true, name: true, type: true }
+        })
+
+        const foundIds = communities.map(c => c.id)
+        const missingIds = validatedData.communityIds.filter(id => !foundIds.includes(id))
+
+        if (missingIds.length > 0) {
+          console.warn(`⚠️ Communities not found for user ${userId}:`, missingIds)
+          console.log(`✓ Found ${communities.length} valid communities:`, communities.map(c => `${c.name} (${c.type})`))
+        }
+
+        if (communities.length > 0) {
+          await tx.userCommunity.createMany({
+            data: communities.map(community => ({
+              userId,
+              communityId: community.id,
+              role: 'community_member' as const
+            }))
+          })
+          console.log(`✅ Created ${communities.length} community memberships for user ${userId}`)
+        } else {
+          console.error(`❌ No valid communities found for user ${userId} from IDs:`, validatedData.communityIds)
+        }
+      }
+
+      return user
+    })
+
+    // Sync ONLY essential fields to Clerk metadata (outside transaction — external API)
     // All user data lives in Prisma - we only store minimal metadata in Clerk
     const clerkUpdateData = {
       publicMetadata: {
