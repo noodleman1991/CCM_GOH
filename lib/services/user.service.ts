@@ -11,7 +11,8 @@ import type {
   LocalizedQueryOptions,
   PaginatedResult
 } from '@/types/prisma'
-import type { User, Prisma } from '@/generated/prisma'
+import { Prisma } from '@/generated/prisma'
+import type { User } from '@/generated/prisma'
 
 export class UserService {
   /**
@@ -410,99 +411,70 @@ export class UserService {
       // Apply privacy filters
       const privacyFilter = this.getPrivacyWhereClause(options.isAuthenticated)
 
-      // Build filter conditions for community, work types, expertise
-      const filterConditions: string[] = []
-      const filterParams: any[] = []
-      let paramIndex = 2 // Start from $2 since $1 is searchQuery
+      // Build filter conditions as Prisma.sql fragments for safe parameterization
+      const filterConditions: Prisma.Sql[] = []
 
       if (filters?.communityIds?.length) {
-        filterConditions.push(`EXISTS (
+        filterConditions.push(Prisma.sql`EXISTS (
           SELECT 1 FROM "UserCommunity" uc
           WHERE uc."userId" = u.id
-          AND uc."communityId" = ANY($${paramIndex})
+          AND uc."communityId" = ANY(${filters.communityIds})
         )`)
-        filterParams.push(filters.communityIds)
-        paramIndex++
       }
 
       if (filters?.workTypes?.length) {
-        filterConditions.push(`u."workTypes" && $${paramIndex}::text[]`)
-        filterParams.push(filters.workTypes)
-        paramIndex++
+        filterConditions.push(Prisma.sql`u."workTypes" && ${filters.workTypes}::text[]`)
       }
 
       if (filters?.expertiseAreas?.length) {
-        filterConditions.push(`u."expertiseAreas" && $${paramIndex}::text[]`)
-        filterParams.push(filters.expertiseAreas)
-        paramIndex++
+        filterConditions.push(Prisma.sql`u."expertiseAreas" && ${filters.expertiseAreas}::text[]`)
       }
 
-      // Build privacy conditions
-      const privacyConditions: string[] = ['u."isSearchable" = true']
+      // Build privacy conditions as Prisma.sql fragments
+      const privacyConditions: Prisma.Sql[] = [
+        Prisma.sql`u."isSearchable" = true`
+      ]
       if (options.isAuthenticated) {
-        privacyConditions.push(`u."profileVisibility" IN ('PUBLIC', 'MEMBERS')`)
+        privacyConditions.push(Prisma.sql`u."profileVisibility" IN ('PUBLIC', 'MEMBERS')`)
       } else {
-        privacyConditions.push(`u."profileVisibility" = 'PUBLIC'`)
+        privacyConditions.push(Prisma.sql`u."profileVisibility" = 'PUBLIC'`)
       }
 
-      const allConditions = [
-        ...privacyConditions,
-        ...filterConditions
-      ].join(' AND ')
+      const allConditions = Prisma.join(
+        [...privacyConditions, ...filterConditions],
+        ' AND '
+      )
 
-      // Fuzzy search query using pg_trgm similarity
-      const fuzzyQuery = `
-        SELECT
-          u.*,
-          GREATEST(
-            COALESCE(similarity(u."firstName", $1), 0),
-            COALESCE(similarity(u."lastName", $1), 0),
-            COALESCE(similarity(u.username, $1), 0),
-            COALESCE(similarity(u.bio, $1), 0),
-            COALESCE(similarity(u.organization, $1), 0),
-            COALESCE(similarity(u.position, $1), 0)
-          ) as similarity_score
-        FROM "User" u
-        WHERE ${allConditions}
-        HAVING GREATEST(
-          COALESCE(similarity(u."firstName", $1), 0),
-          COALESCE(similarity(u."lastName", $1), 0),
-          COALESCE(similarity(u.username, $1), 0),
-          COALESCE(similarity(u.bio, $1), 0),
-          COALESCE(similarity(u.organization, $1), 0),
-          COALESCE(similarity(u.position, $1), 0)
-        ) >= ${similarityThreshold}
-        ORDER BY similarity_score DESC, u."lastLoginAt" DESC NULLS LAST, u."profileCompleteness" DESC
-        LIMIT ${pageSize}
-        OFFSET ${skip}
-      `
-
-      // Get total count
-      const countQuery = `
-        SELECT COUNT(*) as count
-        FROM "User" u
-        WHERE ${allConditions}
-        AND GREATEST(
-          COALESCE(similarity(u."firstName", $1), 0),
-          COALESCE(similarity(u."lastName", $1), 0),
-          COALESCE(similarity(u.username, $1), 0),
-          COALESCE(similarity(u.bio, $1), 0),
-          COALESCE(similarity(u.organization, $1), 0),
-          COALESCE(similarity(u.position, $1), 0)
-        ) >= ${similarityThreshold}
-      `
+      // Similarity expression used in SELECT, WHERE/HAVING
+      const similarityExpr = Prisma.sql`GREATEST(
+        COALESCE(similarity(u."firstName", ${searchQuery}), 0),
+        COALESCE(similarity(u."lastName", ${searchQuery}), 0),
+        COALESCE(similarity(u.username, ${searchQuery}), 0),
+        COALESCE(similarity(u.bio, ${searchQuery}), 0),
+        COALESCE(similarity(u.organization, ${searchQuery}), 0),
+        COALESCE(similarity(u.position, ${searchQuery}), 0)
+      )`
 
       const [users, countResult] = await Promise.all([
-        prisma.$queryRawUnsafe<(User & { similarity_score: number })[]>(
-          fuzzyQuery,
-          searchQuery,
-          ...filterParams
-        ),
-        prisma.$queryRawUnsafe<{ count: bigint }[]>(
-          countQuery,
-          searchQuery,
-          ...filterParams
-        )
+        // Fuzzy search query using pg_trgm similarity
+        prisma.$queryRaw<(User & { similarity_score: number })[]>`
+          SELECT
+            u.*,
+            ${similarityExpr} as similarity_score
+          FROM "User" u
+          WHERE ${allConditions}
+          HAVING ${similarityExpr} >= ${similarityThreshold}
+          ORDER BY similarity_score DESC, u."lastLoginAt" DESC NULLS LAST, u."profileCompleteness" DESC
+          LIMIT ${pageSize}
+          OFFSET ${skip}
+        `,
+        // Get total count
+        prisma.$queryRaw<{ count: bigint }[]>`
+          SELECT COUNT(*) as count
+          FROM "User" u
+          WHERE ${allConditions}
+          AND ${similarityExpr} >= ${similarityThreshold}
+        `
       ])
 
       const total = Number(countResult[0]?.count || 0)
