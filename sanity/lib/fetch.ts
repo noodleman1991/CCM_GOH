@@ -1248,7 +1248,9 @@ export const fetchApprovedCaseStudiesByRC = async ({
 }) => {
     // Determine ordering based on language (RTL vs LTR)
     const isRTL = locale === 'ar';
-    const orderDirection = isRTL ? 'asc' : 'desc'; // RTL: oldest first (right to left), LTR: newest first (left to right)
+    // SAFETY: orderDirection is derived from a boolean check and can only be 'asc' or 'desc'.
+    // GROQ parameters cannot be used for sort directions — string interpolation is required here.
+    const orderDirection = isRTL ? 'asc' : 'desc';
 
     const { data } = await sanityFetch({
         query: `*[_type == "caseStudy" && status == "approved" && references(*[_type == "regionalCommunity" && slug.current == $slug][0]._id)] | order(publishedAt ${orderDirection}, featured desc)[0...$limit]{
@@ -1343,33 +1345,36 @@ export const searchCaseStudies = async ({
     limit?: number;
 }) => {
     let filters = [`_type == "caseStudy"`, `status == "approved"`];
+    const params: Record<string, unknown> = { limit };
 
     if (language) {
-        filters.push(`language == "${language}"`);
+        filters.push(`language == $language`);
+        params.language = language;
     }
 
     if (searchTerm) {
         filters.push(`(
-      title.en match "${searchTerm}*" ||
-      title.es match "${searchTerm}*" ||
-      title.fr match "${searchTerm}*" ||
-      title.ar match "${searchTerm}*" ||
-      excerpt.en match "${searchTerm}*" ||
-      excerpt.es match "${searchTerm}*" ||
-      excerpt.fr match "${searchTerm}*" ||
-      excerpt.ar match "${searchTerm}*"
+      title.en match $searchPattern ||
+      title.es match $searchPattern ||
+      title.fr match $searchPattern ||
+      title.ar match $searchPattern ||
+      excerpt.en match $searchPattern ||
+      excerpt.es match $searchPattern ||
+      excerpt.fr match $searchPattern ||
+      excerpt.ar match $searchPattern
     )`);
+        params.searchPattern = `${searchTerm}*`;
     }
 
-    // Updated tag filtering for field-level localized tags
+    // Tag filtering using parameterized $tags array
     if (tags && tags.length > 0) {
-        const tagFilters = tags.map(tag => `(
-      defined(tags.en) && "${tag}" in tags.en[]->value.current ||
-      defined(tags.es) && "${tag}" in tags.es[]->value.current ||
-      defined(tags.fr) && "${tag}" in tags.fr[]->value.current ||
-      defined(tags.ar) && "${tag}" in tags.ar[]->value.current
+        filters.push(`(
+      count((tags.en[]->value.current)[@ in $tags]) > 0 ||
+      count((tags.es[]->value.current)[@ in $tags]) > 0 ||
+      count((tags.fr[]->value.current)[@ in $tags]) > 0 ||
+      count((tags.ar[]->value.current)[@ in $tags]) > 0
     )`);
-        filters.push(`(${tagFilters.join(' || ')})`);
+        params.tags = tags;
     }
 
     const { data } = await sanityFetch({
@@ -1407,7 +1412,7 @@ export const searchCaseStudies = async ({
       },
       tags
     }`,
-        params: { limit },
+        params,
         perspective: "published",
         stega: false,
     });

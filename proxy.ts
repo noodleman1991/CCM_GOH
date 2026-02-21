@@ -19,7 +19,9 @@ const withLocale = (path: string) => `/:locale${path.startsWith('/') ? '' : '/'}
 
 const isPublicRoute = createRouteMatcher([
     withLocale('/'),
-    withLocale('/(main)/:path*'),
+    withLocale('/about'),
+    withLocale('/privacy-policy'),
+    withLocale('/terms-of-service'),
     withLocale('/sign-in'),
     withLocale('/sign-up'),
     '/api/webhooks/(.*)'
@@ -37,7 +39,7 @@ const isProtectedApiRoute = createRouteMatcher([
 ])
 
 const isProtectedRoute = createRouteMatcher([
-    withLocale('/(main)/dashboard/:path*'),
+    withLocale('/dashboard/:path*'),
 ])
 
 const isOnboardingRoute = createRouteMatcher([withLocale('/onboarding')])

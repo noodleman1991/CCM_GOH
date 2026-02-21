@@ -3,6 +3,9 @@ import createNextIntlPlugin from 'next-intl/plugin';
 const withNextIntl = createNextIntlPlugin();
 
 
+const isDev = process.env.NODE_ENV === 'development';
+const clerkDevDomains = isDev ? ' https://*.clerk.accounts.dev' : '';
+
 const nextConfig = {
   async headers() {
     return [
@@ -33,11 +36,11 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.clerk.com https://*.clerk.accounts.dev https://challenges.cloudflare.com https://*.algolianet.com https://plausible.io",
+              `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.clerk.com${clerkDevDomains} https://challenges.cloudflare.com https://*.algolianet.com https://plausible.io`,
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: blob: https://cdn.sanity.io https://img.youtube.com https://img.clerk.com",
               "font-src 'self' data:",
-              "connect-src 'self' https://*.clerk.com https://*.clerk.accounts.dev https://*.algolia.net https://*.algolianet.com https://plausible.io https://cdn.sanity.io",
+              `connect-src 'self' https://*.clerk.com${clerkDevDomains} https://*.algolia.net https://*.algolianet.com https://plausible.io https://cdn.sanity.io`,
               "frame-src https://www.youtube.com https://www.youtube-nocookie.com https://challenges.cloudflare.com https://*.clerk.com",
               "media-src 'self' https://cdn.sanity.io",
               "object-src 'none'",
