@@ -67,9 +67,8 @@ export async function POST(request: NextRequest) {
         .filter((record): record is NonNullable<typeof record> => record !== null)
 
       if (records.length > 0) {
-        // Clear existing index and add new records
-        await algoliaClient.clearObjects({ indexName: ALGOLIA_INDICES.USERS })
-        const response = await algoliaClient.saveObjects({
+        // Replace all records atomically
+        const response = await algoliaClient.replaceAllObjects({
           indexName: ALGOLIA_INDICES.USERS,
           objects: records as any[]
         })

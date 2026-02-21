@@ -111,7 +111,6 @@ export default function Hero1({
                                 height={image.asset?.metadata?.dimensions?.height || 800}
                                 placeholder={image?.asset?.metadata?.lqip ? "blur" : undefined}
                                 blurDataURL={image?.asset?.metadata?.lqip || ""}
-                                quality={100}
                                 sizes="(min-width: 1024px) 50vw, 100vw"
                             />
                         </div>

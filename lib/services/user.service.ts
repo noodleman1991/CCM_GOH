@@ -467,34 +467,26 @@ export class UserService {
 
       const total = Number(countResult[0]?.count || 0)
 
-      // Fetch full user data with relations for each result
-      const usersWithRelations = await Promise.all(
-        users.map(async (user) => {
-          const fullUser = await prisma.user.findUnique({
-            where: { id: user.id },
-            include: {
-              communityMemberships: {
-                include: {
-                  community: true
-                }
-              },
-              recentWork: {
-                orderBy: { createdAt: 'desc' },
-                take: 3
-              }
-            }
-          })
-
+      // Fetch full user data with relations in a single batch query
+      const userIds = users.map(u => u.id)
+      const fullUsers = await prisma.user.findMany({
+        where: { id: { in: userIds } },
+        include: {
+          communityMemberships: { include: { community: true } },
+          recentWork: { orderBy: { createdAt: 'desc' }, take: 3 }
+        }
+      })
+      const userMap = new Map(fullUsers.map(u => [u.id, u]))
+      const localizedUsers = users
+        .map(user => {
+          const fullUser = userMap.get(user.id)
           if (!fullUser) return null
-
           return {
             ...this.transformToLocalizedUser(fullUser, localizedQuery),
             similarity: user.similarity_score
           }
         })
-      )
-
-      const localizedUsers = usersWithRelations.filter((u): u is NonNullable<typeof u> => u !== null)
+        .filter((u): u is NonNullable<typeof u> => u !== null)
 
       return {
         data: localizedUsers,
@@ -698,20 +690,10 @@ export class UserService {
       // Get all regional communities
       const communities = await prisma.community.findMany({
         where: { type: 'REGIONAL' },
-        include: {
-          members: {
-            include: {
-              user: {
-                include: {
-                  communityMemberships: {
-                    include: {
-                      community: true
-                    }
-                  }
-                }
-              }
-            }
-          }
+        select: {
+          id: true,
+          name: true,
+          regionalName: true,
         }
       })
 

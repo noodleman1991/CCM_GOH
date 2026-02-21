@@ -167,7 +167,6 @@ export default function LivedExperiencesPageClient({
                             alt="A figure jumping off a book - illustration"
                             width={800}
                             height={800}
-                            quality={100}
                             priority
                         />
                     </div>
