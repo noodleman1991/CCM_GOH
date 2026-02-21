@@ -5,15 +5,13 @@ import { searchClient, ALGOLIA_INDICES } from '@/lib/algolia'
 import { createSearchRouting } from '@/lib/search-routing'
 import { CustomSearchBox } from './custom-search-box'
 import { Configure } from 'react-instantsearch'
-import SearchResults from './search-results'
-import SearchFilters from './search-filters'
 import ContentSearchResults from './content-search-results'
 import ContentSearchFilters from './content-search-filters'
 import SearchStats from './search-stats'
 import { SearchHitsReporter } from './search-hits-reporter'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
-import { Users, FileText, BookOpen, Newspaper } from 'lucide-react'
+import { FileText, BookOpen, Newspaper } from 'lucide-react'
 import { useTranslations, useLocale } from 'next-intl'
 import { SearchErrorBoundary } from './search-error-boundary'
 import { useAuth } from '@clerk/nextjs'
@@ -62,36 +60,10 @@ export default function SearchInterface() {
     return baseFilters.join(' AND ')
   }
 
-  // Generate privacy-aware filters for user search (CRITICAL for privacy)
-  const generateUserFilters = () => {
-    const baseFilters = ['isSearchable:true']  // Only users who opted in
-
-    if (!isSignedIn) {
-      // Unauthenticated users only see PUBLIC profiles
-      baseFilters.push('profileVisibility:PUBLIC')
-    } else {
-      // Authenticated users see PUBLIC + MEMBERS profiles
-      baseFilters.push('(profileVisibility:PUBLIC OR profileVisibility:MEMBERS)')
-    }
-
-    return baseFilters.join(' AND ')
-  }
-  
   return (
     <div className="space-y-6" dir={isRTL ? 'rtl' : 'ltr'}>
       <Tabs defaultValue="agendas" className="w-full">
         <TabsList className="grid w-full grid-cols-3 max-w-3xl mx-auto">
-          {/* People Search - Commented out (functionality not ready yet)
-          <TabsTrigger value="users" className="flex items-center gap-2">
-            <Users className="h-4 w-4" />
-            {t('people')}
-            {!isLoading && counts.users > 0 && (
-              <Badge variant="secondary" className="ms-1 text-xs">
-                {counts.users}
-              </Badge>
-            )}
-          </TabsTrigger>
-          */}
           <TabsTrigger value="agendas" className="flex items-center gap-2">
             <FileText className="h-4 w-4" />
             {t('agendas')}
@@ -132,65 +104,6 @@ export default function SearchInterface() {
             ) : null}
           </TabsTrigger>
         </TabsList>
-
-        {/* Users Search - Commented out (functionality not ready yet)
-        <TabsContent value="users">
-          <SearchErrorBoundary>
-            <InstantSearchNext
-              searchClient={searchClient}
-              indexName={ALGOLIA_INDICES.USERS}
-              routing={createSearchRouting(ALGOLIA_INDICES.USERS)}
-              insights={true}
-              future={{ preserveSharedStateOnUnmount: true }}
-            >
-            <Configure
-              hitsPerPage={20}
-              filters={generateUserFilters()}
-              attributesToHighlight={['firstName', 'lastName', 'username', 'bio', 'organization']}
-              attributesToSnippet={['bio:30']}
-            />
-
-            <div className="space-y-6">
-              <div className="max-w-2xl mx-auto">
-                <SearchBox
-                  placeholder={t('placeholder')}
-                  classNames={{
-                    root: 'w-full',
-                    form: 'relative',
-                    input: 'flex h-12 w-full rounded-md border border-input bg-background px-4 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
-                    submit: 'absolute end-2 top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground',
-                    reset: 'absolute end-12 top-1/2 -translate-y-1/2 p-2 rounded-md hover:bg-accent hover:text-accent-foreground',
-                    loadingIndicator: 'absolute end-2 top-1/2 -translate-y-1/2',
-                  }}
-                  submitIconComponent={() => (
-                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                  )}
-                  resetIconComponent={() => (
-                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  )}
-                />
-              </div>
-
-              <SearchStats />
-
-              <div className="flex gap-8">
-                <div className="w-64 flex-shrink-0">
-                  <SearchFilters />
-                </div>
-
-                <div className="flex-1">
-                  <SearchResults type="users" />
-                </div>
-              </div>
-            </div>
-            </InstantSearchNext>
-          </SearchErrorBoundary>
-        </TabsContent>
-        */}
 
         {/* Agendas Search */}
         <TabsContent value="agendas" forceMount className="data-[state=inactive]:hidden">

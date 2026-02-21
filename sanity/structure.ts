@@ -113,30 +113,7 @@ export const structure = (S: any, context: any) =>
                                     S.documentTypeList("agenda")
                                         .title("Agendas")
                                         .defaultOrdering([{ field: "_createdAt", direction: "desc" }])
-                                    // S.documentList()
-                                    //     .title("Agendas")
-                                    //     .filter('_type == "agenda"')
-                                    //     .params({})
-                                    //     .defaultOrdering([
-                                    //         {
-                                    //             field: 'regionalCommunities', //or regionalCommunities[]
-                                    //             direction: 'desc'
-                                    //         },
-                                    //         {
-                                    //             field: '_createdAt',
-                                    //             direction: 'desc'
-                                    //         }
-                                    //     ])
-
                         ),
-                            // S.listItem()
-                            //     .title("Posts (Blog)")
-                            //     .icon(Newspaper)
-                            //     .child(
-                            //         S.documentTypeList("post")
-                            //             .title("Posts")
-                            //             .defaultOrdering([{ field: "_createdAt", direction: "desc" }])
-                            //     ),
                             S.listItem()
                                 .title("Lived Experiences")
                                 .icon(Heart)

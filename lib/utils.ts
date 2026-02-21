@@ -51,19 +51,6 @@ export function formatFileSize(bytes: number): string {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
-// /**
-//  * Format date to locale string ** claude
-//  */
-// export function formatDate(date: string | Date, locale: string = 'en-US'): string {
-//     const dateObj = typeof date === 'string' ? new Date(date) : date;
-//
-//     return new Intl.DateTimeFormat(locale, {
-//         year: 'numeric',
-//         month: 'long',
-//         day: 'numeric'
-//     }).format(dateObj);
-// }
-
 /**
  * Format date to short format
  */
