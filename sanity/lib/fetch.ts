@@ -1247,9 +1247,8 @@ export const fetchApprovedCaseStudiesByRC = async ({
     locale?: string;
 }) => {
     // Determine ordering based on language (RTL vs LTR)
-    // orderDirection is safe: derived from a boolean check, can only be 'asc' or 'desc'
     const isRTL = locale === 'ar';
-    const orderDirection = isRTL ? 'asc' : 'desc';
+    const orderDirection = isRTL ? 'asc' : 'desc'; // RTL: oldest first (right to left), LTR: newest first (left to right)
 
     const { data } = await sanityFetch({
         query: `*[_type == "caseStudy" && status == "approved" && references(*[_type == "regionalCommunity" && slug.current == $slug][0]._id)] | order(publishedAt ${orderDirection}, featured desc)[0...$limit]{
@@ -1344,44 +1343,37 @@ export const searchCaseStudies = async ({
     limit?: number;
 }) => {
     let filters = [`_type == "caseStudy"`, `status == "approved"`];
-    const params: Record<string, unknown> = { limit };
 
     if (language) {
-        params.language = language;
+        filters.push(`language == "${language}"`);
     }
 
     if (searchTerm) {
         filters.push(`(
-      title.en match $searchPattern ||
-      title.es match $searchPattern ||
-      title.fr match $searchPattern ||
-      title.ar match $searchPattern ||
-      excerpt.en match $searchPattern ||
-      excerpt.es match $searchPattern ||
-      excerpt.fr match $searchPattern ||
-      excerpt.ar match $searchPattern
+      title.en match "${searchTerm}*" ||
+      title.es match "${searchTerm}*" ||
+      title.fr match "${searchTerm}*" ||
+      title.ar match "${searchTerm}*" ||
+      excerpt.en match "${searchTerm}*" ||
+      excerpt.es match "${searchTerm}*" ||
+      excerpt.fr match "${searchTerm}*" ||
+      excerpt.ar match "${searchTerm}*"
     )`);
-        params.searchPattern = `${searchTerm}*`;
     }
 
     // Updated tag filtering for field-level localized tags
-    // Uses $tags array parameter to prevent GROQ injection
     if (tags && tags.length > 0) {
-        filters.push(`(
-      count((tags.en[]->value.current)[@ in $tags]) > 0 ||
-      count((tags.es[]->value.current)[@ in $tags]) > 0 ||
-      count((tags.fr[]->value.current)[@ in $tags]) > 0 ||
-      count((tags.ar[]->value.current)[@ in $tags]) > 0
+        const tagFilters = tags.map(tag => `(
+      defined(tags.en) && "${tag}" in tags.en[]->value.current ||
+      defined(tags.es) && "${tag}" in tags.es[]->value.current ||
+      defined(tags.fr) && "${tag}" in tags.fr[]->value.current ||
+      defined(tags.ar) && "${tag}" in tags.ar[]->value.current
     )`);
-        params.tags = tags;
+        filters.push(`(${tagFilters.join(' || ')})`);
     }
 
-    const orderClause = language
-        ? `order(language == $language desc, featured desc, publishedAt desc)`
-        : `order(featured desc, publishedAt desc)`;
-
     const { data } = await sanityFetch({
-        query: `*[${filters.join(' && ')}] | ${orderClause}[0...$limit]{
+        query: `*[${filters.join(' && ')}] | order(featured desc, publishedAt desc)[0...$limit]{
       _id,
       language,
       title,
@@ -1415,7 +1407,7 @@ export const searchCaseStudies = async ({
       },
       tags
     }`,
-        params,
+        params: { limit },
         perspective: "published",
         stega: false,
     });
