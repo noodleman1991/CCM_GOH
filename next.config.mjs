@@ -33,7 +33,7 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.clerk.com https://challenges.cloudflare.com https://*.algolianet.com https://plausible.io",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.clerk.com https://*.clerk.accounts.dev https://challenges.cloudflare.com https://*.algolianet.com https://plausible.io",
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: blob: https://cdn.sanity.io https://img.youtube.com https://img.clerk.com",
               "font-src 'self' data:",
@@ -41,6 +41,7 @@ const nextConfig = {
               "frame-src https://www.youtube.com https://www.youtube-nocookie.com https://challenges.cloudflare.com https://*.clerk.com",
               "media-src 'self' https://cdn.sanity.io",
               "object-src 'none'",
+              "worker-src 'self' blob:",
               "base-uri 'self'",
               "form-action 'self'",
             ].join('; '),
