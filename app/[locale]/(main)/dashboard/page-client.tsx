@@ -3,7 +3,7 @@
 import { useTranslations } from 'next-intl'
 import { isRTL } from '@/i18n/i18n-helpers'
 import { cn } from '@/lib/utils'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -117,7 +117,7 @@ export function DashboardClient({
               </div>
             </div>
             <Button asChild size="lg">
-              <Link href={`/${locale}/dashboard/profile/edit`}>
+              <Link href={`/dashboard/profile/edit`}>
                 <Edit className={cn("w-4 h-4", rtl ? "ml-2" : "mr-2")} />
                 {t('editProfile')}
               </Link>
@@ -162,7 +162,7 @@ export function DashboardClient({
                       {t('manageProfileDescription')}
                     </CardDescription>
                     <Button asChild variant="outline" className="w-full mt-auto">
-                      <Link href={`/${locale}/dashboard/profile/edit`} className={cn("flex items-center justify-center gap-2", rtl && "flex-row-reverse")}>
+                      <Link href={`/dashboard/profile/edit`} className={cn("flex items-center justify-center gap-2", rtl && "flex-row-reverse")}>
                         <span>{t('viewProfile')}</span>
                         <ArrowRight className="w-4 h-4" />
                       </Link>
@@ -184,7 +184,7 @@ export function DashboardClient({
                       {t('submitCaseStudyDescription')}
                     </CardDescription>
                     <Button asChild variant="outline" className="w-full mt-auto">
-                      <Link href={`/${locale}/research-and-action/case-studies/submit`} className={cn("flex items-center justify-center gap-2", rtl && "flex-row-reverse")}>
+                      <Link href={`/research-and-action/case-studies/submit`} className={cn("flex items-center justify-center gap-2", rtl && "flex-row-reverse")}>
                         <span>{t('submit')}</span>
                         <ArrowRight className="w-4 h-4" />
                       </Link>
@@ -206,7 +206,7 @@ export function DashboardClient({
                       {t('collaborateDescription')}
                     </CardDescription>
                     <Button asChild variant="outline" className="w-full mt-auto">
-                      <Link href={`/${locale}/collaborate`} className={cn("flex items-center justify-center gap-2", rtl && "flex-row-reverse")}>
+                      <Link href={`/collaborate`} className={cn("flex items-center justify-center gap-2", rtl && "flex-row-reverse")}>
                         <span>{t('findCollaborators')}</span>
                         <ArrowRight className="w-4 h-4" />
                       </Link>
@@ -228,7 +228,7 @@ export function DashboardClient({
                       {t('accountSettingsDescription')}
                     </CardDescription>
                     <Button asChild variant="outline" className="w-full mt-auto">
-                      <Link href={`/${locale}/dashboard/account`} className={cn("flex items-center justify-center gap-2", rtl && "flex-row-reverse")}>
+                      <Link href={`/dashboard/account`} className={cn("flex items-center justify-center gap-2", rtl && "flex-row-reverse")}>
                         <span>{t('manageAccount')}</span>
                         <ArrowRight className="w-4 h-4" />
                       </Link>
@@ -244,7 +244,7 @@ export function DashboardClient({
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-2xl font-bold">{t('recentWork')}</h2>
                   <Button asChild variant="ghost" size="sm">
-                    <Link href={`/${locale}/dashboard/profile/edit/work`}>
+                    <Link href={`/dashboard/profile/edit/work`}>
                       {t('viewAll')}
                       <ArrowRight className={cn("w-4 h-4", rtl ? "mr-2" : "ml-2")} />
                     </Link>
@@ -306,7 +306,7 @@ export function DashboardClient({
                 </CardHeader>
                 <CardContent>
                   <Button asChild className="w-full">
-                    <Link href={`/${locale}/communities/${regionalCommunity.slug}`}>
+                    <Link href={`/communities/${regionalCommunity.slug}`}>
                       {t('visitCommunity')}
                       <ArrowRight className={cn("w-4 h-4", rtl ? "mr-2" : "ml-2")} />
                     </Link>
@@ -327,7 +327,7 @@ export function DashboardClient({
                 <div className="space-y-4">
                   {recentNews.map((news) => (
                     <Card key={news._id} className="group hover:shadow-md transition-shadow">
-                      <Link href={`/${locale}/news/${news.slug.current}`}>
+                      <Link href={`/news/${news.slug.current}`}>
                         {news.image?.asset?.url && (
                           <div className="relative w-full aspect-video overflow-hidden rounded-t-lg">
                             <Image
@@ -363,7 +363,7 @@ export function DashboardClient({
                 </div>
                 {regionalCommunity && (
                   <Button asChild variant="outline" className="w-full mt-4">
-                    <Link href={`/${locale}/communities/${regionalCommunity.slug}`}>
+                    <Link href={`/communities/${regionalCommunity.slug}`}>
                       {t('viewAllNews')}
                       <ArrowRight className={cn("w-4 h-4", rtl ? "mr-2" : "ml-2")} />
                     </Link>
@@ -386,7 +386,7 @@ export function DashboardClient({
                     {t('joinCommunityDescription')}
                   </CardDescription>
                   <Button asChild className="w-full">
-                    <Link href={`/${locale}/communities`}>
+                    <Link href={`/communities`}>
                       {t('exploreCommunities')}
                       <ArrowRight className={cn("w-4 h-4", rtl ? "mr-2" : "ml-2")} />
                     </Link>

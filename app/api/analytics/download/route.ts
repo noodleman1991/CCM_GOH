@@ -1,6 +1,56 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/prisma';
+import { z } from 'zod';
+
+const downloadEventSchema = z.object({
+    reportId: z.string().min(1),
+    fileLanguage: z.string().min(1),
+    sessionId: z.string().optional(),
+});
+
+function getClientIP(request: NextRequest): string {
+    const forwarded = request.headers.get('x-forwarded-for');
+    if (forwarded) return forwarded.split(',')[0].trim();
+    const realIP = request.headers.get('x-real-ip');
+    if (realIP) return realIP.trim();
+    return 'unknown';
+}
+
+export async function POST(request: NextRequest) {
+    try {
+        const { userId } = await auth();
+        const body = await request.json();
+        const validated = downloadEventSchema.parse(body);
+
+        await prisma.downloadEvent.create({
+            data: {
+                reportId: validated.reportId,
+                fileLanguage: validated.fileLanguage,
+                userId: userId || null,
+                sessionId: validated.sessionId || 'anonymous',
+                userAgent: request.headers.get('user-agent') || null,
+                referer: request.headers.get('referer') || null,
+                ipAddress: getClientIP(request),
+                timestamp: new Date(),
+            },
+        });
+
+        return NextResponse.json({ success: true });
+    } catch (error) {
+        if (error instanceof z.ZodError) {
+            return NextResponse.json(
+                { error: 'Invalid request body' },
+                { status: 400 }
+            );
+        }
+        console.error('Download tracking error:', error);
+        return NextResponse.json(
+            { error: 'Failed to track download' },
+            { status: 500 }
+        );
+    }
+}
 
 export async function GET(request: NextRequest) {
     try {

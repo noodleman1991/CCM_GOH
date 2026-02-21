@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
+import { Link } from '@/i18n/navigation'
 import { DashboardClient } from './page-client'
 import { prisma } from '@/lib/prisma'
 import { executePredefinedQuery } from '@/lib/dynamic-queries'
@@ -96,12 +97,12 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
             <p className="text-gray-600">
               We're preparing your dashboard. This usually takes just a few seconds.
             </p>
-            <a
-              href={`/${locale}/dashboard`}
+            <Link
+              href={`/dashboard`}
               className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
               Refresh Page
-            </a>
+            </Link>
             <p className="text-sm text-gray-500">
               If this message persists, please contact support.
             </p>
