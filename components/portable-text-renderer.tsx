@@ -50,7 +50,6 @@ const createPortableTextComponents = (
               placeholder={lqip ? "blur" : undefined}
               blurDataURL={lqip || undefined}
               className="rounded-2xl mx-auto w-full"
-              quality={100}
             />
             {caption && (
               <figcaption className="text-sm text-muted-foreground mt-2 italic text-center font-body">

@@ -62,9 +62,8 @@ export async function POST(request: NextRequest) {
         .filter(Boolean) as NewsSearchRecord[]
 
       if (records.length > 0) {
-        // Clear existing index and add new records
-        await algoliaClient.clearObjects({ indexName: ALGOLIA_INDICES.NEWS })
-        const response = await algoliaClient.saveObjects({
+        // Replace all records atomically
+        const response = await algoliaClient.replaceAllObjects({
           indexName: ALGOLIA_INDICES.NEWS,
           objects: records as any[]
         })

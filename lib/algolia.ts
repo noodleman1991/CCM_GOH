@@ -77,43 +77,7 @@ const baseSearchClient = (() => {
   }
 })()
 
-/**
- * Creates a debounced version of the search client
- * This improves performance by delaying search requests until the user stops typing
- */
-function createDebouncedSearchClient(client: any, delay: number = 300) {
-  let timerId: NodeJS.Timeout | undefined
-
-  return {
-    ...client,
-    search(requests: any[]) {
-      // If there's an empty query (initial load), don't debounce
-      const hasQuery = requests.some(req => req.query && req.query.length > 0)
-
-      if (!hasQuery) {
-        return client.search(requests)
-      }
-
-      // Clear existing timer
-      if (timerId) {
-        clearTimeout(timerId)
-      }
-
-      // Return a promise that resolves after the debounce delay
-      return new Promise((resolve, reject) => {
-        timerId = setTimeout(() => {
-          client
-            .search(requests)
-            .then(resolve)
-            .catch(reject)
-        }, delay)
-      })
-    }
-  }
-}
-
-// Export debounced search client with 300ms delay
-export const searchClient = createDebouncedSearchClient(baseSearchClient, 300)
+export const searchClient = baseSearchClient
 
 // Algolia v5 search result type
 export interface AlgoliaSearchResult<T = unknown> {
