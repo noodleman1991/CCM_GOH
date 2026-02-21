@@ -10,7 +10,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { Calendar, Users, Building, MapPin, ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import { urlFor } from '@/sanity/lib/image'
 import { getLocalizedText, formatCaseStudyDate, getPrimaryAuthor, getStudyLocationText } from '@/lib/case-study-utils'
 import { PortableText } from '@portabletext/react'
@@ -80,7 +80,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ loca
     <div className="container max-w-4xl py-8 space-y-8">
       {/* Back button */}
       <Button variant="ghost" asChild>
-        <Link href={`/${locale}/research-and-action/case-studies`} className="flex items-center gap-2">
+        <Link href={`/research-and-action/case-studies`} className="flex items-center gap-2">
           <ArrowLeft className="w-4 h-4" />
           Back to Case Studies
         </Link>

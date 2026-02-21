@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
+import { Link } from "@/i18n/navigation";
 
 export default function MainError({
   error,
@@ -30,7 +31,7 @@ export default function MainError({
           {t('tryAgain')}
         </Button>
         <Button variant="outline" asChild>
-          <a href="/">{t('goHome')}</a>
+          <Link href="/">{t('goHome')}</Link>
         </Button>
       </div>
     </div>

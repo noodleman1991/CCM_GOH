@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Plus, Search, ChevronRight } from 'lucide-react'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import { getLocalizedText } from '@/lib/localization-utils'
 import { fetchCaseStudyTags, fetchCaseStudyCommunities } from '@/sanity/queries/case-study-queries'
 
@@ -216,7 +216,7 @@ export default async function RegionalCaseStudiesPage({
 
         <div className="flex flex-col sm:flex-row gap-3">
           <Button asChild className="flex items-center gap-2">
-            <Link href={`/${locale}/research-and-action/case-studies/submit`}>
+            <Link href={`/research-and-action/case-studies/submit`}>
               <Plus className="w-4 h-4" />
               {t('submitButton')}
             </Link>
@@ -301,7 +301,7 @@ async function RegionalCaseStudiesContent({
             {filteredCaseStudies.map((caseStudy: any) => (
               <Link
                 key={caseStudy._id}
-                href={`/${locale}/research-and-action/case-studies/${caseStudy.slug}`}
+                href={`/research-and-action/case-studies/${caseStudy.slug}`}
               >
                 <GridCaseStudyComponent
                   _type="grid-case-study"
@@ -329,7 +329,7 @@ async function RegionalCaseStudiesContent({
                 {t('noResultsDescription')}
               </p>
               <Button variant="outline" asChild className="mt-4">
-                <Link href={`/${locale}/research-and-action/case-studies`}>
+                <Link href={`/research-and-action/case-studies`}>
                   {t('clearFilters')}
                 </Link>
               </Button>
@@ -378,7 +378,7 @@ async function RegionalCaseStudiesContent({
             </div>
             <Button variant="ghost" size="sm" asChild>
               <Link
-                href={`/${locale}/communities/${community.slug}`}
+                href={`/communities/${community.slug}`}
                 className="flex items-center gap-1"
               >
                 View community
@@ -392,7 +392,7 @@ async function RegionalCaseStudiesContent({
             {community.caseStudies.map((caseStudy: any) => (
               <Link
                 key={caseStudy._id}
-                href={`/${locale}/research-and-action/case-studies/${caseStudy.slug}`}
+                href={`/research-and-action/case-studies/${caseStudy.slug}`}
               >
                 <GridCaseStudyComponent
                   _type="grid-case-study"

@@ -1347,7 +1347,6 @@ export const searchCaseStudies = async ({
     const params: Record<string, unknown> = { limit };
 
     if (language) {
-        filters.push(`language == $language`);
         params.language = language;
     }
 
@@ -1377,8 +1376,12 @@ export const searchCaseStudies = async ({
         params.tags = tags;
     }
 
+    const orderClause = language
+        ? `order(language == $language desc, featured desc, publishedAt desc)`
+        : `order(featured desc, publishedAt desc)`;
+
     const { data } = await sanityFetch({
-        query: `*[${filters.join(' && ')}] | order(featured desc, publishedAt desc)[0...$limit]{
+        query: `*[${filters.join(' && ')}] | ${orderClause}[0...$limit]{
       _id,
       language,
       title,

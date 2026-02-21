@@ -4,7 +4,7 @@ import type { Metadata } from "next"
 import { notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 import Image from 'next/image'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
@@ -110,7 +110,7 @@ export default async function NewsDetailPage({
     <div className="container max-w-4xl py-8 space-y-8">
       {/* Back button */}
       <Button variant="ghost" asChild>
-        <Link href={`/${locale}/news`} className="flex items-center gap-2">
+        <Link href={`/news`} className="flex items-center gap-2">
           <ArrowLeft className="w-4 h-4" />
           {t('backToNews')}
         </Link>
@@ -314,7 +314,7 @@ export default async function NewsDetailPage({
                 const relatedTitle = getLocalizedValue(related.title, supportedLocale)
                 const relatedExcerpt = getLocalizedValue(related.excerpt, supportedLocale)
                 return (
-                  <Link key={related._id} href={`/${locale}/news/${related.slug}`}>
+                  <Link key={related._id} href={`/news/${related.slug}`}>
                     <Card className="group overflow-hidden h-full hover:shadow-lg transition-shadow">
                       {related.image?.asset?.url && (
                         <div className="relative aspect-video overflow-hidden bg-muted">

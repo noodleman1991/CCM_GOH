@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { Suspense } from 'react'
 import { getTranslations } from 'next-intl/server'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import { Card, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Search } from 'lucide-react'
@@ -156,7 +156,7 @@ async function NewsContent({
             {allNews.map((newsPost: any) => (
               <Link
                 key={newsPost._id}
-                href={`/${locale}/news/${newsPost.slug}`}
+                href={`/news/${newsPost.slug}`}
               >
                 <NewsPostCard
                   title={newsPost.title}
@@ -183,7 +183,7 @@ async function NewsContent({
                 {t('noResultsDescription')}
               </p>
               <Button variant="outline" asChild className="mt-4">
-                <Link href={`/${locale}/news`}>
+                <Link href={`/news`}>
                   {t('clearFilters')}
                 </Link>
               </Button>
@@ -224,7 +224,7 @@ async function NewsContent({
             {regularNews.map((newsPost: any) => (
               <Link
                 key={newsPost._id}
-                href={`/${locale}/news/${newsPost.slug}`}
+                href={`/news/${newsPost.slug}`}
               >
                 <NewsPostCard
                   title={newsPost.title}

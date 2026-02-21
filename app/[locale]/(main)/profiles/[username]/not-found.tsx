@@ -1,5 +1,5 @@
 import { getTranslations } from 'next-intl/server'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { UserX, ArrowLeft } from 'lucide-react'
