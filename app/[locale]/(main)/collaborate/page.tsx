@@ -46,6 +46,7 @@ export default async function CollaboratePage({ params, searchParams }: Collabor
     const authResult = await auth()
     userId = authResult.userId
   } catch (error) {
+    if (typeof error === 'object' && error !== null && 'digest' in error) throw error
     console.error('Collaborate page auth error:', error)
     redirect(`/${locale}/sign-in?redirect=/collaborate`)
   }
