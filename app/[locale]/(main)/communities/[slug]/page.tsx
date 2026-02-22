@@ -18,10 +18,17 @@ export async function generateStaticParams() {
         return [];
     }
 
-    return data.map((page: any) => ({
-        locale: page.language || 'en',
-        slug: page.slug?.current || page.slug,
-    }));
+    const locales = ['en', 'es', 'fr', 'ar'];
+    const slugs = [...new Set(data.map((page: any) => page.slug?.current || page.slug))];
+    const params = [];
+
+    for (const slug of slugs) {
+        for (const locale of locales) {
+            params.push({ locale, slug });
+        }
+    }
+
+    return params;
 }
 
 export default async function RegionalCommunityPage({

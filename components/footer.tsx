@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Logo from "@/components/logo";
+import { CookiePreferencesButton } from "@/components/cookie-consent/cookie-preferences-button";
 
 const navItems = [
   {
@@ -47,7 +48,7 @@ export default function Footer() {
             </Link>
           ))}
         </div>
-        <div className="mt-8 flex flex-col lg:flex-row gap-6 justify-center text-center lg:mt-5 text-xs border-t pt-8">
+        <div className="mt-8 flex flex-col lg:flex-row gap-6 items-center justify-center text-center lg:mt-5 text-xs border-t pt-8">
           <p className="text-foreground/60">
             &copy; {getCurrentYear()} Built by{" "}
             <Link href="https://x.com/serge_0v" target="_blank" rel="noopener">
@@ -55,6 +56,7 @@ export default function Footer() {
             </Link>
             .
           </p>
+          <CookiePreferencesButton />
         </div>
       </div>
     </footer>

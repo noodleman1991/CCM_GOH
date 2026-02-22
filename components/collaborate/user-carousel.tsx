@@ -101,7 +101,7 @@ export function UserCarousel({ title, users, className, defaultExpanded = false 
 
       {/* Content */}
       {isExpanded ? (
-        <UserGrid users={users} />
+        <UserGrid users={users} locale={locale} />
       ) : (
         <div className="relative group">
           {/* Scroll Buttons */}
@@ -116,7 +116,7 @@ export function UserCarousel({ title, users, className, defaultExpanded = false 
             )}
             onClick={() => scroll('left')}
           >
-            <ChevronLeft className="h-4 w-4" />
+            {isRTL ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
           </Button>
           <Button
             variant="outline"
@@ -129,7 +129,7 @@ export function UserCarousel({ title, users, className, defaultExpanded = false 
             )}
             onClick={() => scroll('right')}
           >
-            <ChevronRight className="h-4 w-4" />
+            {isRTL ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
           </Button>
 
           {/* Carousel */}
@@ -137,8 +137,7 @@ export function UserCarousel({ title, users, className, defaultExpanded = false 
             ref={scrollContainerRef}
             className={cn(
               'flex gap-4 overflow-x-auto scrollbar-hide pb-4',
-              'scroll-smooth',
-              isRTL && 'flex-row-reverse'
+              'scroll-smooth'
             )}
             dir={isRTL ? 'rtl' : 'ltr'}
           >

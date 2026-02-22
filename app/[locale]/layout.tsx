@@ -13,6 +13,8 @@ import { rtlLocales } from '@/i18n/routing';
 import { Poppins, Lato, Lalezar, Tajawal } from "next/font/google";
 import OnboardingRedirectProvider from '@/components/onboarding/onboarding-redirect-provider';
 import RevisionAlertProvider from '@/components/submissions/revision-alert-provider';
+import { CookieConsentProvider } from '@/components/cookie-consent/cookie-consent-provider';
+import { CookieConsentBanner } from '@/components/cookie-consent/cookie-consent-banner';
 
 const poppins = Poppins({
     subsets: ["latin"],
@@ -122,7 +124,10 @@ export default async function LocaleLayout({
                     >
                         <OnboardingRedirectProvider>
                             <RevisionAlertProvider>
-                                {children}
+                                <CookieConsentProvider>
+                                    {children}
+                                    <CookieConsentBanner />
+                                </CookieConsentProvider>
                             </RevisionAlertProvider>
                         </OnboardingRedirectProvider>
                     </ThemeProvider>

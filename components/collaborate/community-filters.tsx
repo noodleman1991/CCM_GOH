@@ -130,7 +130,7 @@ export function CommunityFilters({ filters, onChangeAction, communities, classNa
   const allSelected = totalSelected === totalPossible
 
   return (
-    <Card className={cn('w-full max-w-full overflow-hidden', className)}>
+    <Card className={cn('w-full max-w-full overflow-hidden', className)} dir={isRTL ? 'rtl' : 'ltr'}>
       <CardHeader>
         <div className="space-y-2">
           <div className="flex items-center justify-between">
@@ -156,7 +156,7 @@ export function CommunityFilters({ filters, onChangeAction, communities, classNa
                 onClick={handleDeselectAll}
                 className="h-8 w-full"
               >
-                <X className="h-4 w-4 mr-2" />
+                <X className="h-4 w-4 me-2" />
                 {t('clearFilters')}
               </Button>
             )}

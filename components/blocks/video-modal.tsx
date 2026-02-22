@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect } from "react";
-import { X, User, Calendar, MapPin } from "lucide-react";
+import { X, User, Calendar, MapPin, Video } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from '@/components/ui/button';
+import { useCookieConsent } from '@/components/cookie-consent/cookie-consent-provider';
 import {
   Dialog,
   DialogContent,
@@ -126,6 +128,8 @@ export function VideoModal({
   locale,
 }: VideoModalProps) {
   const t = useTranslations("livedExperiences");
+  const { consent, hasConsented, acceptAll } = useCookieConsent();
+  const hasFunctionalConsent = hasConsented && consent?.functional;
   const isRTL = locale === "ar";
 
   // Get video URL and title from experience or props
@@ -192,7 +196,7 @@ export function VideoModal({
 
         {/* Video Container */}
         <div className="relative aspect-video w-full overflow-hidden rounded-t-lg bg-black">
-          {isAllowed ? (
+          {isAllowed && hasFunctionalConsent ? (
             <iframe
               src={embedUrl}
               title={displayTitle || "Video player"}
@@ -200,6 +204,12 @@ export function VideoModal({
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
             />
+          ) : !hasFunctionalConsent ? (
+            <div className="absolute inset-0 flex items-center justify-center text-white flex-col gap-4">
+              <Video className="h-12 w-12" />
+              <p>{t("cookieConsentRequired")}</p>
+              <Button onClick={acceptAll} size="sm" variant="secondary">{t("acceptCookies")}</Button>
+            </div>
           ) : (
             <div className="absolute inset-0 flex items-center justify-center text-white">
               <p>{t("videoUnavailable")}</p>

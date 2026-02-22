@@ -70,6 +70,18 @@ export const fetchSanityRCPageBySlug = async ({
         },
     });
 
+    // Fall back to English if no locale-specific document exists
+    if (!data && locale !== 'en') {
+        const { data: fallbackData } = await sanityFetch({
+            query: REGIONAL_COMMUNITY_PAGE_QUERY,
+            params: {
+                slug,
+                language: 'en'
+            },
+        });
+        return fallbackData;
+    }
+
     return data;
 };
 

@@ -121,7 +121,7 @@ export function CollaborateUserCard({ user, className }: CollaborateUserCardProp
 
             {/* Affiliation */}
             {user.showWorkDetails && (user.organization || user.position) && (
-              <div className={cn('flex items-start gap-2', isRTL && 'flex-row-reverse')}>
+              <div className="flex items-start gap-2">
                 <Briefcase className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
                 <div className="text-sm text-muted-foreground min-w-0">
                   {user.organization && <p className="font-medium truncate">{user.organization}</p>}
@@ -132,7 +132,7 @@ export function CollaborateUserCard({ user, className }: CollaborateUserCardProp
 
             {/* Location */}
             {user.showLocation && (user.city || user.country) && (
-              <div className={cn('flex items-center gap-2', isRTL && 'flex-row-reverse')}>
+              <div className="flex items-center gap-2">
                 <MapPin className="h-4 w-4 text-muted-foreground flex-shrink-0" />
                 <p className="text-sm text-muted-foreground truncate">
                   {[user.city, user.country].filter(Boolean).join(', ')}
@@ -175,7 +175,7 @@ export function CollaborateUserCard({ user, className }: CollaborateUserCardProp
             {/* Recent Projects - respects showWorkDetails privacy setting */}
             {user.showWorkDetails && user.recentWork && user.recentWork.length > 0 && (
               <div className="space-y-1">
-                <div className={cn('flex items-center gap-1.5 text-xs font-medium text-muted-foreground', isRTL && 'flex-row-reverse')}>
+                <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
                   <FileText className="h-3 w-3" />
                   <span>{t('recentProjects', { count: user.recentWork.length })}</span>
                 </div>
@@ -205,7 +205,7 @@ export function CollaborateUserCard({ user, className }: CollaborateUserCardProp
                 />
               )}
               {user.lastLoginAt && (
-                <div className={cn('flex items-center gap-1.5 text-xs text-muted-foreground', isRTL && 'flex-row-reverse')}>
+                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                   <Clock className="h-3 w-3" />
                   <span>{t('lastActive', { time: getLastActiveText(user.lastLoginAt) })}</span>
                 </div>
