@@ -12,6 +12,7 @@ import { rtlLocales } from '@/i18n/routing'
 import { cn } from '@/lib/utils'
 import Image from "next/image";
 import SectionContainer from "@/components/ui/section-container";
+import { YouTubeConsentGate } from "@/components/cookie-consent/youtube-consent-gate";
 
 interface LivedExperiencesPageClientProps {
   initialCommunityVideos: Record<string, any[]>
@@ -323,13 +324,15 @@ export default function LivedExperiencesPageClient({
                   <div key={video._id} className="space-y-3">
                     <div className="aspect-video rounded-lg overflow-hidden bg-muted">
                       {video.videoUrl && (
-                        <iframe
-                          src={video.videoUrl.replace('watch?v=', 'embed/')}
-                          title={getLocalizedText(video.title, locale, video.title)}
-                          className="w-full h-full"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                          allowFullScreen
-                        />
+                        <YouTubeConsentGate>
+                          <iframe
+                            src={video.videoUrl.replace('watch?v=', 'embed/')}
+                            title={getLocalizedText(video.title, locale, video.title)}
+                            className="w-full h-full"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                          />
+                        </YouTubeConsentGate>
                       )}
                     </div>
                     <div className="space-y-2">

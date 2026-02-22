@@ -551,7 +551,10 @@
     "noResults": "Aucune vidéo trouvée correspondant à vos filtres",
     "video": "vidéo",
     "videos": "vidéos",
-    "tags": "Étiquettes"
+    "tags": "Étiquettes",
+    "cookieConsentRequired": "Cette vidéo nécessite le consentement aux cookies pour être lue.",
+    "acceptCookies": "Accepter les Cookies",
+    "videoUnavailable": "Cette vidéo n'est pas disponible."
   },
   "caseStudyForm": {
     "sections": {
@@ -1120,6 +1123,37 @@
     "studyPeriod": "Période d'étude : ",
     "viewMore": "Voir Plus",
     "showLess": "Voir Moins",
-    "ourTeam": "Notre Équipe"
+    "ourTeam": "Notre Équipe",
+    "sectionTitles": {
+      "agendas": "Agendas",
+      "caseStudies": "Études de Cas",
+      "newsUpdates": "Actualités",
+      "communityVoices": "Voix de la Communauté",
+      "communityVoicesSubtitle": "Écoutez directement les membres de la communauté partager leurs expériences"
+    }
+  },
+  "cookieConsent": {
+    "title": "Nous respectons votre vie privée",
+    "description": "Nous utilisons des cookies essentiels pour le bon fonctionnement, et des cookies optionnels pour améliorer votre expérience. Plausible, notre outil d'analyse, est entièrement sans cookies.",
+    "acceptAll": "Tout Accepter",
+    "rejectNonEssential": "Essentiels Uniquement",
+    "managePreferences": "Gérer les Préférences",
+    "savePreferences": "Enregistrer les Préférences",
+    "videoBlocked": "Cette vidéo nécessite le consentement aux cookies pour être lue.",
+    "changePreferences": "Préférences de Cookies",
+    "categories": {
+      "essential": {
+        "title": "Essentiels",
+        "description": "Ces cookies sont nécessaires pour l'authentification et les fonctionnalités principales. Ils ne peuvent pas être désactivés."
+      },
+      "functional": {
+        "title": "Fonctionnels",
+        "description": "Activent le contenu intégré comme les vidéos YouTube et les fonctionnalités interactives."
+      },
+      "analytics": {
+        "title": "Analytiques",
+        "description": "Nous utilisons Plausible Analytics, qui est entièrement sans cookies. Aucun consentement nécessaire ici !"
+      }
+    }
   }
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import Blocks from '@/components/blocks/index';
 import TeamGrid from '@/components/blocks/grid/team-grid';
+import { getTranslations } from 'next-intl/server';
 import { fetchRegionalCommunityAgendas } from '@/sanity/lib/fetch';
 import { fetchRegionalCommunityCaseStudiesBySlug } from '@/sanity/queries/regional-community-case-studies';
 import { fetchRegionalCommunityLivedExperiencesBySlug } from '@/sanity/queries/regional-community-lived-experiences';
@@ -81,6 +82,8 @@ export default async function RegionalCommunityTemplate({
     });
     return null;
   }
+
+  const t = await getTranslations({ locale, namespace: 'regional' });
 
   const communitySlug = regionalCommunity.slug.current;
 
@@ -225,7 +228,7 @@ export default async function RegionalCommunityTemplate({
     templateBlocks.push({
       _type: 'grid-row',
       _key: 'template-agendas-grid',
-      title: agendasGrid?.title || 'Agendas',
+      title: agendasGrid?.title || t('sectionTitles.agendas'),
       subtitle: agendasGrid?.subtitle,
       headerImage: agendasGrid?.headerImage,
       description: agendasGrid?.showDescription ? agendasGrid.description : undefined,
@@ -252,7 +255,7 @@ export default async function RegionalCommunityTemplate({
     templateBlocks.push({
       _type: 'grid-row',
       _key: 'template-case-studies-grid',
-      title: caseStudiesGrid?.title || 'Case Studies',
+      title: caseStudiesGrid?.title || t('sectionTitles.caseStudies'),
       subtitle: caseStudiesGrid?.subtitle,
       headerImage: caseStudiesGrid?.headerImage,
       description: caseStudiesGrid?.showDescription ? caseStudiesGrid.description : undefined,
@@ -279,7 +282,7 @@ export default async function RegionalCommunityTemplate({
     templateBlocks.push({
       _type: 'grid-row',
       _key: 'template-news-grid',
-      title: newsGrid?.title || 'News & Updates',
+      title: newsGrid?.title || t('sectionTitles.newsUpdates'),
       subtitle: newsGrid?.subtitle,
       headerImage: newsGrid?.headerImage,
       description: newsGrid?.showDescription ? newsGrid.description : undefined,
@@ -327,8 +330,8 @@ export default async function RegionalCommunityTemplate({
     templateBlocks.push({
       _type: 'lived-experiences-carousel',
       _key: 'template-lived-experiences',
-      title: livedExperiencesCarousel?.title || 'Community Voices',
-      subtitle: livedExperiencesCarousel?.subtitle || 'Hear directly from community members about their experiences',
+      title: livedExperiencesCarousel?.title || t('sectionTitles.communityVoices'),
+      subtitle: livedExperiencesCarousel?.subtitle || t('sectionTitles.communityVoicesSubtitle'),
       description: livedExperiencesCarousel?.showDescription ? livedExperiencesCarousel.description : undefined,
       background: livedExperiencesCarousel?.background || { type: 'muted' },
       padding: livedExperiencesCarousel?.padding || { top: 'xl', bottom: 'xl' },

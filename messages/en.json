@@ -721,7 +721,10 @@
     "noResults": "No videos found matching your filters",
     "video": "video",
     "videos": "videos",
-    "tags": "Tags"
+    "tags": "Tags",
+    "cookieConsentRequired": "This video requires cookie consent to play.",
+    "acceptCookies": "Accept Cookies",
+    "videoUnavailable": "This video is unavailable."
   },
   "revisionAlert": {
     "title": "Action Required: Revision Needed",
@@ -1147,6 +1150,37 @@
     "studyPeriod": "Study Period: ",
     "viewMore": "View More",
     "showLess": "Show Less",
-    "ourTeam": "Our Team"
+    "ourTeam": "Our Team",
+    "sectionTitles": {
+      "agendas": "Agendas",
+      "caseStudies": "Case Studies",
+      "newsUpdates": "News & Updates",
+      "communityVoices": "Community Voices",
+      "communityVoicesSubtitle": "Hear directly from community members about their experiences"
+    }
+  },
+  "cookieConsent": {
+    "title": "We value your privacy",
+    "description": "We use essential cookies to keep things running smoothly, and optional cookies to make your experience better. Plausible, our analytics tool, is completely cookieless — it never tracks you personally.",
+    "acceptAll": "Accept All",
+    "rejectNonEssential": "Essential Only",
+    "managePreferences": "Manage Preferences",
+    "savePreferences": "Save Preferences",
+    "videoBlocked": "This video requires cookie consent to play.",
+    "changePreferences": "Cookie Preferences",
+    "categories": {
+      "essential": {
+        "title": "Essential",
+        "description": "These cookies are needed for authentication and core functionality. They can't be turned off."
+      },
+      "functional": {
+        "title": "Functional",
+        "description": "Enable embedded content like YouTube videos and interactive features."
+      },
+      "analytics": {
+        "title": "Analytics",
+        "description": "We use Plausible Analytics, which is completely cookieless — no tracking cookies are ever set. No consent needed here!"
+      }
+    }
   }
 }

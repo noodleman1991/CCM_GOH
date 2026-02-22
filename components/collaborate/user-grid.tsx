@@ -27,11 +27,14 @@ interface UserGridProps {
   }>
   className?: string
   itemsPerPage?: number
+  locale?: string
 }
 
-export function UserGrid({ users, className, itemsPerPage }: UserGridProps) {
+export function UserGrid({ users, className, itemsPerPage, locale }: UserGridProps) {
   const t = useTranslations('collaborate.carousel')
   const tStats = useTranslations('collaborate.stats')
+  const tCommon = useTranslations('common')
+  const isRTL = locale === 'ar'
 
   // Calculate items per page based on screen size (4 rows)
   // Responsive: 1 col (mobile), 2 cols (tablet), 3 cols (desktop), 4 cols (large)
@@ -89,8 +92,8 @@ export function UserGrid({ users, className, itemsPerPage }: UserGridProps) {
               disabled={currentPage === 1}
               className="gap-2"
             >
-              <ChevronLeft className="h-4 w-4" />
-              Previous
+              {isRTL ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+              {tCommon('previous')}
             </Button>
             <span className="text-sm font-medium px-2">
               {currentPage} / {totalPages}
@@ -102,8 +105,8 @@ export function UserGrid({ users, className, itemsPerPage }: UserGridProps) {
               disabled={currentPage === totalPages}
               className="gap-2"
             >
-              Next
-              <ChevronRight className="h-4 w-4" />
+              {tCommon('next')}
+              {isRTL ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
             </Button>
           </div>
         </div>

@@ -11,6 +11,7 @@ import { urlFor } from "@/sanity/lib/image";
 import { getLocalizedValue } from '@/i18n/i18n-helpers';
 import { splitContentAtReadMore } from "@/lib/portable-text-utils";
 import { PortableTextWithReadMore } from "@/components/portable-text-with-read-more";
+import { YouTubeConsentGate } from '@/components/cookie-consent/youtube-consent-gate';
 
 interface PortableTextRendererProps extends PortableTextProps {
   locale?: string;
@@ -68,7 +69,9 @@ const createPortableTextComponents = (
         return (
           <figure className="my-8">
             <div className="aspect-video max-w-[45rem] rounded-xl overflow-hidden mb-4 mx-auto">
-              <YouTubeEmbed videoid={videoId} params="rel=0" />
+              <YouTubeConsentGate>
+                <YouTubeEmbed videoid={videoId} params="rel=0" />
+              </YouTubeConsentGate>
             </div>
             {caption && (
               <figcaption className="text-sm text-muted-foreground mt-2 italic text-center font-body">

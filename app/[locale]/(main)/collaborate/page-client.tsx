@@ -189,7 +189,7 @@ export function CollaboratePageClient({
   }
 
   return (
-    <div className={cn('container mx-auto py-8 px-4', isRTL && 'rtl')}>
+    <div className="container mx-auto py-8 px-4">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">{t('pageTitle')}</h1>
@@ -218,19 +218,16 @@ export function CollaboratePageClient({
                 e.preventDefault()
                 handleSearch(searchInput)
               }}
-              className={cn('flex gap-2', isRTL && 'flex-row-reverse')}
+              className="flex gap-2"
             >
               <div className="relative flex-1">
-                <Search className={cn(
-                  'absolute top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground',
-                  isRTL ? 'right-3' : 'left-3'
-                )} />
+                <Search className="absolute top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground start-3" />
                 <Input
                   type="text"
                   placeholder={t('searchPlaceholder')}
                   value={searchInput}
                   onChange={(e) => setSearchInput(e.target.value)}
-                  className={cn(isRTL ? 'pr-10' : 'pl-10')}
+                  className="ps-10"
                   dir={isRTL ? 'rtl' : 'ltr'}
                 />
               </div>
@@ -241,7 +238,7 @@ export function CollaboratePageClient({
 
             {/* Active Filters Tags */}
             {hasActiveFilters && (
-              <div className={cn('flex flex-wrap items-center gap-2 mt-4', isRTL && 'flex-row-reverse')}>
+              <div className="flex flex-wrap items-center gap-2 mt-4">
                 <span className="text-sm font-medium text-muted-foreground">
                   {t('activeFilters.title')}
                 </span>

@@ -551,7 +551,10 @@
     "noResults": "No se encontraron videos que coincidan con tus filtros",
     "video": "video",
     "videos": "videos",
-    "tags": "Etiquetas"
+    "tags": "Etiquetas",
+    "cookieConsentRequired": "Este video requiere consentimiento de cookies para reproducirse.",
+    "acceptCookies": "Aceptar Cookies",
+    "videoUnavailable": "Este video no está disponible."
   },
   "caseStudyForm": {
     "sections": {
@@ -1120,6 +1123,37 @@
     "studyPeriod": "Período de estudio: ",
     "viewMore": "Ver Más",
     "showLess": "Ver Menos",
-    "ourTeam": "Nuestro Equipo"
+    "ourTeam": "Nuestro Equipo",
+    "sectionTitles": {
+      "agendas": "Agendas",
+      "caseStudies": "Estudios de Caso",
+      "newsUpdates": "Noticias y Actualizaciones",
+      "communityVoices": "Voces de la Comunidad",
+      "communityVoicesSubtitle": "Escucha directamente a los miembros de la comunidad sobre sus experiencias"
+    }
+  },
+  "cookieConsent": {
+    "title": "Valoramos tu privacidad",
+    "description": "Usamos cookies esenciales para que todo funcione correctamente, y cookies opcionales para mejorar tu experiencia. Plausible, nuestra herramienta de análisis, no utiliza cookies en absoluto.",
+    "acceptAll": "Aceptar Todo",
+    "rejectNonEssential": "Solo Esenciales",
+    "managePreferences": "Gestionar Preferencias",
+    "savePreferences": "Guardar Preferencias",
+    "videoBlocked": "Este video requiere consentimiento de cookies para reproducirse.",
+    "changePreferences": "Preferencias de Cookies",
+    "categories": {
+      "essential": {
+        "title": "Esenciales",
+        "description": "Estas cookies son necesarias para la autenticación y la funcionalidad principal. No se pueden desactivar."
+      },
+      "functional": {
+        "title": "Funcionales",
+        "description": "Habilitan contenido incrustado como videos de YouTube y funciones interactivas."
+      },
+      "analytics": {
+        "title": "Analíticas",
+        "description": "Usamos Plausible Analytics, que es completamente sin cookies. ¡No se necesita consentimiento aquí!"
+      }
+    }
   }
 }
