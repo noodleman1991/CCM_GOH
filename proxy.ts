@@ -17,14 +17,10 @@ import { NextRequest, NextResponse } from 'next/server'
 
 const withLocale = (path: string) => `/:locale${path.startsWith('/') ? '' : '/'}${path}`
 
-const isPublicRoute = createRouteMatcher([
-    withLocale('/'),
-    withLocale('/about'),
-    withLocale('/privacy-policy'),
-    withLocale('/terms-of-service'),
-    withLocale('/sign-in'),
-    withLocale('/sign-up'),
-    '/api/webhooks/(.*)'
+const isProtectedRoute = createRouteMatcher([
+    withLocale('/dashboard/:path*'),
+    withLocale('/collaborate'),
+    withLocale('/research-and-action/case-studies/submit'),
 ])
 
 const isProtectedApiRoute = createRouteMatcher([
@@ -33,13 +29,8 @@ const isProtectedApiRoute = createRouteMatcher([
     '/api/account',
     '/api/account/(.*)',
     '/api/users/(.*)',
-    // Removed: '/api/search/(.*)' - sync routes have internal auth
     '/api/onboarding/(.*)',
     '/api/case-studies/submit',
-])
-
-const isProtectedRoute = createRouteMatcher([
-    withLocale('/dashboard/:path*'),
 ])
 
 const isOnboardingRoute = createRouteMatcher([withLocale('/onboarding')])
@@ -47,27 +38,27 @@ const isOnboardingRoute = createRouteMatcher([withLocale('/onboarding')])
 const intlMiddleware = createIntlMiddleware(routing)
 
 export const proxy = clerkMiddleware(async (auth, req: NextRequest) => {
-    // Handle webhook routes - skip all middleware
+    // Skip middleware for webhook routes
     if (req.nextUrl.pathname.startsWith('/api/webhooks/')) {
         return NextResponse.next()
     }
 
-    // Handle sync routes - skip Clerk auth, they have internal Bearer token auth
+    // Skip Clerk for sync routes (internal Bearer token auth)
     if (req.nextUrl.pathname.match(/^\/api\/search\/.*\/sync$/)) {
         return NextResponse.next()
     }
 
-    // Handle public API routes - no authentication required, no i18n
+    // Public API routes — no auth, no i18n
     if (req.nextUrl.pathname.startsWith('/api/communities')) {
         return NextResponse.next()
     }
 
-    // Handle search counts - public endpoint (auth is optional for enhanced filtering)
+    // Search counts — public endpoint
     if (req.nextUrl.pathname === '/api/search/counts') {
         return NextResponse.next()
     }
 
-    // Handle protected API routes - require authentication but no i18n
+    // Protected API routes — require auth, no i18n
     if (isProtectedApiRoute(req)) {
         const authResult = await auth()
         if (!authResult.userId) {
@@ -76,7 +67,7 @@ export const proxy = clerkMiddleware(async (auth, req: NextRequest) => {
         return NextResponse.next()
     }
 
-    // Handle i18n for non-API routes
+    // i18n for non-API routes
     if (!req.nextUrl.pathname.startsWith('/api/')) {
         const intlResponse = intlMiddleware(req)
         if (intlResponse) return intlResponse
@@ -85,29 +76,27 @@ export const proxy = clerkMiddleware(async (auth, req: NextRequest) => {
     const authResult = await auth()
     const { userId, sessionClaims } = authResult
 
+    // Allow authenticated users on onboarding route
     if (userId && isOnboardingRoute(req)) {
         return NextResponse.next()
     }
 
-    if (!userId && !isPublicRoute(req)) {
+    // Protected routes — redirect unauthenticated users to sign-in
+    if (isProtectedRoute(req) && !userId) {
         const cleanUrl = new URL(req.url)
-        cleanUrl.searchParams.delete('redirect_url') // prevent nested loops
+        cleanUrl.searchParams.delete('redirect_url')
         return authResult.redirectToSignIn({ returnBackUrl: cleanUrl.toString() })
     }
 
+    // Onboarding enforcement on protected routes only
     if (
         userId &&
-        !(sessionClaims?.publicMetadata as { onboardingCompleted?: boolean })?.onboardingCompleted &&
+        isProtectedRoute(req) &&
         !isOnboardingRoute(req) &&
-        !isPublicRoute(req)
+        !(sessionClaims?.publicMetadata as { onboardingCompleted?: boolean })?.onboardingCompleted
     ) {
         const onboardingUrl = new URL('/onboarding', req.url)
         return NextResponse.redirect(onboardingUrl)
-    }
-
-    // Explicitly protect dashboard routes
-    if (isProtectedRoute(req) && !userId) {
-        return authResult.redirectToSignIn({ returnBackUrl: req.url })
     }
 
     return NextResponse.next()
