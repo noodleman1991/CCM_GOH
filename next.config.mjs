@@ -36,11 +36,11 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.clerk.com${clerkDevDomains} https://challenges.cloudflare.com https://*.algolianet.com https://plausible.io`,
+              `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.clerk.com https://*.clerk.com https://clerk.connectingclimateminds.org${clerkDevDomains} https://challenges.cloudflare.com https://*.algolianet.com https://plausible.io`,
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: blob: https://cdn.sanity.io https://img.youtube.com https://img.clerk.com",
               "font-src 'self' data:",
-              `connect-src 'self' https://*.clerk.com${clerkDevDomains} https://*.algolia.net https://*.algolianet.com https://plausible.io https://cdn.sanity.io`,
+              `connect-src 'self' https://*.clerk.com https://clerk.connectingclimateminds.org${clerkDevDomains} https://*.algolia.net https://*.algolianet.com https://plausible.io https://cdn.sanity.io`,
               "frame-src https://www.youtube.com https://www.youtube-nocookie.com https://challenges.cloudflare.com https://*.clerk.com",
               "media-src 'self' https://cdn.sanity.io",
               "object-src 'none'",
