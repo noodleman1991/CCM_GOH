@@ -631,10 +631,10 @@
       "submitted": "Enviado para Revisión"
     },
     "messages": {
-      "submitSuccess": "¡Gracias! Thank you! Merci! شكرا! Tu estudio de caso ha sido enviado y será revisado por nuestro equipo.",
-      "submitError": "Error al enviar el estudio de caso. Por favor intenta de nuevo.",
+      "submitSuccess": "¡Gracias por compartir tu trabajo! Tu estudio de caso ha sido enviado y nuestro equipo lo revisará pronto.",
+      "submitError": "No pudimos enviar tu estudio de caso en este momento. Por favor, inténtalo de nuevo en un momento.",
       "loginRequired": "Debes estar conectado para enviar un estudio de caso",
-      "reviewNote": "Tu estudio de caso será revisado por nuestro equipo editorial multilingüe antes de la publicación.",
+      "reviewNote": "Una vez que envíes, nuestro equipo revisará tu estudio de caso y te responderá. Esto suele tardar unos días.",
       "multilingualWelcome": "¡Bienvenido a nuestra comunidad global! Envía en cualquier idioma y ayúdanos a llegar a investigadores de todo el mundo."
     }
   },

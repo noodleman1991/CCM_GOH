@@ -117,6 +117,7 @@ export const defaultOnboardingValues: OnboardingFormData = {
     lastName: "",
     username: "",
     bio: "",
+    ageGroup: undefined,
     country: "",
     city: "",
     preferredLanguage: "EN" as const
