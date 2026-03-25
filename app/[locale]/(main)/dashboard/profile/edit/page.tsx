@@ -5,6 +5,7 @@ import { getTranslations, getLocale } from 'next-intl/server'
 import ProfileEditForm from "@/components/blocks/profile/profile-edit-form"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 import { fetchUserManagementOptionsWithLocale } from "@/lib/actions/sync-user-management"
+import { revalidatePath } from 'next/cache'
 import { prisma } from '@/lib/prisma'
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -15,7 +16,10 @@ export async function generateMetadata(): Promise<Metadata> {
     }
 }
 
-// Remove server action - we'll use our TypeScript API service instead
+async function revalidateDashboard() {
+    'use server'
+    revalidatePath('/dashboard', 'layout')
+}
 
 export default async function ProfileEditPage() {
     const t = await getTranslations('profile.edit')
@@ -70,6 +74,7 @@ export default async function ProfileEditPage() {
             <ProfileEditForm
                 userManagementOptions={userManagementOptions}
                 availableCommunitiesData={communities}
+                onImageChangeAction={revalidateDashboard}
             />
         </div>
     )

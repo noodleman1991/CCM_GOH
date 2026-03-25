@@ -130,10 +130,11 @@ interface ProfileEditFormProps {
         }
         regionalName: string
     }>
+    onImageChangeAction?: () => Promise<void>
 }
 
 export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
-    const { initialData, onSubmitAction, userManagementOptions, availableCommunitiesData } = props
+    const { initialData, onSubmitAction, userManagementOptions, availableCommunitiesData, onImageChangeAction } = props
     const t = useTranslations('profile.edit')
     const tCommunities = useTranslations('profile.communities')
     const tRecentWork = useTranslations('profile.recentWork')
@@ -428,6 +429,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                 <ProfilePictureUpload
                     firstName={form.watch("firstName")}
                     lastName={form.watch("lastName")}
+                    onImageChangeAction={onImageChangeAction}
                 />
 
                 {/* Clerk-managed Information */}
