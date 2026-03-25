@@ -554,10 +554,10 @@
       "submitted": "Submitted for Review"
     },
     "messages": {
-      "submitSuccess": "¡Gracias! Thank you! Merci! شكرا! Your case study has been submitted and will be reviewed by our team.",
-      "submitError": "Failed to submit case study. Please try again.",
+      "submitSuccess": "Thank you for sharing your work! Your case study has been submitted and our team will review it soon.",
+      "submitError": "We couldn't submit your case study right now. Please try again in a moment.",
       "loginRequired": "You must be logged in to submit a case study",
-      "reviewNote": "Your case study will be reviewed by our multilingual editorial team before publication.",
+      "reviewNote": "Once you submit, our team will review your case study and get back to you. This usually takes a few days.",
       "multilingualWelcome": "Welcome to our global community! Submit in any language and help us reach researchers worldwide."
     }
   },

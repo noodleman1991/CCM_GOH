@@ -631,10 +631,10 @@
       "submitted": "Soumis pour Révision"
     },
     "messages": {
-      "submitSuccess": "¡Gracias! Thank you! Merci! شكرا! Votre étude de cas a été soumise et sera examinée par notre équipe.",
-      "submitError": "Échec de la soumission de l'étude de cas. Veuillez réessayer.",
+      "submitSuccess": "Merci d'avoir partagé votre travail ! Votre étude de cas a été soumise et notre équipe l'examinera bientôt.",
+      "submitError": "Nous n'avons pas pu soumettre votre étude de cas pour le moment. Veuillez réessayer dans un instant.",
       "loginRequired": "Vous devez être connecté pour soumettre une étude de cas",
-      "reviewNote": "Votre étude de cas sera examinée par notre équipe éditoriale multilingue avant publication.",
+      "reviewNote": "Une fois soumise, notre équipe examinera votre étude de cas et vous répondra. Cela prend généralement quelques jours.",
       "multilingualWelcome": "Bienvenue dans notre communauté mondiale ! Soumettez dans n'importe quelle langue et aidez-nous à atteindre les chercheurs du monde entier."
     }
   },
