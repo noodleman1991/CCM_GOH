@@ -29,30 +29,30 @@ import {
 
 interface Submission {
   _id: string
-  title: Record<string, string>
-  excerpt: Record<string, string>
+  title?: Record<string, string> | null
+  excerpt?: Record<string, string> | null
   topic?: string
   status: 'pending' | 'approved' | 'rejected' | 'revision'
   featured?: boolean
   slug?: string
-  submittedAt: string
+  submittedAt?: string | null
   publishedAt?: string
   reviewNotes?: string
   image?: string
-  authors: Array<{ name: string; role: string }>
+  authors?: Array<{ name: string; role: string }> | null
   tags?: Array<{
     _id: string
-    title: Record<string, string>
-    value: string
-  }>
+    title?: Record<string, string> | null
+    value?: string
+  }> | null
 }
 
 interface Draft {
   _id: string
-  title: Record<string, string>
-  excerpt: Record<string, string>
+  title?: Record<string, string> | null
+  excerpt?: Record<string, string> | null
   topic?: string
-  lastSaved: string
+  lastSaved?: string | null
   formMetadata?: {
     currentStep?: string
     completedSections?: string[]
@@ -116,11 +116,11 @@ export default function UserSubmissionsDashboard({
   const [selectedStatus, setSelectedStatus] = useState<string>('all')
 
   const getTitle = (item: Submission | Draft) => {
-    return item.title[locale] || item.title.en || 'Untitled'
+    return item.title?.[locale] || item.title?.en || 'Untitled'
   }
 
   const getExcerpt = (item: Submission | Draft) => {
-    return item.excerpt[locale] || item.excerpt.en || ''
+    return item.excerpt?.[locale] || item.excerpt?.en || ''
   }
 
   const filteredSubmissions = selectedStatus === 'all'
@@ -185,12 +185,14 @@ export default function UserSubmissionsDashboard({
             <div className="flex items-center gap-4 text-xs text-muted-foreground">
               <div className="flex items-center gap-1">
                 <Calendar className="w-3 h-3" />
-                {format(new Date(submission.submittedAt), 'MMM d, yyyy')}
+                {submission.submittedAt
+                  ? format(new Date(submission.submittedAt), 'MMM d, yyyy')
+                  : 'Date unknown'}
               </div>
-              {submission.authors.length > 0 && (
+              {(submission.authors?.length ?? 0) > 0 && (
                 <div className="flex items-center gap-1">
                   <Users className="w-3 h-3" />
-                  {submission.authors.length} author{submission.authors.length !== 1 ? 's' : ''}
+                  {submission.authors!.length} author{submission.authors!.length !== 1 ? 's' : ''}
                 </div>
               )}
             </div>
@@ -199,7 +201,7 @@ export default function UserSubmissionsDashboard({
               <div className="flex flex-wrap gap-1">
                 {submission.tags.slice(0, 3).map((tag) => (
                   <Badge key={tag._id} variant="secondary" className="text-xs">
-                    {tag.title[locale] || tag.title.en || tag.value}
+                    {tag.title?.[locale] || tag.title?.en || tag.value || 'Tag'}
                   </Badge>
                 ))}
                 {submission.tags.length > 3 && (
@@ -280,7 +282,9 @@ export default function UserSubmissionsDashboard({
         <div className="flex items-center gap-4 text-xs text-muted-foreground mb-4">
           <div className="flex items-center gap-1">
             <Clock className="w-3 h-3" />
-            Last saved {format(new Date(draft.lastSaved), 'MMM d, yyyy')}
+            Last saved {draft.lastSaved
+              ? format(new Date(draft.lastSaved), 'MMM d, yyyy')
+              : 'Unknown'}
           </div>
           {draft.formMetadata?.currentStep && (
             <div className="flex items-center gap-1">

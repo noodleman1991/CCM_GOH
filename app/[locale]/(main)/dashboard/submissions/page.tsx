@@ -2,46 +2,12 @@ import type { Metadata } from "next"
 import { auth } from "@clerk/nextjs/server"
 import { redirect } from "next/navigation"
 import { getTranslations } from 'next-intl/server'
-import { client } from "@/sanity/lib/client"
+import { fetchUserSubmissionsAndDrafts } from "@/sanity/lib/fetch"
 import UserSubmissionsDashboard from "@/components/dashboard/user-submissions-dashboard"
 import { Suspense } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 
-// Fetch user's case studies and drafts
-async function fetchUserSubmissions(userId: string) {
-  return await client.fetch(`
-    {
-      "submissions": *[_type == "caseStudy" && submittedBy == $userId] | order(submittedAt desc) {
-        _id,
-        title,
-        excerpt,
-        topic,
-        status,
-        featured,
-        "slug": slug.current,
-        submittedAt,
-        publishedAt,
-        reviewNotes,
-        "image": image.asset->url,
-        authors,
-        tags[]-> {
-          _id,
-          title,
-          "value": value.current
-        }
-      },
-      "drafts": *[_type == "caseStudyDraft" && userId == $userId] | order(lastSaved desc) {
-        _id,
-        title,
-        excerpt,
-        topic,
-        lastSaved,
-        formMetadata
-      }
-    }
-  `, { userId })
-}
 
 function LoadingSkeleton() {
   return (
@@ -103,14 +69,14 @@ export default async function UserSubmissionsPage({
 
 async function UserSubmissionsContent({ locale, userId }: { locale: string; userId: string }) {
   const [data, t] = await Promise.all([
-    fetchUserSubmissions(userId),
+    fetchUserSubmissionsAndDrafts({ userId }),
     getTranslations({ locale, namespace: 'dashboard' })
   ])
 
   return (
     <UserSubmissionsDashboard
-      submissions={data.submissions}
-      drafts={data.drafts}
+      submissions={data.submissions ?? []}
+      drafts={data.drafts ?? []}
       locale={locale}
     />
   )

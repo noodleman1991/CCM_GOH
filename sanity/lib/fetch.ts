@@ -1163,6 +1163,31 @@ export const fetchCaseStudiesByUser = async ({
     return data;
 };
 
+// Fetch user's submissions and drafts (authenticated, no CDN)
+export const fetchUserSubmissionsAndDrafts = async ({ userId }: { userId: string }) => {
+    try {
+        const { data } = await sanityFetch({
+            query: `{
+        "submissions": *[_type == "caseStudy" && submittedBy == $userId] | order(submittedAt desc) {
+          _id, title, excerpt, topic, status, featured,
+          "slug": slug.current, submittedAt, publishedAt, reviewNotes,
+          "image": image.asset->url,
+          authors[]{ name, role },
+          tags[]-> { _id, title, "value": value.current }
+        },
+        "drafts": *[_type == "caseStudyDraft" && userId == $userId] | order(lastSaved desc) {
+          _id, title, excerpt, topic, lastSaved, formMetadata
+        }
+      }`,
+            params: { userId },
+        });
+        return data ?? { submissions: [], drafts: [] };
+    } catch (error) {
+        console.error('Error fetching user submissions:', error);
+        return { submissions: [], drafts: [] };
+    }
+};
+
 // Fetch case studies by status (for editorial workflow)
 export const fetchCaseStudiesByStatus = async ({
                                                    status,
