@@ -1,6 +1,6 @@
 "use server"
 
-import { client as sanityClient } from "@/sanity/lib/client"
+import { writeClient as sanityClient } from "@/sanity/lib/write-client"
 import { allUserManagementOptionsQuery } from "@/sanity/queries/work-types"
 
 // Hardcoded fallback data with full i18n support

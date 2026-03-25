@@ -168,8 +168,7 @@ export default defineType({
             type: "reference",
             group: "affiliations",
             to: [{ type: "regionalCommunity" }],
-            description: "Regional community this news post belongs to",
-            validation: (Rule) => Rule.required(),
+            description: "Regional community this news post belongs to (optional)",
         }),
         // Location using Google Maps plugins
         defineField({
