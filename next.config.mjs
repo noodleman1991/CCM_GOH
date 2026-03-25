@@ -40,7 +40,7 @@ const nextConfig = {
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: blob: https://cdn.sanity.io https://img.youtube.com https://img.clerk.com",
               "font-src 'self' data:",
-              `connect-src 'self' https://*.clerk.com https://clerk.connectingclimateminds.org${clerkDevDomains} https://*.algolia.net https://*.algolianet.com https://plausible.io https://cdn.sanity.io`,
+              `connect-src 'self' https://*.clerk.com https://clerk.connectingclimateminds.org${clerkDevDomains} https://*.algolia.net https://*.algolianet.com https://plausible.io https://*.sanity.io`,
               "frame-src https://www.youtube.com https://www.youtube-nocookie.com https://challenges.cloudflare.com https://*.clerk.com",
               "media-src 'self' https://cdn.sanity.io",
               "object-src 'none'",
