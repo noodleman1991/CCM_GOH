@@ -473,6 +473,7 @@ export async function GET() {
         lastName: true,
         username: true,
         bio: true,
+        ageGroup: true,
         country: true,
         city: true,
         workTypes: true,
