@@ -15,7 +15,9 @@ import {
   fetchAllNews,
   fetchNewsTags,
   fetchRegionalCommunities,
+  fetchApprovedExternalSources,
 } from '@/sanity/queries/news-queries'
+import ExternalSourceCard from '@/components/ui/external-source-card'
 import { hasActiveFilters } from '@/lib/news-utils'
 import { getLocalizedValue } from '@/i18n/i18n-helpers'
 import type { NewsFilters as NewsFiltersType } from '@/lib/news-utils'
@@ -134,9 +136,18 @@ async function NewsContent({
 
   const hasFilters = hasActiveFilters(filterObj)
 
-  // If filters are active, show all matching news (including featured)
+  // If filters are active, show all matching news (including featured) + external sources
   if (hasFilters) {
-    const allNews = await fetchAllNews(filterObj)
+    const [allNews, externalSources] = await Promise.all([
+      fetchAllNews(filterObj),
+      fetchApprovedExternalSources({
+        tag: filterObj.tag,
+        community: filterObj.community,
+        search: filterObj.search,
+      }),
+    ])
+
+    const totalResults = allNews.length + externalSources.length
 
     return (
       <div className="space-y-6">
@@ -146,12 +157,12 @@ async function NewsContent({
             <h2 className="text-xl font-semibold">{t('searchResults')}</h2>
           </div>
           <p className="text-sm text-muted-foreground">
-            {allNews.length} {t('resultsFound')}
+            {totalResults} {t('resultsFound')}
           </p>
         </div>
 
-        {/* Results Grid */}
-        {allNews.length > 0 ? (
+        {/* News Results Grid */}
+        {allNews.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {allNews.map((newsPost: any) => (
               <Link
@@ -174,7 +185,34 @@ async function NewsContent({
               </Link>
             ))}
           </div>
-        ) : (
+        )}
+
+        {/* External Sources Grid */}
+        {externalSources.length > 0 && (
+          <section className="space-y-4">
+            <h3 className="text-lg font-semibold">{t('externalSources')}</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {externalSources.map((source: any) => (
+                <ExternalSourceCard
+                  key={source._id}
+                  title={source.title}
+                  excerpt={source.excerpt}
+                  image={source.image}
+                  sourceUrl={source.sourceUrl}
+                  publisher={source.publisher}
+                  publishedAt={source.publishedAt}
+                  tags={source.tags}
+                  organization={source.organizations?.[0]}
+                  language={source.language}
+                  locale={locale}
+                />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Empty State */}
+        {totalResults === 0 && (
           <Card className="p-12 text-center">
             <div className="space-y-3">
               <Search className="w-12 h-12 mx-auto text-muted-foreground/50" />
@@ -194,10 +232,11 @@ async function NewsContent({
     )
   }
 
-  // No filters - show hero section + regular news grid
-  const [featuredNews, regularNews] = await Promise.all([
+  // No filters - show hero section + regular news grid + external sources
+  const [featuredNews, regularNews, externalSources] = await Promise.all([
     fetchFeaturedNews(3),
     fetchRegularNews({ limit: 50 }),
+    fetchApprovedExternalSources({ limit: 12 }),
   ])
 
   return (
@@ -240,6 +279,30 @@ async function NewsContent({
                   featured={false}
                 />
               </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* External Sources Section */}
+      {externalSources.length > 0 && (
+        <section className="space-y-6">
+          <h2 className="text-2xl font-bold">{t('externalSources')}</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {externalSources.map((source: any) => (
+              <ExternalSourceCard
+                key={source._id}
+                title={source.title}
+                excerpt={source.excerpt}
+                image={source.image}
+                sourceUrl={source.sourceUrl}
+                publisher={source.publisher}
+                publishedAt={source.publishedAt}
+                tags={source.tags}
+                organization={source.organizations?.[0]}
+                language={source.language}
+                locale={locale}
+              />
             ))}
           </div>
         </section>

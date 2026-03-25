@@ -219,17 +219,23 @@ export const useCaseStudyStore = create<CaseStudyStore>()(
                         }
                     }
 
-                    let result
-                    if (state.draftId) {
-                        // Update existing draft
-                        result = await client.patch(state.draftId).set(draftData).commit()
-                    } else {
-                        // Create new draft
-                        result = await client.create(draftData)
+                    const response = await fetch('/api/case-studies/drafts', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            draftId: state.draftId,
+                            draftData
+                        })
+                    })
+
+                    if (!response.ok) {
+                        throw new Error('Failed to save draft')
                     }
 
+                    const result = await response.json()
+
                     set({
-                        draftId: result._id,
+                        draftId: result.id,
                         lastSaved: new Date(),
                         hasPendingChanges: false,
                         isDraftSaving: false
@@ -276,7 +282,16 @@ export const useCaseStudyStore = create<CaseStudyStore>()(
                 if (!draftId) return
 
                 try {
-                    await client.delete(draftId)
+                    const response = await fetch('/api/case-studies/drafts', {
+                        method: 'DELETE',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ draftId })
+                    })
+
+                    if (!response.ok) {
+                        throw new Error('Failed to delete draft')
+                    }
+
                     set({
                         draftId: undefined,
                         lastSaved: undefined,

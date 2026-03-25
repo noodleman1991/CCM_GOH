@@ -45,6 +45,9 @@ export default function ProfilePictureUpload({
             // Use Clerk's setProfileImage method directly
             await user.setProfileImage({ file })
 
+            // Reload user to get the updated imageUrl from Clerk
+            await user.reload()
+
             // Sync new image URL to Prisma immediately (don't wait for webhook)
             try {
                 await fetch('/api/profile/sync-image', {
@@ -82,12 +85,15 @@ export default function ProfilePictureUpload({
             // Use Clerk's setProfileImage with null to remove image
             await user.setProfileImage({ file: null })
 
+            // Reload user to get the updated state from Clerk
+            await user.reload()
+
             // Sync removal to Prisma immediately (don't wait for webhook)
             try {
                 await fetch('/api/profile/sync-image', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ imageUrl: null })
+                    body: JSON.stringify({ imageUrl: user.imageUrl })
                 })
             } catch {
                 // Non-critical — webhook will eventually sync

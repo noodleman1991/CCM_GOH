@@ -355,6 +355,96 @@ export async function fetchLatestNews(limit: number = 10, language?: string) {
   );
 }
 
+// External Source fields fragment
+const EXTERNAL_SOURCE_FIELDS = groq`
+  _id,
+  _type,
+  title,
+  excerpt,
+  sourceUrl,
+  publisher,
+  publishedAt,
+  featured,
+  sourceType,
+  language,
+  image{
+    asset->{
+      _id,
+      url,
+      metadata {
+        lqip,
+        dimensions {
+          width,
+          height
+        }
+      }
+    },
+    alt
+  },
+  organizations[]->{
+    _id,
+    name,
+    slug
+  },
+  tags[]->{
+    _id,
+    label,
+    title,
+    value,
+    color,
+    category
+  }
+`;
+
+// Query: Fetch approved external sources (for news page)
+export async function fetchApprovedExternalSources(filters?: {
+  tag?: string;
+  community?: string;
+  search?: string;
+  limit?: number;
+}) {
+  const conditions: string[] = [
+    '_type == "externalSource"',
+    'approved == true',
+  ];
+  const params: Record<string, unknown> = {};
+
+  if (filters?.tag) {
+    conditions.push('$filterTag in tags[]->value.current');
+    params.filterTag = filters.tag;
+  }
+
+  if (filters?.community) {
+    conditions.push('relatedCommunity->slug.current == $filterCommunity');
+    params.filterCommunity = filters.community;
+  }
+
+  if (filters?.search) {
+    conditions.push(`(
+      lower(title.en) match $searchPattern ||
+      lower(title.es) match $searchPattern ||
+      lower(title.fr) match $searchPattern ||
+      lower(title.ar) match $searchPattern ||
+      lower(excerpt.en) match $searchPattern ||
+      lower(excerpt.es) match $searchPattern ||
+      lower(excerpt.fr) match $searchPattern ||
+      lower(excerpt.ar) match $searchPattern
+    )`);
+    params.searchPattern = `*${filters.search.toLowerCase()}*`;
+  }
+
+  const limit = filters?.limit || 20;
+
+  return await client.fetch(
+    groq`
+      *[${conditions.join(' && ')}] | order(publishedAt desc)[0...${limit}] {
+        ${EXTERNAL_SOURCE_FIELDS}
+      }
+    `,
+    params
+  );
+}
+
 // Query 9: Get News Count (useful for pagination)
 export async function getNewsCount(filters?: {
   tag?: string;

@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
-import { auth } from '@clerk/nextjs/server'
+import { auth, clerkClient } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import { Link } from '@/i18n/navigation'
 import { DashboardClient } from './page-client'
@@ -112,6 +112,24 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
     }
 
     console.log(`✅ Dashboard: Found user ${userId} after retry`)
+  }
+
+  // If Prisma has no image but Clerk does, sync it (self-healing backfill)
+  if (!user.image) {
+    try {
+      const clerkClientInstance = await clerkClient()
+      const clerkUser = await clerkClientInstance.users.getUser(userId)
+      const clerkImage = clerkUser.imageUrl
+      if (clerkImage && !clerkImage.includes('gravatar')) {
+        await prisma.user.update({
+          where: { id: userId },
+          data: { image: clerkImage }
+        })
+        user.image = clerkImage
+      }
+    } catch {
+      // Non-critical — image will sync eventually via webhook
+    }
   }
 
   // Calculate profile completeness
