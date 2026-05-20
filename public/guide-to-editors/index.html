@@ -1,0 +1,712 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="robots" content="noindex, nofollow" />
+<title>CCM CMS · Editor's Guide · News Posts</title>
+<style>
+  :root{
+    --navy:#0b3160;
+    --blue:#4974ca;
+    --blue-soft:#e7eef9;
+    --yellow:#eab308;
+    --yellow-soft:#fef3c7;
+    --cream:#faf9f5;
+    --ink:#1a2540;
+    --muted:#5b6678;
+    --line:#e3e1d8;
+    --green:#15803d;
+    --red:#b91c1c;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--cream);color:var(--ink);
+    font-family:'Lato','Helvetica Neue',Arial,sans-serif;line-height:1.6;font-size:15.5px;font-weight:400;-webkit-font-smoothing:antialiased}
+  a{color:var(--blue);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{display:grid;grid-template-columns:260px 1fr;max-width:1240px;margin:0 auto;gap:0;min-height:100vh}
+  aside{position:sticky;top:0;align-self:start;height:100vh;overflow:auto;
+    background:var(--navy);color:#fff;padding:28px 22px}
+  aside .brand{font-weight:900;font-size:19px;letter-spacing:-.01em;margin-bottom:4px}
+  aside .brand span{color:var(--yellow)}
+  aside .sub{font-size:11.5px;opacity:.7;margin-bottom:22px;letter-spacing:.3px;text-transform:uppercase}
+  aside nav a{display:block;color:#dbe3f1;padding:8px 10px;border-radius:6px;font-size:13.5px;margin-bottom:2px;font-weight:500}
+  aside nav a:hover{background:#143f74;color:#fff;text-decoration:none}
+  aside .tag{display:inline-block;background:var(--yellow);color:var(--navy);
+    font-weight:800;font-size:10.5px;padding:3px 8px;border-radius:4px;margin-top:18px;letter-spacing:.4px;text-transform:uppercase}
+  main{padding:48px 56px 96px;max-width:980px}
+  header.page{border-bottom:1px solid var(--line);padding-bottom:28px;margin-bottom:36px}
+  .kicker{color:var(--blue);font-weight:900;letter-spacing:1.6px;text-transform:uppercase;font-size:11px}
+  h1{font-size:38px;line-height:1.1;margin:10px 0 14px;color:var(--navy);font-weight:900;letter-spacing:-.015em}
+  .lede{font-size:17.5px;color:var(--muted);max-width:68ch;line-height:1.55}
+  h2{font-size:26px;color:var(--navy);margin:52px 0 14px;padding-top:8px;font-weight:900;letter-spacing:-.01em}
+  h3{font-size:17px;color:var(--navy);margin:28px 0 8px;font-weight:800}
+  h4{font-size:14px;color:var(--ink);margin:18px 0 6px;text-transform:uppercase;letter-spacing:.5px;font-weight:800}
+  p{margin:8px 0 14px}
+  code{background:#f0ede2;padding:1px 6px;border-radius:4px;font-size:13px;color:#43381a;font-family:'SFMono-Regular',Menlo,Consolas,monospace}
+  ul,ol{padding-left:22px}
+  li{margin:6px 0}
+  .callout{background:var(--blue-soft);border-left:4px solid var(--blue);
+    padding:14px 18px;border-radius:6px;margin:18px 0;font-size:14.5px}
+  .callout.warn{background:var(--yellow-soft);border-left-color:var(--yellow)}
+  .callout.tip{background:#e8f3ec;border-left-color:var(--green)}
+  .callout strong{color:var(--navy)}
+  .step{border:1px solid var(--line);border-radius:10px;background:#fff;
+    padding:22px 24px;margin:22px 0;box-shadow:0 1px 0 rgba(11,49,96,.04)}
+  .step-head{display:flex;align-items:center;gap:14px;margin-bottom:8px}
+  .step-num{width:34px;height:34px;border-radius:50%;background:var(--navy);
+    color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;flex:none}
+  .step-title{font-size:17px;font-weight:900;color:var(--navy);letter-spacing:-.005em}
+  .pair{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:14px 0 6px}
+  .pane{border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#fff}
+  .pane h5{margin:0;padding:8px 12px;font-size:11px;letter-spacing:.7px;
+    text-transform:uppercase;background:var(--navy);color:#fff;font-weight:800}
+  .pane.front h5{background:var(--blue)}
+  .pane svg{display:block;width:100%;height:auto}
+  @media (max-width:900px){
+    .wrap{grid-template-columns:1fr}
+    aside{position:relative;height:auto}
+    main{padding:28px 22px}
+    .pair{grid-template-columns:1fr}
+  }
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px;background:#fff;border-radius:8px;overflow:hidden}
+  th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:var(--navy);color:#fff;font-weight:800;font-size:12px;letter-spacing:.4px;text-transform:uppercase}
+  tr:last-child td{border-bottom:none}
+  td code{font-size:12px}
+  .checks{list-style:none;padding-left:0}
+  .checks li{padding:8px 12px;border:1px solid var(--line);border-radius:6px;background:#fff;margin:6px 0}
+  .checks li::before{content:"☐";color:var(--blue);font-weight:900;margin-right:10px}
+  .legend{margin-top:8px;font-size:13px;color:var(--muted)}
+  .legend b{display:inline-block;width:20px;height:20px;border-radius:50%;background:var(--yellow);
+    color:var(--navy);text-align:center;line-height:20px;font-weight:900;font-size:12px;margin-right:6px;vertical-align:-4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<aside>
+  <div class="brand">Connecting <span>Climate</span> Minds</div>
+  <div class="sub">CMS Editor's Guide · v1</div>
+  <nav>
+    <a href="#open">How to open this file</a>
+    <a href="#sec1">1 · How the CMS is organised</a>
+    <a href="#sec2">2 · What a News Post becomes on the site</a>
+    <a href="#sec3">3 · Step-by-step: your first post</a>
+    <a href="#sec4">4 · Translations</a>
+    <a href="#sec5">5 · Field cheat-sheet</a>
+    <a href="#sec6">6 · Pre-publish checklist</a>
+    <a href="#sec7">7 · Common pitfalls</a>
+  </nav>
+  <div class="tag">News content type</div>
+</aside>
+
+<main>
+
+<header class="page">
+  <div class="kicker">Editor's Guide</div>
+  <h1>Publishing a News Post on the CCM Hub</h1>
+  <p class="lede">A walkthrough for editors using Sanity Studio for the first time. Section 1 shows the layout of the CMS. Section 2 shows what each field becomes on the public site. Section 3 builds a post from blank to published in ten steps.</p>
+</header>
+
+<section id="sec1">
+  <h2>1 · How the CMS is organised</h2>
+  <p>The CMS is Sanity Studio, at <code>hub.connectingclimateminds.org/studio</code>. When you log in you see three columns: a navigation rail on the far left, a list of items in the middle, the document you're editing on the right. Drawer, folder, document.</p>
+
+  <div class="pane" style="margin:18px 0">
+    <h5>Sanity Studio · top-level structure</h5>
+    <svg viewBox="0 0 900 420" xmlns="http://www.w3.org/2000/svg">
+      <rect width="900" height="420" fill="#faf9f5"/>
+      <rect x="0" y="0" width="60" height="420" fill="#0b3160"/>
+      <circle cx="30" cy="40" r="10" fill="#eab308"/>
+      <circle cx="30" cy="80" r="8" fill="#4974ca"/>
+      <circle cx="30" cy="115" r="8" fill="#4974ca"/>
+      <circle cx="30" cy="150" r="8" fill="#4974ca"/>
+      <rect x="60" y="0" width="260" height="420" fill="#fff" stroke="#e3e1d8"/>
+      <text x="80" y="34" font-family="Lato" font-size="13" font-weight="800" fill="#0b3160">CONTENT</text>
+      <g font-family="Lato" font-size="14" fill="#1a2540">
+        <rect x="72" y="52" width="236" height="32" rx="4" fill="#f0ede2"/>
+        <text x="86" y="73">🏠  Homepage</text>
+        <text x="86" y="108">🌐  Website</text>
+        <text x="86" y="143">📚  Research &amp; Content</text>
+        <rect x="72" y="158" width="236" height="32" rx="4" fill="#eab308" opacity=".25"/>
+        <text x="86" y="178" font-weight="800" fill="#0b3160">📰  News &amp; Sources</text>
+        <text x="86" y="213">🤝  Affiliations</text>
+        <text x="86" y="248">👥  User Management</text>
+        <text x="86" y="283">🌍  Communities &amp; Users</text>
+        <text x="86" y="318">🏷️  Taxonomies</text>
+        <text x="86" y="353">💬  Support &amp; Engagement</text>
+      </g>
+      <rect x="320" y="0" width="260" height="420" fill="#fff" stroke="#e3e1d8"/>
+      <text x="340" y="34" font-family="Lato" font-size="13" font-weight="800" fill="#0b3160">NEWS &amp; SOURCES</text>
+      <g font-family="Lato" font-size="14" fill="#1a2540">
+        <rect x="332" y="52" width="236" height="32" rx="4" fill="#eab308" opacity=".25"/>
+        <text x="346" y="73" font-weight="800" fill="#0b3160">📄  News Posts</text>
+        <text x="346" y="108">🔗  External Sources</text>
+      </g>
+      <rect x="580" y="0" width="320" height="420" fill="#fff" stroke="#e3e1d8"/>
+      <text x="600" y="34" font-family="Lato" font-size="13" font-weight="800" fill="#0b3160">DOCUMENT</text>
+      <g font-family="Lato" font-size="13" fill="#5b6678">
+        <rect x="592" y="52" width="296" height="60" rx="6" fill="#faf9f5" stroke="#e3e1d8"/>
+        <text x="606" y="74" fill="#0b3160" font-weight="800" font-size="14">Title (en)</text>
+        <text x="606" y="96">Climate change is becoming…</text>
+        <rect x="592" y="124" width="296" height="60" rx="6" fill="#faf9f5" stroke="#e3e1d8"/>
+        <text x="606" y="146" fill="#0b3160" font-weight="800" font-size="14">Slug</text>
+        <text x="606" y="168">climate-change-mental-health</text>
+        <rect x="592" y="196" width="296" height="80" rx="6" fill="#faf9f5" stroke="#e3e1d8"/>
+        <text x="606" y="218" fill="#0b3160" font-weight="800" font-size="14">Excerpt (en)</text>
+        <text x="606" y="240">A short summary that shows on…</text>
+      </g>
+      <g font-family="Lato" font-weight="900" font-size="12" fill="#0b3160">
+        <circle cx="180" cy="174" r="11" fill="#eab308"/><text x="180" y="178" text-anchor="middle">A</text>
+        <circle cx="440" cy="68" r="11" fill="#eab308"/><text x="440" y="72" text-anchor="middle">B</text>
+        <circle cx="740" cy="68" r="11" fill="#eab308"/><text x="740" y="72" text-anchor="middle">C</text>
+      </g>
+    </svg>
+  </div>
+  <p class="legend">
+    <b>A</b> The <strong>desk</strong>. Top-level groups of content. News &amp; Sources is where you live.
+    <b>B</b> The <strong>list</strong>. Every document of that type. Click one to open it, or hit <code>+</code> to make a new one.
+    <b>C</b> The <strong>document</strong>. The fields you fill in.
+  </p>
+
+  <h3>The other drawers</h3>
+  <ul>
+    <li><strong>Homepage</strong>. The hero, intro and featured blocks on the front page.</li>
+    <li><strong>Website</strong>. Global pages: About, Contact, Footer text.</li>
+    <li><strong>Research &amp; Content</strong>. Long-form research, frameworks, publications.</li>
+    <li><strong>News &amp; Sources</strong>. Your home. Two sub-types: News Posts (articles we author) and External Sources (links to other people's articles).</li>
+    <li><strong>Affiliations</strong>. Partner organisations and how they appear on the site.</li>
+    <li><strong>User Management</strong>. Accounts that can log into the hub.</li>
+    <li><strong>Communities &amp; Users</strong>. Regional Communities and member profiles.</li>
+    <li><strong>Taxonomies</strong>. The tags, regions and topics that classify everything. You pick from these, you don't edit them.</li>
+    <li><strong>Support &amp; Engagement</strong>. Contact forms, FAQs, helpdesk content.</li>
+  </ul>
+  <div class="callout">
+    <strong>Mental model.</strong> The CMS is a database, but you don't think about databases. You think: which drawer, which folder, which fields.
+  </div>
+</section>
+
+<section id="sec2">
+  <h2>2 · What a News Post becomes on the site</h2>
+  <p>Before you click anything, look at what a finished News Post turns into on the public site. Every field you fill in maps to a visible piece of the article. Keep this image in your head as you edit.</p>
+
+  <div class="pair">
+    <div class="pane">
+      <h5>CMS · News Post fields</h5>
+      <svg viewBox="0 0 460 460" xmlns="http://www.w3.org/2000/svg">
+        <rect width="460" height="460" fill="#fff"/>
+        <g font-family="Lato" font-size="13" fill="#1a2540">
+          <rect x="20" y="20" width="420" height="46" rx="6" fill="#faf9f5" stroke="#e3e1d8"/>
+          <text x="32" y="40" font-weight="800" fill="#0b3160">Title (en)</text>
+          <text x="32" y="58" fill="#5b6678">Climate Change Is Becoming a Mental Health Crisis</text>
+
+          <rect x="20" y="76" width="420" height="40" rx="6" fill="#faf9f5" stroke="#e3e1d8"/>
+          <text x="32" y="94" font-weight="800" fill="#0b3160">Slug</text>
+          <text x="32" y="110" fill="#5b6678">climate-change-mental-health-crisis</text>
+
+          <rect x="20" y="126" width="420" height="56" rx="6" fill="#faf9f5" stroke="#e3e1d8"/>
+          <text x="32" y="144" font-weight="800" fill="#0b3160">Excerpt (en)</text>
+          <text x="32" y="162" fill="#5b6678">A short summary used in cards and previews.</text>
+
+          <rect x="20" y="192" width="200" height="120" rx="6" fill="#e7eef9" stroke="#4974ca"/>
+          <text x="120" y="256" text-anchor="middle" fill="#4974ca" font-weight="800">Featured Image</text>
+          <rect x="230" y="192" width="210" height="56" rx="6" fill="#faf9f5" stroke="#e3e1d8"/>
+          <text x="242" y="210" font-weight="800" fill="#0b3160">Author</text>
+          <text x="242" y="228" fill="#5b6678">Dr. Jane Example</text>
+          <rect x="230" y="256" width="210" height="56" rx="6" fill="#faf9f5" stroke="#e3e1d8"/>
+          <text x="242" y="274" font-weight="800" fill="#0b3160">Published At</text>
+          <text x="242" y="292" fill="#5b6678">12 May 2026</text>
+
+          <rect x="20" y="322" width="420" height="50" rx="6" fill="#faf9f5" stroke="#e3e1d8"/>
+          <text x="32" y="340" font-weight="800" fill="#0b3160">Tags · Region · Projects</text>
+          <text x="32" y="358" fill="#5b6678">[mental-health] [africa] [phase-1]</text>
+
+          <rect x="20" y="382" width="420" height="58" rx="6" fill="#faf9f5" stroke="#e3e1d8"/>
+          <text x="32" y="402" font-weight="800" fill="#0b3160">Sources</text>
+          <text x="32" y="420" fill="#5b6678">→ External Source: WHO Report 2025</text>
+        </g>
+        <g font-family="Lato" font-weight="900" font-size="12" fill="#0b3160">
+          <circle cx="430" cy="42" r="11" fill="#eab308"/><text x="430" y="46" text-anchor="middle">1</text>
+          <circle cx="430" cy="96" r="11" fill="#eab308"/><text x="430" y="100" text-anchor="middle">2</text>
+          <circle cx="430" cy="153" r="11" fill="#eab308"/><text x="430" y="157" text-anchor="middle">3</text>
+          <circle cx="208" cy="204" r="11" fill="#eab308"/><text x="208" y="208" text-anchor="middle">4</text>
+          <circle cx="430" cy="284" r="11" fill="#eab308"/><text x="430" y="288" text-anchor="middle">5</text>
+          <circle cx="430" cy="346" r="11" fill="#eab308"/><text x="430" y="350" text-anchor="middle">6</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="pane front">
+      <h5>Public site · article page</h5>
+      <svg viewBox="0 0 460 460" xmlns="http://www.w3.org/2000/svg">
+        <rect width="460" height="460" fill="#faf9f5"/>
+        <rect x="0" y="0" width="460" height="36" fill="#0b3160"/>
+        <text x="20" y="23" font-family="Lato" font-size="12" font-weight="800" fill="#fff">CCM</text>
+        <text x="380" y="23" font-family="Lato" font-size="11" fill="#dbe3f1">EN ▾</text>
+        <rect x="0" y="36" width="460" height="22" fill="#fff" stroke="#e3e1d8"/>
+        <text x="14" y="51" font-family="Menlo,monospace" font-size="11" fill="#5b6678">ccm.org/en/news/climate-change-mental-health-crisis</text>
+        <rect x="20" y="74" width="420" height="120" rx="6" fill="#4974ca"/>
+        <text x="230" y="140" text-anchor="middle" font-family="Lato" font-size="14" font-weight="800" fill="#fff">[ Featured Image ]</text>
+        <text x="20" y="226" font-family="Lato" font-size="20" font-weight="900" fill="#0b3160">Climate Change Is Becoming a</text>
+        <text x="20" y="250" font-family="Lato" font-size="20" font-weight="900" fill="#0b3160">Mental Health Crisis</text>
+        <text x="20" y="276" font-family="Lato" font-size="12" fill="#5b6678">By Dr. Jane Example · 12 May 2026</text>
+        <text x="20" y="304" font-family="Lato" font-size="13" fill="#1a2540">A short summary used in cards and previews.</text>
+        <line x1="20" y1="324" x2="440" y2="324" stroke="#e3e1d8"/>
+        <text x="20" y="346" font-family="Lato" font-size="12" fill="#5b6678">Lorem ipsum body of the article…</text>
+        <text x="20" y="364" font-family="Lato" font-size="12" fill="#5b6678">…continues here…</text>
+        <g font-family="Lato" font-size="11" font-weight="800" fill="#0b3160">
+          <rect x="20" y="386" width="80" height="22" rx="11" fill="#eab308" opacity=".35"/>
+          <text x="60" y="402" text-anchor="middle">mental-health</text>
+          <rect x="108" y="386" width="56" height="22" rx="11" fill="#eab308" opacity=".35"/>
+          <text x="136" y="402" text-anchor="middle">africa</text>
+          <rect x="172" y="386" width="62" height="22" rx="11" fill="#eab308" opacity=".35"/>
+          <text x="203" y="402" text-anchor="middle">phase-1</text>
+        </g>
+        <text x="20" y="432" font-family="Lato" font-size="12" font-weight="800" fill="#0b3160">Sources</text>
+        <text x="20" y="450" font-family="Lato" font-size="12" fill="#4974ca">→ WHO Report 2025</text>
+        <g font-family="Lato" font-weight="900" font-size="12" fill="#0b3160">
+          <circle cx="440" cy="240" r="11" fill="#eab308"/><text x="440" y="244" text-anchor="middle">1</text>
+          <circle cx="440" cy="51" r="11" fill="#eab308"/><text x="440" y="55" text-anchor="middle">2</text>
+          <circle cx="440" cy="304" r="11" fill="#eab308"/><text x="440" y="308" text-anchor="middle">3</text>
+          <circle cx="440" cy="134" r="11" fill="#eab308"/><text x="440" y="138" text-anchor="middle">4</text>
+          <circle cx="440" cy="276" r="11" fill="#eab308"/><text x="440" y="280" text-anchor="middle">5</text>
+          <circle cx="440" cy="397" r="11" fill="#eab308"/><text x="440" y="401" text-anchor="middle">6</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+  <p class="legend">
+    <b>1</b> Title becomes the article headline.
+    <b>2</b> Slug becomes the URL after <code>/news/</code>.
+    <b>3</b> Excerpt becomes the line under the headline, and the summary on card previews.
+    <b>4</b> Featured Image becomes the hero banner and the thumbnail.
+    <b>5</b> Author and Published At become the byline.
+    <b>6</b> Tags, Region and Sources drive filters and the related links at the bottom.
+  </p>
+</section>
+
+<section id="sec3">
+  <h2>3 · Step-by-step: your first News Post</h2>
+  <p>Blank page to published article in ten steps. Each step has a side-by-side panel: the CMS on the left, what it produces on the right.</p>
+
+  <div class="step">
+    <div class="step-head"><div class="step-num">1</div><div class="step-title">Open a fresh, blank post</div></div>
+    <p>In the left rail, go to <strong>News &amp; Sources → News Posts</strong>. At the top of the list, click the round <strong>+</strong> button. A new empty document called <em>Untitled</em> opens on the right.</p>
+
+    <div class="pane">
+      <h5>What you'll see</h5>
+      <svg viewBox="0 0 900 280" xmlns="http://www.w3.org/2000/svg">
+        <rect width="900" height="280" fill="#faf9f5"/>
+        <rect x="0" y="0" width="60" height="280" fill="#0b3160"/>
+        <rect x="60" y="0" width="240" height="280" fill="#fff" stroke="#e3e1d8"/>
+        <text x="78" y="34" font-family="Lato" font-size="13" font-weight="800" fill="#0b3160">News Posts</text>
+        <circle cx="270" cy="32" r="13" fill="#eab308"/><text x="270" y="37" text-anchor="middle" font-family="Lato" font-weight="900" fill="#0b3160">+</text>
+        <g font-family="Lato" font-size="13" fill="#5b6678">
+          <text x="78" y="70">Climate change is becoming…</text>
+          <text x="78" y="98">Insights from regional dialogues</text>
+          <text x="78" y="126">Phase one launch</text>
+          <rect x="70" y="138" width="220" height="28" rx="4" fill="#e7eef9"/>
+          <text x="78" y="158" font-weight="800" fill="#0b3160">Untitled (draft)</text>
+        </g>
+        <rect x="320" y="20" width="560" height="240" rx="6" fill="#fff" stroke="#e3e1d8"/>
+        <text x="340" y="50" font-family="Lato" font-size="14" font-weight="800" fill="#0b3160">New News Post</text>
+        <g font-family="Lato" font-size="12" fill="#5b6678">
+          <rect x="340" y="68" width="520" height="30" rx="4" fill="#faf9f5" stroke="#e3e1d8"/>
+          <text x="352" y="87">Title (en)</text>
+          <rect x="340" y="102" width="520" height="30" rx="4" fill="#faf9f5" stroke="#e3e1d8"/>
+          <text x="352" y="121">Title (es)</text>
+          <rect x="340" y="136" width="520" height="30" rx="4" fill="#faf9f5" stroke="#e3e1d8"/>
+          <text x="352" y="155">Slug</text>
+          <rect x="340" y="170" width="520" height="40" rx="4" fill="#faf9f5" stroke="#e3e1d8"/>
+          <text x="352" y="194">Excerpt (en)</text>
+          <rect x="340" y="216" width="160" height="36" rx="4" fill="#e7eef9" stroke="#4974ca"/>
+          <text x="420" y="238" text-anchor="middle" fill="#4974ca" font-weight="800">+ Image</text>
+        </g>
+      </svg>
+    </div>
+    <div class="callout tip"><strong>Tip.</strong> The document is a <em>draft</em> until you publish. Drafts are private to editors. They never appear on the live site.</div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><div class="step-num">2</div><div class="step-title">Write the Title</div></div>
+    <p>The Title field is translatable. You'll see one input per language stacked one below the other: <code>Title (en)</code>, <code>Title (es)</code>, <code>Title (fr)</code>, <code>Title (ar)</code>. English is required. The others are optional, and worth filling in when you have the translation. Type the headline into each one as it arrives.</p>
+    <div class="pair">
+      <div class="pane"><h5>CMS · Title fields per language</h5>
+        <svg viewBox="0 0 460 240" xmlns="http://www.w3.org/2000/svg">
+          <rect width="460" height="240" fill="#fff"/>
+          <text x="20" y="26" font-family="Lato" font-size="11" font-weight="800" fill="#0b3160">TITLE (EN)</text>
+          <rect x="20" y="34" width="420" height="34" rx="4" fill="#faf9f5" stroke="#4974ca"/>
+          <text x="32" y="56" font-family="Lato" font-size="13" fill="#1a2540">Climate change is becoming a mental health crisis</text>
+
+          <text x="20" y="86" font-family="Lato" font-size="11" font-weight="800" fill="#0b3160">TITLE (ES)</text>
+          <rect x="20" y="94" width="420" height="34" rx="4" fill="#faf9f5" stroke="#e3e1d8"/>
+          <text x="32" y="116" font-family="Lato" font-size="13" fill="#1a2540">El cambio climático se está convirtiendo en…</text>
+
+          <text x="20" y="146" font-family="Lato" font-size="11" font-weight="800" fill="#0b3160">TITLE (FR)</text>
+          <rect x="20" y="154" width="420" height="34" rx="4" fill="#faf9f5" stroke="#e3e1d8"/>
+          <text x="32" y="176" font-family="Lato" font-size="13" fill="#5b6678">(empty)</text>
+
+          <text x="20" y="206" font-family="Lato" font-size="11" font-weight="800" fill="#0b3160">TITLE (AR)</text>
+          <rect x="20" y="214" width="420" height="22" rx="4" fill="#faf9f5" stroke="#e3e1d8"/>
+        </svg>
+      </div>
+      <div class="pane front"><h5>Public · article headline</h5>
+        <svg viewBox="0 0 460 240" xmlns="http://www.w3.org/2000/svg">
+          <rect width="460" height="240" fill="#faf9f5"/>
+          <rect x="0" y="0" width="460" height="28" fill="#0b3160"/>
+          <text x="430" y="19" text-anchor="end" font-family="Lato" font-size="11" fill="#dbe3f1">EN ▾</text>
+          <text x="20" y="82" font-family="Lato" font-size="20" font-weight="900" fill="#0b3160">Climate change is becoming a</text>
+          <text x="20" y="108" font-family="Lato" font-size="20" font-weight="900" fill="#0b3160">mental health crisis</text>
+          <text x="20" y="148" font-family="Lato" font-size="12" fill="#5b6678">A Spanish visitor sees the ES title in the same place.</text>
+          <text x="20" y="172" font-family="Lato" font-size="12" fill="#5b6678">A French visitor sees the EN title (FR is empty, so it</text>
+          <text x="20" y="190" font-family="Lato" font-size="12" fill="#5b6678">falls back to English).</text>
+        </svg>
+      </div>
+    </div>
+    <div class="callout warn"><strong>Heads up.</strong> An empty language field falls back to English on the live site. Empty translations aren't broken. They're untranslated.</div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><div class="step-num">3</div><div class="step-title">Generate the Slug</div></div>
+    <p>The slug is the URL-friendly name. Don't type it by hand. Click the <strong>Generate</strong> button next to the field and Sanity derives it from the English title. Edit only if you need to shorten it.</p>
+    <div class="pair">
+      <div class="pane"><h5>CMS · Slug</h5>
+        <svg viewBox="0 0 460 120" xmlns="http://www.w3.org/2000/svg">
+          <rect width="460" height="120" fill="#fff"/>
+          <text x="20" y="30" font-family="Lato" font-size="12" font-weight="800" fill="#0b3160">SLUG</text>
+          <rect x="20" y="44" width="320" height="40" rx="4" fill="#faf9f5" stroke="#e3e1d8"/>
+          <text x="32" y="69" font-family="Menlo,monospace" font-size="13" fill="#1a2540">climate-change-mental-health-crisis</text>
+          <rect x="348" y="44" width="92" height="40" rx="4" fill="#eab308"/>
+          <text x="394" y="69" text-anchor="middle" font-family="Lato" font-size="13" font-weight="800" fill="#0b3160">Generate</text>
+        </svg>
+      </div>
+      <div class="pane front"><h5>Public · the URL</h5>
+        <svg viewBox="0 0 460 120" xmlns="http://www.w3.org/2000/svg">
+          <rect width="460" height="120" fill="#faf9f5"/>
+          <rect x="20" y="40" width="420" height="40" rx="6" fill="#fff" stroke="#e3e1d8"/>
+          <text x="32" y="65" font-family="Menlo,monospace" font-size="12" fill="#5b6678">hub.connectingclimateminds.org/en/news/</text>
+          <text x="288" y="65" font-family="Menlo,monospace" font-size="12" font-weight="800" fill="#0b3160">climate-change-mental-health-crisis</text>
+        </svg>
+      </div>
+    </div>
+    <div class="callout warn"><strong>Once published, don't change the slug.</strong> Changing it breaks every link and bookmark that points to the article.</div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><div class="step-num">4</div><div class="step-title">Add Subtitle and Excerpt</div></div>
+    <p><strong>Subtitle</strong> is one short sentence under the headline. <strong>Excerpt</strong> is two or three sentences used in card previews on the news index and in search results. Both are translatable, with one input per language, the same as Title.</p>
+    <div class="pair">
+      <div class="pane"><h5>CMS · Subtitle &amp; Excerpt</h5>
+        <svg viewBox="0 0 460 200" xmlns="http://www.w3.org/2000/svg">
+          <rect width="460" height="200" fill="#fff"/>
+          <text x="20" y="26" font-family="Lato" font-size="12" font-weight="800" fill="#0b3160">SUBTITLE (en)</text>
+          <rect x="20" y="34" width="420" height="36" rx="4" fill="#faf9f5" stroke="#e3e1d8"/>
+          <text x="32" y="57" font-family="Lato" font-size="13" fill="#1a2540">How communities are already living it.</text>
+          <text x="20" y="98" font-family="Lato" font-size="12" font-weight="800" fill="#0b3160">EXCERPT (en)</text>
+          <rect x="20" y="106" width="420" height="76" rx="4" fill="#faf9f5" stroke="#e3e1d8"/>
+          <text x="32" y="128" font-family="Lato" font-size="13" fill="#1a2540">From the Sahel to the Pacific, rising temperatures are</text>
+          <text x="32" y="146" font-family="Lato" font-size="13" fill="#1a2540">amplifying anxiety, grief and displacement. A summary.</text>
+        </svg>
+      </div>
+      <div class="pane front"><h5>Public · article header + news card</h5>
+        <svg viewBox="0 0 460 200" xmlns="http://www.w3.org/2000/svg">
+          <rect width="460" height="200" fill="#faf9f5"/>
+          <text x="20" y="34" font-family="Lato" font-size="16" font-weight="900" fill="#0b3160">Climate change is becoming…</text>
+          <text x="20" y="56" font-family="Lato" font-size="13" font-style="italic" fill="#4974ca">How communities are already living it.</text>
+          <rect x="20" y="76" width="420" height="2" fill="#e3e1d8"/>
+          <text x="20" y="100" font-family="Lato" font-size="11" font-weight="800" fill="#5b6678">NEWS CARD PREVIEW</text>
+          <rect x="20" y="108" width="420" height="80" rx="6" fill="#fff" stroke="#e3e1d8"/>
+          <text x="32" y="130" font-family="Lato" font-size="13" font-weight="800" fill="#0b3160">Climate change is becoming…</text>
+          <text x="32" y="150" font-family="Lato" font-size="11" fill="#5b6678">From the Sahel to the Pacific, rising</text>
+          <text x="32" y="166" font-family="Lato" font-size="11" fill="#5b6678">temperatures are amplifying anxiety…</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><div class="step-num">5</div><div class="step-title">Pick the Author and set Published At</div></div>
+    <p><strong>Author</strong> is a <em>reference</em> field. Start typing and pick from existing people. If your author doesn't exist yet, stop and ask an admin to add them first. Don't invent a new one inside this post. <strong>Published At</strong> is the date that shows on the byline. It also controls sort order on the news index.</p>
+    <div class="pair">
+      <div class="pane"><h5>CMS</h5>
+        <svg viewBox="0 0 460 160" xmlns="http://www.w3.org/2000/svg">
+          <rect width="460" height="160" fill="#fff"/>
+          <text x="20" y="26" font-family="Lato" font-size="12" font-weight="800" fill="#0b3160">AUTHOR</text>
+          <rect x="20" y="34" width="420" height="36" rx="4" fill="#faf9f5" stroke="#e3e1d8"/>
+          <text x="32" y="57" font-family="Lato" font-size="13" fill="#4974ca">→ Dr. Jane Example</text>
+          <text x="20" y="96" font-family="Lato" font-size="12" font-weight="800" fill="#0b3160">PUBLISHED AT</text>
+          <rect x="20" y="104" width="420" height="36" rx="4" fill="#faf9f5" stroke="#e3e1d8"/>
+          <text x="32" y="127" font-family="Lato" font-size="13" fill="#1a2540">2026-05-12 · 09:00 UTC</text>
+        </svg>
+      </div>
+      <div class="pane front"><h5>Public · byline</h5>
+        <svg viewBox="0 0 460 160" xmlns="http://www.w3.org/2000/svg">
+          <rect width="460" height="160" fill="#faf9f5"/>
+          <text x="20" y="60" font-family="Lato" font-size="18" font-weight="900" fill="#0b3160">Climate change is becoming…</text>
+          <text x="20" y="90" font-family="Lato" font-size="13" fill="#5b6678">By <tspan font-weight="800" fill="#0b3160">Dr. Jane Example</tspan> · 12 May 2026</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><div class="step-num">6</div><div class="step-title">Upload the Featured Image (with alt text)</div></div>
+    <p>Drop an image into the Featured Image field. Landscape, at least 1600 × 900 px, JPEG or PNG. After upload, click the image and fill in <strong>alt text</strong>. Alt text is read aloud by screen readers and shown if the image fails to load. It is not optional. Write a one-sentence description of what the image shows.</p>
+    <div class="pair">
+      <div class="pane"><h5>CMS · image with alt</h5>
+        <svg viewBox="0 0 460 200" xmlns="http://www.w3.org/2000/svg">
+          <rect width="460" height="200" fill="#fff"/>
+          <rect x="20" y="20" width="200" height="120" rx="6" fill="#4974ca"/>
+          <text x="120" y="86" text-anchor="middle" font-family="Lato" font-size="13" font-weight="800" fill="#fff">photo.jpg</text>
+          <text x="240" y="40" font-family="Lato" font-size="12" font-weight="800" fill="#0b3160">ALT TEXT</text>
+          <rect x="240" y="50" width="200" height="60" rx="4" fill="#faf9f5" stroke="#e3e1d8"/>
+          <text x="252" y="72" font-family="Lato" font-size="11" fill="#1a2540">A woman walks past a dried-up</text>
+          <text x="252" y="88" font-family="Lato" font-size="11" fill="#1a2540">reservoir in northern Kenya.</text>
+          <rect x="20" y="156" width="420" height="30" rx="4" fill="#fef3c7" stroke="#eab308"/>
+          <text x="32" y="176" font-family="Lato" font-size="12" fill="#0b3160">⚠ Don't publish without alt text.</text>
+        </svg>
+      </div>
+      <div class="pane front"><h5>Public · hero + card</h5>
+        <svg viewBox="0 0 460 200" xmlns="http://www.w3.org/2000/svg">
+          <rect width="460" height="200" fill="#faf9f5"/>
+          <rect x="20" y="20" width="420" height="100" rx="6" fill="#4974ca"/>
+          <text x="230" y="76" text-anchor="middle" font-family="Lato" font-size="14" font-weight="800" fill="#fff">[ Hero banner, full bleed ]</text>
+          <rect x="20" y="134" width="100" height="56" rx="4" fill="#4974ca"/>
+          <text x="130" y="156" font-family="Lato" font-size="12" fill="#5b6678">Same image used as the</text>
+          <text x="130" y="172" font-family="Lato" font-size="12" fill="#5b6678">thumbnail on news cards.</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><div class="step-num">7</div><div class="step-title">Link Projects, Regional Community and Location</div></div>
+    <p>These three fields connect the article to the rest of the hub. <strong>Projects</strong>: pick any CCM projects the post relates to. <strong>Regional Community</strong>: choose one (e.g. Africa, Latin America). <strong>Location</strong>: optional latitude and longitude if the story has a specific place. A location makes the post appear as a pin on the regional map.</p>
+    <div class="pane">
+      <h5>What the connections do</h5>
+      <svg viewBox="0 0 900 200" xmlns="http://www.w3.org/2000/svg">
+        <rect width="900" height="200" fill="#fff"/>
+        <rect x="20" y="60" width="180" height="80" rx="8" fill="#e7eef9" stroke="#4974ca"/>
+        <text x="110" y="105" text-anchor="middle" font-family="Lato" font-size="13" font-weight="800" fill="#0b3160">This News Post</text>
+        <line x1="200" y1="100" x2="280" y2="40" stroke="#4974ca" stroke-width="2"/>
+        <line x1="200" y1="100" x2="280" y2="100" stroke="#4974ca" stroke-width="2"/>
+        <line x1="200" y1="100" x2="280" y2="160" stroke="#4974ca" stroke-width="2"/>
+        <g font-family="Lato" font-size="12" fill="#1a2540">
+          <rect x="280" y="20" width="220" height="40" rx="6" fill="#faf9f5" stroke="#e3e1d8"/>
+          <text x="294" y="45" font-weight="800" fill="#0b3160">Projects →</text><text x="370" y="45">shown on each project page</text>
+          <rect x="280" y="80" width="220" height="40" rx="6" fill="#faf9f5" stroke="#e3e1d8"/>
+          <text x="294" y="105" font-weight="800" fill="#0b3160">Regional Community →</text><text x="442" y="105">…</text>
+          <rect x="280" y="140" width="220" height="40" rx="6" fill="#faf9f5" stroke="#e3e1d8"/>
+          <text x="294" y="165" font-weight="800" fill="#0b3160">Location →</text><text x="378" y="165">pin on the map</text>
+        </g>
+        <rect x="540" y="20" width="340" height="160" rx="8" fill="#faf9f5" stroke="#e3e1d8"/>
+        <text x="710" y="44" text-anchor="middle" font-family="Lato" font-size="12" font-weight="800" fill="#0b3160">Regional page</text>
+        <circle cx="640" cy="120" r="8" fill="#eab308"/>
+        <circle cx="720" cy="100" r="8" fill="#eab308"/>
+        <circle cx="800" cy="140" r="8" fill="#eab308"/>
+        <text x="710" y="170" text-anchor="middle" font-family="Lato" font-size="11" fill="#5b6678">…with your post pinned by location.</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><div class="step-num">8</div><div class="step-title">Add Region, Tags and Sources</div></div>
+    <p><strong>Region</strong> and <strong>Tags</strong> come from the Taxonomies drawer. You pick from existing options. You don't type free text. They power the filter chips on the news index. <strong>Sources</strong> is a list of references. Each one points at an <em>External Source</em> document, so add those in News &amp; Sources → External Sources first if they don't exist yet.</p>
+    <div class="pair">
+      <div class="pane"><h5>CMS</h5>
+        <svg viewBox="0 0 460 180" xmlns="http://www.w3.org/2000/svg">
+          <rect width="460" height="180" fill="#fff"/>
+          <text x="20" y="26" font-family="Lato" font-size="12" font-weight="800" fill="#0b3160">TAGS</text>
+          <g font-family="Lato" font-size="11" font-weight="800">
+            <rect x="20" y="34" width="80" height="22" rx="11" fill="#eab308" opacity=".35"/><text x="60" y="50" text-anchor="middle" fill="#0b3160">mental-health</text>
+            <rect x="108" y="34" width="60" height="22" rx="11" fill="#eab308" opacity=".35"/><text x="138" y="50" text-anchor="middle" fill="#0b3160">drought</text>
+            <rect x="176" y="34" width="60" height="22" rx="11" fill="#eab308" opacity=".35"/><text x="206" y="50" text-anchor="middle" fill="#0b3160">+ add</text>
+          </g>
+          <text x="20" y="86" font-family="Lato" font-size="12" font-weight="800" fill="#0b3160">REGION</text>
+          <rect x="20" y="94" width="420" height="30" rx="4" fill="#faf9f5" stroke="#e3e1d8"/>
+          <text x="32" y="114" font-family="Lato" font-size="12" fill="#1a2540">Africa</text>
+          <text x="20" y="146" font-family="Lato" font-size="12" font-weight="800" fill="#0b3160">SOURCES</text>
+          <rect x="20" y="154" width="420" height="20" rx="4" fill="#faf9f5" stroke="#e3e1d8"/>
+          <text x="32" y="168" font-family="Lato" font-size="11" fill="#4974ca">→ WHO Report 2025  · → IPCC AR6</text>
+        </svg>
+      </div>
+      <div class="pane front"><h5>Public · news index filters</h5>
+        <svg viewBox="0 0 460 180" xmlns="http://www.w3.org/2000/svg">
+          <rect width="460" height="180" fill="#faf9f5"/>
+          <text x="20" y="30" font-family="Lato" font-size="13" font-weight="800" fill="#0b3160">All news</text>
+          <g font-family="Lato" font-size="11" font-weight="800">
+            <rect x="20" y="44" width="86" height="24" rx="12" fill="#0b3160"/><text x="63" y="60" text-anchor="middle" fill="#fff">mental-health</text>
+            <rect x="114" y="44" width="64" height="24" rx="12" fill="#fff" stroke="#e3e1d8"/><text x="146" y="60" text-anchor="middle" fill="#0b3160">drought</text>
+            <rect x="186" y="44" width="60" height="24" rx="12" fill="#fff" stroke="#e3e1d8"/><text x="216" y="60" text-anchor="middle" fill="#0b3160">africa</text>
+          </g>
+          <text x="20" y="100" font-family="Lato" font-size="11" fill="#5b6678">Clicking a chip filters the index.</text>
+          <text x="20" y="140" font-family="Lato" font-size="11" font-weight="800" fill="#0b3160">Sources appear at the bottom of the article →</text>
+          <text x="20" y="158" font-family="Lato" font-size="11" fill="#4974ca">→ WHO Report 2025</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><div class="step-num">9</div><div class="step-title">SEO: Open Graph image and No Index</div></div>
+    <p>Switch to the <strong>SEO</strong> section at the top of the document. <strong>Open Graph Image</strong> is the preview that shows when someone shares the article on LinkedIn, X or WhatsApp. If you leave it empty, the Featured Image is used instead. That is usually fine. <strong>No Index</strong> is a checkbox. Tick it only if you want to hide this post from Google (for example, a private announcement).</p>
+    <div class="pair">
+      <div class="pane"><h5>CMS · SEO section</h5>
+        <svg viewBox="0 0 460 180" xmlns="http://www.w3.org/2000/svg">
+          <rect width="460" height="180" fill="#fff"/>
+          <text x="20" y="40" font-family="Lato" font-size="12" font-weight="800" fill="#0b3160">SEO</text>
+          <rect x="60" y="28" width="380" height="2" fill="#e3e1d8"/>
+          <text x="20" y="74" font-family="Lato" font-size="12" font-weight="800" fill="#0b3160">OG IMAGE</text>
+          <rect x="20" y="82" width="160" height="80" rx="4" fill="#e7eef9" stroke="#4974ca"/>
+          <text x="100" y="128" text-anchor="middle" font-family="Lato" font-size="12" fill="#4974ca">1200×630</text>
+          <rect x="200" y="82" width="20" height="20" rx="2" fill="#fff" stroke="#0b3160"/>
+          <text x="228" y="98" font-family="Lato" font-size="12" fill="#1a2540">No Index (hide from search)</text>
+        </svg>
+      </div>
+      <div class="pane front"><h5>Public · share preview</h5>
+        <svg viewBox="0 0 460 180" xmlns="http://www.w3.org/2000/svg">
+          <rect width="460" height="180" fill="#faf9f5"/>
+          <rect x="40" y="20" width="380" height="140" rx="8" fill="#fff" stroke="#e3e1d8"/>
+          <rect x="40" y="20" width="380" height="80" rx="8" fill="#4974ca"/>
+          <text x="230" y="68" text-anchor="middle" font-family="Lato" font-size="13" font-weight="800" fill="#fff">[ OG image preview ]</text>
+          <text x="56" y="122" font-family="Lato" font-size="12" font-weight="800" fill="#0b3160">Climate change is becoming…</text>
+          <text x="56" y="142" font-family="Lato" font-size="11" fill="#5b6678">hub.connectingclimateminds.org</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><div class="step-num">10</div><div class="step-title">Preview, then Publish</div></div>
+    <p>Before you publish, click the <strong>eye / Preview</strong> icon in the top-right of the document. It opens the article on the live site in <em>draft mode</em>: looks exactly like the published version, but only you can see it. Check the headline, hero image, byline, and that links work. When you're happy, hit the green <strong>Publish</strong> button. The article goes live within seconds.</p>
+    <div class="pane">
+      <h5>Action bar</h5>
+      <svg viewBox="0 0 900 80" xmlns="http://www.w3.org/2000/svg">
+        <rect width="900" height="80" fill="#faf9f5"/>
+        <rect x="20" y="20" width="600" height="40" rx="6" fill="#fff" stroke="#e3e1d8"/>
+        <text x="40" y="46" font-family="Lato" font-size="13" fill="#5b6678">Last edited 2 minutes ago · draft</text>
+        <rect x="640" y="20" width="100" height="40" rx="6" fill="#fff" stroke="#0b3160"/>
+        <text x="690" y="46" text-anchor="middle" font-family="Lato" font-size="13" font-weight="800" fill="#0b3160">Preview</text>
+        <rect x="752" y="20" width="128" height="40" rx="6" fill="#15803d"/>
+        <text x="816" y="46" text-anchor="middle" font-family="Lato" font-size="13" font-weight="800" fill="#fff">Publish</text>
+      </svg>
+    </div>
+    <div class="callout tip"><strong>Made a mistake after publishing?</strong> Edit the document and hit Publish again. The live article updates in place. To unpublish, open the document menu (•••) and choose <em>Unpublish</em>. The draft stays so you can re-publish later.</div>
+  </div>
+</section>
+
+<section id="sec4">
+  <h2>4 · How translations behave on the site</h2>
+  <p>Each translatable field exists as one input per locale: <code>Title (en)</code>, <code>Title (es)</code>, <code>Title (fr)</code>, <code>Title (ar)</code>, and the same for Subtitle and Excerpt. Fill in <code>en</code>. Fill in the others when translations arrive.</p>
+  <p>When a visitor switches the site language in the top-right menu, the page swaps to that locale's URL prefix (<code>/en/</code>, <code>/es/</code>, <code>/fr/</code>, <code>/ar/</code>) and re-renders using the matching field of every translatable input.</p>
+  <p>If a field is empty for the chosen language, the site falls back to English. So a Spanish visitor reading a half-translated post will see the navigation in Spanish but the article body in English. That is expected, and better than a blank page. It is also a signal to finish the translation.</p>
+
+  <div class="pair">
+    <div class="pane"><h5>EN · /en/news/your-slug</h5>
+      <svg viewBox="0 0 460 260" xmlns="http://www.w3.org/2000/svg">
+        <rect width="460" height="260" fill="#faf9f5"/>
+        <rect x="0" y="0" width="460" height="28" fill="#0b3160"/>
+        <text x="20" y="19" font-family="Lato" font-size="11" font-weight="800" fill="#fff">CCM · News  Research  About</text>
+        <text x="440" y="19" text-anchor="end" font-family="Lato" font-size="11" fill="#eab308">EN ▾</text>
+        <text x="20" y="68" font-family="Lato" font-size="16" font-weight="900" fill="#0b3160">Climate change is becoming a</text>
+        <text x="20" y="88" font-family="Lato" font-size="16" font-weight="900" fill="#0b3160">mental health crisis</text>
+        <text x="20" y="112" font-family="Lato" font-size="11" fill="#5b6678">By Dr. Jane Example · 12 May 2026</text>
+        <rect x="20" y="124" width="420" height="60" rx="4" fill="#4974ca" opacity=".15"/>
+        <text x="20" y="208" font-family="Lato" font-size="12" fill="#1a2540">From the Sahel to the Pacific, rising</text>
+        <text x="20" y="226" font-family="Lato" font-size="12" fill="#1a2540">temperatures are amplifying anxiety…</text>
+      </svg>
+    </div>
+    <div class="pane"><h5>ES · /es/news/your-slug (partly translated)</h5>
+      <svg viewBox="0 0 460 260" xmlns="http://www.w3.org/2000/svg">
+        <rect width="460" height="260" fill="#faf9f5"/>
+        <rect x="0" y="0" width="460" height="28" fill="#0b3160"/>
+        <text x="20" y="19" font-family="Lato" font-size="11" font-weight="800" fill="#fff">CCM · Noticias  Investigación  Acerca</text>
+        <text x="440" y="19" text-anchor="end" font-family="Lato" font-size="11" fill="#eab308">ES ▾</text>
+        <text x="20" y="68" font-family="Lato" font-size="16" font-weight="900" fill="#0b3160">El cambio climático se está</text>
+        <text x="20" y="88" font-family="Lato" font-size="16" font-weight="900" fill="#0b3160">convirtiendo en una crisis…</text>
+        <text x="20" y="112" font-family="Lato" font-size="11" fill="#5b6678">Por Dr. Jane Example · 12 May 2026</text>
+        <rect x="20" y="124" width="420" height="60" rx="4" fill="#4974ca" opacity=".15"/>
+        <rect x="20" y="194" width="420" height="20" rx="4" fill="#fef3c7" stroke="#eab308"/>
+        <text x="32" y="208" font-family="Lato" font-size="10" fill="#0b3160">⚠ Body text shown in English. ES excerpt is empty.</text>
+        <text x="20" y="232" font-family="Lato" font-size="12" fill="#1a2540">From the Sahel to the Pacific, rising…</text>
+      </svg>
+    </div>
+  </div>
+  <p class="legend">Site chrome (nav, footer, language switcher) is always localised. Article fields fall back per-field, so the title can be in ES even when the excerpt is not yet.</p>
+
+  <div class="callout"><strong>Editor rule.</strong> When you publish, fill in <code>en</code> for everything. Add <code>es</code>, <code>fr</code>, <code>ar</code> as translations arrive. You don't have to wait for all four to publish.</div>
+</section>
+
+<section id="sec5">
+  <h2>5 · Field cheat-sheet</h2>
+  <p>Every field on a News Post: what it does, whether it's translated, whether it's required.</p>
+  <table>
+    <thead><tr><th>Field</th><th>What it's for</th><th>Translated?</th><th>Required?</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Title</strong></td><td>Article headline. Also used in the browser tab and in search results.</td><td>Yes</td><td>Yes</td></tr>
+      <tr><td><strong>Slug</strong></td><td>The URL after <code>/news/</code>. Click <em>Generate</em>.</td><td>No</td><td>Yes</td></tr>
+      <tr><td><strong>Subtitle</strong></td><td>One short sentence under the headline.</td><td>Yes</td><td>No</td></tr>
+      <tr><td><strong>Excerpt</strong></td><td>Two or three sentence summary for cards, search, social.</td><td>Yes</td><td>Yes</td></tr>
+      <tr><td><strong>Author</strong></td><td>Reference to an existing person.</td><td>No</td><td>Yes</td></tr>
+      <tr><td><strong>Published At</strong></td><td>Byline date and sort order on the news index.</td><td>No</td><td>Yes</td></tr>
+      <tr><td><strong>Featured Image</strong></td><td>Hero banner and card thumbnail. Always write alt text.</td><td>Alt text yes</td><td>Yes</td></tr>
+      <tr><td><strong>Projects</strong></td><td>Links the post to one or more CCM projects.</td><td>No</td><td>No</td></tr>
+      <tr><td><strong>Regional Community</strong></td><td>Surfaces the post on a community page.</td><td>No</td><td>No</td></tr>
+      <tr><td><strong>Location</strong></td><td>Lat and long for a map pin.</td><td>No</td><td>No</td></tr>
+      <tr><td><strong>Region</strong></td><td>Top-level region from Taxonomies.</td><td>No</td><td>Recommended</td></tr>
+      <tr><td><strong>Tags</strong></td><td>Topical tags from Taxonomies. Drive the filter chips.</td><td>No</td><td>Recommended</td></tr>
+      <tr><td><strong>Sources</strong></td><td>References to External Source documents.</td><td>No</td><td>No</td></tr>
+      <tr><td><strong>OG Image</strong></td><td>Custom share preview (1200×630). Falls back to Featured Image.</td><td>No</td><td>No</td></tr>
+      <tr><td><strong>No Index</strong></td><td>Hide from search engines. Leave unchecked unless asked.</td><td>No</td><td>No</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="sec6">
+  <h2>6 · Pre-publish checklist</h2>
+  <p>Run through this before you hit Publish.</p>
+  <ul class="checks">
+    <li>English Title, Excerpt and Featured Image are all filled in.</li>
+    <li>Slug is short, lowercase, hyphen-separated, and matches the topic.</li>
+    <li>Featured Image has alt text written in plain language.</li>
+    <li>Author exists and is the correct person, not a placeholder.</li>
+    <li>Published At is set to the date you actually want the article to bear.</li>
+    <li>At least one Region or Tag is set so the post shows up in filters.</li>
+    <li>Sources list every external article or report you cited.</li>
+    <li>You clicked Preview and the page looks the way you expect.</li>
+    <li>If translations exist, the <code>es</code>, <code>fr</code> and <code>ar</code> versions of Title and Excerpt are filled in.</li>
+    <li>No Index is <em>unchecked</em>, unless this post should be hidden from search.</li>
+  </ul>
+</section>
+
+<section id="sec7">
+  <h2>7 · Common pitfalls (and how to avoid them)</h2>
+
+  <h3>"My post isn't on the news index"</h3>
+  <p>Two usual suspects. Either the document is still a <em>draft</em> (look for the orange dot in the top bar, and hit Publish), or <strong>Published At</strong> is set in the future. The index respects publish dates. A post dated next Tuesday won't appear until next Tuesday.</p>
+
+  <h3>"The Spanish page shows English text"</h3>
+  <p>That is the fallback working as designed. Open the document, find the <code>Title (es)</code> or <code>Excerpt (es)</code> field that is still empty, type the translation, publish again.</p>
+
+  <h3>"The share preview on LinkedIn looks wrong or outdated"</h3>
+  <p>Social platforms cache OG previews aggressively. Edit the post, make sure OG Image is set (or Featured Image is good), publish, then use LinkedIn's Post Inspector or X's Card Validator to force a refresh of their cache.</p>
+
+  <h3>"I changed the slug and now an old link is broken"</h3>
+  <p>That is why we say: don't change the slug after publish. If you absolutely must, ask a developer to add a redirect from the old URL to the new one.</p>
+
+  <h3>"I can't find the author I need"</h3>
+  <p>Authors live in <strong>User Management</strong>. If your author isn't there, an admin needs to add them first. Don't be tempted to put the name in the Title or Subtitle as a workaround. The byline won't render.</p>
+
+  <h3>"I accidentally deleted something"</h3>
+  <p>Sanity keeps document history. Open the document, click the clock icon in the top-right, scroll to the version before the mistake, click <em>Restore</em>. Nothing is truly gone for at least 30 days.</p>
+
+  <p style="margin-top:40px;color:var(--muted);font-size:13px;text-align:center;border-top:1px solid var(--line);padding-top:20px">
+    Connecting Climate Minds · Editor's Guide v1 · News Posts
+  </p>
+</section>
+
+</main>
+</div>
+</body>
+</html>
