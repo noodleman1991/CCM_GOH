@@ -1,0 +1,6 @@
+{
+  "headers": [
+    { "source": "/guide-to-editors", "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }] },
+    { "source": "/guide-to-editors/(.*)", "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }] }
+  ]
+}
