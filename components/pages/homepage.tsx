@@ -66,32 +66,41 @@ async function resolveNewsSection(section: DynamicGridSection): Promise<any> {
     return section;
   }
 
-  const limit = section.maxItems || 3;
-  const items = await fetchDynamicItems(section.mode, limit, fetchHomepageNews);
+  try {
+    const limit = section.maxItems || 3;
+    const items = await fetchDynamicItems(
+      section.mode,
+      limit,
+      fetchHomepageNews
+    );
 
-  return {
-    ...section,
-    columns: items
-      .filter((news: any) => news && news._id)
-      .slice(0, limit)
-      .map((news: any) =>
-        news._type === "externalSource"
-          ? {
-              _type: "grid-external-source",
-              _key: `external-source-${news._id}`,
-              externalSource: news,
-              showTags: true,
-              showMetadata: true,
-            }
-          : {
-              _type: "grid-news",
-              _key: `news-${news._id}`,
-              newsPost: news,
-              showTags: true,
-              showMetadata: true,
-            }
-      ),
-  };
+    return {
+      ...section,
+      columns: items
+        .filter((news: any) => news && news._id)
+        .slice(0, limit)
+        .map((news: any) =>
+          news._type === "externalSource"
+            ? {
+                _type: "grid-external-source",
+                _key: `external-source-${news._id}`,
+                externalSource: news,
+                showTags: true,
+                showMetadata: true,
+              }
+            : {
+                _type: "grid-news",
+                _key: `news-${news._id}`,
+                newsPost: news,
+                showTags: true,
+                showMetadata: true,
+              }
+        ),
+    };
+  } catch (error) {
+    console.error("[homepage] dynamic news resolution failed:", error);
+    return section;
+  }
 }
 
 /**
@@ -103,27 +112,32 @@ async function resolveAgendasSection(section: DynamicGridSection): Promise<any> 
     return section;
   }
 
-  const limit = section.maxItems || 3;
-  const items = await fetchDynamicItems(
-    section.mode,
-    limit,
-    fetchHomepageAgendas
-  );
+  try {
+    const limit = section.maxItems || 3;
+    const items = await fetchDynamicItems(
+      section.mode,
+      limit,
+      fetchHomepageAgendas
+    );
 
-  return {
-    ...section,
-    columns: items
-      .filter((agenda: any) => agenda && agenda._id)
-      .slice(0, limit)
-      .map((agenda: any) => ({
-        _type: "grid-agenda",
-        _key: `agenda-${agenda._id}`,
-        agenda: agenda,
-        showTags: true,
-        showMetadata: true,
-        showDownloadButtons: true,
-      })),
-  };
+    return {
+      ...section,
+      columns: items
+        .filter((agenda: any) => agenda && agenda._id)
+        .slice(0, limit)
+        .map((agenda: any) => ({
+          _type: "grid-agenda",
+          _key: `agenda-${agenda._id}`,
+          agenda: agenda,
+          showTags: true,
+          showMetadata: true,
+          showDownloadButtons: true,
+        })),
+    };
+  } catch (error) {
+    console.error("[homepage] dynamic agendas resolution failed:", error);
+    return section;
+  }
 }
 
 export default async function Homepage({ homepage, locale }: HomepageProps) {
