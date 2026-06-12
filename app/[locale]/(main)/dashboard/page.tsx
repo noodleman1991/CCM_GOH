@@ -133,27 +133,7 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
   }
 
   // Calculate profile completeness
-  const profileCompleteness = calculateProfileCompleteness({
-    firstName: user.firstName,
-    lastName: user.lastName,
-    username: user.username,
-    email: user.email,
-    image: user.image,
-    bio: user.bio,
-    ageGroup: user.ageGroup,
-    country: user.country,
-    city: user.city,
-    organization: user.organization,
-    position: user.position,
-    workBio: user.workBio,
-    workTypes: user.workTypes,
-    expertiseAreas: user.expertiseAreas,
-    personalWebsite: user.personalWebsite,
-    linkedinProfile: user.linkedinProfile,
-    phoneNumber: user.phoneNumber,
-    communityMemberships: user.communityMemberships,
-    recentWork: user.recentWork
-  })
+  const profileCompleteness = calculateProfileCompleteness(user)
 
   // Get user's regional community
   const regionalCommunity = user.communityMemberships.find(
