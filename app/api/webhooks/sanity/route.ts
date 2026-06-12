@@ -5,7 +5,7 @@
  * and ensure content changes are immediately reflected in the application.
  */
 
-import { revalidateTag } from 'next/cache'
+import { revalidatePath, revalidateTag } from 'next/cache'
 import { NextRequest, NextResponse } from 'next/server'
 import { headers } from 'next/headers'
 
@@ -48,8 +48,24 @@ async function verifySignature(payload: string, signature: string | null) {
 // Handle cache invalidation based on document type
 function handleCacheInvalidation(payload: SanityWebhookPayload) {
   const tagsToRevalidate: string[] = []
+  const pathsToRevalidate: string[] = []
+  const locales = ['en', 'es', 'fr', 'ar']
 
   switch (payload._type) {
+    case 'caseStudy': {
+      // Revalidate the ISR listing and detail pages so approvals/edits
+      // show up immediately instead of waiting for the revalidate window
+      const slug = payload.slug?.current
+      for (const locale of locales) {
+        pathsToRevalidate.push(`/${locale}/research-and-action/case-studies`)
+        if (slug) {
+          pathsToRevalidate.push(`/${locale}/research-and-action/case-studies/${slug}`)
+        }
+      }
+      console.log(`🔄 Invalidating case study pages for slug: ${slug ?? 'unknown'}`)
+      break
+    }
+
     case 'onboardingContent':
       tagsToRevalidate.push('onboarding-content')
       console.log(`🔄 Invalidating onboarding content cache for language: ${payload.language}`)
@@ -87,7 +103,17 @@ function handleCacheInvalidation(payload: SanityWebhookPayload) {
     }
   })
 
-  return tagsToRevalidate
+  // Revalidate the appropriate paths
+  pathsToRevalidate.forEach(path => {
+    try {
+      revalidatePath(path)
+      console.log(`✅ Path revalidated: ${path}`)
+    } catch (error) {
+      console.error(`❌ Error revalidating path ${path}:`, error)
+    }
+  })
+
+  return [...tagsToRevalidate, ...pathsToRevalidate]
 }
 
 // POST handler for Sanity webhooks

@@ -1,11 +1,17 @@
-import { DocumentActionComponent } from 'sanity'
+import { DocumentActionComponent, useClient } from 'sanity'
 import { CheckCircle, XCircle, AlertCircle, Eye } from 'lucide-react'
-import { client } from '@/sanity/lib/client'
+import { apiVersion } from '../env'
+
+// NOTE: Document actions are React hooks, so we must use Sanity's `useClient`
+// (authenticated with the logged-in studio user's session) instead of the
+// public read-only client from `sanity/lib/client.ts`, whose mutations fail
+// with 401/403.
 
 // Action to approve a case study
 export const approveCaseStudyAction: DocumentActionComponent = (props) => {
   const { id, draft, published } = props
   const doc = draft || published
+  const client = useClient({ apiVersion })
 
   // Only show for case studies with pending or revision status
   if (doc?._type !== 'caseStudy' || !['pending', 'revision'].includes(doc?.status as string)) {
@@ -18,19 +24,23 @@ export const approveCaseStudyAction: DocumentActionComponent = (props) => {
     tone: 'positive',
     onHandle: async () => {
       try {
-        // Update the case study status to approved and set publish date
+        const now = new Date().toISOString()
+        // Approve: set review timestamp; keep an existing publish date if the
+        // document was approved before (e.g. re-approval after revision)
         await client
           .patch(id)
           .set({
             status: 'approved',
-            publishedAt: new Date().toISOString()
+            publishedAt: (doc?.publishedAt as string) || now,
+            reviewedAt: now
           })
           .commit()
-
-        // Show success message
-        props.onComplete()
       } catch (error) {
         console.error('Error approving case study:', error)
+        // Rethrow so Studio surfaces the failure to the reviewer
+        throw error
+      } finally {
+        props.onComplete()
       }
     }
   }
@@ -40,6 +50,7 @@ export const approveCaseStudyAction: DocumentActionComponent = (props) => {
 export const requestRevisionAction: DocumentActionComponent = (props) => {
   const { id, draft, published } = props
   const doc = draft || published
+  const client = useClient({ apiVersion })
 
   // Only show for case studies with pending status
   if (doc?._type !== 'caseStudy' || doc?.status !== 'pending') {
@@ -64,12 +75,13 @@ export const requestRevisionAction: DocumentActionComponent = (props) => {
               reviewedAt: new Date().toISOString()
             })
             .commit()
-
-          // Show success message
-          props.onComplete()
         }
       } catch (error) {
         console.error('Error requesting revision:', error)
+        // Rethrow so Studio surfaces the failure to the reviewer
+        throw error
+      } finally {
+        props.onComplete()
       }
     }
   }
@@ -79,6 +91,7 @@ export const requestRevisionAction: DocumentActionComponent = (props) => {
 export const rejectCaseStudyAction: DocumentActionComponent = (props) => {
   const { id, draft, published } = props
   const doc = draft || published
+  const client = useClient({ apiVersion })
 
   // Only show for case studies with pending or revision status
   if (doc?._type !== 'caseStudy' || !['pending', 'revision'].includes(doc?.status as string)) {
@@ -103,12 +116,13 @@ export const rejectCaseStudyAction: DocumentActionComponent = (props) => {
               reviewedAt: new Date().toISOString()
             })
             .commit()
-
-          // Show success message
-          props.onComplete()
         }
       } catch (error) {
         console.error('Error rejecting case study:', error)
+        // Rethrow so Studio surfaces the failure to the reviewer
+        throw error
+      } finally {
+        props.onComplete()
       }
     }
   }
@@ -130,8 +144,9 @@ export const previewCaseStudyAction: DocumentActionComponent = (props) => {
     onHandle: () => {
       // Open the published case study in a new tab
       const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
-      const url = `${baseUrl}/en/case-studies/${(doc.slug as any).current}`
+      const url = `${baseUrl}/en/research-and-action/case-studies/${(doc.slug as any).current}`
       window.open(url, '_blank')
+      props.onComplete()
     }
   }
 }

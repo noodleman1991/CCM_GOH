@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { createClient } from "@sanity/client";
 import { v4 as uuidv4 } from "uuid";
+import { caseStudySubmissionSchema, generateCaseStudySlug } from "@/lib/validation/case-study";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp']
@@ -45,15 +46,31 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const data = JSON.parse(dataString);
+        let parsedData: unknown;
+        try {
+            parsedData = JSON.parse(dataString);
+        } catch {
+            return NextResponse.json(
+                { error: "Invalid JSON in data field" },
+                { status: 400 }
+            );
+        }
 
-        // Generate slug from English title
-        const slug = data.title.en
-            .toLowerCase()
-            .replace(/[^\w\s-]/g, '')
-            .replace(/\s+/g, '-')
-            .replace(/-+/g, '-')
-            .trim();
+        const validation = caseStudySubmissionSchema.safeParse(parsedData);
+        if (!validation.success) {
+            return NextResponse.json(
+                {
+                    error: "Validation failed",
+                    details: validation.error.flatten(),
+                },
+                { status: 400 }
+            );
+        }
+
+        const data = validation.data;
+
+        // Generate a unique, unicode-safe slug from the English title
+        const slug = generateCaseStudySlug(data.title.en);
 
         // Prepare location data
         let studyLocation = null;
@@ -69,9 +86,8 @@ export async function POST(request: NextRequest) {
         const caseStudyDoc: any = {
             _type: "caseStudy",
             title: data.title,
-            subtitle: data.subtitle,
             slug: {
-                current: `${slug}-${uuidv4().slice(0, 8)}`,
+                current: slug,
             },
             excerpt: data.excerpt,
             content: data.content, // Already in portable text format from editor
@@ -141,12 +157,7 @@ export async function POST(request: NextRequest) {
                     _type: "organization",
                     name: data.organizationName,
                     slug: {
-                        current: data.organizationName
-                            .toLowerCase()
-                            .replace(/[^\w\s-]/g, '')
-                            .replace(/\s+/g, '-')
-                            .replace(/-+/g, '-')
-                            .trim(),
+                        current: generateCaseStudySlug(data.organizationName),
                     },
                     type: "other",
                 });
