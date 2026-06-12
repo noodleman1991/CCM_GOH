@@ -33,6 +33,8 @@ export const gridAgendaQuery = groq`
             }
           }
         },
+        hotspot,
+        crop,
         alt
       },
       files[]{

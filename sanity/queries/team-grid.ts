@@ -22,6 +22,8 @@ export const teamGridQuery = groq`
             }
           }
         },
+        hotspot,
+        crop,
         alt
       },
       organizationalAffiliation,

@@ -28,6 +28,8 @@ export const REGIONAL_COMMUNITY_NEWS_QUERY = groq`
           }
         }
       },
+      hotspot,
+      crop,
       alt
     },
     author->{
@@ -126,6 +128,8 @@ export const REGIONAL_COMMUNITY_NEWS_BY_SLUG_QUERY = groq`
           }
         }
       },
+      hotspot,
+      crop,
       alt
     },
     author->{
