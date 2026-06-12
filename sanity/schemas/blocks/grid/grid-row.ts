@@ -58,6 +58,30 @@ export default defineType({
       initialValue: "classic",
     }),
     defineField({
+      name: "mode",
+      title: "Content Mode",
+      type: "string",
+      options: {
+        list: [
+          { title: "Manual — hand-pick items", value: "manual" },
+          { title: "Dynamic — most recent", value: "dynamic-recent" },
+          { title: "Dynamic — featured first, fill with recent", value: "dynamic-featured" },
+        ],
+        layout: "radio",
+      },
+      initialValue: "manual",
+      description:
+        "Dynamic modes keep this section automatically up to date with the latest published content. Currently honored by the homepage 'Latest News' (news posts) and 'Research Agendas' (agendas) sections; other grid sections always use the manually picked items below.",
+    }),
+    defineField({
+      name: "maxItems",
+      title: "Max items (dynamic modes)",
+      type: "number",
+      initialValue: 3,
+      hidden: ({ parent }) => !parent?.mode || parent?.mode === "manual",
+      validation: (Rule) => Rule.min(1).max(12),
+    }),
+    defineField({
       name: "columns",
       type: "array",
       of: [
