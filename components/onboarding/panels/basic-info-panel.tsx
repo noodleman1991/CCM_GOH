@@ -79,7 +79,7 @@ export function BasicInfoPanel({ form, content }: BasicInfoPanelProps) {
           setUsernameStatus("taken")
           form.setError("basicInfo.username", {
             type: "manual",
-            message: data.message || "Username is already taken"
+            message: data.message || t("usernameTaken")
           })
         }
       } catch (error) {
@@ -162,13 +162,13 @@ export function BasicInfoPanel({ form, content }: BasicInfoPanelProps) {
               {usernameStatus === "checking" && (
                 <p className={cn("flex items-center gap-1.5 text-sm text-muted-foreground", isRTL && "flex-row-reverse")}>
                   <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                  Checking availability...
+                  {t("usernameChecking")}
                 </p>
               )}
               {usernameStatus === "available" && (
                 <p className={cn("flex items-center gap-1.5 text-sm text-green-600", isRTL && "flex-row-reverse")}>
                   <Check className="h-3.5 w-3.5" />
-                  Username is available
+                  {t("usernameAvailable")}
                 </p>
               )}
               <FormDescription>

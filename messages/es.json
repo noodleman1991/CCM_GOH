@@ -771,6 +771,9 @@
         "lastName": "Apellido",
         "username": "Nombre de Usuario",
         "usernameHint": "Esto se usará en la URL de tu perfil (ejemplo.com/profiles/tu-usuario)",
+        "usernameChecking": "Comprobando disponibilidad...",
+        "usernameAvailable": "El nombre de usuario está disponible",
+        "usernameTaken": "Este nombre de usuario ya está en uso",
         "bio": "Biografía",
         "bioPlaceholder": "Cuéntanos sobre ti, tus intereses y qué te trae a nuestra comunidad...",
         "bioHint": "Comparte lo que te hace único y lo que te apasiona",
@@ -1165,6 +1168,7 @@
     "featured": "Destacado",
     "viewAll": "Ver todo",
     "noPostsTitle": "Aún no hay publicaciones",
-    "noPostsBody": "Vuelve pronto para ver las novedades."
+    "noPostsBody": "Vuelve pronto para ver las novedades.",
+    "noContent": "No hay contenido disponible en este momento."
   }
 }
