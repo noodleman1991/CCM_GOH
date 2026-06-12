@@ -34,6 +34,8 @@ export default defineType({
       name: "gridColumns",
       type: "string",
       title: "Grid Columns",
+      description:
+        "How many cards per row on desktop screens. Note: the 'Wide (16:9)' card style always shows at most 2 per row.",
       options: {
         list: COLS_VARIANTS.map(({ title, value }) => ({ title, value })),
         layout: "radio",
@@ -44,7 +46,8 @@ export default defineType({
       name: "cardVariant",
       type: "string",
       title: "Card Variant",
-      description: "Choose the card layout variant for this grid row",
+      description:
+        "Card shape. 'Classic (3:2)' fits 2-4 per row; 'Wide (16:9)' is panoramic and overrides the columns setting to max 2 per row.",
       options: {
         list: [
           { title: "Classic (3:2 - Vertical)", value: "classic" },
