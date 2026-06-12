@@ -24,6 +24,8 @@ export const HOMEPAGE_QUERY = groq`
       ${splitRowQuery}
     },
     agendasModule {
+      mode,
+      maxItems,
       ${gridRowQuery}
     },
     livedExperiences {
@@ -36,6 +38,8 @@ export const HOMEPAGE_QUERY = groq`
       ${splitRowQuery}
     },
     news {
+      mode,
+      maxItems,
       ${gridRowQuery}
     },
     projectInfo {
@@ -84,6 +88,8 @@ export const INDEX_HOMEPAGE_QUERY = groq`
       ${splitRowQuery}
     },
     agendasModule {
+      mode,
+      maxItems,
       ${gridRowQuery}
     },
     livedExperiences {
@@ -96,6 +102,8 @@ export const INDEX_HOMEPAGE_QUERY = groq`
       ${splitRowQuery}
     },
     news {
+      mode,
+      maxItems,
       ${gridRowQuery}
     },
     projectInfo {
