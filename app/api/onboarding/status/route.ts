@@ -1,5 +1,6 @@
 import { auth } from '@clerk/nextjs/server'
 import { prisma } from '@/lib/prisma'
+import { isOnboardingComplete } from '@/lib/onboarding-status'
 import { NextResponse } from 'next/server'
 
 export const runtime = 'nodejs'
@@ -23,7 +24,7 @@ export async function GET() {
 
     // Also check Clerk metadata as fallback
     const { sessionClaims } = await auth()
-    const clerkOnboardingComplete = sessionClaims?.metadata?.onboardingComplete === true
+    const clerkOnboardingComplete = isOnboardingComplete(sessionClaims)
 
     const isCompleted = user?.onboardingCompleted || clerkOnboardingComplete
 
