@@ -417,11 +417,11 @@ export class UserService {
       }
 
       if (filters?.workTypes?.length) {
-        filterConditions.push(Prisma.sql`u."workTypes" && ${filters.workTypes}::text[]`)
+        filterConditions.push(Prisma.sql`u."workTypes"::text[] && ${filters.workTypes}::text[]`)
       }
 
       if (filters?.expertiseAreas?.length) {
-        filterConditions.push(Prisma.sql`u."expertiseAreas" && ${filters.expertiseAreas}::text[]`)
+        filterConditions.push(Prisma.sql`u."expertiseAreas"::text[] && ${filters.expertiseAreas}::text[]`)
       }
 
       // Build privacy conditions as Prisma.sql fragments
