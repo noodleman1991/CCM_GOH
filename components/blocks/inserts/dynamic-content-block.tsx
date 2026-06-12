@@ -111,7 +111,7 @@ export function DynamicContentBlock({
             <h2 className="text-3xl font-bold tracking-tight text-foreground mb-4">
               {sectionTitle}
             </h2>
-            <p className="text-muted-foreground">No content available at this time.</p>
+            <p className="text-muted-foreground">{t("noContent")}</p>
           </div>
         </div>
       </section>
