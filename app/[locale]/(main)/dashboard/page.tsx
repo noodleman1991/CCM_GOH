@@ -150,7 +150,9 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
     expertiseAreas: user.expertiseAreas,
     personalWebsite: user.personalWebsite,
     linkedinProfile: user.linkedinProfile,
-    phoneNumber: user.phoneNumber
+    phoneNumber: user.phoneNumber,
+    communityMemberships: user.communityMemberships,
+    recentWork: user.recentWork
   })
 
   // Get user's regional community

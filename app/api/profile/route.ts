@@ -266,7 +266,12 @@ export async function PUT(request: NextRequest) {
         }
 
         // STEP 1.5: Calculate and update profile completeness
-        const updatedUser = result.data
+        // updateUserProfile includes the communityMemberships/recentWork relations,
+        // but LocalizedUser doesn't carry them in its type
+        const updatedUser = result.data as typeof result.data & {
+            communityMemberships?: unknown[]
+            recentWork?: unknown[]
+        }
         const completeness = calculateProfileCompleteness({
             firstName: updatedUser.firstName,
             lastName: updatedUser.lastName,
@@ -284,7 +289,9 @@ export async function PUT(request: NextRequest) {
             expertiseAreas: updatedUser.expertiseAreas,
             personalWebsite: updatedUser.personalWebsite,
             linkedinProfile: updatedUser.linkedinProfile,
-            phoneNumber: updatedUser.phoneNumber
+            phoneNumber: updatedUser.phoneNumber,
+            communityMemberships: updatedUser.communityMemberships,
+            recentWork: updatedUser.recentWork
         })
 
         console.log(`[Profile Completeness] User ${userId} calculated: ${completeness}%`)
