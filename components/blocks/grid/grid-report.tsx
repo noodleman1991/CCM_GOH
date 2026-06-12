@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
@@ -50,6 +51,8 @@ export default function GridReportComponent({
                                                 cardVariant = "classic",
                                                 imageSizes,
                                             }: GridReportComponentProps) {
+    const t = useTranslations('blocks');
+
     if (!report) return null;
 
     const isWide = cardVariant === "wide";
@@ -78,7 +81,7 @@ export default function GridReportComponent({
                     <div className="text-center text-white p-4">
                         <Lock className="h-8 w-8 mx-auto mb-2" />
                         <p className="text-sm font-medium">
-                            {report.accessLevel === 'registered' ? 'Please sign in to download' : 'Members only'}
+                            {report.accessLevel === 'registered' ? t('signInToDownload') : t('membersOnly')}
                         </p>
                     </div>
                 </div>
@@ -106,7 +109,7 @@ export default function GridReportComponent({
                     {report.featured && (
                         <div className="absolute top-3 right-3">
                             <Badge className="bg-yellow-500 text-black">
-                                ⭐ Featured
+                                {'⭐ '}{t('featured')}
                             </Badge>
                         </div>
                     )}
@@ -164,7 +167,7 @@ export default function GridReportComponent({
                         {totalDownloads > 0 && (
                             <div className="flex items-center gap-1">
                                 <Eye className="h-3 w-3" />
-                                <span>{totalDownloads} downloads</span>
+                                <span>{totalDownloads} {t('downloads')}</span>
                             </div>
                         )}
                     </div>

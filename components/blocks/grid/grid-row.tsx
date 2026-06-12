@@ -15,6 +15,7 @@ import PortableTextRenderer from "@/components/portable-text-renderer";
 import { GridSectionHeader } from "./grid-section-header";
 import { ExpandableGrid } from "./expandable-grid";
 import { getLocalizedField } from "@/lib/localization-utils";
+import { resolveGridColumns } from "@/lib/grid-layout";
 
 type Block = NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number];
 type GridRow = Extract<Block, { _type: "grid-row" }>;
@@ -112,27 +113,10 @@ export default function GridRow({
     const isRTL = locale === "ar";
 
     // Single source of truth for column count: wide cards max out at 2 columns.
+    // Class literals live in lib/grid-layout.ts (scanned by Tailwind).
     const cleanedColumns = stegaClean(gridColumns);
-    const cols =
-        variant === "wide"
-            ? 2
-            : cleanedColumns === "grid-cols-4"
-            ? 4
-            : cleanedColumns === "grid-cols-3"
-            ? 3
-            : 2;
+    const { cols, className: gridColumnsClass } = resolveGridColumns(cleanedColumns, variant);
     const imageSizes = sizesForColumns(cols);
-
-    // Full class literals so Tailwind's scanner picks them up.
-    const gridColumnClasses: Record<number, string> = {
-        2: "grid-cols-1 md:grid-cols-2 lg:grid-cols-2", // Classic 2 cols: mobile 1, tablet 2, desktop 2
-        3: "grid-cols-1 md:grid-cols-2 lg:grid-cols-3", // Classic 3 cols: mobile 1, tablet 2, desktop 3
-        4: "grid-cols-2 md:grid-cols-2 lg:grid-cols-4", // Classic 4 cols: mobile 2, tablet 2, desktop 4
-    };
-    const gridColumnsClass =
-        variant === "wide"
-            ? "grid-cols-1 lg:grid-cols-2" // Wide cards: max 2 columns
-            : gridColumnClasses[cols];
 
     const supportedLocale = (locale || "en") as 'en' | 'es' | 'fr' | 'ar';
 

@@ -1183,5 +1183,15 @@
         "description": "We use Plausible Analytics, which is completely cookieless — no tracking cookies are ever set. No consent needed here!"
       }
     }
+  },
+  "blocks": {
+    "learnMore": "Learn More",
+    "downloads": "Downloads",
+    "membersOnly": "Members only",
+    "signInToDownload": "Please sign in to download",
+    "featured": "Featured",
+    "viewAll": "View All",
+    "noPostsTitle": "No posts yet",
+    "noPostsBody": "Check back soon for updates."
   }
 }

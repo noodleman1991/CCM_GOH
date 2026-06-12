@@ -1156,5 +1156,15 @@
         "description": "Usamos Plausible Analytics, que es completamente sin cookies. ¡No se necesita consentimiento aquí!"
       }
     }
+  },
+  "blocks": {
+    "learnMore": "Más información",
+    "downloads": "Descargas",
+    "membersOnly": "Solo para miembros",
+    "signInToDownload": "Inicia sesión para descargar",
+    "featured": "Destacado",
+    "viewAll": "Ver todo",
+    "noPostsTitle": "Aún no hay publicaciones",
+    "noPostsBody": "Vuelve pronto para ver las novedades."
   }
 }
