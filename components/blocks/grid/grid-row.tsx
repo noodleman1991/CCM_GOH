@@ -111,16 +111,28 @@ export default function GridRow({
     const variant = (stegaClean(cardVariant) as "classic" | "wide" | null) || "classic";
     const isRTL = locale === "ar";
 
-    // Mirror the column-class mapping below: wide cards max out at 2 columns.
-    const desktopColumns =
+    // Single source of truth for column count: wide cards max out at 2 columns.
+    const cleanedColumns = stegaClean(gridColumns);
+    const cols =
         variant === "wide"
             ? 2
-            : stegaClean(gridColumns) === "grid-cols-4"
+            : cleanedColumns === "grid-cols-4"
             ? 4
-            : stegaClean(gridColumns) === "grid-cols-3"
+            : cleanedColumns === "grid-cols-3"
             ? 3
             : 2;
-    const imageSizes = sizesForColumns(desktopColumns);
+    const imageSizes = sizesForColumns(cols);
+
+    // Full class literals so Tailwind's scanner picks them up.
+    const gridColumnClasses: Record<number, string> = {
+        2: "grid-cols-1 md:grid-cols-2 lg:grid-cols-2", // Classic 2 cols: mobile 1, tablet 2, desktop 2
+        3: "grid-cols-1 md:grid-cols-2 lg:grid-cols-3", // Classic 3 cols: mobile 1, tablet 2, desktop 3
+        4: "grid-cols-2 md:grid-cols-2 lg:grid-cols-4", // Classic 4 cols: mobile 2, tablet 2, desktop 4
+    };
+    const gridColumnsClass =
+        variant === "wide"
+            ? "grid-cols-1 lg:grid-cols-2" // Wide cards: max 2 columns
+            : gridColumnClasses[cols];
 
     const supportedLocale = (locale || "en") as 'en' | 'es' | 'fr' | 'ar';
 
@@ -150,14 +162,8 @@ export default function GridRow({
                         initialDisplayCount={initialDisplayCount}
                         gridClassName={cn(
                             "gap-4 md:gap-6 lg:gap-8", // Clean grid without negative margins
-                            // Grid columns based on variant and gridColumns setting
-                            variant === "wide"
-                                ? "grid-cols-1 lg:grid-cols-2" // Wide cards: max 2 columns
-                                : stegaClean(gridColumns) === "grid-cols-4"
-                                ? "grid-cols-2 md:grid-cols-2 lg:grid-cols-4" // Classic 4 cols: mobile 2, tablet 2, desktop 4
-                                : stegaClean(gridColumns) === "grid-cols-3"
-                                ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" // Classic 3 cols: mobile 1, tablet 2, desktop 3
-                                : "grid-cols-1 md:grid-cols-2 lg:grid-cols-2" // Classic 2 cols: mobile 1, tablet 2, desktop 2
+                            // Grid columns derived from the same `cols` used for image sizes
+                            gridColumnsClass
                         )}
                         locale={locale || "en"}
                         isRTL={isRTL}
