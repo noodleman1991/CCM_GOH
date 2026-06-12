@@ -77,6 +77,14 @@ const componentMap: Record<string, React.ComponentType<any>> = {
     "grid-external-source": GridExternalSource,
 };
 
+/** Responsive `sizes` for images inside a grid column. The content area is
+ *  capped at max-w-6xl (1152px), so above that breakpoint columns have a
+ *  fixed pixel width; below it they track the viewport. */
+function sizesForColumns(cols: number): string {
+    const capped = Math.round(1152 / cols); // content capped at max-w-6xl
+    return `(min-width: 1152px) ${capped}px, (min-width: 1024px) ${Math.round(100 / cols)}vw, (min-width: 768px) 50vw, 100vw`;
+}
+
 interface GridRowProps extends Omit<GridRow, 'initialDisplayCount' | 'headerImage'> {
     locale?: string;
     userId?: string;
@@ -102,6 +110,17 @@ export default function GridRow({
                                 }: GridRowProps) {
     const variant = (stegaClean(cardVariant) as "classic" | "wide" | null) || "classic";
     const isRTL = locale === "ar";
+
+    // Mirror the column-class mapping below: wide cards max out at 2 columns.
+    const desktopColumns =
+        variant === "wide"
+            ? 2
+            : stegaClean(gridColumns) === "grid-cols-4"
+            ? 4
+            : stegaClean(gridColumns) === "grid-cols-3"
+            ? 3
+            : 2;
+    const imageSizes = sizesForColumns(desktopColumns);
 
     const supportedLocale = (locale || "en") as 'en' | 'es' | 'fr' | 'ar';
 
@@ -171,6 +190,7 @@ export default function GridRow({
                                         locale={locale || 'en'}
                                         userId={userId}
                                         cardVariant={variant}
+                                        imageSizes={imageSizes}
                                     />
                                 </div>
                             );

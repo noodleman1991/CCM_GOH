@@ -128,7 +128,7 @@ function LivedExperienceCard({
   };
 
   const thumbnailUrl = experience.thumbnail?.asset?._id
-    ? urlFor(experience.thumbnail).url()
+    ? urlFor(experience.thumbnail).width(800).url()
     : getYouTubeThumbnail(experience.videoLink);
 
   return (
@@ -144,6 +144,7 @@ function LivedExperienceCard({
             alt={experience.thumbnail?.alt || title}
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-300"
+            sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-100 to-blue-200">

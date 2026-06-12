@@ -13,7 +13,7 @@ import {
     Lock,
     AlertCircle
 } from 'lucide-react';
-import { urlFor } from '@/sanity/lib/image';
+import { urlForCropped } from '@/sanity/lib/image';
 import {
     getLocalizedText,
     getCaseStudyUrl,
@@ -43,6 +43,7 @@ interface GridCaseStudyComponentProps {
     color?: string;
     cardVariant?: string;
     disableModal?: boolean;
+    imageSizes?: string;
 }
 
 export default function GridCaseStudyComponent({
@@ -59,6 +60,7 @@ export default function GridCaseStudyComponent({
                                                    className,
                                                    cardVariant = "classic",
                                                    disableModal = false,
+                                                   imageSizes,
                                                }: GridCaseStudyComponentProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const t = useTranslations('regional');
@@ -136,11 +138,11 @@ export default function GridCaseStudyComponent({
             {caseStudy.image?.asset?.url && (
                 <div className={cn("mb-4 relative rounded-2xl overflow-hidden w-full max-w-full min-w-0", aspectRatioClass)}>
                     <Image
-                        src={urlFor(caseStudy.image).width(400).height(225).url()}
+                        src={urlForCropped(caseStudy.image, 800, 450).url()}
                         alt={caseStudy.image.alt || title}
                         fill
                         className="object-cover transition-transform duration-200 group-hover:scale-105"
-                        sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                        sizes={imageSizes || "(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"}
                     />
 
                     {/* Case study type badge */}

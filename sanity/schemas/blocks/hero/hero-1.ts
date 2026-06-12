@@ -37,6 +37,9 @@ export default defineType({
       type: "image",
       description:
         "Shown at half width on desktop; drag the hotspot to control cropping.",
+      options: {
+        hotspot: true,
+      },
       fields: [
         {
           name: "alt",

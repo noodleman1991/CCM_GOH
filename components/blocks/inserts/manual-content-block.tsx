@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { PortableText } from "@portabletext/react";
 import { portableTextComponents } from "@/components/portable-text-renderer";
-import { urlFor } from "@/sanity/lib/image";
+import { urlForCropped } from "@/sanity/lib/image";
 import { cn } from "@/lib/utils";
 import { getLocalizedField, getLocalizedPortableText, type SupportedLocale } from "@/lib/localization-utils";
 
@@ -77,15 +77,23 @@ export function ManualContentBlock({
   const renderImage = () => {
     if (!image?.asset) return null;
 
+    // Half-width on desktop in the side-by-side layouts; otherwise the image
+    // sits inside a max-w-4xl (896px) column.
+    const isSideBySide = layout === "left-image" || layout === "right-image";
+    const imageSizes = isSideBySide
+      ? "(min-width: 1024px) 50vw, 100vw"
+      : "(min-width: 928px) 896px, 100vw";
+
     return (
       <div className="relative">
         <Image
-          src={urlFor(image.asset).width(800).height(600).url()}
+          src={urlForCropped(image, 800, 600).url()}
           alt={image.alt || localizedTitle || ""}
           width={800}
           height={600}
           className="rounded-lg object-cover w-full h-auto"
           priority={false}
+          sizes={imageSizes}
         />
         {image.caption && (
           <p className="text-sm text-muted-foreground mt-2 italic">
