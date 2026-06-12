@@ -388,6 +388,7 @@ export class UserService {
       communityIds?: string[]
       workTypes?: string[]
       expertiseAreas?: string[]
+      excludeRegionalCommunities?: boolean
     },
     page: number = 1,
     pageSize: number = 20
@@ -396,9 +397,6 @@ export class UserService {
     const skip = (page - 1) * pageSize
 
     return safeQuery(async () => {
-      // Apply privacy filters
-      const privacyFilter = this.getPrivacyWhereClause(options.isAuthenticated)
-
       // Build filter conditions as Prisma.sql fragments for safe parameterization
       const filterConditions: Prisma.Sql[] = []
 
@@ -406,7 +404,15 @@ export class UserService {
         filterConditions.push(Prisma.sql`EXISTS (
           SELECT 1 FROM "UserCommunity" uc
           WHERE uc."userId" = u.id
-          AND uc."communityId" = ANY(${filters.communityIds})
+          AND uc."communityId" = ANY(${filters.communityIds}::text[])
+        )`)
+      }
+
+      if (filters?.excludeRegionalCommunities) {
+        filterConditions.push(Prisma.sql`NOT EXISTS (
+          SELECT 1 FROM "UserCommunity" uc
+          JOIN "Community" c ON c.id = uc."communityId"
+          WHERE uc."userId" = u.id AND c.type = 'REGIONAL'
         )`)
       }
 
@@ -451,7 +457,7 @@ export class UserService {
             ${similarityExpr} as similarity_score
           FROM "User" u
           WHERE ${allConditions}
-          HAVING ${similarityExpr} >= ${similarityThreshold}
+          AND ${similarityExpr} >= ${similarityThreshold}
           ORDER BY similarity_score DESC, u."lastLoginAt" DESC NULLS LAST, u."profileCompleteness" DESC
           LIMIT ${pageSize}
           OFFSET ${skip}
@@ -488,8 +494,12 @@ export class UserService {
         })
         .filter((u): u is NonNullable<typeof u> => u !== null)
 
+      // Apply privacy redaction to each user for external viewing
+      // (same as the standard collaborate path)
+      const redactedUsers = localizedUsers.map(user => redactUser(user, null))
+
       return {
-        data: localizedUsers,
+        data: redactedUsers,
         total,
         page,
         pageSize,
@@ -519,47 +529,57 @@ export class UserService {
   ): Promise<DatabaseResult<PaginatedResult<LocalizedUser>>> {
     // Use fuzzy search if enabled and query provided
     if (filters.useFuzzySearch && filters.searchQuery) {
-      return this.fuzzySearchUsers(
+      const fuzzyResult = await this.fuzzySearchUsers(
         filters.searchQuery,
         options,
         0.3, // Similarity threshold
         {
           communityIds: filters.communityIds,
           workTypes: filters.workTypes,
-          expertiseAreas: filters.expertiseAreas
+          expertiseAreas: filters.expertiseAreas,
+          excludeRegionalCommunities: filters.excludeRegionalCommunities
         },
         page,
         pageSize
-      ) as Promise<DatabaseResult<PaginatedResult<LocalizedUser>>>
+      )
+
+      if (fuzzyResult.success) {
+        return fuzzyResult as DatabaseResult<PaginatedResult<LocalizedUser>>
+      }
+
+      // Graceful fallback: if fuzzy search fails (e.g. pg_trgm extension
+      // unavailable), log and fall through to the standard contains-based path.
+      console.error(
+        'Fuzzy search failed, falling back to standard search:',
+        fuzzyResult.error
+      )
     }
 
     const localizedQuery = createLocalizedQuery(options)
     const skip = (page - 1) * pageSize
 
     return safeQuery(async () => {
-      // Apply privacy filters - only authenticated users can access collaborate
-      const privacyFilter = this.getPrivacyWhereClause(true)
+      // Apply privacy filters based on the caller's authentication status
+      const privacyFilter = this.getPrivacyWhereClause(options.isAuthenticated)
 
-      // Build OR conditions for workTypes and expertiseAreas filters
-      // This ensures users appear if they match ANY of the selected filters
-      const filterOrConditions: Prisma.UserWhereInput[] = []
+      // Build AND array for combining all conditions
+      const andConditions: Prisma.UserWhereInput[] = [privacyFilter]
 
-      // Add workTypes filter to OR conditions
+      // Work types and expertise areas are combined with AND *between* categories
+      // (a user must match the work-type filter AND the expertise filter), while
+      // `hasSome` provides OR *within* a category (match any of the selected values).
+      // This makes adding filters narrow results rather than widen them.
       if (filters.workTypes?.length) {
-        filterOrConditions.push({
+        andConditions.push({
           workTypes: { hasSome: filters.workTypes as any }
         })
       }
 
-      // Add expertiseAreas filter to OR conditions
       if (filters.expertiseAreas?.length) {
-        filterOrConditions.push({
+        andConditions.push({
           expertiseAreas: { hasSome: filters.expertiseAreas as any }
         })
       }
-
-      // Build AND array for combining all conditions
-      const andConditions: Prisma.UserWhereInput[] = [privacyFilter]
 
       // Add community filter
       if (filters.communityIds?.length) {
@@ -583,11 +603,6 @@ export class UserService {
             }
           }
         })
-      }
-
-      // Add OR logic for workTypes and expertiseAreas (if any)
-      if (filterOrConditions.length > 0) {
-        andConditions.push({ OR: filterOrConditions })
       }
 
       // Add search query filter (if present)
