@@ -1156,5 +1156,15 @@
         "description": "نستخدم Plausible Analytics، وهي أداة تحليلات بدون ملفات تعريف ارتباط تمامًا. لا حاجة للموافقة هنا!"
       }
     }
+  },
+  "blocks": {
+    "learnMore": "اعرف المزيد",
+    "downloads": "التنزيلات",
+    "membersOnly": "للأعضاء فقط",
+    "signInToDownload": "يرجى تسجيل الدخول للتنزيل",
+    "featured": "مميز",
+    "viewAll": "عرض الكل",
+    "noPostsTitle": "لا توجد منشورات بعد",
+    "noPostsBody": "تحقق مرة أخرى قريباً للاطلاع على التحديثات."
   }
 }

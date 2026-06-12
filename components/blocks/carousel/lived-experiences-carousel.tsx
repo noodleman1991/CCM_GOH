@@ -306,13 +306,6 @@ export default function LivedExperiencesCarousel({
     }
   };
 
-  // Debug logging to check data passing
-  console.log('Lived Experiences Carousel Debug:', {
-    hasExperiences: !!experiences,
-    count: experiences?.length || 0,
-    firstExperience: experiences?.[0]?._id || 'none'
-  });
-
   // Show empty state instead of null to help with debugging
   if (!experiences || experiences.length === 0) {
     return (

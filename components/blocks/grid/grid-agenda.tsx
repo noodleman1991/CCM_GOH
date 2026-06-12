@@ -52,9 +52,11 @@ export default function GridAgendaComponent({
                                                 cardVariant = "classic",
                                                 imageSizes,
                                             }: GridAgendaComponentProps) {
+    const t = useTranslations('regional');
+    const tBlocks = useTranslations('blocks');
+
     if (!agenda) return null;
 
-    const t = useTranslations('regional');
     const isWide = cardVariant === "wide";
     const aspectRatioClass = isWide ? "aspect-video" : "aspect-[3/2]";
 
@@ -135,7 +137,7 @@ export default function GridAgendaComponent({
             <CardContent className="flex-1 pb-3 px-0">
                 {/* Description */}
                 {description && (
-                    <p className="text-sm text-foreground line-clamp-14 mb-4">
+                    <p className="text-sm text-foreground line-clamp-6 mb-4">
                         {description}
                     </p>
                 )}
@@ -167,7 +169,7 @@ export default function GridAgendaComponent({
                         {totalDownloads > 0 && (
                             <div className="flex items-center gap-1">
                                 <Eye className="h-3 w-3" />
-                                <span>{totalDownloads} downloads</span>
+                                <span>{totalDownloads} {tBlocks('downloads')}</span>
                             </div>
                         )}
                     </div>

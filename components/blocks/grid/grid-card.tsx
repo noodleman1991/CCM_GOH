@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { stegaClean } from "next-sanity";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import Image from "next/image";
 import { urlForCropped } from "@/sanity/lib/image";
@@ -26,6 +27,7 @@ export default function GridCard({
   cardVariant = "classic",
   imageSizes,
 }: GridCardProps) {
+  const t = useTranslations("blocks");
   const isWide = cardVariant === "wide";
   const aspectRatioClass = isWide ? "aspect-video" : "aspect-[3/2]";
   return (
@@ -62,10 +64,10 @@ export default function GridCard({
           >
             {title && (
               <div className="flex justify-between items-center mb-4">
-                <h3 className="font-bold text-2xl break-words">{title}</h3>
+                <h3 className="font-bold text-2xl break-words line-clamp-2">{title}</h3>
               </div>
             )}
-            {excerpt && <p>{excerpt}</p>}
+            {excerpt && <p className="line-clamp-3">{excerpt}</p>}
           </div>
         </div>
         <Button
@@ -75,7 +77,7 @@ export default function GridCard({
           stroke={stegaClean((link?.buttonVariant as any)?.stroke)}
           asChild
         >
-          <div>{link?.title ?? "Learn More"}</div>
+          <div>{link?.title ?? t("learnMore")}</div>
         </Button>
       </div>
     </Link>

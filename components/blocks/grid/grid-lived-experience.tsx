@@ -127,9 +127,10 @@ export default function GridLivedExperienceComponent({
                                                         className,
                                                         cardVariant = "classic",
                                                     }: GridLivedExperienceProps) {
+    const t = useTranslations('regional');
+
     if (!livedExperience) return null;
 
-    const t = useTranslations('regional');
     const aspectRatioClass = cardVariant === "wide" ? "aspect-video" : "aspect-[3/2]";
 
     const supportedLocale = locale as 'en' | 'es' | 'fr' | 'ar';
