@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { stegaClean } from "next-sanity";
 import Link from "next/link";
 import Image from "next/image";
-import { urlFor } from "@/sanity/lib/image";
+import { urlForCropped } from "@/sanity/lib/image";
 import { PAGE_QUERYResult, ColorVariant } from "@/sanity.types";
 
 type Block = NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number];
@@ -14,6 +14,7 @@ type GridCard = Extract<GridColumn, { _type: "grid-card" }>;
 interface GridCardProps extends Omit<GridCard, "_type" | "_key"> {
   color?: string; //todo: what is the issue with colorVariant?
   cardVariant?: string;
+  imageSizes?: string;
 }
 
 export default function GridCard({
@@ -23,8 +24,10 @@ export default function GridCard({
   image,
   link,
   cardVariant = "classic",
+  imageSizes,
 }: GridCardProps) {
-  const aspectRatioClass = cardVariant === "wide" ? "aspect-video" : "aspect-[3/2]";
+  const isWide = cardVariant === "wide";
+  const aspectRatioClass = isWide ? "aspect-video" : "aspect-[3/2]";
   return (
     <Link
       key={title}
@@ -44,12 +47,12 @@ export default function GridCard({
           {image && image.asset?._id && (
             <div className={cn("mb-4 relative rounded-2xl overflow-hidden w-full max-w-full", aspectRatioClass)}>
               <Image
-                src={urlFor(image).url()}
+                src={urlForCropped(image, 800, isWide ? 450 : 533).url()}
                 alt={image.alt || ""}
                 placeholder={image?.asset?.metadata?.lqip ? "blur" : undefined}
                 blurDataURL={image?.asset?.metadata?.lqip || ""}
                 fill
-                sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                sizes={imageSizes || "(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"}
                 className="object-cover"
               />
             </div>

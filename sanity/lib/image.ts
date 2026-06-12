@@ -18,3 +18,18 @@ export const urlFor = (source: SanityImageSource) => {
 
   return imageBuilder.format("webp").fit("max");
 };
+
+/** Hotspot-aware crop: requests an exact aspect from the Sanity CDN so the
+ *  editor's hotspot/crop is honored instead of CSS center-cropping. */
+export function urlForCropped(
+  source: SanityImageSource,
+  width: number,
+  height: number
+) {
+  return builder
+    .image(source)
+    .width(width)
+    .height(height)
+    .fit("crop")
+    .auto("format");
+}

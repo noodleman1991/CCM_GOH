@@ -10,7 +10,7 @@ import {
     Lock,
     AlertCircle
 } from 'lucide-react';
-import { urlFor } from '@/sanity/lib/image';
+import { urlForCropped } from '@/sanity/lib/image';
 import {
     Report,
     SupportedLanguage
@@ -36,6 +36,7 @@ interface GridReportComponentProps {
     className?: string;
     color?: string;
     cardVariant?: string;
+    imageSizes?: string;
 }
 
 export default function GridReportComponent({
@@ -47,10 +48,12 @@ export default function GridReportComponent({
                                                 userId,
                                                 className,
                                                 cardVariant = "classic",
+                                                imageSizes,
                                             }: GridReportComponentProps) {
     if (!report) return null;
 
-    const aspectRatioClass = cardVariant === "wide" ? "aspect-video" : "aspect-[3/2]";
+    const isWide = cardVariant === "wide";
+    const aspectRatioClass = isWide ? "aspect-video" : "aspect-[3/2]";
 
     const title = getLocalizedText(report.title, locale);
     const subtitle = getLocalizedText(report.subtitle, locale);
@@ -85,11 +88,11 @@ export default function GridReportComponent({
             {report.coverImage?.asset?.url && (
                 <div className={cn("mb-4 relative rounded-2xl overflow-hidden w-full max-w-full min-w-0", aspectRatioClass)}>
                     <Image
-                        src={urlFor(report.coverImage).width(400).height(225).url()}
+                        src={urlForCropped(report.coverImage, 800, isWide ? 450 : 533).url()}
                         alt={report.coverImage.alt || title}
                         fill
                         className="object-cover transition-transform duration-200 group-hover:scale-105"
-                        sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                        sizes={imageSizes || "(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"}
                     />
 
                     {/* Report type badge */}

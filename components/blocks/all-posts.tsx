@@ -155,7 +155,9 @@ export default async function AllPosts({
           const excerpt = typeof post.excerpt === 'string'
             ? post.excerpt
             : getLocalizedField(post.excerpt, supportedLocale, '');
-          const imageUrl = post.image?.asset?.url || (post.image?.asset ? urlFor(post.image).width(600).url() : null);
+          const imageUrl = post.image?.asset?._id
+            ? urlFor(post.image).width(800).url()
+            : post.image?.asset?.url || null;
 
           return (
             <Link key={post._id} href={`/news/${post.slug}`} className="group">
@@ -167,6 +169,7 @@ export default async function AllPosts({
                       alt={post.image?.alt || title}
                       fill
                       className="object-cover transition-transform group-hover:scale-105"
+                      sizes="(min-width: 1024px) 384px, (min-width: 768px) 50vw, 100vw"
                     />
                   </div>
                 )}

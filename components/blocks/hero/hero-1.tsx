@@ -105,13 +105,13 @@ export default function Hero1({
                         <div className="relative w-full max-w-full overflow-hidden min-w-0">
                             <Image
                                 className="rounded-xl animate-fade-up [animation-delay:500ms] opacity-0 w-full h-auto object-cover max-w-full"
-                                src={urlFor(image).url()}
+                                src={urlFor(image).width(1200).url()}
                                 alt={image.alt || ""}
                                 width={image.asset?.metadata?.dimensions?.width || 800}
                                 height={image.asset?.metadata?.dimensions?.height || 800}
                                 placeholder={image?.asset?.metadata?.lqip ? "blur" : undefined}
                                 blurDataURL={image?.asset?.metadata?.lqip || ""}
-                                sizes="(min-width: 1024px) 50vw, 100vw"
+                                sizes="(min-width: 1152px) 576px, (min-width: 1024px) 50vw, 100vw"
                             />
                         </div>
                     )}

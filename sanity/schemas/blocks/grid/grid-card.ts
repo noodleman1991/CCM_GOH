@@ -22,6 +22,9 @@ export default defineType({
       type: "image",
       description:
         "Card image. Drag the hotspot circle to keep the important part visible when the image is cropped.",
+      options: {
+        hotspot: true,
+      },
       fields: [
         {
           name: "alt",
