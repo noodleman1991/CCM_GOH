@@ -26,6 +26,8 @@ const NEWS_PROJECTION = groq`{
         }
       }
     },
+    hotspot,
+    crop,
     alt
   },
   author->{
@@ -121,6 +123,8 @@ const AGENDA_PROJECTION = groq`{
         }
       }
     },
+    hotspot,
+    crop,
     alt
   },
   files[]{

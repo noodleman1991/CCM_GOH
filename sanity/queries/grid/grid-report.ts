@@ -33,6 +33,8 @@ export const gridReportQuery = groq`
             }
           }
         },
+        hotspot,
+        crop,
         alt
       },
       files[]{

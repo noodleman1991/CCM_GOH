@@ -29,6 +29,8 @@ export const REGIONAL_COMMUNITY_CASE_STUDIES_QUERY = groq`
           }
         }
       },
+      hotspot,
+      crop,
       alt
     },
     studyPeriod,
@@ -125,6 +127,8 @@ export const REGIONAL_COMMUNITY_CASE_STUDIES_BY_SLUG_QUERY = groq`
           }
         }
       },
+      hotspot,
+      crop,
       alt
     },
     studyPeriod,

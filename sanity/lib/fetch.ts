@@ -256,6 +256,8 @@ export const fetchRegionalCommunityAgendas = async ({
                             }
                         }
                     },
+                    hotspot,
+                    crop,
                     alt
                 },
                 files[]{
@@ -337,6 +339,8 @@ export const fetchRegionalCommunityAgendas = async ({
                                 }
                             }
                         },
+                        hotspot,
+                        crop,
                         alt
                     },
                     files[]{
