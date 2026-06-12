@@ -16,7 +16,6 @@ import type { LocalizedUser } from '@/types/prisma'
 
 interface UserGridProps {
   users: Array<LocalizedUser & {
-    profileCompleteness?: number
     lastLoginAt?: Date | null
     communityMemberships?: Array<{
       community: {

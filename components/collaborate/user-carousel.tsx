@@ -18,7 +18,6 @@ import type { LocalizedUser } from '@/types/prisma'
 interface UserCarouselProps {
   title: string
   users: Array<LocalizedUser & {
-    profileCompleteness?: number
     lastLoginAt?: Date | null
     communityMemberships?: Array<{
       community: {
