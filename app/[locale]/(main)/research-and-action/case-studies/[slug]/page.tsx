@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button'
 import { Link } from '@/i18n/navigation'
 import { urlFor } from '@/sanity/lib/image'
 import { getLocalizedText, formatCaseStudyDate, getPrimaryAuthor, getStudyLocationText } from '@/lib/case-study-utils'
-import { PortableText } from '@portabletext/react'
+import PortableTextRenderer from '@/components/portable-text-renderer'
 
 export async function generateStaticParams() {
   const caseStudies = await fetchCaseStudiesStaticParams()
@@ -170,8 +170,13 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ loca
       {/* Main Content */}
       {caseStudy.content && (
         <Card>
-          <CardContent className="prose prose-lg max-w-none pt-6">
-            <PortableText value={caseStudy.content} />
+          <CardContent className="pt-6">
+            {/* PortableTextRenderer applies its own prose styling and handles images/videos */}
+            <PortableTextRenderer
+              value={caseStudy.content}
+              locale={supportedLocale}
+              isRTL={supportedLocale === 'ar'}
+            />
           </CardContent>
         </Card>
       )}

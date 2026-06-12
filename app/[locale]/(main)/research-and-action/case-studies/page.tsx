@@ -62,34 +62,38 @@ async function fetchFilteredCaseStudies(filters: {
   communities?: string[]
   search?: string
 }) {
+  // Conditions use GROQ parameters ($param) instead of string interpolation
+  // to prevent GROQ injection via URL search params.
   const conditions: string[] = ['_type == "caseStudy"', 'status == "approved"']
+  const params: Record<string, unknown> = {}
 
   if (filters.topic) {
-    conditions.push(`topic == "${filters.topic}"`)
+    conditions.push(`topic == $topic`)
+    params.topic = filters.topic
   }
 
   if (filters.tags && filters.tags.length > 0) {
-    const tagConditions = filters.tags.map(tag => `"${tag}" in tags[]->value.current`)
-    conditions.push(`(${tagConditions.join(' || ')})`)
+    conditions.push(`count((tags[]->value.current)[@ in $tags]) > 0`)
+    params.tags = filters.tags
   }
 
   if (filters.communities && filters.communities.length > 0) {
-    const communityConditions = filters.communities.map(slug => `relatedCommunity->slug.current == "${slug}"`)
-    conditions.push(`(${communityConditions.join(' || ')})`)
+    conditions.push(`relatedCommunity->slug.current in $communities`)
+    params.communities = filters.communities
   }
 
   if (filters.search) {
-    const searchTerm = filters.search.toLowerCase()
     conditions.push(`(
-      lower(title.en) match "*${searchTerm}*" ||
-      lower(title.es) match "*${searchTerm}*" ||
-      lower(title.fr) match "*${searchTerm}*" ||
-      lower(title.ar) match "*${searchTerm}*" ||
-      lower(excerpt.en) match "*${searchTerm}*" ||
-      lower(excerpt.es) match "*${searchTerm}*" ||
-      lower(excerpt.fr) match "*${searchTerm}*" ||
-      lower(excerpt.ar) match "*${searchTerm}*"
+      lower(title.en) match $searchPattern ||
+      lower(title.es) match $searchPattern ||
+      lower(title.fr) match $searchPattern ||
+      lower(title.ar) match $searchPattern ||
+      lower(excerpt.en) match $searchPattern ||
+      lower(excerpt.es) match $searchPattern ||
+      lower(excerpt.fr) match $searchPattern ||
+      lower(excerpt.ar) match $searchPattern
     )`)
+    params.searchPattern = `*${filters.search.toLowerCase()}*`
   }
 
   const query = `*[${conditions.join(' && ')}] | order(featured desc, publishedAt desc)[0...50] {
@@ -121,7 +125,7 @@ async function fetchFilteredCaseStudies(filters: {
     "relatedCommunity": relatedCommunity->name
   }`
 
-  return await client.fetch(query)
+  return await client.fetch(query, params)
 }
 
 // Wrapper component to fetch filter data
