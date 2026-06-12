@@ -17,11 +17,13 @@ export function generateCaseStudySlug(title: string): string {
         .replace(/[\s_]+/g, '-')
         .replace(/-+/g, '-')
         .slice(0, 96)
-    const suffix = Math.random().toString(36).slice(2, 8)
+        .replace(/^-+|-+$/g, '')
+    // crypto.randomUUID over Math.random().toString(36): always yields 6 chars
+    const suffix = crypto.randomUUID().replace(/-/g, '').slice(0, 6)
     return base ? `${base}-${suffix}` : suffix
 }
 
-const optionalString = z.string().optional().or(z.literal(''))
+const optionalString = z.string().optional()
 
 /**
  * Server-side schema for the `data` JSON blob posted by

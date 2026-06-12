@@ -19,6 +19,10 @@ describe('generateCaseStudySlug', () => {
         expect(generateCaseStudySlug('a  --  b')).toMatch(/^a-b-[a-z0-9]{6}$/)
     })
 
+    it('joins a dash-terminated title with a single dash', () => {
+        expect(generateCaseStudySlug('abc-')).toMatch(/^abc-[a-z0-9]{6}$/)
+    })
+
     it('produces different suffixes across calls', () => {
         expect(generateCaseStudySlug('same title')).not.toBe(generateCaseStudySlug('same title'))
     })
