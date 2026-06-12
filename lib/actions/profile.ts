@@ -27,6 +27,7 @@ export interface ProfileData {
     linkedinProfile?: string | null
     otherSocialLinks: Array<{platform: string, url: string}>
     role: string
+    profileCompleteness: number
     createdAt: Date
     updatedAt: Date
     recentWork: Array<{
@@ -109,6 +110,7 @@ export async function getUserProfile(username: string): Promise<ProfileData | nu
             linkedinProfile: user.linkedinProfile, // Already redacted if showSocialLinks=false
             otherSocialLinks: (user.otherSocialLinks as Array<{platform: string, url: string}>) || [],
             role: user.role,
+            profileCompleteness: user.profileCompleteness ?? 0,
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
             recentWork: user.recentWork || [],

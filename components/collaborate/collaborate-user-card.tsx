@@ -3,7 +3,7 @@
 /**
  * CollaborateUserCard Component
  * Displays user information for the collaborate page
- * Shows avatar, name, expertise, work types, affiliation, and profile completeness
+ * Shows avatar, name, expertise, work types, and affiliation
  * Respects privacy settings and supports RTL
  */
 
@@ -12,14 +12,12 @@ import { useTranslations, useLocale } from 'next-intl'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { ProfileCompletenessIndicator } from '@/components/ui/profile-completeness-indicator'
 import { cn } from '@/lib/utils'
 import { MapPin, Briefcase, Clock, FileText } from 'lucide-react'
 import type { LocalizedUser } from '@/types/prisma'
 
 interface CollaborateUserCardProps {
   user: LocalizedUser & {
-    profileCompleteness?: number
     lastLoginAt?: Date | null
     communityMemberships?: Array<{
       community: {
@@ -194,16 +192,8 @@ export function CollaborateUserCard({ user, className }: CollaborateUserCardProp
               </div>
             )}
 
-            {/* Footer: Profile Completeness + Last Active */}
+            {/* Footer: Last Active */}
             <div className="space-y-2 pt-2 border-t">
-              {user.profileCompleteness !== undefined && (
-                <ProfileCompletenessIndicator
-                  percentage={user.profileCompleteness}
-                  size="sm"
-                  variant="compact"
-                  showLabel={false}
-                />
-              )}
               {user.lastLoginAt && (
                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                   <Clock className="h-3 w-3" />
