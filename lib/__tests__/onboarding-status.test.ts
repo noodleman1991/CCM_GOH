@@ -38,4 +38,15 @@ describe('isOnboardingComplete', () => {
       })
     ).toBe(true)
   })
+
+  it('publicMetadata takes precedence; a flagless publicMetadata does not fall through to metadata', () => {
+    // Deliberate: the canonical write path is publicMetadata.onboardingCompleted,
+    // so a present-but-flagless publicMetadata is treated as "not complete"
+    // rather than falling back to a legacy metadata flag.
+    expect(isOnboardingComplete({ publicMetadata: {}, metadata: { onboardingComplete: true } })).toBe(false)
+  })
+
+  it('uses metadata when publicMetadata is absent', () => {
+    expect(isOnboardingComplete({ metadata: { onboardingCompleted: true } })).toBe(true)
+  })
 })
