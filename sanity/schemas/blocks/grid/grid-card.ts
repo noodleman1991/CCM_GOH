@@ -9,14 +9,19 @@ export default defineType({
     defineField({
       name: "title",
       type: "string",
+      description:
+        "Keep under ~60 characters — long titles are trimmed to 2 lines on cards.",
     }),
     defineField({
       name: "excerpt",
       type: "text",
+      description: "Short summary shown on the card, up to 3 lines.",
     }),
     defineField({
       name: "image",
       type: "image",
+      description:
+        "Card image. Drag the hotspot circle to keep the important part visible when the image is cropped.",
       fields: [
         {
           name: "alt",
@@ -28,6 +33,7 @@ export default defineType({
     defineField({
       name: "link",
       type: "link",
+      description: "Where the card's button leads.",
     }),
   ],
   preview: {
