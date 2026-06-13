@@ -16,19 +16,30 @@ export default defineType({
     defineField({
       name: "tagLine",
       type: "string",
+      title: "Tag Line",
+      description: "Short text shown above the main headline (e.g. a category or slogan).",
     }),
     defineField({
       name: "title",
       type: "string",
+      title: "Heading",
+      description: "Main headline of the hero section.",
     }),
     defineField({
       name: "body",
       type: "block-content",
+      title: "Body",
+      description: "Supporting text shown below the headline.",
     }),
     defineField({
       name: "image",
       title: "Image",
       type: "image",
+      description:
+        "Shown at half width on desktop; drag the hotspot to control cropping.",
+      options: {
+        hotspot: true,
+      },
       fields: [
         {
           name: "alt",

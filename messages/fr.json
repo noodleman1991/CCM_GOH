@@ -771,6 +771,9 @@
         "lastName": "Nom",
         "username": "Nom d'utilisateur",
         "usernameHint": "Ceci sera utilisé dans l'URL de votre profil (exemple.com/profiles/votre-nom-utilisateur)",
+        "usernameChecking": "Vérification de la disponibilité...",
+        "usernameAvailable": "Le nom d'utilisateur est disponible",
+        "usernameTaken": "Ce nom d'utilisateur est déjà pris",
         "bio": "Biographie",
         "bioPlaceholder": "Parlez-nous de vous, de vos intérêts et de ce qui vous amène dans notre communauté...",
         "bioHint": "Partagez ce qui vous rend unique et ce qui vous passionne",
@@ -1156,5 +1159,16 @@
         "description": "Nous utilisons Plausible Analytics, qui est entièrement sans cookies. Aucun consentement nécessaire ici !"
       }
     }
+  },
+  "blocks": {
+    "learnMore": "En savoir plus",
+    "downloads": "Téléchargements",
+    "membersOnly": "Réservé aux membres",
+    "signInToDownload": "Veuillez vous connecter pour télécharger",
+    "featured": "En vedette",
+    "viewAll": "Voir tout",
+    "noPostsTitle": "Pas encore de publications",
+    "noPostsBody": "Revenez bientôt pour découvrir les nouveautés.",
+    "noContent": "Aucun contenu disponible pour le moment."
   }
 }

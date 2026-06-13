@@ -29,6 +29,8 @@ export const gridNewsQuery = groq`
             }
           }
         },
+        hotspot,
+        crop,
         alt
       },
       author->{

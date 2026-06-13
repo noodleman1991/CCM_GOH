@@ -1,6 +1,7 @@
 import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
+import { isOnboardingComplete } from '@/lib/onboarding-status'
 
 export default async function OnboardingLayout({ children }: { children: React.ReactNode }) {
     const { userId } = await auth()
@@ -17,7 +18,7 @@ export default async function OnboardingLayout({ children }: { children: React.R
 
     // Also check Clerk metadata as fallback
     const { sessionClaims } = await auth()
-    const clerkOnboardingComplete = (sessionClaims?.publicMetadata as { onboardingCompleted?: boolean })?.onboardingCompleted === true
+    const clerkOnboardingComplete = isOnboardingComplete(sessionClaims)
 
     if (user?.onboardingCompleted || clerkOnboardingComplete) {
         redirect('/dashboard')

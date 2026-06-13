@@ -30,7 +30,7 @@ type ProfileData = {
  * Field weights define the importance of each field in the profile
  * Total should add up to 100
  */
-const FIELD_WEIGHTS = {
+export const FIELD_WEIGHTS = {
   // Core identity fields (25%)
   firstName: 4,
   lastName: 4,

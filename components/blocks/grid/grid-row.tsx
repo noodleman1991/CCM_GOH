@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import SectionContainer from "@/components/ui/section-container";
 import { stegaClean } from "next-sanity";
+import { getTranslations } from "next-intl/server";
 import { PAGE_QUERYResult } from "@/sanity.types";
 import GridCard from "./grid-card";
 import GridPost from "./grid-post";
@@ -15,6 +16,7 @@ import PortableTextRenderer from "@/components/portable-text-renderer";
 import { GridSectionHeader } from "./grid-section-header";
 import { ExpandableGrid } from "./expandable-grid";
 import { getLocalizedField } from "@/lib/localization-utils";
+import { resolveGridColumns } from "@/lib/grid-layout";
 
 type Block = NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number];
 type GridRow = Extract<Block, { _type: "grid-row" }>;
@@ -77,6 +79,14 @@ const componentMap: Record<string, React.ComponentType<any>> = {
     "grid-external-source": GridExternalSource,
 };
 
+/** Responsive `sizes` for images inside a grid column. The content area is
+ *  capped at max-w-6xl (1152px), so above that breakpoint columns have a
+ *  fixed pixel width; below it they track the viewport. */
+function sizesForColumns(cols: number): string {
+    const capped = Math.round(1152 / cols); // content capped at max-w-6xl
+    return `(min-width: 1152px) ${capped}px, (min-width: 1024px) ${Math.round(100 / cols)}vw, (min-width: 768px) 50vw, 100vw`;
+}
+
 interface GridRowProps extends Omit<GridRow, 'initialDisplayCount' | 'headerImage'> {
     locale?: string;
     userId?: string;
@@ -85,7 +95,7 @@ interface GridRowProps extends Omit<GridRow, 'initialDisplayCount' | 'headerImag
     initialDisplayCount?: number;
 }
 
-export default function GridRow({
+export default async function GridRow({
                                     padding,
                                     background,
                                     description,
@@ -103,7 +113,14 @@ export default function GridRow({
     const variant = (stegaClean(cardVariant) as "classic" | "wide" | null) || "classic";
     const isRTL = locale === "ar";
 
+    // Single source of truth for column count: wide cards max out at 2 columns.
+    // Class literals live in lib/grid-layout.ts (scanned by Tailwind).
+    const cleanedColumns = stegaClean(gridColumns);
+    const { cols, className: gridColumnsClass } = resolveGridColumns(cleanedColumns, variant);
+    const imageSizes = sizesForColumns(cols);
+
     const supportedLocale = (locale || "en") as 'en' | 'es' | 'fr' | 'ar';
+    const t = await getTranslations({ locale: supportedLocale, namespace: 'blocks' });
 
     const localizedTitle = typeof title === 'string'
         ? title
@@ -131,14 +148,8 @@ export default function GridRow({
                         initialDisplayCount={initialDisplayCount}
                         gridClassName={cn(
                             "gap-4 md:gap-6 lg:gap-8", // Clean grid without negative margins
-                            // Grid columns based on variant and gridColumns setting
-                            variant === "wide"
-                                ? "grid-cols-1 lg:grid-cols-2" // Wide cards: max 2 columns
-                                : stegaClean(gridColumns) === "grid-cols-4"
-                                ? "grid-cols-2 md:grid-cols-2 lg:grid-cols-4" // Classic 4 cols: mobile 2, tablet 2, desktop 4
-                                : stegaClean(gridColumns) === "grid-cols-3"
-                                ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" // Classic 3 cols: mobile 1, tablet 2, desktop 3
-                                : "grid-cols-1 md:grid-cols-2 lg:grid-cols-2" // Classic 2 cols: mobile 1, tablet 2, desktop 2
+                            // Grid columns derived from the same `cols` used for image sizes
+                            gridColumnsClass
                         )}
                         locale={locale || "en"}
                         isRTL={isRTL}
@@ -171,6 +182,7 @@ export default function GridRow({
                                         locale={locale || 'en'}
                                         userId={userId}
                                         cardVariant={variant}
+                                        imageSizes={imageSizes}
                                     />
                                 </div>
                             );
@@ -178,12 +190,8 @@ export default function GridRow({
                     </ExpandableGrid>
                 ) : (
                     <div className="text-center py-12 text-muted-foreground">
-                        <p className="text-lg">{
-                            { en: 'No content available yet.', fr: 'Aucun contenu disponible pour le moment.', es: 'Aún no hay contenido disponible.', ar: 'لا يوجد محتوى متاح حالياً.' }[supportedLocale] || 'No content available yet.'
-                        }</p>
-                        <p className="text-sm mt-2">{
-                            { en: 'Check back soon for updates.', fr: 'Revenez bientôt pour les mises à jour.', es: 'Vuelve pronto para ver las actualizaciones.', ar: 'تحقق مرة أخرى قريباً للاطلاع على التحديثات.' }[supportedLocale] || 'Check back soon for updates.'
-                        }</p>
+                        <p className="text-lg">{t('noContent')}</p>
+                        <p className="text-sm mt-2">{t('noPostsBody')}</p>
                     </div>
                 )}
             </div>

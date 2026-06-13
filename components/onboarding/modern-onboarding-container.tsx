@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect, useCallback } from "react"
+import React, { useState, useEffect, useCallback, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { useTranslations, useLocale } from "next-intl"
 import { useForm } from "react-hook-form"
@@ -33,6 +33,10 @@ interface ModernOnboardingContainerProps {
   userManagementOptions: any
   sanityContent: any
 }
+
+// sessionStorage key for in-progress onboarding state (step + form values).
+// Session-scoped on purpose: survives refreshes, not cross-device/staleness.
+const PROGRESS_STORAGE_KEY = "onboarding-progress"
 
 export function ModernOnboardingContainer({
   initialData,
@@ -164,6 +168,69 @@ export function ModernOnboardingContainer({
       isOptional: false
     }
   ]
+
+  // --- Progress persistence (sessionStorage) ---
+  // Only touched inside effects/handlers — never during render (SSR-safe).
+  const totalSteps = steps.length
+  const currentStepRef = useRef(currentStep)
+  currentStepRef.current = currentStep
+
+  // Restore saved progress on mount (ignore malformed payloads)
+  const restoredRef = useRef(false)
+  useEffect(() => {
+    if (restoredRef.current) return
+    restoredRef.current = true
+    try {
+      const raw = sessionStorage.getItem(PROGRESS_STORAGE_KEY)
+      if (!raw) return
+      const saved = JSON.parse(raw)
+      if (!saved || typeof saved !== "object") return
+      if (saved.values && typeof saved.values === "object" && typeof saved.values.basicInfo === "object") {
+        // keepDefaultValues so the server-provided data stays the baseline
+        form.reset(saved.values, { keepDefaultValues: true })
+      }
+      if (
+        typeof saved.step === "number" &&
+        Number.isInteger(saved.step) &&
+        saved.step >= 0 &&
+        saved.step < totalSteps
+      ) {
+        setCurrentStep(saved.step)
+      }
+    } catch {
+      // Malformed or unavailable storage — start fresh
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const persistProgress = useCallback(() => {
+    try {
+      sessionStorage.setItem(
+        PROGRESS_STORAGE_KEY,
+        JSON.stringify({ step: currentStepRef.current, values: form.getValues() })
+      )
+    } catch {
+      // Storage full/unavailable — persistence is best-effort
+    }
+  }, [form])
+
+  // Persist immediately on step change
+  useEffect(() => {
+    persistProgress()
+  }, [currentStep, persistProgress])
+
+  // Persist form value changes, debounced ~500ms
+  useEffect(() => {
+    let timeout: ReturnType<typeof setTimeout> | undefined
+    const subscription = form.watch(() => {
+      if (timeout) clearTimeout(timeout)
+      timeout = setTimeout(persistProgress, 500)
+    })
+    return () => {
+      subscription.unsubscribe()
+      if (timeout) clearTimeout(timeout)
+    }
+  }, [form, persistProgress])
 
   // Validation logic
   const validateCurrentStep = useCallback(async (): Promise<boolean> => {
@@ -310,6 +377,13 @@ export function ModernOnboardingContainer({
       }
 
       console.log('✅ Onboarding completed:', result)
+
+      // Clear persisted progress — onboarding is done
+      try {
+        sessionStorage.removeItem(PROGRESS_STORAGE_KEY)
+      } catch {
+        // Storage unavailable — nothing to clean up
+      }
 
       // Show success message
       toast.success("Welcome! Your profile has been set up successfully.")

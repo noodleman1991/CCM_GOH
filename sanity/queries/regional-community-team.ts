@@ -19,6 +19,8 @@ export const REGIONAL_COMMUNITY_TEAM_QUERY = groq`
           }
         }
       },
+      hotspot,
+      crop,
       alt
     },
     organizationalAffiliation,
@@ -50,6 +52,8 @@ export const TEAM_MEMBERS_BY_IDS_QUERY = groq`
           }
         }
       },
+      hotspot,
+      crop,
       alt
     },
     organizationalAffiliation,

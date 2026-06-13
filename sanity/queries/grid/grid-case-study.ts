@@ -28,6 +28,8 @@ const CASE_STUDY_PROJECTION_FRAGMENT = `
         }
       }
     },
+    hotspot,
+    crop,
     alt,
     caption
   },

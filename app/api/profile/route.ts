@@ -266,26 +266,8 @@ export async function PUT(request: NextRequest) {
         }
 
         // STEP 1.5: Calculate and update profile completeness
-        const updatedUser = result.data
-        const completeness = calculateProfileCompleteness({
-            firstName: updatedUser.firstName,
-            lastName: updatedUser.lastName,
-            username: updatedUser.username,
-            email: updatedUser.email,
-            image: updatedUser.image,
-            bio: updatedUser.bio,
-            ageGroup: updatedUser.ageGroup,
-            country: updatedUser.country,
-            city: updatedUser.city,
-            organization: updatedUser.organization,
-            position: updatedUser.position,
-            workBio: updatedUser.workBio,
-            workTypes: updatedUser.workTypes,
-            expertiseAreas: updatedUser.expertiseAreas,
-            personalWebsite: updatedUser.personalWebsite,
-            linkedinProfile: updatedUser.linkedinProfile,
-            phoneNumber: updatedUser.phoneNumber
-        })
+        // updateUserProfile includes the communityMemberships/recentWork relations
+        const completeness = calculateProfileCompleteness(result.data)
 
         console.log(`[Profile Completeness] User ${userId} calculated: ${completeness}%`)
 

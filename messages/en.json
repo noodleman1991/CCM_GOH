@@ -868,6 +868,9 @@
         "lastName": "Last Name",
         "username": "Username",
         "usernameHint": "This will be used in your profile URL (example.com/profiles/your-username)",
+        "usernameChecking": "Checking availability...",
+        "usernameAvailable": "Username is available",
+        "usernameTaken": "This username is already taken",
         "bio": "Bio",
         "bioPlaceholder": "Tell us about yourself, your interests, and what brings you to our community...",
         "bioHint": "Share what makes you unique and what you're passionate about",
@@ -1183,5 +1186,16 @@
         "description": "We use Plausible Analytics, which is completely cookieless — no tracking cookies are ever set. No consent needed here!"
       }
     }
+  },
+  "blocks": {
+    "learnMore": "Learn More",
+    "downloads": "Downloads",
+    "membersOnly": "Members only",
+    "signInToDownload": "Please sign in to download",
+    "featured": "Featured",
+    "viewAll": "View All",
+    "noPostsTitle": "No posts yet",
+    "noPostsBody": "Check back soon for updates.",
+    "noContent": "No content available at this time."
   }
 }

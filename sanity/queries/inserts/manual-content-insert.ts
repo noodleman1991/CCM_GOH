@@ -19,6 +19,8 @@ export const manualContentInsertQuery = groq`
           }
         }
       },
+      hotspot,
+      crop,
       alt,
       caption
     },

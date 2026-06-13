@@ -6,12 +6,13 @@
  * Full i18n and RTL support
  */
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
 import { useRouter } from '@/i18n/navigation'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { buildCollaborateParams } from '@/lib/collaborate-filters'
 import { CommunityFilters, type CommunityFiltersState } from '@/components/collaborate/community-filters'
 import { UserCarousel } from '@/components/collaborate/user-carousel'
 import { cn } from '@/lib/utils'
@@ -57,10 +58,14 @@ interface CollaboratePageClientProps {
   userCommunityIds: string[]
   locale: SupportedLocale
   initialSearch?: string
+  /**
+   * Decoded filter state from the URL (see lib/collaborate-filters.ts):
+   * null = param absent = all selected; [] = explicitly none selected.
+   */
   initialFilters?: {
-    workTypes: string[]
-    expertiseAreas: string[]
-    communities: string[]
+    workTypes: string[] | null
+    expertiseAreas: string[] | null
+    communities: string[] | null
   }
 }
 
@@ -83,43 +88,41 @@ export function CollaboratePageClient({
 
   const [searchInput, setSearchInput] = useState(initialSearch || '')
 
-  // Initialize filters from URL params or defaults to all checked
-  const [filters, setFilters] = useState<CommunityFiltersState>({
-    communities: initialFilters?.communities.length ?
-      initialFilters.communities :
-      [...ALL_COMMUNITY_IDS],
-    workTypes: initialFilters?.workTypes.length ?
-      initialFilters.workTypes :
-      [...ALL_WORK_TYPES],
-    expertiseAreas: initialFilters?.expertiseAreas.length ?
-      initialFilters.expertiseAreas :
-      [...ALL_EXPERTISE_AREAS]
-  })
+  // Derive filter state from the decoded URL params:
+  // null (param absent) = all checked; an array (even empty) is used as-is.
+  const filtersFromProps = useMemo<CommunityFiltersState>(() => ({
+    communities: initialFilters?.communities ?? [...ALL_COMMUNITY_IDS],
+    workTypes: initialFilters?.workTypes ?? [...ALL_WORK_TYPES],
+    expertiseAreas: initialFilters?.expertiseAreas ?? [...ALL_EXPERTISE_AREAS]
+  }), [initialFilters, ALL_COMMUNITY_IDS])
+
+  const [filters, setFilters] = useState<CommunityFiltersState>(filtersFromProps)
+
+  // Re-sync local state when the URL-derived props change (e.g. back/forward
+  // navigation). Serialize-compare to avoid render loops after router.push.
+  useEffect(() => {
+    setFilters(prev =>
+      JSON.stringify(prev) === JSON.stringify(filtersFromProps) ? prev : filtersFromProps
+    )
+  }, [filtersFromProps])
+
+  useEffect(() => {
+    setSearchInput(initialSearch || '')
+  }, [initialSearch])
 
   // No local state for community users - always use prop from server
   const communityUsers = initialCommunityUsers
   const searchQuery = initialSearch || ''
 
+  const allFilterValues = useMemo(() => ({
+    workTypes: ALL_WORK_TYPES,
+    expertiseAreas: ALL_EXPERTISE_AREAS,
+    communities: ALL_COMMUNITY_IDS
+  }), [ALL_COMMUNITY_IDS])
+
   // Handle search submission - updates URL to trigger server re-render
   const handleSearch = (query: string) => {
-    const params = new URLSearchParams()
-
-    // Add search query
-    if (query) {
-      params.set('search', query)
-    }
-
-    // Add filter params only if not "all selected" (to keep URL clean)
-    if (filters.workTypes.length > 0 && filters.workTypes.length < ALL_WORK_TYPES.length) {
-      params.set('workTypes', filters.workTypes.join(','))
-    }
-    if (filters.expertiseAreas.length > 0 && filters.expertiseAreas.length < ALL_EXPERTISE_AREAS.length) {
-      params.set('expertiseAreas', filters.expertiseAreas.join(','))
-    }
-    if (filters.communities.length > 0 && filters.communities.length < ALL_COMMUNITY_IDS.length) {
-      params.set('communities', filters.communities.join(','))
-    }
-
+    const params = buildCollaborateParams(query, filters, allFilterValues)
     // Navigate with new params - will trigger server component re-render
     router.push(`?${params.toString()}`)
   }
@@ -128,46 +131,37 @@ export function CollaboratePageClient({
   const handleFilterChange = (newFilters: CommunityFiltersState) => {
     setFilters(newFilters)
 
-    const params = new URLSearchParams()
-
-    // Preserve search query
-    if (searchQuery) {
-      params.set('search', searchQuery)
-    }
-
-    // Add filter params only if not "all selected"
-    if (newFilters.workTypes.length > 0 && newFilters.workTypes.length < ALL_WORK_TYPES.length) {
-      params.set('workTypes', newFilters.workTypes.join(','))
-    }
-    if (newFilters.expertiseAreas.length > 0 && newFilters.expertiseAreas.length < ALL_EXPERTISE_AREAS.length) {
-      params.set('expertiseAreas', newFilters.expertiseAreas.join(','))
-    }
-    if (newFilters.communities.length > 0 && newFilters.communities.length < ALL_COMMUNITY_IDS.length) {
-      params.set('communities', newFilters.communities.join(','))
-    }
-
+    const params = buildCollaborateParams(searchQuery, newFilters, allFilterValues)
     // Navigate with new params - will trigger server component re-render
     router.push(`?${params.toString()}`)
   }
 
-  // Filter communities based on active filters
-  // In exclusion mode: checked items are shown, unchecked items are hidden
+  // Render exactly the carousels the server returned.
+  // All filtering (communities, work types, expertise, search) is applied server-side
+  // and reflected in `communityUsers`. Re-filtering here would drop groups the server
+  // intended to show (e.g. the "No Regional Community" group). We only impose a stable
+  // display order: regional groups in the `communities` prop order, then "No Regional
+  // Community" last, then any remaining keys.
   const filteredCommunities = useMemo(() => {
-    // If all communities are checked, show all
-    if (filters.communities.length === ALL_COMMUNITY_IDS.length) {
-      return Object.keys(communityUsers)
-    }
+    const keys = Object.keys(communityUsers)
+    const orderedRegional = communities
+      .map(c => c.regionalName || c.name)
+      .filter(name => keys.includes(name))
 
-    // Otherwise, only show checked communities
-    const selectedCommunityNames = filters.communities.map(id => {
-      const community = communities.find(c => c.id === id)
-      return community?.regionalName || community?.name || ''
-    })
+    const seen = new Set(orderedRegional)
+    const noRegional = keys.includes('No Regional Community') ? ['No Regional Community'] : []
+    seen.add('No Regional Community')
+    const rest = keys.filter(name => !seen.has(name))
 
-    return Object.keys(communityUsers).filter(name =>
-      selectedCommunityNames.includes(name)
-    )
-  }, [communityUsers, filters.communities, communities, ALL_COMMUNITY_IDS])
+    return [...orderedRegional, ...rest, ...noRegional]
+  }, [communityUsers, communities])
+
+  // Any category explicitly emptied ("deselect all") means no user can match:
+  // render the empty state instead of whatever carousels the server returned.
+  const hasExplicitEmptyFilter =
+    filters.communities.length === 0 ||
+    filters.workTypes.length === 0 ||
+    filters.expertiseAreas.length === 0
 
   // Check if there are active filters (filters differ from "all selected")
   const hasActiveFilters =
@@ -269,7 +263,7 @@ export function CollaboratePageClient({
           </div>
 
           {/* Community Carousels */}
-          {filteredCommunities.length === 0 ? (
+          {hasExplicitEmptyFilter || filteredCommunities.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-lg font-medium mb-2">{t('noResults')}</p>
               <p className="text-muted-foreground mb-4">{t('noResultsDescription')}</p>

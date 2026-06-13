@@ -12,7 +12,7 @@ import {
     Lock,
     AlertCircle
 } from 'lucide-react';
-import { urlFor } from '@/sanity/lib/image';
+import { urlForCropped } from '@/sanity/lib/image';
 import {
     Agenda,
     SupportedLanguage
@@ -38,6 +38,7 @@ interface GridAgendaComponentProps {
     className?: string;
     color?: string;
     cardVariant?: string;
+    imageSizes?: string;
 }
 
 export default function GridAgendaComponent({
@@ -49,11 +50,15 @@ export default function GridAgendaComponent({
                                                 userId,
                                                 className,
                                                 cardVariant = "classic",
+                                                imageSizes,
                                             }: GridAgendaComponentProps) {
+    const t = useTranslations('regional');
+    const tBlocks = useTranslations('blocks');
+
     if (!agenda) return null;
 
-    const t = useTranslations('regional');
-    const aspectRatioClass = cardVariant === "wide" ? "aspect-video" : "aspect-[3/2]";
+    const isWide = cardVariant === "wide";
+    const aspectRatioClass = isWide ? "aspect-video" : "aspect-[3/2]";
 
     const title = getLocalizedText(agenda.title, locale);
     const subtitle = getLocalizedText(agenda.subtitle, locale);
@@ -88,11 +93,11 @@ export default function GridAgendaComponent({
             {agenda.coverImage?.asset?.url && (
                 <div className={cn("mb-4 relative rounded-2xl overflow-hidden w-full max-w-full min-w-0", aspectRatioClass)}>
                     <Image
-                        src={urlFor(agenda.coverImage).width(400).height(225).url()}
+                        src={urlForCropped(agenda.coverImage, 800, isWide ? 450 : 533).url()}
                         alt={agenda.coverImage.alt || title}
                         fill
                         className="object-cover transition-transform duration-200 group-hover:scale-105"
-                        sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                        sizes={imageSizes || "(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"}
                     />
 
                     {/* Agenda type badge */}
@@ -132,7 +137,7 @@ export default function GridAgendaComponent({
             <CardContent className="flex-1 pb-3 px-0">
                 {/* Description */}
                 {description && (
-                    <p className="text-sm text-foreground line-clamp-14 mb-4">
+                    <p className="text-sm text-foreground line-clamp-6 mb-4">
                         {description}
                     </p>
                 )}
@@ -164,7 +169,7 @@ export default function GridAgendaComponent({
                         {totalDownloads > 0 && (
                             <div className="flex items-center gap-1">
                                 <Eye className="h-3 w-3" />
-                                <span>{totalDownloads} downloads</span>
+                                <span>{totalDownloads} {tBlocks('downloads')}</span>
                             </div>
                         )}
                     </div>

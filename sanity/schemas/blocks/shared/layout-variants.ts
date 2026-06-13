@@ -9,7 +9,8 @@ export const SECTION_WIDTH = [
 ];
 
 export const COLS_VARIANTS = [
-  { title: "2 Columns", value: "grid-cols-2" },
-  { title: "3 Columns", value: "grid-cols-3" },
-  { title: "4 Columns", value: "grid-cols-4" },
+  { title: "2 Cards", value: "grid-cols-2" },
+  { title: "3 Cards", value: "grid-cols-3" },
+  { title: "4 Cards", value: "grid-cols-4" },
+  { title: "5 Cards", value: "grid-cols-5" },
 ];
