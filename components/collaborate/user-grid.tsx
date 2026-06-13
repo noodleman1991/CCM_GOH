@@ -6,7 +6,7 @@
  * Displays up to 4 rows on expanded view, responsive column count
  */
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import { CollaborateUserCard } from './collaborate-user-card'
@@ -16,7 +16,6 @@ import type { LocalizedUser } from '@/types/prisma'
 
 interface UserGridProps {
   users: Array<LocalizedUser & {
-    profileCompleteness?: number
     lastLoginAt?: Date | null
     communityMemberships?: Array<{
       community: {
@@ -42,7 +41,13 @@ export function UserGrid({ users, className, itemsPerPage, locale }: UserGridPro
   const defaultItemsPerPage = itemsPerPage || 16
 
   const [currentPage, setCurrentPage] = useState(1)
-  const totalPages = Math.ceil(users.length / defaultItemsPerPage)
+  const totalPages = Math.max(1, Math.ceil(users.length / defaultItemsPerPage))
+
+  // Clamp the page when the users list shrinks (the component instance
+  // survives prop changes, so a stale page could render an empty grid)
+  useEffect(() => {
+    setCurrentPage(p => Math.min(p, totalPages))
+  }, [totalPages])
 
   const startIndex = (currentPage - 1) * defaultItemsPerPage
   const endIndex = startIndex + defaultItemsPerPage

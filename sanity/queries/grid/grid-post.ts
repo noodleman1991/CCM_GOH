@@ -24,6 +24,8 @@ export const gridPostQuery = groq`
             }
           }
         },
+        hotspot,
+        crop,
         alt
       },
       publishedAt,

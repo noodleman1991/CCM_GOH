@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma"
 import { auth } from '@clerk/nextjs/server'
 import { unstable_cache } from 'next/cache'
 import { UserService } from '@/lib/services/user.service'
+import { calculateProfileCompleteness } from '@/lib/profile-completeness'
 import { getLocale } from 'next-intl/server'
 import type { SupportedLocale } from '@/types/prisma'
 
@@ -27,6 +28,7 @@ export interface ProfileData {
     linkedinProfile?: string | null
     otherSocialLinks: Array<{platform: string, url: string}>
     role: string
+    profileCompleteness: number
     createdAt: Date
     updatedAt: Date
     recentWork: Array<{
@@ -109,6 +111,7 @@ export async function getUserProfile(username: string): Promise<ProfileData | nu
             linkedinProfile: user.linkedinProfile, // Already redacted if showSocialLinks=false
             otherSocialLinks: (user.otherSocialLinks as Array<{platform: string, url: string}>) || [],
             role: user.role,
+            profileCompleteness: calculateProfileCompleteness(user),
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
             recentWork: user.recentWork || [],

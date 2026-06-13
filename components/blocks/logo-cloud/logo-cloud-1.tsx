@@ -87,6 +87,7 @@ export default function LogoCloud1({
                     blurDataURL={image?.asset?.metadata?.lqip || ""}
                     width={image.asset?.metadata?.dimensions?.width || 220}
                     height={image?.asset?.metadata?.dimensions?.height || 90}
+                    sizes="96px"
                   />
                 </div>
               ))}

@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import Image from "next/image";
-import { urlFor } from "@/sanity/lib/image";
+import { urlForCropped } from "@/sanity/lib/image";
 import { ChevronRight, Calendar } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { PAGE_QUERYResult } from "@/sanity.types";
@@ -41,9 +41,10 @@ interface GridPostProps {
   featured?: boolean;
   locale?: string;
   userId?: string;
+  imageSizes?: string;
 }
 
-export default function GridPost({ newsPost, featured, locale = "en", userId }: GridPostProps) {
+export default function GridPost({ newsPost, featured, locale = "en", userId, imageSizes }: GridPostProps) {
   if (!newsPost) return null;
 
   const { title, slug, subtitle, image, publishedAt, tags } = newsPost;
@@ -88,15 +89,15 @@ export default function GridPost({ newsPost, featured, locale = "en", userId }: 
         <div className="flex flex-col flex-1">
           {/* Image */}
           {image && image.asset?._id && (
-            <div className="mb-3 sm:mb-4 relative aspect-[4/3] w-full rounded-xl overflow-hidden">
+            <div className="mb-3 sm:mb-4 relative aspect-[3/2] w-full rounded-xl overflow-hidden">
               <Image
-                src={urlFor(image).url()}
+                src={urlForCropped(image, 800, 533).url()}
                 alt={image.alt || localizedTitle}
                 placeholder={image?.asset?.metadata?.lqip ? "blur" : undefined}
                 blurDataURL={image?.asset?.metadata?.lqip || ""}
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-300"
-                sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                sizes={imageSizes || "(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"}
                 quality={85}
               />
             </div>

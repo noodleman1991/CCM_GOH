@@ -10,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import Markdown from "react-markdown"
 import { Link } from '@/i18n/navigation'
 import { getUserProfile, checkProfileOwnership } from "@/lib/actions/profile"
+import { ProfileCompletenessIndicator } from "@/components/ui/profile-completeness-indicator"
 import { ProfileStatistics } from "@/components/blocks/profile/profile-statistics"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 
@@ -143,6 +144,17 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                         </BlurFade>
                     )}
                 </div>
+
+                {/* Profile Completeness - visible only to the profile owner */}
+                {isOwnProfile && (
+                    <BlurFade delay={BLUR_FADE_DELAY * 9} className="mb-6">
+                        <ProfileCompletenessIndicator
+                            percentage={user.profileCompleteness}
+                            size="md"
+                            className="max-w-sm"
+                        />
+                    </BlurFade>
+                )}
 
                 {/* Avatar */}
                 <BlurFade delay={BLUR_FADE_DELAY * 10}>

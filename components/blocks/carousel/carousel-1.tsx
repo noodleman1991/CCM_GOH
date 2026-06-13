@@ -27,6 +27,15 @@ const IMAGE_SIZES = {
   three: "h-[30rem] md:h-[20rem] xl:h-[25rem]",
 } as const;
 
+// Honest `sizes` per carousel variant: the content area is capped at
+// max-w-6xl (1152px); "one" is additionally capped at max-w-[35rem] (560px).
+const SIZES_ATTR = {
+  one: "(min-width: 560px) 560px, 100vw",
+  two: "(min-width: 1152px) 576px, (min-width: 768px) 50vw, 100vw",
+  three:
+    "(min-width: 1152px) 384px, (min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw",
+} as const;
+
 type CarouselSize = keyof typeof CAROUSEL_SIZES;
 
 type Carousel1 = Extract<
@@ -107,7 +116,7 @@ export default function Carousel1({
                         image?.asset?.metadata?.lqip ? "blur" : undefined
                       }
                       blurDataURL={image.asset?.metadata?.lqip || ""}
-                      sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                      sizes={SIZES_ATTR[stegaSize]}
                     />
                   </div>
                 )}

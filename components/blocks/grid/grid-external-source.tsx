@@ -9,7 +9,7 @@ import {
     ExternalLink,
     MapPin
 } from 'lucide-react';
-import { urlFor } from '@/sanity/lib/image';
+import { urlForCropped } from '@/sanity/lib/image';
 import { cn } from '@/lib/utils';
 
 // Define the external source type based on the schema
@@ -66,6 +66,7 @@ interface GridExternalSourceComponentProps {
     userId?: string;
     className?: string;
     cardVariant?: string;
+    imageSizes?: string;
 }
 
 // Helper function to get localized text
@@ -98,10 +99,12 @@ export default function GridExternalSourceComponent({
     userId,
     className,
     cardVariant = "classic",
+    imageSizes,
 }: GridExternalSourceComponentProps) {
     if (!externalSource) return null;
 
-    const aspectRatioClass = cardVariant === "wide" ? "aspect-video" : "aspect-[3/2]";
+    const isWide = cardVariant === "wide";
+    const aspectRatioClass = isWide ? "aspect-video" : "aspect-[3/2]";
 
     const supportedLocale = locale as 'en' | 'es' | 'fr' | 'ar';
 
@@ -163,11 +166,11 @@ export default function GridExternalSourceComponent({
                 {externalSource.image?.asset?.url && (
                     <div className={cn("mb-4 relative rounded-2xl overflow-hidden w-full max-w-full min-w-0", aspectRatioClass)}>
                         <Image
-                            src={urlFor(externalSource.image).width(400).height(225).url()}
+                            src={urlForCropped(externalSource.image, 800, isWide ? 450 : 533).url()}
                             alt={externalSource.image.alt || title}
                             fill
                             className="object-cover transition-transform duration-200 group-hover:scale-105"
-                            sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                            sizes={imageSizes || "(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"}
                         />
 
                         {/* Source type badge */}

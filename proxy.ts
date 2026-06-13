@@ -14,6 +14,7 @@ import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 import createIntlMiddleware from 'next-intl/middleware'
 import { routing } from './i18n/routing'
 import { NextRequest, NextResponse } from 'next/server'
+import { isOnboardingComplete } from './lib/onboarding-status'
 
 const withLocale = (path: string) => `/:locale${path.startsWith('/') ? '' : '/'}${path}`
 
@@ -93,7 +94,7 @@ export const proxy = clerkMiddleware(async (auth, req: NextRequest) => {
         userId &&
         isProtectedRoute(req) &&
         !isOnboardingRoute(req) &&
-        !(sessionClaims?.publicMetadata as { onboardingCompleted?: boolean })?.onboardingCompleted
+        !isOnboardingComplete(sessionClaims)
     ) {
         const onboardingUrl = new URL('/onboarding', req.url)
         return NextResponse.redirect(onboardingUrl)

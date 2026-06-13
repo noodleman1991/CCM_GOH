@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
@@ -10,7 +11,7 @@ import {
     Lock,
     AlertCircle
 } from 'lucide-react';
-import { urlFor } from '@/sanity/lib/image';
+import { urlForCropped } from '@/sanity/lib/image';
 import {
     Report,
     SupportedLanguage
@@ -36,6 +37,7 @@ interface GridReportComponentProps {
     className?: string;
     color?: string;
     cardVariant?: string;
+    imageSizes?: string;
 }
 
 export default function GridReportComponent({
@@ -47,10 +49,14 @@ export default function GridReportComponent({
                                                 userId,
                                                 className,
                                                 cardVariant = "classic",
+                                                imageSizes,
                                             }: GridReportComponentProps) {
+    const t = useTranslations('blocks');
+
     if (!report) return null;
 
-    const aspectRatioClass = cardVariant === "wide" ? "aspect-video" : "aspect-[3/2]";
+    const isWide = cardVariant === "wide";
+    const aspectRatioClass = isWide ? "aspect-video" : "aspect-[3/2]";
 
     const title = getLocalizedText(report.title, locale);
     const subtitle = getLocalizedText(report.subtitle, locale);
@@ -75,7 +81,7 @@ export default function GridReportComponent({
                     <div className="text-center text-white p-4">
                         <Lock className="h-8 w-8 mx-auto mb-2" />
                         <p className="text-sm font-medium">
-                            {report.accessLevel === 'registered' ? 'Please sign in to download' : 'Members only'}
+                            {report.accessLevel === 'registered' ? t('signInToDownload') : t('membersOnly')}
                         </p>
                     </div>
                 </div>
@@ -85,11 +91,11 @@ export default function GridReportComponent({
             {report.coverImage?.asset?.url && (
                 <div className={cn("mb-4 relative rounded-2xl overflow-hidden w-full max-w-full min-w-0", aspectRatioClass)}>
                     <Image
-                        src={urlFor(report.coverImage).width(400).height(225).url()}
+                        src={urlForCropped(report.coverImage, 800, isWide ? 450 : 533).url()}
                         alt={report.coverImage.alt || title}
                         fill
                         className="object-cover transition-transform duration-200 group-hover:scale-105"
-                        sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                        sizes={imageSizes || "(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"}
                     />
 
                     {/* Report type badge */}
@@ -103,7 +109,7 @@ export default function GridReportComponent({
                     {report.featured && (
                         <div className="absolute top-3 right-3">
                             <Badge className="bg-yellow-500 text-black">
-                                ⭐ Featured
+                                {'⭐ '}{t('featured')}
                             </Badge>
                         </div>
                     )}
@@ -161,7 +167,7 @@ export default function GridReportComponent({
                         {totalDownloads > 0 && (
                             <div className="flex items-center gap-1">
                                 <Eye className="h-3 w-3" />
-                                <span>{totalDownloads} downloads</span>
+                                <span>{totalDownloads} {t('downloads')}</span>
                             </div>
                         )}
                     </div>

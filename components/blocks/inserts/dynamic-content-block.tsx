@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { getQueryMetadata, type QueryType } from "@/lib/dynamic-queries-types";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -50,6 +51,8 @@ export function DynamicContentBlock({
   userId,
   communitySlug,
 }: DynamicContentBlockProps) {
+  const t = useTranslations("blocks");
+
   // Handle missing queryType
   if (!section.queryType) {
     return (
@@ -108,7 +111,7 @@ export function DynamicContentBlock({
             <h2 className="text-3xl font-bold tracking-tight text-foreground mb-4">
               {sectionTitle}
             </h2>
-            <p className="text-muted-foreground">No content available at this time.</p>
+            <p className="text-muted-foreground">{t("noContent")}</p>
           </div>
         </div>
       </section>
@@ -146,7 +149,7 @@ export function DynamicContentBlock({
           <div className="text-center mt-12">
             <Button asChild variant="outline">
               <Link href={getViewAllUrl(metadata.contentType, communitySlug, locale)}>
-                View All {metadata.title}
+                {t("viewAll")} {metadata.title}
               </Link>
             </Button>
           </div>

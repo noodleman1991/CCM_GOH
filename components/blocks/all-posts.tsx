@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Calendar, User } from "lucide-react";
 import { stegaClean } from "next-sanity";
+import { getTranslations } from "next-intl/server";
 import { PAGE_QUERYResult } from "@/sanity.types";
 import { client } from "@/sanity/lib/client";
 import { groq } from "next-sanity";
@@ -134,11 +135,12 @@ export default async function AllPosts({
   const posts = await fetchNewsPosts(displayMode, displayLimit, manualPosts as any);
 
   if (!posts || posts.length === 0) {
+    const t = await getTranslations({ locale: supportedLocale, namespace: "blocks" });
     return (
       <SectionContainer color={color} padding={padding}>
         <div className="text-center py-12 text-muted-foreground">
-          <p className="text-lg">No news posts available yet.</p>
-          <p className="text-sm mt-2">Check back soon for updates.</p>
+          <p className="text-lg">{t("noPostsTitle")}</p>
+          <p className="text-sm mt-2">{t("noPostsBody")}</p>
         </div>
       </SectionContainer>
     );
@@ -155,7 +157,9 @@ export default async function AllPosts({
           const excerpt = typeof post.excerpt === 'string'
             ? post.excerpt
             : getLocalizedField(post.excerpt, supportedLocale, '');
-          const imageUrl = post.image?.asset?.url || (post.image?.asset ? urlFor(post.image).width(600).url() : null);
+          const imageUrl = post.image?.asset?._id
+            ? urlFor(post.image).width(800).url()
+            : post.image?.asset?.url || null;
 
           return (
             <Link key={post._id} href={`/news/${post.slug}`} className="group">
@@ -167,6 +171,7 @@ export default async function AllPosts({
                       alt={post.image?.alt || title}
                       fill
                       className="object-cover transition-transform group-hover:scale-105"
+                      sizes="(min-width: 1024px) 384px, (min-width: 768px) 50vw, 100vw"
                     />
                   </div>
                 )}
@@ -174,7 +179,7 @@ export default async function AllPosts({
                   <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
                     <Calendar className="h-4 w-4" />
                     <time dateTime={post.publishedAt}>
-                      {new Date(post.publishedAt).toLocaleDateString('en-US', {
+                      {new Date(post.publishedAt).toLocaleDateString(supportedLocale, {
                         year: 'numeric',
                         month: 'long',
                         day: 'numeric'

@@ -126,6 +126,7 @@ export function CaseStudyModal({ isOpen, onClose, caseStudy, locale }: CaseStudy
                 alt={caseStudy.image.alt || title}
                 fill
                 className="object-cover"
+                sizes="(min-width: 1280px) 832px, 95vw"
               />
               {caseStudy.image.caption && (
                 <p className="text-sm text-muted-foreground mt-2 text-center italic">
