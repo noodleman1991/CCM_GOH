@@ -7,6 +7,10 @@ const isDev = process.env.NODE_ENV === 'development';
 const clerkDevDomains = isDev ? ' https://*.clerk.accounts.dev' : '';
 
 const nextConfig = {
+  // The Arabic homepage's static export can exceed the default 60s under slow
+  // network conditions (heavy Sanity content). Raise the per-page generation
+  // budget so static export doesn't fail on a single slow locale.
+  staticPageGenerationTimeout: 180,
   async headers() {
     return [
       {
