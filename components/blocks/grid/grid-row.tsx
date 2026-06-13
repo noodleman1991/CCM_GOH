@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import SectionContainer from "@/components/ui/section-container";
 import { stegaClean } from "next-sanity";
+import { getTranslations } from "next-intl/server";
 import { PAGE_QUERYResult } from "@/sanity.types";
 import GridCard from "./grid-card";
 import GridPost from "./grid-post";
@@ -94,7 +95,7 @@ interface GridRowProps extends Omit<GridRow, 'initialDisplayCount' | 'headerImag
     initialDisplayCount?: number;
 }
 
-export default function GridRow({
+export default async function GridRow({
                                     padding,
                                     background,
                                     description,
@@ -119,6 +120,7 @@ export default function GridRow({
     const imageSizes = sizesForColumns(cols);
 
     const supportedLocale = (locale || "en") as 'en' | 'es' | 'fr' | 'ar';
+    const t = await getTranslations({ locale: supportedLocale, namespace: 'blocks' });
 
     const localizedTitle = typeof title === 'string'
         ? title
@@ -188,12 +190,8 @@ export default function GridRow({
                     </ExpandableGrid>
                 ) : (
                     <div className="text-center py-12 text-muted-foreground">
-                        <p className="text-lg">{
-                            { en: 'No content available yet.', fr: 'Aucun contenu disponible pour le moment.', es: 'Aún no hay contenido disponible.', ar: 'لا يوجد محتوى متاح حالياً.' }[supportedLocale] || 'No content available yet.'
-                        }</p>
-                        <p className="text-sm mt-2">{
-                            { en: 'Check back soon for updates.', fr: 'Revenez bientôt pour les mises à jour.', es: 'Vuelve pronto para ver las actualizaciones.', ar: 'تحقق مرة أخرى قريباً للاطلاع على التحديثات.' }[supportedLocale] || 'Check back soon for updates.'
-                        }</p>
+                        <p className="text-lg">{t('noContent')}</p>
+                        <p className="text-sm mt-2">{t('noPostsBody')}</p>
                     </div>
                 )}
             </div>
