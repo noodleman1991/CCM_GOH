@@ -495,7 +495,8 @@
           "description": "Cela supprimera définitivement votre compte et supprimera toutes vos données de nos serveurs. Cette action est irréversible.",
           "type": "Pour confirmer, tapez",
           "cancel": "Annuler",
-          "delete": "Supprimer le Compte"
+          "delete": "Supprimer le Compte",
+          "publishedNote": "Vos études de cas publiées resteront sur le site. Pour faire modifier ou retirer une étude de cas publiée, veuillez contacter l'équipe de Connecting Climate Minds Hub par e-mail."
         }
       }
     }
