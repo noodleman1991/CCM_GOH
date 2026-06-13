@@ -32,7 +32,7 @@ export default function Logo({ className = "", size = "default", asChild = false
             height={baseDimensions.height}
             priority={size === 'default' || size === 'lg'}
             className={cn(
-                "transition-all duration-200 object-contain",
+                "object-contain",
                 sizeClasses[size as keyof typeof sizeClasses] || sizeClasses.default
             )}
         />
@@ -46,7 +46,7 @@ export default function Logo({ className = "", size = "default", asChild = false
         <Link
             href="/"
             className={cn(
-                "inline-flex items-center transition-opacity hover:opacity-80",
+                "inline-flex items-center",
                 className
             )}
             aria-label="Go to homepage"
