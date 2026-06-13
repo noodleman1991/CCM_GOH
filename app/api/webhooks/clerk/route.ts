@@ -4,6 +4,7 @@ import { headers } from 'next/headers'
 import { prisma } from '@/lib/prisma'
 import { NextResponse } from 'next/server'
 import { clerkClient } from '@clerk/nextjs/server'
+import { eraseUserSanityContent } from '@/lib/account-deletion'
 
 // Enhanced types for better Clerk integration
 type UserCreatedEvent = {
@@ -295,15 +296,27 @@ async function handleUserDeleted(event: UserDeletedEvent) {
         })
 
         if (!existingUser) {
-            console.log(`User ${id} doesn't exist, skipping deletion`)
-            return { action: 'skipped', reason: 'user_not_found' }
+            console.log(`User ${id} doesn't exist, skipping Prisma deletion`)
+        } else {
+            await prisma.user.delete({
+                where: { id }
+            })
+            console.log(`✅ Deleted user: ${id}`)
         }
 
-        await prisma.user.delete({
-            where: { id }
-        })
-
-        console.log(`✅ Deleted user: ${id}`)
+        // Also erase the user's PRIVATE Sanity content (drafts + non-approved
+        // submissions). This makes the webhook a complete backstop for users
+        // deleted directly in the Clerk dashboard (bypassing our API route).
+        // Idempotent: no-op if there is nothing left to erase. Published case
+        // studies are intentionally retained.
+        try {
+            const sanity = await eraseUserSanityContent(id)
+            if (sanity.draftsDeleted || sanity.submissionsDeleted) {
+                console.log(`🧹 Erased Sanity content for ${id}:`, sanity)
+            }
+        } catch (sanityErr) {
+            console.warn(`Sanity erasure failed for deleted user ${id}:`, sanityErr)
+        }
 
         // Trigger Algolia sync to remove from index (fire and forget)
         fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/search/users/webhook`, {
