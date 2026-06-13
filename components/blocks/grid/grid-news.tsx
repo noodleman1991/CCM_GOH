@@ -219,21 +219,17 @@ export default function GridNewsComponent({
                     <h3 className="font-semibold text-lg leading-tight line-clamp-2 group-hover:text-primary transition-colors">
                         {title}
                     </h3>
-
-                    {/* Subtitle */}
-                    {subtitle && (
-                        <p className="text-sm text-foreground line-clamp-1">
-                            {subtitle}
-                        </p>
-                    )}
                 </div>
             </CardHeader>
 
             <CardContent className="flex-1 pb-3">
-                {/* Description */}
-                {excerpt && (
+                {/* Summary: show the subtitle if present, otherwise the excerpt —
+                    never both, so cards stay compact and uniform in height
+                    regardless of which fields an editor filled in (and across
+                    longer translations / RTL). */}
+                {(subtitle || excerpt) && (
                     <p className="text-sm text-foreground line-clamp-3 mb-4">
-                        {excerpt}
+                        {subtitle || excerpt}
                     </p>
                 )}
 
