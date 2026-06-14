@@ -49,3 +49,6 @@ TESTING.local.md
 
 # local-only deployment config notes (not committed)
 DEPLOYMENT-CONFIG.local.md
+
+# block analysis docs (local only)
+BLOCK-SYSTEM-COHERENCE-REPORT.local.md
