@@ -52,6 +52,20 @@ export const fetchSanityPageBySlug = async ({
         },
     });
 
+    // Fall back to the English document if this locale has no translation yet,
+    // so a missing translation degrades to English instead of a 404. (Mirrors
+    // fetchSanityRCPageBySlug.)
+    if (!data && locale !== 'en') {
+        const { data: fallbackData } = await sanityFetch({
+            query: PAGE_QUERY,
+            params: {
+                slug,
+                language: 'en'
+            },
+        });
+        return fallbackData;
+    }
+
     return data;
 };
 
@@ -185,6 +199,16 @@ export const fetchSanityPostBySlug = async ({
             language: locale
         },
     });
+
+    // Fall back to English when this locale has no translation, so a missing
+    // translation degrades to English instead of a 404.
+    if (!data && locale !== 'en') {
+        const { data: fallbackData } = await sanityFetch({
+            query: POST_QUERY,
+            params: { slug, language: 'en' },
+        });
+        return fallbackData;
+    }
 
     return data;
 };
