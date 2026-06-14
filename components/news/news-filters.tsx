@@ -6,6 +6,7 @@ import { useState, useTransition, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
+import { RemovableChip } from '@/components/ui/filter-chip'
 import { Calendar } from '@/components/ui/calendar'
 import {
   Select,
@@ -410,67 +411,39 @@ export default function NewsFilters({ currentFilters, tags = [], communities = [
             <span className="text-sm text-muted-foreground">{t('activeFilters')}:</span>
 
             {currentFilters.search && (
-              <Badge variant="secondary" className="flex items-center gap-1">
-                <Search className="w-3 h-3" />
-                "{currentFilters.search}"
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleSearch('')}
-                  className="h-4 w-4 p-0 ms-1"
-                >
-                  <X className="w-3 h-3" />
-                </Button>
-              </Badge>
+              <RemovableChip
+                icon={Search}
+                label={`"${currentFilters.search}"`}
+                onRemove={() => handleSearch('')}
+              />
             )}
 
             {currentFilters.tag && (
-              <Badge variant="secondary" className="flex items-center gap-1">
-                <Tag className="w-3 h-3" />
-                {tags.find(t => t.value === currentFilters.tag)
-                  ? getTagLabel(tags.find(t => t.value === currentFilters.tag)!)
-                  : currentFilters.tag}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => updateFilter('tag', undefined)}
-                  className="h-4 w-4 p-0 ms-1"
-                >
-                  <X className="w-3 h-3" />
-                </Button>
-              </Badge>
+              <RemovableChip
+                icon={Tag}
+                label={
+                  tags.find(t => t.value === currentFilters.tag)
+                    ? getTagLabel(tags.find(t => t.value === currentFilters.tag)!)
+                    : currentFilters.tag
+                }
+                onRemove={() => updateFilter('tag', undefined)}
+              />
             )}
 
             {currentFilters.community && (
-              <Badge variant="secondary" className="flex items-center gap-1">
-                <MapPin className="w-3 h-3" />
-                {currentFilters.community}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => updateFilter('community', undefined)}
-                  className="h-4 w-4 p-0 ms-1"
-                >
-                  <X className="w-3 h-3" />
-                </Button>
-              </Badge>
+              <RemovableChip
+                icon={MapPin}
+                label={currentFilters.community}
+                onRemove={() => updateFilter('community', undefined)}
+              />
             )}
 
             {(currentFilters.dateFrom || currentFilters.dateTo) && (
-              <Badge variant="secondary" className="flex items-center gap-1">
-                <CalendarIcon className="w-3 h-3" />
-                {currentFilters.dateFrom && format(new Date(currentFilters.dateFrom), 'MMM dd, yyyy')}
-                {currentFilters.dateFrom && currentFilters.dateTo && ' - '}
-                {currentFilters.dateTo && format(new Date(currentFilters.dateTo), 'MMM dd, yyyy')}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={clearDateFilters}
-                  className="h-4 w-4 p-0 ms-1"
-                >
-                  <X className="w-3 h-3" />
-                </Button>
-              </Badge>
+              <RemovableChip
+                icon={CalendarIcon}
+                label={`${currentFilters.dateFrom ? format(new Date(currentFilters.dateFrom), 'MMM dd, yyyy') : ''}${currentFilters.dateFrom && currentFilters.dateTo ? ' - ' : ''}${currentFilters.dateTo ? format(new Date(currentFilters.dateTo), 'MMM dd, yyyy') : ''}`}
+                onRemove={clearDateFilters}
+              />
             )}
 
             <Button
