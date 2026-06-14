@@ -239,8 +239,23 @@ export function transformUserForIndex(user: any): UserSearchRecord {
   }
 
   const fullName = `${user.firstName || ''} ${user.lastName || ''}`.trim()
-  const location = [user.city, user.country].filter(Boolean).join(', ')
-  
+
+  // Respect per-field privacy flags at INDEX time so the search index never
+  // holds (and therefore can never surface) data the user chose to hide. This
+  // mirrors redactUser, applied before data ever reaches Algolia.
+  const showLocation = user.showLocation !== false
+  const showWorkDetails = user.showWorkDetails !== false
+
+  const city = showLocation ? user.city : undefined
+  const country = showLocation ? user.country : undefined
+  const location = showLocation
+    ? [user.city, user.country].filter(Boolean).join(', ')
+    : undefined
+  const organization = showWorkDetails ? user.organization : undefined
+  const position = showWorkDetails ? user.position : undefined
+  const workTypes = showWorkDetails ? (user.workTypes || []) : []
+  const expertiseAreas = showWorkDetails ? (user.expertiseAreas || []) : []
+
   return {
     objectID: user.id,
     userId: user.id,
@@ -250,13 +265,13 @@ export function transformUserForIndex(user: any): UserSearchRecord {
     fullName,
     bio: user.bio,
     profileImage: user.image,
-    country: user.country,
-    city: user.city,
+    country,
+    city,
     location: location || undefined,
-    organization: user.organization,
-    position: user.position,
-    workTypes: user.workTypes || [],
-    expertiseAreas: user.expertiseAreas || [],
+    organization,
+    position,
+    workTypes,
+    expertiseAreas,
     // Privacy controls
     isSearchable: user.isSearchable,
     profileVisibility: user.profileVisibility,
