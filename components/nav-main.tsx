@@ -2,6 +2,7 @@
 
 import { ChevronRight, type LucideIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { Link } from "@/i18n/navigation"
 
 import {
   Collapsible,
@@ -69,12 +70,12 @@ export function NavMain({
                             asChild
                             className="h-auto py-1 [&>span:last-child]:whitespace-normal [&>span:last-child]:break-words [&>span:last-child]:truncate-none [&>span:last-child]:hyphens-auto"
                           >
-                            <a href={subItem.url}>
+                            <Link href={subItem.url}>
                               {subItem.icon && <subItem.icon />}
                               <span className="leading-tight">
                                 {subItem.title}
                               </span>
-                            </a>
+                            </Link>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
                       ))}
@@ -89,10 +90,10 @@ export function NavMain({
           return (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton asChild tooltip={item.title}>
-                <a href={item.url}>
+                <Link href={item.url}>
                   <item.icon />
                   <span>{item.title}</span>
-                </a>
+                </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           )
