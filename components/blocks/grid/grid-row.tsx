@@ -1,7 +1,6 @@
 import { cn } from "@/lib/utils";
 import SectionContainer from "@/components/ui/section-container";
 import { stegaClean } from "next-sanity";
-import { getTranslations } from "next-intl/server";
 import { PAGE_QUERYResult } from "@/sanity.types";
 import GridCard from "./grid-card";
 import GridPost from "./grid-post";
@@ -17,6 +16,7 @@ import { GridSectionHeader } from "./grid-section-header";
 import { ExpandableGrid } from "./expandable-grid";
 import { getLocalizedField } from "@/lib/localization-utils";
 import { resolveGridColumns } from "@/lib/grid-layout";
+import { gridGap } from "@/lib/design-tokens";
 
 type Block = NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number];
 type GridRow = Extract<Block, { _type: "grid-row" }>;
@@ -120,7 +120,6 @@ export default async function GridRow({
     const imageSizes = sizesForColumns(cols);
 
     const supportedLocale = (locale || "en") as 'en' | 'es' | 'fr' | 'ar';
-    const t = await getTranslations({ locale: supportedLocale, namespace: 'blocks' });
 
     const localizedTitle = typeof title === 'string'
         ? title
@@ -129,6 +128,15 @@ export default async function GridRow({
     const localizedSubtitle = typeof subtitle === 'string'
         ? subtitle
         : getLocalizedField(subtitle, supportedLocale, '');
+
+    // Hide the whole section when there's nothing to show. A grid with no items
+    // (e.g. a dynamic news/case-study section that has no published content yet)
+    // would otherwise render a large heading over empty space, which looks
+    // broken to a visitor. Rendering nothing is cleaner than an empty-state.
+    if (!columns || columns.length === 0) {
+        return null;
+    }
+    const columnItems = columns;
 
     return (
         <SectionContainer background={background as any} padding={padding}>
@@ -143,18 +151,17 @@ export default async function GridRow({
                     isRTL={isRTL}
                 />
 
-                {columns && columns?.length > 0 ? (
-                    <ExpandableGrid
+                <ExpandableGrid
                         initialDisplayCount={initialDisplayCount}
                         gridClassName={cn(
-                            "gap-4 md:gap-6 lg:gap-8", // Clean grid without negative margins
+                            gridGap("md"), // standard grid gap from the spacing scale
                             // Grid columns derived from the same `cols` used for image sizes
                             gridColumnsClass
                         )}
                         locale={locale || "en"}
                         isRTL={isRTL}
                     >
-                        {columns.map((column, index) => {
+                        {columnItems.map((column, index) => {
                             // Type guard to ensure column has required properties
                             if (!column || typeof column !== 'object' || !('_type' in column) || !column._type) {
                                 console.warn('Invalid column object:', column);
@@ -188,12 +195,6 @@ export default async function GridRow({
                             );
                         })}
                     </ExpandableGrid>
-                ) : (
-                    <div className="text-center py-12 text-muted-foreground">
-                        <p className="text-lg">{t('noContent')}</p>
-                        <p className="text-sm mt-2">{t('noPostsBody')}</p>
-                    </div>
-                )}
             </div>
         </SectionContainer>
     );

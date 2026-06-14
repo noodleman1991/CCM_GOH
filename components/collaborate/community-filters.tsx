@@ -9,11 +9,9 @@
 import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Separator } from '@/components/ui/separator'
+import { FilterChip } from '@/components/ui/filter-chip'
 import { cn } from '@/lib/utils'
-import { ChevronDown, ChevronUp, X } from 'lucide-react'
+import { ChevronDown, X } from 'lucide-react'
 
 export interface CommunityFiltersState {
   communities: string[]
@@ -67,229 +65,111 @@ export function CommunityFilters({ filters, onChangeAction, communities, classNa
   const tWorkTypes = useTranslations('profile.edit.workTypes')
   const tExpertise = useTranslations('profile.edit.expertise')
 
-  const [expandedSections, setExpandedSections] = useState<Set<string>>(
-    new Set(['communities', 'workTypes', 'expertise'])
-  )
+  // One filter group can be open at a time on this horizontal bar.
+  const [openGroup, setOpenGroup] = useState<string | null>(null)
+  const toggleGroup = (group: string) =>
+    setOpenGroup(prev => (prev === group ? null : group))
 
-  const toggleSection = (section: string) => {
-    setExpandedSections(prev => {
-      const next = new Set(prev)
-      if (next.has(section)) {
-        next.delete(section)
-      } else {
-        next.add(section)
-      }
-      return next
-    })
+  // Inclusion model: toggling a value adds/removes it from the active selection.
+  const toggleValue = (key: keyof CommunityFiltersState, value: string) => {
+    const current = filters[key]
+    const next = current.includes(value)
+      ? current.filter(v => v !== value)
+      : [...current, value]
+    onChangeAction({ ...filters, [key]: next })
   }
 
-  const handleCommunityToggle = (community: string) => {
-    const newCommunities = filters.communities.includes(community)
-      ? filters.communities.filter(c => c !== community)
-      : [...filters.communities, community]
+  const clearAll = () =>
+    onChangeAction({ communities: [], workTypes: [], expertiseAreas: [] })
 
-    onChangeAction({ ...filters, communities: newCommunities })
-  }
+  const activeCount =
+    filters.communities.length + filters.workTypes.length + filters.expertiseAreas.length
 
-  const handleWorkTypeToggle = (workType: string) => {
-    const newWorkTypes = filters.workTypes.includes(workType)
-      ? filters.workTypes.filter(w => w !== workType)
-      : [...filters.workTypes, workType]
+  const communityOptions = communities.map(c => {
+    const key = c.regionalName ? REGIONAL_NAME_TO_TRANSLATION_KEY[c.regionalName] : null
+    return { value: c.id, label: key ? tNav(`regions.${key}`) : c.name }
+  })
+  const workTypeOptions = WORK_TYPES.map(w => ({ value: w.value, label: tWorkTypes(w.labelKey) }))
+  const expertiseOptions = EXPERTISE_AREAS.map(e => ({ value: e.value, label: tExpertise(e.labelKey) }))
 
-    onChangeAction({ ...filters, workTypes: newWorkTypes })
-  }
-
-  const handleExpertiseToggle = (expertise: string) => {
-    const newExpertise = filters.expertiseAreas.includes(expertise)
-      ? filters.expertiseAreas.filter(e => e !== expertise)
-      : [...filters.expertiseAreas, expertise]
-
-    onChangeAction({ ...filters, expertiseAreas: newExpertise })
-  }
-
-  const handleSelectAll = () => {
-    onChangeAction({
-      communities: communities.map(c => c.id),
-      workTypes: WORK_TYPES.map(w => w.value),
-      expertiseAreas: EXPERTISE_AREAS.map(e => e.value)
-    })
-  }
-
-  const handleDeselectAll = () => {
-    onChangeAction({
-      communities: [],
-      workTypes: [],
-      expertiseAreas: []
-    })
-  }
-
-  // In exclusion mode: filters are "active" when something is unchecked
-  const totalPossible = communities.length + WORK_TYPES.length + EXPERTISE_AREAS.length
-  const totalSelected = filters.communities.length + filters.workTypes.length + filters.expertiseAreas.length
-  const hasExclusions = totalSelected < totalPossible
-  const allSelected = totalSelected === totalPossible
+  const groups: Array<{
+    id: string
+    key: keyof CommunityFiltersState
+    label: string
+    options: Array<{ value: string; label: string }>
+  }> = [
+    { id: 'communities', key: 'communities', label: t('communities'), options: communityOptions },
+    { id: 'workTypes', key: 'workTypes', label: t('workTypes'), options: workTypeOptions },
+    { id: 'expertise', key: 'expertiseAreas', label: t('expertise'), options: expertiseOptions },
+  ]
 
   return (
-    <Card className={cn('w-full max-w-full overflow-hidden', className)} dir={isRTL ? 'rtl' : 'ltr'}>
-      <CardHeader>
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <CardTitle>{t('title')}</CardTitle>
-          </div>
-          <CardDescription>
-            {t('selectedCount', { selected: totalSelected, total: totalPossible })}
-          </CardDescription>
-          <div className="flex gap-2">
-            {totalSelected === 0 ? (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleSelectAll}
-                className="h-8 w-full"
-              >
-                {t('selectAll')}
-              </Button>
-            ) : (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleDeselectAll}
-                className="h-8 w-full"
-              >
-                <X className="h-4 w-4 me-2" />
-                {t('clearFilters')}
-              </Button>
-            )}
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {/* Regional Communities Filter */}
-        <div>
-          <button
-            onClick={() => toggleSection('communities')}
-            className={cn(
-              'flex items-center justify-between w-full text-sm font-medium py-2',
-              'hover:text-primary transition-colors'
-            )}
+    <div className={cn('w-full', className)} dir={isRTL ? 'rtl' : 'ltr'}>
+      {/* Filter group triggers — a horizontal, wrapping, mobile-friendly row */}
+      <div className="flex flex-wrap items-center gap-2">
+        {groups.map(group => {
+          const count = filters[group.key].length
+          const isOpen = openGroup === group.id
+          return (
+            <button
+              key={group.id}
+              type="button"
+              onClick={() => toggleGroup(group.id)}
+              aria-expanded={isOpen}
+              className={cn(
+                'inline-flex items-center gap-1.5 rounded-full border px-3.5 py-2 text-sm font-medium transition-colors',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                count > 0
+                  ? 'border-[var(--color-ccm-sea)]/40 bg-[var(--color-ccm-sea)]/10 text-[var(--color-ccm-sea)]'
+                  : 'border-border bg-background text-foreground/80 hover:bg-muted'
+              )}
+            >
+              <span>{group.label}</span>
+              {count > 0 && (
+                <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--color-ccm-sea)] px-1.5 text-xs font-semibold text-white">
+                  {count}
+                </span>
+              )}
+              <ChevronDown
+                className={cn('h-4 w-4 transition-transform', isOpen && 'rotate-180')}
+              />
+            </button>
+          )
+        })}
+
+        {activeCount > 0 && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={clearAll}
+            className="h-9 text-muted-foreground hover:text-foreground"
           >
-            <span>{t('communities')}</span>
-            {expandedSections.has('communities') ? (
-              <ChevronUp className="h-4 w-4" />
-            ) : (
-              <ChevronDown className="h-4 w-4" />
-            )}
-          </button>
-          {expandedSections.has('communities') && (
-            <div className="space-y-2 mt-2">
-              {communities.map(community => {
-                // Get translation key from regionalName enum
-                const translationKey = community.regionalName
-                  ? REGIONAL_NAME_TO_TRANSLATION_KEY[community.regionalName]
-                  : null
+            <X className="h-4 w-4 me-1.5" />
+            {t('clearFilters')}
+          </Button>
+        )}
+      </div>
 
-                const displayName = translationKey
-                  ? tNav(`regions.${translationKey}`)
-                  : community.name
-
+      {/* Expanded options for the open group — pills under the triggers */}
+      {openGroup && (
+        <div className="mt-3 rounded-xl border bg-muted/30 p-3">
+          <div className="flex flex-wrap gap-2">
+            {groups
+              .find(g => g.id === openGroup)!
+              .options.map(opt => {
+                const group = groups.find(g => g.id === openGroup)!
                 return (
-                  <div key={community.id} className="flex items-center gap-3">
-                    <Checkbox
-                      id={`community-${community.id}`}
-                      checked={filters.communities.includes(community.id)}
-                      onCheckedChange={() => handleCommunityToggle(community.id)}
-                    />
-                    <label
-                      htmlFor={`community-${community.id}`}
-                      className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer break-words flex-1"
-                    >
-                      {displayName}
-                    </label>
-                  </div>
+                  <FilterChip
+                    key={opt.value}
+                    label={opt.label}
+                    active={filters[group.key].includes(opt.value)}
+                    onClick={() => toggleValue(group.key, opt.value)}
+                  />
                 )
               })}
-            </div>
-          )}
+          </div>
         </div>
-
-        <Separator />
-
-        {/* Work Types Filter */}
-        <div>
-          <button
-            onClick={() => toggleSection('workTypes')}
-            className={cn(
-              'flex items-center justify-between w-full text-sm font-medium py-2',
-              'hover:text-primary transition-colors'
-            )}
-          >
-            <span>{t('workTypes')}</span>
-            {expandedSections.has('workTypes') ? (
-              <ChevronUp className="h-4 w-4" />
-            ) : (
-              <ChevronDown className="h-4 w-4" />
-            )}
-          </button>
-          {expandedSections.has('workTypes') && (
-            <div className="space-y-2 mt-2">
-              {WORK_TYPES.map(workType => (
-                <div key={workType.value} className="flex items-center gap-3">
-                  <Checkbox
-                    id={`workType-${workType.value}`}
-                    checked={filters.workTypes.includes(workType.value)}
-                    onCheckedChange={() => handleWorkTypeToggle(workType.value)}
-                  />
-                  <label
-                    htmlFor={`workType-${workType.value}`}
-                    className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer break-words flex-1"
-                  >
-                    {tWorkTypes(workType.labelKey)}
-                  </label>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        <Separator />
-
-        {/* Expertise Areas Filter */}
-        <div>
-          <button
-            onClick={() => toggleSection('expertise')}
-            className={cn(
-              'flex items-center justify-between w-full text-sm font-medium py-2',
-              'hover:text-primary transition-colors'
-            )}
-          >
-            <span>{t('expertise')}</span>
-            {expandedSections.has('expertise') ? (
-              <ChevronUp className="h-4 w-4" />
-            ) : (
-              <ChevronDown className="h-4 w-4" />
-            )}
-          </button>
-          {expandedSections.has('expertise') && (
-            <div className="space-y-2 mt-2">
-              {EXPERTISE_AREAS.map(expertise => (
-                <div key={expertise.value} className="flex items-center gap-3">
-                  <Checkbox
-                    id={`expertise-${expertise.value}`}
-                    checked={filters.expertiseAreas.includes(expertise.value)}
-                    onCheckedChange={() => handleExpertiseToggle(expertise.value)}
-                  />
-                  <label
-                    htmlFor={`expertise-${expertise.value}`}
-                    className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer break-words flex-1"
-                  >
-                    {tExpertise(expertise.labelKey)}
-                  </label>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </CardContent>
-    </Card>
+      )}
+    </div>
   )
 }

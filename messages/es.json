@@ -495,7 +495,8 @@
           "description": "Esto eliminará permanentemente tu cuenta y eliminará todos tus datos de nuestros servidores. Esta acción no se puede deshacer.",
           "type": "Para confirmar, escribe",
           "cancel": "Cancelar",
-          "delete": "Eliminar Cuenta"
+          "delete": "Eliminar Cuenta",
+          "publishedNote": "Tus estudios de caso publicados permanecerán en el sitio. Para modificar o eliminar un estudio de caso publicado, comunícate por correo electrónico con el equipo de Connecting Climate Minds Hub."
         }
       }
     }

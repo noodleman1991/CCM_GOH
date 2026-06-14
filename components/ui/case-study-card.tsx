@@ -192,22 +192,18 @@ export default function CaseStudyCardComponent({
                     </div>
                 )}
 
-                {/* Title & Subtitle */}
+                {/* Title */}
                 <div className="mb-3">
-                    <h3 className="text-xl font-bold line-clamp-2 mb-1 group-hover:text-primary transition-colors">
+                    <h3 className="text-xl font-bold line-clamp-2 group-hover:text-primary transition-colors">
                         {localizedTitle}
                     </h3>
-                    {localizedSubtitle && (
-                        <p className="text-sm text-muted-foreground line-clamp-1">
-                            {localizedSubtitle}
-                        </p>
-                    )}
                 </div>
 
-                {/* Excerpt */}
-                {localizedExcerpt && (
+                {/* Summary: subtitle if present, otherwise excerpt — never both,
+                    so cards stay compact and uniform across translations / RTL. */}
+                {(localizedSubtitle || localizedExcerpt) && (
                     <p className="text-sm text-muted-foreground line-clamp-3 mb-4 flex-1">
-                        {localizedExcerpt}
+                        {localizedSubtitle || localizedExcerpt}
                     </p>
                 )}
 

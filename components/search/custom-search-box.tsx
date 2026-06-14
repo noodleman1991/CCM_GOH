@@ -8,27 +8,43 @@ interface CustomSearchBoxProps {
   placeholder?: string
 }
 
+// Wait this long after the last keystroke before querying Algolia. Keeps the
+// input fully responsive while avoiding a request (and a results re-render)
+// on every character, which made the results flicker.
+const SEARCH_DEBOUNCE_MS = 250
+
 export function CustomSearchBox({ placeholder = 'Search...' }: CustomSearchBoxProps) {
   const { query, refine } = useSearchBox()
   const [inputValue, setInputValue] = useState(query)
   const inputRef = useRef<HTMLInputElement>(null)
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Sync with InstantSearch query
   useEffect(() => {
     if (query !== inputValue) {
       setInputValue(query)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query])
+
+  // Clear any pending debounce on unmount.
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current)
+    }
+  }, [])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
-    setInputValue(value)
-    refine(value)
+    setInputValue(value) // immediate, so typing feels instant
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+    debounceRef.current = setTimeout(() => refine(value), SEARCH_DEBOUNCE_MS)
   }
 
   const handleClear = () => {
+    if (debounceRef.current) clearTimeout(debounceRef.current)
     setInputValue('')
-    refine('')
+    refine('') // clearing should be instant, no debounce
     inputRef.current?.focus()
   }
 

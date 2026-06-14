@@ -43,3 +43,12 @@ migration-log-*.json
 
 # prisma generated client (should be generated at build time with correct DATABASE_URL)
 /generated
+
+# local-only testing guide (not committed)
+TESTING.local.md
+
+# local-only deployment config notes (not committed)
+DEPLOYMENT-CONFIG.local.md
+
+# block analysis docs (local only)
+BLOCK-SYSTEM-COHERENCE-REPORT.local.md

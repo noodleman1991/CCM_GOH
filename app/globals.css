@@ -202,11 +202,17 @@
 
     @media (width >= theme(--breakpoint-lg)) {
     max-width: 1024px;
+    padding-inline: 3rem;
 }
 
     @media (width >= theme(--breakpoint-xl)) {
     max-width: 1280px;
-    padding-inline: 4rem;
+    padding-inline: 5rem;
+}
+
+    @media (width >= theme(--breakpoint-2xl)) {
+    max-width: 1400px;
+    padding-inline: 7rem;
 }
 }
 

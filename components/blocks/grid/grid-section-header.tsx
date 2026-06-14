@@ -41,7 +41,7 @@ export function GridSectionHeader({
       {/* Text Content */}
       <div className={cn(isRTL && hasImage && "md:order-2")}>
         {title && (
-          <h2 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl break-words">
+          <h2 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl text-balance break-words">
             {title}
           </h2>
         )}

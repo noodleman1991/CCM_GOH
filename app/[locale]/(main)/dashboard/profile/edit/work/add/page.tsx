@@ -28,7 +28,7 @@ export default async function AddRecentWorkPage() {
     })
 
     if (workCount >= 5) {
-        redirect('/profile/edit')
+        redirect('/dashboard/profile/edit')
     }
 
     const user = await prisma.user.findUnique({

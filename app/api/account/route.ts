@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { auth, clerkClient } from "@clerk/nextjs/server"
 import { prisma } from "@/lib/prisma"
+import { deleteUserData } from "@/lib/account-deletion"
 import { z } from "zod"
 
 const UpdateAccountSchema = z.object({
@@ -107,14 +108,27 @@ export async function PUT(request: NextRequest) {
           message: "Password updated successfully"
         })
 
-      case "delete_account":
-        // Delete user from Clerk (this will trigger webhook to delete from DB)
+      case "delete_account": {
+        // GDPR erasure performed synchronously so the user's data is gone before
+        // we respond — not left to the eventually-consistent Clerk webhook.
+        // Order matters: erase our data FIRST, then delete the Clerk auth user.
+        // If our erasure throws, the Clerk user still exists and the user can
+        // retry, rather than ending up with a deleted login and orphaned data.
+        const erasure = await deleteUserData(userId)
+
+        // Delete the Clerk auth user last. The user.deleted webhook is an
+        // idempotent backstop (it no-ops if the Prisma row is already gone).
         await clerkClientInstance.users.deleteUser(userId)
-        
+
         return NextResponse.json({
           success: true,
-          message: "Account deletion initiated"
+          message: "Account deleted",
+          erasure,
+          // Surfaced so the UI can tell the user to contact the team about
+          // any published case studies, which are intentionally retained.
+          publishedCaseStudiesRetained: erasure.publishedRetained,
         })
+      }
 
       default:
         return NextResponse.json(

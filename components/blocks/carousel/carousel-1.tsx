@@ -21,10 +21,13 @@ const CAROUSEL_SIZES = {
   three: "basis-full md:basis-1/2 lg:basis-1/3",
 } as const;
 
+// Aspect ratios scale predictably with the card width instead of jumping
+// between arbitrary fixed heights (the old values shrank then grew across
+// breakpoints, causing inconsistent cropping). Wider cards get a wider ratio.
 const IMAGE_SIZES = {
-  one: "h-[30rem] sm:h-[40rem] lg:h-[31.25rem] xl:h-[35rem]",
-  two: "h-[30rem] md:h-[22rem] lg:h-[30rem] xl:h-[35rem]",
-  three: "h-[30rem] md:h-[20rem] xl:h-[25rem]",
+  one: "aspect-video sm:aspect-[2/1]",
+  two: "aspect-[4/3]",
+  three: "aspect-[4/3]",
 } as const;
 
 // Honest `sizes` per carousel variant: the content area is capped at

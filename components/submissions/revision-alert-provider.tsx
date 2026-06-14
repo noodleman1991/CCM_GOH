@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react'
 import { useUser } from '@clerk/nextjs'
 import { useParams } from 'next/navigation'
-import { client } from '@/sanity/lib/client'
 import RevisionAlertDialog from './revision-alert-dialog'
 
 interface RevisionSubmission {
@@ -35,16 +34,13 @@ export default function RevisionAlertProvider({
       try {
         setIsLoadingSubmissions(true)
 
-        // Query Sanity for submissions with revision status
-        const submissions = await client.fetch(`
-          *[_type == "caseStudy" && submittedBy == $userId && status == "revision"] {
-            _id,
-            title,
-            status,
-            reviewNotes,
-            submittedAt
-          }
-        `, { userId: user.id })
+        // Fetch via an authenticated server route. The userId is taken from the
+        // trusted Clerk session server-side; we do not query Sanity from the
+        // browser because the dataset is publicly readable.
+        const response = await fetch('/api/case-studies/revisions')
+        const submissions = response.ok
+          ? (await response.json()).submissions ?? []
+          : []
 
         const shouldShowDialog =
           // User is authenticated

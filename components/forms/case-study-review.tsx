@@ -399,7 +399,7 @@ export default function CaseStudyReview({ availableTags, userId }: CaseStudyRevi
                                 onClick={handleBackToForm}
                                 disabled={isSubmitting}
                             >
-                                <ArrowLeft className="w-4 h-4 mr-2" />
+                                <ArrowLeft className="w-4 h-4 me-2 rtl:-scale-x-100" />
                                 Back to Edit
                             </Button>
 

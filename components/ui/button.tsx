@@ -5,7 +5,11 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-bold transition-[color,box-shadow,border-color] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:shrink-0 ring-ring/10 dark:ring-ring/20 dark:outline-ring/40 outline-ring/50 focus-visible:ring-4 focus-visible:outline-1 aria-invalid:focus-visible:ring-0 font-heading rounded-[6px]",
+  // Text wraps and is balanced/centered instead of forced onto one line, so
+  // longer labels (and longer es/fr/ar translations) wrap to a second line
+  // rather than overflowing or being clipped. Sizes use min-height (below) so a
+  // wrapped button grows vertically instead of truncating.
+  "inline-flex items-center justify-center gap-2 text-center text-balance leading-tight text-sm font-bold transition-[color,box-shadow,border-color] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:shrink-0 ring-ring/10 dark:ring-ring/20 dark:outline-ring/40 outline-ring/50 focus-visible:ring-4 focus-visible:outline-1 aria-invalid:focus-visible:ring-0 font-heading rounded-[6px]",
   {
     variants: {
       variant: {
@@ -19,12 +23,13 @@ const buttonVariants = cva(
         link: "text-[var(--color-ccm-sea)] underline-offset-4 hover:underline hover:text-[var(--color-ccm-midnight)]",
       },
       size: {
-        default: "h-9 px-4 py-2 has-[>svg]:px-3",
-        wide: "h-9 px-16 py-2 has-[>svg]:px-14",
-        thick: "h-16 px-12 py-6 text-lg font-extrabold has-[>svg]:px-10",
-        sm: "h-9 px-4 has-[>svg]:px-3",
-        lg: "h-12 px-8 has-[>svg]:px-6",
-        icon: "size-9",
+        // min-h (not fixed h) so buttons grow when their label wraps.
+        default: "min-h-9 px-4 py-2 has-[>svg]:px-3",
+        wide: "min-h-9 px-16 py-2 has-[>svg]:px-14",
+        thick: "min-h-16 px-12 py-6 text-lg font-extrabold has-[>svg]:px-10",
+        sm: "min-h-9 px-4 py-2 has-[>svg]:px-3",
+        lg: "min-h-12 px-8 py-2.5 has-[>svg]:px-6",
+        icon: "size-9 shrink-0",
       },
       stroke: {
         none: "",
