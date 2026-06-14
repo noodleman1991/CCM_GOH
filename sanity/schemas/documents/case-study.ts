@@ -404,6 +404,18 @@ export default defineType({
             },
         }),
 
+        defineField({
+            // System field: the last status the submitter was emailed about.
+            // Set automatically by the status-change webhook so notifications
+            // aren't re-sent on unrelated edits. Not editorial.
+            name: "notifiedStatus",
+            title: "Last Notified Status (system)",
+            type: "string",
+            group: "review",
+            readOnly: true,
+            hidden: true,
+        }),
+
         // SEO fields
         defineField({
             name: "seoTitle",
