@@ -230,6 +230,16 @@ export default function ImprovedCaseStudyForm({
     useEffect(() => {
         if (!isHydrated) return; // Don't save on initial mount/restore
 
+        // Don't create a draft for an empty form — only once the user has
+        // entered something worth keeping (or we're updating an existing draft).
+        const hasContent = Boolean(
+            (formData.title && Object.values(formData.title).some((v) => (v as string)?.trim())) ||
+            (formData.excerpt && Object.values(formData.excerpt).some((v) => (v as string)?.trim())) ||
+            (formData.content && (formData.content as any[])?.length) ||
+            selectedTags.length
+        );
+        if (!draftId && !hasContent) return;
+
         const timeoutId = setTimeout(async () => {
             try {
                 const { image, ...draftFields } = formData as Record<string, any>;
