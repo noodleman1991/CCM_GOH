@@ -260,7 +260,7 @@ export default defineType({
                     type: "string",
                 },
             ],
-            description: "Text description of the study location",
+            description: "Human-readable location shown on the case study (e.g. \"Nairobi, Kenya\"). Display only — for the map, set the coordinates below.",
         }),
 
         defineField({
@@ -268,7 +268,7 @@ export default defineType({
             title: "Primary Study Location (Map)",
             type: "geopoint",
             group: "metadata",
-            description: "Geographic coordinates for map display",
+            description: "The main location's coordinates. This is what drives the regional map and search — set it for every case study.",
         }),
 
         defineField({
@@ -276,6 +276,7 @@ export default defineType({
             title: "Additional Study Areas",
             type: "array",
             group: "metadata",
+            description: "Optional. Only add these if the study spanned several distinct places beyond the primary location above.",
             of: [{
                 type: "object",
                 fields: [
