@@ -43,3 +43,6 @@ migration-log-*.json
 
 # prisma generated client (should be generated at build time with correct DATABASE_URL)
 /generated
+
+# local-only testing guide (not committed)
+TESTING.local.md
