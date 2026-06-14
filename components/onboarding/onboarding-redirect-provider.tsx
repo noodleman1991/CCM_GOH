@@ -3,8 +3,6 @@
 import { useEffect, useState } from 'react'
 import { useUser } from '@clerk/nextjs'
 import { useParams, usePathname } from 'next/navigation'
-import { client } from '@/sanity/lib/client'
-import { onboardingContentQueryWithFallback } from '@/sanity/queries/onboarding-content'
 import OnboardingRedirectDialog from './onboarding-redirect-dialog'
 
 interface OnboardingContent {
@@ -52,34 +50,33 @@ export default function OnboardingRedirectProvider({
           if (shouldShowDialog) {
             setIsLoadingContent(true)
 
-            // Fetch onboarding content from Sanity
-            client
-              .fetch(onboardingContentQueryWithFallback, { locale })
-              .then((data) => {
-                if (data) {
-                  setContent({
-                    redirectDialogTitle: data.redirectDialogTitle || 'Complete Your Profile',
-                    redirectDialogMessage: data.redirectDialogMessage || 'To get the most out of your experience, we recommend completing your profile.',
-                    proceedToOnboardingText: data.proceedToOnboardingText || 'Complete Profile',
-                    continueToHubText: data.continueToHubText || 'Continue to Collaborate',
-                    oneTimeWaiverText: data.oneTimeWaiverText || 'You can complete this later'
-                  })
-                  setShowDialog(true)
+            // Built-in fallback copy used if the CMS content is unavailable.
+            const fallback = {
+              redirectDialogTitle: 'Complete Your Profile',
+              redirectDialogMessage: 'To get the most out of your experience, we recommend completing your profile.',
+              proceedToOnboardingText: 'Complete Profile',
+              continueToHubText: 'Continue to Collaborate',
+              oneTimeWaiverText: 'You can complete this later',
+            }
 
-                  // Mark dialog as shown in session storage
-                  sessionStorage.setItem('onboarding-dialog-shown', 'true')
-                }
+            // Fetch onboarding copy via a server route (tokened client), so this
+            // works whether or not the Sanity dataset is public.
+            fetch(`/api/onboarding/content?locale=${encodeURIComponent(locale)}`)
+              .then((res) => (res.ok ? res.json() : { content: null }))
+              .then(({ content: data }) => {
+                setContent(data ? {
+                  redirectDialogTitle: data.redirectDialogTitle || fallback.redirectDialogTitle,
+                  redirectDialogMessage: data.redirectDialogMessage || fallback.redirectDialogMessage,
+                  proceedToOnboardingText: data.proceedToOnboardingText || fallback.proceedToOnboardingText,
+                  continueToHubText: data.continueToHubText || fallback.continueToHubText,
+                  oneTimeWaiverText: data.oneTimeWaiverText || fallback.oneTimeWaiverText,
+                } : fallback)
+                setShowDialog(true)
+                sessionStorage.setItem('onboarding-dialog-shown', 'true')
               })
               .catch((error) => {
                 console.error('Failed to fetch onboarding content:', error)
-                // Use fallback content if fetch fails
-                setContent({
-                  redirectDialogTitle: 'Complete Your Profile',
-                  redirectDialogMessage: 'To get the most out of your experience, we recommend completing your profile.',
-                  proceedToOnboardingText: 'Complete Profile',
-                  continueToHubText: 'Continue to Collaborate',
-                  oneTimeWaiverText: 'You can complete this later'
-                })
+                setContent(fallback)
                 setShowDialog(true)
                 sessionStorage.setItem('onboarding-dialog-shown', 'true')
               })
