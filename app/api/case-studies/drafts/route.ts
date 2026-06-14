@@ -2,6 +2,30 @@ import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@clerk/nextjs/server"
 import { writeClient } from "@/sanity/lib/write-client"
 
+/**
+ * Returns the authenticated user's most recently saved case-study draft (if any).
+ * Read happens server-side with the tokened client — the dataset is public, so
+ * a browser-side `userId` filter would not be a security boundary.
+ */
+export async function GET() {
+    try {
+        const { userId } = await auth()
+        if (!userId) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+        }
+
+        const draft = await writeClient.fetch(
+            `*[_type == "caseStudyDraft" && userId == $userId] | order(lastSaved desc)[0]`,
+            { userId }
+        )
+
+        return NextResponse.json({ draft: draft ?? null })
+    } catch (error) {
+        console.error("Failed to load draft:", error)
+        return NextResponse.json({ error: "Failed to load draft" }, { status: 500 })
+    }
+}
+
 export async function POST(request: NextRequest) {
     try {
         const { userId } = await auth()
