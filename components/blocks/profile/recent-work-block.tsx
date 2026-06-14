@@ -37,8 +37,8 @@ export default function RecentWorkBlock({
                 <CardTitle>{t('title')}</CardTitle>
                 {isOwnProfile && works.length < 5 && (
                     <Button size="sm" variant="outline" asChild>
-                        <Link href="/profile/work/add">
-                            <Plus className="h-4 w-4 mr-2" />
+                        <Link href="/dashboard/profile/edit/work/add">
+                            <Plus className="h-4 w-4 me-2" />
                             {t('addWork')}
                         </Link>
                     </Button>
