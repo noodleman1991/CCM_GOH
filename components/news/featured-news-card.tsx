@@ -81,22 +81,18 @@ export default function FeaturedNewsCard({ news, locale, className }: FeaturedNe
             </div>
           )}
 
-          {/* Title & Subtitle */}
+          {/* Title */}
           <div className="space-y-2">
             <h3 className="text-2xl lg:text-3xl font-bold line-clamp-2 group-hover:text-primary transition-colors">
               {title}
             </h3>
-            {subtitle && (
-              <p className="text-lg text-muted-foreground line-clamp-1">
-                {subtitle}
-              </p>
-            )}
           </div>
 
-          {/* Excerpt */}
-          {excerpt && (
+          {/* Summary: subtitle if present, otherwise excerpt — never both, so
+              the card stays readable instead of stacking two text blocks. */}
+          {(subtitle || excerpt) && (
             <p className="text-base text-muted-foreground line-clamp-3 leading-relaxed">
-              {excerpt}
+              {subtitle || excerpt}
             </p>
           )}
 

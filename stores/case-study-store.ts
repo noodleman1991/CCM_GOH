@@ -1,6 +1,5 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
-import { client } from '@/sanity/lib/client'
 import type { PortableTextBlock } from '@portabletext/types'
 
 export interface LocalizedString {
@@ -87,8 +86,6 @@ export interface CaseStudyStore {
     updateAuthor: (index: number, author: Partial<CaseStudyAuthor>) => void
 
     // Draft management
-    saveDraft: (userId: string) => Promise<void>
-    loadDraft: (userId: string) => Promise<boolean>
     deleteDraft: () => Promise<void>
     markChanges: () => void
 
@@ -196,86 +193,6 @@ export const useCaseStudyStore = create<CaseStudyStore>()(
                 })),
 
             markChanges: () => set({ hasPendingChanges: true }),
-
-            // Draft management
-            saveDraft: async (userId: string) => {
-                const state = get()
-                if (!state.hasPendingChanges && state.draftId) return
-
-                set({ isDraftSaving: true })
-
-                try {
-                    const draftData = {
-                        _type: 'caseStudyDraft',
-                        userId,
-                        lastSaved: new Date().toISOString(),
-                        ...state.formData,
-                        // Convert File to asset reference if image exists
-                        image: state.formData.image ? undefined : state.formData.image,
-                        formMetadata: {
-                            currentStep: state.currentStep,
-                            completedSections: [], // Can be implemented based on validation
-                            organizationName: state.formData.organizationName,
-                        }
-                    }
-
-                    const response = await fetch('/api/case-studies/drafts', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            draftId: state.draftId,
-                            draftData
-                        })
-                    })
-
-                    if (!response.ok) {
-                        throw new Error('Failed to save draft')
-                    }
-
-                    const result = await response.json()
-
-                    set({
-                        draftId: result.id,
-                        lastSaved: new Date(),
-                        hasPendingChanges: false,
-                        isDraftSaving: false
-                    })
-                } catch (error) {
-                    console.error('Failed to save draft:', error)
-                    set({ isDraftSaving: false })
-                    throw error
-                }
-            },
-
-            loadDraft: async (userId: string) => {
-                try {
-                    const draft = await client.fetch(`
-                        *[_type == "caseStudyDraft" && userId == $userId][0]
-                    `, { userId })
-
-                    if (draft) {
-                        const { _id, userId: draftUserId, lastSaved, formMetadata, ...draftData } = draft
-
-                        set({
-                            formData: {
-                                ...initialFormData,
-                                ...draftData,
-                                organizationName: formMetadata?.organizationName
-                            },
-                            draftId: _id,
-                            lastSaved: new Date(lastSaved),
-                            currentStep: formMetadata?.currentStep || 'form',
-                            hasPendingChanges: false,
-                            selectedTags: draftData.tags || []
-                        })
-                        return true
-                    }
-                    return false
-                } catch (error) {
-                    console.error('Failed to load draft:', error)
-                    return false
-                }
-            },
 
             deleteDraft: async () => {
                 const { draftId } = get()

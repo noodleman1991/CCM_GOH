@@ -204,10 +204,11 @@ export default function AccountManagement({ initialData }: AccountManagementProp
       }
 
       toast.success(result.message)
-      // Redirect will happen automatically as Clerk session will be destroyed
+      // The Clerk user no longer exists; hard-navigate home to clear all
+      // client-side auth/session state.
+      window.location.href = '/'
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to delete account')
-    } finally {
       setLoading(false)
     }
   }
@@ -400,6 +401,9 @@ export default function AccountManagement({ initialData }: AccountManagementProp
               </DialogHeader>
               
               <div className="space-y-4">
+                <p className="rounded-md bg-muted p-3 text-sm text-muted-foreground">
+                  {t('delete.confirm.publishedNote')}
+                </p>
                 <p className="text-sm text-muted-foreground">
                   {t('delete.confirm.type')} <strong>DELETE</strong>
                 </p>

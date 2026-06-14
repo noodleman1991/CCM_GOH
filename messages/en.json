@@ -415,7 +415,8 @@
           "description": "This will permanently delete your account and remove all your data from our servers. This action cannot be undone.",
           "type": "To confirm, type",
           "cancel": "Cancel",
-          "delete": "Delete Account"
+          "delete": "Delete Account",
+          "publishedNote": "Your published case studies will remain on the site. To have a published case study changed or removed, please contact the Connecting Climate Minds Hub team by email."
         }
       }
     }
@@ -925,6 +926,8 @@
         "socialLinks": "Social Links",
         "socialLinksDescription": "Add links to help others connect with you professionally",
         "personalWebsite": "Personal Website",
+        "website": "Personal Website",
+        "websitePlaceholder": "https://yourwebsite.com",
         "linkedin": "LinkedIn",
         "twitter": "Twitter",
         "github": "GitHub",

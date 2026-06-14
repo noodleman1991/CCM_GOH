@@ -10,13 +10,20 @@ import {
   fetchSanityPostBySlug,
   fetchSanityPostsStaticParams,
 } from "@/sanity/lib/fetch";
+import { getTranslations } from "next-intl/server";
 
 export async function generateStaticParams() {
   const posts = await fetchSanityPostsStaticParams();
+  const locales = ["en", "es", "fr", "ar"];
 
-  return posts.map((post) => ({
-    slug: post.slug?.current,
-  }));
+  // Emit one entry per (post, locale) so every localized URL is pre-rendered.
+  // Posts without a translation fall back to English at request time
+  // (fetchSanityPostBySlug handles the fallback).
+  return posts.flatMap((post) =>
+    post.slug?.current
+      ? locales.map((locale) => ({ locale, slug: post.slug!.current }))
+      : []
+  );
 }
 
 // export async function generateMetadata(props: {
@@ -42,14 +49,16 @@ export default async function PostPage(props: {
     notFound();
   }
 
+  const t = await getTranslations({ locale: params.locale, namespace: "navigation" });
+
   const links: BreadcrumbLink[] = post
     ? [
         {
-          label: "Home",
+          label: t("home"),
           href: "/",
         },
         {
-          label: "Blog",
+          label: t("blog"),
           href: "/blog",
         },
         {

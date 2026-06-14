@@ -38,9 +38,37 @@ export async function generateMetadata({ params }: ProfilePageProps): Promise<Me
     }
 }
 
+// Map the stored enum values to the camelCase translation keys.
+const WORK_TYPE_KEY: Record<string, string> = {
+    RESEARCH: 'research',
+    POLICY: 'policy',
+    LIVED_EXPERIENCE_EXPERT: 'livedExperience',
+    NGO: 'ngo',
+    COMMUNITY_ORGANIZATION: 'communityOrg',
+    EDUCATION_TEACHING: 'education',
+}
+const EXPERTISE_KEY: Record<string, string> = {
+    CLIMATE_CHANGE: 'climate',
+    MENTAL_HEALTH: 'mentalHealth',
+    HEALTH: 'health',
+    EDUCATION: 'education',
+    SOCIAL_JUSTICE: 'socialJustice',
+}
+
 export default async function ProfilePage({ params }: ProfilePageProps) {
     const { username, locale } = await params
     const t = await getTranslations('profile')
+    const tTypesRaw = await getTranslations('profile.work.types')
+    const tExpertiseRaw = await getTranslations('profile.work.expertise')
+    // Translate an enum value, falling back to a humanized form if unmapped.
+    const tWorkTypes = (v: string) => {
+        const k = WORK_TYPE_KEY[v]
+        return k ? tTypesRaw(k) : v.replace(/_/g, ' ')
+    }
+    const tExpertise = (v: string) => {
+        const k = EXPERTISE_KEY[v]
+        return k ? tExpertiseRaw(k) : v.replace(/_/g, ' ')
+    }
 
     const { userId: currentUserId } = await auth()
 
@@ -84,70 +112,79 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
 
             {/* Profile Header */}
             <div className="mb-8">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-                    <div>
-                        <BlurFade delay={BLUR_FADE_DELAY * 3} className="mb-2">
-                            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
+                <div className="flex flex-col sm:flex-row sm:items-start gap-6 mb-6">
+                    {/* Avatar beside the identity, like a standard profile */}
+                    <BlurFade delay={BLUR_FADE_DELAY * 3}>
+                        <Avatar className="h-24 w-24 sm:h-28 sm:w-28 shrink-0">
+                            <AvatarImage alt={user.displayName} src={user.image || undefined} />
+                            <AvatarFallback className="text-2xl">{user.initials}</AvatarFallback>
+                        </Avatar>
+                    </BlurFade>
+
+                    <div className="flex-1 min-w-0">
+                        <BlurFade delay={BLUR_FADE_DELAY * 3} className="mb-1">
+                            <h1 className="text-3xl font-bold tracking-tight text-balance sm:text-4xl">
                                 {user.displayName}
                             </h1>
                         </BlurFade>
                         {user.username && (
-                            <BlurFade delay={BLUR_FADE_DELAY * 4} className="mb-4">
+                            <BlurFade delay={BLUR_FADE_DELAY * 4} className="mb-3">
                                 <p className="text-lg text-muted-foreground">@{user.username}</p>
                             </BlurFade>
                         )}
-                    </div>
 
-                    <div className="flex flex-col sm:flex-row gap-4">
-                        {user.work && (
-                            <BlurFade delay={BLUR_FADE_DELAY * 5}>
-                                <div className="flex items-center gap-2">
-                                    <span className="text-sm">{user.work}</span>
-                                </div>
-                            </BlurFade>
-                        )}
-                        {user.location && (
+                        {/* Role / location — the at-a-glance "who you'd collaborate with" line */}
+                        <BlurFade delay={BLUR_FADE_DELAY * 5}>
+                            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
+                                {user.work && <span>{user.work}</span>}
+                                {user.location && <span>{user.location}</span>}
+                                {user.ageGroup && (
+                                    <span>{user.ageGroup === 'UNDER_18' ? t('under18') : t('above18')}</span>
+                                )}
+                            </div>
+                        </BlurFade>
+
+                        {/* Expertise tags up top — the collaboration-relevant signal */}
+                        {(user.workTypes.length > 0 || user.expertiseAreas.length > 0) && (
                             <BlurFade delay={BLUR_FADE_DELAY * 6}>
-                                <div className="flex items-center gap-2">
-                                    <span className="text-sm">{user.location}</span>
+                                <div className="mt-3 flex flex-wrap gap-2">
+                                    {user.workTypes.map((type) => (
+                                        <Badge key={type} variant="secondary">
+                                            {tWorkTypes(type)}
+                                        </Badge>
+                                    ))}
+                                    {user.expertiseAreas.map((area) => (
+                                        <Badge key={area} variant="outline">
+                                            {tExpertise(area)}
+                                        </Badge>
+                                    ))}
                                 </div>
                             </BlurFade>
                         )}
-                        {user.ageGroup && (
-                            <BlurFade delay={BLUR_FADE_DELAY * 7}>
-                                <div className="flex items-center gap-2">
-                                    <span className="text-sm">
-                                        {user.ageGroup === 'UNDER_18' ? t('under18') : t('above18')}
-                                    </span>
-                                </div>
-                            </BlurFade>
-                        )}
-                    </div>
-                </div>
 
-                {/* Action Buttons */}
-                <div className="flex items-center gap-4 mb-6">
-                    {isOwnProfile && (
-                        <BlurFade delay={BLUR_FADE_DELAY * 8}>
-                            <Button asChild>
-                                <Link href="/dashboard/profile/edit">Edit Profile</Link>
-                            </Button>
-                        </BlurFade>
-                    )}
-                    {user.email && (
-                        <BlurFade delay={BLUR_FADE_DELAY * 9}>
-                            <Button variant="outline" asChild>
-                                <a href={`mailto:${user.email}`}>
-                                    Contact
-                                </a>
-                            </Button>
-                        </BlurFade>
-                    )}
+                        {/* Action Buttons */}
+                        <div className="mt-4 flex flex-wrap items-center gap-3">
+                            {isOwnProfile && (
+                                <BlurFade delay={BLUR_FADE_DELAY * 8}>
+                                    <Button asChild>
+                                        <Link href="/dashboard/profile/edit">{t('editProfile')}</Link>
+                                    </Button>
+                                </BlurFade>
+                            )}
+                            {user.email && (
+                                <BlurFade delay={BLUR_FADE_DELAY * 9}>
+                                    <Button variant="outline" asChild>
+                                        <a href={`mailto:${user.email}`}>{t('contact')}</a>
+                                    </Button>
+                                </BlurFade>
+                            )}
+                        </div>
+                    </div>
                 </div>
 
                 {/* Profile Completeness - visible only to the profile owner */}
                 {isOwnProfile && (
-                    <BlurFade delay={BLUR_FADE_DELAY * 9} className="mb-6">
+                    <BlurFade delay={BLUR_FADE_DELAY * 9} className="mb-2">
                         <ProfileCompletenessIndicator
                             percentage={user.profileCompleteness}
                             size="md"
@@ -155,16 +192,6 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                         />
                     </BlurFade>
                 )}
-
-                {/* Avatar */}
-                <BlurFade delay={BLUR_FADE_DELAY * 10}>
-                    <div className="flex items-center gap-6">
-                        <Avatar className="h-24 w-24 sm:h-32 sm:w-32">
-                            <AvatarImage alt={user.displayName} src={user.image || undefined} />
-                            <AvatarFallback>{user.initials}</AvatarFallback>
-                        </Avatar>
-                    </div>
-                </BlurFade>
             </div>
 
             {/* Profile Statistics */}
@@ -225,14 +252,14 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                                             {user.workTypes.map((type, id) => (
                                                 <BlurFade key={type} delay={BLUR_FADE_DELAY * 11 + id * 0.05}>
                                                     <Badge variant="secondary">
-                                                        {type.replace(/_/g, ' ')}
+                                                        {tWorkTypes(type)}
                                                     </Badge>
                                                 </BlurFade>
                                             ))}
                                             {user.expertiseAreas.map((area, id) => (
                                                 <BlurFade key={area} delay={BLUR_FADE_DELAY * 11 + (user.workTypes.length + id) * 0.05}>
                                                     <Badge variant="outline">
-                                                        {area.replace(/_/g, ' ')}
+                                                        {tExpertise(area)}
                                                     </Badge>
                                                 </BlurFade>
                                             ))}
@@ -252,7 +279,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                                         <h2 className="text-xl font-semibold">{t('recentWork.title')}</h2>
                                         {isOwnProfile && (
                                             <Button variant="outline" size="sm" asChild>
-                                                <Link href="/profile/work/add">{t('recentWork.addWork')}</Link>
+                                                <Link href="/dashboard/profile/edit/work/add">{t('recentWork.addWork')}</Link>
                                             </Button>
                                         )}
                                     </div>

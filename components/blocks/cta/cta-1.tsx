@@ -6,6 +6,7 @@ import Link from "next/link";
 import PortableTextRenderer from "@/components/portable-text-renderer";
 import { PAGE_QUERYResult } from "@/sanity.types";
 import { getLocalizedField, getLocalizedPortableText } from "@/lib/localization-utils";
+import { heading } from "@/lib/design-tokens";
 
 type Cta1Props = Extract<
   NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number],
@@ -57,7 +58,7 @@ export default function Cta1({
               {localizedTagLine}
             </p>
           )}
-          <h2 className="mb-4 font-bold font-heading text-3xl md:text-4xl lg:text-5xl text-ccm-midnight">{localizedTitle}</h2>
+          <h2 className={cn('mb-4 font-bold font-heading text-balance text-ccm-midnight', heading('lg'))}>{localizedTitle}</h2>
           {localizedBody && <PortableTextRenderer value={localizedBody} locale={locale} />}
         </div>
         {links && links.length > 0 && (

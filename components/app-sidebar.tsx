@@ -17,7 +17,7 @@ import {
     X,
 } from "lucide-react"
 import Logo from "@/components/logo"
-import { useRouter } from "next/navigation"
+import { useRouter } from "@/i18n/navigation"
 
 import { useClerkUser } from "@/hooks/use-clerk-user";
 import { useLocale, useTranslations } from "next-intl"

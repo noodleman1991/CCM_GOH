@@ -56,7 +56,6 @@ export function ModernOnboardingContainer({
   const [currentStep, setCurrentStep] = useState(0)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [validationError, setValidationError] = useState<string | null>(null)
-  const [isReviewConfirmed, setIsReviewConfirmed] = useState(false)
 
   // Create dynamic schema
   const dynamicSchema = createOnboardingSchema(sanityContent?.validationMessages)
@@ -410,7 +409,14 @@ export function ModernOnboardingContainer({
     )} dir={isRTL ? "rtl" : "ltr"}>
       {/* Main Content */}
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="flex-1 flex flex-col">
+        <form
+          onSubmit={form.handleSubmit(handleSubmit, () => {
+            // RHF blocked the submit due to validation — surface it instead of
+            // failing silently (the submit button would otherwise appear dead).
+            setValidationError(validationT("requiredFields"))
+          })}
+          className="flex-1 flex flex-col"
+        >
           <ModernContentArea
             currentStep={currentStep}
             totalSteps={steps.length}
@@ -419,7 +425,6 @@ export function ModernOnboardingContainer({
             isSubmitting={isSubmitting}
             canGoNext={true}
             canGoPrevious={currentStep > 0}
-            isConfirmed={isReviewConfirmed}
           >
             {/* Error Alert */}
             {validationError && (
@@ -444,7 +449,6 @@ export function ModernOnboardingContainer({
               expertiseAreas={userManagementOptions?.expertiseAreas || []}
               communities={userManagementOptions?.communities || []}
               {...(userManagementOptions && { userManagementOptions })}
-              onConfirmationChange={setIsReviewConfirmed}
             />
           </ModernContentArea>
         </form>

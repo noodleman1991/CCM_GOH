@@ -346,7 +346,7 @@ export default defineType({
             options: { list: statusOptions },
             initialValue: "pending",
             validation: (Rule) => Rule.required(),
-            description: "Only 'approved' case studies will be visible to the public",
+            description: "Single source of truth for visibility: ONLY 'Approved' case studies appear on the public site. Use the Approve / Reject / Request Revision actions (top-right) so review timestamps are recorded.",
         }),
 
         defineField({
@@ -363,11 +363,12 @@ export default defineType({
             title: "Published At",
             type: "datetime",
             group: "review",
+            readOnly: true,
             hidden: ({ document }) => {
                 const status = document?.status as string;
                 return status !== "approved";
             },
-            description: "Automatically set when status changes to 'approved'",
+            description: "Set automatically by the Approve action when the case study goes live. Read-only so it always reflects the real publish time.",
         }),
 
         defineField({
@@ -401,6 +402,18 @@ export default defineType({
                 const status = document?.status as string;
                 return !status || !["approved", "rejected", "revision"].includes(status);
             },
+        }),
+
+        defineField({
+            // System field: the last status the submitter was emailed about.
+            // Set automatically by the status-change webhook so notifications
+            // aren't re-sent on unrelated edits. Not editorial.
+            name: "notifiedStatus",
+            title: "Last Notified Status (system)",
+            type: "string",
+            group: "review",
+            readOnly: true,
+            hidden: true,
         }),
 
         // SEO fields
@@ -447,7 +460,17 @@ export default defineType({
         }) {
             const displayTitle = title?.en || "Untitled Case Study";
             const featuredIcon = featured ? "⭐ " : "";
-            const subtitle = `${featuredIcon}${status || "pending"}`;
+            // Status is the single source of truth for public visibility:
+            // only "approved" is shown on the public site. Make that explicit in
+            // the Studio list so an editor never misreads a hidden doc as live.
+            const statusLabels: Record<string, string> = {
+                approved: "🟢 Live (public)",
+                pending: "🟡 Pending review (hidden)",
+                revision: "🟠 Needs revision (hidden)",
+                rejected: "🔴 Rejected (hidden)",
+            };
+            const statusLabel = statusLabels[status || "pending"] || `${status} (hidden)`;
+            const subtitle = `${featuredIcon}${statusLabel}`;
 
             return {
                 title: displayTitle,
