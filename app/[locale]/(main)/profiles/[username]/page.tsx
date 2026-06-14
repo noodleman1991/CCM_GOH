@@ -279,7 +279,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                                         <h2 className="text-xl font-semibold">{t('recentWork.title')}</h2>
                                         {isOwnProfile && (
                                             <Button variant="outline" size="sm" asChild>
-                                                <Link href="/profile/work/add">{t('recentWork.addWork')}</Link>
+                                                <Link href="/dashboard/profile/edit/work/add">{t('recentWork.addWork')}</Link>
                                             </Button>
                                         )}
                                     </div>

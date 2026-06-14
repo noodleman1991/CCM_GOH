@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { heading } from "@/lib/design-tokens";
 import PortableTextRenderer from "@/components/portable-text-renderer";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -64,7 +65,7 @@ export default function SplitContent({
           createElement(
             "h2",
             {
-              className: cn("my-4 font-bold font-heading text-3xl md:text-4xl lg:text-5xl text-ccm-midnight leading-[1.2] break-words"),
+              className: cn("my-4 font-bold font-heading text-ccm-midnight leading-[1.2] text-balance break-words", heading("lg")),
             },
             localizedTitle
           )}
