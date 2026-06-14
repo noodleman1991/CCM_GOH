@@ -229,20 +229,44 @@ export default async function OnboardingPage({ params }: { params: Promise<{ loc
                 })
                 .filter(Boolean)
         } else {
-            // Merge Sanity data with database IDs
+            // Merge Sanity data with database IDs. The DB enum (regionalName) and
+            // the Sanity slug don't always transform 1:1 — e.g. slug
+            // `europe-and-northern-america` → `EUROPE_AND_NORTHERN_AMERICA` but the
+            // enum is `EUROPE_AND_NORTH_AMERICA`. Match robustly so a community is
+            // never silently dropped from onboarding.
+
+            // Normalize an enum-ish key for fuzzy comparison: lowercase, drop
+            // filler words and non-letters, and collapse the north/northern,
+            // east/eastern, etc. difference (the actual cause of the
+            // europe-and-northern-america vs EUROPE_AND_NORTH_AMERICA mismatch).
+            const norm = (s: string) =>
+                s.toLowerCase()
+                    .replace(/\b(and|the|of)\b/g, '')
+                    .replace(/[^a-z]/g, '')
+                    .replace(/(north|south|east|west)ern/g, '$1') // northern->north
+
+            const normalizedDbIds = new Map(
+                dbCommunities.map(c => [norm(c.regionalName || ''), { id: c.id, regionalName: c.regionalName }])
+            )
+
             communities = sanityCommunities
                 .map((community: any) => {
-                    const regionalName = community.slug
-                        .replace(/-/g, '_')
-                        .toUpperCase()
-                    const dbId = regionalNameToId.get(regionalName)
-                    if (!dbId) return null
+                    const transformed = community.slug.replace(/-/g, '_').toUpperCase()
+                    // 1) exact transform match, 2) fuzzy normalized match
+                    let match = regionalNameToId.get(transformed)
+                        ? { id: regionalNameToId.get(transformed)!, regionalName: transformed }
+                        : normalizedDbIds.get(norm(transformed))
+
+                    if (!match) {
+                        console.warn(`[Onboarding] ⚠️ No DB community matched Sanity slug "${community.slug}" (tried "${transformed}") — it will be MISSING from onboarding. Check the RegionalCommunityName enum vs the Sanity slug.`)
+                        return null
+                    }
                     return {
-                        id: dbId,
+                        id: match.id,
                         slug: community.slug,
                         name: community.name,
                         type: 'REGIONAL',
-                        regionalName
+                        regionalName: match.regionalName,
                     }
                 })
                 .filter(Boolean)
