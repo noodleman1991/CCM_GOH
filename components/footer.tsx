@@ -1,26 +1,17 @@
-import Link from "next/link";
+"use client";
+
+import { Link } from "@/i18n/navigation";
 import Logo from "@/components/logo";
+import { useTranslations } from "next-intl";
 import { CookiePreferencesButton } from "@/components/cookie-consent/cookie-preferences-button";
 
-const navItems = [
-  {
-    label: "Home",
-    href: "/",
-    target: false,
-  },
-  {
-    label: "Blog",
-    href: "/blog",
-    target: false,
-  },
-  {
-    label: "About",
-    href: "/about",
-    target: false,
-  },
-];
-
 export default function Footer() {
+  const t = useTranslations("navigation");
+  const navItems = [
+    { label: t("home"), href: "/" },
+    { label: t("blog"), href: "/blog" },
+    { label: t("about"), href: "/about" },
+  ];
   const getCurrentYear = () => {
     return new Date().getFullYear();
   };
@@ -38,10 +29,8 @@ export default function Footer() {
         <div className="mt-8 flex flex-wrap items-center justify-center gap-7 text-primary">
           {navItems.map((navItem) => (
             <Link
-              key={navItem.label}
+              key={navItem.href}
               href={navItem.href}
-              target={navItem.target ? "_blank" : undefined}
-              rel={navItem.target ? "noopener noreferrer" : undefined}
               className="transition-colors hover:text-foreground/80 text-foreground/60 text-sm"
             >
               {navItem.label}
@@ -51,9 +40,9 @@ export default function Footer() {
         <div className="mt-8 flex flex-col lg:flex-row gap-6 items-center justify-center text-center lg:mt-5 text-xs border-t pt-8">
           <p className="text-foreground/60">
             &copy; {getCurrentYear()} Built by{" "}
-            <Link href="https://x.com/serge_0v" target="_blank" rel="noopener">
+            <a href="https://x.com/serge_0v" target="_blank" rel="noopener" className="hover:underline">
               @serge_0v
-            </Link>
+            </a>
             .
           </p>
           <CookiePreferencesButton />
