@@ -88,13 +88,13 @@ export function CollaboratePageClient({
 
   const [searchInput, setSearchInput] = useState(initialSearch || '')
 
-  // Derive filter state from the decoded URL params:
-  // null (param absent) = all checked; an array (even empty) is used as-is.
+  // Inclusion model: filter state holds ONLY what the user actively selected.
+  // Empty arrays mean "no filter" (show everyone), not "show no one".
   const filtersFromProps = useMemo<CommunityFiltersState>(() => ({
-    communities: initialFilters?.communities ?? [...ALL_COMMUNITY_IDS],
-    workTypes: initialFilters?.workTypes ?? [...ALL_WORK_TYPES],
-    expertiseAreas: initialFilters?.expertiseAreas ?? [...ALL_EXPERTISE_AREAS]
-  }), [initialFilters, ALL_COMMUNITY_IDS])
+    communities: initialFilters?.communities ?? [],
+    workTypes: initialFilters?.workTypes ?? [],
+    expertiseAreas: initialFilters?.expertiseAreas ?? []
+  }), [initialFilters])
 
   const [filters, setFilters] = useState<CommunityFiltersState>(filtersFromProps)
 
@@ -114,15 +114,9 @@ export function CollaboratePageClient({
   const communityUsers = initialCommunityUsers
   const searchQuery = initialSearch || ''
 
-  const allFilterValues = useMemo(() => ({
-    workTypes: ALL_WORK_TYPES,
-    expertiseAreas: ALL_EXPERTISE_AREAS,
-    communities: ALL_COMMUNITY_IDS
-  }), [ALL_COMMUNITY_IDS])
-
   // Handle search submission - updates URL to trigger server re-render
   const handleSearch = (query: string) => {
-    const params = buildCollaborateParams(query, filters, allFilterValues)
+    const params = buildCollaborateParams(query, filters)
     // Navigate with new params - will trigger server component re-render
     router.push(`?${params.toString()}`)
   }
@@ -131,7 +125,7 @@ export function CollaboratePageClient({
   const handleFilterChange = (newFilters: CommunityFiltersState) => {
     setFilters(newFilters)
 
-    const params = buildCollaborateParams(searchQuery, newFilters, allFilterValues)
+    const params = buildCollaborateParams(searchQuery, newFilters)
     // Navigate with new params - will trigger server component re-render
     router.push(`?${params.toString()}`)
   }
@@ -156,29 +150,19 @@ export function CollaboratePageClient({
     return [...orderedRegional, ...rest, ...noRegional]
   }, [communityUsers, communities])
 
-  // Any category explicitly emptied ("deselect all") means no user can match:
-  // render the empty state instead of whatever carousels the server returned.
-  const hasExplicitEmptyFilter =
-    filters.communities.length === 0 ||
-    filters.workTypes.length === 0 ||
-    filters.expertiseAreas.length === 0
-
-  // Check if there are active filters (filters differ from "all selected")
-  const hasActiveFilters =
+  // Inclusion model: a filter is "active" when the user has selected something
+  // (or searched). Empty = no filter.
+  const hasActiveFilters = Boolean(
     searchQuery ||
-    filters.communities.length < ALL_COMMUNITY_IDS.length ||
-    filters.workTypes.length < ALL_WORK_TYPES.length ||
-    filters.expertiseAreas.length < ALL_EXPERTISE_AREAS.length
+    filters.communities.length ||
+    filters.workTypes.length ||
+    filters.expertiseAreas.length
+  )
 
   const handleClearFilters = () => {
     setSearchInput('')
-    // Reset to all checked (show all)
-    setFilters({
-      communities: [...ALL_COMMUNITY_IDS],
-      workTypes: [...ALL_WORK_TYPES],
-      expertiseAreas: [...ALL_EXPERTISE_AREAS]
-    })
-    // Navigate to clean URL (no params) - will trigger server re-render with all data
+    setFilters({ communities: [], workTypes: [], expertiseAreas: [] })
+    // Navigate to clean URL (no params) — server re-renders with everyone.
     router.push('/collaborate')
   }
 
@@ -190,113 +174,75 @@ export function CollaboratePageClient({
         <p className="text-muted-foreground">{t('pageDescription')}</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        {/* Sidebar - Filters */}
-        <aside className="lg:col-span-1">
-          <div className="sticky top-24">
-            <CommunityFilters
-              filters={filters}
-              onChangeAction={handleFilterChange}
-              communities={communities}
-              isRTL={isRTL}
+      {/* Search + horizontal filters, full width */}
+      <div className="mb-8 space-y-4">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            handleSearch(searchInput)
+          }}
+          className="flex gap-2"
+        >
+          <div className="relative flex-1">
+            <Search className="absolute top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground start-3" />
+            <Input
+              type="text"
+              placeholder={t('searchPlaceholder')}
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              className="ps-10"
+              dir={isRTL ? 'rtl' : 'ltr'}
             />
           </div>
-        </aside>
+          <Button type="submit">
+            {tCommon('search')}
+          </Button>
+        </form>
 
-        {/* Main Content */}
-        <main className="lg:col-span-3">
-          {/* Search */}
-          <div className="mb-6">
-            <form
-              onSubmit={(e) => {
-                e.preventDefault()
-                handleSearch(searchInput)
-              }}
-              className="flex gap-2"
-            >
-              <div className="relative flex-1">
-                <Search className="absolute top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground start-3" />
-                <Input
-                  type="text"
-                  placeholder={t('searchPlaceholder')}
-                  value={searchInput}
-                  onChange={(e) => setSearchInput(e.target.value)}
-                  className="ps-10"
-                  dir={isRTL ? 'rtl' : 'ltr'}
-                />
-              </div>
-              <Button type="submit">
-                {tCommon('search')}
-              </Button>
-            </form>
-
-            {/* Active Filters Tags */}
-            {hasActiveFilters && (
-              <div className="flex flex-wrap items-center gap-2 mt-4">
-                <span className="text-sm font-medium text-muted-foreground">
-                  {t('activeFilters.title')}
-                </span>
-                {searchQuery && (
-                  <Badge variant="secondary" className="gap-1">
-                    {t('activeFilters.search', { query: searchQuery })}
-                    <button
-                      onClick={() => {
-                        setSearchInput('')
-                        handleSearch('')
-                      }}
-                      className="hover:bg-secondary-foreground/20 rounded-full p-0.5"
-                    >
-                      <X className="h-3 w-3" />
-                    </button>
-                  </Badge>
-                )}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleClearFilters}
-                  className="h-7"
-                >
-                  {t('activeFilters.clear')}
-                </Button>
-              </div>
-            )}
-          </div>
-
-          {/* Community Carousels */}
-          {hasExplicitEmptyFilter || filteredCommunities.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-lg font-medium mb-2">{t('noResults')}</p>
-              <p className="text-muted-foreground mb-4">{t('noResultsDescription')}</p>
-              <Button onClick={handleClearFilters}>
-                {t('filters.clearFilters')}
-              </Button>
-            </div>
-          ) : (
-            <div className="space-y-8">
-              {filteredCommunities.map(communityName => {
-                // communityName is the regionalName enum value (e.g., "EASTERN_AND_SOUTH_EASTERN_ASIA")
-                // or "No Regional Community" for users without a regional community
-                const translationKey = communityName === 'No Regional Community'
-                  ? 'noRegionalCommunity'
-                  : REGIONAL_NAME_TO_TRANSLATION_KEY[communityName]
-
-                const translatedTitle = translationKey
-                  ? tNav(`regions.${translationKey}`)
-                  : communityName
-
-                return (
-                  <UserCarousel
-                    key={communityName}
-                    title={translatedTitle}
-                    users={communityUsers[communityName] || []}
-                    defaultExpanded={false}
-                  />
-                )
-              })}
-            </div>
-          )}
-        </main>
+        {/* Horizontal filter bar, directly under the search */}
+        <CommunityFilters
+          filters={filters}
+          onChangeAction={handleFilterChange}
+          communities={communities}
+          isRTL={isRTL}
+        />
       </div>
+
+      {/* Community Carousels */}
+      {filteredCommunities.length === 0 ? (
+        <div className="text-center py-12">
+          <p className="text-lg font-medium mb-2">{t('noResults')}</p>
+          <p className="text-muted-foreground mb-4">{t('noResultsDescription')}</p>
+          {hasActiveFilters && (
+            <Button onClick={handleClearFilters}>
+              {t('filters.clearFilters')}
+            </Button>
+          )}
+        </div>
+      ) : (
+        <div className="space-y-8">
+          {filteredCommunities.map(communityName => {
+            // communityName is the regionalName enum value (e.g., "EASTERN_AND_SOUTH_EASTERN_ASIA")
+            // or "No Regional Community" for users without a regional community
+            const translationKey = communityName === 'No Regional Community'
+              ? 'noRegionalCommunity'
+              : REGIONAL_NAME_TO_TRANSLATION_KEY[communityName]
+
+            const translatedTitle = translationKey
+              ? tNav(`regions.${translationKey}`)
+              : communityName
+
+            return (
+              <UserCarousel
+                key={communityName}
+                title={translatedTitle}
+                users={communityUsers[communityName] || []}
+                defaultExpanded={false}
+              />
+            )
+          })}
+        </div>
+      )}
     </div>
   )
 }

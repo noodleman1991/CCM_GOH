@@ -57,19 +57,12 @@ export default async function CollaboratePage({ params, searchParams }: Collabor
   }
 
   try {
-    // Parse filter params via the shared codec:
-    // null = param missing = "all selected" (no filter)
-    // []   = explicit 'none' sentinel = show no one
+    // Parse filter params via the shared codec (INCLUSION model):
+    // []   = no filter for that category (show everyone)
     // [..] = filter to that subset
     const workTypesFilter = decodeFilterParam(workTypes)
     const expertiseFilter = decodeFilterParam(expertiseAreas)
     const communitiesFilter = decodeFilterParam(communitiesParam)
-
-    // Any category explicitly emptied means no user can match
-    const hasExplicitEmptyFilter =
-      workTypesFilter?.length === 0 ||
-      expertiseFilter?.length === 0 ||
-      communitiesFilter?.length === 0
 
     // Fetch user to get their communities for prioritization
     const currentUser = await prisma.user.findUnique({
@@ -104,72 +97,68 @@ export default async function CollaboratePage({ params, searchParams }: Collabor
     // Then group them by community on the server side
     const communityUsersMap: Record<string, any[]> = {}
 
-    // If a category was explicitly emptied ('none' sentinel), no user can
-    // match — skip all user queries and render an empty map.
-    if (!hasExplicitEmptyFilter) {
-      // Build single query with the decoded filters (null = no filter)
-      const result = await UserService.getUsersForCollaborate(
+    // Build single query with the decoded filters (empty array = no filter).
+    const result = await UserService.getUsersForCollaborate(
+      {
+        searchQuery: search,
+        useFuzzySearch: Boolean(search),
+        workTypes: workTypesFilter.length ? workTypesFilter : undefined,
+        expertiseAreas: expertiseFilter.length ? expertiseFilter : undefined,
+        communityIds: communitiesFilter.length ? communitiesFilter : undefined
+      },
+      1,
+      200, // Fetch more users since we're grouping them
+      {
+        locale,
+        isAuthenticated: true
+      }
+    )
+
+    // Group users by their communities (users can appear in multiple carousels)
+    if (result.success && result.data.data.length > 0) {
+      const allUsers = result.data.data
+
+      // Group users by their regional communities
+      for (const community of sortedCommunities) {
+        const communityName = community.regionalName || community.name
+        const usersInCommunity = allUsers.filter(user => {
+          // Type assertion: transformToLocalizedUser includes relations via spread
+          const userWithRelations = user as any
+          return userWithRelations.communityMemberships?.some((m: any) => m.communityId === community.id)
+        })
+
+        if (usersInCommunity.length > 0) {
+          communityUsersMap[communityName] = usersInCommunity.slice(0, 20) // Limit to 20 per carousel
+        }
+      }
+    }
+
+    // Fetch users without regional communities (No Community carousel).
+    // Only when NO community filter is active — filtering to a subset of
+    // communities must not leak the "No Regional Community" group.
+    const shouldFetchNoCommunity = communitiesFilter.length === 0
+
+    let noCommunityResult
+    if (shouldFetchNoCommunity) {
+      noCommunityResult = await UserService.getUsersForCollaborate(
         {
           searchQuery: search,
           useFuzzySearch: Boolean(search),
-          workTypes: workTypesFilter ?? undefined,
-          expertiseAreas: expertiseFilter ?? undefined,
-          communityIds: communitiesFilter ?? undefined
+          workTypes: workTypesFilter.length ? workTypesFilter : undefined,
+          expertiseAreas: expertiseFilter.length ? expertiseFilter : undefined,
+          excludeRegionalCommunities: true // Special flag for "no community" users
         },
         1,
-        200, // Fetch more users since we're grouping them
+        20,
         {
           locale,
           isAuthenticated: true
         }
       )
+    }
 
-      // Group users by their communities (users can appear in multiple carousels)
-      if (result.success && result.data.data.length > 0) {
-        const allUsers = result.data.data
-
-        // Group users by their regional communities
-        for (const community of sortedCommunities) {
-          const communityName = community.regionalName || community.name
-          const usersInCommunity = allUsers.filter(user => {
-            // Type assertion: transformToLocalizedUser includes relations via spread
-            const userWithRelations = user as any
-            return userWithRelations.communityMemberships?.some((m: any) => m.communityId === community.id)
-          })
-
-          if (usersInCommunity.length > 0) {
-            communityUsersMap[communityName] = usersInCommunity.slice(0, 20) // Limit to 20 per carousel
-          }
-        }
-      }
-
-      // Fetch users without regional communities (No Community carousel)
-      // Only when NO community filter is active — filtering to a subset of
-      // communities must not leak the "No Regional Community" group.
-      const shouldFetchNoCommunity = communitiesFilter === null
-
-      let noCommunityResult
-      if (shouldFetchNoCommunity) {
-        noCommunityResult = await UserService.getUsersForCollaborate(
-          {
-            searchQuery: search,
-            useFuzzySearch: Boolean(search),
-            workTypes: workTypesFilter ?? undefined,
-            expertiseAreas: expertiseFilter ?? undefined,
-            excludeRegionalCommunities: true // Special flag for "no community" users
-          },
-          1,
-          20,
-          {
-            locale,
-            isAuthenticated: true
-          }
-        )
-      }
-
-      if (noCommunityResult?.success && noCommunityResult.data.data.length > 0) {
-        communityUsersMap['No Regional Community'] = noCommunityResult.data.data
-      }
+    if (noCommunityResult?.success && noCommunityResult.data.data.length > 0) {
+      communityUsersMap['No Regional Community'] = noCommunityResult.data.data
     }
 
     return (
