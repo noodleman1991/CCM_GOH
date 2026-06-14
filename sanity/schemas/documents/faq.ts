@@ -10,12 +10,16 @@ export default defineType({
   fields: [
     defineField({
       name: "title",
+      title: "Question",
       type: "string",
+      description: "The question, as a visitor would phrase it.",
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: "body",
+      title: "Answer",
       type: "block-content",
+      description: "The answer. Supports rich text and links.",
     }),
     orderRankField({ type: "faq" }),
   ],

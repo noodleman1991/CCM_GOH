@@ -12,8 +12,12 @@ export default defineType({
       name: "title",
       title: "Title",
       type: "string",
+      description: "Category name used to group blog posts.",
       validation: (Rule) => Rule.required(),
     }),
     orderRankField({ type: "category" }),
   ],
+  preview: {
+    select: { title: "title" },
+  },
 });
