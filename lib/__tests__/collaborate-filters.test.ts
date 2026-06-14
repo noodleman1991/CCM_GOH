@@ -1,40 +1,31 @@
 import { describe, it, expect } from 'vitest'
 import {
-  NONE_SENTINEL,
   encodeFilterParam,
   decodeFilterParam,
   buildCollaborateParams
 } from '@/lib/collaborate-filters'
 
-const ALL = ['A', 'B', 'C']
+// Inclusion model: state holds only what the user actively selected.
+// empty = no filter (show everyone); subset = show only those.
 
 describe('encodeFilterParam', () => {
-  it('omits the param (undefined) when all values are selected', () => {
-    expect(encodeFilterParam(['A', 'B', 'C'], ALL)).toBeUndefined()
+  it('omits the param (undefined) when nothing is selected', () => {
+    expect(encodeFilterParam([])).toBeUndefined()
   })
 
-  it('omits the param when selected is a superset of all', () => {
-    expect(encodeFilterParam(['A', 'B', 'C', 'D'], ALL)).toBeUndefined()
+  it('comma-joins a selected subset', () => {
+    expect(encodeFilterParam(['A', 'C'])).toBe('A,C')
   })
 
-  it('yields the none sentinel when nothing is selected', () => {
-    expect(encodeFilterParam([], ALL)).toBe(NONE_SENTINEL)
-    expect(NONE_SENTINEL).toBe('none')
-  })
-
-  it('comma-joins a subset', () => {
-    expect(encodeFilterParam(['A', 'C'], ALL)).toBe('A,C')
+  it('handles a single selection', () => {
+    expect(encodeFilterParam(['A'])).toBe('A')
   })
 })
 
 describe('decodeFilterParam', () => {
-  it('returns null for a missing param (means "all", no filter)', () => {
-    expect(decodeFilterParam(undefined)).toBeNull()
-    expect(decodeFilterParam('')).toBeNull()
-  })
-
-  it('returns [] for the none sentinel', () => {
-    expect(decodeFilterParam('none')).toEqual([])
+  it('returns [] for a missing param (no filter)', () => {
+    expect(decodeFilterParam(undefined)).toEqual([])
+    expect(decodeFilterParam('')).toEqual([])
   })
 
   it('splits comma-joined values and drops empty segments', () => {
@@ -45,55 +36,44 @@ describe('decodeFilterParam', () => {
 
 describe('round-trips', () => {
   it('subset round-trips through encode/decode', () => {
-    const encoded = encodeFilterParam(['B', 'C'], ALL)
+    const encoded = encodeFilterParam(['B', 'C'])
     expect(decodeFilterParam(encoded)).toEqual(['B', 'C'])
   })
 
-  it('empty selection round-trips to []', () => {
-    const encoded = encodeFilterParam([], ALL)
+  it('empty selection round-trips to [] (no filter)', () => {
+    const encoded = encodeFilterParam([])
     expect(decodeFilterParam(encoded)).toEqual([])
-  })
-
-  it('all-selected round-trips to null (no filter)', () => {
-    const encoded = encodeFilterParam(['A', 'B', 'C'], ALL)
-    expect(decodeFilterParam(encoded)).toBeNull()
   })
 })
 
 describe('buildCollaborateParams', () => {
-  const all = {
-    workTypes: ['W1', 'W2'],
-    expertiseAreas: ['E1', 'E2'],
-    communities: ['C1', 'C2']
-  }
-
-  it('produces no params when everything is selected and no search', () => {
-    const params = buildCollaborateParams(
-      '',
-      { workTypes: ['W1', 'W2'], expertiseAreas: ['E1', 'E2'], communities: ['C1', 'C2'] },
-      all
-    )
+  it('produces no params when nothing is selected and no search', () => {
+    const params = buildCollaborateParams('', {
+      workTypes: [],
+      expertiseAreas: [],
+      communities: [],
+    })
     expect(params.toString()).toBe('')
   })
 
   it('sets search when provided', () => {
-    const params = buildCollaborateParams(
-      'amit',
-      { workTypes: ['W1', 'W2'], expertiseAreas: ['E1', 'E2'], communities: ['C1', 'C2'] },
-      all
-    )
+    const params = buildCollaborateParams('amit', {
+      workTypes: [],
+      expertiseAreas: [],
+      communities: [],
+    })
     expect(params.get('search')).toBe('amit')
     expect(params.get('workTypes')).toBeNull()
   })
 
-  it('encodes subsets and none-sentinels per category', () => {
-    const params = buildCollaborateParams(
-      '',
-      { workTypes: ['W1'], expertiseAreas: [], communities: ['C1', 'C2'] },
-      all
-    )
+  it('encodes only the selected categories', () => {
+    const params = buildCollaborateParams('', {
+      workTypes: ['W1'],
+      expertiseAreas: [],
+      communities: ['C1', 'C2'],
+    })
     expect(params.get('workTypes')).toBe('W1')
-    expect(params.get('expertiseAreas')).toBe('none')
-    expect(params.get('communities')).toBeNull()
+    expect(params.get('expertiseAreas')).toBeNull()
+    expect(params.get('communities')).toBe('C1,C2')
   })
 })
