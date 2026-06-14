@@ -39,9 +39,9 @@ function TimelineItem({ work, isOwnProfile, onEdit, onDelete }: TimelineItemProp
   };
 
   return (
-    <div ref={ref} className="relative border-l-2 border-muted pl-8 pb-8 last:pb-0">
+    <div ref={ref} className="relative border-s-2 border-muted ps-8 pb-8 last:pb-0">
       <motion.div
-        className="absolute w-4 h-4 rounded-full top-6 left-[-0.5rem] border-4 border-background"
+        className="absolute w-4 h-4 rounded-full top-6 start-[-0.5rem] border-4 border-background"
         initial={{
           backgroundColor: "hsl(var(--muted))",
           opacity: 0.3,

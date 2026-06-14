@@ -107,7 +107,7 @@ export default function RegionalAgendasGrid({
                     <Button asChild size="lg" variant="outline">
                         <Link href={`/${locale}/communities/${regionalCommunitySlug}/reports`}>
                             {getViewAllText()}
-                            <ArrowRight className="ml-2 h-4 w-4" />
+                            <ArrowRight className="ms-2 h-4 w-4 rtl:-scale-x-100" />
                         </Link>
                     </Button>
                 </div>
