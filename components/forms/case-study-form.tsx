@@ -172,52 +172,87 @@ export default function ImprovedCaseStudyForm({
 
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [isHydrated, setIsHydrated] = useState(false);
+    // Server-side draft id (cross-device). Drafts are stored as caseStudyDraft
+    // documents via the authenticated /api/case-studies/drafts route.
+    const [draftId, setDraftId] = useState<string | null>(null);
 
-    // Load saved draft from localStorage on mount (client-side only)
+    const LEGACY_DRAFT_KEY = 'case-study-submission';
+
+    // Apply a stored draft's fields to the form. Shape: form fields spread at
+    // the top level (matches what we POST below), plus selectedTags.
+    const applyDraft = (draft: any) => {
+        if (!draft) return;
+        const { _id, _type, _rev, userId, lastSaved, formMetadata, selectedTags: tags, ...fields } = draft;
+        if (!fields.contentLanguage) fields.contentLanguage = 'en';
+        setFormData((prev) => ({ ...prev, ...fields }));
+        if (Array.isArray(tags)) setSelectedTags(tags);
+    };
+
+    // On mount: load the server draft. If none exists but a legacy localStorage
+    // draft is present, migrate it to the server once, then clear localStorage.
     useEffect(() => {
-        const savedData = localStorage.getItem('case-study-submission');
-        if (savedData) {
+        let cancelled = false;
+        (async () => {
             try {
-                const parsed = JSON.parse(savedData);
-                if (parsed.state?.formData) {
-                    const savedFormData = parsed.state.formData;
-                    // Ensure contentLanguage has a default
-                    if (!savedFormData.contentLanguage) {
-                        savedFormData.contentLanguage = 'en';
+                const res = await fetch('/api/case-studies/drafts');
+                const serverDraft = res.ok ? (await res.json()).draft : null;
+
+                if (serverDraft && !cancelled) {
+                    setDraftId(serverDraft._id);
+                    applyDraft(serverDraft);
+                    toast.info('Your saved draft has been restored');
+                } else {
+                    // One-time migration of a legacy local draft.
+                    const legacy = localStorage.getItem(LEGACY_DRAFT_KEY);
+                    if (legacy) {
+                        try {
+                            const parsed = JSON.parse(legacy);
+                            const legacyForm = parsed.state?.formData;
+                            if (legacyForm && !cancelled) {
+                                applyDraft({ ...legacyForm, selectedTags: parsed.state?.selectedTags });
+                                toast.info('Your previous draft has been restored');
+                            }
+                        } catch { /* ignore malformed legacy draft */ }
+                        localStorage.removeItem(LEGACY_DRAFT_KEY);
                     }
-                    setFormData(savedFormData);
-                    setSelectedTags(parsed.state.selectedTags || []);
-                    toast.info('Your previous draft has been restored');
                 }
             } catch {
+                // Network/auth failure — fall back to whatever the form defaults are.
+            } finally {
+                if (!cancelled) setIsHydrated(true);
             }
-        }
-        setIsHydrated(true);
+        })();
+        return () => { cancelled = true; };
     }, []);
 
-    // Auto-save to localStorage on form changes (debounced)
+    // Auto-save to the server (debounced). The image File is uploaded only at
+    // final submit, so drafts persist field data, not the binary.
     useEffect(() => {
-        if (!isHydrated) return; // Don't save on initial mount
+        if (!isHydrated) return; // Don't save on initial mount/restore
 
-        const timeoutId = setTimeout(() => {
+        const timeoutId = setTimeout(async () => {
             try {
-                const dataToSave = {
-                    state: {
-                        formData: formData,
-                        selectedTags,
-                        // B3: Exclude imagePreview from localStorage (base64 can exceed 5MB limit)
-                        currentLanguage: 'en',
-                        currentStep: 'form'
-                    }
-                };
-                localStorage.setItem('case-study-submission', JSON.stringify(dataToSave));
-                setDraftSavedAt(new Date().toLocaleTimeString());
+                const { image, ...draftFields } = formData as Record<string, any>;
+                const res = await fetch('/api/case-studies/drafts', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        draftId,
+                        draftData: { ...draftFields, selectedTags },
+                    }),
+                });
+                if (res.ok) {
+                    const { id } = await res.json();
+                    if (id && !draftId) setDraftId(id);
+                    setDraftSavedAt(new Date().toLocaleTimeString());
+                }
             } catch {
+                // Transient save failure — the next change will retry.
             }
-        }, 1000); // Debounce 1 second
+        }, 1500); // Debounce 1.5s (server round-trip, vs the old 1s local write)
 
         return () => clearTimeout(timeoutId);
-    }, [formData, selectedTags, isHydrated]);
+    }, [formData, selectedTags, isHydrated, draftId]);
 
     // Validation
     const validateForm = () => {
@@ -397,8 +432,17 @@ export default function ImprovedCaseStudyForm({
 
             const result = await response.json();
 
-            // Clear saved draft from localStorage
-            localStorage.removeItem('case-study-submission');
+            // Delete the server-side draft now that it has been submitted.
+            if (draftId) {
+                fetch('/api/case-studies/drafts', {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ draftId }),
+                }).catch(() => { /* best effort */ });
+                setDraftId(null);
+            }
+            // Clear any stale legacy local draft too.
+            localStorage.removeItem(LEGACY_DRAFT_KEY);
 
             setSubmissionStep('success');
             toast.success('Thank you! Your case study has been submitted for review.');
@@ -1120,12 +1164,18 @@ export default function ImprovedCaseStudyForm({
                 <Button
                     type="button"
                     variant="outline"
-                    onClick={() => {
+                    onClick={async () => {
                         try {
-                            const dataToSave = {
-                                state: { formData, selectedTags, currentLanguage: 'en', currentStep: 'form' }
-                            };
-                            localStorage.setItem('case-study-submission', JSON.stringify(dataToSave));
+                            const { image, ...draftFields } = formData as Record<string, any>;
+                            const res = await fetch('/api/case-studies/drafts', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ draftId, draftData: { ...draftFields, selectedTags } }),
+                            });
+                            if (!res.ok) throw new Error('save failed');
+                            const { id } = await res.json();
+                            if (id && !draftId) setDraftId(id);
+                            setDraftSavedAt(new Date().toLocaleTimeString());
                             toast.success('Draft saved');
                         } catch {
                             toast.error('Could not save draft');
