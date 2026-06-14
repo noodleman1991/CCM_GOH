@@ -21,10 +21,15 @@ export type SupportedLocale = 'en' | 'es' | 'fr' | 'ar'
  * @returns The localized text or fallback
  */
 export function getLocalizedText(
-  localizedObj: LocalizedString | Record<string, string> | null | undefined,
+  localizedObj: LocalizedString | Record<string, string> | string | null | undefined,
   locale: string,
   fallbackText: string = ''
 ): string {
+  // A plain string is already resolved (e.g. a document-internationalization
+  // field, or content migrated to a flat single-language value) — pass through.
+  if (typeof localizedObj === 'string') {
+    return localizedObj || fallbackText
+  }
   if (!localizedObj || typeof localizedObj !== 'object') {
     return fallbackText
   }
