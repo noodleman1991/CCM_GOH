@@ -16,6 +16,7 @@ import { GridSectionHeader } from "./grid-section-header";
 import { ExpandableGrid } from "./expandable-grid";
 import { getLocalizedField } from "@/lib/localization-utils";
 import { resolveGridColumns } from "@/lib/grid-layout";
+import { gridGap } from "@/lib/design-tokens";
 
 type Block = NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number];
 type GridRow = Extract<Block, { _type: "grid-row" }>;
@@ -153,7 +154,7 @@ export default async function GridRow({
                 <ExpandableGrid
                         initialDisplayCount={initialDisplayCount}
                         gridClassName={cn(
-                            "gap-4 md:gap-6 lg:gap-8", // Clean grid without negative margins
+                            gridGap("md"), // standard grid gap from the spacing scale
                             // Grid columns derived from the same `cols` used for image sizes
                             gridColumnsClass
                         )}
