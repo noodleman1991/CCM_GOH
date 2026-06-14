@@ -46,3 +46,6 @@ migration-log-*.json
 
 # local-only testing guide (not committed)
 TESTING.local.md
+
+# local-only deployment config notes (not committed)
+DEPLOYMENT-CONFIG.local.md
