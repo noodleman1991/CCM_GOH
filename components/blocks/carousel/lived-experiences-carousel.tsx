@@ -314,7 +314,7 @@ export default function LivedExperiencesCarousel({
           {(title || subtitle) && (
             <div className="mb-12">
               {title && (
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                <h2 className="text-3xl md:text-4xl font-bold mb-4 text-balance">
                   {title}
                 </h2>
               )}
@@ -341,7 +341,7 @@ export default function LivedExperiencesCarousel({
         {(title || subtitle) && (
           <div className="mb-12">
             {title && (
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-balance">
                 {title}
               </h2>
             )}

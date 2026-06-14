@@ -41,7 +41,7 @@ export default function Hero2({ background, tagLine, title, body, links, padding
         </p>
       )}
       {localizedTitle && (
-        <h1 className="mt-6 font-bold font-heading leading-[1.1] text-4xl md:text-5xl lg:text-6xl text-ccm-midnight animate-fade-up [animation-delay:200ms] opacity-0">
+        <h1 className="mt-6 font-bold font-heading leading-[1.1] text-balance text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-ccm-midnight animate-fade-up [animation-delay:200ms] opacity-0">
           {localizedTitle}
         </h1>
       )}
