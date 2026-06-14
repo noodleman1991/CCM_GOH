@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React from "react"
 import { UseFormReturn } from "react-hook-form"
 import { useTranslations, useLocale } from "next-intl"
 import { format } from "date-fns"
@@ -9,7 +9,6 @@ import { User, Briefcase, Globe, Shield, Calendar, ExternalLink } from "lucide-r
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { Checkbox } from "@/components/ui/checkbox"
 import { cn } from "@/lib/utils"
 import { rtlLocales } from "@/i18n/routing"
 import type { OnboardingFormData } from "@/lib/schemas/onboarding-schema"
@@ -20,11 +19,9 @@ interface ReviewPanelProps {
   workTypes?: Array<{ _id: string; label: any }>
   expertiseAreas?: Array<{ _id: string; label: any }>
   isSubmitting?: boolean
-  onConfirmationChange?: (confirmed: boolean) => void
 }
 
-export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = [], onConfirmationChange }: ReviewPanelProps) {
-  const [confirmed, setConfirmed] = useState(false)
+export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = [] }: ReviewPanelProps) {
   const t = useTranslations("onboarding.steps.review")
   const locale = useLocale()
   const isRTL = rtlLocales.includes(locale)
@@ -376,32 +373,15 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
         </Card>
       </div>
 
-      <div className="bg-gradient-to-r from-primary/10 to-primary/5 p-6 rounded-xl space-y-4">
-        <h3 className="font-semibold text-foreground mb-2">
+      <div className="bg-gradient-to-r from-primary/10 to-primary/5 p-6 rounded-xl space-y-2">
+        <h3 className="font-semibold text-foreground">
           {content?.reviewFieldLabels?.readyToSubmit || t("readyToSubmit")}
         </h3>
         <p className="text-muted-foreground">
           {content?.reviewFieldLabels?.submissionNote || t("submissionNote")}
         </p>
-
-        <div className={cn("flex items-start gap-3", isRTL && "flex-row-reverse")}>
-          <Checkbox
-            id="confirm-review"
-            checked={confirmed}
-            onCheckedChange={(checked) => {
-              const isConfirmed = checked === true
-              setConfirmed(isConfirmed)
-              onConfirmationChange?.(isConfirmed)
-            }}
-          />
-          <label
-            htmlFor="confirm-review"
-            className="text-sm leading-relaxed cursor-pointer"
-          >
-            I&apos;ve reviewed my information and it looks correct
-          </label>
-        </div>
-
+        {/* No separate confirmation checkbox: pressing the Complete button below
+            IS the confirmation. The review above is the user's chance to check. */}
         <p className="text-xs text-muted-foreground">
           You can always update your profile from the dashboard.
         </p>
