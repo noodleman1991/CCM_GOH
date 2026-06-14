@@ -1,14 +1,7 @@
 import { defineField, defineType } from "sanity";
 import { FileSearch } from "lucide-react";
 import { topicOptions } from "../shared/topic-options";
-
-// Language configuration
-const supportedLanguages = [
-    { id: "en", title: "English", isDefault: true },
-    { id: "es", title: "Español" },
-    { id: "fr", title: "Français" },
-    { id: "ar", title: "العربية", isRTL: true },
-];
+import { createLocalizedField as createSharedLocalizedField } from "../shared/localized-field";
 
 // Role configuration
 const authorRoles = [
@@ -26,24 +19,10 @@ const statusOptions = [
     { title: "Approved (Published)", value: "approved" },
 ];
 
-// Helper function for localized fields
-const createLocalizedField = (name: string, title: string, type: string = "string", required: boolean = false) => {
-    const validation = required ? (Rule: any) => Rule.required() : undefined;
-
-    return defineField({
-        name,
-        title,
-        type: "object",
-        group: "content",
-        fields: supportedLanguages.map(lang => ({
-            name: lang.id,
-            title: lang.title,
-            type,
-            validation: lang.isDefault && required ? validation : undefined,
-        })),
-        validation: required ? (Rule: any) => Rule.required() : undefined,
-    });
-};
+// Thin wrapper preserving this file's call signature; delegates to the shared
+// Lane-B localized-field helper (group defaults to "content" here).
+const createLocalizedField = (name: string, title: string, type: string = "string", required: boolean = false) =>
+    createSharedLocalizedField(name, title, type, { group: "content", required });
 
 export default defineType({
     name: "caseStudy",
