@@ -30,7 +30,8 @@ export function CookieConsentBanner() {
     }
   }, [isPreferencesOpen, consent])
 
-  // Show initial banner only when user hasn't consented yet
+  // Show initial banner only when user hasn't consented yet. It stays until the
+  // user makes a choice (Accept / Reject / save preferences) — no auto-dismiss.
   useEffect(() => {
     if (!hasConsented) {
       setShowInitialBanner(true)
@@ -85,23 +86,15 @@ export function CookieConsentBanner() {
     </div>
   )
 
-  // User has already consented — show floating button + reopenable preferences
+  // User has already consented. No persistent floating button — it cluttered
+  // the bottom-left on every page and mis-aligned with the collapsible sidebar.
+  // Users reopen preferences via the "Cookie preferences" link in the footer
+  // (components/cookie-consent/cookie-preferences-button.tsx), which sets
+  // isPreferencesOpen and reveals the panel below.
   if (hasConsented) {
     return (
       <>
-        {/* Floating cookie preferences button */}
-        {!isPreferencesOpen && (
-          <button
-            onClick={openPreferences}
-            className="fixed bottom-4 start-4 z-50 flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-transform hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            aria-label={t('changePreferences')}
-            title={t('changePreferences')}
-          >
-            <Cookie className="h-5 w-5" />
-          </button>
-        )}
-
-        {/* Preferences panel (reopened) */}
+        {/* Preferences panel (reopened from the footer link) */}
         {isPreferencesOpen && (
           <div className="fixed bottom-0 inset-x-0 z-50 p-4 sm:p-6">
             <Card className="mx-auto max-w-2xl shadow-2xl border-2">
