@@ -44,7 +44,7 @@ export default function LogoCloud1({
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-8">
           {localizedTitle && (
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl animate-fade-up [animation-delay:100ms] opacity-0">
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl text-balance animate-fade-up [animation-delay:100ms] opacity-0">
               {localizedTitle}
             </h2>
           )}
