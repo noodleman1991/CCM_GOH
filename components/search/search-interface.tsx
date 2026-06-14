@@ -112,7 +112,7 @@ export default function SearchInterface() {
               searchClient={searchClient}
               indexName={ALGOLIA_INDICES.AGENDAS}
               routing={createSearchRouting(ALGOLIA_INDICES.AGENDAS)}
-              insights={true}
+              insights={false}
               future={{ preserveSharedStateOnUnmount: true }}
             >
               <Configure
@@ -156,7 +156,7 @@ export default function SearchInterface() {
               searchClient={searchClient}
               indexName={ALGOLIA_INDICES.NEWS}
               routing={createSearchRouting(ALGOLIA_INDICES.NEWS)}
-              insights={true}
+              insights={false}
               future={{ preserveSharedStateOnUnmount: true }}
             >
               <Configure
@@ -200,7 +200,7 @@ export default function SearchInterface() {
               searchClient={searchClient}
               indexName={ALGOLIA_INDICES.CASE_STUDIES}
               routing={createSearchRouting(ALGOLIA_INDICES.CASE_STUDIES)}
-              insights={true}
+              insights={false}
               future={{ preserveSharedStateOnUnmount: true }}
             >
               <Configure
