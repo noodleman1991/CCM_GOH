@@ -8,6 +8,8 @@
 import { revalidatePath, revalidateTag } from 'next/cache'
 import { NextRequest, NextResponse } from 'next/server'
 import { headers } from 'next/headers'
+import { writeClient } from '@/sanity/lib/write-client'
+import { notifyCaseStudyStatusChange, isNotifiableStatus } from '@/lib/case-study-emails'
 
 // Types for webhook payload
 interface SanityWebhookPayload {
@@ -116,6 +118,46 @@ function handleCacheInvalidation(payload: SanityWebhookPayload) {
   return [...tagsToRevalidate, ...pathsToRevalidate]
 }
 
+/**
+ * Resolve the fields needed to email the submitter and send (idempotently).
+ * The Sanity webhook projection may not include everything, so we fetch the
+ * authoritative fields with the server client when needed.
+ */
+async function handleCaseStudyNotification(payload: SanityWebhookPayload): Promise<string> {
+  // Fast skip: if the payload already tells us the status isn't notifiable.
+  if (payload.status && !isNotifiableStatus(payload.status)) {
+    return 'skipped: status not notifiable'
+  }
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://hub.connectingclimateminds.org'
+
+  // Fetch the authoritative fields (status may have just changed; submittedBy /
+  // notifiedStatus / title are often not projected into the webhook payload).
+  const doc = await writeClient.fetch(
+    `*[_type == "caseStudy" && _id == $id][0]{
+      "title": title.en,
+      status,
+      notifiedStatus,
+      submittedBy,
+      reviewNotes,
+      "locale": coalesce(submitterLocale, "en")
+    }`,
+    { id: payload._id }
+  )
+  if (!doc) return 'skipped: document not found'
+
+  return notifyCaseStudyStatusChange({
+    caseStudyId: payload._id,
+    status: doc.status,
+    notifiedStatus: doc.notifiedStatus,
+    submittedBy: doc.submittedBy,
+    title: doc.title,
+    reviewNotes: doc.reviewNotes,
+    locale: doc.locale,
+    siteUrl,
+  })
+}
+
 // POST handler for Sanity webhooks
 export async function POST(request: NextRequest) {
   try {
@@ -160,11 +202,23 @@ export async function POST(request: NextRequest) {
     // Handle cache invalidation
     const revalidatedTags = handleCacheInvalidation(webhookData)
 
+    // Case-study status-change email notification (idempotent).
+    let emailResult: string | undefined
+    if (webhookData._type === 'caseStudy') {
+      try {
+        emailResult = await handleCaseStudyNotification(webhookData)
+      } catch (err) {
+        console.error('Case study notification failed:', err)
+        emailResult = 'error'
+      }
+    }
+
     // Return success response
     return NextResponse.json({
       success: true,
       message: 'Webhook processed successfully',
-      revalidatedTags,
+      revalidated: revalidatedTags,
+      emailResult,
       timestamp: new Date().toISOString()
     })
 

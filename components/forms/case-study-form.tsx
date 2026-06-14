@@ -470,7 +470,7 @@ export default function ImprovedCaseStudyForm({
                 <h2 className="text-2xl font-bold">Thank You for Your Contribution!</h2>
                 <div className="space-y-2 text-muted-foreground">
                     <p>Your case study has been submitted successfully.</p>
-                    <p>Our team will review it. You can check its status anytime on your submissions page.</p>
+                    <p>Our team will review it and email you once there&apos;s an update. You can also check its status anytime on your submissions page.</p>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
                     <Button
