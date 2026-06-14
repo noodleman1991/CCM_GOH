@@ -200,7 +200,9 @@ export default async function RegionalCommunityTemplate({
   }
 
   // Add Agendas Grid - render if configured, show empty state if no data
-  if (agendasGrid?.showTitle !== false) {
+  // Only render the section when it actually has content — an empty grid would
+  // show a heading over blank space, which looks broken to a visitor.
+  if (agendasGrid?.showTitle !== false && agendasData?.length) {
     templateBlocks.push({
       _type: 'grid-row',
       _key: 'template-agendas-grid',
@@ -226,8 +228,8 @@ export default async function RegionalCommunityTemplate({
     });
   }
 
-  // Add Case Studies Grid - render if configured, show empty state if no data
-  if (caseStudiesGrid?.showTitle !== false) {
+  // Add Case Studies Grid - only when there is content to show.
+  if (caseStudiesGrid?.showTitle !== false && caseStudiesData?.length) {
     templateBlocks.push({
       _type: 'grid-row',
       _key: 'template-case-studies-grid',
@@ -254,7 +256,7 @@ export default async function RegionalCommunityTemplate({
   }
 
   // Add News Grid - render if configured, show empty state if no data (includes both newsPost and externalSource)
-  if (newsGrid?.showTitle !== false) {
+  if (newsGrid?.showTitle !== false && newsData?.length) {
     templateBlocks.push({
       _type: 'grid-row',
       _key: 'template-news-grid',
