@@ -9,39 +9,9 @@
 import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
+import { FilterChip } from '@/components/ui/filter-chip'
 import { cn } from '@/lib/utils'
-import { Check, ChevronDown, X } from 'lucide-react'
-
-/** A tappable filter pill. Fills with the brand colour and shows a check when
- *  active — more engaging and scannable than a checkbox row, and the active
- *  state reads at a glance. */
-function FilterChip({
-  label,
-  active,
-  onClick,
-}: {
-  label: string
-  active: boolean
-  onClick: () => void
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-pressed={active}
-      className={cn(
-        'inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition-colors',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-        active
-          ? 'border-transparent bg-[var(--color-ccm-sea)] text-white shadow-sm'
-          : 'border-border bg-background text-foreground/80 hover:border-[var(--color-ccm-sea)]/40 hover:bg-muted'
-      )}
-    >
-      {active && <Check className="h-3.5 w-3.5 shrink-0" />}
-      <span className="text-start">{label}</span>
-    </button>
-  )
-}
+import { ChevronDown, X } from 'lucide-react'
 
 export interface CommunityFiltersState {
   communities: string[]
