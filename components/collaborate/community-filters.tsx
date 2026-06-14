@@ -9,11 +9,41 @@
 import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { cn } from '@/lib/utils'
-import { ChevronDown, ChevronUp, X } from 'lucide-react'
+import { Check, ChevronDown, ChevronUp, X } from 'lucide-react'
+
+/** A tappable filter pill. Fills with the brand colour and shows a check when
+ *  active — more engaging and scannable than a checkbox row, and the active
+ *  state reads at a glance. */
+function FilterChip({
+  label,
+  active,
+  onClick,
+}: {
+  label: string
+  active: boolean
+  onClick: () => void
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className={cn(
+        'inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition-colors',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+        active
+          ? 'border-transparent bg-[var(--color-ccm-sea)] text-white shadow-sm'
+          : 'border-border bg-background text-foreground/80 hover:border-[var(--color-ccm-sea)]/40 hover:bg-muted'
+      )}
+    >
+      {active && <Check className="h-3.5 w-3.5 shrink-0" />}
+      <span className="text-start">{label}</span>
+    </button>
+  )
+}
 
 export interface CommunityFiltersState {
   communities: string[]
@@ -181,7 +211,7 @@ export function CommunityFilters({ filters, onChangeAction, communities, classNa
             )}
           </button>
           {expandedSections.has('communities') && (
-            <div className="space-y-2 mt-2">
+            <div className="flex flex-wrap gap-2 mt-3">
               {communities.map(community => {
                 // Get translation key from regionalName enum
                 const translationKey = community.regionalName
@@ -193,19 +223,12 @@ export function CommunityFilters({ filters, onChangeAction, communities, classNa
                   : community.name
 
                 return (
-                  <div key={community.id} className="flex items-center gap-3">
-                    <Checkbox
-                      id={`community-${community.id}`}
-                      checked={filters.communities.includes(community.id)}
-                      onCheckedChange={() => handleCommunityToggle(community.id)}
-                    />
-                    <label
-                      htmlFor={`community-${community.id}`}
-                      className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer break-words flex-1"
-                    >
-                      {displayName}
-                    </label>
-                  </div>
+                  <FilterChip
+                    key={community.id}
+                    label={displayName}
+                    active={filters.communities.includes(community.id)}
+                    onClick={() => handleCommunityToggle(community.id)}
+                  />
                 )
               })}
             </div>
@@ -231,21 +254,14 @@ export function CommunityFilters({ filters, onChangeAction, communities, classNa
             )}
           </button>
           {expandedSections.has('workTypes') && (
-            <div className="space-y-2 mt-2">
+            <div className="flex flex-wrap gap-2 mt-3">
               {WORK_TYPES.map(workType => (
-                <div key={workType.value} className="flex items-center gap-3">
-                  <Checkbox
-                    id={`workType-${workType.value}`}
-                    checked={filters.workTypes.includes(workType.value)}
-                    onCheckedChange={() => handleWorkTypeToggle(workType.value)}
-                  />
-                  <label
-                    htmlFor={`workType-${workType.value}`}
-                    className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer break-words flex-1"
-                  >
-                    {tWorkTypes(workType.labelKey)}
-                  </label>
-                </div>
+                <FilterChip
+                  key={workType.value}
+                  label={tWorkTypes(workType.labelKey)}
+                  active={filters.workTypes.includes(workType.value)}
+                  onClick={() => handleWorkTypeToggle(workType.value)}
+                />
               ))}
             </div>
           )}
@@ -270,21 +286,14 @@ export function CommunityFilters({ filters, onChangeAction, communities, classNa
             )}
           </button>
           {expandedSections.has('expertise') && (
-            <div className="space-y-2 mt-2">
+            <div className="flex flex-wrap gap-2 mt-3">
               {EXPERTISE_AREAS.map(expertise => (
-                <div key={expertise.value} className="flex items-center gap-3">
-                  <Checkbox
-                    id={`expertise-${expertise.value}`}
-                    checked={filters.expertiseAreas.includes(expertise.value)}
-                    onCheckedChange={() => handleExpertiseToggle(expertise.value)}
-                  />
-                  <label
-                    htmlFor={`expertise-${expertise.value}`}
-                    className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer break-words flex-1"
-                  >
-                    {tExpertise(expertise.labelKey)}
-                  </label>
-                </div>
+                <FilterChip
+                  key={expertise.value}
+                  label={tExpertise(expertise.labelKey)}
+                  active={filters.expertiseAreas.includes(expertise.value)}
+                  onClick={() => handleExpertiseToggle(expertise.value)}
+                />
               ))}
             </div>
           )}
