@@ -56,7 +56,7 @@ export default function SectionHeader({
               {localizedTagLine}
             </p>
           )}
-          <h2 className="text-3xl md:text-5xl mb-4">{localizedTitle}</h2>
+          <h2 className="text-3xl md:text-4xl text-balance mb-4">{localizedTitle}</h2>
         </div>
         <p>{localizedDescription}</p>
         </div>
