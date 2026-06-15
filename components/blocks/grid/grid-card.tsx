@@ -63,17 +63,17 @@ export default function GridCard({
             className={cn("break-words", color === "primary" ? "text-background" : undefined)}
           >
             {title && (
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="font-bold text-2xl break-words line-clamp-2">{title}</h3>
+              <div className="flex justify-between items-start mb-4">
+                <h3 className="font-bold text-2xl text-balance break-words line-clamp-3">{title}</h3>
               </div>
             )}
-            {excerpt && <p className="line-clamp-3">{excerpt}</p>}
+            {excerpt && <p className="line-clamp-4 break-words">{excerpt}</p>}
           </div>
         </div>
         <Button
           className="mt-6"
           variant={stegaClean((link?.buttonVariant as any)?.variant)}
-          size={stegaClean((link?.buttonVariant as any)?.size) || "lg"}
+          size={stegaClean((link?.buttonVariant as any)?.size) || "default"}
           stroke={stegaClean((link?.buttonVariant as any)?.stroke)}
           asChild
         >
