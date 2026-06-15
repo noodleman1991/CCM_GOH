@@ -37,8 +37,8 @@ export default function SplitRow({
         {splitColumns && splitColumns?.length > 0 && (
           <div
           className={cn(
-            "grid grid-cols-1 lg:grid-cols-2",
-            noGap ? "gap-0" : "gap-4 md:gap-6 lg:gap-8"
+            "grid grid-cols-1 lg:grid-cols-2 items-center",
+            noGap ? "gap-0" : "gap-6 md:gap-8 lg:gap-12"
           )}
         >
           {splitColumns?.map((column) => {
@@ -51,7 +51,9 @@ export default function SplitRow({
               return <div data-type={column._type} key={column._key} />;
             }
             return (
-              <div key={column._key} className="min-w-0">
+              // h-full + centered so a shorter column (e.g. the image) sits
+              // vertically centred against a taller text column.
+              <div key={column._key} className="flex h-full min-w-0 flex-col justify-center">
                 <Component
                   {...(column as any)}
                   color={color}

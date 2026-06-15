@@ -5,6 +5,7 @@ import PortableTextRenderer from "@/components/portable-text-renderer";
 import { PAGE_QUERY_RESULT } from "@/sanity.types";
 import SectionContainer from "@/components/ui/section-container";
 import { cn } from "@/lib/utils";
+import { heading } from "@/lib/design-tokens";
 import { isRTL } from "@/i18n/i18n-helpers";
 import { getLocalizedField, getLocalizedPortableText } from "@/lib/localization-utils";
 
@@ -36,17 +37,17 @@ export default function Hero2({ background, tagLine, title, body, links, padding
     <SectionContainer background={background as any} padding={padding}>
       <div className="text-center">
       {localizedTagLine && (
-        <p className="text-base font-semibold text-ccm-water uppercase tracking-wider animate-fade-up [animation-delay:100ms] opacity-0">
+        <p className="text-sm font-semibold text-ccm-water uppercase tracking-wider animate-fade-up [animation-delay:100ms] opacity-0">
           {localizedTagLine}
         </p>
       )}
       {localizedTitle && (
-        <h1 className="mt-6 font-bold font-heading leading-[1.1] text-balance text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-ccm-midnight animate-fade-up [animation-delay:200ms] opacity-0">
+        <h1 className={cn('mt-4 font-bold font-heading text-balance text-pretty break-words text-ccm-midnight animate-fade-up [animation-delay:200ms] opacity-0', heading('xl'))}>
           {localizedTitle}
         </h1>
       )}
       {localizedBody && (
-        <div className="text-lg mt-6 max-w-2xl mx-auto animate-fade-up [animation-delay:300ms] opacity-0">
+        <div className="text-base md:text-lg text-muted-foreground mt-5 max-w-2xl mx-auto animate-fade-up [animation-delay:300ms] opacity-0">
           <PortableTextRenderer value={localizedBody} locale={locale} />
         </div>
       )}

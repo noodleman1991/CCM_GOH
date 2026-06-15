@@ -45,21 +45,24 @@ export default function Cta1({
 
   return (
     <SectionContainer background={background as any} padding={padding}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div
           className={cn(
-            align === "center" ? "max-w-[48rem] text-center mx-auto" : undefined,
-            isNarrow ? "max-w-[48rem] mx-auto" : undefined
+            align === "center" ? "max-w-3xl text-center mx-auto" : undefined,
+            isNarrow ? "max-w-3xl mx-auto" : undefined
           )}
         >
         <div>
           {localizedTagLine && (
-            <p className="text-base font-semibold text-ccm-water uppercase tracking-wider mb-4">
+            <p className="text-sm font-semibold text-ccm-water uppercase tracking-wider mb-3">
               {localizedTagLine}
             </p>
           )}
           <h2 className={cn('mb-4 font-bold font-heading text-balance text-ccm-midnight', heading('lg'))}>{localizedTitle}</h2>
-          {localizedBody && <PortableTextRenderer value={localizedBody} locale={locale} />}
+          {localizedBody && (
+            <div className="text-lg text-muted-foreground">
+              <PortableTextRenderer value={localizedBody} locale={locale} />
+            </div>
+          )}
         </div>
         {links && links.length > 0 && (
           <div
@@ -90,7 +93,6 @@ export default function Cta1({
           </div>
         )}
         </div>
-      </div>
     </SectionContainer>
   );
 }

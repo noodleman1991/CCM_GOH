@@ -37,12 +37,17 @@ export const GRID_GAP: Record<SpacingToken, string> = {
 // ---- Heading scale -----------------------------------------------------------
 export type HeadingToken = "sm" | "md" | "lg" | "xl";
 
-/** Section/heading sizes. `xl` is hero-scale; `lg` is a standard section header. */
+/**
+ * Section/heading sizes. `xl` is hero-scale; `lg` a section title; `md` a
+ * standard header; `sm` a sub-header. Every scale carries the SAME tight
+ * line-height so headings read consistently across all blocks — pair with
+ * `text-balance` at the call site for even line wrapping.
+ */
 export const HEADING_SCALE: Record<HeadingToken, string> = {
-  sm: "text-2xl md:text-3xl",
-  md: "text-3xl md:text-4xl", // standard section header (current grid-header)
-  lg: "text-3xl md:text-4xl lg:text-5xl", // cta / split title
-  xl: "text-4xl md:text-5xl lg:text-6xl", // hero
+  sm: "text-2xl md:text-3xl leading-tight",
+  md: "text-3xl md:text-4xl leading-tight", // standard section header
+  lg: "text-3xl md:text-4xl lg:text-5xl leading-tight", // cta / split title
+  xl: "text-4xl md:text-5xl lg:text-6xl leading-tight", // hero
 };
 
 // ---- Container width ---------------------------------------------------------
