@@ -14,7 +14,7 @@ import { urlForCropped } from "@/sanity/lib/image";
 import { StarRating } from "@/components/ui/star-rating";
 import PortableTextRenderer from "@/components/portable-text-renderer";
 import { PAGE_QUERYResult } from "@/sanity.types";
-import { getLocalizedField } from "@/lib/localization-utils";
+import { getLocalizedField, getLocalizedPortableText } from "@/lib/localization-utils";
 
 type Carousel2Props = Extract<
   NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number],
@@ -62,7 +62,15 @@ export default function Carousel2({
         {testimonial && testimonial.length > 0 && (
         <Carousel>
           <CarouselContent>
-            {testimonial.map((item) => (
+            {testimonial.map((item) => {
+              const it = item as any;
+              const jobTitle = typeof it.title === 'string'
+                ? it.title
+                : getLocalizedField(it.title, supportedLocale, '');
+              const quoteBody = Array.isArray(it.quote)
+                ? it.quote
+                : getLocalizedPortableText(it.quote, supportedLocale);
+              return (
               <CarouselItem
                 key={item._id}
                 className="ps-2 md:ps-4 md:basis-1/2 lg:basis-1/3 min-w-0"
@@ -85,26 +93,27 @@ export default function Carousel2({
                         <div>
                           <h3 className="text-sm font-semibold">{item.name}</h3>
                           <p className="text-xs text-muted-foreground">
-                            {item.title}
+                            {jobTitle}
                           </p>
-                          {((item as any).organization?.name || (item as any).relatedCommunity?.name) && (
+                          {(it.organization?.name || it.relatedCommunity?.name) && (
                             <p className="text-xs text-muted-foreground/80">
-                              {(item as any).organization?.name || (item as any).relatedCommunity?.name}
+                              {it.organization?.name || it.relatedCommunity?.name}
                             </p>
                           )}
                         </div>
                       </div>
                       <StarRating rating={item.rating ?? 0} />
-                      {item.body && (
+                      {quoteBody && (
                         <div className="text-sm mt-2 line-clamp-4">
-                          <PortableTextRenderer value={item.body} locale={locale} />
+                          <PortableTextRenderer value={quoteBody} locale={locale} />
                         </div>
                       )}
                     </div>
                   </CardContent>
                 </Card>
               </CarouselItem>
-            ))}
+              );
+            })}
           </CarouselContent>
           <CarouselPrevious
             variant="secondary"

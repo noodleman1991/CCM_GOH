@@ -1,6 +1,7 @@
 import { defineField, defineType } from "sanity";
 import { orderRankField } from "@sanity/orderable-document-list";
 import { Quote } from "lucide-react";
+import { createLocalizedField } from "../shared/localized-field";
 
 export default defineType({
   name: "testimonial",
@@ -29,11 +30,18 @@ export default defineType({
       group: "content",
       validation: (rule) => rule.required(),
     }),
+    // i18n: job title is a short string → field-level localized (Lane B).
+    createLocalizedField("jobTitle", "Job Title", "string", {
+      group: "content",
+      description: "Role/title, in each language.",
+    }),
     defineField({
       name: "title",
-      title: "Job Title",
+      title: "Job Title (legacy, single-language)",
       type: "string",
       group: "content",
+      hidden: true,
+      deprecated: { reason: "Use the localized Job Title field above." },
     }),
     defineField({
       name: "image",
@@ -51,12 +59,18 @@ export default defineType({
         },
       ],
     }),
+    // i18n: the quote is localized rich text, one editor per language.
+    createLocalizedField("quote", "Testimonial", "block-content", {
+      group: "content",
+      description: "The testimonial quote (rich text), in each language.",
+    }),
     defineField({
       name: "body",
-      title: "Testimonial",
+      title: "Testimonial (legacy, single-language)",
       type: "block-content",
       group: "content",
-      validation: (rule) => rule.required(),
+      hidden: true,
+      deprecated: { reason: "Use the localized Testimonial field above." },
     }),
     defineField({
       name: "rating",
