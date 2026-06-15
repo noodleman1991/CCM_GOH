@@ -555,7 +555,10 @@
     "tags": "Etiquetas",
     "cookieConsentRequired": "Este video requiere consentimiento de cookies para reproducirse.",
     "acceptCookies": "Aceptar Cookies",
-    "videoUnavailable": "Este video no está disponible."
+    "videoUnavailable": "Este video no está disponible.",
+    "sortBy": "Ordenar",
+    "sortNewest": "Más recientes",
+    "sortAZ": "A–Z"
   },
   "caseStudyForm": {
     "sections": {

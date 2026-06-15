@@ -725,7 +725,10 @@
     "tags": "Tags",
     "cookieConsentRequired": "This video requires cookie consent to play.",
     "acceptCookies": "Accept Cookies",
-    "videoUnavailable": "This video is unavailable."
+    "videoUnavailable": "This video is unavailable.",
+    "sortBy": "Sort",
+    "sortNewest": "Newest first",
+    "sortAZ": "A–Z"
   },
   "revisionAlert": {
     "title": "Action Required: Revision Needed",

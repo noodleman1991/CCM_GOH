@@ -555,7 +555,10 @@
     "tags": "العلامات",
     "cookieConsentRequired": "يتطلب هذا الفيديو موافقة على ملفات تعريف الارتباط للتشغيل.",
     "acceptCookies": "قبول ملفات تعريف الارتباط",
-    "videoUnavailable": "هذا الفيديو غير متاح."
+    "videoUnavailable": "هذا الفيديو غير متاح.",
+    "sortBy": "ترتيب",
+    "sortNewest": "الأحدث أولاً",
+    "sortAZ": "أ–ي"
   },
   "caseStudyForm": {
     "sections": {

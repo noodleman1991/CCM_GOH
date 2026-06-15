@@ -1,12 +1,20 @@
 'use client'
 
 import { useState, useMemo, useEffect } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
-import { Search, Filter, X } from 'lucide-react'
+import { Search, Filter, X, MapPin, Tag as TagIcon, ArrowUpDown } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { FilterChip, RemovableChip } from '@/components/ui/filter-chip'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { getLocalizedText } from '@/lib/localization-utils'
 import { rtlLocales } from '@/i18n/routing'
 import { cn } from '@/lib/utils'
@@ -37,64 +45,48 @@ export default function LivedExperiencesPageClient({
 }: LivedExperiencesPageClientProps) {
   const t = useTranslations('livedExperiences')
   const router = useRouter()
-  const searchParams = useSearchParams()
   const isRTL = rtlLocales.includes(locale)
 
   const [searchQuery, setSearchQuery] = useState(initialSearch)
   const [showFilters, setShowFilters] = useState(false)
+  const [sortBy, setSortBy] = useState<'default' | 'az'>('default')
 
-  // Initialize filters with all items checked by default
-  const [selectedRegions, setSelectedRegions] = useState<string[]>(
-    initialFilters.regions.length > 0
-      ? initialFilters.regions
-      : communities.map(c => c.slug)
-  )
-
-  const [selectedTags, setSelectedTags] = useState<string[]>(
-    initialFilters.tags.length > 0 ? initialFilters.tags : allTags
-  )
+  // Inclusion model: empty selection = show everything; selecting narrows.
+  const [selectedRegions, setSelectedRegions] = useState<string[]>(initialFilters.regions)
+  const [selectedTags, setSelectedTags] = useState<string[]>(initialFilters.tags)
 
   // Update URL when filters change
   useEffect(() => {
     const params = new URLSearchParams()
-
-    if (searchQuery) {
-      params.set('search', searchQuery)
-    }
-
-    // Only add to URL if not all selected (optimization)
-    if (selectedRegions.length !== communities.length) {
-      params.set('regions', selectedRegions.join(','))
-    }
-
-    if (selectedTags.length !== allTags.length) {
-      params.set('tags', selectedTags.join(','))
-    }
+    if (searchQuery) params.set('search', searchQuery)
+    if (selectedRegions.length > 0) params.set('regions', selectedRegions.join(','))
+    if (selectedTags.length > 0) params.set('tags', selectedTags.join(','))
 
     const newUrl = params.toString() ? `?${params.toString()}` : ''
     router.replace(`/${locale}/lived-experiences${newUrl}`, { scroll: false })
-  }, [searchQuery, selectedRegions, selectedTags, communities.length, allTags.length, locale, router])
+  }, [searchQuery, selectedRegions, selectedTags, locale, router])
 
-  // Filter videos based on selected filters and search
+  // Filter videos. Inclusion: no region/tag selected = no filter on that axis.
   const filteredCommunityVideos = useMemo(() => {
     const filtered: Record<string, any[]> = {}
 
     for (const [communityName, videos] of Object.entries(initialCommunityVideos)) {
-      // Find the community to check if it's selected
       const community = communities.find(c => {
         const name = typeof c.name === 'string' ? c.name : c.name.en
         return name === communityName
       })
 
-      if (!community || !selectedRegions.includes(community.slug)) {
+      // Region filter (inclusion): if any regions selected, this one must be among them.
+      if (selectedRegions.length > 0 && (!community || !selectedRegions.includes(community.slug))) {
         continue
       }
 
-      // Filter videos by tags and search
       const filteredVideos = videos.filter(video => {
-        // Check tags filter
-        const hasMatchingTag = video.tags?.some((tag: string) => selectedTags.includes(tag))
-        if (!hasMatchingTag) return false
+        // Tag filter (inclusion): if any tags selected, the video must match one.
+        if (selectedTags.length > 0) {
+          const hasMatchingTag = video.tags?.some((tag: string) => selectedTags.includes(tag))
+          if (!hasMatchingTag) return false
+        }
 
         // Check search query
         if (searchQuery) {
@@ -132,15 +124,32 @@ export default function LivedExperiencesPageClient({
 
   const clearFilters = () => {
     setSearchQuery('')
-    setSelectedRegions(communities.map(c => c.slug))
-    setSelectedTags(allTags)
+    setSelectedRegions([])
+    setSelectedTags([])
   }
 
-  const hasActiveFilters = searchQuery ||
-    selectedRegions.length !== communities.length ||
-    selectedTags.length !== allTags.length
+  const hasActiveFilters = Boolean(searchQuery) ||
+    selectedRegions.length > 0 ||
+    selectedTags.length > 0
+
+  // Sort the rows: 'default' keeps the CMS order (by region order, newest videos
+  // first within each row); 'az' alphabetises the rows by community name.
+  const sortedEntries = useMemo(() => {
+    const entries = Object.entries(filteredCommunityVideos)
+    if (sortBy === 'az') {
+      return [...entries].sort(([a], [b]) => a.localeCompare(b, locale))
+    }
+    return entries
+  }, [filteredCommunityVideos, sortBy, locale])
 
   const totalVideos = Object.values(filteredCommunityVideos).flat().length
+
+  // Label a region slug for the active-filter summary chips.
+  const regionLabel = (slug: string) => {
+    const c = communities.find(cm => cm.slug === slug)
+    if (!c) return slug
+    return typeof c.name === 'string' ? c.name : getLocalizedText(c.name, locale, c.name)
+  }
 
   return (
     <div className="py-8 space-y-8">
@@ -194,8 +203,8 @@ export default function LivedExperiencesPageClient({
           />
         </div>
 
-        {/* Filter Toggle */}
-        <div className="flex items-center justify-between">
+        {/* Filter toggle + sort + clear */}
+        <div className="flex flex-wrap items-center gap-3">
           <Button
             variant="outline"
             size="sm"
@@ -205,18 +214,33 @@ export default function LivedExperiencesPageClient({
             <Filter className="w-4 h-4" />
             {t('filters')}
             {hasActiveFilters && (
-              <Badge variant="secondary" className="ml-1">
-                {totalVideos}
+              <Badge variant="secondary" className="ms-1">
+                {selectedRegions.length + selectedTags.length}
               </Badge>
             )}
           </Button>
+
+          <Select value={sortBy} onValueChange={(v) => setSortBy(v as 'default' | 'az')}>
+            <SelectTrigger size="sm" className="w-auto gap-2">
+              <ArrowUpDown className="w-4 h-4 text-muted-foreground" />
+              <SelectValue placeholder={t('sortBy')} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="default">{t('sortNewest')}</SelectItem>
+              <SelectItem value="az">{t('sortAZ')}</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <span className="text-sm text-muted-foreground">
+            {totalVideos} {totalVideos === 1 ? t('video') : t('videos')}
+          </span>
 
           {hasActiveFilters && (
             <Button
               variant="ghost"
               size="sm"
               onClick={clearFilters}
-              className="flex items-center gap-2"
+              className="ms-auto flex items-center gap-2"
             >
               <X className="w-4 h-4" />
               {t('clearFilters')}
@@ -224,94 +248,81 @@ export default function LivedExperiencesPageClient({
           )}
         </div>
 
-        {/* Filters Panel */}
+        {/* Active-filter summary chips (click × to remove) */}
+        {(selectedRegions.length > 0 || selectedTags.length > 0) && (
+          <div className="flex flex-wrap gap-2">
+            {selectedRegions.map((slug) => (
+              <RemovableChip
+                key={`r-${slug}`}
+                label={regionLabel(slug)}
+                icon={MapPin}
+                onRemove={() => toggleRegion(slug)}
+                removeLabel={t('clearFilters')}
+              />
+            ))}
+            {selectedTags.map((tag) => (
+              <RemovableChip
+                key={`t-${tag}`}
+                label={tag}
+                icon={TagIcon}
+                onRemove={() => toggleTag(tag)}
+                removeLabel={t('clearFilters')}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* Filters Panel — inclusion model: nothing selected shows everything */}
         {showFilters && (
           <div className="border rounded-lg p-6 space-y-6 bg-card">
             {/* Regions Filter */}
             <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <h3 className="font-semibold">{t('filterByRegion')}</h3>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    if (selectedRegions.length === communities.length) {
-                      setSelectedRegions([])
-                    } else {
-                      setSelectedRegions(communities.map(c => c.slug))
-                    }
-                  }}
-                >
-                  {selectedRegions.length === communities.length ? t('deselectAll') : t('selectAll')}
-                </Button>
-              </div>
+              <h3 className="font-semibold">{t('filterByRegion')}</h3>
               <div className="flex flex-wrap gap-2">
                 {communities.map((community) => {
                   const communityName = typeof community.name === 'string'
                     ? community.name
                     : getLocalizedText(community.name, locale, community.name)
-                  const isSelected = selectedRegions.includes(community.slug)
-
                   return (
-                    <Badge
+                    <FilterChip
                       key={community._id}
-                      variant={isSelected ? 'default' : 'outline'}
-                      className="cursor-pointer"
+                      label={communityName}
+                      active={selectedRegions.includes(community.slug)}
                       onClick={() => toggleRegion(community.slug)}
-                    >
-                      {communityName}
-                    </Badge>
+                    />
                   )
                 })}
               </div>
             </div>
 
             {/* Tags Filter */}
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
+            {allTags.length > 0 && (
+              <div className="space-y-3">
                 <h3 className="font-semibold">{t('filterByTag')}</h3>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    if (selectedTags.length === allTags.length) {
-                      setSelectedTags([])
-                    } else {
-                      setSelectedTags(allTags)
-                    }
-                  }}
-                >
-                  {selectedTags.length === allTags.length ? t('deselectAll') : t('selectAll')}
-                </Button>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {allTags.map((tag) => {
-                  const isSelected = selectedTags.includes(tag)
-                  return (
-                    <Badge
+                <div className="flex flex-wrap gap-2">
+                  {allTags.map((tag) => (
+                    <FilterChip
                       key={tag}
-                      variant={isSelected ? 'default' : 'outline'}
-                      className="cursor-pointer"
+                      label={tag}
+                      active={selectedTags.includes(tag)}
                       onClick={() => toggleTag(tag)}
-                    >
-                      {tag}
-                    </Badge>
-                  )
-                })}
+                    />
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         )}
       </div>
 
       {/* Results */}
       <div className="space-y-12">
-        {Object.keys(filteredCommunityVideos).length === 0 ? (
+        {sortedEntries.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-muted-foreground">{t('noResults')}</p>
           </div>
         ) : (
-          Object.entries(filteredCommunityVideos).map(([communityName, videos]) => (
+          sortedEntries.map(([communityName, videos]) => (
             <ScrollRow
               key={communityName}
               isRTL={isRTL}
