@@ -1,5 +1,4 @@
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import { SanityButton } from "@/components/ui/sanity-button";
 import { stegaClean } from "next-sanity";
 import PortableTextRenderer from "@/components/portable-text-renderer";
 import { PAGE_QUERY_RESULT } from "@/sanity.types";
@@ -52,23 +51,9 @@ export default function Hero2({ background, tagLine, title, body, links, padding
         </div>
       )}
       {links && links.length > 0 && (
-        <div className="mt-10 flex flex-wrap gap-4 justify-center animate-fade-up [animation-delay:400ms] opacity-0">
+        <div className="mt-8 flex flex-wrap gap-4 justify-center animate-fade-up [animation-delay:400ms] opacity-0">
           {links.map((link) => (
-            <Button
-              key={link.title}
-              variant={stegaClean((link?.buttonVariant as any)?.variant)}
-              size={stegaClean((link?.buttonVariant as any)?.size) || "lg"}
-              stroke={stegaClean((link?.buttonVariant as any)?.stroke)}
-              asChild
-            >
-              <Link
-                href={link.href as string}
-                target={link.target ? "_blank" : undefined}
-                rel={link.target ? "noopener" : undefined}
-              >
-                {link.title}
-              </Link>
-            </Button>
+            <SanityButton key={link.title} link={link as any} locale={locale} />
           ))}
         </div>
       )}

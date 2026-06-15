@@ -1,10 +1,8 @@
 import { cn } from "@/lib/utils";
 import { heading } from "@/lib/design-tokens";
 import PortableTextRenderer from "@/components/portable-text-renderer";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import { SanityButton } from "@/components/ui/sanity-button";
 import { createElement } from "react";
-import { stegaClean } from "next-sanity";
 import { PAGE_QUERY_RESULT } from "@/sanity.types";
 import { getLocalizedField, getLocalizedPortableText } from "@/lib/localization-utils";
 
@@ -75,21 +73,8 @@ export default function SplitContent({
           </div>
         )}
         {link?.href && (
-          <div className="flex flex-col">
-            <Button
-              className="mt-6"
-              variant={stegaClean((link?.buttonVariant as any)?.variant)}
-              size={stegaClean((link?.buttonVariant as any)?.size) || "lg"}
-              stroke={stegaClean((link?.buttonVariant as any)?.stroke)}
-              asChild
-            >
-              <Link
-                href={link.href}
-                target={link.target ? "_blank" : undefined}
-              >
-                {link.title}
-              </Link>
-            </Button>
+          <div className="mt-6 flex flex-col">
+            <SanityButton link={link as any} locale={locale} />
           </div>
         )}
       </div>

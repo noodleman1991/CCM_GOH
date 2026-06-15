@@ -9,6 +9,31 @@ export interface SanityButtonVariant {
   stroke?: "none" | "light" | "midnight";
 }
 
+/**
+ * Map any stored (incl. legacy) button value onto the curated, site-wide set so
+ * every CMS button renders consistently. This is the single normalisation point
+ * for block buttons — legacy values keep working but resolve to a current style.
+ */
+export const VARIANT_ALIAS: Record<string, "default" | "secondary" | "outline" | "ghost" | "link"> = {
+  default: "default",
+  secondary: "secondary",
+  outline: "outline",
+  ghost: "ghost",
+  link: "link",
+  // legacy → nearest curated style
+  invert: "secondary",
+  "light-invert": "secondary",
+  destructive: "default",
+};
+export const SIZE_ALIAS: Record<string, "default" | "lg" | "wide"> = {
+  default: "default",
+  lg: "lg",
+  wide: "wide",
+  // legacy → nearest curated size
+  sm: "default",
+  thick: "lg",
+};
+
 export interface SanityLinkData {
   title?: string;
   href?: string;
@@ -32,17 +57,15 @@ export function SanityButton({ link, locale = 'en', isRTL = false, className }: 
   }
 
   const buttonStyle = link.buttonVariant || {};
-  const {
-    variant = "default",
-    size = "default",
-    stroke = "none"
-  } = buttonStyle;
+  const rawVariant = typeof buttonStyle === 'string' ? buttonStyle : (buttonStyle.variant || "default");
+  const rawSize = typeof buttonStyle === 'string' ? "default" : (buttonStyle.size || "default");
+
+  // Normalise to the curated, site-wide set so every CMS button is consistent.
+  const buttonVariant = VARIANT_ALIAS[rawVariant] ?? "default";
+  const size = SIZE_ALIAS[rawSize] ?? "default";
 
   const isExternal = link.href.startsWith('http') || link.href.startsWith('https');
   const target = link.target || isExternal;
-
-  // Handle legacy string variant (backward compatibility)
-  const buttonVariant = typeof buttonStyle === 'string' ? buttonStyle : variant;
 
   if (buttonVariant === 'link') {
     // Render as text link for 'link' variant
@@ -80,9 +103,8 @@ export function SanityButton({ link, locale = 'en', isRTL = false, className }: 
   // Render as button
   const ButtonComponent = ({ children, ...props }: any) => (
     <Button
-      variant={buttonVariant as any}
-      size={size as any}
-      stroke={stroke as any}
+      variant={buttonVariant}
+      size={size}
       className={cn(
         isRTL && "font-arabic-heading",
         className
