@@ -18,6 +18,7 @@ import { manualContentInsertQuery } from "./inserts/manual-content-insert";
 import { dynamicContentInsertQuery } from "./inserts/dynamic-content-insert";
 import { separatorBlockQuery } from "./inserts/separator-block";
 import { teamGridQuery } from "./team-grid";
+import { regionMapQuery } from "./maps/region-map";
 
 export const REGIONAL_COMMUNITY_PAGE_QUERY = groq`
   *[_type == "regionalCommunityPage" && slug.current == $slug && language == $language][0]{
@@ -434,7 +435,8 @@ export const REGIONAL_COMMUNITY_PAGE_QUERY = groq`
       ${allPostsQuery},
       ${manualContentInsertQuery},
       ${dynamicContentInsertQuery},
-      ${separatorBlockQuery}
+      ${separatorBlockQuery},
+      ${regionMapQuery}
     },
 
     meta_title,

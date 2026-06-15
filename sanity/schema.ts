@@ -72,6 +72,7 @@ import logoCloud1 from "./schemas/blocks/logo-cloud/logo-cloud-1";
 import faqs from "./schemas/blocks/faqs";
 import newsletter from "./schemas/blocks/forms/newsletter";
 import allPosts from "./schemas/blocks/all-posts";
+import regionMap from "./schemas/blocks/maps/region-map";
 
 // Insert blocks for structured content pattern
 import manualContentInsert from "./schemas/blocks/inserts/manual-content-insert";
@@ -156,6 +157,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
         faqs,
         newsletter,
         allPosts,
+        regionMap,
         // insert blocks
         manualContentInsert,
         dynamicContentInsert,
