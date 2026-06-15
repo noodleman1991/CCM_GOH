@@ -20,6 +20,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
+import { clerkAppearance } from "@/lib/clerk-appearance"
 
 export function AuthNavUser({ isRTL = false }: { isRTL?: boolean }) {
     const t = useTranslations('auth')
@@ -106,7 +107,7 @@ export function AuthNavUser({ isRTL = false }: { isRTL?: boolean }) {
                                 sideOffset={4}
                             >
                                 <div className="flex flex-col gap-2 p-2">
-                                    <SignInButton mode="modal">
+                                    <SignInButton mode="modal" appearance={clerkAppearance}>
                                         <Button
                                             className={cn(
                                                 "w-full",
@@ -120,7 +121,7 @@ export function AuthNavUser({ isRTL = false }: { isRTL?: boolean }) {
 
                                     <DropdownMenuSeparator />
 
-                                    <SignUpButton mode="modal">
+                                    <SignUpButton mode="modal" appearance={clerkAppearance}>
                                         <Button
                                             className={cn(
                                                 "w-full",
