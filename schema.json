@@ -5158,11 +5158,7 @@
               },
               {
                 "type": "string",
-                "value": "invert"
-              },
-              {
-                "type": "string",
-                "value": "light-invert"
+                "value": "secondary"
               },
               {
                 "type": "string",
@@ -5170,19 +5166,7 @@
               },
               {
                 "type": "string",
-                "value": "secondary"
-              },
-              {
-                "type": "string",
                 "value": "ghost"
-              },
-              {
-                "type": "string",
-                "value": "link"
-              },
-              {
-                "type": "string",
-                "value": "destructive"
               }
             ]
           },
@@ -5199,40 +5183,11 @@
               },
               {
                 "type": "string",
-                "value": "wide"
-              },
-              {
-                "type": "string",
-                "value": "thick"
-              },
-              {
-                "type": "string",
-                "value": "sm"
-              },
-              {
-                "type": "string",
                 "value": "lg"
-              }
-            ]
-          },
-          "optional": true
-        },
-        "stroke": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "union",
-            "of": [
-              {
-                "type": "string",
-                "value": "none"
               },
               {
                 "type": "string",
-                "value": "light"
-              },
-              {
-                "type": "string",
-                "value": "midnight"
+                "value": "wide"
               }
             ]
           },
