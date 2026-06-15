@@ -1174,5 +1174,13 @@
     "noPostsTitle": "No posts yet",
     "noPostsBody": "Check back soon for updates.",
     "noContent": "No content available at this time."
+  },
+  "map": {
+    "title": "Explore by region",
+    "facetCaseStudies": "Case studies",
+    "facetMembers": "Members",
+    "facetNews": "News",
+    "viewInSearch": "View in search",
+    "noData": "No data for this region yet."
   }
 }
