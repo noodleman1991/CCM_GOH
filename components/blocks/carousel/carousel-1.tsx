@@ -12,6 +12,7 @@ import {
 import Image from "next/image";
 import { urlFor } from "@/sanity/lib/image";
 import { cn } from "@/lib/utils";
+import { heading } from "@/lib/design-tokens";
 import { PAGE_QUERY_RESULT } from "@/sanity.types";
 import { getLocalizedField } from "@/lib/localization-utils";
 
@@ -84,11 +85,11 @@ export default function Carousel1({
         <div className="flex flex-col space-y-6">
           {localizedTitle && (
             <div className="text-center">
-              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+              <h2 className={cn("font-bold font-heading text-ccm-midnight text-balance", heading('md'))}>
                 {localizedTitle}
               </h2>
               {localizedDescription && (
-                <p className="mt-4 text-lg text-muted-foreground">
+                <p className="mt-3 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
                   {localizedDescription}
                 </p>
               )}
