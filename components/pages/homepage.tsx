@@ -62,17 +62,25 @@ async function fetchDynamicItems(
  * Manual mode (or no mode, for existing documents) returns the section as-is.
  */
 async function resolveNewsSection(section: DynamicGridSection): Promise<any> {
-  if (!section || !isDynamicMode(section.mode)) {
-    return section;
-  }
+  if (!section) return section;
+  // Default to "latest news" when no mode is set, so the homepage shows fresh
+  // posts instead of stale manually-picked columns. An explicit manual choice is
+  // still honoured.
+  const mode = isDynamicMode(section.mode)
+    ? section.mode
+    : section.mode === "manual"
+      ? null
+      : "dynamic-recent";
+  if (!mode) return section;
 
   try {
     const limit = section.maxItems || 3;
     const items = await fetchDynamicItems(
-      section.mode,
+      mode,
       limit,
       fetchHomepageNews
     );
+    if (items.length === 0) return section; // fall back to manual columns
 
     return {
       ...section,
@@ -108,17 +116,22 @@ async function resolveNewsSection(section: DynamicGridSection): Promise<any> {
  * column items. Manual mode (or no mode) returns the section as-is.
  */
 async function resolveAgendasSection(section: DynamicGridSection): Promise<any> {
-  if (!section || !isDynamicMode(section.mode)) {
-    return section;
-  }
+  if (!section) return section;
+  const mode = isDynamicMode(section.mode)
+    ? section.mode
+    : section.mode === "manual"
+      ? null
+      : "dynamic-recent";
+  if (!mode) return section;
 
   try {
     const limit = section.maxItems || 3;
     const items = await fetchDynamicItems(
-      section.mode,
+      mode,
       limit,
       fetchHomepageAgendas
     );
+    if (items.length === 0) return section;
 
     return {
       ...section,

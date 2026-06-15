@@ -279,24 +279,24 @@ export default function GridNewsComponent({
                 )}
 
                 {/* Tags */}
-                {showTags && newsPost.tags && newsPost.tags.length > 0 && (
+                {showTags && newsPost.tags && newsPost.tags.filter(Boolean).length > 0 && (
                     <div className="flex flex-wrap gap-1 mt-3">
-                        {newsPost.tags.slice(0, 3).map((tag: any) => (
+                        {newsPost.tags.filter(Boolean).slice(0, 3).map((tag: any) => (
                             <Badge
                                 key={tag._id}
                                 variant="outline"
                                 className="text-xs"
                                 style={{
-                                    borderColor: tag.color,
-                                    color: tag.color
+                                    borderColor: tag.color || undefined,
+                                    color: tag.color || undefined
                                 }}
                             >
                                 {getLocalizedText(tag.label, supportedLocale)}
                             </Badge>
                         ))}
-                        {newsPost.tags.length > 3 && (
+                        {newsPost.tags.filter(Boolean).length > 3 && (
                             <Badge variant="outline" className="text-xs">
-                                {getMoreText(newsPost.tags.length - 3)}
+                                {getMoreText(newsPost.tags.filter(Boolean).length - 3)}
                             </Badge>
                         )}
                     </div>
