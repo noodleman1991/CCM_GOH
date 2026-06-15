@@ -15,7 +15,6 @@ import * as z from "zod";
 import { toast } from "sonner";
 import { useCallback } from "react";
 import { Loader2 } from "lucide-react";
-import { stegaClean } from "next-sanity";
 import { PAGE_QUERY_RESULT } from "@/sanity.types";
 
 type FormNewsletterProps = Extract<
@@ -25,7 +24,6 @@ type FormNewsletterProps = Extract<
 
 export default function FormNewsletter({
   padding,
-  colorVariant,
   consentText,
   buttonText,
   successMessage,
@@ -84,10 +82,9 @@ export default function FormNewsletter({
     await handleSend(values);
   }
 
-  const color = stegaClean(colorVariant);
 
   return (
-    <SectionContainer color={color} padding={padding}>
+    <SectionContainer padding={padding}>
       <Form {...form}>
         <form className="pt-8" onSubmit={form.handleSubmit(onSubmit)}>
           <div className="flex gap-4">

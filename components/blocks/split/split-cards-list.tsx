@@ -1,6 +1,5 @@
-import { stegaClean } from "next-sanity";
 import SplitCardsItem from "@/components/blocks/split/split-cards-item";
-import { PAGE_QUERY_RESULT, ColorVariant } from "@/sanity.types";
+import { PAGE_QUERY_RESULT } from "@/sanity.types";
 
 type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
 type SplitRow = Extract<Block, { _type: "split-row" }>;
@@ -9,13 +8,9 @@ type SplitCardsList = Extract<
   { _type: "split-cards-list" }
 >;
 
-interface SplitCardsListProps extends SplitCardsList {
-  color?: ColorVariant;
-}
+type SplitCardsListProps = SplitCardsList;
 
-export default function SplitCardsList({ color, list }: SplitCardsListProps) {
-  const colorParent = stegaClean(color);
-
+export default function SplitCardsList({ list }: SplitCardsListProps) {
   return (
     <div className="flex flex-col justify-center gap-6 md:gap-8 lg:gap-10">
       {list &&
@@ -23,7 +18,6 @@ export default function SplitCardsList({ color, list }: SplitCardsListProps) {
         list.map((item, index) => (
           <SplitCardsItem
             key={index}
-            color={colorParent}
             tagLine={item.tagLine}
             title={item.title}
             body={item.body}

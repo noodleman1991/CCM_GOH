@@ -14,11 +14,6 @@ export default defineType({
       type: "section-padding",
     }),
     defineField({
-      name: "colorVariant",
-      type: "color-variant",
-      description: "Select a background color variant",
-    }),
-    defineField({
       name: "noGap",
       type: "boolean",
       description: "Remove gap between columns",

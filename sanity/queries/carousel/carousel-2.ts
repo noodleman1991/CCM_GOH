@@ -8,7 +8,6 @@ export const carousel2Query = groq`
     title,
     description,
     padding,
-    colorVariant,
     testimonial[]->{
       _id,
       name,

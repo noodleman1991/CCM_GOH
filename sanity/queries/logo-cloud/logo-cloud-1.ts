@@ -6,7 +6,6 @@ export const logoCloud1Query = groq`
     _type,
     _key,
     padding,
-    colorVariant,
     title,
     description,
     images[]{

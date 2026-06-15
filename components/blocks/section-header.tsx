@@ -14,7 +14,6 @@ type SectionHeaderProps = Extract<
 
 export default function SectionHeader({
   padding,
-  colorVariant,
   sectionWidth = "default",
   stackAlign = "left",
   tagLine,
@@ -24,7 +23,6 @@ export default function SectionHeader({
 }: SectionHeaderProps) {
   const isNarrow = stegaClean(sectionWidth) === "narrow";
   const align = stegaClean(stackAlign);
-  const color = stegaClean(colorVariant);
 
   const supportedLocale = (locale || "en") as 'en' | 'es' | 'fr' | 'ar';
 
@@ -41,37 +39,27 @@ export default function SectionHeader({
     : getLocalizedField(description, supportedLocale, '');
 
   return (
-    <SectionContainer color={color} padding={padding}>
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <SectionContainer padding={padding}>
         <div
           className={cn(
-            align === "center" ? "max-w-[48rem] text-center mx-auto" : undefined,
-            isNarrow ? "max-w-[48rem] mx-auto" : undefined
+            align === "center" ? "max-w-3xl text-center mx-auto" : undefined,
+            isNarrow ? "max-w-3xl mx-auto" : undefined
           )}
         >
-        <div
-          className={cn(color === "primary" ? "text-background" : undefined)}
-        >
+        <div>
           {localizedTagLine && (
-            <p className={cn(
-              "text-base font-semibold uppercase tracking-wider mb-4",
-              color === "primary" ? "text-background/80" : "text-ccm-water"
-            )}>
+            <p className="text-sm font-semibold uppercase tracking-wider text-ccm-water mb-3">
               {localizedTagLine}
             </p>
           )}
-          <h2 className={cn('font-bold font-heading text-balance mb-4', heading('md'))}>{localizedTitle}</h2>
+          <h2 className={cn('font-bold font-heading text-ccm-midnight text-balance mb-4', heading('md'))}>{localizedTitle}</h2>
         </div>
         {localizedDescription && (
-          <p className={cn(
-            "text-lg",
-            color === "primary" ? "text-background/90" : "text-muted-foreground"
-          )}>
+          <p className="text-base md:text-lg text-muted-foreground">
             {localizedDescription}
           </p>
         )}
         </div>
-      </div>
     </SectionContainer>
   );
 }

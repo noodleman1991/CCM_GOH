@@ -1,5 +1,4 @@
 import SectionContainer from "@/components/ui/section-container";
-import { stegaClean } from "next-sanity";
 import {
   Carousel,
   CarouselContent,
@@ -29,11 +28,9 @@ export default function Carousel2({
   title,
   description,
   padding,
-  colorVariant,
   testimonial,
   locale = "en",
 }: Carousel2Props) {
-  const color = stegaClean(colorVariant);
 
   const supportedLocale = (locale || "en") as 'en' | 'es' | 'fr' | 'ar';
 
@@ -46,7 +43,7 @@ export default function Carousel2({
     : getLocalizedField(description, supportedLocale, '');
 
   return (
-    <SectionContainer color={color} padding={padding}>
+    <SectionContainer padding={padding}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col space-y-6 overflow-hidden">
           {localizedTitle && (

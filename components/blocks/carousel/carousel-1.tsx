@@ -59,13 +59,11 @@ export default function Carousel1({
   description,
   background,
   padding,
-  colorVariant,
   size = "one",
   indicators = "none",
   images,
   locale = "en",
 }: Carousel1Props) {
-  const color = stegaClean(colorVariant);
   const stegaIndicators = stegaClean(indicators);
   const stegaSize = stegaClean(size) as CarouselSize;
 
@@ -80,7 +78,7 @@ export default function Carousel1({
     : getLocalizedField(description, supportedLocale, '');
 
   return (
-    <SectionContainer color={color} padding={padding} background={background as any}>
+    <SectionContainer padding={padding} background={background as any}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col space-y-6">
           {localizedTitle && (

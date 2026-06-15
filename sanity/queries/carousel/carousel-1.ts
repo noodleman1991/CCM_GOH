@@ -9,7 +9,6 @@ export const carousel1Query = groq`
     description,
     background,
     padding,
-    colorVariant,
     size,
     orientation,
     indicators,

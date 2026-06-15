@@ -6,7 +6,6 @@ export const faqsQuery = groq`
     _type,
     _key,
     padding,
-    colorVariant,
     faqs[]->{
       _id,
       // Localized question (Lane B), with legacy single-language fallback.

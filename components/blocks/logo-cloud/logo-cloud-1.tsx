@@ -20,13 +20,11 @@ type LogoCloud1Props = Extract<
 
 export default function LogoCloud1({
   padding,
-  colorVariant,
   title,
   description,
   images,
   locale = "en",
 }: LogoCloud1Props) {
-  const color = stegaClean(colorVariant);
   const rtl = isRTL(locale);
   const prefersReducedMotion = useReducedMotion();
 
@@ -42,7 +40,7 @@ export default function LogoCloud1({
 
   return (
     <SectionContainer
-      color={color}
+
       padding={padding}
       className="overflow-hidden"
     >
