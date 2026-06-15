@@ -4,9 +4,10 @@ import { stegaClean } from "next-sanity";
 import Image from "next/image";
 import { urlFor } from "@/sanity/lib/image";
 import { Fragment } from "react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { PAGE_QUERYResult } from "@/sanity.types";
 import { getLocalizedField } from "@/lib/localization-utils";
+import { isRTL } from "@/i18n/i18n-helpers";
 
 type LogoCloud1Props = Extract<
   NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number],
@@ -24,6 +25,8 @@ export default function LogoCloud1({
   locale = "en",
 }: LogoCloud1Props) {
   const color = stegaClean(colorVariant);
+  const rtl = isRTL(locale);
+  const prefersReducedMotion = useReducedMotion();
 
   const supportedLocale = (locale || "en") as 'en' | 'es' | 'fr' | 'ar';
 
@@ -57,15 +60,17 @@ export default function LogoCloud1({
       </div>
       <div className="flex relative overflow-hidden before:absolute before:left-0 before:top-0 before:z-10 before:h-full before:w-10 before:bg-linear-to-r rtl:before:bg-linear-to-l before:from-background before:to-transparent before:content-[''] after:absolute after:right-0 after:top-0 after:h-full after:w-10 after:bg-linear-to-l rtl:after:bg-linear-to-r after:from-background after:to-transparent after:content-['']">
         <motion.div
-          transition={{
-            duration: 20,
-            ease: "linear",
-            repeat: Infinity,
-          }}
-          animate={{
-            x: ["0%", "-50%"],
-          }}
-          className="flex w-max gap-24 pr-24"
+          transition={
+            prefersReducedMotion
+              ? undefined
+              : { duration: 20, ease: "linear", repeat: Infinity }
+          }
+          animate={
+            prefersReducedMotion
+              ? undefined
+              : { x: rtl ? ["0%", "50%"] : ["0%", "-50%"] }
+          }
+          className="flex w-max gap-24 pe-24"
         >
           {[...new Array(2)].map((_, arrayIndex) => (
             <Fragment key={arrayIndex}>
@@ -77,6 +82,7 @@ export default function LogoCloud1({
                   <Image
                     src={urlFor(image).url()}
                     alt={image.alt || ""}
+                    className="max-h-24 w-auto object-contain"
                     priority={arrayIndex === 0 && index < 3}
                     placeholder={
                       image?.asset?.metadata?.lqip &&

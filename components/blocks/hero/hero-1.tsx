@@ -34,6 +34,7 @@ export default function Hero1({
                               }: Hero1Props) {
     const rtl = isRTL(locale);
     const isImageRight = imagePosition === "right" || imagePosition === null;
+    const hasImage = Boolean(image && image.asset?._id);
     const supportedLocale = locale as 'en' | 'es' | 'fr' | 'ar';
 
     // Extract localized content
@@ -51,12 +52,18 @@ export default function Hero1({
 
     return (
         <SectionContainer background={background as any} padding={padding}>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 lg:gap-8">
+            <div className={cn(
+                "grid grid-cols-1 gap-4 md:gap-6 lg:gap-8 items-center",
+                hasImage && "lg:grid-cols-2"
+            )}>
                 <div className={cn(
-                    "flex flex-col justify-start min-w-0 w-full",
-                    rtl
+                    "flex flex-col justify-center min-w-0 w-full",
+                    // Without an image, center the text column and cap its width
+                    // so it doesn't stretch awkwardly across the full container.
+                    !hasImage && "max-w-3xl mx-auto text-center items-center",
+                    hasImage && (rtl
                         ? isImageRight ? "lg:order-2" : "lg:order-1"
-                        : isImageRight ? "lg:order-1" : "lg:order-2"
+                        : isImageRight ? "lg:order-1" : "lg:order-2")
                 )}>
                     {localizedTagLine && (
                         <p className="text-base font-semibold text-ccm-water uppercase tracking-wider animate-fade-up [animation-delay:100ms] opacity-0">
@@ -95,27 +102,27 @@ export default function Hero1({
                         </div>
                     )}
                 </div>
-                <div className={cn(
-                    "flex flex-col justify-center min-w-0 w-full",
-                    rtl
-                        ? isImageRight ? "lg:order-1" : "lg:order-2"
-                        : isImageRight ? "lg:order-2" : "lg:order-1"
-                )}>
-                    {image && image.asset?._id && (
+                {hasImage && (
+                    <div className={cn(
+                        "flex flex-col justify-center min-w-0 w-full",
+                        rtl
+                            ? isImageRight ? "lg:order-1" : "lg:order-2"
+                            : isImageRight ? "lg:order-2" : "lg:order-1"
+                    )}>
                         <div className="relative w-full max-w-full overflow-hidden min-w-0">
                             <Image
                                 className="rounded-xl animate-fade-up [animation-delay:500ms] opacity-0 w-full h-auto object-cover max-w-full"
-                                src={urlFor(image).width(1200).url()}
-                                alt={image.alt || ""}
-                                width={image.asset?.metadata?.dimensions?.width || 800}
-                                height={image.asset?.metadata?.dimensions?.height || 800}
-                                placeholder={image?.asset?.metadata?.lqip ? "blur" : undefined}
-                                blurDataURL={image?.asset?.metadata?.lqip || ""}
+                                src={urlFor(image!).width(1200).url()}
+                                alt={image!.alt || ""}
+                                width={image!.asset?.metadata?.dimensions?.width || 800}
+                                height={image!.asset?.metadata?.dimensions?.height || 800}
+                                placeholder={image!.asset?.metadata?.lqip ? "blur" : undefined}
+                                blurDataURL={image!.asset?.metadata?.lqip || ""}
                                 sizes="(min-width: 1152px) 576px, (min-width: 1024px) 50vw, 100vw"
                             />
                         </div>
-                    )}
-                </div>
+                    </div>
+                )}
             </div>
         </SectionContainer>
     );
