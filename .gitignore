@@ -52,3 +52,6 @@ DEPLOYMENT-CONFIG.local.md
 
 # block analysis docs (local only)
 BLOCK-SYSTEM-COHERENCE-REPORT.local.md
+
+# dataset backups (local only)
+backups/
