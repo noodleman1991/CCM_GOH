@@ -15,6 +15,7 @@ async function fetchLivedExperiences() {
       title,
       videoUrl,
       tags,
+      "thumbnailUrl": thumbnail.asset->url,
       "region": region->{
         _id,
         name,

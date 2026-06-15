@@ -12,7 +12,8 @@ import { rtlLocales } from '@/i18n/routing'
 import { cn } from '@/lib/utils'
 import Image from "next/image";
 import SectionContainer from "@/components/ui/section-container";
-import { YouTubeConsentGate } from "@/components/cookie-consent/youtube-consent-gate";
+import { ScrollRow } from "@/components/ui/scroll-row";
+import { LivedExperienceVideoCard } from "@/components/lived-experiences/video-card";
 
 interface LivedExperiencesPageClientProps {
   initialCommunityVideos: Record<string, any[]>
@@ -311,48 +312,22 @@ export default function LivedExperiencesPageClient({
           </div>
         ) : (
           Object.entries(filteredCommunityVideos).map(([communityName, videos]) => (
-            <section key={communityName} className="space-y-6">
-              <div className="space-y-1">
-                <h2 className="text-2xl font-bold">{communityName}</h2>
-                <p className="text-sm text-muted-foreground">
-                  {videos.length} {videos.length === 1 ? t('video') : t('videos')}
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {videos.map((video) => (
-                  <div key={video._id} className="space-y-3">
-                    <div className="aspect-video rounded-lg overflow-hidden bg-muted">
-                      {video.videoUrl && (
-                        <YouTubeConsentGate>
-                          <iframe
-                            src={video.videoUrl.replace('watch?v=', 'embed/')}
-                            title={getLocalizedText(video.title, locale, video.title)}
-                            className="w-full h-full"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowFullScreen
-                          />
-                        </YouTubeConsentGate>
-                      )}
-                    </div>
-                    <div className="space-y-2">
-                      <h5 className="font-semibold line-clamp-4">
-                        {getLocalizedText(video.title, locale, video.title)}
-                      </h5>
-                      {video.tags && video.tags.length > 0 && (
-                        <div className="flex flex-wrap gap-1">
-                          {video.tags.slice(0, 3).map((tag: string) => (
-                            <Badge key={tag} variant="secondary" className="text-xs">
-                              {tag}
-                            </Badge>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
+            <ScrollRow
+              key={communityName}
+              isRTL={isRTL}
+              title={communityName}
+              subtitle={`${videos.length} ${videos.length === 1 ? t('video') : t('videos')}`}
+            >
+              {videos.map((video) => (
+                <LivedExperienceVideoCard
+                  key={video._id}
+                  title={getLocalizedText(video.title, locale, video.title)}
+                  videoUrl={video.videoUrl}
+                  thumbnailUrl={video.thumbnailUrl}
+                  tags={video.tags}
+                />
+              ))}
+            </ScrollRow>
           ))
         )}
       </div>
