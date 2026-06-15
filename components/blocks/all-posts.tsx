@@ -6,14 +6,14 @@ import Link from "next/link";
 import { Calendar, User } from "lucide-react";
 import { stegaClean } from "next-sanity";
 import { getTranslations } from "next-intl/server";
-import { PAGE_QUERYResult } from "@/sanity.types";
+import { PAGE_QUERY_RESULT } from "@/sanity.types";
 import { client } from "@/sanity/lib/client";
 import { groq } from "next-sanity";
 import { urlFor } from "@/sanity/lib/image";
 import { getLocalizedField } from "@/lib/localization-utils";
 
 type AllPostsProps = Extract<
-  NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number],
+  NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number],
   { _type: "all-posts" }
 > & {
   locale?: string;

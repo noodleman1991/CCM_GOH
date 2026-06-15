@@ -1,13 +1,13 @@
 import { cn } from "@/lib/utils";
 import SectionContainer from "@/components/ui/section-container";
 import { stegaClean } from "next-sanity";
-import { PAGE_QUERYResult } from "@/sanity.types";
+import { PAGE_QUERY_RESULT } from "@/sanity.types";
 import SplitContent from "./split-content";
 import SplitCardsList from "./split-cards-list";
 import SplitImage from "./split-image";
 import SplitInfoList from "./split-info-list";
 
-type Block = NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number];
+type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
 type SplitRow = Extract<Block, { _type: "split-row" }>;
 type SplitColumn = NonNullable<NonNullable<SplitRow["splitColumns"]>[number]>;
 

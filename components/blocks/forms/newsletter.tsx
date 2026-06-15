@@ -16,10 +16,10 @@ import { toast } from "sonner";
 import { useCallback } from "react";
 import { Loader2 } from "lucide-react";
 import { stegaClean } from "next-sanity";
-import { PAGE_QUERYResult } from "@/sanity.types";
+import { PAGE_QUERY_RESULT } from "@/sanity.types";
 
 type FormNewsletterProps = Extract<
-  NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number],
+  NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number],
   { _type: "form-newsletter" }
 >;
 

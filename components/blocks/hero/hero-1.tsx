@@ -4,14 +4,14 @@ import Image from "next/image";
 import { urlFor } from "@/sanity/lib/image";
 import { stegaClean } from "next-sanity";
 import PortableTextRenderer from "@/components/portable-text-renderer";
-import { PAGE_QUERYResult } from "@/sanity.types";
+import { PAGE_QUERY_RESULT } from "@/sanity.types";
 import SectionContainer from "@/components/ui/section-container";
 import { cn } from "@/lib/utils";
 import { isRTL } from "@/i18n/i18n-helpers";
 import { getLocalizedField, getLocalizedPortableText } from "@/lib/localization-utils";
 
 type Hero1BaseProps = Extract<
-    NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number],
+    NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number],
     { _type: "hero-1" }
 >;
 

@@ -12,7 +12,7 @@ import {
 import Image from "next/image";
 import { urlFor } from "@/sanity/lib/image";
 import { cn } from "@/lib/utils";
-import { PAGE_QUERYResult } from "@/sanity.types";
+import { PAGE_QUERY_RESULT } from "@/sanity.types";
 import { getLocalizedField } from "@/lib/localization-utils";
 
 const CAROUSEL_SIZES = {
@@ -42,7 +42,7 @@ const SIZES_ATTR = {
 type CarouselSize = keyof typeof CAROUSEL_SIZES;
 
 type Carousel1 = Extract<
-  NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number],
+  NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number],
   { _type: "carousel-1" }
 >;
 
