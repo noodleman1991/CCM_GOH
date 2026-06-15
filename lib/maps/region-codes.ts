@@ -26,3 +26,16 @@ export const REGION_I18N_KEY: Record<RegionCode, string> = {
 export function isRegionCode(v: string): v is RegionCode {
   return (REGION_CODES as readonly string[]).includes(v);
 }
+
+/** Map a Sanity `regionalCommunity` slug to its region code. The Sanity docs
+ *  identify their region by slug (no enum field), so this bridges Sanity content
+ *  counts to the 7 region codes. Keep in sync with the dataset's RC slugs. */
+export const RC_SLUG_TO_REGION: Record<string, RegionCode> = {
+  "sub-saharan-africa": "SUB_SAHARAN_AFRICA",
+  "northern-africa-and-western-asia": "NORTHERN_AFRICA_AND_WESTERN_ASIA",
+  "central-and-southern-asia": "CENTRAL_AND_SOUTHERN_ASIA",
+  "eastern-and-south-eastern-asia": "EASTERN_AND_SOUTH_EASTERN_ASIA",
+  "latin-america-and-the-caribbean": "LATIN_AMERICA_AND_THE_CARIBBEAN",
+  oceania: "OCEANIA",
+  "europe-and-northern-america": "EUROPE_AND_NORTH_AMERICA",
+};
