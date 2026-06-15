@@ -3,9 +3,9 @@ import { cn } from "@/lib/utils";
 import PortableTextRenderer from "@/components/portable-text-renderer";
 import { motion, useInView } from "motion/react";
 import { useRef } from "react";
-import { PAGE_QUERYResult, ColorVariant } from "@/sanity.types";
+import { PAGE_QUERY_RESULT, ColorVariant } from "@/sanity.types";
 
-type Block = NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number];
+type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
 type TimelineRow = Extract<Block, { _type: "timeline-row" }>;
 type Timeline1 = NonNullable<NonNullable<TimelineRow["timelines"]>>[number];
 

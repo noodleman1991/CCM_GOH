@@ -2,9 +2,9 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { urlFor } from "@/sanity/lib/image";
 import { ChevronRight } from "lucide-react";
-import { POSTS_QUERYResult } from "@/sanity.types";
+import { POSTS_QUERY_RESULT } from "@/sanity.types";
 
-type PostCard = NonNullable<POSTS_QUERYResult[number]>;
+type PostCard = NonNullable<POSTS_QUERY_RESULT[number]>;
 
 interface PostCardProps extends Omit<PostCard, "slug"> {
   className?: string;

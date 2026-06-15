@@ -5,12 +5,12 @@ import Image from "next/image";
 import { urlFor } from "@/sanity/lib/image";
 import { Fragment } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { PAGE_QUERYResult } from "@/sanity.types";
+import { PAGE_QUERY_RESULT } from "@/sanity.types";
 import { getLocalizedField } from "@/lib/localization-utils";
 import { isRTL } from "@/i18n/i18n-helpers";
 
 type LogoCloud1Props = Extract<
-  NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number],
+  NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number],
   { _type: "logo-cloud-1" }
 > & {
   locale?: string;

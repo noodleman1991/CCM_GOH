@@ -5,10 +5,10 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { createElement } from "react";
 import { stegaClean } from "next-sanity";
-import { PAGE_QUERYResult } from "@/sanity.types";
+import { PAGE_QUERY_RESULT } from "@/sanity.types";
 import { getLocalizedField, getLocalizedPortableText } from "@/lib/localization-utils";
 
-type Block = NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number];
+type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
 type SplitRow = Extract<Block, { _type: "split-row" }>;
 type SplitContent = Extract<
   NonNullable<SplitRow["splitColumns"]>[number],

@@ -1,5 +1,5 @@
 import { urlFor } from "@/sanity/lib/image";
-import { PAGE_QUERYResult, POST_QUERYResult } from "@/sanity.types";
+import { PAGE_QUERY_RESULT, POST_QUERY_RESULT } from "@/sanity.types";
 const isProduction = process.env.NEXT_PUBLIC_SITE_ENV === "production";
 
 export function generatePageMetadata({
@@ -7,7 +7,7 @@ export function generatePageMetadata({
                                                          slug,
                                                          locale = 'en',
                                                      }: {
-    page: PAGE_QUERYResult | POST_QUERYResult;
+    page: PAGE_QUERY_RESULT | POST_QUERY_RESULT;
     slug: string;
     locale?: string;
 }) {

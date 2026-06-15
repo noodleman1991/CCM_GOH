@@ -2,11 +2,11 @@ import { cn } from "@/lib/utils";
 import SectionContainer from "@/components/ui/section-container";
 import { stegaClean } from "next-sanity";
 import { getLocalizedField } from "@/lib/localization-utils";
-import { PAGE_QUERYResult } from "@/sanity.types";
+import { PAGE_QUERY_RESULT } from "@/sanity.types";
 import { heading } from "@/lib/design-tokens";
 
 type SectionHeaderProps = Extract<
-  NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number],
+  NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number],
   { _type: "section-header" }
 > & {
   locale?: string;

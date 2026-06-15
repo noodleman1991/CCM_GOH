@@ -1,10 +1,10 @@
 import SectionContainer from "@/components/ui/section-container";
 import { stegaClean } from "next-sanity";
 import Timeline1 from "@/components/blocks/timeline/timeline-1";
-import { PAGE_QUERYResult, ColorVariant } from "@/sanity.types";
+import { PAGE_QUERY_RESULT, ColorVariant } from "@/sanity.types";
 
 type TimelineRow = Extract<
-  NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number],
+  NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number],
   { _type: "timeline-row" }
 >;
 

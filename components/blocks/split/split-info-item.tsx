@@ -6,9 +6,9 @@ import { urlFor } from "@/sanity/lib/image";
 import { motion, useInView } from "motion/react";
 import { useRef } from "react";
 import { cn } from "@/lib/utils";
-import { PAGE_QUERYResult } from "@/sanity.types";
+import { PAGE_QUERY_RESULT } from "@/sanity.types";
 
-type Block = NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number];
+type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
 type SplitRow = Extract<Block, { _type: "split-row" }>;
 type SplitInfoList = Extract<
   NonNullable<SplitRow["splitColumns"]>[number],
