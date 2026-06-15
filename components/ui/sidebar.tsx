@@ -344,14 +344,12 @@ function SidebarInset({ className, ...props }: React.ComponentProps<"main">) {
             data-slot="sidebar-inset"
             className={cn(
                 "bg-background relative flex w-full flex-1 flex-col",
-                // General inset styling
+                // Inset styling: the content sits in a rounded card with a small
+                // gap on every side, in BOTH the open and collapsed sidebar
+                // states (RTL-safe via m-2 + rounded-xl) — so the curved start
+                // edge is preserved when the sidebar is open instead of meeting
+                // it with a hard square corner.
                 "md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow-sm",
-                // Logical margin adjustments (RTL-safe). When expanded the panel
-                // sits flush against the sidebar (ms-0); in that flush state we
-                // also drop the start-side rounding so the white panel meets the
-                // sidebar cleanly instead of leaving a thin light seam.
-                "md:peer-data-[variant=inset]:ms-0 md:peer-data-[variant=inset]:rounded-s-none",
-                "md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ms-2 md:peer-data-[variant=inset]:peer-data-[state=collapsed]:rounded-s-xl",
                 className
             )}
             {...props}
