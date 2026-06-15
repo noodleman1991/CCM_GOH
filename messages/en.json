@@ -207,7 +207,7 @@
     "work": {
       "title": "Professional Experience",
       "workBio": "About my work",
-      "workTypes": "Work Types", 
+      "workTypes": "Work Types",
       "expertiseAreas": "Expertise Areas",
       "types": {
         "research": "Research",
@@ -289,7 +289,7 @@
         "phoneNote": "To add or change your phone number, go to your account settings"
       },
       "email": "Email Address",
-      "phoneNumber": "Phone Number", 
+      "phoneNumber": "Phone Number",
       "noEmail": "No email address",
       "noPhone": "No phone number",
       "basicInfo": {
@@ -351,7 +351,7 @@
           "title": "Profile Visibility",
           "description": "Choose who can view your full profile information",
           "public": "Public - Anyone can view your profile",
-          "members": "Members Only - Only community members can view your profile", 
+          "members": "Members Only - Only community members can view your profile",
           "private": "Private - Your profile is not discoverable"
         },
         "showInProfile": "Show in profile and search results",
@@ -455,30 +455,7 @@
     "description": "Share your research with our global community in English, Spanish, French, or Arabic. Help us make knowledge accessible to researchers worldwide."
   },
   "caseStudy": {
-    "pageTitle": "Case Studies",
-    "featured": "Featured",
-    "readMore": "Read More",
-    "downloadStudy": "Download Study",
-    "shareStudy": "Share Study",
-    "studyPeriod": "Study Period",
-    "location": "Location",
-    "organization": "Organization",
-    "authors": "Authors",
-    "tags": "Tags",
-    "relatedStudies": "Related Studies",
-    "status": {
-      "approved": "Approved",
-      "pending": "Pending Review",
-      "rejected": "Rejected",
-      "revision": "Needs Revision"
-    },
-    "filters": {
-      "byStatus": "By Status",
-      "byAuthor": "By Author",
-      "byOrganization": "By Organization",
-      "byTag": "By Tag",
-      "featured": "Featured Only"
-    }
+    "backToCaseStudies": "Back to Case Studies"
   },
   "caseStudyForm": {
     "sections": {
@@ -703,9 +680,6 @@
     "relatedProjects": "Related Projects",
     "studyAreas": "Study Areas",
     "allAuthors": "All Authors"
-  },
-  "caseStudy": {
-    "backToCaseStudies": "Back to Case Studies"
   },
   "livedExperiences": {
     "title": "Lived Experiences",
@@ -945,7 +919,7 @@
       },
       "recentWork": {
         "title": "Recent Work",
-        "description": "Showcase your recent projects, research, or contributions. This helps others understand your current focus and expertise.",
+        "description": "Description",
         "addWork": "Add Work",
         "editWork": "Edit Work",
         "yourWork": "Your Recent Work",
@@ -955,7 +929,6 @@
         "noWorkDescription": "Add your recent projects, research, or other contributions to help others understand your expertise.",
         "workTitle": "Project Title",
         "workTitlePlaceholder": "Enter the title of your project or work",
-        "description": "Description",
         "descriptionPlaceholder": "Describe what this project involved and its impact...",
         "workDescription": "Description",
         "workDescriptionPlaceholder": "Describe what this project involved and its impact...",
@@ -1071,8 +1044,6 @@
         "email": "Email",
         "phone": "Phone",
         "workDetails": "Work Details",
-        "socialLinks": "Social Links",
-        "location": "Location",
         "ongoing": "Ongoing",
         "viewProject": "View Project",
         "readyTitle": "You're all set!",
