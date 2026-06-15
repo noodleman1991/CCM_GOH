@@ -68,7 +68,7 @@ export function LivedExperienceVideoCard({
             </span>
           </div>
         </div>
-        <h3 className="mt-2 line-clamp-2 text-sm font-semibold leading-snug">{title}</h3>
+        <h3 className="mt-2 line-clamp-3 text-sm font-semibold leading-snug text-balance break-words">{title}</h3>
         {tags && tags.length > 0 && (
           <div className="mt-1.5 flex flex-wrap gap-1">
             {tags.slice(0, 2).map((tag) => (

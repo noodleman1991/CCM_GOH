@@ -97,10 +97,10 @@ export default function Hero1({
                             ? isImageRight ? "lg:order-1" : "lg:order-2"
                             : isImageRight ? "lg:order-2" : "lg:order-1"
                     )}>
-                        <div className="relative w-full max-w-full overflow-hidden min-w-0">
+                        <div className="relative mx-auto w-full max-w-[82%] min-w-0">
                             <Image
-                                className="rounded-xl animate-fade-up [animation-delay:500ms] opacity-0 w-full h-auto object-cover max-w-full"
-                                src={urlFor(image!).width(1200).url()}
+                                className="rounded-xl animate-fade-up [animation-delay:500ms] opacity-0 w-full h-auto object-contain"
+                                src={urlFor(image!).width(1100).url()}
                                 alt={image!.alt || ""}
                                 width={image!.asset?.metadata?.dimensions?.width || 800}
                                 height={image!.asset?.metadata?.dimensions?.height || 800}

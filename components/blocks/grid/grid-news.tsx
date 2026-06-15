@@ -10,6 +10,7 @@ import {
     MapPin
 } from 'lucide-react';
 import { urlForCropped } from '@/sanity/lib/image';
+import { sortTagsByLabel } from '@/lib/localization-utils';
 import { cn } from '@/lib/utils';
 
 // Define the news post type based on the schema
@@ -216,7 +217,7 @@ export default function GridNewsComponent({
             <CardHeader className="pb-3">
                 <div className="space-y-2">
                     {/* Title */}
-                    <h3 className="font-semibold text-lg leading-tight line-clamp-2 group-hover:text-primary transition-colors">
+                    <h3 className="font-semibold text-lg leading-snug text-balance break-words line-clamp-3 group-hover:text-primary transition-colors">
                         {title}
                     </h3>
                 </div>
@@ -279,9 +280,9 @@ export default function GridNewsComponent({
                 )}
 
                 {/* Tags */}
-                {showTags && newsPost.tags && newsPost.tags.filter(Boolean).length > 0 && (
+                {showTags && sortTagsByLabel(newsPost.tags, supportedLocale).length > 0 && (
                     <div className="flex flex-wrap gap-1 mt-3">
-                        {newsPost.tags.filter(Boolean).slice(0, 3).map((tag: any) => (
+                        {sortTagsByLabel(newsPost.tags, supportedLocale).slice(0, 3).map((tag: any) => (
                             <Badge
                                 key={tag._id}
                                 variant="outline"
@@ -294,9 +295,9 @@ export default function GridNewsComponent({
                                 {getLocalizedText(tag.label, supportedLocale)}
                             </Badge>
                         ))}
-                        {newsPost.tags.filter(Boolean).length > 3 && (
+                        {sortTagsByLabel(newsPost.tags, supportedLocale).length > 3 && (
                             <Badge variant="outline" className="text-xs">
-                                {getMoreText(newsPost.tags.filter(Boolean).length - 3)}
+                                {getMoreText(sortTagsByLabel(newsPost.tags, supportedLocale).length - 3)}
                             </Badge>
                         )}
                     </div>

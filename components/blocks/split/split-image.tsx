@@ -20,7 +20,7 @@ export default function SplitImage({ image }: SplitImage) {
   const height = dims?.height || 750;
 
   return (
-    <div className="relative w-full max-w-full min-w-0">
+    <div className="relative mx-auto w-full max-w-[82%] min-w-0">
       <Image
         src={urlFor(image).width(1100).url()}
         alt={image.alt || ""}
