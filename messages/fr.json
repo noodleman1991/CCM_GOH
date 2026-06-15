@@ -1174,5 +1174,13 @@
     "noPostsTitle": "Pas encore de publications",
     "noPostsBody": "Revenez bientôt pour découvrir les nouveautés.",
     "noContent": "Aucun contenu disponible pour le moment."
+  },
+  "map": {
+    "title": "Explorer par région",
+    "facetCaseStudies": "Études de cas",
+    "facetMembers": "Membres",
+    "facetNews": "Actualités",
+    "viewInSearch": "Voir dans la recherche",
+    "noData": "Aucune donnée pour cette région."
   }
 }
