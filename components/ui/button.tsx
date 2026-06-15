@@ -9,27 +9,29 @@ const buttonVariants = cva(
   // longer labels (and longer es/fr/ar translations) wrap to a second line
   // rather than overflowing or being clipped. Sizes use min-height (below) so a
   // wrapped button grows vertically instead of truncating.
-  "inline-flex items-center justify-center gap-2 text-center text-balance leading-tight text-sm font-bold transition-[color,box-shadow,border-color] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:shrink-0 ring-ring/10 dark:ring-ring/20 dark:outline-ring/40 outline-ring/50 focus-visible:ring-4 focus-visible:outline-1 aria-invalid:focus-visible:ring-0 font-heading rounded-[6px]",
+  // Flat by design: colour + border carry the hierarchy, not drop shadows.
+  // Text wraps/balances so long es/fr/ar labels grow vertically (min-h sizes)
+  // instead of overflowing. One radius, one transition, consistent focus ring.
+  "inline-flex items-center justify-center gap-2 text-center text-balance leading-tight font-bold transition-[color,background-color,border-color] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:shrink-0 ring-ring/10 dark:ring-ring/20 dark:outline-ring/40 outline-ring/50 focus-visible:ring-4 focus-visible:outline-1 aria-invalid:focus-visible:ring-0 font-heading rounded-lg",
   {
     variants: {
       variant: {
-        default: "bg-[var(--color-ccm-sea)] text-white shadow-md hover:bg-[var(--color-ccm-sea)]/90 hover:shadow-lg",
-        invert: "bg-background text-[var(--color-ccm-midnight)] shadow-md border-2 border-[var(--color-ccm-midnight)]/20 hover:bg-muted hover:shadow-lg hover:border-[var(--color-ccm-midnight)]/30",
-        "light-invert": "bg-[var(--color-ccm-sky)] text-[var(--color-ccm-midnight)] shadow-sm hover:bg-[var(--color-ccm-sky)]/80",
-        destructive: "bg-destructive text-destructive-foreground shadow-md hover:bg-destructive/90 hover:shadow-lg",
-        outline: "border border-[var(--color-ccm-sea)] bg-transparent text-[var(--color-ccm-sea)] shadow-sm hover:bg-[var(--color-ccm-sea)]/10 hover:border-[var(--color-ccm-sea)]/80",
-        secondary: "bg-[var(--color-ccm-water)]/15 text-[var(--color-ccm-midnight)] border-2 border-[var(--color-ccm-water)]/30 shadow-sm hover:bg-[var(--color-ccm-water)]/25 hover:border-[var(--color-ccm-water)]/50",
+        default: "bg-[var(--color-ccm-sea)] text-white hover:bg-[var(--color-ccm-midnight)]",
+        invert: "bg-background text-[var(--color-ccm-midnight)] border-2 border-[var(--color-ccm-midnight)]/20 hover:bg-muted hover:border-[var(--color-ccm-midnight)]/40",
+        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+        outline: "border border-[var(--color-ccm-sea)] bg-transparent text-[var(--color-ccm-sea)] hover:bg-[var(--color-ccm-sea)]/10 hover:border-[var(--color-ccm-sea)]/80",
+        secondary: "bg-[var(--color-ccm-water)]/15 text-[var(--color-ccm-midnight)] border border-[var(--color-ccm-water)]/40 hover:bg-[var(--color-ccm-water)]/25 hover:border-[var(--color-ccm-water)]/60",
         ghost: "bg-transparent text-[var(--color-ccm-sea)] hover:bg-[var(--color-ccm-sea)]/10 hover:text-[var(--color-ccm-midnight)]",
         link: "text-[var(--color-ccm-sea)] underline-offset-4 hover:underline hover:text-[var(--color-ccm-midnight)]",
       },
       size: {
-        // min-h (not fixed h) so buttons grow when their label wraps.
-        default: "min-h-9 px-4 py-2 has-[>svg]:px-3",
-        wide: "min-h-9 px-16 py-2 has-[>svg]:px-14",
-        thick: "min-h-16 px-12 py-6 text-lg font-extrabold has-[>svg]:px-10",
-        sm: "min-h-9 px-4 py-2 has-[>svg]:px-3",
-        lg: "min-h-12 px-8 py-2.5 has-[>svg]:px-6",
-        icon: "size-9 shrink-0",
+        // min-h (not fixed h) so buttons grow when their label wraps. A clear
+        // step between each: sm compact, default standard, lg/wide prominent.
+        sm: "min-h-8 px-3 py-1.5 text-xs has-[>svg]:px-2.5",
+        default: "min-h-10 px-5 py-2 text-sm has-[>svg]:px-4",
+        lg: "min-h-12 px-8 py-2.5 text-base has-[>svg]:px-6",
+        wide: "min-h-12 px-14 py-2.5 text-base has-[>svg]:px-12",
+        icon: "size-10 shrink-0",
       },
       stroke: {
         none: "",
@@ -47,16 +49,6 @@ const buttonVariants = cva(
         variant: "invert",
         stroke: "light",
         className: "border-gray-300"
-      },
-      {
-        variant: "light-invert",
-        stroke: "midnight",
-        className: "border-[var(--color-ccm-midnight)]"
-      },
-      {
-        variant: "light-invert",
-        stroke: "light",
-        className: "border-white"
       },
     ],
     defaultVariants: {

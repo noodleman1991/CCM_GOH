@@ -27,6 +27,8 @@ export default function SectionContainer({
 }: SectionContainerProps) {
   const backgroundStyles = getBackgroundStyles(background);
   const hasBackground = background && background.type !== "none";
+  // Editor opt-in: switch text to a light colour for dark backgrounds.
+  const lightText = Boolean(background?.lightText);
 
   // Vertical rhythm + optional top/bottom inner padding, sourced from tokens so
   // the spacing scale lives in one place (lib/design-tokens.ts).
@@ -38,24 +40,31 @@ export default function SectionContainer({
   const maxWidth = containerWidth(width);
 
   if (hasBackground) {
+    // The background spans the FULL width of the main content area (the
+    // SidebarInset) edge-to-edge — no negative margins, so it stays flush to the
+    // x-edges whether the sidebar is open or collapsed (the parent <main> has no
+    // horizontal padding). The inner content keeps the standard centred width +
+    // padding so it lines up with non-background sections above/below.
     return (
-      <section className={cn("relative w-full -mx-4", verticalPadding)}>
-        {/* Full-width background - positioned relative to section which has height */}
+      <section className={cn("relative w-full", verticalPadding)}>
         <div
-          className={cn(
-            "absolute inset-0 w-full",
-            backgroundStyles.className
-          )}
+          className={cn("absolute inset-0", backgroundStyles.className)}
           style={backgroundStyles.style}
           aria-hidden="true"
         />
-
-        {/* Centered content with horizontal padding restored and increased to compensate for -mx-4 */}
-        <div className={cn(
-          "relative mx-auto px-8 sm:px-10 lg:px-12",
-          maxWidth,
-          className
-        )}>
+        <div
+          className={cn(
+            "relative mx-auto px-4 sm:px-6 lg:px-8",
+            // When the editor flags a dark background, render text in the light
+            // foreground so headings/body stay readable. Headings/muted text that
+            // hardcode a dark brand colour are nudged to inherit via these
+            // descendant selectors (kept narrow — only text colours, not links).
+            lightText &&
+              "text-background [&_h1]:text-background [&_h2]:text-background [&_h3]:text-background [&_p]:text-background/90 [&_.text-muted-foreground]:text-background/80 [&_.text-ccm-midnight]:text-background",
+            maxWidth,
+            className
+          )}
+        >
           {children}
         </div>
       </section>

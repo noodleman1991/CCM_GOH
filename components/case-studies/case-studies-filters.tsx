@@ -6,6 +6,7 @@ import { useState, useTransition } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
+import { RemovableChip } from '@/components/ui/filter-chip'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
 import {
@@ -172,19 +173,19 @@ export default function CaseStudiesFilters({
         <div className="flex flex-col sm:flex-row gap-4">
           {/* Search Input */}
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+            <Search className="absolute start-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
             <Input
               placeholder={t('searchPlaceholder')}
               value={searchValue}
               onChange={(e) => handleSearch(e.target.value)}
-              className="pl-10 pr-10"
+              className="ps-10 pe-10"
             />
             {searchValue && (
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => handleSearch('')}
-                className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
+                className="absolute end-1 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
               >
                 <X className="w-3 h-3" />
               </Button>
@@ -223,7 +224,7 @@ export default function CaseStudiesFilters({
                 <Filter className="w-4 h-4" />
                 {t('filters')}
                 {hasActiveFilters && (
-                  <Badge variant="secondary" className="ml-1 px-1.5 py-0.5 text-xs">
+                  <Badge variant="secondary" className="ms-1 px-1.5 py-0.5 text-xs">
                     {getActiveFiltersCount()}
                   </Badge>
                 )}
@@ -269,7 +270,7 @@ export default function CaseStudiesFilters({
                           >
                             {getTagLabel(tag)}
                             {tag.caseStudyCount !== undefined && tag.caseStudyCount > 0 && (
-                              <span className="ml-1 text-xs text-muted-foreground">
+                              <span className="ms-1 text-xs text-muted-foreground">
                                 ({tag.caseStudyCount})
                               </span>
                             )}
@@ -301,7 +302,7 @@ export default function CaseStudiesFilters({
                           >
                             {getCommunityName(community)}
                             {community.caseStudyCount !== undefined && community.caseStudyCount > 0 && (
-                              <span className="ml-1 text-xs text-muted-foreground">
+                              <span className="ms-1 text-xs text-muted-foreground">
                                 ({community.caseStudyCount})
                               </span>
                             )}
@@ -322,68 +323,42 @@ export default function CaseStudiesFilters({
             <span className="text-sm text-muted-foreground">{t('activeFilters')}:</span>
 
             {currentFilters.search && (
-              <Badge variant="secondary" className="flex items-center gap-1">
-                <Search className="w-3 h-3" />
-                "{currentFilters.search}"
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleSearch('')}
-                  className="h-4 w-4 p-0 ml-1"
-                >
-                  <X className="w-3 h-3" />
-                </Button>
-              </Badge>
+              <RemovableChip
+                icon={Search}
+                label={`"${currentFilters.search}"`}
+                onRemove={() => handleSearch('')}
+              />
             )}
 
             {currentFilters.topic && (
-              <Badge variant="secondary" className="flex items-center gap-1">
-                <BookOpen className="w-3 h-3" />
-                {topicOptions.find(t => t.value === currentFilters.topic)?.label}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => updateFilter('topic', undefined)}
-                  className="h-4 w-4 p-0 ml-1"
-                >
-                  <X className="w-3 h-3" />
-                </Button>
-              </Badge>
+              <RemovableChip
+                icon={BookOpen}
+                label={topicOptions.find(t => t.value === currentFilters.topic)?.label ?? currentFilters.topic}
+                onRemove={() => updateFilter('topic', undefined)}
+              />
             )}
 
             {currentFilters.tags && currentFilters.tags.map((tagValue) => {
               const tag = tags.find(t => t.value === tagValue)
               return (
-                <Badge key={tagValue} variant="secondary" className="flex items-center gap-1">
-                  <Tag className="w-3 h-3" />
-                  {tag ? getTagLabel(tag) : tagValue}
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => toggleArrayFilter('tags', tagValue)}
-                    className="h-4 w-4 p-0 ml-1"
-                  >
-                    <X className="w-3 h-3" />
-                  </Button>
-                </Badge>
+                <RemovableChip
+                  key={tagValue}
+                  icon={Tag}
+                  label={tag ? getTagLabel(tag) : tagValue}
+                  onRemove={() => toggleArrayFilter('tags', tagValue)}
+                />
               )
             })}
 
             {currentFilters.communities && currentFilters.communities.map((communitySlug) => {
               const community = communities.find(c => c.slug === communitySlug)
               return (
-                <Badge key={communitySlug} variant="secondary" className="flex items-center gap-1">
-                  <MapPin className="w-3 h-3" />
-                  {community ? getCommunityName(community) : communitySlug}
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => toggleArrayFilter('communities', communitySlug)}
-                    className="h-4 w-4 p-0 ml-1"
-                  >
-                    <X className="w-3 h-3" />
-                  </Button>
-                </Badge>
+                <RemovableChip
+                  key={communitySlug}
+                  icon={MapPin}
+                  label={community ? getCommunityName(community) : communitySlug}
+                  onRemove={() => toggleArrayFilter('communities', communitySlug)}
+                />
               )
             })}
 

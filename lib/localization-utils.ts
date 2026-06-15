@@ -21,10 +21,15 @@ export type SupportedLocale = 'en' | 'es' | 'fr' | 'ar'
  * @returns The localized text or fallback
  */
 export function getLocalizedText(
-  localizedObj: LocalizedString | Record<string, string> | null | undefined,
+  localizedObj: LocalizedString | Record<string, string> | string | null | undefined,
   locale: string,
   fallbackText: string = ''
 ): string {
+  // A plain string is already resolved (e.g. a document-internationalization
+  // field, or content migrated to a flat single-language value) — pass through.
+  if (typeof localizedObj === 'string') {
+    return localizedObj || fallbackText
+  }
   if (!localizedObj || typeof localizedObj !== 'object') {
     return fallbackText
   }
@@ -310,4 +315,23 @@ export function getLocalizedField<T = any>(
   }
 
   return fallback
+}
+
+/**
+ * Sort tags by their LOCALIZED label so badges render in a stable, locale-aware
+ * order across every card/grid (consistent in en/es/fr/ar). Drops null entries.
+ * Each tag is expected to have a localized `label` consumable by getLocalizedText.
+ */
+export function sortTagsByLabel<T extends { label?: unknown }>(
+  tags: (T | null | undefined)[] | null | undefined,
+  locale: string
+): T[] {
+  if (!Array.isArray(tags)) return []
+  const valid = tags.filter((t): t is T => Boolean(t))
+  return [...valid].sort((a, b) =>
+    getLocalizedText((a as any).label, locale).localeCompare(
+      getLocalizedText((b as any).label, locale),
+      locale
+    )
+  )
 }

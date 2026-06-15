@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import SectionContainer from "@/components/ui/section-container";
 import { stegaClean } from "next-sanity";
-import { PAGE_QUERYResult } from "@/sanity.types";
+import { PAGE_QUERY_RESULT } from "@/sanity.types";
 import GridCard from "./grid-card";
 import GridPost from "./grid-post";
 // import PricingCard from "./pricing-card";
@@ -18,7 +18,7 @@ import { getLocalizedField } from "@/lib/localization-utils";
 import { resolveGridColumns } from "@/lib/grid-layout";
 import { gridGap } from "@/lib/design-tokens";
 
-type Block = NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number];
+type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
 type GridRow = Extract<Block, { _type: "grid-row" }>;
 
 type GridCardType = {

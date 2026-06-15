@@ -4,6 +4,7 @@
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { urlFor } from "@/sanity/lib/image";
+import { heading } from "@/lib/design-tokens";
 import Blocks from "@/components/blocks";
 
 interface GridSectionHeaderProps {
@@ -41,12 +42,12 @@ export function GridSectionHeader({
       {/* Text Content */}
       <div className={cn(isRTL && hasImage && "md:order-2")}>
         {title && (
-          <h2 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl text-balance break-words">
+          <h2 className={cn("font-bold font-heading text-ccm-midnight text-balance break-words", heading('md'))}>
             {title}
           </h2>
         )}
         {subtitle && (
-          <p className="mt-2 text-lg text-muted-foreground break-words">{subtitle}</p>
+          <p className="mt-2 text-base md:text-lg text-muted-foreground break-words">{subtitle}</p>
         )}
         {description && (
           <div className="mt-4">

@@ -17,18 +17,18 @@ import {
   INDEX_HOMEPAGE_QUERY,
 } from "@/sanity/queries/homepage";
 import {
-    PAGE_QUERYResult,
-    // PAGES_SLUGS_QUERYResult,
-    POST_QUERYResult,
-    POSTS_QUERYResult,
-    POSTS_SLUGS_QUERYResult,
+    PAGE_QUERY_RESULT,
+    // PAGES_SLUGS_QUERY_RESULT,
+    POST_QUERY_RESULT,
+    POSTS_QUERY_RESULT,
+    POSTS_SLUGS_QUERY_RESULT,
 } from "@/sanity.types";
 
 // export const fetchSanityPageBySlug = async ({
 //   slug,
 // }: {
 //   slug: string;
-// }): Promise<PAGE_QUERYResult> => {
+// }): Promise<PAGE_QUERY_RESULT> => {
 //   const { data } = await sanityFetch({
 //     query: PAGE_QUERY,
 //     params: { slug },
@@ -43,7 +43,7 @@ export const fetchSanityPageBySlug = async ({
                                             }: {
     slug: string;
     locale?: string;
-}): Promise<PAGE_QUERYResult> => {
+}): Promise<PAGE_QUERY_RESULT> => {
     const { data } = await sanityFetch({
         query: PAGE_QUERY,
         params: {
@@ -114,7 +114,7 @@ export const fetchSanityRCPagesStaticParams = async () => {
 };
 
 // export const fetchSanityPagesStaticParams =
-//   async (): Promise<PAGES_SLUGS_QUERYResult> => {
+//   async (): Promise<PAGES_SLUGS_QUERY_RESULT> => {
 //     const { data } = await sanityFetch({
 //       query: PAGES_SLUGS_QUERY,
 //       perspective: "published",
@@ -177,7 +177,7 @@ export const fetchTranslationsForPage = async (pageId: string) => {
     }
 };
 
-export const fetchSanityPosts = async (): Promise<POSTS_QUERYResult> => {
+export const fetchSanityPosts = async (): Promise<POSTS_QUERY_RESULT> => {
     const { data } = await sanityFetch({
         query: POSTS_QUERY,
     });
@@ -191,7 +191,7 @@ export const fetchSanityPostBySlug = async ({
                                             }: {
     slug: string;
     locale?: string;
-}): Promise<POST_QUERYResult> => {
+}): Promise<POST_QUERY_RESULT> => {
     const { data } = await sanityFetch({
         query: POST_QUERY,
         params: {
@@ -214,7 +214,7 @@ export const fetchSanityPostBySlug = async ({
 };
 
 export const fetchSanityPostsStaticParams =
-    async (): Promise<POSTS_SLUGS_QUERYResult> => {
+    async (): Promise<POSTS_SLUGS_QUERY_RESULT> => {
         const { data } = await sanityFetch({
             query: POSTS_SLUGS_QUERY,
             perspective: "published",

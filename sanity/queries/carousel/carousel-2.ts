@@ -12,7 +12,8 @@ export const carousel2Query = groq`
     testimonial[]->{
       _id,
       name,
-      title,
+      // Localized job title (Lane B) with legacy single-language fallback.
+      "title": coalesce(jobTitle, { "en": title }),
       image{
         asset->{
           _id,
@@ -30,24 +31,9 @@ export const carousel2Query = groq`
         crop,
         alt
       },
-      body[]{
-        ...,
-        _type == "image" => {
-          ...,
-          asset->{
-            _id,
-            url,
-            mimeType,
-            metadata {
-              lqip,
-              dimensions {
-                width,
-                height
-              }
-            }
-          }
-        }
-      },
+      // Localized rich quote object ({en,es,fr,ar}); the renderer resolves the
+      // active locale. Falls back to wrapping the legacy single-language body.
+      "quote": coalesce(quote, { "en": body }),
       rating,
       featured,
       relatedCommunity->{

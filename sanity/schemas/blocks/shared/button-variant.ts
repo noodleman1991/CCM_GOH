@@ -1,74 +1,58 @@
 import { defineType } from "sanity";
 
+/**
+ * Curated button options. Editors pick from a SHORT list so buttons stay
+ * consistent across the site — the renderer (components/ui/button.tsx) still
+ * understands the older values (invert / light-invert / secondary / thick / sm
+ * / strokes) so any previously-saved button keeps rendering; they're just no
+ * longer offered for NEW buttons.
+ */
 export const BUTTON_VARIANTS = [
-  { title: "Primary (Sea Blue)", value: "default" },
-  { title: "Light (White Background)", value: "invert" },
-  { title: "Secondary (Water Blue)", value: "light-invert" },
-  { title: "Outline", value: "outline" },
-  { title: "Neutral (Gray)", value: "secondary" },
-  { title: "Ghost", value: "ghost" },
-  { title: "Link", value: "link" },
-  { title: "Destructive (Red)", value: "destructive" },
+  { title: "Primary — filled brand blue", value: "default" },
+  { title: "Secondary — soft blue", value: "secondary" },
+  { title: "Outline — bordered", value: "outline" },
+  { title: "Ghost — text only", value: "ghost" },
 ];
 
 export const BUTTON_SIZES = [
   { title: "Default", value: "default" },
-  { title: "Wide", value: "wide" },
-  { title: "Thick (Bulky)", value: "thick" },
-  { title: "Small", value: "sm" },
   { title: "Large", value: "lg" },
-];
-
-export const BUTTON_STROKES = [
-  { title: "No Border", value: "none" },
-  { title: "Light Gray Border", value: "light" },
-  { title: "CCM Midnight Border", value: "midnight" },
+  { title: "Wide", value: "wide" },
 ];
 
 export const buttonVariant = defineType({
   name: "button-variant",
-  title: "Button Variant",
+  title: "Button Style",
   type: "object",
+  description:
+    "Keep buttons consistent: use Primary for the main action, Secondary/Outline for less important ones, Ghost for subtle links.",
   fields: [
     {
       name: "variant",
-      title: "Button Type",
+      title: "Style",
       type: "string",
+      description: "Primary = the main call to action. Use sparingly — one per section.",
       options: {
         list: BUTTON_VARIANTS.map(({ title, value }) => ({ title, value })),
-        layout: "dropdown",
+        layout: "radio",
       },
       initialValue: "default",
     },
     {
       name: "size",
-      title: "Button Size",
+      title: "Size",
       type: "string",
+      description: "Default for most buttons; Large/Wide for prominent hero or call-to-action buttons.",
       options: {
         list: BUTTON_SIZES.map(({ title, value }) => ({ title, value })),
         layout: "radio",
       },
       initialValue: "default",
     },
-    {
-      name: "stroke",
-      title: "Border Stroke",
-      type: "string",
-      options: {
-        list: BUTTON_STROKES.map(({ title, value }) => ({ title, value })),
-        layout: "radio",
-      },
-      initialValue: "none",
-      hidden: ({ parent }: { parent?: any }) => {
-        // Only show stroke options for invert variants and outline
-        return !parent?.variant || (!parent.variant.includes('invert') && parent.variant !== 'outline');
-      },
-    }
   ],
   initialValue: {
     variant: "default",
     size: "default",
-    stroke: "none",
   },
   preview: {
     select: {

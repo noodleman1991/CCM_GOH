@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { heading } from "@/lib/design-tokens";
 import Image from "next/image";
 import { urlForCropped } from "@/sanity/lib/image";
 import PortableText from "@/components/portable-text-renderer";
@@ -167,7 +168,7 @@ export default async function TeamGrid(props: TeamGridProps) {
         {/* Section Header */}
         {showTitle && (
           <div className="mb-10 sm:mb-12 lg:mb-16 text-center">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4">
+            <h2 className={cn("font-bold font-heading text-ccm-midnight text-balance mb-4", heading('lg'))}>
               {title}
             </h2>
             {showDescription && description && (

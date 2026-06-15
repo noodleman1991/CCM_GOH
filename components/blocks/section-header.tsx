@@ -2,10 +2,11 @@ import { cn } from "@/lib/utils";
 import SectionContainer from "@/components/ui/section-container";
 import { stegaClean } from "next-sanity";
 import { getLocalizedField } from "@/lib/localization-utils";
-import { PAGE_QUERYResult } from "@/sanity.types";
+import { PAGE_QUERY_RESULT } from "@/sanity.types";
+import { heading } from "@/lib/design-tokens";
 
 type SectionHeaderProps = Extract<
-  NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number],
+  NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number],
   { _type: "section-header" }
 > & {
   locale?: string;
@@ -52,13 +53,23 @@ export default function SectionHeader({
           className={cn(color === "primary" ? "text-background" : undefined)}
         >
           {localizedTagLine && (
-            <p className="text-base font-semibold mb-4">
+            <p className={cn(
+              "text-base font-semibold uppercase tracking-wider mb-4",
+              color === "primary" ? "text-background/80" : "text-ccm-water"
+            )}>
               {localizedTagLine}
             </p>
           )}
-          <h2 className="text-3xl md:text-4xl text-balance mb-4">{localizedTitle}</h2>
+          <h2 className={cn('font-bold font-heading text-balance mb-4', heading('md'))}>{localizedTitle}</h2>
         </div>
-        <p>{localizedDescription}</p>
+        {localizedDescription && (
+          <p className={cn(
+            "text-lg",
+            color === "primary" ? "text-background/90" : "text-muted-foreground"
+          )}>
+            {localizedDescription}
+          </p>
+        )}
         </div>
       </div>
     </SectionContainer>

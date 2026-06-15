@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
+import { heading } from "@/lib/design-tokens";
 import SectionContainer from "@/components/ui/section-container";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Play, Calendar, User } from "lucide-react";
@@ -314,7 +315,7 @@ export default function LivedExperiencesCarousel({
           {(title || subtitle) && (
             <div className="mb-12">
               {title && (
-                <h2 className="text-3xl md:text-4xl font-bold mb-4 text-balance">
+                <h2 className={cn("font-bold font-heading text-ccm-midnight mb-4 text-balance", heading('md'))}>
                   {title}
                 </h2>
               )}
@@ -341,12 +342,12 @@ export default function LivedExperiencesCarousel({
         {(title || subtitle) && (
           <div className="mb-12">
             {title && (
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-balance">
+              <h2 className={cn("font-bold font-heading text-ccm-midnight mb-4 text-balance", heading('md'))}>
                 {title}
               </h2>
             )}
             {subtitle && (
-              <p className="text-lg text-muted-foreground max-w-2xl">
+              <p className="text-base md:text-lg text-muted-foreground max-w-2xl">
                 {subtitle}
               </p>
             )}
