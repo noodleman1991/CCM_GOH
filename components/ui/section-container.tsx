@@ -1,11 +1,10 @@
 import { cn } from "@/lib/utils";
 import { BackgroundOptionType } from "@/types/background-option";
 import { getBackgroundStyles } from "@/lib/background-utils";
-import { SectionPadding, ColorVariant } from "@/sanity.types";
+import { SectionPadding } from "@/sanity.types";
 import { spacingY, containerWidth, type SpacingToken, type WidthToken } from "@/lib/design-tokens";
 
 interface SectionContainerProps {
-  color?: ColorVariant | null;
   padding?: SectionPadding | null;
   background?: BackgroundOptionType | null;
   /** Vertical rhythm token. Defaults to the site-standard "md". */
@@ -17,7 +16,6 @@ interface SectionContainerProps {
 }
 
 export default function SectionContainer({
-  color = "background",
   padding,
   background,
   spacing = "md",

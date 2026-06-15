@@ -5,7 +5,6 @@ export const regionMapQuery = groq`
     _type,
     _key,
     padding,
-    colorVariant,
     title,
     description,
     defaultFacet,

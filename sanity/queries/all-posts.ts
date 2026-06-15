@@ -6,7 +6,6 @@ export const allPostsQuery = groq`
     _type,
     _key,
     padding,
-    colorVariant,
     mode,
     limit,
     manualPosts[]->{

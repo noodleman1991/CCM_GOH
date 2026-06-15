@@ -1,5 +1,4 @@
 import SectionContainer from "@/components/ui/section-container";
-import { stegaClean } from "next-sanity";
 import {
   Accordion,
   AccordionContent,
@@ -17,13 +16,12 @@ type FAQProps = Extract<
   locale?: string;
 };
 
-export default function FAQs({ padding, colorVariant, faqs, locale = "en" }: FAQProps) {
-  const color = stegaClean(colorVariant);
+export default function FAQs({ padding, faqs, locale = "en" }: FAQProps) {
 
   const supportedLocale = (locale || "en") as 'en' | 'es' | 'fr' | 'ar';
 
   return (
-    <SectionContainer color={color} padding={padding}>
+    <SectionContainer padding={padding}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {faqs && faqs?.length > 0 && (
           <Accordion className="space-y-4" type="multiple">

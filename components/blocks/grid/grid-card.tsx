@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import Image from "next/image";
 import { urlForCropped } from "@/sanity/lib/image";
-import { PAGE_QUERY_RESULT, ColorVariant } from "@/sanity.types";
+import { PAGE_QUERY_RESULT } from "@/sanity.types";
 
 type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
 type GridRow = Extract<Block, { _type: "grid-row" }>;
@@ -13,13 +13,11 @@ type GridColumn = NonNullable<NonNullable<GridRow["columns"]>>[number];
 type GridCard = Extract<GridColumn, { _type: "grid-card" }>;
 
 interface GridCardProps extends Omit<GridCard, "_type" | "_key"> {
-  color?: string; //todo: what is the issue with colorVariant?
   cardVariant?: string;
   imageSizes?: string;
 }
 
 export default function GridCard({
-  color,
   title,
   excerpt,
   image,
@@ -40,9 +38,7 @@ export default function GridCard({
       <div
         className={cn(
           "flex w-full flex-col justify-between overflow-hidden transition ease-in-out border rounded-3xl p-6",
-          color === "primary"
-            ? "group-hover:border-primary-foreground/50"
-            : "group-hover:border-primary"
+          "group-hover:border-primary"
         )}
       >
         <div className="w-full min-w-0">
@@ -59,9 +55,7 @@ export default function GridCard({
               />
             </div>
           )}
-          <div
-            className={cn("break-words", color === "primary" ? "text-background" : undefined)}
-          >
+          <div className="break-words">
             {title && (
               <div className="flex justify-between items-start mb-4">
                 <h3 className="font-bold text-2xl text-balance break-words line-clamp-3">{title}</h3>

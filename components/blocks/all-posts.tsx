@@ -121,14 +121,12 @@ async function fetchNewsPosts(mode: string, limit: number, manualPosts?: any[]) 
 
 export default async function AllPosts({
   padding,
-  colorVariant,
   mode,
   limit,
   manualPosts,
   locale = "en",
 }: AllPostsProps) {
   const supportedLocale = locale as 'en' | 'es' | 'fr' | 'ar';
-  const color = stegaClean(colorVariant);
   const displayMode = stegaClean(mode) || "featured";
   const displayLimit = stegaClean(limit) || 6;
 
@@ -137,7 +135,7 @@ export default async function AllPosts({
   if (!posts || posts.length === 0) {
     const t = await getTranslations({ locale: supportedLocale, namespace: "blocks" });
     return (
-      <SectionContainer color={color} padding={padding}>
+      <SectionContainer padding={padding}>
         <div className="text-center py-12 text-muted-foreground">
           <p className="text-lg">{t("noPostsTitle")}</p>
           <p className="text-sm mt-2">{t("noPostsBody")}</p>
@@ -147,7 +145,7 @@ export default async function AllPosts({
   }
 
   return (
-    <SectionContainer color={color} padding={padding}>
+    <SectionContainer padding={padding}>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {posts.map((post: any) => {
           // Extract localized content

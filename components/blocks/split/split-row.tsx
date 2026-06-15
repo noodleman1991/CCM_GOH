@@ -24,15 +24,13 @@ const componentMap: {
 
 export default function SplitRow({
   padding,
-  colorVariant,
   noGap,
   splitColumns,
   locale = "en",
 }: SplitRow & { locale?: string }) {
-  const color = stegaClean(colorVariant);
 
   return (
-    <SectionContainer color={color} padding={padding}>
+    <SectionContainer padding={padding}>
       <div className="overflow-x-hidden">
         {splitColumns && splitColumns?.length > 0 && (
           <div
@@ -56,7 +54,7 @@ export default function SplitRow({
               <div key={column._key} className="flex h-full min-w-0 flex-col justify-center">
                 <Component
                   {...(column as any)}
-                  color={color}
+
                   noGap={noGap}
                   locale={locale}
                 />

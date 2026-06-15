@@ -6,7 +6,6 @@ export const timelineQuery = groq`
     _type,
     _key,
     padding,
-    colorVariant,
     timelines[]{
       title,
       tagLine,

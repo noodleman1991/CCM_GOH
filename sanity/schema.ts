@@ -33,7 +33,6 @@ import link from "./schemas/blocks/shared/link";
 // New block types for portable text
 import breakBlock from "./schemas/blocks/break";
 import infoBox from "./schemas/blocks/info-box";
-import { colorVariant } from "./schemas/blocks/shared/color-variant";
 import { buttonVariant } from "./schemas/blocks/shared/button-variant";
 import sectionPadding from "./schemas/blocks/shared/section-padding";
 import { backgroundOption } from "./schemas/blocks/shared/background-option";
@@ -120,7 +119,6 @@ export const schema: { types: SchemaTypeDefinition[] } = {
         // portable text block types
         breakBlock,
         infoBox,
-        colorVariant,
         buttonVariant,
         sectionPadding,
         backgroundOption,
