@@ -2,9 +2,9 @@ import Image from "next/image";
 import PostDate from "@/components/post-date";
 import { Mail } from "lucide-react";
 import { urlFor } from "@/sanity/lib/image";
-import { POST_QUERYResult } from "@/sanity.types";
+import { POST_QUERY_RESULT } from "@/sanity.types";
 
-type PostHeroProps = NonNullable<POST_QUERYResult>;
+type PostHeroProps = NonNullable<POST_QUERY_RESULT>;
 
 export default function PostHero({
   title,

@@ -1,4 +1,4 @@
-import { PAGE_QUERYResult } from "@/sanity.types";
+import { PAGE_QUERY_RESULT } from "@/sanity.types";
 import Hero1 from "@/components/blocks/hero/hero-1";
 import Hero2 from "@/components/blocks/hero/hero-2";
 import SectionHeader from "@/components/blocks/section-header";
@@ -14,10 +14,11 @@ import LogoCloud1 from "@/components/blocks/logo-cloud/logo-cloud-1";
 import FAQs from "@/components/blocks/faqs";
 import FormNewsletter from "@/components/blocks/forms/newsletter";
 import AllPosts from "@/components/blocks/all-posts";
+import RegionMapBlock from "@/components/blocks/maps/region-map";
 import { isRTL } from "@/i18n/i18n-helpers";
 // import gridReport from "@/sanity/schemas/blocks/grid/grid-report"; //todo: what is the diff between reportsgrid and gridreports in schemas???
 
-type Block = NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number];
+type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
 
 interface BlocksProps {
     blocks: Block[];
@@ -46,6 +47,7 @@ const componentMap: Record<string, React.ComponentType<any>> = {
     faqs: FAQs,
     "form-newsletter": FormNewsletter,
     "all-posts": AllPosts,
+    "region-map": RegionMapBlock,
 };
 
 export default function Blocks({ blocks, locale, userId }: BlocksProps) {

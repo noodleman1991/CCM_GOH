@@ -132,6 +132,16 @@ export const backgroundOption = defineType({
       hidden: ({ parent }) => parent?.type !== "image",
       validation: (rule) => rule.custom(() => true),
     }),
+    defineField({
+      name: "lightText",
+      title: "Light text for a dark background",
+      type: "boolean",
+      description:
+        "Turn this on when your background is dark (e.g. CCM Sea or Midnight) so the heading and text switch to a light colour and stay readable. Leave off for light backgrounds.",
+      initialValue: false,
+      // Only relevant once an actual background is chosen.
+      hidden: ({ parent }) => !parent?.type || parent.type === "none",
+    }),
   ],
   preview: {
     select: {

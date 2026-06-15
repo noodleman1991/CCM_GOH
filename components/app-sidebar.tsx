@@ -207,7 +207,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton size="xl" asChild className="justify-center p-4">
+                        <SidebarMenuButton
+                            size="xl"
+                            asChild
+                            className="justify-center p-4 hover:bg-transparent active:bg-transparent focus-visible:bg-transparent data-[active=true]:bg-transparent"
+                        >
                             <Logo size="xl" />
                         </SidebarMenuButton>
                     </SidebarMenuItem>

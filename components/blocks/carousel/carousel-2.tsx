@@ -13,11 +13,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { urlForCropped } from "@/sanity/lib/image";
 import { StarRating } from "@/components/ui/star-rating";
 import PortableTextRenderer from "@/components/portable-text-renderer";
-import { PAGE_QUERYResult } from "@/sanity.types";
-import { getLocalizedField } from "@/lib/localization-utils";
+import { PAGE_QUERY_RESULT } from "@/sanity.types";
+import { getLocalizedField, getLocalizedPortableText } from "@/lib/localization-utils";
+import { cn } from "@/lib/utils";
+import { heading } from "@/lib/design-tokens";
 
 type Carousel2Props = Extract<
-  NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number],
+  NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number],
   { _type: "carousel-2" }
 > & {
   locale?: string;
@@ -49,11 +51,11 @@ export default function Carousel2({
         <div className="flex flex-col space-y-6 overflow-hidden">
           {localizedTitle && (
             <div className="text-center">
-              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl break-words">
+              <h2 className={cn('font-bold font-heading text-balance break-words text-ccm-midnight', heading('lg'))}>
                 {localizedTitle}
               </h2>
               {localizedDescription && (
-                <p className="mt-4 text-lg text-muted-foreground">
+                <p className="mt-4 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
                   {localizedDescription}
                 </p>
               )}
@@ -62,7 +64,15 @@ export default function Carousel2({
         {testimonial && testimonial.length > 0 && (
         <Carousel>
           <CarouselContent>
-            {testimonial.map((item) => (
+            {testimonial.map((item) => {
+              const it = item as any;
+              const jobTitle = typeof it.title === 'string'
+                ? it.title
+                : getLocalizedField(it.title, supportedLocale, '');
+              const quoteBody = Array.isArray(it.quote)
+                ? it.quote
+                : getLocalizedPortableText(it.quote, supportedLocale);
+              return (
               <CarouselItem
                 key={item._id}
                 className="ps-2 md:ps-4 md:basis-1/2 lg:basis-1/3 min-w-0"
@@ -85,26 +95,27 @@ export default function Carousel2({
                         <div>
                           <h3 className="text-sm font-semibold">{item.name}</h3>
                           <p className="text-xs text-muted-foreground">
-                            {item.title}
+                            {jobTitle}
                           </p>
-                          {((item as any).organization?.name || (item as any).relatedCommunity?.name) && (
+                          {(it.organization?.name || it.relatedCommunity?.name) && (
                             <p className="text-xs text-muted-foreground/80">
-                              {(item as any).organization?.name || (item as any).relatedCommunity?.name}
+                              {it.organization?.name || it.relatedCommunity?.name}
                             </p>
                           )}
                         </div>
                       </div>
                       <StarRating rating={item.rating ?? 0} />
-                      {item.body && (
+                      {quoteBody && (
                         <div className="text-sm mt-2 line-clamp-4">
-                          <PortableTextRenderer value={item.body} locale={locale} />
+                          <PortableTextRenderer value={quoteBody} locale={locale} />
                         </div>
                       )}
                     </div>
                   </CardContent>
                 </Card>
               </CarouselItem>
-            ))}
+              );
+            })}
           </CarouselContent>
           <CarouselPrevious
             variant="secondary"

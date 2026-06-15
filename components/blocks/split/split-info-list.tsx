@@ -1,7 +1,7 @@
 import SplitInfoItem from "@/components/blocks/split/split-info-item";
-import { PAGE_QUERYResult } from "@/sanity.types";
+import { PAGE_QUERY_RESULT } from "@/sanity.types";
 
-type Block = NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number];
+type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
 type SplitRow = Extract<Block, { _type: "split-row" }>;
 type SplitInfoList = Extract<
   NonNullable<SplitRow["splitColumns"]>[number],

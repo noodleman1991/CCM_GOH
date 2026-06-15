@@ -555,7 +555,10 @@
     "tags": "العلامات",
     "cookieConsentRequired": "يتطلب هذا الفيديو موافقة على ملفات تعريف الارتباط للتشغيل.",
     "acceptCookies": "قبول ملفات تعريف الارتباط",
-    "videoUnavailable": "هذا الفيديو غير متاح."
+    "videoUnavailable": "هذا الفيديو غير متاح.",
+    "sortBy": "ترتيب",
+    "sortNewest": "الأحدث أولاً",
+    "sortAZ": "أ–ي"
   },
   "caseStudyForm": {
     "sections": {
@@ -1171,5 +1174,13 @@
     "noPostsTitle": "لا توجد منشورات بعد",
     "noPostsBody": "تحقق مرة أخرى قريباً للاطلاع على التحديثات.",
     "noContent": "لا يوجد محتوى متاح في الوقت الحالي."
+  },
+  "map": {
+    "title": "استكشف حسب المنطقة",
+    "facetCaseStudies": "دراسات الحالة",
+    "facetMembers": "الأعضاء",
+    "facetNews": "الأخبار",
+    "viewInSearch": "عرض في البحث",
+    "noData": "لا توجد بيانات لهذه المنطقة بعد."
   }
 }

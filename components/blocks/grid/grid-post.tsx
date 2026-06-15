@@ -4,9 +4,9 @@ import Image from "next/image";
 import { urlForCropped } from "@/sanity/lib/image";
 import { ChevronRight, Calendar } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { PAGE_QUERYResult } from "@/sanity.types";
+import { PAGE_QUERY_RESULT } from "@/sanity.types";
 
-type Block = NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number];
+type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
 type GridRow = Extract<Block, { _type: "grid-row" }>;
 type GridColumn = NonNullable<NonNullable<GridRow["columns"]>>[number];
 type GridPost = Extract<GridColumn, { _type: "grid-post" }>;

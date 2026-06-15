@@ -9,7 +9,7 @@ import WorkDetailsBlock from "@/components/blocks/profile/work-details-block"
 import RecentWorkBlock from "@/components/blocks/profile/recent-work-block"
 import CommunityHubBlock from "@/components/blocks/profile/community-hub-block"
 import SocialLinksBlock from "@/components/blocks/profile/social-links-block"
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
+import { PageBreadcrumb } from "@/components/ui/page-breadcrumb"
 
 interface ProfilePageProps {
     params: Promise<{
@@ -66,24 +66,13 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
 
     return (
         <div className="container py-8 max-w-6xl">
-            {/* Breadcrumbs */}
-            <Breadcrumb className="mb-6">
-                <BreadcrumbList>
-                    <BreadcrumbItem>
-                        <BreadcrumbLink href="/">Home</BreadcrumbLink>
-                    </BreadcrumbItem>
-                    <BreadcrumbSeparator />
-                    <BreadcrumbItem>
-                        <BreadcrumbLink href="/profiles">Profiles</BreadcrumbLink>
-                    </BreadcrumbItem>
-                    <BreadcrumbSeparator />
-                    <BreadcrumbItem>
-                        <BreadcrumbPage>
-                            {user.firstName || user.username || 'Profile'}
-                        </BreadcrumbPage>
-                    </BreadcrumbItem>
-                </BreadcrumbList>
-            </Breadcrumb>
+            <PageBreadcrumb
+                className="mb-6"
+                withDashboard
+                items={[
+                    { label: user.firstName || user.username || t('overview') },
+                ]}
+            />
 
             <div className="grid gap-6 lg:grid-cols-3">
                 {/* Main Column */}

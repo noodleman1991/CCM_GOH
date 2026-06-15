@@ -1,6 +1,6 @@
 'use client'
 
-import { Check } from 'lucide-react'
+import { Check, X, type LucideIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 /**
@@ -37,5 +37,43 @@ export function FilterChip({
       {active && <Check className="h-3.5 w-3.5 shrink-0" />}
       <span className="text-start">{label}</span>
     </button>
+  )
+}
+
+/**
+ * An ACTIVE-filter chip with a remove (×) affordance, for "currently applied"
+ * filter summaries (case studies, news). Optional leading icon. RTL-safe.
+ */
+export function RemovableChip({
+  label,
+  onRemove,
+  icon: Icon,
+  removeLabel = 'Remove filter',
+  className,
+}: {
+  label: string
+  onRemove: () => void
+  icon?: LucideIcon
+  removeLabel?: string
+  className?: string
+}) {
+  return (
+    <span
+      className={cn(
+        'inline-flex items-center gap-1.5 rounded-full bg-[var(--color-ccm-sea)]/10 px-2.5 py-1 text-sm font-medium text-[var(--color-ccm-sea)]',
+        className
+      )}
+    >
+      {Icon && <Icon className="h-3.5 w-3.5 shrink-0" />}
+      <span className="text-start">{label}</span>
+      <button
+        type="button"
+        onClick={onRemove}
+        aria-label={removeLabel}
+        className="ms-0.5 rounded-full p-0.5 hover:bg-[var(--color-ccm-sea)]/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      >
+        <X className="h-3 w-3" />
+      </button>
+    </span>
   )
 }

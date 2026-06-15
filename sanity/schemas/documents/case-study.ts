@@ -1,14 +1,7 @@
 import { defineField, defineType } from "sanity";
 import { FileSearch } from "lucide-react";
 import { topicOptions } from "../shared/topic-options";
-
-// Language configuration
-const supportedLanguages = [
-    { id: "en", title: "English", isDefault: true },
-    { id: "es", title: "Español" },
-    { id: "fr", title: "Français" },
-    { id: "ar", title: "العربية", isRTL: true },
-];
+import { createLocalizedField as createSharedLocalizedField } from "../shared/localized-field";
 
 // Role configuration
 const authorRoles = [
@@ -26,24 +19,10 @@ const statusOptions = [
     { title: "Approved (Published)", value: "approved" },
 ];
 
-// Helper function for localized fields
-const createLocalizedField = (name: string, title: string, type: string = "string", required: boolean = false) => {
-    const validation = required ? (Rule: any) => Rule.required() : undefined;
-
-    return defineField({
-        name,
-        title,
-        type: "object",
-        group: "content",
-        fields: supportedLanguages.map(lang => ({
-            name: lang.id,
-            title: lang.title,
-            type,
-            validation: lang.isDefault && required ? validation : undefined,
-        })),
-        validation: required ? (Rule: any) => Rule.required() : undefined,
-    });
-};
+// Thin wrapper preserving this file's call signature; delegates to the shared
+// Lane-B localized-field helper (group defaults to "content" here).
+const createLocalizedField = (name: string, title: string, type: string = "string", required: boolean = false) =>
+    createSharedLocalizedField(name, title, type, { group: "content", required });
 
 export default defineType({
     name: "caseStudy",
@@ -260,7 +239,7 @@ export default defineType({
                     type: "string",
                 },
             ],
-            description: "Text description of the study location",
+            description: "Human-readable location shown on the case study (e.g. \"Nairobi, Kenya\"). Display only — for the map, set the coordinates below.",
         }),
 
         defineField({
@@ -268,7 +247,7 @@ export default defineType({
             title: "Primary Study Location (Map)",
             type: "geopoint",
             group: "metadata",
-            description: "Geographic coordinates for map display",
+            description: "The main location's coordinates. This is what drives the regional map and search — set it for every case study.",
         }),
 
         defineField({
@@ -276,6 +255,7 @@ export default defineType({
             title: "Additional Study Areas",
             type: "array",
             group: "metadata",
+            description: "Optional. Only add these if the study spanned several distinct places beyond the primary location above.",
             of: [{
                 type: "object",
                 fields: [

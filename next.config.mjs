@@ -1,6 +1,13 @@
 /** @type {import('next').NextConfig} */
 import createNextIntlPlugin from 'next-intl/plugin';
+import { fileURLToPath } from 'node:url';
+import { dirname } from 'node:path';
 const withNextIntl = createNextIntlPlugin();
+
+// Pin Turbopack's workspace root to this project. Without it, Next walks up and
+// finds a stray ~/package-lock.json, mis-infers the root, and warns on every
+// dev/build run.
+const projectRoot = dirname(fileURLToPath(import.meta.url));
 
 
 const isDev = process.env.NODE_ENV === 'development';
@@ -11,6 +18,9 @@ const nextConfig = {
   // network conditions (heavy Sanity content). Raise the per-page generation
   // budget so static export doesn't fail on a single slow locale.
   staticPageGenerationTimeout: 180,
+  turbopack: {
+    root: projectRoot,
+  },
   async headers() {
     return [
       {

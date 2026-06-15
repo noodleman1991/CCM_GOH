@@ -555,7 +555,10 @@
     "tags": "Etiquetas",
     "cookieConsentRequired": "Este video requiere consentimiento de cookies para reproducirse.",
     "acceptCookies": "Aceptar Cookies",
-    "videoUnavailable": "Este video no está disponible."
+    "videoUnavailable": "Este video no está disponible.",
+    "sortBy": "Ordenar",
+    "sortNewest": "Más recientes",
+    "sortAZ": "A–Z"
   },
   "caseStudyForm": {
     "sections": {
@@ -1171,5 +1174,13 @@
     "noPostsTitle": "Aún no hay publicaciones",
     "noPostsBody": "Vuelve pronto para ver las novedades.",
     "noContent": "No hay contenido disponible en este momento."
+  },
+  "map": {
+    "title": "Explorar por región",
+    "facetCaseStudies": "Casos de estudio",
+    "facetMembers": "Miembros",
+    "facetNews": "Noticias",
+    "viewInSearch": "Ver en búsqueda",
+    "noData": "Aún no hay datos para esta región."
   }
 }

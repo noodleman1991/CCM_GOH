@@ -1,13 +1,13 @@
 import { cn } from "@/lib/utils";
 import SectionContainer from "@/components/ui/section-container";
 import { stegaClean } from "next-sanity";
-import { PAGE_QUERYResult } from "@/sanity.types";
+import { PAGE_QUERY_RESULT } from "@/sanity.types";
 import SplitContent from "./split-content";
 import SplitCardsList from "./split-cards-list";
 import SplitImage from "./split-image";
 import SplitInfoList from "./split-info-list";
 
-type Block = NonNullable<NonNullable<PAGE_QUERYResult>["blocks"]>[number];
+type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
 type SplitRow = Extract<Block, { _type: "split-row" }>;
 type SplitColumn = NonNullable<NonNullable<SplitRow["splitColumns"]>[number]>;
 
@@ -37,8 +37,8 @@ export default function SplitRow({
         {splitColumns && splitColumns?.length > 0 && (
           <div
           className={cn(
-            "grid grid-cols-1 lg:grid-cols-2",
-            noGap ? "gap-0" : "gap-4 md:gap-6 lg:gap-8"
+            "grid grid-cols-1 lg:grid-cols-2 items-center",
+            noGap ? "gap-0" : "gap-6 md:gap-8 lg:gap-12"
           )}
         >
           {splitColumns?.map((column) => {
@@ -51,7 +51,9 @@ export default function SplitRow({
               return <div data-type={column._type} key={column._key} />;
             }
             return (
-              <div key={column._key} className="min-w-0">
+              // h-full + centered so a shorter column (e.g. the image) sits
+              // vertically centred against a taller text column.
+              <div key={column._key} className="flex h-full min-w-0 flex-col justify-center">
                 <Component
                   {...(column as any)}
                   color={color}

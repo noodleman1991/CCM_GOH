@@ -692,6 +692,7 @@ export default defineType({
         { type: "faqs" },
         { type: "form-newsletter" },
         { type: "all-posts" },
+        { type: "region-map" },
 
         // Strategic insertion blocks
         { type: "manualContentInsert" },
@@ -714,7 +715,8 @@ export default defineType({
                 "logo-cloud-1",
                 "faqs",
                 "form-newsletter",
-                "all-posts"
+                "all-posts",
+                "region-map"
               ],
             },
             {
