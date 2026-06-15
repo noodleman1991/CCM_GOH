@@ -50,7 +50,12 @@ export default function Hero1({
         : getLocalizedPortableText(body, supportedLocale);
 
     return (
-        <SectionContainer background={background as any} padding={padding}>
+        <SectionContainer
+            background={background as any}
+            padding={padding}
+            spacing="none"
+            className="-mt-4 md:-mt-8 pt-2"
+        >
             <div className={cn(
                 "grid grid-cols-1 gap-4 md:gap-6 lg:gap-8 items-center",
                 hasImage && "lg:grid-cols-2"

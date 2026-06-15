@@ -7,27 +7,10 @@
  * Renderers map the chosen token to classes via lib/design-tokens.ts.
  */
 
-export const SPACING_OPTIONS = [
-  { title: "None", value: "none" },
-  { title: "Small", value: "sm" },
-  { title: "Medium (default)", value: "md" },
-  { title: "Large", value: "lg" },
-  { title: "Extra large", value: "xl" },
-] as const;
-
-export const HEADING_SIZE_OPTIONS = [
-  { title: "Small", value: "sm" },
-  { title: "Medium (default)", value: "md" },
-  { title: "Large", value: "lg" },
-  { title: "Hero", value: "xl" },
-] as const;
-
-export const WIDTH_OPTIONS = [
-  { title: "Narrow", value: "narrow" },
-  { title: "Default", value: "default" },
-  { title: "Wide", value: "wide" },
-  { title: "Full width", value: "full" },
-] as const;
+// NOTE: SPACING_OPTIONS, HEADING_SIZE_OPTIONS and WIDTH_OPTIONS were defined here
+// but never imported by any block schema — they were dead editor options. Removed
+// to keep this file to what the blocks actually use. Section spacing/width is
+// handled by the design tokens (lib/design-tokens.ts) and SectionContainer.
 
 export const CARD_ASPECT_OPTIONS = [
   { title: "Square (1:1)", value: "square" },
