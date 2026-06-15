@@ -9,8 +9,12 @@ export const faqsQuery = groq`
     colorVariant,
     faqs[]->{
       _id,
-      title,
-      body[]{
+      // Localized question (Lane B), with legacy single-language fallback.
+      "question": coalesce(question, { "en": title }),
+      "title": coalesce(question.en, title),
+      // Localized rich answer; fall back to legacy single-language body.
+      "answer": coalesce(answer, { "en": body }),
+      "body": coalesce(answer.en, body)[]{
         ...,
         _type == "image" => {
           ...,
