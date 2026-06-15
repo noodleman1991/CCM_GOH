@@ -20,4 +20,6 @@ export interface BackgroundOptionType {
     };
     alt?: string;
   };
+  /** Editor opt-in: render text in the light foreground for dark backgrounds. */
+  lightText?: boolean;
 }

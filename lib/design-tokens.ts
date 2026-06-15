@@ -44,10 +44,12 @@ export type HeadingToken = "sm" | "md" | "lg" | "xl";
  * `text-balance` at the call site for even line wrapping.
  */
 export const HEADING_SCALE: Record<HeadingToken, string> = {
-  sm: "text-2xl md:text-3xl leading-tight",
-  md: "text-3xl md:text-4xl leading-tight", // standard section header
-  lg: "text-3xl md:text-4xl lg:text-5xl leading-tight", // cta / split title
-  xl: "text-4xl md:text-5xl lg:text-6xl leading-tight", // hero
+  // One step smaller than before, same relative hierarchy — section headings
+  // were reading too large against body copy and cards.
+  sm: "text-xl md:text-2xl leading-tight",
+  md: "text-2xl md:text-3xl leading-tight", // standard section header
+  lg: "text-2xl md:text-3xl lg:text-4xl leading-tight", // cta / split title
+  xl: "text-3xl md:text-4xl lg:text-5xl leading-tight", // hero
 };
 
 // ---- Container width ---------------------------------------------------------
