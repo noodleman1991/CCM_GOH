@@ -66,17 +66,17 @@ export default function Hero1({
                         : isImageRight ? "lg:order-1" : "lg:order-2")
                 )}>
                     {localizedTagLine && (
-                        <p className="text-base font-semibold text-ccm-water uppercase tracking-wider animate-fade-up [animation-delay:100ms] opacity-0">
+                        <p className="text-sm font-semibold text-ccm-water uppercase tracking-wider animate-fade-up [animation-delay:100ms] opacity-0">
                             {localizedTagLine}
                         </p>
                     )}
                     {localizedTitle && (
-                        <h1 className="mt-6 font-bold font-heading leading-[1.1] text-balance text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-ccm-midnight animate-fade-up [animation-delay:200ms] opacity-0">
+                        <h1 className="mt-4 font-bold font-heading leading-tight text-balance text-pretty break-words hyphens-auto text-3xl md:text-4xl lg:text-5xl text-ccm-midnight animate-fade-up [animation-delay:200ms] opacity-0">
                             {localizedTitle}
                         </h1>
                     )}
                     {localizedBody && (
-                        <div className="text-lg mt-6 animate-fade-up [animation-delay:300ms] opacity-0">
+                        <div className="text-base md:text-lg text-muted-foreground mt-5 max-w-prose animate-fade-up [animation-delay:300ms] opacity-0">
                             <PortableTextRenderer value={localizedBody} locale={locale} />
                         </div>
                     )}

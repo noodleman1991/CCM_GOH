@@ -1,7 +1,6 @@
 import Image from "next/image";
-import { urlFor } from "@/sanity/lib/image";
+import { urlForCropped } from "@/sanity/lib/image";
 import { PAGE_QUERY_RESULT } from "@/sanity.types";
-import { cn } from "@/lib/utils";
 
 type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
 type SplitRow = Extract<Block, { _type: "split-row" }>;
@@ -12,9 +11,12 @@ type SplitImage = Extract<
 
 export default function SplitImage({ image }: SplitImage) {
   return image && image.asset?._id ? (
-    <div className="relative rounded-lg overflow-hidden aspect-[3/2] lg:aspect-[4/3] w-full max-w-full min-w-0">
+    // Fixed aspect + object-cover crops the image to a consistent shape;
+    // urlForCropped respects the Sanity hotspot so the focal point stays in
+    // frame. The parent split column centres this vertically against the text.
+    <div className="relative w-full max-w-full min-w-0 overflow-hidden rounded-xl aspect-[3/2] lg:aspect-[4/3]">
       <Image
-        src={urlFor(image).width(1000).url()}
+        src={urlForCropped(image, 1000, 750).url()}
         alt={image.alt || ""}
         placeholder={image?.asset?.metadata?.lqip ? "blur" : undefined}
         blurDataURL={image?.asset?.metadata?.lqip || ""}

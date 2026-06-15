@@ -15,6 +15,8 @@ import { StarRating } from "@/components/ui/star-rating";
 import PortableTextRenderer from "@/components/portable-text-renderer";
 import { PAGE_QUERY_RESULT } from "@/sanity.types";
 import { getLocalizedField, getLocalizedPortableText } from "@/lib/localization-utils";
+import { cn } from "@/lib/utils";
+import { heading } from "@/lib/design-tokens";
 
 type Carousel2Props = Extract<
   NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number],
@@ -49,11 +51,11 @@ export default function Carousel2({
         <div className="flex flex-col space-y-6 overflow-hidden">
           {localizedTitle && (
             <div className="text-center">
-              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl break-words">
+              <h2 className={cn('font-bold font-heading text-balance break-words text-ccm-midnight', heading('lg'))}>
                 {localizedTitle}
               </h2>
               {localizedDescription && (
-                <p className="mt-4 text-lg text-muted-foreground">
+                <p className="mt-4 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
                   {localizedDescription}
                 </p>
               )}

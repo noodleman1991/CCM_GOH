@@ -8,6 +8,8 @@ import { motion, useReducedMotion } from "motion/react";
 import { PAGE_QUERY_RESULT } from "@/sanity.types";
 import { getLocalizedField } from "@/lib/localization-utils";
 import { isRTL } from "@/i18n/i18n-helpers";
+import { cn } from "@/lib/utils";
+import { heading } from "@/lib/design-tokens";
 
 type LogoCloud1Props = Extract<
   NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number],
@@ -47,12 +49,12 @@ export default function LogoCloud1({
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-8">
           {localizedTitle && (
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl text-balance animate-fade-up [animation-delay:100ms] opacity-0">
+            <h2 className={cn('font-bold font-heading text-balance text-ccm-midnight animate-fade-up [animation-delay:100ms] opacity-0', heading('md'))}>
               {localizedTitle}
             </h2>
           )}
           {localizedDescription && (
-            <p className="mt-4 text-lg text-muted-foreground animate-fade-up [animation-delay:200ms] opacity-0">
+            <p className="mt-3 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto animate-fade-up [animation-delay:200ms] opacity-0">
               {localizedDescription}
             </p>
           )}
