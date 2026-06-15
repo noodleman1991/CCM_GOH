@@ -12,7 +12,7 @@ import { Link } from '@/i18n/navigation'
 import { getUserProfile, checkProfileOwnership } from "@/lib/actions/profile"
 import { ProfileCompletenessIndicator } from "@/components/ui/profile-completeness-indicator"
 import { ProfileStatistics } from "@/components/blocks/profile/profile-statistics"
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
+import { PageBreadcrumb } from "@/components/ui/page-breadcrumb"
 
 const BLUR_FADE_DELAY = 0.04
 
@@ -58,6 +58,7 @@ const EXPERTISE_KEY: Record<string, string> = {
 export default async function ProfilePage({ params }: ProfilePageProps) {
     const { username, locale } = await params
     const t = await getTranslations('profile')
+    const tNav = await getTranslations('navigation')
     const tTypesRaw = await getTranslations('profile.work.types')
     const tExpertiseRaw = await getTranslations('profile.work.expertise')
     // Translate an enum value, falling back to a humanized form if unmapped.
@@ -91,24 +92,13 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
 
     return (
         <div className="container max-w-6xl py-8">
-            {/* Breadcrumbs */}
-            <Breadcrumb className="mb-6">
-                <BreadcrumbList>
-                    <BreadcrumbItem>
-                        <BreadcrumbLink href="/">Home</BreadcrumbLink>
-                    </BreadcrumbItem>
-                    <BreadcrumbSeparator />
-                    <BreadcrumbItem>
-                        <BreadcrumbLink href="/profiles">Profiles</BreadcrumbLink>
-                    </BreadcrumbItem>
-                    <BreadcrumbSeparator />
-                    <BreadcrumbItem>
-                        <BreadcrumbPage>
-                            {user.displayName}
-                        </BreadcrumbPage>
-                    </BreadcrumbItem>
-                </BreadcrumbList>
-            </Breadcrumb>
+            <PageBreadcrumb
+                className="mb-6"
+                items={[
+                    { href: "/collaborate", label: tNav('collaborate') },
+                    { label: user.displayName },
+                ]}
+            />
 
             {/* Profile Header */}
             <div className="mb-8">

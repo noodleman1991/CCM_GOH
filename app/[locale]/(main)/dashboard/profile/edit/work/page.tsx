@@ -4,7 +4,7 @@ import { redirect } from "next/navigation"
 import { getTranslations } from 'next-intl/server'
 import { prisma } from "@/lib/prisma"
 import RecentWorkForm from "@/components/blocks/profile/recent-work-form"
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
+import { PageBreadcrumb } from "@/components/ui/page-breadcrumb"
 
 export async function generateMetadata(): Promise<Metadata> {
     const t = await getTranslations('profile.recentWork')
@@ -16,6 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function AddRecentWorkPage() {
     const t = await getTranslations('profile.recentWork')
+    const tNav = await getTranslations('navigation')
     const { userId } = await auth()
 
     if (!userId) {
@@ -66,22 +67,13 @@ export default async function AddRecentWorkPage() {
 
     return (
         <div className="container py-8 max-w-2xl">
-            {/* Breadcrumbs */}
-            <Breadcrumb className="mb-6">
-                <BreadcrumbList>
-                    <BreadcrumbItem>
-                        <BreadcrumbLink href="/">Home</BreadcrumbLink>
-                    </BreadcrumbItem>
-                    <BreadcrumbSeparator />
-                    <BreadcrumbItem>
-                        <BreadcrumbLink href={`/profile/${user?.username}`}>Profile</BreadcrumbLink>
-                    </BreadcrumbItem>
-                    <BreadcrumbSeparator />
-                    <BreadcrumbItem>
-                        <BreadcrumbPage>{t('addWork')}</BreadcrumbPage>
-                    </BreadcrumbItem>
-                </BreadcrumbList>
-            </Breadcrumb>
+            <PageBreadcrumb
+                className="mb-6"
+                items={[
+                    { href: `/profiles/${user?.username}`, label: tNav('profile') },
+                    { label: t('addWork') },
+                ]}
+            />
 
             <RecentWorkForm
                 onSubmitAction={createRecentWork}
