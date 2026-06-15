@@ -18,7 +18,6 @@ const buttonVariants = cva(
       variant: {
         default: "bg-[var(--color-ccm-sea)] text-white hover:bg-[var(--color-ccm-midnight)]",
         invert: "bg-background text-[var(--color-ccm-midnight)] border-2 border-[var(--color-ccm-midnight)]/20 hover:bg-muted hover:border-[var(--color-ccm-midnight)]/40",
-        "light-invert": "bg-[var(--color-ccm-sky)] text-[var(--color-ccm-midnight)] hover:bg-[var(--color-ccm-sky)]/80",
         destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline: "border border-[var(--color-ccm-sea)] bg-transparent text-[var(--color-ccm-sea)] hover:bg-[var(--color-ccm-sea)]/10 hover:border-[var(--color-ccm-sea)]/80",
         secondary: "bg-[var(--color-ccm-water)]/15 text-[var(--color-ccm-midnight)] border border-[var(--color-ccm-water)]/40 hover:bg-[var(--color-ccm-water)]/25 hover:border-[var(--color-ccm-water)]/60",
@@ -27,12 +26,11 @@ const buttonVariants = cva(
       },
       size: {
         // min-h (not fixed h) so buttons grow when their label wraps. A clear
-        // step between each: sm is genuinely compact, lg/wide/thick distinct.
+        // step between each: sm compact, default standard, lg/wide prominent.
         sm: "min-h-8 px-3 py-1.5 text-xs has-[>svg]:px-2.5",
         default: "min-h-10 px-5 py-2 text-sm has-[>svg]:px-4",
         lg: "min-h-12 px-8 py-2.5 text-base has-[>svg]:px-6",
         wide: "min-h-12 px-14 py-2.5 text-base has-[>svg]:px-12",
-        thick: "min-h-14 px-10 py-4 text-lg font-extrabold has-[>svg]:px-8",
         icon: "size-10 shrink-0",
       },
       stroke: {
@@ -51,16 +49,6 @@ const buttonVariants = cva(
         variant: "invert",
         stroke: "light",
         className: "border-gray-300"
-      },
-      {
-        variant: "light-invert",
-        stroke: "midnight",
-        className: "border-[var(--color-ccm-midnight)]"
-      },
-      {
-        variant: "light-invert",
-        stroke: "light",
-        className: "border-white"
       },
     ],
     defaultVariants: {

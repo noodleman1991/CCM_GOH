@@ -1,8 +1,7 @@
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { SanityButton } from "@/components/ui/sanity-button";
 import SectionContainer from "@/components/ui/section-container";
 import { stegaClean } from "next-sanity";
-import Link from "next/link";
 import PortableTextRenderer from "@/components/portable-text-renderer";
 import { PAGE_QUERY_RESULT } from "@/sanity.types";
 import { getLocalizedField, getLocalizedPortableText } from "@/lib/localization-utils";
@@ -74,21 +73,7 @@ export default function Cta1({
             {links &&
               links.length > 0 &&
               links.map((link) => (
-                <Button
-                  key={link.title}
-                  variant={stegaClean((link?.buttonVariant as any)?.variant)}
-                  size={stegaClean((link?.buttonVariant as any)?.size) || "lg"}
-                  stroke={stegaClean((link?.buttonVariant as any)?.stroke)}
-                  asChild
-                >
-                  <Link
-                    href={link.href as string}
-                    target={link.target ? "_blank" : undefined}
-                    rel={link.target ? "noopener" : undefined}
-                  >
-                    {link.title}
-                  </Link>
-                </Button>
+                <SanityButton key={link.title} link={link as any} locale={locale} />
               ))}
           </div>
         )}
