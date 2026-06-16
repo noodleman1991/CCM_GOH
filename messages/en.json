@@ -625,7 +625,9 @@
           "editorFeedback": "Editor feedback:"
         }
       }
-    }
+    },
+    "recentSubmissions": "Your recent submissions",
+    "memberCount": "{count, plural, one {# member} other {# members}}"
   },
   "caseStudies": {
     "title": "Case Studies",

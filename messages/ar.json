@@ -194,7 +194,9 @@
           "editorFeedback": "ملاحظات المحرر:"
         }
       }
-    }
+    },
+    "recentSubmissions": "مساهماتك الأخيرة",
+    "memberCount": "{count, plural, zero {# عضو} one {عضو واحد} two {عضوان} few {# أعضاء} many {# عضوًا} other {# عضو}}"
   },
   "settings": {
     "title": "الإعدادات",
