@@ -7,9 +7,10 @@ import { fetchRegionalCommunityAgendas } from '@/sanity/lib/fetch';
 import { fetchRegionalCommunityCaseStudiesBySlug } from '@/sanity/queries/regional-community-case-studies';
 import { fetchRegionalCommunityLivedExperiencesBySlug } from '@/sanity/queries/regional-community-lived-experiences';
 import { fetchRegionalCommunityNewsBySlug } from '@/sanity/queries/regional-community-news';
+import { mergePinnedWithDynamic } from '@/lib/community/grid-items';
 
 interface GridConfig {
-  mode?: 'manual' | 'dynamic-featured' | 'dynamic-recent';
+  mode?: 'manual' | 'dynamic-featured' | 'dynamic-recent' | 'dynamic-with-pinned';
   gridColumns?: string;
   maxItems?: number;
   initialDisplayCount?: number;
@@ -23,7 +24,7 @@ interface GridConfig {
 }
 
 interface CarouselConfig {
-  mode?: 'manual' | 'dynamic-featured' | 'dynamic-recent';
+  mode?: 'manual' | 'dynamic-featured' | 'dynamic-recent' | 'dynamic-with-pinned';
   maxItems?: number;
   showTitle?: boolean;
   title?: string;
@@ -177,6 +178,22 @@ export default async function RegionalCommunityTemplate({
       slug: communitySlug,
       limit: agendasLimit
     });
+  }
+
+  // Hybrid "dynamic-with-pinned": editor-pinned manualItems render first, then
+  // the dynamic results fill the rest (deduped, capped at maxItems). This lets
+  // editors curate without losing the auto-updating regional feed.
+  if (agendasMode === 'dynamic-with-pinned') {
+    agendasData = mergePinnedWithDynamic(agendasGrid?.manualItems, agendasData, agendasLimit);
+  }
+  if (caseStudiesMode === 'dynamic-with-pinned') {
+    caseStudiesData = mergePinnedWithDynamic(caseStudiesGrid?.manualItems, caseStudiesData, caseStudiesLimit);
+  }
+  if (livedExpMode === 'dynamic-with-pinned') {
+    livedExperiencesData = mergePinnedWithDynamic(livedExperiencesCarousel?.manualItems, livedExperiencesData, livedExpLimit);
+  }
+  if (newsMode === 'dynamic-with-pinned') {
+    newsData = mergePinnedWithDynamic(newsGrid?.manualItems, newsData, newsLimit);
   }
 
   // Create template blocks array for Blocks component
