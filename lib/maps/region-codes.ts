@@ -39,3 +39,8 @@ export const RC_SLUG_TO_REGION: Record<string, RegionCode> = {
   oceania: "OCEANIA",
   "europe-and-northern-america": "EUROPE_AND_NORTH_AMERICA",
 };
+
+/** Reverse of RC_SLUG_TO_REGION: region code → its community-page slug. */
+export const REGION_TO_RC_SLUG: Record<RegionCode, string> = Object.fromEntries(
+  Object.entries(RC_SLUG_TO_REGION).map(([slug, code]) => [code, slug])
+) as Record<RegionCode, string>;
