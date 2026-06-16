@@ -88,8 +88,11 @@ export default function OnboardingRedirectProvider({
                 setIsLoadingContent(false)
               })
           }
-        } else {
-          console.error('Failed to fetch onboarding status')
+        } else if (response.status !== 401) {
+          // A 401 just means the session isn't ready yet (or the user signed
+          // out mid-check) — that's expected, not an error. Only surface real
+          // failures.
+          console.error('Failed to fetch onboarding status:', response.status)
         }
       } catch (error) {
         console.error('Error checking onboarding status:', error)
