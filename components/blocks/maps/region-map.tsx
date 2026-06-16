@@ -8,7 +8,7 @@ import { FilterChip } from '@/components/ui/filter-chip'
 import { RegionChoropleth } from '@/components/maps/region-choropleth'
 import { RegionDataPanel } from '@/components/maps/region-data-panel'
 import { FACETS, type FacetId, type RegionDatum } from '@/lib/maps/region-facets'
-import { REGION_I18N_KEY, type RegionCode } from '@/lib/maps/region-codes'
+import { REGION_I18N_KEY, REGION_TO_RC_SLUG, type RegionCode } from '@/lib/maps/region-codes'
 import { getLocalizedField } from '@/lib/localization-utils'
 import { useRouter } from '@/i18n/navigation'
 import { heading } from '@/lib/design-tokens'
@@ -67,8 +67,12 @@ export default function RegionMapBlock({
   const activeFacetDef = FACETS.find((f) => f.id === facet)
   const facetLabel = activeFacetDef ? t(activeFacetDef.labelKey) : ''
 
-  const goToSearch = (code: RegionCode) => {
-    router.push({ pathname: '/search', query: { q: labelFor(code) } })
+  // Clicking a region is the connective tissue: go to that region's community
+  // page (its people + content), falling back to search if there's no slug.
+  const goToRegion = (code: RegionCode) => {
+    const slug = REGION_TO_RC_SLUG[code]
+    if (slug) router.push(`/communities/${slug}`)
+    else router.push({ pathname: '/search', query: { q: labelFor(code) } })
   }
 
   return (
@@ -109,7 +113,7 @@ export default function RegionMapBlock({
               data={regionData}
               activeCode={active}
               onHover={setActive}
-              onSelect={goToSearch}
+              onSelect={goToRegion}
               labelFor={labelFor}
             />
           </div>
@@ -118,7 +122,7 @@ export default function RegionMapBlock({
             activeCode={active}
             facetLabel={facetLabel}
             labelFor={labelFor}
-            onSelect={goToSearch}
+            onSelect={goToRegion}
           />
         </div>
       </div>
