@@ -28,6 +28,22 @@ export interface RegionMember {
   contributionCount: number;
 }
 
+/**
+ * Up to two initials from a display name, for an avatar fallback when a member
+ * has no image. "Ada Lovelace" -> "AL"; "Ada" -> "A"; "" -> "?". Unicode-aware
+ * enough for accented Latin and falls back gracefully for non-Latin scripts.
+ */
+export function initials(displayName: string | null | undefined): string {
+  const parts = (displayName || "")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+  if (parts.length === 0) return "?";
+  const first = [...parts[0]][0] ?? "";
+  const last = parts.length > 1 ? [...parts[parts.length - 1]][0] ?? "" : "";
+  return (first + last).toUpperCase() || "?";
+}
+
 type RawCaseStudy = {
   _id?: string;
   title?: unknown;
