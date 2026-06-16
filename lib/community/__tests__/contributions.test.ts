@@ -1,5 +1,21 @@
 import { describe, it, expect } from "vitest";
-import { normalizeContributions, publicRegionMembers } from "../contributions";
+import { normalizeContributions, publicRegionMembers, initials } from "../contributions";
+
+describe("initials", () => {
+  it("takes first + last initial", () => {
+    expect(initials("Ada Lovelace")).toBe("AL");
+    expect(initials("María José García")).toBe("MG"); // first + last
+  });
+  it("single name -> one initial", () => {
+    expect(initials("Ada")).toBe("A");
+  });
+  it("empty / nullish -> ?", () => {
+    expect(initials("")).toBe("?");
+    expect(initials(null)).toBe("?");
+    expect(initials(undefined)).toBe("?");
+    expect(initials("   ")).toBe("?");
+  });
+});
 
 describe("normalizeContributions", () => {
   it("merges case studies, content and recent work, newest first", () => {

@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { heading } from "@/lib/design-tokens";
 import { cn } from "@/lib/utils";
 import { getRegionMembers } from "@/lib/community/region-data";
+import { initials } from "@/lib/community/contributions";
 
 /**
  * Shows the people who are members of a regional community — the "see the
@@ -45,8 +46,8 @@ export async function RegionMembersBlock({
                     // we don't depend on the host allowlist and they always load.
                     <Image src={m.image} alt={m.displayName} fill unoptimized className="object-cover" sizes="80px" />
                   ) : (
-                    <span className="flex size-full items-center justify-center bg-[var(--color-ccm-sky)]/30 text-xl font-bold text-[var(--color-ccm-sea)]">
-                      {m.displayName.charAt(0).toUpperCase()}
+                    <span className="flex size-full items-center justify-center bg-[var(--color-ccm-sky)]/30 text-lg font-bold text-[var(--color-ccm-sea)]" aria-hidden="true">
+                      {initials(m.displayName)}
                     </span>
                   )}
                 </span>
