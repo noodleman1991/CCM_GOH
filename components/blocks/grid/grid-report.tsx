@@ -23,6 +23,7 @@ import {
     canAccessReport
 } from '@/lib/report-utils';
 import { cn } from '@/lib/utils';
+import { normalizeTagColor, sortedTags } from '@/lib/tags';
 import { DownloadSection } from './grid-report-download';
 
 interface GridReportComponentProps {
@@ -168,28 +169,32 @@ export default function GridReportComponent({
                 )}
 
                 {/* Tags */}
-                {showTags && report.tags && report.tags.length > 0 && (
+                {showTags && report.tags && report.tags.length > 0 && (() => {
+                    const tags = sortedTags(report.tags, locale);
+                    if (tags.length === 0) return null;
+                    return (
                     <div className="flex flex-wrap gap-1 mt-3">
-                        {report.tags.slice(0, 3).map((tag) => (
+                        {tags.slice(0, 3).map((tag) => {
+                            const color = normalizeTagColor(tag.color);
+                            return (
                             <Badge
                                 key={tag._id}
                                 variant="outline"
                                 className="text-xs"
-                                style={{
-                                    borderColor: tag.color,
-                                    color: tag.color
-                                }}
+                                style={{ borderColor: color, color }}
                             >
                                 {getLocalizedText(tag.label, locale)}
                             </Badge>
-                        ))}
-                        {report.tags.length > 3 && (
+                            );
+                        })}
+                        {tags.length > 3 && (
                             <Badge variant="outline" className="text-xs">
-                                +{report.tags.length - 3} more
+                                +{tags.length - 3} more
                             </Badge>
                         )}
                     </div>
-                )}
+                    );
+                })()}
             </CardContent>
 
             <CardFooter className="pt-0 px-0">

@@ -211,8 +211,9 @@ export default defineType({
                 layout: "tags",
                 sortable: true,
             },
-            validation: (Rule) => Rule.max(10),
-            description: "Tags to categorize this lived experience",
+            validation: (Rule) =>
+                Rule.max(6).warning("Aim for 3–4 tags; more than 6 dilutes them."),
+            description: "Tags to categorize this lived experience. 3–4 focused tags work best (6 max).",
         }),
         
         // Featured flag

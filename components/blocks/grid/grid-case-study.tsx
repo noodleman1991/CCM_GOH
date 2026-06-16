@@ -14,6 +14,7 @@ import {
     AlertCircle
 } from 'lucide-react';
 import { urlForCropped } from '@/sanity/lib/image';
+import { normalizeTagColor, sortedTags } from '@/lib/tags';
 import {
     getLocalizedText,
     getCaseStudyUrl,
@@ -227,33 +228,33 @@ export default function GridCaseStudyComponent({
                 )}
 
                 {/* Tags */}
-                {showTags && caseStudy.tags && caseStudy.tags.length > 0 && (
+                {showTags && caseStudy.tags && caseStudy.tags.length > 0 && (() => {
+                    // Stable, locale-aware order + on-brand colours for every badge.
+                    const tags = sortedTags(caseStudy.tags, supportedLocale);
+                    if (tags.length === 0) return null;
+                    return (
                     <div className="flex flex-wrap gap-1 mt-3">
-                        {caseStudy.tags.slice(0, 3).map((tag: any) => {
-                            // Skip null or incomplete tags
-                            if (!tag || !tag.color) return null;
-
+                        {tags.slice(0, 3).map((tag: any) => {
+                            const color = normalizeTagColor(tag.color);
                             return (
                                 <Badge
                                     key={tag._id}
                                     variant="outline"
                                     className="text-xs"
-                                    style={{
-                                        borderColor: tag.color,
-                                        color: tag.color
-                                    }}
+                                    style={{ borderColor: color, color }}
                                 >
                                     {getLocalizedText(tag.label, supportedLocale)}
                                 </Badge>
                             );
                         })}
-                        {caseStudy.tags.length > 3 && (
+                        {tags.length > 3 && (
                             <Badge variant="outline" className="text-xs">
-                                {getMoreText(caseStudy.tags.length - 3)}
+                                {getMoreText(tags.length - 3)}
                             </Badge>
                         )}
                     </div>
-                )}
+                    );
+                })()}
             </CardContent>
 
             <CardFooter className="pt-0 px-0">
