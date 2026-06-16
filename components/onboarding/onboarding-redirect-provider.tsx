@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useUser } from '@clerk/nextjs'
 import { useParams, usePathname } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import OnboardingRedirectDialog from './onboarding-redirect-dialog'
 
 interface OnboardingContent {
@@ -22,6 +23,7 @@ export default function OnboardingRedirectProvider({
   const params = useParams()
   const pathname = usePathname()
   const locale = params.locale as string || 'en'
+  const t = useTranslations('onboarding.redirectDialog')
 
   const [showDialog, setShowDialog] = useState(false)
   const [content, setContent] = useState<OnboardingContent | null>(null)
@@ -50,13 +52,15 @@ export default function OnboardingRedirectProvider({
           if (shouldShowDialog) {
             setIsLoadingContent(true)
 
-            // Built-in fallback copy used if the CMS content is unavailable.
+            // Localised fallback copy (from the messages file, always available)
+            // used if the CMS content is unavailable — so non-English users don't
+            // see English when Sanity can't be reached.
             const fallback = {
-              redirectDialogTitle: 'Complete Your Profile',
-              redirectDialogMessage: 'To get the most out of your experience, we recommend completing your profile.',
-              proceedToOnboardingText: 'Complete Profile',
-              continueToHubText: 'Continue to Collaborate',
-              oneTimeWaiverText: 'You can complete this later',
+              redirectDialogTitle: t('title'),
+              redirectDialogMessage: t('message'),
+              proceedToOnboardingText: t('proceed'),
+              continueToHubText: t('continue'),
+              oneTimeWaiverText: t('waiver'),
             }
 
             // Fetch onboarding copy via a server route (tokened client), so this

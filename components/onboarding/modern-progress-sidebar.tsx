@@ -45,42 +45,42 @@ export function ModernProgressSidebar({
     {
       id: "welcome",
       title: t("steps.welcome.title"),
-      description: "Get started with your journey",
+      description: t("steps.welcome.tagline"),
       icon: Sparkles,
       status: currentStep > 0 ? 'completed' : currentStep === 0 ? 'current' : 'upcoming'
     },
     {
       id: "basicInfo",
       title: t("steps.basicInfo.title"),
-      description: "Tell us about yourself",
+      description: t("steps.basicInfo.tagline"),
       icon: User,
       status: currentStep > 1 ? 'completed' : currentStep === 1 ? 'current' : 'upcoming'
     },
     {
       id: "workInfo",
       title: t("steps.workInfo.title"),
-      description: "Share your expertise",
+      description: t("steps.workInfo.tagline"),
       icon: Briefcase,
       status: currentStep > 2 ? 'completed' : currentStep === 2 ? 'current' : 'upcoming'
     },
     {
       id: "recentWork",
       title: t("steps.recentWork.title"),
-      description: "Showcase your projects",
+      description: t("steps.recentWork.tagline"),
       icon: FolderOpen,
       status: currentStep > 3 ? 'completed' : currentStep === 3 ? 'current' : 'upcoming'
     },
     {
       id: "privacy",
       title: t("steps.privacy.title"),
-      description: "Control your visibility",
+      description: t("steps.privacy.tagline"),
       icon: Shield,
       status: currentStep > 4 ? 'completed' : currentStep === 4 ? 'current' : 'upcoming'
     },
     {
       id: "review",
       title: t("steps.review.title"),
-      description: "Review and complete",
+      description: t("steps.review.tagline"),
       icon: Eye,
       status: currentStep > 5 ? 'completed' : currentStep === 5 ? 'current' : 'upcoming'
     }

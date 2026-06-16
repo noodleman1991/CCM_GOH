@@ -837,7 +837,8 @@
           "step2": "Share your work experience and expertise areas",
           "step3": "Add recent projects to showcase your contributions",
           "step4": "Choose your privacy and visibility settings"
-        }
+        },
+        "tagline": "Get started with your journey"
       },
       "basicInfo": {
         "title": "Basic Information",
@@ -865,7 +866,8 @@
         "usernamePlaceholder": "Enter a unique username",
         "countryPlaceholder": "Enter your country",
         "cityPlaceholder": "Enter your city",
-        "continue": "Continue"
+        "continue": "Continue",
+        "tagline": "Tell us about yourself"
       },
       "workInfo": {
         "title": "Work Information",
@@ -915,11 +917,12 @@
         "otherLinksHint": "Add links to your professional profiles (Twitter, GitHub, Portfolio, etc.)",
         "platformPlaceholder": "Platform name (e.g., Twitter, GitHub)",
         "urlPlaceholder": "https://example.com/yourprofile",
-        "continue": "Continue"
+        "continue": "Continue",
+        "tagline": "Share your expertise"
       },
       "recentWork": {
         "title": "Recent Work",
-        "description": "Description",
+        "description": "Add up to five recent projects or pieces of work to showcase your experience.",
         "addWork": "Add Work",
         "editWork": "Edit Work",
         "yourWork": "Your Recent Work",
@@ -944,7 +947,8 @@
         "viewProject": "View Project",
         "cancel": "Cancel",
         "updateWork": "Update Work",
-        "continue": "Continue"
+        "continue": "Continue",
+        "tagline": "Showcase your projects"
       },
       "privacy": {
         "title": "Privacy & Visibility",
@@ -985,7 +989,8 @@
           "showLocation": "Show location",
           "locationHint": "Display your country and city information"
         },
-        "continue": "Continue"
+        "continue": "Continue",
+        "tagline": "Control your visibility"
       },
       "review": {
         "title": "Almost Ready!",
@@ -1048,7 +1053,8 @@
         "viewProject": "View Project",
         "readyTitle": "You're all set!",
         "readyDescription": "Welcome to our global community of climate minds. Let's create meaningful change together.",
-        "completeOnboarding": "Complete Setup"
+        "completeOnboarding": "Complete Setup",
+        "tagline": "Review and complete"
       }
     },
     "title": "Setup Your Profile",
@@ -1070,7 +1076,14 @@
     "getStarted": "Get Started",
     "continue": "Continue",
     "reviewProfile": "Review Profile",
-    "completeProfile": "Complete Profile"
+    "completeProfile": "Complete Profile",
+    "redirectDialog": {
+      "title": "Complete Your Profile",
+      "message": "To get the most out of your experience, we recommend completing your profile.",
+      "proceed": "Complete Profile",
+      "continue": "Continue to Collaborate",
+      "waiver": "You can complete this later"
+    }
   },
   "news": {
     "title": "News",
