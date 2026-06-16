@@ -1159,7 +1159,9 @@
       "newsUpdates": "Noticias y Actualizaciones",
       "communityVoices": "Voces de la Comunidad",
       "communityVoicesSubtitle": "Escucha directamente a los miembros de la comunidad sobre sus experiencias"
-    }
+    },
+    "communityMembers": "Miembros de la comunidad",
+    "contributionCount": "{count, plural, one {# contribución} other {# contribuciones}}"
   },
   "cookieConsent": {
     "title": "Valoramos tu privacidad",

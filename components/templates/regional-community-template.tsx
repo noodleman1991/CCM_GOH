@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import Blocks from '@/components/blocks/index';
 import TeamGrid from '@/components/blocks/grid/team-grid';
+import { RegionMembersBlock } from '@/components/blocks/community/region-members-block';
 import { getTranslations } from 'next-intl/server';
 import { fetchRegionalCommunityAgendas } from '@/sanity/lib/fetch';
 import { fetchRegionalCommunityCaseStudiesBySlug } from '@/sanity/queries/regional-community-case-studies';
@@ -352,6 +353,11 @@ export default async function RegionalCommunityTemplate({
           userId={userId}
         />
       )}
+
+      {/* Community graph: the people who are members of this region. */}
+      <Suspense fallback={null}>
+        <RegionMembersBlock slug={communitySlug} locale={locale} />
+      </Suspense>
     </>
   );
 }
