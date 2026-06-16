@@ -167,7 +167,7 @@ export default async function TeamGrid(props: TeamGridProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         {showTitle && (
-          <div className="mb-10 sm:mb-12 lg:mb-16 text-center">
+          <div className="mb-6 md:mb-8 text-center">
             <h2 className={cn("font-bold font-heading text-ccm-midnight text-balance mb-4", heading('lg'))}>
               {title}
             </h2>

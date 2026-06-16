@@ -16,6 +16,13 @@ type ClerkAppearance = NonNullable<ComponentProps<typeof SignIn>["appearance"]>;
  * radius, border, and font. Colours come from the CCM palette in globals.css.
  */
 export const clerkAppearance: ClerkAppearance = {
+  layout: {
+    // Show the CCM logo at the top of the sign-in / sign-up card. Use the
+    // colour logo (not the white one) since the card background is white.
+    logoImageUrl: "/connecting-climate-minds-logo.png",
+    logoPlacement: "inside",
+    logoLinkUrl: "/",
+  },
   variables: {
     colorPrimary: "#205596", // --color-ccm-sea
     colorText: "#0B3160", // --color-ccm-midnight
@@ -30,6 +37,8 @@ export const clerkAppearance: ClerkAppearance = {
     // Render inside our own auth layout card, so drop Clerk's outer chrome.
     rootBox: "w-full",
     card: "shadow-none border border-border bg-card rounded-xl",
+    logoBox: "h-10 justify-center",
+    logoImage: "h-10 w-auto object-contain",
     headerTitle: "font-heading text-ccm-midnight",
     headerSubtitle: "text-muted-foreground",
     socialButtonsBlockButton:

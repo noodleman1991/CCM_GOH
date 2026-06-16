@@ -2,7 +2,6 @@ export const revalidate = 120;
 
 import type { Metadata } from "next"
 import Blocks from "@/components/blocks";
-import Hero1 from "@/components/blocks/hero/hero-1"
 import {
   fetchSanityPageBySlug,
   fetchSanityPagesStaticParams,
@@ -10,7 +9,7 @@ import {
   fetchSanityRCPagesStaticParams,
   fetchTranslationsForPage,
 } from "@/sanity/lib/fetch";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { generatePageMetadata } from "@/sanity/lib/metadata";
 import { isRTL } from "@/i18n/i18n-helpers";
 
@@ -88,14 +87,15 @@ export default async function Page({
     const {locale, slug: slugArray} = await params;
     const slug = slugArray.join('/'); // Join array to create full slug path
 
-    // Try regional community page first, then generic page
-    let page = await fetchSanityRCPageBySlug({slug, locale});
-    let isGenericPage = false;
-
-    if (!page) {
-        page = await fetchSanityPageBySlug({slug, locale});
-        isGenericPage = true;
+    // Regional community pages render via their dedicated template at
+    // /communities/<slug> — this catch-all only has the generic-page fields, so
+    // redirect RC slugs to the canonical URL instead of rendering them empty.
+    const rcPage = await fetchSanityRCPageBySlug({slug, locale});
+    if (rcPage) {
+        redirect(`/${locale}/communities/${slug}`);
     }
+
+    const page = await fetchSanityPageBySlug({slug, locale});
 
     if (!page) {
         notFound();
@@ -106,16 +106,8 @@ export default async function Page({
 
     return (
         <main dir={rtl ? 'rtl' : 'ltr'}>
-            {/* Regional Community Page specific heros */}
-            {!isGenericPage && page.titleHero && (
-                <Hero1 {...page.titleHero} locale={locale} />
-            )}
-
-            {!isGenericPage && page.listHero && (
-                <Hero1 {...page.listHero} locale={locale} />
-            )}
-
-            {/* Render blocks (works for both page types) */}
+            {/* Generic page: render its block array. (RC pages are redirected
+                above to their dedicated /communities/<slug> template.) */}
             <Blocks blocks={page.blocks ?? []} locale={locale} />
         </main>
     );
