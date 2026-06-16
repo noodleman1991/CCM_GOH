@@ -499,6 +499,14 @@
           "publishedNote": "Vos études de cas publiées resteront sur le site. Pour faire modifier ou retirer une étude de cas publiée, veuillez contacter l'équipe de Connecting Climate Minds Hub par e-mail."
         }
       }
+    },
+    "contributions": {
+      "title": "Contributions",
+      "kind": {
+        "caseStudy": "Étude de cas",
+        "content": "Article",
+        "recentWork": "Projet"
+      }
     }
   },
   "profilePicture": {

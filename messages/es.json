@@ -499,6 +499,14 @@
           "publishedNote": "Tus estudios de caso publicados permanecerán en el sitio. Para modificar o eliminar un estudio de caso publicado, comunícate por correo electrónico con el equipo de Connecting Climate Minds Hub."
         }
       }
+    },
+    "contributions": {
+      "title": "Contribuciones",
+      "kind": {
+        "caseStudy": "Estudio de caso",
+        "content": "Artículo",
+        "recentWork": "Proyecto"
+      }
     }
   },
   "profilePicture": {

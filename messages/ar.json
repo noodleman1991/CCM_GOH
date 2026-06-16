@@ -499,6 +499,14 @@
           "publishedNote": "ستبقى دراسات الحالة المنشورة الخاصة بك على الموقع. لتعديل أو إزالة دراسة حالة منشورة، يُرجى التواصل مع فريق Connecting Climate Minds Hub عبر البريد الإلكتروني."
         }
       }
+    },
+    "contributions": {
+      "title": "المساهمات",
+      "kind": {
+        "caseStudy": "دراسة حالة",
+        "content": "مقال",
+        "recentWork": "مشروع"
+      }
     }
   },
   "profilePicture": {
