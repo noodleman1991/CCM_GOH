@@ -31,6 +31,10 @@ export default defineType({
       title: 'Redirect Dialog',
     },
     {
+      name: 'labels',
+      title: 'UI Labels & Messages',
+    },
+    {
       name: 'settings',
       title: 'Settings',
     },
@@ -58,7 +62,9 @@ export default defineType({
     }),
     defineField({
       name: "language",
+      title: "Language",
       type: "string",
+      description: "The locale this onboarding content is written for (set by the translation system).",
       readOnly: true,
       group: "settings",
     }),
@@ -402,6 +408,7 @@ export default defineType({
       name: 'navigationTexts',
       title: 'Navigation Button Texts',
       type: 'object',
+      group: 'labels',
       fields: [
         { name: 'continue', title: 'Continue Button', type: 'string', initialValue: 'Continue' },
         { name: 'back', title: 'Back Button', type: 'string', initialValue: 'Back' },
@@ -415,6 +422,7 @@ export default defineType({
       name: 'validationMessages',
       title: 'Form Validation Messages',
       type: 'object',
+      group: 'labels',
       fields: [
         // Basic Info Validations
         {
@@ -484,6 +492,7 @@ export default defineType({
       name: 'fieldLabels',
       title: 'Form Field Labels and Placeholders',
       type: 'object',
+      group: 'labels',
       fields: [
         // Basic Info Labels
         {
@@ -606,6 +615,7 @@ export default defineType({
       name: 'privacyFieldLabels',
       title: 'Privacy Settings Field Labels',
       type: 'object',
+      group: 'labels',
       fields: [
         { name: 'allowSearch', title: 'Allow Search', type: 'string', initialValue: 'Allow others to find me in search' },
         { name: 'searchHint', title: 'Search Hint', type: 'string', initialValue: 'Other members can discover your profile through search' },
@@ -627,6 +637,7 @@ export default defineType({
       name: 'visibilityLabels',
       title: 'Profile Visibility Labels',
       type: 'object',
+      group: 'labels',
       fields: [
         { name: 'public', title: 'Public', type: 'string', initialValue: 'Public' },
         { name: 'members', title: 'Members Only', type: 'string', initialValue: 'Members Only' },
