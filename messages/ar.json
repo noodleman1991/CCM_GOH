@@ -1205,5 +1205,9 @@
     "facetNews": "الأخبار",
     "viewInSearch": "عرض في البحث",
     "noData": "لا توجد بيانات لهذه المنطقة بعد."
+  },
+  "announcement": {
+    "dismiss": "إغلاق الإعلان",
+    "readMore": "اقرأ المزيد"
   }
 }

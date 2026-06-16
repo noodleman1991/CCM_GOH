@@ -1205,5 +1205,9 @@
     "facetNews": "Noticias",
     "viewInSearch": "Ver en búsqueda",
     "noData": "Aún no hay datos para esta región."
+  },
+  "announcement": {
+    "dismiss": "Descartar anuncio",
+    "readMore": "Leer más"
   }
 }

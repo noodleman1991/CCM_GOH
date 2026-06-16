@@ -1,4 +1,5 @@
 import { sanityFetch } from "@/sanity/lib/live";
+import { SITE_ANNOUNCEMENT_QUERY } from "@/sanity/queries/site-announcement";
 import { PAGE_QUERY, PAGES_SLUGS_QUERY } from "@/sanity/queries/page";
 import { REGIONAL_COMMUNITY_PAGE_QUERY } from "@/sanity/queries/regional-community-page";
 import {
@@ -36,6 +37,15 @@ import {
 //
 //   return data;
 // };
+
+/** The singleton site announcement (or null). Locale-agnostic fetch; the bar
+ *  component resolves the localized message itself. */
+export const fetchSiteAnnouncement = async () => {
+    const { data } = await sanityFetch({
+        query: SITE_ANNOUNCEMENT_QUERY,
+    });
+    return data;
+};
 
 export const fetchSanityPageBySlug = async ({
                                                 slug,
