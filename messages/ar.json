@@ -1209,5 +1209,18 @@
   "announcement": {
     "dismiss": "إغلاق الإعلان",
     "readMore": "اقرأ المزيد"
+  },
+  "organizations": {
+    "types": {
+      "ngo": "المنظمات غير الحكومية",
+      "research": "مؤسسات بحثية",
+      "university": "الجامعات",
+      "government": "الجهات الحكومية",
+      "international": "المنظمات الدولية",
+      "company": "الشركات",
+      "community": "المنظمات المجتمعية",
+      "foundation": "المؤسسات",
+      "other": "أخرى"
+    }
   }
 }

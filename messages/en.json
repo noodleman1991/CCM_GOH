@@ -1209,5 +1209,18 @@
   "announcement": {
     "dismiss": "Dismiss announcement",
     "readMore": "Read more"
+  },
+  "organizations": {
+    "types": {
+      "ngo": "NGOs",
+      "research": "Research institutions",
+      "university": "Universities",
+      "government": "Government agencies",
+      "international": "International organizations",
+      "company": "Companies",
+      "community": "Community organizations",
+      "foundation": "Foundations",
+      "other": "Other"
+    }
   }
 }
