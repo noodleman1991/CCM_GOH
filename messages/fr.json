@@ -766,7 +766,8 @@
           "step2": "Partagez votre expérience professionnelle et domaines d'expertise",
           "step3": "Ajoutez des projets récents pour présenter vos contributions",
           "step4": "Choisissez vos paramètres de confidentialité et de visibilité"
-        }
+        },
+        "tagline": "Commencez votre parcours"
       },
       "basicInfo": {
         "title": "Informations de Base",
@@ -794,7 +795,8 @@
         "usernamePlaceholder": "Entrez un nom d'utilisateur unique",
         "countryPlaceholder": "Entrez votre pays",
         "cityPlaceholder": "Entrez votre ville",
-        "continue": "Continuer"
+        "continue": "Continuer",
+        "tagline": "Parlez-nous de vous"
       },
       "workInfo": {
         "title": "Informations Professionnelles",
@@ -844,11 +846,12 @@
         "otherLinksHint": "Ajoutez des liens vers vos profils professionnels (Twitter, GitHub, Portfolio, etc.)",
         "platformPlaceholder": "Nom de la plateforme (ex., Twitter, GitHub)",
         "urlPlaceholder": "https://exemple.com/votre-profil",
-        "continue": "Continuer"
+        "continue": "Continuer",
+        "tagline": "Partagez votre expertise"
       },
       "recentWork": {
         "title": "Travaux Récents",
-        "description": "Description",
+        "description": "Ajoutez jusqu’à cinq projets ou travaux récents pour présenter votre expérience.",
         "addWork": "Ajouter un Travail",
         "editWork": "Modifier le Travail",
         "yourWork": "Vos Travaux Récents",
@@ -873,7 +876,8 @@
         "viewProject": "Voir le Projet",
         "cancel": "Annuler",
         "updateWork": "Mettre à jour le Travail",
-        "continue": "Continuer"
+        "continue": "Continuer",
+        "tagline": "Présentez vos projets"
       },
       "privacy": {
         "title": "Confidentialité et Visibilité",
@@ -914,7 +918,8 @@
           "showLocation": "Afficher la localisation",
           "locationHint": "Afficher les informations de votre pays et ville"
         },
-        "continue": "Continuer"
+        "continue": "Continuer",
+        "tagline": "Contrôlez votre visibilité"
       },
       "review": {
         "title": "Presque Prêt !",
@@ -977,7 +982,8 @@
         "viewProject": "Voir le Projet",
         "readyTitle": "Vous êtes prêt !",
         "readyDescription": "Bienvenue dans notre communauté mondiale d'esprits climatiques. Créons un changement significatif ensemble.",
-        "completeOnboarding": "Terminer la Configuration"
+        "completeOnboarding": "Terminer la Configuration",
+        "tagline": "Vérifiez et terminez"
       }
     },
     "title": "Configurer votre Profil",
@@ -999,7 +1005,14 @@
     "getStarted": "Commencer",
     "continue": "Continuer",
     "reviewProfile": "Réviser le Profil",
-    "completeProfile": "Terminer le Profil"
+    "completeProfile": "Terminer le Profil",
+    "redirectDialog": {
+      "title": "Complétez votre profil",
+      "message": "Pour tirer le meilleur parti de votre expérience, nous vous recommandons de compléter votre profil.",
+      "proceed": "Compléter le profil",
+      "continue": "Continuer vers Collaborer",
+      "waiver": "Vous pourrez le compléter plus tard"
+    }
   },
   "caseStudies": {
     "title": "Études de Cas",

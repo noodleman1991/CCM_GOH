@@ -766,7 +766,8 @@
           "step2": "شارك تجربتك المهنية ومجالات خبرتك",
           "step3": "أضف مشاريع حديثة لإظهار مساهماتك",
           "step4": "اختر إعدادات الخصوصية والرؤية"
-        }
+        },
+        "tagline": "ابدأ رحلتك"
       },
       "basicInfo": {
         "title": "المعلومات الأساسية",
@@ -794,7 +795,8 @@
         "usernamePlaceholder": "أدخل اسم مستخدم فريد",
         "countryPlaceholder": "أدخل بلدك",
         "cityPlaceholder": "أدخل مدينتك",
-        "continue": "متابعة"
+        "continue": "متابعة",
+        "tagline": "أخبرنا عن نفسك"
       },
       "workInfo": {
         "title": "معلومات العمل",
@@ -844,7 +846,8 @@
         "otherLinksHint": "أضف روابط لملفاتك المهنية (تويتر، GitHub، معرض الأعمال، إلخ)",
         "platformPlaceholder": "اسم المنصة (مثل تويتر، GitHub)",
         "urlPlaceholder": "https://example.com/yourprofile",
-        "continue": "متابعة"
+        "continue": "متابعة",
+        "tagline": "شارك خبرتك"
       },
       "recentWork": {
         "title": "الأعمال الحديثة",
@@ -873,7 +876,8 @@
         "viewProject": "عرض المشروع",
         "cancel": "إلغاء",
         "updateWork": "تحديث العمل",
-        "continue": "متابعة"
+        "continue": "متابعة",
+        "tagline": "اعرض مشاريعك"
       },
       "privacy": {
         "title": "الخصوصية والرؤية",
@@ -914,7 +918,8 @@
           "showLocation": "إظهار الموقع",
           "locationHint": "عرض معلومات بلدك ومدينتك"
         },
-        "continue": "متابعة"
+        "continue": "متابعة",
+        "tagline": "تحكم في ظهورك"
       },
       "review": {
         "title": "تقريباً جاهز!",
@@ -977,7 +982,8 @@
         "viewProject": "عرض المشروع",
         "readyTitle": "أنت جاهز!",
         "readyDescription": "أهلاً بك في مجتمعنا العالمي من العقول المناخية. لنخلق تغييراً هادفاً معاً.",
-        "completeOnboarding": "إكمال الإعداد"
+        "completeOnboarding": "إكمال الإعداد",
+        "tagline": "راجِع وأكمِل"
       }
     },
     "title": "إعداد ملفك الشخصي",
@@ -999,7 +1005,14 @@
     "getStarted": "ابدأ",
     "continue": "متابعة",
     "reviewProfile": "مراجعة الملف الشخصي",
-    "completeProfile": "إكمال الملف الشخصي"
+    "completeProfile": "إكمال الملف الشخصي",
+    "redirectDialog": {
+      "title": "أكمل ملفك الشخصي",
+      "message": "للاستفادة القصوى من تجربتك، نوصي بإكمال ملفك الشخصي.",
+      "proceed": "إكمال الملف الشخصي",
+      "continue": "المتابعة إلى التعاون",
+      "waiver": "يمكنك إكمال ذلك لاحقًا"
+    }
   },
   "caseStudies": {
     "title": "دراسات الحالة",

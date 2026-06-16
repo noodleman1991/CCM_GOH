@@ -5,30 +5,30 @@ export default defineType({
   name: 'onboardingContent',
   title: 'Onboarding Content',
   type: 'document',
+  // Groups ordered to follow the onboarding journey the visitor experiences —
+  // Welcome → the steps → Privacy → Review → the redirect prompt — then the
+  // shared UI labels, and finally internal Settings/metadata.
   groups: [
     {
-      name: 'content',
-      title: 'Content',
-    },
-    {
       name: 'welcome',
-      title: 'Welcome Step',
+      title: '1. Welcome Step',
+      default: true,
     },
     {
       name: 'steps',
-      title: 'Step Descriptions',
+      title: '2. Step Intros',
     },
     {
       name: 'privacy',
-      title: 'Privacy Settings',
+      title: '3. Privacy Step',
     },
     {
       name: 'review',
-      title: 'Review & Submit',
+      title: '4. Review & Submit',
     },
     {
       name: 'redirectDialog',
-      title: 'Redirect Dialog',
+      title: '5. Redirect Prompt',
     },
     {
       name: 'labels',
@@ -37,6 +37,10 @@ export default defineType({
     {
       name: 'settings',
       title: 'Settings',
+    },
+    {
+      name: 'content',
+      title: 'Internal',
     },
   ],
   fields: [

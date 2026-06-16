@@ -766,7 +766,8 @@
           "step2": "Comparte tu experiencia laboral y áreas de especialización",
           "step3": "Agrega proyectos recientes para mostrar tus contribuciones",
           "step4": "Elige tu configuración de privacidad y visibilidad"
-        }
+        },
+        "tagline": "Comienza tu recorrido"
       },
       "basicInfo": {
         "title": "Información Básica",
@@ -794,7 +795,8 @@
         "usernamePlaceholder": "Ingresa un nombre de usuario único",
         "countryPlaceholder": "Ingresa tu país",
         "cityPlaceholder": "Ingresa tu ciudad",
-        "continue": "Continuar"
+        "continue": "Continuar",
+        "tagline": "Cuéntanos sobre ti"
       },
       "workInfo": {
         "title": "Información Laboral",
@@ -844,7 +846,8 @@
         "otherLinksHint": "Agrega enlaces a tus perfiles profesionales (Twitter, GitHub, Portafolio, etc.)",
         "platformPlaceholder": "Nombre de la plataforma (ej., Twitter, GitHub)",
         "urlPlaceholder": "https://ejemplo.com/tuperfil",
-        "continue": "Continuar"
+        "continue": "Continuar",
+        "tagline": "Comparte tu experiencia"
       },
       "recentWork": {
         "title": "Trabajo Reciente",
@@ -873,7 +876,8 @@
         "viewProject": "Ver Proyecto",
         "cancel": "Cancelar",
         "updateWork": "Actualizar Trabajo",
-        "continue": "Continuar"
+        "continue": "Continuar",
+        "tagline": "Muestra tus proyectos"
       },
       "privacy": {
         "title": "Privacidad y Visibilidad",
@@ -914,7 +918,8 @@
           "showLocation": "Mostrar ubicación",
           "locationHint": "Mostrar información de tu país y ciudad"
         },
-        "continue": "Continuar"
+        "continue": "Continuar",
+        "tagline": "Controla tu visibilidad"
       },
       "review": {
         "title": "¡Casi Listo!",
@@ -977,7 +982,8 @@
         "viewProject": "Ver Proyecto",
         "readyTitle": "¡Todo listo!",
         "readyDescription": "Bienvenido a nuestra comunidad global de mentes climáticas. Creemos un cambio significativo juntos.",
-        "completeOnboarding": "Completar Configuración"
+        "completeOnboarding": "Completar Configuración",
+        "tagline": "Revisa y finaliza"
       }
     },
     "title": "Configurar tu Perfil",
@@ -999,7 +1005,14 @@
     "getStarted": "Comenzar",
     "continue": "Continuar",
     "reviewProfile": "Revisar Perfil",
-    "completeProfile": "Completar Perfil"
+    "completeProfile": "Completar Perfil",
+    "redirectDialog": {
+      "title": "Completa tu perfil",
+      "message": "Para aprovechar al máximo tu experiencia, te recomendamos completar tu perfil.",
+      "proceed": "Completar perfil",
+      "continue": "Continuar a Colaborar",
+      "waiver": "Puedes completarlo más tarde"
+    }
   },
   "caseStudies": {
     "title": "Estudios de Caso",
