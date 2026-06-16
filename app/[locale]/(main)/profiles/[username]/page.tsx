@@ -12,7 +12,9 @@ import { Link } from '@/i18n/navigation'
 import { getUserProfile, checkProfileOwnership } from "@/lib/actions/profile"
 import { ProfileCompletenessIndicator } from "@/components/ui/profile-completeness-indicator"
 import { ProfileStatistics } from "@/components/blocks/profile/profile-statistics"
+import { ContributionsBlock } from "@/components/blocks/profile/contributions-block"
 import { PageBreadcrumb } from "@/components/ui/page-breadcrumb"
+import { Suspense } from "react"
 
 const BLUR_FADE_DELAY = 0.04
 
@@ -308,6 +310,13 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                             </Card>
                         </BlurFade>
                     )}
+
+                    {/* Contributions (community-graph: their case studies / content / work) */}
+                    <BlurFade delay={BLUR_FADE_DELAY * 14.5}>
+                        <Suspense fallback={null}>
+                            <ContributionsBlock userId={user.id} locale={locale} />
+                        </Suspense>
+                    </BlurFade>
                 </div>
 
                 {/* Sidebar */}

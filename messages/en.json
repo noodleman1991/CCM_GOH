@@ -419,6 +419,14 @@
           "publishedNote": "Your published case studies will remain on the site. To have a published case study changed or removed, please contact the Connecting Climate Minds Hub team by email."
         }
       }
+    },
+    "contributions": {
+      "title": "Contributions",
+      "kind": {
+        "caseStudy": "Case study",
+        "content": "Article",
+        "recentWork": "Project"
+      }
     }
   },
   "profilePicture": {
