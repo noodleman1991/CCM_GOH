@@ -1159,7 +1159,9 @@
       "newsUpdates": "الأخبار والتحديثات",
       "communityVoices": "أصوات المجتمع",
       "communityVoicesSubtitle": "استمع مباشرة إلى أفراد المجتمع حول تجاربهم"
-    }
+    },
+    "communityMembers": "أعضاء المجتمع",
+    "contributionCount": "{count, plural, zero {# مساهمة} one {# مساهمة} two {# مساهمتان} few {# مساهمات} many {# مساهمة} other {# مساهمة}}"
   },
   "cookieConsent": {
     "title": "نحن نقدر خصوصيتك",
