@@ -1,21 +1,29 @@
 import { defineField, defineType } from "sanity";
 import { FolderOpen } from "lucide-react";
 import { orderRankField } from "@sanity/orderable-document-list";
+import { urlRule } from "../shared/validation";
 
 export default defineType({
     name: "project",
     title: "Project",
     type: "document",
     icon: FolderOpen,
+    groups: [
+        { name: "content", title: "Details", default: true },
+        { name: "partners", title: "Organisations" },
+        { name: "location", title: "Location & Coverage" },
+    ],
     fields: [
         defineField({
             name: "name",
+            group: "content",
             title: "Project Name",
             type: "string",
             validation: (Rule) => Rule.required(),
         }),
         defineField({
             name: "slug",
+            group: "content",
             title: "Slug",
             type: "slug",
             options: {
@@ -26,12 +34,14 @@ export default defineType({
         }),
         defineField({
             name: "acronym",
+            group: "content",
             title: "Acronym",
             type: "string",
             description: "Short form or acronym of the project name",
         }),
         defineField({
             name: "description",
+            group: "content",
             title: "Description",
             type: "object",
             fields: [
@@ -43,6 +53,7 @@ export default defineType({
         }),
         defineField({
             name: "type",
+            group: "content",
             title: "Project Type",
             type: "string",
             options: {
@@ -60,6 +71,7 @@ export default defineType({
         }),
         defineField({
             name: "status",
+            group: "content",
             title: "Status",
             type: "string",
             options: {
@@ -75,12 +87,14 @@ export default defineType({
         }),
         defineField({
             name: "leadOrganization",
+            group: "partners",
             title: "Lead Organization",
             type: "reference",
             to: [{ type: "organization" }],
         }),
         defineField({
             name: "partnerOrganizations",
+            group: "partners",
             title: "Partner Organizations",
             type: "array",
             of: [
@@ -92,21 +106,26 @@ export default defineType({
         }),
         defineField({
             name: "startDate",
+            group: "content",
             title: "Start Date",
             type: "date",
         }),
         defineField({
             name: "endDate",
+            group: "content",
             title: "End Date",
             type: "date",
         }),
         defineField({
             name: "website",
+            group: "content",
             title: "Project Website",
             type: "url",
+            validation: (Rule) => urlRule(Rule),
         }),
         defineField({
             name: "logo",
+            group: "content",
             title: "Project Logo",
             type: "image",
             options: {
@@ -122,12 +141,14 @@ export default defineType({
         }),
         defineField({
             name: "location",
+            group: "location",
             title: "Project Location",
             type: "geopoint",
             description: "Primary location or headquarters of the project",
         }),
         defineField({
             name: "coverageArea",
+            group: "location",
             title: "Coverage Area",
             type: "array",
             of: [
@@ -157,6 +178,7 @@ export default defineType({
         }),
         defineField({
             name: "tags",
+            group: "content",
             title: "Tags",
             type: "array",
             of: [
