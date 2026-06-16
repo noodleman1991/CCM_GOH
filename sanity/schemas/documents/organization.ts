@@ -1,23 +1,33 @@
 import { defineField, defineType } from "sanity";
 import { Building } from "lucide-react";
 import { orderRankField } from "@sanity/orderable-document-list";
+import { urlRule, emailRule } from "../shared/validation";
 
 export default defineType({
     name: "organization",
     title: "Organization",
     type: "document",
     icon: Building,
+    groups: [
+        { name: "content", title: "Details", default: true },
+        { name: "contact", title: "Contact & Links" },
+        { name: "location", title: "Location" },
+    ],
     fields: [
         defineField({
             name: "name",
             title: "Name",
             type: "string",
+            group: "content",
+            description: "The organisation's full name.",
             validation: (Rule) => Rule.required(),
         }),
         defineField({
             name: "slug",
             title: "Slug",
             type: "slug",
+            group: "content",
+            description: "Auto-generated from the name; used in the page URL.",
             options: {
                 source: "name",
                 maxLength: 96,
@@ -28,12 +38,15 @@ export default defineType({
             name: "acronym",
             title: "Acronym",
             type: "string",
+            group: "content",
             description: "Organization acronym (e.g., WHO, UN)",
         }),
         defineField({
             name: "type",
             title: "Type",
             type: "string",
+            group: "content",
+            description: "The kind of institution — used to group organisations.",
             options: {
                 list: [
                     { title: "NGO", value: "ngo" },
@@ -53,6 +66,8 @@ export default defineType({
             name: "description",
             title: "Description",
             type: "object",
+            group: "content",
+            description: "A short description, in each language.",
             fields: [
                 { name: "en", title: "English", type: "text", rows: 3 },
                 { name: "es", title: "Español", type: "text", rows: 3 },
@@ -64,6 +79,7 @@ export default defineType({
             name: "logo",
             title: "Logo",
             type: "image",
+            group: "content",
             options: {
                 hotspot: true,
             },
@@ -79,21 +95,27 @@ export default defineType({
             name: "website",
             title: "Website",
             type: "url",
+            group: "contact",
+            validation: (Rule) => urlRule(Rule),
         }),
         defineField({
             name: "email",
             title: "Contact Email",
             type: "email",
+            group: "contact",
+            validation: (Rule) => emailRule(Rule),
         }),
         defineField({
             name: "headquarters",
             title: "Headquarters Location",
             type: "geopoint",
+            group: "location",
         }),
         defineField({
             name: "offices",
             title: "Office Locations",
             type: "array",
+            group: "location",
             of: [
                 {
                     type: "object",
@@ -141,6 +163,7 @@ export default defineType({
             name: "locationDetails",
             title: "Location Details",
             type: "object",
+            group: "location",
             fields: [
                 {
                     name: "country",
@@ -163,6 +186,7 @@ export default defineType({
             name: "regionalCommunity",
             title: "Regional Community",
             type: "reference",
+            group: "content",
             to: [{ type: "regionalCommunity" }],
             description: "Which regional community does this organization belong to?",
         }),
@@ -170,26 +194,31 @@ export default defineType({
             name: "socialMedia",
             title: "Social Media",
             type: "object",
+            group: "contact",
             fields: [
                 {
                     name: "twitter",
                     title: "Twitter/X",
                     type: "url",
+                    validation: (Rule) => urlRule(Rule),
                 },
                 {
                     name: "linkedin",
                     title: "LinkedIn",
                     type: "url",
+                    validation: (Rule) => urlRule(Rule),
                 },
                 {
                     name: "facebook",
                     title: "Facebook",
                     type: "url",
+                    validation: (Rule) => urlRule(Rule),
                 },
                 {
                     name: "instagram",
                     title: "Instagram",
                     type: "url",
+                    validation: (Rule) => urlRule(Rule),
                 },
             ],
         }),
@@ -197,6 +226,7 @@ export default defineType({
             name: "tags",
             title: "Tags",
             type: "array",
+            group: "content",
             of: [
                 {
                     type: "reference",
@@ -214,6 +244,7 @@ export default defineType({
             name: "verified",
             title: "Verified Organization",
             type: "boolean",
+            group: "content",
             initialValue: false,
             description: "Has this organization been verified by the platform?",
         }),
