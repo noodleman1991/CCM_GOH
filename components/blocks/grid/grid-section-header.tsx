@@ -35,7 +35,9 @@ export function GridSectionHeader({
     <div
       className={cn(
         "mb-6 md:mb-8",
-        hasImage && "grid grid-cols-1 md:grid-cols-[1fr_auto] gap-6",
+        // Centre the heading against the image so a short title doesn't leave a
+        // tall empty gap below it (the image used to drive the row height).
+        hasImage && "grid grid-cols-1 md:grid-cols-[1fr_auto] gap-6 md:items-center",
         isRTL && hasImage && "md:grid-cols-[auto_1fr]"
       )}
     >
