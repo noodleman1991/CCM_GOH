@@ -41,7 +41,12 @@ export default defineType({
             type: "slug",
             group: "metadata",
             options: {
-                source: "title.en",
+                // Fall back to the first available localized title so the slug
+                // can still be generated when there is no English title.
+                source: (doc: any) => {
+                    const t = (doc?.title || {}) as Record<string, string>;
+                    return t.en || t.es || t.fr || t.ar || "";
+                },
                 maxLength: 96,
             },
             validation: (Rule) => Rule.required(),
