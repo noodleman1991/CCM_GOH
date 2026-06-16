@@ -194,7 +194,9 @@
           "editorFeedback": "Comentarios del editor:"
         }
       }
-    }
+    },
+    "recentSubmissions": "Tus contribuciones recientes",
+    "memberCount": "{count, plural, one {# miembro} other {# miembros}}"
   },
   "settings": {
     "title": "Configuración",

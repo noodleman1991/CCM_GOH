@@ -8,6 +8,8 @@ import { prisma } from '@/lib/prisma'
 import { executePredefinedQuery } from '@/lib/dynamic-queries'
 import type { SupportedLocale } from '@/types/prisma'
 import { calculateProfileCompleteness } from '@/lib/profile-completeness'
+import { REGION_TO_RC_SLUG, isRegionCode } from '@/lib/maps/region-codes'
+import { getUserContributions, getRegionMembers } from '@/lib/community/region-data'
 
 /**
  * Dashboard Page - Server Component
@@ -140,14 +142,31 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
     m => m.community.type === 'REGIONAL'
   )?.community
 
+  // The community-page URL slug (e.g. "sub-saharan-africa") differs from the
+  // RegionalCommunityName enum (e.g. "SUB_SAHARAN_AFRICA"). Map it so the
+  // "visit community" link points at the real page.
+  const regionSlug =
+    regionalCommunity?.regionalName && isRegionCode(regionalCommunity.regionalName)
+      ? REGION_TO_RC_SLUG[regionalCommunity.regionalName]
+      : null
+
   // Fetch recent news from user's regional community (if they have one)
   let recentNews = null
+  let regionMemberCount = 0
   if (regionalCommunity?.regionalName) {
     recentNews = await executePredefinedQuery('recentNews', {
       communitySlug: regionalCommunity.regionalName,
       count: 3
     })
+    if (regionSlug) {
+      const members = await getRegionMembers(regionSlug)
+      regionMemberCount = members.length
+    }
   }
+
+  // The user's own contributions (case studies, content, recent work) — the
+  // unified feed that also powers the public profile's Contributions block.
+  const contributions = (await getUserContributions(user.id, locale)).slice(0, 5)
 
   return (
     <DashboardClient
@@ -164,8 +183,16 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
       regionalCommunity={regionalCommunity ? {
         id: regionalCommunity.id,
         name: regionalCommunity.name,
-        slug: regionalCommunity.regionalName || regionalCommunity.name
+        slug: regionSlug || regionalCommunity.name,
+        memberCount: regionMemberCount
       } : null}
+      contributions={contributions.map(c => ({
+        id: c.id,
+        kind: c.kind,
+        title: c.title,
+        href: c.href,
+        date: c.date
+      }))}
       recentWork={user.recentWork.map(w => ({
         id: w.id,
         title: w.title,

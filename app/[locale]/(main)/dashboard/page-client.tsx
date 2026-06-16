@@ -37,6 +37,15 @@ interface RegionalCommunity {
   id: string
   name: string
   slug: string
+  memberCount?: number
+}
+
+interface Contribution {
+  id: string
+  kind: 'caseStudy' | 'content' | 'recentWork'
+  title: string
+  href: string | null
+  date: string | null
 }
 
 interface RecentWork {
@@ -70,6 +79,7 @@ interface DashboardClientProps {
   regionalCommunity: RegionalCommunity | null
   recentWork: RecentWork[]
   recentNews: NewsItem[]
+  contributions?: Contribution[]
   locale: SupportedLocale
 }
 
@@ -78,6 +88,7 @@ export function DashboardClient({
   regionalCommunity,
   recentWork,
   recentNews,
+  contributions = [],
   locale
 }: DashboardClientProps) {
   const t = useTranslations('dashboard')
@@ -151,8 +162,8 @@ export function DashboardClient({
                 <Card className="group hover:shadow-lg transition-shadow min-h-[220px] flex flex-col">
                   <CardHeader>
                     <div className={cn("flex items-center gap-3", rtl && "flex-row-reverse")}>
-                      <div className="p-3 rounded-lg bg-blue-500/10 flex-shrink-0">
-                        <User className="w-6 h-6 text-blue-500" />
+                      <div className="p-3 rounded-lg bg-[var(--color-ccm-sea)]/10 flex-shrink-0">
+                        <User className="w-6 h-6 text-[var(--color-ccm-sea)]" />
                       </div>
                       <CardTitle>{t('manageProfile')}</CardTitle>
                     </div>
@@ -173,8 +184,8 @@ export function DashboardClient({
                 <Card className="group hover:shadow-lg transition-shadow min-h-[220px] flex flex-col">
                   <CardHeader>
                     <div className={cn("flex items-center gap-3", rtl && "flex-row-reverse")}>
-                      <div className="p-3 rounded-lg bg-green-500/10 flex-shrink-0">
-                        <Upload className="w-6 h-6 text-green-500" />
+                      <div className="p-3 rounded-lg bg-[var(--color-ccm-water)]/10 flex-shrink-0">
+                        <Upload className="w-6 h-6 text-[var(--color-ccm-water)]" />
                       </div>
                       <CardTitle>{t('submitCaseStudy')}</CardTitle>
                     </div>
@@ -195,8 +206,8 @@ export function DashboardClient({
                 <Card className="group hover:shadow-lg transition-shadow min-h-[220px] flex flex-col">
                   <CardHeader>
                     <div className={cn("flex items-center gap-3", rtl && "flex-row-reverse")}>
-                      <div className="p-3 rounded-lg bg-purple-500/10 flex-shrink-0">
-                        <Users className="w-6 h-6 text-purple-500" />
+                      <div className="p-3 rounded-lg bg-[var(--color-ccm-sky)]/25 flex-shrink-0">
+                        <Users className="w-6 h-6 text-[var(--color-ccm-sea)]" />
                       </div>
                       <CardTitle>{t('collaborate')}</CardTitle>
                     </div>
@@ -217,8 +228,8 @@ export function DashboardClient({
                 <Card className="group hover:shadow-lg transition-shadow min-h-[220px] flex flex-col">
                   <CardHeader>
                     <div className={cn("flex items-center gap-3", rtl && "flex-row-reverse")}>
-                      <div className="p-3 rounded-lg bg-orange-500/10 flex-shrink-0">
-                        <Settings className="w-6 h-6 text-orange-500" />
+                      <div className="p-3 rounded-lg bg-[var(--color-ccm-midnight)]/10 flex-shrink-0">
+                        <Settings className="w-6 h-6 text-[var(--color-ccm-midnight)]" />
                       </div>
                       <CardTitle>{t('accountSettings')}</CardTitle>
                     </div>
@@ -266,7 +277,7 @@ export function DashboardClient({
                             </div>
                           </div>
                           {work.isOngoing && (
-                            <span className="px-2 py-1 text-xs bg-green-500/10 text-green-700 dark:text-green-400 rounded-full">
+                            <span className="px-2 py-1 text-xs bg-[var(--color-ccm-sky)]/25 text-[var(--color-ccm-sea)] rounded-full">
                               {t('ongoing')}
                             </span>
                           )}
@@ -293,13 +304,18 @@ export function DashboardClient({
               <Card>
                 <CardHeader>
                   <div className="flex items-center gap-3">
-                    <div className="p-3 rounded-lg bg-blue-500/10">
-                      <MapPin className="w-6 h-6 text-blue-500" />
+                    <div className="p-3 rounded-lg bg-[var(--color-ccm-sea)]/10">
+                      <MapPin className="w-6 h-6 text-[var(--color-ccm-sea)]" />
                     </div>
                     <div>
                       <CardTitle>{t('yourCommunity')}</CardTitle>
                       <CardDescription className="mt-1">
                         {regionalCommunity.name}
+                        {regionalCommunity.memberCount ? (
+                          <span className="block text-xs text-[var(--color-ccm-sea)] mt-0.5">
+                            {t('memberCount', { count: regionalCommunity.memberCount })}
+                          </span>
+                        ) : null}
                       </CardDescription>
                     </div>
                   </div>
@@ -313,6 +329,46 @@ export function DashboardClient({
                   </Button>
                 </CardContent>
               </Card>
+            )}
+
+            {/* Recent submissions — the user's own contributions */}
+            {contributions.length > 0 && (
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-xl font-bold flex items-center gap-2">
+                    <FileText className="w-5 h-5 text-[var(--color-ccm-sea)]" />
+                    {t('recentSubmissions')}
+                  </h2>
+                </div>
+                <Card>
+                  <CardContent className="p-0 divide-y">
+                    {contributions.map((c) => {
+                      const inner = (
+                        <div className="flex items-start gap-3 p-4">
+                          <div className="p-2 rounded-md bg-[var(--color-ccm-sky)]/25 shrink-0">
+                            <FileText className="w-4 h-4 text-[var(--color-ccm-sea)]" />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-sm font-medium line-clamp-2">{c.title}</p>
+                            {c.date && (
+                              <p className="text-xs text-muted-foreground mt-0.5">
+                                {new Date(c.date).toLocaleDateString(locale)}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      )
+                      return c.href ? (
+                        <Link key={c.id} href={c.href} className="block hover:bg-muted/50 transition-colors">
+                          {inner}
+                        </Link>
+                      ) : (
+                        <div key={c.id}>{inner}</div>
+                      )
+                    })}
+                  </CardContent>
+                </Card>
+              </div>
             )}
 
             {/* Recent Community News */}
@@ -374,7 +430,7 @@ export function DashboardClient({
 
             {/* Join Community CTA */}
             {!regionalCommunity && (
-              <Card className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 border-blue-200 dark:border-blue-800">
+              <Card className="bg-gradient-to-br from-[var(--color-ccm-sky)]/20 to-[var(--color-ccm-water)]/10 border-[var(--color-ccm-sky)]">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <MapPin className="w-5 h-5" />

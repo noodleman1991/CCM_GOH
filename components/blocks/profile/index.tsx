@@ -7,4 +7,3 @@ export { default as SocialLinksBlock } from './social-links-block'
 
 // New components
 export { ProfileStatistics } from './profile-statistics'
-export { ProfileNavigation } from './profile-navigation'
