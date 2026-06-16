@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { algoliaClient, ALGOLIA_INDICES, AgendaSearchRecord } from '@/lib/algolia'
+import { deriveAgendaLanguages } from '@/lib/agenda-languages'
 import { sanityFetch } from '@/sanity/lib/live'
 
 // Sanity query to get all agendas
@@ -255,7 +256,8 @@ function transformAgendaForIndex(agenda: any): AgendaSearchRecord | null {
       regionalCommunities: (agenda.regionalCommunities || []).map((community: any) => community.name).filter(Boolean),
       tags: (agenda.tags || []).map((tag: any) => tag.name).filter(Boolean),
       accessLevel: agenda.accessLevel || 'public',
-      language: 'en', // Default to English, could be enhanced with language detection from files
+      language: 'en', // deprecated; kept for back-compat
+      languages: deriveAgendaLanguages(agenda.files, agenda.title),
       files: (agenda.files || [])
         .filter((f: any) => f.file?.asset?.url)
         .map((f: any) => ({

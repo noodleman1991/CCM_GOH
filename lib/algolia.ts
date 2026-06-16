@@ -176,7 +176,10 @@ export interface AgendaSearchRecord extends Record<string, unknown> {
   regionalCommunities: string[]
   tags: string[]
   accessLevel: 'public' | 'registered' | 'members'
+  /** @deprecated single language was always 'en' — use `languages`. */
   language: string
+  /** Every language this agenda is available in (from files + localized titles). */
+  languages: string[]
   files?: Array<{
     language: string
     url: string
@@ -408,7 +411,8 @@ export const INDEX_SETTINGS = {
       'tags',
       'organizations',
       'regionalCommunities',
-      'language'
+      'language',
+      'languages'
     ],
     customRanking: [
       'desc(featured)',

@@ -41,7 +41,12 @@ export default defineType({
             type: "slug",
             group: "metadata",
             options: {
-                source: "title.en",
+                // Fall back to the first available localized title so the slug
+                // can still be generated when there is no English title.
+                source: (doc: any) => {
+                    const t = (doc?.title || {}) as Record<string, string>;
+                    return t.en || t.es || t.fr || t.ar || "";
+                },
                 maxLength: 96,
             },
             validation: (Rule) => Rule.required(),
@@ -284,14 +289,18 @@ export default defineType({
     ],
     preview: {
         select: {
-            title: "title.en",
+            titleEn: "title.en",
+            titleEs: "title.es",
+            titleFr: "title.fr",
+            titleAr: "title.ar",
             subtitle: "agendaType",
             media: "coverImage",
             year: "year",
             featured: "featured",
             downloadCount: "totalDownloadCount",
+            files: "files",
         },
-        prepare({ title, subtitle, media, year, featured, downloadCount }) {
+        prepare({ titleEn, titleEs, titleFr, titleAr, subtitle, media, year, featured, downloadCount, files }) {
             const typeLabels = {
                 annual: "Annual Agenda",
                 research: "Research Agenda",
@@ -307,10 +316,17 @@ export default defineType({
 
             const agendaTypeLabel = typeLabels[subtitle as keyof typeof typeLabels] || subtitle;
             const downloads = downloadCount || 0;
+            // Show the title in whichever language exists (en may be missing).
+            const title = titleEn || titleEs || titleFr || titleAr || "Untitled Agenda";
+            // Languages available, from the files attached.
+            const fileLangs = Array.from(
+                new Set((files || []).map((f: { language?: string }) => f?.language).filter(Boolean))
+            );
+            const langText = fileLangs.length ? ` | ${fileLangs.length} language${fileLangs.length > 1 ? "s" : ""}` : "";
 
             return {
-                title: `${featured ? "FEATURED " : ""}${title || "Untitled Agenda"}`,
-                subtitle: `${agendaTypeLabel} | ${year || "No year"} | ${downloads} downloads`,
+                title: `${featured ? "FEATURED " : ""}${title}`,
+                subtitle: `${agendaTypeLabel} | ${year || "No year"} | ${downloads} downloads${langText}`,
                 media,
             };
         }
