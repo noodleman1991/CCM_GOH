@@ -34,7 +34,7 @@ export function GridSectionHeader({
   return (
     <div
       className={cn(
-        "mb-8 md:mb-12",
+        "mb-6 md:mb-8",
         hasImage && "grid grid-cols-1 md:grid-cols-[1fr_auto] gap-6",
         isRTL && hasImage && "md:grid-cols-[auto_1fr]"
       )}

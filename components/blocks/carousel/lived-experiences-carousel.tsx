@@ -313,7 +313,7 @@ export default function LivedExperiencesCarousel({
       <SectionContainer background={background} padding={padding}>
         <div className="w-full">
           {(title || subtitle) && (
-            <div className="mb-12">
+            <div className="mb-6 md:mb-8">
               {title && (
                 <h2 className={cn("font-bold font-heading text-ccm-midnight mb-4 text-balance", heading('md'))}>
                   {title}
@@ -340,7 +340,7 @@ export default function LivedExperiencesCarousel({
       <div className="w-full">
         {/* Header */}
         {(title || subtitle) && (
-          <div className="mb-12">
+          <div className="mb-6 md:mb-8">
             {title && (
               <h2 className={cn("font-bold font-heading text-ccm-midnight mb-4 text-balance", heading('md'))}>
                 {title}
