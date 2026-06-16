@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { urlForCropped } from '@/sanity/lib/image';
 import { cn } from '@/lib/utils';
+import { normalizeTagColor, sortedTags } from '@/lib/tags';
 
 // Define the external source type based on the schema
 interface ExternalSource {
@@ -243,28 +244,32 @@ export default function GridExternalSourceComponent({
                     )}
 
                     {/* Tags */}
-                    {showTags && externalSource.tags && externalSource.tags.length > 0 && (
+                    {showTags && externalSource.tags && externalSource.tags.length > 0 && (() => {
+                        const tags = sortedTags(externalSource.tags, supportedLocale);
+                        if (tags.length === 0) return null;
+                        return (
                         <div className="flex flex-wrap gap-1 mt-3">
-                            {externalSource.tags.slice(0, 3).map((tag: any) => (
+                            {tags.slice(0, 3).map((tag: any) => {
+                                const color = normalizeTagColor(tag.color);
+                                return (
                                 <Badge
                                     key={tag._id}
                                     variant="outline"
                                     className="text-xs"
-                                    style={{
-                                        borderColor: tag.color,
-                                        color: tag.color
-                                    }}
+                                    style={{ borderColor: color, color }}
                                 >
                                     {getLocalizedText(tag.label, supportedLocale)}
                                 </Badge>
-                            ))}
-                            {externalSource.tags.length > 3 && (
+                                );
+                            })}
+                            {tags.length > 3 && (
                                 <Badge variant="outline" className="text-xs">
-                                    {getMoreText(externalSource.tags.length - 3)}
+                                    {getMoreText(tags.length - 3)}
                                 </Badge>
                             )}
                         </div>
-                    )}
+                        );
+                    })()}
                 </CardContent>
             </Card>
         </Link>

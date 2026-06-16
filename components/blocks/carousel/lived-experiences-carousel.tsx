@@ -14,6 +14,7 @@ import { BackgroundOptionType } from "@/types/background-option";
 import { SectionPadding } from "@/sanity.types";
 import { VideoModal } from "@/components/blocks/video-modal";
 import { getLocalizedField } from "@/lib/localization-utils";
+import { normalizeTagColor, sortedTags } from "@/lib/tags";
 
 interface LivedExperience {
   _id: string;
@@ -224,38 +225,40 @@ function LivedExperienceCard({
           )}
         </div>
 
-        {/* Tags - Show 2 tags + count */}
-        {experience.tags && experience.tags.length > 0 && (
+        {/* Tags - Show 2 tags + count (sorted, on-brand colours) */}
+        {(() => {
+          const supportedLocale = locale as 'en' | 'es' | 'fr' | 'ar';
+          const tags = sortedTags(experience.tags, supportedLocale);
+          if (tags.length === 0) return null;
+          return (
           <div className="flex flex-wrap gap-2 mt-4">
-            {experience.tags
-              .filter((tag) => tag && tag.label && tag.color) // Filter out null tags and tags without color
-              .slice(0, 2)
-              .map((tag) => {
-              const supportedLocale = locale as 'en' | 'es' | 'fr' | 'ar';
+            {tags.slice(0, 2).map((tag) => {
+              const color = normalizeTagColor(tag.color);
               const tagLabel = typeof tag.label === 'string'
                 ? tag.label
-                : getLocalizedField(tag.label, supportedLocale, "Tag");
+                : getLocalizedField(tag.label as never, supportedLocale, "Tag");
               return (
                 <span
                   key={tag._id}
                   className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border-2"
                   style={{
-                    borderColor: tag.color,
-                    color: tag.color,
-                    backgroundColor: `${tag.color}10`
+                    borderColor: color,
+                    color,
+                    backgroundColor: `${color}10`
                   }}
                 >
                   {tagLabel}
                 </span>
               );
             })}
-            {experience.tags.filter((tag) => tag && tag.label && tag.color).length > 2 && (
+            {tags.length > 2 && (
               <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-muted text-muted-foreground">
-                +{experience.tags.filter((tag) => tag && tag.label && tag.color).length - 2}
+                +{tags.length - 2}
               </span>
             )}
           </div>
-        )}
+          );
+        })()}
       </div>
     </div>
   );

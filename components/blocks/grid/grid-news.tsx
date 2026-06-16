@@ -12,6 +12,7 @@ import {
 import { urlForCropped } from '@/sanity/lib/image';
 import { sortTagsByLabel } from '@/lib/localization-utils';
 import { cn } from '@/lib/utils';
+import { normalizeTagColor } from '@/lib/tags';
 
 // Define the news post type based on the schema
 interface NewsPost {
@@ -282,19 +283,19 @@ export default function GridNewsComponent({
                 {/* Tags */}
                 {showTags && sortTagsByLabel(newsPost.tags, supportedLocale).length > 0 && (
                     <div className="flex flex-wrap gap-1 mt-3">
-                        {sortTagsByLabel(newsPost.tags, supportedLocale).slice(0, 3).map((tag: any) => (
+                        {sortTagsByLabel(newsPost.tags, supportedLocale).slice(0, 3).map((tag: any) => {
+                            const color = normalizeTagColor(tag.color);
+                            return (
                             <Badge
                                 key={tag._id}
                                 variant="outline"
                                 className="text-xs"
-                                style={{
-                                    borderColor: tag.color || undefined,
-                                    color: tag.color || undefined
-                                }}
+                                style={{ borderColor: color, color }}
                             >
                                 {getLocalizedText(tag.label, supportedLocale)}
                             </Badge>
-                        ))}
+                            );
+                        })}
                         {sortTagsByLabel(newsPost.tags, supportedLocale).length > 3 && (
                             <Badge variant="outline" className="text-xs">
                                 {getMoreText(sortTagsByLabel(newsPost.tags, supportedLocale).length - 3)}

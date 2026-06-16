@@ -249,7 +249,9 @@ export default defineType({
                 layout: "tags",
                 sortable: true,
             },
-            validation: (Rule) => Rule.max(15),
+            validation: (Rule) =>
+                Rule.max(6).warning("Aim for 3–4 tags; more than 6 dilutes them."),
+            description: "3–4 focused tags work best (6 max).",
         }),
 
         // ANALYTICS FIELDS

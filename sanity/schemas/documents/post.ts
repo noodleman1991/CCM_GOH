@@ -90,8 +90,9 @@ export default defineType({
               layout: "tags",
               sortable: true,
           },
-          validation: (Rule) => Rule.max(15),
-          description: "Type to search existing tags or create new ones.",
+          validation: (Rule) =>
+            Rule.max(6).warning("Aim for 3–4 tags; more than 6 dilutes them."),
+          description: "Type to search existing tags or create new ones. 3–4 focused tags work best (6 max).",
       }),
     defineField({
       name: "author",
