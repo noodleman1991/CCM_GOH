@@ -13,6 +13,7 @@ import {
     FileSearch,
     MapPinned,
     Home,
+    Megaphone,
     Heart,
     Globe,
     UserCog,
@@ -36,6 +37,16 @@ export const structure = (S: any, context: any) =>
                                 .documentId(documentId)
                                 .schemaType("homepage")
                         )
+                ),
+
+            // Site Announcement - singleton (one fixed document)
+            S.listItem()
+                .title("Site Announcement")
+                .icon(Megaphone)
+                .child(
+                    S.document()
+                        .schemaType("siteAnnouncement")
+                        .documentId("siteAnnouncement")
                 ),
 
             // Website Pages

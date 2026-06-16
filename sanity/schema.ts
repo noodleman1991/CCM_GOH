@@ -2,6 +2,7 @@ import { type SchemaTypeDefinition } from "sanity";
 
 // documents
 import homepage from "./schemas/documents/homepage";
+import siteAnnouncement from "./schemas/documents/site-announcement";
 import page from "./schemas/documents/page";
 import regionalCommunityPage from "./schemas/documents/regional-community-page"; //hub
 import post from "./schemas/documents/post";
@@ -89,6 +90,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     types: [
         // documents
         homepage,
+        siteAnnouncement,
         page,
         post,
         author,

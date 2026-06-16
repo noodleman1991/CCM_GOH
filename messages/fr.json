@@ -1205,5 +1205,9 @@
     "facetNews": "Actualités",
     "viewInSearch": "Voir dans la recherche",
     "noData": "Aucune donnée pour cette région."
+  },
+  "announcement": {
+    "dismiss": "Fermer l’annonce",
+    "readMore": "En savoir plus"
   }
 }

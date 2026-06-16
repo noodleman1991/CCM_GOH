@@ -1205,5 +1205,9 @@
     "facetNews": "News",
     "viewInSearch": "View in search",
     "noData": "No data for this region yet."
+  },
+  "announcement": {
+    "dismiss": "Dismiss announcement",
+    "readMore": "Read more"
   }
 }
