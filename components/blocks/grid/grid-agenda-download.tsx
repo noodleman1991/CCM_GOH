@@ -87,7 +87,9 @@ function DownloadButton({
                     <Download className="h-3 w-3 shrink-0" />
                     <span className="truncate">{languageDisplay}</span>
                     {fileSize && (
-                        <span className="text-xs opacity-70 shrink-0 ms-1">
+                        // No opacity dimming: it dropped contrast below WCAG AA
+                        // (4.5:1). The smaller text-xs already reads as secondary.
+                        <span className="text-xs shrink-0 ms-1">
                             ({fileSize})
                         </span>
                     )}

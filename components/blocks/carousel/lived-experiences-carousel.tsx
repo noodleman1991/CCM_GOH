@@ -134,8 +134,17 @@ function LivedExperienceCard({
 
   return (
     <div
-      className="group relative bg-card rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer flex flex-col h-full"
+      role="button"
+      tabIndex={0}
+      aria-label={`${t('watchExperience')}: ${title}`}
+      className="group relative bg-card rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer flex flex-col h-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ccm-water"
       onClick={onClick}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onClick?.();
+        }
+      }}
     >
       {/* Thumbnail with Play Button Overlay */}
       <div className="relative aspect-video bg-muted flex-shrink-0">
@@ -264,6 +273,7 @@ export default function LivedExperiencesCarousel({
   locale = "en",
 }: LivedExperiencesCarouselProps) {
   const t = useTranslations('regional');
+  const tCommon = useTranslations('common');
   const [itemsPerView, setItemsPerView] = useState(3);
   const [selectedVideo, setSelectedVideo] = useState<LivedExperience | null>(null);
   const [scrollContainerRef, setScrollContainerRef] = useState<HTMLDivElement | null>(null);
@@ -356,10 +366,15 @@ export default function LivedExperiencesCarousel({
 
         {/* Carousel Container with Native Scroll */}
         <div className="relative">
-          {/* Carousel Content with Horizontal Scroll */}
+          {/* Carousel Content with Horizontal Scroll.
+              tabIndex + role/aria-label make the scroll region reachable and
+              operable by keyboard (arrow keys scroll a focused region). */}
           <div
             ref={setScrollContainerRef}
-            className="overflow-x-auto scrollbar-hide pb-4"
+            tabIndex={0}
+            role="region"
+            aria-label={title || t('noLivedExperiences')}
+            className="overflow-x-auto scrollbar-hide pb-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ccm-water rounded-lg"
             style={{
               scrollSnapType: 'x mandatory',
               WebkitOverflowScrolling: 'touch'
@@ -395,6 +410,7 @@ export default function LivedExperiencesCarousel({
                 variant="outline"
                 size="icon"
                 onClick={scrollToPrev}
+                aria-label={tCommon('previous')}
                 className="rounded-full"
               >
                 <ChevronLeft className="w-4 h-4" />
@@ -404,6 +420,7 @@ export default function LivedExperiencesCarousel({
                 variant="outline"
                 size="icon"
                 onClick={scrollToNext}
+                aria-label={tCommon('next')}
                 className="rounded-full"
               >
                 <ChevronRight className="w-4 h-4" />

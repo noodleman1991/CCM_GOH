@@ -26,7 +26,9 @@ export const clerkAppearance: ClerkAppearance = {
   variables: {
     colorPrimary: "#205596", // --color-ccm-sea
     colorText: "#0B3160", // --color-ccm-midnight
-    colorTextSecondary: "#4186C3", // --color-ccm-water
+    // ccm-sea, not the lighter ccm-water: secondary body text at ~13px needs
+    // 4.5:1 on white for WCAG AA. ccm-water (#4186C3) was only 3.87:1.
+    colorTextSecondary: "#205596", // --color-ccm-sea
     colorBackground: "#ffffff",
     colorInputBackground: "#ffffff",
     colorInputText: "#0B3160",

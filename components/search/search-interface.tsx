@@ -15,13 +15,22 @@ import { FileText, BookOpen, Newspaper } from 'lucide-react'
 import { useTranslations, useLocale } from 'next-intl'
 import { SearchErrorBoundary } from './search-error-boundary'
 import { useAuth } from '@clerk/nextjs'
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
+import { Skeleton } from '@/components/ui/skeleton'
 
 export default function SearchInterface() {
   const t = useTranslations('search')
   const locale = useLocale()
   const isRTL = locale === 'ar'
   const { isSignedIn } = useAuth()
+
+  // Mount the Algolia widgets only on the client. InstantSearchNext otherwise
+  // server-renders each tab's results (three parallel SSR Algolia requests here,
+  // all forceMount'd), which holds the RSC stream open and can hang the page.
+  // This search is force-dynamic, auth-aware and query-param driven, so there is
+  // no SEO value in SSR-ing the results — render a skeleton on the server.
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
 
   // Track hits count per tab from InstantSearch contexts
   const [hitsCounts, setHitsCounts] = useState<{
@@ -58,6 +67,31 @@ export default function SearchInterface() {
     }
 
     return baseFilters.join(' AND ')
+  }
+
+  // Server / pre-hydration render: a lightweight skeleton, no Algolia SSR.
+  if (!mounted) {
+    return (
+      <div className="space-y-6" dir={isRTL ? 'rtl' : 'ltr'}>
+        <div className="flex justify-center">
+          <Skeleton className="h-10 w-full max-w-3xl" />
+        </div>
+        <Skeleton className="mx-auto h-12 w-full max-w-2xl" />
+        <div className="flex gap-8">
+          <div className="w-64 flex-shrink-0 space-y-3">
+            <Skeleton className="h-6 w-24" />
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Skeleton key={i} className="h-20 w-full" />
+            ))}
+          </div>
+          <div className="flex-1 space-y-4">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <Skeleton key={i} className="h-28 w-full rounded-lg" />
+            ))}
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
