@@ -428,6 +428,15 @@
         "recentWork": "Recent work",
         "social": "Links",
         "privacy": "Privacy"
+      },
+      "orcidImport": {
+        "label": "ORCID iD",
+        "button": "Import from ORCID",
+        "importing": "Importing…",
+        "help": "Paste your ORCID iD to pull in your publications and affiliations for review.",
+        "needId": "Enter your ORCID iD first.",
+        "added": "Imported {count} works — review and save.",
+        "none": "No new works found to import."
       }
     },
     "account": {

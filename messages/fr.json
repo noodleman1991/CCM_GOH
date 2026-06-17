@@ -510,6 +510,15 @@
         "recentWork": "Travaux récents",
         "social": "Liens",
         "privacy": "Confidentialité"
+      },
+      "orcidImport": {
+        "label": "ORCID iD",
+        "button": "Importer depuis ORCID",
+        "importing": "Importation…",
+        "help": "Collez votre ORCID iD pour récupérer vos publications et affiliations à vérifier.",
+        "needId": "Saisissez d'abord votre ORCID iD.",
+        "added": "{count} travaux importés — vérifiez et enregistrez.",
+        "none": "Aucun nouveau travail à importer."
       }
     },
     "account": {
