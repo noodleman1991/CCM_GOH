@@ -6,7 +6,8 @@ import { useState, useTransition, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
-import { RemovableChip } from '@/components/ui/filter-chip'
+import { RemovableChip, FilterChip } from '@/components/ui/filter-chip'
+import { TIME_FRAMES, timeFrameToDateFrom, dateFromToTimeFrame, type TimeFrame } from '@/lib/filters/time-frame'
 import { Calendar } from '@/components/ui/calendar'
 import {
   Select,
@@ -123,6 +124,22 @@ export default function NewsFilters({ currentFilters, tags = [], communities = [
     updateFilter('dateFrom', date?.toISOString())
   }
 
+  // Quick time-frame presets — set dateFrom from a friendly range, clearing
+  // dateTo so the preset means "since N years ago".
+  const activeTimeFrame = dateFromToTimeFrame(currentFilters.dateFrom)
+  const handleTimeFrame = (tf: TimeFrame) => {
+    const from = timeFrameToDateFrom(tf)
+    setDateFrom(from ? new Date(from) : undefined)
+    setDateTo(undefined)
+    const params = new URLSearchParams(searchParams.toString())
+    if (from) params.set('dateFrom', from)
+    else params.delete('dateFrom')
+    params.delete('dateTo')
+    startTransition(() => {
+      router.push(`${pathname}?${params.toString()}`)
+    })
+  }
+
   const handleDateToChange = (date: Date | undefined) => {
     setDateTo(date)
     updateFilter('dateTo', date?.toISOString())
@@ -176,6 +193,18 @@ export default function NewsFilters({ currentFilters, tags = [], communities = [
                 <X className="w-3 h-3" />
               </Button>
             )}
+          </div>
+
+          {/* Time-frame quick presets — pills */}
+          <div className="flex flex-wrap items-center gap-2">
+            {TIME_FRAMES.map((tf) => (
+              <FilterChip
+                key={tf}
+                label={t(`timeFrame.${tf}`)}
+                active={activeTimeFrame === tf}
+                onClick={() => handleTimeFrame(tf)}
+              />
+            ))}
           </div>
 
           {/* Second Row: Date Range and Advanced Filters */}
