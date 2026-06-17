@@ -7,8 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { RemovableChip } from '@/components/ui/filter-chip'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Label } from '@/components/ui/label'
+import { PillFilterGroup } from '@/components/ui/pill-filter-group'
 import {
   Select,
   SelectContent,
@@ -249,69 +248,29 @@ export default function CaseStudiesFilters({
 
                 <Separator />
 
-                {/* Tag Filter */}
-                {tags.length > 0 && (
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium flex items-center gap-2">
-                      <Tag className="w-4 h-4" />
-                      {t('tag')}
-                    </label>
-                    <div className="max-h-48 overflow-y-auto space-y-2">
-                      {tags.map((tag) => (
-                        <div key={tag._id} className="flex items-center space-x-2">
-                          <Checkbox
-                            id={`tag-${tag._id}`}
-                            checked={currentFilters.tags?.includes(tag.value) || false}
-                            onCheckedChange={() => toggleArrayFilter('tags', tag.value)}
-                          />
-                          <Label
-                            htmlFor={`tag-${tag._id}`}
-                            className="text-sm font-normal cursor-pointer flex-1"
-                          >
-                            {getTagLabel(tag)}
-                            {tag.caseStudyCount !== undefined && tag.caseStudyCount > 0 && (
-                              <span className="ms-1 text-xs text-muted-foreground">
-                                ({tag.caseStudyCount})
-                              </span>
-                            )}
-                          </Label>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                {/* Tag Filter — pills */}
+                <PillFilterGroup
+                  legend={t('tag')}
+                  options={tags.map((tag) => ({
+                    value: tag.value,
+                    label: getTagLabel(tag),
+                    count: tag.caseStudyCount,
+                  }))}
+                  selected={currentFilters.tags || []}
+                  onToggle={(v) => toggleArrayFilter('tags', v)}
+                />
 
-                {/* Community Filter */}
-                {communities.length > 0 && (
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium flex items-center gap-2">
-                      <MapPin className="w-4 h-4" />
-                      {t('community')}
-                    </label>
-                    <div className="max-h-48 overflow-y-auto space-y-2">
-                      {communities.map((community) => (
-                        <div key={community._id} className="flex items-center space-x-2">
-                          <Checkbox
-                            id={`community-${community._id}`}
-                            checked={currentFilters.communities?.includes(community.slug) || false}
-                            onCheckedChange={() => toggleArrayFilter('communities', community.slug)}
-                          />
-                          <Label
-                            htmlFor={`community-${community._id}`}
-                            className="text-sm font-normal cursor-pointer flex-1"
-                          >
-                            {getCommunityName(community)}
-                            {community.caseStudyCount !== undefined && community.caseStudyCount > 0 && (
-                              <span className="ms-1 text-xs text-muted-foreground">
-                                ({community.caseStudyCount})
-                              </span>
-                            )}
-                          </Label>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                {/* Community Filter — pills */}
+                <PillFilterGroup
+                  legend={t('community')}
+                  options={communities.map((community) => ({
+                    value: community.slug,
+                    label: getCommunityName(community),
+                    count: community.caseStudyCount,
+                  }))}
+                  selected={currentFilters.communities || []}
+                  onToggle={(v) => toggleArrayFilter('communities', v)}
+                />
               </div>
             </PopoverContent>
           </Popover>
