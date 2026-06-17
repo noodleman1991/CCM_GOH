@@ -28,6 +28,18 @@ interface LivedExperience {
     fr?: string;
     ar?: string;
   };
+  issue?: {
+    en?: string;
+    es?: string;
+    fr?: string;
+    ar?: string;
+  };
+  personContext?: {
+    en?: string;
+    es?: string;
+    fr?: string;
+    ar?: string;
+  };
   videoLink?: string;
   duration?: string;
   publishedAt?: string;
@@ -140,6 +152,8 @@ export function VideoModal({
   const description = experience
     ? getLocalizedText(experience.description, locale)
     : null;
+  const issue = experience ? getLocalizedText(experience.issue, locale) : null;
+  const personContext = experience ? getLocalizedText(experience.personContext, locale) : null;
   const communityName = experience?.relatedCommunity?.name
     ? getLocalizedText(experience.relatedCommunity.name, locale)
     : null;
@@ -261,10 +275,26 @@ export function VideoModal({
               )}
             </div>
 
+            {/* The issue this experience speaks to — a quiet framed callout */}
+            {issue && (
+              <div className="rounded-lg border-s-2 border-[var(--color-ccm-water)] bg-[var(--color-ccm-sky)]/10 ps-4 py-3">
+                <p className="text-xs font-semibold uppercase tracking-wider text-ccm-sea mb-1">{t('issueLabel')}</p>
+                <p className="text-sm text-foreground/85 leading-relaxed">{issue}</p>
+              </div>
+            )}
+
             {/* Description */}
             {description && (
               <div>
                 <p className="text-muted-foreground leading-relaxed">{description}</p>
+              </div>
+            )}
+
+            {/* About the person sharing — their own words, shown respectfully */}
+            {personContext && (
+              <div className="rounded-lg bg-muted/50 p-4">
+                <p className="text-xs font-semibold uppercase tracking-wider text-ccm-sea mb-1">{t('aboutPersonLabel')}</p>
+                <p className="text-sm text-foreground/85 leading-relaxed">{personContext}</p>
               </div>
             )}
 

@@ -795,7 +795,10 @@
     "videoUnavailable": "This video is unavailable.",
     "sortBy": "Sort",
     "sortNewest": "Newest first",
-    "sortAZ": "A–Z"
+    "sortAZ": "A–Z",
+    "issueLabel": "The issue",
+    "aboutPersonLabel": "About the person",
+    "shareCta": "Share your experience"
   },
   "revisionAlert": {
     "title": "Action Required: Revision Needed",

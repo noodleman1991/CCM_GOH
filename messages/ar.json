@@ -650,7 +650,10 @@
     "videoUnavailable": "هذا الفيديو غير متاح.",
     "sortBy": "ترتيب",
     "sortNewest": "الأحدث أولاً",
-    "sortAZ": "أ–ي"
+    "sortAZ": "أ–ي",
+    "issueLabel": "القضية",
+    "aboutPersonLabel": "عن الشخص",
+    "shareCta": "شارك تجربتك"
   },
   "caseStudyForm": {
     "sections": {

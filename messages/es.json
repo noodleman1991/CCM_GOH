@@ -650,7 +650,10 @@
     "videoUnavailable": "Este video no está disponible.",
     "sortBy": "Ordenar",
     "sortNewest": "Más recientes",
-    "sortAZ": "A–Z"
+    "sortAZ": "A–Z",
+    "issueLabel": "El tema",
+    "aboutPersonLabel": "Sobre la persona",
+    "shareCta": "Comparte tu experiencia"
   },
   "caseStudyForm": {
     "sections": {

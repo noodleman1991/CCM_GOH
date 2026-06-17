@@ -27,6 +27,8 @@ export const livedExperiencesCarouselQuery = groq`
     _type,
     title,
     description,
+    issue,
+    personContext,
     videoLink,
     thumbnail,
     duration,
