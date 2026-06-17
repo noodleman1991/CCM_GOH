@@ -27,10 +27,10 @@ describe("aggregateRegionData", () => {
     expect(oce.intensity).toBeCloseTo(0.5);
   });
 
-  it("exposes the three facets", () => {
+  it("exposes the content facets", () => {
     const ids = FACETS.map((f) => f.id).sort();
     expect(ids).toEqual(
-      (["caseStudyCount", "memberCount", "newsCount"] as FacetId[]).sort()
+      (["caseStudyCount", "livedExpCount", "memberCount", "newsCount"] as FacetId[]).sort()
     );
   });
 

@@ -1306,7 +1306,8 @@
     "facetMembers": "Members",
     "facetNews": "News",
     "viewInSearch": "View in search",
-    "noData": "No data for this region yet."
+    "noData": "No data for this region yet.",
+    "facetLivedExperiences": "Lived experiences"
   },
   "announcement": {
     "dismiss": "Dismiss announcement",

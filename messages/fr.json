@@ -1306,7 +1306,8 @@
     "facetMembers": "Membres",
     "facetNews": "Actualités",
     "viewInSearch": "Voir dans la recherche",
-    "noData": "Aucune donnée pour cette région."
+    "noData": "Aucune donnée pour cette région.",
+    "facetLivedExperiences": "Expériences vécues"
   },
   "announcement": {
     "dismiss": "Fermer l’annonce",
