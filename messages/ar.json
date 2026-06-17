@@ -1217,7 +1217,8 @@
       "project": "المشروع",
       "location": "الموقع",
       "publishDate": "تاريخ النشر"
-    }
+    },
+    "siteBadge": "CCM"
   },
   "regional": {
     "noLivedExperiences": "لا تتوفر تجارب حياتية بعد.",

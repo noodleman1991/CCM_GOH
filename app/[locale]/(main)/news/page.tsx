@@ -19,6 +19,9 @@ import {
 } from '@/sanity/queries/news-queries'
 import ExternalSourceCard from '@/components/ui/external-source-card'
 import { hasActiveFilters } from '@/lib/news-utils'
+import { mergeNewsFeed } from '@/lib/news-feed'
+import { cn } from '@/lib/utils'
+import { heading } from '@/lib/design-tokens'
 import { getLocalizedValue } from '@/i18n/i18n-helpers'
 import type { NewsFilters as NewsFiltersType } from '@/lib/news-utils'
 
@@ -147,68 +150,60 @@ async function NewsContent({
       }),
     ])
 
-    const totalResults = allNews.length + externalSources.length
+    const resultsFeed = mergeNewsFeed(allNews, externalSources)
+    const totalResults = resultsFeed.length
 
     return (
       <div className="space-y-6">
         {/* Results Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h2 className="text-xl font-semibold">{t('searchResults')}</h2>
+            <h2 className={cn("font-semibold text-ccm-midnight", heading('sm'))}>{t('searchResults')}</h2>
           </div>
           <p className="text-sm text-muted-foreground">
             {totalResults} {t('resultsFound')}
           </p>
         </div>
 
-        {/* News Results Grid */}
-        {allNews.length > 0 && (
+        {/* Unified results grid (site + external, date-sorted, badged) */}
+        {resultsFeed.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {allNews.map((newsPost: any) => (
-              <Link
-                key={newsPost._id}
-                href={`/news/${newsPost.slug}`}
-              >
-                <NewsPostCard
-                  title={newsPost.title}
-                  subtitle={newsPost.subtitle}
-                  excerpt={newsPost.excerpt}
-                  image={newsPost.image}
-                  tags={newsPost.tags}
-                  author={newsPost.author}
-                  organization={newsPost.organizations?.[0]}
-                  location={newsPost.locationDetails}
-                  publishedAt={newsPost.publishedAt}
-                  locale={locale}
-                  featured={newsPost.featured}
-                />
-              </Link>
-            ))}
-          </div>
-        )}
-
-        {/* External Sources Grid */}
-        {externalSources.length > 0 && (
-          <section className="space-y-4">
-            <h3 className="text-lg font-semibold">{t('externalSources')}</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {externalSources.map((source: any) => (
+            {resultsFeed.map((item) =>
+              item.kind === 'site' ? (
+                <Link key={item.id} href={`/news/${item.data.slug}`}>
+                  <NewsPostCard
+                    title={item.data.title}
+                    subtitle={item.data.subtitle}
+                    excerpt={item.data.excerpt}
+                    image={item.data.image}
+                    tags={item.data.tags}
+                    author={item.data.author}
+                    organization={item.data.organizations?.[0]}
+                    location={item.data.locationDetails}
+                    publishedAt={item.data.publishedAt}
+                    locale={locale}
+                    featured={item.data.featured}
+                    showSiteBadge
+                    siteBadgeLabel={t('siteBadge')}
+                  />
+                </Link>
+              ) : (
                 <ExternalSourceCard
-                  key={source._id}
-                  title={source.title}
-                  excerpt={source.excerpt}
-                  image={source.image}
-                  sourceUrl={source.sourceUrl}
-                  publisher={source.publisher}
-                  publishedAt={source.publishedAt}
-                  tags={source.tags}
-                  organization={source.organizations?.[0]}
-                  language={source.language}
+                  key={item.id}
+                  title={item.data.title}
+                  excerpt={item.data.excerpt}
+                  image={item.data.image}
+                  sourceUrl={item.data.sourceUrl}
+                  publisher={item.data.publisher}
+                  publishedAt={item.data.publishedAt}
+                  tags={item.data.tags}
+                  organization={item.data.organizations?.[0]}
+                  language={item.data.language}
                   locale={locale}
                 />
-              ))}
-            </div>
-          </section>
+              )
+            )}
+          </div>
         )}
 
         {/* Empty State */}
@@ -232,12 +227,13 @@ async function NewsContent({
     )
   }
 
-  // No filters - show hero section + regular news grid + external sources
+  // No filters - show hero section + a single merged feed (CCM + external)
   const [featuredNews, regularNews, externalSources] = await Promise.all([
     fetchFeaturedNews(3),
     fetchRegularNews({ limit: 50 }),
     fetchApprovedExternalSources({ limit: 12 }),
   ])
+  const feed = mergeNewsFeed(regularNews, externalSources)
 
   return (
     <div className="space-y-12">
@@ -249,61 +245,52 @@ async function NewsContent({
         />
       )}
 
-      {/* Latest News Section */}
-      {regularNews.length > 0 && (
+      {/* Unified feed — CCM news + external sources in one date-sorted grid,
+          each card badged with its origin (site vs external). */}
+      {feed.length > 0 && (
         <section className="space-y-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold">{t('latest')}</h2>
+            <h2 className={cn("font-bold font-heading text-ccm-midnight text-balance", heading('md'))}>{t('latest')}</h2>
             <p className="text-muted-foreground">
-              {regularNews.length} {t('resultsFound')}
+              {feed.length} {t('resultsFound')}
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {regularNews.map((newsPost: any) => (
-              <Link
-                key={newsPost._id}
-                href={`/news/${newsPost.slug}`}
-              >
-                <NewsPostCard
-                  title={newsPost.title}
-                  subtitle={newsPost.subtitle}
-                  excerpt={newsPost.excerpt}
-                  image={newsPost.image}
-                  tags={newsPost.tags}
-                  author={newsPost.author}
-                  organization={newsPost.organizations?.[0]}
-                  location={newsPost.locationDetails}
-                  publishedAt={newsPost.publishedAt}
+            {feed.map((item) =>
+              item.kind === 'site' ? (
+                <Link key={item.id} href={`/news/${item.data.slug}`}>
+                  <NewsPostCard
+                    title={item.data.title}
+                    subtitle={item.data.subtitle}
+                    excerpt={item.data.excerpt}
+                    image={item.data.image}
+                    tags={item.data.tags}
+                    author={item.data.author}
+                    organization={item.data.organizations?.[0]}
+                    location={item.data.locationDetails}
+                    publishedAt={item.data.publishedAt}
+                    locale={locale}
+                    showSiteBadge
+                    siteBadgeLabel={t('siteBadge')}
+                  />
+                </Link>
+              ) : (
+                <ExternalSourceCard
+                  key={item.id}
+                  title={item.data.title}
+                  excerpt={item.data.excerpt}
+                  image={item.data.image}
+                  sourceUrl={item.data.sourceUrl}
+                  publisher={item.data.publisher}
+                  publishedAt={item.data.publishedAt}
+                  tags={item.data.tags}
+                  organization={item.data.organizations?.[0]}
+                  language={item.data.language}
                   locale={locale}
-                  featured={false}
                 />
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* External Sources Section */}
-      {externalSources.length > 0 && (
-        <section className="space-y-6">
-          <h2 className="text-2xl font-bold">{t('externalSources')}</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {externalSources.map((source: any) => (
-              <ExternalSourceCard
-                key={source._id}
-                title={source.title}
-                excerpt={source.excerpt}
-                image={source.image}
-                sourceUrl={source.sourceUrl}
-                publisher={source.publisher}
-                publishedAt={source.publishedAt}
-                tags={source.tags}
-                organization={source.organizations?.[0]}
-                language={source.language}
-                locale={locale}
-              />
-            ))}
+              )
+            )}
           </div>
         </section>
       )}

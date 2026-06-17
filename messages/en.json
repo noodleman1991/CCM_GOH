@@ -1217,7 +1217,8 @@
       "project": "Project",
       "location": "Location",
       "publishDate": "Published"
-    }
+    },
+    "siteBadge": "CCM"
   },
   "regional": {
     "noLivedExperiences": "No lived experiences available yet.",
