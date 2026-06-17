@@ -73,9 +73,24 @@ model User {
   otherSocialLinks     Json?
   lastLoginAt          DateTime?
   profileCompleteness  Int               @default(0)
+
+  // Domain-rich profile fields (K4) — all optional, climate x mental-health vocabulary.
+  headline                 String?      // one-line self-description
+  pronouns                 String?
+  languages                String[]     @default([])
+  focusTopics              String[]     @default([]) // climate x MH themes (CMS-curated)
+  motivation               String?      // "what brought me here"
+  openToCollaboration      Boolean      @default(false)
+  lookingFor               String[]     @default([]) // mentorship/partners/funding/data/co-authors
+  collaborationInterests   String?
+  livedExperienceStatement String?      // sensitive — opt-in only
+  showLivedExperience      Boolean      @default(false)
+  orcidId                  String?      // academic credential + ORCID import
+
   accounts             Account[]
   createdContent       Content[]
   recentWork           RecentWork[]
+  promptAnswers        ProfilePromptAnswer[]
   sessions             Session[]
   communityMemberships UserCommunity[]
 
@@ -138,6 +153,28 @@ model RecentWork {
   updatedAt   DateTime  @updatedAt
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  // Project upgrade (K4) — all optional, additive.
+  role          String? // the person's role on the project
+  collaborators String? // partners / collaborators, free text
+  outcome       String? // outcome / impact line
+  imageUrl      String? // cover image URL
+
+  @@index([userId])
+}
+
+// K5 — a user's answer to a CMS-curated "Hinge-style" profile prompt.
+// The prompt text lives in Sanity (profilePrompt doc); we store its id + answer.
+model ProfilePromptAnswer {
+  id        String   @id @default(uuid())
+  userId    String
+  promptId  String   // Sanity profilePrompt._id
+  answer    String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, promptId])
   @@index([userId])
 }
 
