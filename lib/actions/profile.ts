@@ -31,6 +31,17 @@ export interface ProfileData {
     profileCompleteness: number
     createdAt: Date
     updatedAt: Date
+    // Domain-rich fields (K4)
+    headline?: string | null
+    pronouns?: string | null
+    languages: string[]
+    focusTopics: string[]
+    motivation?: string | null
+    openToCollaboration: boolean
+    lookingFor: string[]
+    collaborationInterests?: string | null
+    livedExperienceStatement?: string | null // redacted unless showLivedExperience
+    orcidId?: string | null
     recentWork: Array<{
         id: string
         title: string
@@ -39,6 +50,10 @@ export interface ProfileData {
         isOngoing: boolean
         startDate: Date
         endDate?: Date | null
+        role?: string | null
+        collaborators?: string | null
+        outcome?: string | null
+        imageUrl?: string | null
     }>
     communities: Array<{
         id: string
@@ -114,6 +129,16 @@ export async function getUserProfile(username: string): Promise<ProfileData | nu
             profileCompleteness: calculateProfileCompleteness(user),
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
+            headline: user.headline,
+            pronouns: user.pronouns,
+            languages: user.languages || [],
+            focusTopics: user.focusTopics || [],
+            motivation: user.motivation,
+            openToCollaboration: user.openToCollaboration ?? false,
+            lookingFor: user.lookingFor || [],
+            collaborationInterests: user.collaborationInterests,
+            livedExperienceStatement: user.livedExperienceStatement, // null if redacted
+            orcidId: user.orcidId,
             recentWork: user.recentWork || [],
             communities: user.communityMemberships?.map((cm: any) => cm.community) || [],
             displayName,

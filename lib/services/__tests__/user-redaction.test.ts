@@ -20,12 +20,14 @@ function makeUser(overrides: Record<string, unknown> = {}) {
     linkedinProfile: 'https://linkedin.com/in/someone',
     personalWebsite: 'https://example.com',
     otherSocialLinks: ['https://social.example.com'],
+    livedExperienceStatement: 'My lived experience with climate anxiety.',
     // privacy flags default to "hidden"
     showEmail: false,
     showPhoneNumber: false,
     showLocation: false,
     showWorkDetails: false,
     showSocialLinks: false,
+    showLivedExperience: false,
     ...overrides
   } as any
 }
@@ -62,6 +64,13 @@ describe('redactUser', () => {
       expect(redacted.linkedinProfile).toBeNull()
       expect(redacted.personalWebsite).toBeNull()
       expect(redacted.otherSocialLinks).toEqual([])
+    })
+
+    it('redacts the lived-experience statement unless opted in (sensitive)', () => {
+      const hidden = redactUser(makeUser(), null)
+      expect((hidden as any).livedExperienceStatement).toBeNull()
+      const shown = redactUser(makeUser({ showLivedExperience: true }), null)
+      expect((shown as any).livedExperienceStatement).toBe('My lived experience with climate anxiety.')
     })
 
     it('does not mutate the input user', () => {
@@ -114,6 +123,7 @@ describe('redactUser', () => {
       expect(result.linkedinProfile).toBe('https://linkedin.com/in/someone')
       expect(result.personalWebsite).toBe('https://example.com')
       expect(result.otherSocialLinks).toEqual(['https://social.example.com'])
+      expect((result as any).livedExperienceStatement).toBe('My lived experience with climate anxiety.')
     })
   })
 })

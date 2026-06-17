@@ -45,5 +45,11 @@ export function redactUser<T extends Partial<User>>(
     (redacted as any).otherSocialLinks = []
   }
 
+  // Lived-experience redaction — sensitive; opt-in only. Hidden unless the
+  // user has explicitly chosen to show it on their public profile.
+  if (!(user as any).showLivedExperience) {
+    (redacted as any).livedExperienceStatement = null
+  }
+
   return redacted
 }
