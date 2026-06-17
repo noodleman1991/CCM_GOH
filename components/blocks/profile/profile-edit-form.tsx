@@ -20,7 +20,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox"
 import { Switch } from "@/components/ui/switch"
 import { toast } from "sonner"
-import { Loader2, Shield, CheckCircle, XCircle, ExternalLink, Plus, Edit, Trash2, Calendar } from "lucide-react"
+import { Loader2, Shield, CheckCircle, XCircle, ExternalLink, Plus, Edit, Trash2, Calendar, Linkedin } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 import ProfilePictureUpload from "@/components/blocks/profile/profile-picture-upload"
@@ -289,6 +289,27 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
     // Handler for community selection changes - now just updates form state
     const handleCommunityChange = (communityIds: string[]) => {
         form.setValue('communityIds', communityIds, { shouldDirty: true })
+    }
+
+    // Prefill headline (and avatar if empty) from the user's LinkedIn connection
+    // via Clerk — the user reviews before saving, never a silent overwrite.
+    const [linkedinImporting, setLinkedinImporting] = useState(false)
+    const handleLinkedInImport = async () => {
+        setLinkedinImporting(true)
+        try {
+            const res = await fetch('/api/profile/import/linkedin')
+            if (!res.ok) return
+            const json = await res.json()
+            if (!json.connected || !json.data) return
+            if (json.data.headline) {
+                form.setValue('headline', json.data.headline, { shouldDirty: true })
+            }
+            if (json.data.imageUrl && !form.getValues('image')) {
+                form.setValue('image', json.data.imageUrl, { shouldDirty: true })
+            }
+        } finally {
+            setLinkedinImporting(false)
+        }
     }
 
     // Recent work form handlers
@@ -596,6 +617,19 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                                 )}
                             />
                         </div>
+
+                        {/* Prefill headline (+ avatar) from LinkedIn via Clerk */}
+                        <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={handleLinkedInImport}
+                            disabled={linkedinImporting}
+                            className="gap-2"
+                        >
+                            <Linkedin className="h-4 w-4 text-[#0A66C2]" />
+                            {linkedinImporting ? t('headline.importing') : t('headline.importLinkedIn')}
+                        </Button>
 
                         <FormField
                             control={form.control}
