@@ -50,6 +50,11 @@
       "youth": "Juventud",
       "indigenous": "Indígenas",
       "smallholderFarmers": "Pequeños Agricultores"
+    },
+    "specialCommunities": {
+      "youth": "Juventud",
+      "indigenous": "Indígena",
+      "farmerAndFisher": "Agricultores y pescadores"
     }
   },
   "navUser": {
