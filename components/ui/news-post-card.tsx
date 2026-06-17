@@ -29,6 +29,8 @@ interface NewsPostCardProps {
     publishedAt?: string;
     locale?: string;
     featured?: boolean;
+    showSiteBadge?: boolean;
+    siteBadgeLabel?: string;
 }
 
 export default function NewsPostCard({
@@ -43,6 +45,8 @@ export default function NewsPostCard({
                                          publishedAt,
                                          locale = 'en',
                                          featured = false,
+                                         showSiteBadge = false,
+                                         siteBadgeLabel,
                                      }: NewsPostCardProps) {
     const localizedTitle = getLocalizedValue(title, locale);
     const localizedSubtitle = getLocalizedValue(subtitle, locale);
@@ -70,6 +74,14 @@ export default function NewsPostCard({
                     {featured && (
                         <div className="absolute top-2 right-2 bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-medium">
                             Featured
+                        </div>
+                    )}
+                    {/* Site badge — marks this as CCM's own news (parallels the
+                        external card's "External" badge so the two read as one feed). */}
+                    {showSiteBadge && (
+                        <div className="absolute top-2 left-2 bg-[var(--color-ccm-sea)] text-white px-3 py-1 rounded-full flex items-center gap-1 text-xs font-medium">
+                            <span className="size-1.5 rounded-full bg-white" aria-hidden="true" />
+                            {siteBadgeLabel || "CCM"}
                         </div>
                     )}
                 </div>
