@@ -19,6 +19,13 @@ import {
     SheetHeader,
     SheetTitle,
 } from "@/components/ui/sheet"
+import {
+    Drawer,
+    DrawerContent,
+    DrawerDescription,
+    DrawerHeader,
+    DrawerTitle,
+} from "@/components/ui/drawer"
 import { Skeleton } from "@/components/ui/skeleton"
 import {
     Tooltip,
@@ -204,9 +211,15 @@ function Sidebar({
     }
 
     if (isMobile) {
+        // Native-feel drawer (vaul): side-anchored with swipe-to-dismiss + momentum.
+        // direction follows RTL (right in ar, left otherwise).
         return (
-            <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
-                <SheetContent
+            <Drawer
+                open={openMobile}
+                onOpenChange={setOpenMobile}
+                direction={effectiveSide}
+            >
+                <DrawerContent
                     data-sidebar="sidebar"
                     data-slot="sidebar"
                     data-mobile="true"
@@ -216,15 +229,14 @@ function Sidebar({
                             "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
                         } as React.CSSProperties
                     }
-                    side={effectiveSide}
                 >
-                    <SheetHeader className="sr-only">
-                        <SheetTitle>Sidebar</SheetTitle>
-                        <SheetDescription>Displays the mobile sidebar.</SheetDescription>
-                    </SheetHeader>
-                    <div className="flex h-full w-full flex-col">{children}</div>
-                </SheetContent>
-            </Sheet>
+                    <DrawerHeader className="sr-only">
+                        <DrawerTitle>Sidebar</DrawerTitle>
+                        <DrawerDescription>Displays the mobile sidebar.</DrawerDescription>
+                    </DrawerHeader>
+                    <div className="flex h-full w-full flex-col overflow-y-auto">{children}</div>
+                </DrawerContent>
+            </Drawer>
         )
     }
 
