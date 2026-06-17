@@ -16,13 +16,17 @@
 // ---- Vertical spacing (section margins / internal gaps) ----------------------
 export type SpacingToken = "none" | "sm" | "md" | "lg" | "xl";
 
-/** Outer vertical rhythm between stacked sections. */
+/** Outer vertical rhythm between stacked sections.
+ *  Values are +7% over the prior scale (user request) for a touch more breathing
+ *  room between stacked blocks — applied here at the source so it propagates
+ *  everywhere SectionContainer is used. Arbitrary rem values because Tailwind's
+ *  fixed steps can't express the 7% bump. */
 export const SECTION_SPACING_Y: Record<SpacingToken, string> = {
   none: "",
-  sm: "my-4 lg:my-6",
-  md: "my-8 lg:my-10 xl:my-12", // current default
-  lg: "my-12 lg:my-16 xl:my-20",
-  xl: "my-16 lg:my-24 xl:my-28",
+  sm: "my-[1.07rem] lg:my-[1.605rem]",
+  md: "my-[2.14rem] lg:my-[2.675rem] xl:my-[3.21rem]", // current default (+7%)
+  lg: "my-[3.21rem] lg:my-[4.28rem] xl:my-[5.35rem]",
+  xl: "my-[4.28rem] lg:my-[6.42rem] xl:my-[7.49rem]",
 };
 
 /** Gap between items in a grid/flex row. */

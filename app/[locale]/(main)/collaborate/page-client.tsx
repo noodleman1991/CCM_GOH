@@ -16,6 +16,8 @@ import { buildCollaborateParams } from '@/lib/collaborate-filters'
 import { CommunityFilters, type CommunityFiltersState } from '@/components/collaborate/community-filters'
 import { UserCarousel } from '@/components/collaborate/user-carousel'
 import { cn } from '@/lib/utils'
+import { heading } from '@/lib/design-tokens'
+import { PageContainer } from '@/components/ui/page-container'
 import { Search, X } from 'lucide-react'
 import type { SupportedLocale, LocalizedUser } from '@/types/prisma'
 
@@ -167,11 +169,11 @@ export function CollaboratePageClient({
   }
 
   return (
-    <div className="container mx-auto py-8 px-4">
+    <PageContainer>
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">{t('pageTitle')}</h1>
-        <p className="text-muted-foreground">{t('pageDescription')}</p>
+        <h1 className={cn("font-bold font-heading text-ccm-midnight mb-2 text-balance", heading('lg'))}>{t('pageTitle')}</h1>
+        <p className="text-base md:text-lg text-muted-foreground max-w-2xl">{t('pageDescription')}</p>
       </div>
 
       {/* Search + horizontal filters, full width */}
@@ -243,6 +245,6 @@ export function CollaboratePageClient({
           })}
         </div>
       )}
-    </div>
+    </PageContainer>
   )
 }
