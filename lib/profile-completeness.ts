@@ -24,41 +24,59 @@ type ProfileData = {
   phoneNumber?: string | null
   communityMemberships?: any[] | null
   recentWork?: any[] | null
+  // Domain-rich fields (K4)
+  headline?: string | null
+  pronouns?: string | null
+  motivation?: string | null
+  focusTopics?: string[] | null
+  openToCollaboration?: boolean | null
+  collaborationInterests?: string | null
 }
 
 /**
- * Field weights define the importance of each field in the profile
- * Total should add up to 100
+ * Field weights define the importance of each field in the profile.
+ * Comprehensive model (rebuilt for K4) — includes the domain-rich
+ * climate x mental-health fields. Grouped by category; total = 100.
  */
 export const FIELD_WEIGHTS = {
-  // Core identity fields (25%)
-  firstName: 4,
-  lastName: 4,
-  username: 4,
-  email: 4,
-  image: 9,
+  // Core identity (20)
+  firstName: 3,
+  lastName: 3,
+  username: 3,
+  email: 3,
+  image: 8,
 
-  // Bio and personal info (20%)
-  bio: 8,
-  ageGroup: 4,  // Added - was missing!
-  country: 4,
-  city: 4,
+  // About & headline (18)
+  headline: 6,
+  bio: 7,
+  pronouns: 1,
+  ageGroup: 2,
+  motivation: 2,
 
-  // Professional information (30%)
-  organization: 5,
-  position: 5,
-  workBio: 8,
-  workTypes: 6,
-  expertiseAreas: 6,
+  // Location (6)
+  country: 3,
+  city: 3,
 
-  // Contact and social (15%)
-  personalWebsite: 4,
-  linkedinProfile: 4,
-  phoneNumber: 7,
+  // Professional (24)
+  organization: 4,
+  position: 4,
+  workBio: 6,
+  workTypes: 5,
+  expertiseAreas: 5,
 
-  // Community and engagement (10%)
-  communityMemberships: 5,  // Added - regional communities
-  recentWork: 5,  // Added - recent projects/work
+  // Focus & collaboration (12)
+  focusTopics: 6,
+  openToCollaboration: 3,
+  collaborationInterests: 3,
+
+  // Contact & social (10)
+  personalWebsite: 3,
+  linkedinProfile: 3,
+  phoneNumber: 4,
+
+  // Community & engagement (10)
+  communityMemberships: 5,
+  recentWork: 5,
 } as const
 
 /**
