@@ -10,6 +10,8 @@ import { Card, CardContent } from "@/components/ui/card"
 import Markdown from "react-markdown"
 import { Link } from '@/i18n/navigation'
 import { getUserProfile, checkProfileOwnership } from "@/lib/actions/profile"
+import { cn } from "@/lib/utils"
+import { heading } from "@/lib/design-tokens"
 import { ProfileCompletenessIndicator } from "@/components/ui/profile-completeness-indicator"
 import { ProfileStatistics } from "@/components/blocks/profile/profile-statistics"
 import { ContributionsBlock } from "@/components/blocks/profile/contributions-block"
@@ -115,13 +117,33 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
 
                     <div className="flex-1 min-w-0">
                         <BlurFade delay={BLUR_FADE_DELAY * 3} className="mb-1">
-                            <h1 className="text-3xl font-bold tracking-tight text-balance sm:text-4xl">
-                                {user.displayName}
-                            </h1>
+                            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                                <h1 className={cn("font-bold tracking-tight text-balance text-ccm-midnight", heading('xl'))}>
+                                    {user.displayName}
+                                </h1>
+                                {user.pronouns && (
+                                    <span className="text-sm text-muted-foreground">({user.pronouns})</span>
+                                )}
+                            </div>
                         </BlurFade>
                         {user.username && (
-                            <BlurFade delay={BLUR_FADE_DELAY * 4} className="mb-3">
+                            <BlurFade delay={BLUR_FADE_DELAY * 4} className="mb-2">
                                 <p className="text-lg text-muted-foreground">@{user.username}</p>
+                            </BlurFade>
+                        )}
+                        {user.headline && (
+                            <BlurFade delay={BLUR_FADE_DELAY * 4.5} className="mb-3">
+                                <p className="text-base md:text-lg font-medium text-ccm-sea text-balance">
+                                    {user.headline}
+                                </p>
+                            </BlurFade>
+                        )}
+                        {user.openToCollaboration && (
+                            <BlurFade delay={BLUR_FADE_DELAY * 4.8} className="mb-3">
+                                <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--color-ccm-sky)]/25 px-3 py-1 text-xs font-semibold text-[var(--color-ccm-sea)]">
+                                    <span className="size-1.5 rounded-full bg-[var(--color-ccm-sea)]" aria-hidden="true" />
+                                    {t('openToCollaboration')}
+                                </span>
                             </BlurFade>
                         )}
 
@@ -197,12 +219,70 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                         <BlurFade delay={BLUR_FADE_DELAY * 11}>
                             <Card>
                                 <CardContent className="pt-6">
-                                    <h2 className="text-xl font-semibold mb-4">{t('about')}</h2>
+                                    <h2 className={cn("font-semibold mb-4 text-ccm-midnight", heading('sm'))}>{t('about')}</h2>
                                     <div className="prose max-w-full text-pretty font-sans text-sm text-muted-foreground dark:prose-invert">
                                         <Markdown>
                                             {user.bio}
                                         </Markdown>
                                     </div>
+                                </CardContent>
+                            </Card>
+                        </BlurFade>
+                    )}
+
+                    {/* Motivation — "what brought me here" */}
+                    {user.motivation && (
+                        <BlurFade delay={BLUR_FADE_DELAY * 11.5}>
+                            <Card className="border-[var(--color-ccm-sky)] bg-[var(--color-ccm-sky)]/10">
+                                <CardContent className="pt-6">
+                                    <h2 className={cn("font-semibold mb-3 text-ccm-midnight", heading('sm'))}>{t('motivation')}</h2>
+                                    <p className="text-pretty text-sm text-foreground/80 whitespace-pre-line">{user.motivation}</p>
+                                </CardContent>
+                            </Card>
+                        </BlurFade>
+                    )}
+
+                    {/* Collaboration */}
+                    {(user.openToCollaboration || user.collaborationInterests || user.focusTopics.length > 0 || user.lookingFor.length > 0) && (
+                        <BlurFade delay={BLUR_FADE_DELAY * 12}>
+                            <Card>
+                                <CardContent className="pt-6 space-y-4">
+                                    <h2 className={cn("font-semibold text-ccm-midnight", heading('sm'))}>{t('collaboration')}</h2>
+                                    {user.collaborationInterests && (
+                                        <p className="text-pretty text-sm text-muted-foreground whitespace-pre-line">{user.collaborationInterests}</p>
+                                    )}
+                                    {user.focusTopics.length > 0 && (
+                                        <div>
+                                            <h3 className="text-xs font-semibold uppercase tracking-wider text-ccm-sea mb-2">{t('focusTopics')}</h3>
+                                            <div className="flex flex-wrap gap-2">
+                                                {user.focusTopics.map((topic) => (
+                                                    <Badge key={topic} variant="secondary" className="bg-[var(--color-ccm-sky)]/25 text-[var(--color-ccm-sea)]">{topic}</Badge>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                    {user.lookingFor.length > 0 && (
+                                        <div>
+                                            <h3 className="text-xs font-semibold uppercase tracking-wider text-ccm-sea mb-2">{t('lookingFor')}</h3>
+                                            <div className="flex flex-wrap gap-2">
+                                                {user.lookingFor.map((item) => (
+                                                    <Badge key={item} variant="outline">{item}</Badge>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                </CardContent>
+                            </Card>
+                        </BlurFade>
+                    )}
+
+                    {/* Lived experience — already redacted server-side unless opted in */}
+                    {user.livedExperienceStatement && (
+                        <BlurFade delay={BLUR_FADE_DELAY * 12.5}>
+                            <Card className="border-l-4 border-l-[var(--color-ccm-water)]">
+                                <CardContent className="pt-6">
+                                    <h2 className={cn("font-semibold mb-3 text-ccm-midnight", heading('sm'))}>{t('livedExperience')}</h2>
+                                    <p className="text-pretty text-sm text-foreground/80 whitespace-pre-line">{user.livedExperienceStatement}</p>
                                 </CardContent>
                             </Card>
                         </BlurFade>

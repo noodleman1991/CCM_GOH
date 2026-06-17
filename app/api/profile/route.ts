@@ -76,6 +76,19 @@ const ProfileUpdateSchema = z.object({
     showWorkDetails: z.boolean().default(true),
     showSocialLinks: z.boolean().default(true),
     showLocation: z.boolean().default(true),
+
+    // Domain-rich fields (K4) — all optional
+    headline: z.string().max(120).optional().or(z.literal("")).or(z.null()),
+    pronouns: z.string().max(40).optional().or(z.literal("")).or(z.null()),
+    languages: z.array(z.string().max(40)).optional().default([]),
+    focusTopics: z.array(z.string().max(60)).optional().default([]),
+    motivation: z.string().max(600).optional().or(z.literal("")).or(z.null()),
+    openToCollaboration: z.boolean().optional().default(false),
+    lookingFor: z.array(z.string().max(40)).optional().default([]),
+    collaborationInterests: z.string().max(600).optional().or(z.literal("")).or(z.null()),
+    livedExperienceStatement: z.string().max(1000).optional().or(z.literal("")).or(z.null()),
+    showLivedExperience: z.boolean().optional().default(false),
+    orcidId: z.string().max(40).optional().or(z.literal("")).or(z.null()),
 }).transform((data) => ({
     // Transform empty strings and null values to null for database storage
     ...data,
@@ -91,6 +104,16 @@ const ProfileUpdateSchema = z.object({
     otherSocialLinks: data.otherSocialLinks || [],
     recentWork: data.recentWork || [],
     communityIds: data.communityIds || [],
+    // Domain-rich fields → null when blank
+    headline: data.headline || null,
+    pronouns: data.pronouns || null,
+    languages: data.languages || [],
+    focusTopics: data.focusTopics || [],
+    motivation: data.motivation || null,
+    lookingFor: data.lookingFor || [],
+    collaborationInterests: data.collaborationInterests || null,
+    livedExperienceStatement: data.livedExperienceStatement || null,
+    orcidId: data.orcidId || null,
 }))
 
 type ProfileFormValues = z.infer<typeof ProfileUpdateSchema>
@@ -245,6 +268,18 @@ export async function PUT(request: NextRequest) {
             showLocation: validatedData.showLocation,
             communityIds: validatedData.communityIds || [],
             recentWork: validatedData.recentWork || [],
+            // Domain-rich fields (K4)
+            headline: validatedData.headline || null,
+            pronouns: validatedData.pronouns || null,
+            languages: validatedData.languages || [],
+            focusTopics: validatedData.focusTopics || [],
+            motivation: validatedData.motivation || null,
+            openToCollaboration: validatedData.openToCollaboration ?? false,
+            lookingFor: validatedData.lookingFor || [],
+            collaborationInterests: validatedData.collaborationInterests || null,
+            livedExperienceStatement: validatedData.livedExperienceStatement || null,
+            showLivedExperience: validatedData.showLivedExperience ?? false,
+            orcidId: validatedData.orcidId || null,
         }
 
         // STEP 1: Update using type-safe service

@@ -459,7 +459,42 @@
       "linkedin": "Profil LinkedIn",
       "twitter": "Identifiant Twitter",
       "cancel": "Annuler",
-      "save": "Enregistrer les Modifications"
+      "save": "Enregistrer les Modifications",
+      "headline": {
+        "label": "Accroche",
+        "placeholder": "p. ex. Chercheuse sur l’éco-anxiété chez les jeunes",
+        "help": "Une ligne qui vous résume — la première chose que l’on voit."
+      },
+      "pronouns": {
+        "label": "Pronoms",
+        "placeholder": "elle"
+      },
+      "collab": {
+        "title": "Motivation et collaboration",
+        "description": "Partagez ce qui vous motive et comment vous souhaitez échanger.",
+        "motivation": {
+          "label": "Qu’est-ce qui vous amène ici ?",
+          "placeholder": "Ce qui vous attire vers le climat et la santé mentale…",
+          "help": "Votre histoire aide les autres à se connecter avec vous."
+        },
+        "openToCollaboration": {
+          "label": "Je suis ouvert·e à la collaboration",
+          "help": "Montrez aux autres que vous aimeriez travailler ensemble."
+        },
+        "interests": {
+          "label": "Sur quoi aimeriez-vous collaborer ?",
+          "placeholder": "Co-écriture, mentorat, partage de données…"
+        },
+        "livedExperience": {
+          "label": "Expérience vécue (facultatif)",
+          "placeholder": "Partagez ce que vous souhaitez…",
+          "help": "Privée par défaut. Vous choisissez de l’afficher ou non."
+        },
+        "showLivedExperience": {
+          "label": "Afficher sur mon profil public",
+          "help": "Désactivé, elle reste visible par vous seul·e."
+        }
+      }
     },
     "account": {
       "pageTitle": "Compte et Sécurité",
@@ -509,7 +544,13 @@
         "content": "Article",
         "recentWork": "Projet"
       }
-    }
+    },
+    "openToCollaboration": "Ouvert·e à la collaboration",
+    "motivation": "Ce qui m’a amené·e ici",
+    "collaboration": "Collaboration",
+    "focusTopics": "Domaines d’intérêt",
+    "lookingFor": "Je recherche",
+    "livedExperience": "Expérience vécue"
   },
   "profilePicture": {
     "title": "Photo de Profil",

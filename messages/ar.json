@@ -459,7 +459,42 @@
       "linkedin": "ملف LinkedIn",
       "twitter": "معرف Twitter",
       "cancel": "إلغاء",
-      "save": "حفظ التغييرات"
+      "save": "حفظ التغييرات",
+      "headline": {
+        "label": "العنوان التعريفي",
+        "placeholder": "مثال: باحثة في قلق المناخ لدى الشباب",
+        "help": "سطر واحد يلخّصك — أول ما يراه الناس."
+      },
+      "pronouns": {
+        "label": "الضمائر",
+        "placeholder": "هي"
+      },
+      "collab": {
+        "title": "الدافع والتعاون",
+        "description": "شارك ما يحفّزك وكيف تودّ التواصل.",
+        "motivation": {
+          "label": "ما الذي جاء بك إلى هنا؟",
+          "placeholder": "ما الذي يجذبك إلى تغير المناخ والصحة النفسية…",
+          "help": "قصتك تساعد الآخرين على التواصل معك."
+        },
+        "openToCollaboration": {
+          "label": "أنا منفتح على التعاون",
+          "help": "أظهر للآخرين رغبتك في العمل المشترك."
+        },
+        "interests": {
+          "label": "في أي مجال تودّ التعاون؟",
+          "placeholder": "تأليف مشترك، إرشاد، مشاركة بيانات…"
+        },
+        "livedExperience": {
+          "label": "التجربة المعاشة (اختياري)",
+          "placeholder": "شارك بالقدر الذي تريده…",
+          "help": "خاصة افتراضيًا. أنت تقرّر إظهارها."
+        },
+        "showLivedExperience": {
+          "label": "إظهارها في ملفي العام",
+          "help": "عند الإيقاف تبقى مرئية لك وحدك."
+        }
+      }
     },
     "account": {
       "pageTitle": "الحساب والأمان",
@@ -509,7 +544,13 @@
         "content": "مقال",
         "recentWork": "مشروع"
       }
-    }
+    },
+    "openToCollaboration": "منفتح على التعاون",
+    "motivation": "ما الذي جاء بي إلى هنا",
+    "collaboration": "التعاون",
+    "focusTopics": "مجالات التركيز",
+    "lookingFor": "أبحث عن",
+    "livedExperience": "التجربة المعاشة"
   },
   "profilePicture": {
     "title": "صورة الملف الشخصي",
