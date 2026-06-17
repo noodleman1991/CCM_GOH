@@ -13,6 +13,7 @@ import { getUserProfile, checkProfileOwnership } from "@/lib/actions/profile"
 import { cn } from "@/lib/utils"
 import { heading } from "@/lib/design-tokens"
 import { MessageCircle } from "lucide-react"
+import { regionLabel, specialCommunityLabel } from "@/lib/labels"
 import { ProfileCompletenessIndicator } from "@/components/ui/profile-completeness-indicator"
 import { ProfileStatistics } from "@/components/blocks/profile/profile-statistics"
 import { ContributionsBlock } from "@/components/blocks/profile/contributions-block"
@@ -65,6 +66,8 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
     const { username, locale } = await params
     const t = await getTranslations('profile')
     const tNav = await getTranslations('navigation')
+    const tRegions = await getTranslations('navigation.regions')
+    const tSpecial = await getTranslations('navigation.specialCommunities')
     const tTypesRaw = await getTranslations('profile.work.types')
     const tExpertiseRaw = await getTranslations('profile.work.expertise')
     // Translate an enum value, falling back to a humanized form if unmapped.
@@ -436,7 +439,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                                             .map((community) => (
                                                 <div key={community.id} className="flex items-center gap-2">
                                                     <Badge variant="secondary">
-                                                        {community.regionalName?.replace(/_/g, ' ') || community.name}
+                                                        {regionLabel(tRegions, community.regionalName) || community.name}
                                                     </Badge>
                                                 </div>
                                             ))}
@@ -457,7 +460,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                                             .map((community) => (
                                                 <div key={community.id} className="flex items-center gap-2">
                                                     <Badge variant="outline">
-                                                        {community.specialName?.replace(/_/g, ' ') || community.name}
+                                                        {specialCommunityLabel(tSpecial, community.specialName) || community.name}
                                                     </Badge>
                                                 </div>
                                             ))}

@@ -50,6 +50,11 @@
       "youth": "Youth",
       "indigenous": "Indigenous",
       "smallholderFarmers": "Smallholder Farmers"
+    },
+    "specialCommunities": {
+      "youth": "Youth",
+      "indigenous": "Indigenous",
+      "farmerAndFisher": "Farmers & Fishers"
     }
   },
   "navUser": {

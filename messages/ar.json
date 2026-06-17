@@ -50,6 +50,11 @@
       "youth": "الشباب",
       "indigenous": "السكان الأصليون",
       "smallholderFarmers": "صغار المزارعين"
+    },
+    "specialCommunities": {
+      "youth": "الشباب",
+      "indigenous": "الشعوب الأصلية",
+      "farmerAndFisher": "المزارعون والصيادون"
     }
   },
   "navUser": {
