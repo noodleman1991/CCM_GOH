@@ -1163,7 +1163,8 @@
     "organizations": "المنظمات",
     "relatedProjects": "المشاريع ذات الصلة",
     "studyAreas": "مجالات الدراسة",
-    "allAuthors": "جميع المؤلفين"
+    "allAuthors": "جميع المؤلفين",
+    "featuredBadge": "مميّزة"
   },
   "revisionAlert": {
     "title": "مطلوب إجراء: تنقيح مطلوب",
