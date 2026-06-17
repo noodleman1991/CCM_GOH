@@ -43,7 +43,9 @@ export const createOnboardingSchema = (validationMessages?: any) => {
         .min(3, messages.basicInfo?.username || defaultMessages.basicInfo.username)
         .max(30, messages.basicInfo?.usernameMax || defaultMessages.basicInfo.usernameMax)
         .regex(/^[a-zA-Z0-9_]+$/, messages.basicInfo?.usernamePattern || defaultMessages.basicInfo.usernamePattern),
+      headline: z.string().max(120).optional(),
       bio: z.string().max(500, messages.basicInfo?.bio || defaultMessages.basicInfo.bio).optional(),
+      motivation: z.string().max(600).optional(),
       ageGroup: z.enum(["UNDER_18", "ABOVE_18"]).optional(),
       country: z.string().min(1, messages.basicInfo?.country || defaultMessages.basicInfo.country),
       city: z.string().min(1, messages.basicInfo?.city || defaultMessages.basicInfo.city),
@@ -116,7 +118,9 @@ export const defaultOnboardingValues: OnboardingFormData = {
     firstName: "",
     lastName: "",
     username: "",
+    headline: "",
     bio: "",
+    motivation: "",
     ageGroup: undefined,
     country: "",
     city: "",

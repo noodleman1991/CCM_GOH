@@ -847,7 +847,13 @@
         "countryPlaceholder": "Entrez votre pays",
         "cityPlaceholder": "Entrez votre ville",
         "continue": "Continuer",
-        "tagline": "Parlez-nous de vous"
+        "tagline": "Parlez-nous de vous",
+        "headline": "Accroche",
+        "headlinePlaceholder": "p. ex. Chercheuse sur l’éco-anxiété chez les jeunes",
+        "headlineHint": "Une ligne qui vous résume — on la voit en premier.",
+        "motivation": "Qu’est-ce qui vous amène ici ?",
+        "motivationPlaceholder": "Ce qui vous attire vers le climat et la santé mentale…",
+        "motivationHint": "Facultatif. Votre histoire aide les autres à se connecter."
       },
       "workInfo": {
         "title": "Informations Professionnelles",

@@ -847,7 +847,13 @@
         "countryPlaceholder": "Ingresa tu país",
         "cityPlaceholder": "Ingresa tu ciudad",
         "continue": "Continuar",
-        "tagline": "Cuéntanos sobre ti"
+        "tagline": "Cuéntanos sobre ti",
+        "headline": "Titular",
+        "headlinePlaceholder": "p. ej. Investigadora sobre ansiedad climática en jóvenes",
+        "headlineHint": "Una línea que te resuma: la gente la ve primero.",
+        "motivation": "¿Qué te trajo aquí?",
+        "motivationPlaceholder": "Qué te atrae del cambio climático y la salud mental…",
+        "motivationHint": "Opcional. Tu historia ayuda a otros a conectar contigo."
       },
       "workInfo": {
         "title": "Información Laboral",
