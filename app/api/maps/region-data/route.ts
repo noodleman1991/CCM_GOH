@@ -26,9 +26,17 @@ export async function GET(req: NextRequest) {
   const counts = emptyCounts();
 
   try {
-    if (facet === "caseStudyCount" || facet === "newsCount") {
-      const type = facet === "caseStudyCount" ? "caseStudy" : "newsPost";
-      const statusFilter = facet === "caseStudyCount" ? ' && status == "approved"' : "";
+    if (facet === "caseStudyCount" || facet === "newsCount" || facet === "livedExpCount") {
+      const type =
+        facet === "caseStudyCount" ? "caseStudy" : facet === "newsCount" ? "newsPost" : "livedExperience";
+      // Case studies + lived experiences are status-gated to approved (legacy
+      // LEs without status still count); news posts have no status field.
+      const statusFilter =
+        facet === "caseStudyCount"
+          ? ' && status == "approved"'
+          : facet === "livedExpCount"
+            ? ' && (status == "approved" || !defined(status))'
+            : "";
       // For each regional community, count the content that references it. The
       // Sanity RC doc has no region enum, so we key by its slug and translate to
       // a region code via RC_SLUG_TO_REGION.
