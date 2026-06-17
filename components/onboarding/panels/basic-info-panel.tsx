@@ -179,6 +179,24 @@ export function BasicInfoPanel({ form, content }: BasicInfoPanelProps) {
           )}
         />
 
+        {/* Headline — a one-line self-description */}
+        <FormField
+          control={form.control}
+          name="basicInfo.headline"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{content?.fieldLabels?.basicInfo?.headline || t("headline")}</FormLabel>
+              <FormControl>
+                <Input {...field} value={field.value || ""} placeholder={content?.fieldLabels?.basicInfo?.headlinePlaceholder || t("headlinePlaceholder")} />
+              </FormControl>
+              <FormDescription>
+                {content?.basicInfoFieldHints?.headlineHint || t("headlineHint")}
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         {/* Bio */}
         <FormField
           control={form.control}
@@ -191,6 +209,24 @@ export function BasicInfoPanel({ form, content }: BasicInfoPanelProps) {
               </FormControl>
               <FormDescription>
                 {content?.basicInfoFieldHints?.bioHint || t("bioHint")}
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* Motivation — "what brought you here" */}
+        <FormField
+          control={form.control}
+          name="basicInfo.motivation"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{content?.fieldLabels?.basicInfo?.motivation || t("motivation")}</FormLabel>
+              <FormControl>
+                <Textarea {...field} value={field.value || ""} rows={3} placeholder={content?.fieldLabels?.basicInfo?.motivationPlaceholder || t("motivationPlaceholder")} />
+              </FormControl>
+              <FormDescription>
+                {content?.basicInfoFieldHints?.motivationHint || t("motivationHint")}
               </FormDescription>
               <FormMessage />
             </FormItem>

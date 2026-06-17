@@ -918,7 +918,13 @@
         "countryPlaceholder": "Enter your country",
         "cityPlaceholder": "Enter your city",
         "continue": "Continue",
-        "tagline": "Tell us about yourself"
+        "tagline": "Tell us about yourself",
+        "headline": "Headline",
+        "headlinePlaceholder": "e.g. Researcher on climate anxiety in youth",
+        "headlineHint": "One line that sums you up — people see this first.",
+        "motivation": "What brought you here?",
+        "motivationPlaceholder": "What draws you to climate change and mental health…",
+        "motivationHint": "Optional. Your story helps others connect with you."
       },
       "workInfo": {
         "title": "Work Information",

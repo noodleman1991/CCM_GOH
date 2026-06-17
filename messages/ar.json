@@ -847,7 +847,13 @@
         "countryPlaceholder": "أدخل بلدك",
         "cityPlaceholder": "أدخل مدينتك",
         "continue": "متابعة",
-        "tagline": "أخبرنا عن نفسك"
+        "tagline": "أخبرنا عن نفسك",
+        "headline": "العنوان التعريفي",
+        "headlinePlaceholder": "مثال: باحثة في قلق المناخ لدى الشباب",
+        "headlineHint": "سطر واحد يلخّصك — يراه الناس أولًا.",
+        "motivation": "ما الذي جاء بك إلى هنا؟",
+        "motivationPlaceholder": "ما الذي يجذبك إلى تغير المناخ والصحة النفسية…",
+        "motivationHint": "اختياري. قصتك تساعد الآخرين على التواصل معك."
       },
       "workInfo": {
         "title": "معلومات العمل",
