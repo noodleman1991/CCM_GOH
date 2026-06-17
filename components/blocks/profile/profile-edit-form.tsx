@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { ProfilePromptsEditor } from "@/components/profile/profile-prompts-editor"
 import { Badge } from "@/components/ui/badge"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -150,6 +151,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
     const t = useTranslations('profile.edit')
     const tCommunities = useTranslations('profile.communities')
     const tRecentWork = useTranslations('profile.recentWork')
+    const tPrompts = useTranslations('profile.prompts')
     const locale = useLocale() as SupportedLocale
     const router = useRouter()
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -749,6 +751,17 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                                 )}
                             />
                         )}
+                    </CardContent>
+                </Card>
+
+                {/* Profile prompts (K5) — saved independently via its own API */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle>{tPrompts('title')}</CardTitle>
+                        <CardDescription>{tPrompts('description')}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <ProfilePromptsEditor />
                     </CardContent>
                 </Card>
 

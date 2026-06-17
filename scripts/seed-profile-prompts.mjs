@@ -1,0 +1,36 @@
+// Seed a few starter profile prompts in Sanity (idempotent via fixed ids).
+import { createClient } from "@sanity/client";
+import dotenv from "dotenv";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+dotenv.config({ path: join(__dirname, "../.env.local") });
+
+const client = createClient({
+  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
+  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET,
+  token: process.env.SANITY_API_EDITOR_TOKEN,
+  apiVersion: "2024-10-31",
+  useCdn: false,
+});
+
+const prompts = [
+  { id: "profilePrompt-climate-personal", category: "about",
+    prompt: { en: "Climate change feels personal to me because…", es: "El cambio climático me toca de cerca porque…", fr: "Le changement climatique me touche personnellement parce que…", ar: "تغير المناخ يهمّني شخصيًا لأن…" } },
+  { id: "profilePrompt-proud-project", category: "research",
+    prompt: { en: "A project I'm proud of…", es: "Un proyecto del que estoy orgulloso/a…", fr: "Un projet dont je suis fier·ère…", ar: "مشروع أفخر به…" } },
+  { id: "profilePrompt-collaborate", category: "collaboration",
+    prompt: { en: "I'd love to collaborate on…", es: "Me encantaría colaborar en…", fr: "J'aimerais collaborer sur…", ar: "أودّ التعاون في…" } },
+];
+
+const tx = client.transaction();
+let rank = 0;
+for (const p of prompts) {
+  tx.createIfNotExists({
+    _id: p.id, _type: "profilePrompt", active: true, category: p.category,
+    prompt: p.prompt, orderRank: String(rank++).padStart(6, "0"),
+  });
+}
+await tx.commit();
+console.log(`✓ seeded ${prompts.length} profile prompts`);

@@ -550,7 +550,17 @@
     "collaboration": "Collaboration",
     "focusTopics": "Domaines d’intérêt",
     "lookingFor": "Je recherche",
-    "livedExperience": "Expérience vécue"
+    "livedExperience": "Expérience vécue",
+    "prompts": {
+      "title": "Questions",
+      "description": "Choisissez quelques questions et répondez-y — la partie la plus personnelle de votre profil.",
+      "loading": "Chargement des questions…",
+      "add": "Ajouter une question",
+      "remove": "Retirer",
+      "save": "Enregistrer",
+      "saved": "Enregistré",
+      "answerPlaceholder": "Votre réponse…"
+    }
   },
   "profilePicture": {
     "title": "Photo de Profil",
