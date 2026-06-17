@@ -10,7 +10,7 @@ import LivedExperiencesPageClient from './page-client'
 // Fetch lived experience videos grouped by regional community
 async function fetchLivedExperiences() {
   const query = `{
-    "videos": *[_type == "livedExperience"] | order(_createdAt desc) {
+    "videos": *[_type == "livedExperience" && (status == "approved" || !defined(status))] | order(_createdAt desc) {
       _id,
       title,
       videoUrl,

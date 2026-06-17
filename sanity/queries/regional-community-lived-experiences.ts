@@ -3,6 +3,7 @@ import { sanityFetch } from "@/sanity/lib/live";
 
 export const REGIONAL_COMMUNITY_LIVED_EXPERIENCES_QUERY = groq`
   *[_type == "livedExperience" &&
+    (status == "approved" || !defined(status)) &&
     (!defined($regionalCommunityId) || references($regionalCommunityId)) &&
     (!$featured || featured == true) &&
     publishedAt <= now()
@@ -82,6 +83,7 @@ export const fetchRegionalCommunityLivedExperiences = async ({
 // Query specifically for lived experiences by community slug
 export const REGIONAL_COMMUNITY_LIVED_EXPERIENCES_BY_SLUG_QUERY = groq`
   *[_type == "livedExperience" &&
+    (status == "approved" || !defined(status)) &&
     references(*[_type == "regionalCommunity" && slug.current == $slug][0]._id) &&
     (!$featured || featured == true) &&
     publishedAt <= now()

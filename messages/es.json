@@ -1311,5 +1311,37 @@
       "foundation": "Fundaciones",
       "other": "Otros"
     }
+  },
+  "livedExperienceSubmission": {
+    "pageTitle": "Comparte una experiencia vivida",
+    "pageDescription": "Enlaza un video y cuéntanos, con tus palabras, quién eres y de qué trata tu experiencia. Un editor la revisará antes de publicarla.",
+    "story": {
+      "title": "Tu historia",
+      "description": "El video y tus palabras."
+    },
+    "context": {
+      "title": "Contexto"
+    },
+    "fields": {
+      "title": "Título",
+      "titlePlaceholder": "Un título breve para tu experiencia",
+      "videoLink": "Enlace del video",
+      "videoLinkHelp": "Pega un enlace de YouTube o Vimeo.",
+      "description": "Descripción",
+      "descriptionPlaceholder": "En breve, ¿de qué trata esta experiencia?",
+      "issue": "El tema que aborda",
+      "issuePlaceholder": "p. ej. ecoansiedad en jóvenes…",
+      "issueHelp": "¿Qué tema de clima y salud mental toca?",
+      "personContext": "Sobre ti",
+      "personContextPlaceholder": "Una o dos frases sobre quién eres…",
+      "personContextHelp": "Se comparte con respeto junto a tu historia. Opcional.",
+      "region": "Comunidad regional",
+      "regionPlaceholder": "Elige una región (opcional)",
+      "tags": "Etiquetas",
+      "tagsHelp": "Hasta 6."
+    },
+    "submit": "Enviar para revisión",
+    "cancel": "Cancelar",
+    "success": "Gracias: tu experiencia se envió para revisión."
   }
 }

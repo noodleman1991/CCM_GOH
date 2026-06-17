@@ -1311,5 +1311,37 @@
       "foundation": "المؤسسات",
       "other": "أخرى"
     }
+  },
+  "livedExperienceSubmission": {
+    "pageTitle": "شارك تجربة معاشة",
+    "pageDescription": "أرفق فيديو وأخبرنا بكلماتك من أنت وما الذي تتحدث عنه تجربتك. سيراجعها محرّر قبل نشرها.",
+    "story": {
+      "title": "قصتك",
+      "description": "الفيديو وكلماتك."
+    },
+    "context": {
+      "title": "السياق"
+    },
+    "fields": {
+      "title": "العنوان",
+      "titlePlaceholder": "عنوان قصير لتجربتك",
+      "videoLink": "رابط الفيديو",
+      "videoLinkHelp": "الصق رابط يوتيوب أو فيميو.",
+      "description": "الوصف",
+      "descriptionPlaceholder": "باختصار، عمّ تدور هذه التجربة؟",
+      "issue": "القضية التي تتناولها",
+      "issuePlaceholder": "مثال: القلق البيئي لدى الشباب…",
+      "issueHelp": "أي موضوع يتعلق بالمناخ والصحة النفسية تتناوله؟",
+      "personContext": "عنك",
+      "personContextPlaceholder": "جملة أو اثنتان عمّن تكون…",
+      "personContextHelp": "تُعرض باحترام إلى جانب قصتك. اختياري.",
+      "region": "المجتمع الإقليمي",
+      "regionPlaceholder": "اختر منطقة (اختياري)",
+      "tags": "الوسوم",
+      "tagsHelp": "حتى 6."
+    },
+    "submit": "إرسال للمراجعة",
+    "cancel": "إلغاء",
+    "success": "شكرًا — تم إرسال تجربتك للمراجعة."
   }
 }
