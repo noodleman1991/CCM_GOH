@@ -481,7 +481,7 @@
         },
         "openToCollaboration": {
           "label": "Estoy abierto/a a colaborar",
-          "help": "Muestra a otros que te gustaría trabajar en conjunto."
+          "help": "Una señal discreta de que estás abierto/a a conectar o colaborar — sin compromiso, solo a conversar."
         },
         "interests": {
           "label": "¿En qué te gustaría colaborar?",
@@ -496,6 +496,15 @@
           "label": "Mostrar en mi perfil público",
           "help": "Si está desactivado, solo tú la verás."
         }
+      },
+      "tabs": {
+        "basic": "Básicos",
+        "collaboration": "Colaboración",
+        "work": "Trabajo",
+        "communities": "Comunidades",
+        "recentWork": "Trabajo reciente",
+        "social": "Enlaces",
+        "privacy": "Privacidad"
       }
     },
     "account": {

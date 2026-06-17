@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ProfilePromptsEditor } from "@/components/profile/profile-prompts-editor"
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -406,6 +407,27 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
     console.log('[ProfileEditForm] Work types source:', userManagementOptions?.workTypes?.length ? 'sanity' : 'fallback')
     console.log('[ProfileEditForm] Expertise areas source:', userManagementOptions?.expertiseAreas?.length ? 'sanity' : 'fallback')
 
+    // Which tab each field belongs to — so the tab strip can flag the step that
+    // still has a validation error (best-practice stepped-form affordance).
+    const FIELD_TAB: Record<string, string> = {
+        firstName: 'basic', lastName: 'basic', username: 'basic', bio: 'basic',
+        headline: 'basic', pronouns: 'basic', ageGroup: 'basic', country: 'basic', city: 'basic',
+        motivation: 'collaboration', collaborationInterests: 'collaboration',
+        livedExperienceStatement: 'collaboration', focusTopics: 'collaboration', lookingFor: 'collaboration',
+        workTypes: 'work', expertiseAreas: 'work', organization: 'work', position: 'work', workBio: 'work', orcidId: 'work',
+        communityIds: 'communities',
+        recentWork: 'recentWork',
+        personalWebsite: 'social', linkedinProfile: 'social', otherSocialLinks: 'social',
+        profileVisibility: 'privacy',
+    }
+    const tabsWithErrors = new Set(
+        Object.keys(form.formState.errors).map((f) => FIELD_TAB[f]).filter(Boolean)
+    )
+    const TabErrorDot = ({ tab }: { tab: string }) =>
+        tabsWithErrors.has(tab) ? (
+            <span className="ms-1.5 inline-block size-1.5 rounded-full bg-destructive" aria-hidden="true" />
+        ) : null
+
     async function handleSubmit(values: ProfileFormValues) {
         setIsSubmitting(true)
         try {
@@ -482,13 +504,26 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
         <div className={`${isRTL ? 'rtl' : 'ltr'} text-start`} dir={isRTL ? 'rtl' : 'ltr'}>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
-                {/* Profile Picture */}
+                {/* Profile Picture — shared identity header above the tabs */}
                 <ProfilePictureUpload
                     firstName={form.watch("firstName")}
                     lastName={form.watch("lastName")}
                     onImageChangeAction={onImageChangeAction}
                 />
 
+                <Tabs defaultValue="basic" className="w-full">
+                    <TabsList className="flex w-full flex-wrap h-auto justify-start gap-1">
+                        <TabsTrigger value="basic">{t('tabs.basic')}<TabErrorDot tab="basic" /></TabsTrigger>
+                        <TabsTrigger value="collaboration">{t('tabs.collaboration')}<TabErrorDot tab="collaboration" /></TabsTrigger>
+                        <TabsTrigger value="work">{t('tabs.work')}<TabErrorDot tab="work" /></TabsTrigger>
+                        <TabsTrigger value="communities">{t('tabs.communities')}<TabErrorDot tab="communities" /></TabsTrigger>
+                        <TabsTrigger value="recentWork">{t('tabs.recentWork')}<TabErrorDot tab="recentWork" /></TabsTrigger>
+                        <TabsTrigger value="social">{t('tabs.social')}<TabErrorDot tab="social" /></TabsTrigger>
+                        <TabsTrigger value="privacy">{t('tabs.privacy')}<TabErrorDot tab="privacy" /></TabsTrigger>
+                    </TabsList>
+
+                    {/* ── Basic ── */}
+                    <TabsContent value="basic" forceMount className="space-y-8 data-[state=inactive]:hidden mt-6">
                 {/* Clerk-managed Information */}
                 <Card>
                     <CardHeader>
@@ -698,6 +733,10 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                     </CardContent>
                 </Card>
 
+                    </TabsContent>
+
+                    {/* ── Collaboration ── */}
+                    <TabsContent value="collaboration" forceMount className="space-y-8 data-[state=inactive]:hidden mt-6">
                 {/* Motivation & collaboration (K4) */}
                 <Card>
                     <CardHeader>
@@ -799,6 +838,10 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                     </CardContent>
                 </Card>
 
+                    </TabsContent>
+
+                    {/* ── Work ── */}
+                    <TabsContent value="work" forceMount className="space-y-8 data-[state=inactive]:hidden mt-6">
                 {/* Work Information */}
                 <Card>
                     <CardHeader>
@@ -949,6 +992,10 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                     </CardContent>
                 </Card>
 
+                    </TabsContent>
+
+                    {/* ── Communities ── */}
+                    <TabsContent value="communities" forceMount className="space-y-8 data-[state=inactive]:hidden mt-6">
                 {/* Regional Communities */}
                 <Card>
                     <CardHeader>
@@ -968,6 +1015,10 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                     </CardContent>
                 </Card>
 
+                    </TabsContent>
+
+                    {/* ── Recent work ── */}
+                    <TabsContent value="recentWork" forceMount className="space-y-8 data-[state=inactive]:hidden mt-6">
                 {/* Recent Work */}
                 <Card>
                     <CardHeader>
@@ -1146,6 +1197,10 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                     </CardContent>
                 </Card>
 
+                    </TabsContent>
+
+                    {/* ── Social ── */}
+                    <TabsContent value="social" forceMount className="space-y-8 data-[state=inactive]:hidden mt-6">
                 {/* Social Links */}
                 <Card>
                     <CardHeader>
@@ -1188,6 +1243,10 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                     </CardContent>
                 </Card>
 
+                    </TabsContent>
+
+                    {/* ── Privacy ── */}
+                    <TabsContent value="privacy" forceMount className="space-y-8 data-[state=inactive]:hidden mt-6">
                 {/* Privacy Settings */}
                 <Card>
                     <CardHeader>
@@ -1360,6 +1419,8 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                         </div>
                     </CardContent>
                 </Card>
+                    </TabsContent>
+                </Tabs>
 
                 <div className="flex gap-4 justify-end">
                     <Button
