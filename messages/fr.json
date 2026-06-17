@@ -463,7 +463,9 @@
       "headline": {
         "label": "Accroche",
         "placeholder": "p. ex. Chercheuse sur l’éco-anxiété chez les jeunes",
-        "help": "Une ligne qui vous résume — la première chose que l’on voit."
+        "help": "Une ligne qui vous résume — la première chose que l’on voit.",
+        "importLinkedIn": "Importer depuis LinkedIn",
+        "importing": "Importation…"
       },
       "pronouns": {
         "label": "Pronoms",
@@ -535,6 +537,12 @@
           "delete": "Supprimer le Compte",
           "publishedNote": "Vos études de cas publiées resteront sur le site. Pour faire modifier ou retirer une étude de cas publiée, veuillez contacter l'équipe de Connecting Climate Minds Hub par e-mail."
         }
+      },
+      "groups": {
+        "account": "Votre compte",
+        "accountDescription": "Gérez votre e-mail de connexion et votre mot de passe.",
+        "dangerZone": "Zone sensible",
+        "dangerZoneDescription": "Actions irréversibles. Soyez certain·e."
       }
     },
     "contributions": {

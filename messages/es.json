@@ -463,7 +463,9 @@
       "headline": {
         "label": "Titular",
         "placeholder": "p. ej. Investigadora sobre ansiedad climática en jóvenes",
-        "help": "Una línea que te resuma: lo primero que la gente ve."
+        "help": "Una línea que te resuma: lo primero que la gente ve.",
+        "importLinkedIn": "Importar de LinkedIn",
+        "importing": "Importando…"
       },
       "pronouns": {
         "label": "Pronombres",
@@ -535,6 +537,12 @@
           "delete": "Eliminar Cuenta",
           "publishedNote": "Tus estudios de caso publicados permanecerán en el sitio. Para modificar o eliminar un estudio de caso publicado, comunícate por correo electrónico con el equipo de Connecting Climate Minds Hub."
         }
+      },
+      "groups": {
+        "account": "Tu cuenta",
+        "accountDescription": "Gestiona tu correo de acceso y tu contraseña.",
+        "dangerZone": "Zona de peligro",
+        "dangerZoneDescription": "Acciones irreversibles. Asegúrate antes de continuar."
       }
     },
     "contributions": {

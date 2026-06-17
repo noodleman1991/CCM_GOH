@@ -229,7 +229,14 @@ export default function AccountManagement({ initialData }: AccountManagementProp
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+      {/* ── Your account ─────────────────────────────────────── */}
+      <section className="space-y-4">
+        <div>
+          <h2 className="text-lg font-semibold text-ccm-midnight">{t('groups.account')}</h2>
+          <p className="text-sm text-muted-foreground">{t('groups.accountDescription')}</p>
+        </div>
+
       {/* Email Management */}
       <Card>
         <CardHeader>
@@ -270,47 +277,6 @@ export default function AccountManagement({ initialData }: AccountManagementProp
           </div>
         </CardContent>
       </Card>
-
-      {/* Phone Management */}
-      {/*<Card>*/}
-      {/*  <CardHeader>*/}
-      {/*    <CardTitle className="flex items-center gap-2">*/}
-      {/*      <Phone className="h-4 w-4" />*/}
-      {/*      {t('phone.title')}*/}
-      {/*    </CardTitle>*/}
-      {/*    <CardDescription>{t('phone.description')}</CardDescription>*/}
-      {/*  </CardHeader>*/}
-      {/*  <CardContent>*/}
-      {/*    <div className="space-y-4">*/}
-      {/*      <div className="text-sm">*/}
-      {/*        <strong>{t('phone.current')}</strong>*/}
-      {/*        <p>{accountInfo?.primaryPhoneNumber?.phoneNumber || t('phone.none')}</p>*/}
-      {/*      </div>*/}
-      {/*      */}
-      {/*      <Form {...phoneForm}>*/}
-      {/*        <form onSubmit={phoneForm.handleSubmit(handlePhoneUpdate)} className="space-y-4">*/}
-      {/*          <FormField*/}
-      {/*            control={phoneForm.control}*/}
-      {/*            name="phone"*/}
-      {/*            render={({ field }) => (*/}
-      {/*              <FormItem>*/}
-      {/*                <FormLabel>{t('phone.new')}</FormLabel>*/}
-      {/*                <FormControl>*/}
-      {/*                  <Input {...field} type="tel" />*/}
-      {/*                </FormControl>*/}
-      {/*                <FormMessage />*/}
-      {/*              </FormItem>*/}
-      {/*            )}*/}
-      {/*          />*/}
-      {/*          <Button type="submit" disabled={loading}>*/}
-      {/*            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}*/}
-      {/*            {t('phone.update')}*/}
-      {/*          </Button>*/}
-      {/*        </form>*/}
-      {/*      </Form>*/}
-      {/*    </div>*/}
-      {/*  </CardContent>*/}
-      {/*</Card>*/}
 
       {/* Password Management */}
       <Card>
@@ -374,9 +340,20 @@ export default function AccountManagement({ initialData }: AccountManagementProp
           </Form>
         </CardContent>
       </Card>
+      </section>
+
+      {/* ── Danger zone ──────────────────────────────────────── */}
+      <section className="space-y-4">
+        <div>
+          <h2 className="flex items-center gap-2 text-lg font-semibold text-destructive">
+            <AlertTriangle className="h-4 w-4" />
+            {t('groups.dangerZone')}
+          </h2>
+          <p className="text-sm text-muted-foreground">{t('groups.dangerZoneDescription')}</p>
+        </div>
 
       {/* Delete Account */}
-      <Card className="border-destructive">
+      <Card className="border-destructive/60 bg-destructive/5">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-destructive">
             <Trash2 className="h-4 w-4" />
@@ -431,6 +408,7 @@ export default function AccountManagement({ initialData }: AccountManagementProp
           </Dialog>
         </CardContent>
       </Card>
+      </section>
     </div>
   )
 }

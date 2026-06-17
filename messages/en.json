@@ -381,7 +381,9 @@
       "headline": {
         "label": "Headline",
         "placeholder": "e.g. Researcher on climate anxiety in youth",
-        "help": "One line that sums you up — the first thing people see."
+        "help": "One line that sums you up — the first thing people see.",
+        "importLinkedIn": "Import from LinkedIn",
+        "importing": "Importing…"
       },
       "pronouns": {
         "label": "Pronouns",
@@ -453,6 +455,12 @@
           "delete": "Delete Account",
           "publishedNote": "Your published case studies will remain on the site. To have a published case study changed or removed, please contact the Connecting Climate Minds Hub team by email."
         }
+      },
+      "groups": {
+        "account": "Your account",
+        "accountDescription": "Manage your sign-in email and password.",
+        "dangerZone": "Danger zone",
+        "dangerZoneDescription": "Irreversible actions. Please be certain."
       }
     },
     "contributions": {
