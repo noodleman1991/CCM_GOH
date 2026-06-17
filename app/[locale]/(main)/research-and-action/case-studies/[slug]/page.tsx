@@ -14,6 +14,10 @@ import { Link } from '@/i18n/navigation'
 import { urlFor } from '@/sanity/lib/image'
 import { getLocalizedText, formatCaseStudyDate, getPrimaryAuthor, getStudyLocationText } from '@/lib/case-study-utils'
 import PortableTextRenderer from '@/components/portable-text-renderer'
+import { getTranslations } from 'next-intl/server'
+import { cn } from '@/lib/utils'
+import { heading } from '@/lib/design-tokens'
+import { sortedTags, normalizeTagColor } from '@/lib/tags'
 
 export async function generateStaticParams() {
   const caseStudies = await fetchCaseStudiesStaticParams()
@@ -70,6 +74,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ loca
   }
 
   const supportedLocale = locale as 'en' | 'es' | 'fr' | 'ar'
+  const t = await getTranslations('caseStudies')
   const title = getLocalizedText(caseStudy.title, supportedLocale, 'Case Study')
   const excerpt = getLocalizedText(caseStudy.excerpt, supportedLocale, '')
   const primaryAuthor = getPrimaryAuthor(caseStudy)
@@ -90,15 +95,15 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ loca
       <div className="space-y-4">
         {/* Featured badge */}
         {caseStudy.featured && (
-          <Badge className="bg-yellow-500 text-black">
-            ⭐ Featured Case Study
+          <Badge className="bg-[var(--color-ccm-sky)]/30 text-[var(--color-ccm-sea)] border-0">
+            {t('featuredBadge')}
           </Badge>
         )}
 
-        <h1 className="text-4xl font-bold tracking-tight">{title}</h1>
+        <h1 className={cn("font-bold tracking-tight text-balance text-ccm-midnight", heading('xl'))}>{title}</h1>
 
         {excerpt && (
-          <p className="text-xl text-muted-foreground">{excerpt}</p>
+          <p className="text-lg md:text-xl text-muted-foreground text-pretty">{excerpt}</p>
         )}
 
         {/* Metadata */}
@@ -128,21 +133,17 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ loca
           )}
         </div>
 
-        {/* Tags */}
+        {/* Tags — sorted + on-brand colours (L2 tag unification) */}
         {caseStudy.tags && caseStudy.tags.length > 0 && (
           <div className="flex flex-wrap gap-2">
-            {caseStudy.tags.map((tag: any) => (
-              <Badge
-                key={tag._id}
-                variant="outline"
-                style={{
-                  borderColor: tag.color,
-                  color: tag.color
-                }}
-              >
-                {getLocalizedText(tag.label, supportedLocale)}
-              </Badge>
-            ))}
+            {sortedTags(caseStudy.tags, supportedLocale).map((tag: any) => {
+              const color = normalizeTagColor(tag.color)
+              return (
+                <Badge key={tag._id} variant="outline" style={{ borderColor: color, color }}>
+                  {getLocalizedText(tag.label, supportedLocale)}
+                </Badge>
+              )
+            })}
           </div>
         )}
       </div>
@@ -167,18 +168,16 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ loca
         </div>
       )}
 
-      {/* Main Content */}
+      {/* Main Content — clean long-form article (no card chrome), the rich
+          styled-block-content renders lead/sidebar-note/pull-quote/CTA blocks. */}
       {caseStudy.content && (
-        <Card>
-          <CardContent className="pt-6">
-            {/* PortableTextRenderer applies its own prose styling and handles images/videos */}
-            <PortableTextRenderer
-              value={caseStudy.content}
-              locale={supportedLocale}
-              isRTL={supportedLocale === 'ar'}
-            />
-          </CardContent>
-        </Card>
+        <article className="text-base md:text-lg leading-relaxed">
+          <PortableTextRenderer
+            value={caseStudy.content}
+            locale={supportedLocale}
+            isRTL={supportedLocale === 'ar'}
+          />
+        </article>
       )}
 
       {/* Study Details */}

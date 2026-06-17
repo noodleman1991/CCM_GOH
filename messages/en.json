@@ -762,7 +762,8 @@
     "organizations": "Organizations",
     "relatedProjects": "Related Projects",
     "studyAreas": "Study Areas",
-    "allAuthors": "All Authors"
+    "allAuthors": "All Authors",
+    "featuredBadge": "Featured"
   },
   "livedExperiences": {
     "title": "Lived Experiences",

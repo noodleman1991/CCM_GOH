@@ -1163,7 +1163,8 @@
     "organizations": "Organizaciones",
     "relatedProjects": "Proyectos Relacionados",
     "studyAreas": "Áreas de Estudio",
-    "allAuthors": "Todos los Autores"
+    "allAuthors": "Todos los Autores",
+    "featuredBadge": "Destacado"
   },
   "revisionAlert": {
     "title": "Acción Requerida: Revisión Necesaria",
