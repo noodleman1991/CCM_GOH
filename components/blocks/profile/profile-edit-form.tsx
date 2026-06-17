@@ -292,6 +292,55 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
         form.setValue('communityIds', communityIds, { shouldDirty: true })
     }
 
+    // Prefill recent work + organisation/position from ORCID (+ OpenAlex) by
+    // the entered ORCID iD. Appends works as recent-work entries for review —
+    // never auto-saves; the user trims and submits the form as normal.
+    const [orcidImporting, setOrcidImporting] = useState(false)
+    const handleOrcidImport = async () => {
+        const orcid = form.getValues('orcidId')
+        if (!orcid) {
+            toast.error(t('orcidImport.needId'))
+            return
+        }
+        setOrcidImporting(true)
+        try {
+            const res = await fetch(`/api/profile/import/orcid?orcid=${encodeURIComponent(orcid)}`)
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}))
+                throw new Error(err.error || 'Import failed')
+            }
+            const { works, affiliations } = await res.json()
+            // Prefill org/position from the first affiliation if those are empty.
+            if (affiliations?.[0]) {
+                if (!form.getValues('organization')) form.setValue('organization', affiliations[0].organization, { shouldDirty: true })
+                if (!form.getValues('position') && affiliations[0].role) form.setValue('position', affiliations[0].role, { shouldDirty: true })
+            }
+            // Append works (skip ones already listed by title), up to 5 total.
+            const existingTitles = new Set((form.getValues('recentWork') || []).map((w: any) => (w.title || '').trim().toLowerCase()))
+            let added = 0
+            for (const w of works || []) {
+                if (workFields.length + added >= 5) break
+                const key = (w.title || '').trim().toLowerCase()
+                if (!key || existingTitles.has(key)) continue
+                existingTitles.add(key)
+                appendWork({
+                    title: w.title.slice(0, 100),
+                    description: (w.description || w.title).slice(0, 500),
+                    link: w.link || '',
+                    startDate: w.year ? `${w.year}-01-01` : '',
+                    endDate: '',
+                    isOngoing: false,
+                })
+                added++
+            }
+            toast.success(added > 0 ? t('orcidImport.added', { count: added }) : t('orcidImport.none'))
+        } catch (e) {
+            toast.error(e instanceof Error ? e.message : 'Import failed')
+        } finally {
+            setOrcidImporting(false)
+        }
+    }
+
     // Prefill headline (and avatar if empty) from the user's LinkedIn connection
     // via Clerk — the user reviews before saving, never a silent overwrite.
     const [linkedinImporting, setLinkedinImporting] = useState(false)
@@ -985,6 +1034,34 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                                     <FormControl>
                                         <Textarea {...field} rows={4} />
                                     </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        {/* ORCID iD + import (works → recent work, affiliations → org/position) */}
+                        <FormField
+                            control={form.control}
+                            name="orcidId"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>{t('orcidImport.label')}</FormLabel>
+                                    <div className="flex flex-col sm:flex-row gap-2">
+                                        <FormControl>
+                                            <Input {...field} value={field.value || ""} placeholder="0000-0002-1825-0097" />
+                                        </FormControl>
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            onClick={handleOrcidImport}
+                                            disabled={orcidImporting}
+                                            className="gap-2 shrink-0"
+                                        >
+                                            {orcidImporting ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+                                            {orcidImporting ? t('orcidImport.importing') : t('orcidImport.button')}
+                                        </Button>
+                                    </div>
+                                    <FormDescription>{t('orcidImport.help')}</FormDescription>
                                     <FormMessage />
                                 </FormItem>
                             )}
