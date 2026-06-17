@@ -1,5 +1,6 @@
 import { sanityFetch } from "@/sanity/lib/live";
 import { SITE_ANNOUNCEMENT_QUERY } from "@/sanity/queries/site-announcement";
+import { ACTIVE_PROFILE_PROMPTS_QUERY } from "@/sanity/queries/profile-prompt";
 import { PAGE_QUERY, PAGES_SLUGS_QUERY } from "@/sanity/queries/page";
 import { REGIONAL_COMMUNITY_PAGE_QUERY } from "@/sanity/queries/regional-community-page";
 import {
@@ -45,6 +46,14 @@ export const fetchSiteAnnouncement = async () => {
         query: SITE_ANNOUNCEMENT_QUERY,
     });
     return data;
+};
+
+/** Active, editor-ordered profile prompts. Components resolve the localized text. */
+export const fetchActiveProfilePrompts = async () => {
+    const { data } = await sanityFetch({
+        query: ACTIVE_PROFILE_PROMPTS_QUERY,
+    });
+    return (data || []) as Array<{ id: string; prompt: Record<string, string>; category?: string }>;
 };
 
 export const fetchSanityPageBySlug = async ({

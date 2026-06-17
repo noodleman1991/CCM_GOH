@@ -7,6 +7,7 @@ import { format } from "date-fns"
 import { User, Briefcase, Globe, Shield, Calendar, ExternalLink } from "lucide-react"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { ProfilePromptsEditor } from "@/components/profile/profile-prompts-editor"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
@@ -23,6 +24,7 @@ interface ReviewPanelProps {
 
 export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = [] }: ReviewPanelProps) {
   const t = useTranslations("onboarding.steps.review")
+  const tPrompts = useTranslations("profile.prompts")
   const locale = useLocale()
   const isRTL = rtlLocales.includes(locale)
 
@@ -372,6 +374,17 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
           </CardContent>
         </Card>
       </div>
+
+      {/* Profile prompts (K5) — an inviting last step; saved independently. */}
+      <Card>
+        <CardHeader>
+          <CardTitle>{tPrompts("title")}</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <p className="text-sm text-muted-foreground">{tPrompts("description")}</p>
+          <ProfilePromptsEditor />
+        </CardContent>
+      </Card>
 
       <div className="bg-gradient-to-r from-primary/10 to-primary/5 p-6 rounded-xl space-y-2">
         <h3 className="font-semibold text-foreground">

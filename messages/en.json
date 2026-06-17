@@ -468,7 +468,17 @@
     "collaboration": "Collaboration",
     "focusTopics": "Focus areas",
     "lookingFor": "Looking for",
-    "livedExperience": "Lived experience"
+    "livedExperience": "Lived experience",
+    "prompts": {
+      "title": "Prompts",
+      "description": "Pick a few prompts and answer them — the most personal part of your profile.",
+      "loading": "Loading prompts…",
+      "add": "Add a prompt",
+      "remove": "Remove",
+      "save": "Save prompts",
+      "saved": "Saved",
+      "answerPlaceholder": "Your answer…"
+    }
   },
   "profilePicture": {
     "title": "Profile Picture",

@@ -15,6 +15,7 @@ import { heading } from "@/lib/design-tokens"
 import { ProfileCompletenessIndicator } from "@/components/ui/profile-completeness-indicator"
 import { ProfileStatistics } from "@/components/blocks/profile/profile-statistics"
 import { ContributionsBlock } from "@/components/blocks/profile/contributions-block"
+import { PromptsBlock } from "@/components/blocks/profile/prompts-block"
 import { PageBreadcrumb } from "@/components/ui/page-breadcrumb"
 import { Suspense } from "react"
 
@@ -229,6 +230,11 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                             </Card>
                         </BlurFade>
                     )}
+
+                    {/* Answered prompts — the most human part of the profile */}
+                    <Suspense fallback={null}>
+                        <PromptsBlock userId={user.id} locale={locale} />
+                    </Suspense>
 
                     {/* Motivation — "what brought me here" */}
                     {user.motivation && (

@@ -550,7 +550,17 @@
     "collaboration": "التعاون",
     "focusTopics": "مجالات التركيز",
     "lookingFor": "أبحث عن",
-    "livedExperience": "التجربة المعاشة"
+    "livedExperience": "التجربة المعاشة",
+    "prompts": {
+      "title": "أسئلة",
+      "description": "اختر بعض الأسئلة وأجب عنها — الجزء الأكثر شخصية في ملفك.",
+      "loading": "جارٍ تحميل الأسئلة…",
+      "add": "إضافة سؤال",
+      "remove": "إزالة",
+      "save": "حفظ الأسئلة",
+      "saved": "تم الحفظ",
+      "answerPlaceholder": "إجابتك…"
+    }
   },
   "profilePicture": {
     "title": "صورة الملف الشخصي",
