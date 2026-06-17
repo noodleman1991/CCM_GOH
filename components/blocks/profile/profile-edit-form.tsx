@@ -78,6 +78,18 @@ const profileSchema = z.object({
     // Community memberships
     communityIds: z.array(z.string()).optional().default([]),
 
+    // Domain-rich fields (K4)
+    headline: z.string().max(120, "Headline must be under 120 characters").optional().or(z.literal("")),
+    pronouns: z.string().max(40).optional().or(z.literal("")),
+    motivation: z.string().max(600, "Keep it under 600 characters").optional().or(z.literal("")),
+    focusTopics: z.array(z.string()).optional().default([]),
+    openToCollaboration: z.boolean().optional().default(false),
+    lookingFor: z.array(z.string()).optional().default([]),
+    collaborationInterests: z.string().max(600, "Keep it under 600 characters").optional().or(z.literal("")),
+    livedExperienceStatement: z.string().max(1000, "Keep it under 1000 characters").optional().or(z.literal("")),
+    showLivedExperience: z.boolean().optional().default(false),
+    orcidId: z.string().max(40).optional().or(z.literal("")),
+
     // Privacy Controls
     isSearchable: z.boolean().default(true),
     profileVisibility: z.enum(["PUBLIC", "MEMBERS", "PRIVATE"]).default("PUBLIC"),
@@ -177,6 +189,17 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
             otherSocialLinks: user?.otherSocialLinks || initialData?.otherSocialLinks || [],
             recentWork: [], // Will be populated by API fetch
             communityIds: [], // Will be populated by API fetch
+            // Domain-rich fields (K4)
+            headline: (user as any)?.headline || "",
+            pronouns: (user as any)?.pronouns || "",
+            motivation: (user as any)?.motivation || "",
+            focusTopics: (user as any)?.focusTopics || [],
+            openToCollaboration: (user as any)?.openToCollaboration ?? false,
+            lookingFor: (user as any)?.lookingFor || [],
+            collaborationInterests: (user as any)?.collaborationInterests || "",
+            livedExperienceStatement: (user as any)?.livedExperienceStatement || "",
+            showLivedExperience: (user as any)?.showLivedExperience ?? false,
+            orcidId: (user as any)?.orcidId || "",
             // Privacy Controls
             isSearchable: user?.isSearchable ?? initialData?.isSearchable ?? true,
             profileVisibility: user?.profileVisibility || initialData?.profileVisibility || "PUBLIC",
@@ -232,6 +255,17 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                 // Use data from hook
                 recentWork: recentWorkFormatted,
                 communityIds: communityIds,
+                // Domain-rich fields (K4)
+                headline: userWithRelations.headline || "",
+                pronouns: userWithRelations.pronouns || "",
+                motivation: userWithRelations.motivation || "",
+                focusTopics: userWithRelations.focusTopics || [],
+                openToCollaboration: userWithRelations.openToCollaboration ?? false,
+                lookingFor: userWithRelations.lookingFor || [],
+                collaborationInterests: userWithRelations.collaborationInterests || "",
+                livedExperienceStatement: userWithRelations.livedExperienceStatement || "",
+                showLivedExperience: userWithRelations.showLivedExperience ?? false,
+                orcidId: userWithRelations.orcidId || "",
                 isSearchable: user.isSearchable ?? true,
                 profileVisibility: user.profileVisibility || "PUBLIC",
                 showEmail: user.showEmail ?? false,
@@ -531,6 +565,36 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                             )}
                         />
 
+                        <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-4">
+                            <FormField
+                                control={form.control}
+                                name="headline"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>{t('headline.label')}</FormLabel>
+                                        <FormControl>
+                                            <Input {...field} value={field.value || ""} placeholder={t('headline.placeholder')} />
+                                        </FormControl>
+                                        <FormDescription>{t('headline.help')}</FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="pronouns"
+                                render={({ field }) => (
+                                    <FormItem className="sm:w-32">
+                                        <FormLabel>{t('pronouns.label')}</FormLabel>
+                                        <FormControl>
+                                            <Input {...field} value={field.value || ""} placeholder={t('pronouns.placeholder')} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+
                         <FormField
                             control={form.control}
                             name="bio"
@@ -595,6 +659,96 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                                 )}
                             />
                         </div>
+                    </CardContent>
+                </Card>
+
+                {/* Motivation & collaboration (K4) */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle>{t('collab.title')}</CardTitle>
+                        <CardDescription>{t('collab.description')}</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <FormField
+                            control={form.control}
+                            name="motivation"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>{t('collab.motivation.label')}</FormLabel>
+                                    <FormControl>
+                                        <Textarea {...field} value={field.value || ""} rows={3} placeholder={t('collab.motivation.placeholder')} />
+                                    </FormControl>
+                                    <FormDescription>{t('collab.motivation.help')}</FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="openToCollaboration"
+                            render={({ field }) => (
+                                <FormItem className="flex items-center justify-between rounded-lg border p-4">
+                                    <div className="space-y-0.5 pe-4">
+                                        <FormLabel>{t('collab.openToCollaboration.label')}</FormLabel>
+                                        <FormDescription>{t('collab.openToCollaboration.help')}</FormDescription>
+                                    </div>
+                                    <FormControl>
+                                        <Switch checked={!!field.value} onCheckedChange={field.onChange} />
+                                    </FormControl>
+                                </FormItem>
+                            )}
+                        />
+
+                        {form.watch("openToCollaboration") && (
+                            <FormField
+                                control={form.control}
+                                name="collaborationInterests"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>{t('collab.interests.label')}</FormLabel>
+                                        <FormControl>
+                                            <Textarea {...field} value={field.value || ""} rows={3} placeholder={t('collab.interests.placeholder')} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        )}
+
+                        {/* Lived experience — sensitive, opt-in to show publicly */}
+                        <FormField
+                            control={form.control}
+                            name="livedExperienceStatement"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>{t('collab.livedExperience.label')}</FormLabel>
+                                    <FormControl>
+                                        <Textarea {...field} value={field.value || ""} rows={3} placeholder={t('collab.livedExperience.placeholder')} />
+                                    </FormControl>
+                                    <FormDescription>{t('collab.livedExperience.help')}</FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        {form.watch("livedExperienceStatement") && (
+                            <FormField
+                                control={form.control}
+                                name="showLivedExperience"
+                                render={({ field }) => (
+                                    <FormItem className="flex items-center justify-between rounded-lg border border-[var(--color-ccm-sky)] bg-[var(--color-ccm-sky)]/10 p-4">
+                                        <div className="space-y-0.5 pe-4">
+                                            <FormLabel>{t('collab.showLivedExperience.label')}</FormLabel>
+                                            <FormDescription>{t('collab.showLivedExperience.help')}</FormDescription>
+                                        </div>
+                                        <FormControl>
+                                            <Switch checked={!!field.value} onCheckedChange={field.onChange} />
+                                        </FormControl>
+                                    </FormItem>
+                                )}
+                            />
+                        )}
                     </CardContent>
                 </Card>
 

@@ -158,7 +158,23 @@ export interface UserProfileUpdateData {
     startDate: string
     endDate?: string
     isOngoing?: boolean
+    role?: string | null
+    collaborators?: string | null
+    outcome?: string | null
+    imageUrl?: string | null
   }>
+  // Domain-rich fields (K4)
+  headline?: string | null
+  pronouns?: string | null
+  languages?: string[]
+  focusTopics?: string[]
+  motivation?: string | null
+  openToCollaboration?: boolean
+  lookingFor?: string[]
+  collaborationInterests?: string | null
+  livedExperienceStatement?: string | null
+  showLivedExperience?: boolean
+  orcidId?: string | null
 }
 
 export interface CommunityCreateData {

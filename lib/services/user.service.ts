@@ -234,7 +234,11 @@ export class UserService {
             link: work.link || null,
             startDate: new Date(work.startDate),
             endDate: work.endDate ? new Date(work.endDate) : null,
-            isOngoing: work.isOngoing || false
+            isOngoing: work.isOngoing || false,
+            role: (work as any).role || null,
+            collaborators: (work as any).collaborators || null,
+            outcome: (work as any).outcome || null,
+            imageUrl: (work as any).imageUrl || null
           }))
         }
       }

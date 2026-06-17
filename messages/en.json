@@ -377,7 +377,42 @@
         }
       },
       "cancel": "Cancel",
-      "save": "Save Changes"
+      "save": "Save Changes",
+      "headline": {
+        "label": "Headline",
+        "placeholder": "e.g. Researcher on climate anxiety in youth",
+        "help": "One line that sums you up — the first thing people see."
+      },
+      "pronouns": {
+        "label": "Pronouns",
+        "placeholder": "she/her"
+      },
+      "collab": {
+        "title": "Motivation & collaboration",
+        "description": "Share what drives you and how you'd like to connect.",
+        "motivation": {
+          "label": "What brought you here?",
+          "placeholder": "What draws you to climate change and mental health…",
+          "help": "Your story helps others connect with you."
+        },
+        "openToCollaboration": {
+          "label": "I'm open to collaboration",
+          "help": "Show others you'd like to work together."
+        },
+        "interests": {
+          "label": "What would you like to collaborate on?",
+          "placeholder": "Co-authoring, mentorship, sharing data…"
+        },
+        "livedExperience": {
+          "label": "Lived experience (optional)",
+          "placeholder": "Share as much or as little as you like…",
+          "help": "Private by default. You choose whether to show it."
+        },
+        "showLivedExperience": {
+          "label": "Show on my public profile",
+          "help": "Off keeps this visible only to you."
+        }
+      }
     },
     "account": {
       "pageTitle": "Account & Security",
@@ -427,7 +462,13 @@
         "content": "Article",
         "recentWork": "Project"
       }
-    }
+    },
+    "openToCollaboration": "Open to collaboration",
+    "motivation": "What brought me here",
+    "collaboration": "Collaboration",
+    "focusTopics": "Focus areas",
+    "lookingFor": "Looking for",
+    "livedExperience": "Lived experience"
   },
   "profilePicture": {
     "title": "Profile Picture",

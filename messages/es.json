@@ -459,7 +459,42 @@
       "linkedin": "Perfil de LinkedIn",
       "twitter": "Usuario de Twitter",
       "cancel": "Cancelar",
-      "save": "Guardar Cambios"
+      "save": "Guardar Cambios",
+      "headline": {
+        "label": "Titular",
+        "placeholder": "p. ej. Investigadora sobre ansiedad climática en jóvenes",
+        "help": "Una línea que te resuma: lo primero que la gente ve."
+      },
+      "pronouns": {
+        "label": "Pronombres",
+        "placeholder": "ella"
+      },
+      "collab": {
+        "title": "Motivación y colaboración",
+        "description": "Comparte qué te motiva y cómo te gustaría conectar.",
+        "motivation": {
+          "label": "¿Qué te trajo aquí?",
+          "placeholder": "Qué te atrae del cambio climático y la salud mental…",
+          "help": "Tu historia ayuda a otros a conectar contigo."
+        },
+        "openToCollaboration": {
+          "label": "Estoy abierto/a a colaborar",
+          "help": "Muestra a otros que te gustaría trabajar en conjunto."
+        },
+        "interests": {
+          "label": "¿En qué te gustaría colaborar?",
+          "placeholder": "Coautoría, mentoría, compartir datos…"
+        },
+        "livedExperience": {
+          "label": "Experiencia vivida (opcional)",
+          "placeholder": "Comparte lo que quieras…",
+          "help": "Privada por defecto. Tú decides si mostrarla."
+        },
+        "showLivedExperience": {
+          "label": "Mostrar en mi perfil público",
+          "help": "Si está desactivado, solo tú la verás."
+        }
+      }
     },
     "account": {
       "pageTitle": "Cuenta y Seguridad",
@@ -509,7 +544,13 @@
         "content": "Artículo",
         "recentWork": "Proyecto"
       }
-    }
+    },
+    "openToCollaboration": "Abierto/a a colaborar",
+    "motivation": "Qué me trajo aquí",
+    "collaboration": "Colaboración",
+    "focusTopics": "Áreas de interés",
+    "lookingFor": "Busco",
+    "livedExperience": "Experiencia vivida"
   },
   "profilePicture": {
     "title": "Foto de Perfil",
