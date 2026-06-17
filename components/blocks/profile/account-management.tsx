@@ -11,14 +11,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { toast } from "sonner"
-import { Loader2, Shield, Mail, Phone, Key, Trash2, AlertTriangle } from "lucide-react"
+import { Loader2, Mail, Key, Trash2, AlertTriangle } from "lucide-react"
 
 const EmailUpdateSchema = z.object({
   email: z.string().email("Please enter a valid email address")
-})
-
-const PhoneUpdateSchema = z.object({
-  phone: z.string().min(10, "Please enter a valid phone number")
 })
 
 const PasswordChangeSchema = z.object({
@@ -60,12 +56,6 @@ export default function AccountManagement({ initialData }: AccountManagementProp
     }
   })
 
-  const phoneForm = useForm<z.infer<typeof PhoneUpdateSchema>>({
-    resolver: zodResolver(PhoneUpdateSchema),
-    defaultValues: {
-      phone: accountInfo?.primaryPhoneNumber?.phoneNumber || ""
-    }
-  })
 
   const passwordForm = useForm<z.infer<typeof PasswordChangeSchema>>({
     resolver: zodResolver(PasswordChangeSchema),
@@ -123,33 +113,6 @@ export default function AccountManagement({ initialData }: AccountManagementProp
     }
   }
 
-  // Update phone
-  const handlePhoneUpdate = async (data: z.infer<typeof PhoneUpdateSchema>) => {
-    try {
-      setLoading(true)
-      const response = await fetch('/api/account', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'update_phone',
-          phone: data.phone
-        })
-      })
-
-      const result = await response.json()
-
-      if (!response.ok) {
-        throw new Error(result.error || 'Failed to update phone')
-      }
-
-      toast.success(result.message)
-      await fetchAccountInfo()
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to update phone')
-    } finally {
-      setLoading(false)
-    }
-  }
 
   // Change password
   const handlePasswordChange = async (data: z.infer<typeof PasswordChangeSchema>) => {
