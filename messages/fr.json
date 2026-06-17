@@ -1311,5 +1311,37 @@
       "foundation": "Fondations",
       "other": "Autres"
     }
+  },
+  "livedExperienceSubmission": {
+    "pageTitle": "Partager une expérience vécue",
+    "pageDescription": "Ajoutez une vidéo et dites-nous, avec vos mots, qui vous êtes et ce que votre expérience évoque. Un éditeur la vérifiera avant publication.",
+    "story": {
+      "title": "Votre histoire",
+      "description": "La vidéo et vos mots."
+    },
+    "context": {
+      "title": "Contexte"
+    },
+    "fields": {
+      "title": "Titre",
+      "titlePlaceholder": "Un titre court pour votre expérience",
+      "videoLink": "Lien vidéo",
+      "videoLinkHelp": "Collez un lien YouTube ou Vimeo.",
+      "description": "Description",
+      "descriptionPlaceholder": "En bref, de quoi s'agit-il ?",
+      "issue": "Le sujet abordé",
+      "issuePlaceholder": "p. ex. éco-anxiété chez les jeunes…",
+      "issueHelp": "Quel thème climat × santé mentale aborde-t-il ?",
+      "personContext": "À votre sujet",
+      "personContextPlaceholder": "Une phrase ou deux sur qui vous êtes…",
+      "personContextHelp": "Partagé avec respect aux côtés de votre histoire. Facultatif.",
+      "region": "Communauté régionale",
+      "regionPlaceholder": "Choisir une région (facultatif)",
+      "tags": "Étiquettes",
+      "tagsHelp": "Jusqu'à 6."
+    },
+    "submit": "Soumettre pour révision",
+    "cancel": "Annuler",
+    "success": "Merci — votre expérience a été soumise pour révision."
   }
 }

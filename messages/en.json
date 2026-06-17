@@ -1311,5 +1311,37 @@
       "foundation": "Foundations",
       "other": "Other"
     }
+  },
+  "livedExperienceSubmission": {
+    "pageTitle": "Share a lived experience",
+    "pageDescription": "Link a video and tell us, in your own words, who you are and what your experience speaks to. An editor will review it before it appears.",
+    "story": {
+      "title": "Your story",
+      "description": "The video and your words."
+    },
+    "context": {
+      "title": "Context"
+    },
+    "fields": {
+      "title": "Title",
+      "titlePlaceholder": "A short title for your experience",
+      "videoLink": "Video link",
+      "videoLinkHelp": "Paste a YouTube or Vimeo link.",
+      "description": "Description",
+      "descriptionPlaceholder": "Briefly, what is this experience about?",
+      "issue": "The issue it speaks to",
+      "issuePlaceholder": "e.g. eco-anxiety among young people…",
+      "issueHelp": "What climate × mental-health theme does this touch?",
+      "personContext": "About you",
+      "personContextPlaceholder": "A sentence or two about who you are…",
+      "personContextHelp": "Shared respectfully alongside your story. Optional.",
+      "region": "Regional community",
+      "regionPlaceholder": "Choose a region (optional)",
+      "tags": "Tags",
+      "tagsHelp": "Up to 6."
+    },
+    "submit": "Submit for review",
+    "cancel": "Cancel",
+    "success": "Thank you — your experience was submitted for review."
   }
 }

@@ -24,6 +24,11 @@ import {
   rejectCaseStudyAction,
   previewCaseStudyAction
 } from './sanity/actions'
+import {
+  approveLivedExperienceAction,
+  requestLivedExperienceRevisionAction,
+  rejectLivedExperienceAction
+} from './sanity/actions/lived-experience-actions'
 
 
 
@@ -44,6 +49,15 @@ export default defineConfig({
             requestRevisionAction,
             rejectCaseStudyAction,
             previewCaseStudyAction
+          ]
+        }
+        // Review actions for user-submitted lived experiences
+        if (context.schemaType === 'livedExperience') {
+          return [
+            ...prev,
+            approveLivedExperienceAction,
+            requestLivedExperienceRevisionAction,
+            rejectLivedExperienceAction
           ]
         }
         return prev

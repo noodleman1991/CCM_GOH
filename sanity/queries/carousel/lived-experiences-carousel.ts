@@ -17,6 +17,7 @@ export const livedExperiencesCarouselBlockQuery = groq`
 
 export const livedExperiencesCarouselQuery = groq`
   *[_type == "livedExperience" &&
+    (status == "approved" || !defined(status)) &&
     (!defined($communities) || _id in *[_type == "regionalCommunity" && _id in $communities].members[].person._ref) &&
     (!defined($tags) || count(tags[]._ref[@ in $tags]) > 0) &&
     (!defined($authors) || author._ref in $authors) &&

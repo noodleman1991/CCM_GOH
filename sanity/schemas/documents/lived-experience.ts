@@ -25,6 +25,10 @@ export default defineType({
             title: "Affiliations",
         },
         {
+            name: "review",
+            title: "Review & Publishing",
+        },
+        {
             name: "seo",
             title: "SEO",
         },
@@ -95,7 +99,39 @@ export default defineType({
                 { name: "ar", title: "العربية", type: "text", rows: 3 },
             ],
         }),
-        
+
+        // The issue / theme this experience speaks to — shown in the modal so
+        // viewers understand what the story is about (the person writes this).
+        defineField({
+            name: "issue",
+            title: "The issue / theme",
+            type: "object",
+            group: "content",
+            description: "In a sentence or two: what climate × mental-health issue does this experience speak to?",
+            fields: [
+                { name: "en", title: "English", type: "text", rows: 2 },
+                { name: "es", title: "Español", type: "text", rows: 2 },
+                { name: "fr", title: "Français", type: "text", rows: 2 },
+                { name: "ar", title: "العربية", type: "text", rows: 2 },
+            ],
+        }),
+
+        // A little about the person sharing — their own words, shown respectfully
+        // in the modal alongside their name/affiliation.
+        defineField({
+            name: "personContext",
+            title: "About the person sharing",
+            type: "object",
+            group: "content",
+            description: "A short, self-written introduction to who is sharing this experience.",
+            fields: [
+                { name: "en", title: "English", type: "text", rows: 2 },
+                { name: "es", title: "Español", type: "text", rows: 2 },
+                { name: "fr", title: "Français", type: "text", rows: 2 },
+                { name: "ar", title: "العربية", type: "text", rows: 2 },
+            ],
+        }),
+
         // Video URL (external link to video platform)
         defineField({
             name: "videoLink",
@@ -225,7 +261,41 @@ export default defineType({
             initialValue: false,
             description: "Mark as featured to highlight in listings",
         }),
-        
+
+        // Review workflow (mirrors case studies) — only "approved" shows publicly.
+        defineField({
+            name: "status",
+            title: "Publication Status",
+            type: "string",
+            group: "review",
+            options: {
+                list: [
+                    { title: "Pending Review", value: "pending" },
+                    { title: "Rejected", value: "rejected" },
+                    { title: "Needs Revision", value: "revision" },
+                    { title: "Approved (Published)", value: "approved" },
+                ],
+            },
+            initialValue: "approved",
+            description: "Only 'Approved' lived experiences appear on the public site. User-submitted ones start as 'Pending Review'.",
+        }),
+        defineField({
+            name: "submittedBy",
+            title: "Submitted By",
+            type: "string",
+            group: "review",
+            readOnly: true,
+            description: "Clerk User ID of the submitter (set when submitted via the in-app form).",
+        }),
+        defineField({
+            name: "reviewNotes",
+            title: "Review Notes",
+            type: "text",
+            group: "review",
+            rows: 3,
+            description: "Internal notes for the editor / feedback to the submitter.",
+        }),
+
         // SEO fields
         defineField({
             name: "meta_title",

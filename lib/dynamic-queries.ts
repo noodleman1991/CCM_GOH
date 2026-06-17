@@ -83,6 +83,7 @@ const QUERY_MAPPING = {
 
   recentLivedExperiences: groq`
     *[_type == "livedExperience" &&
+      (status == "approved" || !defined(status)) &&
       defined(relatedCommunity) &&
       relatedCommunity->slug.current == $communitySlug
     ] | order(publishedAt desc)[0...$count] {
@@ -202,6 +203,7 @@ const QUERY_MAPPING = {
 
   featuredLivedExperiences: groq`
     *[_type == "livedExperience" &&
+      (status == "approved" || !defined(status)) &&
       defined(relatedCommunity) &&
       relatedCommunity->slug.current == $communitySlug
     ] | order(featured desc, publishedAt desc)[0...$count] {
