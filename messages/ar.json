@@ -1210,7 +1210,13 @@
       "activeFilters": "المرشحات النشطة",
       "updating": "جاري التحديث...",
       "filters": "المرشحات",
-      "advancedFilters": "مرشحات متقدمة"
+      "advancedFilters": "مرشحات متقدمة",
+      "timeFrame": {
+        "any": "أي وقت",
+        "year": "السنة الماضية",
+        "threeYears": "آخر 3 سنوات",
+        "fiveYears": "آخر 5 سنوات"
+      }
     },
     "metadata": {
       "author": "المؤلف",

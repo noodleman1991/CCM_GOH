@@ -1210,7 +1210,13 @@
       "activeFilters": "Active filters",
       "updating": "Updating...",
       "filters": "Filters",
-      "advancedFilters": "Advanced Filters"
+      "advancedFilters": "Advanced Filters",
+      "timeFrame": {
+        "any": "Any time",
+        "year": "Past year",
+        "threeYears": "Past 3 years",
+        "fiveYears": "Past 5 years"
+      }
     },
     "metadata": {
       "author": "Author",
