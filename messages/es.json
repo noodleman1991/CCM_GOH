@@ -816,7 +816,8 @@
       "hoursAgo": "hace {count}h",
       "daysAgo": "hace {count}d",
       "weeksAgo": "hace {count}sem",
-      "monthsAgo": "hace {count}mes"
+      "monthsAgo": "hace {count}mes",
+      "openToCollaborate": "Abierto a colaborar"
     },
     "stats": {
       "totalMembers": "{count} miembros",

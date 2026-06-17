@@ -816,7 +816,8 @@
       "hoursAgo": "منذ {count} ساعة",
       "daysAgo": "منذ {count} يوم",
       "weeksAgo": "منذ {count} أسبوع",
-      "monthsAgo": "منذ {count} شهر"
+      "monthsAgo": "منذ {count} شهر",
+      "openToCollaborate": "منفتح على التعاون"
     },
     "stats": {
       "totalMembers": "{count} أعضاء",
