@@ -3,7 +3,9 @@
 import { useState, useMemo, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
-import { Search, Filter, X, MapPin, Tag as TagIcon, ArrowUpDown } from 'lucide-react'
+import { Search, Filter, X, MapPin, Tag as TagIcon, ArrowUpDown, Video } from 'lucide-react'
+import { Link } from '@/i18n/navigation'
+import { heading } from '@/lib/design-tokens'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -160,13 +162,23 @@ export default function LivedExperiencesPageClient({
                 className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center"
             >
                 {/* Text Content - Always first in DOM */}
-                <div className="flex flex-col justify-start min-w-0 w-full space-y-2 text-center lg:text-start">
-                    <h1 className="text-4xl lg:text-5xl font-bold tracking-tight">
-                        {t("title")}
-                    </h1>
-                    <p className="text-lg text-muted-foreground max-w-2xl mx-auto lg:mx-0">
-                        {t("description")}
-                    </p>
+                <div className="flex flex-col justify-start min-w-0 w-full space-y-4 text-center lg:text-start">
+                    <div className="space-y-2">
+                        <h1 className={cn("font-bold font-heading tracking-tight text-balance text-ccm-midnight", heading('xl'))}>
+                            {t("title")}
+                        </h1>
+                        <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto lg:mx-0">
+                            {t("description")}
+                        </p>
+                    </div>
+                    <div className="flex justify-center lg:justify-start">
+                        <Button asChild>
+                            <Link href="/lived-experiences/submit" className="gap-2">
+                                <Video className="w-4 h-4" />
+                                {t("shareCta")}
+                            </Link>
+                        </Button>
+                    </div>
                 </div>
 
                 {/* Image */}

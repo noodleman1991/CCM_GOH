@@ -12,6 +12,8 @@ export const REGIONAL_COMMUNITY_LIVED_EXPERIENCES_QUERY = groq`
     _type,
     title,
     description,
+    issue,
+    personContext,
     videoLink,
     thumbnail{
       asset->{
@@ -92,6 +94,8 @@ export const REGIONAL_COMMUNITY_LIVED_EXPERIENCES_BY_SLUG_QUERY = groq`
     _type,
     title,
     description,
+    issue,
+    personContext,
     videoLink,
     thumbnail{
       asset->{
