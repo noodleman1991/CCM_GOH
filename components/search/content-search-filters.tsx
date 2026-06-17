@@ -3,6 +3,7 @@
 import { useRefinementList, useCurrentRefinements, Configure } from 'react-instantsearch'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { FilterChip } from '@/components/ui/filter-chip'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { X, Filter, ChevronRight } from 'lucide-react'
@@ -47,20 +48,14 @@ function RefinementListFilter({ attribute, title, limit = 10 }: { attribute: str
 
   return (
     <FilterSection title={title} isEmpty={!hasItems}>
-      <div className="space-y-2">
+      <div className="flex flex-wrap gap-2">
         {items?.map((item) => (
-          <label key={item.value} className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={item.isRefined}
-              onChange={() => refine(item.value)}
-              className="rounded border-gray-300"
-            />
-            <span className="text-sm flex-1">{item.label}</span>
-            <Badge variant="secondary" className="text-xs">
-              {item.count}
-            </Badge>
-          </label>
+          <FilterChip
+            key={item.value}
+            label={`${item.label} (${item.count})`}
+            active={item.isRefined}
+            onClick={() => refine(item.value)}
+          />
         ))}
       </div>
     </FilterSection>
