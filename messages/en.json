@@ -888,7 +888,8 @@
       "hoursAgo": "{count}h ago",
       "daysAgo": "{count}d ago",
       "weeksAgo": "{count}w ago",
-      "monthsAgo": "{count}mo ago"
+      "monthsAgo": "{count}mo ago",
+      "openToCollaborate": "Open to collaborate"
     },
     "stats": {
       "totalMembers": "{count} members",

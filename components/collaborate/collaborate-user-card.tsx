@@ -13,12 +13,14 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
-import { MapPin, Briefcase, Clock, FileText } from 'lucide-react'
+import { MapPin, Briefcase, Clock, FileText, MessageCircle } from 'lucide-react'
 import type { LocalizedUser } from '@/types/prisma'
 
 interface CollaborateUserCardProps {
   user: LocalizedUser & {
     lastLoginAt?: Date | null
+    headline?: string | null
+    openToCollaboration?: boolean | null
     communityMemberships?: Array<{
       community: {
         name: string
@@ -101,12 +103,25 @@ export function CollaborateUserCard({ user, className }: CollaborateUserCardProp
           <div className="flex flex-col gap-4">
             {/* Header: Avatar + Name */}
             <div className="flex items-start gap-3">
-              <Avatar className="h-12 w-12 flex-shrink-0">
-                {user.image && <AvatarImage src={user.image} alt={user.displayName} />}
-                <AvatarFallback>{user.initials}</AvatarFallback>
-              </Avatar>
+              <div className="relative flex-shrink-0">
+                <Avatar className={cn(
+                  "h-12 w-12",
+                  user.openToCollaboration && "ring-2 ring-[var(--color-ccm-sea)] ring-offset-2 ring-offset-background"
+                )}>
+                  {user.image && <AvatarImage src={user.image} alt={user.displayName} />}
+                  <AvatarFallback>{user.initials}</AvatarFallback>
+                </Avatar>
+                {user.openToCollaboration && (
+                  <span
+                    className="absolute -bottom-0.5 -end-0.5 flex size-4 items-center justify-center rounded-full bg-[var(--color-ccm-sea)] text-white ring-2 ring-background"
+                    title={t('openToCollaborate')}
+                  >
+                    <MessageCircle className="size-2.5" aria-hidden="true" />
+                  </span>
+                )}
+              </div>
               <div className="flex-1 min-w-0">
-                <h3 className="font-semibold text-base truncate">
+                <h3 className="font-semibold text-base text-ccm-midnight truncate">
                   {user.displayName}
                 </h3>
                 {user.username && (
@@ -116,6 +131,13 @@ export function CollaborateUserCard({ user, className }: CollaborateUserCardProp
                 )}
               </div>
             </div>
+
+            {/* Headline — the at-a-glance "what I'm about" line */}
+            {user.headline && (
+              <p className="text-sm text-ccm-sea font-medium line-clamp-2 -mt-1">
+                {user.headline}
+              </p>
+            )}
 
             {/* Affiliation */}
             {user.showWorkDetails && (user.organization || user.position) && (
