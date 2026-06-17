@@ -12,6 +12,7 @@ import { Link } from '@/i18n/navigation'
 import { getUserProfile, checkProfileOwnership } from "@/lib/actions/profile"
 import { cn } from "@/lib/utils"
 import { heading } from "@/lib/design-tokens"
+import { MessageCircle } from "lucide-react"
 import { ProfileCompletenessIndicator } from "@/components/ui/profile-completeness-indicator"
 import { ProfileStatistics } from "@/components/blocks/profile/profile-statistics"
 import { ContributionsBlock } from "@/components/blocks/profile/contributions-block"
@@ -108,12 +109,28 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
             {/* Profile Header */}
             <div className="mb-8">
                 <div className="flex flex-col sm:flex-row sm:items-start gap-6 mb-6">
-                    {/* Avatar beside the identity, like a standard profile */}
+                    {/* Avatar beside the identity, like a standard profile.
+                        When the person is open to talk, the avatar wears a CCM
+                        ring + a chat-bubble badge as a quiet signal. */}
                     <BlurFade delay={BLUR_FADE_DELAY * 3}>
-                        <Avatar className="h-24 w-24 sm:h-28 sm:w-28 shrink-0">
-                            <AvatarImage alt={user.displayName} src={user.image || undefined} />
-                            <AvatarFallback className="text-2xl">{user.initials}</AvatarFallback>
-                        </Avatar>
+                        <div className="relative shrink-0 w-24 sm:w-28">
+                            <Avatar className={cn(
+                                "h-24 w-24 sm:h-28 sm:w-28",
+                                user.openToCollaboration && "ring-2 ring-[var(--color-ccm-sea)] ring-offset-2 ring-offset-background"
+                            )}>
+                                <AvatarImage alt={user.displayName} src={user.image || undefined} />
+                                <AvatarFallback className="text-2xl">{user.initials}</AvatarFallback>
+                            </Avatar>
+                            {user.openToCollaboration && (
+                                <span
+                                    className="absolute -bottom-1 -end-1 flex size-7 items-center justify-center rounded-full bg-[var(--color-ccm-sea)] text-white ring-2 ring-background"
+                                    title={t('openToCollaboration')}
+                                >
+                                    <MessageCircle className="size-3.5" aria-hidden="true" />
+                                    <span className="sr-only">{t('openToCollaboration')}</span>
+                                </span>
+                            )}
+                        </div>
                     </BlurFade>
 
                     <div className="flex-1 min-w-0">

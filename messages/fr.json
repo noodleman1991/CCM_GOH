@@ -480,8 +480,8 @@
           "help": "Votre histoire aide les autres à se connecter avec vous."
         },
         "openToCollaboration": {
-          "label": "Je suis ouvert·e à la collaboration",
-          "help": "Montrez aux autres que vous aimeriez travailler ensemble."
+          "label": "Je suis ouvert·e à collaborer",
+          "help": "Un signal discret indiquant que vous êtes ouvert·e à échanger ou collaborer — sans engagement, juste à discuter."
         },
         "interests": {
           "label": "Sur quoi aimeriez-vous collaborer ?",
@@ -496,6 +496,15 @@
           "label": "Afficher sur mon profil public",
           "help": "Désactivé, elle reste visible par vous seul·e."
         }
+      },
+      "tabs": {
+        "basic": "Bases",
+        "collaboration": "Collaboration",
+        "work": "Travail",
+        "communities": "Communautés",
+        "recentWork": "Travaux récents",
+        "social": "Liens",
+        "privacy": "Confidentialité"
       }
     },
     "account": {
@@ -553,7 +562,7 @@
         "recentWork": "Projet"
       }
     },
-    "openToCollaboration": "Ouvert·e à la collaboration",
+    "openToCollaboration": "Ouvert·e à collaborer",
     "motivation": "Ce qui m’a amené·e ici",
     "collaboration": "Collaboration",
     "focusTopics": "Domaines d’intérêt",

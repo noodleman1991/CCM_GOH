@@ -398,8 +398,8 @@
           "help": "Your story helps others connect with you."
         },
         "openToCollaboration": {
-          "label": "I'm open to collaboration",
-          "help": "Show others you'd like to work together."
+          "label": "I'm open to collaborate",
+          "help": "A quiet signal that you're open to connect or collaborate — no pressure, just open to a conversation."
         },
         "interests": {
           "label": "What would you like to collaborate on?",
@@ -414,6 +414,15 @@
           "label": "Show on my public profile",
           "help": "Off keeps this visible only to you."
         }
+      },
+      "tabs": {
+        "basic": "Basics",
+        "collaboration": "Collaboration",
+        "work": "Work",
+        "communities": "Communities",
+        "recentWork": "Recent work",
+        "social": "Links",
+        "privacy": "Privacy"
       }
     },
     "account": {
@@ -471,7 +480,7 @@
         "recentWork": "Project"
       }
     },
-    "openToCollaboration": "Open to collaboration",
+    "openToCollaboration": "Open to collaborate",
     "motivation": "What brought me here",
     "collaboration": "Collaboration",
     "focusTopics": "Focus areas",
