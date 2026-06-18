@@ -1491,6 +1491,10 @@
     "back": "Retour",
     "typeMessage": "Écrire un message…",
     "send": "Envoyer",
-    "messageButton": "Message"
+    "messageButton": "Message",
+    "delete": "Supprimer",
+    "report": "Signaler",
+    "reported": "Signalé.",
+    "messageDeleted": "Message supprimé"
   }
 }

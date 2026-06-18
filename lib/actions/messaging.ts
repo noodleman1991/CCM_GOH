@@ -138,3 +138,95 @@ export async function markConversationRead(conversationId: string): Promise<{ ok
   });
   return { ok: true };
 }
+
+/** Delete a message — sender only; soft-delete (tombstone) so the thread stays coherent. */
+export async function deleteMessage(messageId: string): Promise<Result> {
+  const actor = await getActor();
+  if (!actor) return { ok: false, error: "Sign in." };
+  const msg = await prisma.message.findUnique({ where: { id: messageId }, select: { senderId: true } });
+  if (!msg || msg.senderId !== actor.id) return { ok: false, error: "Not permitted." };
+  await prisma.message.update({ where: { id: messageId }, data: { body: "", deletedAt: new Date() } });
+  return { ok: true };
+}
+
+/** Report a message to moderators (reuses the comment report surface). */
+export async function reportMessage(messageId: string, reason: string): Promise<Result> {
+  const actor = await getActor();
+  if (!actor) return { ok: false, error: "Sign in." };
+  const msg = await prisma.message.findUnique({
+    where: { id: messageId },
+    select: { id: true, conversationId: true, senderId: true },
+  });
+  if (!msg) return { ok: false, error: "Not found." };
+  // Must be a participant of the conversation to report.
+  const isParticipant = await prisma.conversationParticipant.findUnique({
+    where: { conversationId_userId: { conversationId: msg.conversationId, userId: actor.id } },
+    select: { conversationId: true },
+  });
+  if (!isParticipant) return { ok: false, error: "Not permitted." };
+  await prisma.messageReport.create({
+    data: { messageId, reporterId: actor.id, reason: reason.slice(0, 500) },
+  }).catch(() => {});
+  return { ok: true };
+}
+
+/** Block a user (and stop any shared conversations). */
+export async function blockUser(blockedId: string): Promise<Result> {
+  const actor = await getActor();
+  if (!actor) return { ok: false, error: "Sign in." };
+  if (blockedId === actor.id) return { ok: false, error: "You can't block yourself." };
+  await prisma.userBlock.upsert({
+    where: { blockerId_blockedId: { blockerId: actor.id, blockedId } },
+    create: { blockerId: actor.id, blockedId },
+    update: {},
+  });
+  return { ok: true };
+}
+
+export async function unblockUser(blockedId: string): Promise<Result> {
+  const actor = await getActor();
+  if (!actor) return { ok: false, error: "Sign in." };
+  await prisma.userBlock.deleteMany({ where: { blockerId: actor.id, blockedId } });
+  return { ok: true };
+}
+
+const groupSchema = z.object({
+  userIds: z.array(z.string()).min(1).max(9),
+});
+
+/** Start a small-group conversation (creator + up to 9 others). */
+export async function startGroupConversation(input: z.infer<typeof groupSchema>): Promise<Result<{ id: string }>> {
+  const actor = await getActor();
+  if (!actor) return { ok: false, error: "Sign in." };
+  const parsed = groupSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: "Invalid group." };
+
+  const ids = [...new Set(parsed.data.userIds.filter((id) => id !== actor.id))];
+  if (ids.length === 0) return { ok: false, error: "Add at least one other member." };
+
+  // Respect each invitee's inbox privacy + blocks.
+  const invitees = await prisma.user.findMany({
+    where: { id: { in: ids } },
+    select: { id: true, allowMessagesFrom: true },
+  });
+  const blocks = await prisma.userBlock.findMany({
+    where: {
+      OR: [
+        { blockerId: actor.id, blockedId: { in: ids } },
+        { blockerId: { in: ids }, blockedId: actor.id },
+      ],
+    },
+    select: { blockerId: true, blockedId: true },
+  });
+  const blockedSet = new Set(blocks.flatMap((b) => [b.blockerId, b.blockedId]));
+  const allowed = invitees.filter((u) => u.allowMessagesFrom === "EVERYONE" && !blockedSet.has(u.id));
+  if (allowed.length === 0) return { ok: false, error: "None of those members can be added." };
+
+  const convo = await prisma.conversation.create({
+    data: {
+      participants: { create: [{ userId: actor.id }, ...allowed.map((u) => ({ userId: u.id }))] },
+    },
+    select: { id: true },
+  });
+  return { ok: true, id: convo.id };
+}
