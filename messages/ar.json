@@ -60,7 +60,9 @@
     "messages": "الرسائل",
     "staff": "الطاقم",
     "moderation": "الإشراف",
-    "broadcast": "إرسال إشعار"
+    "broadcast": "إرسال إشعار",
+    "privacy": "الخصوصية",
+    "terms": "الشروط"
   },
   "navUser": {
     "account": "الحساب",
@@ -242,7 +244,9 @@
     "everyone": "الجميع",
     "nobody": "لا أحد",
     "blocked": "الأعضاء المحظورون",
-    "unblock": "إلغاء الحظر"
+    "unblock": "إلغاء الحظر",
+    "yourData": "بياناتك",
+    "downloadData": "تنزيل بياناتي"
   },
   "notifications": {
     "success": "نجح!",

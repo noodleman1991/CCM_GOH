@@ -109,6 +109,17 @@ export function SettingsForm({ initial, blocked }: { initial: UserSettings; bloc
         </CardContent>
       </Card>
 
+      <Card>
+        <CardHeader>
+          <CardTitle>{t("yourData")}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Button asChild variant="outline">
+            <a href="/api/account/export">{t("downloadData")}</a>
+          </Button>
+        </CardContent>
+      </Card>
+
       <Button onClick={save} disabled={saving}>
         {t("save")}
       </Button>
