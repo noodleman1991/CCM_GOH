@@ -2,10 +2,13 @@
 
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Calendar, MapPin, Users, Briefcase, Award, Clock } from "lucide-react"
-import { useTranslations } from 'next-intl'
-import { formatDistanceToNow } from 'date-fns'
+import { MapPin, Users, Briefcase, Award, Clock } from "lucide-react"
+import { useTranslations, useLocale } from 'next-intl'
+import { formatDistanceToNow, type Locale } from 'date-fns'
+import { es as esLocale, fr as frLocale, ar as arLocale } from 'date-fns/locale'
 import { BlurFade } from "@/components/magicui/blur-fade"
+
+const DATE_LOCALES: Record<string, Locale> = { es: esLocale, fr: frLocale, ar: arLocale }
 
 const BLUR_FADE_DELAY = 0.04
 
@@ -23,40 +26,49 @@ interface ProfileStatisticsProps {
 }
 
 export function ProfileStatistics({ user, className }: ProfileStatisticsProps) {
-    const t = useTranslations('profile')
+    const t = useTranslations('profile.statistics')
+    const locale = useLocale()
 
-    const memberSince = formatDistanceToNow(user.createdAt, { addSuffix: false })
+    const memberSince = formatDistanceToNow(user.createdAt, {
+        addSuffix: false,
+        locale: DATE_LOCALES[locale],
+    })
     const location = [user.city, user.country].filter(Boolean).join(', ')
 
     const stats = [
         {
             icon: Clock,
-            label: 'Member Since',
+            label: t('memberSince'),
             value: memberSince,
+            isText: true,
             visible: true
         },
         {
             icon: MapPin,
-            label: 'Location',
+            label: t('location'),
             value: location,
+            isText: true,
             visible: !!location
         },
         {
             icon: Briefcase,
-            label: 'Projects',
+            label: t('projects'),
             value: user.recentWork.length.toString(),
+            isText: false,
             visible: user.recentWork.length > 0
         },
         {
             icon: Users,
-            label: 'Communities',
+            label: t('communities'),
             value: user.communities.length.toString(),
+            isText: false,
             visible: user.communities.length > 0
         },
         {
             icon: Award,
-            label: 'Skills',
+            label: t('skills'),
             value: (user.workTypes.length + user.expertiseAreas.length).toString(),
+            isText: false,
             visible: (user.workTypes.length + user.expertiseAreas.length) > 0
         }
     ].filter(stat => stat.visible)
@@ -77,7 +89,9 @@ export function ProfileStatistics({ user, className }: ProfileStatisticsProps) {
                                             <Icon className="h-5 w-5 text-primary" />
                                         </div>
                                         <div className="space-y-1">
-                                            <p className="text-2xl font-bold text-foreground">{stat.value}</p>
+                                            <p className={stat.isText ? "text-base font-semibold text-foreground break-words" : "text-2xl font-bold text-foreground"}>
+                                                {stat.isText ? <bdi>{stat.value}</bdi> : stat.value}
+                                            </p>
                                             <p className="text-xs text-muted-foreground">{stat.label}</p>
                                         </div>
                                     </div>

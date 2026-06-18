@@ -591,6 +591,13 @@
       "save": "Enregistrer",
       "saved": "Enregistré",
       "answerPlaceholder": "Votre réponse…"
+    },
+    "statistics": {
+      "memberSince": "Membre depuis",
+      "location": "Lieu",
+      "projects": "Projets",
+      "communities": "Communautés",
+      "skills": "Compétences"
     }
   },
   "profilePicture": {
