@@ -6,7 +6,9 @@ import * as Sentry from "@sentry/nextjs";
  */
 export async function register() {
   const dsn = process.env.NEXT_PUBLIC_SENTRY_DSN;
-  if (!dsn) return;
+  // Skip in development so the SDK doesn't load on every dev boot (keeps dev fast);
+  // monitoring is a production concern.
+  if (!dsn || process.env.NODE_ENV !== "production") return;
 
   if (process.env.NEXT_RUNTIME === "nodejs") {
     Sentry.init({ dsn, tracesSampleRate: 0.1, enabled: true });

@@ -6,7 +6,8 @@ import * as Sentry from "@sentry/nextjs";
  * audience — enable explicitly if ever needed).
  */
 const dsn = process.env.NEXT_PUBLIC_SENTRY_DSN;
-if (dsn) {
+// Skip in development so the SDK doesn't load on every dev boot (keeps dev fast).
+if (dsn && process.env.NODE_ENV === "production") {
   Sentry.init({
     dsn,
     tracesSampleRate: 0.1,
