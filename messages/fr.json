@@ -875,7 +875,8 @@
       "title": "Filtres actifs:",
       "search": "Recherche: {query}",
       "clear": "Réinitialiser Tous les Filtres"
-    }
+    },
+    "startCollaboration": "Créer un espace"
   },
   "onboarding": {
     "steps": {

@@ -947,7 +947,8 @@
       "title": "Active filters:",
       "search": "Search: {query}",
       "clear": "Reset All Filters"
-    }
+    },
+    "startCollaboration": "Start a workspace"
   },
   "onboarding": {
     "steps": {

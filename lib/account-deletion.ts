@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/prisma"
 import { writeClient } from "@/sanity/lib/write-client"
+import { r2Configured, deleteObject } from "@/lib/r2"
+import { algoliaClient, ALGOLIA_INDICES } from "@/lib/algolia"
 
 /**
  * GDPR account erasure.
@@ -114,6 +116,32 @@ async function handleSoleOwnedCollaborations(userId: string): Promise<void> {
   }
 }
 
+/**
+ * Delete the user's uploaded collaboration files from R2 (Prisma cascade can't
+ * reach object storage). Must run BEFORE the user-delete cascade removes the
+ * CollaborationFile rows. No-op when R2 isn't configured.
+ */
+async function sweepUserR2Files(userId: string): Promise<void> {
+  if (!r2Configured()) return
+  const files = await prisma.collaborationFile.findMany({
+    where: { uploadedById: userId },
+    select: { r2Key: true },
+  })
+  for (const f of files) {
+    await deleteObject(f.r2Key)
+  }
+}
+
+/** Remove the user's record from the Algolia search index. */
+async function eraseUserFromAlgolia(userId: string): Promise<void> {
+  if (!algoliaClient) return
+  try {
+    await algoliaClient.deleteObject({ indexName: ALGOLIA_INDICES.USERS, objectID: userId })
+  } catch (err) {
+    console.warn(`Algolia erasure failed for ${userId}:`, err)
+  }
+}
+
 export async function deleteUserData(clerkUserId: string): Promise<DeletionResult> {
   const sanity = await eraseUserSanityContent(clerkUserId)
 
@@ -123,6 +151,15 @@ export async function deleteUserData(clerkUserId: string): Promise<DeletionResul
   } catch (err) {
     console.warn(`Sole-owner collaboration handling failed for ${clerkUserId}:`, err)
   }
+
+  // Sweep R2 objects + the Algolia record (neither is reachable by the Prisma
+  // cascade). R2 must run before the cascade deletes the file rows.
+  try {
+    await sweepUserR2Files(clerkUserId)
+  } catch (err) {
+    console.warn(`R2 file sweep failed for ${clerkUserId}:`, err)
+  }
+  await eraseUserFromAlgolia(clerkUserId)
 
   // Note: messages, conversation participations, notifications, blocks, mentions,
   // reactions, comments and collaboration memberships all cascade from User

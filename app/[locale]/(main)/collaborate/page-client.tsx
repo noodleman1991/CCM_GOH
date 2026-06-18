@@ -8,7 +8,7 @@
 
 import { useState, useMemo, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
-import { useRouter } from '@/i18n/navigation'
+import { useRouter, Link } from '@/i18n/navigation'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -18,7 +18,7 @@ import { UserCarousel } from '@/components/collaborate/user-carousel'
 import { cn } from '@/lib/utils'
 import { heading } from '@/lib/design-tokens'
 import { PageContainer } from '@/components/ui/page-container'
-import { Search, X } from 'lucide-react'
+import { Search, X, FolderKanban } from 'lucide-react'
 import type { SupportedLocale, LocalizedUser } from '@/types/prisma'
 
 // All possible filter values (workTypes and expertiseAreas are static enums)
@@ -171,9 +171,17 @@ export function CollaboratePageClient({
   return (
     <PageContainer>
       {/* Header */}
-      <div className="mb-8">
-        <h1 className={cn("font-bold font-heading text-ccm-midnight mb-2 text-balance", heading('lg'))}>{t('pageTitle')}</h1>
-        <p className="text-base md:text-lg text-muted-foreground max-w-2xl">{t('pageDescription')}</p>
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h1 className={cn("font-bold font-heading text-ccm-midnight mb-2 text-balance", heading('lg'))}>{t('pageTitle')}</h1>
+          <p className="text-base md:text-lg text-muted-foreground max-w-2xl">{t('pageDescription')}</p>
+        </div>
+        <Button asChild variant="outline" className="flex-shrink-0">
+          <Link href="/collaborations" className="flex items-center gap-2">
+            <FolderKanban className="size-4" />
+            <span>{t('startCollaboration')}</span>
+          </Link>
+        </Button>
       </div>
 
       {/* Search + horizontal filters, full width */}
