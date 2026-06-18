@@ -1,5 +1,6 @@
 import { groq } from "next-sanity";
 import { client } from "@/sanity/lib/client";
+import { styledBodyProjection } from "@/sanity/queries/shared/styled-body";
 
 // Shared fragment for news post fields
 const NEWS_POST_FIELDS = groq`
@@ -240,7 +241,7 @@ export async function fetchNewsBySlug(slug: string) {
     groq`
       *[_type == "newsPost" && slug.current == $slug][0] {
         ${NEWS_POST_FIELDS},
-        content,
+        content[]{ ${styledBodyProjection} },
         sources[]{
           title,
           url,

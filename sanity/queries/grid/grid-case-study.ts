@@ -1,6 +1,7 @@
 // sanity/queries/grid/grid-case-study.ts
 
 import { groq } from "next-sanity";
+import { styledBodyProjection } from "@/sanity/queries/shared/styled-body";
 import { sanityFetch } from "@/sanity/lib/live";
 import { CaseStudy, CaseStudySearchParams, SupportedLanguage } from '@/types/case-study';
 
@@ -87,7 +88,7 @@ const CASE_STUDY_PROJECTION_FRAGMENT = `
 
 const CASE_STUDY_DETAIL_PROJECTION_FRAGMENT = `
   ${CASE_STUDY_PROJECTION_FRAGMENT},
-  content,
+  content[]{ ${styledBodyProjection} },
   seoTitle,
   seoDescription,
   canonicalUrl,
