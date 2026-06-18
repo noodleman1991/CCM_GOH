@@ -1457,6 +1457,21 @@
       "EDITOR": "Éditeur",
       "COMMENTER": "Commentateur",
       "VIEWER": "Observateur"
-    }
+    },
+    "uploadFile": "Téléverser",
+    "uploading": "Téléversement…",
+    "uploaded": "Fichier téléversé.",
+    "uploadFailed": "Échec du téléversement.",
+    "noFiles": "Aucun fichier pour le moment.",
+    "openPdf": "Ouvrir",
+    "download": "Télécharger",
+    "loadingPdf": "Chargement du PDF…",
+    "notesOn": "Notes : activées",
+    "notesOff": "Notes",
+    "youtubeUrlPlaceholder": "Lien YouTube…",
+    "mediaTitlePlaceholder": "Titre (facultatif)",
+    "addMedia": "Ajouter",
+    "noMedia": "Aucun média pour le moment.",
+    "mediaConsentRequired": "Cette vidéo nécessite le consentement aux cookies."
   }
 }

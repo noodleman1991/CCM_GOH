@@ -25,6 +25,8 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.68.0",
+    "@aws-sdk/client-s3": "^3.1071.0",
+    "@aws-sdk/s3-request-presigner": "^3.1071.0",
     "@clerk/backend": "^2.22.0",
     "@clerk/localizations": "^3.25.1",
     "@clerk/nextjs": "^6.32.0",
@@ -33,7 +35,9 @@
     "@embedpdf/models": "^2.14.4",
     "@embedpdf/pdfium": "^2.14.4",
     "@embedpdf/plugin-annotation": "^2.14.4",
+    "@embedpdf/plugin-document-manager": "^2.14.4",
     "@embedpdf/plugin-render": "^2.14.4",
+    "@embedpdf/plugin-scroll": "^2.14.4",
     "@embedpdf/plugin-viewport": "^2.14.4",
     "@embedpdf/plugin-zoom": "^2.14.4",
     "@hookform/resolvers": "^5.2.2",
