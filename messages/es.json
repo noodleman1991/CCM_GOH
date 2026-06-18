@@ -653,7 +653,10 @@
     "sortAZ": "A–Z",
     "issueLabel": "El tema",
     "aboutPersonLabel": "Sobre la persona",
-    "shareCta": "Comparte tu experiencia"
+    "shareCta": "Comparte tu experiencia",
+    "storyLabel": "Historia",
+    "closeVideo": "Cerrar",
+    "videoTitleFallback": "Experiencia vivida"
   },
   "caseStudyForm": {
     "sections": {

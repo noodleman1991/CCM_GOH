@@ -798,7 +798,10 @@
     "sortAZ": "A–Z",
     "issueLabel": "The issue",
     "aboutPersonLabel": "About the person",
-    "shareCta": "Share your experience"
+    "shareCta": "Share your experience",
+    "storyLabel": "Story",
+    "closeVideo": "Close",
+    "videoTitleFallback": "Lived experience"
   },
   "revisionAlert": {
     "title": "Action Required: Revision Needed",
