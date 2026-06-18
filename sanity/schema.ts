@@ -3,6 +3,7 @@ import { type SchemaTypeDefinition } from "sanity";
 // documents
 import homepage from "./schemas/documents/homepage";
 import siteAnnouncement from "./schemas/documents/site-announcement";
+import moderationSettings from "./schemas/documents/moderation-settings";
 import profilePrompt from "./schemas/documents/profile-prompt";
 import page from "./schemas/documents/page";
 import regionalCommunityPage from "./schemas/documents/regional-community-page"; //hub
@@ -92,6 +93,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
         // documents
         homepage,
         siteAnnouncement,
+        moderationSettings,
         profilePrompt,
         page,
         post,
