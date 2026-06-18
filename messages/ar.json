@@ -1358,7 +1358,9 @@
     "facetNews": "الأخبار",
     "viewInSearch": "عرض في البحث",
     "noData": "لا توجد بيانات لهذه المنطقة بعد.",
-    "facetLivedExperiences": "التجارب المعاشة"
+    "facetLivedExperiences": "التجارب المعاشة",
+    "facetAgendas": "الأجندات",
+    "facetReports": "التقارير"
   },
   "announcement": {
     "dismiss": "إغلاق الإعلان",

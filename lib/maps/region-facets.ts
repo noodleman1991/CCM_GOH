@@ -1,6 +1,12 @@
 import { REGION_CODES, REGION_I18N_KEY, type RegionCode } from "./region-codes";
 
-export type FacetId = "caseStudyCount" | "memberCount" | "newsCount" | "livedExpCount";
+export type FacetId =
+  | "caseStudyCount"
+  | "memberCount"
+  | "newsCount"
+  | "livedExpCount"
+  | "agendaCount"
+  | "reportCount";
 
 export interface FacetDef {
   id: FacetId;
@@ -13,6 +19,8 @@ export const FACETS: FacetDef[] = [
   { id: "livedExpCount", labelKey: "facetLivedExperiences" },
   { id: "memberCount", labelKey: "facetMembers" },
   { id: "newsCount", labelKey: "facetNews" },
+  { id: "agendaCount", labelKey: "facetAgendas" },
+  { id: "reportCount", labelKey: "facetReports" },
 ];
 
 export interface RegionDatum {
