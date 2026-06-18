@@ -1,9 +1,21 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { getActor, isStaff } from "@/lib/authz";
 import { prisma } from "@/lib/prisma";
 import { BroadcastForm } from "@/components/notifications/broadcast-form";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "navigation" });
+  return { title: t("broadcast") };
+}
 
 export default async function BroadcastPage() {
   const actor = await getActor();
