@@ -194,17 +194,17 @@ const createPortableTextComponents = (
         </h1>
       ),
       h2: ({ children }) => (
-        <h2 className="mb-4 mt-4 font-heading text-3xl font-bold text-ccm-sea text-start">
+        <h2 className="mb-4 mt-10 first:mt-0 font-heading text-2xl md:text-3xl font-bold leading-tight text-ccm-midnight text-balance text-start">
           {children}
         </h2>
       ),
       h3: ({ children }) => (
-        <h3 className="mb-4 mt-4 font-heading text-2xl font-bold text-ccm-sea text-start">
+        <h3 className="mb-3 mt-8 font-heading text-xl md:text-2xl font-semibold leading-tight text-ccm-sea text-start">
           {children}
         </h3>
       ),
       h4: ({ children }) => (
-        <h4 className="mb-3 mt-3 font-heading text-xl font-bold text-ccm-water text-start">
+        <h4 className="mb-2 mt-6 font-heading text-lg md:text-xl font-semibold leading-tight text-ccm-water text-start">
           {children}
         </h4>
       ),

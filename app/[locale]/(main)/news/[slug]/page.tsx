@@ -223,7 +223,7 @@ export default async function NewsDetailPage({
       {/* Main Content */}
       {newsPost.content && (
         <Card>
-          <CardContent className="prose prose-lg max-w-none pt-6 dark:prose-invert">
+          <CardContent className="prose prose-lg mx-auto max-w-prose pt-6 dark:prose-invert">
             <PortableText value={newsPost.content} />
           </CardContent>
         </Card>

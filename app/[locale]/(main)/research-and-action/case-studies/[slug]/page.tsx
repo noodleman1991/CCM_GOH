@@ -171,7 +171,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ loca
       {/* Main Content — clean long-form article (no card chrome), the rich
           styled-block-content renders lead/sidebar-note/pull-quote/CTA blocks. */}
       {caseStudy.content && (
-        <article className="text-base md:text-lg leading-relaxed">
+        <article className="mx-auto max-w-prose text-base md:text-lg leading-relaxed">
           <PortableTextRenderer
             value={caseStudy.content}
             locale={supportedLocale}

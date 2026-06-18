@@ -54,6 +54,29 @@
     }
 }
 
+/* A5 — unified reduced-motion respect. The hero blocks use `animate-fade-up`
+   together with `opacity-0`, so an element is invisible until the animation
+   runs. If the user prefers reduced motion we must NOT just disable the
+   animation (that would leave content stuck invisible) — we force the
+   end-state instead: visible, no transform, no movement. This also damps the
+   "who is involved" marquee and other long animations globally, so every block
+   shares one reduced-motion behavior without per-component guards. */
+@media (prefers-reduced-motion: reduce) {
+    .animate-fade-up {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+    }
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
 :root {
     --radix-accordion-content-height: auto;
     --radix-collapsible-content-height: auto;
