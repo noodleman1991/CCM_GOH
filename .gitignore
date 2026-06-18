@@ -59,3 +59,10 @@ backups/
 
 # Playwright MCP session artifacts
 .playwright-mcp/
+
+# screen recordings / local video captures
+*.mov
+*.mp4
+*.m4v
+*.webm
+Screen Recording*

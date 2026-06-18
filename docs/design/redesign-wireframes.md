@@ -225,16 +225,157 @@ MOBILE (375)                      DESKTOP (lg)
 ```
 Native plugin tools; `exportAnnotations()`→one `CollaborationFileAnnotations` row/file; `importAnnotations()` on open; **toggle to show/hide annotations** while reading; PDF bytes never mutated; VIEWER read-only. Same viewer reused for reports/agendas (Track 5 "EmbedPDF for all PDFs").
 
-### Notifications + DMs
+### Messaging & Workspaces — full redesign spec (2026-06-18, user-driven)
 
+> This section supersedes the old thin "Notifications + DMs" sketch. It is the **build spec** for the messaging/workspaces redesign, grounded in the decisions the user confirmed: nest under Collaborate; messaging integrated into discover; notifications+messages **into the avatar** (nothing floating in the header); contact details **never exposed** (platform-relay model, message-as-email **with reply-by-email as an option**); layered anti-bot (rate-limit + Turnstile on first contact); workspace group chats **surface in the unified inbox as group conversations**; minimal comment editor (B/i/link); correct Latin/Arabic title fonts; **mobile-first throughout**.
+
+#### Why this redesign (the honest state it replaces)
+The plumbing exists but is not a product: `NotificationBell` floats in the header `ms-auto` cluster (not in the avatar); `Inbox` is a bare list+thread on a disconnected `/messages` route (no search, reply, file-link, or group affordance); workspaces are a separate `/collaborations` island reachable only by a bolted-on header button. The redesign collapses **discover → message → work-together** into one motion with Collaborate as the parent.
+
+#### IA — Collaborate becomes the parent hub
 ```
-Bell (in header):  🔔³  → dropdown: reply/mention/reaction/message rows, "mark read"
-Inbox (DMs):       ┌ Conversations ─┐ ┌─ thread ──────────────┐
-                   │ ◎ Name  · 2h   │ │ messages…             │
-                   │ ◎ Name  · 1d   │ │ [ type a message…  ▷] │
-                   └────────────────┘ └───────────────────────┘
+Collaborate (parent)
+├── People       ← existing discover carousels + a "Message" action on every person card
+├── Workspaces   ← your collaborations (was /collaborations), as a tab here
+└── Messages     ← NOT a top tab. Lives in the avatar, reachable from everywhere.
 ```
-SWR polling (`refreshWhenHidden:false`), indexed unread `COUNT`. Mobile-first: inbox = list → full-screen thread (back arrow); bell dropdown = full-width sheet on mobile.
+Mental model: find a person → message them → that thread can graduate into a **workspace** → the workspace has a **group conversation** (in your inbox) + files you can **link into any message**.
+
+#### Engagement hub = the avatar button (replaces the header bell)
+- The **avatar** (bottom of sidebar, `auth-nav-user.tsx` → `NavUser`) carries a single combined unread dot (messages + notifications). **Nothing floats in the header** — `NotificationBell` is removed from `layout.tsx`; its logic moves into the dropdown.
+- Dropdown rows, above Sign out: **Messages `N`** and **Notifications `N`**, each with its own count badge.
+```
+avatar ◎ •     (combined unread dot on the button itself)
+└ dropdown:
+  Messages        3   →  opens the inbox panel (below)
+  Notifications   5   →  opens the notifications panel
+  ───────────────────
+  Sign out
+```
+
+#### Inbox surface — Instagram-style hovering side panel (lg) / full-screen drawer (mobile)
+Mobile-first: on `< md` the inbox is a **full-screen drawer** (vaul) — list, then tap → full-screen thread with a back arrow. On `lg` it's a **hovering pop-up side panel** anchored to the avatar (does not navigate away; you read/reply in place, like Instagram web DMs). A "See all" affordance can still open a full `/messages` page for power use.
+```
+MOBILE (375) — full-screen drawer        DESKTOP (lg) — hovering side panel
+┌───────────────────────────┐            ┌─────────── page ───────────┐
+│ Messages              [✕] │            │              ┌────────────┐│  ← anchored to
+│ ┌ 🔍 search people/msgs ┐ │            │  (page)      │ Messages ✕ ││     the avatar,
+│ └───────────────────────┘ │            │              │ 🔍 search  ││     floats over
+│ • Amina            2h  3  │            │              │ • Amina  3 ││     content
+│ • 👥 Coastal Resil. 1d 1  │            │              │ •👥Coastal ││
+│ • Diego            3d     │            │              │ • Diego    ││
+│   (tap → full-screen)     │            │              │ ──────────  ││
+└───────────────────────────┘            │              │ [ thread ] ││
+   thread view (after tap):              │              │ ◎ Amina →pf││
+   ‹ back   ◎ Amina · region  [⋯]        │              │ msgs…      ││
+   …messages… (reply-to shows quote)     │              │ [type… 📎] ││
+   [ 📎 type a message…           ▷ ]    │              └────────────┘│
+                                          └─────────────────────────────┘
+```
+**Search** filters both existing conversations **and** people you haven't messaged yet (start-new inline) — one search box, two result groups ("Conversations" / "People"). Starting a new conversation with someone you've never messaged triggers the **Turnstile** first-contact check.
+
+#### Conversation thread — features
+- **Reply-to-a-message:** tap a message → "Reply" → composer shows a quoted preview; the sent message stores `replyToId` and renders the quote inline (tap to scroll to original).
+- **Link/share workspace files:** the `📎` in the composer opens a picker scoped to **workspaces you both belong to** (or the workspace this group chat is attached to) → inserts a file reference card (name + type + open-in-viewer). For `members/` (private) files the recipient must be a workspace member; the link resolves to a **short-TTL presigned GET**, never a raw R2 URL. No file is *copied* into the message — it references the `CollaborationFile`, so permissions stay live.
+- **Group conversations = workspaces.** A workspace's group chat is just a `Conversation` with `collaborationId` set and all members as participants. It appears in the **unified inbox** marked `👥 {workspace name}`, opens into the same thread UI with member avatars + a **link back to the workspace**. No separate "Chat" tab in the workspace shell — one message list, everything in it. New members joining the workspace are added as participants; leaving removes them.
+- **Minimal rich text (matches the comment editor):** composer supports **bold / italic / link only**, stored as light markdown, rendered safely. Same minimal toolbar component is reused by the comment composer.
+
+#### Contact-privacy & relay model (the spine)
+- **Emails/contact details are never serialized to the client** — audit every surface (profile, collaborate card, workspace members, case-study author) so no `user.email` reaches the browser. The CTA is **"Message"**, never "Email". (`transformUserForIndex` already redacts for Algolia; extend the guarantee app-wide.)
+- **Message-as-email (relay), per recipient preference:** sending a DM always creates the in-app message; it **optionally also emails** the recipient ("{Sender} sent you a message" + preview + "Read & reply on the Hub"), gated by `NotificationPreference` + one-click unsubscribe (`unsubscribeToken`). The email shows the sender's *display name*, never the address.
+- **Reply-by-email is an OPTION (user-confirmed):** the data model carries a **per-conversation relay token** from day one (`Conversation.relayToken`). v1 ships **notify-by-email + reply-on-Hub**; the relay-reply path (inbound parse via `conv-{token}@reply.connectingclimateminds.org` → matched to the conversation → posted as a Hub message, with loop/spam guards) layers on without a schema change. A per-recipient setting chooses "notify by email" vs "email + reply by email".
+- **Anti-bot (layered, user-confirmed):** messaging is authed-only; **Turnstile on first-contact / new conversation**; per-user send rate limit (30/min, already in `lib/actions/messaging.ts`); profile/collaborate **contact actions require sign-in**; listing fields stay redacted. Normal back-and-forth is never challenged.
+
+#### Notifications panel (in the avatar)
+```
+Notifications                 [mark all read]
+◎ Amina replied to your comment        2h
+◎ Diego mentioned you (@you)           5h
+◎ New reaction 👍 on your comment      1d
+◎ Coastal Resilience: new file          1d
+(rows link to the source; opening marks read)
+```
+SWR-polled (`refreshWhenHidden:false`), indexed unread `COUNT`, respects `NotificationPreference` for which types email. Mobile = full-screen sheet from the avatar drawer; lg = the same hovering side panel pattern as the inbox.
+
+#### Fonts (Latin/Arabic correctness)
+Every new title/heading uses `font-heading` so the existing `--font-heading` switch applies: Latin → Poppins, Arabic/RTL → Lalezar (`globals.css` ar block); body via `font-body` (Lato / Tajawal). Workspace names + person names get `<bdi>` so bidi mixing (e.g. an Arabic name in an LTR list) renders correctly.
+
+#### Repo integration map (where each piece lives)
+- **Avatar hub:** `components/auth-nav-user.tsx` + `components/nav-user.tsx` (add Messages/Notifications rows + combined badge); **remove** `NotificationBell` from `app/[locale]/layout.tsx`.
+- **Inbox panel:** redesign `components/messaging/inbox.tsx` into a panel that mounts in the avatar dropdown; new `components/messaging/message-search.tsx` (conversations + people); reply-to + file-picker subcomponents. Service `lib/messaging/service.ts` gains search + file-reference resolution; actions `lib/actions/messaging.ts` gain `replyToId`, file-reference attach, group-from-workspace.
+- **Workspace group chat:** `Conversation.collaborationId` (additive migration); membership sync hooks in the collaboration member add/remove actions; inbox renders the `👥` group affordance + workspace back-link.
+- **People → Message:** add a `Message` action to the person card in `components/collaborate/user-carousel.tsx` (and the profile page) → opens the inbox panel pre-targeted (Turnstile if first contact).
+- **Relay:** `Conversation.relayToken` (additive); `lib/messaging/email.ts` (new) reusing the `lib/case-study-emails.ts` localized/RTL Resend pattern; inbound route deferred but tokens reserved.
+- **Minimal editor:** `components/ui/minimal-rich-text.tsx` (new, B/i/link) reused by both the message composer and the comment composer.
+- **Anti-bot:** Turnstile gate on first-contact in `lib/actions/messaging.ts` (CSP already allows Turnstile); rate-limit via `lib/rate-limit.ts`.
+
+#### Mobile-first (non-negotiable, per user)
+375 first for every surface: avatar dropdown is a bottom-anchored menu; inbox + notifications are **full-screen drawers**, not shrunk side panels; thread is full-screen with a back arrow; file-picker is a drawer; reply-quote stacks above the composer. `md`/`lg` progressively enhance to the hovering side panel. Logical props throughout (`ms/me/ps/pe`, `-start/-end`) so RTL is correct by construction; reduced-motion honored.
+
+---
+
+### Reply-by-email — full inbound path (v1, user-confirmed)
+
+The user chose **full reply-by-email in v1** (not deferred). This is the riskiest piece; spec'd concretely here.
+
+**Outbound (the email that invites a reply):**
+```
+From:     Connecting Climate Minds <notify@connectingclimateminds.org>
+Reply-To: conv-{relayToken}@reply.connectingclimateminds.org      ← per-conversation
+Subject:  {Sender display name} sent you a message
+Body:     {preview}  ·  [Read & reply on the Hub →]  ·  unsubscribe (one-click)
+```
+- `Reply-To` carries the per-conversation `relayToken` (NOT the recipient's address anywhere). The sender's *display name* shows; their address never does.
+
+**Inbound (the reply coming back):**
+```
+user hits Reply in Gmail/Outlook
+   → mail lands at *@reply.connectingclimateminds.org (MX → inbound provider)
+   → inbound webhook  POST /api/messaging/inbound   (provider-signed)
+   → verify signature  →  parse: relayToken (from To:), sender address, body
+   → match relayToken → Conversation; match From: → a participant (must already be one)
+   → strip quoted history + signature (top-post extraction)
+   → post as a Message (senderId = matched participant), fan out in-app + (opt) email to others
+```
+**Guards (must-haves, or it becomes a spam/abuse vector):**
+- **Signature verification** on the inbound webhook (provider HMAC) — reject unsigned.
+- **Participant match required:** the `From:` address must map to an existing conversation participant. Unknown sender → drop (never auto-create a user or leak that the address exists).
+- **Loop/auto-reply suppression:** honor `Auto-Submitted`, `List-*`, `Precedence: bulk` headers; ignore vacation/bounce mail; dedupe on `Message-ID`.
+- **Rate-limit inbound** per relay token (reuse `lib/rate-limit.ts`).
+- **Quote stripping:** extract only the new text (top-post heuristic + provider-parsed `text` part), so the whole thread isn't re-posted.
+- **Size/content caps:** strip attachments in v1 (or route to the R2 file path with validation); cap body length.
+- **Token rotation:** `relayToken` is per-conversation and revocable; blocking a user or leaving disables their inbound match.
+
+**Infra the user must provision (Cloudflare-side, since email is on CF/Resend):**
+- A subdomain **`reply.connectingclimateminds.org`** with **MX → an inbound-email provider** (Cloudflare Email Routing → Worker, or Resend Inbound, or a mailbox-to-webhook service).
+- The **inbound webhook secret** → env `MESSAGING_INBOUND_SECRET`.
+- Confirm SPF/DKIM/DMARC for `notify@` outbound (Resend domain already set up — extend to the reply subdomain).
+
+**Schema additions for relay (additive):** `Conversation.relayToken String @unique @default(cuid())`; a per-recipient mode on `NotificationPreference` (e.g. `messageDelivery: HUB_ONLY | EMAIL_NOTIFY | EMAIL_REPLY`). Build order: outbound notify + `Reply-To` token first (works immediately), then the `/api/messaging/inbound` route + parser (the part that needs the MX/provider). Code can be written and unit-tested (parser, token match, guards) before the MX exists.
+
+---
+
+### Notifications — app-wide rethink (user-requested)
+
+Current state (grounded in `prisma/schema.prisma` + `lib/notifications/service.ts`): a single `Notification` model (polymorphic `entityType`/`entityId` + `snippet`), `NotificationType` = `COMMENT_REPLY | MENTION | REACTION | COMMENT_APPROVED | COLLAB_ACTIVITY | MESSAGE`, a `NotificationBell` (header), and `NotificationPreference` with only 3 email toggles (`emailOnReply/Mention/Message`). It works but is (a) **header-bound** (the float you want gone), (b) **coarse** (3 toggles for 6 types), and (c) **siloed** from messages (separate bell vs separate inbox). The rethink:
+
+**1. One engagement center, two streams.** Messages and Notifications are *different* (a message wants a reply; a notification is an FYI) so they stay separate **streams**, but live in **one place — the avatar**, with one combined unread dot. No header bell. This is the single biggest UX win and what the user asked for.
+
+**2. Notification taxonomy (group the 6 types into 3 reader-facing buckets):**
+- **Direct** — someone acted *at* you: `MENTION`, `COMMENT_REPLY`. (High signal; default email on.)
+- **Activity** — things you follow moved: `COLLAB_ACTIVITY` (new file/thread/member in your workspace), `COMMENT_APPROVED`. (Medium; default in-app, digest-able.)
+- **Reactions** — `REACTION`. (Low; in-app only by default, never email.)
+Messages (`MESSAGE` type) are **not** shown in the notifications stream at all — they belong to the inbox, so the streams don't double-count.
+
+**3. Per-type preferences (replace the 3 coarse toggles).** A matrix the user controls in settings: each type → `In-app` / `Email` / `Off`, with sensible defaults above. Plus the message-delivery mode (`HUB_ONLY | EMAIL_NOTIFY | EMAIL_REPLY`) from the relay spec. One-click unsubscribe still maps to flipping email off.
+
+**4. Consistent fan-out helper.** Every producer (comment reply, mention, reaction, collab activity, message) calls one `notify({ recipientId, type, actor, entity, snippet })` that: writes the `Notification`, checks `NotificationPreference`, and emails when allowed (localized/RTL via the `lib/case-study-emails.ts` pattern). No ad-hoc notification creation scattered across actions. (`createNotification` already exists in `lib/notifications/service.ts` — extend it into this single gated entry point.)
+
+**5. Read semantics + budget.** Opening a stream marks its items read (already the bell's behavior); unread `COUNT` stays an indexed query (`@@index([recipientId, readAt])` exists); SWR `refreshWhenHidden:false`; one combined poll for the avatar dot rather than two. Document the cumulative polling budget so messages + notifications together don't exceed a sane interval.
+
+**6. Settings surface.** The preference matrix lives in dashboard settings alongside DM privacy (`allowMessagesFrom`) + block list. Mobile-first: a stacked list of toggles, not a wide table.
+
+**Schema deltas for the rethink (additive):** extend `NotificationPreference` from 3 booleans to a per-type map (or columns `emailOnReaction`, `emailOnCollabActivity`, `emailOnApproved` + a `messageDelivery` enum); no change to `Notification`/`NotificationType` themselves.
 
 ### The Reader — Global Agenda docs block
 
