@@ -28,7 +28,7 @@ export default async function NotFound() {
                         </Button>
                         <Button asChild variant="outline">
                             <Link href="/">
-                                <ArrowLeft className="w-4 h-4 mr-2" />
+                                <ArrowLeft className="w-4 h-4 me-2 rtl:-scale-x-100" />
                                 {t('backToHome')}
                             </Link>
                         </Button>

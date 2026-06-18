@@ -121,12 +121,12 @@ export default async function ProfilesPage({ params }: ProfilesPageProps) {
                 <CardContent className="p-6">
                     <form className="flex flex-col sm:flex-row gap-4">
                         <div className="flex-1 relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                            <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                             <Input
                                 name="search"
                                 placeholder={t('searchPlaceholder')}
                                 defaultValue={resolvedSearchParams.search}
-                                className="pl-10"
+                                className="ps-10"
                             />
                         </div>
                         <Button type="submit">{t('search')}</Button>

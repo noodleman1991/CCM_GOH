@@ -33,6 +33,11 @@ interface LivedExperienceCardProps {
   variant?: "default" | "minimal";
 }
 
+/** "Featured" in the 4 supported locales (this card is a sync server component,
+ *  so we localize via the same getLocalizedValue helper used for titles rather
+ *  than pulling in async getTranslations). */
+const FEATURED_LABEL = { en: "Featured", es: "Destacado", fr: "À la une", ar: "مميز" };
+
 export function LivedExperienceCard({ experience, locale, variant = "default" }: LivedExperienceCardProps) {
   if (!experience) return null;
 
@@ -62,7 +67,7 @@ export function LivedExperienceCard({ experience, locale, variant = "default" }:
               <Play className="w-8 h-8 text-white drop-shadow-lg opacity-80 group-hover:opacity-100 transition-opacity" />
             </div>
             {experience.duration && (
-              <div className="absolute bottom-2 right-2 bg-black/80 text-white px-2 py-1 rounded text-xs font-medium">
+              <div className="absolute bottom-2 end-2 bg-black/80 text-white px-2 py-1 rounded text-xs font-medium">
                 {experience.duration}
               </div>
             )}
@@ -115,7 +120,7 @@ export function LivedExperienceCard({ experience, locale, variant = "default" }:
 
           {/* Duration badge */}
           {experience.duration && (
-            <div className="absolute bottom-3 right-3 bg-black/80 text-white px-3 py-1 rounded-full text-sm font-medium">
+            <div className="absolute bottom-3 end-3 bg-black/80 text-white px-3 py-1 rounded-full text-sm font-medium">
               <Clock className="w-3 h-3 inline me-1" />
               {experience.duration}
             </div>
@@ -123,8 +128,8 @@ export function LivedExperienceCard({ experience, locale, variant = "default" }:
 
           {/* Featured badge */}
           {experience.featured && (
-            <div className="absolute top-3 right-3 bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-medium">
-              Featured
+            <div className="absolute top-3 end-3 bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-medium">
+              {getLocalizedValue(FEATURED_LABEL, locale)}
             </div>
           )}
         </div>

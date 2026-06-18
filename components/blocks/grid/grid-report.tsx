@@ -100,7 +100,7 @@ export default function GridReportComponent({
                     />
 
                     {/* Report type badge */}
-                    <div className="absolute top-3 left-3">
+                    <div className="absolute top-3 start-3">
                         <Badge variant="secondary" className="bg-white/90 text-black">
                             {reportTypeLabel}
                         </Badge>
@@ -108,7 +108,7 @@ export default function GridReportComponent({
 
                     {/* Featured badge */}
                     {report.featured && (
-                        <div className="absolute top-3 right-3">
+                        <div className="absolute top-3 end-3">
                             <Badge className="bg-yellow-500 text-black">
                                 {'⭐ '}{t('featured')}
                             </Badge>

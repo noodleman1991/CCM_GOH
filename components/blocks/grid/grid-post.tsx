@@ -79,7 +79,7 @@ export default function GridPost({ newsPost, featured, locale = "en", userId, im
       >
         {/* Featured badge */}
         {featured && (
-          <div className="absolute top-4 right-4 z-10">
+          <div className="absolute top-4 end-4 z-10">
             <Badge variant="secondary" className="bg-yellow-500 text-white">
               Featured
             </Badge>
