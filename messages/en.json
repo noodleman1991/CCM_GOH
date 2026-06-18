@@ -1393,5 +1393,34 @@
     "reported": "Reported. Thank you.",
     "signInToReact": "Sign in to react.",
     "signInToReport": "Sign in to report."
+  },
+  "discovery": {
+    "searchPlaceholder": "Search…",
+    "sortLabel": "Sort",
+    "clearAll": "Clear all",
+    "sort": {
+      "relevance": "Relevance",
+      "newest": "Newest",
+      "oldest": "Oldest",
+      "az": "A–Z",
+      "region": "By region"
+    },
+    "timeFrame": {
+      "any": "Any time",
+      "year": "Past year",
+      "threeYears": "Past 3 years",
+      "fiveYears": "Past 5 years"
+    },
+    "facet": {
+      "region": "Region",
+      "topic": "Topic",
+      "tags": "Tags",
+      "language": "Language",
+      "source": "Source",
+      "agendaType": "Type",
+      "workType": "Work type",
+      "expertise": "Expertise",
+      "openToTalk": "Open to talk"
+    }
   }
 }
