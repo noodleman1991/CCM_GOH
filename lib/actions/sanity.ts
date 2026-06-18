@@ -166,6 +166,10 @@ export async function getExpertiseAreas(locale: string = 'en') {
 
 // Helper function to revalidate cache when content changes
 export async function revalidateSanityCache(tags: string[] = []) {
+  // Cache busting is a staff operation — guard it.
+  const { getActor, isStaff } = await import('@/lib/authz')
+  if (!isStaff(await getActor())) throw new Error('Forbidden: admin only')
+
   const { revalidateTag } = await import('next/cache')
 
   if (tags.length === 0) {

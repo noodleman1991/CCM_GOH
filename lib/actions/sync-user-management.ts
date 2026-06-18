@@ -2,6 +2,13 @@
 
 import { writeClient as sanityClient } from "@/sanity/lib/write-client"
 import { allUserManagementOptionsQuery } from "@/sanity/queries/work-types"
+import { getActor, isStaff } from "@/lib/authz"
+
+/** These actions WRITE to the CMS — restrict to staff (team_editor | admin). */
+async function assertAdmin(): Promise<void> {
+  const actor = await getActor()
+  if (!isStaff(actor)) throw new Error("Forbidden: admin only")
+}
 
 // Hardcoded fallback data with full i18n support
 const FALLBACK_WORK_TYPES = [
@@ -121,6 +128,7 @@ function createInternationalArrayFromLabels(labels: Record<string, string>) {
 // Sync work types from Prisma enums to Sanity
 export async function syncWorkTypesToSanity() {
   try {
+    await assertAdmin()
     console.log('Starting work types sync to Sanity...')
 
     // Get existing work types from Sanity
@@ -188,6 +196,7 @@ export async function syncWorkTypesToSanity() {
 // Sync expertise areas from Prisma enums to Sanity
 export async function syncExpertiseAreasToSanity() {
   try {
+    await assertAdmin()
     console.log('Starting expertise areas sync to Sanity...')
 
     // Get existing expertise areas from Sanity
@@ -255,6 +264,7 @@ export async function syncExpertiseAreasToSanity() {
 // Sync both work types and expertise areas
 export async function syncUserManagementToSanity() {
   try {
+    await assertAdmin()
     console.log('Starting complete user management sync to Sanity...')
 
     const [workTypesResult, expertiseAreasResult] = await Promise.all([
