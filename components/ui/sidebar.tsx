@@ -390,7 +390,11 @@ function SidebarHeader({ className, ...props }: React.ComponentProps<"div">) {
         <div
             data-slot="sidebar-header"
             data-sidebar="header"
-            className={cn("flex flex-col gap-2 p-2", className)}
+            // shrink-0 so the header keeps its full height and any overflow is
+            // pushed into SidebarContent's scroll region rather than squeezing
+            // the header/footer (which clipped the avatar + language switcher
+            // off the bottom on short/tall viewports when signed in).
+            className={cn("flex shrink-0 flex-col gap-2 p-2", className)}
             {...props}
         />
     )
@@ -401,7 +405,10 @@ function SidebarFooter({ className, ...props }: React.ComponentProps<"div">) {
         <div
             data-slot="sidebar-footer"
             data-sidebar="footer"
-            className={cn("flex flex-col gap-2 p-2", className)}
+            // shrink-0 so the footer (avatar + language switcher) always keeps
+            // its full height and stays visible; overflow goes to the scrollable
+            // SidebarContent instead of clipping the footer off the viewport.
+            className={cn("flex shrink-0 flex-col gap-2 p-2", className)}
             {...props}
         />
     )
