@@ -100,6 +100,12 @@ model User {
   reactions            Reaction[]
   mentions             Mention[]            @relation("MentionedUser")
 
+  // Collaboration workspaces
+  collaborationsOwned     Collaboration[]            @relation("CollaborationCreator")
+  collaborationMemberships CollaborationMember[]
+  collaborationFiles      CollaborationFile[]        @relation("CollaborationFileUploader")
+  collaborationAnnotations CollaborationFileAnnotations[]
+
   @@index([isSearchable])
   @@index([profileVisibility])
   @@index([lastLoginAt])
@@ -396,4 +402,118 @@ model RateLimit {
   updatedAt DateTime @updatedAt
 
   @@index([resetAt])
+}
+
+// ─── Collaboration workspaces ────────────────────────────────────────────────
+// User-created free-form workspaces (separate from the fixed Community
+// taxonomy). Membership mirrors the UserCommunity join: composite PK + per-row
+// role + onDelete: Cascade. Named "Collaboration" to avoid the Sanity `project`
+// document collision.
+
+enum CollaborationStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+enum CollaborationVisibility {
+  PUBLIC
+  MEMBERS
+}
+
+enum CollaborationRole {
+  OWNER
+  EDITOR
+  COMMENTER
+  VIEWER
+}
+
+model Collaboration {
+  id          String                  @id @default(cuid())
+  title       String
+  description String?
+  status      CollaborationStatus     @default(ACTIVE)
+  visibility  CollaborationVisibility @default(MEMBERS)
+  createdById String
+  createdBy   User                    @relation("CollaborationCreator", fields: [createdById], references: [id], onDelete: Cascade)
+  createdAt   DateTime                @default(now())
+  updatedAt   DateTime                @updatedAt
+
+  members CollaborationMember[]
+  threads CollaborationThread[]
+  files   CollaborationFile[]
+  media   CollaborationMedia[]
+
+  @@index([status, visibility, updatedAt])
+  @@index([createdById])
+}
+
+model CollaborationMember {
+  collaborationId String
+  collaboration   Collaboration     @relation(fields: [collaborationId], references: [id], onDelete: Cascade)
+  userId          String
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role            CollaborationRole @default(VIEWER)
+  joinedAt        DateTime          @default(now())
+
+  @@id([collaborationId, userId])
+  @@index([userId])
+}
+
+model CollaborationThread {
+  id              String        @id @default(cuid())
+  collaborationId String
+  collaboration   Collaboration @relation(fields: [collaborationId], references: [id], onDelete: Cascade)
+  title           String
+  createdById     String
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  // Comments attach via the polymorphic Comment engine
+  // (targetType = collaborationThread, targetId = this id).
+
+  @@index([collaborationId, updatedAt])
+}
+
+model CollaborationFile {
+  id              String        @id @default(cuid())
+  collaborationId String
+  collaboration   Collaboration @relation(fields: [collaborationId], references: [id], onDelete: Cascade)
+  // R2 object key; prefix `members/` (private) or `public/`.
+  r2Key           String        @unique
+  fileName        String
+  contentType     String
+  size            Int
+  uploadedById    String
+  uploadedBy      User          @relation("CollaborationFileUploader", fields: [uploadedById], references: [id], onDelete: Cascade)
+  createdAt       DateTime      @default(now())
+
+  annotations CollaborationFileAnnotations?
+
+  @@index([collaborationId, createdAt])
+  @@index([uploadedById])
+}
+
+// EmbedPDF annotations stored as a single exported blob per file (no per-rect
+// schema): exportAnnotations() -> data; importAnnotations(data) on open.
+model CollaborationFileAnnotations {
+  fileId      String            @id
+  file        CollaborationFile @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  data        Json
+  updatedById String
+  updatedBy   User              @relation(fields: [updatedById], references: [id], onDelete: Cascade)
+  updatedAt   DateTime          @updatedAt
+}
+
+model CollaborationMedia {
+  id              String        @id @default(cuid())
+  collaborationId String
+  collaboration   Collaboration @relation(fields: [collaborationId], references: [id], onDelete: Cascade)
+  // YouTube only in v1 (CSP-allowlisted).
+  url             String
+  title           String?
+  addedById       String
+  createdAt       DateTime      @default(now())
+
+  @@index([collaborationId, createdAt])
 }
