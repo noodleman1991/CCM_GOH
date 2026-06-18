@@ -716,7 +716,9 @@
       }
     },
     "recentSubmissions": "Your recent submissions",
-    "memberCount": "{count, plural, one {# member} other {# members}}"
+    "memberCount": "{count, plural, one {# member} other {# members}}",
+    "viewPublicProfile": "View public profile",
+    "submitCaseStudyAction": "Submit a case study"
   },
   "caseStudies": {
     "title": "Case Studies",
