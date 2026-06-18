@@ -20,6 +20,7 @@ import {
     UserCog,
     Briefcase,
     GraduationCap,
+    ShieldAlert,
 } from "lucide-react";
 
 export const structure = (S: any, context: any) =>
@@ -48,6 +49,14 @@ export const structure = (S: any, context: any) =>
                     S.document()
                         .schemaType("siteAnnouncement")
                         .documentId("siteAnnouncement")
+                ),
+            S.listItem()
+                .title("Comment Moderation")
+                .icon(ShieldAlert)
+                .child(
+                    S.document()
+                        .schemaType("moderationSettings")
+                        .documentId("moderationSettings")
                 ),
 
             // Website Pages
