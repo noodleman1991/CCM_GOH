@@ -34,6 +34,10 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck
 
+      - name: Lint (non-blocking — legacy backlog being burned down)
+        run: pnpm exec eslint . || true
+        continue-on-error: true
+
       - name: Test
         run: pnpm test
 
