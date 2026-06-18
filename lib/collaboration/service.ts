@@ -74,6 +74,19 @@ export async function listVisibleCollaborations(userId: string | null) {
   return r.success ? r.data : [];
 }
 
+/** Threads in a workspace (caller must have authorized read). */
+export async function listThreads(collaborationId: string) {
+  const r = await safeQuery(() =>
+    prisma.collaborationThread.findMany({
+      where: { collaborationId },
+      orderBy: { updatedAt: "desc" },
+      select: { id: true, title: true, createdAt: true },
+      take: 100,
+    })
+  );
+  return r.success ? r.data : [];
+}
+
 /** Full workspace detail (caller must have already authorized read). */
 export async function getCollaboration(id: string) {
   const r = await safeQuery(() =>

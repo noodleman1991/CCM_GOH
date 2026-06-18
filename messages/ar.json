@@ -1422,5 +1422,41 @@
       "expertise": "الخبرة",
       "openToTalk": "منفتح على الحوار"
     }
+  },
+  "collaboration": {
+    "pageTitle": "التعاونات",
+    "pageDescription": "مساحات عمل مشتركة للعمل معًا.",
+    "create": "مساحة جديدة",
+    "createTitle": "إنشاء مساحة",
+    "titleLabel": "الاسم",
+    "descriptionLabel": "الوصف",
+    "visibilityLabel": "الظهور",
+    "visibilityMembers": "الأعضاء فقط",
+    "visibilityPublic": "عام",
+    "signInToCreate": "سجّل الدخول للإنشاء",
+    "empty": "لا توجد مساحات بعد.",
+    "public": "عام",
+    "members": "الأعضاء فقط",
+    "storageNotConfigured": "يتم إعداد تخزين الملفات — ستظهر الملفات والوسائط هنا قريبًا.",
+    "roleUpdated": "تم تحديث الدور.",
+    "backToThreads": "العودة إلى المواضيع",
+    "threadTitlePlaceholder": "عنوان الموضوع…",
+    "createThread": "إنشاء",
+    "newThread": "موضوع جديد",
+    "noThreads": "لا توجد مواضيع بعد.",
+    "nav": {
+      "overview": "نظرة عامة",
+      "threads": "المواضيع",
+      "files": "الملفات",
+      "media": "الوسائط",
+      "members": "الأعضاء",
+      "sections": "الأقسام"
+    },
+    "role": {
+      "OWNER": "مالك",
+      "EDITOR": "محرر",
+      "COMMENTER": "معلّق",
+      "VIEWER": "مشاهد"
+    }
   }
 }
