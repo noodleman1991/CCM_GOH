@@ -810,7 +810,9 @@
     "shareCta": "Share your experience",
     "storyLabel": "Story",
     "closeVideo": "Close",
-    "videoTitleFallback": "Lived experience"
+    "videoTitleFallback": "Lived experience",
+    "backToGallery": "Back to gallery",
+    "viewFull": "View full story"
   },
   "revisionAlert": {
     "title": "Action Required: Revision Needed",
