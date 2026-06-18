@@ -163,8 +163,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     //     },
     // ];
 
+    // Sidebar is organized into two spines (see docs/PAGE-ORGANIZATION.md):
+    //   • Explore     — the read-only content library
+    //   • Collaborate — people + workspaces (the social hub)
+    // Messages + Notifications live in the avatar (engagement hub), not here.
     const data = React.useMemo(() => ({
-        navMain: [
+        // ── Explore: the content library ────────────────────────────────────
+        navExplore: [
             {
                 title: t('researchAction'),
                 url: "#",
@@ -179,6 +184,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 icon: Heart,
             },
             {
+                title: t('news'),
+                url: "/news",
+                icon: Newspaper,
+            },
+            {
                 title: t('regionalCommunities'),
                 url: "#",
                 icon: Globe,
@@ -186,6 +196,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 items: regionalCommunities,
                 onToggle: () => setOpenAccordion(openAccordion === 'regional' ? null : 'regional')
             },
+        ],
+        // ── Collaborate: people + workspaces ────────────────────────────────
+        navConnect: [
             {
                 title: t('collaborate'),
                 url: "/collaborate",
@@ -195,16 +208,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 title: t('collaborations'),
                 url: "/collaborations",
                 icon: FolderKanban,
-            },
-            {
-                title: t('messages'),
-                url: "/messages",
-                icon: MessageSquare,
-            },
-            {
-                title: t('news'),
-                url: "/news",
-                icon: Newspaper,
             },
         ],
         navSecondary,
@@ -253,8 +256,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 </div>
             </SidebarHeader>
             <SidebarContent>
-                <NavMain items={data.navMain} openAccordion={openAccordion} setOpenAccordionAction={setOpenAccordion} />
-                {/* <NavProjects projects={data.projects} /> */}
+                <NavMain
+                    label={t('sectionExplore')}
+                    items={data.navExplore}
+                    openAccordion={openAccordion}
+                    setOpenAccordionAction={setOpenAccordion}
+                />
+                <NavMain
+                    label={t('sectionConnect')}
+                    items={data.navConnect}
+                    openAccordion={openAccordion}
+                    setOpenAccordionAction={setOpenAccordion}
+                />
                 <StaffNav />
                 <NavSecondary items={data.navSecondary} className="mt-auto" />
             </SidebarContent>

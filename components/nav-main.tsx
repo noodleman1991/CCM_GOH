@@ -23,6 +23,7 @@ import {
 
 export function NavMain({
   items,
+  label,
   openAccordion,
   setOpenAccordionAction,
 }: {
@@ -38,11 +39,14 @@ export function NavMain({
     }[]
     onToggle?: () => void
   }[]
+  /** Optional section heading rendered above the group (e.g. "Explore"). */
+  label?: string
   openAccordion?: string | null
   setOpenAccordionAction?: (value: string | null) => void
 }) {
   return (
     <SidebarGroup>
+      {label && <SidebarGroupLabel>{label}</SidebarGroupLabel>}
       <SidebarMenu>
         {items.map((item) => {
           // If item has items, it's an accordion
