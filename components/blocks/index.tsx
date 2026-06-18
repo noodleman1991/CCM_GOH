@@ -53,14 +53,18 @@ const componentMap: Record<string, React.ComponentType<any>> = {
 export default function Blocks({ blocks, locale, userId }: BlocksProps) {
     const rtl = isRTL(locale);
 
-    // Filter out PortableText blocks that should not be rendered here
-    // PortableText blocks have _type: "block" and are meant for PortableTextRenderer
+    // Filter out PortableText blocks that should not be rendered here.
+    // PortableText blocks have _type: "block" and belong to PortableTextRenderer;
+    // if one lands in a page's `blocks[]` it's a content-modeling slip in Sanity.
+    // We drop it defensively and only warn in development (so prod logs stay clean).
     const pageBlocks = (blocks?.filter(block => {
         if ((block as any)._type === 'block') {
-            console.warn(
-                'PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component.',
-                (block as any)._key
-            );
+            if (process.env.NODE_ENV !== 'production') {
+                console.warn(
+                    'PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component.',
+                    (block as any)._key
+                );
+            }
             return false;
         }
         return true;
