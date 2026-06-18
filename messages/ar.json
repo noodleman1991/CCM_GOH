@@ -653,7 +653,10 @@
     "sortAZ": "أ–ي",
     "issueLabel": "القضية",
     "aboutPersonLabel": "عن الشخص",
-    "shareCta": "شارك تجربتك"
+    "shareCta": "شارك تجربتك",
+    "storyLabel": "القصة",
+    "closeVideo": "إغلاق",
+    "videoTitleFallback": "تجربة معيشية"
   },
   "caseStudyForm": {
     "sections": {
