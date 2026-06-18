@@ -45,11 +45,66 @@ async function getPostsSitemap(): Promise<MetadataRoute.Sitemap[]> {
   return data;
 }
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap[]> {
-  const [pages, posts] = await Promise.all([
+const LOCALES = ["en", "es", "fr", "ar"] as const;
+const BASE = process.env.NEXT_PUBLIC_SITE_URL || "https://connectingclimateminds.org";
+
+/** Per-locale entries for a content type, with hreflang alternates. */
+async function getContentSitemap(
+  filter: string,
+  pathPrefix: string,
+  changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"],
+  priority: number
+): Promise<MetadataRoute.Sitemap> {
+  const query = groq`*[${filter} && defined(slug.current)]{ "slug": slug.current, "lastModified": _updatedAt }`;
+  let rows: { slug: string; lastModified: string }[] = [];
+  try {
+    const { data } = await sanityFetch({ query });
+    rows = data ?? [];
+  } catch {
+    rows = [];
+  }
+  return rows.flatMap((r) =>
+    LOCALES.map((locale) => ({
+      url: `${BASE}/${locale}${pathPrefix}/${r.slug}`,
+      lastModified: r.lastModified,
+      changeFrequency,
+      priority,
+      alternates: {
+        languages: Object.fromEntries(LOCALES.map((l) => [l, `${BASE}/${l}${pathPrefix}/${r.slug}`])),
+      },
+    }))
+  );
+}
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const [pages, posts, caseStudies, news, livedExp, agendas, reports] = await Promise.all([
     getPagesSitemap(),
     getPostsSitemap(),
+    getContentSitemap('_type == "caseStudy" && status == "approved"', "/research-and-action/case-studies", "monthly", 0.8),
+    getContentSitemap('_type == "newsPost"', "/news", "weekly", 0.7),
+    getContentSitemap('_type == "livedExperience" && (status == "approved" || !defined(status))', "/lived-experiences", "monthly", 0.7),
+    getContentSitemap('_type == "agenda"', "/research-and-action/agendas", "monthly", 0.6),
+    getContentSitemap('_type == "report"', "/research-and-action/reports", "monthly", 0.6),
   ]);
 
-  return [...pages, ...posts];
+  // Static top-level routes per locale.
+  const staticRoutes: MetadataRoute.Sitemap = LOCALES.flatMap((locale) =>
+    ["", "/news", "/lived-experiences", "/collaborate", "/research-and-action/case-studies"].map((p) => ({
+      url: `${BASE}/${locale}${p}`,
+      changeFrequency: "weekly" as const,
+      priority: p === "" ? 1 : 0.6,
+    }))
+  );
+
+  return [
+    ...staticRoutes,
+    ...(pages as unknown as MetadataRoute.Sitemap),
+    ...(posts as unknown as MetadataRoute.Sitemap),
+    ...caseStudies,
+    ...news,
+    ...livedExp,
+    ...agendas,
+    ...reports,
+  ];
+  // NOTE: gated regional news/blog sections (Track 6) are intentionally excluded.
 }
