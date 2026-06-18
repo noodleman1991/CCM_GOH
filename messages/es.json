@@ -1422,5 +1422,41 @@
       "expertise": "Experiencia",
       "openToTalk": "Abierto a hablar"
     }
+  },
+  "collaboration": {
+    "pageTitle": "Colaboraciones",
+    "pageDescription": "Espacios compartidos para trabajar juntos.",
+    "create": "Nuevo espacio",
+    "createTitle": "Crear un espacio",
+    "titleLabel": "Nombre",
+    "descriptionLabel": "Descripción",
+    "visibilityLabel": "Visibilidad",
+    "visibilityMembers": "Solo miembros",
+    "visibilityPublic": "Público",
+    "signInToCreate": "Inicia sesión para crear",
+    "empty": "Aún no hay espacios.",
+    "public": "Público",
+    "members": "Solo miembros",
+    "storageNotConfigured": "El almacenamiento se está configurando — los archivos aparecerán aquí pronto.",
+    "roleUpdated": "Rol actualizado.",
+    "backToThreads": "Volver a los hilos",
+    "threadTitlePlaceholder": "Título del hilo…",
+    "createThread": "Crear",
+    "newThread": "Nuevo hilo",
+    "noThreads": "Aún no hay hilos.",
+    "nav": {
+      "overview": "Resumen",
+      "threads": "Hilos",
+      "files": "Archivos",
+      "media": "Multimedia",
+      "members": "Miembros",
+      "sections": "Secciones"
+    },
+    "role": {
+      "OWNER": "Propietario",
+      "EDITOR": "Editor",
+      "COMMENTER": "Comentarista",
+      "VIEWER": "Observador"
+    }
   }
 }

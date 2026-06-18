@@ -1422,5 +1422,41 @@
       "expertise": "Expertise",
       "openToTalk": "Open to talk"
     }
+  },
+  "collaboration": {
+    "pageTitle": "Collaborations",
+    "pageDescription": "Shared workspaces for working together.",
+    "create": "New workspace",
+    "createTitle": "Create a workspace",
+    "titleLabel": "Name",
+    "descriptionLabel": "Description",
+    "visibilityLabel": "Visibility",
+    "visibilityMembers": "Members only",
+    "visibilityPublic": "Public",
+    "signInToCreate": "Sign in to create",
+    "empty": "No workspaces yet.",
+    "public": "Public",
+    "members": "Members only",
+    "storageNotConfigured": "File storage is being set up — files and media will appear here soon.",
+    "roleUpdated": "Role updated.",
+    "backToThreads": "Back to threads",
+    "threadTitlePlaceholder": "Thread title…",
+    "createThread": "Create",
+    "newThread": "New thread",
+    "noThreads": "No threads yet.",
+    "nav": {
+      "overview": "Overview",
+      "threads": "Threads",
+      "files": "Files",
+      "media": "Media",
+      "members": "Members",
+      "sections": "Sections"
+    },
+    "role": {
+      "OWNER": "Owner",
+      "EDITOR": "Editor",
+      "COMMENTER": "Commenter",
+      "VIEWER": "Viewer"
+    }
   }
 }
