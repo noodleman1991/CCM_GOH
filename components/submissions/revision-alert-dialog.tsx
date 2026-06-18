@@ -86,7 +86,7 @@ export default function RevisionAlertDialog({
                   </p>
                 </div>
                 <Badge variant="outline" className="text-xs bg-orange-50 text-orange-700 border-orange-200">
-                  <AlertCircle className="w-3 h-3 mr-1" />
+                  <AlertCircle className="w-3 h-3 me-1" />
                   Revision
                 </Badge>
               </div>
@@ -109,7 +109,7 @@ export default function RevisionAlertDialog({
             disabled={isProcessing}
             className="w-full sm:w-auto"
           >
-            <Clock className="w-4 h-4 mr-2" />
+            <Clock className="w-4 h-4 me-2" />
             {t('actions.remindLater')}
           </Button>
           <Button
@@ -121,7 +121,7 @@ export default function RevisionAlertDialog({
               'Loading...'
             ) : (
               <>
-                <Edit className="w-4 h-4 mr-2" />
+                <Edit className="w-4 h-4 me-2" />
                 {t('actions.viewSubmissions')}
               </>
             )}

@@ -65,7 +65,7 @@ export default function SocialLinksBlock({
                                 className="flex items-center gap-3"
                             >
                                 <Icon className="h-4 w-4" />
-                                <span className="flex-1 text-left">{label}</span>
+                                <span className="flex-1 text-start">{label}</span>
                                 <ExternalLink className="h-4 w-4 text-muted-foreground" />
                             </a>
                         </Button>

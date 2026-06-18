@@ -23,7 +23,7 @@ function FilterSection({ title, children, isEmpty = false }: { title: string; ch
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-between w-full text-left py-2 hover:text-foreground/80 transition-colors"
+        className="flex items-center justify-between w-full text-start py-2 hover:text-foreground/80 transition-colors"
       >
         <h4 className="font-medium text-sm">{title}</h4>
         <ChevronRight className={`h-4 w-4 text-muted-foreground transition-transform ${isOpen ? 'rotate-90' : ''}`} />

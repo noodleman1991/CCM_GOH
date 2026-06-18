@@ -238,7 +238,7 @@ export function RecentWorkPanel({ form, content }: RecentWorkPanelProps) {
             <div>
               <label htmlFor="work-end-date" className="text-sm font-medium">
                 {content?.fieldLabels?.recentWork?.endDate || t("endDate")}
-                {!formData.isOngoing && <span className="text-red-500 ml-1">*</span>}
+                {!formData.isOngoing && <span className="text-red-500 ms-1">*</span>}
               </label>
               <Input
                 id="work-end-date"

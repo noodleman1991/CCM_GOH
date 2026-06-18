@@ -220,7 +220,7 @@ export default function GridLivedExperienceComponent({
                     {livedExperience.duration && (
                         <div className="absolute top-3 end-3">
                             <Badge variant="outline" className="bg-black/70 text-white border-white/20">
-                                <Clock className="h-3 w-3 mr-1" />
+                                <Clock className="h-3 w-3 me-1" />
                                 {livedExperience.duration}
                             </Badge>
                         </div>

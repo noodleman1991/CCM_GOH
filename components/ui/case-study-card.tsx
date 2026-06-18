@@ -216,7 +216,7 @@ export default function CaseStudyCardComponent({
                             <span>
                 {leadAuthor?.name}
                                 {coAuthorsCount > 0 && (
-                                    <span className="text-xs ml-1">
+                                    <span className="text-xs ms-1">
                     +{coAuthorsCount} {coAuthorsCount === 1 ? 'author' : 'authors'}
                   </span>
                                 )}

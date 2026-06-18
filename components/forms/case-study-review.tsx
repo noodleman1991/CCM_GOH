@@ -409,12 +409,12 @@ export default function CaseStudyReview({ availableTags, userId }: CaseStudyRevi
                                 size="lg"
                                 className="min-w-48"
                             >
-                                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                {isSubmitting && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
                                 {isSubmitting ? (
                                     "Submitting..."
                                 ) : (
                                     <>
-                                        <Send className="w-4 h-4 mr-2" />
+                                        <Send className="w-4 h-4 me-2" />
                                         Submit Case Study
                                     </>
                                 )}

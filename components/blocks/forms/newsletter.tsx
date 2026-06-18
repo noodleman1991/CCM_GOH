@@ -114,7 +114,7 @@ export default function FormNewsletter({
               disabled={isSubmitting}
             >
               {isSubmitting && (
-                <Loader2 className="w-6 h-6 mr-2 animate-spin" />
+                <Loader2 className="w-6 h-6 me-2 animate-spin" />
               )}
               {buttonText}
             </Button>

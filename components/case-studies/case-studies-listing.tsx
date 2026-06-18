@@ -174,7 +174,7 @@ export default function CaseStudiesListing({
                     </Avatar>
                   ))}
                   {caseStudy.authors.length > 3 && (
-                    <span className="text-xs text-muted-foreground ml-1">
+                    <span className="text-xs text-muted-foreground ms-1">
                       +{caseStudy.authors.length - 3}
                     </span>
                   )}
@@ -309,8 +309,8 @@ export default function CaseStudiesListing({
                       {getTitle(caseStudy)}
                     </h3>
                     {caseStudy.featured && showFeaturedBadge && (
-                      <Badge variant="secondary" className="ml-2">
-                        <Star className="w-3 h-3 fill-current mr-1" />
+                      <Badge variant="secondary" className="ms-2">
+                        <Star className="w-3 h-3 fill-current me-1" />
                         Featured
                       </Badge>
                     )}
