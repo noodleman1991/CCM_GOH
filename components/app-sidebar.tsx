@@ -14,6 +14,7 @@ import {
     Heart,
     Search,
     Handshake,
+    FolderKanban,
     X,
 } from "lucide-react"
 import Logo from "@/components/logo"
@@ -188,6 +189,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 title: t('collaborate'),
                 url: "/collaborate",
                 icon: Handshake,
+            },
+            {
+                title: t('collaborations'),
+                url: "/collaborations",
+                icon: FolderKanban,
+            },
+            {
+                title: t('messages'),
+                url: "/messages",
+                icon: MessageSquare,
             },
             {
                 title: t('news'),

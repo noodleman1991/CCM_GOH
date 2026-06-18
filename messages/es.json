@@ -55,7 +55,9 @@
       "youth": "Juventud",
       "indigenous": "Indígena",
       "farmerAndFisher": "Agricultores y pescadores"
-    }
+    },
+    "collaborations": "Espacios",
+    "messages": "Mensajes"
   },
   "navUser": {
     "account": "Cuenta",
