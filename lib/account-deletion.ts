@@ -76,8 +76,53 @@ export async function eraseUserSanityContent(clerkUserId: string): Promise<{
 /** Full erasure of Prisma data + private Sanity content for a user. Does NOT
  *  delete the Clerk user — the caller does that last so a failure here can be
  *  retried safely. Published case studies are intentionally left untouched. */
+/**
+ * Before deleting a user, protect collaborations they solely own: deleting the
+ * sole OWNER would cascade-delete every member's work. We transfer ownership to
+ * the longest-standing other member where possible, otherwise archive the
+ * workspace (preserving its content) rather than let it be orphaned/wiped.
+ */
+async function handleSoleOwnedCollaborations(userId: string): Promise<void> {
+  const owned = await prisma.collaborationMember.findMany({
+    where: { userId, role: "OWNER" },
+    select: { collaborationId: true },
+  })
+  for (const { collaborationId } of owned) {
+    const owners = await prisma.collaborationMember.count({
+      where: { collaborationId, role: "OWNER" },
+    })
+    if (owners > 1) continue // another owner remains; cascade is safe
+
+    // Find the next member to promote (oldest non-owner member).
+    const heir = await prisma.collaborationMember.findFirst({
+      where: { collaborationId, userId: { not: userId } },
+      orderBy: { joinedAt: "asc" },
+      select: { userId: true },
+    })
+    if (heir) {
+      await prisma.collaborationMember.update({
+        where: { collaborationId_userId: { collaborationId, userId: heir.userId } },
+        data: { role: "OWNER" },
+      })
+    } else {
+      // No one else to inherit — archive so content isn't lost on cascade.
+      await prisma.collaboration.update({
+        where: { id: collaborationId },
+        data: { status: "ARCHIVED" },
+      })
+    }
+  }
+}
+
 export async function deleteUserData(clerkUserId: string): Promise<DeletionResult> {
   const sanity = await eraseUserSanityContent(clerkUserId)
+
+  // Protect multi-person workspaces before the user-delete cascade runs.
+  try {
+    await handleSoleOwnedCollaborations(clerkUserId)
+  } catch (err) {
+    console.warn(`Sole-owner collaboration handling failed for ${clerkUserId}:`, err)
+  }
 
   // Prisma row may not exist (e.g. user never finished onboarding) — that's fine.
   let prismaDeleted = false
