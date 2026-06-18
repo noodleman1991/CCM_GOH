@@ -16,6 +16,7 @@ import { formatNewsDate, getReadingTime } from '@/lib/news-utils'
 import { PortableText } from '@portabletext/react'
 import { client } from '@/sanity/lib/client'
 import { fetchNewsBySlug, fetchRelatedNews } from '@/sanity/queries/news-queries'
+import { CommentIsland } from '@/components/comments/comment-island'
 import { groq } from 'next-sanity'
 
 // Generate static params for all news posts
@@ -227,6 +228,11 @@ export default async function NewsDetailPage({
             <PortableText value={newsPost.content} />
           </CardContent>
         </Card>
+      )}
+
+      {/* Discussion — lazy, ISR-safe island */}
+      {newsPost._id && (
+        <CommentIsland targetType="newsPost" targetId={newsPost._id} />
       )}
 
       {/* Organizations & Projects */}
