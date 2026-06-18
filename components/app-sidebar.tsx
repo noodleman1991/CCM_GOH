@@ -28,6 +28,7 @@ import { cn } from "@/lib/utils"
 import { NavMain } from "@/components/nav-main"
 // import { NavProjects } from "@/components/nav-projects"
 import { NavSecondary } from "@/components/nav-secondary"
+import { StaffNav } from "@/components/staff-nav"
 import { AuthNavUser } from "@/components/auth-nav-user"
 import { LanguageSwitcher } from "@/components/language-switcher"
 import {
@@ -254,6 +255,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarContent>
                 <NavMain items={data.navMain} openAccordion={openAccordion} setOpenAccordionAction={setOpenAccordion} />
                 {/* <NavProjects projects={data.projects} /> */}
+                <StaffNav />
                 <NavSecondary items={data.navSecondary} className="mt-auto" />
             </SidebarContent>
             <SidebarFooter>

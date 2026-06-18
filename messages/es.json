@@ -57,7 +57,10 @@
       "farmerAndFisher": "Agricultores y pescadores"
     },
     "collaborations": "Espacios",
-    "messages": "Mensajes"
+    "messages": "Mensajes",
+    "staff": "Personal",
+    "moderation": "Moderación",
+    "broadcast": "Enviar notificación"
   },
   "navUser": {
     "account": "Cuenta",
@@ -628,7 +631,8 @@
       "projects": "Proyectos",
       "communities": "Comunidades",
       "skills": "Habilidades"
-    }
+    },
+    "workspaces": "Espacios"
   },
   "profilePicture": {
     "title": "Foto de Perfil",
