@@ -1,0 +1,18 @@
+[     326ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/6f8fc_next_dist_2f27c456._.js:2297
+[     376ms] [LOG] [Fast Refresh] done in 152ms @ http://localhost:3000/_next/static/chunks/6f8fc_next_dist_2f27c456._.js:2297
+[    2398ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/6f8fc_next_dist_2f27c456._.js:2297
+[    2490ms] [WARNING] %c%s%c PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component. background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   ukren1 @ http://localhost:3000/_next/static/chunks/6f8fc_next_dist_2f27c456._.js:2297
+[    2492ms] [WARNING] %c%s%c PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component. background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   wm4f29 @ http://localhost:3000/_next/static/chunks/6f8fc_next_dist_2f27c456._.js:2297
+[    2492ms] [WARNING] %c%s%c PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component. background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   20o54t @ http://localhost:3000/_next/static/chunks/6f8fc_next_dist_2f27c456._.js:2297
+[    2758ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/6f8fc_next_dist_2f27c456._.js:2297
+[    2832ms] [WARNING] Image with src "/connecting-climate-minds-logo-white.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading @ http://localhost:3000/_next/static/chunks/6f8fc_next_dist_2f27c456._.js:2297
+[    2895ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/6f8fc_next_dist_2f27c456._.js:2297
+[    2959ms] [LOG] [Fast Refresh] done in 175ms @ http://localhost:3000/_next/static/chunks/6f8fc_next_dist_2f27c456._.js:2297
+[    3115ms] [WARNING] Ignoring Event: localhost @ http://localhost:3000/_next/static/chunks/6f8fc_next_dist_2f27c456._.js:2297
+[    3147ms] [INFO] Sanity is live with automatic revalidation of published content @ http://localhost:3000/_next/static/chunks/6f8fc_next_dist_2f27c456._.js:2297
+[    3191ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3000/_next/static/chunks/6f8fc_next_dist_2f27c456._.js:2297
+[    7727ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/6f8fc_next_dist_2f27c456._.js:2297
+[    7785ms] [LOG] [Fast Refresh] done in 160ms @ http://localhost:3000/_next/static/chunks/6f8fc_next_dist_2f27c456._.js:2297
+[   14410ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/6f8fc_next_dist_2f27c456._.js:2297
+[   14451ms] [LOG] [Fast Refresh] done in 141ms @ http://localhost:3000/_next/static/chunks/6f8fc_next_dist_2f27c456._.js:2297

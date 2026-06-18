@@ -184,9 +184,8 @@ model DownloadEvent {
   fileLanguage String
   userId       String?
   sessionId    String
-  userAgent    String?
-  referer      String?
-  ipAddress    String?
+  // Privacy: userAgent / referer / ipAddress intentionally removed — never read
+  // by analytics, and indefinite IP storage was a GDPR liability.
   timestamp    DateTime @default(now())
   createdAt    DateTime @default(now())
 

@@ -1,0 +1,119 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - list [ref=e7]:
+          - listitem [ref=e8]:
+            - link "Go to homepage" [ref=e9] [cursor=pointer]:
+              - /url: /
+              - img "Connecting Climate Minds Logo" [ref=e10]
+        - generic [ref=e12]:
+          - img
+          - textbox "Search..." [ref=e13]
+      - generic [ref=e14]:
+        - list [ref=e16]:
+          - listitem [ref=e17]:
+            - button "Research & Action" [ref=e18]:
+              - img [ref=e19]
+              - generic [ref=e21]: Research & Action
+              - img [ref=e22]
+          - listitem [ref=e24]:
+            - link "Lived Experiences" [ref=e25] [cursor=pointer]:
+              - /url: /en/lived-experiences
+              - img [ref=e26]
+              - generic [ref=e28]: Lived Experiences
+          - listitem [ref=e29]:
+            - button "Regional Communities" [ref=e30]:
+              - img [ref=e31]
+              - generic [ref=e34]: Regional Communities
+              - img [ref=e35]
+          - listitem [ref=e37]:
+            - link "Collaborate" [ref=e38] [cursor=pointer]:
+              - /url: /en/collaborate
+              - img [ref=e39]
+              - generic [ref=e44]: Collaborate
+          - listitem [ref=e45]:
+            - link "News" [ref=e46] [cursor=pointer]:
+              - /url: /en/news
+              - img [ref=e47]
+              - generic [ref=e50]: News
+        - list [ref=e53]:
+          - listitem [ref=e54]:
+            - link "About" [ref=e55] [cursor=pointer]:
+              - /url: /about
+              - img [ref=e56]
+              - generic [ref=e58]: About
+          - listitem [ref=e59]:
+            - link "Feedback" [ref=e60] [cursor=pointer]:
+              - /url: /feedback
+              - img [ref=e61]
+              - generic [ref=e63]: Feedback
+      - generic [ref=e65]:
+        - list [ref=e66]:
+          - listitem [ref=e67]:
+            - button "Amit Lokszinski Amit Lokszinski amit2@pm.me" [ref=e68]:
+              - img "Amit Lokszinski" [ref=e70]
+              - generic [ref=e71]:
+                - generic [ref=e72]: Amit Lokszinski
+                - generic [ref=e73]: amit2@pm.me
+              - img [ref=e74]
+        - list [ref=e77]:
+          - listitem [ref=e78]:
+            - button "English" [ref=e79]:
+              - generic [ref=e81]: English
+              - img [ref=e82]
+    - main [ref=e86]:
+      - button "Toggle Sidebar" [ref=e89]:
+        - img
+        - generic [ref=e90]: Toggle Sidebar
+      - main [ref=e92]:
+        - generic [ref=e93]:
+          - link "Back to News" [ref=e94] [cursor=pointer]:
+            - /url: /en/news
+            - img
+            - text: Back to News
+          - generic [ref=e95]:
+            - heading "Climate Change Is Becoming a Mental Health Crisis — and Communities Are Already Living It" [level=1] [ref=e96]
+            - paragraph [ref=e97]: From farmers facing hopelessness after crop loss to Indigenous communities grieving disappearing ecosystems, a new global agenda warns climate change is reshaping emotional survival, identity, and wellbeing.
+            - generic [ref=e98]:
+              - generic [ref=e99]:
+                - img [ref=e100]
+                - generic [ref=e102]: May 20, 2026
+              - generic [ref=e103]:
+                - img [ref=e104]
+                - generic [ref=e107]: News Desk
+              - generic [ref=e109]: 3 min read
+            - generic [ref=e110]:
+              - generic [ref=e111]: Climate Change
+              - generic [ref=e112]: Research
+          - img "Illustration" [ref=e115]
+          - paragraph [ref=e118]: A major international report argues climate change is not only an environmental emergency but a growing mental health crisis. Through stories from farmers, Indigenous leaders, and young people across 126 countries, the report reveals how climate disasters are producing grief, anxiety, exhaustion, and loss of identity — while communities themselves are often leading the most effective responses.
+          - generic [ref=e120]:
+            - paragraph [ref=e121]:
+              - text: A new international research agenda on climate change and mental health is warning that the climate crisis is rapidly becoming a psychological and social crisis as well.
+              - text: The report, developed through the Connecting Climate Minds initiative with contributors from 126 countries, argues that climate change is affecting far more than physical health and infrastructure. Across global consultations, people described rising anxiety, despair, exhaustion, displacement, and grief tied to environmental destruction and uncertain futures.
+              - text: "One farmer described how climate shocks can trap families in cycles of poverty and emotional collapse:"
+            - paragraph
+            - blockquote [ref=e122]:
+              - text: “Families have no income and turn to cutting trees to make charcoal and get income. Cutting trees worsens climate change. This vicious cycle leads to depression, trauma, and hopelessness.”
+              - text: Young people repeatedly described climate change as a force limiting their futures and daily lives.
+              - text: “My country is currently experiencing excruciating impacts of climate change across society, and the environment is not conducive to learning,” one student shared. “It limits the possibilities, wellbeing, and educational capacity in the classroom.”
+            - paragraph [ref=e123]:
+              - text: Another youth contributor spoke of “sleepless nights and overwhelming stress” caused by fears over climate survival.
+              - text: The report argues these experiences go far beyond what is commonly labelled “eco-anxiety.” Contributors described repeated disasters, displacement, crop loss, rising heat, and economic insecurity as chronic pressures reshaping emotional wellbeing over time.
+              - text: For Indigenous communities, contributors emphasized that environmental loss is often inseparable from cultural and spiritual loss.
+              - text: “Without our kelp, I feel that we are losing the veins and arteries of the sea country body,” said one Indigenous woman describing the collapse of marine ecosystems connected to her community’s identity and traditions.
+            - paragraph [ref=e124]:
+              - text: "Another contributor described the emotional burden of anticipating future losses before they fully occur:"
+              - text: “You’re already anticipating grieving even before things actually manifest.”
+              - text: The report also criticizes global climate and mental health policy for lagging behind reality. According to the research, only 17% of national climate adaptation plans currently include mental health actions, despite mounting evidence linking climate change to depression, trauma, suicide risk, and social instability.
+              - text: Researchers involved in the agenda stress that solutions cannot rely solely on individual therapy or medical systems.
+              - text: “People working together is critical to this, rather than individual therapy and individual solutions,” one contributor from Oceania explained. “The problem is political and systemic.”
+              - text: Examples of community-led responses emerged throughout the consultations. Farmworker groups in Florida described community gardens not only as food support systems, but as sources of emotional stability and collective care.
+              - text: “Mentally it was helpful for farm workers — being without stress.”
+              - text: The report ultimately calls for governments, researchers, and international institutions to treat climate and mental health as deeply interconnected challenges. It urges greater investment in community-led research, culturally grounded mental health approaches, and policies that recognize the emotional and social consequences of climate disruption.
+              - strong [ref=e125]: "Its central warning is clear: climate change is not only threatening ecosystems and economies, but also people’s sense of safety, belonging, dignity, and future."
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e131] [cursor=pointer]:
+    - img [ref=e132]
+  - alert [ref=e135]

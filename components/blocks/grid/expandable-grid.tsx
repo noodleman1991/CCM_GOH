@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -21,10 +20,9 @@ export function ExpandableGrid({
   gridClassName = "grid-cols-3",
   locale,
   isRTL = false,
-  expandLabel,
-  collapseLabel,
+  expandLabel = "View More",
+  collapseLabel = "Show Less",
 }: ExpandableGridProps) {
-  const t = useTranslations('regional');
   // ✅ HYDRATION FIX: Initial state is false (collapsed)
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -52,7 +50,7 @@ export function ExpandableGrid({
             )}
             aria-expanded={isExpanded}
           >
-            <span>{isExpanded ? (collapseLabel || t('showLess')) : (expandLabel || t('viewMore'))}</span>
+            <span>{isExpanded ? collapseLabel : expandLabel}</span>
             {isExpanded ? (
               <ChevronUp className="h-4 w-4" />
             ) : (

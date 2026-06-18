@@ -1,0 +1,13 @@
+[     223ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/6f8fc_next_dist_2f27c456._.js:2297
+[     263ms] [LOG] [Fast Refresh] done in 141ms @ http://localhost:3000/_next/static/chunks/6f8fc_next_dist_2f27c456._.js:2297
+[    1278ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/6f8fc_next_dist_2f27c456._.js:2297
+[    1390ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/6f8fc_next_dist_2f27c456._.js:2297
+[    1873ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3000/_next/static/chunks/6f8fc_next_dist_2f27c456._.js:2297
+[    2189ms] [WARNING] Image with src "/connecting-climate-minds-logo-white.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading @ http://localhost:3000/_next/static/chunks/6f8fc_next_dist_2f27c456._.js:2297
+[    2218ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/6f8fc_next_dist_2f27c456._.js:2297
+[    2247ms] [LOG] [Fast Refresh] done in 136ms @ http://localhost:3000/_next/static/chunks/6f8fc_next_dist_2f27c456._.js:2297
+[    2364ms] [WARNING] Ignoring Event: localhost @ http://localhost:3000/_next/static/chunks/6f8fc_next_dist_2f27c456._.js:2297
+[    2506ms] [INFO] Sanity is live with automatic revalidation of published content @ http://localhost:3000/_next/static/chunks/6f8fc_next_dist_2f27c456._.js:2297
+[    6978ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/6f8fc_next_dist_2f27c456._.js:2297
+[    6985ms] [LOG] [Fast Refresh] done in 108ms @ http://localhost:3000/_next/static/chunks/6f8fc_next_dist_2f27c456._.js:2297

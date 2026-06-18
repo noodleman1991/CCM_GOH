@@ -1,0 +1,72 @@
+- generic [active] [ref=e1]:
+  - main [ref=e3]:
+    - button "Toggle Sidebar" [ref=e6]:
+      - img
+      - generic [ref=e7]: Toggle Sidebar
+    - main [ref=e9]:
+      - generic [ref=e10]:
+        - navigation "breadcrumb" [ref=e11]:
+          - list [ref=e12]:
+            - listitem [ref=e13]:
+              - link "الرئيسية" [ref=e14] [cursor=pointer]:
+                - /url: /ar
+            - listitem [ref=e15]:
+              - img [ref=e16]
+            - listitem [ref=e18]:
+              - link "التعاون" [ref=e19] [cursor=pointer]:
+                - /url: /ar/collaborate
+            - listitem [ref=e20]:
+              - img [ref=e21]
+            - listitem [ref=e23]:
+              - link "Lockshinsky Amit" [disabled] [ref=e24]
+        - generic [ref=e26]:
+          - generic [ref=e30]: AL
+          - generic [ref=e31]:
+            - heading "Lockshinsky Amit" [level=1] [ref=e34]
+            - paragraph [ref=e36]: "@amit3"
+            - generic [ref=e38]:
+              - generic [ref=e39]: Wageningen, Netherlands
+              - generic [ref=e40]: 18 أو أكثر
+            - generic [ref=e42]:
+              - generic [ref=e43]: خبير من التجربة المعاشة
+              - generic [ref=e44]: التعليم
+              - generic [ref=e45]: الصحة النفسية
+        - generic [ref=e49]:
+          - generic [ref=e51]:
+            - img [ref=e53]
+            - generic [ref=e56]:
+              - paragraph [ref=e57]: 7 months
+              - paragraph [ref=e58]: Member Since
+          - generic [ref=e60]:
+            - img [ref=e62]
+            - generic [ref=e65]:
+              - paragraph [ref=e66]: Wageningen, Netherlands
+              - paragraph [ref=e67]: Location
+          - generic [ref=e69]:
+            - img [ref=e71]
+            - generic [ref=e76]:
+              - paragraph [ref=e77]: "1"
+              - paragraph [ref=e78]: Communities
+          - generic [ref=e80]:
+            - img [ref=e82]
+            - generic [ref=e85]:
+              - paragraph [ref=e86]: "3"
+              - paragraph [ref=e87]: Skills
+        - generic [ref=e88]:
+          - generic [ref=e89]:
+            - generic [ref=e92]:
+              - heading "حول" [level=2] [ref=e93]
+              - paragraph [ref=e95]: bio
+            - generic [ref=e98]:
+              - heading "المهارات" [level=2] [ref=e99]
+              - generic [ref=e101]:
+                - generic [ref=e103]: خبير من التجربة المعاشة
+                - generic [ref=e105]: التعليم
+                - generic [ref=e107]: الصحة النفسية
+          - generic [ref=e111]:
+            - heading "المجتمعات الإقليمية" [level=3] [ref=e112]
+            - generic [ref=e115]: شمال أفريقيا وغرب آسيا
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e121] [cursor=pointer]:
+    - img [ref=e122]
+  - alert [ref=e125]
