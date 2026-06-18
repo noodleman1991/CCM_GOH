@@ -106,6 +106,11 @@ model User {
   collaborationFiles      CollaborationFile[]        @relation("CollaborationFileUploader")
   collaborationAnnotations CollaborationFileAnnotations[]
 
+  // Notifications
+  notifications          Notification[]             @relation("NotificationRecipient")
+  notificationsActed     Notification[]             @relation("NotificationActor")
+  notificationPreference NotificationPreference?
+
   @@index([isSearchable])
   @@index([profileVisibility])
   @@index([lastLoginAt])
@@ -516,4 +521,44 @@ model CollaborationMedia {
   createdAt       DateTime      @default(now())
 
   @@index([collaborationId, createdAt])
+}
+
+// ─── Notifications ───────────────────────────────────────────────────────────
+
+enum NotificationType {
+  COMMENT_REPLY
+  MENTION
+  REACTION
+  COMMENT_APPROVED
+  COLLAB_ACTIVITY
+  MESSAGE
+}
+
+model Notification {
+  id         String           @id @default(cuid())
+  recipientId String
+  recipient  User             @relation("NotificationRecipient", fields: [recipientId], references: [id], onDelete: Cascade)
+  type       NotificationType
+  actorId    String?
+  actor      User?            @relation("NotificationActor", fields: [actorId], references: [id], onDelete: SetNull)
+  // Polymorphic pointer to the thing the notification is about.
+  entityType String?
+  entityId   String?
+  // Optional human snippet (e.g. comment excerpt) — rendered with i18n shell.
+  snippet    String?
+  readAt     DateTime?
+  createdAt  DateTime         @default(now())
+
+  @@index([recipientId, readAt])
+  @@index([recipientId, createdAt])
+}
+
+model NotificationPreference {
+  userId          String  @id
+  user            User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  emailOnReply    Boolean @default(true)
+  emailOnMention  Boolean @default(true)
+  emailOnMessage  Boolean @default(true)
+  // Unsubscribe token for one-click email opt-out.
+  unsubscribeToken String @unique @default(cuid())
 }

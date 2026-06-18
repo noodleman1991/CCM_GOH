@@ -225,7 +225,15 @@
     "success": "نجح!",
     "error": "خطأ!",
     "info": "معلومات",
-    "warning": "تحذير"
+    "warning": "تحذير",
+    "title": "الإشعارات",
+    "empty": "لا توجد إشعارات بعد.",
+    "repliedToYou": "ردّ عليك",
+    "mentionedYou": "أشار إليك",
+    "reactedToYou": "تفاعل مع تعليقك",
+    "commentApproved": "تمت الموافقة على تعليقك",
+    "sentMessage": "أرسل لك رسالة",
+    "activity": "نشاط جديد"
   },
   "dates": {
     "today": "اليوم",
