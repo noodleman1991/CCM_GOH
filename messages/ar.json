@@ -205,7 +205,13 @@
     "recentSubmissions": "مساهماتك الأخيرة",
     "memberCount": "{count, plural, zero {# عضو} one {عضو واحد} two {عضوان} few {# أعضاء} many {# عضوًا} other {# عضو}}",
     "viewPublicProfile": "عرض الملف العام",
-    "submitCaseStudyAction": "إرسال دراسة حالة"
+    "submitCaseStudyAction": "إرسال دراسة حالة",
+    "workspaces": "مساحات العمل",
+    "workspacesDescription": "أنشئ وانضم إلى مساحات مشتركة للعمل على المشاريع معًا",
+    "openWorkspaces": "فتح المساحات",
+    "messages": "الرسائل",
+    "messagesDescription": "محادثاتك المباشرة مع الأعضاء الآخرين",
+    "openMessages": "فتح الرسائل"
   },
   "settings": {
     "title": "الإعدادات",
@@ -221,7 +227,19 @@
       "system": "النظام"
     },
     "privacy": "الخصوصية",
-    "security": "الأمان"
+    "security": "الأمان",
+    "saved": "تم حفظ الإعدادات.",
+    "save": "حفظ",
+    "emailNotifications": "إشعارات البريد الإلكتروني",
+    "emailReply": "أرسل لي بريدًا عند الرد",
+    "emailMention": "أرسل لي بريدًا عند الإشارة إليّ",
+    "emailMessage": "أبلغني بالبريد عن الرسائل الجديدة",
+    "messaging": "المراسلة",
+    "whoCanMessage": "من يمكنه مراسلتي",
+    "everyone": "الجميع",
+    "nobody": "لا أحد",
+    "blocked": "الأعضاء المحظورون",
+    "unblock": "إلغاء الحظر"
   },
   "notifications": {
     "success": "نجح!",
