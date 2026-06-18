@@ -875,7 +875,8 @@
       "title": "الفلاتر النشطة:",
       "search": "البحث: {query}",
       "clear": "إعادة تعيين جميع الفلاتر"
-    }
+    },
+    "startCollaboration": "إنشاء مساحة"
   },
   "onboarding": {
     "steps": {

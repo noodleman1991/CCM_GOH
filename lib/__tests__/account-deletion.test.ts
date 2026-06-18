@@ -16,7 +16,24 @@ vi.mock('@/sanity/lib/write-client', () => ({
 
 const prismaUserDelete = vi.fn()
 vi.mock('@/lib/prisma', () => ({
-  prisma: { user: { delete: (...a: any[]) => prismaUserDelete(...a) } },
+  prisma: {
+    user: { delete: (...a: any[]) => prismaUserDelete(...a) },
+    // Collaboration sole-owner handling + R2 file sweep + orphan-conversation sweep.
+    collaborationMember: { findMany: vi.fn(async () => []), count: vi.fn(async () => 0), update: vi.fn() },
+    collaboration: { update: vi.fn() },
+    collaborationFile: { findMany: vi.fn(async () => []) },
+    conversation: { deleteMany: vi.fn(async () => ({ count: 0 })) },
+  },
+}))
+
+// R2 + Algolia are server-only / external — mock so the module graph loads.
+vi.mock('@/lib/r2', () => ({
+  r2Configured: () => false,
+  deleteObject: vi.fn(),
+}))
+vi.mock('@/lib/algolia', () => ({
+  algoliaClient: null,
+  ALGOLIA_INDICES: { USERS: 'users' },
 }))
 
 import { eraseUserSanityContent, deleteUserData } from '@/lib/account-deletion'
