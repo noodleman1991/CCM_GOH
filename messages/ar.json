@@ -55,7 +55,9 @@
       "youth": "الشباب",
       "indigenous": "الشعوب الأصلية",
       "farmerAndFisher": "المزارعون والصيادون"
-    }
+    },
+    "collaborations": "مساحات العمل",
+    "messages": "الرسائل"
   },
   "navUser": {
     "account": "الحساب",

@@ -55,7 +55,9 @@
       "youth": "Jeunesse",
       "indigenous": "Autochtone",
       "farmerAndFisher": "Agriculteurs et pêcheurs"
-    }
+    },
+    "collaborations": "Espaces",
+    "messages": "Messages"
   },
   "navUser": {
     "account": "Compte",

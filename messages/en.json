@@ -55,7 +55,9 @@
       "youth": "Youth",
       "indigenous": "Indigenous",
       "farmerAndFisher": "Farmers & Fishers"
-    }
+    },
+    "collaborations": "Workspaces",
+    "messages": "Messages"
   },
   "navUser": {
     "account": "Account",
