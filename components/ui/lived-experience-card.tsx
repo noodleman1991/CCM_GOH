@@ -109,14 +109,14 @@ export function LivedExperienceCard({ experience, locale, variant = "default" }:
           <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300" />
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center group-hover:bg-white transition-colors duration-300">
-              <Play className="w-6 h-6 text-foreground ml-1" />
+              <Play className="w-6 h-6 text-foreground ms-1" />
             </div>
           </div>
 
           {/* Duration badge */}
           {experience.duration && (
             <div className="absolute bottom-3 right-3 bg-black/80 text-white px-3 py-1 rounded-full text-sm font-medium">
-              <Clock className="w-3 h-3 inline mr-1" />
+              <Clock className="w-3 h-3 inline me-1" />
               {experience.duration}
             </div>
           )}

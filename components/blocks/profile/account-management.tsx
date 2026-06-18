@@ -232,7 +232,7 @@ export default function AccountManagement({ initialData }: AccountManagementProp
                   )}
                 />
                 <Button type="submit" disabled={loading}>
-                  {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  {loading && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
                   {t('email.update')}
                 </Button>
               </form>
@@ -296,7 +296,7 @@ export default function AccountManagement({ initialData }: AccountManagementProp
               />
               
               <Button type="submit" disabled={loading}>
-                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {loading && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
                 {t('password.change')}
               </Button>
             </form>
@@ -328,7 +328,7 @@ export default function AccountManagement({ initialData }: AccountManagementProp
           <Dialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
             <DialogTrigger asChild>
               <Button variant="destructive">
-                <AlertTriangle className="mr-2 h-4 w-4" />
+                <AlertTriangle className="me-2 h-4 w-4" />
                 {t('delete.button')}
               </Button>
             </DialogTrigger>
@@ -363,7 +363,7 @@ export default function AccountManagement({ initialData }: AccountManagementProp
                   onClick={handleDeleteAccount}
                   disabled={loading || deleteConfirmText !== "DELETE"}
                 >
-                  {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  {loading && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
                   {t('delete.confirm.delete')}
                 </Button>
               </DialogFooter>

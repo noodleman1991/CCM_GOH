@@ -110,7 +110,7 @@ function ClearFilters() {
       onClick={() => refine()}
       className="w-full mb-4"
     >
-      <X className="h-4 w-4 mr-2" />
+      <X className="h-4 w-4 me-2" />
       {t('clearAll')}
     </Button>
   )

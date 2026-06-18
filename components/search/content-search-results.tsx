@@ -41,7 +41,7 @@ function CaseStudyResult({ hit }: { hit: CaseStudySearchRecord }) {
                 </h3>
                 {hit.featured && (
                   <Badge variant="secondary" className="mt-1">
-                    <Star className="h-3 w-3 mr-1" />
+                    <Star className="h-3 w-3 me-1" />
                     Featured
                   </Badge>
                 )}
@@ -186,7 +186,7 @@ function AgendaResult({ hit }: { hit: AgendaSearchRecord }) {
                   {downloadUrl ? (
                     <button
                       onClick={handleDownloadClick}
-                      className="hover:underline text-primary text-left"
+                      className="hover:underline text-primary text-start"
                     >
                       {getLocalizedTitle(hit.title, locale)}
                     </button>
@@ -205,7 +205,7 @@ function AgendaResult({ hit }: { hit: AgendaSearchRecord }) {
                   </Badge>
                   {hit.featured && (
                     <Badge variant="secondary" className="text-xs">
-                      <Star className="h-3 w-3 mr-1" />
+                      <Star className="h-3 w-3 me-1" />
                       Featured
                     </Badge>
                   )}
@@ -320,7 +320,7 @@ function NewsResult({ hit }: { hit: NewsSearchRecord }) {
                   </span>
                   {hit.featured && (
                     <Badge variant="secondary" className="text-xs">
-                      <Star className="h-3 w-3 mr-1" />
+                      <Star className="h-3 w-3 me-1" />
                       Featured
                     </Badge>
                   )}

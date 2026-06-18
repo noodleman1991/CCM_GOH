@@ -114,7 +114,7 @@ export default function LatestContentSection({
                         onClick={() => setShowFilters(!showFilters)}
                         className={cn(showFilters && "bg-accent")}
                     >
-                        <Filter className="w-4 h-4 mr-2" />
+                        <Filter className="w-4 h-4 me-2" />
                         {t('filters')}
                     </Button>
                 </div>
@@ -126,7 +126,7 @@ export default function LatestContentSection({
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
                                     <label className="text-sm font-medium mb-2 block">
-                                        <Calendar className="w-4 h-4 inline mr-1" />
+                                        <Calendar className="w-4 h-4 inline me-1" />
                                         {t('dateRange')}
                                     </label>
                                     <Select value={dateFilter} onValueChange={setDateFilter}>
@@ -144,7 +144,7 @@ export default function LatestContentSection({
 
                                 <div>
                                     <label className="text-sm font-medium mb-2 block">
-                                        <Tag className="w-4 h-4 inline mr-1" />
+                                        <Tag className="w-4 h-4 inline me-1" />
                                         {t('tags')}
                                     </label>
                                     <Select value={tagFilter || "all"} onValueChange={(value) => setTagFilter(value === "all" ? null : value)}>
@@ -164,7 +164,7 @@ export default function LatestContentSection({
 
                                 <div>
                                     <label className="text-sm font-medium mb-2 block">
-                                        <Globe className="w-4 h-4 inline mr-1" />
+                                        <Globe className="w-4 h-4 inline me-1" />
                                         {t('region')}
                                     </label>
                                     <Select value={regionFilter || "all"} onValueChange={(value) => setRegionFilter(value === "all" ? null : value)}>
@@ -190,7 +190,7 @@ export default function LatestContentSection({
                                     onClick={clearFilters}
                                     className="mt-4"
                                 >
-                                    <X className="w-4 h-4 mr-2" />
+                                    <X className="w-4 h-4 me-2" />
                                     {t('clearFilters')}
                                 </Button>
                             )}

@@ -51,7 +51,7 @@ function SelectTrigger({
       className={cn(
         "border-input data-[placeholder]:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 dark:hover:bg-input/50 flex w-full items-center justify-between rounded-md border bg-transparent text-sm whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 data-[size=default]:h-9 data-[size=sm]:h-8 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         // RTL-aware padding
-        "px-3 py-2 rtl:pr-10 rtl:pl-3 ltr:pl-3 ltr:pr-10",
+        "px-3 py-2 rtl:pe-10 rtl:ps-3 ltr:ps-3 ltr:pe-10",
         className
       )}
       {...props}
@@ -128,7 +128,7 @@ function SelectItem({
       className={cn(
         "focus:bg-accent focus:text-accent-foreground [&_svg:not([class*='text-'])]:text-muted-foreground relative flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2",
         // RTL-aware padding
-        "rtl:pl-8 rtl:pr-2 ltr:pr-8 ltr:pl-2",
+        "rtl:ps-8 rtl:pe-2 ltr:pe-8 ltr:ps-2",
         className
       )}
       {...props}
