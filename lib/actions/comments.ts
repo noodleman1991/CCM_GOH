@@ -8,7 +8,62 @@ import { isCommentTargetValid } from "@/lib/comments/target";
 import { moderateBody } from "@/lib/comments/moderation";
 import { verifyTurnstile, turnstileConfigured } from "@/lib/turnstile";
 import { isCommentTargetType } from "@/lib/comments/types";
+import { parseMentions } from "@/lib/comments/mentions";
+import { createNotification } from "@/lib/notifications/service";
 import type { CommentStatus } from "@/generated/prisma";
+
+/**
+ * Best-effort engagement fan-out after a visible comment is created:
+ *  - resolve @mentions to users, store Mention rows, notify them
+ *  - notify the parent comment's author of a reply
+ */
+async function fanOutEngagement(params: {
+  commentId: string;
+  authorId: string;
+  body: string;
+  parentId: string | null;
+}): Promise<void> {
+  // Mentions
+  const usernames = parseMentions(params.body);
+  if (usernames.length > 0) {
+    const users = await prisma.user.findMany({
+      where: { username: { in: usernames } },
+      select: { id: true },
+    });
+    for (const u of users) {
+      if (u.id === params.authorId) continue;
+      await prisma.mention.create({
+        data: { commentId: params.commentId, mentionedUserId: u.id },
+      }).catch(() => {}); // unique [commentId, mentionedUserId]
+      await createNotification({
+        recipientId: u.id,
+        type: "MENTION",
+        actorId: params.authorId,
+        entityType: "comment",
+        entityId: params.commentId,
+        snippet: params.body.slice(0, 280),
+      });
+    }
+  }
+
+  // Reply notification to the parent author
+  if (params.parentId) {
+    const parent = await prisma.comment.findUnique({
+      where: { id: params.parentId },
+      select: { authorId: true },
+    });
+    if (parent?.authorId && parent.authorId !== params.authorId) {
+      await createNotification({
+        recipientId: parent.authorId,
+        type: "COMMENT_REPLY",
+        actorId: params.authorId,
+        entityType: "comment",
+        entityId: params.commentId,
+        snippet: params.body.slice(0, 280),
+      });
+    }
+  }
+}
 
 const baseSchema = z.object({
   targetType: z.string().refine(isCommentTargetType, "Invalid target type"),
@@ -128,6 +183,17 @@ export async function postComment(input: PostCommentInput): Promise<PostCommentR
     return { ok: false, error: "Your comment couldn't be posted as it may violate the community guidelines.", code: "BLOCKED" };
   }
 
+  // Engagement: mentions + reply notifications (only for visible comments, and
+  // only for signed-in authors — anonymous comments don't notify). Best-effort.
+  if (created.status === "VISIBLE" && actor) {
+    await fanOutEngagement({
+      commentId: created.id,
+      authorId: actor.id,
+      body: data.body,
+      parentId: data.parentId ?? null,
+    }).catch(() => {});
+  }
+
   return {
     ok: true,
     id: created.id,
@@ -203,6 +269,17 @@ export async function toggleReaction(
     await prisma.reaction.delete({ where: { id: existing.id } });
   } else {
     await prisma.reaction.create({ data: { commentId, userId: actor.id, emoji } });
+    // Notify the comment author (best-effort, skips self).
+    const c = await prisma.comment.findUnique({ where: { id: commentId }, select: { authorId: true } });
+    if (c?.authorId) {
+      await createNotification({
+        recipientId: c.authorId,
+        type: "REACTION",
+        actorId: actor.id,
+        entityType: "comment",
+        entityId: commentId,
+      }).catch(() => {});
+    }
   }
   return { ok: true };
 }

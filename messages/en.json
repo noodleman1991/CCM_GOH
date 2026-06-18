@@ -141,7 +141,15 @@
     "success": "Success!",
     "error": "Error!",
     "info": "Information",
-    "warning": "Warning"
+    "warning": "Warning",
+    "title": "Notifications",
+    "empty": "No notifications yet.",
+    "repliedToYou": "replied to you",
+    "mentionedYou": "mentioned you",
+    "reactedToYou": "reacted to your comment",
+    "commentApproved": "Your comment was approved",
+    "sentMessage": "sent you a message",
+    "activity": "new activity"
   },
   "dates": {
     "today": "Today",

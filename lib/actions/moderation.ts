@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { getActor, assertCan, ForbiddenError } from "@/lib/authz";
 import { notifyCommentApproved } from "@/lib/comment-notifications";
+import { createNotification } from "@/lib/notifications/service";
 
 type ModResult = { ok: boolean; error?: string };
 
@@ -32,6 +33,12 @@ export async function approveComment(id: string): Promise<ModResult> {
   await prisma.comment.update({ where: { id }, data: { status: "VISIBLE" } });
   // Notify the author (signed-in only; anonymous has no account to notify).
   if (comment.authorId) {
+    await createNotification({
+      recipientId: comment.authorId,
+      type: "COMMENT_APPROVED",
+      entityType: "comment",
+      entityId: comment.id,
+    }).catch(() => {});
     await notifyCommentApproved(comment.id).catch(() => {});
   }
   revalidatePath("/moderation");

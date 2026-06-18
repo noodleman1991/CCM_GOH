@@ -225,7 +225,15 @@
     "success": "¡Éxito!",
     "error": "¡Error!",
     "info": "Información",
-    "warning": "Advertencia"
+    "warning": "Advertencia",
+    "title": "Notificaciones",
+    "empty": "Aún no hay notificaciones.",
+    "repliedToYou": "te respondió",
+    "mentionedYou": "te mencionó",
+    "reactedToYou": "reaccionó a tu comentario",
+    "commentApproved": "Tu comentario fue aprobado",
+    "sentMessage": "te envió un mensaje",
+    "activity": "nueva actividad"
   },
   "dates": {
     "today": "Hoy",
