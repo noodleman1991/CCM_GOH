@@ -56,3 +56,6 @@ BLOCK-SYSTEM-COHERENCE-REPORT.local.md
 # dataset backups (local only)
 backups/
 *.local.md
+
+# Playwright MCP session artifacts
+.playwright-mcp/
