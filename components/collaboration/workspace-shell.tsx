@@ -23,6 +23,9 @@ import { cn } from "@/lib/utils";
 import { setMemberRole } from "@/lib/actions/collaboration";
 import type { CollaborationRole } from "@/generated/prisma";
 import { WorkspaceThreads } from "./workspace-threads";
+import { WorkspaceFiles } from "./workspace-files";
+import { WorkspaceMedia } from "./workspace-media";
+import { CollaborationPdfDialog } from "./collaboration-pdf-dialog";
 
 type Member = {
   userId: string;
@@ -49,14 +52,17 @@ export function WorkspaceShell({
   myRole,
   isStaff,
   isSignedIn,
+  r2Configured,
 }: {
   collaboration: CollabProps;
   myRole: CollaborationRole | null;
   isStaff: boolean;
   isSignedIn: boolean;
+  r2Configured: boolean;
 }) {
   const t = useTranslations("collaboration");
   const [section, setSection] = useState<Section>("overview");
+  const [pdf, setPdf] = useState<{ fileId: string; fileName: string; url: string } | null>(null);
 
   const nav: { id: Section; label: string; icon: typeof LayoutGrid; count?: number }[] = [
     { id: "overview", label: t("nav.overview"), icon: LayoutGrid },
@@ -150,10 +156,21 @@ export function WorkspaceShell({
             <WorkspaceThreads collaborationId={collaboration.id} myRole={myRole} isSignedIn={isSignedIn} />
           )}
 
-          {(section === "files" || section === "media") && (
-            <section className="rounded-lg border border-dashed p-8 text-center">
-              <p className="text-muted-foreground">{t("storageNotConfigured")}</p>
-            </section>
+          {section === "files" &&
+            (r2Configured ? (
+              <WorkspaceFiles
+                collaborationId={collaboration.id}
+                myRole={myRole}
+                onOpenPdf={(f) => f.url && setPdf({ fileId: f.id, fileName: f.fileName, url: f.url })}
+              />
+            ) : (
+              <section className="rounded-lg border border-dashed p-8 text-center">
+                <p className="text-muted-foreground">{t("storageNotConfigured")}</p>
+              </section>
+            ))}
+
+          {section === "media" && (
+            <WorkspaceMedia collaborationId={collaboration.id} myRole={myRole} isSignedIn={isSignedIn} />
           )}
 
           {section === "members" && (
@@ -165,6 +182,18 @@ export function WorkspaceShell({
           )}
         </div>
       </div>
+
+      {pdf && (
+        <CollaborationPdfDialog
+          open={!!pdf}
+          onOpenChange={(o) => !o && setPdf(null)}
+          fileId={pdf.fileId}
+          fileName={pdf.fileName}
+          url={pdf.url}
+          canAnnotate={myRole === "COMMENTER" || myRole === "EDITOR" || myRole === "OWNER"}
+          isSignedIn={isSignedIn}
+        />
+      )}
     </div>
   );
 }

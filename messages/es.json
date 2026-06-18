@@ -1457,6 +1457,21 @@
       "EDITOR": "Editor",
       "COMMENTER": "Comentarista",
       "VIEWER": "Observador"
-    }
+    },
+    "uploadFile": "Subir archivo",
+    "uploading": "Subiendo…",
+    "uploaded": "Archivo subido.",
+    "uploadFailed": "Error al subir.",
+    "noFiles": "Aún no hay archivos.",
+    "openPdf": "Abrir",
+    "download": "Descargar",
+    "loadingPdf": "Cargando PDF…",
+    "notesOn": "Notas: activadas",
+    "notesOff": "Notas",
+    "youtubeUrlPlaceholder": "Enlace de YouTube…",
+    "mediaTitlePlaceholder": "Título (opcional)",
+    "addMedia": "Añadir",
+    "noMedia": "Aún no hay multimedia.",
+    "mediaConsentRequired": "Este video necesita consentimiento de cookies."
   }
 }

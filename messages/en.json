@@ -1457,6 +1457,21 @@
       "EDITOR": "Editor",
       "COMMENTER": "Commenter",
       "VIEWER": "Viewer"
-    }
+    },
+    "uploadFile": "Upload file",
+    "uploading": "Uploading…",
+    "uploaded": "File uploaded.",
+    "uploadFailed": "Upload failed.",
+    "noFiles": "No files yet.",
+    "openPdf": "Open",
+    "download": "Download",
+    "loadingPdf": "Loading PDF…",
+    "notesOn": "Notes: on",
+    "notesOff": "Notes",
+    "youtubeUrlPlaceholder": "YouTube link…",
+    "mediaTitlePlaceholder": "Title (optional)",
+    "addMedia": "Add",
+    "noMedia": "No media yet.",
+    "mediaConsentRequired": "This video needs cookie consent to play."
   }
 }

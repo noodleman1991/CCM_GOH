@@ -1457,6 +1457,21 @@
       "EDITOR": "محرر",
       "COMMENTER": "معلّق",
       "VIEWER": "مشاهد"
-    }
+    },
+    "uploadFile": "رفع ملف",
+    "uploading": "جارٍ الرفع…",
+    "uploaded": "تم رفع الملف.",
+    "uploadFailed": "فشل الرفع.",
+    "noFiles": "لا توجد ملفات بعد.",
+    "openPdf": "فتح",
+    "download": "تنزيل",
+    "loadingPdf": "جارٍ تحميل PDF…",
+    "notesOn": "الملاحظات: مفعّلة",
+    "notesOff": "الملاحظات",
+    "youtubeUrlPlaceholder": "رابط يوتيوب…",
+    "mediaTitlePlaceholder": "العنوان (اختياري)",
+    "addMedia": "إضافة",
+    "noMedia": "لا توجد وسائط بعد.",
+    "mediaConsentRequired": "يحتاج هذا الفيديو إلى الموافقة على ملفات تعريف الارتباط."
   }
 }
