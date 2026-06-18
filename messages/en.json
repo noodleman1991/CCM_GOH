@@ -60,7 +60,9 @@
     "messages": "Messages",
     "staff": "Staff",
     "moderation": "Moderation",
-    "broadcast": "Send notification"
+    "broadcast": "Send notification",
+    "privacy": "Privacy",
+    "terms": "Terms"
   },
   "navUser": {
     "account": "Account",
@@ -152,7 +154,9 @@
     "everyone": "Everyone",
     "nobody": "No one",
     "blocked": "Blocked members",
-    "unblock": "Unblock"
+    "unblock": "Unblock",
+    "yourData": "Your data",
+    "downloadData": "Download my data"
   },
   "notifications": {
     "success": "Success!",
