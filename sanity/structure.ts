@@ -21,6 +21,7 @@ import {
     Briefcase,
     GraduationCap,
     ShieldAlert,
+    BookText,
 } from "lucide-react";
 
 export const structure = (S: any, context: any) =>
@@ -57,6 +58,14 @@ export const structure = (S: any, context: any) =>
                     S.document()
                         .schemaType("moderationSettings")
                         .documentId("moderationSettings")
+                ),
+            S.listItem()
+                .title("Document Reader (Agenda)")
+                .icon(BookText)
+                .child(
+                    S.documentTypeList("docsChapter")
+                        .title("Document Chapters")
+                        .defaultOrdering([{ field: "order", direction: "asc" }])
                 ),
 
             // Website Pages

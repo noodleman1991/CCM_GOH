@@ -1525,5 +1525,8 @@
     "report": "Report",
     "reported": "Reported.",
     "messageDeleted": "Message deleted"
+  },
+  "reader": {
+    "chapters": "Chapters"
   }
 }

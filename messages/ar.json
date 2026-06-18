@@ -1525,5 +1525,8 @@
     "report": "إبلاغ",
     "reported": "تم الإبلاغ.",
     "messageDeleted": "تم حذف الرسالة"
+  },
+  "reader": {
+    "chapters": "الفصول"
   }
 }
