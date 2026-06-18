@@ -94,6 +94,12 @@ model User {
   sessions             Session[]
   communityMemberships UserCommunity[]
 
+  // Comments & engagement (onDelete: Cascade on each FK side)
+  comments             Comment[]
+  commentReports       CommentReport[]
+  reactions            Reaction[]
+  mentions             Mention[]            @relation("MentionedUser")
+
   @@index([isSearchable])
   @@index([profileVisibility])
   @@index([lastLoginAt])
@@ -265,4 +271,129 @@ enum SpecialCommunityName {
   YOUTH
   INDIGENOUS
   FARMER_AND_FISHER
+}
+
+// ─── Comments + moderation + engagement ──────────────────────────────────────
+
+enum CommentTargetType {
+  caseStudy
+  newsPost
+  livedExperience
+  collaborationThread
+  collaborationFile
+}
+
+enum CommentStatus {
+  PENDING
+  VISIBLE
+  DELETED_BY_AUTHOR
+  REMOVED_BY_MOD
+}
+
+enum CommentFlagReason {
+  BLOCKWORD
+  WORDLIST
+  REPORTED
+}
+
+enum CommentReportStatus {
+  OPEN
+  ACTIONED
+  DISMISSED
+}
+
+model Comment {
+  id          String            @id @default(cuid())
+  targetType  CommentTargetType
+  targetId    String
+  // One level of nesting only; enforced by a CHECK (depth IN (0,1)) added in the
+  // migration SQL. depth 0 = top-level, 1 = reply.
+  depth       Int               @default(0)
+  parentId    String?
+  parent      Comment?          @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies     Comment[]         @relation("CommentReplies")
+
+  // Author: nullable for anonymous comments (name/email captured instead).
+  authorId    String?
+  author      User?             @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorName  String?
+  authorEmail String?
+
+  body        String
+  status      CommentStatus     @default(VISIBLE)
+
+  // Optional page anchor for PDF (collaborationFile) comments.
+  page        Int?
+
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  flags       CommentFlag[]
+  reports     CommentReport[]
+  reactions   Reaction[]
+  mentions    Mention[]
+
+  @@index([targetType, targetId, status, createdAt])
+  @@index([parentId])
+  @@index([authorId])
+}
+
+model CommentFlag {
+  id        String            @id @default(cuid())
+  commentId String
+  comment   Comment           @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  reason    CommentFlagReason
+  term      String?
+  createdAt DateTime          @default(now())
+
+  @@index([commentId])
+}
+
+model CommentReport {
+  id         String              @id @default(cuid())
+  commentId  String
+  comment    Comment             @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  reporterId String
+  reporter   User                @relation(fields: [reporterId], references: [id], onDelete: Cascade)
+  reason     String?
+  status     CommentReportStatus @default(OPEN)
+  createdAt  DateTime            @default(now())
+
+  @@unique([commentId, reporterId])
+  @@index([status])
+}
+
+model Reaction {
+  id        String   @id @default(cuid())
+  commentId String
+  comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  emoji     String
+  createdAt DateTime @default(now())
+
+  @@unique([commentId, userId, emoji])
+  @@index([commentId])
+}
+
+model Mention {
+  id              String   @id @default(cuid())
+  commentId       String
+  comment         Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  mentionedUserId String
+  mentionedUser   User     @relation("MentionedUser", fields: [mentionedUserId], references: [id], onDelete: Cascade)
+  createdAt       DateTime @default(now())
+
+  @@unique([commentId, mentionedUserId])
+  @@index([mentionedUserId])
+}
+
+// Durable rate-limit counter (fallback when Upstash is not configured).
+model RateLimit {
+  key       String   @id
+  count     Int      @default(0)
+  resetAt   DateTime
+  updatedAt DateTime @updatedAt
+
+  @@index([resetAt])
 }

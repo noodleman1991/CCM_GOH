@@ -1,15 +1,14 @@
 import "server-only";
+import { prisma } from "@/lib/prisma";
 
 /**
  * Rate limiting with graceful degradation:
- *   1. Upstash Redis sliding-window  — when UPSTASH_REDIS_REST_URL/_TOKEN are set
+ *   1. Upstash Redis fixed-window   — when UPSTASH_REDIS_REST_URL/_TOKEN are set
  *      (production-grade; doesn't load the primary Postgres).
- *   2. In-process fixed-window counter — fallback for local/CI/preview where
- *      Upstash isn't configured. Per-instance only (not shared across serverless
- *      instances), so it is best-effort; combined with Turnstile on anonymous
- *      writes it is sufficient until the durable Postgres `RateLimit` table is
- *      added (see production-specs Stage 7), at which point this falls back to
- *      the DB counter instead of memory.
+ *   2. Postgres atomic counter      — durable fallback via a single
+ *      INSERT … ON CONFLICT DO UPDATE … RETURNING on the `RateLimit` table
+ *      (no SELECT-then-UPDATE; avoids hot-row contention). Shared across
+ *      serverless instances, unlike an in-process map.
  *
  * Single API: `assertRateLimit(actorKey, action, opts)` throws `RateLimitError`
  * (429) when the window is exceeded.
@@ -38,10 +37,31 @@ type Backend = {
   hit(key: string, opts: RateLimitOptions): Promise<{ count: number; resetAt: number }>;
 };
 
-// --- In-process fallback -----------------------------------------------------
+// --- Postgres durable fallback (atomic upsert) -------------------------------
 
+const postgresBackend: Backend = {
+  async hit(key, { windowSeconds }) {
+    const now = new Date();
+    const newReset = new Date(now.getTime() + windowSeconds * 1000);
+    // Single statement: if the row is missing or its window has expired, start a
+    // new window at count 1; otherwise increment. `xmax = 0` distinguishes a
+    // fresh INSERT from an UPDATE so an expired window resets cleanly.
+    const rows = await prisma.$queryRaw<{ count: number; resetAt: Date }[]>`
+      INSERT INTO "RateLimit" ("key", "count", "resetAt", "updatedAt")
+      VALUES (${key}, 1, ${newReset}, ${now})
+      ON CONFLICT ("key") DO UPDATE SET
+        "count"   = CASE WHEN "RateLimit"."resetAt" <= ${now} THEN 1 ELSE "RateLimit"."count" + 1 END,
+        "resetAt" = CASE WHEN "RateLimit"."resetAt" <= ${now} THEN ${newReset} ELSE "RateLimit"."resetAt" END,
+        "updatedAt" = ${now}
+      RETURNING "count", "resetAt";
+    `;
+    const row = rows[0];
+    return { count: row.count, resetAt: new Date(row.resetAt).getTime() };
+  },
+};
+
+// In-process last-resort if the DB write itself fails (never throws from here).
 const buckets = new Map<string, { count: number; resetAt: number }>();
-
 const memoryBackend: Backend = {
   async hit(key, { windowSeconds }) {
     const now = Date.now();
@@ -104,10 +124,23 @@ export async function assertRateLimit(
   opts: RateLimitOptions
 ): Promise<void> {
   const key = `rl:${action}:${actorKey}`;
-  const backend = (await getUpstashBackend()) ?? memoryBackend;
-  const { count, resetAt } = await backend.hit(key, opts);
-  if (count > opts.limit) {
-    const retryAfter = Math.max(1, Math.ceil((resetAt - Date.now()) / 1000));
+  const upstash = await getUpstashBackend();
+
+  let result: { count: number; resetAt: number };
+  if (upstash) {
+    result = await upstash.hit(key, opts);
+  } else {
+    try {
+      result = await postgresBackend.hit(key, opts);
+    } catch {
+      // DB unavailable — best-effort in-process so a transient DB issue doesn't
+      // open the floodgates entirely (per-instance, but better than nothing).
+      result = await memoryBackend.hit(key, opts);
+    }
+  }
+
+  if (result.count > opts.limit) {
+    const retryAfter = Math.max(1, Math.ceil((result.resetAt - Date.now()) / 1000));
     throw new RateLimitError("Too many requests", retryAfter);
   }
 }
