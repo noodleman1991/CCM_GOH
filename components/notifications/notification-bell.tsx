@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import useSWR from "swr";
 import { useAuth } from "@clerk/nextjs";
 import { useTranslations } from "next-intl";
@@ -31,13 +32,20 @@ export function NotificationBell() {
   const { isSignedIn } = useAuth();
   const t = useTranslations("notifications");
 
-  const { data, mutate } = useSWR(isSignedIn ? "/api/notifications" : null, fetcher, {
+  // Clerk resolves auth state on the client, so `isSignedIn` can differ between
+  // the server render and the first client render — which caused a hydration
+  // mismatch. Gate on a post-mount flag so server + first client render agree
+  // (both render nothing), then reveal once hydrated.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  const { data, mutate } = useSWR(mounted && isSignedIn ? "/api/notifications" : null, fetcher, {
     refreshInterval: 60_000,
     refreshWhenHidden: false,
     revalidateOnFocus: true,
   });
 
-  if (!isSignedIn) return null;
+  if (!mounted || !isSignedIn) return null;
 
   const unread = data?.unread ?? 0;
   const items = data?.notifications ?? [];
