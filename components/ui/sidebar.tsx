@@ -263,11 +263,13 @@ function Sidebar({
             <div
                 data-slot="sidebar-container"
                 className={cn(
-                    // Height comes from inset-y-0 (top/bottom pinned). Avoid h-svh
-                    // here: the small-viewport unit recalculates as mobile browser
-                    // chrome shows/hides during scroll, which makes the fixed
-                    // sidebar flicker. inset-y-0 alone gives a stable full height.
-                    "fixed inset-y-0 z-10 hidden w-(--sidebar-width) transition-[left,right,width] duration-200 ease-linear md:flex",
+                    // Height: pin top/bottom with inset-y-0 AND set h-dvh. inset-y-0
+                    // alone resolves against the *containing block*, so it collapses
+                    // if any ancestor establishes one (transform/filter/will-change/
+                    // contain) — which silently broke vertical responsiveness. h-dvh
+                    // (dynamic viewport height) tracks the viewport without the svh
+                    // scroll-flicker, so it stays full-height regardless of ancestors.
+                    "fixed inset-y-0 h-dvh z-10 hidden w-(--sidebar-width) transition-[left,right,width] duration-200 ease-linear md:flex",
                     // Simple positioning based on effectiveSide
                     effectiveSide === "left"
                         ? "left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]"

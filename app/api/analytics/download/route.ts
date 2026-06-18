@@ -9,13 +9,9 @@ const downloadEventSchema = z.object({
     sessionId: z.string().optional(),
 });
 
-function getClientIP(request: NextRequest): string {
-    const forwarded = request.headers.get('x-forwarded-for');
-    if (forwarded) return forwarded.split(',')[0].trim();
-    const realIP = request.headers.get('x-real-ip');
-    if (realIP) return realIP.trim();
-    return 'unknown';
-}
+// Privacy: we deliberately do NOT collect IP address, user-agent, or referer for
+// download analytics. Aggregate counts (per report / language / day) need none of
+// that PII, and storing it indefinitely was a GDPR liability with no consumer.
 
 export async function POST(request: NextRequest) {
     try {
@@ -29,9 +25,6 @@ export async function POST(request: NextRequest) {
                 fileLanguage: validated.fileLanguage,
                 userId: userId || null,
                 sessionId: validated.sessionId || 'anonymous',
-                userAgent: request.headers.get('user-agent') || null,
-                referer: request.headers.get('referer') || null,
-                ipAddress: getClientIP(request),
                 timestamp: new Date(),
             },
         });

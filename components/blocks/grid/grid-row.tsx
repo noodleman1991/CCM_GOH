@@ -17,6 +17,7 @@ import { ExpandableGrid } from "./expandable-grid";
 import { getLocalizedField } from "@/lib/localization-utils";
 import { resolveGridColumns } from "@/lib/grid-layout";
 import { gridGap } from "@/lib/design-tokens";
+import { getTranslations } from "next-intl/server";
 
 type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
 type GridRow = Extract<Block, { _type: "grid-row" }>;
@@ -121,6 +122,11 @@ export default async function GridRow({
 
     const supportedLocale = (locale || "en") as 'en' | 'es' | 'fr' | 'ar';
 
+    // Resolve expand/collapse labels here (server) so ExpandableGrid (a client
+    // component) doesn't depend on NextIntlClientProvider context — this grid
+    // renders in trees without that provider (e.g. the LE gallery page).
+    const t = await getTranslations({ locale: supportedLocale, namespace: "regional" });
+
     const localizedTitle = typeof title === 'string'
         ? title
         : getLocalizedField(title, supportedLocale, '');
@@ -160,6 +166,8 @@ export default async function GridRow({
                         )}
                         locale={locale || "en"}
                         isRTL={isRTL}
+                        expandLabel={t("viewMore")}
+                        collapseLabel={t("showLess")}
                     >
                         {columnItems.map((column, index) => {
                             // Type guard to ensure column has required properties

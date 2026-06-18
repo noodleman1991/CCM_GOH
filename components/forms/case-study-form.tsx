@@ -319,8 +319,19 @@ export default function ImprovedCaseStudyForm({
             newCompleted.add('topics');
         }
 
-        // Context section (optional)
-        newCompleted.add('context');
+        // Context section (optional) — only mark complete once the user has
+        // actually entered location or study-period data. Marking it complete
+        // unconditionally made a brand-new submission show this stage as already
+        // done, which was confusing.
+        const hasContext = Boolean(
+            formData.locationText?.country ||
+            formData.locationText?.city ||
+            formData.studyPeriod?.startDate ||
+            formData.studyPeriod?.endDate
+        );
+        if (hasContext) {
+            newCompleted.add('context');
+        }
         setCompletedSections(newCompleted);
     }, [formData, selectedTags]);
 
