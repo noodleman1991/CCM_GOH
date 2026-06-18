@@ -183,8 +183,6 @@ async function NewsContent({
                     publishedAt={item.data.publishedAt}
                     locale={locale}
                     featured={item.data.featured}
-                    showSiteBadge
-                    siteBadgeLabel={t('siteBadge')}
                   />
                 </Link>
               ) : (
@@ -271,8 +269,6 @@ async function NewsContent({
                     location={item.data.locationDetails}
                     publishedAt={item.data.publishedAt}
                     locale={locale}
-                    showSiteBadge
-                    siteBadgeLabel={t('siteBadge')}
                   />
                 </Link>
               ) : (
