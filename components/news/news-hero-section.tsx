@@ -10,6 +10,7 @@ interface NewsHeroSectionProps {
 }
 
 export default function NewsHeroSection({ featuredNews, locale, className }: NewsHeroSectionProps) {
+  const t = useTranslations('news')
   if (!featuredNews || featuredNews.length === 0) return null
 
   // Determine grid layout based on number of featured items
@@ -34,7 +35,7 @@ export default function NewsHeroSection({ featuredNews, locale, className }: New
       {/* Section Header */}
       <div className="flex items-center justify-between">
         <h2 className="text-2xl lg:text-3xl font-bold tracking-tight">
-          Featured News
+          {t('featured')}
         </h2>
       </div>
 

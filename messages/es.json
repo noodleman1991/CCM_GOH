@@ -591,6 +591,13 @@
       "save": "Guardar preguntas",
       "saved": "Guardado",
       "answerPlaceholder": "Tu respuesta…"
+    },
+    "statistics": {
+      "memberSince": "Miembro desde",
+      "location": "Ubicación",
+      "projects": "Proyectos",
+      "communities": "Comunidades",
+      "skills": "Habilidades"
     }
   },
   "profilePicture": {

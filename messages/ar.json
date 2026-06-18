@@ -591,6 +591,13 @@
       "save": "حفظ الأسئلة",
       "saved": "تم الحفظ",
       "answerPlaceholder": "إجابتك…"
+    },
+    "statistics": {
+      "memberSince": "عضو منذ",
+      "location": "الموقع",
+      "projects": "المشاريع",
+      "communities": "المجتمعات",
+      "skills": "المهارات"
     }
   },
   "profilePicture": {

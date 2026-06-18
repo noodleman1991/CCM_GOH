@@ -509,6 +509,13 @@
       "save": "Save prompts",
       "saved": "Saved",
       "answerPlaceholder": "Your answer…"
+    },
+    "statistics": {
+      "memberSince": "Member since",
+      "location": "Location",
+      "projects": "Projects",
+      "communities": "Communities",
+      "skills": "Skills"
     }
   },
   "profilePicture": {

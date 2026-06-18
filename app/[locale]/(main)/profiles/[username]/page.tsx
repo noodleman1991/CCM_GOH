@@ -140,7 +140,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                         <BlurFade delay={BLUR_FADE_DELAY * 3} className="mb-1">
                             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
                                 <h1 className={cn("font-bold tracking-tight text-balance text-ccm-midnight", heading('xl'))}>
-                                    {user.displayName}
+                                    <bdi>{user.displayName}</bdi>
                                 </h1>
                                 {user.pronouns && (
                                     <span className="text-sm text-muted-foreground">({user.pronouns})</span>
@@ -438,8 +438,8 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                                             .filter(c => c.type === 'REGIONAL')
                                             .map((community) => (
                                                 <div key={community.id} className="flex items-center gap-2">
-                                                    <Badge variant="secondary">
-                                                        {regionLabel(tRegions, community.regionalName) || community.name}
+                                                    <Badge variant="secondary" className="max-w-full whitespace-normal break-words text-start">
+                                                        <bdi>{regionLabel(tRegions, community.regionalName) || community.name}</bdi>
                                                     </Badge>
                                                 </div>
                                             ))}
@@ -459,8 +459,8 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                                             .filter(c => c.type === 'SPECIAL')
                                             .map((community) => (
                                                 <div key={community.id} className="flex items-center gap-2">
-                                                    <Badge variant="outline">
-                                                        {specialCommunityLabel(tSpecial, community.specialName) || community.name}
+                                                    <Badge variant="outline" className="max-w-full whitespace-normal break-words text-start">
+                                                        <bdi>{specialCommunityLabel(tSpecial, community.specialName) || community.name}</bdi>
                                                     </Badge>
                                                 </div>
                                             ))}
