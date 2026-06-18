@@ -1,5 +1,6 @@
 import "server-only";
 import { prisma, safeQuery } from "@/lib/prisma";
+import { maybeSendNotificationEmail } from "./email";
 import type { NotificationType } from "@/generated/prisma";
 
 export type NotificationDTO = {
@@ -36,6 +37,12 @@ export async function createNotification(params: {
       },
     })
   );
+  // Best-effort email, gated by the recipient's NotificationPreference.
+  await maybeSendNotificationEmail({
+    recipientId: params.recipientId,
+    type: params.type,
+    snippet: params.snippet,
+  }).catch(() => {});
 }
 
 /** Cheap unread count for the bell (indexed on (recipientId, readAt)). */

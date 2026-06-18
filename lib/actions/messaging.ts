@@ -17,8 +17,26 @@ export async function startConversation(otherUserId: string): Promise<Result<{ i
   if (!actor) return { ok: false, error: "Sign in." };
   if (otherUserId === actor.id) return { ok: false, error: "You can't message yourself." };
 
-  const other = await prisma.user.findUnique({ where: { id: otherUserId }, select: { id: true } });
+  const other = await prisma.user.findUnique({
+    where: { id: otherUserId },
+    select: { id: true, allowMessagesFrom: true },
+  });
   if (!other) return { ok: false, error: "User not found." };
+
+  // Respect the recipient's inbox privacy + block list.
+  if (other.allowMessagesFrom === "NOBODY") {
+    return { ok: false, error: "This member isn't accepting messages." };
+  }
+  const blocked = await prisma.userBlock.findFirst({
+    where: {
+      OR: [
+        { blockerId: otherUserId, blockedId: actor.id },
+        { blockerId: actor.id, blockedId: otherUserId },
+      ],
+    },
+    select: { blockerId: true },
+  });
+  if (blocked) return { ok: false, error: "You can't message this member." };
 
   // Find an existing 1:1 conversation between exactly these two.
   const existing = await prisma.conversation.findFirst({
@@ -68,6 +86,25 @@ export async function sendMessage(input: z.infer<typeof sendSchema>): Promise<Re
   });
   if (!participant) return { ok: false, error: "Not permitted." };
 
+  // Stop messaging if either side has blocked the other.
+  const others = await prisma.conversationParticipant.findMany({
+    where: { conversationId: parsed.data.conversationId, userId: { not: actor.id } },
+    select: { userId: true },
+  });
+  const otherIds = others.map((o) => o.userId);
+  if (otherIds.length > 0) {
+    const block = await prisma.userBlock.findFirst({
+      where: {
+        OR: [
+          { blockerId: actor.id, blockedId: { in: otherIds } },
+          { blockerId: { in: otherIds }, blockedId: actor.id },
+        ],
+      },
+      select: { blockerId: true },
+    });
+    if (block) return { ok: false, error: "Messaging is unavailable in this conversation." };
+  }
+
   const message = await prisma.message.create({
     data: { conversationId: parsed.data.conversationId, senderId: actor.id, body: parsed.data.body },
     select: { id: true },
@@ -77,14 +114,10 @@ export async function sendMessage(input: z.infer<typeof sendSchema>): Promise<Re
     data: { lastMessageAt: new Date() },
   });
 
-  // Notify the other participant(s).
-  const others = await prisma.conversationParticipant.findMany({
-    where: { conversationId: parsed.data.conversationId, userId: { not: actor.id } },
-    select: { userId: true },
-  });
-  for (const o of others) {
+  // Notify the other participant(s) (reuse otherIds from the block check).
+  for (const recipientId of otherIds) {
     await createNotification({
-      recipientId: o.userId,
+      recipientId,
       type: "MESSAGE",
       actorId: actor.id,
       entityType: "conversation",
