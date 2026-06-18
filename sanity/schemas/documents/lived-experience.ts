@@ -200,6 +200,16 @@ export default defineType({
             to: { type: "regionalCommunity" },
             description: "The community this lived experience relates to",
         }),
+
+        // Optional precise location — enables this experience to appear as a pin
+        // on the content map (in addition to the region-level choropleth).
+        defineField({
+            name: "location",
+            title: "Location (Map)",
+            type: "geopoint",
+            group: "metadata",
+            description: "Optional. A point on the map for this experience.",
+        }),
         
         // Related Organizations
         defineField({

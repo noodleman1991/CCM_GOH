@@ -30,7 +30,14 @@ describe("aggregateRegionData", () => {
   it("exposes the content facets", () => {
     const ids = FACETS.map((f) => f.id).sort();
     expect(ids).toEqual(
-      (["caseStudyCount", "livedExpCount", "memberCount", "newsCount"] as FacetId[]).sort()
+      ([
+        "caseStudyCount",
+        "livedExpCount",
+        "memberCount",
+        "newsCount",
+        "agendaCount",
+        "reportCount",
+      ] as FacetId[]).sort()
     );
   });
 

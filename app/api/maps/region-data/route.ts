@@ -26,9 +26,23 @@ export async function GET(req: NextRequest) {
   const counts = emptyCounts();
 
   try {
-    if (facet === "caseStudyCount" || facet === "newsCount" || facet === "livedExpCount") {
+    if (
+      facet === "caseStudyCount" ||
+      facet === "newsCount" ||
+      facet === "livedExpCount" ||
+      facet === "agendaCount" ||
+      facet === "reportCount"
+    ) {
       const type =
-        facet === "caseStudyCount" ? "caseStudy" : facet === "newsCount" ? "newsPost" : "livedExperience";
+        facet === "caseStudyCount"
+          ? "caseStudy"
+          : facet === "newsCount"
+            ? "newsPost"
+            : facet === "livedExpCount"
+              ? "livedExperience"
+              : facet === "agendaCount"
+                ? "agenda"
+                : "report";
       // Case studies + lived experiences are status-gated to approved (legacy
       // LEs without status still count); news posts have no status field.
       const statusFilter =

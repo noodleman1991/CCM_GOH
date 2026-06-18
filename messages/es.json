@@ -1358,7 +1358,9 @@
     "facetNews": "Noticias",
     "viewInSearch": "Ver en búsqueda",
     "noData": "Aún no hay datos para esta región.",
-    "facetLivedExperiences": "Experiencias vividas"
+    "facetLivedExperiences": "Experiencias vividas",
+    "facetAgendas": "Agendas",
+    "facetReports": "Informes"
   },
   "announcement": {
     "dismiss": "Descartar anuncio",
