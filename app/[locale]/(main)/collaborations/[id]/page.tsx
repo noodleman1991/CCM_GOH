@@ -1,11 +1,26 @@
+import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
+import { getTranslations } from "next-intl/server";
 import { getCollaboration, getMembershipRole, authorizeCollab } from "@/lib/collaboration/service";
 import { getActor, isStaff } from "@/lib/authz";
 import { r2Configured } from "@/lib/r2";
 import { WorkspaceShell } from "@/components/collaboration/workspace-shell";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; id: string }>;
+}): Promise<Metadata> {
+  const { locale, id } = await params;
+  const collab = await getCollaboration(id);
+  if (collab?.title) return { title: collab.title };
+  // Fall back to the generic workspaces label when missing/unauthorized.
+  const t = await getTranslations({ locale, namespace: "collaboration" });
+  return { title: t("pageTitle") };
+}
 
 export default async function CollaborationDetailPage({
   params,

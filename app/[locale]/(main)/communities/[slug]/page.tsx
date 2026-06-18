@@ -1,5 +1,6 @@
 export const revalidate = 120;
 
+import type { Metadata } from 'next';
 // todo: userId may be undefined? (no-!)
 import { fetchSanityRCPageBySlug, fetchRegionalCommunityAgendas, fetchSanityRCPagesStaticParams } from '@/sanity/lib/fetch';
 import { fetchRegionalCommunityTeamMembers } from '@/sanity/queries/regional-community-team';
@@ -10,6 +11,21 @@ import HybridContentFlow from '@/components/blocks/hybrid-content-flow';
 import RegionalCommunityTemplate from '@/components/templates/regional-community-template';
 import { notFound } from "next/navigation";
 import { isRTL } from "@/i18n/i18n-helpers";
+
+export async function generateMetadata({
+    params,
+}: {
+    params: Promise<{ locale: string; slug: string }>;
+}): Promise<Metadata> {
+    const { locale, slug } = await params;
+    const pageData = await fetchSanityRCPageBySlug({ slug, locale });
+    // RC page documents are per-language, so `title` is already a plain string.
+    // Guard against a localized-object fallback rendering as "[object Object]".
+    const name = pageData?.regionalCommunity?.name;
+    const title =
+        pageData?.title || (typeof name === "string" ? name : undefined);
+    return title ? { title } : {};
+}
 
 export async function generateStaticParams() {
     const data = await fetchSanityRCPagesStaticParams();

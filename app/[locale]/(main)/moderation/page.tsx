@@ -1,9 +1,21 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { getActor, isStaff } from "@/lib/authz";
 import { getQueue, getQueueCounts, type QueueTab } from "@/lib/comments/moderation-queue";
 import { ModerationQueue } from "@/components/comments/moderation-queue";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "navigation" });
+  return { title: t("moderation") };
+}
 
 /**
  * In-app moderation queue. Gated on the Prisma role (team_editor | admin).
