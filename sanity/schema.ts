@@ -4,6 +4,7 @@ import { type SchemaTypeDefinition } from "sanity";
 import homepage from "./schemas/documents/homepage";
 import siteAnnouncement from "./schemas/documents/site-announcement";
 import moderationSettings from "./schemas/documents/moderation-settings";
+import docsChapter from "./schemas/documents/docs-chapter";
 import profilePrompt from "./schemas/documents/profile-prompt";
 import page from "./schemas/documents/page";
 import regionalCommunityPage from "./schemas/documents/regional-community-page"; //hub
@@ -94,6 +95,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
         homepage,
         siteAnnouncement,
         moderationSettings,
+        docsChapter,
         profilePrompt,
         page,
         post,

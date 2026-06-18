@@ -1525,5 +1525,8 @@
     "report": "Signaler",
     "reported": "Signalé.",
     "messageDeleted": "Message supprimé"
+  },
+  "reader": {
+    "chapters": "Chapitres"
   }
 }
