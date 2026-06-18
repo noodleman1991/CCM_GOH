@@ -201,7 +201,9 @@
       }
     },
     "recentSubmissions": "Tus contribuciones recientes",
-    "memberCount": "{count, plural, one {# miembro} other {# miembros}}"
+    "memberCount": "{count, plural, one {# miembro} other {# miembros}}",
+    "viewPublicProfile": "Ver perfil público",
+    "submitCaseStudyAction": "Enviar un caso de estudio"
   },
   "settings": {
     "title": "Configuración",

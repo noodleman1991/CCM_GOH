@@ -150,6 +150,39 @@ export function DashboardClient({
         </div>
       </section>
 
+      {/* Your Community — full-width band directly under the header (most
+          personal, engagement-driving element; near the top on mobile too) */}
+      {regionalCommunity && (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+          <Card>
+            <CardContent className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="p-3 rounded-lg bg-[var(--color-ccm-sea)]/10 flex-shrink-0">
+                  <MapPin className="w-6 h-6 text-[var(--color-ccm-sea)]" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-ccm-sea">{t('yourCommunity')}</p>
+                  <p className="font-heading font-semibold text-ccm-midnight truncate">
+                    <bdi>{regionalCommunity.name}</bdi>
+                  </p>
+                  {regionalCommunity.memberCount ? (
+                    <p className="text-sm text-muted-foreground">
+                      {t('memberCount', { count: regionalCommunity.memberCount })}
+                    </p>
+                  ) : null}
+                </div>
+              </div>
+              <Button asChild className="w-full sm:w-auto flex-shrink-0">
+                <Link href={`/communities/${regionalCommunity.slug}`} className="flex items-center justify-center gap-2">
+                  <span>{t('visitCommunity')}</span>
+                  <ArrowRight className="w-4 h-4 rtl:-scale-x-100" />
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+        </section>
+      )}
+
       {/* Main Dashboard Content */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -173,9 +206,9 @@ export function DashboardClient({
                       {t('manageProfileDescription')}
                     </CardDescription>
                     <Button asChild variant="outline" className="w-full mt-auto">
-                      <Link href={`/dashboard/profile/edit`} className={cn("flex items-center justify-center gap-2", rtl && "flex-row-reverse")}>
-                        <span>{t('viewProfile')}</span>
-                        <ArrowRight className="w-4 h-4" />
+                      <Link href={user.username ? `/profiles/${user.username}` : `/dashboard/profile/edit`} className="flex items-center justify-center gap-2">
+                        <span>{t('viewPublicProfile')}</span>
+                        <ArrowRight className="w-4 h-4 rtl:-scale-x-100" />
                       </Link>
                     </Button>
                   </CardContent>
@@ -195,9 +228,9 @@ export function DashboardClient({
                       {t('submitCaseStudyDescription')}
                     </CardDescription>
                     <Button asChild variant="outline" className="w-full mt-auto">
-                      <Link href={`/research-and-action/case-studies/submit`} className={cn("flex items-center justify-center gap-2", rtl && "flex-row-reverse")}>
-                        <span>{t('submit')}</span>
-                        <ArrowRight className="w-4 h-4" />
+                      <Link href={`/research-and-action/case-studies/submit`} className="flex items-center justify-center gap-2">
+                        <span>{t('submitCaseStudyAction')}</span>
+                        <ArrowRight className="w-4 h-4 rtl:-scale-x-100" />
                       </Link>
                     </Button>
                   </CardContent>
@@ -297,40 +330,8 @@ export function DashboardClient({
             )}
           </div>
 
-          {/* Right Column - Community & News */}
+          {/* Right Column - News & contributions */}
           <div className="space-y-8">
-            {/* Regional Community */}
-            {regionalCommunity && (
-              <Card>
-                <CardHeader>
-                  <div className="flex items-center gap-3">
-                    <div className="p-3 rounded-lg bg-[var(--color-ccm-sea)]/10">
-                      <MapPin className="w-6 h-6 text-[var(--color-ccm-sea)]" />
-                    </div>
-                    <div>
-                      <CardTitle>{t('yourCommunity')}</CardTitle>
-                      <CardDescription className="mt-1">
-                        {regionalCommunity.name}
-                        {regionalCommunity.memberCount ? (
-                          <span className="block text-xs text-[var(--color-ccm-sea)] mt-0.5">
-                            {t('memberCount', { count: regionalCommunity.memberCount })}
-                          </span>
-                        ) : null}
-                      </CardDescription>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <Button asChild className="w-full">
-                    <Link href={`/communities/${regionalCommunity.slug}`}>
-                      {t('visitCommunity')}
-                      <ArrowRight className={cn("w-4 h-4", rtl ? "mr-2" : "ml-2")} />
-                    </Link>
-                  </Button>
-                </CardContent>
-              </Card>
-            )}
-
             {/* Recent submissions — the user's own contributions */}
             {contributions.length > 0 && (
               <div>

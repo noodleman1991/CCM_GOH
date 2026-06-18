@@ -201,7 +201,9 @@
       }
     },
     "recentSubmissions": "مساهماتك الأخيرة",
-    "memberCount": "{count, plural, zero {# عضو} one {عضو واحد} two {عضوان} few {# أعضاء} many {# عضوًا} other {# عضو}}"
+    "memberCount": "{count, plural, zero {# عضو} one {عضو واحد} two {عضوان} few {# أعضاء} many {# عضوًا} other {# عضو}}",
+    "viewPublicProfile": "عرض الملف العام",
+    "submitCaseStudyAction": "إرسال دراسة حالة"
   },
   "settings": {
     "title": "الإعدادات",
