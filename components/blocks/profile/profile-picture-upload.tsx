@@ -146,7 +146,7 @@ export default function ProfilePictureUpload({
                                 type="button"
                                 size="icon"
                                 variant="destructive"
-                                className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0"
+                                className="absolute -top-2 -end-2 h-6 w-6 rounded-full p-0"
                                 onClick={handleRemove}
                                 disabled={isRemoving}
                             >

@@ -393,7 +393,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                                     <div className="space-y-4">
                                         {user.recentWork.map((work, id) => (
                                             <BlurFade key={work.id} delay={BLUR_FADE_DELAY * 15 + id * 0.05}>
-                                                <div className="border-l-2 border-muted pl-4">
+                                                <div className="border-s-2 border-muted ps-4">
                                                     <div className="flex items-start justify-between">
                                                         <div>
                                                             <h3 className="font-medium">{work.title}</h3>
