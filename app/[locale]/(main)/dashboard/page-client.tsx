@@ -18,7 +18,9 @@ import {
   Newspaper,
   ArrowRight,
   Edit,
-  FileText
+  FileText,
+  FolderKanban,
+  MessageSquare
 } from 'lucide-react'
 import type { SupportedLocale } from '@/types/prisma'
 
@@ -274,7 +276,51 @@ export function DashboardClient({
                     <Button asChild variant="outline" className="w-full mt-auto">
                       <Link href={`/dashboard/account`} className={cn("flex items-center justify-center gap-2", rtl && "flex-row-reverse")}>
                         <span>{t('manageAccount')}</span>
-                        <ArrowRight className="w-4 h-4" />
+                        <ArrowRight className="w-4 h-4 rtl:-scale-x-100" />
+                      </Link>
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                <Card className="group hover:shadow-lg transition-shadow min-h-[220px] flex flex-col">
+                  <CardHeader>
+                    <div className={cn("flex items-center gap-3", rtl && "flex-row-reverse")}>
+                      <div className="p-3 rounded-lg bg-[var(--color-ccm-sea)]/10 flex-shrink-0">
+                        <FolderKanban className="w-6 h-6 text-[var(--color-ccm-sea)]" />
+                      </div>
+                      <CardTitle>{t('workspaces')}</CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="flex-1 flex flex-col">
+                    <CardDescription className="mb-4 flex-1">
+                      {t('workspacesDescription')}
+                    </CardDescription>
+                    <Button asChild variant="outline" className="w-full mt-auto">
+                      <Link href={`/collaborations`} className="flex items-center justify-center gap-2">
+                        <span>{t('openWorkspaces')}</span>
+                        <ArrowRight className="w-4 h-4 rtl:-scale-x-100" />
+                      </Link>
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                <Card className="group hover:shadow-lg transition-shadow min-h-[220px] flex flex-col">
+                  <CardHeader>
+                    <div className={cn("flex items-center gap-3", rtl && "flex-row-reverse")}>
+                      <div className="p-3 rounded-lg bg-[var(--color-ccm-water)]/10 flex-shrink-0">
+                        <MessageSquare className="w-6 h-6 text-[var(--color-ccm-water)]" />
+                      </div>
+                      <CardTitle>{t('messages')}</CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="flex-1 flex flex-col">
+                    <CardDescription className="mb-4 flex-1">
+                      {t('messagesDescription')}
+                    </CardDescription>
+                    <Button asChild variant="outline" className="w-full mt-auto">
+                      <Link href={`/messages`} className="flex items-center justify-center gap-2">
+                        <span>{t('openMessages')}</span>
+                        <ArrowRight className="w-4 h-4 rtl:-scale-x-100" />
                       </Link>
                     </Button>
                   </CardContent>

@@ -137,7 +137,19 @@
       "system": "System"
     },
     "privacy": "Privacy",
-    "security": "Security"
+    "security": "Security",
+    "saved": "Settings saved.",
+    "save": "Save",
+    "emailNotifications": "Email notifications",
+    "emailReply": "Email me when someone replies",
+    "emailMention": "Email me when someone mentions me",
+    "emailMessage": "Email me about new messages",
+    "messaging": "Messaging",
+    "whoCanMessage": "Who can message me",
+    "everyone": "Everyone",
+    "nobody": "No one",
+    "blocked": "Blocked members",
+    "unblock": "Unblock"
   },
   "notifications": {
     "success": "Success!",
@@ -728,7 +740,13 @@
     "recentSubmissions": "Your recent submissions",
     "memberCount": "{count, plural, one {# member} other {# members}}",
     "viewPublicProfile": "View public profile",
-    "submitCaseStudyAction": "Submit a case study"
+    "submitCaseStudyAction": "Submit a case study",
+    "workspaces": "Workspaces",
+    "workspacesDescription": "Create and join shared spaces to work on projects together",
+    "openWorkspaces": "Open workspaces",
+    "messages": "Messages",
+    "messagesDescription": "Your direct conversations with other members",
+    "openMessages": "Open messages"
   },
   "caseStudies": {
     "title": "Case Studies",

@@ -205,7 +205,13 @@
     "recentSubmissions": "Vos contributions récentes",
     "memberCount": "{count, plural, one {# membre} other {# membres}}",
     "viewPublicProfile": "Voir le profil public",
-    "submitCaseStudyAction": "Soumettre une étude de cas"
+    "submitCaseStudyAction": "Soumettre une étude de cas",
+    "workspaces": "Espaces",
+    "workspacesDescription": "Créez et rejoignez des espaces partagés pour travailler ensemble",
+    "openWorkspaces": "Ouvrir les espaces",
+    "messages": "Messages",
+    "messagesDescription": "Vos conversations directes avec d'autres membres",
+    "openMessages": "Ouvrir les messages"
   },
   "settings": {
     "title": "Paramètres",
@@ -221,7 +227,19 @@
       "system": "Système"
     },
     "privacy": "Confidentialité",
-    "security": "Sécurité"
+    "security": "Sécurité",
+    "saved": "Paramètres enregistrés.",
+    "save": "Enregistrer",
+    "emailNotifications": "Notifications par e-mail",
+    "emailReply": "M'envoyer un e-mail en cas de réponse",
+    "emailMention": "M'envoyer un e-mail en cas de mention",
+    "emailMessage": "M'avertir par e-mail des nouveaux messages",
+    "messaging": "Messagerie",
+    "whoCanMessage": "Qui peut m'envoyer des messages",
+    "everyone": "Tout le monde",
+    "nobody": "Personne",
+    "blocked": "Membres bloqués",
+    "unblock": "Débloquer"
   },
   "notifications": {
     "success": "Succès !",
