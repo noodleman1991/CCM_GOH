@@ -1,5 +1,6 @@
 import { groq } from "next-sanity";
 import { client } from "@/sanity/lib/client";
+import { styledBodyProjection } from "@/sanity/queries/shared/styled-body";
 
 /** Chapter list (nav) for a document collection. */
 export const DOCS_CHAPTERS_QUERY = groq`
@@ -10,12 +11,12 @@ export const DOCS_CHAPTERS_QUERY = groq`
   }
 `;
 
-/** One chapter's full body by slug. */
+/** One chapter's full body by slug (with dereferenced images + internal links). */
 export const DOCS_CHAPTER_QUERY = groq`
   *[_type == "docsChapter" && collection == $collection && slug.current == $slug][0]{
     title,
     order,
-    body
+    body[]{ ${styledBodyProjection} }
   }
 `;
 

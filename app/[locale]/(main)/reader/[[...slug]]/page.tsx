@@ -42,8 +42,11 @@ export default async function ReaderPage({
           Global Research and Action Agenda
         </h1>
         <p className="mt-4 text-muted-foreground">
-          The chapter-by-chapter reader is being prepared. In the meantime you can read the full agenda.
+          The chapter-by-chapter reader is being prepared.
         </p>
+        <Button asChild className="mt-6">
+          <Link href="/research-and-action/agendas">Browse the agendas</Link>
+        </Button>
       </div>
     );
   }
