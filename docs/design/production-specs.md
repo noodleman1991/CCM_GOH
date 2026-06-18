@@ -96,7 +96,15 @@ GDPR erase → hard delete
 
 ---
 
-## STAGE 3 — EmbedPDF spike (Phase 2, GATED before annotation UI)
+## STAGE 3 — EmbedPDF spike — RESULT: CONDITIONAL GO (2026-06-18)
+
+**Ran the spike.** Installed `@embedpdf/{core,models,engines,pdfium,plugin-annotation,plugin-viewport,plugin-render,plugin-zoom}@2.14.4`, built a minimal viewer (`usePdfiumEngine` + `EmbedPDF` + `Viewport` + `RenderLayer`), typechecked + Turbopack-built.
+- ✅ **React 19 + Turbopack compatible at the framework level.** TS fully resolved the React bindings/props against React 19.1.1; Turbopack compiled the entire package family **except** the legacy loader. The only TS issues were trivial API usage (a missing `documentId` prop).
+- ❌ **One real blocker, NOT a platform issue:** `@embedpdf/plugin-loader@1.5.0` is a stale major that imports `loadDocument`/`setDocument` from `@embedpdf/core`, which `core@2.14.4` no longer exports (2.x moved loading to `startLoadingDocument`/`setActiveDocument` on the registry; there is no `plugin-loader@2.x`). Removed it.
+- **Verdict: GO**, using the 2.x loading API (registry document actions / the component's own loading), not the legacy `plugin-loader`. The wasm/worker resolution under Turbopack did NOT error in the spike. The fallback (pdf.js read-only + page-anchored comments) remains the escape hatch if the 2.x loading wiring proves fiddly during the real build.
+- The `@embedpdf/*@2.14.4` packages remain installed for the production `<PdfViewer>`. Spike route/component were removed.
+
+## STAGE 3 (original plan) — EmbedPDF spike (Phase 2, GATED before annotation UI)
 
 **Risk:** unproven on React 19 + Turbopack (web-worker resolution). **Spike (time-boxed, its own commit):** a throwaway route mounts `@embedpdf` viewer + annotation plugin via `dynamic(ssr:false)` against a sample PDF; verify (a) worker loads under Turbopack (CSP `worker-src 'self' blob:` already allows it), (b) `exportAnnotations()`/`importAnnotations()` round-trip, (c) `onAnnotationEvent` fires. **Go/No-Go:**
 - GO → build the annotator (one `CollaborationFileAnnotations` row/file, debounced save, show/hide toggle, VIEWER read-only).
