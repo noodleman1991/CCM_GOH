@@ -345,7 +345,9 @@ const createPortableTextComponents = (
 
         let href = "/";
         if (type === "post" || type === "newsPost") href = `/news/${slug}`;
-        else if (type === "caseStudy") href = `/case-studies/${slug}`;
+        else if (type === "caseStudy") href = `/research-and-action/case-studies/${slug}`;
+        else if (type === "livedExperience") href = `/lived-experiences/${slug}`;
+        else if (type === "docsChapter") href = `/reader/${slug}`;
         else if (type === "page") href = `/${slug === "index" ? "" : slug}`;
 
         return (

@@ -62,7 +62,8 @@
     "moderation": "Moderation",
     "broadcast": "Send notification",
     "privacy": "Privacy",
-    "terms": "Terms"
+    "terms": "Terms",
+    "readAgenda": "Read the Agenda"
   },
   "navUser": {
     "account": "Account",

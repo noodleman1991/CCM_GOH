@@ -71,3 +71,23 @@ export async function isCommentTargetValid(
   cache.set(cacheKey, { ok, at: Date.now() });
   return ok;
 }
+
+/** Resolve the parent collaboration id for a thread/file target (for authz). */
+export async function collaborationIdForTarget(
+  targetType: "collaborationThread" | "collaborationFile",
+  targetId: string
+): Promise<string | null> {
+  const table = targetType === "collaborationThread" ? "CollaborationThread" : "CollaborationFile";
+  const r = await safeQuery(async () => {
+    try {
+      const rows = await prisma.$queryRawUnsafe<{ collaborationId: string }[]>(
+        `SELECT "collaborationId" FROM "${table}" WHERE "id" = $1 LIMIT 1`,
+        targetId
+      );
+      return rows[0]?.collaborationId ?? null;
+    } catch {
+      return null;
+    }
+  });
+  return r.success ? r.data : null;
+}

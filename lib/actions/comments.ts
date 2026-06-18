@@ -4,7 +4,8 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getActor } from "@/lib/authz";
 import { assertRateLimit, RateLimitError } from "@/lib/rate-limit";
-import { isCommentTargetValid } from "@/lib/comments/target";
+import { isCommentTargetValid, collaborationIdForTarget } from "@/lib/comments/target";
+import { authorizeCollab } from "@/lib/collaboration/service";
 import { moderateBody } from "@/lib/comments/moderation";
 import { verifyTurnstile, turnstileConfigured } from "@/lib/turnstile";
 import { isCommentTargetType } from "@/lib/comments/types";
@@ -127,6 +128,18 @@ export async function postComment(input: PostCommentInput): Promise<PostCommentR
   // 4. target validity
   const validTarget = await isCommentTargetValid(data.targetType as any, data.targetId);
   if (!validTarget) return { ok: false, error: "This content is no longer available for comments.", code: "TARGET" };
+
+  // 4b. Collaboration targets require membership permission to comment — the
+  // workspace's visibility/role rules, not just "the thread exists".
+  if (data.targetType === "collaborationThread" || data.targetType === "collaborationFile") {
+    const collaborationId = await collaborationIdForTarget(data.targetType, data.targetId);
+    if (!collaborationId) return { ok: false, error: "Not available.", code: "TARGET" };
+    try {
+      await authorizeCollab(collaborationId, "collab:comment");
+    } catch {
+      return { ok: false, error: "You don't have permission to comment here.", code: "TARGET" };
+    }
+  }
 
   // 5. one-level nesting
   let depth = 0;

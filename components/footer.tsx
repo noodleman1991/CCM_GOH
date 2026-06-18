@@ -11,6 +11,7 @@ export default function Footer() {
     { label: t("home"), href: "/" },
     { label: t("blog"), href: "/blog" },
     { label: t("about"), href: "/about" },
+    { label: t("readAgenda"), href: "/reader" },
     { label: t("privacy"), href: "/legal/privacy" },
     { label: t("terms"), href: "/legal/terms" },
   ];
