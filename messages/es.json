@@ -1393,5 +1393,34 @@
     "reported": "Reportado. Gracias.",
     "signInToReact": "Inicia sesión para reaccionar.",
     "signInToReport": "Inicia sesión para reportar."
+  },
+  "discovery": {
+    "searchPlaceholder": "Buscar…",
+    "sortLabel": "Ordenar",
+    "clearAll": "Borrar todo",
+    "sort": {
+      "relevance": "Relevancia",
+      "newest": "Más recientes",
+      "oldest": "Más antiguos",
+      "az": "A–Z",
+      "region": "Por región"
+    },
+    "timeFrame": {
+      "any": "Cualquier fecha",
+      "year": "Último año",
+      "threeYears": "Últimos 3 años",
+      "fiveYears": "Últimos 5 años"
+    },
+    "facet": {
+      "region": "Región",
+      "topic": "Tema",
+      "tags": "Etiquetas",
+      "language": "Idioma",
+      "source": "Fuente",
+      "agendaType": "Tipo",
+      "workType": "Tipo de trabajo",
+      "expertise": "Experiencia",
+      "openToTalk": "Abierto a hablar"
+    }
   }
 }

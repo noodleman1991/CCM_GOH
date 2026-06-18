@@ -1393,5 +1393,34 @@
     "reported": "تم الإبلاغ. شكرًا لك.",
     "signInToReact": "سجّل الدخول للتفاعل.",
     "signInToReport": "سجّل الدخول للإبلاغ."
+  },
+  "discovery": {
+    "searchPlaceholder": "بحث…",
+    "sortLabel": "ترتيب",
+    "clearAll": "مسح الكل",
+    "sort": {
+      "relevance": "الصلة",
+      "newest": "الأحدث",
+      "oldest": "الأقدم",
+      "az": "أ–ي",
+      "region": "حسب المنطقة"
+    },
+    "timeFrame": {
+      "any": "أي وقت",
+      "year": "العام الماضي",
+      "threeYears": "آخر 3 سنوات",
+      "fiveYears": "آخر 5 سنوات"
+    },
+    "facet": {
+      "region": "المنطقة",
+      "topic": "الموضوع",
+      "tags": "الوسوم",
+      "language": "اللغة",
+      "source": "المصدر",
+      "agendaType": "النوع",
+      "workType": "نوع العمل",
+      "expertise": "الخبرة",
+      "openToTalk": "منفتح على الحوار"
+    }
   }
 }
