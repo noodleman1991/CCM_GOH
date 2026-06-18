@@ -2,8 +2,10 @@
 
 import {
     BadgeCheck,
+    Bell,
     ChevronsUpDown,
     LogOut,
+    MessageSquare,
 } from "lucide-react"
 import { useTranslations, useLocale } from "next-intl"
 import Link from "next/link"
@@ -46,6 +48,8 @@ export function NavUser({
     const { isMobile } = useSidebar()
     const [open, setOpen] = useState(false)
     const t = useTranslations("navUser")
+    const tNav = useTranslations("navigation")
+    const tNotif = useTranslations("notifications")
     const locale = useLocale()
     const isRTL = rtlLocales.includes(locale)
 
@@ -94,6 +98,20 @@ export function NavUser({
                             </div>
                         </DropdownMenuLabel>
                         <DropdownMenuGroup>
+                            {/* Engagement hub: Messages + Notifications live in
+                                the avatar (not the sidebar/header). */}
+                            <DropdownMenuItem asChild>
+                                <Link href={`/${locale}/messages`} className={cn("flex items-center gap-2", isRTL && "flex-row-reverse")}>
+                                    <MessageSquare className="size-4" />
+                                    <span>{tNav("messages")}</span>
+                                </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem asChild>
+                                <Link href={`/${locale}/dashboard?tab=notifications`} className={cn("flex items-center gap-2", isRTL && "flex-row-reverse")}>
+                                    <Bell className="size-4" />
+                                    <span>{tNotif("title")}</span>
+                                </Link>
+                            </DropdownMenuItem>
                             <DropdownMenuItem asChild>
                                 <Link href={`/${locale}/dashboard`} className={cn("flex items-center gap-2", isRTL && "flex-row-reverse")}>
                                     <BadgeCheck className="size-4" />
