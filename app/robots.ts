@@ -10,6 +10,7 @@ const DISALLOW = [
   "/studio",
   "/sign-in",
   "/sign-up",
+  "/search", // query page — no index value, conserves crawl budget
 ];
 
 export default function robots(): MetadataRoute.Robots {

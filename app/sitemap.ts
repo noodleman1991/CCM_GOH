@@ -87,14 +87,36 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     getContentSitemap('_type == "report"', "/research-and-action/reports", "monthly", 0.6),
   ]);
 
-  // Static top-level routes per locale.
-  const staticRoutes: MetadataRoute.Sitemap = LOCALES.flatMap((locale) =>
-    ["", "/news", "/lived-experiences", "/collaborate", "/research-and-action/case-studies"].map((p) => ({
+  // Static top-level public routes per locale. Weekly-changing index/landing
+  // pages; legal pages change rarely (monthly, lower priority).
+  const WEEKLY_PATHS = [
+    "",
+    "/news",
+    "/lived-experiences",
+    "/collaborate",
+    "/profiles",
+    "/reader",
+    "/research-and-action/case-studies",
+    "/research-and-action/global-agenda",
+    "/research-and-action/regional-agendas",
+    "/research-and-action/community-agendas",
+    "/research-and-action/toolkits",
+    "/research-and-action/impact-reports",
+  ];
+  const MONTHLY_PATHS = ["/legal/terms", "/legal/privacy"];
+
+  const staticRoutes: MetadataRoute.Sitemap = LOCALES.flatMap((locale) => [
+    ...WEEKLY_PATHS.map((p) => ({
       url: `${BASE}/${locale}${p}`,
       changeFrequency: "weekly" as const,
       priority: p === "" ? 1 : 0.6,
-    }))
-  );
+    })),
+    ...MONTHLY_PATHS.map((p) => ({
+      url: `${BASE}/${locale}${p}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.3,
+    })),
+  ]);
 
   return [
     ...staticRoutes,
