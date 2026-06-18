@@ -1481,5 +1481,16 @@
     "addMedia": "Add",
     "noMedia": "No media yet.",
     "mediaConsentRequired": "This video needs cookie consent to play."
+  },
+  "messages": {
+    "title": "Messages",
+    "empty": "No conversations yet.",
+    "selectConversation": "Select a conversation.",
+    "unknownUser": "Member",
+    "unread": "Unread",
+    "back": "Back",
+    "typeMessage": "Type a message…",
+    "send": "Send",
+    "messageButton": "Message"
   }
 }

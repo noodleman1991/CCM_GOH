@@ -1481,5 +1481,16 @@
     "addMedia": "إضافة",
     "noMedia": "لا توجد وسائط بعد.",
     "mediaConsentRequired": "يحتاج هذا الفيديو إلى الموافقة على ملفات تعريف الارتباط."
+  },
+  "messages": {
+    "title": "الرسائل",
+    "empty": "لا توجد محادثات بعد.",
+    "selectConversation": "اختر محادثة.",
+    "unknownUser": "عضو",
+    "unread": "غير مقروء",
+    "back": "رجوع",
+    "typeMessage": "اكتب رسالة…",
+    "send": "إرسال",
+    "messageButton": "مراسلة"
   }
 }

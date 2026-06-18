@@ -111,6 +111,10 @@ model User {
   notificationsActed     Notification[]             @relation("NotificationActor")
   notificationPreference NotificationPreference?
 
+  // Direct messages
+  conversationParticipations ConversationParticipant[]
+  messagesSent               Message[]                 @relation("MessageSender")
+
   @@index([isSearchable])
   @@index([profileVisibility])
   @@index([lastLoginAt])
@@ -561,4 +565,41 @@ model NotificationPreference {
   emailOnMessage  Boolean @default(true)
   // Unsubscribe token for one-click email opt-out.
   unsubscribeToken String @unique @default(cuid())
+}
+
+// ─── Direct messages ─────────────────────────────────────────────────────────
+
+model Conversation {
+  id           String                    @id @default(cuid())
+  createdAt    DateTime                  @default(now())
+  lastMessageAt DateTime                 @default(now())
+  participants ConversationParticipant[]
+  messages     Message[]
+
+  @@index([lastMessageAt])
+}
+
+model ConversationParticipant {
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  userId         String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // For the inbox unread badge: last time this participant read the conversation.
+  lastReadAt     DateTime?
+  joinedAt       DateTime     @default(now())
+
+  @@id([conversationId, userId])
+  @@index([userId])
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  senderId       String
+  sender         User         @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade)
+  body           String
+  createdAt      DateTime     @default(now())
+
+  @@index([conversationId, createdAt])
 }

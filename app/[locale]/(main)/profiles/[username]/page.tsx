@@ -13,6 +13,7 @@ import { getUserProfile, checkProfileOwnership } from "@/lib/actions/profile"
 import { cn } from "@/lib/utils"
 import { heading } from "@/lib/design-tokens"
 import { MessageCircle } from "lucide-react"
+import { MessageUserButton } from "@/components/messaging/message-user-button"
 import { regionLabel, specialCommunityLabel } from "@/lib/labels"
 import { ProfileCompletenessIndicator } from "@/components/ui/profile-completeness-indicator"
 import { ProfileStatistics } from "@/components/blocks/profile/profile-statistics"
@@ -165,6 +166,12 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                                     <span className="size-1.5 rounded-full bg-[var(--color-ccm-sea)]" aria-hidden="true" />
                                     {t('openToCollaboration')}
                                 </span>
+                            </BlurFade>
+                        )}
+
+                        {!isOwnProfile && (
+                            <BlurFade delay={BLUR_FADE_DELAY * 4.9} className="mb-3">
+                                <MessageUserButton targetUserId={user.id} />
                             </BlurFade>
                         )}
 
