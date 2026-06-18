@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { X, User, Video } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from '@/components/ui/button';
+import { Link } from '@/i18n/navigation';
 import { useCookieConsent } from '@/components/cookie-consent/cookie-consent-provider';
 import {
   Dialog,
@@ -43,6 +44,7 @@ interface LivedExperience {
   videoLink?: string;
   duration?: string;
   publishedAt?: string;
+  slug?: { current?: string };
   author?: {
     _id: string;
     name: string;
@@ -307,6 +309,16 @@ export function VideoModal({
                   );
                 })}
               </div>
+            )}
+
+            {experience?.slug?.current && (
+              <Link
+                href={`/lived-experiences/${experience.slug.current}`}
+                className="inline-flex items-center gap-1 text-sm font-medium text-ccm-sea hover:underline"
+              >
+                {t("viewFull")}
+                <span aria-hidden="true" className="rtl:-scale-x-100">→</span>
+              </Link>
             )}
           </div>
         </div>

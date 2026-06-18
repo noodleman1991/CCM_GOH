@@ -665,7 +665,9 @@
     "shareCta": "Comparte tu experiencia",
     "storyLabel": "Historia",
     "closeVideo": "Cerrar",
-    "videoTitleFallback": "Experiencia vivida"
+    "videoTitleFallback": "Experiencia vivida",
+    "backToGallery": "Volver a la galería",
+    "viewFull": "Ver historia completa"
   },
   "caseStudyForm": {
     "sections": {
