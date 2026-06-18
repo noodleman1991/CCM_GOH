@@ -72,27 +72,44 @@ export default function CaseStudySubmissionLayout({
 
     const sectionRefs = useRef<Record<string, HTMLElement | null>>({})
 
-    // Handle scroll to update active section (only for form step)
+    // Update the active section as the user scrolls. Uses IntersectionObserver
+    // rather than window.scrollY so it works regardless of which element owns
+    // the scroll (the page scroll lives on the sidebar inset, not the window).
     useEffect(() => {
         if (currentStep !== 'form') return
 
-        const handleScroll = () => {
-            const scrollPosition = window.scrollY + 100
-
-            for (const section of sections) {
-                const element = sectionRefs.current[section.id]
-                if (element) {
-                    const { offsetTop, offsetHeight } = element
-                    if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
-                        setActiveSection(section.id)
-                        break
+        // Track each section's intersection ratio; the most-visible one wins.
+        const ratios = new Map<string, number>()
+        const observer = new IntersectionObserver(
+            (entries) => {
+                for (const entry of entries) {
+                    const id = entry.target.getAttribute('data-section-id')
+                    if (id) ratios.set(id, entry.isIntersecting ? entry.intersectionRatio : 0)
+                }
+                let best: string | null = null
+                let bestRatio = 0
+                for (const section of sections) {
+                    const r = ratios.get(section.id) ?? 0
+                    if (r > bestRatio) {
+                        bestRatio = r
+                        best = section.id
                     }
                 }
+                if (best) setActiveSection(best)
+            },
+            // Bias toward the section near the top of the viewport.
+            { rootMargin: '-80px 0px -55% 0px', threshold: [0, 0.25, 0.5, 0.75, 1] }
+        )
+
+        for (const section of sections) {
+            const element = sectionRefs.current[section.id]
+            if (element) {
+                element.setAttribute('data-section-id', section.id)
+                observer.observe(element)
             }
         }
 
-        window.addEventListener('scroll', handleScroll)
-        return () => window.removeEventListener('scroll', handleScroll)
+        return () => observer.disconnect()
     }, [currentStep])
 
     const scrollToSection = (sectionId: string) => {
