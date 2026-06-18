@@ -57,7 +57,10 @@
       "farmerAndFisher": "المزارعون والصيادون"
     },
     "collaborations": "مساحات العمل",
-    "messages": "الرسائل"
+    "messages": "الرسائل",
+    "staff": "الطاقم",
+    "moderation": "الإشراف",
+    "broadcast": "إرسال إشعار"
   },
   "navUser": {
     "account": "الحساب",
@@ -628,7 +631,8 @@
       "projects": "المشاريع",
       "communities": "المجتمعات",
       "skills": "المهارات"
-    }
+    },
+    "workspaces": "مساحات العمل"
   },
   "profilePicture": {
     "title": "صورة الملف الشخصي",

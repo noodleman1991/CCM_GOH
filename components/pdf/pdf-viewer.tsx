@@ -19,12 +19,64 @@ import { Scroller } from "@embedpdf/plugin-scroll/react";
 import { RenderPluginPackage } from "@embedpdf/plugin-render";
 import { RenderLayer } from "@embedpdf/plugin-render/react";
 import { AnnotationPluginPackage } from "@embedpdf/plugin-annotation";
-import { AnnotationLayer } from "@embedpdf/plugin-annotation/react";
+import { AnnotationLayer, useAnnotationCapability } from "@embedpdf/plugin-annotation/react";
+import { useEffect, useRef as useReactRef } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
+import { loadAnnotations, saveAnnotations } from "@/lib/actions/collaboration-annotations";
+
+/**
+ * Persists EmbedPDF annotations to CollaborationFileAnnotations: imports the
+ * saved blob on mount, debounce-saves the export on any annotation event.
+ * Rendered inside <EmbedPDF> so the capability hook has a registry.
+ */
+function AnnotationPersistence({ fileId, canAnnotate }: { fileId: string; canAnnotate: boolean }) {
+  const { provides: annotation } = useAnnotationCapability();
+  const saveTimer = useReactRef<ReturnType<typeof setTimeout> | null>(null);
+  const importedRef = useReactRef(false);
+
+  useEffect(() => {
+    if (!annotation) return;
+
+    // Load saved annotations once.
+    if (!importedRef.current) {
+      importedRef.current = true;
+      loadAnnotations(fileId).then((res) => {
+        if (res.ok && res.data && annotation.importAnnotations) {
+          try {
+            annotation.importAnnotations(res.data as never);
+          } catch {
+            /* ignore malformed legacy blobs */
+          }
+        }
+      });
+    }
+
+    if (!canAnnotate || !annotation.onAnnotationEvent) return;
+    const unsubscribe = annotation.onAnnotationEvent(() => {
+      if (saveTimer.current) clearTimeout(saveTimer.current);
+      saveTimer.current = setTimeout(async () => {
+        try {
+          const task = annotation.exportAnnotations?.();
+          const data = task && "toPromise" in task ? await (task as { toPromise: () => Promise<unknown> }).toPromise() : await task;
+          if (data !== undefined) await saveAnnotations(fileId, data);
+        } catch {
+          /* best-effort */
+        }
+      }, 1500);
+    });
+    return () => {
+      if (saveTimer.current) clearTimeout(saveTimer.current);
+      unsubscribe?.();
+    };
+  }, [annotation, fileId, canAnnotate]);
+
+  return null;
+}
 
 export default function PdfViewer({
   url,
+  fileId,
   canAnnotate,
 }: {
   url: string;
@@ -66,6 +118,7 @@ export default function PdfViewer({
       )}
       <div className="min-h-0 flex-1 bg-muted">
         <EmbedPDF engine={engine} plugins={plugins}>
+          {canAnnotate && <AnnotationPersistence fileId={fileId} canAnnotate={canAnnotate} />}
           <Viewport documentId={DOC_ID} className="h-full w-full">
             <Scroller
               documentId={DOC_ID}

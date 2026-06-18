@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils"
 import { heading } from "@/lib/design-tokens"
 import { MessageCircle } from "lucide-react"
 import { MessageUserButton } from "@/components/messaging/message-user-button"
+import { listPublicWorkspacesForUser } from "@/lib/collaboration/service"
 import { regionLabel, specialCommunityLabel } from "@/lib/labels"
 import { ProfileCompletenessIndicator } from "@/components/ui/profile-completeness-indicator"
 import { ProfileStatistics } from "@/components/blocks/profile/profile-statistics"
@@ -89,6 +90,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
         notFound()
     }
     const isOwnProfile = await checkProfileOwnership(user.id)
+    const publicWorkspaces = await listPublicWorkspacesForUser(user.id)
 
     // Calculate profile completeness
     const profileSections = {
@@ -450,6 +452,23 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                                                     </Badge>
                                                 </div>
                                             ))}
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </BlurFade>
+                    )}
+
+                    {publicWorkspaces.length > 0 && (
+                        <BlurFade delay={BLUR_FADE_DELAY * 16.5}>
+                            <Card>
+                                <CardContent className="pt-6">
+                                    <h3 className="font-semibold mb-3">{t('workspaces')}</h3>
+                                    <div className="space-y-2">
+                                        {publicWorkspaces.map((w) => (
+                                            <Link key={w.id} href={`/collaborations/${w.id}`} className="block text-sm text-ccm-sea hover:underline">
+                                                <bdi>{w.title}</bdi>
+                                            </Link>
+                                        ))}
                                     </div>
                                 </CardContent>
                             </Card>

@@ -74,6 +74,23 @@ export async function listVisibleCollaborations(userId: string | null) {
   return r.success ? r.data : [];
 }
 
+/** A user's PUBLIC, non-archived workspaces — for display on their profile. */
+export async function listPublicWorkspacesForUser(userId: string) {
+  const r = await safeQuery(() =>
+    prisma.collaboration.findMany({
+      where: {
+        visibility: "PUBLIC",
+        status: { not: "ARCHIVED" },
+        members: { some: { userId } },
+      },
+      orderBy: { updatedAt: "desc" },
+      take: 6,
+      select: { id: true, title: true },
+    })
+  );
+  return r.success ? r.data : [];
+}
+
 /** Threads in a workspace (caller must have authorized read). */
 export async function listThreads(collaborationId: string) {
   const r = await safeQuery(() =>

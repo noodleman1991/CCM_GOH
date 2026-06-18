@@ -57,7 +57,10 @@
       "farmerAndFisher": "Farmers & Fishers"
     },
     "collaborations": "Workspaces",
-    "messages": "Messages"
+    "messages": "Messages",
+    "staff": "Staff",
+    "moderation": "Moderation",
+    "broadcast": "Send notification"
   },
   "navUser": {
     "account": "Account",
@@ -538,7 +541,8 @@
       "projects": "Projects",
       "communities": "Communities",
       "skills": "Skills"
-    }
+    },
+    "workspaces": "Workspaces"
   },
   "profilePicture": {
     "title": "Profile Picture",
