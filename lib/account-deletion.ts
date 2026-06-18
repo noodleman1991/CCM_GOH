@@ -124,6 +124,11 @@ export async function deleteUserData(clerkUserId: string): Promise<DeletionResul
     console.warn(`Sole-owner collaboration handling failed for ${clerkUserId}:`, err)
   }
 
+  // Note: messages, conversation participations, notifications, blocks, mentions,
+  // reactions, comments and collaboration memberships all cascade from User
+  // (onDelete: Cascade). After the user-delete below we sweep conversations that
+  // are left with no participants (fully-orphaned DMs).
+
   // Prisma row may not exist (e.g. user never finished onboarding) — that's fine.
   let prismaDeleted = false
   try {
@@ -132,6 +137,13 @@ export async function deleteUserData(clerkUserId: string): Promise<DeletionResul
   } catch (err: any) {
     // P2025 = record not found; anything else is a real failure.
     if (err?.code !== "P2025") throw err
+  }
+
+  // Sweep conversations left with no participants (both sides deleted).
+  try {
+    await prisma.conversation.deleteMany({ where: { participants: { none: {} } } })
+  } catch (err) {
+    console.warn("Orphan-conversation sweep failed:", err)
   }
 
   return { prismaDeleted, ...sanity }

@@ -597,15 +597,30 @@ model ConversationParticipant {
 }
 
 model Message {
-  id             String       @id @default(cuid())
+  id             String          @id @default(cuid())
   conversationId String
-  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  conversation   Conversation    @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   senderId       String
-  sender         User         @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade)
+  sender         User            @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade)
   body           String
-  createdAt      DateTime     @default(now())
+  deletedAt      DateTime?
+  createdAt      DateTime        @default(now())
+  reports        MessageReport[]
 
   @@index([conversationId, createdAt])
+}
+
+model MessageReport {
+  id         String   @id @default(cuid())
+  messageId  String
+  message    Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  reporterId String
+  reason     String?
+  status     CommentReportStatus @default(OPEN)
+  createdAt  DateTime @default(now())
+
+  @@unique([messageId, reporterId])
+  @@index([status])
 }
 
 // ─── Messaging privacy ───────────────────────────────────────────────────────

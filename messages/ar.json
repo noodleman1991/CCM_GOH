@@ -1491,6 +1491,10 @@
     "back": "رجوع",
     "typeMessage": "اكتب رسالة…",
     "send": "إرسال",
-    "messageButton": "مراسلة"
+    "messageButton": "مراسلة",
+    "delete": "حذف",
+    "report": "إبلاغ",
+    "reported": "تم الإبلاغ.",
+    "messageDeleted": "تم حذف الرسالة"
   }
 }

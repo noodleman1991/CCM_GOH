@@ -68,10 +68,16 @@ export async function listMessages(conversationId: string, userId: string) {
       where: { conversationId },
       orderBy: { createdAt: "asc" },
       take: 200,
-      select: { id: true, senderId: true, body: true, createdAt: true },
+      select: { id: true, senderId: true, body: true, createdAt: true, deletedAt: true },
     })
   );
   return r.success
-    ? r.data.map((m) => ({ id: m.id, senderId: m.senderId, body: m.body, createdAt: m.createdAt.toISOString() }))
+    ? r.data.map((m) => ({
+        id: m.id,
+        senderId: m.senderId,
+        body: m.deletedAt ? "" : m.body,
+        deleted: !!m.deletedAt,
+        createdAt: m.createdAt.toISOString(),
+      }))
     : [];
 }

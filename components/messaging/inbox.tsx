@@ -11,10 +11,10 @@ import { Input } from "@/components/ui/input";
 import { ArrowLeft, Send } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { cn } from "@/lib/utils";
-import { sendMessage, markConversationRead } from "@/lib/actions/messaging";
+import { sendMessage, markConversationRead, deleteMessage, reportMessage } from "@/lib/actions/messaging";
 import type { ConversationSummary } from "@/lib/messaging/service";
 
-type Msg = { id: string; senderId: string; body: string; createdAt: string };
+type Msg = { id: string; senderId: string; body: string; createdAt: string; deleted?: boolean };
 const listFetcher = (url: string) => fetch(url).then((r) => r.json() as Promise<{ conversations: ConversationSummary[] }>);
 const msgFetcher = (url: string) => fetch(url).then((r) => r.json() as Promise<{ messages: Msg[] }>);
 
@@ -145,18 +145,36 @@ function Thread({
         {messages.map((m) => {
           const mine = m.senderId === currentUserId;
           return (
-            <div key={m.id} className={cn("flex", mine ? "justify-end" : "justify-start")}>
+            <div key={m.id} className={cn("group flex items-end gap-1", mine ? "justify-end" : "justify-start")}>
+              {mine && !m.deleted && (
+                <button
+                  onClick={async () => { const r = await deleteMessage(m.id); if (r.ok) mutate(); }}
+                  className="opacity-0 transition-opacity group-hover:opacity-100 text-xs text-muted-foreground hover:text-destructive"
+                  aria-label={t("delete")}
+                >
+                  {t("delete")}
+                </button>
+              )}
               <div
                 className={cn(
                   "max-w-[75%] rounded-2xl px-3 py-2 text-sm",
-                  mine ? "bg-ccm-sea text-white" : "bg-muted text-foreground"
+                  m.deleted ? "bg-muted text-muted-foreground italic" : mine ? "bg-ccm-sea text-white" : "bg-muted text-foreground"
                 )}
               >
-                <p className="whitespace-pre-wrap break-words">{m.body}</p>
-                <p className={cn("mt-0.5 text-[10px]", mine ? "text-white/70" : "text-muted-foreground")}>
+                <p className="whitespace-pre-wrap break-words">{m.deleted ? t("messageDeleted") : m.body}</p>
+                <p className={cn("mt-0.5 text-[10px]", mine && !m.deleted ? "text-white/70" : "text-muted-foreground")}>
                   {formatDistanceToNow(new Date(m.createdAt), { addSuffix: true })}
                 </p>
               </div>
+              {!mine && !m.deleted && (
+                <button
+                  onClick={async () => { const r = await reportMessage(m.id, "reported from thread"); if (r.ok) toast.success(t("reported")); }}
+                  className="opacity-0 transition-opacity group-hover:opacity-100 text-xs text-muted-foreground hover:text-destructive"
+                  aria-label={t("report")}
+                >
+                  {t("report")}
+                </button>
+              )}
             </div>
           );
         })}
