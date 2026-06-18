@@ -1369,5 +1369,27 @@
     "submit": "Submit for review",
     "cancel": "Cancel",
     "success": "Thank you — your experience was submitted for review."
+  },
+  "comments": {
+    "heading": "Discussion",
+    "loading": "Loading…",
+    "empty": "No comments yet. Start the conversation.",
+    "post": "Post",
+    "reply": "Reply",
+    "placeholder": "Add a comment…",
+    "replyPlaceholder": "Write a reply…",
+    "namePlaceholder": "Your name",
+    "anonNotice": "Posting anonymously — your comment will be reviewed before it appears.",
+    "heldForReview": "Thanks — your comment will appear after review.",
+    "posted": "Comment posted.",
+    "loadMore": "Load more",
+    "pending": "Pending review",
+    "deleted": "This comment was deleted.",
+    "anonymous": "Anonymous",
+    "delete": "Delete",
+    "report": "Report",
+    "reported": "Reported. Thank you.",
+    "signInToReact": "Sign in to react.",
+    "signInToReport": "Sign in to report."
   }
 }

@@ -1369,5 +1369,27 @@
     "submit": "Soumettre pour révision",
     "cancel": "Annuler",
     "success": "Merci — votre expérience a été soumise pour révision."
+  },
+  "comments": {
+    "heading": "Discussion",
+    "loading": "Chargement…",
+    "empty": "Pas encore de commentaires. Lancez la conversation.",
+    "post": "Publier",
+    "reply": "Répondre",
+    "placeholder": "Ajouter un commentaire…",
+    "replyPlaceholder": "Écrire une réponse…",
+    "namePlaceholder": "Votre nom",
+    "anonNotice": "Publication anonyme : votre commentaire sera examiné avant publication.",
+    "heldForReview": "Merci — votre commentaire apparaîtra après examen.",
+    "posted": "Commentaire publié.",
+    "loadMore": "Charger plus",
+    "pending": "En attente de validation",
+    "deleted": "Ce commentaire a été supprimé.",
+    "anonymous": "Anonyme",
+    "delete": "Supprimer",
+    "report": "Signaler",
+    "reported": "Signalé. Merci.",
+    "signInToReact": "Connectez-vous pour réagir.",
+    "signInToReport": "Connectez-vous pour signaler."
   }
 }

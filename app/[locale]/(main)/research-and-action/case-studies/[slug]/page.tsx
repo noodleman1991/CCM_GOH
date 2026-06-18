@@ -14,6 +14,7 @@ import { Link } from '@/i18n/navigation'
 import { urlFor } from '@/sanity/lib/image'
 import { getLocalizedText, formatCaseStudyDate, getPrimaryAuthor, getStudyLocationText } from '@/lib/case-study-utils'
 import PortableTextRenderer from '@/components/portable-text-renderer'
+import { CommentIsland } from '@/components/comments/comment-island'
 import { getTranslations } from 'next-intl/server'
 import { cn } from '@/lib/utils'
 import { heading } from '@/lib/design-tokens'
@@ -238,6 +239,11 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ loca
             </p>
           </CardContent>
         </Card>
+      )}
+
+      {/* Discussion — lazy, ISR-safe island */}
+      {caseStudy._id && (
+        <CommentIsland targetType="caseStudy" targetId={caseStudy._id} />
       )}
     </div>
   )
