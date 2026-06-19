@@ -47,6 +47,27 @@ export function headingId(block: PTBlock): string {
   return slug || `h-${key}`;
 }
 
+/**
+ * Drop a leading heading block whose text matches the document title — the
+ * chapter title is already shown as the page <h1>, so this removes the visible
+ * "double title". Only the FIRST block, and only when it's a heading that
+ * matches; a descriptive first heading (different text) is left intact.
+ */
+export function stripLeadingTitleHeading<T>(
+  body: T[] | undefined,
+  title: string
+): T[] {
+  if (!Array.isArray(body) || body.length === 0) return body ?? [];
+  const norm = (s: string) => s.toLowerCase().replace(/\s+/g, " ").trim();
+  const first = body[0] as PTBlock;
+  const isHeading =
+    first?._type === "block" && ["h2", "h3", "h4"].includes(first.style ?? "");
+  if (isHeading && norm(blockPlainText(first)) === norm(title)) {
+    return body.slice(1);
+  }
+  return body;
+}
+
 export type TocItem = { id: string; text: string; level: 2 | 3 };
 
 export type Footnote = { key: string; number: number; text: string };

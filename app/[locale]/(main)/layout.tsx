@@ -40,7 +40,13 @@ export default async function MainLayout({
                         <NotificationBell />
                     </div>
                 </header>
-                <div className="flex flex-1 flex-col overflow-x-hidden w-full">
+                {/*
+                  overflow-x-clip (not -hidden): clips horizontal overflow
+                  WITHOUT making this a scroll container, so position: sticky
+                  (reader menus / "on this page", profile sidebars) keeps working
+                  against the viewport. overflow-x-hidden silently broke sticky.
+                */}
+                <div className="flex flex-1 flex-col overflow-x-clip w-full">
                     <main>{children}</main>
                 </div>
             </SidebarInset>

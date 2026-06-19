@@ -13,6 +13,7 @@ import { splitContentAtReadMore } from "@/lib/portable-text-utils";
 import { PortableTextWithReadMore } from "@/components/portable-text-with-read-more";
 import { YouTubeConsentGate } from '@/components/cookie-consent/youtube-consent-gate';
 import { headingId } from "@/lib/portable-text-headings";
+import { ZoomableImage } from "@/components/ui/zoomable-image";
 
 interface PortableTextRendererProps extends PortableTextProps {
   locale?: string;
@@ -61,12 +62,11 @@ const createPortableTextComponents = (
 
         return (
           <figure className={figureClass}>
-            <Image
+            <ZoomableImage
               src={imageUrl}
               alt={alt}
               width={w}
               height={h}
-              placeholder={lqip ? "blur" : undefined}
               blurDataURL={lqip || undefined}
               // Never upscale: cap at the image's intrinsic width so sliced
               // table fragments don't stretch and pixelate; center within the column.
