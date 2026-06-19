@@ -1410,6 +1410,12 @@
       "tags": "Tags",
       "tagsHelp": "Up to 6."
     },
+    "validation": {
+      "titleMin": "Please add a title",
+      "descriptionMin": "Please describe the experience",
+      "issueMin": "What issue does this speak to?",
+      "videoUrl": "Please paste a valid video link"
+    },
     "submit": "Submit for review",
     "cancel": "Cancel",
     "success": "Thank you — your experience was submitted for review."
