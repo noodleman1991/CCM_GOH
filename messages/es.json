@@ -1410,6 +1410,12 @@
       "tags": "Etiquetas",
       "tagsHelp": "Hasta 6."
     },
+    "validation": {
+      "titleMin": "Añade un título",
+      "descriptionMin": "Describe la experiencia",
+      "issueMin": "¿De qué tema trata?",
+      "videoUrl": "Pega un enlace de vídeo válido"
+    },
     "submit": "Enviar para revisión",
     "cancel": "Cancelar",
     "success": "Gracias: tu experiencia se envió para revisión."

@@ -17,7 +17,8 @@ import { FilterChip } from "@/components/ui/filter-chip"
 import { getLocalizedText } from "@/lib/localization-utils"
 import { cn } from "@/lib/utils"
 import { heading } from "@/lib/design-tokens"
-import { livedExperienceSubmissionSchema } from "@/lib/validation/lived-experience"
+import { makeLivedExperienceSchema, livedExperienceSubmissionSchema } from "@/lib/validation/lived-experience"
+import { useMemo } from "react"
 import type { z } from "zod"
 
 // Use the schema's INPUT type for the form (fields with .default are optional
@@ -39,8 +40,20 @@ export function LivedExperienceForm({
   const router = useRouter()
   const [submitting, setSubmitting] = useState(false)
 
+  // Localized schema so validation errors show in the user's language.
+  const schema = useMemo(
+    () =>
+      makeLivedExperienceSchema({
+        titleMin: t("validation.titleMin"),
+        descriptionMin: t("validation.descriptionMin"),
+        issueMin: t("validation.issueMin"),
+        videoUrl: t("validation.videoUrl"),
+      }),
+    [t]
+  )
+
   const form = useForm<LEFormValues>({
-    resolver: zodResolver(livedExperienceSubmissionSchema),
+    resolver: zodResolver(schema),
     defaultValues: {
       title: "",
       description: "",

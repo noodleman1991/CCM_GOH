@@ -130,4 +130,5 @@ A coherent production push across the whole product: the big **comments + collab
 - Regional-page **image-load layout shift** (avatars pop in, content jumps).
 - PortableText-block-in-`blocks[]` content warning (a `page` doc mismodels a PortableText block).
 - Multilingual case-study **body** content + language filters.
+- **Case-study form validation i18n** — the lived-experience form now localizes its Zod messages (es/fr/ar via a `makeLivedExperienceSchema(messages)` factory + the `livedExperienceSubmission.validation` namespace). The **case-study form** still has ~10 hardcoded-English Zod messages in a module-level `formSchema` (`components/forms/case-study-form.tsx:46`); it surfaces them client-side via a custom `errors` map. Localizing it means importing next-intl into that form, adding a `caseStudySubmission.validation` namespace, and moving `formSchema` to a component-level localized factory — a meaningful refactor of a large working form, deferred pending rendered-UI validation.
 - Browser-validation of the full branch; branch merge (unpushed).
