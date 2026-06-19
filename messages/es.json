@@ -1532,6 +1532,7 @@
     "messageDeleted": "Mensaje eliminado"
   },
   "reader": {
-    "chapters": "Capítulos"
+    "chapters": "Capítulos",
+    "onThisPage": "En esta página"
   }
 }

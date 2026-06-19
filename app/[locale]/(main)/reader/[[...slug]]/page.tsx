@@ -2,14 +2,25 @@ export const revalidate = 300;
 
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { heading } from "@/lib/design-tokens";
 import { cn } from "@/lib/utils";
 import PortableTextRenderer from "@/components/portable-text-renderer";
 import { fetchDocsChapters, fetchDocsChapter } from "@/sanity/queries/docs-reader";
 import { ReaderNav } from "@/components/reader/reader-nav";
+import { ReaderToc } from "@/components/reader/reader-toc";
+import { extractToc } from "@/lib/portable-text-headings";
 
 const COLLECTION = "global-agenda";
 
@@ -60,17 +71,42 @@ export default async function ReaderPage({
 
   const prev = idx > 0 ? chapters[idx - 1] : null;
   const next = idx < chapters.length - 1 ? chapters[idx + 1] : null;
+  const toc = extractToc(chapter.body);
+  const tNav = await getTranslations("navigation");
+  const documentTitle = "Global Research and Action Agenda";
 
   return (
-    <div className="container max-w-6xl py-6" dir={isRTL ? "rtl" : "ltr"}>
-      <div className="grid gap-8 lg:grid-cols-[240px_1fr]">
-        {/* Chapter nav — drawer on mobile, sidebar at lg */}
+    <div className="container max-w-7xl py-6" dir={isRTL ? "rtl" : "ltr"}>
+      {/* Breadcrumb: Reader › Agenda › Chapter */}
+      <Breadcrumb className="mb-6">
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link href="/research-and-action/global-agenda">{tNav("globalAgenda")}</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator className="rtl:-scale-x-100" />
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link href="/reader">{documentTitle}</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator className="rtl:-scale-x-100" />
+          <BreadcrumbItem>
+            <BreadcrumbPage><bdi>{chapter.title}</bdi></BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
+      {/* Docs layout: chapters · article · on-this-page */}
+      <div className="grid gap-8 lg:grid-cols-[240px_minmax(0,1fr)] xl:grid-cols-[240px_minmax(0,1fr)_200px]">
+        {/* Chapter nav — drawer on mobile, sticky sidebar at lg */}
         <ReaderNav chapters={chapters} currentSlug={currentSlug} />
 
         <article className="min-w-0">
           <div className="mx-auto max-w-prose">
             <p className="text-xs font-semibold uppercase tracking-wider text-ccm-water">
-              {chapter.order}. {COLLECTION.replace(/-/g, " ")}
+              {chapter.order}. <span className="capitalize">{COLLECTION.replace(/-/g, " ")}</span>
             </p>
             <h1 className={cn("mt-1 mb-6 text-balance font-heading font-bold text-ccm-midnight", heading("lg"))}>
               {chapter.title}
@@ -104,6 +140,9 @@ export default async function ReaderPage({
             </nav>
           </div>
         </article>
+
+        {/* On this page — scroll-spy TOC (xl only) */}
+        <ReaderToc items={toc} />
       </div>
     </div>
   );

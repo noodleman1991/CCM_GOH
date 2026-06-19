@@ -12,6 +12,7 @@ import { getLocalizedValue } from '@/i18n/i18n-helpers';
 import { splitContentAtReadMore } from "@/lib/portable-text-utils";
 import { PortableTextWithReadMore } from "@/components/portable-text-with-read-more";
 import { YouTubeConsentGate } from '@/components/cookie-consent/youtube-consent-gate';
+import { headingId } from "@/lib/portable-text-headings";
 
 interface PortableTextRendererProps extends PortableTextProps {
   locale?: string;
@@ -193,13 +194,19 @@ const createPortableTextComponents = (
           {children}
         </h1>
       ),
-      h2: ({ children }) => (
-        <h2 className="mb-4 mt-10 first:mt-0 font-heading text-2xl md:text-3xl font-bold leading-tight text-ccm-midnight text-balance text-start">
+      h2: ({ children, value }) => (
+        <h2
+          id={headingId(value)}
+          className="scroll-mt-24 mb-4 mt-10 first:mt-0 font-heading text-2xl md:text-3xl font-bold leading-tight text-ccm-midnight text-balance text-start"
+        >
           {children}
         </h2>
       ),
-      h3: ({ children }) => (
-        <h3 className="mb-3 mt-8 font-heading text-xl md:text-2xl font-semibold leading-tight text-ccm-sea text-start">
+      h3: ({ children, value }) => (
+        <h3
+          id={headingId(value)}
+          className="scroll-mt-24 mb-3 mt-8 font-heading text-xl md:text-2xl font-semibold leading-tight text-ccm-sea text-start"
+        >
           {children}
         </h3>
       ),
