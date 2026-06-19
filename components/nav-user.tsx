@@ -12,6 +12,7 @@ import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { rtlLocales } from "@/i18n/routing"
 
+import { FEATURES } from "@/lib/features"
 import {
     Avatar,
     AvatarFallback,
@@ -99,19 +100,24 @@ export function NavUser({
                         </DropdownMenuLabel>
                         <DropdownMenuGroup>
                             {/* Engagement hub: Messages + Notifications live in
-                                the avatar (not the sidebar/header). */}
-                            <DropdownMenuItem asChild>
-                                <Link href={`/${locale}/messages`} className={cn("flex items-center gap-2", isRTL && "flex-row-reverse")}>
-                                    <MessageSquare className="size-4" />
-                                    <span>{tNav("messages")}</span>
-                                </Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem asChild>
-                                <Link href={`/${locale}/dashboard?tab=notifications`} className={cn("flex items-center gap-2", isRTL && "flex-row-reverse")}>
-                                    <Bell className="size-4" />
-                                    <span>{tNotif("title")}</span>
-                                </Link>
-                            </DropdownMenuItem>
+                                the avatar. Hidden in the intermediate release
+                                (infra stays); re-enabled by the engagement flag. */}
+                            {FEATURES.engagement && (
+                                <>
+                                    <DropdownMenuItem asChild>
+                                        <Link href={`/${locale}/messages`} className={cn("flex items-center gap-2", isRTL && "flex-row-reverse")}>
+                                            <MessageSquare className="size-4" />
+                                            <span>{tNav("messages")}</span>
+                                        </Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem asChild>
+                                        <Link href={`/${locale}/dashboard?tab=notifications`} className={cn("flex items-center gap-2", isRTL && "flex-row-reverse")}>
+                                            <Bell className="size-4" />
+                                            <span>{tNotif("title")}</span>
+                                        </Link>
+                                    </DropdownMenuItem>
+                                </>
+                            )}
                             <DropdownMenuItem asChild>
                                 <Link href={`/${locale}/dashboard`} className={cn("flex items-center gap-2", isRTL && "flex-row-reverse")}>
                                     <BadgeCheck className="size-4" />

@@ -1,4 +1,5 @@
 import { PAGE_QUERY_RESULT } from "@/sanity.types";
+import { FEATURES } from "@/lib/features";
 import Hero1 from "@/components/blocks/hero/hero-1";
 import Hero2 from "@/components/blocks/hero/hero-2";
 import SectionHeader from "@/components/blocks/section-header";
@@ -65,6 +66,11 @@ export default function Blocks({ blocks, locale, userId }: BlocksProps) {
                     (block as any)._key
                 );
             }
+            return false;
+        }
+        // Interactive map is hidden in the intermediate release (infra stays);
+        // drop it from any page's blocks until the homepageMap flag is on.
+        if ((block as any)._type === 'region-map' && !FEATURES.homepageMap) {
             return false;
         }
         return true;

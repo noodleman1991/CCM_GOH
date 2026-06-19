@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { auth } from "@clerk/nextjs/server";
+import { FEATURES } from "@/lib/features";
 import { Link } from "@/i18n/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -22,6 +24,7 @@ export async function generateMetadata({
 }
 
 export default async function CollaborationsPage() {
+  if (!FEATURES.engagement) redirect("/");
   const { userId } = await auth();
   const t = await getTranslations("collaboration");
   const collabs = await listVisibleCollaborations(userId ?? null);

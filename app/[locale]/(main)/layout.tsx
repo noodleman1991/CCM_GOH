@@ -9,6 +9,7 @@ import { SanityLive } from "@/sanity/lib/live";
 import { Suspense } from "react";
 import { SiteAnnouncementBar } from "@/components/announcement/site-announcement-bar";
 import { NotificationBell } from "@/components/notifications/notification-bell";
+import { FEATURES } from "@/lib/features";
 
 export default async function MainLayout({
     children,
@@ -37,7 +38,7 @@ export default async function MainLayout({
                         />
                     </div>
                     <div className="ms-auto flex items-center gap-2 px-4">
-                        <NotificationBell />
+                        {FEATURES.engagement && <NotificationBell />}
                     </div>
                 </header>
                 {/*
