@@ -34,12 +34,17 @@ export function headingSlug(text: string): string {
 }
 
 /**
- * The id for a heading block — stable across renders. Prefers a slug of the
- * text; falls back to the block _key so it's never empty/duplicate-blank.
+ * The id for a heading block — stable AND unique across renders. A slug of the
+ * text alone collides when two headings share text (e.g. two "Executive
+ * Summary"), which breaks both React keys and anchor targets. So we suffix the
+ * block's _key (unique per block) onto a readable slug. The renderer and the
+ * TOC both call this on the same blocks, so their ids stay in lockstep.
  */
 export function headingId(block: PTBlock): string {
   const slug = headingSlug(blockPlainText(block));
-  return slug || `h-${block?._key ?? ""}`;
+  const key = block?._key ?? "";
+  if (slug && key) return `${slug}-${key}`;
+  return slug || `h-${key}`;
 }
 
 export type TocItem = { id: string; text: string; level: 2 | 3 };
