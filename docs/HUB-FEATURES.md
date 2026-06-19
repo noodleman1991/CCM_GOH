@@ -114,7 +114,7 @@ Legend: ✅ shipped · 🔶 built-but-not-fully-integrated · 🧱 infra/plannin
 
 **Built:** ISR page `/reader/[[...slug]]`, sticky chapter nav + mobile drawer, PortableTextRenderer, Sanity `docsChapter` type, `styledBodyProjection` (dereferences images + internalLinks). Reading pane capped at readable measure; `heading()` scale; figures via `urlForCropped`; prev/next.
 
-**Outstanding:** the ETL (`scripts/import-agenda-reader.mjs`) that imports the 13 chapters into Sanity has been **dry-run verified (12 chapters)** but **`--apply` not yet run** — the Sanity write token is now in place, so it's unblocked. Until applied, the Reader has structure but no content.
+**Status:** ✅ content imported. The ETL (`scripts/import-agenda-reader.mjs --apply`) wrote **12 `docsChapter` documents** (Forward → Appendices, 554 blocks) to `gm67v7rk`/`production_2`, verified by read-back. The Reader is now fully populated.
 
 ---
 
@@ -126,7 +126,7 @@ A coherent production push across the whole product: the big **comments + collab
 
 ## 7. Known open items
 - Messaging/workspaces redesign — **planned, not built** (§4).
-- Reader ETL `--apply` — **unblocked, not run** (§5).
+- Reader content — **✅ imported** (12 chapters live in Sanity).
 - Regional-page **image-load layout shift** (avatars pop in, content jumps).
 - PortableText-block-in-`blocks[]` content warning (a `page` doc mismodels a PortableText block).
 - Multilingual case-study **body** content + language filters.
