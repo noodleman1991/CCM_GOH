@@ -20,7 +20,8 @@ import PortableTextRenderer from "@/components/portable-text-renderer";
 import { fetchDocsChapters, fetchDocsChapter } from "@/sanity/queries/docs-reader";
 import { ReaderNav } from "@/components/reader/reader-nav";
 import { ReaderToc } from "@/components/reader/reader-toc";
-import { extractToc } from "@/lib/portable-text-headings";
+import { ReaderFootnotes } from "@/components/reader/reader-footnotes";
+import { extractToc, extractFootnotes } from "@/lib/portable-text-headings";
 
 const COLLECTION = "global-agenda";
 
@@ -72,6 +73,7 @@ export default async function ReaderPage({
   const prev = idx > 0 ? chapters[idx - 1] : null;
   const next = idx < chapters.length - 1 ? chapters[idx + 1] : null;
   const toc = extractToc(chapter.body);
+  const { footnotes, numberByKey } = extractFootnotes(chapter.body);
   const tNav = await getTranslations("navigation");
   const documentTitle = "Global Research and Action Agenda";
 
@@ -113,9 +115,17 @@ export default async function ReaderPage({
             </h1>
             {chapter.body && (
               <div className="text-base md:text-lg leading-relaxed">
-                <PortableTextRenderer value={chapter.body} locale={locale} isRTL={isRTL} />
+                <PortableTextRenderer
+                  value={chapter.body}
+                  locale={locale}
+                  isRTL={isRTL}
+                  footnoteNumbers={numberByKey}
+                />
               </div>
             )}
+
+            {/* Footnotes — collapsible, small font, anchored to the markers */}
+            <ReaderFootnotes footnotes={footnotes} />
 
             {/* Prev / next */}
             <nav className="mt-12 flex items-center justify-between gap-4 border-t pt-6">

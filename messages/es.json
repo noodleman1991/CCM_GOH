@@ -1533,6 +1533,7 @@
   },
   "reader": {
     "chapters": "Capítulos",
-    "onThisPage": "En esta página"
+    "onThisPage": "En esta página",
+    "footnotes": "Notas al pie"
   }
 }

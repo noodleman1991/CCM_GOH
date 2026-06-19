@@ -49,6 +49,34 @@ export function headingId(block: PTBlock): string {
 
 export type TocItem = { id: string; text: string; level: 2 | 3 };
 
+export type Footnote = { key: string; number: number; text: string };
+
+/**
+ * Extract footnotes from a body in document order and number them 1..N.
+ * Returns the ordered list plus a map from the footnote markDef _key to its
+ * number, so the renderer can show the right superscript for each reference.
+ */
+export function extractFootnotes(body: PTBlock[] | undefined): {
+  footnotes: Footnote[];
+  numberByKey: Record<string, number>;
+} {
+  const footnotes: Footnote[] = [];
+  const numberByKey: Record<string, number> = {};
+  if (!Array.isArray(body)) return { footnotes, numberByKey };
+  for (const block of body) {
+    const defs = (block as PTBlock & { markDefs?: { _type?: string; _key?: string; text?: string }[] }).markDefs;
+    if (!Array.isArray(defs)) continue;
+    for (const def of defs) {
+      if (def?._type !== "footnote" || !def._key) continue;
+      if (def._key in numberByKey) continue;
+      const number = footnotes.length + 1;
+      numberByKey[def._key] = number;
+      footnotes.push({ key: def._key, number, text: (def.text ?? "").trim() });
+    }
+  }
+  return { footnotes, numberByKey };
+}
+
 /** Extract the h2/h3 outline from a Portable Text body for a TOC. */
 export function extractToc(body: PTBlock[] | undefined): TocItem[] {
   if (!Array.isArray(body)) return [];

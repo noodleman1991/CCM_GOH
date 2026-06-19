@@ -75,15 +75,15 @@ function normalizeHref(raw) {
 
 /**
  * Upload an image (by absolute URL) to Sanity once; cache by URL so the same
- * asset isn't uploaded twice. Returns the asset _id, or null on failure.
+ * asset isn't uploaded twice. Returns { id, width, height } (id null on failure).
  */
 const assetCache = new Map();
 async function uploadImage(absUrl) {
   if (assetCache.has(absUrl)) return assetCache.get(absUrl);
   if (!APPLY) {
-    // Dry run: don't upload, just record intent.
-    assetCache.set(absUrl, "image-DRYRUN");
-    return "image-DRYRUN";
+    const result = { id: "image-DRYRUN", width: 0, height: 0 };
+    assetCache.set(absUrl, result);
+    return result;
   }
   try {
     const res = await fetch(absUrl);
@@ -91,17 +91,20 @@ async function uploadImage(absUrl) {
     const buf = Buffer.from(await res.arrayBuffer());
     const filename = decodeURIComponent(absUrl.split("/").pop().split("?")[0]) || "image";
     const asset = await client.assets.upload("image", buf, { filename });
-    assetCache.set(absUrl, asset._id);
-    return asset._id;
+    const dims = asset.metadata?.dimensions || {};
+    const result = { id: asset._id, width: dims.width || 0, height: dims.height || 0 };
+    assetCache.set(absUrl, result);
+    return result;
   } catch (e) {
     console.warn(`  ! image upload failed (${absUrl}): ${e.message}`);
-    assetCache.set(absUrl, null);
-    return null;
+    const result = { id: null, width: 0, height: 0 };
+    assetCache.set(absUrl, result);
+    return result;
   }
 }
 
 /** Build inline spans + markDefs for the children of a text element. */
-function inlineSpans($, el) {
+function inlineSpans($, el, footnotes = {}) {
   const spans = [];
   const markDefs = [];
   const walk = (node, activeMarks) => {
@@ -111,7 +114,34 @@ function inlineSpans($, el) {
     }
     if (node.type !== "tag") return;
     const t = node.tagName;
+    // Footnote reference: <sup><a href="#footnoteN">N</a></sup> → footnote mark.
+    if (t === "sup") {
+      const a = $(node).find('a[href^="#"]').first();
+      const anchor = (a.attr("href") || "").replace(/^#/, "");
+      const noteText = footnotes[anchor];
+      const label = $(node).text().trim();
+      if (noteText) {
+        const mk = key();
+        markDefs.push({ _key: mk, _type: "footnote", text: noteText });
+        spans.push({ _key: key(), _type: "span", text: label, marks: [...activeMarks, mk] });
+        return;
+      }
+      // No matching definition — keep the marker as plain superscript text.
+      if (label) spans.push({ _key: key(), _type: "span", text: label, marks: [...activeMarks] });
+      return;
+    }
     if (t === "a") {
+      // Footnote-style anchor links (#footnoteN) without a <sup> wrapper.
+      const rawHref = $(node).attr("href") || "";
+      if (rawHref.startsWith("#")) {
+        const noteText = footnotes[rawHref.replace(/^#/, "")];
+        if (noteText) {
+          const mk = key();
+          markDefs.push({ _key: mk, _type: "footnote", text: noteText });
+          spans.push({ _key: key(), _type: "span", text: $(node).text().trim(), marks: [...activeMarks, mk] });
+          return;
+        }
+      }
       const norm = normalizeHref($(node).attr("href"));
       if (norm) {
         const mk = key();
@@ -140,16 +170,52 @@ function inlineSpans($, el) {
   return { spans, markDefs };
 }
 
+/**
+ * Build a map of footnote anchors → definition text from the chapter's footnote
+ * list (Docusaurus renders <li value="N" id="footnoteN">text</li>). Returns the
+ * map plus the set of <li> elements to skip when emitting body content.
+ */
+function collectFootnotes($, container) {
+  const map = {};
+  const skipLis = new Set();
+  container.find("li[id^='footnote']").each((_, li) => {
+    const id = $(li).attr("id");
+    const text = $(li).text().trim();
+    if (id && text) {
+      map[id] = text;
+      skipLis.add(li);
+    }
+  });
+  return { map, skipLis };
+}
+
 /** Convert a chapter container into portable-text blocks (async — uploads images). */
-async function toBlocks($, container) {
+async function toBlocks($, container, footnotes, skipLis) {
   const blocks = [];
   let imgCount = 0;
+  // The chapter title is rendered separately as the page <h1>; skip the FIRST
+  // heading in the body when it duplicates the title (fixes "double headers").
+  let leadingHeadingSkipped = false;
+  const chapterTitle = container.closest("article").find("h1").first().text().trim();
 
   const pushText = (style, el) => {
-    const { spans, markDefs } = inlineSpans($, el);
+    const { spans, markDefs } = inlineSpans($, el, footnotes);
     if (spans.some((s) => s.text.trim())) {
       blocks.push({ _key: key(), _type: "block", style, markDefs, children: spans });
     }
+  };
+
+  const pushHeading = (style, el) => {
+    const text = $(el).text().trim();
+    // Drop a leading heading that just repeats the chapter/document title.
+    if (!leadingHeadingSkipped && blocks.length === 0) {
+      leadingHeadingSkipped = true;
+      const norm = (s) => s.toLowerCase().replace(/\s+/g, " ").trim();
+      if (norm(text) === norm(chapterTitle) || norm(text).includes("research and action agenda")) {
+        return;
+      }
+    }
+    pushText(style, el);
   };
 
   const pushImage = async (imgEl, captionText) => {
@@ -157,14 +223,19 @@ async function toBlocks($, container) {
     if (!src) return;
     const absUrl = src.startsWith("http") ? src : `${SITE}${src.startsWith("/") ? "" : "/"}${src}`;
     const altText = ($(imgEl).attr("alt") || "").trim();
-    const assetId = await uploadImage(absUrl);
+    const { id: assetId, width, height } = await uploadImage(absUrl);
     imgCount++;
+    // Very wide, short images are sliced table fragments — render full width but
+    // never upscaled (placement "full" + the renderer caps intrinsic size).
+    const aspect = width && height ? width / height : 0;
+    const placement = aspect > 3 ? "full" : "center";
     const block = {
       _key: key(),
       _type: "image",
       asset: assetId ? { _type: "reference", _ref: assetId } : undefined,
       alt: altText ? { en: altText } : undefined,
       caption: captionText ? { en: captionText } : undefined,
+      placement,
       _srcUrl: absUrl, // dry-run visibility only; stripped before write
     };
     blocks.push(block);
@@ -174,12 +245,11 @@ async function toBlocks($, container) {
   const children = container.children().toArray();
   for (const el of children) {
     const tag = el.tagName;
-    if (tag === "h1" || tag === "header") pushText("h2", el);
-    else if (tag === "h2") pushText("h2", el);
+    if (tag === "h1" || tag === "header") pushHeading("h2", el);
+    else if (tag === "h2") pushHeading("h2", el);
     else if (tag === "h3") pushText("h3", el);
     else if (tag === "h4") pushText("h4", el);
     else if (tag === "p") {
-      // A paragraph may wrap an image (Docusaurus often does <p><img></p>).
       const imgs = $(el).find("img").toArray();
       if (imgs.length) {
         for (const im of imgs) await pushImage(im, "");
@@ -196,7 +266,8 @@ async function toBlocks($, container) {
       await pushImage(el, "");
     } else if (tag === "ul" || tag === "ol") {
       $(el).children("li").each((__, li) => {
-        const { spans, markDefs } = inlineSpans($, li);
+        if (skipLis.has(li)) return; // footnote definition — handled as marks
+        const { spans, markDefs } = inlineSpans($, li, footnotes);
         if (spans.some((s) => s.text.trim())) {
           blocks.push({
             _key: key(), _type: "block", style: "normal",
@@ -206,18 +277,14 @@ async function toBlocks($, container) {
         }
       });
     } else if (tag === "div" || tag === "table" || tag === "section") {
-      // Wrappers (Docusaurus admonitions, table layouts) can contain images
-      // and text. Pull any images out in order, then any leftover paragraph
-      // text, so nothing is silently dropped.
       const imgs = $(el).find("img").toArray();
       for (const im of imgs) {
         const cap = $(im).closest("figure").find("figcaption").first().text().trim();
         await pushImage(im, cap);
       }
-      // Capture table-cell / paragraph text inside the wrapper as plain blocks.
       $(el).find("p, td, th").each((__, cell) => {
-        if ($(cell).find("img").length) return; // already handled as image
-        const { spans, markDefs } = inlineSpans($, cell);
+        if ($(cell).find("img").length) return;
+        const { spans, markDefs } = inlineSpans($, cell, footnotes);
         if (spans.some((s) => s.text.trim())) {
           blocks.push({ _key: key(), _type: "block", style: "normal", markDefs, children: spans });
         }
@@ -238,6 +305,7 @@ async function run() {
   const docs = [];
   let totalImgs = 0;
 
+  let totalFootnotes = 0;
   for (const url of urls) {
     const name = decodeURIComponent(url.replace(`${SITE}/`, ""));
     const html = await (await fetch(url)).text();
@@ -247,7 +315,9 @@ async function run() {
       console.warn(`! no markdown container for ${name}`);
       continue;
     }
-    const { blocks, imgCount } = await toBlocks($, container);
+    const { map: footnotes, skipLis } = collectFootnotes($, container);
+    totalFootnotes += Object.keys(footnotes).length;
+    const { blocks, imgCount } = await toBlocks($, container, footnotes, skipLis);
     totalImgs += imgCount;
     const order = (ORDER.indexOf(name) === -1 ? 99 : ORDER.indexOf(name)) + 1;
     docs.push({
@@ -262,10 +332,11 @@ async function run() {
   }
 
   docs.sort((a, b) => a.order - b.order);
-  console.log(`\nParsed ${docs.length} chapters (${totalImgs} images, ${assetCache.size} unique):`);
+  console.log(`\nParsed ${docs.length} chapters (${totalImgs} images, ${assetCache.size} unique; ${totalFootnotes} footnotes):`);
   for (const d of docs) {
     const imgs = d.body.filter((b) => b._type === "image").length;
-    console.log(`  ${d.order}. ${d.title} (${d.body.length} blocks, ${imgs} images)`);
+    const fns = d.body.reduce((n, b) => n + (b.markDefs?.filter((m) => m._type === "footnote").length || 0), 0);
+    console.log(`  ${d.order}. ${d.title} (${d.body.length} blocks, ${imgs} images, ${fns} footnote refs)`);
   }
 
   if (!APPLY) {

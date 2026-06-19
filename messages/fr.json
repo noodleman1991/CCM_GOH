@@ -1533,6 +1533,7 @@
   },
   "reader": {
     "chapters": "Chapitres",
-    "onThisPage": "Sur cette page"
+    "onThisPage": "Sur cette page",
+    "footnotes": "Notes de bas de page"
   }
 }

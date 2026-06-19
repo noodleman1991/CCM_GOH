@@ -18,6 +18,8 @@ interface PortableTextRendererProps extends PortableTextProps {
   locale?: string;
   isRTL?: boolean;
   enableReadMore?: boolean;
+  /** Map of footnote markDef _key → display number (from extractFootnotes). */
+  footnoteNumbers?: Record<string, number>;
 }
 
 /**
@@ -26,13 +28,14 @@ interface PortableTextRendererProps extends PortableTextProps {
  */
 const createPortableTextComponents = (
   locale: string = 'en',
-  isRTL: boolean = false
+  isRTL: boolean = false,
+  footnoteNumbers: Record<string, number> = {}
 ): PortableTextComponents => {
   const shouldUseRTL = isRTL || locale === 'ar';
 
   return {
     types: {
-      // Image handling with proper metadata and LQIP
+      // Image handling with metadata, LQIP, and per-figure placement.
       image: ({ value }) => {
         if (!value?.asset) return null;
 
@@ -41,17 +44,34 @@ const createPortableTextComponents = (
         const caption = getLocalizedValue(value.caption, locale);
         const { metadata } = value.asset;
         const { lqip, dimensions } = metadata || {};
+        const w = dimensions?.width || 800;
+        const h = dimensions?.height || 450;
+
+        // Placement: full (default), start/end float with text wrap, or center
+        // at intrinsic size. `start`/`end` are logical so they mirror in RTL.
+        const placement = value.placement || "full";
+        const figureClass =
+          placement === "start"
+            ? "my-4 sm:float-start sm:me-6 sm:mb-4 sm:max-w-[45%]"
+            : placement === "end"
+            ? "my-4 sm:float-end sm:ms-6 sm:mb-4 sm:max-w-[45%]"
+            : placement === "center"
+            ? "my-8 mx-auto w-fit max-w-full"
+            : "my-8"; // full
 
         return (
-          <figure className="my-8">
+          <figure className={figureClass}>
             <Image
               src={imageUrl}
               alt={alt}
-              width={dimensions?.width || 800}
-              height={dimensions?.height || 450}
+              width={w}
+              height={h}
               placeholder={lqip ? "blur" : undefined}
               blurDataURL={lqip || undefined}
-              className="rounded-2xl mx-auto w-full"
+              // Never upscale: cap at the image's intrinsic width so sliced
+              // table fragments don't stretch and pixelate; center within the column.
+              style={{ maxWidth: `min(100%, ${w}px)` }}
+              className="rounded-2xl mx-auto h-auto"
             />
             {caption && (
               <figcaption className="text-sm text-muted-foreground mt-2 italic text-center font-body">
@@ -322,6 +342,23 @@ const createPortableTextComponents = (
         </mark>
       ),
 
+      // Footnote reference: render the original marker as a small superscript
+      // anchor linking to the footnotes accordion at the end of the chapter.
+      footnote: ({ value }) => {
+        const n = value?._key ? footnoteNumbers[value._key] : undefined;
+        if (!n) return null;
+        return (
+          <a
+            href={`#footnote-${n}`}
+            id={`footnote-ref-${n}`}
+            className="align-super text-[0.7em] font-medium text-ccm-water hover:text-ccm-sea no-underline ms-0.5"
+            aria-label={`Footnote ${n}`}
+          >
+            [{n}]
+          </a>
+        );
+      },
+
       // Enhanced link handling
       link: ({ children, value }) => {
         const isExternal =
@@ -355,6 +392,9 @@ const createPortableTextComponents = (
         else if (type === "caseStudy") href = `/research-and-action/case-studies/${slug}`;
         else if (type === "livedExperience") href = `/lived-experiences/${slug}`;
         else if (type === "docsChapter") href = `/reader/${slug}`;
+        // Agendas/reports have no per-slug detail route yet — link to the index.
+        else if (type === "agenda") href = `/research-and-action/global-agenda`;
+        else if (type === "report") href = `/research-and-action/impact-reports`;
         else if (type === "page") href = `/${slug === "index" ? "" : slug}`;
 
         return (
@@ -375,9 +415,10 @@ const PortableTextRenderer = ({
   locale = 'en',
   isRTL = false,
   enableReadMore = false,
+  footnoteNumbers = {},
 }: PortableTextRendererProps) => {
   const shouldUseRTL = isRTL || locale === 'ar';
-  const components = createPortableTextComponents(locale, isRTL);
+  const components = createPortableTextComponents(locale, isRTL, footnoteNumbers);
 
   // Defensive checks with error logging for debugging
   if (!value) {
