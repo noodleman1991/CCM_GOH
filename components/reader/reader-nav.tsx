@@ -5,6 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { Menu, BookText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 
 type Chapter = { slug: string; title: string; order: number };
@@ -53,14 +54,16 @@ export function ReaderNav({ chapters, currentSlug }: { chapters: Chapter[]; curr
         </Drawer>
       </div>
 
-      {/* Desktop: sticky sidebar */}
+      {/* Desktop: sticky sidebar; long chapter lists scroll within the viewport */}
       <aside className="hidden lg:block">
         <div className="sticky top-20">
           <p className="mb-3 flex items-center gap-2 px-3 text-xs font-semibold uppercase tracking-wider text-ccm-water">
             <BookText className="size-4" />
             {t("chapters")}
           </p>
-          <ChapterList chapters={chapters} currentSlug={currentSlug} />
+          <ScrollArea className="h-[calc(100dvh-8rem)] pe-2">
+            <ChapterList chapters={chapters} currentSlug={currentSlug} />
+          </ScrollArea>
         </div>
       </aside>
     </>

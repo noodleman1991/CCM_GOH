@@ -1532,6 +1532,7 @@
     "messageDeleted": "تم حذف الرسالة"
   },
   "reader": {
-    "chapters": "الفصول"
+    "chapters": "الفصول",
+    "onThisPage": "في هذه الصفحة"
   }
 }
