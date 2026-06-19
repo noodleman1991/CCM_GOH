@@ -25,6 +25,7 @@ import { useLocale, useTranslations } from "next-intl"
 import { rtlLocales } from "@/i18n/routing"
 import { cn } from "@/lib/utils"
 
+import { FEATURES } from "@/lib/features"
 import { NavMain } from "@/components/nav-main"
 // import { NavProjects } from "@/components/nav-projects"
 import { NavSecondary } from "@/components/nav-secondary"
@@ -197,18 +198,21 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 onToggle: () => setOpenAccordion(openAccordion === 'regional' ? null : 'regional')
             },
         ],
-        // ── Collaborate: people + workspaces ────────────────────────────────
+        // ── Collaborate: people (+ workspaces when the engagement flag is on) ──
         navConnect: [
             {
                 title: t('collaborate'),
                 url: "/collaborate",
                 icon: Handshake,
             },
-            {
-                title: t('collaborations'),
-                url: "/collaborations",
-                icon: FolderKanban,
-            },
+            // Workspaces UI is hidden in the intermediate release; infra stays.
+            ...(FEATURES.engagement
+                ? [{
+                    title: t('collaborations'),
+                    url: "/collaborations",
+                    icon: FolderKanban,
+                }]
+                : []),
         ],
         navSecondary,
         user: userData

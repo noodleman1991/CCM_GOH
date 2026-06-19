@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
 import { getTranslations } from "next-intl/server";
 import { Inbox } from "@/components/messaging/inbox";
+import { FEATURES } from "@/lib/features";
 
 export const dynamic = "force-dynamic";
 
@@ -17,6 +18,7 @@ export async function generateMetadata({
 }
 
 export default async function MessagesPage() {
+  if (!FEATURES.engagement) redirect("/");
   const { userId } = await auth();
   if (!userId) redirect("/sign-in");
   return (

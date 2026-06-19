@@ -19,6 +19,7 @@ import { cn } from '@/lib/utils'
 import { heading } from '@/lib/design-tokens'
 import { PageContainer } from '@/components/ui/page-container'
 import { Search, X, FolderKanban } from 'lucide-react'
+import { FEATURES } from '@/lib/features'
 import type { SupportedLocale, LocalizedUser } from '@/types/prisma'
 
 // All possible filter values (workTypes and expertiseAreas are static enums)
@@ -176,12 +177,15 @@ export function CollaboratePageClient({
           <h1 className={cn("font-bold font-heading text-ccm-midnight mb-2 text-balance", heading('lg'))}>{t('pageTitle')}</h1>
           <p className="text-base md:text-lg text-muted-foreground max-w-2xl">{t('pageDescription')}</p>
         </div>
-        <Button asChild variant="outline" className="flex-shrink-0">
-          <Link href="/collaborations" className="flex items-center gap-2">
-            <FolderKanban className="size-4" />
-            <span>{t('startCollaboration')}</span>
-          </Link>
-        </Button>
+        {/* Workspaces UI hidden in the intermediate release; infra stays. */}
+        {FEATURES.engagement && (
+          <Button asChild variant="outline" className="flex-shrink-0">
+            <Link href="/collaborations" className="flex items-center gap-2">
+              <FolderKanban className="size-4" />
+              <span>{t('startCollaboration')}</span>
+            </Link>
+          </Button>
+        )}
       </div>
 
       {/* Search + horizontal filters, full width */}

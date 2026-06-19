@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
+import { FEATURES } from "@/lib/features";
 import { auth } from "@clerk/nextjs/server";
 import { getTranslations } from "next-intl/server";
 import { getCollaboration, getMembershipRole, authorizeCollab } from "@/lib/collaboration/service";
@@ -27,6 +28,7 @@ export default async function CollaborationDetailPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  if (!FEATURES.engagement) redirect("/");
   const { id } = await params;
 
   // Authorize read (PUBLIC = anyone, MEMBERS = members or staff).
