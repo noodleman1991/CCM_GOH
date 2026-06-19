@@ -74,7 +74,27 @@ export default defineType({
                                     { type: "post" },
                                     { type: "page" },
                                     { type: "caseStudy" },
+                                    { type: "agenda" },
+                                    { type: "report" },
+                                    { type: "docsChapter" },
                                 ],
+                            },
+                        ],
+                    },
+                    {
+                        // Marks a span as a footnote reference; the text it holds
+                        // is rendered as a superscript number with the note shown
+                        // in a collapsible footnotes section at the end.
+                        title: "Footnote",
+                        name: "footnote",
+                        type: "object",
+                        fields: [
+                            {
+                                title: "Note",
+                                name: "text",
+                                type: "text",
+                                rows: 3,
+                                description: "The footnote content (shown in the footnotes accordion).",
                             },
                         ],
                     },
@@ -114,6 +134,22 @@ export default defineType({
                         { name: "fr", title: "Français", type: "string" },
                         { name: "ar", title: "العربية", type: "string" },
                     ],
+                },
+                {
+                    name: "placement",
+                    title: "Placement",
+                    type: "string",
+                    description: "How the figure sits in the text column.",
+                    options: {
+                        list: [
+                            { title: "Full width (default)", value: "full" },
+                            { title: "Float inline-start (text wraps)", value: "start" },
+                            { title: "Float inline-end (text wraps)", value: "end" },
+                            { title: "Centered, intrinsic size", value: "center" },
+                        ],
+                        layout: "radio",
+                    },
+                    initialValue: "full",
                 },
             ],
         }),
