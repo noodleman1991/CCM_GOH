@@ -18,49 +18,56 @@ export function ReaderToc({ items }: { items: TocItem[] }) {
 
   useEffect(() => {
     if (items.length === 0) return;
-    const elements = items
-      .map((i) => document.getElementById(i.id))
-      .filter((el): el is HTMLElement => el !== null);
-    if (elements.length === 0) return;
+    const ids = items.map((i) => i.id);
 
-    // Track which headings are in view; the topmost visible one is "active".
-    const visible = new Set<string>();
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) {
-          if (e.isIntersecting) visible.add(e.target.id);
-          else visible.delete(e.target.id);
-        }
-        // Pick the first item (in document order) that's currently visible.
-        const firstVisible = items.find((i) => visible.has(i.id));
-        if (firstVisible) setActiveId(firstVisible.id);
-      },
-      { rootMargin: "-80px 0px -70% 0px", threshold: [0, 1] }
-    );
-    elements.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
+    // Recompute the active section from scroll position. The active heading is
+    // the LAST one whose top has crossed a line ~96px below the viewport top —
+    // so the highlight stays put while reading a long section (no flicker, no
+    // "nothing active" gap between headings). Falls back to the first heading
+    // when scrolled above everything.
+    const compute = () => {
+      const trigger = 96;
+      let current = ids[0];
+      for (const id of ids) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        if (el.getBoundingClientRect().top - trigger <= 0) current = id;
+        else break;
+      }
+      setActiveId((prev) => (prev === current ? prev : current));
+    };
+
+    compute();
+    window.addEventListener("scroll", compute, { passive: true });
+    window.addEventListener("resize", compute);
+    return () => {
+      window.removeEventListener("scroll", compute);
+      window.removeEventListener("resize", compute);
+    };
   }, [items]);
 
   if (items.length < 2) return null;
 
   return (
     <aside className="hidden xl:block">
-      <div className="sticky top-20">
+      {/* Sticky, viewport-bounded so a long outline scrolls within itself. */}
+      <div className="sticky top-20 max-h-[calc(100dvh-7rem)] overflow-y-auto pb-4">
         <p className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-ccm-water">
           <ListTree className="size-4" />
           {t("onThisPage")}
         </p>
-        <nav className="space-y-1 border-s ps-3">
+        <nav className="space-y-px">
           {items.map((item) => (
             <a
               key={item.id}
               href={`#${item.id}`}
               className={cn(
-                "block text-sm leading-snug transition-colors",
-                item.level === 3 && "ps-3",
+                // Active item gets an accent inline-start border + color.
+                "block border-s-2 py-1 text-sm leading-snug transition-colors",
+                item.level === 3 ? "ps-6" : "ps-3",
                 item.id === activeId
-                  ? "font-medium text-ccm-sea"
-                  : "text-muted-foreground hover:text-foreground"
+                  ? "border-ccm-sea font-medium text-ccm-sea"
+                  : "border-transparent text-muted-foreground hover:border-border hover:text-foreground"
               )}
             >
               <bdi>{item.text}</bdi>

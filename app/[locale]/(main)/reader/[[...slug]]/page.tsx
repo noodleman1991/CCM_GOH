@@ -1,6 +1,7 @@
 export const revalidate = 300;
 
 import type { Metadata } from "next";
+import type { PortableTextBlock } from "@portabletext/types";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
@@ -21,7 +22,7 @@ import { fetchDocsChapters, fetchDocsChapter } from "@/sanity/queries/docs-reade
 import { ReaderNav } from "@/components/reader/reader-nav";
 import { ReaderToc } from "@/components/reader/reader-toc";
 import { ReaderFootnotes } from "@/components/reader/reader-footnotes";
-import { extractToc, extractFootnotes } from "@/lib/portable-text-headings";
+import { extractToc, extractFootnotes, stripLeadingTitleHeading } from "@/lib/portable-text-headings";
 
 const COLLECTION = "global-agenda";
 
@@ -72,8 +73,14 @@ export default async function ReaderPage({
 
   const prev = idx > 0 ? chapters[idx - 1] : null;
   const next = idx < chapters.length - 1 ? chapters[idx + 1] : null;
-  const toc = extractToc(chapter.body);
-  const { footnotes, numberByKey } = extractFootnotes(chapter.body);
+  // Remove a leading body heading that just repeats the chapter title (shown
+  // as <h1> below), so chapters don't render a "double title".
+  const body = stripLeadingTitleHeading(
+    (chapter.body ?? []) as PortableTextBlock[],
+    chapter.title
+  );
+  const toc = extractToc(body);
+  const { footnotes, numberByKey } = extractFootnotes(body);
   const tNav = await getTranslations("navigation");
   const documentTitle = "Global Research and Action Agenda";
 
@@ -113,10 +120,10 @@ export default async function ReaderPage({
             <h1 className={cn("mt-1 mb-6 text-balance font-heading font-bold text-ccm-midnight", heading("lg"))}>
               {chapter.title}
             </h1>
-            {chapter.body && (
+            {body.length > 0 && (
               <div className="text-base md:text-lg leading-relaxed">
                 <PortableTextRenderer
-                  value={chapter.body}
+                  value={body}
                   locale={locale}
                   isRTL={isRTL}
                   footnoteNumbers={numberByKey}
