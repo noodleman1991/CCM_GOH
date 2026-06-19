@@ -108,7 +108,8 @@ function formatNewsDate(date: Date, locale: string): string {
     try {
         return new Intl.DateTimeFormat(locale, options).format(date);
     } catch {
-        return date.toLocaleDateString('en-US', options);
+        // Fallback still respects the locale (use ar-EG for Arabic numerals).
+        return date.toLocaleDateString(locale === "ar" ? "ar-EG" : locale, options);
     }
 }
 

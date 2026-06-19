@@ -88,7 +88,7 @@ function formatNewsDate(date: Date, locale: string): string {
     try {
         return new Intl.DateTimeFormat(locale, options).format(date);
     } catch {
-        return date.toLocaleDateString('en-US', options);
+        return date.toLocaleDateString(locale === "ar" ? "ar-EG" : locale, options);
     }
 }
 
