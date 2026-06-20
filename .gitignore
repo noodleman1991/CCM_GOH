@@ -66,3 +66,6 @@ backups/
 *.m4v
 *.webm
 Screen Recording*
+
+# browser-verification screenshot artifacts (Playwright)
+verify-*.png
