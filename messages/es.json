@@ -721,7 +721,9 @@
     "closeVideo": "Cerrar",
     "videoTitleFallback": "Experiencia vivida",
     "backToGallery": "Volver a la galería",
-    "viewFull": "Ver historia completa"
+    "viewFull": "Ver historia completa",
+    "audioTitleFallback": "Audio de experiencia vivida",
+    "audioFallback": "Tu navegador no admite el elemento de audio."
   },
   "caseStudyForm": {
     "sections": {

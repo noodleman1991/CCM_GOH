@@ -721,7 +721,9 @@
     "closeVideo": "Fermer",
     "videoTitleFallback": "Expérience vécue",
     "backToGallery": "Retour à la galerie",
-    "viewFull": "Voir le récit complet"
+    "viewFull": "Voir le récit complet",
+    "audioTitleFallback": "Audio d’expérience vécue",
+    "audioFallback": "Votre navigateur ne prend pas en charge l’élément audio."
   },
   "caseStudyForm": {
     "sections": {

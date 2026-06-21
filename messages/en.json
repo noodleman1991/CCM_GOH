@@ -873,7 +873,9 @@
     "closeVideo": "Close",
     "videoTitleFallback": "Lived experience",
     "backToGallery": "Back to gallery",
-    "viewFull": "View full story"
+    "viewFull": "View full story",
+    "audioTitleFallback": "Lived experience audio",
+    "audioFallback": "Your browser does not support the audio element."
   },
   "revisionAlert": {
     "title": "Action Required: Revision Needed",
