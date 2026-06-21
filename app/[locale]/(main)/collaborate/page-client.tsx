@@ -9,9 +9,7 @@
 import { useState, useMemo, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
 import { useRouter, Link } from '@/i18n/navigation'
-import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { buildCollaborateParams } from '@/lib/collaborate-filters'
 import { CommunityFilters, type CommunityFiltersState } from '@/components/collaborate/community-filters'
 import { UserCarousel } from '@/components/collaborate/user-carousel'
@@ -190,27 +188,33 @@ export function CollaboratePageClient({
 
       {/* Search + horizontal filters, full width */}
       <div className="mb-8 space-y-4">
+        {/* Search — matches the rounded pill used across content pages. */}
         <form
           onSubmit={(e) => {
             e.preventDefault()
             handleSearch(searchInput)
           }}
-          className="flex gap-2"
+          className="relative"
         >
-          <div className="relative flex-1">
-            <Search className="absolute top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground start-3" />
-            <Input
-              type="text"
-              placeholder={t('searchPlaceholder')}
-              value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
-              className="ps-10"
-              dir={isRTL ? 'rtl' : 'ltr'}
-            />
-          </div>
-          <Button type="submit">
-            {tCommon('search')}
-          </Button>
+          <Search className="pointer-events-none absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          <input
+            type="text"
+            placeholder={t('searchPlaceholder')}
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            dir={isRTL ? 'rtl' : 'ltr'}
+            className="h-11 w-full rounded-full border border-input bg-background ps-10 pe-10 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          />
+          {searchInput && (
+            <button
+              type="button"
+              onClick={() => { setSearchInput(''); handleSearch('') }}
+              aria-label={tCommon('clear')}
+              className="absolute end-3 top-1/2 -translate-y-1/2 rounded-md p-1 text-muted-foreground hover:bg-accent hover:text-foreground"
+            >
+              <X className="size-4" />
+            </button>
+          )}
         </form>
 
         {/* Horizontal filter bar, directly under the search */}
@@ -251,7 +255,6 @@ export function CollaboratePageClient({
                 key={communityName}
                 title={translatedTitle}
                 users={communityUsers[communityName] || []}
-                defaultExpanded={false}
               />
             )
           })}
