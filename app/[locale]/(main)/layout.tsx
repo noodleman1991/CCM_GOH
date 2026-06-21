@@ -9,7 +9,7 @@ import { SanityLive } from "@/sanity/lib/live";
 import { Suspense } from "react";
 import { SiteAnnouncementBar } from "@/components/announcement/site-announcement-bar";
 import { NotificationBell } from "@/components/notifications/notification-bell";
-import { SearchDialog } from "@/components/search-dialog";
+import { SearchTrigger, SearchModal } from "@/components/search-dialog";
 import { FEATURES } from "@/lib/features";
 
 export default async function MainLayout({
@@ -39,7 +39,7 @@ export default async function MainLayout({
                         />
                     </div>
                     <div className="ms-auto flex items-center gap-2 px-4">
-                        <SearchDialog variant="icon" />
+                        <SearchTrigger variant="icon" />
                         {FEATURES.engagement && <NotificationBell />}
                     </div>
                 </header>
@@ -53,6 +53,9 @@ export default async function MainLayout({
                     <main>{children}</main>
                 </div>
             </SidebarInset>
+            {/* Single universal-search modal — opened by any SearchTrigger or the
+                ⌘K / "/" shortcut (one instance, no stacking). */}
+            <SearchModal />
             <SanityLive />
             {(await draftMode()).isEnabled && (
                 <>

@@ -17,7 +17,7 @@ import {
 } from "lucide-react"
 import Logo from "@/components/logo"
 import { usePathname } from "@/i18n/navigation"
-import { SearchDialog } from "@/components/search-dialog"
+import { SearchTrigger } from "@/components/search-dialog"
 
 import { useClerkUser } from "@/hooks/use-clerk-user";
 import { useLocale, useTranslations } from "next-intl"
@@ -243,7 +243,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 {/* Universal search — a labelled pill that opens an accessible
                     search modal (keyboard: ⌘K / "/"; focus-trapped; RTL-aware). */}
                 <div className="p-2">
-                    <SearchDialog variant="pill" />
+                    <SearchTrigger variant="pill" />
                 </div>
             </SidebarHeader>
             <SidebarContent>
