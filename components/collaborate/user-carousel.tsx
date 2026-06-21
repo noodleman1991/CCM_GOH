@@ -1,18 +1,18 @@
 'use client'
 
 /**
- * UserCarousel Component
- * Horizontally scrollable carousel of user cards with expand functionality
- * Supports RTL layouts and responsive design
+ * UserCarousel — a horizontally scrollable row of user cards. The scroll arrows
+ * sit in the header row (top-trailing, beside the title) rather than overlapping
+ * the cards, and there is no expand/collapse — it's always the carousel.
+ * RTL-aware + responsive.
  */
 
-import { useState, useRef } from 'react'
+import { useRef } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
-import { Button } from '@/components/ui/button'
 import { CollaborateUserCard } from './collaborate-user-card'
-import { UserGrid } from './user-grid'
 import { cn } from '@/lib/utils'
-import { ChevronLeft, ChevronRight, Maximize2, Minimize2 } from 'lucide-react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { SectionHeader } from '@/components/ui/section-header'
 import type { LocalizedUser } from '@/types/prisma'
 
 interface UserCarouselProps {
@@ -20,137 +20,68 @@ interface UserCarouselProps {
   users: Array<LocalizedUser & {
     lastLoginAt?: Date | null
     communityMemberships?: Array<{
-      community: {
-        name: string
-        regionalName?: string | null
-      }
+      community: { name: string; regionalName?: string | null }
     }>
   }>
   className?: string
-  defaultExpanded?: boolean
 }
 
-export function UserCarousel({ title, users, className, defaultExpanded = false }: UserCarouselProps) {
+export function UserCarousel({ title, users, className }: UserCarouselProps) {
   const t = useTranslations('collaborate.carousel')
   const tStats = useTranslations('collaborate.stats')
   const locale = useLocale()
   const isRTL = locale === 'ar'
-
-  const [isExpanded, setIsExpanded] = useState(defaultExpanded)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
 
   const scroll = (direction: 'left' | 'right') => {
     if (!scrollContainerRef.current) return
-
-    const scrollAmount = 400
-    const scrollDirection = isRTL
-      ? direction === 'left' ? scrollAmount : -scrollAmount
-      : direction === 'left' ? -scrollAmount : scrollAmount
-
-    scrollContainerRef.current.scrollBy({
-      left: scrollDirection,
-      behavior: 'smooth'
-    })
+    const amount = 360
+    const delta = isRTL
+      ? direction === 'left' ? amount : -amount
+      : direction === 'left' ? -amount : amount
+    scrollContainerRef.current.scrollBy({ left: delta, behavior: 'smooth' })
   }
 
   if (users.length === 0) {
     return (
       <div className={cn('space-y-4', className)}>
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="text-lg font-semibold">{title}</h3>
-            <p className="text-sm text-muted-foreground">
-              {t('noMembers')}
-            </p>
-          </div>
-        </div>
+        <SectionHeader title={title} subtitle={t('noMembers')} />
       </div>
     )
   }
 
+  const arrowBtn =
+    'inline-flex size-9 items-center justify-center rounded-full border border-border bg-background text-foreground/70 transition-colors hover:border-ccm-sea/40 hover:text-ccm-sea focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+
   return (
     <div className={cn('space-y-4', className)}>
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h3 className="text-lg font-semibold">{title}</h3>
-          <p className="text-sm text-muted-foreground">
-            {tStats('totalMembers', { count: users.length })}
-          </p>
+      {/* Header: section title/count + scroll arrows on the trailing side */}
+      <div className="flex items-end justify-between gap-4">
+        <SectionHeader title={title} subtitle={tStats('totalMembers', { count: users.length })} />
+        <div className="flex shrink-0 items-center gap-2">
+          <button type="button" onClick={() => scroll('left')} aria-label={t('previous')} className={arrowBtn}>
+            <ChevronLeft className="size-4 rtl:hidden" />
+            <ChevronRight className="hidden size-4 rtl:block" />
+          </button>
+          <button type="button" onClick={() => scroll('right')} aria-label={t('next')} className={arrowBtn}>
+            <ChevronRight className="size-4 rtl:hidden" />
+            <ChevronLeft className="hidden size-4 rtl:block" />
+          </button>
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="gap-2"
-        >
-          {isExpanded ? (
-            <>
-              <Minimize2 className="h-4 w-4" />
-              {t('collapse')}
-            </>
-          ) : (
-            <>
-              <Maximize2 className="h-4 w-4" />
-              {t('expand')}
-            </>
-          )}
-        </Button>
       </div>
 
-      {/* Content */}
-      {isExpanded ? (
-        <UserGrid users={users} locale={locale} />
-      ) : (
-        <div className="relative group">
-          {/* Scroll Buttons */}
-          <Button
-            variant="outline"
-            size="icon"
-            className={cn(
-              'absolute top-1/2 -translate-y-1/2 z-10',
-              'opacity-0 group-hover:opacity-100 transition-opacity',
-              'shadow-lg',
-              isRTL ? 'right-2' : 'left-2'
-            )}
-            onClick={() => scroll('left')}
-          >
-            {isRTL ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            className={cn(
-              'absolute top-1/2 -translate-y-1/2 z-10',
-              'opacity-0 group-hover:opacity-100 transition-opacity',
-              'shadow-lg',
-              isRTL ? 'left-2' : 'right-2'
-            )}
-            onClick={() => scroll('right')}
-          >
-            {isRTL ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-          </Button>
-
-          {/* Carousel */}
-          <div
-            ref={scrollContainerRef}
-            className={cn(
-              'flex gap-4 overflow-x-auto scrollbar-hide pb-4',
-              'scroll-smooth'
-            )}
-            dir={isRTL ? 'rtl' : 'ltr'}
-          >
-            {users.map(user => (
-              <div
-                key={user.id}
-                className="flex-shrink-0 w-[280px] sm:w-[320px]"
-              >
-                <CollaborateUserCard user={user} />
-              </div>
-            ))}
+      {/* Carousel */}
+      <div
+        ref={scrollContainerRef}
+        className="flex gap-4 overflow-x-auto scroll-smooth scrollbar-hide pb-2 snap-x"
+        dir={isRTL ? 'rtl' : 'ltr'}
+      >
+        {users.map(user => (
+          <div key={user.id} className="w-[280px] shrink-0 snap-start sm:w-[300px]">
+            <CollaborateUserCard user={user} />
           </div>
-        </div>
-      )}
+        ))}
+      </div>
     </div>
   )
 }

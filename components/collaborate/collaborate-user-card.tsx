@@ -93,51 +93,45 @@ export function CollaborateUserCard({ user, className }: CollaborateUserCardProp
   }
 
   return (
-    <Link href={`/profiles/${user.username}`}>
+    <Link href={`/profiles/${user.username}`} className="group block h-full">
       <Card className={cn(
-        'h-full hover:shadow-lg transition-shadow cursor-pointer',
-        'border-2 hover:border-primary/50',
+        'h-full cursor-pointer overflow-hidden rounded-2xl border bg-card transition-all duration-200',
+        'hover:-translate-y-0.5 hover:border-ccm-sea/40 hover:shadow-lg',
         className
       )}>
-        <CardContent className="p-4">
-          <div className="flex flex-col gap-4">
-            {/* Header: Avatar + Name */}
-            <div className="flex items-start gap-3">
-              <div className="relative flex-shrink-0">
-                <Avatar className={cn(
-                  "h-12 w-12",
-                  user.openToCollaboration && "ring-2 ring-[var(--color-ccm-sea)] ring-offset-2 ring-offset-background"
-                )}>
-                  {user.image && <AvatarImage src={user.image} alt={user.displayName} />}
-                  <AvatarFallback>{user.initials}</AvatarFallback>
-                </Avatar>
-                {user.openToCollaboration && (
-                  <span
-                    className="absolute -bottom-0.5 -end-0.5 flex size-4 items-center justify-center rounded-full bg-[var(--color-ccm-sea)] text-white ring-2 ring-background"
-                    title={t('openToCollaborate')}
-                  >
-                    <MessageCircle className="size-2.5" aria-hidden="true" />
-                  </span>
-                )}
-              </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="font-semibold text-base text-ccm-midnight truncate">
-                  {user.displayName}
-                </h3>
-                {user.username && (
-                  <p className="text-sm text-muted-foreground truncate">
-                    @{user.username}
-                  </p>
-                )}
-              </div>
-            </div>
+        {/* Brand gradient band — gives the card a warmer, more engaging top. */}
+        <div className="relative h-16 bg-gradient-to-br from-ccm-sky/50 to-ccm-water/30">
+          {user.openToCollaboration && (
+            <span className="absolute end-3 top-3 inline-flex items-center gap-1 rounded-full bg-white/90 px-2 py-0.5 text-[11px] font-medium text-ccm-sea">
+              <MessageCircle className="size-3" aria-hidden="true" />
+              {t('openToCollaborate')}
+            </span>
+          )}
+        </div>
 
-            {/* Headline — the at-a-glance "what I'm about" line */}
-            {user.headline && (
-              <p className="text-sm text-ccm-sea font-medium line-clamp-2 -mt-1">
-                {user.headline}
-              </p>
-            )}
+        <CardContent className="-mt-8 flex flex-col gap-3 p-4">
+          {/* Avatar overlapping the band */}
+          <div className="flex items-end gap-3">
+            <Avatar className="size-16 shrink-0 ring-4 ring-card transition-transform duration-200 group-hover:scale-105">
+              {user.image && <AvatarImage src={user.image} alt={user.displayName} />}
+              <AvatarFallback className="bg-ccm-sea/15 text-ccm-sea font-semibold">{user.initials}</AvatarFallback>
+            </Avatar>
+            <div className="min-w-0 flex-1 pb-1">
+              <h3 className="truncate font-heading font-semibold text-ccm-midnight transition-colors group-hover:text-primary">
+                {user.displayName}
+              </h3>
+              {user.username && (
+                <p className="truncate text-sm text-muted-foreground">@{user.username}</p>
+              )}
+            </div>
+          </div>
+
+          {/* Headline — the at-a-glance "what I'm about" line */}
+          {user.headline && (
+            <p className="line-clamp-2 text-sm font-medium text-ccm-sea">
+              {user.headline}
+            </p>
+          )}
 
             {/* Affiliation */}
             {user.showWorkDetails && (user.organization || user.position) && (
@@ -215,15 +209,12 @@ export function CollaborateUserCard({ user, className }: CollaborateUserCardProp
             )}
 
             {/* Footer: Last Active */}
-            <div className="space-y-2 pt-2 border-t">
-              {user.lastLoginAt && (
-                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <Clock className="h-3 w-3" />
-                  <span>{t('lastActive', { time: getLastActiveText(user.lastLoginAt) })}</span>
-                </div>
-              )}
-            </div>
-          </div>
+            {user.lastLoginAt && (
+              <div className="flex items-center gap-1.5 border-t pt-2 text-xs text-muted-foreground">
+                <Clock className="h-3 w-3" />
+                <span>{t('lastActive', { time: getLastActiveText(user.lastLoginAt) })}</span>
+              </div>
+            )}
         </CardContent>
       </Card>
     </Link>

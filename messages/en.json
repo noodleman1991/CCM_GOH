@@ -968,7 +968,9 @@
       "viewAll": "View all",
       "showMore": "Show more",
       "loadMore": "Load more",
-      "noMembers": "No members in this community yet"
+      "noMembers": "No members in this community yet",
+      "previous": "Previous",
+      "next": "Next"
     },
     "userCard": {
       "viewProfile": "View profile",

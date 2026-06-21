@@ -888,7 +888,9 @@
       "viewAll": "Ver todo",
       "showMore": "Mostrar más",
       "loadMore": "Cargar más",
-      "noMembers": "Aún no hay miembros en esta comunidad"
+      "noMembers": "Aún no hay miembros en esta comunidad",
+      "previous": "Anterior",
+      "next": "Siguiente"
     },
     "userCard": {
       "viewProfile": "Ver perfil",

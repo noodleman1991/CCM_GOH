@@ -3,17 +3,10 @@
 import { useState, useMemo, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
-import { ArrowUpDown, Video } from 'lucide-react'
+import { Video } from 'lucide-react'
 import { Link } from '@/i18n/navigation'
 import { heading } from '@/lib/design-tokens'
 import { Button } from '@/components/ui/button'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import { getLocalizedText } from '@/lib/localization-utils'
 import { rtlLocales } from '@/i18n/routing'
 import { cn } from '@/lib/utils'
@@ -49,7 +42,6 @@ export default function LivedExperiencesPageClient({
   const isRTL = rtlLocales.includes(locale)
 
   const [searchQuery, setSearchQuery] = useState(initialSearch)
-  const [sortBy, setSortBy] = useState<'default' | 'az'>('default')
 
   // Inclusion model: empty selection = show everything; selecting narrows.
   const [selectedRegions, setSelectedRegions] = useState<string[]>(initialFilters.regions)
@@ -135,15 +127,8 @@ export default function LivedExperiencesPageClient({
     selectedRegions.length > 0 ||
     selectedTags.length > 0
 
-  // Sort the rows: 'default' keeps the CMS order (by region order, newest videos
-  // first within each row); 'az' alphabetises the rows by community name.
-  const sortedEntries = useMemo(() => {
-    const entries = Object.entries(filteredCommunityVideos)
-    if (sortBy === 'az') {
-      return [...entries].sort(([a], [b]) => a.localeCompare(b, locale))
-    }
-    return entries
-  }, [filteredCommunityVideos, sortBy, locale])
+  // Rows keep the CMS order (region order, newest videos first within each row).
+  const sortedEntries = Object.entries(filteredCommunityVideos)
 
   const totalVideos = Object.values(filteredCommunityVideos).flat().length
 
@@ -228,21 +213,9 @@ export default function LivedExperiencesPageClient({
             ]}
           />
 
-          <div className="flex flex-wrap items-center gap-3">
-            <Select value={sortBy} onValueChange={(v) => setSortBy(v as 'default' | 'az')}>
-              <SelectTrigger size="sm" className="w-auto gap-2">
-                <ArrowUpDown className="w-4 h-4 text-muted-foreground" />
-                <SelectValue placeholder={t('sortBy')} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="default">{t('sortNewest')}</SelectItem>
-                <SelectItem value="az">{t('sortAZ')}</SelectItem>
-              </SelectContent>
-            </Select>
-            <span className="text-sm text-muted-foreground">
-              {totalVideos} {totalVideos === 1 ? t('video') : t('videos')}
-            </span>
-          </div>
+          <span className="text-sm text-muted-foreground">
+            {totalVideos} {totalVideos === 1 ? t('video') : t('videos')}
+          </span>
         </div>
 
       {/* Results */}

@@ -6,12 +6,11 @@
  * Supports i18n and RTL layouts
  */
 
-import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import { FilterChip } from '@/components/ui/filter-chip'
 import { cn } from '@/lib/utils'
-import { ChevronDown, X } from 'lucide-react'
+import { X } from 'lucide-react'
 
 export interface CommunityFiltersState {
   communities: string[]
@@ -65,11 +64,6 @@ export function CommunityFilters({ filters, onChangeAction, communities, classNa
   const tWorkTypes = useTranslations('profile.edit.workTypes')
   const tExpertise = useTranslations('profile.edit.expertise')
 
-  // One filter group can be open at a time on this horizontal bar.
-  const [openGroup, setOpenGroup] = useState<string | null>(null)
-  const toggleGroup = (group: string) =>
-    setOpenGroup(prev => (prev === group ? null : group))
-
   // Inclusion model: toggling a value adds/removes it from the active selection.
   const toggleValue = (key: keyof CommunityFiltersState, value: string) => {
     const current = filters[key]
@@ -104,71 +98,37 @@ export function CommunityFilters({ filters, onChangeAction, communities, classNa
   ]
 
   return (
-    <div className={cn('w-full', className)} dir={isRTL ? 'rtl' : 'ltr'}>
-      {/* Filter group triggers — a horizontal, wrapping, mobile-friendly row */}
-      <div className="flex flex-wrap items-center gap-2">
-        {groups.map(group => {
-          const count = filters[group.key].length
-          const isOpen = openGroup === group.id
-          return (
-            <button
-              key={group.id}
-              type="button"
-              onClick={() => toggleGroup(group.id)}
-              aria-expanded={isOpen}
-              className={cn(
-                'inline-flex items-center gap-1.5 rounded-full border px-3.5 py-2 text-sm font-medium transition-colors',
-                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-                count > 0
-                  ? 'border-[var(--color-ccm-sea)]/40 bg-[var(--color-ccm-sea)]/10 text-[var(--color-ccm-sea)]'
-                  : 'border-border bg-background text-foreground/80 hover:bg-muted'
-              )}
-            >
-              <span>{group.label}</span>
-              {count > 0 && (
-                <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--color-ccm-sea)] px-1.5 text-xs font-semibold text-white">
-                  {count}
-                </span>
-              )}
-              <ChevronDown
-                className={cn('h-4 w-4 transition-transform', isOpen && 'rotate-180')}
-              />
-            </button>
-          )
-        })}
-
-        {activeCount > 0 && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={clearAll}
-            className="h-9 text-muted-foreground hover:text-foreground"
-          >
-            <X className="h-4 w-4 me-1.5" />
-            {t('clearFilters')}
-          </Button>
-        )}
-      </div>
-
-      {/* Expanded options for the open group — pills under the triggers */}
-      {openGroup && (
-        <div className="mt-3 rounded-xl border bg-muted/30 p-3">
+    <div className={cn('w-full space-y-4', className)} dir={isRTL ? 'rtl' : 'ltr'}>
+      {/* All groups shown inline (no collapse) — each is a labelled row of
+          multi-select pills. */}
+      {groups.map(group => (
+        <div key={group.id} className="space-y-1.5">
+          <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            {group.label}
+          </span>
           <div className="flex flex-wrap gap-2">
-            {groups
-              .find(g => g.id === openGroup)!
-              .options.map(opt => {
-                const group = groups.find(g => g.id === openGroup)!
-                return (
-                  <FilterChip
-                    key={opt.value}
-                    label={opt.label}
-                    active={filters[group.key].includes(opt.value)}
-                    onClick={() => toggleValue(group.key, opt.value)}
-                  />
-                )
-              })}
+            {group.options.map(opt => (
+              <FilterChip
+                key={opt.value}
+                label={opt.label}
+                active={filters[group.key].includes(opt.value)}
+                onClick={() => toggleValue(group.key, opt.value)}
+              />
+            ))}
           </div>
         </div>
+      ))}
+
+      {activeCount > 0 && (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={clearAll}
+          className="h-9 text-muted-foreground hover:text-foreground"
+        >
+          <X className="me-1.5 size-4" />
+          {t('clearFilters')}
+        </Button>
       )}
     </div>
   )
