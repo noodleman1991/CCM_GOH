@@ -1292,6 +1292,7 @@
     "filters": {
       "searchPlaceholder": "Rechercher des actualités...",
       "dateRange": "Plage de Dates",
+      "byDate": "Par date",
       "dateFrom": "De",
       "dateTo": "À",
       "tags": "Étiquettes",

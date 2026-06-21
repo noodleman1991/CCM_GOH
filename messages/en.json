@@ -1292,6 +1292,7 @@
     "filters": {
       "searchPlaceholder": "Search news...",
       "dateRange": "Date Range",
+      "byDate": "By date",
       "dateFrom": "From",
       "dateTo": "To",
       "tags": "Tags",

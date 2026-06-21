@@ -1292,6 +1292,7 @@
     "filters": {
       "searchPlaceholder": "البحث في الأخبار...",
       "dateRange": "نطاق التاريخ",
+      "byDate": "حسب التاريخ",
       "dateFrom": "من",
       "dateTo": "إلى",
       "tags": "العلامات",
