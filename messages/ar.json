@@ -1267,7 +1267,8 @@
     "relatedProjects": "المشاريع ذات الصلة",
     "studyAreas": "مجالات الدراسة",
     "allAuthors": "جميع المؤلفين",
-    "featuredBadge": "مميّزة"
+    "featuredBadge": "مميّزة",
+    "producedBy": "من إنتاج"
   },
   "revisionAlert": {
     "title": "مطلوب إجراء: تنقيح مطلوب",

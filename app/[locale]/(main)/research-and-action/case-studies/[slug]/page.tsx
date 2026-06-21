@@ -8,7 +8,7 @@ import { fetchCaseStudyBySlug, fetchCaseStudiesStaticParams } from '@/sanity/que
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
-import { Calendar, Users, Building, MapPin } from 'lucide-react'
+import { Calendar, Users, Building, MapPin, FolderKanban } from 'lucide-react'
 import { BackLink } from '@/components/ui/back-link'
 import { Link } from '@/i18n/navigation'
 import { urlFor } from '@/sanity/lib/image'
@@ -217,6 +217,28 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ loca
                   <p key={org._id} className="text-sm">
                     {org.name}
                   </p>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Produced by project(s) — provenance: the project(s) that output this. */}
+        {caseStudy.projects && caseStudy.projects.length > 0 && (
+          <Card>
+            <CardContent className="pt-6">
+              <h3 className="font-semibold mb-4 flex items-center gap-2">
+                <FolderKanban className="w-5 h-5" />
+                {t('producedBy')}
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                {caseStudy.projects.map((project: any) => (
+                  <span
+                    key={project._id}
+                    className="inline-flex items-center rounded-full border border-ccm-sea/30 px-3 py-1 text-sm text-ccm-sea"
+                  >
+                    {project.name}
+                  </span>
                 ))}
               </div>
             </CardContent>
