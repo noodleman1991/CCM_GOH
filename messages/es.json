@@ -1292,6 +1292,7 @@
     "filters": {
       "searchPlaceholder": "Buscar noticias...",
       "dateRange": "Rango de Fechas",
+      "byDate": "Por fecha",
       "dateFrom": "Desde",
       "dateTo": "Hasta",
       "tags": "Etiquetas",
