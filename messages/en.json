@@ -1589,5 +1589,12 @@
     "chapters": "Chapters",
     "onThisPage": "On this page",
     "footnotes": "Footnotes"
+  },
+  "atlas": {
+    "title": "Atlas & Explore",
+    "description": "Explore case studies, lived experiences, people and more across the seven regions.",
+    "dataLayer": "Data layer",
+    "explore": "Explore {region}",
+    "empty": "No {layer} here yet."
   }
 }

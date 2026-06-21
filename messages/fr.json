@@ -1589,5 +1589,12 @@
     "chapters": "Chapitres",
     "onThisPage": "Sur cette page",
     "footnotes": "Notes de bas de page"
+  },
+  "atlas": {
+    "title": "Atlas et Exploration",
+    "description": "Explorez les études de cas, les expériences vécues, les personnes et plus encore dans les sept régions.",
+    "dataLayer": "Couche de données",
+    "explore": "Explorer {region}",
+    "empty": "Aucun {layer} ici pour l’instant."
   }
 }
