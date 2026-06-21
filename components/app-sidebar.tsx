@@ -14,7 +14,8 @@ import {
     Heart,
     Search,
     Handshake,
-    FolderKanban,
+    FolderPlus,
+    BookMarked,
     X,
 } from "lucide-react"
 import Logo from "@/components/logo"
@@ -90,11 +91,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             title: t('communityAgendas'),
             url: "/research-and-action/community-agendas",
             icon: Users,
-        },
-        {
-            title: t('caseStudies'),
-            url: "/research-and-action/case-studies",
-            icon: BookOpen,
         },
         {
             title: t('toolkits'),
@@ -174,10 +170,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     //     },
     // ];
 
-    // Flat primary nav (no section headers). Workspaces only appears when the
-    // engagement flag is on; otherwise it stays out of the sidebar entirely.
+    // Two-group nav. DISCOVER = find content/knowledge; COLLABORATE = find &
+    // work with people and communities. Workspaces only appears when the
+    // engagement flag is on. (Atlas joins Discover in Phase 3 once its route exists.)
     const data = React.useMemo(() => ({
-        navMain: [
+        discover: [
             {
                 title: t('researchAction'),
                 url: "#",
@@ -187,11 +184,25 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 onToggle: () => setOpenAccordion(openAccordion === 'research' ? null : 'research')
             },
             {
+                title: t('newsUpdates'),
+                url: "/news",
+                icon: Newspaper,
+                isActive: isLinkActive("/news"),
+            },
+            {
                 title: t('livedExperiences'),
                 url: "/lived-experiences",
                 icon: Heart,
                 isActive: isLinkActive("/lived-experiences"),
             },
+            {
+                title: t('caseStudies'),
+                url: "/research-and-action/case-studies",
+                icon: BookMarked,
+                isActive: isLinkActive("/research-and-action/case-studies"),
+            },
+        ],
+        collaborate: [
             {
                 title: t('regionalCommunities'),
                 url: "#",
@@ -206,19 +217,17 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 icon: Handshake,
                 isActive: isLinkActive("/collaborate"),
             },
-            ...(FEATURES.engagement
-                ? [{
-                    title: t('collaborations'),
-                    url: "/collaborations",
-                    icon: FolderKanban,
-                    isActive: isLinkActive("/collaborations"),
-                }]
-                : []),
+            // Action item: start or find a project. When engagement is on this
+            // routes into Workspaces; otherwise it points at people-discovery so
+            // the affordance is never a dead end.
             {
-                title: t('news'),
-                url: "/news",
-                icon: Newspaper,
-                isActive: isLinkActive("/news"),
+                title: t('startOrFindProject'),
+                url: FEATURES.engagement ? "/collaborations" : "/collaborate",
+                icon: FolderPlus,
+                isActive: FEATURES.engagement
+                    ? isLinkActive("/collaborations")
+                    : false,
+                isAction: true,
             },
         ],
         navSecondary,
@@ -268,7 +277,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarHeader>
             <SidebarContent>
                 <NavMain
-                    items={data.navMain}
+                    items={data.discover}
+                    label={t('discover')}
+                    openAccordion={openAccordion}
+                    setOpenAccordionAction={setOpenAccordion}
+                />
+                <NavMain
+                    items={data.collaborate}
+                    label={t('collaborateGroup')}
                     openAccordion={openAccordion}
                     setOpenAccordionAction={setOpenAccordion}
                 />

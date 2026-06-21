@@ -32,6 +32,8 @@ export function NavMain({
     url: string
     icon: LucideIcon
     isActive?: boolean
+    /** Render as a call-to-action affordance (e.g. "Start or find a project"). */
+    isAction?: boolean
     items?: {
       title: string
       url: string
@@ -95,7 +97,17 @@ export function NavMain({
           // Regular menu item
           return (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton asChild tooltip={item.title} isActive={item.isActive}>
+              <SidebarMenuButton
+                asChild
+                tooltip={item.title}
+                isActive={item.isActive}
+                className={cn(
+                  item.isAction &&
+                    // CTA affordance on the navy sidebar: cyan accent + dashed
+                    // outline so it reads as "do something", not just navigate.
+                    "text-secondary [&>svg]:text-secondary border border-dashed border-sidebar-border/60 hover:border-secondary/60"
+                )}
+              >
                 <Link href={item.url}>
                   <item.icon />
                   <span>{item.title}</span>
