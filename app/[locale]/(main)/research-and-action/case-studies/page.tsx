@@ -13,6 +13,25 @@ import { Plus, Search, ChevronRight } from 'lucide-react'
 import { Link } from '@/i18n/navigation'
 import { getLocalizedText } from '@/lib/localization-utils'
 import { fetchCaseStudyTags, fetchCaseStudyCommunities } from '@/sanity/queries/case-study-queries'
+import { cn } from '@/lib/utils'
+
+// Assign a card layout to each gallery position to create an editorial masonry
+// rhythm (WIREFRAMES §4.11). Each section leads with a wide "feature" card, then
+// a repeating pattern adds a full-width "wide" split among standard cards. A
+// section of one renders that single item as a feature so it never looks orphaned.
+function variantForIndex(index: number, total: number): 'feature' | 'wide' | 'classic' {
+  if (index === 0) return 'feature'              // lead story
+  if (total > 4 && (index - 1) % 4 === 3) return 'wide' // periodic wide split
+  return 'classic'
+}
+
+// Column span per variant in the 6-col masonry grid: feature spans 2/3, wide
+// spans full width, classic takes a normal 3-up slot.
+function spanForVariant(variant: 'feature' | 'wide' | 'classic'): string {
+  if (variant === 'feature') return 'sm:col-span-2 lg:col-span-4'
+  if (variant === 'wide') return 'sm:col-span-2 lg:col-span-6'
+  return 'sm:col-span-1 lg:col-span-2'
+}
 
 // Fetch approved case studies by regional community
 async function fetchCaseStudiesByRegion() {
@@ -301,28 +320,29 @@ async function RegionalCaseStudiesContent({
         </div>
 
         {filteredCaseStudies.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredCaseStudies.map((caseStudy: any) => (
-              <Link
-                key={caseStudy._id}
-                href={`/research-and-action/case-studies/${caseStudy.slug}`}
-              >
-                <GridCaseStudyComponent
-                  _type="grid-case-study"
-                  _key={caseStudy._id}
-                  caseStudy={caseStudy}
-                  showTags={true}
-                  showAuthors={true}
-                  showMetadata={true}
-                  showStudyPeriod={false}
-                  showLocation={false}
-                  customLayout="default"
-                  locale={locale}
-                  cardVariant="classic"
-                  disableModal={true}
-                />
-              </Link>
-            ))}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-6">
+            {filteredCaseStudies.map((caseStudy: any, index: number) => {
+              const variant = variantForIndex(index, filteredCaseStudies.length)
+              return (
+                <Link
+                  key={caseStudy._id}
+                  href={`/research-and-action/case-studies/${caseStudy.slug}`}
+                  className={cn('block', spanForVariant(variant))}
+                >
+                  <GridCaseStudyComponent
+                    _type="grid-case-study"
+                    _key={caseStudy._id}
+                    caseStudy={caseStudy}
+                    showTags={true}
+                    showAuthors={true}
+                    showMetadata={true}
+                    locale={locale}
+                    cardVariant={variant}
+                    disableModal={true}
+                  />
+                </Link>
+              )
+            })}
           </div>
         ) : (
           <Card className="p-12 text-center">
@@ -391,29 +411,30 @@ async function RegionalCaseStudiesContent({
             </Button>
           </div>
 
-          {/* Grid of Case Studies */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {community.caseStudies.map((caseStudy: any) => (
-              <Link
-                key={caseStudy._id}
-                href={`/research-and-action/case-studies/${caseStudy.slug}`}
-              >
-                <GridCaseStudyComponent
-                  _type="grid-case-study"
-                  _key={caseStudy._id}
-                  caseStudy={caseStudy}
-                  showTags={true}
-                  showAuthors={true}
-                  showMetadata={true}
-                  showStudyPeriod={false}
-                  showLocation={false}
-                  customLayout="default"
-                  locale={locale}
-                  cardVariant="classic"
-                  disableModal={true}
-                />
-              </Link>
-            ))}
+          {/* Grid of Case Studies — editorial masonry rhythm */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-6">
+            {community.caseStudies.map((caseStudy: any, index: number) => {
+              const variant = variantForIndex(index, community.caseStudies.length)
+              return (
+                <Link
+                  key={caseStudy._id}
+                  href={`/research-and-action/case-studies/${caseStudy.slug}`}
+                  className={cn('block', spanForVariant(variant))}
+                >
+                  <GridCaseStudyComponent
+                    _type="grid-case-study"
+                    _key={caseStudy._id}
+                    caseStudy={caseStudy}
+                    showTags={true}
+                    showAuthors={true}
+                    showMetadata={true}
+                    locale={locale}
+                    cardVariant={variant}
+                    disableModal={true}
+                  />
+                </Link>
+              )
+            })}
           </div>
         </section>
       ))}
