@@ -8,8 +8,8 @@ import { fetchCaseStudyBySlug, fetchCaseStudiesStaticParams } from '@/sanity/que
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
-import { Calendar, Users, Building, MapPin, ArrowLeft } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { Calendar, Users, Building, MapPin } from 'lucide-react'
+import { BackLink } from '@/components/ui/back-link'
 import { Link } from '@/i18n/navigation'
 import { urlFor } from '@/sanity/lib/image'
 import { getLocalizedText, formatCaseStudyDate, getPrimaryAuthor, getStudyLocationText } from '@/lib/case-study-utils'
@@ -84,13 +84,8 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ loca
 
   return (
     <div className="container max-w-4xl py-8 space-y-8">
-      {/* Back button */}
-      <Button variant="ghost" asChild>
-        <Link href={`/research-and-action/case-studies`} className="flex items-center gap-2">
-          <ArrowLeft className="w-4 h-4" />
-          Back to Case Studies
-        </Link>
-      </Button>
+      {/* Back link */}
+      <BackLink href="/research-and-action/case-studies" label={t('backToCaseStudies')} />
 
       {/* Header */}
       <div className="space-y-4">
