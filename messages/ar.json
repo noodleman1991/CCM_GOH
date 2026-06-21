@@ -1191,6 +1191,9 @@
   "caseStudies": {
     "title": "دراسات الحالة",
     "description": "استكشف الأبحاث والرؤى من مجتمعنا العالمي",
+    "viewCommunity": "عرض المجتمع",
+    "caseStudySingular": "دراسة حالة",
+    "caseStudyPlural": "دراسات حالة",
     "pageTitle": "دراسات الحالة",
     "pageDescription": "استكشف الأبحاث والرؤى من مجتمعنا العالمي",
     "featured": "دراسات حالة مميزة",

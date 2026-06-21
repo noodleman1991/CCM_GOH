@@ -7,9 +7,10 @@ import { client } from '@/sanity/lib/client'
 import GridCaseStudyComponent from '@/components/blocks/grid/grid-case-study'
 import CaseStudiesFilters from '@/components/case-studies/case-studies-filters'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Plus, Search, ChevronRight } from 'lucide-react'
+import { SectionHeader } from '@/components/ui/section-header'
+import { Plus, Search } from 'lucide-react'
 import { Link } from '@/i18n/navigation'
 import { getLocalizedText } from '@/lib/localization-utils'
 import { fetchCaseStudyTags, fetchCaseStudyCommunities } from '@/sanity/queries/case-study-queries'
@@ -390,26 +391,11 @@ async function RegionalCaseStudiesContent({
     <div className="space-y-16">
       {communitiesWithCaseStudies.map((community: any) => (
         <section key={community._id} className="space-y-6">
-          {/* Section Header */}
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-2xl font-bold">
-                {typeof community.name === 'string' ? community.name : getLocalizedText(community.name, locale, community.name)}
-              </h2>
-              <p className="text-sm text-muted-foreground mt-1">
-                {community.caseStudies.length} case {community.caseStudies.length === 1 ? 'study' : 'studies'}
-              </p>
-            </div>
-            <Button variant="ghost" size="sm" asChild>
-              <Link
-                href={`/communities/${community.slug}`}
-                className="flex items-center gap-1"
-              >
-                View community
-                <ChevronRight className="w-4 h-4" />
-              </Link>
-            </Button>
-          </div>
+          <SectionHeader
+            title={typeof community.name === 'string' ? community.name : getLocalizedText(community.name, locale, community.name)}
+            subtitle={`${community.caseStudies.length} ${community.caseStudies.length === 1 ? t('caseStudySingular') : t('caseStudyPlural')}`}
+            action={{ label: t('viewCommunity'), href: `/communities/${community.slug}` }}
+          />
 
           {/* Grid of Case Studies — editorial masonry rhythm */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-6">

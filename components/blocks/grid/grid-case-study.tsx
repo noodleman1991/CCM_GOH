@@ -13,6 +13,7 @@ import {
     Lock,
     AlertCircle,
     Star,
+    BookMarked,
 } from 'lucide-react';
 import { urlForCropped } from '@/sanity/lib/image';
 import { normalizeTagColor, sortedTags } from '@/lib/tags';
@@ -111,9 +112,11 @@ export default function GridCaseStudyComponent({
     const imageW = variant === "feature" ? 1200 : variant === "wide" ? 800 : 800;
     const imageH = variant === "feature" ? 675 : variant === "wide" ? 600 : 450;
 
-    const CoverImage = ({ className: imgWrapClass }: { className?: string }) =>
-        imageUrl ? (
-            <div className={cn("relative overflow-hidden", imgWrapClass)}>
+    // Cover always renders (image OR an on-brand gradient fallback) so cards never
+    // have an empty top. Badges overlay either way.
+    const CoverImage = ({ className: imgWrapClass }: { className?: string }) => (
+        <div className={cn("relative overflow-hidden bg-gradient-to-br from-ccm-sky/40 to-ccm-water/30", imgWrapClass)}>
+            {imageUrl ? (
                 <Image
                     src={urlForCropped(caseStudy.image, imageW, imageH).url()}
                     alt={caseStudy.image.alt || title}
@@ -121,19 +124,25 @@ export default function GridCaseStudyComponent({
                     className="object-cover transition-transform duration-200 group-hover:scale-105"
                     sizes={imageSizes || "(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"}
                 />
-                <div className="absolute inset-x-3 top-3 flex items-start justify-between gap-2">
-                    <Badge variant="secondary" className="truncate bg-white/90 text-ccm-midnight">
-                        {typeLabel}
+            ) : (
+                // Decorative placeholder so an image-less study still looks intentional.
+                <span aria-hidden="true" className="absolute inset-0 flex items-center justify-center">
+                    <BookMarked className="size-10 text-ccm-sea/30" />
+                </span>
+            )}
+            <div className="absolute inset-x-3 top-3 flex items-start justify-between gap-2">
+                <Badge variant="secondary" className="truncate bg-white/90 text-ccm-midnight">
+                    {typeLabel}
+                </Badge>
+                {caseStudy.featured && (
+                    <Badge className="shrink-0 gap-1 bg-ccm-amber text-ccm-midnight">
+                        <Star className="size-3 fill-current" />
+                        {t('featured')}
                     </Badge>
-                    {caseStudy.featured && (
-                        <Badge className="shrink-0 gap-1 bg-ccm-amber text-ccm-midnight">
-                            <Star className="size-3 fill-current" />
-                            {t('featured')}
-                        </Badge>
-                    )}
-                </div>
+                )}
             </div>
-        ) : null;
+        </div>
+    );
 
     const Meta = () => {
         if (!showMetadata) return null;

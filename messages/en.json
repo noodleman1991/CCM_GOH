@@ -771,6 +771,9 @@
   "caseStudies": {
     "title": "Case Studies",
     "description": "Explore research and insights from our global community",
+    "viewCommunity": "View community",
+    "caseStudySingular": "case study",
+    "caseStudyPlural": "case studies",
     "pageTitle": "Case Studies",
     "pageDescription": "Explore research and insights from our global community",
     "featured": "Featured Case Studies",
