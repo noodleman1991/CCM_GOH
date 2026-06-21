@@ -39,8 +39,10 @@ export const clerkAppearance: ClerkAppearance = {
     // Render inside our own auth layout card, so drop Clerk's outer chrome.
     rootBox: "w-full",
     card: "shadow-none border border-border bg-card rounded-xl",
-    logoBox: "h-10 justify-center",
-    logoImage: "h-10 w-auto object-contain",
+    // Hard-coded 4× the original h-10 logo (h-40 = 160px) on the auth cards.
+    // Clerk applies its own logo sizing, so force ours with `!` (important).
+    logoBox: "!h-40 justify-center",
+    logoImage: "!h-40 w-auto max-w-none object-contain",
     headerTitle: "font-heading text-ccm-midnight",
     headerSubtitle: "text-muted-foreground",
     socialButtonsBlockButton:
