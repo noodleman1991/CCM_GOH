@@ -77,7 +77,7 @@ async function fetchCaseStudiesByRegion() {
 
 // Fetch filtered case studies
 async function fetchFilteredCaseStudies(filters: {
-  topic?: string
+  topics?: string[]
   tags?: string[]
   communities?: string[]
   search?: string
@@ -87,9 +87,9 @@ async function fetchFilteredCaseStudies(filters: {
   const conditions: string[] = ['_type == "caseStudy"', 'status == "approved"']
   const params: Record<string, unknown> = {}
 
-  if (filters.topic) {
-    conditions.push(`topic == $topic`)
-    params.topic = filters.topic
+  if (filters.topics && filters.topics.length > 0) {
+    conditions.push(`topic in $topics`)
+    params.topics = filters.topics
   }
 
   if (filters.tags && filters.tags.length > 0) {
@@ -155,7 +155,7 @@ async function CaseStudiesFiltersWrapper({
 }: {
   locale: string
   currentFilters: {
-    topic?: string
+    topics?: string[]
     tags?: string[]
     communities?: string[]
     search?: string
@@ -215,14 +215,22 @@ export default async function RegionalCaseStudiesPage({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
   const { locale } = await params
-  const { topic, tags, communities, search } = await searchParams
+  const { topics, tags, communities, search } = await searchParams
   const t = await getTranslations({ locale, namespace: 'caseStudies' })
 
-  // Helper to convert param to array
+  // Convert a (possibly comma-separated) multi-value param into an array.
   const toArray = (param: string | string[] | undefined): string[] | undefined => {
     if (!param) return undefined
-    if (Array.isArray(param)) return param
-    return [param]
+    const raw = Array.isArray(param) ? param : param.split(',')
+    const cleaned = raw.map((s) => s.trim()).filter(Boolean)
+    return cleaned.length ? cleaned : undefined
+  }
+
+  const parsed = {
+    topics: toArray(topics),
+    tags: toArray(tags),
+    communities: toArray(communities),
+    search: typeof search === 'string' ? search : undefined,
   }
 
   return (
@@ -250,28 +258,12 @@ export default async function RegionalCaseStudiesPage({
 
       {/* Filters */}
       <Suspense fallback={<Skeleton className="h-16 w-full" />}>
-        <CaseStudiesFiltersWrapper
-          locale={locale}
-          currentFilters={{
-            topic: typeof topic === 'string' ? topic : undefined,
-            tags: toArray(tags),
-            communities: toArray(communities),
-            search: typeof search === 'string' ? search : undefined
-          }}
-        />
+        <CaseStudiesFiltersWrapper locale={locale} currentFilters={parsed} />
       </Suspense>
 
       {/* Content */}
       <Suspense fallback={<LoadingSkeleton />}>
-        <RegionalCaseStudiesContent
-          locale={locale}
-          filters={{
-            topic: typeof topic === 'string' ? topic : undefined,
-            tags: toArray(tags),
-            communities: toArray(communities),
-            search: typeof search === 'string' ? search : undefined
-          }}
-        />
+        <RegionalCaseStudiesContent locale={locale} filters={parsed} />
       </Suspense>
     </div>
   )
@@ -283,7 +275,7 @@ async function RegionalCaseStudiesContent({
 }: {
   locale: string
   filters: {
-    topic?: string
+    topics?: string[]
     tags?: string[]
     communities?: string[]
     search?: string
@@ -292,15 +284,15 @@ async function RegionalCaseStudiesContent({
   const t = await getTranslations({ locale, namespace: 'caseStudies' })
 
   // If filters are applied, show filtered results
-  if (filters.topic || (filters.tags && filters.tags.length > 0) || (filters.communities && filters.communities.length > 0) || filters.search) {
+  if ((filters.topics && filters.topics.length > 0) || (filters.tags && filters.tags.length > 0) || (filters.communities && filters.communities.length > 0) || filters.search) {
     const filteredCaseStudies = await fetchFilteredCaseStudies(filters)
 
     const getFilterSummary = () => {
       const parts: string[] = []
       if (filters.search) parts.push(`"${filters.search}"`)
-      if (filters.topic) parts.push(filters.topic)
-      if (filters.tags && filters.tags.length > 0) parts.push(`Tag: ${filters.tags[0]}`)
-      if (filters.communities && filters.communities.length > 0) parts.push(filters.communities[0])
+      if (filters.topics?.length) parts.push(filters.topics.join(', '))
+      if (filters.tags?.length) parts.push(filters.tags.join(', '))
+      if (filters.communities?.length) parts.push(filters.communities.join(', '))
       return parts.join(' • ')
     }
 

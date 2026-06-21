@@ -804,7 +804,9 @@
       "updating": "Updating...",
       "all": "All Topics",
       "featured": "Featured",
-      "recent": "Recently Published"
+      "recent": "Recently Published",
+      "topic": "Topic",
+      "tags": "Tags"
     },
     "topics": {
       "climate-environment": "Climate Change & Environment",

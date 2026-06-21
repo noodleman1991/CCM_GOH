@@ -1231,7 +1231,9 @@
       "updating": "Actualizando...",
       "all": "Todos los Temas",
       "featured": "Destacados",
-      "recent": "Publicados Recientemente"
+      "recent": "Publicados Recientemente",
+      "topic": "Tema",
+      "tags": "Etiquetas"
     },
     "topics": {
       "climate-environment": "Cambio Climático y Medio Ambiente",

@@ -3,13 +3,10 @@
 import { useState, useMemo, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
-import { Search, Filter, X, MapPin, Tag as TagIcon, ArrowUpDown, Video } from 'lucide-react'
+import { ArrowUpDown, Video } from 'lucide-react'
 import { Link } from '@/i18n/navigation'
 import { heading } from '@/lib/design-tokens'
-import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { FilterChip, RemovableChip } from '@/components/ui/filter-chip'
 import {
   Select,
   SelectContent,
@@ -24,6 +21,7 @@ import Image from "next/image";
 import SectionContainer from "@/components/ui/section-container";
 import { ScrollRow } from "@/components/ui/scroll-row";
 import { LivedExperienceVideoCard } from "@/components/lived-experiences/video-card";
+import { ContentFilters } from "@/components/ui/content-filters";
 
 interface LivedExperiencesPageClientProps {
   initialCommunityVideos: Record<string, any[]>
@@ -51,7 +49,6 @@ export default function LivedExperiencesPageClient({
   const isRTL = rtlLocales.includes(locale)
 
   const [searchQuery, setSearchQuery] = useState(initialSearch)
-  const [showFilters, setShowFilters] = useState(false)
   const [sortBy, setSortBy] = useState<'default' | 'az'>('default')
 
   // Inclusion model: empty selection = show everything; selecting narrows.
@@ -150,19 +147,6 @@ export default function LivedExperiencesPageClient({
 
   const totalVideos = Object.values(filteredCommunityVideos).flat().length
 
-  // Label a region slug for the active-filter summary chips.
-  const regionLabel = (slug: string) => {
-    const c = communities.find(cm => cm.slug === slug)
-    if (!c) return slug
-    return typeof c.name === 'string' ? c.name : getLocalizedText(c.name, locale, c.name)
-  }
-
-  // Label a tag value for chips (tags are dereferenced docs; selection stores value).
-  const tagLabel = (value: string) => {
-    const tag = allTags.find((t) => t.value === value || t._id === value)
-    return tag ? getLocalizedText(tag.label as any, locale, value) : value
-  }
-
   return (
     <div className="py-8 space-y-8">
         {/* Header */}
@@ -209,136 +193,57 @@ export default function LivedExperiencesPageClient({
 
       {/* Search, Filters, and Results Container */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-        {/* Search and Filters */}
-        <div className="space-y-4">
-        {/* Search Bar */}
-        <div className="relative">
-          <Search className={cn(
-            "pointer-events-none absolute top-1/2 size-4 -translate-y-1/2 text-muted-foreground",
-            isRTL ? "right-3" : "left-3"
-          )} />
-          <Input
-            placeholder={t('searchPlaceholder')}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className={cn(isRTL ? "pr-10" : "pl-10")}
-          />
-        </div>
-
-        {/* Filter toggle + sort + clear */}
-        <div className="flex flex-wrap items-center gap-3">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center gap-2"
-          >
-            <Filter className="w-4 h-4" />
-            {t('filters')}
-            {hasActiveFilters && (
-              <Badge variant="secondary" className="ms-1">
-                {selectedRegions.length + selectedTags.length}
-              </Badge>
-            )}
-          </Button>
-
-          <Select value={sortBy} onValueChange={(v) => setSortBy(v as 'default' | 'az')}>
-            <SelectTrigger size="sm" className="w-auto gap-2">
-              <ArrowUpDown className="w-4 h-4 text-muted-foreground" />
-              <SelectValue placeholder={t('sortBy')} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="default">{t('sortNewest')}</SelectItem>
-              <SelectItem value="az">{t('sortAZ')}</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <span className="text-sm text-muted-foreground">
-            {totalVideos} {totalVideos === 1 ? t('video') : t('videos')}
-          </span>
-
-          {hasActiveFilters && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={clearFilters}
-              className="ms-auto flex items-center gap-2"
-            >
-              <X className="w-4 h-4" />
-              {t('clearFilters')}
-            </Button>
-          )}
-        </div>
-
-        {/* Active-filter summary chips (click × to remove) */}
-        {(selectedRegions.length > 0 || selectedTags.length > 0) && (
-          <div className="flex flex-wrap gap-2">
-            {selectedRegions.map((slug) => (
-              <RemovableChip
-                key={`r-${slug}`}
-                label={regionLabel(slug)}
-                icon={MapPin}
-                onRemove={() => toggleRegion(slug)}
-                removeLabel={t('clearFilters')}
-              />
-            ))}
-            {selectedTags.map((tag) => (
-              <RemovableChip
-                key={`t-${tag}`}
-                label={tagLabel(tag)}
-                icon={TagIcon}
-                onRemove={() => toggleTag(tag)}
-                removeLabel={t('clearFilters')}
-              />
-            ))}
-          </div>
-        )}
-
-        {/* Filters Panel — inclusion model: nothing selected shows everything */}
-        {showFilters && (
-          <div className="border rounded-lg p-6 space-y-6 bg-card">
-            {/* Regions Filter */}
-            <div className="space-y-3">
-              <h3 className="font-semibold">{t('filterByRegion')}</h3>
-              <div className="flex flex-wrap gap-2">
-                {communities.map((community) => {
-                  const communityName = typeof community.name === 'string'
+        {/* Unified content filters — collapsed, multi-select (shared with news
+            + case studies). Sort + count sit alongside. */}
+        <div className="space-y-3">
+          <ContentFilters
+            search={{ value: searchQuery, onChange: setSearchQuery, placeholder: t('searchPlaceholder') }}
+            onClearAll={clearFilters}
+            groups={[
+              {
+                id: 'regions',
+                label: t('filterByRegion'),
+                selected: selectedRegions,
+                onToggle: toggleRegion,
+                options: communities.map((community) => ({
+                  value: community.slug,
+                  label: typeof community.name === 'string'
                     ? community.name
-                    : getLocalizedText(community.name, locale, community.name)
-                  return (
-                    <FilterChip
-                      key={community._id}
-                      label={communityName}
-                      active={selectedRegions.includes(community.slug)}
-                      onClick={() => toggleRegion(community.slug)}
-                    />
-                  )
-                })}
-              </div>
-            </div>
+                    : getLocalizedText(community.name, locale, community.name),
+                })),
+              },
+              {
+                id: 'tags',
+                label: t('filterByTag'),
+                selected: selectedTags,
+                // De-surface the 'Other' tag from the chips.
+                options: allTags
+                  .filter((tag) => (tag.value || tag._id) !== 'other')
+                  .map((tag) => ({
+                    value: tag.value || tag._id,
+                    label: getLocalizedText(tag.label as any, locale, tag.value || tag._id),
+                  })),
+                onToggle: toggleTag,
+              },
+            ]}
+          />
 
-            {/* Tags Filter */}
-            {allTags.length > 0 && (
-              <div className="space-y-3">
-                <h3 className="font-semibold">{t('filterByTag')}</h3>
-                <div className="flex flex-wrap gap-2">
-                  {allTags.map((tag) => {
-                    const value = tag.value || tag._id
-                    return (
-                      <FilterChip
-                        key={tag._id}
-                        label={getLocalizedText(tag.label as any, locale, value)}
-                        active={selectedTags.includes(value)}
-                        onClick={() => toggleTag(value)}
-                      />
-                    )
-                  })}
-                </div>
-              </div>
-            )}
+          <div className="flex flex-wrap items-center gap-3">
+            <Select value={sortBy} onValueChange={(v) => setSortBy(v as 'default' | 'az')}>
+              <SelectTrigger size="sm" className="w-auto gap-2">
+                <ArrowUpDown className="w-4 h-4 text-muted-foreground" />
+                <SelectValue placeholder={t('sortBy')} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="default">{t('sortNewest')}</SelectItem>
+                <SelectItem value="az">{t('sortAZ')}</SelectItem>
+              </SelectContent>
+            </Select>
+            <span className="text-sm text-muted-foreground">
+              {totalVideos} {totalVideos === 1 ? t('video') : t('videos')}
+            </span>
           </div>
-        )}
-      </div>
+        </div>
 
       {/* Results */}
       <div className="space-y-12">
