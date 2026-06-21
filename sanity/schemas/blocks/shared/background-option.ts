@@ -142,6 +142,15 @@ export const backgroundOption = defineType({
       // Only relevant once an actual background is chosen.
       hidden: ({ parent }) => !parent?.type || parent.type === "none",
     }),
+    defineField({
+      name: "blobAccent",
+      title: "Soft blob accent",
+      type: "boolean",
+      description:
+        "Add the gentle organic 'blob' shapes behind the content (the CCM brand motif). Best on a solid CCM colour background, especially the navy hero. Decorative only; respects reduced-motion.",
+      initialValue: false,
+      hidden: ({ parent }) => !parent?.type || parent.type === "none",
+    }),
   ],
   preview: {
     select: {
