@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { Suspense } from 'react'
 import { getTranslations } from 'next-intl/server'
-import SearchInterface from '@/components/search/search-interface'
+import GroupedSearch from '@/components/search/grouped-search'
 import { Skeleton } from '@/components/ui/skeleton'
 
 // Force dynamic rendering to prevent SSR caching issues with search state
@@ -82,7 +82,7 @@ export default async function SearchPage() {
       </div>
 
       <Suspense fallback={<SearchSkeleton />}>
-        <SearchInterface />
+        <GroupedSearch />
       </Suspense>
     </div>
   )
