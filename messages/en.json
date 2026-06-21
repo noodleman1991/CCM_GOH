@@ -292,7 +292,11 @@
       "projectLink": "Project Link",
       "startDate": "Start Date",
       "endDate": "End Date",
-      "ongoingProject": "This work is ongoing"
+      "ongoingProject": "This work is ongoing",
+      "hide": "Hide from profile",
+      "show": "Show on profile",
+      "pin": "Pin to top",
+      "unpin": "Unpin"
     },
     "communities": {
       "title": "Communities",

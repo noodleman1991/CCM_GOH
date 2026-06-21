@@ -97,6 +97,13 @@ export async function getUserProfile(username: string): Promise<ProfileData | nu
 
         const user = result.data as any // Type assertion for relations
 
+        // The owner sees their hidden items (so they can manage them); visitors
+        // never see items the owner hid. Already ordered pinned-first upstream.
+        const isOwner = Boolean(viewerId && viewerId === user.id)
+        const recentWork = isOwner
+            ? (user.recentWork || [])
+            : (user.recentWork || []).filter((w: any) => !w.hidden)
+
         // Compute derived fields
         const fullName = [user.firstName, user.lastName].filter(Boolean).join(' ')
         const location = [user.city, user.country].filter(Boolean).join(', ')
@@ -139,7 +146,7 @@ export async function getUserProfile(username: string): Promise<ProfileData | nu
             collaborationInterests: user.collaborationInterests,
             livedExperienceStatement: user.livedExperienceStatement, // null if redacted
             orcidId: user.orcidId,
-            recentWork: user.recentWork || [],
+            recentWork,
             communities: user.communityMemberships?.map((cm: any) => cm.community) || [],
             displayName,
             fullName,

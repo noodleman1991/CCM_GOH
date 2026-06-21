@@ -382,7 +382,11 @@
       "projectLink": "Enlace del Proyecto",
       "startDate": "Fecha de Inicio",
       "endDate": "Fecha de Fin",
-      "ongoingProject": "Este trabajo está en curso"
+      "ongoingProject": "Este trabajo está en curso",
+      "hide": "Ocultar del perfil",
+      "show": "Mostrar en el perfil",
+      "pin": "Fijar arriba",
+      "unpin": "Desfijar"
     },
     "communities": {
       "title": "Comunidades",

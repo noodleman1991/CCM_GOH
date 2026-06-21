@@ -184,6 +184,11 @@ model RecentWork {
   outcome       String? // outcome / impact line
   imageUrl      String? // cover image URL
 
+  // Profile curation — owner can hide an item from their public profile and
+  // pin one to the top. Additive (defaults preserve current behaviour).
+  hidden Boolean @default(false)
+  pinned Boolean @default(false)
+
   @@index([userId])
 }
 
