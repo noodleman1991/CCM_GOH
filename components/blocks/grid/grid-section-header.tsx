@@ -4,8 +4,8 @@
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { urlFor } from "@/sanity/lib/image";
-import { heading } from "@/lib/design-tokens";
 import Blocks from "@/components/blocks";
+import { SectionHeader } from "@/components/ui/section-header";
 
 interface GridSectionHeaderProps {
   title?: string;
@@ -16,6 +16,11 @@ interface GridSectionHeaderProps {
   isRTL?: boolean;
 }
 
+// Section header for page-builder grid rows (toolkits, impact-reports,
+// all-outputs, agendas, community grids). Uses the shared SectionHeader so the
+// vertical colour bar + title type match the rest of the app, while keeping the
+// grid block's two extras: an optional portable-text description and an optional
+// header image floated to the trailing side.
 export function GridSectionHeader({
   title,
   subtitle,
@@ -26,7 +31,6 @@ export function GridSectionHeader({
 }: GridSectionHeaderProps) {
   const hasImage = headerImage?.asset;
 
-  // If no content, don't render
   if (!title && !subtitle && !description && !hasImage) {
     return null;
   }
@@ -35,21 +39,15 @@ export function GridSectionHeader({
     <div
       className={cn(
         "mb-6 md:mb-8",
-        // Centre the heading against the image so a short title doesn't leave a
-        // tall empty gap below it (the image used to drive the row height).
-        hasImage && "grid grid-cols-1 md:grid-cols-[1fr_auto] gap-6 md:items-center",
+        hasImage && "grid grid-cols-1 gap-6 md:grid-cols-[1fr_auto] md:items-center",
         isRTL && hasImage && "md:grid-cols-[auto_1fr]"
       )}
     >
       {/* Text Content */}
       <div className={cn(isRTL && hasImage && "md:order-2")}>
-        {title && (
-          <h2 className={cn("font-bold font-heading text-ccm-midnight text-balance break-words", heading('md'))}>
-            {title}
-          </h2>
-        )}
-        {subtitle && (
-          <p className="mt-2 text-base md:text-lg text-muted-foreground break-words">{subtitle}</p>
+        {title && <SectionHeader title={title} subtitle={subtitle} />}
+        {!title && subtitle && (
+          <p className="text-base text-muted-foreground md:text-lg">{subtitle}</p>
         )}
         {description && (
           <div className="mt-4">

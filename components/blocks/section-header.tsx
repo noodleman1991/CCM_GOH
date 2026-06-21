@@ -4,6 +4,7 @@ import { stegaClean } from "next-sanity";
 import { getLocalizedField } from "@/lib/localization-utils";
 import { PAGE_QUERY_RESULT } from "@/sanity.types";
 import { heading } from "@/lib/design-tokens";
+import { SectionHeader as UISectionHeader } from "@/components/ui/section-header";
 
 type SectionHeaderProps = Extract<
   NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number],
@@ -46,16 +47,23 @@ export default function SectionHeader({
             isNarrow ? "max-w-3xl mx-auto" : undefined
           )}
         >
-        <div>
-          {localizedTagLine && (
-            <p className="text-sm font-semibold uppercase tracking-wider text-ccm-water mb-3">
-              {localizedTagLine}
-            </p>
-          )}
-          <h2 className={cn('font-bold font-heading text-ccm-midnight text-balance mb-4', heading('md'))}>{localizedTitle}</h2>
-        </div>
+        {/* Left-aligned headers get the shared bar'd SectionHeader (matches the
+            rest of the app). Centred headers keep the tagLine accent — a vertical
+            bar reads oddly on centred text. */}
+        {align === "center" ? (
+          <div>
+            {localizedTagLine && (
+              <p className="text-sm font-semibold uppercase tracking-wider text-ccm-water mb-3">
+                {localizedTagLine}
+              </p>
+            )}
+            <h2 className={cn('font-bold font-heading text-ccm-midnight text-balance mb-4', heading('md'))}>{localizedTitle}</h2>
+          </div>
+        ) : (
+          <UISectionHeader title={localizedTitle} subtitle={localizedTagLine || undefined} titleClassName={heading('md')} />
+        )}
         {localizedDescription && (
-          <p className="text-base md:text-lg text-muted-foreground">
+          <p className={cn("text-base md:text-lg text-muted-foreground", align !== "center" && "mt-3")}>
             {localizedDescription}
           </p>
         )}
