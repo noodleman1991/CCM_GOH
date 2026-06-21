@@ -721,7 +721,9 @@
     "closeVideo": "إغلاق",
     "videoTitleFallback": "تجربة معيشية",
     "backToGallery": "العودة إلى المعرض",
-    "viewFull": "عرض القصة كاملة"
+    "viewFull": "عرض القصة كاملة",
+    "audioTitleFallback": "صوت تجربة معيشية",
+    "audioFallback": "متصفحك لا يدعم عنصر الصوت."
   },
   "caseStudyForm": {
     "sections": {

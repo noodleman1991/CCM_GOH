@@ -13,6 +13,7 @@ export const LIVED_EXPERIENCE_BY_SLUG_QUERY = groq`
     && (status == "approved" || !defined(status))][0]{
     _id,
     title,
+    format,
     description,
     issue,
     personContext,

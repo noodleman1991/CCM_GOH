@@ -89,8 +89,11 @@ export default async function LivedExperiencePage({
         </h1>
       )}
 
-      {/* Media — consent handled inside the player */}
-      {le.videoLink && <LivedExperiencePlayer url={le.videoLink} title={title || ""} locale={locale} />}
+      {/* Media — format-aware (video/audio); written stories render no frame.
+          Consent handled inside the player. */}
+      {le.videoLink && le.format !== "written" && (
+        <LivedExperiencePlayer url={le.videoLink} title={title || ""} locale={locale} format={le.format} />
+      )}
 
       {/* Story — quiet noun label, the person's own framing */}
       {(issue || personContext || description) && (
