@@ -200,6 +200,10 @@
     --color-ccm-water: #4186C3;
     --color-ccm-sea: #205596;
     --color-ccm-midnight: #0B3160;
+    /* Accent tokens (redesign TAXONOMY §16): amber = attention/in-review/seeking,
+       slate = neutral/draft/muted secondary text. Pair status colour with a label. */
+    --color-ccm-amber: #E0A53F;
+    --color-ccm-slate: #8595AC;
 }
 
 /* RTL: Override font aliases to Arabic fonts loaded via next/font */
