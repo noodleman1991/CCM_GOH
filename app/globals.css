@@ -25,6 +25,9 @@
     --animate-fade-up: fade-up 0.7s ease-out forwards;
     /* One slow organic morph for the hero/section blob accent (redesign §1.6). */
     --animate-ccmblob: ccmblob 18s ease-in-out infinite;
+    /* Gentle "alive" wiggle echoing the organic CCM brand feel — subtle, with a
+       long rest between nudges so it's noticeable but never distracting. */
+    --animate-ccmwiggle: ccmwiggle 6s ease-in-out infinite;
 }
 
 @keyframes accordion-down {
@@ -54,6 +57,17 @@
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+/* Gentle search-pill wiggle. Mostly at rest; a small rotation nudge ~every cycle
+   so it feels "alive" / on-brand without pulling focus. Damped by the global
+   prefers-reduced-motion block below. */
+@keyframes ccmwiggle {
+    0%, 82%, 100% { transform: rotate(0deg); }
+    86% { transform: rotate(-1.1deg); }
+    90% { transform: rotate(0.9deg); }
+    94% { transform: rotate(-0.6deg); }
+    98% { transform: rotate(0.3deg); }
 }
 
 /* Organic "blob" accent (redesign §1.5/§1.6): a soft shape that slowly morphs
