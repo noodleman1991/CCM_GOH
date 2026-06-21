@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import NewsFilters from '@/components/news/news-filters'
 import NewsHeroSection from '@/components/news/news-hero-section'
 import NewsPostCard from '@/components/ui/news-post-card'
+import { SectionHeader } from '@/components/ui/section-header'
 import {
   fetchFeaturedNews,
   fetchRegularNews,
@@ -247,12 +248,10 @@ async function NewsContent({
           each card badged with its origin (site vs external). */}
       {feed.length > 0 && (
         <section className="space-y-6">
-          <div className="flex items-center justify-between">
-            <h2 className={cn("font-bold font-heading text-ccm-midnight text-balance", heading('md'))}>{t('latest')}</h2>
-            <p className="text-muted-foreground">
-              {feed.length} {t('resultsFound')}
-            </p>
-          </div>
+          <SectionHeader
+            title={t('latest')}
+            subtitle={`${feed.length} ${t('resultsFound')}`}
+          />
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {feed.map((item) =>
