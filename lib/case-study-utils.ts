@@ -67,7 +67,9 @@ export function formatCaseStudyDate(date: Date, locale: SupportedLanguage): stri
     };
 
     const targetLocale = localeMap[locale] || 'en-US';
-    return date.toLocaleDateString(targetLocale);
+    // Editorial month + year (e.g. "Jan 2024") rather than a numeric date —
+    // case studies are dated by period, not day.
+    return date.toLocaleDateString(targetLocale, { year: 'numeric', month: 'short' });
 }
 
 export function isRTL(locale: string): boolean {
