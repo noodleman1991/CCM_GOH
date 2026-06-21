@@ -77,7 +77,9 @@ export function SearchDialog({
           type="button"
           onClick={() => setOpen(true)}
           aria-keyshortcuts="Meta+K Control+K"
-          className="flex w-full items-center gap-2 rounded-full bg-background px-3 py-2 text-sm text-slate-500 transition-colors hover:bg-background/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
+          // Subtle, on-brand "alive" wiggle; settles on hover/focus and for
+          // reduced-motion users (motion-safe + play-state paused).
+          className="flex w-full origin-center items-center gap-2 rounded-full bg-background px-3 py-2 text-sm text-slate-500 transition-colors hover:bg-background/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary motion-safe:animate-ccmwiggle hover:[animation-play-state:paused] focus-visible:[animation-play-state:paused]"
         >
           <Search className="size-4 shrink-0 text-slate-500" />
           <span className="truncate">{t("searchPlaceholder")}</span>
