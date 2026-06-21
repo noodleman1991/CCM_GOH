@@ -1191,6 +1191,9 @@
   "caseStudies": {
     "title": "Estudios de Caso",
     "description": "Explora investigaciones y perspectivas de nuestra comunidad global",
+    "viewCommunity": "Ver comunidad",
+    "caseStudySingular": "estudio de caso",
+    "caseStudyPlural": "estudios de caso",
     "pageTitle": "Estudios de Caso",
     "pageDescription": "Explora investigaciones y perspectivas de nuestra comunidad global",
     "featured": "Estudios de Caso Destacados",
