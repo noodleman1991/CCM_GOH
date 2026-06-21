@@ -15,7 +15,9 @@ async function fetchLivedExperiences() {
       title,
       format,
       videoUrl,
-      tags,
+      // Dereference tag refs into the standard CMS tag shape (localized label +
+      // value + on-brand colour), same as case studies / news.
+      tags[]->{ _id, label, value, color },
       "thumbnailUrl": thumbnail.asset->url,
       "region": region->{
         _id,
@@ -28,7 +30,8 @@ async function fetchLivedExperiences() {
       name,
       "slug": slug.current
     },
-    "allTags": array::unique(*[_type == "livedExperience"].tags[])
+    "allTags": *[_type == "tag" && count(*[_type == "livedExperience" && references(^._id)]) > 0]
+      | order(label.en asc) { _id, label, value, color }
   }`
 
   return await client.fetch(query)
