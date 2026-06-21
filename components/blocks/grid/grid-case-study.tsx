@@ -25,6 +25,14 @@ import {
 } from '@/lib/case-study-utils';
 import { cn } from '@/lib/utils';
 import { CaseStudyModal } from '@/components/blocks/case-study-modal';
+import { topicOptions } from '@/sanity/schemas/shared/topic-options';
+
+// Map a stored topic value to its human label so the card badge reflects the
+// study's actual type (e.g. "Mental Health & Wellbeing") instead of a generic
+// "Case Study". Falls back to the generic label when no topic is set.
+const TOPIC_LABELS: Record<string, string> = Object.fromEntries(
+    topicOptions.map((o) => [o.value, o.title])
+);
 
 interface GridCaseStudyComponentProps {
     _type: 'grid-case-study';
@@ -75,9 +83,14 @@ export default function GridCaseStudyComponent({
     const title = typeof caseStudy.title === 'string'
         ? caseStudy.title
         : getLocalizedText(caseStudy.title, supportedLocale);
-    const excerpt = customExcerpt
+    const rawExcerpt = customExcerpt
         ? (typeof customExcerpt === 'string' ? customExcerpt : getLocalizedText(customExcerpt, supportedLocale))
         : (typeof caseStudy.excerpt === 'string' ? caseStudy.excerpt : getLocalizedText(caseStudy.excerpt, supportedLocale));
+    // Don't repeat the title as the excerpt (some records duplicate them).
+    const excerpt =
+        rawExcerpt && rawExcerpt.trim() && rawExcerpt.trim() !== title?.trim()
+            ? rawExcerpt
+            : '';
 
     const primaryAuthor = getPrimaryAuthor(caseStudy);
     const publishDate = caseStudy.publishedAt ? new Date(caseStudy.publishedAt) : null;
@@ -88,6 +101,9 @@ export default function GridCaseStudyComponent({
         const moreTexts = { en: 'more', es: 'más', fr: 'autres', ar: 'آخرين' };
         return `+${count} ${moreTexts[supportedLocale] || 'more'}`;
     };
+
+    // The badge reflects the study's topic when set; otherwise the generic label.
+    const typeLabel = (caseStudy.topic && TOPIC_LABELS[caseStudy.topic]) || t('caseStudy');
 
     // ---- Shared building blocks (reused across variants) -------------------
 
@@ -105,56 +121,71 @@ export default function GridCaseStudyComponent({
                     className="object-cover transition-transform duration-200 group-hover:scale-105"
                     sizes={imageSizes || "(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"}
                 />
-                <div className="absolute top-3 start-3">
-                    <Badge variant="secondary" className="bg-white/90 text-ccm-midnight">
-                        {t('caseStudy')}
+                <div className="absolute inset-x-3 top-3 flex items-start justify-between gap-2">
+                    <Badge variant="secondary" className="truncate bg-white/90 text-ccm-midnight">
+                        {typeLabel}
                     </Badge>
-                </div>
-                {caseStudy.featured && (
-                    <div className="absolute top-3 end-3">
-                        <Badge className="gap-1 bg-ccm-amber text-ccm-midnight">
+                    {caseStudy.featured && (
+                        <Badge className="shrink-0 gap-1 bg-ccm-amber text-ccm-midnight">
                             <Star className="size-3 fill-current" />
                             {t('featured')}
                         </Badge>
-                    </div>
-                )}
+                    )}
+                </div>
             </div>
         ) : null;
 
-    const Meta = () =>
-        showMetadata ? (
+    const Meta = () => {
+        if (!showMetadata) return null;
+        const authorName = showAuthors && primaryAuthor ? primaryAuthor.name : null;
+        const extraAuthors =
+            authorName && caseStudy.authors && caseStudy.authors.length > 1
+                ? getMoreText(caseStudy.authors.length - 1)
+                : null;
+        const orgs = caseStudy.organizations?.length
+            ? caseStudy.organizations.map((org: any) => org.name).join(', ')
+            : null;
+        // Only render rows that actually have content (no dangling icons).
+        const hasDateOrAuthor = publishDate || authorName;
+        if (!hasDateOrAuthor && !orgs && !(showLocation && locationText)) return null;
+        return (
             <div className="space-y-1.5 text-xs text-muted-foreground">
-                {publishDate && (
-                    <div className="flex items-center gap-1">
-                        <Calendar className="size-3" />
-                        <span>{formatCaseStudyDate(publishDate, supportedLocale)}</span>
+                {/* Date · author on one line — the editorial byline. */}
+                {hasDateOrAuthor && (
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                        {publishDate && (
+                            <span className="inline-flex items-center gap-1">
+                                <Calendar className="size-3 shrink-0" />
+                                {formatCaseStudyDate(publishDate, supportedLocale)}
+                            </span>
+                        )}
+                        {publishDate && authorName && <span aria-hidden="true">·</span>}
+                        {authorName && (
+                            <span className="inline-flex min-w-0 items-center gap-1">
+                                <Users className="size-3 shrink-0" />
+                                <span className="truncate">
+                                    {authorName}
+                                    {extraAuthors && ` ${extraAuthors}`}
+                                </span>
+                            </span>
+                        )}
                     </div>
                 )}
-                {showAuthors && primaryAuthor && (
+                {orgs && (
                     <div className="flex items-center gap-1">
-                        <Users className="size-3" />
-                        <span className="line-clamp-1">
-                            {primaryAuthor.name}
-                            {caseStudy.authors && caseStudy.authors.length > 1 && ` ${getMoreText(caseStudy.authors.length - 1)}`}
-                        </span>
-                    </div>
-                )}
-                {caseStudy.organizations && caseStudy.organizations.length > 0 && (
-                    <div className="flex items-center gap-1">
-                        <Building className="size-3" />
-                        <span className="line-clamp-1">
-                            {caseStudy.organizations.map((org: any) => org.name).join(', ')}
-                        </span>
+                        <Building className="size-3 shrink-0" />
+                        <span className="line-clamp-1">{orgs}</span>
                     </div>
                 )}
                 {showLocation && locationText && (
                     <div className="flex items-center gap-1">
-                        <MapPin className="size-3" />
+                        <MapPin className="size-3 shrink-0" />
                         <span className="line-clamp-1">{locationText}</span>
                     </div>
                 )}
             </div>
-        ) : null;
+        );
+    };
 
     const Tags = () => {
         if (!showTags || !caseStudy.tags?.length) return null;
@@ -196,7 +227,7 @@ export default function GridCaseStudyComponent({
             <Card className={cn(cardBase, "h-full flex-col sm:flex-row")} onClick={onCardClick}>
                 <CoverImage className="aspect-video w-full shrink-0 sm:aspect-auto sm:w-2/5" />
                 <div className="flex flex-1 flex-col gap-3 p-6">
-                    <h3 className="font-heading text-lg font-semibold leading-tight text-ccm-midnight transition-colors group-hover:text-primary line-clamp-2">
+                    <h3 className="font-heading text-lg font-semibold leading-snug text-ccm-midnight text-balance transition-colors group-hover:text-primary line-clamp-3">
                         {title}
                     </h3>
                     {excerpt && <p className="text-sm text-foreground line-clamp-3">{excerpt}</p>}
@@ -236,7 +267,7 @@ export default function GridCaseStudyComponent({
                 )}
                 <CoverImage className="mb-4 aspect-video w-full rounded-2xl" />
                 <CardHeader className="px-0 pb-3">
-                    <h3 className="font-heading text-lg font-semibold leading-tight text-ccm-midnight transition-colors group-hover:text-primary line-clamp-2">
+                    <h3 className="font-heading text-lg font-semibold leading-snug text-ccm-midnight text-balance transition-colors group-hover:text-primary line-clamp-3">
                         {title}
                     </h3>
                 </CardHeader>
