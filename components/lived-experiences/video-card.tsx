@@ -2,20 +2,31 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
 import { Play, Headphones, FileText, Video as VideoIcon } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
 import { YouTubeConsentGate } from '@/components/cookie-consent/youtube-consent-gate'
+import { normalizeTagColor, sortedTags } from '@/lib/tags'
+import { getLocalizedText } from '@/lib/localization-utils'
 import { cn } from '@/lib/utils'
 
 type LivedFormat = 'video' | 'audio' | 'written'
+
+/** Standard CMS tag shape (a dereferenced `tag` document). */
+interface CmsTag {
+  _id: string
+  label?: Record<string, string> | string
+  value?: string
+  color?: string | null
+}
 
 interface VideoCardProps {
   title: string
   videoUrl?: string
   thumbnailUrl?: string
-  tags?: string[]
+  /** Dereferenced `tag` docs — rendered like every other CMS tag. */
+  tags?: CmsTag[]
   /** Medium of the testimony — drives the badge + interaction. */
   format?: LivedFormat
   className?: string
@@ -47,6 +58,7 @@ export function LivedExperienceVideoCard({
   className,
 }: VideoCardProps) {
   const t = useTranslations('livedExperiences')
+  const locale = useLocale()
   const [open, setOpen] = useState(false)
   const embedUrl = videoUrl?.replace('watch?v=', 'embed/')
   const thumb = thumbnailUrl || youtubeThumb(videoUrl)
@@ -92,15 +104,29 @@ export function LivedExperienceVideoCard({
           )}
         </div>
         <h3 className="mt-2 line-clamp-3 text-sm font-semibold leading-snug text-balance break-words">{title}</h3>
-        {tags && tags.length > 0 && (
-          <div className="mt-1.5 flex flex-wrap gap-1">
-            {tags.slice(0, 2).map((tag) => (
-              <Badge key={tag} variant="secondary" className="text-[11px] font-normal">
-                {tag}
-              </Badge>
-            ))}
-          </div>
-        )}
+        {tags && tags.length > 0 && (() => {
+          // Same presentation as every other CMS tag: localized label, stable
+          // locale-aware order, on-brand colour via normalizeTagColor.
+          const sorted = sortedTags(tags as any, locale)
+          if (sorted.length === 0) return null
+          return (
+            <div className="mt-1.5 flex flex-wrap gap-1">
+              {sorted.slice(0, 2).map((tag: any) => {
+                const color = normalizeTagColor(tag.color)
+                return (
+                  <Badge
+                    key={tag._id}
+                    variant="outline"
+                    className="text-[11px] font-normal"
+                    style={{ borderColor: color, color }}
+                  >
+                    {getLocalizedText(tag.label, locale)}
+                  </Badge>
+                )
+              })}
+            </div>
+          )
+        })()}
       </button>
 
       <Dialog open={open} onOpenChange={setOpen}>

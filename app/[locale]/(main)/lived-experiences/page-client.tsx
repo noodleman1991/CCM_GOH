@@ -28,7 +28,8 @@ import { LivedExperienceVideoCard } from "@/components/lived-experiences/video-c
 interface LivedExperiencesPageClientProps {
   initialCommunityVideos: Record<string, any[]>
   communities: any[]
-  allTags: string[]
+  /** Dereferenced tag docs ({ _id, label, value, color }). */
+  allTags: Array<{ _id: string; label?: Record<string, string> | string; value?: string; color?: string }>
   locale: string
   initialSearch: string
   initialFilters: {
@@ -85,8 +86,11 @@ export default function LivedExperiencesPageClient({
 
       const filteredVideos = videos.filter(video => {
         // Tag filter (inclusion): if any tags selected, the video must match one.
+        // Tags are now dereferenced docs — match on value (fall back to _id).
         if (selectedTags.length > 0) {
-          const hasMatchingTag = video.tags?.some((tag: string) => selectedTags.includes(tag))
+          const hasMatchingTag = video.tags?.some((tag: any) =>
+            selectedTags.includes(tag?.value) || selectedTags.includes(tag?._id)
+          )
           if (!hasMatchingTag) return false
         }
 
@@ -151,6 +155,12 @@ export default function LivedExperiencesPageClient({
     const c = communities.find(cm => cm.slug === slug)
     if (!c) return slug
     return typeof c.name === 'string' ? c.name : getLocalizedText(c.name, locale, c.name)
+  }
+
+  // Label a tag value for chips (tags are dereferenced docs; selection stores value).
+  const tagLabel = (value: string) => {
+    const tag = allTags.find((t) => t.value === value || t._id === value)
+    return tag ? getLocalizedText(tag.label as any, locale, value) : value
   }
 
   return (
@@ -275,7 +285,7 @@ export default function LivedExperiencesPageClient({
             {selectedTags.map((tag) => (
               <RemovableChip
                 key={`t-${tag}`}
-                label={tag}
+                label={tagLabel(tag)}
                 icon={TagIcon}
                 onRemove={() => toggleTag(tag)}
                 removeLabel={t('clearFilters')}
@@ -312,14 +322,17 @@ export default function LivedExperiencesPageClient({
               <div className="space-y-3">
                 <h3 className="font-semibold">{t('filterByTag')}</h3>
                 <div className="flex flex-wrap gap-2">
-                  {allTags.map((tag) => (
-                    <FilterChip
-                      key={tag}
-                      label={tag}
-                      active={selectedTags.includes(tag)}
-                      onClick={() => toggleTag(tag)}
-                    />
-                  ))}
+                  {allTags.map((tag) => {
+                    const value = tag.value || tag._id
+                    return (
+                      <FilterChip
+                        key={tag._id}
+                        label={getLocalizedText(tag.label as any, locale, value)}
+                        active={selectedTags.includes(value)}
+                        onClick={() => toggleTag(value)}
+                      />
+                    )
+                  })}
                 </div>
               </div>
             )}
