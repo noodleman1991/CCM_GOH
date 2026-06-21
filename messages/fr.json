@@ -816,6 +816,7 @@
     "allResults": "Tout",
     "searching": "Recherche…",
     "seeAllResults": "Voir tous les résultats pour « {q} »",
+    "searchUnavailable": "La recherche de contenu est momentanément indisponible. Veuillez réessayer sous peu.",
     "regions": "Régions",
     "resultsFor": "Résultats pour « {q} »",
     "typeToSearch": "Rechercher dans le hub",
