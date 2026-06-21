@@ -1,8 +1,10 @@
 // News-specific utilities and type definitions
 
 export interface NewsFilters {
-  tag?: string;
-  community?: string;
+  /** Topic tag values (multi-select). */
+  tags?: string[];
+  /** Regional community slugs (multi-select). */
+  communities?: string[];
   dateFrom?: string;
   dateTo?: string;
   search?: string;
@@ -119,8 +121,8 @@ export interface RegionalCommunity {
  */
 export function hasActiveFilters(filters: NewsFilters): boolean {
   return !!(
-    filters.tag ||
-    filters.community ||
+    filters.tags?.length ||
+    filters.communities?.length ||
     filters.dateFrom ||
     filters.dateTo ||
     filters.search
@@ -132,8 +134,8 @@ export function hasActiveFilters(filters: NewsFilters): boolean {
  */
 export function getActiveFiltersCount(filters: NewsFilters): number {
   let count = 0;
-  if (filters.tag) count++;
-  if (filters.community) count++;
+  count += filters.tags?.length || 0;
+  count += filters.communities?.length || 0;
   if (filters.dateFrom || filters.dateTo) count++; // Count date range as one filter
   if (filters.search) count++;
   return count;
@@ -244,12 +246,12 @@ export function getFilterSummary(filters: NewsFilters): string {
     parts.push(`"${filters.search}"`);
   }
 
-  if (filters.tag) {
-    parts.push(`Tag: ${filters.tag}`);
+  if (filters.tags?.length) {
+    parts.push(filters.tags.join(", "));
   }
 
-  if (filters.community) {
-    parts.push(filters.community);
+  if (filters.communities?.length) {
+    parts.push(filters.communities.join(", "));
   }
 
   if (filters.dateFrom || filters.dateTo) {

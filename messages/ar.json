@@ -138,7 +138,9 @@
     "availableInLanguages": "متاح بـ {count} {count, plural, one {لغة} other {لغات}}",
     "availableIn": "متاح بـ:",
     "noContentYet": "لا يوجد محتوى متاح حالياً.",
-    "checkBackSoon": "تحقق مرة أخرى قريباً للاطلاع على التحديثات."
+    "checkBackSoon": "تحقق مرة أخرى قريباً للاطلاع على التحديثات.",
+    "clear": "مسح",
+    "clearFilters": "مسح الفلاتر"
   },
   "dashboard": {
     "pageTitle": "لوحة التحكم - Connecting Climate Minds Hub",
@@ -1313,7 +1315,9 @@
         "any": "أي وقت",
         "year": "السنة الماضية",
         "threeYears": "آخر 3 سنوات",
-        "fiveYears": "آخر 5 سنوات"
+        "fiveYears": "آخر 5 سنوات",
+        "month": "الشهر الماضي",
+        "threeMonths": "آخر 3 أشهر"
       }
     },
     "metadata": {
@@ -1488,7 +1492,9 @@
       "any": "أي وقت",
       "year": "العام الماضي",
       "threeYears": "آخر 3 سنوات",
-      "fiveYears": "آخر 5 سنوات"
+      "fiveYears": "آخر 5 سنوات",
+      "month": "الشهر الماضي",
+      "threeMonths": "آخر 3 أشهر"
     },
     "facet": {
       "region": "المنطقة",

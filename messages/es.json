@@ -138,7 +138,9 @@
     "availableInLanguages": "Disponible en {count} {count, plural, one {idioma} other {idiomas}}",
     "availableIn": "Disponible en:",
     "noContentYet": "Aún no hay contenido disponible.",
-    "checkBackSoon": "Vuelve pronto para ver las actualizaciones."
+    "checkBackSoon": "Vuelve pronto para ver las actualizaciones.",
+    "clear": "Borrar",
+    "clearFilters": "Borrar filtros"
   },
   "dashboard": {
     "pageTitle": "Panel - Connecting Climate Minds Hub",
@@ -1313,7 +1315,9 @@
         "any": "Cualquier fecha",
         "year": "Último año",
         "threeYears": "Últimos 3 años",
-        "fiveYears": "Últimos 5 años"
+        "fiveYears": "Últimos 5 años",
+        "month": "Último mes",
+        "threeMonths": "Últimos 3 meses"
       }
     },
     "metadata": {
@@ -1488,7 +1492,9 @@
       "any": "Cualquier fecha",
       "year": "Último año",
       "threeYears": "Últimos 3 años",
-      "fiveYears": "Últimos 5 años"
+      "fiveYears": "Últimos 5 años",
+      "month": "Último mes",
+      "threeMonths": "Últimos 3 meses"
     },
     "facet": {
       "region": "Región",
