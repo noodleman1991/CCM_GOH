@@ -814,6 +814,8 @@
     "clear": "Borrar búsqueda",
     "seeAll": "Ver todo",
     "allResults": "Todo",
+    "searching": "Buscando…",
+    "seeAllResults": "Ver todos los resultados de \"{q}\"",
     "regions": "Regiones",
     "resultsFor": "Resultados de \"{q}\"",
     "typeToSearch": "Buscar en el hub",

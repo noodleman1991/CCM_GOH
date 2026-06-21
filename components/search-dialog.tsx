@@ -3,6 +3,7 @@
 import * as React from "react";
 import { Search } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useAuth } from "@clerk/nextjs";
 import { useRouter } from "@/i18n/navigation";
 import {
   Dialog,
@@ -10,6 +11,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import { SearchDialogResults } from "@/components/search-dialog-results";
 
 /**
  * Accessible, mobile-friendly universal search.
@@ -29,9 +31,16 @@ export function SearchDialog({
 }) {
   const t = useTranslations("navigation");
   const router = useRouter();
+  const { isSignedIn } = useAuth();
   const [open, setOpen] = React.useState(false);
   const [query, setQuery] = React.useState("");
   const inputRef = React.useRef<HTMLInputElement>(null);
+
+  // Reset the query when the modal closes so it always opens fresh.
+  const handleOpenChange = (next: boolean) => {
+    setOpen(next);
+    if (!next) setQuery("");
+  };
 
   // Global open shortcuts: ⌘K / Ctrl-K anywhere; "/" unless already typing.
   React.useEffect(() => {
@@ -77,9 +86,9 @@ export function SearchDialog({
           type="button"
           onClick={() => setOpen(true)}
           aria-keyshortcuts="Meta+K Control+K"
-          // Subtle, on-brand "alive" wiggle; settles on hover/focus and for
-          // reduced-motion users (motion-safe + play-state paused).
-          className="flex w-full origin-center items-center gap-2 rounded-full bg-background px-3 py-2 text-sm text-slate-500 transition-colors hover:bg-background/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary motion-safe:animate-ccmwiggle hover:[animation-play-state:paused] focus-visible:[animation-play-state:paused]"
+          // Clean radius matching the search Dialog (rounded-xl) + a subtle wiggle
+          // for the brand's "alive" feel; settles on hover/focus & reduced motion.
+          className="flex w-full origin-center items-center gap-2 rounded-xl bg-background px-3.5 py-2.5 text-sm text-slate-500 transition-colors hover:bg-background/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary motion-safe:animate-ccmwiggle hover:[animation-play-state:paused] focus-visible:[animation-play-state:paused]"
         >
           <Search className="size-4 shrink-0 text-slate-500" />
           <span className="truncate">{t("searchPlaceholder")}</span>
@@ -89,9 +98,9 @@ export function SearchDialog({
         </button>
       )}
 
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogContent
-          className="top-[12%] translate-y-0 gap-0 rounded-xl p-0 sm:max-w-xl"
+          className="top-[10%] translate-y-0 gap-0 overflow-hidden rounded-xl p-0 sm:max-w-xl"
           onOpenAutoFocus={(e) => {
             // Focus the search field, not the close button.
             e.preventDefault();
@@ -103,8 +112,8 @@ export function SearchDialog({
           <DialogDescription className="sr-only">
             {t("searchDescription")}
           </DialogDescription>
-          {/* Single clean row: icon + input. Enter submits; the Dialog's own
-              close ✕ (top-end) is the only ✕. pe-10 leaves room for it. */}
+          {/* Single clean row: icon + input. Enter goes to the active result (or
+              the full results page); the Dialog's own close ✕ is the only ✕. */}
           <form onSubmit={submit} className="flex items-center gap-3 px-4 py-3.5 pe-12">
             <Search className="size-5 shrink-0 text-slate-400" aria-hidden="true" />
             {/* type=text (not search) so WebKit doesn't add a native clear ✕. */}
@@ -121,6 +130,14 @@ export function SearchDialog({
               ↵
             </kbd>
           </form>
+
+          {/* Live command-palette results inside the modal. */}
+          <SearchDialogResults
+            query={query}
+            isSignedIn={Boolean(isSignedIn)}
+            onNavigate={() => handleOpenChange(false)}
+            footerHref={`/search?q=${encodeURIComponent(query.trim())}`}
+          />
         </DialogContent>
       </Dialog>
     </>

@@ -889,6 +889,8 @@
     "clear": "Clear search",
     "seeAll": "See all",
     "allResults": "All",
+    "searching": "Searching…",
+    "seeAllResults": "See all results for \"{q}\"",
     "regions": "Regions",
     "resultsFor": "Results for \"{q}\"",
     "typeToSearch": "Search the hub",
