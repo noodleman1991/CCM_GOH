@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { heading } from "@/lib/design-tokens";
 import SectionContainer from "@/components/ui/section-container";
+import { SectionHeader } from "@/components/ui/section-header";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Play, Calendar, User } from "lucide-react";
 import Image from "next/image";
@@ -327,16 +328,7 @@ export default function LivedExperiencesCarousel({
         <div className="w-full">
           {(title || subtitle) && (
             <div className="mb-6 md:mb-8">
-              {title && (
-                <h2 className={cn("font-bold font-heading text-ccm-midnight mb-4 text-balance", heading('md'))}>
-                  {title}
-                </h2>
-              )}
-              {subtitle && (
-                <p className="text-lg text-muted-foreground max-w-2xl">
-                  {subtitle}
-                </p>
-              )}
+              <SectionHeader title={title} subtitle={subtitle} titleClassName={heading('md')} />
             </div>
           )}
           <div className="text-center py-12 text-muted-foreground">
@@ -354,16 +346,7 @@ export default function LivedExperiencesCarousel({
         {/* Header */}
         {(title || subtitle) && (
           <div className="mb-6 md:mb-8">
-            {title && (
-              <h2 className={cn("font-bold font-heading text-ccm-midnight mb-4 text-balance", heading('md'))}>
-                {title}
-              </h2>
-            )}
-            {subtitle && (
-              <p className="text-base md:text-lg text-muted-foreground max-w-2xl">
-                {subtitle}
-              </p>
-            )}
+            <SectionHeader title={title} subtitle={subtitle} titleClassName={heading('md')} />
           </div>
         )}
 
