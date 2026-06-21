@@ -36,6 +36,7 @@ export function NavMain({
       title: string
       url: string
       icon?: LucideIcon
+      isActive?: boolean
     }[]
     onToggle?: () => void
   }[]
@@ -72,6 +73,7 @@ export function NavMain({
                         <SidebarMenuSubItem key={subItem.title}>
                           <SidebarMenuSubButton
                             asChild
+                            isActive={subItem.isActive}
                             className="h-auto py-1 [&>span:last-child]:whitespace-normal [&>span:last-child]:break-words [&>span:last-child]:truncate-none [&>span:last-child]:hyphens-auto"
                           >
                             <Link href={subItem.url}>
@@ -93,7 +95,7 @@ export function NavMain({
           // Regular menu item
           return (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton asChild tooltip={item.title}>
+              <SidebarMenuButton asChild tooltip={item.title} isActive={item.isActive}>
                 <Link href={item.url}>
                   <item.icon />
                   <span>{item.title}</span>

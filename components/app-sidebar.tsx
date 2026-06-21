@@ -18,7 +18,7 @@ import {
     X,
 } from "lucide-react"
 import Logo from "@/components/logo"
-import { useRouter } from "@/i18n/navigation"
+import { useRouter, usePathname } from "@/i18n/navigation"
 
 import { useClerkUser } from "@/hooks/use-clerk-user";
 import { useLocale, useTranslations } from "next-intl"
@@ -49,8 +49,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const isRTL = rtlLocales.includes(locale)
     const t = useTranslations('navigation')
     const router = useRouter()
+    const pathname = usePathname()
     const [searchQuery, setSearchQuery] = React.useState("")
     const [openAccordion, setOpenAccordion] = React.useState<string | null>(null)
+
+    // A nav link is active when the current route equals it or is nested under it,
+    // so detail pages (e.g. /news/[slug]) highlight their parent nav item. "#"
+    // accordion triggers are never themselves a route, so they never match here.
+    const isLinkActive = React.useCallback(
+        (url: string) =>
+            url !== "#" && (pathname === url || pathname.startsWith(`${url}/`)),
+        [pathname]
+    )
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault()
@@ -173,43 +183,47 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 url: "#",
                 icon: BookOpen,
                 isActive: openAccordion === 'research',
-                items: researchActionItems,
+                items: researchActionItems.map((s) => ({ ...s, isActive: isLinkActive(s.url) })),
                 onToggle: () => setOpenAccordion(openAccordion === 'research' ? null : 'research')
             },
             {
                 title: t('livedExperiences'),
                 url: "/lived-experiences",
                 icon: Heart,
+                isActive: isLinkActive("/lived-experiences"),
             },
             {
                 title: t('regionalCommunities'),
                 url: "#",
                 icon: Globe,
                 isActive: openAccordion === 'regional',
-                items: regionalCommunities,
+                items: regionalCommunities.map((s) => ({ ...s, isActive: isLinkActive(s.url) })),
                 onToggle: () => setOpenAccordion(openAccordion === 'regional' ? null : 'regional')
             },
             {
                 title: t('collaborate'),
                 url: "/collaborate",
                 icon: Handshake,
+                isActive: isLinkActive("/collaborate"),
             },
             ...(FEATURES.engagement
                 ? [{
                     title: t('collaborations'),
                     url: "/collaborations",
                     icon: FolderKanban,
+                    isActive: isLinkActive("/collaborations"),
                 }]
                 : []),
             {
                 title: t('news'),
                 url: "/news",
                 icon: Newspaper,
+                isActive: isLinkActive("/news"),
             },
         ],
         navSecondary,
         user: userData
-    }), [navSecondary, userData, t, openAccordion, researchActionItems, regionalCommunities]);
+    }), [navSecondary, userData, t, openAccordion, researchActionItems, regionalCommunities, isLinkActive]);
 
     return (
         <Sidebar
