@@ -1,5 +1,6 @@
 import { groq } from "next-sanity";
 import { client } from "@/sanity/lib/client";
+import { RELATED_CONTENT_PROJECTION } from "@/sanity/queries/grid/grid-case-study";
 
 /**
  * Public lived-experience detail by slug. Hard-filters to approved (legacy docs
@@ -26,7 +27,8 @@ export const LIVED_EXPERIENCE_BY_SLUG_QUERY = groq`
     author->{ _id, name, organizationalAffiliation },
     relatedCommunity->{ _id, name, slug },
     organizations[]->{ _id, name, slug, acronym },
-    tags[]->{ _id, label, value, color }
+    tags[]->{ _id, label, value, color },
+    ${RELATED_CONTENT_PROJECTION}
   }
 `;
 

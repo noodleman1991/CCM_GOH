@@ -86,9 +86,30 @@ const CASE_STUDY_PROJECTION_FRAGMENT = `
   }
 `;
 
+// Dereferences a polymorphic connection target into the minimal fields each
+// content type's "Related" card needs. Shared by every detail query.
+export const RELATED_CONTENT_PROJECTION = `
+  relatedContent[]{
+    relation,
+    "target": target->{
+      _type,
+      _id,
+      "slug": slug.current,
+      title,
+      excerpt,
+      "image": image{ asset->{ _id, url }, alt },
+      // lived experience specifics
+      videoUrl,
+      // project specifics (title is plain string there)
+      status
+    }
+  }
+`;
+
 const CASE_STUDY_DETAIL_PROJECTION_FRAGMENT = `
   ${CASE_STUDY_PROJECTION_FRAGMENT},
   content[]{ ${styledBodyProjection} },
+  ${RELATED_CONTENT_PROJECTION},
   seoTitle,
   seoDescription,
   canonicalUrl,

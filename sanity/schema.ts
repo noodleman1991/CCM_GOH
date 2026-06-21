@@ -44,6 +44,8 @@ import { backgroundOption } from "./schemas/blocks/shared/background-option";
 // Internationalized objects
 import internationalizedArrayString from "./schemas/objects/internationalized-array-string";
 import internationalizedArrayText from "./schemas/objects/internationalized-array-text";
+// Content connections (cross-content linking)
+import connection from "./schemas/objects/connection";
 
 // Schema UI objects (existing blocks)
 import hero1 from "./schemas/blocks/hero/hero-1";
@@ -133,6 +135,8 @@ export const schema: { types: SchemaTypeDefinition[] } = {
         // internationalized objects
         internationalizedArrayString,
         internationalizedArrayText,
+        // content connections
+        connection,
         // blocks
         hero1,
         hero2,
