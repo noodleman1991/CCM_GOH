@@ -98,8 +98,8 @@ export async function fetchFeaturedNews(limit: number = 3, language?: string) {
 
 // Query 2: Fetch Regular News (non-featured, with optional filters)
 export async function fetchRegularNews(filters?: {
-  tag?: string;
-  community?: string;
+  tags?: string[];
+  communities?: string[];
   dateFrom?: string;
   dateTo?: string;
   search?: string;
@@ -113,15 +113,15 @@ export async function fetchRegularNews(filters?: {
   ];
   const params: Record<string, unknown> = {};
 
-  // Add filter conditions using parameterized values to prevent GROQ injection
-  if (filters?.tag) {
-    conditions.push(`$filterTag in tags[]->value.current`);
-    params.filterTag = filters.tag;
+  // Multi-select (OR within a facet): match if ANY selected tag/community matches.
+  if (filters?.tags?.length) {
+    conditions.push(`count((tags[]->value.current)[@ in $filterTags]) > 0`);
+    params.filterTags = filters.tags;
   }
 
-  if (filters?.community) {
-    conditions.push(`relatedCommunity->slug.current == $filterCommunity`);
-    params.filterCommunity = filters.community;
+  if (filters?.communities?.length) {
+    conditions.push(`relatedCommunity->slug.current in $filterCommunities`);
+    params.filterCommunities = filters.communities;
   }
 
   if (filters?.dateFrom) {
@@ -168,8 +168,8 @@ export async function fetchRegularNews(filters?: {
 
 // Query 3: Fetch All News (with filters, includes featured)
 export async function fetchAllNews(filters?: {
-  tag?: string;
-  community?: string;
+  tags?: string[];
+  communities?: string[];
   dateFrom?: string;
   dateTo?: string;
   search?: string;
@@ -182,15 +182,15 @@ export async function fetchAllNews(filters?: {
   ];
   const params: Record<string, unknown> = {};
 
-  // Add filter conditions using parameterized values to prevent GROQ injection
-  if (filters?.tag) {
-    conditions.push(`$filterTag in tags[]->value.current`);
-    params.filterTag = filters.tag;
+  // Multi-select (OR within a facet).
+  if (filters?.tags?.length) {
+    conditions.push(`count((tags[]->value.current)[@ in $filterTags]) > 0`);
+    params.filterTags = filters.tags;
   }
 
-  if (filters?.community) {
-    conditions.push(`relatedCommunity->slug.current == $filterCommunity`);
-    params.filterCommunity = filters.community;
+  if (filters?.communities?.length) {
+    conditions.push(`relatedCommunity->slug.current in $filterCommunities`);
+    params.filterCommunities = filters.communities;
   }
 
   if (filters?.dateFrom) {
@@ -399,8 +399,8 @@ const EXTERNAL_SOURCE_FIELDS = groq`
 
 // Query: Fetch approved external sources (for news page)
 export async function fetchApprovedExternalSources(filters?: {
-  tag?: string;
-  community?: string;
+  tags?: string[];
+  communities?: string[];
   search?: string;
   limit?: number;
 }) {
@@ -410,14 +410,14 @@ export async function fetchApprovedExternalSources(filters?: {
   ];
   const params: Record<string, unknown> = {};
 
-  if (filters?.tag) {
-    conditions.push('$filterTag in tags[]->value.current');
-    params.filterTag = filters.tag;
+  if (filters?.tags?.length) {
+    conditions.push('count((tags[]->value.current)[@ in $filterTags]) > 0');
+    params.filterTags = filters.tags;
   }
 
-  if (filters?.community) {
-    conditions.push('relatedCommunity->slug.current == $filterCommunity');
-    params.filterCommunity = filters.community;
+  if (filters?.communities?.length) {
+    conditions.push('relatedCommunity->slug.current in $filterCommunities');
+    params.filterCommunities = filters.communities;
   }
 
   if (filters?.search) {
@@ -448,8 +448,8 @@ export async function fetchApprovedExternalSources(filters?: {
 
 // Query 9: Get News Count (useful for pagination)
 export async function getNewsCount(filters?: {
-  tag?: string;
-  community?: string;
+  tags?: string[];
+  communities?: string[];
   dateFrom?: string;
   dateTo?: string;
   search?: string;
@@ -466,15 +466,14 @@ export async function getNewsCount(filters?: {
     params.filterFeatured = filters.featured;
   }
 
-  // Use parameterized values to prevent GROQ injection
-  if (filters?.tag) {
-    conditions.push(`$filterTag in tags[]->value.current`);
-    params.filterTag = filters.tag;
+  if (filters?.tags?.length) {
+    conditions.push(`count((tags[]->value.current)[@ in $filterTags]) > 0`);
+    params.filterTags = filters.tags;
   }
 
-  if (filters?.community) {
-    conditions.push(`relatedCommunity->slug.current == $filterCommunity`);
-    params.filterCommunity = filters.community;
+  if (filters?.communities?.length) {
+    conditions.push(`relatedCommunity->slug.current in $filterCommunities`);
+    params.filterCommunities = filters.communities;
   }
 
   if (filters?.dateFrom) {

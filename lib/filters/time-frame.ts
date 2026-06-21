@@ -1,27 +1,28 @@
 /**
  * Shared time-frame filtering — a small set of friendly presets that resolve to
  * a `dateFrom` ISO string, used by the time-frame pills across news, case
- * studies and agendas. "Any time" clears the date filter.
+ * studies and lived experiences. "Any time" clears the date filter. Max = 3 years.
  */
 
-export type TimeFrame = "any" | "year" | "threeYears" | "fiveYears";
+export type TimeFrame = "any" | "month" | "threeMonths" | "year" | "threeYears";
 
-export const TIME_FRAMES: TimeFrame[] = ["any", "year", "threeYears", "fiveYears"];
+export const TIME_FRAMES: TimeFrame[] = ["any", "month", "threeMonths", "year", "threeYears"];
 
-/** Years back for each preset (0 = no lower bound). */
-const YEARS_BACK: Record<TimeFrame, number> = {
+/** Months back for each preset (0 = no lower bound). */
+const MONTHS_BACK: Record<TimeFrame, number> = {
   any: 0,
-  year: 1,
-  threeYears: 3,
-  fiveYears: 5,
+  month: 1,
+  threeMonths: 3,
+  year: 12,
+  threeYears: 36,
 };
 
 /** The `dateFrom` ISO string for a time-frame (null = no lower bound). */
 export function timeFrameToDateFrom(tf: TimeFrame, now: Date = new Date()): string | null {
-  const years = YEARS_BACK[tf] ?? 0;
-  if (years <= 0) return null;
+  const months = MONTHS_BACK[tf] ?? 0;
+  if (months <= 0) return null;
   const d = new Date(now);
-  d.setFullYear(d.getFullYear() - years);
+  d.setMonth(d.getMonth() - months);
   return d.toISOString();
 }
 

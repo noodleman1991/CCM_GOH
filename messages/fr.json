@@ -138,7 +138,9 @@
     "availableInLanguages": "Disponible en {count} {count, plural, one {langue} other {langues}}",
     "availableIn": "Disponible en :",
     "noContentYet": "Aucun contenu disponible pour le moment.",
-    "checkBackSoon": "Revenez bientôt pour les mises à jour."
+    "checkBackSoon": "Revenez bientôt pour les mises à jour.",
+    "clear": "Effacer",
+    "clearFilters": "Effacer les filtres"
   },
   "dashboard": {
     "pageTitle": "Tableau de bord - Connecting Climate Minds Hub",
@@ -1313,7 +1315,9 @@
         "any": "À tout moment",
         "year": "Dernière année",
         "threeYears": "3 dernières années",
-        "fiveYears": "5 dernières années"
+        "fiveYears": "5 dernières années",
+        "month": "Dernier mois",
+        "threeMonths": "3 derniers mois"
       }
     },
     "metadata": {
@@ -1488,7 +1492,9 @@
       "any": "À tout moment",
       "year": "Année passée",
       "threeYears": "3 dernières années",
-      "fiveYears": "5 dernières années"
+      "fiveYears": "5 dernières années",
+      "month": "Dernier mois",
+      "threeMonths": "3 derniers mois"
     },
     "facet": {
       "region": "Région",

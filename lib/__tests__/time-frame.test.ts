@@ -7,10 +7,12 @@ describe("timeFrameToDateFrom", () => {
   it("returns null for 'any'", () => {
     expect(timeFrameToDateFrom("any", now)).toBeNull();
   });
-  it("subtracts the right number of years", () => {
+  it("subtracts the right span", () => {
+    // month / 3 months back from 2026-06-17
+    expect(timeFrameToDateFrom("month", now)?.slice(0, 7)).toBe("2026-05");
+    expect(timeFrameToDateFrom("threeMonths", now)?.slice(0, 7)).toBe("2026-03");
     expect(timeFrameToDateFrom("year", now)?.slice(0, 4)).toBe("2025");
     expect(timeFrameToDateFrom("threeYears", now)?.slice(0, 4)).toBe("2023");
-    expect(timeFrameToDateFrom("fiveYears", now)?.slice(0, 4)).toBe("2021");
   });
 });
 

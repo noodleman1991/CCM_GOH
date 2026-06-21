@@ -92,6 +92,23 @@ export default async function NewsPage({
   )
 }
 
+// Parse a comma-separated multi-value URL param (e.g. ?tags=a,b) into an array.
+function toArr(param: string | string[] | undefined): string[] {
+  if (!param) return []
+  const raw = Array.isArray(param) ? param : param.split(',')
+  return raw.map((s) => s.trim()).filter(Boolean)
+}
+
+function parseNewsFilters(p: any): NewsFiltersType {
+  return {
+    tags: toArr(p.tags),
+    communities: toArr(p.communities),
+    dateFrom: typeof p.dateFrom === 'string' ? p.dateFrom : undefined,
+    dateTo: typeof p.dateTo === 'string' ? p.dateTo : undefined,
+    search: typeof p.search === 'string' ? p.search : undefined,
+  }
+}
+
 async function NewsFiltersWrapper({
   locale,
   currentFilters,
@@ -104,17 +121,9 @@ async function NewsFiltersWrapper({
     fetchRegionalCommunities(),
   ])
 
-  const filterObj: NewsFiltersType = {
-    tag: typeof currentFilters.tag === 'string' ? currentFilters.tag : undefined,
-    community: typeof currentFilters.community === 'string' ? currentFilters.community : undefined,
-    dateFrom: typeof currentFilters.dateFrom === 'string' ? currentFilters.dateFrom : undefined,
-    dateTo: typeof currentFilters.dateTo === 'string' ? currentFilters.dateTo : undefined,
-    search: typeof currentFilters.search === 'string' ? currentFilters.search : undefined,
-  }
-
   return (
     <NewsFilters
-      currentFilters={filterObj}
+      currentFilters={parseNewsFilters(currentFilters)}
       tags={tags}
       communities={communities}
     />
@@ -130,13 +139,7 @@ async function NewsContent({
 }) {
   const t = await getTranslations({ locale, namespace: 'news' })
 
-  const filterObj: NewsFiltersType = {
-    tag: typeof filters.tag === 'string' ? filters.tag : undefined,
-    community: typeof filters.community === 'string' ? filters.community : undefined,
-    dateFrom: typeof filters.dateFrom === 'string' ? filters.dateFrom : undefined,
-    dateTo: typeof filters.dateTo === 'string' ? filters.dateTo : undefined,
-    search: typeof filters.search === 'string' ? filters.search : undefined,
-  }
+  const filterObj: NewsFiltersType = parseNewsFilters(filters)
 
   const hasFilters = hasActiveFilters(filterObj)
 
@@ -145,8 +148,8 @@ async function NewsContent({
     const [allNews, externalSources] = await Promise.all([
       fetchAllNews(filterObj),
       fetchApprovedExternalSources({
-        tag: filterObj.tag,
-        community: filterObj.community,
+        tags: filterObj.tags,
+        communities: filterObj.communities,
         search: filterObj.search,
       }),
     ])
