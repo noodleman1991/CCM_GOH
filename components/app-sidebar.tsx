@@ -14,6 +14,7 @@ import {
     Heart,
     FolderPlus,
     BookMarked,
+    Compass,
 } from "lucide-react"
 import Logo from "@/components/logo"
 import { usePathname } from "@/i18n/navigation"
@@ -163,6 +164,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     // engagement flag is on. (Atlas joins Discover in Phase 3 once its route exists.)
     const data = React.useMemo(() => ({
         discover: [
+            {
+                title: t('atlasExplore'),
+                url: "/atlas",
+                icon: Compass,
+                isActive: isLinkActive("/atlas"),
+            },
             {
                 title: t('researchAction'),
                 url: "#",
