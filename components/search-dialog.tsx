@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Search, ArrowRight } from "lucide-react";
+import { Search } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import {
@@ -89,7 +89,7 @@ export function SearchDialog({
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent
-          className="top-[12%] translate-y-0 gap-0 p-0 sm:max-w-xl"
+          className="top-[12%] translate-y-0 gap-0 rounded-xl p-0 sm:max-w-xl"
           onOpenAutoFocus={(e) => {
             // Focus the search field, not the close button.
             e.preventDefault();
@@ -101,25 +101,23 @@ export function SearchDialog({
           <DialogDescription className="sr-only">
             {t("searchDescription")}
           </DialogDescription>
-          <form onSubmit={submit} className="flex items-center gap-3 px-4 py-3">
+          {/* Single clean row: icon + input. Enter submits; the Dialog's own
+              close ✕ (top-end) is the only ✕. pe-10 leaves room for it. */}
+          <form onSubmit={submit} className="flex items-center gap-3 px-4 py-3.5 pe-12">
             <Search className="size-5 shrink-0 text-slate-400" aria-hidden="true" />
+            {/* type=text (not search) so WebKit doesn't add a native clear ✕. */}
             <input
               ref={inputRef}
-              type="search"
+              type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={t("searchPlaceholder")}
               autoComplete="off"
               className="w-full bg-transparent text-base text-foreground outline-none placeholder:text-slate-400"
             />
-            <button
-              type="submit"
-              disabled={!query.trim()}
-              aria-label={t("searchSubmit")}
-              className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground transition-opacity disabled:opacity-40"
-            >
-              <ArrowRight className="size-4 rtl:-scale-x-100" />
-            </button>
+            <kbd className="hidden shrink-0 rounded border border-border px-1.5 py-0.5 text-[10px] font-medium text-slate-400 sm:inline-block">
+              ↵
+            </kbd>
           </form>
         </DialogContent>
       </Dialog>
