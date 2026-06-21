@@ -15,6 +15,7 @@ import {
 } from "@/sanity/queries/lived-experience-detail";
 import { LivedExperiencePlayer } from "@/components/lived-experiences/lived-experience-player";
 import { CommentIsland } from "@/components/comments/comment-island";
+import { RelatedContent } from "@/components/content/related-content";
 
 export async function generateStaticParams() {
   const slugs = await fetchLivedExperienceSlugs();
@@ -116,6 +117,9 @@ export default async function LivedExperiencePage({
           ))}
         </div>
       )}
+
+      {/* Related content — content-type-aware strip */}
+      <RelatedContent items={le.relatedContent} locale={locale} heading={t('relatedContent')} />
 
       {/* Discussion */}
       {le._id && <CommentIsland targetType="livedExperience" targetId={le._id} />}

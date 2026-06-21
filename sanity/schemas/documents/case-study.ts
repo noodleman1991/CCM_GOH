@@ -319,6 +319,18 @@ export default defineType({
             description: "The community this case study relates to",
         }),
 
+        // Cross-content links (lived experiences, other case studies, news…)
+        // rendered as a content-type-aware "Related" strip on the public page.
+        defineField({
+            name: "relatedContent",
+            title: "Related content",
+            type: "array",
+            group: "affiliations",
+            of: [{ type: "connection" }],
+            description: "Link to lived experiences, news or other studies this connects to.",
+            validation: (Rule) => Rule.max(8),
+        }),
+
         // Review workflow and publishing
         defineField({
             name: "status",

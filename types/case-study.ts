@@ -107,6 +107,19 @@ export interface CaseStudy {
         alt?: number;
     };
     studyAreas?: StudyArea[];
+    // Cross-content links (connection[] — see RELATED_CONTENT_PROJECTION)
+    relatedContent?: Array<{
+        relation?: string;
+        target?: {
+            _type: string;
+            _id: string;
+            slug?: string;
+            title?: unknown;
+            excerpt?: unknown;
+            image?: { asset?: { url?: string }; alt?: string };
+            status?: string;
+        } | null;
+    }>;
     // SEO fields
     seoTitle?: string;
     seoDescription?: string;

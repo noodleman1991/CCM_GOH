@@ -240,6 +240,17 @@ export default defineType({
             ],
             description: "Projects related to this lived experience",
         }),
+
+        // Cross-content links — rendered as a content-type-aware "Related" strip.
+        defineField({
+            name: "relatedContent",
+            title: "Related content",
+            type: "array",
+            group: "affiliations",
+            of: [{ type: "connection" }],
+            description: "Link to case studies, news or other stories this connects to.",
+            validation: (Rule) => Rule.max(8),
+        }),
         
         // Tags for categorization
         defineField({

@@ -15,6 +15,7 @@ import { urlFor } from '@/sanity/lib/image'
 import { getLocalizedText, formatCaseStudyDate, getPrimaryAuthor, getStudyLocationText } from '@/lib/case-study-utils'
 import PortableTextRenderer from '@/components/portable-text-renderer'
 import { CommentIsland } from '@/components/comments/comment-island'
+import { RelatedContent } from '@/components/content/related-content'
 import { getTranslations } from 'next-intl/server'
 import { cn } from '@/lib/utils'
 import { heading } from '@/lib/design-tokens'
@@ -235,6 +236,13 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ loca
           </CardContent>
         </Card>
       )}
+
+      {/* Related content — content-type-aware strip (lived experiences, news…) */}
+      <RelatedContent
+        items={caseStudy.relatedContent}
+        locale={locale}
+        heading={t('relatedContent')}
+      />
 
       {/* Discussion — lazy, ISR-safe island */}
       {caseStudy._id && (
