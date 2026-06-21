@@ -47,6 +47,25 @@ export default defineType({
             group: "settings",
         }),
         
+        // Medium of the testimony (redesign §4.15). Additive: defaults to "video"
+        // so existing docs stay video. Audio/written rendering builds on this.
+        defineField({
+            name: "format",
+            title: "Format",
+            type: "string",
+            group: "content",
+            options: {
+                list: [
+                    { title: "Video", value: "video" },
+                    { title: "Audio", value: "audio" },
+                    { title: "Written", value: "written" },
+                ],
+                layout: "radio",
+            },
+            initialValue: "video",
+            description: "The medium of this lived experience — drives how it's presented.",
+        }),
+
         // Title (required in document's language)
         defineField({
             name: "title",
@@ -132,14 +151,23 @@ export default defineType({
             ],
         }),
 
-        // Video URL (external link to video platform)
+        // Video/audio URL (external link to the media platform). Required only
+        // for video/audio formats; a written story needs no media link.
         defineField({
             name: "videoLink",
-            title: "Video Link",
+            title: "Media Link",
             type: "url",
             group: "video",
-            description: "Link to the video (YouTube, Vimeo, etc.)",
-            validation: (Rule) => Rule.required(),
+            description: "Link to the video or audio (YouTube, Vimeo, SoundCloud, etc.)",
+            hidden: ({ parent }) => parent?.format === "written",
+            validation: (Rule) =>
+                Rule.custom((value, context) => {
+                    const format = (context.parent as { format?: string })?.format;
+                    if (format !== "written" && !value) {
+                        return "A media link is required for video and audio formats.";
+                    }
+                    return true;
+                }),
         }),
         
         // Video thumbnail (optional, will fallback to platform thumbnail)
