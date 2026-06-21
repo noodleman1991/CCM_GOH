@@ -27,7 +27,7 @@ export function SectionHeader({
   titleClassName?: string;
 }) {
   return (
-    <div className={cn("flex items-end justify-between gap-4", className)}>
+    <div className={cn("flex items-start justify-between gap-4", className)}>
       <div className="flex min-w-0 items-start gap-3">
         {bar && (
           <span
@@ -47,7 +47,7 @@ export function SectionHeader({
       {action && (
         <Link
           href={action.href}
-          className="shrink-0 whitespace-nowrap text-sm font-medium text-ccm-water underline-offset-4 hover:underline"
+          className="mt-1 shrink-0 whitespace-nowrap text-sm font-medium text-ccm-water underline-offset-4 hover:underline"
         >
           {action.label}
         </Link>
