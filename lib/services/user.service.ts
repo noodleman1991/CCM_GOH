@@ -341,7 +341,9 @@ export class UserService {
             }
           },
           recentWork: {
-            orderBy: { startDate: 'desc' },
+            // Pinned first, then most recent. Hidden items are filtered downstream
+            // in getUserProfile (kept for the owner's own view, dropped for visitors).
+            orderBy: [{ pinned: 'desc' }, { startDate: 'desc' }],
             take: 10
           }
         }

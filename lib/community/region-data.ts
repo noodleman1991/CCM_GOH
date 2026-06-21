@@ -104,7 +104,8 @@ export async function getUserContributions(
     prisma.user.findUnique({
       where: { id: userId },
       select: {
-        recentWork: { select: { id: true, title: true, link: true, startDate: true } },
+        // Hidden recent work never appears in the public Contributions block.
+        recentWork: { where: { hidden: false }, select: { id: true, title: true, link: true, startDate: true } },
         createdContent: { select: { id: true, title: true, createdAt: true } },
       },
     })

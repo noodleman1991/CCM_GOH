@@ -11,6 +11,7 @@ import Markdown from "react-markdown"
 import { Link } from '@/i18n/navigation'
 import { getUserProfile, checkProfileOwnership } from "@/lib/actions/profile"
 import { cn } from "@/lib/utils"
+import { RecentWorkOwnerControls } from "@/components/profile/recent-work-owner-controls"
 import { heading } from "@/lib/design-tokens"
 import { MessageCircle } from "lucide-react"
 import { MessageUserButton } from "@/components/messaging/message-user-button"
@@ -393,8 +394,13 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                                     <div className="space-y-4">
                                         {user.recentWork.map((work, id) => (
                                             <BlurFade key={work.id} delay={BLUR_FADE_DELAY * 15 + id * 0.05}>
-                                                <div className="border-s-2 border-muted ps-4">
-                                                    <div className="flex items-start justify-between">
+                                                <div className={cn(
+                                                    "border-s-2 ps-4",
+                                                    (work as any).pinned ? "border-ccm-sea" : "border-muted",
+                                                    // Hidden items only show to the owner — dim them so it's clear.
+                                                    isOwnProfile && (work as any).hidden && "opacity-50"
+                                                )}>
+                                                    <div className="flex items-start justify-between gap-2">
                                                         <div>
                                                             <h3 className="font-medium">{work.title}</h3>
                                                             <div className="prose max-w-full text-pretty font-sans text-xs text-muted-foreground dark:prose-invert">
@@ -413,8 +419,17 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                                                                 </a>
                                                             )}
                                                         </div>
-                                                        <div className="text-xs text-muted-foreground">
-                                                            {work.isOngoing ? 'Ongoing' : new Date(work.endDate || work.startDate).getFullYear()}
+                                                        <div className="flex shrink-0 items-center gap-2">
+                                                            {isOwnProfile && (
+                                                                <RecentWorkOwnerControls
+                                                                    id={work.id}
+                                                                    hidden={Boolean((work as any).hidden)}
+                                                                    pinned={Boolean((work as any).pinned)}
+                                                                />
+                                                            )}
+                                                            <div className="text-xs text-muted-foreground">
+                                                                {work.isOngoing ? 'Ongoing' : new Date(work.endDate || work.startDate).getFullYear()}
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
