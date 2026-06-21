@@ -44,3 +44,16 @@ export const RC_SLUG_TO_REGION: Record<string, RegionCode> = {
 export const REGION_TO_RC_SLUG: Record<RegionCode, string> = Object.fromEntries(
   Object.entries(RC_SLUG_TO_REGION).map(([slug, code]) => [code, slug])
 ) as Record<RegionCode, string>;
+
+/** Brand colour per region (fixed, blue family), keyed by the long-form code so
+ *  map/choropleth components can colour regions directly. The canonical source is
+ *  `COLOR.region` in `lib/ccm-colors.ts`; this is the same map keyed by RegionCode. */
+export const REGION_COLOR: Record<RegionCode, string> = {
+  EUROPE_AND_NORTH_AMERICA: "#0B3160", // enam — midnight
+  LATIN_AMERICA_AND_THE_CARIBBEAN: "#2563ef", // lac
+  NORTHERN_AFRICA_AND_WESTERN_ASIA: "#4186C3", // nawa — water
+  SUB_SAHARAN_AFRICA: "#205596", // ssa — sea
+  CENTRAL_AND_SOUTHERN_ASIA: "#3a81f6", // csa
+  EASTERN_AND_SOUTH_EASTERN_ASIA: "#1a4eda", // esea
+  OCEANIA: "#9BC6DA", // oce — sky
+};
