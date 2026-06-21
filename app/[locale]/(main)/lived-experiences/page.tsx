@@ -13,6 +13,7 @@ async function fetchLivedExperiences() {
     "videos": *[_type == "livedExperience" && (status == "approved" || !defined(status))] | order(_createdAt desc) {
       _id,
       title,
+      format,
       videoUrl,
       tags,
       "thumbnailUrl": thumbnail.asset->url,

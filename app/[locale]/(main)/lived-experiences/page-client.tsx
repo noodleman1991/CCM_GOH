@@ -348,6 +348,7 @@ export default function LivedExperiencesPageClient({
                   videoUrl={video.videoUrl}
                   thumbnailUrl={video.thumbnailUrl}
                   tags={video.tags}
+                  format={video.format}
                 />
               ))}
             </ScrollRow>

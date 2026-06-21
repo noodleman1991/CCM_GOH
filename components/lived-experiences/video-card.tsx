@@ -2,18 +2,29 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
-import { Play } from 'lucide-react'
+import { useTranslations } from 'next-intl'
+import { Play, Headphones, FileText, Video as VideoIcon } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
 import { YouTubeConsentGate } from '@/components/cookie-consent/youtube-consent-gate'
 import { cn } from '@/lib/utils'
+
+type LivedFormat = 'video' | 'audio' | 'written'
 
 interface VideoCardProps {
   title: string
   videoUrl?: string
   thumbnailUrl?: string
   tags?: string[]
+  /** Medium of the testimony — drives the badge + interaction. */
+  format?: LivedFormat
   className?: string
+}
+
+const FORMAT_META: Record<LivedFormat, { icon: typeof VideoIcon; key: string }> = {
+  video: { icon: VideoIcon, key: 'formatVideo' },
+  audio: { icon: Headphones, key: 'formatAudio' },
+  written: { icon: FileText, key: 'formatWritten' },
 }
 
 /** A Netflix-style video card: thumbnail with a play overlay; clicking opens the
@@ -32,11 +43,15 @@ export function LivedExperienceVideoCard({
   videoUrl,
   thumbnailUrl,
   tags,
+  format = 'video',
   className,
 }: VideoCardProps) {
+  const t = useTranslations('livedExperiences')
   const [open, setOpen] = useState(false)
   const embedUrl = videoUrl?.replace('watch?v=', 'embed/')
   const thumb = thumbnailUrl || youtubeThumb(videoUrl)
+  const fmt = FORMAT_META[format] || FORMAT_META.video
+  const FormatIcon = fmt.icon
 
   return (
     <>
@@ -62,11 +77,19 @@ export function LivedExperienceVideoCard({
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[var(--color-ccm-sky)]/40 to-[var(--color-ccm-water)]/30" />
           )}
-          <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover/card:bg-black/30">
-            <span className="flex h-12 w-12 items-center justify-center rounded-full bg-white/90 opacity-0 shadow-lg transition-opacity group-hover/card:opacity-100">
-              <Play className="h-5 w-5 fill-[var(--color-ccm-sea)] text-[var(--color-ccm-sea)] ms-0.5" />
-            </span>
-          </div>
+          {/* Medium badge (Video / Audio / Written) */}
+          <span className="absolute start-2 top-2 inline-flex items-center gap-1 rounded-full bg-white/90 px-2 py-0.5 text-[11px] font-medium text-ccm-midnight">
+            <FormatIcon className="size-3" />
+            {t(fmt.key)}
+          </span>
+          {/* Play affordance only for video/audio (not a written story). */}
+          {format !== 'written' && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover/card:bg-black/30">
+              <span className="flex h-12 w-12 items-center justify-center rounded-full bg-white/90 opacity-0 shadow-lg transition-opacity group-hover/card:opacity-100">
+                <Play className="h-5 w-5 fill-[var(--color-ccm-sea)] text-[var(--color-ccm-sea)] ms-0.5" />
+              </span>
+            </div>
+          )}
         </div>
         <h3 className="mt-2 line-clamp-3 text-sm font-semibold leading-snug text-balance break-words">{title}</h3>
         {tags && tags.length > 0 && (
