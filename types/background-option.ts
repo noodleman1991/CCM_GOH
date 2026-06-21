@@ -22,4 +22,6 @@ export interface BackgroundOptionType {
   };
   /** Editor opt-in: render text in the light foreground for dark backgrounds. */
   lightText?: boolean;
+  /** Editor opt-in: render the soft organic "blob" brand accent behind content. */
+  blobAccent?: boolean;
 }
