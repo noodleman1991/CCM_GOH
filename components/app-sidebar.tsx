@@ -12,14 +12,12 @@ import {
     Newspaper,
     Info,
     Heart,
-    Search,
-    Handshake,
     FolderPlus,
     BookMarked,
-    X,
 } from "lucide-react"
 import Logo from "@/components/logo"
-import { useRouter, usePathname } from "@/i18n/navigation"
+import { usePathname } from "@/i18n/navigation"
+import { SearchDialog } from "@/components/search-dialog"
 
 import { useClerkUser } from "@/hooks/use-clerk-user";
 import { useLocale, useTranslations } from "next-intl"
@@ -41,7 +39,6 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
-    SidebarInput
 } from "@/components/ui/sidebar"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -49,9 +46,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const locale = useLocale()
     const isRTL = rtlLocales.includes(locale)
     const t = useTranslations('navigation')
-    const router = useRouter()
     const pathname = usePathname()
-    const [searchQuery, setSearchQuery] = React.useState("")
     const [openAccordion, setOpenAccordion] = React.useState<string | null>(null)
 
     // A nav link is active when the current route equals it or is nested under it,
@@ -62,13 +57,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             url !== "#" && (pathname === url || pathname.startsWith(`${url}/`)),
         [pathname]
     )
-
-    const handleSearch = (e: React.FormEvent) => {
-        e.preventDefault()
-        if (searchQuery.trim()) {
-            router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`)
-        }
-    }
 
     // Research & Action items
     const researchActionItems = [
@@ -212,9 +200,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 onToggle: () => setOpenAccordion(openAccordion === 'regional' ? null : 'regional')
             },
             {
-                title: t('collaborate'),
+                title: t('findPeople'),
                 url: "/collaborate",
-                icon: Handshake,
+                icon: Users,
                 isActive: isLinkActive("/collaborate"),
             },
             // Action item: start or find a project. When engagement is on this
@@ -252,27 +240,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     </SidebarMenuItem>
                 </SidebarMenu>
 
-                {/* Search Box */}
+                {/* Universal search — a labelled pill that opens an accessible
+                    search modal (keyboard: ⌘K / "/"; focus-trapped; RTL-aware). */}
                 <div className="p-2">
-                    <form onSubmit={handleSearch} className="relative sidebar-search-input">
-                        <Search className="pointer-events-none absolute top-1/2 size-4 -translate-y-1/2 select-none text-slate-900 start-2" />
-                        <SidebarInput
-                            id="search"
-                            placeholder={t('searchPlaceholder')}
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full placeholder:text-slate-500 bg-background border-gray-300 text-slate-900 ps-8 pe-8"
-                        />
-                        {searchQuery && (
-                            <button
-                                type="button"
-                                onClick={() => setSearchQuery("")}
-                                className="absolute top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 end-2"
-                            >
-                                <X className="size-4" />
-                            </button>
-                        )}
-                    </form>
+                    <SearchDialog variant="pill" />
                 </div>
             </SidebarHeader>
             <SidebarContent>
