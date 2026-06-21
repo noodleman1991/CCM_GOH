@@ -892,6 +892,7 @@
     "allResults": "All",
     "searching": "Searching…",
     "seeAllResults": "See all results for \"{q}\"",
+    "searchUnavailable": "Content search is temporarily unavailable. Please try again shortly.",
     "regions": "Regions",
     "resultsFor": "Results for \"{q}\"",
     "typeToSearch": "Search the hub",

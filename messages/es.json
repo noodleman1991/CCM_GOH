@@ -816,6 +816,7 @@
     "allResults": "Todo",
     "searching": "Buscando…",
     "seeAllResults": "Ver todos los resultados de \"{q}\"",
+    "searchUnavailable": "La búsqueda de contenido no está disponible temporalmente. Inténtalo de nuevo en breve.",
     "regions": "Regiones",
     "resultsFor": "Resultados de \"{q}\"",
     "typeToSearch": "Buscar en el hub",

@@ -58,6 +58,7 @@ export function SearchDialogResults({
   const locale = useLocale();
   const router = useRouter();
   const [loading, setLoading] = React.useState(false);
+  const [errored, setErrored] = React.useState(false);
   const [groups, setGroups] = React.useState<{
     caseStudies: Item[];
     news: Item[];
@@ -98,6 +99,7 @@ export function SearchDialogResults({
     }
     let cancelled = false;
     setLoading(true);
+    setErrored(false);
     const handle = setTimeout(async () => {
       try {
         const peopleFilter = isSignedIn
@@ -141,7 +143,12 @@ export function SearchDialogResults({
           })),
         });
       } catch {
-        if (!cancelled) setGroups({ caseStudies: [], news: [], people: [] });
+        // Algolia unreachable / bad key — surface a clear state, don't pretend
+        // there are simply no matches (regions, which are client-side, still show).
+        if (!cancelled) {
+          setGroups({ caseStudies: [], news: [], people: [] });
+          setErrored(true);
+        }
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -236,19 +243,32 @@ export function SearchDialogResults({
           {t("searching")}
         </div>
       )}
-      {!loading && !hasResults && (
-        <div className="px-4 py-8 text-center text-sm text-muted-foreground">
-          {t("nothingFound", { q: query })}
-        </div>
-      )}
-      {!loading && hasResults && (
+
+      {/* Regions are client-side, so they show even when Algolia is unavailable. */}
+      {!loading && renderGroup("regions", regionItems)}
+
+      {!loading && (
         <>
           {renderGroup("caseStudies", groups.caseStudies)}
           {renderGroup("news", groups.news)}
           {renderGroup("people", groups.people)}
-          {renderGroup("regions", regionItems)}
         </>
       )}
+
+      {/* Algolia errored (e.g. bad search key) — say so, don't imply "no matches". */}
+      {!loading && errored && (
+        <div className="px-4 py-6 text-center text-sm text-muted-foreground">
+          {t("searchUnavailable")}
+        </div>
+      )}
+
+      {/* Genuinely nothing (not an error, no regions, no hits). */}
+      {!loading && !errored && !hasResults && (
+        <div className="px-4 py-8 text-center text-sm text-muted-foreground">
+          {t("nothingFound", { q: query })}
+        </div>
+      )}
+
       {/* Footer: full results page */}
       <Link
         href={footerHref}

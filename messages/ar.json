@@ -816,6 +816,7 @@
     "allResults": "الكل",
     "searching": "جارٍ البحث…",
     "seeAllResults": "عرض كل النتائج لـ \"{q}\"",
+    "searchUnavailable": "البحث في المحتوى غير متاح مؤقتًا. يرجى المحاولة مرة أخرى بعد قليل.",
     "regions": "المناطق",
     "resultsFor": "نتائج البحث عن \"{q}\"",
     "typeToSearch": "ابحث في المنصة",
