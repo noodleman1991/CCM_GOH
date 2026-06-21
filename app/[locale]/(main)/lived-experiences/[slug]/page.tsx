@@ -3,9 +3,8 @@ export const revalidate = 300;
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { Link } from "@/i18n/navigation";
-import { ArrowLeft, User } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { User } from "lucide-react";
+import { BackLink } from "@/components/ui/back-link";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { getLocalizedValue } from "@/i18n/i18n-helpers";
 import { heading } from "@/lib/design-tokens";
@@ -60,12 +59,7 @@ export default async function LivedExperiencePage({
 
   return (
     <div className="container max-w-4xl py-8 space-y-8" dir={isRTL ? "rtl" : "ltr"}>
-      <Button variant="ghost" asChild>
-        <Link href="/lived-experiences" className="flex items-center gap-2">
-          <ArrowLeft className="size-4 rtl:-scale-x-100" />
-          {t("backToGallery")}
-        </Link>
-      </Button>
+      <BackLink href="/lived-experiences" label={t("backToGallery")} />
 
       {/* Person header — leads, dignity first (matches the modal voice) */}
       <header className="flex items-start gap-3">

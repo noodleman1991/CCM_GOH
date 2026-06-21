@@ -8,8 +8,8 @@ import { Link } from '@/i18n/navigation'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
-import { Calendar, User, Building2, MapPin, ArrowLeft, Star, ExternalLink } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { Calendar, User, Building2, MapPin, Star, ExternalLink } from 'lucide-react'
+import { BackLink } from '@/components/ui/back-link'
 import { urlFor } from '@/sanity/lib/image'
 import { getLocalizedValue } from '@/i18n/i18n-helpers'
 import { formatNewsDate, getReadingTime } from '@/lib/news-utils'
@@ -109,13 +109,8 @@ export default async function NewsDetailPage({
 
   return (
     <div className="container max-w-4xl py-8 space-y-8">
-      {/* Back button */}
-      <Button variant="ghost" asChild>
-        <Link href={`/news`} className="flex items-center gap-2">
-          <ArrowLeft className="w-4 h-4" />
-          {t('backToNews')}
-        </Link>
-      </Button>
+      {/* Back link */}
+      <BackLink href="/news" label={t('backToNews')} />
 
       {/* Header */}
       <div className="space-y-4">
