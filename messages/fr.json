@@ -1267,7 +1267,8 @@
     "relatedProjects": "Projets Connexes",
     "studyAreas": "Domaines d'Étude",
     "allAuthors": "Tous les Auteurs",
-    "featuredBadge": "À la une"
+    "featuredBadge": "À la une",
+    "producedBy": "Produit par"
   },
   "revisionAlert": {
     "title": "Action Requise: Révision Nécessaire",
