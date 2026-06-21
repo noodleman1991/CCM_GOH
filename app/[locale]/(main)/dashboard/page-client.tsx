@@ -15,13 +15,13 @@ import {
   Users,
   MapPin,
   Calendar,
-  Newspaper,
   ArrowRight,
   Edit,
   FileText,
   FolderKanban,
   MessageSquare
 } from 'lucide-react'
+import { SectionHeader } from '@/components/ui/section-header'
 import type { SupportedLocale } from '@/types/prisma'
 
 interface DashboardUser {
@@ -331,14 +331,11 @@ export function DashboardClient({
             {/* Recent Work */}
             {recentWork.length > 0 && (
               <div>
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-bold">{t('recentWork')}</h2>
-                  <Button asChild variant="ghost" size="sm">
-                    <Link href={`/dashboard/profile/edit/work`}>
-                      {t('viewAll')}
-                      <ArrowRight className={cn("w-4 h-4", rtl ? "mr-2" : "ml-2")} />
-                    </Link>
-                  </Button>
+                <div className="mb-6">
+                  <SectionHeader
+                    title={t('recentWork')}
+                    action={{ label: t('viewAll'), href: '/dashboard/profile/edit/work' }}
+                  />
                 </div>
                 <div className="space-y-4">
                   {recentWork.map((work) => (
@@ -381,11 +378,8 @@ export function DashboardClient({
             {/* Recent submissions — the user's own contributions */}
             {contributions.length > 0 && (
               <div>
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-bold flex items-center gap-2">
-                    <FileText className="w-5 h-5 text-[var(--color-ccm-sea)]" />
-                    {t('recentSubmissions')}
-                  </h2>
+                <div className="mb-4">
+                  <SectionHeader title={t('recentSubmissions')} />
                 </div>
                 <Card>
                   <CardContent className="p-0 divide-y">
@@ -421,11 +415,8 @@ export function DashboardClient({
             {/* Recent Community News */}
             {recentNews && recentNews.length > 0 && (
               <div>
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-bold flex items-center gap-2">
-                    <Newspaper className="w-5 h-5" />
-                    {t('recentNews')}
-                  </h2>
+                <div className="mb-4">
+                  <SectionHeader title={t('recentNews')} />
                 </div>
                 <div className="space-y-4">
                   {recentNews.map((news) => (
@@ -468,7 +459,6 @@ export function DashboardClient({
                   <Button asChild variant="outline" className="w-full mt-4">
                     <Link href={`/communities/${regionalCommunity.slug}`}>
                       {t('viewAllNews')}
-                      <ArrowRight className={cn("w-4 h-4", rtl ? "mr-2" : "ml-2")} />
                     </Link>
                   </Button>
                 )}
