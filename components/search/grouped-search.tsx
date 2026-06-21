@@ -31,6 +31,7 @@ import { useState, useCallback, useEffect, useRef, useMemo } from 'react'
 import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 import { getLocalizedTitle, getLocalizedExcerpt } from '@/lib/localization-utils'
 import { REGION_CODES, REGION_I18N_KEY, REGION_TO_RC_SLUG, REGION_COLOR } from '@/lib/maps/region-codes'
+import { regionColor } from '@/lib/ccm-colors'
 import { cn } from '@/lib/utils'
 
 /** How many hits each group previews before "See all". */
@@ -145,18 +146,23 @@ function ResultRow({
   title,
   subtitle,
   badge,
-  onDark,
+  meta,
+  leading,
 }: {
   href: string
   title: string
   subtitle?: string
+  /** Right-aligned badge (e.g. type/featured). */
   badge?: React.ReactNode
-  onDark?: React.ReactNode
+  /** Below the subtitle: chips / byline / date — type-specific. */
+  meta?: React.ReactNode
+  /** Leading visual (avatar / type icon). */
+  leading?: React.ReactNode
 }) {
   return (
     <Card className="transition-shadow hover:shadow-md">
       <CardContent className="flex items-start gap-3 p-4">
-        {onDark}
+        {leading}
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-2">
             <h3 className="font-medium text-foreground">
@@ -167,9 +173,37 @@ function ResultRow({
           {subtitle && (
             <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{subtitle}</p>
           )}
+          {meta && <div className="mt-2 flex flex-wrap items-center gap-1.5">{meta}</div>}
         </div>
       </CardContent>
     </Card>
+  )
+}
+
+/** Small region chip with its brand-colour dot (via the canonical colour map). */
+function RegionChip({ code }: { code: string }) {
+  const t = useTranslations()
+  const region = code as keyof typeof REGION_I18N_KEY
+  const key = REGION_I18N_KEY[region]
+  if (!key) return null
+  return (
+    <span className="inline-flex items-center gap-1 rounded-full border border-border px-2 py-0.5 text-xs text-muted-foreground">
+      <span
+        className="size-1.5 rounded-full"
+        style={{ backgroundColor: regionColor(code) }}
+        aria-hidden="true"
+      />
+      {t(`navigation.regions.${key}`)}
+    </span>
+  )
+}
+
+/** Plain tag/topic chip. */
+function MetaChip({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">
+      {children}
+    </span>
   )
 }
 
@@ -186,28 +220,48 @@ function ContentHits({
 
   useEffect(() => { onCount(nbHits) }, [nbHits, onCount])
 
+  const fmtDate = (ts?: number) =>
+    ts ? new Date(ts).toLocaleDateString(locale, { year: 'numeric', month: 'short' }) : null
+
   return (
     <div className="space-y-3">
       {hits.slice(0, PREVIEW_COUNT).map((raw) => {
         if (type === 'case-studies') {
           const hit = raw as unknown as CaseStudySearchRecord
+          const author = hit.authors?.[0]?.name
           return (
             <ResultRow
               key={hit.objectID}
               href={`/research-and-action/case-studies/${hit.slug}`}
               title={getLocalizedTitle(hit.title, locale)}
               subtitle={getLocalizedExcerpt(hit.excerpt, locale)}
+              leading={<TypeIcon icon={BookOpen} />}
+              meta={
+                <>
+                  {author && <span className="text-xs text-muted-foreground">{author}</span>}
+                  {(hit.tags || []).slice(0, 2).map((tag) => (
+                    <MetaChip key={tag}>{tag}</MetaChip>
+                  ))}
+                </>
+              }
             />
           )
         }
         if (type === 'news') {
           const hit = raw as unknown as NewsSearchRecord
+          const date = fmtDate(hit.publishedAt)
           return (
             <ResultRow
               key={hit.objectID}
               href={`/news/${hit.slug}`}
               title={getLocalizedTitle(hit.title, locale)}
               subtitle={getLocalizedExcerpt(hit.excerpt, locale)}
+              leading={<TypeIcon icon={Newspaper} />}
+              meta={
+                <span className="text-xs text-muted-foreground">
+                  {[hit.author?.name, date].filter(Boolean).join(' · ')}
+                </span>
+              }
             />
           )
         }
@@ -217,10 +271,28 @@ function ContentHits({
             key={hit.objectID}
             href={`/research-and-action`}
             title={getLocalizedTitle(hit.title, locale)}
+            leading={<TypeIcon icon={FileText} />}
+            meta={
+              <>
+                {hit.year && <MetaChip>{hit.year}</MetaChip>}
+                {(hit.regionalCommunities || []).slice(0, 1).map((rc) => (
+                  <MetaChip key={rc}>{rc}</MetaChip>
+                ))}
+              </>
+            }
           />
         )
       })}
     </div>
+  )
+}
+
+/** Square type-icon tile used as the leading visual on content rows. */
+function TypeIcon({ icon: Icon }: { icon: typeof BookOpen }) {
+  return (
+    <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-ccm-sky/20 text-ccm-sea">
+      <Icon className="size-5" />
+    </span>
   )
 }
 
@@ -234,6 +306,8 @@ function PeopleHits({ onCount }: { onCount: (n: number) => void }) {
   const initials = (first?: string, last?: string) =>
     `${first?.[0] || ''}${last?.[0] || ''}`.toUpperCase()
 
+  const tidy = (s: string) => s.replace(/_/g, ' ').toLowerCase()
+
   return (
     <div className="grid gap-3 sm:grid-cols-2">
       {hits.slice(0, PREVIEW_COUNT).map((raw) => {
@@ -246,12 +320,15 @@ function PeopleHits({ onCount }: { onCount: (n: number) => void }) {
             subtitle={hit.showWorkDetails && (hit.position || hit.organization)
               ? [hit.position, hit.organization].filter(Boolean).join(' · ')
               : hit.bio}
-            onDark={
+            leading={
               <Avatar className="size-10 shrink-0">
                 <AvatarImage src={hit.profileImage} alt={hit.fullName} />
                 <AvatarFallback>{initials(hit.firstName, hit.lastName)}</AvatarFallback>
               </Avatar>
             }
+            meta={(hit.expertiseAreas || []).slice(0, 2).map((area) => (
+              <MetaChip key={area}>{tidy(area)}</MetaChip>
+            ))}
           />
         )
       })}
@@ -318,6 +395,7 @@ function AlgoliaGroup({
   seeAllHref,
   render,
   onCount,
+  visible = true,
 }: {
   groupKey: string
   indexName: string
@@ -328,6 +406,9 @@ function AlgoliaGroup({
   seeAllHref: string
   render: (onCount: (n: number) => void) => React.ReactNode
   onCount: (key: string, n: number) => void
+  /** Group-filter visibility. The group stays MOUNTED when hidden so its count
+   *  keeps updating the filter chip badge — we only hide it visually. */
+  visible?: boolean
 }) {
   const [count, setCount] = useState<number | null>(null)
   const handleCount = useCallback((n: number) => {
@@ -335,9 +416,8 @@ function AlgoliaGroup({
     onCount(groupKey, n)
   }, [groupKey, onCount])
 
-  // Hide the whole group when the query yields nothing (keeps the page tight,
-  // per STATES §2: "section hidden if empty").
-  const hidden = query.trim().length > 0 && count === 0
+  // Hide the whole group when empty (STATES §2) or when filtered out.
+  const hidden = !visible || (query.trim().length > 0 && count === 0)
 
   return (
     <SearchErrorBoundary>
@@ -376,6 +456,11 @@ export default function GroupedSearch() {
   useEffect(() => setMounted(true), [])
 
   const [query, setQuery] = useState(searchParams.get('q') || '')
+
+  // Group filter: 'all' or a specific group key. Lets users scope a cross-type
+  // search to one category (the useful filter for a grouped results page).
+  const [activeFilter, setActiveFilter] = useState<string>('all')
+  const showGroup = (key: string) => activeFilter === 'all' || activeFilter === key
 
   // Aggregate per-group counts so we can show one "nothing found" state when
   // every group is empty (instead of a blank page of hidden sections).
@@ -441,6 +526,46 @@ export default function GroupedSearch() {
         </p>
       )}
 
+      {/* Group filter chips — scope the results to one category. Counts annotate
+          each chip; a chip with 0 results (and no query-less state) is dimmed. */}
+      {hasQuery && mounted && !nothingFound && (
+        <div className="flex flex-wrap justify-center gap-2">
+          {[
+            { key: 'all', label: t('allResults'), count: null as number | null },
+            { key: 'caseStudies', label: t('caseStudies'), count: counts.caseStudies ?? null },
+            { key: 'news', label: t('news'), count: counts.news ?? null },
+            { key: 'agendas', label: t('agendas'), count: counts.agendas ?? null },
+            { key: 'people', label: t('people'), count: counts.people ?? null },
+            { key: 'regions', label: t('regions'), count: regionMatchCount },
+          ].map((chip) => {
+            const active = activeFilter === chip.key
+            const empty = chip.count === 0 && chip.key !== 'all'
+            return (
+              <button
+                key={chip.key}
+                type="button"
+                onClick={() => setActiveFilter(chip.key)}
+                aria-pressed={active}
+                className={cn(
+                  'inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition-colors',
+                  active
+                    ? 'border-primary bg-primary text-primary-foreground'
+                    : 'border-border bg-background text-muted-foreground hover:border-primary/40 hover:text-foreground',
+                  empty && !active && 'opacity-50'
+                )}
+              >
+                {chip.label}
+                {chip.count !== null && chip.count > 0 && (
+                  <span className={cn('text-xs', active ? 'text-primary-foreground/80' : 'text-muted-foreground')}>
+                    {chip.count}
+                  </span>
+                )}
+              </button>
+            )
+          })}
+        </div>
+      )}
+
       {!mounted ? (
         <div className="space-y-8">
           {Array.from({ length: 3 }).map((_, i) => (
@@ -478,6 +603,7 @@ export default function GroupedSearch() {
               seeAllHref={`/research-and-action/case-studies?q=${encodeURIComponent(query)}`}
               render={(onCount) => <ContentHits type="case-studies" onCount={onCount} />}
               onCount={onGroupCount}
+              visible={showGroup('caseStudies')}
             />
             <AlgoliaGroup
               groupKey="news"
@@ -489,6 +615,7 @@ export default function GroupedSearch() {
               seeAllHref={`/news?q=${encodeURIComponent(query)}`}
               render={(onCount) => <ContentHits type="news" onCount={onCount} />}
               onCount={onGroupCount}
+              visible={showGroup('news')}
             />
             <AlgoliaGroup
               groupKey="agendas"
@@ -500,6 +627,7 @@ export default function GroupedSearch() {
               seeAllHref={`/research-and-action/all-outputs?q=${encodeURIComponent(query)}`}
               render={(onCount) => <ContentHits type="agendas" onCount={onCount} />}
               onCount={onGroupCount}
+              visible={showGroup('agendas')}
             />
             <AlgoliaGroup
               groupKey="people"
@@ -511,9 +639,10 @@ export default function GroupedSearch() {
               seeAllHref={`/collaborate?q=${encodeURIComponent(query)}`}
               render={(onCount) => <PeopleHits onCount={onCount} />}
               onCount={onGroupCount}
+              visible={showGroup('people')}
             />
 
-            <RegionGroup query={query} />
+            {showGroup('regions') && <RegionGroup query={query} />}
           </div>
         </>
       )}
