@@ -16,6 +16,7 @@ import FAQs from "@/components/blocks/faqs";
 import FormNewsletter from "@/components/blocks/forms/newsletter";
 import AllPosts from "@/components/blocks/all-posts";
 import RegionMapBlock from "@/components/blocks/maps/region-map";
+import { BlockReveal } from "@/components/blocks/block-reveal";
 import { isRTL } from "@/i18n/i18n-helpers";
 // import gridReport from "@/sanity/schemas/blocks/grid/grid-report"; //todo: what is the diff between reportsgrid and gridreports in schemas???
 
@@ -87,13 +88,14 @@ export default function Blocks({ blocks, locale, userId }: BlocksProps) {
                     return <div data-type={block._type} key={block._key} />;
                 }
                 return (
-                    <Component
-                        key={block._key}
-                        {...(block as any)} // eslint-disable-line @typescript-eslint/no-explicit-any
-                        locale={locale}
-                        isRTL={rtl}
-                        userId={userId} // Pass userId for download tracking
-                    />
+                    <BlockReveal key={block._key}>
+                        <Component
+                            {...(block as any)} // eslint-disable-line @typescript-eslint/no-explicit-any
+                            locale={locale}
+                            isRTL={rtl}
+                            userId={userId} // Pass userId for download tracking
+                        />
+                    </BlockReveal>
                 );
             })}
         </>
