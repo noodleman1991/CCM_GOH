@@ -69,6 +69,10 @@ model User {
   onboardingCompleted  Boolean           @default(false)
   onboardingStep       Int               @default(0)
   preferredLanguage    Language          @default(EN)
+  // Optional link to this member's Sanity `author` document (content authorship
+  // side). Set going forward (profile edit / Studio); no automatic backfill —
+  // the `author` doc has no email to match on. One author ↔ one user.
+  sanityPersonId       String?           @unique
   welcomeMessageSeen   Boolean           @default(false)
   otherSocialLinks     Json?
   lastLoginAt          DateTime?

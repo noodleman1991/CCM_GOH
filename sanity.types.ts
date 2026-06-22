@@ -2430,6 +2430,7 @@ export type Author = {
     _type: "image";
   };
   organizationalAffiliation?: string;
+  userId?: string;
   communityMemberships?: Array<{
     community?: RegionalCommunityReference;
     role?: string;
