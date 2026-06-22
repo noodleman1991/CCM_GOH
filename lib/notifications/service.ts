@@ -6,6 +6,7 @@ import type { NotificationType } from "@/generated/prisma";
 export type NotificationDTO = {
   id: string;
   type: NotificationType;
+  actorId: string | null;
   actorName: string | null;
   actorImage: string | null;
   entityType: string | null;
@@ -68,6 +69,7 @@ export async function listNotifications(userId: string, limit = 20): Promise<Not
   return r.data.map((n) => ({
     id: n.id,
     type: n.type,
+    actorId: n.actorId,
     actorName: n.actor
       ? [n.actor.firstName, n.actor.lastName].filter(Boolean).join(" ") || n.actor.username || null
       : null,

@@ -283,8 +283,14 @@
     "commentApproved": "Votre commentaire a été approuvé",
     "sentMessage": "vous a envoyé un message",
     "activity": "nouvelle activité",
+    "sentRequest": "vous a envoyé une demande",
     "today": "Aujourd'hui",
-    "earlier": "Plus tôt"
+    "earlier": "Plus tôt",
+    "requests": "Demandes",
+    "accept": "Accepter",
+    "decline": "Refuser",
+    "accepted": "Acceptée",
+    "declined": "Refusée"
   },
   "dates": {
     "today": "Aujourd'hui",

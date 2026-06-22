@@ -283,8 +283,14 @@
     "commentApproved": "تمت الموافقة على تعليقك",
     "sentMessage": "أرسل لك رسالة",
     "activity": "نشاط جديد",
+    "sentRequest": "أرسل لك طلبًا",
     "today": "اليوم",
-    "earlier": "أقدم"
+    "earlier": "أقدم",
+    "requests": "الطلبات",
+    "accept": "قبول",
+    "decline": "رفض",
+    "accepted": "مقبول",
+    "declined": "مرفوض"
   },
   "dates": {
     "today": "اليوم",

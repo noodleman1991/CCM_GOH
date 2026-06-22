@@ -1,22 +1,34 @@
 "use client";
 
 import useSWR from "swr";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { markNotificationsRead } from "@/lib/actions/notifications";
+import { respondToJoinByTarget, respondToContactByTarget } from "@/lib/actions/requests";
 import { cn } from "@/lib/utils";
 
 export type Notif = {
   id: string;
   type: string;
+  actorId: string | null;
   actorName: string | null;
   actorImage: string | null;
+  entityType: string | null;
+  entityId: string | null;
   snippet: string | null;
   readAt: string | null;
   createdAt: string;
 };
+
+/** An actionable, still-open request notification (Accept/Decline shown). */
+const ACTIONABLE_ENTITY = new Set(["joinRequest", "contactRequest"]);
+function isActionableRequest(n: Notif): boolean {
+  return n.type === "REQUEST" && !!n.entityType && ACTIONABLE_ENTITY.has(n.entityType);
+}
 
 const fetcher = (url: string) =>
   fetch(url).then((r) => r.json() as Promise<{ unread: number; notifications: Notif[] }>);
@@ -31,6 +43,7 @@ export function useNotificationVerb() {
       case "REACTION": return t("reactedToYou");
       case "COMMENT_APPROVED": return t("commentApproved");
       case "MESSAGE": return t("sentMessage");
+      case "REQUEST": return t("sentRequest");
       default: return t("activity");
     }
   };
@@ -55,6 +68,8 @@ export function NotificationFeed({
     refreshWhenHidden: false,
   });
   const items = data?.notifications ?? [];
+  // Requests acted on this session — hide their Accept/Decline immediately.
+  const [resolved, setResolved] = useState<Record<string, "ACCEPTED" | "DECLINED">>({});
 
   useEffect(() => {
     if (markReadOnMount && (data?.unread ?? 0) > 0) {
@@ -67,41 +82,73 @@ export function NotificationFeed({
     return <p className={cn("p-6 text-center text-sm text-muted-foreground", className)}>{t("empty")}</p>;
   }
 
-  // Group by recency: Today vs Earlier (the spec's Requests group lands once
-  // actionable request notifications exist — Phase 5). Items already arrive
-  // newest-first from the API, so the buckets preserve that order.
+  // Three groups (spec §4.16): actionable Requests first, then recency buckets.
+  const requests = items.filter(isActionableRequest);
+  const rest = items.filter((n) => !isActionableRequest(n));
   const startOfToday = new Date();
   startOfToday.setHours(0, 0, 0, 0);
   const today: Notif[] = [];
   const earlier: Notif[] = [];
-  for (const n of items) {
+  for (const n of rest) {
     (new Date(n.createdAt) >= startOfToday ? today : earlier).push(n);
   }
   const groups: { key: string; label: string; items: Notif[] }[] = [
+    { key: "requests", label: t("requests"), items: requests },
     { key: "today", label: t("today"), items: today },
     { key: "earlier", label: t("earlier"), items: earlier },
   ].filter((g) => g.items.length > 0);
 
-  const row = (n: Notif) => (
-    <li key={n.id} className={n.readAt ? "" : "bg-ccm-sky/10"}>
-      <div className="flex items-start gap-3 p-4">
-        <Avatar className="size-9 shrink-0">
-          {n.actorImage && <AvatarImage src={n.actorImage} alt="" />}
-          <AvatarFallback>{(n.actorName ?? "?").slice(0, 1)}</AvatarFallback>
-        </Avatar>
-        <div className="min-w-0 flex-1">
-          <p className="text-sm">
-            {n.actorName && <span className="font-medium"><bdi>{n.actorName}</bdi></span>}{" "}
-            {verb(n.type)}
-          </p>
-          {n.snippet && <p className="truncate text-xs text-muted-foreground">{n.snippet}</p>}
-          <p className="mt-0.5 text-xs text-muted-foreground">
-            {formatDistanceToNow(new Date(n.createdAt), { addSuffix: true })}
-          </p>
+  const respond = async (n: Notif, accept: boolean) => {
+    const res =
+      n.entityType === "joinRequest" && n.entityId && n.actorId
+        ? await respondToJoinByTarget(n.entityId, n.actorId, accept)
+        : n.entityType === "contactRequest" && n.actorId
+          ? await respondToContactByTarget(n.actorId, accept)
+          : ({ ok: false, error: "Can't act on this request." } as const);
+    if (res.ok) {
+      setResolved((r) => ({ ...r, [n.id]: accept ? "ACCEPTED" : "DECLINED" }));
+      mutate();
+    } else {
+      toast.error(res.error);
+    }
+  };
+
+  const row = (n: Notif) => {
+    const actionable = isActionableRequest(n);
+    const decided = resolved[n.id];
+    return (
+      <li key={n.id} className={n.readAt ? "" : "bg-ccm-sky/10"}>
+        <div className="flex items-start gap-3 p-4">
+          <Avatar className="size-9 shrink-0">
+            {n.actorImage && <AvatarImage src={n.actorImage} alt="" />}
+            <AvatarFallback>{(n.actorName ?? "?").slice(0, 1)}</AvatarFallback>
+          </Avatar>
+          <div className="min-w-0 flex-1">
+            <p className="text-sm">
+              {n.actorName && <span className="font-medium"><bdi>{n.actorName}</bdi></span>}{" "}
+              {verb(n.type)}
+            </p>
+            {n.snippet && <p className="truncate text-xs text-muted-foreground">{n.snippet}</p>}
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              {formatDistanceToNow(new Date(n.createdAt), { addSuffix: true })}
+            </p>
+            {actionable && (
+              decided ? (
+                <p className="mt-2 text-xs font-medium text-muted-foreground">
+                  {decided === "ACCEPTED" ? t("accepted") : t("declined")}
+                </p>
+              ) : (
+                <div className="mt-2 flex gap-2">
+                  <Button size="sm" onClick={() => respond(n, true)}>{t("accept")}</Button>
+                  <Button size="sm" variant="outline" onClick={() => respond(n, false)}>{t("decline")}</Button>
+                </div>
+              )
+            )}
+          </div>
         </div>
-      </div>
-    </li>
-  );
+      </li>
+    );
+  };
 
   return (
     <div className={className}>
