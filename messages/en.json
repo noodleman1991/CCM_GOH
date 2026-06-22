@@ -193,8 +193,14 @@
     "commentApproved": "Your comment was approved",
     "sentMessage": "sent you a message",
     "activity": "new activity",
+    "sentRequest": "sent you a request",
     "today": "Today",
-    "earlier": "Earlier"
+    "earlier": "Earlier",
+    "requests": "Requests",
+    "accept": "Accept",
+    "decline": "Decline",
+    "accepted": "Accepted",
+    "declined": "Declined"
   },
   "dates": {
     "today": "Today",

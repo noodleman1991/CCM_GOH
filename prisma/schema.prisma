@@ -126,6 +126,11 @@ model User {
   // Follows (region / theme / project)
   follows                    Follow[]
 
+  // Join / contact requests
+  joinRequests               JoinRequest[]
+  contactRequestsSent        ContactRequest[]          @relation("ContactRequester")
+  contactRequestsReceived    ContactRequest[]          @relation("ContactRecipient")
+
   @@index([isSearchable])
   @@index([profileVisibility])
   @@index([lastLoginAt])
@@ -468,6 +473,7 @@ model Collaboration {
   threads CollaborationThread[]
   files   CollaborationFile[]
   media   CollaborationMedia[]
+  joinRequests JoinRequest[]
 
   @@index([status, visibility, updatedAt])
   @@index([createdById])
@@ -552,6 +558,7 @@ enum NotificationType {
   COMMENT_APPROVED
   COLLAB_ACTIVITY
   MESSAGE
+  REQUEST
 }
 
 model Notification {
@@ -672,4 +679,46 @@ enum FollowTargetType {
   REGION
   THEME
   PROJECT
+}
+
+enum RequestStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+}
+
+// A member's request to join a collaboration workspace. On ACCEPT the requester
+// is added as a CollaborationMember (VIEWER). Owners are notified (REQUEST).
+model JoinRequest {
+  id              String        @id @default(cuid())
+  collaborationId String
+  collaboration   Collaboration @relation(fields: [collaborationId], references: [id], onDelete: Cascade)
+  requesterId     String
+  requester       User          @relation(fields: [requesterId], references: [id], onDelete: Cascade)
+  message         String?
+  status          RequestStatus @default(PENDING)
+  createdAt       DateTime      @default(now())
+  resolvedAt      DateTime?
+
+  // One open request per (collaboration, requester); resolved ones are kept for history
+  @@unique([collaborationId, requesterId])
+  @@index([collaborationId, status])
+  @@index([requesterId])
+}
+
+// A request from one member to connect/contact another. On ACCEPT the recipient
+// has opted into being contacted by the requester.
+model ContactRequest {
+  id          String        @id @default(cuid())
+  requesterId String
+  requester   User          @relation("ContactRequester", fields: [requesterId], references: [id], onDelete: Cascade)
+  recipientId String
+  recipient   User          @relation("ContactRecipient", fields: [recipientId], references: [id], onDelete: Cascade)
+  message     String?
+  status      RequestStatus @default(PENDING)
+  createdAt   DateTime      @default(now())
+  resolvedAt  DateTime?
+
+  @@unique([requesterId, recipientId])
+  @@index([recipientId, status])
 }
