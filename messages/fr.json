@@ -277,7 +277,9 @@
     "reactedToYou": "a réagi à votre commentaire",
     "commentApproved": "Votre commentaire a été approuvé",
     "sentMessage": "vous a envoyé un message",
-    "activity": "nouvelle activité"
+    "activity": "nouvelle activité",
+    "today": "Aujourd'hui",
+    "earlier": "Plus tôt"
   },
   "dates": {
     "today": "Aujourd'hui",

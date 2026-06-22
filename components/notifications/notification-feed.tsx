@@ -67,28 +67,52 @@ export function NotificationFeed({
     return <p className={cn("p-6 text-center text-sm text-muted-foreground", className)}>{t("empty")}</p>;
   }
 
+  // Group by recency: Today vs Earlier (the spec's Requests group lands once
+  // actionable request notifications exist — Phase 5). Items already arrive
+  // newest-first from the API, so the buckets preserve that order.
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
+  const today: Notif[] = [];
+  const earlier: Notif[] = [];
+  for (const n of items) {
+    (new Date(n.createdAt) >= startOfToday ? today : earlier).push(n);
+  }
+  const groups: { key: string; label: string; items: Notif[] }[] = [
+    { key: "today", label: t("today"), items: today },
+    { key: "earlier", label: t("earlier"), items: earlier },
+  ].filter((g) => g.items.length > 0);
+
+  const row = (n: Notif) => (
+    <li key={n.id} className={n.readAt ? "" : "bg-ccm-sky/10"}>
+      <div className="flex items-start gap-3 p-4">
+        <Avatar className="size-9 shrink-0">
+          {n.actorImage && <AvatarImage src={n.actorImage} alt="" />}
+          <AvatarFallback>{(n.actorName ?? "?").slice(0, 1)}</AvatarFallback>
+        </Avatar>
+        <div className="min-w-0 flex-1">
+          <p className="text-sm">
+            {n.actorName && <span className="font-medium"><bdi>{n.actorName}</bdi></span>}{" "}
+            {verb(n.type)}
+          </p>
+          {n.snippet && <p className="truncate text-xs text-muted-foreground">{n.snippet}</p>}
+          <p className="mt-0.5 text-xs text-muted-foreground">
+            {formatDistanceToNow(new Date(n.createdAt), { addSuffix: true })}
+          </p>
+        </div>
+      </div>
+    </li>
+  );
+
   return (
-    <ul className={cn("divide-y", className)}>
-      {items.map((n) => (
-        <li key={n.id} className={n.readAt ? "" : "bg-ccm-sky/10"}>
-          <div className="flex items-start gap-3 p-4">
-            <Avatar className="size-9 shrink-0">
-              {n.actorImage && <AvatarImage src={n.actorImage} alt="" />}
-              <AvatarFallback>{(n.actorName ?? "?").slice(0, 1)}</AvatarFallback>
-            </Avatar>
-            <div className="min-w-0 flex-1">
-              <p className="text-sm">
-                {n.actorName && <span className="font-medium"><bdi>{n.actorName}</bdi></span>}{" "}
-                {verb(n.type)}
-              </p>
-              {n.snippet && <p className="truncate text-xs text-muted-foreground">{n.snippet}</p>}
-              <p className="mt-0.5 text-xs text-muted-foreground">
-                {formatDistanceToNow(new Date(n.createdAt), { addSuffix: true })}
-              </p>
-            </div>
-          </div>
-        </li>
+    <div className={className}>
+      {groups.map((g) => (
+        <section key={g.key}>
+          <h3 className="bg-muted/40 px-4 py-1.5 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            {g.label}
+          </h3>
+          <ul className="divide-y">{g.items.map(row)}</ul>
+        </section>
       ))}
-    </ul>
+    </div>
   );
 }
