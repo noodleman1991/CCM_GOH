@@ -131,6 +131,9 @@ model User {
   contactRequestsSent        ContactRequest[]          @relation("ContactRequester")
   contactRequestsReceived    ContactRequest[]          @relation("ContactRecipient")
 
+  // Event RSVPs
+  rsvps                      Rsvp[]
+
   @@index([isSearchable])
   @@index([profileVisibility])
   @@index([lastLoginAt])
@@ -721,4 +724,24 @@ model ContactRequest {
 
   @@unique([requesterId, recipientId])
   @@index([recipientId, status])
+}
+
+// RSVP to an event. The event itself is a Sanity document (moderated like other
+// content); `eventId` is that document's _id. One RSVP per (user, event).
+model Rsvp {
+  id        String     @id @default(cuid())
+  userId    String
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  eventId   String
+  status    RsvpStatus @default(GOING)
+  createdAt DateTime   @default(now())
+
+  @@unique([userId, eventId])
+  @@index([eventId, status])
+}
+
+enum RsvpStatus {
+  GOING
+  INTERESTED
+  NOT_GOING
 }
