@@ -265,6 +265,11 @@
     "profileEditDescription": "Mettez à jour votre nom, photo, titre et autres informations publiques.",
     "editProfileCta": "Modifier votre profil"
   },
+  "follow": {
+    "follow": "Suivre",
+    "following": "Suivi",
+    "signInToFollow": "Connectez-vous pour suivre"
+  },
   "notifications": {
     "success": "Succès !",
     "error": "Erreur !",

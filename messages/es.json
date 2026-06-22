@@ -265,6 +265,11 @@
     "profileEditDescription": "Actualiza tu nombre, foto, titular y otros datos públicos.",
     "editProfileCta": "Editar tu perfil"
   },
+  "follow": {
+    "follow": "Seguir",
+    "following": "Siguiendo",
+    "signInToFollow": "Inicia sesión para seguir"
+  },
   "notifications": {
     "success": "¡Éxito!",
     "error": "¡Error!",
