@@ -18,13 +18,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { LayoutGrid, MessagesSquare, FileText, Film, Users, Menu } from "lucide-react";
+import { LayoutGrid, MessagesSquare, FileText, Film, Users, Menu, ListTodo } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { setMemberRole } from "@/lib/actions/collaboration";
 import type { CollaborationRole } from "@/generated/prisma";
 import { WorkspaceThreads } from "./workspace-threads";
 import { WorkspaceFiles } from "./workspace-files";
 import { WorkspaceMedia } from "./workspace-media";
+import { WorkspacePlan } from "./workspace-plan";
 import { CollaborationPdfDialog } from "./collaboration-pdf-dialog";
 
 type Member = {
@@ -45,7 +46,13 @@ type CollabProps = {
   members: Member[];
 };
 
-type Section = "overview" | "threads" | "files" | "media" | "members";
+type PlanStageProp = {
+  id: string;
+  title: string;
+  tasks: { id: string; title: string; status: "TODO" | "IN_PROGRESS" | "DONE" }[];
+};
+
+type Section = "overview" | "plan" | "threads" | "files" | "media" | "members";
 
 export function WorkspaceShell({
   collaboration,
@@ -53,19 +60,24 @@ export function WorkspaceShell({
   isStaff,
   isSignedIn,
   r2Configured,
+  planStages,
 }: {
   collaboration: CollabProps;
   myRole: CollaborationRole | null;
   isStaff: boolean;
   isSignedIn: boolean;
   r2Configured: boolean;
+  planStages: PlanStageProp[];
 }) {
   const t = useTranslations("collaboration");
   const [section, setSection] = useState<Section>("overview");
   const [pdf, setPdf] = useState<{ fileId: string; fileName: string; url: string } | null>(null);
+  // Editors+ (and the plan reuses collab:editPlan = EDITOR+).
+  const canEditPlan = myRole === "OWNER" || myRole === "EDITOR";
 
   const nav: { id: Section; label: string; icon: typeof LayoutGrid; count?: number }[] = [
     { id: "overview", label: t("nav.overview"), icon: LayoutGrid },
+    { id: "plan", label: t("nav.plan"), icon: ListTodo },
     { id: "threads", label: t("nav.threads"), icon: MessagesSquare, count: collaboration.counts.threads },
     { id: "files", label: t("nav.files"), icon: FileText, count: collaboration.counts.files },
     { id: "media", label: t("nav.media"), icon: Film, count: collaboration.counts.media },
@@ -150,6 +162,14 @@ export function WorkspaceShell({
                 ))}
               </div>
             </section>
+          )}
+
+          {section === "plan" && (
+            <WorkspacePlan
+              collaborationId={collaboration.id}
+              initialStages={planStages}
+              canEdit={canEditPlan}
+            />
           )}
 
           {section === "threads" && (

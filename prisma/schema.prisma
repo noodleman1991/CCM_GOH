@@ -134,6 +134,9 @@ model User {
   // Event RSVPs
   rsvps                      Rsvp[]
 
+  // Tasks assigned to this user (workspace plans)
+  assignedTasks              Task[]                    @relation("TaskAssignee")
+
   @@index([isSearchable])
   @@index([profileVisibility])
   @@index([lastLoginAt])
@@ -477,6 +480,7 @@ model Collaboration {
   files   CollaborationFile[]
   media   CollaborationMedia[]
   joinRequests JoinRequest[]
+  plan    Plan?
 
   @@index([status, visibility, updatedAt])
   @@index([createdById])
@@ -744,4 +748,51 @@ enum RsvpStatus {
   GOING
   INTERESTED
   NOT_GOING
+}
+
+// A workspace's research plan: ordered stages, each holding tasks (kanban).
+// One plan per collaboration (Collaboration.plan is optional 1:1).
+model Plan {
+  id              String        @id @default(cuid())
+  collaborationId String        @unique
+  collaboration   Collaboration @relation(fields: [collaborationId], references: [id], onDelete: Cascade)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  stages PlanStage[]
+}
+
+model PlanStage {
+  id        String   @id @default(cuid())
+  planId    String
+  plan      Plan     @relation(fields: [planId], references: [id], onDelete: Cascade)
+  title     String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+
+  tasks Task[]
+
+  @@index([planId, order])
+}
+
+model Task {
+  id          String     @id @default(cuid())
+  stageId     String
+  stage       PlanStage  @relation(fields: [stageId], references: [id], onDelete: Cascade)
+  title       String
+  status      TaskStatus @default(TODO)
+  order       Int        @default(0)
+  assigneeId  String?
+  assignee    User?      @relation("TaskAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([stageId, order])
+  @@index([assigneeId, status])
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  DONE
 }
