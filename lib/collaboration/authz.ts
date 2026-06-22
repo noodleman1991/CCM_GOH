@@ -17,6 +17,7 @@ export type CollabAction =
   | "collab:annotate" // annotate PDFs
   | "collab:upload" // upload files / add media
   | "collab:editThread" // create/rename threads
+  | "collab:editPlan" // edit the research plan: stages/tasks (kanban)
   | "collab:manageMembers" // invite/remove/change roles
   | "collab:archive" // archive/delete the workspace
   | "collab:moderate"; // staff: remove content
@@ -62,6 +63,7 @@ export function canInCollab(action: CollabAction, ctx: CollabContext): boolean {
 
     case "collab:upload":
     case "collab:editThread":
+    case "collab:editPlan":
       return atLeast(membershipRole, "EDITOR");
 
     case "collab:manageMembers":

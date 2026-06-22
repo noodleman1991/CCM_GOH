@@ -119,3 +119,29 @@ export async function getCollaboration(id: string) {
   );
   return r.success ? r.data : null;
 }
+
+/** The research plan (ordered stages → tasks) for a collaboration's Home tab. */
+export async function getPlan(collaborationId: string) {
+  const r = await safeQuery(() =>
+    prisma.plan.findUnique({
+      where: { collaborationId },
+      include: {
+        stages: {
+          orderBy: { order: "asc" },
+          include: {
+            tasks: {
+              orderBy: { order: "asc" },
+              select: {
+                id: true,
+                title: true,
+                status: true,
+                assignee: { select: { id: true, firstName: true, lastName: true, username: true } },
+              },
+            },
+          },
+        },
+      },
+    })
+  );
+  return r.success ? r.data : null;
+}

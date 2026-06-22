@@ -3,7 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { FEATURES } from "@/lib/features";
 import { auth } from "@clerk/nextjs/server";
 import { getTranslations } from "next-intl/server";
-import { getCollaboration, getMembershipRole, authorizeCollab } from "@/lib/collaboration/service";
+import { getCollaboration, getMembershipRole, authorizeCollab, getPlan } from "@/lib/collaboration/service";
 import { getActor, isStaff } from "@/lib/authz";
 import { r2Configured } from "@/lib/r2";
 import { WorkspaceShell } from "@/components/collaboration/workspace-shell";
@@ -45,6 +45,14 @@ export default async function CollaborationDetailPage({
   const actor = await getActor();
   const myRole = userId ? await getMembershipRole(id, userId) : null;
 
+  const plan = await getPlan(id);
+  const planStages =
+    plan?.stages.map((s) => ({
+      id: s.id,
+      title: s.title,
+      tasks: s.tasks.map((t) => ({ id: t.id, title: t.title, status: t.status })),
+    })) ?? [];
+
   return (
     <WorkspaceShell
       collaboration={{
@@ -67,6 +75,7 @@ export default async function CollaborationDetailPage({
       isStaff={isStaff(actor)}
       isSignedIn={!!userId}
       r2Configured={r2Configured()}
+      planStages={planStages}
     />
   );
 }

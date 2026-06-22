@@ -290,6 +290,15 @@
     "submitPending": "Envoyé — en attente de révision.",
     "submitFailed": "Échec de l'envoi. Vérifiez le formulaire et réessayez."
   },
+  "plan": {
+    "empty": "Pas encore de plan.",
+    "addStage": "Ajouter une étape",
+    "addTask": "Ajouter une tâche",
+    "deleteStage": "Supprimer l'étape",
+    "deleteTask": "Supprimer la tâche",
+    "cycleStatus": "Changer le statut",
+    "stageComplete": "Étape terminée"
+  },
   "follow": {
     "follow": "Suivre",
     "following": "Suivi",
@@ -1583,6 +1592,7 @@
     "noThreads": "Aucun fil pour le moment.",
     "nav": {
       "overview": "Aperçu",
+      "plan": "Plan",
       "threads": "Fils",
       "files": "Fichiers",
       "media": "Médias",

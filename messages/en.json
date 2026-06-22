@@ -200,6 +200,15 @@
     "submitPending": "Submitted — pending review.",
     "submitFailed": "Could not submit. Please check the form and try again."
   },
+  "plan": {
+    "empty": "No plan yet.",
+    "addStage": "Add a stage",
+    "addTask": "Add a task",
+    "deleteStage": "Delete stage",
+    "deleteTask": "Delete task",
+    "cycleStatus": "Change status",
+    "stageComplete": "Stage complete"
+  },
   "follow": {
     "follow": "Follow",
     "following": "Following",
@@ -1583,6 +1592,7 @@
     "noThreads": "No threads yet.",
     "nav": {
       "overview": "Overview",
+      "plan": "Plan",
       "threads": "Threads",
       "files": "Files",
       "media": "Media",
