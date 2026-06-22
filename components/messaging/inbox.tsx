@@ -8,11 +8,13 @@ import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ArrowLeft, Send } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { cn } from "@/lib/utils";
 import { sendMessage, markConversationRead, deleteMessage, reportMessage } from "@/lib/actions/messaging";
 import type { ConversationSummary } from "@/lib/messaging/service";
+import { NotificationFeed } from "@/components/notifications/notification-feed";
 
 type Msg = { id: string; senderId: string; body: string; createdAt: string; deleted?: boolean };
 const listFetcher = (url: string) => fetch(url).then((r) => r.json() as Promise<{ conversations: ConversationSummary[] }>);
@@ -20,6 +22,7 @@ const msgFetcher = (url: string) => fetch(url).then((r) => r.json() as Promise<{
 
 export function Inbox({ currentUserId }: { currentUserId: string }) {
   const t = useTranslations("messages");
+  const tn = useTranslations("notifications");
   const searchParams = useSearchParams();
   const [active, setActive] = useState<string | null>(searchParams.get("c"));
 
@@ -31,57 +34,72 @@ export function Inbox({ currentUserId }: { currentUserId: string }) {
   const activeConvo = conversations.find((c) => c.id === active) ?? null;
 
   return (
-    <div className="grid h-[75vh] gap-4 lg:grid-cols-[300px_1fr]">
-      {/* Conversation list — hidden on mobile when a thread is open */}
-      <aside className={cn("min-h-0 overflow-y-auto rounded-lg border", active && "hidden lg:block")}>
-        <div className="border-b px-4 py-3 font-semibold">{t("title")}</div>
-        {conversations.length === 0 ? (
-          <p className="p-4 text-sm text-muted-foreground">{t("empty")}</p>
-        ) : (
-          <ul className="divide-y">
-            {conversations.map((c) => (
-              <li key={c.id}>
-                <button
-                  onClick={() => setActive(c.id)}
-                  className={cn(
-                    "flex w-full items-center gap-3 p-3 text-start transition-colors hover:bg-muted",
-                    active === c.id && "bg-muted"
-                  )}
-                >
-                  <Avatar className="size-9 flex-shrink-0">
-                    {c.otherImage && <AvatarImage src={c.otherImage} alt="" />}
-                    <AvatarFallback>{(c.otherName ?? "?").slice(0, 1)}</AvatarFallback>
-                  </Avatar>
-                  <div className="min-w-0 flex-1">
-                    <p className={cn("truncate text-sm", c.unread && "font-semibold")}>
-                      <bdi>{c.otherName ?? t("unknownUser")}</bdi>
-                    </p>
-                    {c.lastMessage && <p className="truncate text-xs text-muted-foreground">{c.lastMessage}</p>}
-                  </div>
-                  {c.unread && <span className="size-2 flex-shrink-0 rounded-full bg-ccm-sea" aria-label={t("unread")} />}
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </aside>
+    <Tabs defaultValue="messages" className="gap-4">
+      <TabsList>
+        <TabsTrigger value="messages">{t("title")}</TabsTrigger>
+        <TabsTrigger value="notifications">{tn("title")}</TabsTrigger>
+      </TabsList>
 
-      {/* Thread */}
-      <section className={cn("min-h-0 rounded-lg border", !active && "hidden lg:flex lg:items-center lg:justify-center")}>
-        {active ? (
-          <Thread
-            key={active}
-            conversationId={active}
-            currentUserId={currentUserId}
-            title={activeConvo?.otherName ?? t("unknownUser")}
-            onBack={() => setActive(null)}
-            onSent={() => mutateList()}
-          />
-        ) : (
-          <p className="text-sm text-muted-foreground">{t("selectConversation")}</p>
-        )}
-      </section>
-    </div>
+      <TabsContent value="messages">
+        <div className="grid h-[75vh] gap-4 lg:grid-cols-[300px_1fr]">
+          {/* Conversation list — hidden on mobile when a thread is open */}
+          <aside className={cn("min-h-0 overflow-y-auto rounded-lg border", active && "hidden lg:block")}>
+            <div className="border-b px-4 py-3 font-semibold">{t("title")}</div>
+            {conversations.length === 0 ? (
+              <p className="p-4 text-sm text-muted-foreground">{t("empty")}</p>
+            ) : (
+              <ul className="divide-y">
+                {conversations.map((c) => (
+                  <li key={c.id}>
+                    <button
+                      onClick={() => setActive(c.id)}
+                      className={cn(
+                        "flex w-full items-center gap-3 p-3 text-start transition-colors hover:bg-muted",
+                        active === c.id && "bg-muted"
+                      )}
+                    >
+                      <Avatar className="size-9 flex-shrink-0">
+                        {c.otherImage && <AvatarImage src={c.otherImage} alt="" />}
+                        <AvatarFallback>{(c.otherName ?? "?").slice(0, 1)}</AvatarFallback>
+                      </Avatar>
+                      <div className="min-w-0 flex-1">
+                        <p className={cn("truncate text-sm", c.unread && "font-semibold")}>
+                          <bdi>{c.otherName ?? t("unknownUser")}</bdi>
+                        </p>
+                        {c.lastMessage && <p className="truncate text-xs text-muted-foreground">{c.lastMessage}</p>}
+                      </div>
+                      {c.unread && <span className="size-2 flex-shrink-0 rounded-full bg-ccm-sea" aria-label={t("unread")} />}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </aside>
+
+          {/* Thread */}
+          <section className={cn("min-h-0 rounded-lg border", !active && "hidden lg:flex lg:items-center lg:justify-center")}>
+            {active ? (
+              <Thread
+                key={active}
+                conversationId={active}
+                currentUserId={currentUserId}
+                title={activeConvo?.otherName ?? t("unknownUser")}
+                onBack={() => setActive(null)}
+                onSent={() => mutateList()}
+              />
+            ) : (
+              <p className="text-sm text-muted-foreground">{t("selectConversation")}</p>
+            )}
+          </section>
+        </div>
+      </TabsContent>
+
+      <TabsContent value="notifications">
+        <div className="h-[75vh] min-h-0 overflow-y-auto rounded-lg border">
+          <NotificationFeed markReadOnMount />
+        </div>
+      </TabsContent>
+    </Tabs>
   );
 }
 
