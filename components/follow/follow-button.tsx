@@ -1,19 +1,22 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useEffect, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Check, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { followTarget, unfollowTarget } from "@/lib/actions/follows";
+import { followTarget, unfollowTarget, isFollowing as isFollowingAction } from "@/lib/actions/follows";
 
 type FollowTargetType = "REGION" | "THEME" | "PROJECT";
 
 /**
  * One-click follow toggle for a region / theme / project. Optimistic: flips
- * immediately, reverts + toasts on failure. `initialFollowing` is resolved on
- * the server (via `isFollowing`) so the first paint is correct.
+ * immediately, reverts + toasts on failure.
+ *
+ * `initialFollowing` may be passed when the host can resolve it on the server.
+ * On ISR/statically-cached pages (where per-user state must NOT be baked in),
+ * omit it and the button resolves its own state on mount via `isFollowing`.
  */
 export function FollowButton({
   targetType,
@@ -24,13 +27,25 @@ export function FollowButton({
 }: {
   targetType: FollowTargetType;
   targetId: string;
-  initialFollowing: boolean;
+  initialFollowing?: boolean;
   size?: "sm" | "default";
   className?: string;
 }) {
   const t = useTranslations("follow");
-  const [following, setFollowing] = useState(initialFollowing);
+  const [following, setFollowing] = useState(initialFollowing ?? false);
   const [pending, startTransition] = useTransition();
+
+  // Self-resolve initial state when the host didn't provide it (ISR-safe).
+  useEffect(() => {
+    if (initialFollowing !== undefined) return;
+    let active = true;
+    isFollowingAction({ targetType, targetId }).then((v) => {
+      if (active) setFollowing(v);
+    });
+    return () => {
+      active = false;
+    };
+  }, [initialFollowing, targetType, targetId]);
 
   const toggle = () => {
     const next = !following;

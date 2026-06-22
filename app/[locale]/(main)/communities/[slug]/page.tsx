@@ -11,6 +11,7 @@ import HybridContentFlow from '@/components/blocks/hybrid-content-flow';
 import RegionalCommunityTemplate from '@/components/templates/regional-community-template';
 import { notFound } from "next/navigation";
 import { isRTL } from "@/i18n/i18n-helpers";
+import { FollowButton } from "@/components/follow/follow-button";
 
 export async function generateMetadata({
     params,
@@ -93,6 +94,15 @@ export default async function RegionalCommunityPage({
                     locale={locale}
                     userId={userId!}
                 />
+            )}
+
+            {/* Follow this region (one-click; per-user, so it self-resolves on the
+                client to keep this ISR page user-agnostic). Signed-out users get a
+                sign-in prompt via the action. */}
+            {userId && (
+                <div className="container relative z-10 flex justify-end py-3">
+                    <FollowButton targetType="REGION" targetId={slug} />
+                </div>
             )}
 
             {/* Template Mode - New structured template with dynamic content */}

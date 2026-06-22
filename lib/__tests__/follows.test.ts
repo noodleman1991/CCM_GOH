@@ -6,9 +6,9 @@ vi.mock("@/lib/authz", () => ({
   getActor: () => getActorMock(),
 }));
 
-const upsertMock = vi.fn(async () => ({ id: "f1" }));
-const deleteManyMock = vi.fn(async () => ({ count: 1 }));
-const findUniqueMock = vi.fn(async () => null);
+const upsertMock = vi.fn<(...a: any[]) => Promise<any>>(async () => ({ id: "f1" }));
+const deleteManyMock = vi.fn<(...a: any[]) => Promise<any>>(async () => ({ count: 1 }));
+const findUniqueMock = vi.fn<(...a: any[]) => Promise<any>>(async () => null);
 vi.mock("@/lib/prisma", () => ({
   prisma: {
     follow: {
@@ -51,7 +51,7 @@ describe("followTarget", () => {
     const res = await followTarget({ targetType: "PROJECT", targetId: "collab123" });
     expect(res.ok).toBe(true);
     expect(upsertMock).toHaveBeenCalledTimes(1);
-    const arg = upsertMock.mock.calls[0][0];
+    const arg = upsertMock.mock.calls[0][0] as any;
     expect(arg.where.userId_targetType_targetId).toEqual({
       userId: "u1",
       targetType: "PROJECT",
