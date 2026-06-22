@@ -277,7 +277,9 @@
     "reactedToYou": "تفاعل مع تعليقك",
     "commentApproved": "تمت الموافقة على تعليقك",
     "sentMessage": "أرسل لك رسالة",
-    "activity": "نشاط جديد"
+    "activity": "نشاط جديد",
+    "today": "اليوم",
+    "earlier": "أقدم"
   },
   "dates": {
     "today": "اليوم",

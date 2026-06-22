@@ -187,7 +187,9 @@
     "reactedToYou": "reacted to your comment",
     "commentApproved": "Your comment was approved",
     "sentMessage": "sent you a message",
-    "activity": "new activity"
+    "activity": "new activity",
+    "today": "Today",
+    "earlier": "Earlier"
   },
   "dates": {
     "today": "Today",
