@@ -260,7 +260,10 @@
     "blocked": "الأعضاء المحظورون",
     "unblock": "إلغاء الحظر",
     "yourData": "بياناتك",
-    "downloadData": "تنزيل بياناتي"
+    "downloadData": "تنزيل بياناتي",
+    "privacyContact": "الخصوصية والتواصل",
+    "profileEditDescription": "حدّث اسمك وصورتك وعنوانك الوظيفي وغيرها من التفاصيل العامة.",
+    "editProfileCta": "تعديل ملفك الشخصي"
   },
   "notifications": {
     "success": "نجح!",
