@@ -29,6 +29,11 @@ import {
   requestLivedExperienceRevisionAction,
   rejectLivedExperienceAction
 } from './sanity/actions/lived-experience-actions'
+import {
+  approveEventAction,
+  requestEventRevisionAction,
+  rejectEventAction
+} from './sanity/actions/event-actions'
 
 
 
@@ -58,6 +63,15 @@ export default defineConfig({
             approveLivedExperienceAction,
             requestLivedExperienceRevisionAction,
             rejectLivedExperienceAction
+          ]
+        }
+        // Review actions for member/project-submitted events
+        if (context.schemaType === 'event') {
+          return [
+            ...prev,
+            approveEventAction,
+            requestEventRevisionAction,
+            rejectEventAction
           ]
         }
         return prev
