@@ -1,32 +1,23 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import useSWR from "swr";
 import { useAuth } from "@clerk/nextjs";
 import { useTranslations } from "next-intl";
 import { Bell } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { NotificationFeed } from "@/components/notifications/notification-feed";
 import { markNotificationsRead } from "@/lib/actions/notifications";
+import { useHydrated } from "@/hooks/use-hydrated";
 
-type Notif = {
-  id: string;
-  type: string;
-  actorName: string | null;
-  actorImage: string | null;
-  snippet: string | null;
-  readAt: string | null;
-  createdAt: string;
-};
-
-const fetcher = (url: string) =>
-  fetch(url).then((r) => r.json() as Promise<{ unread: number; notifications: Notif[] }>);
+// The bell only needs the unread count for its badge; the list itself is
+// rendered by the shared <NotificationFeed>, which runs its own SWR.
+const countFetcher = (url: string) =>
+  fetch(url).then((r) => r.json() as Promise<{ unread: number }>);
 
 export function NotificationBell() {
   const { isSignedIn } = useAuth();
@@ -34,32 +25,19 @@ export function NotificationBell() {
 
   // Clerk resolves auth state on the client, so `isSignedIn` can differ between
   // the server render and the first client render — which caused a hydration
-  // mismatch. Gate on a post-mount flag so server + first client render agree
-  // (both render nothing), then reveal once hydrated.
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  // mismatch. Gate on hydration so server + first client render agree (both
+  // render nothing), then reveal once hydrated.
+  const hydrated = useHydrated();
 
-  const { data, mutate } = useSWR(mounted && isSignedIn ? "/api/notifications" : null, fetcher, {
+  const { data, mutate } = useSWR(hydrated && isSignedIn ? "/api/notifications" : null, countFetcher, {
     refreshInterval: 60_000,
     refreshWhenHidden: false,
     revalidateOnFocus: true,
   });
 
-  if (!mounted || !isSignedIn) return null;
+  if (!hydrated || !isSignedIn) return null;
 
   const unread = data?.unread ?? 0;
-  const items = data?.notifications ?? [];
-
-  const verb = (type: string) => {
-    switch (type) {
-      case "COMMENT_REPLY": return t("repliedToYou");
-      case "MENTION": return t("mentionedYou");
-      case "REACTION": return t("reactedToYou");
-      case "COMMENT_APPROVED": return t("commentApproved");
-      case "MESSAGE": return t("sentMessage");
-      default: return t("activity");
-    }
-  };
 
   const onOpen = async (open: boolean) => {
     if (open && unread > 0) {
@@ -82,32 +60,7 @@ export function NotificationBell() {
       </PopoverTrigger>
       <PopoverContent align="end" className="w-80 p-0">
         <div className="border-b px-4 py-2 text-sm font-semibold">{t("title")}</div>
-        {items.length === 0 ? (
-          <p className="p-4 text-sm text-muted-foreground">{t("empty")}</p>
-        ) : (
-          <ul className="max-h-96 divide-y overflow-y-auto">
-            {items.map((n) => (
-              <li key={n.id} className={n.readAt ? "" : "bg-ccm-sky/10"}>
-                <div className="flex items-start gap-3 p-3">
-                  <Avatar className="size-8 flex-shrink-0">
-                    {n.actorImage && <AvatarImage src={n.actorImage} alt="" />}
-                    <AvatarFallback>{(n.actorName ?? "?").slice(0, 1)}</AvatarFallback>
-                  </Avatar>
-                  <div className="min-w-0">
-                    <p className="text-sm">
-                      {n.actorName && <span className="font-medium"><bdi>{n.actorName}</bdi></span>}{" "}
-                      {verb(n.type)}
-                    </p>
-                    {n.snippet && <p className="truncate text-xs text-muted-foreground">{n.snippet}</p>}
-                    <p className="text-xs text-muted-foreground">
-                      {formatDistanceToNow(new Date(n.createdAt), { addSuffix: true })}
-                    </p>
-                  </div>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
+        <NotificationFeed className="max-h-96 overflow-y-auto" />
       </PopoverContent>
     </Popover>
   );
