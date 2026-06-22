@@ -265,6 +265,11 @@
     "profileEditDescription": "حدّث اسمك وصورتك وعنوانك الوظيفي وغيرها من التفاصيل العامة.",
     "editProfileCta": "تعديل ملفك الشخصي"
   },
+  "follow": {
+    "follow": "متابعة",
+    "following": "تتابع",
+    "signInToFollow": "سجّل الدخول للمتابعة"
+  },
   "notifications": {
     "success": "نجح!",
     "error": "خطأ!",
