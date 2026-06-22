@@ -170,7 +170,10 @@
     "blocked": "Blocked members",
     "unblock": "Unblock",
     "yourData": "Your data",
-    "downloadData": "Download my data"
+    "downloadData": "Download my data",
+    "privacyContact": "Privacy & contact",
+    "profileEditDescription": "Update your name, photo, headline and other public details.",
+    "editProfileCta": "Edit your profile"
   },
   "notifications": {
     "success": "Success!",

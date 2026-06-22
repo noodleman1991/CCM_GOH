@@ -260,7 +260,10 @@
     "blocked": "Miembros bloqueados",
     "unblock": "Desbloquear",
     "yourData": "Tus datos",
-    "downloadData": "Descargar mis datos"
+    "downloadData": "Descargar mis datos",
+    "privacyContact": "Privacidad y contacto",
+    "profileEditDescription": "Actualiza tu nombre, foto, titular y otros datos públicos.",
+    "editProfileCta": "Editar tu perfil"
   },
   "notifications": {
     "success": "¡Éxito!",
