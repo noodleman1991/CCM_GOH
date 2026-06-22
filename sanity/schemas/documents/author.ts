@@ -43,6 +43,13 @@ export default defineType({
       description: "The organization this person is affiliated with",
     }),
     defineField({
+      name: "userId",
+      title: "Linked hub member (user ID)",
+      type: "string",
+      description:
+        "Optional. The Connecting Climate Minds hub account (Clerk/Prisma User id) this author is the same person as. Links content authorship to the member's profile. One author ↔ one member.",
+    }),
+    defineField({
       name: "communityMemberships",
       title: "Community Memberships",
       type: "array",
