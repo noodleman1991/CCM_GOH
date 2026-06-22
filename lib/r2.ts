@@ -11,11 +11,13 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
  * so the file feature shows a disabled state rather than crashing.
  */
 
-const ENDPOINT = process.env.CLOUDFLARE_R2_ENDPOINT;
-const ACCESS_KEY_ID = process.env.CLOUDFLARE_R2_ACCESS_KEY_ID;
-const SECRET_ACCESS_KEY = process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY;
-const BUCKET = process.env.CLOUDFLARE_R2_COLLAB_BUCKET || "ccm-collab";
-const PUBLIC_URL = process.env.CLOUDFLARE_R2_COLLAB_PUBLIC_URL;
+// Canonical names are the short `R2_*` set; the longer `CLOUDFLARE_R2_*`
+// names are accepted as a fallback for backward compatibility.
+const ENDPOINT = process.env.R2_ENDPOINT ?? process.env.CLOUDFLARE_R2_ENDPOINT;
+const ACCESS_KEY_ID = process.env.R2_ACCESS_KEY_ID ?? process.env.CLOUDFLARE_R2_ACCESS_KEY_ID;
+const SECRET_ACCESS_KEY = process.env.R2_SECRET_ACCESS_KEY ?? process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY;
+const BUCKET = process.env.R2_BUCKET ?? process.env.CLOUDFLARE_R2_COLLAB_BUCKET ?? "ccm-collab";
+const PUBLIC_URL = process.env.R2_PUBLIC_URL ?? process.env.CLOUDFLARE_R2_COLLAB_PUBLIC_URL;
 
 export function r2Configured(): boolean {
   return !!(ENDPOINT && ACCESS_KEY_ID && SECRET_ACCESS_KEY);
