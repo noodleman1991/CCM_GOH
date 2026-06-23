@@ -114,6 +114,49 @@ export async function archiveCollaboration(id: string): Promise<Result> {
 }
 
 /** Create a discussion thread (EDITOR+). */
+/** Inline-edit the workspace title and/or description (EDITOR+ via editThread cap). */
+export async function updateCollaboration(
+  collaborationId: string,
+  patch: { title?: string; description?: string }
+): Promise<Result> {
+  try {
+    await authorizeCollab(collaborationId, "collab:editThread");
+  } catch {
+    return { ok: false, error: "Not permitted." };
+  }
+  const data: { title?: string; description?: string } = {};
+  if (patch.title !== undefined) {
+    const t = patch.title.trim();
+    if (t.length < 1 || t.length > 200) return { ok: false, error: "Title must be 1–200 chars." };
+    data.title = t;
+  }
+  if (patch.description !== undefined) {
+    data.description = patch.description.trim().slice(0, 2000) || "";
+  }
+  if (Object.keys(data).length === 0) return { ok: true };
+  await prisma.collaboration.update({ where: { id: collaborationId }, data });
+  revalidatePath(`/collaborations/${collaborationId}`);
+  return { ok: true };
+}
+
+/** Inline-rename a thread (EDITOR+). */
+export async function renameThread(
+  collaborationId: string,
+  threadId: string,
+  title: string
+): Promise<Result> {
+  try {
+    await authorizeCollab(collaborationId, "collab:editThread");
+  } catch {
+    return { ok: false, error: "Not permitted." };
+  }
+  const t = title.trim();
+  if (t.length < 1 || t.length > 160) return { ok: false, error: "Invalid title." };
+  await prisma.collaborationThread.update({ where: { id: threadId }, data: { title: t } });
+  revalidatePath(`/collaborations/${collaborationId}`);
+  return { ok: true };
+}
+
 export async function createThread(collaborationId: string, title: string): Promise<Result<{ id: string }>> {
   const actor = await getActor();
   if (!actor) return { ok: false, error: "Sign in." };

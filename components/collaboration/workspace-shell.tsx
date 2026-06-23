@@ -26,6 +26,8 @@ import { WorkspaceThreads } from "./workspace-threads";
 import { WorkspaceFiles } from "./workspace-files";
 import { WorkspaceMedia } from "./workspace-media";
 import { WorkspacePlan } from "./workspace-plan";
+import { InlineText } from "@/components/ui/inline-text";
+import { updateCollaboration } from "@/lib/actions/collaboration";
 import { CollaborationPdfDialog } from "./collaboration-pdf-dialog";
 
 type Member = {
@@ -73,7 +75,25 @@ export function WorkspaceShell({
   const [section, setSection] = useState<Section>("overview");
   const [pdf, setPdf] = useState<{ fileId: string; fileName: string; url: string } | null>(null);
   // Editors+ (and the plan reuses collab:editPlan = EDITOR+).
-  const canEditPlan = myRole === "OWNER" || myRole === "EDITOR";
+  const canEdit = myRole === "OWNER" || myRole === "EDITOR";
+  const canEditPlan = canEdit;
+
+  // Optimistic local copies so inline edits show immediately.
+  const [title, setTitle] = useState(collaboration.title);
+  const [description, setDescription] = useState(collaboration.description ?? "");
+
+  const saveTitle = async (next: string) => {
+    const prev = title;
+    setTitle(next);
+    const res = await updateCollaboration(collaboration.id, { title: next });
+    if (!res.ok) { setTitle(prev); toast.error(res.error); }
+  };
+  const saveDescription = async (next: string) => {
+    const prev = description;
+    setDescription(next);
+    const res = await updateCollaboration(collaboration.id, { description: next });
+    if (!res.ok) { setDescription(prev); toast.error(res.error); }
+  };
 
   const nav: { id: Section; label: string; icon: typeof LayoutGrid; count?: number }[] = [
     { id: "overview", label: t("nav.overview"), icon: LayoutGrid },
@@ -128,10 +148,16 @@ export function WorkspaceShell({
               </div>
             </DrawerContent>
           </Drawer>
-          <h1 className="text-2xl font-heading font-bold text-ccm-midnight">
-            <bdi>{collaboration.title}</bdi>
-          </h1>
-          <Badge variant={collaboration.visibility === "PUBLIC" ? "secondary" : "outline"} className="ms-2">
+          <InlineText
+            value={title}
+            onCommit={saveTitle}
+            canEdit={canEdit}
+            as="h1"
+            placeholder={t("untitledWorkspace")}
+            className="flex-1 text-2xl font-heading font-bold text-ccm-midnight"
+            inputClassName="text-2xl font-heading font-bold text-ccm-midnight"
+          />
+          <Badge variant={collaboration.visibility === "PUBLIC" ? "secondary" : "outline"} className="ms-2 shrink-0">
             {t(collaboration.visibility === "PUBLIC" ? "public" : "members")}
           </Badge>
         </div>
@@ -146,8 +172,16 @@ export function WorkspaceShell({
         <div className="min-w-0">
           {section === "overview" && (
             <section className="space-y-4">
-              {collaboration.description && (
-                <p className="text-foreground/90">{collaboration.description}</p>
+              {(canEdit || description) && (
+                <InlineText
+                  value={description}
+                  onCommit={saveDescription}
+                  canEdit={canEdit}
+                  as="p"
+                  multiline
+                  placeholder={t("addDescription")}
+                  className="block text-foreground/90"
+                />
               )}
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                 {nav.slice(1).map((n) => (
