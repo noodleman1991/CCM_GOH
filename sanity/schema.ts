@@ -47,6 +47,8 @@ import internationalizedArrayString from "./schemas/objects/internationalized-ar
 import internationalizedArrayText from "./schemas/objects/internationalized-array-text";
 // Content connections (cross-content linking)
 import connection from "./schemas/objects/connection";
+// Output document versions (kind × language)
+import documentVersion from "./schemas/objects/document-version";
 
 // Schema UI objects (existing blocks)
 import hero1 from "./schemas/blocks/hero/hero-1";
@@ -139,6 +141,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
         internationalizedArrayText,
         // content connections
         connection,
+        documentVersion,
         // blocks
         hero1,
         hero2,
