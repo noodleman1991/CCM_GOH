@@ -152,6 +152,41 @@ export const structure = (S: any, context: any) =>
                                         .title("Lived Experiences")
                                         .defaultOrdering([{ field: "_createdAt", direction: "desc" }])
                                 ),
+                            S.listItem()
+                                .title("Research Outputs")
+                                .icon(BookText)
+                                .child(
+                                    S.list()
+                                        .title("Research Outputs")
+                                        .items([
+                                            S.listItem()
+                                                .title("All Research Outputs")
+                                                .schemaType("researchOutput")
+                                                .child(
+                                                    S.documentTypeList("researchOutput")
+                                                        .title("All Research Outputs")
+                                                        .defaultOrdering([{ field: "_createdAt", direction: "desc" }])
+                                                ),
+                                            S.listItem()
+                                                .title("Pending Review")
+                                                .schemaType("researchOutput")
+                                                .child(
+                                                    S.documentTypeList("researchOutput")
+                                                        .title("Pending Review")
+                                                        .apiVersion('2024-10-31')
+                                                        .filter('_type == "researchOutput" && status == "pending"')
+                                                ),
+                                            S.listItem()
+                                                .title("Approved")
+                                                .schemaType("researchOutput")
+                                                .child(
+                                                    S.documentTypeList("researchOutput")
+                                                        .title("Approved Research Outputs")
+                                                        .apiVersion('2024-10-31')
+                                                        .filter('_type == "researchOutput" && status == "approved"')
+                                                ),
+                                        ])
+                                ),
                         ])
                 ),
 
