@@ -1624,7 +1624,8 @@
     "mediaTitlePlaceholder": "العنوان (اختياري)",
     "addMedia": "إضافة",
     "noMedia": "لا توجد وسائط بعد.",
-    "mediaConsentRequired": "يحتاج هذا الفيديو إلى الموافقة على ملفات تعريف الارتباط."
+    "mediaConsentRequired": "يحتاج هذا الفيديو إلى الموافقة على ملفات تعريف الارتباط.",
+    "dropToUpload": "اسحب ملفًا هنا أو"
   },
   "messages": {
     "title": "الرسائل",

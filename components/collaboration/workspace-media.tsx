@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Trash2 } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import { addMedia, deleteMedia } from "@/lib/actions/collaboration-media";
 import { useCookieConsent } from "@/components/cookie-consent/cookie-consent-provider";
 import type { CollaborationRole } from "@/generated/prisma";
@@ -28,30 +28,34 @@ export function WorkspaceMedia({
     revalidateOnFocus: false,
   });
   const [url, setUrl] = useState("");
-  const [title, setTitle] = useState("");
 
   const canEdit = myRole === "EDITOR" || myRole === "OWNER";
   const media = data?.media ?? [];
   const canPlay = consent?.functional && hasConsented;
 
+  // Inline add: paste a YouTube URL + Enter (title can be added later). The
+  // server derives a sensible default title from the link.
   const add = async () => {
-    if (!url.trim()) return;
-    const res = await addMedia(collaborationId, url, title);
-    if (!res.ok) return toast.error(res.error);
+    const u = url.trim();
+    if (!u) return;
     setUrl("");
-    setTitle("");
+    const res = await addMedia(collaborationId, u, "");
+    if (!res.ok) { toast.error(res.error); return; }
     mutate();
   };
 
   return (
     <div className="space-y-4">
       {canEdit && (
-        <div className="flex flex-col gap-2 sm:flex-row">
-          <Input value={url} onChange={(e) => setUrl(e.target.value)} placeholder={t("youtubeUrlPlaceholder")} />
-          <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={t("mediaTitlePlaceholder")} className="sm:w-48" />
-          <Button onClick={add} disabled={!url.trim()}>
-            {t("addMedia")}
-          </Button>
+        <div className="flex items-center gap-2 rounded-md border p-2">
+          <Plus className="size-4 flex-shrink-0 text-muted-foreground" aria-hidden="true" />
+          <Input
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+            placeholder={t("youtubeUrlPlaceholder")}
+            onKeyDown={(e) => e.key === "Enter" && add()}
+            className="h-8 border-0 bg-transparent shadow-none focus-visible:ring-0"
+          />
         </div>
       )}
 

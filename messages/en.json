@@ -1624,7 +1624,8 @@
     "mediaTitlePlaceholder": "Title (optional)",
     "addMedia": "Add",
     "noMedia": "No media yet.",
-    "mediaConsentRequired": "This video needs cookie consent to play."
+    "mediaConsentRequired": "This video needs cookie consent to play.",
+    "dropToUpload": "Drag a file here or"
   },
   "messages": {
     "title": "Messages",
