@@ -107,6 +107,36 @@ export async function moveTask(collaborationId: string, taskId: string, toStageI
   return { ok: true };
 }
 
+/**
+ * Persist a drag-reorder of tasks within a stage. `taskIds` is the full new
+ * order for that stage; we rewrite each task's `order` (and re-home any that
+ * were dragged in from another stage) in one transaction.
+ */
+export async function reorderTasks(
+  collaborationId: string,
+  stageId: string,
+  taskIds: string[]
+): Promise<Result> {
+  const auth = await canEdit(collaborationId);
+  if (!auth.ok) return auth;
+  await prisma.$transaction(
+    taskIds.map((id, index) =>
+      prisma.task.update({ where: { id }, data: { stageId, order: index } })
+    )
+  );
+  return { ok: true };
+}
+
+/** Persist a drag-reorder of stages within a collaboration's plan. */
+export async function reorderStages(collaborationId: string, stageIds: string[]): Promise<Result> {
+  const auth = await canEdit(collaborationId);
+  if (!auth.ok) return auth;
+  await prisma.$transaction(
+    stageIds.map((id, index) => prisma.planStage.update({ where: { id }, data: { order: index } }))
+  );
+  return { ok: true };
+}
+
 export async function deleteTask(collaborationId: string, taskId: string): Promise<Result> {
   const auth = await canEdit(collaborationId);
   if (!auth.ok) return auth;

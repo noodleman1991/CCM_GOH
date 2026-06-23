@@ -207,7 +207,8 @@
     "deleteStage": "Delete stage",
     "deleteTask": "Delete task",
     "cycleStatus": "Change status",
-    "stageComplete": "Stage complete"
+    "stageComplete": "Stage complete",
+    "dragTask": "Drag to reorder"
   },
   "follow": {
     "follow": "Follow",

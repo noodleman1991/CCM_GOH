@@ -297,7 +297,8 @@
     "deleteStage": "Eliminar etapa",
     "deleteTask": "Eliminar tarea",
     "cycleStatus": "Cambiar estado",
-    "stageComplete": "Etapa completada"
+    "stageComplete": "Etapa completada",
+    "dragTask": "Arrastra para reordenar"
   },
   "follow": {
     "follow": "Seguir",

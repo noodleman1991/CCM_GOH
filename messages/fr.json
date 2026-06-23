@@ -297,7 +297,8 @@
     "deleteStage": "Supprimer l'étape",
     "deleteTask": "Supprimer la tâche",
     "cycleStatus": "Changer le statut",
-    "stageComplete": "Étape terminée"
+    "stageComplete": "Étape terminée",
+    "dragTask": "Glisser pour réordonner"
   },
   "follow": {
     "follow": "Suivre",

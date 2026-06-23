@@ -19,12 +19,13 @@ const db = vi.hoisted(() => {
       delete: vi.fn(async () => ({})),
       findMany: vi.fn(async () => []),
     },
+    $transaction: vi.fn(async (ops: any[]) => Promise.all(ops)),
   };
   return d;
 });
 vi.mock("@/lib/prisma", () => ({ prisma: db }));
 
-import { addStage, addTask, cycleTaskStatus, deleteTask } from "@/lib/actions/plans";
+import { addStage, addTask, cycleTaskStatus, deleteTask, reorderTasks, reorderStages } from "@/lib/actions/plans";
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -91,5 +92,29 @@ describe("deleteTask", () => {
     const res = await deleteTask("c1", "tk1");
     expect(res.ok).toBe(true);
     expect(db.task.delete).toHaveBeenCalledWith({ where: { id: "tk1" } });
+  });
+});
+
+describe("reorder (drag persistence)", () => {
+  it("reorderTasks rewrites each task's order in one transaction", async () => {
+    const res = await reorderTasks("c1", "s1", ["tk3", "tk1", "tk2"]);
+    expect(res.ok).toBe(true);
+    expect(db.$transaction).toHaveBeenCalledTimes(1);
+    // each task updated to its new index + the target stage
+    expect(db.task.update).toHaveBeenCalledWith({ where: { id: "tk3" }, data: { stageId: "s1", order: 0 } });
+    expect(db.task.update).toHaveBeenCalledWith({ where: { id: "tk2" }, data: { stageId: "s1", order: 2 } });
+  });
+
+  it("reorderTasks is blocked for non-editors", async () => {
+    authorizeCollabMock.mockRejectedValueOnce(new Error("Forbidden"));
+    const res = await reorderTasks("c1", "s1", ["tk1"]);
+    expect(res.ok).toBe(false);
+  });
+
+  it("reorderStages rewrites stage order", async () => {
+    const res = await reorderStages("c1", ["s2", "s1"]);
+    expect(res.ok).toBe(true);
+    expect(db.planStage.update).toHaveBeenCalledWith({ where: { id: "s2" }, data: { order: 0 } });
+    expect(db.planStage.update).toHaveBeenCalledWith({ where: { id: "s1" }, data: { order: 1 } });
   });
 });
