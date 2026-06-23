@@ -8,7 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowLeft, Plus, MessagesSquare } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
-import { createThread } from "@/lib/actions/collaboration";
+import { createThread, renameThread } from "@/lib/actions/collaboration";
+import { InlineText } from "@/components/ui/inline-text";
 import { CommentSection } from "@/components/comments/comment-section";
 import type { CollaborationRole } from "@/generated/prisma";
 
@@ -29,18 +30,23 @@ export function WorkspaceThreads({
     revalidateOnFocus: false,
   });
   const [open, setOpen] = useState<Thread | null>(null);
-  const [creating, setCreating] = useState(false);
   const [title, setTitle] = useState("");
 
   const canEdit = myRole === "EDITOR" || myRole === "OWNER";
   const threads = data?.threads ?? [];
 
   const create = async () => {
-    if (!title.trim()) return;
-    const res = await createThread(collaborationId, title);
-    if (!res.ok) return toast.error(res.error);
+    const t = title.trim();
+    if (!t) return;
     setTitle("");
-    setCreating(false);
+    const res = await createThread(collaborationId, t);
+    if (!res.ok) { toast.error(res.error); return; }
+    mutate();
+  };
+
+  const rename = async (threadId: string, next: string) => {
+    const res = await renameThread(collaborationId, threadId, next);
+    if (!res.ok) { toast.error(res.error); return; }
     mutate();
   };
 
@@ -62,50 +68,51 @@ export function WorkspaceThreads({
 
   return (
     <div className="space-y-4">
-      {canEdit && (
-        <div>
-          {creating ? (
-            <div className="flex gap-2">
-              <Input
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder={t("threadTitlePlaceholder")}
-                maxLength={160}
-                onKeyDown={(e) => e.key === "Enter" && create()}
-              />
-              <Button onClick={create} disabled={!title.trim()}>
-                {t("createThread")}
-              </Button>
-            </div>
-          ) : (
-            <Button variant="outline" onClick={() => setCreating(true)}>
-              <Plus className="size-4 me-2" />
-              {t("newThread")}
-            </Button>
-          )}
-        </div>
-      )}
-
-      {threads.length === 0 ? (
+      {threads.length === 0 && !canEdit ? (
         <p className="text-sm text-muted-foreground">{t("noThreads")}</p>
       ) : (
         <ul className="divide-y rounded-lg border">
           {threads.map((th) => (
-            <li key={th.id}>
-              <button
-                onClick={() => setOpen(th)}
-                className="flex w-full items-center gap-3 p-4 text-start transition-colors hover:bg-muted"
-              >
-                <MessagesSquare className="size-4 flex-shrink-0 text-ccm-sea" aria-hidden="true" />
-                <span className="flex-1 font-medium">
+            <li key={th.id} className="flex items-center gap-3 p-4 hover:bg-muted/50">
+              <MessagesSquare className="size-4 flex-shrink-0 text-ccm-sea" aria-hidden="true" />
+              {/* Inline rename for editors; click-to-open via the chevron/title area. */}
+              {canEdit ? (
+                <InlineText
+                  value={th.title}
+                  onCommit={(next) => rename(th.id, next)}
+                  canEdit
+                  as="span"
+                  className="flex-1 font-medium"
+                  placeholder={t("threadTitlePlaceholder")}
+                />
+              ) : (
+                <button onClick={() => setOpen(th)} className="flex-1 text-start font-medium">
                   <bdi>{th.title}</bdi>
-                </span>
-                <span className="text-xs text-muted-foreground">
-                  {formatDistanceToNow(new Date(th.createdAt), { addSuffix: true })}
-                </span>
-              </button>
+                </button>
+              )}
+              <span className="text-xs text-muted-foreground">
+                {formatDistanceToNow(new Date(th.createdAt), { addSuffix: true })}
+              </span>
+              <Button variant="ghost" size="sm" onClick={() => setOpen(th)}>
+                {t("open")}
+              </Button>
             </li>
           ))}
+
+          {/* Persistent inline add-row (Notion-style): type + Enter to create. */}
+          {canEdit && (
+            <li className="flex items-center gap-3 p-2">
+              <Plus className="size-4 flex-shrink-0 text-muted-foreground" aria-hidden="true" />
+              <Input
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder={t("newThread")}
+                maxLength={160}
+                onKeyDown={(e) => e.key === "Enter" && create()}
+                className="h-8 border-0 bg-transparent shadow-none focus-visible:ring-0"
+              />
+            </li>
+          )}
         </ul>
       )}
     </div>
