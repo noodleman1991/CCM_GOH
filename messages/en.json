@@ -1601,7 +1601,8 @@
       "files": "Files",
       "media": "Media",
       "members": "Members",
-      "sections": "Sections"
+      "sections": "Sections",
+      "docs": "Docs"
     },
     "role": {
       "OWNER": "Owner",
@@ -1651,5 +1652,14 @@
     "dataLayer": "Data layer",
     "explore": "Explore {region}",
     "empty": "No {layer} here yet."
+  },
+  "docs": {
+    "title": "Documents",
+    "empty": "No documents yet.",
+    "newDoc": "New document",
+    "deleteDoc": "Delete document",
+    "backToDocs": "Back to documents",
+    "untitled": "Untitled",
+    "startWriting": "Start writing…"
   }
 }

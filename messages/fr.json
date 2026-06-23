@@ -1601,7 +1601,8 @@
       "files": "Fichiers",
       "media": "Médias",
       "members": "Membres",
-      "sections": "Sections"
+      "sections": "Sections",
+      "docs": "Documents"
     },
     "role": {
       "OWNER": "Propriétaire",
@@ -1651,5 +1652,14 @@
     "dataLayer": "Couche de données",
     "explore": "Explorer {region}",
     "empty": "Aucun {layer} ici pour l’instant."
+  },
+  "docs": {
+    "title": "Documents",
+    "empty": "Aucun document pour le moment.",
+    "newDoc": "Nouveau document",
+    "deleteDoc": "Supprimer le document",
+    "backToDocs": "Retour aux documents",
+    "untitled": "Sans titre",
+    "startWriting": "Commencez à écrire…"
   }
 }

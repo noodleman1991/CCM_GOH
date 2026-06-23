@@ -1601,7 +1601,8 @@
       "files": "Archivos",
       "media": "Multimedia",
       "members": "Miembros",
-      "sections": "Secciones"
+      "sections": "Secciones",
+      "docs": "Documentos"
     },
     "role": {
       "OWNER": "Propietario",
@@ -1651,5 +1652,14 @@
     "dataLayer": "Capa de datos",
     "explore": "Explorar {region}",
     "empty": "Aún no hay {layer} aquí."
+  },
+  "docs": {
+    "title": "Documentos",
+    "empty": "Aún no hay documentos.",
+    "newDoc": "Nuevo documento",
+    "deleteDoc": "Eliminar documento",
+    "backToDocs": "Volver a documentos",
+    "untitled": "Sin título",
+    "startWriting": "Empieza a escribir…"
   }
 }
