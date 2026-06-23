@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { FileText, Upload, Trash2, FileType } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { confirmFileUpload, deleteFile } from "@/lib/actions/collaboration-files";
+import { cn } from "@/lib/utils";
 import type { CollaborationRole } from "@/generated/prisma";
 
 type FileRow = {
@@ -45,6 +46,7 @@ export function WorkspaceFiles({
   });
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
 
   const canUpload = myRole === "EDITOR" || myRole === "OWNER";
   const files = data?.files ?? [];
@@ -97,9 +99,28 @@ export function WorkspaceFiles({
   };
 
   return (
-    <div className="space-y-4">
+    <div
+      className="space-y-4"
+      onDragOver={canUpload ? (e) => { e.preventDefault(); setDragOver(true); } : undefined}
+      onDragLeave={canUpload ? () => setDragOver(false) : undefined}
+      onDrop={
+        canUpload
+          ? (e) => {
+              e.preventDefault();
+              setDragOver(false);
+              const file = e.dataTransfer.files?.[0];
+              if (file) handleFile(file);
+            }
+          : undefined
+      }
+    >
       {canUpload && (
-        <div>
+        <div
+          className={cn(
+            "rounded-lg border border-dashed p-4 text-center transition-colors",
+            dragOver ? "border-ccm-sea bg-ccm-sky/10" : "border-input"
+          )}
+        >
           <input
             ref={inputRef}
             type="file"
@@ -107,7 +128,8 @@ export function WorkspaceFiles({
             accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
             onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])}
           />
-          <Button variant="outline" disabled={uploading} onClick={() => inputRef.current?.click()}>
+          <p className="mb-2 text-sm text-muted-foreground">{t("dropToUpload")}</p>
+          <Button variant="outline" size="sm" disabled={uploading} onClick={() => inputRef.current?.click()}>
             <Upload className="size-4 me-2" />
             {uploading ? t("uploading") : t("uploadFile")}
           </Button>

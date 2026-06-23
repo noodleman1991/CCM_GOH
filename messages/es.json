@@ -1624,7 +1624,8 @@
     "mediaTitlePlaceholder": "Título (opcional)",
     "addMedia": "Añadir",
     "noMedia": "Aún no hay multimedia.",
-    "mediaConsentRequired": "Este video necesita consentimiento de cookies."
+    "mediaConsentRequired": "Este video necesita consentimiento de cookies.",
+    "dropToUpload": "Arrastra un archivo aquí o"
   },
   "messages": {
     "title": "Mensajes",
