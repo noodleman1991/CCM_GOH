@@ -34,6 +34,11 @@ import {
   requestEventRevisionAction,
   rejectEventAction
 } from './sanity/actions/event-actions'
+import {
+  approveResearchOutputAction,
+  requestResearchOutputRevisionAction,
+  rejectResearchOutputAction
+} from './sanity/actions/research-output-actions'
 
 
 
@@ -72,6 +77,15 @@ export default defineConfig({
             approveEventAction,
             requestEventRevisionAction,
             rejectEventAction
+          ]
+        }
+        // Review actions for research outputs
+        if (context.schemaType === 'researchOutput') {
+          return [
+            ...prev,
+            approveResearchOutputAction,
+            requestResearchOutputRevisionAction,
+            rejectResearchOutputAction
           ]
         }
         return prev

@@ -26,6 +26,7 @@ import caseStudy from "./schemas/documents/case-study";
 import caseStudyDraft from "./schemas/documents/case-study-draft";
 import livedExperience from "./schemas/documents/lived-experience";
 import event from "./schemas/documents/event";
+import researchOutput from "./schemas/documents/research-output";
 import onboardingContent from "./schemas/documents/onboarding-content";
 import workType from "./schemas/documents/work-type";
 import expertiseArea from "./schemas/documents/expertise-area";
@@ -117,6 +118,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
         caseStudyDraft,
         livedExperience,
         event,
+        researchOutput,
         regionalCommunity,
         report,
         agenda,
