@@ -120,6 +120,18 @@ export async function getCollaboration(id: string) {
   return r.success ? r.data : null;
 }
 
+/** Workspace documents (ordered) — title + Portable Text content. */
+export async function getDocs(collaborationId: string) {
+  const r = await safeQuery(() =>
+    prisma.collaborationDoc.findMany({
+      where: { collaborationId },
+      orderBy: { order: "asc" },
+      select: { id: true, title: true, content: true, updatedAt: true },
+    })
+  );
+  return r.success ? r.data : [];
+}
+
 /** The research plan (ordered stages → tasks) for a collaboration's Home tab. */
 export async function getPlan(collaborationId: string) {
   const r = await safeQuery(() =>
