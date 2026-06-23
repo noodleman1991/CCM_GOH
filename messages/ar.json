@@ -297,7 +297,8 @@
     "deleteStage": "حذف المرحلة",
     "deleteTask": "حذف المهمة",
     "cycleStatus": "تغيير الحالة",
-    "stageComplete": "اكتملت المرحلة"
+    "stageComplete": "اكتملت المرحلة",
+    "dragTask": "اسحب لإعادة الترتيب"
   },
   "follow": {
     "follow": "متابعة",

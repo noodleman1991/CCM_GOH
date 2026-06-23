@@ -3,7 +3,18 @@
 import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { Plus, Circle, CircleDot, CheckCircle2, X } from "lucide-react";
+import { Plus, Circle, CircleDot, CheckCircle2, X, GripVertical } from "lucide-react";
+import {
+  DndContext,
+  closestCorners,
+  PointerSensor,
+  KeyboardSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import { SortableContext, useSortable, verticalListSortingStrategy, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -13,6 +24,7 @@ import {
   cycleTaskStatus,
   deleteTask,
   deleteStage,
+  reorderTasks,
 } from "@/lib/actions/plans";
 
 type TaskStatus = "TODO" | "IN_PROGRESS" | "DONE";
@@ -90,6 +102,35 @@ export function WorkspacePlan({
     });
   };
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+
+  // Within-stage drag-reorder. The dragged task id is `active`, dropped over
+  // `over`; we reorder that stage's tasks and persist the new order.
+  const onDragEnd = (stageId: string) => (e: DragEndEvent) => {
+    const { active, over } = e;
+    if (!over || active.id === over.id) return;
+    // Compute the reordered task list for the affected stage outside of setState,
+    // so we never call startTransition during render.
+    const stage = stages.find((st) => st.id === stageId);
+    if (!stage) return;
+    const ids = stage.tasks.map((tk) => tk.id);
+    const from = ids.indexOf(active.id as string);
+    const to = ids.indexOf(over.id as string);
+    if (from < 0 || to < 0) return;
+    const nextTasks = [...stage.tasks];
+    const [moved] = nextTasks.splice(from, 1);
+    nextTasks.splice(to, 0, moved);
+
+    setStages((s) => s.map((st) => (st.id === stageId ? { ...st, tasks: nextTasks } : st)));
+    startTransition(async () => {
+      const res = await reorderTasks(collaborationId, stageId, nextTasks.map((tk) => tk.id));
+      if (!res.ok) toast.error(res.error);
+    });
+  };
+
   if (stages.length === 0 && !canEdit) {
     return <p className="p-6 text-center text-sm text-muted-foreground">{t("empty")}</p>;
   }
@@ -112,31 +153,22 @@ export function WorkspacePlan({
                   </button>
                 )}
               </div>
-              <ul className="space-y-1">
-                {stage.tasks.map((task) => {
-                  const Icon = STATUS_ICON[task.status];
-                  return (
-                    <li key={task.id} className="group flex items-center gap-2 rounded-md bg-background px-2 py-1.5 text-sm">
-                      <button
-                        onClick={() => onCycle(stage.id, task)}
-                        disabled={!canEdit}
-                        aria-label={t("cycleStatus")}
-                        className={cn(task.status === "DONE" ? "text-ccm-sea" : "text-muted-foreground", canEdit && "hover:text-ccm-sea")}
-                      >
-                        <Icon className="size-4" />
-                      </button>
-                      <span className={cn("min-w-0 flex-1 truncate", task.status === "DONE" && "text-muted-foreground line-through")}>
-                        {task.title}
-                      </span>
-                      {canEdit && (
-                        <button onClick={() => onDeleteTask(stage.id, task.id)} aria-label={t("deleteTask")} className="opacity-0 transition-opacity group-hover:opacity-100 text-muted-foreground hover:text-destructive">
-                          <X className="size-3.5" />
-                        </button>
-                      )}
-                    </li>
-                  );
-                })}
-              </ul>
+              <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={onDragEnd(stage.id)}>
+                <SortableContext items={stage.tasks.map((tk) => tk.id)} strategy={verticalListSortingStrategy}>
+                  <ul className="space-y-1">
+                    {stage.tasks.map((task) => (
+                      <SortableTask
+                        key={task.id}
+                        task={task}
+                        canEdit={canEdit}
+                        onCycle={() => onCycle(stage.id, task)}
+                        onDelete={() => onDeleteTask(stage.id, task.id)}
+                        labels={{ cycle: t("cycleStatus"), del: t("deleteTask"), drag: t("dragTask") }}
+                      />
+                    ))}
+                  </ul>
+                </SortableContext>
+              </DndContext>
               {canEdit && <AddTaskRow onAdd={(title, reset) => onAddTask(stage.id, title, reset)} placeholder={t("addTask")} />}
             </div>
           );
@@ -152,6 +184,63 @@ export function WorkspacePlan({
         </div>
       )}
     </div>
+  );
+}
+
+function SortableTask({
+  task,
+  canEdit,
+  onCycle,
+  onDelete,
+  labels,
+}: {
+  task: Task;
+  canEdit: boolean;
+  onCycle: () => void;
+  onDelete: () => void;
+  labels: { cycle: string; del: string; drag: string };
+}) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: task.id,
+    disabled: !canEdit,
+  });
+  const Icon = STATUS_ICON[task.status];
+  return (
+    <li
+      ref={setNodeRef}
+      style={{ transform: CSS.Transform.toString(transform), transition }}
+      className={cn(
+        "group flex items-center gap-2 rounded-md bg-background px-2 py-1.5 text-sm",
+        isDragging && "opacity-60 shadow"
+      )}
+    >
+      {canEdit && (
+        <button
+          {...attributes}
+          {...listeners}
+          aria-label={labels.drag}
+          className="cursor-grab text-muted-foreground/50 hover:text-muted-foreground touch-none"
+        >
+          <GripVertical className="size-3.5" />
+        </button>
+      )}
+      <button
+        onClick={onCycle}
+        disabled={!canEdit}
+        aria-label={labels.cycle}
+        className={cn(task.status === "DONE" ? "text-ccm-sea" : "text-muted-foreground", canEdit && "hover:text-ccm-sea")}
+      >
+        <Icon className="size-4" />
+      </button>
+      <span className={cn("min-w-0 flex-1 truncate", task.status === "DONE" && "text-muted-foreground line-through")}>
+        {task.title}
+      </span>
+      {canEdit && (
+        <button onClick={onDelete} aria-label={labels.del} className="opacity-0 transition-opacity group-hover:opacity-100 text-muted-foreground hover:text-destructive">
+          <X className="size-3.5" />
+        </button>
+      )}
+    </li>
   );
 }
 
