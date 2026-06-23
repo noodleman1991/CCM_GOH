@@ -1,6 +1,7 @@
 import { defineField, defineType } from "sanity";
 import { FileSearch } from "lucide-react";
 import { topicOptions } from "../shared/topic-options";
+import { REGION_OPTIONS, THEME_OPTIONS, POPULATION_OPTIONS } from "../shared/taxonomy-options";
 import { createLocalizedField as createSharedLocalizedField } from "../shared/localized-field";
 
 // Role configuration
@@ -109,6 +110,33 @@ export default defineType({
                 list: [...topicOptions],
             },
             validation: (Rule) => Rule.required(),
+        }),
+
+        // Phase 6 fixed taxonomy (additive — coexists with topic/tags + the
+        // relatedCommunity ref during the dual-field transition).
+        defineField({
+            name: "region",
+            title: "Region",
+            type: "string",
+            group: "affiliations",
+            options: { list: [...REGION_OPTIONS] },
+            description: "Fixed-7 region code. Backfilled from the related community; required by the redesign on all content except news.",
+        }),
+        defineField({
+            name: "themes",
+            title: "Themes",
+            type: "array",
+            of: [{ type: "string" }],
+            options: { list: [...THEME_OPTIONS] },
+            group: "affiliations",
+        }),
+        defineField({
+            name: "populations",
+            title: "Populations",
+            type: "array",
+            of: [{ type: "string" }],
+            options: { list: [...POPULATION_OPTIONS] },
+            group: "affiliations",
         }),
 
         // Metadata fields

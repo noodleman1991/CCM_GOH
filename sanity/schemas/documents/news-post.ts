@@ -1,6 +1,7 @@
 import { defineField, defineType } from "sanity";
 import { FileText } from "lucide-react";
 import { isUniqueOtherThanLanguage } from '@/sanity/lib/isUniqueOtherThanLanguage';
+import { REGION_OPTIONS, THEME_OPTIONS, POPULATION_OPTIONS } from "../shared/taxonomy-options";
 
 export default defineType({
     name: "newsPost",
@@ -169,6 +170,32 @@ export default defineType({
             group: "affiliations",
             to: [{ type: "regionalCommunity" }],
             description: "Regional community this news post belongs to (optional)",
+        }),
+
+        // Phase 6 fixed taxonomy (additive; region OPTIONAL on news per spec).
+        defineField({
+            name: "region",
+            title: "Region",
+            type: "string",
+            group: "affiliations",
+            options: { list: [...REGION_OPTIONS] },
+            description: "Fixed-7 region code (optional for news; backfilled from the related community).",
+        }),
+        defineField({
+            name: "themes",
+            title: "Themes",
+            type: "array",
+            of: [{ type: "string" }],
+            options: { list: [...THEME_OPTIONS] },
+            group: "affiliations",
+        }),
+        defineField({
+            name: "populations",
+            title: "Populations",
+            type: "array",
+            of: [{ type: "string" }],
+            options: { list: [...POPULATION_OPTIONS] },
+            group: "affiliations",
         }),
         // Location using Google Maps plugins
         defineField({
