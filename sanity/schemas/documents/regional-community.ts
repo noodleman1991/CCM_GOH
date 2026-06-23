@@ -1,4 +1,5 @@
  import { defineField, defineType } from "sanity";
+import { REGION_OPTIONS } from "../shared/taxonomy-options";
 import { Globe } from "lucide-react";
 import { orderRankField } from "@sanity/orderable-document-list";
 
@@ -29,6 +30,16 @@ export default defineType({
                 maxLength: 96,
             },
             validation: (Rule) => Rule.required(),
+        }),
+        // Phase 6 fixed-7 region short code (ssa/nawa/…), backfilled from slug.
+        // The canonical region identifier going forward; the Prisma enum rename
+        // is the later B3 migration.
+        defineField({
+            name: "region",
+            title: "Region code",
+            type: "string",
+            options: { list: [...REGION_OPTIONS] },
+            description: "Fixed-7 region short code. Backfilled from the slug.",
         }),
         defineField({
             name: "coverImage",

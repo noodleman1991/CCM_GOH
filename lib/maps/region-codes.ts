@@ -27,6 +27,37 @@ export function isRegionCode(v: string): v is RegionCode {
   return (REGION_CODES as readonly string[]).includes(v);
 }
 
+/** The redesign's fixed-7 SHORT region codes (SANITY_SCHEMA §2 / TAXONOMY §1).
+ *  Phase 6 adopts these as the `region` string field on Sanity content; the long
+ *  `REGION_CODES` above remain the Prisma/legacy store until the B3 enum migration. */
+export const REGION_SHORT_CODES = ["ssa", "nawa", "csa", "esea", "lac", "oce", "enam"] as const;
+export type RegionShortCode = (typeof REGION_SHORT_CODES)[number];
+
+export const LONG_TO_SHORT: Record<RegionCode, RegionShortCode> = {
+  SUB_SAHARAN_AFRICA: "ssa",
+  NORTHERN_AFRICA_AND_WESTERN_ASIA: "nawa",
+  CENTRAL_AND_SOUTHERN_ASIA: "csa",
+  EASTERN_AND_SOUTH_EASTERN_ASIA: "esea",
+  LATIN_AMERICA_AND_THE_CARIBBEAN: "lac",
+  OCEANIA: "oce",
+  EUROPE_AND_NORTH_AMERICA: "enam",
+};
+
+export const SHORT_TO_LONG: Record<RegionShortCode, RegionCode> = Object.fromEntries(
+  Object.entries(LONG_TO_SHORT).map(([long, short]) => [short, long])
+) as Record<RegionShortCode, RegionCode>;
+
+export function isRegionShortCode(v: string): v is RegionShortCode {
+  return (REGION_SHORT_CODES as readonly string[]).includes(v);
+}
+
+/** Bridge a Sanity `regionalCommunity` slug directly to its short code (for the
+ *  Phase-6 content `region` field backfill). */
+export function slugToShortCode(slug: string): RegionShortCode | null {
+  const long = RC_SLUG_TO_REGION[slug];
+  return long ? LONG_TO_SHORT[long] : null;
+}
+
 /** Map a Sanity `regionalCommunity` slug to its region code. The Sanity docs
  *  identify their region by slug (no enum field), so this bridges Sanity content
  *  counts to the 7 region codes. Keep in sync with the dataset's RC slugs. */
