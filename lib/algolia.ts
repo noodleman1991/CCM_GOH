@@ -371,7 +371,11 @@ export const INDEX_SETTINGS = {
       'tags',
       'organizations',
       'language',
-      'authors.role'
+      'authors.role',
+      // Phase 6 fixed taxonomy facets (region short code + themes/populations).
+      'region',
+      'themes',
+      'populations'
     ],
     customRanking: [
       'desc(featured)',
@@ -454,7 +458,11 @@ export const INDEX_SETTINGS = {
       'projects',
       'language',
       'location.country',
-      'author.name'
+      'author.name',
+      // Phase 6 fixed taxonomy facets.
+      'region',
+      'themes',
+      'populations'
     ],
     customRanking: [
       'desc(featured)',

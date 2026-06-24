@@ -30,6 +30,17 @@ if (!algoliaAppId || !algoliaAdminKey) {
 
 const algoliaClient = algoliasearch(algoliaAppId, algoliaAdminKey);
 
+// Index name is env-overridable so we can reindex a STAGING index
+// (e.g. case_studies_staging) without touching the production search index.
+const CASE_STUDIES_INDEX = process.env.ALGOLIA_CASE_STUDIES_INDEX || 'case_studies';
+
+// Phase 6: faceting attributes pushed before reindex so region/themes/populations
+// are filterable. Kept in sync with INDEX_SETTINGS.case_studies in lib/algolia.ts.
+const FACETING = [
+  'filterOnly(status)', 'filterOnly(accessLevel)', 'featured', 'tags',
+  'organizations', 'language', 'authors.role', 'region', 'themes', 'populations',
+];
+
 // Sanity query to get approved case studies
 const CASE_STUDIES_QUERY = `*[_type == "caseStudy" && status == "approved"] {
   _id,
@@ -41,6 +52,9 @@ const CASE_STUDIES_QUERY = `*[_type == "caseStudy" && status == "approved"] {
   publishedAt,
   _updatedAt,
   topic,
+  region,
+  themes,
+  populations,
   authors[] {
     name,
     role,
@@ -94,6 +108,10 @@ function transformCaseStudyForIndex(caseStudy) {
       } : undefined,
       organizations: (caseStudy.organizations || []).map((org) => org.name).filter(Boolean),
       relatedCommunity: caseStudy.relatedCommunity?.name,
+      // Phase 6 fixed taxonomy facets.
+      region: caseStudy.region || undefined,
+      themes: caseStudy.themes || [],
+      populations: caseStudy.populations || [],
       language: 'en',
       accessLevel: 'public'
     };
@@ -126,15 +144,21 @@ async function syncCaseStudiesToAlgolia() {
 
     console.log(`✅ Transformed ${records.length} case studies\n`);
 
+    console.log(`🎛️  Setting faceting on "${CASE_STUDIES_INDEX}" (region/themes/populations)...`);
+    await algoliaClient.setSettings({
+      indexName: CASE_STUDIES_INDEX,
+      indexSettings: { attributesForFaceting: FACETING },
+    });
+
     // Clear existing index and add new records
-    console.log('🗑️  Clearing existing Algolia index...');
+    console.log(`🗑️  Clearing "${CASE_STUDIES_INDEX}"...`);
     await algoliaClient.clearObjects({
-      indexName: 'case_studies'
+      indexName: CASE_STUDIES_INDEX
     });
 
     console.log('📤 Uploading case studies to Algolia...');
     const response = await algoliaClient.saveObjects({
-      indexName: 'case_studies',
+      indexName: CASE_STUDIES_INDEX,
       objects: records
     });
 
@@ -142,7 +166,7 @@ async function syncCaseStudiesToAlgolia() {
     if (response && response.taskID) {
       console.log('⏳ Waiting for indexing to complete...');
       await algoliaClient.waitForTask({
-        indexName: 'case_studies',
+        indexName: CASE_STUDIES_INDEX,
         taskID: response.taskID
       });
     }
