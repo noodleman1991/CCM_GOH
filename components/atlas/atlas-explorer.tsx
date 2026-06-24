@@ -60,7 +60,12 @@ export function AtlasExplorer() {
   )
   const regionData = data?.data ?? []
 
-  const labelFor = (code: RegionCode) => tRegions(REGION_I18N_KEY[code])
+  // Guard the i18n key: an unknown code (stale data/geometry) must not crash
+  // next-intl with `tRegions(undefined)` — fall back to the raw code.
+  const labelFor = (code: RegionCode) => {
+    const key = REGION_I18N_KEY[code]
+    return key ? tRegions(key) : String(code)
+  }
   const activeFacetDef = FACETS.find((f) => f.id === facet)
   const facetLabel = activeFacetDef ? t(activeFacetDef.labelKey) : ''
 
