@@ -28,6 +28,9 @@ export const FEATURES = {
 
   /** The interactive region map block on the homepage. */
   homepageMap: on(process.env.NEXT_PUBLIC_FEATURE_HOMEPAGE_MAP),
+
+  /** The "People in your region" widget on the homepage (WIREFRAMES §4.1). */
+  homepagePeople: on(process.env.NEXT_PUBLIC_FEATURE_HOMEPAGE_PEOPLE),
 } as const;
 
 export type FeatureName = keyof typeof FEATURES;

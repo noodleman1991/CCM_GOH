@@ -1667,5 +1667,11 @@
     "backToDocs": "Back to documents",
     "untitled": "Untitled",
     "startWriting": "Start writing…"
+  },
+  "home": {
+    "peopleTitle": "People in your region",
+    "peopleEmpty": "No members to show here yet.",
+    "aMember": "A member",
+    "seeking": "Seeking"
   }
 }

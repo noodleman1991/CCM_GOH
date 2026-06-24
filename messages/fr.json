@@ -1667,5 +1667,11 @@
     "backToDocs": "Retour aux documents",
     "untitled": "Sans titre",
     "startWriting": "Commencez à écrire…"
+  },
+  "home": {
+    "peopleTitle": "Personnes dans votre région",
+    "peopleEmpty": "Aucun membre à afficher pour l’instant.",
+    "aMember": "Un membre",
+    "seeking": "Recherche"
   }
 }
