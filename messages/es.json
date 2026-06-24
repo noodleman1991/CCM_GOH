@@ -1652,7 +1652,8 @@
     "description": "Explora estudios de caso, experiencias vividas, personas y más en las siete regiones.",
     "dataLayer": "Capa de datos",
     "explore": "Explorar {region}",
-    "empty": "Aún no hay {layer} aquí."
+    "empty": "Aún no hay {layer} aquí.",
+    "untitled": "Sin título"
   },
   "docs": {
     "title": "Documentos",

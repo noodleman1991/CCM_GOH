@@ -1652,7 +1652,8 @@
     "description": "Explore case studies, lived experiences, people and more across the seven regions.",
     "dataLayer": "Data layer",
     "explore": "Explore {region}",
-    "empty": "No {layer} here yet."
+    "empty": "No {layer} here yet.",
+    "untitled": "Untitled"
   },
   "docs": {
     "title": "Documents",

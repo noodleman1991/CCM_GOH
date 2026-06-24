@@ -1652,7 +1652,8 @@
     "description": "Explorez les études de cas, les expériences vécues, les personnes et plus encore dans les sept régions.",
     "dataLayer": "Couche de données",
     "explore": "Explorer {region}",
-    "empty": "Aucun {layer} ici pour l’instant."
+    "empty": "Aucun {layer} ici pour l’instant.",
+    "untitled": "Sans titre"
   },
   "docs": {
     "title": "Documents",
