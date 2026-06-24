@@ -894,7 +894,11 @@
     "studyAreas": "Study Areas",
     "allAuthors": "All Authors",
     "featuredBadge": "Featured",
-    "producedBy": "Produced by"
+    "producedBy": "Produced by",
+    "atAGlance": "At a glance",
+    "published": "Published",
+    "author": "Author",
+    "location": "Location"
   },
   "livedExperiences": {
     "relatedContent": "Related",

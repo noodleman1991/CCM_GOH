@@ -108,6 +108,7 @@ export const RELATED_CONTENT_PROJECTION = `
 
 const CASE_STUDY_DETAIL_PROJECTION_FRAGMENT = `
   ${CASE_STUDY_PROJECTION_FRAGMENT},
+  layout,
   content[]{ ${styledBodyProjection} },
   ${RELATED_CONTENT_PROJECTION},
   seoTitle,

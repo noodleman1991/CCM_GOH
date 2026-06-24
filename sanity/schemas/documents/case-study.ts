@@ -112,6 +112,21 @@ export default defineType({
             validation: (Rule) => Rule.required(),
         }),
 
+        // Detail-page layout archetype (WIREFRAMES §4.12). Same content, different
+        // arrangement. Defaults to "story" = the current centered reading layout.
+        defineField({
+            name: "layout",
+            title: "Detail layout",
+            type: "string",
+            group: "content",
+            options: { list: [
+                { title: "Story (narrative + photography)", value: "story" },
+                { title: "Feature (one bold statement)", value: "feature" },
+                { title: "Report (evidence + data; sticky 'At a glance')", value: "report" },
+            ] },
+            initialValue: "story",
+        }),
+
         // Phase 6 fixed taxonomy (additive — coexists with topic/tags + the
         // relatedCommunity ref during the dual-field transition).
         defineField({

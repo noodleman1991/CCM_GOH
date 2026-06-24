@@ -1325,7 +1325,11 @@
     "studyAreas": "Domaines d'Étude",
     "allAuthors": "Tous les Auteurs",
     "featuredBadge": "À la une",
-    "producedBy": "Produit par"
+    "producedBy": "Produit par",
+    "atAGlance": "En bref",
+    "published": "Publié",
+    "author": "Auteur",
+    "location": "Lieu"
   },
   "revisionAlert": {
     "title": "Action Requise: Révision Nécessaire",
