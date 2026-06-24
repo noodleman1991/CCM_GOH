@@ -107,10 +107,12 @@ export function NotificationFeed({
           : ({ ok: false, error: "Can't act on this request." } as const);
     if (res.ok) {
       setResolved((r) => ({ ...r, [n.id]: accept ? "ACCEPTED" : "DECLINED" }));
-      mutate();
     } else {
       toast.error(res.error);
     }
+    // Always refetch: on success to pick up the now-resolved row, and on error
+    // (e.g. "Already resolved.") to drop a stale row the server has since closed.
+    mutate();
   };
 
   const row = (n: Notif) => {

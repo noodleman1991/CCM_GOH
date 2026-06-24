@@ -99,6 +99,19 @@ export async function respondToJoinRequest(
         update: {},
       });
     }
+    // Resolve the resolver's own REQUEST notification: mark it read and flip its
+    // entityType so the feed no longer renders Accept/Decline (it stays as a
+    // read history row). Without this the row reappears actionable after refetch.
+    await tx.notification.updateMany({
+      where: {
+        recipientId: actor.id,
+        type: "REQUEST",
+        entityType: "joinRequest",
+        entityId: req.collaborationId,
+        actorId: req.requesterId,
+      },
+      data: { entityType: "joinRequestResolved", readAt: new Date() },
+    });
   });
 
   await createNotification({
@@ -196,9 +209,22 @@ export async function respondToContactRequest(
   if (req.status !== "PENDING") return { ok: false, error: "Already resolved." };
 
   const status = accept ? "ACCEPTED" : "DECLINED";
-  await prisma.contactRequest.update({
-    where: { id: requestId },
-    data: { status, resolvedAt: new Date() },
+  await prisma.$transaction(async (tx) => {
+    await tx.contactRequest.update({
+      where: { id: requestId },
+      data: { status, resolvedAt: new Date() },
+    });
+    // Resolve the resolver's own REQUEST notification (see respondToJoinRequest).
+    await tx.notification.updateMany({
+      where: {
+        recipientId: actor.id,
+        type: "REQUEST",
+        entityType: "contactRequest",
+        entityId: req.requesterId,
+        actorId: req.requesterId,
+      },
+      data: { entityType: "contactRequestResolved", readAt: new Date() },
+    });
   });
 
   await createNotification({
