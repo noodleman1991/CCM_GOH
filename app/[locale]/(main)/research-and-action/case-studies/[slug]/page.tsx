@@ -3,7 +3,7 @@ export const revalidate = 300;
 import type { Metadata } from "next"
 import { notFound } from 'next/navigation'
 //import { getTranslations } from 'next-intl/server'
-import Image from 'next/image'
+import { SafeCoverImage } from '@/components/content/safe-cover-image'
 import { fetchCaseStudyBySlug, fetchCaseStudiesStaticParams } from '@/sanity/queries/grid/grid-case-study'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
@@ -153,22 +153,19 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ loca
 
       <Separator />
 
-      {/* Featured Image */}
+      {/* Featured Image — resilient to a missing/404 CMS asset. */}
       {caseStudy.image?.asset?.url && (
-        <div className="relative aspect-video rounded-lg overflow-hidden">
-          <Image
+        <figure>
+          <SafeCoverImage
             src={urlFor(caseStudy.image).width(1200).height(675).url()}
             alt={caseStudy.image.alt || title}
-            fill
-            className="object-cover"
-            priority
           />
           {caseStudy.image.caption && (
-            <p className="text-sm text-muted-foreground mt-2 text-center italic">
+            <figcaption className="text-sm text-muted-foreground mt-2 text-center italic">
               {caseStudy.image.caption}
-            </p>
+            </figcaption>
           )}
-        </div>
+        </figure>
       )}
 
       {/* Main Content — clean long-form article. The Report archetype pairs it
