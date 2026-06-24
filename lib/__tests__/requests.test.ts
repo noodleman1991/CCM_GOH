@@ -32,6 +32,7 @@ const db = vi.hoisted(() => {
       update: vi.fn(async () => ({})),
     },
     user: { findUnique: vi.fn(async () => ({ id: "u2" })) },
+    notification: { updateMany: vi.fn(async () => ({ count: 1 })) },
     $transaction: vi.fn(async (fn: any) => fn(d)),
   };
   return d;
@@ -124,6 +125,17 @@ describe("respondToJoinRequest", () => {
     db.joinRequest.findUnique.mockResolvedValueOnce({ ...baseReq, status: "ACCEPTED" });
     const res = await respondToJoinRequest("jr1", true);
     expect(res.ok).toBe(false);
+  });
+
+  it("marks the originating REQUEST notification resolved so it stops being actionable", async () => {
+    db.joinRequest.findUnique.mockResolvedValueOnce(baseReq);
+    await respondToJoinRequest("jr1", true);
+    expect(db.notification.updateMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({ recipientId: "u1", type: "REQUEST", entityType: "joinRequest" }),
+        data: expect.objectContaining({ entityType: "joinRequestResolved" }),
+      })
+    );
   });
 });
 
