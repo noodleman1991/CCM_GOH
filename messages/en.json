@@ -1673,5 +1673,17 @@
     "peopleEmpty": "No members to show here yet.",
     "aMember": "A member",
     "seeking": "Seeking"
+  },
+  "researchOutputs": {
+    "backToResearch": "Back to Research & Action",
+    "featured": "Featured",
+    "documents": "Documents",
+    "download": "Download",
+    "pages": "pages",
+    "atAGlance": "At a glance",
+    "type": "Type",
+    "published": "Published",
+    "organizations": "Organizations",
+    "relatedContent": "Related content"
   }
 }
