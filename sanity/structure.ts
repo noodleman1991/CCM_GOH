@@ -22,6 +22,9 @@ import {
     GraduationCap,
     ShieldAlert,
     BookText,
+    Lock,
+    Database,
+    Banknote,
 } from "lucide-react";
 
 export const structure = (S: any, context: any) =>
@@ -217,6 +220,36 @@ export const structure = (S: any, context: any) =>
                                     S.documentTypeList("externalSource")
                                         .title("External Sources")
                                         .defaultOrdering([{ field: "addedAt", direction: "desc" }])
+                                ),
+                        ])
+                ),
+
+            // Internal — never-public working documents (datasets, funding apps).
+            S.divider(),
+            S.listItem()
+                .title("Internal")
+                .icon(Lock)
+                .child(
+                    S.list()
+                        .title("Internal (not public)")
+                        .items([
+                            S.listItem()
+                                .title("Datasets")
+                                .icon(Database)
+                                .schemaType("dataset")
+                                .child(
+                                    S.documentTypeList("dataset")
+                                        .title("Datasets")
+                                        .defaultOrdering([{ field: "_createdAt", direction: "desc" }])
+                                ),
+                            S.listItem()
+                                .title("Funding Applications")
+                                .icon(Banknote)
+                                .schemaType("fundingApplication")
+                                .child(
+                                    S.documentTypeList("fundingApplication")
+                                        .title("Funding Applications")
+                                        .defaultOrdering([{ field: "_createdAt", direction: "desc" }])
                                 ),
                         ])
                 ),
