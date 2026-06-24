@@ -11,7 +11,7 @@ import { getRegionalCommunities } from "@/sanity/queries/regional-communities"
 const FALLBACK_COMMUNITIES = [
     {
         slug: 'sub-saharan-africa',
-        regionalName: 'SUB_SAHARAN_AFRICA',
+        regionalName: 'ssa',
         name: {
             en: 'Sub-Saharan Africa',
             es: 'África subsahariana',
@@ -21,7 +21,7 @@ const FALLBACK_COMMUNITIES = [
     },
     {
         slug: 'northern-africa-and-western-asia',
-        regionalName: 'NORTHERN_AFRICA_AND_WESTERN_ASIA',
+        regionalName: 'nawa',
         name: {
             en: 'Northern Africa and Western Asia',
             es: 'África del Norte y Asia Occidental',
@@ -31,7 +31,7 @@ const FALLBACK_COMMUNITIES = [
     },
     {
         slug: 'central-and-southern-asia',
-        regionalName: 'CENTRAL_AND_SOUTHERN_ASIA',
+        regionalName: 'csa',
         name: {
             en: 'Central and Southern Asia',
             es: 'Asia Central y del Sur',
@@ -41,7 +41,7 @@ const FALLBACK_COMMUNITIES = [
     },
     {
         slug: 'eastern-and-south-eastern-asia',
-        regionalName: 'EASTERN_AND_SOUTH_EASTERN_ASIA',
+        regionalName: 'esea',
         name: {
             en: 'Eastern and South-Eastern Asia',
             es: 'Asia Oriental y Sudoriental',
@@ -51,7 +51,7 @@ const FALLBACK_COMMUNITIES = [
     },
     {
         slug: 'latin-america-and-the-caribbean',
-        regionalName: 'LATIN_AMERICA_AND_THE_CARIBBEAN',
+        regionalName: 'lac',
         name: {
             en: 'Latin America and the Caribbean',
             es: 'América Latina y el Caribe',
@@ -61,7 +61,7 @@ const FALLBACK_COMMUNITIES = [
     },
     {
         slug: 'oceania',
-        regionalName: 'OCEANIA',
+        regionalName: 'oce',
         name: {
             en: 'Oceania',
             es: 'Oceanía',
@@ -71,7 +71,7 @@ const FALLBACK_COMMUNITIES = [
     },
     {
         slug: 'europe-and-north-america',
-        regionalName: 'EUROPE_AND_NORTH_AMERICA',
+        regionalName: 'enam',
         name: {
             en: 'Europe and North America',
             es: 'Europa y América del Norte',
@@ -232,13 +232,13 @@ export default async function OnboardingPage({ params }: { params: Promise<{ loc
             // Merge Sanity data with database IDs. The DB enum (regionalName) and
             // the Sanity slug don't always transform 1:1 — e.g. slug
             // `europe-and-northern-america` → `EUROPE_AND_NORTHERN_AMERICA` but the
-            // enum is `EUROPE_AND_NORTH_AMERICA`. Match robustly so a community is
+            // enum is `enam`. Match robustly so a community is
             // never silently dropped from onboarding.
 
             // Normalize an enum-ish key for fuzzy comparison: lowercase, drop
             // filler words and non-letters, and collapse the north/northern,
             // east/eastern, etc. difference (the actual cause of the
-            // europe-and-northern-america vs EUROPE_AND_NORTH_AMERICA mismatch).
+            // europe-and-northern-america vs enam mismatch).
             const norm = (s: string) =>
                 s.toLowerCase()
                     .replace(/\b(and|the|of)\b/g, '')

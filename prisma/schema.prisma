@@ -300,13 +300,13 @@ enum CommunityType {
 }
 
 enum RegionalCommunityName {
-  SUB_SAHARAN_AFRICA
-  NORTHERN_AFRICA_AND_WESTERN_ASIA
-  CENTRAL_AND_SOUTHERN_ASIA
-  EASTERN_AND_SOUTH_EASTERN_ASIA
-  LATIN_AMERICA_AND_THE_CARIBBEAN
-  OCEANIA
-  EUROPE_AND_NORTH_AMERICA
+  ssa
+  nawa
+  csa
+  esea
+  lac
+  oce
+  enam
 }
 
 enum SpecialCommunityName {

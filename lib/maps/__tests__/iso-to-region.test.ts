@@ -4,14 +4,14 @@ import { REGION_CODES } from "../region-codes";
 
 describe("isoToRegion", () => {
   it("maps representative countries to the right region", () => {
-    expect(isoToRegion("KEN")).toBe("SUB_SAHARAN_AFRICA");
-    expect(isoToRegion("EGY")).toBe("NORTHERN_AFRICA_AND_WESTERN_ASIA");
-    expect(isoToRegion("IND")).toBe("CENTRAL_AND_SOUTHERN_ASIA");
-    expect(isoToRegion("JPN")).toBe("EASTERN_AND_SOUTH_EASTERN_ASIA");
-    expect(isoToRegion("BRA")).toBe("LATIN_AMERICA_AND_THE_CARIBBEAN");
-    expect(isoToRegion("AUS")).toBe("OCEANIA");
-    expect(isoToRegion("FRA")).toBe("EUROPE_AND_NORTH_AMERICA");
-    expect(isoToRegion("USA")).toBe("EUROPE_AND_NORTH_AMERICA");
+    expect(isoToRegion("KEN")).toBe("ssa");
+    expect(isoToRegion("EGY")).toBe("nawa");
+    expect(isoToRegion("IND")).toBe("csa");
+    expect(isoToRegion("JPN")).toBe("esea");
+    expect(isoToRegion("BRA")).toBe("lac");
+    expect(isoToRegion("AUS")).toBe("oce");
+    expect(isoToRegion("FRA")).toBe("enam");
+    expect(isoToRegion("USA")).toBe("enam");
   });
 
   it("returns null for unknown / non-country codes", () => {

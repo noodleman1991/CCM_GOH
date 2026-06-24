@@ -143,7 +143,7 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
   )?.community
 
   // The community-page URL slug (e.g. "sub-saharan-africa") differs from the
-  // RegionalCommunityName enum (e.g. "SUB_SAHARAN_AFRICA"). Map it so the
+  // RegionalCommunityName enum (e.g. "ssa"). Map it so the
   // "visit community" link points at the real page.
   const regionSlug =
     regionalCommunity?.regionalName && isRegionCode(regionalCommunity.regionalName)

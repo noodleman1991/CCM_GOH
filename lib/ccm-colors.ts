@@ -8,7 +8,7 @@
 // layer. Resolve every fixed-facet colour through here instead of hand-coding hexes.
 //
 // Region note: the codebase currently stores the long-form region values
-// (`SUB_SAHARAN_AFRICA`, …) in Prisma/Algolia/Sanity, while the redesign spec uses
+// (`ssa`, …) in Prisma/Algolia/Sanity, while the redesign spec uses
 // short codes (`ssa`, …). Phase 6 migrates stored values to short codes; until then
 // `regionColor()` accepts BOTH forms so colours work against today's data and the
 // post-migration data without a breaking change.
@@ -45,13 +45,13 @@ export type RegionShortCode = (typeof REGION_SHORT_CODES)[number];
 
 /** Long-form `RegionCode` ↔ short code, so both data shapes resolve to one colour. */
 export const REGION_LONG_TO_SHORT: Record<RegionCode, RegionShortCode> = {
-  EUROPE_AND_NORTH_AMERICA: "enam",
-  LATIN_AMERICA_AND_THE_CARIBBEAN: "lac",
-  NORTHERN_AFRICA_AND_WESTERN_ASIA: "nawa",
-  SUB_SAHARAN_AFRICA: "ssa",
-  CENTRAL_AND_SOUTHERN_ASIA: "csa",
-  EASTERN_AND_SOUTH_EASTERN_ASIA: "esea",
-  OCEANIA: "oce",
+  enam: "enam",
+  lac: "lac",
+  nawa: "nawa",
+  ssa: "ssa",
+  csa: "csa",
+  esea: "esea",
+  oce: "oce",
 };
 
 /** Reverse: short code → long-form `RegionCode`. */
@@ -115,7 +115,7 @@ export const COLOR = {
 
 /**
  * Resolve a region's colour from EITHER a short code (`ssa`) or the long-form
- * stored value (`SUB_SAHARAN_AFRICA`). Falls back to the Global colour for an
+ * stored value (`ssa`). Falls back to the Global colour for an
  * empty/unknown region (i.e. "Global" content), never colourless.
  */
 export function regionColor(region?: string | null): string {

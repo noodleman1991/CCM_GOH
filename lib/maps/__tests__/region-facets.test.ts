@@ -18,11 +18,11 @@ describe("aggregateRegionData", () => {
 
   it("scales intensity to the max value (max → 1)", () => {
     const counts = zero();
-    counts.OCEANIA = 5;
-    counts.EUROPE_AND_NORTH_AMERICA = 10;
+    counts.oce = 5;
+    counts.enam = 10;
     const data = aggregateRegionData(counts, "memberCount");
-    const oce = data.find((d) => d.code === "OCEANIA")!;
-    const eur = data.find((d) => d.code === "EUROPE_AND_NORTH_AMERICA")!;
+    const oce = data.find((d) => d.code === "oce")!;
+    const eur = data.find((d) => d.code === "enam")!;
     expect(eur.intensity).toBe(1);
     expect(oce.intensity).toBeCloseTo(0.5);
   });

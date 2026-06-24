@@ -370,43 +370,43 @@ export class CommunityService {
    */
   private static getRegionalNames(): Record<RegionalCommunityName, Record<string, string>> {
     return {
-      SUB_SAHARAN_AFRICA: {
+      ssa: {
         en: 'Sub-Saharan Africa',
         es: 'África Subsahariana',
         fr: 'Afrique subsaharienne',
         ar: 'أفريقيا جنوب الصحراء'
       },
-      NORTHERN_AFRICA_AND_WESTERN_ASIA: {
+      nawa: {
         en: 'Northern Africa and Western Asia',
         es: 'África del Norte y Asia Occidental',
         fr: 'Afrique du Nord et Asie occidentale',
         ar: 'شمال أفريقيا وغرب آسيا'
       },
-      CENTRAL_AND_SOUTHERN_ASIA: {
+      csa: {
         en: 'Central and Southern Asia',
         es: 'Asia Central y Meridional',
         fr: 'Asie centrale et méridionale',
         ar: 'آسيا الوسطى والجنوبية'
       },
-      EASTERN_AND_SOUTH_EASTERN_ASIA: {
+      esea: {
         en: 'Eastern and South-Eastern Asia',
         es: 'Asia Oriental y Sudoriental',
         fr: 'Asie orientale et du Sud-Est',
         ar: 'شرق وجنوب شرق آسيا'
       },
-      LATIN_AMERICA_AND_THE_CARIBBEAN: {
+      lac: {
         en: 'Latin America and the Caribbean',
         es: 'América Latina y el Caribe',
         fr: 'Amérique latine et Caraïbes',
         ar: 'أمريكا اللاتينية والكاريبي'
       },
-      OCEANIA: {
+      oce: {
         en: 'Oceania',
         es: 'Oceanía',
         fr: 'Océanie',
         ar: 'أوقيانوسيا'
       },
-      EUROPE_AND_NORTH_AMERICA: {
+      enam: {
         en: 'Europe and North America',
         es: 'Europa y América del Norte',
         fr: 'Europe et Amérique du Nord',
