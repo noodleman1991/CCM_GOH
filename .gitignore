@@ -69,3 +69,6 @@ Screen Recording*
 
 # browser-verification screenshot artifacts (Playwright)
 verify-*.png
+
+# Sanity dataset export backups (local only)
+.sanity-backups/
