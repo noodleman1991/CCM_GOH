@@ -47,8 +47,8 @@ describe("regionColor", () => {
   });
 
   it("resolves a long-form stored value (today's data)", () => {
-    expect(regionColor("SUB_SAHARAN_AFRICA")).toBe(COLOR.region.ssa);
-    expect(regionColor("EUROPE_AND_NORTH_AMERICA")).toBe(COLOR.region.enam);
+    expect(regionColor("ssa")).toBe(COLOR.region.ssa);
+    expect(regionColor("enam")).toBe(COLOR.region.enam);
   });
 
   it("falls back to the Global colour for empty / unknown regions", () => {

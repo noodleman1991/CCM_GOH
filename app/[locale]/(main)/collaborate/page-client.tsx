@@ -40,13 +40,13 @@ const ALL_EXPERTISE_AREAS = [
 
 // Map regional name enum values to translation keys
 const REGIONAL_NAME_TO_TRANSLATION_KEY: Record<string, string> = {
-  'SUB_SAHARAN_AFRICA': 'subSaharanAfrica',
-  'NORTHERN_AFRICA_AND_WESTERN_ASIA': 'northernAfricaWesternAsia',
-  'CENTRAL_AND_SOUTHERN_ASIA': 'centralSouthernAsia',
-  'EASTERN_AND_SOUTH_EASTERN_ASIA': 'easternSouthEasternAsia',
-  'LATIN_AMERICA_AND_THE_CARIBBEAN': 'latinAmericaCaribbean',
-  'OCEANIA': 'oceania',
-  'EUROPE_AND_NORTH_AMERICA': 'europeNorthAmerica'
+  'ssa': 'subSaharanAfrica',
+  'nawa': 'northernAfricaWesternAsia',
+  'csa': 'centralSouthernAsia',
+  'esea': 'easternSouthEasternAsia',
+  'lac': 'latinAmericaCaribbean',
+  'oce': 'oceania',
+  'enam': 'europeNorthAmerica'
 }
 
 interface CollaboratePageClientProps {
@@ -240,7 +240,7 @@ export function CollaboratePageClient({
       ) : (
         <div className="space-y-8">
           {filteredCommunities.map(communityName => {
-            // communityName is the regionalName enum value (e.g., "EASTERN_AND_SOUTH_EASTERN_ASIA")
+            // communityName is the regionalName enum value (e.g., "esea")
             // or "No Regional Community" for users without a regional community
             const translationKey = communityName === 'No Regional Community'
               ? 'noRegionalCommunity'

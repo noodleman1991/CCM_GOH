@@ -22,7 +22,7 @@ describe("region-codes", () => {
   });
 
   it("isRegionCode validates membership", () => {
-    expect(isRegionCode("SUB_SAHARAN_AFRICA")).toBe(true);
+    expect(isRegionCode("ssa")).toBe(true);
     expect(isRegionCode("NOT_A_REGION")).toBe(false);
   });
 });

@@ -7,7 +7,7 @@ import { getLocalizedValue } from "@/i18n/i18n-helpers";
 
 /**
  * Resolve each facet's options to LOCALIZED labels (never raw slugs/enums), so
- * the DiscoveryBar shows "Sub-Saharan Africa" not SUB_SAHARAN_AFRICA and
+ * the DiscoveryBar shows "Sub-Saharan Africa" not ssa and
  * "Climate Grief" not climate-grief. Server-only; pass the result to the bar.
  *
  * Static facets (language, source, openToTalk) have fixed option sets resolved

@@ -62,7 +62,7 @@ export function expertiseLabel(tExpertise: T, value: string): string {
 
 /**
  * Turn a slug/enum into a readable Title Case string as a LAST resort — when no
- * i18n key exists. "climate-grief" / "SUB_SAHARAN_AFRICA" → "Climate Grief" /
+ * i18n key exists. "climate-grief" / "ssa" → "Climate Grief" /
  * "Sub Saharan Africa". Never show the raw value.
  */
 export function humanize(value: string): string {

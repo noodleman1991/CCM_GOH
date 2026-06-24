@@ -32,13 +32,13 @@ interface CommunityFiltersProps {
 
 // Map regional name enum values to translation keys
 const REGIONAL_NAME_TO_TRANSLATION_KEY: Record<string, string> = {
-  'SUB_SAHARAN_AFRICA': 'subSaharanAfrica',
-  'NORTHERN_AFRICA_AND_WESTERN_ASIA': 'northernAfricaWesternAsia',
-  'CENTRAL_AND_SOUTHERN_ASIA': 'centralSouthernAsia',
-  'EASTERN_AND_SOUTH_EASTERN_ASIA': 'easternSouthEasternAsia',
-  'LATIN_AMERICA_AND_THE_CARIBBEAN': 'latinAmericaCaribbean',
-  'OCEANIA': 'oceania',
-  'EUROPE_AND_NORTH_AMERICA': 'europeNorthAmerica'
+  'ssa': 'subSaharanAfrica',
+  'nawa': 'northernAfricaWesternAsia',
+  'csa': 'centralSouthernAsia',
+  'esea': 'easternSouthEasternAsia',
+  'lac': 'latinAmericaCaribbean',
+  'oce': 'oceania',
+  'enam': 'europeNorthAmerica'
 }
 
 const WORK_TYPES = [

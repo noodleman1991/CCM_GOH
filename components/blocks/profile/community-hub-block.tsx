@@ -25,13 +25,13 @@ export default function CommunityHubBlock({
     const t = useTranslations('profile.communities')
 
     const regionalLabels: Record<string, string> = {
-        SUB_SAHARAN_AFRICA: t('regional.subSaharanAfrica'),
-        NORTHERN_AFRICA_AND_WESTERN_ASIA: t('regional.northernAfricaWesternAsia'),
-        CENTRAL_AND_SOUTHERN_ASIA: t('regional.centralSouthernAsia'),
-        EASTERN_AND_SOUTH_EASTERN_ASIA: t('regional.easternSouthEasternAsia'),
-        LATIN_AMERICA_AND_THE_CARIBBEAN: t('regional.latinAmericaCaribbean'),
-        OCEANIA: t('regional.oceania'),
-        EUROPE_AND_NORTH_AMERICA: t('regional.europeNorthAmerica')
+        ssa: t('regional.subSaharanAfrica'),
+        nawa: t('regional.northernAfricaWesternAsia'),
+        csa: t('regional.centralSouthernAsia'),
+        esea: t('regional.easternSouthEasternAsia'),
+        lac: t('regional.latinAmericaCaribbean'),
+        oce: t('regional.oceania'),
+        enam: t('regional.europeNorthAmerica')
     }
 
     const specialLabels: Record<string, string> = {
