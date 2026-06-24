@@ -83,13 +83,19 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ loca
   const locationText = getStudyLocationText(caseStudy)
   const publishDate = caseStudy.publishedAt ? new Date(caseStudy.publishedAt) : null
 
+  // Detail layout archetype (WIREFRAMES §4.12). "story" = the centered reading
+  // layout (default); "feature" leads with a bold split header; "report" adds a
+  // sticky "At a glance" sidebar. All render the SAME content/blocks.
+  const layout = (caseStudy.layout as 'story' | 'feature' | 'report') || 'story'
+
   return (
-    <div className="container max-w-4xl py-8 space-y-8">
+    <div className={cn("container py-8 space-y-8", layout === 'report' ? "max-w-5xl" : "max-w-4xl")} data-layout={layout}>
       {/* Back link */}
       <BackLink href="/research-and-action/case-studies" label={t('backToCaseStudies')} />
 
-      {/* Header */}
-      <div className="space-y-4">
+      {/* Header — Feature archetype renders a bold navy title panel; Story/Report
+          use the standard header. */}
+      <div className={cn("space-y-4", layout === 'feature' && "rounded-2xl bg-ccm-midnight p-8 text-white md:p-10")}>
         {/* Featured badge */}
         {caseStudy.featured && (
           <Badge className="bg-[var(--color-ccm-sky)]/30 text-[var(--color-ccm-sea)] border-0">
@@ -97,14 +103,14 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ loca
           </Badge>
         )}
 
-        <h1 className={cn("font-bold tracking-tight text-balance text-ccm-midnight", heading('xl'))}>{title}</h1>
+        <h1 className={cn("font-bold tracking-tight text-balance", heading('xl'), layout === 'feature' ? "text-white" : "text-ccm-midnight")}>{title}</h1>
 
         {excerpt && (
-          <p className="text-lg md:text-xl text-muted-foreground text-pretty">{excerpt}</p>
+          <p className={cn("text-lg md:text-xl text-pretty", layout === 'feature' ? "text-white/80" : "text-muted-foreground")}>{excerpt}</p>
         )}
 
         {/* Metadata */}
-        <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+        <div className={cn("flex flex-wrap gap-4 text-sm", layout === 'feature' ? "text-white/70" : "text-muted-foreground")}>
           {publishDate && (
             <div className="flex items-center gap-1">
               <Calendar className="w-4 h-4" />
@@ -165,16 +171,37 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ loca
         </div>
       )}
 
-      {/* Main Content — clean long-form article (no card chrome), the rich
-          styled-block-content renders lead/sidebar-note/pull-quote/CTA blocks. */}
+      {/* Main Content — clean long-form article. The Report archetype pairs it
+          with a sticky "At a glance" sidebar; Story/Feature center the column. */}
       {caseStudy.content && (
-        <article className="mx-auto max-w-prose text-base md:text-lg leading-relaxed">
-          <PortableTextRenderer
-            value={caseStudy.content}
-            locale={supportedLocale}
-            isRTL={supportedLocale === 'ar'}
-          />
-        </article>
+        layout === 'report' ? (
+          <div className="grid gap-8 lg:grid-cols-[1fr_280px] lg:items-start">
+            <article className="min-w-0 text-base md:text-lg leading-relaxed">
+              <PortableTextRenderer value={caseStudy.content} locale={supportedLocale} isRTL={supportedLocale === 'ar'} />
+            </article>
+            <aside className="lg:sticky lg:top-24 rounded-xl border bg-muted/20 p-5 text-sm">
+              <h3 className="mb-3 font-heading font-semibold text-ccm-midnight">{t('atAGlance')}</h3>
+              <dl className="space-y-2">
+                {publishDate && (
+                  <div><dt className="text-muted-foreground">{t('published')}</dt><dd>{formatCaseStudyDate(publishDate, supportedLocale)}</dd></div>
+                )}
+                {primaryAuthor && (
+                  <div><dt className="text-muted-foreground">{t('author')}</dt><dd>{primaryAuthor.name}</dd></div>
+                )}
+                {locationText && (
+                  <div><dt className="text-muted-foreground">{t('location')}</dt><dd>{locationText}</dd></div>
+                )}
+                {caseStudy.organizations && caseStudy.organizations.length > 0 && (
+                  <div><dt className="text-muted-foreground">{t('organizations')}</dt><dd>{caseStudy.organizations.map((o: any) => o.name).join(', ')}</dd></div>
+                )}
+              </dl>
+            </aside>
+          </div>
+        ) : (
+          <article className="mx-auto max-w-prose text-base md:text-lg leading-relaxed">
+            <PortableTextRenderer value={caseStudy.content} locale={supportedLocale} isRTL={supportedLocale === 'ar'} />
+          </article>
+        )
       )}
 
       {/* Study Details */}

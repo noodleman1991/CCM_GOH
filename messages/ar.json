@@ -1325,7 +1325,11 @@
     "studyAreas": "مجالات الدراسة",
     "allAuthors": "جميع المؤلفين",
     "featuredBadge": "مميّزة",
-    "producedBy": "من إنتاج"
+    "producedBy": "من إنتاج",
+    "atAGlance": "لمحة سريعة",
+    "published": "تاريخ النشر",
+    "author": "المؤلف",
+    "location": "الموقع"
   },
   "revisionAlert": {
     "title": "مطلوب إجراء: تنقيح مطلوب",

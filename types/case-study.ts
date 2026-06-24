@@ -89,6 +89,7 @@ export interface CaseStudy {
     title: LocalizedString; // Field-level localized object
     excerpt?: LocalizedString; // Field-level localized object
     content?: any; // Portable Text content (styled-block-content)
+    layout?: 'story' | 'feature' | 'report'; // Detail-page archetype (§4.12)
     slug: { current: string };
     status: 'pending' | 'approved' | 'rejected' | 'revision';
     publishedAt?: string;

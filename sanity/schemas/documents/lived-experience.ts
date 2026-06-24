@@ -230,6 +230,20 @@ export default defineType({
             description: "The community this lived experience relates to",
         }),
 
+        // Detail-page layout archetype (WIREFRAMES §4.12). Defaults to "story".
+        defineField({
+            name: "layout",
+            title: "Detail layout",
+            type: "string",
+            group: "content",
+            options: { list: [
+                { title: "Story (narrative + photography)", value: "story" },
+                { title: "Feature (one bold statement)", value: "feature" },
+                { title: "Report (evidence + data; sticky 'At a glance')", value: "report" },
+            ] },
+            initialValue: "story",
+        }),
+
         // Phase 6 fixed taxonomy (additive; backfilled from relatedCommunity).
         defineField({
             name: "region",

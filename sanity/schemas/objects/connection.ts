@@ -12,6 +12,7 @@ import { defineType, defineField } from "sanity";
  * `references()` back-query, so the relationship is bidirectional in display.
  */
 export const RELATION_OPTIONS = [
+  { title: "About", value: "about" },
   { title: "Related", value: "related" },
   { title: "Part of", value: "part-of" },
   { title: "Output of", value: "output-of" },
@@ -40,6 +41,7 @@ const connection = defineType({
         { type: "caseStudy" },
         { type: "livedExperience" },
         { type: "newsPost" },
+        { type: "researchOutput" },
         { type: "report" },
         { type: "project" },
         { type: "regionalCommunity" },
