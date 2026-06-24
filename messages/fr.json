@@ -1673,5 +1673,17 @@
     "peopleEmpty": "Aucun membre à afficher pour l’instant.",
     "aMember": "Un membre",
     "seeking": "Recherche"
+  },
+  "researchOutputs": {
+    "backToResearch": "Retour à Recherche et Action",
+    "featured": "À la une",
+    "documents": "Documents",
+    "download": "Télécharger",
+    "pages": "pages",
+    "atAGlance": "En bref",
+    "type": "Type",
+    "published": "Publié",
+    "organizations": "Organisations",
+    "relatedContent": "Contenu lié"
   }
 }

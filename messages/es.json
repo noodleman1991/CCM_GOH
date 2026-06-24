@@ -1673,5 +1673,17 @@
     "peopleEmpty": "Aún no hay miembros para mostrar.",
     "aMember": "Un miembro",
     "seeking": "Busca"
+  },
+  "researchOutputs": {
+    "backToResearch": "Volver a Investigación y Acción",
+    "featured": "Destacado",
+    "documents": "Documentos",
+    "download": "Descargar",
+    "pages": "páginas",
+    "atAGlance": "De un vistazo",
+    "type": "Tipo",
+    "published": "Publicado",
+    "organizations": "Organizaciones",
+    "relatedContent": "Contenido relacionado"
   }
 }

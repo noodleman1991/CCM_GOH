@@ -1673,5 +1673,17 @@
     "peopleEmpty": "لا يوجد أعضاء لعرضهم بعد.",
     "aMember": "عضو",
     "seeking": "يبحث عن"
+  },
+  "researchOutputs": {
+    "backToResearch": "العودة إلى البحث والعمل",
+    "featured": "مميّز",
+    "documents": "المستندات",
+    "download": "تنزيل",
+    "pages": "صفحات",
+    "atAGlance": "لمحة سريعة",
+    "type": "النوع",
+    "published": "تاريخ النشر",
+    "organizations": "المنظمات",
+    "relatedContent": "محتوى ذو صلة"
   }
 }
