@@ -6,6 +6,7 @@ import { useTranslations } from 'next-intl'
 import { FilterChip } from '@/components/ui/filter-chip'
 import { RegionChoropleth } from '@/components/maps/region-choropleth'
 import { RegionDataPanel } from '@/components/maps/region-data-panel'
+import { RegionContentCards } from '@/components/atlas/region-content-cards'
 import { SectionHeader } from '@/components/ui/section-header'
 import { FACETS, type FacetId, type RegionDatum } from '@/lib/maps/region-facets'
 import {
@@ -28,6 +29,12 @@ const FACET_DESTINATION: Record<FacetId, (slug: string) => string> = {
   agendaCount: (slug) => `/research-and-action/community-agendas`,
   reportCount: (slug) => `/research-and-action/impact-reports`,
 }
+
+// Facets whose selected region surfaces actual content cards (D2). Members
+// aren't shown as content cards.
+const CARD_FACETS: ReadonlySet<FacetId> = new Set([
+  'caseStudyCount', 'livedExpCount', 'newsCount', 'agendaCount', 'reportCount',
+])
 
 /**
  * Atlas & Explore — the geo-faceted discovery page. A full-width choropleth of
@@ -125,15 +132,21 @@ export function AtlasExplorer() {
             title={labelFor(selected)}
             subtitle={`${selectedDatum.value} · ${facetLabel}`}
           />
-          <div className="mt-4">
+          <div className="mt-4 space-y-4">
             {selectedDatum.value > 0 ? (
-              <Link
-                href={destinationHref}
-                className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
-              >
-                {tAtlas('explore', { region: labelFor(selected) })}
-                <ArrowRight className="size-4 rtl:-scale-x-100" />
-              </Link>
+              <>
+                {/* The region's actual content as cards (D2). */}
+                {CARD_FACETS.has(facet) && (
+                  <RegionContentCards region={selected} facet={facet} />
+                )}
+                <Link
+                  href={destinationHref}
+                  className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
+                >
+                  {tAtlas('explore', { region: labelFor(selected) })}
+                  <ArrowRight className="size-4 rtl:-scale-x-100" />
+                </Link>
+              </>
             ) : (
               <p className="text-sm text-muted-foreground">
                 {tAtlas('empty', { layer: facetLabel })}
