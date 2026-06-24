@@ -8,6 +8,7 @@ import { RegionChoropleth } from '@/components/maps/region-choropleth'
 import { RegionDataPanel } from '@/components/maps/region-data-panel'
 import { RegionContentCards } from '@/components/atlas/region-content-cards'
 import { SectionHeader } from '@/components/ui/section-header'
+import { Button } from '@/components/ui/button'
 import { FACETS, type FacetId, type RegionDatum } from '@/lib/maps/region-facets'
 import {
   REGION_I18N_KEY,
@@ -139,13 +140,12 @@ export function AtlasExplorer() {
                 {CARD_FACETS.has(facet) && (
                   <RegionContentCards region={selected} facet={facet} />
                 )}
-                <Link
-                  href={destinationHref}
-                  className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
-                >
-                  {tAtlas('explore', { region: labelFor(selected) })}
-                  <ArrowRight className="size-4 rtl:-scale-x-100" />
-                </Link>
+                <Button asChild size="sm">
+                  <Link href={destinationHref}>
+                    {tAtlas('explore', { region: labelFor(selected) })}
+                    <ArrowRight className="size-4 rtl:-scale-x-100" />
+                  </Link>
+                </Button>
               </>
             ) : (
               <p className="text-sm text-muted-foreground">

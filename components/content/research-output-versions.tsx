@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { Download, FileText } from "lucide-react";
 import { FilterChip } from "@/components/ui/filter-chip";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 type Version = {
   _key: string;
@@ -58,15 +59,12 @@ export function ResearchOutputVersions({ versions }: { versions: Version[] }) {
               </p>
             </div>
           </div>
-          <a
-            href={active.fileUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
-          >
-            <Download className="size-4" />
-            {t("download")}
-          </a>
+          <Button asChild size="sm">
+            <a href={active.fileUrl} target="_blank" rel="noopener noreferrer">
+              <Download className="size-4" />
+              {t("download")}
+            </a>
+          </Button>
         </div>
       )}
     </Card>
