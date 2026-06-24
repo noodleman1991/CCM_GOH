@@ -5,6 +5,7 @@ import Carousel2 from "@/components/blocks/carousel/carousel-2";
 import Cta1 from "@/components/blocks/cta/cta-1";
 import LogoCloud1 from "@/components/blocks/logo-cloud/logo-cloud-1";
 import RegionMapBlock from "@/components/blocks/maps/region-map";
+import PeopleWidget from "@/components/blocks/people/people-widget";
 import { FEATURES } from "@/lib/features";
 import { isRTL } from "@/i18n/i18n-helpers";
 import {
@@ -238,6 +239,14 @@ export default async function Homepage({ homepage, locale }: HomepageProps) {
           locale={locale}
           isRTL={rtl}
         />
+      )}
+
+      {/* Section 7b: People in your region (WIREFRAMES §4.1 "Collaborate" panel).
+          Flag-gated until validated; prod stays clean. */}
+      {FEATURES.homepagePeople && (
+        <section className="container max-w-6xl py-8">
+          <PeopleWidget locale={locale} limit={6} />
+        </section>
       )}
 
       {/* Section 8: Latest News */}

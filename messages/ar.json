@@ -1667,5 +1667,11 @@
     "backToDocs": "العودة إلى المستندات",
     "untitled": "بدون عنوان",
     "startWriting": "ابدأ الكتابة…"
+  },
+  "home": {
+    "peopleTitle": "أشخاص في منطقتك",
+    "peopleEmpty": "لا يوجد أعضاء لعرضهم بعد.",
+    "aMember": "عضو",
+    "seeking": "يبحث عن"
   }
 }
