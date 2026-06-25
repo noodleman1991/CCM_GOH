@@ -1606,7 +1606,8 @@
       "media": "Médias",
       "members": "Membres",
       "sections": "Sections",
-      "docs": "Documents"
+      "docs": "Documents",
+      "outputs": "Productions"
     },
     "role": {
       "OWNER": "Propriétaire",

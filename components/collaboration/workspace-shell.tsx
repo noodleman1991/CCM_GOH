@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { LayoutGrid, MessagesSquare, FileText, Film, Users, Menu, ListTodo, BookText } from "lucide-react";
+import { LayoutGrid, MessagesSquare, FileText, Film, Users, Menu, ListTodo, BookText, Package } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { setMemberRole } from "@/lib/actions/collaboration";
 import type { CollaborationRole } from "@/generated/prisma";
@@ -27,6 +27,8 @@ import { WorkspaceFiles } from "./workspace-files";
 import { WorkspaceMedia } from "./workspace-media";
 import { WorkspacePlan } from "./workspace-plan";
 import { WorkspaceDocs } from "./workspace-docs";
+import WorkspaceOutputs from "./workspace-outputs";
+import WorkspaceHome from "./workspace-home";
 import { InlineText } from "@/components/ui/inline-text";
 import { updateCollaboration } from "@/lib/actions/collaboration";
 import { CollaborationPdfDialog } from "./collaboration-pdf-dialog";
@@ -45,7 +47,7 @@ type CollabProps = {
   description: string | null;
   visibility: "PUBLIC" | "MEMBERS";
   status: string;
-  counts: { threads: number; files: number; media: number; members: number };
+  counts: { threads: number; files: number; media: number; members: number; outputs: number };
   members: Member[];
 };
 
@@ -57,7 +59,10 @@ type PlanStageProp = {
 
 type DocProp = { id: string; title: string; content: unknown; updatedAt: string };
 
-type Section = "overview" | "plan" | "docs" | "threads" | "files" | "media" | "members";
+type OutputProp = { id: string; sanityId: string; sanityType: string; title: string; status: string };
+type ActivityProp = { kind: string; summary: string; at: string };
+
+type Section = "overview" | "plan" | "outputs" | "docs" | "threads" | "files" | "media" | "members";
 
 export function WorkspaceShell({
   collaboration,
@@ -67,6 +72,8 @@ export function WorkspaceShell({
   r2Configured,
   planStages,
   docs,
+  outputs,
+  activity,
 }: {
   collaboration: CollabProps;
   myRole: CollaborationRole | null;
@@ -75,6 +82,8 @@ export function WorkspaceShell({
   r2Configured: boolean;
   planStages: PlanStageProp[];
   docs: DocProp[];
+  outputs: OutputProp[];
+  activity: ActivityProp[];
 }) {
   const t = useTranslations("collaboration");
   const [section, setSection] = useState<Section>("overview");
@@ -102,6 +111,7 @@ export function WorkspaceShell({
 
   const nav: { id: Section; label: string; icon: typeof LayoutGrid; count?: number }[] = [
     { id: "overview", label: t("nav.overview"), icon: LayoutGrid },
+    { id: "outputs", label: t("nav.outputs"), icon: Package, count: collaboration.counts.outputs },
     { id: "plan", label: t("nav.plan"), icon: ListTodo },
     { id: "docs", label: t("nav.docs"), icon: BookText },
     { id: "threads", label: t("nav.threads"), icon: MessagesSquare, count: collaboration.counts.threads },
@@ -189,19 +199,18 @@ export function WorkspaceShell({
                   className="block text-foreground/90"
                 />
               )}
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                {nav.slice(1).map((n) => (
-                  <button
-                    key={n.id}
-                    onClick={() => setSection(n.id)}
-                    className="rounded-lg border p-4 text-start transition-colors hover:bg-muted"
-                  >
-                    <p className="text-2xl font-bold text-ccm-midnight">{n.count}</p>
-                    <p className="text-sm text-muted-foreground">{n.label}</p>
-                  </button>
-                ))}
-              </div>
+              <WorkspaceHome
+                outputs={outputs}
+                planStages={planStages}
+                activity={activity}
+                memberCount={collaboration.counts.members}
+                onGoToTab={(tab) => setSection(tab as Section)}
+              />
             </section>
+          )}
+
+          {section === "outputs" && (
+            <WorkspaceOutputs outputs={outputs} collaborationId={collaboration.id} canEdit={canEdit} />
           )}
 
           {section === "plan" && (

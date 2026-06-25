@@ -3,7 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { FEATURES } from "@/lib/features";
 import { auth } from "@clerk/nextjs/server";
 import { getTranslations } from "next-intl/server";
-import { getCollaboration, getMembershipRole, authorizeCollab, getPlan, getDocs } from "@/lib/collaboration/service";
+import { getCollaboration, getMembershipRole, authorizeCollab, getPlan, getDocs, getOutputs, refreshOutputStatuses, getActivity } from "@/lib/collaboration/service";
 import { getActor, isStaff } from "@/lib/authz";
 import { r2Configured } from "@/lib/r2";
 import { WorkspaceShell } from "@/components/collaboration/workspace-shell";
@@ -61,6 +61,10 @@ export default async function CollaborationDetailPage({
     updatedAt: d.updatedAt.toISOString(),
   }));
 
+  // Refresh cached output statuses from Sanity, then load outputs + activity.
+  await refreshOutputStatuses(id);
+  const [outputs, activity] = await Promise.all([getOutputs(id), getActivity(id)]);
+
   return (
     <WorkspaceShell
       collaboration={{
@@ -85,6 +89,8 @@ export default async function CollaborationDetailPage({
       r2Configured={r2Configured()}
       planStages={planStages}
       docs={docs}
+      outputs={outputs}
+      activity={activity}
     />
   );
 }
