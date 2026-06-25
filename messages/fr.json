@@ -1685,5 +1685,21 @@
     "published": "Publié",
     "organizations": "Organisations",
     "relatedContent": "Contenu lié"
+  },
+  "outputs": {
+    "title": "Productions",
+    "subtitle": "Le contenu du hub que cet espace produit.",
+    "whatMaking": "Que créez-vous ?",
+    "addOutput": "Ajouter une production",
+    "createNew": "Créer un brouillon",
+    "linkExisting": "Lier un brouillon existant",
+    "pickType": "Choisir un type",
+    "empty": "Aucune production pour l’instant. Ajoutez l’étude de cas, l’expérience vécue ou le résultat de recherche sur lequel cet espace travaille.",
+    "statusDraft": "Brouillon",
+    "statusPending": "En révision",
+    "statusRevision": "À corriger",
+    "statusApproved": "Publié",
+    "remove": "Retirer",
+    "removeConfirm": "Retirer cette production de l’espace ? Le brouillon n’est pas supprimé."
   }
 }

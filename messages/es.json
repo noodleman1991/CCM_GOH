@@ -1685,5 +1685,21 @@
     "published": "Publicado",
     "organizations": "Organizaciones",
     "relatedContent": "Contenido relacionado"
+  },
+  "outputs": {
+    "title": "Resultados",
+    "subtitle": "El contenido del hub que produce este espacio.",
+    "whatMaking": "¿Qué estás creando?",
+    "addOutput": "Añadir un resultado",
+    "createNew": "Crear un borrador",
+    "linkExisting": "Vincular un borrador existente",
+    "pickType": "Elige un tipo",
+    "empty": "Aún no hay resultados. Añade el estudio de caso, la experiencia vivida o el resultado de investigación en el que trabaja este espacio.",
+    "statusDraft": "Borrador",
+    "statusPending": "En revisión",
+    "statusRevision": "Necesita cambios",
+    "statusApproved": "Publicado",
+    "remove": "Quitar",
+    "removeConfirm": "¿Quitar este resultado del espacio? El borrador no se elimina."
   }
 }
