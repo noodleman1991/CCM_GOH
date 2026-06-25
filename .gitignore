@@ -72,3 +72,6 @@ verify-*.png
 
 # Sanity dataset export backups (local only)
 .sanity-backups/
+
+# Brainstorm visual companion (local only)
+.superpowers/
