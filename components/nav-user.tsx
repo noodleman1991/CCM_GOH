@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils"
 import { rtlLocales } from "@/i18n/routing"
 
 import { FEATURES } from "@/lib/features"
+import { NotificationDot } from "@/components/notifications/notification-dot"
 import {
     Avatar,
     AvatarFallback,
@@ -65,12 +66,14 @@ export function NavUser({
                             size="lg"
                             className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                         >
-                            <Avatar className="h-8 w-8 rounded-lg">
-                                <AvatarImage src={user.avatar} alt={user.name} />
-                                <AvatarFallback className="rounded-lg">
-                                    {user.name.substring(0, 2).toUpperCase()}
-                                </AvatarFallback>
-                            </Avatar>
+                            <NotificationDot>
+                                <Avatar className="h-8 w-8 rounded-lg">
+                                    <AvatarImage src={user.avatar} alt={user.name} />
+                                    <AvatarFallback className="rounded-lg">
+                                        {user.name.substring(0, 2).toUpperCase()}
+                                    </AvatarFallback>
+                                </Avatar>
+                            </NotificationDot>
                             <div className={cn("grid flex-1 text-sm leading-tight", isRTL ? "text-right" : "text-left")}>
                                 <span className="truncate font-medium">{user.name}</span>
                                 <span className="truncate text-xs">{user.email}</span>

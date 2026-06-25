@@ -8,9 +8,7 @@ import { draftMode } from "next/headers";
 import { SanityLive } from "@/sanity/lib/live";
 import { Suspense } from "react";
 import { SiteAnnouncementBar } from "@/components/announcement/site-announcement-bar";
-import { NotificationBell } from "@/components/notifications/notification-bell";
-import { SearchTrigger, SearchModal } from "@/components/search-dialog";
-import { FEATURES } from "@/lib/features";
+import { SearchModal } from "@/components/search-dialog";
 
 export default async function MainLayout({
     children,
@@ -37,10 +35,6 @@ export default async function MainLayout({
                             orientation="vertical"
                             className="h-4 me-2"
                         />
-                    </div>
-                    <div className="ms-auto flex items-center gap-2 px-4">
-                        <SearchTrigger variant="icon" />
-                        {FEATURES.engagement && <NotificationBell />}
                     </div>
                 </header>
                 {/*
