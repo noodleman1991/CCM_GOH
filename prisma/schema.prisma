@@ -483,6 +483,7 @@ model Collaboration {
   joinRequests JoinRequest[]
   plan    Plan?
   docs    CollaborationDoc[]
+  outputs WorkspaceOutput[]
 
   @@index([status, visibility, updatedAt])
   @@index([createdById])
@@ -556,6 +557,24 @@ model CollaborationMedia {
   createdAt       DateTime      @default(now())
 
   @@index([collaborationId, createdAt])
+}
+
+/// A hub output (a Sanity draft) a workspace is producing. Sanity is the system
+/// of record; title/status are cached for the Home and refreshed on view.
+model WorkspaceOutput {
+  id              String        @id @default(cuid())
+  collaborationId String
+  collaboration   Collaboration @relation(fields: [collaborationId], references: [id], onDelete: Cascade)
+  sanityId        String
+  sanityType      String // "caseStudy" | "livedExperience" | "researchOutput"
+  title           String        @default("Untitled")
+  status          String        @default("draft") // cached Sanity status
+  createdById     String
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@unique([collaborationId, sanityId])
+  @@index([collaborationId])
 }
 
 // ─── Notifications ───────────────────────────────────────────────────────────
