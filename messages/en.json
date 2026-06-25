@@ -1685,5 +1685,21 @@
     "published": "Published",
     "organizations": "Organizations",
     "relatedContent": "Related content"
+  },
+  "outputs": {
+    "title": "Outputs",
+    "subtitle": "The hub content this workspace is producing.",
+    "whatMaking": "What are you making?",
+    "addOutput": "Add an output",
+    "createNew": "Create a new draft",
+    "linkExisting": "Link an existing draft",
+    "pickType": "Pick a type",
+    "empty": "No outputs yet. Add the case study, lived experience, or research output this workspace is working toward.",
+    "statusDraft": "Draft",
+    "statusPending": "In review",
+    "statusRevision": "Needs changes",
+    "statusApproved": "Published",
+    "remove": "Remove",
+    "removeConfirm": "Remove this output from the workspace? The draft itself is not deleted."
   }
 }
