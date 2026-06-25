@@ -6,6 +6,7 @@ import Cta1 from "@/components/blocks/cta/cta-1";
 import LogoCloud1 from "@/components/blocks/logo-cloud/logo-cloud-1";
 import RegionMapBlock from "@/components/blocks/maps/region-map";
 import PeopleWidget from "@/components/blocks/people/people-widget";
+import Blocks from "@/components/blocks";
 import { FEATURES } from "@/lib/features";
 import { isRTL } from "@/i18n/i18n-helpers";
 import {
@@ -161,6 +162,16 @@ export default async function Homepage({ homepage, locale }: HomepageProps) {
 
   if (!homepage) {
     return null;
+  }
+
+  // Preferred: render from the freeform blocks[] page-builder. The fixed-section
+  // render below is the legacy fallback during the blocks[] migration.
+  if (homepage.blocks && homepage.blocks.length > 0) {
+    return (
+      <div dir={rtl ? "rtl" : "ltr"}>
+        <Blocks blocks={homepage.blocks} locale={locale} />
+      </div>
+    );
   }
 
   const [agendasModule, news] = await Promise.all([
