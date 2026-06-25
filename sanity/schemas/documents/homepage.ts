@@ -50,6 +50,34 @@ export default defineType({
       group: "settings",
     }),
 
+    // Freeform page-builder: compose the homepage from reusable blocks (drag to
+    // reorder). The fixed sections below are legacy and are removed once blocks
+    // are in use (dual-field transition).
+    defineField({
+      name: "blocks",
+      title: "Page blocks",
+      type: "array",
+      group: "content",
+      of: [
+        { type: "hero-1" },
+        { type: "hero-2" },
+        { type: "section-header" },
+        { type: "split-row" },
+        { type: "grid-row" },
+        { type: "carousel-1" },
+        { type: "carousel-2" },
+        { type: "lived-experiences-carousel" },
+        { type: "timeline-row" },
+        { type: "cta-1" },
+        { type: "logo-cloud-1" },
+        { type: "faqs" },
+        { type: "form-newsletter" },
+        { type: "region-map" },
+        { type: "people-widget" },
+      ],
+      description: "Compose the homepage from reusable blocks (drag to reorder).",
+    }),
+
     defineField({
       name: "heroWelcome",
       title: "Hero Welcome Section",
