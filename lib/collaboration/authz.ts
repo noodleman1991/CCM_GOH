@@ -19,6 +19,7 @@ export type CollabAction =
   | "collab:editThread" // create/rename threads
   | "collab:editPlan" // edit the research plan: stages/tasks (kanban)
   | "collab:editDoc" // create/edit/delete workspace documents
+  | "collab:editOutputs" // link/create/remove the workspace's hub outputs
   | "collab:manageMembers" // invite/remove/change roles
   | "collab:archive" // archive/delete the workspace
   | "collab:moderate"; // staff: remove content
@@ -66,6 +67,7 @@ export function canInCollab(action: CollabAction, ctx: CollabContext): boolean {
     case "collab:editThread":
     case "collab:editPlan":
     case "collab:editDoc":
+    case "collab:editOutputs":
       return atLeast(membershipRole, "EDITOR");
 
     case "collab:manageMembers":
