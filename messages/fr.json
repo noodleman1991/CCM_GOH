@@ -1577,6 +1577,7 @@
   "collaboration": {
     "pageTitle": "Collaborations",
     "pageDescription": "Espaces partagés pour travailler ensemble.",
+    "breadcrumbHome": "Espaces de travail",
     "create": "Nouvel espace",
     "createTitle": "Créer un espace",
     "titleLabel": "Nom",
