@@ -74,6 +74,7 @@ export default defineType({
         { type: "form-newsletter" },
         { type: "region-map" },
         { type: "people-widget" },
+        { type: "events-calendar" },
       ],
       description: "Compose the homepage from reusable blocks (drag to reorder).",
     }),
