@@ -3,18 +3,11 @@
 import { useTranslations } from "next-intl";
 import { Card } from "@/components/ui/card";
 import { SectionHeader } from "@/components/ui/section-header";
-import { OUTPUT_TYPES } from "@/lib/collaboration/outputs";
+import { OutputStatusPill, OutputTypeChip } from "./workspace-output-chip";
 
 type Output = { id: string; sanityType: string; title: string; status: string };
 type Stage = { id: string; title: string; tasks: { status: string }[] };
 type Activity = { kind: string; summary: string; at: string };
-
-const STATUS_BADGE: Record<string, { key: string; cls: string }> = {
-  draft: { key: "statusDraft", cls: "bg-muted text-muted-foreground" },
-  pending: { key: "statusPending", cls: "bg-[#fde9c8] text-[#92610a]" },
-  revision: { key: "statusRevision", cls: "bg-[#fde9c8] text-[#92610a]" },
-  approved: { key: "statusApproved", cls: "bg-[#d7f0dc] text-[#1d7a36]" },
-};
 
 export default function WorkspaceHome({
   outputs,
@@ -41,21 +34,13 @@ export default function WorkspaceHome({
       <section>
         <SectionHeader title={t("title")} subtitle={t("subtitle")} />
         <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {outputs.map((o) => {
-            const def = OUTPUT_TYPES.find((d) => d.type === o.sanityType);
-            const badge = STATUS_BADGE[o.status] ?? STATUS_BADGE.draft;
-            return (
-              <Card key={o.id} className="space-y-2 p-4">
-                <span className="inline-block rounded-full bg-ccm-sky/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-ccm-sea">
-                  {def?.label ?? o.sanityType}
-                </span>
-                <p className="font-medium text-ccm-midnight">{o.title}</p>
-                <span className={`inline-block rounded-full px-2 py-0.5 text-[10px] font-bold ${badge.cls}`}>
-                  {t(badge.key)}
-                </span>
-              </Card>
-            );
-          })}
+          {outputs.map((o) => (
+            <Card key={o.id} className="space-y-2 p-4">
+              <OutputTypeChip type={o.sanityType} />
+              <p className="font-medium text-ccm-midnight">{o.title}</p>
+              <OutputStatusPill status={o.status} />
+            </Card>
+          ))}
           <button
             onClick={() => onGoToTab("outputs")}
             className="flex items-center justify-center rounded-lg border border-dashed border-ccm-sea/40 p-4 text-sm font-semibold text-ccm-sea"

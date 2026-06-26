@@ -8,15 +8,9 @@ import { Card } from "@/components/ui/card";
 import { SectionHeader } from "@/components/ui/section-header";
 import { OUTPUT_TYPES } from "@/lib/collaboration/outputs";
 import { addOutput, removeOutput } from "@/lib/actions/workspace-outputs";
+import { OutputStatusPill, OutputTypeChip } from "./workspace-output-chip";
 
 type Output = { id: string; sanityId: string; sanityType: string; title: string; status: string };
-
-const STATUS_BADGE: Record<string, { key: string; cls: string }> = {
-  draft: { key: "statusDraft", cls: "bg-muted text-muted-foreground" },
-  pending: { key: "statusPending", cls: "bg-[#fde9c8] text-[#92610a]" },
-  revision: { key: "statusRevision", cls: "bg-[#fde9c8] text-[#92610a]" },
-  approved: { key: "statusApproved", cls: "bg-[#d7f0dc] text-[#1d7a36]" },
-};
 
 export default function WorkspaceOutputs({
   outputs,
@@ -60,16 +54,12 @@ export default function WorkspaceOutputs({
       {outputs.length > 0 && (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {outputs.map((o) => {
-            const def = OUTPUT_TYPES.find((d) => d.type === o.sanityType);
-            const badge = STATUS_BADGE[o.status] ?? STATUS_BADGE.draft;
             return (
               <Card key={o.id} className="space-y-2 p-4">
-                <span className="inline-block rounded-full bg-ccm-sky/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-ccm-sea">
-                  {def?.label ?? o.sanityType}
-                </span>
+                <OutputTypeChip type={o.sanityType} />
                 <p className="font-medium text-ccm-midnight">{o.title}</p>
                 <div className="flex items-center justify-between">
-                  <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${badge.cls}`}>{t(badge.key)}</span>
+                  <OutputStatusPill status={o.status} />
                   {canEdit && (
                     <button
                       onClick={() => remove(o.id)}
