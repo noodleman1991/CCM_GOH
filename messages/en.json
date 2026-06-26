@@ -1630,6 +1630,16 @@
     "mediaTitlePlaceholder": "Title (optional)",
     "addMedia": "Add",
     "noMedia": "No media yet.",
+    "emptyState": {
+      "docsTitle": "No documents yet",
+      "docsBody": "Draft notes, briefs, and write-ups together. Create your first document to get started.",
+      "threadsTitle": "No discussions yet",
+      "threadsBody": "Start a thread to discuss decisions, share updates, or ask the group a question.",
+      "filesTitle": "No files yet",
+      "filesBody": "Upload PDFs and documents the team needs. Drag a file here or use the upload button.",
+      "mediaTitle": "No media yet",
+      "mediaBody": "Add YouTube videos to share talks, demos, or recordings with the workspace."
+    },
     "mediaConsentRequired": "This video needs cookie consent to play.",
     "dropToUpload": "Drag a file here or"
   },

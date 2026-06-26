@@ -11,6 +11,7 @@ import { formatDistanceToNow } from "date-fns";
 import { createThread, renameThread } from "@/lib/actions/collaboration";
 import { InlineText } from "@/components/ui/inline-text";
 import { CommentSection } from "@/components/comments/comment-section";
+import { WorkspaceEmptyState } from "./workspace-empty-state";
 import type { CollaborationRole } from "@/generated/prisma";
 
 type Thread = { id: string; title: string; createdAt: string };
@@ -69,7 +70,11 @@ export function WorkspaceThreads({
   return (
     <div className="space-y-4">
       {threads.length === 0 && !canEdit ? (
-        <p className="text-sm text-muted-foreground">{t("noThreads")}</p>
+        <WorkspaceEmptyState
+          icon={MessagesSquare}
+          title={t("emptyState.threadsTitle")}
+          body={t("emptyState.threadsBody")}
+        />
       ) : (
         <ul className="divide-y rounded-lg border">
           {threads.map((th) => (

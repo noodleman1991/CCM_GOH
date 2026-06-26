@@ -1630,6 +1630,16 @@
     "mediaTitlePlaceholder": "Título (opcional)",
     "addMedia": "Añadir",
     "noMedia": "Aún no hay multimedia.",
+    "emptyState": {
+      "docsTitle": "Aún no hay documentos",
+      "docsBody": "Redacten notas, resúmenes y textos en conjunto. Crea tu primer documento para empezar.",
+      "threadsTitle": "Aún no hay debates",
+      "threadsBody": "Inicia un hilo para debatir decisiones, compartir novedades o hacer una pregunta al grupo.",
+      "filesTitle": "Aún no hay archivos",
+      "filesBody": "Sube los PDF y documentos que el equipo necesite. Arrastra un archivo aquí o usa el botón de subida.",
+      "mediaTitle": "Aún no hay multimedia",
+      "mediaBody": "Añade vídeos de YouTube para compartir charlas, demostraciones o grabaciones con el espacio de trabajo."
+    },
     "mediaConsentRequired": "Este video necesita consentimiento de cookies.",
     "dropToUpload": "Arrastra un archivo aquí o"
   },
