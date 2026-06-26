@@ -51,7 +51,7 @@ export default async function CollaborationDetailPage({
     plan?.stages.map((s) => ({
       id: s.id,
       title: s.title,
-      tasks: s.tasks.map((t) => ({ id: t.id, title: t.title, status: t.status })),
+      tasks: s.tasks.map((t) => ({ id: t.id, title: t.title, status: t.status, assigneeId: t.assignee?.id ?? null })),
     })) ?? [];
 
   const docsRows = await getDocs(id);

@@ -57,7 +57,7 @@ type CollabProps = {
 type PlanStageProp = {
   id: string;
   title: string;
-  tasks: { id: string; title: string; status: "TODO" | "IN_PROGRESS" | "DONE" }[];
+  tasks: { id: string; title: string; status: "TODO" | "IN_PROGRESS" | "DONE"; assigneeId: string | null }[];
 };
 
 type DocProp = { id: string; title: string; content: unknown; updatedAt: string };
@@ -218,6 +218,7 @@ export function WorkspaceShell({
               collaborationId={collaboration.id}
               initialStages={planStages}
               canEdit={canEditPlan}
+              members={collaboration.members.map((m) => ({ userId: m.userId, name: m.name }))}
             />
           )}
 

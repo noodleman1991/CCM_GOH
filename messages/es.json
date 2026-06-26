@@ -298,7 +298,13 @@
     "deleteTask": "Eliminar tarea",
     "cycleStatus": "Cambiar estado",
     "stageComplete": "Etapa completada",
-    "dragTask": "Arrastra para reordenar"
+    "dragTask": "Arrastra para reordenar",
+    "heading": "Plan",
+    "subtitle": "Divide el trabajo en etapas y luego añade tareas en cada una. Haz clic en una tarea para moverla Por hacer → En curso → Hecho.",
+    "emptyTitle": "Aún no hay etapas",
+    "emptyBody": "Añade tu primera etapa (p. ej. Exploración, Redacción, Revisión) para empezar a seguir el trabajo.",
+    "assign": "Asignar",
+    "unassigned": "Sin asignar"
   },
   "follow": {
     "follow": "Seguir",
