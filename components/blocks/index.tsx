@@ -16,6 +16,7 @@ import FormNewsletter from "@/components/blocks/forms/newsletter";
 import AllPosts from "@/components/blocks/all-posts";
 import RegionMapBlock from "@/components/blocks/maps/region-map";
 import PeopleWidget from "@/components/blocks/people/people-widget";
+import EventsCalendar from "@/components/blocks/events/events-calendar";
 import { BlockReveal } from "@/components/blocks/block-reveal";
 import { isRTL } from "@/i18n/i18n-helpers";
 // import gridReport from "@/sanity/schemas/blocks/grid/grid-report"; //todo: what is the diff between reportsgrid and gridreports in schemas???
@@ -51,6 +52,7 @@ const componentMap: Record<string, React.ComponentType<any>> = {
     "all-posts": AllPosts,
     "region-map": RegionMapBlock,
     "people-widget": PeopleWidget,
+    "events-calendar": EventsCalendar,
 };
 
 export default function Blocks({ blocks, locale, userId }: BlocksProps) {
