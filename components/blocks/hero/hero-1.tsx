@@ -57,9 +57,33 @@ export default function Hero1({
             className="-mt-4 md:-mt-8 pt-2"
         >
             <div className={cn(
-                "grid grid-cols-1 gap-4 md:gap-6 lg:gap-8 items-center",
+                "relative overflow-hidden grid grid-cols-1 gap-4 md:gap-6 lg:gap-8 items-center",
                 hasImage && "lg:grid-cols-2"
             )}>
+                {/* Decorative organic "blob" brand accent (redesign §1.5/§1.6).
+                    Sits behind the content (-z-10) in the trailing corners so it
+                    never overlaps the hero text. aria-hidden + pointer-events-none;
+                    the slow morph only runs under `motion-safe`, so reduced-motion
+                    users get a static shape. Logical inset (`end`/`start`) keeps it
+                    correct in RTL, and the parent's overflow-hidden clips it at
+                    375px so it can never cause horizontal scroll. */}
+                <span
+                    aria-hidden="true"
+                    className={cn(
+                        "pointer-events-none absolute -z-10 -top-16 end-[-12%] blur-[2px]",
+                        "h-40 w-40 sm:h-56 sm:w-56 lg:h-72 lg:w-72",
+                        "bg-ccm-sky/30 motion-safe:animate-[ccmblob_18s_ease-in-out_infinite]"
+                    )}
+                    style={{ borderRadius: "58% 42% 55% 45% / 52% 48% 52% 48%" }}
+                />
+                <span
+                    aria-hidden="true"
+                    className={cn(
+                        "pointer-events-none absolute -z-10 hidden lg:block -bottom-20 start-[-8%] blur-[2px]",
+                        "h-48 w-48 bg-ccm-sea/20 motion-safe:animate-[ccmblob_18s_ease-in-out_infinite]"
+                    )}
+                    style={{ borderRadius: "52% 48% 58% 42% / 55% 45% 52% 48%", animationDelay: "-6s" }}
+                />
                 <div className={cn(
                     "flex flex-col justify-center min-w-0 w-full",
                     // Without an image, center the text column and cap its width
