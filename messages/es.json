@@ -288,7 +288,14 @@
     "moderationNote": "Tu evento será revisado por un editor antes de publicarse.",
     "validationRequired": "Añade un título y una fecha de inicio.",
     "submitPending": "Enviado — pendiente de revisión.",
-    "submitFailed": "No se pudo enviar. Revisa el formulario e inténtalo de nuevo."
+    "submitFailed": "No se pudo enviar. Revisa el formulario e inténtalo de nuevo.",
+    "calendarTitle": "Calendario de eventos",
+    "upcomingHeading": "Próximos",
+    "subscribe": "Suscribirse (iCal)",
+    "noUpcoming": "No hay eventos próximos.",
+    "prevMonth": "Mes anterior",
+    "nextMonth": "Mes siguiente",
+    "today": "Hoy"
   },
   "plan": {
     "empty": "Aún no hay plan.",
