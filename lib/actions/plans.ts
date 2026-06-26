@@ -144,6 +144,18 @@ export async function deleteTask(collaborationId: string, taskId: string): Promi
   return { ok: true };
 }
 
+/** Assign a workspace member to a task (or clear with null). EDITOR+. */
+export async function assignTask(
+  collaborationId: string,
+  taskId: string,
+  assigneeId: string | null
+): Promise<Result> {
+  const auth = await canEdit(collaborationId);
+  if (!auth.ok) return auth;
+  await prisma.task.update({ where: { id: taskId }, data: { assigneeId } });
+  return { ok: true };
+}
+
 /** The current user's open tasks across all workspaces (Dashboard "My tasks"). */
 export async function myTasks(): Promise<
   Array<{ id: string; title: string; status: TaskStatus; collaborationId: string; collaborationTitle: string }>
