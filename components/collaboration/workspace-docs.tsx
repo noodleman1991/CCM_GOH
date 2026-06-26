@@ -9,6 +9,7 @@ import { InlineText } from "@/components/ui/inline-text";
 import PortableTextRenderer from "@/components/portable-text-renderer";
 import PortableTextEditor from "@/components/forms/portable-text-editor";
 import { createDoc, renameDoc, updateDocContent, deleteDoc } from "@/lib/actions/docs";
+import { WorkspaceEmptyState } from "./workspace-empty-state";
 
 type Doc = { id: string; title: string; content: unknown; updatedAt: string };
 
@@ -27,6 +28,7 @@ export function WorkspaceDocs({
   canEdit: boolean;
 }) {
   const t = useTranslations("docs");
+  const tc = useTranslations("collaboration");
   const [docs, setDocs] = useState<Doc[]>(initialDocs);
   const [openId, setOpenId] = useState<string | null>(null);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -98,8 +100,22 @@ export function WorkspaceDocs({
     );
   }
 
-  if (docs.length === 0 && !canEdit) {
-    return <p className="p-6 text-center text-sm text-muted-foreground">{t("empty")}</p>;
+  if (docs.length === 0) {
+    return (
+      <WorkspaceEmptyState
+        icon={FileText}
+        title={tc("emptyState.docsTitle")}
+        body={tc("emptyState.docsBody")}
+        action={
+          canEdit ? (
+            <Button variant="outline" onClick={create} className="gap-2">
+              <Plus className="size-4" />
+              {t("newDoc")}
+            </Button>
+          ) : undefined
+        }
+      />
+    );
   }
 
   return (

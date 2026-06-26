@@ -1630,6 +1630,16 @@
     "mediaTitlePlaceholder": "Titre (facultatif)",
     "addMedia": "Ajouter",
     "noMedia": "Aucun média pour le moment.",
+    "emptyState": {
+      "docsTitle": "Aucun document pour le moment",
+      "docsBody": "Rédigez ensemble des notes, des briefs et des comptes rendus. Créez votre premier document pour commencer.",
+      "threadsTitle": "Aucune discussion pour le moment",
+      "threadsBody": "Lancez un fil pour débattre de décisions, partager des nouvelles ou poser une question au groupe.",
+      "filesTitle": "Aucun fichier pour le moment",
+      "filesBody": "Téléversez les PDF et documents dont l'équipe a besoin. Glissez un fichier ici ou utilisez le bouton de téléversement.",
+      "mediaTitle": "Aucun média pour le moment",
+      "mediaBody": "Ajoutez des vidéos YouTube pour partager des présentations, des démos ou des enregistrements avec l'espace de travail."
+    },
     "mediaConsentRequired": "Cette vidéo nécessite le consentement aux cookies.",
     "dropToUpload": "Glissez un fichier ici ou"
   },
