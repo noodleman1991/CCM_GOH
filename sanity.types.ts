@@ -372,6 +372,17 @@ export type RegionMap = {
   allowedFacets?: Array<string>;
 };
 
+// Hand-added (Slice H3); never run `sanity typegen generate` (it renames/breaks
+// the committed *_RESULT types). Keep in sync with
+// sanity/schemas/blocks/events/events-calendar.ts + its projection.
+export type EventsCalendar = {
+  _type: "events-calendar";
+  padding?: SectionPadding;
+  title?: string;
+  description?: string;
+  upcomingLimit?: number;
+};
+
 export type AllPosts = {
   _type: "all-posts";
   padding?: SectionPadding;
@@ -12083,6 +12094,14 @@ export type PAGE_QUERY_RESULT = {
         description: string | null;
         defaultFacet: "caseStudyCount" | "memberCount" | "newsCount" | null;
         allowedFacets: Array<string> | null;
+      }
+    | {
+        _type: "events-calendar";
+        _key: string;
+        padding: SectionPadding | null;
+        title: string | null;
+        description: string | null;
+        upcomingLimit: number | null;
       }
     | {
         _type: "section-header";
