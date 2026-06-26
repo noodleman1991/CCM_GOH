@@ -25,7 +25,7 @@ const db = vi.hoisted(() => {
 });
 vi.mock("@/lib/prisma", () => ({ prisma: db }));
 
-import { addStage, addTask, cycleTaskStatus, deleteTask, reorderTasks, reorderStages } from "@/lib/actions/plans";
+import { addStage, addTask, cycleTaskStatus, deleteTask, reorderTasks, reorderStages, assignTask } from "@/lib/actions/plans";
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -116,5 +116,31 @@ describe("reorder (drag persistence)", () => {
     expect(res.ok).toBe(true);
     expect(db.planStage.update).toHaveBeenCalledWith({ where: { id: "s2" }, data: { order: 0 } });
     expect(db.planStage.update).toHaveBeenCalledWith({ where: { id: "s1" }, data: { order: 1 } });
+  });
+});
+
+describe("assignTask", () => {
+  it("is blocked for non-editors", async () => {
+    authorizeCollabMock.mockRejectedValueOnce(new Error("Forbidden"));
+    const res = await assignTask("c1", "tk1", "u2");
+    expect(res.ok).toBe(false);
+    expect(db.task.update).not.toHaveBeenCalled();
+  });
+
+  it("requests the collab:editPlan capability", async () => {
+    await assignTask("c1", "tk1", "u2");
+    expect(authorizeCollabMock).toHaveBeenCalledWith("c1", "collab:editPlan");
+  });
+
+  it("assigns a member", async () => {
+    const res = await assignTask("c1", "tk1", "u2");
+    expect(res.ok).toBe(true);
+    expect(db.task.update).toHaveBeenCalledWith({ where: { id: "tk1" }, data: { assigneeId: "u2" } });
+  });
+
+  it("clears the assignment when given null", async () => {
+    const res = await assignTask("c1", "tk1", null);
+    expect(res.ok).toBe(true);
+    expect(db.task.update).toHaveBeenCalledWith({ where: { id: "tk1" }, data: { assigneeId: null } });
   });
 });

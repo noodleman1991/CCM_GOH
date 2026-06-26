@@ -6,9 +6,10 @@ import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Film } from "lucide-react";
 import { addMedia, deleteMedia } from "@/lib/actions/collaboration-media";
 import { useCookieConsent } from "@/components/cookie-consent/cookie-consent-provider";
+import { WorkspaceEmptyState } from "./workspace-empty-state";
 import type { CollaborationRole } from "@/generated/prisma";
 
 type Media = { id: string; url: string; title: string | null; createdAt: string };
@@ -60,7 +61,11 @@ export function WorkspaceMedia({
       )}
 
       {media.length === 0 ? (
-        <p className="text-sm text-muted-foreground">{t("noMedia")}</p>
+        <WorkspaceEmptyState
+          icon={Film}
+          title={t("emptyState.mediaTitle")}
+          body={t("emptyState.mediaBody")}
+        />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">
           {media.map((m) => (

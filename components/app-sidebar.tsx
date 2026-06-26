@@ -59,6 +59,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         [pathname]
     )
 
+    // On a specific workspace (/collaborations/<id>) the workspace owns the
+    // screen, so the global rail shrinks to an icon rail instead of fully hiding.
+    // Route-derived (recomputed from the live pathname every render) → it can
+    // never leak to other routes; leaving the route flips it back to offcanvas.
+    const isWorkspaceRoute = /^\/collaborations\/[^/]+$/.test(pathname)
+    const collapsible = isWorkspaceRoute ? "icon" : "offcanvas"
+
     // Research & Action items
     const researchActionItems = [
         {
@@ -232,6 +239,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     return (
         <Sidebar
             variant="inset"
+            collapsible={collapsible}
             {...props}
         >
             <SidebarHeader>
