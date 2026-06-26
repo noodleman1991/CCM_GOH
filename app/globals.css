@@ -23,6 +23,8 @@
     --animate-accordion-down: accordion-down 0.2s ease-out;
     --animate-accordion-up: accordion-up 0.2s ease-out;
     --animate-fade-up: fade-up 0.7s ease-out forwards;
+    /* One slow organic morph for the hero/section blob accent (redesign §1.6). */
+    --animate-ccmblob: ccmblob 18s ease-in-out infinite;
 }
 
 @keyframes accordion-down {
@@ -51,6 +53,25 @@
     100% {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+/* Organic "blob" accent (redesign §1.5/§1.6): a soft shape that slowly morphs
+   its border-radius and drifts. Decorative only — aria-hidden on the element,
+   and applied via Tailwind's `motion-safe:` variant so it is frozen for users
+   who prefer reduced motion. */
+@keyframes ccmblob {
+    0%, 100% {
+        border-radius: 58% 42% 55% 45% / 52% 48% 52% 48%;
+        transform: translate(0, 0) rotate(0deg) scale(1);
+    }
+    33% {
+        border-radius: 45% 55% 42% 58% / 48% 55% 45% 52%;
+        transform: translate(2%, -3%) rotate(8deg) scale(1.04);
+    }
+    66% {
+        border-radius: 52% 48% 58% 42% / 55% 45% 52% 48%;
+        transform: translate(-2%, 2%) rotate(-6deg) scale(0.98);
     }
 }
 
