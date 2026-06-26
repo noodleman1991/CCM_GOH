@@ -70,4 +70,29 @@ describe("resolveGridColumns", () => {
       }
     });
   });
+
+  describe("media-list layout", () => {
+    it("returns a single-column list class regardless of gridColumns or variant", () => {
+      for (const value of ["grid-cols-2", "grid-cols-4", null, undefined]) {
+        expect(resolveGridColumns(value, "classic", "media-list")).toEqual({
+          cols: 1,
+          className: "grid-cols-1",
+        });
+      }
+    });
+
+    it("ignores the wide variant when layout is media-list", () => {
+      expect(resolveGridColumns("grid-cols-3", "wide", "media-list")).toEqual({
+        cols: 1,
+        className: "grid-cols-1",
+      });
+    });
+
+    it("still resolves the card grid when layout is the default card", () => {
+      expect(resolveGridColumns("grid-cols-3", "classic", "card")).toEqual({
+        cols: 3,
+        className: "grid-cols-1 md:grid-cols-2 lg:grid-cols-3",
+      });
+    });
+  });
 });

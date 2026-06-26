@@ -82,6 +82,21 @@ export default defineType({
       initialValue: "classic",
     }),
     defineField({
+      name: "layout",
+      type: "string",
+      title: "Layout",
+      description:
+        "'Cards' is a responsive card grid. 'Media list' is full-width rows (thumbnail + date + headline) — good for News & updates feeds.",
+      options: {
+        list: [
+          { title: "Cards (grid)", value: "card" },
+          { title: "Media list (rows)", value: "media-list" },
+        ],
+        layout: "radio",
+      },
+      initialValue: "card",
+    }),
+    defineField({
       name: "mode",
       title: "Content Mode",
       type: "string",

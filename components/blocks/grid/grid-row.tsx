@@ -105,6 +105,7 @@ export default async function GridRow({
                                     headerImage,
                                     gridColumns,
                                     cardVariant,
+                                    layout,
                                     columns,
                                     locale,
                                     userId,
@@ -112,12 +113,15 @@ export default async function GridRow({
                                     initialDisplayCount,
                                 }: GridRowProps) {
     const variant = (stegaClean(cardVariant) as "classic" | "wide" | null) || "classic";
+    const layoutMode = (stegaClean(layout) as "card" | "media-list" | null) || "card";
+    const isMediaList = layoutMode === "media-list";
     const isRTL = locale === "ar";
 
-    // Single source of truth for column count: wide cards max out at 2 columns.
+    // Single source of truth for column count: wide cards max out at 2 columns,
+    // and the media-list layout forces a single full-width column.
     // Class literals live in lib/grid-layout.ts (scanned by Tailwind).
     const cleanedColumns = stegaClean(gridColumns);
-    const { cols, className: gridColumnsClass } = resolveGridColumns(cleanedColumns, variant);
+    const { cols, className: gridColumnsClass } = resolveGridColumns(cleanedColumns, variant, layoutMode);
     const imageSizes = sizesForColumns(cols);
 
     const supportedLocale = (locale || "en") as 'en' | 'es' | 'fr' | 'ar';
@@ -160,7 +164,8 @@ export default async function GridRow({
                 <ExpandableGrid
                         initialDisplayCount={initialDisplayCount}
                         gridClassName={cn(
-                            gridGap("md"), // standard grid gap from the spacing scale
+                            // Tighter gap for the dense media-list rows; standard gap otherwise.
+                            isMediaList ? gridGap("sm") : gridGap("md"),
                             // Grid columns derived from the same `cols` used for image sizes
                             gridColumnsClass
                         )}
@@ -197,6 +202,7 @@ export default async function GridRow({
                                         locale={locale || 'en'}
                                         userId={userId}
                                         cardVariant={variant}
+                                        layout={layoutMode}
                                         imageSizes={imageSizes}
                                     />
                                 </div>

@@ -18,6 +18,7 @@ export const gridRowQuery = groq`
     description,
     gridColumns,
     cardVariant,
+    layout,
     initialDisplayCount,
     headerImage {
       asset->{

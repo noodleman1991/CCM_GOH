@@ -9,6 +9,9 @@
 
 export type GridCardVariant = "classic" | "wide";
 
+/** Grid layout axis: a responsive card grid, or a single-column media list. */
+export type GridLayout = "card" | "media-list";
+
 export interface ResolvedGridColumns {
   /** Desktop column count (drives image `sizes` calculations). */
   cols: number;
@@ -27,6 +30,9 @@ const GRID_COLUMN_CLASSES: Record<number, string> = {
 /** Wide (16:9) cards always cap at 2 columns. */
 const WIDE_GRID_CLASS = "grid-cols-1 lg:grid-cols-2";
 
+/** Media-list layout is always a single column (full-width rows). */
+const MEDIA_LIST_CLASS = "grid-cols-1";
+
 const DEFAULT_COLS = 2;
 
 /**
@@ -35,11 +41,19 @@ const DEFAULT_COLS = 2;
  * @param gridColumnsValue - The (stega-cleaned) `gridColumns` value from
  *   Sanity, e.g. "grid-cols-4". Unknown or missing values fall back to 2.
  * @param variant - The card variant; "wide" always caps at 2 columns.
+ * @param layout - The layout axis; "media-list" forces a single column
+ *   (full-width rows) regardless of `gridColumnsValue`/`variant`.
  */
 export function resolveGridColumns(
   gridColumnsValue: string | null | undefined,
-  variant: GridCardVariant
+  variant: GridCardVariant,
+  layout: GridLayout = "card"
 ): ResolvedGridColumns {
+  // Media list = one column per row; the card-grid sizing rules don't apply.
+  if (layout === "media-list") {
+    return { cols: 1, className: MEDIA_LIST_CLASS };
+  }
+
   if (variant === "wide") {
     return { cols: 2, className: WIDE_GRID_CLASS };
   }

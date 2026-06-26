@@ -633,6 +633,7 @@ export type GridRow = {
   };
   gridColumns?: "grid-cols-2" | "grid-cols-3" | "grid-cols-4" | "grid-cols-5";
   cardVariant?: "classic" | "wide";
+  layout?: "card" | "media-list";
   mode?: "manual" | "dynamic-recent" | "dynamic-featured";
   maxItems?: number;
   initialDisplayCount?: number;
@@ -4984,6 +4985,7 @@ export type HOMEPAGE_QUERY_RESULT = {
       | "grid-cols-5"
       | null;
     cardVariant: "classic" | "wide" | null;
+    layout: "card" | "media-list" | null;
     initialDisplayCount: number | null;
     headerImage: {
       asset: {
@@ -5598,6 +5600,7 @@ export type HOMEPAGE_QUERY_RESULT = {
       | "grid-cols-5"
       | null;
     cardVariant: "classic" | "wide" | null;
+    layout: "card" | "media-list" | null;
     initialDisplayCount: number | null;
     headerImage: {
       asset: {
@@ -6396,6 +6399,7 @@ export type HOMEPAGE_QUERY_RESULT = {
       | "grid-cols-5"
       | null;
     cardVariant: "classic" | "wide" | null;
+    layout: "card" | "media-list" | null;
     initialDisplayCount: number | null;
     headerImage: {
       asset: {
@@ -7949,6 +7953,7 @@ export type INDEX_HOMEPAGE_QUERY_RESULT = {
       | "grid-cols-5"
       | null;
     cardVariant: "classic" | "wide" | null;
+    layout: "card" | "media-list" | null;
     initialDisplayCount: number | null;
     headerImage: {
       asset: {
@@ -8563,6 +8568,7 @@ export type INDEX_HOMEPAGE_QUERY_RESULT = {
       | "grid-cols-5"
       | null;
     cardVariant: "classic" | "wide" | null;
+    layout: "card" | "media-list" | null;
     initialDisplayCount: number | null;
     headerImage: {
       asset: {
@@ -9361,6 +9367,7 @@ export type INDEX_HOMEPAGE_QUERY_RESULT = {
       | "grid-cols-5"
       | null;
     cardVariant: "classic" | "wide" | null;
+    layout: "card" | "media-list" | null;
     initialDisplayCount: number | null;
     headerImage: {
       asset: {
@@ -11292,6 +11299,7 @@ export type PAGE_QUERY_RESULT = {
           | "grid-cols-5"
           | null;
         cardVariant: "classic" | "wide" | null;
+        layout: "card" | "media-list" | null;
         initialDisplayCount: number | null;
         headerImage: {
           asset: {
@@ -13864,6 +13872,7 @@ export type REGIONAL_COMMUNITY_PAGE_QUERY_RESULT = {
           | "grid-cols-5"
           | null;
         cardVariant: "classic" | "wide" | null;
+        layout: "card" | "media-list" | null;
         initialDisplayCount: number | null;
         headerImage: {
           asset: {

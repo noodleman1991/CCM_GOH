@@ -87,6 +87,8 @@ interface GridNewsComponentProps {
     className?: string;
     color?: string;
     cardVariant?: string;
+    /** "card" (default) renders a card; "media-list" renders a horizontal row. */
+    layout?: string;
     imageSizes?: string;
 }
 
@@ -124,11 +126,13 @@ export default function GridNewsComponent({
                                              userId,
                                              className,
                                              cardVariant = "classic",
+                                             layout = "card",
                                              imageSizes,
                                          }: GridNewsComponentProps) {
     if (!newsPost) return null;
 
     const isWide = cardVariant === "wide";
+    const isMediaList = layout === "media-list";
     const aspectRatioClass = isWide ? "aspect-video" : "aspect-[3/2]";
 
     const supportedLocale = locale as 'en' | 'es' | 'fr' | 'ar';
@@ -180,6 +184,86 @@ export default function GridNewsComponent({
         const parts = [city, region, country].filter(Boolean);
         return parts.join(', ');
     };
+
+    // Media-list layout: a full-width horizontal row (thumb + region dot + date +
+    // headline). Used by the homepage "News & updates" section. Logical spacing
+    // (gap, start/end) keeps it correct in RTL.
+    if (isMediaList) {
+        const summary = subtitle || excerpt;
+        return (
+            <Link href={`/${locale}/news/${newsPost.slug.current}`} className="block w-full">
+                <Card className={cn(
+                    "flex w-full flex-row items-stretch gap-4 overflow-hidden rounded-2xl border p-3 transition ease-in-out group hover:border-primary sm:gap-5 sm:p-4",
+                    className
+                )}>
+                    {/* Thumbnail */}
+                    {newsPost.image?.asset?.url && (
+                        <div className="relative aspect-[3/2] w-28 shrink-0 overflow-hidden rounded-xl bg-muted sm:w-40">
+                            <Image
+                                src={urlForCropped(newsPost.image, 480, 320).url()}
+                                alt={newsPost.image.alt || title}
+                                fill
+                                className="object-cover transition-transform duration-200 group-hover:scale-105"
+                                sizes="(min-width: 640px) 160px, 112px"
+                            />
+                        </div>
+                    )}
+
+                    {/* Content */}
+                    <div className="flex min-w-0 flex-1 flex-col justify-center gap-1.5">
+                        {/* Meta line: region dot + type + date */}
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <span
+                                aria-hidden="true"
+                                className="h-2 w-2 shrink-0 rounded-full bg-ccm-water"
+                            />
+                            <span className="font-medium text-ccm-water">{getNewsTypeText()}</span>
+                            {publishDate && (
+                                <>
+                                    <span aria-hidden="true">·</span>
+                                    <span className="inline-flex items-center gap-1">
+                                        <Calendar className="h-3 w-3" />
+                                        {formatNewsDate(publishDate, supportedLocale)}
+                                    </span>
+                                </>
+                            )}
+                        </div>
+
+                        {/* Headline */}
+                        <h3 className="font-semibold text-base leading-snug text-balance break-words line-clamp-2 group-hover:text-primary transition-colors">
+                            {title}
+                        </h3>
+
+                        {/* One-line summary */}
+                        {summary && (
+                            <p className="text-sm text-muted-foreground line-clamp-1">
+                                {summary}
+                            </p>
+                        )}
+
+                        {/* Tags (compact) */}
+                        {showTags && sortTagsByLabel(newsPost.tags, supportedLocale).length > 0 && (
+                            <div className="mt-0.5 flex flex-wrap gap-1">
+                                {sortTagsByLabel(newsPost.tags, supportedLocale).slice(0, 2).map((tag: any) => {
+                                    const color = normalizeTagColor(tag.color);
+                                    return (
+                                        <Badge
+                                            key={tag._id}
+                                            variant="outline"
+                                            className="text-xs"
+                                            style={{ borderColor: color, color }}
+                                        >
+                                            {getLocalizedText(tag.label, supportedLocale)}
+                                        </Badge>
+                                    );
+                                })}
+                            </div>
+                        )}
+                    </div>
+                </Card>
+            </Link>
+        );
+    }
 
     return (
         <Link href={`/${locale}/news/${newsPost.slug.current}`} className="block h-full">
