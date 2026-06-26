@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { Plus, Circle, CircleDot, CheckCircle2, X, GripVertical } from "lucide-react";
+import { Plus, Circle, CircleDot, CheckCircle2, X, GripVertical, ListTodo } from "lucide-react";
 import {
   DndContext,
   closestCorners,
@@ -17,7 +17,16 @@ import { SortableContext, useSortable, verticalListSortingStrategy, sortableKeyb
 import { CSS } from "@dnd-kit/utilities";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { SectionHeader } from "@/components/ui/section-header";
 import { cn } from "@/lib/utils";
+import { WorkspaceEmptyState } from "./workspace-empty-state";
 import {
   addStage,
   addTask,
@@ -25,11 +34,13 @@ import {
   deleteTask,
   deleteStage,
   reorderTasks,
+  assignTask,
 } from "@/lib/actions/plans";
 
 type TaskStatus = "TODO" | "IN_PROGRESS" | "DONE";
-type Task = { id: string; title: string; status: TaskStatus };
+type Task = { id: string; title: string; status: TaskStatus; assigneeId: string | null };
 type Stage = { id: string; title: string; tasks: Task[] };
+type Member = { userId: string; name: string };
 
 const STATUS_ICON = { TODO: Circle, IN_PROGRESS: CircleDot, DONE: CheckCircle2 } as const;
 
@@ -42,10 +53,12 @@ export function WorkspacePlan({
   collaborationId,
   initialStages,
   canEdit,
+  members = [],
 }: {
   collaborationId: string;
   initialStages: Stage[];
   canEdit: boolean;
+  members?: Member[];
 }) {
   const t = useTranslations("plan");
   const [stages, setStages] = useState<Stage[]>(initialStages);
@@ -70,7 +83,7 @@ export function WorkspacePlan({
       const res = await addTask(collaborationId, stageId, title.trim());
       if (!res.ok) { toast.error(res.error); return; }
       setStages((s) =>
-        s.map((st) => (st.id === stageId ? { ...st, tasks: [...st.tasks, { id: res.taskId, title: title.trim(), status: "TODO" }] } : st))
+        s.map((st) => (st.id === stageId ? { ...st, tasks: [...st.tasks, { id: res.taskId, title: title.trim(), status: "TODO", assigneeId: null }] } : st))
       );
     });
   };
@@ -83,6 +96,19 @@ export function WorkspacePlan({
       setStages((s) =>
         s.map((st) => (st.id === stageId ? { ...st, tasks: st.tasks.map((tk) => (tk.id === task.id ? { ...tk, status: res.status } : tk)) } : st))
       );
+    });
+  };
+
+  // Assign (or clear) a member on a task. Optimistic; reverts on failure.
+  const onAssign = (stageId: string, taskId: string, assigneeId: string | null) => {
+    if (!canEdit) return;
+    const prev = stages;
+    setStages((s) =>
+      s.map((st) => (st.id === stageId ? { ...st, tasks: st.tasks.map((tk) => (tk.id === taskId ? { ...tk, assigneeId } : tk)) } : st))
+    );
+    startTransition(async () => {
+      const res = await assignTask(collaborationId, taskId, assigneeId);
+      if (!res.ok) { setStages(prev); toast.error(res.error); }
     });
   };
 
@@ -132,11 +158,22 @@ export function WorkspacePlan({
   };
 
   if (stages.length === 0 && !canEdit) {
-    return <p className="p-6 text-center text-sm text-muted-foreground">{t("empty")}</p>;
+    return (
+      <div className="space-y-4">
+        <SectionHeader title={t("heading")} subtitle={t("subtitle")} />
+        <WorkspaceEmptyState icon={ListTodo} title={t("emptyTitle")} body={t("emptyBody")} />
+      </div>
+    );
   }
 
   return (
     <div className="space-y-4">
+      <SectionHeader title={t("heading")} subtitle={t("subtitle")} />
+
+      {stages.length === 0 && canEdit && (
+        <WorkspaceEmptyState icon={ListTodo} title={t("emptyTitle")} body={t("emptyBody")} />
+      )}
+
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {stages.map((stage) => {
           const done = stage.tasks.length > 0 && stage.tasks.every((tk) => tk.status === "DONE");
@@ -161,9 +198,17 @@ export function WorkspacePlan({
                         key={task.id}
                         task={task}
                         canEdit={canEdit}
+                        members={members}
                         onCycle={() => onCycle(stage.id, task)}
                         onDelete={() => onDeleteTask(stage.id, task.id)}
-                        labels={{ cycle: t("cycleStatus"), del: t("deleteTask"), drag: t("dragTask") }}
+                        onAssign={(assigneeId) => onAssign(stage.id, task.id, assigneeId)}
+                        labels={{
+                          cycle: t("cycleStatus"),
+                          del: t("deleteTask"),
+                          drag: t("dragTask"),
+                          assign: t("assign"),
+                          unassigned: t("unassigned"),
+                        }}
                       />
                     ))}
                   </ul>
@@ -190,15 +235,19 @@ export function WorkspacePlan({
 function SortableTask({
   task,
   canEdit,
+  members,
   onCycle,
   onDelete,
+  onAssign,
   labels,
 }: {
   task: Task;
   canEdit: boolean;
+  members: Member[];
   onCycle: () => void;
   onDelete: () => void;
-  labels: { cycle: string; del: string; drag: string };
+  onAssign: (assigneeId: string | null) => void;
+  labels: { cycle: string; del: string; drag: string; assign: string; unassigned: string };
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: task.id,
@@ -235,6 +284,30 @@ function SortableTask({
       <span className={cn("min-w-0 flex-1 truncate", task.status === "DONE" && "text-muted-foreground line-through")}>
         {task.title}
       </span>
+      {canEdit ? (
+        <Select
+          value={task.assigneeId ?? "none"}
+          onValueChange={(v) => onAssign(v === "none" ? null : v)}
+        >
+          <SelectTrigger className="h-7 w-28 shrink-0 text-xs" aria-label={labels.assign}>
+            <SelectValue placeholder={labels.unassigned} />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="none">{labels.unassigned}</SelectItem>
+            {members.map((m) => (
+              <SelectItem key={m.userId} value={m.userId}>
+                <bdi>{m.name}</bdi>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      ) : (
+        task.assigneeId && (
+          <span className="shrink-0 truncate text-xs text-muted-foreground">
+            <bdi>{members.find((m) => m.userId === task.assigneeId)?.name ?? ""}</bdi>
+          </span>
+        )
+      )}
       {canEdit && (
         <button onClick={onDelete} aria-label={labels.del} className="opacity-0 transition-opacity group-hover:opacity-100 text-muted-foreground hover:text-destructive">
           <X className="size-3.5" />

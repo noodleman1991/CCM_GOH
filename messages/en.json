@@ -208,7 +208,13 @@
     "deleteTask": "Delete task",
     "cycleStatus": "Change status",
     "stageComplete": "Stage complete",
-    "dragTask": "Drag to reorder"
+    "dragTask": "Drag to reorder",
+    "heading": "Plan",
+    "subtitle": "Break the work into stages, then add tasks under each. Click a task to move it To do → In progress → Done.",
+    "emptyTitle": "No stages yet",
+    "emptyBody": "Add your first stage (e.g. Discovery, Drafting, Review) to start tracking the work.",
+    "assign": "Assign",
+    "unassigned": "Unassigned"
   },
   "follow": {
     "follow": "Follow",
