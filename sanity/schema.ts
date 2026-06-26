@@ -85,6 +85,7 @@ import newsletter from "./schemas/blocks/forms/newsletter";
 import allPosts from "./schemas/blocks/all-posts";
 import regionMap from "./schemas/blocks/maps/region-map";
 import peopleWidget from "./schemas/blocks/people/people-widget";
+import eventsCalendar from "./schemas/blocks/events/events-calendar";
 
 // Insert blocks for structured content pattern
 import manualContentInsert from "./schemas/blocks/inserts/manual-content-insert";
@@ -181,6 +182,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
         allPosts,
         regionMap,
         peopleWidget,
+        eventsCalendar,
         // insert blocks
         manualContentInsert,
         dynamicContentInsert,
