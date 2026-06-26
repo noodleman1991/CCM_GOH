@@ -1577,6 +1577,7 @@
   "collaboration": {
     "pageTitle": "التعاونات",
     "pageDescription": "مساحات عمل مشتركة للعمل معًا.",
+    "breadcrumbHome": "مساحات العمل",
     "create": "مساحة جديدة",
     "createTitle": "إنشاء مساحة",
     "titleLabel": "الاسم",

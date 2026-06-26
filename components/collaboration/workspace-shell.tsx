@@ -5,12 +5,14 @@ import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
-  Drawer,
-  DrawerContent,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import {
   Select,
   SelectContent,
@@ -18,8 +20,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { LayoutGrid, MessagesSquare, FileText, Film, Users, Menu, ListTodo, BookText, Package } from "lucide-react";
+import { LayoutGrid, MessagesSquare, FileText, Film, Users, ListTodo, BookText, Package } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Link } from "@/i18n/navigation";
 import { setMemberRole } from "@/lib/actions/collaboration";
 import type { CollaborationRole } from "@/generated/prisma";
 import { WorkspaceThreads } from "./workspace-threads";
@@ -120,50 +123,26 @@ export function WorkspaceShell({
     { id: "members", label: t("nav.members"), icon: Users, count: collaboration.counts.members },
   ];
 
-  const NavList = ({ onPick }: { onPick?: () => void }) => (
-    <nav className="space-y-1">
-      {nav.map((item) => {
-        const Icon = item.icon;
-        return (
-          <button
-            key={item.id}
-            onClick={() => {
-              setSection(item.id);
-              onPick?.();
-            }}
-            className={cn(
-              "flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
-              section === item.id
-                ? "bg-ccm-sky/20 font-medium text-ccm-sea"
-                : "text-muted-foreground hover:bg-muted hover:text-foreground"
-            )}
-          >
-            <Icon className="size-4 flex-shrink-0" aria-hidden="true" />
-            <span className="flex-1 text-start">{item.label}</span>
-            {item.count !== undefined && <span className="text-xs">{item.count}</span>}
-          </button>
-        );
-      })}
-    </nav>
-  );
-
   return (
     <div className="container max-w-6xl py-6">
-      <header className="mb-6">
+      {/* Header band: breadcrumb → editable title + status badge. */}
+      <header className="mb-4">
+        <Breadcrumb className="mb-2">
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link href="/collaborations">{t("breadcrumbHome")}</Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator className="rtl:-scale-x-100" />
+            <BreadcrumbItem>
+              <BreadcrumbPage>
+                <bdi>{title || t("untitledWorkspace")}</bdi>
+              </BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
         <div className="flex items-center gap-2">
-          {/* Mobile: drawer nav */}
-          <Drawer>
-            <DrawerTrigger asChild>
-              <Button variant="outline" size="icon" className="lg:hidden" aria-label={t("nav.sections")}>
-                <Menu className="size-4" />
-              </Button>
-            </DrawerTrigger>
-            <DrawerContent>
-              <div className="p-4">
-                <NavList onPick={() => {}} />
-              </div>
-            </DrawerContent>
-          </Drawer>
           <InlineText
             value={title}
             onCommit={saveTitle}
@@ -179,13 +158,34 @@ export function WorkspaceShell({
         </div>
       </header>
 
-      <div className="grid gap-6 lg:grid-cols-[200px_1fr]">
-        {/* Desktop left nav */}
-        <aside className="hidden lg:block">
-          <NavList />
-        </aside>
+      {/* Top tabs: a single horizontally-scrollable row (mobile + desktop). */}
+      <div className="mb-6 border-b">
+        <nav className="-mb-px flex gap-1 overflow-x-auto" aria-label={t("nav.sections")}>
+          {nav.map((item) => {
+            const Icon = item.icon;
+            const active = section === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => setSection(item.id)}
+                aria-current={active ? "page" : undefined}
+                className={cn(
+                  "flex shrink-0 items-center gap-2 whitespace-nowrap border-b-2 px-3 py-2.5 text-sm transition-colors",
+                  active
+                    ? "border-ccm-water font-medium text-ccm-sea"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
+                )}
+              >
+                <Icon className="size-4 shrink-0" aria-hidden="true" />
+                <span>{item.label}</span>
+                {item.count !== undefined && <span className="text-xs">{item.count}</span>}
+              </button>
+            );
+          })}
+        </nav>
+      </div>
 
-        <div className="min-w-0">
+      <div className="min-w-0">
           {section === "overview" && (
             <section className="space-y-4">
               {(canEdit || description) && (
@@ -253,7 +253,6 @@ export function WorkspaceShell({
               canManage={myRole === "OWNER"}
             />
           )}
-        </div>
       </div>
 
       {pdf && (
