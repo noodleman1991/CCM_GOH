@@ -9,6 +9,7 @@ import { FileText, Upload, Trash2, FileType } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { confirmFileUpload, deleteFile } from "@/lib/actions/collaboration-files";
 import { cn } from "@/lib/utils";
+import { WorkspaceEmptyState } from "./workspace-empty-state";
 import type { CollaborationRole } from "@/generated/prisma";
 
 type FileRow = {
@@ -137,7 +138,11 @@ export function WorkspaceFiles({
       )}
 
       {files.length === 0 ? (
-        <p className="text-sm text-muted-foreground">{t("noFiles")}</p>
+        <WorkspaceEmptyState
+          icon={FileText}
+          title={t("emptyState.filesTitle")}
+          body={t("emptyState.filesBody")}
+        />
       ) : (
         <ul className="divide-y rounded-lg border">
           {files.map((f) => (

@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { getActor } from "@/lib/authz";
 import { authorizeCollab, getMembershipRole } from "@/lib/collaboration/service";
+import { seedWorkspace } from "@/lib/collaboration/seed";
 import type { CollaborationRole } from "@/generated/prisma";
 
 type Result<T = {}> = ({ ok: true } & T) | { ok: false; error: string };
@@ -32,6 +33,15 @@ export async function createCollaboration(input: z.infer<typeof createSchema>): 
     },
     select: { id: true },
   });
+
+  // Seed the workspace so it is never empty: a plan with the three starter
+  // stages + a starter doc. Best-effort — never fail creation on a seed error.
+  try {
+    await seedWorkspace(prisma, collab.id, actor.id);
+  } catch {
+    // Seeding is convenience-only; the workspace is the source of truth.
+  }
+
   revalidatePath("/collaborations");
   return { ok: true, id: collab.id };
 }

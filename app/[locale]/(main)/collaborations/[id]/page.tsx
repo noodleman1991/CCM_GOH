@@ -7,6 +7,7 @@ import { getCollaboration, getMembershipRole, authorizeCollab, getPlan, getDocs,
 import { getActor, isStaff } from "@/lib/authz";
 import { r2Configured } from "@/lib/r2";
 import { WorkspaceShell } from "@/components/collaboration/workspace-shell";
+import { WorkspaceSidebarCollapse } from "@/components/collaboration/workspace-sidebar-collapse";
 
 export const dynamic = "force-dynamic";
 
@@ -50,7 +51,7 @@ export default async function CollaborationDetailPage({
     plan?.stages.map((s) => ({
       id: s.id,
       title: s.title,
-      tasks: s.tasks.map((t) => ({ id: t.id, title: t.title, status: t.status })),
+      tasks: s.tasks.map((t) => ({ id: t.id, title: t.title, status: t.status, assigneeId: t.assignee?.id ?? null })),
     })) ?? [];
 
   const docsRows = await getDocs(id);
@@ -66,7 +67,9 @@ export default async function CollaborationDetailPage({
   const [outputs, activity] = await Promise.all([getOutputs(id), getActivity(id)]);
 
   return (
-    <WorkspaceShell
+    <>
+      <WorkspaceSidebarCollapse />
+      <WorkspaceShell
       collaboration={{
         id: collab.id,
         title: collab.title,
@@ -91,6 +94,7 @@ export default async function CollaborationDetailPage({
       docs={docs}
       outputs={outputs}
       activity={activity}
-    />
+      />
+    </>
   );
 }

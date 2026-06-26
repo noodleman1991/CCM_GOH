@@ -305,7 +305,13 @@
     "deleteTask": "Eliminar tarea",
     "cycleStatus": "Cambiar estado",
     "stageComplete": "Etapa completada",
-    "dragTask": "Arrastra para reordenar"
+    "dragTask": "Arrastra para reordenar",
+    "heading": "Plan",
+    "subtitle": "Divide el trabajo en etapas y luego añade tareas en cada una. Haz clic en una tarea para moverla Por hacer → En curso → Hecho.",
+    "emptyTitle": "Aún no hay etapas",
+    "emptyBody": "Añade tu primera etapa (p. ej. Exploración, Redacción, Revisión) para empezar a seguir el trabajo.",
+    "assign": "Asignar",
+    "unassigned": "Sin asignar"
   },
   "follow": {
     "follow": "Seguir",
@@ -1584,6 +1590,7 @@
   "collaboration": {
     "pageTitle": "Colaboraciones",
     "pageDescription": "Espacios compartidos para trabajar juntos.",
+    "breadcrumbHome": "Espacios de trabajo",
     "create": "Nuevo espacio",
     "createTitle": "Crear un espacio",
     "titleLabel": "Nombre",
@@ -1636,6 +1643,16 @@
     "mediaTitlePlaceholder": "Título (opcional)",
     "addMedia": "Añadir",
     "noMedia": "Aún no hay multimedia.",
+    "emptyState": {
+      "docsTitle": "Aún no hay documentos",
+      "docsBody": "Redacten notas, resúmenes y textos en conjunto. Crea tu primer documento para empezar.",
+      "threadsTitle": "Aún no hay debates",
+      "threadsBody": "Inicia un hilo para debatir decisiones, compartir novedades o hacer una pregunta al grupo.",
+      "filesTitle": "Aún no hay archivos",
+      "filesBody": "Sube los PDF y documentos que el equipo necesite. Arrastra un archivo aquí o usa el botón de subida.",
+      "mediaTitle": "Aún no hay multimedia",
+      "mediaBody": "Añade vídeos de YouTube para compartir charlas, demostraciones o grabaciones con el espacio de trabajo."
+    },
     "mediaConsentRequired": "Este video necesita consentimiento de cookies.",
     "dropToUpload": "Arrastra un archivo aquí o"
   },
