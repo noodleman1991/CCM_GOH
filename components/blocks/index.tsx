@@ -7,7 +7,7 @@ import GridRow from "@/components/blocks/grid/grid-row";
 import TeamGrid from "@/components/blocks/grid/team-grid";
 import Carousel1 from "@/components/blocks/carousel/carousel-1";
 import Carousel2 from "@/components/blocks/carousel/carousel-2";
-import LivedExperiencesCarousel from "@/components/blocks/carousel/lived-experiences-carousel";
+import LivedExperiencesCarousel from "@/components/blocks/carousel/lived-experiences-carousel-server";
 import TimelineRow from "@/components/blocks/timeline/timeline-row";
 import Cta1 from "@/components/blocks/cta/cta-1";
 import LogoCloud1 from "@/components/blocks/logo-cloud/logo-cloud-1";

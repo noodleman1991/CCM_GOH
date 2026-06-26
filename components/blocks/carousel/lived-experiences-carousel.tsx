@@ -84,6 +84,10 @@ interface LivedExperiencesCarouselProps {
   featured?: boolean;
   experiences?: LivedExperience[];
   locale?: string;
+  /** Optional "View all" link target (e.g. "/lived-experiences"). */
+  viewAllHref?: string;
+  /** Localized label for the "View all" link. */
+  viewAllLabel?: string;
 }
 
 function LivedExperienceCard({
@@ -275,8 +279,15 @@ export default function LivedExperiencesCarousel({
   featured = false,
   experiences = [],
   locale = "en",
+  viewAllHref,
+  viewAllLabel,
 }: LivedExperiencesCarouselProps) {
   const t = useTranslations('regional');
+  // Optional "View all" link, surfaced through SectionHeader's quiet action slot.
+  const viewAllAction =
+    viewAllHref && viewAllLabel
+      ? { label: viewAllLabel, href: viewAllHref }
+      : undefined;
   const tCommon = useTranslations('common');
   const [itemsPerView, setItemsPerView] = useState(3);
   const [selectedVideo, setSelectedVideo] = useState<LivedExperience | null>(null);
@@ -328,7 +339,7 @@ export default function LivedExperiencesCarousel({
         <div className="w-full">
           {(title || subtitle) && (
             <div className="mb-6 md:mb-8">
-              <SectionHeader title={title} subtitle={subtitle} titleClassName={heading('md')} />
+              <SectionHeader title={title} subtitle={subtitle} action={viewAllAction} titleClassName={heading('md')} />
             </div>
           )}
           <div className="text-center py-12 text-muted-foreground">

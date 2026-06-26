@@ -785,7 +785,8 @@
     "backToGallery": "Retour à la galerie",
     "viewFull": "Voir le récit complet",
     "audioTitleFallback": "Audio d’expérience vécue",
-    "audioFallback": "Votre navigateur ne prend pas en charge l’élément audio."
+    "audioFallback": "Votre navigateur ne prend pas en charge l’élément audio.",
+    "viewAll": "Voir tout"
   },
   "caseStudyForm": {
     "sections": {

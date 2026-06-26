@@ -484,6 +484,7 @@ export type LivedExperiencesCarousel = {
   filterBy?: FilterBy;
   maxItems?: number;
   featured?: boolean;
+  viewAllLink?: boolean;
 };
 
 export type TestimonialReference = {

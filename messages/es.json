@@ -785,7 +785,8 @@
     "backToGallery": "Volver a la galería",
     "viewFull": "Ver historia completa",
     "audioTitleFallback": "Audio de experiencia vivida",
-    "audioFallback": "Tu navegador no admite el elemento de audio."
+    "audioFallback": "Tu navegador no admite el elemento de audio.",
+    "viewAll": "Ver todo"
   },
   "caseStudyForm": {
     "sections": {

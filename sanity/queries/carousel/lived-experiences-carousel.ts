@@ -12,6 +12,7 @@ export const livedExperiencesCarouselBlockQuery = groq`
     filterBy,
     maxItems,
     featured,
+    viewAllLink,
   }
 `;
 

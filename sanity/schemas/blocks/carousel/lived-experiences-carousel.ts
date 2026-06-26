@@ -87,6 +87,14 @@ export default defineType({
       description: "Only show featured lived experiences",
       initialValue: false,
     }),
+    defineField({
+      name: "viewAllLink",
+      title: "Show 'View all' link",
+      type: "boolean",
+      description:
+        "Show a 'View all' link to the lived-experiences index (/lived-experiences).",
+      initialValue: true,
+    }),
   ],
   preview: {
     select: {
