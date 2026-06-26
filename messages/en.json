@@ -198,7 +198,14 @@
     "moderationNote": "Your event is reviewed by an editor before it appears publicly.",
     "validationRequired": "Please add a title and a start date.",
     "submitPending": "Submitted — pending review.",
-    "submitFailed": "Could not submit. Please check the form and try again."
+    "submitFailed": "Could not submit. Please check the form and try again.",
+    "calendarTitle": "Events calendar",
+    "upcomingHeading": "Upcoming",
+    "subscribe": "Subscribe (iCal)",
+    "noUpcoming": "No upcoming events.",
+    "prevMonth": "Previous month",
+    "nextMonth": "Next month",
+    "today": "Today"
   },
   "plan": {
     "empty": "No plan yet.",

@@ -288,7 +288,14 @@
     "moderationNote": "Votre événement est examiné par un éditeur avant publication.",
     "validationRequired": "Ajoutez un titre et une date de début.",
     "submitPending": "Envoyé — en attente de révision.",
-    "submitFailed": "Échec de l'envoi. Vérifiez le formulaire et réessayez."
+    "submitFailed": "Échec de l'envoi. Vérifiez le formulaire et réessayez.",
+    "calendarTitle": "Calendrier des événements",
+    "upcomingHeading": "À venir",
+    "subscribe": "S'abonner (iCal)",
+    "noUpcoming": "Aucun événement à venir.",
+    "prevMonth": "Mois précédent",
+    "nextMonth": "Mois suivant",
+    "today": "Aujourd'hui"
   },
   "plan": {
     "empty": "Pas encore de plan.",
