@@ -51,7 +51,31 @@ export default function Hero1({
 
     return (
         <SectionContainer background={background as any} padding={padding}>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 lg:gap-8">
+            <div className="relative overflow-hidden grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 lg:gap-8">
+                {/* Decorative organic "blob" brand accent (redesign §1.5/§1.6).
+                    Sits behind the content (-z-10) in the trailing corners so it
+                    never overlaps the hero text. aria-hidden + pointer-events-none;
+                    the slow morph only runs under `motion-safe`, so reduced-motion
+                    users get a static shape. Logical inset (`end`/`start`) keeps it
+                    correct in RTL, and the parent's overflow-hidden clips it at
+                    375px so it can never cause horizontal scroll. */}
+                <span
+                    aria-hidden="true"
+                    className={cn(
+                        "pointer-events-none absolute -z-10 -top-16 end-[-12%] blur-[2px]",
+                        "h-40 w-40 sm:h-56 sm:w-56 lg:h-72 lg:w-72",
+                        "bg-ccm-sky/30 motion-safe:animate-[ccmblob_18s_ease-in-out_infinite]"
+                    )}
+                    style={{ borderRadius: "58% 42% 55% 45% / 52% 48% 52% 48%" }}
+                />
+                <span
+                    aria-hidden="true"
+                    className={cn(
+                        "pointer-events-none absolute -z-10 hidden lg:block -bottom-20 start-[-8%] blur-[2px]",
+                        "h-48 w-48 bg-ccm-sea/20 motion-safe:animate-[ccmblob_18s_ease-in-out_infinite]"
+                    )}
+                    style={{ borderRadius: "52% 48% 58% 42% / 55% 45% 52% 48%", animationDelay: "-6s" }}
+                />
                 <div className={cn(
                     "flex flex-col justify-start min-w-0 w-full",
                     rtl
