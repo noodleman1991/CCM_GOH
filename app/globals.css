@@ -26,8 +26,16 @@
     /* One slow organic morph for the hero/section blob accent (redesign §1.6). */
     --animate-ccmblob: ccmblob 18s ease-in-out infinite;
     /* Gentle "alive" wiggle echoing the organic CCM brand feel — subtle, with a
-       long rest between nudges so it's noticeable but never distracting. */
-    --animate-ccmwiggle: ccmwiggle 6s ease-in-out infinite;
+       long rest between nudges so it's noticeable but never distracting. Runs on
+       a 2-minute cycle: the label types itself out, then a small wiggle nudge. */
+    --animate-ccmwiggle: ccmwiggle 120s ease-in-out infinite;
+    /* Search-pill label "typewriter": reveals "Search…" char-by-char near the
+       start of each 2-minute cycle, then holds. The discrete typing feel comes
+       from the per-glyph keyframe stops; the timing function stays linear so the
+       reveal actually advances (steps(1) would freeze it on the first frame).
+       The caret blinks only while typing. */
+    --animate-ccmtype: ccmtype 120s linear infinite;
+    --animate-ccmcaret: ccmcaret 120s linear infinite;
 }
 
 @keyframes accordion-down {
@@ -68,6 +76,28 @@
     90% { transform: rotate(0.9deg); }
     94% { transform: rotate(-0.6deg); }
     98% { transform: rotate(0.3deg); }
+}
+
+/* Typewriter reveal for the search-pill label. Over a 120s cycle the first
+   ~2.5% (~3s) types the word out in discrete steps; it then stays fully shown
+   for the rest of the cycle. `ch` units track the label's character count so the
+   reveal lands exactly on glyph boundaries. Drives `max-width` on the label. */
+@keyframes ccmtype {
+    0%,    0.39% { max-width: 0; }
+    0.4%,  0.79% { max-width: 1ch; }
+    0.8%,  1.19% { max-width: 2ch; }
+    1.2%,  1.59% { max-width: 3ch; }
+    1.6%,  1.99% { max-width: 4ch; }
+    2.0%,  2.39% { max-width: 5ch; }
+    2.4%,  2.79% { max-width: 6ch; }
+    2.8%,  100%  { max-width: 12ch; }
+}
+
+/* Caret that blinks while the label types, then fades out for the long rest. */
+@keyframes ccmcaret {
+    0%, 2.8%   { opacity: 1; }
+    1.4%       { opacity: 0.2; }
+    3.2%, 100% { opacity: 0; }
 }
 
 /* Organic "blob" accent (redesign §1.5/§1.6): a soft shape that slowly morphs

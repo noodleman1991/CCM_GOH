@@ -49,12 +49,25 @@ export function SearchTrigger({
       type="button"
       onClick={() => setOpen(true)}
       aria-keyshortcuts="Meta+K Control+K"
-      // Clean radius matching the search Dialog + a subtle wiggle for the brand's
-      // "alive" feel; settles on hover/focus & for reduced motion.
+      // Clean radius + box height matching the original (app radius, centered
+      // icon/label). Every 2 minutes the label "types" itself out (ccmtype) and
+      // then a small wiggle nudge fires (ccmwiggle) for the brand's "alive" feel;
+      // both settle on hover/focus and for reduced motion.
       className="flex w-full origin-center items-center gap-2 rounded-xl bg-background px-3.5 py-2.5 text-sm text-slate-500 transition-colors hover:bg-background/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary motion-safe:animate-ccmwiggle hover:[animation-play-state:paused] focus-visible:[animation-play-state:paused]"
     >
       <Search className="size-4 shrink-0 text-slate-500" />
-      <span className="truncate">{t("searchPlaceholder")}</span>
+      {/* Typewriter label: an overflow-clipped inline-block whose max-width is
+          animated in steps, with a blinking caret while it types. The text is
+          fully present for a11y / no-motion; only its reveal is animated. */}
+      <span className="inline-flex items-center overflow-hidden whitespace-nowrap">
+        <span className="overflow-hidden whitespace-nowrap motion-safe:max-w-0 motion-safe:animate-ccmtype motion-reduce:max-w-none">
+          {t("searchPlaceholder")}
+        </span>
+        <span
+          aria-hidden="true"
+          className="ms-px hidden w-px self-stretch bg-slate-400 motion-safe:inline-block motion-safe:animate-ccmcaret"
+        />
+      </span>
       <kbd className="ms-auto hidden rounded border border-border px-1.5 py-0.5 text-[10px] font-medium text-slate-400 sm:inline-block">
         ⌘K
       </kbd>
