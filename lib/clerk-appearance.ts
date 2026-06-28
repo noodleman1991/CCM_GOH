@@ -32,28 +32,46 @@ export const clerkAppearance: ClerkAppearance = {
     colorBackground: "#ffffff",
     colorInputBackground: "#ffffff",
     colorInputText: "#0B3160",
-    borderRadius: "0.75rem", // matches our rounded-xl cards
-    fontFamily: "var(--font-poppins), system-ui, sans-serif",
+    // The app's own base radius (globals.css `--radius: 0.625rem`), not a
+    // hard-coded approximation — so inputs/buttons match app controls exactly.
+    borderRadius: "var(--radius)",
+    // Use the app's body-font token (not a hard-coded family): it resolves to
+    // Lato for Latin locales and Tajawal under the RTL/`ar` block in globals.css,
+    // so Arabic sign-in renders in the correct Arabic font automatically. Headings
+    // use `font-heading` (Poppins → Lalezar in `ar`) via the element overrides.
+    fontFamily: "var(--font-body)",
   },
   elements: {
-    // Render inside our own auth layout card, so drop Clerk's outer chrome.
     rootBox: "w-full",
-    card: "shadow-none border border-border bg-card rounded-xl",
-    // Hard-coded 4× the original h-10 logo (h-40 = 160px) on the auth cards.
-    // Clerk applies its own logo sizing, so force ours with `!` (important).
-    logoBox: "!h-40 justify-center",
-    logoImage: "!h-40 w-auto max-w-none object-contain",
-    headerTitle: "font-heading text-ccm-midnight",
-    headerSubtitle: "text-muted-foreground",
+    // No floating-box look: the auth layout already centers the form on a white
+    // page, so the Clerk chrome drops its border + shadow and sits flush. The
+    // visible outline lives on the OUTER `cardBox` wrapper (not `card`), so both
+    // are reset — with `!` since Clerk's own styles are specific. This is the
+    // "hide the dialog border" requirement.
+    cardBox: "!shadow-none !border-0 !rounded-[var(--radius)] !bg-transparent",
+    card: "!shadow-none !border-0 !bg-transparent rounded-[var(--radius)] !px-0",
+    // Centered brand mark, sized generously (the app's lg logo region).
+    logoBox: "!h-16 justify-center mb-3",
+    logoImage: "!h-16 w-auto max-w-none object-contain",
+    // Single heading line in Poppins (the brand heading font), sized as a calm
+    // section title — not a hero. The subtitle is emptied via localization, so
+    // hide its (now-blank) node to avoid a stray gap.
+    headerTitle: "font-heading text-ccm-midnight text-xl font-semibold tracking-tight",
+    headerSubtitle: "hidden",
+    // Labels in Poppins to match the headings; provider/primary button text too.
+    formFieldLabel: "font-heading text-ccm-midnight",
     socialButtonsBlockButton:
-      "border-border hover:bg-muted transition-colors",
+      "border-border rounded-[var(--radius)] hover:bg-muted transition-colors",
+    socialButtonsBlockButtonText: "font-heading",
     formButtonPrimary:
-      "bg-[var(--color-ccm-sea)] hover:bg-[var(--color-ccm-midnight)] text-white normal-case font-medium shadow-sm",
+      "bg-[var(--color-ccm-sea)] hover:bg-[var(--color-ccm-midnight)] text-white normal-case font-heading font-medium rounded-[var(--radius)] shadow-sm",
     formFieldInput:
-      "border-border focus:border-[var(--color-ccm-water)] focus:ring-[var(--color-ccm-water)]",
+      "border-border rounded-[var(--radius)] focus:border-[var(--color-ccm-water)] focus:ring-[var(--color-ccm-water)]",
+    footerActionText: "font-heading",
     footerActionLink:
-      "text-[var(--color-ccm-sea)] hover:text-[var(--color-ccm-midnight)]",
-    // Clerk's free-plan branding line; keep it but tone it down.
-    footer: "text-muted-foreground",
+      "text-[var(--color-ccm-sea)] hover:text-[var(--color-ccm-midnight)] font-heading",
+    // The "Sign up" / "Secured by" area sits on a plain WHITE background (not the
+    // faint grey gradient Clerk ships) and carries no divider border.
+    footer: "!bg-white !border-0 text-muted-foreground",
   },
 };

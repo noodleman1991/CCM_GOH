@@ -274,7 +274,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <NavSecondary items={data.navSecondary} className="mt-auto" />
             </SidebarContent>
             <SidebarFooter>
-                {/* Universal search sits just above the user button. It opens an
+                <div className="flex flex-col p-2 gap-2 group-data-[collapsible=icon]:p-1">
+                    <AuthNavUser isRTL={isRTL} />
+                    {/* The wide language switcher can't fit the icon rail; hide it
+                        there (it's one click away once the rail is expanded). */}
+                    <div className="group-data-[collapsible=icon]:hidden">
+                        <LanguageSwitcher />
+                    </div>
+                </div>
+                {/* Universal search sits just below the user button. It opens an
                     accessible search modal (keyboard: ⌘K / "/"; focus-trapped;
                     RTL-aware). On the icon rail (workspace routes) the pill can't
                     fit without its ⌘K hint leaking onto the content pane, so we
@@ -293,14 +301,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>
-                <div className="flex flex-col p-2 gap-2 group-data-[collapsible=icon]:p-1">
-                    <AuthNavUser isRTL={isRTL} />
-                    {/* The wide language switcher can't fit the icon rail; hide it
-                        there (it's one click away once the rail is expanded). */}
-                    <div className="group-data-[collapsible=icon]:hidden">
-                        <LanguageSwitcher />
-                    </div>
-                </div>
             </SidebarFooter>
         </Sidebar>
     )
