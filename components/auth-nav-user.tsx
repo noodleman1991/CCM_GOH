@@ -83,7 +83,8 @@ export function AuthNavUser({ isRTL = false }: { isRTL?: boolean }) {
                       the sidebar's primary tokens (white bg / midnight text).
                     • Sign in = transparent button with a white hairline border +
                       white text (secondary), using the sidebar border token.
-                    Radius is unified to rounded-xl to match the search pill. */}
+                    Radius is unified to rounded-lg — the repo's Button radius
+                    (var(--radius)) — across both buttons and the search box. */}
                 <div
                     className={cn(
                         "flex flex-col gap-2 px-1 group-data-[collapsible=icon]:hidden",
@@ -92,12 +93,12 @@ export function AuthNavUser({ isRTL = false }: { isRTL?: boolean }) {
                     suppressHydrationWarning
                 >
                     <SignUpButton mode="modal" appearance={clerkAppearance}>
-                        <Button className="w-full rounded-xl bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary/90">
+                        <Button className="w-full rounded-lg bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary/90">
                             {t('createAccount')}
                         </Button>
                     </SignUpButton>
                     <SignInButton mode="modal" appearance={clerkAppearance}>
-                        <Button className="w-full rounded-xl border border-sidebar-border bg-transparent text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
+                        <Button className="w-full rounded-lg border border-sidebar-border bg-transparent text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
                             {t('signIn')}
                         </Button>
                     </SignInButton>
