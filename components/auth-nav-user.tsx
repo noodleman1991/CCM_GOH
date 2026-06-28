@@ -13,11 +13,7 @@ import {
     SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import {
-    DropdownMenu,
-    DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
 import { clerkAppearance } from "@/lib/clerk-appearance"
@@ -80,62 +76,30 @@ export function AuthNavUser({ isRTL = false }: { isRTL?: boolean }) {
             </SignedIn>
 
             <SignedOut>
-                <SidebarMenu>
-                    <SidebarMenuItem suppressHydrationWarning>
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <SidebarMenuButton
-                                    size="lg"
-                                    className={cn(
-                                        "data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground",
-                                        isRTL && "flex-row-reverse"
-                                    )}
-                                >
-                                    <div className={cn(
-                                        "grid flex-1 text-sm leading-tight",
-                                        isRTL ? "text-right" : "text-left"
-                                    )}>
-                                        <span className="truncate text-large">{t('welcome')}</span>
-                                        <span className="truncate text-medium">{t('signUpOrSignIn')}</span>
-                                    </div>
-                                </SidebarMenuButton>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent
-                                className="min-w-56 rounded-lg"
-                                align={isRTL ? "start" : "end"}
-                                side={isRTL ? "left" : "right"}
-                                sideOffset={4}
-                            >
-                                <div className="flex flex-col gap-2 p-2">
-                                    <SignInButton mode="modal" appearance={clerkAppearance}>
-                                        <Button
-                                            className={cn(
-                                                "w-full",
-                                                isRTL ? "justify-end" : "justify-start"
-                                            )}
-                                            variant="outline"
-                                        >
-                                            {t('signIn')}
-                                        </Button>
-                                    </SignInButton>
-
-                                    <DropdownMenuSeparator />
-
-                                    <SignUpButton mode="modal" appearance={clerkAppearance}>
-                                        <Button
-                                            className={cn(
-                                                "w-full",
-                                                isRTL ? "justify-end" : "justify-start"
-                                            )}
-                                        >
-                                            {t('createAccount')}
-                                        </Button>
-                                    </SignUpButton>
-                                </div>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </SidebarMenuItem>
-                </SidebarMenu>
+                {/* A plain greeting line followed by the two auth actions shown
+                    directly — no dropdown/popping menu. Sign in = `outline`,
+                    Create account = `default`, matching the modal's buttons. */}
+                <div
+                    className={cn(
+                        "flex flex-col gap-2 px-1 group-data-[collapsible=icon]:hidden",
+                        isRTL ? "text-right" : "text-left"
+                    )}
+                    suppressHydrationWarning
+                >
+                    <p className="px-1 text-sm font-medium text-sidebar-foreground/80">
+                        {t('welcome')}
+                    </p>
+                    <SignInButton mode="modal" appearance={clerkAppearance}>
+                        <Button className="w-full" variant="outline">
+                            {t('signIn')}
+                        </Button>
+                    </SignInButton>
+                    <SignUpButton mode="modal" appearance={clerkAppearance}>
+                        <Button className="w-full">
+                            {t('createAccount')}
+                        </Button>
+                    </SignUpButton>
+                </div>
             </SignedOut>
         </>
     )
