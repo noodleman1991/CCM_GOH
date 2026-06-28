@@ -51,6 +51,31 @@ const clerkLocalizationsMap = {
     ar: arSA,
 };
 
+// Promote the friendly "Welcome back…" line to be the SOLE sign-in heading and
+// drop Clerk's default "Sign in to <app>" title + its now-redundant subtitle.
+// Merged per-locale below so each language keeps its own strings.
+const signInHeadings: Record<string, string> = {
+    en: "Welcome back! Please sign in to continue",
+    fr: "Bon retour ! Veuillez vous connecter pour continuer",
+    es: "¡Bienvenido de nuevo! Inicia sesión para continuar",
+    ar: "مرحبًا بعودتك! يرجى تسجيل الدخول للمتابعة",
+};
+
+// Clerk's arSA bundle leaves some sign-in placeholders in English; fill the ones
+// the form actually shows (email/username + password) per locale.
+const emailOrUsernamePlaceholders: Record<string, string> = {
+    en: "Enter email or username",
+    fr: "Saisissez l'e-mail ou le nom d'utilisateur",
+    es: "Introduce el correo o el nombre de usuario",
+    ar: "أدخل البريد الإلكتروني أو اسم المستخدم",
+};
+const passwordPlaceholders: Record<string, string> = {
+    en: "Enter your password",
+    fr: "Saisissez votre mot de passe",
+    es: "Introduce tu contraseña",
+    ar: "أدخل كلمة المرور",
+};
+
 const isProduction = process.env.NEXT_PUBLIC_SITE_ENV === "production";
 
 export const metadata: Metadata = {
@@ -87,7 +112,25 @@ export default async function LocaleLayout({
     setRequestLocale(locale);
     const isRtl = rtlLocales.includes(locale);
     const messages = await getMessages();
-    const clerkLocalization = clerkLocalizationsMap[locale as keyof typeof clerkLocalizationsMap] || enGB;
+    const baseClerkLocalization = clerkLocalizationsMap[locale as keyof typeof clerkLocalizationsMap] || enGB;
+    // One heading line, in Poppins (styled via clerkAppearance.headerTitle): the
+    // "Welcome back…" copy becomes the title; the default "Sign in to <app>" and
+    // the duplicate subtitle are dropped.
+    const clerkLocalization = {
+        ...baseClerkLocalization,
+        signIn: {
+            ...baseClerkLocalization.signIn,
+            start: {
+                ...baseClerkLocalization.signIn?.start,
+                title: signInHeadings[locale] ?? signInHeadings.en,
+                subtitle: "",
+            },
+        },
+        formFieldInputPlaceholder__emailAddress_username:
+            emailOrUsernamePlaceholders[locale] ?? emailOrUsernamePlaceholders.en,
+        formFieldInputPlaceholder__password:
+            passwordPlaceholders[locale] ?? passwordPlaceholders.en,
+    };
 
     return (
         <html

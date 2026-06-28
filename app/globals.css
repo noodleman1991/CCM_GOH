@@ -468,3 +468,17 @@
 .scrollbar-hide::-webkit-scrollbar {
     display: none;
 }
+
+/* Clerk sign-in/up: strip the remaining chrome the `appearance` API can't reach
+   so the borderless form sits fully flush — the footer's faint gradient fill and
+   the 1px top border on its inner "Secured by" strip (an internal, non-themeable
+   node). (The diagonal "Development mode" banner is a dev-instance indicator from
+   Clerk and only renders on the dev key.) */
+.cl-footer {
+    background-image: none !important;
+    background-color: #fff !important;
+}
+.cl-footer * {
+    border-top: 0 !important;
+    background-color: transparent !important;
+}
