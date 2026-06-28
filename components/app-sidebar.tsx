@@ -256,27 +256,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>
-
-                {/* Universal search — a labelled pill that opens an accessible
-                    search modal (keyboard: ⌘K / "/"; focus-trapped; RTL-aware).
-                    On the icon rail (workspace routes) the pill can't fit without
-                    its ⌘K hint leaking onto the content pane, so we swap to a
-                    rail icon button that matches the other nav items (inherits the
-                    white sidebar foreground + hover/active treatment). */}
-                <div className="p-2 group-data-[collapsible=icon]:hidden">
-                    <SearchTrigger variant="pill" />
-                </div>
-                <SidebarMenu className="hidden group-data-[collapsible=icon]:block">
-                    <SidebarMenuItem>
-                        <SidebarMenuButton
-                            tooltip={t('searchPlaceholder')}
-                            onClick={() => useSearchStore.getState().setOpen(true)}
-                            className="justify-center"
-                        >
-                            <Search />
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                </SidebarMenu>
             </SidebarHeader>
             <SidebarContent>
                 <NavMain
@@ -295,6 +274,25 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <NavSecondary items={data.navSecondary} className="mt-auto" />
             </SidebarContent>
             <SidebarFooter>
+                {/* Universal search sits just above the user button. It opens an
+                    accessible search modal (keyboard: ⌘K / "/"; focus-trapped;
+                    RTL-aware). On the icon rail (workspace routes) the pill can't
+                    fit without its ⌘K hint leaking onto the content pane, so we
+                    swap to a rail icon button matching the other nav items. */}
+                <div className="p-2 group-data-[collapsible=icon]:hidden">
+                    <SearchTrigger variant="pill" />
+                </div>
+                <SidebarMenu className="hidden group-data-[collapsible=icon]:block">
+                    <SidebarMenuItem>
+                        <SidebarMenuButton
+                            tooltip={t('searchPlaceholder')}
+                            onClick={() => useSearchStore.getState().setOpen(true)}
+                            className="justify-center"
+                        >
+                            <Search />
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                </SidebarMenu>
                 <div className="flex flex-col p-2 gap-2 group-data-[collapsible=icon]:p-1">
                     <AuthNavUser isRTL={isRTL} />
                     {/* The wide language switcher can't fit the icon rail; hide it

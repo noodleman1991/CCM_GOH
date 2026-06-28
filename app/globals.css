@@ -82,22 +82,30 @@
    ~2.5% (~3s) types the word out in discrete steps; it then stays fully shown
    for the rest of the cycle. `ch` units track the label's character count so the
    reveal lands exactly on glyph boundaries. Drives `max-width` on the label. */
+/* "Search..." typed out one glyph at a time. Each glyph holds (plateau) then
+   snaps to the next — the discrete jumps are the typing feel. The hold lengths
+   are deliberately UNEVEN (a human types in bursts with little pauses), and the
+   word starts after a short "thinking" beat, which reads far more convincingly
+   than a metronome. 8 glyphs ("Search.."), reveal finishing ~3.4s into the 120s
+   cycle (2.8%), then it rests fully shown until the next cycle. */
 @keyframes ccmtype {
-    0%,    0.39% { max-width: 0; }
-    0.4%,  0.79% { max-width: 1ch; }
-    0.8%,  1.19% { max-width: 2ch; }
-    1.2%,  1.59% { max-width: 3ch; }
-    1.6%,  1.99% { max-width: 4ch; }
-    2.0%,  2.39% { max-width: 5ch; }
-    2.4%,  2.79% { max-width: 6ch; }
-    2.8%,  100%  { max-width: 12ch; }
+    0%,    0.50% { max-width: 0; }      /* brief pause before the first key */
+    0.55%, 0.72% { max-width: 1ch; }    /* S */
+    0.78%, 1.05% { max-width: 2ch; }    /* e (small stutter) */
+    1.10%, 1.28% { max-width: 3ch; }    /* a */
+    1.34%, 1.74% { max-width: 4ch; }    /* r (longer pause) */
+    1.80%, 1.98% { max-width: 5ch; }    /* c */
+    2.04%, 2.20% { max-width: 6ch; }    /* h */
+    2.26%, 2.55% { max-width: 7ch; }    /* . */
+    2.62%, 100%  { max-width: 12ch; }   /* .. settle, fully shown */
 }
 
-/* Caret that blinks while the label types, then fades out for the long rest. */
+/* Caret blinks steadily while typing (≈2 blinks/sec across the ~3.4s reveal),
+   then fades out for the long rest so the pill sits quiet. */
 @keyframes ccmcaret {
-    0%, 2.8%   { opacity: 1; }
-    1.4%       { opacity: 0.2; }
-    3.2%, 100% { opacity: 0; }
+    0%, 0.4%, 1.2%, 2.0%, 2.8% { opacity: 1; }
+    0.8%, 1.6%, 2.4%           { opacity: 0; }
+    3.4%, 100%                 { opacity: 0; }
 }
 
 /* Organic "blob" accent (redesign §1.5/§1.6): a soft shape that slowly morphs
