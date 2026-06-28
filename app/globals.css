@@ -503,23 +503,27 @@
 }
 
 /* Modal variant (SignInButton/SignUpButton mode="modal"): opaque white card over
-   the overlay, responsive width. The BACKDROP scrolls (not the card) so a tall
-   form — the sign-up modal on a short screen — is fully reachable, top-aligned
-   with breathing room, and never clipped below the fold. */
+   the overlay, responsive width, centered. The CARD scrolls internally when its
+   content is taller than the viewport (the sign-up form is tall) — capped to the
+   viewport minus padding so it's never clipped below the fold. */
 .cl-modalBackdrop {
-    align-items: flex-start !important;
-    padding: 2rem 1rem !important;         /* vertical room so it's never edge-to-edge */
-    overflow-y: auto !important;
-    overscroll-behavior: contain !important;
+    padding: 1rem !important;              /* never let the card touch screen edges */
 }
 .cl-modalContent {
     width: 100% !important;
     max-width: 28rem !important;           /* ~max-w-md, matches the page form */
-    margin: auto !important;               /* center when it fits; top-scroll when tall */
+    /* Zero Clerk's default 64px top/bottom margins so the card can use the full
+       padded viewport height (otherwise the bottom is pushed off-screen). */
+    margin: 0 auto !important;
 }
-.cl-modalContent .cl-cardBox,
-.cl-modalContent .cl-card {
+.cl-modalContent .cl-cardBox {
+    max-height: calc(100dvh - 2rem) !important;
+    overflow-y: auto !important;           /* scroll the tall sign-up form */
+    overscroll-behavior: contain !important;
     background-color: #fff !important;     /* opaque so the overlay can't show through */
+}
+.cl-modalContent .cl-card {
+    background-color: #fff !important;
 }
 
 /* Poppins weight: the app uses bold for buttons; titles read better at semibold.
