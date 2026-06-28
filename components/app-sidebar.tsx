@@ -274,19 +274,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <NavSecondary items={data.navSecondary} className="mt-auto" />
             </SidebarContent>
             <SidebarFooter>
-                <div className="flex flex-col p-2 gap-2 group-data-[collapsible=icon]:p-1">
+                <div className="p-2 pb-0 group-data-[collapsible=icon]:p-1">
                     <AuthNavUser isRTL={isRTL} />
-                    {/* The wide language switcher can't fit the icon rail; hide it
-                        there (it's one click away once the rail is expanded). */}
-                    <div className="group-data-[collapsible=icon]:hidden">
-                        <LanguageSwitcher />
-                    </div>
                 </div>
-                {/* Universal search sits just below the user button. It opens an
-                    accessible search modal (keyboard: ⌘K / "/"; focus-trapped;
-                    RTL-aware). On the icon rail (workspace routes) the pill can't
-                    fit without its ⌘K hint leaking onto the content pane, so we
-                    swap to a rail icon button matching the other nav items. */}
+                {/* Universal search sits between the user button and the language
+                    switcher. It opens an accessible search modal (keyboard: ⌘K /
+                    "/"; focus-trapped; RTL-aware). On the icon rail (workspace
+                    routes) the pill can't fit without its ⌘K hint leaking onto the
+                    content pane, so we swap to a rail icon button matching the
+                    other nav items. */}
                 <div className="p-2 group-data-[collapsible=icon]:hidden">
                     <SearchTrigger variant="pill" />
                 </div>
@@ -301,6 +297,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>
+                {/* The wide language switcher can't fit the icon rail; hide it
+                    there (it's one click away once the rail is expanded). */}
+                <div className="p-2 pt-0 group-data-[collapsible=icon]:hidden">
+                    <LanguageSwitcher />
+                </div>
             </SidebarFooter>
         </Sidebar>
     )

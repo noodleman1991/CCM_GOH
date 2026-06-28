@@ -50,9 +50,9 @@ export const clerkAppearance: ClerkAppearance = {
     // "hide the dialog border" requirement.
     cardBox: "!shadow-none !border-0 !rounded-[var(--radius)] !bg-transparent",
     card: "!shadow-none !border-0 !bg-transparent rounded-[var(--radius)] !px-0",
-    // Centered brand mark, sized generously (the app's lg logo region).
-    logoBox: "!h-16 justify-center mb-3",
-    logoImage: "!h-16 w-auto max-w-none object-contain",
+    // Centered brand mark, sized generously (h-20 ≈ 25% larger than the prior h-16).
+    logoBox: "!h-20 justify-center mb-3",
+    logoImage: "!h-20 w-auto max-w-none object-contain",
     // Single heading line in Poppins (the brand heading font), sized as a calm
     // section title — not a hero. The subtitle is emptied via localization, so
     // hide its (now-blank) node to avoid a stray gap.
@@ -70,8 +70,9 @@ export const clerkAppearance: ClerkAppearance = {
     footerActionText: "font-heading",
     footerActionLink:
       "text-[var(--color-ccm-sea)] hover:text-[var(--color-ccm-midnight)] font-heading",
-    // The "Sign up" / "Secured by" area sits on a plain WHITE background (not the
-    // faint grey gradient Clerk ships) and carries no divider border.
-    footer: "!bg-white !border-0 text-muted-foreground",
+    // The "Sign up" / "Secured by" area sits flush on the page background (no
+    // grey gradient, no divider, no opaque white box that stands out) — fully
+    // transparent so it blends with the rest of the borderless form.
+    footer: "!bg-transparent !border-0 text-muted-foreground",
   },
 };
