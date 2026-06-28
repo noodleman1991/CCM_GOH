@@ -76,9 +76,14 @@ export function AuthNavUser({ isRTL = false }: { isRTL?: boolean }) {
             </SignedIn>
 
             <SignedOut>
-                {/* A plain greeting line followed by the two auth actions shown
-                    directly — no dropdown/popping menu. Sign in = `outline`,
-                    Create account = `default`, matching the modal's buttons. */}
+                {/* Two auth actions shown directly (no dropdown/popping menu),
+                    adapted for the DARK sidebar surface so both read clearly and
+                    are distinct from each other and from the search box below:
+                    • Create account = solid WHITE button (the primary CTA), using
+                      the sidebar's primary tokens (white bg / midnight text).
+                    • Sign in = transparent button with a white hairline border +
+                      white text (secondary), using the sidebar border token.
+                    Radius is unified to rounded-xl to match the search pill. */}
                 <div
                     className={cn(
                         "flex flex-col gap-2 px-1 group-data-[collapsible=icon]:hidden",
@@ -86,19 +91,16 @@ export function AuthNavUser({ isRTL = false }: { isRTL?: boolean }) {
                     )}
                     suppressHydrationWarning
                 >
-                    <p className="px-1 text-sm font-medium text-sidebar-foreground/80">
-                        {t('welcome')}
-                    </p>
-                    <SignInButton mode="modal" appearance={clerkAppearance}>
-                        <Button className="w-full" variant="outline">
-                            {t('signIn')}
-                        </Button>
-                    </SignInButton>
                     <SignUpButton mode="modal" appearance={clerkAppearance}>
-                        <Button className="w-full">
+                        <Button className="w-full rounded-xl bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary/90">
                             {t('createAccount')}
                         </Button>
                     </SignUpButton>
+                    <SignInButton mode="modal" appearance={clerkAppearance}>
+                        <Button className="w-full rounded-xl border border-sidebar-border bg-transparent text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
+                            {t('signIn')}
+                        </Button>
+                    </SignInButton>
                 </div>
             </SignedOut>
         </>
