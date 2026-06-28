@@ -469,14 +469,65 @@
     display: none;
 }
 
-/* Clerk sign-in/up: strip the remaining chrome the `appearance` API can't reach
-   so the borderless form sits fully flush — the footer's faint gradient fill and
-   the 1px top border on its inner "Secured by" strip (an internal, non-themeable
-   node). (The diagonal "Development mode" banner is a dev-instance indicator from
-   Clerk and only renders on the dev key.) */
+/* Clerk sign-in / sign-up theming that the `appearance` prop can't reliably win.
+   Targets Clerk's stable `.cl-*` classes so it applies in BOTH the dedicated
+   /sign-in page and the modal (SignInButton mode="modal"). */
+
+/* Fonts: headings/labels/buttons in Poppins (→ Lalezar under the `ar` block via
+   --font-heading); everything else in the body font (Lato / Tajawal). Forced
+   with !important because Clerk sets its own font-family on these nodes. */
+.cl-card,
+.cl-formFieldInput,
+.cl-footer,
+.cl-dividerText {
+    font-family: var(--font-body) !important;
+}
+.cl-headerTitle,
+.cl-formFieldLabel,
+.cl-formButtonPrimary,
+.cl-socialButtonsBlockButton,
+.cl-socialButtonsBlockButtonText,
+.cl-footerActionText,
+.cl-footerActionLink {
+    font-family: var(--font-heading) !important;
+}
+
+/* Footer: strip the faint gradient fill + the 1px divider on its inner "Secured
+   by" strip so the borderless form sits fully flush. (The diagonal "Development
+   mode" banner is a dev-instance indicator and only renders on the dev key.) */
 .cl-footer,
 .cl-footer * {
     background-image: none !important;
     background-color: transparent !important;
     border-top: 0 !important;
 }
+
+/* Modal variant (SignInButton/SignUpButton mode="modal"): opaque white card over
+   the overlay, responsive width. The BACKDROP scrolls (not the card) so a tall
+   form — the sign-up modal on a short screen — is fully reachable, top-aligned
+   with breathing room, and never clipped below the fold. */
+.cl-modalBackdrop {
+    align-items: flex-start !important;
+    padding: 2rem 1rem !important;         /* vertical room so it's never edge-to-edge */
+    overflow-y: auto !important;
+    overscroll-behavior: contain !important;
+}
+.cl-modalContent {
+    width: 100% !important;
+    max-width: 28rem !important;           /* ~max-w-md, matches the page form */
+    margin: auto !important;               /* center when it fits; top-scroll when tall */
+}
+.cl-modalContent .cl-cardBox,
+.cl-modalContent .cl-card {
+    background-color: #fff !important;     /* opaque so the overlay can't show through */
+}
+
+/* Poppins weight: the app uses bold for buttons; titles read better at semibold.
+   Pin them so the brand weight is consistent (Clerk ships its own font-weights). */
+.cl-headerTitle {
+    font-weight: 600 !important;           /* semibold title */
+    white-space: pre-line !important;      /* honour the \n -> two-line heading */
+}
+.cl-formButtonPrimary,
+.cl-socialButtonsBlockButton { font-weight: 700 !important; }  /* bold buttons, like app */
+.cl-formFieldLabel { font-weight: 500 !important; }

@@ -54,11 +54,13 @@ const clerkLocalizationsMap = {
 // Promote the friendly "Welcome back…" line to be the SOLE sign-in heading and
 // drop Clerk's default "Sign in to <app>" title + its now-redundant subtitle.
 // Merged per-locale below so each language keeps its own strings.
+// `\n` splits the heading onto two lines (rendered via `white-space: pre-line`
+// on `.cl-headerTitle` in globals.css): greeting on row 1, instruction on row 2.
 const signInHeadings: Record<string, string> = {
-    en: "Welcome back! Please sign in to continue",
-    fr: "Bon retour ! Veuillez vous connecter pour continuer",
-    es: "¡Bienvenido de nuevo! Inicia sesión para continuar",
-    ar: "مرحبًا بعودتك! يرجى تسجيل الدخول للمتابعة",
+    en: "Welcome back!\nPlease sign in to continue",
+    fr: "Bon retour !\nVeuillez vous connecter pour continuer",
+    es: "¡Bienvenido de nuevo!\nInicia sesión para continuar",
+    ar: "مرحبًا بعودتك!\nيرجى تسجيل الدخول للمتابعة",
 };
 
 // Clerk's arSA bundle leaves some sign-in placeholders in English; fill the ones

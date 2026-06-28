@@ -43,36 +43,33 @@ export const clerkAppearance: ClerkAppearance = {
   },
   elements: {
     rootBox: "w-full",
-    // No floating-box look: the auth layout already centers the form on a white
-    // page, so the Clerk chrome drops its border + shadow and sits flush. The
-    // visible outline lives on the OUTER `cardBox` wrapper (not `card`), so both
-    // are reset — with `!` since Clerk's own styles are specific. This is the
-    // "hide the dialog border" requirement.
-    cardBox: "!shadow-none !border-0 !rounded-[var(--radius)] !bg-transparent",
-    card: "!shadow-none !border-0 !bg-transparent rounded-[var(--radius)] !px-0",
+    // Card keeps a WHITE background + radius (so the MODAL variant is opaque over
+    // its overlay) but drops the border + shadow so the dedicated /sign-in page
+    // doesn't look like a floating box on the white page. We do NOT force
+    // overflow-visible here — that would break the modal's internal scroll; the
+    // card's own horizontal padding (kept, not zeroed) is what insets the
+    // full-width buttons so they're never clipped. Borderless/flush + font +
+    // modal-scroll rules live in the `.cl-*` block in globals.css.
+    cardBox: "!shadow-none !border-0",
+    card: "!shadow-none !border-0",
     // Centered brand mark, sized generously (h-20 ≈ 25% larger than the prior h-16).
     logoBox: "!h-20 justify-center mb-3",
     logoImage: "!h-20 w-auto max-w-none object-contain",
-    // Single heading line in Poppins (the brand heading font), sized as a calm
-    // section title — not a hero. The subtitle is emptied via localization, so
-    // hide its (now-blank) node to avoid a stray gap.
-    headerTitle: "font-heading text-ccm-midnight text-xl font-semibold tracking-tight",
+    // Single calm section title (not a hero); subtitle emptied via localization.
+    headerTitle: "text-ccm-midnight text-xl font-semibold tracking-tight",
     headerSubtitle: "hidden",
-    // Labels in Poppins to match the headings; provider/primary button text too.
-    formFieldLabel: "font-heading text-ccm-midnight",
+    formFieldLabel: "text-ccm-midnight",
+    // Match the app's Button variants exactly (components/ui/button.tsx):
+    // social/provider = `outline`, primary = `default`. Same radius (rounded-lg),
+    // weight (font-bold), height (min-h-10), and ccm-sea/midnight colours.
     socialButtonsBlockButton:
-      "border-border rounded-[var(--radius)] hover:bg-muted transition-colors",
-    socialButtonsBlockButtonText: "font-heading",
+      "min-h-10 rounded-lg border border-[var(--color-ccm-sea)] bg-transparent font-bold text-[var(--color-ccm-sea)] normal-case hover:bg-[var(--color-ccm-sea)]/10 hover:border-[var(--color-ccm-sea)]/80",
     formButtonPrimary:
-      "bg-[var(--color-ccm-sea)] hover:bg-[var(--color-ccm-midnight)] text-white normal-case font-heading font-medium rounded-[var(--radius)] shadow-sm",
+      "min-h-10 rounded-lg bg-[var(--color-ccm-sea)] font-bold text-white normal-case hover:bg-[var(--color-ccm-midnight)]",
     formFieldInput:
-      "border-border rounded-[var(--radius)] focus:border-[var(--color-ccm-water)] focus:ring-[var(--color-ccm-water)]",
-    footerActionText: "font-heading",
+      "border-border rounded-lg focus:border-[var(--color-ccm-water)] focus:ring-[var(--color-ccm-water)]",
     footerActionLink:
-      "text-[var(--color-ccm-sea)] hover:text-[var(--color-ccm-midnight)] font-heading",
-    // The "Sign up" / "Secured by" area sits flush on the page background (no
-    // grey gradient, no divider, no opaque white box that stands out) — fully
-    // transparent so it blends with the rest of the borderless form.
-    footer: "!bg-transparent !border-0 text-muted-foreground",
+      "text-[var(--color-ccm-sea)] hover:text-[var(--color-ccm-midnight)]",
+    footer: "text-muted-foreground",
   },
 };
