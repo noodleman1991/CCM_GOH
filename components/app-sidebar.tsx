@@ -15,10 +15,12 @@ import {
     FolderPlus,
     BookMarked,
     Compass,
+    Search,
 } from "lucide-react"
 import Logo from "@/components/logo"
 import { usePathname } from "@/i18n/navigation"
 import { SearchTrigger } from "@/components/search-dialog"
+import { useSearchStore } from "@/stores/search-store"
 
 import { useClerkUser } from "@/hooks/use-clerk-user";
 import { useLocale, useTranslations } from "next-intl"
@@ -248,7 +250,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                         <SidebarMenuButton
                             size="xl"
                             asChild
-                            className="justify-center p-4 hover:bg-transparent active:bg-transparent focus-visible:bg-transparent data-[active=true]:bg-transparent"
+                            className="justify-center p-4 hover:bg-transparent active:bg-transparent focus-visible:bg-transparent data-[active=true]:bg-transparent group-data-[collapsible=icon]:h-auto group-data-[collapsible=icon]:p-1 [&_img]:group-data-[collapsible=icon]:h-auto [&_img]:group-data-[collapsible=icon]:w-full"
                         >
                             <Logo size="xl" />
                         </SidebarMenuButton>
@@ -256,10 +258,25 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 </SidebarMenu>
 
                 {/* Universal search — a labelled pill that opens an accessible
-                    search modal (keyboard: ⌘K / "/"; focus-trapped; RTL-aware). */}
-                <div className="p-2">
+                    search modal (keyboard: ⌘K / "/"; focus-trapped; RTL-aware).
+                    On the icon rail (workspace routes) the pill can't fit without
+                    its ⌘K hint leaking onto the content pane, so we swap to a
+                    rail icon button that matches the other nav items (inherits the
+                    white sidebar foreground + hover/active treatment). */}
+                <div className="p-2 group-data-[collapsible=icon]:hidden">
                     <SearchTrigger variant="pill" />
                 </div>
+                <SidebarMenu className="hidden group-data-[collapsible=icon]:block">
+                    <SidebarMenuItem>
+                        <SidebarMenuButton
+                            tooltip={t('searchPlaceholder')}
+                            onClick={() => useSearchStore.getState().setOpen(true)}
+                            className="justify-center"
+                        >
+                            <Search />
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                </SidebarMenu>
             </SidebarHeader>
             <SidebarContent>
                 <NavMain
@@ -278,9 +295,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <NavSecondary items={data.navSecondary} className="mt-auto" />
             </SidebarContent>
             <SidebarFooter>
-                <div className="flex flex-col p-2 gap-2">
+                <div className="flex flex-col p-2 gap-2 group-data-[collapsible=icon]:p-1">
                     <AuthNavUser isRTL={isRTL} />
-                    <LanguageSwitcher />
+                    {/* The wide language switcher can't fit the icon rail; hide it
+                        there (it's one click away once the rail is expanded). */}
+                    <div className="group-data-[collapsible=icon]:hidden">
+                        <LanguageSwitcher />
+                    </div>
                 </div>
             </SidebarFooter>
         </Sidebar>
