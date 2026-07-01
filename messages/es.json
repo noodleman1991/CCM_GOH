@@ -1726,5 +1726,27 @@
     "statusApproved": "Publicado",
     "remove": "Quitar",
     "removeConfirm": "¿Quitar este resultado del espacio? El borrador no se elimina."
+  },
+  "projectPublic": {
+    "aboutHeading": "About this project",
+    "teamHeading": "The team",
+    "outputsHeading": "Published outputs",
+    "outputsEmpty": "No published outputs yet.",
+    "follow": "Follow",
+    "following": "Following",
+    "requestToJoin": "Request to join",
+    "messageLead": "Message the lead",
+    "signInToJoin": "Sign in to request to join",
+    "openWorkspace": "Open workspace",
+    "privateNotice": "This is a private workspace.",
+    "requestModalTitle": "Request to join {title}",
+    "requestModalHint": "Tell the lead how you'd like to contribute (optional).",
+    "requestModalPlaceholder": "I'd like to help with…",
+    "requestModalSubmit": "Send request",
+    "requestSent": "Request sent — the lead will review it.",
+    "requestCancel": "Cancel",
+    "statusDraft": "Forming",
+    "statusActive": "Active",
+    "statusArchived": "Completed"
   }
 }
