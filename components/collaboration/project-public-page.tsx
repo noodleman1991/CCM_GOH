@@ -2,6 +2,7 @@
 import { getTranslations } from "next-intl/server";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Link } from "@/i18n/navigation";
 import { projectColor } from "@/lib/ccm-colors";
@@ -64,6 +65,13 @@ export async function ProjectPublicPage({
           isSignedIn={isSignedIn}
           isMember={isMember}
         />
+        {isMember && (
+          <div className="mt-2">
+            <Button asChild variant="outline" size="sm">
+              <Link href={`/collaborations/${project.id}`}>{t("openWorkspace")}</Link>
+            </Button>
+          </div>
+        )}
       </header>
 
       {gated ? (

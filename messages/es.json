@@ -1654,7 +1654,8 @@
       "mediaBody": "Añade vídeos de YouTube para compartir charlas, demostraciones o grabaciones con el espacio de trabajo."
     },
     "mediaConsentRequired": "Este video necesita consentimiento de cookies.",
-    "dropToUpload": "Arrastra un archivo aquí o"
+    "dropToUpload": "Arrastra un archivo aquí o",
+    "viewPublicPage": "View public page"
   },
   "messages": {
     "title": "Mensajes",
