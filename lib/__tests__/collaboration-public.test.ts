@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { canShowPublicProject, canRequestToJoin } from "@/lib/collaboration/public";
+import { canShowPublicProject, canRequestToJoin } from "@/lib/collaboration/public-access";
 
 const findUniqueMock = vi.fn();
 const outputsFindManyMock = vi.fn();
