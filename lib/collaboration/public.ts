@@ -14,6 +14,11 @@ export function canShowPublicProject(input: {
   return input.membershipRole === null && !input.isStaff;
 }
 
+/** Only a signed-in non-member may request to join a workspace. */
+export function canRequestToJoin(input: { isSignedIn: boolean; isMember: boolean }): boolean {
+  return input.isSignedIn && !input.isMember;
+}
+
 export type PublicProject = {
   id: string;
   title: string;
