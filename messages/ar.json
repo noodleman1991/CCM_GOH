@@ -1654,7 +1654,8 @@
       "mediaBody": "أضف مقاطع فيديو من يوتيوب لمشاركة المحادثات أو العروض أو التسجيلات مع مساحة العمل."
     },
     "mediaConsentRequired": "يحتاج هذا الفيديو إلى الموافقة على ملفات تعريف الارتباط.",
-    "dropToUpload": "اسحب ملفًا هنا أو"
+    "dropToUpload": "اسحب ملفًا هنا أو",
+    "viewPublicPage": "View public page"
   },
   "messages": {
     "title": "الرسائل",

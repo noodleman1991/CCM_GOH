@@ -3,7 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { FEATURES } from "@/lib/features";
 import { auth } from "@clerk/nextjs/server";
 import { getTranslations } from "next-intl/server";
-import { getCollaboration, getMembershipRole, authorizeCollab, getPlan, getDocs, getOutputs, refreshOutputStatuses, getActivity } from "@/lib/collaboration/service";
+import { getCollaboration, getMembershipRole, getPlan, getDocs, getOutputs, refreshOutputStatuses, getActivity } from "@/lib/collaboration/service";
 import { getActor, isStaff } from "@/lib/authz";
 import { r2Configured } from "@/lib/r2";
 import { WorkspaceShell } from "@/components/collaboration/workspace-shell";
@@ -28,11 +28,15 @@ export async function generateMetadata({
 
 export default async function CollaborationDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   if (!FEATURES.engagement) redirect("/");
   const { id } = await params;
+  const sp = await searchParams;
+  const forcePublic = sp?.view === "public";
 
   // We intentionally do NOT redirect non-members of a private workspace here:
   // they receive the gated public page (title + "This is a private workspace" +
@@ -48,11 +52,13 @@ export default async function CollaborationDetailPage({
   const myRole = userId ? await getMembershipRole(id, userId) : null;
 
   // Non-members (and non-staff) get the PUBLIC project page, not the workspace shell.
-  if (canShowPublicProject({ membershipRole: myRole, isStaff: isStaff(actor) })) {
+  // Members/staff can also preview the public page via ?view=public.
+  if (forcePublic || canShowPublicProject({ membershipRole: myRole, isStaff: isStaff(actor) })) {
     const publicProject = await getPublicProject(id);
     if (!publicProject) notFound();
+    const viewerIsMember = myRole !== null;
     return (
-      <ProjectPublicPage project={publicProject} isSignedIn={!!userId} isMember={false} />
+      <ProjectPublicPage project={publicProject} isSignedIn={!!userId} isMember={viewerIsMember} />
     );
   }
 

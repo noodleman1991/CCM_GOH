@@ -1654,7 +1654,8 @@
       "mediaBody": "Add YouTube videos to share talks, demos, or recordings with the workspace."
     },
     "mediaConsentRequired": "This video needs cookie consent to play.",
-    "dropToUpload": "Drag a file here or"
+    "dropToUpload": "Drag a file here or",
+    "viewPublicPage": "View public page"
   },
   "messages": {
     "title": "Messages",

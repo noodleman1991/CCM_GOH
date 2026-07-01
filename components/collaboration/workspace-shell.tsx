@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -155,6 +156,11 @@ export function WorkspaceShell({
           <Badge variant={collaboration.visibility === "PUBLIC" ? "secondary" : "outline"} className="ms-2 shrink-0">
             {t(collaboration.visibility === "PUBLIC" ? "public" : "members")}
           </Badge>
+          <Button asChild variant="ghost" size="sm">
+            <Link href={`/collaborations/${collaboration.id}?view=public`}>
+              {t("viewPublicPage")}
+            </Link>
+          </Button>
         </div>
       </header>
 
