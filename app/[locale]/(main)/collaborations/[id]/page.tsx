@@ -8,7 +8,8 @@ import { getActor, isStaff } from "@/lib/authz";
 import { r2Configured } from "@/lib/r2";
 import { WorkspaceShell } from "@/components/collaboration/workspace-shell";
 import { WorkspaceSidebarCollapse } from "@/components/collaboration/workspace-sidebar-collapse";
-import { canShowPublicProject, getPublicProject } from "@/lib/collaboration/public";
+import { canShowPublicProject } from "@/lib/collaboration/public-access";
+import { getPublicProject } from "@/lib/collaboration/public";
 import { ProjectPublicPage } from "@/components/collaboration/project-public-page";
 
 export const dynamic = "force-dynamic";

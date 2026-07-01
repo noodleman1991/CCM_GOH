@@ -18,7 +18,7 @@ import {
 import { Link } from "@/i18n/navigation";
 import { FollowButton } from "@/components/follow/follow-button";
 import { requestToJoin, requestContact } from "@/lib/actions/requests";
-import { canRequestToJoin } from "@/lib/collaboration/public";
+import { canRequestToJoin } from "@/lib/collaboration/public-access";
 
 export function ProjectCtaBar({
   projectId,

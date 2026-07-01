@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Link } from "@/i18n/navigation";
 import { projectColor } from "@/lib/ccm-colors";
 import { OUTPUT_TYPES } from "@/lib/collaboration/outputs";
-import type { PublicProject } from "@/lib/collaboration/public";
+import type { PublicProject } from "@/lib/collaboration/public-access";
 import { ProjectCtaBar } from "./project-cta-bar";
 
 // Maps the real CollaborationStatus enum (DRAFT | ACTIVE | ARCHIVED) to a
