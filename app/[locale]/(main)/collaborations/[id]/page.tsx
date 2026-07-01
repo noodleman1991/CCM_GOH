@@ -8,6 +8,8 @@ import { getActor, isStaff } from "@/lib/authz";
 import { r2Configured } from "@/lib/r2";
 import { WorkspaceShell } from "@/components/collaboration/workspace-shell";
 import { WorkspaceSidebarCollapse } from "@/components/collaboration/workspace-sidebar-collapse";
+import { canShowPublicProject, getPublicProject } from "@/lib/collaboration/public";
+import { ProjectPublicPage } from "@/components/collaboration/project-public-page";
 
 export const dynamic = "force-dynamic";
 
@@ -32,12 +34,11 @@ export default async function CollaborationDetailPage({
   if (!FEATURES.engagement) redirect("/");
   const { id } = await params;
 
-  // Authorize read (PUBLIC = anyone, MEMBERS = members or staff).
-  try {
-    await authorizeCollab(id, "collab:read");
-  } catch {
-    redirect("/collaborations");
-  }
+  // We intentionally do NOT redirect non-members of a private workspace here:
+  // they receive the gated public page (title + "This is a private workspace" +
+  // Request to join) rendered by ProjectPublicPage below. The public projection
+  // exposes only public-safe fields, so this does not leak private content.
+  // (Members/staff still fall through to the full workspace shell.)
 
   const collab = await getCollaboration(id);
   if (!collab) notFound();
@@ -45,6 +46,15 @@ export default async function CollaborationDetailPage({
   const { userId } = await auth();
   const actor = await getActor();
   const myRole = userId ? await getMembershipRole(id, userId) : null;
+
+  // Non-members (and non-staff) get the PUBLIC project page, not the workspace shell.
+  if (canShowPublicProject({ membershipRole: myRole, isStaff: isStaff(actor) })) {
+    const publicProject = await getPublicProject(id);
+    if (!publicProject) notFound();
+    return (
+      <ProjectPublicPage project={publicProject} isSignedIn={!!userId} isMember={false} />
+    );
+  }
 
   const plan = await getPlan(id);
   const planStages =
