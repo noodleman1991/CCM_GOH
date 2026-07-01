@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { canShowPublicProject } from "@/lib/collaboration/public";
+import { canShowPublicProject, canRequestToJoin } from "@/lib/collaboration/public";
 
 const findUniqueMock = vi.fn();
 const outputsFindManyMock = vi.fn();
@@ -72,5 +72,17 @@ describe("getPublicProject", () => {
       expect.objectContaining({ where: expect.objectContaining({ collaborationId: "c1", status: "approved" }) })
     );
     expect(p!.outputs).toEqual([{ id: "o1", sanityType: "caseStudy", title: "Published CS", slug: null }]);
+  });
+});
+
+describe("canRequestToJoin", () => {
+  it("allows a signed-in non-member", () => {
+    expect(canRequestToJoin({ isSignedIn: true, isMember: false })).toBe(true);
+  });
+  it("blocks anonymous viewers", () => {
+    expect(canRequestToJoin({ isSignedIn: false, isMember: false })).toBe(false);
+  });
+  it("blocks existing members", () => {
+    expect(canRequestToJoin({ isSignedIn: true, isMember: true })).toBe(false);
   });
 });
