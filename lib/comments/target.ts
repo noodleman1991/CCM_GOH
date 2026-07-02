@@ -25,6 +25,7 @@ const SANITY_PREDICATE: Partial<Record<CommentTargetType, string>> = {
   caseStudy: '_type == "caseStudy" && status == "approved"',
   newsPost: '_type == "newsPost"',
   livedExperience: '_type == "livedExperience" && (status == "approved" || !defined(status))',
+  researchOutput: '_type == "researchOutput" && status == "approved"',
 };
 
 /** Postgres table name for each workspace (membership-gated) target type. */
