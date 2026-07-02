@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import { topicOptions } from '@/sanity/schemas/shared/topic-options';
 import PortableTextEditor from '@/components/forms/portable-text-editor';
 import { geocodeLocation } from '@/lib/geocoding';
+import { PlacePicker, type PlaceValue } from '@/components/forms/place-picker';
 import {
     Accordion,
     AccordionContent,
@@ -144,6 +145,7 @@ export default function ImprovedCaseStudyForm({
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
     const [selectedCommunity, setSelectedCommunity] = useState<string>('');
     const [isGeocoding, setIsGeocoding] = useState(false);
+    const [place, setPlace] = useState<PlaceValue | null>(null);
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [completedSections, setCompletedSections] = useState<Set<string>>(new Set());
@@ -431,6 +433,7 @@ export default function ImprovedCaseStudyForm({
                     ...author,
                     userId: index === 0 ? userId : undefined, // First author is submitter
                 })),
+                ...(place ? { place } : {}),
             };
 
             // Create FormData for multipart submission
@@ -514,6 +517,7 @@ export default function ImprovedCaseStudyForm({
                             setSelectedCommunity('');
                             setImageFile(null);
                             setImagePreview(null);
+                            setPlace(null);
                             setSubmissionStep('form');
                             setOpenSection('basic');
                         }}
@@ -621,7 +625,7 @@ export default function ImprovedCaseStudyForm({
                 </Card>
 
                 {/* Context */}
-                {(formData.locationText?.country || formData.studyPeriod?.startDate) && (
+                {(place || formData.locationText?.country || formData.studyPeriod?.startDate) && (
                     <Card>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
@@ -630,7 +634,12 @@ export default function ImprovedCaseStudyForm({
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-2">
-                            {formData.locationText?.country && (
+                            {place && (
+                                <p className="text-sm">
+                                    Location: {place.text}
+                                </p>
+                            )}
+                            {!place && formData.locationText?.country && (
                                 <p className="text-sm">
                                     Location: {formData.locationText.city && `${formData.locationText.city}, `}{formData.locationText.country}
                                 </p>
@@ -1081,6 +1090,8 @@ export default function ImprovedCaseStudyForm({
                                         <p className="text-muted-foreground">
                                             Help others understand the context of your work (all fields optional)
                                         </p>
+
+                                        <PlacePicker value={place} onChange={setPlace} />
 
                                         <div className="space-y-4">
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

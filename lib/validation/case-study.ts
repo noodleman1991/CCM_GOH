@@ -91,6 +91,20 @@ export const caseStudySubmissionSchema = z
             })
             .passthrough()
             .optional(),
+        // PlacePicker value (Task 4) — takes precedence over the legacy
+        // locationText/studyLocation geocode pair when present.
+        place: z
+            .object({
+                lat: z.number().gte(-90).lte(90),
+                lng: z.number().gte(-180).lte(180),
+                text: z.string().min(1).max(200),
+                precision: z.enum(['exact', 'city', 'country', 'region']),
+                countryCode3: z
+                    .string()
+                    .regex(/^[A-Z]{3}$/)
+                    .nullable(),
+            })
+            .optional(),
     })
     .passthrough()
 

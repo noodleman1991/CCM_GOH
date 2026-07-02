@@ -1749,5 +1749,15 @@
     "statusDraft": "Forming",
     "statusActive": "Active",
     "statusArchived": "Completed"
+  },
+  "placePicker": {
+    "searchLabel": "أين تم هذا العمل؟",
+    "searchPlaceholder": "ابحث عن مدينة أو مكان أو بلد…",
+    "searching": "جارٍ البحث…",
+    "precisionLabel": "يظهر على الخريطة كـ",
+    "precision": { "exact": "نقطة دقيقة", "city": "مدينة", "country": "بلد", "region": "المنطقة فقط" },
+    "precisionHint": "لن تعرض الخريطة تفاصيل أدق من اختيارك. \"المنطقة فقط\" يزيل العنصر من خريطة الدبابيس تمامًا.",
+    "displayLabel": "يظهر كـ",
+    "clear": "إزالة الموقع"
   }
 }
