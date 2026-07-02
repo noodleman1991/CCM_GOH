@@ -47,10 +47,11 @@ const projection = geoNaturalEarth1().fitSize(
 // visible quality loss, but it roughly halves the committed JSON size.
 const path = geoPath(projection).digits(1);
 
-const out: { viewBox: string; regions: Record<string, { d: string }> } = {
-  viewBox: `0 0 ${VIEWBOX_W} ${VIEWBOX_H}`,
-  regions: {},
-};
+const out: {
+  viewBox: string;
+  projection?: { scale: number; translate: [number, number] };
+  regions: Record<string, { d: string }>;
+} = { viewBox: `0 0 ${VIEWBOX_W} ${VIEWBOX_H}`, regions: {} };
 
 for (const code of REGION_CODES) {
   const members = allGeoms.filter((g: any) => {
@@ -69,6 +70,34 @@ for (const code of REGION_CODES) {
   }
   out.regions[code] = { d };
 }
+
+// Serialize the fitted projection so runtime code can project points
+// WITHOUT re-fitting (identical frame guaranteed).
+const projectionConstants = {
+  scale: projection.scale(),
+  translate: projection.translate() as [number, number],
+};
+out.projection = projectionConstants;
+
+// ── Per-country geometry (LocaleMap + atlas country breakdown) ──────────────
+const countriesOut: {
+  viewBox: string;
+  projection: typeof projectionConstants;
+  countries: Record<string, { d: string; region: string | null }>;
+} = { viewBox: `0 0 ${VIEWBOX_W} ${VIEWBOX_H}`, projection: projectionConstants, countries: {} };
+
+for (const g of allGeoms) {
+  const a3 = numericToAlpha3(String(g.id));
+  if (!a3) continue;
+  const mergedCountry = merge(world, [g]);
+  const d = path(mergedCountry as any);
+  if (!d) continue;
+  countriesOut.countries[a3] = { d, region: isoToRegion(a3) ?? null };
+}
+
+const countryTarget = join(__dirname, "../components/maps/country-geometry.json");
+writeFileSync(countryTarget, JSON.stringify(countriesOut));
+console.log(`✅ Wrote ${countryTarget} with ${Object.keys(countriesOut.countries).length} countries`);
 
 const target = join(__dirname, "../components/maps/region-geometry.json");
 writeFileSync(target, JSON.stringify(out));
