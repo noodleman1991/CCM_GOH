@@ -1,4 +1,5 @@
 import { REGION_CODES, REGION_I18N_KEY, type RegionCode } from "./region-codes";
+import type { FacetContentType } from "./cluster-pins";
 
 export type FacetId =
   | "caseStudyCount"
@@ -31,6 +32,13 @@ export interface RegionDatum {
   intensity: number;
 }
 
+/** `region-data`'s multi-layer response datum: `value` is the sum across all
+ *  requested facets, `byFacet` is the per-facet breakdown (used by the
+ *  drill-in's per-layer count chips when more than one CARD_FACET is active). */
+export interface RegionDatumWithBreakdown extends RegionDatum {
+  byFacet: Partial<Record<FacetId, number>>;
+}
+
 export function aggregateRegionData(
   counts: Record<string, number>,
   facet: FacetId
@@ -48,6 +56,34 @@ export function aggregateRegionData(
       intensity: max === 0 ? 0 : value / max,
     };
   });
+}
+
+/** Default/never-empty layer selection: case studies alone. */
+export const DEFAULT_LAYERS: FacetId[] = ["caseStudyCount"];
+
+/** Max number of simultaneously selected layers (URL + API guard). */
+export const MAX_LAYERS = 6;
+
+const isFacetId = (v: string): v is FacetId => FACETS.some((f) => f.id === v);
+
+/**
+ * Parse the Atlas `?layers=` URL param (comma list of `FacetId`s) into a
+ * validated, deduped, order-preserving, NEVER-EMPTY array. Unknown ids are
+ * dropped silently rather than 400ing the page; an all-invalid or missing/empty
+ * param falls back to `DEFAULT_LAYERS`. Caps at `MAX_LAYERS` (defensive — today
+ * there are only 6 facets total, so this never actually truncates).
+ */
+export function parseLayers(param: string | null): FacetId[] {
+  if (!param) return [...DEFAULT_LAYERS];
+  const seen = new Set<FacetId>();
+  for (const raw of param.split(",")) {
+    const id = raw.trim();
+    if (isFacetId(id) && !seen.has(id)) {
+      seen.add(id);
+      if (seen.size >= MAX_LAYERS) break;
+    }
+  }
+  return seen.size > 0 ? [...seen] : [...DEFAULT_LAYERS];
 }
 
 /** A theme facet option, as surfaced by the Atlas theme chips. The `slug` is
@@ -86,6 +122,28 @@ export const FALLBACK_THEMES: ThemeOption[] = [
     label: { en: "Indigenous", es: "Pueblos indígenas", fr: "Peuples autochtones", ar: "الشعوب الأصلية" },
   },
 ];
+
+/** `FacetId` → the Sanity content type it counts (mirrors the server-side
+ *  `FACET_TO_TYPE` in `app/api/maps/region-pins/route.ts`) — used client-side
+ *  to label a pin popover row with its facet's i18n label (a11y: colour is
+ *  always paired with a text label, never the only signal). `memberCount` has
+ *  no pin-capable content type. */
+export const FACET_TO_CONTENT_TYPE: Partial<Record<FacetId, FacetContentType>> = {
+  caseStudyCount: "caseStudy",
+  livedExpCount: "livedExperience",
+  newsCount: "newsPost",
+  agendaCount: "agenda",
+  reportCount: "report",
+};
+
+/** Reverse of `FACET_TO_CONTENT_TYPE`: a pin's content type → the `FacetDef`
+ *  whose `labelKey` names it, for the popover row label. */
+export function facetForContentType(type: FacetContentType): FacetDef | undefined {
+  const id = (Object.entries(FACET_TO_CONTENT_TYPE) as Array<[FacetId, FacetContentType]>).find(
+    ([, t]) => t === type
+  )?.[0];
+  return id ? FACETS.find((f) => f.id === id) : undefined;
+}
 
 /** Deep-link from an atlas facet+region into the matching listing (spec A1 —
  *  centralized; was FACET_DESTINATION inside the explorer component). */

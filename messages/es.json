@@ -1692,7 +1692,8 @@
     "close": "Cerrar",
     "embedTitle": "Explora esta región",
     "openFullAtlas": "Abrir el Atlas completo",
-    "countryBreakdown": "Dónde en la región"
+    "countryBreakdown": "Dónde en la región",
+    "lastLayer": "Al menos una capa permanece seleccionada"
   },
   "docs": {
     "title": "Documentos",

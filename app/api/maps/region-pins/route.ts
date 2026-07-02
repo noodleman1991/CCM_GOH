@@ -3,7 +3,7 @@ import countriesLib from "i18n-iso-countries";
 import enLocale from "i18n-iso-countries/langs/en.json";
 import { client } from "@/sanity/lib/client";
 import { isRegionCode, REGION_TO_RC_SLUG } from "@/lib/maps/region-codes";
-import { type FacetId } from "@/lib/maps/region-facets";
+import { parseLayers, FACET_TO_CONTENT_TYPE } from "@/lib/maps/region-facets";
 import { getThemeOptions } from "@/lib/maps/themes";
 import { projectPoint } from "@/lib/maps/project-point";
 import { clusterPins, type FacetContentType, type PinItem } from "@/lib/maps/cluster-pins";
@@ -18,19 +18,21 @@ countriesLib.registerLocale(enLocale);
 // instead — a pre-existing divergence between the two routes, tracked for a
 // follow-up decision. Neither legacy type carries place/geo fields, so these
 // facets always yield empty pins/countries today.
-const FACET_TO_TYPE: Partial<Record<FacetId, FacetContentType>> = {
-  caseStudyCount: "caseStudy",
-  livedExpCount: "livedExperience",
-  newsCount: "newsPost",
-  agendaCount: "agenda",
-  reportCount: "report",
+const FACET_TO_TYPE = FACET_TO_CONTENT_TYPE;
+
+type RawPinRow = {
+  _id: string;
+  title: string | null;
+  slug: string | null;
+  point: { lat: number; lng: number } | null;
+  precision: string | null;
+  countryCode3: string | null;
 };
 
 /**
- * Geotagged items for the pin layer (spec A1). Precision rule: only
- * exact/city items get pins; country-precision items pin at the country's
- * geometry centre is a lie, so they are EXCLUDED from pins but included in the
- * per-country breakdown; region-precision items appear in neither.
+ * Fetch geotagged rows for a single content type — one query per requested
+ * facet, so a multi-layer selection queries each pin-capable type in the set
+ * and the results get clustered together (clusters may mix types).
  *
  * Per-type place fields (verified against each document schema — see
  * sanity/schemas/documents/{case-study,lived-experience,news-post}.ts):
@@ -48,28 +50,17 @@ const FACET_TO_TYPE: Partial<Record<FacetId, FacetContentType>> = {
  * null/[] for a field a type doesn't define, so the unused branches are
  * harmless no-ops per type.
  */
-export async function GET(req: NextRequest) {
-  const sp = req.nextUrl.searchParams;
-  const region = sp.get("region") ?? "";
-  const facet = (sp.get("facet") ?? "caseStudyCount") as FacetId;
-  const theme = sp.get("theme");
-  const q = (sp.get("q") ?? "").slice(0, 100).trim();
-
-  const type = FACET_TO_TYPE[facet];
-  if (!isRegionCode(region) || !type) {
-    return NextResponse.json({ pins: [], countries: [] }, { status: 400 });
-  }
-  const slug = REGION_TO_RC_SLUG[region];
-
+async function fetchRowsForType(
+  type: FacetContentType,
+  region: string,
+  slug: string,
+  themeSlug: string | null,
+  q: string
+): Promise<RawPinRow[]> {
   // Theme filter: content matches a theme when one of its dereferenced tags'
   // slug (`tag.value.current`) exactly equals the selected theme's slug.
   // `theme` is validated against the CMS-fetched theme list; the value
   // itself is still only ever passed as the bound `$themeSlug` param.
-  let themeSlug: string | null = null;
-  if (theme) {
-    const themeOptions = await getThemeOptions();
-    if (themeOptions.some((t) => t.slug === theme)) themeSlug = theme;
-  }
   const themeFilter = themeSlug ? ` && $themeSlug in tags[]->value.current` : "";
   // `q` is NEVER interpolated — always passed as the bound `$q` GROQ param.
   const qFilter = q ? ` && [title.en, title.es, title.fr, title.ar] match $q + "*"` : "";
@@ -95,39 +86,68 @@ export async function GET(req: NextRequest) {
 
   const regionMatch = `(region == $region || relatedCommunity->slug.current == $slug || $slug in relatedCommunities[]->slug.current)`;
 
-  const rows = await client.fetch<
-    Array<{
-      _id: string;
-      title: string | null;
-      slug: string | null;
-      point: { lat: number; lng: number } | null;
-      precision: string | null;
-      countryCode3: string | null;
-    }>
-  >(
+  return client.fetch<RawPinRow[]>(
     `*[_type == $type ${publicFilter} && ${regionMatch} ${themeFilter} ${qFilter}]{
       _id, "title": coalesce(title.en, title), "slug": slug.current, ${placeProjection}
     }`,
     { type, region, slug, q, themeSlug: themeSlug ?? "" }
   );
+}
+
+/**
+ * Geotagged items for the pin layer (spec A1). Precision rule: only
+ * exact/city items get pins; country-precision items pin at the country's
+ * geometry centre is a lie, so they are EXCLUDED from pins but included in the
+ * per-country breakdown; region-precision items appear in neither.
+ */
+export async function GET(req: NextRequest) {
+  const sp = req.nextUrl.searchParams;
+  const region = sp.get("region") ?? "";
+  const facetsParam = sp.get("facets");
+  const legacyFacet = sp.get("facet");
+  const facets = parseLayers(facetsParam ?? legacyFacet);
+  const theme = sp.get("theme");
+  const q = (sp.get("q") ?? "").slice(0, 100).trim();
+
+  if (!isRegionCode(region)) {
+    return NextResponse.json({ pins: [], countries: [] }, { status: 400 });
+  }
+  const slug = REGION_TO_RC_SLUG[region];
+
+  const types = [...new Set(facets.map((f) => FACET_TO_TYPE[f]).filter((t): t is FacetContentType => !!t))];
+  if (types.length === 0) {
+    return NextResponse.json({ pins: [], countries: [] }, { status: 400 });
+  }
+
+  let themeSlug: string | null = null;
+  if (theme) {
+    const themeOptions = await getThemeOptions();
+    if (themeOptions.some((t) => t.slug === theme)) themeSlug = theme;
+  }
+
+  const rowsByType = await Promise.all(
+    types.map((type) => fetchRowsForType(type, region, slug, themeSlug, q))
+  );
 
   const countryCounts = new Map<string, number>();
   const projected: Array<PinItem & { x: number; y: number }> = [];
-  for (const r of rows) {
-    if (r.countryCode3) countryCounts.set(r.countryCode3, (countryCounts.get(r.countryCode3) ?? 0) + 1);
-    if (!r.point || (r.precision !== "exact" && r.precision !== "city")) continue;
-    const p = projectPoint(r.point.lat, r.point.lng);
-    if (!p) continue;
-    projected.push({
-      id: r._id,
-      title: r.title ?? "",
-      type,
-      slug: r.slug ?? "",
-      countryCode3: r.countryCode3,
-      x: p.x,
-      y: p.y,
-    });
-  }
+  types.forEach((type, i) => {
+    for (const r of rowsByType[i]) {
+      if (r.countryCode3) countryCounts.set(r.countryCode3, (countryCounts.get(r.countryCode3) ?? 0) + 1);
+      if (!r.point || (r.precision !== "exact" && r.precision !== "city")) continue;
+      const p = projectPoint(r.point.lat, r.point.lng);
+      if (!p) continue;
+      projected.push({
+        id: r._id,
+        title: r.title ?? "",
+        type,
+        slug: r.slug ?? "",
+        countryCode3: r.countryCode3,
+        x: p.x,
+        y: p.y,
+      });
+    }
+  });
 
   return NextResponse.json({
     pins: clusterPins(projected),

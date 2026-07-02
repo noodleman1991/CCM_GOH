@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { aggregateRegionData, atlasDestination, FACETS, FALLBACK_THEMES, type FacetId } from "../region-facets";
+import { aggregateRegionData, atlasDestination, FACETS, FALLBACK_THEMES, parseLayers, type FacetId } from "../region-facets";
 import { REGION_CODES } from "../region-codes";
 
 const zero = () =>
@@ -62,5 +62,47 @@ describe("themes + destinations", () => {
     expect(atlasDestination("caseStudyCount", "sub-saharan-africa"))
       .toBe("/research-and-action/case-studies?communities=sub-saharan-africa");
     expect(atlasDestination("livedExpCount", "oceania")).toBe("/lived-experiences?regions=oceania");
+  });
+});
+
+describe("parseLayers", () => {
+  it("defaults to caseStudyCount when null", () => {
+    expect(parseLayers(null)).toEqual(["caseStudyCount"]);
+  });
+
+  it("defaults to caseStudyCount when empty string", () => {
+    expect(parseLayers("")).toEqual(["caseStudyCount"]);
+  });
+
+  it("parses a comma list of valid facet ids", () => {
+    expect(parseLayers("caseStudyCount,livedExpCount")).toEqual(["caseStudyCount", "livedExpCount"]);
+  });
+
+  it("dedupes repeated ids", () => {
+    expect(parseLayers("caseStudyCount,caseStudyCount,livedExpCount")).toEqual([
+      "caseStudyCount",
+      "livedExpCount",
+    ]);
+  });
+
+  it("drops invalid/unknown ids", () => {
+    expect(parseLayers("caseStudyCount,nope,livedExpCount")).toEqual(["caseStudyCount", "livedExpCount"]);
+  });
+
+  it("falls back to the default when every id is invalid", () => {
+    expect(parseLayers("nope,alsoNope")).toEqual(["caseStudyCount"]);
+  });
+
+  it("never returns an empty array", () => {
+    expect(parseLayers(",,,")).toEqual(["caseStudyCount"]);
+  });
+
+  it("caps at 6 facets (all defined facets fit)", () => {
+    const all = FACETS.map((f) => f.id).join(",");
+    expect(parseLayers(all)).toHaveLength(FACETS.length);
+  });
+
+  it("trims whitespace around ids", () => {
+    expect(parseLayers(" caseStudyCount , livedExpCount ")).toEqual(["caseStudyCount", "livedExpCount"]);
   });
 });

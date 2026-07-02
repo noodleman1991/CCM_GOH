@@ -4,7 +4,8 @@ import { cn } from '@/lib/utils'
 import geometry from './region-geometry.json'
 import type { RegionDatum } from '@/lib/maps/region-facets'
 import type { RegionCode } from '@/lib/maps/region-codes'
-import type { PinCluster } from '@/lib/maps/cluster-pins'
+import { layerColorKeyFor, type PinCluster } from '@/lib/maps/cluster-pins'
+import { COLOR, CCM } from '@/lib/ccm-colors'
 
 /**
  * Presentational choropleth: renders the 7 region paths from the build-time
@@ -42,6 +43,12 @@ export function RegionChoropleth({
     const pct = Math.round((0.12 + intensity * 0.88) * 100)
     return `color-mix(in srgb, var(--color-ccm-sea) ${pct}%, white)`
   }
+
+  // A single-type cluster is coloured by that type's `COLOR.layer` entry; a
+  // cluster mixing types (from a multi-layer selection) falls back to the
+  // amber "mixed" colour rather than picking an arbitrary dominant type.
+  const fillForCluster = (cluster: PinCluster) =>
+    cluster.types.length === 1 ? COLOR.layer[layerColorKeyFor(cluster.types[0])] : CCM.amber
 
   return (
     <svg
@@ -97,7 +104,7 @@ export function RegionChoropleth({
           }}
         >
           <circle cx={c.x} cy={c.y} r={c.count > 1 ? 11 : 7}
-            fill="var(--color-ccm-amber)" stroke="white" strokeWidth={2} />
+            fill={fillForCluster(c)} stroke="white" strokeWidth={2} />
           {c.count > 1 && (
             <text x={c.x} y={c.y + 3.5} textAnchor="middle"
               className="fill-white font-heading text-[10px] font-bold">
