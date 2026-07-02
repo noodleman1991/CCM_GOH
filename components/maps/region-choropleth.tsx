@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils'
 import geometry from './region-geometry.json'
 import type { RegionDatum } from '@/lib/maps/region-facets'
 import type { RegionCode } from '@/lib/maps/region-codes'
+import type { PinCluster } from '@/lib/maps/cluster-pins'
 
 /**
  * Presentational choropleth: renders the 7 region paths from the build-time
@@ -20,6 +21,8 @@ export function RegionChoropleth({
   onSelect,
   labelFor,
   className,
+  pins,
+  onPinClick,
 }: {
   data: RegionDatum[]
   activeCode?: RegionCode | null
@@ -27,6 +30,8 @@ export function RegionChoropleth({
   onSelect?: (code: RegionCode) => void
   labelFor: (code: RegionCode) => string
   className?: string
+  pins?: PinCluster[]
+  onPinClick?: (cluster: PinCluster) => void
 }) {
   const byCode = new Map(data.map((d) => [d.code, d]))
   const regions = geometry.regions as Record<string, { d: string }>
@@ -79,6 +84,28 @@ export function RegionChoropleth({
           />
         )
       })}
+      {pins?.map((c, i) => (
+        <g
+          key={`${c.x}-${c.y}-${i}`}
+          role="button"
+          tabIndex={0}
+          aria-label={`${c.count} ${c.items[0]?.title ?? ''}`}
+          className="cursor-pointer outline-none"
+          onClick={(e) => { e.stopPropagation(); onPinClick?.(c) }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onPinClick?.(c) }
+          }}
+        >
+          <circle cx={c.x} cy={c.y} r={c.count > 1 ? 11 : 7}
+            fill="var(--color-ccm-amber)" stroke="white" strokeWidth={2} />
+          {c.count > 1 && (
+            <text x={c.x} y={c.y + 3.5} textAnchor="middle"
+              className="fill-white font-heading text-[10px] font-bold">
+              {c.count}
+            </text>
+          )}
+        </g>
+      ))}
     </svg>
   )
 }
