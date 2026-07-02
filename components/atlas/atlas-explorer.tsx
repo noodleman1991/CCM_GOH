@@ -81,7 +81,10 @@ export function AtlasExplorer({ lockedRegion }: { lockedRegion?: RegionCode } = 
   const pinsKey = effectiveRegion && CARD_FACETS.has(facet)
     ? `/api/maps/region-pins?region=${effectiveRegion}&facet=${facet}${theme ? `&theme=${theme}` : ''}${q ? `&q=${encodeURIComponent(q)}` : ''}`
     : null
-  const { data: pinsData } = useSWR<{ pins: PinCluster[] }>(pinsKey, fetcher, {
+  const { data: pinsData } = useSWR<{
+    pins: PinCluster[]
+    countries?: Array<{ countryCode3: string; count: number; name?: string }>
+  }>(pinsKey, fetcher, {
     revalidateOnFocus: false, dedupingInterval: 60000,
   })
 
@@ -222,6 +225,24 @@ export function AtlasExplorer({ lockedRegion }: { lockedRegion?: RegionCode } = 
           onSelect={onSelect}
         />
       </div>
+
+      {/* Country breakdown (locked/embed mode only, spec A4) — country names
+          are resolved server-side by the pins route, so no i18n-iso-countries
+          import lands in this client bundle. */}
+      {lockedRegion && pinsData && 'countries' in pinsData && pinsData.countries?.length ? (
+        <div className="space-y-1">
+          <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            {tAtlas('countryBreakdown')}
+          </span>
+          <ul className="flex flex-wrap gap-2">
+            {pinsData.countries.slice(0, 8).map((c) => (
+              <li key={c.countryCode3} className="rounded-full border bg-card px-3 py-1 text-sm">
+                {c.name ?? c.countryCode3} · {c.count}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
 
       {/* Caption bar (spec A1) — the live result sentence + deep link */}
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-lg border bg-card px-4 py-3 text-sm shadow-sm">

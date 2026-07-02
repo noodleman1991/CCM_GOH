@@ -15,6 +15,7 @@ import FAQs from "@/components/blocks/faqs";
 import FormNewsletter from "@/components/blocks/forms/newsletter";
 import AllPosts from "@/components/blocks/all-posts";
 import RegionMapBlock from "@/components/blocks/maps/region-map";
+import AtlasEmbedBlock from "@/components/blocks/maps/atlas-embed";
 import PeopleWidget from "@/components/blocks/people/people-widget";
 import EventsCalendar from "@/components/blocks/events/events-calendar";
 import { BlockReveal } from "@/components/blocks/block-reveal";
@@ -51,6 +52,7 @@ const componentMap: Record<string, React.ComponentType<any>> = {
     "form-newsletter": FormNewsletter,
     "all-posts": AllPosts,
     "region-map": RegionMapBlock,
+    "atlas-embed": AtlasEmbedBlock,
     "people-widget": PeopleWidget,
     "events-calendar": EventsCalendar,
 };

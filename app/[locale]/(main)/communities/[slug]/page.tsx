@@ -118,6 +118,7 @@ export default async function RegionalCommunityPage({
                     logoCloud={pageData.logoCloud}
                     teamGrid={pageData.teamGrid}
                     teamMembers={teamMembers}
+                    atlasEmbed={pageData.atlasEmbed}
                     locale={locale}
                     userId={userId!}
                 />
