@@ -1692,7 +1692,8 @@
     "close": "Close",
     "embedTitle": "Explore this region",
     "openFullAtlas": "Open the full Atlas",
-    "countryBreakdown": "Where in the region"
+    "countryBreakdown": "Where in the region",
+    "lastLayer": "At least one layer stays selected"
   },
   "docs": {
     "title": "Documents",

@@ -14,23 +14,34 @@ export function FilterChip({
   active,
   onClick,
   className,
+  disabled = false,
+  title,
 }: {
   label: string
   active: boolean
   onClick: () => void
   className?: string
+  /** Renders `aria-disabled` + suppresses the click instead of a hard HTML
+   *  `disabled` — used by multi-select chip groups where toggling off the
+   *  last active option is a no-op that should still explain itself via
+   *  `title` (e.g. the Atlas "at least one layer stays selected" case). */
+  disabled?: boolean
+  title?: string
 }) {
   return (
     <button
       type="button"
-      onClick={onClick}
+      onClick={disabled ? undefined : onClick}
       aria-pressed={active}
+      aria-disabled={disabled || undefined}
+      title={title}
       className={cn(
         'inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition-colors',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
         active
           ? 'border-transparent bg-[var(--color-ccm-sea)] text-white shadow-sm'
           : 'border-border bg-background text-foreground/80 hover:border-[var(--color-ccm-sea)]/40 hover:bg-muted',
+        disabled && 'cursor-not-allowed opacity-70',
         className
       )}
     >

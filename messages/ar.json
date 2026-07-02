@@ -1692,7 +1692,8 @@
     "close": "إغلاق",
     "embedTitle": "استكشف هذه المنطقة",
     "openFullAtlas": "افتح الأطلس الكامل",
-    "countryBreakdown": "أين في المنطقة"
+    "countryBreakdown": "أين في المنطقة",
+    "lastLayer": "تبقى طبقة واحدة على الأقل محددة"
   },
   "docs": {
     "title": "المستندات",
