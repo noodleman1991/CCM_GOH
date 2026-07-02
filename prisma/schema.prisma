@@ -155,6 +155,7 @@ model Community {
   updatedAt    DateTime               @updatedAt
   contents     Content[]
   members      UserCommunity[]
+  conversations Conversation[]
 }
 
 model UserCommunity {
@@ -484,6 +485,7 @@ model Collaboration {
   plan    Plan?
   docs    CollaborationDoc[]
   outputs WorkspaceOutput[]
+  conversations Conversation[]
 
   @@index([status, visibility, updatedAt])
   @@index([createdById])
@@ -620,13 +622,26 @@ model NotificationPreference {
 
 // ─── Direct messages ─────────────────────────────────────────────────────────
 
-model Conversation {
-  id           String                    @id @default(cuid())
-  createdAt    DateTime                  @default(now())
-  lastMessageAt DateTime                 @default(now())
-  participants ConversationParticipant[]
-  messages     Message[]
+enum ConversationKind {
+  DIRECT
+  PROJECT
+  COMMUNITY
+}
 
+model Conversation {
+  id              String                    @id @default(cuid())
+  kind            ConversationKind          @default(DIRECT)
+  // Set when kind=PROJECT / kind=COMMUNITY; the channel's home.
+  collaborationId String?
+  collaboration   Collaboration?            @relation(fields: [collaborationId], references: [id], onDelete: Cascade)
+  communityId     String?
+  community       Community?                @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  createdAt       DateTime                  @default(now())
+  lastMessageAt   DateTime                  @default(now())
+  participants    ConversationParticipant[]
+  messages        Message[]
+
+  @@unique([kind, collaborationId])
   @@index([lastMessageAt])
 }
 
