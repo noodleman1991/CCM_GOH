@@ -11,11 +11,12 @@ export const revalidate = 300;
 
 countriesLib.registerLocale(enLocale);
 
-// caseStudy / livedExperience / newsPost carry the redesign's `_type` names;
-// agenda + report are still the LEGACY (pre-researchOutput) schema types —
-// `region-items`'s "researchOutput" mapping predates the A3 migration split
-// and is stale. `region-data` (verified, current) queries the literal
-// "agenda" / "report" types, so we mirror that here.
+// agendaCount/reportCount map to the legacy `agenda`/`report` doc types to stay
+// coherent with /api/maps/region-data (the counts this pin layer shares filter
+// state with). NOTE: /api/maps/region-items maps these facets to `researchOutput`
+// instead — a pre-existing divergence between the two routes, tracked for a
+// follow-up decision. Neither legacy type carries place/geo fields, so these
+// facets always yield empty pins/countries today.
 const FACET_TO_TYPE: Partial<Record<FacetId, FacetContentType>> = {
   caseStudyCount: "caseStudy",
   livedExpCount: "livedExperience",
