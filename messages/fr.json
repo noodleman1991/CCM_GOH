@@ -1683,7 +1683,17 @@
     "dataLayer": "Couche de données",
     "explore": "Explorer {region}",
     "empty": "Aucun {layer} ici pour l’instant.",
-    "untitled": "Sans titre"
+    "untitled": "Sans titre",
+    "theme": "Thème",
+    "themeDisplacement": "Déplacement",
+    "themeLivelihoods": "Moyens de subsistance",
+    "themeYouth": "Jeunesse",
+    "themeIndigenous": "Peuples autochtones",
+    "searchPlaceholder": "Rechercher dans l'atlas…",
+    "clearSearch": "Effacer la recherche",
+    "openIn": "Ouvrir dans {label}",
+    "pinItems": "{count} ici",
+    "close": "Fermer"
   },
   "docs": {
     "title": "Documents",

@@ -1683,7 +1683,17 @@
     "dataLayer": "Capa de datos",
     "explore": "Explorar {region}",
     "empty": "Aún no hay {layer} aquí.",
-    "untitled": "Sin título"
+    "untitled": "Sin título",
+    "theme": "Tema",
+    "themeDisplacement": "Desplazamiento",
+    "themeLivelihoods": "Medios de vida",
+    "themeYouth": "Juventud",
+    "themeIndigenous": "Pueblos indígenas",
+    "searchPlaceholder": "Buscar en el atlas…",
+    "clearSearch": "Borrar búsqueda",
+    "openIn": "Abrir en {label}",
+    "pinItems": "{count} aquí",
+    "close": "Cerrar"
   },
   "docs": {
     "title": "Documentos",
