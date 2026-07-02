@@ -3,6 +3,8 @@
  * Free and open-source geocoding service
  */
 
+import countriesLib from "i18n-iso-countries";
+
 export interface GeoPoint {
     lat: number;
     lng: number;
@@ -142,5 +144,51 @@ export async function reverseGeocode(
             success: false,
             error: error instanceof Error ? error.message : 'Unknown error'
         };
+    }
+}
+
+export interface GeocodeSuggestion {
+    label: string;
+    lat: number;
+    lng: number;
+    /** ISO alpha-3, uppercased; null when Nominatim gives no country. */
+    countryCode3: string | null;
+    /** Nominatim result type: city / administrative / country / … */
+    kind: string;
+}
+
+/** Free-text place search (Nominatim), max 5 suggestions. */
+export async function geocodeQuery(query: string): Promise<GeocodeSuggestion[]> {
+    const q = query.trim();
+    if (!q) return [];
+    try {
+        const params = new URLSearchParams({
+            q,
+            format: 'json',
+            limit: '5',
+            addressdetails: '1',
+        });
+        const response = await fetch(
+            `https://nominatim.openstreetmap.org/search?${params.toString()}`,
+            { headers: { 'User-Agent': 'ConnectingClimateMinds/1.0 (place picker)' } }
+        );
+        if (!response.ok) return [];
+        const rows = (await response.json()) as Array<{
+            display_name: string; lat: string; lon: string; type: string;
+            address?: { country_code?: string };
+        }>;
+        return rows.map((r) => {
+            const a2 = r.address?.country_code?.toUpperCase();
+            const a3 = a2 ? (countriesLib.alpha2ToAlpha3(a2) ?? null) : null;
+            return {
+                label: r.display_name,
+                lat: Number(r.lat),
+                lng: Number(r.lon),
+                countryCode3: a3,
+                kind: r.type,
+            };
+        }).filter((r) => Number.isFinite(r.lat) && Number.isFinite(r.lng));
+    } catch {
+        return [];
     }
 }

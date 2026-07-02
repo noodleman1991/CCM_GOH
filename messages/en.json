@@ -1749,5 +1749,15 @@
     "statusDraft": "Forming",
     "statusActive": "Active",
     "statusArchived": "Completed"
+  },
+  "placePicker": {
+    "searchLabel": "Where did this work take place?",
+    "searchPlaceholder": "Search for a city, place or country…",
+    "searching": "Searching…",
+    "precisionLabel": "Shown on the map as",
+    "precision": { "exact": "Exact point", "city": "City", "country": "Country", "region": "Region only" },
+    "precisionHint": "The map never shows finer than your choice. \"Region only\" keeps this off the pin map entirely.",
+    "displayLabel": "Displayed as",
+    "clear": "Remove location"
   }
 }

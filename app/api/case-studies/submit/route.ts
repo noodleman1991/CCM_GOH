@@ -124,6 +124,16 @@ export async function POST(request: NextRequest) {
             locationText: data.locationText,
             studyLocation: studyLocation,
 
+            // PlacePicker value (Task 4) — takes precedence over the legacy
+            // city/country geocode pair above when the submitter used the
+            // new picker.
+            ...(data.place ? {
+                studyLocation: { _type: "geopoint", lat: data.place.lat, lng: data.place.lng },
+                locationText: data.place.text,
+                locationPrecision: data.place.precision,
+                locationCountryCode: data.place.countryCode3 ?? undefined,
+            } : {}),
+
             // Default status for review workflow
             status: "pending",
             featured: false,
