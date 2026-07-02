@@ -25,6 +25,7 @@ import {
     Lock,
     Database,
     Banknote,
+    Palette,
 } from "lucide-react";
 
 export const structure = (S: any, context: any) =>
@@ -61,6 +62,14 @@ export const structure = (S: any, context: any) =>
                     S.document()
                         .schemaType("moderationSettings")
                         .documentId("moderationSettings")
+                ),
+            S.listItem()
+                .title("Hub Illustrations")
+                .icon(Palette)
+                .child(
+                    S.document()
+                        .schemaType("hubIllustrations")
+                        .documentId("hubIllustrations")
                 ),
             S.listItem()
                 .title("Document Reader (Agenda)")
