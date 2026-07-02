@@ -131,7 +131,11 @@ export async function postComment(input: PostCommentInput): Promise<PostCommentR
 
   // 4b. Collaboration targets require membership permission to comment — the
   // workspace's visibility/role rules, not just "the thread exists".
-  if (data.targetType === "collaborationThread" || data.targetType === "collaborationFile") {
+  if (
+    data.targetType === "collaborationThread" ||
+    data.targetType === "collaborationFile" ||
+    data.targetType === "collaborationDoc"
+  ) {
     const collaborationId = await collaborationIdForTarget(data.targetType, data.targetId);
     if (!collaborationId) return { ok: false, error: "Not available.", code: "TARGET" };
     try {

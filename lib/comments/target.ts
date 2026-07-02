@@ -27,6 +27,16 @@ const SANITY_PREDICATE: Partial<Record<CommentTargetType, string>> = {
   livedExperience: '_type == "livedExperience" && (status == "approved" || !defined(status))',
 };
 
+/** Postgres table name for each workspace (membership-gated) target type. */
+const WORKSPACE_TARGET_TABLE: Record<
+  "collaborationThread" | "collaborationFile" | "collaborationDoc",
+  string
+> = {
+  collaborationThread: "CollaborationThread",
+  collaborationFile: "CollaborationFile",
+  collaborationDoc: "CollaborationDoc",
+};
+
 export async function isCommentTargetValid(
   targetType: CommentTargetType,
   targetId: string
@@ -48,12 +58,16 @@ export async function isCommentTargetValid(
     } catch {
       ok = false;
     }
-  } else if (targetType === "collaborationThread" || targetType === "collaborationFile") {
+  } else if (
+    targetType === "collaborationThread" ||
+    targetType === "collaborationFile" ||
+    targetType === "collaborationDoc"
+  ) {
     // Collaboration tables land in a later migration. Until then these targets
     // are validated by the collaboration membership check at the call site;
     // here we resolve them via a raw count so this module needs no generated
     // model that may not exist yet.
-    const table = targetType === "collaborationThread" ? "CollaborationThread" : "CollaborationFile";
+    const table = WORKSPACE_TARGET_TABLE[targetType];
     const r = await safeQuery(async () => {
       try {
         const rows = await prisma.$queryRawUnsafe<{ n: bigint }[]>(
@@ -72,12 +86,12 @@ export async function isCommentTargetValid(
   return ok;
 }
 
-/** Resolve the parent collaboration id for a thread/file target (for authz). */
+/** Resolve the parent collaboration id for a thread/file/doc target (for authz). */
 export async function collaborationIdForTarget(
-  targetType: "collaborationThread" | "collaborationFile",
+  targetType: "collaborationThread" | "collaborationFile" | "collaborationDoc",
   targetId: string
 ): Promise<string | null> {
-  const table = targetType === "collaborationThread" ? "CollaborationThread" : "CollaborationFile";
+  const table = WORKSPACE_TARGET_TABLE[targetType];
   const r = await safeQuery(async () => {
     try {
       const rows = await prisma.$queryRawUnsafe<{ collaborationId: string }[]>(
