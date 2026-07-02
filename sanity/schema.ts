@@ -52,6 +52,8 @@ import internationalizedArrayText from "./schemas/objects/internationalized-arra
 import connection from "./schemas/objects/connection";
 // Output document versions (kind × language)
 import documentVersion from "./schemas/objects/document-version";
+// Reusable geotag (spec A2): coordinate + display text + precision + ISO country code
+import place from "./schemas/objects/place";
 
 // Schema UI objects (existing blocks)
 import hero1 from "./schemas/blocks/hero/hero-1";
@@ -150,6 +152,8 @@ export const schema: { types: SchemaTypeDefinition[] } = {
         // content connections
         connection,
         documentVersion,
+        // geo
+        place,
         // blocks
         hero1,
         hero2,

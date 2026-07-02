@@ -279,7 +279,18 @@ export default defineType({
             group: "metadata",
             description: "Optional. A point on the map for this experience.",
         }),
-        
+
+        // Reusable geotag (spec A2). Defaults to country-level precision — a
+        // community-safety default for user-submitted lived experiences, so a
+        // specific address is never shown on the map unless an editor opts in.
+        defineField({
+            name: "place",
+            title: "Place",
+            type: "place",
+            group: "metadata",
+            initialValue: { precision: "country" },
+        }),
+
         // Related Organizations
         defineField({
             name: "organizations",

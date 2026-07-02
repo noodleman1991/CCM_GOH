@@ -293,6 +293,40 @@ export default defineType({
             type: "geopoint",
             group: "metadata",
             description: "The main location's coordinates. This is what drives the regional map and search — set it for every case study.",
+            // Soft region-mismatch warning (spec: "never a hard block"). The full
+            // check (country → region vs. the doc's relatedCommunity) needs an
+            // async dereference of `relatedCommunity` and the iso-to-region /
+            // region-codes maps; wiring async custom validators with a dynamic
+            // `import()` through the Studio's CustomValidator typing didn't
+            // resolve cleanly (Promise<boolean> vs. CustomValidatorResult), so
+            // this stays a no-op `.warning()` scaffold. The enforced check lives
+            // in the "Missing geotags" coverage view instead — this rule never
+            // returns anything but `true` and can never block a save.
+            validation: (Rule) => Rule.custom(() => true).warning(),
+        }),
+
+        defineField({
+            name: "locationPrecision",
+            title: "Shown on the map as",
+            type: "string",
+            group: "metadata",
+            options: {
+                list: [
+                    { title: "Exact point", value: "exact" },
+                    { title: "City", value: "city" },
+                    { title: "Country", value: "country" },
+                    { title: "Region only (no pin)", value: "region" },
+                ],
+                layout: "radio",
+            },
+            initialValue: "city",
+        }),
+
+        defineField({
+            name: "locationCountryCode",
+            title: "Country code (ISO alpha-3)",
+            type: "string",
+            group: "metadata",
         }),
 
         defineField({

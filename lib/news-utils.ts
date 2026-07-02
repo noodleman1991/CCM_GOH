@@ -1,5 +1,7 @@
 // News-specific utilities and type definitions
 
+import type { SanityPlace } from "@/types/case-study";
+
 export interface NewsFilters {
   /** Topic tag values (multi-select). */
   tags?: string[];
@@ -68,6 +70,7 @@ export interface NewsPost {
       lng: number;
     };
   };
+  place?: SanityPlace | null;
   tags?: Array<{
     _id: string;
     label: Record<string, string> | string;

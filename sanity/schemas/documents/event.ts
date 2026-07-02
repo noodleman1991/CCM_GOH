@@ -96,6 +96,12 @@ export default defineType({
       description: "Venue name or city (for in-person/hybrid).",
     }),
     defineField({
+      name: "place",
+      title: "Place",
+      type: "place",
+      group: "when",
+    }),
+    defineField({
       name: "url",
       title: "Joining / details URL",
       type: "url",
