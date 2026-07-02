@@ -1683,7 +1683,17 @@
     "dataLayer": "طبقة البيانات",
     "explore": "استكشف {region}",
     "empty": "لا يوجد {layer} هنا بعد.",
-    "untitled": "بدون عنوان"
+    "untitled": "بدون عنوان",
+    "theme": "الموضوع",
+    "themeDisplacement": "النزوح",
+    "themeLivelihoods": "سُبل العيش",
+    "themeYouth": "الشباب",
+    "themeIndigenous": "الشعوب الأصلية",
+    "searchPlaceholder": "ابحث في الأطلس…",
+    "clearSearch": "مسح البحث",
+    "openIn": "افتح في {label}",
+    "pinItems": "{count} هنا",
+    "close": "إغلاق"
   },
   "docs": {
     "title": "المستندات",

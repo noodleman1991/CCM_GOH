@@ -1,96 +1,154 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import useSWR from 'swr'
 import { useTranslations } from 'next-intl'
+import { useSearchParams } from 'next/navigation'
 import { FilterChip } from '@/components/ui/filter-chip'
+import { Input } from '@/components/ui/input'
 import { RegionChoropleth } from '@/components/maps/region-choropleth'
 import { RegionDataPanel } from '@/components/maps/region-data-panel'
 import { RegionContentCards } from '@/components/atlas/region-content-cards'
 import { SectionHeader } from '@/components/ui/section-header'
 import { Button } from '@/components/ui/button'
-import { FACETS, type FacetId, type RegionDatum } from '@/lib/maps/region-facets'
 import {
-  REGION_I18N_KEY,
-  REGION_TO_RC_SLUG,
-  type RegionCode,
-} from '@/lib/maps/region-codes'
-import { useRouter, Link } from '@/i18n/navigation'
-import { ArrowRight } from 'lucide-react'
+  FACETS, THEMES, isThemeId, atlasDestination,
+  type FacetId, type RegionDatum, type ThemeId,
+} from '@/lib/maps/region-facets'
+import type { PinCluster } from '@/lib/maps/cluster-pins'
+import { REGION_I18N_KEY, REGION_TO_RC_SLUG, isRegionCode, type RegionCode } from '@/lib/maps/region-codes'
+import { useRouter, usePathname, Link } from '@/i18n/navigation'
+import { ArrowRight, Search, X } from 'lucide-react'
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json())
 
-// Each layer (facet) deep-links to the listing that shows that content type,
-// pre-filtered to the selected region's community slug.
-const FACET_DESTINATION: Record<FacetId, (slug: string) => string> = {
-  caseStudyCount: (slug) => `/research-and-action/case-studies?communities=${slug}`,
-  livedExpCount: (slug) => `/lived-experiences?regions=${slug}`,
-  newsCount: (slug) => `/news?communities=${slug}`,
-  memberCount: (slug) => `/collaborate?communities=${slug}`,
-  agendaCount: (slug) => `/research-and-action/community-agendas`,
-  reportCount: (slug) => `/research-and-action/impact-reports`,
-}
-
-// Facets whose selected region surfaces actual content cards (D2). Members
-// aren't shown as content cards.
 const CARD_FACETS: ReadonlySet<FacetId> = new Set([
   'caseStudyCount', 'livedExpCount', 'newsCount', 'agendaCount', 'reportCount',
 ])
 
+const isFacetId = (v: string): v is FacetId => FACETS.some((f) => f.id === v)
+
 /**
- * Atlas & Explore — the geo-faceted discovery page. A full-width choropleth of
- * the 7 regions with a data-layer (facet) switcher; selecting a region surfaces
- * its count and a deep link into the matching, region-filtered listing.
- * Reuses the map block's pieces (choropleth, data panel, region-data API).
+ * Atlas & Explore — shared URL state (layer · theme · region · q, spec A1):
+ * every view is linkable and back-button-safe. Selecting a region loads its
+ * geotagged pins; a persistent caption bar narrates the current result set.
+ * `lockedRegion` renders the region-scoped embed variant (spec A4).
  */
-export function AtlasExplorer() {
+export function AtlasExplorer({ lockedRegion }: { lockedRegion?: RegionCode } = {}) {
   const t = useTranslations('map')
   const tAtlas = useTranslations('atlas')
   const tRegions = useTranslations('navigation.regions')
   const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
 
-  const [facet, setFacet] = useState<FacetId>('caseStudyCount')
+  // ── URL state (locked mode ignores the URL's region) ──────────────────────
+  const rawLayer = searchParams.get('layer') ?? 'caseStudyCount'
+  const facet: FacetId = isFacetId(rawLayer) ? rawLayer : 'caseStudyCount'
+  const rawTheme = searchParams.get('theme') ?? ''
+  const theme: ThemeId | null = isThemeId(rawTheme) ? rawTheme : null
+  const rawRegion = lockedRegion ?? searchParams.get('region') ?? ''
+  const selected: RegionCode | null = isRegionCode(rawRegion) ? rawRegion : null
+  const q = (searchParams.get('q') ?? '').slice(0, 100)
+
+  // Locked mode (Task 9's embed) has no URL region state — pins must key off
+  // the locked region directly rather than the URL-derived `selected`.
+  const effectiveRegion = lockedRegion ?? selected
+
   const [active, setActive] = useState<RegionCode | null>(null)
-  const [selected, setSelected] = useState<RegionCode | null>(null)
+  const [openCluster, setOpenCluster] = useState<PinCluster | null>(null)
 
-  const { data } = useSWR<{ facet: FacetId; data: RegionDatum[] }>(
-    `/api/maps/region-data?facet=${facet}`,
-    fetcher,
-    { revalidateOnFocus: false, dedupingInterval: 60000 }
+  const setParams = useCallback(
+    (patch: Record<string, string | null>) => {
+      const next = new URLSearchParams(searchParams.toString())
+      for (const [k, v] of Object.entries(patch)) {
+        if (v === null || v === '') next.delete(k)
+        else next.set(k, v)
+      }
+      router.replace(`${pathname}?${next.toString()}`, { scroll: false })
+      setOpenCluster(null)
+    },
+    [router, pathname, searchParams]
   )
+
+  // ── Data ───────────────────────────────────────────────────────────────────
+  const dataKey = `/api/maps/region-data?facet=${facet}${theme ? `&theme=${theme}` : ''}${q ? `&q=${encodeURIComponent(q)}` : ''}`
+  const { data } = useSWR<{ facet: FacetId; data: RegionDatum[] }>(dataKey, fetcher, {
+    revalidateOnFocus: false, dedupingInterval: 60000,
+  })
   const regionData = data?.data ?? []
 
-  // Guard the i18n key: an unknown code (stale data/geometry) must not crash
-  // next-intl with `tRegions(undefined)` — fall back to the raw code.
+  const pinsKey = effectiveRegion && CARD_FACETS.has(facet)
+    ? `/api/maps/region-pins?region=${effectiveRegion}&facet=${facet}${theme ? `&theme=${theme}` : ''}${q ? `&q=${encodeURIComponent(q)}` : ''}`
+    : null
+  const { data: pinsData } = useSWR<{ pins: PinCluster[] }>(pinsKey, fetcher, {
+    revalidateOnFocus: false, dedupingInterval: 60000,
+  })
+
   const labelFor = (code: RegionCode) => {
     const key = REGION_I18N_KEY[code]
     return key ? tRegions(key) : String(code)
   }
   const activeFacetDef = FACETS.find((f) => f.id === facet)
   const facetLabel = activeFacetDef ? t(activeFacetDef.labelKey) : ''
+  const themeLabel = theme ? tAtlas(THEMES.find((td) => td.id === theme)!.labelKey) : null
 
-  // Click selects the region (shows the deep-link panel below) rather than
-  // navigating immediately — so the user sees the count + chooses to drill in.
-  const onSelect = (code: RegionCode) => setSelected((prev) => (prev === code ? null : code))
+  const onSelect = (code: RegionCode) => {
+    if (lockedRegion) return
+    setParams({ region: selected === code ? null : code })
+  }
 
   const selectedDatum = useMemo(
     () => (selected ? regionData.find((d) => d.code === selected) : null),
     [selected, regionData]
   )
-  const destinationHref = selected
-    ? FACET_DESTINATION[facet](REGION_TO_RC_SLUG[selected])
-    : null
+  const destinationHref = selected ? atlasDestination(facet, REGION_TO_RC_SLUG[selected]) : null
+
+  // The caption sentence: "14 case studies · Livelihoods · "drought" · SSA"
+  const captionParts = [
+    selectedDatum ? `${selectedDatum.value} · ${facetLabel}` : facetLabel,
+    themeLabel,
+    q ? `"${q}"` : null,
+    selected ? labelFor(selected) : null,
+  ].filter(Boolean)
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="font-heading text-3xl font-bold text-balance text-ccm-midnight lg:text-4xl">
-          {tAtlas('title')}
-        </h1>
-        <p className="mt-2 max-w-2xl text-lg text-muted-foreground">{tAtlas('description')}</p>
+      {!lockedRegion && (
+        <div>
+          <h1 className="font-heading text-3xl font-bold text-balance text-ccm-midnight lg:text-4xl">
+            {tAtlas('title')}
+          </h1>
+          <p className="mt-2 max-w-2xl text-lg text-muted-foreground">{tAtlas('description')}</p>
+        </div>
+      )}
+
+      {/* Search q — part of the shared state */}
+      <div className="relative max-w-sm">
+        <Search className="absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
+        <Input
+          defaultValue={q}
+          key={q} /* re-sync on back/forward */
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') setParams({ q: (e.target as HTMLInputElement).value })
+          }}
+          placeholder={tAtlas('searchPlaceholder')}
+          className="ps-9 pe-9"
+          aria-label={tAtlas('searchPlaceholder')}
+        />
+        {q && (
+          <button
+            type="button"
+            onClick={() => setParams({ q: null })}
+            className="absolute end-2 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:text-foreground"
+            aria-label={tAtlas('clearSearch')}
+          >
+            <X className="size-4" />
+          </button>
+        )}
       </div>
 
-      {/* Data-layer switcher (the facets) */}
+      {/* Data-layer switcher */}
       <div className="space-y-1.5">
         <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
           {tAtlas('dataLayer')}
@@ -101,11 +159,24 @@ export function AtlasExplorer() {
               key={f.id}
               label={t(f.labelKey)}
               active={facet === f.id}
-              onClick={() => {
-                setFacet(f.id)
-                setActive(null)
-                setSelected(null)
-              }}
+              onClick={() => setParams({ layer: f.id === 'caseStudyCount' ? null : f.id })}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Theme facet (spec A1) */}
+      <div className="space-y-1.5">
+        <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          {tAtlas('theme')}
+        </span>
+        <div className="flex flex-wrap gap-2">
+          {THEMES.map((td) => (
+            <FilterChip
+              key={td.id}
+              label={tAtlas(td.labelKey)}
+              active={theme === td.id}
+              onClick={() => setParams({ theme: theme === td.id ? null : td.id })}
             />
           ))}
         </div>
@@ -113,14 +184,35 @@ export function AtlasExplorer() {
 
       {/* Map + panel */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[2fr_1fr] lg:items-start">
-        <div className="min-w-0">
+        <div className="relative min-w-0">
           <RegionChoropleth
             data={regionData}
             activeCode={active ?? selected}
             onHover={setActive}
             onSelect={onSelect}
             labelFor={labelFor}
+            pins={pinsData?.pins}
+            onPinClick={setOpenCluster}
           />
+          {openCluster && (
+            <div className="absolute inset-x-4 bottom-4 rounded-lg border bg-card p-3 shadow-lg">
+              <div className="mb-1 flex items-center justify-between">
+                <span className="text-xs font-semibold text-muted-foreground">
+                  {tAtlas('pinItems', { count: openCluster.count })}
+                </span>
+                <button type="button" onClick={() => setOpenCluster(null)} aria-label={tAtlas('close')} className="rounded p-1 hover:bg-muted">
+                  <X className="size-3.5" />
+                </button>
+              </div>
+              <ul className="space-y-1">
+                {openCluster.items.map((item) => (
+                  <li key={item.id} className="truncate text-sm">
+                    <bdi>{item.title}</bdi>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
         <RegionDataPanel
           data={regionData}
@@ -131,20 +223,25 @@ export function AtlasExplorer() {
         />
       </div>
 
+      {/* Caption bar (spec A1) — the live result sentence + deep link */}
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-lg border bg-card px-4 py-3 text-sm shadow-sm">
+        <span className="font-heading font-semibold text-ccm-midnight">{captionParts.join(' · ')}</span>
+        {destinationHref && selected && (
+          <Link href={destinationHref} className="ms-auto inline-flex min-h-11 items-center gap-1 font-heading text-sm font-semibold text-primary">
+            {tAtlas('openIn', { label: facetLabel })}
+            <ArrowRight className="size-4 rtl:-scale-x-100" />
+          </Link>
+        )}
+      </div>
+
       {/* Selected-region drill-in */}
       {selected && selectedDatum && destinationHref && (
         <section className="rounded-2xl border bg-ccm-sky/10 p-6">
-          <SectionHeader
-            title={labelFor(selected)}
-            subtitle={`${selectedDatum.value} · ${facetLabel}`}
-          />
+          <SectionHeader title={labelFor(selected)} subtitle={`${selectedDatum.value} · ${facetLabel}`} />
           <div className="mt-4 space-y-4">
             {selectedDatum.value > 0 ? (
               <>
-                {/* The region's actual content as cards (D2). */}
-                {CARD_FACETS.has(facet) && (
-                  <RegionContentCards region={selected} facet={facet} />
-                )}
+                {CARD_FACETS.has(facet) && <RegionContentCards region={selected} facet={facet} />}
                 <Button asChild size="sm">
                   <Link href={destinationHref}>
                     {tAtlas('explore', { region: labelFor(selected) })}
@@ -153,9 +250,7 @@ export function AtlasExplorer() {
                 </Button>
               </>
             ) : (
-              <p className="text-sm text-muted-foreground">
-                {tAtlas('empty', { layer: facetLabel })}
-              </p>
+              <p className="text-sm text-muted-foreground">{tAtlas('empty', { layer: facetLabel })}</p>
             )}
           </div>
         </section>

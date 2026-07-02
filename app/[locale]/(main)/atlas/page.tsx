@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
 import { AtlasExplorer } from "@/components/atlas/atlas-explorer";
 
@@ -19,7 +20,9 @@ export async function generateMetadata({
 export default function AtlasPage() {
   return (
     <div className="container max-w-6xl py-8">
-      <AtlasExplorer />
+      <Suspense fallback={null}>
+        <AtlasExplorer />
+      </Suspense>
     </div>
   );
 }

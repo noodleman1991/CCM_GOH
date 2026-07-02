@@ -1683,7 +1683,17 @@
     "dataLayer": "Data layer",
     "explore": "Explore {region}",
     "empty": "No {layer} here yet.",
-    "untitled": "Untitled"
+    "untitled": "Untitled",
+    "theme": "Theme",
+    "themeDisplacement": "Displacement",
+    "themeLivelihoods": "Livelihoods",
+    "themeYouth": "Youth",
+    "themeIndigenous": "Indigenous",
+    "searchPlaceholder": "Search the atlas…",
+    "clearSearch": "Clear search",
+    "openIn": "Open in {label}",
+    "pinItems": "{count} here",
+    "close": "Close"
   },
   "docs": {
     "title": "Documents",
