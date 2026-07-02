@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { client } from "@/sanity/lib/client";
 import { prisma, safeQuery } from "@/lib/prisma";
 import { REGION_CODES, RC_SLUG_TO_REGION } from "@/lib/maps/region-codes";
-import { aggregateRegionData, FACETS, isThemeId, THEMES, type FacetId } from "@/lib/maps/region-facets";
+import { aggregateRegionData, FACETS, type FacetId } from "@/lib/maps/region-facets";
+import { getThemeOptions } from "@/lib/maps/themes";
 
 // Counts change slowly; cache for 5 minutes.
 export const revalidate = 300;
@@ -25,10 +26,14 @@ export async function GET(req: NextRequest) {
   }
 
   const themeParam = req.nextUrl.searchParams.get("theme");
-  if (themeParam && !isThemeId(themeParam)) {
-    return NextResponse.json({ error: "Unknown theme" }, { status: 400 });
+  let theme: string | null = null;
+  if (themeParam) {
+    const themeOptions = await getThemeOptions();
+    if (!themeOptions.some((t) => t.slug === themeParam)) {
+      return NextResponse.json({ error: "Unknown theme" }, { status: 400 });
+    }
+    theme = themeParam;
   }
-  const theme = themeParam && isThemeId(themeParam) ? themeParam : null;
 
   const qParam = req.nextUrl.searchParams.get("q") ?? "";
   if (qParam.length > 100) {
@@ -64,15 +69,12 @@ export async function GET(req: NextRequest) {
           : facet === "livedExpCount"
             ? ' && (status == "approved" || !defined(status))'
             : "";
-      // Theme filter: content matches a theme when any of its dereferenced
-      // tags' localized label (`tag.label.en`, per the `tag` schema — NOT
-      // `title`) contains one of the theme's substrings, case-insensitively.
-      // `tagMatch` values are code constants (from THEMES), safe to interpolate;
-      // all 5 content types share the identical `tags[]->` reference shape.
-      const themeDef = theme ? THEMES.find((t) => t.id === theme) : null;
-      const themeFilter = themeDef
-        ? ` && count((tags[]->label.en)[${themeDef.tagMatch.map((m) => `lower(@) match "*${m}*"`).join(" || ")}]) > 0`
-        : "";
+      // Theme filter: content matches a theme when one of its dereferenced
+      // tags' slug (`tag.value.current`) exactly equals the selected theme's
+      // slug. `theme` has already been validated against the CMS-fetched
+      // theme list above, but the value itself is still only ever passed as
+      // the bound `$themeSlug` param — never interpolated.
+      const themeFilter = theme ? ` && $themeSlug in tags[]->value.current` : "";
       // Free-text filter on the content's own localized title. `q` is NEVER
       // interpolated — always passed as the bound `$q` GROQ param.
       const qFilter = q ? ` && [title.en, title.es, title.fr, title.ar] match $q + "*"` : "";
@@ -84,7 +86,7 @@ export async function GET(req: NextRequest) {
            "slug": slug.current,
            "count": count(*[_type == "${type}"${statusFilter}${themeFilter}${qFilter} && references(^._id)])
          }`,
-        { q }
+        { q, themeSlug: theme ?? "" }
       );
       for (const r of rows) {
         const region = r.slug ? RC_SLUG_TO_REGION[r.slug] : undefined;

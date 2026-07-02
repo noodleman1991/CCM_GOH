@@ -3,7 +3,8 @@ import countriesLib from "i18n-iso-countries";
 import enLocale from "i18n-iso-countries/langs/en.json";
 import { client } from "@/sanity/lib/client";
 import { isRegionCode, REGION_TO_RC_SLUG } from "@/lib/maps/region-codes";
-import { THEMES, isThemeId, type FacetId } from "@/lib/maps/region-facets";
+import { type FacetId } from "@/lib/maps/region-facets";
+import { getThemeOptions } from "@/lib/maps/themes";
 import { projectPoint } from "@/lib/maps/project-point";
 import { clusterPins, type FacetContentType, type PinItem } from "@/lib/maps/cluster-pins";
 
@@ -60,10 +61,16 @@ export async function GET(req: NextRequest) {
   }
   const slug = REGION_TO_RC_SLUG[region];
 
-  const themeDef = theme && isThemeId(theme) ? THEMES.find((t) => t.id === theme)! : null;
-  const themeFilter = themeDef
-    ? ` && count((tags[]->label.en)[${themeDef.tagMatch.map((m) => `lower(@) match "*${m}*"`).join(" || ")}]) > 0`
-    : "";
+  // Theme filter: content matches a theme when one of its dereferenced tags'
+  // slug (`tag.value.current`) exactly equals the selected theme's slug.
+  // `theme` is validated against the CMS-fetched theme list; the value
+  // itself is still only ever passed as the bound `$themeSlug` param.
+  let themeSlug: string | null = null;
+  if (theme) {
+    const themeOptions = await getThemeOptions();
+    if (themeOptions.some((t) => t.slug === theme)) themeSlug = theme;
+  }
+  const themeFilter = themeSlug ? ` && $themeSlug in tags[]->value.current` : "";
   // `q` is NEVER interpolated — always passed as the bound `$q` GROQ param.
   const qFilter = q ? ` && [title.en, title.es, title.fr, title.ar] match $q + "*"` : "";
 
@@ -101,7 +108,7 @@ export async function GET(req: NextRequest) {
     `*[_type == $type ${publicFilter} && ${regionMatch} ${themeFilter} ${qFilter}]{
       _id, "title": coalesce(title.en, title), "slug": slug.current, ${placeProjection}
     }`,
-    { type, region, slug, q }
+    { type, region, slug, q, themeSlug: themeSlug ?? "" }
   );
 
   const countryCounts = new Map<string, number>();

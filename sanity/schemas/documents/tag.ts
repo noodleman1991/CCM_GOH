@@ -76,6 +76,14 @@ export default defineType({
             },
             initialValue: "#205596",
         }),
+        defineField({
+            name: "useAsTheme",
+            title: "Use as Theme",
+            type: "boolean",
+            description:
+                "Show this tag as a Theme filter on the Atlas and other discovery surfaces.",
+            initialValue: false,
+        }),
         orderRankField({ type: "tag" }),
     ],
     preview: {
@@ -84,12 +92,14 @@ export default defineType({
             subtitle: "category",
             value: "value.current",
             color: "color",
+            useAsTheme: "useAsTheme",
         },
-        prepare({ title, subtitle, value, color }: {
+        prepare({ title, subtitle, value, color, useAsTheme }: {
             title?: string;
             subtitle?: string;
             value?: string;
             color?: string;
+            useAsTheme?: boolean;
         }) {
             const colorNames: Record<string, string> = {
                 "#3b82f6": "Blue",
@@ -106,7 +116,7 @@ export default defineType({
 
             return {
                 title: `${title || "Untitled Tag"}`,
-                subtitle: `${colorNames[color || "#3b82f6"] || "Blue"} | ${subtitle || "topic"} | ${value || "no-slug"}`,
+                subtitle: `${colorNames[color || "#3b82f6"] || "Blue"} | ${subtitle || "topic"} | ${value || "no-slug"}${useAsTheme ? " | Theme" : ""}`,
                 media: Tag,
             };
         },

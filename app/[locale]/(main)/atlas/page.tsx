@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
 import { AtlasExplorer } from "@/components/atlas/atlas-explorer";
+import { getThemeOptions } from "@/lib/maps/themes";
 
 export async function generateMetadata({
   params,
@@ -17,11 +18,12 @@ export async function generateMetadata({
   };
 }
 
-export default function AtlasPage() {
+export default async function AtlasPage() {
+  const themes = await getThemeOptions();
   return (
     <div className="container max-w-6xl py-8">
       <Suspense fallback={null}>
-        <AtlasExplorer />
+        <AtlasExplorer themes={themes} />
       </Suspense>
     </div>
   );
