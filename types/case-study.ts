@@ -127,6 +127,7 @@ export interface CaseStudy {
     // sanity/schemas/documents/case-study.ts).
     locationPrecision?: 'exact' | 'city' | 'country' | 'region' | null;
     locationCountryCode?: string | null;
+    locationDisplayText?: string | null;
     studyAreas?: StudyArea[];
     // Cross-content links (connection[] — see RELATED_CONTENT_PROJECTION)
     relatedContent?: Array<{

@@ -129,7 +129,7 @@ export async function POST(request: NextRequest) {
             // new picker.
             ...(data.place ? {
                 studyLocation: { _type: "geopoint", lat: data.place.lat, lng: data.place.lng },
-                locationText: data.place.text,
+                locationDisplayText: data.place.text,
                 locationPrecision: data.place.precision,
                 locationCountryCode: data.place.countryCode3 ?? undefined,
             } : {}),

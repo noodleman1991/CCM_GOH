@@ -306,6 +306,14 @@ export default defineType({
         }),
 
         defineField({
+            name: "locationDisplayText",
+            title: "Location display text",
+            type: "string",
+            group: "metadata",
+            description: "Human-readable place from the location picker (e.g. \"Nakuru, Kenya\"). Shown to readers; the legacy locationText object is unaffected.",
+        }),
+
+        defineField({
             name: "locationPrecision",
             title: "Shown on the map as",
             type: "string",
