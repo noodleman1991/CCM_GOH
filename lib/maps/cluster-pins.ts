@@ -28,9 +28,13 @@ export interface PinCluster {
   /** First items for the popover; capped at 5, `count` is the real total. */
   items: PinItem[];
   /** Distinct content types across the FULL bucket (not just the capped
-   *  `items`) — drives pin colour: single-type cluster gets that type's
-   *  `COLOR.layer` colour, a mixed-type cluster falls back to `CCM.amber`. */
+   *  `items`) — a single-type cluster gets that type's `COLOR.layer` colour;
+   *  a mixed-type cluster renders as a segmented donut (see `donutSegments`)
+   *  instead of a flat "mixed" colour. */
   types: FacetContentType[];
+  /** Per-type counts across the FULL bucket — feeds `donutSegments` to size
+   *  each mixed cluster's donut arcs. */
+  typeCounts: Partial<Record<FacetContentType, number>>;
 }
 
 /** Grid-cluster projected points (viewBox 960×500). Pure — testable, no d3. */
@@ -45,11 +49,73 @@ export function clusterPins(
     bucket.push(p);
     cells.set(key, bucket);
   }
-  return [...cells.values()].map((bucket) => ({
-    x: bucket.reduce((s, p) => s + p.x, 0) / bucket.length,
-    y: bucket.reduce((s, p) => s + p.y, 0) / bucket.length,
-    count: bucket.length,
-    items: bucket.slice(0, 5).map(({ x: _x, y: _y, ...item }) => item),
-    types: [...new Set(bucket.map((p) => p.type))],
-  }));
+  return [...cells.values()].map((bucket) => {
+    const typeCounts: Partial<Record<FacetContentType, number>> = {};
+    for (const p of bucket) typeCounts[p.type] = (typeCounts[p.type] ?? 0) + 1;
+    return {
+      x: bucket.reduce((s, p) => s + p.x, 0) / bucket.length,
+      y: bucket.reduce((s, p) => s + p.y, 0) / bucket.length,
+      count: bucket.length,
+      items: bucket.slice(0, 5).map(({ x: _x, y: _y, ...item }) => item),
+      types: [...new Set(bucket.map((p) => p.type))],
+      typeCounts,
+    };
+  });
+}
+
+export interface DonutSegment {
+  type: FacetContentType | "other";
+  /** Share of the circle, 0–1; all segments in the returned array sum to 1
+   *  (modulo floating-point). */
+  share: number;
+  /** SVG `stroke-dasharray` pair (`"filled gap"`) for a circle of the given
+   *  circumference, so the caller can drop it straight onto a `<circle>`. */
+  dashArray: string;
+  /** SVG `stroke-dashoffset` — where this segment starts, going clockwise
+   *  from 12 o'clock. */
+  dashOffset: number;
+}
+
+/**
+ * Turn a mixed pin cluster's type counts into segmented-donut arc geometry.
+ * Pure + testable (no DOM/SVG dependency): callers drop `dashArray`/`dashOffset`
+ * straight onto a `<circle>` with the matching `circumference` as its
+ * `stroke-dasharray` basis. Caps at 3 segments by count desc, folding any
+ * remainder into a synthetic "other" segment (slate) rather than drawing an
+ * unreadable sliver per extra type — mirrors the popover's "count desc"
+ * ordering so the two views agree on what's dominant.
+ */
+export function donutSegments(
+  counts: Partial<Record<FacetContentType, number>>,
+  circumference = 2 * Math.PI * 10
+): DonutSegment[] {
+  const total = Object.values(counts).reduce((s, n) => s + (n ?? 0), 0);
+  if (total <= 0) return [];
+
+  const ranked = (Object.entries(counts) as Array<[FacetContentType, number]>)
+    .filter(([, n]) => n > 0)
+    .sort((a, b) => b[1] - a[1]);
+
+  const MAX_SEGMENTS = 3;
+  const top = ranked.slice(0, MAX_SEGMENTS);
+  const restCount = ranked.slice(MAX_SEGMENTS).reduce((s, [, n]) => s + n, 0);
+
+  const parts: Array<{ type: FacetContentType | "other"; count: number }> = [
+    ...top.map(([type, count]) => ({ type, count })),
+    ...(restCount > 0 ? [{ type: "other" as const, count: restCount }] : []),
+  ];
+
+  let offset = 0;
+  return parts.map(({ type, count }) => {
+    const share = count / total;
+    const arcLength = share * circumference;
+    const segment: DonutSegment = {
+      type,
+      share,
+      dashArray: `${arcLength} ${circumference - arcLength}`,
+      dashOffset: -offset,
+    };
+    offset += arcLength;
+    return segment;
+  });
 }

@@ -1,5 +1,6 @@
 import { REGION_CODES, REGION_I18N_KEY, type RegionCode } from "./region-codes";
-import type { FacetContentType } from "./cluster-pins";
+import { layerColorKeyFor, type FacetContentType } from "./cluster-pins";
+import type { COLOR } from "@/lib/ccm-colors";
 
 export type FacetId =
   | "caseStudyCount"
@@ -143,6 +144,27 @@ export function facetForContentType(type: FacetContentType): FacetDef | undefine
     ([, t]) => t === type
   )?.[0];
   return id ? FACETS.find((f) => f.id === id) : undefined;
+}
+
+/** A `FacetId` → its `COLOR.layer` key (`lib/ccm-colors.ts`), so legend chips,
+ *  composition bars and popover headers all colour a layer identically to its
+ *  pins. A full `Record` (mirroring `atlasDestination`'s map below) rather than
+ *  a partial map + fallback, so adding a `FacetId` without updating this table
+ *  is a compile error instead of a silently-wrong swatch. `memberCount` has no
+ *  pin-capable content type (no geo data) but still needs a swatch for its
+ *  legend chip/composition segment, so it gets the otherwise-unused `people`
+ *  layer colour directly; every other facet resolves via `layerColorKeyFor`. */
+const FACET_LAYER_COLOR_KEY: Record<FacetId, keyof typeof COLOR.layer> = {
+  caseStudyCount: layerColorKeyFor("caseStudy"),
+  livedExpCount: layerColorKeyFor("livedExperience"),
+  newsCount: layerColorKeyFor("newsPost"),
+  agendaCount: layerColorKeyFor("agenda"),
+  reportCount: layerColorKeyFor("report"),
+  memberCount: "people",
+};
+
+export function layerColorKeyForFacet(facet: FacetId): keyof typeof COLOR.layer {
+  return FACET_LAYER_COLOR_KEY[facet];
 }
 
 /** Deep-link from an atlas facet+region into the matching listing (spec A1 —

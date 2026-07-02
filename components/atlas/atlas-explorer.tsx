@@ -12,12 +12,14 @@ import { RegionContentCards } from '@/components/atlas/region-content-cards'
 import { SectionHeader } from '@/components/ui/section-header'
 import { Button } from '@/components/ui/button'
 import {
-  FACETS, atlasDestination, parseLayers, facetForContentType,
+  FACETS, atlasDestination, parseLayers, facetForContentType, layerColorKeyForFacet,
   type FacetId, type RegionDatumWithBreakdown, type ThemeOption,
 } from '@/lib/maps/region-facets'
-import type { PinCluster } from '@/lib/maps/cluster-pins'
+import type { PinCluster, PinItem } from '@/lib/maps/cluster-pins'
 import { REGION_I18N_KEY, REGION_TO_RC_SLUG, isRegionCode, type RegionCode } from '@/lib/maps/region-codes'
 import { useRouter, usePathname, Link } from '@/i18n/navigation'
+import { COLOR } from '@/lib/ccm-colors'
+import { cn } from '@/lib/utils'
 import { ArrowRight, Search, X } from 'lucide-react'
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json())
@@ -26,18 +28,52 @@ const CARD_FACETS: ReadonlySet<FacetId> = new Set([
   'caseStudyCount', 'livedExpCount', 'newsCount', 'agendaCount', 'reportCount',
 ])
 
+/** Group a pin popover's (capped) items by content type, ordered by the
+ *  cluster's FULL per-type counts desc (`typeCounts`) — so ordering reflects
+ *  the true composition even though `items` only carries the first 5. Each
+ *  group's `count` is that full count (may exceed, or exist without, any
+ *  titled `items` — `items` is capped repo-wide at 5 per cluster, so a type
+ *  can be present in `typeCounts` with zero representatives among them; that
+ *  group still renders its dot + label + count, just with no title list, so
+ *  the popover's mini-legend never disagrees with the pin's own donut). */
+function groupClusterItems(cluster: PinCluster) {
+  const byType = new Map<PinItem['type'], PinItem[]>()
+  for (const item of cluster.items) {
+    const bucket = byType.get(item.type) ?? []
+    bucket.push(item)
+    byType.set(item.type, bucket)
+  }
+  return (Object.entries(cluster.typeCounts) as Array<[PinItem['type'], number]>)
+    .sort((a, b) => b[1] - a[1])
+    .map(([type, count]) => {
+      const def = facetForContentType(type)
+      return {
+        type,
+        facetId: (def?.id ?? 'caseStudyCount') as FacetId,
+        labelKey: def?.labelKey ?? 'facetCaseStudies',
+        count,
+        items: byType.get(type) ?? [],
+      }
+    })
+}
+
 /**
  * Atlas & Explore — shared URL state (layer · theme · region · q, spec A1):
  * every view is linkable and back-button-safe. Selecting a region loads its
- * geotagged pins; a persistent caption bar narrates the current result set.
+ * geotagged pins; the legend chips under the map narrate the current result
+ * set (count per active layer) instead of a separate caption bar.
  * `lockedRegion` renders the region-scoped embed variant (spec A4).
  */
 export function AtlasExplorer({
   lockedRegion,
   themes,
+  showBreakdown = true,
 }: {
   lockedRegion?: RegionCode
   themes: ThemeOption[]
+  /** Show the locked-mode country breakdown list (spec A4). Default true;
+   *  an embed can opt out when it wants the map without that list. */
+  showBreakdown?: boolean
 } = { themes: [] }) {
   const t = useTranslations('map')
   const tAtlas = useTranslations('atlas')
@@ -118,6 +154,10 @@ export function AtlasExplorer({
     const key = REGION_I18N_KEY[code]
     return key ? tRegions(key) : String(code)
   }
+  const labelForFacet = useCallback((id: FacetId) => {
+    const def = FACETS.find((f) => f.id === id)
+    return def ? t(def.labelKey) : id
+  }, [t])
   const activeFacetDefs = useMemo(() => FACETS.filter((f) => layerSet.has(f.id)), [layerSet])
   // Multiple active layers: join their labels ("Case studies + Lived experiences").
   const facetLabel = activeFacetDefs.map((f) => t(f.labelKey)).join(' + ')
@@ -126,7 +166,17 @@ export function AtlasExplorer({
     ? (locale as (typeof SUPPORTED_LOCALES)[number])
     : 'en'
   const labelForTheme = (opt: ThemeOption) => opt.label[localeKey] ?? opt.label.en ?? opt.slug
-  const themeLabel = theme ? labelForTheme(themes.find((th) => th.slug === theme)!) : null
+
+  // Legend/result chips (spec R2b): one per ACTIVE layer, with its total count
+  // summed across all regions from `byFacet` — this doubles as the live result
+  // summary that used to live in the deleted caption bar.
+  const legendTotals = useMemo(() => {
+    const totals: Partial<Record<FacetId, number>> = {}
+    for (const f of layers) {
+      totals[f] = regionData.reduce((s, d) => s + (d.byFacet[f] ?? 0), 0)
+    }
+    return totals
+  }, [layers, regionData])
 
   const onSelect = (code: RegionCode) => {
     if (lockedRegion) return
@@ -142,17 +192,10 @@ export function AtlasExplorer({
   const singleFacet: FacetId | null = layers.length === 1 ? layers[0] : null
   const destinationHref = selected && singleFacet ? atlasDestination(singleFacet, REGION_TO_RC_SLUG[selected]) : null
   // Content-card drill-in only applies when exactly one CARD_FACET (pin-capable
-  // content facet) is active — with multiple, per-layer chips replace it.
+  // content facet) is active — with multiple, per-layer chips replace it. The
+  // same gate controls the drill-in's "Open in {label} →" deep link (spec R3).
   const singleCardFacet: FacetId | null =
     pinFacets.length === 1 && layers.length === 1 ? pinFacets[0] : null
-
-  // The caption sentence: "14 case studies · Livelihoods · "drought" · SSA"
-  const captionParts = [
-    selectedDatum ? `${selectedDatum.value} · ${facetLabel}` : facetLabel,
-    themeLabel,
-    q ? `"${q}"` : null,
-    selected ? labelFor(selected) : null,
-  ].filter(Boolean)
 
   return (
     <div className="space-y-8">
@@ -194,7 +237,7 @@ export function AtlasExplorer({
           a no-op (aria-disabled + tooltip) so at least one stays selected. */}
       <div className="space-y-1.5">
         <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          {tAtlas('dataLayer')}
+          {tAtlas('show')}
         </span>
         <div className="flex flex-wrap gap-2">
           {FACETS.map((f) => {
@@ -256,22 +299,40 @@ export function AtlasExplorer({
                   <X className="size-3.5" />
                 </button>
               </div>
-              <ul className="space-y-1">
-                {openCluster.items.map((item) => {
-                  // Colour is never the only signal for an item's type: every
-                  // popover row pairs it with a small text label (a11y).
-                  const itemFacet = facetForContentType(item.type)
-                  const itemTypeLabel = itemFacet ? t(itemFacet.labelKey) : null
-                  return (
-                    <li key={item.id} className="flex items-center gap-1.5 truncate text-sm">
-                      <bdi className="truncate">{item.title}</bdi>
-                      {itemTypeLabel && (
-                        <span className="shrink-0 text-xs text-muted-foreground">· {itemTypeLabel}</span>
-                      )}
-                    </li>
-                  )
-                })}
-              </ul>
+              {/* Popover groups by type (spec R2b point 4): a header row per
+                  type (dot + localized label + count), types ordered by count
+                  desc, so a mixed cluster reads like a mini-legend before its
+                  items. */}
+              <div className="space-y-2">
+                {groupClusterItems(openCluster).map((group) => (
+                  <div key={group.type}>
+                    <div className="mb-0.5 flex items-center gap-1.5">
+                      <span
+                        aria-hidden="true"
+                        className="size-2 shrink-0 rounded-full"
+                        style={{ backgroundColor: COLOR.layer[layerColorKeyForFacet(group.facetId)] }}
+                      />
+                      <span className="text-xs font-semibold text-ccm-midnight">
+                        {t(group.labelKey)} · {group.count}
+                      </span>
+                    </div>
+                    {group.items.length > 0 && (
+                      <ul className="space-y-1 ps-3.5">
+                        {group.items.map((item) => (
+                          <li key={item.id} className="truncate text-sm">
+                            <bdi className="truncate">{item.title}</bdi>
+                          </li>
+                        ))}
+                        {group.items.length < group.count && (
+                          <li className="text-xs text-muted-foreground">
+                            +{group.count - group.items.length}
+                          </li>
+                        )}
+                      </ul>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </div>
@@ -280,14 +341,52 @@ export function AtlasExplorer({
           activeCode={active ?? selected}
           facetLabel={facetLabel}
           labelFor={labelFor}
+          labelForFacet={labelForFacet}
+          activeFacets={layers}
           onSelect={onSelect}
         />
+      </div>
+
+      {/* Legend/result chips (spec R2b point 1) — one per active layer: dot +
+          localized label + its total count, replacing the deleted caption
+          bar's "live result summary" job. Clicking a chip when >1 layer is
+          active behaves like toggling that layer off (kept consistent with
+          the switcher above); with exactly one layer active the chip is
+          purely informational (toggling it off would violate "at least one
+          layer stays selected", same as the switcher's disabled state). */}
+      <div className="flex flex-wrap gap-2">
+        {activeFacetDefs.map((f) => {
+          const isOnlyLayer = layerSet.size === 1
+          return (
+            <button
+              key={f.id}
+              type="button"
+              onClick={() => toggleLayer(f.id)}
+              disabled={isOnlyLayer}
+              aria-disabled={isOnlyLayer || undefined}
+              title={isOnlyLayer ? tAtlas('lastLayer') : undefined}
+              className={cn(
+                'inline-flex items-center gap-1.5 rounded-full border bg-card px-3 py-1.5 text-sm font-medium text-ccm-midnight shadow-sm transition-colors',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                isOnlyLayer ? 'cursor-not-allowed opacity-80' : 'hover:border-[var(--color-ccm-sea)]/40 hover:bg-muted'
+              )}
+            >
+              <span
+                aria-hidden="true"
+                className="size-2.5 shrink-0 rounded-full"
+                style={{ backgroundColor: COLOR.layer[layerColorKeyForFacet(f.id)] }}
+              />
+              <span>{t(f.labelKey)}</span>
+              <span className="font-semibold text-[var(--color-ccm-sea)]">{legendTotals[f.id] ?? 0}</span>
+            </button>
+          )
+        })}
       </div>
 
       {/* Country breakdown (locked/embed mode only, spec A4) — country names
           are resolved server-side by the pins route, so no i18n-iso-countries
           import lands in this client bundle. */}
-      {lockedRegion && pinsData && 'countries' in pinsData && pinsData.countries?.length ? (
+      {showBreakdown && lockedRegion && pinsData && 'countries' in pinsData && pinsData.countries?.length ? (
         <div className="space-y-1">
           <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
             {tAtlas('countryBreakdown')}
@@ -302,24 +401,23 @@ export function AtlasExplorer({
         </div>
       ) : null}
 
-      {/* Caption bar (spec A1) — the live result sentence + deep link */}
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-lg border bg-card px-4 py-3 text-sm shadow-sm">
-        <span className="font-heading font-semibold text-ccm-midnight">{captionParts.join(' · ')}</span>
-        {destinationHref && selected && (
-          <Link href={destinationHref} className="ms-auto inline-flex min-h-11 items-center gap-1 font-heading text-sm font-semibold text-primary">
-            {tAtlas('openIn', { label: facetLabel })}
-            <ArrowRight className="size-4 rtl:-scale-x-100" />
-          </Link>
-        )}
-      </div>
-
       {/* Selected-region drill-in. Single active layer: the original cards +
-          "explore" deep link. Multiple active layers: no single destination to
-          drill into, so each layer gets its own count chip linking to its
-          listing (spec R2) — summed totals live in the caption/panel above. */}
+          "explore" deep link, plus an "Open in {label} →" deep link in the
+          header (only when exactly one card-facet is active, spec R3).
+          Multiple active layers: no single destination to drill into, so each
+          layer gets its own count chip linking to its listing (spec R2) —
+          summed totals live in the legend chips/panel above. */}
       {selected && selectedDatum && (
         <section className="rounded-2xl border bg-ccm-sky/10 p-6">
-          <SectionHeader title={labelFor(selected)} subtitle={`${selectedDatum.value} · ${facetLabel}`} />
+          <SectionHeader
+            title={labelFor(selected)}
+            subtitle={`${selectedDatum.value} · ${facetLabel}`}
+            action={
+              singleCardFacet && destinationHref
+                ? { label: `${tAtlas('openIn', { label: facetLabel })} →`, href: destinationHref }
+                : undefined
+            }
+          />
           <div className="mt-4 space-y-4">
             {singleFacet && destinationHref ? (
               selectedDatum.value > 0 ? (

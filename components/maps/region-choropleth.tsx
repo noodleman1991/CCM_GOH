@@ -4,8 +4,14 @@ import { cn } from '@/lib/utils'
 import geometry from './region-geometry.json'
 import type { RegionDatum } from '@/lib/maps/region-facets'
 import type { RegionCode } from '@/lib/maps/region-codes'
-import { layerColorKeyFor, type PinCluster } from '@/lib/maps/cluster-pins'
+import { layerColorKeyFor, donutSegments, type PinCluster } from '@/lib/maps/cluster-pins'
 import { COLOR, CCM } from '@/lib/ccm-colors'
+
+/** `DonutSegment.type` → its stroke colour: known content types resolve through
+ *  `COLOR.layer` (same swatch as the popover/legend); the synthetic "other"
+ *  bucket (>3rd type, folded together) renders in neutral slate. */
+const donutSegmentColor = (type: Parameters<typeof layerColorKeyFor>[0] | 'other') =>
+  type === 'other' ? CCM.slate : COLOR.layer[layerColorKeyFor(type)]
 
 /**
  * Presentational choropleth: renders the 7 region paths from the build-time
@@ -44,11 +50,15 @@ export function RegionChoropleth({
     return `color-mix(in srgb, var(--color-ccm-sea) ${pct}%, white)`
   }
 
-  // A single-type cluster is coloured by that type's `COLOR.layer` entry; a
-  // cluster mixing types (from a multi-layer selection) falls back to the
-  // amber "mixed" colour rather than picking an arbitrary dominant type.
-  const fillForCluster = (cluster: PinCluster) =>
-    cluster.types.length === 1 ? COLOR.layer[layerColorKeyFor(cluster.types[0])] : CCM.amber
+  // A single-type cluster is a solid `COLOR.layer` circle. Amber is reserved
+  // for selection/highlight only (never "mixed" — see the donut below).
+  const fillForCluster = (cluster: PinCluster) => COLOR.layer[layerColorKeyFor(cluster.types[0])]
+  // Donut ring radius/stroke for mixed clusters — the SVG circle's radius must
+  // shrink by half the stroke width so the ring's outer edge still lands on
+  // the cluster's usual footprint (matches the solid circle's `r`).
+  const DONUT_R = 8
+  const DONUT_STROKE = 6
+  const DONUT_CIRCUMFERENCE = 2 * Math.PI * DONUT_R
 
   return (
     <svg
@@ -91,28 +101,56 @@ export function RegionChoropleth({
           />
         )
       })}
-      {pins?.map((c, i) => (
-        <g
-          key={`${c.x}-${c.y}-${i}`}
-          role="button"
-          tabIndex={0}
-          aria-label={`${c.count} ${c.items[0]?.title ?? ''}`}
-          className="cursor-pointer outline-none"
-          onClick={(e) => { e.stopPropagation(); onPinClick?.(c) }}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onPinClick?.(c) }
-          }}
-        >
-          <circle cx={c.x} cy={c.y} r={c.count > 1 ? 11 : 7}
-            fill={fillForCluster(c)} stroke="white" strokeWidth={2} />
-          {c.count > 1 && (
-            <text x={c.x} y={c.y + 3.5} textAnchor="middle"
-              className="fill-white font-heading text-[10px] font-bold">
-              {c.count}
-            </text>
-          )}
-        </g>
-      ))}
+      {pins?.map((c, i) => {
+        const isMixed = c.types.length > 1
+        const segments = isMixed ? donutSegments(c.typeCounts, DONUT_CIRCUMFERENCE) : []
+        return (
+          <g
+            key={`${c.x}-${c.y}-${i}`}
+            role="button"
+            tabIndex={0}
+            aria-label={`${c.count} ${c.items[0]?.title ?? ''}`}
+            className="cursor-pointer outline-none"
+            onClick={(e) => { e.stopPropagation(); onPinClick?.(c) }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onPinClick?.(c) }
+            }}
+          >
+            {isMixed ? (
+              <>
+                {/* Base ring (slate) so gaps between rounded segment caps never
+                    show background through the donut. */}
+                <circle cx={c.x} cy={c.y} r={DONUT_R} fill="none" stroke={CCM.slate}
+                  strokeWidth={DONUT_STROKE} opacity={0.25} />
+                {segments.map((seg, si) => (
+                  <circle
+                    key={`${seg.type}-${si}`}
+                    cx={c.x} cy={c.y} r={DONUT_R}
+                    fill="none"
+                    stroke={donutSegmentColor(seg.type)}
+                    strokeWidth={DONUT_STROKE}
+                    strokeDasharray={seg.dashArray}
+                    strokeDashoffset={seg.dashOffset}
+                    transform={`rotate(-90 ${c.x} ${c.y})`}
+                  />
+                ))}
+                {/* Solid centre disc keeps the count legible regardless of
+                    which segment colours sit behind it. */}
+                <circle cx={c.x} cy={c.y} r={DONUT_R - DONUT_STROKE / 2} fill={CCM.midnight} />
+              </>
+            ) : (
+              <circle cx={c.x} cy={c.y} r={c.count > 1 ? 11 : 7}
+                fill={fillForCluster(c)} stroke="white" strokeWidth={2} />
+            )}
+            {c.count > 1 && (
+              <text x={c.x} y={c.y + 3.5} textAnchor="middle"
+                className="fill-white font-heading text-[10px] font-bold">
+                {c.count}
+              </text>
+            )}
+          </g>
+        )
+      })}
     </svg>
   )
 }
