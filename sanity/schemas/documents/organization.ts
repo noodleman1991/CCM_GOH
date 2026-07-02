@@ -112,6 +112,12 @@ export default defineType({
             group: "location",
         }),
         defineField({
+            name: "place",
+            title: "Place",
+            type: "place",
+            group: "location",
+        }),
+        defineField({
             name: "offices",
             title: "Office Locations",
             type: "array",

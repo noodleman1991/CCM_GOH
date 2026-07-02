@@ -1,5 +1,6 @@
 import "server-only";
 import { client } from "@/sanity/lib/client";
+import type { SanityPlace } from "@/types/case-study";
 
 export type EventListItem = {
   _id: string;
@@ -12,6 +13,7 @@ export type EventListItem = {
   locationName: string | null;
   url: string | null;
   linkedProject: string | null;
+  place?: SanityPlace | null;
 };
 
 /**

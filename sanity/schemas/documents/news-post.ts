@@ -206,6 +206,12 @@ export default defineType({
             description: "Primary location related to this news",
         }),
         defineField({
+            name: "place",
+            title: "Place",
+            type: "place",
+            group: "metadata",
+        }),
+        defineField({
             name: "locationDetails",
             title: "Location Details",
             type: "object",

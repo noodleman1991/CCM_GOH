@@ -441,4 +441,33 @@ export const structure = (S: any, context: any) =>
                             }),
                         ])
                 ),
+
+            // Geo coverage — published docs missing a place/coordinates, so
+            // editors can find and fix gaps before they show up as holes on
+            // the content map / atlas.
+            S.divider(),
+            S.listItem()
+                .title("🌍 Missing geotags")
+                .icon(MapPinned)
+                .child(
+                    S.list()
+                        .title("Published docs without a place")
+                        .items([
+                            S.listItem().title("Case studies").child(
+                                S.documentList()
+                                    .title("Case studies without coordinates")
+                                    .filter('_type == "caseStudy" && status == "approved" && !defined(studyLocation)')
+                            ),
+                            S.listItem().title("Lived experiences").child(
+                                S.documentList()
+                                    .title("Lived experiences without a place")
+                                    .filter('_type == "livedExperience" && !defined(place.point)')
+                            ),
+                            S.listItem().title("Events").child(
+                                S.documentList()
+                                    .title("Events without a place")
+                                    .filter('_type == "event" && !defined(place.point)')
+                            ),
+                        ])
+                ),
         ]);

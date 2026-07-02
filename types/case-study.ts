@@ -5,6 +5,20 @@ export interface LocalizedString {
     ar?: string;
 }
 
+/**
+ * Hand-maintained mirror of the `place` Sanity object (spec A2): one
+ * coordinate + display text + author-owned precision + ISO alpha-3 country
+ * code. Adopted on livedExperience, event, organization, newsPost. Do NOT
+ * regenerate via `sanity typegen` — hand-edit this alongside schema changes
+ * (see sanity/schemas/objects/place.ts).
+ */
+export interface SanityPlace {
+    point?: { lat: number; lng: number } | null;
+    text?: string | null;
+    precision?: "exact" | "city" | "country" | "region" | null;
+    countryCode?: string | null;
+}
+
 export interface CaseStudyAuthor {
     userId?: string;
     name: string;
@@ -37,6 +51,7 @@ export interface Organization {
         };
         alt?: string;
     };
+    place?: SanityPlace | null;
 }
 
 export interface Project {
@@ -107,6 +122,11 @@ export interface CaseStudy {
         lng: number;
         alt?: number;
     };
+    // Scalars read by GROQ consumers alongside studyLocation/locationText to
+    // build the legacy-case-study "place" alias (no data migration — see
+    // sanity/schemas/documents/case-study.ts).
+    locationPrecision?: 'exact' | 'city' | 'country' | 'region' | null;
+    locationCountryCode?: string | null;
     studyAreas?: StudyArea[];
     // Cross-content links (connection[] — see RELATED_CONTENT_PROJECTION)
     relatedContent?: Array<{
