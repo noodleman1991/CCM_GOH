@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { aggregateRegionData, FACETS, type FacetId } from "../region-facets";
+import { aggregateRegionData, atlasDestination, FACETS, isThemeId, THEMES, type FacetId } from "../region-facets";
 import { REGION_CODES } from "../region-codes";
 
 const zero = () =>
@@ -43,5 +43,20 @@ describe("aggregateRegionData", () => {
 
   it("throws on an unknown facet", () => {
     expect(() => aggregateRegionData(zero(), "nope" as FacetId)).toThrow();
+  });
+});
+
+describe("themes + destinations", () => {
+  it("defines the four spec themes", () => {
+    expect(THEMES.map((t) => t.id)).toEqual(["displacement", "livelihoods", "youth", "indigenous"]);
+  });
+  it("validates theme ids", () => {
+    expect(isThemeId("youth")).toBe(true);
+    expect(isThemeId("nope")).toBe(false);
+  });
+  it("routes each facet to its listing", () => {
+    expect(atlasDestination("caseStudyCount", "sub-saharan-africa"))
+      .toBe("/research-and-action/case-studies?communities=sub-saharan-africa");
+    expect(atlasDestination("livedExpCount", "oceania")).toBe("/lived-experiences?regions=oceania");
   });
 });
