@@ -2,10 +2,12 @@ import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 
 /** Minimal shape of a Sanity `image` field with alt text, as stored on the
- *  `hubIllustrations` singleton. */
+ *  `hubIllustrations` singleton. GROQ's `asset->{...}` dereferences the
+ *  reference into the asset document, whose id field is `_id` — `_ref` only
+ *  exists on the un-dereferenced reference and is absent here. */
 interface RawIllustrationImage {
   asset?: {
-    _ref?: string;
+    _id?: string;
     metadata?: { dimensions?: { width?: number; height?: number } };
   };
   alt?: string;
@@ -35,16 +37,16 @@ export interface HubIllustrations {
 }
 
 const HUB_ILLUSTRATIONS_QUERY = `*[_type == "hubIllustrations"][0]{
-  atlasHeader{ asset->{ _ref, metadata { dimensions { width, height } } }, alt },
-  searchHeader{ asset->{ _ref, metadata { dimensions { width, height } } }, alt },
-  collaborateHeader{ asset->{ _ref, metadata { dimensions { width, height } } }, alt },
-  emptyState{ asset->{ _ref, metadata { dimensions { width, height } } }, alt }
+  atlasHeader{ asset->{ _id, metadata { dimensions { width, height } } }, alt },
+  searchHeader{ asset->{ _id, metadata { dimensions { width, height } } }, alt },
+  collaborateHeader{ asset->{ _id, metadata { dimensions { width, height } } }, alt },
+  emptyState{ asset->{ _id, metadata { dimensions { width, height } } }, alt }
 }`;
 
 function mapImage(image: RawIllustrationImage | null | undefined): HubIllustration | undefined {
   const width = image?.asset?.metadata?.dimensions?.width;
   const height = image?.asset?.metadata?.dimensions?.height;
-  if (!image?.asset?._ref || !width || !height) return undefined;
+  if (!image?.asset?._id || !width || !height) return undefined;
 
   return {
     url: urlFor(image).width(width).height(height).url(),
@@ -61,8 +63,7 @@ function mapImage(image: RawIllustrationImage | null | undefined): HubIllustrati
  *  and get today's text-only header when nothing is configured.
  *
  *  ISR 300s: the underlying `client.fetch` call is tagged and revalidated
- *  every 5 minutes via Next's fetch cache (`next: { revalidate, tags }`),
- *  same as other singleton reads in this codebase. */
+ *  every 5 minutes via Next's fetch cache (`next: { revalidate, tags }`). */
 export async function getHubIllustrations(): Promise<HubIllustrations> {
   try {
     const data = await client.fetch<RawHubIllustrations | null>(
