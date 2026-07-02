@@ -14,7 +14,12 @@ import { postComment, toggleReaction, deleteComment, reportComment } from "@/lib
 import type { CommentDTO, CommentPage } from "@/lib/comments/types";
 import type { CommentTargetType } from "@/generated/prisma";
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json() as Promise<CommentPage>);
+const fetcher = (url: string) =>
+  fetch(url).then((r) =>
+    r.ok
+      ? (r.json() as Promise<CommentPage>)
+      : Promise.resolve({ comments: [], nextCursor: null })
+  );
 
 type Props = {
   targetType: CommentTargetType;

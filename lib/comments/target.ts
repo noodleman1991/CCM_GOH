@@ -63,10 +63,9 @@ export async function isCommentTargetValid(
     targetType === "collaborationFile" ||
     targetType === "collaborationDoc"
   ) {
-    // Collaboration tables land in a later migration. Until then these targets
-    // are validated by the collaboration membership check at the call site;
-    // here we resolve them via a raw count so this module needs no generated
-    // model that may not exist yet.
+    // Collaboration tables exist; raw-SQL lookups retained here. Typed Prisma
+    // delegates are a possible follow-up. For now, the membership check at the
+    // call site gates access; this validates existence only.
     const table = WORKSPACE_TARGET_TABLE[targetType];
     const r = await safeQuery(async () => {
       try {
