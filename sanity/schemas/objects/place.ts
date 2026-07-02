@@ -47,7 +47,7 @@ export default defineType({
       validation: (rule) =>
         rule.custom((v) =>
           !v || /^[A-Z]{3}$/.test(v) ? true : "Use a 3-letter ISO code (e.g. KEN)"
-        ),
+        ).warning(),
     }),
   ],
   preview: {
