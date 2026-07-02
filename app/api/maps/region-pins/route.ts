@@ -133,7 +133,8 @@ export async function GET(req: NextRequest) {
   const projected: Array<PinItem & { x: number; y: number }> = [];
   types.forEach((type, i) => {
     for (const r of rowsByType[i]) {
-      if (r.countryCode3) countryCounts.set(r.countryCode3, (countryCounts.get(r.countryCode3) ?? 0) + 1);
+      if (r.countryCode3 && r.precision !== "region")
+        countryCounts.set(r.countryCode3, (countryCounts.get(r.countryCode3) ?? 0) + 1);
       if (!r.point || (r.precision !== "exact" && r.precision !== "city")) continue;
       const p = projectPoint(r.point.lat, r.point.lng);
       if (!p) continue;
