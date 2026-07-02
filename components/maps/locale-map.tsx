@@ -1,18 +1,19 @@
 import { cn } from "@/lib/utils";
-import { CCM, regionColor } from "@/lib/ccm-colors";
-import regionGeometry from "@/components/maps/region-geometry.json";
+import { CCM } from "@/lib/ccm-colors";
 import {
-  allCountryEntries,
+  allRegionEntries,
   getCountryPath,
+  getRegionPath,
   COUNTRY_VIEWBOX,
 } from "@/lib/maps/country-geometry";
 import { projectPoint } from "@/lib/maps/project-point";
+import type { RegionCode } from "@/lib/maps/region-codes";
 
 type LocaleMapProps = {
   /** ISO alpha-3 of the country to highlight (exact/city/country precision). */
   iso?: string | null;
   /** Region code to highlight instead (precision: "region"). */
-  region?: string | null;
+  region?: RegionCode | null;
   point?: { lat: number; lng: number } | null;
   label?: string | null;
   variant?: "mini" | "panel";
@@ -26,9 +27,7 @@ type LocaleMapProps = {
  */
 export function LocaleMap({ iso, region, point, label, variant = "mini", className }: LocaleMapProps) {
   const highlight = iso ? getCountryPath(iso) : null;
-  const regionPath = region
-    ? (regionGeometry.regions as Record<string, { d: string }>)[region] ?? null
-    : null;
+  const regionPath = region ? getRegionPath(region) : null;
   const pin = variant === "panel" && point ? projectPoint(point.lat, point.lng) : null;
   const size = variant === "mini" ? "w-20" : "w-full max-w-[280px]";
 
@@ -37,7 +36,10 @@ export function LocaleMap({ iso, region, point, label, variant = "mini", classNa
   return (
     <figure className={cn("m-0", size, className)}>
       <svg viewBox={COUNTRY_VIEWBOX} role="img" aria-label={label ?? undefined} className="h-auto w-full">
-        {allCountryEntries().map(([code, { d }]) => (
+        {/* Backdrop trade-off: draw the 7 region blobs (not per-country geometry)
+            to keep this component light enough to sit on cards — per-country
+            data (~116KB) is used only for the highlighted-country path below. */}
+        {allRegionEntries().map(([code, { d }]) => (
           <path key={code} d={d} fill={CCM.sky} fillOpacity={0.45} stroke="white" strokeWidth={0.4} />
         ))}
         {regionPath && (
