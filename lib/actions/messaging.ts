@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { getActor } from "@/lib/authz";
 import { assertRateLimit, RateLimitError } from "@/lib/rate-limit";
 import { createNotification } from "@/lib/notifications/service";
+import { getOrCreateProjectConversation } from "@/lib/messaging/service";
 
 type Result<T = {}> = ({ ok: true } & T) | { ok: false; error: string };
 
@@ -229,4 +230,13 @@ export async function startGroupConversation(input: z.infer<typeof groupSchema>)
     select: { id: true },
   });
   return { ok: true, id: convo.id };
+}
+
+/** "Message team" — opens (lazily creating) the workspace's project channel. */
+export async function startProjectConversation(collaborationId: string): Promise<Result<{ id: string }>> {
+  const actor = await getActor();
+  if (!actor) return { ok: false, error: "Sign in." };
+  const conv = await getOrCreateProjectConversation(collaborationId, actor.id);
+  if (!conv) return { ok: false, error: "Only workspace members can message the team." };
+  return { ok: true, id: conv.id };
 }

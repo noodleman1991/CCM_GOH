@@ -3,6 +3,9 @@ import { prisma, safeQuery } from "@/lib/prisma";
 
 export type ConversationSummary = {
   id: string;
+  kind: "DIRECT" | "PROJECT" | "COMMUNITY";
+  /** Channel title (project/community name); null for DMs (use otherName). */
+  title: string | null;
   otherName: string | null;
   otherImage: string | null;
   otherUsername: string | null;
@@ -27,6 +30,7 @@ export async function listConversations(userId: string): Promise<ConversationSum
           include: { user: { select: { id: true, firstName: true, lastName: true, username: true, image: true } } },
         },
         messages: { orderBy: { createdAt: "desc" }, take: 1, select: { body: true, createdAt: true } },
+        collaboration: { select: { title: true } },
       },
     })
   );
@@ -39,6 +43,8 @@ export async function listConversations(userId: string): Promise<ConversationSum
     const unread = !!last && (!me?.lastReadAt || last.createdAt > me.lastReadAt);
     return {
       id: c.id,
+      kind: c.kind,
+      title: c.kind === "PROJECT" ? (c.collaboration?.title ?? null) : null,
       otherName: other ? displayName(other) : null,
       otherImage: other?.image ?? null,
       otherUsername: other?.username ?? null,
@@ -80,4 +86,41 @@ export async function listMessages(conversationId: string, userId: string) {
         createdAt: m.createdAt.toISOString(),
       }))
     : [];
+}
+
+/**
+ * The workspace's single PROJECT channel, created lazily on first use
+ * ("no empty rooms" — spec F1). Member-gated; all current members join.
+ */
+export async function getOrCreateProjectConversation(
+  collaborationId: string,
+  userId: string
+): Promise<{ id: string } | null> {
+  const membership = await prisma.collaborationMember.findUnique({
+    where: { collaborationId_userId: { collaborationId, userId } },
+    select: { role: true },
+  });
+  if (!membership) return null;
+
+  const existing = await prisma.conversation.findUnique({
+    where: { kind_collaborationId: { kind: "PROJECT", collaborationId } },
+    select: { id: true },
+  });
+  if (existing) return existing;
+
+  const collab = await prisma.collaboration.findUnique({
+    where: { id: collaborationId },
+    select: { members: { select: { userId: true } } },
+  });
+  if (!collab) return null;
+
+  const created = await prisma.conversation.create({
+    data: {
+      kind: "PROJECT",
+      collaborationId,
+      participants: { createMany: { data: collab.members.map((m) => ({ userId: m.userId })) } },
+    },
+    select: { id: true },
+  });
+  return created;
 }
