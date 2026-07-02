@@ -99,3 +99,17 @@
 - User directives covered: dynamic themes ✓ (R1) · universal no-hardcoded-taxonomy ✓ (R1 + constraint) · "data layer" label ✓ (R3) · multi-layer selection ✓ (R2) · caption bar removed/made-relevant ✓ (R3) · illustration spaces atlas+search ✓ (R4; collaborate slot fielded for P3).
 - Type consistency: ThemeOption (R1) consumed by explorer prop; parseLayers/layerColorKeyFor (R2) used in explorer/choropleth; HeaderIllustration image shape defined once (R4).
 - Back-compat: region-data keeps `facet` param one release; `dataLayer` i18n key deleted only if unconsumed.
+
+---
+
+### Task R2b (user directive): multi-type presentation on the map — merged with R3
+
+How the UI reads a multi-layer result set (binding design):
+
+1. **Legend/result chips under the map** — one chip per ACTIVE layer: `COLOR.layer` dot + localized layer label + its total count (sum of that facet across regions, from `byFacet`). This is the legend AND the live result summary (replaces the deleted caption bar's job). Clicking a legend chip when >1 layer active = same as toggling that layer chip off (kept consistent).
+2. **Region panel rows read composition** — each region row gets a thin stacked segment bar (h-1.5, rounded) under the name: segments proportional to `byFacet` shares in `COLOR.layer` colours, plus the summed count. One layer active → bar is single-colour (harmless degenerate case).
+3. **Mixed pin clusters = segmented donut** — SVG arc segments proportional to the cluster's type shares (max 3 segments, then "other" in slate), white count in the middle; single-type cluster stays a solid `COLOR.layer` circle. Amber no longer means "mixed" (it returns to highlight/selection semantics only).
+4. **Popover groups by type** — type header row (dot + localized label + count), then its items; types ordered by count desc.
+5. R3 folded in: caption bar deleted; "Open in {label} →" moves into the drill-in `SectionHeader` row (only when exactly one card-facet active); "Data layer" label → `atlas.show` ("Show" / "Mostrar" / "Afficher" / "عرض"); `showBreakdown` prop honored by the locked-mode country list; keep/delete `dataLayer` key per grep.
+
+Colour+label pairing holds everywhere (legend chips, popover headers, segment bars have an sr-only composition sentence per row: "{n} case studies, {m} lived experiences").
