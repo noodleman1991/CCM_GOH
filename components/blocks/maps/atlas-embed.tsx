@@ -12,6 +12,7 @@ import { getThemeOptions } from '@/lib/maps/themes'
  */
 export default async function AtlasEmbedBlock({
   region,
+  showBreakdown,
 }: {
   region?: string
   showBreakdown?: boolean
@@ -32,7 +33,7 @@ export default async function AtlasEmbedBlock({
             {t('openFullAtlas')} →
           </Link>
         </div>
-        <AtlasExplorer lockedRegion={region as RegionCode} themes={themes} />
+        <AtlasExplorer lockedRegion={region as RegionCode} themes={themes} showBreakdown={showBreakdown} />
       </div>
     </SectionContainer>
   )

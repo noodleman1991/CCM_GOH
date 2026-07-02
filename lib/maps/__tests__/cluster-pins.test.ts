@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { clusterPins, layerColorKeyFor } from "../cluster-pins";
+import { clusterPins, layerColorKeyFor, donutSegments } from "../cluster-pins";
 
 const item = (id: string, x: number, y: number, type: "caseStudy" | "livedExperience" = "caseStudy") => ({
   id, title: id, type, slug: id, countryCode3: "KEN", x, y,
@@ -54,5 +54,53 @@ describe("layerColorKeyFor", () => {
     expect(layerColorKeyFor("newsPost")).toBe("projects");
     expect(layerColorKeyFor("agenda")).toBe("projects");
     expect(layerColorKeyFor("report")).toBe("projects");
+  });
+});
+
+describe("donutSegments", () => {
+  it("returns [] for an empty/all-zero count map", () => {
+    expect(donutSegments({})).toEqual([]);
+    expect(donutSegments({ caseStudy: 0 })).toEqual([]);
+  });
+
+  it("splits two types proportionally and sums shares to 1", () => {
+    const segs = donutSegments({ caseStudy: 3, livedExperience: 1 });
+    expect(segs).toHaveLength(2);
+    expect(segs[0].type).toBe("caseStudy");
+    expect(segs[0].share).toBeCloseTo(0.75);
+    expect(segs[1].type).toBe("livedExperience");
+    expect(segs[1].share).toBeCloseTo(0.25);
+    expect(segs.reduce((s, seg) => s + seg.share, 0)).toBeCloseTo(1);
+  });
+
+  it("orders segments by count desc", () => {
+    const segs = donutSegments({ newsPost: 1, caseStudy: 5, report: 2 });
+    expect(segs.map((s) => s.type)).toEqual(["caseStudy", "report", "newsPost"]);
+  });
+
+  it("caps at 3 segments, folding the remainder into a slate 'other' bucket", () => {
+    const segs = donutSegments({
+      caseStudy: 4, livedExperience: 3, report: 2, agenda: 1, newsPost: 1,
+    });
+    expect(segs).toHaveLength(4);
+    expect(segs.map((s) => s.type)).toEqual(["caseStudy", "livedExperience", "report", "other"]);
+    const other = segs[3];
+    expect(other.type).toBe("other");
+    // agenda(1) + newsPost(1) folded together
+    expect(other.share).toBeCloseTo(2 / 11);
+  });
+
+  it("computes contiguous, non-overlapping dashOffsets starting at 0", () => {
+    const circumference = 2 * Math.PI * 10;
+    const segs = donutSegments({ caseStudy: 1, livedExperience: 1 }, circumference);
+    expect(segs[0].dashOffset).toBe(-0);
+    const firstArc = segs[0].share * circumference;
+    expect(segs[1].dashOffset).toBeCloseTo(-firstArc);
+  });
+
+  it("a single-type map yields one full-circle segment", () => {
+    const segs = donutSegments({ caseStudy: 5 });
+    expect(segs).toHaveLength(1);
+    expect(segs[0].share).toBe(1);
   });
 });

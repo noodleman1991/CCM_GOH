@@ -1680,7 +1680,7 @@
   "atlas": {
     "title": "Atlas y Exploración",
     "description": "Explora estudios de caso, experiencias vividas, personas y más en las siete regiones.",
-    "dataLayer": "Capa de datos",
+    "show": "Mostrar",
     "explore": "Explorar {region}",
     "empty": "Aún no hay {layer} aquí.",
     "untitled": "Sin título",
@@ -1765,7 +1765,12 @@
     "searchPlaceholder": "Busca una ciudad, lugar o país…",
     "searching": "Buscando…",
     "precisionLabel": "Se muestra en el mapa como",
-    "precision": { "exact": "Punto exacto", "city": "Ciudad", "country": "País", "region": "Solo región" },
+    "precision": {
+      "exact": "Punto exacto",
+      "city": "Ciudad",
+      "country": "País",
+      "region": "Solo región"
+    },
     "precisionHint": "El mapa nunca muestra más detalle del que elijas. \"Solo región\" lo excluye por completo del mapa de puntos.",
     "displayLabel": "Se muestra como",
     "clear": "Quitar ubicación"

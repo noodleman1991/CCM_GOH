@@ -1680,7 +1680,7 @@
   "atlas": {
     "title": "Atlas & Explore",
     "description": "Explore case studies, lived experiences, people and more across the seven regions.",
-    "dataLayer": "Data layer",
+    "show": "Show",
     "explore": "Explore {region}",
     "empty": "No {layer} here yet.",
     "untitled": "Untitled",
@@ -1765,7 +1765,12 @@
     "searchPlaceholder": "Search for a city, place or country…",
     "searching": "Searching…",
     "precisionLabel": "Shown on the map as",
-    "precision": { "exact": "Exact point", "city": "City", "country": "Country", "region": "Region only" },
+    "precision": {
+      "exact": "Exact point",
+      "city": "City",
+      "country": "Country",
+      "region": "Region only"
+    },
     "precisionHint": "The map never shows finer than your choice. \"Region only\" keeps this off the pin map entirely.",
     "displayLabel": "Displayed as",
     "clear": "Remove location"
