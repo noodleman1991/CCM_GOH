@@ -325,6 +325,7 @@ enum CommentTargetType {
   researchOutput
   collaborationThread
   collaborationFile
+  collaborationDoc
 }
 
 enum CommentStatus {

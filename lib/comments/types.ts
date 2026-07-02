@@ -7,6 +7,7 @@ export const COMMENT_TARGET_TYPES: CommentTargetType[] = [
   "researchOutput",
   "collaborationThread",
   "collaborationFile",
+  "collaborationDoc",
 ];
 
 export function isCommentTargetType(v: unknown): v is CommentTargetType {
