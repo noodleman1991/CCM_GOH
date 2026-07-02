@@ -1566,6 +1566,7 @@ export type Tag = {
     | "#6b7280"
     | "#f97316"
     | "#14b8a6";
+  useAsTheme?: boolean;
   orderRank?: string;
 };
 

@@ -2,7 +2,7 @@
 
 import { useCallback, useMemo, useState } from 'react'
 import useSWR from 'swr'
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
 import { useSearchParams } from 'next/navigation'
 import { FilterChip } from '@/components/ui/filter-chip'
 import { Input } from '@/components/ui/input'
@@ -12,8 +12,8 @@ import { RegionContentCards } from '@/components/atlas/region-content-cards'
 import { SectionHeader } from '@/components/ui/section-header'
 import { Button } from '@/components/ui/button'
 import {
-  FACETS, THEMES, isThemeId, atlasDestination,
-  type FacetId, type RegionDatum, type ThemeId,
+  FACETS, atlasDestination,
+  type FacetId, type RegionDatum, type ThemeOption,
 } from '@/lib/maps/region-facets'
 import type { PinCluster } from '@/lib/maps/cluster-pins'
 import { REGION_I18N_KEY, REGION_TO_RC_SLUG, isRegionCode, type RegionCode } from '@/lib/maps/region-codes'
@@ -34,10 +34,17 @@ const isFacetId = (v: string): v is FacetId => FACETS.some((f) => f.id === v)
  * geotagged pins; a persistent caption bar narrates the current result set.
  * `lockedRegion` renders the region-scoped embed variant (spec A4).
  */
-export function AtlasExplorer({ lockedRegion }: { lockedRegion?: RegionCode } = {}) {
+export function AtlasExplorer({
+  lockedRegion,
+  themes,
+}: {
+  lockedRegion?: RegionCode
+  themes: ThemeOption[]
+} = { themes: [] }) {
   const t = useTranslations('map')
   const tAtlas = useTranslations('atlas')
   const tRegions = useTranslations('navigation.regions')
+  const locale = useLocale()
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -45,8 +52,11 @@ export function AtlasExplorer({ lockedRegion }: { lockedRegion?: RegionCode } = 
   // ── URL state (locked mode ignores the URL's region) ──────────────────────
   const rawLayer = searchParams.get('layer') ?? 'caseStudyCount'
   const facet: FacetId = isFacetId(rawLayer) ? rawLayer : 'caseStudyCount'
+  // `theme` URL param holds a tag SLUG (CMS-driven); validated against the
+  // passed `themes` list — an unrecognized slug is ignored rather than 400ing
+  // the whole page.
   const rawTheme = searchParams.get('theme') ?? ''
-  const theme: ThemeId | null = isThemeId(rawTheme) ? rawTheme : null
+  const theme: string | null = themes.some((th) => th.slug === rawTheme) ? rawTheme : null
   const rawRegion = lockedRegion ?? searchParams.get('region') ?? ''
   const selected: RegionCode | null = isRegionCode(rawRegion) ? rawRegion : null
   const q = (searchParams.get('q') ?? '').slice(0, 100)
@@ -94,7 +104,12 @@ export function AtlasExplorer({ lockedRegion }: { lockedRegion?: RegionCode } = 
   }
   const activeFacetDef = FACETS.find((f) => f.id === facet)
   const facetLabel = activeFacetDef ? t(activeFacetDef.labelKey) : ''
-  const themeLabel = theme ? tAtlas(THEMES.find((td) => td.id === theme)!.labelKey) : null
+  const SUPPORTED_LOCALES = ['en', 'es', 'fr', 'ar'] as const
+  const localeKey = (SUPPORTED_LOCALES as readonly string[]).includes(locale)
+    ? (locale as (typeof SUPPORTED_LOCALES)[number])
+    : 'en'
+  const labelForTheme = (opt: ThemeOption) => opt.label[localeKey] ?? opt.label.en ?? opt.slug
+  const themeLabel = theme ? labelForTheme(themes.find((th) => th.slug === theme)!) : null
 
   const onSelect = (code: RegionCode) => {
     if (lockedRegion) return
@@ -168,22 +183,25 @@ export function AtlasExplorer({ lockedRegion }: { lockedRegion?: RegionCode } = 
         </div>
       </div>
 
-      {/* Theme facet (spec A1) */}
-      <div className="space-y-1.5">
-        <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          {tAtlas('theme')}
-        </span>
-        <div className="flex flex-wrap gap-2">
-          {THEMES.map((td) => (
-            <FilterChip
-              key={td.id}
-              label={tAtlas(td.labelKey)}
-              active={theme === td.id}
-              onClick={() => setParams({ theme: theme === td.id ? null : td.id })}
-            />
-          ))}
+      {/* Theme facet (spec A1) — CMS-driven (tag.useAsTheme); labels localized
+          with `en` fallback for locales missing a translation. */}
+      {themes.length > 0 && (
+        <div className="space-y-1.5">
+          <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            {tAtlas('theme')}
+          </span>
+          <div className="flex flex-wrap gap-2">
+            {themes.map((th) => (
+              <FilterChip
+                key={th.slug}
+                label={labelForTheme(th)}
+                active={theme === th.slug}
+                onClick={() => setParams({ theme: theme === th.slug ? null : th.slug })}
+              />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Map + panel */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[2fr_1fr] lg:items-start">
