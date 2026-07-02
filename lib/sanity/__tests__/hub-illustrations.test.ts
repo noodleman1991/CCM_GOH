@@ -26,15 +26,18 @@ describe("getHubIllustrations", () => {
   });
 
   it("maps configured slots to {url, alt, width, height}", async () => {
+    // GROQ's `asset->{...}` dereferences the reference into the asset
+    // document, whose id field is `_id` (not `_ref` — that only exists on
+    // the un-dereferenced reference). Mirrors the real query shape.
     urlForMock.mockImplementation((source: unknown) => {
-      const asset = (source as { asset?: { _ref?: string } })?.asset;
-      return stubUrlForBuilder(`https://cdn.sanity.io/images/${asset?._ref ?? "unknown"}.webp`);
+      const asset = (source as { asset?: { _id?: string } })?.asset;
+      return stubUrlForBuilder(`https://cdn.sanity.io/images/${asset?._id ?? "unknown"}.webp`);
     });
 
     fetchMock.mockResolvedValue({
       atlasHeader: {
         asset: {
-          _ref: "image-atlas",
+          _id: "image-atlas",
           metadata: { dimensions: { width: 800, height: 600 } },
         },
         alt: "Atlas illustration",
@@ -43,7 +46,7 @@ describe("getHubIllustrations", () => {
       collaborateHeader: undefined,
       emptyState: {
         asset: {
-          _ref: "image-empty",
+          _id: "image-empty",
           metadata: { dimensions: { width: 400, height: 300 } },
         },
         alt: "",
