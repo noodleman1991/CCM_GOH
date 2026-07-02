@@ -19,7 +19,26 @@ vi.mock("@/lib/prisma", () => ({
   },
 }));
 
-import { collaborationIdForTarget } from "@/lib/comments/target";
+import { client } from "@/sanity/lib/client";
+import { collaborationIdForTarget, isCommentTargetValid } from "@/lib/comments/target";
+
+describe("isCommentTargetValid(researchOutput)", () => {
+  beforeEach(() => vi.clearAllMocks());
+
+  it("uses the researchOutput predicate (approved-only) and validates existing ids", async () => {
+    (client.fetch as ReturnType<typeof vi.fn>).mockResolvedValue(1);
+    expect(await isCommentTargetValid("researchOutput", "ro1")).toBe(true);
+    expect(client.fetch).toHaveBeenCalledWith(
+      expect.stringContaining('_type == "researchOutput" && status == "approved"'),
+      { id: "ro1" }
+    );
+  });
+
+  it("returns false when no matching document exists", async () => {
+    (client.fetch as ReturnType<typeof vi.fn>).mockResolvedValue(0);
+    expect(await isCommentTargetValid("researchOutput", "missing")).toBe(false);
+  });
+});
 
 describe("collaborationIdForTarget(collaborationDoc)", () => {
   beforeEach(() => vi.clearAllMocks());
