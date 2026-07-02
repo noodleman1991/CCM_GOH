@@ -8,6 +8,7 @@ import { fetchRegionalCommunityCaseStudiesBySlug } from '@/sanity/queries/region
 import { fetchRegionalCommunityLivedExperiencesBySlug } from '@/sanity/queries/regional-community-lived-experiences';
 import { fetchRegionalCommunityNewsBySlug } from '@/sanity/queries/regional-community-news';
 import { mergePinnedWithDynamic } from '@/lib/community/grid-items';
+import { RC_SLUG_TO_REGION } from '@/lib/maps/region-codes';
 
 interface GridConfig {
   mode?: 'manual' | 'dynamic-featured' | 'dynamic-recent' | 'dynamic-with-pinned';
@@ -56,6 +57,7 @@ interface RegionalCommunityTemplateProps {
   logoCloud?: any;
   teamGrid?: any;
   teamMembers?: any[];
+  atlasEmbed?: { enabled?: boolean; showBreakdown?: boolean };
   locale: string;
   userId: string;
 }
@@ -71,6 +73,7 @@ export default async function RegionalCommunityTemplate({
   logoCloud,
   teamGrid,
   teamMembers,
+  atlasEmbed,
   locale,
   userId
 }: RegionalCommunityTemplateProps) {
@@ -351,6 +354,16 @@ export default async function RegionalCommunityTemplate({
     });
   }
 
+  // Region-scoped atlas embed (spec A4) — config-gated like every other grid.
+  if (atlasEmbed?.enabled) {
+    templateBlocks.push({
+      _type: 'atlas-embed',
+      _key: 'atlas-embed',
+      region: RC_SLUG_TO_REGION[communitySlug],
+      showBreakdown: atlasEmbed?.showBreakdown ?? true,
+    } as never);
+  }
+
   // Add Logo Cloud as last component
   if (logoCloud && (logoCloud.images || logoCloud.showTitle !== false)) {
     templateBlocks.push({
@@ -362,13 +375,17 @@ export default async function RegionalCommunityTemplate({
 
   return (
     <>
-      {/* Render all template blocks in order */}
+      {/* Render all template blocks in order. Wrapped in Suspense because the
+          atlas-embed block's client explorer reads useSearchParams(), which
+          requires a Suspense boundary under static rendering. */}
       {templateBlocks.length > 0 && (
-        <Blocks
-          blocks={templateBlocks}
-          locale={locale}
-          userId={userId}
-        />
+        <Suspense fallback={null}>
+          <Blocks
+            blocks={templateBlocks}
+            locale={locale}
+            userId={userId}
+          />
+        </Suspense>
       )}
 
       {/* Community graph: the people who are members of this region. */}

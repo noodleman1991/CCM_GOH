@@ -86,6 +86,7 @@ import faqs from "./schemas/blocks/faqs";
 import newsletter from "./schemas/blocks/forms/newsletter";
 import allPosts from "./schemas/blocks/all-posts";
 import regionMap from "./schemas/blocks/maps/region-map";
+import atlasEmbed from "./schemas/blocks/maps/atlas-embed";
 import peopleWidget from "./schemas/blocks/people/people-widget";
 import eventsCalendar from "./schemas/blocks/events/events-calendar";
 
@@ -185,6 +186,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
         newsletter,
         allPosts,
         regionMap,
+        atlasEmbed,
         peopleWidget,
         eventsCalendar,
         // insert blocks

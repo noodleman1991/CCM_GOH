@@ -412,6 +412,10 @@ export const REGIONAL_COMMUNITY_PAGE_QUERY = groq`
       }
     },
     testimonialsBlock,
+    atlasEmbed {
+      enabled,
+      showBreakdown
+    },
     logoCloud {
       ${logoCloud1Query}
     },

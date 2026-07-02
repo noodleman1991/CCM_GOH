@@ -664,6 +664,44 @@ export default defineType({
       },
     }),
 
+    // Region-scoped atlas embed (spec A4): the atlas engine locked to this
+    // page's region. The region itself is derived from the page's slug at
+    // render time, not stored here.
+    defineField({
+      name: "atlasEmbed",
+      title: "Atlas Embed (this region)",
+      type: "object",
+      group: "template",
+      hidden: ({ document }) => !Boolean(document?.useTemplate),
+      description: "Embed the region-locked Atlas explorer on this page",
+      fields: [
+        {
+          name: "enabled",
+          title: "Show the atlas embed",
+          type: "boolean",
+          initialValue: false,
+        },
+        {
+          name: "showBreakdown",
+          title: "Show the country breakdown list",
+          type: "boolean",
+          initialValue: true,
+          hidden: ({ parent }) => !Boolean(parent?.enabled),
+        },
+      ],
+    }),
+
+    defineField({
+      name: "divider_after_atlas",
+      title: "─────────────────",
+      type: "string",
+      group: "template",
+      hidden: ({ document }) => !Boolean(document?.useTemplate),
+      components: {
+        input: () => null,
+      },
+    }),
+
     defineField({
       name: "logoCloud",
       title: "Logo Cloud Section",

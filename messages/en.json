@@ -1693,7 +1693,10 @@
     "clearSearch": "Clear search",
     "openIn": "Open in {label}",
     "pinItems": "{count} here",
-    "close": "Close"
+    "close": "Close",
+    "embedTitle": "Explore this region",
+    "openFullAtlas": "Open the full Atlas",
+    "countryBreakdown": "Where in the region"
   },
   "docs": {
     "title": "Documents",
