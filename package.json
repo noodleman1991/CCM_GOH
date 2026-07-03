@@ -84,6 +84,7 @@
     "@tiptap/extension-heading": "^3.7.2",
     "@tiptap/extension-image": "^3.7.2",
     "@tiptap/extension-link": "^3.7.2",
+    "@tiptap/extensions": "^3.14.0",
     "@tiptap/react": "^3.7.2",
     "@tiptap/starter-kit": "^3.7.2",
     "@tiptap/suggestion": "^3.14.0",

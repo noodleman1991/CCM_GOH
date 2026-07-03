@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Link from '@tiptap/extension-link';
+import { Placeholder } from '@tiptap/extensions';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import {
@@ -42,6 +43,12 @@ interface PortableTextEditorProps {
     enabledBlocks?: SlashMenuItemId[];
     /** Passed to the upload endpoint so it can authorize against a workspace membership (workspace docs only). */
     collaborationId?: string;
+    /**
+     * Visual shell. "default" keeps the bordered card look used by workspace
+     * docs; "canvas" (Task E3) drops the card chrome for an open editorial
+     * canvas — floating pill toolbar, borderless body, quiet footer.
+     */
+    variant?: 'default' | 'canvas';
 }
 
 export default function PortableTextEditor({
@@ -51,7 +58,8 @@ export default function PortableTextEditor({
     language = 'en',
     maxLength = 20000,
     enabledBlocks = DEFAULT_SLASH_MENU_ITEMS,
-    collaborationId
+    collaborationId,
+    variant = 'default'
 }: PortableTextEditorProps) {
     const t = useTranslations('editor');
     const isRTL = language === 'ar';
@@ -79,6 +87,12 @@ export default function PortableTextEditor({
             Youtube,
             InfoBox,
             Break,
+            // Renders the `placeholder` prop as ghost text on the empty editor
+            // (the prop was previously passed to EditorContent as a no-op DOM
+            // attribute). Styled via `.is-editor-empty` in globals.css.
+            Placeholder.configure({
+                placeholder: placeholder ?? ''
+            }),
             SlashMenu.configure({
                 enabledBlocks,
                 labels: Object.fromEntries(
@@ -95,7 +109,9 @@ export default function PortableTextEditor({
         },
         editorProps: {
             attributes: {
-                class: 'prose prose-sm max-w-none focus:outline-none min-h-[300px] p-4',
+                class: variant === 'canvas'
+                    ? 'prose max-w-none focus:outline-none min-h-[420px] py-4'
+                    : 'prose prose-sm max-w-none focus:outline-none min-h-[300px] p-4',
                 dir: isRTL ? 'rtl' : 'ltr'
             }
         }
@@ -151,8 +167,10 @@ export default function PortableTextEditor({
 
     const charCount = editor.state.doc.textContent.length;
 
+    const isCanvas = variant === 'canvas';
+
     return (
-        <div className="border rounded-lg overflow-hidden">
+        <div className={isCanvas ? '' : 'border rounded-lg overflow-hidden'}>
             <input
                 ref={fileInputRef}
                 type="file"
@@ -162,8 +180,14 @@ export default function PortableTextEditor({
                 aria-hidden="true"
                 tabIndex={-1}
             />
-            {/* Toolbar */}
-            <div className="border-b bg-muted/30 p-2 flex flex-wrap gap-1">
+            {/* Toolbar — floating pill in canvas mode, card header otherwise */}
+            <div
+                className={
+                    isCanvas
+                        ? 'flex w-fit flex-wrap gap-1 rounded-full border border-border/70 bg-background/95 px-2 py-1 shadow-sm'
+                        : 'border-b bg-muted/30 p-2 flex flex-wrap gap-1'
+                }
+            >
                 <Button
                     type="button"
                     variant="ghost"
@@ -279,10 +303,16 @@ export default function PortableTextEditor({
             </div>
 
             {/* Editor */}
-            <EditorContent editor={editor} placeholder={placeholder} />
+            <EditorContent editor={editor} />
 
             {/* Footer */}
-            <div className="border-t p-2 text-xs text-muted-foreground flex justify-between">
+            <div
+                className={
+                    isCanvas
+                        ? 'pt-1 text-xs text-muted-foreground flex justify-between'
+                        : 'border-t p-2 text-xs text-muted-foreground flex justify-between'
+                }
+            >
                 <span>{t('hint')}</span>
                 <span className={charCount > maxLength ? 'text-destructive' : ''}>
                     {charCount}/{maxLength} {t('charCountSuffix')}

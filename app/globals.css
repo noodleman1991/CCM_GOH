@@ -460,6 +460,17 @@
     text-align: right;
 }
 
+/* Tiptap Placeholder extension (Task E3): ghost text on the empty editor.
+   `float: inline-start` keeps it RTL-safe (the editor sets dir per language). */
+.tiptap p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    color: var(--color-muted-foreground);
+    opacity: 0.7;
+    float: inline-start;
+    height: 0;
+    pointer-events: none;
+}
+
 /* Hide scrollbar for carousel */
 .scrollbar-hide {
     -ms-overflow-style: none;

@@ -114,6 +114,9 @@ export async function POST(request: NextRequest) {
             // A1: Include topic from form
             topic: data.topic || "other",
 
+            // Task E3: detail-page layout archetype chosen in the editor shell
+            layout: data.layout ?? "story",
+
             tags: data.tags.map((tagId: string) => ({
                 _type: "reference",
                 _ref: tagId,
