@@ -7,8 +7,7 @@ import { useSearchParams } from 'next/navigation'
 import { FilterChip } from '@/components/ui/filter-chip'
 import { Input } from '@/components/ui/input'
 import { RegionChoropleth } from '@/components/maps/region-choropleth'
-import { RegionDataPanel } from '@/components/maps/region-data-panel'
-import { RegionContentCards } from '@/components/atlas/region-content-cards'
+import { RegionContentCards, RecentEverywhereCards } from '@/components/atlas/region-content-cards'
 import { SectionHeader } from '@/components/ui/section-header'
 import { Button } from '@/components/ui/button'
 import {
@@ -178,6 +177,26 @@ export function AtlasExplorer({
     return totals
   }, [layers, regionData])
 
+  // Hover tooltip data (spec E1): only while a region is actually hovered/
+  // focused (not merely selected) — `active` is `onHover`'s state, distinct
+  // from the click-driven `selected`. Composition line lists each active
+  // facet with a nonzero count for that region, count desc, e.g.
+  // "6 case studies · 2 lived experiences" — mirrors the pin popover's and
+  // panel's own composition ordering.
+  const hoverDatum = useMemo(
+    () => (active ? regionData.find((d) => d.code === active) : null),
+    [active, regionData]
+  )
+  const hoverComposition = useMemo(() => {
+    if (!hoverDatum) return ''
+    return layers
+      .map((f) => [f, hoverDatum.byFacet[f] ?? 0] as const)
+      .filter(([, count]) => count > 0)
+      .sort((a, b) => b[1] - a[1])
+      .map(([f, count]) => `${count} ${labelForFacet(f)}`)
+      .join(' · ')
+  }, [hoverDatum, layers, labelForFacet])
+
   const onSelect = (code: RegionCode) => {
     if (lockedRegion) return
     setParams({ region: selected === code ? null : code })
@@ -196,6 +215,11 @@ export function AtlasExplorer({
   // same gate controls the drill-in's "Open in {label} →" deep link (spec R3).
   const singleCardFacet: FacetId | null =
     pinFacets.length === 1 && layers.length === 1 ? pinFacets[0] : null
+  // Multi-layer card strip (spec E1 point 4): when >1 CARD_FACET is active,
+  // the drill-in still shows cards — grouped by type — instead of falling
+  // back to count-only chips. Comma-joined to match region-items' `facet=`
+  // multi-value support.
+  const cardFacetsQS = pinFacets.length > 0 ? pinFacets.join(',') : null
 
   return (
     <div className="space-y-8">
@@ -277,74 +301,84 @@ export function AtlasExplorer({
         </div>
       )}
 
-      {/* Map + panel */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[2fr_1fr] lg:items-start">
-        <div className="relative min-w-0">
-          <RegionChoropleth
-            data={regionData}
-            activeCode={active ?? selected}
-            onHover={setActive}
-            onSelect={onSelect}
-            labelFor={labelFor}
-            pins={pinsData?.pins}
-            onPinClick={setOpenCluster}
-          />
-          {openCluster && (
-            <div className="absolute inset-x-4 bottom-4 rounded-lg border bg-card p-3 shadow-lg">
-              <div className="mb-1 flex items-center justify-between">
-                <span className="text-xs font-semibold text-muted-foreground">
-                  {tAtlas('pinItems', { count: openCluster.count })}
-                </span>
-                <button type="button" onClick={() => setOpenCluster(null)} aria-label={tAtlas('close')} className="rounded p-1 hover:bg-muted">
-                  <X className="size-3.5" />
-                </button>
-              </div>
-              {/* Popover groups by type (spec R2b point 4): a header row per
-                  type (dot + localized label + count), types ordered by count
-                  desc, so a mixed cluster reads like a mini-legend before its
-                  items. */}
-              <div className="space-y-2">
-                {groupClusterItems(openCluster).map((group) => (
-                  <div key={group.type}>
-                    <div className="mb-0.5 flex items-center gap-1.5">
-                      <span
-                        aria-hidden="true"
-                        className="size-2 shrink-0 rounded-full"
-                        style={{ backgroundColor: COLOR.layer[layerColorKeyForFacet(group.facetId)] }}
-                      />
-                      <span className="text-xs font-semibold text-ccm-midnight">
-                        {t(group.labelKey)} · {group.count}
-                      </span>
-                    </div>
-                    {group.items.length > 0 && (
-                      <ul className="space-y-1 ps-3.5">
-                        {group.items.map((item) => (
-                          <li key={item.id} className="truncate text-sm">
-                            <bdi className="truncate">{item.title}</bdi>
-                          </li>
-                        ))}
-                        {group.items.length < group.count && (
-                          <li className="text-xs text-muted-foreground">
-                            +{group.count - group.items.length}
-                          </li>
-                        )}
-                      </ul>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-        <RegionDataPanel
+      {/* Map — full-width (spec E1 drops the stats panel from this column;
+          legend chips below narrate the result set instead). */}
+      <div className="relative min-w-0">
+        {/* Hover tooltip (spec E1): a fixed-position strip pinned to the top
+            of the map container rather than tracking the cursor — avoids
+            jank and has no meaningful touch equivalent (a tap selects the
+            region instead, so `hoverDatum` never becomes non-null from a
+            touch interaction — `onHover` is only wired to mouse/focus
+            events in RegionChoropleth). The `pointer:coarse` class is
+            defense-in-depth for hybrid devices (e.g. touch + mouse). */}
+        {hoverDatum && (
+          <div
+            className="pointer-coarse:hidden absolute inset-x-3 top-3 z-10 rounded-lg border bg-card/95 px-3 py-2 shadow-md backdrop-blur-sm"
+            role="status"
+          >
+            <p className="truncate text-sm font-bold text-ccm-midnight">
+              <bdi>{labelFor(hoverDatum.code)}</bdi> · {hoverDatum.value}
+            </p>
+            {hoverComposition && (
+              <p className="truncate text-xs text-muted-foreground">{hoverComposition}</p>
+            )}
+          </div>
+        )}
+        <RegionChoropleth
           data={regionData}
           activeCode={active ?? selected}
-          facetLabel={facetLabel}
-          labelFor={labelFor}
-          labelForFacet={labelForFacet}
-          activeFacets={layers}
+          onHover={setActive}
           onSelect={onSelect}
+          labelFor={labelFor}
+          pins={pinsData?.pins}
+          onPinClick={setOpenCluster}
         />
+        {openCluster && (
+          <div className="absolute inset-x-4 bottom-4 rounded-lg border bg-card p-3 shadow-lg">
+            <div className="mb-1 flex items-center justify-between">
+              <span className="text-xs font-semibold text-muted-foreground">
+                {tAtlas('pinItems', { count: openCluster.count })}
+              </span>
+              <button type="button" onClick={() => setOpenCluster(null)} aria-label={tAtlas('close')} className="rounded p-1 hover:bg-muted">
+                <X className="size-3.5" />
+              </button>
+            </div>
+            {/* Popover groups by type (spec R2b point 4): a header row per
+                type (dot + localized label + count), types ordered by count
+                desc, so a mixed cluster reads like a mini-legend before its
+                items. */}
+            <div className="space-y-2">
+              {groupClusterItems(openCluster).map((group) => (
+                <div key={group.type}>
+                  <div className="mb-0.5 flex items-center gap-1.5">
+                    <span
+                      aria-hidden="true"
+                      className="size-2 shrink-0 rounded-full"
+                      style={{ backgroundColor: COLOR.layer[layerColorKeyForFacet(group.facetId)] }}
+                    />
+                    <span className="text-xs font-semibold text-ccm-midnight">
+                      {t(group.labelKey)} · {group.count}
+                    </span>
+                  </div>
+                  {group.items.length > 0 && (
+                    <ul className="space-y-1 ps-3.5">
+                      {group.items.map((item) => (
+                        <li key={item.id} className="truncate text-sm">
+                          <bdi className="truncate">{item.title}</bdi>
+                        </li>
+                      ))}
+                      {group.items.length < group.count && (
+                        <li className="text-xs text-muted-foreground">
+                          +{group.count - group.items.length}
+                        </li>
+                      )}
+                    </ul>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Legend/result chips (spec R2b point 1) — one per active layer: dot +
@@ -401,12 +435,14 @@ export function AtlasExplorer({
         </div>
       ) : null}
 
-      {/* Selected-region drill-in. Single active layer: the original cards +
-          "explore" deep link, plus an "Open in {label} →" deep link in the
-          header (only when exactly one card-facet is active, spec R3).
-          Multiple active layers: no single destination to drill into, so each
-          layer gets its own count chip linking to its listing (spec R2) —
-          summed totals live in the legend chips/panel above. */}
+      {/* Selected-region drill-in — the map + card strip below it are now the
+          engagement core (spec E1; the stats panel is gone). Single active
+          layer: cards + "explore" deep link, plus an "Open in {label} →" deep
+          link in the header (only when exactly one card-facet is active,
+          spec R3). Multiple active layers: cards grouped by type (spec E1
+          point 4) when any are pin-capable, PLUS each layer's own count chip
+          linking to its listing (spec R2) — summed totals live in the legend
+          chips above. */}
       {selected && selectedDatum && (
         <section className="rounded-2xl border bg-ccm-sky/10 p-6">
           <SectionHeader
@@ -434,25 +470,45 @@ export function AtlasExplorer({
                 <p className="text-sm text-muted-foreground">{tAtlas('empty', { layer: facetLabel })}</p>
               )
             ) : (
-              <ul className="flex flex-wrap gap-2">
-                {layers.map((layerId) => {
-                  const def = FACETS.find((f) => f.id === layerId)
-                  const count = selectedDatum.byFacet[layerId] ?? 0
-                  const href = atlasDestination(layerId, REGION_TO_RC_SLUG[selected])
-                  return (
-                    <li key={layerId}>
-                      <Link
-                        href={href}
-                        className="inline-flex items-center gap-1.5 rounded-full border bg-card px-3 py-1.5 text-sm font-medium text-ccm-midnight transition-colors hover:border-[var(--color-ccm-sea)]/40 hover:bg-muted"
-                      >
-                        <span>{def ? t(def.labelKey) : layerId}</span>
-                        <span className="font-semibold text-[var(--color-ccm-sea)]">{count}</span>
-                      </Link>
-                    </li>
-                  )
-                })}
-              </ul>
+              <>
+                {cardFacetsQS && <RegionContentCards region={selected} facet={cardFacetsQS} />}
+                <ul className="flex flex-wrap gap-2">
+                  {layers.map((layerId) => {
+                    const def = FACETS.find((f) => f.id === layerId)
+                    const count = selectedDatum.byFacet[layerId] ?? 0
+                    const href = atlasDestination(layerId, REGION_TO_RC_SLUG[selected])
+                    return (
+                      <li key={layerId}>
+                        <Link
+                          href={href}
+                          className="inline-flex items-center gap-1.5 rounded-full border bg-card px-3 py-1.5 text-sm font-medium text-ccm-midnight transition-colors hover:border-[var(--color-ccm-sea)]/40 hover:bg-muted"
+                        >
+                          <span>{def ? t(def.labelKey) : layerId}</span>
+                          <span className="font-semibold text-[var(--color-ccm-sea)]">{count}</span>
+                        </Link>
+                      </li>
+                    )
+                  })}
+                </ul>
+              </>
             )}
+          </div>
+        </section>
+      )}
+
+      {/* No-selection invitation (spec E1) — replaces the old stats-panel
+          emptiness with a hint + the most recent geotagged items across every
+          region, so the atlas always has something to look at. Suppressed in
+          locked/embed mode (that variant is always region-scoped) and once a
+          region is actually selected. */}
+      {!lockedRegion && !selected && (
+        <section className="space-y-4">
+          <p className="text-sm text-muted-foreground">{tAtlas('tapHint')}</p>
+          <div>
+            <h2 className="mb-3 font-heading text-lg font-semibold text-ccm-midnight">
+              {tAtlas('latestEverywhere')}
+            </h2>
+            <RecentEverywhereCards limit={6} />
           </div>
         </section>
       )}

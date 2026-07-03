@@ -1693,7 +1693,9 @@
     "embedTitle": "Explore this region",
     "openFullAtlas": "Open the full Atlas",
     "countryBreakdown": "Where in the region",
-    "lastLayer": "At least one layer stays selected"
+    "lastLayer": "At least one layer stays selected",
+    "tapHint": "Tap a region to see its stories",
+    "latestEverywhere": "Latest from across the regions"
   },
   "docs": {
     "title": "Documents",
