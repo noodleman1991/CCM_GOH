@@ -94,23 +94,23 @@ export default function Hero1({
                         : isImageRight ? "lg:order-1" : "lg:order-2")
                 )}>
                     {localizedTagLine && (
-                        <p className="text-sm font-semibold text-ccm-water uppercase tracking-wider animate-fade-up [animation-delay:100ms] opacity-0">
+                        <p className="text-sm font-semibold text-ccm-water uppercase tracking-wider">
                             {localizedTagLine}
                         </p>
                     )}
                     {localizedTitle && (
-                        <h1 className="mt-4 font-bold font-heading leading-tight text-balance text-pretty break-words hyphens-auto text-3xl md:text-4xl lg:text-5xl text-ccm-midnight animate-fade-up [animation-delay:200ms] opacity-0">
+                        <h1 className="mt-4 font-bold font-heading leading-tight text-balance text-pretty break-words hyphens-auto text-3xl md:text-4xl lg:text-5xl text-ccm-midnight">
                             {localizedTitle}
                         </h1>
                     )}
                     {localizedBody && (
-                        <div className="text-base md:text-lg text-muted-foreground mt-5 max-w-prose animate-fade-up [animation-delay:300ms] opacity-0">
+                        <div className="text-base md:text-lg text-muted-foreground mt-5 max-w-prose">
                             <PortableTextRenderer value={localizedBody} locale={locale} />
                         </div>
                     )}
                     {links && links.length > 0 && (
                         <div className={cn(
-                            "mt-8 flex flex-wrap gap-4 animate-fade-up [animation-delay:400ms] opacity-0",
+                            "mt-8 flex flex-wrap gap-4",
                             !hasImage && "justify-center"
                         )}>
                             {links.map((link) => (
@@ -128,7 +128,7 @@ export default function Hero1({
                     )}>
                         <div className="relative mx-auto w-full max-w-[82%] min-w-0">
                             <Image
-                                className="rounded-xl animate-fade-up [animation-delay:500ms] opacity-0 w-full h-auto object-contain"
+                                className="rounded-xl w-full h-auto object-contain"
                                 src={urlFor(image!).width(1100).url()}
                                 alt={image!.alt || ""}
                                 width={image!.asset?.metadata?.dimensions?.width || 800}
