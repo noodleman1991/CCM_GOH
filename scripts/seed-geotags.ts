@@ -188,6 +188,75 @@ async function seedCaseStudies() {
   return mutatedIds;
 }
 
+// ── 1b. Repair livedExperience.region reference bug ─────────────────────
+// The schema declares `region` as a plain string (Fixed-7 short-code, see
+// REGION_OPTIONS) — same convention as caseStudy.region — but some seeded/
+// legacy livedExperience docs instead hold a Sanity *reference* to the
+// related regionalCommunity doc (`{ _ref: "regional-community-..." }`).
+// The map API routes (region-items/region-pins) correctly query `region`
+// as a string and so silently miss these docs. Idempotent: only touches
+// docs where `region._ref` is actually set; rewrites it to the matching
+// short-code via REGION_TO_RC_ID, falling back to the doc's own
+// relatedCommunity slug (via RC_ID_TO_REGION's slug map) when the ref
+// doesn't match a known community id.
+const RC_ID_TO_REGION: Record<string, string> = Object.fromEntries(
+  Object.entries(REGION_TO_RC_ID).map(([region, id]) => [id, region])
+);
+
+type RegionRepairRow = {
+  _id: string;
+  title: string | null;
+  region: { _ref?: string } | null;
+  relatedCommunitySlug: string | null;
+};
+
+const RC_SLUG_TO_REGION: Record<string, string> = {
+  "sub-saharan-africa": "ssa",
+  "northern-africa-and-western-asia": "nawa",
+  "central-and-southern-asia": "csa",
+  "eastern-and-south-eastern-asia": "esea",
+  "latin-america-and-the-caribbean": "lac",
+  oceania: "oce",
+  "europe-and-northern-america": "enam",
+};
+
+async function repairLivedExperienceRegionRefs() {
+  const docs = await client.fetch<RegionRepairRow[]>(
+    `*[_type == "livedExperience" && defined(region._ref)] {
+      _id, "title": title.en, region, "relatedCommunitySlug": relatedCommunity->slug.current
+    }`
+  );
+
+  console.log(`Found ${docs.length} livedExperience doc(s) with region stored as a reference (repairing).`);
+
+  const repairedIds: string[] = [];
+
+  for (const doc of docs) {
+    const ref = doc.region?._ref;
+    let region = ref ? RC_ID_TO_REGION[ref] : undefined;
+    if (!region && doc.relatedCommunitySlug) {
+      region = RC_SLUG_TO_REGION[doc.relatedCommunitySlug];
+    }
+    if (!region) {
+      console.log(`  skip (couldn't resolve a region code): ${doc._id}`);
+      continue;
+    }
+
+    await client.patch(doc._id).set({ region }).commit();
+
+    repairedIds.push(doc._id);
+    mutationLog.push({
+      docType: "livedExperience",
+      id: doc._id,
+      title: doc.title ?? "(untitled)",
+      field: "region (repaired ref -> string)",
+      value: `${region} (was ref ${ref ?? "?"})`,
+    });
+  }
+
+  return repairedIds;
+}
+
 // ── 2. Lived experiences ─────────────────────────────────────────────────
 type LivedExperienceRow = {
   _id: string;
@@ -341,6 +410,8 @@ async function ensureThemedCaseStudies(caseStudyIds: string[], flaggedTagIds: st
 
 // ── Run ───────────────────────────────────────────────────────────────────
 async function main() {
+  const regionRepairedIds = await repairLivedExperienceRegionRefs();
+  console.log("");
   const caseStudyIds = await seedCaseStudies();
   console.log("");
   const leIds = await seedLivedExperiences();
@@ -362,6 +433,7 @@ async function main() {
     }
   }
   console.log(`\nTotal mutations: ${mutationLog.length}`);
+  console.log(`  livedExperience region refs repaired: ${regionRepairedIds.length}`);
   console.log(`  caseStudy geotagged: ${caseStudyIds.length}`);
   console.log(`  livedExperience geotagged: ${leIds.length}`);
   console.log(`  tags flagged useAsTheme: ${flaggedTagIds.length}`);
