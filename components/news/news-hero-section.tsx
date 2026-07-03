@@ -1,5 +1,6 @@
 import { useTranslations } from 'next-intl'
 import FeaturedNewsCard from './featured-news-card'
+import { SectionHeader } from '@/components/ui/section-header'
 import type { NewsPost } from '@/lib/news-utils'
 import { cn } from '@/lib/utils'
 
@@ -9,46 +10,30 @@ interface NewsHeroSectionProps {
   className?: string
 }
 
+/**
+ * Featured hero with lead-story emphasis: the first featured item is a large
+ * lead card (image at inline-start on desktop, stacked on mobile); the
+ * remaining items (up to two) follow as compact cards.
+ */
 export default function NewsHeroSection({ featuredNews, locale, className }: NewsHeroSectionProps) {
   const t = useTranslations('news')
   if (!featuredNews || featuredNews.length === 0) return null
 
-  // Determine grid layout based on number of featured items
-  const getGridLayout = () => {
-    const count = Math.min(featuredNews.length, 3)
-    switch (count) {
-      case 1:
-        return 'grid-cols-1' // Single large card
-      case 2:
-        return 'grid-cols-1 md:grid-cols-2' // Two cards side by side
-      case 3:
-        return 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' // Three cards
-      default:
-        return 'grid-cols-1'
-    }
-  }
-
-  const gridLayout = getGridLayout()
+  const [lead, ...rest] = featuredNews.slice(0, 3)
 
   return (
-    <section className={cn("space-y-6", className)}>
-      {/* Section Header */}
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl lg:text-3xl font-bold tracking-tight">
-          {t('featured')}
-        </h2>
-      </div>
+    <section className={cn('space-y-6', className)}>
+      <SectionHeader title={t('featured')} />
 
-      {/* Featured News Grid */}
-      <div className={cn("grid gap-6", gridLayout)}>
-        {featuredNews.slice(0, 3).map((news) => (
-          <FeaturedNewsCard
-            key={news._id}
-            news={news}
-            locale={locale}
-          />
-        ))}
-      </div>
+      <FeaturedNewsCard news={lead} locale={locale} variant="lead" />
+
+      {rest.length > 0 && (
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          {rest.map((news) => (
+            <FeaturedNewsCard key={news._id} news={news} locale={locale} variant="compact" />
+          ))}
+        </div>
+      )}
     </section>
   )
 }

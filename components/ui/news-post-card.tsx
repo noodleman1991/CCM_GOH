@@ -4,6 +4,7 @@ import { urlFor } from "@/sanity/lib/image";
 import { formatDateShort } from "@/lib/utils";
 import { getLocalizedValue } from '@/i18n/i18n-helpers';
 import { normalizeTagColor } from "@/lib/tags";
+import { CARD_ASPECT } from "@/lib/design-tokens";
 import { Calendar, MapPin, Building2 } from "lucide-react";
 
 // next-intl locale -> Intl locale tag, so dates read correctly per language.
@@ -64,7 +65,7 @@ export default function NewsPostCard({
         )}>
             {/* Image — always rendered (real image or an on-brand gradient
                 fallback) so a card without a hero never has a blank top. */}
-            <div className="relative h-44 sm:h-52 overflow-hidden bg-gradient-to-br from-ccm-sky/40 to-ccm-water/30">
+            <div className={cn("relative overflow-hidden bg-gradient-to-br from-ccm-sky/40 to-ccm-water/30", CARD_ASPECT.wide)}>
                 {image?.asset?._id && (
                     <Image
                         src={urlFor(image).url()}

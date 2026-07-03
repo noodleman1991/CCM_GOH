@@ -5,7 +5,7 @@ import { useLocale, useTranslations } from 'next-intl'
 import { useState, useTransition, useEffect, useMemo } from 'react'
 import { ContentFilters, type FilterGroup } from '@/components/ui/content-filters'
 import { TIME_FRAMES, timeFrameToDateFrom, dateFromToTimeFrame, type TimeFrame } from '@/lib/filters/time-frame'
-import type { NewsFilters as NewsFiltersType } from '@/lib/news-utils'
+import { GLOBAL_REGION, type NewsFilters as NewsFiltersType } from '@/lib/news-utils'
 import { getLocalizedValue } from '@/i18n/i18n-helpers'
 
 interface NewsFiltersProps {
@@ -76,9 +76,14 @@ export default function NewsFilters({ currentFilters, tags = [], communities = [
         .map((tag) => ({ value: tag.value, label: getLocalizedValue(tag.label, locale) })),
     [tags, locale]
   )
+  // "Global" leads the region chips: news not tied to any regional community
+  // (reserved value alongside the CMS-driven region slugs, never replacing them).
   const communityOptions = useMemo(
-    () => communities.map((c) => ({ value: c.slug, label: getLocalizedValue(c.name, locale) })),
-    [communities, locale]
+    () => [
+      { value: GLOBAL_REGION, label: t('global') },
+      ...communities.map((c) => ({ value: c.slug, label: getLocalizedValue(c.name, locale) })),
+    ],
+    [communities, locale, t]
   )
   // Date pills as a "group" of mutually-exclusive options (single active).
   const dateOptions = TIME_FRAMES.map((tf) => ({ value: tf, label: t(`timeFrame.${tf}`) }))

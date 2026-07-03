@@ -1,151 +1,140 @@
 import Image from 'next/image'
-import Link from 'next/link'
-import { Card, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Calendar, User, MapPin, Star } from 'lucide-react'
+import { useTranslations } from 'next-intl'
+import { Link } from '@/i18n/navigation'
+import { Calendar } from 'lucide-react'
 import { urlFor } from '@/sanity/lib/image'
 import { getLocalizedValue } from '@/i18n/i18n-helpers'
 import { formatNewsDate } from '@/lib/news-utils'
+import { normalizeTagColor } from '@/lib/tags'
+import { CARD_ASPECT, CARD_ASPECT_SOURCE } from '@/lib/design-tokens'
 import { cn } from '@/lib/utils'
 import type { NewsPost } from '@/lib/news-utils'
 
 interface FeaturedNewsCardProps {
   news: NewsPost
   locale: string
+  /**
+   * `lead` — the single large lead story (image at inline-start on desktop,
+   * stacked on mobile). `compact` — the smaller companion cards.
+   */
+  variant?: 'lead' | 'compact'
   className?: string
 }
 
-export default function FeaturedNewsCard({ news, locale, className }: FeaturedNewsCardProps) {
+/**
+ * Featured-news card for the news list hero. One lead story carries the
+ * emphasis; the remaining featured items render as compact cards. Both share
+ * the unified card ratio (CARD_ASPECT.wide) and the quiet kicker → title →
+ * summary → date/author hierarchy used across CCM cards.
+ */
+export default function FeaturedNewsCard({
+  news,
+  locale,
+  variant = 'compact',
+  className,
+}: FeaturedNewsCardProps) {
+  const t = useTranslations('news')
   const title = getLocalizedValue(news.title, locale)
   const subtitle = getLocalizedValue(news.subtitle, locale)
   const excerpt = getLocalizedValue(news.excerpt, locale)
   const imageAlt = getLocalizedValue(news.image?.alt, locale)
+  const kicker = news.tags?.[0]
+  const isLead = variant === 'lead'
+  const { w, h } = CARD_ASPECT_SOURCE.wide
+
+  const image = news.image?.asset?.url ? (
+    <Image
+      src={urlFor(news.image).width(isLead ? 1200 : w).height(isLead ? 675 : h).url()}
+      alt={imageAlt || title || ''}
+      fill
+      className="object-cover transition-transform duration-500 group-hover:scale-105"
+      sizes={isLead ? '(max-width: 768px) 100vw, 50vw' : '(max-width: 640px) 100vw, 50vw'}
+      priority={isLead}
+      placeholder={news.image?.asset?.metadata?.lqip ? 'blur' : undefined}
+      blurDataURL={news.image?.asset?.metadata?.lqip || ''}
+    />
+  ) : null
+
+  const featuredBadge = (
+    <span className="absolute top-2 end-2 rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground">
+      {t('featuredBadge')}
+    </span>
+  )
+
+  const meta = (
+    <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
+      {news.publishedAt && (
+        <span className="inline-flex shrink-0 items-center gap-1">
+          <Calendar className="size-3 shrink-0" />
+          <time dateTime={news.publishedAt}>{formatNewsDate(news.publishedAt, locale)}</time>
+        </span>
+      )}
+      {news.publishedAt && news.author && <span aria-hidden="true">·</span>}
+      {news.author && (
+        <span className="min-w-0 truncate font-medium text-foreground/80">
+          <bdi>{news.author.name}</bdi>
+        </span>
+      )}
+    </div>
+  )
 
   return (
-    <Link href={`/${locale}/news/${news.slug}`}>
-      <Card className={cn(
-        "group overflow-hidden h-full hover:shadow-2xl transition-all duration-300",
-        "border-2 hover:border-primary/50",
+    <Link
+      href={`/news/${news.slug}`}
+      className={cn(
+        'group flex h-full flex-col overflow-hidden rounded-2xl border bg-card transition-all duration-300',
+        'hover:border-primary/50 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+        isLead && 'md:flex-row',
         className
-      )}>
-        {/* Large Image - Hero style */}
-        {news.image?.asset?.url && (
-          <div className="relative aspect-video overflow-hidden bg-muted">
-            <Image
-              src={urlFor(news.image).width(800).height(450).url()}
-              alt={imageAlt || title || ''}
-              fill
-              className="object-cover group-hover:scale-105 transition-transform duration-500"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              priority
-              placeholder={news.image?.asset?.metadata?.lqip ? "blur" : undefined}
-              blurDataURL={news.image?.asset?.metadata?.lqip || ''}
-            />
-            {/* Featured Badge Overlay */}
-            <div className="absolute top-4 right-4">
-              <Badge className="bg-yellow-500 text-black font-semibold px-3 py-1.5 shadow-lg flex items-center gap-1">
-                <Star className="w-3 h-3 fill-black" />
-                Featured
-              </Badge>
-            </div>
-          </div>
+      )}
+    >
+      {/* Image (or on-brand gradient fallback) — inline-start half on desktop
+          for the lead, unified wide ratio on the compact cards. */}
+      <div
+        className={cn(
+          'relative overflow-hidden bg-gradient-to-br from-ccm-sky/40 to-ccm-water/30',
+          CARD_ASPECT.wide,
+          isLead && 'md:aspect-auto md:w-1/2 md:self-stretch'
+        )}
+      >
+        {image}
+        {featuredBadge}
+      </div>
+
+      {/* Content */}
+      <div className={cn('flex flex-1 flex-col p-6', isLead && 'md:w-1/2 md:justify-center lg:p-8')}>
+        {kicker && (
+          <p
+            className="mb-1.5 truncate text-xs font-semibold uppercase tracking-wide"
+            style={{ color: normalizeTagColor(kicker.color) }}
+          >
+            {getLocalizedValue(kicker.label, locale)}
+          </p>
         )}
 
-        {/* Content */}
-        <CardContent className="p-6 space-y-4">
-          {/* Tags */}
-          {news.tags && news.tags.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              {news.tags.slice(0, 2).map((tag) => {
-                const tagLabel = getLocalizedValue(tag.label, locale)
-                return (
-                  <Badge
-                    key={tag._id}
-                    variant="secondary"
-                    style={{
-                      backgroundColor: tag.color ? `${tag.color}20` : undefined,
-                      borderColor: tag.color,
-                      color: tag.color,
-                    }}
-                    className="text-xs font-medium border"
-                  >
-                    {tagLabel}
-                  </Badge>
-                )
-              })}
-              {news.tags.length > 2 && (
-                <Badge variant="outline" className="text-xs">
-                  +{news.tags.length - 2}
-                </Badge>
-              )}
-            </div>
+        <h3
+          className={cn(
+            'font-heading font-bold leading-snug text-balance break-words text-ccm-midnight transition-colors group-hover:text-primary',
+            isLead ? 'text-2xl sm:text-3xl line-clamp-3' : 'text-lg sm:text-xl line-clamp-2'
           )}
+        >
+          {title}
+        </h3>
 
-          {/* Title */}
-          <div className="space-y-2">
-            <h3 className="text-2xl lg:text-3xl font-bold line-clamp-2 group-hover:text-primary transition-colors">
-              {title}
-            </h3>
-          </div>
-
-          {/* Summary: subtitle if present, otherwise excerpt — never both, so
-              the card stays readable instead of stacking two text blocks. */}
-          {(subtitle || excerpt) && (
-            <p className="text-base text-muted-foreground line-clamp-3 leading-relaxed">
-              {subtitle || excerpt}
-            </p>
-          )}
-
-          {/* Metadata */}
-          <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground pt-2">
-            {/* Date */}
-            {news.publishedAt && (
-              <div className="flex items-center gap-1.5">
-                <Calendar className="w-4 h-4" />
-                <time dateTime={news.publishedAt}>
-                  {formatNewsDate(news.publishedAt, locale)}
-                </time>
-              </div>
+        {/* Summary: subtitle if present, otherwise excerpt — never both. */}
+        {(subtitle || excerpt) && (
+          <p
+            className={cn(
+              'mt-2 text-muted-foreground',
+              isLead ? 'text-base leading-relaxed line-clamp-3' : 'text-sm line-clamp-2'
             )}
+          >
+            {subtitle || excerpt}
+          </p>
+        )}
 
-            {/* Author */}
-            {news.author && (
-              <div className="flex items-center gap-1.5">
-                <User className="w-4 h-4" />
-                <span className="font-medium">{news.author.name}</span>
-              </div>
-            )}
-
-            {/* Location */}
-            {news.locationDetails && (news.locationDetails.city || news.locationDetails.country) && (
-              <div className="flex items-center gap-1.5">
-                <MapPin className="w-4 h-4" />
-                <span>
-                  {[news.locationDetails.city, news.locationDetails.country]
-                    .filter(Boolean)
-                    .join(', ')}
-                </span>
-              </div>
-            )}
-          </div>
-
-          {/* Organizations */}
-          {news.organizations && news.organizations.length > 0 && (
-            <div className="flex flex-wrap gap-2 pt-2 border-t">
-              {news.organizations.slice(0, 3).map((org) => (
-                <Badge key={org._id} variant="outline" className="text-xs">
-                  {org.name}
-                </Badge>
-              ))}
-              {news.organizations.length > 3 && (
-                <Badge variant="outline" className="text-xs">
-                  +{news.organizations.length - 3} more
-                </Badge>
-              )}
-            </div>
-          )}
-        </CardContent>
-      </Card>
+        <div className={cn('pt-4', isLead ? 'mt-2' : 'mt-auto')}>{meta}</div>
+      </div>
     </Link>
   )
 }

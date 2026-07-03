@@ -3,6 +3,7 @@ import Image from "next/image";
 import { urlFor } from "@/sanity/lib/image";
 import { formatDateShort } from "@/lib/utils";
 import { getLocalizedValue } from '@/i18n/i18n-helpers';
+import { CARD_ASPECT } from "@/lib/design-tokens";
 import { ExternalLink } from "lucide-react";
 
 const INTL_LOCALE: Record<string, string> = {
@@ -52,7 +53,7 @@ export default function ExternalSourceCard({
             )}
         >
             {/* Cover — image or on-brand gradient fallback; External indicator. */}
-            <div className="relative h-44 sm:h-52 overflow-hidden bg-gradient-to-br from-ccm-sky/30 to-ccm-water/20">
+            <div className={cn("relative overflow-hidden bg-gradient-to-br from-ccm-sky/30 to-ccm-water/20", CARD_ASPECT.wide)}>
                 {image?.asset?._id && (
                     <Image
                         src={urlFor(image).url()}
