@@ -3,7 +3,7 @@ import { prisma, safeQuery } from "@/lib/prisma";
 import { getActor, isStaff } from "@/lib/authz";
 import { canInCollab, type CollabAction } from "./authz";
 import { client } from "@/sanity/lib/client";
-import { mapSanityStatus } from "@/lib/collaboration/outputs";
+import { mapSanityStatus, mergeOutputDocs, type EnrichedOutput, type OutputDoc } from "@/lib/collaboration/outputs";
 import type { CollaborationRole } from "@/generated/prisma";
 
 /** Resolve the actor's membership role in a collaboration (null if not a member). */
@@ -160,8 +160,10 @@ export async function getPlan(collaborationId: string) {
   return r.success ? r.data : null;
 }
 
-/** The hub outputs (Sanity drafts) this workspace is producing. */
-export async function getOutputs(collaborationId: string) {
+/** The hub outputs (Sanity drafts) this workspace is producing, enriched with
+ *  live title/status/slug from Sanity in one query (cached row values remain
+ *  the fallback when Sanity is unreachable). */
+export async function getOutputs(collaborationId: string): Promise<EnrichedOutput[]> {
   const r = await safeQuery(() =>
     prisma.workspaceOutput.findMany({
       where: { collaborationId },
@@ -169,7 +171,18 @@ export async function getOutputs(collaborationId: string) {
       select: { id: true, sanityId: true, sanityType: true, title: true, status: true },
     })
   );
-  return r.success ? r.data : [];
+  if (!r.success || r.data.length === 0) return [];
+  const rows = r.data;
+  let docs: OutputDoc[] = [];
+  try {
+    docs = await client.fetch(
+      `*[_id in $ids || ("drafts." + _id) in $ids]{ _id, "title": coalesce(title.en, title), status, "slug": slug.current }`,
+      { ids: rows.map((x) => x.sanityId.replace(/^drafts\./, "")) }
+    );
+  } catch {
+    // Sanity unreachable — cached row values still render.
+  }
+  return mergeOutputDocs(rows, docs);
 }
 
 /** Refresh cached title/status of the linked outputs from Sanity (system of
