@@ -1776,5 +1776,103 @@
     "precisionHint": "La carte n'affiche jamais plus précis que votre choix. « Région seulement » retire l'élément de la carte à épingles.",
     "displayLabel": "Affiché comme",
     "clear": "Supprimer le lieu"
+  },
+  "editor": {
+    "hint": "Tapez / pour insérer des blocs : titres, images, vidéo et plus",
+    "charCountSuffix": "caractères",
+    "link": {
+      "promptUrl": "Saisissez une URL"
+    },
+    "image": {
+      "insertLabel": "Insérer une image",
+      "uploadFailed": "Échec du téléversement de l'image. Veuillez réessayer.",
+      "altLabel": "Texte alternatif",
+      "altPlaceholder": "Décrivez l'image pour les lecteurs d'écran",
+      "altRequiredHint": "Ajoutez un texte alternatif pour que tout le monde puisse comprendre l'image.",
+      "captionLabel": "Légende",
+      "captionPlaceholder": "Ajoutez une légende (facultatif)"
+    },
+    "slashMenu": {
+      "label": "Insérer un bloc",
+      "empty": "Aucun bloc ne correspond à votre recherche",
+      "groupInsert": "Insérer",
+      "items": {
+        "heading2": {
+          "label": "Titre 2",
+          "hint": "Grand titre de section"
+        },
+        "heading3": {
+          "label": "Titre 3",
+          "hint": "Titre de section moyen"
+        },
+        "heading4": {
+          "label": "Titre 4",
+          "hint": "Petit titre de section"
+        },
+        "bulletList": {
+          "label": "Liste à puces",
+          "hint": "Une liste simple à puces"
+        },
+        "orderedList": {
+          "label": "Liste numérotée",
+          "hint": "Une liste numérotée"
+        },
+        "image": {
+          "label": "Image",
+          "hint": "Téléversez une image avec légende"
+        },
+        "youtube": {
+          "label": "YouTube",
+          "hint": "Intégrez une vidéo YouTube"
+        },
+        "quote": {
+          "label": "Citation",
+          "hint": "Mettez une citation en valeur"
+        },
+        "infoBox": {
+          "label": "Encadré",
+          "hint": "Encadré pour conseils ou avertissements"
+        },
+        "break": {
+          "label": "Séparateur de section",
+          "hint": "Séparateur visuel entre les sections"
+        }
+      }
+    },
+    "toolbar": {
+      "label": "Options du bloc",
+      "delete": "Supprimer le bloc",
+      "placement": {
+        "full": "Pleine largeur",
+        "wide": "Large",
+        "start": "Aligner au début",
+        "end": "Aligner à la fin",
+        "center": "Centré"
+      }
+    },
+    "youtube": {
+      "urlPlaceholder": "Collez un lien YouTube…",
+      "confirm": "Ajouter la vidéo",
+      "invalidUrl": "Cela ne ressemble pas à un lien YouTube. Essayez l'URL complète de la vidéo.",
+      "captionLabel": "Légende",
+      "captionPlaceholder": "Ajoutez une légende (facultatif)"
+    },
+    "infoBox": {
+      "variantLabel": "Style de l'encadré",
+      "variant": {
+        "info": "Information",
+        "warning": "Avertissement",
+        "success": "Succès"
+      }
+    },
+    "break": {
+      "styleLabel": "Style du séparateur",
+      "style": {
+        "hr": "Ligne",
+        "readMore": "Points",
+        "section": "Section",
+        "chapter": "Chapitre"
+      }
+    }
   }
 }
