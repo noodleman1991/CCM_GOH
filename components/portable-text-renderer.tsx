@@ -198,6 +198,79 @@ const createPortableTextComponents = (
           </div>
         );
       },
+      // "Data & story" timeline (Task E8): server-rendered static HTML
+      // reusing timeline-1's visual language (start-side rail + dots) —
+      // deliberately NOT the motion-based Timeline1 component so the PT
+      // renderer stays free of client JS.
+      storyTimeline: ({ value }) => {
+        const items: Array<{ _key?: string; date?: string; title?: string; text?: string }> =
+          Array.isArray(value?.items) ? value.items : [];
+        if (items.length === 0) return null;
+
+        return (
+          <ol className="relative my-8 ms-2 list-none border-s-2 border-ccm-sky ps-8">
+            {items.map((item, index) => (
+              <li key={item._key ?? index} className="relative pb-8 last:pb-0">
+                <span
+                  aria-hidden="true"
+                  className="absolute -start-[41px] top-1 size-4 rounded-full border-4 border-background bg-ccm-water"
+                />
+                {item.date && (
+                  <p className="mb-1 text-sm font-semibold uppercase tracking-wide text-ccm-sea">
+                    {item.date}
+                  </p>
+                )}
+                {item.title && (
+                  <h4 className="mb-1 mt-0 font-heading text-lg font-semibold text-ccm-midnight text-start">
+                    {item.title}
+                  </h4>
+                )}
+                {item.text && (
+                  <p className="mb-0 font-body leading-relaxed text-foreground text-start">{item.text}</p>
+                )}
+              </li>
+            ))}
+          </ol>
+        );
+      },
+
+      // "Data & story" chart (Task E8): renders ONLY the server-sanitized
+      // SVG produced by /api/story-blocks/render. Blocks whose render failed
+      // (renderStatus !== "ok") or that were never rendered are withheld.
+      storyChart: ({ value }) => {
+        if (value?.renderStatus !== "ok" || !value?.renderedSvg) return null;
+        return (
+          <figure className="my-8">
+            <div
+              className="overflow-x-auto [&_svg]:mx-auto [&_svg]:h-auto [&_svg]:max-w-full"
+              dir="ltr"
+              // Safe: sanitized server-side (lib/story-blocks/sanitize-svg.ts) before storage.
+              dangerouslySetInnerHTML={{ __html: value.renderedSvg }}
+            />
+            {value.title && (
+              <figcaption className="text-sm text-muted-foreground mt-2 italic text-center font-body">
+                {value.title}
+              </figcaption>
+            )}
+          </figure>
+        );
+      },
+
+      // "Data & story" mermaid diagram (Task E8): same withheld-from-publish
+      // contract as storyChart — only the sanitized stored SVG ever renders.
+      storyMermaid: ({ value }) => {
+        if (value?.renderStatus !== "ok" || !value?.renderedSvg) return null;
+        return (
+          <figure className="my-8">
+            <div
+              className="overflow-x-auto [&_svg]:mx-auto [&_svg]:h-auto [&_svg]:max-w-full"
+              dir="ltr"
+              // Safe: sanitized server-side (lib/story-blocks/sanitize-svg.ts) before storage.
+              dangerouslySetInnerHTML={{ __html: value.renderedSvg }}
+            />
+          </figure>
+        );
+      },
     },
 
     block: {

@@ -2,7 +2,7 @@
 
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { useTranslations } from "next-intl";
-import { Heading2, Heading3, Heading4, List, ListOrdered, Image as ImageIcon, Quote, SquarePlay, Info, Minus } from "lucide-react";
+import { Heading2, Heading3, Heading4, List, ListOrdered, Image as ImageIcon, Quote, SquarePlay, Info, Minus, Milestone, ChartColumn, Workflow } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export type SlashMenuItemId =
@@ -15,11 +15,16 @@ export type SlashMenuItemId =
   | "youtube"
   | "quote"
   | "infoBox"
-  | "break";
+  | "break"
+  | "timeline"
+  | "chart"
+  | "mermaid";
+
+export type SlashMenuGroup = "insert" | "data";
 
 export type SlashMenuItem = {
   id: SlashMenuItemId;
-  group: "insert";
+  group: SlashMenuGroup;
   icon: typeof ImageIcon;
 };
 
@@ -34,10 +39,39 @@ const ICONS: Record<SlashMenuItemId, typeof ImageIcon> = {
   quote: Quote,
   infoBox: Info,
   break: Minus,
+  timeline: Milestone,
+  chart: ChartColumn,
+  mermaid: Workflow,
 };
 
-/** Default set of block ids the slash menu offers, in display order. `enabledBlocks` filters this. */
-export const DEFAULT_SLASH_MENU_ITEMS: SlashMenuItemId[] = [
+/** Which menu group each item renders under ("Insert" vs "Data & story"). */
+export const SLASH_MENU_GROUP_BY_ITEM: Record<SlashMenuItemId, SlashMenuGroup> = {
+  heading2: "insert",
+  heading3: "insert",
+  heading4: "insert",
+  bulletList: "insert",
+  orderedList: "insert",
+  image: "insert",
+  youtube: "insert",
+  quote: "insert",
+  infoBox: "insert",
+  break: "insert",
+  timeline: "data",
+  chart: "data",
+  mermaid: "data",
+};
+
+const GROUP_LABEL_KEY: Record<SlashMenuGroup, string> = {
+  insert: "slashMenu.groupInsert",
+  data: "slashMenu.groupData",
+};
+
+/**
+ * The "Insert" group only — surfaces that must not offer the "Data & story"
+ * blocks (the lived-experience body, per the plan's constraint) pass this as
+ * `enabledBlocks`.
+ */
+export const INSERT_SLASH_MENU_ITEMS: SlashMenuItemId[] = [
   "heading2",
   "heading3",
   "heading4",
@@ -48,6 +82,15 @@ export const DEFAULT_SLASH_MENU_ITEMS: SlashMenuItemId[] = [
   "quote",
   "infoBox",
   "break",
+];
+
+/** Default set of block ids the slash menu offers, in display order. `enabledBlocks` filters this. */
+export const DEFAULT_SLASH_MENU_ITEMS: SlashMenuItemId[] = [
+  ...INSERT_SLASH_MENU_ITEMS,
+  // "Data & story" group (Task E8)
+  "timeline",
+  "chart",
+  "mermaid",
 ];
 
 export interface SlashMenuListProps {
@@ -111,30 +154,37 @@ export const SlashMenuList = forwardRef<SlashMenuListHandle, SlashMenuListProps>
       aria-label={t("slashMenu.label")}
       className="w-72 max-h-80 overflow-y-auto rounded-lg border bg-popover py-1 shadow-lg"
     >
-      <div className="px-3 py-1.5 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-        {t("slashMenu.groupInsert")}
-      </div>
       {items.map((id, index) => {
         const Icon = ICONS[id];
+        const group = SLASH_MENU_GROUP_BY_ITEM[id];
+        // A group header renders above the first item of each group present
+        // in the (already filtered) list; keyboard indices stay flat.
+        const isGroupStart = index === 0 || SLASH_MENU_GROUP_BY_ITEM[items[index - 1]] !== group;
         return (
-          <button
-            key={id}
-            type="button"
-            role="option"
-            aria-selected={index === selectedIndex}
-            onClick={() => selectItem(index)}
-            onMouseEnter={() => setSelectedIndex(index)}
-            className={cn(
-              "flex w-full min-h-[44px] items-center gap-3 px-3 text-start text-sm",
-              index === selectedIndex ? "bg-ccm-sky/20 text-ccm-midnight" : "text-foreground hover:bg-muted"
+          <div key={id}>
+            {isGroupStart && (
+              <div className="px-3 py-1.5 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                {t(GROUP_LABEL_KEY[group])}
+              </div>
             )}
-          >
-            <Icon className="size-4 flex-shrink-0" aria-hidden="true" />
-            <span className="flex-1">
-              <span className="block font-medium">{t(`slashMenu.items.${id}.label`)}</span>
-              <span className="block text-xs text-muted-foreground">{t(`slashMenu.items.${id}.hint`)}</span>
-            </span>
-          </button>
+            <button
+              type="button"
+              role="option"
+              aria-selected={index === selectedIndex}
+              onClick={() => selectItem(index)}
+              onMouseEnter={() => setSelectedIndex(index)}
+              className={cn(
+                "flex w-full min-h-[44px] items-center gap-3 px-3 text-start text-sm",
+                index === selectedIndex ? "bg-ccm-sky/20 text-ccm-midnight" : "text-foreground hover:bg-muted"
+              )}
+            >
+              <Icon className="size-4 flex-shrink-0" aria-hidden="true" />
+              <span className="flex-1">
+                <span className="block font-medium">{t(`slashMenu.items.${id}.label`)}</span>
+                <span className="block text-xs text-muted-foreground">{t(`slashMenu.items.${id}.hint`)}</span>
+              </span>
+            </button>
+          </div>
         );
       })}
     </div>

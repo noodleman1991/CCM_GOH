@@ -16,6 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { FilterChip } from "@/components/ui/filter-chip"
 import PortableTextEditor from "@/components/forms/portable-text-editor"
+import { INSERT_SLASH_MENU_ITEMS } from "@/components/forms/editor/slash-menu-list"
 import { getLocalizedText } from "@/lib/localization-utils"
 import { cn } from "@/lib/utils"
 import { heading } from "@/lib/design-tokens"
@@ -323,6 +324,9 @@ export function LivedExperienceForm({
                       onChangeAction={field.onChange}
                       language={locale}
                       placeholder={t("fields.bodyPlaceholder")}
+                      // Lived experiences stay blog-post-like: no "Data &
+                      // story" group (charts/diagrams) here — plan constraint.
+                      enabledBlocks={INSERT_SLASH_MENU_ITEMS}
                     />
                   </FormControl>
                   <FormDescription>{t("fields.bodyHelp")}</FormDescription>

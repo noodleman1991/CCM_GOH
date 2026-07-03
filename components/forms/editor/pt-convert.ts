@@ -125,6 +125,20 @@ function portableImageToTiptapAttrs(block: AnyNode): AnyNode {
   };
 }
 
+/** Map an editor-side item list to a Sanity array: every member gets a stable `_key` (kept when present, generated otherwise). */
+function keyedItems(items: AnyNode[] | undefined, pick: (item: AnyNode) => AnyNode): AnyNode[] {
+  if (!Array.isArray(items)) return [];
+  return items.map((item) => ({ _key: item?._key || uuidv4(), ...pick(item || {}) }));
+}
+
+/** renderedSvg/renderStatus passthrough for storyChart/storyMermaid — included only when present. */
+function renderFields(attrs: AnyNode): AnyNode {
+  return {
+    ...(attrs?.renderedSvg ? { renderedSvg: attrs.renderedSvg } : {}),
+    ...(attrs?.renderStatus ? { renderStatus: attrs.renderStatus } : {}),
+  };
+}
+
 /**
  * Convert Tiptap JSON to Sanity Portable Text.
  */
@@ -191,6 +205,38 @@ export function tiptapToPortableText(doc: AnyNode): AnyNode[] {
         _type: "break",
         _key: uuidv4(),
         style: node.attrs?.style || "hr",
+      });
+    } else if (node.type === "storyTimeline") {
+      portableText.push({
+        _type: "storyTimeline",
+        _key: uuidv4(),
+        items: keyedItems(node.attrs?.items, (item) => ({
+          date: item.date || "",
+          title: item.title || "",
+          text: item.text || "",
+        })),
+      });
+    } else if (node.type === "storyChart") {
+      portableText.push({
+        _type: "storyChart",
+        _key: uuidv4(),
+        chartType: node.attrs?.chartType || "bar",
+        title: node.attrs?.title || "",
+        data: keyedItems(node.attrs?.data, (row) => ({
+          label: row.label || "",
+          // NaN (a numeric input mid-edit) must never reach Sanity — coerce to 0.
+          value: Number.isFinite(row.value) ? row.value : Number(row.value) || 0,
+        })),
+        // Render fields travel only when a render happened — their absence is
+        // what marks a never-rendered block as withheld-from-publish.
+        ...renderFields(node.attrs),
+      });
+    } else if (node.type === "storyMermaid") {
+      portableText.push({
+        _type: "storyMermaid",
+        _key: uuidv4(),
+        code: node.attrs?.code || "",
+        ...renderFields(node.attrs),
       });
     }
     // Unknown node types are intentionally dropped — see module docstring.
@@ -295,6 +341,46 @@ export function portableTextToTiptap(portableText: AnyNode): AnyNode {
       });
     } else if (block._type === "break") {
       content.push({ type: "break", attrs: { style: block.style || "hr" } });
+    } else if (block._type === "storyTimeline") {
+      content.push({
+        type: "storyTimeline",
+        attrs: {
+          items: Array.isArray(block.items)
+            ? block.items.map((item: AnyNode) => ({
+                _key: item?._key,
+                date: item?.date || "",
+                title: item?.title || "",
+                text: item?.text || "",
+              }))
+            : [],
+        },
+      });
+    } else if (block._type === "storyChart") {
+      content.push({
+        type: "storyChart",
+        attrs: {
+          chartType: block.chartType || "bar",
+          title: block.title || "",
+          data: Array.isArray(block.data)
+            ? block.data.map((row: AnyNode) => ({
+                _key: row?._key,
+                label: row?.label || "",
+                value: Number.isFinite(row?.value) ? row.value : Number(row?.value) || 0,
+              }))
+            : [],
+          renderedSvg: block.renderedSvg || null,
+          renderStatus: block.renderStatus || null,
+        },
+      });
+    } else if (block._type === "storyMermaid") {
+      content.push({
+        type: "storyMermaid",
+        attrs: {
+          code: block.code || "",
+          renderedSvg: block.renderedSvg || null,
+          renderStatus: block.renderStatus || null,
+        },
+      });
     }
     // Unknown PT _type values are intentionally dropped — see module docstring.
   });

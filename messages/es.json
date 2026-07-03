@@ -1949,8 +1949,21 @@
         "break": {
           "label": "Separador de sección",
           "hint": "Divisor visual entre secciones"
+        },
+        "timeline": {
+          "label": "Cronología",
+          "hint": "Momentos clave en una línea de tiempo"
+        },
+        "chart": {
+          "label": "Gráfico",
+          "hint": "Gráfico de barras, líneas o circular con tus datos"
+        },
+        "mermaid": {
+          "label": "Diagrama",
+          "hint": "Diagrama de flujo o de proceso (Mermaid)"
         }
-      }
+      },
+      "groupData": "Datos e historia"
     },
     "toolbar": {
       "label": "Opciones del bloque",
@@ -1986,6 +1999,45 @@
         "section": "Sección",
         "chapter": "Capítulo"
       }
+    },
+    "timeline": {
+      "blockLabel": "Cronología",
+      "addItem": "Añadir momento",
+      "removeItem": "Eliminar momento",
+      "dateLabel": "Fecha",
+      "datePlaceholder": "p. ej. 2021",
+      "titleLabel": "Título",
+      "titlePlaceholder": "Qué ocurrió",
+      "textLabel": "Descripción",
+      "textPlaceholder": "Cuenta esta parte de la historia…"
+    },
+    "chart": {
+      "typeLabel": "Tipo de gráfico",
+      "type": {
+        "bar": "Barras",
+        "line": "Líneas",
+        "pie": "Circular"
+      },
+      "titleLabel": "Título del gráfico",
+      "titlePlaceholder": "Ponle un título al gráfico (opcional)",
+      "labelLabel": "Etiqueta",
+      "labelPlaceholder": "Etiqueta",
+      "valueLabel": "Valor",
+      "addRow": "Añadir fila",
+      "removeRow": "Eliminar fila",
+      "rendering": "Generando el gráfico…",
+      "renderFailed": "No pudimos dibujar este gráfico. Revisa las filas e inténtalo de nuevo.",
+      "renderFailedLastGood": "No pudimos actualizar el gráfico; se muestra la última versión correcta.",
+      "previewEmpty": "Añade datos para ver la vista previa del gráfico"
+    },
+    "mermaid": {
+      "blockLabel": "Diagrama",
+      "codeLabel": "Código del diagrama",
+      "codePlaceholder": "graph TD; A-->B",
+      "rendering": "Generando el diagrama…",
+      "renderFailed": "No pudimos dibujar este diagrama. Revisa la sintaxis e inténtalo de nuevo.",
+      "renderFailedLastGood": "No pudimos actualizar el diagrama; se muestra la última versión correcta.",
+      "previewEmpty": "Escribe código Mermaid para ver la vista previa"
     }
   },
   "submitStoryBanner": {

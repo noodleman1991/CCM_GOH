@@ -310,6 +310,185 @@ describe("pt-convert: break", () => {
   });
 });
 
+describe("pt-convert: storyTimeline (Data & story)", () => {
+  const items = [
+    { _key: "i1", date: "2019", title: "Founded", text: "The community was founded." },
+    { _key: "i2", date: "2022", title: "First atlas", text: "The atlas launched." },
+  ];
+
+  it("converts a storyTimeline node to a PT storyTimeline object preserving item _keys", () => {
+    const doc = { type: "doc", content: [{ type: "storyTimeline", attrs: { items } }] };
+    const pt = tiptapToPortableText(doc);
+    expect(pt).toHaveLength(1);
+    expect(pt[0]._type).toBe("storyTimeline");
+    expect(typeof pt[0]._key).toBe("string");
+    expect(pt[0].items).toHaveLength(2);
+    expect(pt[0].items[0]).toMatchObject({ _key: "i1", date: "2019", title: "Founded", text: "The community was founded." });
+  });
+
+  it("generates item _keys when missing (Sanity requires _key on array members)", () => {
+    const doc = {
+      type: "doc",
+      content: [
+        { type: "storyTimeline", attrs: { items: [{ date: "2020", title: "T", text: "x" }] } },
+      ],
+    };
+    const pt = tiptapToPortableText(doc);
+    expect(typeof pt[0].items[0]._key).toBe("string");
+    expect(pt[0].items[0]._key.length).toBeGreaterThan(0);
+  });
+
+  it("round-trips back to a tiptap storyTimeline node with the same items", () => {
+    const pt = [{ _type: "storyTimeline", _key: "k1", items }];
+    const back = portableTextToTiptap(pt);
+    expect(back.content[0].type).toBe("storyTimeline");
+    expect(back.content[0].attrs.items).toEqual(items);
+  });
+
+  it("tolerates a missing/empty items array", () => {
+    const pt = tiptapToPortableText({ type: "doc", content: [{ type: "storyTimeline", attrs: {} }] });
+    expect(pt[0].items).toEqual([]);
+    const back = portableTextToTiptap([{ _type: "storyTimeline", _key: "k" }]);
+    expect(back.content[0].attrs.items).toEqual([]);
+  });
+});
+
+describe("pt-convert: storyChart (Data & story)", () => {
+  const data = [
+    { _key: "r1", label: "MENA", value: 12 },
+    { _key: "r2", label: "LATAM", value: 30 },
+  ];
+
+  it("converts a storyChart node incl. renderedSvg/renderStatus passthrough", () => {
+    const doc = {
+      type: "doc",
+      content: [
+        {
+          type: "storyChart",
+          attrs: {
+            chartType: "pie",
+            title: "Members",
+            data,
+            renderedSvg: "<svg><title>t</title></svg>",
+            renderStatus: "ok",
+          },
+        },
+      ],
+    };
+    const pt = tiptapToPortableText(doc);
+    expect(pt).toHaveLength(1);
+    expect(pt[0]).toMatchObject({
+      _type: "storyChart",
+      chartType: "pie",
+      title: "Members",
+      renderedSvg: "<svg><title>t</title></svg>",
+      renderStatus: "ok",
+    });
+    expect(pt[0].data).toHaveLength(2);
+    expect(pt[0].data[0]).toMatchObject({ _key: "r1", label: "MENA", value: 12 });
+  });
+
+  it("generates row _keys when missing", () => {
+    const doc = {
+      type: "doc",
+      content: [
+        { type: "storyChart", attrs: { chartType: "bar", data: [{ label: "x", value: 1 }] } },
+      ],
+    };
+    const pt = tiptapToPortableText(doc);
+    expect(typeof pt[0].data[0]._key).toBe("string");
+  });
+
+  it("round-trips back to a tiptap storyChart node (last-good render travels with the block)", () => {
+    const pt = [
+      {
+        _type: "storyChart",
+        _key: "k1",
+        chartType: "line",
+        title: "Trend",
+        data,
+        renderedSvg: "<svg>last-good</svg>",
+        renderStatus: "failed",
+      },
+    ];
+    const back = portableTextToTiptap(pt);
+    expect(back.content[0].type).toBe("storyChart");
+    expect(back.content[0].attrs).toMatchObject({
+      chartType: "line",
+      title: "Trend",
+      renderedSvg: "<svg>last-good</svg>",
+      renderStatus: "failed",
+    });
+    expect(back.content[0].attrs.data).toEqual(data);
+  });
+
+  it("coerces NaN row values (numeric input mid-edit) to 0 so they never reach Sanity", () => {
+    const doc = {
+      type: "doc",
+      content: [
+        { type: "storyChart", attrs: { chartType: "bar", data: [{ _key: "a", label: "x", value: NaN }] } },
+      ],
+    };
+    const pt = tiptapToPortableText(doc);
+    expect(pt[0].data[0].value).toBe(0);
+  });
+
+  it("defaults chartType to 'bar' and omits render fields when absent", () => {
+    const doc = {
+      type: "doc",
+      content: [{ type: "storyChart", attrs: { data: [{ _key: "a", label: "x", value: 1 }] } }],
+    };
+    const pt = tiptapToPortableText(doc);
+    expect(pt[0].chartType).toBe("bar");
+    expect(pt[0]).not.toHaveProperty("renderedSvg");
+    expect(pt[0]).not.toHaveProperty("renderStatus");
+  });
+});
+
+describe("pt-convert: storyMermaid (Data & story)", () => {
+  it("converts a storyMermaid node incl. code + renderedSvg/renderStatus passthrough", () => {
+    const doc = {
+      type: "doc",
+      content: [
+        {
+          type: "storyMermaid",
+          attrs: { code: "graph TD; A-->B", renderedSvg: "<svg>d</svg>", renderStatus: "ok" },
+        },
+      ],
+    };
+    const pt = tiptapToPortableText(doc);
+    expect(pt).toHaveLength(1);
+    expect(pt[0]).toMatchObject({
+      _type: "storyMermaid",
+      code: "graph TD; A-->B",
+      renderedSvg: "<svg>d</svg>",
+      renderStatus: "ok",
+    });
+    expect(typeof pt[0]._key).toBe("string");
+  });
+
+  it("round-trips back to a tiptap storyMermaid node", () => {
+    const pt = [
+      { _type: "storyMermaid", _key: "k1", code: "graph TD; A-->B", renderedSvg: "<svg>d</svg>", renderStatus: "failed" },
+    ];
+    const back = portableTextToTiptap(pt);
+    expect(back.content[0].type).toBe("storyMermaid");
+    expect(back.content[0].attrs).toMatchObject({
+      code: "graph TD; A-->B",
+      renderedSvg: "<svg>d</svg>",
+      renderStatus: "failed",
+    });
+  });
+
+  it("keeps the source code even when there is no render yet", () => {
+    const doc = { type: "doc", content: [{ type: "storyMermaid", attrs: { code: "pie" } }] };
+    const pt = tiptapToPortableText(doc);
+    expect(pt[0].code).toBe("pie");
+    expect(pt[0]).not.toHaveProperty("renderedSvg");
+    expect(pt[0]).not.toHaveProperty("renderStatus");
+  });
+});
+
 describe("pt-convert: unknown/unsupported node passthrough behavior", () => {
   it("silently drops an unrecognized tiptap node type (documented: no crash, no PT entry)", () => {
     const doc = {

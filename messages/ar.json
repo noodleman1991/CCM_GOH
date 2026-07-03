@@ -1949,8 +1949,21 @@
         "break": {
           "label": "فاصل قسم",
           "hint": "فاصل مرئي بين الأقسام"
+        },
+        "timeline": {
+          "label": "خط زمني",
+          "hint": "لحظات مهمة على خط زمني مؤرَّخ"
+        },
+        "chart": {
+          "label": "رسم بياني",
+          "hint": "رسم أعمدة أو خطوط أو دائري من بياناتك"
+        },
+        "mermaid": {
+          "label": "مخطط",
+          "hint": "مخطط انسيابي أو مخطط عمليات (Mermaid)"
         }
-      }
+      },
+      "groupData": "البيانات والقصة"
     },
     "toolbar": {
       "label": "خيارات الكتلة",
@@ -1986,6 +1999,45 @@
         "section": "قسم",
         "chapter": "فصل"
       }
+    },
+    "timeline": {
+      "blockLabel": "خط زمني",
+      "addItem": "إضافة لحظة",
+      "removeItem": "حذف اللحظة",
+      "dateLabel": "التاريخ",
+      "datePlaceholder": "مثال: 2021",
+      "titleLabel": "العنوان",
+      "titlePlaceholder": "ماذا حدث",
+      "textLabel": "الوصف",
+      "textPlaceholder": "احكِ هذا الجزء من القصة…"
+    },
+    "chart": {
+      "typeLabel": "نوع الرسم البياني",
+      "type": {
+        "bar": "أعمدة",
+        "line": "خطوط",
+        "pie": "دائري"
+      },
+      "titleLabel": "عنوان الرسم البياني",
+      "titlePlaceholder": "أضف عنوانًا للرسم البياني (اختياري)",
+      "labelLabel": "التسمية",
+      "labelPlaceholder": "التسمية",
+      "valueLabel": "القيمة",
+      "addRow": "إضافة صف",
+      "removeRow": "حذف الصف",
+      "rendering": "جارٍ إنشاء الرسم البياني…",
+      "renderFailed": "تعذّر رسم هذا الرسم البياني. تحقق من الصفوف وحاول مجددًا.",
+      "renderFailedLastGood": "تعذّر تحديث الرسم البياني — تُعرض آخر نسخة صحيحة.",
+      "previewEmpty": "أضف بيانات لرؤية معاينة الرسم البياني"
+    },
+    "mermaid": {
+      "blockLabel": "مخطط",
+      "codeLabel": "شيفرة المخطط",
+      "codePlaceholder": "graph TD; A-->B",
+      "rendering": "جارٍ إنشاء المخطط…",
+      "renderFailed": "تعذّر رسم هذا المخطط. تحقق من الصياغة وحاول مجددًا.",
+      "renderFailedLastGood": "تعذّر تحديث المخطط — تُعرض آخر نسخة صحيحة.",
+      "previewEmpty": "اكتب شيفرة Mermaid لرؤية المعاينة"
     }
   },
   "submitStoryBanner": {

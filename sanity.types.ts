@@ -383,6 +383,48 @@ export type EventsCalendar = {
   upcomingLimit?: number;
 };
 
+// Hand-added (Task E8); keep in sync with
+// sanity/schemas/blocks/story-timeline.ts / story-chart.ts / story-mermaid.ts
+// ("Data & story" portable-text object types).
+export type StoryTimeline = {
+  _type: "storyTimeline";
+  _key?: string;
+  items?: Array<{
+    _key: string;
+    _type?: "storyTimelineItem";
+    date?: string;
+    title?: string;
+    text?: string;
+  }>;
+};
+
+export type StoryChart = {
+  _type: "storyChart";
+  _key?: string;
+  chartType?: "bar" | "line" | "pie";
+  title?: string;
+  data?: Array<{
+    _key: string;
+    _type?: "storyChartRow";
+    label?: string;
+    value?: number;
+  }>;
+  /** Sanitized SVG produced by POST /api/story-blocks/render at save time. */
+  renderedSvg?: string;
+  /** Blocks whose status is not "ok" are withheld from the public renderer. */
+  renderStatus?: "ok" | "failed";
+};
+
+export type StoryMermaid = {
+  _type: "storyMermaid";
+  _key?: string;
+  code?: string;
+  /** Sanitized SVG (browser-rendered mermaid, server-sanitized) — see lib/story-blocks/render.ts. */
+  renderedSvg?: string;
+  /** Blocks whose status is not "ok" are withheld from the public renderer. */
+  renderStatus?: "ok" | "failed";
+};
+
 // Hand-added (Task E4); keep in sync with
 // sanity/schemas/blocks/cta/submit-story-banner.ts + its projection.
 export type SubmitStoryBanner = {

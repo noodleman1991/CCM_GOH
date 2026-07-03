@@ -160,5 +160,15 @@ function runSlashCommand(
       chain.run();
       onInsertImage();
       break;
+    // "Data & story" group (Task E8)
+    case "timeline":
+      chain.setStoryTimeline().run();
+      break;
+    case "chart":
+      chain.setStoryChart().run();
+      break;
+    case "mermaid":
+      chain.setStoryMermaid().run();
+      break;
   }
 }

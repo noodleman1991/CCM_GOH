@@ -1949,8 +1949,21 @@
         "break": {
           "label": "Séparateur de section",
           "hint": "Séparateur visuel entre les sections"
+        },
+        "timeline": {
+          "label": "Chronologie",
+          "hint": "Moments clés sur une frise datée"
+        },
+        "chart": {
+          "label": "Graphique",
+          "hint": "Graphique en barres, en courbes ou circulaire à partir de vos données"
+        },
+        "mermaid": {
+          "label": "Diagramme",
+          "hint": "Diagramme de flux ou de processus (Mermaid)"
         }
-      }
+      },
+      "groupData": "Données et récit"
     },
     "toolbar": {
       "label": "Options du bloc",
@@ -1986,6 +1999,45 @@
         "section": "Section",
         "chapter": "Chapitre"
       }
+    },
+    "timeline": {
+      "blockLabel": "Chronologie",
+      "addItem": "Ajouter un moment",
+      "removeItem": "Supprimer ce moment",
+      "dateLabel": "Date",
+      "datePlaceholder": "p. ex. 2021",
+      "titleLabel": "Titre",
+      "titlePlaceholder": "Ce qui s'est passé",
+      "textLabel": "Description",
+      "textPlaceholder": "Racontez cette partie de l'histoire…"
+    },
+    "chart": {
+      "typeLabel": "Type de graphique",
+      "type": {
+        "bar": "Barres",
+        "line": "Courbes",
+        "pie": "Circulaire"
+      },
+      "titleLabel": "Titre du graphique",
+      "titlePlaceholder": "Donnez un titre au graphique (facultatif)",
+      "labelLabel": "Libellé",
+      "labelPlaceholder": "Libellé",
+      "valueLabel": "Valeur",
+      "addRow": "Ajouter une ligne",
+      "removeRow": "Supprimer la ligne",
+      "rendering": "Génération du graphique…",
+      "renderFailed": "Impossible de tracer ce graphique. Vérifiez les lignes et réessayez.",
+      "renderFailedLastGood": "Impossible de mettre à jour le graphique — la dernière version correcte est affichée.",
+      "previewEmpty": "Ajoutez des données pour voir l'aperçu du graphique"
+    },
+    "mermaid": {
+      "blockLabel": "Diagramme",
+      "codeLabel": "Source du diagramme",
+      "codePlaceholder": "graph TD; A-->B",
+      "rendering": "Génération du diagramme…",
+      "renderFailed": "Impossible de tracer ce diagramme. Vérifiez la syntaxe et réessayez.",
+      "renderFailedLastGood": "Impossible de mettre à jour le diagramme — la dernière version correcte est affichée.",
+      "previewEmpty": "Écrivez du code Mermaid pour voir l'aperçu"
     }
   },
   "submitStoryBanner": {
