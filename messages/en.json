@@ -1949,8 +1949,21 @@
         "break": {
           "label": "Section break",
           "hint": "Visual divider between sections"
+        },
+        "timeline": {
+          "label": "Timeline",
+          "hint": "Key moments on a dated rail"
+        },
+        "chart": {
+          "label": "Chart",
+          "hint": "Bar, line or pie chart from your data"
+        },
+        "mermaid": {
+          "label": "Diagram",
+          "hint": "Flow or process diagram (Mermaid)"
         }
-      }
+      },
+      "groupData": "Data & story"
     },
     "toolbar": {
       "label": "Block options",
@@ -1986,6 +1999,45 @@
         "section": "Section",
         "chapter": "Chapter"
       }
+    },
+    "timeline": {
+      "blockLabel": "Timeline",
+      "addItem": "Add moment",
+      "removeItem": "Remove moment",
+      "dateLabel": "Date",
+      "datePlaceholder": "e.g. 2021",
+      "titleLabel": "Title",
+      "titlePlaceholder": "What happened",
+      "textLabel": "Description",
+      "textPlaceholder": "Tell this part of the story…"
+    },
+    "chart": {
+      "typeLabel": "Chart type",
+      "type": {
+        "bar": "Bar",
+        "line": "Line",
+        "pie": "Pie"
+      },
+      "titleLabel": "Chart title",
+      "titlePlaceholder": "Give the chart a title (optional)",
+      "labelLabel": "Label",
+      "labelPlaceholder": "Label",
+      "valueLabel": "Value",
+      "addRow": "Add row",
+      "removeRow": "Remove row",
+      "rendering": "Rendering chart…",
+      "renderFailed": "We couldn't draw this chart. Check the rows and try again.",
+      "renderFailedLastGood": "We couldn't update the chart — showing the last good version.",
+      "previewEmpty": "Add data to see the chart preview"
+    },
+    "mermaid": {
+      "blockLabel": "Diagram",
+      "codeLabel": "Diagram source",
+      "codePlaceholder": "graph TD; A-->B",
+      "rendering": "Rendering diagram…",
+      "renderFailed": "We couldn't draw this diagram. Check the syntax and try again.",
+      "renderFailedLastGood": "We couldn't update the diagram — showing the last good version.",
+      "previewEmpty": "Write Mermaid code to see the preview"
     }
   },
   "submitStoryBanner": {

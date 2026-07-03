@@ -109,6 +109,17 @@ export default defineType({
         defineArrayMember({
             type: "infoBox",
         }),
+        // "Data & story" blocks (Task E8): timeline renders natively as HTML;
+        // chart/mermaid carry a server-sanitized renderedSvg + renderStatus.
+        defineArrayMember({
+            type: "storyTimeline",
+        }),
+        defineArrayMember({
+            type: "storyChart",
+        }),
+        defineArrayMember({
+            type: "storyMermaid",
+        }),
         defineArrayMember({
             type: "image",
             options: { hotspot: true },

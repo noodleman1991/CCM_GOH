@@ -29,6 +29,9 @@ import { EditorImage } from '@/components/forms/editor/nodes/image-node';
 import { Youtube } from '@/components/forms/editor/nodes/youtube-node';
 import { InfoBox } from '@/components/forms/editor/nodes/info-box-node';
 import { Break } from '@/components/forms/editor/nodes/break-node';
+import { StoryTimeline } from '@/components/forms/editor/nodes/timeline-node';
+import { StoryChart } from '@/components/forms/editor/nodes/chart-node';
+import { StoryMermaid } from '@/components/forms/editor/nodes/mermaid-node';
 import { uploadEditorImage, ImageUploadError } from '@/components/forms/editor/upload';
 
 export { tiptapToPortableText, portableTextToTiptap };
@@ -87,6 +90,12 @@ export default function PortableTextEditor({
             Youtube,
             InfoBox,
             Break,
+            // "Data & story" blocks (Task E8). Always registered so existing
+            // content renders; whether they're OFFERED is per-surface via
+            // `enabledBlocks` (lived experiences exclude them).
+            StoryTimeline,
+            StoryChart,
+            StoryMermaid,
             // Renders the `placeholder` prop as ghost text on the empty editor
             // (the prop was previously passed to EditorContent as a no-op DOM
             // attribute). Styled via `.is-editor-empty` in globals.css.

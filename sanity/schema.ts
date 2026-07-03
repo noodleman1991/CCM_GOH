@@ -42,6 +42,9 @@ import link from "./schemas/blocks/shared/link";
 // New block types for portable text
 import breakBlock from "./schemas/blocks/break";
 import infoBox from "./schemas/blocks/info-box";
+import storyTimeline from "./schemas/blocks/story-timeline";
+import storyChart from "./schemas/blocks/story-chart";
+import storyMermaid from "./schemas/blocks/story-mermaid";
 import { buttonVariant } from "./schemas/blocks/shared/button-variant";
 import sectionPadding from "./schemas/blocks/shared/section-padding";
 import { backgroundOption } from "./schemas/blocks/shared/background-option";
@@ -147,6 +150,10 @@ export const schema: { types: SchemaTypeDefinition[] } = {
         // portable text block types
         breakBlock,
         infoBox,
+        // "Data & story" blocks (Task E8)
+        storyTimeline,
+        storyChart,
+        storyMermaid,
         buttonVariant,
         sectionPadding,
         backgroundOption,
