@@ -661,7 +661,93 @@
     "pageTitle": "Submit Case Study",
     "pageDescription": "Share your research and insights with our global multilingual community",
     "title": "Submit Your Case Study",
-    "description": "Share your research with our global community in English, Spanish, French, or Arabic. Help us make knowledge accessible to researchers worldwide."
+    "description": "Share your research with our global community in English, Spanish, French, or Arabic. Help us make knowledge accessible to researchers worldwide.",
+    "layoutChooser": {
+      "label": "Choose a layout",
+      "hint": "Same content, different presentation — you can change this anytime.",
+      "story": {
+        "title": "Story",
+        "caption": "A narrative account of change in a community"
+      },
+      "feature": {
+        "title": "Feature",
+        "caption": "A visual, image-led showcase"
+      },
+      "report": {
+        "title": "Report",
+        "caption": "A structured research summary with findings"
+      }
+    },
+    "languages": {
+      "switcherLabel": "Content language",
+      "hint": "English is required — translations help more readers find your work."
+    },
+    "canvas": {
+      "titleLabel": "Case study title",
+      "titlePlaceholder": "Title your case study…",
+      "excerptLabel": "Summary",
+      "excerptPlaceholder": "Write a short summary — what happened, where, and why it matters…",
+      "excerptHint": "At least 100 characters in English",
+      "bodyPlaceholder": "Tell the story — type / for blocks…"
+    },
+    "byline": {
+      "label": "Byline",
+      "addAuthor": "Add author",
+      "removeAuthor": "Remove author",
+      "unnamed": "New author",
+      "nameLabel": "Full name",
+      "namePlaceholder": "Enter full name",
+      "emailLabel": "Email (optional)",
+      "roleLabel": "Role in study",
+      "done": "Done",
+      "organizationLabel": "Organization (optional)",
+      "organizationPlaceholder": "Organization or institution name",
+      "roles": {
+        "lead": "Lead author",
+        "coauthor": "Co-author",
+        "contributor": "Contributor",
+        "advisor": "Advisor"
+      }
+    },
+    "hero": {
+      "dropHint": "Drag a cover image here, or tap to choose",
+      "formats": "JPEG, PNG or WebP, up to 5MB",
+      "replace": "Replace image",
+      "remove": "Remove image",
+      "previewAlt": "Cover image preview"
+    },
+    "details": {
+      "heading": "Story details",
+      "description": "Help readers and reviewers place your work — where, when, and what it covers.",
+      "topicLabel": "Topic",
+      "topicPlaceholder": "Select the main topic",
+      "communityLabel": "Regional community (optional)",
+      "communityPlaceholder": "Select a community",
+      "clearCommunity": "Clear selection",
+      "tagsLabel": "Tags",
+      "tagsHint": "Pick the tags that best describe your work so others can discover it",
+      "countryLabel": "Country",
+      "countryPlaceholder": "Where was this work done?",
+      "cityLabel": "City / region",
+      "cityPlaceholder": "Specific location",
+      "findOnMap": "Find on map",
+      "searching": "Searching…",
+      "coordsFound": "Location coordinates",
+      "periodStartLabel": "Study start date",
+      "periodEndLabel": "Study end date",
+      "periodEndHint": "Leave empty if ongoing"
+    },
+    "bar": {
+      "saving": "Saving draft…",
+      "saved": "Draft saved",
+      "savedAt": "Draft saved at {time}",
+      "notSaved": "Changes save automatically as a draft",
+      "saveError": "Draft could not be saved — retrying on your next change",
+      "saveDraft": "Save draft",
+      "preview": "Preview",
+      "submit": "Submit for review",
+      "incomplete": "Complete the required fields to submit"
+    }
   },
   "caseStudy": {
     "backToCaseStudies": "Back to Case Studies"

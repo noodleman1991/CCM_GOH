@@ -1282,6 +1282,16 @@ export type LivedExperience = {
     ar?: string;
   };
   videoLink?: string;
+  // Hand-added (Task E2); keep in sync with
+  // sanity/schemas/documents/lived-experience.ts (videoSource / videoFile /
+  // body — video sources + blog-post body).
+  videoSource?: "youtube" | "vimeo" | "upload";
+  videoFile?: {
+    asset?: SanityFileAssetReference;
+    media?: unknown;
+    _type: "file";
+  };
+  body?: StyledBlockContent;
   thumbnail?: {
     asset?: SanityImageAssetReference;
     media?: unknown;
@@ -2350,6 +2360,9 @@ export type CaseStudy = {
     | "disaster-resilience"
     | "digital-inclusion"
     | "other";
+  // Hand-added (Task E3); keep in sync with the `layout` field in
+  // sanity/schemas/documents/case-study.ts (detail-page layout archetype).
+  layout?: "story" | "feature" | "report";
   submittedBy?: string;
   submittedAt?: string;
   authors?: Array<{

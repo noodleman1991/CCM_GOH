@@ -142,7 +142,7 @@ export default function CaseStudySubmissionLayout({
 
                 {/* Form Component */}
                 <CaseStudyForm
-                    locale={'en'}
+                    locale={locale}
                     userId={userId}
                     availableTags={availableTags}
                     regionalCommunities={regionalCommunities}

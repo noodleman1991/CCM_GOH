@@ -1,21 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import * as z from 'zod';
 import { useUser } from '@clerk/nextjs';
+import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 import { topicOptions } from '@/sanity/schemas/shared/topic-options';
 import PortableTextEditor from '@/components/forms/portable-text-editor';
 import { geocodeLocation } from '@/lib/geocoding';
 import { PlacePicker, type PlaceValue } from '@/components/forms/place-picker';
-import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-} from '@/components/ui/accordion';
+import { LayoutChooser, type CaseStudyLayout } from '@/components/forms/case-study/layout-chooser';
+import { BylineChips, type BylineAuthor } from '@/components/forms/case-study/byline-chips';
+import { HeroImageDrop } from '@/components/forms/case-study/hero-image-drop';
+import { SubmitBar, type DraftStatus } from '@/components/forms/case-study/submit-bar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
@@ -26,21 +24,16 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import { cn } from '@/lib/utils';
 import {
     FileText,
     Users,
     MapPin,
-    Calendar,
     Tag,
-    Upload,
-    X,
     Plus,
     Send,
-    Globe,
-    ChevronRight,
     CheckCircle,
     Clock,
-    AlertCircle
 } from 'lucide-react';
 
 // Simplified schema - only essential fields
@@ -70,6 +63,9 @@ const formSchema = z.object({
         return hasText;
     }, "Please provide detailed content for your case study"),
     topic: z.string().min(1, "Please select a topic"),
+    // Task E3 — detail-page layout archetype (parent spec §8a/C1). Presentation
+    // only; the pipeline stores it on the caseStudy doc alongside the content.
+    layout: z.enum(['story', 'feature', 'report']).default('story'),
     authors: z.array(z.object({
         name: z.string().min(2, "Please enter the author's full name"),
         email: z.string().email("Please enter a valid email address").optional().or(z.literal('')),
@@ -100,14 +96,9 @@ const languages = [
     { code: 'es', label: 'Español' },
     { code: 'fr', label: 'Français' },
     { code: 'ar', label: 'العربية' },
-];
+] as const;
 
-const authorRoles = [
-    { value: 'lead', label: 'Lead Author' },
-    { value: 'coauthor', label: 'Co-Author' },
-    { value: 'contributor', label: 'Contributor' },
-    { value: 'advisor', label: 'Advisor' },
-];
+type LangCode = (typeof languages)[number]['code'];
 
 interface ImprovedCaseStudyFormProps {
     userId: string;
@@ -125,13 +116,9 @@ interface ImprovedCaseStudyFormProps {
     onSuccess?: (id: string) => void;
 }
 
-const sections = [
-    { id: 'basic', title: 'Basic Information', icon: FileText, required: true },
-    { id: 'content', title: 'Case Study Details', icon: FileText, required: true },
-    { id: 'authors', title: 'Authors & Team', icon: Users, required: true },
-    { id: 'topics', title: 'Regional Community & Tags', icon: Tag, required: true },
-    { id: 'context', title: 'Context & Location', icon: MapPin, required: false },
-];
+// The four required completeness gates (formerly the accordion's required
+// sections) — still drive the "Submit for review" enablement.
+const REQUIRED_SECTIONS = ['basic', 'content', 'authors', 'topics'] as const;
 
 export default function ImprovedCaseStudyForm({
                                                   userId,
@@ -141,6 +128,7 @@ export default function ImprovedCaseStudyForm({
                                                   onSuccess
                                               }: ImprovedCaseStudyFormProps) {
     const { user } = useUser();
+    const t = useTranslations('caseStudySubmission');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
     const [selectedCommunity, setSelectedCommunity] = useState<string>('');
@@ -149,15 +137,21 @@ export default function ImprovedCaseStudyForm({
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [completedSections, setCompletedSections] = useState<Set<string>>(new Set());
-    const [openSection, setOpenSection] = useState<string>('basic');
     const [submissionStep, setSubmissionStep] = useState<'form' | 'review' | 'submitting' | 'success'>('form');
     const [draftSavedAt, setDraftSavedAt] = useState<string | null>(null);
+    const [draftStatus, setDraftStatus] = useState<DraftStatus>('idle');
+    // Which language the title/excerpt inputs currently edit (multilingual switcher).
+    const [activeLang, setActiveLang] = useState<LangCode>('en');
+    // Bumped when a stored draft is applied so the (uncontrolled-after-mount)
+    // Portable Text editor remounts with the restored body content.
+    const [editorResetKey, setEditorResetKey] = useState(0);
 
     // Form state
     const [formData, setFormData] = useState<Partial<FormData>>({
         title: { en: '', es: '', fr: '', ar: '' },
         excerpt: { en: '', es: '', fr: '', ar: '' },
         topic: '',
+        layout: 'story',
         content: [],
         authors: user ? [{
             name: user.fullName || '',
@@ -188,6 +182,9 @@ export default function ImprovedCaseStudyForm({
         if (!fields.contentLanguage) fields.contentLanguage = 'en';
         setFormData((prev) => ({ ...prev, ...fields }));
         if (Array.isArray(tags)) setSelectedTags(tags);
+        if (typeof fields.relatedCommunity === 'string') setSelectedCommunity(fields.relatedCommunity);
+        // Remount the body editor so the restored Portable Text is displayed.
+        setEditorResetKey((k) => k + 1);
     };
 
     // On mount: load the server draft. If none exists but a legacy localStorage
@@ -243,6 +240,7 @@ export default function ImprovedCaseStudyForm({
         if (!draftId && !hasContent) return;
 
         const timeoutId = setTimeout(async () => {
+            setDraftStatus('saving');
             try {
                 const { image, ...draftFields } = formData as Record<string, any>;
                 const res = await fetch('/api/case-studies/drafts', {
@@ -257,9 +255,13 @@ export default function ImprovedCaseStudyForm({
                     const { id } = await res.json();
                     if (id && !draftId) setDraftId(id);
                     setDraftSavedAt(new Date().toLocaleTimeString());
+                    setDraftStatus('saved');
+                } else {
+                    setDraftStatus('error');
                 }
             } catch {
                 // Transient save failure — the next change will retry.
+                setDraftStatus('error');
             }
         }, 1500); // Debounce 1.5s (server round-trip, vs the old 1s local write)
 
@@ -356,10 +358,9 @@ export default function ImprovedCaseStudyForm({
         });
     };
 
-    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
-
+    // Validates + previews the hero image (fed by HeroImageDrop's picker/drop).
+    // The binary is still only uploaded at final submit, same as before.
+    const handleImageFile = (file: File) => {
         // Validation
         const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
         if (!validTypes.includes(file.type)) {
@@ -504,6 +505,7 @@ export default function ImprovedCaseStudyForm({
                                 title: { en: '', es: '', fr: '', ar: '' },
                                 excerpt: { en: '', es: '', fr: '', ar: '' },
                                 topic: '',
+                                layout: 'story',
                                 content: [],
                                 authors: [],
                                 organizationName: '',
@@ -519,7 +521,8 @@ export default function ImprovedCaseStudyForm({
                             setImagePreview(null);
                             setPlace(null);
                             setSubmissionStep('form');
-                            setOpenSection('basic');
+                            setActiveLang('en');
+                            setEditorResetKey((k) => k + 1);
                         }}
                     >
                         <Plus className="w-4 h-4 me-2" />
@@ -699,549 +702,362 @@ export default function ImprovedCaseStudyForm({
         );
     }
 
+    // ——— Form step: Task E3 editorial canvas ———
+    const requiredComplete = REQUIRED_SECTIONS.every((s) => completedSections.has(s));
+    const isRTLInput = activeLang === 'ar';
+
+    // Manual save (same endpoint the debounced autosave uses).
+    const saveDraftNow = async () => {
+        setDraftStatus('saving');
+        try {
+            const { image, ...draftFields } = formData as Record<string, any>;
+            const res = await fetch('/api/case-studies/drafts', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ draftId, draftData: { ...draftFields, selectedTags } }),
+            });
+            if (!res.ok) throw new Error('save failed');
+            const { id } = await res.json();
+            if (id && !draftId) setDraftId(id);
+            setDraftSavedAt(new Date().toLocaleTimeString());
+            setDraftStatus('saved');
+            toast.success('Draft saved');
+        } catch {
+            setDraftStatus('error');
+            toast.error('Could not save draft');
+        }
+    };
+
     return (
-        <div className="space-y-8">
-            <div className="text-center mb-8">
-                <h1 className="text-3xl font-bold mb-2">Share Your Case Study</h1>
-                <p className="text-muted-foreground">
-                    Help the global research community learn from your work and experience
-                </p>
-            </div>
+        <div className="mx-auto max-w-3xl">
+            {/* Compact editorial header */}
+            <header className="mb-8">
+                <h1 className="font-heading text-2xl font-bold text-ccm-midnight">{t('title')}</h1>
+                <p className="mt-1 text-muted-foreground">{t('description')}</p>
+            </header>
 
-            <Accordion
-                type="single"
-                value={openSection}
-                onValueChange={setOpenSection}
-                className="space-y-4"
-            >
-                {sections.map((section) => {
-                    const isCompleted = completedSections.has(section.id);
-                    const isRequired = section.required;
+            {/* 1 — Layout chooser (writes the caseStudy `layout` field) */}
+            <LayoutChooser
+                value={(formData.layout as CaseStudyLayout) || 'story'}
+                onChange={(value) => updateFormData('layout', value)}
+            />
 
-                    return (
-                        <AccordionItem key={section.id} value={section.id}>
-                            <AccordionTrigger className="hover:no-underline">
-                                <div className="flex items-center gap-3 w-full">
-                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                                        isCompleted
-                                            ? 'bg-green-100 text-green-600'
-                                            : isRequired
-                                                ? 'bg-blue-100 text-ccm-water'
-                                                : 'bg-muted text-muted-foreground'
-                                    }`}>
-                                        {isCompleted ? (
-                                            <CheckCircle className="w-4 h-4" />
-                                        ) : (
-                                            <section.icon className="w-4 h-4" />
-                                        )}
-                                    </div>
-                                    <div className="flex-1 text-start">
-                                        <div className="font-medium">{section.title}</div>
-                                        {isRequired && !isCompleted && (
-                                            <div className="text-sm text-muted-foreground">Required</div>
-                                        )}
-                                    </div>
-                                    {isCompleted && (
-                                        <Badge variant="outline" className="text-green-600 border-green-600">
-                                            Complete
-                                        </Badge>
-                                    )}
-                                </div>
-                            </AccordionTrigger>
-
-                            <AccordionContent className="pt-6">
-                                {section.id === 'basic' && (
-                                    <div className="space-y-6">
-                                        <div className="grid gap-6">
-                                            <div>
-                                                <Label className="flex items-center gap-2">
-                                                    <Globe className="w-4 h-4" />
-                                                    Case Study Title *
-                                                </Label>
-                                                <Input
-                                                    value={formData.title?.en || ''}
-                                                    onChange={(e) => updateFormData('title.en', e.target.value)}
-                                                    placeholder="What is your case study about?"
-                                                    className="mt-2"
-                                                />
-                                                <p className="text-sm text-muted-foreground mt-1">
-                                                    Give your case study a clear, descriptive title
-                                                </p>
-                                                {errors['title.en'] && (
-                                                    <p className="text-sm text-destructive mt-1">{errors['title.en']}</p>
-                                                )}
-                                            </div>
-
-                                            <div>
-                                                <Label>Brief Description *</Label>
-                                                <Textarea
-                                                    value={formData.excerpt?.en || ''}
-                                                    onChange={(e) => updateFormData('excerpt.en', e.target.value)}
-                                                    rows={4}
-                                                    placeholder="Provide a brief overview of your case study - what did you do, where, and what were the key findings?"
-                                                    className="mt-2"
-                                                />
-                                                <p className="text-sm text-muted-foreground mt-1">
-                                                    This helps others quickly understand your work (minimum 100 characters)
-                                                </p>
-                                                {errors['excerpt.en'] && (
-                                                    <p className="text-sm text-destructive mt-1">{errors['excerpt.en']}</p>
-                                                )}
-                                            </div>
-
-                                            <div>
-                                                <Label>Topic / Domain *</Label>
-                                                <Select
-                                                    value={formData.topic || ''}
-                                                    onValueChange={(value) => updateFormData('topic', value)}
-                                                >
-                                                    <SelectTrigger className="mt-2">
-                                                        <SelectValue placeholder="Select the main topic of your case study" />
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        {topicOptions.map((option) => (
-                                                            <SelectItem key={option.value} value={option.value}>
-                                                                {option.title}
-                                                            </SelectItem>
-                                                        ))}
-                                                    </SelectContent>
-                                                </Select>
-                                                <p className="text-sm text-muted-foreground mt-1">
-                                                    Choose the primary topic that best describes your case study
-                                                </p>
-                                                {errors['topic'] && (
-                                                    <p className="text-sm text-destructive mt-1">{errors['topic']}</p>
-                                                )}
-                                            </div>
-
-                                            {/* B4: Optional translations — collapsed by default */}
-                                            <details className="border rounded-lg bg-muted/30">
-                                                <summary className="p-4 cursor-pointer font-medium flex items-center gap-2">
-                                                    <Globe className="w-4 h-4 text-ccm-water" />
-                                                    Add translations to help more researchers discover your work
-                                                </summary>
-                                                <div className="px-4 pb-4 grid gap-4">
-                                                    {languages.filter(lang => lang.code !== 'en').map((lang) => (
-                                                        <div key={lang.code} className="space-y-2">
-                                                            <Label className="text-sm">{lang.label} Translation</Label>
-                                                            <Input
-                                                                placeholder={`Title in ${lang.label}`}
-                                                                value={formData.title?.[lang.code as keyof typeof formData.title] || ''}
-                                                                onChange={(e) => updateFormData(`title.${lang.code}`, e.target.value)}
-                                                            />
-                                                            <Textarea
-                                                                rows={2}
-                                                                placeholder={`Brief description in ${lang.label}`}
-                                                                value={formData.excerpt?.[lang.code as keyof typeof formData.excerpt] || ''}
-                                                                onChange={(e) => updateFormData(`excerpt.${lang.code}`, e.target.value)}
-                                                            />
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            </details>
-                                        </div>
-                                    </div>
-                                )}
-
-                                {section.id === 'content' && (
-                                    <div className="space-y-6">
-                                        <div>
-                                            <Label>Case Study Content *</Label>
-                                            <p className="text-sm text-muted-foreground mb-3">
-                                                Use the formatting toolbar to style your content with headings, lists, links, and images. Write in any language you prefer.
-                                            </p>
-                                            <div className="mt-2">
-                                                <PortableTextEditor
-                                                    value={formData.content || []}
-                                                    onChangeAction={(value) => updateFormData('content', value)}
-                                                    language={locale}
-                                                    placeholder="Share the details of your case study - methodology, findings, challenges, successes, and lessons learned..."
-                                                    maxLength={20000}
-                                                />
-                                            </div>
-                                            {errors['content'] && (
-                                                <p className="text-sm text-destructive mt-1">{errors['content']}</p>
-                                            )}
-                                        </div>
-
-                                        {/* Image Upload */}
-                                        <div className="space-y-4">
-                                            <Label>Featured Image (optional)</Label>
-                                            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                                                {imagePreview ? (
-                                                    <div className="relative">
-                                                        <img
-                                                            src={imagePreview}
-                                                            alt="Preview"
-                                                            className="max-w-full h-48 object-cover mx-auto rounded"
-                                                        />
-                                                        <Button
-                                                            type="button"
-                                                            variant="destructive"
-                                                            size="sm"
-                                                            className="absolute top-2 end-2"
-                                                            onClick={() => {
-                                                                setImageFile(null);
-                                                                setImagePreview(null);
-                                                            }}
-                                                        >
-                                                            <X className="w-4 h-4" />
-                                                        </Button>
-                                                    </div>
-                                                ) : (
-                                                    <div>
-                                                        <Upload className="w-8 h-8 mx-auto mb-2 text-gray-400" />
-                                                        <p className="text-sm text-muted-foreground mb-2">
-                                                            Upload an image to represent your case study
-                                                        </p>
-                                                        <input
-                                                            type="file"
-                                                            accept="image/jpeg,image/png,image/webp"
-                                                            onChange={handleImageUpload}
-                                                            className="hidden"
-                                                            id="image-upload"
-                                                        />
-                                                        <Label
-                                                            htmlFor="image-upload"
-                                                            className="cursor-pointer inline-flex items-center px-4 py-2 bg-ccm-midnight text-white rounded-md text-sm hover:bg-ccm-midnight/90 font-heading font-bold"
-                                                        >
-                                                            Choose Image
-                                                        </Label>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-
-                                {section.id === 'authors' && (
-                                    <div className="space-y-6">
-                                        <div className="flex items-center justify-between">
-                                            <h4 className="font-medium">Research Team *</h4>
-                                            <Button
-                                                type="button"
-                                                variant="outline"
-                                                size="sm"
-                                                onClick={addAuthor}
-                                            >
-                                                <Plus className="w-4 h-4 me-2" />
-                                                Add Author
-                                            </Button>
-                                        </div>
-
-                                        {(formData.authors || []).map((author, index) => (
-                                            <Card key={index}>
-                                                <CardContent className="pt-6">
-                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                        <div>
-                                                            <Label>Full Name *</Label>
-                                                            <Input
-                                                                value={author.name || ''}
-                                                                onChange={(e) => updateAuthor(index, 'name', e.target.value)}
-                                                                placeholder="Enter full name"
-                                                                className="mt-2"
-                                                            />
-                                                        </div>
-                                                        <div>
-                                                            <Label>Email Address (optional)</Label>
-                                                            <Input
-                                                                value={author.email || ''}
-                                                                onChange={(e) => updateAuthor(index, 'email', e.target.value)}
-                                                                type="email"
-                                                                placeholder="email@example.com"
-                                                                className="mt-2"
-                                                            />
-                                                        </div>
-                                                        <div className="md:col-span-2">
-                                                            <Label>Role in Study *</Label>
-                                                            <Select
-                                                                value={author.role || ''}
-                                                                onValueChange={(value) => updateAuthor(index, 'role', value)}
-                                                            >
-                                                                <SelectTrigger className="mt-2">
-                                                                    <SelectValue placeholder="Select role" />
-                                                                </SelectTrigger>
-                                                                <SelectContent>
-                                                                    {authorRoles.map((role) => (
-                                                                        <SelectItem key={role.value} value={role.value}>
-                                                                            {role.label}
-                                                                        </SelectItem>
-                                                                    ))}
-                                                                </SelectContent>
-                                                            </Select>
-                                                        </div>
-                                                    </div>
-                                                    {formData.authors && formData.authors.length > 1 && (
-                                                        <Button
-                                                            type="button"
-                                                            variant="ghost"
-                                                            size="sm"
-                                                            className="mt-4"
-                                                            onClick={() => removeAuthor(index)}
-                                                        >
-                                                            <X className="w-4 h-4 me-2" />
-                                                            Remove Author
-                                                        </Button>
-                                                    )}
-                                                </CardContent>
-                                            </Card>
-                                        ))}
-
-                                        <div>
-                                            <Label>Associated Organization (optional)</Label>
-                                            <Input
-                                                value={formData.organizationName || ''}
-                                                onChange={(e) => updateFormData('organizationName', e.target.value)}
-                                                placeholder="Organization or institution name"
-                                                className="mt-2"
-                                            />
-                                            <p className="text-sm text-muted-foreground mt-1">
-                                                If this work was done as part of an organization
-                                            </p>
-                                        </div>
-                                    </div>
-                                )}
-
-                                {section.id === 'topics' && (
-                                    <div className="space-y-6">
-                                        {/* Regional Community Selector */}
-                                        <div>
-                                            <Label className="text-base font-medium mb-2 block">
-                                                Associated Regional Community (Optional)
-                                            </Label>
-                                            <p className="text-sm text-muted-foreground mb-3">
-                                                Connect your case study to a specific regional community if relevant
-                                            </p>
-                                            <Select
-                                                value={selectedCommunity}
-                                                onValueChange={(value) => {
-                                                    setSelectedCommunity(value);
-                                                    updateFormData('relatedCommunity', value);
-                                                }}
-                                            >
-                                                <SelectTrigger className="w-full">
-                                                    <SelectValue placeholder="Select a community (optional)" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    {regionalCommunities.map((community) => {
-                                                        const communityName = community.name?.[locale as keyof typeof community.name] || community.name?.en || 'Untitled';
-                                                        return (
-                                                            <SelectItem key={community._id} value={community._id}>
-                                                                {communityName}
-                                                            </SelectItem>
-                                                        );
-                                                    })}
-                                                </SelectContent>
-                                            </Select>
-                                            {selectedCommunity && (
-                                                <Button
-                                                    type="button"
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    onClick={() => {
-                                                        setSelectedCommunity('');
-                                                        updateFormData('relatedCommunity', '');
-                                                    }}
-                                                    className="mt-2"
-                                                >
-                                                    Clear selection
-                                                </Button>
-                                            )}
-                                        </div>
-
-                                        {/* Tags Selector */}
-                                        <div>
-                                            <Label className="text-base font-medium mb-2 block">
-                                                Select Relevant Tags *
-                                            </Label>
-                                            <p className="text-sm text-muted-foreground mb-3">
-                                                Choose tags that best describe your case study to help others discover it
-                                            </p>
-                                            <div className="flex flex-wrap gap-2">
-                                                {availableTags.map((tag) => {
-                                                    const isSelected = selectedTags.includes(tag._id);
-                                                    const tagLabel = tag.label?.[locale as keyof typeof tag.label] || tag.label?.en || 'Untitled';
-
-                                                    return (
-                                                        <Button
-                                                            key={tag._id}
-                                                            type="button"
-                                                            variant={isSelected ? "default" : "outline"}
-                                                            size="sm"
-                                                            onClick={() => handleTagToggle(tag._id)}
-                                                            className="h-auto py-2"
-                                                        >
-                                                            {tagLabel}
-                                                        </Button>
-                                                    );
-                                                })}
-                                            </div>
-                                            {selectedTags.length === 0 && (
-                                                <p className="text-sm text-destructive mt-2">
-                                                    Please select at least one tag
-                                                </p>
-                                            )}
-                                        </div>
-                                    </div>
-                                )}
-
-                                {section.id === 'context' && (
-                                    <div className="space-y-6">
-                                        <p className="text-muted-foreground">
-                                            Help others understand the context of your work (all fields optional)
-                                        </p>
-
-                                        <PlacePicker value={place} onChange={setPlace} />
-
-                                        <div className="space-y-4">
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                <div>
-                                                    <Label>Country</Label>
-                                                    <Input
-                                                        value={formData.locationText?.country || ''}
-                                                        onChange={(e) => updateFormData('locationText.country', e.target.value)}
-                                                        placeholder="Where was this study conducted?"
-                                                        className="mt-2"
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <Label>City/Region</Label>
-                                                    <Input
-                                                        value={formData.locationText?.city || ''}
-                                                        onChange={(e) => updateFormData('locationText.city', e.target.value)}
-                                                        placeholder="Specific location"
-                                                        className="mt-2"
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            {formData.locationText?.country && formData.locationText?.city && (
-                                                <Button
-                                                    type="button"
-                                                    variant="outline"
-                                                    size="sm"
-                                                    onClick={async () => {
-                                                        if (!formData.locationText?.country || !formData.locationText?.city) return;
-
-                                                        setIsGeocoding(true);
-                                                        toast.info('Searching for location...');
-
-                                                        const result = await geocodeLocation(
-                                                            formData.locationText.city,
-                                                            formData.locationText.country
-                                                        );
-
-                                                        setIsGeocoding(false);
-
-                                                        if (result.success && result.location) {
-                                                            updateFormData('studyLocation', result.location);
-                                                            toast.success(`Location found! (${result.location.lat.toFixed(4)}, ${result.location.lng.toFixed(4)})`);
-                                                        } else {
-                                                            toast.error(result.error || 'Could not find location');
-                                                        }
-                                                    }}
-                                                    disabled={isGeocoding}
-                                                >
-                                                    {isGeocoding ? 'Searching...' : '📍 Find on Map'}
-                                                </Button>
-                                            )}
-
-                                            {formData.studyLocation?.lat && formData.studyLocation?.lng && (
-                                                <p className="text-sm text-muted-foreground">
-                                                    ✓ Location coordinates: {formData.studyLocation.lat.toFixed(4)}, {formData.studyLocation.lng.toFixed(4)}
-                                                </p>
-                                            )}
-                                        </div>
-
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            <div>
-                                                <Label>Study Start Date</Label>
-                                                <Input
-                                                    value={formData.studyPeriod?.startDate || ''}
-                                                    onChange={(e) => updateFormData('studyPeriod.startDate', e.target.value)}
-                                                    type="date"
-                                                    className="mt-2"
-                                                />
-                                            </div>
-                                            <div>
-                                                <Label>Study End Date</Label>
-                                                <Input
-                                                    value={formData.studyPeriod?.endDate || ''}
-                                                    onChange={(e) => updateFormData('studyPeriod.endDate', e.target.value)}
-                                                    type="date"
-                                                    className="mt-2"
-                                                />
-                                                <p className="text-sm text-muted-foreground mt-1">
-                                                    Leave empty if ongoing
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-                            </AccordionContent>
-                        </AccordionItem>
-                    );
-                })}
-            </Accordion>
-
-            <Separator />
-
-            {draftSavedAt && (
-                <p className="text-center text-xs text-muted-foreground">
-                    Draft saved at {draftSavedAt}
-                </p>
-            )}
-
-            <div className="flex justify-center gap-4">
-                <Button
-                    type="button"
-                    variant="outline"
-                    onClick={async () => {
-                        try {
-                            const { image, ...draftFields } = formData as Record<string, any>;
-                            const res = await fetch('/api/case-studies/drafts', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ draftId, draftData: { ...draftFields, selectedTags } }),
-                            });
-                            if (!res.ok) throw new Error('save failed');
-                            const { id } = await res.json();
-                            if (id && !draftId) setDraftId(id);
-                            setDraftSavedAt(new Date().toLocaleTimeString());
-                            toast.success('Draft saved');
-                        } catch {
-                            toast.error('Could not save draft');
-                        }
-                    }}
+            {/* 2 — Big borderless title + excerpt, with the multilingual switcher */}
+            <section className="mt-10">
+                <div
+                    className="flex flex-wrap items-center gap-1.5"
+                    role="group"
+                    aria-label={t('languages.switcherLabel')}
                 >
-                    Save Draft
-                </Button>
-                <Button
-                    type="button"
-                    onClick={() => {
-                        if (!validateForm()) {
-                            toast.error('Please fix the highlighted issues before reviewing');
-                            return;
-                        }
-                        setSubmissionStep('review');
-                    }}
-                    disabled={completedSections.size < 4}
-                    size="lg"
-                    className="min-w-48"
-                >
-                    <ChevronRight className="w-4 h-4 me-2" />
-                    Review &amp; Submit
-                </Button>
-            </div>
-
-            {completedSections.size < 4 && (
-                <div className="text-center">
-                    <p className="text-sm text-muted-foreground flex items-center justify-center gap-2">
-                        <AlertCircle className="w-4 h-4" />
-                        Please complete all required sections to continue
-                    </p>
+                    {languages.map((lang) => (
+                        <button
+                            key={lang.code}
+                            type="button"
+                            aria-pressed={activeLang === lang.code}
+                            onClick={() => setActiveLang(lang.code)}
+                            className={cn(
+                                'min-h-11 rounded-full px-4 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ccm-water',
+                                activeLang === lang.code
+                                    ? 'bg-ccm-midnight text-white'
+                                    : 'bg-muted text-muted-foreground hover:text-ccm-midnight'
+                            )}
+                        >
+                            {lang.label}
+                        </button>
+                    ))}
                 </div>
-            )}
+                {activeLang !== 'en' && (
+                    <p className="mt-2 text-xs text-muted-foreground">{t('languages.hint')}</p>
+                )}
+
+                <label htmlFor="cs-title" className="sr-only">
+                    {t('canvas.titleLabel')}
+                </label>
+                <input
+                    id="cs-title"
+                    dir={isRTLInput ? 'rtl' : 'ltr'}
+                    value={formData.title?.[activeLang] || ''}
+                    onChange={(e) => updateFormData(`title.${activeLang}`, e.target.value)}
+                    placeholder={t('canvas.titlePlaceholder')}
+                    className="mt-4 w-full border-0 border-b-2 border-transparent bg-transparent pb-1 font-heading text-3xl font-bold leading-tight text-ccm-midnight outline-none transition-colors placeholder:text-muted-foreground/40 focus:border-ccm-water/50 sm:text-4xl md:text-5xl"
+                />
+                {errors['title.en'] && (
+                    <p className="mt-2 text-sm text-destructive">{errors['title.en']}</p>
+                )}
+
+                <label htmlFor="cs-excerpt" className="sr-only">
+                    {t('canvas.excerptLabel')}
+                </label>
+                <textarea
+                    id="cs-excerpt"
+                    dir={isRTLInput ? 'rtl' : 'ltr'}
+                    rows={3}
+                    value={formData.excerpt?.[activeLang] || ''}
+                    onChange={(e) => updateFormData(`excerpt.${activeLang}`, e.target.value)}
+                    placeholder={t('canvas.excerptPlaceholder')}
+                    className="mt-4 w-full resize-none border-0 bg-transparent text-lg leading-relaxed outline-none placeholder:text-muted-foreground/40"
+                />
+                <p className="text-xs text-muted-foreground">{t('canvas.excerptHint')}</p>
+                {errors['excerpt.en'] && (
+                    <p className="mt-1 text-sm text-destructive">{errors['excerpt.en']}</p>
+                )}
+            </section>
+
+            {/* 3 — Byline: author chips */}
+            <section className="mt-8">
+                <BylineChips
+                    authors={(formData.authors || []) as BylineAuthor[]}
+                    onAdd={addAuthor}
+                    onUpdate={updateAuthor}
+                    onRemove={removeAuthor}
+                    error={errors['authors']}
+                />
+            </section>
+
+            {/* 4 — Hero image drop zone */}
+            <section className="mt-8">
+                <HeroImageDrop
+                    previewUrl={imagePreview}
+                    onFile={handleImageFile}
+                    onRemove={() => {
+                        setImageFile(null);
+                        setImagePreview(null);
+                    }}
+                />
+            </section>
+
+            {/* 5 — The story: Portable Text as an open canvas */}
+            <section className="mt-10">
+                <PortableTextEditor
+                    key={editorResetKey}
+                    variant="canvas"
+                    value={formData.content || []}
+                    onChangeAction={(value) => updateFormData('content', value)}
+                    language={locale}
+                    placeholder={t('canvas.bodyPlaceholder')}
+                    maxLength={20000}
+                />
+                {errors['content'] && (
+                    <p className="mt-1 text-sm text-destructive">{errors['content']}</p>
+                )}
+            </section>
+
+            {/* 6 — Story details: clean two-column block (single column on mobile) */}
+            <section className="mt-12 border-t pt-8">
+                <h2 className="font-heading text-xl font-bold text-ccm-midnight">
+                    {t('details.heading')}
+                </h2>
+                <p className="mt-1 text-sm text-muted-foreground">{t('details.description')}</p>
+
+                <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
+                    <div>
+                        <Label>{t('details.topicLabel')} *</Label>
+                        <Select
+                            value={formData.topic || ''}
+                            onValueChange={(value) => updateFormData('topic', value)}
+                        >
+                            <SelectTrigger className="mt-2 min-h-11 w-full">
+                                <SelectValue placeholder={t('details.topicPlaceholder')} />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {topicOptions.map((option) => (
+                                    <SelectItem key={option.value} value={option.value}>
+                                        {option.title}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                        {errors['topic'] && (
+                            <p className="mt-1 text-sm text-destructive">{errors['topic']}</p>
+                        )}
+                    </div>
+
+                    <div>
+                        <Label>{t('details.communityLabel')}</Label>
+                        <Select
+                            value={selectedCommunity}
+                            onValueChange={(value) => {
+                                setSelectedCommunity(value);
+                                updateFormData('relatedCommunity', value);
+                            }}
+                        >
+                            <SelectTrigger className="mt-2 min-h-11 w-full">
+                                <SelectValue placeholder={t('details.communityPlaceholder')} />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {regionalCommunities.map((community) => {
+                                    const communityName =
+                                        community.name?.[locale as keyof typeof community.name] ||
+                                        community.name?.en ||
+                                        'Untitled';
+                                    return (
+                                        <SelectItem key={community._id} value={community._id}>
+                                            {communityName}
+                                        </SelectItem>
+                                    );
+                                })}
+                            </SelectContent>
+                        </Select>
+                        {selectedCommunity && (
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                className="mt-1 h-auto px-2 py-1 text-xs"
+                                onClick={() => {
+                                    setSelectedCommunity('');
+                                    updateFormData('relatedCommunity', '');
+                                }}
+                            >
+                                {t('details.clearCommunity')}
+                            </Button>
+                        )}
+                    </div>
+
+                    <div className="md:col-span-2">
+                        <Label>{t('details.tagsLabel')} *</Label>
+                        <p className="mt-1 text-sm text-muted-foreground">{t('details.tagsHint')}</p>
+                        <div className="mt-3 flex flex-wrap gap-2">
+                            {availableTags.map((tag) => {
+                                const isSelected = selectedTags.includes(tag._id);
+                                const tagLabel =
+                                    tag.label?.[locale as keyof typeof tag.label] ||
+                                    tag.label?.en ||
+                                    'Untitled';
+                                return (
+                                    <Button
+                                        key={tag._id}
+                                        type="button"
+                                        variant={isSelected ? 'default' : 'outline'}
+                                        size="sm"
+                                        onClick={() => handleTagToggle(tag._id)}
+                                        className="h-auto min-h-11 rounded-full py-2"
+                                    >
+                                        {tagLabel}
+                                    </Button>
+                                );
+                            })}
+                        </div>
+                        {errors['tags'] && (
+                            <p className="mt-2 text-sm text-destructive">{errors['tags']}</p>
+                        )}
+                    </div>
+
+                    <div className="md:col-span-2">
+                        <Label htmlFor="cs-org">{t('byline.organizationLabel')}</Label>
+                        <Input
+                            id="cs-org"
+                            value={formData.organizationName || ''}
+                            onChange={(e) => updateFormData('organizationName', e.target.value)}
+                            placeholder={t('byline.organizationPlaceholder')}
+                            className="mt-2"
+                        />
+                    </div>
+
+                    <div className="md:col-span-2">
+                        <PlacePicker value={place} onChange={setPlace} />
+                    </div>
+
+                    <div>
+                        <Label htmlFor="cs-country">{t('details.countryLabel')}</Label>
+                        <Input
+                            id="cs-country"
+                            value={formData.locationText?.country || ''}
+                            onChange={(e) => updateFormData('locationText.country', e.target.value)}
+                            placeholder={t('details.countryPlaceholder')}
+                            className="mt-2"
+                        />
+                    </div>
+                    <div>
+                        <Label htmlFor="cs-city">{t('details.cityLabel')}</Label>
+                        <Input
+                            id="cs-city"
+                            value={formData.locationText?.city || ''}
+                            onChange={(e) => updateFormData('locationText.city', e.target.value)}
+                            placeholder={t('details.cityPlaceholder')}
+                            className="mt-2"
+                        />
+                    </div>
+
+                    {formData.locationText?.country && formData.locationText?.city && (
+                        <div className="md:col-span-2">
+                            <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                className="min-h-11"
+                                disabled={isGeocoding}
+                                onClick={async () => {
+                                    if (!formData.locationText?.country || !formData.locationText?.city) return;
+
+                                    setIsGeocoding(true);
+                                    toast.info('Searching for location...');
+
+                                    const result = await geocodeLocation(
+                                        formData.locationText.city,
+                                        formData.locationText.country
+                                    );
+
+                                    setIsGeocoding(false);
+
+                                    if (result.success && result.location) {
+                                        updateFormData('studyLocation', result.location);
+                                        toast.success(`Location found! (${result.location.lat.toFixed(4)}, ${result.location.lng.toFixed(4)})`);
+                                    } else {
+                                        toast.error(result.error || 'Could not find location');
+                                    }
+                                }}
+                            >
+                                {isGeocoding ? t('details.searching') : t('details.findOnMap')}
+                            </Button>
+                            {formData.studyLocation?.lat && formData.studyLocation?.lng && (
+                                <p className="mt-2 text-sm text-muted-foreground">
+                                    {t('details.coordsFound')}: {formData.studyLocation.lat.toFixed(4)}, {formData.studyLocation.lng.toFixed(4)}
+                                </p>
+                            )}
+                        </div>
+                    )}
+
+                    <div>
+                        <Label htmlFor="cs-start">{t('details.periodStartLabel')}</Label>
+                        <Input
+                            id="cs-start"
+                            type="date"
+                            value={formData.studyPeriod?.startDate || ''}
+                            onChange={(e) => updateFormData('studyPeriod.startDate', e.target.value)}
+                            className="mt-2"
+                        />
+                    </div>
+                    <div>
+                        <Label htmlFor="cs-end">{t('details.periodEndLabel')}</Label>
+                        <Input
+                            id="cs-end"
+                            type="date"
+                            value={formData.studyPeriod?.endDate || ''}
+                            onChange={(e) => updateFormData('studyPeriod.endDate', e.target.value)}
+                            className="mt-2"
+                        />
+                        <p className="mt-1 text-sm text-muted-foreground">{t('details.periodEndHint')}</p>
+                    </div>
+                </div>
+            </section>
+
+            {/* 7 — Sticky bottom bar: autosave state + Preview + Submit for review */}
+            <SubmitBar
+                draftStatus={draftStatus}
+                draftSavedAt={draftSavedAt}
+                incomplete={!requiredComplete}
+                isSubmitting={isSubmitting}
+                onSaveDraft={() => void saveDraftNow()}
+                onPreview={() => {
+                    if (!validateForm()) {
+                        toast.error('Please fix the highlighted issues before reviewing');
+                        return;
+                    }
+                    setSubmissionStep('review');
+                }}
+                onSubmit={() => void handleSubmit()}
+            />
         </div>
     );
 }

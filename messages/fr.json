@@ -751,7 +751,93 @@
     "pageTitle": "Soumettre une Étude de Cas",
     "pageDescription": "Partagez votre recherche et vos idées avec notre communauté mondiale multilingue",
     "title": "Soumettez votre Étude de Cas",
-    "description": "Partagez votre recherche avec notre communauté mondiale en anglais, espagnol, français ou arabe. Aidez-nous à rendre les connaissances accessibles aux chercheurs du monde entier."
+    "description": "Partagez votre recherche avec notre communauté mondiale en anglais, espagnol, français ou arabe. Aidez-nous à rendre les connaissances accessibles aux chercheurs du monde entier.",
+    "layoutChooser": {
+      "label": "Choisissez une mise en page",
+      "hint": "Même contenu, présentation différente — modifiable à tout moment.",
+      "story": {
+        "title": "Récit",
+        "caption": "Un récit de changement au sein d'une communauté"
+      },
+      "feature": {
+        "title": "Reportage",
+        "caption": "Une vitrine visuelle portée par l'image"
+      },
+      "report": {
+        "title": "Rapport",
+        "caption": "Une synthèse de recherche structurée avec des résultats"
+      }
+    },
+    "languages": {
+      "switcherLabel": "Langue du contenu",
+      "hint": "L'anglais est obligatoire ; les traductions aident davantage de lecteurs à découvrir votre travail."
+    },
+    "canvas": {
+      "titleLabel": "Titre de l'étude de cas",
+      "titlePlaceholder": "Donnez un titre à votre étude de cas…",
+      "excerptLabel": "Résumé",
+      "excerptPlaceholder": "Rédigez un bref résumé : ce qui s'est passé, où et pourquoi c'est important…",
+      "excerptHint": "Au moins 100 caractères en anglais",
+      "bodyPlaceholder": "Racontez l'histoire — tapez / pour insérer des blocs…"
+    },
+    "byline": {
+      "label": "Signature",
+      "addAuthor": "Ajouter un auteur",
+      "removeAuthor": "Supprimer l'auteur",
+      "unnamed": "Nouvel auteur",
+      "nameLabel": "Nom complet",
+      "namePlaceholder": "Saisissez le nom complet",
+      "emailLabel": "E-mail (facultatif)",
+      "roleLabel": "Rôle dans l'étude",
+      "done": "Terminé",
+      "organizationLabel": "Organisation (facultatif)",
+      "organizationPlaceholder": "Nom de l'organisation ou de l'institution",
+      "roles": {
+        "lead": "Auteur principal",
+        "coauthor": "Co-auteur",
+        "contributor": "Contributeur",
+        "advisor": "Conseiller"
+      }
+    },
+    "hero": {
+      "dropHint": "Glissez une image de couverture ici, ou touchez pour choisir",
+      "formats": "JPEG, PNG ou WebP, jusqu'à 5 Mo",
+      "replace": "Remplacer l'image",
+      "remove": "Supprimer l'image",
+      "previewAlt": "Aperçu de l'image de couverture"
+    },
+    "details": {
+      "heading": "Détails de l'histoire",
+      "description": "Aidez les lecteurs et les relecteurs à situer votre travail : où, quand et sur quoi il porte.",
+      "topicLabel": "Thème",
+      "topicPlaceholder": "Sélectionnez le thème principal",
+      "communityLabel": "Communauté régionale (facultatif)",
+      "communityPlaceholder": "Sélectionnez une communauté",
+      "clearCommunity": "Effacer la sélection",
+      "tagsLabel": "Mots-clés",
+      "tagsHint": "Choisissez les mots-clés qui décrivent le mieux votre travail pour aider les autres à le découvrir",
+      "countryLabel": "Pays",
+      "countryPlaceholder": "Où ce travail a-t-il été mené ?",
+      "cityLabel": "Ville / région",
+      "cityPlaceholder": "Lieu précis",
+      "findOnMap": "Situer sur la carte",
+      "searching": "Recherche…",
+      "coordsFound": "Coordonnées du lieu",
+      "periodStartLabel": "Date de début de l'étude",
+      "periodEndLabel": "Date de fin de l'étude",
+      "periodEndHint": "Laissez vide si l'étude est en cours"
+    },
+    "bar": {
+      "saving": "Enregistrement du brouillon…",
+      "saved": "Brouillon enregistré",
+      "savedAt": "Brouillon enregistré à {time}",
+      "notSaved": "Les modifications sont enregistrées automatiquement en brouillon",
+      "saveError": "Impossible d'enregistrer le brouillon — nouvel essai à votre prochaine modification",
+      "saveDraft": "Enregistrer le brouillon",
+      "preview": "Aperçu",
+      "submit": "Soumettre pour relecture",
+      "incomplete": "Renseignez les champs obligatoires pour soumettre"
+    }
   },
   "caseStudy": {
     "backToCaseStudies": "Retour aux Études de Cas"

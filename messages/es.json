@@ -751,7 +751,93 @@
     "pageTitle": "Enviar Estudio de Caso",
     "pageDescription": "Comparte tu investigación e ideas con nuestra comunidad global multilingüe",
     "title": "Envía tu Estudio de Caso",
-    "description": "Comparte tu investigación con nuestra comunidad global en inglés, español, francés o árabe. Ayúdanos a hacer el conocimiento accesible a investigadores de todo el mundo."
+    "description": "Comparte tu investigación con nuestra comunidad global en inglés, español, francés o árabe. Ayúdanos a hacer el conocimiento accesible a investigadores de todo el mundo.",
+    "layoutChooser": {
+      "label": "Elige un formato",
+      "hint": "El mismo contenido con otra presentación; puedes cambiarlo en cualquier momento.",
+      "story": {
+        "title": "Historia",
+        "caption": "Un relato narrativo de cambio en una comunidad"
+      },
+      "feature": {
+        "title": "Reportaje",
+        "caption": "Un escaparate visual guiado por imágenes"
+      },
+      "report": {
+        "title": "Informe",
+        "caption": "Un resumen de investigación estructurado con hallazgos"
+      }
+    },
+    "languages": {
+      "switcherLabel": "Idioma del contenido",
+      "hint": "El inglés es obligatorio; las traducciones ayudan a que más personas encuentren tu trabajo."
+    },
+    "canvas": {
+      "titleLabel": "Título del estudio de caso",
+      "titlePlaceholder": "Ponle título a tu estudio de caso…",
+      "excerptLabel": "Resumen",
+      "excerptPlaceholder": "Escribe un breve resumen: qué ocurrió, dónde y por qué importa…",
+      "excerptHint": "Al menos 100 caracteres en inglés",
+      "bodyPlaceholder": "Cuenta la historia — escribe / para insertar bloques…"
+    },
+    "byline": {
+      "label": "Autoría",
+      "addAuthor": "Añadir autor",
+      "removeAuthor": "Eliminar autor",
+      "unnamed": "Nuevo autor",
+      "nameLabel": "Nombre completo",
+      "namePlaceholder": "Escribe el nombre completo",
+      "emailLabel": "Correo electrónico (opcional)",
+      "roleLabel": "Rol en el estudio",
+      "done": "Listo",
+      "organizationLabel": "Organización (opcional)",
+      "organizationPlaceholder": "Nombre de la organización o institución",
+      "roles": {
+        "lead": "Autor principal",
+        "coauthor": "Coautor",
+        "contributor": "Colaborador",
+        "advisor": "Asesor"
+      }
+    },
+    "hero": {
+      "dropHint": "Arrastra una imagen de portada aquí o toca para elegir",
+      "formats": "JPEG, PNG o WebP, hasta 5 MB",
+      "replace": "Reemplazar imagen",
+      "remove": "Quitar imagen",
+      "previewAlt": "Vista previa de la imagen de portada"
+    },
+    "details": {
+      "heading": "Detalles de la historia",
+      "description": "Ayuda a lectores y revisores a situar tu trabajo: dónde, cuándo y qué abarca.",
+      "topicLabel": "Tema",
+      "topicPlaceholder": "Selecciona el tema principal",
+      "communityLabel": "Comunidad regional (opcional)",
+      "communityPlaceholder": "Selecciona una comunidad",
+      "clearCommunity": "Borrar selección",
+      "tagsLabel": "Etiquetas",
+      "tagsHint": "Elige las etiquetas que mejor describan tu trabajo para que otros lo descubran",
+      "countryLabel": "País",
+      "countryPlaceholder": "¿Dónde se realizó este trabajo?",
+      "cityLabel": "Ciudad / región",
+      "cityPlaceholder": "Ubicación específica",
+      "findOnMap": "Buscar en el mapa",
+      "searching": "Buscando…",
+      "coordsFound": "Coordenadas de la ubicación",
+      "periodStartLabel": "Fecha de inicio del estudio",
+      "periodEndLabel": "Fecha de fin del estudio",
+      "periodEndHint": "Déjalo vacío si sigue en curso"
+    },
+    "bar": {
+      "saving": "Guardando borrador…",
+      "saved": "Borrador guardado",
+      "savedAt": "Borrador guardado a las {time}",
+      "notSaved": "Los cambios se guardan automáticamente como borrador",
+      "saveError": "No se pudo guardar el borrador; se reintentará con tu próximo cambio",
+      "saveDraft": "Guardar borrador",
+      "preview": "Vista previa",
+      "submit": "Enviar a revisión",
+      "incomplete": "Completa los campos obligatorios para enviar"
+    }
   },
   "caseStudy": {
     "backToCaseStudies": "Volver a Estudios de Caso"

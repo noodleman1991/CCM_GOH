@@ -55,6 +55,9 @@ export const caseStudySubmissionSchema = z
         // Portable Text from the editor — must be a non-empty array of blocks
         content: z.array(z.record(z.unknown())).min(1, 'Content is required'),
         topic: optionalString,
+        // Detail-page layout archetype (Task E3 editor shell). Optional so older
+        // clients/drafts without it still submit; the route defaults to "story".
+        layout: z.enum(['story', 'feature', 'report']).optional(),
         authors: z
             .array(
                 z
