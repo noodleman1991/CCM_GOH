@@ -24,10 +24,13 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
 export default async function SubmitLivedExperiencePage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string }>
+  searchParams: Promise<{ workspace?: string }>
 }) {
   await params
+  const { workspace } = await searchParams
   const { userId } = await auth()
   if (!userId) redirect("/sign-in")
 
@@ -38,7 +41,11 @@ export default async function SubmitLivedExperiencePage({
 
   return (
     <PageContainer width="max-w-3xl">
-      <LivedExperienceForm availableTags={availableTags} regionalCommunities={regionalCommunities} />
+      <LivedExperienceForm
+        availableTags={availableTags}
+        regionalCommunities={regionalCommunities}
+        workspaceId={workspace ?? null}
+      />
     </PageContainer>
   )
 }

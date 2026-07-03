@@ -37,11 +37,14 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 }
 
 export default async function CaseStudySubmitPage({
-                                                      params
+                                                      params,
+                                                      searchParams
                                                   }: {
     params: Promise<{ locale: string }>
+    searchParams: Promise<{ workspace?: string }>
 }) {
     const { locale } = await params
+    const { workspace } = await searchParams
     const { userId } = await auth()
 
     if (!userId) {
@@ -60,6 +63,7 @@ export default async function CaseStudySubmitPage({
                 regionalCommunities={regionalCommunities}
                 locale={locale}
                 userId={userId}
+                workspaceId={workspace ?? null}
             />
         </div>
     )

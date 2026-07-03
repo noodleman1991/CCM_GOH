@@ -3,6 +3,7 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 import { createClient } from "@sanity/client";
 import { v4 as uuidv4 } from "uuid";
 import { caseStudySubmissionSchema, generateCaseStudySlug } from "@/lib/validation/case-study";
+import { addOutput } from "@/lib/actions/workspace-outputs";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp']
@@ -224,6 +225,19 @@ export async function POST(request: NextRequest) {
 
         // Log submission for tracking
         console.log(`Case study submitted by user ${userId} (${clerkUser.emailAddresses[0]?.emailAddress}): ${result._id}`);
+
+        // Submitted from a workspace: link the new doc as a workspace output.
+        // addOutput enforces collab authz itself; a failed link never fails the submission.
+        if (typeof data.collaborationId === "string" && data.collaborationId) {
+            const linked = await addOutput({
+                collaborationId: data.collaborationId,
+                sanityType: "caseStudy",
+                mode: "link",
+                sanityId: result._id,
+                title: data.title.en,
+            });
+            if (!linked.ok) console.warn(`Workspace link failed for ${result._id}: ${linked.error}`);
+        }
 
         return NextResponse.json({
             success: true,

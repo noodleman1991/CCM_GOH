@@ -114,6 +114,7 @@ interface ImprovedCaseStudyFormProps {
         slug: { current: string };
     }>;
     onSuccess?: (id: string) => void;
+    workspaceId?: string | null;
 }
 
 // The four required completeness gates (formerly the accordion's required
@@ -125,7 +126,8 @@ export default function ImprovedCaseStudyForm({
                                                   locale = 'en',
                                                   availableTags,
                                                   regionalCommunities,
-                                                  onSuccess
+                                                  onSuccess,
+                                                  workspaceId
                                               }: ImprovedCaseStudyFormProps) {
     const { user } = useUser();
     const t = useTranslations('caseStudySubmission');
@@ -435,6 +437,7 @@ export default function ImprovedCaseStudyForm({
                     userId: index === 0 ? userId : undefined, // First author is submitter
                 })),
                 ...(place ? { place } : {}),
+                ...(workspaceId ? { collaborationId: workspaceId } : {}),
             };
 
             // Create FormData for multipart submission

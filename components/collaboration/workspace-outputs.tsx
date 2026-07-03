@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { Link } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { SectionHeader } from "@/components/ui/section-header";
@@ -29,10 +29,24 @@ export default function WorkspaceOutputs({
   canEdit: boolean;
 }) {
   const t = useTranslations("outputs");
+  const router = useRouter();
   const [pending, start] = useTransition();
   const [adding, setAdding] = useState(false);
 
+  // Case studies and lived experiences have real submit flows — creating
+  // there (with ?workspace=) produces actual content that links back here.
+  // researchOutput has no public submit flow yet, so it keeps the draft path.
+  const SUBMIT_ROUTES: Record<string, string> = {
+    caseStudy: "/research-and-action/case-studies/submit",
+    livedExperience: "/lived-experiences/submit",
+  };
+
   const create = (sanityType: string) => {
+    const submitRoute = SUBMIT_ROUTES[sanityType];
+    if (submitRoute) {
+      router.push(`${submitRoute}?workspace=${collaborationId}`);
+      return;
+    }
     start(async () => {
       const res = await addOutput({ collaborationId, sanityType, mode: "create", title: "Untitled" });
       if (res.ok) {

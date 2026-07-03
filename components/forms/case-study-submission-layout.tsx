@@ -53,13 +53,15 @@ interface CaseStudySubmissionLayoutProps {
     }>
     locale: string
     userId: string
+    workspaceId?: string | null
 }
 
 export default function CaseStudySubmissionLayout({
                                                       availableTags,
                                                       regionalCommunities,
                                                       locale,
-                                                      userId
+                                                      userId,
+                                                      workspaceId
                                                   }: CaseStudySubmissionLayoutProps) {
     const t = useTranslations('caseStudySubmission')
     const [activeSection, setActiveSection] = useState("basic-info")
@@ -146,6 +148,7 @@ export default function CaseStudySubmissionLayout({
                     userId={userId}
                     availableTags={availableTags}
                     regionalCommunities={regionalCommunities}
+                    workspaceId={workspaceId}
                 />
             </div>
         </div>

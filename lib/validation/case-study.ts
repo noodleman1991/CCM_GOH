@@ -58,6 +58,9 @@ export const caseStudySubmissionSchema = z
         // Detail-page layout archetype (Task E3 editor shell). Optional so older
         // clients/drafts without it still submit; the route defaults to "story".
         layout: z.enum(['story', 'feature', 'report']).optional(),
+        // Present when submitting from a workspace (?workspace=) — the route
+        // links the created doc back as a workspace output. Authz enforced there.
+        collaborationId: optionalString,
         authors: z
             .array(
                 z
