@@ -29,7 +29,7 @@ User: "I don't get the statistics pane… should be more engaging, with cards of
 **Files:** components/atlas/atlas-explorer.tsx · components/atlas/region-content-cards.tsx · components/maps/region-choropleth.tsx (hover callback already exists; tooltip lives in explorer) · app/api/maps/region-items/route.ts (image + `all` mode) · messages/*4 (new keys: atlas.tapHint en "Tap a region to see its stories", es "Toca una región para ver sus historias", fr "Touchez une région pour voir ses histoires", ar "المس منطقة لرؤية قصصها"; atlas.latestEverywhere en "Latest from across the regions", es "Lo último de todas las regiones", fr "Les dernières histoires de toutes les régions", ar "الأحدث من جميع المناطق").
 **Tests:** extend region-items route logic tests if pure helpers exist; otherwise gates + visual.
 
-- [ ] Implement · gates · screenshots (incl. a region WITH seeded pins: csa or ssa) · commit `feat(atlas): content-first explorer — thumbnail cards, hover tooltip, drop stats pane`.
+- [x] Implement · gates · screenshots (incl. a region WITH seeded pins: csa or ssa) · commit `feat(atlas): content-first explorer — thumbnail cards, hover tooltip, drop stats pane`. (376009f49 + fixes eb369202e/3fa8637bd)
 
 ---
 
@@ -47,7 +47,7 @@ User: "lived experience is the video, the text, few images — more like a blog 
 **Files:** sanity/schemas/documents/lived-experience.ts · components/[player path — grep LivedExperiencePlayer] · the submit form + API route · types (hand-edit) · messages*4 (tabs: livedSubmit.uploadVideo/youtubeLink/vimeoLink + validation copy, real translations).
 **Tests:** URL-parse helpers (youtube id, vimeo id) TDD in lib (pure), player render logic typecheck.
 
-- [ ] TDD parse helpers · implement · gates · screenshots of the submit video step + a Vimeo LE detail · commit `feat(lived): video sources — upload/YouTube/Vimeo + blog-post body polish`.
+- [x] TDD parse helpers · implement · gates · commit `feat(lived): video sources — upload/YouTube/Vimeo + blog-post body` (94722ab95). Screenshots OWED: submit video step is Clerk-gated (needs signed-in session); no published video LE in dev dataset for a detail shot.
 
 ---
 
@@ -64,7 +64,7 @@ User: "the layout of the content of the case study, the dialog — I imagine a p
 **Files:** components/forms/case-study-form.tsx (+ small subcomponents in components/forms/case-study/ if the file grows unwieldy — split by section) · messages*4 for new copy (editor.placeholder etc., real translations) · reuse PlacePicker/portable-text editor as-is.
 **Tests:** none new beyond gates (shell); Playwright screenshots incl. 375/ar are the gate.
 
-- [ ] Implement · gates · screenshots · commit `feat(authoring): editorial page-editor shell for case-study submissions (layout chooser, canvas, sticky bar)`.
+- [x] Implement · gates · commit `feat(authoring): editorial page-editor shell for case-study submissions (layout chooser, canvas, sticky bar)` (0ba416fcd). Screenshots OWED: route is Clerk-gated (needs signed-in session).
 
 ---
 
@@ -81,7 +81,7 @@ User: "you still haven't worked on the homepage." Spec #11 remnants (events cale
 **Files:** sanity/schemas/blocks/cta/submit-story-banner.ts (or match blocks dir conventions) · components/blocks/cta/submit-story-banner.tsx · components/blocks/index.tsx · sanity/schema.ts + homepage doc of:-list + homepage GROQ projection · scripts/seed-homepage-blocks.ts · lib/features.ts · messages*4.
 **Tests:** gates + screenshots of the recomposed homepage (desktop/375/ar).
 
-- [ ] Implement · run seed script (dev dataset only) · gates · screenshots · commit `feat(homepage): submit-story banner block, hero CTAs, §4.1 composition; drop dead flags`.
+- [x] Implement · run seed script (dev dataset only) · gates · screenshots (.superpowers/sdd/task-e4-home-{en-desktop,en-375,ar-desktop}.png) · commit `feat(homepage): submit-story banner block, seed script for §4.1 composition; drop dead flags` (ca2f6943e). Hero CTAs (/atlas + /collaborate) + banner verified live on dev.
 
 ---
 
