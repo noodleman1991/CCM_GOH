@@ -24,12 +24,18 @@ export function FollowButton({
   initialFollowing,
   size = "sm",
   className,
+  followLabel,
+  followingLabel,
 }: {
   targetType: FollowTargetType;
   targetId: string;
   initialFollowing?: boolean;
   size?: "sm" | "default";
   className?: string;
+  /** Optional context-specific label (e.g. "Follow this region"); defaults to the shared "Follow". */
+  followLabel?: string;
+  /** Optional label for the followed state; defaults to the shared "Following". */
+  followingLabel?: string;
 }) {
   const t = useTranslations("follow");
   const [following, setFollowing] = useState(initialFollowing ?? false);
@@ -72,7 +78,7 @@ export function FollowButton({
       className={cn("gap-1.5", className)}
     >
       {following ? <Check className="size-4" /> : <Plus className="size-4" />}
-      {following ? t("following") : t("follow")}
+      {following ? followingLabel ?? t("following") : followLabel ?? t("follow")}
     </Button>
   );
 }

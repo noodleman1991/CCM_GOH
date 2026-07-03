@@ -1,6 +1,27 @@
 import { groq } from "next-sanity";
 import { client } from "@/sanity/lib/client";
 import { styledBodyProjection } from "@/sanity/queries/shared/styled-body";
+import { GLOBAL_REGION } from "@/lib/news-utils";
+
+/**
+ * Region facet → GROQ condition. Region chips carry CMS community slugs, plus
+ * the reserved "global" value meaning "not tied to any region" (i.e. the doc's
+ * optional `relatedCommunity` reference is unset). Mutates `params` with the
+ * slug list when one is needed; returns null when the facet is inactive.
+ */
+function communityCondition(
+  communities: string[] | undefined,
+  params: Record<string, unknown>
+): string | null {
+  if (!communities?.length) return null;
+  const slugs = communities.filter((c) => c !== GLOBAL_REGION);
+  const includeGlobal = communities.includes(GLOBAL_REGION);
+  if (slugs.length) params.filterCommunities = slugs;
+  if (slugs.length && includeGlobal)
+    return `(relatedCommunity->slug.current in $filterCommunities || !defined(relatedCommunity))`;
+  if (includeGlobal) return `!defined(relatedCommunity)`;
+  return `relatedCommunity->slug.current in $filterCommunities`;
+}
 
 // Shared fragment for news post fields
 const NEWS_POST_FIELDS = groq`
@@ -66,10 +87,10 @@ const NEWS_POST_FIELDS = groq`
     color,
     category
   },
-  relatedCommunities[]->{
+  relatedCommunity->{
     _id,
     name,
-    slug
+    "slug": slug.current
   },
   language,
   priority,

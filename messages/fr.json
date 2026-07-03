@@ -1397,7 +1397,8 @@
         "fiveYears": "5 dernières années",
         "month": "Dernier mois",
         "threeMonths": "3 derniers mois"
-      }
+      },
+      "global": "Mondial"
     },
     "metadata": {
       "author": "Auteur",
@@ -1406,7 +1407,14 @@
       "location": "Emplacement",
       "publishDate": "Publié"
     },
-    "siteBadge": "CCM"
+    "siteBadge": "CCM",
+    "featuredBadge": "À la une",
+    "minRead": "{minutes} min de lecture",
+    "regionEmpty": {
+      "title": "Aucune actualité dans {region} pour l'instant.",
+      "description": "Suivez cette région pour être averti dès qu'une actualité est publiée.",
+      "cta": "Suivre cette région"
+    }
   },
   "regional": {
     "noLivedExperiences": "Aucune expérience vécue disponible pour le moment.",

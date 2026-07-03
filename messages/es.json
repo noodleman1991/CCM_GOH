@@ -1397,7 +1397,8 @@
         "fiveYears": "Últimos 5 años",
         "month": "Último mes",
         "threeMonths": "Últimos 3 meses"
-      }
+      },
+      "global": "Global"
     },
     "metadata": {
       "author": "Autor",
@@ -1406,7 +1407,14 @@
       "location": "Ubicación",
       "publishDate": "Publicado"
     },
-    "siteBadge": "CCM"
+    "siteBadge": "CCM",
+    "featuredBadge": "Destacado",
+    "minRead": "{minutes} min de lectura",
+    "regionEmpty": {
+      "title": "Aún no hay novedades en {region}.",
+      "description": "Sigue esta región para enterarte cuando se publique algo.",
+      "cta": "Seguir esta región"
+    }
   },
   "regional": {
     "noLivedExperiences": "Aún no hay experiencias vividas disponibles.",

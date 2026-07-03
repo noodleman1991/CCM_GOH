@@ -19,7 +19,8 @@ import {
   fetchApprovedExternalSources,
 } from '@/sanity/queries/news-queries'
 import ExternalSourceCard from '@/components/ui/external-source-card'
-import { hasActiveFilters } from '@/lib/news-utils'
+import { FollowButton } from '@/components/follow/follow-button'
+import { hasActiveFilters, GLOBAL_REGION } from '@/lib/news-utils'
 import { mergeNewsFeed } from '@/lib/news-feed'
 import { cn } from '@/lib/utils'
 import { heading } from '@/lib/design-tokens'
@@ -130,6 +131,77 @@ async function NewsFiltersWrapper({
   )
 }
 
+/**
+ * Empty state for filtered results. When the selection includes a specific
+ * region with no news, use the STATES §2 region-empty copy ("No updates in
+ * {region} yet") with a "Follow this region" CTA (existing Follow infra,
+ * REGION target keyed by the community slug — same as the community page).
+ * Otherwise fall back to the generic no-results card.
+ */
+async function NewsEmptyState({
+  locale,
+  filters,
+}: {
+  locale: string
+  filters: NewsFiltersType
+}) {
+  const t = await getTranslations({ locale, namespace: 'news' })
+
+  const regionSlugs = (filters.communities || []).filter((c) => c !== GLOBAL_REGION)
+  const regionSlug = regionSlugs[0]
+  const region = regionSlug
+    ? (await fetchRegionalCommunities()).find(
+        (c: { slug: string }) => c.slug === regionSlug
+      )
+    : undefined
+
+  if (region) {
+    const regionName = getLocalizedValue(region.name, locale)
+    return (
+      <Card className="p-12 text-center">
+        <div className="space-y-3">
+          <Search className="w-12 h-12 mx-auto text-muted-foreground/50" />
+          <h3 className="font-heading text-lg font-medium text-ccm-midnight">
+            {t('regionEmpty.title', { region: regionName })}
+          </h3>
+          <p className="text-sm text-muted-foreground max-w-md mx-auto">
+            {t('regionEmpty.description')}
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+            <FollowButton
+              targetType="REGION"
+              targetId={region.slug}
+              size="default"
+              className="min-h-11"
+              followLabel={t('regionEmpty.cta')}
+            />
+            <Button variant="ghost" className="min-h-11" asChild>
+              <Link href={`/news`}>{t('clearFilters')}</Link>
+            </Button>
+          </div>
+        </div>
+      </Card>
+    )
+  }
+
+  return (
+    <Card className="p-12 text-center">
+      <div className="space-y-3">
+        <Search className="w-12 h-12 mx-auto text-muted-foreground/50" />
+        <h3 className="text-lg font-medium">{t('noResults')}</h3>
+        <p className="text-sm text-muted-foreground max-w-md mx-auto">
+          {t('noResultsDescription')}
+        </p>
+        <Button variant="outline" asChild className="mt-4">
+          <Link href={`/news`}>
+            {t('clearFilters')}
+          </Link>
+        </Button>
+      </div>
+    </Card>
+  )
+}
+
 async function NewsContent({
   locale,
   filters,
@@ -210,20 +282,7 @@ async function NewsContent({
 
         {/* Empty State */}
         {totalResults === 0 && (
-          <Card className="p-12 text-center">
-            <div className="space-y-3">
-              <Search className="w-12 h-12 mx-auto text-muted-foreground/50" />
-              <h3 className="text-lg font-medium">{t('noResults')}</h3>
-              <p className="text-sm text-muted-foreground max-w-md mx-auto">
-                {t('noResultsDescription')}
-              </p>
-              <Button variant="outline" asChild className="mt-4">
-                <Link href={`/news`}>
-                  {t('clearFilters')}
-                </Link>
-              </Button>
-            </div>
-          </Card>
+          <NewsEmptyState locale={locale} filters={filterObj} />
         )}
       </div>
     )

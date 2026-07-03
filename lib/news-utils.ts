@@ -2,10 +2,17 @@
 
 import type { SanityPlace } from "@/types/case-study";
 
+/**
+ * Reserved value for the "Global" region pill: news/sources NOT tied to any
+ * regional community (their optional `relatedCommunity` reference is unset).
+ * Lives alongside — never instead of — the CMS-driven community slugs.
+ */
+export const GLOBAL_REGION = "global";
+
 export interface NewsFilters {
   /** Topic tag values (multi-select). */
   tags?: string[];
-  /** Regional community slugs (multi-select). */
+  /** Regional community slugs (multi-select), plus the reserved GLOBAL_REGION. */
   communities?: string[];
   dateFrom?: string;
   dateTo?: string;
@@ -80,13 +87,11 @@ export interface NewsPost {
     color?: string;
     category?: string;
   }>;
-  relatedCommunities?: Array<{
+  relatedCommunity?: {
     _id: string;
     name: Record<string, string> | string;
-    slug: {
-      current: string;
-    };
-  }>;
+    slug: string;
+  } | null;
   content?: any; // PortableText content
   sources?: Array<{
     title: string;

@@ -1397,7 +1397,8 @@
         "fiveYears": "آخر 5 سنوات",
         "month": "الشهر الماضي",
         "threeMonths": "آخر 3 أشهر"
-      }
+      },
+      "global": "عالمي"
     },
     "metadata": {
       "author": "المؤلف",
@@ -1406,7 +1407,14 @@
       "location": "الموقع",
       "publishDate": "تاريخ النشر"
     },
-    "siteBadge": "CCM"
+    "siteBadge": "CCM",
+    "featuredBadge": "مميز",
+    "minRead": "{minutes} دقيقة قراءة",
+    "regionEmpty": {
+      "title": "لا توجد مستجدات في {region} بعد.",
+      "description": "تابع هذه المنطقة لتصلك الأخبار عند نشر أي جديد.",
+      "cta": "تابع هذه المنطقة"
+    }
   },
   "regional": {
     "noLivedExperiences": "لا تتوفر تجارب حياتية بعد.",

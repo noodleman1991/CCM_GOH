@@ -10,6 +10,9 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { Calendar, User, Building2, MapPin, Star, ExternalLink } from 'lucide-react'
 import { BackLink } from '@/components/ui/back-link'
+import { SectionHeader } from '@/components/ui/section-header'
+import { CARD_ASPECT, CARD_ASPECT_SOURCE } from '@/lib/design-tokens'
+import { cn } from '@/lib/utils'
 import { urlFor } from '@/sanity/lib/image'
 import { getLocalizedValue } from '@/i18n/i18n-helpers'
 import { formatNewsDate, getReadingTime } from '@/lib/news-utils'
@@ -112,60 +115,25 @@ export default async function NewsDetailPage({
       {/* Back link */}
       <BackLink href="/news" label={t('backToNews')} />
 
-      {/* Header */}
-      <div className="space-y-4">
-        {/* Featured badge */}
-        {newsPost.featured && (
-          <Badge className="bg-yellow-500 text-black font-semibold px-3 py-1.5 flex items-center gap-1 w-fit">
-            <Star className="w-3 h-3 fill-black" />
-            {t('featured')}
-          </Badge>
-        )}
-
-        <h1 className="text-4xl font-bold tracking-tight">{title}</h1>
-
-        {subtitle && (
-          <p className="text-xl text-muted-foreground">{subtitle}</p>
-        )}
-
-        {/* Metadata */}
-        <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-          {newsPost.publishedAt && (
-            <div className="flex items-center gap-1.5">
-              <Calendar className="w-4 h-4" />
-              <span>{formatNewsDate(newsPost.publishedAt, locale)}</span>
-            </div>
-          )}
-
-          {newsPost.author && (
-            <div className="flex items-center gap-1.5">
-              <User className="w-4 h-4" />
-              <span>{newsPost.author.name}</span>
-            </div>
-          )}
-
-          {newsPost.locationDetails && (newsPost.locationDetails.city || newsPost.locationDetails.country) && (
-            <div className="flex items-center gap-1.5">
-              <MapPin className="w-4 h-4" />
-              <span>
-                {[newsPost.locationDetails.city, newsPost.locationDetails.country]
-                  .filter(Boolean)
-                  .join(', ')}
-              </span>
-            </div>
-          )}
-
-          {readingTime > 0 && (
-            <div className="flex items-center gap-1.5">
-              <span>{readingTime} min read</span>
-            </div>
-          )}
-        </div>
-
-        {/* Tags */}
-        {newsPost.tags && newsPost.tags.length > 0 && (
-          <div className="flex flex-wrap gap-2">
-            {newsPost.tags.map((tag: { _id: string; label: any; color?: string }) => {
+      {/* Header — kicker chip row · balanced title · quiet meta row */}
+      <header className="space-y-4">
+        {/* Kicker: featured + region + topic chips in one quiet row */}
+        {(newsPost.featured || newsPost.relatedCommunity || (newsPost.tags && newsPost.tags.length > 0)) && (
+          <div className="flex flex-wrap items-center gap-2">
+            {newsPost.featured && (
+              <Badge className="flex items-center gap-1 px-3 py-1">
+                <Star className="w-3 h-3 fill-current" />
+                {t('featuredBadge')}
+              </Badge>
+            )}
+            {newsPost.relatedCommunity && (
+              <Link href={`/news?communities=${newsPost.relatedCommunity.slug}`}>
+                <Badge variant="secondary" className="px-3 py-1 hover:bg-ccm-sea/10 hover:text-ccm-sea transition-colors">
+                  <bdi>{getLocalizedValue(newsPost.relatedCommunity.name, supportedLocale)}</bdi>
+                </Badge>
+              </Link>
+            )}
+            {newsPost.tags?.map((tag: { _id: string; label: any; color?: string }) => {
               const tagLabel = getLocalizedValue(tag.label, supportedLocale)
               return (
                 <Badge
@@ -182,7 +150,58 @@ export default async function NewsDetailPage({
             })}
           </div>
         )}
-      </div>
+
+        <h1 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight leading-tight text-balance text-ccm-midnight">
+          {title}
+        </h1>
+
+        {subtitle && (
+          <p className="text-lg sm:text-xl text-muted-foreground text-balance">{subtitle}</p>
+        )}
+
+        {/* Meta row: date · author · location · reading time */}
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5 text-sm text-muted-foreground">
+          {newsPost.publishedAt && (
+            <span className="inline-flex items-center gap-1.5">
+              <Calendar className="w-4 h-4" />
+              <time dateTime={newsPost.publishedAt}>
+                {formatNewsDate(newsPost.publishedAt, locale)}
+              </time>
+            </span>
+          )}
+
+          {newsPost.author && (
+            <>
+              {newsPost.publishedAt && <span aria-hidden="true">·</span>}
+              <span className="inline-flex items-center gap-1.5">
+                <User className="w-4 h-4" />
+                <span className="font-medium text-foreground/80"><bdi>{newsPost.author.name}</bdi></span>
+              </span>
+            </>
+          )}
+
+          {newsPost.locationDetails && (newsPost.locationDetails.city || newsPost.locationDetails.country) && (
+            <>
+              <span aria-hidden="true">·</span>
+              <span className="inline-flex items-center gap-1.5">
+                <MapPin className="w-4 h-4" />
+                <span>
+                  {[newsPost.locationDetails.city, newsPost.locationDetails.country]
+                    .filter(Boolean)
+                    .join(', ')}
+                </span>
+              </span>
+            </>
+          )}
+
+          {readingTime > 0 && (
+            <>
+              <span aria-hidden="true">·</span>
+              <span>{t('minRead', { minutes: readingTime })}</span>
+            </>
+          )}
+        </div>
+      </header>
 
       <Separator />
 
@@ -207,13 +226,14 @@ export default async function NewsDetailPage({
         </div>
       )}
 
-      {/* Excerpt */}
+      {/* Excerpt — editorial pull-quote (same vocabulary as the portable-text
+          blockquote: ccm-water start rule on a whisper of ccm-sky). */}
       {excerpt && (
-        <Card className="border-l-4 border-l-primary">
-          <CardContent className="p-6">
-            <p className="text-lg leading-relaxed">{excerpt}</p>
-          </CardContent>
-        </Card>
+        <blockquote className="border-s-4 border-ccm-water bg-ccm-sky/5 rounded-e-lg ps-6 pe-4 py-4">
+          <p className="font-heading text-xl sm:text-2xl font-medium leading-snug text-balance text-ccm-midnight">
+            {excerpt}
+          </p>
+        </blockquote>
       )}
 
       {/* Main Content */}
@@ -308,37 +328,51 @@ export default async function NewsDetailPage({
       {relatedNews.length > 0 && (
         <div className="space-y-6">
           <Separator />
-          <div>
-            <h2 className="text-2xl font-bold mb-6">{t('relatedNews')}</h2>
+          <div className="space-y-6">
+            <SectionHeader title={t('relatedNews')} />
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {relatedNews.map((related: any) => {
                 const relatedTitle = getLocalizedValue(related.title, supportedLocale)
                 const relatedExcerpt = getLocalizedValue(related.excerpt, supportedLocale)
                 return (
-                  <Link key={related._id} href={`/news/${related.slug}`}>
-                    <Card className="group overflow-hidden h-full hover:shadow-lg transition-shadow">
+                  <Link
+                    key={related._id}
+                    href={`/news/${related.slug}`}
+                    className="group flex h-full flex-col overflow-hidden rounded-2xl border bg-card transition-all duration-300 hover:border-primary/50 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    {/* Unified wide card ratio; gradient fallback keeps cards even. */}
+                    <div className={cn("relative overflow-hidden bg-gradient-to-br from-ccm-sky/40 to-ccm-water/30", CARD_ASPECT.wide)}>
                       {related.image?.asset?.url && (
-                        <div className="relative aspect-video overflow-hidden bg-muted">
-                          <Image
-                            src={urlFor(related.image).width(400).height(225).url()}
-                            alt={relatedTitle || ''}
-                            fill
-                            className="object-cover group-hover:scale-105 transition-transform duration-300"
-                            sizes="(max-width: 768px) 100vw, 33vw"
-                          />
-                        </div>
+                        <Image
+                          src={urlFor(related.image)
+                            .width(CARD_ASPECT_SOURCE.wide.w)
+                            .height(CARD_ASPECT_SOURCE.wide.h)
+                            .url()}
+                          alt={relatedTitle || ''}
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-300"
+                          sizes="(max-width: 768px) 100vw, 33vw"
+                        />
                       )}
-                      <CardContent className="p-4">
-                        <h3 className="font-semibold line-clamp-2 group-hover:text-primary transition-colors">
-                          {relatedTitle}
-                        </h3>
-                        {relatedExcerpt && (
-                          <p className="text-sm text-muted-foreground line-clamp-2 mt-2">
-                            {relatedExcerpt}
-                          </p>
-                        )}
-                      </CardContent>
-                    </Card>
+                    </div>
+                    <div className="flex flex-1 flex-col p-4">
+                      <h3 className="font-heading font-semibold text-balance line-clamp-2 group-hover:text-primary transition-colors">
+                        {relatedTitle}
+                      </h3>
+                      {relatedExcerpt && (
+                        <p className="text-sm text-muted-foreground line-clamp-2 mt-2">
+                          {relatedExcerpt}
+                        </p>
+                      )}
+                      {related.publishedAt && (
+                        <time
+                          dateTime={related.publishedAt}
+                          className="mt-auto pt-3 text-xs text-muted-foreground"
+                        >
+                          {formatNewsDate(related.publishedAt, locale)}
+                        </time>
+                      )}
+                    </div>
                   </Link>
                 )
               })}
