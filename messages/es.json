@@ -1530,17 +1530,36 @@
       "region": "Comunidad regional",
       "regionPlaceholder": "Elige una región (opcional)",
       "tags": "Etiquetas",
-      "tagsHelp": "Hasta 6."
+      "tagsHelp": "Hasta 6.",
+      "body": "La historia completa (opcional)",
+      "bodyPlaceholder": "Cuenta la historia completa; puedes añadir imágenes con pie de foto…",
+      "bodyHelp": "Como una entrada de blog: párrafos y algunas imágenes. Se muestra debajo de tu vídeo."
     },
     "validation": {
       "titleMin": "Añade un título",
       "descriptionMin": "Describe la experiencia",
       "issueMin": "¿De qué tema trata?",
-      "videoUrl": "Pega un enlace de vídeo válido"
+      "videoUrl": "Pega un enlace de vídeo válido",
+      "youtubeUrl": "Pega un enlace válido de YouTube",
+      "vimeoUrl": "Pega un enlace válido de Vimeo"
     },
     "submit": "Enviar para revisión",
     "cancel": "Cancelar",
-    "success": "Gracias: tu experiencia se envió para revisión."
+    "success": "Gracias: tu experiencia se envió para revisión.",
+    "video": {
+      "uploadVideo": "Subir un vídeo",
+      "youtubeLink": "Enlace de YouTube",
+      "vimeoLink": "Enlace de Vimeo",
+      "youtubeValid": "Enlace de YouTube reconocido: aquí tienes la vista previa.",
+      "youtubePreviewAlt": "Imagen de vista previa del vídeo de YouTube",
+      "vimeoValid": "Este enlace de Vimeo parece correcto.",
+      "chooseFile": "Elige un archivo de vídeo",
+      "removeFile": "Quitar",
+      "fileHint": "MP4 o WebM, hasta 100 MB.",
+      "fileRequired": "Elige un archivo de vídeo para subir.",
+      "fileTooLarge": "Ese archivo supera el límite de 100 MB; elige uno más pequeño.",
+      "fileWrongType": "Elige un archivo MP4 o WebM."
+    }
   },
   "comments": {
     "heading": "Debate",

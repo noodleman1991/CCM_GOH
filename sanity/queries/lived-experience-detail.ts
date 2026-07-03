@@ -1,6 +1,7 @@
 import { groq } from "next-sanity";
 import { client } from "@/sanity/lib/client";
 import { RELATED_CONTENT_PROJECTION } from "@/sanity/queries/grid/grid-case-study";
+import { styledBodyProjection } from "@/sanity/queries/shared/styled-body";
 
 /**
  * Public lived-experience detail by slug. Hard-filters to approved (legacy docs
@@ -19,6 +20,9 @@ export const LIVED_EXPERIENCE_BY_SLUG_QUERY = groq`
     personContext,
     slug,
     videoLink,
+    videoSource,
+    "videoFileUrl": videoFile.asset->url,
+    body[]{ ${styledBodyProjection} },
     duration,
     publishedAt,
     thumbnail{

@@ -16,6 +16,7 @@ import {
 import { LivedExperiencePlayer } from "@/components/lived-experiences/lived-experience-player";
 import { CommentIsland } from "@/components/comments/comment-island";
 import { RelatedContent } from "@/components/content/related-content";
+import PortableTextRenderer from "@/components/portable-text-renderer";
 
 export async function generateStaticParams() {
   const slugs = await fetchLivedExperienceSlugs();
@@ -90,9 +91,19 @@ export default async function LivedExperiencePage({
       )}
 
       {/* Media — format-aware (video/audio); written stories render no frame.
+          Source-aware: YouTube/Vimeo consent-gated embeds or a natively played
+          uploaded file (legacy docs derive the source from videoLink).
           Consent handled inside the player. */}
-      {le.videoLink && le.format !== "written" && (
-        <LivedExperiencePlayer url={le.videoLink} title={title || ""} locale={locale} format={le.format} />
+      {(le.videoLink || le.videoFileUrl) && le.format !== "written" && (
+        <LivedExperiencePlayer
+          url={le.videoLink}
+          title={title || ""}
+          locale={locale}
+          format={le.format}
+          videoSource={le.videoSource}
+          fileUrl={le.videoFileUrl}
+          posterUrl={le.thumbnail?.asset?.url}
+        />
       )}
 
       {/* Story — quiet noun label, the person's own framing */}
@@ -104,6 +115,14 @@ export default async function LivedExperiencePage({
           {!issue && !personContext && description && (
             <p className="text-base leading-relaxed text-foreground/90">{description}</p>
           )}
+        </section>
+      )}
+
+      {/* Long-form story body — blog-post feel: rich text + images with
+          captions (shared styled-block-content renderer). */}
+      {Array.isArray(le.body) && le.body.length > 0 && (
+        <section className="mx-auto max-w-prose">
+          <PortableTextRenderer value={le.body} locale={locale} isRTL={isRTL} />
         </section>
       )}
 

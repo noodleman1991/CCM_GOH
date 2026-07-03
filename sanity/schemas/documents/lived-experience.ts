@@ -152,8 +152,43 @@ export default defineType({
             ],
         }),
 
+        // The full story as rich text (Task E2 — "more like a blog post"):
+        // paragraphs + a few images with captions, shared with case studies /
+        // news via the styled-block-content type so the same editor + renderer
+        // work here unchanged.
+        defineField({
+            name: "body",
+            title: "Story body",
+            type: "styled-block-content",
+            group: "content",
+            description:
+                "Optional long-form story — text and images (with captions), rendered below the video.",
+        }),
+
+        // Where the video comes from (Task E2). OPTIONAL: legacy docs carry only
+        // a videoLink, and the app derives youtube/vimeo from the URL when this
+        // is absent — so existing content keeps working without a migration.
+        defineField({
+            name: "videoSource",
+            title: "Video Source",
+            type: "string",
+            group: "video",
+            options: {
+                list: [
+                    { title: "YouTube", value: "youtube" },
+                    { title: "Vimeo", value: "vimeo" },
+                    { title: "Uploaded file", value: "upload" },
+                ],
+                layout: "radio",
+            },
+            hidden: ({ parent }) => parent?.format === "written",
+            description:
+                "Optional. When empty, the source is derived from the media link (YouTube or Vimeo).",
+        }),
+
         // Video/audio URL (external link to the media platform). Required only
-        // for video/audio formats; a written story needs no media link.
+        // for video/audio formats without an uploaded file; a written story
+        // needs no media link. Accepts YouTube AND Vimeo URLs.
         defineField({
             name: "videoLink",
             title: "Media Link",
@@ -163,12 +198,34 @@ export default defineType({
             hidden: ({ parent }) => parent?.format === "written",
             validation: (Rule) =>
                 Rule.custom((value, context) => {
-                    const format = (context.parent as { format?: string })?.format;
-                    if (format !== "written" && !value) {
-                        return "A media link is required for video and audio formats.";
+                    const parent = context.parent as {
+                        format?: string;
+                        videoSource?: string;
+                        videoFile?: { asset?: { _ref?: string } };
+                    };
+                    const hasFile = Boolean(parent?.videoFile?.asset?._ref);
+                    if (
+                        parent?.format !== "written" &&
+                        parent?.videoSource !== "upload" &&
+                        !hasFile &&
+                        !value
+                    ) {
+                        return "A media link is required for video and audio formats (unless a video file is uploaded).";
                     }
                     return true;
                 }),
+        }),
+
+        // Directly uploaded video (Task E2) — used when videoSource is "upload".
+        defineField({
+            name: "videoFile",
+            title: "Video File",
+            type: "file",
+            group: "video",
+            options: { accept: "video/mp4,video/webm" },
+            hidden: ({ parent }) => parent?.format === "written",
+            description:
+                "Self-hosted video (MP4 or WebM, up to 100MB). Played natively on the site — no third-party embed or cookie consent needed.",
         }),
         
         // Video thumbnail (optional, will fallback to platform thumbnail)
