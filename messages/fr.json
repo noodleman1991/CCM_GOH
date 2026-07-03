@@ -1874,5 +1874,10 @@
         "chapter": "Chapitre"
       }
     }
+  },
+  "submitStoryBanner": {
+    "title": "Partagez votre histoire",
+    "subtitle": "Votre expérience vécue peut contribuer à orienter la recherche et l'action sur le climat et la santé mentale.",
+    "cta": "Envoyez votre histoire"
   }
 }

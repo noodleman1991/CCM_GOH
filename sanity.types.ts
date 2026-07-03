@@ -383,6 +383,29 @@ export type EventsCalendar = {
   upcomingLimit?: number;
 };
 
+// Hand-added (Task E4); keep in sync with
+// sanity/schemas/blocks/cta/submit-story-banner.ts + its projection.
+export type SubmitStoryBanner = {
+  _type: "submit-story-banner";
+  padding?: SectionPadding;
+  title?: string;
+  subtitle?: string;
+  ctaLabel?: string;
+  illustration?: {
+    asset?: {
+      _id: string;
+      url: string | null;
+      metadata: {
+        lqip: string | null;
+        dimensions: {
+          width: number | null;
+          height: number | null;
+        } | null;
+      } | null;
+    } | null;
+  };
+};
+
 export type AllPosts = {
   _type: "all-posts";
   padding?: SectionPadding;
@@ -12103,6 +12126,27 @@ export type PAGE_QUERY_RESULT = {
         title: string | null;
         description: string | null;
         upcomingLimit: number | null;
+      }
+    | {
+        _type: "submit-story-banner";
+        _key: string;
+        padding: SectionPadding | null;
+        title: string | null;
+        subtitle: string | null;
+        ctaLabel: string | null;
+        illustration: {
+          asset: {
+            _id: string;
+            url: string | null;
+            metadata: {
+              lqip: string | null;
+              dimensions: {
+                width: number | null;
+                height: number | null;
+              } | null;
+            } | null;
+          } | null;
+        } | null;
       }
     | {
         _type: "section-header";

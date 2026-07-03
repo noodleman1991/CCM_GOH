@@ -75,6 +75,7 @@ export default defineType({
         { type: "region-map" },
         { type: "people-widget" },
         { type: "events-calendar" },
+        { type: "submit-story-banner" },
       ],
       description: "Compose the homepage from reusable blocks (drag to reorder).",
     }),
