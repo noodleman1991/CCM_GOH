@@ -161,8 +161,10 @@ export default async function Homepage({ homepage, locale }: HomepageProps) {
     return null;
   }
 
-  // Preferred: render from the freeform blocks[] page-builder. The fixed-section
-  // render below is the legacy fallback during the blocks[] migration.
+  // Preferred: render ONLY the freeform blocks[] page-builder (no legacy
+  // interleave). The fixed-section render below serves docs whose blocks[] is
+  // still empty (prod safety); retire it once the production homepage content
+  // is migrated to blocks[].
   if (homepage.blocks && homepage.blocks.length > 0) {
     return (
       <div dir={rtl ? "rtl" : "ltr"}>

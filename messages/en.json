@@ -1874,5 +1874,10 @@
         "chapter": "Chapter"
       }
     }
+  },
+  "submitStoryBanner": {
+    "title": "Share your story",
+    "subtitle": "Your lived experience can help shape research and action on climate and mental health.",
+    "cta": "Submit your story"
   }
 }

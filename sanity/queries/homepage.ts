@@ -15,6 +15,7 @@ import { formNewsletterQuery } from "./forms/newsletter";
 import { regionMapQuery } from "./maps/region-map";
 import { peopleWidgetQuery } from "./people/people-widget";
 import { eventsCalendarQuery } from "./events/events-calendar";
+import { submitStoryBannerQuery } from "./cta/submit-story-banner";
 
 // Reusable blocks[] projection shared by both homepage queries (mirrors PAGE_QUERY).
 const homepageBlocksProjection = groq`
@@ -35,6 +36,7 @@ const homepageBlocksProjection = groq`
     ${regionMapQuery},
     ${peopleWidgetQuery},
     ${eventsCalendarQuery},
+    ${submitStoryBannerQuery},
   }
 `;
 
