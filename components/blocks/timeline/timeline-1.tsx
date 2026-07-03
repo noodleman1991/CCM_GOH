@@ -21,6 +21,8 @@ export default function Timeline1({
   const ref = useRef(null);
   const isInView = useInView(ref);
 
+  // Entrance (fade/rise) is handled once by the shared BlockReveal wrapper;
+  // the timeline keeps only its internal rail-dot fill animation.
   return (
     <div ref={ref} className="relative border-s-2 ps-12 lg:ps-28 py-8">
       <motion.div
@@ -43,57 +45,10 @@ export default function Timeline1({
       />
       <div>
         <h3 className="flex justify-between items-center font-semibold mb-4">
-          <motion.span
-            initial={{ opacity: 0, y: 10 }}
-            animate={
-              isInView && {
-                opacity: 1,
-                y: 0,
-              }
-            }
-            transition={{
-              duration: 0.8,
-              ease: [0.21, 0.45, 0.27, 0.9],
-              delay: 0.6,
-            }}
-          >
-            {title}
-          </motion.span>
-          <motion.span
-            initial={{ opacity: 0, y: 10 }}
-            animate={
-              isInView && {
-                opacity: 1,
-                y: 0,
-              }
-            }
-            transition={{
-              duration: 0.8,
-              ease: [0.21, 0.45, 0.27, 0.9],
-              delay: 0.6,
-            }}
-          >
-            {tagLine}
-          </motion.span>
+          <span>{title}</span>
+          <span>{tagLine}</span>
         </h3>
-        {body && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={
-              isInView && {
-                opacity: 1,
-                y: 0,
-              }
-            }
-            transition={{
-              duration: 0.8,
-              ease: [0.21, 0.45, 0.27, 0.9],
-              delay: 0.7,
-            }}
-          >
-            <PortableTextRenderer value={body} locale={locale} />
-          </motion.div>
-        )}
+        {body && <PortableTextRenderer value={body} locale={locale} />}
       </div>
     </div>
   );

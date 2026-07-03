@@ -62,7 +62,7 @@ export function BlockReveal({ children }: { children: React.ReactNode }) {
     <div
       ref={ref}
       data-revealed={revealed}
-      className="motion-safe:transition-all motion-safe:duration-700 motion-safe:ease-out data-[revealed=false]:translate-y-4 data-[revealed=false]:opacity-0"
+      className="motion-safe:transition-all motion-safe:duration-[350ms] motion-safe:ease-out data-[revealed=false]:translate-y-3 data-[revealed=false]:opacity-0"
     >
       {children}
     </div>

@@ -32,7 +32,7 @@ export function SectionHeader({
         {bar && (
           <span
             aria-hidden="true"
-            className="mt-1 h-6 w-1.5 shrink-0 rounded-full bg-ccm-water"
+            className="h-6 w-1.5 flex-none self-center rounded-full bg-ccm-water"
           />
         )}
         <div className="min-w-0">

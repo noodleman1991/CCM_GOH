@@ -7,6 +7,7 @@ import { fetchDynamicContent } from "@/lib/dynamic-queries-client";
 import { ManualContentBlock } from "./inserts/manual-content-block";
 import { DynamicContentBlock } from "./inserts/dynamic-content-block";
 import { SeparatorBlock } from "./inserts/separator-block";
+import { BlockReveal } from "./block-reveal";
 
 interface ContentFlowProps {
   sections: ContentSection[];
@@ -99,6 +100,7 @@ function ContentSection({ section, locale, userId, communitySlug }: ContentSecti
   switch (section._type) {
     case "manualContentInsert":
       return (
+        <BlockReveal key={section._key}>
         <ManualContentBlock
           title={section.title}
           content={section.content}
@@ -107,12 +109,13 @@ function ContentSection({ section, locale, userId, communitySlug }: ContentSecti
           backgroundColor={section.backgroundColor as "none" | "light-gray" | "dark-gray" | "brand-primary" | "brand-secondary"}
           padding={section.padding as "none" | "small" | "medium" | "large"}
           locale={locale}
-          key={section._key}
         />
+        </BlockReveal>
       );
 
     case "dynamicContentInsert":
       return (
+        <BlockReveal key={section._key}>
         <DynamicContentBlock
           section={section}
           data={dynamicData}
@@ -121,16 +124,15 @@ function ContentSection({ section, locale, userId, communitySlug }: ContentSecti
           locale={locale}
           userId={userId}
           communitySlug={communitySlug}
-          key={section._key}
         />
+        </BlockReveal>
       );
 
     case "separatorBlock":
       return (
-        <SeparatorBlock
-          {...section}
-          key={section._key}
-        />
+        <BlockReveal key={section._key}>
+        <SeparatorBlock {...(section as React.ComponentProps<typeof SeparatorBlock>)} />
+        </BlockReveal>
       );
 
     // Handle existing block types - these should be rendered by parent server component
