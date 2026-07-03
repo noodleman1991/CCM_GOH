@@ -1851,7 +1851,8 @@
     "statusRevision": "Needs changes",
     "statusApproved": "Published",
     "remove": "Remove",
-    "removeConfirm": "Remove this output from the workspace? The draft itself is not deleted."
+    "removeConfirm": "Remove this output from the workspace? The draft itself is not deleted.",
+    "pendingHint": "Will link here once published"
   },
   "projectPublic": {
     "aboutHeading": "About this project",

@@ -1851,7 +1851,8 @@
     "statusRevision": "بحاجة لتعديل",
     "statusApproved": "منشور",
     "remove": "إزالة",
-    "removeConfirm": "إزالة هذا المُخرَج من المساحة؟ لن تُحذف المسودة نفسها."
+    "removeConfirm": "إزالة هذا المُخرَج من المساحة؟ لن تُحذف المسودة نفسها.",
+    "pendingHint": "سيظهر الرابط هنا بعد النشر"
   },
   "projectPublic": {
     "aboutHeading": "About this project",

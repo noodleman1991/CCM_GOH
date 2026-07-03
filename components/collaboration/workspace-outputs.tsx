@@ -3,13 +3,14 @@
 import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
+import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { SectionHeader } from "@/components/ui/section-header";
-import { OUTPUT_TYPES } from "@/lib/collaboration/outputs";
+import { OUTPUT_TYPES, outputDetailHref } from "@/lib/collaboration/outputs";
 import { addOutput, removeOutput } from "@/lib/actions/workspace-outputs";
 
-type Output = { id: string; sanityId: string; sanityType: string; title: string; status: string };
+type Output = { id: string; sanityId: string; sanityType: string; title: string; status: string; slug: string | null };
 
 const STATUS_BADGE: Record<string, { key: string; cls: string }> = {
   draft: { key: "statusDraft", cls: "bg-muted text-muted-foreground" },
@@ -62,12 +63,24 @@ export default function WorkspaceOutputs({
           {outputs.map((o) => {
             const def = OUTPUT_TYPES.find((d) => d.type === o.sanityType);
             const badge = STATUS_BADGE[o.status] ?? STATUS_BADGE.draft;
+            const published = o.status === "approved" && !!o.slug;
             return (
               <Card key={o.id} className="space-y-2 p-4">
                 <span className="inline-block rounded-full bg-ccm-sky/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-ccm-sea">
                   {def?.label ?? o.sanityType}
                 </span>
-                <p className="font-medium text-ccm-midnight">{o.title}</p>
+                {published ? (
+                  <Link
+                    href={outputDetailHref(o.sanityType, o.slug!)}
+                    className="block font-medium text-ccm-midnight underline-offset-2 hover:underline"
+                  >
+                    <bdi>{o.title}</bdi>
+                  </Link>
+                ) : (
+                  <p className="font-medium text-ccm-midnight">
+                    <bdi>{o.title}</bdi>
+                  </p>
+                )}
                 <div className="flex items-center justify-between">
                   <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${badge.cls}`}>{t(badge.key)}</span>
                   {canEdit && (
@@ -80,6 +93,7 @@ export default function WorkspaceOutputs({
                     </button>
                   )}
                 </div>
+                {!published && <p className="text-xs text-muted-foreground">{t("pendingHint")}</p>}
               </Card>
             );
           })}

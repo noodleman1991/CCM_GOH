@@ -1851,7 +1851,8 @@
     "statusRevision": "À corriger",
     "statusApproved": "Publié",
     "remove": "Retirer",
-    "removeConfirm": "Retirer cette production de l’espace ? Le brouillon n’est pas supprimé."
+    "removeConfirm": "Retirer cette production de l’espace ? Le brouillon n’est pas supprimé.",
+    "pendingHint": "Le lien apparaîtra ici après publication"
   },
   "projectPublic": {
     "aboutHeading": "About this project",

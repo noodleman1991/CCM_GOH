@@ -63,7 +63,7 @@ type PlanStageProp = {
 
 type DocProp = { id: string; title: string; content: unknown; updatedAt: string };
 
-type OutputProp = { id: string; sanityId: string; sanityType: string; title: string; status: string };
+type OutputProp = { id: string; sanityId: string; sanityType: string; title: string; status: string; slug: string | null };
 type ActivityProp = { kind: string; summary: string; at: string };
 
 type Section = "overview" | "plan" | "outputs" | "docs" | "threads" | "files" | "media" | "members";
