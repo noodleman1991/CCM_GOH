@@ -313,7 +313,7 @@ export function AtlasExplorer({
             defense-in-depth for hybrid devices (e.g. touch + mouse). */}
         {hoverDatum && (
           <div
-            className="pointer-coarse:hidden absolute inset-x-3 top-3 z-10 rounded-lg border bg-card/95 px-3 py-2 shadow-md backdrop-blur-sm"
+            className="pointer-coarse:hidden pointer-events-none absolute inset-x-3 top-3 z-10 rounded-lg border bg-card/95 px-3 py-2 shadow-md backdrop-blur-sm"
             role="status"
           >
             <p className="truncate text-sm font-bold text-ccm-midnight">
