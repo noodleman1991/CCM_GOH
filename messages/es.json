@@ -1776,5 +1776,103 @@
     "precisionHint": "El mapa nunca muestra más detalle del que elijas. \"Solo región\" lo excluye por completo del mapa de puntos.",
     "displayLabel": "Se muestra como",
     "clear": "Quitar ubicación"
+  },
+  "editor": {
+    "hint": "Escribe / para insertar bloques: títulos, imágenes, vídeo y más",
+    "charCountSuffix": "caracteres",
+    "link": {
+      "promptUrl": "Introduce una URL"
+    },
+    "image": {
+      "insertLabel": "Insertar imagen",
+      "uploadFailed": "No se pudo subir la imagen. Inténtalo de nuevo.",
+      "altLabel": "Texto alternativo",
+      "altPlaceholder": "Describe la imagen para lectores de pantalla",
+      "altRequiredHint": "Añade un texto alternativo para que todas las personas puedan entender la imagen.",
+      "captionLabel": "Leyenda",
+      "captionPlaceholder": "Añade una leyenda (opcional)"
+    },
+    "slashMenu": {
+      "label": "Insertar un bloque",
+      "empty": "Ningún bloque coincide con tu búsqueda",
+      "groupInsert": "Insertar",
+      "items": {
+        "heading2": {
+          "label": "Título 2",
+          "hint": "Encabezado grande de sección"
+        },
+        "heading3": {
+          "label": "Título 3",
+          "hint": "Encabezado mediano de sección"
+        },
+        "heading4": {
+          "label": "Título 4",
+          "hint": "Encabezado pequeño de sección"
+        },
+        "bulletList": {
+          "label": "Lista con viñetas",
+          "hint": "Una lista sencilla con viñetas"
+        },
+        "orderedList": {
+          "label": "Lista numerada",
+          "hint": "Una lista con numeración"
+        },
+        "image": {
+          "label": "Imagen",
+          "hint": "Sube una imagen con leyenda"
+        },
+        "youtube": {
+          "label": "YouTube",
+          "hint": "Inserta un vídeo de YouTube"
+        },
+        "quote": {
+          "label": "Cita",
+          "hint": "Destaca una cita"
+        },
+        "infoBox": {
+          "label": "Cuadro informativo",
+          "hint": "Aviso para consejos o advertencias"
+        },
+        "break": {
+          "label": "Separador de sección",
+          "hint": "Divisor visual entre secciones"
+        }
+      }
+    },
+    "toolbar": {
+      "label": "Opciones del bloque",
+      "delete": "Eliminar bloque",
+      "placement": {
+        "full": "Ancho completo",
+        "wide": "Ancho",
+        "start": "Alinear al inicio",
+        "end": "Alinear al final",
+        "center": "Centrado"
+      }
+    },
+    "youtube": {
+      "urlPlaceholder": "Pega un enlace de YouTube…",
+      "confirm": "Añadir vídeo",
+      "invalidUrl": "No parece un enlace de YouTube. Prueba con la URL completa del vídeo.",
+      "captionLabel": "Leyenda",
+      "captionPlaceholder": "Añade una leyenda (opcional)"
+    },
+    "infoBox": {
+      "variantLabel": "Estilo del cuadro",
+      "variant": {
+        "info": "Información",
+        "warning": "Advertencia",
+        "success": "Éxito"
+      }
+    },
+    "break": {
+      "styleLabel": "Estilo del separador",
+      "style": {
+        "hr": "Línea",
+        "readMore": "Puntos",
+        "section": "Sección",
+        "chapter": "Capítulo"
+      }
+    }
   }
 }

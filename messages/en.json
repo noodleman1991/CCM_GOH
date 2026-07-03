@@ -1776,5 +1776,103 @@
     "precisionHint": "The map never shows finer than your choice. \"Region only\" keeps this off the pin map entirely.",
     "displayLabel": "Displayed as",
     "clear": "Remove location"
+  },
+  "editor": {
+    "hint": "Type / for blocks — headings, images, video and more",
+    "charCountSuffix": "characters",
+    "link": {
+      "promptUrl": "Enter a URL"
+    },
+    "image": {
+      "insertLabel": "Insert image",
+      "uploadFailed": "Image upload failed. Please try again.",
+      "altLabel": "Alternative text",
+      "altPlaceholder": "Describe the image for screen readers",
+      "altRequiredHint": "Please add alt text so everyone can understand the image.",
+      "captionLabel": "Caption",
+      "captionPlaceholder": "Add a caption (optional)"
+    },
+    "slashMenu": {
+      "label": "Insert a block",
+      "empty": "No blocks match your search",
+      "groupInsert": "Insert",
+      "items": {
+        "heading2": {
+          "label": "Heading 2",
+          "hint": "Large section heading"
+        },
+        "heading3": {
+          "label": "Heading 3",
+          "hint": "Medium section heading"
+        },
+        "heading4": {
+          "label": "Heading 4",
+          "hint": "Small section heading"
+        },
+        "bulletList": {
+          "label": "Bulleted list",
+          "hint": "A simple list with bullets"
+        },
+        "orderedList": {
+          "label": "Numbered list",
+          "hint": "A list with numbering"
+        },
+        "image": {
+          "label": "Image",
+          "hint": "Upload an image with a caption"
+        },
+        "youtube": {
+          "label": "YouTube",
+          "hint": "Embed a YouTube video"
+        },
+        "quote": {
+          "label": "Quote",
+          "hint": "Highlight a quotation"
+        },
+        "infoBox": {
+          "label": "Info box",
+          "hint": "Callout for tips or warnings"
+        },
+        "break": {
+          "label": "Section break",
+          "hint": "Visual divider between sections"
+        }
+      }
+    },
+    "toolbar": {
+      "label": "Block options",
+      "delete": "Delete block",
+      "placement": {
+        "full": "Full width",
+        "wide": "Wide",
+        "start": "Align to the start",
+        "end": "Align to the end",
+        "center": "Centered"
+      }
+    },
+    "youtube": {
+      "urlPlaceholder": "Paste a YouTube link…",
+      "confirm": "Add video",
+      "invalidUrl": "That doesn't look like a YouTube link. Try the full video URL.",
+      "captionLabel": "Caption",
+      "captionPlaceholder": "Add a caption (optional)"
+    },
+    "infoBox": {
+      "variantLabel": "Info box style",
+      "variant": {
+        "info": "Info",
+        "warning": "Warning",
+        "success": "Success"
+      }
+    },
+    "break": {
+      "styleLabel": "Break style",
+      "style": {
+        "hr": "Line",
+        "readMore": "Dots",
+        "section": "Section",
+        "chapter": "Chapter"
+      }
+    }
   }
 }

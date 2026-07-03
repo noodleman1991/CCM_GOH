@@ -164,6 +164,9 @@ importers:
       '@tailwindcss/typography':
         specifier: ^0.5.16
         version: 0.5.19(tailwindcss@4.1.18)
+      '@tiptap/core':
+        specifier: ^3.14.0
+        version: 3.14.0(@tiptap/pm@3.14.0)
       '@tiptap/extension-heading':
         specifier: ^3.7.2
         version: 3.14.0(@tiptap/core@3.14.0(@tiptap/pm@3.14.0))
@@ -179,6 +182,9 @@ importers:
       '@tiptap/starter-kit':
         specifier: ^3.7.2
         version: 3.14.0
+      '@tiptap/suggestion':
+        specifier: ^3.14.0
+        version: 3.14.0(@tiptap/core@3.14.0(@tiptap/pm@3.14.0))(@tiptap/pm@3.14.0)
       '@types/react-syntax-highlighter':
         specifier: ^15.5.13
         version: 15.5.13
@@ -5531,6 +5537,12 @@ packages:
 
   '@tiptap/starter-kit@3.14.0':
     resolution: {integrity: sha512-fHsC4oDVzvMU9btg+IUmu/eqPquapjJ341qaNI7cCeSCKjjE6XJEN6WcONLAVId2OZUwML0IX1Jgl+6gJxU9Jw==}
+
+  '@tiptap/suggestion@3.14.0':
+    resolution: {integrity: sha512-B9BQ9Tck8HsISDc6jZmtaSpl8KK69JbKHfU0ntILxgj8aBASElewO+W8WE49JSTxuyJGRgnhGSgaGpM4LhbLAg==}
+    peerDependencies:
+      '@tiptap/core': ^3.14.0
+      '@tiptap/pm': ^3.14.0
 
   '@tybys/wasm-util@0.10.1':
     resolution: {integrity: sha512-9tTaPJLSiejZKx+Bmog4uSubteqTvFrVrURwkmHixBo0G4seD0zUxp98E1DzUBJxLQ3NPwXrGKDiVjwx/DpPsg==}
@@ -16667,6 +16679,11 @@ snapshots:
       '@tiptap/extension-text': 3.14.0(@tiptap/core@3.14.0(@tiptap/pm@3.14.0))
       '@tiptap/extension-underline': 3.14.0(@tiptap/core@3.14.0(@tiptap/pm@3.14.0))
       '@tiptap/extensions': 3.14.0(@tiptap/core@3.14.0(@tiptap/pm@3.14.0))(@tiptap/pm@3.14.0)
+      '@tiptap/pm': 3.14.0
+
+  '@tiptap/suggestion@3.14.0(@tiptap/core@3.14.0(@tiptap/pm@3.14.0))(@tiptap/pm@3.14.0)':
+    dependencies:
+      '@tiptap/core': 3.14.0(@tiptap/pm@3.14.0)
       '@tiptap/pm': 3.14.0
 
   '@tybys/wasm-util@0.10.1':

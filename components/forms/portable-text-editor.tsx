@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import Image from '@tiptap/extension-image';
 import Link from '@tiptap/extension-link';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import {
     Bold,
@@ -17,9 +18,19 @@ import {
     LinkIcon,
     ImageIcon,
     Undo,
-    Redo
+    Redo,
+    Loader2
 } from 'lucide-react';
-import { v4 as uuidv4 } from 'uuid';
+import { tiptapToPortableText, portableTextToTiptap } from '@/components/forms/editor/pt-convert';
+import { SlashMenu } from '@/components/forms/editor/slash-menu';
+import { DEFAULT_SLASH_MENU_ITEMS, type SlashMenuItemId } from '@/components/forms/editor/slash-menu-list';
+import { EditorImage } from '@/components/forms/editor/nodes/image-node';
+import { Youtube } from '@/components/forms/editor/nodes/youtube-node';
+import { InfoBox } from '@/components/forms/editor/nodes/info-box-node';
+import { Break } from '@/components/forms/editor/nodes/break-node';
+import { uploadEditorImage, ImageUploadError } from '@/components/forms/editor/upload';
+
+export { tiptapToPortableText, portableTextToTiptap };
 
 interface PortableTextEditorProps {
     value: any[]; // Portable Text array
@@ -27,249 +38,10 @@ interface PortableTextEditorProps {
     placeholder?: string;
     language?: string;
     maxLength?: number;
-}
-
-/**
- * Convert Tiptap JSON to Sanity Portable Text
- */
-function tiptapToPortableText(doc: any): any[] {
-    if (!doc || !doc.content) return [];
-
-    const portableText: any[] = [];
-
-    doc.content.forEach((node: any) => {
-        if (node.type === 'paragraph') {
-            const block: any = {
-                _type: 'block',
-                _key: uuidv4(),
-                style: 'normal',
-                children: [],
-                markDefs: []
-            };
-
-            if (node.content) {
-                node.content.forEach((child: any) => {
-                    if (child.type === 'text') {
-                        const marks: string[] = [];
-                        if (child.marks) {
-                            child.marks.forEach((mark: any) => {
-                                if (mark.type === 'bold') marks.push('strong');
-                                if (mark.type === 'italic') marks.push('em');
-                                if (mark.type === 'link') {
-                                    const markDef = {
-                                        _key: uuidv4(),
-                                        _type: 'link',
-                                        href: mark.attrs.href
-                                    };
-                                    block.markDefs.push(markDef);
-                                    marks.push(markDef._key);
-                                }
-                            });
-                        }
-
-                        block.children.push({
-                            _type: 'span',
-                            _key: uuidv4(),
-                            text: child.text || '',
-                            marks
-                        });
-                    } else if (child.type === 'image') {
-                        // Handle inline images
-                        portableText.push({
-                            _type: 'image',
-                            _key: uuidv4(),
-                            asset: {
-                                _type: 'reference',
-                                _ref: child.attrs.src // This will be the temporary URL, needs to be uploaded
-                            },
-                            alt: child.attrs.alt || ''
-                        });
-                    }
-                });
-            }
-
-            if (block.children.length > 0) {
-                portableText.push(block);
-            }
-        } else if (node.type === 'heading') {
-            const level = node.attrs.level;
-            const style = level === 2 ? 'h2' : level === 3 ? 'h3' : level === 4 ? 'h4' : 'normal';
-
-            const block: any = {
-                _type: 'block',
-                _key: uuidv4(),
-                style,
-                children: [],
-                markDefs: []
-            };
-
-            if (node.content) {
-                node.content.forEach((child: any) => {
-                    if (child.type === 'text') {
-                        const marks: string[] = [];
-                        if (child.marks) {
-                            child.marks.forEach((mark: any) => {
-                                if (mark.type === 'bold') marks.push('strong');
-                                if (mark.type === 'italic') marks.push('em');
-                            });
-                        }
-
-                        block.children.push({
-                            _type: 'span',
-                            _key: uuidv4(),
-                            text: child.text || '',
-                            marks
-                        });
-                    }
-                });
-            }
-
-            portableText.push(block);
-        } else if (node.type === 'bulletList') {
-            node.content?.forEach((listItem: any) => {
-                const block: any = {
-                    _type: 'block',
-                    _key: uuidv4(),
-                    style: 'normal',
-                    listItem: 'bullet',
-                    children: [],
-                    markDefs: []
-                };
-
-                listItem.content?.forEach((para: any) => {
-                    para.content?.forEach((child: any) => {
-                        if (child.type === 'text') {
-                            block.children.push({
-                                _type: 'span',
-                                _key: uuidv4(),
-                                text: child.text || '',
-                                marks: []
-                            });
-                        }
-                    });
-                });
-
-                portableText.push(block);
-            });
-        } else if (node.type === 'orderedList') {
-            node.content?.forEach((listItem: any) => {
-                const block: any = {
-                    _type: 'block',
-                    _key: uuidv4(),
-                    style: 'normal',
-                    listItem: 'number',
-                    children: [],
-                    markDefs: []
-                };
-
-                listItem.content?.forEach((para: any) => {
-                    para.content?.forEach((child: any) => {
-                        if (child.type === 'text') {
-                            block.children.push({
-                                _type: 'span',
-                                _key: uuidv4(),
-                                text: child.text || '',
-                                marks: []
-                            });
-                        }
-                    });
-                });
-
-                portableText.push(block);
-            });
-        } else if (node.type === 'image') {
-            portableText.push({
-                _type: 'image',
-                _key: uuidv4(),
-                asset: {
-                    _type: 'reference',
-                    _ref: node.attrs.src
-                },
-                alt: node.attrs.alt || ''
-            });
-        }
-    });
-
-    return portableText;
-}
-
-/**
- * Convert Sanity Portable Text to Tiptap JSON
- */
-function portableTextToTiptap(portableText: any): any {
-    // Defensive check: ensure input is actually an array
-    if (!portableText || !Array.isArray(portableText) || portableText.length === 0) {
-        return {
-            type: 'doc',
-            content: []
-        };
-    }
-
-    const content: any[] = [];
-
-    portableText.forEach((block: any) => {
-        if (block._type === 'block') {
-            let nodeType = 'paragraph';
-            const attrs: any = {};
-
-            if (block.style === 'h2') {
-                nodeType = 'heading';
-                attrs.level = 2;
-            } else if (block.style === 'h3') {
-                nodeType = 'heading';
-                attrs.level = 3;
-            } else if (block.style === 'h4') {
-                nodeType = 'heading';
-                attrs.level = 4;
-            }
-
-            const children: any[] = [];
-
-            block.children?.forEach((child: any) => {
-                if (child._type === 'span') {
-                    const marks: any[] = [];
-
-                    child.marks?.forEach((mark: string) => {
-                        if (mark === 'strong') marks.push({ type: 'bold' });
-                        if (mark === 'em') marks.push({ type: 'italic' });
-                        // Handle link marks
-                        const linkMark = block.markDefs?.find((def: any) => def._key === mark);
-                        if (linkMark && linkMark._type === 'link') {
-                            marks.push({
-                                type: 'link',
-                                attrs: { href: linkMark.href }
-                            });
-                        }
-                    });
-
-                    children.push({
-                        type: 'text',
-                        text: child.text,
-                        marks: marks.length > 0 ? marks : undefined
-                    });
-                }
-            });
-
-            content.push({
-                type: nodeType,
-                attrs,
-                content: children.length > 0 ? children : undefined
-            });
-        } else if (block._type === 'image') {
-            content.push({
-                type: 'image',
-                attrs: {
-                    src: block.asset._ref,
-                    alt: block.alt || ''
-                }
-            });
-        }
-    });
-
-    return {
-        type: 'doc',
-        content
-    };
+    /** Which slash-menu blocks to offer. Defaults to all five insert-group items (headings/lists count as baseline, not gated). */
+    enabledBlocks?: SlashMenuItemId[];
+    /** Passed to the upload endpoint so it can authorize against a workspace membership (workspace docs only). */
+    collaborationId?: string;
 }
 
 export default function PortableTextEditor({
@@ -277,9 +49,14 @@ export default function PortableTextEditor({
     onChangeAction,
     placeholder,
     language = 'en',
-    maxLength = 20000
+    maxLength = 20000,
+    enabledBlocks = DEFAULT_SLASH_MENU_ITEMS,
+    collaborationId
 }: PortableTextEditorProps) {
+    const t = useTranslations('editor');
     const isRTL = language === 'ar';
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [uploading, setUploading] = useState(false);
 
     const editor = useEditor({
         immediatelyRender: false, // Prevents SSR hydration errors in Next.js
@@ -289,15 +66,25 @@ export default function PortableTextEditor({
                     levels: [2, 3, 4]
                 }
             }),
-            Image.configure({
-                inline: true,
-                allowBase64: true
+            EditorImage.configure({
+                inline: false,
+                allowBase64: false
             }),
             Link.configure({
                 openOnClick: false,
                 HTMLAttributes: {
                     class: 'text-ccm-water underline'
                 }
+            }),
+            Youtube,
+            InfoBox,
+            Break,
+            SlashMenu.configure({
+                enabledBlocks,
+                labels: Object.fromEntries(
+                    enabledBlocks.map((id) => [id, t(`slashMenu.items.${id}.label`)])
+                ),
+                onInsertImage: () => fileInputRef.current?.click()
             })
         ],
         content: portableTextToTiptap(value),
@@ -314,19 +101,49 @@ export default function PortableTextEditor({
         }
     });
 
-    const addImage = useCallback(() => {
-        const url = window.prompt('Enter image URL:');
-        if (url && editor) {
-            editor.chain().focus().setImage({ src: url }).run();
-        }
-    }, [editor]);
+    const insertUploadedImage = useCallback(
+        async (file: File) => {
+            if (!editor) return;
+            setUploading(true);
+            try {
+                const uploaded = await uploadEditorImage(file, collaborationId);
+                editor
+                    .chain()
+                    .focus()
+                    .setImage({
+                        src: uploaded.url,
+                        // @ts-expect-error -- EditorImage's extra attrs aren't in tiptap's base SetImageOptions type
+                        assetRef: uploaded.assetRef,
+                        width: uploaded.width,
+                        height: uploaded.height,
+                        lqip: uploaded.lqip
+                    })
+                    .run();
+            } catch (err) {
+                const message = err instanceof ImageUploadError ? err.message : t('image.uploadFailed');
+                toast.error(message);
+            } finally {
+                setUploading(false);
+            }
+        },
+        [editor, collaborationId, t]
+    );
+
+    const onFileChange = useCallback(
+        (e: React.ChangeEvent<HTMLInputElement>) => {
+            const file = e.target.files?.[0];
+            e.target.value = ''; // allow re-selecting the same file
+            if (file) void insertUploadedImage(file);
+        },
+        [insertUploadedImage]
+    );
 
     const setLink = useCallback(() => {
-        const url = window.prompt('Enter URL:');
+        const url = window.prompt(t('link.promptUrl'));
         if (url && editor) {
             editor.chain().focus().setLink({ href: url }).run();
         }
-    }, [editor]);
+    }, [editor, t]);
 
     if (!editor) {
         return null;
@@ -336,6 +153,15 @@ export default function PortableTextEditor({
 
     return (
         <div className="border rounded-lg overflow-hidden">
+            <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/gif"
+                className="hidden"
+                onChange={onFileChange}
+                aria-hidden="true"
+                tabIndex={-1}
+            />
             {/* Toolbar */}
             <div className="border-b bg-muted/30 p-2 flex flex-wrap gap-1">
                 <Button
@@ -423,9 +249,11 @@ export default function PortableTextEditor({
                     type="button"
                     variant="ghost"
                     size="sm"
-                    onClick={addImage}
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={uploading}
+                    aria-label={t('image.insertLabel')}
                 >
-                    <ImageIcon className="w-4 h-4" />
+                    {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ImageIcon className="w-4 h-4" />}
                 </Button>
 
                 <div className="w-px h-6 bg-border mx-1" />
@@ -455,9 +283,9 @@ export default function PortableTextEditor({
 
             {/* Footer */}
             <div className="border-t p-2 text-xs text-muted-foreground flex justify-between">
-                <span>Use the toolbar to format your content</span>
+                <span>{t('hint')}</span>
                 <span className={charCount > maxLength ? 'text-destructive' : ''}>
-                    {charCount}/{maxLength} characters
+                    {charCount}/{maxLength} {t('charCountSuffix')}
                 </span>
             </div>
         </div>
