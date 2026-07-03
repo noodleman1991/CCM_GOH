@@ -53,6 +53,9 @@ export interface CaseStudyFormData {
     relatedCommunity?: string
     image?: File
     imagePreview?: string
+    // Set when the form was opened from a workspace (?workspace=) — the submit
+    // API links the created doc back as a workspace output.
+    collaborationId?: string
 }
 
 export interface CaseStudyStore {

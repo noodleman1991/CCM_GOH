@@ -7,6 +7,7 @@ import {
   LE_VIDEO_MAX_BYTES,
   LE_VIDEO_MIME_TYPES,
 } from "@/lib/validation/lived-experience";
+import { addOutput } from "@/lib/actions/workspace-outputs";
 
 /**
  * User submission of a lived experience. Creates a PENDING livedExperience for
@@ -127,6 +128,20 @@ export async function POST(request: NextRequest) {
     }
 
     const created = await writeClient.create(doc);
+
+    // Submitted from a workspace: link the new doc as a workspace output.
+    // addOutput enforces collab authz itself; a failed link never fails the submission.
+    if (data.collaborationId) {
+      const linked = await addOutput({
+        collaborationId: data.collaborationId,
+        sanityType: "livedExperience",
+        mode: "link",
+        sanityId: created._id,
+        title: data.title,
+      });
+      if (!linked.ok) console.warn(`Workspace link failed for ${created._id}: ${linked.error}`);
+    }
+
     return NextResponse.json({ success: true, id: created._id });
   } catch (error) {
     console.error("Lived experience submission failed:", error);

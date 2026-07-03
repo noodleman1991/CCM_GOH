@@ -41,9 +41,11 @@ type Community = { _id: string; name: any; slug?: { current: string } }
 export function LivedExperienceForm({
   availableTags,
   regionalCommunities,
+  workspaceId,
 }: {
   availableTags: Tag[]
   regionalCommunities: Community[]
+  workspaceId?: string | null
 }) {
   const t = useTranslations("livedExperienceSubmission")
   const locale = useLocale() as "en" | "es" | "fr" | "ar"
@@ -125,7 +127,7 @@ export function LivedExperienceForm({
       // Multipart: JSON payload in `data` + the optional video file — the
       // same shape the case-study submit route uses for its image.
       const formData = new FormData()
-      formData.append("data", JSON.stringify({ ...values, language: locale }))
+      formData.append("data", JSON.stringify({ ...values, language: locale, ...(workspaceId ? { collaborationId: workspaceId } : {}) }))
       if (values.videoSource === "upload" && videoFile) {
         formData.append("video", videoFile)
       }
