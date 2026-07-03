@@ -1,23 +1,32 @@
 "use client"
 
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useRouter } from "@/i18n/navigation"
 import { useTranslations, useLocale } from "next-intl"
 import { toast } from "sonner"
-import { Loader2, Send } from "lucide-react"
+import { CheckCircle2, Loader2, Send, Upload, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { FilterChip } from "@/components/ui/filter-chip"
+import PortableTextEditor from "@/components/forms/portable-text-editor"
 import { getLocalizedText } from "@/lib/localization-utils"
 import { cn } from "@/lib/utils"
 import { heading } from "@/lib/design-tokens"
-import { makeLivedExperienceSchema, livedExperienceSubmissionSchema } from "@/lib/validation/lived-experience"
+import {
+  makeLivedExperienceSchema,
+  livedExperienceSubmissionSchema,
+  LE_VIDEO_MAX_BYTES,
+  LE_VIDEO_MIME_TYPES,
+} from "@/lib/validation/lived-experience"
+import { youtubeId } from "@/lib/youtube"
+import { vimeoId } from "@/lib/vimeo"
 import { useMemo } from "react"
 import type { z } from "zod"
 
@@ -40,6 +49,12 @@ export function LivedExperienceForm({
   const router = useRouter()
   const [submitting, setSubmitting] = useState(false)
 
+  // Direct-upload state (the file travels outside react-hook-form, as
+  // multipart alongside the JSON payload — the case-study image pattern).
+  const [videoFile, setVideoFile] = useState<File | null>(null)
+  const [fileError, setFileError] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
   // Localized schema so validation errors show in the user's language.
   const schema = useMemo(
     () =>
@@ -48,6 +63,8 @@ export function LivedExperienceForm({
         descriptionMin: t("validation.descriptionMin"),
         issueMin: t("validation.issueMin"),
         videoUrl: t("validation.videoUrl"),
+        youtubeUrl: t("validation.youtubeUrl"),
+        vimeoUrl: t("validation.vimeoUrl"),
       }),
     [t]
   )
@@ -59,12 +76,33 @@ export function LivedExperienceForm({
       description: "",
       issue: "",
       personContext: "",
+      videoSource: "youtube",
       videoLink: "",
+      body: [],
       regionalCommunityId: "",
       tagIds: [],
       language: locale,
     },
   })
+
+  const videoSource = form.watch("videoSource") || "youtube"
+  const videoLink = form.watch("videoLink") || ""
+  const youtubeVideoId = videoSource === "youtube" ? youtubeId(videoLink) : null
+  const vimeoVideoId = videoSource === "vimeo" ? vimeoId(videoLink) : null
+
+  const onSelectFile = (file: File | null) => {
+    setFileError(null)
+    if (!file) return
+    if (!LE_VIDEO_MIME_TYPES.includes(file.type)) {
+      setFileError(t("video.fileWrongType"))
+      return
+    }
+    if (file.size > LE_VIDEO_MAX_BYTES) {
+      setFileError(t("video.fileTooLarge"))
+      return
+    }
+    setVideoFile(file)
+  }
 
   const selectedTags = form.watch("tagIds") || []
   const toggleTag = (id: string) => {
@@ -77,12 +115,22 @@ export function LivedExperienceForm({
   }
 
   async function onSubmit(values: LEFormValues) {
+    if (values.videoSource === "upload" && !videoFile) {
+      setFileError(t("video.fileRequired"))
+      return
+    }
     setSubmitting(true)
     try {
+      // Multipart: JSON payload in `data` + the optional video file — the
+      // same shape the case-study submit route uses for its image.
+      const formData = new FormData()
+      formData.append("data", JSON.stringify({ ...values, language: locale }))
+      if (values.videoSource === "upload" && videoFile) {
+        formData.append("video", videoFile)
+      }
       const res = await fetch("/api/lived-experiences/submit", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...values, language: locale }),
+        body: formData,
       })
       if (!res.ok) {
         const err = await res.json().catch(() => ({}))
@@ -120,14 +168,123 @@ export function LivedExperienceForm({
                 </FormItem>
               )} />
 
-              <FormField control={form.control} name="videoLink" render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("fields.videoLink")}</FormLabel>
-                  <FormControl><Input {...field} placeholder="https://youtube.com/watch?v=…" /></FormControl>
-                  <FormDescription>{t("fields.videoLinkHelp")}</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )} />
+              {/* Video — three sources: direct upload / YouTube / Vimeo. */}
+              <div className="space-y-2">
+                <FormLabel>{t("fields.videoLink")}</FormLabel>
+                <Tabs
+                  value={videoSource}
+                  onValueChange={(v) => {
+                    form.setValue("videoSource", v as LEFormValues["videoSource"], { shouldDirty: true })
+                    form.clearErrors("videoLink")
+                    setFileError(null)
+                  }}
+                >
+                  <TabsList className="h-auto w-full flex-wrap gap-1">
+                    <TabsTrigger value="upload" className="h-auto min-h-11 px-3">
+                      {t("video.uploadVideo")}
+                    </TabsTrigger>
+                    <TabsTrigger value="youtube" className="h-auto min-h-11 px-3">
+                      {t("video.youtubeLink")}
+                    </TabsTrigger>
+                    <TabsTrigger value="vimeo" className="h-auto min-h-11 px-3">
+                      {t("video.vimeoLink")}
+                    </TabsTrigger>
+                  </TabsList>
+
+                  <TabsContent value="upload" className="space-y-2">
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept={LE_VIDEO_MIME_TYPES.join(",")}
+                      className="hidden"
+                      aria-hidden="true"
+                      tabIndex={-1}
+                      onChange={(e) => {
+                        onSelectFile(e.target.files?.[0] ?? null)
+                        e.target.value = ""
+                      }}
+                    />
+                    {videoFile ? (
+                      <div className="flex min-h-11 items-center gap-3 rounded-lg border bg-muted/30 px-3 py-2">
+                        <Upload className="size-4 shrink-0 text-ccm-sea" aria-hidden="true" />
+                        <span className="min-w-0 flex-1 truncate text-sm">
+                          <bdi>{videoFile.name}</bdi>{" "}
+                          <span className="text-muted-foreground">
+                            ({(videoFile.size / (1024 * 1024)).toFixed(1)} MB)
+                          </span>
+                        </span>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className="min-h-11 shrink-0"
+                          onClick={() => { setVideoFile(null); setFileError(null) }}
+                        >
+                          <X className="size-4 me-1" aria-hidden="true" />
+                          {t("video.removeFile")}
+                        </Button>
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="flex min-h-24 w-full flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-border p-4 text-center transition-colors hover:border-ccm-sea/50 hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      >
+                        <Upload className="size-5 text-muted-foreground" aria-hidden="true" />
+                        <span className="text-sm font-medium">{t("video.chooseFile")}</span>
+                        <span className="text-xs text-muted-foreground">{t("video.fileHint")}</span>
+                      </button>
+                    )}
+                    {fileError && <p className="text-sm text-destructive">{fileError}</p>}
+                    {videoFile && <p className="text-xs text-muted-foreground">{t("video.fileHint")}</p>}
+                  </TabsContent>
+
+                  <TabsContent value="youtube" className="space-y-2">
+                    <FormField control={form.control} name="videoLink" render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input {...field} inputMode="url" dir="ltr" placeholder="https://www.youtube.com/watch?v=…" />
+                        </FormControl>
+                        <FormDescription>{t("fields.videoLinkHelp")}</FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
+                    {youtubeVideoId && (
+                      <div className="space-y-1.5">
+                        <p className="flex items-center gap-1.5 text-sm text-ccm-sea">
+                          <CheckCircle2 className="size-4 shrink-0" aria-hidden="true" />
+                          {t("video.youtubeValid")}
+                        </p>
+                        {/* img.youtube.com is the CSP-allowed YouTube thumb host. */}
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={`https://img.youtube.com/vi/${youtubeVideoId}/hqdefault.jpg`}
+                          alt={t("video.youtubePreviewAlt")}
+                          className="aspect-video w-full max-w-xs rounded-lg border object-cover"
+                        />
+                      </div>
+                    )}
+                  </TabsContent>
+
+                  <TabsContent value="vimeo" className="space-y-2">
+                    <FormField control={form.control} name="videoLink" render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input {...field} inputMode="url" dir="ltr" placeholder="https://vimeo.com/…" />
+                        </FormControl>
+                        <FormDescription>{t("fields.videoLinkHelp")}</FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
+                    {vimeoVideoId && (
+                      <p className="flex items-center gap-1.5 text-sm text-ccm-sea">
+                        <CheckCircle2 className="size-4 shrink-0" aria-hidden="true" />
+                        {t("video.vimeoValid")}
+                      </p>
+                    )}
+                  </TabsContent>
+                </Tabs>
+              </div>
 
               <FormField control={form.control} name="description" render={({ field }) => (
                 <FormItem>
@@ -151,6 +308,24 @@ export function LivedExperienceForm({
                   <FormLabel>{t("fields.personContext")}</FormLabel>
                   <FormControl><Textarea {...field} value={field.value || ""} rows={2} placeholder={t("fields.personContextPlaceholder")} /></FormControl>
                   <FormDescription>{t("fields.personContextHelp")}</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )} />
+
+              {/* Long-form story body — the shared editor (slash menu + toolbar
+                  image upload with caption), blog-post feel. Optional. */}
+              <FormField control={form.control} name="body" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("fields.body")}</FormLabel>
+                  <FormControl>
+                    <PortableTextEditor
+                      value={(field.value as any[]) || []}
+                      onChangeAction={field.onChange}
+                      language={locale}
+                      placeholder={t("fields.bodyPlaceholder")}
+                    />
+                  </FormControl>
+                  <FormDescription>{t("fields.bodyHelp")}</FormDescription>
                   <FormMessage />
                 </FormItem>
               )} />

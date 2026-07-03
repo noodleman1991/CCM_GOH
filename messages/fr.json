@@ -1530,17 +1530,36 @@
       "region": "Communauté régionale",
       "regionPlaceholder": "Choisir une région (facultatif)",
       "tags": "Étiquettes",
-      "tagsHelp": "Jusqu'à 6."
+      "tagsHelp": "Jusqu'à 6.",
+      "body": "L'histoire complète (facultatif)",
+      "bodyPlaceholder": "Racontez toute l'histoire — vous pouvez ajouter des images avec légende…",
+      "bodyHelp": "Comme un article de blog : des paragraphes et quelques images. Affiché sous votre vidéo."
     },
     "validation": {
       "titleMin": "Veuillez ajouter un titre",
       "descriptionMin": "Veuillez décrire l'expérience",
       "issueMin": "Quel sujet cela aborde-t-il ?",
-      "videoUrl": "Veuillez coller un lien vidéo valide"
+      "videoUrl": "Veuillez coller un lien vidéo valide",
+      "youtubeUrl": "Veuillez coller un lien YouTube valide",
+      "vimeoUrl": "Veuillez coller un lien Vimeo valide"
     },
     "submit": "Soumettre pour révision",
     "cancel": "Annuler",
-    "success": "Merci — votre expérience a été soumise pour révision."
+    "success": "Merci — votre expérience a été soumise pour révision.",
+    "video": {
+      "uploadVideo": "Téléverser une vidéo",
+      "youtubeLink": "Lien YouTube",
+      "vimeoLink": "Lien Vimeo",
+      "youtubeValid": "Lien YouTube reconnu — voici l'aperçu.",
+      "youtubePreviewAlt": "Image d'aperçu de la vidéo YouTube",
+      "vimeoValid": "Ce lien Vimeo semble correct.",
+      "chooseFile": "Choisir un fichier vidéo",
+      "removeFile": "Retirer",
+      "fileHint": "MP4 ou WebM, jusqu'à 100 Mo.",
+      "fileRequired": "Veuillez choisir un fichier vidéo à téléverser.",
+      "fileTooLarge": "Ce fichier dépasse la limite de 100 Mo — choisissez-en un plus léger.",
+      "fileWrongType": "Veuillez choisir un fichier MP4 ou WebM."
+    }
   },
   "comments": {
     "heading": "Discussion",

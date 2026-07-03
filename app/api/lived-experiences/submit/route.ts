@@ -4,12 +4,18 @@ import { writeClient } from "@/sanity/lib/write-client";
 import {
   livedExperienceSubmissionSchema,
   generateLivedExperienceSlug,
+  LE_VIDEO_MAX_BYTES,
+  LE_VIDEO_MIME_TYPES,
 } from "@/lib/validation/lived-experience";
 
 /**
  * User submission of a lived experience. Creates a PENDING livedExperience for
  * editor review (mirrors the case-study flow). Only approved docs are public,
  * enforced in the read queries; status starts as "pending" regardless of input.
+ *
+ * Accepts either JSON (legacy link-only clients) or multipart form data
+ * (`data` JSON field + optional `video` file — the case-study image pattern,
+ * with a 100MB cap for direct video uploads to Sanity's asset store).
  */
 export async function POST(request: NextRequest) {
   const { userId } = await auth();
@@ -18,11 +24,34 @@ export async function POST(request: NextRequest) {
   const clerkUser = await currentUser();
   if (!clerkUser) return NextResponse.json({ error: "User not found" }, { status: 404 });
 
+  // Parse the payload — multipart (data + optional video file) or plain JSON.
   let body: unknown;
-  try {
-    body = await request.json();
-  } catch {
-    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  let videoFile: File | null = null;
+  const contentType = request.headers.get("content-type") || "";
+  if (contentType.includes("multipart/form-data")) {
+    let formData: FormData;
+    try {
+      formData = await request.formData();
+    } catch {
+      return NextResponse.json({ error: "Invalid form data" }, { status: 400 });
+    }
+    const dataString = formData.get("data");
+    if (typeof dataString !== "string") {
+      return NextResponse.json({ error: "No data provided" }, { status: 400 });
+    }
+    try {
+      body = JSON.parse(dataString);
+    } catch {
+      return NextResponse.json({ error: "Invalid JSON in data field" }, { status: 400 });
+    }
+    const file = formData.get("video");
+    if (file instanceof File && file.size > 0) videoFile = file;
+  } else {
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+    }
   }
 
   const parsed = livedExperienceSubmissionSchema.safeParse(body);
@@ -34,6 +63,25 @@ export async function POST(request: NextRequest) {
   }
   const data = parsed.data;
   const lang = data.language;
+
+  // Direct upload: the file is required and validated (type + 100MB cap).
+  if (data.videoSource === "upload") {
+    if (!videoFile) {
+      return NextResponse.json({ error: "No video file provided" }, { status: 400 });
+    }
+    if (videoFile.size > LE_VIDEO_MAX_BYTES) {
+      return NextResponse.json(
+        { error: "File too large. Maximum size is 100MB." },
+        { status: 400 }
+      );
+    }
+    if (!LE_VIDEO_MIME_TYPES.includes(videoFile.type)) {
+      return NextResponse.json(
+        { error: "Invalid file type. Allowed: MP4, WebM." },
+        { status: 400 }
+      );
+    }
+  }
 
   // Localized objects with the submitter's language populated.
   const localized = (value: string) => (value ? { [lang]: value } : undefined);
@@ -49,9 +97,14 @@ export async function POST(request: NextRequest) {
     description: localized(data.description),
     issue: localized(data.issue),
     personContext: localized(data.personContext || ""),
-    videoLink: data.videoLink,
     featured: false,
   };
+
+  if (data.videoSource) doc.videoSource = data.videoSource;
+  if (data.videoSource !== "upload" && data.videoLink) doc.videoLink = data.videoLink;
+
+  // Long-form body — already Portable Text from the shared editor.
+  if (Array.isArray(data.body) && data.body.length > 0) doc.body = data.body;
 
   if (data.regionalCommunityId) {
     doc.relatedCommunity = { _type: "reference", _ref: data.regionalCommunityId };
@@ -61,6 +114,18 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    // Upload the video to Sanity's asset store first (same pipeline as the
+    // case-study image), then reference it from the document.
+    if (data.videoSource === "upload" && videoFile) {
+      const sanitizedFilename = videoFile.name.replace(/[^a-zA-Z0-9._-]/g, "_").substring(0, 255);
+      const buffer = await videoFile.arrayBuffer();
+      const asset = await writeClient.assets.upload("file", Buffer.from(buffer), {
+        filename: sanitizedFilename,
+        contentType: videoFile.type,
+      });
+      doc.videoFile = { _type: "file", asset: { _type: "reference", _ref: asset._id } };
+    }
+
     const created = await writeClient.create(doc);
     return NextResponse.json({ success: true, id: created._id });
   } catch (error) {

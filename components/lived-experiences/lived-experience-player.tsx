@@ -4,8 +4,10 @@ import { useTranslations } from "next-intl";
 import { Video, Headphones } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCookieConsent } from "@/components/cookie-consent/cookie-consent-provider";
+import { youtubeId } from "@/lib/youtube";
+import { vimeoId } from "@/lib/vimeo";
+import { deriveVideoSource } from "@/lib/video-source";
 
-const ALLOWED = ["www.youtube.com", "youtube.com", "www.youtube-nocookie.com", "youtu.be"];
 const AUDIO_EMBED_HOSTS = ["soundcloud.com", "www.soundcloud.com", "w.soundcloud.com"];
 
 function host(url: string): string | null {
@@ -20,31 +22,13 @@ function isDirectAudioFile(url: string): boolean {
   return /\.(mp3|m4a|wav|ogg|aac)(\?|$)/i.test(url);
 }
 
-function isAllowed(url: string): boolean {
-  try {
-    return ALLOWED.includes(new URL(url).hostname);
-  } catch {
-    return false;
-  }
-}
-
-function embedUrl(url: string): string {
-  if (url.includes("youtube.com/watch")) {
-    const id = new URLSearchParams(url.split("?")[1]).get("v");
-    if (id) return `https://www.youtube-nocookie.com/embed/${id}`;
-  }
-  if (url.includes("youtu.be/")) {
-    const id = url.split("youtu.be/")[1]?.split("?")[0];
-    if (id) return `https://www.youtube-nocookie.com/embed/${id}`;
-  }
-  return url;
-}
-
 /**
  * Format-aware media for the lived-experience detail page. Consent prompts are
  * scoped to the media frame only (the story stays readable regardless), matching
  * the modal's respectful pattern.
- *  - video → consent-gated YouTube iframe (16:9)
+ *  - video → by source: YouTube / Vimeo consent-gated iframes, or a natively
+ *    played uploaded file (no third-party — no consent needed). Legacy docs
+ *    have only a URL; the source is derived from it.
  *  - audio → native <audio> for self-hosted files, or a consent-gated SoundCloud
  *    embed; written stories render no media (the prose is the content).
  */
@@ -52,11 +36,20 @@ export function LivedExperiencePlayer({
   url,
   title,
   format = "video",
+  videoSource,
+  fileUrl,
+  posterUrl,
 }: {
-  url: string;
+  url?: string | null;
   title: string;
   locale: string;
   format?: "video" | "audio" | "written";
+  /** Explicit source from the CMS; absent on legacy docs (derived from url). */
+  videoSource?: string | null;
+  /** CDN URL of a directly uploaded video file (videoSource "upload"). */
+  fileUrl?: string | null;
+  /** Poster for the native player — the LE thumbnail when available. */
+  posterUrl?: string | null;
 }) {
   const t = useTranslations("livedExperiences");
   const { consent, hasConsented, acceptAll } = useCookieConsent();
@@ -65,7 +58,7 @@ export function LivedExperiencePlayer({
   if (format === "written") return null;
 
   // Audio: self-hosted file plays natively (no third-party consent needed).
-  if (format === "audio" && isDirectAudioFile(url)) {
+  if (format === "audio" && url && isDirectAudioFile(url)) {
     return (
       <div className="flex items-center gap-3 rounded-lg bg-ccm-sky/15 p-4">
         <Headphones className="size-6 shrink-0 text-ccm-sea" aria-hidden="true" />
@@ -79,6 +72,7 @@ export function LivedExperiencePlayer({
 
   // Audio via an embeddable host (e.g. SoundCloud) → consent-gated iframe.
   if (format === "audio") {
+    if (!url) return null;
     const allowedAudio =
       consent?.functional && hasConsented && AUDIO_EMBED_HOSTS.includes(host(url) || "");
     return (
@@ -103,13 +97,42 @@ export function LivedExperiencePlayer({
     );
   }
 
-  // Video (default).
-  const allowed = consent?.functional && hasConsented && isAllowed(url);
+  // Video (default) — routed by source. Legacy docs (no videoSource) derive it
+  // from the URL, so they keep playing exactly as before.
+  const source = deriveVideoSource(videoSource, url, fileUrl);
+
+  // Uploaded file: played natively — no third-party embed, no consent gate.
+  if (source === "upload" && fileUrl) {
+    return (
+      <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-ccm-midnight">
+        {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+        <video
+          controls
+          preload="metadata"
+          playsInline
+          poster={posterUrl || undefined}
+          className="absolute inset-0 h-full w-full"
+          src={fileUrl}
+          title={title || t("videoTitleFallback")}
+        />
+      </div>
+    );
+  }
+
+  // Embedded YouTube / Vimeo → the same consent gate for both.
+  const embedSrc =
+    source === "youtube" && url && youtubeId(url)
+      ? `https://www.youtube-nocookie.com/embed/${youtubeId(url)}`
+      : source === "vimeo" && url && vimeoId(url)
+        ? `https://player.vimeo.com/video/${vimeoId(url)}?dnt=1`
+        : null;
+
+  const allowed = consent?.functional && hasConsented && Boolean(embedSrc);
   return (
     <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-ccm-midnight">
-      {allowed ? (
+      {allowed && embedSrc ? (
         <iframe
-          src={embedUrl(url)}
+          src={embedSrc}
           title={title || t("videoTitleFallback")}
           className="absolute inset-0 h-full w-full"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -118,10 +141,14 @@ export function LivedExperiencePlayer({
       ) : (
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-6 text-center text-white">
           <Video className="h-9 w-9 opacity-80" aria-hidden="true" />
-          <p className="text-sm text-white/85">{t("cookieConsentRequired")}</p>
-          <Button onClick={acceptAll} size="sm" variant="secondary">
-            {t("acceptCookies")}
-          </Button>
+          <p className="text-sm text-white/85">
+            {embedSrc ? t("cookieConsentRequired") : t("videoUnavailable")}
+          </p>
+          {embedSrc && (
+            <Button onClick={acceptAll} size="sm" variant="secondary">
+              {t("acceptCookies")}
+            </Button>
+          )}
         </div>
       )}
     </div>
