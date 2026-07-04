@@ -220,8 +220,42 @@ export async function POST(request: NextRequest) {
             };
         }
 
-        // Create the case study document in Sanity
-        const result = await sanityClient.create(caseStudyDoc);
+        // X7 edit mode: resubmit an existing draft/pending doc — verify the
+        // caller may edit it, then patch (status returns to pending for
+        // re-review). Slug and submittedBy are preserved.
+        let result: { _id: string; slug: { current: string }; status: string };
+        if (data.editId) {
+            const existing = await sanityClient.fetch(
+                `*[_id == $id][0]{ _id, submittedBy, status, slug }`,
+                { id: data.editId }
+            );
+            const editable = existing && ["pending", "revision", "draft", null].includes(existing.status ?? null);
+            const isSubmitter = existing?.submittedBy === userId;
+            let isWorkspaceMember = false;
+            if (existing && !isSubmitter) {
+                const { prisma } = await import("@/lib/prisma");
+                const row = await prisma.workspaceOutput.findFirst({
+                    where: {
+                        sanityId: { in: [existing._id, existing._id.replace(/^drafts\./, "")] },
+                        collaboration: { members: { some: { userId } } },
+                    },
+                    select: { id: true },
+                });
+                isWorkspaceMember = !!row;
+            }
+            if (!existing || !editable || (!isSubmitter && !isWorkspaceMember)) {
+                return NextResponse.json({ error: "You can't edit this submission." }, { status: 403 });
+            }
+            const { slug: _slug, submittedBy: _sb, ...updatable } = caseStudyDoc;
+            const patched = await sanityClient
+                .patch(existing._id)
+                .set({ ...updatable, status: "pending" })
+                .commit();
+            result = { _id: patched._id, slug: existing.slug, status: "pending" };
+        } else {
+            // Create the case study document in Sanity
+            result = await sanityClient.create(caseStudyDoc);
+        }
 
         // Log submission for tracking
         console.log(`Case study submitted by user ${userId} (${clerkUser.emailAddresses[0]?.emailAddress}): ${result._id}`);

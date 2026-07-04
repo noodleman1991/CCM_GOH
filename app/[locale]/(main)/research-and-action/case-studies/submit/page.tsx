@@ -4,6 +4,7 @@ import { redirect } from "next/navigation"
 import { getTranslations } from 'next-intl/server'
 import { client } from "@/sanity/lib/client"
 import CaseStudySubmissionLayout from "@/components/forms/case-study-submission-layout"
+import { loadEditableCaseStudy } from "@/lib/case-studies/edit"
 
 // Fetch available tags for the form
 async function fetchAvailableTags() {
@@ -41,10 +42,10 @@ export default async function CaseStudySubmitPage({
                                                       searchParams
                                                   }: {
     params: Promise<{ locale: string }>
-    searchParams: Promise<{ workspace?: string }>
+    searchParams: Promise<{ workspace?: string; edit?: string }>
 }) {
     const { locale } = await params
-    const { workspace } = await searchParams
+    const { workspace, edit } = await searchParams
     const { userId } = await auth()
 
     if (!userId) {
@@ -56,6 +57,14 @@ export default async function CaseStudySubmitPage({
         fetchRegionalCommunities()
     ])
 
+    // X7 edit mode: load the author's own draft/pending doc into the form.
+    // Authz: the submitter, or a member of a workspace this doc is an output of.
+    let editDoc: (Record<string, unknown> & { _sanityId: string }) | null = null
+    if (edit) {
+        editDoc = await loadEditableCaseStudy(edit, userId)
+        if (!editDoc) redirect('/research-and-action/case-studies/submit')
+    }
+
     return (
         <div className="container max-w-7xl py-8">
             <CaseStudySubmissionLayout
@@ -64,6 +73,7 @@ export default async function CaseStudySubmitPage({
                 locale={locale}
                 userId={userId}
                 workspaceId={workspace ?? null}
+                editDoc={editDoc}
             />
         </div>
     )

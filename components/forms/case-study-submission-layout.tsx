@@ -54,6 +54,7 @@ interface CaseStudySubmissionLayoutProps {
     locale: string
     userId: string
     workspaceId?: string | null
+    editDoc?: (Record<string, unknown> & { _sanityId: string }) | null
 }
 
 export default function CaseStudySubmissionLayout({
@@ -61,7 +62,8 @@ export default function CaseStudySubmissionLayout({
                                                       regionalCommunities,
                                                       locale,
                                                       userId,
-                                                      workspaceId
+                                                      workspaceId,
+                                                      editDoc
                                                   }: CaseStudySubmissionLayoutProps) {
     const t = useTranslations('caseStudySubmission')
     const [activeSection, setActiveSection] = useState("basic-info")
@@ -149,6 +151,7 @@ export default function CaseStudySubmissionLayout({
                     availableTags={availableTags}
                     regionalCommunities={regionalCommunities}
                     workspaceId={workspaceId}
+                    editDoc={editDoc}
                 />
             </div>
         </div>
