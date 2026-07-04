@@ -147,6 +147,15 @@ export default defineType({
                     ],
                 },
                 {
+                    // Editorial photo credit ("Photo courtesy of …"), rendered as
+                    // the em-dashed line under the caption. Single string: credits
+                    // are proper names, not translated copy.
+                    name: "credit",
+                    title: "Credit",
+                    type: "string",
+                    description: "Who took or provided the image (shown after the caption).",
+                },
+                {
                     name: "placement",
                     title: "Placement",
                     type: "string",
@@ -163,6 +172,64 @@ export default defineType({
                     initialValue: "full",
                 },
             ],
+        }),
+        // Editorial pull-quote with attribution — the amber-bar treatment.
+        // Distinct from the "Quote" block style (which stays for light quoting
+        // inside running text).
+        defineArrayMember({
+            name: "pullQuote",
+            type: "object",
+            title: "Pull quote",
+            fields: [
+                {
+                    name: "text",
+                    title: "Quote",
+                    type: "text",
+                    rows: 3,
+                    validation: (Rule) => Rule.required().max(300),
+                },
+                {
+                    name: "attribution",
+                    title: "Attribution",
+                    type: "string",
+                    description: "Who said it (name, role) — optional.",
+                },
+            ],
+            preview: {
+                select: { title: "text", subtitle: "attribution" },
+            },
+        }),
+        // Numbered references section ("References" at the end of research
+        // content). Inline superscript markers keep using the footnote
+        // annotation; this object is the visible bibliography.
+        defineArrayMember({
+            name: "references",
+            type: "object",
+            title: "References",
+            fields: [
+                {
+                    name: "items",
+                    title: "References",
+                    type: "array",
+                    of: [
+                        {
+                            type: "object",
+                            name: "referenceItem",
+                            fields: [
+                                { name: "text", title: "Citation", type: "text", rows: 2 },
+                                { name: "url", title: "Link (DOI / URL)", type: "url" },
+                            ],
+                            preview: { select: { title: "text" } },
+                        },
+                    ],
+                },
+            ],
+            preview: {
+                select: { items: "items" },
+                prepare({ items }: { items?: unknown[] }) {
+                    return { title: `References (${items?.length ?? 0})` };
+                },
+            },
         }),
         defineArrayMember({
             name: "youtube",
