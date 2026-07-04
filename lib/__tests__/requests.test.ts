@@ -20,6 +20,7 @@ const db = vi.hoisted(() => {
     collaborationMember: {
       findUnique: vi.fn(async () => null),
       upsert: vi.fn(async () => ({})),
+      findMany: vi.fn(async () => []),
     },
     joinRequest: {
       upsert: vi.fn(async () => ({ id: "jr1" })),
@@ -38,6 +39,7 @@ const db = vi.hoisted(() => {
   return d;
 });
 vi.mock("@/lib/prisma", () => ({ prisma: db }));
+vi.mock("@/lib/notifications/emit", () => ({ emitLifecycle: vi.fn(async () => {}) }));
 
 import {
   requestToJoin,

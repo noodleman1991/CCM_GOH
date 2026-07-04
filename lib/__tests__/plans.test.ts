@@ -24,6 +24,7 @@ const db = vi.hoisted(() => {
   return d;
 });
 vi.mock("@/lib/prisma", () => ({ prisma: db }));
+vi.mock("@/lib/notifications/emit", () => ({ emitLifecycle: vi.fn(async () => {}) }));
 
 import { addStage, addTask, cycleTaskStatus, deleteTask, reorderTasks, reorderStages, assignTask } from "@/lib/actions/plans";
 
@@ -135,12 +136,12 @@ describe("assignTask", () => {
   it("assigns a member", async () => {
     const res = await assignTask("c1", "tk1", "u2");
     expect(res.ok).toBe(true);
-    expect(db.task.update).toHaveBeenCalledWith({ where: { id: "tk1" }, data: { assigneeId: "u2" } });
+    expect(db.task.update).toHaveBeenCalledWith({ where: { id: "tk1" }, data: { assigneeId: "u2" }, select: { title: true } });
   });
 
   it("clears the assignment when given null", async () => {
     const res = await assignTask("c1", "tk1", null);
     expect(res.ok).toBe(true);
-    expect(db.task.update).toHaveBeenCalledWith({ where: { id: "tk1" }, data: { assigneeId: null } });
+    expect(db.task.update).toHaveBeenCalledWith({ where: { id: "tk1" }, data: { assigneeId: null }, select: { title: true } });
   });
 });

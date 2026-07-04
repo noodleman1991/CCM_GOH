@@ -338,7 +338,14 @@
     "accept": "Aceptar",
     "decline": "Rechazar",
     "accepted": "Aceptada",
-    "declined": "Rechazada"
+    "declined": "Rechazada",
+    "assignedYouTask": "te asignó una tarea",
+    "taskDue": "tarea próxima a vencer",
+    "outputStatus": "cambió el estado de una publicación",
+    "threadReply": "respondió en un hilo",
+    "memberJoined": "se unió al espacio de trabajo",
+    "followedPublish": "publicó algo nuevo",
+    "eventReminder": "el evento comienza pronto"
   },
   "dates": {
     "today": "Hoy",

@@ -338,7 +338,14 @@
     "accept": "قبول",
     "decline": "رفض",
     "accepted": "مقبول",
-    "declined": "مرفوض"
+    "declined": "مرفوض",
+    "assignedYouTask": "أسند إليك مهمة",
+    "taskDue": "مهمة تقترب من موعدها",
+    "outputStatus": "تغيّرت حالة أحد المخرجات",
+    "threadReply": "ردّ في نقاش",
+    "memberJoined": "انضم إلى مساحة العمل",
+    "followedPublish": "نشر شيئًا جديدًا",
+    "eventReminder": "الفعالية تبدأ قريبًا"
   },
   "dates": {
     "today": "اليوم",
