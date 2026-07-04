@@ -1025,7 +1025,9 @@
     "location": "Location",
     "viewToggle": "View",
     "galleryView": "Gallery",
-    "mapView": "Map"
+    "mapView": "Map",
+    "writtenBy": "Written by",
+    "withOrgs": "With"
   },
   "livedExperiences": {
     "relatedContent": "Related",

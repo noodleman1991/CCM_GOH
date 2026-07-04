@@ -1456,7 +1456,9 @@
     "location": "الموقع",
     "viewToggle": "العرض",
     "galleryView": "المعرض",
-    "mapView": "الخريطة"
+    "mapView": "الخريطة",
+    "writtenBy": "بقلم",
+    "withOrgs": "بالتعاون مع"
   },
   "revisionAlert": {
     "title": "مطلوب إجراء: تنقيح مطلوب",

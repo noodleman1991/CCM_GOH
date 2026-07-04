@@ -201,51 +201,41 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ loca
         )
       )}
 
+      {/* Contributors — a quiet editorial colophon, not a card bubble. */}
+      {((caseStudy.authors && caseStudy.authors.length > 0) ||
+        (caseStudy.organizations && caseStudy.organizations.length > 0)) && (
+        <section className="border-t border-border pt-5 text-start">
+          <p className="mb-1.5 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+            {t('writtenBy')}
+          </p>
+          {caseStudy.authors && caseStudy.authors.length > 0 && (
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              {caseStudy.authors.map((author: any, index: number) => (
+                <span key={index}>
+                  {index > 0 && " · "}
+                  <span className="font-bold text-foreground"><bdi>{author.name}</bdi></span>
+                  {author.role && <span> ({author.role})</span>}
+                  {author.affiliation?.name && <span>, <bdi>{author.affiliation.name}</bdi></span>}
+                </span>
+              ))}
+            </p>
+          )}
+          {caseStudy.organizations && caseStudy.organizations.length > 0 && (
+            <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+              {t('withOrgs')}{" "}
+              {caseStudy.organizations.map((org: any, i: number) => (
+                <span key={org._id}>
+                  {i > 0 && " · "}
+                  <bdi>{org.name}</bdi>
+                </span>
+              ))}
+            </p>
+          )}
+        </section>
+      )}
+
       {/* Study Details */}
       <div className="grid md:grid-cols-2 gap-6">
-        {/* Authors */}
-        {caseStudy.authors && caseStudy.authors.length > 0 && (
-          <Card>
-            <CardContent className="pt-6">
-              <h3 className="font-semibold mb-4 flex items-center gap-2">
-                <Users className="w-5 h-5" />
-                Authors
-              </h3>
-              <div className="space-y-3">
-                {caseStudy.authors.map((author: any, index: number) => (
-                  <div key={index} className="space-y-1">
-                    <p className="font-medium">{author.name}</p>
-                    <p className="text-sm text-muted-foreground">{author.role}</p>
-                    {author.affiliation?.name && (
-                      <p className="text-sm text-muted-foreground">
-                        {author.affiliation.name}
-                      </p>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Organizations */}
-        {caseStudy.organizations && caseStudy.organizations.length > 0 && (
-          <Card>
-            <CardContent className="pt-6">
-              <h3 className="font-semibold mb-4 flex items-center gap-2">
-                <Building className="w-5 h-5" />
-                Organizations
-              </h3>
-              <div className="space-y-2">
-                {caseStudy.organizations.map((org: any) => (
-                  <p key={org._id} className="text-sm">
-                    {org.name}
-                  </p>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
 
         {/* Produced by project(s) — provenance: the project(s) that output this. */}
         {caseStudy.projects && caseStudy.projects.length > 0 && (
