@@ -7,6 +7,9 @@ import { z } from "zod";
 export const eventSubmissionSchema = z
   .object({
     title: z.string().trim().min(3, "Please add a title").max(160),
+    // Present when submitting from a workspace (?workspace=) — the route
+    // links the created event back as a workspace output.
+    collaborationId: z.string().optional(),
     description: z.string().trim().max(2000).optional().or(z.literal("")),
     scope: z.enum(["community", "project"]).default("community"),
     startAt: z.string().datetime({ message: "Please pick a start date/time" }),

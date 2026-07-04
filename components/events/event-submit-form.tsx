@@ -20,7 +20,7 @@ import {
  * status=pending → editor review (the moderation gate). Mirrors the
  * lived-experience submission UX.
  */
-export function EventSubmitForm() {
+export function EventSubmitForm({ workspaceId }: { workspaceId?: string | null } = {}) {
   const t = useTranslations("events");
   const router = useRouter();
   const [pending, setPending] = useState(false);
@@ -47,6 +47,7 @@ export function EventSubmitForm() {
     try {
       const payload = {
         ...form,
+        ...(workspaceId ? { collaborationId: workspaceId } : {}),
         // datetime-local → ISO; the API expects z.string().datetime()
         startAt: new Date(form.startAt).toISOString(),
         endAt: form.endAt ? new Date(form.endAt).toISOString() : "",

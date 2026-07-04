@@ -18,9 +18,16 @@ export async function generateMetadata({
   return { title: t("submit") };
 }
 
-export default async function NewEventPage({ params }: { params: Promise<{ locale: string }> }) {
+export default async function NewEventPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<{ workspace?: string }>;
+}) {
   if (!FEATURES.engagement) redirect("/");
   const { locale } = await params;
+  const { workspace } = await searchParams;
   const { userId } = await auth();
   if (!userId) redirect("/sign-in");
   const t = await getTranslations({ locale, namespace: "events" });
@@ -29,7 +36,7 @@ export default async function NewEventPage({ params }: { params: Promise<{ local
     <div className="container max-w-2xl py-8 space-y-6">
       <BackLink href="/collaborate/events" label={t("title")} />
       <h1 className="text-3xl font-heading font-bold tracking-tight text-ccm-midnight">{t("submit")}</h1>
-      <EventSubmitForm />
+      <EventSubmitForm workspaceId={workspace ?? null} />
     </div>
   );
 }

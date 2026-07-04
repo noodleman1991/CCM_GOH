@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { writeClient } from "@/sanity/lib/write-client";
 import { eventSubmissionSchema, generateEventSlug } from "@/lib/validation/event";
+import { addOutput } from "@/lib/actions/workspace-outputs";
 
 /**
  * Member/project submission of an event. Creates a PENDING `event` for editor
@@ -51,7 +52,22 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    if (data.collaborationId) doc.relatedCollaboration = data.collaborationId;
     const created = await writeClient.create(doc);
+
+    // Submitted from a workspace: link the event as a workspace output.
+    // addOutput enforces collab authz; a failed link never fails submission.
+    if (data.collaborationId) {
+      const linked = await addOutput({
+        collaborationId: data.collaborationId,
+        sanityType: "event",
+        mode: "link",
+        sanityId: created._id,
+        title: data.title,
+      });
+      if (!linked.ok) console.warn(`Workspace link failed for ${created._id}: ${linked.error}`);
+    }
+
     return NextResponse.json({ success: true, id: created._id });
   } catch (error) {
     console.error("Event submission failed:", error);

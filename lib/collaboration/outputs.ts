@@ -3,6 +3,7 @@ export const OUTPUT_TYPES = [
   { type: "caseStudy", label: "Case study", route: "/research-and-action/case-studies" },
   { type: "livedExperience", label: "Lived experience", route: "/lived-experiences" },
   { type: "researchOutput", label: "Research output", route: "/research-and-action/research-outputs" },
+  { type: "event", label: "Event", route: "/collaborate/events" },
 ] as const;
 
 const TYPE_SET = new Set(OUTPUT_TYPES.map((o) => o.type));

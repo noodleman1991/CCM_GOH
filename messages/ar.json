@@ -300,7 +300,15 @@
     "noUpcoming": "لا توجد فعاليات قادمة.",
     "prevMonth": "الشهر السابق",
     "nextMonth": "الشهر التالي",
-    "today": "اليوم"
+    "today": "اليوم",
+    "pastEvent": "فعالية سابقة",
+    "addToCalendar": "أضِف إلى التقويم",
+    "share": "مشاركة",
+    "linkCopied": "تم نسخ الرابط",
+    "watchRecording": "شاهد التسجيل",
+    "goingCount": "{count, plural, =0 {كن أول من يؤكد الحضور} one {مشارك واحد} two {مشاركان} few {# مشاركين} other {# مشاركًا}}",
+    "partOf": "جزء من",
+    "theProject": "المشروع المنظِّم"
   },
   "plan": {
     "empty": "لا توجد خطة بعد.",

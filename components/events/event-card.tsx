@@ -1,3 +1,4 @@
+import { Link } from "@/i18n/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { MapPin, Globe, Users } from "lucide-react";
@@ -54,7 +55,16 @@ export function EventCard({
             </span>
           )}
         </div>
-        <h3 className="truncate font-heading font-semibold text-ccm-midnight">{event.title}</h3>
+        {event.slug ? (
+          <Link
+            href={`/collaborate/events/${event.slug}`}
+            className="block truncate font-heading font-semibold text-ccm-midnight underline-offset-2 hover:underline"
+          >
+            <bdi>{event.title}</bdi>
+          </Link>
+        ) : (
+          <h3 className="truncate font-heading font-semibold text-ccm-midnight">{event.title}</h3>
+        )}
         <p className="mt-0.5 text-xs text-muted-foreground">
           {start && start.toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })}
           {event.locationName ? ` · ${event.locationName}` : ""}
