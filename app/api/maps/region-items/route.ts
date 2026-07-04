@@ -115,11 +115,19 @@ export async function GET(req: NextRequest) {
   // the region's community by slug — so it works pre- and post-backfill.
   const regionMatch = `(region == $region || relatedCommunity->slug.current == $slug || $slug in relatedCommunities[]->slug.current)`;
 
+  // Theme + free-text filters mirror region-data's predicates exactly, so the
+  // cards always list the documents the counts describe. Both values are only
+  // ever passed as bound GROQ params — never interpolated.
+  const theme = req.nextUrl.searchParams.get("theme") || "";
+  const q = req.nextUrl.searchParams.get("q") || "";
+  const themeFilter = theme ? ` && $themeSlug in tags[]->value.current` : "";
+  const qFilter = q ? ` && [title.en, title.es, title.fr, title.ar] match $q + "*"` : "";
+
   try {
     const perType = await Promise.all(
       types.map((type) =>
         client.fetch(
-          `*[_type == $type ${STATUS_FILTER(type)} && ${regionMatch}] | order(coalesce(publishedAt, publishDate, _createdAt) desc)[0...12]{
+          `*[_type == $type ${STATUS_FILTER(type)} && ${regionMatch}${themeFilter}${qFilter}] | order(coalesce(publishedAt, publishDate, _createdAt) desc)[0...12]{
             "id": _id,
             "type": _type,
             "title": coalesce(title.en, title, ""),
@@ -128,7 +136,7 @@ export async function GET(req: NextRequest) {
             ${PLACE_PROJECTION(type)},
             "date": coalesce(publishedAt, publishDate, _createdAt)
           }`,
-          { type, region, slug }
+          { type, region, slug, themeSlug: theme, q }
         )
       )
     );

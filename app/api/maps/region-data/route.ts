@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { client } from "@/sanity/lib/client";
 import { prisma, safeQuery } from "@/lib/prisma";
-import { REGION_CODES, RC_SLUG_TO_REGION } from "@/lib/maps/region-codes";
+import { REGION_CODES, RC_SLUG_TO_REGION, isRegionCode, type RegionCode } from "@/lib/maps/region-codes";
 import { aggregateRegionData, FACET_TO_CONTENT_TYPE, parseLayers, type FacetId } from "@/lib/maps/region-facets";
 import { getThemeOptions } from "@/lib/maps/themes";
 
@@ -24,12 +24,12 @@ async function countsForFacet(
   const counts = emptyCounts();
   const type = FACET_TO_CONTENT_TYPE[facet];
   if (type) {
-    // Case studies + lived experiences are status-gated to approved (legacy
-    // LEs without status still count); news posts have no status field.
+    // Status gates mirror region-items' STATUS_FILTER exactly — the atlas
+    // counts must describe the SAME set of documents the cards list.
     const statusFilter =
-      facet === "caseStudyCount"
+      type === "caseStudy" || type === "researchOutput"
         ? ' && status == "approved"'
-        : facet === "livedExpCount"
+        : type === "livedExperience"
           ? ' && (status == "approved" || !defined(status))'
           : "";
     // Theme filter: content matches a theme when one of its dereferenced
@@ -41,19 +41,29 @@ async function countsForFacet(
     // Free-text filter on the content's own localized title. `q` is NEVER
     // interpolated — always passed as the bound `$q` GROQ param.
     const qFilter = q ? ` && [title.en, title.es, title.fr, title.ar] match $q + "*"` : "";
-    // For each regional community, count the content that references it. The
-    // Sanity RC doc has no region enum, so we key by its slug and translate to
-    // a region code via RC_SLUG_TO_REGION.
-    const rows: { slug: string | null; count: number }[] = await client.fetch(
-      `*[_type == "regionalCommunity" && defined(slug.current)]{
-         "slug": slug.current,
-         "count": count(*[_type == "${type}"${statusFilter}${themeFilter}${qFilter} && references(^._id)])
-       }`,
-      { q, themeSlug: theme ?? "" }
-    );
+    // Region attribution mirrors region-items' regionMatch: a doc belongs to a
+    // region via its `region` short code OR any referenced community (single
+    // `relatedCommunity` or the `relatedCommunities[]` array). A doc counting
+    // in several regions appears in each region's cards, so it counts in each.
+    const rows: { code: string | null; rcSlug: string | null; rcSlugs: (string | null)[] | null }[] =
+      await client.fetch(
+        `*[_type == "${type}"${statusFilter}${themeFilter}${qFilter}]{
+           "code": region,
+           "rcSlug": relatedCommunity->slug.current,
+           "rcSlugs": relatedCommunities[]->slug.current
+         }`,
+        { q, themeSlug: theme ?? "" }
+      );
     for (const r of rows) {
-      const region = r.slug ? RC_SLUG_TO_REGION[r.slug] : undefined;
-      if (region) counts[region] += r.count;
+      const regions = new Set<RegionCode>();
+      if (r.code && isRegionCode(r.code)) regions.add(r.code);
+      const slugRegion = r.rcSlug ? RC_SLUG_TO_REGION[r.rcSlug] : undefined;
+      if (slugRegion) regions.add(slugRegion);
+      for (const slug of r.rcSlugs ?? []) {
+        const reg = slug ? RC_SLUG_TO_REGION[slug] : undefined;
+        if (reg) regions.add(reg);
+      }
+      for (const region of regions) counts[region] += 1;
     }
   } else if (facet === "memberCount") {
     // Member counts ignore theme/q (members have no tags/title to filter on).

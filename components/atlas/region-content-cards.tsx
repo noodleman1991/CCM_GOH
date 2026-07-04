@@ -210,10 +210,23 @@ function useCardLabels() {
  * The selected region's actual content, as cards (Atlas D2/E1). Replaces the
  * count-only drill-in with the real items for the chosen region + facet.
  */
-export function RegionContentCards({ region, facet }: { region: string; facet: string }) {
+export function RegionContentCards({
+  region,
+  facet,
+  theme,
+  q,
+}: {
+  region: string;
+  facet: string;
+  theme?: string | null;
+  q?: string;
+}) {
   const t = useCardLabels();
+  // Theme/q ride along so the cards always show the same filtered set the
+  // choropleth counts describe (count↔cards consistency).
+  const filterQS = `${theme ? `&theme=${encodeURIComponent(theme)}` : ""}${q ? `&q=${encodeURIComponent(q)}` : ""}`;
   const { data, isLoading } = useSWR(
-    `/api/maps/region-items?region=${region}&facet=${facet}`,
+    `/api/maps/region-items?region=${region}&facet=${facet}${filterQS}`,
     fetcher,
     { revalidateOnFocus: false, dedupingInterval: 60000 }
   );

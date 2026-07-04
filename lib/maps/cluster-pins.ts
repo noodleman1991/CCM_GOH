@@ -1,4 +1,4 @@
-export type FacetContentType = "caseStudy" | "livedExperience" | "newsPost" | "agenda" | "report";
+export type FacetContentType = "caseStudy" | "livedExperience" | "newsPost" | "researchOutput" | "agenda" | "report";
 
 /**
  * Map a pin's content type to its `COLOR.layer` key (`lib/ccm-colors.ts`), so a
