@@ -217,16 +217,48 @@ export function tiptapToPortableText(doc: AnyNode): AnyNode[] {
         })),
       });
     } else if (node.type === "storyChart") {
+      const series = Array.isArray(node.attrs?.series) ? node.attrs.series : [];
       portableText.push({
         _type: "storyChart",
         _key: uuidv4(),
         chartType: node.attrs?.chartType || "bar",
         title: node.attrs?.title || "",
+        ...(node.attrs?.unit ? { unit: node.attrs.unit } : {}),
         data: keyedItems(node.attrs?.data, (row) => ({
           label: row.label || "",
           // NaN (a numeric input mid-edit) must never reach Sanity — coerce to 0.
           value: Number.isFinite(row.value) ? row.value : Number(row.value) || 0,
         })),
+        // Studio fields (X2): multi-series + labels + annotations + frame.
+        ...(Array.isArray(node.attrs?.labels) && node.attrs.labels.length
+          ? { labels: node.attrs.labels.map((l: unknown) => String(l ?? "")) }
+          : {}),
+        ...(series.length
+          ? {
+              series: keyedItems(series, (sr) => ({
+                name: sr.name || "",
+                values: Array.isArray(sr.values)
+                  ? sr.values.map((v: unknown) => (Number.isFinite(v) ? (v as number) : Number(v) || 0))
+                  : [],
+                highlight: Boolean(sr.highlight),
+              })),
+            }
+          : {}),
+        ...(Array.isArray(node.attrs?.annotations) && node.attrs.annotations.length
+          ? {
+              annotations: keyedItems(node.attrs.annotations, (a) => ({
+                atLabel: a.atLabel || "",
+                text: a.text || "",
+              })),
+            }
+          : {}),
+        ...(node.attrs?.threshold && Number.isFinite(node.attrs.threshold.value)
+          ? { threshold: { value: node.attrs.threshold.value, label: node.attrs.threshold.label || "" } }
+          : {}),
+        ...(node.attrs?.caption ? { caption: node.attrs.caption } : {}),
+        ...(node.attrs?.source ? { source: node.attrs.source } : {}),
+        ...(node.attrs?.sourceUrl ? { sourceUrl: node.attrs.sourceUrl } : {}),
+        ...(node.attrs?.alt ? { alt: node.attrs.alt } : {}),
         // Render fields travel only when a render happened — their absence is
         // what marks a never-rendered block as withheld-from-publish.
         ...renderFields(node.attrs),
@@ -361,6 +393,7 @@ export function portableTextToTiptap(portableText: AnyNode): AnyNode {
         attrs: {
           chartType: block.chartType || "bar",
           title: block.title || "",
+          unit: block.unit || "",
           data: Array.isArray(block.data)
             ? block.data.map((row: AnyNode) => ({
                 _key: row?._key,
@@ -368,6 +401,23 @@ export function portableTextToTiptap(portableText: AnyNode): AnyNode {
                 value: Number.isFinite(row?.value) ? row.value : Number(row?.value) || 0,
               }))
             : [],
+          labels: Array.isArray(block.labels) ? block.labels.map((l: unknown) => String(l ?? "")) : [],
+          series: Array.isArray(block.series)
+            ? block.series.map((sr: AnyNode) => ({
+                _key: sr?._key,
+                name: sr?.name || "",
+                values: Array.isArray(sr?.values) ? sr.values : [],
+                highlight: Boolean(sr?.highlight),
+              }))
+            : [],
+          annotations: Array.isArray(block.annotations)
+            ? block.annotations.map((a: AnyNode) => ({ _key: a?._key, atLabel: a?.atLabel || "", text: a?.text || "" }))
+            : [],
+          threshold: block.threshold && Number.isFinite(block.threshold.value) ? block.threshold : null,
+          caption: block.caption || "",
+          source: block.source || "",
+          sourceUrl: block.sourceUrl || "",
+          alt: block.alt || "",
           renderedSvg: block.renderedSvg || null,
           renderStatus: block.renderStatus || null,
         },

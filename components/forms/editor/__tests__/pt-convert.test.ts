@@ -445,6 +445,49 @@ describe("pt-convert: storyChart (Data & story)", () => {
   });
 });
 
+describe("pt-convert: storyChart studio fields (X2)", () => {
+  const attrs = {
+    chartType: "line",
+    title: "Wellbeing index",
+    unit: "%",
+    data: [],
+    labels: ["2019", "2021"],
+    series: [
+      { name: "Gazi", values: [38, 51], highlight: true },
+      { name: "Vanga", values: [34, 44], highlight: false },
+    ],
+    annotations: [{ atLabel: "2021", text: "Cyclone" }],
+    threshold: { value: 65, label: "Target" },
+    caption: "Surveyed twice yearly",
+    source: "Programme survey",
+    sourceUrl: "https://example.org/data",
+    alt: "Line chart of wellbeing",
+  };
+
+  it("carries series/labels/annotations/frame tiptap → PT", () => {
+    const pt = tiptapToPortableText({ type: "doc", content: [{ type: "storyChart", attrs }] });
+    const block = pt[0] as Record<string, unknown>;
+    expect(block._type).toBe("storyChart");
+    expect(block.labels).toEqual(["2019", "2021"]);
+    expect((block.series as Array<{ name: string; highlight: boolean }>).map((s) => s.name)).toEqual(["Gazi", "Vanga"]);
+    expect((block.series as Array<{ highlight: boolean }>)[0].highlight).toBe(true);
+    expect((block.annotations as Array<{ atLabel: string }>)[0].atLabel).toBe("2021");
+    expect(block.threshold).toMatchObject({ value: 65, label: "Target" });
+    expect(block).toMatchObject({ unit: "%", caption: "Surveyed twice yearly", source: "Programme survey", sourceUrl: "https://example.org/data", alt: "Line chart of wellbeing" });
+  });
+
+  it("round-trips PT → tiptap with the same fields", () => {
+    const pt = tiptapToPortableText({ type: "doc", content: [{ type: "storyChart", attrs }] });
+    const doc = portableTextToTiptap(pt);
+    const node = (doc.content as Array<{ type: string; attrs: Record<string, unknown> }>).find((n) => n.type === "storyChart")!;
+    expect(node.attrs.labels).toEqual(["2019", "2021"]);
+    expect((node.attrs.series as Array<{ name: string }>).length).toBe(2);
+    expect((node.attrs.series as Array<{ highlight: boolean }>)[0].highlight).toBe(true);
+    expect(node.attrs.threshold).toMatchObject({ value: 65 });
+    expect(node.attrs).toMatchObject({ unit: "%", caption: "Surveyed twice yearly", source: "Programme survey" });
+  });
+});
+
 describe("pt-convert: storyMermaid (Data & story)", () => {
   it("converts a storyMermaid node incl. code + renderedSvg/renderStatus passthrough", () => {
     const doc = {

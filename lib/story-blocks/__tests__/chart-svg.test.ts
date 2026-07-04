@@ -40,8 +40,8 @@ describe("chart-svg: bar", () => {
 
   it("summarizes the data (item count + total) in the <desc>", () => {
     const svg = renderChartSvg(input);
-    expect(svg).toContain("3 items");
-    expect(svg).toContain("total 60");
+    expect(svg).toContain("3 categories");
+    expect(svg).toContain("1 series");
   });
 
   it("draws minimal horizontal gridlines (no vertical grid)", () => {
@@ -97,7 +97,7 @@ describe("chart-svg: line", () => {
   it("still has <title>/<desc> when no title is given (falls back to a generic name)", () => {
     const svg = renderChartSvg(input);
     expect(svg).toMatch(/<title id="[^"]+">.+<\/title>/);
-    expect(svg).toContain("4 items");
+    expect(svg).toContain("4 categories");
   });
 });
 

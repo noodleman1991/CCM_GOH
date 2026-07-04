@@ -28,6 +28,9 @@ declare module "@tiptap/core" {
  * SANITIZED one the server returned. renderStatus:"failed" keeps the block
  * withheld from the public renderer while preserving the last-good preview.
  */
+export type SeriesAttrs = { _key?: string; name: string; values: number[]; highlight?: boolean };
+export type AnnotationAttrs = { _key?: string; atLabel: string; text: string };
+
 export const StoryChart = Node.create<StoryChartOptions>({
   name: "storyChart",
   group: "block",
@@ -42,7 +45,17 @@ export const StoryChart = Node.create<StoryChartOptions>({
     return {
       chartType: { default: "bar" },
       title: { default: "" },
+      unit: { default: "" },
       data: { default: [] as ChartRowAttrs[] },
+      // Studio fields (X2): multi-series data + editorial frame + annotations.
+      labels: { default: [] as string[] },
+      series: { default: [] as SeriesAttrs[] },
+      annotations: { default: [] as AnnotationAttrs[] },
+      threshold: { default: null as { value: number; label?: string } | null },
+      caption: { default: "" },
+      source: { default: "" },
+      sourceUrl: { default: "" },
+      alt: { default: "" },
       renderedSvg: { default: null },
       renderStatus: { default: null },
     };
