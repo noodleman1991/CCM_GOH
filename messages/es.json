@@ -2127,5 +2127,13 @@
     "message": "Mensaje",
     "connect": "Conectar",
     "requested": "Solicitado ✓"
+  },
+  "regionalCommunity": {
+    "kicker": "Comunidad regional de práctica",
+    "intro": "Un espacio conectado que reúne la investigación, las experiencias vividas, los eventos y las personas de la región que trabajan en clima y salud mental.",
+    "getInvolved": "Participa",
+    "statMembers": "Integrantes",
+    "statCaseStudies": "Estudios de caso",
+    "statLived": "Experiencias vividas"
   }
 }

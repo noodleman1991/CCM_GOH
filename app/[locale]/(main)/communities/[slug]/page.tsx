@@ -12,6 +12,8 @@ import RegionalCommunityTemplate from '@/components/templates/regional-community
 import { notFound } from "next/navigation";
 import { isRTL } from "@/i18n/i18n-helpers";
 import { FollowButton } from "@/components/follow/follow-button";
+import { RegionHero } from "@/components/regions/region-hero";
+import { slugToShortCode } from "@/lib/maps/region-codes";
 
 export async function generateMetadata({
     params,
@@ -85,24 +87,25 @@ export default async function RegionalCommunityPage({
     // Determine text direction
     const rtl = isRTL(locale);
 
+    // §4.13 hero renders for the seven canonical regions; other community
+    // pages keep their CMS hero untouched.
+    const hasRegionHero = Boolean(slugToShortCode(slug));
+
     return (
         <main dir={rtl ? 'rtl' : 'ltr'}>
-            {/* Your existing titleHero */}
-            {pageData.titleHero && (
-                <Blocks
-                    blocks={[pageData.titleHero]}
-                    locale={locale}
-                    userId={userId!}
-                />
-            )}
-
-            {/* Follow this region (one-click; per-user, so it self-resolves on the
-                client to keep this ISR page user-agnostic). Signed-out users get a
-                sign-in prompt via the action. */}
-            {userId && (
-                <div className="container relative z-10 flex justify-end py-3">
-                    <FollowButton targetType="REGION" targetId={slug} />
-                </div>
+            {hasRegionHero ? (
+                <RegionHero slug={slug} locale={locale} />
+            ) : (
+                <>
+                    {pageData.titleHero && (
+                        <Blocks blocks={[pageData.titleHero]} locale={locale} userId={userId!} />
+                    )}
+                    {userId && (
+                        <div className="container relative z-10 flex justify-end py-3">
+                            <FollowButton targetType="REGION" targetId={slug} />
+                        </div>
+                    )}
+                </>
             )}
 
             {/* Template Mode - New structured template with dynamic content */}
@@ -113,7 +116,7 @@ export default async function RegionalCommunityPage({
                     newsGrid={pageData.newsGrid}
                     caseStudiesGrid={pageData.caseStudiesGrid}
                     livedExperiencesCarousel={pageData.livedExperiencesCarousel}
-                    welcomeHero={pageData.welcomeHero}
+                    welcomeHero={hasRegionHero ? null : pageData.welcomeHero}
                     whyJoinCTA={pageData.whyJoinCTA}
                     logoCloud={pageData.logoCloud}
                     teamGrid={pageData.teamGrid}
