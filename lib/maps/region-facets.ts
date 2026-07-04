@@ -133,8 +133,12 @@ export const FACET_TO_CONTENT_TYPE: Partial<Record<FacetId, FacetContentType>> =
   caseStudyCount: "caseStudy",
   livedExpCount: "livedExperience",
   newsCount: "newsPost",
-  agendaCount: "agenda",
-  reportCount: "report",
+  // Canonical mapping (user decision 2026-07-04): both output facets count the
+  // researchOutput type — the SAME type region-items lists — so the atlas
+  // numbers always match the cards beneath the map. Legacy agenda/report docs
+  // are no longer counted (they are dual-read elsewhere until retirement).
+  agendaCount: "researchOutput",
+  reportCount: "researchOutput",
 };
 
 /** Reverse of `FACET_TO_CONTENT_TYPE`: a pin's content type → the `FacetDef`
@@ -158,8 +162,8 @@ const FACET_LAYER_COLOR_KEY: Record<FacetId, keyof typeof COLOR.layer> = {
   caseStudyCount: layerColorKeyFor("caseStudy"),
   livedExpCount: layerColorKeyFor("livedExperience"),
   newsCount: layerColorKeyFor("newsPost"),
-  agendaCount: layerColorKeyFor("agenda"),
-  reportCount: layerColorKeyFor("report"),
+  agendaCount: layerColorKeyFor("researchOutput"),
+  reportCount: layerColorKeyFor("researchOutput"),
   memberCount: "people",
 };
 

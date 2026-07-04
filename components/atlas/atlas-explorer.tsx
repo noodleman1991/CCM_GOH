@@ -458,7 +458,7 @@ export function AtlasExplorer({
             {singleFacet && destinationHref ? (
               selectedDatum.value > 0 ? (
                 <>
-                  {singleCardFacet && <RegionContentCards region={selected} facet={singleCardFacet} />}
+                  {singleCardFacet && <RegionContentCards region={selected} facet={singleCardFacet} theme={theme} q={q} />}
                   <Button asChild size="sm">
                     <Link href={destinationHref}>
                       {tAtlas('explore', { region: labelFor(selected) })}
@@ -471,7 +471,7 @@ export function AtlasExplorer({
               )
             ) : (
               <>
-                {cardFacetsQS && <RegionContentCards region={selected} facet={cardFacetsQS} />}
+                {cardFacetsQS && <RegionContentCards region={selected} facet={cardFacetsQS} theme={theme} q={q} />}
                 <ul className="flex flex-wrap gap-2">
                   {layers.map((layerId) => {
                     const def = FACETS.find((f) => f.id === layerId)

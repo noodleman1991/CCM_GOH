@@ -12,12 +12,10 @@ export const revalidate = 300;
 
 countriesLib.registerLocale(enLocale);
 
-// agendaCount/reportCount map to the legacy `agenda`/`report` doc types to stay
-// coherent with /api/maps/region-data (the counts this pin layer shares filter
-// state with). NOTE: /api/maps/region-items maps these facets to `researchOutput`
-// instead — a pre-existing divergence between the two routes, tracked for a
-// follow-up decision. Neither legacy type carries place/geo fields, so these
-// facets always yield empty pins/countries today.
+// agendaCount/reportCount resolve to `researchOutput` via the shared
+// FACET_TO_CONTENT_TYPE (canonical mapping 2026-07-04 — all three map routes
+// now agree). researchOutput carries no place/geo fields yet, so these facets
+// still yield empty pins/countries until the schema grows one.
 const FACET_TO_TYPE = FACET_TO_CONTENT_TYPE;
 
 type RawPinRow = {
@@ -74,11 +72,11 @@ async function fetchRowsForType(
         ? `"point": place.point, "precision": coalesce(place.precision, "city"), "countryCode3": place.countryCode`
         : `"point": null, "precision": null, "countryCode3": null`;
 
-  // Status gating mirrors region-data/region-items: caseStudy is approved-only;
-  // livedExperience allows legacy docs with no status; newsPost/agenda/report
-  // have no review workflow (always public).
+  // Status gating mirrors region-data/region-items: caseStudy/researchOutput
+  // are approved-only; livedExperience allows legacy docs with no status;
+  // newsPost has no review workflow (always public).
   const publicFilter =
-    type === "caseStudy"
+    type === "caseStudy" || type === "researchOutput"
       ? ` && status == "approved"`
       : type === "livedExperience"
         ? ` && (status == "approved" || !defined(status))`
