@@ -1,12 +1,16 @@
 "use client";
 
 import { useCallback } from "react";
+import useSWR from "swr";
 import { useSearchParams } from "next/navigation";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { Card } from "@/components/ui/card";
 import { RegionChoropleth } from "@/components/maps/region-choropleth";
-import { REGION_TO_RC_SLUG, type RegionCode } from "@/lib/maps/region-codes";
+import { RC_SLUG_TO_REGION, REGION_TO_RC_SLUG, type RegionCode } from "@/lib/maps/region-codes";
 import type { RegionDatum } from "@/lib/maps/region-facets";
+import type { PinCluster } from "@/lib/maps/cluster-pins";
+
+const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
 export type CasesMapItem = {
   id: string;
@@ -33,6 +37,18 @@ export function CasesMapView({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+
+  // Geo pins (task #12: "pins throughout"): when exactly one region filter is
+  // active, its geotagged case studies drop as pins — the same layer, colours
+  // and clustering the Atlas uses. No region selected → the choropleth's
+  // shading carries the story alone.
+  const communitiesParam = (searchParams.get("communities") ?? "").split(",").map((v) => v.trim()).filter(Boolean);
+  const activeRegion = communitiesParam.length === 1 ? RC_SLUG_TO_REGION[communitiesParam[0]] : undefined;
+  const { data: pinsData } = useSWR<{ pins: PinCluster[] }>(
+    activeRegion ? `/api/maps/region-pins?region=${activeRegion}&facets=caseStudyCount` : null,
+    fetcher,
+    { revalidateOnFocus: false, dedupingInterval: 60000 }
+  );
 
   const onSelect = useCallback(
     (code: RegionCode) => {
@@ -78,6 +94,8 @@ export function CasesMapView({
       <div className="order-1 lg:order-2">
         <RegionChoropleth
           data={data}
+          activeCode={activeRegion ?? null}
+          pins={pinsData?.pins}
           onSelect={onSelect}
           labelFor={(code) => regionLabels[code] ?? code}
           className="w-full"

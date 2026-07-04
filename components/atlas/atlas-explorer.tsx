@@ -136,6 +136,24 @@ export function AtlasExplorer({
   })
   const regionData = data?.data ?? []
 
+  // Chip totals (task #12): every "Show" chip carries its live count, so the
+  // facet row is informative before anything is clicked. One counts-only fetch
+  // across ALL facets, theme/q-aware so the numbers always match the filters.
+  const allFacetsQS = FACETS.map((f) => f.id).join(',')
+  const totalsKey = `/api/maps/region-data?facets=${allFacetsQS}${theme ? `&theme=${theme}` : ''}${q ? `&q=${encodeURIComponent(q)}` : ''}`
+  const { data: totalsData } = useSWR<{ data: RegionDatumWithBreakdown[] }>(totalsKey, fetcher, {
+    revalidateOnFocus: false, dedupingInterval: 120000,
+  })
+  const facetTotals = useMemo(() => {
+    const totals: Partial<Record<FacetId, number>> = {}
+    for (const datum of totalsData?.data ?? []) {
+      for (const [facetId, count] of Object.entries(datum.byFacet ?? {})) {
+        totals[facetId as FacetId] = (totals[facetId as FacetId] ?? 0) + (count ?? 0)
+      }
+    }
+    return totals
+  }, [totalsData])
+
   // Pins only exist for content facets (member counts have no geo data); if
   // none of the active layers are pin-capable, skip the pins fetch entirely.
   const pinFacets = layers.filter((l) => CARD_FACETS.has(l))
@@ -270,7 +288,9 @@ export function AtlasExplorer({
             return (
               <FilterChip
                 key={f.id}
-                label={t(f.labelKey)}
+                label={
+                  facetTotals[f.id] !== undefined ? `${t(f.labelKey)} · ${facetTotals[f.id]}` : t(f.labelKey)
+                }
                 active={isActive}
                 disabled={isLastActive}
                 title={isLastActive ? tAtlas('lastLayer') : undefined}

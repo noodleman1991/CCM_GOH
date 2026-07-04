@@ -30,7 +30,7 @@ export function SectionHeader({
   titleClassName?: string;
 }) {
   return (
-    <div className={cn("flex items-start justify-between gap-4", className)}>
+    <div className={cn("flex flex-wrap items-start justify-between gap-x-4 gap-y-1.5", className)}>
       <div className="flex min-w-0 items-start gap-3">
         <div className="min-w-0">
           <h2 className={cn("font-heading text-xl font-bold text-balance text-ccm-midnight sm:text-2xl", titleClassName)}>
