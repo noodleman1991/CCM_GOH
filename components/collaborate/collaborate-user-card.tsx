@@ -7,13 +7,19 @@
  * Respects privacy settings and supports RTL
  */
 
-import { Link } from '@/i18n/navigation'
+import { useState, useTransition } from 'react'
+import { useUser } from '@clerk/nextjs'
+import { toast } from 'sonner'
+import { Link, useRouter } from '@/i18n/navigation'
 import { useTranslations, useLocale } from 'next-intl'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
-import { MapPin, Briefcase, Clock, FileText, MessageCircle } from 'lucide-react'
+import { MapPin, Briefcase, Clock, FileText, MessageCircle, UserPlus } from 'lucide-react'
+import { startConversation } from '@/lib/actions/messaging'
+import { requestContact } from '@/lib/actions/requests'
 import type { LocalizedUser } from '@/types/prisma'
 
 interface CollaborateUserCardProps {
@@ -42,10 +48,36 @@ interface CollaborateUserCardProps {
 
 export function CollaborateUserCard({ user, className }: CollaborateUserCardProps) {
   const t = useTranslations('collaborate.userCard')
+  const tCollab = useTranslations('collabSpace')
   const tWorkTypes = useTranslations('profile.work.types')
   const tExpertise = useTranslations('profile.work.expertise')
   const locale = useLocale()
   const isRTL = locale === 'ar'
+  const router = useRouter()
+  const { isSignedIn } = useUser()
+  const [pending, startAction] = useTransition()
+  const [requested, setRequested] = useState(false)
+
+  // Both handlers live inside the profile <Link>, so they must suppress the
+  // card navigation. Self-targeting is rejected server-side ("That's you.").
+  const handleMessage = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    startAction(async () => {
+      const res = await startConversation(user.id)
+      if (res.ok) router.push(`/messages?c=${res.id}`)
+      else toast.error(res.error)
+    })
+  }
+  const handleConnect = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    startAction(async () => {
+      const res = await requestContact(user.id)
+      if (res.ok) setRequested(true)
+      else toast.error(res.error)
+    })
+  }
 
   // Map work type enum values to translation keys
   const getWorkTypeKey = (workType: string): string => {
@@ -213,6 +245,32 @@ export function CollaborateUserCard({ user, className }: CollaborateUserCardProp
               <div className="flex items-center gap-1.5 border-t pt-2 text-xs text-muted-foreground">
                 <Clock className="h-3 w-3" />
                 <span>{t('lastActive', { time: getLastActiveText(user.lastLoginAt) })}</span>
+              </div>
+            )}
+
+            {/* Actions: Message + Connect (§4.6) — signed-in only */}
+            {isSignedIn && (
+              <div className="flex gap-2 border-t pt-3">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="min-h-[44px] flex-1 gap-1.5"
+                  disabled={pending}
+                  onClick={handleMessage}
+                >
+                  <MessageCircle className="size-3.5" aria-hidden />
+                  {tCollab('message')}
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="min-h-[44px] flex-1 gap-1.5"
+                  disabled={pending || requested}
+                  onClick={handleConnect}
+                >
+                  <UserPlus className="size-3.5" aria-hidden />
+                  {requested ? tCollab('requested') : tCollab('connect')}
+                </Button>
               </div>
             )}
         </CardContent>
