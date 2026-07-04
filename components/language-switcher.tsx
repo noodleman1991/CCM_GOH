@@ -51,12 +51,15 @@ export function LanguageSwitcher() {
     if (isMobile) {
         return (
             <Drawer>
+                {/* Same SidebarMenuButton chrome as the desktop dropdown trigger,
+                    so the switcher reads as part of the sidebar footer on every
+                    device (was a stray outline button that clashed with it). */}
                 <DrawerTrigger asChild>
-                    <Button variant="outline" className={cn("flex items-center gap-2", isPending && "opacity-70")}>
-                        {isPending ? <Loader2 className="h-5 w-5 animate-spin" /> : <Globe className="h-5 w-5" />}
-                        <span>{currentLocale.toUpperCase()}</span>
-                        <ChevronDown className="h-4 w-4" />
-                    </Button>
+                    <SidebarMenuButton size="lg" className={cn(isPending && "opacity-70")}>
+                        {isPending ? <Loader2 className="size-4 animate-spin" /> : <Globe className="size-4" />}
+                        <span className="truncate font-bold">{currentLanguage.name}</span>
+                        <ChevronDown className="size-4 ms-auto" />
+                    </SidebarMenuButton>
                 </DrawerTrigger>
                 <DrawerContent>
                     <div className="grid gap-4 p-4">
