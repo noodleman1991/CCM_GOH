@@ -1456,7 +1456,9 @@
     "location": "Lieu",
     "viewToggle": "Affichage",
     "galleryView": "Galerie",
-    "mapView": "Carte"
+    "mapView": "Carte",
+    "writtenBy": "Écrit par",
+    "withOrgs": "Avec"
   },
   "revisionAlert": {
     "title": "Action Requise: Révision Nécessaire",
