@@ -113,9 +113,8 @@ const createPortableTextComponents = (
         if (items.length === 0) return null;
         return (
           <section className="mt-12 text-start">
-            <h3 className="mb-3 flex items-center gap-2.5 font-heading text-xl font-semibold text-ccm-midnight">
-              <span aria-hidden className="h-5 w-1 rounded-full bg-ccm-water" />
-              References
+            <h3 className="mb-3 font-heading text-xl font-semibold text-ccm-midnight">
+              {({ en: "References", es: "Referencias", fr: "Références", ar: "المراجع" } as Record<string, string>)[locale] ?? "References"}
             </h3>
             <ol className="grid list-decimal gap-2.5 ps-6 text-sm leading-relaxed text-muted-foreground marker:font-bold marker:text-ccm-sea">
               {items.map((item, i) => (

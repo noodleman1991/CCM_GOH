@@ -99,7 +99,7 @@ export default function Hero1({
                         </p>
                     )}
                     {localizedTitle && (
-                        <h1 className="mt-4 font-bold font-heading leading-tight text-balance text-pretty break-words hyphens-auto text-3xl md:text-4xl lg:text-5xl text-ccm-midnight">
+                        <h1 className="mt-4 font-bold font-heading leading-tight text-balance text-pretty [overflow-wrap:anywhere] text-3xl md:text-4xl lg:text-5xl text-ccm-midnight">
                             {localizedTitle}
                         </h1>
                     )}

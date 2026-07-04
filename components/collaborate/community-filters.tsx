@@ -106,7 +106,7 @@ export function CommunityFilters({ filters, onChangeAction, communities, classNa
           <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
             {group.label}
           </span>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4 snap-x [&>*]:snap-start [&>*]:flex-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0 sm:[&>*]:flex-auto sm:[&>*]:flex-none">
             {group.options.map(opt => (
               <FilterChip
                 key={opt.value}
