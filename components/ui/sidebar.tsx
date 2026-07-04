@@ -3,7 +3,7 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { VariantProps, cva } from "class-variance-authority"
-import { PanelLeftIcon, PanelRightIcon } from "lucide-react"
+import { MenuIcon, PanelLeftIcon, PanelRightIcon } from "lucide-react"
 
 import { useIsMobile } from "@/hooks/use-mobile"
 import { useLocale } from "next-intl"
@@ -297,7 +297,7 @@ function SidebarTrigger({
                             onClick,
                             ...props
                         }: React.ComponentProps<typeof Button>) {
-    const { toggleSidebar, isRtl } = useSidebar()
+    const { toggleSidebar, isRtl, isMobile } = useSidebar()
 
     return (
         <Button
@@ -312,7 +312,9 @@ function SidebarTrigger({
             }}
             {...props}
         >
-            {isRtl ? <PanelRightIcon /> : <PanelLeftIcon />}
+            {/* Mobile opens a bottom sheet, so the affordance is the universal
+                menu glyph; desktop keeps the panel icon (it collapses a panel). */}
+            {isMobile ? <MenuIcon /> : isRtl ? <PanelRightIcon /> : <PanelLeftIcon />}
             <span className="sr-only">Toggle Sidebar</span>
         </Button>
     )
