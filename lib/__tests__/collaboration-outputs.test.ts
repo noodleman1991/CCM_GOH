@@ -3,7 +3,7 @@ import { OUTPUT_TYPES, isOutputType, outputDetailHref, mapSanityStatus, mergeOut
 
 describe("workspace output helpers", () => {
   it("lists the linkable output types", () => {
-    expect(OUTPUT_TYPES.map((o) => o.type).sort()).toEqual(["caseStudy", "livedExperience", "researchOutput"]);
+    expect(OUTPUT_TYPES.map((o) => o.type).sort()).toEqual(["caseStudy", "event", "livedExperience", "researchOutput"]);
   });
   it("validates output types", () => {
     expect(isOutputType("caseStudy")).toBe(true);

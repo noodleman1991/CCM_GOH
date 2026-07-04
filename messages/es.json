@@ -300,7 +300,15 @@
     "noUpcoming": "No hay eventos próximos.",
     "prevMonth": "Mes anterior",
     "nextMonth": "Mes siguiente",
-    "today": "Hoy"
+    "today": "Hoy",
+    "pastEvent": "Evento pasado",
+    "addToCalendar": "Añadir al calendario",
+    "share": "Compartir",
+    "linkCopied": "Enlace copiado",
+    "watchRecording": "Ver la grabación",
+    "goingCount": "{count, plural, =0 {Sé la primera persona en confirmar} one {# asistirá} other {# asistirán}}",
+    "partOf": "Parte de",
+    "theProject": "el proyecto organizador"
   },
   "plan": {
     "empty": "Aún no hay plan.",

@@ -205,7 +205,15 @@
     "noUpcoming": "No upcoming events.",
     "prevMonth": "Previous month",
     "nextMonth": "Next month",
-    "today": "Today"
+    "today": "Today",
+    "pastEvent": "Past event",
+    "addToCalendar": "Add to calendar",
+    "share": "Share",
+    "linkCopied": "Link copied",
+    "watchRecording": "Watch the recording",
+    "goingCount": "{count, plural, =0 {Be the first to RSVP} one {# going} other {# going}}",
+    "partOf": "Part of",
+    "theProject": "the organising project"
   },
   "plan": {
     "empty": "No plan yet.",

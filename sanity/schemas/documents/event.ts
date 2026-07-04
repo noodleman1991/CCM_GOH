@@ -108,6 +108,37 @@ export default defineType({
       group: "when",
     }),
 
+    // --- Page content (X6): the event's public page body -------------------
+    defineField({
+      name: "coverImage",
+      title: "Cover image",
+      type: "image",
+      options: { hotspot: true },
+      group: "content",
+    }),
+    defineField({
+      name: "body",
+      title: "Page body",
+      type: "styled-block-content",
+      description: "About, agenda, speakers — the same editorial blocks as every content page.",
+      group: "content",
+    }),
+    defineField({
+      name: "recordingUrl",
+      title: "Recording URL",
+      type: "url",
+      description: "Posted after the event — flips the public page into recap mode.",
+      group: "content",
+    }),
+    defineField({
+      name: "relatedCollaboration",
+      title: "Workspace (app id)",
+      type: "string",
+      description: "Prisma Collaboration id of the organising workspace, set by the app.",
+      group: "affiliations",
+      readOnly: true,
+    }),
+
     // --- Affiliations -------------------------------------------------------
     defineField({
       name: "linkedProject",
