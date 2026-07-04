@@ -232,7 +232,10 @@
     "messagesDescription": "محادثاتك المباشرة مع الأعضاء الآخرين",
     "openMessages": "فتح الرسائل",
     "attentionTitle": "ما ينتظرك",
-    "attentionOpen": "افتح ←"
+    "attentionOpen": "افتح ←",
+    "forYouTitle": "لك",
+    "forYouRegion": "من منطقة تتابعها",
+    "forYouTheme": "حول موضوع تتابعه"
   },
   "settings": {
     "title": "الإعدادات",
@@ -318,7 +321,12 @@
   "follow": {
     "follow": "متابعة",
     "following": "تتابع",
-    "signInToFollow": "سجّل الدخول للمتابعة"
+    "signInToFollow": "سجّل الدخول للمتابعة",
+    "contract": {
+      "PROJECT": "احصل على إشعار عندما ينشر هذا المشروع مخرجًا أو يحدد فعالية",
+      "REGION": "جديد هذه المنطقة يظهر في قسم «لك» والملخص الأسبوعي",
+      "THEME": "جديد هذا الموضوع يظهر في قسم «لك» والملخص الأسبوعي"
+    }
   },
   "notifications": {
     "success": "نجح!",

@@ -11,6 +11,7 @@ import { calculateProfileCompleteness } from '@/lib/profile-completeness'
 import { REGION_TO_RC_SLUG, isRegionCode } from '@/lib/maps/region-codes'
 import { getUserContributions, getRegionMembers } from '@/lib/community/region-data'
 import { myTasks } from '@/lib/actions/plans'
+import { getForYou, forYouHref } from '@/lib/follows/for-you'
 import { safeQuery } from '@/lib/prisma'
 
 /**
@@ -172,7 +173,7 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
 
   // X4 "What needs me": my open tasks across workspaces + unread lifecycle
   // notifications, one list — the dashboard's pull side of the spine.
-  const [tasks, unreadR] = await Promise.all([
+  const [tasks, unreadR, forYouItems] = await Promise.all([
     myTasks(),
     safeQuery(() =>
       prisma.notification.findMany({
@@ -186,7 +187,9 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
         select: { id: true, type: true, snippet: true },
       })
     ),
+    getForYou(userId),
   ])
+  const forYou = forYouItems.map((item) => ({ ...item, href: forYouHref(item) }))
   const dashboardAttention = [
     ...tasks.slice(0, 5).map((task) => ({
       kind: "task" as const,
@@ -209,6 +212,7 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
   return (
     <DashboardClient
       attention={dashboardAttention}
+      forYou={forYou}
       user={{
         id: user.id,
         firstName: user.firstName,

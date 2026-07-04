@@ -240,6 +240,29 @@ export async function refreshOutputStatuses(collaborationId: string): Promise<vo
           })
         )
       );
+
+      // X5 Follow contract: a newly-approved output notifies the project's
+      // followers — that is what "Follow" means (no fan-out, no button).
+      const published = changed.filter((c) => c.status === "approved");
+      if (published.length > 0) {
+        const followers = await prisma.follow.findMany({
+          where: { targetType: "PROJECT", targetId: collaborationId },
+          select: { userId: true },
+        });
+        if (followers.length > 0) {
+          await Promise.all(
+            published.map((c) =>
+              emitLifecycle({
+                kind: "followed_publish",
+                followerIds: followers.map((f) => f.userId),
+                entityType: "collaboration",
+                entityId: collaborationId,
+                title: c.title,
+              })
+            )
+          );
+        }
+      }
     }
   } catch {
     // Sanity unreachable — keep the cached values (they remain the fallback).

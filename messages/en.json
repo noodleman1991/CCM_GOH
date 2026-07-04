@@ -226,7 +226,12 @@
   "follow": {
     "follow": "Follow",
     "following": "Following",
-    "signInToFollow": "Sign in to follow"
+    "signInToFollow": "Sign in to follow",
+    "contract": {
+      "PROJECT": "Get notified when this project publishes an output or schedules an event",
+      "REGION": "New content from this region appears in your For-you strip and weekly digest",
+      "THEME": "New content on this theme appears in your For-you strip and weekly digest"
+    }
   },
   "notifications": {
     "success": "Success!",
@@ -931,7 +936,10 @@
     "messagesDescription": "Your direct conversations with other members",
     "openMessages": "Open messages",
     "attentionTitle": "What needs you",
-    "attentionOpen": "Open →"
+    "attentionOpen": "Open →",
+    "forYouTitle": "For you",
+    "forYouRegion": "from a region you follow",
+    "forYouTheme": "on a theme you follow"
   },
   "caseStudies": {
     "title": "Case Studies",

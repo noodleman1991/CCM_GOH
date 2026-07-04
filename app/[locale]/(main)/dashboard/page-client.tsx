@@ -84,8 +84,11 @@ type DashboardAttention = {
   href: string
 }
 
+type ForYouRow = { id: string; type: string; title: string; href: string; match: "region" | "theme" }
+
 interface DashboardClientProps {
   attention?: DashboardAttention[]
+  forYou?: ForYouRow[]
   user: DashboardUser
   regionalCommunity: RegionalCommunity | null
   recentWork: RecentWork[]
@@ -96,6 +99,7 @@ interface DashboardClientProps {
 
 export function DashboardClient({
   attention = [],
+  forYou = [],
   user,
   regionalCommunity,
   recentWork,
@@ -223,6 +227,25 @@ export function DashboardClient({
                         {a.detail && <span className="ms-2 text-xs text-muted-foreground">{a.detail}</span>}
                       </span>
                       <span className="flex-none text-xs font-bold text-[var(--color-ccm-sea)]">{t('attentionOpen')}</span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* X5 "For you" — content matching the regions/themes you follow */}
+            {forYou.length > 0 && (
+              <div>
+                <h2 className="text-2xl font-bold mb-4">{t('forYouTitle')}</h2>
+                <div className="grid gap-2 sm:grid-cols-2">
+                  {forYou.map((item) => (
+                    <Link
+                      key={item.id}
+                      href={item.href}
+                      className="rounded-xl border border-border bg-card p-3 text-sm transition-colors hover:border-[var(--color-ccm-sea)]/40 hover:shadow-sm"
+                    >
+                      <span className="block truncate font-medium text-foreground"><bdi>{item.title}</bdi></span>
+                      <span className="text-xs text-muted-foreground">{t(item.match === 'region' ? 'forYouRegion' : 'forYouTheme')}</span>
                     </Link>
                   ))}
                 </div>
