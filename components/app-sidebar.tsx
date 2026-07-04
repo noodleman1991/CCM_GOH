@@ -18,7 +18,7 @@ import {
     Search,
 } from "lucide-react"
 import Logo from "@/components/logo"
-import { usePathname } from "@/i18n/navigation"
+import { Link, usePathname } from "@/i18n/navigation"
 import { SearchTrigger } from "@/components/search-dialog"
 import { useSearchStore } from "@/stores/search-store"
 
@@ -247,12 +247,25 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
+                        {/* Expanded: full wordmark. Icon rail: the wordmark can't
+                            survive a 48px squeeze, so swap to a compact "ccm"
+                            blob mark echoing the logo's white-cloud-on-navy. */}
                         <SidebarMenuButton
                             size="xl"
                             asChild
-                            className="justify-center p-4 hover:bg-transparent active:bg-transparent focus-visible:bg-transparent data-[active=true]:bg-transparent group-data-[collapsible=icon]:h-auto group-data-[collapsible=icon]:p-1 [&_img]:group-data-[collapsible=icon]:h-auto [&_img]:group-data-[collapsible=icon]:w-full"
+                            className="justify-center p-4 hover:bg-transparent active:bg-transparent focus-visible:bg-transparent data-[active=true]:bg-transparent group-data-[collapsible=icon]:h-auto group-data-[collapsible=icon]:p-1"
                         >
-                            <Logo size="xl" />
+                            <Link href="/" aria-label="Go to homepage" className="inline-flex items-center justify-center">
+                                <span className="group-data-[collapsible=icon]:hidden">
+                                    <Logo size="xl" asChild />
+                                </span>
+                                <span
+                                    aria-hidden
+                                    className="hidden size-8 items-center justify-center rounded-full bg-white font-heading text-[11px] font-bold lowercase tracking-tight text-ccm-midnight group-data-[collapsible=icon]:flex"
+                                >
+                                    ccm
+                                </span>
+                            </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>
