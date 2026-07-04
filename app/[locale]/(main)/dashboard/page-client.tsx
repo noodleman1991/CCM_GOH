@@ -76,7 +76,16 @@ interface NewsItem {
   }
 }
 
+type DashboardAttention = {
+  kind: "task" | "notification"
+  id: string
+  title: string
+  detail: string | null
+  href: string
+}
+
 interface DashboardClientProps {
+  attention?: DashboardAttention[]
   user: DashboardUser
   regionalCommunity: RegionalCommunity | null
   recentWork: RecentWork[]
@@ -86,6 +95,7 @@ interface DashboardClientProps {
 }
 
 export function DashboardClient({
+  attention = [],
   user,
   regionalCommunity,
   recentWork,
@@ -190,6 +200,35 @@ export function DashboardClient({
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - Main Actions */}
           <div className="lg:col-span-2 space-y-8">
+            {/* X4 "What needs me" — tasks + unread project activity, one glance */}
+            {attention.length > 0 && (
+              <div>
+                <h2 className="text-2xl font-bold mb-4">{t('attentionTitle')}</h2>
+                <div className="space-y-2">
+                  {attention.map((a) => (
+                    <Link
+                      key={`${a.kind}-${a.id}`}
+                      href={a.href}
+                      className="flex items-start gap-2.5 rounded-xl border border-border bg-card p-3 text-sm transition-colors hover:border-[var(--color-ccm-sea)]/40 hover:shadow-sm"
+                    >
+                      <span
+                        aria-hidden
+                        className={cn(
+                          "mt-1.5 size-2 flex-none rounded-full",
+                          a.kind === "task" ? "bg-[var(--color-ccm-water)]" : "bg-[var(--color-ccm-sea)]"
+                        )}
+                      />
+                      <span className="min-w-0 flex-1 text-foreground">
+                        <bdi>{a.title}</bdi>
+                        {a.detail && <span className="ms-2 text-xs text-muted-foreground">{a.detail}</span>}
+                      </span>
+                      <span className="flex-none text-xs font-bold text-[var(--color-ccm-sea)]">{t('attentionOpen')}</span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Quick Actions */}
             <div>
               <h2 className="text-2xl font-bold mb-6">{t('quickActions')}</h2>

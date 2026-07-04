@@ -10,6 +10,8 @@ import type { SupportedLocale } from '@/types/prisma'
 import { calculateProfileCompleteness } from '@/lib/profile-completeness'
 import { REGION_TO_RC_SLUG, isRegionCode } from '@/lib/maps/region-codes'
 import { getUserContributions, getRegionMembers } from '@/lib/community/region-data'
+import { myTasks } from '@/lib/actions/plans'
+import { safeQuery } from '@/lib/prisma'
 
 /**
  * Dashboard Page - Server Component
@@ -168,8 +170,45 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
   // unified feed that also powers the public profile's Contributions block.
   const contributions = (await getUserContributions(user.id, locale)).slice(0, 5)
 
+  // X4 "What needs me": my open tasks across workspaces + unread lifecycle
+  // notifications, one list — the dashboard's pull side of the spine.
+  const [tasks, unreadR] = await Promise.all([
+    myTasks(),
+    safeQuery(() =>
+      prisma.notification.findMany({
+        where: {
+          recipientId: userId,
+          readAt: null,
+          type: { in: ["TASK_ASSIGNED", "TASK_DUE", "OUTPUT_STATUS", "THREAD_REPLY", "MEMBER_JOINED", "FOLLOWED_PUBLISH", "EVENT_REMINDER"] },
+        },
+        orderBy: { createdAt: "desc" },
+        take: 5,
+        select: { id: true, type: true, snippet: true },
+      })
+    ),
+  ])
+  const dashboardAttention = [
+    ...tasks.slice(0, 5).map((task) => ({
+      kind: "task" as const,
+      id: task.id,
+      title: task.title,
+      detail: task.collaborationTitle,
+      href: `/collaborations/${task.collaborationId}?tab=plan`,
+    })),
+    ...(unreadR.success
+      ? unreadR.data.map((n) => ({
+          kind: "notification" as const,
+          id: n.id,
+          title: n.snippet ?? "",
+          detail: n.type,
+          href: "/messages?tab=notifications",
+        }))
+      : []),
+  ].slice(0, 8)
+
   return (
     <DashboardClient
+      attention={dashboardAttention}
       user={{
         id: user.id,
         firstName: user.firstName,

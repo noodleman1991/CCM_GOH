@@ -230,7 +230,9 @@
     "openWorkspaces": "فتح المساحات",
     "messages": "الرسائل",
     "messagesDescription": "محادثاتك المباشرة مع الأعضاء الآخرين",
-    "openMessages": "فتح الرسائل"
+    "openMessages": "فتح الرسائل",
+    "attentionTitle": "ما ينتظرك",
+    "attentionOpen": "افتح ←"
   },
   "settings": {
     "title": "الإعدادات",
@@ -1778,7 +1780,15 @@
     },
     "mediaConsentRequired": "يحتاج هذا الفيديو إلى الموافقة على ملفات تعريف الارتباط.",
     "dropToUpload": "اسحب ملفًا هنا أو",
-    "viewPublicPage": "View public page"
+    "viewPublicPage": "View public page",
+    "attention": {
+      "title": "ما ينتظرك",
+      "subtitle": "مهام ومراجعات وردود بانتظارك",
+      "open": "افتح ←",
+      "task": "مهمة · {detail}",
+      "output": "مطلوب تعديل",
+      "notification": "{detail}"
+    }
   },
   "messages": {
     "title": "الرسائل",

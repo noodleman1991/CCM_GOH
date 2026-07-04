@@ -8,6 +8,13 @@ import { OUTPUT_TYPES } from "@/lib/collaboration/outputs";
 type Output = { id: string; sanityType: string; title: string; status: string };
 type Stage = { id: string; title: string; tasks: { status: string }[] };
 type Activity = { kind: string; summary: string; at: string };
+type Attention = { kind: "task" | "output" | "notification"; id: string; title: string; detail: string | null; tab: string };
+
+const ATTENTION_DOT: Record<Attention["kind"], string> = {
+  output: "bg-ccm-amber",
+  task: "bg-ccm-water",
+  notification: "bg-ccm-sea",
+};
 
 const STATUS_BADGE: Record<string, { key: string; cls: string }> = {
   draft: { key: "statusDraft", cls: "bg-muted text-muted-foreground" },
@@ -21,12 +28,14 @@ export default function WorkspaceHome({
   planStages,
   activity,
   memberCount,
+  attention = [],
   onGoToTab,
 }: {
   outputs: Output[];
   planStages: Stage[];
   activity: Activity[];
   memberCount: number;
+  attention?: Attention[];
   onGoToTab: (tab: string) => void;
 }) {
   const t = useTranslations("outputs");
@@ -38,6 +47,32 @@ export default function WorkspaceHome({
 
   return (
     <div className="space-y-8">
+      {/* "What needs me?" — the attention strip (X4). Pull side of the same
+          rows the notification spine writes; empty = a quiet day, no section. */}
+      {attention.length > 0 && (
+        <section>
+          <SectionHeader title={tCollab("attention.title")} subtitle={tCollab("attention.subtitle")} />
+          <div className="mt-3 space-y-2">
+            {attention.map((a) => (
+              <button
+                key={`${a.kind}-${a.id}`}
+                onClick={() => onGoToTab(a.tab)}
+                className="flex w-full items-start gap-2.5 rounded-xl border border-border p-3 text-start text-sm transition-colors hover:border-ccm-sea/40 hover:bg-ccm-sky/5"
+              >
+                <span aria-hidden className={`mt-1.5 size-2 flex-none rounded-full ${ATTENTION_DOT[a.kind]}`} />
+                <span className="min-w-0 flex-1 text-ccm-midnight">
+                  <bdi>{a.title}</bdi>
+                  {a.detail && (
+                    <span className="ms-2 text-xs text-muted-foreground">{tCollab(`attention.${a.kind}`, { detail: a.detail })}</span>
+                  )}
+                </span>
+                <span className="flex-none text-xs font-bold text-ccm-sea">{tCollab("attention.open")}</span>
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
+
       <section>
         <SectionHeader title={t("title")} subtitle={t("subtitle")} />
         <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
