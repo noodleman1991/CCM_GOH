@@ -929,7 +929,9 @@
     "openWorkspaces": "Open workspaces",
     "messages": "Messages",
     "messagesDescription": "Your direct conversations with other members",
-    "openMessages": "Open messages"
+    "openMessages": "Open messages",
+    "attentionTitle": "What needs you",
+    "attentionOpen": "Open →"
   },
   "caseStudies": {
     "title": "Case Studies",
@@ -1778,7 +1780,15 @@
     },
     "mediaConsentRequired": "This video needs cookie consent to play.",
     "dropToUpload": "Drag a file here or",
-    "viewPublicPage": "View public page"
+    "viewPublicPage": "View public page",
+    "attention": {
+      "title": "What needs you",
+      "subtitle": "Tasks, reviews and replies waiting on you",
+      "open": "Open →",
+      "task": "task · {detail}",
+      "output": "revision requested",
+      "notification": "{detail}"
+    }
   },
   "messages": {
     "title": "Messages",

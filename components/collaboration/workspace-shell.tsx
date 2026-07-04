@@ -65,6 +65,7 @@ type DocProp = { id: string; title: string; content: unknown; updatedAt: string 
 
 type OutputProp = { id: string; sanityId: string; sanityType: string; title: string; status: string; slug: string | null };
 type ActivityProp = { kind: string; summary: string; at: string };
+type AttentionProp = { kind: "task" | "output" | "notification"; id: string; title: string; detail: string | null; tab: string };
 
 type Section = "overview" | "plan" | "outputs" | "docs" | "threads" | "files" | "media" | "members";
 
@@ -88,6 +89,7 @@ export function WorkspaceShell({
   docs: DocProp[];
   outputs: OutputProp[];
   activity: ActivityProp[];
+  attention?: AttentionProp[];
 }) {
   const t = useTranslations("collaboration");
   const [section, setSection] = useState<Section>("overview");

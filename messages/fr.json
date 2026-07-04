@@ -230,7 +230,9 @@
     "openWorkspaces": "Ouvrir les espaces",
     "messages": "Messages",
     "messagesDescription": "Vos conversations directes avec d'autres membres",
-    "openMessages": "Ouvrir les messages"
+    "openMessages": "Ouvrir les messages",
+    "attentionTitle": "Ce qui vous attend",
+    "attentionOpen": "Ouvrir →"
   },
   "settings": {
     "title": "Paramètres",
@@ -1778,7 +1780,15 @@
     },
     "mediaConsentRequired": "Cette vidéo nécessite le consentement aux cookies.",
     "dropToUpload": "Glissez un fichier ici ou",
-    "viewPublicPage": "View public page"
+    "viewPublicPage": "View public page",
+    "attention": {
+      "title": "Ce qui vous attend",
+      "subtitle": "Tâches, révisions et réponses en attente de vous",
+      "open": "Ouvrir →",
+      "task": "tâche · {detail}",
+      "output": "révision demandée",
+      "notification": "{detail}"
+    }
   },
   "messages": {
     "title": "Messages",

@@ -7,6 +7,7 @@ import { getCollaboration, getMembershipRole, getPlan, getDocs, getOutputs, refr
 import { getActor, isStaff } from "@/lib/authz";
 import { r2Configured } from "@/lib/r2";
 import { WorkspaceShell } from "@/components/collaboration/workspace-shell";
+import { getWorkspaceAttention } from "@/lib/collaboration/attention";
 import { WorkspaceSidebarCollapse } from "@/components/collaboration/workspace-sidebar-collapse";
 import { canShowPublicProject } from "@/lib/collaboration/public-access";
 import { getPublicProject } from "@/lib/collaboration/public";
@@ -81,7 +82,11 @@ export default async function CollaborationDetailPage({
 
   // Refresh cached output statuses from Sanity, then load outputs + activity.
   await refreshOutputStatuses(id);
-  const [outputs, activity] = await Promise.all([getOutputs(id), getActivity(id)]);
+  const [outputs, activity, attention] = await Promise.all([
+    getOutputs(id),
+    getActivity(id),
+    getWorkspaceAttention(id, actor?.id ?? null),
+  ]);
 
   return (
     <>
@@ -111,6 +116,7 @@ export default async function CollaborationDetailPage({
       docs={docs}
       outputs={outputs}
       activity={activity}
+      attention={attention}
       />
     </>
   );
