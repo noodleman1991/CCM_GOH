@@ -211,30 +211,25 @@ function Sidebar({
     }
 
     if (isMobile) {
-        // Native-feel drawer (vaul): side-anchored with swipe-to-dismiss + momentum.
-        // direction follows RTL (right in ar, left otherwise).
+        // Native-feel BOTTOM drawer (vaul): the phone-native sheet pattern —
+        // slides up with a grab handle, swipe-down to dismiss, rounded top,
+        // safe-area padding. Direction-agnostic, so RTL needs no special case.
         return (
-            <Drawer
-                open={openMobile}
-                onOpenChange={setOpenMobile}
-                direction={effectiveSide}
-            >
+            <Drawer open={openMobile} onOpenChange={setOpenMobile} direction="bottom">
                 <DrawerContent
                     data-sidebar="sidebar"
                     data-slot="sidebar"
                     data-mobile="true"
-                    className="border-transparent bg-sidebar text-sidebar-foreground w-(--sidebar-width) p-0 [&>button]:hidden"
-                    style={
-                        {
-                            "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
-                        } as React.CSSProperties
-                    }
+                    className="max-h-[88dvh] rounded-t-2xl border-transparent bg-sidebar text-sidebar-foreground p-0 [&>button]:hidden"
                 >
                     <DrawerHeader className="sr-only">
-                        <DrawerTitle>Sidebar</DrawerTitle>
-                        <DrawerDescription>Displays the mobile sidebar.</DrawerDescription>
+                        <DrawerTitle>Navigation</DrawerTitle>
+                        <DrawerDescription>Displays the app navigation.</DrawerDescription>
                     </DrawerHeader>
-                    <div className="flex h-full w-full flex-col overflow-y-auto">{children}</div>
+                    {/* vaul's built-in grab handle renders for bottom drawers. */}
+                    <div className="flex w-full flex-col overflow-y-auto overscroll-contain pb-[max(env(safe-area-inset-bottom),12px)]">
+                        {children}
+                    </div>
                 </DrawerContent>
             </Drawer>
         )

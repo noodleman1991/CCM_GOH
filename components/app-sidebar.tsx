@@ -256,7 +256,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                             className="justify-center p-4 hover:bg-transparent active:bg-transparent focus-visible:bg-transparent data-[active=true]:bg-transparent group-data-[collapsible=icon]:h-auto group-data-[collapsible=icon]:p-1"
                         >
                             <Link href="/" aria-label="Go to homepage" className="inline-flex items-center justify-center">
-                                <span className="group-data-[collapsible=icon]:hidden">
+                                {/* In the mobile bottom sheet the full-size wordmark
+                                    wastes half a screen — cap it so navigation leads. */}
+                                <span className="group-data-[collapsible=icon]:hidden [[data-mobile=true]_&_img]:h-14 [[data-mobile=true]_&_img]:w-auto">
                                     <Logo size="xl" asChild />
                                 </span>
                                 <span
