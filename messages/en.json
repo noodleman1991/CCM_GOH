@@ -997,7 +997,10 @@
     "atAGlance": "At a glance",
     "published": "Published",
     "author": "Author",
-    "location": "Location"
+    "location": "Location",
+    "viewToggle": "View",
+    "galleryView": "Gallery",
+    "mapView": "Map"
   },
   "livedExperiences": {
     "relatedContent": "Related",

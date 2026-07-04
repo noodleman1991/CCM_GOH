@@ -1428,7 +1428,10 @@
     "atAGlance": "De un vistazo",
     "published": "Publicado",
     "author": "Autor",
-    "location": "Ubicación"
+    "location": "Ubicación",
+    "viewToggle": "Vista",
+    "galleryView": "Galería",
+    "mapView": "Mapa"
   },
   "revisionAlert": {
     "title": "Acción Requerida: Revisión Necesaria",
