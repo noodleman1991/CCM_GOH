@@ -2127,5 +2127,13 @@
     "message": "Message",
     "connect": "Connect",
     "requested": "Requested ✓"
+  },
+  "regionalCommunity": {
+    "kicker": "Regional Community of Practice",
+    "intro": "A connected space bringing together the region's research, lived experiences, events and the people working on climate change and mental health.",
+    "getInvolved": "Get involved",
+    "statMembers": "Members",
+    "statCaseStudies": "Case studies",
+    "statLived": "Lived experiences"
   }
 }
