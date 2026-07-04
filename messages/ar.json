@@ -1428,7 +1428,10 @@
     "atAGlance": "لمحة سريعة",
     "published": "تاريخ النشر",
     "author": "المؤلف",
-    "location": "الموقع"
+    "location": "الموقع",
+    "viewToggle": "العرض",
+    "galleryView": "المعرض",
+    "mapView": "الخريطة"
   },
   "revisionAlert": {
     "title": "مطلوب إجراء: تنقيح مطلوب",
