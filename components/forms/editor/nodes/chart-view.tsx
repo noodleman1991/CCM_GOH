@@ -98,7 +98,9 @@ export function ChartView({ node, updateAttributes, deleteNode, selected }: Node
   );
 
   const isEmpty = labels.length === 0;
-  const [editing, setEditing] = useState(isEmpty);
+  // The placed state exists to show a finished chart — with nothing rendered
+  // yet (new block, or an old failed one), open straight into the studio.
+  const [editing, setEditing] = useState(isEmpty || !renderedSvg);
   const [rendering, setRendering] = useState(false);
 
   const suggested = useMemo(() => suggestType(labels, series), [labels, series]);
@@ -146,6 +148,15 @@ export function ChartView({ node, updateAttributes, deleteNode, selected }: Node
   /** Write labels+series (the canonical model) and clear the legacy rows. */
   const setData = (nextLabels: string[], nextSeries: SeriesAttrs[]) =>
     updateAttributes({ labels: nextLabels, series: nextSeries, data: [] });
+
+  // An empty studio still shows one editable row so typing (not just pasting)
+  // is an obvious path in.
+  useEffect(() => {
+    if (editing && labels.length === 0 && seriesAttr.length === 0 && legacyData.length === 0) {
+      setData([""], [{ name: t("chart.defaultSeries"), values: [0], highlight: false }]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editing]);
 
   const onPaste = (e: React.ClipboardEvent) => {
     const parsed = parsePastedData(e.clipboardData.getData("text/plain"));

@@ -83,7 +83,11 @@ export const StoryChart = Node.create<StoryChartOptions>({
             attrs: {
               chartType: "bar",
               title: "",
-              data: [{ label: "", value: 0 }],
+              // Truly empty: the studio opens on insert (see ChartView) and
+              // the author's first paste/typing defines the data model.
+              data: [],
+              labels: [],
+              series: [],
               renderedSvg: null,
               renderStatus: null,
             },
