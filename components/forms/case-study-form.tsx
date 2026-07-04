@@ -115,6 +115,9 @@ interface ImprovedCaseStudyFormProps {
     }>;
     onSuccess?: (id: string) => void;
     workspaceId?: string | null;
+    /** X7 edit mode: an existing Sanity doc (mapped to form shape server-side).
+     *  Present → the form edits + resubmits instead of creating. */
+    editDoc?: (Record<string, unknown> & { _sanityId: string }) | null;
 }
 
 // The four required completeness gates (formerly the accordion's required
@@ -127,7 +130,8 @@ export default function ImprovedCaseStudyForm({
                                                   availableTags,
                                                   regionalCommunities,
                                                   onSuccess,
-                                                  workspaceId
+                                                  workspaceId,
+                                                  editDoc
                                               }: ImprovedCaseStudyFormProps) {
     const { user } = useUser();
     const t = useTranslations('caseStudySubmission');
@@ -194,6 +198,15 @@ export default function ImprovedCaseStudyForm({
     useEffect(() => {
         let cancelled = false;
         (async () => {
+            // X7 edit mode: the Sanity doc IS the source of truth — skip drafts.
+            if (editDoc) {
+                if (!cancelled) {
+                    const { _sanityId, ...fields } = editDoc;
+                    applyDraft(fields);
+                    setIsHydrated(true);
+                }
+                return;
+            }
             try {
                 const res = await fetch('/api/case-studies/drafts');
                 const serverDraft = res.ok ? (await res.json()).draft : null;
@@ -239,6 +252,7 @@ export default function ImprovedCaseStudyForm({
             (formData.content && (formData.content as any[])?.length) ||
             selectedTags.length
         );
+        if (editDoc) return; // edit mode: the Sanity doc is canonical — no personal draft writes
         if (!draftId && !hasContent) return;
 
         const timeoutId = setTimeout(async () => {
@@ -438,6 +452,7 @@ export default function ImprovedCaseStudyForm({
                 })),
                 ...(place ? { place } : {}),
                 ...(workspaceId ? { collaborationId: workspaceId } : {}),
+                ...(editDoc ? { editId: editDoc._sanityId } : {}),
             };
 
             // Create FormData for multipart submission

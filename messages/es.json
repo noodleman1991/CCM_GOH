@@ -1890,7 +1890,8 @@
     "statusApproved": "Publicado",
     "remove": "Quitar",
     "removeConfirm": "¿Quitar este resultado del espacio? El borrador no se elimina.",
-    "pendingHint": "Se enlazará aquí cuando se publique"
+    "pendingHint": "Se enlazará aquí cuando se publique",
+    "continueEditing": "Seguir editando →"
   },
   "projectPublic": {
     "aboutHeading": "About this project",

@@ -1890,7 +1890,8 @@
     "statusApproved": "Published",
     "remove": "Remove",
     "removeConfirm": "Remove this output from the workspace? The draft itself is not deleted.",
-    "pendingHint": "Will link here once published"
+    "pendingHint": "Will link here once published",
+    "continueEditing": "Continue editing →"
   },
   "projectPublic": {
     "aboutHeading": "About this project",

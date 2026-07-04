@@ -61,6 +61,9 @@ export const caseStudySubmissionSchema = z
         // Present when submitting from a workspace (?workspace=) — the route
         // links the created doc back as a workspace output. Authz enforced there.
         collaborationId: optionalString,
+        // X7 edit mode: the Sanity _id being resubmitted. The route verifies
+        // the author may edit it and patches instead of creating.
+        editId: optionalString,
         authors: z
             .array(
                 z

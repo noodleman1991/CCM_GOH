@@ -108,7 +108,17 @@ export default function WorkspaceOutputs({
                     </button>
                   )}
                 </div>
-                {!published && <p className="text-xs text-muted-foreground">{t("pendingHint")}</p>}
+                {!published &&
+                  (o.sanityType === "caseStudy" && canEdit ? (
+                    <Link
+                      href={`/research-and-action/case-studies/submit?edit=${o.sanityId}&workspace=${collaborationId}`}
+                      className="text-xs font-bold text-ccm-sea underline-offset-2 hover:underline"
+                    >
+                      {t("continueEditing")}
+                    </Link>
+                  ) : (
+                    <p className="text-xs text-muted-foreground">{t("pendingHint")}</p>
+                  ))}
               </Card>
             );
           })}
