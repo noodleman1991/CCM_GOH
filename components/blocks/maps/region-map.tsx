@@ -69,10 +69,12 @@ export default function RegionMapBlock({
 
   // Clicking a region is the connective tissue: go to that region's community
   // page (its people + content), falling back to search if there's no slug.
+  // The homepage block is a GATEWAY, not an explorer: clicking a region lands
+  // in the Atlas with that region selected AND the block's active facet as the
+  // layer — so the result cards for exactly what the visitor tapped are already
+  // on screen. (The community page stays reachable from the Atlas itself.)
   const goToRegion = (code: RegionCode) => {
-    const slug = REGION_TO_RC_SLUG[code]
-    if (slug) router.push(`/communities/${slug}`)
-    else router.push({ pathname: '/search', query: { q: labelFor(code) } })
+    router.push(`/atlas?region=${code}&layers=${facet}`)
   }
 
   return (
