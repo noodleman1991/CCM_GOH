@@ -44,6 +44,14 @@ export function useNotificationVerb() {
       case "COMMENT_APPROVED": return t("commentApproved");
       case "MESSAGE": return t("sentMessage");
       case "REQUEST": return t("sentRequest");
+      // Lifecycle spine (X3)
+      case "TASK_ASSIGNED": return t("assignedYouTask");
+      case "TASK_DUE": return t("taskDue");
+      case "OUTPUT_STATUS": return t("outputStatus");
+      case "THREAD_REPLY": return t("threadReply");
+      case "MEMBER_JOINED": return t("memberJoined");
+      case "FOLLOWED_PUBLISH": return t("followedPublish");
+      case "EVENT_REMINDER": return t("eventReminder");
       default: return t("activity");
     }
   };

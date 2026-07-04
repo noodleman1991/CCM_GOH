@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getActor } from "@/lib/authz";
+import { emitLifecycle } from "@/lib/notifications/emit";
 import { authorizeCollab } from "@/lib/collaboration/service";
 import type { TaskStatus } from "@/generated/prisma";
 
@@ -152,7 +153,21 @@ export async function assignTask(
 ): Promise<Result> {
   const auth = await canEdit(collaborationId);
   if (!auth.ok) return auth;
-  await prisma.task.update({ where: { id: taskId }, data: { assigneeId } });
+  const task = await prisma.task.update({
+    where: { id: taskId },
+    data: { assigneeId },
+    select: { title: true },
+  });
+  if (assigneeId) {
+    const actor = await getActor();
+    await emitLifecycle({
+      kind: "task_assigned",
+      assigneeId,
+      actorId: actor?.id ?? "",
+      collaborationId,
+      taskTitle: task.title,
+    });
+  }
   return { ok: true };
 }
 

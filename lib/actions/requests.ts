@@ -4,6 +4,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getActor, isStaff } from "@/lib/authz";
 import { createNotification } from "@/lib/notifications/service";
+import { emitLifecycle } from "@/lib/notifications/emit";
 
 type Result<T = {}> = ({ ok: true } & T) | { ok: false; error: string };
 
@@ -122,6 +123,28 @@ export async function respondToJoinRequest(
     entityId: req.collaborationId,
     snippet: accept ? "accepted your request to join" : "declined your request to join",
   });
+
+  // X3: tell the rest of the team someone new is aboard.
+  if (accept) {
+    const [members, newMember] = await Promise.all([
+      prisma.collaborationMember.findMany({
+        where: { collaborationId: req.collaborationId, userId: { notIn: [req.requesterId, actor.id] } },
+        select: { userId: true },
+      }),
+      prisma.user.findUnique({
+        where: { id: req.requesterId },
+        select: { firstName: true, lastName: true, username: true },
+      }),
+    ]);
+    await emitLifecycle({
+      kind: "member_joined",
+      memberIds: members.map((m) => m.userId),
+      newMemberId: req.requesterId,
+      collaborationId: req.collaborationId,
+      memberName:
+        [newMember?.firstName, newMember?.lastName].filter(Boolean).join(" ") || newMember?.username || "A new member",
+    });
+  }
 
   return { ok: true, status };
 }

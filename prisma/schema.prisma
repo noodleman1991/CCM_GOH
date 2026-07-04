@@ -590,6 +590,15 @@ enum NotificationType {
   COLLAB_ACTIVITY
   MESSAGE
   REQUEST
+  // Experience-plan X3: the project lifecycle events (one emitter,
+  // lib/notifications/emit.ts, feeds bell/inbox/overview/digest).
+  TASK_ASSIGNED
+  TASK_DUE
+  OUTPUT_STATUS
+  THREAD_REPLY
+  MEMBER_JOINED
+  FOLLOWED_PUBLISH
+  EVENT_REMINDER
 }
 
 model Notification {

@@ -4,6 +4,7 @@ import { getActor, isStaff } from "@/lib/authz";
 import { canInCollab, type CollabAction } from "./authz";
 import { client } from "@/sanity/lib/client";
 import { mapSanityStatus, mergeOutputDocs, type EnrichedOutput, type OutputDoc } from "@/lib/collaboration/outputs";
+import { emitLifecycle } from "@/lib/notifications/emit";
 import type { CollaborationRole } from "@/generated/prisma";
 
 /** Resolve the actor's membership role in a collaboration (null if not a member). */
@@ -191,7 +192,7 @@ export async function refreshOutputStatuses(collaborationId: string): Promise<vo
   const r = await safeQuery(() =>
     prisma.workspaceOutput.findMany({
       where: { collaborationId },
-      select: { id: true, sanityId: true },
+      select: { id: true, sanityId: true, status: true },
     })
   );
   if (!r.success || r.data.length === 0) return;
@@ -203,16 +204,43 @@ export async function refreshOutputStatuses(collaborationId: string): Promise<vo
       { ids }
     );
     const byId = new Map(docs.map((d) => [d._id.replace(/^drafts\./, ""), d]));
+    const changed: { title: string; status: string; sanityId: string }[] = [];
     await Promise.all(
       rows.map((row) => {
         const d = byId.get(row.sanityId.replace(/^drafts\./, ""));
         if (!d) return Promise.resolve();
+        const nextStatus = mapSanityStatus(d.status);
+        if (nextStatus !== row.status) {
+          changed.push({ title: d.title || "Untitled", status: nextStatus, sanityId: row.sanityId });
+        }
         return prisma.workspaceOutput.update({
           where: { id: row.id },
-          data: { title: d.title || "Untitled", status: mapSanityStatus(d.status) },
+          data: { title: d.title || "Untitled", status: nextStatus },
         });
       })
     );
+    // X3: a pipeline move (submitted → approved/revision…) notifies the whole
+    // workspace. Detected here because Studio review actions change the doc
+    // out-of-band — this refresh is where the app first SEES the change.
+    if (changed.length > 0) {
+      const members = await prisma.collaborationMember.findMany({
+        where: { collaborationId },
+        select: { userId: true },
+      });
+      const memberIds = members.map((m) => m.userId);
+      await Promise.all(
+        changed.map((c) =>
+          emitLifecycle({
+            kind: "output_status",
+            memberIds,
+            collaborationId,
+            outputTitle: c.title,
+            status: c.status,
+            sanityId: c.sanityId,
+          })
+        )
+      );
+    }
   } catch {
     // Sanity unreachable — keep the cached values (they remain the fallback).
   }

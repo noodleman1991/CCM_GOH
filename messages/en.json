@@ -248,7 +248,14 @@
     "accept": "Accept",
     "decline": "Decline",
     "accepted": "Accepted",
-    "declined": "Declined"
+    "declined": "Declined",
+    "assignedYouTask": "assigned you a task",
+    "taskDue": "task due soon",
+    "outputStatus": "output status changed",
+    "threadReply": "replied in a thread",
+    "memberJoined": "joined the workspace",
+    "followedPublish": "published something new",
+    "eventReminder": "event starting soon"
   },
   "dates": {
     "today": "Today",

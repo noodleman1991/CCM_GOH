@@ -11,6 +11,7 @@ import { verifyTurnstile, turnstileConfigured } from "@/lib/turnstile";
 import { isCommentTargetType } from "@/lib/comments/types";
 import { parseMentions } from "@/lib/comments/mentions";
 import { createNotification } from "@/lib/notifications/service";
+import { emitLifecycle } from "@/lib/notifications/emit";
 import type { CommentStatus } from "@/generated/prisma";
 
 /**
@@ -209,6 +210,32 @@ export async function postComment(input: PostCommentInput): Promise<PostCommentR
       body: data.body,
       parentId: data.parentId ?? null,
     }).catch(() => {});
+
+    // X3: a reply in a workspace thread notifies everyone in that thread
+    // (creator + prior commenters), not just the parent-comment author.
+    if (data.targetType === "collaborationThread") {
+      const [thread, priorAuthors] = await Promise.all([
+        prisma.collaborationThread.findUnique({
+          where: { id: data.targetId },
+          select: { title: true, createdById: true, collaborationId: true },
+        }),
+        prisma.comment.findMany({
+          where: { targetType: "collaborationThread" as any, targetId: data.targetId, authorId: { not: null } },
+          select: { authorId: true },
+          distinct: ["authorId"],
+        }),
+      ]);
+      if (thread) {
+        await emitLifecycle({
+          kind: "thread_reply",
+          participantIds: [thread.createdById, ...priorAuthors.map((c) => c.authorId!)].filter((id) => id !== actor.id),
+          actorId: actor.id,
+          collaborationId: thread.collaborationId,
+          threadId: data.targetId,
+          threadTitle: thread.title,
+        });
+      }
+    }
   }
 
   return {
