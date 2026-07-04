@@ -70,7 +70,7 @@ export default async function EventPage({
             </div>
           )}
           <div className="min-w-0">
-            <h1 className="font-heading text-2xl font-semibold text-balance sm:text-3xl">
+            <h1 className="font-heading text-2xl font-semibold text-balance text-white sm:text-3xl">
               <bdi>{event.title}</bdi>
             </h1>
             {timeLine && <p className="mt-1.5 text-sm text-ccm-sky">{timeLine}</p>}
