@@ -74,7 +74,10 @@
     "broadcast": "Send notification",
     "privacy": "Privacy",
     "terms": "Terms",
-    "readAgenda": "Read the Agenda"
+    "readAgenda": "Read the Agenda",
+    "quickSearch": "Search",
+    "quickMessages": "Messages",
+    "quickNotifications": "Alerts"
   },
   "navUser": {
     "account": "Account",

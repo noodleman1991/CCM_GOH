@@ -34,6 +34,7 @@ import { NavSecondary } from "@/components/nav-secondary"
 import { StaffNav } from "@/components/staff-nav"
 import { AuthNavUser } from "@/components/auth-nav-user"
 import { LanguageSwitcher } from "@/components/language-switcher"
+import { SidebarQuickActions } from "@/components/sidebar-quick-actions"
 import {
     Sidebar,
     SidebarContent,
@@ -272,6 +273,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarHeader>
+            <SidebarQuickActions />
             <SidebarContent>
                 <NavMain
                     items={data.discover}
