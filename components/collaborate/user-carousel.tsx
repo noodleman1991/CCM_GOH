@@ -23,10 +23,13 @@ interface UserCarouselProps {
       community: { name: string; regionalName?: string | null }
     }>
   }>
+  /** True match count for this community (pre-slice); falls back to the
+   *  visible list length when absent. */
+  total?: number
   className?: string
 }
 
-export function UserCarousel({ title, users, className }: UserCarouselProps) {
+export function UserCarousel({ title, users, total, className }: UserCarouselProps) {
   const t = useTranslations('collaborate.carousel')
   const tStats = useTranslations('collaborate.stats')
   const locale = useLocale()
@@ -57,7 +60,7 @@ export function UserCarousel({ title, users, className }: UserCarouselProps) {
     <div className={cn('space-y-4', className)}>
       {/* Header: section title/count + scroll arrows on the trailing side */}
       <div className="flex items-end justify-between gap-4">
-        <SectionHeader title={title} subtitle={tStats('totalMembers', { count: users.length })} />
+        <SectionHeader title={title} subtitle={tStats('totalMembers', { count: total ?? users.length })} />
         <div className="flex shrink-0 items-center gap-2">
           <button type="button" onClick={() => scroll('left')} aria-label={t('previous')} className={arrowBtn}>
             <ChevronLeft className="size-4 rtl:hidden" />
