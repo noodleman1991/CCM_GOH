@@ -171,7 +171,9 @@ export default async function CollaboratePage({ params, searchParams }: Collabor
 
     // Optimized: Fetch ALL users with filters in a single query (not N+1)
     // Then group them by community on the server side
-    const communityUsersMap: Record<string, any[]> = {}
+    // Sliced users for display + the TRUE pre-slice match count per community,
+    // so carousel headers never claim a number the slice cap made up.
+    const communityUsersMap: Record<string, { users: any[]; total: number }> = {}
 
     // Build single query with the decoded filters (empty array = no filter).
     const result = await UserService.getUsersForCollaborate(
@@ -183,7 +185,7 @@ export default async function CollaboratePage({ params, searchParams }: Collabor
         communityIds: communitiesFilter.length ? communitiesFilter : undefined
       },
       1,
-      200, // Fetch more users since we're grouping them
+      1000, // Whole-pool fetch (≈700 users today) so per-community counts are true
       {
         locale,
         isAuthenticated: true
@@ -204,7 +206,10 @@ export default async function CollaboratePage({ params, searchParams }: Collabor
         })
 
         if (usersInCommunity.length > 0) {
-          communityUsersMap[communityName] = usersInCommunity.slice(0, 20) // Limit to 20 per carousel
+          communityUsersMap[communityName] = {
+            users: usersInCommunity.slice(0, 20), // Limit to 20 per carousel
+            total: usersInCommunity.length,
+          }
         }
       }
     }
@@ -234,7 +239,10 @@ export default async function CollaboratePage({ params, searchParams }: Collabor
     }
 
     if (noCommunityResult?.success && noCommunityResult.data.data.length > 0) {
-      communityUsersMap['No Regional Community'] = noCommunityResult.data.data
+      communityUsersMap['No Regional Community'] = {
+        users: noCommunityResult.data.data,
+        total: noCommunityResult.data.total ?? noCommunityResult.data.data.length,
+      }
     }
 
     return shell(

@@ -50,7 +50,7 @@ const REGIONAL_NAME_TO_TRANSLATION_KEY: Record<string, string> = {
 }
 
 interface CollaboratePageClientProps {
-  initialCommunityUsers: Record<string, LocalizedUser[]>
+  initialCommunityUsers: Record<string, { users: LocalizedUser[]; total: number }>
   communities: Array<{
     id: string
     name: string
@@ -260,7 +260,8 @@ export function CollaboratePageClient({
               <UserCarousel
                 key={communityName}
                 title={translatedTitle}
-                users={communityUsers[communityName] || []}
+                users={communityUsers[communityName]?.users || []}
+                total={communityUsers[communityName]?.total}
               />
             )
           })}
