@@ -298,17 +298,37 @@ const createPortableTextComponents = (
       // (renderStatus !== "ok") or that were never rendered are withheld.
       storyChart: ({ value }) => {
         if (value?.renderStatus !== "ok" || !value?.renderedSvg) return null;
+        // Editorial chart frame (X2): the SVG carries title+unit; the frame
+        // adds caption + source with a link — the metadata that makes a chart
+        // citable research content instead of a floating picture.
         return (
-          <figure className="my-8">
+          <figure className="my-10 rounded-2xl border border-border p-5 sm:p-6">
             <div
               className="overflow-x-auto [&_svg]:mx-auto [&_svg]:h-auto [&_svg]:max-w-full"
               dir="ltr"
               // Safe: sanitized server-side (lib/story-blocks/sanitize-svg.ts) before storage.
               dangerouslySetInnerHTML={{ __html: value.renderedSvg }}
             />
-            {value.title && (
-              <figcaption className="text-sm text-muted-foreground mt-2 italic text-center font-body">
-                {value.title}
+            {(value.caption || value.source) && (
+              <figcaption className="mt-4 flex flex-wrap gap-x-5 gap-y-1 border-t border-border pt-3 text-start text-[13px] leading-relaxed text-muted-foreground">
+                {value.caption && <span>{value.caption}</span>}
+                {value.source && (
+                  <span>
+                    <span className="font-bold text-foreground/80">Source: </span>
+                    {value.sourceUrl ? (
+                      <a
+                        href={value.sourceUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-ccm-sea underline underline-offset-2"
+                      >
+                        <bdi>{value.source}</bdi>
+                      </a>
+                    ) : (
+                      <bdi>{value.source}</bdi>
+                    )}
+                  </span>
+                )}
               </figcaption>
             )}
           </figure>

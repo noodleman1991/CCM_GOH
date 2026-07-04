@@ -45,7 +45,7 @@ describe("renderStoryBlock: chart", () => {
   it("fails on an unknown chart type", () => {
     expect(
       renderStoryBlock("chart", {
-        chartType: "donut" as never,
+        chartType: "sparkline" as never,
         data: [{ label: "x", value: 1 }],
       })
     ).toEqual({ svg: null, status: "failed" });
