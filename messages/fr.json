@@ -232,7 +232,10 @@
     "messagesDescription": "Vos conversations directes avec d'autres membres",
     "openMessages": "Ouvrir les messages",
     "attentionTitle": "Ce qui vous attend",
-    "attentionOpen": "Ouvrir →"
+    "attentionOpen": "Ouvrir →",
+    "forYouTitle": "Pour vous",
+    "forYouRegion": "d'une région que vous suivez",
+    "forYouTheme": "sur un thème que vous suivez"
   },
   "settings": {
     "title": "Paramètres",
@@ -318,7 +321,12 @@
   "follow": {
     "follow": "Suivre",
     "following": "Suivi",
-    "signInToFollow": "Connectez-vous pour suivre"
+    "signInToFollow": "Connectez-vous pour suivre",
+    "contract": {
+      "PROJECT": "Soyez averti quand ce projet publie ou planifie un événement",
+      "REGION": "Les nouveautés de cette région alimentent votre fil Pour vous et le résumé hebdomadaire",
+      "THEME": "Les nouveautés de ce thème alimentent votre fil Pour vous et le résumé hebdomadaire"
+    }
   },
   "notifications": {
     "success": "Succès !",

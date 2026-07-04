@@ -75,6 +75,9 @@ export function FollowButton({
       onClick={toggle}
       disabled={pending}
       aria-pressed={following}
+      // The Follow contract, visible on the control itself (X5): following a
+      // target means being told when it publishes.
+      title={t(`contract.${targetType}`)}
       className={cn("gap-1.5", className)}
     >
       {following ? <Check className="size-4" /> : <Plus className="size-4" />}
