@@ -68,6 +68,9 @@ interface CollaboratePageClientProps {
     expertiseAreas: string[] | null
     communities: string[] | null
   }
+  /** Rendered inside the Collaborate tabs shell — the parent owns the page
+   *  container and header, so skip both here. */
+  embedded?: boolean
 }
 
 export function CollaboratePageClient({
@@ -76,7 +79,8 @@ export function CollaboratePageClient({
   userCommunityIds,
   locale,
   initialSearch,
-  initialFilters
+  initialFilters,
+  embedded
 }: CollaboratePageClientProps) {
   const t = useTranslations('collaborate')
   const tNav = useTranslations('navigation')
@@ -167,9 +171,10 @@ export function CollaboratePageClient({
     router.push('/collaborate')
   }
 
+  const Wrapper = embedded ? "div" : PageContainer
   return (
-    <PageContainer>
-      {/* Header */}
+    <Wrapper>
+      {!embedded && (
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h1 className={cn("font-bold font-heading text-ccm-midnight mb-2 text-balance", heading('lg'))}>{t('pageTitle')}</h1>
@@ -185,6 +190,7 @@ export function CollaboratePageClient({
           </Button>
         )}
       </div>
+      )}
 
       {/* Search + horizontal filters, full width */}
       <div className="mb-8 space-y-4">
@@ -260,6 +266,6 @@ export function CollaboratePageClient({
           })}
         </div>
       )}
-    </PageContainer>
+    </Wrapper>
   )
 }

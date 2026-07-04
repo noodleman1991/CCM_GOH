@@ -2045,5 +2045,19 @@
     "title": "Partagez votre histoire",
     "subtitle": "Votre expérience vécue peut contribuer à orienter la recherche et l'action sur le climat et la santé mentale.",
     "cta": "Envoyez votre histoire"
+  },
+  "collabSpace": {
+    "header": "Trouvez des personnes, des projets et des événements",
+    "projectsTab": "Projets",
+    "peopleTab": "Personnes",
+    "eventsTab": "Événements",
+    "publicChip": "Public",
+    "memberCount": "{count, plural, one {# membre} other {# membres}}",
+    "openWorkspace": "Ouvrir l'espace de travail",
+    "viewProject": "Voir le projet →",
+    "noProjects": "Pas encore de projets publics — lancez-en un et invitez des collaborateurs.",
+    "message": "Message",
+    "connect": "Se connecter",
+    "requested": "Demandé ✓"
   }
 }

@@ -2045,5 +2045,19 @@
     "title": "Share your story",
     "subtitle": "Your lived experience can help shape research and action on climate and mental health.",
     "cta": "Submit your story"
+  },
+  "collabSpace": {
+    "header": "Find people, projects & events",
+    "projectsTab": "Projects",
+    "peopleTab": "People",
+    "eventsTab": "Events",
+    "publicChip": "Public",
+    "memberCount": "{count, plural, one {# member} other {# members}}",
+    "openWorkspace": "Open workspace",
+    "viewProject": "View project →",
+    "noProjects": "No public projects yet — start one and invite collaborators.",
+    "message": "Message",
+    "connect": "Connect",
+    "requested": "Requested ✓"
   }
 }
