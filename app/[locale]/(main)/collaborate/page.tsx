@@ -4,6 +4,18 @@ import { getTranslations } from 'next-intl/server'
 import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import { CollaboratePageClient } from './page-client'
+import { CollabTabs } from '@/components/collaborate/collab-tabs'
+import { ProjectCard } from '@/components/collaborate/project-card'
+import { getPublicProjects } from '@/lib/collaboration/public-list'
+import { fetchApprovedEvents } from '@/lib/events'
+import { EventCard } from '@/components/events/event-card'
+import { CreateCollaborationButton } from '@/components/collaboration/create-collaboration-button'
+import { PageContainer } from '@/components/ui/page-container'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Link } from '@/i18n/navigation'
+import { Plus } from 'lucide-react'
+import { FEATURES } from '@/lib/features'
 import { UserService } from '@/lib/services/user.service'
 import { prisma } from '@/lib/prisma'
 import { decodeFilterParam } from '@/lib/collaborate-filters'
@@ -24,6 +36,7 @@ interface CollaboratePageProps {
     workTypes?: string
     expertiseAreas?: string
     communities?: string
+    tab?: string
   }>
 }
 
@@ -55,6 +68,69 @@ export default async function CollaboratePage({ params, searchParams }: Collabor
   if (!userId) {
     redirect(`/${locale}/sign-in?redirect=/collaborate`)
   }
+
+  // §4.6 collab space: Projects and Events panels (People keeps its own
+  // data path below). Both degrade to empty lists on fetch failure.
+  const [tCollab, tEvents, projects, events] = await Promise.all([
+    getTranslations({ locale, namespace: 'collabSpace' }),
+    getTranslations({ locale, namespace: 'events' }),
+    getPublicProjects().catch(() => []),
+    FEATURES.engagement ? fetchApprovedEvents(12).catch(() => []) : Promise.resolve([]),
+  ])
+
+  const eventLabels = {
+    community: tEvents('scopeCommunity'),
+    project: tEvents('scopeProject'),
+    modeOnline: tEvents('modeOnline'),
+    modeInPerson: tEvents('modeInPerson'),
+    modeHybrid: tEvents('modeHybrid'),
+  }
+
+  const projectsPanel = (
+    <div className="space-y-6">
+      {projects.length === 0 ? (
+        <Card className="p-10 text-center text-sm text-muted-foreground">{tCollab('noProjects')}</Card>
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {projects.map((project) => (
+            <ProjectCard key={project.id} project={project} />
+          ))}
+        </div>
+      )}
+    </div>
+  )
+
+  const eventsPanel = (
+    <div className="space-y-4">
+      <div className="flex justify-end">
+        <Button asChild variant="outline" className="gap-2">
+          <Link href="/collaborate/events/new">
+            <Plus className="size-4" />
+            {tEvents('submit')}
+          </Link>
+        </Button>
+      </div>
+      {events.length === 0 ? (
+        <Card className="p-10 text-center text-sm text-muted-foreground">{tEvents('empty')}</Card>
+      ) : (
+        events.map((e) => <EventCard key={e._id} event={e} signedIn={!!userId} labels={eventLabels} />)
+      )}
+    </div>
+  )
+
+  const shell = (peoplePanel: React.ReactNode) => (
+    <PageContainer>
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h1 className="font-heading text-3xl font-bold text-balance text-ccm-midnight md:text-4xl">
+            {tCollab('header')}
+          </h1>
+        </div>
+        <CreateCollaborationButton />
+      </div>
+      <CollabTabs projects={projectsPanel} people={peoplePanel} events={eventsPanel} />
+    </PageContainer>
+  )
 
   try {
     // Parse filter params via the shared codec (INCLUSION model):
@@ -161,7 +237,7 @@ export default async function CollaboratePage({ params, searchParams }: Collabor
       communityUsersMap['No Regional Community'] = noCommunityResult.data.data
     }
 
-    return (
+    return shell(
       <Suspense fallback={<CollaborateSkeleton />}>
         <CollaboratePageClient
           initialCommunityUsers={communityUsersMap}
@@ -174,13 +250,14 @@ export default async function CollaboratePage({ params, searchParams }: Collabor
             expertiseAreas: expertiseFilter,
             communities: communitiesFilter
           }}
+          embedded
         />
       </Suspense>
     )
   } catch (error) {
     console.error('Collaborate page data fetch error:', error)
     // Return a minimal page with empty data so the client can still render
-    return (
+    return shell(
       <Suspense fallback={<CollaborateSkeleton />}>
         <CollaboratePageClient
           initialCommunityUsers={{}}
@@ -193,6 +270,7 @@ export default async function CollaboratePage({ params, searchParams }: Collabor
             expertiseAreas: null,
             communities: null
           }}
+          embedded
         />
       </Suspense>
     )
