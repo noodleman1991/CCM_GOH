@@ -60,6 +60,8 @@ const createPortableTextComponents = (
             ? "my-8 mx-auto w-fit max-w-full"
             : "my-8"; // full
 
+        const credit = value.credit as string | undefined;
+
         return (
           <figure className={figureClass}>
             <ZoomableImage
@@ -73,12 +75,69 @@ const createPortableTextComponents = (
               style={{ maxWidth: `min(100%, ${w}px)` }}
               className="rounded-2xl mx-auto h-auto"
             />
-            {caption && (
-              <figcaption className="text-sm text-muted-foreground mt-2 italic text-center font-body">
-                {caption}
+            {(caption || credit) && (
+              <figcaption className="mt-2.5 border-s-[3px] border-ccm-sky ps-3 text-start text-sm leading-relaxed text-muted-foreground font-body">
+                {caption && <span>{caption}</span>}
+                {credit && (
+                  <span className="mt-0.5 block text-[13px] text-muted-foreground/70">
+                    — <bdi>{credit}</bdi>
+                  </span>
+                )}
               </figcaption>
             )}
           </figure>
+        );
+      },
+
+      // Editorial pull-quote with attribution — the amber-bar treatment.
+      pullQuote: ({ value }) => {
+        if (!value?.text) return null;
+        return (
+          <blockquote className="my-10 border-s-4 border-ccm-amber ps-6 text-start">
+            <p className="font-heading text-2xl font-semibold leading-snug text-ccm-midnight text-balance">
+              <bdi>{value.text}</bdi>
+            </p>
+            {value.attribution && (
+              <cite className="mt-2.5 block text-sm not-italic text-muted-foreground">
+                <bdi>{value.attribution}</bdi>
+              </cite>
+            )}
+          </blockquote>
+        );
+      },
+
+      // Numbered references section (bibliography). Inline superscript markers
+      // remain the footnote annotation; this is the visible list.
+      references: ({ value }) => {
+        const items: Array<{ _key?: string; text?: string; url?: string }> = value?.items ?? [];
+        if (items.length === 0) return null;
+        return (
+          <section className="mt-12 text-start">
+            <h3 className="mb-3 flex items-center gap-2.5 font-heading text-xl font-semibold text-ccm-midnight">
+              <span aria-hidden className="h-5 w-1 rounded-full bg-ccm-water" />
+              References
+            </h3>
+            <ol className="grid list-decimal gap-2.5 ps-6 text-sm leading-relaxed text-muted-foreground marker:font-bold marker:text-ccm-sea">
+              {items.map((item, i) => (
+                <li key={item._key ?? i}>
+                  <bdi>{item.text}</bdi>
+                  {item.url && (
+                    <>
+                      {" "}
+                      <a
+                        href={item.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="break-all text-ccm-sea underline underline-offset-2"
+                      >
+                        {item.url.replace(/^https?:\/\//, "")}
+                      </a>
+                    </>
+                  )}
+                </li>
+              ))}
+            </ol>
+          </section>
         );
       },
 
@@ -314,10 +373,14 @@ const createPortableTextComponents = (
         </h5>
       ),
 
-      // Enhanced blockquotes
+      // Quote block style — upgraded from the italic tint box to the editorial
+      // treatment (Poppins, amber bar). The pullQuote OBJECT adds attribution;
+      // this style covers quotes typed in running text.
       blockquote: ({ children }) => (
-        <blockquote className="border-s-4 border-ccm-water ps-6 py-2 my-6 italic bg-ccm-sky/5 rounded-e-lg font-body text-start">
-          {children}
+        <blockquote className="my-8 border-s-4 border-ccm-amber ps-6 text-start">
+          <p className="font-heading text-xl font-semibold leading-snug text-ccm-midnight text-balance">
+            {children}
+          </p>
         </blockquote>
       ),
 
