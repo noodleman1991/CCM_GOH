@@ -274,7 +274,7 @@ export default async function CaseStudiesPage({
         </div>
 
         {regionCommunities.length > 0 && (
-          <div className="flex flex-wrap gap-2">
+          <div className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4 snap-x [&>*]:snap-start [&>*]:flex-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0 sm:[&>*]:flex-auto sm:[&>*]:flex-none">
             {regionCommunities.map((c: { slug: string; name: unknown }) => {
               const active = selectedCommunities.includes(c.slug)
               return (
@@ -295,7 +295,7 @@ export default async function CaseStudiesPage({
         )}
 
         {themeOptions.length > 0 && (
-          <div className="flex flex-wrap gap-2">
+          <div className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4 snap-x [&>*]:snap-start [&>*]:flex-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0 sm:[&>*]:flex-auto sm:[&>*]:flex-none">
             {themeOptions.map((theme) => {
               const active = selectedTags.includes(theme.slug)
               return (

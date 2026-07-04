@@ -2,12 +2,15 @@ import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 
 /**
- * Shared section header: a colour bar + title (+ optional subtitle) on the lead
- * side, with an optional quiet "view all" text link on the trailing side.
+ * Shared section header: title (+ optional subtitle) on the lead side, with an
+ * optional quiet "view all" text link on the trailing side.
  *
- * Design (per brand voice — quiet, editorial, restraint): the action is a plain
- * text link in ccm-water that underlines on hover. NO chevron/arrow icon — the
- * label carries it. Used across home, region, dashboard, case studies, news…
+ * Design (per brand voice — quiet, editorial, restraint): typography carries
+ * the hierarchy — the old vertical colour-bar accent was retired 2026-07-04
+ * (user: "the vertical bubbles next to the title don't fit well"). The `bar`
+ * prop is still accepted so existing call sites keep compiling, but it never
+ * renders. The action is a plain text link in ccm-water that underlines on
+ * hover; NO chevron — the label carries it.
  */
 export function SectionHeader({
   title,
@@ -21,7 +24,7 @@ export function SectionHeader({
   subtitle?: React.ReactNode;
   /** Optional trailing action: a "view all" link. */
   action?: { label: string; href: string };
-  /** Show the leading colour bar accent (default true). */
+  /** Deprecated — the bar accent was retired; accepted for compatibility. */
   bar?: boolean;
   className?: string;
   titleClassName?: string;
@@ -29,12 +32,6 @@ export function SectionHeader({
   return (
     <div className={cn("flex items-start justify-between gap-4", className)}>
       <div className="flex min-w-0 items-start gap-3">
-        {bar && (
-          <span
-            aria-hidden="true"
-            className="h-6 w-1.5 flex-none self-center rounded-full bg-ccm-water"
-          />
-        )}
         <div className="min-w-0">
           <h2 className={cn("font-heading text-xl font-bold text-balance text-ccm-midnight sm:text-2xl", titleClassName)}>
             {title}
