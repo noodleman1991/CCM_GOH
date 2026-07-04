@@ -74,7 +74,10 @@
     "broadcast": "إرسال إشعار",
     "privacy": "الخصوصية",
     "terms": "الشروط",
-    "readAgenda": "اقرأ الأجندة"
+    "readAgenda": "اقرأ الأجندة",
+    "quickSearch": "بحث",
+    "quickMessages": "الرسائل",
+    "quickNotifications": "تنبيهات"
   },
   "navUser": {
     "account": "الحساب",
