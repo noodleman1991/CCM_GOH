@@ -24,7 +24,7 @@ export function UserMiniNav() {
     "flex min-h-[40px] items-center gap-2.5 rounded-lg px-2.5 text-[13px] font-medium text-sidebar-foreground/85 transition-colors hover:bg-white/8 hover:text-sidebar-foreground group-data-[collapsible=icon]:hidden";
 
   return (
-    <nav aria-label={t("userMenu")} className="mt-1 grid gap-0.5 group-data-[collapsible=icon]:hidden">
+    <nav aria-label={t("userMenu")} className="mt-1.5 grid gap-0.5 border-t border-white/10 pt-1.5 group-data-[collapsible=icon]:hidden">
       <Link href="/dashboard" className={row} onClick={() => setOpenMobile(false)}>
         <LayoutDashboard className="size-4 opacity-70" aria-hidden />
         {t("userDashboard")}

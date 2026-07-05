@@ -121,7 +121,7 @@ export function SearchModal() {
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
-        className="top-[10%] translate-y-0 gap-0 overflow-hidden rounded-xl p-0 sm:max-w-xl"
+        className="top-[10%] w-[calc(100vw-2rem)] max-w-[calc(100vw-2rem)] translate-y-0 gap-0 overflow-hidden rounded-xl p-0 sm:w-full sm:max-w-xl"
         onOpenAutoFocus={(e) => {
           e.preventDefault();
           inputRef.current?.focus();
