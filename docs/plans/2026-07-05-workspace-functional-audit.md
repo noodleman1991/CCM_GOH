@@ -19,7 +19,7 @@ Legend: ✅ works end-to-end · 🟡 action exists, no/partial UI · 🔴 missin
 | Assign task | `assignTask` | member picker | ✅ 🔵 TASK_ASSIGNED |
 | Delete task | `deleteTask` | button | ✅ |
 | Task due dates / reminders | none | none | 🔴 (design decision: deliberately deferred in mock I) |
-| **@mention in a task** | none | none | 🔴 — mentions live only in the Comment engine; tasks are plain strings. Design: task DESCRIPTION field with mentions, or task-attached comments. Queued as a designed slice, not a quick patch. |
+| **@mention in a task** | `setTaskDescription` | inline notes editor | ✅ 🔵 MENTION — FIXED (Task.description + @username parsing; verified live: mention row landed for the named user) |
 
 ## Outputs
 | Interaction | Verdict |
@@ -53,12 +53,12 @@ Legend: ✅ works end-to-end · 🟡 action exists, no/partial UI · 🔴 missin
 | Edit title/description inline | ✅ (W1) |
 
 ## Notifications coverage (the spine, X3)
-Task assigned ✅ · output status ✅ · thread reply ✅ · member joined ✅ · follower publish ✅ · event reminder ✅ (cron) · comment reply/mention (comments only) ✅ · **task mentions 🔴 (no task text to mention in)** · RSVP receipt 🔴 (queued).
+Task assigned ✅ · output status ✅ · thread reply ✅ · member joined ✅ · follower publish ✅ · event reminder ✅ (cron) · comment reply/mention (comments only) ✅ · task mentions ✅ (task notes, this audit) · RSVP receipt 🔴 (queued).
 
 ## Fix order (user-named first)
 1. ✅ Stage rename (this audit)
 2. ✅ Task title edit (this audit)
 3. Edit pending LE/event/researchOutput (X7 tail — next slice)
-4. Task descriptions with @mentions → mention notifications (designed slice)
+4. ✅ Task descriptions with @mentions → mention notifications (2026-07-05, commit f98a0efac)
 5. Outbound invites + remove member
 6. Reorder stages UI · thread archive · RSVP receipt · organiser RSVP list
