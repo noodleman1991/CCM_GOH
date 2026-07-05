@@ -138,6 +138,19 @@ export async function reorderStages(collaborationId: string, stageIds: string[])
   return { ok: true };
 }
 
+export async function renameTask(
+  collaborationId: string,
+  taskId: string,
+  title: string
+): Promise<Result> {
+  const auth = await canEdit(collaborationId);
+  if (!auth.ok) return auth;
+  const parsed = z.string().trim().min(1).max(300).safeParse(title);
+  if (!parsed.success) return { ok: false, error: "Task title can't be empty." };
+  await prisma.task.update({ where: { id: taskId }, data: { title: parsed.data } });
+  return { ok: true };
+}
+
 export async function deleteTask(collaborationId: string, taskId: string): Promise<Result> {
   const auth = await canEdit(collaborationId);
   if (!auth.ok) return auth;

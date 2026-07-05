@@ -27,11 +27,14 @@ import {
 import { SectionHeader } from "@/components/ui/section-header";
 import { cn } from "@/lib/utils";
 import { WorkspaceEmptyState } from "./workspace-empty-state";
+import { InlineText } from "@/components/ui/inline-text";
 import {
   addStage,
   addTask,
   cycleTaskStatus,
   deleteTask,
+  renameStage,
+  renameTask,
   deleteStage,
   reorderTasks,
   assignTask,
@@ -120,6 +123,23 @@ export function WorkspacePlan({
     });
   };
 
+  const onRenameStage = async (stageId: string, title: string) => {
+    const res = await renameStage(collaborationId, stageId, title);
+    if (!res.ok) toast.error(res.error);
+    else setStages((prev) => prev.map((s) => (s.id === stageId ? { ...s, title } : s)));
+  };
+
+  const onRenameTask = async (stageId: string, taskId: string, title: string) => {
+    const res = await renameTask(collaborationId, taskId, title);
+    if (!res.ok) toast.error(res.error);
+    else
+      setStages((prev) =>
+        prev.map((s) =>
+          s.id === stageId ? { ...s, tasks: s.tasks.map((tk) => (tk.id === taskId ? { ...tk, title } : tk)) } : s
+        )
+      );
+  };
+
   const onDeleteStage = (stageId: string) => {
     startTransition(async () => {
       const res = await deleteStage(collaborationId, stageId);
@@ -180,10 +200,17 @@ export function WorkspacePlan({
           return (
             <div key={stage.id} className="rounded-lg border bg-muted/20 p-3">
               <div className="mb-2 flex items-center justify-between gap-2">
-                <h4 className={cn("font-heading text-sm font-semibold", done && "text-ccm-sea")}>
-                  {stage.title}
-                  {done && <CheckCircle2 className="ms-1 inline size-3.5" aria-label={t("stageComplete")} />}
-                </h4>
+                <span className="flex min-w-0 items-center gap-1">
+                  <InlineText
+                    value={stage.title}
+                    canEdit={canEdit}
+                    as="h3"
+                    placeholder={t("addStage")}
+                    className={cn("font-heading text-sm font-semibold", done && "text-ccm-sea")}
+                    onCommit={(next) => onRenameStage(stage.id, next)}
+                  />
+                  {done && <CheckCircle2 className="size-3.5 flex-none text-ccm-sea" aria-label={t("stageComplete")} />}
+                </span>
                 {canEdit && (
                   <button onClick={() => onDeleteStage(stage.id)} aria-label={t("deleteStage")} className="text-muted-foreground hover:text-destructive">
                     <X className="size-3.5" />
@@ -202,6 +229,7 @@ export function WorkspacePlan({
                         onCycle={() => onCycle(stage.id, task)}
                         onDelete={() => onDeleteTask(stage.id, task.id)}
                         onAssign={(assigneeId) => onAssign(stage.id, task.id, assigneeId)}
+                        onRename={(title) => onRenameTask(stage.id, task.id, title)}
                         labels={{
                           cycle: t("cycleStatus"),
                           del: t("deleteTask"),
@@ -239,6 +267,7 @@ function SortableTask({
   onCycle,
   onDelete,
   onAssign,
+  onRename,
   labels,
 }: {
   task: Task;
@@ -247,6 +276,7 @@ function SortableTask({
   onCycle: () => void;
   onDelete: () => void;
   onAssign: (assigneeId: string | null) => void;
+  onRename: (title: string) => void | Promise<void>;
   labels: { cycle: string; del: string; drag: string; assign: string; unassigned: string };
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
@@ -281,8 +311,14 @@ function SortableTask({
       >
         <Icon className="size-4" />
       </button>
-      <span className={cn("min-w-0 flex-1 truncate", task.status === "DONE" && "text-muted-foreground line-through")}>
-        {task.title}
+      <span className="min-w-0 flex-1">
+        <InlineText
+          value={task.title}
+          canEdit={canEdit}
+          as="span"
+          onCommit={onRename}
+          className={cn("block truncate", task.status === "DONE" && "text-muted-foreground line-through")}
+        />
       </span>
       {canEdit ? (
         <Select
