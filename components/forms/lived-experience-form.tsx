@@ -26,6 +26,7 @@ import {
   LE_VIDEO_MAX_BYTES,
   LE_VIDEO_MIME_TYPES,
 } from "@/lib/validation/lived-experience"
+import type { EditableLivedExperience } from "@/lib/lived-experiences/edit"
 import { youtubeId } from "@/lib/youtube"
 import { vimeoId } from "@/lib/vimeo"
 import { useMemo } from "react"
@@ -42,10 +43,13 @@ export function LivedExperienceForm({
   availableTags,
   regionalCommunities,
   workspaceId,
+  editDoc,
 }: {
   availableTags: Tag[]
   regionalCommunities: Community[]
   workspaceId?: string | null
+  /** X7 ?edit= — reopen an existing draft/pending doc; resubmits in place. */
+  editDoc?: EditableLivedExperience | null
 }) {
   const t = useTranslations("livedExperienceSubmission")
   const locale = useLocale() as "en" | "es" | "fr" | "ar"
@@ -75,16 +79,18 @@ export function LivedExperienceForm({
   const form = useForm<LEFormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
-      title: "",
-      description: "",
-      issue: "",
-      personContext: "",
-      videoSource: "youtube",
-      videoLink: "",
-      body: [],
-      regionalCommunityId: "",
-      tagIds: [],
-      language: locale,
+      title: editDoc?.title ?? "",
+      description: editDoc?.description ?? "",
+      issue: editDoc?.issue ?? "",
+      personContext: editDoc?.personContext ?? "",
+      videoSource: editDoc?.videoSource ?? "youtube",
+      videoLink: editDoc?.videoLink ?? "",
+      body: editDoc?.body ?? [],
+      regionalCommunityId: editDoc?.regionalCommunityId ?? "",
+      tagIds: editDoc?.tagIds ?? [],
+      // Edit keeps the original submission language so localized fields
+      // re-wrap under the same key regardless of the UI locale.
+      language: editDoc?.language ?? locale,
     },
   })
 
@@ -118,7 +124,8 @@ export function LivedExperienceForm({
   }
 
   async function onSubmit(values: LEFormValues) {
-    if (values.videoSource === "upload" && !videoFile) {
+    // In edit mode a missing file keeps the existing upload.
+    if (values.videoSource === "upload" && !videoFile && !editDoc?.hasVideoFile) {
       setFileError(t("video.fileRequired"))
       return
     }
@@ -127,7 +134,15 @@ export function LivedExperienceForm({
       // Multipart: JSON payload in `data` + the optional video file — the
       // same shape the case-study submit route uses for its image.
       const formData = new FormData()
-      formData.append("data", JSON.stringify({ ...values, language: locale, ...(workspaceId ? { collaborationId: workspaceId } : {}) }))
+      formData.append(
+        "data",
+        JSON.stringify({
+          ...values,
+          language: editDoc?.language ?? locale,
+          ...(workspaceId ? { collaborationId: workspaceId } : {}),
+          ...(editDoc ? { editId: editDoc._sanityId } : {}),
+        })
+      )
       if (values.videoSource === "upload" && videoFile) {
         formData.append("video", videoFile)
       }
@@ -240,6 +255,9 @@ export function LivedExperienceForm({
                     )}
                     {fileError && <p className="text-sm text-destructive">{fileError}</p>}
                     {videoFile && <p className="text-xs text-muted-foreground">{t("video.fileHint")}</p>}
+                    {!videoFile && editDoc?.hasVideoFile && (
+                      <p className="text-xs text-muted-foreground">{t("video.keepExisting")}</p>
+                    )}
                   </TabsContent>
 
                   <TabsContent value="youtube" className="space-y-2">

@@ -109,9 +109,9 @@ export default function WorkspaceOutputs({
                   )}
                 </div>
                 {!published &&
-                  (o.sanityType === "caseStudy" && canEdit ? (
+                  (canEdit && SUBMIT_ROUTES[o.sanityType] ? (
                     <Link
-                      href={`/research-and-action/case-studies/submit?edit=${o.sanityId}&workspace=${collaborationId}`}
+                      href={`${SUBMIT_ROUTES[o.sanityType]}?edit=${o.sanityId}&workspace=${collaborationId}`}
                       className="text-xs font-bold text-ccm-sea underline-offset-2 hover:underline"
                     >
                       {t("continueEditing")}

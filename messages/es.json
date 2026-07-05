@@ -1686,7 +1686,8 @@
       "fileHint": "MP4 o WebM, hasta 100 MB.",
       "fileRequired": "Elige un archivo de vídeo para subir.",
       "fileTooLarge": "Ese archivo supera el límite de 100 MB; elige uno más pequeño.",
-      "fileWrongType": "Elige un archivo MP4 o WebM."
+      "fileWrongType": "Elige un archivo MP4 o WebM.",
+      "keepExisting": "Se conserva tu video actual salvo que elijas un archivo nuevo."
     }
   },
   "comments": {

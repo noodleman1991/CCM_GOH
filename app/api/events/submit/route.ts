@@ -53,6 +53,48 @@ export async function POST(request: NextRequest) {
 
   try {
     if (data.collaborationId) doc.relatedCollaboration = data.collaborationId;
+
+    // X7 edit mode: resubmit an existing draft/pending event — verify the
+    // caller may edit it, then patch (status returns to pending for
+    // re-review). Slug and submittedBy are preserved.
+    if (data.editId) {
+      const existing = await writeClient
+        .withConfig({ perspective: "raw" })
+        .fetch(`*[_type == "event" && _id == $id][0]{ _id, submittedBy, status }`, {
+          id: data.editId,
+        });
+      const editable = existing && ["pending", "revision", "draft", null].includes(existing.status ?? null);
+      const isSubmitter = existing?.submittedBy === userId;
+      let isWorkspaceMember = false;
+      if (existing && !isSubmitter) {
+        const { prisma } = await import("@/lib/prisma");
+        const row = await prisma.workspaceOutput.findFirst({
+          where: {
+            sanityId: { in: [existing._id, existing._id.replace(/^drafts\./, "")] },
+            collaboration: { members: { some: { userId } } },
+          },
+          select: { id: true },
+        });
+        isWorkspaceMember = !!row;
+      }
+      if (!existing || !editable || (!isSubmitter && !isWorkspaceMember)) {
+        return NextResponse.json({ error: "You can't edit this submission." }, { status: 403 });
+      }
+      const { _type: _t, slug: _slug, submittedBy: _sb, ...updatable } = doc;
+      // JSON drops undefined, so cleared optional fields must be unset explicitly.
+      const cleared = Object.keys(updatable).filter(
+        (k) => updatable[k as keyof typeof updatable] === undefined
+      );
+      const set = Object.fromEntries(
+        Object.entries(updatable).filter(([, v]) => v !== undefined)
+      );
+      let patch = writeClient.patch(existing._id).set({ ...set, status: "pending" });
+      if (cleared.length > 0) patch = patch.unset(cleared);
+      await patch.commit();
+      // The workspace-output row (if any) already exists — no link-back.
+      return NextResponse.json({ success: true, id: existing._id });
+    }
+
     const created = await writeClient.create(doc);
 
     // Submitted from a workspace: link the event as a workspace output.

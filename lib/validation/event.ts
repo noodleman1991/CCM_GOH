@@ -10,6 +10,9 @@ export const eventSubmissionSchema = z
     // Present when submitting from a workspace (?workspace=) — the route
     // links the created event back as a workspace output.
     collaborationId: z.string().optional(),
+    // X7 edit mode: the Sanity _id of an existing draft/pending event being
+    // resubmitted. The route verifies the caller may edit it, then patches.
+    editId: z.string().optional(),
     description: z.string().trim().max(2000).optional().or(z.literal("")),
     scope: z.enum(["community", "project"]).default("community"),
     startAt: z.string().datetime({ message: "Please pick a start date/time" }),
