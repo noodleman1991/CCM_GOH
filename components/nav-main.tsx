@@ -1,5 +1,6 @@
 "use client"
 
+import * as React from "react"
 import { ChevronRight, type LucideIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Link } from "@/i18n/navigation"
@@ -34,6 +35,8 @@ export function NavMain({
     isActive?: boolean
     /** Render as a call-to-action affordance (e.g. "Start or find a project"). */
     isAction?: boolean
+    /** Optional trailing badge (e.g. unread count). */
+    badge?: React.ReactNode
     items?: {
       title: string
       url: string
@@ -111,6 +114,7 @@ export function NavMain({
                 <Link href={item.url}>
                   <item.icon />
                   <span>{item.title}</span>
+                  {item.badge != null && <span className="ms-auto">{item.badge}</span>}
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

@@ -77,7 +77,14 @@
     "readAgenda": "Leer la Agenda",
     "quickSearch": "Buscar",
     "quickMessages": "Mensajes",
-    "quickNotifications": "Avisos"
+    "quickNotifications": "Avisos",
+    "quickFindPeople": "Buscar personas",
+    "quickStartProject": "Crear proyecto",
+    "messagesNav": "Mensajes y avisos",
+    "userMenu": "Tu cuenta",
+    "userDashboard": "Panel",
+    "userMessages": "Mensajes y avisos",
+    "userSettings": "Ajustes"
   },
   "navUser": {
     "account": "Cuenta",

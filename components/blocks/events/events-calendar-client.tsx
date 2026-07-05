@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { CalendarPlus, ChevronLeft, ChevronRight, Globe, MapPin, Users } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { Link } from "@/i18n/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SectionHeader } from "@/components/ui/section-header";
@@ -258,7 +259,16 @@ export default function EventsCalendarClient({
                         </span>
                       )}
                     </div>
-                    <h4 className="truncate font-heading font-semibold text-ccm-midnight">{e.title}</h4>
+                    {e.slug ? (
+                      <Link
+                        href={`/collaborate/events/${e.slug}`}
+                        className="block truncate font-heading font-semibold text-ccm-midnight underline-offset-2 hover:underline"
+                      >
+                        <bdi>{e.title}</bdi>
+                      </Link>
+                    ) : (
+                      <h4 className="truncate font-heading font-semibold text-ccm-midnight">{e.title}</h4>
+                    )}
                     <p className="mt-0.5 text-xs text-muted-foreground">
                       {start && start.toLocaleString(locale, { dateStyle: "medium", timeStyle: "short" })}
                       {e.locationName ? ` · ${e.locationName}` : ""}

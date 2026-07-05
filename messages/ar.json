@@ -77,7 +77,14 @@
     "readAgenda": "اقرأ الأجندة",
     "quickSearch": "بحث",
     "quickMessages": "الرسائل",
-    "quickNotifications": "تنبيهات"
+    "quickNotifications": "تنبيهات",
+    "quickFindPeople": "ابحث عن أشخاص",
+    "quickStartProject": "ابدأ مشروعًا",
+    "messagesNav": "الرسائل والتنبيهات",
+    "userMenu": "حسابك",
+    "userDashboard": "لوحة التحكم",
+    "userMessages": "الرسائل والتنبيهات",
+    "userSettings": "الإعدادات"
   },
   "navUser": {
     "account": "الحساب",
