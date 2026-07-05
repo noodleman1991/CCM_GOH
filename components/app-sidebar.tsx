@@ -217,24 +217,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 items: regionalCommunities.map((s) => ({ ...s, isActive: isLinkActive(s.url) })),
                 onToggle: () => setOpenAccordion(openAccordion === 'regional' ? null : 'regional')
             },
-            {
-                title: t('findPeople'),
-                url: "/collaborate",
-                icon: Users,
-                isActive: isLinkActive("/collaborate"),
-            },
-            // Action item: start or find a project. When engagement is on this
-            // routes into Workspaces; otherwise it points at people-discovery so
-            // the affordance is never a dead end.
-            {
-                title: t('startOrFindProject'),
-                url: FEATURES.engagement ? "/collaborations" : "/collaborate",
-                icon: FolderPlus,
-                isActive: FEATURES.engagement
-                    ? isLinkActive("/collaborations")
-                    : false,
-                isAction: true,
-            },
+            // Find-people and Start-a-project live in the doorway tiles up
+            // top (sidebar revision 2026-07-05) — no duplicated rows here.
         ],
         navSecondary,
         user: userData
@@ -254,14 +238,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <Link
                     href="/"
                     aria-label="Go to homepage"
-                    className="group/logo relative mx-2 mt-1 block overflow-hidden rounded-xl px-3 py-3.5 transition-colors hover:bg-white/5 group-data-[collapsible=icon]:mx-0 group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-1 group-data-[collapsible=icon]:py-2"
+                    className="group/logo relative mx-2 mt-2 block overflow-hidden rounded-xl px-4 py-5 transition-colors hover:bg-white/5 group-data-[collapsible=icon]:mx-0 group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-1 group-data-[collapsible=icon]:py-2"
                 >
                     <span
                         aria-hidden
-                        className="pointer-events-none absolute -end-8 -top-10 size-32 rounded-full bg-ccm-water/25 blur-2xl transition-transform duration-500 group-hover/logo:scale-125 group-data-[collapsible=icon]:hidden"
+                        className="pointer-events-none absolute -end-6 -top-12 size-40 rounded-full bg-ccm-water/25 blur-2xl transition-transform duration-500 group-hover/logo:scale-125 group-data-[collapsible=icon]:hidden"
                     />
-                    <span className="relative block group-data-[collapsible=icon]:hidden [&_img]:h-12 [&_img]:w-auto">
-                        <Logo size="md" asChild />
+                    <span className="relative block group-data-[collapsible=icon]:hidden [&_img]:h-16 [&_img]:w-auto">
+                        <Logo size="lg" asChild />
                     </span>
                     <span
                         aria-hidden
@@ -289,12 +273,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <NavSecondary items={data.navSecondary} className="mt-auto" />
             </SidebarContent>
             <SidebarFooter>
-                <div className="p-2 pb-0 group-data-[collapsible=icon]:p-1">
+                {/* The user area is ONE neat menu card (user direction
+                    2026-07-05): account row + personal destinations for the
+                    signed-in state, the two auth actions for the signed-out
+                    state — identical on desktop and in the sheet. */}
+                <div className="mx-2 mb-1 rounded-xl bg-white/5 p-1.5 group-data-[collapsible=icon]:mx-0 group-data-[collapsible=icon]:bg-transparent group-data-[collapsible=icon]:p-1">
                     <AuthNavUser isRTL={isRTL} />
-                    {/* The user area is a little nav menu (user direction
-                        2026-07-05): the frequent personal destinations sit
-                        inline under the account button, identical on desktop
-                        and in the sheet. */}
                     <UserMiniNav />
                 </div>
                 {/* Search moved to the quick-actions row (sidebar revision
