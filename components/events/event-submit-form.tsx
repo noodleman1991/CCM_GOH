@@ -14,25 +14,39 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import type { EditableEvent } from "@/lib/events/edit";
+
+/** ISO → the local "YYYY-MM-DDTHH:mm" a datetime-local input expects. */
+function toLocalInput(iso: string): string {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
 
 /**
  * In-app event submission. Posts to /api/events/submit, which forces
  * status=pending → editor review (the moderation gate). Mirrors the
- * lived-experience submission UX.
+ * lived-experience submission UX. With `editDoc` (X7 ?edit=) the form
+ * reopens an existing draft/pending event and resubmits it in place.
  */
-export function EventSubmitForm({ workspaceId }: { workspaceId?: string | null } = {}) {
+export function EventSubmitForm({
+  workspaceId,
+  editDoc,
+}: { workspaceId?: string | null; editDoc?: EditableEvent | null } = {}) {
   const t = useTranslations("events");
   const router = useRouter();
   const [pending, setPending] = useState(false);
   const [form, setForm] = useState({
-    title: "",
-    description: "",
-    scope: "community" as "community" | "project",
-    startAt: "",
-    endAt: "",
-    mode: "online" as "online" | "in_person" | "hybrid",
-    locationName: "",
-    url: "",
+    title: editDoc?.title ?? "",
+    description: editDoc?.description ?? "",
+    scope: (editDoc?.scope ?? "community") as "community" | "project",
+    startAt: toLocalInput(editDoc?.startAt ?? ""),
+    endAt: toLocalInput(editDoc?.endAt ?? ""),
+    mode: (editDoc?.mode ?? "online") as "online" | "in_person" | "hybrid",
+    locationName: editDoc?.locationName ?? "",
+    url: editDoc?.url ?? "",
   });
 
   const set = (k: keyof typeof form) => (v: string) => setForm((f) => ({ ...f, [k]: v }));
@@ -48,6 +62,7 @@ export function EventSubmitForm({ workspaceId }: { workspaceId?: string | null }
       const payload = {
         ...form,
         ...(workspaceId ? { collaborationId: workspaceId } : {}),
+        ...(editDoc ? { editId: editDoc._sanityId } : {}),
         // datetime-local → ISO; the API expects z.string().datetime()
         startAt: new Date(form.startAt).toISOString(),
         endAt: form.endAt ? new Date(form.endAt).toISOString() : "",

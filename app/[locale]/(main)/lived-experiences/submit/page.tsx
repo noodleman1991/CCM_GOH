@@ -5,6 +5,7 @@ import { getTranslations } from "next-intl/server"
 import { client } from "@/sanity/lib/client"
 import { PageContainer } from "@/components/ui/page-container"
 import { LivedExperienceForm } from "@/components/forms/lived-experience-form"
+import { loadEditableLivedExperience } from "@/lib/lived-experiences/edit"
 
 async function fetchAvailableTags() {
   return await client.fetch(`*[_type == "tag"] | order(label.en asc) { _id, label, value }`)
@@ -27,10 +28,10 @@ export default async function SubmitLivedExperiencePage({
   searchParams,
 }: {
   params: Promise<{ locale: string }>
-  searchParams: Promise<{ workspace?: string }>
+  searchParams: Promise<{ workspace?: string; edit?: string }>
 }) {
   await params
-  const { workspace } = await searchParams
+  const { workspace, edit } = await searchParams
   const { userId } = await auth()
   if (!userId) redirect("/sign-in")
 
@@ -39,12 +40,20 @@ export default async function SubmitLivedExperiencePage({
     fetchRegionalCommunities(),
   ])
 
+  // X7 edit mode: reopen your own (or your workspace's) draft/pending doc.
+  let editDoc = null
+  if (edit) {
+    editDoc = await loadEditableLivedExperience(edit, userId)
+    if (!editDoc) redirect("/lived-experiences/submit")
+  }
+
   return (
     <PageContainer width="max-w-3xl">
       <LivedExperienceForm
         availableTags={availableTags}
         regionalCommunities={regionalCommunities}
         workspaceId={workspace ?? null}
+        editDoc={editDoc}
       />
     </PageContainer>
   )

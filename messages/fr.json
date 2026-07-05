@@ -1686,7 +1686,8 @@
       "fileHint": "MP4 ou WebM, jusqu'à 100 Mo.",
       "fileRequired": "Veuillez choisir un fichier vidéo à téléverser.",
       "fileTooLarge": "Ce fichier dépasse la limite de 100 Mo — choisissez-en un plus léger.",
-      "fileWrongType": "Veuillez choisir un fichier MP4 ou WebM."
+      "fileWrongType": "Veuillez choisir un fichier MP4 ou WebM.",
+      "keepExisting": "Votre vidéo actuelle est conservée sauf si vous choisissez un nouveau fichier."
     }
   },
   "comments": {

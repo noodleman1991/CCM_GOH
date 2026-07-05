@@ -66,17 +66,19 @@ export async function POST(request: NextRequest) {
   const lang = data.language;
 
   // Direct upload: the file is required and validated (type + 100MB cap).
+  // In edit mode a missing file means "keep the existing upload" — the edit
+  // branch below verifies one actually exists.
   if (data.videoSource === "upload") {
-    if (!videoFile) {
+    if (!videoFile && !data.editId) {
       return NextResponse.json({ error: "No video file provided" }, { status: 400 });
     }
-    if (videoFile.size > LE_VIDEO_MAX_BYTES) {
+    if (videoFile && videoFile.size > LE_VIDEO_MAX_BYTES) {
       return NextResponse.json(
         { error: "File too large. Maximum size is 100MB." },
         { status: 400 }
       );
     }
-    if (!LE_VIDEO_MIME_TYPES.includes(videoFile.type)) {
+    if (videoFile && !LE_VIDEO_MIME_TYPES.includes(videoFile.type)) {
       return NextResponse.json(
         { error: "Invalid file type. Allowed: MP4, WebM." },
         { status: 400 }
@@ -125,6 +127,62 @@ export async function POST(request: NextRequest) {
         contentType: videoFile.type,
       });
       doc.videoFile = { _type: "file", asset: { _type: "reference", _ref: asset._id } };
+    }
+
+    // X7 edit mode: resubmit an existing draft/pending doc — verify the
+    // caller may edit it, then patch (status returns to pending for
+    // re-review). Slug, submittedBy and publishedAt are preserved.
+    if (data.editId) {
+      const existing = await writeClient
+        .withConfig({ perspective: "raw" })
+        .fetch(
+          `*[_type == "livedExperience" && _id == $id][0]{
+            _id, submittedBy, status, "hasVideoFile": defined(videoFile.asset)
+          }`,
+          { id: data.editId }
+        );
+      const editable = existing && ["pending", "revision", "draft", null].includes(existing.status ?? null);
+      const isSubmitter = existing?.submittedBy === userId;
+      let isWorkspaceMember = false;
+      if (existing && !isSubmitter) {
+        const { prisma } = await import("@/lib/prisma");
+        const row = await prisma.workspaceOutput.findFirst({
+          where: {
+            sanityId: { in: [existing._id, existing._id.replace(/^drafts\./, "")] },
+            collaboration: { members: { some: { userId } } },
+          },
+          select: { id: true },
+        });
+        isWorkspaceMember = !!row;
+      }
+      if (!existing || !editable || (!isSubmitter && !isWorkspaceMember)) {
+        return NextResponse.json({ error: "You can't edit this submission." }, { status: 403 });
+      }
+      if (data.videoSource === "upload" && !videoFile && !existing.hasVideoFile) {
+        return NextResponse.json({ error: "No video file provided" }, { status: 400 });
+      }
+
+      const { _type: _t, slug: _slug, submittedBy: _sb, publishedAt: _pa, ...updatable } = doc;
+      // JSON drops undefined, so cleared optional fields must be unset explicitly;
+      // a video-source switch also has to drop the now-stale counterpart field.
+      const cleared = Object.keys(updatable).filter(
+        (k) => updatable[k as keyof typeof updatable] === undefined
+      );
+      if (data.videoSource === "upload") cleared.push("videoLink");
+      else cleared.push("videoFile");
+      if (!Array.isArray(data.body) || data.body.length === 0) cleared.push("body");
+      if (!data.regionalCommunityId) cleared.push("relatedCommunity");
+      if (!data.tagIds || data.tagIds.length === 0) cleared.push("tags");
+      const set = Object.fromEntries(
+        Object.entries(updatable).filter(([, v]) => v !== undefined)
+      );
+      // Keeping the existing upload: videoFile isn't in `set`, and must not be unset.
+      const unsets = cleared.filter((k) => !(k === "videoFile" && data.videoSource === "upload"));
+      let patch = writeClient.patch(existing._id).set({ ...set, status: "pending" });
+      if (unsets.length > 0) patch = patch.unset(unsets);
+      await patch.commit();
+      // The workspace-output row (if any) already exists — no link-back.
+      return NextResponse.json({ success: true, id: existing._id });
     }
 
     const created = await writeClient.create(doc);

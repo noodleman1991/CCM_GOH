@@ -261,8 +261,10 @@ export async function POST(request: NextRequest) {
         console.log(`Case study submitted by user ${userId} (${clerkUser.emailAddresses[0]?.emailAddress}): ${result._id}`);
 
         // Submitted from a workspace: link the new doc as a workspace output.
-        // addOutput enforces collab authz itself; a failed link never fails the submission.
-        if (typeof data.collaborationId === "string" && data.collaborationId) {
+        // addOutput enforces collab authz itself; a failed link never fails the
+        // submission. Skipped on edit — the output row already exists, and
+        // addOutput doesn't dedupe.
+        if (typeof data.collaborationId === "string" && data.collaborationId && !data.editId) {
             const linked = await addOutput({
                 collaborationId: data.collaborationId,
                 sanityType: "caseStudy",

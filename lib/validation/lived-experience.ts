@@ -48,6 +48,9 @@ export function makeLivedExperienceSchema(m: LEValidationMessages = LE_DEFAULT_M
       // Present when submitting from a workspace (?workspace=) — the route
       // links the created doc back as a workspace output.
       collaborationId: z.string().optional(),
+      // X7 edit mode: the Sanity _id of an existing draft/pending doc being
+      // resubmitted. The route verifies the caller may edit it, then patches.
+      editId: z.string().optional(),
       description: z.string().trim().min(10, m.descriptionMin).max(800),
       issue: z.string().trim().min(5, m.issueMin).max(400),
       personContext: z.string().trim().max(400).optional().or(z.literal("")),
