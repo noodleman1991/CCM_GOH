@@ -77,7 +77,14 @@
     "readAgenda": "Read the Agenda",
     "quickSearch": "Search",
     "quickMessages": "Messages",
-    "quickNotifications": "Alerts"
+    "quickNotifications": "Alerts",
+    "quickFindPeople": "Find people",
+    "quickStartProject": "Start a project",
+    "messagesNav": "Messages & alerts",
+    "userMenu": "Your account",
+    "userDashboard": "Dashboard",
+    "userMessages": "Messages & alerts",
+    "userSettings": "Settings"
   },
   "navUser": {
     "account": "Account",

@@ -1,59 +1,50 @@
 "use client";
 
-import useSWR from "swr";
 import { useTranslations } from "next-intl";
-import { Bell, MessageSquare, Search } from "lucide-react";
+import { useUser } from "@clerk/nextjs";
+import { FolderPlus, Search, UsersRound } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { useSearchStore } from "@/stores/search-store";
 import { useSidebar } from "@/components/ui/sidebar";
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
-
 /**
- * One-tap quick actions at the top of the MOBILE nav sheet (task #11,
- * user-approved layout): Search · Messages · Notifications, with the live
- * unread count. Hidden everywhere else — desktop keeps its footer pill +
- * topbar bell, so the two surfaces stay matched without duplication.
+ * Sidebar quick actions (user revision 2026-07-05): the three doorways —
+ * Search · Find people · Start a project — identical on the desktop rail and
+ * the mobile sheet (one component, one design). Auth-aware: signed-out users
+ * are routed to sign-in with a redirect back to their destination instead of
+ * bouncing off a gated page.
  */
 export function SidebarQuickActions() {
   const t = useTranslations("navigation");
   const { setOpenMobile } = useSidebar();
-  const { data } = useSWR<{ unread: number }>("/api/notifications", fetcher, {
-    revalidateOnFocus: false,
-    dedupingInterval: 30000,
-  });
-  const unread = data?.unread ?? 0;
+  const { isSignedIn } = useUser();
+
+  const gate = (target: string) => (isSignedIn ? target : `/sign-in?redirect=${encodeURIComponent(target)}`);
+  const close = () => setOpenMobile(false);
 
   const item =
-    "flex min-h-[48px] flex-1 flex-col items-center justify-center gap-1 rounded-xl bg-white/10 text-[11px] font-bold text-white active:bg-white/20";
+    "flex min-h-[52px] flex-1 flex-col items-center justify-center gap-1 rounded-xl bg-white/10 px-1 text-center text-[10.5px] font-bold leading-tight text-white transition-colors hover:bg-white/15 active:bg-white/20 group-data-[collapsible=icon]:hidden";
 
   return (
-    <div className="hidden gap-2 px-3 pt-3 [[data-mobile=true]_&]:flex">
+    <div className="flex gap-1.5 px-2.5 pt-1 group-data-[collapsible=icon]:hidden">
       <button
         type="button"
         className={item}
         onClick={() => {
-          setOpenMobile(false);
+          close();
           useSearchStore.getState().setOpen(true);
         }}
       >
         <Search className="size-4" aria-hidden />
         {t("quickSearch")}
       </button>
-      <Link href="/messages" className={item} onClick={() => setOpenMobile(false)}>
-        <MessageSquare className="size-4" aria-hidden />
-        {t("quickMessages")}
+      <Link href={gate("/collaborate?tab=people")} className={item} onClick={close}>
+        <UsersRound className="size-4" aria-hidden />
+        {t("quickFindPeople")}
       </Link>
-      <Link href="/messages?tab=notifications" className={`${item} relative`} onClick={() => setOpenMobile(false)}>
-        <span className="relative">
-          <Bell className="size-4" aria-hidden />
-          {unread > 0 && (
-            <span className="absolute -end-2.5 -top-1.5 min-w-4 rounded-full bg-ccm-amber px-1 text-center text-[9px] font-bold leading-4 text-white">
-              {unread > 9 ? "9+" : unread}
-            </span>
-          )}
-        </span>
-        {t("quickNotifications")}
+      <Link href={gate("/collaborations")} className={item} onClick={close}>
+        <FolderPlus className="size-4" aria-hidden />
+        {t("quickStartProject")}
       </Link>
     </div>
   );

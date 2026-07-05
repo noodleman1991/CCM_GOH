@@ -35,6 +35,7 @@ import { StaffNav } from "@/components/staff-nav"
 import { AuthNavUser } from "@/components/auth-nav-user"
 import { LanguageSwitcher } from "@/components/language-switcher"
 import { SidebarQuickActions } from "@/components/sidebar-quick-actions"
+import { UserMiniNav } from "@/components/user-mini-nav"
 import {
     Sidebar,
     SidebarContent,
@@ -246,32 +247,29 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             {...props}
         >
             <SidebarHeader>
-                <SidebarMenu>
-                    <SidebarMenuItem>
-                        {/* Expanded: full wordmark. Icon rail: the wordmark can't
-                            survive a 48px squeeze, so swap to a compact "ccm"
-                            blob mark echoing the logo's white-cloud-on-navy. */}
-                        <SidebarMenuButton
-                            size="xl"
-                            asChild
-                            className="justify-center p-4 hover:bg-transparent active:bg-transparent focus-visible:bg-transparent data-[active=true]:bg-transparent group-data-[collapsible=icon]:h-auto group-data-[collapsible=icon]:p-1"
-                        >
-                            <Link href="/" aria-label="Go to homepage" className="inline-flex items-center justify-center">
-                                {/* In the mobile bottom sheet the full-size wordmark
-                                    wastes half a screen — cap it so navigation leads. */}
-                                <span className="group-data-[collapsible=icon]:hidden [[data-mobile=true]_&_img]:h-14 [[data-mobile=true]_&_img]:w-auto">
-                                    <Logo size="xl" asChild />
-                                </span>
-                                <span
-                                    aria-hidden
-                                    className="hidden size-8 items-center justify-center rounded-full bg-white font-heading text-[11px] font-bold lowercase tracking-tight text-ccm-midnight group-data-[collapsible=icon]:flex"
-                                >
-                                    ccm
-                                </span>
-                            </Link>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                </SidebarMenu>
+                {/* Brand lockup (sidebar revision 2026-07-05): compact,
+                    start-aligned wordmark riding a soft sky blob — the same
+                    treatment on desktop and in the mobile sheet. Icon rail
+                    swaps to the round "ccm" mark. */}
+                <Link
+                    href="/"
+                    aria-label="Go to homepage"
+                    className="group/logo relative mx-2 mt-1 block overflow-hidden rounded-xl px-3 py-3.5 transition-colors hover:bg-white/5 group-data-[collapsible=icon]:mx-0 group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-1 group-data-[collapsible=icon]:py-2"
+                >
+                    <span
+                        aria-hidden
+                        className="pointer-events-none absolute -end-8 -top-10 size-32 rounded-full bg-ccm-water/25 blur-2xl transition-transform duration-500 group-hover/logo:scale-125 group-data-[collapsible=icon]:hidden"
+                    />
+                    <span className="relative block group-data-[collapsible=icon]:hidden [&_img]:h-12 [&_img]:w-auto">
+                        <Logo size="md" asChild />
+                    </span>
+                    <span
+                        aria-hidden
+                        className="hidden size-8 items-center justify-center rounded-full bg-white font-heading text-[11px] font-bold lowercase tracking-tight text-ccm-midnight group-data-[collapsible=icon]:flex"
+                    >
+                        ccm
+                    </span>
+                </Link>
             </SidebarHeader>
             <SidebarQuickActions />
             <SidebarContent>
@@ -293,16 +291,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarFooter>
                 <div className="p-2 pb-0 group-data-[collapsible=icon]:p-1">
                     <AuthNavUser isRTL={isRTL} />
+                    {/* The user area is a little nav menu (user direction
+                        2026-07-05): the frequent personal destinations sit
+                        inline under the account button, identical on desktop
+                        and in the sheet. */}
+                    <UserMiniNav />
                 </div>
-                {/* Universal search sits between the user button and the language
-                    switcher. It opens an accessible search modal (keyboard: ⌘K /
-                    "/"; focus-trapped; RTL-aware). On the icon rail (workspace
-                    routes) the pill can't fit without its ⌘K hint leaking onto the
-                    content pane, so we swap to a rail icon button matching the
-                    other nav items. */}
-                <div className="p-2 group-data-[collapsible=icon]:hidden">
-                    <SearchTrigger variant="pill" />
-                </div>
+                {/* Search moved to the quick-actions row (sidebar revision
+                    2026-07-05) — the footer keeps only the icon-rail variant
+                    for collapsed workspace routes. */}
                 <SidebarMenu className="hidden group-data-[collapsible=icon]:block">
                     <SidebarMenuItem>
                         <SidebarMenuButton

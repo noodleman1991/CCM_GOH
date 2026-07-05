@@ -78,10 +78,19 @@ export default async function IndexPage({ params }: IndexPageProps) {
     // Determine text direction for RTL languages
     const rtl = isRTL(locale);
 
-    const homepage = await fetchSanityHomepageBySlug({
-        slug: "index",
-        locale,
-    });
+    // Resilient homepage fetch: a transient Sanity failure must NEVER swap the
+    // front door to the legacy `page` doc (users saw the redesign "revert").
+    // Retry the flake; only a genuine null (doc absent) reaches the fallback.
+    let homepage = null;
+    for (let attempt = 0; attempt < 3; attempt++) {
+        try {
+            homepage = await fetchSanityHomepageBySlug({ slug: "index", locale });
+            break;
+        } catch (error) {
+            if (attempt === 2) throw error;
+            await new Promise((resolve) => setTimeout(resolve, 250 * (attempt + 1)));
+        }
+    }
 
     if (homepage) {
         return <Homepage homepage={homepage} locale={locale} />;
