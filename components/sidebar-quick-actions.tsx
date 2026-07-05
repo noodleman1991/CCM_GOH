@@ -26,7 +26,7 @@ export function SidebarQuickActions() {
     "flex min-h-[52px] flex-1 flex-col items-center justify-center gap-1 rounded-xl bg-white/10 px-1 text-center text-[10.5px] font-bold leading-tight text-white transition-colors hover:bg-white/15 active:bg-white/20 group-data-[collapsible=icon]:hidden";
 
   return (
-    <div className="flex gap-1.5 px-2.5 pt-1 group-data-[collapsible=icon]:hidden">
+    <div className="mb-2 flex gap-1.5 px-2.5 group-data-[collapsible=icon]:hidden">
       <button
         type="button"
         className={item}

@@ -186,18 +186,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 onToggle: () => setOpenAccordion(openAccordion === 'regional' ? null : 'regional')
             },
             {
-                title: t('atlas'),
-                url: "/atlas",
-                icon: Compass,
-                isActive: isLinkActive("/atlas"),
-            },
-            {
                 title: t('researchAction'),
                 url: "#",
                 icon: BookOpen,
                 isActive: openAccordion === 'research',
                 items: researchActionItems.map((s) => ({ ...s, isActive: isLinkActive(s.url) })),
                 onToggle: () => setOpenAccordion(openAccordion === 'research' ? null : 'research')
+            },
+            {
+                title: t('atlas'),
+                url: "/atlas",
+                icon: Compass,
+                isActive: isLinkActive("/atlas"),
             },
             {
                 title: t('livedExperiences'),
@@ -236,9 +236,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <Link
                     href="/"
                     aria-label="Go to homepage"
-                    className="block px-5 pb-2 pt-5 group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-2"
+                    className="flex justify-center px-5 pb-6 pt-6 group-data-[collapsible=icon]:p-2"
                 >
-                    <span className="block group-data-[collapsible=icon]:hidden [&_img]:h-[4.5rem] [&_img]:w-auto">
+                    <span className="block group-data-[collapsible=icon]:hidden [&_img]:h-[4.25rem] [&_img]:w-auto">
                         <Logo size="lg" asChild />
                     </span>
                     <span
