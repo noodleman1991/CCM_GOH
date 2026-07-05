@@ -335,7 +335,8 @@
     "emptyTitle": "Aucune étape pour le moment",
     "emptyBody": "Ajoutez votre première étape (p. ex. Exploration, Rédaction, Relecture) pour commencer à suivre le travail.",
     "assign": "Attribuer",
-    "unassigned": "Non attribué"
+    "unassigned": "Non attribué",
+    "addNotes": "Ajoutez des notes — @pseudo prévient la personne"
   },
   "follow": {
     "follow": "Suivre",

@@ -58,7 +58,7 @@ type CollabProps = {
 type PlanStageProp = {
   id: string;
   title: string;
-  tasks: { id: string; title: string; status: "TODO" | "IN_PROGRESS" | "DONE"; assigneeId: string | null }[];
+  tasks: { id: string; title: string; description: string | null; status: "TODO" | "IN_PROGRESS" | "DONE"; assigneeId: string | null }[];
 };
 
 type DocProp = { id: string; title: string; content: unknown; updatedAt: string };

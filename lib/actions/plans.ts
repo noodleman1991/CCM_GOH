@@ -4,6 +4,8 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getActor } from "@/lib/authz";
 import { emitLifecycle } from "@/lib/notifications/emit";
+import { createNotification } from "@/lib/notifications/service";
+import { parseMentions } from "@/lib/comments/mentions";
 import { authorizeCollab } from "@/lib/collaboration/service";
 import type { TaskStatus } from "@/generated/prisma";
 
@@ -148,6 +150,48 @@ export async function renameTask(
   const parsed = z.string().trim().min(1).max(300).safeParse(title);
   if (!parsed.success) return { ok: false, error: "Task title can't be empty." };
   await prisma.task.update({ where: { id: taskId }, data: { title: parsed.data } });
+  return { ok: true };
+}
+
+export async function setTaskDescription(
+  collaborationId: string,
+  taskId: string,
+  description: string
+): Promise<Result> {
+  const auth = await canEdit(collaborationId);
+  if (!auth.ok) return auth;
+  const parsed = z.string().max(2000).safeParse(description);
+  if (!parsed.success) return { ok: false, error: "Description too long." };
+  const task = await prisma.task.update({
+    where: { id: taskId },
+    data: { description: parsed.data.trim() || null },
+    select: { title: true },
+  });
+
+  // @username mentions in the notes notify the mentioned members (MENTION —
+  // the same contract as comment mentions).
+  const usernames = parseMentions(parsed.data);
+  if (usernames.length > 0) {
+    const actor = await getActor();
+    const users = await prisma.user.findMany({
+      where: { username: { in: usernames } },
+      select: { id: true },
+    });
+    await Promise.all(
+      users
+        .filter((u) => u.id !== actor?.id)
+        .map((u) =>
+          createNotification({
+            recipientId: u.id,
+            type: "MENTION",
+            actorId: actor?.id ?? null,
+            entityType: "collaboration",
+            entityId: collaborationId,
+            snippet: `${task.title}: ${parsed.data.slice(0, 200)}`,
+          })
+        )
+    );
+  }
   return { ok: true };
 }
 

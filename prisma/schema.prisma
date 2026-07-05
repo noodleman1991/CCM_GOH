@@ -826,6 +826,8 @@ model Task {
   stageId     String
   stage       PlanStage  @relation(fields: [stageId], references: [id], onDelete: Cascade)
   title       String
+  // X8: free-text notes on a task; @username mentions in it notify (MENTION).
+  description String?
   status      TaskStatus @default(TODO)
   order       Int        @default(0)
   assigneeId  String?

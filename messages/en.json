@@ -240,7 +240,8 @@
     "emptyTitle": "No stages yet",
     "emptyBody": "Add your first stage (e.g. Discovery, Drafting, Review) to start tracking the work.",
     "assign": "Assign",
-    "unassigned": "Unassigned"
+    "unassigned": "Unassigned",
+    "addNotes": "Add notes — @username notifies a teammate"
   },
   "follow": {
     "follow": "Follow",

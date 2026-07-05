@@ -38,10 +38,11 @@ import {
   deleteStage,
   reorderTasks,
   assignTask,
+  setTaskDescription,
 } from "@/lib/actions/plans";
 
 type TaskStatus = "TODO" | "IN_PROGRESS" | "DONE";
-type Task = { id: string; title: string; status: TaskStatus; assigneeId: string | null };
+type Task = { id: string; title: string; description: string | null; status: TaskStatus; assigneeId: string | null };
 type Stage = { id: string; title: string; tasks: Task[] };
 type Member = { userId: string; name: string };
 
@@ -86,7 +87,7 @@ export function WorkspacePlan({
       const res = await addTask(collaborationId, stageId, title.trim());
       if (!res.ok) { toast.error(res.error); return; }
       setStages((s) =>
-        s.map((st) => (st.id === stageId ? { ...st, tasks: [...st.tasks, { id: res.taskId, title: title.trim(), status: "TODO", assigneeId: null }] } : st))
+        s.map((st) => (st.id === stageId ? { ...st, tasks: [...st.tasks, { id: res.taskId, title: title.trim(), description: null, status: "TODO", assigneeId: null }] } : st))
       );
     });
   };
@@ -136,6 +137,20 @@ export function WorkspacePlan({
       setStages((prev) =>
         prev.map((s) =>
           s.id === stageId ? { ...s, tasks: s.tasks.map((tk) => (tk.id === taskId ? { ...tk, title } : tk)) } : s
+        )
+      );
+  };
+
+  // Notes on a task; @username mentions in the text notify those members.
+  const onDescribeTask = async (stageId: string, taskId: string, description: string) => {
+    const res = await setTaskDescription(collaborationId, taskId, description);
+    if (!res.ok) toast.error(res.error);
+    else
+      setStages((prev) =>
+        prev.map((s) =>
+          s.id === stageId
+            ? { ...s, tasks: s.tasks.map((tk) => (tk.id === taskId ? { ...tk, description: description.trim() || null } : tk)) }
+            : s
         )
       );
   };
@@ -230,12 +245,14 @@ export function WorkspacePlan({
                         onDelete={() => onDeleteTask(stage.id, task.id)}
                         onAssign={(assigneeId) => onAssign(stage.id, task.id, assigneeId)}
                         onRename={(title) => onRenameTask(stage.id, task.id, title)}
+                        onDescribe={(desc) => onDescribeTask(stage.id, task.id, desc)}
                         labels={{
                           cycle: t("cycleStatus"),
                           del: t("deleteTask"),
                           drag: t("dragTask"),
                           assign: t("assign"),
                           unassigned: t("unassigned"),
+                          addNotes: t("addNotes"),
                         }}
                       />
                     ))}
@@ -268,6 +285,7 @@ function SortableTask({
   onDelete,
   onAssign,
   onRename,
+  onDescribe,
   labels,
 }: {
   task: Task;
@@ -277,7 +295,8 @@ function SortableTask({
   onDelete: () => void;
   onAssign: (assigneeId: string | null) => void;
   onRename: (title: string) => void | Promise<void>;
-  labels: { cycle: string; del: string; drag: string; assign: string; unassigned: string };
+  onDescribe: (description: string) => void | Promise<void>;
+  labels: { cycle: string; del: string; drag: string; assign: string; unassigned: string; addNotes: string };
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: task.id,
@@ -319,6 +338,18 @@ function SortableTask({
           onCommit={onRename}
           className={cn("block truncate", task.status === "DONE" && "text-muted-foreground line-through")}
         />
+        {(canEdit || task.description) && (
+          <InlineText
+            value={task.description ?? ""}
+            canEdit={canEdit}
+            as="p"
+            multiline
+            placeholder={labels.addNotes}
+            onCommit={onDescribe}
+            className="mt-0.5 whitespace-pre-wrap text-xs leading-snug text-muted-foreground [&:not(:hover)]:line-clamp-3"
+            inputClassName="text-xs"
+          />
+        )}
       </span>
       {canEdit ? (
         <Select
