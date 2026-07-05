@@ -28,7 +28,7 @@ Legend: ✅ works end-to-end · 🟡 action exists, no/partial UI · 🔴 missin
 | Add researchOutput | 🟡 draft-only path (no public submit flow exists) |
 | Live title/slug on cards; published cards link out | ✅ (G1a) |
 | **Edit pending caseStudy** ("Continue editing") | ✅ (X7) |
-| **Edit pending LE / event / researchOutput** | 🔴 — X7 built the pattern for caseStudy only; extending needs per-type edit loaders + form prefill. Queued (X7 tail). |
+| **Edit pending LE / event / researchOutput** | ✅ LE + event (2026-07-05, commit 4d827a081; verified live: create→edit→patch, slug/submittedBy preserved, no duplicate output rows) · researchOutput still 🔴 (no submit flow exists — needs the flow first) |
 | Remove output | ✅ |
 | Output status change → team notified | ✅ 🔵 OUTPUT_STATUS |
 
@@ -58,7 +58,7 @@ Task assigned ✅ · output status ✅ · thread reply ✅ · member joined ✅ 
 ## Fix order (user-named first)
 1. ✅ Stage rename (this audit)
 2. ✅ Task title edit (this audit)
-3. Edit pending LE/event/researchOutput (X7 tail — next slice)
+3. ✅ Edit pending LE/event (2026-07-05, commit 4d827a081); researchOutput deferred until it has a submit flow
 4. ✅ Task descriptions with @mentions → mention notifications (2026-07-05, commit f98a0efac)
 5. Outbound invites + remove member
 6. Reorder stages UI · thread archive · RSVP receipt · organiser RSVP list
