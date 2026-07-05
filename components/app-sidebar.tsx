@@ -32,10 +32,9 @@ import { NavMain } from "@/components/nav-main"
 // import { NavProjects } from "@/components/nav-projects"
 import { NavSecondary } from "@/components/nav-secondary"
 import { StaffNav } from "@/components/staff-nav"
-import { AuthNavUser } from "@/components/auth-nav-user"
 import { LanguageSwitcher } from "@/components/language-switcher"
 import { SidebarQuickActions } from "@/components/sidebar-quick-actions"
-import { UserMiniNav } from "@/components/user-mini-nav"
+import { UserMenuCard } from "@/components/user-menu-card"
 import {
     Sidebar,
     SidebarContent,
@@ -173,10 +172,21 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     // Two-group nav. DISCOVER = find content/knowledge; COLLABORATE = find &
     // work with people and communities. Workspaces only appears when the
     // engagement flag is on. (Atlas joins Discover in Phase 3 once its route exists.)
+    // ONE flat menu, no group labels (user direction 2026-07-05) — order:
+    // Regional Communities · Atlas · Research & Action · Lived experiences ·
+    // Case studies · News. Doorway tiles above carry people/project actions.
     const data = React.useMemo(() => ({
-        discover: [
+        main: [
             {
-                title: t('atlasExplore'),
+                title: t('regionalCommunities'),
+                url: "#",
+                icon: Globe,
+                isActive: openAccordion === 'regional',
+                items: regionalCommunities.map((s) => ({ ...s, isActive: isLinkActive(s.url) })),
+                onToggle: () => setOpenAccordion(openAccordion === 'regional' ? null : 'regional')
+            },
+            {
+                title: t('atlas'),
                 url: "/atlas",
                 icon: Compass,
                 isActive: isLinkActive("/atlas"),
@@ -190,12 +200,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 onToggle: () => setOpenAccordion(openAccordion === 'research' ? null : 'research')
             },
             {
-                title: t('newsUpdates'),
-                url: "/news",
-                icon: Newspaper,
-                isActive: isLinkActive("/news"),
-            },
-            {
                 title: t('livedExperiences'),
                 url: "/lived-experiences",
                 icon: Heart,
@@ -207,18 +211,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 icon: BookMarked,
                 isActive: isLinkActive("/research-and-action/case-studies"),
             },
-        ],
-        collaborate: [
             {
-                title: t('regionalCommunities'),
-                url: "#",
-                icon: Globe,
-                isActive: openAccordion === 'regional',
-                items: regionalCommunities.map((s) => ({ ...s, isActive: isLinkActive(s.url) })),
-                onToggle: () => setOpenAccordion(openAccordion === 'regional' ? null : 'regional')
+                title: t('newsUpdates'),
+                url: "/news",
+                icon: Newspaper,
+                isActive: isLinkActive("/news"),
             },
-            // Find-people and Start-a-project live in the doorway tiles up
-            // top (sidebar revision 2026-07-05) — no duplicated rows here.
         ],
         navSecondary,
         user: userData
@@ -238,13 +236,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <Link
                     href="/"
                     aria-label="Go to homepage"
-                    className="group/logo relative mx-2 mt-2 block overflow-hidden rounded-xl px-4 py-5 transition-colors hover:bg-white/5 group-data-[collapsible=icon]:mx-0 group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-1 group-data-[collapsible=icon]:py-2"
+                    className="block px-5 pb-2 pt-5 group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-2"
                 >
-                    <span
-                        aria-hidden
-                        className="pointer-events-none absolute -end-6 -top-12 size-40 rounded-full bg-ccm-water/25 blur-2xl transition-transform duration-500 group-hover/logo:scale-125 group-data-[collapsible=icon]:hidden"
-                    />
-                    <span className="relative block group-data-[collapsible=icon]:hidden [&_img]:h-16 [&_img]:w-auto">
+                    <span className="block group-data-[collapsible=icon]:hidden [&_img]:h-[4.5rem] [&_img]:w-auto">
                         <Logo size="lg" asChild />
                     </span>
                     <span
@@ -258,29 +252,27 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarQuickActions />
             <SidebarContent>
                 <NavMain
-                    items={data.discover}
-                    label={t('discover')}
-                    openAccordion={openAccordion}
-                    setOpenAccordionAction={setOpenAccordion}
-                />
-                <NavMain
-                    items={data.collaborate}
-                    label={t('collaborateGroup')}
+                    items={data.main}
                     openAccordion={openAccordion}
                     setOpenAccordionAction={setOpenAccordion}
                 />
                 <StaffNav />
-                <NavSecondary items={data.navSecondary} className="mt-auto" />
+                {/* About · Feedback share one quiet horizontal line. */}
+                <div className="mt-auto flex items-center gap-1 px-3 pb-1 group-data-[collapsible=icon]:hidden">
+                    {data.navSecondary.map((item) => (
+                        <Link
+                            key={item.url}
+                            href={item.url}
+                            className="flex min-h-[36px] items-center gap-1.5 rounded-lg px-2 text-xs font-medium text-sidebar-foreground/70 transition-colors hover:bg-white/8 hover:text-sidebar-foreground"
+                        >
+                            <item.icon className="size-3.5 opacity-70" aria-hidden />
+                            {item.title}
+                        </Link>
+                    ))}
+                </div>
             </SidebarContent>
             <SidebarFooter>
-                {/* The user area is ONE neat menu card (user direction
-                    2026-07-05): account row + personal destinations for the
-                    signed-in state, the two auth actions for the signed-out
-                    state — identical on desktop and in the sheet. */}
-                <div className="mx-2 mb-1 rounded-xl bg-white/5 p-1.5 group-data-[collapsible=icon]:mx-0 group-data-[collapsible=icon]:bg-transparent group-data-[collapsible=icon]:p-1">
-                    <AuthNavUser isRTL={isRTL} />
-                    <UserMiniNav />
-                </div>
+                <UserMenuCard />
                 {/* Search moved to the quick-actions row (sidebar revision
                     2026-07-05) — the footer keeps only the icon-rail variant
                     for collapsed workspace routes. */}

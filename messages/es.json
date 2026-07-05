@@ -84,7 +84,8 @@
     "userMenu": "Tu cuenta",
     "userDashboard": "Panel",
     "userMessages": "Mensajes y avisos",
-    "userSettings": "Ajustes"
+    "userSettings": "Ajustes",
+    "atlas": "Atlas"
   },
   "navUser": {
     "account": "Cuenta",
@@ -1839,7 +1840,7 @@
     "footnotes": "Notas al pie"
   },
   "atlas": {
-    "title": "Atlas y Exploración",
+    "title": "Atlas",
     "description": "Explora estudios de caso, experiencias vividas, personas y más en las siete regiones.",
     "show": "Mostrar",
     "explore": "Explorar {region}",

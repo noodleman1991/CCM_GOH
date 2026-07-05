@@ -84,7 +84,8 @@
     "userMenu": "Your account",
     "userDashboard": "Dashboard",
     "userMessages": "Messages & alerts",
-    "userSettings": "Settings"
+    "userSettings": "Settings",
+    "atlas": "Atlas"
   },
   "navUser": {
     "account": "Account",
@@ -1839,7 +1840,7 @@
     "footnotes": "Footnotes"
   },
   "atlas": {
-    "title": "Atlas & Explore",
+    "title": "Atlas",
     "description": "Explore case studies, lived experiences, people and more across the seven regions.",
     "show": "Show",
     "explore": "Explore {region}",
