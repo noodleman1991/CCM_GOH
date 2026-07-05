@@ -149,6 +149,7 @@ export async function getPlan(collaborationId: string) {
               select: {
                 id: true,
                 title: true,
+                description: true,
                 status: true,
                 assignee: { select: { id: true, firstName: true, lastName: true, username: true } },
               },

@@ -335,7 +335,8 @@
     "emptyTitle": "Aún no hay etapas",
     "emptyBody": "Añade tu primera etapa (p. ej. Exploración, Redacción, Revisión) para empezar a seguir el trabajo.",
     "assign": "Asignar",
-    "unassigned": "Sin asignar"
+    "unassigned": "Sin asignar",
+    "addNotes": "Añade notas — @usuario avisa a esa persona"
   },
   "follow": {
     "follow": "Seguir",
