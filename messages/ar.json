@@ -84,7 +84,8 @@
     "userMenu": "حسابك",
     "userDashboard": "لوحة التحكم",
     "userMessages": "الرسائل والتنبيهات",
-    "userSettings": "الإعدادات"
+    "userSettings": "الإعدادات",
+    "atlas": "الأطلس"
   },
   "navUser": {
     "account": "الحساب",
@@ -1839,7 +1840,7 @@
     "footnotes": "الحواشي"
   },
   "atlas": {
-    "title": "الأطلس والاستكشاف",
+    "title": "الأطلس",
     "description": "استكشف دراسات الحالة والتجارب المعيشية والأشخاص والمزيد عبر المناطق السبع.",
     "show": "عرض",
     "explore": "استكشف {region}",
