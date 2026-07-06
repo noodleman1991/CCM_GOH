@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { NextIntlClientProvider } from 'next-intl';
-import { getMessages, setRequestLocale } from "next-intl/server";
+import { getMessages } from "next-intl/server";
 import { ClerkProvider } from '@clerk/nextjs';
 import { arSA, esES, frFR, enGB } from '@clerk/localizations';
 import { rtlLocales } from '@/i18n/routing';
@@ -109,9 +109,6 @@ export default async function LocaleLayout({
 }) {
     const resolvedParams = await params;
     const { locale } = resolvedParams;
-    // Enable static rendering for this locale (next-intl). Without this, pages
-    // that use translations opt out of static generation.
-    setRequestLocale(locale);
     const isRtl = rtlLocales.includes(locale);
     const messages = await getMessages();
     const baseClerkLocalization = clerkLocalizationsMap[locale as keyof typeof clerkLocalizationsMap] || enGB;
