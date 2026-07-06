@@ -28,7 +28,10 @@ const nextConfig = {
         headers: [
           {
             key: 'X-Frame-Options',
-            value: 'DENY',
+            // SAMEORIGIN (not DENY) so the Sanity Studio Presentation tool can
+            // iframe the site for live preview. Studio and the site share an
+            // origin; third-party framing is still blocked.
+            value: 'SAMEORIGIN',
           },
           {
             key: 'X-Content-Type-Options',
@@ -61,6 +64,10 @@ const nextConfig = {
               "worker-src 'self' blob:",
               "base-uri 'self'",
               "form-action 'self'",
+              // Allow same-origin framing so Sanity Studio's Presentation tool
+              // can embed the site for live preview (modern equivalent of the
+              // X-Frame-Options: SAMEORIGIN above).
+              "frame-ancestors 'self'",
             ].join('; '),
           },
         ],
