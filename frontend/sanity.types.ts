@@ -350,12 +350,7 @@ export type SectionPadding = {
 };
 
 export type ButtonVariant =
-  | "default"
-  | "destructive"
-  | "outline"
-  | "secondary"
-  | "ghost"
-  | "link";
+  "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
 
 export type ColorVariant =
   | "background"
@@ -1441,12 +1436,7 @@ export type PAGE_QUERY_RESULT = {
                         _key: string;
                       }>;
                       style?:
-                        | "blockquote"
-                        | "h1"
-                        | "h2"
-                        | "h3"
-                        | "h4"
-                        | "normal";
+                        "blockquote" | "h1" | "h2" | "h3" | "h4" | "normal";
                       listItem?: "bullet" | "number";
                       markDefs: Array<{
                         isExternal?: boolean;
@@ -1633,12 +1623,7 @@ export type PAGE_QUERY_RESULT = {
                         _key: string;
                       }>;
                       style?:
-                        | "blockquote"
-                        | "h1"
-                        | "h2"
-                        | "h3"
-                        | "h4"
-                        | "normal";
+                        "blockquote" | "h1" | "h2" | "h3" | "h4" | "normal";
                       listItem?: "bullet" | "number";
                       markDefs: Array<{
                         isExternal?: boolean;

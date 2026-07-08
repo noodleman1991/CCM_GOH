@@ -51,7 +51,7 @@ export default defineConfig({
     presentationTool({
       previewUrl: {
         origin: SANITY_STUDIO_PREVIEW_URL,
-        draftMode: {
+        previewMode: {
           enable: "/api/draft-mode/enable",
         },
       },

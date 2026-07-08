@@ -1,27 +1,50 @@
-import Header from "@/components/header";
-import Footer from "@/components/footer";
+import {
+  CachedHeader,
+  DynamicHeader,
+  HeaderFallback,
+} from "@/components/header";
+import {
+  CachedFooter,
+  DynamicFooter,
+  FooterFallback,
+} from "@/components/footer";
 import { DisableDraftMode } from "@/components/disable-draft-mode";
 import { VisualEditing } from "next-sanity/visual-editing";
 import { draftMode } from "next/headers";
 import { SanityLive } from "@/sanity/lib/live";
+import { Suspense } from "react";
 
 export default async function MainLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { isEnabled: isDraftMode } = await draftMode();
+
   return (
     <>
-      <Header />
+      {isDraftMode ? (
+        <Suspense fallback={<HeaderFallback />}>
+          <DynamicHeader />
+        </Suspense>
+      ) : (
+        <CachedHeader perspective="published" stega={false} />
+      )}
       <main>{children}</main>
-      <SanityLive />
-      {(await draftMode()).isEnabled && (
+      <SanityLive includeDrafts={isDraftMode} />
+      {isDraftMode && (
         <>
           <DisableDraftMode />
           <VisualEditing />
         </>
       )}
-      <Footer />
+      {isDraftMode ? (
+        <Suspense fallback={<FooterFallback />}>
+          <DynamicFooter />
+        </Suspense>
+      ) : (
+        <CachedFooter perspective="published" stega={false} />
+      )}
     </>
   );
 }

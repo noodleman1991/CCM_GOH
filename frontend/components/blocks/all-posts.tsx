@@ -2,6 +2,7 @@ import SectionContainer from "@/components/ui/section-container";
 import PostCard from "@/components/ui/post-card";
 import Link from "next/link";
 import { fetchSanityPosts } from "@/sanity/lib/fetch";
+import { type DynamicFetchOptions } from "@/sanity/lib/live";
 import { PAGE_QUERY_RESULT } from "@/sanity.types";
 
 type AllPostsProps = Extract<
@@ -12,8 +13,10 @@ type AllPostsProps = Extract<
 export default async function AllPosts({
   padding,
   colorVariant,
-}: AllPostsProps) {
-  const posts = await fetchSanityPosts();
+  perspective,
+  stega,
+}: AllPostsProps & DynamicFetchOptions) {
+  const posts = await fetchSanityPosts({ perspective, stega });
 
   return (
     <SectionContainer color={colorVariant} padding={padding}>

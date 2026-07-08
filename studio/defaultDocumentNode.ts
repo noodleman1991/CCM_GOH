@@ -38,7 +38,6 @@ export const defaultDocumentNode: DefaultDocumentNodeResolver = (
                 path = "/contact";
               }
 
-              // Add iframe parameter to distinguish from presentation mode
               return path;
             },
             draftMode: "/api/draft-mode/enable",
