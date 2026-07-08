@@ -1,6 +1,9 @@
-/** @type {import('next').NextConfig} */
+import { sanity } from "next-sanity/live/cache-life";
 
+/** @type {import('next').NextConfig} */
 const nextConfig = {
+  cacheComponents: true,
+  cacheLife: { default: sanity },
   async redirects() {
     return [
       {

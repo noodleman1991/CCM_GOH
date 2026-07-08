@@ -1,6 +1,6 @@
 import { MetadataRoute } from "next";
 import { groq } from "next-sanity";
-import { sanityFetch } from "@/sanity/lib/live";
+import { getDynamicFetchOptions, sanityFetchMetadata } from "@/sanity/lib/live";
 
 const VIEWABLE_TYPES = ["page", "post"] as const;
 
@@ -33,13 +33,15 @@ const SITEMAP_QUERY = groq`
 `;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const { data } = await sanityFetch({
+  const { perspective } = await getDynamicFetchOptions();
+  const { data } = await sanityFetchMetadata({
     query: SITEMAP_QUERY,
     params: {
       baseUrl: process.env.NEXT_PUBLIC_SITE_URL!,
       viewableTypes: [...VIEWABLE_TYPES],
     },
+    perspective,
   });
 
-  return data || [];
+  return (data as MetadataRoute.Sitemap) || [];
 }

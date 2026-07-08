@@ -1,5 +1,5 @@
-import Header from "@/components/header";
-import Footer from "@/components/footer";
+import { CachedFooter } from "@/components/footer";
+import { CachedHeader } from "@/components/header";
 import Custom404 from "@/components/404";
 
 import type { Metadata } from "next";
@@ -8,12 +8,12 @@ export const metadata: Metadata = {
   title: "Page not found",
 };
 
-export default function NotFoundPage() {
+export default async function NotFoundPage() {
   return (
     <>
-      <Header />
+      <CachedHeader perspective="published" stega={false} />
       <Custom404 />
-      <Footer />
+      <CachedFooter perspective="published" stega={false} />
     </>
   );
 }
