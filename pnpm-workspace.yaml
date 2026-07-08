@@ -1,3 +1,12 @@
 packages:
   - "studio"
-  - "frontend" 
+  - "frontend"
+
+strictDepBuilds: true
+minimumReleaseAge: 1440
+blockExoticSubdeps: true
+
+allowBuilds:
+  esbuild: true
+  sharp: true
+  unrs-resolver: true
