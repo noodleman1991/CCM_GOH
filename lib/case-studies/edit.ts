@@ -21,7 +21,7 @@ export async function loadEditableCaseStudy(
   // reopening drafts. This module is server-only and authz-gated below.
   const doc = await writeClient.withConfig({ perspective: "raw" }).fetch(
     `*[_type == "caseStudy" && (_id == $id || _id == "drafts." + $id)][0]{
-      _id, title, excerpt, content, topic, layout, submittedBy, status,
+      _id, title, excerpt, content, topic, layout, submittedBy, status, reviewNotes,
       studyPeriod, locationText, locationDisplayText,
       "relatedCommunity": relatedCommunity._ref,
       "tags": tags[]._ref,
@@ -49,6 +49,8 @@ export async function loadEditableCaseStudy(
 
   return {
     _sanityId: doc._id,
+    // Pipeline context for the edit UI — stripped before applyDraft.
+    _review: { status: doc.status ?? "draft", reviewNotes: doc.reviewNotes ?? null },
     title: doc.title ?? { en: "", es: "", fr: "", ar: "" },
     excerpt: doc.excerpt ?? { en: "", es: "", fr: "", ar: "" },
     content: doc.content ?? [],

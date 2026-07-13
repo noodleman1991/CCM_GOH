@@ -11,6 +11,8 @@ import { prisma, safeQuery } from "@/lib/prisma";
  * approved content changes go through the editorial team.
  */
 export type EditableEvent = {
+  status: string;
+  reviewNotes: string | null;
   _sanityId: string;
   title: string;
   description: string;
@@ -32,7 +34,7 @@ export async function loadEditableEvent(
   const doc = await writeClient.withConfig({ perspective: "raw" }).fetch(
     `*[_type == "event" && (_id == $id || _id == "drafts." + $id)][0]{
       _id, title, description, scope, startAt, endAt, mode, locationName, url,
-      submittedBy, status
+      submittedBy, status, reviewNotes
     }`,
     { id }
   );
@@ -56,6 +58,8 @@ export async function loadEditableEvent(
 
   return {
     _sanityId: doc._id,
+    status: doc.status ?? "draft",
+    reviewNotes: doc.reviewNotes ?? null,
     title: doc.title ?? "",
     description: doc.description ?? "",
     scope: doc.scope === "project" ? "project" : "community",

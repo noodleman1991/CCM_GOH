@@ -2224,5 +2224,17 @@
     "cancel": "Cancelar",
     "submit": "Enviar a revisión",
     "success": "Gracias — tu producto de investigación se envió a revisión."
+  },
+  "editorReview": {
+    "status": {
+      "draft": "Borrador — aún sin enviar",
+      "pending": "En revisión",
+      "revision": "Se pidieron cambios"
+    },
+    "hint": {
+      "draft": "Termínalo y envíalo cuando esté listo.",
+      "pending": "Un editor lo está revisando. Reenviar reemplaza la versión en revisión.",
+      "revision": "Un editor pidió cambios — atiende las notas y reenvía."
+    }
   }
 }

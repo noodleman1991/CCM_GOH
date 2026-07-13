@@ -2224,5 +2224,17 @@
     "cancel": "Annuler",
     "submit": "Soumettre pour relecture",
     "success": "Merci — votre production de recherche a été soumise pour relecture."
+  },
+  "editorReview": {
+    "status": {
+      "draft": "Brouillon — pas encore soumis",
+      "pending": "En relecture",
+      "revision": "Modifications demandées"
+    },
+    "hint": {
+      "draft": "Terminez-le et soumettez quand c'est prêt.",
+      "pending": "Un éditeur le relit. Resoumettre remplace la version en relecture.",
+      "revision": "Un éditeur a demandé des modifications — répondez aux notes puis resoumettez."
+    }
   }
 }

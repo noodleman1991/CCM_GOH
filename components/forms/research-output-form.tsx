@@ -16,6 +16,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { FilterChip } from "@/components/ui/filter-chip"
 import PortableTextEditor from "@/components/forms/portable-text-editor"
+import { ReviewContext } from "@/components/forms/review-context"
 import { getLocalizedText } from "@/lib/localization-utils"
 import { cn } from "@/lib/utils"
 import { heading } from "@/lib/design-tokens"
@@ -157,6 +158,8 @@ export function ResearchOutputForm({
         <h1 className={cn("font-bold font-heading text-ccm-midnight text-balance", heading("lg"))}>{t("pageTitle")}</h1>
         <p className="mt-2 text-muted-foreground max-w-2xl">{t("pageDescription")}</p>
       </div>
+
+      {editDoc && <ReviewContext status={editDoc.status} reviewNotes={editDoc.reviewNotes} />}
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">

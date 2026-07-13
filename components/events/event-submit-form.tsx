@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { EditableEvent } from "@/lib/events/edit";
+import { ReviewContext } from "@/components/forms/review-context";
 
 /** ISO → the local "YYYY-MM-DDTHH:mm" a datetime-local input expects. */
 function toLocalInput(iso: string): string {
@@ -85,6 +86,7 @@ export function EventSubmitForm({
 
   return (
     <form onSubmit={submit} className="space-y-5">
+      {editDoc && <ReviewContext status={editDoc.status} reviewNotes={editDoc.reviewNotes} />}
       <div className="space-y-2">
         <Label htmlFor="ev-title">{t("fieldTitle")}</Label>
         <Input id="ev-title" value={form.title} onChange={(e) => set("title")(e.target.value)} maxLength={160} required />

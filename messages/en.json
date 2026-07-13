@@ -2224,5 +2224,17 @@
     "cancel": "Cancel",
     "submit": "Submit for review",
     "success": "Thank you — your research output was submitted for review."
+  },
+  "editorReview": {
+    "status": {
+      "draft": "Draft — not yet submitted",
+      "pending": "In review",
+      "revision": "Changes requested"
+    },
+    "hint": {
+      "draft": "Finish it up and submit when ready.",
+      "pending": "An editor is reviewing this. Resubmitting replaces the version in review.",
+      "revision": "An editor asked for changes — address the notes below and resubmit."
+    }
   }
 }
