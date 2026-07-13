@@ -2148,5 +2148,64 @@
     "statMembers": "Members",
     "statCaseStudies": "Case studies",
     "statLived": "Lived experiences"
+  },
+  "researchOutputSubmission": {
+    "pageTitle": "Submit a research output",
+    "pageDescription": "Share a report, toolkit, dataset brief or guideline. An editor will review it before it appears publicly.",
+    "about": {
+      "title": "About this output",
+      "description": "What it is and what it covers."
+    },
+    "fields": {
+      "title": "Title",
+      "titlePlaceholder": "e.g. Heat and mental health in coastal cities — 2026 report",
+      "type": "Type of output",
+      "region": "Region",
+      "regionPlaceholder": "Choose a region (optional)",
+      "excerpt": "Summary",
+      "excerptPlaceholder": "A few sentences on what readers will find…",
+      "excerptHelp": "Shown on cards and at the top of the page.",
+      "bodyPlaceholder": "Optional in-hub reading — key findings, charts, context…",
+      "themes": "Themes",
+      "tags": "Tags",
+      "tagsHelp": "Up to 6.",
+      "communities": "Regional communities"
+    },
+    "types": {
+      "report": "Report",
+      "toolkit": "Toolkit",
+      "dataset-brief": "Dataset brief",
+      "guideline": "Guideline"
+    },
+    "docs": {
+      "title": "Documents",
+      "description": "The files readers can download — add a full report, a summary, translations or slides.",
+      "addFile": "Add a document",
+      "fileHint": "PDF, Word, Excel or PowerPoint · up to 50MB",
+      "remove": "Remove",
+      "kind": "Document kind",
+      "language": "Document language",
+      "fileWrongType": "That file type isn't supported. Use PDF, Word, Excel or PowerPoint.",
+      "fileTooLarge": "That file is over 50MB."
+    },
+    "kinds": {
+      "summary": "Summary",
+      "full": "Full report",
+      "brief": "Brief",
+      "deck": "Slides"
+    },
+    "reading": {
+      "title": "Read it on the hub",
+      "description": "Optional: tell the story of this output right on the page — findings, charts, quotes."
+    },
+    "context": {
+      "title": "Context"
+    },
+    "validation": {
+      "titleMin": "Please add a title"
+    },
+    "cancel": "Cancel",
+    "submit": "Submit for review",
+    "success": "Thank you — your research output was submitted for review."
   }
 }

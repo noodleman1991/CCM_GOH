@@ -29,7 +29,7 @@ const RESEARCH_OUTPUT_FRAGMENT = `
 export const RESEARCH_OUTPUT_BY_SLUG_QUERY = groq`
   *[_type == "researchOutput" && slug.current == $slug && status == "approved"][0]{
     ${RESEARCH_OUTPUT_FRAGMENT},
-    content[]{ ${styledBodyProjection} },
+    "content": coalesce(content, body)[]{ ${styledBodyProjection} },
     ${RELATED_CONTENT_PROJECTION}
   }
 `;

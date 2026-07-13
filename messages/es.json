@@ -2148,5 +2148,64 @@
     "statMembers": "Integrantes",
     "statCaseStudies": "Estudios de caso",
     "statLived": "Experiencias vividas"
+  },
+  "researchOutputSubmission": {
+    "pageTitle": "Enviar un producto de investigación",
+    "pageDescription": "Comparte un informe, kit de herramientas, resumen de datos o guía. Un editor lo revisará antes de publicarse.",
+    "about": {
+      "title": "Sobre este producto",
+      "description": "Qué es y qué abarca."
+    },
+    "fields": {
+      "title": "Título",
+      "titlePlaceholder": "p. ej. Calor y salud mental en ciudades costeras — informe 2026",
+      "type": "Tipo de producto",
+      "region": "Región",
+      "regionPlaceholder": "Elige una región (opcional)",
+      "excerpt": "Resumen",
+      "excerptPlaceholder": "Unas frases sobre lo que encontrarán los lectores…",
+      "excerptHelp": "Se muestra en las tarjetas y al inicio de la página.",
+      "bodyPlaceholder": "Lectura opcional en el hub — hallazgos clave, gráficos, contexto…",
+      "themes": "Temas",
+      "tags": "Etiquetas",
+      "tagsHelp": "Hasta 6.",
+      "communities": "Comunidades regionales"
+    },
+    "types": {
+      "report": "Informe",
+      "toolkit": "Kit de herramientas",
+      "dataset-brief": "Resumen de datos",
+      "guideline": "Guía"
+    },
+    "docs": {
+      "title": "Documentos",
+      "description": "Los archivos que se pueden descargar — añade el informe completo, un resumen, traducciones o diapositivas.",
+      "addFile": "Añadir un documento",
+      "fileHint": "PDF, Word, Excel o PowerPoint · hasta 50MB",
+      "remove": "Quitar",
+      "kind": "Tipo de documento",
+      "language": "Idioma del documento",
+      "fileWrongType": "Ese tipo de archivo no es compatible. Usa PDF, Word, Excel o PowerPoint.",
+      "fileTooLarge": "Ese archivo supera los 50MB."
+    },
+    "kinds": {
+      "summary": "Resumen",
+      "full": "Informe completo",
+      "brief": "Síntesis",
+      "deck": "Diapositivas"
+    },
+    "reading": {
+      "title": "Léelo en el hub",
+      "description": "Opcional: cuenta la historia de este producto en la propia página — hallazgos, gráficos, citas."
+    },
+    "context": {
+      "title": "Contexto"
+    },
+    "validation": {
+      "titleMin": "Añade un título"
+    },
+    "cancel": "Cancelar",
+    "submit": "Enviar a revisión",
+    "success": "Gracias — tu producto de investigación se envió a revisión."
   }
 }
