@@ -13,6 +13,8 @@ import { prisma, safeQuery } from "@/lib/prisma";
  * approved content changes go through the editorial team.
  */
 export type EditableLivedExperience = {
+  status: string;
+  reviewNotes: string | null;
   _sanityId: string;
   language: "en" | "es" | "fr" | "ar";
   title: string;
@@ -38,7 +40,7 @@ export async function loadEditableLivedExperience(
   const doc = await writeClient.withConfig({ perspective: "raw" }).fetch(
     `*[_type == "livedExperience" && (_id == $id || _id == "drafts." + $id)][0]{
       _id, language, title, description, issue, personContext,
-      videoSource, videoLink, body, submittedBy, status,
+      videoSource, videoLink, body, submittedBy, status, reviewNotes,
       "regionalCommunityId": relatedCommunity._ref,
       "tagIds": tags[]._ref,
       "hasVideoFile": defined(videoFile.asset)
@@ -72,6 +74,8 @@ export async function loadEditableLivedExperience(
 
   return {
     _sanityId: doc._id,
+    status: doc.status ?? "draft",
+    reviewNotes: doc.reviewNotes ?? null,
     language: lang,
     title: text(doc.title),
     description: text(doc.description),

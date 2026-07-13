@@ -201,7 +201,8 @@ export default function ImprovedCaseStudyForm({
             // X7 edit mode: the Sanity doc IS the source of truth — skip drafts.
             if (editDoc) {
                 if (!cancelled) {
-                    const { _sanityId, ...fields } = editDoc;
+                    const { _sanityId, _review, ...fields } = editDoc;
+                    void _sanityId; void _review;
                     applyDraft(fields);
                     setIsHydrated(true);
                 }

@@ -12,6 +12,8 @@ import { prisma, safeQuery } from "@/lib/prisma";
  * approved content changes go through the editorial team.
  */
 export type EditableResearchOutput = {
+  status: string;
+  reviewNotes: string | null;
   _sanityId: string;
   language: "en" | "es" | "fr" | "ar";
   title: string;
@@ -36,7 +38,7 @@ export async function loadEditableResearchOutput(
   const doc = await writeClient.withConfig({ perspective: "raw" }).fetch(
     `*[_type == "researchOutput" && (_id == $id || _id == "drafts." + $id)][0]{
       _id, title, outputType, excerpt, body, region, themes,
-      submittedBy, status,
+      submittedBy, status, reviewNotes,
       "tagIds": tags[]._ref,
       "communityIds": relatedCommunities[]._ref,
       "versions": versions[]{ _key, kind, lang, "fileName": file.asset->originalFilename }
@@ -68,6 +70,8 @@ export async function loadEditableResearchOutput(
 
   return {
     _sanityId: doc._id,
+    status: doc.status ?? "draft",
+    reviewNotes: doc.reviewNotes ?? null,
     language: "en",
     title: text(doc.title),
     outputType: doc.outputType ?? "report",

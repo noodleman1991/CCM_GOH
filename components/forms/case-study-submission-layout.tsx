@@ -15,6 +15,7 @@ import {
 import { ChevronRight, Globe, FileText, Users, MapPin, Calendar, Tag, CheckCircle2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import CaseStudyForm from "./case-study-form"
+import { ReviewContext } from "./review-context"
 import CaseStudyReview from "./case-study-review"
 
 interface Section {
@@ -143,6 +144,15 @@ export default function CaseStudySubmissionLayout({
             <div className="flex-1 max-w-4xl">
                 {/*<div className="mb-8">*/}
                 {/*</div>*/}
+
+                {editDoc?._review != null && (
+                    <div className="mb-6">
+                        <ReviewContext
+                            status={(editDoc._review as { status?: string }).status}
+                            reviewNotes={(editDoc._review as { reviewNotes?: string | null }).reviewNotes}
+                        />
+                    </div>
+                )}
 
                 {/* Form Component */}
                 <CaseStudyForm
