@@ -16,6 +16,8 @@ const FACET_TYPE: Record<string, string> = {
   caseStudyCount: "caseStudy",
   livedExpCount: "livedExperience",
   newsCount: "newsPost",
+  researchOutputCount: "researchOutput",
+  // Legacy facet ids (pre-merge bookmarks/clients).
   agendaCount: "researchOutput",
   reportCount: "researchOutput",
 };

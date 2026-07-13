@@ -11,6 +11,7 @@ import { goingCount, listRsvpsForOrganiser } from "@/lib/actions/rsvp";
 import { RsvpButton } from "@/components/events/rsvp-button";
 import PortableTextRenderer from "@/components/portable-text-renderer";
 import { ShareButton } from "@/components/events/share-button";
+import { CommentIsland } from "@/components/comments/comment-island";
 
 export const dynamic = "force-dynamic";
 
@@ -143,6 +144,9 @@ export default async function EventPage({
           )}
         </section>
       )}
+
+      {/* Community discussion — the same moderated engine as every content page */}
+      {event._id && <CommentIsland targetType="event" targetId={event._id} />}
 
       {event.relatedCollaboration && (
         <p className="text-sm text-muted-foreground">

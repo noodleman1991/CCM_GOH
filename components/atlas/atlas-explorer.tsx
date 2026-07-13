@@ -24,7 +24,7 @@ import { ArrowRight, Search, X } from 'lucide-react'
 const fetcher = (url: string) => fetch(url).then((r) => r.json())
 
 const CARD_FACETS: ReadonlySet<FacetId> = new Set([
-  'caseStudyCount', 'livedExpCount', 'newsCount', 'agendaCount', 'reportCount',
+  'caseStudyCount', 'livedExpCount', 'newsCount', 'researchOutputCount',
 ])
 
 /** Group a pin popover's (capped) items by content type, ordered by the

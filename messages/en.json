@@ -1618,7 +1618,8 @@
     "noData": "No data for this region yet.",
     "facetLivedExperiences": "Lived experiences",
     "facetAgendas": "Agendas",
-    "facetReports": "Reports"
+    "facetReports": "Reports",
+    "facetResearchOutputs": "Research outputs"
   },
   "announcement": {
     "dismiss": "Dismiss announcement",

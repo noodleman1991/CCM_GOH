@@ -1618,7 +1618,8 @@
     "noData": "Aucune donnée pour cette région.",
     "facetLivedExperiences": "Expériences vécues",
     "facetAgendas": "Programmes",
-    "facetReports": "Rapports"
+    "facetReports": "Rapports",
+    "facetResearchOutputs": "Productions de recherche"
   },
   "announcement": {
     "dismiss": "Fermer l’annonce",

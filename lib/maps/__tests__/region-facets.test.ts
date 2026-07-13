@@ -35,8 +35,7 @@ describe("aggregateRegionData", () => {
         "livedExpCount",
         "memberCount",
         "newsCount",
-        "agendaCount",
-        "reportCount",
+        "researchOutputCount",
       ] as FacetId[]).sort()
     );
   });
@@ -104,5 +103,13 @@ describe("parseLayers", () => {
 
   it("trims whitespace around ids", () => {
     expect(parseLayers(" caseStudyCount , livedExpCount ")).toEqual(["caseStudyCount", "livedExpCount"]);
+  });
+});
+
+describe("legacy layer aliases (agendas/reports merge)", () => {
+  it("maps old agendaCount/reportCount bookmarks to researchOutputCount", async () => {
+    const { parseLayers } = await import("../region-facets");
+    expect(parseLayers("agendaCount")).toEqual(["researchOutputCount"]);
+    expect(parseLayers("reportCount,caseStudyCount")).toEqual(["researchOutputCount", "caseStudyCount"]);
   });
 });

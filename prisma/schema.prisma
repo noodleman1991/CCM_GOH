@@ -324,6 +324,7 @@ enum CommentTargetType {
   newsPost
   livedExperience
   researchOutput
+  event
   collaborationThread
   collaborationFile
   collaborationDoc
@@ -630,6 +631,9 @@ model NotificationPreference {
   emailOnReply    Boolean @default(true)
   emailOnMention  Boolean @default(true)
   emailOnMessage  Boolean @default(true)
+  // Weekly summary of unread activity (the digest cron).
+  emailWeeklyDigest Boolean   @default(true)
+  digestSentAt      DateTime?
   // Unsubscribe token for one-click email opt-out.
   unsubscribeToken String @unique @default(cuid())
 }

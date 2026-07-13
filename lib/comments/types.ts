@@ -5,6 +5,7 @@ export const COMMENT_TARGET_TYPES: CommentTargetType[] = [
   "newsPost",
   "livedExperience",
   "researchOutput",
+  "event",
   "collaborationThread",
   "collaborationFile",
   "collaborationDoc",
