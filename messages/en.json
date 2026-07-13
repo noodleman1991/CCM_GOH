@@ -1819,7 +1819,16 @@
       "task": "task · {detail}",
       "output": "revision requested",
       "notification": "{detail}"
-    }
+    },
+    "invitePeople": "Invite people",
+    "inviteSearchPlaceholder": "Search members by name…",
+    "inviteAction": "Invite",
+    "invitedLabel": "Invited",
+    "inviteSent": "Invitation sent.",
+    "inviteNoResults": "No members match.",
+    "removeMember": "Remove",
+    "removeConfirm": "Confirm removal?",
+    "memberRemoved": "Member removed."
   },
   "messages": {
     "title": "Messages",

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
+import { InviteMembers } from "@/components/collaboration/invite-members";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -24,7 +25,7 @@ import {
 import { LayoutGrid, MessagesSquare, FileText, Film, Users, ListTodo, BookText, Package } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Link } from "@/i18n/navigation";
-import { setMemberRole } from "@/lib/actions/collaboration";
+import { setMemberRole, removeMember } from "@/lib/actions/collaboration";
 import type { CollaborationRole } from "@/generated/prisma";
 import { WorkspaceThreads } from "./workspace-threads";
 import { WorkspaceFiles } from "./workspace-files";
@@ -291,15 +292,37 @@ function MembersSection({
   const t = useTranslations("collaboration");
   const roles: CollaborationRole[] = ["OWNER", "EDITOR", "COMMENTER", "VIEWER"];
 
+  const [confirmRemove, setConfirmRemove] = useState<string | null>(null);
+  const [gone, setGone] = useState<Set<string>>(new Set());
+
   const change = async (userId: string, role: CollaborationRole) => {
     const res = await setMemberRole(collaborationId, userId, role);
     if (!res.ok) toast.error(res.error);
     else toast.success(t("roleUpdated"));
   };
 
+  // Two-click removal (no blocking confirm dialog): first click arms, second
+  // executes; clicking anything else disarms.
+  const onRemove = async (userId: string) => {
+    if (confirmRemove !== userId) {
+      setConfirmRemove(userId);
+      return;
+    }
+    setConfirmRemove(null);
+    const res = await removeMember(collaborationId, userId);
+    if (!res.ok) toast.error(res.error);
+    else {
+      setGone((g) => new Set(g).add(userId));
+      toast.success(t("memberRemoved"));
+    }
+  };
+
   return (
     <section className="space-y-3">
-      {members.map((m) => (
+      {canManage && (
+        <InviteMembers collaborationId={collaborationId} existingIds={members.map((m) => m.userId)} />
+      )}
+      {members.filter((m) => !gone.has(m.userId)).map((m) => (
         <div key={m.userId} className="flex items-center gap-3 rounded-lg border p-3">
           <Avatar className="size-9">
             {m.image && <AvatarImage src={m.image} alt="" />}
@@ -326,6 +349,17 @@ function MembersSection({
             </Select>
           ) : (
             <Badge variant="outline">{t(`role.${m.role}`)}</Badge>
+          )}
+          {canManage && (
+            <Button
+              variant={confirmRemove === m.userId ? "destructive" : "ghost"}
+              size="sm"
+              className="min-h-8 shrink-0"
+              onClick={() => onRemove(m.userId)}
+              onBlur={() => setConfirmRemove((c) => (c === m.userId ? null : c))}
+            >
+              {confirmRemove === m.userId ? t("removeConfirm") : t("removeMember")}
+            </Button>
           )}
         </div>
       ))}

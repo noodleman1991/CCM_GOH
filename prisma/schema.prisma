@@ -130,6 +130,7 @@ model User {
   joinRequests               JoinRequest[]
   contactRequestsSent        ContactRequest[]          @relation("ContactRequester")
   contactRequestsReceived    ContactRequest[]          @relation("ContactRecipient")
+  collaborationInvites       CollaborationInvite[]     @relation("CollaborationInvitee")
 
   // Event RSVPs
   rsvps                      Rsvp[]
@@ -483,6 +484,7 @@ model Collaboration {
   files   CollaborationFile[]
   media   CollaborationMedia[]
   joinRequests JoinRequest[]
+  invites CollaborationInvite[]
   plan    Plan?
   docs    CollaborationDoc[]
   outputs WorkspaceOutput[]
@@ -774,6 +776,24 @@ model ContactRequest {
 
   @@unique([requesterId, recipientId])
   @@index([recipientId, status])
+}
+
+// Outbound workspace invite: an OWNER invites a hub member (the inverse of
+// JoinRequest). Idempotent per (collaboration, invitee); resolved rows are
+// kept for history and reopened on re-invite.
+model CollaborationInvite {
+  id              String        @id @default(cuid())
+  collaborationId String
+  collaboration   Collaboration @relation(fields: [collaborationId], references: [id], onDelete: Cascade)
+  inviteeId       String
+  invitee         User          @relation("CollaborationInvitee", fields: [inviteeId], references: [id], onDelete: Cascade)
+  inviterId       String
+  status          RequestStatus @default(PENDING)
+  createdAt       DateTime      @default(now())
+  resolvedAt      DateTime?
+
+  @@unique([collaborationId, inviteeId])
+  @@index([inviteeId, status])
 }
 
 // RSVP to an event. The event itself is a Sanity document (moderated like other
