@@ -98,7 +98,7 @@ export async function listPublicWorkspacesForUser(userId: string) {
 export async function listThreads(collaborationId: string) {
   const r = await safeQuery(() =>
     prisma.collaborationThread.findMany({
-      where: { collaborationId },
+      where: { collaborationId, archivedAt: null },
       orderBy: { updatedAt: "desc" },
       select: { id: true, title: true, createdAt: true },
       take: 100,

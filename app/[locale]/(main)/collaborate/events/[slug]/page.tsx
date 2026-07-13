@@ -7,7 +7,7 @@ import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { FEATURES } from "@/lib/features";
 import { fetchEventBySlug } from "@/lib/events";
-import { goingCount } from "@/lib/actions/rsvp";
+import { goingCount, listRsvpsForOrganiser } from "@/lib/actions/rsvp";
 import { RsvpButton } from "@/components/events/rsvp-button";
 import PortableTextRenderer from "@/components/portable-text-renderer";
 import { ShareButton } from "@/components/events/share-button";
@@ -45,6 +45,8 @@ export default async function EventPage({
   if (!event || !event.title) notFound();
 
   const going = await goingCount(event._id);
+  // Organiser-only attendee list (the action itself enforces submittedBy/staff).
+  const attendees = userId ? await listRsvpsForOrganiser(event._id) : { ok: false as const, error: "" };
   const start = event.startAt ? new Date(event.startAt) : null;
   const isPast = start ? start.getTime() < Date.now() : false;
   const day = start?.toLocaleDateString(locale, { day: "numeric" });
@@ -116,6 +118,30 @@ export default async function EventPage({
       {/* Editorial body — same blocks as every content page (X1 renderer) */}
       {Array.isArray(event.body) && event.body.length > 0 && (
         <PortableTextRenderer value={event.body as never} locale={locale} />
+      )}
+
+      {/* Organiser view: who's coming */}
+      {attendees.ok && (
+        <section className="rounded-xl border bg-muted/20 p-5">
+          <h2 className="font-heading text-lg font-semibold text-ccm-midnight">
+            {t("attendeesHeading", { count: attendees.going.length })}
+          </h2>
+          {attendees.going.length > 0 ? (
+            <ul className="mt-3 flex flex-wrap gap-2">
+              {attendees.going.map((a) => (
+                <li key={`${a.username}-${a.name}`} className="rounded-full bg-white px-3 py-1 text-sm shadow-sm">
+                  <bdi>{a.name}</bdi>
+                  {a.username && <span className="ms-1 text-xs text-muted-foreground">@{a.username}</span>}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="mt-2 text-sm text-muted-foreground">{t("attendeesNone")}</p>
+          )}
+          {attendees.interested > 0 && (
+            <p className="mt-3 text-xs text-muted-foreground">{t("attendeesInterested", { count: attendees.interested })}</p>
+          )}
+        </section>
       )}
 
       {event.relatedCollaboration && (

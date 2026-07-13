@@ -224,7 +224,10 @@
     "watchRecording": "Watch the recording",
     "goingCount": "{count, plural, =0 {Be the first to RSVP} one {# going} other {# going}}",
     "partOf": "Part of",
-    "theProject": "the organising project"
+    "theProject": "the organising project",
+    "attendeesHeading": "Who's coming · {count}",
+    "attendeesNone": "No RSVPs yet — share the event to get the word out.",
+    "attendeesInterested": "{count} more interested"
   },
   "plan": {
     "empty": "No plan yet.",
@@ -241,7 +244,9 @@
     "emptyBody": "Add your first stage (e.g. Discovery, Drafting, Review) to start tracking the work.",
     "assign": "Assign",
     "unassigned": "Unassigned",
-    "addNotes": "Add notes — @username notifies a teammate"
+    "addNotes": "Add notes — @username notifies a teammate",
+    "moveStageEarlier": "Move stage earlier",
+    "moveStageLater": "Move stage later"
   },
   "follow": {
     "follow": "Follow",
@@ -1828,7 +1833,10 @@
     "inviteNoResults": "No members match.",
     "removeMember": "Remove",
     "removeConfirm": "Confirm removal?",
-    "memberRemoved": "Member removed."
+    "memberRemoved": "Member removed.",
+    "archiveThread": "Archive",
+    "archiveConfirm": "Confirm archive?",
+    "threadArchived": "Thread archived."
   },
   "messages": {
     "title": "Messages",
