@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
+import { createNotification } from "@/lib/notifications/service";
 import { getActor } from "@/lib/authz";
 import { authorizeCollab, getMembershipRole } from "@/lib/collaboration/service";
 import { seedWorkspace } from "@/lib/collaboration/seed";
@@ -87,6 +88,44 @@ export async function setMemberRole(
   await prisma.collaborationMember.update({
     where: { collaborationId_userId: { collaborationId, userId } },
     data: { role },
+  });
+  revalidatePath(`/collaborations/${collaborationId}`);
+  return { ok: true };
+}
+
+/** Owner removes a member (yourself = use leave). The removed member is told. */
+export async function removeMember(collaborationId: string, userId: string): Promise<Result> {
+  const actor = await getActor();
+  if (!actor) return { ok: false, error: "Sign in." };
+  if (userId === actor.id) return { ok: false, error: "Use Leave to remove yourself." };
+  try {
+    await authorizeCollab(collaborationId, "collab:manageMembers");
+  } catch {
+    return { ok: false, error: "Not permitted." };
+  }
+  const target = await getMembershipRole(collaborationId, userId);
+  if (!target) return { ok: true };
+  // Guard: the sole OWNER can't be removed.
+  if (target === "OWNER") {
+    const owners = await prisma.collaborationMember.count({
+      where: { collaborationId, role: "OWNER" },
+    });
+    if (owners <= 1) return { ok: false, error: "Assign another owner first." };
+  }
+  const collab = await prisma.collaboration.findUnique({
+    where: { id: collaborationId },
+    select: { title: true },
+  });
+  await prisma.collaborationMember.delete({
+    where: { collaborationId_userId: { collaborationId, userId } },
+  });
+  await createNotification({
+    recipientId: userId,
+    type: "COLLAB_ACTIVITY",
+    actorId: actor.id,
+    entityType: "collaboration",
+    entityId: collaborationId,
+    snippet: `removed you from "${collab?.title ?? "a workspace"}"`,
   });
   revalidatePath(`/collaborations/${collaborationId}`);
   return { ok: true };

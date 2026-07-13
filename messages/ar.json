@@ -1819,7 +1819,16 @@
       "task": "مهمة · {detail}",
       "output": "مطلوب تعديل",
       "notification": "{detail}"
-    }
+    },
+    "invitePeople": "دعوة أعضاء",
+    "inviteSearchPlaceholder": "ابحث عن الأعضاء بالاسم…",
+    "inviteAction": "دعوة",
+    "invitedLabel": "تمت الدعوة",
+    "inviteSent": "أُرسلت الدعوة.",
+    "inviteNoResults": "لا يوجد أعضاء مطابقون.",
+    "removeMember": "إزالة",
+    "removeConfirm": "تأكيد الإزالة؟",
+    "memberRemoved": "أُزيل العضو."
   },
   "messages": {
     "title": "الرسائل",

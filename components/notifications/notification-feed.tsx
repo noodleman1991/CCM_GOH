@@ -8,7 +8,7 @@ import { formatDistanceToNow } from "date-fns";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { markNotificationsRead } from "@/lib/actions/notifications";
-import { respondToJoinByTarget, respondToContactByTarget } from "@/lib/actions/requests";
+import { respondToJoinByTarget, respondToInviteByTarget, respondToContactByTarget } from "@/lib/actions/requests";
 import { cn } from "@/lib/utils";
 
 export type Notif = {
@@ -25,7 +25,7 @@ export type Notif = {
 };
 
 /** An actionable, still-open request notification (Accept/Decline shown). */
-const ACTIONABLE_ENTITY = new Set(["joinRequest", "contactRequest"]);
+const ACTIONABLE_ENTITY = new Set(["joinRequest", "contactRequest", "collaborationInvite"]);
 function isActionableRequest(n: Notif): boolean {
   return n.type === "REQUEST" && !!n.entityType && ACTIONABLE_ENTITY.has(n.entityType);
 }
@@ -112,7 +112,9 @@ export function NotificationFeed({
         ? await respondToJoinByTarget(n.entityId, n.actorId, accept)
         : n.entityType === "contactRequest" && n.actorId
           ? await respondToContactByTarget(n.actorId, accept)
-          : ({ ok: false, error: "Can't act on this request." } as const);
+          : n.entityType === "collaborationInvite" && n.entityId
+            ? await respondToInviteByTarget(n.entityId, accept)
+            : ({ ok: false, error: "Can't act on this request." } as const);
     if (res.ok) {
       setResolved((r) => ({ ...r, [n.id]: accept ? "ACCEPTED" : "DECLINED" }));
     } else {
