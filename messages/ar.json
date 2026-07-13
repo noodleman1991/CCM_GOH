@@ -2148,5 +2148,64 @@
     "statMembers": "الأعضاء",
     "statCaseStudies": "دراسات الحالة",
     "statLived": "التجارب المعيشة"
+  },
+  "researchOutputSubmission": {
+    "pageTitle": "إرسال ناتج بحثي",
+    "pageDescription": "شارك تقريرًا أو مجموعة أدوات أو موجز بيانات أو دليلًا إرشاديًا. سيراجعه محرر قبل نشره.",
+    "about": {
+      "title": "عن هذا الناتج",
+      "description": "ما هو وما الذي يغطيه."
+    },
+    "fields": {
+      "title": "العنوان",
+      "titlePlaceholder": "مثال: الحرارة والصحة النفسية في المدن الساحلية — تقرير 2026",
+      "type": "نوع الناتج",
+      "region": "المنطقة",
+      "regionPlaceholder": "اختر منطقة (اختياري)",
+      "excerpt": "الملخص",
+      "excerptPlaceholder": "بضع جمل عمّا سيجده القرّاء…",
+      "excerptHelp": "يظهر على البطاقات وفي أعلى الصفحة.",
+      "bodyPlaceholder": "قراءة اختيارية داخل المنصة — نتائج رئيسية ورسوم بيانية وسياق…",
+      "themes": "المحاور",
+      "tags": "الوسوم",
+      "tagsHelp": "حتى 6.",
+      "communities": "المجتمعات الإقليمية"
+    },
+    "types": {
+      "report": "تقرير",
+      "toolkit": "مجموعة أدوات",
+      "dataset-brief": "موجز بيانات",
+      "guideline": "دليل إرشادي"
+    },
+    "docs": {
+      "title": "المستندات",
+      "description": "الملفات القابلة للتنزيل — أضف التقرير الكامل أو ملخصًا أو ترجمات أو شرائح عرض.",
+      "addFile": "إضافة مستند",
+      "fileHint": "PDF أو Word أو Excel أو PowerPoint · حتى 50MB",
+      "remove": "إزالة",
+      "kind": "نوع المستند",
+      "language": "لغة المستند",
+      "fileWrongType": "نوع الملف غير مدعوم. استخدم PDF أو Word أو Excel أو PowerPoint.",
+      "fileTooLarge": "حجم الملف يتجاوز 50MB."
+    },
+    "kinds": {
+      "summary": "ملخص",
+      "full": "التقرير الكامل",
+      "brief": "موجز",
+      "deck": "شرائح"
+    },
+    "reading": {
+      "title": "اقرأه على المنصة",
+      "description": "اختياري: اسرد قصة هذا الناتج على الصفحة نفسها — نتائج ورسوم واقتباسات."
+    },
+    "context": {
+      "title": "السياق"
+    },
+    "validation": {
+      "titleMin": "أضف عنوانًا"
+    },
+    "cancel": "إلغاء",
+    "submit": "إرسال للمراجعة",
+    "success": "شكرًا — أُرسل ناتجك البحثي للمراجعة."
   }
 }

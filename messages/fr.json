@@ -2148,5 +2148,64 @@
     "statMembers": "Membres",
     "statCaseStudies": "Études de cas",
     "statLived": "Expériences vécues"
+  },
+  "researchOutputSubmission": {
+    "pageTitle": "Soumettre une production de recherche",
+    "pageDescription": "Partagez un rapport, une boîte à outils, une note de données ou un guide. Un éditeur le relira avant publication.",
+    "about": {
+      "title": "À propos de cette production",
+      "description": "Ce que c'est et ce que ça couvre."
+    },
+    "fields": {
+      "title": "Titre",
+      "titlePlaceholder": "p. ex. Chaleur et santé mentale dans les villes côtières — rapport 2026",
+      "type": "Type de production",
+      "region": "Région",
+      "regionPlaceholder": "Choisissez une région (facultatif)",
+      "excerpt": "Résumé",
+      "excerptPlaceholder": "Quelques phrases sur ce que les lecteurs y trouveront…",
+      "excerptHelp": "Affiché sur les cartes et en haut de la page.",
+      "bodyPlaceholder": "Lecture facultative sur le hub — résultats clés, graphiques, contexte…",
+      "themes": "Thèmes",
+      "tags": "Mots-clés",
+      "tagsHelp": "Jusqu'à 6.",
+      "communities": "Communautés régionales"
+    },
+    "types": {
+      "report": "Rapport",
+      "toolkit": "Boîte à outils",
+      "dataset-brief": "Note de données",
+      "guideline": "Guide"
+    },
+    "docs": {
+      "title": "Documents",
+      "description": "Les fichiers téléchargeables — ajoutez le rapport complet, un résumé, des traductions ou des diapositives.",
+      "addFile": "Ajouter un document",
+      "fileHint": "PDF, Word, Excel ou PowerPoint · jusqu'à 50MB",
+      "remove": "Retirer",
+      "kind": "Type de document",
+      "language": "Langue du document",
+      "fileWrongType": "Ce type de fichier n'est pas pris en charge. Utilisez PDF, Word, Excel ou PowerPoint.",
+      "fileTooLarge": "Ce fichier dépasse 50MB."
+    },
+    "kinds": {
+      "summary": "Résumé",
+      "full": "Rapport complet",
+      "brief": "Synthèse",
+      "deck": "Diapositives"
+    },
+    "reading": {
+      "title": "À lire sur le hub",
+      "description": "Facultatif : racontez cette production directement sur la page — résultats, graphiques, citations."
+    },
+    "context": {
+      "title": "Contexte"
+    },
+    "validation": {
+      "titleMin": "Ajoutez un titre"
+    },
+    "cancel": "Annuler",
+    "submit": "Soumettre pour relecture",
+    "success": "Merci — votre production de recherche a été soumise pour relecture."
   }
 }

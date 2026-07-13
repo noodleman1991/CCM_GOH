@@ -35,11 +35,11 @@ export default function WorkspaceOutputs({
 
   // Case studies and lived experiences have real submit flows — creating
   // there (with ?workspace=) produces actual content that links back here.
-  // researchOutput has no public submit flow yet, so it keeps the draft path.
   const SUBMIT_ROUTES: Record<string, string> = {
     caseStudy: "/research-and-action/case-studies/submit",
     livedExperience: "/lived-experiences/submit",
     event: "/collaborate/events/new",
+    researchOutput: "/research-and-action/research-outputs/submit",
   };
 
   const create = (sanityType: string) => {
