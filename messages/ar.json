@@ -319,7 +319,10 @@
     "watchRecording": "شاهد التسجيل",
     "goingCount": "{count, plural, =0 {كن أول من يؤكد الحضور} one {مشارك واحد} two {مشاركان} few {# مشاركين} other {# مشاركًا}}",
     "partOf": "جزء من",
-    "theProject": "المشروع المنظِّم"
+    "theProject": "المشروع المنظِّم",
+    "attendeesHeading": "من سيحضر · {count}",
+    "attendeesNone": "لا توجد تأكيدات بعد — شارك الفعالية لنشر الخبر.",
+    "attendeesInterested": "{count} آخرون مهتمون"
   },
   "plan": {
     "empty": "لا توجد خطة بعد.",
@@ -336,7 +339,9 @@
     "emptyBody": "أضف مرحلتك الأولى (مثل الاستكشاف أو الصياغة أو المراجعة) لبدء تتبع العمل.",
     "assign": "إسناد",
     "unassigned": "غير مُسنَد",
-    "addNotes": "أضف ملاحظات — الإشارة بـ @اسم_المستخدم تُرسل إشعارًا"
+    "addNotes": "أضف ملاحظات — الإشارة بـ @اسم_المستخدم تُرسل إشعارًا",
+    "moveStageEarlier": "نقل المرحلة لموضع أسبق",
+    "moveStageLater": "نقل المرحلة لموضع لاحق"
   },
   "follow": {
     "follow": "متابعة",
@@ -1828,7 +1833,10 @@
     "inviteNoResults": "لا يوجد أعضاء مطابقون.",
     "removeMember": "إزالة",
     "removeConfirm": "تأكيد الإزالة؟",
-    "memberRemoved": "أُزيل العضو."
+    "memberRemoved": "أُزيل العضو.",
+    "archiveThread": "أرشفة",
+    "archiveConfirm": "تأكيد الأرشفة؟",
+    "threadArchived": "أُرشف النقاش."
   },
   "messages": {
     "title": "الرسائل",

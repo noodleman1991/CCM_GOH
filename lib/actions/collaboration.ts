@@ -93,6 +93,21 @@ export async function setMemberRole(
   return { ok: true };
 }
 
+/** Archive a thread (soft delete — comments retained, thread leaves the list). */
+export async function archiveThread(collaborationId: string, threadId: string): Promise<Result> {
+  try {
+    await authorizeCollab(collaborationId, "collab:editThread");
+  } catch {
+    return { ok: false, error: "Not permitted." };
+  }
+  await prisma.collaborationThread.update({
+    where: { id: threadId },
+    data: { archivedAt: new Date() },
+  });
+  revalidatePath(`/collaborations/${collaborationId}`);
+  return { ok: true };
+}
+
 /** Owner removes a member (yourself = use leave). The removed member is told. */
 export async function removeMember(collaborationId: string, userId: string): Promise<Result> {
   const actor = await getActor();

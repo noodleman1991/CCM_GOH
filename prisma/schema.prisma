@@ -512,6 +512,8 @@ model CollaborationThread {
   collaboration   Collaboration @relation(fields: [collaborationId], references: [id], onDelete: Cascade)
   title           String
   createdById     String
+  // Archived threads leave the list but keep their comments (no hard delete).
+  archivedAt      DateTime?
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
 

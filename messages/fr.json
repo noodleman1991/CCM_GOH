@@ -319,7 +319,10 @@
     "watchRecording": "Voir l'enregistrement",
     "goingCount": "{count, plural, =0 {Soyez le premier à répondre} one {# participant} other {# participants}}",
     "partOf": "Fait partie de",
-    "theProject": "le projet organisateur"
+    "theProject": "le projet organisateur",
+    "attendeesHeading": "Qui vient · {count}",
+    "attendeesNone": "Pas encore de réponses — partagez l'événement pour le faire connaître.",
+    "attendeesInterested": "{count} autres intéressé·es"
   },
   "plan": {
     "empty": "Pas encore de plan.",
@@ -336,7 +339,9 @@
     "emptyBody": "Ajoutez votre première étape (p. ex. Exploration, Rédaction, Relecture) pour commencer à suivre le travail.",
     "assign": "Attribuer",
     "unassigned": "Non attribué",
-    "addNotes": "Ajoutez des notes — @pseudo prévient la personne"
+    "addNotes": "Ajoutez des notes — @pseudo prévient la personne",
+    "moveStageEarlier": "Avancer l'étape",
+    "moveStageLater": "Reculer l'étape"
   },
   "follow": {
     "follow": "Suivre",
@@ -1828,7 +1833,10 @@
     "inviteNoResults": "Aucun membre ne correspond.",
     "removeMember": "Retirer",
     "removeConfirm": "Confirmer ?",
-    "memberRemoved": "Membre retiré."
+    "memberRemoved": "Membre retiré.",
+    "archiveThread": "Archiver",
+    "archiveConfirm": "Confirmer ?",
+    "threadArchived": "Fil archivé."
   },
   "messages": {
     "title": "Messages",

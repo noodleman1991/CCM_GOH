@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowLeft, Plus, MessagesSquare } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
-import { createThread, renameThread } from "@/lib/actions/collaboration";
+import { archiveThread, createThread, renameThread } from "@/lib/actions/collaboration";
 import { InlineText } from "@/components/ui/inline-text";
 import { CommentSection } from "@/components/comments/comment-section";
 import { WorkspaceEmptyState } from "./workspace-empty-state";
@@ -32,6 +32,7 @@ export function WorkspaceThreads({
   });
   const [open, setOpen] = useState<Thread | null>(null);
   const [title, setTitle] = useState("");
+  const [confirmArchive, setConfirmArchive] = useState<string | null>(null);
 
   const canEdit = myRole === "EDITOR" || myRole === "OWNER";
   const threads = data?.threads ?? [];
@@ -48,6 +49,19 @@ export function WorkspaceThreads({
   const rename = async (threadId: string, next: string) => {
     const res = await renameThread(collaborationId, threadId, next);
     if (!res.ok) { toast.error(res.error); return; }
+    mutate();
+  };
+
+  // Two-click archive (no blocking confirm dialog): first click arms, second executes.
+  const archive = async (threadId: string) => {
+    if (confirmArchive !== threadId) {
+      setConfirmArchive(threadId);
+      return;
+    }
+    setConfirmArchive(null);
+    const res = await archiveThread(collaborationId, threadId);
+    if (!res.ok) { toast.error(res.error); return; }
+    toast.success(t("threadArchived"));
     mutate();
   };
 
@@ -101,6 +115,16 @@ export function WorkspaceThreads({
               <Button variant="ghost" size="sm" onClick={() => setOpen(th)}>
                 {t("open")}
               </Button>
+              {canEdit && (
+                <Button
+                  variant={confirmArchive === th.id ? "destructive" : "ghost"}
+                  size="sm"
+                  onClick={() => archive(th.id)}
+                  onBlur={() => setConfirmArchive((c) => (c === th.id ? null : c))}
+                >
+                  {confirmArchive === th.id ? t("archiveConfirm") : t("archiveThread")}
+                </Button>
+              )}
             </li>
           ))}
 

@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { Plus, Circle, CircleDot, CheckCircle2, X, GripVertical, ListTodo } from "lucide-react";
+import { Plus, Circle, CircleDot, CheckCircle2, ChevronLeft, ChevronRight, X, GripVertical, ListTodo } from "lucide-react";
 import {
   DndContext,
   closestCorners,
@@ -37,6 +37,7 @@ import {
   renameTask,
   deleteStage,
   reorderTasks,
+  reorderStages,
   assignTask,
   setTaskDescription,
 } from "@/lib/actions/plans";
@@ -155,6 +156,22 @@ export function WorkspacePlan({
       );
   };
 
+  // Move a stage one slot earlier/later (arrows beat drag for a 2-3 column
+  // grid, and they work on mobile). Optimistic; persists the full order.
+  const onMoveStage = (stageId: string, dir: -1 | 1) => {
+    const idx = stages.findIndex((st) => st.id === stageId);
+    const to = idx + dir;
+    if (idx < 0 || to < 0 || to >= stages.length) return;
+    const next = [...stages];
+    const [moved] = next.splice(idx, 1);
+    next.splice(to, 0, moved);
+    setStages(next);
+    startTransition(async () => {
+      const res = await reorderStages(collaborationId, next.map((st) => st.id));
+      if (!res.ok) toast.error(res.error);
+    });
+  };
+
   const onDeleteStage = (stageId: string) => {
     startTransition(async () => {
       const res = await deleteStage(collaborationId, stageId);
@@ -227,9 +244,27 @@ export function WorkspacePlan({
                   {done && <CheckCircle2 className="size-3.5 flex-none text-ccm-sea" aria-label={t("stageComplete")} />}
                 </span>
                 {canEdit && (
-                  <button onClick={() => onDeleteStage(stage.id)} aria-label={t("deleteStage")} className="text-muted-foreground hover:text-destructive">
-                    <X className="size-3.5" />
-                  </button>
+                  <span className="flex items-center gap-0.5">
+                    <button
+                      onClick={() => onMoveStage(stage.id, -1)}
+                      aria-label={t("moveStageEarlier")}
+                      disabled={stages[0]?.id === stage.id}
+                      className="text-muted-foreground hover:text-foreground disabled:opacity-30 rtl:-scale-x-100"
+                    >
+                      <ChevronLeft className="size-3.5" />
+                    </button>
+                    <button
+                      onClick={() => onMoveStage(stage.id, 1)}
+                      aria-label={t("moveStageLater")}
+                      disabled={stages[stages.length - 1]?.id === stage.id}
+                      className="text-muted-foreground hover:text-foreground disabled:opacity-30 rtl:-scale-x-100"
+                    >
+                      <ChevronRight className="size-3.5" />
+                    </button>
+                    <button onClick={() => onDeleteStage(stage.id)} aria-label={t("deleteStage")} className="ms-1 text-muted-foreground hover:text-destructive">
+                      <X className="size-3.5" />
+                    </button>
+                  </span>
                 )}
               </div>
               <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={onDragEnd(stage.id)}>
