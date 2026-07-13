@@ -12,6 +12,13 @@ vi.mock("@/lib/notifications/service", () => ({
   createNotification: (...a: any[]) => createNotificationMock(...a),
 }));
 
+// requests.ts imports authorizeCollab (which transitively pulls the Sanity
+// client + its env asserts) — stub the whole service module out.
+const authorizeCollabMock = vi.fn<(...a: any[]) => Promise<any>>(async () => ({ actorId: "u1", role: "OWNER" }));
+vi.mock("@/lib/collaboration/service", () => ({
+  authorizeCollab: (...a: any[]) => authorizeCollabMock(...a),
+}));
+
 // Prisma surface used by requests.ts. Built via vi.hoisted so the mock factory
 // (hoisted to top of file) can reference it without a TDZ error.
 const db = vi.hoisted(() => {
@@ -32,6 +39,11 @@ const db = vi.hoisted(() => {
       findUnique: vi.fn(async () => null),
       update: vi.fn(async () => ({})),
     },
+    collaborationInvite: {
+      upsert: vi.fn(async () => ({ id: "ci1" })),
+      findUnique: vi.fn(async () => null),
+      update: vi.fn(async () => ({})),
+    },
     user: { findUnique: vi.fn(async () => ({ id: "u2" })) },
     notification: { updateMany: vi.fn(async () => ({ count: 1 })) },
     $transaction: vi.fn(async (fn: any) => fn(d)),
@@ -42,6 +54,8 @@ vi.mock("@/lib/prisma", () => ({ prisma: db }));
 vi.mock("@/lib/notifications/emit", () => ({ emitLifecycle: vi.fn(async () => {}) }));
 
 import {
+  inviteToCollaboration,
+  respondToInviteByTarget,
   requestToJoin,
   respondToJoinRequest,
   requestContact,
@@ -170,5 +184,81 @@ describe("contact requests", () => {
     expect(createNotificationMock).toHaveBeenCalledWith(
       expect.objectContaining({ recipientId: "u2", type: "REQUEST" })
     );
+  });
+});
+
+describe("workspace invites", () => {
+  beforeEach(() => {
+    getActorMock.mockReturnValue({ id: "u1" });
+    authorizeCollabMock.mockResolvedValue({ actorId: "u1", role: "OWNER" });
+  });
+
+  it("rejects self-invite", async () => {
+    const res = await inviteToCollaboration("c1", "u1");
+    expect(res.ok).toBe(false);
+  });
+
+  it("blocks non-owners via authorizeCollab", async () => {
+    authorizeCollabMock.mockRejectedValueOnce(new Error("Forbidden"));
+    const res = await inviteToCollaboration("c1", "u2");
+    expect(res.ok).toBe(false);
+  });
+
+  it("rejects inviting an existing member", async () => {
+    db.collaboration.findUnique.mockResolvedValueOnce({ title: "W" });
+    db.collaborationMember.findUnique.mockResolvedValueOnce({ userId: "u2" });
+    const res = await inviteToCollaboration("c1", "u2");
+    expect(res.ok).toBe(false);
+  });
+
+  it("upserts the invite + notifies the invitee", async () => {
+    db.collaboration.findUnique.mockResolvedValueOnce({ title: "Coastal minds" });
+    db.collaborationMember.findUnique.mockResolvedValueOnce(null);
+    const res = await inviteToCollaboration("c1", "u2");
+    expect(res.ok).toBe(true);
+    expect(db.collaborationInvite.upsert).toHaveBeenCalled();
+    expect(createNotificationMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        recipientId: "u2",
+        type: "REQUEST",
+        entityType: "collaborationInvite",
+        entityId: "c1",
+      })
+    );
+  });
+
+  it("accept joins as VIEWER + notifies the inviter", async () => {
+    db.collaborationInvite.findUnique.mockResolvedValueOnce({
+      id: "ci1", status: "PENDING", inviterId: "u9",
+      collaboration: { title: "Coastal minds" },
+    });
+    const res = await respondToInviteByTarget("c1", true);
+    expect(res.ok).toBe(true);
+    if (res.ok) expect(res.status).toBe("ACCEPTED");
+    expect(db.collaborationMember.upsert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        create: expect.objectContaining({ userId: "u1", role: "VIEWER" }),
+      })
+    );
+    expect(createNotificationMock).toHaveBeenCalledWith(
+      expect.objectContaining({ recipientId: "u9", entityType: "collaborationInviteResolved" })
+    );
+  });
+
+  it("decline does not add a member and rejects re-resolution", async () => {
+    db.collaborationInvite.findUnique.mockResolvedValueOnce({
+      id: "ci1", status: "PENDING", inviterId: "u9",
+      collaboration: { title: "W" },
+    });
+    const res = await respondToInviteByTarget("c1", false);
+    expect(res.ok).toBe(true);
+    expect(db.collaborationMember.upsert).not.toHaveBeenCalled();
+
+    db.collaborationInvite.findUnique.mockResolvedValueOnce({
+      id: "ci1", status: "DECLINED", inviterId: "u9",
+      collaboration: { title: "W" },
+    });
+    const res2 = await respondToInviteByTarget("c1", false);
+    expect(res2.ok).toBe(false);
   });
 });
