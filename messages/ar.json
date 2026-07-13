@@ -1618,7 +1618,8 @@
     "noData": "لا توجد بيانات لهذه المنطقة بعد.",
     "facetLivedExperiences": "التجارب المعاشة",
     "facetAgendas": "الأجندات",
-    "facetReports": "التقارير"
+    "facetReports": "التقارير",
+    "facetResearchOutputs": "النواتج البحثية"
   },
   "announcement": {
     "dismiss": "إغلاق الإعلان",

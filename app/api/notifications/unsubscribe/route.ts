@@ -6,10 +6,11 @@ import { prisma } from "@/lib/prisma";
  * the recipient's unsubscribeToken + the kind; we flip the matching preference
  * off. No auth needed (the token is the proof) — and it can only DISABLE.
  */
-const FIELD: Record<string, "emailOnReply" | "emailOnMention" | "emailOnMessage"> = {
+const FIELD: Record<string, "emailOnReply" | "emailOnMention" | "emailOnMessage" | "emailWeeklyDigest"> = {
   reply: "emailOnReply",
   mention: "emailOnMention",
   message: "emailOnMessage",
+  digest: "emailWeeklyDigest",
 };
 
 export async function GET(req: NextRequest) {
@@ -26,7 +27,7 @@ export async function GET(req: NextRequest) {
     // Unknown/blank kind unsubscribes from all email kinds.
     data: field
       ? { [field]: false }
-      : { emailOnReply: false, emailOnMention: false, emailOnMessage: false },
+      : { emailOnReply: false, emailOnMention: false, emailOnMessage: false, emailWeeklyDigest: false },
   });
 
   return new NextResponse(

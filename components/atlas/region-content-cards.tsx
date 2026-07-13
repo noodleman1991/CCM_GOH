@@ -43,7 +43,7 @@ const TYPE_TO_FACET: Record<string, FacetId> = {
   caseStudy: "caseStudyCount",
   livedExperience: "livedExpCount",
   newsPost: "newsCount",
-  researchOutput: "reportCount",
+  researchOutput: "researchOutputCount",
 };
 
 function labelKeyForType(type: string): string {

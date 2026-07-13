@@ -7,8 +7,7 @@ export type FacetId =
   | "memberCount"
   | "newsCount"
   | "livedExpCount"
-  | "agendaCount"
-  | "reportCount";
+  | "researchOutputCount";
 
 export interface FacetDef {
   id: FacetId;
@@ -21,8 +20,7 @@ export const FACETS: FacetDef[] = [
   { id: "livedExpCount", labelKey: "facetLivedExperiences" },
   { id: "memberCount", labelKey: "facetMembers" },
   { id: "newsCount", labelKey: "facetNews" },
-  { id: "agendaCount", labelKey: "facetAgendas" },
-  { id: "reportCount", labelKey: "facetReports" },
+  { id: "researchOutputCount", labelKey: "facetResearchOutputs" },
 ];
 
 export interface RegionDatum {
@@ -67,6 +65,13 @@ export const MAX_LAYERS = 6;
 
 const isFacetId = (v: string): v is FacetId => FACETS.some((f) => f.id === v);
 
+/** Legacy `?layers=` ids from before the agendas/reports chips merged into one
+ *  Research-outputs facet (2026-07-13) — old bookmarks keep working. */
+const LEGACY_LAYER_ALIAS: Record<string, FacetId> = {
+  agendaCount: "researchOutputCount",
+  reportCount: "researchOutputCount",
+};
+
 /**
  * Parse the Atlas `?layers=` URL param (comma list of `FacetId`s) into a
  * validated, deduped, order-preserving, NEVER-EMPTY array. Unknown ids are
@@ -78,7 +83,7 @@ export function parseLayers(param: string | null): FacetId[] {
   if (!param) return [...DEFAULT_LAYERS];
   const seen = new Set<FacetId>();
   for (const raw of param.split(",")) {
-    const id = raw.trim();
+    const id = LEGACY_LAYER_ALIAS[raw.trim()] ?? raw.trim();
     if (isFacetId(id) && !seen.has(id)) {
       seen.add(id);
       if (seen.size >= MAX_LAYERS) break;
@@ -133,12 +138,9 @@ export const FACET_TO_CONTENT_TYPE: Partial<Record<FacetId, FacetContentType>> =
   caseStudyCount: "caseStudy",
   livedExpCount: "livedExperience",
   newsCount: "newsPost",
-  // Canonical mapping (user decision 2026-07-04): both output facets count the
-  // researchOutput type — the SAME type region-items lists — so the atlas
-  // numbers always match the cards beneath the map. Legacy agenda/report docs
-  // are no longer counted (they are dual-read elsewhere until retirement).
-  agendaCount: "researchOutput",
-  reportCount: "researchOutput",
+  // One Research-outputs facet (merged from the former Agendas/Reports chips,
+  // which both counted this same type and always showed identical numbers).
+  researchOutputCount: "researchOutput",
 };
 
 /** Reverse of `FACET_TO_CONTENT_TYPE`: a pin's content type → the `FacetDef`
@@ -162,8 +164,7 @@ const FACET_LAYER_COLOR_KEY: Record<FacetId, keyof typeof COLOR.layer> = {
   caseStudyCount: layerColorKeyFor("caseStudy"),
   livedExpCount: layerColorKeyFor("livedExperience"),
   newsCount: layerColorKeyFor("newsPost"),
-  agendaCount: layerColorKeyFor("researchOutput"),
-  reportCount: layerColorKeyFor("researchOutput"),
+  researchOutputCount: layerColorKeyFor("researchOutput"),
   memberCount: "people",
 };
 
@@ -179,8 +180,9 @@ export function atlasDestination(facet: FacetId, slug: string): string {
     livedExpCount: `/lived-experiences?regions=${slug}`,
     newsCount: `/news?communities=${slug}`,
     memberCount: `/collaborate?communities=${slug}`,
-    agendaCount: `/research-and-action/community-agendas`,
-    reportCount: `/research-and-action/impact-reports`,
+    // No public researchOutput list page yet — the agendas archive is the
+    // closest home for the merged outputs facet until one exists.
+    researchOutputCount: `/research-and-action/community-agendas`,
   };
   return map[facet];
 }
