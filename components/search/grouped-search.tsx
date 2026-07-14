@@ -11,8 +11,9 @@ import type {
 } from '@/lib/algolia'
 import { SearchErrorBoundary } from './search-error-boundary'
 import { Card, CardContent } from '@/components/ui/card'
+import { TypedCard } from '@/components/cards/typed-card'
+import type { TypedCardItem } from '@/lib/cards/type-style'
 import { Badge } from '@/components/ui/badge'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Skeleton } from '@/components/ui/skeleton'
 import {
   Search as SearchIcon,
@@ -137,49 +138,6 @@ function GroupHeader({
   )
 }
 
-/* ------------------------------------------------------------------ */
-/* Compact result rows (reuse existing detail routes).                 */
-/* ------------------------------------------------------------------ */
-
-function ResultRow({
-  href,
-  title,
-  subtitle,
-  badge,
-  meta,
-  leading,
-}: {
-  href: string
-  title: string
-  subtitle?: string
-  /** Right-aligned badge (e.g. type/featured). */
-  badge?: React.ReactNode
-  /** Below the subtitle: chips / byline / date — type-specific. */
-  meta?: React.ReactNode
-  /** Leading visual (avatar / type icon). */
-  leading?: React.ReactNode
-}) {
-  return (
-    <Card className="transition-shadow hover:shadow-md">
-      <CardContent className="flex items-start gap-3 p-4">
-        {leading}
-        <div className="min-w-0 flex-1">
-          <div className="flex items-start justify-between gap-2">
-            <h3 className="font-medium text-foreground">
-              <Link href={href} className="hover:underline">{title}</Link>
-            </h3>
-            {badge}
-          </div>
-          {subtitle && (
-            <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{subtitle}</p>
-          )}
-          {meta && <div className="mt-2 flex flex-wrap items-center gap-1.5">{meta}</div>}
-        </div>
-      </CardContent>
-    </Card>
-  )
-}
-
 /** Small region chip with its brand-colour dot (via the canonical colour map). */
 function RegionChip({ code }: { code: string }) {
   const t = useTranslations()
@@ -194,15 +152,6 @@ function RegionChip({ code }: { code: string }) {
         aria-hidden="true"
       />
       {t(`navigation.regions.${key}`)}
-    </span>
-  )
-}
-
-/** Plain tag/topic chip. */
-function MetaChip({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">
-      {children}
     </span>
   )
 }
@@ -229,70 +178,40 @@ function ContentHits({
         if (type === 'case-studies') {
           const hit = raw as unknown as CaseStudySearchRecord
           const author = hit.authors?.[0]?.name
-          return (
-            <ResultRow
-              key={hit.objectID}
-              href={`/research-and-action/case-studies/${hit.slug}`}
-              title={getLocalizedTitle(hit.title, locale)}
-              subtitle={getLocalizedExcerpt(hit.excerpt, locale)}
-              leading={<TypeIcon icon={BookOpen} />}
-              meta={
-                <>
-                  {author && <span className="text-xs text-muted-foreground">{author}</span>}
-                  {(hit.tags || []).slice(0, 2).map((tag) => (
-                    <MetaChip key={tag}>{tag}</MetaChip>
-                  ))}
-                </>
-              }
-            />
-          )
+          const item: TypedCardItem = {
+            type: 'caseStudy',
+            id: hit.objectID,
+            title: getLocalizedTitle(hit.title, locale),
+            href: `/research-and-action/case-studies/${hit.slug}`,
+            place: hit.studyLocation?.name ?? null,
+            meta: [author, getLocalizedExcerpt(hit.excerpt, locale)].filter(Boolean).join(' — ') || null,
+          }
+          return <TypedCard key={hit.objectID} item={item} variant="row" />
         }
         if (type === 'news') {
           const hit = raw as unknown as NewsSearchRecord
           const date = fmtDate(hit.publishedAt)
-          return (
-            <ResultRow
-              key={hit.objectID}
-              href={`/news/${hit.slug}`}
-              title={getLocalizedTitle(hit.title, locale)}
-              subtitle={getLocalizedExcerpt(hit.excerpt, locale)}
-              leading={<TypeIcon icon={Newspaper} />}
-              meta={
-                <span className="text-xs text-muted-foreground">
-                  {[hit.author?.name, date].filter(Boolean).join(' · ')}
-                </span>
-              }
-            />
-          )
+          const item: TypedCardItem = {
+            type: 'newsPost',
+            id: hit.objectID,
+            title: getLocalizedTitle(hit.title, locale),
+            href: `/news/${hit.slug}`,
+            meta: [hit.author?.name, date].filter(Boolean).join(' · ') || getLocalizedExcerpt(hit.excerpt, locale) || null,
+            date: hit.publishedAt ? new Date(hit.publishedAt).toISOString() : null,
+          }
+          return <TypedCard key={hit.objectID} item={item} variant="row" />
         }
         const hit = raw as unknown as AgendaSearchRecord
-        return (
-          <ResultRow
-            key={hit.objectID}
-            href={`/research-and-action`}
-            title={getLocalizedTitle(hit.title, locale)}
-            leading={<TypeIcon icon={FileText} />}
-            meta={
-              <>
-                {hit.year && <MetaChip>{hit.year}</MetaChip>}
-                {(hit.regionalCommunities || []).slice(0, 1).map((rc) => (
-                  <MetaChip key={rc}>{rc}</MetaChip>
-                ))}
-              </>
-            }
-          />
-        )
+        const roItem: TypedCardItem = {
+          type: 'researchOutput',
+          id: hit.objectID,
+          title: getLocalizedTitle(hit.title, locale),
+          href: `/research-and-action`,
+          meta: [hit.year, (hit.regionalCommunities || [])[0]].filter(Boolean).join(' · ') || null,
+        }
+        return <TypedCard key={hit.objectID} item={roItem} variant="row" />
       })}
     </div>
-  )
-}
-
-/** Square type-icon tile used as the leading visual on content rows. */
-function TypeIcon({ icon: Icon }: { icon: typeof BookOpen }) {
-  return (
-    <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-ccm-sky/20 text-ccm-sea">
-      <Icon className="size-5" />
-    </span>
   )
 }
 
@@ -312,25 +231,18 @@ function PeopleHits({ onCount }: { onCount: (n: number) => void }) {
     <div className="grid gap-3 sm:grid-cols-2">
       {hits.slice(0, PREVIEW_COUNT).map((raw) => {
         const hit = raw as unknown as UserSearchRecord
-        return (
-          <ResultRow
-            key={hit.objectID}
-            href={`/profiles/${hit.username}`}
-            title={hit.fullName || hit.username}
-            subtitle={hit.showWorkDetails && (hit.position || hit.organization)
+        const item: TypedCardItem = {
+          type: 'person',
+          id: hit.objectID,
+          title: hit.fullName || hit.username,
+          href: `/profiles/${hit.username}`,
+          meta:
+            (hit.showWorkDetails && (hit.position || hit.organization)
               ? [hit.position, hit.organization].filter(Boolean).join(' · ')
-              : hit.bio}
-            leading={
-              <Avatar className="size-10 shrink-0">
-                <AvatarImage src={hit.profileImage} alt={hit.fullName} />
-                <AvatarFallback>{initials(hit.firstName, hit.lastName)}</AvatarFallback>
-              </Avatar>
-            }
-            meta={(hit.expertiseAreas || []).slice(0, 2).map((area) => (
-              <MetaChip key={area}>{tidy(area)}</MetaChip>
-            ))}
-          />
-        )
+              : (hit.expertiseAreas || []).slice(0, 3).map(tidy).join(' · ')) || null,
+          person: { initials: initials(hit.firstName, hit.lastName), image: hit.profileImage ?? null },
+        }
+        return <TypedCard key={hit.objectID} item={item} variant="row" />
       })}
     </div>
   )

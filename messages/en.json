@@ -2237,5 +2237,20 @@
       "pending": "An editor is reviewing this. Resubmitting replaces the version in review.",
       "revision": "An editor asked for changes — address the notes below and resubmit."
     }
+  },
+  "typedCards": {
+    "type": {
+      "caseStudy": "Case study",
+      "livedExperience": "Lived experience",
+      "newsPost": "News",
+      "researchOutput": "Research output",
+      "event": "Event",
+      "person": "Member",
+      "region": "Regional community"
+    },
+    "untitled": "Untitled",
+    "new": "New",
+    "freshHeading": "Fresh on the hub",
+    "exploreAtlas": "Explore in Atlas"
   }
 }

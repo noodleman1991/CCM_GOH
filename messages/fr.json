@@ -2237,5 +2237,20 @@
       "pending": "Un éditeur le relit. Resoumettre remplace la version en relecture.",
       "revision": "Un éditeur a demandé des modifications — répondez aux notes puis resoumettez."
     }
+  },
+  "typedCards": {
+    "type": {
+      "caseStudy": "Étude de cas",
+      "livedExperience": "Expérience vécue",
+      "newsPost": "Actualités",
+      "researchOutput": "Production de recherche",
+      "event": "Événement",
+      "person": "Membre",
+      "region": "Communauté régionale"
+    },
+    "untitled": "Sans titre",
+    "new": "Nouveau",
+    "freshHeading": "Nouveautés sur le hub",
+    "exploreAtlas": "Explorer dans l'Atlas"
   }
 }
