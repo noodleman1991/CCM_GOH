@@ -30,8 +30,11 @@ const TYPE_LINE: Record<string, string> = {
  * kind=digest unsubscribe. Trigger: vercel.json cron, Mondays 08:00 UTC.
  */
 export async function GET(req: NextRequest) {
+  // Fail CLOSED: this route sends real email, so no secret means no run —
+  // unlike the notification-only crons, an unset CRON_SECRET must not leave
+  // it publicly triggerable (learned the hard way in dev, 2026-07-14).
   const secret = process.env.CRON_SECRET;
-  if (secret && req.headers.get("authorization") !== `Bearer ${secret}`) {
+  if (!secret || req.headers.get("authorization") !== `Bearer ${secret}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
