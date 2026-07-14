@@ -1,14 +1,13 @@
 "use client";
 
 import useSWR from "swr";
-import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
-import { Card } from "@/components/ui/card";
 import { FACETS, facetForContentType, type FacetId } from "@/lib/maps/region-facets";
 import type { FacetContentType } from "@/lib/maps/cluster-pins";
-import { COLOR, CCM } from "@/lib/ccm-colors";
+import { COLOR } from "@/lib/ccm-colors";
 import { cn } from "@/lib/utils";
+import { TypedCard } from "@/components/cards/typed-card";
+import { isTypedCardType, type TypedCardItem } from "@/lib/cards/type-style";
 
 type Item = {
   id: string;
@@ -63,62 +62,26 @@ function layerColorKeyForType(type: string): keyof typeof COLOR.layer {
 }
 
 /**
- * One content card: thumbnail-led (spec E1). Falls back to a region-tinted
- * placeholder — carrying the place text/country code when there's no image —
- * so a card is never a blank box. (`LocaleMap` itself is a server component,
- * built on `server-only` geometry libs, and can't render inside this client
- * card grid; the tinted placeholder is the client-safe equivalent the spec
- * names as the fallback's second option.)
+ * Task 13: region-items rows adapt into the shared TypedCard (approved mock
+ * v3) — the eyebrow colour here, the pin layer colour and the Show-chip
+ * colour are one continuous system.
  */
-function ContentCard({ item, tMap }: { item: Item; tMap: (key: string) => string }) {
-  const def = facetForContentType(item.type as FacetContentType);
-  const typeLabel = def ? tMap(def.labelKey) : undefined;
+function toTypedCardItem(item: Item): TypedCardItem {
+  return {
+    type: isTypedCardType(item.type) ? item.type : "caseStudy",
+    id: item.id,
+    title: item.title,
+    href: hrefFor(item.type, item.slug),
+    image: item.image,
+    imageLqip: item.imageLqip,
+    place: item.place ?? null,
+    date: item.date,
+    quote: item.type === "livedExperience",
+  };
+}
 
-  return (
-    <Link href={hrefFor(item.type, item.slug)} className="group block h-full">
-      <Card className="flex h-full flex-col overflow-hidden transition-shadow hover:shadow-md">
-        <div className="relative aspect-video shrink-0 bg-ccm-sky/15">
-          {item.image ? (
-            <Image
-              src={item.image}
-              alt=""
-              fill
-              className="object-cover"
-              sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 60vw"
-              placeholder={item.imageLqip ? "blur" : undefined}
-              blurDataURL={item.imageLqip ?? undefined}
-            />
-          ) : (
-            <div
-              className="flex h-full w-full items-center justify-center px-2"
-              style={{ backgroundColor: CCM.sky, opacity: 0.35 }}
-            >
-              {item.countryCode3 && (
-                <span className="truncate text-xs font-semibold text-ccm-midnight/70">
-                  {item.countryCode3}
-                </span>
-              )}
-            </div>
-          )}
-          {typeLabel && (
-            <span className="absolute start-2 top-2 rounded-full bg-card/90 px-2 py-0.5 text-[11px] font-semibold text-ccm-midnight shadow-sm">
-              {typeLabel}
-            </span>
-          )}
-        </div>
-        <div className="flex flex-1 flex-col gap-1 p-2.5">
-          <p className="line-clamp-2 text-xs font-medium text-ccm-midnight group-hover:text-ccm-sea">
-            <bdi>{item.title || tMap("untitled")}</bdi>
-          </p>
-          {item.place && (
-            <p className="truncate text-[11px] text-muted-foreground">
-              <bdi>{item.place}</bdi>
-            </p>
-          )}
-        </div>
-      </Card>
-    </Link>
-  );
+function ContentCard({ item }: { item: Item }) {
+  return <TypedCard item={toTypedCardItem(item)} variant="grid" className="h-full" />;
 }
 
 /** Small group header for the multi-type card strip: a colour dot (matching
@@ -166,7 +129,7 @@ function CardsTrack({ items, t }: { items: Item[]; t: (key: string) => string })
       <div className="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-1 [scrollbar-width:none] lg:grid lg:grid-cols-4 lg:overflow-visible [&::-webkit-scrollbar]:hidden">
         {items.map((item) => (
           <div key={item.id} className="w-[70%] shrink-0 snap-start sm:w-[45%] lg:w-auto">
-            <ContentCard item={item} tMap={t} />
+            <ContentCard item={item} />
           </div>
         ))}
       </div>
@@ -186,7 +149,7 @@ function CardsTrack({ items, t }: { items: Item[]; t: (key: string) => string })
             <div className="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-1 [scrollbar-width:none] lg:grid lg:grid-cols-4 lg:overflow-visible [&::-webkit-scrollbar]:hidden">
               {groupItems.map((item) => (
                 <div key={item.id} className="w-[70%] shrink-0 snap-start sm:w-[45%] lg:w-auto">
-                  <ContentCard item={item} tMap={t} />
+                  <ContentCard item={item} />
                 </div>
               ))}
             </div>

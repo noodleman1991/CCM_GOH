@@ -2237,5 +2237,20 @@
       "pending": "Un editor lo está revisando. Reenviar reemplaza la versión en revisión.",
       "revision": "Un editor pidió cambios — atiende las notas y reenvía."
     }
+  },
+  "typedCards": {
+    "type": {
+      "caseStudy": "Estudio de caso",
+      "livedExperience": "Experiencia vivida",
+      "newsPost": "Noticias",
+      "researchOutput": "Producto de investigación",
+      "event": "Evento",
+      "person": "Miembro",
+      "region": "Comunidad regional"
+    },
+    "untitled": "Sin título",
+    "new": "Nuevo",
+    "freshHeading": "Novedades en el hub",
+    "exploreAtlas": "Explorar en el Atlas"
   }
 }

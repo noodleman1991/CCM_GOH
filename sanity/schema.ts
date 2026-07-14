@@ -93,6 +93,7 @@ import regionMap from "./schemas/blocks/maps/region-map";
 import atlasEmbed from "./schemas/blocks/maps/atlas-embed";
 import peopleWidget from "./schemas/blocks/people/people-widget";
 import eventsCalendar from "./schemas/blocks/events/events-calendar";
+import freshContent from "./schemas/blocks/fresh-content";
 import submitStoryBanner from "./schemas/blocks/cta/submit-story-banner";
 
 // Insert blocks for structured content pattern
@@ -199,6 +200,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
         atlasEmbed,
         peopleWidget,
         eventsCalendar,
+        freshContent,
         submitStoryBanner,
         // insert blocks
         manualContentInsert,
