@@ -1877,7 +1877,14 @@
     "countryBreakdown": "أين في المنطقة",
     "lastLayer": "تبقى طبقة واحدة على الأقل محددة",
     "tapHint": "المس منطقة لرؤية قصصها",
-    "latestEverywhere": "الأحدث من جميع المناطق"
+    "latestEverywhere": "الأحدث من جميع المناطق",
+    "viewAllType": "عرض كل {label}",
+    "region": "المنطقة",
+    "allRegions": "كل المناطق",
+    "when": "التاريخ",
+    "when_y1": "العام الماضي",
+    "when_y3": "آخر ٣ سنوات",
+    "when_older": "أقدم"
   },
   "docs": {
     "title": "المستندات",

@@ -5,6 +5,7 @@ import { client } from "@/sanity/lib/client";
 import { isRegionCode, REGION_TO_RC_SLUG } from "@/lib/maps/region-codes";
 import { parseLayers, FACET_TO_CONTENT_TYPE } from "@/lib/maps/region-facets";
 import { getThemeOptions } from "@/lib/maps/themes";
+import { parseWhen, whenFilter, type WhenFilter } from "@/lib/maps/date-filter";
 import { projectPoint } from "@/lib/maps/project-point";
 import { clusterPins, type FacetContentType, type PinItem } from "@/lib/maps/cluster-pins";
 
@@ -53,7 +54,8 @@ async function fetchRowsForType(
   region: string,
   slug: string,
   themeSlug: string | null,
-  q: string
+  q: string,
+  when: WhenFilter
 ): Promise<RawPinRow[]> {
   // Theme filter: content matches a theme when one of its dereferenced tags'
   // slug (`tag.value.current`) exactly equals the selected theme's slug.
@@ -85,10 +87,10 @@ async function fetchRowsForType(
   const regionMatch = `(region == $region || relatedCommunity->slug.current == $slug || $slug in relatedCommunities[]->slug.current)`;
 
   return client.fetch<RawPinRow[]>(
-    `*[_type == $type ${publicFilter} && ${regionMatch} ${themeFilter} ${qFilter}]{
+    `*[_type == $type ${publicFilter} && ${regionMatch} ${themeFilter} ${qFilter}${when.filter}]{
       _id, "title": coalesce(title.en, title), "slug": slug.current, ${placeProjection}
     }`,
-    { type, region, slug, q, themeSlug: themeSlug ?? "" }
+    { type, region, slug, q, themeSlug: themeSlug ?? "", ...when.params }
   );
 }
 
@@ -123,8 +125,10 @@ export async function GET(req: NextRequest) {
     if (themeOptions.some((t) => t.slug === theme)) themeSlug = theme;
   }
 
+  const when = whenFilter(parseWhen(sp.get("when")), new Date());
+
   const rowsByType = await Promise.all(
-    types.map((type) => fetchRowsForType(type, region, slug, themeSlug, q))
+    types.map((type) => fetchRowsForType(type, region, slug, themeSlug, q, when))
   );
 
   const countryCounts = new Map<string, number>();

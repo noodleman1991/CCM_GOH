@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { client } from "@/sanity/lib/client";
 import { isRegionCode, REGION_TO_RC_SLUG } from "@/lib/maps/region-codes";
+import { parseWhen, whenFilter } from "@/lib/maps/date-filter";
 
 // Content for a selected region/facet(s), as cards for the Atlas panel (D2, E1).
 // `?region=<code>&facet=caseStudyCount|livedExpCount|newsCount|agendaCount` —
@@ -124,12 +125,15 @@ export async function GET(req: NextRequest) {
   const q = req.nextUrl.searchParams.get("q") || "";
   const themeFilter = theme ? ` && $themeSlug in tags[]->value.current` : "";
   const qFilter = q ? ` && [title.en, title.es, title.fr, title.ar] match $q + "*"` : "";
+  // "When" date facet — same bound-param predicate the map counts use, so the
+  // cards list exactly the documents the counts describe.
+  const when = whenFilter(parseWhen(req.nextUrl.searchParams.get("when")), new Date());
 
   try {
     const perType = await Promise.all(
       types.map((type) =>
         client.fetch(
-          `*[_type == $type ${STATUS_FILTER(type)} && ${regionMatch}${themeFilter}${qFilter}] | order(coalesce(publishedAt, publishDate, _createdAt) desc)[0...12]{
+          `*[_type == $type ${STATUS_FILTER(type)} && ${regionMatch}${themeFilter}${qFilter}${when.filter}] | order(coalesce(publishedAt, publishDate, _createdAt) desc)[0...12]{
             "id": _id,
             "type": _type,
             "title": coalesce(title.en, title, ""),
@@ -138,7 +142,7 @@ export async function GET(req: NextRequest) {
             ${PLACE_PROJECTION(type)},
             "date": coalesce(publishedAt, publishDate, _createdAt)
           }`,
-          { type, region, slug, themeSlug: theme, q }
+          { type, region, slug, themeSlug: theme, q, ...when.params }
         )
       )
     );

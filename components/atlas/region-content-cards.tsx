@@ -2,12 +2,20 @@
 
 import useSWR from "swr";
 import { useTranslations } from "next-intl";
-import { FACETS, facetForContentType, type FacetId } from "@/lib/maps/region-facets";
+import { ArrowRight } from "lucide-react";
+import { FACETS, facetForContentType, atlasDestination, type FacetId } from "@/lib/maps/region-facets";
 import type { FacetContentType } from "@/lib/maps/cluster-pins";
+import { REGION_TO_RC_SLUG, isRegionCode } from "@/lib/maps/region-codes";
 import { COLOR } from "@/lib/ccm-colors";
 import { cn } from "@/lib/utils";
+import { Link } from "@/i18n/navigation";
 import { TypedCard } from "@/components/cards/typed-card";
 import { isTypedCardType, type TypedCardItem } from "@/lib/cards/type-style";
+
+/** Atlas drill-in shows a PREVIEW of a region's content, capped per type; the
+ *  full set lives on each type's listing page, reached via the view-all link
+ *  (which carries the region as a `communities=`/`regions=` filter). */
+const PER_TYPE_CAP = 6;
 
 type Item = {
   id: string;
@@ -114,26 +122,83 @@ function CardsSkeleton() {
   );
 }
 
+/** The listing-page href for a content type, scoped to the given region so the
+ *  full set opens pre-filtered (carries the region as its `communities=`/
+ *  `regions=` param via the shared `atlasDestination` map). Returns null for a
+ *  type with no public listing page or an unrecognized region. */
+function listingHrefFor(type: string, region: string): string | null {
+  if (!isRegionCode(region)) return null;
+  const facetId = facetForContentType(type as FacetContentType)?.id ?? TYPE_TO_FACET[type];
+  if (!facetId) return null;
+  return atlasDestination(facetId, REGION_TO_RC_SLUG[region]);
+}
+
+/** "View all N {type}" link shown when a type's items exceed the preview cap —
+ *  the drill-in is a preview, the listing page holds the rest. */
+function ViewAllLink({ href, label, total }: { href: string; label: string; total: number }) {
+  return (
+    <Link
+      href={href}
+      className="inline-flex items-center gap-1 text-sm font-semibold text-[var(--color-ccm-sea)] hover:underline"
+    >
+      {label}
+      <span className="text-muted-foreground">({total})</span>
+      <ArrowRight className="size-3.5 rtl:-scale-x-100" aria-hidden />
+    </Link>
+  );
+}
+
 /**
  * Track layout shared by both modes below: horizontal snap-scroll strip on
  * mobile (each card ~70% width so the next peeks in), 3–4 col grid from `sm`
  * up. Cards spanning multiple content types get small dot+label group headers
  * ahead of that type's run (spec E1) — skipped entirely for a single-type set.
+ * Each type is capped at PER_TYPE_CAP as a preview; a "view all" link to the
+ * region-scoped listing page appears when the full count exceeds the cap.
  */
-function CardsTrack({ items, t }: { items: Item[]; t: (key: string) => string }) {
+function CardsTrack({
+  items,
+  t,
+  region,
+  viewAllLabel,
+}: {
+  items: Item[];
+  t: (key: string) => string;
+  region?: string;
+  /** (type, region) → localized "View all case studies" label. */
+  viewAllLabel?: (type: string) => string;
+}) {
   const types = [...new Set(items.map((i) => i.type))];
   const grouped = types.length > 1;
 
-  if (!grouped) {
+  const cappedTrack = (type: string, groupItems: Item[]) => {
+    const shown = groupItems.slice(0, PER_TYPE_CAP);
+    const href = region ? listingHrefFor(type, region) : null;
+    const showViewAll = href && groupItems.length > PER_TYPE_CAP;
     return (
-      <div className="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-1 [scrollbar-width:none] lg:grid lg:grid-cols-4 lg:overflow-visible [&::-webkit-scrollbar]:hidden">
-        {items.map((item) => (
-          <div key={item.id} className="w-[70%] shrink-0 snap-start sm:w-[45%] lg:w-auto">
-            <ContentCard item={item} />
+      <>
+        <div className="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-1 [scrollbar-width:none] lg:grid lg:grid-cols-4 lg:overflow-visible [&::-webkit-scrollbar]:hidden">
+          {shown.map((item) => (
+            <div key={item.id} className="w-[70%] shrink-0 snap-start sm:w-[45%] lg:w-auto">
+              <ContentCard item={item} />
+            </div>
+          ))}
+        </div>
+        {showViewAll && (
+          <div className="mt-2">
+            <ViewAllLink
+              href={href}
+              label={viewAllLabel ? viewAllLabel(type) : t(labelKeyForType(type))}
+              total={groupItems.length}
+            />
           </div>
-        ))}
-      </div>
+        )}
+      </>
     );
+  };
+
+  if (!grouped) {
+    return <div className="space-y-1.5">{cappedTrack(types[0], items)}</div>;
   }
 
   // Grouped mode: mobile keeps a single horizontal strip (headers interleave
@@ -146,13 +211,7 @@ function CardsTrack({ items, t }: { items: Item[]; t: (key: string) => string })
         return (
           <div key={type} className="space-y-1.5">
             <GroupHeader type={type} t={t} />
-            <div className="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-1 [scrollbar-width:none] lg:grid lg:grid-cols-4 lg:overflow-visible [&::-webkit-scrollbar]:hidden">
-              {groupItems.map((item) => (
-                <div key={item.id} className="w-[70%] shrink-0 snap-start sm:w-[45%] lg:w-auto">
-                  <ContentCard item={item} />
-                </div>
-              ))}
-            </div>
+            {cappedTrack(type, groupItems)}
           </div>
         );
       })}
@@ -169,6 +228,14 @@ function useCardLabels() {
   return (key: string) => (key === "untitled" ? tAtlas(key) : tMap(key));
 }
 
+/** "View all {type}" label builder, localized: `atlas.viewAllType` wrapping the
+ *  type's own `map`-namespace facet label (e.g. "View all case studies"). */
+function useViewAllLabel() {
+  const tMap = useTranslations("map");
+  const tAtlas = useTranslations("atlas");
+  return (type: string) => tAtlas("viewAllType", { label: tMap(labelKeyForType(type)) });
+}
+
 /**
  * The selected region's actual content, as cards (Atlas D2/E1). Replaces the
  * count-only drill-in with the real items for the chosen region + facet.
@@ -178,16 +245,19 @@ export function RegionContentCards({
   facet,
   theme,
   q,
+  when,
 }: {
   region: string;
   facet: string;
   theme?: string | null;
   q?: string;
+  when?: string | null;
 }) {
   const t = useCardLabels();
-  // Theme/q ride along so the cards always show the same filtered set the
+  const viewAllLabel = useViewAllLabel();
+  // Theme/q/when ride along so the cards always show the same filtered set the
   // choropleth counts describe (count↔cards consistency).
-  const filterQS = `${theme ? `&theme=${encodeURIComponent(theme)}` : ""}${q ? `&q=${encodeURIComponent(q)}` : ""}`;
+  const filterQS = `${theme ? `&theme=${encodeURIComponent(theme)}` : ""}${q ? `&q=${encodeURIComponent(q)}` : ""}${when ? `&when=${encodeURIComponent(when)}` : ""}`;
   const { data, isLoading } = useSWR(
     `/api/maps/region-items?region=${region}&facet=${facet}${filterQS}`,
     fetcher,
@@ -198,7 +268,7 @@ export function RegionContentCards({
   if (isLoading) return <CardsSkeleton />;
   if (items.length === 0) return null;
 
-  return <CardsTrack items={items} t={t} />;
+  return <CardsTrack items={items} t={t} region={region} viewAllLabel={viewAllLabel} />;
 }
 
 /**

@@ -1877,7 +1877,14 @@
     "countryBreakdown": "Où dans la région",
     "lastLayer": "Au moins une couche reste sélectionnée",
     "tapHint": "Touchez une région pour voir ses histoires",
-    "latestEverywhere": "Les dernières histoires de toutes les régions"
+    "latestEverywhere": "Les dernières histoires de toutes les régions",
+    "viewAllType": "Voir tout : {label}",
+    "region": "Région",
+    "allRegions": "Toutes les régions",
+    "when": "Quand",
+    "when_y1": "Cette année",
+    "when_y3": "3 dernières années",
+    "when_older": "Plus ancien"
   },
   "docs": {
     "title": "Documents",
