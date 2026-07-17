@@ -4,6 +4,7 @@ import { prisma, safeQuery } from "@/lib/prisma";
 import { REGION_CODES, RC_SLUG_TO_REGION, isRegionCode, type RegionCode } from "@/lib/maps/region-codes";
 import { aggregateRegionData, FACET_TO_CONTENT_TYPE, parseLayers, type FacetId } from "@/lib/maps/region-facets";
 import { getThemeOptions } from "@/lib/maps/themes";
+import { parseWhen, whenFilter, type WhenFilter } from "@/lib/maps/date-filter";
 
 // Counts change slowly; cache for 5 minutes.
 export const revalidate = 300;
@@ -19,7 +20,8 @@ function emptyCounts(): Record<string, number> {
 async function countsForFacet(
   facet: FacetId,
   theme: string | null,
-  q: string
+  q: string,
+  when: WhenFilter
 ): Promise<Record<string, number>> {
   const counts = emptyCounts();
   const type = FACET_TO_CONTENT_TYPE[facet];
@@ -47,12 +49,12 @@ async function countsForFacet(
     // in several regions appears in each region's cards, so it counts in each.
     const rows: { code: string | null; rcSlug: string | null; rcSlugs: (string | null)[] | null }[] =
       await client.fetch(
-        `*[_type == "${type}"${statusFilter}${themeFilter}${qFilter}]{
+        `*[_type == "${type}"${statusFilter}${themeFilter}${qFilter}${when.filter}]{
            "code": region,
            "rcSlug": relatedCommunity->slug.current,
            "rcSlugs": relatedCommunities[]->slug.current
          }`,
-        { q, themeSlug: theme ?? "" }
+        { q, themeSlug: theme ?? "", ...when.params }
       );
     for (const r of rows) {
       const regions = new Set<RegionCode>();
@@ -115,12 +117,18 @@ export async function GET(req: NextRequest) {
   }
   const q = qParam.trim();
 
+  // "When" date facet. Only applies to dated content facets; member counts have
+  // no publish date, so they're intentionally left unfiltered by date (a doc
+  // with no date can't be asserted to fall in a bounded window — see
+  // date-filter.ts). Computed once per request against a single `now`.
+  const when = whenFilter(parseWhen(sp.get("when")), new Date());
+
   // Fetch every requested facet's counts in parallel (mirrors region-pins'
   // Promise.all fan-out) and isolate failures PER FACET: one facet's query
   // throwing (e.g. a Sanity timeout) must not zero out the other, independent
   // facets that would have succeeded — each settles on its own.
   const byFacetCounts: Partial<Record<FacetId, Record<string, number>>> = {};
-  const settled = await Promise.allSettled(facets.map((facet) => countsForFacet(facet, theme, q)));
+  const settled = await Promise.allSettled(facets.map((facet) => countsForFacet(facet, theme, q, when)));
   settled.forEach((result, i) => {
     const facet = facets[i];
     if (result.status === "fulfilled") {

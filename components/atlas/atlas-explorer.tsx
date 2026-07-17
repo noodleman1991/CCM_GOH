@@ -15,7 +15,8 @@ import {
   type FacetId, type RegionDatumWithBreakdown, type ThemeOption,
 } from '@/lib/maps/region-facets'
 import type { PinCluster, PinItem } from '@/lib/maps/cluster-pins'
-import { REGION_I18N_KEY, REGION_TO_RC_SLUG, isRegionCode, type RegionCode } from '@/lib/maps/region-codes'
+import { parseWhen, type WhenBucket } from '@/lib/maps/date-filter'
+import { REGION_CODES, REGION_I18N_KEY, REGION_TO_RC_SLUG, isRegionCode, type RegionCode } from '@/lib/maps/region-codes'
 import { useRouter, usePathname, Link } from '@/i18n/navigation'
 import { COLOR } from '@/lib/ccm-colors'
 import { cn } from '@/lib/utils'
@@ -26,6 +27,9 @@ const fetcher = (url: string) => fetch(url).then((r) => r.json())
 const CARD_FACETS: ReadonlySet<FacetId> = new Set([
   'caseStudyCount', 'livedExpCount', 'newsCount', 'researchOutputCount',
 ])
+
+// "When" date facet buckets, in chip order (labels via `atlas.when_<bucket>`).
+const WHEN_BUCKETS: readonly WhenBucket[] = ['y1', 'y3', 'older']
 
 /** Group a pin popover's (capped) items by content type, ordered by the
  *  cluster's FULL per-type counts desc (`typeCounts`) — so ordering reflects
@@ -99,6 +103,11 @@ export function AtlasExplorer({
   const rawRegion = lockedRegion ?? searchParams.get('region') ?? ''
   const selected: RegionCode | null = isRegionCode(rawRegion) ? rawRegion : null
   const q = (searchParams.get('q') ?? '').slice(0, 100)
+  // `when` date facet — validated against the known buckets; an unknown value
+  // is dropped (no filter) rather than 400ing the page. Rides along in every
+  // data fetch below so counts, cards and pins describe the same dated set.
+  const when = parseWhen(searchParams.get('when'))
+  const whenQS = when ? `&when=${when}` : ''
 
   // Locked mode (Task 9's embed) has no URL region state — pins must key off
   // the locked region directly rather than the URL-derived `selected`.
@@ -130,7 +139,7 @@ export function AtlasExplorer({
 
   // ── Data ───────────────────────────────────────────────────────────────────
   const facetsQS = layers.join(',')
-  const dataKey = `/api/maps/region-data?facets=${facetsQS}${theme ? `&theme=${theme}` : ''}${q ? `&q=${encodeURIComponent(q)}` : ''}`
+  const dataKey = `/api/maps/region-data?facets=${facetsQS}${theme ? `&theme=${theme}` : ''}${q ? `&q=${encodeURIComponent(q)}` : ''}${whenQS}`
   const { data } = useSWR<{ facets: FacetId[]; data: RegionDatumWithBreakdown[] }>(dataKey, fetcher, {
     revalidateOnFocus: false, dedupingInterval: 60000,
   })
@@ -140,7 +149,7 @@ export function AtlasExplorer({
   // facet row is informative before anything is clicked. One counts-only fetch
   // across ALL facets, theme/q-aware so the numbers always match the filters.
   const allFacetsQS = FACETS.map((f) => f.id).join(',')
-  const totalsKey = `/api/maps/region-data?facets=${allFacetsQS}${theme ? `&theme=${theme}` : ''}${q ? `&q=${encodeURIComponent(q)}` : ''}`
+  const totalsKey = `/api/maps/region-data?facets=${allFacetsQS}${theme ? `&theme=${theme}` : ''}${q ? `&q=${encodeURIComponent(q)}` : ''}${whenQS}`
   const { data: totalsData } = useSWR<{ data: RegionDatumWithBreakdown[] }>(totalsKey, fetcher, {
     revalidateOnFocus: false, dedupingInterval: 120000,
   })
@@ -158,7 +167,7 @@ export function AtlasExplorer({
   // none of the active layers are pin-capable, skip the pins fetch entirely.
   const pinFacets = layers.filter((l) => CARD_FACETS.has(l))
   const pinsKey = effectiveRegion && pinFacets.length > 0
-    ? `/api/maps/region-pins?region=${effectiveRegion}&facets=${pinFacets.join(',')}${theme ? `&theme=${theme}` : ''}${q ? `&q=${encodeURIComponent(q)}` : ''}`
+    ? `/api/maps/region-pins?region=${effectiveRegion}&facets=${pinFacets.join(',')}${theme ? `&theme=${theme}` : ''}${q ? `&q=${encodeURIComponent(q)}` : ''}${whenQS}`
     : null
   const { data: pinsData } = useSWR<{
     pins: PinCluster[]
@@ -321,6 +330,53 @@ export function AtlasExplorer({
         </div>
       )}
 
+      {/* Region facet — a chip row mirroring map selection, so region is
+          filterable without hunting on the map (and works on touch/screen
+          readers). Single-select, driven by the same `region` URL param as
+          the map's onSelect. Hidden in locked/embed mode (that variant is
+          already region-scoped, so a region switcher would be contradictory). */}
+      {!lockedRegion && (
+        <div className="space-y-1.5">
+          <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            {tAtlas('region')}
+          </span>
+          <div className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4 snap-x [&>*]:snap-start [&>*]:flex-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0">
+            <FilterChip
+              label={tAtlas('allRegions')}
+              active={!selected}
+              onClick={() => setParams({ region: null })}
+            />
+            {REGION_CODES.map((code) => (
+              <FilterChip
+                key={code}
+                label={labelFor(code)}
+                active={selected === code}
+                onClick={() => setParams({ region: selected === code ? null : code })}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* When facet — coarse date buckets (single-select). Applies to dated
+          content only; member counts are unaffected (they have no publish
+          date). Rides in the URL like the other facets so it's shareable. */}
+      <div className="space-y-1.5">
+        <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          {tAtlas('when')}
+        </span>
+        <div className="flex flex-wrap gap-2">
+          {WHEN_BUCKETS.map((bucket) => (
+            <FilterChip
+              key={bucket}
+              label={tAtlas(`when_${bucket}`)}
+              active={when === bucket}
+              onClick={() => setParams({ when: when === bucket ? null : bucket })}
+            />
+          ))}
+        </div>
+      </div>
+
       {/* Map — full-width (spec E1 drops the stats panel from this column;
           legend chips below narrate the result set instead). */}
       <div className="relative min-w-0">
@@ -478,7 +534,7 @@ export function AtlasExplorer({
             {singleFacet && destinationHref ? (
               selectedDatum.value > 0 ? (
                 <>
-                  {singleCardFacet && <RegionContentCards region={selected} facet={singleCardFacet} theme={theme} q={q} />}
+                  {singleCardFacet && <RegionContentCards region={selected} facet={singleCardFacet} theme={theme} q={q} when={when} />}
                   <Button asChild size="sm">
                     <Link href={destinationHref}>
                       {tAtlas('explore', { region: labelFor(selected) })}
@@ -491,7 +547,7 @@ export function AtlasExplorer({
               )
             ) : (
               <>
-                {cardFacetsQS && <RegionContentCards region={selected} facet={cardFacetsQS} theme={theme} q={q} />}
+                {cardFacetsQS && <RegionContentCards region={selected} facet={cardFacetsQS} theme={theme} q={q} when={when} />}
                 <ul className="flex flex-wrap gap-2">
                   {layers.map((layerId) => {
                     const def = FACETS.find((f) => f.id === layerId)
