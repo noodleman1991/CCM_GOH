@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "node scripts/create-all-outputs-pages.mjs && next build",
+    "postbuild": "npm run sync:search",
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",

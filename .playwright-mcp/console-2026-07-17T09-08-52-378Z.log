@@ -1,0 +1,94 @@
+[448068929ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/en/atlas?layers=livedExpCount&region=ssa:0
+[448069127ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[448069368ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[448069533ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[448069845ms] [WARNING] Ignoring Event: localhost @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[448070692ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[448071121ms] [ERROR] Connecting to 'https://clerk-telemetry.com/v1/event' violates the following Content Security Policy directive: "connect-src 'self' https://*.clerk.com https://clerk.connectingclimateminds.org https://*.clerk.accounts.dev https://*.algolia.net https://*.algolianet.com https://plausible.io https://*.sanity.io". The action has been blocked. @ https://generous-hagfish-7.clerk.accounts.dev/npm/@clerk/clerk-js@5/dist/clerk.browser.js:18
+[448071126ms] [ERROR] Fetch API cannot load https://clerk-telemetry.com/v1/event. Refused to connect because it violates the document's Content Security Policy. @ https://generous-hagfish-7.clerk.accounts.dev/npm/@clerk/clerk-js@5/dist/clerk.browser.js:18
+[448074174ms] [ERROR] Connecting to 'https://clerk-telemetry.com/v1/event' violates the following Content Security Policy directive: "connect-src 'self' https://*.clerk.com https://clerk.connectingclimateminds.org https://*.clerk.accounts.dev https://*.algolia.net https://*.algolianet.com https://plausible.io https://*.sanity.io". The action has been blocked. @ https://generous-hagfish-7.clerk.accounts.dev/npm/@clerk/clerk-js@5/dist/clerk.browser.js:18
+[448074184ms] [ERROR] Fetch API cannot load https://clerk-telemetry.com/v1/event. Refused to connect because it violates the document's Content Security Policy. @ https://generous-hagfish-7.clerk.accounts.dev/npm/@clerk/clerk-js@5/dist/clerk.browser.js:18
+[448074844ms] [LOG] [Fast Refresh] done in 5417ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[448249114ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[448249141ms] [LOG] [Fast Refresh] done in 131ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[448348703ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[448348732ms] [LOG] [Fast Refresh] done in 134ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[448442036ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[448442097ms] [LOG] [Fast Refresh] done in 165ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[448601637ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[448601716ms] [LOG] [Fast Refresh] done in 184ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[448793444ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[448793609ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[448794084ms] [LOG] [Fast Refresh] done in 577ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[449699933ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[449700009ms] [LOG] [Fast Refresh] done in 178ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[449781069ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[449781109ms] [LOG] [Fast Refresh] done in 143ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[449859293ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[449859349ms] [LOG] [Fast Refresh] done in 162ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[449946758ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[449946778ms] [LOG] [Fast Refresh] done in 133ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[449977425ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[449977442ms] [LOG] [Fast Refresh] done in 118ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[451392151ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[451392166ms] [LOG] [Fast Refresh] done in 120ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[451679039ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[451679044ms] [LOG] [Fast Refresh] done in 108ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[451796933ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[451797015ms] [LOG] [Fast Refresh] done in 186ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[451996152ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[451996195ms] [LOG] [Fast Refresh] done in 145ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[452126396ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[452126401ms] [LOG] [Fast Refresh] done in 108ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[452340852ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[452340880ms] [LOG] [Fast Refresh] done in 132ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[452509106ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[452509119ms] [LOG] [Fast Refresh] done in 115ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[452665508ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[452665586ms] [LOG] [Fast Refresh] done in 180ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[452680997ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[452681122ms] [LOG] [Fast Refresh] done in 228ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[452768761ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[452768840ms] [LOG] [Fast Refresh] done in 182ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[452865481ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[452865613ms] [LOG] [Fast Refresh] done in 237ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[452871338ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[452871377ms] [LOG] [Fast Refresh] done in 141ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[452958897ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[452958928ms] [LOG] [Fast Refresh] done in 131ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[453071202ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[453071352ms] [LOG] [Fast Refresh] done in 252ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[453132920ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[453132937ms] [LOG] [Fast Refresh] done in 120ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[453182595ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[453182601ms] [LOG] [Fast Refresh] done in 108ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[453198330ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[453198372ms] [LOG] [Fast Refresh] done in 144ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[453345039ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[453345145ms] [LOG] [Fast Refresh] done in 209ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[453347902ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[453347903ms] [LOG] [Fast Refresh] done in 102ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[453363449ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[453363590ms] [LOG] [Fast Refresh] done in 242ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[453441826ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[453441962ms] [LOG] [Fast Refresh] done in 238ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[453450650ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[453450661ms] [LOG] [Fast Refresh] done in 113ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[453559747ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[453559781ms] [LOG] [Fast Refresh] done in 136ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[453569012ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[453569039ms] [LOG] [Fast Refresh] done in 128ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[453748797ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[453760538ms] [LOG] [Fast Refresh] done in 11851ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[453760831ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[453760856ms] [LOG] [Fast Refresh] done in 126ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[453762678ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[453762680ms] [LOG] [Fast Refresh] done in 104ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[453771148ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[453784847ms] [LOG] [Fast Refresh] done in 13776ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[453793021ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[453799546ms] [LOG] [Fast Refresh] done in 6630ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[453806991ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[453810886ms] [LOG] [Fast Refresh] done in 3996ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[453883648ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
+[453885595ms] [LOG] [Fast Refresh] done in 2059ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2297
