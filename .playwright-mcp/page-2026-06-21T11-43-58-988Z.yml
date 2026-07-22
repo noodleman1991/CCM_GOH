@@ -1,0 +1,23 @@
+- generic [active] [ref=e1]:
+  - main [ref=e3]:
+    - generic [ref=e4]:
+      - button "Toggle Sidebar" [ref=e6]:
+        - img
+        - generic [ref=e7]: Toggle Sidebar
+      - button "Search..." [ref=e9]:
+        - img [ref=e10]
+    - main [ref=e14]:
+      - generic [ref=e15]:
+        - generic [ref=e16]:
+          - heading "Search" [level=1] [ref=e17]
+          - paragraph [ref=e18]: Find community members, agendas, news, posts, and case studies
+        - generic [ref=e19]:
+          - generic [ref=e21]:
+            - img
+            - searchbox "Search for people, content, or expertise..." [ref=e22]: asia
+            - button "Clear search" [ref=e23]:
+              - img [ref=e24]
+          - paragraph [ref=e27]: Results for "asia"
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e46] [cursor=pointer]:
+    - img [ref=e47]

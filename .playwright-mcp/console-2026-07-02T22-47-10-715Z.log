@@ -1,0 +1,8 @@
+[     365ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[     387ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[     541ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[     611ms] [WARNING] Missing Algolia environment variables: ALGOLIA_API_KEY @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[     612ms] [WARNING] Algolia admin client not available - missing credentials @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[     612ms] [LOG] ✅ Algolia search client initialized successfully @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[     743ms] [WARNING] Ignoring Event: localhost @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[     795ms] [INFO] Sanity is live with automatic revalidation of published content @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302

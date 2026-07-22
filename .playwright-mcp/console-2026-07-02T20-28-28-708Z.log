@@ -1,0 +1,24 @@
+[     403ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[     511ms] [LOG] [Fast Refresh] done in 211ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[     961ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    1037ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    1202ms] [WARNING] Missing Algolia environment variables: ALGOLIA_API_KEY @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    1203ms] [WARNING] Algolia admin client not available - missing credentials @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    1203ms] [LOG] ✅ Algolia search client initialized successfully @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    1214ms] [WARNING] Image with src "/connecting-climate-minds-logo-white.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    1241ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    1387ms] [WARNING] Ignoring Event: localhost @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    1392ms] [LOG] [Fast Refresh] done in 260ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    1418ms] [INFO] Sanity is live with automatic revalidation of published content @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    1486ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   26383ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   26413ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   26473ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   26515ms] [WARNING] Missing Algolia environment variables: ALGOLIA_API_KEY @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   26516ms] [WARNING] Algolia admin client not available - missing credentials @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   26516ms] [LOG] ✅ Algolia search client initialized successfully @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   26525ms] [WARNING] Image with src "/connecting-climate-minds-logo-white.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   26655ms] [WARNING] Ignoring Event: localhost @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   26714ms] [INFO] Sanity is live with automatic revalidation of published content @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302

@@ -1,0 +1,594 @@
+[     338ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[     399ms] [LOG] [Fast Refresh] done in 163ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    3446ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    3832ms] [LOG] [HMR] connected @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    3895ms] [WARNING] Missing Algolia environment variables: ALGOLIA_API_KEY @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    3895ms] [WARNING] Algolia admin client not available - missing credentials @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    3896ms] [LOG] ✅ Algolia search client initialized successfully @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    3921ms] [WARNING] Image with src "/connecting-climate-minds-logo-white.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    4015ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    4129ms] [WARNING] Ignoring Event: localhost @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    4241ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    4256ms] [LOG] [Fast Refresh] done in 365ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    4426ms] [ERROR] Access to resource at 'https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live' from origin 'http://localhost:3001' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ http://localhost:3001/en/collaborations/cmqqj3yf50001oktblt3mh3m2:0
+[    4427ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live:0
+[    4541ms] [ERROR] Access to fetch at 'https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live' from origin 'http://localhost:3001' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ http://localhost:3001/en/collaborations/cmqqj3yf50001oktblt3mh3m2:0
+[    4541ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live:0
+[    4656ms] [ERROR] Access to fetch at 'https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live' from origin 'http://localhost:3001' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ http://localhost:3001/en/collaborations/cmqqj3yf50001oktblt3mh3m2:0
+[    4656ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live:0
+[    4656ms] [WARNING] Sanity Live is unable to connect to the Sanity API as the current origin - http://localhost:3001 - is not in the list of allowed CORS origins for this Sanity Project. Add it here: https://sanity.io/manage/project/gm67v7rk/api?cors=add&origin=http%3A%2F%2Flocalhost%3A3001 @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   61894ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   62314ms] [LOG] [Fast Refresh] done in 522ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11097704ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11097709ms] [LOG] [Fast Refresh] done in 110ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11098645ms] [LOG] [Client Instrumentation Hook] Slow execution detected: 22ms (Note: Code download overhead is not included in this measurement) @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:1530
+[11098665ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11099135ms] [LOG] [HMR] connected @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11099256ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11099373ms] [WARNING] Missing Algolia environment variables: ALGOLIA_API_KEY @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11099374ms] [WARNING] Algolia admin client not available - missing credentials @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11099374ms] [LOG] ✅ Algolia search client initialized successfully @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11099403ms] [WARNING] Image with src "/connecting-climate-minds-logo-white.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11099413ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11099619ms] [WARNING] Ignoring Event: localhost @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11099620ms] [LOG] [Fast Refresh] done in 330ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11100082ms] [ERROR] Access to resource at 'https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live' from origin 'http://localhost:3001' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ http://localhost:3001/en/collaborations:0
+[11100084ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live:0
+[11100196ms] [ERROR] Access to fetch at 'https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live' from origin 'http://localhost:3001' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ http://localhost:3001/en/collaborations:0
+[11100196ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live:0
+[11100368ms] [ERROR] Access to fetch at 'https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live' from origin 'http://localhost:3001' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ http://localhost:3001/en/collaborations:0
+[11100368ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live:0
+[11100369ms] [WARNING] Sanity Live is unable to connect to the Sanity API as the current origin - http://localhost:3001 - is not in the list of allowed CORS origins for this Sanity Project. Add it here: https://sanity.io/manage/project/gm67v7rk/api?cors=add&origin=http%3A%2F%2Flocalhost%3A3001 @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11105143ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11105179ms] [LOG] [HMR] connected @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11105306ms] [WARNING] Missing Algolia environment variables: ALGOLIA_API_KEY @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11105307ms] [WARNING] Algolia admin client not available - missing credentials @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11105307ms] [LOG] ✅ Algolia search client initialized successfully @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11105321ms] [WARNING] Image with src "/connecting-climate-minds-logo-white.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11105374ms] [ERROR] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+%s%s https://react.dev/link/hydration-mismatch 
+
+  ...
+    <InnerLayoutRouter url="/en/collab..." tree={[...]} params={{locale:"en"}} cacheNode={{rsc:<Fragment>, ...}} ...>
+      <SegmentViewNode type="page" pagePath="[locale]/(...">
+        <SegmentTrieNode>
+        <CollaborationsPage>
+          <div className="container ...">
+            <div className="mb-6 flex ...">
+              <div>
+              <CreateCollaborationButton>
+                <Dialog open={false} onOpenChange={function bound dispatchSetState}>
+                  <DialogProvider scope={undefined} triggerRef={{current:null}} contentRef={{current:null}} ...>
+                    <DialogTrigger asChild={true}>
+                      <Primitive.button type="button" aria-haspopup="dialog" aria-expanded={false} ...>
+                        <Primitive.button.Slot type="button" aria-haspopup="dialog" aria-expanded={false} ...>
+                          <Primitive.button.SlotClone type="button" aria-haspopup="dialog" aria-expanded={false} ...>
+                            <Button type="button" aria-haspopup="dialog" aria-expanded={false} ...>
+                              <button
+                                data-slot="button"
+                                className={"inline-flex items-center justify-center gap-2 text-center text-balance fo..."}
+                                type="button"
+                                aria-haspopup="dialog"
+                                aria-expanded={false}
++                               aria-controls="radix-_R_16atpeukndb7t9etb_"
+-                               aria-controls="radix-_R_4pbn5rqkndb7t9etb_"
+                                data-state="closed"
+                                onClick={function handleEvent}
+                                ref={function}
+                              >
+                    ...
+            <Card>
+              <div data-slot="card" className="bg-card te...">
+                ...
+                  <Dialog open={false} onOpenChange={function bound dispatchSetState}>
+                    <DialogProvider scope={undefined} triggerRef={{current:null}} contentRef={{current:null}} ...>
+                      <DialogTrigger asChild={true}>
+                        <Primitive.button type="button" aria-haspopup="dialog" aria-expanded={false} ...>
+                          <Primitive.button.Slot type="button" aria-haspopup="dialog" aria-expanded={false} ...>
+                            <Primitive.button.SlotClone type="button" aria-haspopup="dialog" aria-expanded={false} ...>
+                              <Button type="button" aria-haspopup="dialog" aria-expanded={false} ...>
+                                <button
+                                  data-slot="button"
+                                  className={"inline-flex items-center justify-center gap-2 text-center text-balance ..."}
+                                  type="button"
+                                  aria-haspopup="dialog"
+                                  aria-expanded={false}
++                                 aria-controls="radix-_R_1qatpeukndb7t9etb_"
+-                                 aria-controls="radix-_R_79bn5rqkndb7t9etb_"
+                                  data-state="closed"
+                                  onClick={function handleEvent}
+                                  ref={function}
+                                >
+                      ...
+      ...
+ @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:3132
+[11105502ms] [WARNING] Ignoring Event: localhost @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11105608ms] [ERROR] Access to resource at 'https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live' from origin 'http://localhost:3001' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ http://localhost:3001/en/collaborations:0
+[11105610ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live:0
+[11105639ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11105650ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11105806ms] [ERROR] Access to fetch at 'https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live' from origin 'http://localhost:3001' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ http://localhost:3001/en/collaborations:0
+[11105806ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live:0
+[11105895ms] [ERROR] Access to fetch at 'https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live' from origin 'http://localhost:3001' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ http://localhost:3001/en/collaborations:0
+[11105895ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live:0
+[11105895ms] [WARNING] Sanity Live is unable to connect to the Sanity API as the current origin - http://localhost:3001 - is not in the list of allowed CORS origins for this Sanity Project. Add it here: https://sanity.io/manage/project/gm67v7rk/api?cors=add&origin=http%3A%2F%2Flocalhost%3A3001 @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11107386ms] [LOG] [Fast Refresh] done in 1842ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11111223ms] [WARNING] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}. @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11111226ms] [WARNING] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}. @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11143711ms] [WARNING] Ignoring Event: localhost @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11169089ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11169258ms] [LOG] [Fast Refresh] done in 271ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11197958ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11200651ms] [LOG] [Fast Refresh] done in 2795ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11201448ms] [WARNING] Ignoring Event: localhost @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11201588ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11201713ms] [LOG] [Fast Refresh] done in 227ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11269808ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11271969ms] [LOG] [Fast Refresh] done in 2260ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11273122ms] [WARNING] Ignoring Event: localhost @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11273328ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11273400ms] [LOG] [Fast Refresh] done in 173ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11274712ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F1e53c8216d88a819ddc8ef94749e4f380103ee4e-3840x1280.heif%3Ffm%3Dwebp%26fit%3Dmax&w=640&q=75:0
+[11274716ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F4808835b193451a77f9f87fd3cccd1d686805cbe-1200x630.jpg%3Ffm%3Dwebp%26fit%3Dmax&w=640&q=75:0
+[11282270ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11282551ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11282790ms] [LOG] [HMR] connected @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11282867ms] [WARNING] Missing Algolia environment variables: ALGOLIA_API_KEY @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11282868ms] [WARNING] Algolia admin client not available - missing credentials @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11282868ms] [LOG] ✅ Algolia search client initialized successfully @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11282881ms] [WARNING] Image with src "/connecting-climate-minds-logo-white.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11282937ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11282956ms] [LOG] [Fast Refresh] done in 126ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11283106ms] [WARNING] Ignoring Event: localhost @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11283232ms] [ERROR] Access to resource at 'https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live' from origin 'http://localhost:3001' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ http://localhost:3001/en/news:0
+[11283234ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live:0
+[11283343ms] [ERROR] Access to fetch at 'https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live' from origin 'http://localhost:3001' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ http://localhost:3001/en/news:0
+[11283343ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live:0
+[11283457ms] [ERROR] Access to fetch at 'https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live' from origin 'http://localhost:3001' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ http://localhost:3001/en/news:0
+[11283458ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live:0
+[11283459ms] [WARNING] Sanity Live is unable to connect to the Sanity API as the current origin - http://localhost:3001 - is not in the list of allowed CORS origins for this Sanity Project. Add it here: https://sanity.io/manage/project/gm67v7rk/api?cors=add&origin=http%3A%2F%2Flocalhost%3A3001 @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11283461ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F1e53c8216d88a819ddc8ef94749e4f380103ee4e-3840x1280.heif%3Ffm%3Dwebp%26fit%3Dmax&w=640&q=75:0
+[11283465ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F4808835b193451a77f9f87fd3cccd1d686805cbe-1200x630.jpg%3Ffm%3Dwebp%26fit%3Dmax&w=640&q=75:0
+[11284945ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11286013ms] [LOG] [Fast Refresh] done in 1169ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11287823ms] [WARNING] %c%s%c [@portabletext/react] Unknown block type "image", specify a component for it in the `components.types` prop background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11287851ms] [WARNING] Ignoring Event: localhost @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11287937ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11288064ms] [LOG] [Fast Refresh] done in 227ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11288195ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F4808835b193451a77f9f87fd3cccd1d686805cbe-1200x630.jpg%3Frect%3D40%2C0%2C1120%2C630%26w%3D1200%26h%3D675%26fm%3Dwebp%26fit%3Dmax&w=1200&q=75:0
+[11294749ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11294807ms] [LOG] [Fast Refresh] done in 159ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11295010ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11297313ms] [LOG] [Fast Refresh] done in 2405ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11328911ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11330021ms] [LOG] [Fast Refresh] done in 1212ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11331618ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11331668ms] [WARNING] Ignoring Event: localhost @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11331778ms] [LOG] [Fast Refresh] done in 271ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11335667ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11339400ms] [LOG] [Fast Refresh] done in 3832ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11339511ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11339643ms] [LOG] [Fast Refresh] done in 233ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11341213ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11341303ms] [WARNING] Ignoring Event: localhost @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11341470ms] [LOG] [Fast Refresh] done in 389ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11396563ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11399171ms] [LOG] [Fast Refresh] done in 2710ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11418002ms] [WARNING] %c%s%c PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component. background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   19d234d81259 @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11418005ms] [WARNING] %c%s%c PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component. background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   c59bafe040f8 @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11418005ms] [WARNING] %c%s%c PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component. background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   91023982e65d @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11418141ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11418192ms] [WARNING] Ignoring Event: localhost @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11418697ms] [LOG] [Fast Refresh] done in 697ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11418857ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F7131d0c3058e42bdacb40588daaa07ca3bf11b5f-2083x1488.png%3Fw%3D1100%26fm%3Dwebp%26fit%3Dmax&w=640&q=75:0
+[11418906ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2Fe90606c9ce644a7d64fd7f7ab86b558c63c20081-2074x1164.png%3Frect%3D3%2C0%2C2069%2C1164%26w%3D800%26h%3D450%26fit%3Dcrop%26auto%3Dformat&w=640&q=75:0
+[11418908ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F567f9f20e9c9afb035972841f6783838d016e302-3840x2160.png%3Fw%3D800%26h%3D450%26fit%3Dcrop%26auto%3Dformat&w=640&q=75:0
+[11418909ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F72b19fb988d8fe5d16abf18b8d57c9c6a492af13-3840x2160.png%3Fw%3D800%26h%3D450%26fit%3Dcrop%26auto%3Dformat&w=640&q=75:0
+[11418913ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F172fcbef06c74ab8cba12e857f608d50e3c9d4ef-1436x776.png%3Frect%3D28%2C0%2C1380%2C776%26w%3D800%26h%3D450%26fit%3Dcrop%26auto%3Dformat&w=640&q=75:0
+[11419923ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F5819229eb5fca007fe918feac37ea6224444a7e3-2083x1488.png%3Fw%3D1100%26fm%3Dwebp%26fit%3Dmax&w=640&q=75:0
+[11420815ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F7971b68f228b0780af4472f44a8e93a596baf3e8-1920x1080.jpg%3Frect%3D150%2C0%2C1621%2C1080%26w%3D800%26h%3D533%26fit%3Dcrop%26auto%3Dformat&w=384&q=75:0
+[11420818ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F1ce936d1aae2a6e375f242fbebf7eabcb3abc564-1920x1080.jpg%3Frect%3D150%2C0%2C1621%2C1080%26w%3D800%26h%3D533%26fit%3Dcrop%26auto%3Dformat&w=384&q=75:0
+[11420823ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F34e0ba8b9830188be002a51f7d8628ec382cee7e-1920x1080.jpg%3Frect%3D150%2C0%2C1621%2C1080%26w%3D800%26h%3D533%26fit%3Dcrop%26auto%3Dformat&w=384&q=75:0
+[11421978ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F7873ab82d98436bf9a3f69f11382937fe60fc1fc-1920x1080.jpg%3Frect%3D150%2C0%2C1621%2C1080%26w%3D800%26h%3D533%26fit%3Dcrop%26auto%3Dformat&w=384&q=75:0
+[11421981ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F3d2ca6830166414be40adcb14de43a1d17803fba-1920x1080.jpg%3Frect%3D150%2C0%2C1621%2C1080%26w%3D800%26h%3D533%26fit%3Dcrop%26auto%3Dformat&w=384&q=75:0
+[11421982ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F56939ba686ae83fd4f11cd850755bc2850aa9dd6-1920x1080.jpg%3Frect%3D150%2C0%2C1621%2C1080%26w%3D800%26h%3D533%26fit%3Dcrop%26auto%3Dformat&w=384&q=75:0
+[11422282ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F2c015f41d0dc156e9f3bd3045b6a61f296413ae7-1920x1080.jpg%3Frect%3D150%2C0%2C1621%2C1080%26w%3D800%26h%3D533%26fit%3Dcrop%26auto%3Dformat&w=384&q=75:0
+[11422795ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F34e0ba8b9830188be002a51f7d8628ec382cee7e-1920x1080.jpg%3Frect%3D150%2C0%2C1621%2C1080%26w%3D800%26h%3D533%26fit%3Dcrop%26auto%3Dformat&w=384&q=75:0
+[11422797ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F7971b68f228b0780af4472f44a8e93a596baf3e8-1920x1080.jpg%3Frect%3D150%2C0%2C1621%2C1080%26w%3D800%26h%3D533%26fit%3Dcrop%26auto%3Dformat&w=384&q=75:0
+[11422799ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F1ce936d1aae2a6e375f242fbebf7eabcb3abc564-1920x1080.jpg%3Frect%3D150%2C0%2C1621%2C1080%26w%3D800%26h%3D533%26fit%3Dcrop%26auto%3Dformat&w=384&q=75:0
+[11423388ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F7873ab82d98436bf9a3f69f11382937fe60fc1fc-1920x1080.jpg%3Frect%3D150%2C0%2C1621%2C1080%26w%3D800%26h%3D533%26fit%3Dcrop%26auto%3Dformat&w=384&q=75:0
+[11423390ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F2c015f41d0dc156e9f3bd3045b6a61f296413ae7-1920x1080.jpg%3Frect%3D150%2C0%2C1621%2C1080%26w%3D800%26h%3D533%26fit%3Dcrop%26auto%3Dformat&w=384&q=75:0
+[11423390ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F56939ba686ae83fd4f11cd850755bc2850aa9dd6-1920x1080.jpg%3Frect%3D150%2C0%2C1621%2C1080%26w%3D800%26h%3D533%26fit%3Dcrop%26auto%3Dformat&w=384&q=75:0
+[11424537ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2Fa9b63cab8f1a3e8f0f59eb3363478a545e3004f9-2083x1488.png%3Fw%3D1100%26fm%3Dwebp%26fit%3Dmax&w=640&q=75:0
+[11424700ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2Fa188992df760eecc7333d6fbe0c264d859fb3523-3840x2160.png%3Frect%3D299%2C0%2C3242%2C2160%26w%3D800%26h%3D533%26fit%3Dcrop%26auto%3Dformat&w=384&q=75:0
+[11426601ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11426646ms] [LOG] [Fast Refresh] done in 146ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11429097ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11429187ms] [WARNING] %c%s%c PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component. background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   19d234d81259 @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11429188ms] [WARNING] %c%s%c PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component. background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   c59bafe040f8 @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11429188ms] [WARNING] %c%s%c PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component. background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   91023982e65d @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11429660ms] [LOG] [HMR] connected @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11429710ms] [WARNING] Missing Algolia environment variables: ALGOLIA_API_KEY @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11429710ms] [WARNING] Algolia admin client not available - missing credentials @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11429710ms] [LOG] ✅ Algolia search client initialized successfully @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11429724ms] [WARNING] Image with src "/connecting-climate-minds-logo-white.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11429767ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F3d2ca6830166414be40adcb14de43a1d17803fba-1920x1080.jpg%3Frect%3D150%2C0%2C1621%2C1080%26w%3D800%26h%3D533%26fit%3Dcrop%26auto%3Dformat&w=384&q=75:0
+[11429772ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F56939ba686ae83fd4f11cd850755bc2850aa9dd6-1920x1080.jpg%3Frect%3D150%2C0%2C1621%2C1080%26w%3D800%26h%3D533%26fit%3Dcrop%26auto%3Dformat&w=384&q=75:0
+[11429773ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F2c015f41d0dc156e9f3bd3045b6a61f296413ae7-1920x1080.jpg%3Frect%3D150%2C0%2C1621%2C1080%26w%3D800%26h%3D533%26fit%3Dcrop%26auto%3Dformat&w=384&q=75:0
+[11429773ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F34e0ba8b9830188be002a51f7d8628ec382cee7e-1920x1080.jpg%3Frect%3D150%2C0%2C1621%2C1080%26w%3D800%26h%3D533%26fit%3Dcrop%26auto%3Dformat&w=384&q=75:0
+[11429823ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11430100ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F1ce936d1aae2a6e375f242fbebf7eabcb3abc564-1920x1080.jpg%3Frect%3D150%2C0%2C1621%2C1080%26w%3D800%26h%3D533%26fit%3Dcrop%26auto%3Dformat&w=384&q=75:0
+[11430105ms] [WARNING] Ignoring Event: localhost @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11430160ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2Fa9b63cab8f1a3e8f0f59eb3363478a545e3004f9-2083x1488.png%3Fw%3D1100%26fm%3Dwebp%26fit%3Dmax&w=640&q=75:0
+[11430162ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F7971b68f228b0780af4472f44a8e93a596baf3e8-1920x1080.jpg%3Frect%3D150%2C0%2C1621%2C1080%26w%3D800%26h%3D533%26fit%3Dcrop%26auto%3Dformat&w=384&q=75:0
+[11430164ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2Fa188992df760eecc7333d6fbe0c264d859fb3523-3840x2160.png%3Frect%3D299%2C0%2C3242%2C2160%26w%3D800%26h%3D533%26fit%3Dcrop%26auto%3Dformat&w=384&q=75:0
+[11430217ms] [ERROR] Access to resource at 'https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live' from origin 'http://localhost:3001' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ http://localhost:3001/en/research-and-action/all-outputs:0
+[11430219ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live:0
+[11430364ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F7873ab82d98436bf9a3f69f11382937fe60fc1fc-1920x1080.jpg%3Frect%3D150%2C0%2C1621%2C1080%26w%3D800%26h%3D533%26fit%3Dcrop%26auto%3Dformat&w=384&q=75:0
+[11430364ms] [ERROR] Access to fetch at 'https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live' from origin 'http://localhost:3001' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ http://localhost:3001/en/research-and-action/all-outputs:0
+[11430364ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live:0
+[11430450ms] [ERROR] Access to fetch at 'https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live' from origin 'http://localhost:3001' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ http://localhost:3001/en/research-and-action/all-outputs:0
+[11430450ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live:0
+[11430450ms] [WARNING] Sanity Live is unable to connect to the Sanity API as the current origin - http://localhost:3001 - is not in the list of allowed CORS origins for this Sanity Project. Add it here: https://sanity.io/manage/project/gm67v7rk/api?cors=add&origin=http%3A%2F%2Flocalhost%3A3001 @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11430494ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F5819229eb5fca007fe918feac37ea6224444a7e3-2083x1488.png%3Fw%3D1100%26fm%3Dwebp%26fit%3Dmax&w=640&q=75:0
+[11430497ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F34e0ba8b9830188be002a51f7d8628ec382cee7e-1920x1080.jpg%3Frect%3D150%2C0%2C1621%2C1080%26w%3D800%26h%3D533%26fit%3Dcrop%26auto%3Dformat&w=384&q=75:0
+[11430569ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F1ce936d1aae2a6e375f242fbebf7eabcb3abc564-1920x1080.jpg%3Frect%3D150%2C0%2C1621%2C1080%26w%3D800%26h%3D533%26fit%3Dcrop%26auto%3Dformat&w=384&q=75:0
+[11430572ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F7971b68f228b0780af4472f44a8e93a596baf3e8-1920x1080.jpg%3Frect%3D150%2C0%2C1621%2C1080%26w%3D800%26h%3D533%26fit%3Dcrop%26auto%3Dformat&w=384&q=75:0
+[11430726ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F567f9f20e9c9afb035972841f6783838d016e302-3840x2160.png%3Fw%3D800%26h%3D450%26fit%3Dcrop%26auto%3Dformat&w=640&q=75:0
+[11430728ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F172fcbef06c74ab8cba12e857f608d50e3c9d4ef-1436x776.png%3Frect%3D28%2C0%2C1380%2C776%26w%3D800%26h%3D450%26fit%3Dcrop%26auto%3Dformat&w=640&q=75:0
+[11430813ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F72b19fb988d8fe5d16abf18b8d57c9c6a492af13-3840x2160.png%3Fw%3D800%26h%3D450%26fit%3Dcrop%26auto%3Dformat&w=640&q=75:0
+[11430818ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2Fe90606c9ce644a7d64fd7f7ab86b558c63c20081-2074x1164.png%3Frect%3D3%2C0%2C2069%2C1164%26w%3D800%26h%3D450%26fit%3Dcrop%26auto%3Dformat&w=640&q=75:0
+[11431254ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F7131d0c3058e42bdacb40588daaa07ca3bf11b5f-2083x1488.png%3Fw%3D1100%26fm%3Dwebp%26fit%3Dmax&w=640&q=75:0
+[11434947ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11434970ms] [WARNING] %c%s%c PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component. background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   19d234d81259 @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11434971ms] [WARNING] %c%s%c PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component. background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   c59bafe040f8 @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11434971ms] [WARNING] %c%s%c PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component. background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   91023982e65d @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11434991ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F7131d0c3058e42bdacb40588daaa07ca3bf11b5f-2083x1488.png%3Fw%3D1100%26fm%3Dwebp%26fit%3Dmax&w=640&q=75:0
+[11434993ms] [LOG] [HMR] connected @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11435036ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11435124ms] [WARNING] Missing Algolia environment variables: ALGOLIA_API_KEY @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11435124ms] [WARNING] Algolia admin client not available - missing credentials @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11435124ms] [LOG] ✅ Algolia search client initialized successfully @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11435138ms] [WARNING] Image with src "/connecting-climate-minds-logo-white.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11435144ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F72b19fb988d8fe5d16abf18b8d57c9c6a492af13-3840x2160.png%3Fw%3D800%26h%3D450%26fit%3Dcrop%26auto%3Dformat&w=640&q=75:0
+[11435151ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2Fe90606c9ce644a7d64fd7f7ab86b558c63c20081-2074x1164.png%3Frect%3D3%2C0%2C2069%2C1164%26w%3D800%26h%3D450%26fit%3Dcrop%26auto%3Dformat&w=640&q=75:0
+[11435170ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F172fcbef06c74ab8cba12e857f608d50e3c9d4ef-1436x776.png%3Frect%3D28%2C0%2C1380%2C776%26w%3D800%26h%3D450%26fit%3Dcrop%26auto%3Dformat&w=640&q=75:0
+[11435383ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F567f9f20e9c9afb035972841f6783838d016e302-3840x2160.png%3Fw%3D800%26h%3D450%26fit%3Dcrop%26auto%3Dformat&w=640&q=75:0
+[11435384ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F5819229eb5fca007fe918feac37ea6224444a7e3-2083x1488.png%3Fw%3D1100%26fm%3Dwebp%26fit%3Dmax&w=640&q=75:0
+[11435662ms] [WARNING] Ignoring Event: localhost @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11435754ms] [ERROR] Access to resource at 'https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live' from origin 'http://localhost:3001' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ http://localhost:3001/en/research-and-action/all-outputs:0
+[11435755ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live:0
+[11435903ms] [ERROR] Access to fetch at 'https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live' from origin 'http://localhost:3001' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ http://localhost:3001/en/research-and-action/all-outputs:0
+[11435903ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live:0
+[11435990ms] [ERROR] Access to fetch at 'https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live' from origin 'http://localhost:3001' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ http://localhost:3001/en/research-and-action/all-outputs:0
+[11435990ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live:0
+[11435990ms] [WARNING] Sanity Live is unable to connect to the Sanity API as the current origin - http://localhost:3001 - is not in the list of allowed CORS origins for this Sanity Project. Add it here: https://sanity.io/manage/project/gm67v7rk/api?cors=add&origin=http%3A%2F%2Flocalhost%3A3001 @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11438563ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11438627ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F7131d0c3058e42bdacb40588daaa07ca3bf11b5f-2083x1488.png%3Fw%3D1100%26fm%3Dwebp%26fit%3Dmax&w=640&q=75:0
+[11438627ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F72b19fb988d8fe5d16abf18b8d57c9c6a492af13-3840x2160.png%3Fw%3D800%26h%3D450%26fit%3Dcrop%26auto%3Dformat&w=640&q=75:0
+[11438627ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2Fe90606c9ce644a7d64fd7f7ab86b558c63c20081-2074x1164.png%3Frect%3D3%2C0%2C2069%2C1164%26w%3D800%26h%3D450%26fit%3Dcrop%26auto%3Dformat&w=640&q=75:0
+[11438703ms] [LOG] [HMR] connected @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11438749ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F567f9f20e9c9afb035972841f6783838d016e302-3840x2160.png%3Fw%3D800%26h%3D450%26fit%3Dcrop%26auto%3Dformat&w=640&q=75:0
+[11438764ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F172fcbef06c74ab8cba12e857f608d50e3c9d4ef-1436x776.png%3Frect%3D28%2C0%2C1380%2C776%26w%3D800%26h%3D450%26fit%3Dcrop%26auto%3Dformat&w=640&q=75:0
+[11438764ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F5819229eb5fca007fe918feac37ea6224444a7e3-2083x1488.png%3Fw%3D1100%26fm%3Dwebp%26fit%3Dmax&w=640&q=75:0
+[11438887ms] [WARNING] %c%s%c PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component. background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   19d234d81259 @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11438892ms] [WARNING] %c%s%c PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component. background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   c59bafe040f8 @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11438896ms] [WARNING] %c%s%c PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component. background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   91023982e65d @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11438964ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11439117ms] [WARNING] Missing Algolia environment variables: ALGOLIA_API_KEY @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11439117ms] [WARNING] Algolia admin client not available - missing credentials @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11439118ms] [LOG] ✅ Algolia search client initialized successfully @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11439180ms] [WARNING] Image with src "/connecting-climate-minds-logo-white.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11439414ms] [WARNING] Ignoring Event: localhost @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11439571ms] [ERROR] Access to resource at 'https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live' from origin 'http://localhost:3001' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ http://localhost:3001/en/research-and-action/all-outputs:0
+[11439572ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live:0
+[11439685ms] [ERROR] Access to fetch at 'https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live' from origin 'http://localhost:3001' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ http://localhost:3001/en/research-and-action/all-outputs:0
+[11439685ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live:0
+[11439771ms] [ERROR] Access to fetch at 'https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live' from origin 'http://localhost:3001' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ http://localhost:3001/en/research-and-action/all-outputs:0
+[11439771ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live:0
+[11439772ms] [WARNING] Sanity Live is unable to connect to the Sanity API as the current origin - http://localhost:3001 - is not in the list of allowed CORS origins for this Sanity Project. Add it here: https://sanity.io/manage/project/gm67v7rk/api?cors=add&origin=http%3A%2F%2Flocalhost%3A3001 @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11445083ms] [WARNING] Ignoring Event: localhost @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11445417ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F7131d0c3058e42bdacb40588daaa07ca3bf11b5f-2083x1488.png%3Fw%3D1100%26fm%3Dwebp%26fit%3Dmax&w=640&q=75:0
+[11445423ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F567f9f20e9c9afb035972841f6783838d016e302-3840x2160.png%3Fw%3D800%26h%3D450%26fit%3Dcrop%26auto%3Dformat&w=640&q=75:0
+[11445426ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2Fe90606c9ce644a7d64fd7f7ab86b558c63c20081-2074x1164.png%3Frect%3D3%2C0%2C2069%2C1164%26w%3D800%26h%3D450%26fit%3Dcrop%26auto%3Dformat&w=640&q=75:0
+[11445427ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F72b19fb988d8fe5d16abf18b8d57c9c6a492af13-3840x2160.png%3Fw%3D800%26h%3D450%26fit%3Dcrop%26auto%3Dformat&w=640&q=75:0
+[11445428ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F172fcbef06c74ab8cba12e857f608d50e3c9d4ef-1436x776.png%3Frect%3D28%2C0%2C1380%2C776%26w%3D800%26h%3D450%26fit%3Dcrop%26auto%3Dformat&w=640&q=75:0
+[11448234ms] [WARNING] Ignoring Event: localhost @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11448378ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F5819229eb5fca007fe918feac37ea6224444a7e3-2083x1488.png%3Fw%3D1100%26fm%3Dwebp%26fit%3Dmax&w=640&q=75:0
+[11448382ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F34e0ba8b9830188be002a51f7d8628ec382cee7e-1920x1080.jpg%3Frect%3D150%2C0%2C1621%2C1080%26w%3D800%26h%3D533%26fit%3Dcrop%26auto%3Dformat&w=384&q=75:0
+[11448383ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F1ce936d1aae2a6e375f242fbebf7eabcb3abc564-1920x1080.jpg%3Frect%3D150%2C0%2C1621%2C1080%26w%3D800%26h%3D533%26fit%3Dcrop%26auto%3Dformat&w=384&q=75:0
+[11448384ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F7873ab82d98436bf9a3f69f11382937fe60fc1fc-1920x1080.jpg%3Frect%3D150%2C0%2C1621%2C1080%26w%3D800%26h%3D533%26fit%3Dcrop%26auto%3Dformat&w=384&q=75:0
+[11448386ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F7971b68f228b0780af4472f44a8e93a596baf3e8-1920x1080.jpg%3Frect%3D150%2C0%2C1621%2C1080%26w%3D800%26h%3D533%26fit%3Dcrop%26auto%3Dformat&w=384&q=75:0
+[11448487ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F3d2ca6830166414be40adcb14de43a1d17803fba-1920x1080.jpg%3Frect%3D150%2C0%2C1621%2C1080%26w%3D800%26h%3D533%26fit%3Dcrop%26auto%3Dformat&w=384&q=75:0
+[11448489ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F2c015f41d0dc156e9f3bd3045b6a61f296413ae7-1920x1080.jpg%3Frect%3D150%2C0%2C1621%2C1080%26w%3D800%26h%3D533%26fit%3Dcrop%26auto%3Dformat&w=384&q=75:0
+[11448597ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F56939ba686ae83fd4f11cd850755bc2850aa9dd6-1920x1080.jpg%3Frect%3D150%2C0%2C1621%2C1080%26w%3D800%26h%3D533%26fit%3Dcrop%26auto%3Dformat&w=384&q=75:0
+[11451215ms] [WARNING] %c%s%c PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component. background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   19d234d81259 @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11451216ms] [WARNING] %c%s%c PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component. background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   c59bafe040f8 @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11451216ms] [WARNING] %c%s%c PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component. background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   91023982e65d @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11451225ms] [WARNING] Ignoring Event: localhost @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11451324ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2Fa9b63cab8f1a3e8f0f59eb3363478a545e3004f9-2083x1488.png%3Fw%3D1100%26fm%3Dwebp%26fit%3Dmax&w=640&q=75:0
+[11451326ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2Fa188992df760eecc7333d6fbe0c264d859fb3523-3840x2160.png%3Frect%3D299%2C0%2C3242%2C2160%26w%3D800%26h%3D533%26fit%3Dcrop%26auto%3Dformat&w=384&q=75:0
+[11451376ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F61d99780b61149d7b9ff2ecd631beb3b1541cd27-3840x2160.png%3Fw%3D800%26h%3D450%26fit%3Dcrop%26auto%3Dformat&w=640&q=75:0
+[11451386ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2Fea79b7b3f7ea4bed14666ec5f996d8bc05cb2898-3840x2160.png%3Fw%3D800%26h%3D450%26fit%3Dcrop%26auto%3Dformat&w=640&q=75:0
+[11454879ms] [WARNING] Ignoring Event: localhost @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11454988ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2Fd800ae0083a85016fd1640ec6a414b5dfd8217f1-3840x2160.png%3Frect%3D299%2C0%2C3242%2C2160%26w%3D800%26h%3D533%26fit%3Dcrop%26auto%3Dformat&w=384&q=75:0
+[11455035ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F567f9f20e9c9afb035972841f6783838d016e302-3840x2160.png%3Frect%3D299%2C0%2C3242%2C2160%26w%3D800%26h%3D533%26fit%3Dcrop%26auto%3Dformat&w=384&q=75:0
+[11455037ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F693df4ea3c67d4812f2bbe4eaa23c15584ecc1e7-3840x2160.png%3Frect%3D299%2C0%2C3242%2C2160%26w%3D800%26h%3D533%26fit%3Dcrop%26auto%3Dformat&w=384&q=75:0
+[11455041ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2Fd9a60dcfdbf2d1b07ae3e68a200183728b638d46-2083x1488.png%3Fw%3D1100%26fm%3Dwebp%26fit%3Dmax&w=640&q=75:0
+[11463067ms] [WARNING] Ignoring Event: localhost @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11463942ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F4808835b193451a77f9f87fd3cccd1d686805cbe-1200x630.jpg%3Ffm%3Dwebp%26fit%3Dmax&w=640&q=75:0
+[11463946ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F1e53c8216d88a819ddc8ef94749e4f380103ee4e-3840x1280.heif%3Ffm%3Dwebp%26fit%3Dmax&w=640&q=75:0
+[11479495ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F1e53c8216d88a819ddc8ef94749e4f380103ee4e-3840x1280.heif%3Ffm%3Dwebp%26fit%3Dmax&w=640&q=75:0
+[11479497ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F4808835b193451a77f9f87fd3cccd1d686805cbe-1200x630.jpg%3Ffm%3Dwebp%26fit%3Dmax&w=640&q=75:0
+[11483874ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11485325ms] [LOG] [Fast Refresh] done in 1552ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11489295ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11489449ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11489549ms] [WARNING] Ignoring Event: localhost @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11489904ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2Fbcdaedef57ea25f55a4233b10d57101370db393d-1054x772.png%3Ffm%3Dwebp%26fit%3Dmax&w=96&q=75:0
+[11489906ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2Fb2f35ee5e225570931be15c8629c97a98eba7da2-1054x772.png%3Ffm%3Dwebp%26fit%3Dmax&w=96&q=75:0
+[11489907ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F466e31d8ed5163822c7e1f2996b8500532b57772-1054x772.png%3Ffm%3Dwebp%26fit%3Dmax&w=96&q=75:0
+[11490029ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2Fe80c190fb330efd0c845cae42de3c689af3030ec-1612x1612.png%3Fw%3D1100%26fm%3Dwebp%26fit%3Dmax&w=640&q=75:0
+[11490040ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F68125b9581329c1116ce3b97b84ea8b0b05fcba7-1920x1081.jpg%3Fw%3D1100%26fm%3Dwebp%26fit%3Dmax&w=640&q=75:0
+[11490243ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F080b0cb8cb6496e83c304188c072e57b1bfc06e4-810x873.png%3Frect%3D0%2C32%2C810%2C810%26w%3D320%26h%3D320%26fit%3Dcrop%26auto%3Dformat&w=256&q=90:0
+[11490543ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F96d182f2560ddb3dc2276bf1f39447ab3af8c69f-810x873.png%3Frect%3D0%2C32%2C810%2C810%26w%3D320%26h%3D320%26fit%3Dcrop%26auto%3Dformat&w=256&q=90:0
+[11490546ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F57491b5d9842244e2b6ca4d52c6bdab4923f9707-810x873.png%3Frect%3D0%2C32%2C810%2C810%26w%3D320%26h%3D320%26fit%3Dcrop%26auto%3Dformat&w=256&q=90:0
+[11490549ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F271707749b893fe09b3eedfe2012e35a23d90cf5-810x873.png%3Frect%3D0%2C32%2C810%2C810%26w%3D320%26h%3D320%26fit%3Dcrop%26auto%3Dformat&w=256&q=90:0
+[11490679ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2Feb24a95ac14042cc3ae65c7420a0b5a34f5f62a1-810x873.png%3Frect%3D0%2C32%2C810%2C810%26w%3D320%26h%3D320%26fit%3Dcrop%26auto%3Dformat&w=256&q=90:0
+[11490681ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2Fe1d61a1e0a36730f41ebf10c8c8faa1fe00e8b14-810x873.png%3Frect%3D0%2C32%2C810%2C810%26w%3D320%26h%3D320%26fit%3Dcrop%26auto%3Dformat&w=256&q=90:0
+[11491705ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F715acae9d0b653dd28c255c61305d362b6ed50e3-810x873.png%3Frect%3D0%2C32%2C810%2C810%26w%3D320%26h%3D320%26fit%3Dcrop%26auto%3Dformat&w=256&q=90:0
+[11491708ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F590b92433ffff9b0fa60b9e417529f390543d297-810x873.png%3Frect%3D0%2C32%2C810%2C810%26w%3D320%26h%3D320%26fit%3Dcrop%26auto%3Dformat&w=256&q=90:0
+[11491711ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F85ec8a28d24f43b438d33eda83abf64075f32ac9-810x873.png%3Frect%3D0%2C32%2C810%2C810%26w%3D320%26h%3D320%26fit%3Dcrop%26auto%3Dformat&w=256&q=90:0
+[11492000ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2Faf5503d836d1a4e3d00d1e0c924d1e45626b60b1-810x873.png%3Frect%3D0%2C32%2C810%2C810%26w%3D320%26h%3D320%26fit%3Dcrop%26auto%3Dformat&w=256&q=90:0
+[11492002ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F56fbc38e000ad3d2e3f1fe198d0fcacbe30d5105-810x873.png%3Frect%3D0%2C32%2C810%2C810%26w%3D320%26h%3D320%26fit%3Dcrop%26auto%3Dformat&w=256&q=90:0
+[11492003ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F4c57fe873e9ce38fc15143bf37e17c54cfaac050-810x873.png%3Frect%3D0%2C32%2C810%2C810%26w%3D320%26h%3D320%26fit%3Dcrop%26auto%3Dformat&w=256&q=90:0
+[11492271ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F8b3d5bdee8e7ff4d2a82e1918d85b13a39654d7e-810x873.png%3Frect%3D0%2C32%2C810%2C810%26w%3D320%26h%3D320%26fit%3Dcrop%26auto%3Dformat&w=256&q=90:0
+[11492273ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2Fa5c287abfe4408a86865bc85a56931f39719a3b8-810x873.png%3Frect%3D0%2C32%2C810%2C810%26w%3D320%26h%3D320%26fit%3Dcrop%26auto%3Dformat&w=256&q=90:0
+[11492279ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2Fec7f51a29a3d62489d22a6ff42ba29f2eb602bff-810x873.png%3Frect%3D0%2C32%2C810%2C810%26w%3D320%26h%3D320%26fit%3Dcrop%26auto%3Dformat&w=256&q=90:0
+[11492771ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F4b9aab406880cea2f69a062cb417104df3c2bee7-810x873.png%3Frect%3D0%2C32%2C810%2C810%26w%3D320%26h%3D320%26fit%3Dcrop%26auto%3Dformat&w=256&q=90:0
+[11492773ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F4c757bbff99ac7fe67e9e112b590e4cfe5a27e2a-810x873.png%3Frect%3D0%2C32%2C810%2C810%26w%3D320%26h%3D320%26fit%3Dcrop%26auto%3Dformat&w=256&q=90:0
+[11492783ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F7a5de3499174af5f3b29172cd3a6d9f271b52dc6-810x873.png%3Frect%3D0%2C32%2C810%2C810%26w%3D320%26h%3D320%26fit%3Dcrop%26auto%3Dformat&w=256&q=90:0
+[11492848ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F19c5f34ccaa7d31fdb81e684827474d5b3fc3d25-810x873.png%3Frect%3D0%2C32%2C810%2C810%26w%3D320%26h%3D320%26fit%3Dcrop%26auto%3Dformat&w=256&q=90:0
+[11492850ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F371e0c69323bdd8b9fc48851d80af07875c9db30-810x873.png%3Frect%3D0%2C32%2C810%2C810%26w%3D320%26h%3D320%26fit%3Dcrop%26auto%3Dformat&w=256&q=90:0
+[11492854ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3001/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fdevelopment%2F81f03e7cdb2dd8485ec92bb400d36349e17f795b-810x873.png%3Frect%3D0%2C32%2C810%2C810%26w%3D320%26h%3D320%26fit%3Dcrop%26auto%3Dformat&w=256&q=90:0
+[11498513ms] [WARNING] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}. @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11498519ms] [WARNING] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}. @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11499221ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11499230ms] [LOG] [Fast Refresh] done in 111ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11499668ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://googleads.g.doubleclick.net/pagead/id:0
+[11499669ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://static.doubleclick.net/instream/ad_status.js:0
+[11502192ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11505596ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11510469ms] [LOG] [Fast Refresh] done in 4975ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11510575ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11510688ms] [LOG] [Fast Refresh] done in 215ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11512296ms] [WARNING] Ignoring Event: localhost @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11512398ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11512686ms] [LOG] [Fast Refresh] done in 393ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11522563ms] [WARNING] Ignoring Event: localhost @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11926427ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[11926494ms] [LOG] [Fast Refresh] done in 171ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[12083966ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[12085735ms] [LOG] [Fast Refresh] done in 1870ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[12109883ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[12109976ms] [LOG] [Fast Refresh] done in 195ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[13147559ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[13147568ms] [LOG] [Fast Refresh] done in 114ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[13214527ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[13214556ms] [LOG] [Fast Refresh] done in 137ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[13214670ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[13215666ms] [LOG] [Fast Refresh] done in 1101ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[13574525ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[13574535ms] [LOG] [Fast Refresh] done in 112ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[22932540ms] [LOG] [HMR] connected @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[22932789ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[22933203ms] [LOG] [Fast Refresh] done in 518ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[23101306ms] [LOG] [HMR] connected @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[23102044ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[23103394ms] [LOG] [Fast Refresh] done in 1452ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[23110992ms] [LOG] [HMR] connected @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[23111166ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[23111196ms] [LOG] [Fast Refresh] done in 133ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[28742418ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[28744962ms] [LOG] [Fast Refresh] done in 2661ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[28792951ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[28792987ms] [LOG] [Fast Refresh] done in 142ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[28975403ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[28975407ms] [LOG] [Fast Refresh] done in 107ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[29036660ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[29036668ms] [LOG] [Fast Refresh] done in 109ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[29280418ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[29280491ms] [LOG] [Fast Refresh] done in 176ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[29464096ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[29464117ms] [LOG] [Fast Refresh] done in 122ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[31781500ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[31781527ms] [LOG] [Fast Refresh] done in 126ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[31836381ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[31837225ms] [LOG] [Fast Refresh] done in 954ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[31904846ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[31904857ms] [LOG] [Fast Refresh] done in 116ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[32055536ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[32056007ms] [LOG] [Fast Refresh] done in 572ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[32210931ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[32210940ms] [LOG] [Fast Refresh] done in 112ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[32271852ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[32271881ms] [LOG] [Fast Refresh] done in 130ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[32332657ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[32332677ms] [LOG] [Fast Refresh] done in 123ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[34039854ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[34039871ms] [LOG] [Fast Refresh] done in 123ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[34701919ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[34702507ms] [LOG] [Fast Refresh] done in 692ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[34789830ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[34792153ms] [LOG] [Fast Refresh] done in 2426ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[34809962ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[34810156ms] [LOG] [Fast Refresh] done in 298ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[34838428ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[34838933ms] [LOG] [Fast Refresh] done in 608ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[35085895ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[35085904ms] [LOG] [Fast Refresh] done in 113ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[35228575ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[35234102ms] [LOG] [Fast Refresh] done in 5553ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[35234347ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[35238207ms] [LOG] [Fast Refresh] done in 3960ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[35252265ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[35252641ms] [LOG] [Fast Refresh] done in 481ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[35296293ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[35296489ms] [LOG] [Fast Refresh] done in 299ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[35317131ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[35317313ms] [LOG] [Fast Refresh] done in 287ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[35366385ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[35366557ms] [LOG] [Fast Refresh] done in 274ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[35422776ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[35422919ms] [LOG] [Fast Refresh] done in 245ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[35442141ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[35442209ms] [LOG] [Fast Refresh] done in 170ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[35490989ms] [ERROR] Connecting to 'https://clerk-telemetry.com/v1/event' violates the following Content Security Policy directive: "connect-src 'self' https://*.clerk.com https://clerk.connectingclimateminds.org https://*.clerk.accounts.dev https://*.algolia.net https://*.algolianet.com https://plausible.io https://*.sanity.io https://*.r2.cloudflarestorage.com https://*.upstash.io https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://*.ingest.de.sentry.io". The action has been blocked. @ https://generous-hagfish-7.clerk.accounts.dev/npm/@clerk/clerk-js@5/dist/clerk.browser.js:18
+[35490992ms] [ERROR] Fetch API cannot load https://clerk-telemetry.com/v1/event. Refused to connect because it violates the document's Content Security Policy. @ https://generous-hagfish-7.clerk.accounts.dev/npm/@clerk/clerk-js@5/dist/clerk.browser.js:18
+[35492074ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[35492163ms] [LOG] [Fast Refresh] done in 190ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[35512054ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[35512225ms] [LOG] [Fast Refresh] done in 271ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[35534169ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[35536657ms] [LOG] [Fast Refresh] done in 2606ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[35570525ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[35575340ms] [LOG] [Fast Refresh] done in 4927ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[35578550ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[35579247ms] [LOG] [Fast Refresh] done in 800ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[35629849ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[35630272ms] [LOG] [Fast Refresh] done in 530ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[35642051ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[35642108ms] [LOG] [Fast Refresh] done in 159ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[35676855ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[35677112ms] [LOG] [Fast Refresh] done in 359ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[35887769ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[35887916ms] [LOG] [Fast Refresh] done in 251ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[37110395ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[37111157ms] [LOG] [Fast Refresh] done in 867ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[37128163ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[37128521ms] [LOG] [Fast Refresh] done in 461ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[37144892ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[37145037ms] [LOG] [Fast Refresh] done in 247ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[37165059ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[37165242ms] [LOG] [Fast Refresh] done in 284ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[37181367ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[37181896ms] [LOG] [Fast Refresh] done in 631ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[37202086ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[37202215ms] [LOG] [Fast Refresh] done in 231ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[37307727ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[37307869ms] [LOG] [Fast Refresh] done in 243ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[37412927ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[37413053ms] [LOG] [Fast Refresh] done in 230ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[37475629ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[37476464ms] [LOG] [Fast Refresh] done in 935ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[37539624ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[37540968ms] [LOG] [Fast Refresh] done in 1452ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[39065000ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[39065129ms] [LOG] [Fast Refresh] done in 235ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[42535125ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[42535394ms] [LOG] [Fast Refresh] done in 373ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[44286929ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[44287793ms] [LOG] [Fast Refresh] done in 969ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[44292889ms] [LOG] [HMR] connected @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[44293116ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[44293564ms] [LOG] [Fast Refresh] done in 550ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[44641677ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[44641780ms] [LOG] [Fast Refresh] done in 207ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[47528974ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_CLOSED @ https://generous-hagfish-7.clerk.accounts.dev/v1/client/sessions/sess_3FSEmikACldU79KaY5E4E3BYOC9/tokens?__clerk_api_version=2025-11-10&_clerk_js_version=5.127.0&__clerk_db_jwt=dvb_3FOOUfoQT9T6UmXtJa7tc2zjqQq:0
+[48337971ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[48337991ms] [LOG] [Fast Refresh] done in 129ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[50274502ms] [ERROR] Failed to load resource: net::ERR_TIMED_OUT @ https://generous-hagfish-7.clerk.accounts.dev/v1/client/sessions/sess_3FSEmikACldU79KaY5E4E3BYOC9/tokens?__clerk_api_version=2025-11-10&_clerk_js_version=5.127.0&__clerk_db_jwt=dvb_3FOOUfoQT9T6UmXtJa7tc2zjqQq:0
+[51213531ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_CLOSED @ https://generous-hagfish-7.clerk.accounts.dev/v1/client/sessions/sess_3FSEmikACldU79KaY5E4E3BYOC9/tokens?__clerk_api_version=2025-11-10&_clerk_js_version=5.127.0&__clerk_db_jwt=dvb_3FOOUfoQT9T6UmXtJa7tc2zjqQq:0
+[54885792ms] [ERROR] Failed to load resource: net::ERR_TIMED_OUT @ https://generous-hagfish-7.clerk.accounts.dev/v1/client/sessions/sess_3FSEmikACldU79KaY5E4E3BYOC9/tokens?__clerk_api_version=2025-11-10&_clerk_js_version=5.127.0&__clerk_db_jwt=dvb_3FOOUfoQT9T6UmXtJa7tc2zjqQq:0
+[57513542ms] [ERROR] Failed to load resource: net::ERR_TIMED_OUT @ https://generous-hagfish-7.clerk.accounts.dev/v1/client/sessions/sess_3FSEmikACldU79KaY5E4E3BYOC9/tokens?__clerk_api_version=2025-11-10&_clerk_js_version=5.127.0&__clerk_db_jwt=dvb_3FOOUfoQT9T6UmXtJa7tc2zjqQq:0
+[61346390ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_CLOSED @ https://generous-hagfish-7.clerk.accounts.dev/v1/client/sessions/sess_3FSEmikACldU79KaY5E4E3BYOC9/tokens?__clerk_api_version=2025-11-10&_clerk_js_version=5.127.0&__clerk_db_jwt=dvb_3FOOUfoQT9T6UmXtJa7tc2zjqQq:0
+[62978560ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_RESET @ https://generous-hagfish-7.clerk.accounts.dev/v1/client/sessions/sess_3FSEmikACldU79KaY5E4E3BYOC9/tokens?__clerk_api_version=2025-11-10&_clerk_js_version=5.127.0&__clerk_db_jwt=dvb_3FOOUfoQT9T6UmXtJa7tc2zjqQq:0
+[65034165ms] [ERROR] Failed to load resource: net::ERR_TIMED_OUT @ https://generous-hagfish-7.clerk.accounts.dev/v1/client/sessions/sess_3FSEmikACldU79KaY5E4E3BYOC9/tokens?__clerk_api_version=2025-11-10&_clerk_js_version=5.127.0&__clerk_db_jwt=dvb_3FOOUfoQT9T6UmXtJa7tc2zjqQq:0
+[65126569ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[65127628ms] [LOG] [Fast Refresh] done in 1174ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[65181419ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[65181830ms] [LOG] [Fast Refresh] done in 514ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[65223127ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[65223579ms] [LOG] [Fast Refresh] done in 571ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[65962891ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[65962911ms] [LOG] [Fast Refresh] done in 122ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66086647ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66087229ms] [LOG] [Fast Refresh] done in 683ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66147297ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66147503ms] [LOG] [Fast Refresh] done in 306ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66158694ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66159882ms] [LOG] [Fast Refresh] done in 1228ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66159991ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66161540ms] [LOG] [Fast Refresh] done in 1648ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66272598ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66272866ms] [LOG] [Fast Refresh] done in 370ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66297140ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66298487ms] [LOG] [Fast Refresh] done in 1447ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66331906ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66331954ms] [LOG] [Fast Refresh] done in 153ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66374689ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66374914ms] [LOG] [Fast Refresh] done in 327ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66389506ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66389657ms] [LOG] [Fast Refresh] done in 254ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66426037ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66426831ms] [LOG] [Fast Refresh] done in 894ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66427185ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66430071ms] [LOG] [Fast Refresh] done in 2987ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66430954ms] [ERROR] Connecting to 'https://clerk-telemetry.com/v1/event' violates the following Content Security Policy directive: "connect-src 'self' https://*.clerk.com https://clerk.connectingclimateminds.org https://*.clerk.accounts.dev https://*.algolia.net https://*.algolianet.com https://plausible.io https://*.sanity.io https://*.r2.cloudflarestorage.com https://*.upstash.io https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://*.ingest.de.sentry.io". The action has been blocked. @ https://generous-hagfish-7.clerk.accounts.dev/npm/@clerk/clerk-js@5/dist/clerk.browser.js:18
+[66430959ms] [ERROR] Fetch API cannot load https://clerk-telemetry.com/v1/event. Refused to connect because it violates the document's Content Security Policy. @ https://generous-hagfish-7.clerk.accounts.dev/npm/@clerk/clerk-js@5/dist/clerk.browser.js:18
+[66453316ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66454015ms] [LOG] [Fast Refresh] done in 800ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66477069ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66477178ms] [LOG] [Fast Refresh] done in 212ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66568850ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66569659ms] [LOG] [Fast Refresh] done in 400ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66594943ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66595086ms] [LOG] [Fast Refresh] done in 227ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66595210ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66595712ms] [LOG] [Fast Refresh] done in 603ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66615748ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66615781ms] [LOG] [Fast Refresh] done in 133ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66633696ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66633906ms] [LOG] [Fast Refresh] done in 310ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66735419ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66735526ms] [LOG] [Fast Refresh] done in 209ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66821004ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66822760ms] [LOG] [Fast Refresh] done in 1872ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66884266ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66884291ms] [LOG] [Fast Refresh] done in 127ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66885621ms] [ERROR] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr?id=8GHSXF2jlF3tw1tMrQGls' failed:  @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:10876
+[66890096ms] [LOG] [HMR] connected @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66894384ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66894621ms] [LOG] [HMR] connected @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66894687ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66894851ms] [WARNING] Missing Algolia environment variables: ALGOLIA_API_KEY @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66894851ms] [WARNING] Algolia admin client not available - missing credentials @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66894852ms] [LOG] ✅ Algolia search client initialized successfully @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66894862ms] [WARNING] Image with src "/connecting-climate-minds-logo-white.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66894877ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66895212ms] [WARNING] Ignoring Event: localhost @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66895228ms] [LOG] [Fast Refresh] done in 458ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[66895559ms] [ERROR] Access to resource at 'https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live' from origin 'http://localhost:3001' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ http://localhost:3001/en/lived-experiences:0
+[66895562ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live:0
+[66895722ms] [ERROR] Access to fetch at 'https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live' from origin 'http://localhost:3001' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ http://localhost:3001/en/lived-experiences:0
+[66895722ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live:0
+[66896034ms] [ERROR] Access to fetch at 'https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live' from origin 'http://localhost:3001' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ http://localhost:3001/en/lived-experiences:0
+[66896034ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/development?tag=next-loader.live:0
+[66896034ms] [WARNING] Sanity Live is unable to connect to the Sanity API as the current origin - http://localhost:3001 - is not in the list of allowed CORS origins for this Sanity Project. Add it here: https://sanity.io/manage/project/gm67v7rk/api?cors=add&origin=http%3A%2F%2Flocalhost%3A3001 @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302

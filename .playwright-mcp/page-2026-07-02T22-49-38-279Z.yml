@@ -1,0 +1,137 @@
+- generic [active] [ref=f22e1]:
+  - generic [ref=f22e2]:
+    - generic [ref=f22e5]:
+      - list [ref=f22e7]:
+        - listitem [ref=f22e8]:
+          - link "Go to homepage" [ref=f22e9] [cursor=pointer]:
+            - /url: /
+            - img "Connecting Climate Minds Logo" [ref=f22e10]
+      - generic [ref=f22e11]:
+        - generic [ref=f22e12]:
+          - generic [ref=f22e13]: Discover
+          - list [ref=f22e14]:
+            - listitem [ref=f22e15]:
+              - link "Atlas & Explore" [ref=f22e16] [cursor=pointer]:
+                - /url: /en/atlas
+                - img [ref=f22e17]
+                - generic [ref=f22e20]: Atlas & Explore
+            - listitem [ref=f22e21]:
+              - button "Research & Action" [ref=f22e22]:
+                - img [ref=f22e23]
+                - generic [ref=f22e25]: Research & Action
+                - img [ref=f22e26]
+            - listitem [ref=f22e28]:
+              - link "News & Updates" [ref=f22e29] [cursor=pointer]:
+                - /url: /en/news
+                - img [ref=f22e30]
+                - generic [ref=f22e33]: News & Updates
+            - listitem [ref=f22e34]:
+              - link "Lived experiences" [ref=f22e35] [cursor=pointer]:
+                - /url: /en/lived-experiences
+                - img [ref=f22e36]
+                - generic [ref=f22e38]: Lived experiences
+            - listitem [ref=f22e39]:
+              - link "Case studies" [ref=f22e40] [cursor=pointer]:
+                - /url: /en/research-and-action/case-studies
+                - img [ref=f22e41]
+                - generic [ref=f22e44]: Case studies
+        - generic [ref=f22e45]:
+          - generic [ref=f22e46]: Collaborate
+          - list [ref=f22e47]:
+            - listitem [ref=f22e48]:
+              - button "Regional Communities" [ref=f22e49]:
+                - img [ref=f22e50]
+                - generic [ref=f22e53]: Regional Communities
+                - img [ref=f22e54]
+            - listitem [ref=f22e56]:
+              - link "Find people" [ref=f22e57] [cursor=pointer]:
+                - /url: /en/collaborate
+                - img [ref=f22e58]
+                - generic [ref=f22e63]: Find people
+            - listitem [ref=f22e64]:
+              - link "Start or find a project" [ref=f22e65] [cursor=pointer]:
+                - /url: /en/collaborations
+                - img [ref=f22e66]
+                - generic [ref=f22e68]: Start or find a project
+        - list [ref=f22e71]:
+          - listitem [ref=f22e72]:
+            - link "About" [ref=f22e73] [cursor=pointer]:
+              - /url: /about
+              - img [ref=f22e74]
+              - generic [ref=f22e76]: About
+          - listitem [ref=f22e77]:
+            - link "Feedback" [ref=f22e78] [cursor=pointer]:
+              - /url: /feedback
+              - img [ref=f22e79]
+              - generic [ref=f22e81]: Feedback
+      - generic [ref=f22e82]:
+        - list [ref=f22e84]:
+          - listitem [ref=f22e85]:
+            - button [disabled]
+        - button "Search... ⌘K" [ref=f22e87]:
+          - img [ref=f22e88]
+          - generic [ref=f22e91]:
+            - generic: Search...
+          - generic [ref=f22e93]: ⌘K
+        - list [ref=f22e95]:
+          - listitem [ref=f22e96]:
+            - button "English" [ref=f22e97]:
+              - generic [ref=f22e99]: English
+              - img [ref=f22e100]
+    - main [ref=f22e104]:
+      - button "Toggle Sidebar" [ref=f22e107]:
+        - img
+        - generic [ref=f22e108]: Toggle Sidebar
+      - main [ref=f22e110]:
+        - generic [ref=f22e114]:
+          - generic [ref=f22e115]:
+            - heading "Atlas & Explore" [level=1] [ref=f22e116]
+            - paragraph [ref=f22e117]: Explore case studies, lived experiences, people and more across the seven regions.
+          - generic [ref=f22e118]:
+            - img [ref=f22e119]
+            - textbox "Search the atlas…" [ref=f22e122]
+          - generic [ref=f22e123]:
+            - text: Show
+            - generic [ref=f22e124]:
+              - button "Case studies" [disabled] [pressed] [ref=f22e125]:
+                - img [ref=f22e126]
+                - generic [ref=f22e128]: Case studies
+              - button "Lived experiences" [ref=f22e129]:
+                - generic [ref=f22e130]: Lived experiences
+              - button "Members" [ref=f22e131]:
+                - generic [ref=f22e132]: Members
+              - button "News" [ref=f22e133]:
+                - generic [ref=f22e134]: News
+              - button "Agendas" [ref=f22e135]:
+                - generic [ref=f22e136]: Agendas
+              - button "Reports" [ref=f22e137]:
+                - generic [ref=f22e138]: Reports
+          - generic [ref=f22e139]:
+            - text: Theme
+            - generic [ref=f22e140]:
+              - button "Displacement" [ref=f22e141]:
+                - generic [ref=f22e142]: Displacement
+              - button "Livelihoods" [ref=f22e143]:
+                - generic [ref=f22e144]: Livelihoods
+              - button "Youth" [ref=f22e145]:
+                - generic [ref=f22e146]: Youth
+              - button "Indigenous" [ref=f22e147]:
+                - generic [ref=f22e148]: Indigenous
+          - generic [ref=f22e149]:
+            - img "Regional map" [ref=f22e151]:
+              - 'button "Sub-Saharan Africa: 0" [ref=f22e152] [cursor=pointer]'
+              - 'button "Northern Africa and Western Asia: 0" [ref=f22e153] [cursor=pointer]'
+              - 'button "Central and Southern Asia: 0" [ref=f22e154] [cursor=pointer]'
+              - 'button "Eastern and South-Eastern Asia: 0" [ref=f22e155] [cursor=pointer]'
+              - 'button "Latin America and the Caribbean: 0" [ref=f22e156] [cursor=pointer]'
+              - 'button "Oceania: 0" [ref=f22e157] [cursor=pointer]'
+              - 'button "Europe and North America: 0" [ref=f22e158] [cursor=pointer]'
+            - generic [ref=f22e159]:
+              - paragraph [ref=f22e160]: Case studies
+              - list
+          - button "Case studies 0" [disabled] [ref=f22e162]:
+            - generic [ref=f22e164]: Case studies
+            - generic [ref=f22e165]: "0"
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=f22e171] [cursor=pointer]:
+    - img [ref=f22e172]

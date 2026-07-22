@@ -1,0 +1,36 @@
+- generic [active] [ref=e1]:
+  - main [ref=e3]:
+    - generic [ref=e4]:
+      - button "Toggle Sidebar" [ref=e6]:
+        - img
+        - generic [ref=e7]: Toggle Sidebar
+      - button "البحث..." [ref=e9]:
+        - img [ref=e10]
+    - main [ref=e14]:
+      - generic [ref=e15]:
+        - generic [ref=e16]:
+          - heading "البحث" [level=1] [ref=e17]
+          - paragraph [ref=e18]: العثور على أعضاء المجتمع والأجندات والأخبار والمنشورات ودراسات الحالة
+        - generic [ref=e19]:
+          - generic [ref=e21]:
+            - img
+            - searchbox "البحث عن الأشخاص أو المحتوى أو الخبرة..." [ref=e22]: آسيا
+            - button "مسح البحث" [ref=e23]:
+              - img [ref=e24]
+          - paragraph [ref=e27]: نتائج البحث عن "آسيا"
+          - generic [ref=e29]:
+            - generic [ref=e31]:
+              - img [ref=e33]
+              - heading "المناطق" [level=2] [ref=e36]
+              - generic [ref=e37]: "3"
+            - generic [ref=e38]:
+              - link "شمال أفريقيا وغرب آسيا" [ref=e42] [cursor=pointer]:
+                - /url: /ar/communities/northern-africa-and-western-asia
+              - link "آسيا الوسطى والجنوبية" [ref=e46] [cursor=pointer]:
+                - /url: /ar/communities/central-and-southern-asia
+              - link "شرق وجنوب شرق آسيا" [ref=e50] [cursor=pointer]:
+                - /url: /ar/communities/eastern-and-south-eastern-asia
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e56] [cursor=pointer]:
+    - img [ref=e57]
+  - alert [ref=e60]

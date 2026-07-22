@@ -1,0 +1,16 @@
+- generic [active] [ref=f25e1]:
+  - main [ref=f25e3]:
+    - button "Toggle Sidebar" [ref=f25e6]:
+      - img
+      - generic [ref=f25e7]: Toggle Sidebar
+    - main [ref=f25e9]:
+      - generic [ref=f25e10]:
+        - generic [ref=f25e11]:
+          - heading "Search" [level=1] [ref=f25e12]
+          - paragraph [ref=f25e13]: Find community members, agendas, news, posts, and case studies
+        - generic [ref=f25e16]:
+          - img
+          - searchbox "Search for people, content, or expertise..." [ref=f25e17]
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=f25e36] [cursor=pointer]:
+    - img [ref=f25e37]

@@ -1,0 +1,134 @@
+- generic [active] [ref=f7e1]:
+  - generic [ref=f7e2]:
+    - generic [ref=f7e5]:
+      - list [ref=f7e7]:
+        - listitem [ref=f7e8]:
+          - link "Go to homepage" [ref=f7e9] [cursor=pointer]:
+            - /url: /
+            - img "Connecting Climate Minds Logo" [ref=f7e10]
+      - generic [ref=f7e11]:
+        - generic [ref=f7e12]:
+          - generic [ref=f7e13]: Discover
+          - list [ref=f7e14]:
+            - listitem [ref=f7e15]:
+              - link "Atlas & Explore" [ref=f7e16] [cursor=pointer]:
+                - /url: /en/atlas
+                - img [ref=f7e17]
+                - generic [ref=f7e20]: Atlas & Explore
+            - listitem [ref=f7e21]:
+              - button "Research & Action" [ref=f7e22]:
+                - img [ref=f7e23]
+                - generic [ref=f7e25]: Research & Action
+                - img [ref=f7e26]
+            - listitem [ref=f7e28]:
+              - link "News & Updates" [ref=f7e29] [cursor=pointer]:
+                - /url: /en/news
+                - img [ref=f7e30]
+                - generic [ref=f7e33]: News & Updates
+            - listitem [ref=f7e34]:
+              - link "Lived experiences" [ref=f7e35] [cursor=pointer]:
+                - /url: /en/lived-experiences
+                - img [ref=f7e36]
+                - generic [ref=f7e38]: Lived experiences
+            - listitem [ref=f7e39]:
+              - link "Case studies" [ref=f7e40] [cursor=pointer]:
+                - /url: /en/research-and-action/case-studies
+                - img [ref=f7e41]
+                - generic [ref=f7e44]: Case studies
+        - generic [ref=f7e45]:
+          - generic [ref=f7e46]: Collaborate
+          - list [ref=f7e47]:
+            - listitem [ref=f7e48]:
+              - button "Regional Communities" [ref=f7e49]:
+                - img [ref=f7e50]
+                - generic [ref=f7e53]: Regional Communities
+                - img [ref=f7e54]
+            - listitem [ref=f7e56]:
+              - link "Find people" [ref=f7e57] [cursor=pointer]:
+                - /url: /en/collaborate
+                - img [ref=f7e58]
+                - generic [ref=f7e63]: Find people
+            - listitem [ref=f7e64]:
+              - link "Start or find a project" [ref=f7e65] [cursor=pointer]:
+                - /url: /en/collaborations
+                - img [ref=f7e66]
+                - generic [ref=f7e68]: Start or find a project
+        - list [ref=f7e71]:
+          - listitem [ref=f7e72]:
+            - link "About" [ref=f7e73] [cursor=pointer]:
+              - /url: /about
+              - img [ref=f7e74]
+              - generic [ref=f7e76]: About
+          - listitem [ref=f7e77]:
+            - link "Feedback" [ref=f7e78] [cursor=pointer]:
+              - /url: /feedback
+              - img [ref=f7e79]
+              - generic [ref=f7e81]: Feedback
+      - generic [ref=f7e82]:
+        - list [ref=f7e84]:
+          - listitem [ref=f7e85]:
+            - button [disabled]
+        - button "Search... ⌘K" [ref=f7e87]:
+          - img [ref=f7e88]
+          - generic [ref=f7e92]: Search...
+          - generic [ref=f7e94]: ⌘K
+        - list [ref=f7e96]:
+          - listitem [ref=f7e97]:
+            - button "English" [ref=f7e98]:
+              - generic [ref=f7e100]: English
+              - img [ref=f7e101]
+    - main [ref=f7e105]:
+      - button "Toggle Sidebar" [ref=f7e108]:
+        - img
+        - generic [ref=f7e109]: Toggle Sidebar
+      - main [ref=f7e111]:
+        - generic [ref=f7e113]:
+          - generic [ref=f7e114]:
+            - heading "Atlas & Explore" [level=1] [ref=f7e115]
+            - paragraph [ref=f7e116]: Explore case studies, lived experiences, people and more across the seven regions.
+          - generic [ref=f7e117]:
+            - img [ref=f7e118]
+            - textbox "Search the atlas…" [ref=f7e121]
+          - generic [ref=f7e122]:
+            - text: Data layer
+            - generic [ref=f7e123]:
+              - button "Case studies" [disabled] [pressed] [ref=f7e124]:
+                - img [ref=f7e125]
+                - generic [ref=f7e127]: Case studies
+              - button "Lived experiences" [ref=f7e128]:
+                - generic [ref=f7e129]: Lived experiences
+              - button "Members" [ref=f7e130]:
+                - generic [ref=f7e131]: Members
+              - button "News" [ref=f7e132]:
+                - generic [ref=f7e133]: News
+              - button "Agendas" [ref=f7e134]:
+                - generic [ref=f7e135]: Agendas
+              - button "Reports" [ref=f7e136]:
+                - generic [ref=f7e137]: Reports
+          - generic [ref=f7e138]:
+            - text: Theme
+            - generic [ref=f7e139]:
+              - button "Displacement" [ref=f7e140]:
+                - generic [ref=f7e141]: Displacement
+              - button "Livelihoods" [ref=f7e142]:
+                - generic [ref=f7e143]: Livelihoods
+              - button "Youth" [ref=f7e144]:
+                - generic [ref=f7e145]: Youth
+              - button "Indigenous" [ref=f7e146]:
+                - generic [ref=f7e147]: Indigenous
+          - generic [ref=f7e148]:
+            - img "Regional map" [ref=f7e150]:
+              - 'button "Sub-Saharan Africa: 0" [ref=f7e151] [cursor=pointer]'
+              - 'button "Northern Africa and Western Asia: 0" [ref=f7e152] [cursor=pointer]'
+              - 'button "Central and Southern Asia: 0" [ref=f7e153] [cursor=pointer]'
+              - 'button "Eastern and South-Eastern Asia: 0" [ref=f7e154] [cursor=pointer]'
+              - 'button "Latin America and the Caribbean: 0" [ref=f7e155] [cursor=pointer]'
+              - 'button "Oceania: 0" [ref=f7e156] [cursor=pointer]'
+              - 'button "Europe and North America: 0" [ref=f7e157] [cursor=pointer]'
+            - generic [ref=f7e158]:
+              - paragraph [ref=f7e159]: Case studies
+              - list
+          - generic [ref=f7e161]: Case studies
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=f7e167] [cursor=pointer]:
+    - img [ref=f7e168]

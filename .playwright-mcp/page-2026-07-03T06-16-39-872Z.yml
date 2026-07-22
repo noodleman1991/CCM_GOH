@@ -1,0 +1,131 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e5]:
+      - list [ref=e7]:
+        - listitem [ref=e8]:
+          - link "Go to homepage" [ref=e9] [cursor=pointer]:
+            - /url: /
+            - img "Connecting Climate Minds Logo" [ref=e10]
+      - generic [ref=e11]:
+        - generic [ref=e12]:
+          - generic [ref=e13]: Discover
+          - list [ref=e14]:
+            - listitem [ref=e15]:
+              - link "Atlas & Explore" [ref=e16] [cursor=pointer]:
+                - /url: /en/atlas
+                - img [ref=e17]
+                - generic [ref=e20]: Atlas & Explore
+            - listitem [ref=e21]:
+              - button "Research & Action" [ref=e22]:
+                - img [ref=e23]
+                - generic [ref=e25]: Research & Action
+                - img [ref=e26]
+            - listitem [ref=e28]:
+              - link "News & Updates" [ref=e29] [cursor=pointer]:
+                - /url: /en/news
+                - img [ref=e30]
+                - generic [ref=e33]: News & Updates
+            - listitem [ref=e34]:
+              - link "Lived experiences" [ref=e35] [cursor=pointer]:
+                - /url: /en/lived-experiences
+                - img [ref=e36]
+                - generic [ref=e38]: Lived experiences
+            - listitem [ref=e39]:
+              - link "Case studies" [ref=e40] [cursor=pointer]:
+                - /url: /en/research-and-action/case-studies
+                - img [ref=e41]
+                - generic [ref=e44]: Case studies
+        - generic [ref=e45]:
+          - generic [ref=e46]: Collaborate
+          - list [ref=e47]:
+            - listitem [ref=e48]:
+              - button "Regional Communities" [ref=e49]:
+                - img [ref=e50]
+                - generic [ref=e53]: Regional Communities
+                - img [ref=e54]
+            - listitem [ref=e56]:
+              - link "Find people" [ref=e57] [cursor=pointer]:
+                - /url: /en/collaborate
+                - img [ref=e58]
+                - generic [ref=e63]: Find people
+            - listitem [ref=e64]:
+              - link "Start or find a project" [ref=e65] [cursor=pointer]:
+                - /url: /en/collaborations
+                - img [ref=e66]
+                - generic [ref=e68]: Start or find a project
+        - list [ref=e71]:
+          - listitem [ref=e72]:
+            - link "About" [ref=e73] [cursor=pointer]:
+              - /url: /about
+              - img [ref=e74]
+              - generic [ref=e76]: About
+          - listitem [ref=e77]:
+            - link "Feedback" [ref=e78] [cursor=pointer]:
+              - /url: /feedback
+              - img [ref=e79]
+              - generic [ref=e81]: Feedback
+      - generic [ref=e82]:
+        - button "Search... ⌘K" [ref=e85]:
+          - img [ref=e86]
+          - generic [ref=e90]: Search...
+          - generic [ref=e92]: ⌘K
+        - list [ref=e94]:
+          - listitem [ref=e95]:
+            - button "English" [ref=e96]:
+              - generic [ref=e98]: English
+              - img [ref=e99]
+    - main [ref=e103]:
+      - button "Toggle Sidebar" [ref=e106]:
+        - img
+        - generic [ref=e107]: Toggle Sidebar
+      - main [ref=e109]:
+        - generic [ref=e112]:
+          - generic [ref=e113]:
+            - heading "Atlas & Explore" [level=1] [ref=e114]
+            - paragraph [ref=e115]: Explore case studies, lived experiences, people and more across the seven regions.
+          - generic [ref=e116]:
+            - img [ref=e117]
+            - textbox "Search the atlas…" [ref=e120]
+          - generic [ref=e121]:
+            - text: Show
+            - generic [ref=e122]:
+              - button "Case studies" [disabled] [pressed] [ref=e123]:
+                - img [ref=e124]
+                - generic [ref=e126]: Case studies
+              - button "Lived experiences" [ref=e127]:
+                - generic [ref=e128]: Lived experiences
+              - button "Members" [ref=e129]:
+                - generic [ref=e130]: Members
+              - button "News" [ref=e131]:
+                - generic [ref=e132]: News
+              - button "Agendas" [ref=e133]:
+                - generic [ref=e134]: Agendas
+              - button "Reports" [ref=e135]:
+                - generic [ref=e136]: Reports
+          - generic [ref=e137]:
+            - text: Theme
+            - generic [ref=e138]:
+              - button "Climate Change" [ref=e139]:
+                - generic [ref=e140]: Climate Change
+              - button "Climate Justice" [ref=e141]:
+                - generic [ref=e142]: Climate Justice
+              - button "Indigenous Communities" [ref=e143]:
+                - generic [ref=e144]: Indigenous Communities
+              - button "Intergenerational Impact" [ref=e145]:
+                - generic [ref=e146]: Intergenerational Impact
+          - img "Regional map" [ref=e148]:
+            - 'button "Sub-Saharan Africa: 0" [ref=e149] [cursor=pointer]'
+            - 'button "Northern Africa and Western Asia: 0" [ref=e150] [cursor=pointer]'
+            - 'button "Central and Southern Asia: 0" [ref=e151] [cursor=pointer]'
+            - 'button "Eastern and South-Eastern Asia: 0" [ref=e152] [cursor=pointer]'
+            - 'button "Latin America and the Caribbean: 0" [ref=e153] [cursor=pointer]'
+            - 'button "Oceania: 0" [ref=e154] [cursor=pointer]'
+            - 'button "Europe and North America: 0" [ref=e155] [cursor=pointer]'
+            - button "1 Climate change and mental health impacts among Dalit communities in southwestern Bangladesh" [ref=e156] [cursor=pointer]
+          - button "Case studies 0" [disabled] [ref=e159]:
+            - generic [ref=e161]: Case studies
+            - generic [ref=e162]: "0"
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e168] [cursor=pointer]:
+    - img [ref=e169]
+  - alert [ref=e172]

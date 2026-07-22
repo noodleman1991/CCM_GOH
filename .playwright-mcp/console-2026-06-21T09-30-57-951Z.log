@@ -1,0 +1,17 @@
+[    3137ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   25970ms] [LOG] [Fast Refresh] done in 22955ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   26126ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   26353ms] [LOG] [Fast Refresh] done in 332ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   30944ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   31499ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   31653ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   32736ms] [WARNING] Ignoring Event: localhost @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   32864ms] [INFO] Sanity is live with automatic revalidation of published content @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   32919ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   32952ms] [WARNING] Image with src "https://cdn.sanity.io/images/gm67v7rk/production_2/1d3fae800fffe1b06b1978b583d73667dc0771bc-5760x3240.jpg?w=800&h=450&fit=crop&auto=format" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   36119ms] [LOG] [Fast Refresh] done in 4574ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   56933ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   57593ms] [LOG] [Fast Refresh] done in 756ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   73994ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   74889ms] [LOG] [Fast Refresh] done in 995ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302

@@ -1,0 +1,171 @@
+- generic [ref=f7e1]:
+  - generic [ref=f7e2]:
+    - generic [ref=f7e5]:
+      - link "Go to homepage" [ref=f7e7] [cursor=pointer]:
+        - /url: /en
+        - generic [ref=f7e8]: ccm
+      - list [ref=f7e11]:
+        - listitem [ref=f7e12]:
+          - button "Regional Communities" [ref=f7e13]:
+            - img [ref=f7e14]
+            - generic: Regional Communities
+            - img [ref=f7e17]
+        - listitem [ref=f7e19]:
+          - button "Research & Action" [ref=f7e20]:
+            - img [ref=f7e21]
+            - generic: Research & Action
+            - img [ref=f7e23]
+        - listitem [ref=f7e25]:
+          - link "Atlas" [ref=f7e26] [cursor=pointer]:
+            - /url: /en/atlas
+            - img [ref=f7e27]
+            - generic: Atlas
+        - listitem [ref=f7e30]:
+          - link "Lived experiences" [ref=f7e31] [cursor=pointer]:
+            - /url: /en/lived-experiences
+            - img [ref=f7e32]
+            - generic: Lived experiences
+        - listitem [ref=f7e34]:
+          - link "Case studies" [ref=f7e35] [cursor=pointer]:
+            - /url: /en/research-and-action/case-studies
+            - img [ref=f7e36]
+            - generic: Case studies
+        - listitem [ref=f7e39]:
+          - link "News & Updates" [ref=f7e40] [cursor=pointer]:
+            - /url: /en/news
+            - img [ref=f7e41]
+            - generic: News & Updates
+      - list [ref=f7e45]:
+        - listitem [ref=f7e46]:
+          - button [ref=f7e47]:
+            - img [ref=f7e48]
+    - main [ref=f7e51]:
+      - button "Toggle Sidebar" [ref=f7e54]:
+        - img
+        - generic [ref=f7e55]: Toggle Sidebar
+      - main [ref=f7e57]:
+        - generic [ref=f7e58]:
+          - generic [ref=f7e59]:
+            - navigation "breadcrumb" [ref=f7e60]:
+              - list [ref=f7e61]:
+                - listitem [ref=f7e62]:
+                  - link "Workspaces" [ref=f7e63] [cursor=pointer]:
+                    - /url: /en/collaborations
+                - listitem [ref=f7e64]:
+                  - img [ref=f7e65]
+                - listitem [ref=f7e67]:
+                  - link "The best project" [disabled] [ref=f7e68]
+            - generic [ref=f7e69]:
+              - button "The best project" [ref=f7e70]
+              - generic [ref=f7e71]: Members only
+              - link "View public page" [ref=f7e72] [cursor=pointer]:
+                - /url: /en/collaborations/cmqqpqyey0003oky2hufx7h7d?view=public
+          - navigation "Sections" [ref=f7e74]:
+            - button "Overview" [ref=f7e75]:
+              - img [ref=f7e76]
+              - generic [ref=f7e81]: Overview
+            - button "Outputs 6" [ref=f7e82]:
+              - img [ref=f7e83]
+              - generic [ref=f7e87]: Outputs
+              - generic [ref=f7e88]: "6"
+            - button "Plan" [active] [ref=f7e89]:
+              - img [ref=f7e90]
+              - generic [ref=f7e93]: Plan
+            - button "Docs" [ref=f7e94]:
+              - img [ref=f7e95]
+              - generic [ref=f7e97]: Docs
+            - button "Threads 2" [ref=f7e98]:
+              - img [ref=f7e99]
+              - generic [ref=f7e102]: Threads
+              - generic [ref=f7e103]: "2"
+            - button "Files 0" [ref=f7e104]:
+              - img [ref=f7e105]
+              - generic [ref=f7e108]: Files
+              - generic [ref=f7e109]: "0"
+            - button "Media 0" [ref=f7e110]:
+              - img [ref=f7e111]
+              - generic [ref=f7e113]: Media
+              - generic [ref=f7e114]: "0"
+            - button "Members 1" [ref=f7e115]:
+              - img [ref=f7e116]
+              - generic [ref=f7e121]: Members
+              - generic [ref=f7e122]: "1"
+          - generic [ref=f7e229]:
+            - generic [ref=f7e232]:
+              - heading "Plan" [level=2] [ref=f7e233]
+              - paragraph [ref=f7e234]: Break the work into stages, then add tasks under each. Click a task to move it To do → In progress → Done.
+            - generic [ref=f7e235]:
+              - generic [ref=f7e236]:
+                - generic [ref=f7e237]:
+                  - button "Fieldwork & data collection" [ref=f7e239]
+                  - generic [ref=f7e240]:
+                    - button "Move stage earlier" [disabled] [ref=f7e241]:
+                      - img [ref=f7e242]
+                    - button "Move stage later" [ref=f7e244]:
+                      - img [ref=f7e245]
+                    - button "Delete stage" [ref=f7e247]:
+                      - img [ref=f7e248]
+                - list [ref=f7e251]:
+                  - listitem [ref=f7e252]:
+                    - button "Drag to reorder" [ref=f7e253]:
+                      - img [ref=f7e254]
+                    - button "Change status" [ref=f7e261]:
+                      - img [ref=f7e262]
+                    - generic [ref=f7e264]:
+                      - button "Draft the survey instrument" [ref=f7e265]
+                      - button "Add notes — @username notifies a teammate" [ref=f7e266]
+                    - combobox "Assign" [ref=f7e267]:
+                      - generic:
+                        - generic: Amit Lokszinski
+                      - img
+                    - button "Delete task" [ref=f7e268]:
+                      - img [ref=f7e269]
+                - status [ref=f7e272]
+                - textbox "Add a task" [ref=f7e274]
+              - generic [ref=f7e275]:
+                - generic [ref=f7e276]:
+                  - button "stage 2" [ref=f7e278]
+                  - generic [ref=f7e279]:
+                    - button "Move stage earlier" [ref=f7e280]:
+                      - img [ref=f7e281]
+                    - button "Move stage later" [ref=f7e283]:
+                      - img [ref=f7e284]
+                    - button "Delete stage" [ref=f7e286]:
+                      - img [ref=f7e287]
+                - list
+                - status [ref=f7e290]
+                - textbox "Add a task" [ref=f7e292]
+              - generic [ref=f7e293]:
+                - generic [ref=f7e294]:
+                  - button "Analysis" [ref=f7e296]
+                  - generic [ref=f7e297]:
+                    - button "Move stage earlier" [ref=f7e298]:
+                      - img [ref=f7e299]
+                    - button "Move stage later" [disabled] [ref=f7e301]:
+                      - img [ref=f7e302]
+                    - button "Delete stage" [ref=f7e304]:
+                      - img [ref=f7e305]
+                - list [ref=f7e308]:
+                  - listitem [ref=f7e309]:
+                    - button "Drag to reorder" [ref=f7e310]:
+                      - img [ref=f7e311]
+                    - button "Change status" [ref=f7e318]:
+                      - img [ref=f7e319]
+                    - generic [ref=f7e321]:
+                      - button "Synthesize interview themes" [ref=f7e322]
+                      - button "Cluster the coded transcripts by theme — @jessicanlv can you sanity-check the coastal cluster?" [ref=f7e323]
+                    - combobox "Assign" [ref=f7e324]:
+                      - generic: Unassigned
+                      - img
+                    - button "Delete task" [ref=f7e325]:
+                      - img [ref=f7e326]
+                - status [ref=f7e329]
+                - textbox "Add a task" [ref=f7e331]
+            - generic [ref=f7e332]:
+              - textbox "Add a stage" [ref=f7e333]
+              - button "Add a stage" [ref=f7e334]:
+                - img
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=f7e194] [cursor=pointer]:
+    - img [ref=f7e195]
+  - alert [ref=f7e198]

@@ -1,0 +1,136 @@
+- generic [active] [ref=f5e1]:
+  - generic [ref=f5e2]:
+    - generic [ref=f5e5]:
+      - list [ref=f5e7]:
+        - listitem [ref=f5e8]:
+          - link "Go to homepage" [ref=f5e9] [cursor=pointer]:
+            - /url: /
+            - img "Connecting Climate Minds Logo" [ref=f5e10]
+      - generic [ref=f5e11]:
+        - generic [ref=f5e12]:
+          - generic [ref=f5e13]: اكتشف
+          - list [ref=f5e14]:
+            - listitem [ref=f5e15]:
+              - link "الأطلس والاستكشاف" [ref=f5e16] [cursor=pointer]:
+                - /url: /ar/atlas
+                - img [ref=f5e17]
+                - generic [ref=f5e20]: الأطلس والاستكشاف
+            - listitem [ref=f5e21]:
+              - button "البحث والعمل" [ref=f5e22]:
+                - img [ref=f5e23]
+                - generic [ref=f5e25]: البحث والعمل
+                - img [ref=f5e26]
+            - listitem [ref=f5e28]:
+              - link "الأخبار والمستجدات" [ref=f5e29] [cursor=pointer]:
+                - /url: /ar/news
+                - img [ref=f5e30]
+                - generic [ref=f5e33]: الأخبار والمستجدات
+            - listitem [ref=f5e34]:
+              - link "التجارب المعيشة" [ref=f5e35] [cursor=pointer]:
+                - /url: /ar/lived-experiences
+                - img [ref=f5e36]
+                - generic [ref=f5e38]: التجارب المعيشة
+            - listitem [ref=f5e39]:
+              - link "دراسات الحالة" [ref=f5e40] [cursor=pointer]:
+                - /url: /ar/research-and-action/case-studies
+                - img [ref=f5e41]
+                - generic [ref=f5e44]: دراسات الحالة
+        - generic [ref=f5e45]:
+          - generic [ref=f5e46]: تعاون
+          - list [ref=f5e47]:
+            - listitem [ref=f5e48]:
+              - button "المجتمعات الإقليمية" [ref=f5e49]:
+                - img [ref=f5e50]
+                - generic [ref=f5e53]: المجتمعات الإقليمية
+                - img [ref=f5e54]
+            - listitem [ref=f5e56]:
+              - link "ابحث عن أشخاص" [ref=f5e57] [cursor=pointer]:
+                - /url: /ar/collaborate
+                - img [ref=f5e58]
+                - generic [ref=f5e63]: ابحث عن أشخاص
+            - listitem [ref=f5e64]:
+              - link "ابدأ مشروعًا أو ابحث عنه" [ref=f5e65] [cursor=pointer]:
+                - /url: /ar/collaborations
+                - img [ref=f5e66]
+                - generic [ref=f5e68]: ابدأ مشروعًا أو ابحث عنه
+        - list [ref=f5e71]:
+          - listitem [ref=f5e72]:
+            - link "حول" [ref=f5e73] [cursor=pointer]:
+              - /url: /about
+              - img [ref=f5e74]
+              - generic [ref=f5e76]: حول
+          - listitem [ref=f5e77]:
+            - link "التعليقات" [ref=f5e78] [cursor=pointer]:
+              - /url: /feedback
+              - img [ref=f5e79]
+              - generic [ref=f5e81]: التعليقات
+      - generic [ref=f5e82]:
+        - list [ref=f5e84]:
+          - listitem [ref=f5e85]:
+            - button [disabled]
+        - button "البحث... ⌘K" [ref=f5e87]:
+          - img [ref=f5e88]
+          - generic [ref=f5e91]:
+            - generic: البحث...
+          - generic [ref=f5e93]: ⌘K
+        - list [ref=f5e95]:
+          - listitem [ref=f5e96]:
+            - button "العربية" [ref=f5e97]:
+              - generic [ref=f5e99]: العربية
+              - img [ref=f5e100]
+    - main [ref=f5e104]:
+      - button "Toggle Sidebar" [ref=f5e107]:
+        - img
+        - generic [ref=f5e108]: Toggle Sidebar
+      - main [ref=f5e110]:
+        - generic [ref=f5e113]:
+          - generic [ref=f5e114]:
+            - heading "الأطلس والاستكشاف" [level=1] [ref=f5e115]
+            - paragraph [ref=f5e116]: استكشف دراسات الحالة والتجارب المعيشية والأشخاص والمزيد عبر المناطق السبع.
+          - generic [ref=f5e117]:
+            - img [ref=f5e118]
+            - textbox "ابحث في الأطلس…" [ref=f5e121]
+          - generic [ref=f5e122]:
+            - text: عرض
+            - generic [ref=f5e123]:
+              - button "دراسات الحالة" [disabled] [pressed] [ref=f5e124]:
+                - img [ref=f5e125]
+                - generic [ref=f5e127]: دراسات الحالة
+              - button "التجارب المعاشة" [ref=f5e128]:
+                - generic [ref=f5e129]: التجارب المعاشة
+              - button "الأعضاء" [ref=f5e130]:
+                - generic [ref=f5e131]: الأعضاء
+              - button "الأخبار" [ref=f5e132]:
+                - generic [ref=f5e133]: الأخبار
+              - button "الأجندات" [ref=f5e134]:
+                - generic [ref=f5e135]: الأجندات
+              - button "التقارير" [ref=f5e136]:
+                - generic [ref=f5e137]: التقارير
+          - generic [ref=f5e138]:
+            - text: الموضوع
+            - generic [ref=f5e139]:
+              - button "تغير المناخ" [ref=f5e140]:
+                - generic [ref=f5e141]: تغير المناخ
+              - button "العدالة المناخية" [ref=f5e142]:
+                - generic [ref=f5e143]: العدالة المناخية
+              - button "المجتمعات الأصلية" [ref=f5e144]:
+                - generic [ref=f5e145]: المجتمعات الأصلية
+              - button "التأثير بين الأجيال" [ref=f5e146]:
+                - generic [ref=f5e147]: التأثير بين الأجيال
+          - img "Regional map" [ref=f5e149]:
+            - 'button "أفريقيا جنوب الصحراء: 0" [ref=f5e150] [cursor=pointer]'
+            - 'button "شمال أفريقيا وغرب آسيا: 0" [ref=f5e151] [cursor=pointer]'
+            - 'button "آسيا الوسطى والجنوبية: 0" [ref=f5e152] [cursor=pointer]'
+            - 'button "شرق وجنوب شرق آسيا: 0" [ref=f5e153] [cursor=pointer]'
+            - 'button "أمريكا اللاتينية والكاريبي: 0" [ref=f5e154] [cursor=pointer]'
+            - 'button "أوقيانوسيا: 0" [ref=f5e155] [cursor=pointer]'
+            - 'button "أوروبا وأمريكا الشمالية: 0" [ref=f5e156] [cursor=pointer]'
+          - button "دراسات الحالة 0" [disabled] [ref=f5e158]:
+            - generic [ref=f5e160]: دراسات الحالة
+            - generic [ref=f5e161]: "0"
+          - generic [ref=f5e162]:
+            - paragraph [ref=f5e163]: المس منطقة لرؤية قصصها
+            - heading "الأحدث من جميع المناطق" [level=2] [ref=f5e165]
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=f5e178] [cursor=pointer]:
+    - img [ref=f5e179]

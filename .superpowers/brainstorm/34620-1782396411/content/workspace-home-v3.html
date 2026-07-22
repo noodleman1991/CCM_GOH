@@ -1,0 +1,109 @@
+<h2>Workspace: collapsed global sidebar + top tabs</h2>
+<p class="subtitle">Inside a workspace, the global sidebar collapses to icons (more room, still one click to global nav). The workspace itself uses horizontal tabs. One sidebar, never two.</p>
+
+<style>
+  .app { display:flex; gap:0; border:1px solid #d8dee8; border-radius:12px; overflow:hidden; font-size:13px; background:#fff; }
+  /* GLOBAL sidebar — COLLAPSED to icons */
+  .gside { width:50px; background:#0B3160; color:#cfe0f0; padding:14px 0; flex-shrink:0; display:flex; flex-direction:column; align-items:center; gap:4px; }
+  .gside .logo { font-weight:700; color:#fff; margin-bottom:14px; font-size:15px; }
+  .gside .gi { width:34px; height:34px; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#aac4e0; font-size:15px; }
+  .gside .gi.on { background:#ffffff22; color:#fff; }
+  .gside .expand { margin-top:auto; color:#7fa3cc; font-size:16px; }
+  .gside .av { width:28px;height:28px;border-radius:50%;background:#9BC6DA; margin-top:10px; }
+
+  .wmain { flex:1; min-width:0; background:#fff; }
+  .wtop { padding:16px 24px 0; border-bottom:1px solid #e8edf4; }
+  .wcrumb { font-size:11px; color:#8b9bb2; margin-bottom:6px; }
+  .wheadrow { display:flex; justify-content:space-between; align-items:flex-start; }
+  .wtitle { font-size:21px; font-weight:700; color:#0B3160; }
+  .wsub { color:#5a6b82; font-size:12px; margin:2px 0 12px; }
+  .wtabs { display:flex; gap:4px; }
+  .wtabs div { padding:9px 15px; font-size:13px; color:#5a6b82; border-bottom:2px solid transparent; }
+  .wtabs div.on { color:#205596; font-weight:700; border-bottom-color:#205596; }
+  .badge { font-size:10px; font-weight:700; padding:3px 9px; border-radius:20px; }
+  .b-review { background:#fde9c8; color:#92610a; }
+  .b-draft { background:#eef1f5; color:#5a6b82; }
+  .b-pub { background:#d7f0dc; color:#1d7a36; }
+
+  .wbody { padding:20px 24px; }
+  .sec-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:#6b7a90; margin:0 0 10px; }
+  .out-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:11px; margin-bottom:10px; }
+  .out { border:1px solid #e2e8f2; border-radius:10px; padding:13px; }
+  .out .otype { font-size:10px; font-weight:700; text-transform:uppercase; color:#205596; background:#9BC6DA33; display:inline-block; padding:2px 8px; border-radius:20px; margin-bottom:8px; }
+  .out .otitle { font-weight:600; color:#0B3160; line-height:1.3; margin-bottom:9px; font-size:13px; }
+  .out-add { border:1.5px dashed #c3cfe0; border-radius:10px; padding:11px 14px; display:inline-flex; align-items:center; color:#205596; font-weight:600; font-size:12px; margin-bottom:24px; }
+  .two { display:grid; grid-template-columns:1.3fr 1fr; gap:22px; }
+  .prog-bar { height:9px; background:#eef1f5; border-radius:6px; overflow:hidden; margin:8px 0 6px; }
+  .prog-bar > div { height:100%; background:#205596; width:40%; }
+  .stage-row { display:flex; justify-content:space-between; color:#5a6b82; padding:5px 0; border-bottom:1px solid #f0f3f8; font-size:12px; }
+  .act { display:flex; gap:8px; padding:6px 0; color:#5a6b82; border-bottom:1px solid #f0f3f8; font-size:12px; }
+  .act b { color:#33455e; }
+  .av2 { width:22px;height:22px;border-radius:50%;background:#9BC6DA;flex-shrink:0; }
+</style>
+
+<div class="app">
+  <!-- GLOBAL sidebar collapsed to icons -->
+  <div class="gside">
+    <div class="logo">C</div>
+    <div class="gi">⌂</div>
+    <div class="gi">▤</div>
+    <div class="gi on">▭</div>
+    <div class="gi">◔</div>
+    <div class="gi">✦</div>
+    <div class="expand">»</div>
+    <div class="av"></div>
+  </div>
+
+  <div class="wmain">
+    <div class="wtop">
+      <div class="wcrumb">‹ Workspaces</div>
+      <div class="wheadrow">
+        <div>
+          <div class="wtitle">Coastal Bangladesh study</div>
+          <div class="wsub">4 members · Members-only</div>
+        </div>
+        <span class="badge b-review">In progress</span>
+      </div>
+      <div class="wtabs">
+        <div class="on">Home</div><div>Plan</div><div>Outputs</div><div>Docs</div><div>Threads</div><div>Files</div><div>Members</div>
+      </div>
+    </div>
+
+    <div class="wbody">
+      <div class="sec-label">Outputs we're making</div>
+      <div class="out-grid">
+        <div class="out"><span class="otype">Case study</span><div class="otitle">Displacement & mental health in Khulna</div><span class="badge b-review">In review</span></div>
+        <div class="out"><span class="otype">Lived experience</span><div class="otitle">Amina's story — leaving the delta</div><span class="badge b-draft">Draft</span></div>
+        <div class="out"><span class="otype">Research output</span><div class="otitle">Coastal displacement field brief</div><span class="badge b-pub">Published</span></div>
+      </div>
+      <div class="out-add">+ Add an output</div>
+
+      <div class="two">
+        <div>
+          <div class="sec-label">Plan progress · 6 / 15 tasks</div>
+          <div class="prog-bar"><div></div></div>
+          <div class="stage-row"><span>Gather evidence</span><span>4/4 ✓</span></div>
+          <div class="stage-row"><span>Draft</span><span>2/6</span></div>
+          <div class="stage-row"><span>Review & publish</span><span>0/5</span></div>
+        </div>
+        <div>
+          <div class="sec-label">Recent activity</div>
+          <div class="act"><div class="av2"></div><div><b>Sara</b> moved a card to In review</div></div>
+          <div class="act"><div class="av2"></div><div><b>Amir</b> edited the draft doc</div></div>
+          <div class="act"><div class="av2"></div><div><b>You</b> uploaded survey-data.xlsx</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="options" style="margin-top:20px">
+  <div class="option" data-choice="yes" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content"><h3>Yes — this is the layout</h3><p>Collapsed icon sidebar + workspace top tabs. Lock it.</p></div>
+  </div>
+  <div class="option" data-choice="tweak" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content"><h3>Right, but a tweak</h3><p>Close — I'll note one change in the terminal.</p></div>
+  </div>
+</div>

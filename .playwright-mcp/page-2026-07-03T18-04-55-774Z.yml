@@ -1,0 +1,112 @@
+- generic [active] [ref=f2e1]:
+  - generic [ref=f2e2]:
+    - generic [ref=f2e5]:
+      - list [ref=f2e7]:
+        - listitem [ref=f2e8]:
+          - link "Go to homepage" [ref=f2e9] [cursor=pointer]:
+            - /url: /
+            - img "Connecting Climate Minds Logo" [ref=f2e10]
+      - generic [ref=f2e11]:
+        - generic [ref=f2e12]:
+          - generic [ref=f2e13]: Discover
+          - list [ref=f2e14]:
+            - listitem [ref=f2e15]:
+              - link "Atlas & Explore" [ref=f2e16] [cursor=pointer]:
+                - /url: /en/atlas
+                - img [ref=f2e17]
+                - generic [ref=f2e20]: Atlas & Explore
+            - listitem [ref=f2e21]:
+              - button "Research & Action" [ref=f2e22]:
+                - img [ref=f2e23]
+                - generic [ref=f2e25]: Research & Action
+                - img [ref=f2e26]
+            - listitem [ref=f2e28]:
+              - link "News & Updates" [ref=f2e29] [cursor=pointer]:
+                - /url: /en/news
+                - img [ref=f2e30]
+                - generic [ref=f2e33]: News & Updates
+            - listitem [ref=f2e34]:
+              - link "Lived experiences" [ref=f2e35] [cursor=pointer]:
+                - /url: /en/lived-experiences
+                - img [ref=f2e36]
+                - generic [ref=f2e38]: Lived experiences
+            - listitem [ref=f2e39]:
+              - link "Case studies" [ref=f2e40] [cursor=pointer]:
+                - /url: /en/research-and-action/case-studies
+                - img [ref=f2e41]
+                - generic [ref=f2e44]: Case studies
+        - generic [ref=f2e45]:
+          - generic [ref=f2e46]: Collaborate
+          - list [ref=f2e47]:
+            - listitem [ref=f2e48]:
+              - button "Regional Communities" [ref=f2e49]:
+                - img [ref=f2e50]
+                - generic [ref=f2e53]: Regional Communities
+                - img [ref=f2e54]
+            - listitem [ref=f2e56]:
+              - link "Find people" [ref=f2e57] [cursor=pointer]:
+                - /url: /en/collaborate
+                - img [ref=f2e58]
+                - generic [ref=f2e63]: Find people
+            - listitem [ref=f2e64]:
+              - link "Start or find a project" [ref=f2e65] [cursor=pointer]:
+                - /url: /en/collaborations
+                - img [ref=f2e66]
+                - generic [ref=f2e68]: Start or find a project
+        - list [ref=f2e71]:
+          - listitem [ref=f2e72]:
+            - link "About" [ref=f2e73] [cursor=pointer]:
+              - /url: /about
+              - img [ref=f2e74]
+              - generic [ref=f2e76]: About
+          - listitem [ref=f2e77]:
+            - link "Feedback" [ref=f2e78] [cursor=pointer]:
+              - /url: /feedback
+              - img [ref=f2e79]
+              - generic [ref=f2e81]: Feedback
+      - generic [ref=f2e82]:
+        - button "Search... ⌘K" [ref=f2e85]:
+          - img [ref=f2e86]
+          - generic [ref=f2e89]:
+            - generic: Search...
+          - generic [ref=f2e91]: ⌘K
+        - list [ref=f2e93]:
+          - listitem [ref=f2e94]:
+            - button "English" [ref=f2e95]:
+              - generic [ref=f2e97]: English
+              - img [ref=f2e98]
+    - main [ref=f2e102]:
+      - button "Toggle Sidebar" [ref=f2e105]:
+        - img
+        - generic [ref=f2e106]: Toggle Sidebar
+      - main [ref=f2e108]:
+        - generic [ref=f2e109]:
+          - generic [ref=f2e112]:
+            - generic [ref=f2e113]:
+              - generic [ref=f2e114]:
+                - heading "Lived Experiences" [level=1] [ref=f2e115]
+                - paragraph [ref=f2e116]: Lived experience is a foundational source of expertise to be engaged when addressing the mental health consequences of climate change. Listening to and learning from various individuals and communities that are directly affected by the interrelated challenges of climate change and mental health is fundamental to creating impactful research and action. Importantly, lived experiences help all efforts at this intersection to generate feasible solutions for and with the most impacted groups, leading to more inclusive research and action. The stories shown below, and the insights within them, reflect a commitment to moving beyond tokenization, and towards valuing and uplifting the contribution of lived experiences to this growing field.
+              - link "Share your experience" [ref=f2e118] [cursor=pointer]:
+                - /url: /en/lived-experiences/submit
+                - img
+                - text: Share your experience
+            - img "A figure jumping off a book - illustration" [ref=f2e121]
+          - generic [ref=f2e122]:
+            - generic [ref=f2e123]:
+              - generic [ref=f2e124]:
+                - generic [ref=f2e125]:
+                  - img
+                  - textbox "Search lived experiences..." [ref=f2e126]
+                - generic [ref=f2e127]:
+                  - button "Filter by Region" [ref=f2e128]:
+                    - generic [ref=f2e129]: Filter by Region
+                    - img [ref=f2e130]
+                  - button "Filter by Tag" [ref=f2e132]:
+                    - generic [ref=f2e133]: Filter by Tag
+                    - img [ref=f2e134]
+              - generic [ref=f2e136]: 0 videos
+            - paragraph [ref=f2e139]: No videos found matching your filters
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=f2e145] [cursor=pointer]:
+    - img [ref=f2e146]
+  - alert [ref=f2e149]

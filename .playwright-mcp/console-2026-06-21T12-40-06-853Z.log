@@ -1,0 +1,242 @@
+[    1225ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    5443ms] [LOG] [Fast Refresh] done in 4329ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   10370ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   10594ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   10791ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   10812ms] [WARNING] %c%s%c PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component. background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   ukren1 @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   10813ms] [WARNING] %c%s%c PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component. background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   wm4f29 @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   10813ms] [WARNING] %c%s%c PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component. background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   20o54t @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   10818ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   10858ms] [WARNING] Missing Algolia environment variables: ALGOLIA_API_KEY @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   10858ms] [WARNING] Algolia admin client not available - missing credentials @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   10858ms] [LOG] ✅ Algolia search client initialized successfully @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   10915ms] [WARNING] Image with src "/connecting-climate-minds-logo-white.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   11694ms] [WARNING] Ignoring Event: localhost @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   11745ms] [INFO] Sanity is live with automatic revalidation of published content @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   12852ms] [LOG] [Fast Refresh] done in 2200ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   50022ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ https://jwepepsgj5-dsn.algolia.net/1/indexes/*/queries?x-algolia-agent=Algolia%20for%20JavaScript%20(5.46.2)%3B%20Search%20(5.46.2)%3B%20Browser&x-algolia-api-key=46ef813f447af6910eb24aee6f61a537&x-algolia-application-id=JWEPEPSGJ5:0
+[   62471ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   62968ms] [LOG] [Fast Refresh] done in 599ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  101005ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  101034ms] [LOG] [Fast Refresh] done in 130ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1078147ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1080824ms] [LOG] [Fast Refresh] done in 2787ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1085498ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ https://jwepepsgj5-dsn.algolia.net/1/indexes/*/queries?x-algolia-agent=Algolia%20for%20JavaScript%20(5.46.2)%3B%20Search%20(5.46.2)%3B%20Browser&x-algolia-api-key=46ef813f447af6910eb24aee6f61a537&x-algolia-application-id=JWEPEPSGJ5:0
+[ 1085674ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ https://jwepepsgj5-dsn.algolia.net/1/indexes/*/queries?x-algolia-agent=Algolia%20for%20JavaScript%20(5.46.2)%3B%20Search%20(5.46.2)%3B%20Browser&x-algolia-api-key=46ef813f447af6910eb24aee6f61a537&x-algolia-application-id=JWEPEPSGJ5:0
+[ 1087684ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ https://jwepepsgj5-dsn.algolia.net/1/indexes/*/queries?x-algolia-agent=Algolia%20for%20JavaScript%20(5.46.2)%3B%20Search%20(5.46.2)%3B%20Browser&x-algolia-api-key=46ef813f447af6910eb24aee6f61a537&x-algolia-application-id=JWEPEPSGJ5:0
+[ 1088004ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ https://jwepepsgj5-dsn.algolia.net/1/indexes/*/queries?x-algolia-agent=Algolia%20for%20JavaScript%20(5.46.2)%3B%20Search%20(5.46.2)%3B%20Browser&x-algolia-api-key=46ef813f447af6910eb24aee6f61a537&x-algolia-application-id=JWEPEPSGJ5:0
+[ 1088668ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ https://jwepepsgj5-dsn.algolia.net/1/indexes/*/queries?x-algolia-agent=Algolia%20for%20JavaScript%20(5.46.2)%3B%20Search%20(5.46.2)%3B%20Browser&x-algolia-api-key=46ef813f447af6910eb24aee6f61a537&x-algolia-application-id=JWEPEPSGJ5:0
+[ 1090252ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ https://jwepepsgj5-dsn.algolia.net/1/indexes/*/queries?x-algolia-agent=Algolia%20for%20JavaScript%20(5.46.2)%3B%20Search%20(5.46.2)%3B%20Browser&x-algolia-api-key=46ef813f447af6910eb24aee6f61a537&x-algolia-application-id=JWEPEPSGJ5:0
+[ 1090690ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ https://jwepepsgj5-dsn.algolia.net/1/indexes/*/queries?x-algolia-agent=Algolia%20for%20JavaScript%20(5.46.2)%3B%20Search%20(5.46.2)%3B%20Browser&x-algolia-api-key=46ef813f447af6910eb24aee6f61a537&x-algolia-application-id=JWEPEPSGJ5:0
+[ 1091324ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ https://jwepepsgj5-dsn.algolia.net/1/indexes/*/queries?x-algolia-agent=Algolia%20for%20JavaScript%20(5.46.2)%3B%20Search%20(5.46.2)%3B%20Browser&x-algolia-api-key=46ef813f447af6910eb24aee6f61a537&x-algolia-application-id=JWEPEPSGJ5:0
+[ 1091739ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ https://jwepepsgj5-dsn.algolia.net/1/indexes/*/queries?x-algolia-agent=Algolia%20for%20JavaScript%20(5.46.2)%3B%20Search%20(5.46.2)%3B%20Browser&x-algolia-api-key=46ef813f447af6910eb24aee6f61a537&x-algolia-application-id=JWEPEPSGJ5:0
+[ 1092373ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ https://jwepepsgj5-dsn.algolia.net/1/indexes/*/queries?x-algolia-agent=Algolia%20for%20JavaScript%20(5.46.2)%3B%20Search%20(5.46.2)%3B%20Browser&x-algolia-api-key=46ef813f447af6910eb24aee6f61a537&x-algolia-application-id=JWEPEPSGJ5:0
+[ 1096951ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1103838ms] [LOG] [Fast Refresh] done in 6988ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1104582ms] [WARNING] Ignoring Event: localhost @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1104685ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1104769ms] [WARNING] [react-instantsearch-nextjs] InstantSearchNext relies on experimental APIs and may break in the future.
+This message will only be displayed in development mode. @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1107284ms] [LOG] [Fast Refresh] done in 2734ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1109857ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1109915ms] [LOG] [Fast Refresh] done in 162ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1113399ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ https://jwepepsgj5-dsn.algolia.net/1/indexes/*/queries?x-algolia-agent=Algolia%20for%20JavaScript%20(5.46.2)%3B%20Search%20(5.46.2)%3B%20Browser%3B%20instantsearch.js%20(4.85.2)%3B%20react%20(19.3.0-canary-f93b9fd4-20251217)%3B%20react-instantsearch%20(7.21.0)%3B%20react-instantsearch-core%20(7.21.0)%3B%20next.js%20(16.1.1)%3B%20JS%20Helper%20(3.26.1)&x-algolia-api-key=46ef813f447af6910eb24aee6f61a537&x-algolia-application-id=JWEPEPSGJ5:0
+[ 1113409ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ https://jwepepsgj5-dsn.algolia.net/1/indexes/*/queries?x-algolia-agent=Algolia%20for%20JavaScript%20(5.46.2)%3B%20Search%20(5.46.2)%3B%20Browser%3B%20instantsearch.js%20(4.85.2)%3B%20react%20(19.3.0-canary-f93b9fd4-20251217)%3B%20react-instantsearch%20(7.21.0)%3B%20react-instantsearch-core%20(7.21.0)%3B%20next.js%20(16.1.1)%3B%20JS%20Helper%20(3.26.1)&x-algolia-api-key=46ef813f447af6910eb24aee6f61a537&x-algolia-application-id=JWEPEPSGJ5:0
+[ 1113510ms] ApiError: Invalid Application-ID or API key
+    at deserializeFailure (http://localhost:3000/_next/static/chunks/node_modules__pnpm_422df49f._.js:2762:16)
+    at retry (http://localhost:3000/_next/static/chunks/node_modules__pnpm_422df49f._.js:2888:19)
+[ 1113512ms] ApiError: Invalid Application-ID or API key
+    at deserializeFailure (http://localhost:3000/_next/static/chunks/node_modules__pnpm_422df49f._.js:2762:16)
+    at retry (http://localhost:3000/_next/static/chunks/node_modules__pnpm_422df49f._.js:2888:19)
+[ 1113471ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ https://jwepepsgj5-dsn.algolia.net/1/indexes/*/queries?x-algolia-agent=Algolia%20for%20JavaScript%20(5.46.2)%3B%20Search%20(5.46.2)%3B%20Browser%3B%20instantsearch.js%20(4.85.2)%3B%20react%20(19.3.0-canary-f93b9fd4-20251217)%3B%20react-instantsearch%20(7.21.0)%3B%20react-instantsearch-core%20(7.21.0)%3B%20next.js%20(16.1.1)%3B%20JS%20Helper%20(3.26.1)&x-algolia-api-key=46ef813f447af6910eb24aee6f61a537&x-algolia-application-id=JWEPEPSGJ5:0
+[ 1113472ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ https://jwepepsgj5-dsn.algolia.net/1/indexes/*/queries?x-algolia-agent=Algolia%20for%20JavaScript%20(5.46.2)%3B%20Search%20(5.46.2)%3B%20Browser%3B%20instantsearch.js%20(4.85.2)%3B%20react%20(19.3.0-canary-f93b9fd4-20251217)%3B%20react-instantsearch%20(7.21.0)%3B%20react-instantsearch-core%20(7.21.0)%3B%20next.js%20(16.1.1)%3B%20JS%20Helper%20(3.26.1)&x-algolia-api-key=46ef813f447af6910eb24aee6f61a537&x-algolia-application-id=JWEPEPSGJ5:0
+[ 1113518ms] ApiError: Invalid Application-ID or API key
+    at deserializeFailure (http://localhost:3000/_next/static/chunks/node_modules__pnpm_422df49f._.js:2762:16)
+    at retry (http://localhost:3000/_next/static/chunks/node_modules__pnpm_422df49f._.js:2888:19)
+[ 1113527ms] ApiError: Invalid Application-ID or API key
+    at deserializeFailure (http://localhost:3000/_next/static/chunks/node_modules__pnpm_422df49f._.js:2762:16)
+    at retry (http://localhost:3000/_next/static/chunks/node_modules__pnpm_422df49f._.js:2888:19)
+[ 1113602ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1114037ms] [LOG] [Fast Refresh] done in 536ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1194920ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1196729ms] [LOG] [Fast Refresh] done in 1851ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1215916ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1217808ms] [LOG] [Fast Refresh] done in 1834ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1220074ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1222848ms] [LOG] [Fast Refresh] done in 2880ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1237778ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1238606ms] [LOG] [Fast Refresh] done in 904ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1238799ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1238926ms] [LOG] [Fast Refresh] done in 229ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1260559ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ https://jwepepsgj5-dsn.algolia.net/1/indexes/*/queries?x-algolia-agent=Algolia%20for%20JavaScript%20(5.46.2)%3B%20Search%20(5.46.2)%3B%20Browser%3B%20instantsearch.js%20(4.85.2)%3B%20react%20(19.3.0-canary-f93b9fd4-20251217)%3B%20react-instantsearch%20(7.21.0)%3B%20react-instantsearch-core%20(7.21.0)%3B%20next.js%20(16.1.1)%3B%20JS%20Helper%20(3.26.1)&x-algolia-api-key=46ef813f447af6910eb24aee6f61a537&x-algolia-application-id=JWEPEPSGJ5:0
+[ 1266306ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ https://jwepepsgj5-dsn.algolia.net/1/indexes/*/queries?x-algolia-agent=Algolia%20for%20JavaScript%20(5.46.2)%3B%20Search%20(5.46.2)%3B%20Browser%3B%20instantsearch.js%20(4.85.2)%3B%20react%20(19.3.0-canary-f93b9fd4-20251217)%3B%20react-instantsearch%20(7.21.0)%3B%20react-instantsearch-core%20(7.21.0)%3B%20next.js%20(16.1.1)%3B%20JS%20Helper%20(3.26.1)&x-algolia-api-key=46ef813f447af6910eb24aee6f61a537&x-algolia-application-id=JWEPEPSGJ5:0
+[ 1267567ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1272229ms] [LOG] [Fast Refresh] done in 4760ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1277028ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1277158ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1277204ms] [WARNING] Ignoring Event: localhost @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1278523ms] [LOG] [Fast Refresh] done in 1472ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1280594ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1282108ms] [LOG] [Fast Refresh] done in 1572ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1282374ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1283545ms] [LOG] [Fast Refresh] done in 1273ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1283700ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1331645ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1331811ms] [LOG] [Fast Refresh] done in 272ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1349387ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1349488ms] [LOG] [Fast Refresh] done in 203ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1392957ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1394215ms] [LOG] [Fast Refresh] done in 1362ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1444078ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1444915ms] [LOG] [Fast Refresh] done in 950ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1503645ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1504088ms] [LOG] [Fast Refresh] done in 544ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1523897ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1524816ms] [LOG] [Fast Refresh] done in 1016ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1525519ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1531410ms] [LOG] [Fast Refresh] done in 5990ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1533606ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1538089ms] [LOG] [Fast Refresh] done in 4576ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1543041ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1554814ms] [LOG] [Fast Refresh] done in 11902ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1555538ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1555728ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1555753ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1562521ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1563021ms] [LOG] [Fast Refresh] done in 517ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1564834ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1570588ms] [LOG] [Fast Refresh] done in 5854ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1570943ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1571219ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1571407ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1571414ms] [LOG] [Fast Refresh] done in 109ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1571510ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1571616ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1571628ms] [LOG] [Fast Refresh] done in 113ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1571867ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1572013ms] [LOG] [Fast Refresh] done in 248ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1572132ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1572257ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1572480ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1572724ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1573033ms] [LOG] [Fast Refresh] done in 412ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1573710ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1574053ms] [LOG] [Fast Refresh] done in 444ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1574465ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1574845ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1575278ms] [LOG] [Fast Refresh] done in 535ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1575582ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1575786ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1592144ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1593590ms] [LOG] [Fast Refresh] done in 1545ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1593967ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1598362ms] [LOG] [Fast Refresh] done in 4487ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1601823ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1603023ms] [LOG] [Fast Refresh] done in 1303ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1610501ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1610651ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1620602ms] [LOG] [Fast Refresh] done in 10045ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1645255ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1646213ms] [LOG] [Fast Refresh] done in 2101ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1664260ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1664573ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1664611ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1665159ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1686282ms] [LOG] [Fast Refresh] done in 21960ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1711218ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1711276ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1711280ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1711564ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1711594ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1711657ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1730294ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1733010ms] [LOG] [Fast Refresh] done in 2826ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1735163ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1735170ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1898221ms] [ERROR] Failed to load resource: the server responded with a status of 504 (Gateway Timeout) @ http://localhost:3000/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fproduction_2%2Ff1323ab8470f3f049d73a75e137083fe036ecf5b-810x873.png%3Frect%3D0%2C32%2C810%2C810%26w%3D320%26h%3D320%26fit%3Dcrop%26auto%3Dformat&w=256&q=90:0
+[ 1898556ms] [ERROR] Failed to load resource: the server responded with a status of 504 (Gateway Timeout) @ http://localhost:3000/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fproduction_2%2F110e8be8676d1270beb7adac8b4257ea30c19e76-810x873.png%3Frect%3D0%2C32%2C810%2C810%26w%3D320%26h%3D320%26fit%3Dcrop%26auto%3Dformat&w=256&q=90:0
+[ 1898558ms] [ERROR] Failed to load resource: the server responded with a status of 504 (Gateway Timeout) @ http://localhost:3000/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fgm67v7rk%2Fproduction_2%2F62ee5952fcac665a4e725798b72647b4d659ef1c-810x873.png%3Frect%3D0%2C32%2C810%2C810%26w%3D320%26h%3D320%26fit%3Dcrop%26auto%3Dformat&w=256&q=90:0
+[ 1939321ms] [ERROR] Failed to load resource: net::ERR_NETWORK_CHANGED @ https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/production_2?tag=next-loader.live:0
+[ 1942838ms] [INFO] Sanity is live with automatic revalidation of published content @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1969268ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1969561ms] [LOG] [Fast Refresh] done in 712ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 2016949ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 2017001ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 2017756ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 2746546ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 2748405ms] [LOG] [Fast Refresh] done in 1970ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 2918629ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 2920201ms] [LOG] [Fast Refresh] done in 1646ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 2938479ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 2938864ms] [LOG] [Fast Refresh] done in 478ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 2981799ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 2981975ms] [LOG] [Fast Refresh] done in 259ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3030192ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3030340ms] [LOG] [Fast Refresh] done in 230ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3048126ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3048337ms] [LOG] [Fast Refresh] done in 311ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3050144ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3060797ms] [LOG] [Fast Refresh] done in 10753ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3061423ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3061714ms] [LOG] [Fast Refresh] done in 392ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3062126ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3062191ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3062251ms] [LOG] [Fast Refresh] done in 161ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3062578ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3063241ms] [LOG] [Fast Refresh] done in 764ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3063600ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3063705ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3064006ms] [LOG] [Fast Refresh] done in 403ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3064335ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3064441ms] [LOG] [Fast Refresh] done in 207ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3064496ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3064610ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3064661ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3064680ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3069966ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3070069ms] [LOG] [Fast Refresh] done in 198ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3070190ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3071260ms] [LOG] [Fast Refresh] done in 1171ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3078181ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3078353ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3078467ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3078658ms] [LOG] [Fast Refresh] done in 291ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3078852ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3078864ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3078893ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3078914ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3088207ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3088381ms] [LOG] [Fast Refresh] done in 254ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3088511ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3089689ms] [LOG] [Fast Refresh] done in 1279ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3089929ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3090030ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3090036ms] [LOG] [Fast Refresh] done in 107ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3090242ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3090314ms] [LOG] [Fast Refresh] done in 173ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3090587ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3090640ms] [LOG] [Fast Refresh] done in 153ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3090717ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3091024ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3091076ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3091099ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3091163ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3108248ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3108397ms] [LOG] [Fast Refresh] done in 250ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3108585ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3109989ms] [LOG] [Fast Refresh] done in 1505ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3110195ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3110268ms] [LOG] [Fast Refresh] done in 176ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3110458ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3110492ms] [LOG] [Fast Refresh] done in 134ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3110577ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3110698ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3110718ms] [LOG] [Fast Refresh] done in 120ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3110914ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3110916ms] [LOG] [Fast Refresh] done in 104ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3110976ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3111148ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3111155ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3111166ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3111170ms] [LOG] %c%s%c No featured lived experiences found, falling back to recent background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302

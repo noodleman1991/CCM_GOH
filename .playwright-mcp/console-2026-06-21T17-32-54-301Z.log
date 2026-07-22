@@ -1,0 +1,157 @@
+[     418ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   13773ms] [LOG] [Fast Refresh] done in 13458ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   13880ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   13887ms] [LOG] [Fast Refresh] done in 110ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   20698ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   30194ms] [LOG] [Fast Refresh] done in 9603ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   34507ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   35934ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   56479ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   60323ms] [WARNING] Missing Algolia environment variables: ALGOLIA_API_KEY @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   60326ms] [WARNING] Algolia admin client not available - missing credentials @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   60328ms] [LOG] ✅ Algolia search client initialized successfully @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   60585ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   60592ms] [WARNING] Image with src "/connecting-climate-minds-logo-white.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   61485ms] [WARNING] Ignoring Event: localhost @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   61694ms] [INFO] Sanity is live with automatic revalidation of published content @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   64879ms] [LOG] [Fast Refresh] done in 4585ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   84983ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   85958ms] [LOG] [Fast Refresh] done in 1078ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   96497ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   96557ms] [LOG] [Fast Refresh] done in 164ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  746974ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  752148ms] [LOG] [Fast Refresh] done in 5282ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  753975ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  755472ms] [LOG] [Fast Refresh] done in 1598ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  756670ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  757033ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  757075ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  757185ms] [WARNING] Missing Algolia environment variables: ALGOLIA_API_KEY @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  757185ms] [WARNING] Algolia admin client not available - missing credentials @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  757185ms] [LOG] ✅ Algolia search client initialized successfully @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  757196ms] [WARNING] Image with src "/connecting-climate-minds-logo-white.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  757207ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  757504ms] [WARNING] Ignoring Event: localhost @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  757620ms] [LOG] [Fast Refresh] done in 521ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  757621ms] [INFO] Sanity is live with automatic revalidation of published content @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  757829ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  757957ms] [LOG] [Fast Refresh] done in 228ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  774586ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  774628ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  774690ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  774721ms] [WARNING] Missing Algolia environment variables: ALGOLIA_API_KEY @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  774721ms] [WARNING] Algolia admin client not available - missing credentials @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  774721ms] [LOG] ✅ Algolia search client initialized successfully @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  774727ms] [WARNING] Image with src "/connecting-climate-minds-logo-white.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  775071ms] [WARNING] Ignoring Event: localhost @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  775329ms] [INFO] Sanity is live with automatic revalidation of published content @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  790623ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  800125ms] [LOG] [Fast Refresh] done in 9603ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  800188ms] [WARNING] Ignoring Event: localhost @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  815599ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  815643ms] [LOG] [Fast Refresh] done in 145ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  815717ms] [WARNING] Ignoring Event: localhost @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  815805ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  815818ms] [LOG] [Fast Refresh] done in 120ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  819387ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  819969ms] [LOG] [Fast Refresh] done in 682ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  820249ms] [WARNING] Ignoring Event: localhost @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  830868ms] [WARNING] Ignoring Event: localhost @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  874155ms] [WARNING] Ignoring Event: localhost @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  888354ms] [WARNING] Ignoring Event: localhost @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  888568ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  888598ms] [LOG] [Fast Refresh] done in 131ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  994612ms] [WARNING] Ignoring Event: localhost @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1245751ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1246789ms] [LOG] [Fast Refresh] done in 1141ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1355690ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1359437ms] [LOG] [Fast Refresh] done in 3606ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1402499ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1403695ms] [LOG] [Fast Refresh] done in 1278ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1405926ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1421339ms] [LOG] [Fast Refresh] done in 15507ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1421674ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1421856ms] [LOG] [Fast Refresh] done in 285ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1422215ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1422223ms] [LOG] [Fast Refresh] done in 138ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1427515ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1428649ms] [LOG] [Fast Refresh] done in 1234ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1430549ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1431818ms] [LOG] [Fast Refresh] done in 1370ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1431893ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1433049ms] [LOG] [Fast Refresh] done in 84ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1434127ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1435149ms] [LOG] [Fast Refresh] done in 1123ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1437558ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1438543ms] [LOG] [Fast Refresh] done in 1085ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1441071ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1441819ms] [LOG] [Fast Refresh] done in 848ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1442429ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1443325ms] [LOG] [Fast Refresh] done in 997ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1444132ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1445053ms] [LOG] [Fast Refresh] done in 1021ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1445805ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1446881ms] [LOG] [Fast Refresh] done in 1177ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1458493ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1460071ms] [LOG] [Fast Refresh] done in 1638ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1492746ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1495886ms] [LOG] [Fast Refresh] done in 3225ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1534959ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1535252ms] [LOG] [Fast Refresh] done in 377ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1565336ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1566087ms] [LOG] [Fast Refresh] done in 832ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1611599ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1612091ms] [LOG] [Fast Refresh] done in 575ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1710422ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1732149ms] [LOG] [Fast Refresh] done in 21827ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1732694ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1732952ms] [LOG] [Fast Refresh] done in 360ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1741107ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1741782ms] [LOG] [Fast Refresh] done in 599ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1741884ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1745430ms] [LOG] [Fast Refresh] done in 3646ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1764268ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1764571ms] [LOG] [Fast Refresh] done in 213ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1820215ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1820680ms] [LOG] [Fast Refresh] done in 566ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1871735ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1872254ms] [LOG] [Fast Refresh] done in 537ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1872792ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1882340ms] [LOG] [Fast Refresh] done in 9653ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1936341ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1942709ms] [ERROR] ./components/collaborate/collaborate-user-card.tsx:220:17
+Parsing ecmascript source code failed
+  218 |               )}
+  219 |             </div>
+> 220 |           </div>
+      |                 ^
+> 221 |         </CardContent>
+      | ^^^^^^^^^
+  222 |       </Card>
+  223 |     </Link>
+  224 |   )
+
+Expected '</', got 'jsx text (
+        )'
+
+Import traces:
+  Client Component Browser:
+    ./components/collaborate/collaborate-user-card.tsx [Client Component Browser]
+    ./components/collaborate/user-carousel.tsx [Client Component Browser]
+    ./app/[locale]/(main)/collaborate/page-client.tsx [Client Component Browser]
+    ./app/[locale]/(main)/collaborate/page-client.tsx [Server Component]
+    ./app/[locale]/(main)/collaborate/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./components/collaborate/collaborate-user-card.tsx [Client Component SSR]
+    ./components/collaborate/user-carousel.tsx [Client Component SSR]
+    ./app/[locale]/(main)/collaborate/page-client.tsx [Client Component SSR]
+    ./app/[locale]/(main)/collaborate/page-client.tsx [Server Component]
+    ./app/[locale]/(main)/collaborate/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:3132
+[ 2007990ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 2011656ms] [LOG] [Fast Refresh] done in 3768ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 2014055ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 2015709ms] [LOG] [Fast Refresh] done in 1755ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302

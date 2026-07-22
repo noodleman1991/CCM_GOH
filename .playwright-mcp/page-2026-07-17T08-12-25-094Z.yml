@@ -1,0 +1,576 @@
+- generic [active] [ref=f10e1]:
+  - generic [ref=f10e2]:
+    - generic [ref=f10e3]:
+      - paragraph [ref=f10e4]: Atlas block · interactive
+      - heading "Explore by region — one system, every surface" [level=1] [ref=f10e5]
+    - group "Language" [ref=f10e6]:
+      - button "EN · LTR" [pressed] [ref=f10e7] [cursor=pointer]
+      - button "AR · RTL" [ref=f10e8] [cursor=pointer]
+  - paragraph [ref=f10e9]: "The hub’s actual region geometry and real pin system: solid dots, soft segmented rings for mixed clusters. Filter by type, theme, when, region (All is the default); results are the hub’s typed content cards. Context-aware — each surface hides the dimension it fixes. Click a region or pin for a pinned card. Toggle AR to see full RTL: the layout mirrors, but each piece of text keeps its own direction."
+  - generic [ref=f10e10]:
+    - generic [ref=f10e11]:
+      - text: Homepage block
+      - generic [ref=f10e12]: · previews top 3 per filter
+    - generic [ref=f10e13]:
+      - generic [ref=f10e14]: Home 1280
+      - generic [ref=f10e21]:
+        - heading "Explore by region" [level=4] [ref=f10e23]
+        - generic [ref=f10e24]:
+          - generic [ref=f10e25]:
+            - generic [ref=f10e26]: Type
+            - button "All types" [pressed] [ref=f10e27] [cursor=pointer]
+            - button "Case study" [ref=f10e28] [cursor=pointer]
+            - button "Lived experience" [ref=f10e30] [cursor=pointer]
+            - button "News" [ref=f10e32] [cursor=pointer]
+            - button "Research output" [ref=f10e34] [cursor=pointer]
+            - button "Event" [ref=f10e36] [cursor=pointer]
+            - button "Member" [ref=f10e38] [cursor=pointer]
+          - generic [ref=f10e40]:
+            - generic [ref=f10e41]: Theme
+            - button "All" [pressed] [ref=f10e42] [cursor=pointer]
+            - button "Displacement" [ref=f10e43] [cursor=pointer]
+            - button "Livelihoods" [ref=f10e44] [cursor=pointer]
+            - button "Youth" [ref=f10e45] [cursor=pointer]
+            - button "Indigenous" [ref=f10e46] [cursor=pointer]
+            - button "Health systems" [ref=f10e47] [cursor=pointer]
+          - generic [ref=f10e48]:
+            - generic [ref=f10e49]: When
+            - button "All" [pressed] [ref=f10e50] [cursor=pointer]
+            - button "Past year" [ref=f10e51] [cursor=pointer]
+            - button "Past 3 yrs" [ref=f10e52] [cursor=pointer]
+            - button "Earlier" [ref=f10e53] [cursor=pointer]
+          - generic [ref=f10e54]:
+            - generic [ref=f10e55]: Region
+            - button "All" [pressed] [ref=f10e56] [cursor=pointer]
+            - button "Eastern & SE Asia" [ref=f10e57] [cursor=pointer]
+            - button "Sub-Saharan Africa" [ref=f10e58] [cursor=pointer]
+            - button "Europe & N. America" [ref=f10e59] [cursor=pointer]
+            - button "Central & Southern Asia" [ref=f10e60] [cursor=pointer]
+            - button "Oceania" [ref=f10e61] [cursor=pointer]
+            - button "Northern Africa & W. Asia" [ref=f10e62] [cursor=pointer]
+            - button "Latin America & Caribbean" [ref=f10e63] [cursor=pointer]
+        - generic [ref=f10e64]:
+          - generic [ref=f10e65]:
+            - img "Regional map with pins" [ref=f10e66]:
+              - generic [ref=f10e74]:
+                - generic [ref=f10e75] [cursor=pointer]: "7"
+                - generic [ref=f10e81] [cursor=pointer]: "7"
+                - generic [ref=f10e87] [cursor=pointer]: "2"
+                - generic [ref=f10e95] [cursor=pointer]: "3"
+                - generic [ref=f10e113] [cursor=pointer]: "3"
+                - generic [ref=f10e118] [cursor=pointer]: "2"
+                - generic [ref=f10e123] [cursor=pointer]: "5"
+                - generic [ref=f10e129] [cursor=pointer]: "2"
+                - generic [ref=f10e134] [cursor=pointer]: "4"
+                - generic [ref=f10e139] [cursor=pointer]: "3"
+                - generic [ref=f10e144] [cursor=pointer]: "2"
+                - generic [ref=f10e152] [cursor=pointer]: "5"
+                - generic [ref=f10e160] [cursor=pointer]: "2"
+                - generic [ref=f10e168] [cursor=pointer]: "2"
+                - generic [ref=f10e174] [cursor=pointer]: "2"
+                - generic [ref=f10e179] [cursor=pointer]: "3"
+                - generic [ref=f10e188] [cursor=pointer]: "6"
+                - generic [ref=f10e194] [cursor=pointer]: "6"
+                - generic [ref=f10e200] [cursor=pointer]: "2"
+                - generic [ref=f10e205] [cursor=pointer]: "3"
+                - generic [ref=f10e210] [cursor=pointer]: "4"
+            - generic [ref=f10e220]:
+              - button "+" [ref=f10e221] [cursor=pointer]
+              - button "−" [ref=f10e222] [cursor=pointer]
+          - generic [ref=f10e223]:
+            - generic [ref=f10e224]:
+              - 'heading "Region: All" [level=5] [ref=f10e225]'
+              - generic [ref=f10e226]: 86 total
+              - link "See all in Atlas" [ref=f10e227] [cursor=pointer]:
+                - /url: "#"
+            - generic [ref=f10e228]:
+              - link "Case study Mangrove restoration and community wellbeing Lagos, Nigeria" [ref=f10e229] [cursor=pointer]:
+                - /url: "#"
+                - generic [ref=f10e234]:
+                  - generic [ref=f10e235]: Case study
+                  - generic [ref=f10e237]: Mangrove restoration and community wellbeing
+                  - generic [ref=f10e238]: Lagos, Nigeria
+              - link "Case study Farmer mental health after prolonged drought Nairobi, Kenya" [ref=f10e239] [cursor=pointer]:
+                - /url: "#"
+                - generic [ref=f10e244]:
+                  - generic [ref=f10e245]: Case study
+                  - generic [ref=f10e247]: Farmer mental health after prolonged drought
+                  - generic [ref=f10e248]: Nairobi, Kenya
+              - link "Case study Peer-support networks in flood recovery Kampala, Uganda" [ref=f10e249] [cursor=pointer]:
+                - /url: "#"
+                - generic [ref=f10e254]:
+                  - generic [ref=f10e255]: Case study
+                  - generic [ref=f10e257]: Peer-support networks in flood recovery
+                  - generic [ref=f10e258]: Kampala, Uganda
+        - generic [ref=f10e259]:
+          - generic [ref=f10e260]: Case study
+          - generic [ref=f10e262]: Lived experience
+          - generic [ref=f10e264]: News
+          - generic [ref=f10e266]: Research output
+          - generic [ref=f10e268]: Event
+          - generic [ref=f10e270]: mixed cluster
+  - generic [ref=f10e272]:
+    - generic [ref=f10e273]:
+      - text: Atlas page
+      - generic [ref=f10e274]: · complete results, grid below the map
+    - generic [ref=f10e275]:
+      - generic [ref=f10e276]: Atlas 1280
+      - generic [ref=f10e283]:
+        - heading "Explore by region" [level=4] [ref=f10e285]
+        - generic [ref=f10e286]:
+          - generic [ref=f10e287]:
+            - generic [ref=f10e288]: Type
+            - button "All types" [pressed] [ref=f10e289] [cursor=pointer]
+            - button "Case study" [ref=f10e290] [cursor=pointer]
+            - button "Lived experience" [ref=f10e292] [cursor=pointer]
+            - button "News" [ref=f10e294] [cursor=pointer]
+            - button "Research output" [ref=f10e296] [cursor=pointer]
+            - button "Event" [ref=f10e298] [cursor=pointer]
+            - button "Member" [ref=f10e300] [cursor=pointer]
+          - generic [ref=f10e302]:
+            - generic [ref=f10e303]: Theme
+            - button "All" [pressed] [ref=f10e304] [cursor=pointer]
+            - button "Displacement" [ref=f10e305] [cursor=pointer]
+            - button "Livelihoods" [ref=f10e306] [cursor=pointer]
+            - button "Youth" [ref=f10e307] [cursor=pointer]
+            - button "Indigenous" [ref=f10e308] [cursor=pointer]
+            - button "Health systems" [ref=f10e309] [cursor=pointer]
+          - generic [ref=f10e310]:
+            - generic [ref=f10e311]: When
+            - button "All" [pressed] [ref=f10e312] [cursor=pointer]
+            - button "Past year" [ref=f10e313] [cursor=pointer]
+            - button "Past 3 yrs" [ref=f10e314] [cursor=pointer]
+            - button "Earlier" [ref=f10e315] [cursor=pointer]
+          - generic [ref=f10e316]:
+            - generic [ref=f10e317]: Region
+            - button "All" [pressed] [ref=f10e318] [cursor=pointer]
+            - button "Eastern & SE Asia" [ref=f10e319] [cursor=pointer]
+            - button "Sub-Saharan Africa" [ref=f10e320] [cursor=pointer]
+            - button "Europe & N. America" [ref=f10e321] [cursor=pointer]
+            - button "Central & Southern Asia" [ref=f10e322] [cursor=pointer]
+            - button "Oceania" [ref=f10e323] [cursor=pointer]
+            - button "Northern Africa & W. Asia" [ref=f10e324] [cursor=pointer]
+            - button "Latin America & Caribbean" [ref=f10e325] [cursor=pointer]
+        - generic [ref=f10e327]:
+          - img "Regional map with pins" [ref=f10e328]:
+            - generic [ref=f10e336]:
+              - generic [ref=f10e337] [cursor=pointer]: "7"
+              - generic [ref=f10e343] [cursor=pointer]: "7"
+              - generic [ref=f10e349] [cursor=pointer]: "2"
+              - generic [ref=f10e357] [cursor=pointer]: "3"
+              - generic [ref=f10e375] [cursor=pointer]: "3"
+              - generic [ref=f10e380] [cursor=pointer]: "2"
+              - generic [ref=f10e385] [cursor=pointer]: "5"
+              - generic [ref=f10e391] [cursor=pointer]: "2"
+              - generic [ref=f10e396] [cursor=pointer]: "4"
+              - generic [ref=f10e401] [cursor=pointer]: "3"
+              - generic [ref=f10e406] [cursor=pointer]: "2"
+              - generic [ref=f10e414] [cursor=pointer]: "5"
+              - generic [ref=f10e422] [cursor=pointer]: "2"
+              - generic [ref=f10e430] [cursor=pointer]: "2"
+              - generic [ref=f10e436] [cursor=pointer]: "2"
+              - generic [ref=f10e441] [cursor=pointer]: "3"
+              - generic [ref=f10e450] [cursor=pointer]: "6"
+              - generic [ref=f10e456] [cursor=pointer]: "6"
+              - generic [ref=f10e462] [cursor=pointer]: "2"
+              - generic [ref=f10e467] [cursor=pointer]: "3"
+              - generic [ref=f10e472] [cursor=pointer]: "4"
+          - generic [ref=f10e482]:
+            - button "+" [ref=f10e483] [cursor=pointer]
+            - button "−" [ref=f10e484] [cursor=pointer]
+        - generic [ref=f10e485]:
+          - 'heading "Region: All" [level=5] [ref=f10e486]'
+          - generic [ref=f10e487]: 86 results · showing top 6
+        - generic [ref=f10e488]:
+          - link "Case study Mangrove restoration and community wellbeing Lagos, Nigeria 2023" [ref=f10e489] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f10e494]:
+              - generic [ref=f10e495]: Case study
+              - generic [ref=f10e497]: Mangrove restoration and community wellbeing
+              - generic [ref=f10e498]:
+                - generic [ref=f10e499]: Lagos, Nigeria
+                - generic [ref=f10e500]: "2023"
+          - link "Case study Farmer mental health after prolonged drought Nairobi, Kenya 2023" [ref=f10e501] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f10e506]:
+              - generic [ref=f10e507]: Case study
+              - generic [ref=f10e509]: Farmer mental health after prolonged drought
+              - generic [ref=f10e510]:
+                - generic [ref=f10e511]: Nairobi, Kenya
+                - generic [ref=f10e512]: "2023"
+          - link "Case study Peer-support networks in flood recovery Kampala, Uganda 2023" [ref=f10e513] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f10e518]:
+              - generic [ref=f10e519]: Case study
+              - generic [ref=f10e521]: Peer-support networks in flood recovery
+              - generic [ref=f10e522]:
+                - generic [ref=f10e523]: Kampala, Uganda
+                - generic [ref=f10e524]: "2023"
+          - link "Case study Mangrove restoration and community wellbeing Amman, Jordan 2025" [ref=f10e525] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f10e530]:
+              - generic [ref=f10e531]: Case study
+              - generic [ref=f10e533]: Mangrove restoration and community wellbeing
+              - generic [ref=f10e534]:
+                - generic [ref=f10e535]: Amman, Jordan
+                - generic [ref=f10e536]: "2025"
+          - link "Case study Mangrove restoration and community wellbeing Dhaka, Bangladesh 2023" [ref=f10e537] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f10e542]:
+              - generic [ref=f10e543]: Case study
+              - generic [ref=f10e545]: Mangrove restoration and community wellbeing
+              - generic [ref=f10e546]:
+                - generic [ref=f10e547]: Dhaka, Bangladesh
+                - generic [ref=f10e548]: "2023"
+          - link "Case study Farmer mental health after prolonged drought Delhi, India 2023" [ref=f10e549] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f10e554]:
+              - generic [ref=f10e555]: Case study
+              - generic [ref=f10e557]: Farmer mental health after prolonged drought
+              - generic [ref=f10e558]:
+                - generic [ref=f10e559]: Delhi, India
+                - generic [ref=f10e560]: "2023"
+        - generic [ref=f10e561]:
+          - link "All Case studies" [ref=f10e562] [cursor=pointer]:
+            - /url: "#"
+          - link "All Lived experiences" [ref=f10e564] [cursor=pointer]:
+            - /url: "#"
+          - link "All News" [ref=f10e566] [cursor=pointer]:
+            - /url: "#"
+          - link "All Research outputs" [ref=f10e568] [cursor=pointer]:
+            - /url: "#"
+        - generic [ref=f10e570]:
+          - generic [ref=f10e571]: /atlas
+          - generic [ref=f10e572]: filters travel in the URL - every link keeps them
+        - generic [ref=f10e573]:
+          - generic [ref=f10e574]: Case study
+          - generic [ref=f10e576]: Lived experience
+          - generic [ref=f10e578]: News
+          - generic [ref=f10e580]: Research output
+          - generic [ref=f10e582]: Event
+          - generic [ref=f10e584]: mixed cluster
+  - generic [ref=f10e586]:
+    - generic [ref=f10e587]:
+      - text: Regional community page
+      - generic [ref=f10e588]: · same component, Region filter hidden
+    - paragraph [ref=f10e589]: A regional community page is the Atlas scoped to one region. The same facet + typed-card component replaces today’s five separate per-type grids (agendas, news, case studies, lived-experiences, team). Because the region is fixed, the Region filter is hidden — the component is context-aware.
+    - generic [ref=f10e590]:
+      - generic [ref=f10e591]: Community 1280
+      - generic [ref=f10e598]:
+        - generic [ref=f10e599]:
+          - button "+ Follow region" [ref=f10e600] [cursor=pointer]
+          - text: Regional community
+          - heading "Sub-Saharan Africa" [level=3] [ref=f10e601]
+          - paragraph [ref=f10e602]: Sub-Saharan Africa
+          - generic [ref=f10e603]:
+            - generic [ref=f10e604]:
+              - generic [ref=f10e605]: "17"
+              - text: items
+            - generic [ref=f10e606]:
+              - generic [ref=f10e607]: "6"
+              - text: members
+        - generic [ref=f10e608]:
+          - generic [ref=f10e609]:
+            - generic [ref=f10e610]: Type
+            - button "All types" [pressed] [ref=f10e611] [cursor=pointer]
+            - button "Case study" [ref=f10e612] [cursor=pointer]
+            - button "Lived experience" [ref=f10e614] [cursor=pointer]
+            - button "News" [ref=f10e616] [cursor=pointer]
+            - button "Research output" [ref=f10e618] [cursor=pointer]
+            - button "Event" [ref=f10e620] [cursor=pointer]
+            - button "Member" [ref=f10e622] [cursor=pointer]
+          - generic [ref=f10e624]:
+            - generic [ref=f10e625]: Theme
+            - button "All" [pressed] [ref=f10e626] [cursor=pointer]
+            - button "Displacement" [ref=f10e627] [cursor=pointer]
+            - button "Livelihoods" [ref=f10e628] [cursor=pointer]
+            - button "Youth" [ref=f10e629] [cursor=pointer]
+            - button "Indigenous" [ref=f10e630] [cursor=pointer]
+            - button "Health systems" [ref=f10e631] [cursor=pointer]
+          - generic [ref=f10e632]:
+            - generic [ref=f10e633]: When
+            - button "All" [pressed] [ref=f10e634] [cursor=pointer]
+            - button "Past year" [ref=f10e635] [cursor=pointer]
+            - button "Past 3 yrs" [ref=f10e636] [cursor=pointer]
+            - button "Earlier" [ref=f10e637] [cursor=pointer]
+        - generic [ref=f10e639]:
+          - img "Regional map with pins" [ref=f10e640]:
+            - generic [ref=f10e648]:
+              - generic [ref=f10e649] [cursor=pointer]: "7"
+              - generic [ref=f10e655] [cursor=pointer]: "7"
+              - generic [ref=f10e661] [cursor=pointer]: "2"
+          - generic [ref=f10e670]:
+            - button "+" [ref=f10e671] [cursor=pointer]
+            - button "−" [ref=f10e672] [cursor=pointer]
+        - generic [ref=f10e673]:
+          - heading "Sub-Saharan Africa" [level=5] [ref=f10e674]
+          - generic [ref=f10e675]: 17 results · showing top 6
+          - link "Prefer the full map? Open in the Atlas, filters and all ›" [ref=f10e676] [cursor=pointer]:
+            - /url: /atlas
+        - generic [ref=f10e677]:
+          - generic [ref=f10e678]: Case studies
+          - link "Case study Mangrove restoration and community wellbeing Lagos, Nigeria 2023" [ref=f10e681] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f10e686]:
+              - generic [ref=f10e687]: Case study
+              - generic [ref=f10e689]: Mangrove restoration and community wellbeing
+              - generic [ref=f10e690]:
+                - generic [ref=f10e691]: Lagos, Nigeria
+                - generic [ref=f10e692]: "2023"
+          - link "Case study Farmer mental health after prolonged drought Nairobi, Kenya 2023" [ref=f10e693] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f10e698]:
+              - generic [ref=f10e699]: Case study
+              - generic [ref=f10e701]: Farmer mental health after prolonged drought
+              - generic [ref=f10e702]:
+                - generic [ref=f10e703]: Nairobi, Kenya
+                - generic [ref=f10e704]: "2023"
+          - link "Case study Peer-support networks in flood recovery Kampala, Uganda 2023" [ref=f10e705] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f10e710]:
+              - generic [ref=f10e711]: Case study
+              - generic [ref=f10e713]: Peer-support networks in flood recovery
+              - generic [ref=f10e714]:
+                - generic [ref=f10e715]: Kampala, Uganda
+                - generic [ref=f10e716]: "2023"
+          - generic [ref=f10e717]: Lived experiences
+          - link "Lived experience “A fisherman's story of loss and hope” Lagos, Nigeria 2021" [ref=f10e720] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f10e725]:
+              - generic [ref=f10e726]: Lived experience
+              - generic [ref=f10e728]: “A fisherman's story of loss and hope”
+              - generic [ref=f10e729]:
+                - generic [ref=f10e730]: Lagos, Nigeria
+                - generic [ref=f10e731]: "2021"
+          - link "Lived experience “Living through the long dry season” Nairobi, Kenya 2021" [ref=f10e732] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f10e737]:
+              - generic [ref=f10e738]: Lived experience
+              - generic [ref=f10e740]: “Living through the long dry season”
+              - generic [ref=f10e741]:
+                - generic [ref=f10e742]: Nairobi, Kenya
+                - generic [ref=f10e743]: "2021"
+          - link "Lived experience “When the river took our home” Kampala, Uganda 2025" [ref=f10e744] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f10e749]:
+              - generic [ref=f10e750]: Lived experience
+              - generic [ref=f10e752]: “When the river took our home”
+              - generic [ref=f10e753]:
+                - generic [ref=f10e754]: Kampala, Uganda
+                - generic [ref=f10e755]: "2025"
+        - generic [ref=f10e756]:
+          - link "All Case studies in Sub-Saharan" [ref=f10e757] [cursor=pointer]:
+            - /url: "#"
+          - link "All Lived experiences in Sub-Saharan" [ref=f10e759] [cursor=pointer]:
+            - /url: "#"
+          - link "All News in Sub-Saharan" [ref=f10e761] [cursor=pointer]:
+            - /url: "#"
+          - link "All Research outputs in Sub-Saharan" [ref=f10e763] [cursor=pointer]:
+            - /url: "#"
+        - generic [ref=f10e765]:
+          - generic [ref=f10e766]: /communities/ssa
+          - generic [ref=f10e767]: filters travel in the URL - every link keeps them
+        - generic [ref=f10e768]:
+          - generic [ref=f10e769]: Case study
+          - generic [ref=f10e771]: Lived experience
+          - generic [ref=f10e773]: News
+          - generic [ref=f10e775]: Research output
+          - generic [ref=f10e777]: Event
+          - generic [ref=f10e779]: mixed cluster
+  - generic [ref=f10e781]:
+    - generic [ref=f10e782]:
+      - text: Content-type page
+      - generic [ref=f10e783]: · same component, Type filter hidden
+    - paragraph [ref=f10e784]: "A listing like /case-studies is the Atlas scoped to one type. Same component — here the Type filter is hidden (the page already is the type), and you filter that type by region, theme and date instead. This is the “smart” behaviour: each surface hides whichever dimension it already fixes."
+    - generic [ref=f10e785]:
+      - generic [ref=f10e786]: Listing 1280
+      - generic [ref=f10e793]:
+        - generic [ref=f10e794]:
+          - text: Content type
+          - heading "Case studies" [level=3] [ref=f10e795]
+        - generic [ref=f10e796]:
+          - generic [ref=f10e797]:
+            - generic [ref=f10e798]: Theme
+            - button "All" [pressed] [ref=f10e799] [cursor=pointer]
+            - button "Displacement" [ref=f10e800] [cursor=pointer]
+            - button "Livelihoods" [ref=f10e801] [cursor=pointer]
+            - button "Youth" [ref=f10e802] [cursor=pointer]
+            - button "Indigenous" [ref=f10e803] [cursor=pointer]
+            - button "Health systems" [ref=f10e804] [cursor=pointer]
+          - generic [ref=f10e805]:
+            - generic [ref=f10e806]: When
+            - button "All" [pressed] [ref=f10e807] [cursor=pointer]
+            - button "Past year" [ref=f10e808] [cursor=pointer]
+            - button "Past 3 yrs" [ref=f10e809] [cursor=pointer]
+            - button "Earlier" [ref=f10e810] [cursor=pointer]
+          - generic [ref=f10e811]:
+            - generic [ref=f10e812]: Region
+            - button "All" [pressed] [ref=f10e813] [cursor=pointer]
+            - button "Eastern & SE Asia" [ref=f10e814] [cursor=pointer]
+            - button "Sub-Saharan Africa" [ref=f10e815] [cursor=pointer]
+            - button "Europe & N. America" [ref=f10e816] [cursor=pointer]
+            - button "Central & Southern Asia" [ref=f10e817] [cursor=pointer]
+            - button "Oceania" [ref=f10e818] [cursor=pointer]
+            - button "Northern Africa & W. Asia" [ref=f10e819] [cursor=pointer]
+            - button "Latin America & Caribbean" [ref=f10e820] [cursor=pointer]
+        - generic [ref=f10e822]:
+          - img "Regional map with pins" [ref=f10e823]:
+            - generic [ref=f10e831]:
+              - generic [ref=f10e835] [cursor=pointer]: "2"
+              - generic [ref=f10e841] [cursor=pointer]: "2"
+              - generic [ref=f10e847] [cursor=pointer]: "2"
+              - generic [ref=f10e850] [cursor=pointer]: "2"
+          - generic [ref=f10e869]:
+            - button "+" [ref=f10e870] [cursor=pointer]
+            - button "−" [ref=f10e871] [cursor=pointer]
+        - generic [ref=f10e872]:
+          - heading "Case studies" [level=5] [ref=f10e873]
+          - generic [ref=f10e874]: 16 results · showing top 6
+          - link "Prefer the full map? Open in the Atlas, filters and all ›" [ref=f10e875] [cursor=pointer]:
+            - /url: /atlas
+        - generic [ref=f10e876]:
+          - link "Case study Mangrove restoration and community wellbeing Lagos, Nigeria 2023" [ref=f10e877] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f10e882]:
+              - generic [ref=f10e883]: Case study
+              - generic [ref=f10e885]: Mangrove restoration and community wellbeing
+              - generic [ref=f10e886]:
+                - generic [ref=f10e887]: Lagos, Nigeria
+                - generic [ref=f10e888]: "2023"
+          - link "Case study Farmer mental health after prolonged drought Nairobi, Kenya 2023" [ref=f10e889] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f10e894]:
+              - generic [ref=f10e895]: Case study
+              - generic [ref=f10e897]: Farmer mental health after prolonged drought
+              - generic [ref=f10e898]:
+                - generic [ref=f10e899]: Nairobi, Kenya
+                - generic [ref=f10e900]: "2023"
+          - link "Case study Peer-support networks in flood recovery Kampala, Uganda 2023" [ref=f10e901] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f10e906]:
+              - generic [ref=f10e907]: Case study
+              - generic [ref=f10e909]: Peer-support networks in flood recovery
+              - generic [ref=f10e910]:
+                - generic [ref=f10e911]: Kampala, Uganda
+                - generic [ref=f10e912]: "2023"
+          - link "Case study Mangrove restoration and community wellbeing Amman, Jordan 2025" [ref=f10e913] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f10e918]:
+              - generic [ref=f10e919]: Case study
+              - generic [ref=f10e921]: Mangrove restoration and community wellbeing
+              - generic [ref=f10e922]:
+                - generic [ref=f10e923]: Amman, Jordan
+                - generic [ref=f10e924]: "2025"
+          - link "Case study Mangrove restoration and community wellbeing Dhaka, Bangladesh 2023" [ref=f10e925] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f10e930]:
+              - generic [ref=f10e931]: Case study
+              - generic [ref=f10e933]: Mangrove restoration and community wellbeing
+              - generic [ref=f10e934]:
+                - generic [ref=f10e935]: Dhaka, Bangladesh
+                - generic [ref=f10e936]: "2023"
+          - link "Case study Farmer mental health after prolonged drought Delhi, India 2023" [ref=f10e937] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f10e942]:
+              - generic [ref=f10e943]: Case study
+              - generic [ref=f10e945]: Farmer mental health after prolonged drought
+              - generic [ref=f10e946]:
+                - generic [ref=f10e947]: Delhi, India
+                - generic [ref=f10e948]: "2023"
+        - link "All Case studies" [ref=f10e950] [cursor=pointer]:
+          - /url: "#"
+        - generic [ref=f10e952]:
+          - generic [ref=f10e953]: /research-and-action/case-studies
+          - generic [ref=f10e954]: filters travel in the URL - every link keeps them
+        - generic [ref=f10e955]:
+          - generic [ref=f10e956]: Case study
+          - generic [ref=f10e958]: Lived experience
+          - generic [ref=f10e960]: News
+          - generic [ref=f10e962]: Research output
+          - generic [ref=f10e964]: Event
+          - generic [ref=f10e966]: mixed cluster
+  - generic [ref=f10e968]:
+    - generic [ref=f10e969]:
+      - text: Mobile — homepage block
+      - generic [ref=f10e970]: · map, filters, then top 3 stacked
+    - generic [ref=f10e971]:
+      - generic [ref=f10e972]: Mobile 375
+      - generic [ref=f10e977]:
+        - heading "Explore by region" [level=4] [ref=f10e979]
+        - generic [ref=f10e980]:
+          - generic [ref=f10e981]:
+            - generic [ref=f10e982]: Type
+            - button "All types" [pressed] [ref=f10e983] [cursor=pointer]
+            - button "Case study" [ref=f10e984] [cursor=pointer]
+            - button "Lived experience" [ref=f10e986] [cursor=pointer]
+            - button "News" [ref=f10e988] [cursor=pointer]
+            - button "Research output" [ref=f10e990] [cursor=pointer]
+            - button "Event" [ref=f10e992] [cursor=pointer]
+            - button "Member" [ref=f10e994] [cursor=pointer]
+          - generic [ref=f10e996]:
+            - generic [ref=f10e997]: Theme
+            - button "All" [pressed] [ref=f10e998] [cursor=pointer]
+            - button "Displacement" [ref=f10e999] [cursor=pointer]
+            - button "Livelihoods" [ref=f10e1000] [cursor=pointer]
+            - button "Youth" [ref=f10e1001] [cursor=pointer]
+          - generic [ref=f10e1002]:
+            - generic [ref=f10e1003]: Region
+            - button "All" [pressed] [ref=f10e1004] [cursor=pointer]
+            - button "Eastern" [ref=f10e1005] [cursor=pointer]
+            - button "Sub-Saharan" [ref=f10e1006] [cursor=pointer]
+            - button "Europe" [ref=f10e1007] [cursor=pointer]
+            - button "Central" [ref=f10e1008] [cursor=pointer]
+            - button "Oceania" [ref=f10e1009] [cursor=pointer]
+            - button "Northern" [ref=f10e1010] [cursor=pointer]
+            - button "Latin" [ref=f10e1011] [cursor=pointer]
+        - generic [ref=f10e1012]:
+          - img "Regional map with pins" [ref=f10e1013]:
+            - generic [ref=f10e1021]:
+              - generic [ref=f10e1022] [cursor=pointer]: "7"
+              - generic [ref=f10e1028] [cursor=pointer]: "7"
+              - generic [ref=f10e1034] [cursor=pointer]: "2"
+              - generic [ref=f10e1042] [cursor=pointer]: "3"
+              - generic [ref=f10e1060] [cursor=pointer]: "3"
+              - generic [ref=f10e1065] [cursor=pointer]: "2"
+              - generic [ref=f10e1070] [cursor=pointer]: "5"
+              - generic [ref=f10e1076] [cursor=pointer]: "2"
+              - generic [ref=f10e1081] [cursor=pointer]: "4"
+              - generic [ref=f10e1086] [cursor=pointer]: "3"
+              - generic [ref=f10e1091] [cursor=pointer]: "2"
+              - generic [ref=f10e1099] [cursor=pointer]: "5"
+              - generic [ref=f10e1107] [cursor=pointer]: "2"
+              - generic [ref=f10e1115] [cursor=pointer]: "2"
+              - generic [ref=f10e1121] [cursor=pointer]: "2"
+              - generic [ref=f10e1126] [cursor=pointer]: "3"
+              - generic [ref=f10e1135] [cursor=pointer]: "6"
+              - generic [ref=f10e1141] [cursor=pointer]: "6"
+              - generic [ref=f10e1147] [cursor=pointer]: "2"
+              - generic [ref=f10e1152] [cursor=pointer]: "3"
+              - generic [ref=f10e1157] [cursor=pointer]: "4"
+          - generic [ref=f10e1167]:
+            - button "+" [ref=f10e1168] [cursor=pointer]
+            - button "−" [ref=f10e1169] [cursor=pointer]
+        - generic [ref=f10e1170]:
+          - 'heading "Region: All" [level=5] [ref=f10e1171]'
+          - generic [ref=f10e1172]: 86 total
+        - generic [ref=f10e1173]:
+          - link "Case study Mangrove restoration and community wellbeing Lagos, Nigeria" [ref=f10e1174] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f10e1179]:
+              - generic [ref=f10e1180]: Case study
+              - generic [ref=f10e1182]: Mangrove restoration and community wellbeing
+              - generic [ref=f10e1183]: Lagos, Nigeria
+          - link "Case study Farmer mental health after prolonged drought Nairobi, Kenya" [ref=f10e1184] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f10e1189]:
+              - generic [ref=f10e1190]: Case study
+              - generic [ref=f10e1192]: Farmer mental health after prolonged drought
+              - generic [ref=f10e1193]: Nairobi, Kenya
+          - link "Case study Peer-support networks in flood recovery Kampala, Uganda" [ref=f10e1194] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f10e1199]:
+              - generic [ref=f10e1200]: Case study
+              - generic [ref=f10e1202]: Peer-support networks in flood recovery
+              - generic [ref=f10e1203]: Kampala, Uganda
+        - link "See all in Atlas" [ref=f10e1204] [cursor=pointer]:
+          - /url: "#"

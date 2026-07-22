@@ -1,0 +1,70 @@
+[  327731ms] [ERROR] Failed to load resource: net::ERR_NETWORK_IO_SUSPENDED @ https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/production_2?tag=next-loader.live:0
+[  366185ms] [ERROR] Failed to load resource: net::ERR_QUIC_PROTOCOL_ERROR.QUIC_NETWORK_IDLE_TIMEOUT @ https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/production_2?tag=next-loader.live:0
+[  630546ms] [ERROR] Failed to load resource: net::ERR_QUIC_PROTOCOL_ERROR.QUIC_NETWORK_IDLE_TIMEOUT @ https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/production_2?tag=next-loader.live:0
+[  631189ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/production_2?tag=next-loader.live:0
+[  631624ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/production_2?tag=next-loader.live:0
+[  631682ms] [WARNING] Sanity Live is unable to connect to the Sanity API as the current origin - https://hub.connectingclimateminds.org - is not in the list of allowed CORS origins for this Sanity Project. Add it here: https://sanity.io/manage/project/gm67v7rk/api?cors=add&origin=https%3A%2F%2Fhub.connectingclimateminds.org @ https://hub.connectingclimateminds.org/_next/static/chunks/6c1a42807fa95cd5.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:0
+[  998360ms] [ERROR] Failed to load resource: net::ERR_ADDRESS_UNREACHABLE @ https://hub.connectingclimateminds.org/en?_rsc=t397o:0
+[  998363ms] [ERROR] Failed to fetch RSC payload for https://hub.connectingclimateminds.org/en. Falling back to browser navigation. TypeError: Failed to fetch
+    at v (https://hub.connectingclimateminds.org/_next/static/chunks/f534b2fafeb98f4c.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:1:16556)
+    at P (https://hub.connectingclimateminds.org/_next/static/chunks/f534b2fafeb98f4c.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:1:15366)
+    at U (https://hub.connectingclimateminds.org/_next/static/chunks/f534b2fafeb98f4c.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:1:24514)
+    at j (https://hub.connectingclimateminds.org/_next/static/chunks/f534b2fafeb98f4c.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:1:23395)
+    at h (https://hub.connectingclimateminds.org/_next/static/chunks/f534b2fafeb98f4c.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:1:62674)
+    at f (https://hub.connectingclimateminds.org/_next/static/chunks/f534b2fafeb98f4c.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:1:69236)
+    at s (https://hub.connectingclimateminds.org/_next/static/chunks/f534b2fafeb98f4c.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:1:68929)
+    at push.s (https://hub.connectingclimateminds.org/_next/static/chunks/f534b2fafeb98f4c.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:2:3816)
+    at Object.action (https://hub.connectingclimateminds.org/_next/static/chunks/f534b2fafeb98f4c.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:2:6518)
+    at g (https://hub.connectingclimateminds.org/_next/static/chunks/f534b2fafeb98f4c.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:2:5713) @ https://hub.connectingclimateminds.org/_next/static/chunks/f534b2fafeb98f4c.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:0
+[  998381ms] [ERROR] Failed to load resource: net::ERR_ADDRESS_UNREACHABLE @ https://hub.connectingclimateminds.org/?_rsc=eqsiq:0
+[ 1042233ms] [ERROR] Failed to load resource: net::ERR_NETWORK_CHANGED @ https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/production_2?tag=next-loader.live:0
+[ 1042305ms] [ERROR] Failed to load resource: net::ERR_NETWORK_CHANGED @ https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/production_2?tag=next-loader.live:0
+[ 1042373ms] [WARNING] Sanity Live is unable to connect to the Sanity API as the current origin - https://hub.connectingclimateminds.org - is not in the list of allowed CORS origins for this Sanity Project. Add it here: https://sanity.io/manage/project/gm67v7rk/api?cors=add&origin=https%3A%2F%2Fhub.connectingclimateminds.org @ https://hub.connectingclimateminds.org/_next/static/chunks/6c1a42807fa95cd5.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:0
+[ 2135914ms] [ERROR] Failed to load resource: net::ERR_ADDRESS_UNREACHABLE @ https://hub.connectingclimateminds.org/en?_rsc=t397o:0
+[ 2135915ms] [ERROR] Failed to fetch RSC payload for https://hub.connectingclimateminds.org/en. Falling back to browser navigation. TypeError: Failed to fetch
+    at v (https://hub.connectingclimateminds.org/_next/static/chunks/f534b2fafeb98f4c.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:1:16556)
+    at P (https://hub.connectingclimateminds.org/_next/static/chunks/f534b2fafeb98f4c.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:1:15366)
+    at U (https://hub.connectingclimateminds.org/_next/static/chunks/f534b2fafeb98f4c.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:1:24514)
+    at j (https://hub.connectingclimateminds.org/_next/static/chunks/f534b2fafeb98f4c.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:1:23395)
+    at h (https://hub.connectingclimateminds.org/_next/static/chunks/f534b2fafeb98f4c.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:1:62674)
+    at f (https://hub.connectingclimateminds.org/_next/static/chunks/f534b2fafeb98f4c.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:1:69236)
+    at s (https://hub.connectingclimateminds.org/_next/static/chunks/f534b2fafeb98f4c.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:1:68929)
+    at push.s (https://hub.connectingclimateminds.org/_next/static/chunks/f534b2fafeb98f4c.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:2:3816)
+    at Object.action (https://hub.connectingclimateminds.org/_next/static/chunks/f534b2fafeb98f4c.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:2:6518)
+    at g (https://hub.connectingclimateminds.org/_next/static/chunks/f534b2fafeb98f4c.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:2:5713) @ https://hub.connectingclimateminds.org/_next/static/chunks/f534b2fafeb98f4c.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:0
+[ 2135934ms] [ERROR] Failed to load resource: net::ERR_ADDRESS_UNREACHABLE @ https://hub.connectingclimateminds.org/?_rsc=eqsiq:0
+[ 2541196ms] [ERROR] Failed to load resource: net::ERR_NETWORK_CHANGED @ https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/production_2?tag=next-loader.live:0
+[ 2541329ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/production_2?tag=next-loader.live:0
+[ 2541342ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/production_2?tag=next-loader.live:0
+[ 2541344ms] [WARNING] Sanity Live is unable to connect to the Sanity API as the current origin - https://hub.connectingclimateminds.org - is not in the list of allowed CORS origins for this Sanity Project. Add it here: https://sanity.io/manage/project/gm67v7rk/api?cors=add&origin=https%3A%2F%2Fhub.connectingclimateminds.org @ https://hub.connectingclimateminds.org/_next/static/chunks/6c1a42807fa95cd5.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:0
+[11949162ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://hub.connectingclimateminds.org/en?_rsc=t397o:0
+[11949164ms] [ERROR] Failed to fetch RSC payload for https://hub.connectingclimateminds.org/en. Falling back to browser navigation. TypeError: Failed to fetch
+    at v (https://hub.connectingclimateminds.org/_next/static/chunks/f534b2fafeb98f4c.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:1:16556)
+    at P (https://hub.connectingclimateminds.org/_next/static/chunks/f534b2fafeb98f4c.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:1:15366)
+    at U (https://hub.connectingclimateminds.org/_next/static/chunks/f534b2fafeb98f4c.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:1:24514)
+    at j (https://hub.connectingclimateminds.org/_next/static/chunks/f534b2fafeb98f4c.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:1:23395)
+    at h (https://hub.connectingclimateminds.org/_next/static/chunks/f534b2fafeb98f4c.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:1:62674)
+    at f (https://hub.connectingclimateminds.org/_next/static/chunks/f534b2fafeb98f4c.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:1:69236)
+    at s (https://hub.connectingclimateminds.org/_next/static/chunks/f534b2fafeb98f4c.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:1:68929)
+    at push.s (https://hub.connectingclimateminds.org/_next/static/chunks/f534b2fafeb98f4c.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:2:3816)
+    at Object.action (https://hub.connectingclimateminds.org/_next/static/chunks/f534b2fafeb98f4c.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:2:6518)
+    at g (https://hub.connectingclimateminds.org/_next/static/chunks/f534b2fafeb98f4c.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:2:5713) @ https://hub.connectingclimateminds.org/_next/static/chunks/f534b2fafeb98f4c.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:0
+[11949204ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://hub.connectingclimateminds.org/?_rsc=eqsiq:0
+[12088685ms] [ERROR] Failed to load resource: net::ERR_NETWORK_CHANGED @ https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/production_2?tag=next-loader.live:0
+[12088720ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/production_2?tag=next-loader.live:0
+[12088727ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/production_2?tag=next-loader.live:0
+[12088728ms] [WARNING] Sanity Live is unable to connect to the Sanity API as the current origin - https://hub.connectingclimateminds.org - is not in the list of allowed CORS origins for this Sanity Project. Add it here: https://sanity.io/manage/project/gm67v7rk/api?cors=add&origin=https%3A%2F%2Fhub.connectingclimateminds.org @ https://hub.connectingclimateminds.org/_next/static/chunks/6c1a42807fa95cd5.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:0
+[18253268ms] [ERROR] Failed to load resource: net::ERR_ADDRESS_UNREACHABLE @ https://hub.connectingclimateminds.org/en?_rsc=t397o:0
+[18253270ms] [ERROR] Failed to fetch RSC payload for https://hub.connectingclimateminds.org/en. Falling back to browser navigation. TypeError: Failed to fetch
+    at v (https://hub.connectingclimateminds.org/_next/static/chunks/f534b2fafeb98f4c.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:1:16556)
+    at P (https://hub.connectingclimateminds.org/_next/static/chunks/f534b2fafeb98f4c.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:1:15366)
+    at U (https://hub.connectingclimateminds.org/_next/static/chunks/f534b2fafeb98f4c.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:1:24514)
+    at j (https://hub.connectingclimateminds.org/_next/static/chunks/f534b2fafeb98f4c.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:1:23395)
+    at h (https://hub.connectingclimateminds.org/_next/static/chunks/f534b2fafeb98f4c.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:1:62674)
+    at f (https://hub.connectingclimateminds.org/_next/static/chunks/f534b2fafeb98f4c.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:1:69236)
+    at s (https://hub.connectingclimateminds.org/_next/static/chunks/f534b2fafeb98f4c.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:1:68929)
+    at push.s (https://hub.connectingclimateminds.org/_next/static/chunks/f534b2fafeb98f4c.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:2:3816)
+    at Object.action (https://hub.connectingclimateminds.org/_next/static/chunks/f534b2fafeb98f4c.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:2:6518)
+    at g (https://hub.connectingclimateminds.org/_next/static/chunks/f534b2fafeb98f4c.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:2:5713) @ https://hub.connectingclimateminds.org/_next/static/chunks/f534b2fafeb98f4c.js?dpl=dpl_GbZGe9W5mpcnnYJWfLrgjZnUp4FW:0
+[18253284ms] [ERROR] Failed to load resource: net::ERR_ADDRESS_UNREACHABLE @ https://hub.connectingclimateminds.org/?_rsc=eqsiq:0
+[18787695ms] [ERROR] Failed to load resource: net::ERR_QUIC_PROTOCOL_ERROR.QUIC_PUBLIC_RESET @ https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/production_2?tag=next-loader.live:0

@@ -1,0 +1,266 @@
+[     268ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    2988ms] [LOG] [Fast Refresh] done in 2821ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    5755ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    5969ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    6096ms] [WARNING] Missing Algolia environment variables: ALGOLIA_API_KEY @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    6096ms] [WARNING] Algolia admin client not available - missing credentials @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    6096ms] [LOG] ✅ Algolia search client initialized successfully @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    6322ms] [WARNING] Ignoring Event: localhost @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    6359ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    6432ms] [INFO] Sanity is live with automatic revalidation of published content @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   40533ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   41254ms] [LOG] [Fast Refresh] done in 823ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   64895ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   64964ms] [LOG] [Fast Refresh] done in 170ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   65855ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   65968ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   66043ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   66317ms] [WARNING] Missing Algolia environment variables: ALGOLIA_API_KEY @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   66318ms] [WARNING] Algolia admin client not available - missing credentials @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   66318ms] [LOG] ✅ Algolia search client initialized successfully @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   66344ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   66575ms] [WARNING] Ignoring Event: localhost @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   66575ms] [LOG] [Fast Refresh] done in 337ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   66603ms] [INFO] Sanity is live with automatic revalidation of published content @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  146939ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  147870ms] [LOG] [Fast Refresh] done in 1033ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  241717ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  242335ms] [LOG] [Fast Refresh] done in 653ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  242494ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  244806ms] [LOG] [Fast Refresh] done in 2413ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  245052ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  245210ms] [LOG] [Fast Refresh] done in 260ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  245604ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  246476ms] [LOG] [Fast Refresh] done in 972ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  246606ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  246668ms] [LOG] [Fast Refresh] done in 163ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  246805ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  246893ms] [LOG] [Fast Refresh] done in 187ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  319613ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  322294ms] [LOG] [Fast Refresh] done in 2743ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  358285ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  358479ms] [LOG] [Fast Refresh] done in 264ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  358629ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  359454ms] [LOG] [Fast Refresh] done in 927ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  360019ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  360056ms] [LOG] [Fast Refresh] done in 139ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  382485ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  382741ms] [LOG] [Fast Refresh] done in 357ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  425471ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  425607ms] [LOG] [Fast Refresh] done in 203ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  425762ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  425901ms] [LOG] [Fast Refresh] done in 239ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  477383ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  477509ms] [LOG] [Fast Refresh] done in 183ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  477624ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  477752ms] [LOG] [Fast Refresh] done in 228ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  503805ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  504101ms] [LOG] [Fast Refresh] done in 349ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  504254ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  504320ms] [LOG] [Fast Refresh] done in 167ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  556364ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  556511ms] [LOG] [Fast Refresh] done in 208ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  556653ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  556824ms] [LOG] [Fast Refresh] done in 272ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  618654ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  618931ms] [LOG] [Fast Refresh] done in 334ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  619072ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  619149ms] [LOG] [Fast Refresh] done in 178ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  665702ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  666073ms] [LOG] [Fast Refresh] done in 409ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  666460ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  666736ms] [LOG] [Fast Refresh] done in 377ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  708698ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  708817ms] [LOG] [Fast Refresh] done in 220ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  713712ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  713930ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  714177ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  714256ms] [WARNING] Missing Algolia environment variables: ALGOLIA_API_KEY @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  714257ms] [WARNING] Algolia admin client not available - missing credentials @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  714257ms] [LOG] ✅ Algolia search client initialized successfully @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  714469ms] [WARNING] Ignoring Event: localhost @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  714640ms] [INFO] Sanity is live with automatic revalidation of published content @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  714641ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  714646ms] [LOG] [Fast Refresh] done in 157ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  737628ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  737766ms] [LOG] [Fast Refresh] done in 200ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  737869ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  737905ms] [LOG] [Fast Refresh] done in 137ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  744157ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  744254ms] [LOG] [Fast Refresh] done in 199ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  747816ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  749528ms] [LOG] [Fast Refresh] done in 1813ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  749680ms] [WARNING] Ignoring Event: localhost @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  749857ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  750026ms] [LOG] [Fast Refresh] done in 270ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  757115ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  757148ms] [LOG] [Fast Refresh] done in 133ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  759818ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  759939ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  760333ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  760522ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  760534ms] [WARNING] Missing Algolia environment variables: ALGOLIA_API_KEY @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  760534ms] [WARNING] Algolia admin client not available - missing credentials @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  760534ms] [LOG] ✅ Algolia search client initialized successfully @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  760554ms] [LOG] [Fast Refresh] done in 141ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  760557ms] [WARNING] Image with src "/connecting-climate-minds-logo-white.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  760898ms] [WARNING] Ignoring Event: localhost @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  760924ms] [INFO] Sanity is live with automatic revalidation of published content @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  764861ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  778849ms] [LOG] [Fast Refresh] done in 12798ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  781089ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  782123ms] [LOG] [Fast Refresh] done in 1135ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  787632ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  789104ms] [LOG] [Fast Refresh] done in 1572ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  789763ms] [WARNING] Ignoring Event: localhost @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  811894ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  813710ms] [LOG] [Fast Refresh] done in 1917ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  815225ms] [WARNING] %c%s%c PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component. background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   65637bb0d5b1 @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  815226ms] [WARNING] %c%s%c PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component. background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   7cd1800b06a3 @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  815321ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  815327ms] [LOG] [Fast Refresh] done in 123ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  815431ms] [WARNING] Ignoring Event: localhost @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  831852ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  833256ms] [LOG] [Fast Refresh] done in 1305ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  834807ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  834821ms] [LOG] [Fast Refresh] done in 114ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  834925ms] [WARNING] Ignoring Event: localhost @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  835052ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  835824ms] [LOG] [Fast Refresh] done in 872ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  836614ms] [ERROR] Connecting to 'https://clerk-telemetry.com/v1/event' violates the following Content Security Policy directive: "connect-src 'self' https://*.clerk.com https://clerk.connectingclimateminds.org https://*.clerk.accounts.dev https://*.algolia.net https://*.algolianet.com https://plausible.io https://*.sanity.io https://*.r2.cloudflarestorage.com https://*.upstash.io https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://*.ingest.de.sentry.io". The action has been blocked. @ https://generous-hagfish-7.clerk.accounts.dev/npm/@clerk/clerk-js@5/dist/clerk.browser.js:18
+[  836616ms] [ERROR] Fetch API cannot load https://clerk-telemetry.com/v1/event. Refused to connect because it violates the document's Content Security Policy. @ https://generous-hagfish-7.clerk.accounts.dev/npm/@clerk/clerk-js@5/dist/clerk.browser.js:18
+[  836917ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ http://localhost:3000/en/sign-in?redirect=/collaborate:0
+[  840171ms] [WARNING] Ignoring Event: localhost @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  840248ms] [INFO] Sanity is live with automatic revalidation of published content @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  844037ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  844059ms] [LOG] [Fast Refresh] done in 123ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  844162ms] [WARNING] Ignoring Event: localhost @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  844549ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ http://localhost:3000/en/sign-in?redirect=/collaborate:0
+[  910517ms] [WARNING] Ignoring Event: localhost @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  910644ms] [INFO] Sanity is live with automatic revalidation of published content @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  911700ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  914781ms] [LOG] [Fast Refresh] done in 929ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  915016ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  915021ms] [LOG] [Fast Refresh] done in 105ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  915319ms] [WARNING] Ignoring Event: localhost @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  924257ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ https://jwepepsgj5-dsn.algolia.net/1/indexes/*/queries?x-algolia-agent=Algolia%20for%20JavaScript%20(5.46.2)%3B%20Search%20(5.46.2)%3B%20Browser&x-algolia-api-key=46ef813f447af6910eb24aee6f61a537&x-algolia-application-id=JWEPEPSGJ5:0
+[  924673ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ https://jwepepsgj5-dsn.algolia.net/1/indexes/*/queries?x-algolia-agent=Algolia%20for%20JavaScript%20(5.46.2)%3B%20Search%20(5.46.2)%3B%20Browser&x-algolia-api-key=46ef813f447af6910eb24aee6f61a537&x-algolia-application-id=JWEPEPSGJ5:0
+[  926106ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ https://jwepepsgj5-dsn.algolia.net/1/indexes/*/queries?x-algolia-agent=Algolia%20for%20JavaScript%20(5.46.2)%3B%20Search%20(5.46.2)%3B%20Browser&x-algolia-api-key=46ef813f447af6910eb24aee6f61a537&x-algolia-application-id=JWEPEPSGJ5:0
+[  927592ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ https://jwepepsgj5-dsn.algolia.net/1/indexes/*/queries?x-algolia-agent=Algolia%20for%20JavaScript%20(5.46.2)%3B%20Search%20(5.46.2)%3B%20Browser&x-algolia-api-key=46ef813f447af6910eb24aee6f61a537&x-algolia-application-id=JWEPEPSGJ5:0
+[  931511ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ https://jwepepsgj5-dsn.algolia.net/1/indexes/*/queries?x-algolia-agent=Algolia%20for%20JavaScript%20(5.46.2)%3B%20Search%20(5.46.2)%3B%20Browser&x-algolia-api-key=46ef813f447af6910eb24aee6f61a537&x-algolia-application-id=JWEPEPSGJ5:0
+[  931845ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ https://jwepepsgj5-dsn.algolia.net/1/indexes/*/queries?x-algolia-agent=Algolia%20for%20JavaScript%20(5.46.2)%3B%20Search%20(5.46.2)%3B%20Browser&x-algolia-api-key=46ef813f447af6910eb24aee6f61a537&x-algolia-application-id=JWEPEPSGJ5:0
+[  932351ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ https://jwepepsgj5-dsn.algolia.net/1/indexes/*/queries?x-algolia-agent=Algolia%20for%20JavaScript%20(5.46.2)%3B%20Search%20(5.46.2)%3B%20Browser&x-algolia-api-key=46ef813f447af6910eb24aee6f61a537&x-algolia-application-id=JWEPEPSGJ5:0
+[  933055ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ https://jwepepsgj5-dsn.algolia.net/1/indexes/*/queries?x-algolia-agent=Algolia%20for%20JavaScript%20(5.46.2)%3B%20Search%20(5.46.2)%3B%20Browser&x-algolia-api-key=46ef813f447af6910eb24aee6f61a537&x-algolia-application-id=JWEPEPSGJ5:0
+[  933580ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ https://jwepepsgj5-dsn.algolia.net/1/indexes/*/queries?x-algolia-agent=Algolia%20for%20JavaScript%20(5.46.2)%3B%20Search%20(5.46.2)%3B%20Browser&x-algolia-api-key=46ef813f447af6910eb24aee6f61a537&x-algolia-application-id=JWEPEPSGJ5:0
+[  933946ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ https://jwepepsgj5-dsn.algolia.net/1/indexes/*/queries?x-algolia-agent=Algolia%20for%20JavaScript%20(5.46.2)%3B%20Search%20(5.46.2)%3B%20Browser&x-algolia-api-key=46ef813f447af6910eb24aee6f61a537&x-algolia-application-id=JWEPEPSGJ5:0
+[  934178ms] [ERROR] Failed to load resource: the server responded with a status of 403 (Forbidden) @ https://jwepepsgj5-dsn.algolia.net/1/indexes/*/queries?x-algolia-agent=Algolia%20for%20JavaScript%20(5.46.2)%3B%20Search%20(5.46.2)%3B%20Browser&x-algolia-api-key=46ef813f447af6910eb24aee6f61a537&x-algolia-application-id=JWEPEPSGJ5:0
+[  943256ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  944725ms] [LOG] [Fast Refresh] done in 1584ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  946027ms] [WARNING] %c%s%c PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component. background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   65637bb0d5b1 @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  946028ms] [WARNING] %c%s%c PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component. background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   7cd1800b06a3 @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  946119ms] [WARNING] Ignoring Event: localhost @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  949327ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  954520ms] [LOG] [Fast Refresh] done in 5266ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1020028ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1020277ms] [LOG] [Fast Refresh] done in 352ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1022811ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1025345ms] [LOG] [Fast Refresh] done in 2639ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1028648ms] [WARNING] %c%s%c PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component. background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   ukren1 @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1028649ms] [WARNING] %c%s%c PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component. background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   wm4f29 @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1028649ms] [WARNING] %c%s%c PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component. background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   20o54t @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1028683ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1028701ms] [LOG] [Fast Refresh] done in 131ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1028810ms] [WARNING] Ignoring Event: localhost @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1138093ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1138488ms] [LOG] [Fast Refresh] done in 497ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1140061ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1140283ms] [LOG] [Fast Refresh] done in 323ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1199177ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1207543ms] [WARNING] [Fast Refresh] performing full reload
+
+Fast Refresh will perform a full reload when you edit a file that's imported by modules outside of the React rendering tree.
+You might have a file which exports a React component but also exports a value that is imported by a non-React component file.
+Consider migrating the non-React component export to a separate file and importing it into both files.
+
+It is also possible the parent component of the component you edited is a class component, which disables Fast Refresh.
+Fast Refresh requires at least one parent function component in your React tree. @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1214319ms] [LOG] [Fast Refresh] done in 8453ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1215414ms] [WARNING] [Fast Refresh] performing full reload
+
+Fast Refresh will perform a full reload when you edit a file that's imported by modules outside of the React rendering tree.
+You might have a file which exports a React component but also exports a value that is imported by a non-React component file.
+Consider migrating the non-React component export to a separate file and importing it into both files.
+
+It is also possible the parent component of the component you edited is a class component, which disables Fast Refresh.
+Fast Refresh requires at least one parent function component in your React tree. @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1216473ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1240565ms] [LOG] [Fast Refresh] done in 24174ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1240994ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1245465ms] [LOG] [Fast Refresh] done in 4496ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1254638ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1255154ms] [LOG] [Fast Refresh] done in 618ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1263424ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1268763ms] [LOG] [Fast Refresh] done in 5429ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1272927ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1291113ms] [LOG] [Fast Refresh] done in 18280ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1291876ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/en:0
+[ 1292754ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1293207ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1294716ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1295222ms] ReferenceError: SearchDialog is not defined
+    at MainLayout (about://React/Server/file:///Users/amitlockshinski/WebstormProjects/turbo2/.next/dev/server/chunks/ssr/%5Broot-of-the-server%5D__3b653d44._.js?2:5516:490)
+    at resolveErrorDev (http://localhost:3000/_next/static/chunks/f12ff_next_dist_compiled_react-server-dom-turbopack_6272b205._.js:1881:148)
+    at processFullStringRow (http://localhost:3000/_next/static/chunks/f12ff_next_dist_compiled_react-server-dom-turbopack_6272b205._.js:2389:29)
+    at processFullBinaryRow (http://localhost:3000/_next/static/chunks/f12ff_next_dist_compiled_react-server-dom-turbopack_6272b205._.js:2348:9)
+    at processBinaryChunk (http://localhost:3000/_next/static/chunks/f12ff_next_dist_compiled_react-server-dom-turbopack_6272b205._.js:2457:221)
+    at progress (http://localhost:3000/_next/static/chunks/f12ff_next_dist_compiled_react-server-dom-turbopack_6272b205._.js:2625:13)
+[ 1295355ms] [ERROR] Global error: ReferenceError: SearchDialog is not defined
+    at MainLayout (about://React/Server/file:///Users/amitlockshinski/WebstormProjects/turbo2/.next/dev/server/chunks/ssr/%5Broot-of-the-server%5D__3b653d44._.js?2:5516:490)
+    at resolveErrorDev (http://localhost:3000/_next/static/chunks/f12ff_next_dist_compiled_react-server-dom-turbopack_6272b205._.js:1881:148)
+    at processFullStringRow (http://localhost:3000/_next/static/chunks/f12ff_next_dist_compiled_react-server-dom-turbopack_6272b205._.js:2389:29)
+    at processFullBinaryRow (http://localhost:3000/_next/static/chunks/f12ff_next_dist_compiled_react-server-dom-turbopack_6272b205._.js:2348:9)
+    at processBinaryChunk (http://localhost:3000/_next/static/chunks/f12ff_next_dist_compiled_react-server-dom-turbopack_6272b205._.js:2457:221)
+    at progress (http://localhost:3000/_next/static/chunks/f12ff_next_dist_compiled_react-server-dom-turbopack_6272b205._.js:2625:13) @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:3132
+[ 1295587ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1298905ms] [WARNING] The resource http://localhost:3000/_next/static/chunks/%5Broot-of-the-server%5D__71366bca._.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://localhost:3000/en:0
+[ 1298920ms] [WARNING] The resource https://plausible.io/js/pa-3hEF5jJ5x-S__sKhqgipY.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://localhost:3000/en:0
+[ 1314178ms] [WARNING] The resource http://localhost:3000/_next/static/chunks/%5Broot-of-the-server%5D__71366bca._.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://localhost:3000/en:0
+[ 1314191ms] [WARNING] The resource https://plausible.io/js/pa-3hEF5jJ5x-S__sKhqgipY.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://localhost:3000/en:0
+[ 1327802ms] [LOG] [Fast Refresh] done in 16853ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1344462ms] [WARNING] The resource http://localhost:3000/_next/static/chunks/%5Broot-of-the-server%5D__71366bca._.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://localhost:3000/en:0
+[ 1344464ms] [WARNING] The resource https://plausible.io/js/pa-3hEF5jJ5x-S__sKhqgipY.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://localhost:3000/en:0
+[ 1351982ms] [LOG] [Client Instrumentation Hook] Slow execution detected: 74ms (Note: Code download overhead is not included in this measurement) @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:1530
+[ 1352026ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1352380ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1352769ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1352977ms] [WARNING] Missing Algolia environment variables: ALGOLIA_API_KEY @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1352977ms] [WARNING] Algolia admin client not available - missing credentials @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1352977ms] [LOG] ✅ Algolia search client initialized successfully @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1353080ms] [WARNING] Image with src "/connecting-climate-minds-logo-white.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1353135ms] [WARNING] %c%s%c PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component. background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   ukren1 @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1353148ms] [WARNING] %c%s%c PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component. background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   wm4f29 @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1353154ms] [WARNING] %c%s%c PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component. background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   20o54t @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1354526ms] [WARNING] Ignoring Event: localhost @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1354686ms] [INFO] Sanity is live with automatic revalidation of published content @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1383318ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1388590ms] [LOG] [Fast Refresh] done in 5491ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1388843ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1389245ms] [LOG] [Fast Refresh] done in 504ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1389408ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1389518ms] [LOG] [Fast Refresh] done in 212ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1389641ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1389749ms] [LOG] [Fast Refresh] done in 209ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1390051ms] [WARNING] %c%s%c PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component. background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   ukren1 @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1390052ms] [WARNING] %c%s%c PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component. background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   wm4f29 @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1390055ms] [WARNING] %c%s%c PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component. background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   ukren1 @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1390055ms] [WARNING] %c%s%c PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component. background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   wm4f29 @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1390056ms] [WARNING] %c%s%c PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component. background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   20o54t @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1390141ms] [WARNING] %c%s%c PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component. background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   ukren1 @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1390142ms] [WARNING] %c%s%c PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component. background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   wm4f29 @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1390146ms] [WARNING] %c%s%c PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component. background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   20o54t @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1390432ms] [WARNING] %c%s%c PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component. background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   ukren1 @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1390432ms] [WARNING] %c%s%c PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component. background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   wm4f29 @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1390432ms] [WARNING] %c%s%c PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component. background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   20o54t @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1390459ms] [WARNING] %c%s%c PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component. background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px  Server   20o54t @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302

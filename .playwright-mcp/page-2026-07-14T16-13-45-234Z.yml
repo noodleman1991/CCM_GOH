@@ -1,0 +1,327 @@
+- generic [ref=f2e2]:
+  - paragraph [ref=f2e3]: Gate 2 · Mock for approval
+  - heading "Homepage revision — proposed direction" [level=1] [ref=f2e4]
+  - paragraph [ref=f2e5]:
+    - text: Current vs. proposed for each reworked block, at the treatment level. Built in the real CCM design language (midnight
+    - code [ref=f2e6]: "#0b3160"
+    - text: ", primary"
+    - code [ref=f2e7]: "#4974ca"
+    - text: ", Poppins headings, Lato body). Approve this and I build slices S1â€“S6; nothing is coded yet."
+  - generic [ref=f2e8]:
+    - generic [ref=f2e9]: Approval gate — no build code until you sign off
+    - generic [ref=f2e10]: Verified live @1440 + 375
+    - generic [ref=f2e11]: Placeholders shown where dev-dataset assets are dangling
+  - generic [ref=f2e12]:
+    - generic [ref=f2e13]:
+      - generic [ref=f2e14]: "01"
+      - heading "Hero" [level=2] [ref=f2e15]
+      - generic [ref=f2e16]: S3
+    - generic [ref=f2e17]:
+      - generic [ref=f2e18]:
+        - generic [ref=f2e19]: Now
+        - generic [ref=f2e21]:
+          - generic [ref=f2e22]: Welcome to the Connected Climate Minds hub…
+          - paragraph [ref=f2e23]: Long welcome paragraph. Two CTAs. Illustration to the right (currently a broken asset).
+          - generic [ref=f2e24]:
+            - generic [ref=f2e25]: Explore
+            - generic [ref=f2e26]: Collaborate
+          - generic [ref=f2e27]: ⚠ illustration asset 404
+        - generic [ref=f2e28]: Diverges from the approved wireframe; hero art doesn't load locally.
+      - generic [ref=f2e29]:
+        - generic [ref=f2e30]: Proposed
+        - generic [ref=f2e32]:
+          - generic [ref=f2e33]: Where mental health and climate change research unite.
+          - paragraph [ref=f2e34]: Tighter thesis line + one supporting sentence. Wireframe-faithful two-column; illustration slot keeps the hub character.
+          - generic [ref=f2e35]:
+            - generic [ref=f2e36]: Explore the Atlas
+            - generic [ref=f2e37]: Collaborate
+          - generic [ref=f2e38]: illustration slot
+        - generic [ref=f2e39]: "Decision: shorter thesis headline, wireframe layout, CMS-controlled copy + CTAs + illustration. I'll show a literal wireframe side-by-side when building S3."
+  - generic [ref=f2e40]:
+    - generic [ref=f2e41]:
+      - generic [ref=f2e42]: "02"
+      - heading "Fresh on the hub — cards" [level=2] [ref=f2e43]
+      - generic [ref=f2e44]: S1
+    - generic [ref=f2e45]:
+      - generic [ref=f2e46]:
+        - generic [ref=f2e47]: Now (mobile @375)
+        - generic [ref=f2e50]:
+          - generic [ref=f2e51]:
+            - generic [ref=f2e52]: cover âœ“
+            - generic [ref=f2e53]:
+              - text: News
+              - generic [ref=f2e54]: Climate Change Is Becoming a Mental Health Crisis…
+          - generic [ref=f2e55]:
+            - generic [ref=f2e56]: no image
+            - generic [ref=f2e57]:
+              - text: Case study
+              - generic [ref=f2e58]: Workspace link test…
+        - generic [ref=f2e59]: "Two defects: carousel clips card 2 at the edge (doesn't stack); image-less card shows an empty band."
+      - generic [ref=f2e60]:
+        - generic [ref=f2e61]: Proposed (mobile @375)
+        - generic [ref=f2e64]:
+          - generic [ref=f2e65]:
+            - generic [ref=f2e66]: ▶
+            - generic [ref=f2e68]:
+              - text: News
+              - generic [ref=f2e69]: Climate Change Is Becoming a Mental Health Crisis…
+          - generic [ref=f2e70]:
+            - generic [ref=f2e71]: Case study
+            - generic [ref=f2e72]:
+              - text: Case study
+              - generic [ref=f2e73]: "Workspace link test: mangrove restoration…"
+        - generic [ref=f2e74]: "Decision: cards stack full-width on mobile (no carousel clip). Image-less cards get a typed pattern cover (type colour + label) instead of an empty band. H0 aspect-video covers kept — verified working."
+    - generic [ref=f2e75]: ◆ H0 folds in here
+  - generic [ref=f2e76]:
+    - generic [ref=f2e77]:
+      - generic [ref=f2e78]: "03"
+      - heading "Explore by region — atlas block" [level=2] [ref=f2e79]
+      - generic [ref=f2e80]: S4
+    - paragraph [ref=f2e81]:
+      - text: "Correction from the audit: the region→Atlas path already exists in code — a region click deep-links to"
+      - code [ref=f2e82]: /atlas?region=…&layers=…
+      - text: "(pre-filtered by region + active facet). The real problem is discoverability: the data-panel rows render as passive counts with no affordance, so nobody knows they’re clickable. S4 is a legibility rework, not a rebuild. The 5 real facets: Case studies · Lived experiences · Members · News · Research outputs, plus theme chips and multi-layer selection the homepage currently hides."
+    - generic [ref=f2e83]: Now — desktop & mobile
+    - generic [ref=f2e85]:
+      - generic [ref=f2e86]:
+        - generic [ref=f2e87]: Desktop 1440
+        - generic [ref=f2e93]:
+          - generic [ref=f2e94]:
+            - heading "Explore by region" [level=4] [ref=f2e95]
+            - paragraph [ref=f2e96]: See research, communities, and stories across the world’s regions.
+          - generic [ref=f2e97]:
+            - generic [ref=f2e98]: Case studies
+            - generic [ref=f2e100]: Lived experiences
+            - generic [ref=f2e101]: Members
+            - generic [ref=f2e102]: News
+            - generic [ref=f2e103]: Research outputs
+          - generic [ref=f2e104]:
+            - img "World map by region" [ref=f2e106]
+            - generic [ref=f2e116]:
+              - generic [ref=f2e117]: Case studies
+              - generic [ref=f2e118]:
+                - generic [ref=f2e119]: Eastern & SE Asia
+                - generic [ref=f2e122]: "4"
+              - generic [ref=f2e123]:
+                - generic [ref=f2e124]: Sub-Saharan Africa
+                - generic [ref=f2e127]: "3"
+              - generic [ref=f2e128]:
+                - generic [ref=f2e129]: Europe & N. America
+                - generic [ref=f2e132]: "3"
+              - generic [ref=f2e133]:
+                - generic [ref=f2e134]: Oceania
+                - generic [ref=f2e137]: "2"
+      - generic [ref=f2e138]:
+        - generic [ref=f2e139]: Mobile 375
+        - generic [ref=f2e143]:
+          - heading "Explore by region" [level=4] [ref=f2e145]
+          - generic [ref=f2e146]:
+            - generic [ref=f2e147]: Case studies
+            - generic [ref=f2e148]: Lived exp.
+            - generic [ref=f2e149]: Members
+          - img "World map by region" [ref=f2e151]
+          - generic [ref=f2e161]:
+            - generic [ref=f2e162]: Case studies
+            - generic [ref=f2e163]:
+              - generic [ref=f2e164]: Eastern & SE Asia
+              - generic [ref=f2e165]: "4"
+            - generic [ref=f2e166]:
+              - generic [ref=f2e167]: Sub-Saharan Africa
+              - generic [ref=f2e168]: "3"
+    - generic [ref=f2e169]: "The gap: counts read as final content. Region rows and map shapes are clickable but look inert — no hover cue, no “view in Atlas”, no reason to tap. Theme chips & multi-layer (both in the Atlas) are absent here."
+    - generic [ref=f2e170]: Proposed — desktop & mobile
+    - generic [ref=f2e172]:
+      - generic [ref=f2e173]:
+        - generic [ref=f2e174]: Desktop 1440
+        - generic [ref=f2e180]:
+          - generic [ref=f2e181]:
+            - heading "Explore by region" [level=4] [ref=f2e182]
+            - paragraph [ref=f2e183]: Tap a region to open it in the Atlas — pre-filtered, results already on screen.
+          - generic [ref=f2e184]:
+            - generic [ref=f2e185]: Case studies
+            - generic [ref=f2e187]: Lived experiences
+            - generic [ref=f2e189]: Members
+            - generic [ref=f2e191]: News
+            - generic [ref=f2e193]: Research outputs
+          - generic [ref=f2e195]:
+            - generic [ref=f2e196]:
+              - generic [ref=f2e197]: Eastern & SE Asia · 4 case studies Open in Atlas →
+              - img "World map by region" [ref=f2e198]
+            - generic [ref=f2e208]:
+              - generic [ref=f2e209]: Case studies · tap to open
+              - generic [ref=f2e210] [cursor=pointer]:
+                - generic [ref=f2e211]:
+                  - text: Eastern & SE Asia
+                  - generic [ref=f2e212]: View 4 in Atlas →
+                - generic [ref=f2e215]: "4"
+              - generic [ref=f2e216] [cursor=pointer]:
+                - generic [ref=f2e217]:
+                  - text: Sub-Saharan Africa
+                  - generic [ref=f2e218]: View 3 in Atlas →
+                - generic [ref=f2e221]: "3"
+              - generic [ref=f2e222] [cursor=pointer]:
+                - generic [ref=f2e223]:
+                  - text: Europe & N. America
+                  - generic [ref=f2e224]: View 3 in Atlas →
+                - generic [ref=f2e227]: "3"
+              - generic [ref=f2e228] [cursor=pointer]:
+                - generic [ref=f2e229]:
+                  - text: Oceania
+                  - generic [ref=f2e230]: View 2 in Atlas →
+                - generic [ref=f2e233]: "2"
+          - generic [ref=f2e234]:
+            - generic [ref=f2e235]: Themes
+            - generic [ref=f2e236]: Displacement
+            - generic [ref=f2e237]: Livelihoods
+            - generic [ref=f2e238]: Youth
+            - generic [ref=f2e239]: Indigenous
+          - generic [ref=f2e240]:
+            - generic [ref=f2e241]: Case studies
+            - generic [ref=f2e243]: Lived exp.
+            - generic [ref=f2e245]: News
+            - generic [ref=f2e247]: + combine layers
+      - generic [ref=f2e248]:
+        - generic [ref=f2e249]: Mobile 375
+        - generic [ref=f2e253]:
+          - generic [ref=f2e254]:
+            - heading "Explore by region" [level=4] [ref=f2e255]
+            - paragraph [ref=f2e256]: Tap a region → Atlas
+          - generic [ref=f2e257]:
+            - generic [ref=f2e258]: Case studies
+            - generic [ref=f2e260]: Lived exp.
+            - generic [ref=f2e261]: News
+          - generic [ref=f2e262]:
+            - generic [ref=f2e263]: Tap a region →
+            - img "World map by region" [ref=f2e264]
+          - generic [ref=f2e274]:
+            - generic [ref=f2e275]: Case studies · tap to open
+            - generic [ref=f2e276] [cursor=pointer]:
+              - generic [ref=f2e277]:
+                - text: Eastern & SE Asia
+                - generic [ref=f2e278]: View 4 →
+              - generic [ref=f2e279]: "4"
+            - generic [ref=f2e280] [cursor=pointer]:
+              - generic [ref=f2e281]:
+                - text: Sub-Saharan Africa
+                - generic [ref=f2e282]: View 3 →
+              - generic [ref=f2e283]: "3"
+            - generic [ref=f2e284] [cursor=pointer]:
+              - generic [ref=f2e285]:
+                - text: Europe & N. America
+                - generic [ref=f2e286]: View 3 →
+              - generic [ref=f2e287]: "3"
+          - generic [ref=f2e288]:
+            - generic [ref=f2e289]: Themes
+            - generic [ref=f2e290]: Displacement
+            - generic [ref=f2e291]: Youth
+    - generic [ref=f2e292]: "Decision: keep the existing region→Atlas deep-link, make it legible — hover/press states on map + rows, an explicit “View N in Atlas →” per row, a tooltip on the map. Surface the facet layer colour swatches, the theme chips, and multi-layer combine that already exist in the Atlas. Counts stay as support (the bar + number), the tap is the point."
+    - generic [ref=f2e293]: "◆ story gesture: region → filtered atlas (make the existing path obvious)"
+  - generic [ref=f2e294]:
+    - generic [ref=f2e295]:
+      - generic [ref=f2e296]: "04"
+      - heading "Latest news in the field" [level=2] [ref=f2e297]
+      - generic [ref=f2e298]: S5
+    - generic [ref=f2e299]:
+      - generic [ref=f2e300]:
+        - generic [ref=f2e301]: Now
+        - generic [ref=f2e304]:
+          - generic [ref=f2e306]:
+            - generic [ref=f2e307]: Study shows climate distress…
+            - generic [ref=f2e308]: May 10, 2024
+          - generic [ref=f2e310]:
+            - generic [ref=f2e311]: Study shows climate distress…
+            - generic [ref=f2e312]: DUPLICATE
+          - generic [ref=f2e314]:
+            - generic [ref=f2e315]: Insights from Regional Dialogues
+            - generic [ref=f2e316]: Mar 20, 2024
+        - generic [ref=f2e317]: "Two defects: first two cards are duplicates (data query); band is narrow & text-only — \"needs a stretch\"."
+      - generic [ref=f2e318]:
+        - generic [ref=f2e319]: Proposed
+        - generic [ref=f2e322]:
+          - generic [ref=f2e323]:
+            - generic [ref=f2e324]: img
+            - generic [ref=f2e325]:
+              - generic [ref=f2e326]: Study shows climate distress…
+              - generic [ref=f2e327]: May 10, 2024 · Dr. Britt Wray
+          - generic [ref=f2e328]:
+            - generic [ref=f2e329]: img
+            - generic [ref=f2e330]:
+              - generic [ref=f2e331]: Insights from Regional Dialogues
+              - generic [ref=f2e332]: Mar 20, 2024
+          - generic [ref=f2e333]:
+            - generic [ref=f2e334]: img
+            - generic [ref=f2e335]:
+              - generic [ref=f2e336]: Youth climate anxiety report
+              - generic [ref=f2e337]: Feb 2024
+        - generic [ref=f2e338]: "Decision: de-duplicate the query; full-width stretch band; add thumbnails so it reads as news, not a list. Distinct items only."
+  - generic [ref=f2e339]:
+    - generic [ref=f2e340]:
+      - generic [ref=f2e341]: "05"
+      - heading "Who is involved" [level=2] [ref=f2e342]
+      - generic [ref=f2e343]: S5
+    - generic [ref=f2e344]:
+      - generic [ref=f2e345]:
+        - generic [ref=f2e346]: Now
+        - generic [ref=f2e349]:
+          - generic [ref=f2e350]: QCMHR Logo
+          - generic [ref=f2e351]: Wellcome Logo
+          - generic [ref=f2e352]: Univ. West Indies
+          - generic [ref=f2e353]: BRAC Public Health
+        - generic [ref=f2e354]: Logo grid renders, but every asset is a dangling ref (local-noise). Not clearly tied to CMS organization entities.
+      - generic [ref=f2e355]:
+        - generic [ref=f2e356]: Proposed
+        - generic [ref=f2e358]:
+          - generic [ref=f2e359]: Research
+          - generic [ref=f2e360]:
+            - generic [ref=f2e361]:
+              - generic [ref=f2e362]: IC
+              - generic [ref=f2e363]: Imperial College
+              - generic [ref=f2e364]: Research
+            - generic [ref=f2e365]:
+              - generic [ref=f2e366]: QC
+              - generic [ref=f2e367]: QCMHR
+              - generic [ref=f2e368]: Research
+            - generic [ref=f2e369]:
+              - generic [ref=f2e370]: BR
+              - generic [ref=f2e371]: BRAC
+              - generic [ref=f2e372]: Research
+          - generic [ref=f2e373]: Funder
+          - generic [ref=f2e375]:
+            - generic [ref=f2e376]: W
+            - generic [ref=f2e377]: Wellcome
+            - generic [ref=f2e378]: Funder
+        - generic [ref=f2e379]:
+          - text: "Decision: drive from CMS"
+          - code [ref=f2e380]: organization
+          - text: entities, grouped by role (Research / Funder / Practice / Lived experience). Logo when present, typed monogram fallback when the asset is missing — so the block never looks broken.
+  - generic [ref=f2e381]:
+    - generic [ref=f2e382]:
+      - generic [ref=f2e383]: "06"
+      - heading "Block-rhythm system" [level=2] [ref=f2e384]
+      - generic [ref=f2e385]: S2
+    - paragraph [ref=f2e386]: One container scale + one vertical-gap token applied across all 9 blocks, replacing today's inconsistent per-block spacing. Values follow the design-language directives (+7% block gap, wider lg sidebar margin).
+    - generic [ref=f2e387]:
+      - generic [ref=f2e388]:
+        - generic [ref=f2e389]: Container max
+        - generic [ref=f2e390]: 1180px
+        - generic [ref=f2e391]: one scale, all blocks
+      - generic [ref=f2e392]:
+        - generic [ref=f2e393]: Block gap (y)
+        - generic [ref=f2e394]: +7%
+        - generic [ref=f2e395]: vs current base rhythm
+      - generic [ref=f2e396]:
+        - generic [ref=f2e397]: lg sidebar margin
+        - generic [ref=f2e398]: wider
+        - generic [ref=f2e399]: more breathing room â‰¥lg
+      - generic [ref=f2e400]:
+        - generic [ref=f2e401]: Card radius
+        - generic [ref=f2e402]: 0.625rem
+        - generic [ref=f2e403]: existing token, unchanged
+    - generic [ref=f2e404]: Applied as a shared wrapper/token — not per-block one-offs — so editors adding CMS blocks inherit correct rhythm automatically.
+  - generic [ref=f2e405]:
+    - paragraph [ref=f2e406]: "Also in scope, not visual (verify in build): block #6 Lived experiences shows empty despite LE data existing → read-failure suspect (R3); People in your region data-source check (R3); Events empty \"Upcoming\" confirmed genuine."
+    - paragraph [ref=f2e407]:
+      - text: "⚠ Your action item: 30 dangling"
+      - code [ref=f2e408]: development
+      - text: "-dataset image assets (hero art, all org logos, avatars) 404 locally. To validate media-bearing blocks end-to-end I need either those refs repaired or dev pointed at a dataset with intact assets. The proposed monogram/pattern fallbacks mean the UI degrades gracefully regardless."
+    - paragraph [ref=f2e409]: "If approved: S1 (cards, incl. H0) → S2 (rhythm) → R2 (autosave) → S3 (hero) → S4 (atlas) → R3 (read failures) → S5 (news + orgs) → S6 (regional pages). R1 (concurrency) already underway."

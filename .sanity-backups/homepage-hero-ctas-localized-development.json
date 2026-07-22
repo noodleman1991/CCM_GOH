@@ -1,0 +1,1247 @@
+[
+  {
+    "_id": "homepage-ar",
+    "blocks": [
+      {
+        "_key": "hero-1-heroWelcome",
+        "_type": "hero-1",
+        "background": {
+          "_type": "background-option",
+          "ccmColor": "ccm-water",
+          "type": "none"
+        },
+        "body": [
+          {
+            "_key": "gxudv",
+            "_type": "block",
+            "children": [
+              {
+                "_key": "qcwaw",
+                "_type": "span",
+                "marks": [],
+                "text": "نحن ملتزمون بتعزيز مجتمع بحثي عالمي متصل، مدفوعاً بهدف مشترك: فهم ومعالجة العلاقة المعقدة بين مناخ كوكبنا المتغير وصحتنا النفسية."
+              }
+            ],
+            "markDefs": [],
+            "style": "normal"
+          }
+        ],
+        "image": {
+          "_type": "image",
+          "alt": "Connecting Climate Minds Welcome Illustration",
+          "asset": {
+            "_ref": "image-41c12b03acf832baf1a7bc1dd79c3bcd9854dadf-3937x4096-webp",
+            "_type": "reference"
+          }
+        },
+        "imagePosition": "right",
+        "links": [
+          {
+            "_key": "hero-cta-explore",
+            "_type": "link",
+            "buttonVariant": {
+              "size": "default",
+              "stroke": "none",
+              "variant": "default"
+            },
+            "href": "/atlas",
+            "target": false,
+            "title": "Explore"
+          },
+          {
+            "_key": "hero-cta-collaborate",
+            "_type": "link",
+            "buttonVariant": {
+              "size": "default",
+              "stroke": "none",
+              "variant": "outline"
+            },
+            "href": "/collaborate",
+            "target": false,
+            "title": "Collaborate"
+          }
+        ],
+        "padding": {
+          "_type": "section-padding",
+          "top": true
+        },
+        "title": "مرحباً بكم في مركز Connecting Climate Minds، حيث يتحد عالم الصحة النفسية وبحوث تغير المناخ."
+      },
+      {
+        "_key": "region-map-section41",
+        "_type": "region-map",
+        "defaultFacet": "caseStudyCount",
+        "description": "See research, communities, and stories across the world's regions.",
+        "padding": {
+          "_type": "section-padding",
+          "bottom": true,
+          "top": true
+        },
+        "title": "Explore by region"
+      },
+      {
+        "_key": "grid-row-news",
+        "_type": "grid-row",
+        "columns": [
+          {
+            "_key": "news-0",
+            "_type": "grid-news",
+            "newsPost": {
+              "_ref": "news-climate-distress-study",
+              "_type": "reference"
+            },
+            "showAuthor": true,
+            "showMetadata": true,
+            "showTags": true
+          },
+          {
+            "_key": "news-1",
+            "_type": "grid-news",
+            "newsPost": {
+              "_ref": "news-regional-dialogues",
+              "_type": "reference"
+            },
+            "showAuthor": true,
+            "showMetadata": true,
+            "showTags": true
+          },
+          {
+            "_key": "news-2",
+            "_type": "grid-news",
+            "newsPost": {
+              "_ref": "news-cop28",
+              "_type": "reference"
+            },
+            "showAuthor": true,
+            "showMetadata": true,
+            "showTags": true
+          }
+        ],
+        "description": [
+          {
+            "_key": "5tjyj",
+            "_type": "block",
+            "children": [
+              {
+                "_key": "grxp75",
+                "_type": "span",
+                "marks": [],
+                "text": "نبقيك على اطلاع بأحدث التطورات في تقاطع البحث والسياسة والممارسة في مجال الصحة النفسية وتغير المناخ."
+              }
+            ],
+            "markDefs": [],
+            "style": "normal"
+          }
+        ],
+        "gridColumns": "grid-cols-3",
+        "layout": "media-list",
+        "title": "آخر الأخبار في هذا المجال"
+      },
+      {
+        "_key": "events-calendar-section41",
+        "_type": "events-calendar",
+        "description": "Upcoming events from across the network.",
+        "padding": {
+          "_type": "section-padding",
+          "bottom": true,
+          "top": true
+        },
+        "title": "Events",
+        "upcomingLimit": 5
+      },
+      {
+        "_key": "lived-experiences-section41",
+        "_type": "lived-experiences-carousel",
+        "featured": false,
+        "maxItems": 9,
+        "padding": {
+          "_type": "section-padding",
+          "bottom": true,
+          "top": true
+        },
+        "subtitle": "Voices and stories from people with lived experience.",
+        "title": "Lived experiences",
+        "viewAllLink": true
+      },
+      {
+        "_key": "submit-lived-section41",
+        "_type": "cta-1",
+        "body": [
+          {
+            "_key": "submit-body-0",
+            "_type": "block",
+            "children": [
+              {
+                "_key": "submit-body-0-0",
+                "_type": "span",
+                "marks": [],
+                "text": "Your lived experience can help shape research and action on climate and mental health. Submit your story to be featured in the hub."
+              }
+            ],
+            "markDefs": [],
+            "style": "normal"
+          }
+        ],
+        "links": [
+          {
+            "_key": "submit-cta-link",
+            "_type": "link",
+            "buttonVariant": {
+              "size": "default",
+              "stroke": "none",
+              "variant": "default"
+            },
+            "href": "/lived-experiences/submit",
+            "target": false,
+            "title": "Submit your story"
+          }
+        ],
+        "padding": {
+          "_type": "section-padding",
+          "bottom": true,
+          "top": true
+        },
+        "stackAlign": "center",
+        "tagLine": "Lived experiences",
+        "title": "Share your story"
+      },
+      {
+        "_key": "logo-cloud-1-partnerLogos",
+        "_type": "logo-cloud-1",
+        "colorVariant": "default",
+        "description": "نحن مشروع ممول من Wellcome يجمع الخبرة في البحث والسياسة والممارسة والتصميم والخبرة المعاشة من جميع أنحاء العالم.",
+        "images": [
+          {
+            "_key": "70d4ffb85dae",
+            "_type": "image",
+            "alt": "Climate Cares Logo",
+            "asset": {
+              "_ref": "image-eda83dfa50044686af5c5460a7357193fdafe434-750x750-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "afef25f9e273",
+            "_type": "image",
+            "alt": "Red Cross/Crescent Climate Centre Logo ",
+            "asset": {
+              "_ref": "image-4d9d7a94f2c8f2dad9da4d47b702bc091a8795c6-750x750-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "2188a0b4bbae",
+            "_type": "image",
+            "alt": "University of Nigeria Logo",
+            "asset": {
+              "_ref": "image-11af89ad0f6b46dd87a02de8bd5709815561c12e-750x750-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "bf829e523c90",
+            "_type": "image",
+            "alt": "St. Luke's Medical Center Logo",
+            "asset": {
+              "_ref": "image-b98281c67c85a4ad37a1845fd11151112f091da9-750x750-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "2108cf7674a2",
+            "_type": "image",
+            "alt": "Force of Nature Logo",
+            "asset": {
+              "_ref": "image-a916d9a8bee47d6fc90074b1b63d2c976435ab49-750x750-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "8d33c4fab674",
+            "_type": "image",
+            "alt": "sustyvibes Logo",
+            "asset": {
+              "_ref": "image-74293faba6e6038a03b01b21d417b6284da694dc-750x750-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "6d35a8c8279c",
+            "_type": "image",
+            "alt": "Jordan Health Aid Society",
+            "asset": {
+              "_ref": "image-5efd81114e5949e05f8b5eecfbb48b7a6b9b1d18-384x281-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "fe50ad6676b7",
+            "_type": "image",
+            "alt": "Imperial College London Logo",
+            "asset": {
+              "_ref": "image-38d69bc1d7ab168e940dafa51abc4837d967d691-750x750-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "9aa79cd75037",
+            "_type": "image",
+            "alt": "Climate Mental Health Network Logo",
+            "asset": {
+              "_ref": "image-a7e6dc310b622f00ead8abddd65762ff80b1c104-750x750-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "49ebb18ff9ce",
+            "_type": "image",
+            "alt": "QCMHR Logo",
+            "asset": {
+              "_ref": "image-ab11d65d7b66f84578619c8b018a04fbc60559ca-750x549-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "de718f5d7379",
+            "_type": "image",
+            "alt": "Planetary health Alliance Logo",
+            "asset": {
+              "_ref": "image-6437b4ba6cb5b4f299f64692dc7806d2fceac7ef-750x549-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "02374391081e",
+            "_type": "image",
+            "alt": "Wellcome Logo",
+            "asset": {
+              "_ref": "image-b7e4d1e3b0a6c8f4db622ada4a03d2e3e1ad54b3-772x772-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "d54f66aec101",
+            "_type": "image",
+            "alt": "University of the West Indies Logo",
+            "asset": {
+              "_ref": "image-84a70c2c58245617e6dca99edfa23e273d4c1aba-750x750-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "976f6ebc55e9",
+            "_type": "image",
+            "alt": "BRAC Public Health Logo",
+            "asset": {
+              "_ref": "image-30b103b868e2d0ab9974a66c0cf03a8479b4a228-750x549-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "be7091a74edd",
+            "_type": "image",
+            "alt": "BRAC University Logo",
+            "asset": {
+              "_ref": "image-fc928150891e063f2f7cc221e4a82658b78cb046-750x549-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "4fd936a82097",
+            "_type": "image",
+            "alt": "Grantham Institute Logo",
+            "asset": {
+              "_ref": "image-689e390cba4a4a3c089eb0f65fe1d871a65e6b41-750x750-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "cf35dbab29de",
+            "_type": "image",
+            "alt": "University of Queensland Logo",
+            "asset": {
+              "_ref": "image-cdc11b432cc1729c2208ecfa720f210f9c8eda6f-750x549-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "133e54dcf271",
+            "_type": "image",
+            "alt": "Waman Wasi Logo",
+            "asset": {
+              "_ref": "image-b5294c3d34ea4dab9b3159a95d664ef180240c5a-772x772-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "7213f608535a",
+            "_type": "image",
+            "alt": "Institute of Global Health Innovation Logo",
+            "asset": {
+              "_ref": "image-3c59206099c46c53b85b61cf2d73730e6abec90c-750x750-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "af032a1109fd",
+            "_type": "image",
+            "alt": "IFRC Psychosocial Centre Logo",
+            "asset": {
+              "_ref": "image-f7d6a83272a69669d1fcc8f415b894879b7876c4-750x750-webp",
+              "_type": "reference"
+            }
+          }
+        ],
+        "layout": "marquee",
+        "padding": {
+          "_type": "section-padding",
+          "top": false
+        },
+        "title": "من المشاركون"
+      },
+      {
+        "_key": "people-widget-section41",
+        "_type": "people-widget",
+        "description": "Connect with researchers, practitioners, and advocates near you.",
+        "limit": 6,
+        "padding": {
+          "_type": "section-padding",
+          "bottom": true,
+          "top": true
+        },
+        "title": "People in your region"
+      }
+    ],
+    "language": "ar"
+  },
+  {
+    "_id": "homepage-es",
+    "blocks": [
+      {
+        "_key": "hero-1-heroWelcome",
+        "_type": "hero-1",
+        "background": {
+          "_type": "background-option",
+          "ccmColor": "ccm-water",
+          "type": "none"
+        },
+        "body": [
+          {
+            "_key": "hxsjuw",
+            "_type": "block",
+            "children": [
+              {
+                "_key": "sdpysp",
+                "_type": "span",
+                "marks": [],
+                "text": "Estamos dedicados a fomentar una comunidad de investigación global conectada, todos impulsados por un objetivo común: comprender y abordar la intrincada relación entre el clima cambiante de nuestro planeta y nuestra salud mental."
+              }
+            ],
+            "markDefs": [],
+            "style": "normal"
+          }
+        ],
+        "image": {
+          "_type": "image",
+          "alt": "Connecting Climate Minds Welcome Illustration",
+          "asset": {
+            "_ref": "image-41c12b03acf832baf1a7bc1dd79c3bcd9854dadf-3937x4096-webp",
+            "_type": "reference"
+          }
+        },
+        "imagePosition": "right",
+        "links": [
+          {
+            "_key": "hero-cta-explore",
+            "_type": "link",
+            "buttonVariant": {
+              "size": "default",
+              "stroke": "none",
+              "variant": "default"
+            },
+            "href": "/atlas",
+            "target": false,
+            "title": "Explore"
+          },
+          {
+            "_key": "hero-cta-collaborate",
+            "_type": "link",
+            "buttonVariant": {
+              "size": "default",
+              "stroke": "none",
+              "variant": "outline"
+            },
+            "href": "/collaborate",
+            "target": false,
+            "title": "Collaborate"
+          }
+        ],
+        "padding": {
+          "_type": "section-padding",
+          "top": true
+        },
+        "title": "Bienvenido al Hub de Connecting Climate Minds, donde los mundos de la investigación en salud mental y cambio climático se unen."
+      },
+      {
+        "_key": "region-map-section41",
+        "_type": "region-map",
+        "defaultFacet": "caseStudyCount",
+        "description": "See research, communities, and stories across the world's regions.",
+        "padding": {
+          "_type": "section-padding",
+          "bottom": true,
+          "top": true
+        },
+        "title": "Explore by region"
+      },
+      {
+        "_key": "grid-row-news",
+        "_type": "grid-row",
+        "columns": [
+          {
+            "_key": "news-0",
+            "_type": "grid-news",
+            "newsPost": {
+              "_ref": "news-climate-distress-study",
+              "_type": "reference"
+            },
+            "showAuthor": true,
+            "showMetadata": true,
+            "showTags": true
+          },
+          {
+            "_key": "news-1",
+            "_type": "grid-news",
+            "newsPost": {
+              "_ref": "news-regional-dialogues",
+              "_type": "reference"
+            },
+            "showAuthor": true,
+            "showMetadata": true,
+            "showTags": true
+          },
+          {
+            "_key": "news-2",
+            "_type": "grid-news",
+            "newsPost": {
+              "_ref": "news-cop28",
+              "_type": "reference"
+            },
+            "showAuthor": true,
+            "showMetadata": true,
+            "showTags": true
+          }
+        ],
+        "description": [
+          {
+            "_key": "vtwpkt",
+            "_type": "block",
+            "children": [
+              {
+                "_key": "cu65yc",
+                "_type": "span",
+                "marks": [],
+                "text": "Manteniéndote actualizado con los últimos desarrollos en la intersección de la salud mental y la investigación, política y práctica del cambio climático."
+              }
+            ],
+            "markDefs": [],
+            "style": "normal"
+          }
+        ],
+        "gridColumns": "grid-cols-3",
+        "layout": "media-list",
+        "title": "Últimas noticias del campo"
+      },
+      {
+        "_key": "events-calendar-section41",
+        "_type": "events-calendar",
+        "description": "Upcoming events from across the network.",
+        "padding": {
+          "_type": "section-padding",
+          "bottom": true,
+          "top": true
+        },
+        "title": "Events",
+        "upcomingLimit": 5
+      },
+      {
+        "_key": "lived-experiences-section41",
+        "_type": "lived-experiences-carousel",
+        "featured": false,
+        "maxItems": 9,
+        "padding": {
+          "_type": "section-padding",
+          "bottom": true,
+          "top": true
+        },
+        "subtitle": "Voices and stories from people with lived experience.",
+        "title": "Lived experiences",
+        "viewAllLink": true
+      },
+      {
+        "_key": "submit-lived-section41",
+        "_type": "cta-1",
+        "body": [
+          {
+            "_key": "submit-body-0",
+            "_type": "block",
+            "children": [
+              {
+                "_key": "submit-body-0-0",
+                "_type": "span",
+                "marks": [],
+                "text": "Your lived experience can help shape research and action on climate and mental health. Submit your story to be featured in the hub."
+              }
+            ],
+            "markDefs": [],
+            "style": "normal"
+          }
+        ],
+        "links": [
+          {
+            "_key": "submit-cta-link",
+            "_type": "link",
+            "buttonVariant": {
+              "size": "default",
+              "stroke": "none",
+              "variant": "default"
+            },
+            "href": "/lived-experiences/submit",
+            "target": false,
+            "title": "Submit your story"
+          }
+        ],
+        "padding": {
+          "_type": "section-padding",
+          "bottom": true,
+          "top": true
+        },
+        "stackAlign": "center",
+        "tagLine": "Lived experiences",
+        "title": "Share your story"
+      },
+      {
+        "_key": "logo-cloud-1-partnerLogos",
+        "_type": "logo-cloud-1",
+        "colorVariant": "default",
+        "description": "Somos un proyecto financiado por Wellcome que reúne experiencia en investigación, política, práctica, diseño y experiencia vivida de todo el mundo.",
+        "images": [
+          {
+            "_key": "70d4ffb85dae",
+            "_type": "image",
+            "alt": "Climate Cares Logo",
+            "asset": {
+              "_ref": "image-eda83dfa50044686af5c5460a7357193fdafe434-750x750-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "afef25f9e273",
+            "_type": "image",
+            "alt": "Red Cross/Crescent Climate Centre Logo ",
+            "asset": {
+              "_ref": "image-4d9d7a94f2c8f2dad9da4d47b702bc091a8795c6-750x750-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "2188a0b4bbae",
+            "_type": "image",
+            "alt": "University of Nigeria Logo",
+            "asset": {
+              "_ref": "image-11af89ad0f6b46dd87a02de8bd5709815561c12e-750x750-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "bf829e523c90",
+            "_type": "image",
+            "alt": "St. Luke's Medical Center Logo",
+            "asset": {
+              "_ref": "image-b98281c67c85a4ad37a1845fd11151112f091da9-750x750-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "2108cf7674a2",
+            "_type": "image",
+            "alt": "Force of Nature Logo",
+            "asset": {
+              "_ref": "image-a916d9a8bee47d6fc90074b1b63d2c976435ab49-750x750-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "8d33c4fab674",
+            "_type": "image",
+            "alt": "sustyvibes Logo",
+            "asset": {
+              "_ref": "image-74293faba6e6038a03b01b21d417b6284da694dc-750x750-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "6d35a8c8279c",
+            "_type": "image",
+            "alt": "Jordan Health Aid Society",
+            "asset": {
+              "_ref": "image-5efd81114e5949e05f8b5eecfbb48b7a6b9b1d18-384x281-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "fe50ad6676b7",
+            "_type": "image",
+            "alt": "Imperial College London Logo",
+            "asset": {
+              "_ref": "image-38d69bc1d7ab168e940dafa51abc4837d967d691-750x750-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "9aa79cd75037",
+            "_type": "image",
+            "alt": "Climate Mental Health Network Logo",
+            "asset": {
+              "_ref": "image-a7e6dc310b622f00ead8abddd65762ff80b1c104-750x750-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "49ebb18ff9ce",
+            "_type": "image",
+            "alt": "QCMHR Logo",
+            "asset": {
+              "_ref": "image-ab11d65d7b66f84578619c8b018a04fbc60559ca-750x549-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "de718f5d7379",
+            "_type": "image",
+            "alt": "Planetary health Alliance Logo",
+            "asset": {
+              "_ref": "image-6437b4ba6cb5b4f299f64692dc7806d2fceac7ef-750x549-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "02374391081e",
+            "_type": "image",
+            "alt": "Wellcome Logo",
+            "asset": {
+              "_ref": "image-b7e4d1e3b0a6c8f4db622ada4a03d2e3e1ad54b3-772x772-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "d54f66aec101",
+            "_type": "image",
+            "alt": "University of the West Indies Logo",
+            "asset": {
+              "_ref": "image-84a70c2c58245617e6dca99edfa23e273d4c1aba-750x750-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "976f6ebc55e9",
+            "_type": "image",
+            "alt": "BRAC Public Health Logo",
+            "asset": {
+              "_ref": "image-30b103b868e2d0ab9974a66c0cf03a8479b4a228-750x549-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "be7091a74edd",
+            "_type": "image",
+            "alt": "BRAC University Logo",
+            "asset": {
+              "_ref": "image-fc928150891e063f2f7cc221e4a82658b78cb046-750x549-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "4fd936a82097",
+            "_type": "image",
+            "alt": "Grantham Institute Logo",
+            "asset": {
+              "_ref": "image-689e390cba4a4a3c089eb0f65fe1d871a65e6b41-750x750-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "cf35dbab29de",
+            "_type": "image",
+            "alt": "University of Queensland Logo",
+            "asset": {
+              "_ref": "image-cdc11b432cc1729c2208ecfa720f210f9c8eda6f-750x549-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "133e54dcf271",
+            "_type": "image",
+            "alt": "Waman Wasi Logo",
+            "asset": {
+              "_ref": "image-b5294c3d34ea4dab9b3159a95d664ef180240c5a-772x772-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "7213f608535a",
+            "_type": "image",
+            "alt": "Institute of Global Health Innovation Logo",
+            "asset": {
+              "_ref": "image-3c59206099c46c53b85b61cf2d73730e6abec90c-750x750-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "af032a1109fd",
+            "_type": "image",
+            "alt": "IFRC Psychosocial Centre Logo",
+            "asset": {
+              "_ref": "image-f7d6a83272a69669d1fcc8f415b894879b7876c4-750x750-webp",
+              "_type": "reference"
+            }
+          }
+        ],
+        "layout": "marquee",
+        "padding": {
+          "_type": "section-padding",
+          "top": false
+        },
+        "title": "Quién está involucrado"
+      },
+      {
+        "_key": "people-widget-section41",
+        "_type": "people-widget",
+        "description": "Connect with researchers, practitioners, and advocates near you.",
+        "limit": 6,
+        "padding": {
+          "_type": "section-padding",
+          "bottom": true,
+          "top": true
+        },
+        "title": "People in your region"
+      }
+    ],
+    "language": "es"
+  },
+  {
+    "_id": "homepage-fr",
+    "blocks": [
+      {
+        "_key": "hero-1-heroWelcome",
+        "_type": "hero-1",
+        "background": {
+          "_type": "background-option",
+          "ccmColor": "ccm-water",
+          "type": "none"
+        },
+        "body": [
+          {
+            "_key": "0wyeop",
+            "_type": "block",
+            "children": [
+              {
+                "_key": "4s63he",
+                "_type": "span",
+                "marks": [],
+                "text": "Nous sommes dédiés à favoriser une communauté de recherche mondiale connectée, tous animés par un objectif commun : comprendre et aborder la relation complexe entre le climat changeant de notre planète et notre santé mentale."
+              }
+            ],
+            "markDefs": [],
+            "style": "normal"
+          }
+        ],
+        "image": {
+          "_type": "image",
+          "alt": "Connecting Climate Minds Welcome Illustration",
+          "asset": {
+            "_ref": "image-41c12b03acf832baf1a7bc1dd79c3bcd9854dadf-3937x4096-webp",
+            "_type": "reference"
+          }
+        },
+        "imagePosition": "right",
+        "links": [
+          {
+            "_key": "hero-cta-explore",
+            "_type": "link",
+            "buttonVariant": {
+              "size": "default",
+              "stroke": "none",
+              "variant": "default"
+            },
+            "href": "/atlas",
+            "target": false,
+            "title": "Explore"
+          },
+          {
+            "_key": "hero-cta-collaborate",
+            "_type": "link",
+            "buttonVariant": {
+              "size": "default",
+              "stroke": "none",
+              "variant": "outline"
+            },
+            "href": "/collaborate",
+            "target": false,
+            "title": "Collaborate"
+          }
+        ],
+        "padding": {
+          "_type": "section-padding",
+          "top": true
+        },
+        "title": "Bienvenue au Hub Connecting Climate Minds, où les mondes de la recherche en santé mentale et en changement climatique s'unissent."
+      },
+      {
+        "_key": "region-map-section41",
+        "_type": "region-map",
+        "defaultFacet": "caseStudyCount",
+        "description": "See research, communities, and stories across the world's regions.",
+        "padding": {
+          "_type": "section-padding",
+          "bottom": true,
+          "top": true
+        },
+        "title": "Explore by region"
+      },
+      {
+        "_key": "grid-row-news",
+        "_type": "grid-row",
+        "columns": [
+          {
+            "_key": "news-0",
+            "_type": "grid-news",
+            "newsPost": {
+              "_ref": "news-climate-distress-study",
+              "_type": "reference"
+            },
+            "showAuthor": true,
+            "showMetadata": true,
+            "showTags": true
+          },
+          {
+            "_key": "news-1",
+            "_type": "grid-news",
+            "newsPost": {
+              "_ref": "news-regional-dialogues",
+              "_type": "reference"
+            },
+            "showAuthor": true,
+            "showMetadata": true,
+            "showTags": true
+          },
+          {
+            "_key": "news-2",
+            "_type": "grid-news",
+            "newsPost": {
+              "_ref": "news-cop28",
+              "_type": "reference"
+            },
+            "showAuthor": true,
+            "showMetadata": true,
+            "showTags": true
+          }
+        ],
+        "description": [
+          {
+            "_key": "6tmt72",
+            "_type": "block",
+            "children": [
+              {
+                "_key": "10qco",
+                "_type": "span",
+                "marks": [],
+                "text": "Vous tenir au courant des derniers développements à l'intersection de la recherche, de la politique et de la pratique en matière de santé mentale et de changement climatique."
+              }
+            ],
+            "markDefs": [],
+            "style": "normal"
+          }
+        ],
+        "gridColumns": "grid-cols-3",
+        "layout": "media-list",
+        "title": "Dernières nouvelles du domaine"
+      },
+      {
+        "_key": "events-calendar-section41",
+        "_type": "events-calendar",
+        "description": "Upcoming events from across the network.",
+        "padding": {
+          "_type": "section-padding",
+          "bottom": true,
+          "top": true
+        },
+        "title": "Events",
+        "upcomingLimit": 5
+      },
+      {
+        "_key": "lived-experiences-section41",
+        "_type": "lived-experiences-carousel",
+        "featured": false,
+        "maxItems": 9,
+        "padding": {
+          "_type": "section-padding",
+          "bottom": true,
+          "top": true
+        },
+        "subtitle": "Voices and stories from people with lived experience.",
+        "title": "Lived experiences",
+        "viewAllLink": true
+      },
+      {
+        "_key": "submit-lived-section41",
+        "_type": "cta-1",
+        "body": [
+          {
+            "_key": "submit-body-0",
+            "_type": "block",
+            "children": [
+              {
+                "_key": "submit-body-0-0",
+                "_type": "span",
+                "marks": [],
+                "text": "Your lived experience can help shape research and action on climate and mental health. Submit your story to be featured in the hub."
+              }
+            ],
+            "markDefs": [],
+            "style": "normal"
+          }
+        ],
+        "links": [
+          {
+            "_key": "submit-cta-link",
+            "_type": "link",
+            "buttonVariant": {
+              "size": "default",
+              "stroke": "none",
+              "variant": "default"
+            },
+            "href": "/lived-experiences/submit",
+            "target": false,
+            "title": "Submit your story"
+          }
+        ],
+        "padding": {
+          "_type": "section-padding",
+          "bottom": true,
+          "top": true
+        },
+        "stackAlign": "center",
+        "tagLine": "Lived experiences",
+        "title": "Share your story"
+      },
+      {
+        "_key": "logo-cloud-1-partnerLogos",
+        "_type": "logo-cloud-1",
+        "colorVariant": "default",
+        "description": "Nous sommes un projet financé par Wellcome qui rassemble une expertise en recherche, politique, pratique, conception et expérience vécue du monde entier.",
+        "images": [
+          {
+            "_key": "70d4ffb85dae",
+            "_type": "image",
+            "alt": "Climate Cares Logo",
+            "asset": {
+              "_ref": "image-eda83dfa50044686af5c5460a7357193fdafe434-750x750-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "afef25f9e273",
+            "_type": "image",
+            "alt": "Red Cross/Crescent Climate Centre Logo ",
+            "asset": {
+              "_ref": "image-4d9d7a94f2c8f2dad9da4d47b702bc091a8795c6-750x750-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "2188a0b4bbae",
+            "_type": "image",
+            "alt": "University of Nigeria Logo",
+            "asset": {
+              "_ref": "image-11af89ad0f6b46dd87a02de8bd5709815561c12e-750x750-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "bf829e523c90",
+            "_type": "image",
+            "alt": "St. Luke's Medical Center Logo",
+            "asset": {
+              "_ref": "image-b98281c67c85a4ad37a1845fd11151112f091da9-750x750-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "2108cf7674a2",
+            "_type": "image",
+            "alt": "Force of Nature Logo",
+            "asset": {
+              "_ref": "image-a916d9a8bee47d6fc90074b1b63d2c976435ab49-750x750-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "8d33c4fab674",
+            "_type": "image",
+            "alt": "sustyvibes Logo",
+            "asset": {
+              "_ref": "image-74293faba6e6038a03b01b21d417b6284da694dc-750x750-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "6d35a8c8279c",
+            "_type": "image",
+            "alt": "Jordan Health Aid Society",
+            "asset": {
+              "_ref": "image-5efd81114e5949e05f8b5eecfbb48b7a6b9b1d18-384x281-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "fe50ad6676b7",
+            "_type": "image",
+            "alt": "Imperial College London Logo",
+            "asset": {
+              "_ref": "image-38d69bc1d7ab168e940dafa51abc4837d967d691-750x750-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "9aa79cd75037",
+            "_type": "image",
+            "alt": "Climate Mental Health Network Logo",
+            "asset": {
+              "_ref": "image-a7e6dc310b622f00ead8abddd65762ff80b1c104-750x750-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "49ebb18ff9ce",
+            "_type": "image",
+            "alt": "QCMHR Logo",
+            "asset": {
+              "_ref": "image-ab11d65d7b66f84578619c8b018a04fbc60559ca-750x549-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "de718f5d7379",
+            "_type": "image",
+            "alt": "Planetary health Alliance Logo",
+            "asset": {
+              "_ref": "image-6437b4ba6cb5b4f299f64692dc7806d2fceac7ef-750x549-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "02374391081e",
+            "_type": "image",
+            "alt": "Wellcome Logo",
+            "asset": {
+              "_ref": "image-b7e4d1e3b0a6c8f4db622ada4a03d2e3e1ad54b3-772x772-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "d54f66aec101",
+            "_type": "image",
+            "alt": "University of the West Indies Logo",
+            "asset": {
+              "_ref": "image-84a70c2c58245617e6dca99edfa23e273d4c1aba-750x750-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "976f6ebc55e9",
+            "_type": "image",
+            "alt": "BRAC Public Health Logo",
+            "asset": {
+              "_ref": "image-30b103b868e2d0ab9974a66c0cf03a8479b4a228-750x549-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "be7091a74edd",
+            "_type": "image",
+            "alt": "BRAC University Logo",
+            "asset": {
+              "_ref": "image-fc928150891e063f2f7cc221e4a82658b78cb046-750x549-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "4fd936a82097",
+            "_type": "image",
+            "alt": "Grantham Institute Logo",
+            "asset": {
+              "_ref": "image-689e390cba4a4a3c089eb0f65fe1d871a65e6b41-750x750-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "cf35dbab29de",
+            "_type": "image",
+            "alt": "University of Queensland Logo",
+            "asset": {
+              "_ref": "image-cdc11b432cc1729c2208ecfa720f210f9c8eda6f-750x549-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "133e54dcf271",
+            "_type": "image",
+            "alt": "Waman Wasi Logo",
+            "asset": {
+              "_ref": "image-b5294c3d34ea4dab9b3159a95d664ef180240c5a-772x772-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "7213f608535a",
+            "_type": "image",
+            "alt": "Institute of Global Health Innovation Logo",
+            "asset": {
+              "_ref": "image-3c59206099c46c53b85b61cf2d73730e6abec90c-750x750-webp",
+              "_type": "reference"
+            }
+          },
+          {
+            "_key": "af032a1109fd",
+            "_type": "image",
+            "alt": "IFRC Psychosocial Centre Logo",
+            "asset": {
+              "_ref": "image-f7d6a83272a69669d1fcc8f415b894879b7876c4-750x750-webp",
+              "_type": "reference"
+            }
+          }
+        ],
+        "layout": "marquee",
+        "padding": {
+          "_type": "section-padding",
+          "top": false
+        },
+        "title": "Qui est impliqué"
+      },
+      {
+        "_key": "people-widget-section41",
+        "_type": "people-widget",
+        "description": "Connect with researchers, practitioners, and advocates near you.",
+        "limit": 6,
+        "padding": {
+          "_type": "section-padding",
+          "bottom": true,
+          "top": true
+        },
+        "title": "People in your region"
+      }
+    ],
+    "language": "fr"
+  }
+]

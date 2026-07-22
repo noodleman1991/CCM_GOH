@@ -1,0 +1,426 @@
+- generic [active] [ref=f2e1]:
+  - generic [ref=f2e2]:
+    - generic [ref=f2e5]:
+      - list [ref=f2e7]:
+        - listitem [ref=f2e8]:
+          - link "Go to homepage" [ref=f2e9] [cursor=pointer]:
+            - /url: /
+            - img "Connecting Climate Minds Logo" [ref=f2e10]
+      - generic [ref=f2e11]:
+        - generic [ref=f2e12]:
+          - generic [ref=f2e13]: اكتشف
+          - list [ref=f2e14]:
+            - listitem [ref=f2e15]:
+              - link "الأطلس والاستكشاف" [ref=f2e16] [cursor=pointer]:
+                - /url: /ar/atlas
+                - img [ref=f2e17]
+                - generic [ref=f2e20]: الأطلس والاستكشاف
+            - listitem [ref=f2e21]:
+              - button "البحث والعمل" [ref=f2e22]:
+                - img [ref=f2e23]
+                - generic [ref=f2e25]: البحث والعمل
+                - img [ref=f2e26]
+            - listitem [ref=f2e28]:
+              - link "الأخبار والمستجدات" [ref=f2e29] [cursor=pointer]:
+                - /url: /ar/news
+                - img [ref=f2e30]
+                - generic [ref=f2e33]: الأخبار والمستجدات
+            - listitem [ref=f2e34]:
+              - link "التجارب المعيشة" [ref=f2e35] [cursor=pointer]:
+                - /url: /ar/lived-experiences
+                - img [ref=f2e36]
+                - generic [ref=f2e38]: التجارب المعيشة
+            - listitem [ref=f2e39]:
+              - link "دراسات الحالة" [ref=f2e40] [cursor=pointer]:
+                - /url: /ar/research-and-action/case-studies
+                - img [ref=f2e41]
+                - generic [ref=f2e44]: دراسات الحالة
+        - generic [ref=f2e45]:
+          - generic [ref=f2e46]: تعاون
+          - list [ref=f2e47]:
+            - listitem [ref=f2e48]:
+              - button "المجتمعات الإقليمية" [ref=f2e49]:
+                - img [ref=f2e50]
+                - generic [ref=f2e53]: المجتمعات الإقليمية
+                - img [ref=f2e54]
+            - listitem [ref=f2e56]:
+              - link "ابحث عن أشخاص" [ref=f2e57] [cursor=pointer]:
+                - /url: /ar/collaborate
+                - img [ref=f2e58]
+                - generic [ref=f2e63]: ابحث عن أشخاص
+            - listitem [ref=f2e64]:
+              - link "ابدأ مشروعًا أو ابحث عنه" [ref=f2e65] [cursor=pointer]:
+                - /url: /ar/collaborations
+                - img [ref=f2e66]
+                - generic [ref=f2e68]: ابدأ مشروعًا أو ابحث عنه
+        - list [ref=f2e71]:
+          - listitem [ref=f2e72]:
+            - link "حول" [ref=f2e73] [cursor=pointer]:
+              - /url: /about
+              - img [ref=f2e74]
+              - generic [ref=f2e76]: حول
+          - listitem [ref=f2e77]:
+            - link "التعليقات" [ref=f2e78] [cursor=pointer]:
+              - /url: /feedback
+              - img [ref=f2e79]
+              - generic [ref=f2e81]: التعليقات
+      - generic [ref=f2e82]:
+        - generic [ref=f2e84]:
+          - button "إنشاء حساب" [ref=f2e85]
+          - button "تسجيل الدخول" [ref=f2e86]
+        - button "البحث... ⌘K" [ref=f2e88]:
+          - img [ref=f2e89]
+          - generic [ref=f2e92]:
+            - generic: البحث...
+          - generic [ref=f2e94]: ⌘K
+        - list [ref=f2e96]:
+          - listitem [ref=f2e97]:
+            - button "العربية" [ref=f2e98]:
+              - generic [ref=f2e100]: العربية
+              - img [ref=f2e101]
+    - main [ref=f2e105]:
+      - button "Toggle Sidebar" [ref=f2e108]:
+        - img
+        - generic [ref=f2e109]: Toggle Sidebar
+      - main [ref=f2e111]:
+        - main [ref=f2e112]:
+          - generic [ref=f2e117]:
+            - heading "مرحبًا بكم في مجتمع الممارسة الإقليمي لـأفريقيا جنوب الصحراء" [level=1] [ref=f2e118]
+            - paragraph [ref=f2e121]: This is a connected, supported and engaged space that brings together the latest Connecting Climate Minds project outputs, events, news, resources and people working in climate change and mental health in the region.
+          - generic [ref=f2e128]:
+            - heading "لماذا تنضم إلى مجتمعنا الإقليمي؟" [level=1] [ref=f2e129]
+            - list [ref=f2e132]:
+              - listitem [ref=f2e133]: Stay up to date with the latest climate change and mental health resources in Central and Southern Asia.
+              - listitem [ref=f2e134]: Connect with other people across disciplines, sectors and countries interested in changing the landscape of climate change and mental health research and policy.
+              - listitem [ref=f2e135]: "Find opportunities to get involved: whether you are a researcher, policymaker, health professional, teacher, community organiser - your skills and expertise are needed."
+            - link "Get Involved" [ref=f2e137] [cursor=pointer]:
+              - /url: /sign-up
+          - generic [ref=f2e143]:
+            - generic [ref=f2e144]:
+              - heading "أجندة البحث والعمل الإقليمية" [level=2] [ref=f2e150]
+              - img "أجندة البحث والعمل الإقليمية" [ref=f2e152]
+            - generic [ref=f2e154]:
+              - generic [ref=f2e156]:
+                - generic [ref=f2e157]:
+                  - img "Sub-Saharan Africa Region" [ref=f2e158]
+                  - generic [ref=f2e160]: Research Agenda
+                - heading "الأجندة الإقليمية لأفريقيا جنوب الصحراء الكبرى" [level=3] [ref=f2e163]
+                - generic [ref=f2e164]:
+                  - paragraph [ref=f2e165]: الأولويات الإقليمية لـ أفريقيا جنوب الصحراء الكبرى
+                  - generic [ref=f2e167]:
+                    - img [ref=f2e168]
+                    - generic [ref=f2e170]: "2024"
+                - generic [ref=f2e172]:
+                  - generic [ref=f2e173]:
+                    - img [ref=f2e174]
+                    - generic [ref=f2e178]: متاح بـ 2 لغات
+                  - generic [ref=f2e179]:
+                    - button "English (1.7 MB)" [ref=f2e180]:
+                      - img
+                      - generic [ref=f2e181]: English
+                      - generic [ref=f2e182]: (1.7 MB)
+                    - button "Français (1.7 MB)" [ref=f2e183]:
+                      - img
+                      - generic [ref=f2e184]: Français
+                      - generic [ref=f2e185]: (1.7 MB)
+              - generic [ref=f2e187]:
+                - generic [ref=f2e188]:
+                  - img "Sub-Saharan Africa Region" [ref=f2e189]
+                  - generic [ref=f2e191]: Research Agenda
+                - heading "Sub-Saharan Africa Regional Agenda - Summary" [level=3] [ref=f2e194]
+                - generic [ref=f2e195]:
+                  - paragraph [ref=f2e196]: ملخص تنفيذي
+                  - generic [ref=f2e198]:
+                    - img [ref=f2e199]
+                    - generic [ref=f2e201]: "2024"
+                - generic [ref=f2e203]:
+                  - generic [ref=f2e204]:
+                    - img [ref=f2e205]
+                    - generic [ref=f2e209]: متاح بـ 2 لغات
+                  - generic [ref=f2e210]:
+                    - button "English (17.8 MB)" [ref=f2e211]:
+                      - img
+                      - generic [ref=f2e212]: English
+                      - generic [ref=f2e213]: (17.8 MB)
+                    - button "Français (488 KB)" [ref=f2e214]:
+                      - img
+                      - generic [ref=f2e215]: Français
+                      - generic [ref=f2e216]: (488 KB)
+          - generic [ref=f2e220]:
+            - heading "دراسات حالة من جميع أنحاء المنطقة" [level=2] [ref=f2e227]
+            - generic [ref=f2e229]:
+              - generic [ref=f2e231] [cursor=pointer]:
+                - generic [ref=f2e232]:
+                  - img "Impact of Heavy Flooding on Community Mental Health in Umueze Aname Community in Anambra State of Nigeria" [ref=f2e233]
+                  - generic [ref=f2e235]: دراسة حالة
+                - heading "تأثير الفيضانات الشديدة على الصحة النفسية المجتمعية في مجتمع أوموزي أنامي في ولاية أنامبرا في نيجيريا" [level=3] [ref=f2e237]
+                - generic [ref=f2e238]:
+                  - paragraph [ref=f2e239]: تم تحديد دراسة الحالة هذه خلال الحوار الإقليمي لـ Connecting Climate Minds لأفريقيا جنوب الصحراء الكبرى. سلط المشاركون في الحوار الضوء على كيفية تأثير الفيضانات الشديدة وغير المسبوقة، الناجمة عن تغير المناخ، على الصحة النفسية للمجتمع.
+                  - generic [ref=f2e242]:
+                    - img [ref=f2e243]
+                    - text: يناير ٢٠٢٤
+              - generic [ref=f2e247] [cursor=pointer]:
+                - generic [ref=f2e248]:
+                  - img "Enhancing Access to Community Mental Health Services for Women Smallholder Farmers Affected By Climate Change" [ref=f2e249]
+                  - generic [ref=f2e251]: دراسة حالة
+                - heading "تعزيز الوصول إلى خدمات الصحة النفسية المجتمعية للمزارعات الصغيرات المتأثرات بتغير المناخ" [level=3] [ref=f2e253]
+                - generic [ref=f2e254]:
+                  - paragraph [ref=f2e255]: Agripsych Beam Ltd هي شركة كينية للتكنولوجيا الصحية تستخدم التكنولوجيا المحمولة لتعزيز الوصول إلى خدمات الصحة النفسية للمزارعين الصغار المتأثرين بتغير المناخ. يتمثل تركيزنا في AgriPsych Beam Ltd في ضمان حصول المزارعات الصغيرات على شبكة أمان للرفاهية النفسية بعد فقدان المحاصيل أو الماشية.
+                  - generic [ref=f2e258]:
+                    - img [ref=f2e259]
+                    - text: يناير ٢٠٢٤
+              - generic [ref=f2e263] [cursor=pointer]:
+                - generic [ref=f2e264]:
+                  - 'img "“Let us Thrive”: Protecting our shared future through youth-led climate action for mental wellbeing" [ref=f2e265]'
+                  - generic [ref=f2e267]: دراسة حالة
+                - 'heading "\"دعونا نزدهر\": حماية مستقبلنا المشترك من خلال العمل المناخي بقيادة الشباب من أجل الرفاهية النفسية" [level=3] [ref=f2e269]'
+                - generic [ref=f2e270]:
+                  - paragraph [ref=f2e271]: نيجيريا هي واحدة من الدول العشر الأكثر عرضة لخطر الكوارث المناخية (اللجنة الدولية للإنقاذ، 2023). من الفيضانات إلى التقلبات المناخية الشديدة، فإن تأثيرات تغير المناخ بعيدة المدى، حيث تؤثر على جميع المناطق وتفاقم الهشاشة القائمة للأمة. داخل المناطق الساحلية
+                  - generic [ref=f2e273]:
+                    - generic [ref=f2e274]:
+                      - img [ref=f2e275]
+                      - text: يناير ٢٠٢٤
+                    - generic [ref=f2e277]: ·
+                    - generic [ref=f2e278]:
+                      - img [ref=f2e279]
+                      - generic [ref=f2e284]: Emma Lawrence
+          - generic [ref=f2e290]:
+            - generic [ref=f2e295]:
+              - heading "رؤى من التجارب المعاشة" [level=2] [ref=f2e296]
+              - paragraph [ref=f2e297]: استمع مباشرة إلى أفراد المجتمع حول تجاربهم
+            - generic [ref=f2e298]:
+              - region "رؤى من التجارب المعاشة" [ref=f2e299]:
+                - generic [ref=f2e300]:
+                  - 'button "شاهد التجربة: Sunday ''s Lived Experience story - Mental health impacts of climate change - Nigeria" [ref=f2e302] [cursor=pointer]':
+                    - generic [ref=f2e303]:
+                      - img "Sunday 's Lived Experience story - Mental health impacts of climate change - Nigeria" [ref=f2e304]
+                      - img [ref=f2e307]
+                    - generic [ref=f2e309]:
+                      - heading "Sunday 's Lived Experience story - Mental health impacts of climate change - Nigeria" [level=3] [ref=f2e310]
+                      - paragraph [ref=f2e311]: "A lived experience video: Sunday 's Lived Experience story - Mental health impacts of climate change - Nigeria"
+                      - generic [ref=f2e312]:
+                        - generic [ref=f2e313]:
+                          - img [ref=f2e314]
+                          - generic [ref=f2e317]: CCM Community
+                        - generic [ref=f2e318]:
+                          - img [ref=f2e319]
+                          - generic [ref=f2e321]: ١٠ نوفمبر ٢٠٢٥
+                  - 'button "شاهد التجربة: Paul ''s Lived Experience story - Mental health impacts of climate change - Anambra State, Nigeria" [ref=f2e323] [cursor=pointer]':
+                    - generic [ref=f2e324]:
+                      - img "Paul 's Lived Experience story - Mental health impacts of climate change - Anambra State, Nigeria" [ref=f2e325]
+                      - img [ref=f2e328]
+                    - generic [ref=f2e330]:
+                      - heading "Paul 's Lived Experience story - Mental health impacts of climate change - Anambra State, Nigeria" [level=3] [ref=f2e331]
+                      - paragraph [ref=f2e332]: "A lived experience video: Paul 's Lived Experience story - Mental health impacts of climate change - Anambra State, Nigeria"
+                      - generic [ref=f2e333]:
+                        - generic [ref=f2e334]:
+                          - img [ref=f2e335]
+                          - generic [ref=f2e338]: CCM Community
+                        - generic [ref=f2e339]:
+                          - img [ref=f2e340]
+                          - generic [ref=f2e342]: ١٠ نوفمبر ٢٠٢٥
+                  - 'button "شاهد التجربة: Laureen''s Lived Experience story - Mental health impacts of climate change - Kenya" [ref=f2e344] [cursor=pointer]':
+                    - generic [ref=f2e345]:
+                      - img "Laureen's Lived Experience story - Mental health impacts of climate change - Kenya" [ref=f2e346]
+                      - img [ref=f2e349]
+                    - generic [ref=f2e351]:
+                      - heading "Laureen's Lived Experience story - Mental health impacts of climate change - Kenya" [level=3] [ref=f2e352]
+                      - paragraph [ref=f2e353]: "A lived experience video: Laureen's Lived Experience story - Mental health impacts of climate change - Kenya"
+                      - generic [ref=f2e354]:
+                        - generic [ref=f2e355]:
+                          - img [ref=f2e356]
+                          - generic [ref=f2e359]: CCM Community
+                        - generic [ref=f2e360]:
+                          - img [ref=f2e361]
+                          - generic [ref=f2e363]: ١٠ نوفمبر ٢٠٢٥
+                  - 'button "شاهد التجربة: Ibiso''s Lived Experience story - Mental health impacts of climate change - Nigeria" [ref=f2e365] [cursor=pointer]':
+                    - generic [ref=f2e366]:
+                      - img "Ibiso's Lived Experience story - Mental health impacts of climate change - Nigeria" [ref=f2e367]
+                      - img [ref=f2e370]
+                    - generic [ref=f2e372]:
+                      - heading "Ibiso's Lived Experience story - Mental health impacts of climate change - Nigeria" [level=3] [ref=f2e373]
+                      - paragraph [ref=f2e374]: "A lived experience video: Ibiso's Lived Experience story - Mental health impacts of climate change - Nigeria"
+                      - generic [ref=f2e375]:
+                        - generic [ref=f2e376]:
+                          - img [ref=f2e377]
+                          - generic [ref=f2e380]: CCM Community
+                        - generic [ref=f2e381]:
+                          - img [ref=f2e382]
+                          - generic [ref=f2e384]: ١٠ نوفمبر ٢٠٢٥
+                  - 'button "شاهد التجربة: Dr Mercy''s Lived Experience story - Mental health impacts of climate change - Kenya" [ref=f2e386] [cursor=pointer]':
+                    - generic [ref=f2e387]:
+                      - img "Dr Mercy's Lived Experience story - Mental health impacts of climate change - Kenya" [ref=f2e388]
+                      - img [ref=f2e391]
+                    - generic [ref=f2e393]:
+                      - heading "Dr Mercy's Lived Experience story - Mental health impacts of climate change - Kenya" [level=3] [ref=f2e394]
+                      - paragraph [ref=f2e395]: "A lived experience video: Dr Mercy's Lived Experience story - Mental health impacts of climate change - Kenya"
+                      - generic [ref=f2e396]:
+                        - generic [ref=f2e397]:
+                          - img [ref=f2e398]
+                          - generic [ref=f2e401]: CCM Community
+                        - generic [ref=f2e402]:
+                          - img [ref=f2e403]
+                          - generic [ref=f2e405]: ١٠ نوفمبر ٢٠٢٥
+                  - 'button "شاهد التجربة: Leah''s Lived Experience story - Mental health impacts of climate change - Kenya" [ref=f2e407] [cursor=pointer]':
+                    - generic [ref=f2e408]:
+                      - img "Leah's Lived Experience story - Mental health impacts of climate change - Kenya" [ref=f2e409]
+                      - img [ref=f2e412]
+                    - generic [ref=f2e414]:
+                      - heading "Leah's Lived Experience story - Mental health impacts of climate change - Kenya" [level=3] [ref=f2e415]
+                      - paragraph [ref=f2e416]: "A lived experience video: Leah's Lived Experience story - Mental health impacts of climate change - Kenya"
+                      - generic [ref=f2e417]:
+                        - generic [ref=f2e418]:
+                          - img [ref=f2e419]
+                          - generic [ref=f2e422]: CCM Community
+                        - generic [ref=f2e423]:
+                          - img [ref=f2e424]
+                          - generic [ref=f2e426]: ١٠ نوفمبر ٢٠٢٥
+              - generic [ref=f2e427]:
+                - button "السابق" [ref=f2e428]:
+                  - img
+                - button "التالي" [ref=f2e429]:
+                  - img
+          - generic [ref=f2e432]:
+            - generic [ref=f2e433]:
+              - heading "الفريق الإقليمي" [level=2] [ref=f2e434]
+              - paragraph [ref=f2e437]: Get to know the core team and people driving forward the Connecting Climate Minds regional community of practice.
+            - generic [ref=f2e438]:
+              - generic [ref=f2e439]:
+                - img "Kenneth Yongabi Anchang" [ref=f2e442]
+                - heading "Kenneth Yongabi Anchang" [level=3] [ref=f2e443]
+                - paragraph [ref=f2e444]: Professor and Dean of Health Sciences at Claretian University of Nigeria (Regional Community Convenor)
+              - generic [ref=f2e445]:
+                - img "Dr. Rouba Katrina" [ref=f2e448]
+                - heading "Dr. Rouba Katrina" [level=3] [ref=f2e449]
+                - paragraph [ref=f2e450]: Head of Department of Environmental Public Health, University of Botswana (Co-Convenors)
+              - generic [ref=f2e451]:
+                - img "Prof George Osanjo" [ref=f2e454]
+                - heading "Prof George Osanjo" [level=3] [ref=f2e455]
+                - paragraph [ref=f2e456]: Prof George Osanjo, Dean of Health Sciences, University of Nairobi (Co-Convenors)
+              - generic [ref=f2e457]:
+                - img "Monika dos Santos" [ref=f2e460]
+                - heading "Monika dos Santos" [level=3] [ref=f2e461]
+                - paragraph [ref=f2e462]: Professor in the Department of Psychology at the University of South Africa (Co-Convenors)
+              - generic [ref=f2e463]:
+                - img "Martins Muchangi" [ref=f2e466]
+                - heading "Martins Muchangi" [level=3] [ref=f2e467]
+                - paragraph [ref=f2e468]: Director for Population Health and Environment and leading climate change and health programming at Amref (Co-Convenors)
+              - generic [ref=f2e469]:
+                - img "Elizabeth Gulugulu" [ref=f2e472]
+                - heading "Elizabeth Gulugulu" [level=3] [ref=f2e473]
+                - paragraph [ref=f2e474]: Environmentalist and former Global Focal Point to the Official Children and Youth Constituency of the UNFCCC (Youth Ambassador)
+              - generic [ref=f2e475]:
+                - img "Sunday Timipre Eric" [ref=f2e478]
+                - heading "Sunday Timipre Eric" [level=3] [ref=f2e479]
+                - paragraph [ref=f2e480]: Student (Lived Experience Advisory Group)
+              - generic [ref=f2e481]:
+                - img "Iwu Josephine Chinwendu" [ref=f2e484]
+                - heading "Iwu Josephine Chinwendu" [level=3] [ref=f2e485]
+                - paragraph [ref=f2e486]: Student (Lived Experience Advisory Group)
+              - generic [ref=f2e487]:
+                - img "Elvis Tata" [ref=f2e490]
+                - heading "Elvis Tata" [level=3] [ref=f2e491]
+                - paragraph [ref=f2e492]: Phytobiotech Research Foundation (Lived Experience Advisory Group)
+              - generic [ref=f2e493]:
+                - img "Lisa Mudoya" [ref=f2e496]
+                - heading "Lisa Mudoya" [level=3] [ref=f2e497]
+                - paragraph [ref=f2e498]: (Lived Experience Advisory Group)
+              - generic [ref=f2e499]:
+                - img "Martin M. Bangura" [ref=f2e502]
+                - heading "Martin M. Bangura" [level=3] [ref=f2e503]
+                - paragraph [ref=f2e504]: Student (Lived Experience Advisory Group)
+              - generic [ref=f2e505]:
+                - img "Victor Bangura" [ref=f2e508]
+                - heading "Victor Bangura" [level=3] [ref=f2e509]
+                - paragraph [ref=f2e510]: (Lived Experience Advisory Group)
+          - generic [ref=f2e514]:
+            - generic [ref=f2e515]:
+              - heading "استكشف هذه المنطقة" [level=2] [ref=f2e520]
+              - link "افتح الأطلس الكامل →" [ref=f2e521] [cursor=pointer]:
+                - /url: /ar/atlas?region=ssa
+            - generic [ref=f2e522]:
+              - generic [ref=f2e523]:
+                - img [ref=f2e524]
+                - textbox "ابحث في الأطلس…" [ref=f2e527]
+              - generic [ref=f2e528]:
+                - text: طبقة البيانات
+                - generic [ref=f2e529]:
+                  - button "دراسات الحالة" [pressed] [ref=f2e530]:
+                    - img [ref=f2e531]
+                    - generic [ref=f2e533]: دراسات الحالة
+                  - button "التجارب المعاشة" [ref=f2e534]:
+                    - generic [ref=f2e535]: التجارب المعاشة
+                  - button "الأعضاء" [ref=f2e536]:
+                    - generic [ref=f2e537]: الأعضاء
+                  - button "الأخبار" [ref=f2e538]:
+                    - generic [ref=f2e539]: الأخبار
+                  - button "الأجندات" [ref=f2e540]:
+                    - generic [ref=f2e541]: الأجندات
+                  - button "التقارير" [ref=f2e542]:
+                    - generic [ref=f2e543]: التقارير
+              - generic [ref=f2e544]:
+                - text: الموضوع
+                - generic [ref=f2e545]:
+                  - button "النزوح" [ref=f2e546]:
+                    - generic [ref=f2e547]: النزوح
+                  - button "سُبل العيش" [ref=f2e548]:
+                    - generic [ref=f2e549]: سُبل العيش
+                  - button "الشباب" [ref=f2e550]:
+                    - generic [ref=f2e551]: الشباب
+                  - button "الشعوب الأصلية" [ref=f2e552]:
+                    - generic [ref=f2e553]: الشعوب الأصلية
+              - generic [ref=f2e554]:
+                - img "Regional map" [ref=f2e556]:
+                  - 'button "أفريقيا جنوب الصحراء: 0" [ref=f2e557] [cursor=pointer]'
+                  - 'button "شمال أفريقيا وغرب آسيا: 0" [ref=f2e558] [cursor=pointer]'
+                  - 'button "آسيا الوسطى والجنوبية: 0" [ref=f2e559] [cursor=pointer]'
+                  - 'button "شرق وجنوب شرق آسيا: 0" [ref=f2e560] [cursor=pointer]'
+                  - 'button "أمريكا اللاتينية والكاريبي: 0" [ref=f2e561] [cursor=pointer]'
+                  - 'button "أوقيانوسيا: 0" [ref=f2e562] [cursor=pointer]'
+                  - 'button "أوروبا وأمريكا الشمالية: 0" [ref=f2e563] [cursor=pointer]'
+                - generic [ref=f2e564]:
+                  - paragraph [ref=f2e565]: دراسات الحالة
+                  - list
+              - generic [ref=f2e566]:
+                - generic [ref=f2e567]: دراسات الحالة · أفريقيا جنوب الصحراء
+                - link "افتح في دراسات الحالة" [ref=f2e568] [cursor=pointer]:
+                  - /url: /ar/research-and-action/case-studies?communities=sub-saharan-africa
+                  - text: افتح في دراسات الحالة
+                  - img [ref=f2e569]
+          - generic [ref=f2e588]:
+            - heading "أعضاء المجتمع" [level=2] [ref=f2e590]
+            - list [ref=f2e591]:
+              - listitem [ref=f2e592]:
+                - link "Ashley Katz Ashley Katz" [ref=f2e593] [cursor=pointer]:
+                  - /url: /ar/profiles/ashleyhopekatz
+                  - img "Ashley Katz" [ref=f2e595]
+                  - generic [ref=f2e596]: Ashley Katz
+              - listitem [ref=f2e597]:
+                - link "Coryna Ogunseitan Coryna Ogunseitan" [ref=f2e598] [cursor=pointer]:
+                  - /url: /ar/profiles/corynaogunseitan
+                  - img "Coryna Ogunseitan" [ref=f2e600]
+                  - generic [ref=f2e601]: Coryna Ogunseitan
+              - listitem [ref=f2e602]:
+                - link "Djibril Moussa Djibril Moussa" [ref=f2e603] [cursor=pointer]:
+                  - /url: /ar/profiles/djibrilmoussa082
+                  - img "Djibril Moussa" [ref=f2e605]
+                  - generic [ref=f2e606]: Djibril Moussa
+              - listitem [ref=f2e607]:
+                - link "Elithea Kempango Elithea Kempango" [ref=f2e608] [cursor=pointer]:
+                  - /url: /ar/profiles/elitheakoojo
+                  - img "Elithea Kempango" [ref=f2e610]
+                  - generic [ref=f2e611]: Elithea Kempango
+              - listitem [ref=f2e612]:
+                - link "nicolas george nicolas george" [ref=f2e613] [cursor=pointer]:
+                  - /url: /ar/profiles/nicolas
+                  - img "nicolas george" [ref=f2e615]
+                  - generic [ref=f2e616]: nicolas george
+              - listitem [ref=f2e617]:
+                - link "Zeinab Ajami Zeinab Ajami" [ref=f2e618] [cursor=pointer]:
+                  - /url: /ar/profiles/zeinabajami
+                  - img "Zeinab Ajami" [ref=f2e620]
+                  - generic [ref=f2e621]: Zeinab Ajami
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=f2e627] [cursor=pointer]:
+    - img [ref=f2e628]
+  - alert [ref=f2e631]

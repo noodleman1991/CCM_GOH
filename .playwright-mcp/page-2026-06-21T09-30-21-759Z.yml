@@ -1,0 +1,129 @@
+- generic [active] [ref=e1]:
+  - main [ref=e3]:
+    - button "Toggle Sidebar" [ref=e6]:
+      - img
+      - generic [ref=e7]: Toggle Sidebar
+    - main [ref=e9]:
+      - generic [ref=e10]:
+        - generic [ref=e11]:
+          - heading "News" [level=1] [ref=e12]
+          - paragraph [ref=e13]: Stay updated with the latest news, stories, and updates from our global climate action community
+        - generic [ref=e16]:
+          - generic [ref=e17]:
+            - img [ref=e18]
+            - textbox "Search news..." [ref=e21]
+          - generic [ref=e22]:
+            - button "Any time" [pressed] [ref=e23]:
+              - img [ref=e24]
+              - generic [ref=e26]: Any time
+            - button "Past year" [ref=e27]:
+              - generic [ref=e28]: Past year
+            - button "Past 3 years" [ref=e29]:
+              - generic [ref=e30]: Past 3 years
+            - button "Past 5 years" [ref=e31]:
+              - generic [ref=e32]: Past 5 years
+          - generic [ref=e33]:
+            - generic [ref=e34]:
+              - img
+              - textbox [ref=e35]:
+                - /placeholder: From
+            - generic [ref=e36]:
+              - img
+              - textbox [ref=e37]:
+                - /placeholder: To
+            - button "Filters" [ref=e38]:
+              - img
+              - text: Filters
+              - img
+        - generic [ref=e39]:
+          - generic [ref=e40]:
+            - heading "Featured News" [level=2] [ref=e42]
+            - generic [ref=e43]:
+              - 'link "Climate Change and Mental Health: Insights from Connecting Climate Minds'' First Regional Dialogues Understanding mental health impacts across global regions March 20, 2024 Dr. Britt Wray" [ref=e44] [cursor=pointer]':
+                - /url: /en/news/insights-from-regional-dialogues
+                - generic [ref=e46]:
+                  - 'heading "Climate Change and Mental Health: Insights from Connecting Climate Minds'' First Regional Dialogues" [level=3] [ref=e48]'
+                  - paragraph [ref=e49]: Understanding mental health impacts across global regions
+                  - generic [ref=e50]:
+                    - generic [ref=e51]:
+                      - img [ref=e52]
+                      - time [ref=e54]: March 20, 2024
+                    - generic [ref=e55]:
+                      - img [ref=e56]
+                      - generic [ref=e59]: Dr. Britt Wray
+              - 'link "COP28: Centring Mental Health in the Health Response to Climate Change A turning point for human health in climate negotiations January 15, 2024 Dr. Britt Wray" [ref=e60] [cursor=pointer]':
+                - /url: /en/news/cop28-centring-mental-health
+                - generic [ref=e62]:
+                  - 'heading "COP28: Centring Mental Health in the Health Response to Climate Change" [level=3] [ref=e64]'
+                  - paragraph [ref=e65]: A turning point for human health in climate negotiations
+                  - generic [ref=e66]:
+                    - generic [ref=e67]:
+                      - img [ref=e68]
+                      - time [ref=e70]: January 15, 2024
+                    - generic [ref=e71]:
+                      - img [ref=e72]
+                      - generic [ref=e75]: Dr. Britt Wray
+          - generic [ref=e76]:
+            - generic [ref=e77]:
+              - heading "Latest News" [level=2] [ref=e78]
+              - paragraph [ref=e79]: 3 results found
+            - generic [ref=e80]:
+              - link [ref=e81] [cursor=pointer]:
+                - /url: /en/news/climate-change-is-becoming-a-mental-health-crisis-and-communities-are-already-living-it
+                - article [ref=e82]:
+                  - img "Illustration" [ref=e84]
+                  - generic [ref=e85]:
+                    - generic [ref=e89]:
+                      - heading "Climate Change Is Becoming a Mental Health Crisis — and Communities Are Already Living It" [level=3] [ref=e90]
+                      - paragraph [ref=e91]: From farmers facing hopelessness after crop loss to Indigenous communities grieving disappearing ecosystems, a new global agenda warns climate change is reshaping emotional survival, identity, and wellbeing.
+                    - paragraph [ref=e92]: A major international report argues climate change is not only an environmental emergency but a growing mental health crisis. Through stories from farmers, Indigenous leaders, and young people across 126 countries, the report reveals how climate disasters are producing grief, anxiety, exhaustion, and loss of identity — while communities themselves are often leading the most effective responses.
+                    - generic [ref=e93]:
+                      - generic [ref=e96]: News Desk
+                      - generic [ref=e98]:
+                        - img [ref=e99]
+                        - time [ref=e101]: May 20, 2026
+              - article [ref=e102]:
+                - generic [ref=e103]:
+                  - 'img "Eco‑anxiety: how do young people relate to the climate crisis?" [ref=e104]'
+                  - generic [ref=e105]:
+                    - img [ref=e106]
+                    - generic [ref=e110]: External
+                - generic [ref=e111]:
+                  - 'heading "Eco‑anxiety: how do young people relate to the climate crisis?" [level=3] [ref=e112]'
+                  - paragraph [ref=e113]: “Eco-anxiety” and “climate-anxiety” are the most widely known terms describing what people feel in response to being aware of the climate crisis. We conducted a review of published academic papers including original research articles and review papers, and found surprising results on how young people aged 10-29 years actually experience being aware of global warming and climate change and its effects.
+                  - generic [ref=e114]:
+                    - generic [ref=e115]:
+                      - generic [ref=e116]:
+                        - img [ref=e117]
+                        - generic [ref=e120]: The Conversation
+                      - generic [ref=e121]:
+                        - img [ref=e122]
+                        - time [ref=e124]: March 25, 2026
+                    - generic [ref=e125]:
+                      - generic [ref=e126]: English
+                      - link "Read on theconversation.com" [ref=e127] [cursor=pointer]:
+                        - /url: https://theconversation.com/eco-anxiety-how-do-young-people-relate-to-the-climate-crisis-277520
+                        - text: Read on theconversation.com
+                        - img
+              - link [ref=e128] [cursor=pointer]:
+                - /url: /en/news/climate-distress-anxiety-action-youth
+                - article [ref=e129]:
+                  - generic [ref=e130]:
+                    - generic [ref=e131]:
+                      - heading "Study shows climate distress related to anxiety and action in young people" [level=3] [ref=e132]
+                      - paragraph [ref=e133]: Imperial research on youth climate anxiety
+                    - paragraph [ref=e134]: Imperial researchers have carried out a study to understand the psycho-social impacts of climate crisis on young people in the UK.
+                    - generic [ref=e135]:
+                      - generic [ref=e138]: Dr. Britt Wray
+                      - generic [ref=e140]:
+                        - img [ref=e141]
+                        - time [ref=e143]: May 10, 2024
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e149] [cursor=pointer]:
+    - generic [ref=e152]:
+      - text: Compiling
+      - generic [ref=e153]:
+        - generic [ref=e154]: .
+        - generic [ref=e155]: .
+        - generic [ref=e156]: .
+  - alert [ref=e157]

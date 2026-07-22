@@ -1,0 +1,287 @@
+[    9183ms] [LOG] [Client Instrumentation Hook] Slow execution detected: 20ms (Note: Code download overhead is not included in this measurement) @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:1530
+[    9208ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   12674ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   13374ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   14204ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   14334ms] [WARNING] Missing Algolia environment variables: ALGOLIA_API_KEY @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   14334ms] [WARNING] Algolia admin client not available - missing credentials @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   14334ms] [LOG] ✅ Algolia search client initialized successfully @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   14351ms] [ERROR] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+%s%s https://react.dev/link/hydration-mismatch 
+
+  ...
+    <SegmentViewNode type="page" pagePath="[locale]/(...">
+      <SegmentTrieNode>
+      <SubmitResearchOutputPage>
+        <PageContainer>
+          <div className="mx-auto w-...">
+            ...
+              <form onSubmit={function} className="space-y-6">
+                ...
+                  <div data-slot="card-content" className="p-6 pt-0 s...">
+                    ...
+                      <div data-slot="form-item" className="grid gap-2">
+                        <FormLabel>
+                          <Label data-slot="form-label" data-error={false} className="data-[erro..." ...>
+                            <Label data-slot="form-label" className="text-sm le..." data-error={false} ...>
+                              <Primitive.label data-slot="form-label" className="text-sm le..." data-error={false} ...>
+                                <label
+                                  data-slot="form-label"
+                                  className="text-sm leading-none font-medium select-none group-data-[disabled=true]:p..."
+                                  data-error={false}
++                                 htmlFor="_R_33pbn5ritpeukndb7t9etb_-form-item"
+-                                 htmlFor="_R_cf5esnebn5rqkndb7t9etb_-form-item"
+                                  onMouseDown={function onMouseDown}
+                                  ref={null}
+                                >
++                                 Title
+                        <FormControl>
+                          <Slot.Slot data-slot="form-control" id="_R_33pbn5r..." aria-describedby="_R_33pbn5r..." ...>
+                            <Slot.SlotClone data-slot="form-control" id="_R_33pbn5r..." aria-describedby="_R_33pbn5r..." ...>
+                              <Input name="title" value="Coastal he..." ...>
+                                <input
+                                  type={undefined}
+                                  data-slot="form-control"
+                                  className="border-input file:text-foreground placeholder:text-muted-foreground selec..."
+                                  name="title"
+                                  value="Coastal heat and community wellbeing — verification toolkit"
+                                  onChange={function useController.useCallback[onChange]}
+                                  onBlur={function useController.useCallback[onBlur]}
+                                  ref={function useController.useCallback[ref]}
+                                  placeholder="e.g. Heat and mental health in coastal cities — 2026 report"
++                                 id="_R_33pbn5ritpeukndb7t9etb_-form-item"
+-                                 id="_R_cf5esnebn5rqkndb7t9etb_-form-item"
++                                 aria-describedby="_R_33pbn5ritpeukndb7t9etb_-form-item-description"
+-                                 aria-describedby="_R_cf5esnebn5rqkndb7t9etb_-form-item-description"
+                                  aria-invalid={false}
+                                >
+                        ...
+                    <div className="grid gap-4...">
+                      ...
+                        <div data-slot="form-item" className="grid gap-2">
+                          <FormLabel>
+                            <Label data-slot="form-label" data-error={false} className="data-[erro..." ...>
+                              <Label data-slot="form-label" className="text-sm le..." data-error={false} ...>
+                                <Primitive.label data-slot="form-label" className="text-sm le..." data-error={false} ...>
+                                  <label
+                                    data-slot="form-label"
+                                    className="text-sm leading-none font-medium select-none group-data-[disabled=true]..."
+                                    data-error={false}
++                                   htmlFor="_R_d3pbn5ritpeukndb7t9etb_-form-item"
+-                                   htmlFor="_R_1kf5esnebn5rqkndb7t9etb_-form-item"
+                                    onMouseDown={function onMouseDown}
+                                    ref={null}
+                                  >
++                                   Type of output
+                          ...
+                            <Primitive.div.Slot ref={function}>
+                              <Primitive.div.SlotClone ref={function}>
+                                <Primitive.button type="button" role="combobox" aria-controls="radix-_R_d..." ...>
+                                  <button
+                                    type="button"
+                                    role="combobox"
++                                   aria-controls="radix-_R_dd3pbn5ritpeukndb7t9etb_"
+-                                   aria-controls="radix-_R_1lkf5esnebn5rqkndb7t9etb_"
+                                    aria-expanded={false}
+                                    aria-required={undefined}
+                                    aria-autocomplete="none"
+                                    dir="ltr"
+                                    data-state="closed"
+                                    disabled={false}
+                                    data-disabled={undefined}
+                                    data-placeholder={undefined}
+                                    data-slot="form-control"
+                                    data-size="default"
+                                    className={"border-input data-[placeholder]:text-muted-foreground [&_svg:not([cla..."}
++                                   id="_R_d3pbn5ritpeukndb7t9etb_-form-item"
+-                                   id="_R_1kf5esnebn5rqkndb7t9etb_-form-item"
++                                   aria-describedby="_R_d3pbn5ritpeukndb7t9etb_-form-item-description"
+-                                   aria-describedby="_R_1kf5esnebn5rqkndb7t9etb_-form-item-description"
+                                    aria-invalid={false}
+                                    onClick={function handleEvent}
+                                    onPointerDown={function handleEvent}
+                                    onKeyDown={function handleEvent}
+                                    ref={function}
+                                  >
+                          ...
+                      ...
+                        <div data-slot="form-item" className="grid gap-2">
+                          <FormLabel>
+                            <Label data-slot="form-label" data-error={false} className="data-[erro..." ...>
+                              <Label data-slot="form-label" className="text-sm le..." data-error={false} ...>
+                                <Primitive.label data-slot="form-label" className="text-sm le..." data-error={false} ...>
+                                  <label
+                                    data-slot="form-label"
+                                    className="text-sm leading-none font-medium select-none group-data-[disabled=true]..."
+                                    data-error={false}
++                                   htmlFor="_R_l3pbn5ritpeukndb7t9etb_-form-item"
+-                                   htmlFor="_R_2kf5esnebn5rqkndb7t9etb_-form-item"
+                                    onMouseDown={function onMouseDown}
+                                    ref={null}
+                                  >
++                                   Region
+                          ...
+                            <Primitive.div.Slot ref={function}>
+                              <Primitive.div.SlotClone ref={function}>
+                                <Primitive.button type="button" role="combobox" aria-controls="radix-_R_d..." ...>
+                                  <button
+                                    type="button"
+                                    role="combobox"
++                                   aria-controls="radix-_R_dl3pbn5ritpeukndb7t9etb_"
+-                                   aria-controls="radix-_R_1mkf5esnebn5rqkndb7t9etb_"
+                                    aria-expanded={false}
+                                    aria-required={undefined}
+                                    aria-autocomplete="none"
+                                    dir="ltr"
+                                    data-state="closed"
+                                    disabled={false}
+                                    data-disabled={undefined}
+                                    data-placeholder={undefined}
+                                    data-slot="form-control"
+                                    data-size="default"
+                                    className={"border-input data-[placeholder]:text-muted-foreground [&_svg:not([cla..."}
++                                   id="_R_l3pbn5ritpeukndb7t9etb_-form-item"
+-                                   id="_R_2kf5esnebn5rqkndb7t9etb_-form-item"
++                                   aria-describedby="_R_l3pbn5ritpeukndb7t9etb_-form-item-description"
+-                                   aria-describedby="_R_2kf5esnebn5rqkndb7t9etb_-form-item-description"
+                                    aria-invalid={false}
+                                    onClick={function handleEvent}
+                                    onPointerDown={function handleEvent}
+                                    onKeyDown={function handleEvent}
+                                    ref={function}
+                                  >
+                          ...
+                    <FormField control={{...}} name="excerpt" render={function render}>
+                      <Controller control={{...}} name="excerpt" render={function render}>
+                        <FormItem>
+                          <div data-slot="form-item" className="grid gap-2">
+                            <FormLabel>
+                              <Label data-slot="form-label" data-error={false} className="data-[erro..." ...>
+                                <Label data-slot="form-label" className="text-sm le..." data-error={false} ...>
+                                  <Primitive.label data-slot="form-label" className="text-sm le..." data-error={false} ...>
+                                    <label
+                                      data-slot="form-label"
+                                      className="text-sm leading-none font-medium select-none group-data-[disabled=tru..."
+                                      data-error={false}
++                                     htmlFor="_R_73pbn5ritpeukndb7t9etb_-form-item"
+-                                     htmlFor="_R_sf5esnebn5rqkndb7t9etb_-form-item"
+                                      onMouseDown={function onMouseDown}
+                                      ref={null}
+                                    >
++                                     Summary
+                            <FormControl>
+                              <Slot.Slot data-slot="form-control" id="_R_73pbn5r..." aria-describedby="_R_73pbn5r..." ...>
+                                <Slot.SlotClone data-slot="form-control" id="_R_73pbn5r..." ...>
+                                  <Textarea name="excerpt" value="A verifica..." ...>
+                                    <textarea
+                                      data-slot="form-control"
+                                      className="border-input placeholder:text-muted-foreground focus-visible:border-r..."
+                                      name="excerpt"
+                                      value="A verification-run research output with one downloadable document, a regi..."
+                                      onChange={function useController.useCallback[onChange]}
+                                      onBlur={function useController.useCallback[onBlur]}
+                                      ref={function useController.useCallback[ref]}
+                                      rows={3}
+                                      placeholder="A few sentences on what readers will find…"
++                                     id="_R_73pbn5ritpeukndb7t9etb_-form-item"
+-                                     id="_R_sf5esnebn5rqkndb7t9etb_-form-item"
++                                     aria-describedby="_R_73pbn5ritpeukndb7t9etb_-form-item-description"
+-                                     aria-describedby="_R_sf5esnebn5rqkndb7t9etb_-form-item-description"
+                                      aria-invalid={false}
+                                    >
+                            <FormDescription>
+                              <p
+                                data-slot="form-description"
++                               id="_R_73pbn5ritpeukndb7t9etb_-form-item-description"
+-                               id="_R_sf5esnebn5rqkndb7t9etb_-form-item-description"
+                                className="text-muted-foreground text-sm"
+                              >
++                               Shown on cards and at the top of the page.
+                            ...
+                <Card>
+                <Card>
+                <Card>
+                  <div data-slot="card" className="bg-card te...">
+                    <CardHeader>
+                    <CardContent className="space-y-4">
+                      <div data-slot="card-content" className="p-6 pt-0 s...">
+                        ...
+                          <FormLabel>
+                            <Label data-slot="form-label" data-error={false} className="data-[erro..." ...>
+                              <Label data-slot="form-label" className="text-sm le..." data-error={false} ...>
+                                <Primitive.label data-slot="form-label" className="text-sm le..." data-error={false} ...>
+                                  <label
+                                    data-slot="form-label"
+                                    className="text-sm leading-none font-medium select-none group-data-[disabled=true]..."
+                                    data-error={false}
++                                   htmlFor="_R_39pbn5ritpeukndb7t9etb_-form-item"
+-                                   htmlFor="_R_d75esnebn5rqkndb7t9etb_-form-item"
+                                    onMouseDown={function onMouseDown}
+                                    ref={null}
+                                  >
++                                   Themes
+                        <FormItem>
+                          <div data-slot="form-item" className="grid gap-2">
+                            <FormLabel>
+                              <Label data-slot="form-label" data-error={false} className="data-[erro..." ...>
+                                <Label data-slot="form-label" className="text-sm le..." data-error={false} ...>
+                                  <Primitive.label data-slot="form-label" className="text-sm le..." data-error={false} ...>
+                                    <label
+                                      data-slot="form-label"
+                                      className="text-sm leading-none font-medium select-none group-data-[disabled=tru..."
+                                      data-error={false}
++                                     htmlFor="_R_59pbn5ritpeukndb7t9etb_-form-item"
+-                                     htmlFor="_R_l75esnebn5rqkndb7t9etb_-form-item"
+                                      onMouseDown={function onMouseDown}
+                                      ref={null}
+                                    >
++                                     Tags
+                            <div>
+                            <FormDescription>
+                              <p
+                                data-slot="form-description"
++                               id="_R_59pbn5ritpeukndb7t9etb_-form-item-description"
+-                               id="_R_l75esnebn5rqkndb7t9etb_-form-item-description"
+                                className="text-muted-foreground text-sm"
+                              >
++                               Up to 6.
+                        ...
+                          <FormLabel>
+                            <Label data-slot="form-label" data-error={false} className="data-[erro..." ...>
+                              <Label data-slot="form-label" className="text-sm le..." data-error={false} ...>
+                                <Primitive.label data-slot="form-label" className="text-sm le..." data-error={false} ...>
+                                  <label
+                                    data-slot="form-label"
+                                    className="text-sm leading-none font-medium select-none group-data-[disabled=true]..."
+                                    data-error={false}
++                                   htmlFor="_R_79pbn5ritpeukndb7t9etb_-form-item"
+-                                   htmlFor="_R_t75esnebn5rqkndb7t9etb_-form-item"
+                                    onMouseDown={function onMouseDown}
+                                    ref={null}
+                                  >
++                                   Regional communities
+                ...
+ @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:3132
+[   14364ms] [WARNING] [tiptap warn]: Duplicate extension names found: ['link']. This can lead to issues. @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   14550ms] [WARNING] Ignoring Event: localhost @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   14556ms] [LOG] [Fast Refresh] done in 508ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   14814ms] [INFO] Sanity is live with automatic revalidation of published content @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   15570ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   18587ms] [LOG] [Fast Refresh] done in 3118ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   21015ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/api/onboarding/status:0
+[   21016ms] [ERROR] Failed to fetch onboarding status: 500 @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:3132
+[   21137ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   22058ms] [LOG] [Fast Refresh] done in 1022ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   22161ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   22492ms] [LOG] [Fast Refresh] done in 433ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   62006ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   62153ms] [LOG] [Fast Refresh] done in 249ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302

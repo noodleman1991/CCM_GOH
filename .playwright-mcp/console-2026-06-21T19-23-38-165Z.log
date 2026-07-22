@@ -1,0 +1,31 @@
+[     245ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[     502ms] [LOG] [Fast Refresh] done in 361ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    1473ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    1533ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    2051ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    2405ms] [WARNING] Missing Algolia environment variables: ALGOLIA_API_KEY @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    2405ms] [WARNING] Algolia admin client not available - missing credentials @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    2405ms] [LOG] ✅ Algolia search client initialized successfully @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    2488ms] [WARNING] Ignoring Event: localhost @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    2543ms] [INFO] Sanity is live with automatic revalidation of published content @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   23619ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   23689ms] [LOG] [Fast Refresh] done in 172ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   73503ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   73511ms] [LOG] [Fast Refresh] done in 110ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 6699604ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 6699840ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 6700008ms] [LOG] [Fast Refresh] done in 272ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 7509609ms] [ERROR] Failed to load resource: net::ERR_QUIC_PROTOCOL_ERROR.QUIC_PUBLIC_RESET @ https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/production_2?tag=next-loader.live:0
+[ 7512643ms] [INFO] Sanity is live with automatic revalidation of published content @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 8685742ms] [ERROR] Failed to load resource: net::ERR_QUIC_PROTOCOL_ERROR.QUIC_PUBLIC_RESET @ https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/production_2?tag=next-loader.live:0
+[ 8686152ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 8686357ms] [LOG] [Fast Refresh] done in 308ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 8688793ms] [INFO] Sanity is live with automatic revalidation of published content @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 8688983ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 8688999ms] [LOG] [Fast Refresh] done in 118ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[12127313ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[12129154ms] [LOG] [Fast Refresh] done in 1950ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[12225293ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[12226186ms] [LOG] [Fast Refresh] done in 996ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[12250090ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[12250304ms] [LOG] [Fast Refresh] done in 318ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302

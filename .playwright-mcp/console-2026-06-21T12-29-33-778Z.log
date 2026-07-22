@@ -1,0 +1,3 @@
+[     577ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://counter.theconversation.com/content/277520/count?from=theconversation.com&referrer=:0
+[    1163ms] [WARNING] <meta name="apple-mobile-web-app-capable" content="yes"> is deprecated. Please include <meta name="mobile-web-app-capable" content="yes"> @ https://theconversation.com/eco-anxiety-how-do-young-people-relate-to-the-climate-crisis-277520:0
+[    1493ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://collector.theconversation.com/v1/events:0

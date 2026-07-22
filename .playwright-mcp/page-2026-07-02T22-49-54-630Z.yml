@@ -1,0 +1,95 @@
+- generic [active] [ref=f23e1]:
+  - generic [ref=f23e2]:
+    - generic [ref=f23e5]:
+      - list [ref=f23e7]:
+        - listitem [ref=f23e8]:
+          - link "Go to homepage" [ref=f23e9] [cursor=pointer]:
+            - /url: /
+            - img "Connecting Climate Minds Logo" [ref=f23e10]
+      - generic [ref=f23e11]:
+        - generic [ref=f23e12]:
+          - generic [ref=f23e13]: Discover
+          - list [ref=f23e14]:
+            - listitem [ref=f23e15]:
+              - link "Atlas & Explore" [ref=f23e16] [cursor=pointer]:
+                - /url: /en/atlas
+                - img [ref=f23e17]
+                - generic [ref=f23e20]: Atlas & Explore
+            - listitem [ref=f23e21]:
+              - button "Research & Action" [ref=f23e22]:
+                - img [ref=f23e23]
+                - generic [ref=f23e25]: Research & Action
+                - img [ref=f23e26]
+            - listitem [ref=f23e28]:
+              - link "News & Updates" [ref=f23e29] [cursor=pointer]:
+                - /url: /en/news
+                - img [ref=f23e30]
+                - generic [ref=f23e33]: News & Updates
+            - listitem [ref=f23e34]:
+              - link "Lived experiences" [ref=f23e35] [cursor=pointer]:
+                - /url: /en/lived-experiences
+                - img [ref=f23e36]
+                - generic [ref=f23e38]: Lived experiences
+            - listitem [ref=f23e39]:
+              - link "Case studies" [ref=f23e40] [cursor=pointer]:
+                - /url: /en/research-and-action/case-studies
+                - img [ref=f23e41]
+                - generic [ref=f23e44]: Case studies
+        - generic [ref=f23e45]:
+          - generic [ref=f23e46]: Collaborate
+          - list [ref=f23e47]:
+            - listitem [ref=f23e48]:
+              - button "Regional Communities" [ref=f23e49]:
+                - img [ref=f23e50]
+                - generic [ref=f23e53]: Regional Communities
+                - img [ref=f23e54]
+            - listitem [ref=f23e56]:
+              - link "Find people" [ref=f23e57] [cursor=pointer]:
+                - /url: /en/collaborate
+                - img [ref=f23e58]
+                - generic [ref=f23e63]: Find people
+            - listitem [ref=f23e64]:
+              - link "Start or find a project" [ref=f23e65] [cursor=pointer]:
+                - /url: /en/collaborations
+                - img [ref=f23e66]
+                - generic [ref=f23e68]: Start or find a project
+        - list [ref=f23e71]:
+          - listitem [ref=f23e72]:
+            - link "About" [ref=f23e73] [cursor=pointer]:
+              - /url: /about
+              - img [ref=f23e74]
+              - generic [ref=f23e76]: About
+          - listitem [ref=f23e77]:
+            - link "Feedback" [ref=f23e78] [cursor=pointer]:
+              - /url: /feedback
+              - img [ref=f23e79]
+              - generic [ref=f23e81]: Feedback
+      - generic [ref=f23e82]:
+        - list [ref=f23e84]:
+          - listitem [ref=f23e85]:
+            - button [disabled]
+        - button "Search... ⌘K" [ref=f23e87]:
+          - img [ref=f23e88]
+          - generic [ref=f23e91]:
+            - generic: Search...
+          - generic [ref=f23e93]: ⌘K
+        - list [ref=f23e95]:
+          - listitem [ref=f23e96]:
+            - button "English" [ref=f23e97]:
+              - generic [ref=f23e99]: English
+              - img [ref=f23e100]
+    - main [ref=f23e104]:
+      - button "Toggle Sidebar" [ref=f23e107]:
+        - img
+        - generic [ref=f23e108]: Toggle Sidebar
+      - main [ref=f23e110]:
+        - generic [ref=f23e111]:
+          - generic [ref=f23e112]:
+            - heading "Search" [level=1] [ref=f23e113]
+            - paragraph [ref=f23e114]: Find community members, agendas, news, posts, and case studies
+          - generic [ref=f23e117]:
+            - img
+            - searchbox "Search for people, content, or expertise..." [ref=f23e118]
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=f23e137] [cursor=pointer]:
+    - img [ref=f23e138]

@@ -1,0 +1,372 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - list [ref=e7]:
+          - listitem [ref=e8]:
+            - link "Go to homepage" [ref=e9] [cursor=pointer]:
+              - /url: /
+              - img "Connecting Climate Minds Logo" [ref=e10]
+        - button "Search... ⌘K" [ref=e12]:
+          - img [ref=e13]
+          - generic [ref=e16]: Search...
+          - generic [ref=e17]: ⌘K
+      - generic [ref=e18]:
+        - generic [ref=e19]:
+          - generic [ref=e20]: Discover
+          - list [ref=e21]:
+            - listitem [ref=e22]:
+              - link "Atlas & Explore" [ref=e23] [cursor=pointer]:
+                - /url: /en/atlas
+                - img [ref=e24]
+                - generic [ref=e27]: Atlas & Explore
+            - listitem [ref=e28]:
+              - button "Research & Action" [ref=e29]:
+                - img [ref=e30]
+                - generic [ref=e32]: Research & Action
+                - img [ref=e33]
+            - listitem [ref=e35]:
+              - link "News & Updates" [ref=e36] [cursor=pointer]:
+                - /url: /en/news
+                - img [ref=e37]
+                - generic [ref=e40]: News & Updates
+            - listitem [ref=e41]:
+              - link "Lived experiences" [ref=e42] [cursor=pointer]:
+                - /url: /en/lived-experiences
+                - img [ref=e43]
+                - generic [ref=e45]: Lived experiences
+            - listitem [ref=e46]:
+              - link "Case studies" [ref=e47] [cursor=pointer]:
+                - /url: /en/research-and-action/case-studies
+                - img [ref=e48]
+                - generic [ref=e51]: Case studies
+        - generic [ref=e52]:
+          - generic [ref=e53]: Collaborate
+          - list [ref=e54]:
+            - listitem [ref=e55]:
+              - button "Regional Communities" [ref=e56]:
+                - img [ref=e57]
+                - generic [ref=e60]: Regional Communities
+                - img [ref=e61]
+            - listitem [ref=e63]:
+              - link "Find people" [ref=e64] [cursor=pointer]:
+                - /url: /en/collaborate
+                - img [ref=e65]
+                - generic [ref=e70]: Find people
+            - listitem [ref=e71]:
+              - link "Start or find a project" [ref=e72] [cursor=pointer]:
+                - /url: /en/collaborations
+                - img [ref=e73]
+                - generic [ref=e75]: Start or find a project
+        - list [ref=e78]:
+          - listitem [ref=e79]:
+            - link "About" [ref=e80] [cursor=pointer]:
+              - /url: /about
+              - img [ref=e81]
+              - generic [ref=e83]: About
+          - listitem [ref=e84]:
+            - link "Feedback" [ref=e85] [cursor=pointer]:
+              - /url: /feedback
+              - img [ref=e86]
+              - generic [ref=e88]: Feedback
+      - generic [ref=e90]:
+        - list [ref=e91]:
+          - listitem [ref=e92]:
+            - button "Amit Lokszinski Amit Lokszinski amit2@pm.me" [ref=e93]:
+              - img "Amit Lokszinski" [ref=e95]
+              - generic [ref=e96]:
+                - generic [ref=e97]: Amit Lokszinski
+                - generic [ref=e98]: amit2@pm.me
+              - img [ref=e99]
+        - list [ref=e102]:
+          - listitem [ref=e103]:
+            - button "English" [ref=e104]:
+              - generic [ref=e106]: English
+              - img [ref=e107]
+    - main [ref=e111]:
+      - generic [ref=e112]:
+        - button "Toggle Sidebar" [ref=e114]:
+          - img
+          - generic [ref=e115]: Toggle Sidebar
+        - generic [ref=e116]:
+          - button "Search..." [ref=e117]:
+            - img [ref=e118]
+          - button "Notifications" [ref=e121]:
+            - img
+      - main [ref=e123]:
+        - generic [ref=e124]:
+          - generic [ref=e125]:
+            - generic [ref=e126]:
+              - heading "Case Studies" [level=1] [ref=e127]
+              - paragraph [ref=e128]: Explore research and insights from our global community
+            - link "Submit Case Study" [ref=e130] [cursor=pointer]:
+              - /url: /en/research-and-action/case-studies/submit
+              - img
+              - text: Submit Case Study
+          - generic [ref=e131]:
+            - generic [ref=e132]:
+              - img
+              - textbox "Search case studies..." [ref=e133]
+            - generic [ref=e134]:
+              - button "Community" [ref=e135]:
+                - generic [ref=e136]: Community
+                - img [ref=e137]
+              - button "Topic" [ref=e139]:
+                - generic [ref=e140]: Topic
+                - img [ref=e141]
+              - button "Tags" [ref=e143]:
+                - generic [ref=e144]: Tags
+                - img [ref=e145]
+          - generic [ref=e147]:
+            - generic [ref=e148]:
+              - generic [ref=e149]:
+                - generic [ref=e152]:
+                  - heading "Central and Southern Asia Regional Community" [level=2] [ref=e153]
+                  - paragraph [ref=e154]: 3 case studies
+                - link "View community" [ref=e155] [cursor=pointer]:
+                  - /url: /en/communities/central-and-southern-asia
+              - generic [ref=e156]:
+                - link "Climate change and mental health impacts among Dalit communities in southwestern Bangladesh Case Study Climate change and mental health impacts among Dalit communities in southwestern Bangladesh The southwestern area of Bangladesh is highly susceptible to climate and disaster impacts. The area, specifically the Satkhira region, is also home to a substantial Dalit population (Islam, 2011). It is estimated there are around five million Dalits in Bangladesh, with approximately 96% being illite Jan 2024" [ref=e157] [cursor=pointer]:
+                  - /url: /en/research-and-action/case-studies/climate-change-and-mental-health-impacts-among-dalit-communities-in-southwestern-bangladesh
+                  - generic [ref=e158]:
+                    - generic [ref=e159]:
+                      - img "Climate change and mental health impacts among Dalit communities in southwestern Bangladesh" [ref=e160]
+                      - generic [ref=e162]: Case Study
+                    - generic [ref=e163]:
+                      - heading "Climate change and mental health impacts among Dalit communities in southwestern Bangladesh" [level=3] [ref=e164]
+                      - paragraph [ref=e165]: The southwestern area of Bangladesh is highly susceptible to climate and disaster impacts. The area, specifically the Satkhira region, is also home to a substantial Dalit population (Islam, 2011). It is estimated there are around five million Dalits in Bangladesh, with approximately 96% being illite
+                      - generic [ref=e169]:
+                        - img [ref=e170]
+                        - text: Jan 2024
+                - link "The Impacts of Climate Change on Mental Health of Tribal Communities in Jharkhand Case Study The Impacts of Climate Change on Mental Health of Tribal Communities in Jharkhand Jan 2024" [ref=e172] [cursor=pointer]:
+                  - /url: /en/research-and-action/case-studies/the-impacts-of-climate-change-on-mental-health-of-tribal-communities-in-jharkhand
+                  - generic [ref=e173]:
+                    - generic [ref=e174]:
+                      - img "The Impacts of Climate Change on Mental Health of Tribal Communities in Jharkhand" [ref=e175]
+                      - generic [ref=e177]: Case Study
+                    - heading "The Impacts of Climate Change on Mental Health of Tribal Communities in Jharkhand" [level=3] [ref=e179]
+                    - generic [ref=e183]:
+                      - img [ref=e184]
+                      - text: Jan 2024
+                - 'link "Responding to mental health challenges of flood-affected communities through technology-driven local solutions in Pakistan: The mPareshan Project Case Study Responding to mental health challenges of flood-affected communities through technology-driven local solutions in Pakistan: The mPareshan Project In recent years, Pakistan has experienced both extreme heat and massive floods, with the risks projected to increase with the ongoing climate change1. Particularly in rural Pakistan (where around 62% of the population resides2), the effects of these climate-related events are compounded by extreme p Jan 2024" [ref=e187] [cursor=pointer]':
+                  - /url: /en/research-and-action/case-studies/responding-to-mental-health-challenges-of-flood-affected-communities-through-technology-driven-l
+                  - generic [ref=e188]:
+                    - generic [ref=e189]:
+                      - 'img "Responding to mental health challenges of flood-affected communities through technology-driven local solutions in Pakistan: The mPareshan Project" [ref=e190]'
+                      - generic [ref=e192]: Case Study
+                    - 'heading "Responding to mental health challenges of flood-affected communities through technology-driven local solutions in Pakistan: The mPareshan Project" [level=3] [ref=e194]'
+                    - generic [ref=e195]:
+                      - paragraph [ref=e196]: In recent years, Pakistan has experienced both extreme heat and massive floods, with the risks projected to increase with the ongoing climate change1. Particularly in rural Pakistan (where around 62% of the population resides2), the effects of these climate-related events are compounded by extreme p
+                      - generic [ref=e199]:
+                        - img [ref=e200]
+                        - text: Jan 2024
+            - generic [ref=e203]:
+              - generic [ref=e204]:
+                - generic [ref=e207]:
+                  - heading "Eastern and South Eastern Asia Regional Community" [level=2] [ref=e208]
+                  - paragraph [ref=e209]: 4 case studies
+                - link "View community" [ref=e210] [cursor=pointer]:
+                  - /url: /en/communities/eastern-and-south-eastern-asia
+              - generic [ref=e211]:
+                - link "Japan’s Shinrin-yoku (Forest Bathing) as a Mental Health Intervention in an Era of Climate Change Case Study Japan's Shinrin-yoku (Forest Bathing) as a Mental Health Intervention in an Era of Climate Change The effects of climate change are becoming increasingly more apparent with intensifying extreme weather events, rising sea levels, and worsening air quality, which poses a significant threat to ecosystems and public health worldwide. Located in East Asia comprising of over 6,800 islands, Japan has c Jan 2024" [ref=e212] [cursor=pointer]:
+                  - /url: /en/research-and-action/case-studies/japan-s-shinrin-yoku-forest-bathing-as-a-mental-health-intervention-in-an-era-of-climate-change
+                  - generic [ref=e213]:
+                    - generic [ref=e214]:
+                      - img "Japan’s Shinrin-yoku (Forest Bathing) as a Mental Health Intervention in an Era of Climate Change" [ref=e215]
+                      - generic [ref=e217]: Case Study
+                    - generic [ref=e218]:
+                      - heading "Japan's Shinrin-yoku (Forest Bathing) as a Mental Health Intervention in an Era of Climate Change" [level=3] [ref=e219]
+                      - paragraph [ref=e220]: The effects of climate change are becoming increasingly more apparent with intensifying extreme weather events, rising sea levels, and worsening air quality, which poses a significant threat to ecosystems and public health worldwide. Located in East Asia comprising of over 6,800 islands, Japan has c
+                      - generic [ref=e224]:
+                        - img [ref=e225]
+                        - text: Jan 2024
+                - link "The Need for Mental Health Support for Environmental Defenders in the Philippines Case Study The Need for Mental Health Support for Environmental Defenders in the Philippines According to the latest Global Climate Risk Index report by Germanwatch published in 2021, the Philippines is one of the top five countries most vulnerable to climate change.[1] The country faces at least twenty typhoons per year (with an average of five typhoons becoming supertyphoons) that cause i Jan 2024" [ref=e227] [cursor=pointer]:
+                  - /url: /en/research-and-action/case-studies/the-need-for-mental-health-support-for-environmental-defenders-in-the-philippines
+                  - generic [ref=e228]:
+                    - generic [ref=e229]:
+                      - img "The Need for Mental Health Support for Environmental Defenders in the Philippines" [ref=e230]
+                      - generic [ref=e232]: Case Study
+                    - heading "The Need for Mental Health Support for Environmental Defenders in the Philippines" [level=3] [ref=e234]
+                    - generic [ref=e235]:
+                      - paragraph [ref=e236]: According to the latest Global Climate Risk Index report by Germanwatch published in 2021, the Philippines is one of the top five countries most vulnerable to climate change.[1] The country faces at least twenty typhoons per year (with an average of five typhoons becoming supertyphoons) that cause i
+                      - generic [ref=e239]:
+                        - img [ref=e240]
+                        - text: Jan 2024
+                - link "Integrating Mental Health in a Planetary Health Intervention in Indonesia Case Study Integrating Mental Health in a Planetary Health Intervention in Indonesia An archipelago of more than 17,000 islands between the Indian and Pacific Oceans, Indonesia is a lower-middle income country in Southeast Asia with almost 280 million people. With its tropical geography, Indonesia is facing some of the most pressing environmental threats, including climate change, w Jan 2024" [ref=e243] [cursor=pointer]:
+                  - /url: /en/research-and-action/case-studies/integrating-mental-health-in-a-planetary-health-intervention-in-indonesia
+                  - generic [ref=e244]:
+                    - generic [ref=e245]:
+                      - img "Integrating Mental Health in a Planetary Health Intervention in Indonesia" [ref=e246]
+                      - generic [ref=e248]: Case Study
+                    - heading "Integrating Mental Health in a Planetary Health Intervention in Indonesia" [level=3] [ref=e250]
+                    - generic [ref=e251]:
+                      - paragraph [ref=e252]: An archipelago of more than 17,000 islands between the Indian and Pacific Oceans, Indonesia is a lower-middle income country in Southeast Asia with almost 280 million people. With its tropical geography, Indonesia is facing some of the most pressing environmental threats, including climate change, w
+                      - generic [ref=e255]:
+                        - img [ref=e256]
+                        - text: Jan 2024
+                - link "Integrating Climate Change into Mental Health Policy in Vietnam Case Study Integrating Climate Change into Mental Health Policy in Vietnam Vietnam is a low-middle-income country in Southeast Asia, with an area of 331,700 km2, a coastline of 3,444 km and a population of around 100 million, making it the world's fifteenth-most populous country. Being one of the countries most vulnerable to the risk of climate change impacts (1), Vietnam Jan 2024" [ref=e259] [cursor=pointer]:
+                  - /url: /en/research-and-action/case-studies/integrating-climate-change-into-mental-health-policy-in-vietnam
+                  - generic [ref=e260]:
+                    - generic [ref=e261]:
+                      - img "Integrating Climate Change into Mental Health Policy in Vietnam" [ref=e262]
+                      - generic [ref=e264]: Case Study
+                    - heading "Integrating Climate Change into Mental Health Policy in Vietnam" [level=3] [ref=e266]
+                    - generic [ref=e267]:
+                      - paragraph [ref=e268]: Vietnam is a low-middle-income country in Southeast Asia, with an area of 331,700 km2, a coastline of 3,444 km and a population of around 100 million, making it the world's fifteenth-most populous country. Being one of the countries most vulnerable to the risk of climate change impacts (1), Vietnam
+                      - generic [ref=e271]:
+                        - img [ref=e272]
+                        - text: Jan 2024
+            - generic [ref=e275]:
+              - generic [ref=e276]:
+                - generic [ref=e279]:
+                  - heading "Europe and Northern America Regional Community" [level=2] [ref=e280]
+                  - paragraph [ref=e281]: 3 case studies
+                - link "View community" [ref=e282] [cursor=pointer]:
+                  - /url: /en/communities/europe-and-northern-america
+              - generic [ref=e283]:
+                - 'link "PERSIST: Climate School Educational Intervention on Youth Climate Emotions Case Study PERSIST: Climate School Educational Intervention on Youth Climate Emotions Italy is considered a hotspot for climate change in Europe and is affected by numerous extreme weather events and severe and frequent heat waves, registering an excess mortality of 18,000 deaths in 2022 due to high temperatures (Italian Ministry of Environment and Energy Security, 2023). Italian you Jan 2024" [ref=e284] [cursor=pointer]':
+                  - /url: /en/research-and-action/case-studies/persist-climate-school-educational-intervention-on-youth-climate-emotions
+                  - generic [ref=e285]:
+                    - generic [ref=e286]:
+                      - 'img "PERSIST: Climate School Educational Intervention on Youth Climate Emotions" [ref=e287]'
+                      - generic [ref=e289]: Case Study
+                    - generic [ref=e290]:
+                      - 'heading "PERSIST: Climate School Educational Intervention on Youth Climate Emotions" [level=3] [ref=e291]'
+                      - paragraph [ref=e292]: Italy is considered a hotspot for climate change in Europe and is affected by numerous extreme weather events and severe and frequent heat waves, registering an excess mortality of 18,000 deaths in 2022 due to high temperatures (Italian Ministry of Environment and Energy Security, 2023). Italian you
+                      - generic [ref=e296]:
+                        - img [ref=e297]
+                        - text: Jan 2024
+                - link "Intervention North Carolina Healthy & Resilient Communities Initiative (NC HRCI) Case Study Intervention North Carolina Healthy & Resilient Communities Initiative (NC HRCI) The North Carolina Healthy and Resilient Communities Initiative (NC HRCI) supports state-wide, local multi-sector coalitions in North Carolina who are working to address adversity and trauma at multiple levels (individual, organizational, and community) and who are working to build resilient and hea Jan 2024" [ref=e299] [cursor=pointer]:
+                  - /url: /en/research-and-action/case-studies/intervention-north-carolina-healthy-resilient-communities-initiative-nc-hrci
+                  - generic [ref=e300]:
+                    - generic [ref=e301]:
+                      - img "Intervention North Carolina Healthy & Resilient Communities Initiative (NC HRCI)" [ref=e302]
+                      - generic [ref=e304]: Case Study
+                    - heading "Intervention North Carolina Healthy & Resilient Communities Initiative (NC HRCI)" [level=3] [ref=e306]
+                    - generic [ref=e307]:
+                      - paragraph [ref=e308]: The North Carolina Healthy and Resilient Communities Initiative (NC HRCI) supports state-wide, local multi-sector coalitions in North Carolina who are working to address adversity and trauma at multiple levels (individual, organizational, and community) and who are working to build resilient and hea
+                      - generic [ref=e311]:
+                        - img [ref=e312]
+                        - text: Jan 2024
+                - 'link "Stichting Klimaat Psychologie: For sustainable insights and green behavioral change Case Study Stichting Klimaat Psychologie: For sustainable insights and green behavioral change \\\"The Netherlands\\\" means \\\"The Low Lands.\\\" Much of our country is already below sea level. We are a river delta and without the protection of dykes and dunes, 2⁄3 of our country would be flooded. As such, water is our livelihood and our vulnerability, necessitating keen monitoring and adaptation to p Jan 2024" [ref=e315] [cursor=pointer]':
+                  - /url: /en/research-and-action/case-studies/stichting-klimaat-psychologie-for-sustainable-insights-and-green-behavioral-change
+                  - generic [ref=e316]:
+                    - generic [ref=e317]:
+                      - 'img "Stichting Klimaat Psychologie: For sustainable insights and green behavioral change" [ref=e318]'
+                      - generic [ref=e320]: Case Study
+                    - 'heading "Stichting Klimaat Psychologie: For sustainable insights and green behavioral change" [level=3] [ref=e322]'
+                    - generic [ref=e323]:
+                      - paragraph [ref=e324]: \"The Netherlands\" means \"The Low Lands.\" Much of our country is already below sea level. We are a river delta and without the protection of dykes and dunes, 2⁄3 of our country would be flooded. As such, water is our livelihood and our vulnerability, necessitating keen monitoring and adaptation to p
+                      - generic [ref=e327]:
+                        - img [ref=e328]
+                        - text: Jan 2024
+            - generic [ref=e331]:
+              - generic [ref=e332]:
+                - generic [ref=e335]:
+                  - heading "Northern Africa and Western Asia Regional Community" [level=2] [ref=e336]
+                  - paragraph [ref=e337]: 1 case study
+                - link "View community" [ref=e338] [cursor=pointer]:
+                  - /url: /en/communities/northern-africa-and-western-asia
+              - 'link "Sustainable Agriculture and Mental Health Resilience: The Moroccan Green Plan in the Face of Climate Change Case Study Sustainable Agriculture and Mental Health Resilience: The Moroccan Green Plan in the Face of Climate Change Morocco, a country in the Maghreb region of North Africa, is characterized by its rich history and diverse geography, which includes the Atlas Mountains and the Sahara Desert. Agriculture is a central part of Morocco''s economy and culture, but it is increasingly threatened by climate change. The cou Jan 2024" [ref=e340] [cursor=pointer]':
+                - /url: /en/research-and-action/case-studies/sustainable-agriculture-and-mental-health-resilience-the-moroccan-green-plan-in-the-face-of-clim
+                - generic [ref=e341]:
+                  - generic [ref=e342]:
+                    - 'img "Sustainable Agriculture and Mental Health Resilience: The Moroccan Green Plan in the Face of Climate Change" [ref=e343]'
+                    - generic [ref=e345]: Case Study
+                  - generic [ref=e346]:
+                    - 'heading "Sustainable Agriculture and Mental Health Resilience: The Moroccan Green Plan in the Face of Climate Change" [level=3] [ref=e347]'
+                    - paragraph [ref=e348]: Morocco, a country in the Maghreb region of North Africa, is characterized by its rich history and diverse geography, which includes the Atlas Mountains and the Sahara Desert. Agriculture is a central part of Morocco's economy and culture, but it is increasingly threatened by climate change. The cou
+                    - generic [ref=e352]:
+                      - img [ref=e353]
+                      - text: Jan 2024
+            - generic [ref=e355]:
+              - generic [ref=e356]:
+                - generic [ref=e359]:
+                  - heading "Oceania Regional Community" [level=2] [ref=e360]
+                  - paragraph [ref=e361]: 2 case studies
+                - link "View community" [ref=e362] [cursor=pointer]:
+                  - /url: /en/communities/oceania
+              - generic [ref=e363]:
+                - 'link "Building Future Resilience and Preparedness in a Bushfire-affected Community: The Phoenix Project Case Study Building Future Resilience and Preparedness in a Bushfire-affected Community: The Phoenix Project The village of Ebor (traditional lands of the Gumbaynggirr peoples) is located in the New England region of New South Wales, Australia. It is a small, rural community with a population of around 150 residents, most of whom are farmers or pensioners. Surrounded by bushlands and farmlands, Ebor sits a Jan 2024" [ref=e364] [cursor=pointer]':
+                  - /url: /en/research-and-action/case-studies/building-future-resilience-and-preparedness-in-a-bushfire-affected-community-the-phoenix-project
+                  - generic [ref=e365]:
+                    - generic [ref=e366]:
+                      - 'img "Building Future Resilience and Preparedness in a Bushfire-affected Community: The Phoenix Project" [ref=e367]'
+                      - generic [ref=e369]: Case Study
+                    - generic [ref=e370]:
+                      - 'heading "Building Future Resilience and Preparedness in a Bushfire-affected Community: The Phoenix Project" [level=3] [ref=e371]'
+                      - paragraph [ref=e372]: The village of Ebor (traditional lands of the Gumbaynggirr peoples) is located in the New England region of New South Wales, Australia. It is a small, rural community with a population of around 150 residents, most of whom are farmers or pensioners. Surrounded by bushlands and farmlands, Ebor sits a
+                      - generic [ref=e376]:
+                        - img [ref=e377]
+                        - text: Jan 2024
+                - link "Climate change and the mental health and wellbeing of children and young people in Western Australia Case Study Climate change and the mental health and wellbeing of children and young people in Western Australia The state of Western Australia (WA) was colonised by Britain in 1829. WA comprises 2.5 million km2 (one-third of Australia's landmass) with four climate zones (see Figure 1). WA has 2.66 million people including 89,000 Aboriginal and/or Torres Strait Islander peoples and 818,000 children and young p Jan 2024" [ref=e379] [cursor=pointer]:
+                  - /url: /en/research-and-action/case-studies/climate-change-and-the-mental-health-and-wellbeing-of-children-and-young-people-in-western-austr
+                  - generic [ref=e380]:
+                    - generic [ref=e381]:
+                      - img "Climate change and the mental health and wellbeing of children and young people in Western Australia" [ref=e382]
+                      - generic [ref=e384]: Case Study
+                    - heading "Climate change and the mental health and wellbeing of children and young people in Western Australia" [level=3] [ref=e386]
+                    - generic [ref=e387]:
+                      - paragraph [ref=e388]: The state of Western Australia (WA) was colonised by Britain in 1829. WA comprises 2.5 million km2 (one-third of Australia's landmass) with four climate zones (see Figure 1). WA has 2.66 million people including 89,000 Aboriginal and/or Torres Strait Islander peoples and 818,000 children and young p
+                      - generic [ref=e391]:
+                        - img [ref=e392]
+                        - text: Jan 2024
+            - generic [ref=e395]:
+              - generic [ref=e396]:
+                - generic [ref=e399]:
+                  - heading "Sub-Saharan Africa Regional Community" [level=2] [ref=e400]
+                  - paragraph [ref=e401]: 3 case studies
+                - link "View community" [ref=e402] [cursor=pointer]:
+                  - /url: /en/communities/sub-saharan-africa
+              - generic [ref=e403]:
+                - link "Impact of Heavy Flooding on Community Mental Health in Umueze Aname Community in Anambra State of Nigeria Case Study Impact of Heavy Flooding on Community Mental Health in Umueze Aname Community in Anambra State of Nigeria This case study was identified during the Connecting Climate Minds regional dialogue for sub-Saharan Africa (SSA). Dialogue participants highlighted how heavy and unprecedented flooding, brought on by climate change, has impacted the mental health of the community. Jan 2024" [ref=e404] [cursor=pointer]:
+                  - /url: /en/research-and-action/case-studies/impact-of-heavy-flooding-on-community-mental-health-in-umueze-aname-community-in-anambra-state-o
+                  - generic [ref=e405]:
+                    - generic [ref=e406]:
+                      - img "Impact of Heavy Flooding on Community Mental Health in Umueze Aname Community in Anambra State of Nigeria" [ref=e407]
+                      - generic [ref=e409]: Case Study
+                    - generic [ref=e410]:
+                      - heading "Impact of Heavy Flooding on Community Mental Health in Umueze Aname Community in Anambra State of Nigeria" [level=3] [ref=e411]
+                      - paragraph [ref=e412]: This case study was identified during the Connecting Climate Minds regional dialogue for sub-Saharan Africa (SSA). Dialogue participants highlighted how heavy and unprecedented flooding, brought on by climate change, has impacted the mental health of the community.
+                      - generic [ref=e416]:
+                        - img [ref=e417]
+                        - text: Jan 2024
+                - link "Enhancing Access to Community Mental Health Services for Women Smallholder Farmers Affected By Climate Change Case Study Enhancing Access to Community Mental Health Services for Women Smallholder Farmers Affected By Climate Change Agripsych Beam Ltd is a Kenyan Healthtech company that uses mobile technology to enhance access to mental health services for smallholder farmers affected by climate change. Our focus at AgriPsych Beam Ltd is to ensure that women smallholder farmers have a mental wellbeing safety net after crop or l Jan 2024" [ref=e419] [cursor=pointer]:
+                  - /url: /en/research-and-action/case-studies/enhancing-access-to-community-mental-health-services-for-women-smallholder-farmers-affected-by-c
+                  - generic [ref=e420]:
+                    - generic [ref=e421]:
+                      - img "Enhancing Access to Community Mental Health Services for Women Smallholder Farmers Affected By Climate Change" [ref=e422]
+                      - generic [ref=e424]: Case Study
+                    - heading "Enhancing Access to Community Mental Health Services for Women Smallholder Farmers Affected By Climate Change" [level=3] [ref=e426]
+                    - generic [ref=e427]:
+                      - paragraph [ref=e428]: Agripsych Beam Ltd is a Kenyan Healthtech company that uses mobile technology to enhance access to mental health services for smallholder farmers affected by climate change. Our focus at AgriPsych Beam Ltd is to ensure that women smallholder farmers have a mental wellbeing safety net after crop or l
+                      - generic [ref=e431]:
+                        - img [ref=e432]
+                        - text: Jan 2024
+                - 'link "“Let us Thrive”: Protecting our shared future through youth-led climate action for mental wellbeing Climate Change & Environment \"Let us Thrive\": Protecting our shared future through youth-led climate action for mental wellbeing Nigeria is one of the ten countries most at risk of climate disasters (International Rescue Committee, 2023). From floods to extreme weather variability, the impacts of a changing climate are far reaching, impacting all regions and worsening the existing fragility of the nation. Within coastal regio Jan 2024 Emma Lawrence Climate Change" [ref=e435] [cursor=pointer]':
+                  - /url: /en/research-and-action/case-studies/let-us-thrive-protecting-our-shared-future-through-youth-led-climate-action-for-mental-wellbeing
+                  - generic [ref=e436]:
+                    - generic [ref=e437]:
+                      - 'img "“Let us Thrive”: Protecting our shared future through youth-led climate action for mental wellbeing" [ref=e438]'
+                      - generic [ref=e440]: Climate Change & Environment
+                    - 'heading "\"Let us Thrive\": Protecting our shared future through youth-led climate action for mental wellbeing" [level=3] [ref=e442]'
+                    - generic [ref=e443]:
+                      - paragraph [ref=e444]: Nigeria is one of the ten countries most at risk of climate disasters (International Rescue Committee, 2023). From floods to extreme weather variability, the impacts of a changing climate are far reaching, impacting all regions and worsening the existing fragility of the nation. Within coastal regio
+                      - generic [ref=e446]:
+                        - generic [ref=e447]:
+                          - img [ref=e448]
+                          - text: Jan 2024
+                        - generic [ref=e450]: ·
+                        - generic [ref=e451]:
+                          - img [ref=e452]
+                          - generic [ref=e457]: Emma Lawrence
+                      - generic [ref=e460]: Climate Change
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e467] [cursor=pointer]:
+    - generic [ref=e470]:
+      - text: Compiling
+      - generic [ref=e471]:
+        - generic [ref=e472]: .
+        - generic [ref=e473]: .
+        - generic [ref=e474]: .
+  - alert [ref=e475]

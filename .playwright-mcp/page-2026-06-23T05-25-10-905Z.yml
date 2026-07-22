@@ -1,0 +1,156 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - list [ref=e7]:
+          - listitem [ref=e8]:
+            - link "Go to homepage" [ref=e9] [cursor=pointer]:
+              - /url: /
+              - img "Connecting Climate Minds Logo" [ref=e10]
+        - button "Search... ⌘K" [ref=e12]:
+          - img [ref=e13]
+          - generic [ref=e16]: Search...
+          - generic [ref=e17]: ⌘K
+      - generic [ref=e18]:
+        - generic [ref=e19]:
+          - generic [ref=e20]: Discover
+          - list [ref=e21]:
+            - listitem [ref=e22]:
+              - link "Atlas & Explore" [ref=e23] [cursor=pointer]:
+                - /url: /en/atlas
+                - img [ref=e24]
+                - generic [ref=e27]: Atlas & Explore
+            - listitem [ref=e28]:
+              - button "Research & Action" [ref=e29]:
+                - img [ref=e30]
+                - generic [ref=e32]: Research & Action
+                - img [ref=e33]
+            - listitem [ref=e35]:
+              - link "News & Updates" [ref=e36] [cursor=pointer]:
+                - /url: /en/news
+                - img [ref=e37]
+                - generic [ref=e40]: News & Updates
+            - listitem [ref=e41]:
+              - link "Lived experiences" [ref=e42] [cursor=pointer]:
+                - /url: /en/lived-experiences
+                - img [ref=e43]
+                - generic [ref=e45]: Lived experiences
+            - listitem [ref=e46]:
+              - link "Case studies" [ref=e47] [cursor=pointer]:
+                - /url: /en/research-and-action/case-studies
+                - img [ref=e48]
+                - generic [ref=e51]: Case studies
+        - generic [ref=e52]:
+          - generic [ref=e53]: Collaborate
+          - list [ref=e54]:
+            - listitem [ref=e55]:
+              - button "Regional Communities" [ref=e56]:
+                - img [ref=e57]
+                - generic [ref=e60]: Regional Communities
+                - img [ref=e61]
+            - listitem [ref=e63]:
+              - link "Find people" [ref=e64] [cursor=pointer]:
+                - /url: /en/collaborate
+                - img [ref=e65]
+                - generic [ref=e70]: Find people
+            - listitem [ref=e71]:
+              - link "Start or find a project" [ref=e72] [cursor=pointer]:
+                - /url: /en/collaborations
+                - img [ref=e73]
+                - generic [ref=e75]: Start or find a project
+        - list [ref=e78]:
+          - listitem [ref=e79]:
+            - link "About" [ref=e80] [cursor=pointer]:
+              - /url: /about
+              - img [ref=e81]
+              - generic [ref=e83]: About
+          - listitem [ref=e84]:
+            - link "Feedback" [ref=e85] [cursor=pointer]:
+              - /url: /feedback
+              - img [ref=e86]
+              - generic [ref=e88]: Feedback
+      - generic [ref=e90]:
+        - list [ref=e194]:
+          - listitem [ref=e195]:
+            - button "Amit Lokszinski Amit Lokszinski amit2@pm.me" [ref=e196]:
+              - img "Amit Lokszinski" [ref=e198]
+              - generic [ref=e199]:
+                - generic [ref=e200]: Amit Lokszinski
+                - generic [ref=e201]: amit2@pm.me
+              - img [ref=e202]
+        - list [ref=e91]:
+          - listitem [ref=e92]:
+            - button "English" [ref=e93]:
+              - generic [ref=e95]: English
+              - img [ref=e96]
+    - main [ref=e100]:
+      - generic [ref=e101]:
+        - button "Toggle Sidebar" [ref=e103]:
+          - img
+          - generic [ref=e104]: Toggle Sidebar
+        - generic [ref=e105]:
+          - button "Search..." [ref=e106]:
+            - img [ref=e107]
+          - button "Notifications" [ref=e205]:
+            - img
+      - main [ref=e111]:
+        - generic [ref=e112]:
+          - generic [ref=e114]:
+            - button "Renamed Inline Workspace" [ref=e207]
+            - generic [ref=e116]: Members only
+          - generic [ref=e117]:
+            - complementary [ref=e118]:
+              - navigation [ref=e208]:
+                - button "Overview" [ref=e209]:
+                  - img [ref=e210]
+                  - generic [ref=e215]: Overview
+                - button "Plan" [ref=e216]:
+                  - img [ref=e217]
+                  - generic [ref=e220]: Plan
+                - button "Threads 0" [ref=e221]:
+                  - img [ref=e222]
+                  - generic [ref=e225]: Threads
+                  - generic [ref=e226]: "0"
+                - button "Files 0" [ref=e227]:
+                  - img [ref=e228]
+                  - generic [ref=e231]: Files
+                  - generic [ref=e232]: "0"
+                - button "Media 0" [ref=e233]:
+                  - img [ref=e234]
+                  - generic [ref=e236]: Media
+                  - generic [ref=e237]: "0"
+                - button "Members 1" [ref=e238]:
+                  - img [ref=e239]
+                  - generic [ref=e244]: Members
+                  - generic [ref=e245]: "1"
+            - generic [ref=e158]:
+              - button "Add a description…" [ref=e159]
+              - generic [ref=e160]:
+                - button "Plan" [ref=e161]:
+                  - paragraph
+                  - paragraph [ref=e162]: Plan
+                - button "0 Threads" [ref=e163]:
+                  - paragraph [ref=e164]: "0"
+                  - paragraph [ref=e165]: Threads
+                - button "0 Files" [ref=e166]:
+                  - paragraph [ref=e167]: "0"
+                  - paragraph [ref=e168]: Files
+                - button "0 Media" [ref=e169]:
+                  - paragraph [ref=e170]: "0"
+                  - paragraph [ref=e171]: Media
+                - button "1 Members" [ref=e172]:
+                  - paragraph [ref=e173]: "1"
+                  - paragraph [ref=e174]: Members
+  - region "Notifications alt+T"
+  - generic [ref=e179] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=e180]:
+      - img [ref=e181]
+    - generic [ref=e184]:
+      - button "Open issues overlay" [ref=e185]:
+        - generic [ref=e186]:
+          - generic [ref=e187]: "0"
+          - generic [ref=e188]: "1"
+        - generic [ref=e189]: Issue
+      - button "Collapse issues badge" [ref=e190]:
+        - img [ref=e191]
+  - alert [ref=e193]: Renamed Inline Workspace | Connecting Climate Minds

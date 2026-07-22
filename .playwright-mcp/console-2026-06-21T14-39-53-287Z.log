@@ -1,0 +1,172 @@
+[     757ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    2393ms] [LOG] [Fast Refresh] done in 1760ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    5840ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    6028ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    6936ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    7156ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    7299ms] [WARNING] Missing Algolia environment variables: ALGOLIA_API_KEY @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    7299ms] [WARNING] Algolia admin client not available - missing credentials @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    7299ms] [LOG] ✅ Algolia search client initialized successfully @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    7362ms] [WARNING] Image with src "/connecting-climate-minds-logo-white.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    8049ms] [LOG] [Fast Refresh] done in 1033ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    8751ms] [WARNING] Ignoring Event: localhost @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    8780ms] [INFO] Sanity is live with automatic revalidation of published content @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    8937ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    9088ms] [LOG] [Fast Refresh] done in 252ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   28851ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   35947ms] [LOG] [Fast Refresh] done in 7199ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   40126ms] [LOG] [Client Instrumentation Hook] Slow execution detected: 34ms (Note: Code download overhead is not included in this measurement) @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:1530
+[   40146ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   40422ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   40521ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   40579ms] [WARNING] Missing Algolia environment variables: ALGOLIA_API_KEY @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   40579ms] [WARNING] Algolia admin client not available - missing credentials @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   40580ms] [LOG] ✅ Algolia search client initialized successfully @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   40590ms] [WARNING] Image with src "/connecting-climate-minds-logo-white.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   40610ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   40924ms] [WARNING] Ignoring Event: localhost @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   41060ms] [INFO] Sanity is live with automatic revalidation of published content @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   42035ms] [WARNING] Image with src "https://cdn.sanity.io/images/gm67v7rk/production_2/1d3fae800fffe1b06b1978b583d73667dc0771bc-5760x3240.jpg?w=1200&h=675&fm=webp&fit=max" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   42759ms] [LOG] [Fast Refresh] done in 2257ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  215507ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  216100ms] [LOG] [Fast Refresh] done in 710ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  238991ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  239239ms] [LOG] [Fast Refresh] done in 354ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  260241ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  260525ms] [LOG] [Fast Refresh] done in 392ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  280505ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  280705ms] [LOG] [Fast Refresh] done in 309ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  304526ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  304632ms] [LOG] [Fast Refresh] done in 212ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  327093ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  327186ms] [LOG] [Fast Refresh] done in 201ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  350247ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  350350ms] [LOG] [Fast Refresh] done in 215ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  369040ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  369764ms] [LOG] [Fast Refresh] done in 832ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  370518ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  378327ms] [LOG] [Fast Refresh] done in 7908ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  378603ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  378682ms] [LOG] [Fast Refresh] done in 180ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  378796ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  378801ms] [LOG] [Fast Refresh] done in 108ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  388437ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  388597ms] [LOG] [Fast Refresh] done in 221ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  388742ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  389267ms] [LOG] [Fast Refresh] done in 627ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  407579ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  407736ms] [LOG] [Fast Refresh] done in 259ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  407871ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  408596ms] [LOG] [Fast Refresh] done in 827ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  408720ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  408743ms] [LOG] [Fast Refresh] done in 125ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  409195ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  409306ms] [LOG] [Fast Refresh] done in 214ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  427646ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  427815ms] [LOG] [Fast Refresh] done in 265ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  428042ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  436007ms] [LOG] [Fast Refresh] done in 8042ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  436327ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  438967ms] [LOG] [Fast Refresh] done in 2741ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  439313ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  441614ms] [LOG] [Fast Refresh] done in 2401ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  442806ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  449544ms] [LOG] [Fast Refresh] done in 6819ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  450834ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  458525ms] [LOG] [Fast Refresh] done in 7786ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  485149ms] [ERROR] Failed to load resource: net::ERR_INCOMPLETE_CHUNKED_ENCODING @ http://localhost:3000/en/research-and-action/case-studies/climate-change-and-mental-health-impacts-among-dalit-communities-in-southwestern-bangladesh?_rsc=kl5wl:0
+[  485164ms] [ERROR] Failed to load resource: net::ERR_INCOMPLETE_CHUNKED_ENCODING @ http://localhost:3000/en/research-and-action/case-studies/climate-change-and-mental-health-impacts-among-dalit-communities-in-southwestern-bangladesh?_rsc=kl5wl:0
+[  485167ms] [ERROR] Failed to load resource: net::ERR_INCOMPLETE_CHUNKED_ENCODING @ http://localhost:3000/en/research-and-action/case-studies/climate-change-and-mental-health-impacts-among-dalit-communities-in-southwestern-bangladesh?_rsc=kl5wl:0
+[  485170ms] [ERROR] Failed to load resource: net::ERR_INCOMPLETE_CHUNKED_ENCODING @ http://localhost:3000/en/research-and-action/case-studies/climate-change-and-mental-health-impacts-among-dalit-communities-in-southwestern-bangladesh?_rsc=kl5wl:0
+[  485172ms] [ERROR] Failed to load resource: net::ERR_INCOMPLETE_CHUNKED_ENCODING @ http://localhost:3000/en/research-and-action/case-studies/climate-change-and-mental-health-impacts-among-dalit-communities-in-southwestern-bangladesh?_rsc=kl5wl:0
+[  485179ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/en/research-and-action/case-studies/climate-change-and-mental-health-impacts-among-dalit-communities-in-southwestern-bangladesh?_rsc=kl5wl:0
+[  485214ms] [ERROR] Failed to fetch RSC payload for http://localhost:3000/en/research-and-action/case-studies/climate-change-and-mental-health-impacts-among-dalit-communities-in-southwestern-bangladesh. Falling back to browser navigation. TypeError: Failed to fetch
+    at createFetch (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:2588:24)
+    at fetchServerResponse (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:2490:27)
+    at fetchMissingDynamicData (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:3654:75)
+    at spawnDynamicRequests (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:3501:35)
+    at navigateToSeededRoute (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:7739:50)
+    at refreshDynamicData (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:8345:58)
+    at hmrRefreshReducer (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:8511:51)
+    at clientReducer (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:9079:65)
+    at Object.action (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:9308:55)
+    at runAction (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:9213:38)
+    at dispatchAction (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:9276:9)
+    at Object.dispatch (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:9306:40)
+    at http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:1489:29
+    at startTransition (http://localhost:3000/_next/static/chunks/f12ff_next_dist_compiled_react-dom_7b2f6d3d._.js:5500:31)
+    at dispatch (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:1488:13)
+    at dispatchAppRouterAction (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:1470:5)
+    at http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:9437:61
+    at startTransition (http://localhost:3000/_next/static/chunks/f12ff_next_dist_compiled_cd863794._.js:1279:31)
+    at Object.hmrRefresh (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:9436:40)
+    at http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:11618:64
+    at startTransition (http://localhost:3000/_next/static/chunks/f12ff_next_dist_compiled_cd863794._.js:1279:31)
+    at processMessage (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:11617:44)
+    at WebSocket.handleMessage (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:10912:52) @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:3132
+[  485282ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/en/research-and-action/case-studies/climate-change-and-mental-health-impacts-among-dalit-communities-in-southwestern-bangladesh?_rsc=kl5wl:0
+[  485283ms] [ERROR] Failed to fetch RSC payload for http://localhost:3000/en/research-and-action/case-studies/climate-change-and-mental-health-impacts-among-dalit-communities-in-southwestern-bangladesh. Falling back to browser navigation. TypeError: Failed to fetch
+    at createFetch (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:2588:24)
+    at fetchServerResponse (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:2490:27)
+    at fetchMissingDynamicData (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:3654:75)
+    at spawnDynamicRequests (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:3501:35)
+    at navigateToSeededRoute (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:7739:50)
+    at refreshDynamicData (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:8345:58)
+    at hmrRefreshReducer (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:8511:51)
+    at clientReducer (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:9079:65)
+    at Object.action (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:9308:55)
+    at runAction (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:9213:38)
+    at dispatchAction (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:9276:9)
+    at Object.dispatch (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:9306:40)
+    at http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:1489:29
+    at startTransition (http://localhost:3000/_next/static/chunks/f12ff_next_dist_compiled_react-dom_7b2f6d3d._.js:5500:31)
+    at dispatch (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:1488:13)
+    at dispatchAppRouterAction (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:1470:5)
+    at http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:9437:61
+    at startTransition (http://localhost:3000/_next/static/chunks/f12ff_next_dist_compiled_cd863794._.js:1279:31)
+    at Object.hmrRefresh (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:9436:40)
+    at http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:11618:64
+    at startTransition (http://localhost:3000/_next/static/chunks/f12ff_next_dist_compiled_cd863794._.js:1279:31)
+    at processMessage (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:11617:44)
+    at WebSocket.handleMessage (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:10912:52) @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:3132
+[  485286ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/en/research-and-action/case-studies/climate-change-and-mental-health-impacts-among-dalit-communities-in-southwestern-bangladesh?_rsc=kl5wl:0
+[  485286ms] [ERROR] Failed to fetch RSC payload for http://localhost:3000/en/research-and-action/case-studies/climate-change-and-mental-health-impacts-among-dalit-communities-in-southwestern-bangladesh. Falling back to browser navigation. TypeError: Failed to fetch
+    at createFetch (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:2588:24)
+    at fetchServerResponse (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:2490:27)
+    at fetchMissingDynamicData (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:3654:75)
+    at spawnDynamicRequests (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:3501:35)
+    at navigateToSeededRoute (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:7739:50)
+    at refreshDynamicData (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:8345:58)
+    at hmrRefreshReducer (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:8511:51)
+    at clientReducer (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:9079:65)
+    at Object.action (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:9308:55)
+    at runAction (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:9213:38)
+    at dispatchAction (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:9276:9)
+    at Object.dispatch (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:9306:40)
+    at http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:1489:29
+    at startTransition (http://localhost:3000/_next/static/chunks/f12ff_next_dist_compiled_react-dom_7b2f6d3d._.js:5500:31)
+    at dispatch (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:1488:13)
+    at dispatchAppRouterAction (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:1470:5)
+    at http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:9437:61
+    at startTransition (http://localhost:3000/_next/static/chunks/f12ff_next_dist_compiled_cd863794._.js:1279:31)
+    at Object.hmrRefresh (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:9436:40)
+    at http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:11618:64
+    at startTransition (http://localhost:3000/_next/static/chunks/f12ff_next_dist_compiled_cd863794._.js:1279:31)
+    at processMessage (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:11617:44)
+    at WebSocket.handleMessage (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:10912:52) @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:3132
+[  485513ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/__nextjs_original-stack-frames:0
+[  491500ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  491629ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  491633ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  491768ms] [WARNING] Missing Algolia environment variables: ALGOLIA_API_KEY @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  491768ms] [WARNING] Algolia admin client not available - missing credentials @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  491769ms] [LOG] ✅ Algolia search client initialized successfully @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  491781ms] [WARNING] Image with src "/connecting-climate-minds-logo-white.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  491819ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  491949ms] [WARNING] Ignoring Event: localhost @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  491952ms] [WARNING] Image with src "https://cdn.sanity.io/images/gm67v7rk/production_2/1d3fae800fffe1b06b1978b583d73667dc0771bc-5760x3240.jpg?w=1200&h=675&fm=webp&fit=max" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  492012ms] [INFO] Sanity is live with automatic revalidation of published content @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  492280ms] [LOG] [Fast Refresh] done in 568ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302

@@ -1,0 +1,182 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - list [ref=e7]:
+          - listitem [ref=e8]:
+            - link "Go to homepage" [ref=e9] [cursor=pointer]:
+              - /url: /
+              - img "Connecting Climate Minds Logo" [ref=e10]
+        - button "Search... ⌘K" [ref=e12]:
+          - img [ref=e13]
+          - generic [ref=e16]: Search...
+          - generic [ref=e17]: ⌘K
+      - generic [ref=e18]:
+        - generic [ref=e19]:
+          - generic [ref=e20]: Discover
+          - list [ref=e21]:
+            - listitem [ref=e22]:
+              - button "Research & Action" [ref=e23]:
+                - img [ref=e24]
+                - generic [ref=e26]: Research & Action
+                - img [ref=e27]
+            - listitem [ref=e29]:
+              - link "News & Updates" [ref=e30] [cursor=pointer]:
+                - /url: /en/news
+                - img [ref=e31]
+                - generic [ref=e34]: News & Updates
+            - listitem [ref=e35]:
+              - link "Lived experiences" [ref=e36] [cursor=pointer]:
+                - /url: /en/lived-experiences
+                - img [ref=e37]
+                - generic [ref=e39]: Lived experiences
+            - listitem [ref=e40]:
+              - link "Case studies" [ref=e41] [cursor=pointer]:
+                - /url: /en/research-and-action/case-studies
+                - img [ref=e42]
+                - generic [ref=e45]: Case studies
+        - generic [ref=e46]:
+          - generic [ref=e47]: Collaborate
+          - list [ref=e48]:
+            - listitem [ref=e49]:
+              - button "Regional Communities" [ref=e50]:
+                - img [ref=e51]
+                - generic [ref=e54]: Regional Communities
+                - img [ref=e55]
+            - listitem [ref=e57]:
+              - link "Find people" [ref=e58] [cursor=pointer]:
+                - /url: /en/collaborate
+                - img [ref=e59]
+                - generic [ref=e64]: Find people
+            - listitem [ref=e65]:
+              - link "Start or find a project" [ref=e66] [cursor=pointer]:
+                - /url: /en/collaborate
+                - img [ref=e67]
+                - generic [ref=e69]: Start or find a project
+        - list [ref=e72]:
+          - listitem [ref=e73]:
+            - link "About" [ref=e74] [cursor=pointer]:
+              - /url: /about
+              - img [ref=e75]
+              - generic [ref=e77]: About
+          - listitem [ref=e78]:
+            - link "Feedback" [ref=e79] [cursor=pointer]:
+              - /url: /feedback
+              - img [ref=e80]
+              - generic [ref=e82]: Feedback
+      - generic [ref=e84]:
+        - list [ref=e85]:
+          - listitem [ref=e86]:
+            - button [disabled]
+        - list [ref=e87]:
+          - listitem [ref=e88]:
+            - button "English" [ref=e89]:
+              - generic [ref=e91]: English
+              - img [ref=e92]
+    - main [ref=e96]:
+      - generic [ref=e97]:
+        - button "Toggle Sidebar" [ref=e99]:
+          - img
+          - generic [ref=e100]: Toggle Sidebar
+        - button "Search..." [ref=e102]:
+          - img [ref=e103]
+      - main [ref=e107]:
+        - generic [ref=e108]:
+          - generic [ref=e109]:
+            - heading "News" [level=1] [ref=e110]
+            - paragraph [ref=e111]: Stay updated with the latest news, stories, and updates from our global climate action community
+          - generic [ref=e112]:
+            - generic [ref=e113]:
+              - img
+              - textbox "Search news..." [ref=e114]
+            - generic [ref=e115]:
+              - button "Region" [ref=e116]:
+                - generic [ref=e117]: Region
+                - img [ref=e118]
+              - button "Tags" [ref=e120]:
+                - generic [ref=e121]: Tags
+                - img [ref=e122]
+              - button "By date" [ref=e124]:
+                - generic [ref=e125]: By date
+                - img [ref=e126]
+          - generic [ref=e128]:
+            - generic [ref=e129]:
+              - heading "Featured News" [level=2] [ref=e131]
+              - generic [ref=e132]:
+                - 'link "Climate Change and Mental Health: Insights from Connecting Climate Minds'' First Regional Dialogues Understanding mental health impacts across global regions March 20, 2024 Dr. Britt Wray" [ref=e133] [cursor=pointer]':
+                  - /url: /en/news/insights-from-regional-dialogues
+                  - generic [ref=e135]:
+                    - 'heading "Climate Change and Mental Health: Insights from Connecting Climate Minds'' First Regional Dialogues" [level=3] [ref=e137]'
+                    - paragraph [ref=e138]: Understanding mental health impacts across global regions
+                    - generic [ref=e139]:
+                      - generic [ref=e140]:
+                        - img [ref=e141]
+                        - time [ref=e143]: March 20, 2024
+                      - generic [ref=e144]:
+                        - img [ref=e145]
+                        - generic [ref=e148]: Dr. Britt Wray
+                - 'link "COP28: Centring Mental Health in the Health Response to Climate Change A turning point for human health in climate negotiations January 15, 2024 Dr. Britt Wray" [ref=e149] [cursor=pointer]':
+                  - /url: /en/news/cop28-centring-mental-health
+                  - generic [ref=e151]:
+                    - 'heading "COP28: Centring Mental Health in the Health Response to Climate Change" [level=3] [ref=e153]'
+                    - paragraph [ref=e154]: A turning point for human health in climate negotiations
+                    - generic [ref=e155]:
+                      - generic [ref=e156]:
+                        - img [ref=e157]
+                        - time [ref=e159]: January 15, 2024
+                      - generic [ref=e160]:
+                        - img [ref=e161]
+                        - generic [ref=e164]: Dr. Britt Wray
+            - generic [ref=e165]:
+              - generic [ref=e169]:
+                - heading "Latest News" [level=2] [ref=e170]
+                - paragraph [ref=e171]: 3 results found
+              - generic [ref=e172]:
+                - link [ref=e173] [cursor=pointer]:
+                  - /url: /en/news/climate-change-is-becoming-a-mental-health-crisis-and-communities-are-already-living-it
+                  - article [ref=e174]:
+                    - img "Illustration" [ref=e176]
+                    - generic [ref=e177]:
+                      - paragraph
+                      - generic [ref=e178]:
+                        - heading "Climate Change Is Becoming a Mental Health Crisis — and Communities Are Already Living It" [level=3] [ref=e179]
+                        - paragraph [ref=e180]: From farmers facing hopelessness after crop loss to Indigenous communities grieving disappearing ecosystems, a new global agenda warns climate change is reshaping emotional survival, identity, and wellbeing.
+                      - paragraph [ref=e181]: A major international report argues climate change is not only an environmental emergency but a growing mental health crisis. Through stories from farmers, Indigenous leaders, and young people across 126 countries, the report reveals how climate disasters are producing grief, anxiety, exhaustion, and loss of identity — while communities themselves are often leading the most effective responses.
+                      - generic [ref=e183]:
+                        - generic [ref=e184]:
+                          - img [ref=e185]
+                          - time [ref=e187]: May 20, 2026
+                        - generic [ref=e188]: ·
+                        - generic [ref=e190]: News Desk
+                - 'link "Eco‑anxiety: how do young people relate to the climate crisis? External Eco‑anxiety: how do young people relate to the climate crisis? “Eco-anxiety” and “climate-anxiety” are the most widely known terms describing what people feel in response to being aware of the climate crisis. We conducted a review of published academic papers including original research articles and review papers, and found surprising results on how young people aged 10-29 years actually experience being aware of global warming and climate change and its effects. The Conversation Mar 25, 2026" [ref=e191] [cursor=pointer]':
+                  - /url: https://theconversation.com/eco-anxiety-how-do-young-people-relate-to-the-climate-crisis-277520
+                  - generic [ref=e192]:
+                    - 'img "Eco‑anxiety: how do young people relate to the climate crisis?" [ref=e193]'
+                    - generic [ref=e194]:
+                      - img [ref=e195]
+                      - text: External
+                  - generic [ref=e199]:
+                    - 'heading "Eco‑anxiety: how do young people relate to the climate crisis?" [level=3] [ref=e200]'
+                    - paragraph [ref=e201]: “Eco-anxiety” and “climate-anxiety” are the most widely known terms describing what people feel in response to being aware of the climate crisis. We conducted a review of published academic papers including original research articles and review papers, and found surprising results on how young people aged 10-29 years actually experience being aware of global warming and climate change and its effects.
+                    - generic [ref=e202]:
+                      - generic [ref=e203]: The Conversation
+                      - generic [ref=e204]: ·
+                      - time [ref=e205]: Mar 25, 2026
+                      - img [ref=e206]
+                - link [ref=e210] [cursor=pointer]:
+                  - /url: /en/news/climate-distress-anxiety-action-youth
+                  - article [ref=e211]:
+                    - generic [ref=e213]:
+                      - generic [ref=e214]:
+                        - heading "Study shows climate distress related to anxiety and action in young people" [level=3] [ref=e215]
+                        - paragraph [ref=e216]: Imperial research on youth climate anxiety
+                      - paragraph [ref=e217]: Imperial researchers have carried out a study to understand the psycho-social impacts of climate crisis on young people in the UK.
+                      - generic [ref=e219]:
+                        - generic [ref=e220]:
+                          - img [ref=e221]
+                          - time [ref=e223]: May 10, 2024
+                        - generic [ref=e224]: ·
+                        - generic [ref=e226]: Dr. Britt Wray
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e232] [cursor=pointer]:
+    - img [ref=e233]

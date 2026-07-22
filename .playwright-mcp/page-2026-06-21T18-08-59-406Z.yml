@@ -1,0 +1,95 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - list [ref=e7]:
+          - listitem [ref=e8]:
+            - link "Go to homepage" [ref=e9] [cursor=pointer]:
+              - /url: /
+              - img "Connecting Climate Minds Logo" [ref=e10]
+        - button "Search... ⌘K" [ref=e12]:
+          - img [ref=e13]
+          - generic [ref=e16]: Search...
+          - generic [ref=e17]: ⌘K
+      - generic [ref=e18]:
+        - generic [ref=e19]:
+          - generic [ref=e20]: Discover
+          - list [ref=e21]:
+            - listitem [ref=e22]:
+              - button "Research & Action" [ref=e23]:
+                - img [ref=e24]
+                - generic [ref=e26]: Research & Action
+                - img [ref=e27]
+            - listitem [ref=e29]:
+              - link "News & Updates" [ref=e30] [cursor=pointer]:
+                - /url: /en/news
+                - img [ref=e31]
+                - generic [ref=e34]: News & Updates
+            - listitem [ref=e35]:
+              - link "Lived experiences" [ref=e36] [cursor=pointer]:
+                - /url: /en/lived-experiences
+                - img [ref=e37]
+                - generic [ref=e39]: Lived experiences
+            - listitem [ref=e40]:
+              - link "Case studies" [ref=e41] [cursor=pointer]:
+                - /url: /en/research-and-action/case-studies
+                - img [ref=e42]
+                - generic [ref=e45]: Case studies
+        - generic [ref=e46]:
+          - generic [ref=e47]: Collaborate
+          - list [ref=e48]:
+            - listitem [ref=e49]:
+              - button "Regional Communities" [ref=e50]:
+                - img [ref=e51]
+                - generic [ref=e54]: Regional Communities
+                - img [ref=e55]
+            - listitem [ref=e57]:
+              - link "Find people" [ref=e58] [cursor=pointer]:
+                - /url: /en/collaborate
+                - img [ref=e59]
+                - generic [ref=e64]: Find people
+            - listitem [ref=e65]:
+              - link "Start or find a project" [ref=e66] [cursor=pointer]:
+                - /url: /en/collaborate
+                - img [ref=e67]
+                - generic [ref=e69]: Start or find a project
+        - list [ref=e72]:
+          - listitem [ref=e73]:
+            - link "About" [ref=e74] [cursor=pointer]:
+              - /url: /about
+              - img [ref=e75]
+              - generic [ref=e77]: About
+          - listitem [ref=e78]:
+            - link "Feedback" [ref=e79] [cursor=pointer]:
+              - /url: /feedback
+              - img [ref=e80]
+              - generic [ref=e82]: Feedback
+      - generic [ref=e84]:
+        - list [ref=e85]:
+          - listitem [ref=e86]:
+            - button "Amit Lokszinski Amit Lokszinski amit2@pm.me" [ref=e87]:
+              - img "Amit Lokszinski" [ref=e89]
+              - generic [ref=e90]:
+                - generic [ref=e91]: Amit Lokszinski
+                - generic [ref=e92]: amit2@pm.me
+              - img [ref=e93]
+        - list [ref=e96]:
+          - listitem [ref=e97]:
+            - button "English" [ref=e98]:
+              - generic [ref=e100]: English
+              - img [ref=e101]
+    - main [ref=e105]:
+      - generic [ref=e106]:
+        - button "Toggle Sidebar" [ref=e108]:
+          - img
+          - generic [ref=e109]: Toggle Sidebar
+        - button "Search..." [ref=e111]:
+          - img [ref=e112]
+      - main [ref=e116]:
+        - generic [ref=e121]:
+          - complementary [ref=e122]
+          - main [ref=e124]
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e149] [cursor=pointer]:
+    - img [ref=e150]
+  - alert [ref=e153]

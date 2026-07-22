@@ -1,0 +1,182 @@
+- generic:
+  - generic:
+    - generic:
+      - generic:
+        - generic:
+          - generic:
+            - list:
+              - listitem:
+                - link:
+                  - /url: /
+                  - img
+            - generic:
+              - button:
+                - img
+                - generic: Search...
+                - generic: ⌘K
+          - generic:
+            - generic:
+              - generic: Discover
+              - list:
+                - listitem:
+                  - link:
+                    - /url: /en/atlas
+                    - img
+                    - generic: Atlas & Explore
+                - listitem:
+                  - button:
+                    - img
+                    - generic: Research & Action
+                    - img
+                - listitem:
+                  - link:
+                    - /url: /en/news
+                    - img
+                    - generic: News & Updates
+                - listitem:
+                  - link:
+                    - /url: /en/lived-experiences
+                    - img
+                    - generic: Lived experiences
+                - listitem:
+                  - link:
+                    - /url: /en/research-and-action/case-studies
+                    - img
+                    - generic: Case studies
+            - generic:
+              - generic: Collaborate
+              - list:
+                - listitem:
+                  - button:
+                    - img
+                    - generic: Regional Communities
+                    - img
+                - listitem:
+                  - link:
+                    - /url: /en/collaborate
+                    - img
+                    - generic: Find people
+                - listitem:
+                  - link:
+                    - /url: /en/collaborations
+                    - img
+                    - generic: Start or find a project
+            - generic:
+              - generic:
+                - list:
+                  - listitem:
+                    - link:
+                      - /url: /about
+                      - img
+                      - generic: About
+                  - listitem:
+                    - link:
+                      - /url: /feedback
+                      - img
+                      - generic: Feedback
+          - generic:
+            - generic:
+              - list:
+                - listitem:
+                  - button:
+                    - generic:
+                      - img
+                    - generic:
+                      - generic: Amit Lokszinski
+                      - generic: amit2@pm.me
+                    - img
+              - list:
+                - listitem:
+                  - button:
+                    - generic:
+                      - generic: English
+                    - img
+    - main:
+      - generic:
+        - generic:
+          - button:
+            - img
+            - generic: Toggle Sidebar
+        - generic:
+          - button:
+            - img
+          - button:
+            - img
+      - generic:
+        - main:
+          - generic:
+            - generic:
+              - generic:
+                - heading [level=1]: Atlas & Explore
+                - paragraph: Explore case studies, lived experiences, people and more across the seven regions.
+              - generic:
+                - text: Data layer
+                - generic:
+                  - button [pressed]:
+                    - img
+                    - generic: Case studies
+                  - button:
+                    - generic: Lived experiences
+                  - button:
+                    - generic: Members
+                  - button:
+                    - generic: News
+                  - button:
+                    - generic: Agendas
+                  - button:
+                    - generic: Reports
+              - generic:
+                - generic:
+                  - img:
+                    - button
+                    - button
+                    - button
+                    - button
+                    - button
+                    - button
+                    - button
+                - generic:
+                  - paragraph: Case studies
+                  - list:
+                    - listitem:
+                      - button:
+                        - generic: Eastern and South-Eastern Asia
+                        - generic: "4"
+                    - listitem:
+                      - button:
+                        - generic: Sub-Saharan Africa
+                        - generic: "3"
+                    - listitem:
+                      - button:
+                        - generic: Central and Southern Asia
+                        - generic: "3"
+                    - listitem:
+                      - button:
+                        - generic: Europe and North America
+                        - generic: "3"
+                    - listitem:
+                      - button:
+                        - generic: Oceania
+                        - generic: "2"
+                    - listitem:
+                      - button:
+                        - generic: Northern Africa and Western Asia
+                        - generic: "1"
+                    - listitem:
+                      - button:
+                        - generic: Latin America and the Caribbean
+                        - generic: "0"
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e6] [cursor=pointer]:
+    - img [ref=e7]
+  - alert
+  - dialog "Search the hub" [ref=e11]:
+    - heading "Search the hub" [level=2] [ref=e12]
+    - paragraph [ref=e13]: Search across content, projects, people and regions.
+    - generic [ref=e14]:
+      - img [ref=e15]
+      - textbox "Search..." [active] [ref=e18]
+      - generic [ref=e19]: ↵
+    - button "Close" [ref=e20]:
+      - img [ref=e21]
+      - generic [ref=e24]: Close

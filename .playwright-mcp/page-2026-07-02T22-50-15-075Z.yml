@@ -1,0 +1,58 @@
+- generic [active] [ref=f24e1]:
+  - main [ref=f24e3]:
+    - button "Toggle Sidebar" [ref=f24e6]:
+      - img
+      - generic [ref=f24e7]: Toggle Sidebar
+    - main [ref=f24e9]:
+      - generic [ref=f24e13]:
+        - generic [ref=f24e14]:
+          - heading "Atlas & Explore" [level=1] [ref=f24e15]
+          - paragraph [ref=f24e16]: Explore case studies, lived experiences, people and more across the seven regions.
+        - generic [ref=f24e17]:
+          - img [ref=f24e18]
+          - textbox "Search the atlas…" [ref=f24e21]
+        - generic [ref=f24e22]:
+          - text: Show
+          - generic [ref=f24e23]:
+            - button "Case studies" [disabled] [pressed] [ref=f24e24]:
+              - img [ref=f24e25]
+              - generic [ref=f24e27]: Case studies
+            - button "Lived experiences" [ref=f24e28]:
+              - generic [ref=f24e29]: Lived experiences
+            - button "Members" [ref=f24e30]:
+              - generic [ref=f24e31]: Members
+            - button "News" [ref=f24e32]:
+              - generic [ref=f24e33]: News
+            - button "Agendas" [ref=f24e34]:
+              - generic [ref=f24e35]: Agendas
+            - button "Reports" [ref=f24e36]:
+              - generic [ref=f24e37]: Reports
+        - generic [ref=f24e38]:
+          - text: Theme
+          - generic [ref=f24e39]:
+            - button "Displacement" [ref=f24e40]:
+              - generic [ref=f24e41]: Displacement
+            - button "Livelihoods" [ref=f24e42]:
+              - generic [ref=f24e43]: Livelihoods
+            - button "Youth" [ref=f24e44]:
+              - generic [ref=f24e45]: Youth
+            - button "Indigenous" [ref=f24e46]:
+              - generic [ref=f24e47]: Indigenous
+        - generic [ref=f24e48]:
+          - img "Regional map" [ref=f24e50]:
+            - 'button "Sub-Saharan Africa: 0" [ref=f24e51] [cursor=pointer]'
+            - 'button "Northern Africa and Western Asia: 0" [ref=f24e52] [cursor=pointer]'
+            - 'button "Central and Southern Asia: 0" [ref=f24e53] [cursor=pointer]'
+            - 'button "Eastern and South-Eastern Asia: 0" [ref=f24e54] [cursor=pointer]'
+            - 'button "Latin America and the Caribbean: 0" [ref=f24e55] [cursor=pointer]'
+            - 'button "Oceania: 0" [ref=f24e56] [cursor=pointer]'
+            - 'button "Europe and North America: 0" [ref=f24e57] [cursor=pointer]'
+          - generic [ref=f24e58]:
+            - paragraph [ref=f24e59]: Case studies
+            - list
+        - button "Case studies 0" [disabled] [ref=f24e61]:
+          - generic [ref=f24e63]: Case studies
+          - generic [ref=f24e64]: "0"
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=f24e70] [cursor=pointer]:
+    - img [ref=f24e71]

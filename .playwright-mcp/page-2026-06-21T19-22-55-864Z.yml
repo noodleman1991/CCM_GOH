@@ -1,0 +1,173 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - list [ref=e7]:
+          - listitem [ref=e8]:
+            - link "Go to homepage" [ref=e9] [cursor=pointer]:
+              - /url: /
+              - img "Connecting Climate Minds Logo" [ref=e10]
+        - button "Search... ⌘K" [ref=e12]:
+          - img [ref=e13]
+          - generic [ref=e16]: Search...
+          - generic [ref=e17]: ⌘K
+      - generic [ref=e18]:
+        - generic [ref=e19]:
+          - generic [ref=e20]: Discover
+          - list [ref=e21]:
+            - listitem [ref=e22]:
+              - link "Atlas & Explore" [ref=e23] [cursor=pointer]:
+                - /url: /en/atlas
+                - img [ref=e24]
+                - generic [ref=e27]: Atlas & Explore
+            - listitem [ref=e28]:
+              - button "Research & Action" [ref=e29]:
+                - img [ref=e30]
+                - generic [ref=e32]: Research & Action
+                - img [ref=e33]
+            - listitem [ref=e35]:
+              - link "News & Updates" [ref=e36] [cursor=pointer]:
+                - /url: /en/news
+                - img [ref=e37]
+                - generic [ref=e40]: News & Updates
+            - listitem [ref=e41]:
+              - link "Lived experiences" [ref=e42] [cursor=pointer]:
+                - /url: /en/lived-experiences
+                - img [ref=e43]
+                - generic [ref=e45]: Lived experiences
+            - listitem [ref=e46]:
+              - link "Case studies" [ref=e47] [cursor=pointer]:
+                - /url: /en/research-and-action/case-studies
+                - img [ref=e48]
+                - generic [ref=e51]: Case studies
+        - generic [ref=e52]:
+          - generic [ref=e53]: Collaborate
+          - list [ref=e54]:
+            - listitem [ref=e55]:
+              - button "Regional Communities" [ref=e56]:
+                - img [ref=e57]
+                - generic [ref=e60]: Regional Communities
+                - img [ref=e61]
+            - listitem [ref=e63]:
+              - link "Find people" [ref=e64] [cursor=pointer]:
+                - /url: /en/collaborate
+                - img [ref=e65]
+                - generic [ref=e70]: Find people
+            - listitem [ref=e71]:
+              - link "Start or find a project" [ref=e72] [cursor=pointer]:
+                - /url: /en/collaborate
+                - img [ref=e73]
+                - generic [ref=e75]: Start or find a project
+        - list [ref=e78]:
+          - listitem [ref=e79]:
+            - link "About" [ref=e80] [cursor=pointer]:
+              - /url: /about
+              - img [ref=e81]
+              - generic [ref=e83]: About
+          - listitem [ref=e84]:
+            - link "Feedback" [ref=e85] [cursor=pointer]:
+              - /url: /feedback
+              - img [ref=e86]
+              - generic [ref=e88]: Feedback
+      - generic [ref=e90]:
+        - list [ref=e155]:
+          - listitem [ref=e156]:
+            - button "Amit Lokszinski Amit Lokszinski amit2@pm.me" [ref=e157]:
+              - img "Amit Lokszinski" [ref=e159]
+              - generic [ref=e160]:
+                - generic [ref=e161]: Amit Lokszinski
+                - generic [ref=e162]: amit2@pm.me
+              - img [ref=e163]
+        - list [ref=e91]:
+          - listitem [ref=e92]:
+            - button "English" [ref=e93]:
+              - generic [ref=e95]: English
+              - img [ref=e96]
+    - main [ref=e100]:
+      - generic [ref=e101]:
+        - button "Toggle Sidebar" [ref=e103]:
+          - img
+          - generic [ref=e104]: Toggle Sidebar
+        - button "Search..." [ref=e106]:
+          - img [ref=e107]
+      - main [ref=e111]:
+        - generic [ref=e215]:
+          - generic [ref=e216]:
+            - generic [ref=e217]:
+              - heading "Case Studies" [level=1] [ref=e218]
+              - paragraph [ref=e219]: Explore research and insights from our global community
+            - link "Submit Case Study" [ref=e221] [cursor=pointer]:
+              - /url: /en/research-and-action/case-studies/submit
+              - img
+              - text: Submit Case Study
+          - generic [ref=e222]:
+            - generic [ref=e223]:
+              - img
+              - textbox "Search case studies..." [ref=e224]
+            - generic [ref=e225]:
+              - button "Community 1" [ref=e226]:
+                - generic [ref=e227]: Community
+                - generic [ref=e228]: "1"
+                - img [ref=e229]
+              - button "Topic" [ref=e231]:
+                - generic [ref=e232]: Topic
+                - img [ref=e233]
+              - button "Tags" [ref=e235]:
+                - generic [ref=e236]: Tags
+                - img [ref=e237]
+              - button "Clear filters" [ref=e239]:
+                - img
+                - text: Clear filters
+          - generic [ref=e240]:
+            - generic [ref=e241]:
+              - generic [ref=e242]:
+                - heading "Search Results" [level=2] [ref=e243]
+                - paragraph [ref=e244]: sub-saharan-africa
+              - paragraph [ref=e245]: 3 results found
+            - generic [ref=e246]:
+              - link "Impact of Heavy Flooding on Community Mental Health in Umueze Aname Community in Anambra State of Nigeria Case Study Impact of Heavy Flooding on Community Mental Health in Umueze Aname Community in Anambra State of Nigeria This case study was identified during the Connecting Climate Minds regional dialogue for sub-Saharan Africa (SSA). Dialogue participants highlighted how heavy and unprecedented flooding, brought on by climate change, has impacted the mental health of the community. Jan 2024" [ref=e247] [cursor=pointer]:
+                - /url: /en/research-and-action/case-studies/impact-of-heavy-flooding-on-community-mental-health-in-umueze-aname-community-in-anambra-state-o
+                - generic [ref=e248]:
+                  - generic [ref=e249]:
+                    - img "Impact of Heavy Flooding on Community Mental Health in Umueze Aname Community in Anambra State of Nigeria" [ref=e250]
+                    - generic [ref=e252]: Case Study
+                  - generic [ref=e253]:
+                    - heading "Impact of Heavy Flooding on Community Mental Health in Umueze Aname Community in Anambra State of Nigeria" [level=3] [ref=e254]
+                    - paragraph [ref=e255]: This case study was identified during the Connecting Climate Minds regional dialogue for sub-Saharan Africa (SSA). Dialogue participants highlighted how heavy and unprecedented flooding, brought on by climate change, has impacted the mental health of the community.
+                    - generic [ref=e259]:
+                      - img [ref=e260]
+                      - text: Jan 2024
+              - link "Enhancing Access to Community Mental Health Services for Women Smallholder Farmers Affected By Climate Change Case Study Enhancing Access to Community Mental Health Services for Women Smallholder Farmers Affected By Climate Change Agripsych Beam Ltd is a Kenyan Healthtech company that uses mobile technology to enhance access to mental health services for smallholder farmers affected by climate change. Our focus at AgriPsych Beam Ltd is to ensure that women smallholder farmers have a mental wellbeing safety net after crop or l Jan 2024" [ref=e262] [cursor=pointer]:
+                - /url: /en/research-and-action/case-studies/enhancing-access-to-community-mental-health-services-for-women-smallholder-farmers-affected-by-c
+                - generic [ref=e263]:
+                  - generic [ref=e264]:
+                    - img "Enhancing Access to Community Mental Health Services for Women Smallholder Farmers Affected By Climate Change" [ref=e265]
+                    - generic [ref=e267]: Case Study
+                  - heading "Enhancing Access to Community Mental Health Services for Women Smallholder Farmers Affected By Climate Change" [level=3] [ref=e269]
+                  - generic [ref=e270]:
+                    - paragraph [ref=e271]: Agripsych Beam Ltd is a Kenyan Healthtech company that uses mobile technology to enhance access to mental health services for smallholder farmers affected by climate change. Our focus at AgriPsych Beam Ltd is to ensure that women smallholder farmers have a mental wellbeing safety net after crop or l
+                    - generic [ref=e274]:
+                      - img [ref=e275]
+                      - text: Jan 2024
+              - 'link "“Let us Thrive”: Protecting our shared future through youth-led climate action for mental wellbeing Climate Change & Environment \"Let us Thrive\": Protecting our shared future through youth-led climate action for mental wellbeing Nigeria is one of the ten countries most at risk of climate disasters (International Rescue Committee, 2023). From floods to extreme weather variability, the impacts of a changing climate are far reaching, impacting all regions and worsening the existing fragility of the nation. Within coastal regio Jan 2024 Emma Lawrence Climate Change" [ref=e278] [cursor=pointer]':
+                - /url: /en/research-and-action/case-studies/let-us-thrive-protecting-our-shared-future-through-youth-led-climate-action-for-mental-wellbeing
+                - generic [ref=e279]:
+                  - generic [ref=e280]:
+                    - 'img "“Let us Thrive”: Protecting our shared future through youth-led climate action for mental wellbeing" [ref=e281]'
+                    - generic [ref=e283]: Climate Change & Environment
+                  - 'heading "\"Let us Thrive\": Protecting our shared future through youth-led climate action for mental wellbeing" [level=3] [ref=e285]'
+                  - generic [ref=e286]:
+                    - paragraph [ref=e287]: Nigeria is one of the ten countries most at risk of climate disasters (International Rescue Committee, 2023). From floods to extreme weather variability, the impacts of a changing climate are far reaching, impacting all regions and worsening the existing fragility of the nation. Within coastal regio
+                    - generic [ref=e289]:
+                      - generic [ref=e290]:
+                        - img [ref=e291]
+                        - text: Jan 2024
+                      - generic [ref=e293]: ·
+                      - generic [ref=e294]:
+                        - img [ref=e295]
+                        - generic [ref=e300]: Emma Lawrence
+                    - generic [ref=e303]: Climate Change
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e150] [cursor=pointer]:
+    - img [ref=e151]
+  - alert [ref=e154]: Case Studies | Connecting Climate Minds

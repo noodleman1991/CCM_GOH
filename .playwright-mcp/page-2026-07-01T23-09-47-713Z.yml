@@ -1,0 +1,95 @@
+- generic [active] [ref=f1e1]:
+  - button "Open Next.js Dev Tools" [ref=f1e7] [cursor=pointer]:
+    - img [ref=f1e8]
+  - generic [ref=f1e11]:
+    - generic [ref=f1e14]:
+      - list [ref=f1e16]:
+        - listitem [ref=f1e17]:
+          - link "Go to homepage" [ref=f1e18] [cursor=pointer]:
+            - /url: /
+            - img "Connecting Climate Minds Logo" [ref=f1e19]
+      - generic [ref=f1e20]:
+        - generic [ref=f1e21]:
+          - generic [ref=f1e22]: Discover
+          - list [ref=f1e23]:
+            - listitem [ref=f1e24]:
+              - link "Atlas & Explore" [ref=f1e25] [cursor=pointer]:
+                - /url: /en/atlas
+                - img [ref=f1e26]
+                - generic [ref=f1e29]: Atlas & Explore
+            - listitem [ref=f1e30]:
+              - button "Research & Action" [ref=f1e31]:
+                - img [ref=f1e32]
+                - generic [ref=f1e34]: Research & Action
+                - img [ref=f1e35]
+            - listitem [ref=f1e37]:
+              - link "News & Updates" [ref=f1e38] [cursor=pointer]:
+                - /url: /en/news
+                - img [ref=f1e39]
+                - generic [ref=f1e42]: News & Updates
+            - listitem [ref=f1e43]:
+              - link "Lived experiences" [ref=f1e44] [cursor=pointer]:
+                - /url: /en/lived-experiences
+                - img [ref=f1e45]
+                - generic [ref=f1e47]: Lived experiences
+            - listitem [ref=f1e48]:
+              - link "Case studies" [ref=f1e49] [cursor=pointer]:
+                - /url: /en/research-and-action/case-studies
+                - img [ref=f1e50]
+                - generic [ref=f1e53]: Case studies
+        - generic [ref=f1e54]:
+          - generic [ref=f1e55]: Collaborate
+          - list [ref=f1e56]:
+            - listitem [ref=f1e57]:
+              - button "Regional Communities" [ref=f1e58]:
+                - img [ref=f1e59]
+                - generic [ref=f1e62]: Regional Communities
+                - img [ref=f1e63]
+            - listitem [ref=f1e65]:
+              - link "Find people" [ref=f1e66] [cursor=pointer]:
+                - /url: /en/collaborate
+                - img [ref=f1e67]
+                - generic [ref=f1e72]: Find people
+            - listitem [ref=f1e73]:
+              - link "Start or find a project" [ref=f1e74] [cursor=pointer]:
+                - /url: /en/collaborations
+                - img [ref=f1e75]
+                - generic [ref=f1e77]: Start or find a project
+        - list [ref=f1e80]:
+          - listitem [ref=f1e81]:
+            - link "About" [ref=f1e82] [cursor=pointer]:
+              - /url: /about
+              - img [ref=f1e83]
+              - generic [ref=f1e85]: About
+          - listitem [ref=f1e86]:
+            - link "Feedback" [ref=f1e87] [cursor=pointer]:
+              - /url: /feedback
+              - img [ref=f1e88]
+              - generic [ref=f1e90]: Feedback
+      - generic [ref=f1e91]:
+        - generic [ref=f1e93]:
+          - button "Create account" [ref=f1e94]
+          - button "Sign In" [ref=f1e95]
+        - button "Search... ⌘K" [ref=f1e97]:
+          - img [ref=f1e98]
+          - generic [ref=f1e102]: Search...
+          - generic [ref=f1e104]: ⌘K
+        - list [ref=f1e106]:
+          - listitem [ref=f1e107]:
+            - button "English" [ref=f1e108]:
+              - generic [ref=f1e110]: English
+              - img [ref=f1e111]
+    - main [ref=f1e115]:
+      - button "Toggle Sidebar" [ref=f1e118]:
+        - img
+        - generic [ref=f1e119]: Toggle Sidebar
+      - main [ref=f1e121]:
+        - generic [ref=f1e123]:
+          - heading "Hmm, we couldn't find that page." [level=2] [ref=f1e124]
+          - paragraph [ref=f1e125]:
+            - text: Maybe check the URL, or
+            - link "go back home" [ref=f1e126] [cursor=pointer]:
+              - /url: /en
+            - text: .
+  - region "Notifications alt+T"
+  - alert [ref=f1e127]

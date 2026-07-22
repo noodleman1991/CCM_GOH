@@ -1,0 +1,201 @@
+- generic [active] [ref=f1e1]:
+  - generic [ref=f1e2]:
+    - generic [ref=f1e5]:
+      - list [ref=f1e7]:
+        - listitem [ref=f1e8]:
+          - link "Go to homepage" [ref=f1e9] [cursor=pointer]:
+            - /url: /
+            - img "Connecting Climate Minds Logo" [ref=f1e10]
+      - generic [ref=f1e11]:
+        - generic [ref=f1e12]:
+          - generic [ref=f1e13]: Discover
+          - list [ref=f1e14]:
+            - listitem [ref=f1e15]:
+              - link "Atlas & Explore" [ref=f1e16] [cursor=pointer]:
+                - /url: /en/atlas
+                - img [ref=f1e17]
+                - generic [ref=f1e20]: Atlas & Explore
+            - listitem [ref=f1e21]:
+              - button "Research & Action" [ref=f1e22]:
+                - img [ref=f1e23]
+                - generic [ref=f1e25]: Research & Action
+                - img [ref=f1e26]
+            - listitem [ref=f1e28]:
+              - link "News & Updates" [ref=f1e29] [cursor=pointer]:
+                - /url: /en/news
+                - img [ref=f1e30]
+                - generic [ref=f1e33]: News & Updates
+            - listitem [ref=f1e34]:
+              - link "Lived experiences" [ref=f1e35] [cursor=pointer]:
+                - /url: /en/lived-experiences
+                - img [ref=f1e36]
+                - generic [ref=f1e38]: Lived experiences
+            - listitem [ref=f1e39]:
+              - link "Case studies" [ref=f1e40] [cursor=pointer]:
+                - /url: /en/research-and-action/case-studies
+                - img [ref=f1e41]
+                - generic [ref=f1e44]: Case studies
+        - generic [ref=f1e45]:
+          - generic [ref=f1e46]: Collaborate
+          - list [ref=f1e47]:
+            - listitem [ref=f1e48]:
+              - button "Regional Communities" [ref=f1e49]:
+                - img [ref=f1e50]
+                - generic [ref=f1e53]: Regional Communities
+                - img [ref=f1e54]
+            - listitem [ref=f1e56]:
+              - link "Find people" [ref=f1e57] [cursor=pointer]:
+                - /url: /en/collaborate
+                - img [ref=f1e58]
+                - generic [ref=f1e63]: Find people
+            - listitem [ref=f1e64]:
+              - link "Start or find a project" [ref=f1e65] [cursor=pointer]:
+                - /url: /en/collaborations
+                - img [ref=f1e66]
+                - generic [ref=f1e68]: Start or find a project
+        - list [ref=f1e71]:
+          - listitem [ref=f1e72]:
+            - link "About" [ref=f1e73] [cursor=pointer]:
+              - /url: /about
+              - img [ref=f1e74]
+              - generic [ref=f1e76]: About
+          - listitem [ref=f1e77]:
+            - link "Feedback" [ref=f1e78] [cursor=pointer]:
+              - /url: /feedback
+              - img [ref=f1e79]
+              - generic [ref=f1e81]: Feedback
+      - generic [ref=f1e82]:
+        - list [ref=f1e181]:
+          - listitem [ref=f1e182]:
+            - button "Amit Lokszinski Amit Lokszinski amit2@pm.me" [ref=f1e183]:
+              - img "Amit Lokszinski" [ref=f1e186]
+              - generic [ref=f1e187]:
+                - generic [ref=f1e188]: Amit Lokszinski
+                - generic [ref=f1e189]: amit2@pm.me
+              - img [ref=f1e190]
+        - button "Search... ⌘K" [ref=f1e85]:
+          - img [ref=f1e86]
+          - generic [ref=f1e193]: Search...
+          - generic [ref=f1e91]: ⌘K
+        - list [ref=f1e93]:
+          - listitem [ref=f1e94]:
+            - button "English" [ref=f1e95]:
+              - generic [ref=f1e97]: English
+              - img [ref=f1e98]
+    - main [ref=f1e102]:
+      - button "Toggle Sidebar" [ref=f1e105]:
+        - img
+        - generic [ref=f1e106]: Toggle Sidebar
+      - main [ref=f1e108]:
+        - generic [ref=f1e111]:
+          - generic [ref=f1e112]:
+            - heading "Atlas & Explore" [level=1] [ref=f1e113]
+            - paragraph [ref=f1e114]: Explore case studies, lived experiences, people and more across the seven regions.
+          - generic [ref=f1e115]:
+            - img [ref=f1e116]
+            - textbox "Search the atlas…" [ref=f1e119]
+          - generic [ref=f1e120]:
+            - text: Show
+            - generic [ref=f1e121]:
+              - button "Case studies" [disabled] [pressed] [ref=f1e122]:
+                - img [ref=f1e123]
+                - generic [ref=f1e125]: Case studies
+              - button "Lived experiences" [ref=f1e126]:
+                - generic [ref=f1e127]: Lived experiences
+              - button "Members" [ref=f1e128]:
+                - generic [ref=f1e129]: Members
+              - button "News" [ref=f1e130]:
+                - generic [ref=f1e131]: News
+              - button "Agendas" [ref=f1e132]:
+                - generic [ref=f1e133]: Agendas
+              - button "Reports" [ref=f1e134]:
+                - generic [ref=f1e135]: Reports
+          - generic [ref=f1e136]:
+            - text: Theme
+            - generic [ref=f1e137]:
+              - button "Climate Change" [ref=f1e138]:
+                - generic [ref=f1e139]: Climate Change
+              - button "Climate Justice" [ref=f1e140]:
+                - generic [ref=f1e141]: Climate Justice
+              - button "Indigenous Communities" [ref=f1e142]:
+                - generic [ref=f1e143]: Indigenous Communities
+              - button "Intergenerational Impact" [ref=f1e144]:
+                - generic [ref=f1e145]: Intergenerational Impact
+          - generic [ref=f1e146]:
+            - status [ref=f1e262]:
+              - paragraph [ref=f1e263]: Central and Southern Asia · 3
+              - paragraph [ref=f1e264]: 3 Case studies
+            - img "Regional map" [ref=f1e147]:
+              - 'button "Sub-Saharan Africa: 3" [ref=f1e194] [cursor=pointer]'
+              - 'button "Northern Africa and Western Asia: 1" [ref=f1e195] [cursor=pointer]'
+              - 'button "Central and Southern Asia: 3" [ref=f1e196] [cursor=pointer]'
+              - 'button "Eastern and South-Eastern Asia: 4" [ref=f1e197] [cursor=pointer]'
+              - 'button "Latin America and the Caribbean: 0" [ref=f1e152] [cursor=pointer]'
+              - 'button "Oceania: 2" [ref=f1e198] [cursor=pointer]'
+              - 'button "Europe and North America: 3" [ref=f1e199] [cursor=pointer]'
+          - button "Case studies 16" [disabled] [ref=f1e200]:
+            - generic [ref=f1e158]: Case studies
+            - generic [ref=f1e159]: "16"
+          - generic [ref=f1e160]:
+            - paragraph [ref=f1e161]: Tap a region to see its stories
+            - generic [ref=f1e162]:
+              - heading "Latest from across the regions" [level=2] [ref=f1e163]
+              - generic [ref=f1e201]:
+                - link "FJI Lived experiences James' Lived Experience story - Mental health impacts of climate change - Solomon Islands Suva, Fiji" [ref=f1e203] [cursor=pointer]:
+                  - /url: /en/lived-experiences/lived-experience-5eGz6sITYtA
+                  - generic [ref=f1e204]:
+                    - generic [ref=f1e205]:
+                      - generic [ref=f1e207]: FJI
+                      - generic [ref=f1e208]: Lived experiences
+                    - generic [ref=f1e209]:
+                      - paragraph [ref=f1e210]: James' Lived Experience story - Mental health impacts of climate change - Solomon Islands
+                      - paragraph [ref=f1e211]: Suva, Fiji
+                - link "FJI Lived experiences Chloe's Lived Experience story - Mental health impacts of climate change - Australia Suva, Fiji" [ref=f1e213] [cursor=pointer]:
+                  - /url: /en/lived-experiences/lived-experience-ARe9EBXcT3k
+                  - generic [ref=f1e214]:
+                    - generic [ref=f1e215]:
+                      - generic [ref=f1e217]: FJI
+                      - generic [ref=f1e218]: Lived experiences
+                    - generic [ref=f1e219]:
+                      - paragraph [ref=f1e220]: Chloe's Lived Experience story - Mental health impacts of climate change - Australia
+                      - paragraph [ref=f1e221]: Suva, Fiji
+                - link "FJI Lived experiences Serena's Lived Experience story - Mental health impacts of climate change - Jordan Suva, Fiji" [ref=f1e223] [cursor=pointer]:
+                  - /url: /en/lived-experiences/lived-experience-EoWwHl17wfc
+                  - generic [ref=f1e224]:
+                    - generic [ref=f1e225]:
+                      - generic [ref=f1e227]: FJI
+                      - generic [ref=f1e228]: Lived experiences
+                    - generic [ref=f1e229]:
+                      - paragraph [ref=f1e230]: Serena's Lived Experience story - Mental health impacts of climate change - Jordan
+                      - paragraph [ref=f1e231]: Suva, Fiji
+                - link "PER Lived experiences Raquel's Lived Experience story - Mental health impacts of climate change - Brazil Lima, Peru" [ref=f1e233] [cursor=pointer]:
+                  - /url: /en/lived-experiences/lived-experience-4zBE3HohcV8
+                  - generic [ref=f1e234]:
+                    - generic [ref=f1e235]:
+                      - generic [ref=f1e237]: PER
+                      - generic [ref=f1e238]: Lived experiences
+                    - generic [ref=f1e239]:
+                      - paragraph [ref=f1e240]: Raquel's Lived Experience story - Mental health impacts of climate change - Brazil
+                      - paragraph [ref=f1e241]: Lima, Peru
+                - link "BGD Lived experiences Lived Experience story from India - Mental health impacts of climate change - India Dhaka, Bangladesh" [ref=f1e243] [cursor=pointer]:
+                  - /url: /en/lived-experiences/lived-experience-3VTei68Svww
+                  - generic [ref=f1e244]:
+                    - generic [ref=f1e245]:
+                      - generic [ref=f1e247]: BGD
+                      - generic [ref=f1e248]: Lived experiences
+                    - generic [ref=f1e249]:
+                      - paragraph [ref=f1e250]: Lived Experience story from India - Mental health impacts of climate change - India
+                      - paragraph [ref=f1e251]: Dhaka, Bangladesh
+                - link "NGA Lived experiences Leah's Lived Experience story - Mental health impacts of climate change - Kenya Lagos, Nigeria" [ref=f1e253] [cursor=pointer]:
+                  - /url: /en/lived-experiences/lived-experience--l5Jj6yRDNk
+                  - generic [ref=f1e254]:
+                    - generic [ref=f1e255]:
+                      - generic [ref=f1e257]: NGA
+                      - generic [ref=f1e258]: Lived experiences
+                    - generic [ref=f1e259]:
+                      - paragraph [ref=f1e260]: Leah's Lived Experience story - Mental health impacts of climate change - Kenya
+                      - paragraph [ref=f1e261]: Lagos, Nigeria
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=f1e176] [cursor=pointer]:
+    - img [ref=f1e177]
+  - alert [ref=f1e180]

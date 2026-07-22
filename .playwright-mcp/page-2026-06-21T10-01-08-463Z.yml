@@ -1,0 +1,364 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - list [ref=e7]:
+          - listitem [ref=e8]:
+            - link "Go to homepage" [ref=e9] [cursor=pointer]:
+              - /url: /
+              - img "Connecting Climate Minds Logo" [ref=e10]
+        - generic [ref=e12]:
+          - img
+          - textbox "البحث..." [ref=e13]
+      - generic [ref=e14]:
+        - generic [ref=e15]:
+          - generic [ref=e16]: اكتشف
+          - list [ref=e17]:
+            - listitem [ref=e18]:
+              - button "البحث والعمل والأجندات" [ref=e19]:
+                - img [ref=e20]
+                - generic [ref=e22]: البحث والعمل والأجندات
+                - img [ref=e23]
+            - listitem [ref=e25]:
+              - link "الأخبار والمستجدات" [ref=e26] [cursor=pointer]:
+                - /url: /ar/news
+                - img [ref=e27]
+                - generic [ref=e30]: الأخبار والمستجدات
+            - listitem [ref=e31]:
+              - link "التجارب المعيشة" [ref=e32] [cursor=pointer]:
+                - /url: /ar/lived-experiences
+                - img [ref=e33]
+                - generic [ref=e35]: التجارب المعيشة
+            - listitem [ref=e36]:
+              - link "دراسات الحالة" [ref=e37] [cursor=pointer]:
+                - /url: /ar/research-and-action/case-studies
+                - img [ref=e38]
+                - generic [ref=e41]: دراسات الحالة
+        - generic [ref=e42]:
+          - generic [ref=e43]: تعاون
+          - list [ref=e44]:
+            - listitem [ref=e45]:
+              - button "المجتمعات الإقليمية" [ref=e46]:
+                - img [ref=e47]
+                - generic [ref=e50]: المجتمعات الإقليمية
+                - img [ref=e51]
+            - listitem [ref=e53]:
+              - link "التعاون" [ref=e54] [cursor=pointer]:
+                - /url: /ar/collaborate
+                - img [ref=e55]
+                - generic [ref=e60]: التعاون
+            - listitem [ref=e61]:
+              - link "ابدأ مشروعًا أو ابحث عنه" [ref=e62] [cursor=pointer]:
+                - /url: /ar/collaborate
+                - img [ref=e63]
+                - generic [ref=e65]: ابدأ مشروعًا أو ابحث عنه
+        - list [ref=e68]:
+          - listitem [ref=e69]:
+            - link "حول" [ref=e70] [cursor=pointer]:
+              - /url: /about
+              - img [ref=e71]
+              - generic [ref=e73]: حول
+          - listitem [ref=e74]:
+            - link "التعليقات" [ref=e75] [cursor=pointer]:
+              - /url: /feedback
+              - img [ref=e76]
+              - generic [ref=e78]: التعليقات
+      - list [ref=e81]:
+        - listitem [ref=e82]:
+          - button "العربية" [ref=e83]:
+            - generic [ref=e85]: العربية
+            - img [ref=e86]
+    - main [ref=e90]:
+      - button "Toggle Sidebar" [ref=e93]:
+        - img
+        - generic [ref=e94]: Toggle Sidebar
+      - main [ref=e96]:
+        - generic [ref=e97]:
+          - generic [ref=e100]:
+            - generic [ref=e101]:
+              - heading "مرحباً بكم في مركز Connecting Climate Minds، حيث يتحد عالم الصحة النفسية وبحوث تغير المناخ." [level=1] [ref=e102]
+              - paragraph [ref=e105]: "نحن ملتزمون بتعزيز مجتمع بحثي عالمي متصل، مدفوعاً بهدف مشترك: فهم ومعالجة العلاقة المعقدة بين مناخ كوكبنا المتغير وصحتنا النفسية."
+              - link "عرض أبحاثنا" [ref=e107] [cursor=pointer]:
+                - /url: /research-and-action/all-outputs
+            - img "Connecting Climate Minds Welcome Illustration" [ref=e110]
+          - generic [ref=e114]:
+            - generic [ref=e117]:
+              - heading "تحديد أولويات البحث والعمل العالمي لتغير المناخ والصحة النفسية" [level=2] [ref=e118]
+              - paragraph [ref=e121]: تحدد أجندة البحث والعمل العالمية لتغير المناخ والصحة النفسية أولويات البحث والعمل التي تم تطويرها من حوارات ومشاورات مع أكثر من 960 خبيراً في البحث والسياسة والممارسة والخبرة المعاشة في 90 دولة.
+              - link "قراءة الأجندة العالمية" [ref=e123] [cursor=pointer]:
+                - /url: /research-and-action/global-agenda
+            - img "Global Agenda Cover" [ref=e126]
+          - generic [ref=e130]:
+            - img "Sign up to the hub illustration" [ref=e133]
+            - generic [ref=e136]:
+              - heading "مساحتك التعاونية للأفكار والحوار والتواصل" [level=2] [ref=e137]
+              - paragraph [ref=e140]: سواء كنت ترغب في التعمق في المجالات ذات الأولوية للبحث والعمل، أو البحث عن الإلهام والفهم من دراسات الحالة والتجارب الشخصية والأفكار، أو التعلم من "الأدلة الإرشادية"، أو تتطلع للانضمام إلى مجتمعنا العالمي المتنامي وتكوين اتصالات جديدة، فهذا المركز مخصص لك.
+              - link "إنشاء حساب" [ref=e142] [cursor=pointer]:
+                - /url: /sign-up
+          - generic [ref=e145]:
+            - heading "تحفيز البحث متعدد التخصصات لإعلام العمل في السياسة والممارسة" [level=2] [ref=e148]
+            - generic [ref=e150]:
+              - generic [ref=e152]:
+                - generic [ref=e153]:
+                  - img "تقرير تأثير الحدث العالمي لـ Connecting Climate Minds" [ref=e154]
+                  - generic [ref=e156]: Other
+                - heading "تقرير تأثير الحدث العالمي لـ Connecting Climate Minds" [level=3] [ref=e159]
+                - generic [ref=e160]:
+                  - paragraph [ref=e161]: البحث والعمل من أجل الصحة النفسية المناخية
+                  - generic [ref=e163]:
+                    - img [ref=e164]
+                    - generic [ref=e166]: "2024"
+                - generic [ref=e168]:
+                  - generic [ref=e169]:
+                    - img [ref=e170]
+                    - generic [ref=e174]: متاح بـ 1 لغة
+                  - button "English (6.4 MB)" [ref=e176]:
+                    - img
+                    - generic [ref=e177]: English
+                    - generic [ref=e178]: (6.4 MB)
+              - generic [ref=e180]:
+                - generic [ref=e181]:
+                  - img "An Introductory Toolkit for Researchers" [ref=e182]
+                  - generic [ref=e184]: Guidelines
+                - 'heading "تغير المناخ والصحة النفسية: دليل تمهيدي للباحثين" [level=3] [ref=e187]'
+                - generic [ref=e188]:
+                  - paragraph [ref=e189]: دليل عملي للباحثين
+                  - generic [ref=e191]:
+                    - img [ref=e192]
+                    - generic [ref=e194]: "2024"
+                - generic [ref=e196]:
+                  - generic [ref=e197]:
+                    - img [ref=e198]
+                    - generic [ref=e202]: متاح بـ 1 لغة
+                  - button "English (8.0 MB)" [ref=e204]:
+                    - img
+                    - generic [ref=e205]: English
+                    - generic [ref=e206]: (8.0 MB)
+              - generic [ref=e208]:
+                - generic [ref=e209]:
+                  - img "Young People" [ref=e210]
+                  - generic [ref=e212]: Other
+                - heading "إعلان الشباب" [level=3] [ref=e215]
+                - generic [ref=e216]:
+                  - paragraph [ref=e217]: دعوة للعمل من شباب العالم
+                  - generic [ref=e219]:
+                    - img [ref=e220]
+                    - generic [ref=e222]: "2024"
+                - generic [ref=e224]:
+                  - generic [ref=e225]:
+                    - img [ref=e226]
+                    - generic [ref=e230]: متاح بـ 1 لغة
+                  - button "English (526 KB)" [ref=e232]:
+                    - img
+                    - generic [ref=e233]: English
+                    - generic [ref=e234]: (526 KB)
+          - generic [ref=e239]:
+            - heading "قصص الحزن والمرونة والأمل" [level=2] [ref=e240]
+            - paragraph [ref=e241]: إن الفهم والتعلم من الخبرة المعاشة أمر ضروري للتنقل في العلاقة بين الصحة النفسية وتغير المناخ. تصفح مكتبتنا من رؤى الخبرة المعاشة التي يشاركها أشخاص من جميع أنحاء العالم، وتوفر رؤى لا تقدر بثمن حول التأثيرات والحلول.
+          - generic [ref=e244]:
+            - heading "المجتمعات الإقليمية التي تقود البحث العالمي" [level=2] [ref=e247]
+            - generic [ref=e249]:
+              - link "أفريقيا جنوب الصحراء الكبرى مجتمع الممارسة الإقليمي عرض المجتمع" [ref=e251] [cursor=pointer]:
+                - /url: /communities/sub-saharan-africa
+                - generic [ref=e252]:
+                  - generic [ref=e255]:
+                    - heading "أفريقيا جنوب الصحراء الكبرى" [level=3] [ref=e257]
+                    - paragraph [ref=e258]: مجتمع الممارسة الإقليمي
+                  - generic [ref=e259]: عرض المجتمع
+              - link "شمال أفريقيا وغرب آسيا مجتمع الممارسة الإقليمي عرض المجتمع" [ref=e261] [cursor=pointer]:
+                - /url: /communities/northern-africa-and-western-asia
+                - generic [ref=e262]:
+                  - generic [ref=e265]:
+                    - heading "شمال أفريقيا وغرب آسيا" [level=3] [ref=e267]
+                    - paragraph [ref=e268]: مجتمع الممارسة الإقليمي
+                  - generic [ref=e269]: عرض المجتمع
+              - link "آسيا الوسطى والجنوبية مجتمع الممارسة الإقليمي عرض المجتمع" [ref=e271] [cursor=pointer]:
+                - /url: /communities/central-and-southern-asia
+                - generic [ref=e272]:
+                  - generic [ref=e275]:
+                    - heading "آسيا الوسطى والجنوبية" [level=3] [ref=e277]
+                    - paragraph [ref=e278]: مجتمع الممارسة الإقليمي
+                  - generic [ref=e279]: عرض المجتمع
+              - link "شرق وجنوب شرق آسيا مجتمع الممارسة الإقليمي عرض المجتمع" [ref=e281] [cursor=pointer]:
+                - /url: /communities/eastern-and-south-eastern-asia
+                - generic [ref=e282]:
+                  - generic [ref=e285]:
+                    - heading "شرق وجنوب شرق آسيا" [level=3] [ref=e287]
+                    - paragraph [ref=e288]: مجتمع الممارسة الإقليمي
+                  - generic [ref=e289]: عرض المجتمع
+              - link "أمريكا اللاتينية والكاريبي مجتمع الممارسة الإقليمي عرض المجتمع" [ref=e291] [cursor=pointer]:
+                - /url: /communities/latin-america-and-the-caribbean
+                - generic [ref=e292]:
+                  - generic [ref=e295]:
+                    - heading "أمريكا اللاتينية والكاريبي" [level=3] [ref=e297]
+                    - paragraph [ref=e298]: مجتمع الممارسة الإقليمي
+                  - generic [ref=e299]: عرض المجتمع
+              - link "أوقيانوسيا مجتمع الممارسة الإقليمي عرض المجتمع" [ref=e301] [cursor=pointer]:
+                - /url: /communities/oceania
+                - generic [ref=e302]:
+                  - generic [ref=e305]:
+                    - heading "أوقيانوسيا" [level=3] [ref=e307]
+                    - paragraph [ref=e308]: مجتمع الممارسة الإقليمي
+                  - generic [ref=e309]: عرض المجتمع
+              - link "أوروبا وأمريكا الشمالية مجتمع الممارسة الإقليمي عرض المجتمع" [ref=e311] [cursor=pointer]:
+                - /url: /communities/europe-and-northern-america
+                - generic [ref=e312]:
+                  - generic [ref=e315]:
+                    - heading "أوروبا وأمريكا الشمالية" [level=3] [ref=e317]
+                    - paragraph [ref=e318]: مجتمع الممارسة الإقليمي
+                  - generic [ref=e319]: عرض المجتمع
+          - generic [ref=e323]:
+            - img "Collaboration illustration" [ref=e326]
+            - generic [ref=e329]:
+              - heading "تسهيل الاتصال والتعاون الهادف" [level=2] [ref=e330]
+              - paragraph [ref=e333]: سواء كنت تبحث عن خبرة لمشروع، أو تتطلع للانضمام إلى القوى في البحث، أو ترغب في مشاركة أفكار مبتكرة، فإن منطقة التعاون لدينا هي مكان لقاء للأفراد والمنظمات من مختلف المجالات للتواصل والتعاون.
+              - link "عرض منطقة التعاون" [ref=e335] [cursor=pointer]:
+                - /url: /collaborate
+          - generic [ref=e338]:
+            - heading "آخر الأخبار في هذا المجال" [level=2] [ref=e341]
+            - generic [ref=e343]:
+              - link "Illustration أخبار Climate Change Is Becoming a Mental Health Crisis — and Communities Are Already Living It From farmers facing hopelessness after crop loss to Indigenous communities grieving disappearing ecosystems, a new global agenda warns climate change is reshaping emotional survival, identity, and wellbeing. 20 مايو 2026 News Desk" [ref=e345] [cursor=pointer]:
+                - /url: /ar/news/climate-change-is-becoming-a-mental-health-crisis-and-communities-are-already-living-it
+                - generic [ref=e346]:
+                  - generic [ref=e347]:
+                    - img "Illustration" [ref=e348]
+                    - generic [ref=e350]: أخبار
+                  - heading "Climate Change Is Becoming a Mental Health Crisis — and Communities Are Already Living It" [level=3] [ref=e353]
+                  - generic [ref=e354]:
+                    - paragraph [ref=e355]: From farmers facing hopelessness after crop loss to Indigenous communities grieving disappearing ecosystems, a new global agenda warns climate change is reshaping emotional survival, identity, and wellbeing.
+                    - generic [ref=e356]:
+                      - generic [ref=e357]:
+                        - img [ref=e358]
+                        - generic [ref=e360]: 20 مايو 2026
+                      - generic [ref=e361]:
+                        - img [ref=e362]
+                        - generic [ref=e365]: News Desk
+              - 'link "Eco‑anxiety: how do young people relate to the climate crisis? أخبار Eco‑anxiety: how do young people relate to the climate crisis? “Eco-anxiety” and “climate-anxiety” are the most widely known terms describing what people feel in response to being aware of the climate crisis. We conducted a review of published academic papers including original research articles and review papers, and found surprising results on how young people aged 10-29 years actually experience being aware of global warming and climate change and its effects. The Conversation 25 مارس 2026" [ref=e367] [cursor=pointer]':
+                - /url: https://theconversation.com/eco-anxiety-how-do-young-people-relate-to-the-climate-crisis-277520
+                - generic [ref=e368]:
+                  - generic [ref=e369]:
+                    - 'img "Eco‑anxiety: how do young people relate to the climate crisis?" [ref=e370]'
+                    - generic [ref=e372]:
+                      - img [ref=e373]
+                      - text: أخبار
+                  - 'heading "Eco‑anxiety: how do young people relate to the climate crisis?" [level=3] [ref=e379]'
+                  - generic [ref=e380]:
+                    - paragraph [ref=e381]: “Eco-anxiety” and “climate-anxiety” are the most widely known terms describing what people feel in response to being aware of the climate crisis. We conducted a review of published academic papers including original research articles and review papers, and found surprising results on how young people aged 10-29 years actually experience being aware of global warming and climate change and its effects.
+                    - generic [ref=e382]:
+                      - generic [ref=e383]:
+                        - img [ref=e384]
+                        - generic [ref=e387]: The Conversation
+                      - generic [ref=e388]:
+                        - img [ref=e389]
+                        - generic [ref=e391]: 25 مارس 2026
+              - link "Study shows climate distress related to anxiety and action in young people Imperial research on youth climate anxiety 10 مايو 2024 Dr. Britt Wray" [ref=e393] [cursor=pointer]:
+                - /url: /ar/news/climate-distress-anxiety-action-youth
+                - generic [ref=e394]:
+                  - heading "Study shows climate distress related to anxiety and action in young people" [level=3] [ref=e397]
+                  - generic [ref=e398]:
+                    - paragraph [ref=e399]: Imperial research on youth climate anxiety
+                    - generic [ref=e400]:
+                      - generic [ref=e401]:
+                        - img [ref=e402]
+                        - generic [ref=e404]: 10 مايو 2024
+                      - generic [ref=e405]:
+                        - img [ref=e406]
+                        - generic [ref=e409]: Dr. Britt Wray
+          - generic [ref=e418]:
+            - heading "ممول من Wellcome، مستضاف من قبل مركز Climate Cares" [level=2] [ref=e419]
+            - paragraph [ref=e422]: تعرف على المزيد حول عمل Wellcome في تغير المناخ والصحة وفي الصحة النفسية.
+            - link "حول المشروع" [ref=e424] [cursor=pointer]:
+              - /url: /about
+          - generic [ref=e428]:
+            - heading "ماذا نعني بالصحة النفسية؟" [level=2] [ref=e429]
+            - generic [ref=e431]:
+              - paragraph [ref=e432]: "تغير المناخ والصحة النفسية وتقاطعهما هي مجالات معقدة وواسعة النطاق، يتم فهمها من خلال مجموعة من وجهات النظر والأطر والمصطلحات المتنوعة. يتم تعريف تحديات الصحة النفسية (التي تشمل حالات/أمراض الصحة النفسية) في Connecting Climate Minds على أنها أفكار ومشاعر وسلوكيات تؤثر على قدرة الشخص على العمل في واحد أو أكثر من مجالات الحياة وغالباً ما تتضمن مستويات كبيرة من الضيق النفسي. الطرق التي يمكن أن تتأثر بها الصحة النفسية بتغير المناخ تشمل:"
+              - list [ref=e433]:
+                - listitem [ref=e434]: كيف يمكن أن يؤدي تغير المناخ إلى تفاقم مشاكل الصحة النفسية الموجودة مسبقاً
+                - listitem [ref=e435]: كيف يمكن أن يساهم تغير المناخ في انتشار أو تأثير مشاكل الصحة النفسية الحالية
+                - listitem [ref=e436]: كيف يمكن أن يؤثر تغير المناخ على الوصول إلى العلاج أو فعاليته لأولئك الذين يعانون من مشاكل الصحة النفسية
+                - listitem [ref=e437]: كيف يمكن أن يؤدي تغير المناخ إلى مشاكل صحية نفسية جديدة.
+              - paragraph [ref=e438]: ومع ذلك، نلاحظ أنه تم الاستماع إلى تنوع من وجهات النظر من خلال Connecting Climate Minds، وقد سعينا إلى تمثيل وعكس ذلك بشكل مناسب في نتائج المشروع.
+          - generic [ref=e440]:
+            - generic [ref=e442]:
+              - heading "من المشاركون" [level=2] [ref=e443]
+              - paragraph [ref=e444]: نحن مشروع ممول من Wellcome يجمع الخبرة في البحث والسياسة والممارسة والتصميم والخبرة المعاشة من جميع أنحاء العالم.
+            - generic [ref=e446]:
+              - img "Climate Cares Logo" [ref=e448]
+              - img "Red Cross/Crescent Climate Centre Logo" [ref=e450]
+              - img "University of Nigeria Logo" [ref=e452]
+              - generic [ref=e453]:
+                - img "St. Luke's Medical Center Logo"
+              - generic [ref=e454]:
+                - img "Force of Nature Logo"
+              - generic [ref=e455]:
+                - img "sustyvibes Logo"
+              - generic [ref=e456]:
+                - img "Jordan Health Aid Society"
+              - generic [ref=e457]:
+                - img "Imperial College London Logo"
+              - generic [ref=e458]:
+                - img "Climate Mental Health Network Logo"
+              - generic [ref=e459]:
+                - img "QCMHR Logo"
+              - generic [ref=e460]:
+                - img "Planetary health Alliance Logo"
+              - generic [ref=e461]:
+                - img "Wellcome Logo"
+              - generic [ref=e462]:
+                - img "University of the West Indies Logo"
+              - generic [ref=e463]:
+                - img "BRAC Public Health Logo"
+              - generic [ref=e464]:
+                - img "BRAC University Logo"
+              - generic [ref=e465]:
+                - img "Grantham Institute Logo"
+              - generic [ref=e466]:
+                - img "University of Queensland Logo"
+              - generic [ref=e467]:
+                - img "Waman Wasi Logo"
+              - generic [ref=e468]:
+                - img "Institute of Global Health Innovation Logo"
+              - generic [ref=e469]:
+                - img "IFRC Psychosocial Centre Logo"
+              - img "Climate Cares Logo" [ref=e471]
+              - img "Red Cross/Crescent Climate Centre Logo" [ref=e473]
+              - img "University of Nigeria Logo" [ref=e475]
+              - generic [ref=e476]:
+                - img "St. Luke's Medical Center Logo"
+              - generic [ref=e477]:
+                - img "Force of Nature Logo"
+              - generic [ref=e478]:
+                - img "sustyvibes Logo"
+              - generic [ref=e479]:
+                - img "Jordan Health Aid Society"
+              - generic [ref=e480]:
+                - img "Imperial College London Logo"
+              - generic [ref=e481]:
+                - img "Climate Mental Health Network Logo"
+              - generic [ref=e482]:
+                - img "QCMHR Logo"
+              - generic [ref=e483]:
+                - img "Planetary health Alliance Logo"
+              - generic [ref=e484]:
+                - img "Wellcome Logo"
+              - generic [ref=e485]:
+                - img "University of the West Indies Logo"
+              - generic [ref=e486]:
+                - img "BRAC Public Health Logo"
+              - generic [ref=e487]:
+                - img "BRAC University Logo"
+              - generic [ref=e488]:
+                - img "Grantham Institute Logo"
+              - generic [ref=e489]:
+                - img "University of Queensland Logo"
+              - generic [ref=e490]:
+                - img "Waman Wasi Logo"
+              - generic [ref=e491]:
+                - img "Institute of Global Health Innovation Logo"
+              - generic [ref=e492]:
+                - img "IFRC Psychosocial Centre Logo"
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e498] [cursor=pointer]:
+    - img [ref=e499]
+  - alert [ref=e502]

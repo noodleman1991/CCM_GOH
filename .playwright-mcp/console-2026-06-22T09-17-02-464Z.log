@@ -1,0 +1,22 @@
+[    3749ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://clerk.connectingclimateminds.org/v1/client?__clerk_api_version=2025-11-10&_clerk_js_version=5.126.0:0
+[    3751ms] [ERROR] e: Clerk: Production Keys are only allowed for domain "connectingclimateminds.org". 
+API Error: The Request HTTP Origin header must be equal to or a subdomain of the requesting URL.
+    at https://clerk.connectingclimateminds.org/npm/@clerk/clerk-js@5/dist/clerk.browser.js:2:7306
+    at u._baseFetch (https://clerk.connectingclimateminds.org/npm/@clerk/clerk-js@5/dist/clerk.browser.js:3:38)
+    at async d.execute (https://clerk.connectingclimateminds.org/npm/@clerk/clerk-js@5/dist/clerk.browser.js:2:5350)
+    at async s._baseGet (https://clerk.connectingclimateminds.org/npm/@clerk/clerk-js@5/dist/clerk.browser.js:3:567)
+    at async Promise.all (index 1)
+    at async #U (https://clerk.connectingclimateminds.org/npm/@clerk/clerk-js@5/dist/clerk.browser.js:5:73598)
+    at async e5.load (https://clerk.connectingclimateminds.org/npm/@clerk/clerk-js@5/dist/clerk.browser.js:5:34379)
+    at async t.loadClerkJS (https://connecting-climate-minds-lqi83j5or-workload-share.vercel.app/_next/static/chunks/3fec3cfdf93ca828.js?dpl=dpl_4hA3eDYEXRz5hkfxNsrX2imGenNz:2:56815) @ https://connecting-climate-minds-lqi83j5or-workload-share.vercel.app/_next/static/chunks/3fec3cfdf93ca828.js?dpl=dpl_4hA3eDYEXRz5hkfxNsrX2imGenNz:1
+[  631831ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://clerk.connectingclimateminds.org/v1/client?__clerk_api_version=2025-11-10&_clerk_js_version=5.126.0:0
+[  631834ms] [ERROR] e: Clerk: Production Keys are only allowed for domain "connectingclimateminds.org". 
+API Error: The Request HTTP Origin header must be equal to or a subdomain of the requesting URL.
+    at https://clerk.connectingclimateminds.org/npm/@clerk/clerk-js@5/dist/clerk.browser.js:2:7306
+    at u._baseFetch (https://clerk.connectingclimateminds.org/npm/@clerk/clerk-js@5/dist/clerk.browser.js:3:38)
+    at async d.execute (https://clerk.connectingclimateminds.org/npm/@clerk/clerk-js@5/dist/clerk.browser.js:2:5350)
+    at async s._baseGet (https://clerk.connectingclimateminds.org/npm/@clerk/clerk-js@5/dist/clerk.browser.js:3:567)
+    at async Promise.all (index 1)
+    at async #U (https://clerk.connectingclimateminds.org/npm/@clerk/clerk-js@5/dist/clerk.browser.js:5:73598)
+    at async e5.load (https://clerk.connectingclimateminds.org/npm/@clerk/clerk-js@5/dist/clerk.browser.js:5:34379)
+    at async t.loadClerkJS (https://connecting-climate-minds-lqi83j5or-workload-share.vercel.app/_next/static/chunks/3fec3cfdf93ca828.js?dpl=dpl_4hA3eDYEXRz5hkfxNsrX2imGenNz:2:56815) @ https://connecting-climate-minds-lqi83j5or-workload-share.vercel.app/_next/static/chunks/3fec3cfdf93ca828.js?dpl=dpl_4hA3eDYEXRz5hkfxNsrX2imGenNz:1

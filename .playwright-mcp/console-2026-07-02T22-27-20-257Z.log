@@ -1,0 +1,31 @@
+[    4554ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    4758ms] [LOG] [HMR] connected @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    4817ms] [WARNING] Missing Algolia environment variables: ALGOLIA_API_KEY @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    4818ms] [WARNING] Algolia admin client not available - missing credentials @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    4818ms] [LOG] ✅ Algolia search client initialized successfully @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    4840ms] [WARNING] Image with src "/connecting-climate-minds-logo-white.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    4899ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    5103ms] [WARNING] Ignoring Event: localhost @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    5209ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    5289ms] [INFO] Sanity is live with automatic revalidation of published content @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    6059ms] [LOG] [Fast Refresh] done in 1268ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   19702ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   20103ms] [LOG] [Fast Refresh] done in 503ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   42182ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   42916ms] [LOG] [Fast Refresh] done in 788ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   52057ms] [ERROR] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr?id=z27saymuak0yAyLghqc9P' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:10876
+[   53062ms] [ERROR] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr?id=z27saymuak0yAyLghqc9P' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:10876
+[   54066ms] [ERROR] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr?id=z27saymuak0yAyLghqc9P' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:10876
+[   55070ms] [ERROR] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr?id=z27saymuak0yAyLghqc9P' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:10876
+[   56074ms] [ERROR] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr?id=z27saymuak0yAyLghqc9P' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:10876
+[   61078ms] [ERROR] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr?id=z27saymuak0yAyLghqc9P' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:10876
+[   66092ms] [ERROR] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr?id=z27saymuak0yAyLghqc9P' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:10876
+[   71096ms] [ERROR] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr?id=z27saymuak0yAyLghqc9P' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:10876
+[   76103ms] [ERROR] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr?id=z27saymuak0yAyLghqc9P' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:10876
+[   81110ms] [ERROR] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr?id=z27saymuak0yAyLghqc9P' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:10876
+[   86117ms] [ERROR] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr?id=z27saymuak0yAyLghqc9P' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:10876
+[   91125ms] [ERROR] WebSocket connection to 'ws://localhost:3001/_next/webpack-hmr?id=z27saymuak0yAyLghqc9P' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:10876
+[   91388ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/en/atlas?layers=caseStudyCount%2ClivedExpCount:0
+[   91436ms] TypeError: Failed to fetch
+    at fetchServerAction (http://localhost:3001/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:8815:23)

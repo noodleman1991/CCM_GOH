@@ -1,0 +1,141 @@
+- generic [active] [ref=f4e1]:
+  - generic [ref=f4e2]:
+    - generic [ref=f4e5]:
+      - list [ref=f4e7]:
+        - listitem [ref=f4e8]:
+          - link "Go to homepage" [ref=f4e9] [cursor=pointer]:
+            - /url: /
+            - img "Connecting Climate Minds Logo" [ref=f4e10]
+      - generic [ref=f4e11]:
+        - generic [ref=f4e12]:
+          - generic [ref=f4e13]: اكتشف
+          - list [ref=f4e14]:
+            - listitem [ref=f4e15]:
+              - link "الأطلس والاستكشاف" [ref=f4e16] [cursor=pointer]:
+                - /url: /ar/atlas
+                - img [ref=f4e17]
+                - generic [ref=f4e20]: الأطلس والاستكشاف
+            - listitem [ref=f4e21]:
+              - button "البحث والعمل" [ref=f4e22]:
+                - img [ref=f4e23]
+                - generic [ref=f4e25]: البحث والعمل
+                - img [ref=f4e26]
+            - listitem [ref=f4e28]:
+              - link "الأخبار والمستجدات" [ref=f4e29] [cursor=pointer]:
+                - /url: /ar/news
+                - img [ref=f4e30]
+                - generic [ref=f4e33]: الأخبار والمستجدات
+            - listitem [ref=f4e34]:
+              - link "التجارب المعيشة" [ref=f4e35] [cursor=pointer]:
+                - /url: /ar/lived-experiences
+                - img [ref=f4e36]
+                - generic [ref=f4e38]: التجارب المعيشة
+            - listitem [ref=f4e39]:
+              - link "دراسات الحالة" [ref=f4e40] [cursor=pointer]:
+                - /url: /ar/research-and-action/case-studies
+                - img [ref=f4e41]
+                - generic [ref=f4e44]: دراسات الحالة
+        - generic [ref=f4e45]:
+          - generic [ref=f4e46]: تعاون
+          - list [ref=f4e47]:
+            - listitem [ref=f4e48]:
+              - button "المجتمعات الإقليمية" [ref=f4e49]:
+                - img [ref=f4e50]
+                - generic [ref=f4e53]: المجتمعات الإقليمية
+                - img [ref=f4e54]
+            - listitem [ref=f4e56]:
+              - link "ابحث عن أشخاص" [ref=f4e57] [cursor=pointer]:
+                - /url: /ar/collaborate
+                - img [ref=f4e58]
+                - generic [ref=f4e63]: ابحث عن أشخاص
+            - listitem [ref=f4e64]:
+              - link "ابدأ مشروعًا أو ابحث عنه" [ref=f4e65] [cursor=pointer]:
+                - /url: /ar/collaborations
+                - img [ref=f4e66]
+                - generic [ref=f4e68]: ابدأ مشروعًا أو ابحث عنه
+        - list [ref=f4e71]:
+          - listitem [ref=f4e72]:
+            - link "حول" [ref=f4e73] [cursor=pointer]:
+              - /url: /about
+              - img [ref=f4e74]
+              - generic [ref=f4e76]: حول
+          - listitem [ref=f4e77]:
+            - link "التعليقات" [ref=f4e78] [cursor=pointer]:
+              - /url: /feedback
+              - img [ref=f4e79]
+              - generic [ref=f4e81]: التعليقات
+      - generic [ref=f4e82]:
+        - button "البحث... ⌘K" [ref=f4e85]:
+          - img [ref=f4e86]
+          - generic [ref=f4e89]:
+            - generic: البحث...
+          - generic [ref=f4e91]: ⌘K
+        - list [ref=f4e93]:
+          - listitem [ref=f4e94]:
+            - button "العربية" [ref=f4e95]:
+              - generic [ref=f4e97]: العربية
+              - img [ref=f4e98]
+    - main [ref=f4e102]:
+      - button "Toggle Sidebar" [ref=f4e105]:
+        - img
+        - generic [ref=f4e106]: Toggle Sidebar
+      - main [ref=f4e108]:
+        - generic [ref=f4e110]:
+          - generic [ref=f4e111]:
+            - heading "الأطلس والاستكشاف" [level=1] [ref=f4e112]
+            - paragraph [ref=f4e113]: استكشف دراسات الحالة والتجارب المعيشية والأشخاص والمزيد عبر المناطق السبع.
+          - generic [ref=f4e114]:
+            - img [ref=f4e115]
+            - textbox "ابحث في الأطلس…" [ref=f4e118]: flood
+            - button "مسح البحث" [ref=f4e119]:
+              - img [ref=f4e120]
+          - generic [ref=f4e123]:
+            - text: طبقة البيانات
+            - generic [ref=f4e124]:
+              - button "دراسات الحالة" [ref=f4e125]:
+                - generic [ref=f4e126]: دراسات الحالة
+              - button "التجارب المعاشة" [pressed] [ref=f4e127]:
+                - img [ref=f4e128]
+                - generic [ref=f4e130]: التجارب المعاشة
+              - button "الأعضاء" [ref=f4e131]:
+                - generic [ref=f4e132]: الأعضاء
+              - button "الأخبار" [ref=f4e133]:
+                - generic [ref=f4e134]: الأخبار
+              - button "الأجندات" [ref=f4e135]:
+                - generic [ref=f4e136]: الأجندات
+              - button "التقارير" [ref=f4e137]:
+                - generic [ref=f4e138]: التقارير
+          - generic [ref=f4e139]:
+            - text: الموضوع
+            - generic [ref=f4e140]:
+              - button "النزوح" [ref=f4e141]:
+                - generic [ref=f4e142]: النزوح
+              - button "سُبل العيش" [ref=f4e143]:
+                - generic [ref=f4e144]: سُبل العيش
+              - button "الشباب" [pressed] [ref=f4e145]:
+                - img [ref=f4e146]
+                - generic [ref=f4e148]: الشباب
+              - button "الشعوب الأصلية" [ref=f4e149]:
+                - generic [ref=f4e150]: الشعوب الأصلية
+          - generic [ref=f4e151]:
+            - img "Regional map" [ref=f4e153]:
+              - 'button "أفريقيا جنوب الصحراء: 0" [ref=f4e154] [cursor=pointer]'
+              - 'button "شمال أفريقيا وغرب آسيا: 0" [ref=f4e155] [cursor=pointer]'
+              - 'button "آسيا الوسطى والجنوبية: 0" [ref=f4e156] [cursor=pointer]'
+              - 'button "شرق وجنوب شرق آسيا: 0" [ref=f4e157] [cursor=pointer]'
+              - 'button "أمريكا اللاتينية والكاريبي: 0" [ref=f4e158] [cursor=pointer]'
+              - 'button "أوقيانوسيا: 0" [ref=f4e159] [cursor=pointer]'
+              - 'button "أوروبا وأمريكا الشمالية: 0" [ref=f4e160] [cursor=pointer]'
+            - generic [ref=f4e161]:
+              - paragraph [ref=f4e162]: التجارب المعاشة
+              - list
+          - generic [ref=f4e163]:
+            - generic [ref=f4e164]: التجارب المعاشة · الشباب · "flood" · أفريقيا جنوب الصحراء
+            - link "افتح في التجارب المعاشة" [ref=f4e165] [cursor=pointer]:
+              - /url: /ar/lived-experiences?regions=sub-saharan-africa
+              - text: افتح في التجارب المعاشة
+              - img [ref=f4e166]
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=f4e173] [cursor=pointer]:
+    - img [ref=f4e174]
+  - alert [ref=f4e177]

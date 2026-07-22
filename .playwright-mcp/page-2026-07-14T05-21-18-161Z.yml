@@ -1,0 +1,148 @@
+- generic [active] [ref=f3e1]:
+  - generic [ref=f3e2]:
+    - generic [ref=f3e5]:
+      - link "Go to homepage" [ref=f3e7] [cursor=pointer]:
+        - /url: /en
+        - generic [ref=f3e8]: ccm
+      - list [ref=f3e11]:
+        - listitem [ref=f3e12]:
+          - button "Regional Communities" [ref=f3e13]:
+            - img [ref=f3e14]
+            - generic: Regional Communities
+            - img [ref=f3e17]
+        - listitem [ref=f3e19]:
+          - button "Research & Action" [ref=f3e20]:
+            - img [ref=f3e21]
+            - generic: Research & Action
+            - img [ref=f3e23]
+        - listitem [ref=f3e25]:
+          - link "Atlas" [ref=f3e26] [cursor=pointer]:
+            - /url: /en/atlas
+            - img [ref=f3e27]
+            - generic: Atlas
+        - listitem [ref=f3e30]:
+          - link "Lived experiences" [ref=f3e31] [cursor=pointer]:
+            - /url: /en/lived-experiences
+            - img [ref=f3e32]
+            - generic: Lived experiences
+        - listitem [ref=f3e34]:
+          - link "Case studies" [ref=f3e35] [cursor=pointer]:
+            - /url: /en/research-and-action/case-studies
+            - img [ref=f3e36]
+            - generic: Case studies
+        - listitem [ref=f3e39]:
+          - link "News & Updates" [ref=f3e40] [cursor=pointer]:
+            - /url: /en/news
+            - img [ref=f3e41]
+            - generic: News & Updates
+      - list [ref=f3e45]:
+        - listitem [ref=f3e46]:
+          - button [ref=f3e47]:
+            - img [ref=f3e48]
+    - main [ref=f3e51]:
+      - button "Toggle Sidebar" [ref=f3e54]:
+        - img
+        - generic [ref=f3e55]: Toggle Sidebar
+      - main [ref=f3e57]:
+        - generic [ref=f3e58]:
+          - generic [ref=f3e59]:
+            - navigation "breadcrumb" [ref=f3e60]:
+              - list [ref=f3e61]:
+                - listitem [ref=f3e62]:
+                  - link "Workspaces" [ref=f3e63] [cursor=pointer]:
+                    - /url: /en/collaborations
+                - listitem [ref=f3e64]:
+                  - img [ref=f3e65]
+                - listitem [ref=f3e67]:
+                  - link "The best project" [disabled] [ref=f3e68]
+            - generic [ref=f3e69]:
+              - button "The best project" [ref=f3e70]
+              - generic [ref=f3e71]: Members only
+              - link "View public page" [ref=f3e72] [cursor=pointer]:
+                - /url: /en/collaborations/cmqqpqyey0003oky2hufx7h7d?view=public
+          - navigation "Sections" [ref=f3e74]:
+            - button "Overview" [ref=f3e75]:
+              - img [ref=f3e76]
+              - generic [ref=f3e81]: Overview
+            - button "Outputs 5" [ref=f3e82]:
+              - img [ref=f3e83]
+              - generic [ref=f3e87]: Outputs
+              - generic [ref=f3e88]: "5"
+            - button "Plan" [ref=f3e89]:
+              - img [ref=f3e90]
+              - generic [ref=f3e93]: Plan
+            - button "Docs" [ref=f3e94]:
+              - img [ref=f3e95]
+              - generic [ref=f3e97]: Docs
+            - button "Threads 2" [ref=f3e98]:
+              - img [ref=f3e99]
+              - generic [ref=f3e102]: Threads
+              - generic [ref=f3e103]: "2"
+            - button "Files 0" [ref=f3e104]:
+              - img [ref=f3e105]
+              - generic [ref=f3e108]: Files
+              - generic [ref=f3e109]: "0"
+            - button "Media 0" [ref=f3e110]:
+              - img [ref=f3e111]
+              - generic [ref=f3e113]: Media
+              - generic [ref=f3e114]: "0"
+            - button "Members 1" [ref=f3e115]:
+              - img [ref=f3e116]
+              - generic [ref=f3e121]: Members
+              - generic [ref=f3e122]: "1"
+          - generic [ref=f3e124]:
+            - button "A project that is the very best" [ref=f3e125]
+            - generic [ref=f3e126]:
+              - generic [ref=f3e127]:
+                - generic [ref=f3e130]:
+                  - heading "Outputs" [level=2] [ref=f3e131]
+                  - paragraph [ref=f3e132]: The hub content this workspace is producing.
+                - generic [ref=f3e133]:
+                  - generic [ref=f3e134]:
+                    - generic [ref=f3e135]: Case study
+                    - paragraph [ref=f3e136]: Untitled
+                    - generic [ref=f3e137]: In review
+                  - generic [ref=f3e138]:
+                    - generic [ref=f3e139]: Case study
+                    - paragraph [ref=f3e140]: Untitled
+                    - generic [ref=f3e141]: In review
+                  - generic [ref=f3e142]:
+                    - generic [ref=f3e143]: Case study
+                    - paragraph [ref=f3e144]: "Workspace link test: mangrove restoration and community mental health"
+                    - generic [ref=f3e145]: Published
+                  - generic [ref=f3e146]:
+                    - generic [ref=f3e147]: Event
+                    - paragraph [ref=f3e148]: Edit-flow verification webinar (revised)
+                    - generic [ref=f3e149]: In review
+                  - generic [ref=f3e150]:
+                    - generic [ref=f3e151]: Lived experience
+                    - paragraph [ref=f3e152]: Living with the rising tide — updated
+                    - generic [ref=f3e153]: In review
+                  - button "+ Add an output" [ref=f3e154]
+              - generic [ref=f3e155]:
+                - generic [ref=f3e156]:
+                  - heading "Plan · 0/2" [level=2] [ref=f3e160]
+                  - generic [ref=f3e162]:
+                    - generic [ref=f3e163]:
+                      - generic [ref=f3e164]: Fieldwork & data collection
+                      - generic [ref=f3e165]: 0/1
+                    - generic [ref=f3e166]:
+                      - generic [ref=f3e167]: stage 2
+                      - generic [ref=f3e168]: 0/0
+                    - generic [ref=f3e169]:
+                      - generic [ref=f3e170]: Analysis
+                      - generic [ref=f3e171]: 0/1
+                - generic [ref=f3e172]:
+                  - heading "Overview" [level=2] [ref=f3e176]
+                  - generic [ref=f3e177]:
+                    - generic [ref=f3e178]: Output "Living with the rising tide — updated" is pending
+                    - generic [ref=f3e179]: Output "Edit-flow verification webinar (revised)" is pending
+                    - generic [ref=f3e180]: "Output \"Workspace link test: mangrove restoration and community mental health\" is approved"
+                    - generic [ref=f3e181]: Doc "Untitled" updated
+                    - generic [ref=f3e182]: Output "Untitled" is pending
+                    - generic [ref=f3e183]: Output "Untitled" is pending
+                  - button "1 Members →" [ref=f3e184]
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=f3e190] [cursor=pointer]:
+    - img [ref=f3e191]
+  - alert [ref=f3e194]

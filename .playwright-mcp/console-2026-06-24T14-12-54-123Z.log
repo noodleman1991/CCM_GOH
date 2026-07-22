@@ -1,0 +1,13 @@
+[    1610ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://ogads-pa.clients6.google.com/$rpc/google.internal.onegoogle.asyncdata.v1.AsyncDataService/GetAsyncData:0
+[   18407ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://www.googleadservices.com/pagead/conversion/16521530460/?gad_source=1&adview_type=1&adview_query_id=CMqIp86HoJUDFSiRaAkdQQINxw:0
+[   18407ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://www.googletagmanager.com/gtm.js?id=GTM-16521530460&preconnect=1&type=8&qid=CMqIp86HoJUDFSiRaAkdQQINxw:0
+[   18407ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://www.googletagmanager.com/gtag/js?id=AW-16521530460&preconnect=1&type=7&qid=CMqIp86HoJUDFSiRaAkdQQINxw:0
+[   18661ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://ogads-pa.clients6.google.com/$rpc/google.internal.onegoogle.asyncdata.v1.AsyncDataService/GetAsyncData:0
+[   19036ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://ep1.adtrafficquality.google/getconfig/sodar?sv=200&tid=oos&tv=2471&st=cr_env&sjk=9-U7aufFL7iIxc8PmLKqkAM:0
+[   19846ms] [WARNING] Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://www.youtube.com') does not match the recipient window's origin ('https://www.google.com'). @ https://www.youtube.com/s/player/06cb0078/www-widgetapi.vflset/www-widgetapi.js:162
+[   20053ms] [ERROR] Refused to get unsafe header "X-Sg-Cs" @ https://www.google.com/search?q=fodder&oq=fodder&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIHCAEQLhiABDIHCAIQLhiABDIHCAMQABiABDIHCAQQABiABDIHCAUQABiABDIHCAYQABiABDIHCAcQABiABDIHCAgQABiABNIBCDE1MjlqMGo3qAIAsAIA&sourceid=chrome&ie=UTF-8:53
+[   20053ms] [ERROR] Refused to get unsafe header "X-Sorry-Redirect" @ https://www.google.com/search?q=fodder&oq=fodder&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIHCAEQLhiABDIHCAIQLhiABDIHCAMQABiABDIHCAQQABiABDIHCAUQABiABDIHCAYQABiABDIHCAcQABiABDIHCAgQABiABNIBCDE1MjlqMGo3qAIAsAIA&sourceid=chrome&ie=UTF-8:53
+[   20174ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://googleads.g.doubleclick.net/pagead/id:0
+[   20174ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://static.doubleclick.net/instream/ad_status.js:0
+[  140274ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://googleads.g.doubleclick.net/pagead/id:0
+[  260388ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://googleads.g.doubleclick.net/pagead/id:0

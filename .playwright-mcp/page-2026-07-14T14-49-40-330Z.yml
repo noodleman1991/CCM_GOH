@@ -1,0 +1,312 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e5]:
+      - link "Go to homepage" [ref=e7] [cursor=pointer]:
+        - /url: /en
+        - img "Connecting Climate Minds Logo" [ref=e9]
+      - generic [ref=e10]:
+        - button "Search" [ref=e11]
+        - link "Find people" [ref=e15] [cursor=pointer]:
+          - /url: /en/sign-in?redirect=%2Fcollaborate%3Ftab%3Dpeople
+        - link "Start a project" [ref=e20] [cursor=pointer]:
+          - /url: /en/sign-in?redirect=%2Fcollaborations
+      - generic [ref=e23]:
+        - list [ref=e25]:
+          - listitem [ref=e26]:
+            - button "Regional Communities" [ref=e27]
+          - listitem [ref=e34]:
+            - button "Research & Action" [ref=e35]
+          - listitem [ref=e41]:
+            - link "Atlas" [ref=e42] [cursor=pointer]:
+              - /url: /en/atlas
+          - listitem [ref=e47]:
+            - link "Lived experiences" [ref=e48] [cursor=pointer]:
+              - /url: /en/lived-experiences
+          - listitem [ref=e52]:
+            - link "Case studies" [ref=e53] [cursor=pointer]:
+              - /url: /en/research-and-action/case-studies
+          - listitem [ref=e58]:
+            - link "News & Updates" [ref=e59] [cursor=pointer]:
+              - /url: /en/news
+        - generic [ref=e64]:
+          - link "About" [ref=e65] [cursor=pointer]:
+            - /url: /en/about
+          - link "Feedback" [ref=e68] [cursor=pointer]:
+            - /url: /en/feedback
+      - list [ref=e74]:
+        - listitem [ref=e75]:
+          - button "English" [ref=e76]
+    - main [ref=e83]:
+      - button "Toggle Sidebar" [ref=e86]
+      - main [ref=e89]:
+        - generic [ref=e90]:
+          - generic [ref=e94]:
+            - generic [ref=e95]:
+              - heading "Welcome to the Connected Climate Minds hub, where the worlds of mental health and climate change research unite." [level=1] [ref=e96]
+              - paragraph [ref=e99]: "We are dedicated to fostering a connected global research community, all driven by a common goal: understanding and addressing the intricate relationship between our planet's changing climate and our mental health."
+              - generic [ref=e100]:
+                - link "Explore" [ref=e101] [cursor=pointer]:
+                  - /url: /atlas
+                - link "Collaborate" [ref=e102] [cursor=pointer]:
+                  - /url: /collaborate
+            - img "Connecting Climate Minds Welcome Illustration" [ref=e105]
+          - generic [ref=e107]:
+            - generic [ref=e108]:
+              - heading "Fresh on the hub" [level=2] [ref=e109]
+              - link "Explore in Atlas" [ref=e110] [cursor=pointer]:
+                - /url: /en/atlas
+            - generic [ref=e113]:
+              - link "News Climate Change Is Becoming a Mental Health Crisis — and Communities Are Already Living It A major international report argues climate change is not only an environmental emergency but a growing mental health crisis. Through stories from farmers, Indigenous leaders, and young people across 126 countries, the report reveals how climate disasters are producing grief, anxiety, exhaustion, and loss of identity — while communities themselves are often leading the most effective responses." [ref=e115] [cursor=pointer]:
+                - /url: /en/news/climate-change-is-becoming-a-mental-health-crisis-and-communities-are-already-living-it
+                - generic [ref=e117]:
+                  - generic [ref=e118]: News
+                  - generic [ref=e120]: Climate Change Is Becoming a Mental Health Crisis — and Communities Are Already Living It
+                  - generic [ref=e122]: A major international report argues climate change is not only an environmental emergency but a growing mental health crisis. Through stories from farmers, Indigenous leaders, and young people across 126 countries, the report reveals how climate disasters are producing grief, anxiety, exhaustion, and loss of identity — while communities themselves are often leading the most effective responses.
+              - 'link "Case study Workspace link test: mangrove restoration and community mental health" [ref=e125] [cursor=pointer]':
+                - /url: /en/research-and-action/case-studies/workspace-link-test-mangrove-restoration-and-community-mental-health-de2498
+                - generic [ref=e126]:
+                  - generic [ref=e127]: Case study
+                  - generic [ref=e129]: "Workspace link test: mangrove restoration and community mental health"
+              - link "Lived experience “Sunday 's Lived Experience story - Mental health impacts of climate change - Nigeria”" [ref=e132] [cursor=pointer]:
+                - /url: /en/lived-experiences/lived-experience-ecQAH7r0R_g
+                - generic [ref=e137]:
+                  - generic [ref=e138]: Lived experience
+                  - generic [ref=e140]: “Sunday 's Lived Experience story - Mental health impacts of climate change - Nigeria”
+              - link "Lived experience “Paul 's Lived Experience story - Mental health impacts of climate change - Anambra State, Nigeria”" [ref=e143] [cursor=pointer]:
+                - /url: /en/lived-experiences/lived-experience-GxzycZLicJw
+                - generic [ref=e148]:
+                  - generic [ref=e149]: Lived experience
+                  - generic [ref=e151]: “Paul 's Lived Experience story - Mental health impacts of climate change - Anambra State, Nigeria”
+              - link "Lived experience “Lindokuhle's Lived Experience story - Mental health impacts of climate change - Eswatini”" [ref=e154] [cursor=pointer]:
+                - /url: /en/lived-experiences/lived-experience-SF5AKnC0PIk
+                - generic [ref=e159]:
+                  - generic [ref=e160]: Lived experience
+                  - generic [ref=e162]: “Lindokuhle's Lived Experience story - Mental health impacts of climate change - Eswatini”
+          - generic [ref=e167]:
+            - generic [ref=e168]:
+              - heading "Explore by region" [level=2] [ref=e169]
+              - paragraph [ref=e170]: See research, communities, and stories across the world's regions.
+            - generic [ref=e171]:
+              - button "Case studies" [pressed] [ref=e172]
+              - button "Lived experiences" [ref=e176]
+              - button "Members" [ref=e178]
+              - button "News" [ref=e180]
+              - button "Research outputs" [ref=e182]
+            - generic [ref=e184]:
+              - img "Regional map" [ref=e186]:
+                - 'button "Sub-Saharan Africa: 0" [ref=e187] [cursor=pointer]'
+                - 'button "Northern Africa and Western Asia: 0" [ref=e188] [cursor=pointer]'
+                - 'button "Central and Southern Asia: 0" [ref=e189] [cursor=pointer]'
+                - 'button "Eastern and South-Eastern Asia: 0" [ref=e190] [cursor=pointer]'
+                - 'button "Latin America and the Caribbean: 0" [ref=e191] [cursor=pointer]'
+                - 'button "Oceania: 0" [ref=e192] [cursor=pointer]'
+                - 'button "Europe and North America: 0" [ref=e193] [cursor=pointer]'
+              - generic [ref=e194]:
+                - paragraph [ref=e195]: Case studies
+                - list
+          - generic [ref=e199]:
+            - heading "Latest news in the field" [level=2] [ref=e205]
+            - generic [ref=e207]:
+              - link "Study shows climate distress related to anxiety and action in young people Imperial research on youth climate anxiety May 10, 2024 Dr. Britt Wray" [ref=e209] [cursor=pointer]:
+                - /url: /en/news/climate-distress-anxiety-action-youth
+                - generic [ref=e210]:
+                  - heading "Study shows climate distress related to anxiety and action in young people" [level=3] [ref=e213]
+                  - generic [ref=e214]:
+                    - paragraph [ref=e215]: Imperial research on youth climate anxiety
+                    - generic [ref=e216]:
+                      - generic [ref=e217]: May 10, 2024
+                      - generic [ref=e221]: Dr. Britt Wray
+              - link "Study shows climate distress related to anxiety and action in young people Imperial research on youth climate anxiety May 10, 2024 Dr. Britt Wray" [ref=e227] [cursor=pointer]:
+                - /url: /en/news/climate-distress-anxiety-action-youth
+                - generic [ref=e228]:
+                  - heading "Study shows climate distress related to anxiety and action in young people" [level=3] [ref=e231]
+                  - generic [ref=e232]:
+                    - paragraph [ref=e233]: Imperial research on youth climate anxiety
+                    - generic [ref=e234]:
+                      - generic [ref=e235]: May 10, 2024
+                      - generic [ref=e239]: Dr. Britt Wray
+              - 'link "Climate Change and Mental Health: Insights from Connecting Climate Minds'' First Regional Dialogues Understanding mental health impacts across global regions March 20, 2024 Dr. Britt Wray" [ref=e245] [cursor=pointer]':
+                - /url: /en/news/insights-from-regional-dialogues
+                - generic [ref=e246]:
+                  - 'heading "Climate Change and Mental Health: Insights from Connecting Climate Minds'' First Regional Dialogues" [level=3] [ref=e249]'
+                  - generic [ref=e250]:
+                    - paragraph [ref=e251]: Understanding mental health impacts across global regions
+                    - generic [ref=e252]:
+                      - generic [ref=e253]: March 20, 2024
+                      - generic [ref=e257]: Dr. Britt Wray
+          - generic [ref=e265]:
+            - generic [ref=e266]:
+              - generic [ref=e269]:
+                - heading "Events" [level=2] [ref=e270]
+                - paragraph [ref=e271]: Upcoming events from across the network.
+              - button "Subscribe (iCal)" [ref=e272]
+            - generic [ref=e273]:
+              - generic [ref=e274]:
+                - generic [ref=e275]:
+                  - button "Previous month" [ref=e276]
+                  - generic [ref=e277]: July 2026
+                  - button "Next month" [ref=e278]
+                - generic [ref=e279]:
+                  - generic [ref=e280]: M
+                  - generic [ref=e281]: T
+                  - generic [ref=e282]: W
+                  - generic [ref=e283]: T
+                  - generic [ref=e284]: F
+                  - generic [ref=e285]: S
+                  - generic [ref=e286]: S
+                  - generic [ref=e287]: "29"
+                  - generic [ref=e288]: "30"
+                  - generic [ref=e289]: "1"
+                  - generic [ref=e290]: "2"
+                  - generic [ref=e291]: "3"
+                  - generic [ref=e292]: "4"
+                  - generic [ref=e293]: "5"
+                  - generic [ref=e294]: "6"
+                  - generic [ref=e295]: "7"
+                  - generic [ref=e297]: "8"
+                  - generic [ref=e298]: "9"
+                  - generic [ref=e299]: "10"
+                  - generic [ref=e300]: "11"
+                  - generic [ref=e301]: "12"
+                  - generic [ref=e302]: "13"
+                  - generic [ref=e303]: "14"
+                  - generic [ref=e304]: "15"
+                  - generic [ref=e305]: "16"
+                  - generic [ref=e306]: "17"
+                  - generic [ref=e307]: "18"
+                  - generic [ref=e308]: "19"
+                  - generic [ref=e309]: "20"
+                  - generic [ref=e310]: "21"
+                  - generic [ref=e311]: "22"
+                  - generic [ref=e312]: "23"
+                  - generic [ref=e313]: "24"
+                  - generic [ref=e314]: "25"
+                  - generic [ref=e315]: "26"
+                  - generic [ref=e316]: "27"
+                  - generic [ref=e317]: "28"
+                  - generic [ref=e318]: "29"
+                  - generic [ref=e319]: "30"
+                  - generic [ref=e320]: "31"
+                  - generic [ref=e321]: "1"
+                  - generic [ref=e322]: "2"
+                  - generic [ref=e323]: "3"
+                  - generic [ref=e324]: "4"
+                  - generic [ref=e325]: "5"
+                  - generic [ref=e326]: "6"
+                  - generic [ref=e327]: "7"
+                  - generic [ref=e328]: "8"
+                  - generic [ref=e329]: "9"
+              - generic [ref=e330]:
+                - heading "Upcoming" [level=3] [ref=e331]
+                - generic [ref=e332]: No upcoming events.
+          - generic [ref=e336]:
+            - generic [ref=e340]:
+              - heading "Lived experiences" [level=2] [ref=e341]
+              - paragraph [ref=e342]: Voices and stories from people with lived experience.
+            - generic [ref=e343]:
+              - paragraph [ref=e344]: No lived experiences available yet.
+              - paragraph [ref=e345]: Check back soon for community voices.
+          - generic [ref=e349]:
+            - generic [ref=e350]:
+              - paragraph [ref=e351]: Lived experiences
+              - heading "Share your story" [level=2] [ref=e352]
+              - paragraph [ref=e355]: Your lived experience can help shape research and action on climate and mental health. Submit your story to be featured in the hub.
+            - link "Submit your story" [ref=e357] [cursor=pointer]:
+              - /url: /lived-experiences/submit
+          - generic [ref=e360]:
+            - generic [ref=e362]:
+              - heading "Who is involved" [level=2] [ref=e363]
+              - paragraph [ref=e364]: We are a Wellcome funded project that brings together expertise across research, policy, practice, design, and lived experience from across the globe.
+            - generic [ref=e366]:
+              - img "Climate Cares Logo" [ref=e368]
+              - img "Red Cross/Crescent Climate Centre Logo" [ref=e370]
+              - img "University of Nigeria Logo" [ref=e372]
+              - generic [ref=e373]:
+                - img "St. Luke's Medical Center Logo"
+              - generic [ref=e374]:
+                - img "Force of Nature Logo"
+              - generic [ref=e375]:
+                - img "sustyvibes Logo"
+              - generic [ref=e376]:
+                - img "Jordan Health Aid Society"
+              - generic [ref=e377]:
+                - img "Imperial College London Logo"
+              - generic [ref=e378]:
+                - img "Climate Mental Health Network Logo"
+              - generic [ref=e379]:
+                - img "QCMHR Logo"
+              - generic [ref=e380]:
+                - img "Planetary health Alliance Logo"
+              - generic [ref=e381]:
+                - img "Wellcome Logo"
+              - generic [ref=e382]:
+                - img "University of the West Indies Logo"
+              - generic [ref=e383]:
+                - img "BRAC Public Health Logo"
+              - generic [ref=e384]:
+                - img "BRAC University Logo"
+              - generic [ref=e385]:
+                - img "Grantham Institute Logo"
+              - generic [ref=e386]:
+                - img "University of Queensland Logo"
+              - generic [ref=e387]:
+                - img "Waman Wasi Logo"
+              - generic [ref=e388]:
+                - img "Institute of Global Health Innovation Logo"
+              - generic [ref=e389]:
+                - img "IFRC Psychosocial Centre Logo"
+              - generic [ref=e390]:
+                - img "Climate Cares Logo"
+              - generic [ref=e391]:
+                - img "Red Cross/Crescent Climate Centre Logo"
+              - generic [ref=e392]:
+                - img "University of Nigeria Logo"
+              - generic [ref=e393]:
+                - img "St. Luke's Medical Center Logo"
+              - generic [ref=e394]:
+                - img "Force of Nature Logo"
+              - generic [ref=e395]:
+                - img "sustyvibes Logo"
+              - generic [ref=e396]:
+                - img "Jordan Health Aid Society"
+              - generic [ref=e397]:
+                - img "Imperial College London Logo"
+              - generic [ref=e398]:
+                - img "Climate Mental Health Network Logo"
+              - generic [ref=e399]:
+                - img "QCMHR Logo"
+              - generic [ref=e400]:
+                - img "Planetary health Alliance Logo"
+              - generic [ref=e401]:
+                - img "Wellcome Logo"
+              - generic [ref=e402]:
+                - img "University of the West Indies Logo"
+              - generic [ref=e403]:
+                - img "BRAC Public Health Logo"
+              - generic [ref=e404]:
+                - img "BRAC University Logo"
+              - generic [ref=e405]:
+                - img "Grantham Institute Logo"
+              - generic [ref=e406]:
+                - img "University of Queensland Logo"
+              - generic [ref=e407]:
+                - img "Waman Wasi Logo"
+              - generic [ref=e408]:
+                - img "Institute of Global Health Innovation Logo"
+              - generic [ref=e409]:
+                - img "IFRC Psychosocial Centre Logo"
+          - generic [ref=e411]:
+            - generic [ref=e412]:
+              - heading "People in your region" [level=2] [ref=e413]
+              - paragraph [ref=e414]: Connect with researchers, practitioners, and advocates near you.
+            - generic [ref=e415]:
+              - button "Sub-Saharan Africa" [pressed] [ref=e416]
+              - button "Northern Africa and Western Asia" [ref=e420]
+              - button "Central and Southern Asia" [ref=e422]
+              - button "Eastern and South-Eastern Asia" [ref=e424]
+              - button "Latin America and the Caribbean" [ref=e426]
+              - button "Oceania" [ref=e428]
+              - button "Europe and North America" [ref=e430]
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e442] [cursor=pointer]
+  - alert [ref=e446]

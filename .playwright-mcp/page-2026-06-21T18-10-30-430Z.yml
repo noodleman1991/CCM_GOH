@@ -1,0 +1,312 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - list [ref=e7]:
+          - listitem [ref=e8]:
+            - link "Go to homepage" [ref=e9] [cursor=pointer]:
+              - /url: /
+              - img "Connecting Climate Minds Logo" [ref=e10]
+        - button "Search... ⌘K" [ref=e12]:
+          - img [ref=e13]
+          - generic [ref=e16]: Search...
+          - generic [ref=e17]: ⌘K
+      - generic [ref=e18]:
+        - generic [ref=e19]:
+          - generic [ref=e20]: Discover
+          - list [ref=e21]:
+            - listitem [ref=e22]:
+              - button "Research & Action" [ref=e23]:
+                - img [ref=e24]
+                - generic [ref=e26]: Research & Action
+                - img [ref=e27]
+            - listitem [ref=e29]:
+              - link "News & Updates" [ref=e30] [cursor=pointer]:
+                - /url: /en/news
+                - img [ref=e31]
+                - generic [ref=e34]: News & Updates
+            - listitem [ref=e35]:
+              - link "Lived experiences" [ref=e36] [cursor=pointer]:
+                - /url: /en/lived-experiences
+                - img [ref=e37]
+                - generic [ref=e39]: Lived experiences
+            - listitem [ref=e40]:
+              - link "Case studies" [ref=e41] [cursor=pointer]:
+                - /url: /en/research-and-action/case-studies
+                - img [ref=e42]
+                - generic [ref=e45]: Case studies
+        - generic [ref=e46]:
+          - generic [ref=e47]: Collaborate
+          - list [ref=e48]:
+            - listitem [ref=e49]:
+              - button "Regional Communities" [ref=e50]:
+                - img [ref=e51]
+                - generic [ref=e54]: Regional Communities
+                - img [ref=e55]
+            - listitem [ref=e57]:
+              - link "Find people" [ref=e58] [cursor=pointer]:
+                - /url: /en/collaborate
+                - img [ref=e59]
+                - generic [ref=e64]: Find people
+            - listitem [ref=e65]:
+              - link "Start or find a project" [ref=e66] [cursor=pointer]:
+                - /url: /en/collaborate
+                - img [ref=e67]
+                - generic [ref=e69]: Start or find a project
+        - list [ref=e72]:
+          - listitem [ref=e73]:
+            - link "About" [ref=e74] [cursor=pointer]:
+              - /url: /about
+              - img [ref=e75]
+              - generic [ref=e77]: About
+          - listitem [ref=e78]:
+            - link "Feedback" [ref=e79] [cursor=pointer]:
+              - /url: /feedback
+              - img [ref=e80]
+              - generic [ref=e82]: Feedback
+      - list [ref=e85]:
+        - listitem [ref=e86]:
+          - button "English" [ref=e87]:
+            - generic [ref=e89]: English
+            - img [ref=e90]
+    - main [ref=e94]:
+      - generic [ref=e95]:
+        - button "Toggle Sidebar" [ref=e97]:
+          - img
+          - generic [ref=e98]: Toggle Sidebar
+        - button "Search..." [ref=e100]:
+          - img [ref=e101]
+      - main [ref=e105]:
+        - generic [ref=e106]:
+          - generic [ref=e109]:
+            - generic [ref=e110]:
+              - generic [ref=e111]:
+                - heading "Lived Experiences" [level=1] [ref=e112]
+                - paragraph [ref=e113]: Lived experience is a foundational source of expertise to be engaged when addressing the mental health consequences of climate change. Listening to and learning from various individuals and communities that are directly affected by the interrelated challenges of climate change and mental health is fundamental to creating impactful research and action. Importantly, lived experiences help all efforts at this intersection to generate feasible solutions for and with the most impacted groups, leading to more inclusive research and action. The stories shown below, and the insights within them, reflect a commitment to moving beyond tokenization, and towards valuing and uplifting the contribution of lived experiences to this growing field.
+              - link "Share your experience" [ref=e115] [cursor=pointer]:
+                - /url: /en/lived-experiences/submit
+                - img
+                - text: Share your experience
+            - img "A figure jumping off a book - illustration" [ref=e118]
+          - generic [ref=e119]:
+            - generic [ref=e120]:
+              - generic [ref=e121]:
+                - generic [ref=e122]:
+                  - img
+                  - textbox "Search lived experiences..." [ref=e123]
+                - generic [ref=e124]:
+                  - button "Filter by Region" [ref=e125]:
+                    - generic [ref=e126]: Filter by Region
+                    - img [ref=e127]
+                  - button "Filter by Tag" [ref=e129]:
+                    - generic [ref=e130]: Filter by Tag
+                    - img [ref=e131]
+              - generic [ref=e133]: 21 videos
+            - generic [ref=e134]:
+              - generic [ref=e135]:
+                - generic [ref=e136]:
+                  - heading "Central and Southern Asia Regional Community" [level=2] [ref=e137]
+                  - paragraph [ref=e138]: 5 videos
+                - generic [ref=e139]:
+                  - generic [ref=e140]:
+                    - button "Samridha's Lived Experience story - Mental health impacts of climate change - Nepal and India Video Samridha's Lived Experience story - Mental health impacts of climate change - Nepal and India" [ref=e141]:
+                      - generic [ref=e142]:
+                        - img "Samridha's Lived Experience story - Mental health impacts of climate change - Nepal and India" [ref=e143]
+                        - generic [ref=e144]:
+                          - img [ref=e145]
+                          - text: Video
+                        - img [ref=e150]
+                      - heading "Samridha's Lived Experience story - Mental health impacts of climate change - Nepal and India" [level=3] [ref=e152]
+                    - button "Monuja's Lived Experience story - Mental health impacts of climate change - Bangladesh Video Monuja's Lived Experience story - Mental health impacts of climate change - Bangladesh" [ref=e153]:
+                      - generic [ref=e154]:
+                        - img "Monuja's Lived Experience story - Mental health impacts of climate change - Bangladesh" [ref=e155]
+                        - generic [ref=e156]:
+                          - img [ref=e157]
+                          - text: Video
+                        - img [ref=e162]
+                      - heading "Monuja's Lived Experience story - Mental health impacts of climate change - Bangladesh" [level=3] [ref=e164]
+                    - button "Dharma's Lived Experience Story - Mental health impacts of climate change - Nepal Video Dharma's Lived Experience Story - Mental health impacts of climate change - Nepal" [ref=e165]:
+                      - generic [ref=e166]:
+                        - img "Dharma's Lived Experience Story - Mental health impacts of climate change - Nepal" [ref=e167]
+                        - generic [ref=e168]:
+                          - img [ref=e169]
+                          - text: Video
+                        - img [ref=e174]
+                      - heading "Dharma's Lived Experience Story - Mental health impacts of climate change - Nepal" [level=3] [ref=e176]
+                    - button "Lived Experience story from India - Mental health impacts of climate change - India Video Lived Experience story from India - Mental health impacts of climate change - India" [ref=e177]:
+                      - generic [ref=e178]:
+                        - img "Lived Experience story from India - Mental health impacts of climate change - India" [ref=e179]
+                        - generic [ref=e180]:
+                          - img [ref=e181]
+                          - text: Video
+                        - img [ref=e186]
+                      - heading "Lived Experience story from India - Mental health impacts of climate change - India" [level=3] [ref=e188]
+                    - button "Diya's Lived Experience story - Mental health impacts of climate change - India Video Diya's Lived Experience story - Mental health impacts of climate change - India" [ref=e189]:
+                      - generic [ref=e190]:
+                        - img "Diya's Lived Experience story - Mental health impacts of climate change - India" [ref=e191]
+                        - generic [ref=e192]:
+                          - img [ref=e193]
+                          - text: Video
+                        - img [ref=e198]
+                      - heading "Diya's Lived Experience story - Mental health impacts of climate change - India" [level=3] [ref=e200]
+                  - button "Scroll forward" [ref=e201]:
+                    - img [ref=e202]
+              - generic [ref=e204]:
+                - generic [ref=e205]:
+                  - heading "Eastern and South Eastern Asia Regional Community" [level=2] [ref=e206]
+                  - paragraph [ref=e207]: 3 videos
+                - generic [ref=e209]:
+                  - button "Veronica's Lived Experience story - Mental health impacts of climate change - Philippines Video Veronica's Lived Experience story - Mental health impacts of climate change - Philippines" [ref=e210]:
+                    - generic [ref=e211]:
+                      - img "Veronica's Lived Experience story - Mental health impacts of climate change - Philippines" [ref=e212]
+                      - generic [ref=e213]:
+                        - img [ref=e214]
+                        - text: Video
+                      - img [ref=e219]
+                    - heading "Veronica's Lived Experience story - Mental health impacts of climate change - Philippines" [level=3] [ref=e221]
+                  - button "Marinel's Lived Experience story - Mental health impacts of climate change - Philippines Video Marinel's Lived Experience story - Mental health impacts of climate change - Philippines" [ref=e222]:
+                    - generic [ref=e223]:
+                      - img "Marinel's Lived Experience story - Mental health impacts of climate change - Philippines" [ref=e224]
+                      - generic [ref=e225]:
+                        - img [ref=e226]
+                        - text: Video
+                      - img [ref=e231]
+                    - heading "Marinel's Lived Experience story - Mental health impacts of climate change - Philippines" [level=3] [ref=e233]
+                  - button "Jhonatan's Lived Experience Story - Mental health impacts of climate change - Indonesia Video Jhonatan's Lived Experience Story - Mental health impacts of climate change - Indonesia" [ref=e234]:
+                    - generic [ref=e235]:
+                      - img "Jhonatan's Lived Experience Story - Mental health impacts of climate change - Indonesia" [ref=e236]
+                      - generic [ref=e237]:
+                        - img [ref=e238]
+                        - text: Video
+                      - img [ref=e243]
+                    - heading "Jhonatan's Lived Experience Story - Mental health impacts of climate change - Indonesia" [level=3] [ref=e245]
+              - generic [ref=e246]:
+                - generic [ref=e247]:
+                  - heading "Europe and Northern America Regional Community" [level=2] [ref=e248]
+                  - paragraph [ref=e249]: 3 videos
+                - generic [ref=e251]:
+                  - button "Hilde's Lived Experience story - Mental health impacts of climate change - Germany Video Hilde's Lived Experience story - Mental health impacts of climate change - Germany" [ref=e252]:
+                    - generic [ref=e253]:
+                      - img "Hilde's Lived Experience story - Mental health impacts of climate change - Germany" [ref=e254]
+                      - generic [ref=e255]:
+                        - img [ref=e256]
+                        - text: Video
+                      - img [ref=e261]
+                    - heading "Hilde's Lived Experience story - Mental health impacts of climate change - Germany" [level=3] [ref=e263]
+                  - button "Charles' Lived Experience story - Mental health impacts of climate change - Pennsylvania, USA Video Charles' Lived Experience story - Mental health impacts of climate change - Pennsylvania, USA" [ref=e264]:
+                    - generic [ref=e265]:
+                      - img "Charles' Lived Experience story - Mental health impacts of climate change - Pennsylvania, USA" [ref=e266]
+                      - generic [ref=e267]:
+                        - img [ref=e268]
+                        - text: Video
+                      - img [ref=e273]
+                    - heading "Charles' Lived Experience story - Mental health impacts of climate change - Pennsylvania, USA" [level=3] [ref=e275]
+                  - button "Dr. Adrienne's Lived Experience story - Mental health impacts of climate change - California, USA Video Dr. Adrienne's Lived Experience story - Mental health impacts of climate change - California, USA" [ref=e276]:
+                    - generic [ref=e277]:
+                      - img "Dr. Adrienne's Lived Experience story - Mental health impacts of climate change - California, USA" [ref=e278]
+                      - generic [ref=e279]:
+                        - img [ref=e280]
+                        - text: Video
+                      - img [ref=e285]
+                    - heading "Dr. Adrienne's Lived Experience story - Mental health impacts of climate change - California, USA" [level=3] [ref=e287]
+              - generic [ref=e288]:
+                - generic [ref=e289]:
+                  - heading "Latin America and the Caribbean Regional Community" [level=2] [ref=e290]
+                  - paragraph [ref=e291]: 1 video
+                - button "Raquel's Lived Experience story - Mental health impacts of climate change - Brazil Video Raquel's Lived Experience story - Mental health impacts of climate change - Brazil" [ref=e294]:
+                  - generic [ref=e295]:
+                    - img "Raquel's Lived Experience story - Mental health impacts of climate change - Brazil" [ref=e296]
+                    - generic [ref=e297]:
+                      - img [ref=e298]
+                      - text: Video
+                    - img [ref=e303]
+                  - heading "Raquel's Lived Experience story - Mental health impacts of climate change - Brazil" [level=3] [ref=e305]
+              - generic [ref=e306]:
+                - generic [ref=e307]:
+                  - heading "Oceania Regional Community" [level=2] [ref=e308]
+                  - paragraph [ref=e309]: 3 videos
+                - generic [ref=e311]:
+                  - button "James' Lived Experience story - Mental health impacts of climate change - Solomon Islands Video James' Lived Experience story - Mental health impacts of climate change - Solomon Islands" [ref=e312]:
+                    - generic [ref=e313]:
+                      - img "James' Lived Experience story - Mental health impacts of climate change - Solomon Islands" [ref=e314]
+                      - generic [ref=e315]:
+                        - img [ref=e316]
+                        - text: Video
+                      - img [ref=e321]
+                    - heading "James' Lived Experience story - Mental health impacts of climate change - Solomon Islands" [level=3] [ref=e323]
+                  - button "Faye's Lived Experience story - Mental health impacts of climate change - Aotearoa /New Zealand Video Faye's Lived Experience story - Mental health impacts of climate change - Aotearoa /New Zealand" [ref=e324]:
+                    - generic [ref=e325]:
+                      - img "Faye's Lived Experience story - Mental health impacts of climate change - Aotearoa /New Zealand" [ref=e326]
+                      - generic [ref=e327]:
+                        - img [ref=e328]
+                        - text: Video
+                      - img [ref=e333]
+                    - heading "Faye's Lived Experience story - Mental health impacts of climate change - Aotearoa /New Zealand" [level=3] [ref=e335]
+                  - button "Chloe's Lived Experience story - Mental health impacts of climate change - Australia Video Chloe's Lived Experience story - Mental health impacts of climate change - Australia" [ref=e336]:
+                    - generic [ref=e337]:
+                      - img "Chloe's Lived Experience story - Mental health impacts of climate change - Australia" [ref=e338]
+                      - generic [ref=e339]:
+                        - img [ref=e340]
+                        - text: Video
+                      - img [ref=e345]
+                    - heading "Chloe's Lived Experience story - Mental health impacts of climate change - Australia" [level=3] [ref=e347]
+              - generic [ref=e348]:
+                - generic [ref=e349]:
+                  - heading "Sub-Saharan Africa Regional Community" [level=2] [ref=e350]
+                  - paragraph [ref=e351]: 6 videos
+                - generic [ref=e352]:
+                  - generic [ref=e353]:
+                    - button "Sunday 's Lived Experience story - Mental health impacts of climate change - Nigeria Video Sunday 's Lived Experience story - Mental health impacts of climate change - Nigeria" [ref=e354]:
+                      - generic [ref=e355]:
+                        - img "Sunday 's Lived Experience story - Mental health impacts of climate change - Nigeria" [ref=e356]
+                        - generic [ref=e357]:
+                          - img [ref=e358]
+                          - text: Video
+                        - img [ref=e363]
+                      - heading "Sunday 's Lived Experience story - Mental health impacts of climate change - Nigeria" [level=3] [ref=e365]
+                    - button "Paul 's Lived Experience story - Mental health impacts of climate change - Anambra State, Nigeria Video Paul 's Lived Experience story - Mental health impacts of climate change - Anambra State, Nigeria" [ref=e366]:
+                      - generic [ref=e367]:
+                        - img "Paul 's Lived Experience story - Mental health impacts of climate change - Anambra State, Nigeria" [ref=e368]
+                        - generic [ref=e369]:
+                          - img [ref=e370]
+                          - text: Video
+                        - img [ref=e375]
+                      - heading "Paul 's Lived Experience story - Mental health impacts of climate change - Anambra State, Nigeria" [level=3] [ref=e377]
+                    - button "Laureen's Lived Experience story - Mental health impacts of climate change - Kenya Video Laureen's Lived Experience story - Mental health impacts of climate change - Kenya" [ref=e378]:
+                      - generic [ref=e379]:
+                        - img "Laureen's Lived Experience story - Mental health impacts of climate change - Kenya" [ref=e380]
+                        - generic [ref=e381]:
+                          - img [ref=e382]
+                          - text: Video
+                        - img [ref=e387]
+                      - heading "Laureen's Lived Experience story - Mental health impacts of climate change - Kenya" [level=3] [ref=e389]
+                    - button "Ibiso's Lived Experience story - Mental health impacts of climate change - Nigeria Video Ibiso's Lived Experience story - Mental health impacts of climate change - Nigeria" [ref=e390]:
+                      - generic [ref=e391]:
+                        - img "Ibiso's Lived Experience story - Mental health impacts of climate change - Nigeria" [ref=e392]
+                        - generic [ref=e393]:
+                          - img [ref=e394]
+                          - text: Video
+                        - img [ref=e399]
+                      - heading "Ibiso's Lived Experience story - Mental health impacts of climate change - Nigeria" [level=3] [ref=e401]
+                    - button "Dr Mercy's Lived Experience story - Mental health impacts of climate change - Kenya Video Dr Mercy's Lived Experience story - Mental health impacts of climate change - Kenya" [ref=e402]:
+                      - generic [ref=e403]:
+                        - img "Dr Mercy's Lived Experience story - Mental health impacts of climate change - Kenya" [ref=e404]
+                        - generic [ref=e405]:
+                          - img [ref=e406]
+                          - text: Video
+                        - img [ref=e411]
+                      - heading "Dr Mercy's Lived Experience story - Mental health impacts of climate change - Kenya" [level=3] [ref=e413]
+                    - button "Leah's Lived Experience story - Mental health impacts of climate change - Kenya Video Leah's Lived Experience story - Mental health impacts of climate change - Kenya" [ref=e414]:
+                      - generic [ref=e415]:
+                        - img "Leah's Lived Experience story - Mental health impacts of climate change - Kenya" [ref=e416]
+                        - generic [ref=e417]:
+                          - img [ref=e418]
+                          - text: Video
+                        - img [ref=e423]
+                      - heading "Leah's Lived Experience story - Mental health impacts of climate change - Kenya" [level=3] [ref=e425]
+                  - button "Scroll forward" [ref=e426]:
+                    - img [ref=e427]
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e434] [cursor=pointer]:
+    - img [ref=e435]
+  - alert [ref=e438]

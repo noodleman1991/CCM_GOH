@@ -1,0 +1,71 @@
+[    1275ms] [WARNING]  [33m[1m⚠[22m[39m Runtime config is deprecated and will be removed in Next.js 16. Please remove the usage of "next/config" from your project. @ https://www.sanity.io/manage-assets/_next/static/chunks/pages/_app-7436e707cfb5f630.js:3051
+[    1433ms] [WARNING] Since you haven't set a value for `useCdn`, we will deliver content using our global, edge-cached API-CDN. If you wish to have content delivered faster, set `useCdn: false` to use the Live API. Note: You may incur higher costs using the live API. @ https://www.sanity.io/manage-assets/_next/static/chunks/pages/_app-7436e707cfb5f630.js:3051
+[    1604ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://www.googletagmanager.com/gtm.js?id=GTM-NSQK92T:0
+[    1605ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://o131006.ingest.sentry.io/api/295086/envelope/?sentry_key=fe01a52d231d48c88af403dead49ed6e&sentry_version=7&sentry_client=sentry.javascript.nextjs%2F8.28.0:0
+[    1957ms] [WARNING] Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://cmp.osano.com') does not match the recipient window's origin ('https://www.sanity.io'). @ https://cmp.osano.com/16CLWDTCcnYWI2HHP/e53d2bde-32d5-45a1-ab1a-16b98951bfe3/osano.js:1
+[    2463ms] Could not clear consent from root domain.
+[    2441ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://o131006.ingest.sentry.io/api/295086/envelope/?sentry_key=fe01a52d231d48c88af403dead49ed6e&sentry_version=7&sentry_client=sentry.javascript.nextjs%2F8.28.0:0
+[    2441ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://o131006.ingest.sentry.io/api/295086/envelope/?sentry_key=fe01a52d231d48c88af403dead49ed6e&sentry_version=7&sentry_client=sentry.javascript.nextjs%2F8.28.0:0
+[    2643ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://api.sanity.io/v2025-07-11/access/project/gm67v7rk/user-permissions/me:0
+[    2826ms] [ERROR] Fetch error: TypeError: Failed to fetch
+    at https://www.sanity.io/manage-assets/_next/static/chunks/pages/_app-7436e707cfb5f630.js:3052:9413
+    at https://www.sanity.io/manage-assets/_next/static/chunks/pages/_app-7436e707cfb5f630.js:3052:9413
+    at e.<anonymous> (https://cdn.vector.co/pixel.js:2:30737)
+    at Generator.<anonymous> (https://cdn.vector.co/pixel.js:2:27963)
+    at Generator.next (https://cdn.vector.co/pixel.js:2:28793)
+    at s (https://cdn.vector.co/pixel.js:2:29667)
+    at a (https://cdn.vector.co/pixel.js:2:31166)
+    at https://cdn.vector.co/pixel.js:2:31225
+    at new Promise (<anonymous>)
+    at e.o (https://cdn.vector.co/pixel.js:2:31107)
+    at t.value (https://cdn.vector.co/pixel.js:2:31259)
+    at e.value (https://cdn.vector.co/pixel.js:2:31389)
+    at https://cdn.vector.co/pixel.js:2:10446
+    at Generator.<anonymous> (https://cdn.vector.co/pixel.js:2:8211)
+    at Generator.next (https://cdn.vector.co/pixel.js:2:9041)
+    at d (https://cdn.vector.co/pixel.js:2:9221)
+    at a (https://cdn.vector.co/pixel.js:2:9423)
+    at https://cdn.vector.co/pixel.js:2:9482
+    at new Promise (<anonymous>)
+    at https://cdn.vector.co/pixel.js:2:9364
+    at https://cdn.vector.co/pixel.js:2:10679
+    at https://cdn.vector.co/pixel.js:2:11256
+    at Generator.<anonymous> (https://cdn.vector.co/pixel.js:2:8211)
+    at Generator.next (https://cdn.vector.co/pixel.js:2:9041)
+    at d (https://cdn.vector.co/pixel.js:2:9221)
+    at a (https://cdn.vector.co/pixel.js:2:9423)
+    at https://cdn.vector.co/pixel.js:2:9482
+    at new Promise (<anonymous>)
+    at Object.<anonymous> (https://cdn.vector.co/pixel.js:2:9364)
+    at Object.getIpInfoAndCheckCloudProvider (https://cdn.vector.co/pixel.js:2:11382)
+    at https://cdn.vector.co/pixel.js:2:204738
+    at Generator.<anonymous> (https://cdn.vector.co/pixel.js:2:201384)
+    at Generator.next (https://cdn.vector.co/pixel.js:2:202214)
+    at l (https://cdn.vector.co/pixel.js:2:202394)
+    at a (https://cdn.vector.co/pixel.js:2:202596)
+    at https://cdn.vector.co/pixel.js:2:202655
+    at new Promise (<anonymous>)
+    at https://cdn.vector.co/pixel.js:2:202537
+    at https://cdn.vector.co/pixel.js:2:206714
+    at Generator.<anonymous> (https://cdn.vector.co/pixel.js:2:201384)
+    at Generator.next (https://cdn.vector.co/pixel.js:2:202214)
+    at l (https://cdn.vector.co/pixel.js:2:202394)
+    at a (https://cdn.vector.co/pixel.js:2:202596)
+    at https://cdn.vector.co/pixel.js:2:202655
+    at new Promise (<anonymous>)
+    at https://cdn.vector.co/pixel.js:2:202537
+    at e.<anonymous> (https://cdn.vector.co/pixel.js:2:213529)
+    at Generator.<anonymous> (https://cdn.vector.co/pixel.js:2:201384)
+    at Generator.next (https://cdn.vector.co/pixel.js:2:202214)
+    at l (https://cdn.vector.co/pixel.js:2:202394) @ https://www.sanity.io/manage-assets/_next/static/chunks/pages/_app-7436e707cfb5f630.js:3051
+[    3150ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://www.googletagmanager.com/gtm.js?id=GTM-N3ZSHCP:0
+[   10127ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://collector.github.com/github/collect:0
+[   10127ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://collector.github.com/github/collect:0
+[   11843ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://collector.github.com/github/collect:0
+[   15085ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://collector.github.com/github/collect:0
+[   17591ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://collector.github.com/github/collect:0
+[   17591ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://collector.github.com/github/collect:0
+[   20495ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://collector.github.com/github/collect:0
+[   63552ms] The operation either timed out or was not allowed. See: https://www.w3.org/TR/webauthn-2/#sctn-privacy-considerations-client.
+[   63537ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://collector.github.com/github/collect:0
+[   63537ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://collector.github.com/github/collect:0

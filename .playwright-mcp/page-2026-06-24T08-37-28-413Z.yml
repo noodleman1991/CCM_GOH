@@ -1,0 +1,402 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - list [ref=e7]:
+          - listitem [ref=e8]:
+            - link "Go to homepage" [ref=e9] [cursor=pointer]:
+              - /url: /
+              - img "Connecting Climate Minds Logo" [ref=e10]
+        - button "Search... ⌘K" [ref=e12]:
+          - img [ref=e13]
+          - generic [ref=e16]: Search...
+          - generic [ref=e17]: ⌘K
+      - generic [ref=e18]:
+        - generic [ref=e19]:
+          - generic [ref=e20]: Discover
+          - list [ref=e21]:
+            - listitem [ref=e22]:
+              - link "Atlas & Explore" [ref=e23] [cursor=pointer]:
+                - /url: /en/atlas
+                - img [ref=e24]
+                - generic [ref=e27]: Atlas & Explore
+            - listitem [ref=e28]:
+              - button "Research & Action" [ref=e29]:
+                - img [ref=e30]
+                - generic [ref=e32]: Research & Action
+                - img [ref=e33]
+            - listitem [ref=e35]:
+              - link "News & Updates" [ref=e36] [cursor=pointer]:
+                - /url: /en/news
+                - img [ref=e37]
+                - generic [ref=e40]: News & Updates
+            - listitem [ref=e41]:
+              - link "Lived experiences" [ref=e42] [cursor=pointer]:
+                - /url: /en/lived-experiences
+                - img [ref=e43]
+                - generic [ref=e45]: Lived experiences
+            - listitem [ref=e46]:
+              - link "Case studies" [ref=e47] [cursor=pointer]:
+                - /url: /en/research-and-action/case-studies
+                - img [ref=e48]
+                - generic [ref=e51]: Case studies
+        - generic [ref=e52]:
+          - generic [ref=e53]: Collaborate
+          - list [ref=e54]:
+            - listitem [ref=e55]:
+              - button "Regional Communities" [ref=e56]:
+                - img [ref=e57]
+                - generic [ref=e60]: Regional Communities
+                - img [ref=e61]
+            - listitem [ref=e63]:
+              - link "Find people" [ref=e64] [cursor=pointer]:
+                - /url: /en/collaborate
+                - img [ref=e65]
+                - generic [ref=e70]: Find people
+            - listitem [ref=e71]:
+              - link "Start or find a project" [ref=e72] [cursor=pointer]:
+                - /url: /en/collaborations
+                - img [ref=e73]
+                - generic [ref=e75]: Start or find a project
+        - list [ref=e78]:
+          - listitem [ref=e79]:
+            - link "About" [ref=e80] [cursor=pointer]:
+              - /url: /about
+              - img [ref=e81]
+              - generic [ref=e83]: About
+          - listitem [ref=e84]:
+            - link "Feedback" [ref=e85] [cursor=pointer]:
+              - /url: /feedback
+              - img [ref=e86]
+              - generic [ref=e88]: Feedback
+      - generic [ref=e90]:
+        - list [ref=e91]:
+          - listitem [ref=e92]:
+            - button [disabled]
+        - list [ref=e93]:
+          - listitem [ref=e94]:
+            - button "English" [ref=e95]:
+              - generic [ref=e97]: English
+              - img [ref=e98]
+    - main [ref=e102]:
+      - generic [ref=e103]:
+        - button "Toggle Sidebar" [ref=e105]:
+          - img
+          - generic [ref=e106]: Toggle Sidebar
+        - button "Search..." [ref=e108]:
+          - img [ref=e109]
+      - main [ref=e113]:
+        - generic [ref=e114]:
+          - generic [ref=e117]:
+            - generic [ref=e118]:
+              - heading "Welcome to the Connected Climate Minds hub, where the worlds of mental health and climate change research unite." [level=1] [ref=e119]
+              - paragraph [ref=e122]: "We are dedicated to fostering a connected global research community, all driven by a common goal: understanding and addressing the intricate relationship between our planet's changing climate and our mental health."
+              - link "View our Research" [ref=e124] [cursor=pointer]:
+                - /url: /research-and-action/all-outputs
+            - img "Connecting Climate Minds Welcome Illustration" [ref=e127]
+          - generic [ref=e131]:
+            - generic [ref=e134]:
+              - heading "Prioritizing Global Research and Action for Climate Change and Mental Health" [level=2] [ref=e135]
+              - paragraph [ref=e138]: The Global Research and Action Agenda for climate change and mental health sets out priorities for research and action that have been developed from dialogues and consultation with 960+ experts in research, policy, practice, and lived experience in 90 countries.
+              - link "Read the Global Agenda" [ref=e140] [cursor=pointer]:
+                - /url: /research-and-action/global-agenda
+            - img "Global Agenda Cover" [ref=e143]
+          - generic [ref=e147]:
+            - img "Sign up to the hub illustration" [ref=e150]
+            - generic [ref=e153]:
+              - heading "Your collaborative space for ideas, dialogue, and connection" [level=2] [ref=e154]
+              - paragraph [ref=e157]: Whether you want to delve into priority areas for research and action, seek inspiration and understanding from case studies, personal experiences and insights, learn from "how to" toolkits, or are looking to join our growing global community and form new connections, this hub is for you.
+              - link "Create an Account" [ref=e159] [cursor=pointer]:
+                - /url: /sign-up
+          - generic [ref=e162]:
+            - heading "Catalysing interdisciplinary research to inform action in policy and practice" [level=2] [ref=e169]
+            - generic [ref=e171]:
+              - generic [ref=e173]:
+                - generic [ref=e174]:
+                  - img "Connecting Climate Minds Global Event Impact Report" [ref=e175]
+                  - generic [ref=e177]: Other
+                - heading "Connecting Climate Minds Global Event Impact Report" [level=3] [ref=e180]
+                - generic [ref=e181]:
+                  - paragraph [ref=e182]: Research and action for climate mental health
+                  - generic [ref=e184]:
+                    - img [ref=e185]
+                    - generic [ref=e187]: "2024"
+                - generic [ref=e189]:
+                  - generic [ref=e190]:
+                    - img [ref=e191]
+                    - generic [ref=e195]: Available in 1 language
+                  - button "English (6.4 MB)" [ref=e197]:
+                    - img
+                    - generic [ref=e198]: English
+                    - generic [ref=e199]: (6.4 MB)
+              - generic [ref=e201]:
+                - generic [ref=e202]:
+                  - img "An Introductory Toolkit for Researchers" [ref=e203]
+                  - generic [ref=e205]: Guidelines
+                - 'heading "Climate Change and Mental Health: An Introductory Toolkit for Researchers" [level=3] [ref=e208]'
+                - generic [ref=e209]:
+                  - paragraph [ref=e210]: A practical guide for researchers
+                  - generic [ref=e212]:
+                    - img [ref=e213]
+                    - generic [ref=e215]: "2024"
+                - generic [ref=e217]:
+                  - generic [ref=e218]:
+                    - img [ref=e219]
+                    - generic [ref=e223]: Available in 1 language
+                  - button "English (8.0 MB)" [ref=e225]:
+                    - img
+                    - generic [ref=e226]: English
+                    - generic [ref=e227]: (8.0 MB)
+              - generic [ref=e229]:
+                - generic [ref=e230]:
+                  - img "Young People" [ref=e231]
+                  - generic [ref=e233]: Other
+                - heading "Youth Declaration" [level=3] [ref=e236]
+                - generic [ref=e237]:
+                  - paragraph [ref=e238]: A call to action from youth worldwide
+                  - generic [ref=e240]:
+                    - img [ref=e241]
+                    - generic [ref=e243]: "2024"
+                - generic [ref=e245]:
+                  - generic [ref=e246]:
+                    - img [ref=e247]
+                    - generic [ref=e251]: Available in 1 language
+                  - button "English (526 KB)" [ref=e253]:
+                    - img
+                    - generic [ref=e254]: English
+                    - generic [ref=e255]: (526 KB)
+          - generic [ref=e260]:
+            - heading "Stories of grief, resilience, and hope" [level=2] [ref=e261]
+            - paragraph [ref=e262]: Understanding and learning from lived experience is essential to navigating the relationship between mental health and climate change. Browse our library of lived experience insights shared by people across the globe, providing invaluable insights into impacts and solutions.
+          - generic [ref=e265]:
+            - heading "Regional communities driving global research" [level=2] [ref=e272]
+            - generic [ref=e274]:
+              - link "Sub-Saharan Africa Regional Community of Practice View Community" [ref=e276] [cursor=pointer]:
+                - /url: /communities/sub-saharan-africa
+                - generic [ref=e277]:
+                  - generic [ref=e280]:
+                    - heading "Sub-Saharan Africa" [level=3] [ref=e282]
+                    - paragraph [ref=e283]: Regional Community of Practice
+                  - generic [ref=e284]: View Community
+              - link "Northern Africa and Western Asia Regional Community of Practice View Community" [ref=e286] [cursor=pointer]:
+                - /url: /communities/northern-africa-and-western-asia
+                - generic [ref=e287]:
+                  - generic [ref=e290]:
+                    - heading "Northern Africa and Western Asia" [level=3] [ref=e292]
+                    - paragraph [ref=e293]: Regional Community of Practice
+                  - generic [ref=e294]: View Community
+              - link "Central and Southern Asia Regional Community of Practice View Community" [ref=e296] [cursor=pointer]:
+                - /url: /communities/central-and-southern-asia
+                - generic [ref=e297]:
+                  - generic [ref=e300]:
+                    - heading "Central and Southern Asia" [level=3] [ref=e302]
+                    - paragraph [ref=e303]: Regional Community of Practice
+                  - generic [ref=e304]: View Community
+              - link "Eastern and South-Eastern Asia Regional Community of Practice View Community" [ref=e306] [cursor=pointer]:
+                - /url: /communities/eastern-and-south-eastern-asia
+                - generic [ref=e307]:
+                  - generic [ref=e310]:
+                    - heading "Eastern and South-Eastern Asia" [level=3] [ref=e312]
+                    - paragraph [ref=e313]: Regional Community of Practice
+                  - generic [ref=e314]: View Community
+              - link "Latin America and the Caribbean Regional Community of Practice View Community" [ref=e316] [cursor=pointer]:
+                - /url: /communities/latin-america-and-the-caribbean
+                - generic [ref=e317]:
+                  - generic [ref=e320]:
+                    - heading "Latin America and the Caribbean" [level=3] [ref=e322]
+                    - paragraph [ref=e323]: Regional Community of Practice
+                  - generic [ref=e324]: View Community
+              - link "Oceania Regional Community of Practice View Community" [ref=e326] [cursor=pointer]:
+                - /url: /communities/oceania
+                - generic [ref=e327]:
+                  - generic [ref=e330]:
+                    - heading "Oceania" [level=3] [ref=e332]
+                    - paragraph [ref=e333]: Regional Community of Practice
+                  - generic [ref=e334]: View Community
+              - link "Europe and Northern America Regional Community of Practice View Community" [ref=e336] [cursor=pointer]:
+                - /url: /communities/europe-and-northern-america
+                - generic [ref=e337]:
+                  - generic [ref=e340]:
+                    - heading "Europe and Northern America" [level=3] [ref=e342]
+                    - paragraph [ref=e343]: Regional Community of Practice
+                  - generic [ref=e344]: View Community
+          - generic [ref=e348]:
+            - img "Collaboration illustration" [ref=e351]
+            - generic [ref=e354]:
+              - heading "Facilitating meaningful connection and collaboration" [level=2] [ref=e355]
+              - paragraph [ref=e358]: Whether you're seeking expertise for a project, looking to join forces on research, or wanting to share innovative ideas, our Collaborate area is a meeting place for individuals and organizations from various fields to connect and collaborate.
+              - link "View Collaborate Area" [ref=e360] [cursor=pointer]:
+                - /url: /collaborate
+          - generic [ref=e362]:
+            - heading "People in your region" [level=2] [ref=e364]
+            - generic [ref=e365]:
+              - button "Sub-Saharan Africa" [pressed] [ref=e366]:
+                - img [ref=e367]
+                - generic [ref=e369]: Sub-Saharan Africa
+              - button "Northern Africa and Western Asia" [ref=e370]:
+                - generic [ref=e371]: Northern Africa and Western Asia
+              - button "Central and Southern Asia" [ref=e372]:
+                - generic [ref=e373]: Central and Southern Asia
+              - button "Eastern and South-Eastern Asia" [ref=e374]:
+                - generic [ref=e375]: Eastern and South-Eastern Asia
+              - button "Latin America and the Caribbean" [ref=e376]:
+                - generic [ref=e377]: Latin America and the Caribbean
+              - button "Oceania" [ref=e378]:
+                - generic [ref=e379]: Oceania
+              - button "Europe and North America" [ref=e380]:
+                - generic [ref=e381]: Europe and North America
+          - generic [ref=e389]:
+            - heading "Latest news in the field" [level=2] [ref=e396]
+            - generic [ref=e398]:
+              - link "Illustration News Climate Change Is Becoming a Mental Health Crisis — and Communities Are Already Living It From farmers facing hopelessness after crop loss to Indigenous communities grieving disappearing ecosystems, a new global agenda warns climate change is reshaping emotional survival, identity, and wellbeing. May 20, 2026 News Desk" [ref=e400] [cursor=pointer]:
+                - /url: /en/news/climate-change-is-becoming-a-mental-health-crisis-and-communities-are-already-living-it
+                - generic [ref=e401]:
+                  - generic [ref=e402]:
+                    - img "Illustration" [ref=e403]
+                    - generic [ref=e405]: News
+                  - heading "Climate Change Is Becoming a Mental Health Crisis — and Communities Are Already Living It" [level=3] [ref=e408]
+                  - generic [ref=e409]:
+                    - paragraph [ref=e410]: From farmers facing hopelessness after crop loss to Indigenous communities grieving disappearing ecosystems, a new global agenda warns climate change is reshaping emotional survival, identity, and wellbeing.
+                    - generic [ref=e411]:
+                      - generic [ref=e412]:
+                        - img [ref=e413]
+                        - generic [ref=e415]: May 20, 2026
+                      - generic [ref=e416]:
+                        - img [ref=e417]
+                        - generic [ref=e420]: News Desk
+              - 'link "Eco‑anxiety: how do young people relate to the climate crisis? News Eco‑anxiety: how do young people relate to the climate crisis? “Eco-anxiety” and “climate-anxiety” are the most widely known terms describing what people feel in response to being aware of the climate crisis. We conducted a review of published academic papers including original research articles and review papers, and found surprising results on how young people aged 10-29 years actually experience being aware of global warming and climate change and its effects. The Conversation March 25, 2026" [ref=e422] [cursor=pointer]':
+                - /url: https://theconversation.com/eco-anxiety-how-do-young-people-relate-to-the-climate-crisis-277520
+                - generic [ref=e423]:
+                  - generic [ref=e424]:
+                    - 'img "Eco‑anxiety: how do young people relate to the climate crisis?" [ref=e425]'
+                    - generic [ref=e427]:
+                      - img [ref=e428]
+                      - text: News
+                  - 'heading "Eco‑anxiety: how do young people relate to the climate crisis?" [level=3] [ref=e434]'
+                  - generic [ref=e435]:
+                    - paragraph [ref=e436]: “Eco-anxiety” and “climate-anxiety” are the most widely known terms describing what people feel in response to being aware of the climate crisis. We conducted a review of published academic papers including original research articles and review papers, and found surprising results on how young people aged 10-29 years actually experience being aware of global warming and climate change and its effects.
+                    - generic [ref=e437]:
+                      - generic [ref=e438]:
+                        - img [ref=e439]
+                        - generic [ref=e442]: The Conversation
+                      - generic [ref=e443]:
+                        - img [ref=e444]
+                        - generic [ref=e446]: March 25, 2026
+              - link "Study shows climate distress related to anxiety and action in young people Imperial research on youth climate anxiety May 10, 2024 Dr. Britt Wray" [ref=e448] [cursor=pointer]:
+                - /url: /en/news/climate-distress-anxiety-action-youth
+                - generic [ref=e449]:
+                  - heading "Study shows climate distress related to anxiety and action in young people" [level=3] [ref=e452]
+                  - generic [ref=e453]:
+                    - paragraph [ref=e454]: Imperial research on youth climate anxiety
+                    - generic [ref=e455]:
+                      - generic [ref=e456]:
+                        - img [ref=e457]
+                        - generic [ref=e459]: May 10, 2024
+                      - generic [ref=e460]:
+                        - img [ref=e461]
+                        - generic [ref=e464]: Dr. Britt Wray
+          - generic [ref=e473]:
+            - heading "Funded by Wellcome, hosted by Climate Cares Centre" [level=2] [ref=e474]
+            - paragraph [ref=e477]: Learn more about Wellcome's work in climate change and health and in mental health.
+            - link "About Project" [ref=e479] [cursor=pointer]:
+              - /url: /about
+          - generic [ref=e483]:
+            - heading "What do we mean by mental health?" [level=2] [ref=e484]
+            - generic [ref=e486]:
+              - paragraph [ref=e487]: "Climate change, mental health, and their intersection are complex and wide-ranging fields, understood through a range of diverse perspectives, framings and terminologies.Mental health challenges (which encompass mental health conditions/illnesses) are defined in Connecting Climate Minds as thoughts, feelings, and behaviours that affect a person’s ability to function in one or more areas of life and often involve significant levels of psychological distress. Ways mental health could be affected by climate change include:"
+              - list [ref=e488]:
+                - listitem [ref=e489]: How climate change may lead to a worsening of pre-existing mental health problems
+                - listitem [ref=e490]: How climate change may contribute to the prevalence or impact of existing mental health problems
+                - listitem [ref=e491]: How climate change may impact on treatment access or effectiveness for those with mental health problems
+                - listitem [ref=e492]: How climate change may lead to new mental health problems.
+              - paragraph [ref=e493]: However, we note that a diversity of perspectives were heard through Connecting Climate Minds, and we have sought to appropriately represent and reflect this in the project outputs.
+          - generic [ref=e495]:
+            - generic [ref=e497]:
+              - heading "Who is involved" [level=2] [ref=e498]
+              - paragraph [ref=e499]: We are a Wellcome funded project that brings together expertise across research, policy, practice, design, and lived experience from across the globe.
+            - generic [ref=e501]:
+              - img "Climate Cares Logo" [ref=e503]
+              - img "Red Cross/Crescent Climate Centre Logo" [ref=e505]
+              - img "University of Nigeria Logo" [ref=e507]
+              - generic [ref=e508]:
+                - img "St. Luke's Medical Center Logo"
+              - generic [ref=e509]:
+                - img "Force of Nature Logo"
+              - generic [ref=e510]:
+                - img "sustyvibes Logo"
+              - generic [ref=e511]:
+                - img "Jordan Health Aid Society"
+              - generic [ref=e512]:
+                - img "Imperial College London Logo"
+              - generic [ref=e513]:
+                - img "Climate Mental Health Network Logo"
+              - generic [ref=e514]:
+                - img "QCMHR Logo"
+              - generic [ref=e515]:
+                - img "Planetary health Alliance Logo"
+              - generic [ref=e516]:
+                - img "Wellcome Logo"
+              - generic [ref=e517]:
+                - img "University of the West Indies Logo"
+              - generic [ref=e518]:
+                - img "BRAC Public Health Logo"
+              - generic [ref=e519]:
+                - img "BRAC University Logo"
+              - generic [ref=e520]:
+                - img "Grantham Institute Logo"
+              - generic [ref=e521]:
+                - img "University of Queensland Logo"
+              - generic [ref=e522]:
+                - img "Waman Wasi Logo"
+              - generic [ref=e523]:
+                - img "Institute of Global Health Innovation Logo"
+              - generic [ref=e524]:
+                - img "IFRC Psychosocial Centre Logo"
+              - generic [ref=e525]:
+                - img "Climate Cares Logo"
+              - generic [ref=e526]:
+                - img "Red Cross/Crescent Climate Centre Logo"
+              - generic [ref=e527]:
+                - img "University of Nigeria Logo"
+              - generic [ref=e528]:
+                - img "St. Luke's Medical Center Logo"
+              - generic [ref=e529]:
+                - img "Force of Nature Logo"
+              - generic [ref=e530]:
+                - img "sustyvibes Logo"
+              - generic [ref=e531]:
+                - img "Jordan Health Aid Society"
+              - generic [ref=e532]:
+                - img "Imperial College London Logo"
+              - generic [ref=e533]:
+                - img "Climate Mental Health Network Logo"
+              - generic [ref=e534]:
+                - img "QCMHR Logo"
+              - generic [ref=e535]:
+                - img "Planetary health Alliance Logo"
+              - generic [ref=e536]:
+                - img "Wellcome Logo"
+              - generic [ref=e537]:
+                - img "University of the West Indies Logo"
+              - generic [ref=e538]:
+                - img "BRAC Public Health Logo"
+              - generic [ref=e539]:
+                - img "BRAC University Logo"
+              - generic [ref=e540]:
+                - img "Grantham Institute Logo"
+              - generic [ref=e541]:
+                - img "University of Queensland Logo"
+              - generic [ref=e542]:
+                - img "Waman Wasi Logo"
+              - generic [ref=e543]:
+                - img "Institute of Global Health Innovation Logo"
+              - generic [ref=e544]:
+                - img "IFRC Psychosocial Centre Logo"
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e550] [cursor=pointer]:
+    - generic [ref=e553]:
+      - text: Compiling
+      - generic [ref=e554]:
+        - generic [ref=e555]: .
+        - generic [ref=e556]: .
+        - generic [ref=e557]: .

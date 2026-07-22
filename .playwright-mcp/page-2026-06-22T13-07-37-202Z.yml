@@ -1,0 +1,271 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - list [ref=e7]:
+          - listitem [ref=e8]:
+            - link "Go to homepage" [ref=e9] [cursor=pointer]:
+              - /url: /
+              - img "Connecting Climate Minds Logo" [ref=e10]
+        - button "Search... ⌘K" [ref=e12]:
+          - img [ref=e13]
+          - generic [ref=e16]: Search...
+          - generic [ref=e17]: ⌘K
+      - generic [ref=e18]:
+        - generic [ref=e19]:
+          - generic [ref=e20]: Discover
+          - list [ref=e21]:
+            - listitem [ref=e22]:
+              - link "Atlas & Explore" [ref=e23] [cursor=pointer]:
+                - /url: /en/atlas
+                - img [ref=e24]
+                - generic [ref=e27]: Atlas & Explore
+            - listitem [ref=e28]:
+              - button "Research & Action" [ref=e29]:
+                - img [ref=e30]
+                - generic [ref=e32]: Research & Action
+                - img [ref=e33]
+            - listitem [ref=e35]:
+              - link "News & Updates" [ref=e36] [cursor=pointer]:
+                - /url: /en/news
+                - img [ref=e37]
+                - generic [ref=e40]: News & Updates
+            - listitem [ref=e41]:
+              - link "Lived experiences" [ref=e42] [cursor=pointer]:
+                - /url: /en/lived-experiences
+                - img [ref=e43]
+                - generic [ref=e45]: Lived experiences
+            - listitem [ref=e46]:
+              - link "Case studies" [ref=e47] [cursor=pointer]:
+                - /url: /en/research-and-action/case-studies
+                - img [ref=e48]
+                - generic [ref=e51]: Case studies
+        - generic [ref=e52]:
+          - generic [ref=e53]: Collaborate
+          - list [ref=e54]:
+            - listitem [ref=e55]:
+              - button "Regional Communities" [ref=e56]:
+                - img [ref=e57]
+                - generic [ref=e60]: Regional Communities
+                - img [ref=e61]
+            - listitem [ref=e63]:
+              - link "Find people" [ref=e64] [cursor=pointer]:
+                - /url: /en/collaborate
+                - img [ref=e65]
+                - generic [ref=e70]: Find people
+            - listitem [ref=e71]:
+              - link "Start or find a project" [ref=e72] [cursor=pointer]:
+                - /url: /en/collaborations
+                - img [ref=e73]
+                - generic [ref=e75]: Start or find a project
+        - list [ref=e78]:
+          - listitem [ref=e79]:
+            - link "About" [ref=e80] [cursor=pointer]:
+              - /url: /about
+              - img [ref=e81]
+              - generic [ref=e83]: About
+          - listitem [ref=e84]:
+            - link "Feedback" [ref=e85] [cursor=pointer]:
+              - /url: /feedback
+              - img [ref=e86]
+              - generic [ref=e88]: Feedback
+      - list [ref=e91]:
+        - listitem [ref=e92]:
+          - button "English" [ref=e93]:
+            - generic [ref=e95]: English
+            - img [ref=e96]
+    - main [ref=e100]:
+      - generic [ref=e101]:
+        - button "Toggle Sidebar" [ref=e103]:
+          - img
+          - generic [ref=e104]: Toggle Sidebar
+        - button "Search..." [ref=e106]:
+          - img [ref=e107]
+      - main [ref=e111]:
+        - main [ref=e112]:
+          - button "Follow" [ref=e114]:
+            - img
+            - text: Follow
+          - generic [ref=e119]:
+            - heading "Welcome to the Oceania regional community of practice" [level=1] [ref=e120]
+            - paragraph [ref=e123]: This is a connected, supported and engaged space that brings together the latest Connecting Climate Minds project outputs, events, news, resources and people working in climate change and mental health in the region.
+          - generic [ref=e130]:
+            - heading "Why join our regional community?" [level=1] [ref=e131]
+            - list [ref=e134]:
+              - listitem [ref=e135]: Stay up to date with the latest climate change and mental health resources in Central and Southern Asia.
+              - listitem [ref=e136]: Connect with other people across disciplines, sectors and countries interested in changing the landscape of climate change and mental health research and policy.
+              - listitem [ref=e137]: "Find opportunities to get involved: whether you are a researcher, policymaker, health professional, teacher, community organiser - your skills and expertise are needed."
+            - link "Get Involved" [ref=e139] [cursor=pointer]:
+              - /url: /sign-up
+          - generic [ref=e145]:
+            - heading "Regional research & action agenda" [level=2] [ref=e152]
+            - generic [ref=e154]:
+              - generic [ref=e156]:
+                - generic [ref=e157]:
+                  - img "Oceania Region" [ref=e158]
+                  - generic [ref=e160]: Research Agenda
+                - heading "Oceania Regional Agenda" [level=3] [ref=e163]
+                - generic [ref=e164]:
+                  - paragraph [ref=e165]: Regional priorities for Oceania
+                  - generic [ref=e167]:
+                    - img [ref=e168]
+                    - generic [ref=e170]: "2024"
+                - generic [ref=e172]:
+                  - generic [ref=e173]:
+                    - img [ref=e174]
+                    - generic [ref=e178]: Available in 1 language
+                  - button "English (2.0 MB)" [ref=e180]:
+                    - img
+                    - generic [ref=e181]: English
+                    - generic [ref=e182]: (2.0 MB)
+              - generic [ref=e184]:
+                - generic [ref=e185]:
+                  - img "Oceania Region" [ref=e186]
+                  - generic [ref=e188]: Research Agenda
+                - heading "Oceania Regional Agenda - Summary" [level=3] [ref=e191]
+                - generic [ref=e192]:
+                  - paragraph [ref=e193]: Executive summary
+                  - generic [ref=e195]:
+                    - img [ref=e196]
+                    - generic [ref=e198]: "2024"
+                - generic [ref=e200]:
+                  - generic [ref=e201]:
+                    - img [ref=e202]
+                    - generic [ref=e206]: Available in 1 language
+                  - button "English (21.0 MB)" [ref=e208]:
+                    - img
+                    - generic [ref=e209]: English
+                    - generic [ref=e210]: (21.0 MB)
+          - generic [ref=e214]:
+            - heading "Case studies from across the region" [level=2] [ref=e221]
+            - generic [ref=e223]:
+              - generic [ref=e225] [cursor=pointer]:
+                - generic [ref=e226]:
+                  - 'img "Building Future Resilience and Preparedness in a Bushfire-affected Community: The Phoenix Project" [ref=e227]'
+                  - generic [ref=e229]: Case Study
+                - 'heading "Building Future Resilience and Preparedness in a Bushfire-affected Community: The Phoenix Project" [level=3] [ref=e231]'
+                - generic [ref=e232]:
+                  - paragraph [ref=e233]: The village of Ebor (traditional lands of the Gumbaynggirr peoples) is located in the New England region of New South Wales, Australia. It is a small, rural community with a population of around 150 residents, most of whom are farmers or pensioners. Surrounded by bushlands and farmlands, Ebor sits a
+                  - generic [ref=e236]:
+                    - img [ref=e237]
+                    - text: Jan 2024
+              - generic [ref=e241] [cursor=pointer]:
+                - generic [ref=e242]:
+                  - img "Climate change and the mental health and wellbeing of children and young people in Western Australia" [ref=e243]
+                  - generic [ref=e245]: Case Study
+                - heading "Climate change and the mental health and wellbeing of children and young people in Western Australia" [level=3] [ref=e247]
+                - generic [ref=e248]:
+                  - paragraph [ref=e249]: The state of Western Australia (WA) was colonised by Britain in 1829. WA comprises 2.5 million km2 (one-third of Australia's landmass) with four climate zones (see Figure 1). WA has 2.66 million people including 89,000 Aboriginal and/or Torres Strait Islander peoples and 818,000 children and young p
+                  - generic [ref=e252]:
+                    - img [ref=e253]
+                    - text: Jan 2024
+          - generic [ref=e260]:
+            - generic [ref=e265]:
+              - heading "Lived experience insights" [level=2] [ref=e266]
+              - paragraph [ref=e267]: Hear directly from community members about their experiences
+            - region "Lived experience insights" [ref=e269]:
+              - generic [ref=e270]:
+                - 'button "Watch Experience: James'' Lived Experience story - Mental health impacts of climate change - Solomon Islands" [ref=e272] [cursor=pointer]':
+                  - generic [ref=e273]:
+                    - img "James' Lived Experience story - Mental health impacts of climate change - Solomon Islands" [ref=e274]
+                    - img [ref=e277]
+                  - generic [ref=e279]:
+                    - heading "James' Lived Experience story - Mental health impacts of climate change - Solomon Islands" [level=3] [ref=e280]
+                    - paragraph [ref=e281]: "A lived experience video: James' Lived Experience story - Mental health impacts of climate change - Solomon Islands"
+                    - generic [ref=e282]:
+                      - generic [ref=e283]:
+                        - img [ref=e284]
+                        - generic [ref=e287]: CCM Community
+                      - generic [ref=e288]:
+                        - img [ref=e289]
+                        - generic [ref=e291]: November 10, 2025
+                - 'button "Watch Experience: Faye''s Lived Experience story - Mental health impacts of climate change - Aotearoa /New Zealand" [ref=e293] [cursor=pointer]':
+                  - generic [ref=e294]:
+                    - img "Faye's Lived Experience story - Mental health impacts of climate change - Aotearoa /New Zealand" [ref=e295]
+                    - img [ref=e298]
+                  - generic [ref=e300]:
+                    - heading "Faye's Lived Experience story - Mental health impacts of climate change - Aotearoa /New Zealand" [level=3] [ref=e301]
+                    - paragraph [ref=e302]: "A lived experience video: Faye's Lived Experience story - Mental health impacts of climate change - Aotearoa /New Zealand"
+                    - generic [ref=e303]:
+                      - generic [ref=e304]:
+                        - img [ref=e305]
+                        - generic [ref=e308]: CCM Community
+                      - generic [ref=e309]:
+                        - img [ref=e310]
+                        - generic [ref=e312]: November 10, 2025
+                - 'button "Watch Experience: Chloe''s Lived Experience story - Mental health impacts of climate change - Australia" [ref=e314] [cursor=pointer]':
+                  - generic [ref=e315]:
+                    - img "Chloe's Lived Experience story - Mental health impacts of climate change - Australia" [ref=e316]
+                    - img [ref=e319]
+                  - generic [ref=e321]:
+                    - heading "Chloe's Lived Experience story - Mental health impacts of climate change - Australia" [level=3] [ref=e322]
+                    - paragraph [ref=e323]: "A lived experience video: Chloe's Lived Experience story - Mental health impacts of climate change - Australia"
+                    - generic [ref=e324]:
+                      - generic [ref=e325]:
+                        - img [ref=e326]
+                        - generic [ref=e329]: CCM Community
+                      - generic [ref=e330]:
+                        - img [ref=e331]
+                        - generic [ref=e333]: November 10, 2025
+          - generic [ref=e336]:
+            - heading "Community members" [level=2] [ref=e338]
+            - list [ref=e339]:
+              - listitem [ref=e340]:
+                - link "Ashley Katz Ashley Katz" [ref=e341] [cursor=pointer]:
+                  - /url: /en/profiles/ashleyhopekatz
+                  - img "Ashley Katz" [ref=e343]
+                  - generic [ref=e344]: Ashley Katz
+              - listitem [ref=e345]:
+                - link "Avalon Bourne Avalon Bourne" [ref=e346] [cursor=pointer]:
+                  - /url: /en/profiles/avalon
+                  - img "Avalon Bourne" [ref=e348]
+                  - generic [ref=e349]: Avalon Bourne
+              - listitem [ref=e350]:
+                - link "Emma Lawrance Emma Lawrance" [ref=e351] [cursor=pointer]:
+                  - /url: /en/profiles/e_lawrance
+                  - img "Emma Lawrance" [ref=e353]
+                  - generic [ref=e354]: Emma Lawrance
+              - listitem [ref=e355]:
+                - link "Gavin Pereira Gavin Pereira" [ref=e356] [cursor=pointer]:
+                  - /url: /en/profiles/pereirag
+                  - img "Gavin Pereira" [ref=e358]
+                  - generic [ref=e359]: Gavin Pereira
+              - listitem [ref=e360]:
+                - link "Kayla Robertson Kayla Robertson" [ref=e361] [cursor=pointer]:
+                  - /url: /en/profiles/krob
+                  - img "Kayla Robertson" [ref=e363]
+                  - generic [ref=e364]: Kayla Robertson
+              - listitem [ref=e365]:
+                - link "Lexine Stapinski Lexine Stapinski" [ref=e366] [cursor=pointer]:
+                  - /url: /en/profiles/lexine
+                  - img "Lexine Stapinski" [ref=e368]
+                  - generic [ref=e369]: Lexine Stapinski
+              - listitem [ref=e370]:
+                - link "Marcia McKenzie Marcia McKenzie" [ref=e371] [cursor=pointer]:
+                  - /url: /en/profiles/marciamckenzie
+                  - img "Marcia McKenzie" [ref=e373]
+                  - generic [ref=e374]: Marcia McKenzie
+              - listitem [ref=e375]:
+                - link "Miruna Cornaschi Miruna Cornaschi" [ref=e376] [cursor=pointer]:
+                  - /url: /en/profiles/miruna19
+                  - img "Miruna Cornaschi" [ref=e378]
+                  - generic [ref=e379]: Miruna Cornaschi
+              - listitem [ref=e380]:
+                - link "nicolas george nicolas george" [ref=e381] [cursor=pointer]:
+                  - /url: /en/profiles/nicolas
+                  - img "nicolas george" [ref=e383]
+                  - generic [ref=e384]: nicolas george
+  - generic [ref=e387]:
+    - generic [ref=e388]:
+      - img [ref=e389]
+      - generic [ref=e391]:
+        - heading "We value your privacy" [level=2] [ref=e392]
+        - paragraph [ref=e393]: We use essential cookies to keep things running smoothly, and optional cookies to make your experience better. Plausible, our analytics tool, is completely cookieless — it never tracks you personally.
+    - generic [ref=e394]:
+      - button "Accept All" [ref=e395]
+      - button "Essential Only" [ref=e396]
+      - button "Manage Preferences" [ref=e397]
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e403] [cursor=pointer]:
+    - img [ref=e404]
+  - alert [ref=e407]

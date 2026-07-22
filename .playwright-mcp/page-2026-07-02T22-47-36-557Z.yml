@@ -1,0 +1,94 @@
+- generic [active] [ref=f20e1]:
+  - generic [ref=f20e2]:
+    - generic [ref=f20e5]:
+      - list [ref=f20e7]:
+        - listitem [ref=f20e8]:
+          - link "Go to homepage" [ref=f20e9] [cursor=pointer]:
+            - /url: /
+            - img "Connecting Climate Minds Logo" [ref=f20e10]
+      - generic [ref=f20e11]:
+        - generic [ref=f20e12]:
+          - generic [ref=f20e13]: اكتشف
+          - list [ref=f20e14]:
+            - listitem [ref=f20e15]:
+              - link "الأطلس والاستكشاف" [ref=f20e16] [cursor=pointer]:
+                - /url: /ar/atlas
+                - img [ref=f20e17]
+                - generic [ref=f20e20]: الأطلس والاستكشاف
+            - listitem [ref=f20e21]:
+              - button "البحث والعمل" [ref=f20e22]:
+                - img [ref=f20e23]
+                - generic [ref=f20e25]: البحث والعمل
+                - img [ref=f20e26]
+            - listitem [ref=f20e28]:
+              - link "الأخبار والمستجدات" [ref=f20e29] [cursor=pointer]:
+                - /url: /ar/news
+                - img [ref=f20e30]
+                - generic [ref=f20e33]: الأخبار والمستجدات
+            - listitem [ref=f20e34]:
+              - link "التجارب المعيشة" [ref=f20e35] [cursor=pointer]:
+                - /url: /ar/lived-experiences
+                - img [ref=f20e36]
+                - generic [ref=f20e38]: التجارب المعيشة
+            - listitem [ref=f20e39]:
+              - link "دراسات الحالة" [ref=f20e40] [cursor=pointer]:
+                - /url: /ar/research-and-action/case-studies
+                - img [ref=f20e41]
+                - generic [ref=f20e44]: دراسات الحالة
+        - generic [ref=f20e45]:
+          - generic [ref=f20e46]: تعاون
+          - list [ref=f20e47]:
+            - listitem [ref=f20e48]:
+              - button "المجتمعات الإقليمية" [ref=f20e49]:
+                - img [ref=f20e50]
+                - generic [ref=f20e53]: المجتمعات الإقليمية
+                - img [ref=f20e54]
+            - listitem [ref=f20e56]:
+              - link "ابحث عن أشخاص" [ref=f20e57] [cursor=pointer]:
+                - /url: /ar/collaborate
+                - img [ref=f20e58]
+                - generic [ref=f20e63]: ابحث عن أشخاص
+            - listitem [ref=f20e64]:
+              - link "ابدأ مشروعًا أو ابحث عنه" [ref=f20e65] [cursor=pointer]:
+                - /url: /ar/collaborations
+                - img [ref=f20e66]
+                - generic [ref=f20e68]: ابدأ مشروعًا أو ابحث عنه
+        - list [ref=f20e71]:
+          - listitem [ref=f20e72]:
+            - link "حول" [ref=f20e73] [cursor=pointer]:
+              - /url: /about
+              - img [ref=f20e74]
+              - generic [ref=f20e76]: حول
+          - listitem [ref=f20e77]:
+            - link "التعليقات" [ref=f20e78] [cursor=pointer]:
+              - /url: /feedback
+              - img [ref=f20e79]
+              - generic [ref=f20e81]: التعليقات
+      - generic [ref=f20e82]:
+        - list [ref=f20e84]:
+          - listitem [ref=f20e85]:
+            - button [disabled]
+        - button "البحث... ⌘K" [ref=f20e87]:
+          - img [ref=f20e88]
+          - generic [ref=f20e92]: البحث...
+          - generic [ref=f20e94]: ⌘K
+        - list [ref=f20e96]:
+          - listitem [ref=f20e97]:
+            - button "العربية" [ref=f20e98]:
+              - generic [ref=f20e100]: العربية
+              - img [ref=f20e101]
+    - main [ref=f20e105]:
+      - button "Toggle Sidebar" [ref=f20e108]:
+        - img
+        - generic [ref=f20e109]: Toggle Sidebar
+      - main [ref=f20e111]:
+        - generic [ref=f20e112]:
+          - generic [ref=f20e113]:
+            - heading "البحث" [level=1] [ref=f20e114]
+            - paragraph [ref=f20e115]: العثور على أعضاء المجتمع والأجندات والأخبار والمنشورات ودراسات الحالة
+          - generic [ref=f20e118]:
+            - img
+            - searchbox "البحث عن الأشخاص أو المحتوى أو الخبرة..." [ref=f20e119]
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=f20e138] [cursor=pointer]:
+    - img [ref=f20e139]

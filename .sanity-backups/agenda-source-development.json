@@ -1,0 +1,1772 @@
+[
+  {
+    "_id": "0f917694-2050-46f9-b367-40d137e7c746",
+    "agendaType": "other",
+    "coverImage": {
+      "_type": "image",
+      "asset": {
+        "_ref": "image-d800ae0083a85016fd1640ec6a414b5dfd8217f1-3840x2160-png",
+        "_type": "reference"
+      }
+    },
+    "description": {
+      "ar": "أجندة بحث وعمل تعالج تأثيرات تغير المناخ على الصحة النفسية.",
+      "en": "A research and action agenda addressing the mental health impacts of climate change.",
+      "es": "Una agenda de investigación y acción que aborda los impactos del cambio climático en la salud mental.",
+      "fr": "Un agenda de recherche et d'action abordant les impacts du changement climatique sur la santé mentale."
+    },
+    "featured": false,
+    "files": [
+      {
+        "_key": "e631d44ade4c",
+        "_type": "agendaFile",
+        "downloadCount": 0,
+        "file": {
+          "_type": "file",
+          "asset": {
+            "_ref": "file-2a1332b08848020ecd5ddce1566e1390c0a2a35e-pdf",
+            "_type": "reference"
+          }
+        },
+        "language": "en"
+      }
+    ],
+    "organizations": null,
+    "publishDate": "2024-03-18",
+    "rcSlugs": null,
+    "regionalCommunities": null,
+    "subtitle": {
+      "ar": "البحث والعمل من أجل الصحة النفسية المناخية",
+      "en": "Research and action for climate mental health",
+      "es": "Investigación y acción para la salud mental climática",
+      "fr": "Recherche et action pour la santé mentale climatique"
+    },
+    "tags": null,
+    "title": {
+      "ar": "تقرير تأثير الحدث العالمي لـ Connecting Climate Minds",
+      "en": "Connecting Climate Minds Global Event Impact Report",
+      "es": "Informe de Impacto del Evento Global de Connecting Climate Minds",
+      "fr": "Rapport d'Impact de l'Événement Mondial Connecting Climate Minds"
+    },
+    "year": 2024
+  },
+  {
+    "_id": "142ab95c-980e-455f-9213-ffbc1a3fe11f",
+    "agendaType": "guidelines",
+    "coverImage": {
+      "_type": "image",
+      "alt": "An Introductory Toolkit for Researchers",
+      "asset": {
+        "_ref": "image-5a171b7507c1d52a3190bd70967050359220c0d8-3840x2160-png",
+        "_type": "reference"
+      }
+    },
+    "description": {
+      "ar": "يعتمد التقدم في حماية الصحة النفسية لعدد متزايد من الأشخاص المعرضين لمخاطر المناخ وتمكين العمل المناخي الذي يجلب فوائد مشتركة للصحة النفسية على الباحثين من خلفيات متنوعة الذين يجلبون وجهات نظرهم وأساليبهم ومجموعات بياناتهم. يهدف هذا الدليل إلى تزويد الباحثين من مختلف التخصصات بفهم لماذا يعد الارتباط بين المناخ والصحة النفسية مهمًا وأين البحث والعمل مطلوبان لمجال المناخ والصحة النفسية بناءً على الأفكار الرئيسية الناشئة من Connecting Climate Minds.",
+      "en": "Progress to protect the mental health of increasing numbers of people exposed to climate hazards and to enable climate action that brings co-benefits for mental health depends on researchers from diverse backgrounds bringing their perspectives, methods, and datasets. This toolkit aims to provide researchers from various disciplines with an understanding of why the climate and mental health nexus is important and where research and action are needed for the climate and mental health field based on key emerging insights from Connecting Climate Minds.",
+      "es": "El progreso para proteger la salud mental de un número creciente de personas expuestas a peligros climáticos y para habilitar acciones climáticas que traigan co-beneficios para la salud mental depende de que investigadores de diversos orígenes aporten sus perspectivas, métodos y conjuntos de datos. Esta guía tiene como objetivo proporcionar a investigadores de varias disciplinas una comprensión de por qué el nexo clima-salud mental es importante y dónde se necesitan investigación y acción para el campo del clima y la salud mental basándose en ideas clave emergentes de Connecting Climate Minds.",
+      "fr": "Les progrès pour protéger la santé mentale d'un nombre croissant de personnes exposées aux dangers climatiques et pour permettre une action climatique apportant des co-bénéfices pour la santé mentale dépendent des chercheurs d'horizons divers apportant leurs perspectives, méthodes et ensembles de données. Cette boîte à outils vise à fournir aux chercheurs de diverses disciplines une compréhension de pourquoi le lien climat-santé mentale est important et où la recherche et l'action sont nécessaires pour le domaine du climat et de la santé mentale sur la base d'informations clés émergentes de Connecting Climate Minds."
+    },
+    "featured": false,
+    "files": [
+      {
+        "_key": "4fd0baceb69c",
+        "_type": "agendaFile",
+        "downloadCount": 0,
+        "file": {
+          "_type": "file",
+          "asset": {
+            "_ref": "file-5ebd5be256cfb638e2caa32afbbaf38a005063c8-pdf",
+            "_type": "reference"
+          }
+        },
+        "language": "en"
+      }
+    ],
+    "organizations": null,
+    "publishDate": "2024-03-18",
+    "rcSlugs": null,
+    "regionalCommunities": null,
+    "subtitle": {
+      "ar": "دليل عملي للباحثين",
+      "en": "A practical guide for researchers",
+      "es": "Una guía práctica para investigadores",
+      "fr": "Un guide pratique pour les chercheurs"
+    },
+    "tags": null,
+    "title": {
+      "ar": "تغير المناخ والصحة النفسية: دليل تمهيدي للباحثين",
+      "en": "Climate Change and Mental Health: An Introductory Toolkit for Researchers",
+      "es": "Cambio Climático y Salud Mental: Una Guía Introductoria para Investigadores",
+      "fr": "Changement Climatique et Santé Mentale : Une Boîte à Outils Introductive pour les Chercheurs"
+    },
+    "year": 2024
+  },
+  {
+    "_id": "3c804269-e6a7-435a-b0e5-d48117e4e6f3",
+    "agendaType": "other",
+    "coverImage": {
+      "_type": "image",
+      "alt": "Young People",
+      "asset": {
+        "_ref": "image-a188992df760eecc7333d6fbe0c264d859fb3523-3840x2160-png",
+        "_type": "reference"
+      }
+    },
+    "description": {
+      "ar": "إعلان من شباب العالم يدعو إلى اتخاذ إجراءات عاجلة لمعالجة تأثيرات تغير المناخ على الصحة النفسية وتركيز أصوات الشباب في سياسة المناخ.",
+      "en": "A declaration from youth worldwide calling for urgent action to address the mental health impacts of climate change and center youth voices in climate policy.",
+      "es": "Una declaración de jóvenes de todo el mundo que pide acción urgente para abordar los impactos del cambio climático en la salud mental y centrar las voces de los jóvenes en la política climática.",
+      "fr": "Une déclaration de jeunes du monde entier appelant à une action urgente pour aborder les impacts du changement climatique sur la santé mentale et centrer les voix des jeunes dans la politique climatique."
+    },
+    "featured": false,
+    "files": [
+      {
+        "_key": "de1693164c8f",
+        "_type": "agendaFile",
+        "downloadCount": 0,
+        "file": {
+          "_type": "file",
+          "asset": {
+            "_ref": "file-6ee1332ea0da9407b9e3bac27bbc33e52f12e524-pdf",
+            "_type": "reference"
+          }
+        },
+        "language": "en"
+      }
+    ],
+    "organizations": null,
+    "publishDate": "2024-03-18",
+    "rcSlugs": null,
+    "regionalCommunities": null,
+    "subtitle": {
+      "ar": "دعوة للعمل من شباب العالم",
+      "en": "A call to action from youth worldwide",
+      "es": "Un llamado a la acción de la juventud mundial",
+      "fr": "Un appel à l'action des jeunes du monde entier"
+    },
+    "tags": null,
+    "title": {
+      "ar": "إعلان الشباب",
+      "en": "Youth Declaration",
+      "es": "Declaración de la Juventud",
+      "fr": "Déclaration de la Jeunesse"
+    },
+    "year": 2024
+  },
+  {
+    "_id": "462a8318-a89b-40a0-85ef-e5cde17f3a87",
+    "agendaType": "other",
+    "coverImage": {
+      "_type": "image",
+      "asset": {
+        "_ref": "image-567f9f20e9c9afb035972841f6783838d016e302-3840x2160-png",
+        "_type": "reference"
+      }
+    },
+    "description": {
+      "en": ""
+    },
+    "featured": false,
+    "files": [
+      {
+        "_key": "07b46d2337e1",
+        "_type": "agendaFile",
+        "downloadCount": 0,
+        "file": {
+          "_type": "file",
+          "asset": {
+            "_ref": "file-ba1bf9274f88874d9251191d5890ce7c52df0ffa-pdf",
+            "_type": "reference"
+          }
+        },
+        "language": "en"
+      }
+    ],
+    "organizations": null,
+    "publishDate": "2024-03-18",
+    "rcSlugs": null,
+    "regionalCommunities": null,
+    "subtitle": {
+      "en": ""
+    },
+    "tags": null,
+    "title": {
+      "ar": "تقرير تأثير مجتمعات الممارسة الإقليمية لـ Connecting Climate Minds",
+      "en": "Connecting Climate Minds Regional Communities of Practice Impact Report",
+      "es": "Informe de Impacto de las Comunidades de Práctica Regionales de Connecting Climate Minds",
+      "fr": "Rapport d'Impact des Communautés de Pratique Régionales de Connecting Climate Minds"
+    },
+    "year": 2024
+  },
+  {
+    "_id": "agenda-central-and-southern-asia-regional-agenda-full",
+    "agendaType": "research",
+    "coverImage": {
+      "_type": "image",
+      "alt": "Central and Southern Asia Region",
+      "asset": {
+        "_ref": "image-7971b68f228b0780af4472f44a8e93a596baf3e8-1920x1080-jpg",
+        "_type": "reference"
+      }
+    },
+    "description": {
+      "ar": "تحدد هذه الأجندة الإقليمية أولويات البحث والعمل لمعالجة تأثيرات تغير المناخ على الصحة النفسية في آسيا الوسطى والجنوبية Regional Agenda.",
+      "en": "This regional agenda outlines priorities for research and action to address the mental health impacts of climate change in Central and Southern Asia Regional Agenda.",
+      "es": "Esta agenda regional describe las prioridades de investigación y acción para abordar los impactos del cambio climático en la salud mental en Asia Central y Meridional Regional Agenda.",
+      "fr": "Cet agenda régional décrit les priorités de recherche et d'action pour aborder les impacts du changement climatique sur la santé mentale dans l'Asie Centrale et Méridionale Regional Agenda."
+    },
+    "featured": false,
+    "files": [
+      {
+        "_key": "qkardxslt",
+        "_type": "object",
+        "downloadCount": 0,
+        "file": {
+          "_type": "file",
+          "asset": {
+            "_ref": "file-35a0ad7c2eab7b02514af311cf8907a261a4bbea-pdf",
+            "_type": "reference"
+          }
+        },
+        "language": "en"
+      }
+    ],
+    "organizations": null,
+    "publishDate": "2024-03-18",
+    "rcSlugs": [
+      "central-and-southern-asia"
+    ],
+    "regionalCommunities": [
+      {
+        "_key": "q751mjzXmd3Io5LU2GZxhq",
+        "_ref": "regional-community-central-and-southern-asia",
+        "_type": "reference"
+      }
+    ],
+    "subtitle": {
+      "ar": "الأولويات الإقليمية لـ آسيا الوسطى والجنوبية",
+      "en": "Regional priorities for Central and Southern Asia",
+      "es": "Prioridades regionales para Asia Central y Meridional",
+      "fr": "Priorités régionales pour l'Asie Centrale et Méridionale"
+    },
+    "tags": null,
+    "title": {
+      "ar": "الأجندة الإقليمية لآسيا الوسطى والجنوبية",
+      "en": "Central and Southern Asia Regional Agenda",
+      "es": "Agenda Regional de Asia Central y Meridional",
+      "fr": "Agenda Régional de l'Asie Centrale et Méridionale"
+    },
+    "year": 2024
+  },
+  {
+    "_id": "agenda-central-and-southern-asia-regional-agenda-summary",
+    "agendaType": "research",
+    "coverImage": {
+      "_type": "image",
+      "alt": "Central and Southern Asia Region",
+      "asset": {
+        "_ref": "image-7971b68f228b0780af4472f44a8e93a596baf3e8-1920x1080-jpg",
+        "_type": "reference"
+      }
+    },
+    "description": {
+      "ar": "ملخص تنفيذي لـ آسيا الوسطى والجنوبية Regional Agenda, highlighting key priorities, recommendations, and action steps.",
+      "en": "An executive summary of the Central and Southern Asia Regional Agenda, highlighting key priorities, recommendations, and action steps.",
+      "es": "Un resumen ejecutivo de Asia Central y Meridional Regional Agenda, highlighting key priorities, recommendations, and action steps.",
+      "fr": "Un résumé exécutif de l'Asie Centrale et Méridionale Regional Agenda, highlighting key priorities, recommendations, and action steps."
+    },
+    "featured": false,
+    "files": [
+      {
+        "_key": "b3qd1d4jf",
+        "_type": "object",
+        "downloadCount": 0,
+        "file": {
+          "_type": "file",
+          "asset": {
+            "_ref": "file-b0b86225eaf67432612e25e4d3f74789317afee5-pdf",
+            "_type": "reference"
+          }
+        },
+        "language": "en"
+      }
+    ],
+    "organizations": null,
+    "publishDate": "2024-03-18",
+    "rcSlugs": [
+      "central-and-southern-asia"
+    ],
+    "regionalCommunities": [
+      {
+        "_key": "7d9b90a4d6e7f8d43df67f942208ed5b",
+        "_ref": "regional-community-central-and-southern-asia",
+        "_type": "reference"
+      }
+    ],
+    "subtitle": {
+      "ar": "ملخص تنفيذي",
+      "en": "Executive summary",
+      "es": "Resumen ejecutivo",
+      "fr": "Résumé exécutif"
+    },
+    "tags": null,
+    "title": {
+      "ar": "Central and Southern Asia Regional Agenda - Summary",
+      "en": "Central and Southern Asia Regional Agenda - Summary",
+      "es": "Central and Southern Asia Regional Agenda - Summary",
+      "fr": "Central and Southern Asia Regional Agenda - Summary"
+    },
+    "year": 2024
+  },
+  {
+    "_id": "agenda-eastern-and-south-eastern-asia-regional-agenda-full",
+    "agendaType": "research",
+    "coverImage": {
+      "_type": "image",
+      "alt": "Eastern and South-Eastern Asia Region",
+      "asset": {
+        "_ref": "image-7873ab82d98436bf9a3f69f11382937fe60fc1fc-1920x1080-jpg",
+        "_type": "reference"
+      }
+    },
+    "description": {
+      "ar": "تحدد هذه الأجندة الإقليمية أولويات البحث والعمل لمعالجة تأثيرات تغير المناخ على الصحة النفسية في شرق وجنوب شرق آسيا Regional Agenda.",
+      "en": "This regional agenda outlines priorities for research and action to address the mental health impacts of climate change in Eastern and South-Eastern Asia Regional Agenda.",
+      "es": "Esta agenda regional describe las prioridades de investigación y acción para abordar los impactos del cambio climático en la salud mental en Asia Oriental y Sudoriental Regional Agenda.",
+      "fr": "Cet agenda régional décrit les priorités de recherche et d'action pour aborder les impacts du changement climatique sur la santé mentale dans l'Asie de l'Est et du Sud-Est Regional Agenda."
+    },
+    "featured": false,
+    "files": [
+      {
+        "_key": "v1zjqo3wo",
+        "_type": "object",
+        "downloadCount": 0,
+        "file": {
+          "_type": "file",
+          "asset": {
+            "_ref": "file-0127c1ba3f4ee18d65239067d8b0faf8c341577c-pdf",
+            "_type": "reference"
+          }
+        },
+        "language": "en"
+      }
+    ],
+    "organizations": null,
+    "publishDate": "2024-03-18",
+    "rcSlugs": [
+      "eastern-and-south-eastern-asia"
+    ],
+    "regionalCommunities": [
+      {
+        "_key": "s1RjPOcssfb7PB6xxyA73h",
+        "_ref": "regional-community-eastern-and-south-eastern-asia",
+        "_type": "reference"
+      }
+    ],
+    "subtitle": {
+      "ar": "الأولويات الإقليمية لـ شرق وجنوب شرق آسيا",
+      "en": "Regional priorities for Eastern and South-Eastern Asia",
+      "es": "Prioridades regionales para Asia Oriental y Sudoriental",
+      "fr": "Priorités régionales pour l'Asie de l'Est et du Sud-Est"
+    },
+    "tags": null,
+    "title": {
+      "ar": "الأجندة الإقليمية لشرق وجنوب شرق آسيا",
+      "en": "Eastern and South-Eastern Asia Regional Agenda",
+      "es": "Agenda Regional de Asia Oriental y Sudoriental",
+      "fr": "Agenda Régional de l'Asie de l'Est et du Sud-Est"
+    },
+    "year": 2024
+  },
+  {
+    "_id": "agenda-eastern-and-south-eastern-asia-regional-agenda-summary",
+    "agendaType": "research",
+    "coverImage": {
+      "_type": "image",
+      "alt": "Eastern and South-Eastern Asia Region",
+      "asset": {
+        "_ref": "image-7873ab82d98436bf9a3f69f11382937fe60fc1fc-1920x1080-jpg",
+        "_type": "reference"
+      }
+    },
+    "description": {
+      "ar": "ملخص تنفيذي لـ شرق وجنوب شرق آسيا Regional Agenda, highlighting key priorities, recommendations, and action steps.",
+      "en": "An executive summary of the Eastern and South-Eastern Asia Regional Agenda, highlighting key priorities, recommendations, and action steps.",
+      "es": "Un resumen ejecutivo de Asia Oriental y Sudoriental Regional Agenda, highlighting key priorities, recommendations, and action steps.",
+      "fr": "Un résumé exécutif de l'Asie de l'Est et du Sud-Est Regional Agenda, highlighting key priorities, recommendations, and action steps."
+    },
+    "featured": false,
+    "files": [
+      {
+        "_key": "flnh3sk5v",
+        "_type": "object",
+        "downloadCount": 0,
+        "file": {
+          "_type": "file",
+          "asset": {
+            "_ref": "file-370dcce041cfc778d77c656007fc1d9b893f793c-pdf",
+            "_type": "reference"
+          }
+        },
+        "language": "en"
+      }
+    ],
+    "organizations": null,
+    "publishDate": "2024-03-18",
+    "rcSlugs": [
+      "eastern-and-south-eastern-asia"
+    ],
+    "regionalCommunities": [
+      {
+        "_key": "KFz7Xy4ctg2o0RXSBSKAzM",
+        "_ref": "regional-community-eastern-and-south-eastern-asia",
+        "_type": "reference"
+      }
+    ],
+    "subtitle": {
+      "ar": "ملخص تنفيذي",
+      "en": "Executive summary",
+      "es": "Resumen ejecutivo",
+      "fr": "Résumé exécutif"
+    },
+    "tags": null,
+    "title": {
+      "ar": "Eastern and South-Eastern Asia Regional Agenda - Summary",
+      "en": "Eastern and South-Eastern Asia Regional Agenda - Summary",
+      "es": "Eastern and South-Eastern Asia Regional Agenda - Summary",
+      "fr": "Eastern and South-Eastern Asia Regional Agenda - Summary"
+    },
+    "year": 2024
+  },
+  {
+    "_id": "agenda-europe-and-northern-america-regional-agenda-full",
+    "agendaType": "research",
+    "coverImage": {
+      "_type": "image",
+      "alt": "Europe and Northern America Region",
+      "asset": {
+        "_ref": "image-2c015f41d0dc156e9f3bd3045b6a61f296413ae7-1920x1080-jpg",
+        "_type": "reference"
+      }
+    },
+    "description": {
+      "ar": "تحدد هذه الأجندة الإقليمية أولويات البحث والعمل لمعالجة تأثيرات تغير المناخ على الصحة النفسية في أوروبا وأمريكا الشمالية Regional Agenda.",
+      "en": "This regional agenda outlines priorities for research and action to address the mental health impacts of climate change in Europe and Northern America Regional Agenda.",
+      "es": "Esta agenda regional describe las prioridades de investigación y acción para abordar los impactos del cambio climático en la salud mental en Europa y América del Norte Regional Agenda.",
+      "fr": "Cet agenda régional décrit les priorités de recherche et d'action pour aborder les impacts du changement climatique sur la santé mentale dans l'Europe et l'Amérique du Nord Regional Agenda."
+    },
+    "featured": false,
+    "files": [
+      {
+        "_key": "47bycogt9",
+        "_type": "object",
+        "downloadCount": 0,
+        "file": {
+          "_type": "file",
+          "asset": {
+            "_ref": "file-87217937912272518f729c78fcce29a32714ff06-pdf",
+            "_type": "reference"
+          }
+        },
+        "language": "en"
+      }
+    ],
+    "organizations": null,
+    "publishDate": "2024-03-18",
+    "rcSlugs": [
+      "europe-and-northern-america"
+    ],
+    "regionalCommunities": [
+      {
+        "_key": "s1RjPOcssfb7PB6xxy9xKb",
+        "_ref": "regional-community-europe-and-northern-america",
+        "_type": "reference"
+      }
+    ],
+    "subtitle": {
+      "ar": "الأولويات الإقليمية لـ أوروبا وأمريكا الشمالية",
+      "en": "Regional priorities for Europe and Northern America",
+      "es": "Prioridades regionales para Europa y América del Norte",
+      "fr": "Priorités régionales pour l'Europe et l'Amérique du Nord"
+    },
+    "tags": null,
+    "title": {
+      "ar": "الأجندة الإقليمية لأوروبا وأمريكا الشمالية",
+      "en": "Europe and Northern America Regional Agenda",
+      "es": "Agenda Regional de Europa y América del Norte",
+      "fr": "Agenda Régional de l'Europe et de l'Amérique du Nord"
+    },
+    "year": 2024
+  },
+  {
+    "_id": "agenda-europe-and-northern-america-regional-agenda-summary",
+    "agendaType": "research",
+    "coverImage": {
+      "_type": "image",
+      "alt": "Europe and Northern America Region",
+      "asset": {
+        "_ref": "image-2c015f41d0dc156e9f3bd3045b6a61f296413ae7-1920x1080-jpg",
+        "_type": "reference"
+      }
+    },
+    "description": {
+      "ar": "ملخص تنفيذي لـ أوروبا وأمريكا الشمالية Regional Agenda, highlighting key priorities, recommendations, and action steps.",
+      "en": "An executive summary of the Europe and Northern America Regional Agenda, highlighting key priorities, recommendations, and action steps.",
+      "es": "Un resumen ejecutivo de Europa y América del Norte Regional Agenda, highlighting key priorities, recommendations, and action steps.",
+      "fr": "Un résumé exécutif de l'Europe et l'Amérique du Nord Regional Agenda, highlighting key priorities, recommendations, and action steps."
+    },
+    "featured": false,
+    "files": [
+      {
+        "_key": "0ffefecd6a76",
+        "_type": "agendaFile",
+        "downloadCount": 0,
+        "file": {
+          "_type": "file",
+          "asset": {
+            "_ref": "file-59a740f484e641b0af9e586e18f22c36757e8588-pdf",
+            "_type": "reference"
+          }
+        },
+        "language": "en"
+      }
+    ],
+    "organizations": null,
+    "publishDate": "2024-03-18",
+    "rcSlugs": [
+      "europe-and-northern-america"
+    ],
+    "regionalCommunities": [
+      {
+        "_key": "KFz7Xy4ctg2o0RXSBSK9Ex",
+        "_ref": "regional-community-europe-and-northern-america",
+        "_type": "reference"
+      }
+    ],
+    "subtitle": {
+      "ar": "ملخص تنفيذي",
+      "en": "Executive summary",
+      "es": "Resumen ejecutivo",
+      "fr": "Résumé exécutif"
+    },
+    "tags": null,
+    "title": {
+      "ar": "Europe and Northern America Regional Agenda - Summary",
+      "en": "Europe and Northern America Regional Agenda - Summary",
+      "es": "Europe and Northern America Regional Agenda - Summary",
+      "fr": "Europe and Northern America Regional Agenda - Summary"
+    },
+    "year": 2024
+  },
+  {
+    "_id": "agenda-global-research-and-action-agenda-full",
+    "agendaType": "research",
+    "coverImage": {
+      "_type": "image",
+      "alt": "Global Research and Action Agenda",
+      "asset": {
+        "_ref": "image-72b19fb988d8fe5d16abf18b8d57c9c6a492af13-3840x2160-png",
+        "_type": "reference"
+      }
+    },
+    "description": {
+      "ar": "تضع أجندة البحث والعمل العالمية رؤية لمجال المناخ والصحة النفسية لفهم والاستجابة لعواقب الصحة النفسية للمناخ المتغير.",
+      "en": "The Global Research and Action Agenda sets a vision for the climate and mental health field to understand and respond to the mental health consequences of a changing climate.",
+      "es": "La Agenda Global de Investigación y Acción establece una visión para el campo del clima y la salud mental para comprender y responder a las consecuencias de salud mental de un clima cambiante.",
+      "fr": "L'Agenda Mondial de Recherche et d'Action établit une vision pour le domaine du climat et de la santé mentale pour comprendre et répondre aux conséquences sur la santé mentale d'un climat changeant."
+    },
+    "featured": true,
+    "files": [
+      {
+        "_key": "96b102d61c18",
+        "_type": "agendaFile",
+        "downloadCount": 0,
+        "file": {
+          "_type": "file",
+          "asset": {
+            "_ref": "file-8cb26736cb4fa4fb63f175554b997ecf04f5aa86-pdf",
+            "_type": "reference"
+          }
+        },
+        "language": "en"
+      },
+      {
+        "_key": "241b0b384b40",
+        "_type": "agendaFile",
+        "downloadCount": 0,
+        "file": {
+          "_type": "file",
+          "asset": {
+            "_ref": "file-e690de8023731357b23e26b44cda6f822af34c2b-pdf",
+            "_type": "reference"
+          }
+        },
+        "language": "es"
+      },
+      {
+        "_key": "15dab8428c14",
+        "_type": "agendaFile",
+        "downloadCount": 0,
+        "file": {
+          "_type": "file",
+          "asset": {
+            "_ref": "file-cbe593074ec6749564bfe083205816acfe409130-pdf",
+            "_type": "reference"
+          }
+        },
+        "language": "fr"
+      },
+      {
+        "_key": "a323d064abb0",
+        "_type": "agendaFile",
+        "downloadCount": 0,
+        "file": {
+          "_type": "file",
+          "asset": {
+            "_ref": "file-da16c90d832f58c992c48347e07de27735ee28df-pdf",
+            "_type": "reference"
+          }
+        },
+        "language": "ar"
+      }
+    ],
+    "organizations": null,
+    "publishDate": "2024-03-18",
+    "rcSlugs": null,
+    "regionalCommunities": null,
+    "subtitle": {
+      "ar": "إطار شامل للعمل",
+      "en": "A comprehensive framework for action",
+      "es": "Un marco integral para la acción",
+      "fr": "Un cadre global pour l'action"
+    },
+    "tags": null,
+    "title": {
+      "ar": "أجندة البحث والعمل العالمية",
+      "en": "Global Research and Action Agenda",
+      "es": "Agenda Global de Investigación y Acción",
+      "fr": "Agenda Mondial de Recherche et d'Action"
+    },
+    "year": 2024
+  },
+  {
+    "_id": "agenda-global-research-and-action-agenda-summary",
+    "agendaType": "research",
+    "coverImage": {
+      "_type": "image",
+      "alt": "Global Research and Action Agenda - Slide Deck",
+      "asset": {
+        "_ref": "image-e90606c9ce644a7d64fd7f7ab86b558c63c20081-2074x1164-png",
+        "_type": "reference"
+      }
+    },
+    "description": {
+      "en": ""
+    },
+    "featured": true,
+    "files": [
+      {
+        "_key": "kxlwe76xv",
+        "_type": "object",
+        "downloadCount": 0,
+        "file": {
+          "_type": "file",
+          "asset": {
+            "_ref": "file-f7dbc251af99bb82fab4f75002e65aa50125ee54-pdf",
+            "_type": "reference"
+          }
+        },
+        "language": "en"
+      }
+    ],
+    "organizations": null,
+    "publishDate": "2024-03-18",
+    "rcSlugs": null,
+    "regionalCommunities": null,
+    "subtitle": {
+      "ar": "Access here a summary of the Global Research and Action Agenda.",
+      "en": "Access here a summary of the Global Research and Action Agenda.",
+      "es": "Access here a summary of the Global Research and Action Agenda.",
+      "fr": "Access here a summary of the Global Research and Action Agenda."
+    },
+    "tags": null,
+    "title": {
+      "ar": "عرض تقديمي موجز: أجندة البحث والعمل العالمية",
+      "en": "Summary Slidedeck: Global Research and Action Agenda",
+      "es": "Presentación Resumida: Agenda Global de Investigación y Acción",
+      "fr": "Présentation Résumée : Agenda Mondial de Recherche et d'Action"
+    },
+    "year": 2024
+  },
+  {
+    "_id": "agenda-humanitarian-toolkit-summary",
+    "agendaType": "guidelines",
+    "coverImage": {
+      "_type": "image",
+      "asset": {
+        "_ref": "image-5150b03b749f3ccd562bfc03c998f24e90a6fed1-3840x2160-png",
+        "_type": "reference"
+      }
+    },
+    "description": {
+      "ar": "يهدف هذا الدليل إلى تزويد صانعي السياسات وصانعي القرار والمنظمات غير الحكومية والممارسين بنظرة عامة موجزة عن الارتباط بين المناخ والصحة النفسية وأهميته والرسائل الرئيسية والطرق العملية للمشاركة.",
+      "en": "This toolkit aims to provide policymakers, decision-makers, NGOs, and practitioners with a concise overview of the climate-mental health nexus, its importance, key messages, and practical ways to engage.",
+      "es": "Esta guía tiene como objetivo proporcionar a los formuladores de políticas, tomadores de decisiones, ONGs y profesionales una descripción general concisa del nexo clima-salud mental, su importancia, mensajes clave y formas prácticas de participar.",
+      "fr": "Cette boîte à outils vise à fournir aux décideurs, aux responsables politiques, aux ONG et aux praticiens un aperçu concis du lien climat-santé mentale, de son importance, des messages clés et des moyens pratiques de s'engager."
+    },
+    "featured": false,
+    "files": [
+      {
+        "_key": "hi6w4umcl",
+        "_type": "object",
+        "downloadCount": 0,
+        "file": {
+          "_type": "file",
+          "asset": {
+            "_ref": "file-1e9209f2b42db9dc8c4b7c41a25283f35e280cc7-pdf",
+            "_type": "reference"
+          }
+        },
+        "language": "en"
+      }
+    ],
+    "organizations": null,
+    "publishDate": "2024-03-18",
+    "rcSlugs": null,
+    "regionalCommunities": null,
+    "subtitle": {
+      "ar": "أدوات عملية لصانعي السياسات",
+      "en": "Practical tools for policymakers",
+      "es": "Herramientas prácticas para formuladores de políticas",
+      "fr": "Outils pratiques pour les décideurs"
+    },
+    "tags": null,
+    "title": {
+      "ar": "دليل لصانعي القرار الذين يتخذون إجراءات لدعم الصحة النفسية في أزمة المناخ",
+      "en": "Toolkit for decision-makers taking action to support mental health in the climate crisis",
+      "es": "Guía para tomadores de decisiones que toman acción para apoyar la salud mental en la crisis climática",
+      "fr": "Boîte à outils pour les décideurs prenant des mesures pour soutenir la santé mentale dans la crise climatique"
+    },
+    "year": 2024
+  },
+  {
+    "_id": "agenda-indigenous-communities-research-and-action-agenda-full",
+    "agendaType": "research",
+    "coverImage": {
+      "_type": "image",
+      "alt": "Indigenous Communities",
+      "asset": {
+        "_ref": "image-61d99780b61149d7b9ff2ecd631beb3b1541cd27-3840x2160-png",
+        "_type": "reference"
+      }
+    },
+    "description": {
+      "ar": "تركز هذه الأجندة على المعرفة والقيادة وتقرير المصير الأصلي في معالجة تأثيرات تغير المناخ على الصحة النفسية للشعوب الأصلية في جميع أنحاء العالم.",
+      "en": "This agenda centers Indigenous knowledge, leadership, and self-determination in addressing the mental health impacts of climate change on Indigenous peoples worldwide.",
+      "es": "Esta agenda centra el conocimiento, liderazgo y autodeterminación indígena en el abordaje de los impactos del cambio climático en la salud mental de los pueblos indígenas en todo el mundo.",
+      "fr": "Cet agenda centre les connaissances, le leadership et l'autodétermination autochtones pour aborder les impacts du changement climatique sur la santé mentale des peuples autochtones du monde entier."
+    },
+    "featured": false,
+    "files": [
+      {
+        "_key": "e6d3e8ad87e2",
+        "_type": "agendaFile",
+        "downloadCount": 0,
+        "file": {
+          "_type": "file",
+          "asset": {
+            "_ref": "file-2aa901733d0a00e3e05c5140676c041236b3dbea-pdf",
+            "_type": "reference"
+          }
+        },
+        "language": "en"
+      },
+      {
+        "_key": "f65bf5cbe255",
+        "_type": "agendaFile",
+        "downloadCount": 0,
+        "file": {
+          "_type": "file",
+          "asset": {
+            "_ref": "file-beb376a6047b5cb195557ef4d119ff4d97ebaa59-pdf",
+            "_type": "reference"
+          }
+        },
+        "language": "es"
+      }
+    ],
+    "organizations": null,
+    "publishDate": "2024-03-18",
+    "rcSlugs": null,
+    "regionalCommunities": null,
+    "subtitle": {
+      "ar": "التركيز على المعرفة والقيادة الأصلية",
+      "en": "Centering Indigenous knowledge and leadership",
+      "es": "Centrando el conocimiento y liderazgo indígena",
+      "fr": "Centrer les connaissances et le leadership autochtones"
+    },
+    "tags": null,
+    "title": {
+      "ar": "أجندة البحث والعمل للمجتمعات الأصلية",
+      "en": "Indigenous Communities Research and Action Agenda",
+      "es": "Agenda de Investigación y Acción de Comunidades Indígenas",
+      "fr": "Agenda de Recherche et d'Action des Communautés Autochtones"
+    },
+    "year": 2024
+  },
+  {
+    "_id": "agenda-indigenous-communities-research-and-action-agenda-summary",
+    "agendaType": "research",
+    "coverImage": {
+      "_type": "image",
+      "alt": "Indigenous Communities",
+      "asset": {
+        "_ref": "image-61d99780b61149d7b9ff2ecd631beb3b1541cd27-3840x2160-png",
+        "_type": "reference"
+      }
+    },
+    "description": {
+      "ar": "ملخص تنفيذي لـ أجندة البحث والعمل للمجتمعات الأصلية, highlighting key priorities, recommendations, and action steps.",
+      "en": "An executive summary of the Indigenous Communities Research and Action Agenda, highlighting key priorities, recommendations, and action steps.",
+      "es": "Un resumen ejecutivo de Agenda de Investigación y Acción de Comunidades Indígenas, highlighting key priorities, recommendations, and action steps.",
+      "fr": "Un résumé exécutif de Agenda de Recherche et d'Action des Communautés Autochtones, highlighting key priorities, recommendations, and action steps."
+    },
+    "featured": false,
+    "files": [
+      {
+        "_key": "83f5bbc468e0",
+        "_type": "agendaFile",
+        "downloadCount": 0,
+        "file": {
+          "_type": "file",
+          "asset": {
+            "_ref": "file-25755c7131a302cf80475255973aac08d0de13fe-pdf",
+            "_type": "reference"
+          }
+        },
+        "language": "en"
+      },
+      {
+        "_key": "45478af57b43",
+        "_type": "agendaFile",
+        "downloadCount": 0,
+        "file": {
+          "_type": "file",
+          "asset": {
+            "_ref": "file-4ccffb0912126d925424fd933b73d6fbfbe90e2b-pdf",
+            "_type": "reference"
+          }
+        },
+        "language": "es"
+      }
+    ],
+    "organizations": null,
+    "publishDate": "2024-03-18",
+    "rcSlugs": null,
+    "regionalCommunities": null,
+    "subtitle": {
+      "ar": "ملخص تنفيذي",
+      "en": "Executive summary",
+      "es": "Resumen ejecutivo",
+      "fr": "Résumé exécutif"
+    },
+    "tags": null,
+    "title": {
+      "ar": "Indigenous Communities Research and Action Agenda - Summary",
+      "en": "Indigenous Communities Research and Action Agenda - Summary",
+      "es": "Indigenous Communities Research and Action Agenda - Summary",
+      "fr": "Indigenous Communities Research and Action Agenda - Summary"
+    },
+    "year": 2024
+  },
+  {
+    "_id": "agenda-latin-america-and-the-caribbean-regional-agenda-full",
+    "agendaType": "research",
+    "coverImage": {
+      "_type": "image",
+      "alt": "Latin America and the Caribbean Region",
+      "asset": {
+        "_ref": "image-56939ba686ae83fd4f11cd850755bc2850aa9dd6-1920x1080-jpg",
+        "_type": "reference"
+      }
+    },
+    "description": {
+      "ar": "تحدد هذه الأجندة الإقليمية أولويات البحث والعمل لمعالجة تأثيرات تغير المناخ على الصحة النفسية في أمريكا اللاتينية والكاريبي Regional Agenda.",
+      "en": "This regional agenda outlines priorities for research and action to address the mental health impacts of climate change in Latin America and the Caribbean Regional Agenda.",
+      "es": "Esta agenda regional describe las prioridades de investigación y acción para abordar los impactos del cambio climático en la salud mental en América Latina y el Caribe Regional Agenda.",
+      "fr": "Cet agenda régional décrit les priorités de recherche et d'action pour aborder les impacts du changement climatique sur la santé mentale dans l'Amérique Latine et les Caraïbes Regional Agenda."
+    },
+    "featured": false,
+    "files": [
+      {
+        "_key": "7996970742c6",
+        "_type": "agendaFile",
+        "downloadCount": 0,
+        "file": {
+          "_type": "file",
+          "asset": {
+            "_ref": "file-6f1ad6ed6a4bb623bedea7ae10a14b5ad1c55b51-pdf",
+            "_type": "reference"
+          }
+        },
+        "language": "en"
+      },
+      {
+        "_key": "c31dd18d73b3",
+        "_type": "agendaFile",
+        "downloadCount": 0,
+        "file": {
+          "_type": "file",
+          "asset": {
+            "_ref": "file-7d05aff6f78987f701233f65c2d617863c430f6d-pdf",
+            "_type": "reference"
+          }
+        },
+        "language": "fr"
+      },
+      {
+        "_key": "08b6e15802f3",
+        "_type": "agendaFile",
+        "downloadCount": 0,
+        "file": {
+          "_type": "file",
+          "asset": {
+            "_ref": "file-acc2daef8047545c9ecfb15dc7018ca18967f200-pdf",
+            "_type": "reference"
+          }
+        },
+        "language": "es"
+      }
+    ],
+    "organizations": null,
+    "publishDate": "2024-03-18",
+    "rcSlugs": [
+      "latin-america-and-the-caribbean"
+    ],
+    "regionalCommunities": [
+      {
+        "_key": "s1RjPOcssfb7PB6xxy7Xtx",
+        "_ref": "regional-community-latin-america-and-the-caribbean",
+        "_type": "reference"
+      }
+    ],
+    "subtitle": {
+      "ar": "الأولويات الإقليمية لـ أمريكا اللاتينية والكاريبي",
+      "en": "Regional priorities for Latin America and the Caribbean",
+      "es": "Prioridades regionales para América Latina y el Caribe",
+      "fr": "Priorités régionales pour l'Amérique Latine et les Caraïbes"
+    },
+    "tags": null,
+    "title": {
+      "ar": "الأجندة الإقليمية لأمريكا اللاتينية والكاريبي",
+      "en": "Latin America and the Caribbean Regional Agenda",
+      "es": "Agenda Regional de América Latina y el Caribe",
+      "fr": "Agenda Régional de l'Amérique Latine et des Caraïbes"
+    },
+    "year": 2024
+  },
+  {
+    "_id": "agenda-latin-america-and-the-caribbean-regional-agenda-summary",
+    "agendaType": "research",
+    "coverImage": {
+      "_type": "image",
+      "alt": "Latin America and the Caribbean Region",
+      "asset": {
+        "_ref": "image-56939ba686ae83fd4f11cd850755bc2850aa9dd6-1920x1080-jpg",
+        "_type": "reference"
+      }
+    },
+    "description": {
+      "ar": "ملخص تنفيذي لـ أمريكا اللاتينية والكاريبي Regional Agenda, highlighting key priorities, recommendations, and action steps.",
+      "en": "An executive summary of the Latin America and the Caribbean Regional Agenda, highlighting key priorities, recommendations, and action steps.",
+      "es": "Un resumen ejecutivo de América Latina y el Caribe Regional Agenda, highlighting key priorities, recommendations, and action steps.",
+      "fr": "Un résumé exécutif de l'Amérique Latine et les Caraïbes Regional Agenda, highlighting key priorities, recommendations, and action steps."
+    },
+    "featured": false,
+    "files": [
+      {
+        "_key": "44d67159f347",
+        "_type": "agendaFile",
+        "downloadCount": 0,
+        "file": {
+          "_type": "file",
+          "asset": {
+            "_ref": "file-08fcbb826d6e376a45b939897544e413a159d859-pdf",
+            "_type": "reference"
+          }
+        },
+        "language": "en"
+      },
+      {
+        "_key": "96c2d3b46295",
+        "_type": "agendaFile",
+        "downloadCount": 0,
+        "file": {
+          "_type": "file",
+          "asset": {
+            "_ref": "file-7dde32f60bf2091118a9e82b958b5a43a9ff9cba-pdf",
+            "_type": "reference"
+          }
+        },
+        "language": "es"
+      },
+      {
+        "_key": "43973b9b3bb3",
+        "_type": "agendaFile",
+        "downloadCount": 0,
+        "file": {
+          "_type": "file",
+          "asset": {
+            "_ref": "file-9e3c169bf34f114c5c89d16a28da2eff2d9b860f-pdf",
+            "_type": "reference"
+          }
+        },
+        "language": "fr"
+      }
+    ],
+    "organizations": null,
+    "publishDate": "2024-03-18",
+    "rcSlugs": [
+      "latin-america-and-the-caribbean"
+    ],
+    "regionalCommunities": [
+      {
+        "_key": "s1RjPOcssfb7PB6xxy8oEb",
+        "_ref": "regional-community-latin-america-and-the-caribbean",
+        "_type": "reference"
+      }
+    ],
+    "subtitle": {
+      "ar": "ملخص تنفيذي",
+      "en": "Executive summary",
+      "es": "Resumen ejecutivo",
+      "fr": "Résumé exécutif"
+    },
+    "tags": null,
+    "title": {
+      "ar": "Latin America and the Caribbean Regional Agenda - Summary",
+      "en": "Latin America and the Caribbean Regional Agenda - Summary",
+      "es": "Latin America and the Caribbean Regional Agenda - Summary",
+      "fr": "Latin America and the Caribbean Regional Agenda - Summary"
+    },
+    "year": 2024
+  },
+  {
+    "_id": "agenda-lived-experience-toolkit-summary",
+    "agendaType": "guidelines",
+    "coverImage": {
+      "_type": "image",
+      "alt": "A Lived Experience Toolkit",
+      "asset": {
+        "_ref": "image-108f82694b487b38d05de46c6a00d5ff47fedb7e-3840x2160-png",
+        "_type": "reference"
+      }
+    },
+    "description": {
+      "ar": "بالاستناد إلى الحكمة الجماعية للخبراء والأفراد ذوي الخبرة المباشرة والدروس من التعاون الدولي، يقدم الدليل إرشادات عملية للتنقل في تعقيدات مشاركة الخبرة المعاشة في سياق بحث وممارسة تغير المناخ والصحة النفسية.",
+      "en": "Drawing upon the collective wisdom of experts and individuals with firsthand experience and lessons from international collaborations, the toolkit offers practical guidance on navigating the complexities of lived experience engagement in the context of climate change and mental health research and practice.",
+      "es": "Basándose en la sabiduría colectiva de expertos e individuos con experiencia de primera mano y lecciones de colaboraciones internacionales, la guía ofrece orientación práctica para navegar las complejidades del compromiso de la experiencia vivida en el contexto de la investigación y práctica del cambio climático y la salud mental.",
+      "fr": "S'appuyant sur la sagesse collective d'experts et de personnes ayant une expérience de première main et des leçons de collaborations internationales, la boîte à outils offre des conseils pratiques pour naviguer dans les complexités de l'engagement de l'expérience vécue dans le contexte de la recherche et de la pratique du changement climatique et de la santé mentale."
+    },
+    "featured": false,
+    "files": [
+      {
+        "_key": "sywlc4nvp",
+        "_type": "object",
+        "downloadCount": 0,
+        "file": {
+          "_type": "file",
+          "asset": {
+            "_ref": "file-1493daae7bba01b8cdbfb06858c142601aea6351-pdf",
+            "_type": "reference"
+          }
+        },
+        "language": "en"
+      }
+    ],
+    "organizations": null,
+    "publishDate": "2024-03-18",
+    "rcSlugs": null,
+    "regionalCommunities": null,
+    "subtitle": {
+      "ar": "التركيز على الخبرة المعاشة في البحث",
+      "en": "Centering lived experience in research",
+      "es": "Centrando la experiencia vivida en la investigación",
+      "fr": "Centrer l'expérience vécue dans la recherche"
+    },
+    "tags": null,
+    "title": {
+      "ar": "تعميق البحث والممارسة: دليل مشاركة الخبرة المعاشة من Connecting Climate Minds",
+      "en": "Deepening Research & Practice: A Lived Experience Engagement Toolkit by Connecting Climate Minds",
+      "es": "Profundizando la Investigación y la Práctica: Una Guía de Compromiso de Experiencia Vivida por Connecting Climate Minds",
+      "fr": "Approfondir la Recherche et la Pratique : Une Boîte à Outils d'Engagement de l'Expérience Vécue par Connecting Climate Minds"
+    },
+    "year": 2024
+  },
+  {
+    "_id": "agenda-northern-africa-and-western-asia-regional-agenda-full",
+    "agendaType": "research",
+    "coverImage": {
+      "_type": "image",
+      "alt": " Northern Africa and Western Asia Region",
+      "asset": {
+        "_ref": "image-1ce936d1aae2a6e375f242fbebf7eabcb3abc564-1920x1080-jpg",
+        "_type": "reference"
+      }
+    },
+    "description": {
+      "ar": "تحدد هذه الأجندة الإقليمية أولويات البحث والعمل لمعالجة تأثيرات تغير المناخ على الصحة النفسية في شمال أفريقيا وغرب آسيا Regional Agenda.",
+      "en": "This regional agenda outlines priorities for research and action to address the mental health impacts of climate change in Northern Africa and Western Asia Regional Agenda.",
+      "es": "Esta agenda regional describe las prioridades de investigación y acción para abordar los impactos del cambio climático en la salud mental en el Norte de África y Asia Occidental Regional Agenda.",
+      "fr": "Cet agenda régional décrit les priorités de recherche et d'action pour aborder les impacts du changement climatique sur la santé mentale dans l'Afrique du Nord et l'Asie Occidentale Regional Agenda."
+    },
+    "featured": false,
+    "files": [
+      {
+        "_key": "d343b1321b71",
+        "_type": "agendaFile",
+        "downloadCount": 0,
+        "file": {
+          "_type": "file",
+          "asset": {
+            "_ref": "file-5aa7864e3c119ebddb8c36d8907a1ded429b3311-pdf",
+            "_type": "reference"
+          }
+        },
+        "language": "en"
+      },
+      {
+        "_key": "d499e8de5994",
+        "_type": "agendaFile",
+        "downloadCount": 0,
+        "file": {
+          "_type": "file",
+          "asset": {
+            "_ref": "file-c7ae57bbbd4199326b862014cf4f1af4b279588a-pdf",
+            "_type": "reference"
+          }
+        },
+        "language": "ar"
+      }
+    ],
+    "organizations": null,
+    "publishDate": "2024-03-18",
+    "rcSlugs": [
+      "northern-africa-and-western-asia"
+    ],
+    "regionalCommunities": [
+      {
+        "_key": "q751mjzXmd3Io5LU2GUXhm",
+        "_ref": "regional-community-northern-africa-and-western-asia",
+        "_type": "reference"
+      }
+    ],
+    "subtitle": {
+      "ar": "الأولويات الإقليمية لـ شمال أفريقيا وغرب آسيا",
+      "en": "Regional priorities for Northern Africa and Western Asia",
+      "es": "Prioridades regionales para el Norte de África y Asia Occidental",
+      "fr": "Priorités régionales pour l'Afrique du Nord et l'Asie Occidentale"
+    },
+    "tags": null,
+    "title": {
+      "ar": "الأجندة الإقليمية لشمال أفريقيا وغرب آسيا",
+      "en": "Northern Africa and Western Asia Regional Agenda",
+      "es": "Agenda Regional del Norte de África y Asia Occidental",
+      "fr": "Agenda Régional de l'Afrique du Nord et de l'Asie Occidentale"
+    },
+    "year": 2024
+  },
+  {
+    "_id": "agenda-northern-africa-and-western-asia-regional-agenda-summary",
+    "agendaType": "research",
+    "coverImage": {
+      "_type": "image",
+      "alt": " Northern Africa and Western Asia Region",
+      "asset": {
+        "_ref": "image-1ce936d1aae2a6e375f242fbebf7eabcb3abc564-1920x1080-jpg",
+        "_type": "reference"
+      }
+    },
+    "description": {
+      "ar": "ملخص تنفيذي لـ شمال أفريقيا وغرب آسيا Regional Agenda, highlighting key priorities, recommendations, and action steps.",
+      "en": "An executive summary of the Northern Africa and Western Asia Regional Agenda, highlighting key priorities, recommendations, and action steps.",
+      "es": "Un resumen ejecutivo de el Norte de África y Asia Occidental Regional Agenda, highlighting key priorities, recommendations, and action steps.",
+      "fr": "Un résumé exécutif de l'Afrique du Nord et l'Asie Occidentale Regional Agenda, highlighting key priorities, recommendations, and action steps."
+    },
+    "featured": false,
+    "files": [
+      {
+        "_key": "59b1dd8abd31",
+        "_type": "agendaFile",
+        "downloadCount": 0,
+        "file": {
+          "_type": "file",
+          "asset": {
+            "_ref": "file-87c4e3b196933b753300d1fb77644e7f891db8d0-pdf",
+            "_type": "reference"
+          }
+        },
+        "language": "en"
+      },
+      {
+        "_key": "f611b589df6d",
+        "_type": "agendaFile",
+        "downloadCount": 0,
+        "file": {
+          "_type": "file",
+          "asset": {
+            "_ref": "file-28f014fcd16c628b57efaa12583415117b929b32-pdf",
+            "_type": "reference"
+          }
+        },
+        "language": "ar"
+      }
+    ],
+    "organizations": null,
+    "publishDate": "2024-03-18",
+    "rcSlugs": [
+      "northern-africa-and-western-asia"
+    ],
+    "regionalCommunities": [
+      {
+        "_key": "KFz7Xy4ctg2o0RXSBSJNgq",
+        "_ref": "regional-community-northern-africa-and-western-asia",
+        "_type": "reference"
+      }
+    ],
+    "subtitle": {
+      "ar": "ملخص تنفيذي",
+      "en": "Executive summary",
+      "es": "Resumen ejecutivo",
+      "fr": "Résumé exécutif"
+    },
+    "tags": null,
+    "title": {
+      "ar": "Northern Africa and Western Asia Regional Agenda - Summary",
+      "en": "Northern Africa and Western Asia Regional Agenda - Summary",
+      "es": "Northern Africa and Western Asia Regional Agenda - Summary",
+      "fr": "Northern Africa and Western Asia Regional Agenda - Summary"
+    },
+    "year": 2024
+  },
+  {
+    "_id": "agenda-oceania-regional-agenda-full",
+    "agendaType": "research",
+    "coverImage": {
+      "_type": "image",
+      "alt": "Oceania Region",
+      "asset": {
+        "_ref": "image-3d2ca6830166414be40adcb14de43a1d17803fba-1920x1080-jpg",
+        "_type": "reference"
+      }
+    },
+    "description": {
+      "ar": "تحدد هذه الأجندة الإقليمية أولويات البحث والعمل لمعالجة تأثيرات تغير المناخ على الصحة النفسية في أوقيانوسيا Regional Agenda.",
+      "en": "This regional agenda outlines priorities for research and action to address the mental health impacts of climate change in Oceania Regional Agenda.",
+      "es": "Esta agenda regional describe las prioridades de investigación y acción para abordar los impactos del cambio climático en la salud mental en Oceanía Regional Agenda.",
+      "fr": "Cet agenda régional décrit les priorités de recherche et d'action pour aborder les impacts du changement climatique sur la santé mentale dans l'Océanie Regional Agenda."
+    },
+    "featured": false,
+    "files": [
+      {
+        "_key": "2kmcxa0ud",
+        "_type": "object",
+        "downloadCount": 0,
+        "file": {
+          "_type": "file",
+          "asset": {
+            "_ref": "file-c650c7f9083459b45699d43afb8e1cf8b11d6ee8-pdf",
+            "_type": "reference"
+          }
+        },
+        "language": "en"
+      }
+    ],
+    "organizations": null,
+    "publishDate": "2024-03-18",
+    "rcSlugs": [
+      "oceania"
+    ],
+    "regionalCommunities": [
+      {
+        "_key": "KFz7Xy4ctg2o0RXSBSJGCu",
+        "_ref": "regional-community-oceania",
+        "_type": "reference"
+      }
+    ],
+    "subtitle": {
+      "ar": "الأولويات الإقليمية لـ أوقيانوسيا",
+      "en": "Regional priorities for Oceania",
+      "es": "Prioridades regionales para Oceanía",
+      "fr": "Priorités régionales pour l'Océanie"
+    },
+    "tags": null,
+    "title": {
+      "ar": "الأجندة الإقليمية لأوقيانوسيا",
+      "en": "Oceania Regional Agenda",
+      "es": "Agenda Regional de Oceanía",
+      "fr": "Agenda Régional de l'Océanie"
+    },
+    "year": 2024
+  },
+  {
+    "_id": "agenda-oceania-regional-agenda-summary",
+    "agendaType": "research",
+    "coverImage": {
+      "_type": "image",
+      "alt": "Oceania Region",
+      "asset": {
+        "_ref": "image-3d2ca6830166414be40adcb14de43a1d17803fba-1920x1080-jpg",
+        "_type": "reference"
+      }
+    },
+    "description": {
+      "ar": "ملخص تنفيذي لـ أوقيانوسيا Regional Agenda, highlighting key priorities, recommendations, and action steps.",
+      "en": "An executive summary of the Oceania Regional Agenda, highlighting key priorities, recommendations, and action steps.",
+      "es": "Un resumen ejecutivo de Oceanía Regional Agenda, highlighting key priorities, recommendations, and action steps.",
+      "fr": "Un résumé exécutif de l'Océanie Regional Agenda, highlighting key priorities, recommendations, and action steps."
+    },
+    "featured": false,
+    "files": [
+      {
+        "_key": "d02f493fb2a1",
+        "_type": "agendaFile",
+        "downloadCount": 0,
+        "file": {
+          "_type": "file",
+          "asset": {
+            "_ref": "file-00013d9224464321cd79f415710fc71369586292-pdf",
+            "_type": "reference"
+          }
+        },
+        "language": "en"
+      }
+    ],
+    "organizations": null,
+    "publishDate": "2024-03-18",
+    "rcSlugs": [
+      "oceania"
+    ],
+    "regionalCommunities": [
+      {
+        "_key": "s1RjPOcssfb7PB6xxy4gR7",
+        "_ref": "regional-community-oceania",
+        "_type": "reference"
+      }
+    ],
+    "subtitle": {
+      "ar": "ملخص تنفيذي",
+      "en": "Executive summary",
+      "es": "Resumen ejecutivo",
+      "fr": "Résumé exécutif"
+    },
+    "tags": null,
+    "title": {
+      "ar": "Oceania Regional Agenda - Summary",
+      "en": "Oceania Regional Agenda - Summary",
+      "es": "Oceania Regional Agenda - Summary",
+      "fr": "Oceania Regional Agenda - Summary"
+    },
+    "year": 2024
+  },
+  {
+    "_id": "agenda-small-farmers-and-fisher-peoples-research-and-action-agenda-full",
+    "agendaType": "research",
+    "coverImage": {
+      "_type": "image",
+      "alt": "Small Farmers and Fisher Peoples",
+      "asset": {
+        "_ref": "image-ea79b7b3f7ea4bed14666ec5f996d8bc05cb2898-3840x2160-png",
+        "_type": "reference"
+      }
+    },
+    "description": {
+      "ar": "أجندة بحث وعمل تعالج تأثيرات تغير المناخ على الصحة النفسية.",
+      "en": "A research and action agenda addressing the mental health impacts of climate change.",
+      "es": "Una agenda de investigación y acción que aborda los impactos del cambio climático en la salud mental.",
+      "fr": "Un agenda de recherche et d'action abordant les impacts du changement climatique sur la santé mentale."
+    },
+    "featured": false,
+    "files": [
+      {
+        "_key": "ue2s1vlub",
+        "_type": "object",
+        "downloadCount": 0,
+        "file": {
+          "_type": "file",
+          "asset": {
+            "_ref": "file-7d9ddcece79013056d1287666372f44aa94b7b4e-pdf",
+            "_type": "reference"
+          }
+        },
+        "language": "en"
+      }
+    ],
+    "organizations": null,
+    "publishDate": "2024-03-18",
+    "rcSlugs": null,
+    "regionalCommunities": null,
+    "subtitle": {
+      "ar": "دعم المجتمعات الزراعية والصيد",
+      "en": "Supporting agricultural and fishing communities",
+      "es": "Apoyando comunidades agrícolas y pesqueras",
+      "fr": "Soutenir les communautés agricoles et de pêche"
+    },
+    "tags": null,
+    "title": {
+      "ar": "أجندة البحث والعمل للمزارعين والصيادين الصغار",
+      "en": "Small Farmers and Fisher Peoples Research and Action Agenda",
+      "es": "Agenda de Investigación y Acción de Pequeños Agricultores y Pescadores",
+      "fr": "Agenda de Recherche et d'Action des Petits Agriculteurs et Pêcheurs"
+    },
+    "year": 2024
+  },
+  {
+    "_id": "agenda-small-farmers-and-fisher-peoples-research-and-action-agenda-summary",
+    "agendaType": "research",
+    "coverImage": {
+      "_type": "image",
+      "alt": "Small Farmers and Fisher Peoples",
+      "asset": {
+        "_ref": "image-ea79b7b3f7ea4bed14666ec5f996d8bc05cb2898-3840x2160-png",
+        "_type": "reference"
+      }
+    },
+    "description": {
+      "ar": "ملخص تنفيذي لـ أجندة البحث والعمل للمزارعين والصيادين الصغار, highlighting key priorities, recommendations, and action steps.",
+      "en": "An executive summary of the Small Farmers and Fisher Peoples Research and Action Agenda, highlighting key priorities, recommendations, and action steps.",
+      "es": "Un resumen ejecutivo de Agenda de Investigación y Acción de Pequeños Agricultores y Pescadores, highlighting key priorities, recommendations, and action steps.",
+      "fr": "Un résumé exécutif de Agenda de Recherche et d'Action des Petits Agriculteurs et Pêcheurs, highlighting key priorities, recommendations, and action steps."
+    },
+    "featured": false,
+    "files": [
+      {
+        "_key": "920ba1610553",
+        "_type": "agendaFile",
+        "downloadCount": 0,
+        "file": {
+          "_type": "file",
+          "asset": {
+            "_ref": "file-e273ba3b734f41c5826b24cd58912bcee6ace6ab-pdf",
+            "_type": "reference"
+          }
+        },
+        "language": "en"
+      }
+    ],
+    "organizations": null,
+    "publishDate": "2024-03-18",
+    "rcSlugs": null,
+    "regionalCommunities": null,
+    "subtitle": {
+      "ar": "ملخص تنفيذي",
+      "en": "Executive summary",
+      "es": "Resumen ejecutivo",
+      "fr": "Résumé exécutif"
+    },
+    "tags": null,
+    "title": {
+      "ar": "Small Farmers and Fisher Peoples Research and Action Agenda - Summary",
+      "en": "Small Farmers and Fisher Peoples Research and Action Agenda - Summary",
+      "es": "Small Farmers and Fisher Peoples Research and Action Agenda - Summary",
+      "fr": "Small Farmers and Fisher Peoples Research and Action Agenda - Summary"
+    },
+    "year": 2024
+  },
+  {
+    "_id": "agenda-sub-saharan-africa-regional-agenda-full",
+    "agendaType": "research",
+    "coverImage": {
+      "_type": "image",
+      "alt": "Sub-Saharan Africa Region",
+      "asset": {
+        "_ref": "image-34e0ba8b9830188be002a51f7d8628ec382cee7e-1920x1080-jpg",
+        "_type": "reference"
+      }
+    },
+    "description": {
+      "ar": "تحدد هذه الأجندة الإقليمية أولويات البحث والعمل لمعالجة تأثيرات تغير المناخ على الصحة النفسية في أفريقيا جنوب الصحراء الكبرى Regional Agenda.",
+      "en": "This regional agenda outlines priorities for research and action to address the mental health impacts of climate change in Sub-Saharan Africa Regional Agenda.",
+      "es": "Esta agenda regional describe las prioridades de investigación y acción para abordar los impactos del cambio climático en la salud mental en África Subsahariana Regional Agenda.",
+      "fr": "Cet agenda régional décrit les priorités de recherche et d'action pour aborder les impacts du changement climatique sur la santé mentale dans l'Afrique Subsaharienne Regional Agenda."
+    },
+    "featured": false,
+    "files": [
+      {
+        "_key": "8yzatuvab",
+        "_type": "object",
+        "downloadCount": 0,
+        "file": {
+          "_type": "file",
+          "asset": {
+            "_ref": "file-24729c723bc235eead18a60832868d5235cc7d41-pdf",
+            "_type": "reference"
+          }
+        },
+        "language": "en"
+      },
+      {
+        "_key": "f0d2e90f8a6d",
+        "_type": "agendaFile",
+        "downloadCount": 0,
+        "file": {
+          "_type": "file",
+          "asset": {
+            "_ref": "file-5d6d95f1448734c34e967484574766594bb9227a-pdf",
+            "_type": "reference"
+          }
+        },
+        "language": "fr"
+      }
+    ],
+    "organizations": null,
+    "publishDate": "2024-03-18",
+    "rcSlugs": [
+      "sub-saharan-africa"
+    ],
+    "regionalCommunities": [
+      {
+        "_key": "q751mjzXmd3Io5LU2GTNfq",
+        "_ref": "regional-community-sub-saharan-africa",
+        "_type": "reference"
+      }
+    ],
+    "subtitle": {
+      "ar": "الأولويات الإقليمية لـ أفريقيا جنوب الصحراء الكبرى",
+      "en": "Regional priorities for Sub-Saharan Africa",
+      "es": "Prioridades regionales para África Subsahariana",
+      "fr": "Priorités régionales pour l'Afrique Subsaharienne"
+    },
+    "tags": null,
+    "title": {
+      "ar": "الأجندة الإقليمية لأفريقيا جنوب الصحراء الكبرى",
+      "en": "Sub-Saharan Africa Regional Agenda",
+      "es": "Agenda Regional de África Subsahariana",
+      "fr": "Agenda Régional de l'Afrique Subsaharienne"
+    },
+    "year": 2024
+  },
+  {
+    "_id": "agenda-sub-saharan-africa-regional-agenda-summary",
+    "agendaType": "research",
+    "coverImage": {
+      "_type": "image",
+      "alt": "Sub-Saharan Africa Region",
+      "asset": {
+        "_ref": "image-34e0ba8b9830188be002a51f7d8628ec382cee7e-1920x1080-jpg",
+        "_type": "reference"
+      }
+    },
+    "description": {
+      "ar": "ملخص تنفيذي لـ أفريقيا جنوب الصحراء الكبرى Regional Agenda, highlighting key priorities, recommendations, and action steps.",
+      "en": "An executive summary of the Sub-Saharan Africa Regional Agenda, highlighting key priorities, recommendations, and action steps.",
+      "es": "Un resumen ejecutivo de África Subsahariana Regional Agenda, highlighting key priorities, recommendations, and action steps.",
+      "fr": "Un résumé exécutif de l'Afrique Subsaharienne Regional Agenda, highlighting key priorities, recommendations, and action steps."
+    },
+    "featured": false,
+    "files": [
+      {
+        "_key": "pima253nu",
+        "_type": "object",
+        "downloadCount": 0,
+        "file": {
+          "_type": "file",
+          "asset": {
+            "_ref": "file-42e7ad6cef7afc540df9f411c9168f08ed5abf4e-pdf",
+            "_type": "reference"
+          }
+        },
+        "language": "en"
+      },
+      {
+        "_key": "ec8677905c71",
+        "_type": "agendaFile",
+        "downloadCount": 0,
+        "file": {
+          "_type": "file",
+          "asset": {
+            "_ref": "file-e1af6a05bc599907fe532ebc9f44bde3367fde4a-pdf",
+            "_type": "reference"
+          }
+        },
+        "language": "fr"
+      }
+    ],
+    "organizations": null,
+    "publishDate": "2024-03-18",
+    "rcSlugs": [
+      "sub-saharan-africa"
+    ],
+    "regionalCommunities": [
+      {
+        "_key": "s1RjPOcssfb7PB6xxy4WEb",
+        "_ref": "regional-community-sub-saharan-africa",
+        "_type": "reference"
+      }
+    ],
+    "subtitle": {
+      "ar": "ملخص تنفيذي",
+      "en": "Executive summary",
+      "es": "Resumen ejecutivo",
+      "fr": "Résumé exécutif"
+    },
+    "tags": null,
+    "title": {
+      "ar": "Sub-Saharan Africa Regional Agenda - Summary",
+      "en": "Sub-Saharan Africa Regional Agenda - Summary",
+      "es": "Sub-Saharan Africa Regional Agenda - Summary",
+      "fr": "Sub-Saharan Africa Regional Agenda - Summary"
+    },
+    "year": 2024
+  },
+  {
+    "_id": "agenda-youth-research-and-action-agenda-full",
+    "agendaType": "research",
+    "coverImage": {
+      "_type": "image",
+      "alt": "Young People",
+      "asset": {
+        "_ref": "image-a188992df760eecc7333d6fbe0c264d859fb3523-3840x2160-png",
+        "_type": "reference"
+      }
+    },
+    "description": {
+      "ar": "تحدد هذه الأجندة الأولويات التي يقودها الشباب للبحث والعمل لمعالجة تأثيرات تغير المناخ على الصحة النفسية، مما يضمن أن أصوات الشباب تشكل المجال.",
+      "en": "This agenda outlines youth-led priorities for research and action to address the mental health impacts of climate change, ensuring youth voices shape the field.",
+      "es": "Esta agenda describe las prioridades lideradas por jóvenes para la investigación y la acción para abordar los impactos del cambio climático en la salud mental, asegurando que las voces de los jóvenes den forma al campo.",
+      "fr": "Cet agenda décrit les priorités menées par les jeunes pour la recherche et l'action pour aborder les impacts du changement climatique sur la santé mentale, en veillant à ce que les voix des jeunes façonnent le domaine."
+    },
+    "featured": false,
+    "files": [
+      {
+        "_key": "rkabxwctw",
+        "_type": "object",
+        "downloadCount": 0,
+        "file": {
+          "_type": "file",
+          "asset": {
+            "_ref": "file-2b1c0e5864b1c7b3c25c7db5cd3e66f2cbcc599f-pdf",
+            "_type": "reference"
+          }
+        },
+        "language": "en"
+      }
+    ],
+    "organizations": null,
+    "publishDate": "2024-03-18",
+    "rcSlugs": null,
+    "regionalCommunities": null,
+    "subtitle": {
+      "ar": "حلول يقودها الشباب للصحة النفسية المناخية",
+      "en": "Youth-led solutions for climate mental health",
+      "es": "Soluciones lideradas por jóvenes para la salud mental climática",
+      "fr": "Solutions menées par les jeunes pour la santé mentale climatique"
+    },
+    "tags": null,
+    "title": {
+      "ar": "أجندة البحث والعمل للشباب",
+      "en": "Youth Research and Action Agenda",
+      "es": "Agenda de Investigación y Acción de la Juventud",
+      "fr": "Agenda de Recherche et d'Action des Jeunes"
+    },
+    "year": 2024
+  },
+  {
+    "_id": "agenda-youth-research-and-action-agenda-summary",
+    "agendaType": "research",
+    "coverImage": {
+      "_type": "image",
+      "alt": "Young People",
+      "asset": {
+        "_ref": "image-a188992df760eecc7333d6fbe0c264d859fb3523-3840x2160-png",
+        "_type": "reference"
+      }
+    },
+    "description": {
+      "ar": "ملخص تنفيذي لـ أجندة البحث والعمل للشباب, highlighting key priorities, recommendations, and action steps.",
+      "en": "An executive summary of the Youth Research and Action Agenda, highlighting key priorities, recommendations, and action steps.",
+      "es": "Un resumen ejecutivo de Agenda de Investigación y Acción de la Juventud, highlighting key priorities, recommendations, and action steps.",
+      "fr": "Un résumé exécutif de Agenda de Recherche et d'Action des Jeunes, highlighting key priorities, recommendations, and action steps."
+    },
+    "featured": false,
+    "files": [
+      {
+        "_key": "f0379f50027a",
+        "_type": "agendaFile",
+        "downloadCount": 0,
+        "file": {
+          "_type": "file",
+          "asset": {
+            "_ref": "file-ad19e079b1145a395f82c37cc7524ab3c34a4c85-pdf",
+            "_type": "reference"
+          }
+        },
+        "language": "en"
+      }
+    ],
+    "organizations": null,
+    "publishDate": "2024-03-18",
+    "rcSlugs": null,
+    "regionalCommunities": null,
+    "subtitle": {
+      "ar": "ملخص تنفيذي",
+      "en": "Executive summary",
+      "es": "Resumen ejecutivo",
+      "fr": "Résumé exécutif"
+    },
+    "tags": null,
+    "title": {
+      "ar": "Youth Research and Action Agenda - Summary",
+      "en": "Youth Research and Action Agenda - Summary",
+      "es": "Youth Research and Action Agenda - Summary",
+      "fr": "Youth Research and Action Agenda - Summary"
+    },
+    "year": 2024
+  },
+  {
+    "_id": "ee389db6-c4a1-4c03-bdf2-66b56fbe28be",
+    "agendaType": "other",
+    "coverImage": {
+      "_type": "image",
+      "asset": {
+        "_ref": "image-693df4ea3c67d4812f2bbe4eaa23c15584ecc1e7-3840x2160-png",
+        "_type": "reference"
+      }
+    },
+    "description": {
+      "en": ""
+    },
+    "featured": false,
+    "files": [
+      {
+        "_key": "8faaadac5385",
+        "_type": "agendaFile",
+        "downloadCount": 0,
+        "file": {
+          "_type": "file",
+          "asset": {
+            "_ref": "file-6ba96d8eac5d0e67fbbac0ef8ab5cbafd419418f-pdf",
+            "_type": "reference"
+          }
+        },
+        "language": "en"
+      }
+    ],
+    "organizations": null,
+    "publishDate": "2024-03-18",
+    "rcSlugs": null,
+    "regionalCommunities": null,
+    "subtitle": {
+      "en": ""
+    },
+    "tags": null,
+    "title": {
+      "ar": "تقرير تأثير فريق عمل الخبرة المعاشة لـ Connecting Climate Minds",
+      "en": "Connecting Climate Minds Lived Experience Working Group Impact Report",
+      "es": "Informe de Impacto del Grupo de Trabajo de Experiencia Vivida de Connecting Climate Minds",
+      "fr": "Rapport d'Impact du Groupe de Travail sur l'Expérience Vécue de Connecting Climate Minds"
+    },
+    "year": 2024
+  }
+]

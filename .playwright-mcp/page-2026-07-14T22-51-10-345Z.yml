@@ -1,0 +1,1035 @@
+- generic [active] [ref=f7e1]:
+  - paragraph [ref=f7e2]: Atlas block · interactive
+  - heading "Explore by region — two surfaces, one system" [level=1] [ref=f7e3]
+  - paragraph [ref=f7e4]:
+    - text: The hub’s actual region geometry and real pin system (
+    - code [ref=f7e5]: cluster-pins.ts
+    - text: "): solid dots, and a soft segmented ring for mixed clusters. Filter by type, theme, when, region; All is the default. Results render as the hub’s typed content cards, each type distinct. Two surfaces share the system: the homepage block previews the top 3, the Atlas page shows the complete results in a grid below the map."
+  - generic [ref=f7e6]:
+    - generic [ref=f7e7]:
+      - text: Homepage block
+      - generic [ref=f7e8]: · previews top 3 per filter
+    - generic [ref=f7e9]:
+      - generic [ref=f7e10]: Home 1280
+      - generic [ref=f7e17]:
+        - generic [ref=f7e18]:
+          - heading "Explore by region" [level=4] [ref=f7e19]
+          - paragraph [ref=f7e20]: Filter, preview the highlights, open the Atlas for everything.
+        - generic [ref=f7e21]:
+          - generic [ref=f7e22]:
+            - generic [ref=f7e23]: Type
+            - button "All types" [pressed] [ref=f7e24] [cursor=pointer]
+            - button "Case study" [ref=f7e25] [cursor=pointer]
+            - button "Lived experience" [ref=f7e27] [cursor=pointer]
+            - button "News" [ref=f7e29] [cursor=pointer]
+            - button "Research output" [ref=f7e31] [cursor=pointer]
+            - button "Event" [ref=f7e33] [cursor=pointer]
+            - button "Member" [ref=f7e35] [cursor=pointer]
+          - generic [ref=f7e37]:
+            - generic [ref=f7e38]: Theme
+            - button "All" [pressed] [ref=f7e39] [cursor=pointer]
+            - button "Displacement" [ref=f7e40] [cursor=pointer]
+            - button "Livelihoods" [ref=f7e41] [cursor=pointer]
+            - button "Youth" [ref=f7e42] [cursor=pointer]
+            - button "Indigenous" [ref=f7e43] [cursor=pointer]
+            - button "Health systems" [ref=f7e44] [cursor=pointer]
+          - generic [ref=f7e45]:
+            - generic [ref=f7e46]: When
+            - button "All" [pressed] [ref=f7e47] [cursor=pointer]
+            - button "Past year" [ref=f7e48] [cursor=pointer]
+            - button "Past 3 yrs" [ref=f7e49] [cursor=pointer]
+            - button "Earlier" [ref=f7e50] [cursor=pointer]
+          - generic [ref=f7e51]:
+            - generic [ref=f7e52]: Region
+            - button "All" [pressed] [ref=f7e53] [cursor=pointer]
+            - button "Eastern & SE Asia" [ref=f7e54] [cursor=pointer]
+            - button "Sub-Saharan Africa" [ref=f7e55] [cursor=pointer]
+            - button "Europe & N. America" [ref=f7e56] [cursor=pointer]
+            - button "Central & Southern Asia" [ref=f7e57] [cursor=pointer]
+            - button "Oceania" [ref=f7e58] [cursor=pointer]
+            - button "Northern Africa & W. Asia" [ref=f7e59] [cursor=pointer]
+            - button "Latin America & Caribbean" [ref=f7e60] [cursor=pointer]
+        - generic [ref=f7e61]:
+          - generic [ref=f7e62]:
+            - img "Regional map with pins" [ref=f7e63]:
+              - generic [ref=f7e71]:
+                - generic [ref=f7e72] [cursor=pointer]: "7"
+                - generic [ref=f7e78] [cursor=pointer]: "7"
+                - generic [ref=f7e84] [cursor=pointer]: "2"
+                - generic [ref=f7e92] [cursor=pointer]: "3"
+                - generic [ref=f7e110] [cursor=pointer]: "3"
+                - generic [ref=f7e115] [cursor=pointer]: "2"
+                - generic [ref=f7e120] [cursor=pointer]: "5"
+                - generic [ref=f7e126] [cursor=pointer]: "2"
+                - generic [ref=f7e131] [cursor=pointer]: "4"
+                - generic [ref=f7e136] [cursor=pointer]: "3"
+                - generic [ref=f7e141] [cursor=pointer]: "2"
+                - generic [ref=f7e149] [cursor=pointer]: "5"
+                - generic [ref=f7e157] [cursor=pointer]: "2"
+                - generic [ref=f7e165] [cursor=pointer]: "2"
+                - generic [ref=f7e171] [cursor=pointer]: "2"
+                - generic [ref=f7e176] [cursor=pointer]: "3"
+                - generic [ref=f7e185] [cursor=pointer]: "6"
+                - generic [ref=f7e191] [cursor=pointer]: "6"
+                - generic [ref=f7e197] [cursor=pointer]: "2"
+                - generic [ref=f7e202] [cursor=pointer]: "3"
+                - generic [ref=f7e207] [cursor=pointer]: "4"
+            - generic [ref=f7e216]:
+              - button "+" [ref=f7e217] [cursor=pointer]
+              - button "−" [ref=f7e218] [cursor=pointer]
+          - generic [ref=f7e219]:
+            - generic [ref=f7e220]:
+              - heading "All regions" [level=5] [ref=f7e221]
+              - generic [ref=f7e222]: 86 total
+              - link "See all in Atlas" [ref=f7e223] [cursor=pointer]:
+                - /url: "#"
+            - generic [ref=f7e224]:
+              - link "Case study Mangrove restoration and community wellbeing Lagos, Nigeria" [ref=f7e225] [cursor=pointer]:
+                - /url: "#"
+                - generic [ref=f7e230]:
+                  - generic [ref=f7e231]: Case study
+                  - generic [ref=f7e233]: Mangrove restoration and community wellbeing
+                  - generic [ref=f7e234]: Lagos, Nigeria
+              - link "Case study Farmer mental health after prolonged drought Nairobi, Kenya" [ref=f7e235] [cursor=pointer]:
+                - /url: "#"
+                - generic [ref=f7e240]:
+                  - generic [ref=f7e241]: Case study
+                  - generic [ref=f7e243]: Farmer mental health after prolonged drought
+                  - generic [ref=f7e244]: Nairobi, Kenya
+              - link "Case study Peer-support networks in flood recovery Kampala, Uganda" [ref=f7e245] [cursor=pointer]:
+                - /url: "#"
+                - generic [ref=f7e250]:
+                  - generic [ref=f7e251]: Case study
+                  - generic [ref=f7e253]: Peer-support networks in flood recovery
+                  - generic [ref=f7e254]: Kampala, Uganda
+        - generic [ref=f7e255]:
+          - generic [ref=f7e256]: Case study
+          - generic [ref=f7e258]: Lived exp.
+          - generic [ref=f7e260]: News
+          - generic [ref=f7e262]: Research
+          - generic [ref=f7e264]: Event
+          - generic [ref=f7e266]: mixed cluster
+  - generic [ref=f7e268]:
+    - generic [ref=f7e269]:
+      - text: Atlas page
+      - generic [ref=f7e270]: · complete results, grid below the map
+    - generic [ref=f7e271]:
+      - generic [ref=f7e272]: Atlas 1280
+      - generic [ref=f7e279]:
+        - generic [ref=f7e280]:
+          - heading "Atlas — explore by region" [level=4] [ref=f7e281]
+          - paragraph [ref=f7e282]: Every result, filtered live. Cards sit below the map.
+        - generic [ref=f7e283]:
+          - generic [ref=f7e284]:
+            - generic [ref=f7e285]: Type
+            - button "All types" [pressed] [ref=f7e286] [cursor=pointer]
+            - button "Case study" [ref=f7e287] [cursor=pointer]
+            - button "Lived experience" [ref=f7e289] [cursor=pointer]
+            - button "News" [ref=f7e291] [cursor=pointer]
+            - button "Research output" [ref=f7e293] [cursor=pointer]
+            - button "Event" [ref=f7e295] [cursor=pointer]
+            - button "Member" [ref=f7e297] [cursor=pointer]
+          - generic [ref=f7e299]:
+            - generic [ref=f7e300]: Theme
+            - button "All" [pressed] [ref=f7e301] [cursor=pointer]
+            - button "Displacement" [ref=f7e302] [cursor=pointer]
+            - button "Livelihoods" [ref=f7e303] [cursor=pointer]
+            - button "Youth" [ref=f7e304] [cursor=pointer]
+            - button "Indigenous" [ref=f7e305] [cursor=pointer]
+            - button "Health systems" [ref=f7e306] [cursor=pointer]
+          - generic [ref=f7e307]:
+            - generic [ref=f7e308]: When
+            - button "All" [pressed] [ref=f7e309] [cursor=pointer]
+            - button "Past year" [ref=f7e310] [cursor=pointer]
+            - button "Past 3 yrs" [ref=f7e311] [cursor=pointer]
+            - button "Earlier" [ref=f7e312] [cursor=pointer]
+          - generic [ref=f7e313]:
+            - generic [ref=f7e314]: Region
+            - button "All" [pressed] [ref=f7e315] [cursor=pointer]
+            - button "Eastern & SE Asia" [ref=f7e316] [cursor=pointer]
+            - button "Sub-Saharan Africa" [ref=f7e317] [cursor=pointer]
+            - button "Europe & N. America" [ref=f7e318] [cursor=pointer]
+            - button "Central & Southern Asia" [ref=f7e319] [cursor=pointer]
+            - button "Oceania" [ref=f7e320] [cursor=pointer]
+            - button "Northern Africa & W. Asia" [ref=f7e321] [cursor=pointer]
+            - button "Latin America & Caribbean" [ref=f7e322] [cursor=pointer]
+        - generic [ref=f7e324]:
+          - img "Regional map with pins" [ref=f7e325]:
+            - generic [ref=f7e333]:
+              - generic [ref=f7e334] [cursor=pointer]: "7"
+              - generic [ref=f7e340] [cursor=pointer]: "7"
+              - generic [ref=f7e346] [cursor=pointer]: "2"
+              - generic [ref=f7e354] [cursor=pointer]: "3"
+              - generic [ref=f7e372] [cursor=pointer]: "3"
+              - generic [ref=f7e377] [cursor=pointer]: "2"
+              - generic [ref=f7e382] [cursor=pointer]: "5"
+              - generic [ref=f7e388] [cursor=pointer]: "2"
+              - generic [ref=f7e393] [cursor=pointer]: "4"
+              - generic [ref=f7e398] [cursor=pointer]: "3"
+              - generic [ref=f7e403] [cursor=pointer]: "2"
+              - generic [ref=f7e411] [cursor=pointer]: "5"
+              - generic [ref=f7e419] [cursor=pointer]: "2"
+              - generic [ref=f7e427] [cursor=pointer]: "2"
+              - generic [ref=f7e433] [cursor=pointer]: "2"
+              - generic [ref=f7e438] [cursor=pointer]: "3"
+              - generic [ref=f7e447] [cursor=pointer]: "6"
+              - generic [ref=f7e453] [cursor=pointer]: "6"
+              - generic [ref=f7e459] [cursor=pointer]: "2"
+              - generic [ref=f7e464] [cursor=pointer]: "3"
+              - generic [ref=f7e469] [cursor=pointer]: "4"
+          - generic [ref=f7e478]:
+            - button "+" [ref=f7e479] [cursor=pointer]
+            - button "−" [ref=f7e480] [cursor=pointer]
+        - generic [ref=f7e481]:
+          - heading "All regions" [level=5] [ref=f7e482]
+          - generic [ref=f7e483]: 86 results
+        - generic [ref=f7e484]:
+          - generic [ref=f7e485]: Case studys
+          - link "Case study Mangrove restoration and community wellbeing Lagos, Nigeria 2023" [ref=f7e488] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e493]:
+              - generic [ref=f7e494]: Case study
+              - generic [ref=f7e496]: Mangrove restoration and community wellbeing
+              - generic [ref=f7e497]:
+                - text: Lagos, Nigeria
+                - generic [ref=f7e498]: "2023"
+          - link "Case study Farmer mental health after prolonged drought Nairobi, Kenya 2023" [ref=f7e499] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e504]:
+              - generic [ref=f7e505]: Case study
+              - generic [ref=f7e507]: Farmer mental health after prolonged drought
+              - generic [ref=f7e508]:
+                - text: Nairobi, Kenya
+                - generic [ref=f7e509]: "2023"
+          - link "Case study Peer-support networks in flood recovery Kampala, Uganda 2023" [ref=f7e510] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e515]:
+              - generic [ref=f7e516]: Case study
+              - generic [ref=f7e518]: Peer-support networks in flood recovery
+              - generic [ref=f7e519]:
+                - text: Kampala, Uganda
+                - generic [ref=f7e520]: "2023"
+          - link "Case study Mangrove restoration and community wellbeing Amman, Jordan 2025" [ref=f7e521] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e526]:
+              - generic [ref=f7e527]: Case study
+              - generic [ref=f7e529]: Mangrove restoration and community wellbeing
+              - generic [ref=f7e530]:
+                - text: Amman, Jordan
+                - generic [ref=f7e531]: "2025"
+          - link "Case study Mangrove restoration and community wellbeing Dhaka, Bangladesh 2023" [ref=f7e532] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e537]:
+              - generic [ref=f7e538]: Case study
+              - generic [ref=f7e540]: Mangrove restoration and community wellbeing
+              - generic [ref=f7e541]:
+                - text: Dhaka, Bangladesh
+                - generic [ref=f7e542]: "2023"
+          - link "Case study Farmer mental health after prolonged drought Delhi, India 2023" [ref=f7e543] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e548]:
+              - generic [ref=f7e549]: Case study
+              - generic [ref=f7e551]: Farmer mental health after prolonged drought
+              - generic [ref=f7e552]:
+                - text: Delhi, India
+                - generic [ref=f7e553]: "2023"
+          - link "Case study Peer-support networks in flood recovery Dhaka, Bangladesh 2025" [ref=f7e554] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e559]:
+              - generic [ref=f7e560]: Case study
+              - generic [ref=f7e562]: Peer-support networks in flood recovery
+              - generic [ref=f7e563]:
+                - text: Dhaka, Bangladesh
+                - generic [ref=f7e564]: "2025"
+          - link "Case study Mangrove restoration and community wellbeing Manila, Philippines 2023" [ref=f7e565] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e570]:
+              - generic [ref=f7e571]: Case study
+              - generic [ref=f7e573]: Mangrove restoration and community wellbeing
+              - generic [ref=f7e574]:
+                - text: Manila, Philippines
+                - generic [ref=f7e575]: "2023"
+          - link "Case study Farmer mental health after prolonged drought Jakarta, Indonesia 2023" [ref=f7e576] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e581]:
+              - generic [ref=f7e582]: Case study
+              - generic [ref=f7e584]: Farmer mental health after prolonged drought
+              - generic [ref=f7e585]:
+                - text: Jakarta, Indonesia
+                - generic [ref=f7e586]: "2023"
+          - link "Case study Peer-support networks in flood recovery Hanoi, Vietnam 2021" [ref=f7e587] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e592]:
+              - generic [ref=f7e593]: Case study
+              - generic [ref=f7e595]: Peer-support networks in flood recovery
+              - generic [ref=f7e596]:
+                - text: Hanoi, Vietnam
+                - generic [ref=f7e597]: "2021"
+          - link "Case study Mangrove restoration and community wellbeing Manila, Philippines 2025" [ref=f7e598] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e603]:
+              - generic [ref=f7e604]: Case study
+              - generic [ref=f7e606]: Mangrove restoration and community wellbeing
+              - generic [ref=f7e607]:
+                - text: Manila, Philippines
+                - generic [ref=f7e608]: "2025"
+          - link "Case study Mangrove restoration and community wellbeing Suva, Fiji 2021" [ref=f7e609] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e614]:
+              - generic [ref=f7e615]: Case study
+              - generic [ref=f7e617]: Mangrove restoration and community wellbeing
+              - generic [ref=f7e618]:
+                - text: Suva, Fiji
+                - generic [ref=f7e619]: "2021"
+          - link "Case study Farmer mental health after prolonged drought Brisbane, Australia 2021" [ref=f7e620] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e625]:
+              - generic [ref=f7e626]: Case study
+              - generic [ref=f7e628]: Farmer mental health after prolonged drought
+              - generic [ref=f7e629]:
+                - text: Brisbane, Australia
+                - generic [ref=f7e630]: "2021"
+          - link "Case study Mangrove restoration and community wellbeing London, UK 2023" [ref=f7e631] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e636]:
+              - generic [ref=f7e637]: Case study
+              - generic [ref=f7e639]: Mangrove restoration and community wellbeing
+              - generic [ref=f7e640]:
+                - text: London, UK
+                - generic [ref=f7e641]: "2023"
+          - link "Case study Farmer mental health after prolonged drought Toronto, Canada 2025" [ref=f7e642] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e647]:
+              - generic [ref=f7e648]: Case study
+              - generic [ref=f7e650]: Farmer mental health after prolonged drought
+              - generic [ref=f7e651]:
+                - text: Toronto, Canada
+                - generic [ref=f7e652]: "2025"
+          - link "Case study Peer-support networks in flood recovery London, UK 2025" [ref=f7e653] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e658]:
+              - generic [ref=f7e659]: Case study
+              - generic [ref=f7e661]: Peer-support networks in flood recovery
+              - generic [ref=f7e662]:
+                - text: London, UK
+                - generic [ref=f7e663]: "2025"
+          - generic [ref=f7e664]: Lived experiences
+          - link "Lived experience “A fisherman's story of loss and hope” Lagos, Nigeria 2021" [ref=f7e667] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e672]:
+              - generic [ref=f7e673]: Lived experience
+              - generic [ref=f7e675]: “A fisherman's story of loss and hope”
+              - generic [ref=f7e676]:
+                - text: Lagos, Nigeria
+                - generic [ref=f7e677]: "2021"
+          - link "Lived experience “Living through the long dry season” Nairobi, Kenya 2021" [ref=f7e678] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e683]:
+              - generic [ref=f7e684]: Lived experience
+              - generic [ref=f7e686]: “Living through the long dry season”
+              - generic [ref=f7e687]:
+                - text: Nairobi, Kenya
+                - generic [ref=f7e688]: "2021"
+          - link "Lived experience “When the river took our home” Kampala, Uganda 2025" [ref=f7e689] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e694]:
+              - generic [ref=f7e695]: Lived experience
+              - generic [ref=f7e697]: “When the river took our home”
+              - generic [ref=f7e698]:
+                - text: Kampala, Uganda
+                - generic [ref=f7e699]: "2025"
+          - link "Lived experience “A fisherman's story of loss and hope” Lagos, Nigeria 2025" [ref=f7e700] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e705]:
+              - generic [ref=f7e706]: Lived experience
+              - generic [ref=f7e708]: “A fisherman's story of loss and hope”
+              - generic [ref=f7e709]:
+                - text: Lagos, Nigeria
+                - generic [ref=f7e710]: "2025"
+          - link "Lived experience “A fisherman's story of loss and hope” Amman, Jordan 2021" [ref=f7e711] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e716]:
+              - generic [ref=f7e717]: Lived experience
+              - generic [ref=f7e719]: “A fisherman's story of loss and hope”
+              - generic [ref=f7e720]:
+                - text: Amman, Jordan
+                - generic [ref=f7e721]: "2021"
+          - link "Lived experience “A fisherman's story of loss and hope” Dhaka, Bangladesh 2025" [ref=f7e722] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e727]:
+              - generic [ref=f7e728]: Lived experience
+              - generic [ref=f7e730]: “A fisherman's story of loss and hope”
+              - generic [ref=f7e731]:
+                - text: Dhaka, Bangladesh
+                - generic [ref=f7e732]: "2025"
+          - link "Lived experience “A fisherman's story of loss and hope” Manila, Philippines 2025" [ref=f7e733] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e738]:
+              - generic [ref=f7e739]: Lived experience
+              - generic [ref=f7e741]: “A fisherman's story of loss and hope”
+              - generic [ref=f7e742]:
+                - text: Manila, Philippines
+                - generic [ref=f7e743]: "2025"
+          - link "Lived experience “Living through the long dry season” Jakarta, Indonesia 2021" [ref=f7e744] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e749]:
+              - generic [ref=f7e750]: Lived experience
+              - generic [ref=f7e752]: “Living through the long dry season”
+              - generic [ref=f7e753]:
+                - text: Jakarta, Indonesia
+                - generic [ref=f7e754]: "2021"
+          - link "Lived experience “A fisherman's story of loss and hope” Lima, Peru 2023" [ref=f7e755] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e760]:
+              - generic [ref=f7e761]: Lived experience
+              - generic [ref=f7e763]: “A fisherman's story of loss and hope”
+              - generic [ref=f7e764]:
+                - text: Lima, Peru
+                - generic [ref=f7e765]: "2023"
+          - link "Lived experience “A fisherman's story of loss and hope” Suva, Fiji 2023" [ref=f7e766] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e771]:
+              - generic [ref=f7e772]: Lived experience
+              - generic [ref=f7e774]: “A fisherman's story of loss and hope”
+              - generic [ref=f7e775]:
+                - text: Suva, Fiji
+                - generic [ref=f7e776]: "2023"
+          - link "Lived experience “A fisherman's story of loss and hope” London, UK 2025" [ref=f7e777] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e782]:
+              - generic [ref=f7e783]: Lived experience
+              - generic [ref=f7e785]: “A fisherman's story of loss and hope”
+              - generic [ref=f7e786]:
+                - text: London, UK
+                - generic [ref=f7e787]: "2025"
+          - link "Lived experience “Living through the long dry season” Toronto, Canada 2025" [ref=f7e788] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e793]:
+              - generic [ref=f7e794]: Lived experience
+              - generic [ref=f7e796]: “Living through the long dry season”
+              - generic [ref=f7e797]:
+                - text: Toronto, Canada
+                - generic [ref=f7e798]: "2025"
+          - generic [ref=f7e799]: Newss
+          - link "News Climate distress linked to youth anxiety Lagos, Nigeria 2021" [ref=f7e802] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e807]:
+              - generic [ref=f7e808]: News
+              - generic [ref=f7e810]: Climate distress linked to youth anxiety
+              - generic [ref=f7e811]:
+                - text: Lagos, Nigeria
+                - generic [ref=f7e812]: "2021"
+          - link "News Climate distress linked to youth anxiety Amman, Jordan 2025" [ref=f7e813] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e818]:
+              - generic [ref=f7e819]: News
+              - generic [ref=f7e821]: Climate distress linked to youth anxiety
+              - generic [ref=f7e822]:
+                - text: Amman, Jordan
+                - generic [ref=f7e823]: "2025"
+          - link "News Climate distress linked to youth anxiety Dhaka, Bangladesh 2021" [ref=f7e824] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e829]:
+              - generic [ref=f7e830]: News
+              - generic [ref=f7e832]: Climate distress linked to youth anxiety
+              - generic [ref=f7e833]:
+                - text: Dhaka, Bangladesh
+                - generic [ref=f7e834]: "2021"
+          - link "News Climate distress linked to youth anxiety Manila, Philippines 2021" [ref=f7e835] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e840]:
+              - generic [ref=f7e841]: News
+              - generic [ref=f7e843]: Climate distress linked to youth anxiety
+              - generic [ref=f7e844]:
+                - text: Manila, Philippines
+                - generic [ref=f7e845]: "2021"
+          - link "News Findings from the first regional dialogues Jakarta, Indonesia 2021" [ref=f7e846] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e851]:
+              - generic [ref=f7e852]: News
+              - generic [ref=f7e854]: Findings from the first regional dialogues
+              - generic [ref=f7e855]:
+                - text: Jakarta, Indonesia
+                - generic [ref=f7e856]: "2021"
+          - link "News Climate distress linked to youth anxiety London, UK 2023" [ref=f7e857] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e862]:
+              - generic [ref=f7e863]: News
+              - generic [ref=f7e865]: Climate distress linked to youth anxiety
+              - generic [ref=f7e866]:
+                - text: London, UK
+                - generic [ref=f7e867]: "2023"
+          - link "News Findings from the first regional dialogues Toronto, Canada 2021" [ref=f7e868] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e873]:
+              - generic [ref=f7e874]: News
+              - generic [ref=f7e876]: Findings from the first regional dialogues
+              - generic [ref=f7e877]:
+                - text: Toronto, Canada
+                - generic [ref=f7e878]: "2021"
+          - 'link "News Report: grief in a warming world London, UK 2023" [ref=f7e879] [cursor=pointer]':
+            - /url: "#"
+            - generic [ref=f7e884]:
+              - generic [ref=f7e885]: News
+              - generic [ref=f7e887]: "Report: grief in a warming world"
+              - generic [ref=f7e888]:
+                - text: London, UK
+                - generic [ref=f7e889]: "2023"
+          - link "News Climate distress linked to youth anxiety Toronto, Canada 2021" [ref=f7e890] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e895]:
+              - generic [ref=f7e896]: News
+              - generic [ref=f7e898]: Climate distress linked to youth anxiety
+              - generic [ref=f7e899]:
+                - text: Toronto, Canada
+                - generic [ref=f7e900]: "2021"
+          - generic [ref=f7e901]: Research outputs
+          - 'link "Research output Regional agenda: climate and mind Full report EN 2021" [ref=f7e904] [cursor=pointer]':
+            - /url: "#"
+            - generic [ref=f7e909]:
+              - generic [ref=f7e910]: Research output
+              - generic [ref=f7e912]: "Regional agenda: climate and mind"
+              - generic [ref=f7e913]:
+                - generic [ref=f7e914]: Full report
+                - generic [ref=f7e915]: EN
+                - generic [ref=f7e916]: "2021"
+          - link "Research output A systematic review of eco-anxiety Full report EN 2021" [ref=f7e917] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e922]:
+              - generic [ref=f7e923]: Research output
+              - generic [ref=f7e925]: A systematic review of eco-anxiety
+              - generic [ref=f7e926]:
+                - generic [ref=f7e927]: Full report
+                - generic [ref=f7e928]: EN
+                - generic [ref=f7e929]: "2021"
+          - 'link "Research output Regional agenda: climate and mind Full report EN 2023" [ref=f7e930] [cursor=pointer]':
+            - /url: "#"
+            - generic [ref=f7e935]:
+              - generic [ref=f7e936]: Research output
+              - generic [ref=f7e938]: "Regional agenda: climate and mind"
+              - generic [ref=f7e939]:
+                - generic [ref=f7e940]: Full report
+                - generic [ref=f7e941]: EN
+                - generic [ref=f7e942]: "2023"
+          - 'link "Research output Regional agenda: climate and mind Full report EN 2025" [ref=f7e943] [cursor=pointer]':
+            - /url: "#"
+            - generic [ref=f7e948]:
+              - generic [ref=f7e949]: Research output
+              - generic [ref=f7e951]: "Regional agenda: climate and mind"
+              - generic [ref=f7e952]:
+                - generic [ref=f7e953]: Full report
+                - generic [ref=f7e954]: EN
+                - generic [ref=f7e955]: "2025"
+          - link "Research output A systematic review of eco-anxiety Full report EN 2025" [ref=f7e956] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e961]:
+              - generic [ref=f7e962]: Research output
+              - generic [ref=f7e964]: A systematic review of eco-anxiety
+              - generic [ref=f7e965]:
+                - generic [ref=f7e966]: Full report
+                - generic [ref=f7e967]: EN
+                - generic [ref=f7e968]: "2025"
+          - link "Research output Community priorities briefing Full report EN 2025" [ref=f7e969] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e974]:
+              - generic [ref=f7e975]: Research output
+              - generic [ref=f7e977]: Community priorities briefing
+              - generic [ref=f7e978]:
+                - generic [ref=f7e979]: Full report
+                - generic [ref=f7e980]: EN
+                - generic [ref=f7e981]: "2025"
+          - 'link "Research output Regional agenda: climate and mind Full report EN 2025" [ref=f7e982] [cursor=pointer]':
+            - /url: "#"
+            - generic [ref=f7e987]:
+              - generic [ref=f7e988]: Research output
+              - generic [ref=f7e990]: "Regional agenda: climate and mind"
+              - generic [ref=f7e991]:
+                - generic [ref=f7e992]: Full report
+                - generic [ref=f7e993]: EN
+                - generic [ref=f7e994]: "2025"
+          - link "Research output A systematic review of eco-anxiety Full report EN 2025" [ref=f7e995] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e1000]:
+              - generic [ref=f7e1001]: Research output
+              - generic [ref=f7e1003]: A systematic review of eco-anxiety
+              - generic [ref=f7e1004]:
+                - generic [ref=f7e1005]: Full report
+                - generic [ref=f7e1006]: EN
+                - generic [ref=f7e1007]: "2025"
+          - 'link "Research output Regional agenda: climate and mind Full report EN 2021" [ref=f7e1008] [cursor=pointer]':
+            - /url: "#"
+            - generic [ref=f7e1013]:
+              - generic [ref=f7e1014]: Research output
+              - generic [ref=f7e1016]: "Regional agenda: climate and mind"
+              - generic [ref=f7e1017]:
+                - generic [ref=f7e1018]: Full report
+                - generic [ref=f7e1019]: EN
+                - generic [ref=f7e1020]: "2021"
+          - 'link "Research output Regional agenda: climate and mind Full report EN 2025" [ref=f7e1021] [cursor=pointer]':
+            - /url: "#"
+            - generic [ref=f7e1026]:
+              - generic [ref=f7e1027]: Research output
+              - generic [ref=f7e1029]: "Regional agenda: climate and mind"
+              - generic [ref=f7e1030]:
+                - generic [ref=f7e1031]: Full report
+                - generic [ref=f7e1032]: EN
+                - generic [ref=f7e1033]: "2025"
+          - 'link "Research output Regional agenda: climate and mind Full report EN 2023" [ref=f7e1034] [cursor=pointer]':
+            - /url: "#"
+            - generic [ref=f7e1039]:
+              - generic [ref=f7e1040]: Research output
+              - generic [ref=f7e1042]: "Regional agenda: climate and mind"
+              - generic [ref=f7e1043]:
+                - generic [ref=f7e1044]: Full report
+                - generic [ref=f7e1045]: EN
+                - generic [ref=f7e1046]: "2023"
+          - link "Research output A systematic review of eco-anxiety Full report EN 2021" [ref=f7e1047] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e1052]:
+              - generic [ref=f7e1053]: Research output
+              - generic [ref=f7e1055]: A systematic review of eco-anxiety
+              - generic [ref=f7e1056]:
+                - generic [ref=f7e1057]: Full report
+                - generic [ref=f7e1058]: EN
+                - generic [ref=f7e1059]: "2021"
+          - link "Research output Community priorities briefing Full report EN 2023" [ref=f7e1060] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e1065]:
+              - generic [ref=f7e1066]: Research output
+              - generic [ref=f7e1068]: Community priorities briefing
+              - generic [ref=f7e1069]:
+                - generic [ref=f7e1070]: Full report
+                - generic [ref=f7e1071]: EN
+                - generic [ref=f7e1072]: "2023"
+          - generic [ref=f7e1073]: Events
+          - 'link "3 APR Event Regional dialogue: adaptation and care Lagos, Nigeria 2021" [ref=f7e1076] [cursor=pointer]':
+            - /url: "#"
+            - generic [ref=f7e1078]:
+              - generic [ref=f7e1079]: "3"
+              - text: APR
+            - generic [ref=f7e1080]:
+              - generic [ref=f7e1081]: Event
+              - generic [ref=f7e1083]: "Regional dialogue: adaptation and care"
+              - generic [ref=f7e1084]:
+                - text: Lagos, Nigeria
+                - generic [ref=f7e1085]: "2021"
+          - 'link "17 AUG Event Regional dialogue: adaptation and care Amman, Jordan 2021" [ref=f7e1086] [cursor=pointer]':
+            - /url: "#"
+            - generic [ref=f7e1088]:
+              - generic [ref=f7e1089]: "17"
+              - text: AUG
+            - generic [ref=f7e1090]:
+              - generic [ref=f7e1091]: Event
+              - generic [ref=f7e1093]: "Regional dialogue: adaptation and care"
+              - generic [ref=f7e1094]:
+                - text: Amman, Jordan
+                - generic [ref=f7e1095]: "2021"
+          - 'link "18 SEP Event Regional dialogue: adaptation and care Manila, Philippines 2021" [ref=f7e1096] [cursor=pointer]':
+            - /url: "#"
+            - generic [ref=f7e1098]:
+              - generic [ref=f7e1099]: "18"
+              - text: SEP
+            - generic [ref=f7e1100]:
+              - generic [ref=f7e1101]: Event
+              - generic [ref=f7e1103]: "Regional dialogue: adaptation and care"
+              - generic [ref=f7e1104]:
+                - text: Manila, Philippines
+                - generic [ref=f7e1105]: "2021"
+          - 'link "9 MAY Event Regional dialogue: adaptation and care Lima, Peru 2025" [ref=f7e1106] [cursor=pointer]':
+            - /url: "#"
+            - generic [ref=f7e1108]:
+              - generic [ref=f7e1109]: "9"
+              - text: MAY
+            - generic [ref=f7e1110]:
+              - generic [ref=f7e1111]: Event
+              - generic [ref=f7e1113]: "Regional dialogue: adaptation and care"
+              - generic [ref=f7e1114]:
+                - text: Lima, Peru
+                - generic [ref=f7e1115]: "2025"
+          - 'link "12 AUG Event Regional dialogue: adaptation and care London, UK 2025" [ref=f7e1116] [cursor=pointer]':
+            - /url: "#"
+            - generic [ref=f7e1118]:
+              - generic [ref=f7e1119]: "12"
+              - text: AUG
+            - generic [ref=f7e1120]:
+              - generic [ref=f7e1121]: Event
+              - generic [ref=f7e1123]: "Regional dialogue: adaptation and care"
+              - generic [ref=f7e1124]:
+                - text: London, UK
+                - generic [ref=f7e1125]: "2025"
+          - 'link "3 JUN Event Webinar: youth climate resilience Toronto, Canada 2023" [ref=f7e1126] [cursor=pointer]':
+            - /url: "#"
+            - generic [ref=f7e1128]:
+              - generic [ref=f7e1129]: "3"
+              - text: JUN
+            - generic [ref=f7e1130]:
+              - generic [ref=f7e1131]: Event
+              - generic [ref=f7e1133]: "Webinar: youth climate resilience"
+              - generic [ref=f7e1134]:
+                - text: Toronto, Canada
+                - generic [ref=f7e1135]: "2023"
+          - generic [ref=f7e1136]: Members
+          - link "DA Member Dr. Amara Okonkwo Researcher · Sub-Saharan 2021" [ref=f7e1139] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e1140]: DA
+            - generic [ref=f7e1142]:
+              - generic [ref=f7e1143]: Member
+              - generic [ref=f7e1145]: Dr. Amara Okonkwo
+              - generic [ref=f7e1146]:
+                - text: Researcher · Sub-Saharan
+                - generic [ref=f7e1147]: "2021"
+          - link "BW Member Britt Wray Researcher · Sub-Saharan 2025" [ref=f7e1148] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e1149]: BW
+            - generic [ref=f7e1151]:
+              - generic [ref=f7e1152]: Member
+              - generic [ref=f7e1154]: Britt Wray
+              - generic [ref=f7e1155]:
+                - text: Researcher · Sub-Saharan
+                - generic [ref=f7e1156]: "2025"
+          - link "LF Member Luis Fernandez Researcher · Sub-Saharan 2025" [ref=f7e1157] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e1158]: LF
+            - generic [ref=f7e1160]:
+              - generic [ref=f7e1161]: Member
+              - generic [ref=f7e1163]: Luis Fernandez
+              - generic [ref=f7e1164]:
+                - text: Researcher · Sub-Saharan
+                - generic [ref=f7e1165]: "2025"
+          - link "PN Member Priya Nair Researcher · Sub-Saharan 2021" [ref=f7e1166] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e1167]: PN
+            - generic [ref=f7e1169]:
+              - generic [ref=f7e1170]: Member
+              - generic [ref=f7e1172]: Priya Nair
+              - generic [ref=f7e1173]:
+                - text: Researcher · Sub-Saharan
+                - generic [ref=f7e1174]: "2021"
+          - link "DA Member Dr. Amara Okonkwo Researcher · Sub-Saharan 2021" [ref=f7e1175] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e1176]: DA
+            - generic [ref=f7e1178]:
+              - generic [ref=f7e1179]: Member
+              - generic [ref=f7e1181]: Dr. Amara Okonkwo
+              - generic [ref=f7e1182]:
+                - text: Researcher · Sub-Saharan
+                - generic [ref=f7e1183]: "2021"
+          - link "BW Member Britt Wray Researcher · Sub-Saharan 2025" [ref=f7e1184] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e1185]: BW
+            - generic [ref=f7e1187]:
+              - generic [ref=f7e1188]: Member
+              - generic [ref=f7e1190]: Britt Wray
+              - generic [ref=f7e1191]:
+                - text: Researcher · Sub-Saharan
+                - generic [ref=f7e1192]: "2025"
+          - link "DA Member Dr. Amara Okonkwo Researcher · Northern 2023" [ref=f7e1193] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e1194]: DA
+            - generic [ref=f7e1196]:
+              - generic [ref=f7e1197]: Member
+              - generic [ref=f7e1199]: Dr. Amara Okonkwo
+              - generic [ref=f7e1200]:
+                - text: Researcher · Northern
+                - generic [ref=f7e1201]: "2023"
+          - link "BW Member Britt Wray Researcher · Northern 2025" [ref=f7e1202] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e1203]: BW
+            - generic [ref=f7e1205]:
+              - generic [ref=f7e1206]: Member
+              - generic [ref=f7e1208]: Britt Wray
+              - generic [ref=f7e1209]:
+                - text: Researcher · Northern
+                - generic [ref=f7e1210]: "2025"
+          - link "DA Member Dr. Amara Okonkwo Researcher · Central 2021" [ref=f7e1211] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e1212]: DA
+            - generic [ref=f7e1214]:
+              - generic [ref=f7e1215]: Member
+              - generic [ref=f7e1217]: Dr. Amara Okonkwo
+              - generic [ref=f7e1218]:
+                - text: Researcher · Central
+                - generic [ref=f7e1219]: "2021"
+          - link "BW Member Britt Wray Researcher · Central 2025" [ref=f7e1220] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e1221]: BW
+            - generic [ref=f7e1223]:
+              - generic [ref=f7e1224]: Member
+              - generic [ref=f7e1226]: Britt Wray
+              - generic [ref=f7e1227]:
+                - text: Researcher · Central
+                - generic [ref=f7e1228]: "2025"
+          - link "LF Member Luis Fernandez Researcher · Central 2023" [ref=f7e1229] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e1230]: LF
+            - generic [ref=f7e1232]:
+              - generic [ref=f7e1233]: Member
+              - generic [ref=f7e1235]: Luis Fernandez
+              - generic [ref=f7e1236]:
+                - text: Researcher · Central
+                - generic [ref=f7e1237]: "2023"
+          - link "PN Member Priya Nair Researcher · Central 2025" [ref=f7e1238] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e1239]: PN
+            - generic [ref=f7e1241]:
+              - generic [ref=f7e1242]: Member
+              - generic [ref=f7e1244]: Priya Nair
+              - generic [ref=f7e1245]:
+                - text: Researcher · Central
+                - generic [ref=f7e1246]: "2025"
+          - link "DA Member Dr. Amara Okonkwo Researcher · Eastern 2025" [ref=f7e1247] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e1248]: DA
+            - generic [ref=f7e1250]:
+              - generic [ref=f7e1251]: Member
+              - generic [ref=f7e1253]: Dr. Amara Okonkwo
+              - generic [ref=f7e1254]:
+                - text: Researcher · Eastern
+                - generic [ref=f7e1255]: "2025"
+          - link "BW Member Britt Wray Researcher · Eastern 2023" [ref=f7e1256] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e1257]: BW
+            - generic [ref=f7e1259]:
+              - generic [ref=f7e1260]: Member
+              - generic [ref=f7e1262]: Britt Wray
+              - generic [ref=f7e1263]:
+                - text: Researcher · Eastern
+                - generic [ref=f7e1264]: "2023"
+          - link "LF Member Luis Fernandez Researcher · Eastern 2023" [ref=f7e1265] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e1266]: LF
+            - generic [ref=f7e1268]:
+              - generic [ref=f7e1269]: Member
+              - generic [ref=f7e1271]: Luis Fernandez
+              - generic [ref=f7e1272]:
+                - text: Researcher · Eastern
+                - generic [ref=f7e1273]: "2023"
+          - link "PN Member Priya Nair Researcher · Eastern 2021" [ref=f7e1274] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e1275]: PN
+            - generic [ref=f7e1277]:
+              - generic [ref=f7e1278]: Member
+              - generic [ref=f7e1280]: Priya Nair
+              - generic [ref=f7e1281]:
+                - text: Researcher · Eastern
+                - generic [ref=f7e1282]: "2021"
+          - link "DA Member Dr. Amara Okonkwo Researcher · Eastern 2025" [ref=f7e1283] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e1284]: DA
+            - generic [ref=f7e1286]:
+              - generic [ref=f7e1287]: Member
+              - generic [ref=f7e1289]: Dr. Amara Okonkwo
+              - generic [ref=f7e1290]:
+                - text: Researcher · Eastern
+                - generic [ref=f7e1291]: "2025"
+          - link "DA Member Dr. Amara Okonkwo Researcher · Latin 2025" [ref=f7e1292] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e1293]: DA
+            - generic [ref=f7e1295]:
+              - generic [ref=f7e1296]: Member
+              - generic [ref=f7e1298]: Dr. Amara Okonkwo
+              - generic [ref=f7e1299]:
+                - text: Researcher · Latin
+                - generic [ref=f7e1300]: "2025"
+          - link "BW Member Britt Wray Researcher · Latin 2021" [ref=f7e1301] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e1302]: BW
+            - generic [ref=f7e1304]:
+              - generic [ref=f7e1305]: Member
+              - generic [ref=f7e1307]: Britt Wray
+              - generic [ref=f7e1308]:
+                - text: Researcher · Latin
+                - generic [ref=f7e1309]: "2021"
+          - link "DA Member Dr. Amara Okonkwo Researcher · Oceania 2025" [ref=f7e1310] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e1311]: DA
+            - generic [ref=f7e1313]:
+              - generic [ref=f7e1314]: Member
+              - generic [ref=f7e1316]: Dr. Amara Okonkwo
+              - generic [ref=f7e1317]:
+                - text: Researcher · Oceania
+                - generic [ref=f7e1318]: "2025"
+          - link "BW Member Britt Wray Researcher · Oceania 2025" [ref=f7e1319] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e1320]: BW
+            - generic [ref=f7e1322]:
+              - generic [ref=f7e1323]: Member
+              - generic [ref=f7e1325]: Britt Wray
+              - generic [ref=f7e1326]:
+                - text: Researcher · Oceania
+                - generic [ref=f7e1327]: "2025"
+          - link "LF Member Luis Fernandez Researcher · Oceania 2025" [ref=f7e1328] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e1329]: LF
+            - generic [ref=f7e1331]:
+              - generic [ref=f7e1332]: Member
+              - generic [ref=f7e1334]: Luis Fernandez
+              - generic [ref=f7e1335]:
+                - text: Researcher · Oceania
+                - generic [ref=f7e1336]: "2025"
+          - link "DA Member Dr. Amara Okonkwo Researcher · Europe 2025" [ref=f7e1337] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e1338]: DA
+            - generic [ref=f7e1340]:
+              - generic [ref=f7e1341]: Member
+              - generic [ref=f7e1343]: Dr. Amara Okonkwo
+              - generic [ref=f7e1344]:
+                - text: Researcher · Europe
+                - generic [ref=f7e1345]: "2025"
+          - link "BW Member Britt Wray Researcher · Europe 2025" [ref=f7e1346] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e1347]: BW
+            - generic [ref=f7e1349]:
+              - generic [ref=f7e1350]: Member
+              - generic [ref=f7e1352]: Britt Wray
+              - generic [ref=f7e1353]:
+                - text: Researcher · Europe
+                - generic [ref=f7e1354]: "2025"
+          - link "LF Member Luis Fernandez Researcher · Europe 2021" [ref=f7e1355] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e1356]: LF
+            - generic [ref=f7e1358]:
+              - generic [ref=f7e1359]: Member
+              - generic [ref=f7e1361]: Luis Fernandez
+              - generic [ref=f7e1362]:
+                - text: Researcher · Europe
+                - generic [ref=f7e1363]: "2021"
+          - link "PN Member Priya Nair Researcher · Europe 2025" [ref=f7e1364] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e1365]: PN
+            - generic [ref=f7e1367]:
+              - generic [ref=f7e1368]: Member
+              - generic [ref=f7e1370]: Priya Nair
+              - generic [ref=f7e1371]:
+                - text: Researcher · Europe
+                - generic [ref=f7e1372]: "2025"
+          - link "DA Member Dr. Amara Okonkwo Researcher · Europe 2023" [ref=f7e1373] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e1374]: DA
+            - generic [ref=f7e1376]:
+              - generic [ref=f7e1377]: Member
+              - generic [ref=f7e1379]: Dr. Amara Okonkwo
+              - generic [ref=f7e1380]:
+                - text: Researcher · Europe
+                - generic [ref=f7e1381]: "2023"
+          - link "BW Member Britt Wray Researcher · Europe 2025" [ref=f7e1382] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e1383]: BW
+            - generic [ref=f7e1385]:
+              - generic [ref=f7e1386]: Member
+              - generic [ref=f7e1388]: Britt Wray
+              - generic [ref=f7e1389]:
+                - text: Researcher · Europe
+                - generic [ref=f7e1390]: "2025"
+          - link "LF Member Luis Fernandez Researcher · Europe 2023" [ref=f7e1391] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e1392]: LF
+            - generic [ref=f7e1394]:
+              - generic [ref=f7e1395]: Member
+              - generic [ref=f7e1397]: Luis Fernandez
+              - generic [ref=f7e1398]:
+                - text: Researcher · Europe
+                - generic [ref=f7e1399]: "2023"
+          - link "PN Member Priya Nair Researcher · Europe 2021" [ref=f7e1400] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=f7e1401]: PN
+            - generic [ref=f7e1403]:
+              - generic [ref=f7e1404]: Member
+              - generic [ref=f7e1406]: Priya Nair
+              - generic [ref=f7e1407]:
+                - text: Researcher · Europe
+                - generic [ref=f7e1408]: "2021"
+        - generic [ref=f7e1409]:
+          - generic [ref=f7e1410]: Case study
+          - generic [ref=f7e1412]: Lived exp.
+          - generic [ref=f7e1414]: News
+          - generic [ref=f7e1416]: Research
+          - generic [ref=f7e1418]: Event
+          - generic [ref=f7e1420]: mixed cluster
+  - generic [ref=f7e1422]:
+    - generic [ref=f7e1423]:
+      - text: Mobile
+      - generic [ref=f7e1424]: · both surfaces stack; cards snap-scroll
+    - generic [ref=f7e1425]:
+      - generic [ref=f7e1426]: Mobile 375
+      - generic [ref=f7e1431]:
+        - heading "Explore by region" [level=4] [ref=f7e1433]
+        - generic [ref=f7e1434]:
+          - generic [ref=f7e1435]:
+            - generic [ref=f7e1436]: Type
+            - button "All types" [pressed] [ref=f7e1437] [cursor=pointer]
+            - button "Case" [ref=f7e1438] [cursor=pointer]
+            - button "Lived" [ref=f7e1440] [cursor=pointer]
+            - button "News" [ref=f7e1442] [cursor=pointer]
+            - button "Research" [ref=f7e1444] [cursor=pointer]
+            - button "Event" [ref=f7e1446] [cursor=pointer]
+            - button "Member" [ref=f7e1448] [cursor=pointer]
+          - generic [ref=f7e1450]:
+            - generic [ref=f7e1451]: Theme
+            - button "All" [pressed] [ref=f7e1452] [cursor=pointer]
+            - button "Displacement" [ref=f7e1453] [cursor=pointer]
+            - button "Livelihoods" [ref=f7e1454] [cursor=pointer]
+            - button "Youth" [ref=f7e1455] [cursor=pointer]
+          - generic [ref=f7e1456]:
+            - generic [ref=f7e1457]: Region
+            - button "All" [pressed] [ref=f7e1458] [cursor=pointer]
+            - button "Eastern" [ref=f7e1459] [cursor=pointer]
+            - button "Sub-Saharan" [ref=f7e1460] [cursor=pointer]
+            - button "Europe" [ref=f7e1461] [cursor=pointer]
+            - button "Central" [ref=f7e1462] [cursor=pointer]
+            - button "Oceania" [ref=f7e1463] [cursor=pointer]
+            - button "Northern" [ref=f7e1464] [cursor=pointer]
+            - button "Latin" [ref=f7e1465] [cursor=pointer]
+        - generic [ref=f7e1466]:
+          - generic [ref=f7e1467]:
+            - img "Regional map with pins" [ref=f7e1468]:
+              - generic [ref=f7e1476]:
+                - generic [ref=f7e1477] [cursor=pointer]: "7"
+                - generic [ref=f7e1483] [cursor=pointer]: "7"
+                - generic [ref=f7e1489] [cursor=pointer]: "2"
+                - generic [ref=f7e1497] [cursor=pointer]: "3"
+                - generic [ref=f7e1515] [cursor=pointer]: "3"
+                - generic [ref=f7e1520] [cursor=pointer]: "2"
+                - generic [ref=f7e1525] [cursor=pointer]: "5"
+                - generic [ref=f7e1531] [cursor=pointer]: "2"
+                - generic [ref=f7e1536] [cursor=pointer]: "4"
+                - generic [ref=f7e1541] [cursor=pointer]: "3"
+                - generic [ref=f7e1546] [cursor=pointer]: "2"
+                - generic [ref=f7e1554] [cursor=pointer]: "5"
+                - generic [ref=f7e1562] [cursor=pointer]: "2"
+                - generic [ref=f7e1570] [cursor=pointer]: "2"
+                - generic [ref=f7e1576] [cursor=pointer]: "2"
+                - generic [ref=f7e1581] [cursor=pointer]: "3"
+                - generic [ref=f7e1590] [cursor=pointer]: "6"
+                - generic [ref=f7e1596] [cursor=pointer]: "6"
+                - generic [ref=f7e1602] [cursor=pointer]: "2"
+                - generic [ref=f7e1607] [cursor=pointer]: "3"
+                - generic [ref=f7e1612] [cursor=pointer]: "4"
+            - generic [ref=f7e1621]:
+              - button "+" [ref=f7e1622] [cursor=pointer]
+              - button "−" [ref=f7e1623] [cursor=pointer]
+          - generic [ref=f7e1624]:
+            - generic [ref=f7e1625]:
+              - heading "All regions" [level=5] [ref=f7e1626]
+              - generic [ref=f7e1627]: 86 total
+              - link "See all in Atlas" [ref=f7e1628] [cursor=pointer]:
+                - /url: "#"
+            - generic [ref=f7e1629]:
+              - link "Case study Mangrove restoration and community wellbeing Lagos, Nigeria" [ref=f7e1630] [cursor=pointer]:
+                - /url: "#"
+                - generic [ref=f7e1635]:
+                  - generic [ref=f7e1636]: Case study
+                  - generic [ref=f7e1638]: Mangrove restoration and community wellbeing
+                  - generic [ref=f7e1639]: Lagos, Nigeria
+              - link "Case study Farmer mental health after prolonged drought Nairobi, Kenya" [ref=f7e1640] [cursor=pointer]:
+                - /url: "#"
+                - generic [ref=f7e1645]:
+                  - generic [ref=f7e1646]: Case study
+                  - generic [ref=f7e1648]: Farmer mental health after prolonged drought
+                  - generic [ref=f7e1649]: Nairobi, Kenya
+              - link "Case study Peer-support networks in flood recovery Kampala, Uganda" [ref=f7e1650] [cursor=pointer]:
+                - /url: "#"
+                - generic [ref=f7e1655]:
+                  - generic [ref=f7e1656]: Case study
+                  - generic [ref=f7e1658]: Peer-support networks in flood recovery
+                  - generic [ref=f7e1659]: Kampala, Uganda

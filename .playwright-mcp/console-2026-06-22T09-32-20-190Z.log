@@ -1,0 +1,112 @@
+[     278ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[     345ms] [LOG] [Fast Refresh] done in 168ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[     797ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[     985ms] [LOG] [HMR] connected @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    1132ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    1367ms] [WARNING] Missing Algolia environment variables: ALGOLIA_API_KEY @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    1368ms] [WARNING] Algolia admin client not available - missing credentials @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    1368ms] [LOG] ✅ Algolia search client initialized successfully @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    1384ms] [WARNING] Image with src "/connecting-climate-minds-logo-white.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    1430ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    1539ms] [LOG] [Fast Refresh] done in 221ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    1972ms] [WARNING] Ignoring Event: localhost @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    2020ms] [ERROR] Access to resource at 'https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/production_2?tag=next-loader.live' from origin 'http://localhost:3001' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ http://localhost:3001/en/research-and-action/case-studies:0
+[    2021ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/production_2?tag=next-loader.live:0
+[    2047ms] [ERROR] Access to fetch at 'https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/production_2?tag=next-loader.live' from origin 'http://localhost:3001' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ http://localhost:3001/en/research-and-action/case-studies:0
+[    2048ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/production_2?tag=next-loader.live:0
+[    2071ms] [ERROR] Access to fetch at 'https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/production_2?tag=next-loader.live' from origin 'http://localhost:3001' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ http://localhost:3001/en/research-and-action/case-studies:0
+[    2072ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://gm67v7rk.api.sanity.io/v2024-04-24/data/live/events/production_2?tag=next-loader.live:0
+[    2072ms] [WARNING] Sanity Live is unable to connect to the Sanity API as the current origin - http://localhost:3001 - is not in the list of allowed CORS origins for this Sanity Project. Add it here: https://sanity.io/manage/project/gm67v7rk/api?cors=add&origin=http%3A%2F%2Flocalhost%3A3001 @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    8065ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[    8641ms] [LOG] [Fast Refresh] done in 678ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   23627ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   23672ms] [LOG] [Fast Refresh] done in 147ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  484395ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  484396ms] [LOG] [Fast Refresh] done in 105ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  974013ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[  974078ms] [LOG] [Fast Refresh] done in 167ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1135331ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1136796ms] [LOG] [Fast Refresh] done in 1569ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1568165ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1568902ms] [LOG] [Fast Refresh] done in 852ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1572494ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1573417ms] [LOG] [Fast Refresh] done in 1026ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1824576ms] [LOG] [HMR] connected @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1824800ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 1825054ms] [LOG] [Fast Refresh] done in 359ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 2427967ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://generous-hagfish-7.clerk.accounts.dev/v1/client/sessions/sess_3FSEmikACldU79KaY5E4E3BYOC9/tokens?__clerk_api_version=2025-11-10&_clerk_js_version=5.126.0&__clerk_db_jwt=dvb_3FOOUfoQT9T6UmXtJa7tc2zjqQq:0
+[ 2433106ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://generous-hagfish-7.clerk.accounts.dev/v1/client/sessions/sess_3FSEmikACldU79KaY5E4E3BYOC9/tokens?__clerk_api_version=2025-11-10&_clerk_js_version=5.126.0&__clerk_db_jwt=dvb_3FOOUfoQT9T6UmXtJa7tc2zjqQq:0
+[ 2438136ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://generous-hagfish-7.clerk.accounts.dev/v1/client/sessions/sess_3FSEmikACldU79KaY5E4E3BYOC9/tokens?__clerk_api_version=2025-11-10&_clerk_js_version=5.126.0&__clerk_db_jwt=dvb_3FOOUfoQT9T6UmXtJa7tc2zjqQq:0
+[ 2443171ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://generous-hagfish-7.clerk.accounts.dev/v1/client/sessions/sess_3FSEmikACldU79KaY5E4E3BYOC9/tokens?__clerk_api_version=2025-11-10&_clerk_js_version=5.126.0&__clerk_db_jwt=dvb_3FOOUfoQT9T6UmXtJa7tc2zjqQq:0
+[ 2448188ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://generous-hagfish-7.clerk.accounts.dev/v1/client/sessions/sess_3FSEmikACldU79KaY5E4E3BYOC9/tokens?__clerk_api_version=2025-11-10&_clerk_js_version=5.126.0&__clerk_db_jwt=dvb_3FOOUfoQT9T6UmXtJa7tc2zjqQq:0
+[ 2453212ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://generous-hagfish-7.clerk.accounts.dev/v1/client/sessions/sess_3FSEmikACldU79KaY5E4E3BYOC9/tokens?__clerk_api_version=2025-11-10&_clerk_js_version=5.126.0&__clerk_db_jwt=dvb_3FOOUfoQT9T6UmXtJa7tc2zjqQq:0
+[ 2458232ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://generous-hagfish-7.clerk.accounts.dev/v1/client/sessions/sess_3FSEmikACldU79KaY5E4E3BYOC9/tokens?__clerk_api_version=2025-11-10&_clerk_js_version=5.126.0&__clerk_db_jwt=dvb_3FOOUfoQT9T6UmXtJa7tc2zjqQq:0
+[ 2463257ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://generous-hagfish-7.clerk.accounts.dev/v1/client/sessions/sess_3FSEmikACldU79KaY5E4E3BYOC9/tokens?__clerk_api_version=2025-11-10&_clerk_js_version=5.126.0&__clerk_db_jwt=dvb_3FOOUfoQT9T6UmXtJa7tc2zjqQq:0
+[ 2468282ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://generous-hagfish-7.clerk.accounts.dev/v1/client/sessions/sess_3FSEmikACldU79KaY5E4E3BYOC9/tokens?__clerk_api_version=2025-11-10&_clerk_js_version=5.126.0&__clerk_db_jwt=dvb_3FOOUfoQT9T6UmXtJa7tc2zjqQq:0
+[ 2770031ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://generous-hagfish-7.clerk.accounts.dev/v1/client/sessions/sess_3FSEmikACldU79KaY5E4E3BYOC9/tokens?__clerk_api_version=2025-11-10&_clerk_js_version=5.126.0&__clerk_db_jwt=dvb_3FOOUfoQT9T6UmXtJa7tc2zjqQq:0
+[ 2775051ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://generous-hagfish-7.clerk.accounts.dev/v1/client/sessions/sess_3FSEmikACldU79KaY5E4E3BYOC9/tokens?__clerk_api_version=2025-11-10&_clerk_js_version=5.126.0&__clerk_db_jwt=dvb_3FOOUfoQT9T6UmXtJa7tc2zjqQq:0
+[ 2780074ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://generous-hagfish-7.clerk.accounts.dev/v1/client/sessions/sess_3FSEmikACldU79KaY5E4E3BYOC9/tokens?__clerk_api_version=2025-11-10&_clerk_js_version=5.126.0&__clerk_db_jwt=dvb_3FOOUfoQT9T6UmXtJa7tc2zjqQq:0
+[ 2785093ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://generous-hagfish-7.clerk.accounts.dev/v1/client/sessions/sess_3FSEmikACldU79KaY5E4E3BYOC9/tokens?__clerk_api_version=2025-11-10&_clerk_js_version=5.126.0&__clerk_db_jwt=dvb_3FOOUfoQT9T6UmXtJa7tc2zjqQq:0
+[ 2790112ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://generous-hagfish-7.clerk.accounts.dev/v1/client/sessions/sess_3FSEmikACldU79KaY5E4E3BYOC9/tokens?__clerk_api_version=2025-11-10&_clerk_js_version=5.126.0&__clerk_db_jwt=dvb_3FOOUfoQT9T6UmXtJa7tc2zjqQq:0
+[ 2795135ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://generous-hagfish-7.clerk.accounts.dev/v1/client/sessions/sess_3FSEmikACldU79KaY5E4E3BYOC9/tokens?__clerk_api_version=2025-11-10&_clerk_js_version=5.126.0&__clerk_db_jwt=dvb_3FOOUfoQT9T6UmXtJa7tc2zjqQq:0
+[ 2800154ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://generous-hagfish-7.clerk.accounts.dev/v1/client/sessions/sess_3FSEmikACldU79KaY5E4E3BYOC9/tokens?__clerk_api_version=2025-11-10&_clerk_js_version=5.126.0&__clerk_db_jwt=dvb_3FOOUfoQT9T6UmXtJa7tc2zjqQq:0
+[ 2805171ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://generous-hagfish-7.clerk.accounts.dev/v1/client/sessions/sess_3FSEmikACldU79KaY5E4E3BYOC9/tokens?__clerk_api_version=2025-11-10&_clerk_js_version=5.126.0&__clerk_db_jwt=dvb_3FOOUfoQT9T6UmXtJa7tc2zjqQq:0
+[ 2810201ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://generous-hagfish-7.clerk.accounts.dev/v1/client/sessions/sess_3FSEmikACldU79KaY5E4E3BYOC9/tokens?__clerk_api_version=2025-11-10&_clerk_js_version=5.126.0&__clerk_db_jwt=dvb_3FOOUfoQT9T6UmXtJa7tc2zjqQq:0
+[ 2815225ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://generous-hagfish-7.clerk.accounts.dev/v1/client/sessions/sess_3FSEmikACldU79KaY5E4E3BYOC9/tokens?__clerk_api_version=2025-11-10&_clerk_js_version=5.126.0&__clerk_db_jwt=dvb_3FOOUfoQT9T6UmXtJa7tc2zjqQq:0
+[ 3124053ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://generous-hagfish-7.clerk.accounts.dev/v1/client/sessions/sess_3FSEmikACldU79KaY5E4E3BYOC9/tokens?__clerk_api_version=2025-11-10&_clerk_js_version=5.126.0&__clerk_db_jwt=dvb_3FOOUfoQT9T6UmXtJa7tc2zjqQq:0
+[ 3129073ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://generous-hagfish-7.clerk.accounts.dev/v1/client/sessions/sess_3FSEmikACldU79KaY5E4E3BYOC9/tokens?__clerk_api_version=2025-11-10&_clerk_js_version=5.126.0&__clerk_db_jwt=dvb_3FOOUfoQT9T6UmXtJa7tc2zjqQq:0
+[ 3134085ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://generous-hagfish-7.clerk.accounts.dev/v1/client/sessions/sess_3FSEmikACldU79KaY5E4E3BYOC9/tokens?__clerk_api_version=2025-11-10&_clerk_js_version=5.126.0&__clerk_db_jwt=dvb_3FOOUfoQT9T6UmXtJa7tc2zjqQq:0
+[ 3139105ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://generous-hagfish-7.clerk.accounts.dev/v1/client/sessions/sess_3FSEmikACldU79KaY5E4E3BYOC9/tokens?__clerk_api_version=2025-11-10&_clerk_js_version=5.126.0&__clerk_db_jwt=dvb_3FOOUfoQT9T6UmXtJa7tc2zjqQq:0
+[ 3144128ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://generous-hagfish-7.clerk.accounts.dev/v1/client/sessions/sess_3FSEmikACldU79KaY5E4E3BYOC9/tokens?__clerk_api_version=2025-11-10&_clerk_js_version=5.126.0&__clerk_db_jwt=dvb_3FOOUfoQT9T6UmXtJa7tc2zjqQq:0
+[ 3149137ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://generous-hagfish-7.clerk.accounts.dev/v1/client/sessions/sess_3FSEmikACldU79KaY5E4E3BYOC9/tokens?__clerk_api_version=2025-11-10&_clerk_js_version=5.126.0&__clerk_db_jwt=dvb_3FOOUfoQT9T6UmXtJa7tc2zjqQq:0
+[ 3153719ms] [ERROR] Connecting to 'https://clerk-telemetry.com/v1/event' violates the following Content Security Policy directive: "connect-src 'self' https://*.clerk.com https://clerk.connectingclimateminds.org https://*.clerk.accounts.dev https://*.algolia.net https://*.algolianet.com https://plausible.io https://*.sanity.io https://*.r2.cloudflarestorage.com https://*.upstash.io https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://*.ingest.de.sentry.io". The action has been blocked. @ https://generous-hagfish-7.clerk.accounts.dev/npm/@clerk/clerk-js@5/dist/clerk.browser.js:18
+[ 3153722ms] [ERROR] Fetch API cannot load https://clerk-telemetry.com/v1/event. Refused to connect because it violates the document's Content Security Policy. @ https://generous-hagfish-7.clerk.accounts.dev/npm/@clerk/clerk-js@5/dist/clerk.browser.js:18
+[ 3436175ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3436204ms] [LOG] [Fast Refresh] done in 134ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3453122ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3456254ms] [LOG] [Fast Refresh] done in 3252ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3839741ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3840646ms] [LOG] [Fast Refresh] done in 1013ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3867503ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3867606ms] [LOG] [Fast Refresh] done in 216ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3928543ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3928643ms] [LOG] [Fast Refresh] done in 207ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3989243ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 3989285ms] [LOG] [Fast Refresh] done in 145ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 4481242ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 4482040ms] [LOG] [Fast Refresh] done in 915ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 5274548ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 5275235ms] [LOG] [Fast Refresh] done in 790ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 5304708ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 5305771ms] [LOG] [Fast Refresh] done in 1175ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 5336163ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 5336810ms] [LOG] [Fast Refresh] done in 750ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 5366827ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 5368026ms] [LOG] [Fast Refresh] done in 1300ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 5368509ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 5370972ms] [LOG] [Fast Refresh] done in 2566ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 5371186ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 5371245ms] [LOG] [Fast Refresh] done in 159ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 5371750ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 5371768ms] [LOG] [Fast Refresh] done in 158ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 5372021ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 5372698ms] [LOG] [Fast Refresh] done in 736ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 5372801ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 5373433ms] [LOG] [Fast Refresh] done in 733ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 5373919ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 5373975ms] [LOG] [Fast Refresh] done in 157ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 5377532ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 5377687ms] [LOG] [Fast Refresh] done in 218ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 5377805ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 5378121ms] [LOG] [Fast Refresh] done in 418ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 5382921ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 5383615ms] [LOG] [Fast Refresh] done in 711ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 5383719ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 5385718ms] [LOG] [Fast Refresh] done in 2099ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 5386038ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 5386136ms] [LOG] [Fast Refresh] done in 200ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 5414849ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 5436142ms] [LOG] [Fast Refresh] done in 21396ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 5436276ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[ 5436278ms] [LOG] [Fast Refresh] done in 108ms @ http://localhost:3001/_next/static/chunks/f12ff_next_dist_95687940._.js:2302

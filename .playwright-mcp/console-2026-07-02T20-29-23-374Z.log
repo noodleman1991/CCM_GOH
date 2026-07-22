@@ -1,0 +1,49 @@
+[     179ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[     182ms] [LOG] [Fast Refresh] done in 104ms @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[     437ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[     479ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[     652ms] [WARNING] Missing Algolia environment variables: ALGOLIA_API_KEY @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[     653ms] [WARNING] Algolia admin client not available - missing credentials @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[     653ms] [LOG] ✅ Algolia search client initialized successfully @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[     669ms] [WARNING] Image with src "/connecting-climate-minds-logo-white.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[     833ms] [WARNING] Ignoring Event: localhost @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[     862ms] [WARNING] Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[     910ms] [INFO] Sanity is live with automatic revalidation of published content @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:2302
+[   42410ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=gPHxGwwGA8xjW0pvT5uf8' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:10876
+[   43413ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=gPHxGwwGA8xjW0pvT5uf8' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:10876
+[   44417ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=gPHxGwwGA8xjW0pvT5uf8' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:10876
+[   45420ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=gPHxGwwGA8xjW0pvT5uf8' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:10876
+[   46422ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=gPHxGwwGA8xjW0pvT5uf8' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:10876
+[   51222ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/ar/atlas?theme=youth&q=flood&region=ssa&_rsc=ein6v:0
+[   51226ms] [ERROR] Failed to fetch RSC payload for http://localhost:3000/ar/atlas?theme=youth&q=flood&region=ssa. Falling back to browser navigation. TypeError: Failed to fetch
+    at createFetch (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:2588:24)
+    at fetchServerResponse (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:2490:27)
+    at navigateDynamicallyWithNoPrefetch (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:7941:90)
+    at navigate (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:7726:15)
+    at navigateReducer (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:8237:45)
+    at clientReducer (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:9063:61)
+    at Object.action (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:9308:55)
+    at runAction (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:9213:38)
+    at dispatchAction (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:9276:9)
+    at Object.dispatch (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:9306:40)
+    at http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:1489:29
+    at startTransition (http://localhost:3000/_next/static/chunks/f12ff_next_dist_compiled_react-dom_7b2f6d3d._.js:5500:31)
+    at dispatch (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:1488:13)
+    at dispatchAppRouterAction (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:1470:5)
+    at dispatchNavigateAction (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:9360:49)
+    at http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:9417:13
+    at startTransition (http://localhost:3000/_next/static/chunks/f12ff_next_dist_compiled_cd863794._.js:1279:31)
+    at replace (http://localhost:3000/_next/static/chunks/f12ff_next_dist_client_d93c57ad._.js:9416:36)
+    at Object.handler [as replace] (http://localhost:3000/_next/static/chunks/node_modules__pnpm_4e997a0b._.js:2085:25)
+    at AtlasExplorer.useCallback[setParams] (http://localhost:3000/_next/static/chunks/_af79dd3a._.js:749:20)
+    at onClick (http://localhost:3000/_next/static/chunks/_af79dd3a._.js:894:46)
+    at executeDispatch (http://localhost:3000/_next/static/chunks/f12ff_next_dist_compiled_react-dom_7b2f6d3d._.js:10314:13)
+    at runWithFiberInDEV (http://localhost:3000/_next/static/chunks/f12ff_next_dist_compiled_react-dom_7b2f6d3d._.js:965:74)
+    at processDispatchQueue (http://localhost:3000/_next/static/chunks/f12ff_next_dist_compiled_react-dom_7b2f6d3d._.js:10340:41)
+    at http://localhost:3000/_next/static/chunks/f12ff_next_dist_compiled_react-dom_7b2f6d3d._.js:10615:13
+    at batchedUpdates$1 (http://localhost:3000/_next/static/chunks/f12ff_next_dist_compiled_react-dom_7b2f6d3d._.js:2253:44)
+    at dispatchEventForPluginEventSystem (http://localhost:3000/_next/static/chunks/f12ff_next_dist_compiled_react-dom_7b2f6d3d._.js:10416:9)
+    at dispatchEvent (http://localhost:3000/_next/static/chunks/f12ff_next_dist_compiled_react-dom_7b2f6d3d._.js:12935:37)
+    at dispatchDiscreteEvent (http://localhost:3000/_next/static/chunks/f12ff_next_dist_compiled_react-dom_7b2f6d3d._.js:12917:64) @ http://localhost:3000/_next/static/chunks/f12ff_next_dist_95687940._.js:3132
+[   51266ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/__nextjs_original-stack-frames:0

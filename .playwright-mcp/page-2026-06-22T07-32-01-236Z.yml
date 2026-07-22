@@ -1,0 +1,39 @@
+- generic [active] [ref=e1]:
+  - main [ref=e3]:
+    - generic [ref=e4]:
+      - button "Toggle Sidebar" [ref=e6]:
+        - img
+        - generic [ref=e7]: Toggle Sidebar
+      - generic [ref=e8]:
+        - button "البحث..." [ref=e9]:
+          - img [ref=e10]
+        - button "الإشعارات" [ref=e13]:
+          - img
+    - main [ref=e15]:
+      - generic [ref=e17]:
+        - tablist [ref=e18]:
+          - tab "الرسائل" [selected] [ref=e19]
+          - tab "الإشعارات" [ref=e20]
+        - tabpanel "الرسائل" [ref=e21]:
+          - complementary [ref=e23]:
+            - generic [ref=e24]: الرسائل
+            - paragraph [ref=e25]: لا توجد محادثات بعد.
+  - generic [ref=e28]:
+    - generic [ref=e29]:
+      - img [ref=e30]
+      - generic [ref=e32]:
+        - heading "نحن نقدر خصوصيتك" [level=2] [ref=e33]
+        - paragraph [ref=e34]: نستخدم ملفات تعريف الارتباط الأساسية للحفاظ على سير الأمور بسلاسة، وملفات تعريف ارتباط اختيارية لتحسين تجربتك. أداة التحليلات لدينا، Plausible، لا تستخدم أي ملفات تعريف ارتباط.
+    - generic [ref=e35]:
+      - button "قبول الكل" [ref=e36]
+      - button "الأساسية فقط" [ref=e37]
+      - button "إدارة التفضيلات" [ref=e38]
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e44] [cursor=pointer]:
+    - generic [ref=e47]:
+      - text: Compiling
+      - generic [ref=e48]:
+        - generic [ref=e49]: .
+        - generic [ref=e50]: .
+        - generic [ref=e51]: .
+  - alert [ref=e52]

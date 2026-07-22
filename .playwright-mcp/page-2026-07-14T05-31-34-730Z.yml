@@ -1,0 +1,286 @@
+- generic [active] [ref=f6e1]:
+  - generic [ref=f6e2]:
+    - generic [ref=f6e5]:
+      - link "Go to homepage" [ref=f6e7] [cursor=pointer]:
+        - /url: /en
+        - img "Connecting Climate Minds Logo" [ref=f6e9]
+      - generic [ref=f6e10]:
+        - button "Search" [ref=f6e11]:
+          - img [ref=f6e12]
+          - text: Search
+        - link "Find people" [ref=f6e15] [cursor=pointer]:
+          - /url: /en/sign-in?redirect=%2Fcollaborate%3Ftab%3Dpeople
+          - img [ref=f6e16]
+          - text: Find people
+        - link "Start a project" [ref=f6e20] [cursor=pointer]:
+          - /url: /en/sign-in?redirect=%2Fcollaborations
+          - img [ref=f6e21]
+          - text: Start a project
+      - generic [ref=f6e23]:
+        - list [ref=f6e25]:
+          - listitem [ref=f6e26]:
+            - button "Regional Communities" [ref=f6e27]:
+              - img [ref=f6e28]
+              - generic [ref=f6e31]: Regional Communities
+              - img [ref=f6e32]
+          - listitem [ref=f6e34]:
+            - button "Research & Action" [ref=f6e35]:
+              - img [ref=f6e36]
+              - generic [ref=f6e38]: Research & Action
+              - img [ref=f6e39]
+          - listitem [ref=f6e41]:
+            - link "Atlas" [ref=f6e42] [cursor=pointer]:
+              - /url: /en/atlas
+              - img [ref=f6e43]
+              - generic [ref=f6e46]: Atlas
+          - listitem [ref=f6e47]:
+            - link "Lived experiences" [ref=f6e48] [cursor=pointer]:
+              - /url: /en/lived-experiences
+              - img [ref=f6e49]
+              - generic [ref=f6e51]: Lived experiences
+          - listitem [ref=f6e52]:
+            - link "Case studies" [ref=f6e53] [cursor=pointer]:
+              - /url: /en/research-and-action/case-studies
+              - img [ref=f6e54]
+              - generic [ref=f6e57]: Case studies
+          - listitem [ref=f6e58]:
+            - link "News & Updates" [ref=f6e59] [cursor=pointer]:
+              - /url: /en/news
+              - img [ref=f6e60]
+              - generic [ref=f6e63]: News & Updates
+        - generic [ref=f6e64]:
+          - link "About" [ref=f6e65] [cursor=pointer]:
+            - /url: /en/about
+            - img [ref=f6e66]
+            - text: About
+          - link "Feedback" [ref=f6e68] [cursor=pointer]:
+            - /url: /en/feedback
+            - img [ref=f6e69]
+            - text: Feedback
+      - list [ref=f6e74]:
+        - listitem [ref=f6e75]:
+          - button "English" [ref=f6e76]:
+            - generic [ref=f6e78]: English
+            - img [ref=f6e79]
+    - main [ref=f6e83]:
+      - button "Toggle Sidebar" [ref=f6e86]:
+        - img
+        - generic [ref=f6e87]: Toggle Sidebar
+      - main [ref=f6e89]:
+        - generic [ref=f6e91]:
+          - generic [ref=f6e92]:
+            - heading "Submit a research output" [level=1] [ref=f6e93]
+            - paragraph [ref=f6e94]: Share a report, toolkit, dataset brief or guideline. An editor will review it before it appears publicly.
+          - generic [ref=f6e95]:
+            - generic [ref=f6e96]:
+              - img [ref=f6e97]
+              - paragraph [ref=f6e106]: Changes requested
+            - paragraph [ref=f6e107]: An editor asked for changes — address the notes below and resubmit.
+            - blockquote [ref=f6e108]:
+              - img [ref=f6e109]
+              - generic [ref=f6e113]: Please add a short methods section and an Arabic summary document before we publish.
+          - generic [ref=f6e114]:
+            - generic [ref=f6e115]:
+              - generic [ref=f6e116]:
+                - generic [ref=f6e117]: About this output
+                - generic [ref=f6e118]: What it is and what it covers.
+              - generic [ref=f6e119]:
+                - generic [ref=f6e120]:
+                  - generic [ref=f6e121]: Title
+                  - textbox "Title" [ref=f6e122]:
+                    - /placeholder: e.g. Heat and mental health in coastal cities — 2026 report
+                    - text: Coastal heat and community wellbeing — verification toolkit
+                - generic [ref=f6e123]:
+                  - generic [ref=f6e124]:
+                    - generic [ref=f6e125]: Type of output
+                    - combobox "Type of output" [ref=f6e126]:
+                      - generic: Toolkit
+                      - img
+                    - combobox [ref=f6e127]
+                  - generic [ref=f6e128]:
+                    - generic [ref=f6e129]: Region
+                    - combobox "Region" [ref=f6e130]:
+                      - generic: Sub-Saharan Africa
+                      - img
+                    - combobox [ref=f6e131]
+                - generic [ref=f6e132]:
+                  - generic [ref=f6e133]: Summary
+                  - textbox "Summary" [ref=f6e134]:
+                    - /placeholder: A few sentences on what readers will find…
+                    - text: A verification-run research output with one downloadable document, a region and tags.
+                  - paragraph [ref=f6e135]: Shown on cards and at the top of the page.
+            - generic [ref=f6e136]:
+              - generic [ref=f6e137]:
+                - generic [ref=f6e138]: Documents
+                - generic [ref=f6e139]: The files readers can download — add a full report, a summary, translations or slides.
+              - generic [ref=f6e140]:
+                - generic [ref=f6e141]:
+                  - img [ref=f6e142]
+                  - generic [ref=f6e145]:
+                    - text: ccm-test-report.pdf
+                    - generic [ref=f6e146]: Full report · EN
+                  - button "Remove" [ref=f6e147]:
+                    - img
+                    - text: Remove
+                - button "Add a document PDF, Word, Excel or PowerPoint · up to 50MB" [ref=f6e148]:
+                  - img [ref=f6e149]
+                  - generic [ref=f6e150]: Add a document
+                  - generic [ref=f6e151]: PDF, Word, Excel or PowerPoint · up to 50MB
+            - generic [ref=f6e152]:
+              - generic [ref=f6e153]:
+                - generic [ref=f6e154]: Read it on the hub
+                - generic [ref=f6e155]: "Optional: tell the story of this output right on the page — findings, charts, quotes."
+              - generic [ref=f6e158]:
+                - generic [ref=f6e159]:
+                  - button [ref=f6e160]:
+                    - img
+                  - button [ref=f6e161]:
+                    - img
+                  - button [ref=f6e163]:
+                    - img
+                  - button [ref=f6e164]:
+                    - img
+                  - button [ref=f6e165]:
+                    - img
+                  - button [ref=f6e167]:
+                    - img
+                  - button [ref=f6e168]:
+                    - img
+                  - button [ref=f6e170]:
+                    - img
+                  - button "Insert image" [ref=f6e171]:
+                    - img
+                  - button [disabled]:
+                    - img
+                  - button [disabled]:
+                    - img
+                - generic [ref=f6e175]:
+                  - generic [ref=f6e176]: Type / for blocks — headings, images, video and more
+                  - generic [ref=f6e177]: 0/20000 characters
+            - generic [ref=f6e178]:
+              - generic [ref=f6e180]: Context
+              - generic [ref=f6e181]:
+                - generic [ref=f6e182]:
+                  - generic [ref=f6e183]: Themes
+                  - generic [ref=f6e184]:
+                    - button "Displacement" [ref=f6e185]:
+                      - generic [ref=f6e186]: Displacement
+                    - button "Livelihoods" [pressed] [ref=f6e187]:
+                      - img [ref=f6e188]
+                      - generic [ref=f6e190]: Livelihoods
+                    - button "Youth" [ref=f6e191]:
+                      - generic [ref=f6e192]: Youth
+                    - button "Indigenous" [ref=f6e193]:
+                      - generic [ref=f6e194]: Indigenous
+                - generic [ref=f6e195]:
+                  - generic [ref=f6e196]: Tags
+                  - generic [ref=f6e197]:
+                    - button "Adaptation" [ref=f6e198]:
+                      - generic [ref=f6e199]: Adaptation
+                    - button "Central & Southern Asia" [ref=f6e200]:
+                      - generic [ref=f6e201]: Central & Southern Asia
+                    - button "Climate Change" [ref=f6e202]:
+                      - generic [ref=f6e203]: Climate Change
+                    - button "Climate Grief" [ref=f6e204]:
+                      - generic [ref=f6e205]: Climate Grief
+                    - button "Climate Justice" [ref=f6e206]:
+                      - generic [ref=f6e207]: Climate Justice
+                    - button "Community Action" [ref=f6e208]:
+                      - generic [ref=f6e209]: Community Action
+                    - button "Connection to Nature" [ref=f6e210]:
+                      - generic [ref=f6e211]: Connection to Nature
+                    - button "Coping Strategies" [ref=f6e212]:
+                      - generic [ref=f6e213]: Coping Strategies
+                    - button "Displacement" [ref=f6e214]:
+                      - generic [ref=f6e215]: Displacement
+                    - button "Drought" [ref=f6e216]:
+                      - generic [ref=f6e217]: Drought
+                    - button "Eastern & South-Eastern Asia" [ref=f6e218]:
+                      - generic [ref=f6e219]: Eastern & South-Eastern Asia
+                    - button "Eco-Anxiety" [ref=f6e220]:
+                      - generic [ref=f6e221]: Eco-Anxiety
+                    - button "Elders" [ref=f6e222]:
+                      - generic [ref=f6e223]: Elders
+                    - button "Europe & North America" [ref=f6e224]:
+                      - generic [ref=f6e225]: Europe & North America
+                    - button "Extreme Weather" [ref=f6e226]:
+                      - generic [ref=f6e227]: Extreme Weather
+                    - button "Farmers" [ref=f6e228]:
+                      - generic [ref=f6e229]: Farmers
+                    - button "Fisher People" [ref=f6e230]:
+                      - generic [ref=f6e231]: Fisher People
+                    - button "Flooding" [ref=f6e232]:
+                      - generic [ref=f6e233]: Flooding
+                    - button "Food Insecurity" [ref=f6e234]:
+                      - generic [ref=f6e235]: Food Insecurity
+                    - button "Hope" [ref=f6e236]:
+                      - generic [ref=f6e237]: Hope
+                    - button "Indigenous Communities" [ref=f6e238]:
+                      - generic [ref=f6e239]: Indigenous Communities
+                    - button "Intergenerational Impact" [ref=f6e240]:
+                      - generic [ref=f6e241]: Intergenerational Impact
+                    - button "Latin America & Caribbean" [ref=f6e242]:
+                      - generic [ref=f6e243]: Latin America & Caribbean
+                    - button "Mental Health Support" [ref=f6e244]:
+                      - generic [ref=f6e245]: Mental Health Support
+                    - button "Northern Africa & Western Asia" [ref=f6e246]:
+                      - generic [ref=f6e247]: Northern Africa & Western Asia
+                    - button "Oceania" [ref=f6e248]:
+                      - generic [ref=f6e249]: Oceania
+                    - button "Research" [ref=f6e250]:
+                      - generic [ref=f6e251]: Research
+                    - button "Resilience" [ref=f6e252]:
+                      - generic [ref=f6e253]: Resilience
+                    - button "Rural Communities" [ref=f6e254]:
+                      - generic [ref=f6e255]: Rural Communities
+                    - button "Sea Level Rise" [pressed] [ref=f6e256]:
+                      - img [ref=f6e257]
+                      - generic [ref=f6e259]: Sea Level Rise
+                    - button "Storytelling" [ref=f6e260]:
+                      - generic [ref=f6e261]: Storytelling
+                    - button "Stress & Overwhelm" [ref=f6e262]:
+                      - generic [ref=f6e263]: Stress & Overwhelm
+                    - button "Sub-Saharan Africa" [ref=f6e264]:
+                      - generic [ref=f6e265]: Sub-Saharan Africa
+                    - button "Traditional Knowledge" [ref=f6e266]:
+                      - generic [ref=f6e267]: Traditional Knowledge
+                    - button "Trauma" [ref=f6e268]:
+                      - generic [ref=f6e269]: Trauma
+                    - button "Urban Communities" [ref=f6e270]:
+                      - generic [ref=f6e271]: Urban Communities
+                    - button "Vulnerable Populations" [ref=f6e272]:
+                      - generic [ref=f6e273]: Vulnerable Populations
+                    - button "Wildfires" [ref=f6e274]:
+                      - generic [ref=f6e275]: Wildfires
+                    - button "Women" [ref=f6e276]:
+                      - generic [ref=f6e277]: Women
+                    - button "Youth" [ref=f6e278]:
+                      - generic [ref=f6e279]: Youth
+                  - paragraph [ref=f6e280]: Up to 6.
+                - generic [ref=f6e281]:
+                  - generic [ref=f6e282]: Regional communities
+                  - generic [ref=f6e283]:
+                    - button "Central and Southern Asia Regional Community" [ref=f6e284]:
+                      - generic [ref=f6e285]: Central and Southern Asia Regional Community
+                    - button "Eastern and South Eastern Asia Regional Community" [ref=f6e286]:
+                      - generic [ref=f6e287]: Eastern and South Eastern Asia Regional Community
+                    - button "Europe and Northern America Regional Community" [ref=f6e288]:
+                      - generic [ref=f6e289]: Europe and Northern America Regional Community
+                    - button "Latin America and the Caribbean Regional Community" [ref=f6e290]:
+                      - generic [ref=f6e291]: Latin America and the Caribbean Regional Community
+                    - button "Northern Africa and Western Asia Regional Community" [ref=f6e292]:
+                      - generic [ref=f6e293]: Northern Africa and Western Asia Regional Community
+                    - button "Oceania Regional Community" [ref=f6e294]:
+                      - generic [ref=f6e295]: Oceania Regional Community
+                    - button "Sub-Saharan Africa Regional Community" [pressed] [ref=f6e296]:
+                      - img [ref=f6e297]
+                      - generic [ref=f6e299]: Sub-Saharan Africa Regional Community
+            - generic [ref=f6e300]:
+              - button "Cancel" [ref=f6e301]
+              - button "Submit for review" [ref=f6e302]:
+                - img
+                - text: Submit for review
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=f6e308] [cursor=pointer]:
+    - img [ref=f6e309]
+  - alert [ref=f6e312]

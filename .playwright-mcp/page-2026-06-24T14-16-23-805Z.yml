@@ -1,0 +1,152 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - list [ref=e7]:
+          - listitem [ref=e8]:
+            - link "Go to homepage" [ref=e9] [cursor=pointer]:
+              - /url: /
+              - img "Connecting Climate Minds Logo" [ref=e10]
+        - button "Search... ⌘K" [ref=e12]:
+          - img [ref=e13]
+          - generic [ref=e16]: Search...
+          - generic [ref=e17]: ⌘K
+      - generic [ref=e18]:
+        - generic [ref=e19]:
+          - generic [ref=e20]: Discover
+          - list [ref=e21]:
+            - listitem [ref=e22]:
+              - link "Atlas & Explore" [ref=e23] [cursor=pointer]:
+                - /url: /en/atlas
+                - img [ref=e24]
+                - generic [ref=e27]: Atlas & Explore
+            - listitem [ref=e28]:
+              - button "Research & Action" [ref=e29]:
+                - img [ref=e30]
+                - generic [ref=e32]: Research & Action
+                - img [ref=e33]
+            - listitem [ref=e35]:
+              - link "News & Updates" [ref=e36] [cursor=pointer]:
+                - /url: /en/news
+                - img [ref=e37]
+                - generic [ref=e40]: News & Updates
+            - listitem [ref=e41]:
+              - link "Lived experiences" [ref=e42] [cursor=pointer]:
+                - /url: /en/lived-experiences
+                - img [ref=e43]
+                - generic [ref=e45]: Lived experiences
+            - listitem [ref=e46]:
+              - link "Case studies" [ref=e47] [cursor=pointer]:
+                - /url: /en/research-and-action/case-studies
+                - img [ref=e48]
+                - generic [ref=e51]: Case studies
+        - generic [ref=e52]:
+          - generic [ref=e53]: Collaborate
+          - list [ref=e54]:
+            - listitem [ref=e55]:
+              - button "Regional Communities" [ref=e56]:
+                - img [ref=e57]
+                - generic [ref=e60]: Regional Communities
+                - img [ref=e61]
+            - listitem [ref=e63]:
+              - link "Find people" [ref=e64] [cursor=pointer]:
+                - /url: /en/collaborate
+                - img [ref=e65]
+                - generic [ref=e70]: Find people
+            - listitem [ref=e71]:
+              - link "Start or find a project" [ref=e72] [cursor=pointer]:
+                - /url: /en/collaborations
+                - img [ref=e73]
+                - generic [ref=e75]: Start or find a project
+        - list [ref=e78]:
+          - listitem [ref=e79]:
+            - link "About" [ref=e80] [cursor=pointer]:
+              - /url: /about
+              - img [ref=e81]
+              - generic [ref=e83]: About
+          - listitem [ref=e84]:
+            - link "Feedback" [ref=e85] [cursor=pointer]:
+              - /url: /feedback
+              - img [ref=e86]
+              - generic [ref=e88]: Feedback
+      - generic [ref=e90]:
+        - list [ref=e91]:
+          - listitem [ref=e92]:
+            - button "Amit Lokszinski Amit Lokszinski amit2@pm.me" [ref=e93]:
+              - img "Amit Lokszinski" [ref=e95]
+              - generic [ref=e96]:
+                - generic [ref=e97]: Amit Lokszinski
+                - generic [ref=e98]: amit2@pm.me
+              - img [ref=e99]
+        - list [ref=e102]:
+          - listitem [ref=e103]:
+            - button "English" [ref=e104]:
+              - generic [ref=e106]: English
+              - img [ref=e107]
+    - main [ref=e111]:
+      - generic [ref=e112]:
+        - button "Toggle Sidebar" [ref=e114]:
+          - img
+          - generic [ref=e115]: Toggle Sidebar
+        - generic [ref=e116]:
+          - button "Search..." [ref=e117]:
+            - img [ref=e118]
+          - button "Notifications" [ref=e121]:
+            - img
+      - main [ref=e123]:
+        - generic [ref=e124]:
+          - link "Back to Case Studies" [ref=e125] [cursor=pointer]:
+            - /url: /en/research-and-action/case-studies
+            - img [ref=e126]
+            - text: Back to Case Studies
+          - generic [ref=e128]:
+            - heading "Mental Health Effects due to the Double burden of COVID-19 and Extreme Heat and Drought in Afghanistan" [level=1] [ref=e129]
+            - paragraph [ref=e130]: Afghanistan is experiencing a situation that reflects an intensified level of conflict and COVID-19 with an increasing prevalence of drought due to climate change affecting people's livelihoods (Orzala et al., 2022). The second-worst drought in 4 years (IFRC, 2021) widely affected the livelihoods of
+            - generic [ref=e131]:
+              - generic [ref=e132]:
+                - img [ref=e133]
+                - generic [ref=e135]: Jan 2024
+              - img [ref=e137]
+          - figure
+          - article [ref=e142]:
+            - generic [ref=e143]:
+              - heading "Brief description of the community/country and its experience of climate change" [level=2] [ref=e144]
+              - paragraph [ref=e145]: Afghanistan is experiencing a situation that reflects an intensified level of conflict and COVID-19 with an increasing prevalence of drought due to climate change affecting people's livelihoods (Orzala et al., 2022). The second-worst drought in 4 years (IFRC, 2021) widely affected the livelihoods of people who rely on agriculture and livestock as a primary source of income. As reported by the Special Inspector General for Afghanistan Reconstruction, USAID, the World Bank, and the Program for Asia Resilience to Climate Change (PARCC) have collectively provided $253 million in cash support in response to COVID-19 and drought-affected families (SIGAR, 2021). Afghanistan is the most affected country in terms of the prolonged nature of drought and climate change in the region. Drought has particularly affected the cities of Kandahar and Herat. Afghanistan’s most severe drought in four years reached its nadir in early 2021, which saw wheat harvests decrease by nearly two million tons; in Kandahar, the cropping season has been reduced to two seasons from four, and over three million heads of livestock were at risk due to fodder and water shortages. This environmental crisis coupled with increases in violence has triggered considerable population displacement. In the first half of 2021, more than 600,000 people were displaced due to severe conflict and drought, as reported by the International Federation of Red Cross and Red Crescent Societies (IFRC, 2021).
+              - heading "Brief description of the climate-related mental health impacts experienced by the community" [level=2] [ref=e146]
+              - paragraph [ref=e147]: "The qualitative study (Orzala et al, 2022) found a significant interplay between climate change and poverty in Kandahar and Herat, particularly in how they affect agricultural livelihoods. Drought, for instance, has dramatically reduced water availability for farming, resulting in lower crop yields and wheat harvests compared to previous years (OCHA, 2018). This has forced people to rely on alternative income sources like daily wage labor and migration. One respondent noted:"
+              - paragraph [ref=e148]:
+                - emphasis [ref=e149]: "\"Due to drought and lack of irrigation resources, I was losing my income. COVID has obliged people who were working in the factory and other manufacturing companies to quit their jobs as the companies are shut down. The income that we had from outside is now stopped. As a result, it has severely affected our livelihoods and economic situation\" (Orzala et al, 2022)."
+              - paragraph [ref=e150]: Due to these shocks and the reduction in income and low economic situation, people have lost their focus and are in a situation in which they cannot judge and make accurate decisions. This itself is an effect of the climate change.
+              - paragraph [ref=e151]:
+                - emphasis [ref=e152]: "Additionally, another respondent said:"
+              - paragraph [ref=e153]:
+                - emphasis [ref=e154]: "\"The drought had affected our harvest, and it was a big problem, especially in Herat. The rain was so rare; it means that during winter until April, we had no rain in Herat. To reduce the effects of the drought and limited access to resources, people in both Kandahar and Herat provinces diversified their income sources such as farm and non-farm, through migration and daily wage labor to repay their past debts or in response to drought.” (Huot et al. 2016)."
+              - paragraph [ref=e155]: People who are faced with drought and insecurity tried to diversify their income sources. The available alternatives for them were illegal migration to Iran. Migration to Iran itself is taking up arms and putting people in the boiling water which mentally distress and jeopardize the people’s mental health who remained behind for instance parents or other close relatives.
+              - heading "Detailed description of the research innovation or dataset" [level=2] [ref=e156]
+              - paragraph [ref=e157]: The researchers selected Kandahar and Herat for field work due to the prevalence of COVID-19, insecurity, and climate change. They also considered practical aspects and contextual understanding of these provinces from past research conducted in these areas. For example, losing a harvest season due to climate change and a reduction in the rain when people need water to irrigate their land. The research involved a mixed-method Q-squared approach to investigate poverty and well-being dynamics, including livelihood trajectories. The qualitative toolkit used key informant interviews and life history interviews with women and men in the study sites. The questionnaire tool was tested in a rural context near Kabul, with the study site selected based on security, health, and feasibility considerations. The research team gathered to assess the testing results and collected qualitative data between June and late July 2021. The research aimed to understand well-being, livelihood trajectories, and the impact of crises on households, and it encountered challenges related to security, gender norms, and compounded crises.
+              - heading "Key insights and lessons learned" [level=2] [ref=e158]
+              - paragraph [ref=e159]: The data highlights the proliferation of impoverishment in Afghanistan, due to the multilayered challenges of COVID-19, climate change, and political instabilities. These crises have created a unique impoverishment factor affecting livelihoods. The research findings show a strong relationship between climate change and poverty, mainly through its impact on agricultural livelihoods. Drought and climate change have significantly affected water sources, leading to declining farming activities and harvest yields. The pandemic, combined with security threats and political instability, has exacerbated the socioeconomic impacts, resulting in a higher probability of poverty and welfare loss. The effect of these crises has drained household resources, contributing to poverty and welfare loss, with the poverty rate rising during the onset of COVID-19. The scarcity of resources and limited opportunities for young adults experiencing poverty have compounded the challenges, leading to a lack of job opportunities and the thinning of social networks both at the village and district level. For instance, in times of difficulty, people attain support from their siblings, relatives, and friends. (Orzala et al., 2022). As a result, people in the target location have been severely affected by the three prolonged crises. This has mentally stressed the local people; hence, they said, ‘We will die of poverty before we die of COVID-19’. Even though the study did not directly cover the effect of mental health, however, the data identified many stressors at the household level. To get a complete understanding of mental health and climate change, there is a high need for separate research that focuses on the relationship between stressors, climate change, and mental health.
+              - paragraph [ref=e160]:
+                - strong [ref=e161]: These insights provide valuable guidance for policy responses and interventions addressing similar multilayered crises. The research innovation is highly generalizable to other communities or countries facing similar challenges. The coping strategies like diversified income sources and migration to Iran the households adopt reflect common challenges communities face in similar crises. These insights can inform the development and implementation of research innovations in other regions experiencing overlapping crises, offering a valuable understanding of the complex dynamics of multilayered crises and their impacts on impoverishment. The research comprehensively analyzes the multilayered crisis and its effect on people's impoverishment in Afghanistan. It provides valuable lessons for developing and implementing similar research innovations at local and national levels.
+              - heading "Recommendations" [level=2] [ref=e162]
+              - paragraph [ref=e163]: The paper's first key recommendation emphasizes the importance of collectively managing overlapping crises, especially in areas facing protracted violence and instability. The 2022 Humanitarian Response Plan recognizes the need for a simultaneous focus on emergency assistance for conflict and disaster-affected individuals and vulnerable populations with humanitarian needs (HRP, 2022). The operational presence of 191 organizations (107 national NGOs, 72 international NGOs, and 12 UN agencies) in Afghanistan highlights the urgency of multi-sectoral interventions, extending beyond food security and agriculture to include education, health services, livelihood support, and inclusive finance. A holistic response is essential for better understanding and addressing long-term issues effectively.
+              - paragraph [ref=e164]: Donors are encouraged to use overlapping crises such as COVID-19, conflict, and climate as a framework for poverty monitoring studies, enabling a deeper understanding of poverty and informing tailored poverty reduction strategies. The study highlights the importance of mixed method data to offer both quantitative analysis and qualitative insights, underlining the need for updates to gain further insights.
+              - paragraph [ref=e165]: The second recommendation underscores the need to strengthen linkages between humanitarian and development responses to the crisis in Afghanistan. While the immediate priority is a humanitarian response, longer-term development aid-focused responses are equally crucial. Addressing the long-term impacts of COVID-19 on livelihoods is imperative, and integrating social protection with pro-poor economic growth and human development initiatives is essential within the humanitarian-development-peace nexus.
+              - paragraph [ref=e166]: The third area focuses on improving the welfare and inclusion of young adults, especially those heading households. The study also highlights the vulnerability of youth-headed households to food insecurity and poverty during COVID-19. Future humanitarian and development programs should prioritize youth-headed households and consider recommendations such as strengthening dialogue in the government, mainstreaming youth inclusion across projects, complementing economic inclusion with social cohesion efforts, and engaging youth as agents of change. Additionally, aid providers should carefully consider the characteristics of each context before planning service delivery to ensure better provision of immediate, short- and longer-term assistance (Orzala et al., 2022).
+              - heading "References" [level=2] [ref=e167]
+              - list [ref=e168]:
+                - listitem [ref=e169]: "International Federation of Red Cross (IFRC), 2021. Afghanistan: Worst Drought and Hunger Crisis in Decades. https://www.ifrc.org/press-release/afghanistan-worst-drought-and-hunger-crisis-decades(20.02.2022)Special Inspector General for Afghanistan Reconstruction (SIGAR), 2021.Economic and Social Development. Quarterly update April 30th, 2021. https://www.sigar.mil/pdf/quarterlyreports/2021-04-30qr-section2-economic.pdf (22.01.22).OCHA. \"Afghanistan Drought 2018-2019\". https://www.humanitarianresponse.info/en/disaster/dr-2018-000052-afg (accessed January 19th 2022).Pain, A., Huot, D. and Ghafoori, I., 2016. Livelihood trajectories in Afghanistan: Silent violence in Kandahar Province. SLRC, AREU, and ODI.Afghanistan Research and Evaluation Unit (AREU), 2022. \"WE WILL DIE IN POVERTY BEFORE DYING BY COVID\" Young adults and multilayered crises in Afghanistan. https://areu.org.af/publication/2205e/Orzala et al. 2022, \"WE WILL DIE IN POVERTY BEFORE DYING BY COVID\" Young adults and multilayered crises in Afghanistan: https://areu.org.af/publication/2205e/HRP. (2022). Humanitarian Response Plan Afghanistan. https://reliefweb.int/sites/reliefweb.int/ files/resources/afghanistan-humanitarian-response-plan-2022.pdf Accessed 1 June, 2022."
+              - heading "Written by" [level=2] [ref=e170]
+              - paragraph [ref=e171]: Afghanistan Research and Evaluation Unit (AREU)
+          - generic [ref=e174]:
+            - heading "Authors" [level=3] [ref=e175]:
+              - img [ref=e176]
+              - text: Authors
+            - generic:
+              - generic:
+                - paragraph
+                - paragraph
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e188] [cursor=pointer]:
+    - img [ref=e189]
+  - alert [ref=e192]

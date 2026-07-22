@@ -1,0 +1,150 @@
+- generic [ref=f1e1]:
+  - generic [ref=f1e2]:
+    - generic [ref=f1e5]:
+      - list [ref=f1e7]:
+        - listitem [ref=f1e8]:
+          - link "Go to homepage" [ref=f1e9] [cursor=pointer]:
+            - /url: /
+            - img "Connecting Climate Minds Logo" [ref=f1e10]
+      - generic [ref=f1e11]:
+        - generic [ref=f1e12]:
+          - generic [ref=f1e13]: Discover
+          - list [ref=f1e14]:
+            - listitem [ref=f1e15]:
+              - link "Atlas & Explore" [ref=f1e16] [cursor=pointer]:
+                - /url: /en/atlas
+                - img [ref=f1e17]
+                - generic [ref=f1e20]: Atlas & Explore
+            - listitem [ref=f1e21]:
+              - button "Research & Action" [ref=f1e22]:
+                - img [ref=f1e23]
+                - generic [ref=f1e25]: Research & Action
+                - img [ref=f1e26]
+            - listitem [ref=f1e28]:
+              - link "News & Updates" [ref=f1e29] [cursor=pointer]:
+                - /url: /en/news
+                - img [ref=f1e30]
+                - generic [ref=f1e33]: News & Updates
+            - listitem [ref=f1e34]:
+              - link "Lived experiences" [ref=f1e35] [cursor=pointer]:
+                - /url: /en/lived-experiences
+                - img [ref=f1e36]
+                - generic [ref=f1e38]: Lived experiences
+            - listitem [ref=f1e39]:
+              - link "Case studies" [ref=f1e40] [cursor=pointer]:
+                - /url: /en/research-and-action/case-studies
+                - img [ref=f1e41]
+                - generic [ref=f1e44]: Case studies
+        - generic [ref=f1e45]:
+          - generic [ref=f1e46]: Collaborate
+          - list [ref=f1e47]:
+            - listitem [ref=f1e48]:
+              - button "Regional Communities" [ref=f1e49]:
+                - img [ref=f1e50]
+                - generic [ref=f1e53]: Regional Communities
+                - img [ref=f1e54]
+            - listitem [ref=f1e56]:
+              - link "Find people" [ref=f1e57] [cursor=pointer]:
+                - /url: /en/collaborate
+                - img [ref=f1e58]
+                - generic [ref=f1e63]: Find people
+            - listitem [ref=f1e64]:
+              - link "Start or find a project" [ref=f1e65] [cursor=pointer]:
+                - /url: /en/collaborations
+                - img [ref=f1e66]
+                - generic [ref=f1e68]: Start or find a project
+        - list [ref=f1e71]:
+          - listitem [ref=f1e72]:
+            - link "About" [ref=f1e73] [cursor=pointer]:
+              - /url: /about
+              - img [ref=f1e74]
+              - generic [ref=f1e76]: About
+          - listitem [ref=f1e77]:
+            - link "Feedback" [ref=f1e78] [cursor=pointer]:
+              - /url: /feedback
+              - img [ref=f1e79]
+              - generic [ref=f1e81]: Feedback
+      - generic [ref=f1e82]:
+        - generic [ref=f1e178]:
+          - button "Create account" [ref=f1e179]
+          - button "Sign In" [ref=f1e180]
+        - button "Search... ⌘K" [ref=f1e85]:
+          - img [ref=f1e86]
+          - generic [ref=f1e193]: Search...
+          - generic [ref=f1e91]: ⌘K
+        - list [ref=f1e93]:
+          - listitem [ref=f1e94]:
+            - button "English" [ref=f1e95]:
+              - generic [ref=f1e97]: English
+              - img [ref=f1e98]
+    - main [ref=f1e102]:
+      - button "Toggle Sidebar" [ref=f1e105]:
+        - img
+        - generic [ref=f1e106]: Toggle Sidebar
+      - main [ref=f1e108]:
+        - generic [ref=f1e110]:
+          - generic [ref=f1e111]:
+            - heading "Atlas & Explore" [level=1] [ref=f1e112]
+            - paragraph [ref=f1e113]: Explore case studies, lived experiences, people and more across the seven regions.
+          - generic [ref=f1e114]:
+            - img [ref=f1e115]
+            - textbox "Search the atlas…" [ref=f1e118]: flood
+            - button "Clear search" [ref=f1e119]:
+              - img [ref=f1e120]
+          - generic [ref=f1e123]:
+            - text: Data layer
+            - generic [ref=f1e124]:
+              - button "Case studies" [ref=f1e125]:
+                - generic [ref=f1e126]: Case studies
+              - button "Lived experiences" [pressed] [ref=f1e127]:
+                - img [ref=f1e128]
+                - generic [ref=f1e130]: Lived experiences
+              - button "Members" [ref=f1e131]:
+                - generic [ref=f1e132]: Members
+              - button "News" [ref=f1e133]:
+                - generic [ref=f1e134]: News
+              - button "Agendas" [ref=f1e135]:
+                - generic [ref=f1e136]: Agendas
+              - button "Reports" [ref=f1e137]:
+                - generic [ref=f1e138]: Reports
+          - generic [ref=f1e139]:
+            - text: Theme
+            - generic [ref=f1e140]:
+              - button "Displacement" [active] [pressed] [ref=f1e141]:
+                - img [ref=f1e194]
+                - generic [ref=f1e142]: Displacement
+              - button "Livelihoods" [ref=f1e143]:
+                - generic [ref=f1e144]: Livelihoods
+              - button "Youth" [ref=f1e145]:
+                - generic [ref=f1e148]: Youth
+              - button "Indigenous" [ref=f1e149]:
+                - generic [ref=f1e150]: Indigenous
+          - generic [ref=f1e151]:
+            - img "Regional map" [ref=f1e153]:
+              - 'button "Sub-Saharan Africa: 0" [ref=f1e154] [cursor=pointer]'
+              - 'button "Northern Africa and Western Asia: 0" [ref=f1e155] [cursor=pointer]'
+              - 'button "Central and Southern Asia: 0" [ref=f1e156] [cursor=pointer]'
+              - 'button "Eastern and South-Eastern Asia: 0" [ref=f1e157] [cursor=pointer]'
+              - 'button "Latin America and the Caribbean: 0" [ref=f1e158] [cursor=pointer]'
+              - 'button "Oceania: 0" [ref=f1e159] [cursor=pointer]'
+              - 'button "Europe and North America: 0" [ref=f1e160] [cursor=pointer]'
+            - generic [ref=f1e161]:
+              - paragraph [ref=f1e162]: Lived experiences
+              - generic [ref=f1e196]:
+                - paragraph [ref=f1e197]: Sub-Saharan Africa
+                - paragraph [ref=f1e198]: "0"
+          - generic [ref=f1e163]:
+            - generic [ref=f1e164]: 0 · Lived experiences · Displacement · "flood" · Sub-Saharan Africa
+            - link "Open in Lived experiences" [ref=f1e165] [cursor=pointer]:
+              - /url: /en/lived-experiences?regions=sub-saharan-africa
+              - text: Open in Lived experiences
+              - img [ref=f1e166]
+          - generic [ref=f1e199]:
+            - generic [ref=f1e203]:
+              - heading "Sub-Saharan Africa" [level=2] [ref=f1e204]
+              - paragraph [ref=f1e205]: 0 · Lived experiences
+            - paragraph [ref=f1e207]: No Lived experiences here yet.
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=f1e173] [cursor=pointer]:
+    - img [ref=f1e174]
+  - alert [ref=f1e177]

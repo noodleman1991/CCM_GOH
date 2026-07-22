@@ -1,0 +1,3590 @@
+[
+  {
+    "_id": "homepage-ar",
+    "agendasModule": {
+      "_type": "grid-row",
+      "columns": [
+        {
+          "_key": "agenda-populations",
+          "_type": "grid-card",
+          "excerpt": "أجندات البحث والعمل التي تم إنشاؤها من خلال الحوارات مع الشباب والمزارعين والصيادين الصغار والمجتمعات الأصلية.",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-de490fb701e91b0d0de14249760cc51e6a7e4577-3840x2160-png",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/research-and-action/regional-agendas",
+            "title": "عرض الأجندات"
+          },
+          "title": "أجندات للسكان الذين يواجهون تأثيرات متضخمة على الصحة النفسية المناخية"
+        },
+        {
+          "_key": "agenda-regional",
+          "_type": "grid-card",
+          "excerpt": "تحدد الأجندات الإقليمية أولويات متوافقة وشاملة للبحث والعمل في سبع مناطق عالمية.",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-d3df9145f1cb93b5c4e63eb3e55c7fef63658053-3840x2160-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/research-and-action/regional-agendas",
+            "title": "عرض الأجندات"
+          },
+          "title": "الأجندات الإقليمية"
+        },
+        {
+          "_key": "31c451833956",
+          "_type": "grid-card",
+          "excerpt": "تحدد أجندة البحث والعمل العالمية لتغير المناخ والصحة النفسية أولويات البحث والعمل التي تم تطويرها من حوارات ومشاورات مع أكثر من 960 خبيراً في البحث والسياسة والممارسة والخبرة المعاشة في 90 دولة.",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-9058e7f003fba9d46c5ba03d0ff5e024ebae5ccd-3840x2160-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "buttonVariant": {
+              "_type": "button-variant",
+              "size": "default",
+              "stroke": "none",
+              "variant": "default"
+            },
+            "href": "/research-and-action/global-agenda",
+            "title": "عرض الأجندة"
+          },
+          "title": "الأجندة العالمية"
+        },
+        {
+          "_key": "impact-reports",
+          "_type": "grid-card",
+          "excerpt": "تحدد تقارير التأثير التنوع القابل للإثبات وتأثير الأنشطة والتعاون الذي عززته Connecting Climate Minds.",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-3c17c3d51690e922513eb44e822cdc97f0013818-3840x2160-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/research-and-action/impact-reports",
+            "title": "عرض تقارير التأثير"
+          },
+          "title": "تقارير التأثير"
+        },
+        {
+          "_key": "toolkits",
+          "_type": "grid-card",
+          "excerpt": "الأدلة الإرشادية هي أدلة عملية تساعد الباحثين والجهات الفاعلة من خلفيات متنوعة على الدخول إلى مجال المناخ والصحة النفسية.",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-d964b7185e9e0c22a64706e64ba63bc26cab16d8-3840x2160-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/research-and-action/toolkits",
+            "title": "عرض الأدلة الإرشادية"
+          },
+          "title": "الأدلة الإرشادية"
+        },
+        {
+          "_key": "case-studies",
+          "_type": "grid-card",
+          "excerpt": "تعرض دراسات الحالة البحوث والتدخلات والسياسات الحالية ذات الآثار على العلاقة بين المناخ والصحة النفسية.",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-2dfdaae1ebaa6b6dc990bbc9cd6e0761ac42b1ee-1920x1080-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/research-and-action/case-studies",
+            "title": "عرض دراسات الحالة"
+          },
+          "title": "دراسات الحالة"
+        }
+      ],
+      "description": [
+        {
+          "_key": "qj8oy7g",
+          "_type": "block",
+          "children": [
+            {
+              "_key": "5cktns",
+              "_type": "span",
+              "marks": [],
+              "text": "استكشف مستودعنا الغني من أجندات البحث والعمل المشتركة والتقارير ودراسات الحالة ورؤى الخبرة المعاشة والأدلة الإرشادية. جميعها مصممة لدعم التعاون بين التخصصات والعديد من أشكال الخبرة المختلفة وتسريع ومواءمة المجال المتنامي لتغير المناخ والصحة النفسية."
+            }
+          ],
+          "markDefs": [],
+          "style": "normal"
+        }
+      ],
+      "gridColumns": "grid-cols-3",
+      "title": "تحفيز البحث متعدد التخصصات لإعلام العمل في السياسة والممارسة"
+    },
+    "collaboration": {
+      "_type": "split-row",
+      "colorVariant": "default",
+      "padding": {
+        "_type": "section-padding",
+        "top": true
+      },
+      "splitColumns": [
+        {
+          "_key": "151a70c2b9a0",
+          "_type": "split-image",
+          "image": {
+            "_type": "image",
+            "alt": "Collaboration illustration",
+            "asset": {
+              "_ref": "image-57418cdb829659625ab81fb7a141aec3ba10dfa2-640x666-webp",
+              "_type": "reference"
+            }
+          }
+        },
+        {
+          "_key": "collaboration-content",
+          "_type": "split-content",
+          "body": [
+            {
+              "_key": "pxin6p",
+              "_type": "block",
+              "children": [
+                {
+                  "_key": "8e2mks",
+                  "_type": "span",
+                  "marks": [],
+                  "text": "سواء كنت تبحث عن خبرة لمشروع، أو تتطلع للانضمام إلى القوى في البحث، أو ترغب في مشاركة أفكار مبتكرة، فإن منطقة التعاون لدينا هي مكان لقاء للأفراد والمنظمات من مختلف المجالات للتواصل والتعاون."
+                }
+              ],
+              "markDefs": [],
+              "style": "normal"
+            }
+          ],
+          "link": {
+            "_type": "link",
+            "href": "/collaborate",
+            "title": "عرض منطقة التعاون",
+            "variant": "primary"
+          },
+          "title": "تسهيل الاتصال والتعاون الهادف"
+        }
+      ]
+    },
+    "globalAgenda": {
+      "_type": "split-row",
+      "padding": {
+        "_type": "section-padding",
+        "top": true
+      },
+      "splitColumns": [
+        {
+          "_key": "global-content",
+          "_type": "split-content",
+          "body": [
+            {
+              "_key": "06yid",
+              "_type": "block",
+              "children": [
+                {
+                  "_key": "rgl67o",
+                  "_type": "span",
+                  "marks": [],
+                  "text": "تحدد أجندة البحث والعمل العالمية لتغير المناخ والصحة النفسية أولويات البحث والعمل التي تم تطويرها من حوارات ومشاورات مع أكثر من 960 خبيراً في البحث والسياسة والممارسة والخبرة المعاشة في 90 دولة."
+                }
+              ],
+              "markDefs": [],
+              "style": "normal"
+            }
+          ],
+          "link": {
+            "_type": "link",
+            "buttonVariant": {
+              "_type": "button-variant",
+              "size": "wide",
+              "variant": "default"
+            },
+            "href": "/research-and-action/global-agenda",
+            "title": "قراءة الأجندة العالمية"
+          },
+          "title": "تحديد أولويات البحث والعمل العالمي لتغير المناخ والصحة النفسية"
+        },
+        {
+          "_key": "6ea5e410db0f",
+          "_type": "split-image",
+          "image": {
+            "_type": "image",
+            "alt": "Global Agenda Cover",
+            "asset": {
+              "_ref": "image-7131d0c3058e42bdacb40588daaa07ca3bf11b5f-2083x1488-png",
+              "_type": "reference"
+            }
+          }
+        }
+      ]
+    },
+    "hasBlocks": null,
+    "heroWelcome": {
+      "_type": "hero-1",
+      "background": {
+        "_type": "background-option",
+        "ccmColor": "ccm-water",
+        "type": "none"
+      },
+      "body": [
+        {
+          "_key": "gxudv",
+          "_type": "block",
+          "children": [
+            {
+              "_key": "qcwaw",
+              "_type": "span",
+              "marks": [],
+              "text": "نحن ملتزمون بتعزيز مجتمع بحثي عالمي متصل، مدفوعاً بهدف مشترك: فهم ومعالجة العلاقة المعقدة بين مناخ كوكبنا المتغير وصحتنا النفسية."
+            }
+          ],
+          "markDefs": [],
+          "style": "normal"
+        }
+      ],
+      "image": {
+        "_type": "image",
+        "alt": "Connecting Climate Minds Welcome Illustration",
+        "asset": {
+          "_ref": "image-41c12b03acf832baf1a7bc1dd79c3bcd9854dadf-3937x4096-webp",
+          "_type": "reference"
+        }
+      },
+      "imagePosition": "right",
+      "links": [
+        {
+          "_key": "hero-link-1",
+          "_type": "link",
+          "buttonVariant": {
+            "_type": "button-variant",
+            "size": "default",
+            "variant": "default"
+          },
+          "href": "/research-and-action/all-outputs",
+          "target": false,
+          "title": "عرض أبحاثنا"
+        }
+      ],
+      "padding": {
+        "_type": "section-padding",
+        "top": true
+      },
+      "title": "مرحباً بكم في مركز Connecting Climate Minds، حيث يتحد عالم الصحة النفسية وبحوث تغير المناخ."
+    },
+    "howToUse": {
+      "_type": "split-row",
+      "colorVariant": "background",
+      "padding": {
+        "_type": "section-padding",
+        "bottom": true,
+        "top": true
+      },
+      "splitColumns": [
+        {
+          "_key": "10bd5ac925c0",
+          "_type": "split-image",
+          "image": {
+            "_type": "image",
+            "alt": "Sign up to the hub illustration",
+            "asset": {
+              "_ref": "image-9596343a0722c7e501a5c63912b85e75a989ed3a-828x716-webp",
+              "_type": "reference"
+            }
+          }
+        },
+        {
+          "_key": "how-to-use-content",
+          "_type": "split-content",
+          "body": [
+            {
+              "_key": "0pr3tg",
+              "_type": "block",
+              "children": [
+                {
+                  "_key": "2gfi3",
+                  "_type": "span",
+                  "marks": [],
+                  "text": "سواء كنت ترغب في التعمق في المجالات ذات الأولوية للبحث والعمل، أو البحث عن الإلهام والفهم من دراسات الحالة والتجارب الشخصية والأفكار، أو التعلم من \"الأدلة الإرشادية\"، أو تتطلع للانضمام إلى مجتمعنا العالمي المتنامي وتكوين اتصالات جديدة، فهذا المركز مخصص لك."
+                }
+              ],
+              "markDefs": [],
+              "style": "normal"
+            }
+          ],
+          "link": {
+            "_type": "link",
+            "href": "/sign-up",
+            "title": "إنشاء حساب",
+            "variant": "primary"
+          },
+          "title": "مساحتك التعاونية للأفكار والحوار والتواصل"
+        }
+      ]
+    },
+    "language": "ar",
+    "livedExperiences": {
+      "_type": "carousel-2",
+      "colorVariant": "accent",
+      "description": "إن الفهم والتعلم من الخبرة المعاشة أمر ضروري للتنقل في العلاقة بين الصحة النفسية وتغير المناخ. تصفح مكتبتنا من رؤى الخبرة المعاشة التي يشاركها أشخاص من جميع أنحاء العالم، وتوفر رؤى لا تقدر بثمن حول التأثيرات والحلول.",
+      "title": "قصص الحزن والمرونة والأمل"
+    },
+    "mentalHealthDefinition": {
+      "_type": "cta-1",
+      "body": [
+        {
+          "_key": "oixt12",
+          "_type": "block",
+          "children": [
+            {
+              "_key": "8h9wc",
+              "_type": "span",
+              "marks": [],
+              "text": "تغير المناخ والصحة النفسية وتقاطعهما هي مجالات معقدة وواسعة النطاق، يتم فهمها من خلال مجموعة من وجهات النظر والأطر والمصطلحات المتنوعة. يتم تعريف تحديات الصحة النفسية (التي تشمل حالات/أمراض الصحة النفسية) في Connecting Climate Minds على أنها أفكار ومشاعر وسلوكيات تؤثر على قدرة الشخص على العمل في واحد أو أكثر من مجالات الحياة وغالباً ما تتضمن مستويات كبيرة من الضيق النفسي. الطرق التي يمكن أن تتأثر بها الصحة النفسية بتغير المناخ تشمل:"
+            }
+          ],
+          "markDefs": [],
+          "style": "normal"
+        },
+        {
+          "_key": "g1lvdv",
+          "_type": "block",
+          "children": [
+            {
+              "_key": "8gu4oq",
+              "_type": "span",
+              "marks": [],
+              "text": "كيف يمكن أن يؤدي تغير المناخ إلى تفاقم مشاكل الصحة النفسية الموجودة مسبقاً"
+            }
+          ],
+          "level": 1,
+          "listItem": "bullet",
+          "markDefs": [],
+          "style": "normal"
+        },
+        {
+          "_key": "qldb6i",
+          "_type": "block",
+          "children": [
+            {
+              "_key": "cau7u",
+              "_type": "span",
+              "marks": [],
+              "text": "كيف يمكن أن يساهم تغير المناخ في انتشار أو تأثير مشاكل الصحة النفسية الحالية"
+            }
+          ],
+          "level": 1,
+          "listItem": "bullet",
+          "markDefs": [],
+          "style": "normal"
+        },
+        {
+          "_key": "qz2f1t",
+          "_type": "block",
+          "children": [
+            {
+              "_key": "ht91ld",
+              "_type": "span",
+              "marks": [],
+              "text": "كيف يمكن أن يؤثر تغير المناخ على الوصول إلى العلاج أو فعاليته لأولئك الذين يعانون من مشاكل الصحة النفسية"
+            }
+          ],
+          "level": 1,
+          "listItem": "bullet",
+          "markDefs": [],
+          "style": "normal"
+        },
+        {
+          "_key": "ldqqq",
+          "_type": "block",
+          "children": [
+            {
+              "_key": "5z4j4",
+              "_type": "span",
+              "marks": [],
+              "text": "كيف يمكن أن يؤدي تغير المناخ إلى مشاكل صحية نفسية جديدة."
+            }
+          ],
+          "level": 1,
+          "listItem": "bullet",
+          "markDefs": [],
+          "style": "normal"
+        },
+        {
+          "_key": "xpuz1f",
+          "_type": "block",
+          "children": [
+            {
+              "_key": "pxmlrp",
+              "_type": "span",
+              "marks": [],
+              "text": "ومع ذلك، نلاحظ أنه تم الاستماع إلى تنوع من وجهات النظر من خلال Connecting Climate Minds، وقد سعينا إلى تمثيل وعكس ذلك بشكل مناسب في نتائج المشروع."
+            }
+          ],
+          "markDefs": [],
+          "style": "normal"
+        }
+      ],
+      "padding": {
+        "_type": "section-padding",
+        "bottom": true,
+        "top": true
+      },
+      "sectionWidth": "default",
+      "stackAlign": "left",
+      "title": "ماذا نعني بالصحة النفسية؟"
+    },
+    "news": {
+      "_type": "grid-row",
+      "columns": [
+        {
+          "_key": "news-0",
+          "_type": "grid-news",
+          "newsPost": {
+            "_ref": "news-climate-distress-study",
+            "_type": "reference"
+          },
+          "showAuthor": true,
+          "showMetadata": true,
+          "showTags": true
+        },
+        {
+          "_key": "news-1",
+          "_type": "grid-news",
+          "newsPost": {
+            "_ref": "news-regional-dialogues",
+            "_type": "reference"
+          },
+          "showAuthor": true,
+          "showMetadata": true,
+          "showTags": true
+        },
+        {
+          "_key": "news-2",
+          "_type": "grid-news",
+          "newsPost": {
+            "_ref": "news-cop28",
+            "_type": "reference"
+          },
+          "showAuthor": true,
+          "showMetadata": true,
+          "showTags": true
+        }
+      ],
+      "description": [
+        {
+          "_key": "5tjyj",
+          "_type": "block",
+          "children": [
+            {
+              "_key": "grxp75",
+              "_type": "span",
+              "marks": [],
+              "text": "نبقيك على اطلاع بأحدث التطورات في تقاطع البحث والسياسة والممارسة في مجال الصحة النفسية وتغير المناخ."
+            }
+          ],
+          "markDefs": [],
+          "style": "normal"
+        }
+      ],
+      "gridColumns": "grid-cols-3",
+      "title": "آخر الأخبار في هذا المجال"
+    },
+    "partnerLogos": {
+      "_type": "logo-cloud-1",
+      "colorVariant": "default",
+      "description": "نحن مشروع ممول من Wellcome يجمع الخبرة في البحث والسياسة والممارسة والتصميم والخبرة المعاشة من جميع أنحاء العالم.",
+      "images": [
+        {
+          "_key": "70d4ffb85dae",
+          "_type": "image",
+          "alt": "Climate Cares Logo",
+          "asset": {
+            "_ref": "image-eda83dfa50044686af5c5460a7357193fdafe434-750x750-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "afef25f9e273",
+          "_type": "image",
+          "alt": "Red Cross/Crescent Climate Centre Logo ",
+          "asset": {
+            "_ref": "image-4d9d7a94f2c8f2dad9da4d47b702bc091a8795c6-750x750-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "2188a0b4bbae",
+          "_type": "image",
+          "alt": "University of Nigeria Logo",
+          "asset": {
+            "_ref": "image-11af89ad0f6b46dd87a02de8bd5709815561c12e-750x750-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "bf829e523c90",
+          "_type": "image",
+          "alt": "St. Luke's Medical Center Logo",
+          "asset": {
+            "_ref": "image-b98281c67c85a4ad37a1845fd11151112f091da9-750x750-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "2108cf7674a2",
+          "_type": "image",
+          "alt": "Force of Nature Logo",
+          "asset": {
+            "_ref": "image-a916d9a8bee47d6fc90074b1b63d2c976435ab49-750x750-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "8d33c4fab674",
+          "_type": "image",
+          "alt": "sustyvibes Logo",
+          "asset": {
+            "_ref": "image-74293faba6e6038a03b01b21d417b6284da694dc-750x750-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "6d35a8c8279c",
+          "_type": "image",
+          "alt": "Jordan Health Aid Society",
+          "asset": {
+            "_ref": "image-5efd81114e5949e05f8b5eecfbb48b7a6b9b1d18-384x281-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "fe50ad6676b7",
+          "_type": "image",
+          "alt": "Imperial College London Logo",
+          "asset": {
+            "_ref": "image-38d69bc1d7ab168e940dafa51abc4837d967d691-750x750-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "9aa79cd75037",
+          "_type": "image",
+          "alt": "Climate Mental Health Network Logo",
+          "asset": {
+            "_ref": "image-a7e6dc310b622f00ead8abddd65762ff80b1c104-750x750-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "49ebb18ff9ce",
+          "_type": "image",
+          "alt": "QCMHR Logo",
+          "asset": {
+            "_ref": "image-ab11d65d7b66f84578619c8b018a04fbc60559ca-750x549-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "de718f5d7379",
+          "_type": "image",
+          "alt": "Planetary health Alliance Logo",
+          "asset": {
+            "_ref": "image-6437b4ba6cb5b4f299f64692dc7806d2fceac7ef-750x549-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "02374391081e",
+          "_type": "image",
+          "alt": "Wellcome Logo",
+          "asset": {
+            "_ref": "image-b7e4d1e3b0a6c8f4db622ada4a03d2e3e1ad54b3-772x772-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "d54f66aec101",
+          "_type": "image",
+          "alt": "University of the West Indies Logo",
+          "asset": {
+            "_ref": "image-84a70c2c58245617e6dca99edfa23e273d4c1aba-750x750-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "976f6ebc55e9",
+          "_type": "image",
+          "alt": "BRAC Public Health Logo",
+          "asset": {
+            "_ref": "image-30b103b868e2d0ab9974a66c0cf03a8479b4a228-750x549-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "be7091a74edd",
+          "_type": "image",
+          "alt": "BRAC University Logo",
+          "asset": {
+            "_ref": "image-fc928150891e063f2f7cc221e4a82658b78cb046-750x549-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "4fd936a82097",
+          "_type": "image",
+          "alt": "Grantham Institute Logo",
+          "asset": {
+            "_ref": "image-689e390cba4a4a3c089eb0f65fe1d871a65e6b41-750x750-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "cf35dbab29de",
+          "_type": "image",
+          "alt": "University of Queensland Logo",
+          "asset": {
+            "_ref": "image-cdc11b432cc1729c2208ecfa720f210f9c8eda6f-750x549-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "133e54dcf271",
+          "_type": "image",
+          "alt": "Waman Wasi Logo",
+          "asset": {
+            "_ref": "image-b5294c3d34ea4dab9b3159a95d664ef180240c5a-772x772-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "7213f608535a",
+          "_type": "image",
+          "alt": "Institute of Global Health Innovation Logo",
+          "asset": {
+            "_ref": "image-3c59206099c46c53b85b61cf2d73730e6abec90c-750x750-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "af032a1109fd",
+          "_type": "image",
+          "alt": "IFRC Psychosocial Centre Logo",
+          "asset": {
+            "_ref": "image-f7d6a83272a69669d1fcc8f415b894879b7876c4-750x750-webp",
+            "_type": "reference"
+          }
+        }
+      ],
+      "layout": "marquee",
+      "padding": {
+        "_type": "section-padding",
+        "top": false
+      },
+      "title": "من المشاركون"
+    },
+    "projectInfo": {
+      "_type": "split-row",
+      "colorVariant": "light",
+      "splitColumns": [
+        {
+          "_key": "618b9196c2ba",
+          "_type": "split-image",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-0316fdac42c8440a3ccd61ff5ca6d65582068426-640x603-webp",
+              "_type": "reference"
+            }
+          }
+        },
+        {
+          "_key": "project-info-content",
+          "_type": "split-content",
+          "body": [
+            {
+              "_key": "b30pm7",
+              "_type": "block",
+              "children": [
+                {
+                  "_key": "565hu6",
+                  "_type": "span",
+                  "marks": [],
+                  "text": "تعرف على المزيد حول عمل Wellcome في تغير المناخ والصحة وفي الصحة النفسية."
+                }
+              ],
+              "markDefs": [],
+              "style": "normal"
+            }
+          ],
+          "link": {
+            "_type": "link",
+            "href": "/about",
+            "title": "حول المشروع"
+          },
+          "title": "ممول من Wellcome، مستضاف من قبل مركز Climate Cares"
+        }
+      ]
+    },
+    "regionalCommunities": {
+      "_type": "grid-row",
+      "columns": [
+        {
+          "_key": "community-6",
+          "_type": "grid-card",
+          "excerpt": "مجتمع الممارسة الإقليمي",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-55c6db4f9014a38d8f96aad25fbaa3295abc68e4-1920x1080-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/communities/sub-saharan-africa",
+            "title": "عرض المجتمع"
+          },
+          "title": "أفريقيا جنوب الصحراء الكبرى"
+        },
+        {
+          "_key": "community-4",
+          "_type": "grid-card",
+          "excerpt": "مجتمع الممارسة الإقليمي",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-57cb29c17a2461ae75ee12f8427837d0ee0dabe7-1920x1080-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/communities/northern-africa-and-western-asia",
+            "title": "عرض المجتمع"
+          },
+          "title": "شمال أفريقيا وغرب آسيا"
+        },
+        {
+          "_key": "community-0",
+          "_type": "grid-card",
+          "excerpt": "مجتمع الممارسة الإقليمي",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-4a3f03eb4bac43c6d93ce72a569d4de47637ccd4-1920x1080-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/communities/central-and-southern-asia",
+            "title": "عرض المجتمع"
+          },
+          "title": "آسيا الوسطى والجنوبية"
+        },
+        {
+          "_key": "community-1",
+          "_type": "grid-card",
+          "excerpt": "مجتمع الممارسة الإقليمي",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-82a8471785a1948de6dc2263076553c20ea83a8a-1920x1080-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/communities/eastern-and-south-eastern-asia",
+            "title": "عرض المجتمع"
+          },
+          "title": "شرق وجنوب شرق آسيا"
+        },
+        {
+          "_key": "community-3",
+          "_type": "grid-card",
+          "excerpt": "مجتمع الممارسة الإقليمي",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-8f182169a67886cf95906ec92a3beb8ff792e6ae-1920x1080-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/communities/latin-america-and-the-caribbean",
+            "title": "عرض المجتمع"
+          },
+          "title": "أمريكا اللاتينية والكاريبي"
+        },
+        {
+          "_key": "community-5",
+          "_type": "grid-card",
+          "excerpt": "مجتمع الممارسة الإقليمي",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-e2ad835ed91c9e4296e1436fd8dd63d5d8ce5fcf-1920x1080-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/communities/oceania",
+            "title": "عرض المجتمع"
+          },
+          "title": "أوقيانوسيا"
+        },
+        {
+          "_key": "community-2",
+          "_type": "grid-card",
+          "excerpt": "مجتمع الممارسة الإقليمي",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-3d248e796789c6d5cd9cb4af3dd45b915348f0f1-1920x1080-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/communities/europe-and-northern-america",
+            "title": "عرض المجتمع"
+          },
+          "title": "أوروبا وأمريكا الشمالية"
+        }
+      ],
+      "description": [
+        {
+          "_key": "hug9xb",
+          "_type": "block",
+          "children": [
+            {
+              "_key": "mwudoy",
+              "_type": "span",
+              "marks": [],
+              "text": "مجتمعات الممارسة الإقليمية السبعة لدينا هي في قلب مشروع Connecting Climate Minds، تربط الأشخاص عبر البلدان والتخصصات والقطاعات والخبرات. جميعها تجلب رؤاها الفريدة إلى مجتمع ممارسة مزدهر في بحوث تغير المناخ والصحة النفسية، متصل بعمق ويتفاعل مع احتياجات الخبرة المعاشة، ويرتبط بالسياسة والممارسة."
+            }
+          ],
+          "markDefs": [],
+          "style": "normal"
+        }
+      ],
+      "gridColumns": "grid-cols-3",
+      "title": "المجتمعات الإقليمية التي تقود البحث العالمي"
+    }
+  },
+  {
+    "_id": "homepage-en",
+    "agendasModule": {
+      "_type": "grid-row",
+      "columns": [
+        {
+          "_key": "agenda-populations",
+          "_type": "grid-card",
+          "excerpt": "Research and Action Agendas created through dialogues with youth, small farmers and fisher people and Indigenous communities.",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-de490fb701e91b0d0de14249760cc51e6a7e4577-3840x2160-png",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/research-and-action/regional-agendas",
+            "title": "View Agendas"
+          },
+          "title": "Agendas for populations facing amplified climate mental health impacts"
+        },
+        {
+          "_key": "agenda-regional",
+          "_type": "grid-card",
+          "excerpt": "The Regional Agendas set out aligned and inclusive priorities for research and action in seven global regions.",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-d3df9145f1cb93b5c4e63eb3e55c7fef63658053-3840x2160-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/research-and-action/regional-agendas",
+            "title": "View Agendas"
+          },
+          "title": "Regional Agendas"
+        },
+        {
+          "_key": "31c451833956",
+          "_type": "grid-card",
+          "excerpt": "The Global Research and Action Agenda for climate change and mental health sets out priorities for research and action that have been developed from dialogues and consultation with 960+ experts in research, policy, practice, and lived experience in 90 countries.",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-9058e7f003fba9d46c5ba03d0ff5e024ebae5ccd-3840x2160-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "buttonVariant": {
+              "_type": "button-variant",
+              "size": "default",
+              "stroke": "none",
+              "variant": "default"
+            },
+            "href": "/research-and-action/global-agenda",
+            "title": "View Agenda"
+          },
+          "title": "Global Agenda"
+        },
+        {
+          "_key": "impact-reports",
+          "_type": "grid-card",
+          "excerpt": "Impact reports outline the demonstrable diversity and impact of activities and collaboration fostered through Connecting Climate Minds.",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-3c17c3d51690e922513eb44e822cdc97f0013818-3840x2160-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/research-and-action/impact-reports",
+            "title": "View Impact Reports"
+          },
+          "title": "Impact Reports"
+        },
+        {
+          "_key": "toolkits",
+          "_type": "grid-card",
+          "excerpt": "The toolkits are practical guides that help researchers and actors from diverse backgrounds to come into the climate and mental health field.",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-d964b7185e9e0c22a64706e64ba63bc26cab16d8-3840x2160-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/research-and-action/toolkits",
+            "title": "View Toolkits"
+          },
+          "title": "Toolkits"
+        },
+        {
+          "_key": "case-studies",
+          "_type": "grid-card",
+          "excerpt": "Case studies showcase existing research, interventions, and policies with implications for the climate-mental health nexus.",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-2dfdaae1ebaa6b6dc990bbc9cd6e0761ac42b1ee-1920x1080-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/research-and-action/case-studies",
+            "title": "View Case Studies"
+          },
+          "title": "Case Studies"
+        }
+      ],
+      "description": [
+        {
+          "_key": "ukren1",
+          "_type": "block",
+          "children": [
+            {
+              "_key": "7fdh5j",
+              "_type": "span",
+              "marks": [],
+              "text": "Explore our rich repository of co-created research and action agendas, reports, case studies, lived experience insights and toolkits. All have been designed to support collaboration between disciplines and many different forms of expertise and accelerate and align the growing field of climate change and mental health."
+            }
+          ],
+          "markDefs": [],
+          "style": "normal"
+        }
+      ],
+      "gridColumns": "grid-cols-3",
+      "title": "Catalysing interdisciplinary research to inform action in policy and practice"
+    },
+    "collaboration": {
+      "_type": "split-row",
+      "colorVariant": "default",
+      "padding": {
+        "_type": "section-padding",
+        "top": true
+      },
+      "splitColumns": [
+        {
+          "_key": "151a70c2b9a0",
+          "_type": "split-image",
+          "image": {
+            "_type": "image",
+            "alt": "Collaboration illustration",
+            "asset": {
+              "_ref": "image-57418cdb829659625ab81fb7a141aec3ba10dfa2-640x666-webp",
+              "_type": "reference"
+            }
+          }
+        },
+        {
+          "_key": "collaboration-content",
+          "_type": "split-content",
+          "body": [
+            {
+              "_key": "447ji",
+              "_type": "block",
+              "children": [
+                {
+                  "_key": "85qbuj",
+                  "_type": "span",
+                  "marks": [],
+                  "text": "Whether you're seeking expertise for a project, looking to join forces on research, or wanting to share innovative ideas, our Collaborate area is a meeting place for individuals and organizations from various fields to connect and collaborate."
+                }
+              ],
+              "markDefs": [],
+              "style": "normal"
+            }
+          ],
+          "link": {
+            "_type": "link",
+            "href": "/collaborate",
+            "title": "View Collaborate Area",
+            "variant": "primary"
+          },
+          "title": "Facilitating meaningful connection and collaboration"
+        }
+      ]
+    },
+    "globalAgenda": {
+      "_type": "split-row",
+      "padding": {
+        "_type": "section-padding",
+        "top": true
+      },
+      "splitColumns": [
+        {
+          "_key": "global-content",
+          "_type": "split-content",
+          "body": [
+            {
+              "_key": "eughz",
+              "_type": "block",
+              "children": [
+                {
+                  "_key": "dich7",
+                  "_type": "span",
+                  "marks": [],
+                  "text": "The Global Research and Action Agenda for climate change and mental health sets out priorities for research and action that have been developed from dialogues and consultation with 960+ experts in research, policy, practice, and lived experience in 90 countries."
+                }
+              ],
+              "markDefs": [],
+              "style": "normal"
+            }
+          ],
+          "link": {
+            "_type": "link",
+            "buttonVariant": {
+              "_type": "button-variant",
+              "size": "wide",
+              "variant": "default"
+            },
+            "href": "/research-and-action/global-agenda",
+            "title": "Read the Global Agenda"
+          },
+          "title": "Prioritizing Global Research and Action for Climate Change and Mental Health"
+        },
+        {
+          "_key": "6ea5e410db0f",
+          "_type": "split-image",
+          "image": {
+            "_type": "image",
+            "alt": "Global Agenda Cover",
+            "asset": {
+              "_ref": "image-7131d0c3058e42bdacb40588daaa07ca3bf11b5f-2083x1488-png",
+              "_type": "reference"
+            }
+          }
+        }
+      ]
+    },
+    "hasBlocks": null,
+    "heroWelcome": {
+      "_type": "hero-1",
+      "background": {
+        "_type": "background-option",
+        "ccmColor": "ccm-water",
+        "type": "none"
+      },
+      "body": [
+        {
+          "_key": "1e7887ca455f",
+          "_type": "block",
+          "children": [
+            {
+              "_key": "5131c98525f4",
+              "_type": "span",
+              "marks": [],
+              "text": "We are dedicated to fostering a connected global research community, all driven by a common goal: understanding and addressing the intricate relationship between our planet's changing climate and our mental health."
+            }
+          ],
+          "markDefs": [],
+          "style": "normal"
+        }
+      ],
+      "image": {
+        "_type": "image",
+        "alt": "Connecting Climate Minds Welcome Illustration",
+        "asset": {
+          "_ref": "image-41c12b03acf832baf1a7bc1dd79c3bcd9854dadf-3937x4096-webp",
+          "_type": "reference"
+        }
+      },
+      "imagePosition": "right",
+      "links": [
+        {
+          "_key": "hero-link-1",
+          "_type": "link",
+          "buttonVariant": {
+            "_type": "button-variant",
+            "size": "lg",
+            "variant": "default"
+          },
+          "href": "/research-and-action/all-outputs",
+          "target": false,
+          "title": "View our Research"
+        }
+      ],
+      "padding": {
+        "_type": "section-padding",
+        "top": true
+      },
+      "title": "Welcome to the Connected Climate Minds hub, where the worlds of mental health and climate change research unite."
+    },
+    "howToUse": {
+      "_type": "split-row",
+      "colorVariant": "background",
+      "padding": {
+        "_type": "section-padding",
+        "bottom": true,
+        "top": true
+      },
+      "splitColumns": [
+        {
+          "_key": "10bd5ac925c0",
+          "_type": "split-image",
+          "image": {
+            "_type": "image",
+            "alt": "Sign up to the hub illustration",
+            "asset": {
+              "_ref": "image-9596343a0722c7e501a5c63912b85e75a989ed3a-828x716-webp",
+              "_type": "reference"
+            }
+          }
+        },
+        {
+          "_key": "how-to-use-content",
+          "_type": "split-content",
+          "body": [
+            {
+              "_key": "gclhqq",
+              "_type": "block",
+              "children": [
+                {
+                  "_key": "jssqa",
+                  "_type": "span",
+                  "marks": [],
+                  "text": "Whether you want to delve into priority areas for research and action, seek inspiration and understanding from case studies, personal experiences and insights, learn from \"how to\" toolkits, or are looking to join our growing global community and form new connections, this hub is for you."
+                }
+              ],
+              "markDefs": [],
+              "style": "normal"
+            }
+          ],
+          "link": {
+            "_type": "link",
+            "href": "/sign-up",
+            "title": "Create an Account",
+            "variant": "primary"
+          },
+          "title": "Your collaborative space for ideas, dialogue, and connection"
+        }
+      ]
+    },
+    "language": "en",
+    "livedExperiences": {
+      "_type": "carousel-2",
+      "colorVariant": "accent",
+      "description": "Understanding and learning from lived experience is essential to navigating the relationship between mental health and climate change. Browse our library of lived experience insights shared by people across the globe, providing invaluable insights into impacts and solutions.",
+      "title": "Stories of grief, resilience, and hope"
+    },
+    "mentalHealthDefinition": {
+      "_type": "cta-1",
+      "body": [
+        {
+          "_key": "a2db434d2640",
+          "_type": "block",
+          "children": [
+            {
+              "_key": "d70b94905e68",
+              "_type": "span",
+              "marks": [],
+              "text": "Climate change, mental health, and their intersection are complex and wide-ranging fields, understood through a range of diverse perspectives, framings and terminologies.Mental health challenges (which encompass mental health conditions/illnesses) are defined in Connecting Climate Minds as thoughts, feelings, and behaviours that affect a person’s ability to function in one or more areas of life and often involve significant levels of psychological distress. Ways mental health could be affected by climate change include:"
+            }
+          ],
+          "markDefs": [],
+          "style": "normal"
+        },
+        {
+          "_key": "54ca717d08f6",
+          "_type": "block",
+          "children": [
+            {
+              "_key": "c79d5cb8c928",
+              "_type": "span",
+              "marks": [],
+              "text": "How climate change may lead to a worsening of pre-existing mental health problems"
+            }
+          ],
+          "level": 1,
+          "listItem": "bullet",
+          "markDefs": [],
+          "style": "normal"
+        },
+        {
+          "_key": "b0897064f4d6",
+          "_type": "block",
+          "children": [
+            {
+              "_key": "02145ccef401",
+              "_type": "span",
+              "marks": [],
+              "text": "How climate change may contribute to the prevalence or impact of existing mental health problems"
+            }
+          ],
+          "level": 1,
+          "listItem": "bullet",
+          "markDefs": [],
+          "style": "normal"
+        },
+        {
+          "_key": "f2450df848bb",
+          "_type": "block",
+          "children": [
+            {
+              "_key": "218cef97d8e7",
+              "_type": "span",
+              "marks": [],
+              "text": "How climate change may impact on treatment access or effectiveness for those with mental health problems"
+            }
+          ],
+          "level": 1,
+          "listItem": "bullet",
+          "markDefs": [],
+          "style": "normal"
+        },
+        {
+          "_key": "bbd22cb8a354",
+          "_type": "block",
+          "children": [
+            {
+              "_key": "9a57b6781d53",
+              "_type": "span",
+              "marks": [],
+              "text": "How climate change may lead to new mental health problems."
+            }
+          ],
+          "level": 1,
+          "listItem": "bullet",
+          "markDefs": [],
+          "style": "normal"
+        },
+        {
+          "_key": "086f86cda2fc",
+          "_type": "block",
+          "children": [
+            {
+              "_key": "24947b0e4206",
+              "_type": "span",
+              "marks": [],
+              "text": "However, we note that a diversity of perspectives were heard through Connecting Climate Minds, and we have sought to appropriately represent and reflect this in the project outputs."
+            }
+          ],
+          "markDefs": [],
+          "style": "normal"
+        }
+      ],
+      "padding": {
+        "_type": "section-padding",
+        "bottom": true,
+        "top": true
+      },
+      "sectionWidth": "default",
+      "stackAlign": "left",
+      "title": "What do we mean by mental health?"
+    },
+    "news": {
+      "_type": "grid-row",
+      "columns": [
+        {
+          "_key": "news-2",
+          "_type": "grid-news",
+          "newsPost": {
+            "_ref": "news-climate-distress-study",
+            "_type": "reference"
+          },
+          "showAuthor": true,
+          "showMetadata": true,
+          "showTags": true
+        },
+        {
+          "_key": "news-0",
+          "_type": "grid-news",
+          "newsPost": {
+            "_ref": "news-climate-distress-study",
+            "_type": "reference"
+          },
+          "showAuthor": true,
+          "showMetadata": true,
+          "showTags": true
+        },
+        {
+          "_key": "news-1",
+          "_type": "grid-news",
+          "newsPost": {
+            "_ref": "news-regional-dialogues",
+            "_type": "reference"
+          },
+          "showAuthor": true,
+          "showMetadata": true,
+          "showTags": true
+        }
+      ],
+      "description": [
+        {
+          "_key": "20o54t",
+          "_type": "block",
+          "children": [
+            {
+              "_key": "ce855w",
+              "_type": "span",
+              "marks": [],
+              "text": "Keeping you up-to-date with the latest developments in the intersection of mental health and climate change research, policy and practice."
+            }
+          ],
+          "markDefs": [],
+          "style": "normal"
+        }
+      ],
+      "gridColumns": "grid-cols-3",
+      "title": "Latest news in the field"
+    },
+    "partnerLogos": {
+      "_type": "logo-cloud-1",
+      "colorVariant": "default",
+      "description": "\nWe are a Wellcome funded project that brings together expertise across research, policy, practice, design, and lived experience from across the globe.",
+      "images": [
+        {
+          "_key": "70d4ffb85dae",
+          "_type": "image",
+          "alt": "Climate Cares Logo",
+          "asset": {
+            "_ref": "image-eda83dfa50044686af5c5460a7357193fdafe434-750x750-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "afef25f9e273",
+          "_type": "image",
+          "alt": "Red Cross/Crescent Climate Centre Logo ",
+          "asset": {
+            "_ref": "image-4d9d7a94f2c8f2dad9da4d47b702bc091a8795c6-750x750-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "2188a0b4bbae",
+          "_type": "image",
+          "alt": "University of Nigeria Logo",
+          "asset": {
+            "_ref": "image-11af89ad0f6b46dd87a02de8bd5709815561c12e-750x750-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "bf829e523c90",
+          "_type": "image",
+          "alt": "St. Luke's Medical Center Logo",
+          "asset": {
+            "_ref": "image-b98281c67c85a4ad37a1845fd11151112f091da9-750x750-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "2108cf7674a2",
+          "_type": "image",
+          "alt": "Force of Nature Logo",
+          "asset": {
+            "_ref": "image-a916d9a8bee47d6fc90074b1b63d2c976435ab49-750x750-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "8d33c4fab674",
+          "_type": "image",
+          "alt": "sustyvibes Logo",
+          "asset": {
+            "_ref": "image-74293faba6e6038a03b01b21d417b6284da694dc-750x750-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "6d35a8c8279c",
+          "_type": "image",
+          "alt": "Jordan Health Aid Society",
+          "asset": {
+            "_ref": "image-5efd81114e5949e05f8b5eecfbb48b7a6b9b1d18-384x281-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "fe50ad6676b7",
+          "_type": "image",
+          "alt": "Imperial College London Logo",
+          "asset": {
+            "_ref": "image-38d69bc1d7ab168e940dafa51abc4837d967d691-750x750-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "9aa79cd75037",
+          "_type": "image",
+          "alt": "Climate Mental Health Network Logo",
+          "asset": {
+            "_ref": "image-a7e6dc310b622f00ead8abddd65762ff80b1c104-750x750-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "49ebb18ff9ce",
+          "_type": "image",
+          "alt": "QCMHR Logo",
+          "asset": {
+            "_ref": "image-ab11d65d7b66f84578619c8b018a04fbc60559ca-750x549-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "de718f5d7379",
+          "_type": "image",
+          "alt": "Planetary health Alliance Logo",
+          "asset": {
+            "_ref": "image-6437b4ba6cb5b4f299f64692dc7806d2fceac7ef-750x549-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "02374391081e",
+          "_type": "image",
+          "alt": "Wellcome Logo",
+          "asset": {
+            "_ref": "image-b7e4d1e3b0a6c8f4db622ada4a03d2e3e1ad54b3-772x772-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "d54f66aec101",
+          "_type": "image",
+          "alt": "University of the West Indies Logo",
+          "asset": {
+            "_ref": "image-84a70c2c58245617e6dca99edfa23e273d4c1aba-750x750-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "976f6ebc55e9",
+          "_type": "image",
+          "alt": "BRAC Public Health Logo",
+          "asset": {
+            "_ref": "image-30b103b868e2d0ab9974a66c0cf03a8479b4a228-750x549-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "be7091a74edd",
+          "_type": "image",
+          "alt": "BRAC University Logo",
+          "asset": {
+            "_ref": "image-fc928150891e063f2f7cc221e4a82658b78cb046-750x549-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "4fd936a82097",
+          "_type": "image",
+          "alt": "Grantham Institute Logo",
+          "asset": {
+            "_ref": "image-689e390cba4a4a3c089eb0f65fe1d871a65e6b41-750x750-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "cf35dbab29de",
+          "_type": "image",
+          "alt": "University of Queensland Logo",
+          "asset": {
+            "_ref": "image-cdc11b432cc1729c2208ecfa720f210f9c8eda6f-750x549-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "133e54dcf271",
+          "_type": "image",
+          "alt": "Waman Wasi Logo",
+          "asset": {
+            "_ref": "image-b5294c3d34ea4dab9b3159a95d664ef180240c5a-772x772-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "7213f608535a",
+          "_type": "image",
+          "alt": "Institute of Global Health Innovation Logo",
+          "asset": {
+            "_ref": "image-3c59206099c46c53b85b61cf2d73730e6abec90c-750x750-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "af032a1109fd",
+          "_type": "image",
+          "alt": "IFRC Psychosocial Centre Logo",
+          "asset": {
+            "_ref": "image-f7d6a83272a69669d1fcc8f415b894879b7876c4-750x750-webp",
+            "_type": "reference"
+          }
+        }
+      ],
+      "layout": "marquee",
+      "padding": {
+        "_type": "section-padding",
+        "top": false
+      },
+      "title": "Who is involved"
+    },
+    "projectInfo": {
+      "_type": "split-row",
+      "colorVariant": "light",
+      "splitColumns": [
+        {
+          "_key": "618b9196c2ba",
+          "_type": "split-image",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-0316fdac42c8440a3ccd61ff5ca6d65582068426-640x603-webp",
+              "_type": "reference"
+            }
+          }
+        },
+        {
+          "_key": "project-info-content",
+          "_type": "split-content",
+          "body": [
+            {
+              "_key": "lrva9l",
+              "_type": "block",
+              "children": [
+                {
+                  "_key": "4lo00i",
+                  "_type": "span",
+                  "marks": [],
+                  "text": "Learn more about Wellcome's work in climate change and health and in mental health."
+                }
+              ],
+              "markDefs": [],
+              "style": "normal"
+            }
+          ],
+          "link": {
+            "_type": "link",
+            "href": "/about",
+            "title": "About Project"
+          },
+          "title": "Funded by Wellcome, hosted by Climate Cares Centre"
+        }
+      ]
+    },
+    "regionalCommunities": {
+      "_type": "grid-row",
+      "columns": [
+        {
+          "_key": "community-6",
+          "_type": "grid-card",
+          "excerpt": "Regional Community of Practice",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-55c6db4f9014a38d8f96aad25fbaa3295abc68e4-1920x1080-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/communities/sub-saharan-africa",
+            "title": "View Community"
+          },
+          "title": "Sub-Saharan Africa"
+        },
+        {
+          "_key": "community-4",
+          "_type": "grid-card",
+          "excerpt": "Regional Community of Practice",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-57cb29c17a2461ae75ee12f8427837d0ee0dabe7-1920x1080-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/communities/northern-africa-and-western-asia",
+            "title": "View Community"
+          },
+          "title": "Northern Africa and Western Asia"
+        },
+        {
+          "_key": "community-0",
+          "_type": "grid-card",
+          "excerpt": "Regional Community of Practice",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-4a3f03eb4bac43c6d93ce72a569d4de47637ccd4-1920x1080-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/communities/central-and-southern-asia",
+            "title": "View Community"
+          },
+          "title": "Central and Southern Asia"
+        },
+        {
+          "_key": "community-1",
+          "_type": "grid-card",
+          "excerpt": "Regional Community of Practice",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-82a8471785a1948de6dc2263076553c20ea83a8a-1920x1080-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/communities/eastern-and-south-eastern-asia",
+            "title": "View Community"
+          },
+          "title": "Eastern and South-Eastern Asia"
+        },
+        {
+          "_key": "community-3",
+          "_type": "grid-card",
+          "excerpt": "Regional Community of Practice",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-8f182169a67886cf95906ec92a3beb8ff792e6ae-1920x1080-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/communities/latin-america-and-the-caribbean",
+            "title": "View Community"
+          },
+          "title": "Latin America and the Caribbean"
+        },
+        {
+          "_key": "community-5",
+          "_type": "grid-card",
+          "excerpt": "Regional Community of Practice",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-e2ad835ed91c9e4296e1436fd8dd63d5d8ce5fcf-1920x1080-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/communities/oceania",
+            "title": "View Community"
+          },
+          "title": "Oceania"
+        },
+        {
+          "_key": "community-2",
+          "_type": "grid-card",
+          "excerpt": "Regional Community of Practice",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-3d248e796789c6d5cd9cb4af3dd45b915348f0f1-1920x1080-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/communities/europe-and-northern-america",
+            "title": "View Community"
+          },
+          "title": "Europe and Northern America"
+        }
+      ],
+      "description": [
+        {
+          "_key": "wm4f29",
+          "_type": "block",
+          "children": [
+            {
+              "_key": "u5y0m",
+              "_type": "span",
+              "marks": [],
+              "text": "Our 7 Regional Communities of Practice are at the heart of the Connecting Climate Minds Project, connecting people across countries, disciplines, sectors and experiences. They all bring their unique insights to a thriving community of practice in climate change and mental health research, that is deeply connected to and engages with lived experience needs, and linking out to policy and practice."
+            }
+          ],
+          "markDefs": [],
+          "style": "normal"
+        }
+      ],
+      "gridColumns": "grid-cols-3",
+      "title": "Regional communities driving global research"
+    }
+  },
+  {
+    "_id": "homepage-es",
+    "agendasModule": {
+      "_type": "grid-row",
+      "columns": [
+        {
+          "_key": "agenda-populations",
+          "_type": "grid-card",
+          "excerpt": "Agendas de Investigación y Acción creadas a través de diálogos con jóvenes, pequeños agricultores y pescadores, y comunidades indígenas.",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-de490fb701e91b0d0de14249760cc51e6a7e4577-3840x2160-png",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/research-and-action/regional-agendas",
+            "title": "Ver Agendas"
+          },
+          "title": "Agendas para poblaciones que enfrentan impactos amplificados en la salud mental climática"
+        },
+        {
+          "_key": "agenda-regional",
+          "_type": "grid-card",
+          "excerpt": "Las Agendas Regionales establecen prioridades alineadas e inclusivas para la investigación y la acción en siete regiones globales.",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-d3df9145f1cb93b5c4e63eb3e55c7fef63658053-3840x2160-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/research-and-action/regional-agendas",
+            "title": "Ver Agendas"
+          },
+          "title": "Agendas Regionales"
+        },
+        {
+          "_key": "31c451833956",
+          "_type": "grid-card",
+          "excerpt": "La Agenda Global de Investigación y Acción para el cambio climático y la salud mental establece prioridades para la investigación y la acción que se han desarrollado a partir de diálogos y consultas con más de 960 expertos en investigación, política, práctica y experiencia vivida en 90 países.",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-9058e7f003fba9d46c5ba03d0ff5e024ebae5ccd-3840x2160-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "buttonVariant": {
+              "_type": "button-variant",
+              "size": "default",
+              "stroke": "none",
+              "variant": "default"
+            },
+            "href": "/research-and-action/global-agenda",
+            "title": "Ver Agenda"
+          },
+          "title": "Agenda Global"
+        },
+        {
+          "_key": "impact-reports",
+          "_type": "grid-card",
+          "excerpt": "Los informes de impacto describen la diversidad demostrable y el impacto de las actividades y la colaboración fomentadas a través de Connecting Climate Minds.",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-3c17c3d51690e922513eb44e822cdc97f0013818-3840x2160-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/research-and-action/impact-reports",
+            "title": "Ver Informes de Impacto"
+          },
+          "title": "Informes de Impacto"
+        },
+        {
+          "_key": "toolkits",
+          "_type": "grid-card",
+          "excerpt": "Las guías prácticas son guías que ayudan a investigadores y actores de diversos orígenes a ingresar al campo del clima y la salud mental.",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-d964b7185e9e0c22a64706e64ba63bc26cab16d8-3840x2160-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/research-and-action/toolkits",
+            "title": "Ver Guías Prácticas"
+          },
+          "title": "Guías Prácticas"
+        },
+        {
+          "_key": "case-studies",
+          "_type": "grid-card",
+          "excerpt": "Los estudios de caso muestran investigaciones, intervenciones y políticas existentes con implicaciones para el nexo clima-salud mental.",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-2dfdaae1ebaa6b6dc990bbc9cd6e0761ac42b1ee-1920x1080-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/research-and-action/case-studies",
+            "title": "Ver Estudios de Caso"
+          },
+          "title": "Estudios de Caso"
+        }
+      ],
+      "description": [
+        {
+          "_key": "y6b47",
+          "_type": "block",
+          "children": [
+            {
+              "_key": "ois6x6",
+              "_type": "span",
+              "marks": [],
+              "text": "Explora nuestro rico repositorio de agendas de investigación y acción co-creadas, informes, estudios de caso, perspectivas de experiencia vivida y guías prácticas. Todos han sido diseñados para apoyar la colaboración entre disciplinas y muchas formas diferentes de experiencia y acelerar y alinear el creciente campo del cambio climático y la salud mental."
+            }
+          ],
+          "markDefs": [],
+          "style": "normal"
+        }
+      ],
+      "gridColumns": "grid-cols-3",
+      "title": "Catalizando la investigación interdisciplinaria para informar la acción en política y práctica"
+    },
+    "collaboration": {
+      "_type": "split-row",
+      "colorVariant": "default",
+      "padding": {
+        "_type": "section-padding",
+        "top": true
+      },
+      "splitColumns": [
+        {
+          "_key": "151a70c2b9a0",
+          "_type": "split-image",
+          "image": {
+            "_type": "image",
+            "alt": "Collaboration illustration",
+            "asset": {
+              "_ref": "image-57418cdb829659625ab81fb7a141aec3ba10dfa2-640x666-webp",
+              "_type": "reference"
+            }
+          }
+        },
+        {
+          "_key": "collaboration-content",
+          "_type": "split-content",
+          "body": [
+            {
+              "_key": "nv0ql3",
+              "_type": "block",
+              "children": [
+                {
+                  "_key": "7b3fd",
+                  "_type": "span",
+                  "marks": [],
+                  "text": "Ya sea que busques experiencia para un proyecto, quieras unir fuerzas en la investigación o desees compartir ideas innovadoras, nuestra área de Colaboración es un lugar de encuentro para individuos y organizaciones de diversos campos para conectarse y colaborar."
+                }
+              ],
+              "markDefs": [],
+              "style": "normal"
+            }
+          ],
+          "link": {
+            "_type": "link",
+            "href": "/collaborate",
+            "title": "Ver Área de Colaboración",
+            "variant": "primary"
+          },
+          "title": "Facilitando conexión y colaboración significativas"
+        }
+      ]
+    },
+    "globalAgenda": {
+      "_type": "split-row",
+      "padding": {
+        "_type": "section-padding",
+        "top": true
+      },
+      "splitColumns": [
+        {
+          "_key": "global-content",
+          "_type": "split-content",
+          "body": [
+            {
+              "_key": "u5b8ur",
+              "_type": "block",
+              "children": [
+                {
+                  "_key": "ajvsn",
+                  "_type": "span",
+                  "marks": [],
+                  "text": "La Agenda Global de Investigación y Acción para el cambio climático y la salud mental establece prioridades para la investigación y la acción que se han desarrollado a partir de diálogos y consultas con más de 960 expertos en investigación, política, práctica y experiencia vivida en 90 países."
+                }
+              ],
+              "markDefs": [],
+              "style": "normal"
+            }
+          ],
+          "link": {
+            "_type": "link",
+            "buttonVariant": {
+              "_type": "button-variant",
+              "size": "wide",
+              "variant": "default"
+            },
+            "href": "/research-and-action/global-agenda",
+            "title": "Leer la Agenda Global"
+          },
+          "title": "Priorizando la Investigación y Acción Global para el Cambio Climático y la Salud Mental"
+        },
+        {
+          "_key": "6ea5e410db0f",
+          "_type": "split-image",
+          "image": {
+            "_type": "image",
+            "alt": "Global Agenda Cover",
+            "asset": {
+              "_ref": "image-7131d0c3058e42bdacb40588daaa07ca3bf11b5f-2083x1488-png",
+              "_type": "reference"
+            }
+          }
+        }
+      ]
+    },
+    "hasBlocks": null,
+    "heroWelcome": {
+      "_type": "hero-1",
+      "background": {
+        "_type": "background-option",
+        "ccmColor": "ccm-water",
+        "type": "none"
+      },
+      "body": [
+        {
+          "_key": "hxsjuw",
+          "_type": "block",
+          "children": [
+            {
+              "_key": "sdpysp",
+              "_type": "span",
+              "marks": [],
+              "text": "Estamos dedicados a fomentar una comunidad de investigación global conectada, todos impulsados por un objetivo común: comprender y abordar la intrincada relación entre el clima cambiante de nuestro planeta y nuestra salud mental."
+            }
+          ],
+          "markDefs": [],
+          "style": "normal"
+        }
+      ],
+      "image": {
+        "_type": "image",
+        "alt": "Connecting Climate Minds Welcome Illustration",
+        "asset": {
+          "_ref": "image-41c12b03acf832baf1a7bc1dd79c3bcd9854dadf-3937x4096-webp",
+          "_type": "reference"
+        }
+      },
+      "imagePosition": "right",
+      "links": [
+        {
+          "_key": "hero-link-1",
+          "_type": "link",
+          "buttonVariant": {
+            "_type": "button-variant",
+            "size": "default",
+            "variant": "default"
+          },
+          "href": "/research-and-action/all-outputs",
+          "target": false,
+          "title": "Ver nuestra Investigación"
+        }
+      ],
+      "padding": {
+        "_type": "section-padding",
+        "top": true
+      },
+      "title": "Bienvenido al Hub de Connecting Climate Minds, donde los mundos de la investigación en salud mental y cambio climático se unen."
+    },
+    "howToUse": {
+      "_type": "split-row",
+      "colorVariant": "background",
+      "padding": {
+        "_type": "section-padding",
+        "bottom": true,
+        "top": true
+      },
+      "splitColumns": [
+        {
+          "_key": "10bd5ac925c0",
+          "_type": "split-image",
+          "image": {
+            "_type": "image",
+            "alt": "Sign up to the hub illustration",
+            "asset": {
+              "_ref": "image-9596343a0722c7e501a5c63912b85e75a989ed3a-828x716-webp",
+              "_type": "reference"
+            }
+          }
+        },
+        {
+          "_key": "how-to-use-content",
+          "_type": "split-content",
+          "body": [
+            {
+              "_key": "p8fbjl",
+              "_type": "block",
+              "children": [
+                {
+                  "_key": "5c7aq",
+                  "_type": "span",
+                  "marks": [],
+                  "text": "Ya sea que desees profundizar en las áreas prioritarias para la investigación y la acción, buscar inspiración y comprensión de estudios de caso, experiencias personales e ideas, aprender de las \"guías prácticas\", o estés buscando unirte a nuestra creciente comunidad global y formar nuevas conexiones, este hub es para ti."
+                }
+              ],
+              "markDefs": [],
+              "style": "normal"
+            }
+          ],
+          "link": {
+            "_type": "link",
+            "href": "/sign-up",
+            "title": "Crear una Cuenta",
+            "variant": "primary"
+          },
+          "title": "Tu espacio colaborativo para ideas, diálogo y conexión"
+        }
+      ]
+    },
+    "language": "es",
+    "livedExperiences": {
+      "_type": "carousel-2",
+      "colorVariant": "accent",
+      "description": "Comprender y aprender de la experiencia vivida es esencial para navegar la relación entre la salud mental y el cambio climático. Explora nuestra biblioteca de perspectivas de experiencia vivida compartidas por personas de todo el mundo, que brindan información invaluable sobre impactos y soluciones.",
+      "title": "Historias de dolor, resiliencia y esperanza"
+    },
+    "mentalHealthDefinition": {
+      "_type": "cta-1",
+      "body": [
+        {
+          "_key": "g3p2x5",
+          "_type": "block",
+          "children": [
+            {
+              "_key": "4la6oi",
+              "_type": "span",
+              "marks": [],
+              "text": "El cambio climático, la salud mental y su intersección son campos complejos y amplios, comprendidos a través de una gama de perspectivas, marcos y terminologías diversas. Los desafíos de salud mental (que abarcan condiciones/enfermedades de salud mental) se definen en Connecting Climate Minds como pensamientos, sentimientos y comportamientos que afectan la capacidad de una persona para funcionar en una o más áreas de la vida y a menudo involucran niveles significativos de angustia psicológica. Las formas en que la salud mental podría verse afectada por el cambio climático incluyen:"
+            }
+          ],
+          "markDefs": [],
+          "style": "normal"
+        },
+        {
+          "_key": "a03i2q",
+          "_type": "block",
+          "children": [
+            {
+              "_key": "v2yww",
+              "_type": "span",
+              "marks": [],
+              "text": "Cómo el cambio climático puede llevar a un empeoramiento de los problemas de salud mental preexistentes"
+            }
+          ],
+          "level": 1,
+          "listItem": "bullet",
+          "markDefs": [],
+          "style": "normal"
+        },
+        {
+          "_key": "0bi2bz",
+          "_type": "block",
+          "children": [
+            {
+              "_key": "qwilwa",
+              "_type": "span",
+              "marks": [],
+              "text": "Cómo el cambio climático puede contribuir a la prevalencia o impacto de problemas de salud mental existentes"
+            }
+          ],
+          "level": 1,
+          "listItem": "bullet",
+          "markDefs": [],
+          "style": "normal"
+        },
+        {
+          "_key": "n6k9b",
+          "_type": "block",
+          "children": [
+            {
+              "_key": "zszpl6",
+              "_type": "span",
+              "marks": [],
+              "text": "Cómo el cambio climático puede impactar en el acceso o efectividad del tratamiento para aquellos con problemas de salud mental"
+            }
+          ],
+          "level": 1,
+          "listItem": "bullet",
+          "markDefs": [],
+          "style": "normal"
+        },
+        {
+          "_key": "tj5xk",
+          "_type": "block",
+          "children": [
+            {
+              "_key": "o3eai",
+              "_type": "span",
+              "marks": [],
+              "text": "Cómo el cambio climático puede llevar a nuevos problemas de salud mental."
+            }
+          ],
+          "level": 1,
+          "listItem": "bullet",
+          "markDefs": [],
+          "style": "normal"
+        },
+        {
+          "_key": "jwlkyu",
+          "_type": "block",
+          "children": [
+            {
+              "_key": "omyp38",
+              "_type": "span",
+              "marks": [],
+              "text": "Sin embargo, notamos que se escuchó una diversidad de perspectivas a través de Connecting Climate Minds, y hemos buscado representar y reflejar esto apropiadamente en los resultados del proyecto."
+            }
+          ],
+          "markDefs": [],
+          "style": "normal"
+        }
+      ],
+      "padding": {
+        "_type": "section-padding",
+        "bottom": true,
+        "top": true
+      },
+      "sectionWidth": "default",
+      "stackAlign": "left",
+      "title": "¿Qué entendemos por salud mental?"
+    },
+    "news": {
+      "_type": "grid-row",
+      "columns": [
+        {
+          "_key": "news-0",
+          "_type": "grid-news",
+          "newsPost": {
+            "_ref": "news-climate-distress-study",
+            "_type": "reference"
+          },
+          "showAuthor": true,
+          "showMetadata": true,
+          "showTags": true
+        },
+        {
+          "_key": "news-1",
+          "_type": "grid-news",
+          "newsPost": {
+            "_ref": "news-regional-dialogues",
+            "_type": "reference"
+          },
+          "showAuthor": true,
+          "showMetadata": true,
+          "showTags": true
+        },
+        {
+          "_key": "news-2",
+          "_type": "grid-news",
+          "newsPost": {
+            "_ref": "news-cop28",
+            "_type": "reference"
+          },
+          "showAuthor": true,
+          "showMetadata": true,
+          "showTags": true
+        }
+      ],
+      "description": [
+        {
+          "_key": "vtwpkt",
+          "_type": "block",
+          "children": [
+            {
+              "_key": "cu65yc",
+              "_type": "span",
+              "marks": [],
+              "text": "Manteniéndote actualizado con los últimos desarrollos en la intersección de la salud mental y la investigación, política y práctica del cambio climático."
+            }
+          ],
+          "markDefs": [],
+          "style": "normal"
+        }
+      ],
+      "gridColumns": "grid-cols-3",
+      "title": "Últimas noticias del campo"
+    },
+    "partnerLogos": {
+      "_type": "logo-cloud-1",
+      "colorVariant": "default",
+      "description": "Somos un proyecto financiado por Wellcome que reúne experiencia en investigación, política, práctica, diseño y experiencia vivida de todo el mundo.",
+      "images": [
+        {
+          "_key": "70d4ffb85dae",
+          "_type": "image",
+          "alt": "Climate Cares Logo",
+          "asset": {
+            "_ref": "image-eda83dfa50044686af5c5460a7357193fdafe434-750x750-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "afef25f9e273",
+          "_type": "image",
+          "alt": "Red Cross/Crescent Climate Centre Logo ",
+          "asset": {
+            "_ref": "image-4d9d7a94f2c8f2dad9da4d47b702bc091a8795c6-750x750-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "2188a0b4bbae",
+          "_type": "image",
+          "alt": "University of Nigeria Logo",
+          "asset": {
+            "_ref": "image-11af89ad0f6b46dd87a02de8bd5709815561c12e-750x750-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "bf829e523c90",
+          "_type": "image",
+          "alt": "St. Luke's Medical Center Logo",
+          "asset": {
+            "_ref": "image-b98281c67c85a4ad37a1845fd11151112f091da9-750x750-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "2108cf7674a2",
+          "_type": "image",
+          "alt": "Force of Nature Logo",
+          "asset": {
+            "_ref": "image-a916d9a8bee47d6fc90074b1b63d2c976435ab49-750x750-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "8d33c4fab674",
+          "_type": "image",
+          "alt": "sustyvibes Logo",
+          "asset": {
+            "_ref": "image-74293faba6e6038a03b01b21d417b6284da694dc-750x750-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "6d35a8c8279c",
+          "_type": "image",
+          "alt": "Jordan Health Aid Society",
+          "asset": {
+            "_ref": "image-5efd81114e5949e05f8b5eecfbb48b7a6b9b1d18-384x281-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "fe50ad6676b7",
+          "_type": "image",
+          "alt": "Imperial College London Logo",
+          "asset": {
+            "_ref": "image-38d69bc1d7ab168e940dafa51abc4837d967d691-750x750-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "9aa79cd75037",
+          "_type": "image",
+          "alt": "Climate Mental Health Network Logo",
+          "asset": {
+            "_ref": "image-a7e6dc310b622f00ead8abddd65762ff80b1c104-750x750-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "49ebb18ff9ce",
+          "_type": "image",
+          "alt": "QCMHR Logo",
+          "asset": {
+            "_ref": "image-ab11d65d7b66f84578619c8b018a04fbc60559ca-750x549-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "de718f5d7379",
+          "_type": "image",
+          "alt": "Planetary health Alliance Logo",
+          "asset": {
+            "_ref": "image-6437b4ba6cb5b4f299f64692dc7806d2fceac7ef-750x549-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "02374391081e",
+          "_type": "image",
+          "alt": "Wellcome Logo",
+          "asset": {
+            "_ref": "image-b7e4d1e3b0a6c8f4db622ada4a03d2e3e1ad54b3-772x772-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "d54f66aec101",
+          "_type": "image",
+          "alt": "University of the West Indies Logo",
+          "asset": {
+            "_ref": "image-84a70c2c58245617e6dca99edfa23e273d4c1aba-750x750-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "976f6ebc55e9",
+          "_type": "image",
+          "alt": "BRAC Public Health Logo",
+          "asset": {
+            "_ref": "image-30b103b868e2d0ab9974a66c0cf03a8479b4a228-750x549-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "be7091a74edd",
+          "_type": "image",
+          "alt": "BRAC University Logo",
+          "asset": {
+            "_ref": "image-fc928150891e063f2f7cc221e4a82658b78cb046-750x549-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "4fd936a82097",
+          "_type": "image",
+          "alt": "Grantham Institute Logo",
+          "asset": {
+            "_ref": "image-689e390cba4a4a3c089eb0f65fe1d871a65e6b41-750x750-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "cf35dbab29de",
+          "_type": "image",
+          "alt": "University of Queensland Logo",
+          "asset": {
+            "_ref": "image-cdc11b432cc1729c2208ecfa720f210f9c8eda6f-750x549-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "133e54dcf271",
+          "_type": "image",
+          "alt": "Waman Wasi Logo",
+          "asset": {
+            "_ref": "image-b5294c3d34ea4dab9b3159a95d664ef180240c5a-772x772-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "7213f608535a",
+          "_type": "image",
+          "alt": "Institute of Global Health Innovation Logo",
+          "asset": {
+            "_ref": "image-3c59206099c46c53b85b61cf2d73730e6abec90c-750x750-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "af032a1109fd",
+          "_type": "image",
+          "alt": "IFRC Psychosocial Centre Logo",
+          "asset": {
+            "_ref": "image-f7d6a83272a69669d1fcc8f415b894879b7876c4-750x750-webp",
+            "_type": "reference"
+          }
+        }
+      ],
+      "layout": "marquee",
+      "padding": {
+        "_type": "section-padding",
+        "top": false
+      },
+      "title": "Quién está involucrado"
+    },
+    "projectInfo": {
+      "_type": "split-row",
+      "colorVariant": "light",
+      "splitColumns": [
+        {
+          "_key": "618b9196c2ba",
+          "_type": "split-image",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-0316fdac42c8440a3ccd61ff5ca6d65582068426-640x603-webp",
+              "_type": "reference"
+            }
+          }
+        },
+        {
+          "_key": "project-info-content",
+          "_type": "split-content",
+          "body": [
+            {
+              "_key": "ducx9q",
+              "_type": "block",
+              "children": [
+                {
+                  "_key": "1zj2uc",
+                  "_type": "span",
+                  "marks": [],
+                  "text": "Obtén más información sobre el trabajo de Wellcome en cambio climático y salud y en salud mental."
+                }
+              ],
+              "markDefs": [],
+              "style": "normal"
+            }
+          ],
+          "link": {
+            "_type": "link",
+            "href": "/about",
+            "title": "Acerca del Proyecto"
+          },
+          "title": "Financiado por Wellcome, alojado por Climate Cares Centre"
+        }
+      ]
+    },
+    "regionalCommunities": {
+      "_type": "grid-row",
+      "columns": [
+        {
+          "_key": "community-6",
+          "_type": "grid-card",
+          "excerpt": "Comunidad de Práctica Regional",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-55c6db4f9014a38d8f96aad25fbaa3295abc68e4-1920x1080-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/communities/sub-saharan-africa",
+            "title": "Ver Comunidad"
+          },
+          "title": "África Subsahariana"
+        },
+        {
+          "_key": "community-4",
+          "_type": "grid-card",
+          "excerpt": "Comunidad de Práctica Regional",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-57cb29c17a2461ae75ee12f8427837d0ee0dabe7-1920x1080-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/communities/northern-africa-and-western-asia",
+            "title": "Ver Comunidad"
+          },
+          "title": "Norte de África y Asia Occidental"
+        },
+        {
+          "_key": "community-0",
+          "_type": "grid-card",
+          "excerpt": "Comunidad de Práctica Regional",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-4a3f03eb4bac43c6d93ce72a569d4de47637ccd4-1920x1080-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/communities/central-and-southern-asia",
+            "title": "Ver Comunidad"
+          },
+          "title": "Asia Central y Meridional"
+        },
+        {
+          "_key": "community-1",
+          "_type": "grid-card",
+          "excerpt": "Comunidad de Práctica Regional",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-82a8471785a1948de6dc2263076553c20ea83a8a-1920x1080-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/communities/eastern-and-south-eastern-asia",
+            "title": "Ver Comunidad"
+          },
+          "title": "Asia Oriental y Sudoriental"
+        },
+        {
+          "_key": "community-3",
+          "_type": "grid-card",
+          "excerpt": "Comunidad de Práctica Regional",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-8f182169a67886cf95906ec92a3beb8ff792e6ae-1920x1080-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/communities/latin-america-and-the-caribbean",
+            "title": "Ver Comunidad"
+          },
+          "title": "América Latina y el Caribe"
+        },
+        {
+          "_key": "community-5",
+          "_type": "grid-card",
+          "excerpt": "Comunidad de Práctica Regional",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-e2ad835ed91c9e4296e1436fd8dd63d5d8ce5fcf-1920x1080-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/communities/oceania",
+            "title": "Ver Comunidad"
+          },
+          "title": "Oceanía"
+        },
+        {
+          "_key": "community-2",
+          "_type": "grid-card",
+          "excerpt": "Comunidad de Práctica Regional",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-3d248e796789c6d5cd9cb4af3dd45b915348f0f1-1920x1080-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/communities/europe-and-northern-america",
+            "title": "Ver Comunidad"
+          },
+          "title": "Europa y América del Norte"
+        }
+      ],
+      "description": [
+        {
+          "_key": "s0l39o",
+          "_type": "block",
+          "children": [
+            {
+              "_key": "apm544",
+              "_type": "span",
+              "marks": [],
+              "text": "Nuestras 7 Comunidades de Práctica Regionales están en el corazón del Proyecto Connecting Climate Minds, conectando personas en países, disciplinas, sectores y experiencias. Todas aportan sus perspectivas únicas a una próspera comunidad de práctica en investigación sobre cambio climático y salud mental, profundamente conectada y comprometida con las necesidades de la experiencia vivida, y vinculándose con la política y la práctica."
+            }
+          ],
+          "markDefs": [],
+          "style": "normal"
+        }
+      ],
+      "gridColumns": "grid-cols-3",
+      "title": "Comunidades regionales que impulsan la investigación global"
+    }
+  },
+  {
+    "_id": "homepage-fr",
+    "agendasModule": {
+      "_type": "grid-row",
+      "columns": [
+        {
+          "_key": "agenda-populations",
+          "_type": "grid-card",
+          "excerpt": "Agendas de Recherche et d'Action créés à travers des dialogues avec les jeunes, les petits agriculteurs et pêcheurs, et les communautés autochtones.",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-de490fb701e91b0d0de14249760cc51e6a7e4577-3840x2160-png",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/research-and-action/regional-agendas",
+            "title": "Voir les Agendas"
+          },
+          "title": "Agendas pour les populations confrontées à des impacts amplifiés sur la santé mentale climatique"
+        },
+        {
+          "_key": "agenda-regional",
+          "_type": "grid-card",
+          "excerpt": "Les Agendas Régionaux définissent des priorités alignées et inclusives pour la recherche et l'action dans sept régions mondiales.",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-d3df9145f1cb93b5c4e63eb3e55c7fef63658053-3840x2160-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/research-and-action/regional-agendas",
+            "title": "Voir les Agendas"
+          },
+          "title": "Agendas Régionaux"
+        },
+        {
+          "_key": "31c451833956",
+          "_type": "grid-card",
+          "excerpt": "L'Agenda Mondial de Recherche et d'Action pour le changement climatique et la santé mentale établit des priorités pour la recherche et l'action qui ont été développées à partir de dialogues et de consultations avec plus de 960 experts en recherche, politique, pratique et expérience vécue dans 90 pays.",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-9058e7f003fba9d46c5ba03d0ff5e024ebae5ccd-3840x2160-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "buttonVariant": {
+              "_type": "button-variant",
+              "size": "default",
+              "stroke": "none",
+              "variant": "default"
+            },
+            "href": "/research-and-action/global-agenda",
+            "title": "Voir l'Agenda"
+          },
+          "title": "Agenda Mondial"
+        },
+        {
+          "_key": "impact-reports",
+          "_type": "grid-card",
+          "excerpt": "Les rapports d'impact décrivent la diversité démontrable et l'impact des activités et de la collaboration favorisées par Connecting Climate Minds.",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-3c17c3d51690e922513eb44e822cdc97f0013818-3840x2160-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/research-and-action/impact-reports",
+            "title": "Voir les Rapports d'Impact"
+          },
+          "title": "Rapports d'Impact"
+        },
+        {
+          "_key": "toolkits",
+          "_type": "grid-card",
+          "excerpt": "Les guides pratiques sont des guides qui aident les chercheurs et les acteurs d'horizons divers à entrer dans le domaine du climat et de la santé mentale.",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-d964b7185e9e0c22a64706e64ba63bc26cab16d8-3840x2160-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/research-and-action/toolkits",
+            "title": "Voir les Guides Pratiques"
+          },
+          "title": "Guides Pratiques"
+        },
+        {
+          "_key": "case-studies",
+          "_type": "grid-card",
+          "excerpt": "Les études de cas mettent en valeur la recherche, les interventions et les politiques existantes ayant des implications pour le lien climat-santé mentale.",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-2dfdaae1ebaa6b6dc990bbc9cd6e0761ac42b1ee-1920x1080-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/research-and-action/case-studies",
+            "title": "Voir les Études de Cas"
+          },
+          "title": "Études de Cas"
+        }
+      ],
+      "description": [
+        {
+          "_key": "ulfwz",
+          "_type": "block",
+          "children": [
+            {
+              "_key": "z3rufs",
+              "_type": "span",
+              "marks": [],
+              "text": "Explorez notre riche référentiel d'agendas de recherche et d'action co-créés, de rapports, d'études de cas, d'aperçus d'expérience vécue et de guides pratiques. Tous ont été conçus pour soutenir la collaboration entre disciplines et de nombreuses formes différentes d'expertise et accélérer et aligner le domaine croissant du changement climatique et de la santé mentale."
+            }
+          ],
+          "markDefs": [],
+          "style": "normal"
+        }
+      ],
+      "gridColumns": "grid-cols-3",
+      "title": "Catalyser la recherche interdisciplinaire pour éclairer l'action en matière de politique et de pratique"
+    },
+    "collaboration": {
+      "_type": "split-row",
+      "colorVariant": "default",
+      "padding": {
+        "_type": "section-padding",
+        "top": true
+      },
+      "splitColumns": [
+        {
+          "_key": "151a70c2b9a0",
+          "_type": "split-image",
+          "image": {
+            "_type": "image",
+            "alt": "Collaboration illustration",
+            "asset": {
+              "_ref": "image-57418cdb829659625ab81fb7a141aec3ba10dfa2-640x666-webp",
+              "_type": "reference"
+            }
+          }
+        },
+        {
+          "_key": "collaboration-content",
+          "_type": "split-content",
+          "body": [
+            {
+              "_key": "e7091g",
+              "_type": "block",
+              "children": [
+                {
+                  "_key": "6vohdf",
+                  "_type": "span",
+                  "marks": [],
+                  "text": "Que vous recherchiez une expertise pour un projet, cherchiez à unir vos forces dans la recherche ou souhaitiez partager des idées innovantes, notre espace Collaboration est un lieu de rencontre pour les individus et les organisations de divers domaines pour se connecter et collaborer."
+                }
+              ],
+              "markDefs": [],
+              "style": "normal"
+            }
+          ],
+          "link": {
+            "_type": "link",
+            "href": "/collaborate",
+            "title": "Voir l'Espace Collaboration",
+            "variant": "primary"
+          },
+          "title": "Faciliter une connexion et une collaboration significatives"
+        }
+      ]
+    },
+    "globalAgenda": {
+      "_type": "split-row",
+      "padding": {
+        "_type": "section-padding",
+        "top": true
+      },
+      "splitColumns": [
+        {
+          "_key": "global-content",
+          "_type": "split-content",
+          "body": [
+            {
+              "_key": "6bilnq",
+              "_type": "block",
+              "children": [
+                {
+                  "_key": "orm8h",
+                  "_type": "span",
+                  "marks": [],
+                  "text": "L'Agenda Mondial de Recherche et d'Action pour le changement climatique et la santé mentale établit des priorités pour la recherche et l'action qui ont été développées à partir de dialogues et de consultations avec plus de 960 experts en recherche, politique, pratique et expérience vécue dans 90 pays."
+                }
+              ],
+              "markDefs": [],
+              "style": "normal"
+            }
+          ],
+          "link": {
+            "_type": "link",
+            "buttonVariant": {
+              "_type": "button-variant",
+              "size": "wide",
+              "variant": "default"
+            },
+            "href": "/research-and-action/global-agenda",
+            "title": "Lire l'Agenda Mondial"
+          },
+          "title": "Prioriser la Recherche et l'Action Mondiale pour le Changement Climatique et la Santé Mentale"
+        },
+        {
+          "_key": "6ea5e410db0f",
+          "_type": "split-image",
+          "image": {
+            "_type": "image",
+            "alt": "Global Agenda Cover",
+            "asset": {
+              "_ref": "image-7131d0c3058e42bdacb40588daaa07ca3bf11b5f-2083x1488-png",
+              "_type": "reference"
+            }
+          }
+        }
+      ]
+    },
+    "hasBlocks": null,
+    "heroWelcome": {
+      "_type": "hero-1",
+      "background": {
+        "_type": "background-option",
+        "ccmColor": "ccm-water",
+        "type": "none"
+      },
+      "body": [
+        {
+          "_key": "0wyeop",
+          "_type": "block",
+          "children": [
+            {
+              "_key": "4s63he",
+              "_type": "span",
+              "marks": [],
+              "text": "Nous sommes dédiés à favoriser une communauté de recherche mondiale connectée, tous animés par un objectif commun : comprendre et aborder la relation complexe entre le climat changeant de notre planète et notre santé mentale."
+            }
+          ],
+          "markDefs": [],
+          "style": "normal"
+        }
+      ],
+      "image": {
+        "_type": "image",
+        "alt": "Connecting Climate Minds Welcome Illustration",
+        "asset": {
+          "_ref": "image-41c12b03acf832baf1a7bc1dd79c3bcd9854dadf-3937x4096-webp",
+          "_type": "reference"
+        }
+      },
+      "imagePosition": "right",
+      "links": [
+        {
+          "_key": "hero-link-1",
+          "_type": "link",
+          "buttonVariant": {
+            "_type": "button-variant",
+            "size": "default",
+            "variant": "default"
+          },
+          "href": "/research-and-action/all-outputs",
+          "target": false,
+          "title": "Voir notre Recherche"
+        }
+      ],
+      "padding": {
+        "_type": "section-padding",
+        "top": true
+      },
+      "title": "Bienvenue au Hub Connecting Climate Minds, où les mondes de la recherche en santé mentale et en changement climatique s'unissent."
+    },
+    "howToUse": {
+      "_type": "split-row",
+      "colorVariant": "background",
+      "padding": {
+        "_type": "section-padding",
+        "bottom": true,
+        "top": true
+      },
+      "splitColumns": [
+        {
+          "_key": "10bd5ac925c0",
+          "_type": "split-image",
+          "image": {
+            "_type": "image",
+            "alt": "Sign up to the hub illustration",
+            "asset": {
+              "_ref": "image-9596343a0722c7e501a5c63912b85e75a989ed3a-828x716-webp",
+              "_type": "reference"
+            }
+          }
+        },
+        {
+          "_key": "how-to-use-content",
+          "_type": "split-content",
+          "body": [
+            {
+              "_key": "u0yuzo",
+              "_type": "block",
+              "children": [
+                {
+                  "_key": "nyyiq",
+                  "_type": "span",
+                  "marks": [],
+                  "text": "Que vous souhaitiez approfondir les domaines prioritaires pour la recherche et l'action, chercher l'inspiration et la compréhension à partir d'études de cas, d'expériences personnelles et d'idées, apprendre des \"guides pratiques\", ou chercher à rejoindre notre communauté mondiale croissante et à former de nouvelles connexions, ce hub est pour vous."
+                }
+              ],
+              "markDefs": [],
+              "style": "normal"
+            }
+          ],
+          "link": {
+            "_type": "link",
+            "href": "/sign-up",
+            "title": "Créer un Compte",
+            "variant": "primary"
+          },
+          "title": "Votre espace collaboratif pour les idées, le dialogue et la connexion"
+        }
+      ]
+    },
+    "language": "fr",
+    "livedExperiences": {
+      "_type": "carousel-2",
+      "colorVariant": "accent",
+      "description": "Comprendre et apprendre de l'expérience vécue est essentiel pour naviguer la relation entre la santé mentale et le changement climatique. Parcourez notre bibliothèque d'aperçus d'expérience vécue partagés par des personnes du monde entier, fournissant des informations inestimables sur les impacts et les solutions.",
+      "title": "Histoires de deuil, de résilience et d'espoir"
+    },
+    "mentalHealthDefinition": {
+      "_type": "cta-1",
+      "body": [
+        {
+          "_key": "7fohv8",
+          "_type": "block",
+          "children": [
+            {
+              "_key": "bexls",
+              "_type": "span",
+              "marks": [],
+              "text": "Le changement climatique, la santé mentale et leur intersection sont des domaines complexes et vastes, compris à travers une gamme de perspectives, de cadrages et de terminologies diverses. Les défis de santé mentale (qui englobent les conditions/maladies de santé mentale) sont définis dans Connecting Climate Minds comme des pensées, des sentiments et des comportements qui affectent la capacité d'une personne à fonctionner dans un ou plusieurs domaines de la vie et impliquent souvent des niveaux significatifs de détresse psychologique. Les façons dont la santé mentale pourrait être affectée par le changement climatique incluent :"
+            }
+          ],
+          "markDefs": [],
+          "style": "normal"
+        },
+        {
+          "_key": "x2n0ui",
+          "_type": "block",
+          "children": [
+            {
+              "_key": "f7xfum",
+              "_type": "span",
+              "marks": [],
+              "text": "Comment le changement climatique peut entraîner une aggravation des problèmes de santé mentale préexistants"
+            }
+          ],
+          "level": 1,
+          "listItem": "bullet",
+          "markDefs": [],
+          "style": "normal"
+        },
+        {
+          "_key": "6b02j",
+          "_type": "block",
+          "children": [
+            {
+              "_key": "1j3dq",
+              "_type": "span",
+              "marks": [],
+              "text": "Comment le changement climatique peut contribuer à la prévalence ou à l'impact des problèmes de santé mentale existants"
+            }
+          ],
+          "level": 1,
+          "listItem": "bullet",
+          "markDefs": [],
+          "style": "normal"
+        },
+        {
+          "_key": "x7wszk",
+          "_type": "block",
+          "children": [
+            {
+              "_key": "9t9h79",
+              "_type": "span",
+              "marks": [],
+              "text": "Comment le changement climatique peut avoir un impact sur l'accès ou l'efficacité du traitement pour ceux qui ont des problèmes de santé mentale"
+            }
+          ],
+          "level": 1,
+          "listItem": "bullet",
+          "markDefs": [],
+          "style": "normal"
+        },
+        {
+          "_key": "3n0a8",
+          "_type": "block",
+          "children": [
+            {
+              "_key": "a9wk4w",
+              "_type": "span",
+              "marks": [],
+              "text": "Comment le changement climatique peut conduire à de nouveaux problèmes de santé mentale."
+            }
+          ],
+          "level": 1,
+          "listItem": "bullet",
+          "markDefs": [],
+          "style": "normal"
+        },
+        {
+          "_key": "uapujm",
+          "_type": "block",
+          "children": [
+            {
+              "_key": "32xrpv",
+              "_type": "span",
+              "marks": [],
+              "text": "Cependant, nous notons qu'une diversité de perspectives a été entendue à travers Connecting Climate Minds, et nous avons cherché à représenter et à refléter cela de manière appropriée dans les résultats du projet."
+            }
+          ],
+          "markDefs": [],
+          "style": "normal"
+        }
+      ],
+      "padding": {
+        "_type": "section-padding",
+        "bottom": true,
+        "top": true
+      },
+      "sectionWidth": "default",
+      "stackAlign": "left",
+      "title": "Que voulons-nous dire par santé mentale ?"
+    },
+    "news": {
+      "_type": "grid-row",
+      "columns": [
+        {
+          "_key": "news-0",
+          "_type": "grid-news",
+          "newsPost": {
+            "_ref": "news-climate-distress-study",
+            "_type": "reference"
+          },
+          "showAuthor": true,
+          "showMetadata": true,
+          "showTags": true
+        },
+        {
+          "_key": "news-1",
+          "_type": "grid-news",
+          "newsPost": {
+            "_ref": "news-regional-dialogues",
+            "_type": "reference"
+          },
+          "showAuthor": true,
+          "showMetadata": true,
+          "showTags": true
+        },
+        {
+          "_key": "news-2",
+          "_type": "grid-news",
+          "newsPost": {
+            "_ref": "news-cop28",
+            "_type": "reference"
+          },
+          "showAuthor": true,
+          "showMetadata": true,
+          "showTags": true
+        }
+      ],
+      "description": [
+        {
+          "_key": "6tmt72",
+          "_type": "block",
+          "children": [
+            {
+              "_key": "10qco",
+              "_type": "span",
+              "marks": [],
+              "text": "Vous tenir au courant des derniers développements à l'intersection de la recherche, de la politique et de la pratique en matière de santé mentale et de changement climatique."
+            }
+          ],
+          "markDefs": [],
+          "style": "normal"
+        }
+      ],
+      "gridColumns": "grid-cols-3",
+      "title": "Dernières nouvelles du domaine"
+    },
+    "partnerLogos": {
+      "_type": "logo-cloud-1",
+      "colorVariant": "default",
+      "description": "Nous sommes un projet financé par Wellcome qui rassemble une expertise en recherche, politique, pratique, conception et expérience vécue du monde entier.",
+      "images": [
+        {
+          "_key": "70d4ffb85dae",
+          "_type": "image",
+          "alt": "Climate Cares Logo",
+          "asset": {
+            "_ref": "image-eda83dfa50044686af5c5460a7357193fdafe434-750x750-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "afef25f9e273",
+          "_type": "image",
+          "alt": "Red Cross/Crescent Climate Centre Logo ",
+          "asset": {
+            "_ref": "image-4d9d7a94f2c8f2dad9da4d47b702bc091a8795c6-750x750-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "2188a0b4bbae",
+          "_type": "image",
+          "alt": "University of Nigeria Logo",
+          "asset": {
+            "_ref": "image-11af89ad0f6b46dd87a02de8bd5709815561c12e-750x750-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "bf829e523c90",
+          "_type": "image",
+          "alt": "St. Luke's Medical Center Logo",
+          "asset": {
+            "_ref": "image-b98281c67c85a4ad37a1845fd11151112f091da9-750x750-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "2108cf7674a2",
+          "_type": "image",
+          "alt": "Force of Nature Logo",
+          "asset": {
+            "_ref": "image-a916d9a8bee47d6fc90074b1b63d2c976435ab49-750x750-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "8d33c4fab674",
+          "_type": "image",
+          "alt": "sustyvibes Logo",
+          "asset": {
+            "_ref": "image-74293faba6e6038a03b01b21d417b6284da694dc-750x750-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "6d35a8c8279c",
+          "_type": "image",
+          "alt": "Jordan Health Aid Society",
+          "asset": {
+            "_ref": "image-5efd81114e5949e05f8b5eecfbb48b7a6b9b1d18-384x281-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "fe50ad6676b7",
+          "_type": "image",
+          "alt": "Imperial College London Logo",
+          "asset": {
+            "_ref": "image-38d69bc1d7ab168e940dafa51abc4837d967d691-750x750-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "9aa79cd75037",
+          "_type": "image",
+          "alt": "Climate Mental Health Network Logo",
+          "asset": {
+            "_ref": "image-a7e6dc310b622f00ead8abddd65762ff80b1c104-750x750-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "49ebb18ff9ce",
+          "_type": "image",
+          "alt": "QCMHR Logo",
+          "asset": {
+            "_ref": "image-ab11d65d7b66f84578619c8b018a04fbc60559ca-750x549-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "de718f5d7379",
+          "_type": "image",
+          "alt": "Planetary health Alliance Logo",
+          "asset": {
+            "_ref": "image-6437b4ba6cb5b4f299f64692dc7806d2fceac7ef-750x549-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "02374391081e",
+          "_type": "image",
+          "alt": "Wellcome Logo",
+          "asset": {
+            "_ref": "image-b7e4d1e3b0a6c8f4db622ada4a03d2e3e1ad54b3-772x772-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "d54f66aec101",
+          "_type": "image",
+          "alt": "University of the West Indies Logo",
+          "asset": {
+            "_ref": "image-84a70c2c58245617e6dca99edfa23e273d4c1aba-750x750-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "976f6ebc55e9",
+          "_type": "image",
+          "alt": "BRAC Public Health Logo",
+          "asset": {
+            "_ref": "image-30b103b868e2d0ab9974a66c0cf03a8479b4a228-750x549-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "be7091a74edd",
+          "_type": "image",
+          "alt": "BRAC University Logo",
+          "asset": {
+            "_ref": "image-fc928150891e063f2f7cc221e4a82658b78cb046-750x549-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "4fd936a82097",
+          "_type": "image",
+          "alt": "Grantham Institute Logo",
+          "asset": {
+            "_ref": "image-689e390cba4a4a3c089eb0f65fe1d871a65e6b41-750x750-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "cf35dbab29de",
+          "_type": "image",
+          "alt": "University of Queensland Logo",
+          "asset": {
+            "_ref": "image-cdc11b432cc1729c2208ecfa720f210f9c8eda6f-750x549-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "133e54dcf271",
+          "_type": "image",
+          "alt": "Waman Wasi Logo",
+          "asset": {
+            "_ref": "image-b5294c3d34ea4dab9b3159a95d664ef180240c5a-772x772-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "7213f608535a",
+          "_type": "image",
+          "alt": "Institute of Global Health Innovation Logo",
+          "asset": {
+            "_ref": "image-3c59206099c46c53b85b61cf2d73730e6abec90c-750x750-webp",
+            "_type": "reference"
+          }
+        },
+        {
+          "_key": "af032a1109fd",
+          "_type": "image",
+          "alt": "IFRC Psychosocial Centre Logo",
+          "asset": {
+            "_ref": "image-f7d6a83272a69669d1fcc8f415b894879b7876c4-750x750-webp",
+            "_type": "reference"
+          }
+        }
+      ],
+      "layout": "marquee",
+      "padding": {
+        "_type": "section-padding",
+        "top": false
+      },
+      "title": "Qui est impliqué"
+    },
+    "projectInfo": {
+      "_type": "split-row",
+      "colorVariant": "light",
+      "splitColumns": [
+        {
+          "_key": "618b9196c2ba",
+          "_type": "split-image",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-0316fdac42c8440a3ccd61ff5ca6d65582068426-640x603-webp",
+              "_type": "reference"
+            }
+          }
+        },
+        {
+          "_key": "project-info-content",
+          "_type": "split-content",
+          "body": [
+            {
+              "_key": "sca1rq",
+              "_type": "block",
+              "children": [
+                {
+                  "_key": "py8w8",
+                  "_type": "span",
+                  "marks": [],
+                  "text": "En savoir plus sur le travail de Wellcome sur le changement climatique et la santé et sur la santé mentale."
+                }
+              ],
+              "markDefs": [],
+              "style": "normal"
+            }
+          ],
+          "link": {
+            "_type": "link",
+            "href": "/about",
+            "title": "À Propos du Projet"
+          },
+          "title": "Financé par Wellcome, hébergé par Climate Cares Centre"
+        }
+      ]
+    },
+    "regionalCommunities": {
+      "_type": "grid-row",
+      "columns": [
+        {
+          "_key": "community-6",
+          "_type": "grid-card",
+          "excerpt": "Communauté de Pratique Régionale",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-55c6db4f9014a38d8f96aad25fbaa3295abc68e4-1920x1080-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/communities/sub-saharan-africa",
+            "title": "Voir la Communauté"
+          },
+          "title": "Afrique Subsaharienne"
+        },
+        {
+          "_key": "community-4",
+          "_type": "grid-card",
+          "excerpt": "Communauté de Pratique Régionale",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-57cb29c17a2461ae75ee12f8427837d0ee0dabe7-1920x1080-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/communities/northern-africa-and-western-asia",
+            "title": "Voir la Communauté"
+          },
+          "title": "Afrique du Nord et Asie Occidentale"
+        },
+        {
+          "_key": "community-0",
+          "_type": "grid-card",
+          "excerpt": "Communauté de Pratique Régionale",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-4a3f03eb4bac43c6d93ce72a569d4de47637ccd4-1920x1080-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/communities/central-and-southern-asia",
+            "title": "Voir la Communauté"
+          },
+          "title": "Asie Centrale et Méridionale"
+        },
+        {
+          "_key": "community-1",
+          "_type": "grid-card",
+          "excerpt": "Communauté de Pratique Régionale",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-82a8471785a1948de6dc2263076553c20ea83a8a-1920x1080-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/communities/eastern-and-south-eastern-asia",
+            "title": "Voir la Communauté"
+          },
+          "title": "Asie de l'Est et du Sud-Est"
+        },
+        {
+          "_key": "community-3",
+          "_type": "grid-card",
+          "excerpt": "Communauté de Pratique Régionale",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-8f182169a67886cf95906ec92a3beb8ff792e6ae-1920x1080-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/communities/latin-america-and-the-caribbean",
+            "title": "Voir la Communauté"
+          },
+          "title": "Amérique Latine et Caraïbes"
+        },
+        {
+          "_key": "community-5",
+          "_type": "grid-card",
+          "excerpt": "Communauté de Pratique Régionale",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-e2ad835ed91c9e4296e1436fd8dd63d5d8ce5fcf-1920x1080-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/communities/oceania",
+            "title": "Voir la Communauté"
+          },
+          "title": "Océanie"
+        },
+        {
+          "_key": "community-2",
+          "_type": "grid-card",
+          "excerpt": "Communauté de Pratique Régionale",
+          "image": {
+            "_type": "image",
+            "asset": {
+              "_ref": "image-3d248e796789c6d5cd9cb4af3dd45b915348f0f1-1920x1080-webp",
+              "_type": "reference"
+            }
+          },
+          "link": {
+            "_type": "link",
+            "href": "/communities/europe-and-northern-america",
+            "title": "Voir la Communauté"
+          },
+          "title": "Europe et Amérique du Nord"
+        }
+      ],
+      "description": [
+        {
+          "_key": "p9khye",
+          "_type": "block",
+          "children": [
+            {
+              "_key": "jn749q",
+              "_type": "span",
+              "marks": [],
+              "text": "Nos 7 Communautés de Pratique Régionales sont au cœur du Projet Connecting Climate Minds, reliant les personnes à travers les pays, les disciplines, les secteurs et les expériences. Toutes apportent leurs perspectives uniques à une communauté de pratique florissante dans la recherche sur le changement climatique et la santé mentale, profondément connectée et engagée avec les besoins de l'expérience vécue, et en lien avec la politique et la pratique."
+            }
+          ],
+          "markDefs": [],
+          "style": "normal"
+        }
+      ],
+      "gridColumns": "grid-cols-3",
+      "title": "Communautés régionales pilotant la recherche mondiale"
+    }
+  }
+]

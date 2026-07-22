@@ -1,0 +1,145 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - list [ref=e7]:
+          - listitem [ref=e8]:
+            - link "Go to homepage" [ref=e9] [cursor=pointer]:
+              - /url: /
+              - img "Connecting Climate Minds Logo" [ref=e10]
+        - button "Search... ⌘K" [ref=e12]:
+          - img [ref=e13]
+          - generic [ref=e16]: Search...
+          - generic [ref=e17]: ⌘K
+      - generic [ref=e18]:
+        - generic [ref=e19]:
+          - generic [ref=e20]: Discover
+          - list [ref=e21]:
+            - listitem [ref=e22]:
+              - link "Atlas & Explore" [ref=e23] [cursor=pointer]:
+                - /url: /en/atlas
+                - img [ref=e24]
+                - generic [ref=e27]: Atlas & Explore
+            - listitem [ref=e28]:
+              - button "Research & Action" [ref=e29]:
+                - img [ref=e30]
+                - generic [ref=e32]: Research & Action
+                - img [ref=e33]
+            - listitem [ref=e35]:
+              - link "News & Updates" [ref=e36] [cursor=pointer]:
+                - /url: /en/news
+                - img [ref=e37]
+                - generic [ref=e40]: News & Updates
+            - listitem [ref=e41]:
+              - link "Lived experiences" [ref=e42] [cursor=pointer]:
+                - /url: /en/lived-experiences
+                - img [ref=e43]
+                - generic [ref=e45]: Lived experiences
+            - listitem [ref=e46]:
+              - link "Case studies" [ref=e47] [cursor=pointer]:
+                - /url: /en/research-and-action/case-studies
+                - img [ref=e48]
+                - generic [ref=e51]: Case studies
+        - generic [ref=e52]:
+          - generic [ref=e53]: Collaborate
+          - list [ref=e54]:
+            - listitem [ref=e55]:
+              - button "Regional Communities" [ref=e56]:
+                - img [ref=e57]
+                - generic [ref=e60]: Regional Communities
+                - img [ref=e61]
+            - listitem [ref=e63]:
+              - link "Find people" [ref=e64] [cursor=pointer]:
+                - /url: /en/collaborate
+                - img [ref=e65]
+                - generic [ref=e70]: Find people
+            - listitem [ref=e71]:
+              - link "Start or find a project" [ref=e72] [cursor=pointer]:
+                - /url: /en/collaborations
+                - img [ref=e73]
+                - generic [ref=e75]: Start or find a project
+        - list [ref=e78]:
+          - listitem [ref=e79]:
+            - link "About" [ref=e80] [cursor=pointer]:
+              - /url: /about
+              - img [ref=e81]
+              - generic [ref=e83]: About
+          - listitem [ref=e84]:
+            - link "Feedback" [ref=e85] [cursor=pointer]:
+              - /url: /feedback
+              - img [ref=e86]
+              - generic [ref=e88]: Feedback
+      - list [ref=e91]:
+        - listitem [ref=e92]:
+          - button "English" [ref=e93]:
+            - generic [ref=e95]: English
+            - img [ref=e96]
+    - main [ref=e100]:
+      - button "Toggle Sidebar" [ref=e103]:
+        - img
+        - generic [ref=e104]: Toggle Sidebar
+      - main [ref=e106]:
+        - generic [ref=e107]:
+          - generic [ref=e109]:
+            - button "The best project" [ref=e110]
+            - generic [ref=e111]: Members only
+          - generic [ref=e112]:
+            - complementary [ref=e113]:
+              - navigation [ref=e114]:
+                - button "Overview" [ref=e115]:
+                  - img [ref=e116]
+                  - generic [ref=e121]: Overview
+                - button "Outputs 0" [ref=e122]:
+                  - img [ref=e123]
+                  - generic [ref=e127]: Outputs
+                  - generic [ref=e128]: "0"
+                - button "Plan" [ref=e129]:
+                  - img [ref=e130]
+                  - generic [ref=e133]: Plan
+                - button "Docs" [ref=e134]:
+                  - img [ref=e135]
+                  - generic [ref=e137]: Docs
+                - button "Threads 2" [ref=e138]:
+                  - img [ref=e139]
+                  - generic [ref=e142]: Threads
+                  - generic [ref=e143]: "2"
+                - button "Files 0" [ref=e144]:
+                  - img [ref=e145]
+                  - generic [ref=e148]: Files
+                  - generic [ref=e149]: "0"
+                - button "Media 0" [ref=e150]:
+                  - img [ref=e151]
+                  - generic [ref=e153]: Media
+                  - generic [ref=e154]: "0"
+                - button "Members 1" [ref=e155]:
+                  - img [ref=e156]
+                  - generic [ref=e161]: Members
+                  - generic [ref=e162]: "1"
+            - generic [ref=e164]:
+              - button "A project that is the very best" [ref=e165]
+              - generic [ref=e166]:
+                - generic [ref=e167]:
+                  - generic [ref=e171]:
+                    - heading "Outputs" [level=2] [ref=e172]
+                    - paragraph [ref=e173]: The hub content this workspace is producing.
+                  - button "+ Add an output" [ref=e175]
+                - generic [ref=e176]:
+                  - generic [ref=e177]:
+                    - heading "Plan · 0/1" [level=2] [ref=e182]
+                    - generic [ref=e184]:
+                      - generic [ref=e185]:
+                        - generic [ref=e186]: Stage 1
+                        - generic [ref=e187]: 0/1
+                      - generic [ref=e188]:
+                        - generic [ref=e189]: stage 2
+                        - generic [ref=e190]: 0/0
+                  - generic [ref=e191]:
+                    - heading "Overview" [level=2] [ref=e196]
+                    - generic [ref=e197]:
+                      - generic [ref=e198]: Doc "Untitled" updated
+                      - generic [ref=e199]: Doc "Untitled" updated
+                    - button "1 Members →" [ref=e200]
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e206] [cursor=pointer]:
+    - img [ref=e207]
+  - alert [ref=e210]

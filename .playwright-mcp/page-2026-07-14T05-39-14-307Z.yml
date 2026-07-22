@@ -1,0 +1,106 @@
+- generic [ref=f7e1]:
+  - generic [ref=f7e2]:
+    - generic [ref=f7e5]:
+      - link "Go to homepage" [ref=f7e7] [cursor=pointer]:
+        - /url: /en
+        - generic [ref=f7e8]: ccm
+      - list [ref=f7e11]:
+        - listitem [ref=f7e12]:
+          - button "Regional Communities" [ref=f7e13]:
+            - img [ref=f7e14]
+            - generic: Regional Communities
+            - img [ref=f7e17]
+        - listitem [ref=f7e19]:
+          - button "Research & Action" [ref=f7e20]:
+            - img [ref=f7e21]
+            - generic: Research & Action
+            - img [ref=f7e23]
+        - listitem [ref=f7e25]:
+          - link "Atlas" [ref=f7e26] [cursor=pointer]:
+            - /url: /en/atlas
+            - img [ref=f7e27]
+            - generic: Atlas
+        - listitem [ref=f7e30]:
+          - link "Lived experiences" [ref=f7e31] [cursor=pointer]:
+            - /url: /en/lived-experiences
+            - img [ref=f7e32]
+            - generic: Lived experiences
+        - listitem [ref=f7e34]:
+          - link "Case studies" [ref=f7e35] [cursor=pointer]:
+            - /url: /en/research-and-action/case-studies
+            - img [ref=f7e36]
+            - generic: Case studies
+        - listitem [ref=f7e39]:
+          - link "News & Updates" [ref=f7e40] [cursor=pointer]:
+            - /url: /en/news
+            - img [ref=f7e41]
+            - generic: News & Updates
+      - list [ref=f7e45]:
+        - listitem [ref=f7e46]:
+          - button [ref=f7e47]:
+            - img [ref=f7e48]
+    - main [ref=f7e51]:
+      - button "Toggle Sidebar" [ref=f7e54]:
+        - img
+        - generic [ref=f7e55]: Toggle Sidebar
+      - main [ref=f7e57]:
+        - generic [ref=f7e58]:
+          - generic [ref=f7e59]:
+            - navigation "breadcrumb" [ref=f7e60]:
+              - list [ref=f7e61]:
+                - listitem [ref=f7e62]:
+                  - link "Workspaces" [ref=f7e63] [cursor=pointer]:
+                    - /url: /en/collaborations
+                - listitem [ref=f7e64]:
+                  - img [ref=f7e65]
+                - listitem [ref=f7e67]:
+                  - link "The best project" [disabled] [ref=f7e68]
+            - generic [ref=f7e69]:
+              - button "The best project" [ref=f7e70]
+              - generic [ref=f7e71]: Members only
+              - link "View public page" [ref=f7e72] [cursor=pointer]:
+                - /url: /en/collaborations/cmqqpqyey0003oky2hufx7h7d?view=public
+          - navigation "Sections" [ref=f7e74]:
+            - button "Overview" [ref=f7e75]:
+              - img [ref=f7e76]
+              - generic [ref=f7e81]: Overview
+            - button "Outputs 6" [ref=f7e82]:
+              - img [ref=f7e83]
+              - generic [ref=f7e87]: Outputs
+              - generic [ref=f7e88]: "6"
+            - button "Plan" [ref=f7e89]:
+              - img [ref=f7e90]
+              - generic [ref=f7e93]: Plan
+            - button "Docs" [ref=f7e94]:
+              - img [ref=f7e95]
+              - generic [ref=f7e97]: Docs
+            - button "Threads 2" [ref=f7e98]:
+              - img [ref=f7e99]
+              - generic [ref=f7e102]: Threads
+              - generic [ref=f7e103]: "2"
+            - button "Files 0" [ref=f7e104]:
+              - img [ref=f7e105]
+              - generic [ref=f7e108]: Files
+              - generic [ref=f7e109]: "0"
+            - button "Media 0" [ref=f7e110]:
+              - img [ref=f7e111]
+              - generic [ref=f7e113]: Media
+              - generic [ref=f7e114]: "0"
+            - button "Members 1" [ref=f7e115]:
+              - img [ref=f7e116]
+              - generic [ref=f7e121]: Members
+              - generic [ref=f7e122]: "1"
+          - list [ref=f7e336]:
+            - listitem [ref=f7e345]:
+              - img [ref=f7e346]
+              - button "thread 1" [ref=f7e349]
+              - generic [ref=f7e350]: 21 days ago
+              - button "Open" [ref=f7e351]
+              - button "Confirm archive?" [active] [ref=f7e365]
+            - listitem [ref=f7e353]:
+              - img [ref=f7e354]
+              - textbox "New thread" [ref=f7e355]
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=f7e194] [cursor=pointer]:
+    - img [ref=f7e195]
+  - alert [ref=f7e198]

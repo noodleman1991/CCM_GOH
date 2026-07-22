@@ -1,0 +1,140 @@
+- generic [active] [ref=f9e1]:
+  - generic [ref=f9e2]:
+    - generic [ref=f9e5]:
+      - list [ref=f9e7]:
+        - listitem [ref=f9e8]:
+          - link "Go to homepage" [ref=f9e9] [cursor=pointer]:
+            - /url: /
+            - img "Connecting Climate Minds Logo" [ref=f9e10]
+      - generic [ref=f9e11]:
+        - generic [ref=f9e12]:
+          - generic [ref=f9e13]: Discover
+          - list [ref=f9e14]:
+            - listitem [ref=f9e15]:
+              - link "Atlas & Explore" [ref=f9e16] [cursor=pointer]:
+                - /url: /en/atlas
+                - img [ref=f9e17]
+                - generic [ref=f9e20]: Atlas & Explore
+            - listitem [ref=f9e21]:
+              - button "Research & Action" [ref=f9e22]:
+                - img [ref=f9e23]
+                - generic [ref=f9e25]: Research & Action
+                - img [ref=f9e26]
+            - listitem [ref=f9e28]:
+              - link "News & Updates" [ref=f9e29] [cursor=pointer]:
+                - /url: /en/news
+                - img [ref=f9e30]
+                - generic [ref=f9e33]: News & Updates
+            - listitem [ref=f9e34]:
+              - link "Lived experiences" [ref=f9e35] [cursor=pointer]:
+                - /url: /en/lived-experiences
+                - img [ref=f9e36]
+                - generic [ref=f9e38]: Lived experiences
+            - listitem [ref=f9e39]:
+              - link "Case studies" [ref=f9e40] [cursor=pointer]:
+                - /url: /en/research-and-action/case-studies
+                - img [ref=f9e41]
+                - generic [ref=f9e44]: Case studies
+        - generic [ref=f9e45]:
+          - generic [ref=f9e46]: Collaborate
+          - list [ref=f9e47]:
+            - listitem [ref=f9e48]:
+              - button "Regional Communities" [ref=f9e49]:
+                - img [ref=f9e50]
+                - generic [ref=f9e53]: Regional Communities
+                - img [ref=f9e54]
+            - listitem [ref=f9e56]:
+              - link "Find people" [ref=f9e57] [cursor=pointer]:
+                - /url: /en/collaborate
+                - img [ref=f9e58]
+                - generic [ref=f9e63]: Find people
+            - listitem [ref=f9e64]:
+              - link "Start or find a project" [ref=f9e65] [cursor=pointer]:
+                - /url: /en/collaborations
+                - img [ref=f9e66]
+                - generic [ref=f9e68]: Start or find a project
+        - list [ref=f9e71]:
+          - listitem [ref=f9e72]:
+            - link "About" [ref=f9e73] [cursor=pointer]:
+              - /url: /about
+              - img [ref=f9e74]
+              - generic [ref=f9e76]: About
+          - listitem [ref=f9e77]:
+            - link "Feedback" [ref=f9e78] [cursor=pointer]:
+              - /url: /feedback
+              - img [ref=f9e79]
+              - generic [ref=f9e81]: Feedback
+      - generic [ref=f9e82]:
+        - button "Search... ⌘K" [ref=f9e85]:
+          - img [ref=f9e86]
+          - generic [ref=f9e90]: Search...
+          - generic [ref=f9e92]: ⌘K
+        - list [ref=f9e94]:
+          - listitem [ref=f9e95]:
+            - button "English" [ref=f9e96]:
+              - generic [ref=f9e98]: English
+              - img [ref=f9e99]
+    - main [ref=f9e103]:
+      - button "Toggle Sidebar" [ref=f9e106]:
+        - img
+        - generic [ref=f9e107]: Toggle Sidebar
+      - main [ref=f9e109]:
+        - generic [ref=f9e111]:
+          - generic [ref=f9e112]:
+            - heading "Atlas & Explore" [level=1] [ref=f9e113]
+            - paragraph [ref=f9e114]: Explore case studies, lived experiences, people and more across the seven regions.
+          - generic [ref=f9e115]:
+            - img [ref=f9e116]
+            - textbox "Search the atlas…" [ref=f9e119]
+          - generic [ref=f9e120]:
+            - text: Show
+            - generic [ref=f9e121]:
+              - button "Case studies" [pressed] [ref=f9e122]:
+                - img [ref=f9e123]
+                - generic [ref=f9e125]: Case studies
+              - button "Lived experiences" [pressed] [ref=f9e126]:
+                - img [ref=f9e127]
+                - generic [ref=f9e129]: Lived experiences
+              - button "Members" [ref=f9e130]:
+                - generic [ref=f9e131]: Members
+              - button "News" [ref=f9e132]:
+                - generic [ref=f9e133]: News
+              - button "Agendas" [ref=f9e134]:
+                - generic [ref=f9e135]: Agendas
+              - button "Reports" [ref=f9e136]:
+                - generic [ref=f9e137]: Reports
+          - generic [ref=f9e138]:
+            - text: Theme
+            - generic [ref=f9e139]:
+              - button "Displacement" [ref=f9e140]:
+                - generic [ref=f9e141]: Displacement
+              - button "Livelihoods" [ref=f9e142]:
+                - generic [ref=f9e143]: Livelihoods
+              - button "Youth" [ref=f9e144]:
+                - generic [ref=f9e145]: Youth
+              - button "Indigenous" [ref=f9e146]:
+                - generic [ref=f9e147]: Indigenous
+          - generic [ref=f9e148]:
+            - img "Regional map" [ref=f9e150]:
+              - 'button "Sub-Saharan Africa: 0" [ref=f9e151] [cursor=pointer]'
+              - 'button "Northern Africa and Western Asia: 0" [ref=f9e152] [cursor=pointer]'
+              - 'button "Central and Southern Asia: 0" [ref=f9e153] [cursor=pointer]'
+              - 'button "Eastern and South-Eastern Asia: 0" [ref=f9e154] [cursor=pointer]'
+              - 'button "Latin America and the Caribbean: 0" [ref=f9e155] [cursor=pointer]'
+              - 'button "Oceania: 0" [ref=f9e156] [cursor=pointer]'
+              - 'button "Europe and North America: 0" [ref=f9e157] [cursor=pointer]'
+              - button "9 Fake case study" [ref=f9e158] [cursor=pointer]:
+                - generic [ref=f9e165]: "9"
+              - button "1 Solo case study" [ref=f9e166] [cursor=pointer]
+            - generic [ref=f9e168]:
+              - paragraph [ref=f9e169]: Case studies + Lived experiences
+              - list
+          - generic [ref=f9e170]:
+            - button "Case studies 0" [ref=f9e171]:
+              - generic [ref=f9e173]: Case studies
+              - generic [ref=f9e174]: "0"
+            - button "Lived experiences 0" [ref=f9e175]:
+              - generic [ref=f9e177]: Lived experiences
+              - generic [ref=f9e178]: "0"
+  - region "Notifications alt+T"
+  - alert [ref=f9e179]

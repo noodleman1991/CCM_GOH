@@ -1,0 +1,44 @@
+- generic [active] [ref=e1]:
+  - main [ref=e3]:
+    - generic [ref=e4]:
+      - button "Toggle Sidebar" [ref=e6]:
+        - img
+        - generic [ref=e7]: Toggle Sidebar
+      - button "البحث..." [ref=e9]:
+        - img [ref=e10]
+    - main [ref=e14]:
+      - generic [ref=e16]:
+        - generic [ref=e17]:
+          - heading "الأطلس والاستكشاف" [level=1] [ref=e18]
+          - paragraph [ref=e19]: استكشف دراسات الحالة والتجارب المعيشية والأشخاص والمزيد عبر المناطق السبع.
+        - generic [ref=e20]:
+          - text: طبقة البيانات
+          - generic [ref=e21]:
+            - button "دراسات الحالة" [pressed] [ref=e22]:
+              - img [ref=e23]
+              - generic [ref=e25]: دراسات الحالة
+            - button "التجارب المعاشة" [ref=e26]:
+              - generic [ref=e27]: التجارب المعاشة
+            - button "الأعضاء" [ref=e28]:
+              - generic [ref=e29]: الأعضاء
+            - button "الأخبار" [ref=e30]:
+              - generic [ref=e31]: الأخبار
+            - button "الأجندات" [ref=e32]:
+              - generic [ref=e33]: الأجندات
+            - button "التقارير" [ref=e34]:
+              - generic [ref=e35]: التقارير
+        - generic [ref=e36]:
+          - img "Regional map" [ref=e38]:
+            - 'button "أفريقيا جنوب الصحراء: 0" [ref=e39] [cursor=pointer]'
+            - 'button "شمال أفريقيا وغرب آسيا: 0" [ref=e40] [cursor=pointer]'
+            - 'button "آسيا الوسطى والجنوبية: 0" [ref=e41] [cursor=pointer]'
+            - 'button "شرق وجنوب شرق آسيا: 0" [ref=e42] [cursor=pointer]'
+            - 'button "أمريكا اللاتينية والكاريبي: 0" [ref=e43] [cursor=pointer]'
+            - 'button "أوقيانوسيا: 0" [ref=e44] [cursor=pointer]'
+            - 'button "أوروبا وأمريكا الشمالية: 0" [ref=e45] [cursor=pointer]'
+          - generic [ref=e46]:
+            - paragraph [ref=e47]: دراسات الحالة
+            - list
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e53] [cursor=pointer]:
+    - img [ref=e54]

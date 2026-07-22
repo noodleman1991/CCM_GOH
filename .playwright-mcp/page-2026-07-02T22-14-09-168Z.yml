@@ -1,0 +1,67 @@
+- generic [active] [ref=f10e1]:
+  - main [ref=f10e3]:
+    - button "Toggle Sidebar" [ref=f10e6]:
+      - img
+      - generic [ref=f10e7]: Toggle Sidebar
+    - main [ref=f10e9]:
+      - generic [ref=f10e11]:
+        - generic [ref=f10e12]:
+          - heading "الأطلس والاستكشاف" [level=1] [ref=f10e13]
+          - paragraph [ref=f10e14]: استكشف دراسات الحالة والتجارب المعيشية والأشخاص والمزيد عبر المناطق السبع.
+        - generic [ref=f10e15]:
+          - img [ref=f10e16]
+          - textbox "ابحث في الأطلس…" [ref=f10e19]
+        - generic [ref=f10e20]:
+          - text: عرض
+          - generic [ref=f10e21]:
+            - button "دراسات الحالة" [pressed] [ref=f10e22]:
+              - img [ref=f10e23]
+              - generic [ref=f10e25]: دراسات الحالة
+            - button "التجارب المعاشة" [pressed] [ref=f10e26]:
+              - img [ref=f10e27]
+              - generic [ref=f10e29]: التجارب المعاشة
+            - button "الأعضاء" [ref=f10e30]:
+              - generic [ref=f10e31]: الأعضاء
+            - button "الأخبار" [ref=f10e32]:
+              - generic [ref=f10e33]: الأخبار
+            - button "الأجندات" [ref=f10e34]:
+              - generic [ref=f10e35]: الأجندات
+            - button "التقارير" [ref=f10e36]:
+              - generic [ref=f10e37]: التقارير
+        - generic [ref=f10e38]:
+          - text: الموضوع
+          - generic [ref=f10e39]:
+            - button "النزوح" [ref=f10e40]:
+              - generic [ref=f10e41]: النزوح
+            - button "سُبل العيش" [ref=f10e42]:
+              - generic [ref=f10e43]: سُبل العيش
+            - button "الشباب" [ref=f10e44]:
+              - generic [ref=f10e45]: الشباب
+            - button "الشعوب الأصلية" [ref=f10e46]:
+              - generic [ref=f10e47]: الشعوب الأصلية
+        - generic [ref=f10e48]:
+          - img "Regional map" [ref=f10e50]:
+            - 'button "أفريقيا جنوب الصحراء: 0" [ref=f10e51] [cursor=pointer]'
+            - 'button "شمال أفريقيا وغرب آسيا: 0" [ref=f10e52] [cursor=pointer]'
+            - 'button "آسيا الوسطى والجنوبية: 0" [ref=f10e53] [cursor=pointer]'
+            - 'button "شرق وجنوب شرق آسيا: 0" [ref=f10e54] [cursor=pointer]'
+            - 'button "أمريكا اللاتينية والكاريبي: 0" [ref=f10e55] [cursor=pointer]'
+            - 'button "أوقيانوسيا: 0" [ref=f10e56] [cursor=pointer]'
+            - 'button "أوروبا وأمريكا الشمالية: 0" [ref=f10e57] [cursor=pointer]'
+            - button "9 Fake case study" [ref=f10e58] [cursor=pointer]:
+              - generic [ref=f10e65]: "9"
+            - button "1 Solo case study" [ref=f10e66] [cursor=pointer]
+          - generic [ref=f10e68]:
+            - paragraph [ref=f10e69]: دراسات الحالة + التجارب المعاشة
+            - list
+        - generic [ref=f10e70]:
+          - button "دراسات الحالة 0" [ref=f10e71]:
+            - generic [ref=f10e73]: دراسات الحالة
+            - generic [ref=f10e74]: "0"
+          - button "التجارب المعاشة 0" [ref=f10e75]:
+            - generic [ref=f10e77]: التجارب المعاشة
+            - generic [ref=f10e78]: "0"
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=f10e84] [cursor=pointer]:
+    - img [ref=f10e85]
+  - alert [ref=f10e88]
