@@ -122,7 +122,7 @@ export function TypedCard({
           <MapPin className="size-4" style={{ color: style.color }} aria-hidden />
         </span>
       ) : (
-        <span className="relative block h-12 w-[72px] flex-none overflow-hidden rounded-lg">{cover("h-full w-full")}</span>
+        <span className="relative block w-[88px] flex-none overflow-hidden rounded-lg aspect-video">{cover("h-full w-full")}</span>
       );
     return (
       <Link
@@ -153,7 +153,7 @@ export function TypedCard({
         href={item.href}
         className={cn("flex flex-col overflow-hidden rounded-xl bg-card shadow-sm transition-shadow hover:shadow-md", className)}
       >
-        {item.type === "livedExperience" && cover("h-11 flex-none")}
+        {item.type === "livedExperience" && cover("aspect-video flex-none")}
         <span className="flex flex-1 flex-col gap-1 px-4 py-3">
           {item.type === "event" && dateTile ? (
             <span className="flex items-center gap-2.5">
@@ -182,7 +182,7 @@ export function TypedCard({
         href={item.href}
         className={cn("flex flex-col overflow-hidden rounded-2xl bg-card shadow-sm transition-shadow hover:shadow-md", className)}
       >
-        {cover("h-40 flex-none")}
+        {cover("aspect-[16/8] flex-none")}
         <span className="flex flex-1 flex-col gap-1.5 p-5">
           {eyebrow}
           <span className="font-heading text-lg font-semibold leading-snug text-balance">{title}</span>
@@ -199,7 +199,7 @@ export function TypedCard({
       href={item.href}
       className={cn("flex flex-col overflow-hidden rounded-2xl bg-card shadow-sm transition-shadow hover:shadow-md", className)}
     >
-      {cover("h-[74px] flex-none")}
+      {cover(item.image || item.type === "livedExperience" ? "aspect-video flex-none" : "aspect-[16/5] flex-none")}
       <span className="flex flex-1 flex-col gap-1 px-4 pb-4 pt-3">
         {item.type === "event" && dateTile ? (
           <span className="flex items-center gap-2.5">

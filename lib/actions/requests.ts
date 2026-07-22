@@ -85,7 +85,22 @@ export async function respondToJoinRequest(
   // Only the workspace owner or platform staff may resolve it.
   const isOwner = req.collaboration.createdById === actor.id;
   if (!isOwner && !isStaff(actor)) return { ok: false, error: "Not permitted." };
-  if (req.status !== "PENDING") return { ok: false, error: "Already resolved." };
+  if (req.status !== "PENDING") {
+    // Phantom row: a stale duplicate notification survived an earlier
+    // resolution (e.g. the requester re-requested, minting a second row).
+    // Flip it here so it stops rendering as actionable.
+    await prisma.notification.updateMany({
+      where: {
+        recipientId: actor.id,
+        type: "REQUEST",
+        entityType: "joinRequest",
+        entityId: req.collaborationId,
+        actorId: req.requesterId,
+      },
+      data: { entityType: "joinRequestResolved", readAt: new Date() },
+    });
+    return { ok: false, error: "Already resolved." };
+  }
 
   const status = accept ? "ACCEPTED" : "DECLINED";
 
@@ -237,7 +252,18 @@ export async function respondToInviteByTarget(
     select: { id: true, status: true, inviterId: true, collaboration: { select: { title: true } } },
   });
   if (!invite) return { ok: false, error: "Invite not found." };
-  if (invite.status !== "PENDING") return { ok: false, error: "Already resolved." };
+  if (invite.status !== "PENDING") {
+    await prisma.notification.updateMany({
+      where: {
+        recipientId: actor.id,
+        type: "REQUEST",
+        entityType: "collaborationInvite",
+        entityId: collaborationId,
+      },
+      data: { entityType: "collaborationInviteResolved", readAt: new Date() },
+    });
+    return { ok: false, error: "Already resolved." };
+  }
 
   const status = accept ? "ACCEPTED" : "DECLINED";
   await prisma.$transaction(async (tx) => {
@@ -361,7 +387,18 @@ export async function respondToContactRequest(
   });
   if (!req) return { ok: false, error: "Request not found." };
   if (req.recipientId !== actor.id) return { ok: false, error: "Not permitted." };
-  if (req.status !== "PENDING") return { ok: false, error: "Already resolved." };
+  if (req.status !== "PENDING") {
+    await prisma.notification.updateMany({
+      where: {
+        recipientId: actor.id,
+        type: "REQUEST",
+        entityType: "contactRequest",
+        entityId: req.requesterId,
+      },
+      data: { entityType: "contactRequestResolved", readAt: new Date() },
+    });
+    return { ok: false, error: "Already resolved." };
+  }
 
   const status = accept ? "ACCEPTED" : "DECLINED";
   await prisma.$transaction(async (tx) => {
