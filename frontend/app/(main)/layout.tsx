@@ -13,6 +13,7 @@ import { VisualEditing } from "next-sanity/visual-editing";
 import { draftMode } from "next/headers";
 import { SanityLive } from "@/sanity/lib/live";
 import { Suspense } from "react";
+import { revalidateTags } from "@/app/actions/revalidate";
 
 export default async function MainLayout({
   children,
@@ -31,7 +32,7 @@ export default async function MainLayout({
         <CachedHeader perspective="published" stega={false} />
       )}
       <main>{children}</main>
-      <SanityLive includeDrafts={isDraftMode} />
+      <SanityLive action={revalidateTags} includeDrafts={isDraftMode} />
       {isDraftMode && (
         <>
           <DisableDraftMode />

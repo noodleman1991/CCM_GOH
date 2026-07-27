@@ -26,26 +26,28 @@ export async function generateStaticParams() {
     query: PAGES_SLUGS_QUERY,
   })) as { data: PAGES_SLUGS_QUERY_RESULT };
 
-  return (
-    pages
-      // Home is served by (main)/page.tsx at /. /index redirects there in next.config.
-      .filter((page) => page.slug?.current && page.slug.current !== "index")
-      .map((page) => ({
-        slug: page.slug?.current,
-      }))
-  );
+  return pages.flatMap((page) => {
+    const slug = page.slug?.current;
+    // Home is served by (main)/page.tsx at /. /index redirects there in next.config.
+    if (!slug || slug === "index") {
+      return [];
+    }
+
+    return [{ slug: slug.split("/").filter(Boolean) }];
+  });
 }
 
 export async function generateMetadata(props: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string[] }>;
 }) {
   const [{ slug }, { perspective }] = await Promise.all([
     props.params,
     getDynamicFetchOptions(),
   ]);
+  const slugPath = slug.join("/");
   const { data: page } = (await sanityFetchMetadata({
     query: PAGE_QUERY,
-    params: { slug },
+    params: { slug: slugPath },
     perspective,
   })) as { data: PAGE_QUERY_RESULT };
 
@@ -53,11 +55,11 @@ export async function generateMetadata(props: {
     notFound();
   }
 
-  return generatePageMetadata({ page, slug });
+  return generatePageMetadata({ page, slug: slugPath });
 }
 
 export default async function Page(props: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string[] }>;
 }) {
   const { isEnabled: isDraftMode } = await draftMode();
 
@@ -70,16 +72,24 @@ export default async function Page(props: {
   }
 
   const { slug } = await props.params;
-  return <CachedPage slug={slug} perspective="published" stega={false} />;
+  return (
+    <CachedPage slug={slug.join("/")} perspective="published" stega={false} />
+  );
 }
 
-async function DynamicPage({ params }: { params: Promise<{ slug: string }> }) {
+async function DynamicPage({
+  params,
+}: {
+  params: Promise<{ slug: string[] }>;
+}) {
   const [{ slug }, { perspective, stega }] = await Promise.all([
     params,
     getDynamicFetchOptions(),
   ]);
 
-  return <CachedPage slug={slug} perspective={perspective} stega={stega} />;
+  return (
+    <CachedPage slug={slug.join("/")} perspective={perspective} stega={stega} />
+  );
 }
 
 async function CachedPage({
