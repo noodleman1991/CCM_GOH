@@ -80,6 +80,26 @@ for (const { pending, approved } of toDelete) {
   }
 }
 
+// Draft-only / unpublished duplicates: multiple distinct docs sharing a title
+// where none is approved (e.g. double-submitted drafts). No canonical copy to
+// keep, so these are reported for manual review in the Studio, never deleted.
+const baseId = (id) => (id.startsWith('drafts.') ? id.slice(7) : id);
+const unapprovedByTitle = new Map();
+for (const d of docs) {
+  const t = normTitle(d.title);
+  if (d.status === 'approved' || approvedByTitle.has(t)) continue;
+  if (!unapprovedByTitle.has(t)) unapprovedByTitle.set(t, new Map());
+  unapprovedByTitle.get(t).set(baseId(d._id), d); // draft+published of same doc = one entry
+}
+const manualReview = [...unapprovedByTitle.entries()].filter(([, m]) => m.size > 1);
+if (manualReview.length) {
+  console.log('\n⚠️  UNPUBLISHED DUPLICATE GROUPS — review manually in Studio (not auto-deleted):');
+  for (const [t, m] of manualReview) {
+    console.log(`   "${t.slice(0, 60)}"`);
+    for (const d of m.values()) console.log(`      • ${d._id} (${d._createdAt.slice(0, 10)}, ${d.status ?? 'no status'})`);
+  }
+}
+
 const deletedIds = new Set(toDelete.flatMap(({ pending }) => [pending._id, `drafts.${pending._id}`]));
 const remainingPending = docs.filter(
   (d) =>

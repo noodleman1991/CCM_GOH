@@ -7,20 +7,16 @@
  * input on exactly those documents.
  *
  * Modes:
- *   strip (default) — remove string entries entirely (keeps any valid
- *                     references). The 5 legacy strings are identical
- *                     boilerplate on every doc, so they carry no filter value;
- *                     stripping unblocks the Studio input so editors can tag
- *                     properly from the real taxonomy.
- *   map             — convert each string to a reference to the closest
+ *   map (default)   — convert each string to a reference to the closest
  *                     existing tag doc (see MAPPING below); unmapped strings
- *                     are dropped.
+ *                     are dropped. Chosen by the user 2026-07-28.
+ *   strip           — remove string entries entirely (keeps any valid
+ *                     references), leaving docs ready for manual tagging.
  *
  * Usage:
- *   node scripts/fix-lived-experience-tags.mjs                # dry-run, strip
- *   node scripts/fix-lived-experience-tags.mjs --mode=map     # dry-run, map
- *   node scripts/fix-lived-experience-tags.mjs --execute      # apply (strip)
- *   node scripts/fix-lived-experience-tags.mjs --mode=map --execute
+ *   node scripts/fix-lived-experience-tags.mjs                # dry-run, map
+ *   node scripts/fix-lived-experience-tags.mjs --mode=strip   # dry-run, strip
+ *   node scripts/fix-lived-experience-tags.mjs --execute      # apply (map)
  *
  * Reads go through the API CDN so dry-runs work even while the live API is
  * over quota; --execute needs the live API (mutations) and will fail with
@@ -41,7 +37,7 @@ dotenv.config({ path: join(__dirname, '../.env') });
 
 const args = process.argv.slice(2);
 const EXECUTE = args.includes('--execute');
-const MODE = (args.find(a => a.startsWith('--mode='))?.split('=')[1]) || 'strip';
+const MODE = (args.find(a => a.startsWith('--mode='))?.split('=')[1]) || 'map';
 const DATASET = (args.find(a => a.startsWith('--dataset='))?.split('=')[1]) || 'production_2';
 
 if (!['strip', 'map'].includes(MODE)) {
