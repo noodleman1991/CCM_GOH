@@ -85,7 +85,8 @@
     "userDashboard": "Panel",
     "userMessages": "Mensajes y avisos",
     "userSettings": "Ajustes",
-    "atlas": "Atlas"
+    "atlas": "Atlas",
+    "researchOutputs": "Resultados de investigación"
   },
   "navUser": {
     "account": "Cuenta",
@@ -151,7 +152,35 @@
     "noContentYet": "Aún no hay contenido disponible.",
     "checkBackSoon": "Vuelve pronto para ver las actualizaciones.",
     "clear": "Borrar",
-    "clearFilters": "Borrar filtros"
+    "clearFilters": "Borrar filtros",
+    "close": "Cerrar",
+    "goToHomepage": "Ir a la página de inicio",
+    "toggleSidebar": "Mostrar u ocultar la barra lateral",
+    "openMenu": "Abrir menú",
+    "previousPage": "Ir a la página anterior",
+    "nextPage": "Ir a la página siguiente",
+    "morePages": "Más páginas",
+    "previousSlide": "Diapositiva anterior",
+    "nextSlide": "Diapositiva siguiente",
+    "copyCode": "Copiar código",
+    "scrollBack": "Desplazarse hacia atrás",
+    "scrollForward": "Desplazarse hacia adelante",
+    "removeFilter": "Quitar filtro",
+    "clearSearch": "Borrar búsqueda",
+    "selectLanguage": "Seleccionar idioma",
+    "regionalMap": "Mapa regional",
+    "shareOnFacebook": "Compartir en Facebook",
+    "shareViaEmail": "Compartir por correo electrónico",
+    "enterYourEmail": "Introduce tu correo electrónico",
+    "sharePost": "Compartir esta publicación",
+    "mainNavigation": "Navegación principal",
+    "mainNavigationDescription": "Navega por las páginas del sitio",
+    "toggleTheme": "Cambiar tema",
+    "themeLight": "Claro",
+    "themeDark": "Oscuro",
+    "themeSystem": "Sistema",
+    "emailRequired": "Por favor, introduce tu correo electrónico",
+    "emailInvalid": "Por favor, introduce un correo electrónico válido"
   },
   "dashboard": {
     "pageTitle": "Panel - Connecting Climate Minds Hub",
@@ -1052,6 +1081,25 @@
       "result": "resultado",
       "relevant": "resultados relevantes de",
       "foundIn": "Encontrado en"
+    },
+    "filterLabels": {
+      "title": "Filtros",
+      "activeFilters": "Filtros activos",
+      "yearRange": "Rango de años",
+      "to": "a",
+      "apply": "Aplicar",
+      "clear": "Borrar",
+      "status": "Estado",
+      "authorRole": "Rol del autor",
+      "organizations": "Organizaciones",
+      "projects": "Proyectos",
+      "tags": "Etiquetas",
+      "featured": "Destacados",
+      "agendaType": "Tipo de agenda",
+      "regionalCommunities": "Comunidades regionales",
+      "author": "Autor",
+      "country": "País",
+      "accessLevel": "Nivel de acceso"
     }
   },
   "collaborate": {
@@ -1484,7 +1532,9 @@
     "actions": {
       "remindLater": "Recordarme Después",
       "viewSubmissions": "Ver y Editar Envíos"
-    }
+    },
+    "submittedOn": "Enviado el {date}",
+    "revisionBadge": "Revisión"
   },
   "news": {
     "title": "Noticias",
@@ -2259,5 +2309,19 @@
     "new": "Nuevo",
     "freshHeading": "Novedades en el hub",
     "exploreAtlas": "Explorar en el Atlas"
+  },
+  "blog": {
+    "pageTitle": "Blog",
+    "pageDescription": "Historias, novedades y reflexiones de la comunidad de Connecting Climate Minds.",
+    "noPosts": "Aún no hay publicaciones",
+    "noPostsDescription": "Vuelve pronto: nuevas historias están en camino."
+  },
+  "researchAndAction": {
+    "pageDescription": "Explora las agendas, los estudios de caso, los resultados y las herramientas producidos en la red de Connecting Climate Minds."
+  },
+  "communitiesIndex": {
+    "pageTitle": "Comunidades Regionales",
+    "pageDescription": "Siete comunidades regionales de práctica conectan a investigadores, profesionales y personas con experiencia vivida en todo el mundo.",
+    "explore": "Explorar comunidad"
   }
 }
