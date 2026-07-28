@@ -34,7 +34,14 @@ async function fetchLivedExperiences() {
       | order(label.en asc) { _id, label, value, color }
   }`
 
-  return await client.fetch(query)
+  try {
+    return await client.fetch(query)
+  } catch (error) {
+    // Degrade to the empty state instead of crashing the whole page — e.g.
+    // when the Sanity API is unavailable or over quota.
+    console.error('[lived-experiences] Sanity fetch failed:', error)
+    return { videos: [], regionalCommunities: [], allTags: [] }
+  }
 }
 
 function LoadingSkeleton() {
