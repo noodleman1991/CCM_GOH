@@ -85,7 +85,8 @@
     "userDashboard": "Dashboard",
     "userMessages": "Messages & alerts",
     "userSettings": "Settings",
-    "atlas": "Atlas"
+    "atlas": "Atlas",
+    "researchOutputs": "Research outputs"
   },
   "navUser": {
     "account": "Account",
@@ -151,7 +152,35 @@
     "noContentYet": "No content available yet.",
     "checkBackSoon": "Check back soon for updates.",
     "clear": "Clear",
-    "clearFilters": "Clear filters"
+    "clearFilters": "Clear filters",
+    "close": "Close",
+    "goToHomepage": "Go to homepage",
+    "toggleSidebar": "Toggle sidebar",
+    "openMenu": "Open menu",
+    "previousPage": "Go to previous page",
+    "nextPage": "Go to next page",
+    "morePages": "More pages",
+    "previousSlide": "Previous slide",
+    "nextSlide": "Next slide",
+    "copyCode": "Copy code",
+    "scrollBack": "Scroll back",
+    "scrollForward": "Scroll forward",
+    "removeFilter": "Remove filter",
+    "clearSearch": "Clear search",
+    "selectLanguage": "Select language",
+    "regionalMap": "Regional map",
+    "shareOnFacebook": "Share on Facebook",
+    "shareViaEmail": "Share via email",
+    "enterYourEmail": "Enter your email",
+    "sharePost": "Share this post",
+    "mainNavigation": "Main navigation",
+    "mainNavigationDescription": "Navigate to the website pages",
+    "toggleTheme": "Toggle theme",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeSystem": "System",
+    "emailRequired": "Please enter your email",
+    "emailInvalid": "Please enter a valid email"
   },
   "settings": {
     "title": "Settings",
@@ -1090,7 +1119,9 @@
     "actions": {
       "remindLater": "Remind Me Later",
       "viewSubmissions": "View & Edit Submissions"
-    }
+    },
+    "submittedOn": "Submitted {date}",
+    "revisionBadge": "Revision"
   },
   "search": {
     "pageTitle": "Search",
@@ -1141,6 +1172,25 @@
       "result": "result",
       "relevant": "relevant results out of",
       "foundIn": "Found in"
+    },
+    "filterLabels": {
+      "title": "Filters",
+      "activeFilters": "Active filters",
+      "yearRange": "Year range",
+      "to": "to",
+      "apply": "Apply",
+      "clear": "Clear",
+      "status": "Status",
+      "authorRole": "Author role",
+      "organizations": "Organizations",
+      "projects": "Projects",
+      "tags": "Tags",
+      "featured": "Featured",
+      "agendaType": "Agenda type",
+      "regionalCommunities": "Regional communities",
+      "author": "Author",
+      "country": "Country",
+      "accessLevel": "Access level"
     }
   },
   "collaborate": {
@@ -2259,5 +2309,19 @@
     "new": "New",
     "freshHeading": "Fresh on the hub",
     "exploreAtlas": "Explore in Atlas"
+  },
+  "blog": {
+    "pageTitle": "Blog",
+    "pageDescription": "Stories, updates and reflections from the Connecting Climate Minds community.",
+    "noPosts": "No posts yet",
+    "noPostsDescription": "Check back soon — new stories are on their way."
+  },
+  "researchAndAction": {
+    "pageDescription": "Explore the agendas, case studies, outputs and tools produced across the Connecting Climate Minds network."
+  },
+  "communitiesIndex": {
+    "pageTitle": "Regional Communities",
+    "pageDescription": "Seven regional communities of practice connect researchers, practitioners and people with lived experience around the world.",
+    "explore": "Explore community"
   }
 }

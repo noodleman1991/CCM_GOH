@@ -85,7 +85,8 @@
     "userDashboard": "لوحة التحكم",
     "userMessages": "الرسائل والتنبيهات",
     "userSettings": "الإعدادات",
-    "atlas": "الأطلس"
+    "atlas": "الأطلس",
+    "researchOutputs": "مخرجات البحث"
   },
   "navUser": {
     "account": "الحساب",
@@ -151,7 +152,35 @@
     "noContentYet": "لا يوجد محتوى متاح حالياً.",
     "checkBackSoon": "تحقق مرة أخرى قريباً للاطلاع على التحديثات.",
     "clear": "مسح",
-    "clearFilters": "مسح الفلاتر"
+    "clearFilters": "مسح الفلاتر",
+    "close": "إغلاق",
+    "goToHomepage": "الانتقال إلى الصفحة الرئيسية",
+    "toggleSidebar": "إظهار أو إخفاء الشريط الجانبي",
+    "openMenu": "فتح القائمة",
+    "previousPage": "الانتقال إلى الصفحة السابقة",
+    "nextPage": "الانتقال إلى الصفحة التالية",
+    "morePages": "المزيد من الصفحات",
+    "previousSlide": "الشريحة السابقة",
+    "nextSlide": "الشريحة التالية",
+    "copyCode": "نسخ الكود",
+    "scrollBack": "التمرير للخلف",
+    "scrollForward": "التمرير للأمام",
+    "removeFilter": "إزالة عامل التصفية",
+    "clearSearch": "مسح البحث",
+    "selectLanguage": "اختيار اللغة",
+    "regionalMap": "الخريطة الإقليمية",
+    "shareOnFacebook": "المشاركة على فيسبوك",
+    "shareViaEmail": "المشاركة عبر البريد الإلكتروني",
+    "enterYourEmail": "أدخل بريدك الإلكتروني",
+    "sharePost": "مشاركة هذا المنشور",
+    "mainNavigation": "التنقل الرئيسي",
+    "mainNavigationDescription": "التنقل إلى صفحات الموقع",
+    "toggleTheme": "تغيير السمة",
+    "themeLight": "فاتح",
+    "themeDark": "داكن",
+    "themeSystem": "النظام",
+    "emailRequired": "يرجى إدخال بريدك الإلكتروني",
+    "emailInvalid": "يرجى إدخال بريد إلكتروني صحيح"
   },
   "dashboard": {
     "pageTitle": "لوحة التحكم - Connecting Climate Minds Hub",
@@ -1052,6 +1081,25 @@
       "result": "نتيجة",
       "relevant": "نتائج ذات صلة من",
       "foundIn": "موجود في"
+    },
+    "filterLabels": {
+      "title": "عوامل التصفية",
+      "activeFilters": "عوامل التصفية النشطة",
+      "yearRange": "نطاق السنوات",
+      "to": "إلى",
+      "apply": "تطبيق",
+      "clear": "مسح",
+      "status": "الحالة",
+      "authorRole": "دور المؤلف",
+      "organizations": "المنظمات",
+      "projects": "المشاريع",
+      "tags": "الوسوم",
+      "featured": "مميز",
+      "agendaType": "نوع الأجندة",
+      "regionalCommunities": "المجتمعات الإقليمية",
+      "author": "المؤلف",
+      "country": "البلد",
+      "accessLevel": "مستوى الوصول"
     }
   },
   "collaborate": {
@@ -1484,7 +1532,9 @@
     "actions": {
       "remindLater": "تذكيرني لاحقاً",
       "viewSubmissions": "عرض وتحرير المراسلات"
-    }
+    },
+    "submittedOn": "قُدِّم في {date}",
+    "revisionBadge": "مراجعة"
   },
   "news": {
     "title": "الأخبار",
@@ -2259,5 +2309,19 @@
     "new": "جديد",
     "freshHeading": "الجديد على المنصة",
     "exploreAtlas": "استكشف في الأطلس"
+  },
+  "blog": {
+    "pageTitle": "المدونة",
+    "pageDescription": "قصص ومستجدات وتأملات من مجتمع Connecting Climate Minds.",
+    "noPosts": "لا توجد منشورات بعد",
+    "noPostsDescription": "عد قريبًا — قصص جديدة في الطريق."
+  },
+  "researchAndAction": {
+    "pageDescription": "استكشف الأجندات ودراسات الحالة والمخرجات والأدوات التي أنتجتها شبكة Connecting Climate Minds."
+  },
+  "communitiesIndex": {
+    "pageTitle": "المجتمعات الإقليمية",
+    "pageDescription": "سبعة مجتمعات إقليمية للممارسة تربط الباحثين والممارسين وأصحاب التجارب المعيشة حول العالم.",
+    "explore": "استكشاف المجتمع"
   }
 }
