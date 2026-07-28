@@ -22,8 +22,12 @@ const statusOptions = [
 
 // Thin wrapper preserving this file's call signature; delegates to the shared
 // Lane-B localized-field helper (group defaults to "content" here).
-const createLocalizedField = (name: string, title: string, type: string = "string", required: boolean = false) =>
-    createSharedLocalizedField(name, title, type, { group: "content", required });
+const createLocalizedField = (
+    name: string,
+    title: string,
+    type: string = "string",
+    options: { required?: boolean; maxWarn?: number } = {}
+) => createSharedLocalizedField(name, title, type, { group: "content", ...options });
 
 export default defineType({
     name: "caseStudy",
@@ -39,7 +43,7 @@ export default defineType({
     ],
     fields: [
         // Content fields
-        createLocalizedField("title", "Title", "string", true),
+        createLocalizedField("title", "Title", "string", { required: true, maxWarn: 110 }),
 
         defineField({
             name: "slug",
@@ -53,7 +57,7 @@ export default defineType({
             validation: (Rule) => Rule.required(),
         }),
 
-        createLocalizedField("excerpt", "Excerpt", "text"),
+        createLocalizedField("excerpt", "Excerpt", "text", { maxWarn: 300 }),
 
         defineField({
             name: "content",
