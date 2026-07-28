@@ -7,15 +7,18 @@ import { apiVersion, dataset, projectId, useCdn } from "../env";
 // modules) — the token is never shipped to the browser. Browser-side reads of
 // private data must go through an authenticated API route instead.
 //
-// NOTE: a token disables the CDN, so we force useCdn:false when a token is set
-// to avoid a runtime warning and to fetch fresh, authorized content.
+// NOTE: keep useCdn ON even with a token. The API CDN (apicdn.sanity.io)
+// accepts authenticated requests, and the uncached live API has a far smaller
+// request quota — routing every page render through it exhausted the plan
+// quota on 2026-07-28 and took down all content pages (402 plan_limit_reached).
+// Published-perspective reads never need the live API.
 const token = process.env.SANITY_API_READ_TOKEN;
 
 export const client = createClient({
   projectId,
   dataset,
   apiVersion,
-  useCdn: token ? false : useCdn,
+  useCdn,
   token,
   perspective: "published",
   stega: {
