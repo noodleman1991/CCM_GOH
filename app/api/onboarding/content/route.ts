@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { writeClient } from "@/sanity/lib/write-client"
+import { client } from "@/sanity/lib/client"
 import { onboardingContentQueryWithFallback } from "@/sanity/queries/onboarding-content"
 
 /**
@@ -7,12 +7,13 @@ import { onboardingContentQueryWithFallback } from "@/sanity/queries/onboarding-
  *
  * This is public CMS content, but it is fetched server-side (tokened client) so
  * it keeps working when the Sanity dataset is set to private — the browser must
- * not depend on a public dataset for any read.
+ * not depend on a public dataset for any read. Uses the read client (API CDN)
+ * rather than the write client so this read never burns live-API quota.
  */
 export async function GET(request: NextRequest) {
   try {
     const locale = request.nextUrl.searchParams.get("locale") || "en"
-    const data = await writeClient.fetch(onboardingContentQueryWithFallback, { locale })
+    const data = await client.fetch(onboardingContentQueryWithFallback, { locale })
     return NextResponse.json({ content: data ?? null })
   } catch (error) {
     console.error("Failed to fetch onboarding content:", error)
