@@ -20,7 +20,15 @@ export * from "./authz-core";
  * session-gated UI only and must not back new authz).
  */
 export async function getActor(): Promise<Actor> {
-  const { userId } = await auth();
+  let userId: string | null;
+  try {
+    ({ userId } = await auth());
+  } catch {
+    // auth() throws outside a clerkMiddleware request context — notably during
+    // static prerender/export of force-static pages (e.g. /legal/*) when a
+    // layout calls getActor(). Anonymous is the correct answer there.
+    return null;
+  }
   if (!userId) return null;
 
   const result = await safeQuery(() =>
