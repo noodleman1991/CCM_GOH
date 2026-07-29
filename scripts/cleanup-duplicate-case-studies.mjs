@@ -69,9 +69,46 @@ for (const d of docs) {
   toDelete.push({ pending: d, approved: twin });
 }
 
+/** Deep-rewrite every reference to `fromId` so it points at `toId`, then
+ *  dedupe reference items within the same array (re-pointing can create a
+ *  double when the approved twin was already referenced alongside). */
+function repointRefs(node, fromId, toId) {
+  if (Array.isArray(node)) {
+    const mapped = node.map((item) => repointRefs(item, fromId, toId));
+    const seenRefs = new Set();
+    return mapped.filter((item) => {
+      const ref = item && typeof item === 'object' && item._ref;
+      if (!ref) return true;
+      if (seenRefs.has(ref)) return false;
+      seenRefs.add(ref);
+      return true;
+    });
+  }
+  if (node && typeof node === 'object') {
+    const out = {};
+    for (const [k, v] of Object.entries(node)) {
+      out[k] = k === '_ref' && v === fromId ? toId : repointRefs(v, fromId, toId);
+    }
+    return out;
+  }
+  return node;
+}
+
 for (const { pending, approved } of toDelete) {
   console.log(`${EXECUTE ? 'DELETING' : 'would delete'} pending ${pending._id} (${pending._createdAt.slice(0, 10)})`);
   console.log(`   duplicate of approved ${approved._id} (${approved._createdAt.slice(0, 10)}) — "${normTitle(pending.title).slice(0, 60)}"`);
+
+  // Re-point any referencing docs (e.g. regional-community pages featuring the
+  // raw pending copy) to the approved twin — deletion is blocked otherwise.
+  const referencing = await client.fetch('*[references($id)]', { id: pending._id });
+  for (const refDoc of referencing) {
+    console.log(`   ↪ repoint ref in ${refDoc._id}`);
+    if (EXECUTE) {
+      const { _rev, _updatedAt, _createdAt, ...rest } = repointRefs(refDoc, pending._id, approved._id);
+      await client.createOrReplace(rest);
+    }
+  }
+
   if (EXECUTE) {
     // Delete the published pending doc AND any lingering draft counterpart so
     // it can't resurface in the Studio's Pending Review list.
