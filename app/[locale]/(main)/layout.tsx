@@ -9,6 +9,8 @@ import { SanityLive } from "@/sanity/lib/live";
 import { Suspense } from "react";
 import { SiteAnnouncementBar } from "@/components/announcement/site-announcement-bar";
 import { SearchModal } from "@/components/search-dialog";
+import { getActor, isStaff } from "@/lib/authz";
+import { ReportIssueWidget } from "@/components/issue-report/report-issue-widget";
 
 export default async function MainLayout({
     children,
@@ -20,11 +22,18 @@ export default async function MainLayout({
     const resolvedParams = await params;
     const { locale } = resolvedParams;
     const isRtl = rtlLocales.includes(locale);
+    // The issue reporter is staff-only (team_editor | admin) — same gate as the
+    // moderation queue. Nobody else gets the widget in their DOM at all.
+    const canReportIssues = isStaff(await getActor());
 
     return (
         <SidebarProvider isRtl={isRtl}>
             <AppSidebar />
-            <SidebarInset className="overflow-hidden">
+            {/* overflow-x-clip, NOT -hidden: hidden makes the inset a scroll
+                container, which silently breaks every position:sticky inside
+                (region-page spine, reader menus). clip keeps the horizontal
+                clipping without creating a scrollport. */}
+            <SidebarInset className="overflow-x-clip">
                 <Suspense fallback={null}>
                     <SiteAnnouncementBar locale={locale} />
                 </Suspense>
@@ -43,14 +52,22 @@ export default async function MainLayout({
                   (reader menus / "on this page", profile sidebars) keeps working
                   against the viewport. overflow-x-hidden silently broke sticky.
                 */}
+                {/* SidebarInset already renders the page's <main> landmark —
+                    a nested second <main> here was an axe duplicate-landmark
+                    violation. Plain div keeps the layout role-free. */}
                 <div className="flex flex-1 flex-col overflow-x-clip w-full">
-                    <main>{children}</main>
+                    <div>{children}</div>
                 </div>
             </SidebarInset>
             {/* Single universal-search modal — opened by any SearchTrigger or the
                 ⌘K / "/" shortcut (one instance, no stacking). */}
             <SearchModal />
-            <SanityLive />
+            {canReportIssues && <ReportIssueWidget />}
+            {/* Kill-switch for API-quota outages: when the live-events stream
+                can't connect (e.g. 402 plan_limit_reached) next-sanity retries
+                every ~1s with no backoff, burning quota and churning re-renders.
+                sanityFetch keeps working either way (revalidate cap in live.ts). */}
+            {process.env.SANITY_LIVE_DISABLED !== "true" && <SanityLive />}
             {(await draftMode()).isEnabled && (
                 <>
                     <DisableDraftMode />

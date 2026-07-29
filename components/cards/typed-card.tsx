@@ -1,4 +1,4 @@
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { MapPin, Play } from "lucide-react";
 import { Link } from "@/i18n/navigation";
@@ -29,6 +29,7 @@ export function TypedCard({
   className?: string;
 }) {
   const t = useTranslations("typedCards");
+  const locale = useLocale();
   const style = TYPE_STYLE[item.type];
 
   const eyebrow = (
@@ -94,7 +95,7 @@ export function TypedCard({
     </span>
   );
 
-  const dateTile = item.event?.startAt && <DateTile iso={item.event.startAt} color={style.color} />;
+  const dateTile = item.event?.startAt && <DateTile iso={item.event.startAt} color={style.color} locale={locale} />;
 
   const avatar = item.person && (
     <span
@@ -140,7 +141,7 @@ export function TypedCard({
           )}
         </span>
         {item.date && (
-          <span className="flex-none text-[11.5px] text-muted-foreground">{shortDate(item.date)}</span>
+          <span className="flex-none text-[11.5px] text-muted-foreground">{shortDate(item.date, locale)}</span>
         )}
       </Link>
     );
@@ -163,7 +164,7 @@ export function TypedCard({
           ) : (
             eyebrow
           )}
-          <span className="font-heading text-[13.5px] font-semibold leading-snug line-clamp-2">{title}</span>
+          <span className="font-heading text-[13.5px] font-semibold leading-snug line-clamp-2" title={item.title || undefined}>{title}</span>
           {docChips ||
             (item.meta || item.place ? (
               <span className="truncate text-[11.5px] text-muted-foreground">
@@ -214,12 +215,12 @@ export function TypedCard({
         ) : (
           eyebrow
         )}
-        <span className="font-heading text-[15px] font-semibold leading-snug line-clamp-2">{title}</span>
+        <span className="font-heading text-[15px] font-semibold leading-snug line-clamp-2" title={item.title || undefined}>{title}</span>
         {placeLine}
         {docChips}
         {!item.place && !item.docs?.length && (item.meta || item.date) && (
           <span className="truncate text-xs text-muted-foreground">
-            <bdi>{item.meta ?? shortDate(item.date!)}</bdi>
+            <bdi>{item.meta ?? shortDate(item.date!, locale)}</bdi>
           </span>
         )}
       </span>
@@ -227,16 +228,16 @@ export function TypedCard({
   );
 }
 
-function DateTile({ iso, color }: { iso: string; color: string }) {
+function DateTile({ iso, color, locale }: { iso: string; color: string; locale: string }) {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return null;
   return (
     <span className="flex-none rounded-lg border bg-muted/40 px-2.5 py-1 text-center leading-tight" aria-hidden>
       <span className="block text-[9px] font-extrabold uppercase tracking-widest" style={{ color }}>
-        {d.toLocaleDateString(undefined, { month: "short" })}
+        {d.toLocaleDateString(locale, { month: "short" })}
       </span>
       <span className="block font-heading text-[17px] font-bold tabular-nums">
-        {d.toLocaleDateString(undefined, { day: "numeric" })}
+        {d.toLocaleDateString(locale, { day: "numeric" })}
       </span>
     </span>
   );
@@ -253,8 +254,8 @@ function blobStyle(color: string): React.CSSProperties {
   };
 }
 
-function shortDate(iso: string): string {
+function shortDate(iso: string, locale: string): string {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return "";
-  return d.toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" });
+  return d.toLocaleDateString(locale, { day: "numeric", month: "short", year: "numeric" });
 }

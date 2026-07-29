@@ -82,10 +82,7 @@ export function CommunitySelector({
   const content = (
     <div className={cn('space-y-3', className)}>
       {communities.length === 0 ? (
-        <p className={cn(
-          'text-sm text-muted-foreground',
-          isRTL && 'text-right'
-        )}>
+        <p className="text-sm text-muted-foreground text-start">
           {t('noCommunitiesAvailable')}
         </p>
       ) : (
@@ -106,9 +103,8 @@ export function CommunitySelector({
               <Label
                 htmlFor={`community-${community.id}`}
                 className={cn(
-                  'text-sm font-normal leading-none cursor-pointer',
-                  'peer-disabled:cursor-not-allowed peer-disabled:opacity-70',
-                  isRTL && 'text-right'
+                  'text-sm font-normal leading-none cursor-pointer text-start',
+                  'peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
                 )}
               >
                 {getDisplayName(community)}
@@ -117,10 +113,7 @@ export function CommunitySelector({
           ))}
 
           {selected.length === 0 && (
-            <p className={cn(
-              'text-sm text-muted-foreground mt-4',
-              isRTL && 'text-right'
-            )}>
+            <p className="text-sm text-muted-foreground mt-4 text-start">
               {t('noneSelected')}
             </p>
           )}
@@ -136,11 +129,11 @@ export function CommunitySelector({
   return (
     <Card className={cn('w-full', className)}>
       <CardHeader>
-        <CardTitle className={isRTL ? 'text-right' : ''}>
+        <CardTitle className="text-start">
           {title || t('title')}
         </CardTitle>
         {description && (
-          <CardDescription className={isRTL ? 'text-right' : ''}>
+          <CardDescription className="text-start">
             {description}
           </CardDescription>
         )}

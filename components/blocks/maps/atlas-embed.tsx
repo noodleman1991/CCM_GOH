@@ -23,7 +23,9 @@ export default async function AtlasEmbedBlock({
 
   return (
     <SectionContainer>
-      <div className="mx-auto max-w-6xl space-y-6 px-4 sm:px-6 lg:px-8">
+      {/* SectionContainer owns the page edge (max-w-6xl + px) — no nested
+          container, so the embed's edge matches every sibling block (B2.5). */}
+      <div className="space-y-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <SectionHeader title={t('embedTitle')} />
           <Link

@@ -5,6 +5,7 @@ import useSWR from 'swr'
 import { useTranslations, useLocale } from 'next-intl'
 import { useSearchParams } from 'next/navigation'
 import { FilterChip } from '@/components/ui/filter-chip'
+import { FilterBar, FilterBarLabel, FilterBarSeparator } from '@/components/ui/filter-bar'
 import { Input } from '@/components/ui/input'
 import { RegionChoropleth } from '@/components/maps/region-choropleth'
 import { RegionContentCards, RecentEverywhereCards } from '@/components/atlas/region-content-cards'
@@ -284,40 +285,34 @@ export function AtlasExplorer({
         )}
       </div>
 
-      {/* Data-layer switcher — multi-select; toggling the last active layer is
-          a no-op (aria-disabled + tooltip) so at least one stays selected. */}
-      <div className="space-y-1.5">
-        <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          {tAtlas('show')}
-        </span>
-        <div className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4 snap-x [&>*]:snap-start [&>*]:flex-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0">
-          {FACETS.map((f) => {
-            const isActive = layerSet.has(f.id)
-            const isLastActive = isActive && layerSet.size === 1
-            return (
-              <FilterChip
-                key={f.id}
-                label={
-                  facetTotals[f.id] !== undefined ? `${t(f.labelKey)} · ${facetTotals[f.id]}` : t(f.labelKey)
-                }
-                active={isActive}
-                disabled={isLastActive}
-                title={isLastActive ? tAtlas('lastLayer') : undefined}
-                onClick={() => toggleLayer(f.id)}
-              />
-            )
-          })}
-        </div>
-      </div>
-
-      {/* Theme facet (spec A1) — CMS-driven (tag.useAsTheme); labels localized
-          with `en` fallback for locales missing a translation. */}
-      {themes.length > 0 && (
-        <div className="space-y-1.5">
-          <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            {tAtlas('theme')}
-          </span>
-          <div className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4 snap-x [&>*]:snap-start [&>*]:flex-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0">
+      {/* ONE slim filter bar (Gate-2 §filter-bar): Show · Theme · When as
+          labelled groups on a single scrollable row. The region chip row is
+          GONE — the map itself carries region selection (paths are focusable
+          buttons with name+count hover/focus labels), which stays the
+          keyboard/screen-reader path. Region still rides the same `region`
+          URL param, so deep links keep working. */}
+      <FilterBar>
+        <FilterBarLabel>{tAtlas('show')}</FilterBarLabel>
+        {FACETS.map((f) => {
+          const isActive = layerSet.has(f.id)
+          const isLastActive = isActive && layerSet.size === 1
+          return (
+            <FilterChip
+              key={f.id}
+              label={
+                facetTotals[f.id] !== undefined ? `${t(f.labelKey)} · ${facetTotals[f.id]}` : t(f.labelKey)
+              }
+              active={isActive}
+              disabled={isLastActive}
+              title={isLastActive ? tAtlas('lastLayer') : undefined}
+              onClick={() => toggleLayer(f.id)}
+            />
+          )
+        })}
+        {themes.length > 0 && (
+          <>
+            <FilterBarSeparator />
+            <FilterBarLabel>{tAtlas('theme')}</FilterBarLabel>
             {themes.map((th) => (
               <FilterChip
                 key={th.slug}
@@ -326,56 +321,19 @@ export function AtlasExplorer({
                 onClick={() => setParams({ theme: theme === th.slug ? null : th.slug })}
               />
             ))}
-          </div>
-        </div>
-      )}
-
-      {/* Region facet — a chip row mirroring map selection, so region is
-          filterable without hunting on the map (and works on touch/screen
-          readers). Single-select, driven by the same `region` URL param as
-          the map's onSelect. Hidden in locked/embed mode (that variant is
-          already region-scoped, so a region switcher would be contradictory). */}
-      {!lockedRegion && (
-        <div className="space-y-1.5">
-          <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            {tAtlas('region')}
-          </span>
-          <div className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4 snap-x [&>*]:snap-start [&>*]:flex-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0">
-            <FilterChip
-              label={tAtlas('allRegions')}
-              active={!selected}
-              onClick={() => setParams({ region: null })}
-            />
-            {REGION_CODES.map((code) => (
-              <FilterChip
-                key={code}
-                label={labelFor(code)}
-                active={selected === code}
-                onClick={() => setParams({ region: selected === code ? null : code })}
-              />
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* When facet — coarse date buckets (single-select). Applies to dated
-          content only; member counts are unaffected (they have no publish
-          date). Rides in the URL like the other facets so it's shareable. */}
-      <div className="space-y-1.5">
-        <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          {tAtlas('when')}
-        </span>
-        <div className="flex flex-wrap gap-2">
-          {WHEN_BUCKETS.map((bucket) => (
-            <FilterChip
-              key={bucket}
-              label={tAtlas(`when_${bucket}`)}
-              active={when === bucket}
-              onClick={() => setParams({ when: when === bucket ? null : bucket })}
-            />
-          ))}
-        </div>
-      </div>
+          </>
+        )}
+        <FilterBarSeparator />
+        <FilterBarLabel>{tAtlas('when')}</FilterBarLabel>
+        {WHEN_BUCKETS.map((bucket) => (
+          <FilterChip
+            key={bucket}
+            label={tAtlas(`when_${bucket}`)}
+            active={when === bucket}
+            onClick={() => setParams({ when: when === bucket ? null : bucket })}
+          />
+        ))}
+      </FilterBar>
 
       {/* Map — full-width (spec E1 drops the stats panel from this column;
           legend chips below narrate the result set instead). */}

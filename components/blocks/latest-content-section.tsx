@@ -12,6 +12,7 @@ import ExternalSourceCard from "@/components/ui/external-source-card";
 import Link from "next/link";
 import { Calendar, Tag, Globe, Building, Filter, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { CONTAINER_WIDTH, SECTION_SPACING_Y } from "@/lib/design-tokens";
 import { useTranslations } from 'next-intl';
 
 interface LatestContentProps {
@@ -102,8 +103,8 @@ export default function LatestContentSection({
     const hasActiveFilters = dateFilter !== "all" || tagFilter || regionFilter;
 
     return (
-        <section className="py-16">
-            <div className="container">
+        <section className={`mx-auto px-4 sm:px-6 lg:px-8 ${CONTAINER_WIDTH.default} ${SECTION_SPACING_Y.md}`}>
+            <div>
                 <div className="flex justify-between items-center mb-8">
                     <div>
                         <h2 className="text-3xl font-bold mb-2">{t('title')}</h2>

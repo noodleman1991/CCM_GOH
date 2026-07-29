@@ -8,6 +8,7 @@ import { REGION_CODES, REGION_I18N_KEY, type RegionCode } from "@/lib/maps/regio
 import { Card } from "@/components/ui/card";
 import { FilterChip } from "@/components/ui/filter-chip";
 import { cn } from "@/lib/utils";
+import SectionContainer from "@/components/ui/section-container";
 
 type Person = {
   id: string;
@@ -44,6 +45,7 @@ export default function PeopleWidget(props: {
   const people = data?.people ?? [];
 
   return (
+    <SectionContainer>
     <section className="space-y-4">
       <div>
         <h2 className="font-heading text-2xl font-bold text-ccm-midnight">
@@ -93,5 +95,6 @@ export default function PeopleWidget(props: {
         </div>
       )}
     </section>
+    </SectionContainer>
   );
 }

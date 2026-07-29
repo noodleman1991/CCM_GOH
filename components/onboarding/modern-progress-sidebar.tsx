@@ -90,7 +90,7 @@ export function ModernProgressSidebar({
 
   return (
     <div className={cn(
-      "bg-card border-r border-border flex flex-col",
+      "bg-card border-e border-border flex flex-col",
       "w-64 h-screen overflow-y-auto",
       "shadow-sm lg:shadow-none", // Add subtle shadow on mobile
       className
@@ -190,7 +190,7 @@ export function ModernProgressSidebar({
                 {index < steps.length - 1 && (
                   <div className={cn(
                     "absolute top-11 w-px h-4 bg-gray-200",
-                    isRTL ? "right-9" : "left-9",
+                    "start-9",
                     isCompleted && "bg-green-300"
                   )} />
                 )}

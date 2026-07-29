@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -28,15 +29,16 @@ export default function FormNewsletter({
   buttonText,
   successMessage,
 }: FormNewsletterProps) {
+  const t = useTranslations("common");
   // form validation schema
   const formSchema = z.object({
     email: z
       .string()
       .min(1, {
-        message: "Please enter your email",
+        message: t("emailRequired"),
       })
       .email({
-        message: "Please enter a valid email",
+        message: t("emailInvalid"),
       }),
   });
 
@@ -97,7 +99,7 @@ export default function FormNewsletter({
                     <Input
                       {...field}
                       type="email"
-                      placeholder="Enter your email"
+                      placeholder={t("enterYourEmail")}
                       autoComplete="off"
                       // ignore 1 Password autofill
                       data-1p-ignore

@@ -85,7 +85,7 @@ export default async function LivedExperiencePage({
       </header>
 
       {title && (
-        <h1 className={cn("text-balance font-heading font-bold text-ccm-midnight", heading("lg"))}>
+        <h1 dir="auto" className={cn("text-balance font-heading font-bold text-ccm-midnight", heading("lg"))}>
           {title}
         </h1>
       )}

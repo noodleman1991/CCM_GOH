@@ -77,15 +77,22 @@ async function getContentSitemap(
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [pages, posts, caseStudies, news, livedExp, agendas, reports] = await Promise.all([
-    getPagesSitemap(),
-    getPostsSitemap(),
-    getContentSitemap('_type == "caseStudy" && status == "approved"', "/research-and-action/case-studies", "monthly", 0.8),
-    getContentSitemap('_type == "newsPost"', "/news", "weekly", 0.7),
-    getContentSitemap('_type == "livedExperience" && (status == "approved" || !defined(status))', "/lived-experiences", "monthly", 0.7),
-    getContentSitemap('_type == "agenda"', "/research-and-action/agendas", "monthly", 0.6),
-    getContentSitemap('_type == "report"', "/research-and-action/reports", "monthly", 0.6),
-  ]);
+  const [pages, posts, caseStudies, news, livedExp, agendas, reports, researchOutputs, communities, events] =
+    await Promise.all([
+      getPagesSitemap(),
+      getPostsSitemap(),
+      getContentSitemap('_type == "caseStudy" && status == "approved"', "/research-and-action/case-studies", "monthly", 0.8),
+      getContentSitemap('_type == "newsPost"', "/news", "weekly", 0.7),
+      getContentSitemap('_type == "livedExperience" && (status == "approved" || !defined(status))', "/lived-experiences", "monthly", 0.7),
+      getContentSitemap('_type == "agenda"', "/research-and-action/agendas", "monthly", 0.6),
+      getContentSitemap('_type == "report"', "/research-and-action/reports", "monthly", 0.6),
+      // B7 additions: the researchOutput successor type, the seven regional
+      // community pages, and approved events — all public detail routes that
+      // were invisible to crawlers.
+      getContentSitemap('_type == "researchOutput" && status == "approved"', "/research-and-action/research-outputs", "monthly", 0.7),
+      getContentSitemap('_type == "regionalCommunityPage" || _type == "regionalCommunity" && defined(slug.current)', "/communities", "weekly", 0.8),
+      getContentSitemap('_type == "event" && status == "approved"', "/collaborate/events", "weekly", 0.6),
+    ]);
 
   // Static top-level public routes per locale. Weekly-changing index/landing
   // pages; legal pages change rarely (monthly, lower priority).
@@ -127,6 +134,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...livedExp,
     ...agendas,
     ...reports,
+    ...researchOutputs,
+    ...communities,
+    ...events,
   ];
   // NOTE: gated regional news/blog sections (Track 6) are intentionally excluded.
 }

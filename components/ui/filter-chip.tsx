@@ -1,4 +1,5 @@
 'use client'
+import { useTranslations } from 'next-intl'
 
 import { Check, X, type LucideIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -59,7 +60,7 @@ export function RemovableChip({
   label,
   onRemove,
   icon: Icon,
-  removeLabel = 'Remove filter',
+  removeLabel,
   className,
 }: {
   label: string
@@ -68,6 +69,8 @@ export function RemovableChip({
   removeLabel?: string
   className?: string
 }) {
+  const t = useTranslations('common')
+  const removeText = removeLabel ?? t('removeFilter')
   return (
     <span
       className={cn(
@@ -80,7 +83,7 @@ export function RemovableChip({
       <button
         type="button"
         onClick={onRemove}
-        aria-label={removeLabel}
+        aria-label={removeText}
         className="ms-0.5 rounded-full p-0.5 hover:bg-[var(--color-ccm-sea)]/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         <X className="h-3 w-3" />

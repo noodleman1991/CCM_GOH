@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { UnreadBadge } from "@/components/unread-badge";
 import { useSidebar } from "@/components/ui/sidebar";
+import { useHydrated } from "@/hooks/use-hydrated";
 import { FEATURES } from "@/lib/features";
 import { clerkAppearance } from "@/lib/clerk-appearance";
 
@@ -23,6 +24,12 @@ export function UserMenuCard() {
   const { user } = useUser();
   const { signOut } = useClerk();
   const { setOpenMobile } = useSidebar();
+  // <ClerkProvider dynamic> gives the server the SESSION (so <SignedIn> renders
+  // server-side), but never the User resource — that loads in the browser. Read
+  // it only after hydration so the server render and the first client render
+  // agree; otherwise the name/email/initials swap under React and mismatch.
+  const hydrated = useHydrated();
+  const identity = hydrated ? user : undefined;
 
   const row =
     "flex min-h-[40px] w-full items-center gap-2.5 rounded-lg px-2.5 text-[13px] font-medium text-sidebar-foreground/85 transition-colors hover:bg-white/10 hover:text-sidebar-foreground";
@@ -34,17 +41,17 @@ export function UserMenuCard() {
         {/* Identity row — informational, not a trigger. */}
         <div className="flex items-center gap-2.5 px-2 py-2">
           <Avatar className="size-8">
-            {user?.imageUrl && <AvatarImage src={user.imageUrl} alt="" />}
+            {identity?.imageUrl && <AvatarImage src={identity.imageUrl} alt="" />}
             <AvatarFallback className="bg-white/15 text-xs font-bold text-white">
-              {(user?.firstName?.[0] ?? "") + (user?.lastName?.[0] ?? "") || "•"}
+              {(identity?.firstName?.[0] ?? "") + (identity?.lastName?.[0] ?? "") || "•"}
             </AvatarFallback>
           </Avatar>
           <div className="min-w-0 leading-tight">
             <p className="truncate text-[13px] font-bold text-sidebar-foreground">
-              <bdi>{user?.fullName ?? ""}</bdi>
+              <bdi>{identity?.fullName ?? ""}</bdi>
             </p>
             <p className="truncate text-[11px] text-sidebar-foreground/60">
-              {user?.primaryEmailAddress?.emailAddress ?? ""}
+              {identity?.primaryEmailAddress?.emailAddress ?? ""}
             </p>
           </div>
         </div>

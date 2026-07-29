@@ -20,6 +20,7 @@ import { regionLabel, specialCommunityLabel } from "@/lib/labels"
 import { ProfileCompletenessIndicator } from "@/components/ui/profile-completeness-indicator"
 import { ProfileStatistics } from "@/components/blocks/profile/profile-statistics"
 import { ContributionsBlock } from "@/components/blocks/profile/contributions-block"
+import { RegionSectionSpine } from "@/components/regions/region-section-spine"
 import { PromptsBlock } from "@/components/blocks/profile/prompts-block"
 import { PageBreadcrumb } from "@/components/ui/page-breadcrumb"
 import { Suspense } from "react"
@@ -242,11 +243,28 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
             {/* Profile Statistics */}
             <ProfileStatistics user={user} />
 
+            {/* Anchor spine (Gate-2 §profile): same scroll-spy pattern as the
+                regional pages — anchors over one scrollable page. */}
+            <RegionSectionSpine
+                className="mt-8"
+                sections={[
+                    ...(profileSections.about ? [{ id: 'about', label: t('about') }] : []),
+                    ...(profileSections.projects
+                        ? [{ id: 'recent-work', label: t('recentWork.title'), count: user.recentWork.length }]
+                        : []),
+                    { id: 'contributions', label: t('contributions.title') },
+                    ...(user.communities.filter(c => c.type === 'REGIONAL').length > 0
+                        ? [{ id: 'communities', label: t('regionalCommunities') }]
+                        : []),
+                ]}
+            />
+
             <div className="grid gap-8 lg:grid-cols-3 mt-8">
                 {/* Main Content */}
                 <div className="lg:col-span-2 space-y-8">
                     {/* About Section */}
                     {profileSections.about && (
+                        <div id="about" className="scroll-mt-14">
                         <BlurFade delay={BLUR_FADE_DELAY * 11}>
                             <Card>
                                 <CardContent className="pt-6">
@@ -259,6 +277,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                                 </CardContent>
                             </Card>
                         </BlurFade>
+                        </div>
                     )}
 
                     {/* Answered prompts — the most human part of the profile */}
@@ -315,7 +334,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                     {/* Lived experience — already redacted server-side unless opted in */}
                     {user.livedExperienceStatement && (
                         <BlurFade delay={BLUR_FADE_DELAY * 12.5}>
-                            <Card className="border-l-4 border-l-[var(--color-ccm-water)]">
+                            <Card className="border-s-4 border-s-[var(--color-ccm-water)]">
                                 <CardContent className="pt-6">
                                     <h2 className={cn("font-semibold mb-3 text-ccm-midnight", heading('sm'))}>{t('livedExperience')}</h2>
                                     <p className="text-pretty text-sm text-foreground/80 whitespace-pre-line">{user.livedExperienceStatement}</p>
@@ -380,6 +399,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
 
                     {/* Recent Work Section */}
                     {profileSections.projects && (
+                        <div id="recent-work" className="scroll-mt-14">
                         <BlurFade delay={BLUR_FADE_DELAY * 14}>
                             <Card>
                                 <CardContent className="pt-6">
@@ -439,20 +459,24 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                                 </CardContent>
                             </Card>
                         </BlurFade>
+                        </div>
                     )}
 
                     {/* Contributions (community-graph: their case studies / content / work) */}
+                    <div id="contributions" className="scroll-mt-14">
                     <BlurFade delay={BLUR_FADE_DELAY * 14.5}>
-                        <Suspense fallback={null}>
+                        <Suspense fallback={<div className="min-h-[200px]" aria-hidden />}>
                             <ContributionsBlock userId={user.id} locale={locale} />
                         </Suspense>
                     </BlurFade>
+                    </div>
                 </div>
 
                 {/* Sidebar */}
                 <div className="space-y-6">
                     {/* Communities */}
                     {user.communities.filter(c => c.type === 'REGIONAL').length > 0 && (
+                        <div id="communities" className="scroll-mt-14">
                         <BlurFade delay={BLUR_FADE_DELAY * 16}>
                             <Card>
                                 <CardContent className="pt-6">
@@ -471,6 +495,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                                 </CardContent>
                             </Card>
                         </BlurFade>
+                        </div>
                     )}
 
                     {publicWorkspaces.length > 0 && (

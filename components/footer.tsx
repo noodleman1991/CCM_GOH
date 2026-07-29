@@ -7,6 +7,7 @@ import { CookiePreferencesButton } from "@/components/cookie-consent/cookie-pref
 
 export default function Footer() {
   const t = useTranslations("navigation");
+  const tCommon = useTranslations("common");
   const navItems = [
     { label: t("home"), href: "/" },
     { label: t("blog"), href: "/blog" },
@@ -25,7 +26,7 @@ export default function Footer() {
         <Link
           className="block w-[6.25rem] mx-auto"
           href="/"
-          aria-label="Home page"
+          aria-label={tCommon("goToHomepage")}
         >
           <Logo asChild />
         </Link>

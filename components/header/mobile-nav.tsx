@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 import {
   Sheet,
   SheetContent,
@@ -15,12 +16,13 @@ import { useState } from "react";
 import { AlignRight } from "lucide-react";
 
 export default function MobileNav({ navItems }: { navItems: NavItem[] }) {
+  const t = useTranslations("common");
   const [open, setOpen] = useState(false);
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <Button
-          aria-label="Open Menu"
+          aria-label={t("openMenu")}
           variant="ghost"
           className="w-10 p-5 focus-visible:ring-1 focus-visible:ring-offset-1"
         >
@@ -33,8 +35,8 @@ export default function MobileNav({ navItems }: { navItems: NavItem[] }) {
             <Logo />
           </div>
           <div className="sr-only">
-            <SheetTitle>Main Navigation</SheetTitle>
-            <SheetDescription>Navigate to the website pages</SheetDescription>
+            <SheetTitle>{t("mainNavigation")}</SheetTitle>
+            <SheetDescription>{t("mainNavigationDescription")}</SheetDescription>
           </div>
         </SheetHeader>
         <div className="pt-10 pb-20">

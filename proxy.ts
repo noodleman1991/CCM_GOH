@@ -113,7 +113,9 @@ export const config = {
          * - static assets
          * - studio and all its subroutes
          */
-        '/((?!studio|guide-to-editors|_next|_vercel|[^?]*\\.(?:html?|css|js(?!on)|jpg|jpeg|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+        // xml/txt cover sitemap.xml + robots.txt — without them the locale
+        // redirect sent crawlers to /en/sitemap.xml, which 404s (B7 fix).
+        '/((?!studio|guide-to-editors|_next|_vercel|[^?]*\\.(?:html?|css|js(?!on)|jpg|jpeg|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest|xml|txt)).*)',
         '/(api|trpc)(.*)',
     ]
 }

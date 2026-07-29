@@ -41,10 +41,7 @@ export function AuthNavUser({ isRTL = false }: { isRTL?: boolean }) {
                         )}
                         disabled
                     >
-                        <div className={cn(
-                            "grid flex-1 text-sm leading-tight",
-                            isRTL ? "text-right" : "text-left"
-                        )}>
+                        <div className="grid flex-1 text-sm leading-tight text-start">
                             <div className="h-4 bg-gray-200 rounded animate-pulse mb-1"></div>
                             <div className="h-3 bg-gray-200 rounded animate-pulse w-3/4"></div>
                         </div>
@@ -66,9 +63,9 @@ export function AuthNavUser({ isRTL = false }: { isRTL?: boolean }) {
                                 closeMenu?.()
                                 signOut()
                             }}
-                            className={cn(isRTL && "flex-row-reverse text-right")}
+                            className={cn("text-start", isRTL && "flex-row-reverse")}
                         >
-                            <LogOut className={cn(isRTL && "ml-2 mr-0")} />
+                            <LogOut className={cn(isRTL && "ms-0 me-2")} />
                             {t('signOut')}
                         </DropdownMenuItem>
                     )}
@@ -87,8 +84,7 @@ export function AuthNavUser({ isRTL = false }: { isRTL?: boolean }) {
                     (var(--radius)) — across both buttons and the search box. */}
                 <div
                     className={cn(
-                        "flex flex-col gap-2 px-1 group-data-[collapsible=icon]:hidden",
-                        isRTL ? "text-right" : "text-left"
+                        "flex flex-col gap-2 px-1 group-data-[collapsible=icon]:hidden text-start"
                     )}
                     suppressHydrationWarning
                 >

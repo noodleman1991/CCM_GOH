@@ -219,7 +219,7 @@ export default function GridNewsComponent({
             <CardHeader className="pb-3">
                 <div className="space-y-2">
                     {/* Title */}
-                    <h3 className="font-semibold text-lg leading-snug text-balance break-words line-clamp-3 group-hover:text-primary transition-colors">
+                    <h3 dir="auto" className="font-semibold text-lg leading-snug text-balance break-words line-clamp-3 group-hover:text-primary transition-colors">
                         {title}
                     </h3>
                 </div>

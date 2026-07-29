@@ -50,7 +50,7 @@ export function NewsCard({ post, locale, variant = "default" }: NewsCardProps) {
             </h3>
             {post.publishedAt && (
               <p className="text-xs text-muted-foreground mt-1">
-                {new Date(post.publishedAt).toLocaleDateString()}
+                {new Date(post.publishedAt).toLocaleDateString(locale)}
               </p>
             )}
           </div>

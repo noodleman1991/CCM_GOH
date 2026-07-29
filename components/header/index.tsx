@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import Logo from "@/components/logo";
 import MobileNav from "@/components/header/mobile-nav";
 import DesktopNav from "@/components/header/desktop-nav";
@@ -23,17 +24,18 @@ const navItems = [
 ];
 
 export default function Header() {
+    const t = useTranslations("common");
   return (
     <header className="sticky top-0 w-full border-border/40 bg-background/95 z-50">
       <div className="container flex items-center justify-between h-16 px-4">
         {/* Mobile menu - positioned absolute left */}
-        <div className="flex items-center xl:hidden absolute left-4">
+        <div className="flex items-center xl:hidden absolute start-4">
           <ModeToggle />
           <MobileNav navItems={navItems} />
         </div>
 
         {/* Logo - centered on mobile, left-aligned on desktop */}
-        <Link href="/" aria-label="Home page" className="flex-shrink-0 mx-auto xl:mx-0">
+        <Link href="/" aria-label={t("goToHomepage")} className="flex-shrink-0 mx-auto xl:mx-0">
           <Logo asChild />
         </Link>
 

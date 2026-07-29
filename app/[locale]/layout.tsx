@@ -135,12 +135,16 @@ export default async function LocaleLayout({
         <html
             lang={locale}
             dir={isRtl ? 'rtl' : 'ltr'}
-            className={`${poppins.variable} ${lato.variable} ${lalezar.variable} ${tajawal.variable}`}
+            // overscroll-none must live on <html>: the root scroller reads
+            // overscroll-behavior from the html element, not body (no
+            // body→viewport propagation), so this is what actually stops the
+            // rubber-band overscroll flash around the app shell.
+            className={`${poppins.variable} ${lato.variable} ${lalezar.variable} ${tajawal.variable} overscroll-none`}
             suppressHydrationWarning
         >
-        <head>
-            <link rel="icon" href="/favicon.ico" />
-        </head>
+        {/* Icons come from the App Router metadata files (app/icon.svg +
+            app/apple-icon.tsx) — a manual favicon link here would override
+            them with the legacy 16/32px .ico. */}
         <body
             className={cn(
                 "min-h-screen bg-background font-sans antialiased overscroll-none overflow-x-hidden",
@@ -160,7 +164,13 @@ export default async function LocaleLayout({
                     plausible.init();
                 `}
             </Script>
-            <ClerkProvider localization={clerkLocalization}>
+            {/* `dynamic` is required, not optional: without it ClerkProvider
+                resolves its auth-state promise to null during SSR, so every
+                client component that branches on auth (<SignedIn>/<SignedOut>
+                in user-menu-card, useUser() in sidebar-quick-actions) renders
+                signed-out on the server and signed-in after Clerk loads —
+                a hydration mismatch on every page for signed-in users. */}
+            <ClerkProvider localization={clerkLocalization} dynamic>
                 <NextIntlClientProvider messages={messages}>
                     <ThemeProvider
                         attribute="class"

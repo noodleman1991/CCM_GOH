@@ -49,7 +49,7 @@ export function PrivacyPanel({ form, content }: PrivacyPanelProps) {
   return (
     <div className={cn(
       "space-y-5",
-      isRTL && "text-right [&_input]:text-right [&_textarea]:text-right"
+      "text-start [&_input]:text-start [&_textarea]:text-start"
     )} dir={isRTL ? "rtl" : "ltr"}>
       <div className="mb-5">
         <div className={cn("flex items-center gap-2 mb-2", isRTL && "flex-row-reverse")}>

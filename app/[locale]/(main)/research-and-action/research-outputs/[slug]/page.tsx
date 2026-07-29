@@ -64,7 +64,7 @@ export default async function ResearchOutputPage({ params }: { params: Promise<{
           {ro.featured && <Badge className="bg-ccm-sky/30 text-ccm-sea border-0">{t("featured")}</Badge>}
         </div>
 
-        <h1 className={cn("font-bold tracking-tight text-balance", heading("xl"), layout === "feature" ? "text-white" : "text-ccm-midnight")}>
+        <h1 dir="auto" className={cn("font-bold tracking-tight text-balance", heading("xl"), layout === "feature" ? "text-white" : "text-ccm-midnight")}>
           {title}
         </h1>
 

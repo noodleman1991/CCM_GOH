@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import Image from 'next/image';
 import { cn } from "@/lib/utils";
 
@@ -9,6 +10,7 @@ interface LogoProps {
 }
 
 export default function Logo({ className = "", size = "default", asChild = false }: LogoProps) {
+    const t = useTranslations("common");
     // Smart sizing that adapts to container
     const sizeClasses = {
         sm: "h-4 w-auto",           // Small - nav bars
@@ -49,7 +51,7 @@ export default function Logo({ className = "", size = "default", asChild = false
                 "inline-flex items-center",
                 className
             )}
-            aria-label="Go to homepage"
+            aria-label={t("goToHomepage")}
         >
             {logoImage}
         </Link>

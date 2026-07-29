@@ -6,6 +6,7 @@ import { isRegionCode, REGION_TO_RC_SLUG } from "@/lib/maps/region-codes";
 import { parseLayers, FACET_TO_CONTENT_TYPE } from "@/lib/maps/region-facets";
 import { getThemeOptions } from "@/lib/maps/themes";
 import { parseWhen, whenFilter, type WhenFilter } from "@/lib/maps/date-filter";
+import { qFilter, regionMatchFilter, statusFilter, themeFilter } from "@/lib/maps/content-filter";
 import { projectPoint } from "@/lib/maps/project-point";
 import { clusterPins, type FacetContentType, type PinItem } from "@/lib/maps/cluster-pins";
 
@@ -57,14 +58,6 @@ async function fetchRowsForType(
   q: string,
   when: WhenFilter
 ): Promise<RawPinRow[]> {
-  // Theme filter: content matches a theme when one of its dereferenced tags'
-  // slug (`tag.value.current`) exactly equals the selected theme's slug.
-  // `theme` is validated against the CMS-fetched theme list; the value
-  // itself is still only ever passed as the bound `$themeSlug` param.
-  const themeFilter = themeSlug ? ` && $themeSlug in tags[]->value.current` : "";
-  // `q` is NEVER interpolated — always passed as the bound `$q` GROQ param.
-  const qFilter = q ? ` && [title.en, title.es, title.fr, title.ar] match $q + "*"` : "";
-
   // caseStudy stores legacy scalar location fields; livedExperience/newsPost
   // use the shared `place` object; agenda/report have no place data.
   const placeProjection =
@@ -74,20 +67,10 @@ async function fetchRowsForType(
         ? `"point": place.point, "precision": coalesce(place.precision, "city"), "countryCode3": place.countryCode`
         : `"point": null, "precision": null, "countryCode3": null`;
 
-  // Status gating mirrors region-data/region-items: caseStudy/researchOutput
-  // are approved-only; livedExperience allows legacy docs with no status;
-  // newsPost has no review workflow (always public).
-  const publicFilter =
-    type === "caseStudy" || type === "researchOutput"
-      ? ` && status == "approved"`
-      : type === "livedExperience"
-        ? ` && (status == "approved" || !defined(status))`
-        : "";
-
-  const regionMatch = `(region == $region || relatedCommunity->slug.current == $slug || $slug in relatedCommunities[]->slug.current)`;
-
+  // Status/theme/q/region predicates come from lib/maps/content-filter — the
+  // shared trust-contract fragments (counts = cards = pins).
   return client.fetch<RawPinRow[]>(
-    `*[_type == $type ${publicFilter} && ${regionMatch} ${themeFilter} ${qFilter}${when.filter}]{
+    `*[_type == $type${statusFilter(type)}${regionMatchFilter()}${themeFilter(themeSlug)}${qFilter(q)}${when.filter}]{
       _id, "title": coalesce(title.en, title), "slug": slug.current, ${placeProjection}
     }`,
     { type, region, slug, q, themeSlug: themeSlug ?? "", ...when.params }

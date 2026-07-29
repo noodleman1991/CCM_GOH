@@ -10,6 +10,7 @@ import { useCookieConsent } from './cookie-consent-provider'
 
 export function CookieConsentBanner() {
   const t = useTranslations('cookieConsent')
+  const tCommon = useTranslations('common')
   const {
     consent,
     hasConsented,
@@ -108,9 +109,9 @@ export function CookieConsentBanner() {
                   <button
                     onClick={closePreferences}
                     className="text-muted-foreground hover:text-foreground transition-colors"
-                    aria-label="Close"
+                    aria-label={tCommon('close')}
                   >
-                    <span className="sr-only">Close</span>
+                    <span className="sr-only">{tCommon('close')}</span>
                     <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>

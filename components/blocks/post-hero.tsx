@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import PostDate from "@/components/post-date";
 import { Mail } from "lucide-react";
 import { urlFor } from "@/sanity/lib/image";
@@ -13,9 +14,10 @@ export default function PostHero({
   slug,
   _createdAt,
 }: PostHeroProps) {
+  const t = useTranslations("common");
   return (
     <>
-      {title && <h1 className="mb-4 md:mb-6 text-3xl lg:text-5xl">{title}</h1>}
+      {title && <h1 dir="auto" className="mb-4 md:mb-6 text-3xl lg:text-5xl">{title}</h1>}
       {image && image.asset?._id && (
         <div className="my-4 md:my-6 rounded-2xl overflow-hidden">
           <Image
@@ -55,15 +57,15 @@ export default function PostHero({
           <PostDate date={_createdAt as string} />
         </div>
         <div className="flex flex-col md:flex-row gap-2">
-          <div>Share this post</div>
+          <div>{t("sharePost")}</div>
           <div className="flex gap-2">
             <a
               className="hover:opacity-70"
               href={`https://www.facebook.com/sharer/sharer.php?u=${process.env.NEXT_PUBLIC_SITE_URL}/blog/${slug?.current}`}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Share on Facebook"
-              title="Share on Facebook"
+              aria-label={t("shareOnFacebook")}
+              title={t("shareOnFacebook")}
             >
               <svg
                 width="24"
@@ -83,8 +85,8 @@ export default function PostHero({
               href={`mailto:?subject=${title}&body=${title}%0A%0A${process.env.NEXT_PUBLIC_SITE_URL}/blog/${slug?.current}`}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Share via email"
-              title="Share via email"
+              aria-label={t("shareViaEmail")}
+              title={t("shareViaEmail")}
             >
               <Mail size={24} />
             </a>
