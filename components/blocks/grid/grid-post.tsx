@@ -105,7 +105,7 @@ export default function GridPost({ newsPost, featured, locale = "en", userId, im
 
           {/* Title */}
           <div className="mb-2 sm:mb-3">
-            <h3 className="font-bold text-lg sm:text-xl leading-tight line-clamp-2 group-hover:text-primary transition-colors">
+            <h3 dir="auto" className="font-bold text-lg sm:text-xl leading-tight line-clamp-2 group-hover:text-primary transition-colors">
               {localizedTitle}
             </h3>
           </div>

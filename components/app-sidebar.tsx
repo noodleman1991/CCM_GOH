@@ -50,6 +50,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const locale = useLocale()
     const isRTL = rtlLocales.includes(locale)
     const t = useTranslations('navigation')
+    const tCommon = useTranslations('common')
     const pathname = usePathname()
     const [openAccordion, setOpenAccordion] = React.useState<string | null>(null)
 
@@ -235,7 +236,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     swaps to the round "ccm" mark. */}
                 <Link
                     href="/"
-                    aria-label="Go to homepage"
+                    aria-label={tCommon("goToHomepage")}
                     className="flex justify-center px-5 pb-6 pt-6 group-data-[collapsible=icon]:p-2"
                 >
                     <span className="block group-data-[collapsible=icon]:hidden [&_img]:h-[4.25rem] [&_img]:w-auto">

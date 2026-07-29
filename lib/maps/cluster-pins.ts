@@ -87,7 +87,13 @@ export interface DonutSegment {
  */
 export function donutSegments(
   counts: Partial<Record<FacetContentType, number>>,
-  circumference = 2 * Math.PI * 10
+  circumference = 2 * Math.PI * 10,
+  /** Visual breathing gap between segments (in circumference units) — pins v2
+   *  renders rounded caps with a small gap so the ring reads as crafted.
+   *  Applied only when there are 2+ segments; a gap never shrinks a segment
+   *  below a quarter of its true arc (tiny shares stay visible). `share`
+   *  still reports the TRUE proportion — the gap is presentation only. */
+  gap = 0
 ): DonutSegment[] {
   const total = Object.values(counts).reduce((s, n) => s + (n ?? 0), 0);
   if (total <= 0) return [];
@@ -105,15 +111,19 @@ export function donutSegments(
     ...(restCount > 0 ? [{ type: "other" as const, count: restCount }] : []),
   ];
 
+  const effectiveGap = parts.length > 1 ? gap : 0;
   let offset = 0;
   return parts.map(({ type, count }) => {
     const share = count / total;
     const arcLength = share * circumference;
+    const drawn = Math.max(arcLength - effectiveGap, arcLength / 4);
     const segment: DonutSegment = {
       type,
       share,
-      dashArray: `${arcLength} ${circumference - arcLength}`,
-      dashOffset: -offset,
+      dashArray: `${drawn} ${circumference - drawn}`,
+      // Centre the drawn arc inside its true slot so gaps split evenly
+      // between neighbours.
+      dashOffset: -(offset + (arcLength - drawn) / 2),
     };
     offset += arcLength;
     return segment;

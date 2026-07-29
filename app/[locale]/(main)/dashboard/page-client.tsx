@@ -145,7 +145,7 @@ export function DashboardClient({
             </div>
             <Button asChild size="lg">
               <Link href={`/dashboard/profile/edit`}>
-                <Edit className={cn("w-4 h-4", rtl ? "ml-2" : "mr-2")} />
+                <Edit className={"w-4 h-4 me-2"} />
                 {t('editProfile')}
               </Link>
             </Button>
@@ -543,7 +543,7 @@ export function DashboardClient({
                   <Button asChild className="w-full">
                     <Link href={`/communities`}>
                       {t('exploreCommunities')}
-                      <ArrowRight className={cn("w-4 h-4", rtl ? "mr-2" : "ml-2")} />
+                      <ArrowRight className={"w-4 h-4 ms-2"} />
                     </Link>
                   </Button>
                 </CardContent>

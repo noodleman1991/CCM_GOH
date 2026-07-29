@@ -4,6 +4,7 @@ import { Link } from "@/i18n/navigation";
 import { TypedCard } from "@/components/cards/typed-card";
 import { fetchFreshItems } from "@/lib/cards/fresh-items";
 import { getLocalizedText } from "@/lib/localization-utils";
+import { CONTAINER_WIDTH, SECTION_SPACING_Y } from "@/lib/design-tokens";
 
 /**
  * "Fresh on the hub" (Task 13, approved mock v3): a bento — the newest item
@@ -34,7 +35,7 @@ export default async function FreshContent({
   const heading = getLocalizedText(title ?? undefined, locale, "") || t("freshHeading");
 
   return (
-    <section className="container py-10">
+    <section className={`mx-auto px-4 sm:px-6 lg:px-8 ${CONTAINER_WIDTH.default} ${SECTION_SPACING_Y.md}`}>
       <div className="mb-4 flex items-baseline justify-between gap-3">
         <h2 className="font-heading text-xl font-bold text-ccm-midnight sm:text-2xl">
           <bdi>{heading}</bdi>

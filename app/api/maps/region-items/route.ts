@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { client } from "@/sanity/lib/client";
 import { isRegionCode, REGION_TO_RC_SLUG } from "@/lib/maps/region-codes";
 import { parseWhen, whenFilter } from "@/lib/maps/date-filter";
+import { qFilter, regionMatchFilter, statusFilter, themeFilter } from "@/lib/maps/content-filter";
 
 // Content for a selected region/facet(s), as cards for the Atlas panel (D2, E1).
 // `?region=<code>&facet=caseStudyCount|livedExpCount|newsCount|agendaCount` —
@@ -50,14 +51,8 @@ const PLACE_PROJECTION = (type: string) =>
       ? `"place": place.text, "countryCode3": place.countryCode`
       : `"place": null, "countryCode3": null`;
 
-const STATUS_FILTER = (type: string) =>
-  type === "caseStudy"
-    ? ' && status == "approved"'
-    : type === "livedExperience"
-      ? ' && (status == "approved" || !defined(status))'
-      : type === "researchOutput"
-        ? ' && status == "approved"'
-        : "";
+// Status/theme/q/region predicates come from lib/maps/content-filter — the
+// shared trust-contract fragments (counts = cards = pins).
 
 export async function GET(req: NextRequest) {
   const region = req.nextUrl.searchParams.get("region") || "";
@@ -72,7 +67,7 @@ export async function GET(req: NextRequest) {
       const perType = await Promise.all(
         ALL_TYPES.map((type) =>
           client.fetch(
-            `*[_type == $type ${STATUS_FILTER(type)} && defined(coalesce(studyLocation, place.point))] | order(coalesce(publishedAt, publishDate, _createdAt) desc)[0...${limit}]{
+            `*[_type == $type${statusFilter(type)} && defined(coalesce(studyLocation, place.point))] | order(coalesce(publishedAt, publishDate, _createdAt) desc)[0...${limit}]{
               "id": _id,
               "type": _type,
               "title": coalesce(title.en, title, ""),
@@ -114,17 +109,8 @@ export async function GET(req: NextRequest) {
   }
   const slug = REGION_TO_RC_SLUG[region];
 
-  // Match either the new `region` short-code field OR (fallback) a reference to
-  // the region's community by slug — so it works pre- and post-backfill.
-  const regionMatch = `(region == $region || relatedCommunity->slug.current == $slug || $slug in relatedCommunities[]->slug.current)`;
-
-  // Theme + free-text filters mirror region-data's predicates exactly, so the
-  // cards always list the documents the counts describe. Both values are only
-  // ever passed as bound GROQ params — never interpolated.
   const theme = req.nextUrl.searchParams.get("theme") || "";
   const q = req.nextUrl.searchParams.get("q") || "";
-  const themeFilter = theme ? ` && $themeSlug in tags[]->value.current` : "";
-  const qFilter = q ? ` && [title.en, title.es, title.fr, title.ar] match $q + "*"` : "";
   // "When" date facet — same bound-param predicate the map counts use, so the
   // cards list exactly the documents the counts describe.
   const when = whenFilter(parseWhen(req.nextUrl.searchParams.get("when")), new Date());
@@ -133,7 +119,7 @@ export async function GET(req: NextRequest) {
     const perType = await Promise.all(
       types.map((type) =>
         client.fetch(
-          `*[_type == $type ${STATUS_FILTER(type)} && ${regionMatch}${themeFilter}${qFilter}${when.filter}] | order(coalesce(publishedAt, publishDate, _createdAt) desc)[0...12]{
+          `*[_type == $type${statusFilter(type)}${regionMatchFilter()}${themeFilter(theme)}${qFilter(q)}${when.filter}] | order(coalesce(publishedAt, publishDate, _createdAt) desc)[0...12]{
             "id": _id,
             "type": _type,
             "title": coalesce(title.en, title, ""),

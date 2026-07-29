@@ -103,7 +103,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ loca
           </Badge>
         )}
 
-        <h1 className={cn("font-bold tracking-tight text-balance", heading('xl'), layout === 'feature' ? "text-white" : "text-ccm-midnight")}>{title}</h1>
+        <h1 dir="auto" className={cn("font-bold tracking-tight text-balance", heading('xl'), layout === 'feature' ? "text-white" : "text-ccm-midnight")}>{title}</h1>
 
         {excerpt && (
           <p className={cn("text-lg md:text-xl text-pretty", layout === 'feature' ? "text-white/80" : "text-muted-foreground")}>{excerpt}</p>

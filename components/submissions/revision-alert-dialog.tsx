@@ -82,12 +82,12 @@ export default function RevisionAlertDialog({
                     {getTitle(submission)}
                   </h4>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Submitted {new Date(submission.submittedAt).toLocaleDateString()}
+                    {t('submittedOn', { date: new Date(submission.submittedAt).toLocaleDateString(locale) })}
                   </p>
                 </div>
                 <Badge variant="outline" className="text-xs bg-orange-50 text-orange-700 border-orange-200">
                   <AlertCircle className="w-3 h-3 me-1" />
-                  Revision
+                  {t('revisionBadge')}
                 </Badge>
               </div>
 

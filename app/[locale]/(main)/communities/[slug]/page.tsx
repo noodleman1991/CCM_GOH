@@ -92,7 +92,9 @@ export default async function RegionalCommunityPage({
     const hasRegionHero = Boolean(slugToShortCode(slug));
 
     return (
-        <main dir={rtl ? 'rtl' : 'ltr'}>
+        // Plain div: the (main) layout's SidebarInset already provides the
+        // page's single <main> landmark (axe duplicate-landmark fix).
+        <div dir={rtl ? 'rtl' : 'ltr'}>
             {hasRegionHero ? (
                 <RegionHero slug={slug} locale={locale} />
             ) : (
@@ -178,6 +180,6 @@ export default async function RegionalCommunityPage({
                     userId={userId!}
                 />
             )}
-        </main>
+        </div>
     );
 }

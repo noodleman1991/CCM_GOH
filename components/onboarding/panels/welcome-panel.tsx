@@ -158,7 +158,7 @@ export function WelcomePanel({ content }: WelcomePanelProps) {
   return (
     <div className={cn(
       "space-y-6",
-      isRTL && "text-right [&_input]:text-right [&_textarea]:text-right"
+      "text-start [&_input]:text-start [&_textarea]:text-start"
     )} dir={isRTL ? "rtl" : "ltr"}>
       {/* Hero Section */}
       <div className="text-center space-y-3">
@@ -184,10 +184,7 @@ export function WelcomePanel({ content }: WelcomePanelProps) {
         {features.map((feature, index) => (
           <div
             key={index}
-            className={cn(
-              "text-center space-y-2 p-4 rounded-lg bg-gradient-to-br from-gray-50 to-gray-100 hover:from-primary/5 hover:to-primary/10 transition-colors",
-              isRTL && "text-right"
-            )}
+            className="text-center space-y-2 p-4 rounded-lg bg-gradient-to-br from-gray-50 to-gray-100 hover:from-primary/5 hover:to-primary/10 transition-colors"
           >
             <div className={cn("flex justify-center", isRTL && "flex-row-reverse")}>
               <div className="bg-card p-2.5 rounded-full shadow-sm">
@@ -202,10 +199,10 @@ export function WelcomePanel({ content }: WelcomePanelProps) {
 
       {/* Getting Started */}
       <div className="bg-gradient-to-r from-primary/10 to-primary/5 p-4 rounded-lg">
-        <h3 className={cn("font-semibold text-sm text-foreground mb-1.5", isRTL && "text-right")}>
+        <h3 className={"font-semibold text-sm text-foreground mb-1.5 text-start"}>
           {gettingStartedTitle}
         </h3>
-        <p className={cn("text-xs text-muted-foreground", isRTL && "text-right")}>
+        <p className={"text-xs text-muted-foreground text-start"}>
           {gettingStartedDescription}
         </p>
       </div>

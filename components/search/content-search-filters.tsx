@@ -127,6 +127,7 @@ interface YearRangeFilterProps {
 }
 
 function YearRangeFilterUI({ state }: YearRangeFilterProps) {
+  const t = useTranslations('search.filterLabels')
   const {
     minValue,
     maxValue,
@@ -140,7 +141,7 @@ function YearRangeFilterUI({ state }: YearRangeFilterProps) {
   } = state
 
   return (
-    <FilterSection title="Year Range">
+    <FilterSection title={t('yearRange')}>
       <div className="space-y-3">
         <div className="flex items-center gap-2">
           <input
@@ -153,7 +154,7 @@ function YearRangeFilterUI({ state }: YearRangeFilterProps) {
             onKeyDown={(e) => e.key === 'Enter' && applyFilter()}
             className="w-20 px-2 py-1 border rounded text-sm"
           />
-          <span className="text-muted-foreground">to</span>
+          <span className="text-muted-foreground">{t('to')}</span>
           <input
             type="number"
             min={defaultMin}
@@ -172,7 +173,7 @@ function YearRangeFilterUI({ state }: YearRangeFilterProps) {
             onClick={applyFilter}
             className="text-xs"
           >
-            Apply
+            {t('apply')}
           </Button>
           {isFiltered && (
             <Button
@@ -181,7 +182,7 @@ function YearRangeFilterUI({ state }: YearRangeFilterProps) {
               onClick={clearFilter}
               className="text-xs"
             >
-              Clear
+              {t('clear')}
             </Button>
           )}
         </div>
@@ -192,7 +193,7 @@ function YearRangeFilterUI({ state }: YearRangeFilterProps) {
 
 function ActiveFilters() {
   const { items, refine } = useCurrentRefinements({}, { skipSuspense: true })
-  const t = useTranslations('search.filters')
+  const t = useTranslations('search.filterLabels')
 
   if (!items || items.length === 0) return null
 
@@ -200,7 +201,7 @@ function ActiveFilters() {
     <div className="mb-6">
       <div className="flex items-center gap-2 mb-3">
         <Filter className="h-4 w-4" />
-        <span className="text-sm font-medium">Active Filters</span>
+        <span className="text-sm font-medium">{t('activeFilters')}</span>
       </div>
       <div className="flex flex-wrap gap-2">
         {items.map((item) => (
@@ -225,7 +226,7 @@ function ActiveFilters() {
 }
 
 export default function ContentSearchFilters({ type }: ContentSearchFiltersProps) {
-  const t = useTranslations('search.filters')
+  const t = useTranslations('search.filterLabels')
   const yearFilterState = useYearFilterState()
 
   return (
@@ -237,7 +238,7 @@ export default function ContentSearchFilters({ type }: ContentSearchFiltersProps
 
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-lg">Filters</CardTitle>
+          <CardTitle className="text-lg">{t('title')}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           <ActiveFilters />
@@ -246,27 +247,27 @@ export default function ContentSearchFilters({ type }: ContentSearchFiltersProps
             <>
               <RefinementListFilter
                 attribute="status"
-                title="Status"
+                title={t('status')}
                 limit={5}
               />
               <RefinementListFilter
                 attribute="authors.role"
-                title="Author Role"
+                title={t('authorRole')}
                 limit={5}
               />
               <RefinementListFilter
                 attribute="organizations"
-                title="Organizations"
+                title={t('organizations')}
                 limit={8}
               />
               <RefinementListFilter
                 attribute="tags"
-                title="Tags"
+                title={t('tags')}
                 limit={10}
               />
               <RefinementListFilter
                 attribute="featured"
-                title="Featured"
+                title={t('featured')}
                 limit={2}
               />
             </>
@@ -276,28 +277,28 @@ export default function ContentSearchFilters({ type }: ContentSearchFiltersProps
             <>
               <RefinementListFilter
                 attribute="agendaType"
-                title="Agenda Type"
+                title={t('agendaType')}
                 limit={10}
               />
               <YearRangeFilterUI state={yearFilterState} />
               <RefinementListFilter
                 attribute="organizations"
-                title="Organizations"
+                title={t('organizations')}
                 limit={8}
               />
               <RefinementListFilter
                 attribute="regionalCommunities"
-                title="Regional Communities"
+                title={t('regionalCommunities')}
                 limit={8}
               />
               <RefinementListFilter
                 attribute="tags"
-                title="Tags"
+                title={t('tags')}
                 limit={10}
               />
               <RefinementListFilter
                 attribute="featured"
-                title="Featured"
+                title={t('featured')}
                 limit={2}
               />
             </>
@@ -307,32 +308,32 @@ export default function ContentSearchFilters({ type }: ContentSearchFiltersProps
             <>
               <RefinementListFilter
                 attribute="author.name"
-                title="Author"
+                title={t('author')}
                 limit={8}
               />
               <RefinementListFilter
                 attribute="organizations"
-                title="Organizations"
+                title={t('organizations')}
                 limit={8}
               />
               <RefinementListFilter
                 attribute="projects"
-                title="Projects"
+                title={t('projects')}
                 limit={8}
               />
               <RefinementListFilter
                 attribute="tags"
-                title="Tags"
+                title={t('tags')}
                 limit={10}
               />
               <RefinementListFilter
                 attribute="location.country"
-                title="Country"
+                title={t('country')}
                 limit={10}
               />
               <RefinementListFilter
                 attribute="featured"
-                title="Featured"
+                title={t('featured')}
                 limit={2}
               />
             </>
@@ -341,7 +342,7 @@ export default function ContentSearchFilters({ type }: ContentSearchFiltersProps
           {type !== 'news' && (
             <RefinementListFilter
               attribute="accessLevel"
-              title="Access Level"
+              title={t('accessLevel')}
               limit={3}
             />
           )}

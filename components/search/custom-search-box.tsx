@@ -3,6 +3,7 @@
 import { useSearchBox } from 'react-instantsearch'
 import { Search, X } from 'lucide-react'
 import { useRef, useState, useEffect } from 'react'
+import { useTranslations } from 'next-intl'
 
 interface CustomSearchBoxProps {
   placeholder?: string
@@ -13,7 +14,9 @@ interface CustomSearchBoxProps {
 // on every character, which made the results flicker.
 const SEARCH_DEBOUNCE_MS = 250
 
-export function CustomSearchBox({ placeholder = 'Search...' }: CustomSearchBoxProps) {
+export function CustomSearchBox({ placeholder }: CustomSearchBoxProps) {
+  const t = useTranslations('common')
+  const placeholderText = placeholder ?? t('search')
   const { query, refine } = useSearchBox()
   const [inputValue, setInputValue] = useState(query)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -65,7 +68,7 @@ export function CustomSearchBox({ placeholder = 'Search...' }: CustomSearchBoxPr
         type="text"
         value={inputValue}
         onChange={handleChange}
-        placeholder={placeholder}
+        placeholder={placeholderText}
         className="flex h-12 w-full rounded-md border border-input bg-background ps-11 pe-11 py-2 text-base text-foreground ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
         autoComplete="off"
         autoCorrect="off"
@@ -79,7 +82,7 @@ export function CustomSearchBox({ placeholder = 'Search...' }: CustomSearchBoxPr
           type="button"
           onClick={handleClear}
           className="absolute end-3 top-1/2 -translate-y-1/2 p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-          aria-label="Clear search"
+          aria-label={t('clearSearch')}
         >
           <X className="h-4 w-4" />
         </button>

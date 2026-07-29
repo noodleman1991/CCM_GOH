@@ -98,7 +98,7 @@ export function BasicInfoPanel({ form, content }: BasicInfoPanelProps) {
   return (
     <div className={cn(
       "space-y-5",
-      isRTL && "text-right [&_input]:text-right [&_textarea]:text-right"
+      "text-start [&_input]:text-start [&_textarea]:text-start"
     )} dir={isRTL ? "rtl" : "ltr"}>
       <div className="mb-5">
         <h2 className="text-2xl font-bold text-foreground mb-2">
@@ -246,7 +246,7 @@ export function BasicInfoPanel({ form, content }: BasicInfoPanelProps) {
                     <SelectValue placeholder={content?.fieldLabels?.basicInfo?.selectAge || t("selectAge")} />
                   </SelectTrigger>
                 </FormControl>
-                <SelectContent dir={isRTL ? "rtl" : "ltr"} className={cn(isRTL && "text-right")}>
+                <SelectContent dir={isRTL ? "rtl" : "ltr"} className="text-start">
                   <SelectItem value="UNDER_18">{content?.fieldLabels?.basicInfo?.under18 || t("under18")}</SelectItem>
                   <SelectItem value="ABOVE_18">{content?.fieldLabels?.basicInfo?.above18 || t("above18")}</SelectItem>
                 </SelectContent>

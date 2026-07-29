@@ -5,6 +5,7 @@ import { REGION_CODES, RC_SLUG_TO_REGION, isRegionCode, type RegionCode } from "
 import { aggregateRegionData, FACET_TO_CONTENT_TYPE, parseLayers, type FacetId } from "@/lib/maps/region-facets";
 import { getThemeOptions } from "@/lib/maps/themes";
 import { parseWhen, whenFilter, type WhenFilter } from "@/lib/maps/date-filter";
+import { qFilter, statusFilter, themeFilter } from "@/lib/maps/content-filter";
 
 // Counts change slowly; cache for 5 minutes.
 export const revalidate = 300;
@@ -26,30 +27,16 @@ async function countsForFacet(
   const counts = emptyCounts();
   const type = FACET_TO_CONTENT_TYPE[facet];
   if (type) {
-    // Status gates mirror region-items' STATUS_FILTER exactly — the atlas
-    // counts must describe the SAME set of documents the cards list.
-    const statusFilter =
-      type === "caseStudy" || type === "researchOutput"
-        ? ' && status == "approved"'
-        : type === "livedExperience"
-          ? ' && (status == "approved" || !defined(status))'
-          : "";
-    // Theme filter: content matches a theme when one of its dereferenced
-    // tags' slug (`tag.value.current`) exactly equals the selected theme's
-    // slug. `theme` has already been validated against the CMS-fetched
-    // theme list above, but the value itself is still only ever passed as
-    // the bound `$themeSlug` param — never interpolated.
-    const themeFilter = theme ? ` && $themeSlug in tags[]->value.current` : "";
-    // Free-text filter on the content's own localized title. `q` is NEVER
-    // interpolated — always passed as the bound `$q` GROQ param.
-    const qFilter = q ? ` && [title.en, title.es, title.fr, title.ar] match $q + "*"` : "";
+    // Shared predicates (lib/maps/content-filter) — the trust contract:
+    // counts, cards and pins compose the SAME fragments.
+    const filters = statusFilter(type) + themeFilter(theme) + qFilter(q);
     // Region attribution mirrors region-items' regionMatch: a doc belongs to a
     // region via its `region` short code OR any referenced community (single
     // `relatedCommunity` or the `relatedCommunities[]` array). A doc counting
     // in several regions appears in each region's cards, so it counts in each.
     const rows: { code: string | null; rcSlug: string | null; rcSlugs: (string | null)[] | null }[] =
       await client.fetch(
-        `*[_type == "${type}"${statusFilter}${themeFilter}${qFilter}${when.filter}]{
+        `*[_type == "${type}"${filters}${when.filter}]{
            "code": region,
            "rcSlug": relatedCommunity->slug.current,
            "rcSlugs": relatedCommunities[]->slug.current

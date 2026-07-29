@@ -46,7 +46,7 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
   return (
     <div className={cn(
       "space-y-5",
-      isRTL && "text-right [&_input]:text-right [&_textarea]:text-right"
+      "text-start [&_input]:text-start [&_textarea]:text-start"
     )} dir={isRTL ? "rtl" : "ltr"}>
       <div className="mb-5">
         <h2 className="text-2xl font-bold text-foreground mb-2">

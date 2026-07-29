@@ -1,4 +1,6 @@
 'use client'
+import { useRef, useState } from 'react'
+import { useTranslations } from 'next-intl'
 
 import { cn } from '@/lib/utils'
 import geometry from './region-geometry.json'
@@ -40,8 +42,21 @@ export function RegionChoropleth({
   pins?: PinCluster[]
   onPinClick?: (cluster: PinCluster) => void
 }) {
+  const t = useTranslations('common')
   const byCode = new Map(data.map((d) => [d.code, d]))
   const regions = geometry.regions as Record<string, { d: string }>
+
+  // Pane-free region selection (Gate-2 §atlas): the map itself names regions —
+  // hovering/focusing a region floats a name+count pill above it. Positioned
+  // from the live path bbox so it tracks the fluid SVG scale.
+  const pathRefs = useRef<Partial<Record<RegionCode, SVGPathElement | null>>>({})
+  const [hoverLabel, setHoverLabel] = useState<{ code: RegionCode; x: number; y: number } | null>(null)
+  const showLabel = (code: RegionCode) => {
+    const el = pathRefs.current[code]
+    if (!el) return
+    const b = el.getBBox()
+    setHoverLabel({ code, x: b.x + b.width / 2, y: Math.max(b.y - 6, 14) })
+  }
 
   // Shade from a light sky tint (low) toward full sea (high). Keep a visible
   // floor so a zero-count region still reads as land, not background.
@@ -50,22 +65,25 @@ export function RegionChoropleth({
     return `color-mix(in srgb, var(--color-ccm-sea) ${pct}%, white)`
   }
 
-  // A single-type cluster is a solid `COLOR.layer` circle. Amber is reserved
-  // for selection/highlight only (never "mixed" — see the donut below).
-  const fillForCluster = (cluster: PinCluster) => COLOR.layer[layerColorKeyFor(cluster.types[0])]
-  // Donut ring radius/stroke for mixed clusters — the SVG circle's radius must
-  // shrink by half the stroke width so the ring's outer edge still lands on
-  // the cluster's usual footprint (matches the solid circle's `r`).
-  const DONUT_R = 8
-  const DONUT_STROKE = 6
+  // Pins v2 (Gate-2 §atlas): every cluster is a WHITE core with the count in
+  // midnight, ringed by layer-coloured segments with rounded caps and small
+  // gaps; a soft same-hue halo blooms on hover/focus. Single items render as
+  // a droplet in their layer colour. Amber stays reserved for selection.
+  const dominantColor = (cluster: PinCluster) => COLOR.layer[layerColorKeyFor(cluster.types[0])]
+  // Sized in viewBox units (960×500) so pins render ~40px at typical map
+  // widths — prominent, per the approved mock.
+  const DONUT_R = 16
+  const DONUT_STROKE = 5
+  const CORE_R = DONUT_R - DONUT_STROKE / 2 - 1
   const DONUT_CIRCUMFERENCE = 2 * Math.PI * DONUT_R
+  const SEGMENT_GAP = DONUT_CIRCUMFERENCE * 0.045
 
   return (
     <svg
       viewBox={geometry.viewBox}
       className={cn('h-auto w-full select-none overflow-visible', className)}
       role="img"
-      aria-label="Regional map"
+      aria-label={t('regionalMap')}
     >
       {Object.entries(regions).map(([code, { d }]) => {
         const datum = byCode.get(code as RegionCode)
@@ -74,6 +92,7 @@ export function RegionChoropleth({
         return (
           <path
             key={code}
+            ref={(el) => { pathRefs.current[code as RegionCode] = el }}
             d={d}
             tabIndex={0}
             role="button"
@@ -87,10 +106,10 @@ export function RegionChoropleth({
               'hover:opacity-90 focus-visible:opacity-90',
               activeCode && !isActive && 'opacity-60'
             )}
-            onMouseEnter={() => onHover?.(code as RegionCode)}
-            onMouseLeave={() => onHover?.(null)}
-            onFocus={() => onHover?.(code as RegionCode)}
-            onBlur={() => onHover?.(null)}
+            onMouseEnter={() => { onHover?.(code as RegionCode); showLabel(code as RegionCode) }}
+            onMouseLeave={() => { onHover?.(null); setHoverLabel(null) }}
+            onFocus={() => { onHover?.(code as RegionCode); showLabel(code as RegionCode) }}
+            onBlur={() => { onHover?.(null); setHoverLabel(null) }}
             onClick={() => onSelect?.(code as RegionCode)}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
@@ -102,26 +121,32 @@ export function RegionChoropleth({
         )
       })}
       {pins?.map((c, i) => {
-        const isMixed = c.types.length > 1
-        const segments = isMixed ? donutSegments(c.typeCounts, DONUT_CIRCUMFERENCE) : []
+        const isCluster = c.count > 1
+        const segments = isCluster ? donutSegments(c.typeCounts, DONUT_CIRCUMFERENCE, SEGMENT_GAP) : []
+        const color = dominantColor(c)
         return (
           <g
             key={`${c.x}-${c.y}-${i}`}
             role="button"
             tabIndex={0}
-            aria-label={`${c.count} ${c.items[0]?.title ?? ''}`}
-            className="cursor-pointer outline-none"
+            aria-label={isCluster ? `${c.count} — ${c.items[0]?.title ?? ''}` : c.items[0]?.title ?? ''}
+            className="group/pin cursor-pointer outline-none"
             onClick={(e) => { e.stopPropagation(); onPinClick?.(c) }}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onPinClick?.(c) }
             }}
           >
-            {isMixed ? (
+            {isCluster ? (
               <>
-                {/* Base ring (slate) so gaps between rounded segment caps never
-                    show background through the donut. */}
-                <circle cx={c.x} cy={c.y} r={DONUT_R} fill="none" stroke={CCM.slate}
-                  strokeWidth={DONUT_STROKE} opacity={0.25} />
+                {/* Same-hue halo blooms on hover/focus. */}
+                <circle cx={c.x} cy={c.y} r={DONUT_R + 5} fill={color}
+                  className="opacity-0 transition-opacity duration-200 group-hover/pin:opacity-15 group-focus-visible/pin:opacity-15 motion-reduce:transition-none" />
+                {/* White core carries the count in midnight — legible on any
+                    map shade beneath. */}
+                <circle cx={c.x} cy={c.y} r={CORE_R} fill="white"
+                  className="drop-shadow-[0_1.5px_3px_rgba(11,49,96,0.3)]" />
+                {/* Rounded-cap segments with breathing gaps — the ring IS the
+                    legend (exact layer colours). */}
                 {segments.map((seg, si) => (
                   <circle
                     key={`${seg.type}-${si}`}
@@ -129,28 +154,54 @@ export function RegionChoropleth({
                     fill="none"
                     stroke={donutSegmentColor(seg.type)}
                     strokeWidth={DONUT_STROKE}
+                    strokeLinecap="round"
                     strokeDasharray={seg.dashArray}
                     strokeDashoffset={seg.dashOffset}
                     transform={`rotate(-90 ${c.x} ${c.y})`}
                   />
                 ))}
-                {/* Solid centre disc keeps the count legible regardless of
-                    which segment colours sit behind it. */}
-                <circle cx={c.x} cy={c.y} r={DONUT_R - DONUT_STROKE / 2} fill={CCM.midnight} />
+                <text x={c.x} y={c.y + 4.5} textAnchor="middle"
+                  className="pointer-events-none font-heading text-[13px] font-bold tabular-nums"
+                  fill={CCM.midnight}>
+                  {c.count}
+                </text>
               </>
             ) : (
-              <circle cx={c.x} cy={c.y} r={c.count > 1 ? 11 : 7}
-                fill={fillForCluster(c)} stroke="white" strokeWidth={2} />
-            )}
-            {c.count > 1 && (
-              <text x={c.x} y={c.y + 3.5} textAnchor="middle"
-                className="fill-white font-heading text-[10px] font-bold">
-                {c.count}
-              </text>
+              <>
+                {/* Single item: droplet in its layer colour, tip on the exact
+                    location, white inner dot. */}
+                <circle cx={c.x} cy={c.y - 13} r={15} fill={color}
+                  className="opacity-0 transition-opacity duration-200 group-hover/pin:opacity-15 group-focus-visible/pin:opacity-15 motion-reduce:transition-none" />
+                <path
+                  d="M0 0C0 0 6.5 -6 6.5 -10.5A6.5 6.5 0 1 0 -6.5 -10.5C-6.5 -6 0 0 0 0Z"
+                  transform={`translate(${c.x} ${c.y}) scale(1.6)`}
+                  fill={color}
+                  stroke="white"
+                  strokeWidth={1}
+                  className="drop-shadow-[0_1.5px_3px_rgba(11,49,96,0.3)]"
+                />
+                <circle cx={c.x} cy={c.y - 16.8} r={3.6} fill="white" />
+              </>
             )}
           </g>
         )
       })}
+      {/* Floating region name+count pill (pane-free selection). */}
+      {hoverLabel && (() => {
+        const datum = byCode.get(hoverLabel.code)
+        const text = `${labelFor(hoverLabel.code)} · ${datum?.value ?? 0}`
+        const w = text.length * 6.8 + 22
+        return (
+          <g className="pointer-events-none" aria-hidden>
+            <rect x={hoverLabel.x - w / 2} y={hoverLabel.y - 13} width={w} height={24} rx={12}
+              fill="white" className="drop-shadow-[0_2px_5px_rgba(11,49,96,0.22)]" />
+            <text x={hoverLabel.x} y={hoverLabel.y + 4} textAnchor="middle"
+              className="font-heading text-[11.5px] font-bold" fill={CCM.midnight}>
+              {text}
+            </text>
+          </g>
+        )
+      })()}
     </svg>
   )
 }

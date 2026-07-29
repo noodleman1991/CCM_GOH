@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useUser } from "@clerk/nextjs";
+import { useAuth } from "@clerk/nextjs";
 import { FolderPlus, Search, UsersRound } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { useSearchStore } from "@/stores/search-store";
@@ -17,7 +17,11 @@ import { useSidebar } from "@/components/ui/sidebar";
 export function SidebarQuickActions() {
   const t = useTranslations("navigation");
   const { setOpenMobile } = useSidebar();
-  const { isSignedIn } = useUser();
+  // useAuth(), NOT useUser(): <ClerkProvider dynamic> populates the session on
+  // the server, so this resolves during SSR and the hrefs come out correct in
+  // the HTML. useUser() loads the User resource client-side only, so branching
+  // render output on it produced a hydration mismatch on every page.
+  const { isSignedIn } = useAuth();
 
   const gate = (target: string) => (isSignedIn ? target : `/sign-in?redirect=${encodeURIComponent(target)}`);
   const close = () => setOpenMobile(false);

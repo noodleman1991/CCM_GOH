@@ -126,7 +126,7 @@ export default function CaseStudiesListing({
 
             {/* Featured badge */}
             {showFeaturedBadge && caseStudy.featured && (
-              <div className="absolute top-3 left-3">
+              <div className="absolute top-3 start-3">
                 <Badge variant="secondary" className="flex items-center gap-1">
                   <Star className="w-3 h-3 fill-current" />
                   Featured
@@ -136,7 +136,7 @@ export default function CaseStudiesListing({
 
             {/* Topic badge */}
             {caseStudy.topic && (
-              <div className="absolute top-3 right-3">
+              <div className="absolute top-3 end-3">
                 <Badge variant="outline" className="bg-background/80 backdrop-blur-sm">
                   {caseStudy.topic.replace('-', ' ')}
                 </Badge>

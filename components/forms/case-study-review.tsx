@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import { useCaseStudyStore } from "@/stores/case-study-store"
 import { toast } from "sonner"
 import {
@@ -45,6 +45,7 @@ const languages = [
 
 export default function CaseStudyReview({ availableTags, userId }: CaseStudyReviewProps) {
     const t = useTranslations('caseStudyForm')
+    const locale = useLocale()
     const [isSubmitting, setIsSubmitting] = useState(false)
 
     const {
@@ -339,9 +340,9 @@ export default function CaseStudyReview({ availableTags, userId }: CaseStudyRevi
                             <div className="flex items-center gap-2">
                                 <Calendar className="w-4 h-4 text-muted-foreground" />
                                 <span className="text-sm">
-                  {formData.studyPeriod.startDate && new Date(formData.studyPeriod.startDate).toLocaleDateString()}
+                  {formData.studyPeriod.startDate && new Date(formData.studyPeriod.startDate).toLocaleDateString(locale)}
                                     {formData.studyPeriod.startDate && formData.studyPeriod.endDate && ' - '}
-                                    {formData.studyPeriod.endDate ? new Date(formData.studyPeriod.endDate).toLocaleDateString() :
+                                    {formData.studyPeriod.endDate ? new Date(formData.studyPeriod.endDate).toLocaleDateString(locale) :
                                         (formData.studyPeriod.startDate && ' - Ongoing')}
                 </span>
                             </div>

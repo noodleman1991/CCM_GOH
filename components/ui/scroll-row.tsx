@@ -1,4 +1,5 @@
 'use client'
+import { useTranslations } from 'next-intl'
 
 import { useRef, useState, useEffect, type ReactNode } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
@@ -22,6 +23,7 @@ export function ScrollRow({
   isRTL?: boolean
   className?: string
 }) {
+  const t = useTranslations('common')
   const trackRef = useRef<HTMLDivElement>(null)
   const [canStart, setCanStart] = useState(false)
   const [canEnd, setCanEnd] = useState(false)
@@ -71,7 +73,7 @@ export function ScrollRow({
         {canStart && (
           <button
             type="button"
-            aria-label="Scroll back"
+            aria-label={t('scrollBack')}
             onClick={() => scrollByPage('start')}
             className="absolute start-0 top-1/2 z-10 hidden -translate-y-1/2 rounded-full bg-background/90 p-1.5 shadow-md ring-1 ring-border transition-opacity hover:bg-background md:block opacity-0 group-hover/row:opacity-100"
           >
@@ -90,7 +92,7 @@ export function ScrollRow({
         {canEnd && (
           <button
             type="button"
-            aria-label="Scroll forward"
+            aria-label={t('scrollForward')}
             onClick={() => scrollByPage('end')}
             className="absolute end-0 top-1/2 z-10 hidden -translate-y-1/2 rounded-full bg-background/90 p-1.5 shadow-md ring-1 ring-border transition-opacity hover:bg-background md:block opacity-0 group-hover/row:opacity-100"
           >

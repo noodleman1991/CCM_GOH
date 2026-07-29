@@ -74,11 +74,11 @@ export function NavUser({
                                     </AvatarFallback>
                                 </Avatar>
                             </NotificationDot>
-                            <div className={cn("grid flex-1 text-sm leading-tight", isRTL ? "text-right" : "text-left")}>
+                            <div className="grid flex-1 text-sm leading-tight text-start">
                                 <span className="truncate font-medium">{user.name}</span>
                                 <span className="truncate text-xs">{user.email}</span>
                             </div>
-                            <ChevronsUpDown className={cn("size-4", isRTL ? "mr-auto" : "ml-auto")} />
+                            <ChevronsUpDown className="size-4 ms-auto" />
                         </SidebarMenuButton>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
@@ -88,14 +88,14 @@ export function NavUser({
                         sideOffset={4}
                     >
                         <DropdownMenuLabel className="p-0 font-normal">
-                            <div className={cn("flex items-center gap-2 px-1 py-1.5 text-sm", isRTL ? "flex-row-reverse text-right" : "text-left")}>
+                            <div className={cn("flex items-center gap-2 px-1 py-1.5 text-sm text-start", isRTL && "flex-row-reverse")}>
                                 <Avatar className="h-8 w-8 rounded-lg">
                                     <AvatarImage src={user.avatar} alt={user.name} />
                                     <AvatarFallback className="rounded-lg">
                                         {user.name.substring(0, 2).toUpperCase()}
                                     </AvatarFallback>
                                 </Avatar>
-                                <div className={cn("grid flex-1 text-sm leading-tight", isRTL ? "text-right" : "text-left")}>
+                                <div className="grid flex-1 text-sm leading-tight text-start">
                                     <span className="truncate font-medium">{user.name}</span>
                                     <span className="truncate text-xs">{user.email}</span>
                                 </div>

@@ -19,4 +19,21 @@ export default [
       "**/*.config.{js,mjs,ts}",
     ],
   },
+  {
+    // Text guard (polish standard §2): user-visible text never hand-truncates —
+    // clamping is line-clamp's job, with the full string in title/aria and on
+    // the detail page. Warn (not error) while the i18n sweep retires the
+    // existing "Loading..."-style literals; new code should not add any.
+    files: ["components/**/*.tsx", "app/**/*.tsx"],
+    rules: {
+      "no-restricted-syntax": [
+        "warn",
+        {
+          selector: "JSXText[value=/\\.\\.\\.|\\u2026/]",
+          message:
+            "No literal ellipsis in JSX — clamp with line-clamp (full text in title/aria) or use an i18n string without '…'.",
+        },
+      ],
+    },
+  },
 ];

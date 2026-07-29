@@ -438,10 +438,13 @@ export default function GroupedSearch() {
         </p>
       )}
 
-      {/* Group filter chips — scope the results to one category. Counts annotate
-          each chip; a chip with 0 results (and no query-less state) is dimmed. */}
+      {/* Group nav — line-tab grammar (Gate-2 §search): quiet labels on a
+          hairline, active carries the water bar, live counts in sky pills.
+          Scopes the grouped results to one category; a group with 0 results
+          is dimmed. */}
       {hasQuery && mounted && !nothingFound && (
-        <div className="flex flex-wrap justify-center gap-2">
+        <div role="tablist" aria-label={t('allResults')}
+          className="flex gap-0.5 overflow-x-auto border-b-[1.5px] border-border [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {[
             { key: 'all', label: t('allResults'), count: null as number | null },
             { key: 'caseStudies', label: t('caseStudies'), count: counts.caseStudies ?? null },
@@ -449,27 +452,32 @@ export default function GroupedSearch() {
             { key: 'agendas', label: t('agendas'), count: counts.agendas ?? null },
             { key: 'people', label: t('people'), count: counts.people ?? null },
             { key: 'regions', label: t('regions'), count: regionMatchCount },
-          ].map((chip) => {
-            const active = activeFilter === chip.key
-            const empty = chip.count === 0 && chip.key !== 'all'
+          ].map((tab) => {
+            const active = activeFilter === tab.key
+            const empty = tab.count === 0 && tab.key !== 'all'
             return (
               <button
-                key={chip.key}
+                key={tab.key}
                 type="button"
-                onClick={() => setActiveFilter(chip.key)}
-                aria-pressed={active}
+                role="tab"
+                onClick={() => setActiveFilter(tab.key)}
+                aria-selected={active}
                 className={cn(
-                  'inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition-colors',
-                  active
-                    ? 'border-primary bg-primary text-primary-foreground'
-                    : 'border-border bg-background text-muted-foreground hover:border-primary/40 hover:text-foreground',
+                  'relative inline-flex flex-none items-center gap-1.5 whitespace-nowrap px-4 pb-2.5 pt-2',
+                  'font-heading text-sm font-medium text-muted-foreground',
+                  'hover:text-[var(--color-ccm-midnight)]',
+                  'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-ccm-water)]',
+                  'after:absolute after:inset-x-3.5 after:-bottom-[1.5px] after:h-[3px] after:origin-center',
+                  'after:scale-x-0 after:rounded-t-full after:bg-[var(--color-ccm-water)]',
+                  'after:transition-transform after:duration-200 motion-reduce:after:transition-none',
+                  active && 'font-bold text-[var(--color-ccm-midnight)] after:scale-x-100',
                   empty && !active && 'opacity-50'
                 )}
               >
-                {chip.label}
-                {chip.count !== null && chip.count > 0 && (
-                  <span className={cn('text-xs', active ? 'text-primary-foreground/80' : 'text-muted-foreground')}>
-                    {chip.count}
+                {tab.label}
+                {tab.count !== null && tab.count > 0 && (
+                  <span className="rounded-full bg-[var(--color-ccm-sky)]/25 px-1.5 py-px text-[10.5px] font-bold tabular-nums text-[var(--color-ccm-sea)]">
+                    {tab.count}
                   </span>
                 )}
               </button>

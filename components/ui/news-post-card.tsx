@@ -102,11 +102,14 @@ export default function NewsPostCard({
 
                 {/* Title & Subtitle */}
                 <div className="mb-3">
-                    <h3 className="font-heading text-lg sm:text-xl font-bold leading-snug text-balance break-words line-clamp-3 mb-1 group-hover:text-primary transition-colors">
+                    {/* dir="auto": CMS content can fall back to English on RTL
+                        pages (and vice versa) — let the text's own script set
+                        direction so punctuation and alignment stay correct. */}
+                    <h3 dir="auto" className="font-heading text-lg sm:text-xl font-bold leading-snug text-balance break-words line-clamp-3 mb-1 group-hover:text-primary transition-colors" title={localizedTitle}>
                         {localizedTitle}
                     </h3>
                     {localizedSubtitle && (
-                        <p className="text-sm text-muted-foreground line-clamp-2">
+                        <p dir="auto" className="text-sm text-muted-foreground line-clamp-2">
                             {localizedSubtitle}
                         </p>
                     )}
@@ -114,7 +117,7 @@ export default function NewsPostCard({
 
                 {/* Excerpt */}
                 {localizedExcerpt && (
-                    <p className="text-sm text-muted-foreground line-clamp-3 mb-4 flex-1">
+                    <p dir="auto" className="text-sm text-muted-foreground line-clamp-3 mb-4 flex-1">
                         {localizedExcerpt}
                     </p>
                 )}

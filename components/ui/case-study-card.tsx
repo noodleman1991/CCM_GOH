@@ -66,7 +66,7 @@ export function CaseStudyCard({
             </div>
           )}
           <div>
-            <h3 className="font-semibold text-sm line-clamp-2 group-hover:text-primary transition-colors">
+            <h3 dir="auto" className="font-semibold text-sm line-clamp-2 group-hover:text-primary transition-colors" title={getLocalizedValue(caseStudy.title, locale)}>
               {getLocalizedValue(caseStudy.title, locale)}
             </h3>
             {caseStudy.publishedAt && (
@@ -150,13 +150,13 @@ export default function CaseStudyCardComponent({
                         blurDataURL={image?.asset?.metadata?.lqip || ""}
                     />
                     {featured && (
-                        <div className="absolute top-3 right-3 bg-primary text-primary-foreground px-3 py-1.5 rounded-full flex items-center gap-1">
+                        <div className="absolute top-3 end-3 bg-primary text-primary-foreground px-3 py-1.5 rounded-full flex items-center gap-1">
                             <Award className="w-3 h-3" />
                             <span className="text-xs font-medium">Featured</span>
                         </div>
                     )}
                     {studyPeriod && (
-                        <div className="absolute bottom-3 left-3 bg-background/90 backdrop-blur-sm px-3 py-1.5 rounded-full">
+                        <div className="absolute bottom-3 start-3 bg-background/90 backdrop-blur-sm px-3 py-1.5 rounded-full">
                             <span className="text-xs font-medium">{formatStudyPeriod()}</span>
                         </div>
                     )}
@@ -194,7 +194,7 @@ export default function CaseStudyCardComponent({
 
                 {/* Title */}
                 <div className="mb-3">
-                    <h3 className="text-xl font-bold line-clamp-2 group-hover:text-primary transition-colors">
+                    <h3 dir="auto" className="text-xl font-bold line-clamp-2 group-hover:text-primary transition-colors" title={localizedTitle}>
                         {localizedTitle}
                     </h3>
                 </div>

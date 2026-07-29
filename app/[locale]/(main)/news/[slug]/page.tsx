@@ -151,7 +151,7 @@ export default async function NewsDetailPage({
           </div>
         )}
 
-        <h1 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight leading-tight text-balance text-ccm-midnight">
+        <h1 dir="auto" className="font-heading text-3xl sm:text-4xl font-bold tracking-tight leading-tight text-balance text-ccm-midnight">
           {title}
         </h1>
 

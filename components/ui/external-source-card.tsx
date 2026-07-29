@@ -73,7 +73,7 @@ export default function ExternalSourceCard({
 
             {/* Content */}
             <div className="flex flex-1 flex-col p-6">
-                <h3 className="font-heading text-lg font-bold leading-snug text-balance break-words line-clamp-3 group-hover:text-primary transition-colors sm:text-xl">
+                <h3 dir="auto" className="font-heading text-lg font-bold leading-snug text-balance break-words line-clamp-3 group-hover:text-primary transition-colors sm:text-xl" title={localizedTitle}>
                     {localizedTitle}
                 </h3>
 

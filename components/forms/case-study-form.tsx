@@ -271,7 +271,7 @@ export default function ImprovedCaseStudyForm({
                 if (res.ok) {
                     const { id } = await res.json();
                     if (id && !draftId) setDraftId(id);
-                    setDraftSavedAt(new Date().toLocaleTimeString());
+                    setDraftSavedAt(new Date().toLocaleTimeString(locale));
                     setDraftStatus('saved');
                 } else {
                     setDraftStatus('error');
@@ -738,7 +738,7 @@ export default function ImprovedCaseStudyForm({
             if (!res.ok) throw new Error('save failed');
             const { id } = await res.json();
             if (id && !draftId) setDraftId(id);
-            setDraftSavedAt(new Date().toLocaleTimeString());
+            setDraftSavedAt(new Date().toLocaleTimeString(locale));
             setDraftStatus('saved');
             toast.success('Draft saved');
         } catch {

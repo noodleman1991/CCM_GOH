@@ -2,6 +2,7 @@ import React, { Suspense } from 'react';
 import Blocks from '@/components/blocks/index';
 import TeamGrid from '@/components/blocks/grid/team-grid';
 import { RegionMembersBlock } from '@/components/blocks/community/region-members-block';
+import { RegionSectionSpine } from '@/components/regions/region-section-spine';
 import { getTranslations } from 'next-intl/server';
 import { fetchRegionalCommunityAgendas } from '@/sanity/lib/fetch';
 import { fetchRegionalCommunityCaseStudiesBySlug } from '@/sanity/queries/regional-community-case-studies';
@@ -373,25 +374,76 @@ export default async function RegionalCommunityTemplate({
     });
   }
 
+  // ── Anchor-spine grouping (Gate-2 §regional) ────────────────────────────
+  // The page stays ONE scroll: blocks group into anchored <section>s in the
+  // approved order (atlas joins Overview), and the sticky spine above them is
+  // scroll-spied anchor nav — never content-switching tabs. Sections with no
+  // blocks simply don't appear in the spine.
+  const KEY_TO_SECTION: Record<string, string> = {
+    'template-welcome-hero': 'overview',
+    'template-why-join-hero': 'overview',
+    'atlas-embed': 'overview',
+    'template-agendas-grid': 'agendas',
+    'template-case-studies-grid': 'case-studies',
+    'template-news-grid': 'news',
+    'template-lived-experiences': 'voices',
+    'template-team-grid': 'members',
+    'template-logo-cloud': 'partners',
+  };
+  const SECTION_ORDER = ['overview', 'agendas', 'case-studies', 'news', 'voices', 'members', 'partners'];
+  const SECTION_LABEL: Record<string, string> = {
+    overview: t('sectionTitles.overview'),
+    agendas: t('sectionTitles.agendas'),
+    'case-studies': t('sectionTitles.caseStudies'),
+    news: t('sectionTitles.newsUpdates'),
+    voices: t('sectionTitles.communityVoices'),
+    members: t('sectionTitles.members'),
+    partners: t('sectionTitles.partners'),
+  };
+  const SECTION_COUNT: Record<string, number | undefined> = {
+    agendas: agendasData?.length || undefined,
+    'case-studies': caseStudiesData?.length || undefined,
+    news: newsData?.length || undefined,
+    voices: livedExperiencesData?.length || undefined,
+  };
+
+  const grouped = new Map<string, typeof templateBlocks>();
+  for (const block of templateBlocks) {
+    const section = KEY_TO_SECTION[(block as { _key?: string })._key ?? ''] ?? 'overview';
+    grouped.set(section, [...(grouped.get(section) ?? []), block]);
+  }
+  // Members always exists (RegionMembersBlock renders independently of config).
+  if (!grouped.has('members')) grouped.set('members', []);
+
+  const spineSections = SECTION_ORDER.filter(
+    (id) => grouped.has(id) && (id === 'members' || (grouped.get(id)?.length ?? 0) > 0)
+  ).map((id) => ({ id, label: SECTION_LABEL[id], count: SECTION_COUNT[id] }));
+
   return (
     <>
-      {/* Render all template blocks in order. Wrapped in Suspense because the
-          atlas-embed block's client explorer reads useSearchParams(), which
-          requires a Suspense boundary under static rendering. */}
-      {templateBlocks.length > 0 && (
-        <Suspense fallback={null}>
-          <Blocks
-            blocks={templateBlocks}
-            locale={locale}
-            userId={userId}
-          />
-        </Suspense>
-      )}
-
-      {/* Community graph: the people who are members of this region. */}
-      <Suspense fallback={null}>
-        <RegionMembersBlock slug={communitySlug} locale={locale} />
-      </Suspense>
+      {spineSections.length > 1 && <RegionSectionSpine sections={spineSections} />}
+      {SECTION_ORDER.map((id) => {
+        const blocks = grouped.get(id);
+        if (!blocks || (blocks.length === 0 && id !== 'members')) return null;
+        return (
+          // scroll-mt clears the sticky spine when an anchor jumps.
+          <section key={id} id={id} className="scroll-mt-14">
+            {/* Reserved-height fallbacks: a null fallback let late-hydrating
+                blocks grow the page after an anchor jump, stranding the
+                viewport mid-section (and costing CLS). */}
+            {blocks.length > 0 && (
+              <Suspense fallback={<div className="min-h-[320px]" aria-hidden />}>
+                <Blocks blocks={blocks} locale={locale} userId={userId} />
+              </Suspense>
+            )}
+            {id === 'members' && (
+              <Suspense fallback={<div className="min-h-[180px]" aria-hidden />}>
+                <RegionMembersBlock slug={communitySlug} locale={locale} />
+              </Suspense>
+            )}
+          </section>
+        );
+      })}
     </>
   );
 }

@@ -1,4 +1,5 @@
 "use client"
+import { useTranslations } from "next-intl"
 
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
@@ -191,6 +192,7 @@ function Sidebar({
     collapsible?: "offcanvas" | "icon" | "none"
 }) {
     const { isMobile, state, openMobile, setOpenMobile, isRtl } = useSidebar()
+    const t = useTranslations("common")
 
     // Auto-determine side based on RTL if not explicitly set
     const effectiveSide = side ?? (isRtl ? "right" : "left")
@@ -223,8 +225,8 @@ function Sidebar({
                     className="max-h-[88dvh] rounded-t-2xl border-transparent bg-sidebar text-sidebar-foreground p-0 [&>button]:hidden"
                 >
                     <DrawerHeader className="sr-only">
-                        <DrawerTitle>Navigation</DrawerTitle>
-                        <DrawerDescription>Displays the app navigation.</DrawerDescription>
+                        <DrawerTitle>{t("mainNavigation")}</DrawerTitle>
+                        <DrawerDescription>{t("mainNavigationDescription")}</DrawerDescription>
                     </DrawerHeader>
                     {/* vaul's built-in grab handle renders for bottom drawers. */}
                     <div className="flex w-full flex-col overflow-y-auto overscroll-contain pb-[max(env(safe-area-inset-bottom),12px)]">
@@ -298,6 +300,7 @@ function SidebarTrigger({
                             ...props
                         }: React.ComponentProps<typeof Button>) {
     const { toggleSidebar, isRtl, isMobile } = useSidebar()
+    const t = useTranslations("common")
 
     return (
         <Button
@@ -315,22 +318,23 @@ function SidebarTrigger({
             {/* Mobile opens a bottom sheet, so the affordance is the universal
                 menu glyph; desktop keeps the panel icon (it collapses a panel). */}
             {isMobile ? <MenuIcon /> : isRtl ? <PanelRightIcon /> : <PanelLeftIcon />}
-            <span className="sr-only">Toggle Sidebar</span>
+            <span className="sr-only">{t("toggleSidebar")}</span>
         </Button>
     )
 }
 
 function SidebarRail({ className, ...props }: React.ComponentProps<"button">) {
+    const t = useTranslations("common")
     const { toggleSidebar, isRtl } = useSidebar()
 
     return (
         <button
             data-sidebar="rail"
             data-slot="sidebar-rail"
-            aria-label="Toggle Sidebar"
+            aria-label={t("toggleSidebar")}
             tabIndex={-1}
             onClick={toggleSidebar}
-            title="Toggle Sidebar"
+            title={t("toggleSidebar")}
             className={cn(
                 "hover:after:bg-sidebar-border absolute inset-y-0 z-20 hidden w-4 -translate-x-1/2 transition-all ease-linear after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] sm:flex",
                 isRtl

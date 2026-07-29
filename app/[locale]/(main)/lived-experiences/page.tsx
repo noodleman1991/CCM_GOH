@@ -4,6 +4,7 @@ import type { Metadata } from "next"
 import { Suspense } from 'react'
 import { getTranslations } from 'next-intl/server'
 import { client } from '@/sanity/lib/client'
+import { REGION_TO_RC_SLUG, isRegionCode } from '@/lib/maps/region-codes'
 import { Skeleton } from '@/components/ui/skeleton'
 import LivedExperiencesPageClient from './page-client'
 
@@ -23,7 +24,11 @@ async function fetchLivedExperiences() {
         _id,
         name,
         "slug": slug.current
-      }
+      },
+      // Raw field alongside the dereferenced one: legacy docs stored region as
+      // a bare short code ("ssa") rather than a reference, so region-> is null
+      // for them and they vanish from the grouping below.
+      "rawRegion": region
     },
     "regionalCommunities": *[_type == "regionalCommunity"] | order(order asc, name asc) {
       _id,
@@ -42,6 +47,24 @@ async function fetchLivedExperiences() {
     console.error('[lived-experiences] Sanity fetch failed:', error)
     return { videos: [], regionalCommunities: [], allTags: [] }
   }
+}
+
+/**
+ * Does this video belong to `community`?
+ *
+ * Accepts both shapes: a resolved `region` reference, and the legacy bare
+ * region code ("ssa") that a backfill wrote into the field instead of a
+ * reference. `region->` yields null for the legacy shape, so without this the
+ * videos silently disappear from every group — which is what emptied the page.
+ */
+function belongsToCommunity(
+  video: { region?: { _id?: string } | null; rawRegion?: unknown },
+  community: { _id: string; slug?: string }
+): boolean {
+  if (video.region?._id) return video.region._id === community._id
+  const raw = video.rawRegion
+  if (typeof raw !== 'string' || !isRegionCode(raw)) return false
+  return REGION_TO_RC_SLUG[raw] === community.slug
 }
 
 function LoadingSkeleton() {
@@ -96,7 +119,7 @@ export default async function LivedExperiencesPage({
   for (const community of data.regionalCommunities) {
     const communityName = typeof community.name === 'string' ? community.name : community.name.en
     const videosInCommunity = data.videos.filter((video: any) =>
-      video.region?._id === community._id
+      belongsToCommunity(video, community)
     )
 
     if (videosInCommunity.length > 0) {

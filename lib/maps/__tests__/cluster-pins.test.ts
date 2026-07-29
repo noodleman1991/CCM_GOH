@@ -104,3 +104,32 @@ describe("donutSegments", () => {
     expect(segs[0].share).toBe(1);
   });
 });
+
+describe("donutSegments gap (pins v2)", () => {
+  const C = 2 * Math.PI * 10;
+
+  it("shrinks drawn arcs by the gap and centres them in their slot", () => {
+    const segs = donutSegments({ caseStudy: 1, livedExperience: 1 }, C, 4);
+    const [a, b] = segs;
+    const drawnA = parseFloat(a.dashArray.split(" ")[0]);
+    expect(drawnA).toBeCloseTo(C / 2 - 4, 5);
+    // centred: offset shifted by half the removed length
+    expect(a.dashOffset).toBeCloseTo(-2, 5);
+    expect(b.dashOffset).toBeCloseTo(-(C / 2 + 2), 5);
+    // true shares unaffected by the visual gap
+    expect(a.share).toBeCloseTo(0.5, 5);
+  });
+
+  it("never shrinks a tiny segment below a quarter of its true arc", () => {
+    const segs = donutSegments({ caseStudy: 99, livedExperience: 1 }, C, 8);
+    const tiny = segs[1];
+    const trueArc = 0.01 * C;
+    const drawn = parseFloat(tiny.dashArray.split(" ")[0]);
+    expect(drawn).toBeCloseTo(trueArc / 4, 5);
+  });
+
+  it("applies no gap to a single-segment donut", () => {
+    const segs = donutSegments({ caseStudy: 5 }, C, 6);
+    expect(parseFloat(segs[0].dashArray.split(" ")[0])).toBeCloseTo(C, 5);
+  });
+});
