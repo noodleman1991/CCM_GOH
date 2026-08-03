@@ -3,7 +3,8 @@ import { useRef, useState } from 'react'
 import { useTranslations } from 'next-intl'
 
 import { cn } from '@/lib/utils'
-import geometry from './region-geometry.json'
+import geometry from './region-geometry-soft.json'
+import { OceanBands } from './ocean-bands'
 import type { RegionDatum } from '@/lib/maps/region-facets'
 import type { RegionCode } from '@/lib/maps/region-codes'
 import { layerColorKeyFor, donutSegments, type PinCluster } from '@/lib/maps/cluster-pins'
@@ -26,6 +27,7 @@ const donutSegmentColor = (type: Parameters<typeof layerColorKeyFor>[0] | 'other
 export function RegionChoropleth({
   data,
   activeCode,
+  selectedCode,
   onHover,
   onSelect,
   labelFor,
@@ -35,6 +37,10 @@ export function RegionChoropleth({
 }: {
   data: RegionDatum[]
   activeCode?: RegionCode | null
+  /** The COMMITTED selection (URL region) — painted artwork gold on a white
+   *  halo while the other regions dim (mock v6 §3). `activeCode` stays the
+   *  transient hover/focus state. */
+  selectedCode?: RegionCode | null
   onHover?: (code: RegionCode | null) => void
   onSelect?: (code: RegionCode) => void
   labelFor: (code: RegionCode) => string
@@ -58,11 +64,15 @@ export function RegionChoropleth({
     setHoverLabel({ code, x: b.x + b.width / 2, y: Math.max(b.y - 6, 14) })
   }
 
-  // Shade from a light sky tint (low) toward full sea (high). Keep a visible
-  // floor so a zero-count region still reads as land, not background.
+  // Illustration ramp (mock v6 §3): flat sky → water tints over the midnight
+  // ocean. 12% floor keeps a zero-count region reading as land; the ceiling
+  // stays LOW (48%) so even the busiest region still reads as sky-family LAND
+  // against the water-coloured inner band — without outlines (artwork = flat
+  // fills only), land/ocean separation is carried entirely by this contrast.
+  // Hover lifts the whole region to full sky.
   const fillFor = (intensity: number) => {
-    const pct = Math.round((0.12 + intensity * 0.88) * 100)
-    return `color-mix(in srgb, var(--color-ccm-sea) ${pct}%, white)`
+    const pct = Math.round((0.12 + intensity * 0.36) * 100)
+    return `color-mix(in srgb, var(--color-ccm-water) ${pct}%, var(--color-ccm-sky))`
   }
 
   // Pins v2 (Gate-2 §atlas): every cluster is a WHITE core with the count in
@@ -81,14 +91,16 @@ export function RegionChoropleth({
   return (
     <svg
       viewBox={geometry.viewBox}
-      className={cn('h-auto w-full select-none overflow-visible', className)}
+      className={cn('h-auto w-full select-none overflow-hidden rounded-2xl', className)}
       role="img"
       aria-label={t('regionalMap')}
     >
+      <OceanBands />
       {Object.entries(regions).map(([code, { d }]) => {
         const datum = byCode.get(code as RegionCode)
         const intensity = datum?.intensity ?? 0
         const isActive = activeCode === code
+        const isSelected = selectedCode === code
         return (
           <path
             key={code}
@@ -97,14 +109,21 @@ export function RegionChoropleth({
             tabIndex={0}
             role="button"
             aria-label={`${labelFor(code as RegionCode)}: ${datum?.value ?? 0}`}
-            fill={fillFor(intensity)}
-            stroke="white"
-            strokeWidth={isActive ? 1.75 : 0.75}
-            strokeLinejoin="round"
+            // Hover/focus is UNMISSABLE: the region jumps to a bright
+            // secondary-leaning cyan (clearly outside the resting sky→water
+            // ramp) with a soft white glow. The committed selection is
+            // painted by the gold overlay below, so its base path just stays
+            // put underneath. No strokes at all (the earlier dotted borders
+            // are gone): the artwork is flat fills only.
+            fill={
+              isActive && !isSelected
+                ? 'color-mix(in srgb, var(--color-ccm-secondary) 45%, var(--color-ccm-sky))'
+                : fillFor(intensity)
+            }
             className={cn(
-              'cursor-pointer outline-none transition-[fill,opacity,stroke-width] duration-200',
-              'hover:opacity-90 focus-visible:opacity-90',
-              activeCode && !isActive && 'opacity-60'
+              'cursor-pointer outline-none transition-[fill,opacity] duration-200 motion-reduce:transition-none',
+              isActive && !isSelected && 'drop-shadow-[0_0_10px_rgba(255,255,255,0.45)]',
+              selectedCode && !isSelected && 'opacity-55'
             )}
             onMouseEnter={() => { onHover?.(code as RegionCode); showLabel(code as RegionCode) }}
             onMouseLeave={() => { onHover?.(null); setHoverLabel(null) }}
@@ -120,6 +139,22 @@ export function RegionChoropleth({
           />
         )
       })}
+      {/* Committed selection: artwork gold on a thick white rounded halo
+          (mock v6 §3). Pointer-events off — the base path underneath keeps
+          handling interaction, so keyboard/AT behaviour is unchanged. */}
+      {selectedCode && regions[selectedCode] && (
+        <g className="pointer-events-none animate-in fade-in duration-300 motion-reduce:animate-none" aria-hidden="true">
+          <path
+            d={regions[selectedCode].d}
+            fill="white"
+            stroke="white"
+            strokeWidth={14}
+            strokeLinejoin="round"
+            strokeLinecap="round"
+          />
+          <path d={regions[selectedCode].d} fill={CCM.gold} />
+        </g>
+      )}
       {pins?.map((c, i) => {
         const isCluster = c.count > 1
         const segments = isCluster ? donutSegments(c.typeCounts, DONUT_CIRCUMFERENCE, SEGMENT_GAP) : []
@@ -177,7 +212,7 @@ export function RegionChoropleth({
                   transform={`translate(${c.x} ${c.y}) scale(1.6)`}
                   fill={color}
                   stroke="white"
-                  strokeWidth={1}
+                  strokeWidth={1.5}
                   className="drop-shadow-[0_1.5px_3px_rgba(11,49,96,0.3)]"
                 />
                 <circle cx={c.x} cy={c.y - 16.8} r={3.6} fill="white" />
@@ -186,18 +221,20 @@ export function RegionChoropleth({
           </g>
         )
       })}
-      {/* Floating region name+count pill (pane-free selection). */}
+      {/* Floating region name+count pill (pane-free selection) — sized UP so
+          the hover response reads instantly, count in sea for contrast. */}
       {hoverLabel && (() => {
         const datum = byCode.get(hoverLabel.code)
-        const text = `${labelFor(hoverLabel.code)} · ${datum?.value ?? 0}`
-        const w = text.length * 6.8 + 22
+        const name = labelFor(hoverLabel.code)
+        const text = `${name} · ${datum?.value ?? 0}`
+        const w = text.length * 7.6 + 30
         return (
           <g className="pointer-events-none" aria-hidden>
-            <rect x={hoverLabel.x - w / 2} y={hoverLabel.y - 13} width={w} height={24} rx={12}
-              fill="white" className="drop-shadow-[0_2px_5px_rgba(11,49,96,0.22)]" />
-            <text x={hoverLabel.x} y={hoverLabel.y + 4} textAnchor="middle"
-              className="font-heading text-[11.5px] font-bold" fill={CCM.midnight}>
-              {text}
+            <rect x={hoverLabel.x - w / 2} y={hoverLabel.y - 15} width={w} height={30} rx={15}
+              fill="white" className="drop-shadow-[0_3px_8px_rgba(11,49,96,0.3)]" />
+            <text x={hoverLabel.x} y={hoverLabel.y + 4.5} textAnchor="middle"
+              className="font-heading text-[13px] font-bold" fill={CCM.midnight}>
+              {name} <tspan fill={CCM.sea}>· {datum?.value ?? 0}</tspan>
             </text>
           </g>
         )
