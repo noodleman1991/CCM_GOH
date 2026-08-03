@@ -3,6 +3,15 @@
 **Date:** 2026-08-03
 **Status:** Approved (visual direction chosen via mockups: cropped zoom + pronounced edge fade)
 
+## Amendment (2026-08-03, post-implementation)
+
+User-directed changes after seeing the rendered result:
+
+1. **Edge fade REMOVED** — the cropped map keeps a clean rounded frame (no gradient overlay).
+2. **Corner locator globe ADDED (mockup option A)** — a circle-clipped mini world (`components/atlas/region-locator.tsx`, centre-weighted viewBox `180 60 620 400`, `slice`) rendered absolutely at the map's top-end corner in locked mode only: focused region in its `REGION_COLOR`, other landmasses in a pale water tint, `role="img"` with the localized `atlas.locator` label ({region} interpolated), `pointer-events-none`, `end-3` for RTL safety.
+
+Everything else in this spec (crop math, `focus` prop, glyph scaling, locked-mode gating, fallbacks) stands.
+
 ## Context
 
 The seven regional community pages embed the unified atlas (`AtlasEmbedBlock` → `AtlasExplorer` with `lockedRegion`, spec A4). Today that embed renders the **full world map** with the page's region merely highlighted (gold halo, other regions dimmed to ~55% opacity). The ask: the embed should read as a true **facet of the atlas** — a "focus clipping" of the illustration, not a world map with a highlight.

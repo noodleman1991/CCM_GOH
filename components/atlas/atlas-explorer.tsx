@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input'
 import { RegionChoropleth } from '@/components/maps/region-choropleth'
 import { RecentEverywhereCards, RegionHighlightsCards } from '@/components/atlas/region-content-cards'
 import { RegionSpotlight } from '@/components/atlas/region-spotlight'
+import { RegionLocator } from '@/components/atlas/region-locator'
 import type { RegionArt } from '@/lib/maps/region-art'
 import {
   FACETS, atlasDestination, parseLayers, facetForContentType, layerColorKeyForFacet,
@@ -358,21 +359,15 @@ export function AtlasExplorer({
           onPinClick={setOpenCluster}
           focus={lockedRegion ?? null}
         />
-        {/* Focus-clipping edge fade (spec 2026-08-03): in locked mode the four
-            frame edges melt into the page instead of a hard slice — the embed
-            reads as a clipping lifted out of the atlas. 22% band per edge,
-            fading to the background TOKEN so it holds in dark mode. pointer-
-            events-none keeps region hover/click and pins fully interactive;
-            the legend chips (z-10) and cluster panel (z-20) sit above it. */}
+        {/* Corner locator (spec 2026-08-03 amendment — replaces the edge
+            fade): circle-clipped mini world, this region in its brand colour,
+            situating the cropped clipping globally. pointer-events-none keeps
+            map interaction beneath untouched; end-3 is RTL-safe. */}
         {lockedRegion && (
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 rounded-2xl"
-            style={{
-              background:
-                'linear-gradient(to right, var(--background), transparent 22%, transparent 78%, var(--background)), ' +
-                'linear-gradient(to bottom, var(--background), transparent 22%, transparent 78%, var(--background))',
-            }}
+          <RegionLocator
+            region={lockedRegion}
+            label={tAtlas('locator', { region: labelFor(lockedRegion) })}
+            className="pointer-events-none absolute end-3 top-3 size-16 sm:size-20"
           />
         )}
         {/* Legend/result chips (spec R2b point 1) — one per active layer:
