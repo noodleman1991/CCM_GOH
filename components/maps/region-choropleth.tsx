@@ -7,6 +7,7 @@ import geometry from './region-geometry-soft.json'
 import { OceanBands } from './ocean-bands'
 import type { RegionDatum } from '@/lib/maps/region-facets'
 import type { RegionCode } from '@/lib/maps/region-codes'
+import { regionCrop } from '@/lib/maps/region-crop'
 import { layerColorKeyFor, donutSegments, type PinCluster } from '@/lib/maps/cluster-pins'
 import { COLOR, CCM } from '@/lib/ccm-colors'
 
@@ -34,6 +35,7 @@ export function RegionChoropleth({
   className,
   pins,
   onPinClick,
+  focus,
 }: {
   data: RegionDatum[]
   activeCode?: RegionCode | null
@@ -47,6 +49,10 @@ export function RegionChoropleth({
   className?: string
   pins?: PinCluster[]
   onPinClick?: (cluster: PinCluster) => void
+  /** Focus-clipping mode (community-page embeds): crop the viewport to this
+   *  region and scale glyphs so they keep their on-screen size. Unknown code
+   *  → null crop → full-world rendering (identical to omitting the prop). */
+  focus?: RegionCode | null
 }) {
   const t = useTranslations('common')
   const byCode = new Map(data.map((d) => [d.code, d]))
@@ -61,7 +67,7 @@ export function RegionChoropleth({
     const el = pathRefs.current[code]
     if (!el) return
     const b = el.getBBox()
-    setHoverLabel({ code, x: b.x + b.width / 2, y: Math.max(b.y - 6, 14) })
+    setHoverLabel({ code, x: b.x + b.width / 2, y: Math.max(b.y - 6 * s, 14 * s) })
   }
 
   // Illustration ramp (mock v6 §3): flat sky → water tints over the midnight
@@ -82,15 +88,20 @@ export function RegionChoropleth({
   const dominantColor = (cluster: PinCluster) => COLOR.layer[layerColorKeyFor(cluster.types[0])]
   // Sized in viewBox units (960×500) so pins render ~40px at typical map
   // widths — prominent, per the approved mock.
-  const DONUT_R = 16
-  const DONUT_STROKE = 5
-  const CORE_R = DONUT_R - DONUT_STROKE / 2 - 1
+  const crop = focus ? regionCrop(focus) : null
+  // Glyphs are authored in viewBox units against the 960-wide world; under a
+  // crop the same units render crop-factor× larger, so every authored size is
+  // multiplied by `s` to hold its on-screen size.
+  const s = crop ? crop.w / 960 : 1
+  const DONUT_R = 16 * s
+  const DONUT_STROKE = 5 * s
+  const CORE_R = DONUT_R - DONUT_STROKE / 2 - 1 * s
   const DONUT_CIRCUMFERENCE = 2 * Math.PI * DONUT_R
   const SEGMENT_GAP = DONUT_CIRCUMFERENCE * 0.045
 
   return (
     <svg
-      viewBox={geometry.viewBox}
+      viewBox={crop ? `${crop.x} ${crop.y} ${crop.w} ${crop.h}` : geometry.viewBox}
       className={cn('h-auto w-full select-none overflow-hidden rounded-2xl', className)}
       role="img"
       aria-label={t('regionalMap')}
@@ -148,7 +159,7 @@ export function RegionChoropleth({
             d={regions[selectedCode].d}
             fill="white"
             stroke="white"
-            strokeWidth={14}
+            strokeWidth={14 * s}
             strokeLinejoin="round"
             strokeLinecap="round"
           />
@@ -174,7 +185,7 @@ export function RegionChoropleth({
             {isCluster ? (
               <>
                 {/* Same-hue halo blooms on hover/focus. */}
-                <circle cx={c.x} cy={c.y} r={DONUT_R + 5} fill={color}
+                <circle cx={c.x} cy={c.y} r={DONUT_R + 5 * s} fill={color}
                   className="opacity-0 transition-opacity duration-200 group-hover/pin:opacity-15 group-focus-visible/pin:opacity-15 motion-reduce:transition-none" />
                 {/* White core carries the count in midnight — legible on any
                     map shade beneath. */}
@@ -195,8 +206,9 @@ export function RegionChoropleth({
                     transform={`rotate(-90 ${c.x} ${c.y})`}
                   />
                 ))}
-                <text x={c.x} y={c.y + 4.5} textAnchor="middle"
-                  className="pointer-events-none font-heading text-[13px] font-bold tabular-nums"
+                <text x={c.x} y={c.y + 4.5 * s} textAnchor="middle"
+                  fontSize={13 * s}
+                  className="pointer-events-none font-heading font-bold tabular-nums"
                   fill={CCM.midnight}>
                   {c.count}
                 </text>
@@ -205,17 +217,17 @@ export function RegionChoropleth({
               <>
                 {/* Single item: droplet in its layer colour, tip on the exact
                     location, white inner dot. */}
-                <circle cx={c.x} cy={c.y - 13} r={15} fill={color}
+                <circle cx={c.x} cy={c.y - 13 * s} r={15 * s} fill={color}
                   className="opacity-0 transition-opacity duration-200 group-hover/pin:opacity-15 group-focus-visible/pin:opacity-15 motion-reduce:transition-none" />
                 <path
                   d="M0 0C0 0 6.5 -6 6.5 -10.5A6.5 6.5 0 1 0 -6.5 -10.5C-6.5 -6 0 0 0 0Z"
-                  transform={`translate(${c.x} ${c.y}) scale(1.6)`}
+                  transform={`translate(${c.x} ${c.y}) scale(${1.6 * s})`}
                   fill={color}
                   stroke="white"
-                  strokeWidth={1.5}
+                  strokeWidth={1.5 * s}
                   className="drop-shadow-[0_1.5px_3px_rgba(11,49,96,0.3)]"
                 />
-                <circle cx={c.x} cy={c.y - 16.8} r={3.6} fill="white" />
+                <circle cx={c.x} cy={c.y - 16.8 * s} r={3.6 * s} fill="white" />
               </>
             )}
           </g>
@@ -227,13 +239,14 @@ export function RegionChoropleth({
         const datum = byCode.get(hoverLabel.code)
         const name = labelFor(hoverLabel.code)
         const text = `${name} · ${datum?.value ?? 0}`
-        const w = text.length * 7.6 + 30
+        const w = (text.length * 7.6 + 30) * s
         return (
           <g className="pointer-events-none" aria-hidden>
-            <rect x={hoverLabel.x - w / 2} y={hoverLabel.y - 15} width={w} height={30} rx={15}
+            <rect x={hoverLabel.x - w / 2} y={hoverLabel.y - 15 * s} width={w} height={30 * s} rx={15 * s}
               fill="white" className="drop-shadow-[0_3px_8px_rgba(11,49,96,0.3)]" />
-            <text x={hoverLabel.x} y={hoverLabel.y + 4.5} textAnchor="middle"
-              className="font-heading text-[13px] font-bold" fill={CCM.midnight}>
+            <text x={hoverLabel.x} y={hoverLabel.y + 4.5 * s} textAnchor="middle"
+              fontSize={13 * s}
+              className="font-heading font-bold" fill={CCM.midnight}>
               {name} <tspan fill={CCM.sea}>· {datum?.value ?? 0}</tspan>
             </text>
           </g>
