@@ -356,7 +356,25 @@ export function AtlasExplorer({
           labelFor={labelFor}
           pins={pinsData?.pins}
           onPinClick={setOpenCluster}
+          focus={lockedRegion ?? null}
         />
+        {/* Focus-clipping edge fade (spec 2026-08-03): in locked mode the four
+            frame edges melt into the page instead of a hard slice — the embed
+            reads as a clipping lifted out of the atlas. 22% band per edge,
+            fading to the background TOKEN so it holds in dark mode. pointer-
+            events-none keeps region hover/click and pins fully interactive;
+            the legend chips (z-10) and cluster panel (z-20) sit above it. */}
+        {lockedRegion && (
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 rounded-2xl"
+            style={{
+              background:
+                'linear-gradient(to right, var(--background), transparent 22%, transparent 78%, var(--background)), ' +
+                'linear-gradient(to bottom, var(--background), transparent 22%, transparent 78%, var(--background))',
+            }}
+          />
+        )}
         {/* Legend/result chips (spec R2b point 1) — one per active layer:
             dot + localized label + total count. Overlaid on the map itself
             (bottom-start, map-UI convention) so the panel below the map is
