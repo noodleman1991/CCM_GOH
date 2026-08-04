@@ -12,10 +12,9 @@ import { Link } from '@/i18n/navigation'
 import { facetShares } from '@/lib/maps/facet-shares'
 import { parseD } from '@/lib/maps/smooth-geometry'
 import { REGION_TO_RC_SLUG, type RegionCode } from '@/lib/maps/region-codes'
-import { atlasDestination, type FacetId } from '@/lib/maps/region-facets'
+import type { FacetId } from '@/lib/maps/region-facets'
 import type { RegionArt } from '@/lib/maps/region-art'
 import { CCM, COLOR } from '@/lib/ccm-colors'
-import { cn } from '@/lib/utils'
 
 /** Facet → the atlas layer swatch (same colours as pins, legend, popover). */
 const FACET_TO_LAYER_KEY: Partial<Record<FacetId, keyof typeof COLOR.layer>> = {
@@ -239,46 +238,32 @@ export function RegionSpotlight({
         )}
 
         {/* CTA row: explore the listing (when a single facet gives one clear
-            destination) + the community page itself. */}
-        <div className="flex flex-wrap items-center gap-2 pt-1">
-          {singleFacet && destinationHref && total > 0 && (
-            <Button asChild size="sm">
-              <Link href={destinationHref}>
-                {tAtlas('explore', { region: label })}
-                <ArrowRight className="size-4 rtl:-scale-x-100" />
-              </Link>
-            </Button>
-          )}
-          {/* On the community page itself (compact) this link would point at
-              the page you're already on — dropped there. */}
-          {!compact && (
-            <Button asChild size="sm" variant="outline">
-              <Link href={communityHref}>
-                {tAtlas('visitCommunity')}
-                <ArrowRight className="size-4 rtl:-scale-x-100" />
-              </Link>
-            </Button>
-          )}
-          {!singleFacet && (
-            <ul className={cn('ms-auto flex flex-wrap gap-1.5')}>
-              {layers.map((layerId) => {
-                const count = byFacet[layerId] ?? 0
-                const href = atlasDestination(layerId, REGION_TO_RC_SLUG[region])
-                return (
-                  <li key={layerId}>
-                    <Link
-                      href={href}
-                      className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border bg-card px-3 py-1.5 text-sm font-medium text-ccm-midnight transition-colors hover:border-[var(--color-ccm-sea)]/40 hover:bg-muted"
-                    >
-                      {facetLabelFor(layerId)}
-                      <span className="text-xs font-semibold tabular-nums text-[var(--color-ccm-sea)]">{count}</span>
-                    </Link>
-                  </li>
-                )
-              })}
-            </ul>
-          )}
-        </div>
+            destination) + the community page itself. The old per-layer pill
+            list is GONE — each content type's listing link now lives in its
+            group subtitle above the cards (user revision 2026-08-04), so the
+            row renders only when it actually has a button. */}
+        {((singleFacet && destinationHref && total > 0) || !compact) && (
+          <div className="flex flex-wrap items-center gap-2 pt-1">
+            {singleFacet && destinationHref && total > 0 && (
+              <Button asChild size="sm">
+                <Link href={destinationHref}>
+                  {tAtlas('explore', { region: label })}
+                  <ArrowRight className="size-4 rtl:-scale-x-100" />
+                </Link>
+              </Button>
+            )}
+            {/* On the community page itself (compact) this link would point at
+                the page you're already on — dropped there. */}
+            {!compact && (
+              <Button asChild size="sm" variant="outline">
+                <Link href={communityHref}>
+                  {tAtlas('visitCommunity')}
+                  <ArrowRight className="size-4 rtl:-scale-x-100" />
+                </Link>
+              </Button>
+            )}
+          </div>
+        )}
       </div>
     </section>
   )

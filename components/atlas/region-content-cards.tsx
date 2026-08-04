@@ -93,9 +93,24 @@ function ContentCard({ item }: { item: Item }) {
 }
 
 /** Small group header for the multi-type card strip: a colour dot (matching
- *  the pin/legend colour for that type) + its localized label — so a mixed
- *  set of cards reads like the pin popover's mini-legend (spec E1). */
-function GroupHeader({ type, t }: { type: string; t: (key: string) => string }) {
+ *  the pin/legend colour for that type) + its localized label + full count —
+ *  so a mixed set of cards reads like the pin popover's mini-legend (spec E1).
+ *  The type's listing-page link lives HERE, end-aligned (user revision
+ *  2026-08-04: the old pill row under the results was orphaned from the
+ *  content it linked). */
+function GroupHeader({
+  type,
+  t,
+  count,
+  href,
+  linkLabel,
+}: {
+  type: string;
+  t: (key: string) => string;
+  count?: number;
+  href?: string | null;
+  linkLabel?: string;
+}) {
   return (
     <div className="col-span-full mb-0.5 flex items-center gap-1.5 first:mt-0">
       <span
@@ -106,6 +121,18 @@ function GroupHeader({ type, t }: { type: string; t: (key: string) => string }) 
       <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
         {t(labelKeyForType(type))}
       </span>
+      {typeof count === "number" && (
+        <span className="text-xs font-semibold tabular-nums text-[var(--color-ccm-sea)]">{count}</span>
+      )}
+      {href && linkLabel && (
+        <Link
+          href={href}
+          className="ms-auto inline-flex items-center gap-1 text-sm font-semibold text-[var(--color-ccm-sea)] hover:underline"
+        >
+          {linkLabel}
+          <ArrowRight className="size-3.5 rtl:-scale-x-100" aria-hidden />
+        </Link>
+      )}
     </div>
   );
 }
@@ -171,10 +198,12 @@ function CardsTrack({
   const types = [...new Set(items.map((i) => i.type))];
   const grouped = types.length > 1;
 
-  const cappedTrack = (type: string, groupItems: Item[]) => {
+  const cappedTrack = (type: string, groupItems: Item[], suppressViewAll = false) => {
     const shown = groupItems.slice(0, PER_TYPE_CAP);
     const href = region ? listingHrefFor(type, region) : null;
-    const showViewAll = href && groupItems.length > PER_TYPE_CAP;
+    // Grouped mode suppresses the below-cards link — the group's linked
+    // subtitle (GroupHeader) is the one home for "view all" there.
+    const showViewAll = !suppressViewAll && href && groupItems.length > PER_TYPE_CAP;
     return (
       <>
         <div className="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-1 [scrollbar-width:none] lg:grid lg:grid-cols-4 lg:overflow-visible [&::-webkit-scrollbar]:hidden">
@@ -208,10 +237,17 @@ function CardsTrack({
     <div className="space-y-3">
       {types.map((type) => {
         const groupItems = items.filter((i) => i.type === type);
+        const href = region ? listingHrefFor(type, region) : null;
         return (
           <div key={type} className="space-y-1.5">
-            <GroupHeader type={type} t={t} />
-            {cappedTrack(type, groupItems)}
+            <GroupHeader
+              type={type}
+              t={t}
+              count={groupItems.length}
+              href={href}
+              linkLabel={viewAllLabel ? viewAllLabel(type) : t(labelKeyForType(type))}
+            />
+            {cappedTrack(type, groupItems, true)}
           </div>
         );
       })}
