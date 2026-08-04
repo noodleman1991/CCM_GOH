@@ -7,6 +7,7 @@ import { ArrowRight } from 'lucide-react'
 
 import geometry from '@/components/maps/region-geometry-soft.json'
 import { RegionContentCards } from '@/components/atlas/region-content-cards'
+import { RegionMembersStrip } from '@/components/atlas/region-members-strip'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/i18n/navigation'
 import { facetShares } from '@/lib/maps/facet-shares'
@@ -235,6 +236,16 @@ export function RegionSpotlight({
           </>
         ) : (
           <p className="text-sm text-muted-foreground">{tAtlas('empty', { layer: facetLabel })}</p>
+        )}
+
+        {/* Members are content too — profile cards, same group grammar as the
+            typed card strips (user correction 2026-08-04). */}
+        {layers.includes('memberCount') && (
+          <RegionMembersStrip
+            region={region}
+            label={facetLabelFor('memberCount')}
+            viewAllLabel={tAtlas('viewAllType', { label: facetLabelFor('memberCount') })}
+          />
         )}
 
         {/* CTA row: explore the listing (when a single facet gives one clear
