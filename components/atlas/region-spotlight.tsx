@@ -178,11 +178,15 @@ export function RegionSpotlight({
       </div>
       )}
 
-      <div className="space-y-4 p-4 sm:p-5">
+      {/* Mobile-first ordering: on phones the CONTENT (cards, members) leads
+          and the meta (composition bar, countries) follows — the cards were
+          buried ~1200px deep under map+meta (user report 2026-08-04). Desktop
+          (lg+) keeps meta-first DOM order via order-0 defaults. */}
+      <div className="flex flex-col gap-4 p-4 sm:p-5">
         {/* Composition bar: each active layer's share in its exact layer
             colour — the same swatches as the pins and legend. */}
         {shares.length > 0 && (
-          <div className="space-y-2">
+          <div className="space-y-2 max-lg:order-3">
             <div className="flex h-2.5 gap-0.5 overflow-hidden rounded-full" role="img"
               aria-label={shares.map((s) => `${facetLabelFor(s.id)}: ${s.count}`).join(', ')}>
               {shares.map((s) => (
@@ -209,7 +213,7 @@ export function RegionSpotlight({
             computes them; only the display used to be locked-embed-gated).
             `showCountries` still lets a locked embed opt out (spec A4). */}
         {showCountries && countries && countries.length > 0 && (
-          <div className="space-y-1.5">
+          <div className="space-y-1.5 max-lg:order-4">
             <span className="font-heading text-[10px] font-bold uppercase tracking-[0.11em] text-[var(--color-ccm-slate,#8595AC)]">
               {tAtlas('countryBreakdown')}
             </span>
@@ -225,27 +229,31 @@ export function RegionSpotlight({
         )}
 
         {/* The region's actual content. */}
-        {total > 0 ? (
-          <>
-            {singleFacet && singleCardFacet && (
-              <RegionContentCards region={region} facet={singleCardFacet} theme={theme} q={q} when={when} />
-            )}
-            {!singleFacet && cardFacetsQS && (
-              <RegionContentCards region={region} facet={cardFacetsQS} theme={theme} q={q} when={when} />
-            )}
-          </>
-        ) : (
-          <p className="text-sm text-muted-foreground">{tAtlas('empty', { layer: facetLabel })}</p>
-        )}
+        <div className="max-lg:order-1">
+          {total > 0 ? (
+            <>
+              {singleFacet && singleCardFacet && (
+                <RegionContentCards region={region} facet={singleCardFacet} theme={theme} q={q} when={when} />
+              )}
+              {!singleFacet && cardFacetsQS && (
+                <RegionContentCards region={region} facet={cardFacetsQS} theme={theme} q={q} when={when} />
+              )}
+            </>
+          ) : (
+            <p className="text-sm text-muted-foreground">{tAtlas('empty', { layer: facetLabel })}</p>
+          )}
+        </div>
 
         {/* Members are content too — profile cards, same group grammar as the
             typed card strips (user correction 2026-08-04). */}
         {layers.includes('memberCount') && (
-          <RegionMembersStrip
-            region={region}
-            label={facetLabelFor('memberCount')}
-            viewAllLabel={tAtlas('viewAllType', { label: facetLabelFor('memberCount') })}
-          />
+          <div className="max-lg:order-2">
+            <RegionMembersStrip
+              region={region}
+              label={facetLabelFor('memberCount')}
+              viewAllLabel={tAtlas('viewAllType', { label: facetLabelFor('memberCount') })}
+            />
+          </div>
         )}
 
         {/* CTA row: explore the listing (when a single facet gives one clear
@@ -254,7 +262,7 @@ export function RegionSpotlight({
             group subtitle above the cards (user revision 2026-08-04), so the
             row renders only when it actually has a button. */}
         {((singleFacet && destinationHref && total > 0) || !compact) && (
-          <div className="flex flex-wrap items-center gap-2 pt-1">
+          <div className="flex flex-wrap items-center gap-2 pt-1 max-lg:order-5">
             {singleFacet && destinationHref && total > 0 && (
               <Button asChild size="sm">
                 <Link href={destinationHref}>

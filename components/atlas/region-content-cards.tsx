@@ -227,6 +227,24 @@ function CardsTrack({
   };
 
   if (!grouped) {
+    // Single card-type: when a region is in view the linked subtitle STILL
+    // renders (same grammar as grouped mode) — otherwise a Members+CaseStudies
+    // selection showed case cards with no header/link at all (2026-08-04).
+    const href = region ? listingHrefFor(types[0], region) : null;
+    if (href) {
+      return (
+        <div className="space-y-1.5">
+          <GroupHeader
+            type={types[0]}
+            t={t}
+            count={items.length}
+            href={href}
+            linkLabel={viewAllLabel ? viewAllLabel(types[0]) : t(labelKeyForType(types[0]))}
+          />
+          {cappedTrack(types[0], items, true)}
+        </div>
+      );
+    }
     return <div className="space-y-1.5">{cappedTrack(types[0], items)}</div>;
   }
 
