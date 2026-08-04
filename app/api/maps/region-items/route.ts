@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { client } from "@/sanity/lib/client";
-import { isRegionCode, REGION_TO_RC_SLUG } from "@/lib/maps/region-codes";
+import { isRegionCode, RC_SLUG_TO_REGION, REGION_CODES as REGION_CODES_ORDER, REGION_TO_RC_SLUG } from "@/lib/maps/region-codes";
 import { parseWhen, whenFilter } from "@/lib/maps/date-filter";
 import { qFilter, regionMatchFilter, statusFilter, themeFilter } from "@/lib/maps/content-filter";
 
@@ -56,6 +56,48 @@ const PLACE_PROJECTION = (type: string) =>
 
 export async function GET(req: NextRequest) {
   const region = req.nextUrl.searchParams.get("region") || "";
+
+  // "Around the regions" (homepage embed, mock v6 §1): the single NEWEST
+  // geotagged item per region — breadth where `region=all` is pure recency.
+  // Region attribution mirrors regionMatchFilter(): the `region` short code
+  // or a referenced community's slug, projected out so grouping happens here.
+  if (req.nextUrl.searchParams.get("mode") === "highlights") {
+    try {
+      const perType = await Promise.all(
+        ALL_TYPES.map((type) =>
+          client.fetch(
+            `*[_type == $type${statusFilter(type)} && defined(coalesce(studyLocation, place.point))] | order(coalesce(publishedAt, publishDate, _createdAt) desc)[0...30]{
+              "id": _id,
+              "type": _type,
+              "title": coalesce(title.en, title, ""),
+              "slug": slug.current,
+              ${IMAGE_PROJECTION},
+              ${PLACE_PROJECTION(type)},
+              "date": coalesce(publishedAt, publishDate, _createdAt),
+              "regionKey": coalesce(region, relatedCommunity->slug.current, relatedCommunities[0]->slug.current)
+            }`,
+            { type }
+          )
+        )
+      );
+      const byRegion = new Map<string, Record<string, unknown> & { date: string | null }>();
+      for (const item of perType.flat() as Array<Record<string, unknown> & { date: string | null; regionKey?: string | null }>) {
+        const key = item.regionKey ?? "";
+        const code = isRegionCode(key) ? key : RC_SLUG_TO_REGION[key];
+        if (!code) continue;
+        const held = byRegion.get(code);
+        if (!held || (item.date ?? "") > (held.date ?? "")) {
+          byRegion.set(code, { ...item, region: code });
+        }
+      }
+      // Stable presentation order: the canonical region order, not fetch order.
+      const items = REGION_CODES_ORDER.filter((c) => byRegion.has(c)).map((c) => byRegion.get(c));
+      return NextResponse.json({ items });
+    } catch (e) {
+      console.error("[region-items] highlights fetch failed:", e);
+      return NextResponse.json({ items: [] });
+    }
+  }
 
   if (region === "all") {
     const limitParam = Number.parseInt(req.nextUrl.searchParams.get("limit") ?? "", 10);

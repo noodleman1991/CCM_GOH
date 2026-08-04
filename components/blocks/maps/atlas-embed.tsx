@@ -4,6 +4,7 @@ import SectionContainer from '@/components/ui/section-container'
 import { AtlasExplorer } from '@/components/atlas/atlas-explorer'
 import { Link } from '@/i18n/navigation'
 import { isRegionCode, type RegionCode } from '@/lib/maps/region-codes'
+import { getRegionArt } from '@/lib/maps/region-art'
 import { getThemeOptions } from '@/lib/maps/themes'
 
 /**
@@ -19,7 +20,7 @@ export default async function AtlasEmbedBlock({
 }) {
   if (!region || !isRegionCode(region)) return null
   const t = await getTranslations('atlas')
-  const themes = await getThemeOptions()
+  const [themes, regionArt] = await Promise.all([getThemeOptions(), getRegionArt()])
 
   return (
     <SectionContainer>
@@ -35,7 +36,7 @@ export default async function AtlasEmbedBlock({
             {t('openFullAtlas')} →
           </Link>
         </div>
-        <AtlasExplorer lockedRegion={region as RegionCode} themes={themes} showBreakdown={showBreakdown} />
+        <AtlasExplorer lockedRegion={region as RegionCode} themes={themes} regionArt={regionArt} showBreakdown={showBreakdown} />
       </div>
     </SectionContainer>
   )

@@ -1,17 +1,19 @@
 'use client'
 import { useTranslations } from 'next-intl'
 
-import { Check, X, type LucideIcon } from 'lucide-react'
+import { X, type LucideIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 /**
  * A tappable filter pill, shared across all filtering interfaces (collaborate,
- * case studies, news, lived experiences, search). Fills with the brand colour
- * and shows a check when active — engaging, scannable, and the active state
- * reads at a glance. Inclusion model: active = "include this".
+ * case studies, news, lived experiences, search). ONE chip geometry everywhere:
+ * px-3 py-1.5 text-sm rounded-full, label never wraps. Active fills with the
+ * brand colour — no icon, so a chip's width never jumps when toggled.
+ * Inclusion model: active = "include this".
  */
 export function FilterChip({
   label,
+  count,
   active,
   onClick,
   className,
@@ -19,6 +21,10 @@ export function FilterChip({
   title,
 }: {
   label: string
+  /** Result count rendered as a quiet trailing figure (tabular-nums so
+   *  neighbouring chips' counts align). Pass the number — never bake
+   *  "label · n" into the label string. */
+  count?: number
   active: boolean
   onClick: () => void
   className?: string
@@ -37,7 +43,7 @@ export function FilterChip({
       aria-disabled={disabled || undefined}
       title={title}
       className={cn(
-        'inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition-colors',
+        'inline-flex flex-none items-center gap-1.5 whitespace-nowrap rounded-full border px-3 py-1.5 text-sm font-medium transition-colors',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
         active
           ? 'border-transparent bg-[var(--color-ccm-sea)] text-white shadow-sm'
@@ -46,8 +52,15 @@ export function FilterChip({
         className
       )}
     >
-      {active && <Check className="h-3.5 w-3.5 shrink-0" />}
       <span className="text-start">{label}</span>
+      {count !== undefined && (
+        <span
+          aria-hidden="true"
+          className={cn('text-xs tabular-nums', active ? 'text-white/85' : 'text-muted-foreground')}
+        >
+          {count}
+        </span>
+      )}
     </button>
   )
 }
@@ -74,7 +87,9 @@ export function RemovableChip({
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1.5 rounded-full bg-[var(--color-ccm-sea)]/10 px-2.5 py-1 text-sm font-medium text-[var(--color-ccm-sea)]',
+        // Same geometry as FilterChip (px-3 py-1.5 text-sm rounded-full) so
+        // applied-filter summaries line up with the pickers above them.
+        'inline-flex flex-none items-center gap-1.5 whitespace-nowrap rounded-full bg-[var(--color-ccm-sea)]/10 px-3 py-1.5 text-sm font-medium text-[var(--color-ccm-sea)]',
         className
       )}
     >

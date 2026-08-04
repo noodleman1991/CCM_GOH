@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
 import { AtlasExplorer } from "@/components/atlas/atlas-explorer";
+import { getRegionArt } from "@/lib/maps/region-art";
 import { getThemeOptions } from "@/lib/maps/themes";
 import { getHubIllustrations } from "@/lib/sanity/hub-illustrations";
 import { HeaderIllustration } from "@/components/ui/header-illustration";
@@ -21,8 +22,11 @@ export async function generateMetadata({
 }
 
 export default async function AtlasPage() {
-  const themes = await getThemeOptions();
-  const { atlasHeader } = await getHubIllustrations();
+  const [themes, regionArt, { atlasHeader }] = await Promise.all([
+    getThemeOptions(),
+    getRegionArt(),
+    getHubIllustrations(),
+  ]);
   return (
     <div className="container max-w-6xl py-8">
       {/* AtlasExplorer's own <h1>/description live in a client component
@@ -41,7 +45,7 @@ export default async function AtlasPage() {
       )}
       <div className={atlasHeader ? "pe-20 sm:pe-28 lg:pe-40" : undefined}>
         <Suspense fallback={null}>
-          <AtlasExplorer themes={themes} />
+          <AtlasExplorer themes={themes} regionArt={regionArt} />
         </Suspense>
       </div>
     </div>

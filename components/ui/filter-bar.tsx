@@ -12,6 +12,19 @@ import { cn } from "@/lib/utils"
  * soft edge fade — it never wraps to a second line and never becomes a
  * sidebar. Chips themselves come from filter-chip.tsx.
  */
+/** Soft fade on the overflow edges so cut-off chips read as "more here".
+ *  Near-zero at the start (4px) so a leading group label is never dimmed;
+ *  symmetric enough to stay direction-safe in RTL. Shared by FilterBar and
+ *  the per-row scrollers in atlas-filters.tsx. */
+export const FILTER_EDGE_FADE =
+  "[mask-image:linear-gradient(to_right,transparent,#000_4px,#000_calc(100%-22px),transparent)] " +
+  "[-webkit-mask-image:linear-gradient(to_right,transparent,#000_4px,#000_calc(100%-22px),transparent)]"
+
+/** Hide the horizontal scrollbar on chip rows (the edge fade is the scroll
+ *  affordance instead). */
+export const FILTER_SCROLLBAR_HIDDEN =
+  "[scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+
 export function FilterBar({
   className,
   children,
@@ -23,12 +36,8 @@ export function FilterBar({
       role="group"
       className={cn(
         "flex items-center gap-1.5 overflow-x-auto py-1.5",
-        // Soft fade on the overflow edges so cut-off chips read as "more
-        // here". Near-zero at the start (4px) so the leading group label is
-        // never dimmed; symmetric enough to stay direction-safe in RTL.
-        "[mask-image:linear-gradient(to_right,transparent,#000_4px,#000_calc(100%-22px),transparent)]",
-        "[-webkit-mask-image:linear-gradient(to_right,transparent,#000_4px,#000_calc(100%-22px),transparent)]",
-        "[scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+        FILTER_EDGE_FADE,
+        FILTER_SCROLLBAR_HIDDEN,
         className
       )}
       {...props}

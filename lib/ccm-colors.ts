@@ -29,6 +29,10 @@ export const CCM = {
   secondary: "#90E0F4",
   amber: "#E0A53F",
   slate: "#8595AC",
+  /** Artwork gold (mock v6 §3) — the atlas SELECTION colour, sampled from the
+   *  case-study region illustrations. Brighter than UI amber, which stays
+   *  reserved for UI accents (warnings, pending states). */
+  gold: "#FFBF05",
 } as const;
 
 /** The 7 region short codes (redesign canonical geo facet). */

@@ -36,7 +36,12 @@ export function qFilter(q?: string | null): string {
  *  OR any referenced community — the singular `relatedCommunity` ref
  *  (caseStudy/livedExperience/newsPost) or the plural `relatedCommunities[]`
  *  (agenda/report). GROQ returns null/[] for fields a type doesn't define, so
- *  unused branches are harmless no-ops. Binds `$region` + `$slug`. */
-export function regionMatchFilter(): string {
+ *  unused branches are harmless no-ops. Binds `$region` + `$slug`.
+ *
+ *  `scope: "all"` drops the predicate entirely (the global map view wants
+ *  every region's geotagged docs) — kept HERE, not as an inline '' in a
+ *  route, so the trust contract still has one author for region matching. */
+export function regionMatchFilter(scope: "region" | "all" = "region"): string {
+  if (scope === "all") return "";
   return " && (region == $region || relatedCommunity->slug.current == $slug || $slug in relatedCommunities[]->slug.current)";
 }

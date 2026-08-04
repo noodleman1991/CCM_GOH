@@ -68,9 +68,10 @@ async function fetchRowsForType(
         : `"point": null, "precision": null, "countryCode3": null`;
 
   // Status/theme/q/region predicates come from lib/maps/content-filter — the
-  // shared trust-contract fragments (counts = cards = pins).
+  // shared trust-contract fragments (counts = cards = pins). `region=all`
+  // (the global map view) drops the region predicate via the shared fragment.
   return client.fetch<RawPinRow[]>(
-    `*[_type == $type${statusFilter(type)}${regionMatchFilter()}${themeFilter(themeSlug)}${qFilter(q)}${when.filter}]{
+    `*[_type == $type${statusFilter(type)}${regionMatchFilter(region === "all" ? "all" : "region")}${themeFilter(themeSlug)}${qFilter(q)}${when.filter}]{
       _id, "title": coalesce(title.en, title), "slug": slug.current, ${placeProjection}
     }`,
     { type, region, slug, q, themeSlug: themeSlug ?? "", ...when.params }
@@ -92,10 +93,13 @@ export async function GET(req: NextRequest) {
   const theme = sp.get("theme");
   const q = (sp.get("q") ?? "").slice(0, 100).trim();
 
-  if (!isRegionCode(region)) {
+  // `region=all` = the global (no-selection) map: every region's geotagged
+  // docs, clustered together, so the atlas/homepage embed shows pins before
+  // any region is chosen.
+  if (region !== "all" && !isRegionCode(region)) {
     return NextResponse.json({ pins: [], countries: [] }, { status: 400 });
   }
-  const slug = REGION_TO_RC_SLUG[region];
+  const slug = region === "all" ? "" : REGION_TO_RC_SLUG[region as keyof typeof REGION_TO_RC_SLUG];
 
   const types = [...new Set(facets.map((f) => FACET_TO_TYPE[f]).filter((t): t is FacetContentType => !!t))];
   if (types.length === 0) {
