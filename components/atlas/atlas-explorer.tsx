@@ -187,11 +187,12 @@ export function AtlasExplorer({
   })
   const facetTotals = useMemo(() => {
     const totals: Partial<Record<FacetId, number>> = {}
-    // Locked embeds scope every chip count to THEIR region — a global sum on
-    // a community page reads as a promise ("News 1") that toggling the chip
-    // then breaks when the region itself has none (bug report 2026-08-04).
-    const source = lockedRegion
-      ? (totalsData?.data ?? []).filter((d) => d.code === lockedRegion)
+    // With a region in view (locked embed OR /atlas selection), every chip
+    // count scopes to THAT region — a global sum reads as a promise ("News 1")
+    // that toggling the chip then breaks when the region has none (bug report
+    // 2026-08-04). No region in view → global sums, as before.
+    const source = effectiveRegion
+      ? (totalsData?.data ?? []).filter((d) => d.code === effectiveRegion)
       : totalsData?.data ?? []
     for (const datum of source) {
       for (const [facetId, count] of Object.entries(datum.byFacet ?? {})) {
@@ -235,9 +236,9 @@ export function AtlasExplorer({
   // summary that used to live in the deleted caption bar.
   const legendTotals = useMemo(() => {
     const totals: Partial<Record<FacetId, number>> = {}
-    // Same region-scoping as facetTotals: the legend on a locked embed's map
-    // must describe this region, not the world.
-    const source = lockedRegion ? regionData.filter((d) => d.code === lockedRegion) : regionData
+    // Same region-scoping as facetTotals: with a region in view the legend
+    // must describe that region, not the world.
+    const source = effectiveRegion ? regionData.filter((d) => d.code === effectiveRegion) : regionData
     for (const f of layers) {
       totals[f] = source.reduce((s, d) => s + (d.byFacet[f] ?? 0), 0)
     }
