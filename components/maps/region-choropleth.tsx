@@ -176,12 +176,16 @@ export function RegionChoropleth({
         const isCluster = c.count > 1
         const segments = isCluster ? donutSegments(c.typeCounts, DONUT_CIRCUMFERENCE, SEGMENT_GAP) : []
         const color = dominantColor(c)
+        // Country-precision clusters (every item approx) render the dashed
+        // "approximate" treatment — the pin says "in this country", not "at
+        // this address" (spec amendment 2026-08-04).
+        const baseLabel = isCluster ? `${c.count} — ${c.items[0]?.title ?? ''}` : c.items[0]?.title ?? ''
         return (
           <g
             key={`${c.x}-${c.y}-${i}`}
             role="button"
             tabIndex={0}
-            aria-label={isCluster ? `${c.count} — ${c.items[0]?.title ?? ''}` : c.items[0]?.title ?? ''}
+            aria-label={c.approx ? `${baseLabel} · ${t('approxLocation')}` : baseLabel}
             className="group/pin cursor-pointer outline-none"
             onClick={(e) => { e.stopPropagation(); onPinClick?.(c) }}
             onKeyDown={(e) => {
@@ -193,6 +197,12 @@ export function RegionChoropleth({
                 {/* Same-hue halo blooms on hover/focus. */}
                 <circle cx={c.x} cy={c.y} r={DONUT_R + 5 * s} fill={color}
                   className="opacity-0 transition-opacity duration-200 group-hover/pin:opacity-15 group-focus-visible/pin:opacity-15 motion-reduce:transition-none" />
+                {/* Approximate cluster: dashed same-colour outer ring. */}
+                {c.approx && (
+                  <circle cx={c.x} cy={c.y} r={DONUT_R + 4 * s} fill="none"
+                    stroke={color} strokeWidth={1.5 * s}
+                    strokeDasharray={`${3.5 * s} ${3.5 * s}`} opacity={0.8} />
+                )}
                 {/* White core carries the count in midnight — legible on any
                     map shade beneath. */}
                 <circle cx={c.x} cy={c.y} r={CORE_R} fill="white"
@@ -218,6 +228,19 @@ export function RegionChoropleth({
                   fill={CCM.midnight}>
                   {c.count}
                 </text>
+              </>
+            ) : c.approx ? (
+              <>
+                {/* Single approximate item: dashed hollow circle at the
+                    country centre — NO droplet tail (a tail points at a spot;
+                    this pin only means "in this country"). */}
+                <circle cx={c.x} cy={c.y} r={12 * s} fill={color}
+                  className="opacity-0 transition-opacity duration-200 group-hover/pin:opacity-15 group-focus-visible/pin:opacity-15 motion-reduce:transition-none" />
+                <circle cx={c.x} cy={c.y} r={9 * s} fill="white" fillOpacity={0.92}
+                  stroke={color} strokeWidth={2 * s}
+                  strokeDasharray={`${3.5 * s} ${3 * s}`}
+                  className="drop-shadow-[0_1.5px_3px_rgba(11,49,96,0.3)]" />
+                <circle cx={c.x} cy={c.y} r={3 * s} fill={color} />
               </>
             ) : (
               <>

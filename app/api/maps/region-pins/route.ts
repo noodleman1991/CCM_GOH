@@ -8,6 +8,7 @@ import { getThemeOptions } from "@/lib/maps/themes";
 import { parseWhen, whenFilter, type WhenFilter } from "@/lib/maps/date-filter";
 import { qFilter, regionMatchFilter, statusFilter, themeFilter } from "@/lib/maps/content-filter";
 import { projectPoint } from "@/lib/maps/project-point";
+import { countryCentroid } from "@/lib/maps/country-geometry";
 import { clusterPins, type FacetContentType, type PinItem } from "@/lib/maps/cluster-pins";
 
 export const revalidate = 300;
@@ -124,7 +125,27 @@ export async function GET(req: NextRequest) {
     for (const r of rowsByType[i]) {
       if (r.countryCode3 && r.precision !== "region")
         countryCounts.set(r.countryCode3, (countryCounts.get(r.countryCode3) ?? 0) + 1);
-      if (!r.point || (r.precision !== "exact" && r.precision !== "city")) continue;
+      if (!r.point || (r.precision !== "exact" && r.precision !== "city")) {
+        // Country-precision rows (spec amendment 2026-08-04): pin at the
+        // country's geometry centre, flagged `approx` so the map renders them
+        // visually distinct (dashed) instead of pretending to a street
+        // address. Region-precision rows still get no pin at all.
+        if (r.countryCode3 && r.precision !== "region") {
+          const c = countryCentroid(r.countryCode3);
+          if (c)
+            projected.push({
+              id: r._id,
+              title: r.title ?? "",
+              type,
+              slug: r.slug ?? "",
+              countryCode3: r.countryCode3,
+              approx: true,
+              x: c.x,
+              y: c.y,
+            });
+        }
+        continue;
+      }
       const p = projectPoint(r.point.lat, r.point.lng);
       if (!p) continue;
       projected.push({

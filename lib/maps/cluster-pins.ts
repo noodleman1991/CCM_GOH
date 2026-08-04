@@ -19,6 +19,9 @@ export interface PinItem {
   type: FacetContentType;
   slug: string;
   countryCode3: string | null;
+  /** Country-precision item pinned at its country's geometry centre — the
+   *  location is approximate by design and renders visually distinct. */
+  approx?: boolean;
 }
 
 export interface PinCluster {
@@ -35,6 +38,10 @@ export interface PinCluster {
   /** Per-type counts across the FULL bucket — feeds `donutSegments` to size
    *  each mixed cluster's donut arcs. */
   typeCounts: Partial<Record<FacetContentType, number>>;
+  /** True when EVERY item in the bucket is country-precision — the whole
+   *  cluster renders with the approximate (dashed) treatment. A mix of exact
+   *  and approximate renders solid: at least one item truly is there. */
+  approx: boolean;
 }
 
 /** Grid-cluster projected points (viewBox 960×500). Pure — testable, no d3. */
@@ -59,6 +66,7 @@ export function clusterPins(
       items: bucket.slice(0, 5).map(({ x: _x, y: _y, ...item }) => item),
       types: [...new Set(bucket.map((p) => p.type))],
       typeCounts,
+      approx: bucket.every((p) => p.approx === true),
     };
   });
 }
