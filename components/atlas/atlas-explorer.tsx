@@ -11,6 +11,7 @@ import { RegionChoropleth } from '@/components/maps/region-choropleth'
 import { RecentEverywhereCards, RegionHighlightsCards } from '@/components/atlas/region-content-cards'
 import { RegionSpotlight } from '@/components/atlas/region-spotlight'
 import { RegionLocator } from '@/components/atlas/region-locator'
+import { regionCrop } from '@/lib/maps/region-crop'
 import type { RegionArt } from '@/lib/maps/region-art'
 import {
   FACETS, atlasDestination, parseLayers, facetForContentType, layerColorKeyForFacet,
@@ -423,8 +424,28 @@ export function AtlasExplorer({
             )
           })}
         </div>
-        {openCluster && (
-          <div className="absolute inset-x-4 bottom-4 z-20 rounded-lg border bg-card p-3 shadow-lg">
+        {openCluster && (() => {
+          // Anchor the popover AT the clicked pin, clamped away from the map
+          // edges, above or below depending on where the pin sits (user
+          // 2026-08-05: "proper placing close to the edges" — the old
+          // full-width bottom sheet covered half of a small locked map and
+          // ignored the pin entirely). Coordinates are viewBox-relative
+          // percentages, so the same math serves the crop and the full world,
+          // and RTL needs no special casing (map coords never mirror).
+          const vb = (lockedRegion ? regionCrop(lockedRegion) : null) ?? { x: 0, y: 0, w: 960, h: 500 }
+          const px = ((openCluster.x - vb.x) / vb.w) * 100
+          const py = ((openCluster.y - vb.y) / vb.h) * 100
+          const clampedX = Math.min(Math.max(px, 18), 82)
+          const below = py < 45
+          return (
+          <div
+            className="absolute z-20 w-72 max-w-[85%] rounded-lg border bg-card p-3 shadow-lg"
+            style={{
+              left: `${clampedX}%`,
+              transform: 'translateX(-50%)',
+              ...(below ? { top: `${Math.min(py + 5, 92)}%` } : { bottom: `${Math.min(100 - py + 8, 92)}%` }),
+            }}
+          >
             <div className="mb-1 flex items-center justify-between">
               <span className="text-xs font-semibold text-muted-foreground">
                 {tAtlas('pinItems', { count: openCluster.count })}
@@ -468,7 +489,8 @@ export function AtlasExplorer({
               ))}
             </div>
           </div>
-        )}
+          )
+        })()}
       </div>
       </div>
 
