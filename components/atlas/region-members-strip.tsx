@@ -92,7 +92,9 @@ export function RegionMembersStrip({
                   </span>
                 )}
                 <span className="line-clamp-2 text-xs font-semibold text-ccm-midnight">
-                  {m.displayName}
+                  {/* bdi: Latin names inside RTL pages (and vice versa) keep
+                      their own direction — same convention as the pin popover. */}
+                  <bdi>{m.displayName}</bdi>
                 </span>
               </span>
             )
