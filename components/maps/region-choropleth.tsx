@@ -58,6 +58,15 @@ export function RegionChoropleth({
   const byCode = new Map(data.map((d) => [d.code, d]))
   const regions = geometry.regions as Record<string, { d: string }>
 
+  // Sized in viewBox units (960×500) so pins render ~40px at typical map
+  // widths — prominent, per the approved mock.
+  const crop = focus ? regionCrop(focus) : null
+  // Glyphs are authored in viewBox units against the 960-wide world; under a
+  // crop the same units render crop-factor× larger, so every authored size is
+  // multiplied by `s` to hold its on-screen size. Declared ahead of
+  // `showLabel` below, which closes over both.
+  const s = crop ? crop.w / 960 : 1
+
   // Pane-free region selection (Gate-2 §atlas): the map itself names regions —
   // hovering/focusing a region floats a name+count pill above it. Positioned
   // from the live path bbox so it tracks the fluid SVG scale.
@@ -67,7 +76,11 @@ export function RegionChoropleth({
     const el = pathRefs.current[code]
     if (!el) return
     const b = el.getBBox()
-    setHoverLabel({ code, x: b.x + b.width / 2, y: Math.max(b.y - 6 * s, 14 * s) })
+    // Clamp to the ACTIVE viewport's top, not the world's — under a focus
+    // crop (community-page embeds), the world top is off-screen, so a sliced
+    // neighbour region's pill must clamp against the crop's own top edge or
+    // it renders above the visible, overflow-hidden area.
+    setHoverLabel({ code, x: b.x + b.width / 2, y: Math.max(b.y - 6 * s, (crop?.y ?? 0) + 14 * s) })
   }
 
   // Illustration ramp (mock v6 §3): flat sky → water tints over the midnight
@@ -86,13 +99,6 @@ export function RegionChoropleth({
   // gaps; a soft same-hue halo blooms on hover/focus. Single items render as
   // a droplet in their layer colour. Amber stays reserved for selection.
   const dominantColor = (cluster: PinCluster) => COLOR.layer[layerColorKeyFor(cluster.types[0])]
-  // Sized in viewBox units (960×500) so pins render ~40px at typical map
-  // widths — prominent, per the approved mock.
-  const crop = focus ? regionCrop(focus) : null
-  // Glyphs are authored in viewBox units against the 960-wide world; under a
-  // crop the same units render crop-factor× larger, so every authored size is
-  // multiplied by `s` to hold its on-screen size.
-  const s = crop ? crop.w / 960 : 1
   const DONUT_R = 16 * s
   const DONUT_STROKE = 5 * s
   const CORE_R = DONUT_R - DONUT_STROKE / 2 - 1 * s

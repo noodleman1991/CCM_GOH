@@ -69,6 +69,7 @@ export function RegionSpotlight({
   layers,
   art,
   countries,
+  showCountries = true,
   facetLabel,
   destinationHref,
   singleFacet,
@@ -87,6 +88,9 @@ export function RegionSpotlight({
   layers: FacetId[]
   art?: RegionArt | null
   countries?: Array<{ countryCode3: string; count: number; name?: string }>
+  /** Show the country-breakdown chip list (spec A4). Default true; a locked
+   *  embed threads its `showBreakdown` prop through here to opt out. */
+  showCountries?: boolean
   facetLabel: string
   destinationHref?: string | null
   singleFacet: boolean
@@ -202,8 +206,9 @@ export function RegionSpotlight({
         )}
 
         {/* Country chips — available in EVERY mode now (the pins route always
-            computes them; only the display used to be locked-embed-gated). */}
-        {countries && countries.length > 0 && (
+            computes them; only the display used to be locked-embed-gated).
+            `showCountries` still lets a locked embed opt out (spec A4). */}
+        {showCountries && countries && countries.length > 0 && (
           <div className="space-y-1.5">
             <span className="font-heading text-[10px] font-bold uppercase tracking-[0.11em] text-[var(--color-ccm-slate,#8595AC)]">
               {tAtlas('countryBreakdown')}
