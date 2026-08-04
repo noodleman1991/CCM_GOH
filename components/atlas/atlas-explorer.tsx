@@ -75,6 +75,7 @@ export function AtlasExplorer({
   recentVariant = 'everywhere',
   showHeader = true,
   regionArt,
+  showBreakdown = true,
 }: {
   lockedRegion?: RegionCode
   themes: ThemeOption[]
@@ -473,6 +474,7 @@ export function AtlasExplorer({
           layers={layers}
           art={regionArt?.[selected] ?? null}
           countries={pinsData && 'countries' in pinsData ? pinsData.countries : undefined}
+          showCountries={showBreakdown}
           facetLabel={facetLabel}
           destinationHref={destinationHref}
           singleFacet={Boolean(singleFacet && destinationHref)}
