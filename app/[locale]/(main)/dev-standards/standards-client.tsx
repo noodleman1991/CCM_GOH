@@ -6,37 +6,52 @@ import { RegionChoropleth } from "@/components/maps/region-choropleth";
 import { FilterBar, FilterBarLabel, FilterBarSeparator } from "@/components/ui/filter-bar";
 import { FilterChip, RemovableChip } from "@/components/ui/filter-chip";
 import { Tabs, TabsContent, TabsCount, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import type { PinCluster } from "@/lib/maps/cluster-pins";
 import type { RegionCode } from "@/lib/maps/region-codes";
 
-/** Fake map data for the bench — every region shaded, three pin shapes:
- *  mixed cluster (donut), single-type cluster (one-colour ring), single item
- *  (droplet). */
+/** Fake map data for the bench — every region shaded, four pin shapes: mixed
+ *  cluster (donut), single-type cluster (one-colour ring), single item
+ *  (droplet), and a single country-precision item (dashed/approximate). */
 const BENCH_REGIONS = (
   [
     ["ssa", 17], ["esea", 12], ["enam", 14], ["lac", 9], ["nawa", 8], ["csa", 11], ["oce", 5],
   ] as Array<[RegionCode, number]>
 ).map(([code, value]) => ({ code, value, intensity: value / 17, i18nKey: code }));
 
-const BENCH_PINS = [
+const BENCH_PINS: PinCluster[] = [
   {
     x: 505, y: 300, count: 17,
-    items: [{ id: "1", title: "Mangrove restoration and community mental health", type: "caseStudy" as const, slug: "m", countryCode3: "KEN" }],
-    types: ["caseStudy", "livedExperience", "newsPost"] as const,
+    items: [{ id: "1", title: "Mangrove restoration and community mental health", type: "caseStudy", slug: "m", countryCode3: "KEN" }],
+    types: ["caseStudy", "livedExperience", "newsPost"],
     typeCounts: { caseStudy: 11, livedExperience: 4, newsPost: 2 },
+    approx: false,
   },
   {
     x: 750, y: 190, count: 9,
-    items: [{ id: "2", title: "Heat and anxiety in Lagos street markets", type: "caseStudy" as const, slug: "h", countryCode3: "NGA" }],
-    types: ["caseStudy"] as const,
+    items: [{ id: "2", title: "Heat and anxiety in Lagos street markets", type: "caseStudy", slug: "h", countryCode3: "NGA" }],
+    types: ["caseStudy"],
     typeCounts: { caseStudy: 9 },
+    approx: false,
   },
   {
     x: 300, y: 320, count: 1,
-    items: [{ id: "3", title: "Farming through the long drought — Amina's story", type: "livedExperience" as const, slug: "f", countryCode3: "BRA" }],
-    types: ["livedExperience"] as const,
+    items: [{ id: "3", title: "Farming through the long drought — Amina's story", type: "livedExperience", slug: "f", countryCode3: "BRA" }],
+    types: ["livedExperience"],
     typeCounts: { livedExperience: 1 },
+    approx: false,
   },
-].map((p) => ({ ...p, types: [...p.types], approx: false }));
+  // Country-precision proof card (spec amendment 2026-08-04): a single
+  // `approx: true` item/cluster so the dashed/approximate pin treatment has
+  // something to render against on the bench, alongside the three
+  // exact-location pins above.
+  {
+    x: 560, y: 260, count: 1,
+    items: [{ id: "4", title: "Country-only case study — approximate pin", type: "caseStudy", slug: "approx", countryCode3: "MLI", approx: true }],
+    types: ["caseStudy"],
+    typeCounts: { caseStudy: 1 },
+    approx: true,
+  },
+];
 
 /** Longest real title in the dataset — the text-guard proof card. */
 const LONG_TITLE =

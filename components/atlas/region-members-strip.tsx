@@ -28,11 +28,12 @@ export function RegionMembersStrip({
   label: string
   viewAllLabel: string
 }) {
-  const { data } = useSWR<{ total: number; members: RegionMember[] }>(
+  const { data, error } = useSWR<{ total: number; members: RegionMember[] }>(
     `/api/maps/region-members?region=${region}`,
     fetcher,
     { revalidateOnFocus: false, dedupingInterval: 60000 }
   )
+  if (error) return null
   const members = data?.members ?? []
   if (data && members.length === 0) return null
 

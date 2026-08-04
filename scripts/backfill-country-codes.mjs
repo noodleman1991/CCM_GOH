@@ -2,9 +2,9 @@
  * Backfill country codes for geo-less atlas content (2026-08-04).
  *
  * For caseStudy / livedExperience / newsPost docs that have NO location data,
- * scan the doc's own text (title + summary + body) for country names; when
- * EXACTLY ONE country is mentioned, set the schema's country fields at
- * precision "country":
+ * scan the doc's own text (title + locationText, where present — caseStudy
+ * only) for country names; when EXACTLY ONE country is mentioned, set the
+ * schema's country fields at precision "country":
  *   - caseStudy:              locationCountryCode + locationPrecision
  *   - livedExperience/news:   place.countryCode + place.precision
  *
@@ -17,6 +17,7 @@
 import { createClient } from "@sanity/client";
 import countriesLib from "i18n-iso-countries";
 import enLocale from "i18n-iso-countries/langs/en.json" with { type: "json" };
+import countryGeometry from "../components/maps/country-geometry.json" with { type: "json" };
 import { config } from "dotenv";
 
 config({ path: new URL("../.env.local", import.meta.url).pathname });
@@ -25,6 +26,13 @@ config({ path: new URL("../.env", import.meta.url).pathname });
 countriesLib.registerLocale(enLocale);
 
 const EXECUTE = process.argv.includes("--execute");
+
+// Micro-states/territories with no shape in country-geometry.json but a
+// hand-projected fallback centroid in lib/maps/country-geometry.ts's
+// CENTROID_FALLBACK_COORDS. This script runs outside the Next.js
+// server-only bundle and can't import that module directly, so the list is
+// duplicated here by hand — keep the two in sync.
+const KNOWN_CENTROID_FALLBACK_CODES = new Set(["MLT"]);
 
 const client = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
@@ -114,6 +122,20 @@ scan(data.news, "newsPost");
 console.log(`\nWill patch ${plans.length} docs:`);
 for (const p of plans)
   console.log(`  ${p.kind} ${p.id} (${p.region ?? "no region"}) -> ${p.alpha3} (${countriesLib.getName(p.alpha3, "en")})`);
+
+// A patched country with neither a geometry shape nor a hardcoded centroid
+// fallback gets a country CHIP but silently no PIN on the map (the Malta
+// bug this script's own output would otherwise have hidden) — flag it here
+// so that gap is visible before anyone relies on the backfilled data.
+const geometryCodes = new Set(Object.keys(countryGeometry.countries));
+const pinlessAlpha3s = [...new Set(plans.map((p) => p.alpha3))].filter(
+  (a3) => !geometryCodes.has(a3) && !KNOWN_CENTROID_FALLBACK_CODES.has(a3)
+);
+if (pinlessAlpha3s.length > 0) {
+  console.log(`\nWARNING: ${pinlessAlpha3s.length} planned country code(s) have no map geometry and no centroid fallback — docs will get a country chip but NO pin:`);
+  for (const a3 of pinlessAlpha3s) console.log(`  ${a3} (${countriesLib.getName(a3, "en") ?? a3})`);
+}
+
 console.log(`\nSkipped ${skipped.length} (ambiguous/no mention):`);
 for (const s of skipped) console.log(`  ${s.kind} ${s.id} (${s.region ?? "no region"}): [${s.hits.join(", ")}]`);
 
