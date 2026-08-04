@@ -8,14 +8,8 @@ import { OceanBands } from './ocean-bands'
 import type { RegionDatum } from '@/lib/maps/region-facets'
 import type { RegionCode } from '@/lib/maps/region-codes'
 import { regionCrop } from '@/lib/maps/region-crop'
-import { layerColorKeyFor, donutSegments, type PinCluster } from '@/lib/maps/cluster-pins'
+import { layerColorKeyFor, type PinCluster } from '@/lib/maps/cluster-pins'
 import { COLOR, CCM } from '@/lib/ccm-colors'
-
-/** `DonutSegment.type` → its stroke colour: known content types resolve through
- *  `COLOR.layer` (same swatch as the popover/legend); the synthetic "other"
- *  bucket (>3rd type, folded together) renders in neutral slate. */
-const donutSegmentColor = (type: Parameters<typeof layerColorKeyFor>[0] | 'other') =>
-  type === 'other' ? CCM.slate : COLOR.layer[layerColorKeyFor(type)]
 
 /**
  * Presentational choropleth: renders the 7 region paths from the build-time
@@ -113,16 +107,9 @@ export function RegionChoropleth({
     return `color-mix(in srgb, var(--color-ccm-water) ${pct}%, var(--color-ccm-sky))`
   }
 
-  // Pins v2 (Gate-2 §atlas): every cluster is a WHITE core with the count in
-  // midnight, ringed by layer-coloured segments with rounded caps and small
-  // gaps; a soft same-hue halo blooms on hover/focus. Single items render as
-  // a droplet in their layer colour. Amber stays reserved for selection.
+  // Pins v3 (user 2026-08-05): one flat droplet shape for everything, in the
+  // cluster's dominant layer colour. Amber stays reserved for selection.
   const dominantColor = (cluster: PinCluster) => COLOR.layer[layerColorKeyFor(cluster.types[0])]
-  const DONUT_R = 16 * s
-  const DONUT_STROKE = 5 * s
-  const CORE_R = DONUT_R - DONUT_STROKE / 2 - 1 * s
-  const DONUT_CIRCUMFERENCE = 2 * Math.PI * DONUT_R
-  const SEGMENT_GAP = DONUT_CIRCUMFERENCE * 0.045
 
   return (
     <svg
@@ -194,11 +181,15 @@ export function RegionChoropleth({
       )}
       {pins?.map((c, i) => {
         const isCluster = c.count > 1
-        const segments = isCluster ? donutSegments(c.typeCounts, DONUT_CIRCUMFERENCE, SEGMENT_GAP) : []
         const color = dominantColor(c)
-        // Country-precision clusters (every item approx) render the dashed
-        // "approximate" treatment — the pin says "in this country", not "at
-        // this address" (spec amendment 2026-08-04).
+        // Unified flat droplet language (user 2026-08-05): ONE shape for
+        // every pin. Exact = solid droplet in the dominant layer colour;
+        // clusters set their count flat in the droplet head; country-level
+        // approximate = the same droplet hollow (white fill, coloured
+        // outline + count). The segmented donut is gone — the popover still
+        // carries the per-type breakdown for mixed clusters.
+        const k = (isCluster ? 2.7 : 1.6) * s
+        const headCY = c.y - 10.5 * k
         const baseLabel = isCluster ? `${c.count} — ${c.items[0]?.title ?? ''}` : c.items[0]?.title ?? ''
         return (
           <g
@@ -212,72 +203,26 @@ export function RegionChoropleth({
               if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onPinClick?.(c) }
             }}
           >
-            {isCluster ? (
-              <>
-                {/* Same-hue halo blooms on hover/focus. */}
-                <circle cx={c.x} cy={c.y} r={DONUT_R + 5 * s} fill={color}
-                  className="opacity-0 transition-opacity duration-200 group-hover/pin:opacity-15 group-focus-visible/pin:opacity-15 motion-reduce:transition-none" />
-                {/* Approximate cluster: dashed same-colour outer ring. */}
-                {c.approx && (
-                  <circle cx={c.x} cy={c.y} r={DONUT_R + 4 * s} fill="none"
-                    stroke={color} strokeWidth={1.5 * s}
-                    strokeDasharray={`${3.5 * s} ${3.5 * s}`} opacity={0.8} />
-                )}
-                {/* White core carries the count in midnight — legible on any
-                    map shade beneath. */}
-                <circle cx={c.x} cy={c.y} r={CORE_R} fill="white"
-                  className="drop-shadow-[0_1.5px_3px_rgba(11,49,96,0.3)]" />
-                {/* Rounded-cap segments with breathing gaps — the ring IS the
-                    legend (exact layer colours). */}
-                {segments.map((seg, si) => (
-                  <circle
-                    key={`${seg.type}-${si}`}
-                    cx={c.x} cy={c.y} r={DONUT_R}
-                    fill="none"
-                    stroke={donutSegmentColor(seg.type)}
-                    strokeWidth={DONUT_STROKE}
-                    strokeLinecap="round"
-                    strokeDasharray={seg.dashArray}
-                    strokeDashoffset={seg.dashOffset}
-                    transform={`rotate(-90 ${c.x} ${c.y})`}
-                  />
-                ))}
-                <text x={c.x} y={c.y + 4.5 * s} textAnchor="middle"
-                  fontSize={13 * s}
-                  className="pointer-events-none font-heading font-bold tabular-nums"
-                  fill={CCM.midnight}>
-                  {c.count}
-                </text>
-              </>
-            ) : c.approx ? (
-              <>
-                {/* Single approximate item: dashed hollow circle at the
-                    country centre — NO droplet tail (a tail points at a spot;
-                    this pin only means "in this country"). */}
-                <circle cx={c.x} cy={c.y} r={12 * s} fill={color}
-                  className="opacity-0 transition-opacity duration-200 group-hover/pin:opacity-15 group-focus-visible/pin:opacity-15 motion-reduce:transition-none" />
-                <circle cx={c.x} cy={c.y} r={9 * s} fill="white" fillOpacity={0.92}
-                  stroke={color} strokeWidth={2 * s}
-                  strokeDasharray={`${3.5 * s} ${3 * s}`}
-                  className="drop-shadow-[0_1.5px_3px_rgba(11,49,96,0.3)]" />
-                <circle cx={c.x} cy={c.y} r={3 * s} fill={color} />
-              </>
-            ) : (
-              <>
-                {/* Single item: droplet in its layer colour, tip on the exact
-                    location, white inner dot. */}
-                <circle cx={c.x} cy={c.y - 13 * s} r={15 * s} fill={color}
-                  className="opacity-0 transition-opacity duration-200 group-hover/pin:opacity-15 group-focus-visible/pin:opacity-15 motion-reduce:transition-none" />
-                <path
-                  d="M0 0C0 0 6.5 -6 6.5 -10.5A6.5 6.5 0 1 0 -6.5 -10.5C-6.5 -6 0 0 0 0Z"
-                  transform={`translate(${c.x} ${c.y}) scale(${1.6 * s})`}
-                  fill={color}
-                  stroke="white"
-                  strokeWidth={1.5 * s}
-                  className="drop-shadow-[0_1.5px_3px_rgba(11,49,96,0.3)]"
-                />
-                <circle cx={c.x} cy={c.y - 16.8 * s} r={3.6 * s} fill="white" />
-              </>
+            {/* Same-hue halo blooms on hover/focus, centred on the head. */}
+            <circle cx={c.x} cy={headCY} r={9 * k} fill={color}
+              className="opacity-0 transition-opacity duration-200 group-hover/pin:opacity-15 group-focus-visible/pin:opacity-15 motion-reduce:transition-none" />
+            <path
+              d="M0 0C0 0 6.5 -6 6.5 -10.5A6.5 6.5 0 1 0 -6.5 -10.5C-6.5 -6 0 0 0 0Z"
+              transform={`translate(${c.x} ${c.y}) scale(${k})`}
+              fill={c.approx ? 'white' : color}
+              stroke={c.approx ? color : 'white'}
+              /* strokeWidth is in pre-transform units — divide by the scale
+                 factor so the rendered stroke stays constant across sizes. */
+              strokeWidth={(c.approx ? 2 : 1.5) / (isCluster ? 2.7 : 1.6)}
+              className="drop-shadow-[0_1.5px_3px_rgba(11,49,96,0.3)]"
+            />
+            {isCluster && (
+              <text x={c.x} y={headCY + 4.5 * s} textAnchor="middle"
+                fontSize={13 * s}
+                className="pointer-events-none font-heading font-bold tabular-nums"
+                fill={c.approx ? color : 'white'}>
+                {c.count}
+              </text>
             )}
           </g>
         )
@@ -289,11 +234,18 @@ export function RegionChoropleth({
         const name = labelFor(hoverLabel.code)
         const text = `${name} · ${datum?.value ?? 0}`
         const w = (text.length * 7.6 + 30) * s
+        // Clamp the pill inside the ACTIVE viewport horizontally (the y clamp
+        // happens in showLabel) — near a map edge the pill slides inward
+        // instead of being cut by overflow-hidden (user 2026-08-05).
+        const vbX = crop?.x ?? 0
+        const vbW = crop?.w ?? 960
+        const pad = 6 * s
+        const cx = Math.min(Math.max(hoverLabel.x, vbX + w / 2 + pad), vbX + vbW - w / 2 - pad)
         return (
           <g className="pointer-events-none" aria-hidden>
-            <rect x={hoverLabel.x - w / 2} y={hoverLabel.y - 15 * s} width={w} height={30 * s} rx={15 * s}
+            <rect x={cx - w / 2} y={hoverLabel.y - 15 * s} width={w} height={30 * s} rx={15 * s}
               fill="white" className="drop-shadow-[0_3px_8px_rgba(11,49,96,0.3)]" />
-            <text x={hoverLabel.x} y={hoverLabel.y + 4.5 * s} textAnchor="middle"
+            <text x={cx} y={hoverLabel.y + 4.5 * s} textAnchor="middle"
               fontSize={13 * s}
               className="font-heading font-bold" fill={CCM.midnight}>
               {name} <tspan fill={CCM.sea}>· {datum?.value ?? 0}</tspan>
