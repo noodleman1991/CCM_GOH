@@ -1,5 +1,5 @@
 'use client'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslations } from 'next-intl'
 
 import { cn } from '@/lib/utils'
@@ -61,11 +61,30 @@ export function RegionChoropleth({
   // Sized in viewBox units (960×500) so pins render ~40px at typical map
   // widths — prominent, per the approved mock.
   const crop = focus ? regionCrop(focus) : null
-  // Glyphs are authored in viewBox units against the 960-wide world; under a
-  // crop the same units render crop-factor× larger, so every authored size is
-  // multiplied by `s` to hold its on-screen size. Declared ahead of
-  // `showLabel` below, which closes over both.
-  const s = crop ? crop.w / 960 : 1
+  // Under a crop, glyph sizes must be MEASURED, not derived from the zoom
+  // factor alone: `crop.w / 960` assumed the cropped map renders at the same
+  // pixel width as the full map, but the locked embed ALSO shrinks the map to
+  // a ~44% column, so the two effects stacked and pins rendered half-size
+  // (bug report 2026-08-04, spotted on the ar community page). Instead,
+  // observe the svg's rendered width and scale glyphs so their on-screen size
+  // matches the unlocked map's reference density (960 units across ~1120px).
+  const svgRef = useRef<SVGSVGElement | null>(null)
+  const [pxPerUnit, setPxPerUnit] = useState<number | null>(null)
+  useEffect(() => {
+    if (!crop) return
+    const el = svgRef.current
+    if (!el) return
+    const measure = () => {
+      const w = el.clientWidth
+      if (w > 0) setPxPerUnit(w / crop.w)
+    }
+    measure()
+    const ro = new ResizeObserver(measure)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [crop])
+  const REF_PX_PER_UNIT = 1120 / 960
+  const s = crop ? (pxPerUnit ? REF_PX_PER_UNIT / pxPerUnit : crop.w / 960) : 1
 
   // Pane-free region selection (Gate-2 §atlas): the map itself names regions —
   // hovering/focusing a region floats a name+count pill above it. Positioned
@@ -107,6 +126,7 @@ export function RegionChoropleth({
 
   return (
     <svg
+      ref={svgRef}
       viewBox={crop ? `${crop.x} ${crop.y} ${crop.w} ${crop.h}` : geometry.viewBox}
       className={cn('h-auto w-full select-none overflow-hidden rounded-2xl', className)}
       role="img"
