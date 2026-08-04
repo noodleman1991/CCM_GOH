@@ -5,6 +5,11 @@ const item = (id: string, x: number, y: number, type: "caseStudy" | "livedExperi
   id, title: id, type, slug: id, countryCode3: "KEN", x, y,
 });
 
+const approxItem = (id: string, x: number, y: number, approx: boolean) => ({
+  ...item(id, x, y),
+  approx,
+});
+
 describe("clusterPins", () => {
   it("merges points in the same cell and averages the position", () => {
     const clusters = clusterPins([item("a", 100, 100), item("b", 104, 102), item("c", 300, 300)], 24);
@@ -38,6 +43,27 @@ describe("clusterPins", () => {
       24
     );
     expect(c.types.sort()).toEqual(["caseStudy", "livedExperience"]);
+  });
+
+  it("marks a cluster approx when every item in the bucket is country-precision", () => {
+    const [c] = clusterPins(
+      [approxItem("a", 100, 100, true), approxItem("b", 101, 101, true)],
+      24
+    );
+    expect(c.approx).toBe(true);
+  });
+
+  it("marks a cluster non-approx when it mixes exact and country-precision items", () => {
+    const [c] = clusterPins(
+      [approxItem("a", 100, 100, true), approxItem("b", 101, 101, false)],
+      24
+    );
+    expect(c.approx).toBe(false);
+  });
+
+  it("marks a cluster non-approx when every item is exact (no approx flag)", () => {
+    const [c] = clusterPins([item("a", 100, 100), item("b", 101, 101)], 24);
+    expect(c.approx).toBe(false);
   });
 });
 

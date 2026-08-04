@@ -200,7 +200,7 @@ export function AtlasExplorer({
       }
     }
     return totals
-  }, [totalsData, lockedRegion])
+  }, [totalsData, effectiveRegion])
 
   // Pins only exist for content facets (member counts have no geo data); if
   // none of the active layers are pin-capable, skip the pins fetch entirely.
@@ -243,7 +243,7 @@ export function AtlasExplorer({
       totals[f] = source.reduce((s, d) => s + (d.byFacet[f] ?? 0), 0)
     }
     return totals
-  }, [layers, regionData, lockedRegion])
+  }, [layers, regionData, effectiveRegion])
 
   const onSelect = (code: RegionCode) => {
     if (lockedRegion) return
