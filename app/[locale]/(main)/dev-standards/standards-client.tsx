@@ -36,7 +36,7 @@ const BENCH_PINS = [
     types: ["livedExperience"] as const,
     typeCounts: { livedExperience: 1 },
   },
-].map((p) => ({ ...p, types: [...p.types] }));
+].map((p) => ({ ...p, types: [...p.types], approx: false }));
 
 /** Longest real title in the dataset — the text-guard proof card. */
 const LONG_TITLE =
