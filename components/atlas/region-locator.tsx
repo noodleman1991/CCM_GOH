@@ -6,8 +6,9 @@ import { cn } from '@/lib/utils'
  * Circle-clipped mini world map with one region in its brand colour — the
  * locked atlas embed's corner locator (spec 2026-08-03 amendment): the cropped
  * clipping shows only the region, so this situates it globally at a glance.
- * The viewBox is centre-weighted (crops polar dead space) so the landmass
- * fills the circle; `slice` keeps it edge-to-edge.
+ * The viewBox trims only the emptiest margins (user 2026-08-04: zoomed out
+ * from the earlier tight crop — most of the world shows, so the region reads
+ * in true global context); `slice` keeps it edge-to-edge in the circle.
  */
 export function RegionLocator({
   region,
@@ -22,7 +23,7 @@ export function RegionLocator({
   if (!regions[region]) return null
   return (
     <svg
-      viewBox="180 60 620 400"
+      viewBox="70 25 820 450"
       preserveAspectRatio="xMidYMid slice"
       role="img"
       aria-label={label}
