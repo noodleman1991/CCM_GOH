@@ -270,6 +270,12 @@ export function AtlasExplorer({
         </div>
       )}
 
+      {/* Locked embeds (community pages): filters and the demoted map share a
+          two-column row at lg — the map stays (pins + locator) but no longer
+          dominates the section, and results follow immediately below.
+          Unlocked keeps the classic full-width stack. */}
+      <div className={cn(lockedRegion ? 'grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,44%)] lg:items-start' : 'space-y-8')}>
+      <div className={cn(lockedRegion ? 'space-y-4' : 'space-y-8')}>
       {/* Search q — part of the shared state */}
       <div className="relative max-w-sm">
         <Search className="absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
@@ -343,8 +349,10 @@ export function AtlasExplorer({
           ))}
         </FilterRow>
       </FilterRowGroup>
+      </div>
 
-      {/* Map — full-width. The old top hover strip is GONE (the floating
+      {/* Map — full-width when unlocked; the 44% column when locked (see the
+          wrapper above). The old top hover strip is GONE (the floating
           name+count pill ON the map is the hover affordance now); the legend
           chips overlay the map's bottom-start corner so map + legend read as
           one unit and the spotlight can sit directly beneath the map. */}
@@ -368,7 +376,7 @@ export function AtlasExplorer({
           <RegionLocator
             region={lockedRegion}
             label={tAtlas('locator', { region: labelFor(lockedRegion) })}
-            className="pointer-events-none absolute end-3 top-3 size-16 sm:size-20"
+            className="pointer-events-none absolute end-3 top-3 size-14 sm:size-16"
           />
         )}
         {/* Legend/result chips (spec R2b point 1) — one per active layer:
@@ -451,6 +459,7 @@ export function AtlasExplorer({
             </div>
           </div>
         )}
+      </div>
       </div>
 
       {/* Regional spotlight (Slice 4, mock v6 §3): selecting a region opens

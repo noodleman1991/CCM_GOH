@@ -10,6 +10,9 @@ User-directed changes after seeing the rendered result:
 1. **Edge fade REMOVED** — the cropped map keeps a clean rounded frame (no gradient overlay).
 2. **Corner locator globe ADDED (mockup option A)** — a circle-clipped mini world (`components/atlas/region-locator.tsx`, centre-weighted viewBox `180 60 620 400`, `slice`) rendered absolutely at the map's top-end corner in locked mode only: focused region in its `REGION_COLOR`, other landmasses in a pale water tint, `role="img"` with the localized `atlas.locator` label ({region} interpolated), `pointer-events-none`, `end-3` for RTL safety.
 
+3. **Layout tweak (2026-08-04)** — in locked mode the map is demoted: filters (search + Show/Theme/When) and the map share a two-column row at `lg` (`grid-cols-[minmax(0,1fr)_minmax(0,44%)]`, map end-side, RTL-mirrors via grid), stacking on mobile; the spotlight/results follow full-width directly below. Locator shrinks to `size-14 sm:size-16`. Unlocked surfaces keep the full-width stack.
+4. **Linked type-subtitles (2026-08-04)** — in the multi-type card strip, each content type's group header now carries its full count and the region-scoped "View all {type} →" listing link (end-aligned); the spotlight's bottom per-layer pill row is REMOVED, and grouped mode suppresses the old below-cards view-all link (single-type mode keeps it).
+
 Everything else in this spec (crop math, `focus` prop, glyph scaling, locked-mode gating, fallbacks) stands.
 
 ## Context
