@@ -4,6 +4,7 @@ import { AtlasExplorer } from "@/components/atlas/atlas-explorer";
 import SectionContainer from "@/components/ui/section-container";
 import { heading } from "@/lib/design-tokens";
 import { getLocalizedField } from "@/lib/localization-utils";
+import { getRegionArt } from "@/lib/maps/region-art";
 import { getThemeOptions } from "@/lib/maps/themes";
 import { cn } from "@/lib/utils";
 
@@ -33,7 +34,7 @@ export default async function RegionMapBlock({
   description,
   locale = "en",
 }: RegionMapProps) {
-  const themes = await getThemeOptions();
+  const [themes, regionArt] = await Promise.all([getThemeOptions(), getRegionArt()]);
   const supported = (locale || "en") as "en" | "es" | "fr" | "ar";
   const localizedTitle =
     typeof title === "string" ? title : getLocalizedField(title as never, supported, "");
@@ -61,7 +62,11 @@ export default async function RegionMapBlock({
           </div>
         )}
         <Suspense fallback={<div className="min-h-[420px] rounded-2xl border bg-muted/30" aria-hidden />}>
-          <AtlasExplorer themes={themes} showBreakdown={false} />
+          {/* recentVariant=highlights: one newest item PER region ("Around the
+              regions") — breadth the homepage doesn't have elsewhere; the
+              fresh-content block already owns recency. showHeader off: the CMS
+              block title above replaces the explorer's own "Atlas" h1. */}
+          <AtlasExplorer themes={themes} regionArt={regionArt} showBreakdown={false} recentVariant="highlights" showHeader={false} />
         </Suspense>
       </div>
     </SectionContainer>

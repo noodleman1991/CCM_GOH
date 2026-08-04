@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { ArrowRight } from "lucide-react";
 import { FACETS, facetForContentType, atlasDestination, type FacetId } from "@/lib/maps/region-facets";
 import type { FacetContentType } from "@/lib/maps/cluster-pins";
-import { REGION_TO_RC_SLUG, isRegionCode } from "@/lib/maps/region-codes";
+import { REGION_COLOR, REGION_I18N_KEY, REGION_TO_RC_SLUG, isRegionCode } from "@/lib/maps/region-codes";
 import { COLOR } from "@/lib/ccm-colors";
 import { cn } from "@/lib/utils";
 import { Link } from "@/i18n/navigation";
@@ -269,6 +269,51 @@ export function RegionContentCards({
   if (items.length === 0) return null;
 
   return <CardsTrack items={items} t={t} region={region} viewAllLabel={viewAllLabel} />;
+}
+
+/**
+ * "Around the regions" (mock v6 §1, homepage embed): ONE newest geotagged item
+ * per region, each under a region eyebrow (colour dot + localized name that
+ * links to the community page). Breadth is this strip's whole job — the
+ * homepage's fresh-content block already owns recency.
+ */
+export function RegionHighlightsCards() {
+  const t = useCardLabels();
+  const tRegions = useTranslations("navigation.regions");
+  const { data, isLoading } = useSWR(
+    `/api/maps/region-items?mode=highlights`,
+    fetcher,
+    { revalidateOnFocus: false, dedupingInterval: 60000 }
+  );
+  const items = (data?.items ?? []) as (Item & { region?: string })[];
+
+  if (isLoading) return <CardsSkeleton />;
+  if (items.length === 0) return null;
+
+  return (
+    <div className="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-1 [scrollbar-width:none] lg:grid lg:grid-cols-4 lg:overflow-visible [&::-webkit-scrollbar]:hidden">
+      {items.map((item) => (
+        <div key={item.id} className="w-[70%] shrink-0 snap-start sm:w-[45%] lg:w-auto">
+          {item.region && isRegionCode(item.region) && (
+            <Link
+              href={`/communities/${REGION_TO_RC_SLUG[item.region]}`}
+              className="mb-1.5 flex items-center gap-1.5 hover:underline"
+            >
+              <span
+                aria-hidden="true"
+                className="size-2 shrink-0 rounded-full"
+                style={{ backgroundColor: REGION_COLOR[item.region] }}
+              />
+              <span className="truncate text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                {tRegions(REGION_I18N_KEY[item.region])}
+              </span>
+            </Link>
+          )}
+          <ContentCard item={item} />
+        </div>
+      ))}
+    </div>
+  );
 }
 
 /**
