@@ -1056,7 +1056,7 @@
     "typeToSearch": "Rechercher dans le hub",
     "typeToSearchHint": "Trouvez des études de cas, des actualités, des personnes et des régions.",
     "nothingFound": "Aucun résultat pour « {q} »",
-    "nothingFoundHint": "Essayez un autre terme ou explorez l'Atlas.",
+    "nothingFoundHint": "Essayez un autre terme ou <link>explorez l'Atlas</link>.",
     "people": "Personnes",
     "agendas": "Agendas",
     "news": "Actualités",

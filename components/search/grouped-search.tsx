@@ -1,29 +1,25 @@
 'use client'
 
-import { InstantSearchNext } from 'react-instantsearch-nextjs'
-import { Configure, useHits, useStats } from 'react-instantsearch'
-import { searchClient, ALGOLIA_INDICES } from '@/lib/algolia'
+import { InstantSearch, Configure, useHits, useStats } from 'react-instantsearch'
+import type { SearchClient } from 'algoliasearch'
+import { ALGOLIA_INDICES } from '@/lib/algolia'
 import type {
   CaseStudySearchRecord,
   AgendaSearchRecord,
   NewsSearchRecord,
   UserSearchRecord,
 } from '@/lib/algolia'
+import { useAlgoliaSearchClient } from '@/lib/algolia-client'
 import { SearchErrorBoundary } from './search-error-boundary'
 import { Card, CardContent } from '@/components/ui/card'
 import { TypedCard } from '@/components/cards/typed-card'
 import type { TypedCardItem } from '@/lib/cards/type-style'
-import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { SearchInput } from '@/components/ui/search-input'
-import {
-  ArrowRight,
-  BookOpen,
-  Newspaper,
-  FileText,
-  Users,
-  Globe,
-} from 'lucide-react'
+import { FilterChip } from '@/components/ui/filter-chip'
+import { FilterBar } from '@/components/ui/filter-bar'
+import { RecentEverywhereCards } from '@/components/atlas/region-content-cards'
+import { ArrowRight } from 'lucide-react'
 import { Link } from '@/i18n/navigation'
 import { useTranslations, useLocale } from 'next-intl'
 import { useAuth } from '@clerk/nextjs'
@@ -31,7 +27,7 @@ import { useState, useCallback, useEffect, useRef, useMemo } from 'react'
 import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 import { getLocalizedTitle, getLocalizedExcerpt } from '@/lib/localization-utils'
 import { REGION_CODES, REGION_I18N_KEY, REGION_TO_RC_SLUG, REGION_COLOR } from '@/lib/maps/region-codes'
-import { regionColor } from '@/lib/ccm-colors'
+import { COLOR, regionColor } from '@/lib/ccm-colors'
 import { cn } from '@/lib/utils'
 
 /** How many hits each group previews before "See all". */
@@ -89,36 +85,37 @@ function GroupedSearchBox({
 /* Group shell — section header (icon + title + count) + see-all link. */
 /* ------------------------------------------------------------------ */
 
+/** Same group-header grammar as the atlas typed-card strips (region-content-
+ *  cards.tsx / region-members-strip.tsx): a colour dot matching the type's
+ *  atlas-layer colour + its uppercase label + count + an end-aligned "See
+ *  all" link to the type's full listing page — so a mixed results page reads
+ *  like one continuous system with the atlas's own mixed-type strips. */
 function GroupHeader({
-  icon: Icon,
+  dotColor,
   title,
   count,
   seeAllHref,
 }: {
-  icon: typeof BookOpen
+  dotColor: string
   title: string
   count: number | null
   seeAllHref?: string
 }) {
   const t = useTranslations('search')
   return (
-    <div className="mb-4 flex items-center justify-between gap-3">
-      <div className="flex items-center gap-2">
-        <span className="flex size-7 items-center justify-center rounded-md bg-ccm-sea/10 text-ccm-sea">
-          <Icon className="size-4" />
-        </span>
-        <h2 className="font-heading text-lg font-semibold text-ccm-midnight">{title}</h2>
-        {count !== null && (
-          <Badge variant="secondary" className="ms-1">{count}</Badge>
-        )}
-      </div>
+    <div className="mb-3 flex items-center gap-1.5">
+      <span aria-hidden="true" className="size-2 shrink-0 rounded-full" style={{ backgroundColor: dotColor }} />
+      <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{title}</span>
+      {count !== null && (
+        <span className="text-xs font-semibold tabular-nums text-[var(--color-ccm-sea)]">{count}</span>
+      )}
       {seeAllHref && count !== null && count > PREVIEW_COUNT && (
         <Link
           href={seeAllHref}
-          className="inline-flex items-center gap-1 text-sm font-medium text-ccm-water hover:underline"
+          className="ms-auto inline-flex items-center gap-1 text-sm font-semibold text-[var(--color-ccm-sea)] hover:underline"
         >
           {t('seeAll')}
-          <ArrowRight className="size-3.5 rtl:-scale-x-100" />
+          <ArrowRight className="size-3.5 rtl:-scale-x-100" aria-hidden />
         </Link>
       )}
     </div>
@@ -256,7 +253,7 @@ function RegionGroup({ query }: { query: string }) {
 
   return (
     <section>
-      <GroupHeader icon={Globe} title={tSearch('regions')} count={matches.length} />
+      <GroupHeader dotColor={COLOR.global} title={tSearch('regions')} count={matches.length} />
       <div className="grid gap-3 sm:grid-cols-2">
         {matches.map((code) => (
           <Card key={code} className="transition-shadow hover:shadow-md">
@@ -289,18 +286,19 @@ function AlgoliaGroup({
   indexName,
   query,
   filters,
-  icon,
+  dotColor,
   title,
   seeAllHref,
   render,
   onCount,
   visible = true,
+  searchClient,
 }: {
   groupKey: string
   indexName: string
   query: string
   filters: string
-  icon: typeof BookOpen
+  dotColor: string
   title: string
   seeAllHref: string
   render: (onCount: (n: number) => void) => React.ReactNode
@@ -308,6 +306,10 @@ function AlgoliaGroup({
   /** Group-filter visibility. The group stays MOUNTED when hidden so its count
    *  keeps updating the filter chip badge — we only hide it visually. */
   visible?: boolean
+  /** Minted from the /api/search/token secured key (see lib/algolia-client) —
+   *  passed in rather than imported so the group never mounts InstantSearch
+   *  before a real, working client exists. */
+  searchClient: SearchClient
 }) {
   const [count, setCount] = useState<number | null>(null)
   const handleCount = useCallback((n: number) => {
@@ -320,7 +322,17 @@ function AlgoliaGroup({
 
   return (
     <SearchErrorBoundary>
-      <InstantSearchNext
+      {/* Plain `InstantSearch`, NOT the Next-specific `InstantSearchNext` —
+          this group only ever mounts client-side (the `mounted` gate in
+          GroupedSearch exists precisely to dodge the documented SSR-hang
+          bug), so there's never a real SSR pass for InstantSearchNext to
+          hydrate from. Its SSR machinery unconditionally treats the first
+          render as "SSR already ran with empty results" (via a truthy but
+          server-less `waitForResultsRef`) and skips the real initial query —
+          verified 2026-08: with a working key, every group sat at 0 hits
+          until a LATER query change forced a refetch. Plain InstantSearch has
+          no such assumption and searches correctly on mount. */}
+      <InstantSearch
         searchClient={searchClient}
         indexName={indexName}
         insights={false}
@@ -328,10 +340,10 @@ function AlgoliaGroup({
       >
         <Configure query={query} filters={filters} hitsPerPage={PREVIEW_COUNT} />
         <section className={cn(hidden && 'hidden')}>
-          <GroupHeader icon={icon} title={title} count={count} seeAllHref={seeAllHref} />
+          <GroupHeader dotColor={dotColor} title={title} count={count} seeAllHref={seeAllHref} />
           {render(handleCount)}
         </section>
-      </InstantSearchNext>
+      </InstantSearch>
     </SearchErrorBoundary>
   )
 }
@@ -353,6 +365,14 @@ export default function GroupedSearch() {
   // several forceMount'd InstantSearch SSR queries can hold the RSC stream open).
   const [mounted, setMounted] = useState(false)
   useEffect(() => setMounted(true), [])
+
+  // Search-only client, minted from /api/search/token (see lib/algolia-client) —
+  // the env NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY has been invalid since June, so
+  // this is the only working path until it's ready.
+  const { client: searchClient, error: searchClientError, isLoading: searchClientLoading } = useAlgoliaSearchClient()
+  useEffect(() => {
+    if (searchClientError) console.error('[search] Algolia search client unavailable:', searchClientError)
+  }, [searchClientError])
 
   const [query, setQuery] = useState(searchParams.get('q') || '')
 
@@ -425,52 +445,30 @@ export default function GroupedSearch() {
         </p>
       )}
 
-      {/* Group nav — line-tab grammar (Gate-2 §search): quiet labels on a
-          hairline, active carries the water bar, live counts in sky pills.
-          Scopes the grouped results to one category; a group with 0 results
-          is dimmed. */}
-      {hasQuery && mounted && !nothingFound && (
-        <div role="tablist" aria-label={t('allResults')}
-          className="flex gap-0.5 overflow-x-auto border-b-[1.5px] border-border [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      {/* Type filter chips (shared FilterChip geometry — atlas's FilterRow
+          uses the exact same component). Always available once mounted:
+          before a query (priming the scope for when the user types), on a
+          result set (scoping it), and on a no-results page (so there's a way
+          to pivot instead of a dead end). "All" is the default. */}
+      {mounted && (
+        <FilterBar aria-label={t('allResults')}>
           {[
-            { key: 'all', label: t('allResults'), count: null as number | null },
-            { key: 'caseStudies', label: t('caseStudies'), count: counts.caseStudies ?? null },
-            { key: 'news', label: t('news'), count: counts.news ?? null },
-            { key: 'agendas', label: t('agendas'), count: counts.agendas ?? null },
-            { key: 'people', label: t('people'), count: counts.people ?? null },
-            { key: 'regions', label: t('regions'), count: regionMatchCount },
-          ].map((tab) => {
-            const active = activeFilter === tab.key
-            const empty = tab.count === 0 && tab.key !== 'all'
-            return (
-              <button
-                key={tab.key}
-                type="button"
-                role="tab"
-                onClick={() => setActiveFilter(tab.key)}
-                aria-selected={active}
-                className={cn(
-                  'relative inline-flex flex-none items-center gap-1.5 whitespace-nowrap px-4 pb-2.5 pt-2',
-                  'font-heading text-sm font-medium text-muted-foreground',
-                  'hover:text-[var(--color-ccm-midnight)]',
-                  'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-ccm-water)]',
-                  'after:absolute after:inset-x-3.5 after:-bottom-[1.5px] after:h-[3px] after:origin-center',
-                  'after:scale-x-0 after:rounded-t-full after:bg-[var(--color-ccm-water)]',
-                  'after:transition-transform after:duration-200 motion-reduce:after:transition-none',
-                  active && 'font-bold text-[var(--color-ccm-midnight)] after:scale-x-100',
-                  empty && !active && 'opacity-50'
-                )}
-              >
-                {tab.label}
-                {tab.count !== null && tab.count > 0 && (
-                  <span className="rounded-full bg-[var(--color-ccm-sky)]/25 px-1.5 py-px text-[10.5px] font-bold tabular-nums text-[var(--color-ccm-sea)]">
-                    {tab.count}
-                  </span>
-                )}
-              </button>
-            )
-          })}
-        </div>
+            { key: 'all', label: t('allResults'), count: undefined as number | undefined },
+            { key: 'caseStudies', label: t('caseStudies'), count: counts.caseStudies },
+            { key: 'news', label: t('news'), count: counts.news },
+            { key: 'agendas', label: t('agendas'), count: counts.agendas },
+            { key: 'people', label: t('people'), count: counts.people },
+            { key: 'regions', label: t('regions'), count: hasQuery ? regionMatchCount : undefined },
+          ].map((tab) => (
+            <FilterChip
+              key={tab.key}
+              label={tab.label}
+              count={tab.count}
+              active={activeFilter === tab.key}
+              onClick={() => setActiveFilter(tab.key)}
+            />
+          ))}
+        </FilterBar>
       )}
 
       {!mounted ? (
@@ -485,9 +483,21 @@ export default function GroupedSearch() {
           ))}
         </div>
       ) : !hasQuery ? (
-        <div className="py-16 text-center">
-          <p className="font-heading text-lg font-semibold text-ccm-midnight">{t('typeToSearch')}</p>
-          <p className="mt-1 text-sm text-muted-foreground">{t('typeToSearchHint')}</p>
+        /* Pre-query "Browse" panel (never a bare empty state): the invitation
+           copy, then the same "most recent, everywhere" strip the atlas's own
+           no-selection state shows — reusing RecentEverywhereCards verbatim so
+           this reads as the SAME feature, not a lookalike. */
+        <div className="space-y-8">
+          <div className="py-8 text-center">
+            <p className="font-heading text-lg font-semibold text-ccm-midnight">{t('typeToSearch')}</p>
+            <p className="mt-1 text-sm text-muted-foreground">{t('typeToSearchHint')}</p>
+          </div>
+          <div>
+            <h2 className="mb-3 font-heading text-lg font-semibold text-ccm-midnight">
+              {tRoot('atlas.latestEverywhere')}
+            </h2>
+            <RecentEverywhereCards limit={6} />
+          </div>
         </div>
       ) : (
         <>
@@ -496,58 +506,88 @@ export default function GroupedSearch() {
               <p className="font-heading text-lg font-semibold text-ccm-midnight">
                 {t('nothingFound', { q: query })}
               </p>
-              <p className="mt-1 text-sm text-muted-foreground">{t('nothingFoundHint')}</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {t.rich('nothingFoundHint', {
+                  link: (chunks) => (
+                    <Link href="/atlas" className="font-medium text-[var(--color-ccm-sea)] hover:underline">
+                      {chunks}
+                    </Link>
+                  ),
+                })}
+              </p>
             </div>
           )}
           <div className={cn('space-y-10', nothingFound && 'hidden')}>
-            <AlgoliaGroup
-              groupKey="caseStudies"
-              indexName={ALGOLIA_INDICES.CASE_STUDIES}
-              query={query}
-              filters="status:approved AND accessLevel:public"
-              icon={BookOpen}
-              title={t('caseStudies')}
-              seeAllHref={`/research-and-action/case-studies?q=${encodeURIComponent(query)}`}
-              render={(onCount) => <ContentHits type="case-studies" onCount={onCount} />}
-              onCount={onGroupCount}
-              visible={showGroup('caseStudies')}
-            />
-            <AlgoliaGroup
-              groupKey="news"
-              indexName={ALGOLIA_INDICES.NEWS}
-              query={query}
-              filters={contentFilter}
-              icon={Newspaper}
-              title={t('news')}
-              seeAllHref={`/news?q=${encodeURIComponent(query)}`}
-              render={(onCount) => <ContentHits type="news" onCount={onCount} />}
-              onCount={onGroupCount}
-              visible={showGroup('news')}
-            />
-            <AlgoliaGroup
-              groupKey="agendas"
-              indexName={ALGOLIA_INDICES.AGENDAS}
-              query={query}
-              filters={contentFilter}
-              icon={FileText}
-              title={t('agendas')}
-              seeAllHref={`/research-and-action/all-outputs?q=${encodeURIComponent(query)}`}
-              render={(onCount) => <ContentHits type="agendas" onCount={onCount} />}
-              onCount={onGroupCount}
-              visible={showGroup('agendas')}
-            />
-            <AlgoliaGroup
-              groupKey="people"
-              indexName={ALGOLIA_INDICES.USERS}
-              query={query}
-              filters={peopleFilter}
-              icon={Users}
-              title={t('people')}
-              seeAllHref={`/collaborate?q=${encodeURIComponent(query)}`}
-              render={(onCount) => <PeopleHits onCount={onCount} />}
-              onCount={onGroupCount}
-              visible={showGroup('people')}
-            />
+            {searchClient ? (
+              <>
+                <AlgoliaGroup
+                  searchClient={searchClient}
+                  groupKey="caseStudies"
+                  indexName={ALGOLIA_INDICES.CASE_STUDIES}
+                  query={query}
+                  filters="status:approved AND accessLevel:public"
+                  dotColor={COLOR.layer.cases}
+                  title={t('caseStudies')}
+                  seeAllHref={`/research-and-action/case-studies?q=${encodeURIComponent(query)}`}
+                  render={(onCount) => <ContentHits type="case-studies" onCount={onCount} />}
+                  onCount={onGroupCount}
+                  visible={showGroup('caseStudies')}
+                />
+                <AlgoliaGroup
+                  searchClient={searchClient}
+                  groupKey="news"
+                  indexName={ALGOLIA_INDICES.NEWS}
+                  query={query}
+                  filters={contentFilter}
+                  dotColor={COLOR.layer.projects}
+                  title={t('news')}
+                  seeAllHref={`/news?q=${encodeURIComponent(query)}`}
+                  render={(onCount) => <ContentHits type="news" onCount={onCount} />}
+                  onCount={onGroupCount}
+                  visible={showGroup('news')}
+                />
+                <AlgoliaGroup
+                  searchClient={searchClient}
+                  groupKey="agendas"
+                  indexName={ALGOLIA_INDICES.AGENDAS}
+                  query={query}
+                  filters={contentFilter}
+                  dotColor={COLOR.layer.projects}
+                  title={t('agendas')}
+                  seeAllHref={`/research-and-action/all-outputs?q=${encodeURIComponent(query)}`}
+                  render={(onCount) => <ContentHits type="agendas" onCount={onCount} />}
+                  onCount={onGroupCount}
+                  visible={showGroup('agendas')}
+                />
+                <AlgoliaGroup
+                  searchClient={searchClient}
+                  groupKey="people"
+                  indexName={ALGOLIA_INDICES.USERS}
+                  query={query}
+                  filters={peopleFilter}
+                  dotColor={COLOR.layer.people}
+                  title={t('people')}
+                  seeAllHref={`/collaborate?q=${encodeURIComponent(query)}`}
+                  render={(onCount) => <PeopleHits onCount={onCount} />}
+                  onCount={onGroupCount}
+                  visible={showGroup('people')}
+                />
+              </>
+            ) : searchClientLoading ? (
+              <div className="space-y-8">
+                {Array.from({ length: 2 }).map((_, i) => (
+                  <div key={i} className="space-y-3">
+                    <Skeleton className="h-5 w-32" />
+                    <Skeleton className="h-20 w-full rounded-lg" />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              // Token mint failed and no working fallback key — say so plainly
+              // (searchClientError has the real cause, logged above) rather
+              // than silently showing zero results.
+              <p className="text-sm text-muted-foreground">{t('searchUnavailable')}</p>
+            )}
 
             {showGroup('regions') && <RegionGroup query={query} />}
           </div>
