@@ -25,18 +25,21 @@ export function StaffNav() {
       <SidebarGroupLabel>{t("staff")}</SidebarGroupLabel>
       <SidebarMenu>
         <SidebarMenuItem>
-          <SidebarMenuButton asChild>
+          <SidebarMenuButton asChild tooltip={t("moderation")}>
             <Link href="/moderation">
               <ShieldAlert />
-              <span>{t("moderation")}</span>
+              {/* Collapsed rail: hide the label outright so the icon alone
+                  centers cleanly (see nav-main.tsx for why truncate/shrink
+                  alone isn't reliable here). */}
+              <span className="group-data-[collapsible=icon]:hidden">{t("moderation")}</span>
             </Link>
           </SidebarMenuButton>
         </SidebarMenuItem>
         <SidebarMenuItem>
-          <SidebarMenuButton asChild>
+          <SidebarMenuButton asChild tooltip={t("broadcast")}>
             <Link href="/moderation/broadcast">
               <Megaphone />
-              <span>{t("broadcast")}</span>
+              <span className="group-data-[collapsible=icon]:hidden">{t("broadcast")}</span>
             </Link>
           </SidebarMenuButton>
         </SidebarMenuItem>
