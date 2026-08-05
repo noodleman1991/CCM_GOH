@@ -37,6 +37,7 @@ export function DiscoveryBar({
   options: DiscoveryOptions;
 }) {
   const t = useTranslations("discovery");
+  const tCommon = useTranslations("common");
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -79,6 +80,7 @@ export function DiscoveryBar({
           placeholder={t("searchPlaceholder")}
           aria-label={t("searchPlaceholder")}
           onClear={state.q ? () => apply({ ...state, q: "" }) : undefined}
+          clearLabel={tCommon("clear")}
         />
         <Select value={state.sort} onValueChange={(v) => apply({ ...state, sort: v as DiscoveryState["sort"] })}>
           <SelectTrigger className="sm:w-48">

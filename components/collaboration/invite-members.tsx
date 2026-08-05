@@ -30,6 +30,7 @@ export function InviteMembers({
   existingIds: string[];
 }) {
   const t = useTranslations("collaboration");
+  const tCommon = useTranslations("common");
   const [q, setQ] = useState("");
   const [results, setResults] = useState<Candidate[]>([]);
   const [searching, setSearching] = useState(false);
@@ -84,6 +85,7 @@ export function InviteMembers({
         placeholder={t("inviteSearchPlaceholder")}
         aria-label={t("invitePeople")}
         onClear={q ? () => setQ("") : undefined}
+        clearLabel={tCommon("clear")}
       />
       {q.trim().length >= 2 && (
         <ul className="mt-2 space-y-1">

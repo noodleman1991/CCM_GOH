@@ -31,7 +31,7 @@ export function UserMenuCard() {
   const tAuth = useTranslations("auth");
   const { user } = useUser();
   const { signOut } = useClerk();
-  const { setOpenMobile } = useSidebar();
+  const { setOpenMobile, isRtl } = useSidebar();
   // <ClerkProvider dynamic> gives the server the SESSION (so <SignedIn> renders
   // server-side), but never the User resource — that loads in the browser. Read
   // it only after hydration so the server render and the first client render
@@ -160,7 +160,7 @@ export function UserMenuCard() {
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
-              side="right"
+              side={isRtl ? "left" : "right"}
               align="end"
               sideOffset={12}
               className="w-60 rounded-lg border bg-popover p-1.5 shadow-lg"

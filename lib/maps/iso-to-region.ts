@@ -124,3 +124,14 @@ export const REGION_MEMBERSHIP: Record<string, RegionCode> = {
 export function isoToRegion(iso3: string): RegionCode | null {
   return REGION_MEMBERSHIP[iso3] ?? null;
 }
+
+/** Reverse of `REGION_MEMBERSHIP`: every alpha-3 country code that maps to a
+ *  given SDG region — used to bind a GROQ `$regionCountries in [...]` param
+ *  for the country-derived branch of `regionMatchFilter` (atlas trust
+ *  contract). Computed once per call rather than cached: the source map is
+ *  small (~200 entries) and this only runs per API request, not per row. */
+export function alpha3sForRegion(region: RegionCode): string[] {
+  return Object.entries(REGION_MEMBERSHIP)
+    .filter(([, r]) => r === region)
+    .map(([iso3]) => iso3);
+}

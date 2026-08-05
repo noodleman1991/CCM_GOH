@@ -233,7 +233,7 @@ function CardsTrack({
     const href = region ? listingHrefFor(types[0], region) : null;
     if (href) {
       return (
-        <div className="space-y-1.5">
+        <div id={`atlas-cards-${types[0]}`} className="space-y-1.5">
           <GroupHeader
             type={types[0]}
             t={t}
@@ -245,7 +245,7 @@ function CardsTrack({
         </div>
       );
     }
-    return <div className="space-y-1.5">{cappedTrack(types[0], items)}</div>;
+    return <div id={`atlas-cards-${types[0]}`} className="space-y-1.5">{cappedTrack(types[0], items)}</div>;
   }
 
   // Grouped mode: mobile keeps a single horizontal strip (headers interleave
@@ -257,7 +257,11 @@ function CardsTrack({
         const groupItems = items.filter((i) => i.type === type);
         const href = region ? listingHrefFor(type, region) : null;
         return (
-          <div key={type} className="space-y-1.5">
+          // Anchor id for the pin popover's "jump to card" buttons
+          // (atlas-explorer.tsx groupClusterItems) — matches
+          // `atlas-cards-${group.type}`, whose type union is exactly this
+          // route's normalized _type set (see TYPE_TO_FACET above).
+          <div key={type} id={`atlas-cards-${type}`} className="space-y-1.5">
             <GroupHeader
               type={type}
               t={t}

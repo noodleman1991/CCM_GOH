@@ -32,11 +32,18 @@ describe("content-filter fragments (atlas trust contract)", () => {
     expect(qFilter("mangrove")).not.toContain("mangrove");
   });
 
-  it("region match covers short code + singular + plural community refs", () => {
+  it("region match covers short code + singular + plural community refs + country-derived membership", () => {
     const f = regionMatchFilter();
     expect(f).toContain("region == $region");
     expect(f).toContain("relatedCommunity->slug.current == $slug");
     expect(f).toContain("$slug in relatedCommunities[]->slug.current");
+    // Country-derived branch (2026-08-05): docs with no community ref still
+    // match via a country code that implies a region (alpha3sForRegion).
+    expect(f).toContain("coalesce(locationCountryCode, place.countryCode) in $regionCountries");
+  });
+
+  it("scope 'all' drops the predicate entirely, including the country branch", () => {
+    expect(regionMatchFilter("all")).toBe("");
   });
 });
 
