@@ -62,11 +62,17 @@ export async function GET(req: NextRequest) {
   // Region attribution mirrors regionMatchFilter(): the `region` short code
   // or a referenced community's slug, projected out so grouping happens here.
   if (req.nextUrl.searchParams.get("mode") === "highlights") {
+    // Same theme/q/when facets as counts and pins (trust contract, user
+    // 2026-08-05) — and country-coded docs belong since the country-pin
+    // amendment made them pinnable.
+    const hlTheme = req.nextUrl.searchParams.get("theme") || "";
+    const hlQ = req.nextUrl.searchParams.get("q") || "";
+    const hlWhen = whenFilter(parseWhen(req.nextUrl.searchParams.get("when")), new Date());
     try {
       const perType = await Promise.all(
         ALL_TYPES.map((type) =>
           client.fetch(
-            `*[_type == $type${statusFilter(type)} && defined(coalesce(studyLocation, place.point))] | order(coalesce(publishedAt, publishDate, _createdAt) desc)[0...30]{
+            `*[_type == $type${statusFilter(type)}${themeFilter(hlTheme)}${qFilter(hlQ)}${hlWhen.filter} && defined(coalesce(studyLocation, place.point, locationCountryCode, place.countryCode))] | order(coalesce(publishedAt, publishDate, _createdAt) desc)[0...30]{
               "id": _id,
               "type": _type,
               "title": coalesce(title.en, title, ""),
@@ -76,7 +82,7 @@ export async function GET(req: NextRequest) {
               "date": coalesce(publishedAt, publishDate, _createdAt),
               "regionKey": coalesce(region, relatedCommunity->slug.current, relatedCommunities[0]->slug.current)
             }`,
-            { type }
+            { type, theme: hlTheme, q: hlQ, ...hlWhen.params }
           )
         )
       );
@@ -104,12 +110,20 @@ export async function GET(req: NextRequest) {
     const limit = Number.isFinite(limitParam) && limitParam > 0
       ? Math.min(limitParam, MAX_RECENT_LIMIT)
       : DEFAULT_RECENT_LIMIT;
+    // The recent strip honours the SAME theme/q/when facets as counts and
+    // pins (trust contract) — it previously ignored them, so an active theme
+    // zeroed the map while the gallery kept showing unfiltered items (user
+    // 2026-08-05). Membership also widened to country-coded docs: since the
+    // country-pin amendment they pin and count, so they belong here too.
+    const recentTheme = req.nextUrl.searchParams.get("theme") || "";
+    const recentQ = req.nextUrl.searchParams.get("q") || "";
+    const recentWhen = whenFilter(parseWhen(req.nextUrl.searchParams.get("when")), new Date());
 
     try {
       const perType = await Promise.all(
         ALL_TYPES.map((type) =>
           client.fetch(
-            `*[_type == $type${statusFilter(type)} && defined(coalesce(studyLocation, place.point))] | order(coalesce(publishedAt, publishDate, _createdAt) desc)[0...${limit}]{
+            `*[_type == $type${statusFilter(type)}${themeFilter(recentTheme)}${qFilter(recentQ)}${recentWhen.filter} && defined(coalesce(studyLocation, place.point, locationCountryCode, place.countryCode))] | order(coalesce(publishedAt, publishDate, _createdAt) desc)[0...${limit}]{
               "id": _id,
               "type": _type,
               "title": coalesce(title.en, title, ""),
@@ -118,7 +132,7 @@ export async function GET(req: NextRequest) {
               ${PLACE_PROJECTION(type)},
               "date": coalesce(publishedAt, publishDate, _createdAt)
             }`,
-            { type }
+            { type, theme: recentTheme, q: recentQ, ...recentWhen.params }
           )
         )
       );

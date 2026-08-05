@@ -287,9 +287,11 @@ export function AtlasExplorer({
           Unlocked keeps the classic full-width stack. */}
       <div className={cn(lockedRegion ? 'grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,44%)] lg:items-start' : 'space-y-8')}>
       <div className={cn(lockedRegion ? 'space-y-4' : 'space-y-8')}>
-      {/* Search q — part of the shared state */}
-      <div className="relative max-w-sm">
-        <Search className="absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
+      {/* Search q — part of the shared state. Styled as a soft pill so it
+          reads as the filter system's first control, not a stray form field
+          (user 2026-08-05 refinement). */}
+      <div className="relative max-w-md">
+        <Search className="absolute start-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
         <Input
           defaultValue={q}
           key={q} /* re-sync on back/forward */
@@ -297,7 +299,7 @@ export function AtlasExplorer({
             if (e.key === 'Enter') setParams({ q: (e.target as HTMLInputElement).value })
           }}
           placeholder={tAtlas('searchPlaceholder')}
-          className="ps-9 pe-9"
+          className="h-10 rounded-full border-transparent bg-muted/60 ps-10 pe-9 transition-colors focus-visible:border-input focus-visible:bg-background"
           aria-label={tAtlas('searchPlaceholder')}
         />
         {q && (
@@ -545,7 +547,9 @@ export function AtlasExplorer({
               <h2 className="mb-3 font-heading text-lg font-semibold text-ccm-midnight">
                 {recentVariant === 'highlights' ? tAtlas('aroundTheRegions') : tAtlas('latestEverywhere')}
               </h2>
-              {recentVariant === 'highlights' ? <RegionHighlightsCards /> : <RecentEverywhereCards limit={6} />}
+              {recentVariant === 'highlights'
+                ? <RegionHighlightsCards theme={theme} q={q} when={when} />
+                : <RecentEverywhereCards limit={6} theme={theme} q={q} when={when} />}
             </div>
           )}
         </section>

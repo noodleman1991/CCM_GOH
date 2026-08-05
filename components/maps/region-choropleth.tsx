@@ -8,8 +8,8 @@ import { OceanBands } from './ocean-bands'
 import type { RegionDatum } from '@/lib/maps/region-facets'
 import type { RegionCode } from '@/lib/maps/region-codes'
 import { regionCrop } from '@/lib/maps/region-crop'
-import { layerColorKeyFor, type PinCluster } from '@/lib/maps/cluster-pins'
-import { COLOR, CCM } from '@/lib/ccm-colors'
+import type { PinCluster } from '@/lib/maps/cluster-pins'
+import { CCM } from '@/lib/ccm-colors'
 
 /**
  * Presentational choropleth: renders the 7 region paths from the build-time
@@ -107,9 +107,6 @@ export function RegionChoropleth({
     return `color-mix(in srgb, var(--color-ccm-water) ${pct}%, var(--color-ccm-sky))`
   }
 
-  // Pins v3 (user 2026-08-05): one flat droplet shape for everything, in the
-  // cluster's dominant layer colour. Amber stays reserved for selection.
-  const dominantColor = (cluster: PinCluster) => COLOR.layer[layerColorKeyFor(cluster.types[0])]
 
   return (
     <svg
@@ -141,7 +138,11 @@ export function RegionChoropleth({
             // are gone): the artwork is flat fills only.
             fill={
               isActive && !isSelected
-                ? 'color-mix(in srgb, var(--color-ccm-secondary) 45%, var(--color-ccm-sky))'
+                // Warm gold-tinted lift previewing selection. NOT a CSS var
+                // mix: the old `--color-ccm-secondary` was never defined in
+                // globals.css, so color-mix() collapsed and hover rendered
+                // BLACK (user bug report 2026-08-05).
+                ? `color-mix(in srgb, ${CCM.gold} 35%, var(--color-ccm-sky))`
                 : fillFor(intensity)
             }
             className={cn(
@@ -163,31 +164,40 @@ export function RegionChoropleth({
           />
         )
       })}
-      {/* Committed selection: artwork gold on a thick white rounded halo
-          (mock v6 §3). Pointer-events off — the base path underneath keeps
-          handling interaction, so keyboard/AT behaviour is unchanged. */}
+      {/* Committed selection — matches the brand region artworks exactly
+          (user 2026-08-05, sampled from the welcome-hero illustrations):
+          flat #FFBF05 gold fill with a DASHED gold fringe just outside the
+          boundary. The fringe trick: a wide dashed stroke painted UNDER the
+          fill, so only its outer half shows — reading like the artwork's
+          offset dashed outline. The old thick white halo is gone.
+          Pointer-events off — the base path underneath keeps handling
+          interaction, so keyboard/AT behaviour is unchanged. */}
       {selectedCode && regions[selectedCode] && (
         <g className="pointer-events-none animate-in fade-in duration-300 motion-reduce:animate-none" aria-hidden="true">
           <path
             d={regions[selectedCode].d}
-            fill="white"
-            stroke="white"
-            strokeWidth={14 * s}
+            fill="none"
+            stroke={CCM.gold}
+            strokeWidth={9 * s}
+            strokeDasharray={`${6 * s} ${6 * s}`}
             strokeLinejoin="round"
             strokeLinecap="round"
+            opacity={0.85}
           />
           <path d={regions[selectedCode].d} fill={CCM.gold} />
         </g>
       )}
       {pins?.map((c, i) => {
         const isCluster = c.count > 1
-        const color = dominantColor(c)
+        // Pins are ARTWORK GOLD like the illustrations (user 2026-08-05) —
+        // type colours moved entirely to the popover's mini-legend. White
+        // stroke separates a gold pin from the gold selected region beneath.
+        const color = CCM.gold
         // Unified flat droplet language (user 2026-08-05): ONE shape for
-        // every pin. Exact = solid droplet in the dominant layer colour;
-        // clusters set their count flat in the droplet head; country-level
-        // approximate = the same droplet hollow (white fill, coloured
-        // outline + count). The segmented donut is gone — the popover still
-        // carries the per-type breakdown for mixed clusters.
+        // every pin. Exact = solid gold droplet; clusters set their count
+        // flat in the droplet head (midnight for contrast on gold);
+        // country-level approximate = the same droplet hollow (white fill,
+        // gold outline). The popover carries the per-type breakdown.
         const k = (isCluster ? 2.7 : 1.6) * s
         const headCY = c.y - 10.5 * k
         const baseLabel = isCluster ? `${c.count} — ${c.items[0]?.title ?? ''}` : c.items[0]?.title ?? ''
@@ -220,7 +230,7 @@ export function RegionChoropleth({
               <text x={c.x} y={headCY + 4.5 * s} textAnchor="middle"
                 fontSize={13 * s}
                 className="pointer-events-none font-heading font-bold tabular-nums"
-                fill={c.approx ? color : 'white'}>
+                fill={CCM.midnight}>
                 {c.count}
               </text>
             )}
@@ -233,13 +243,17 @@ export function RegionChoropleth({
         const datum = byCode.get(hoverLabel.code)
         const name = labelFor(hoverLabel.code)
         const text = `${name} · ${datum?.value ?? 0}`
-        const w = (text.length * 7.6 + 30) * s
+        // 8.2/char tracks the 13px heading font's real advance closer than
+        // the old 7.6 — long names (Northern Africa and Western Asia) were
+        // underestimated, so their pills still touched the frame even after
+        // clamping (user 2026-08-05).
+        const w = (text.length * 8.2 + 34) * s
         // Clamp the pill inside the ACTIVE viewport horizontally (the y clamp
         // happens in showLabel) — near a map edge the pill slides inward
-        // instead of being cut by overflow-hidden (user 2026-08-05).
+        // instead of being cut by overflow-hidden.
         const vbX = crop?.x ?? 0
         const vbW = crop?.w ?? 960
-        const pad = 6 * s
+        const pad = 10 * s
         const cx = Math.min(Math.max(hoverLabel.x, vbX + w / 2 + pad), vbX + vbW - w / 2 - pad)
         return (
           <g className="pointer-events-none" aria-hidden>
