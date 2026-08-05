@@ -194,10 +194,12 @@ export function RegionChoropleth({
         // stroke separates a gold pin from the gold selected region beneath.
         const color = CCM.gold
         // Unified flat droplet language (user 2026-08-05): ONE shape for
-        // every pin. Exact = solid gold droplet; clusters set their count
-        // flat in the droplet head (midnight for contrast on gold);
-        // country-level approximate = the same droplet hollow (white fill,
-        // gold outline). The popover carries the per-type breakdown.
+        // every pin. Exact = solid gold droplet with a WHITE HOLE in the
+        // head (the count sits in the hole; singles get a small white dot) —
+        // without the hole, gold pins conflated with the gold selected
+        // region beneath them. Country-level approximate = the same droplet
+        // hollow (white fill, gold outline). Popover carries the per-type
+        // breakdown.
         const k = (isCluster ? 2.7 : 1.6) * s
         const headCY = c.y - 10.5 * k
         const baseLabel = isCluster ? `${c.count} — ${c.items[0]?.title ?? ''}` : c.items[0]?.title ?? ''
@@ -226,6 +228,14 @@ export function RegionChoropleth({
               strokeWidth={(c.approx ? 2 : 1.5) / (isCluster ? 2.7 : 1.6)}
               className="drop-shadow-[0_1.5px_3px_rgba(11,49,96,0.3)]"
             />
+            {/* The white hole: keeps gold pins legible ON the gold selected
+                region. Clusters carry their count in it; single exact pins a
+                small dot (the classic droplet eye). Hollow approx pins are
+                already white inside — no hole needed. */}
+            {!c.approx && (
+              /* head radius is 6.5k — the hole leaves a ~1.6k gold rim */
+              <circle cx={c.x} cy={headCY} r={(isCluster ? 4.9 : 2.2) * k} fill="white" />
+            )}
             {isCluster && (
               <text x={c.x} y={headCY + 4.5 * s} textAnchor="middle"
                 fontSize={13 * s}
