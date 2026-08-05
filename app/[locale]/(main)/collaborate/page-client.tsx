@@ -176,7 +176,7 @@ export function CollaboratePageClient({
   return (
     <Wrapper>
       {!embedded && (
-      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className={cn("font-bold font-heading text-ccm-midnight mb-2 text-balance", heading('lg'))}>{t('pageTitle')}</h1>
           <p className="text-base md:text-lg text-muted-foreground max-w-2xl">{t('pageDescription')}</p>
