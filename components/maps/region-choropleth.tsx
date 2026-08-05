@@ -92,8 +92,11 @@ export function RegionChoropleth({
     // Clamp to the ACTIVE viewport's top, not the world's — under a focus
     // crop (community-page embeds), the world top is off-screen, so a sliced
     // neighbour region's pill must clamp against the crop's own top edge or
-    // it renders above the visible, overflow-hidden area.
-    setHoverLabel({ code, x: b.x + b.width / 2, y: Math.max(b.y - 6 * s, (crop?.y ?? 0) + 14 * s) })
+    // it renders above the visible, overflow-hidden area. Floor = the pill's
+    // HALF-HEIGHT (15) plus breathing room: the old 14-unit floor was smaller
+    // than the half-height, so top regions (ENAM) still poked past the frame
+    // (user 2026-08-05).
+    setHoverLabel({ code, x: b.x + b.width / 2, y: Math.max(b.y - 6 * s, (crop?.y ?? 0) + 19 * s) })
   }
 
   // Illustration ramp (mock v6 §3): flat sky → water tints over the midnight
@@ -138,11 +141,12 @@ export function RegionChoropleth({
             // are gone): the artwork is flat fills only.
             fill={
               isActive && !isSelected
-                // Warm gold-tinted lift previewing selection. NOT a CSS var
-                // mix: the old `--color-ccm-secondary` was never defined in
-                // globals.css, so color-mix() collapsed and hover rendered
-                // BLACK (user bug report 2026-08-05).
-                ? `color-mix(in srgb, ${CCM.gold} 35%, var(--color-ccm-sky))`
+                // Hover = a clean LUMINANCE lift of the land colour (white
+                // into sky) — unmistakably brighter, no hue clash. Gold stays
+                // reserved for the committed selection; the earlier gold-tint
+                // mix read as khaki (user 2026-08-05). Literal white, never
+                // an undefined var (the black-hover bug).
+                ? 'color-mix(in srgb, white 40%, var(--color-ccm-sky))'
                 : fillFor(intensity)
             }
             className={cn(
@@ -174,17 +178,19 @@ export function RegionChoropleth({
           interaction, so keyboard/AT behaviour is unchanged. */}
       {selectedCode && regions[selectedCode] && (
         <g className="pointer-events-none animate-in fade-in duration-300 motion-reduce:animate-none" aria-hidden="true">
+          <path d={regions[selectedCode].d} fill={CCM.gold} />
           <path
             d={regions[selectedCode].d}
             fill="none"
             stroke={CCM.gold}
-            strokeWidth={9 * s}
-            strokeDasharray={`${6 * s} ${6 * s}`}
+            strokeWidth={2.5 * s}
+            strokeDasharray={`${7 * s} ${5 * s}`}
             strokeLinejoin="round"
             strokeLinecap="round"
-            opacity={0.85}
+            /* Thin crisp dashed outline ON the boundary, drawn over the fill —
+               the artwork's treatment. The earlier wide under-fill fringe read
+               as muddy nibs on the dark ocean (user 2026-08-05). */
           />
-          <path d={regions[selectedCode].d} fill={CCM.gold} />
         </g>
       )}
       {pins?.map((c, i) => {
