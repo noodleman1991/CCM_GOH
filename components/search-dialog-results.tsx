@@ -1,16 +1,19 @@
 "use client";
 
 import * as React from "react";
-import { searchClient, ALGOLIA_INDICES } from "@/lib/algolia";
+import type { SearchClient } from "algoliasearch";
+import { ALGOLIA_INDICES } from "@/lib/algolia";
 import type {
   CaseStudySearchRecord,
   NewsSearchRecord,
   UserSearchRecord,
 } from "@/lib/algolia";
+import { useAlgoliaSearchClient } from "@/lib/algolia-client";
 import { useLocale, useTranslations } from "next-intl";
+import { useAuth } from "@clerk/nextjs";
 import { useRouter, Link } from "@/i18n/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { BookOpen, Newspaper, Users, Globe, ArrowRight, Loader2 } from "lucide-react";
+import { BookOpen, Newspaper, ArrowRight, Loader2 } from "lucide-react";
 import { getLocalizedTitle } from "@/lib/localization-utils";
 import {
   REGION_CODES,
@@ -37,17 +40,18 @@ const PER_GROUP = 4;
  * plus a client-side match over the fixed regions. Results are a flat list so
  * ↑/↓/Enter navigate the whole palette; a footer routes to the full /search page.
  *
- * Signed-in state is passed in (the modal lives in the sidebar, a client tree)
- * to keep this component free of auth context.
+ * Signed-in state is read HERE, not in the always-mounted SearchModal shell:
+ * with ClerkProvider `dynamic`, useAuth() reads a promise-backed store, and
+ * touching it during the shell's hydration pass skewed the useId tree for the
+ * modal's later siblings (the report-issue trigger's aria-controls mismatch).
+ * This component only mounts once the dialog opens, safely after hydration.
  */
 export function SearchDialogResults({
   query,
-  isSignedIn,
   onNavigate,
   footerHref,
 }: {
   query: string;
-  isSignedIn: boolean;
   /** Called when a result is chosen (so the modal can close). */
   onNavigate: () => void;
   /** "See all results" target. */
@@ -57,6 +61,9 @@ export function SearchDialogResults({
   const tRoot = useTranslations();
   const locale = useLocale();
   const router = useRouter();
+  const { isSignedIn: isSignedInRaw } = useAuth();
+  const isSignedIn = Boolean(isSignedInRaw);
+  const { client: searchClient, isLoading: clientLoading } = useAlgoliaSearchClient();
   const [loading, setLoading] = React.useState(false);
   const [errored, setErrored] = React.useState(false);
   const [groups, setGroups] = React.useState<{
@@ -97,6 +104,14 @@ export function SearchDialogResults({
       setLoading(false);
       return;
     }
+    // Search client still fetching its token (see lib/algolia-client) — keep
+    // showing the loading state rather than a premature "unavailable".
+    if (!searchClient) {
+      setGroups({ caseStudies: [], news: [], people: [] });
+      setLoading(clientLoading);
+      setErrored(!clientLoading);
+      return;
+    }
     let cancelled = false;
     setLoading(true);
     setErrored(false);
@@ -109,9 +124,13 @@ export function SearchDialogResults({
           { indexName: ALGOLIA_INDICES.CASE_STUDIES, params: { query: q, hitsPerPage: PER_GROUP, filters: "status:approved AND accessLevel:public" } },
           { indexName: ALGOLIA_INDICES.NEWS, params: { query: q, hitsPerPage: PER_GROUP, filters: isSignedIn ? "accessLevel:public OR accessLevel:registered" : "accessLevel:public" } },
           { indexName: ALGOLIA_INDICES.USERS, params: { query: q, hitsPerPage: PER_GROUP, filters: peopleFilter } },
-        ] as any);
+        ] as Parameters<SearchClient["search"]>[0]);
         if (cancelled) return;
-        const [cs, news, users] = results as any[];
+        const [cs, news, users] = results as unknown as [
+          { hits?: CaseStudySearchRecord[] },
+          { hits?: NewsSearchRecord[] },
+          { hits?: UserSearchRecord[] },
+        ];
         setGroups({
           caseStudies: (cs?.hits || []).map((h: CaseStudySearchRecord) => ({
             id: h.objectID,
@@ -157,7 +176,7 @@ export function SearchDialogResults({
       cancelled = true;
       clearTimeout(handle);
     };
-  }, [q, isSignedIn, locale]);
+  }, [q, isSignedIn, locale, searchClient, clientLoading]);
 
   // Flattened list in display order — drives ↑/↓/Enter.
   const flat = React.useMemo<Item[]>(

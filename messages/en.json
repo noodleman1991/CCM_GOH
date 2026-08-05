@@ -1148,7 +1148,7 @@
     "typeToSearch": "Search the hub",
     "typeToSearchHint": "Find case studies, news, people and regions.",
     "nothingFound": "Nothing found for \"{q}\"",
-    "nothingFoundHint": "Try a different term, or browse the Atlas.",
+    "nothingFoundHint": "Try a different term, or <link>browse the Atlas</link>.",
     "people": "People",
     "agendas": "Agendas",
     "news": "News",
