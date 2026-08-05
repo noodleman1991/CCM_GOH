@@ -331,11 +331,21 @@ export function RegionContentCards({
  * links to the community page). Breadth is this strip's whole job — the
  * homepage's fresh-content block already owns recency.
  */
-export function RegionHighlightsCards() {
+export function RegionHighlightsCards({
+  theme,
+  q,
+  when,
+}: {
+  theme?: string | null;
+  q?: string;
+  when?: string | null;
+} = {}) {
   const t = useCardLabels();
   const tRegions = useTranslations("navigation.regions");
+  // Theme/q/when ride along — same trust contract as RecentEverywhereCards.
+  const fq = `${theme ? `&theme=${encodeURIComponent(theme)}` : ""}${q ? `&q=${encodeURIComponent(q)}` : ""}${when ? `&when=${when}` : ""}`;
   const { data, isLoading } = useSWR(
-    `/api/maps/region-items?mode=highlights`,
+    `/api/maps/region-items?mode=highlights${fq}`,
     fetcher,
     { revalidateOnFocus: false, dedupingInterval: 60000 }
   );
@@ -375,10 +385,23 @@ export function RegionHighlightsCards() {
  * across every region, so the atlas never opens on a stats-panel-shaped void.
  * Independent of `region`/`facet` — always the lightweight `region=all` mode.
  */
-export function RecentEverywhereCards({ limit = 6 }: { limit?: number }) {
+export function RecentEverywhereCards({
+  limit = 6,
+  theme,
+  q,
+  when,
+}: {
+  limit?: number;
+  theme?: string | null;
+  q?: string;
+  when?: string | null;
+}) {
   const t = useCardLabels();
+  // Theme/q/when ride along so the strip lists exactly what the counts and
+  // pins describe (trust contract — it previously ignored active filters).
+  const fq = `${theme ? `&theme=${encodeURIComponent(theme)}` : ""}${q ? `&q=${encodeURIComponent(q)}` : ""}${when ? `&when=${when}` : ""}`;
   const { data, isLoading } = useSWR(
-    `/api/maps/region-items?region=all&limit=${limit}`,
+    `/api/maps/region-items?region=all&limit=${limit}${fq}`,
     fetcher,
     { revalidateOnFocus: false, dedupingInterval: 60000 }
   );
