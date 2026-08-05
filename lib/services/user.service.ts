@@ -1,4 +1,4 @@
-import { prisma, safeQuery, createLocalizedQuery } from '@/lib/prisma'
+import { prisma, safeQuery, createLocalizedQuery, Prisma } from '@/lib/prisma'
 import { getLocalizedValue, isRTL } from '@/i18n/i18n-helpers'
 import { redactUser } from './user-redaction'
 import type {
@@ -12,7 +12,9 @@ import type {
   LocalizedQueryOptions,
   PaginatedResult
 } from '@/types/prisma'
-import { Prisma } from '@/generated/prisma'
+// NOTE: `Prisma` (the value) comes from '@/lib/prisma' above — never from
+// '@/generated/prisma' — so Sql fragments share the executing client's module
+// instance (see lib/prisma.ts's export comment; 42804 jsonb bug 2026-08-05).
 import type { User } from '@/generated/prisma'
 
 export class UserService {
@@ -403,19 +405,39 @@ export class UserService {
     const skip = (page - 1) * pageSize
 
     return safeQuery(async () => {
-      // Build filter conditions as Prisma.sql fragments for safe parameterization
-      const filterConditions: Prisma.Sql[] = []
+      // Composed as PLAIN TEXT with hand-numbered placeholders and a flat
+      // values array — NOT nested Prisma.sql fragments. Nested-fragment
+      // inlining is `instanceof`-based, and Turbopack can duplicate the
+      // generated client across server chunk graphs; a fragment built by the
+      // other copy fails that check and gets bound as a JSONB PARAMETER
+      // (Postgres 42804 "argument of AND must be type boolean, not type
+      // jsonb" — this exact query, 2026-08-05). Array params travel as JSON
+      // text and unpack via jsonb_array_elements_text for the same
+      // driver-independence. Every piece of query TEXT below is static;
+      // every dynamic value is a bound parameter.
+      const values: unknown[] = []
+      const bind = (v: unknown) => {
+        values.push(v)
+        return `$${values.length}`
+      }
+
+      const conditions: string[] = [
+        'u."isSearchable" = true',
+        options.isAuthenticated
+          ? `u."profileVisibility" IN ('PUBLIC', 'MEMBERS')`
+          : `u."profileVisibility" = 'PUBLIC'`,
+      ]
 
       if (filters?.communityIds?.length) {
-        filterConditions.push(Prisma.sql`EXISTS (
+        conditions.push(`EXISTS (
           SELECT 1 FROM "UserCommunity" uc
           WHERE uc."userId" = u.id
-          AND uc."communityId" = ANY(${filters.communityIds}::text[])
+          AND uc."communityId" IN (SELECT jsonb_array_elements_text(${bind(JSON.stringify(filters.communityIds))}::jsonb))
         )`)
       }
 
       if (filters?.excludeRegionalCommunities) {
-        filterConditions.push(Prisma.sql`NOT EXISTS (
+        conditions.push(`NOT EXISTS (
           SELECT 1 FROM "UserCommunity" uc
           JOIN "Community" c ON c.id = uc."communityId"
           WHERE uc."userId" = u.id AND c.type = 'REGIONAL'
@@ -423,58 +445,45 @@ export class UserService {
       }
 
       if (filters?.workTypes?.length) {
-        filterConditions.push(Prisma.sql`u."workTypes"::text[] && ${filters.workTypes}::text[]`)
+        conditions.push(`u."workTypes"::text[] && ARRAY(SELECT jsonb_array_elements_text(${bind(JSON.stringify(filters.workTypes))}::jsonb))`)
       }
 
       if (filters?.expertiseAreas?.length) {
-        filterConditions.push(Prisma.sql`u."expertiseAreas"::text[] && ${filters.expertiseAreas}::text[]`)
+        conditions.push(`u."expertiseAreas"::text[] && ARRAY(SELECT jsonb_array_elements_text(${bind(JSON.stringify(filters.expertiseAreas))}::jsonb))`)
       }
 
-      // Build privacy conditions as Prisma.sql fragments
-      const privacyConditions: Prisma.Sql[] = [
-        Prisma.sql`u."isSearchable" = true`
-      ]
-      if (options.isAuthenticated) {
-        privacyConditions.push(Prisma.sql`u."profileVisibility" IN ('PUBLIC', 'MEMBERS')`)
-      } else {
-        privacyConditions.push(Prisma.sql`u."profileVisibility" = 'PUBLIC'`)
-      }
-
-      const allConditions = Prisma.join(
-        [...privacyConditions, ...filterConditions],
-        ' AND '
-      )
-
-      // Similarity expression used in SELECT, WHERE/HAVING
-      const similarityExpr = Prisma.sql`GREATEST(
-        COALESCE(similarity(u."firstName", ${searchQuery}), 0),
-        COALESCE(similarity(u."lastName", ${searchQuery}), 0),
-        COALESCE(similarity(u.username, ${searchQuery}), 0),
-        COALESCE(similarity(u.bio, ${searchQuery}), 0),
-        COALESCE(similarity(u.organization, ${searchQuery}), 0),
-        COALESCE(similarity(u.position, ${searchQuery}), 0)
+      // Similarity expression used in SELECT and WHERE — one bound search
+      // param, referenced six times.
+      const qp = bind(searchQuery)
+      const similarityExpr = `GREATEST(
+        COALESCE(similarity(u."firstName", ${qp}), 0),
+        COALESCE(similarity(u."lastName", ${qp}), 0),
+        COALESCE(similarity(u.username, ${qp}), 0),
+        COALESCE(similarity(u.bio, ${qp}), 0),
+        COALESCE(similarity(u.organization, ${qp}), 0),
+        COALESCE(similarity(u.position, ${qp}), 0)
       )`
 
+      const whereSql = `${conditions.join('\n          AND ')}
+          AND ${similarityExpr} >= ${bind(similarityThreshold)}`
+
+      // The count query binds $1..$k; the rows query appends LIMIT/OFFSET as
+      // $k+1/$k+2 — the shared prefix keeps both statements' numbering valid.
+      const countValues = [...values]
+      const countSql = `SELECT COUNT(*) as count FROM "User" u WHERE ${whereSql}`
+      const rowsSql = `
+        SELECT
+          u.*,
+          ${similarityExpr} as similarity_score
+        FROM "User" u
+        WHERE ${whereSql}
+        ORDER BY similarity_score DESC, u."lastLoginAt" DESC NULLS LAST, u."profileCompleteness" DESC
+        LIMIT ${bind(pageSize)}
+        OFFSET ${bind(skip)}`
+
       const [users, countResult] = await Promise.all([
-        // Fuzzy search query using pg_trgm similarity
-        prisma.$queryRaw<(User & { similarity_score: number })[]>`
-          SELECT
-            u.*,
-            ${similarityExpr} as similarity_score
-          FROM "User" u
-          WHERE ${allConditions}
-          AND ${similarityExpr} >= ${similarityThreshold}
-          ORDER BY similarity_score DESC, u."lastLoginAt" DESC NULLS LAST, u."profileCompleteness" DESC
-          LIMIT ${pageSize}
-          OFFSET ${skip}
-        `,
-        // Get total count
-        prisma.$queryRaw<{ count: bigint }[]>`
-          SELECT COUNT(*) as count
-          FROM "User" u
-          WHERE ${allConditions}
-          AND ${similarityExpr} >= ${similarityThreshold}
-        `
+        prisma.$queryRawUnsafe<(User & { similarity_score: number })[]>(rowsSql, ...values),
+        prisma.$queryRawUnsafe<{ count: bigint }[]>(countSql, ...countValues),
       ])
 
       const total = Number(countResult[0]?.count || 0)
@@ -554,10 +563,11 @@ export class UserService {
       }
 
       // Graceful fallback: if fuzzy search fails (e.g. pg_trgm extension
-      // unavailable), log and fall through to the standard contains-based path.
+      // unavailable), log and fall through to the standard contains-based
+      // path. Log the fields, not the object — DatabaseResult errors have
+      // non-enumerable-looking output and printed as "{}".
       console.error(
-        'Fuzzy search failed, falling back to standard search:',
-        fuzzyResult.error
+        `Fuzzy search failed, falling back to standard search: [${fuzzyResult.error?.code}] ${fuzzyResult.error?.message}`
       )
     }
 

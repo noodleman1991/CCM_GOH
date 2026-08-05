@@ -7,7 +7,7 @@
  * Respects privacy settings and supports RTL
  */
 
-import { useState, useTransition } from 'react'
+import { useState, useSyncExternalStore, useTransition } from 'react'
 import { useUser } from '@clerk/nextjs'
 import { toast } from 'sonner'
 import { Link, useRouter } from '@/i18n/navigation'
@@ -46,6 +46,11 @@ interface CollaborateUserCardProps {
   className?: string
 }
 
+// Stable helpers for the useSyncExternalStore mounted idiom below.
+const subscribeNoop = () => () => {}
+const snapshotTrue = () => true
+const snapshotFalse = () => false
+
 export function CollaborateUserCard({ user, className }: CollaborateUserCardProps) {
   const t = useTranslations('collaborate.userCard')
   const tCollab = useTranslations('collabSpace')
@@ -57,6 +62,13 @@ export function CollaborateUserCard({ user, className }: CollaborateUserCardProp
   const { isSignedIn } = useUser()
   const [pending, startAction] = useTransition()
   const [requested, setRequested] = useState(false)
+  // Auth-dependent UI mounts client-only: this card streams inside a Suspense
+  // boundary where the SSR pass has rendered signed-out while the client
+  // hydrates signed-in (observed 2026-08-05), producing a structural hydration
+  // mismatch that regenerates the whole tree. useSyncExternalStore's
+  // server/client snapshots give a hydration-safe "mounted" without an effect:
+  // false during SSR + hydration render, true immediately after.
+  const mounted = useSyncExternalStore(subscribeNoop, snapshotTrue, snapshotFalse)
 
   // Both handlers live inside the profile <Link>, so they must suppress the
   // card navigation. Self-targeting is rejected server-side ("That's you.").
@@ -249,7 +261,7 @@ export function CollaborateUserCard({ user, className }: CollaborateUserCardProp
             )}
 
             {/* Actions: Message + Connect (§4.6) — signed-in only */}
-            {isSignedIn && (
+            {mounted && isSignedIn && (
               <div className="flex gap-2 border-t pt-3">
                 <Button
                   size="sm"
