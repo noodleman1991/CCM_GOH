@@ -3,7 +3,6 @@
 import * as React from "react";
 import { Search } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useAuth } from "@clerk/nextjs";
 import { useRouter } from "@/i18n/navigation";
 import {
   Dialog,
@@ -79,7 +78,10 @@ export function SearchTrigger({
 export function SearchModal() {
   const t = useTranslations("navigation");
   const router = useRouter();
-  const { isSignedIn } = useAuth();
+  // No useAuth() here: this shell is always mounted, and with ClerkProvider
+  // `dynamic` reading the promise-backed auth store during hydration skewed
+  // the useId tree of later layout siblings (see SearchDialogResults, which
+  // reads it after the dialog opens instead).
   const open = useSearchStore((s) => s.open);
   const setOpen = useSearchStore((s) => s.setOpen);
   const [query, setQuery] = React.useState("");
@@ -129,8 +131,14 @@ export function SearchModal() {
       >
         <DialogTitle className="sr-only">{t("searchTitle")}</DialogTitle>
         <DialogDescription className="sr-only">{t("searchDescription")}</DialogDescription>
-        <form onSubmit={submit} className="flex items-center gap-3 px-4 py-3.5 pe-12">
-          <Search className="size-5 shrink-0 text-slate-400" aria-hidden="true" />
+        {/* The dialog header IS the field (no nested pill box) — icon and
+            sizing match SearchInput's language so ⌘K reads as the same
+            search control as everywhere else in the hub. */}
+        <form onSubmit={submit} className="relative flex items-center border-b border-border">
+          <Search
+            className="absolute start-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+            aria-hidden="true"
+          />
           <input
             ref={inputRef}
             type="text"
@@ -138,16 +146,18 @@ export function SearchModal() {
             onChange={(e) => setQuery(e.target.value)}
             placeholder={t("searchPlaceholder")}
             autoComplete="off"
-            className="w-full bg-transparent text-base text-foreground outline-none placeholder:text-slate-400"
+            // pe-12 alone clears the dialog's own close (×) button, which sits
+            // fixed at end-4 top-4 regardless of this row's layout; sm:pe-20
+            // makes room for the ↵ kbd hint once it appears too.
+            className="h-11 w-full bg-transparent ps-10 pe-12 text-base text-foreground outline-none placeholder:text-muted-foreground sm:pe-20"
           />
-          <kbd className="hidden shrink-0 rounded border border-border px-1.5 py-0.5 text-[10px] font-medium text-slate-400 sm:inline-block">
+          <kbd className="absolute end-12 top-1/2 hidden -translate-y-1/2 rounded border border-border px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground sm:inline-block">
             ↵
           </kbd>
         </form>
 
         <SearchDialogResults
           query={query}
-          isSignedIn={Boolean(isSignedIn)}
           onNavigate={() => handleOpenChange(false)}
           footerHref={`/search?q=${encodeURIComponent(query.trim())}`}
         />

@@ -239,14 +239,25 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     aria-label={tCommon("goToHomepage")}
                     className="flex justify-center px-5 pb-6 pt-6 group-data-[collapsible=icon]:p-2"
                 >
-                    <span className="block group-data-[collapsible=icon]:hidden [&_img]:h-[4.25rem] [&_img]:w-auto">
+                    <span className="block group-data-[collapsible=icon]:hidden [&_img]:w-auto">
                         <Logo size="lg" asChild />
                     </span>
+                    {/* Collapsed rail: the bare mark, no disc/frame (user
+                        direction 2026-08-05) — the wave glyph desaturated and
+                        inverted to white, sitting directly on the midnight
+                        rail. grayscale+invert (not a flat brightness-0
+                        silhouette) keeps the source PNG's tonal layers as a
+                        faint internal wave line, so it still reads as the
+                        wave mark instead of a featureless blob. */}
                     <span
                         aria-hidden
-                        className="hidden size-8 items-center justify-center rounded-full bg-white font-heading text-[11px] font-bold lowercase tracking-tight text-ccm-midnight group-data-[collapsible=icon]:flex"
+                        className="mx-auto hidden shrink-0 items-center justify-center group-data-[collapsible=icon]:flex"
                     >
-                        ccm
+                        <img
+                            src="/images/icons/ccm-mark.png"
+                            alt=""
+                            className="size-7 shrink-0 object-contain grayscale invert brightness-[1.65] contrast-[1.3]"
+                        />
                     </span>
                 </Link>
             </SidebarHeader>
@@ -282,7 +293,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                         <SidebarMenuButton
                             tooltip={t('searchPlaceholder')}
                             onClick={() => useSearchStore.getState().setOpen(true)}
-                            className="justify-center"
                         >
                             <Search />
                         </SidebarMenuButton>

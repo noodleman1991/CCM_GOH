@@ -271,12 +271,18 @@ function Sidebar({
                     effectiveSide === "left"
                         ? "left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]"
                         : "right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]",
-                    // Adjust the padding for floating and inset variants.
-                    variant === "floating" || variant === "inset"
+                    // Only `floating` insets the panel from the screen edge.
+                    // `inset` runs the sidebar flush to the edge so the shell
+                    // reads as two solid regions — blue nav, white content —
+                    // rather than a card floating inside a blue frame.
+                    variant === "floating"
                         ? "p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]"
                         : cn(
                             "group-data-[collapsible=icon]:w-(--sidebar-width-icon)",
-                            effectiveSide === "left" ? "border-r" : "border-l"
+                            // No divider for `inset`: the blue panel meets the
+                            // white content directly, so a border reads as a seam.
+                            variant === "sidebar" &&
+                                (effectiveSide === "left" ? "border-r" : "border-l")
                         ),
                     className
                 )}
@@ -358,12 +364,23 @@ function SidebarInset({ className, ...props }: React.ComponentProps<"main">) {
         <main
             data-slot="sidebar-inset"
             className={cn(
-                "bg-background relative flex w-full flex-1 flex-col",
-                // Inset styling: the content sits in a rounded card with a small
-                // gap on every side, in BOTH the open and collapsed sidebar
-                // states (RTL-safe via m-2 + rounded-xl) — so the curved start
-                // edge is preserved when the sidebar is open instead of meeting
-                // it with a hard square corner.
+                // min-w-0 is load-bearing: as a flex item this defaults to
+                // min-width:auto, which floors the panel at its content's
+                // min-content width. Any wide descendant (e.g. a horizontally
+                // scrollable chip row whose chips don't shrink) then pins the
+                // panel wider than the space left by the sidebar, pushing the
+                // page past the viewport and stopping it tracking screen width.
+                // min-w-0 lets it shrink to the available space in both the
+                // expanded and collapsed sidebar states; wide children scroll or
+                // clip inside it instead of blowing out the shell.
+                "bg-background relative flex w-full min-w-0 flex-1 flex-col",
+                // The content panel is a soft-cornered card inset from the blue
+                // shell — the curve on all four corners is the intended look, so
+                // it needs the small gap on every side to curve against. (An
+                // earlier pass ran it flush to the edges, which squared off the
+                // corners; the rounded card reads better.) The sidebar panel
+                // itself stays flush to the screen edge — see the container's
+                // variant handling above — so the blue still reaches the edge.
                 "md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow-sm",
                 className
             )}
@@ -542,7 +559,13 @@ function SidebarMenuItem({ className, ...props }: React.ComponentProps<"li">) {
 }
 
 const sidebarMenuButtonVariants = cva(
-    "peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-sm outline-hidden ring-sidebar-ring transition-[width,height,padding] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
+    // group-data-[collapsible=icon]:justify-center + rounded-lg: the collapsed
+    // rail forces every button to an exact icon-sized square, but that alone
+    // only centers the icon by coincidence (padding math happens to cancel
+    // out) — justify-center makes it deliberate and resilient to badges/
+    // chevrons/long labels that would otherwise skew it. rounded-lg matches
+    // the rail's other icon boxes (search action, user avatar).
+    "peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-sm outline-hidden ring-sidebar-ring transition-[width,height,padding] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:rounded-lg group-data-[collapsible=icon]:p-2! [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
     {
         variants: {
             variant: {
@@ -607,6 +630,9 @@ function SidebarMenuButton({
         }
     }
 
+    // CCM-styled tooltip for the collapsed rail: midnight chip, no arrow, a
+    // hair of offset (ms-1 is a logical margin so it stays correct in RTL,
+    // where the tooltip flips to the left of the rail).
     return (
         <Tooltip>
             <TooltipTrigger asChild>{button}</TooltipTrigger>
@@ -614,7 +640,12 @@ function SidebarMenuButton({
                 side={isRtl ? "left" : "right"}
                 align="center"
                 hidden={state !== "collapsed" || isMobile}
+                showArrow={false}
                 {...tooltip}
+                className={cn(
+                    "ms-1 border-0 bg-ccm-midnight px-2.5 py-1.5 text-xs font-semibold text-white shadow-lg",
+                    tooltip.className
+                )}
             />
         </Tooltip>
     )

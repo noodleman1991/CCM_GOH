@@ -68,8 +68,13 @@ export function NavMain({
                   <CollapsibleTrigger asChild>
                     <SidebarMenuButton tooltip={item.title}>
                       <item.icon />
-                      <span className="truncate">{item.title}</span>
-                      <ChevronRight className="ms-auto shrink-0 transition-transform duration-200 data-[state=open]:rotate-90 rtl:-scale-x-100" />
+                      {/* Collapsed rail: hide the label and chevron outright
+                          rather than lean on truncate/shrink to squeeze them
+                          away — with the icon centered (not flex-start), any
+                          sibling that keeps even a few px of layout width
+                          skews the centering instead of being clipped clean. */}
+                      <span className="truncate group-data-[collapsible=icon]:hidden">{item.title}</span>
+                      <ChevronRight className="ms-auto shrink-0 transition-transform duration-200 data-[state=open]:rotate-90 rtl:-scale-x-100 group-data-[collapsible=icon]:hidden" />
                     </SidebarMenuButton>
                   </CollapsibleTrigger>
                   <CollapsibleContent>
@@ -113,8 +118,10 @@ export function NavMain({
               >
                 <Link href={item.url}>
                   <item.icon />
-                  <span>{item.title}</span>
-                  {item.badge != null && <span className="ms-auto">{item.badge}</span>}
+                  <span className="group-data-[collapsible=icon]:hidden">{item.title}</span>
+                  {item.badge != null && (
+                    <span className="ms-auto group-data-[collapsible=icon]:hidden">{item.badge}</span>
+                  )}
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
