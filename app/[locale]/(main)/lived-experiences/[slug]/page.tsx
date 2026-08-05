@@ -17,6 +17,7 @@ import { LivedExperiencePlayer } from "@/components/lived-experiences/lived-expe
 import { CommentIsland } from "@/components/comments/comment-island";
 import { RelatedContent } from "@/components/content/related-content";
 import PortableTextRenderer from "@/components/portable-text-renderer";
+import { JsonLd, articleJsonLd } from "@/lib/seo/json-ld";
 
 export async function generateStaticParams() {
   const slugs = await fetchLivedExperienceSlugs();
@@ -34,7 +35,16 @@ export async function generateMetadata({
   if (!le) return {};
   const title = getLocalizedValue(le.title, locale) || "Lived experience";
   const description = getLocalizedValue(le.description, locale) || getLocalizedValue(le.issue, locale) || "";
-  return { title, description };
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: "article",
+      images: [`${process.env.NEXT_PUBLIC_SITE_URL}/${locale}/lived-experiences/${slug}/og.png`],
+    },
+  };
 }
 
 export default async function LivedExperiencePage({
@@ -61,6 +71,16 @@ export default async function LivedExperiencePage({
 
   return (
     <div className="container max-w-4xl py-8 space-y-8" dir={isRTL ? "rtl" : "ltr"}>
+      <JsonLd
+        data={articleJsonLd({
+          title: title || "Lived experience",
+          description: description || issue || undefined,
+          url: `${process.env.NEXT_PUBLIC_SITE_URL}/${locale}/lived-experiences/${slug}`,
+          datePublished: le.publishedAt ?? null,
+          authorName: le.author?.name ?? null,
+          inLanguage: locale,
+        })}
+      />
       <BackLink href="/lived-experiences" label={t("backToGallery")} />
 
       {/* Person header — leads, dignity first (matches the modal voice) */}

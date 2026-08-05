@@ -14,7 +14,7 @@ export default function TimelineRow({
 
   return (
     <SectionContainer padding={padding}>
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-4 @content-sm/page:px-6 @content-lg/page:px-8">
         {timelines && timelines?.length > 0 && (
           <div className="max-w-[48rem] mx-auto">
           {timelines?.map((timeline, index) => (

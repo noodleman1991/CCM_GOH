@@ -106,7 +106,7 @@ export function ManualContentBlock({
 
   return (
     <section className={cn("w-full", bgClass, paddingClass)}>
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-6xl px-4 @content-sm/page:px-6 @content-lg/page:px-8">
         {layout === "full-width" && (
           <div className="max-w-4xl mx-auto">
             {renderContent()}
@@ -119,18 +119,18 @@ export function ManualContentBlock({
         )}
 
         {layout === "left-image" && (
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="order-2 lg:order-1">
+          <div className="grid @content-md/page:grid-cols-2 gap-12 items-center">
+            <div className="order-2 @content-md/page:order-1">
               {renderImage()}
             </div>
-            <div className="order-1 lg:order-2">
+            <div className="order-1 @content-md/page:order-2">
               {renderContent()}
             </div>
           </div>
         )}
 
         {layout === "right-image" && (
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid @content-md/page:grid-cols-2 gap-12 items-center">
             <div className="order-1">
               {renderContent()}
             </div>

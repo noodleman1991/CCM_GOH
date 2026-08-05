@@ -44,7 +44,7 @@ export default function Carousel2({
 
   return (
     <SectionContainer padding={padding}>
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-4 @content-sm/page:px-6 @content-lg/page:px-8">
         <div className="flex flex-col space-y-6 overflow-hidden">
           {localizedTitle && (
             <div className="text-center">
@@ -52,7 +52,7 @@ export default function Carousel2({
                 {localizedTitle}
               </h2>
               {localizedDescription && (
-                <p className="mt-4 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
+                <p className="mt-4 text-base @content-md/page:text-lg text-muted-foreground max-w-2xl mx-auto">
                   {localizedDescription}
                 </p>
               )}
@@ -72,7 +72,7 @@ export default function Carousel2({
               return (
               <CarouselItem
                 key={item._id}
-                className="ps-2 md:ps-4 md:basis-1/2 lg:basis-1/3 min-w-0"
+                className="ps-2 @content-md/page:ps-4 @content-md/page:basis-1/2 @content-lg/page:basis-1/3 min-w-0"
               >
                 <Card className="h-full overflow-hidden">
                   <CardContent className="flex flex-col justify-between p-6 h-full">
@@ -116,11 +116,11 @@ export default function Carousel2({
           </CarouselContent>
           <CarouselPrevious
             variant="secondary"
-            className="-start-3 md:-start-8 xl:-start-12"
+            className="-start-3 @content-md/page:-start-8 @content-xl/page:-start-12"
           />
           <CarouselNext
             variant="secondary"
-            className="-end-3 md:-end-8 xl:-end-12"
+            className="-end-3 @content-md/page:-end-8 @content-xl/page:-end-12"
           />
           <div className="w-full flex justify-center">
             <CarouselDots />

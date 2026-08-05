@@ -233,8 +233,8 @@ export default function GridCaseStudyComponent({
     if (variant === "wide") {
         // Horizontal split: image on the lead side, text on the trailing side.
         card = (
-            <Card className={cn(cardBase, "h-full flex-col sm:flex-row")} onClick={onCardClick}>
-                <CoverImage className="aspect-video w-full shrink-0 sm:aspect-auto sm:w-2/5" />
+            <Card className={cn(cardBase, "h-full flex-col @content-sm/page:flex-row")} onClick={onCardClick}>
+                <CoverImage className="aspect-video w-full shrink-0 @content-sm/page:aspect-auto @content-sm/page:w-2/5" />
                 <div className="flex flex-1 flex-col gap-3 p-6">
                     <h3 dir="auto" className="font-heading text-lg font-semibold leading-snug text-ccm-midnight text-balance transition-colors group-hover:text-primary line-clamp-3">
                         {title}
@@ -250,7 +250,7 @@ export default function GridCaseStudyComponent({
         card = (
             <Card className={cn(cardBase, "h-full flex-col")} onClick={onCardClick}>
                 <CoverImage className="aspect-[16/9] w-full" />
-                <div className="flex flex-1 flex-col gap-3 p-6 md:p-8">
+                <div className="flex flex-1 flex-col gap-3 p-6 @content-md/page:p-8">
                     <h3 dir="auto" className="font-heading text-2xl font-semibold leading-tight text-ccm-midnight transition-colors group-hover:text-primary text-balance line-clamp-3">
                         {title}
                     </h3>

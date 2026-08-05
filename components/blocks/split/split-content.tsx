@@ -47,14 +47,14 @@ export default function SplitContent({
     <div
       className={cn(
         !sticky ? "flex flex-col justify-center" : undefined,
-        padding?.top ? "pt-8 lg:pt-12 xl:pt-16" : undefined,
-        padding?.bottom ? "pb-8 lg:pb-12 xl:pb-16" : undefined
+        padding?.top ? "pt-8 @content-lg/page:pt-12 @content-xl/page:pt-16" : undefined,
+        padding?.bottom ? "pb-8 @content-lg/page:pb-12 @content-xl/page:pb-16" : undefined
       )}
     >
       <div
         className={cn(
           "flex flex-col items-start overflow-hidden",
-          sticky ? "lg:sticky lg:top-56" : undefined,
+          sticky ? "@content-lg/page:sticky @content-lg/page:top-56" : undefined,
           noGap ? "px-10" : undefined
         )}
       >

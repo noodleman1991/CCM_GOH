@@ -156,7 +156,7 @@ export default function EventsCalendarClient({
         </Button>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2 lg:items-start">
+      <div className="grid gap-6 @content-md/page:grid-cols-2 @content-md/page:items-start">
         {/* Month grid */}
         <Card className="p-4">
           <div className="mb-3 flex items-center justify-between gap-2">

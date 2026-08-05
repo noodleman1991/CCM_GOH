@@ -12,6 +12,7 @@ import { Calendar, Users, Building, MapPin, FolderKanban } from 'lucide-react'
 import { BackLink } from '@/components/ui/back-link'
 import { Link } from '@/i18n/navigation'
 import { urlFor } from '@/sanity/lib/image'
+import { JsonLd, articleJsonLd } from '@/lib/seo/json-ld'
 import { getLocalizedText, formatCaseStudyDate, getPrimaryAuthor, getStudyLocationText } from '@/lib/case-study-utils'
 import PortableTextRenderer from '@/components/portable-text-renderer'
 import { CommentIsland } from '@/components/comments/comment-island'
@@ -62,7 +63,12 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       description: caseStudy.seoDescription || description,
       type: 'article',
       publishedTime: caseStudy.publishedAt,
-      images: caseStudy.image?.asset?.url ? [caseStudy.image.asset.url] : []
+      // Branded per-content card first (served by the sibling
+      // opengraph-image route handler), the CMS photo as the fallback frame.
+      images: [
+        `${process.env.NEXT_PUBLIC_SITE_URL}/${locale}/research-and-action/case-studies/${slug}/og.png`,
+        ...(caseStudy.image?.asset?.url ? [caseStudy.image.asset.url] : []),
+      ]
     }
   }
 }
@@ -90,6 +96,17 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ loca
 
   return (
     <div className={cn("container py-8 space-y-8", layout === 'report' ? "max-w-5xl" : "max-w-4xl")} data-layout={layout}>
+      <JsonLd
+        data={articleJsonLd({
+          title,
+          description: excerpt,
+          url: `${process.env.NEXT_PUBLIC_SITE_URL}/${locale}/research-and-action/case-studies/${slug}`,
+          image: caseStudy.image?.asset?.url ?? null,
+          datePublished: caseStudy.publishedAt ?? null,
+          authorName: primaryAuthor?.name ?? null,
+          inLanguage: locale,
+        })}
+      />
       {/* Back link */}
       <BackLink href="/research-and-action/case-studies" label={t('backToCaseStudies')} />
 

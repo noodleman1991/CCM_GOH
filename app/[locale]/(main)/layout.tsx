@@ -55,7 +55,17 @@ export default async function MainLayout({
                 {/* SidebarInset already renders the page's <main> landmark —
                     a nested second <main> here was an axe duplicate-landmark
                     violation. Plain div keeps the layout role-free. */}
-                <div className="flex flex-1 flex-col overflow-x-clip w-full">
+                {/* @container/page makes this the measuring stick for every
+                    block's responsive steps. Breakpoints must key off the width
+                    content ACTUALLY gets, not the viewport: with the sidebar open
+                    the panel is ~282px narrower, so viewport-keyed `lg:`/`xl:`
+                    classes fired one step too dense (a 4-up grid at 1440 got
+                    261px columns). Container queries make the same page respond
+                    correctly in both the expanded and collapsed sidebar states.
+                    Safe to make a containment context here: every position:fixed
+                    element (cookie banner, issue widget, draft-mode toggle) is
+                    mounted in the root [locale] layout, outside this subtree. */}
+                <div className="@container/page flex flex-1 flex-col overflow-x-clip w-full">
                     <div>{children}</div>
                 </div>
             </SidebarInset>

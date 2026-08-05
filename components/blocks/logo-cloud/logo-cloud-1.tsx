@@ -79,7 +79,7 @@ export default function LogoCloud1({
   const hasTypes = imgs.some((i) => i.orgType);
 
   const header = (
-    <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-6xl px-4 @content-sm/page:px-6 @content-lg/page:px-8">
       <div className="mb-8 text-center">
         {localizedTitle && (
           <h2 className={cn("font-bold font-heading text-balance text-ccm-midnight", heading("md"))}>
@@ -87,7 +87,7 @@ export default function LogoCloud1({
           </h2>
         )}
         {localizedDescription && (
-          <p className="mx-auto mt-3 max-w-2xl text-base text-muted-foreground md:text-lg">
+          <p className="mx-auto mt-3 max-w-2xl text-base text-muted-foreground @content-md/page:text-lg">
             {localizedDescription}
           </p>
         )}
@@ -106,7 +106,7 @@ export default function LogoCloud1({
     return (
       <SectionContainer padding={padding}>
         {header}
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-6xl px-4 @content-sm/page:px-6 @content-lg/page:px-8">
           {groups.map((group) => (
             <div key={group.type ?? "all"} className="mb-10 last:mb-0">
               {group.type && (
@@ -114,7 +114,7 @@ export default function LogoCloud1({
                   {tTypes(group.type)}
                 </h3>
               )}
-              <div className={cn("grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4", gridGap("lg"))}>
+              <div className={cn("grid grid-cols-2 @content-sm/page:grid-cols-3 @content-xl/page:grid-cols-4", gridGap("lg"))}>
                 {group.items.map((image, index) => (
                   <LogoTile key={`${image.asset?._id}-${index}`} image={image} label={image.label} />
                 ))}

@@ -63,7 +63,7 @@ export default function SectionHeader({
           <UISectionHeader title={localizedTitle} subtitle={localizedTagLine || undefined} titleClassName={heading('md')} />
         )}
         {localizedDescription && (
-          <p className={cn("text-base md:text-lg text-muted-foreground", align !== "center" && "mt-3")}>
+          <p className={cn("text-base @content-md/page:text-lg text-muted-foreground", align !== "center" && "mt-3")}>
             {localizedDescription}
           </p>
         )}

@@ -46,7 +46,7 @@ export default function Hero2({ background, tagLine, title, body, links, padding
         </h1>
       )}
       {localizedBody && (
-        <div className="text-base md:text-lg text-muted-foreground mt-5 max-w-2xl mx-auto">
+        <div className="text-base @content-md/page:text-lg text-muted-foreground mt-5 max-w-2xl mx-auto">
           <PortableTextRenderer value={localizedBody} locale={locale} />
         </div>
       )}

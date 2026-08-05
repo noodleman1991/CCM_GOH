@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import useSWR from "swr";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { REGION_CODES, REGION_I18N_KEY, type RegionCode } from "@/lib/maps/region-codes";
+import { REGION_CODES, REGION_I18N_KEY, isRegionCode, type RegionCode } from "@/lib/maps/region-codes";
 import { Card } from "@/components/ui/card";
 import { FilterChip } from "@/components/ui/filter-chip";
+import { FilterRow, FilterRowGroup } from "@/components/atlas/atlas-filters";
 import { cn } from "@/lib/utils";
 import SectionContainer from "@/components/ui/section-container";
 
@@ -35,7 +37,16 @@ export default function PeopleWidget(props: {
 }) {
   const t = useTranslations("home");
   const tRegions = useTranslations("navigation.regions");
-  const [region, setRegion] = useState<RegionCode>(props.region || REGION_CODES[0]);
+  const tDiscovery = useTranslations("discovery");
+  // One-way init from ?region= (set by the atlas block above on the same
+  // page): the widget STARTS on the map's region but its chips only change
+  // local state — it never writes the URL param back, so it can't scroll-jump
+  // or fight the map's own region selection.
+  const searchParams = useSearchParams();
+  const urlRegion = searchParams.get("region");
+  const [region, setRegion] = useState<RegionCode>(
+    props.region || (urlRegion && isRegionCode(urlRegion) ? urlRegion : REGION_CODES[0])
+  );
 
   const { data, isLoading } = useSWR(
     `/api/home/people?region=${region}&limit=${props.limit || 6}`,
@@ -54,20 +65,22 @@ export default function PeopleWidget(props: {
         {props.description && <p className="mt-1 text-muted-foreground">{props.description}</p>}
       </div>
 
-      {/* Region switcher */}
-      <div className="flex flex-wrap gap-2">
-        {REGION_CODES.map((code) => (
-          <FilterChip
-            key={code}
-            label={tRegions(REGION_I18N_KEY[code])}
-            active={region === code}
-            onClick={() => setRegion(code)}
-          />
-        ))}
-      </div>
+      {/* Region switcher — same labelled-row grammar as the atlas filters. */}
+      <FilterRowGroup>
+        <FilterRow label={tDiscovery("facet.region")}>
+          {REGION_CODES.map((code) => (
+            <FilterChip
+              key={code}
+              label={tRegions(REGION_I18N_KEY[code])}
+              active={region === code}
+              onClick={() => setRegion(code)}
+            />
+          ))}
+        </FilterRow>
+      </FilterRowGroup>
 
       {isLoading ? (
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid gap-3 @content-sm/page:grid-cols-2">
           {Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className="h-20 animate-pulse rounded-lg bg-muted" />
           ))}
@@ -75,7 +88,7 @@ export default function PeopleWidget(props: {
       ) : people.length === 0 ? (
         <p className="text-sm text-muted-foreground">{t("peopleEmpty")}</p>
       ) : (
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid gap-3 @content-sm/page:grid-cols-2">
           {people.map((p) => (
             <Card key={p.id} className="flex items-start gap-3 p-3">
               <div className="relative size-10 shrink-0 overflow-hidden rounded-full bg-ccm-sky/20">

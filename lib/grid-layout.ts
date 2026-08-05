@@ -16,16 +16,24 @@ export interface ResolvedGridColumns {
   className: string;
 }
 
-/** Responsive grid classes per desktop column count for classic cards. */
+/**
+ * Responsive grid classes per desktop column count for classic cards.
+ *
+ * Steps are CONTAINER queries against the `/page` container (the main content
+ * panel, declared in the (main) layout) rather than viewport breakpoints: the
+ * open sidebar takes ~282px, so viewport-keyed steps promoted grids a stop too
+ * early and produced cramped columns (a 4-up at 1440 fell to 261px each).
+ * The `--container-content-*` thresholds are defined in app/globals.css.
+ */
 const GRID_COLUMN_CLASSES: Record<number, string> = {
-  2: "grid-cols-1 md:grid-cols-2 lg:grid-cols-2", // Classic 2 cols: mobile 1, tablet 2, desktop 2
-  3: "grid-cols-1 md:grid-cols-2 lg:grid-cols-3", // Classic 3 cols: mobile 1, tablet 2, desktop 3
-  4: "grid-cols-2 md:grid-cols-2 lg:grid-cols-4", // Classic 4 cols: mobile 2, tablet 2, desktop 4
-  5: "grid-cols-2 md:grid-cols-3 lg:grid-cols-5", // Classic 5 cols: mobile 2, tablet 3, desktop 5
+  2: "grid-cols-1 @content-md/page:grid-cols-2", // 1 up, then 2 up from 640px of content
+  3: "grid-cols-1 @content-md/page:grid-cols-2 @content-lg/page:grid-cols-3", // 1 / 2 / 3
+  4: "grid-cols-2 @content-md/page:grid-cols-2 @content-lg/page:grid-cols-3 @content-xl/page:grid-cols-4", // 2 / 2 / 3 / 4
+  5: "grid-cols-2 @content-md/page:grid-cols-3 @content-lg/page:grid-cols-4 @content-xl/page:grid-cols-5", // 2 / 3 / 4 / 5
 };
 
 /** Wide (16:9) cards always cap at 2 columns. */
-const WIDE_GRID_CLASS = "grid-cols-1 lg:grid-cols-2";
+const WIDE_GRID_CLASS = "grid-cols-1 @content-md/page:grid-cols-2";
 
 const DEFAULT_COLS = 2;
 

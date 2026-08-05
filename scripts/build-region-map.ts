@@ -19,6 +19,7 @@ import { merge } from "topojson-client";
 import countriesLib from "i18n-iso-countries";
 import { isoToRegion } from "../lib/maps/iso-to-region";
 import { REGION_CODES } from "../lib/maps/region-codes";
+import { bandPath, smoothPath } from "../lib/maps/smooth-geometry";
 
 const require = createRequire(import.meta.url);
 const world = require("world-atlas/countries-110m.json");
@@ -105,3 +106,35 @@ console.log(
   `✅ Wrote ${target} with ${Object.keys(out.regions).length} regions:`,
   Object.keys(out.regions)
 );
+
+// ── Illustration-style variant (mock v6 §3) ────────────────────────────────
+// The same regions blob-smoothed (small islands drop, coastlines simplify +
+// round) plus the two ocean contour bands derived by dilating the big rings.
+// This is what region-choropleth.tsx actually renders; the raw file above
+// stays the projection source of truth (pins/countries still project on it).
+const soft: {
+  viewBox: string;
+  projection: typeof projectionConstants;
+  regions: Record<string, { d: string }>;
+  bands: { outer: string; inner: string };
+} = {
+  viewBox: out.viewBox,
+  projection: projectionConstants,
+  regions: {},
+  bands: { outer: "", inner: "" },
+};
+for (const [code, { d }] of Object.entries(out.regions)) {
+  soft.regions[code] = { d: smoothPath(d) };
+}
+const softDs = Object.values(soft.regions).map((r) => r.d);
+// Chunky, artwork-style contour bands: the brand region art draws its
+// bathymetric rings BROAD (each ~4–12% of the canvas width), so the offsets
+// are generous rather than a tight coastline hug. Only continent-scale rings
+// get a halo (min area 800) — per-islet halos read as noise, and the artwork
+// wraps whole archipelagos in one blob instead.
+soft.bands.outer = bandPath(softDs, 58, 800);
+soft.bands.inner = bandPath(softDs, 26, 800);
+
+const softTarget = join(__dirname, "../components/maps/region-geometry-soft.json");
+writeFileSync(softTarget, JSON.stringify(soft));
+console.log(`✅ Wrote ${softTarget} (${JSON.stringify(soft).length} bytes)`);

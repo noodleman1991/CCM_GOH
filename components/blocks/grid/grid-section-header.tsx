@@ -38,16 +38,16 @@ export function GridSectionHeader({
   return (
     <div
       className={cn(
-        "mb-6 md:mb-8",
-        hasImage && "grid grid-cols-1 gap-6 md:grid-cols-[1fr_auto] md:items-center",
-        isRTL && hasImage && "md:grid-cols-[auto_1fr]"
+        "mb-6 @content-md/page:mb-8",
+        hasImage && "grid grid-cols-1 gap-6 @content-md/page:grid-cols-[1fr_auto] @content-md/page:items-center",
+        isRTL && hasImage && "@content-md/page:grid-cols-[auto_1fr]"
       )}
     >
       {/* Text Content */}
-      <div className={cn(isRTL && hasImage && "md:order-2")}>
+      <div className={cn(isRTL && hasImage && "@content-md/page:order-2")}>
         {title && <SectionHeader title={title} subtitle={subtitle} />}
         {!title && subtitle && (
-          <p className="text-base text-muted-foreground md:text-lg">{subtitle}</p>
+          <p className="text-base text-muted-foreground @content-md/page:text-lg">{subtitle}</p>
         )}
         {description && (
           <div className="mt-4">
@@ -60,8 +60,8 @@ export function GridSectionHeader({
       {hasImage && (
         <div
           className={cn(
-            "relative h-32 w-48 overflow-hidden rounded-lg md:h-40 md:w-56",
-            isRTL && "md:order-1"
+            "relative h-32 w-48 overflow-hidden rounded-lg @content-md/page:h-40 @content-md/page:w-56",
+            isRTL && "@content-md/page:order-1"
           )}
         >
           <Image

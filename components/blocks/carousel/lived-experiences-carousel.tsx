@@ -327,7 +327,7 @@ export default function LivedExperiencesCarousel({
       <SectionContainer background={background} padding={padding}>
         <div className="w-full">
           {(title || subtitle) && (
-            <div className="mb-6 md:mb-8">
+            <div className="mb-6 @content-md/page:mb-8">
               <SectionHeader title={title} subtitle={subtitle} titleClassName={heading('md')} />
             </div>
           )}
@@ -345,7 +345,7 @@ export default function LivedExperiencesCarousel({
       <div className="w-full">
         {/* Header */}
         {(title || subtitle) && (
-          <div className="mb-6 md:mb-8">
+          <div className="mb-6 @content-md/page:mb-8">
             <SectionHeader title={title} subtitle={subtitle} titleClassName={heading('md')} />
           </div>
         )}
@@ -375,7 +375,7 @@ export default function LivedExperiencesCarousel({
                 return (
                   <div
                     key={experience._id}
-                    className="flex-none w-full md:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)]"
+                    className="flex-none w-full @content-md/page:w-[calc(50%-0.75rem)] @content-lg/page:w-[calc(33.333%-1rem)]"
                     style={{ scrollSnapAlign: 'start' }}
                   >
                     <LivedExperienceCard

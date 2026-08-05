@@ -119,7 +119,10 @@ export default async function RegionalCommunityPage({
                     caseStudiesGrid={pageData.caseStudiesGrid}
                     livedExperiencesCarousel={pageData.livedExperiencesCarousel}
                     welcomeHero={hasRegionHero ? null : pageData.welcomeHero}
-                    whyJoinCTA={pageData.whyJoinCTA}
+                    // RegionHero already carries the Get-involved + Follow CTAs —
+                    // stacking the CMS "why join" hero under it reads as a
+                    // duplicate hero on the seven canonical regions.
+                    whyJoinCTA={hasRegionHero ? null : pageData.whyJoinCTA}
                     logoCloud={pageData.logoCloud}
                     teamGrid={pageData.teamGrid}
                     teamMembers={teamMembers}

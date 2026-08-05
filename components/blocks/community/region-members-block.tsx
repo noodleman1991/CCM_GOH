@@ -27,13 +27,13 @@ export async function RegionMembersBlock({
 
   return (
     <SectionContainer>
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="mb-6 md:mb-8 text-center">
+      <div className="mx-auto max-w-6xl px-4 @content-sm/page:px-6 @content-lg/page:px-8">
+        <div className="mb-6 @content-md/page:mb-8 text-center">
           <h2 className={cn("font-bold font-heading text-ccm-midnight text-balance", heading("md"))}>
             {t("communityMembers")}
           </h2>
         </div>
-        <ul className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
+        <ul className="grid grid-cols-2 gap-6 @content-sm/page:grid-cols-3 @content-xl/page:grid-cols-4">
           {members.slice(0, 12).map((m) => (
             <li key={m.id}>
               <Link

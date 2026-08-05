@@ -49,12 +49,12 @@ export default async function SubmitStoryBanner({
     <section
       className={cn(
         "relative overflow-hidden bg-ccm-midnight",
-        padding?.top !== false && "pt-14 sm:pt-20",
-        padding?.bottom !== false && "pb-14 sm:pb-20"
+        padding?.top !== false && "pt-14 @content-sm/page:pt-20",
+        padding?.bottom !== false && "pb-14 @content-sm/page:pb-20"
       )}
     >
-      <div className={cn("container relative max-w-4xl text-center", art && "sm:pe-36 lg:pe-44")}>
-        <h2 className="font-heading text-2xl font-bold text-balance text-white sm:text-3xl">
+      <div className={cn("container relative max-w-4xl text-center", art && "@content-sm/page:pe-36 @content-lg/page:pe-44")}>
+        <h2 className="font-heading text-2xl font-bold text-balance text-white @content-sm/page:text-3xl">
           {heading}
         </h2>
         <p className="mx-auto mt-4 max-w-2xl text-balance text-white/80">{body}</p>
@@ -68,7 +68,7 @@ export default async function SubmitStoryBanner({
         {art && (
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute end-0 top-1/2 hidden -translate-y-1/2 sm:block"
+            className="pointer-events-none absolute end-0 top-1/2 hidden -translate-y-1/2 @content-sm/page:block"
           >
             <Image
               src={art.url!}
@@ -77,7 +77,7 @@ export default async function SubmitStoryBanner({
               height={art.metadata?.dimensions?.height || 320}
               placeholder={art.metadata?.lqip ? "blur" : undefined}
               blurDataURL={art.metadata?.lqip || ""}
-              className="h-24 w-auto object-contain lg:h-36"
+              className="h-24 w-auto object-contain @content-lg/page:h-36"
             />
           </div>
         )}

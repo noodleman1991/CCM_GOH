@@ -12,6 +12,7 @@ import { RsvpButton } from "@/components/events/rsvp-button";
 import PortableTextRenderer from "@/components/portable-text-renderer";
 import { ShareButton } from "@/components/events/share-button";
 import { CommentIsland } from "@/components/comments/comment-island";
+import { JsonLd, eventJsonLd } from "@/lib/seo/json-ld";
 
 export const dynamic = "force-dynamic";
 
@@ -63,6 +64,17 @@ export default async function EventPage({
 
   return (
     <div className="container max-w-3xl space-y-8 py-8">
+      <JsonLd
+        data={eventJsonLd({
+          name: event.title,
+          description: event.description ?? undefined,
+          url: `${process.env.NEXT_PUBLIC_SITE_URL}/${locale}/collaborate/events/${slug}`,
+          startDate: event.startAt ?? null,
+          endDate: event.endAt ?? null,
+          locationName: event.locationName ?? null,
+          isOnline: event.mode === "online",
+        })}
+      />
       {/* Hero — navy band with the date block */}
       <section className="rounded-2xl bg-gradient-to-br from-ccm-midnight to-ccm-sea p-6 text-white sm:p-8">
         <div className="flex items-start gap-5">

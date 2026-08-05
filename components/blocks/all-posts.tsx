@@ -146,7 +146,7 @@ export default async function AllPosts({
 
   return (
     <SectionContainer padding={padding}>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 @content-md/page:grid-cols-2 @content-lg/page:grid-cols-3 gap-6">
         {posts.map((post: any) => {
           // Extract localized content
           const title = typeof post.title === 'string'

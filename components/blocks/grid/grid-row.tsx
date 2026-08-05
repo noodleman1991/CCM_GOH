@@ -80,6 +80,27 @@ const componentMap: Record<string, React.ComponentType<any>> = {
     "grid-external-source": GridExternalSource,
 };
 
+/** Drop repeat columns that point at the SAME referenced document — an editor
+ *  duplicating a reference in the CMS otherwise renders the same card twice
+ *  side by side (the homepage news grid shipped exactly that). Identity is the
+ *  referenced doc's _id when the column carries one; columns without a
+ *  reference (e.g. hand-written grid-card) fall back to their _key, which is
+ *  unique per array entry and so never collides. */
+function dedupeGridColumns<T extends { _key?: string }>(columns: T[]): T[] {
+    const seen = new Set<string>();
+    return columns.filter((column) => {
+        const c = column as Record<string, { _id?: string } | undefined> & { _key?: string };
+        const refId =
+            c.post?._id ?? c.report?._id ?? c.agenda?._id ?? c.caseStudy?._id ??
+            c.news?._id ?? c.newsPost?._id ?? c.livedExperience?._id ?? c.externalSource?._id;
+        const identity = refId ?? column._key;
+        if (!identity) return true;
+        if (seen.has(identity)) return false;
+        seen.add(identity);
+        return true;
+    });
+}
+
 /** Responsive `sizes` for images inside a grid column. The content area is
  *  capped at max-w-6xl (1152px), so above that breakpoint columns have a
  *  fixed pixel width; below it they track the viewport. */
@@ -142,7 +163,7 @@ export default async function GridRow({
     if (!columns || columns.length === 0) {
         return null;
     }
-    const columnItems = columns;
+    const columnItems = dedupeGridColumns(columns);
 
     return (
         <SectionContainer background={background as any} padding={padding}>
