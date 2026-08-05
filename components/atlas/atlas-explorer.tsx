@@ -36,12 +36,15 @@ const WHEN_BUCKETS: readonly WhenBucket[] = ['y1', 'y3', 'older']
 
 /** Group a pin popover's (capped) items by content type, ordered by the
  *  cluster's FULL per-type counts desc (`typeCounts`) — so ordering reflects
- *  the true composition even though `items` only carries the first 5. Each
+ *  the true composition even though `items` only carries a fair sample. Each
  *  group's `count` is that full count (may exceed, or exist without, any
- *  titled `items` — `items` is capped repo-wide at 5 per cluster, so a type
- *  can be present in `typeCounts` with zero representatives among them; that
- *  group still renders its dot + label + count, just with no title list, so
- *  the popover's mini-legend never disagrees with the pin's own donut). */
+ *  titled `items` — `items` is capped repo-wide at 8 per cluster / 3 per type
+ *  (`fairItems` in cluster-pins.ts), so a type with more than 3 pins in the
+ *  bucket, or one squeezed out once 8 is reached, can be present in
+ *  `typeCounts` with fewer (or zero) representatives among them; that group
+ *  still renders its dot + label + count, just with a shorter (or no) title
+ *  list, so the popover's mini-legend never disagrees with the pin's own
+ *  donut). */
 function groupClusterItems(cluster: PinCluster) {
   const byType = new Map<PinItem['type'], PinItem[]>()
   for (const item of cluster.items) {

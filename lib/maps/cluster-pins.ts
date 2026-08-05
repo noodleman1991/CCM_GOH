@@ -28,7 +28,10 @@ export interface PinCluster {
   x: number;
   y: number;
   count: number;
-  /** First items for the popover; capped at 5, `count` is the real total. */
+  /** Items for the popover, `count` is the real total. Capped at 8 total AND
+   *  at most 3 per content type (`fairItems`) — a per-type round-robin, not a
+   *  flat first-8, so a mixed cluster's smaller types still get a titled item
+   *  in the popover instead of being silently swallowed by a dominant type. */
   items: PinItem[];
   /** Distinct content types across the FULL bucket (not just the capped
    *  `items`) — a single-type cluster gets that type's `COLOR.layer` colour;
@@ -42,6 +45,36 @@ export interface PinCluster {
    *  cluster renders with the approximate (dashed) treatment. A mix of exact
    *  and approximate renders solid: at least one item truly is there. */
   approx: boolean;
+}
+
+/** Popover item caps — a flat `slice(0, N)` would let one dominant type
+ *  (e.g. 20 caseStudy pins) crowd out a mixed cluster's smaller types
+ *  entirely, leaving them a count with no titles at all. Round-robin across
+ *  types instead: up to `MAX_PER_TYPE` from each, in turn, until `MAX_TOTAL`
+ *  is reached — so every type present in the bucket surfaces at least one
+ *  titled item whenever the total items available allow it. */
+const MAX_TOTAL_ITEMS = 8;
+const MAX_PER_TYPE = 3;
+
+/** Select a fair, capped subset of a cluster's bucket for the popover (pure,
+ *  order-stable within each type). See `MAX_TOTAL_ITEMS`/`MAX_PER_TYPE`. */
+function fairItems(bucket: Array<PinItem & { x: number; y: number }>): PinItem[] {
+  const byType = new Map<FacetContentType, Array<PinItem & { x: number; y: number }>>();
+  for (const p of bucket) {
+    const arr = byType.get(p.type) ?? [];
+    if (arr.length < MAX_PER_TYPE) arr.push(p);
+    byType.set(p.type, arr);
+  }
+  const types = [...byType.keys()];
+  const result: Array<PinItem & { x: number; y: number }> = [];
+  for (let round = 0; round < MAX_PER_TYPE && result.length < MAX_TOTAL_ITEMS; round++) {
+    for (const type of types) {
+      if (result.length >= MAX_TOTAL_ITEMS) break;
+      const candidate = byType.get(type)![round];
+      if (candidate) result.push(candidate);
+    }
+  }
+  return result.map(({ x: _x, y: _y, ...item }) => item);
 }
 
 /** Grid-cluster projected points (viewBox 960×500). Pure — testable, no d3. */
@@ -63,7 +96,7 @@ export function clusterPins(
       x: bucket.reduce((s, p) => s + p.x, 0) / bucket.length,
       y: bucket.reduce((s, p) => s + p.y, 0) / bucket.length,
       count: bucket.length,
-      items: bucket.slice(0, 5).map(({ x: _x, y: _y, ...item }) => item),
+      items: fairItems(bucket),
       types: [...new Set(bucket.map((p) => p.type))],
       typeCounts,
       approx: bucket.every((p) => p.approx === true),

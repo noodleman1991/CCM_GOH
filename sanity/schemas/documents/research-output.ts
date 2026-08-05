@@ -192,6 +192,19 @@ export default defineType({
     defineField({ name: "submittedBy", title: "Submitted By", type: "string", group: "review", readOnly: true }),
     defineField({ name: "reviewNotes", title: "Review Notes", type: "text", group: "review", rows: 3 }),
 
+    // Reusable geotag (spec A2, extended to researchOutput 2026-08-05) — the
+    // shared `place` object (mirrors livedExperience/newsPost exactly) so
+    // research outputs that name a specific place can appear as atlas pins,
+    // not just region-level counts. No initialValue: research outputs are
+    // editor-authored (not user-submitted), so there's no safety default to
+    // apply the way livedExperience does.
+    defineField({
+      name: "place",
+      title: "Place",
+      type: "place",
+      group: "metadata",
+    }),
+
     // Metadata + download roll-up (parity with report).
     defineField({ name: "publishDate", title: "Publish date", type: "datetime", group: "metadata" }),
     defineField({ name: "year", title: "Year", type: "number", group: "metadata" }),

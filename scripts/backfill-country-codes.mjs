@@ -1,15 +1,18 @@
 /**
- * Backfill country codes for geo-less atlas content (2026-08-04).
+ * Backfill country codes for geo-less atlas content (2026-08-04, extended to
+ * researchOutput 2026-08-05).
  *
- * For caseStudy / livedExperience / newsPost docs that have NO location data,
- * scan the doc's own text (title + locationText, where present — caseStudy
- * only) for country names; when EXACTLY ONE country is mentioned, set the
- * schema's country fields at precision "country":
- *   - caseStudy:              locationCountryCode + locationPrecision
- *   - livedExperience/news:   place.countryCode + place.precision
+ * For caseStudy / livedExperience / newsPost / researchOutput docs that have
+ * NO location data, scan the doc's own text (title + locationText, where
+ * present — caseStudy only) for country names; when EXACTLY ONE country is
+ * mentioned, set the schema's country fields at precision "country":
+ *   - caseStudy:                          locationCountryCode + locationPrecision
+ *   - livedExperience/news/researchOutput: place.countryCode + place.precision
  *
  * Ambiguous docs (0 or 2+ countries) are listed and left untouched — no
- * invented locations, ever.
+ * invented locations, ever. researchOutput titles frequently name a region
+ * rather than a country (e.g. "Sub-Saharan Africa Regional Agenda") — those
+ * simply produce 0 hits and are skipped, same as any other ambiguous doc.
  *
  * DRY RUN by default; pass --execute to write. Requires a write token in
  * SANITY_API_TOKEN (falls back to SANITY_API_WRITE_TOKEN).
@@ -91,6 +94,9 @@ const QUERY = `{
   },
   "news": *[_type == "newsPost" && !defined(place.point) && !defined(place.countryCode) && !(_id in path("drafts.**"))]{
     _id, "region": relatedCommunity->slug.current, "titleObj": title
+  },
+  "researchOutputs": *[_type == "researchOutput" && !defined(place.point) && !defined(place.countryCode) && !(_id in path("drafts.**"))]{
+    _id, "region": coalesce(region, relatedCommunities[0]->slug.current), "titleObj": title
   }
 }`;
 
@@ -118,6 +124,7 @@ const scan = (docs, kind) => {
 scan(data.caseStudies, "caseStudy");
 scan(data.lived, "livedExperience");
 scan(data.news, "newsPost");
+scan(data.researchOutputs, "researchOutput");
 
 console.log(`\nWill patch ${plans.length} docs:`);
 for (const p of plans)
