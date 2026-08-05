@@ -20,6 +20,7 @@ import { PortableText } from '@portabletext/react'
 import { client } from '@/sanity/lib/client'
 import { fetchNewsBySlug, fetchRelatedNews } from '@/sanity/queries/news-queries'
 import { CommentIsland } from '@/components/comments/comment-island'
+import { JsonLd, articleJsonLd } from '@/lib/seo/json-ld'
 import { groq } from 'next-sanity'
 
 // Generate static params for all news posts
@@ -72,9 +73,12 @@ export async function generateMetadata({
       type: 'article',
       publishedTime: newsPost.publishedAt,
       modifiedTime: newsPost._updatedAt,
-      images: newsPost.ogImage?.asset?.url || newsPost.image?.asset?.url
-        ? [newsPost.ogImage?.asset?.url || newsPost.image?.asset?.url]
-        : [],
+      images: [
+        `${process.env.NEXT_PUBLIC_SITE_URL}/${locale}/news/${slug}/og.png`,
+        ...(newsPost.ogImage?.asset?.url || newsPost.image?.asset?.url
+          ? [newsPost.ogImage?.asset?.url || newsPost.image?.asset?.url]
+          : []),
+      ],
     },
   }
 }
@@ -112,6 +116,17 @@ export default async function NewsDetailPage({
 
   return (
     <div className="container max-w-4xl py-8 space-y-8">
+      <JsonLd
+        data={articleJsonLd({
+          title,
+          description: excerpt || subtitle || undefined,
+          url: `${process.env.NEXT_PUBLIC_SITE_URL}/${locale}/news/${slug}`,
+          image: newsPost.image?.asset?.url ?? null,
+          datePublished: newsPost.publishedAt ?? null,
+          authorName: newsPost.author?.name ?? null,
+          inLanguage: locale,
+        })}
+      />
       {/* Back link */}
       <BackLink href="/news" label={t('backToNews')} />
 

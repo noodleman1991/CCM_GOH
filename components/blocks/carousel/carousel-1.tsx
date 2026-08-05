@@ -18,15 +18,15 @@ import { getLocalizedField } from "@/lib/localization-utils";
 
 const CAROUSEL_SIZES = {
   one: "basis-full",
-  two: "basis-full md:basis-1/2",
-  three: "basis-full md:basis-1/2 lg:basis-1/3",
+  two: "basis-full @content-md/page:basis-1/2",
+  three: "basis-full @content-md/page:basis-1/2 @content-lg/page:basis-1/3",
 } as const;
 
 // Aspect ratios scale predictably with the card width instead of jumping
 // between arbitrary fixed heights (the old values shrank then grew across
 // breakpoints, causing inconsistent cropping). Wider cards get a wider ratio.
 const IMAGE_SIZES = {
-  one: "aspect-video sm:aspect-[2/1]",
+  one: "aspect-video @content-sm/page:aspect-[2/1]",
   two: "aspect-[4/3]",
   three: "aspect-[4/3]",
 } as const;
@@ -79,7 +79,7 @@ export default function Carousel1({
 
   return (
     <SectionContainer padding={padding} background={background as any}>
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-4 @content-sm/page:px-6 @content-lg/page:px-8">
         <div className="flex flex-col space-y-6">
           {localizedTitle && (
             <div className="text-center">
@@ -87,7 +87,7 @@ export default function Carousel1({
                 {localizedTitle}
               </h2>
               {localizedDescription && (
-                <p className="mt-3 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
+                <p className="mt-3 text-base @content-md/page:text-lg text-muted-foreground max-w-2xl mx-auto">
                   {localizedDescription}
                 </p>
               )}
@@ -127,11 +127,11 @@ export default function Carousel1({
           </CarouselContent>
           <CarouselPrevious
             variant="secondary"
-            className="-start-3 md:-start-8 xl:-start-12"
+            className="-start-3 @content-md/page:-start-8 @content-xl/page:-start-12"
           />
           <CarouselNext
             variant="secondary"
-            className="-end-3 md:-end-8 xl:-end-12"
+            className="-end-3 @content-md/page:-end-8 @content-xl/page:-end-12"
           />
           {stegaIndicators !== "none" && (
             <div className="w-full flex justify-center">

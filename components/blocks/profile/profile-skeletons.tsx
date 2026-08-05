@@ -5,12 +5,12 @@ export function ProfileHeaderSkeleton() {
     return (
         <Card>
             <CardContent className="p-6">
-                <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
-                    <Skeleton className="h-24 w-24 sm:h-32 sm:w-32 rounded-full" />
-                    <div className="flex-1 text-center sm:text-start space-y-3">
-                        <Skeleton className="h-8 w-48 mx-auto sm:mx-0" />
-                        <Skeleton className="h-4 w-32 mx-auto sm:mx-0" />
-                        <Skeleton className="h-9 w-24 mx-auto sm:mx-0" />
+                <div className="flex flex-col @content-sm/page:flex-row items-center @content-sm/page:items-start gap-6">
+                    <Skeleton className="h-24 w-24 @content-sm/page:h-32 @content-sm/page:w-32 rounded-full" />
+                    <div className="flex-1 text-center @content-sm/page:text-start space-y-3">
+                        <Skeleton className="h-8 w-48 mx-auto @content-sm/page:mx-0" />
+                        <Skeleton className="h-4 w-32 mx-auto @content-sm/page:mx-0" />
+                        <Skeleton className="h-9 w-24 mx-auto @content-sm/page:mx-0" />
                     </div>
                 </div>
             </CardContent>
@@ -143,8 +143,8 @@ export function ProfilePageSkeleton() {
                 <Skeleton className="h-4 w-64" />
             </div>
 
-            <div className="grid gap-6 lg:grid-cols-3">
-                <div className="lg:col-span-2 space-y-6">
+            <div className="grid gap-6 @content-lg/page:grid-cols-3">
+                <div className="@content-lg/page:col-span-2 space-y-6">
                     <ProfileHeaderSkeleton />
                     <BasicInfoSkeleton />
                     <WorkDetailsSkeleton />

@@ -86,7 +86,7 @@ export default function SectionContainer({
         ))}
         <div
           className={cn(
-            "relative z-10 mx-auto px-4 sm:px-6 lg:px-8",
+            "relative z-10 mx-auto px-4 @content-sm/page:px-6 @content-lg/page:px-8",
             // When the editor flags a dark background, render text in the light
             // foreground so headings/body stay readable. Headings/muted text that
             // hardcode a dark brand colour are nudged to inherit via these
@@ -105,7 +105,7 @@ export default function SectionContainer({
 
   // No background: simple centered container with horizontal padding
   return (
-    <div className={cn("mx-auto px-4 sm:px-6 lg:px-8", maxWidth)}>
+    <div className={cn("mx-auto px-4 @content-sm/page:px-6 @content-lg/page:px-8", maxWidth)}>
       <div className={cn("relative", verticalPadding, className)}>
         {children}
       </div>

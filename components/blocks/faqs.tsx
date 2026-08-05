@@ -22,7 +22,7 @@ export default function FAQs({ padding, faqs, locale = "en" }: FAQProps) {
 
   return (
     <SectionContainer padding={padding}>
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-4 @content-sm/page:px-6 @content-lg/page:px-8">
         {faqs && faqs?.length > 0 && (
           <Accordion className="space-y-4" type="multiple">
           {faqs.map((faq) => {

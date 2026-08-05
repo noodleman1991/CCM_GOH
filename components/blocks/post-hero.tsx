@@ -17,9 +17,9 @@ export default function PostHero({
   const t = useTranslations("common");
   return (
     <>
-      {title && <h1 dir="auto" className="mb-4 md:mb-6 text-3xl lg:text-5xl">{title}</h1>}
+      {title && <h1 dir="auto" className="mb-4 @content-md/page:mb-6 text-3xl @content-lg/page:text-5xl">{title}</h1>}
       {image && image.asset?._id && (
-        <div className="my-4 md:my-6 rounded-2xl overflow-hidden">
+        <div className="my-4 @content-md/page:my-6 rounded-2xl overflow-hidden">
           <Image
             src={urlFor(image).url()}
             alt={image.alt || ""}
@@ -30,11 +30,11 @@ export default function PostHero({
           />
         </div>
       )}
-      <div className="flex items-center justify-between gap-2 text-sm md:text-base">
-        <div className="flex flex-col md:flex-row md:items-center gap-2">
+      <div className="flex items-center justify-between gap-2 text-sm @content-md/page:text-base">
+        <div className="flex flex-col @content-md/page:flex-row @content-md/page:items-center gap-2">
           <div className="flex items-center gap-2">
             {author?.image && author.image.asset?._id && (
-              <div className="relative w-6 h-6 md:w-10 md:h-10">
+              <div className="relative w-6 h-6 @content-md/page:w-10 @content-md/page:h-10">
                 <Image
                   src={urlFor(author.image).url()}
                   alt={author.image.alt ? author.image.alt : ""}
@@ -52,11 +52,11 @@ export default function PostHero({
               </div>
             )}
             {author?.name && <div>{author.name}</div>}
-            <div className="hidden md:block">•</div>
+            <div className="hidden @content-md/page:block">•</div>
           </div>
           <PostDate date={_createdAt as string} />
         </div>
-        <div className="flex flex-col md:flex-row gap-2">
+        <div className="flex flex-col @content-md/page:flex-row gap-2">
           <div>{t("sharePost")}</div>
           <div className="flex gap-2">
             <a
@@ -93,7 +93,7 @@ export default function PostHero({
           </div>
         </div>
       </div>
-      <hr className="my-4 md:my-6 border-primary/30" />
+      <hr className="my-4 @content-md/page:my-6 border-primary/30" />
     </>
   );
 }

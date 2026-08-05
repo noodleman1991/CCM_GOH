@@ -1,9 +1,21 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { getRegionalCommunities } from "@/sanity/queries/regional-communities"
+import { slugToShortCode, type RegionCode } from "@/lib/maps/region-codes"
+
+interface SanityRegionalCommunity {
+    _id: string
+    slug: string
+    name: { en?: string; es?: string; fr?: string; ar?: string }
+    active: boolean
+}
 
 // Fallback communities with multilingual names (all 4 languages)
-const FALLBACK_COMMUNITIES = [
+const FALLBACK_COMMUNITIES: Array<{
+    slug: string
+    regionalName: RegionCode
+    name: { en: string; es: string; fr: string; ar: string }
+}> = [
     {
         slug: 'sub-saharan-africa',
         regionalName: 'ssa',
@@ -65,7 +77,7 @@ const FALLBACK_COMMUNITIES = [
         }
     },
     {
-        slug: 'europe-and-north-america',
+        slug: 'europe-and-northern-america',
         regionalName: 'enam',
         name: {
             en: 'Europe and North America',
@@ -112,7 +124,7 @@ export async function GET() {
 
             const fallbackCommunities = FALLBACK_COMMUNITIES
                 .map(community => {
-                    const dbId = regionalNameToId.get(community.regionalName as any)
+                    const dbId = regionalNameToId.get(community.regionalName)
 
                     // Only include if we have a matching database record
                     if (!dbId) {
@@ -144,14 +156,12 @@ export async function GET() {
 
         // Merge Sanity data with database IDs
         const communities = sanityCommunities
-            .map((community: any) => {
+            .map((community: SanityRegionalCommunity) => {
                 // Map Sanity slug to database regionalName enum
                 // e.g., "sub-saharan-africa" -> "ssa"
-                const regionalName = community.slug
-                    .replace(/-/g, '_')
-                    .toUpperCase()
+                const regionalName = slugToShortCode(community.slug)
 
-                const dbId = regionalNameToId.get(regionalName)
+                const dbId = regionalName ? regionalNameToId.get(regionalName) : undefined
 
                 // Only include if we have a matching database record
                 if (!dbId) {

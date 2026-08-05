@@ -52,7 +52,8 @@ function RefinementListFilter({ attribute, title, limit = 10 }: { attribute: str
         {items?.map((item) => (
           <FilterChip
             key={item.value}
-            label={`${item.label} (${item.count})`}
+            label={item.label}
+            count={item.count}
             active={item.isRefined}
             onClick={() => refine(item.value)}
           />

@@ -35,9 +35,9 @@ export default async function FreshContent({
   const heading = getLocalizedText(title ?? undefined, locale, "") || t("freshHeading");
 
   return (
-    <section className={`mx-auto px-4 sm:px-6 lg:px-8 ${CONTAINER_WIDTH.default} ${SECTION_SPACING_Y.md}`}>
+    <section className={`mx-auto px-4 @content-sm/page:px-6 @content-lg/page:px-8 ${CONTAINER_WIDTH.default} ${SECTION_SPACING_Y.md}`}>
       <div className="mb-4 flex items-baseline justify-between gap-3">
-        <h2 className="font-heading text-xl font-bold text-ccm-midnight sm:text-2xl">
+        <h2 className="font-heading text-xl font-bold text-ccm-midnight @content-sm/page:text-2xl">
           <bdi>{heading}</bdi>
         </h2>
         <Link
@@ -50,12 +50,15 @@ export default async function FreshContent({
       </div>
 
       {/* Desktop bento: lead spans both rows; mobile: snap strip. */}
-      <div className="flex snap-x snap-mandatory gap-3.5 overflow-x-auto pb-2 [scrollbar-width:none] md:grid md:grid-cols-[1.35fr_1fr_1fr] md:grid-rows-2 md:overflow-visible md:pb-0 [&::-webkit-scrollbar]:hidden">
-        <div className="w-[82%] flex-none snap-start md:col-start-1 md:row-span-2 md:w-auto">
+      <div className="flex snap-x snap-mandatory gap-3.5 overflow-x-auto pb-2 [scrollbar-width:none] @content-md/page:grid @content-md/page:grid-cols-[1.35fr_1fr_1fr] @content-md/page:grid-rows-2 @content-md/page:overflow-visible @content-md/page:pb-0 [&::-webkit-scrollbar]:hidden">
+        {/* Placement/width MUST flip at the same breakpoint as the parent's
+            `grid` above — otherwise the cards go w-auto while the parent is
+            still a flex strip and collapse to nothing. */}
+        <div className="w-[82%] flex-none snap-start @content-md/page:col-start-1 @content-md/page:row-span-2 @content-md/page:w-auto">
           <TypedCard item={lead} variant="lead" className="h-full" />
         </div>
         {rest.slice(0, 4).map((item) => (
-          <div key={item.id} className="w-[62%] flex-none snap-start md:w-auto">
+          <div key={item.id} className="w-[62%] flex-none snap-start @content-md/page:w-auto">
             <TypedCard item={item} variant="mini" className="h-full" />
           </div>
         ))}

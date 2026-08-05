@@ -14,7 +14,6 @@ import { Plus, Search, LayoutGrid, Map as MapIcon } from 'lucide-react'
 import { Link } from '@/i18n/navigation'
 import { getLocalizedText } from '@/lib/localization-utils'
 import { fetchCaseStudyTags, fetchCaseStudyCommunities } from '@/sanity/queries/case-study-queries'
-import { getThemeOptions } from '@/lib/maps/themes'
 import { assignGalleryVariant, spanForVariant } from '@/lib/case-studies/gallery-layout'
 import { REGION_CODES, REGION_I18N_KEY, slugToShortCode, type RegionCode } from '@/lib/maps/region-codes'
 import type { RegionDatum } from '@/lib/maps/region-facets'
@@ -149,25 +148,6 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   }
 }
 
-/** Build the href for toggling one value of a multi-value chip param while
- *  preserving every other active param. */
-function chipHref(
-  base: Record<string, string | undefined>,
-  param: 'communities' | 'tags',
-  value: string
-): string {
-  const params = new URLSearchParams()
-  for (const [k, v] of Object.entries(base)) {
-    if (v) params.set(k, v)
-  }
-  const current = (params.get(param) ?? '').split(',').map((s) => s.trim()).filter(Boolean)
-  const next = current.includes(value) ? current.filter((v) => v !== value) : [...current, value]
-  if (next.length) params.set(param, next.join(','))
-  else params.delete(param)
-  const qs = params.toString()
-  return `/research-and-action/case-studies${qs ? `?${qs}` : ''}`
-}
-
 export default async function CaseStudiesPage({
   params,
   searchParams
@@ -193,7 +173,9 @@ export default async function CaseStudiesPage({
     communities: toArray(communities),
     search: typeof search === 'string' ? search : undefined,
   }
-  const activeView = view === 'map' ? 'map' : 'gallery'
+  // Map is the DEFAULT view (approved mock, B3): the atlas is how the hub
+  // presents case studies; the gallery is the ?view=gallery opt-in.
+  const activeView = view === 'gallery' ? 'gallery' : 'map'
 
   // Raw single-string params, used to build chip-toggle hrefs.
   const rawParams: Record<string, string | undefined> = {
@@ -202,23 +184,15 @@ export default async function CaseStudiesPage({
     communities:
       typeof communities === 'string' ? communities : Array.isArray(communities) ? communities.join(',') : undefined,
     search: typeof search === 'string' ? search : undefined,
-    view: activeView === 'map' ? 'map' : undefined,
+    view: activeView === 'gallery' ? 'gallery' : undefined,
   }
-
-  // §4.11 shared filter chips: regions + themes, both CMS-driven.
-  const [regionCommunities, themeOptions] = await Promise.all([
-    fetchCaseStudyCommunities().catch(() => []),
-    getThemeOptions().catch(() => []),
-  ])
-  const selectedCommunities = parsed.communities ?? []
-  const selectedTags = parsed.tags ?? []
 
   const viewHref = (v: 'gallery' | 'map') => {
     const p = new URLSearchParams()
     for (const [k, val] of Object.entries(rawParams)) {
       if (k !== 'view' && val) p.set(k, val)
     }
-    if (v === 'map') p.set('view', 'map')
+    if (v === 'gallery') p.set('view', 'gallery')
     const qs = p.toString()
     return `/research-and-action/case-studies${qs ? `?${qs}` : ''}`
   }
@@ -246,20 +220,9 @@ export default async function CaseStudiesPage({
         </div>
       </div>
 
-      {/* Gallery | Map toggle + shared region/theme chips (§4.11) */}
+      {/* Map | Gallery toggle — map leads, matching the default (B3). */}
       <div className="space-y-4">
         <div className="inline-flex rounded-full border bg-muted/40 p-1" role="group" aria-label={t('viewToggle')}>
-          <Button
-            asChild
-            size="sm"
-            variant={activeView === 'gallery' ? 'default' : 'ghost'}
-            className="min-h-[44px] gap-1.5 rounded-full"
-          >
-            <Link href={viewHref('gallery')}>
-              <LayoutGrid className="size-4" aria-hidden />
-              {t('galleryView')}
-            </Link>
-          </Button>
           <Button
             asChild
             size="sm"
@@ -271,52 +234,25 @@ export default async function CaseStudiesPage({
               {t('mapView')}
             </Link>
           </Button>
+          <Button
+            asChild
+            size="sm"
+            variant={activeView === 'gallery' ? 'default' : 'ghost'}
+            className="min-h-[44px] gap-1.5 rounded-full"
+          >
+            <Link href={viewHref('gallery')}>
+              <LayoutGrid className="size-4" aria-hidden />
+              {t('galleryView')}
+            </Link>
+          </Button>
         </div>
 
-        {regionCommunities.length > 0 && (
-          <div className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4 snap-x [&>*]:snap-start [&>*]:flex-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0 sm:[&>*]:flex-auto sm:[&>*]:flex-none">
-            {regionCommunities.map((c: { slug: string; name: unknown }) => {
-              const active = selectedCommunities.includes(c.slug)
-              return (
-                <Button
-                  key={c.slug}
-                  asChild
-                  size="sm"
-                  variant={active ? 'default' : 'outline'}
-                  className="min-h-[44px] rounded-full"
-                >
-                  <Link href={chipHref(rawParams, 'communities', c.slug)}>
-                    {getLocalizedText(c.name as Record<string, string>, locale, c.slug)}
-                  </Link>
-                </Button>
-              )
-            })}
-          </div>
-        )}
-
-        {themeOptions.length > 0 && (
-          <div className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4 snap-x [&>*]:snap-start [&>*]:flex-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0 sm:[&>*]:flex-auto sm:[&>*]:flex-none">
-            {themeOptions.map((theme) => {
-              const active = selectedTags.includes(theme.slug)
-              return (
-                <Button
-                  key={theme.slug}
-                  asChild
-                  size="sm"
-                  variant={active ? 'secondary' : 'ghost'}
-                  className="min-h-[44px] rounded-full border border-dashed"
-                >
-                  <Link href={chipHref(rawParams, 'tags', theme.slug)}>
-                    {theme.label[locale as 'en' | 'es' | 'fr' | 'ar'] ?? theme.label.en ?? theme.slug}
-                  </Link>
-                </Button>
-              )
-            })}
-          </div>
-        )}
       </div>
 
-      {/* Search + advanced filters (existing collapsed multi-select bar) */}
+      {/* ONE filter control (punch-list de-bulk): the collapsed Region ·
+          Topic · Tags groups + search below. The always-expanded 7-region
+          and theme pill rows that used to sit here duplicated those groups
+          and dominated the page. */}
       <Suspense fallback={<Skeleton className="h-16 w-full" />}>
         <CaseStudiesFiltersWrapper currentFilters={parsed} />
       </Suspense>
@@ -394,6 +330,8 @@ async function CaseStudiesContent({
       communityName: cs.relatedCommunity
         ? getLocalizedText(cs.relatedCommunity as Record<string, string>, locale, '')
         : null,
+      image: (cs.image as { asset?: { url?: string | null } } | null)?.asset?.url ?? null,
+      date: (cs.publishedAt as string | null) ?? null,
     }))
 
     const regionLabels = Object.fromEntries(
@@ -401,12 +339,14 @@ async function CaseStudiesContent({
     ) as Record<RegionCode, string>
 
     return (
-      <div className="space-y-4">
-        <p className="text-sm text-muted-foreground">
-          {caseStudies.length} {t('resultsFound')}
-        </p>
-        <CasesMapView data={data} items={items} regionLabels={regionLabels} emptyLabel={t('noResults')} />
-      </div>
+      <CasesMapView
+        data={data}
+        items={items}
+        regionLabels={regionLabels}
+        emptyLabel={t('noResults')}
+        countLabel={`${caseStudies.length} ${t('resultsFound')}`}
+        galleryLabel={t('openAsGallery')}
+      />
     )
   }
 
@@ -418,17 +358,17 @@ async function CaseStudiesContent({
         {caseStudies.length} {t('resultsFound')}
       </p>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-6">
-        {caseStudies.map((caseStudy: any, index: number) => {
+        {(caseStudies as Array<Record<string, unknown>>).map((caseStudy, index) => {
           const variant = assignGalleryVariant(index, caseStudies.length)
           return (
             <Link
-              key={caseStudy._id}
-              href={`/research-and-action/case-studies/${caseStudy.slug}`}
+              key={caseStudy._id as string}
+              href={`/research-and-action/case-studies/${caseStudy.slug as string}`}
               className={cn('block', spanForVariant(variant))}
             >
               <GridCaseStudyComponent
                 _type="grid-case-study"
-                _key={caseStudy._id}
+                _key={caseStudy._id as string}
                 caseStudy={caseStudy}
                 showTags={true}
                 showAuthors={true}

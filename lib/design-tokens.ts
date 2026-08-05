@@ -11,6 +11,14 @@
  *  - Values are FULL literal class strings so Tailwind's scanner sees them.
  *    Never build these by interpolation.
  *  - One concept = one scale here. Don't reintroduce per-block hardcoded values.
+ *  - Responsive steps are CONTAINER queries (`@content-*\/page:`), never viewport
+ *    ones. The `/page` container is the main content panel (declared in the
+ *    (main) layout), so blocks respond to the width they actually get rather
+ *    than to the window — the open sidebar takes ~282px, which made
+ *    viewport-keyed steps fire one stop too dense. The `--container-content-*`
+ *    thresholds live in app/globals.css; they are deliberately lower than the
+ *    viewport breakpoint of the same name, because a content box doesn't also
+ *    have to pay for the sidebar and page gutters.
  */
 
 // ---- Vertical spacing (section margins / internal gaps) ----------------------
@@ -23,19 +31,19 @@ export type SpacingToken = "none" | "sm" | "md" | "lg" | "xl";
  *  fixed steps can't express the 7% bump. */
 export const SECTION_SPACING_Y: Record<SpacingToken, string> = {
   none: "",
-  sm: "my-[1.07rem] lg:my-[1.605rem]",
-  md: "my-[2.14rem] lg:my-[2.675rem] xl:my-[3.21rem]", // current default (+7%)
-  lg: "my-[3.21rem] lg:my-[4.28rem] xl:my-[5.35rem]",
-  xl: "my-[4.28rem] lg:my-[6.42rem] xl:my-[7.49rem]",
+  sm: "my-[1.07rem] @content-lg/page:my-[1.605rem]",
+  md: "my-[2.14rem] @content-lg/page:my-[2.675rem] @content-xl/page:my-[3.21rem]", // current default (+7%)
+  lg: "my-[3.21rem] @content-lg/page:my-[4.28rem] @content-xl/page:my-[5.35rem]",
+  xl: "my-[4.28rem] @content-lg/page:my-[6.42rem] @content-xl/page:my-[7.49rem]",
 };
 
 /** Gap between items in a grid/flex row. */
 export const GRID_GAP: Record<SpacingToken, string> = {
   none: "gap-0",
-  sm: "gap-3 md:gap-4",
-  md: "gap-4 md:gap-6 lg:gap-8", // current grid-row default
-  lg: "gap-6 md:gap-8 lg:gap-10",
-  xl: "gap-8 md:gap-10 lg:gap-12",
+  sm: "gap-3 @content-md/page:gap-4",
+  md: "gap-4 @content-md/page:gap-6 @content-lg/page:gap-8", // current grid-row default
+  lg: "gap-6 @content-md/page:gap-8 @content-lg/page:gap-10",
+  xl: "gap-8 @content-md/page:gap-10 @content-lg/page:gap-12",
 };
 
 // ---- Heading scale -----------------------------------------------------------
@@ -50,10 +58,10 @@ export type HeadingToken = "sm" | "md" | "lg" | "xl";
 export const HEADING_SCALE: Record<HeadingToken, string> = {
   // One step smaller than before, same relative hierarchy — section headings
   // were reading too large against body copy and cards.
-  sm: "text-xl md:text-2xl leading-tight",
-  md: "text-2xl md:text-3xl leading-tight", // standard section header
-  lg: "text-2xl md:text-3xl lg:text-4xl leading-tight", // cta / split title
-  xl: "text-3xl md:text-4xl lg:text-5xl leading-tight", // hero
+  sm: "text-xl @content-md/page:text-2xl leading-tight",
+  md: "text-2xl @content-md/page:text-3xl leading-tight", // standard section header
+  lg: "text-2xl @content-md/page:text-3xl @content-lg/page:text-4xl leading-tight", // cta / split title
+  xl: "text-3xl @content-md/page:text-4xl @content-lg/page:text-5xl leading-tight", // hero
 };
 
 // ---- Container width ---------------------------------------------------------

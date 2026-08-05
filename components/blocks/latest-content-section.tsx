@@ -103,7 +103,7 @@ export default function LatestContentSection({
     const hasActiveFilters = dateFilter !== "all" || tagFilter || regionFilter;
 
     return (
-        <section className={`mx-auto px-4 sm:px-6 lg:px-8 ${CONTAINER_WIDTH.default} ${SECTION_SPACING_Y.md}`}>
+        <section className={`mx-auto px-4 @content-sm/page:px-6 @content-lg/page:px-8 ${CONTAINER_WIDTH.default} ${SECTION_SPACING_Y.md}`}>
             <div>
                 <div className="flex justify-between items-center mb-8">
                     <div>
@@ -124,7 +124,7 @@ export default function LatestContentSection({
                 {showFilters && (
                     <Card className="mb-6">
                         <CardContent className="pt-6">
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div className="grid grid-cols-1 @content-lg/page:grid-cols-3 gap-4">
                                 <div>
                                     <label className="text-sm font-medium mb-2 block">
                                         <Calendar className="w-4 h-4 inline me-1" />
@@ -216,7 +216,7 @@ export default function LatestContentSection({
                         </TabsTrigger>
                     </TabsList>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 @content-md/page:grid-cols-2 @content-lg/page:grid-cols-3 gap-6">
                         {filteredContent.slice(0, 9).map((item) => {
                             if (item.contentType === 'news') {
                                 return (

@@ -57,7 +57,7 @@ export function DynamicContentBlock({
   if (!section.queryType) {
     return (
       <section className="w-full py-12">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl px-6 @content-lg/page:px-8">
           <div className="text-center">
             <p className="text-red-600">Error: No query type specified for dynamic content block</p>
           </div>
@@ -76,7 +76,7 @@ export function DynamicContentBlock({
   if (error) {
     return (
       <section className={cn("w-full", bgClass, paddingClass)}>
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl px-6 @content-lg/page:px-8">
           <div className="text-center">
             <p className="text-red-600">Error loading content: {error}</p>
           </div>
@@ -88,7 +88,7 @@ export function DynamicContentBlock({
   if (loading) {
     return (
       <section className={cn("w-full", bgClass, paddingClass)}>
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl px-6 @content-lg/page:px-8">
           <div className="text-center mb-12">
             <Skeleton className="h-8 w-64 mx-auto mb-4" />
             <Skeleton className="h-4 w-96 mx-auto" />
@@ -106,7 +106,7 @@ export function DynamicContentBlock({
   if (!data || data.length === 0) {
     return (
       <section className={cn("w-full", bgClass, paddingClass)}>
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl px-6 @content-lg/page:px-8">
           <div className="text-center">
             <h2 className="text-3xl font-bold tracking-tight text-foreground mb-4">
               {sectionTitle}
@@ -120,7 +120,7 @@ export function DynamicContentBlock({
 
   return (
     <section className={cn("w-full", bgClass, paddingClass)}>
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-6 @content-lg/page:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold tracking-tight text-foreground mb-4">
             {sectionTitle}
@@ -162,15 +162,15 @@ export function DynamicContentBlock({
 function getGridClasses(displayStyle: string): string {
   switch (displayStyle) {
     case "grid":
-      return "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8";
+      return "grid grid-cols-1 @content-md/page:grid-cols-2 @content-lg/page:grid-cols-3 gap-8";
     case "carousel":
       return "flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory";
     case "list":
       return "space-y-6";
     case "minimal":
-      return "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4";
+      return "grid grid-cols-1 @content-md/page:grid-cols-2 @content-xl/page:grid-cols-4 gap-4";
     default:
-      return "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8";
+      return "grid grid-cols-1 @content-md/page:grid-cols-2 @content-lg/page:grid-cols-3 gap-8";
   }
 }
 

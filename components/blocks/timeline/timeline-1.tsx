@@ -24,9 +24,9 @@ export default function Timeline1({
   // Entrance (fade/rise) is handled once by the shared BlockReveal wrapper;
   // the timeline keeps only its internal rail-dot fill animation.
   return (
-    <div ref={ref} className="relative border-s-2 ps-12 lg:ps-28 py-8">
+    <div ref={ref} className="relative border-s-2 ps-12 @content-lg/page:ps-28 py-8">
       <motion.div
-        className="absolute w-8 h-8 rounded-full top-[3.5rem] lg:top-[3.75rem] start-[-1.1rem] border-8"
+        className="absolute w-8 h-8 rounded-full top-[3.5rem] @content-lg/page:top-[3.75rem] start-[-1.1rem] border-8"
         initial={{
           backgroundColor: "hsl(var(--background))",
           opacity: 0.3,

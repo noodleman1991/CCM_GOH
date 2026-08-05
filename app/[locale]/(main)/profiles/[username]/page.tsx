@@ -24,6 +24,7 @@ import { RegionSectionSpine } from "@/components/regions/region-section-spine"
 import { PromptsBlock } from "@/components/blocks/profile/prompts-block"
 import { PageBreadcrumb } from "@/components/ui/page-breadcrumb"
 import { Suspense } from "react"
+import { JsonLd, personJsonLd } from "@/lib/seo/json-ld";
 
 const BLUR_FADE_DELAY = 0.04
 
@@ -106,6 +107,15 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
 
     return (
         <div className="container max-w-6xl py-8">
+            <JsonLd
+                data={personJsonLd({
+                    name: user.displayName,
+                    url: `${process.env.NEXT_PUBLIC_SITE_URL}/${locale}/profiles/${user.username}`,
+                    image: user.image ?? null,
+                    jobTitle: user.headline ?? null,
+                    affiliation: user.organization ?? null,
+                })}
+            />
             <PageBreadcrumb
                 className="mb-6"
                 items={[

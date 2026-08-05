@@ -44,7 +44,8 @@ export function PillFilterGroup({
         {options.map((opt) => (
           <FilterChip
             key={opt.value}
-            label={opt.count !== undefined && opt.count > 0 ? `${opt.label} (${opt.count})` : opt.label}
+            label={opt.label}
+            count={opt.count !== undefined && opt.count > 0 ? opt.count : undefined}
             active={selected.includes(opt.value)}
             onClick={() => onToggle(opt.value)}
           />

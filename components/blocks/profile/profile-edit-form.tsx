@@ -672,7 +672,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                             )}
                         />
 
-                        <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-4">
+                        <div className="grid grid-cols-1 @content-sm/page:grid-cols-[1fr_auto] gap-4">
                             <FormField
                                 control={form.control}
                                 name="headline"
@@ -691,7 +691,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                                 control={form.control}
                                 name="pronouns"
                                 render={({ field }) => (
-                                    <FormItem className="sm:w-32">
+                                    <FormItem className="@content-sm/page:w-32">
                                         <FormLabel>{t('pronouns.label')}</FormLabel>
                                         <FormControl>
                                             <Input {...field} value={field.value || ""} placeholder={t('pronouns.placeholder')} />
@@ -1046,7 +1046,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>{t('orcidImport.label')}</FormLabel>
-                                    <div className="flex flex-col sm:flex-row gap-2">
+                                    <div className="flex flex-col @content-sm/page:flex-row gap-2">
                                         <FormControl>
                                             <Input {...field} value={field.value || ""} placeholder="0000-0002-1825-0097" />
                                         </FormControl>
@@ -1169,7 +1169,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-4">
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                                <div className="grid grid-cols-1 @content-sm/page:grid-cols-2 gap-3 @content-sm/page:gap-4">
                                     <div>
                                         <label htmlFor="work-title" className="text-sm font-medium flex items-center gap-1">
                                             {tRecentWork('workTitle')}
@@ -1208,7 +1208,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                                     />
                                 </div>
 
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                                <div className="grid grid-cols-1 @content-sm/page:grid-cols-2 gap-3 @content-sm/page:gap-4">
                                     <div>
                                         <label htmlFor="work-start-date" className="text-sm font-medium flex items-center gap-1">
                                             {tRecentWork('startDate')}

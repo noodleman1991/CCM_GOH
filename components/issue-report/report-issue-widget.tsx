@@ -91,6 +91,14 @@ export function ReportIssueWidget() {
   const pathname = usePathname();
   const isMobile = useIsMobile();
 
+  // Client-only mount: the trigger's Radix-generated aria-controls id is
+  // position-derived, and streaming Suspense siblings (announcement bar, page
+  // blocks) make the server's id sequence vary per request → intermittent
+  // hydration mismatch. Skipping SSR removes the server id entirely; a floating
+  // button that needs JS to do anything loses nothing by appearing post-mount.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   const [open, setOpen] = useState(false);
   const [summary, setSummary] = useState("");
   const [whatHappened, setWhatHappened] = useState("");
@@ -423,6 +431,8 @@ export function ReportIssueWidget() {
       </div>
     </div>
   );
+
+  if (!mounted) return null;
 
   if (isMobile) {
     return (

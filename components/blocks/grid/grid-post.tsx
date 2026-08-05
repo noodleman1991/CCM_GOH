@@ -73,7 +73,7 @@ export default function GridPost({ newsPost, featured, locale = "en", userId, im
     >
       <article
         className={cn(
-          "relative flex w-full flex-col h-full overflow-hidden transition ease-in-out group border rounded-2xl p-4 sm:p-5 lg:p-6 hover:border-primary hover:shadow-lg bg-card",
+          "relative flex w-full flex-col h-full overflow-hidden transition ease-in-out group border rounded-2xl p-4 @content-sm/page:p-5 @content-lg/page:p-6 hover:border-primary hover:shadow-lg bg-card",
           featured && "ring-2 ring-yellow-500/20 border-yellow-500/30"
         )}
       >
@@ -89,7 +89,7 @@ export default function GridPost({ newsPost, featured, locale = "en", userId, im
         <div className="flex flex-col flex-1">
           {/* Image */}
           {image && image.asset?._id && (
-            <div className="mb-3 sm:mb-4 relative aspect-[3/2] w-full rounded-xl overflow-hidden">
+            <div className="mb-3 @content-sm/page:mb-4 relative aspect-[3/2] w-full rounded-xl overflow-hidden">
               <Image
                 src={urlForCropped(image, 800, 533).url()}
                 alt={image.alt || localizedTitle}
@@ -104,30 +104,30 @@ export default function GridPost({ newsPost, featured, locale = "en", userId, im
           )}
 
           {/* Title */}
-          <div className="mb-2 sm:mb-3">
-            <h3 dir="auto" className="font-bold text-lg sm:text-xl leading-tight line-clamp-2 group-hover:text-primary transition-colors">
+          <div className="mb-2 @content-sm/page:mb-3">
+            <h3 dir="auto" className="font-bold text-lg @content-sm/page:text-xl leading-tight line-clamp-2 group-hover:text-primary transition-colors">
               {localizedTitle}
             </h3>
           </div>
 
           {/* Subtitle */}
           {localizedSubtitle && (
-            <p className="text-foreground text-sm leading-relaxed mb-2 sm:mb-3 line-clamp-2">
+            <p className="text-foreground text-sm leading-relaxed mb-2 @content-sm/page:mb-3 line-clamp-2">
               {localizedSubtitle}
             </p>
           )}
 
           {/* Date */}
           {publishedAt && (
-            <div className="flex items-center gap-1 text-muted-foreground text-xs sm:text-sm mb-2 sm:mb-3">
-              <Calendar size={12} className="sm:w-4 sm:h-4" />
+            <div className="flex items-center gap-1 text-muted-foreground text-xs @content-sm/page:text-sm mb-2 @content-sm/page:mb-3">
+              <Calendar size={12} className="@content-sm/page:w-4 @content-sm/page:h-4" />
               <time dateTime={publishedAt}>{formatDate(publishedAt)}</time>
             </div>
           )}
 
           {/* Tags */}
           {tags && tags.length > 0 && (
-            <div className="flex flex-wrap gap-1 sm:gap-2 mb-3 sm:mb-4">
+            <div className="flex flex-wrap gap-1 @content-sm/page:gap-2 mb-3 @content-sm/page:mb-4">
               {tags.slice(0, 2).map((tag) => {
                 const tagLabel = tag.label?.[locale as keyof typeof tag.label] || tag.label?.en || "Tag";
                 return (
@@ -146,8 +146,8 @@ export default function GridPost({ newsPost, featured, locale = "en", userId, im
         </div>
 
         {/* Read more arrow */}
-        <div className="mt-auto pt-2 sm:pt-3">
-          <div className="w-8 h-8 sm:w-10 sm:h-10 border rounded-full flex items-center justify-center group-hover:border-primary group-hover:bg-primary/5 transition-all duration-200">
+        <div className="mt-auto pt-2 @content-sm/page:pt-3">
+          <div className="w-8 h-8 @content-sm/page:w-10 @content-sm/page:h-10 border rounded-full flex items-center justify-center group-hover:border-primary group-hover:bg-primary/5 transition-all duration-200">
             <ChevronRight
               className="text-muted-foreground group-hover:text-primary transition-colors"
               size={16}

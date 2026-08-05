@@ -355,8 +355,13 @@ export default async function RegionalCommunityTemplate({
     });
   }
 
-  // Region-scoped atlas embed (spec A4) — config-gated like every other grid.
-  if (atlasEmbed?.enabled) {
+  // Region-scoped atlas embed (spec A4) — ON BY DEFAULT for the seven
+  // canonical regions (opt-OUT via CMS, not opt-in): every regional page
+  // carries its live atlas facet — map + compact spotlight (composition bar,
+  // countries, cards) reacting to the shared filters. AtlasEmbedBlock
+  // returns null for a slug with no region code, so non-canonical
+  // communities are unaffected.
+  if (atlasEmbed?.enabled !== false && RC_SLUG_TO_REGION[communitySlug]) {
     templateBlocks.push({
       _type: 'atlas-embed',
       _key: 'atlas-embed',
@@ -436,7 +441,11 @@ export default async function RegionalCommunityTemplate({
                 <Blocks blocks={blocks} locale={locale} userId={userId} />
               </Suspense>
             )}
-            {id === 'members' && (
+            {/* One people surface per section: when the CMS team-grid is
+                configured it wins; the community-members graph renders only
+                as the fallback so Members is never empty — two stacked
+                people grids read as a duplicate block. */}
+            {id === 'members' && blocks.length === 0 && (
               <Suspense fallback={<div className="min-h-[180px]" aria-hidden />}>
                 <RegionMembersBlock slug={communitySlug} locale={locale} />
               </Suspense>

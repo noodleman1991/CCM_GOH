@@ -12,6 +12,28 @@
     --breakpoint-xl: 1280px;
     --breakpoint-2xl: 1536px;
 
+    /* Content-area breakpoints (container queries) ---------------------------
+       Blocks inside the app shell must respond to the width the CONTENT gets,
+       not the window: the open sidebar takes ~282px, so viewport breakpoints
+       fired a stop too dense and produced cramped columns.
+
+       These pair with `@container/page` on the main panel (see the (main)
+       layout) and are used as `@content-lg/page:grid-cols-3` etc.
+
+       Deliberately LOWER than the viewport breakpoints of the same name: a
+       768px-wide *content box* is roomier than a 768px-wide window, which also
+       has to pay for the sidebar and page gutters. Calibrated so the common
+       sidebar-open desktop widths keep the layout they should:
+         1024 viewport open ->  726px content -> content-md (2 up)
+         1280 viewport open ->  982px content -> content-lg (3 up)
+         1440 viewport open -> 1142px content -> content-lg (3 up, was a
+                               cramped 4 up at 261px/col before this change)
+         1440 collapsed      -> 1424px content -> content-xl (4 up) */
+    --container-content-sm: 35rem;  /* 560px */
+    --container-content-md: 40rem;  /* 640px */
+    --container-content-lg: 60rem;  /* 960px */
+    --container-content-xl: 75rem;  /* 1200px */
+
     /* Direction-aware font aliases — overridden in [dir="rtl"] below.
        Actual font files are loaded via next/font/google CSS variables
        (--font-poppins, --font-lato, --font-lalezar, --font-tajawal). */

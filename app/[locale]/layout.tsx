@@ -142,9 +142,9 @@ export default async function LocaleLayout({
             className={`${poppins.variable} ${lato.variable} ${lalezar.variable} ${tajawal.variable} overscroll-none`}
             suppressHydrationWarning
         >
-        {/* Icons come from the App Router metadata files (app/icon.svg +
-            app/apple-icon.tsx) — a manual favicon link here would override
-            them with the legacy 16/32px .ico. */}
+        <head>
+            <link rel="icon" href="/favicon.ico" sizes="any" />
+        </head>
         <body
             className={cn(
                 "min-h-screen bg-background font-sans antialiased overscroll-none overflow-x-hidden",

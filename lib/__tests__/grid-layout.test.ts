@@ -6,49 +6,49 @@ describe("resolveGridColumns", () => {
     it("maps grid-cols-2 to 2 columns", () => {
       expect(resolveGridColumns("grid-cols-2", "classic")).toEqual({
         cols: 2,
-        className: "grid-cols-1 md:grid-cols-2 lg:grid-cols-2",
+        className: "grid-cols-1 @content-md/page:grid-cols-2",
       });
     });
 
     it("maps grid-cols-3 to 3 columns", () => {
       expect(resolveGridColumns("grid-cols-3", "classic")).toEqual({
         cols: 3,
-        className: "grid-cols-1 md:grid-cols-2 lg:grid-cols-3",
+        className: "grid-cols-1 @content-md/page:grid-cols-2 @content-lg/page:grid-cols-3",
       });
     });
 
     it("maps grid-cols-4 to 4 columns", () => {
       expect(resolveGridColumns("grid-cols-4", "classic")).toEqual({
         cols: 4,
-        className: "grid-cols-2 md:grid-cols-2 lg:grid-cols-4",
+        className: "grid-cols-2 @content-md/page:grid-cols-2 @content-lg/page:grid-cols-3 @content-xl/page:grid-cols-4",
       });
     });
 
     it("maps grid-cols-5 to 5 columns", () => {
       expect(resolveGridColumns("grid-cols-5", "classic")).toEqual({
         cols: 5,
-        className: "grid-cols-2 md:grid-cols-3 lg:grid-cols-5",
+        className: "grid-cols-2 @content-md/page:grid-cols-3 @content-lg/page:grid-cols-4 @content-xl/page:grid-cols-5",
       });
     });
 
     it("defaults to 2 columns when value is null", () => {
       expect(resolveGridColumns(null, "classic")).toEqual({
         cols: 2,
-        className: "grid-cols-1 md:grid-cols-2 lg:grid-cols-2",
+        className: "grid-cols-1 @content-md/page:grid-cols-2",
       });
     });
 
     it("defaults to 2 columns when value is undefined", () => {
       expect(resolveGridColumns(undefined, "classic")).toEqual({
         cols: 2,
-        className: "grid-cols-1 md:grid-cols-2 lg:grid-cols-2",
+        className: "grid-cols-1 @content-md/page:grid-cols-2",
       });
     });
 
     it("defaults to 2 columns for unknown values", () => {
       expect(resolveGridColumns("grid-cols-7", "classic")).toEqual({
         cols: 2,
-        className: "grid-cols-1 md:grid-cols-2 lg:grid-cols-2",
+        className: "grid-cols-1 @content-md/page:grid-cols-2",
       });
     });
   });
@@ -65,7 +65,7 @@ describe("resolveGridColumns", () => {
       ]) {
         expect(resolveGridColumns(value, "wide")).toEqual({
           cols: 2,
-          className: "grid-cols-1 lg:grid-cols-2",
+          className: "grid-cols-1 @content-md/page:grid-cols-2",
         });
       }
     });

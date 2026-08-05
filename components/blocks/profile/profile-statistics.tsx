@@ -79,7 +79,7 @@ export function ProfileStatistics({ user, className }: ProfileStatisticsProps) {
         <BlurFade delay={BLUR_FADE_DELAY * 3} className={className}>
             <Card>
                 <CardContent className="p-6">
-                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+                    <div className="grid grid-cols-2 @content-sm/page:grid-cols-3 @content-xl/page:grid-cols-5 gap-4">
                         {stats.map((stat, index) => {
                             const Icon = stat.icon
                             return (
