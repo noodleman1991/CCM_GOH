@@ -6,7 +6,7 @@ import { useTranslations, useLocale } from 'next-intl'
 import { useSearchParams } from 'next/navigation'
 import { FilterChip } from '@/components/ui/filter-chip'
 import { FilterRow, FilterRowGroup } from '@/components/atlas/atlas-filters'
-import { Input } from '@/components/ui/input'
+import { SearchInput } from '@/components/ui/search-input'
 import { RegionChoropleth } from '@/components/maps/region-choropleth'
 import { RecentEverywhereCards, RegionHighlightsCards } from '@/components/atlas/region-content-cards'
 import { RegionSpotlight } from '@/components/atlas/region-spotlight'
@@ -23,7 +23,7 @@ import { REGION_I18N_KEY, REGION_TO_RC_SLUG, isRegionCode, type RegionCode } fro
 import { useRouter, usePathname } from '@/i18n/navigation'
 import { COLOR } from '@/lib/ccm-colors'
 import { cn } from '@/lib/utils'
-import { Search, X } from 'lucide-react'
+import { X } from 'lucide-react'
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json())
 
@@ -287,32 +287,20 @@ export function AtlasExplorer({
           Unlocked keeps the classic full-width stack. */}
       <div className={cn(lockedRegion ? 'grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,44%)] lg:items-start' : 'space-y-8')}>
       <div className={cn(lockedRegion ? 'space-y-4' : 'space-y-8')}>
-      {/* Search q — part of the shared state. Styled as a soft pill so it
-          reads as the filter system's first control, not a stray form field
-          (user 2026-08-05 refinement). */}
-      <div className="relative max-w-md">
-        <Search className="absolute start-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
-        <Input
-          defaultValue={q}
-          key={q} /* re-sync on back/forward */
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') setParams({ q: (e.target as HTMLInputElement).value })
-          }}
-          placeholder={tAtlas('searchPlaceholder')}
-          className="h-10 rounded-full border-transparent bg-muted/60 ps-10 pe-9 transition-colors focus-visible:border-input focus-visible:bg-background"
-          aria-label={tAtlas('searchPlaceholder')}
-        />
-        {q && (
-          <button
-            type="button"
-            onClick={() => setParams({ q: null })}
-            className="absolute end-2 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:text-foreground"
-            aria-label={tAtlas('clearSearch')}
-          >
-            <X className="size-4" />
-          </button>
-        )}
-      </div>
+      {/* Search q — part of the shared state. SearchInput is THE hub-wide
+          search pill (user 2026-08-05: all search bars share one style). */}
+      <SearchInput
+        containerClassName="max-w-md"
+        defaultValue={q}
+        key={q} /* re-sync on back/forward */
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') setParams({ q: (e.target as HTMLInputElement).value })
+        }}
+        placeholder={tAtlas('searchPlaceholder')}
+        aria-label={tAtlas('searchPlaceholder')}
+        onClear={q ? () => setParams({ q: null }) : undefined}
+        clearLabel={tAtlas('clearSearch')}
+      />
 
       {/* Labelled filter rows (punch-list revision of §filter-bar): Show ·
           Theme · When each get their OWN row with an aligned label column —
