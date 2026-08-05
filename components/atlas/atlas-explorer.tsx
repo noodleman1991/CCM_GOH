@@ -183,18 +183,27 @@ export function AtlasExplorer({
   // across ALL facets, theme/q-aware so the numbers always match the filters.
   const allFacetsQS = FACETS.map((f) => f.id).join(',')
   const totalsKey = `/api/maps/region-data?facets=${allFacetsQS}${theme ? `&theme=${theme}` : ''}${q ? `&q=${encodeURIComponent(q)}` : ''}${whenQS}`
-  const { data: totalsData } = useSWR<{ data: RegionDatumWithBreakdown[] }>(totalsKey, fetcher, {
+  const { data: totalsData } = useSWR<{
+    data: RegionDatumWithBreakdown[]
+    /** GLOBAL per-facet counts (no region predicate) — includes docs with no
+     *  region/community ref AND no mappable country, which summing the
+     *  per-region `data` buckets misses (LE counter trust fix, 2026-08-05). */
+    totals?: Partial<Record<FacetId, number>>
+  }>(totalsKey, fetcher, {
     revalidateOnFocus: false, dedupingInterval: 120000,
   })
   const facetTotals = useMemo(() => {
-    const totals: Partial<Record<FacetId, number>> = {}
+    // No region in view → the server's GLOBAL totals (region-less docs
+    // included) — summing regional buckets here undercounted (a doc with a
+    // backfilled country but no community ref, or truly unmapped, dropped out
+    // of every bucket while still existing in `region=all` views).
+    if (!effectiveRegion) return totalsData?.totals ?? {}
     // With a region in view (locked embed OR /atlas selection), every chip
     // count scopes to THAT region — a global sum reads as a promise ("News 1")
     // that toggling the chip then breaks when the region has none (bug report
-    // 2026-08-04). No region in view → global sums, as before.
-    const source = effectiveRegion
-      ? (totalsData?.data ?? []).filter((d) => d.code === effectiveRegion)
-      : totalsData?.data ?? []
+    // 2026-08-04).
+    const totals: Partial<Record<FacetId, number>> = {}
+    const source = (totalsData?.data ?? []).filter((d) => d.code === effectiveRegion)
     for (const datum of source) {
       for (const [facetId, count] of Object.entries(datum.byFacet ?? {})) {
         totals[facetId as FacetId] = (totals[facetId as FacetId] ?? 0) + (count ?? 0)
@@ -237,14 +246,21 @@ export function AtlasExplorer({
   // summary that used to live in the deleted caption bar.
   const legendTotals = useMemo(() => {
     const totals: Partial<Record<FacetId, number>> = {}
-    // Same region-scoping as facetTotals: with a region in view the legend
-    // must describe that region, not the world.
-    const source = effectiveRegion ? regionData.filter((d) => d.code === effectiveRegion) : regionData
+    // Same region-scoping + global-totals gap as facetTotals: with no region
+    // in view, summing `regionData`'s per-region buckets misses region-less
+    // docs — use the server's GLOBAL totals instead (same source facetTotals
+    // uses). `totalsData` always fetches every facet, so it covers whatever
+    // subset is in `layers`.
+    if (!effectiveRegion) {
+      for (const f of layers) totals[f] = totalsData?.totals?.[f] ?? 0
+      return totals
+    }
+    const source = regionData.filter((d) => d.code === effectiveRegion)
     for (const f of layers) {
       totals[f] = source.reduce((s, d) => s + (d.byFacet[f] ?? 0), 0)
     }
     return totals
-  }, [layers, regionData, effectiveRegion])
+  }, [layers, regionData, effectiveRegion, totalsData])
 
   const onSelect = (code: RegionCode) => {
     if (lockedRegion) return
@@ -425,15 +441,24 @@ export function AtlasExplorer({
           const vb = (lockedRegion ? regionCrop(lockedRegion) : null) ?? { x: 0, y: 0, w: 960, h: 500 }
           const px = ((openCluster.x - vb.x) / vb.w) * 100
           const py = ((openCluster.y - vb.y) / vb.h) * 100
-          const clampedX = Math.min(Math.max(px, 18), 82)
-          const below = py < 45
+          // Below (py < 55, was 45 — biases toward the roomier "below"
+          // placement) caps `top` at 60% so the box has headroom before the
+          // container's bottom edge; "above" caps `bottom` well short of the
+          // container height so its box never rides up past the top edge.
+          // Horizontal clamp is PX-aware (user 2026-08-05: "edge distance
+          // insufficient + %-only clamp ignores pixel width") — clamp() keeps
+          // the % anchor as the preferred value but floors/ceils it against
+          // the popover's actual half-width (w-72 = 18rem, so 9rem half) plus
+          // a 12px edge margin, guaranteeing ≥12px from either map edge at
+          // every pin regardless of container width.
+          const below = py < 55
           return (
           <div
-            className="absolute z-20 w-72 max-w-[85%] rounded-lg border bg-card p-3 shadow-lg"
+            className="absolute z-20 w-72 max-w-[min(85%,calc(100%-24px))] rounded-lg border bg-card p-3 shadow-lg"
             style={{
-              left: `${clampedX}%`,
+              left: `clamp(calc(12px + 9rem), ${px}%, calc(100% - 12px - 9rem))`,
               transform: 'translateX(-50%)',
-              ...(below ? { top: `${Math.min(py + 5, 92)}%` } : { bottom: `${Math.min(100 - py + 8, 92)}%` }),
+              ...(below ? { top: `${Math.min(py + 5, 60)}%` } : { bottom: `${Math.min(100 - py + 8, 92)}%` }),
             }}
           >
             <div className="mb-1 flex items-center justify-between">
@@ -464,8 +489,26 @@ export function AtlasExplorer({
                   {group.items.length > 0 && (
                     <ul className="space-y-1 ps-3.5">
                       {group.items.map((item) => (
-                        <li key={item.id} className="truncate text-sm">
-                          <bdi className="truncate">{item.title}</bdi>
+                        <li key={item.id} className="text-sm">
+                          {/* Jumps to the matching spotlight card section
+                              instead of just naming a truncated title (user
+                              2026-08-05: "content truncated + items should
+                              JUMP to the in-page card section"). Falls back to
+                              a no-op scroll (still closes) when that section
+                              isn't rendered — e.g. no region selected yet. */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setOpenCluster(null)
+                              const target = document.getElementById(`atlas-cards-${group.type}`)
+                              if (!target) return
+                              const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+                              target.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' })
+                            }}
+                            className="line-clamp-2 text-start text-[var(--color-ccm-sea)] hover:underline"
+                          >
+                            <bdi>{item.title}</bdi>
+                          </button>
                         </li>
                       ))}
                       {group.items.length < group.count && (

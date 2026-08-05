@@ -2,11 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import countriesLib from "i18n-iso-countries";
 import enLocale from "i18n-iso-countries/langs/en.json";
 import { client } from "@/sanity/lib/client";
-import { isRegionCode, REGION_TO_RC_SLUG } from "@/lib/maps/region-codes";
+import { isRegionCode, REGION_TO_RC_SLUG, type RegionCode } from "@/lib/maps/region-codes";
 import { parseLayers, FACET_TO_CONTENT_TYPE } from "@/lib/maps/region-facets";
 import { getThemeOptions } from "@/lib/maps/themes";
 import { parseWhen, whenFilter, type WhenFilter } from "@/lib/maps/date-filter";
 import { qFilter, regionMatchFilter, statusFilter, themeFilter } from "@/lib/maps/content-filter";
+import { alpha3sForRegion } from "@/lib/maps/iso-to-region";
 import { projectPoint } from "@/lib/maps/project-point";
 import { countryCentroid } from "@/lib/maps/country-geometry";
 import { clusterPins, type FacetContentType, type PinItem } from "@/lib/maps/cluster-pins";
@@ -71,11 +72,15 @@ async function fetchRowsForType(
   // Status/theme/q/region predicates come from lib/maps/content-filter — the
   // shared trust-contract fragments (counts = cards = pins). `region=all`
   // (the global map view) drops the region predicate via the shared fragment.
+  // `regionCountries` feeds regionMatchFilter's country-derived branch — []
+  // when scope is "all" (the fragment is empty there anyway, so the param is
+  // simply unused, never a query error).
+  const regionCountries = region === "all" ? [] : alpha3sForRegion(region as RegionCode);
   return client.fetch<RawPinRow[]>(
     `*[_type == $type${statusFilter(type)}${regionMatchFilter(region === "all" ? "all" : "region")}${themeFilter(themeSlug)}${qFilter(q)}${when.filter}]{
       _id, "title": coalesce(title.en, title), "slug": slug.current, ${placeProjection}
     }`,
-    { type, region, slug, q, themeSlug: themeSlug ?? "", ...when.params }
+    { type, region, slug, regionCountries, q, themeSlug: themeSlug ?? "", ...when.params }
   );
 }
 

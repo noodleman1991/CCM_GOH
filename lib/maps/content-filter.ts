@@ -35,13 +35,22 @@ export function qFilter(q?: string | null): string {
 /** Region attribution: a doc belongs to a region via its `region` short code
  *  OR any referenced community — the singular `relatedCommunity` ref
  *  (caseStudy/livedExperience/newsPost) or the plural `relatedCommunities[]`
- *  (agenda/report). GROQ returns null/[] for fields a type doesn't define, so
- *  unused branches are harmless no-ops. Binds `$region` + `$slug`.
+ *  (agenda/report) — OR, when it carries no ref at all, a COUNTRY code that
+ *  implies a region via `lib/maps/iso-to-region.ts`'s REGION_MEMBERSHIP
+ *  (caseStudy's `locationCountryCode` / livedExperience+newsPost's
+ *  `place.countryCode`). That third branch is what makes country-backfilled-
+ *  but-unreferenced docs (e.g. 35 livedExperience docs with no
+ *  `relatedCommunity`) actually count/card/pin for their implied region —
+ *  without it a per-region view silently showed 0 for content that DID exist,
+ *  just unreferenced (verified root cause, 2026-08-05). GROQ returns null/[]
+ *  for fields a type doesn't define, so unused branches are harmless no-ops.
+ *  Binds `$region` + `$slug` + `$regionCountries` (build the latter with
+ *  `alpha3sForRegion` from `lib/maps/iso-to-region.ts`).
  *
  *  `scope: "all"` drops the predicate entirely (the global map view wants
  *  every region's geotagged docs) — kept HERE, not as an inline '' in a
  *  route, so the trust contract still has one author for region matching. */
 export function regionMatchFilter(scope: "region" | "all" = "region"): string {
   if (scope === "all") return "";
-  return " && (region == $region || relatedCommunity->slug.current == $slug || $slug in relatedCommunities[]->slug.current)";
+  return " && (region == $region || relatedCommunity->slug.current == $slug || $slug in relatedCommunities[]->slug.current || coalesce(locationCountryCode, place.countryCode) in $regionCountries)";
 }

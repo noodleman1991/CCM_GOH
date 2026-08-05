@@ -3,6 +3,7 @@ import { client } from "@/sanity/lib/client";
 import { isRegionCode, RC_SLUG_TO_REGION, REGION_CODES as REGION_CODES_ORDER, REGION_TO_RC_SLUG } from "@/lib/maps/region-codes";
 import { parseWhen, whenFilter } from "@/lib/maps/date-filter";
 import { qFilter, regionMatchFilter, statusFilter, themeFilter } from "@/lib/maps/content-filter";
+import { alpha3sForRegion } from "@/lib/maps/iso-to-region";
 
 // Content for a selected region/facet(s), as cards for the Atlas panel (D2, E1).
 // `?region=<code>&facet=caseStudyCount|livedExpCount|newsCount|agendaCount` —
@@ -185,6 +186,10 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ items: [] });
   }
   const slug = REGION_TO_RC_SLUG[region];
+  // Country-derived region membership (content-filter's regionMatchFilter
+  // third branch): the set of alpha-3 codes belonging to this region, so a
+  // doc with a backfilled country but no community ref still matches.
+  const regionCountries = alpha3sForRegion(region);
 
   const theme = req.nextUrl.searchParams.get("theme") || "";
   const q = req.nextUrl.searchParams.get("q") || "";
@@ -205,7 +210,7 @@ export async function GET(req: NextRequest) {
             ${PLACE_PROJECTION(type)},
             "date": coalesce(publishedAt, publishDate, _createdAt)
           }`,
-          { type, region, slug, themeSlug: theme, q, ...when.params }
+          { type, region, slug, regionCountries, themeSlug: theme, q, ...when.params }
         )
       )
     );

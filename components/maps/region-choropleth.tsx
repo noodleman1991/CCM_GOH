@@ -243,8 +243,11 @@ export function RegionChoropleth({
               <circle cx={c.x} cy={headCY} r={(isCluster ? 4.9 : 2.2) * k} fill="white" />
             )}
             {isCluster && (
+              // 3-digit counts overflow the fixed white hole at the base
+              // 13px size — step down to 10.5px past 99 so the digits stay
+              // inside the hole; the hole itself (r=4.9k above) is unchanged.
               <text x={c.x} y={headCY + 4.5 * s} textAnchor="middle"
-                fontSize={13 * s}
+                fontSize={(c.count > 99 ? 10.5 : 13) * s}
                 className="pointer-events-none font-heading font-bold tabular-nums"
                 fill={CCM.midnight}>
                 {c.count}

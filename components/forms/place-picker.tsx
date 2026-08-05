@@ -39,6 +39,7 @@ export function PlacePicker({
   defaultPrecision?: PlaceValue['precision']
 }) {
   const t = useTranslations('placePicker')
+  const tCommon = useTranslations('common')
   const [query, setQuery] = useState('')
   const [suggestions, setSuggestions] = useState<Suggestion[]>([])
   const [pin, setPin] = useState<{ vx: number; vy: number } | null>(null)
@@ -83,6 +84,7 @@ export function PlacePicker({
             placeholder={t('searchPlaceholder')}
             autoComplete="off"
             onClear={query ? () => setQuery('') : undefined}
+            clearLabel={tCommon('clear')}
           />
           {searching && <p className="text-xs text-muted-foreground">{t('searching')}</p>}
           {suggestions.length > 0 && (

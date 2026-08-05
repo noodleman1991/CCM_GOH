@@ -38,17 +38,25 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 /**
- * Prisma codes that mean "couldn't reach/open the connection", as opposed to
- * "the query was wrong". P1001 is the one Neon produces on a cold start.
+ * Prisma codes that mean "couldn't OPEN the connection", as opposed to "the
+ * query was wrong" — deliberately narrow to failures that happen BEFORE any
+ * statement executes. P1001 is the one Neon produces on a cold start; P1002
+ * is the same class (connection timed out) once a connection attempt starts.
+ * P1008 (operation timeout) and P1017 (server closed the connection) were
+ * REMOVED: both can occur mid-statement, so retrying them risks double-
+ * applying a write whose commit already reached the server before the
+ * connection dropped. P1000 (auth failed) was also removed — retrying a bad
+ * credential is never transient.
  * @see https://www.prisma.io/docs/orm/reference/error-reference
  */
-const CONNECTION_ERROR_CODES = new Set(['P1000', 'P1001', 'P1002', 'P1008', 'P1017'])
+const CONNECTION_ERROR_CODES = new Set(['P1001', 'P1002'])
 
 /**
  * Neon (and any scale-to-zero Postgres) suspends the compute when idle. The
  * first query after that wakes it, and can fail before it's accepting
  * connections — the socket is open, so this is not a network outage and a
- * moment later the same query succeeds.
+ * moment later the same query succeeds. Retrying is safe here specifically
+ * because these are PRE-EXECUTION failures (the statement never ran).
  */
 function isTransientConnectionError(error: unknown): boolean {
   if (error instanceof Prisma.PrismaClientInitializationError) return true

@@ -252,7 +252,11 @@ function Sidebar({
                 className={cn(
                     "relative w-(--sidebar-width) bg-transparent transition-[width] duration-200 ease-linear",
                     "group-data-[collapsible=offcanvas]:w-0",
-                    variant === "floating" || variant === "inset"
+                    // Only `floating` insets its fixed container (adds the
+                    // +spacing(4) padding below) — `inset`'s fixed container is
+                    // plain w-(--sidebar-width-icon), so including it here left
+                    // a ~16px dead gutter in the collapsed workspace rail.
+                    variant === "floating"
                         ? "group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4)))]"
                         : "group-data-[collapsible=icon]:w-(--sidebar-width-icon)"
                 )}
