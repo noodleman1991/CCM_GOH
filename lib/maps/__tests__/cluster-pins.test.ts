@@ -20,11 +20,48 @@ describe("clusterPins", () => {
     expect(big.items.map((i) => i.id).sort()).toEqual(["a", "b"]);
   });
 
-  it("caps items per cluster at 5 but keeps the true count", () => {
-    const many = Array.from({ length: 8 }, (_, i) => item(`p${i}`, 50 + i, 50));
+  it("caps total items per cluster at 8 (given enough distinct types to reach it) but keeps the true count", () => {
+    const many = (type: "caseStudy" | "livedExperience", prefix: string) =>
+      Array.from({ length: 5 }, (_, i) => item(`${prefix}${i}`, 50 + i, 50, type));
+    const news = Array.from({ length: 5 }, (_, i) => ({ ...item(`nw${i}`, 50 + i, 50), type: "newsPost" as const }));
+    const [c] = clusterPins([...many("caseStudy", "cs"), ...many("livedExperience", "le"), ...news], 24);
+    expect(c.count).toBe(15);
+    expect(c.items).toHaveLength(8);
+  });
+
+  it("does not cap items when the bucket has fewer than 8", () => {
+    const few = Array.from({ length: 3 }, (_, i) => item(`p${i}`, 50 + i, 50));
+    const [c] = clusterPins(few, 24);
+    expect(c.items).toHaveLength(3);
+  });
+
+  it("caps a single dominant type at 3 items even though the total cap is 8", () => {
+    const many = Array.from({ length: 8 }, (_, i) => item(`p${i}`, 50 + i, 50, "caseStudy"));
     const [c] = clusterPins(many, 24);
-    expect(c.count).toBe(8);
-    expect(c.items).toHaveLength(5);
+    expect(c.items).toHaveLength(3);
+  });
+
+  it("fairly round-robins items across types so a minority type isn't crowded out", () => {
+    const dominant = Array.from({ length: 6 }, (_, i) => item(`cs${i}`, 50 + i, 50, "caseStudy"));
+    const minority = [item("le0", 60, 50, "livedExperience")];
+    const [c] = clusterPins([...dominant, ...minority], 24);
+    // The minority type (only 1 pin) still shows up in items, not crowded
+    // out by the 6 caseStudy pins competing for the shared 8-item cap.
+    expect(c.items.some((i) => i.type === "livedExperience")).toBe(true);
+    expect(c.items.filter((i) => i.type === "caseStudy")).toHaveLength(3);
+    expect(c.items).toHaveLength(4);
+  });
+
+  it("gives every type present at least one titled item across a 3-type mixed cluster", () => {
+    const three = (type: "caseStudy" | "livedExperience", prefix: string) =>
+      Array.from({ length: 3 }, (_, i) => item(`${prefix}${i}`, 50 + i, 50, type));
+    const newsItem = { ...item("news0", 70, 50), type: "newsPost" as const };
+    const [c] = clusterPins(
+      [...three("caseStudy", "cs"), ...three("livedExperience", "le"), newsItem],
+      24
+    );
+    const types = new Set(c.items.map((i) => i.type));
+    expect(types).toEqual(new Set(["caseStudy", "livedExperience", "newsPost"]));
   });
 
   it("returns [] for no input", () => {

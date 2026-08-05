@@ -18,8 +18,9 @@ countriesLib.registerLocale(enLocale);
 
 // agendaCount/reportCount resolve to `researchOutput` via the shared
 // FACET_TO_CONTENT_TYPE (canonical mapping 2026-07-04 — all three map routes
-// now agree). researchOutput carries no place/geo fields yet, so these facets
-// still yield empty pins/countries until the schema grows one.
+// now agree). researchOutput grew a `place` object (2026-08-05, mirroring
+// livedExperience/newsPost) so this facet now yields pins/countries wherever
+// a research output has been geotagged (see backfill-country-codes.mjs).
 const FACET_TO_TYPE = FACET_TO_CONTENT_TYPE;
 
 type RawPinRow = {
@@ -37,18 +38,17 @@ type RawPinRow = {
  * and the results get clustered together (clusters may mix types).
  *
  * Per-type place fields (verified against each document schema — see
- * sanity/schemas/documents/{case-study,lived-experience,news-post}.ts):
+ * sanity/schemas/documents/{case-study,lived-experience,news-post,research-output}.ts):
  *   - caseStudy: legacy scalar fields — `studyLocation` (geopoint),
  *     `locationPrecision` (default "city"), `locationCountryCode` (alpha-3).
- *   - livedExperience / newsPost: the shared `place` object —
+ *   - livedExperience / newsPost / researchOutput: the shared `place` object —
  *     `place.point` / `place.precision` / `place.countryCode`.
- *   - agenda / report (legacy schemas, no researchOutput yet has geo fields):
- *     no place data at all — pins/countries are always empty for these, but
- *     the query still runs so the facet doesn't 500.
+ *   - Legacy `agenda`/`report` types (superseded by researchOutput, not
+ *     wired to any facet — see FACET_TO_CONTENT_TYPE) are never queried here.
  *
  * Region matching mirrors `region-items`'s tolerant OR (works whether a doc
  * has the singular `relatedCommunity` ref (caseStudy/livedExperience/newsPost)
- * or the plural `regionalCommunities[]` ref (agenda/report) — GROQ returns
+ * or the plural `relatedCommunities[]` ref (researchOutput) — GROQ returns
  * null/[] for a field a type doesn't define, so the unused branches are
  * harmless no-ops per type.
  */
@@ -60,12 +60,12 @@ async function fetchRowsForType(
   q: string,
   when: WhenFilter
 ): Promise<RawPinRow[]> {
-  // caseStudy stores legacy scalar location fields; livedExperience/newsPost
-  // use the shared `place` object; agenda/report have no place data.
+  // caseStudy stores legacy scalar location fields; livedExperience/newsPost/
+  // researchOutput all use the shared `place` object.
   const placeProjection =
     type === "caseStudy"
       ? `"point": studyLocation, "precision": coalesce(locationPrecision, "city"), "countryCode3": locationCountryCode`
-      : type === "livedExperience" || type === "newsPost"
+      : type === "livedExperience" || type === "newsPost" || type === "researchOutput"
         ? `"point": place.point, "precision": coalesce(place.precision, "city"), "countryCode3": place.countryCode`
         : `"point": null, "precision": null, "countryCode3": null`;
 
