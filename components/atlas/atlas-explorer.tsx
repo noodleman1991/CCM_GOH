@@ -536,8 +536,8 @@ export function AtlasExplorer({
                 {recentVariant === 'highlights' ? tAtlas('aroundTheRegions') : tAtlas('latestEverywhere')}
               </h2>
               {recentVariant === 'highlights'
-                ? <RegionHighlightsCards theme={theme} q={q} when={when} />
-                : <RecentEverywhereCards limit={6} theme={theme} q={q} when={when} />}
+                ? <RegionHighlightsCards theme={theme} q={q} when={when} facets={facetsQS} />
+                : <RecentEverywhereCards limit={6} theme={theme} q={q} when={when} facets={facetsQS} />}
             </div>
           )}
         </section>

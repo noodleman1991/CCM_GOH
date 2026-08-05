@@ -335,15 +335,17 @@ export function RegionHighlightsCards({
   theme,
   q,
   when,
+  facets,
 }: {
   theme?: string | null;
   q?: string;
   when?: string | null;
+  facets?: string | null;
 } = {}) {
   const t = useCardLabels();
   const tRegions = useTranslations("navigation.regions");
-  // Theme/q/when ride along — same trust contract as RecentEverywhereCards.
-  const fq = `${theme ? `&theme=${encodeURIComponent(theme)}` : ""}${q ? `&q=${encodeURIComponent(q)}` : ""}${when ? `&when=${when}` : ""}`;
+  // Theme/q/when/facets ride along — same trust contract as RecentEverywhereCards.
+  const fq = `${theme ? `&theme=${encodeURIComponent(theme)}` : ""}${q ? `&q=${encodeURIComponent(q)}` : ""}${when ? `&when=${when}` : ""}${facets ? `&facet=${encodeURIComponent(facets)}` : ""}`;
   const { data, isLoading } = useSWR(
     `/api/maps/region-items?mode=highlights${fq}`,
     fetcher,
@@ -390,16 +392,20 @@ export function RecentEverywhereCards({
   theme,
   q,
   when,
+  facets,
 }: {
   limit?: number;
   theme?: string | null;
   q?: string;
   when?: string | null;
+  /** Active "Show" layer ids, comma-joined — narrows the strip to the types
+   *  on the map (an LE card next to a case-studies-only map broke trust). */
+  facets?: string | null;
 }) {
   const t = useCardLabels();
-  // Theme/q/when ride along so the strip lists exactly what the counts and
-  // pins describe (trust contract — it previously ignored active filters).
-  const fq = `${theme ? `&theme=${encodeURIComponent(theme)}` : ""}${q ? `&q=${encodeURIComponent(q)}` : ""}${when ? `&when=${when}` : ""}`;
+  // Theme/q/when/facets ride along so the strip lists exactly what the counts
+  // and pins describe (trust contract — it previously ignored active filters).
+  const fq = `${theme ? `&theme=${encodeURIComponent(theme)}` : ""}${q ? `&q=${encodeURIComponent(q)}` : ""}${when ? `&when=${when}` : ""}${facets ? `&facet=${encodeURIComponent(facets)}` : ""}`;
   const { data, isLoading } = useSWR(
     `/api/maps/region-items?region=all&limit=${limit}${fq}`,
     fetcher,

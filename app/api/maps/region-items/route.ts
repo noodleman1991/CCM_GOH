@@ -28,6 +28,22 @@ const FACET_TYPE: Record<string, string> = {
 // has no single facet to key off — mirrors the pin layer's content set).
 const ALL_TYPES = ["caseStudy", "livedExperience", "newsPost", "researchOutput"];
 
+/** Map a comma-separated `facet` param to distinct content types; no/unknown
+ *  param → ALL_TYPES (the recent/highlights strips show everything until the
+ *  "Show" layers narrow them — user 2026-08-05). */
+function typesForFacetParam(facetParam: string | null): string[] {
+  if (!facetParam) return ALL_TYPES;
+  const types = [
+    ...new Set(
+      facetParam
+        .split(",")
+        .map((f) => FACET_TYPE[f.trim()])
+        .filter((t): t is string => Boolean(t))
+    ),
+  ];
+  return types.length > 0 ? types : ALL_TYPES;
+}
+
 const MAX_RECENT_LIMIT = 12;
 const DEFAULT_RECENT_LIMIT = 6;
 
@@ -68,9 +84,10 @@ export async function GET(req: NextRequest) {
     const hlTheme = req.nextUrl.searchParams.get("theme") || "";
     const hlQ = req.nextUrl.searchParams.get("q") || "";
     const hlWhen = whenFilter(parseWhen(req.nextUrl.searchParams.get("when")), new Date());
+    const hlTypes = typesForFacetParam(req.nextUrl.searchParams.get("facet"));
     try {
       const perType = await Promise.all(
-        ALL_TYPES.map((type) =>
+        hlTypes.map((type) =>
           client.fetch(
             `*[_type == $type${statusFilter(type)}${themeFilter(hlTheme)}${qFilter(hlQ)}${hlWhen.filter} && defined(coalesce(studyLocation, place.point, locationCountryCode, place.countryCode))] | order(coalesce(publishedAt, publishDate, _createdAt) desc)[0...30]{
               "id": _id,
@@ -118,10 +135,14 @@ export async function GET(req: NextRequest) {
     const recentTheme = req.nextUrl.searchParams.get("theme") || "";
     const recentQ = req.nextUrl.searchParams.get("q") || "";
     const recentWhen = whenFilter(parseWhen(req.nextUrl.searchParams.get("when")), new Date());
+    // Active "Show" layers narrow the type set (user 2026-08-05: the strip
+    // showed a lived-experience card while the map's case-studies-only layer
+    // showed no LE pin). No facet param → all types, as before.
+    const recentTypes = typesForFacetParam(req.nextUrl.searchParams.get("facet"));
 
     try {
       const perType = await Promise.all(
-        ALL_TYPES.map((type) =>
+        recentTypes.map((type) =>
           client.fetch(
             `*[_type == $type${statusFilter(type)}${themeFilter(recentTheme)}${qFilter(recentQ)}${recentWhen.filter} && defined(coalesce(studyLocation, place.point, locationCountryCode, place.countryCode))] | order(coalesce(publishedAt, publishDate, _createdAt) desc)[0...${limit}]{
               "id": _id,
