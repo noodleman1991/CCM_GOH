@@ -15,9 +15,8 @@ import { TypedCard } from '@/components/cards/typed-card'
 import type { TypedCardItem } from '@/lib/cards/type-style'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
+import { SearchInput } from '@/components/ui/search-input'
 import {
-  Search as SearchIcon,
-  X,
   ArrowRight,
   BookOpen,
   Newspaper,
@@ -73,28 +72,16 @@ function GroupedSearchBox({
   }
 
   return (
-    <div className="relative w-full max-w-2xl">
-      <SearchIcon className="pointer-events-none absolute start-3 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
-      <input
-        ref={inputRef}
-        type="search"
-        value={local}
-        onChange={handleChange}
-        placeholder={t('placeholder')}
-        autoComplete="off"
-        className="flex h-12 w-full rounded-full border border-input bg-background ps-11 pe-11 text-base text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-      />
-      {local && (
-        <button
-          type="button"
-          onClick={clear}
-          aria-label={t('clear')}
-          className="absolute end-3 top-1/2 -translate-y-1/2 rounded-md p-1 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-        >
-          <X className="size-4" />
-        </button>
-      )}
-    </div>
+    <SearchInput
+      containerClassName="w-full max-w-2xl"
+      ref={inputRef}
+      value={local}
+      onChange={handleChange}
+      placeholder={t('placeholder')}
+      autoComplete="off"
+      onClear={local ? clear : undefined}
+      clearLabel={t('clear')}
+    />
   )
 }
 

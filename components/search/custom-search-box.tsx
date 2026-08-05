@@ -1,9 +1,9 @@
 'use client'
 
 import { useSearchBox } from 'react-instantsearch'
-import { Search, X } from 'lucide-react'
 import { useRef, useState, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
+import { SearchInput } from '@/components/ui/search-input'
 
 interface CustomSearchBoxProps {
   placeholder?: string
@@ -56,37 +56,19 @@ export function CustomSearchBox({ placeholder }: CustomSearchBoxProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="relative w-full">
-      {/* Search Icon - Start side */}
-      <div className="absolute start-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none">
-        <Search className="h-5 w-5" />
-      </div>
-
-      {/* Input */}
-      <input
+    <form onSubmit={handleSubmit} className="w-full">
+      <SearchInput
         ref={inputRef}
-        type="text"
         value={inputValue}
         onChange={handleChange}
         placeholder={placeholderText}
-        className="flex h-12 w-full rounded-md border border-input bg-background ps-11 pe-11 py-2 text-base text-foreground ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
         autoComplete="off"
         autoCorrect="off"
         autoCapitalize="off"
         spellCheck={false}
+        onClear={inputValue ? handleClear : undefined}
+        clearLabel={t('clearSearch')}
       />
-
-      {/* Clear Button - End side (only show when there's text) */}
-      {inputValue && (
-        <button
-          type="button"
-          onClick={handleClear}
-          className="absolute end-3 top-1/2 -translate-y-1/2 p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-          aria-label={t('clearSearch')}
-        >
-          <X className="h-4 w-4" />
-        </button>
-      )}
     </form>
   )
 }

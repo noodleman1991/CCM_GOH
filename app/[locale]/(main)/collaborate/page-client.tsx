@@ -16,7 +16,8 @@ import { UserCarousel } from '@/components/collaborate/user-carousel'
 import { cn } from '@/lib/utils'
 import { heading } from '@/lib/design-tokens'
 import { PageContainer } from '@/components/ui/page-container'
-import { Search, X, FolderKanban } from 'lucide-react'
+import { SearchInput } from '@/components/ui/search-input'
+import { FolderKanban } from 'lucide-react'
 import { FEATURES } from '@/lib/features'
 import type { SupportedLocale, LocalizedUser } from '@/types/prisma'
 
@@ -194,33 +195,22 @@ export function CollaboratePageClient({
 
       {/* Search + horizontal filters, full width */}
       <div className="mb-8 space-y-4">
-        {/* Search — matches the rounded pill used across content pages. */}
+        {/* Search — the shared pill used across content pages. */}
         <form
           onSubmit={(e) => {
             e.preventDefault()
             handleSearch(searchInput)
           }}
-          className="relative"
         >
-          <Search className="pointer-events-none absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-          <input
-            type="text"
+          <SearchInput
+            containerClassName="w-full"
             placeholder={t('searchPlaceholder')}
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             dir={isRTL ? 'rtl' : 'ltr'}
-            className="h-11 w-full rounded-full border border-input bg-background ps-10 pe-10 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            onClear={searchInput ? () => { setSearchInput(''); handleSearch('') } : undefined}
+            clearLabel={tCommon('clear')}
           />
-          {searchInput && (
-            <button
-              type="button"
-              onClick={() => { setSearchInput(''); handleSearch('') }}
-              aria-label={tCommon('clear')}
-              className="absolute end-3 top-1/2 -translate-y-1/2 rounded-md p-1 text-muted-foreground hover:bg-accent hover:text-foreground"
-            >
-              <X className="size-4" />
-            </button>
-          )}
         </form>
 
         {/* Horizontal filter bar, directly under the search */}

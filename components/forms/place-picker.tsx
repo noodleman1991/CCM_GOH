@@ -2,11 +2,11 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { useTranslations } from 'next-intl'
+import { SearchInput } from '@/components/ui/search-input'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { FilterChip } from '@/components/ui/filter-chip'
 import { RegionChoropleth } from '@/components/maps/region-choropleth'
-import { Search } from 'lucide-react'
 import { CCM } from '@/lib/ccm-colors'
 
 export type PlaceValue = {
@@ -76,17 +76,14 @@ export function PlacePicker({
       <div className="space-y-4">
         <div className="space-y-1.5">
           <Label htmlFor="place-search">{t('searchLabel')}</Label>
-          <div className="relative">
-            <Search className="absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
-            <Input
-              id="place-search"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder={t('searchPlaceholder')}
-              className="ps-9"
-              autoComplete="off"
-            />
-          </div>
+          <SearchInput
+            id="place-search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder={t('searchPlaceholder')}
+            autoComplete="off"
+            onClear={query ? () => setQuery('') : undefined}
+          />
           {searching && <p className="text-xs text-muted-foreground">{t('searching')}</p>}
           {suggestions.length > 0 && (
             <ul className="divide-y rounded-lg border bg-card shadow-sm" role="listbox">

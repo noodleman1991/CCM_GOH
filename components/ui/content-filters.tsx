@@ -4,8 +4,9 @@ import * as React from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { FilterChip } from "@/components/ui/filter-chip";
+import { SearchInput } from "@/components/ui/search-input";
 import { cn } from "@/lib/utils";
-import { ChevronDown, X, Search } from "lucide-react";
+import { ChevronDown, X } from "lucide-react";
 
 export interface FilterOption {
   value: string;
@@ -50,26 +51,14 @@ export function ContentFilters({
   return (
     <div className={cn("w-full space-y-3", className)}>
       {search && (
-        <div className="relative">
-          <Search className="pointer-events-none absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-          <input
-            type="text"
-            value={search.value}
-            onChange={(e) => search.onChange(e.target.value)}
-            placeholder={search.placeholder}
-            className="h-11 w-full rounded-full border border-input bg-background ps-10 pe-10 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          />
-          {search.value && (
-            <button
-              type="button"
-              onClick={() => search.onChange("")}
-              aria-label={t("clear")}
-              className="absolute end-3 top-1/2 -translate-y-1/2 rounded-md p-1 text-muted-foreground hover:bg-accent hover:text-foreground"
-            >
-              <X className="size-4" />
-            </button>
-          )}
-        </div>
+        <SearchInput
+          containerClassName="w-full"
+          value={search.value}
+          onChange={(e) => search.onChange(e.target.value)}
+          placeholder={search.placeholder}
+          onClear={search.value ? () => search.onChange("") : undefined}
+          clearLabel={t("clear")}
+        />
       )}
 
       {/* Collapsed group triggers */}
@@ -84,7 +73,9 @@ export function ContentFilters({
               onClick={() => toggleGroup(group.id)}
               aria-expanded={isOpen}
               className={cn(
-                "inline-flex items-center gap-1.5 rounded-full border px-3.5 py-2 text-sm font-medium transition-colors",
+                // Same chip geometry as FilterChip (px-3 py-1.5 text-sm) so a
+                // collapsed group trigger sits flush with inline chips.
+                "inline-flex flex-none items-center gap-1.5 whitespace-nowrap rounded-full border px-3 py-1.5 text-sm font-medium transition-colors",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                 count > 0
                   ? "border-ccm-sea/40 bg-ccm-sea/10 text-ccm-sea"
