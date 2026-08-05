@@ -120,7 +120,7 @@ export default async function CollaboratePage({ params, searchParams }: Collabor
 
   const shell = (peoplePanel: React.ReactNode) => (
     <PageContainer>
-      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="font-heading text-3xl font-bold text-balance text-ccm-midnight md:text-4xl">
             {tCollab('header')}
