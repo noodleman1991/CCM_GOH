@@ -3,10 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { Check, Search, UserPlus } from "lucide-react";
+import { Check, UserPlus } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { SearchInput } from "@/components/ui/search-input";
 import { inviteToCollaboration } from "@/lib/actions/requests";
 
 type Candidate = {
@@ -78,16 +78,13 @@ export function InviteMembers({
 
   return (
     <div className="rounded-lg border border-dashed p-3">
-      <div className="relative">
-        <Search className="pointer-events-none absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
-        <Input
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder={t("inviteSearchPlaceholder")}
-          className="ps-9"
-          aria-label={t("invitePeople")}
-        />
-      </div>
+      <SearchInput
+        value={q}
+        onChange={(e) => setQ(e.target.value)}
+        placeholder={t("inviteSearchPlaceholder")}
+        aria-label={t("invitePeople")}
+        onClear={q ? () => setQ("") : undefined}
+      />
       {q.trim().length >= 2 && (
         <ul className="mt-2 space-y-1">
           {results.map((u) => {

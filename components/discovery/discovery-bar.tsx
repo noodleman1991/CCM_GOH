@@ -3,8 +3,7 @@
 import { useState, useTransition, useCallback } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Search } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { SearchInput } from "@/components/ui/search-input";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -70,19 +69,17 @@ export function DiscoveryBar({
     <div className="space-y-4">
       {/* Search + sort */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-        <div className="relative flex-1">
-          <Search className="pointer-events-none absolute top-1/2 size-4 -translate-y-1/2 text-muted-foreground ms-3" />
-          <Input
-            value={state.q}
-            onChange={(e) => setState({ ...state, q: e.target.value })}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") apply(state);
-            }}
-            placeholder={t("searchPlaceholder")}
-            className="ps-9"
-            aria-label={t("searchPlaceholder")}
-          />
-        </div>
+        <SearchInput
+          containerClassName="flex-1"
+          value={state.q}
+          onChange={(e) => setState({ ...state, q: e.target.value })}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") apply(state);
+          }}
+          placeholder={t("searchPlaceholder")}
+          aria-label={t("searchPlaceholder")}
+          onClear={state.q ? () => apply({ ...state, q: "" }) : undefined}
+        />
         <Select value={state.sort} onValueChange={(v) => apply({ ...state, sort: v as DiscoveryState["sort"] })}>
           <SelectTrigger className="sm:w-48">
             <SelectValue placeholder={t("sortLabel")} />
