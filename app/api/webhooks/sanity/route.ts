@@ -8,6 +8,7 @@
 import { revalidatePath, revalidateTag } from 'next/cache'
 import { NextRequest, NextResponse } from 'next/server'
 import { headers } from 'next/headers'
+import { isValidSignature, SIGNATURE_HEADER_NAME } from '@sanity/webhook'
 import { writeClient } from '@/sanity/lib/write-client'
 import { notifyCaseStudyStatusChange, isNotifiableStatus } from '@/lib/case-study-emails'
 
@@ -21,7 +22,18 @@ interface SanityWebhookPayload {
   [key: string]: any
 }
 
-// Verify webhook signature
+/**
+ * Verify the webhook signature.
+ *
+ * This previously read an `x-sanity-signature` header and compared it against
+ * `sha256=<hex hmac>` — a GitHub-style scheme that Sanity does not use, so no
+ * genuine webhook could ever pass and every delivery was rejected with a 401.
+ *
+ * Sanity signs with header `sanity-webhook-signature` (SIGNATURE_HEADER_NAME)
+ * carrying `t=<timestamp>,v1=<base64url hmac>`, and the timestamp is part of the
+ * signed payload. Rather than re-implement that, use @sanity/webhook — already
+ * a dependency — which owns the format and its expiry handling.
+ */
 async function verifySignature(payload: string, signature: string | null) {
   const webhookSecret = process.env.SANITY_WEBHOOK_SECRET
   if (!webhookSecret) {
@@ -29,18 +41,12 @@ async function verifySignature(payload: string, signature: string | null) {
     return false
   }
   if (!signature) {
-    console.warn('Sanity webhook received without signature header')
+    console.warn(`Sanity webhook received without ${SIGNATURE_HEADER_NAME} header`)
     return false
   }
 
   try {
-    const crypto = await import('crypto')
-    const computedSignature = crypto
-      .createHmac('sha256', webhookSecret)
-      .update(payload)
-      .digest('hex')
-
-    return signature === `sha256=${computedSignature}`
+    return await isValidSignature(payload, signature, webhookSecret)
   } catch (error) {
     console.error('Error verifying webhook signature:', error)
     return false
@@ -49,7 +55,13 @@ async function verifySignature(payload: string, signature: string | null) {
 
 // Handle cache invalidation based on document type
 function handleCacheInvalidation(payload: SanityWebhookPayload) {
-  const tagsToRevalidate: string[] = []
+  // Every sanityFetch() result is cached under the "sanity" tag (next-sanity's
+  // defineLive uses `tags = ["sanity"]` by default, plus per-document sync
+  // tags). Invalidating it here is what makes a publish show up without waiting
+  // for the revalidate window — the per-type cases below only ever covered a
+  // handful of tags, so all ~98 sanityFetch call sites used to rely purely on
+  // the timer. Unconditional: any document type can appear in any query.
+  const tagsToRevalidate: string[] = ['sanity']
   const pathsToRevalidate: string[] = []
   const locales = ['en', 'es', 'fr', 'ar']
 
@@ -166,11 +178,12 @@ export async function POST(request: NextRequest) {
 
     // Get signature from headers
     const headersList = await headers()
-    const signature = headersList.get('x-sanity-signature')
+    const signature = headersList.get(SIGNATURE_HEADER_NAME)
 
-    // Verify webhook signature
-    const isValidSignature = await verifySignature(payload, signature)
-    if (!isValidSignature) {
+    // Verify webhook signature (named to avoid shadowing the imported
+    // isValidSignature that verifySignature delegates to).
+    const signatureIsValid = await verifySignature(payload, signature)
+    if (!signatureIsValid) {
       console.error('❌ Invalid webhook signature')
       return NextResponse.json(
         { error: 'Invalid signature' },
@@ -256,7 +269,7 @@ export async function OPTIONS() {
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, x-sanity-signature',
+      'Access-Control-Allow-Headers': `Content-Type, ${SIGNATURE_HEADER_NAME}`,
     },
   })
 }

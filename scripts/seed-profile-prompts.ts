@@ -1,15 +1,19 @@
 // Seed a few starter profile prompts in Sanity (idempotent via fixed ids).
+//
+// Run with tsx: `pnpm seed:profile-prompts` (the shared orderRank helper is TS).
 import { createClient } from "@sanity/client";
 import dotenv from "dotenv";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 
+import { sequentialOrderRanks } from "../lib/order-rank";
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: join(__dirname, "../.env.local") });
 
 const client = createClient({
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
-  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET,
+  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
+  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
   token: process.env.SANITY_API_EDITOR_TOKEN,
   apiVersion: "2024-10-31",
   useCdn: false,
@@ -24,13 +28,19 @@ const prompts = [
     prompt: { en: "I'd love to collaborate on…", es: "Me encantaría colaborar en…", fr: "J'aimerais collaborer sur…", ar: "أودّ التعاون في…" } },
 ];
 
+// `orderRank` must hold LexoRank strings — the Studio parses them unguarded, so
+// a plain ordinal like "000002" crashes it. Seed after whatever already exists.
+const lastOrderRank: string | null = await client.fetch(
+  `*[_type == "profilePrompt"]|order(orderRank desc)[0].orderRank`,
+);
+const ranks = sequentialOrderRanks(prompts.length, lastOrderRank);
+
 const tx = client.transaction();
-let rank = 0;
-for (const p of prompts) {
+prompts.forEach((p, i) => {
   tx.createIfNotExists({
     _id: p.id, _type: "profilePrompt", active: true, category: p.category,
-    prompt: p.prompt, orderRank: String(rank++).padStart(6, "0"),
+    prompt: p.prompt, orderRank: ranks[i],
   });
-}
+});
 await tx.commit();
 console.log(`✓ seeded ${prompts.length} profile prompts`);

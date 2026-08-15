@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { algoliaClient, ALGOLIA_INDICES, CaseStudySearchRecord } from '@/lib/algolia'
-import { sanityFetch } from '@/sanity/lib/live'
+import { cachedFetch as sanityFetch } from "@/sanity/lib/cached-fetch";
 
 const SEARCH_WEBHOOK_SECRET = process.env.SEARCH_WEBHOOK_SECRET
 

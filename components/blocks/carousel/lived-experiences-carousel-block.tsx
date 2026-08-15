@@ -1,4 +1,4 @@
-import { sanityFetch } from "@/sanity/lib/live";
+import { cachedFetch as sanityFetch } from "@/sanity/lib/cached-fetch";
 import { livedExperiencesCarouselQuery } from "@/sanity/queries/carousel/lived-experiences-carousel";
 import LivedExperiencesCarousel from "./lived-experiences-carousel";
 

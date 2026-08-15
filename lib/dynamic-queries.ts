@@ -1,5 +1,5 @@
 import { groq } from "next-sanity";
-import { sanityFetch } from "@/sanity/lib/live";
+import { cachedFetch as sanityFetch } from "@/sanity/lib/cached-fetch";
 
 // Predefined query mapping for dynamic content inserts
 const QUERY_MAPPING = {

@@ -1,5 +1,5 @@
 import { groq } from 'next-sanity'
-import { sanityFetch } from '@/sanity/lib/live'
+import { cachedFetch as sanityFetch } from "@/sanity/lib/cached-fetch";
 import { RC_SLUG_TO_REGION, type RegionCode } from '@/lib/maps/region-codes'
 
 export type RegionArt = { url: string; lqip: string | null }

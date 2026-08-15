@@ -25,6 +25,7 @@ export default async function MainLayout({
     // The issue reporter is staff-only (team_editor | admin) — same gate as the
     // moderation queue. Nobody else gets the widget in their DOM at all.
     const canReportIssues = isStaff(await getActor());
+    const isDraftMode = (await draftMode()).isEnabled;
 
     return (
         <SidebarProvider isRtl={isRtl}>
@@ -73,12 +74,21 @@ export default async function MainLayout({
                 ⌘K / "/" shortcut (one instance, no stacking). */}
             <SearchModal />
             {canReportIssues && <ReportIssueWidget />}
-            {/* Kill-switch for API-quota outages: when the live-events stream
-                can't connect (e.g. 402 plan_limit_reached) next-sanity retries
-                every ~1s with no backoff, burning quota and churning re-renders.
-                sanityFetch keeps working either way (revalidate cap in live.ts). */}
-            {process.env.SANITY_LIVE_DISABLED !== "true" && <SanityLive />}
-            {(await draftMode()).isEnabled && (
+            {/* Draft mode only. <SanityLive /> opens a per-visitor live-events
+                subscription (client.live.events) and calls router.refresh() on
+                every event and on window focus — a cost that scales with TRAFFIC
+                rather than with how often content changes, and one that page
+                caching does nothing to reduce. Editors still get instant updates
+                in the Presentation tool, which runs in draft mode; published
+                pages get their freshness from revalidateTag on the publish
+                webhook, with the revalidate cap in live.ts as the backstop.
+
+                SANITY_LIVE_DISABLED remains a kill-switch for API-quota outages:
+                when the stream can't connect (e.g. 402 plan_limit_reached)
+                next-sanity retries every ~1s with no backoff, burning quota and
+                churning re-renders. */}
+            {isDraftMode && process.env.SANITY_LIVE_DISABLED !== "true" && <SanityLive />}
+            {isDraftMode && (
                 <>
                     <DisableDraftMode />
                     <VisualEditing />

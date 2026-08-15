@@ -1,5 +1,5 @@
 import { groq } from "next-sanity";
-import { sanityFetch } from "@/sanity/lib/live";
+import { cachedFetch as sanityFetch } from "@/sanity/lib/cached-fetch";
 
 // Query for team members by community ID (dynamic mode)
 export const REGIONAL_COMMUNITY_TEAM_QUERY = groq`

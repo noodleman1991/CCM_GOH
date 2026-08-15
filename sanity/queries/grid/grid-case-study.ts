@@ -2,7 +2,7 @@
 
 import { groq } from "next-sanity";
 import { styledBodyProjection } from "@/sanity/queries/shared/styled-body";
-import { sanityFetch } from "@/sanity/lib/live";
+import { cachedFetch as sanityFetch } from "@/sanity/lib/cached-fetch";
 import { CaseStudy, CaseStudySearchParams, SupportedLanguage } from '@/types/case-study';
 
 // ===== SHARED CASE STUDY PROJECTION FRAGMENT =====

@@ -1,5 +1,5 @@
 import { groq } from "next-sanity";
-import { sanityFetch } from "@/sanity/lib/live";
+import { cachedFetch as sanityFetch } from "@/sanity/lib/cached-fetch";
 import { hero1Query } from "./hero/hero-1";
 import { hero2Query } from "./hero/hero-2";
 import { sectionHeaderQuery } from "./section-header";

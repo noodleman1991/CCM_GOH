@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { algoliaClient, ALGOLIA_INDICES, NewsSearchRecord } from '@/lib/algolia'
-import { sanityFetch } from '@/sanity/lib/live'
+import { cachedFetch as sanityFetch } from "@/sanity/lib/cached-fetch";
 
 // Sanity query to get all published news posts
 const NEWS_QUERY = `*[_type == "newsPost" && publishedAt <= now()] | order(publishedAt desc) {

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { isValidSignature, SIGNATURE_HEADER_NAME } from '@sanity/webhook'
 import { algoliaClient, ALGOLIA_INDICES, NewsSearchRecord } from '@/lib/algolia'
-import { sanityFetch } from '@/sanity/lib/live'
+import { cachedFetch as sanityFetch } from "@/sanity/lib/cached-fetch";
 
 const secret = process.env.SANITY_WEBHOOK_SECRET
 const SEARCH_WEBHOOK_SECRET = process.env.SEARCH_WEBHOOK_SECRET

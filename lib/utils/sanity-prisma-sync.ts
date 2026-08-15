@@ -5,7 +5,7 @@
  * and help maintain referential integrity between the content management system and database.
  */
 
-import { sanityFetch } from '@/sanity/lib/live'
+import { cachedFetch as sanityFetch } from "@/sanity/lib/cached-fetch";
 import { WorkType, ExpertiseArea } from '../../generated/prisma'
 import { groq } from 'next-sanity'
 
