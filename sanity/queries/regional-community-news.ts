@@ -1,5 +1,5 @@
 import { groq } from "next-sanity";
-import { sanityFetch } from "@/sanity/lib/live";
+import { cachedFetch as sanityFetch } from "@/sanity/lib/cached-fetch";
 
 export const REGIONAL_COMMUNITY_NEWS_QUERY = groq`
   *[_type == "newsPost" &&

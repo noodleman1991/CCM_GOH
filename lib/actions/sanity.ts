@@ -1,7 +1,7 @@
 "use server"
 
 import { unstable_cache } from 'next/cache'
-import { sanityFetch } from "@/sanity/lib/live"
+import { cachedFetch as sanityFetch } from "@/sanity/lib/cached-fetch";
 import { onboardingContentQueryWithFallback } from "@/sanity/queries/onboarding-content"
 import { workTypesQuery, expertiseAreasQuery, userManagementOptionsQuery } from "@/sanity/queries/work-types"
 

@@ -372,6 +372,9 @@ importers:
       eslint-config-next:
         specifier: 16.1.1
         version: 16.1.1(@typescript-eslint/parser@8.50.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
+      lexorank:
+        specifier: 1.0.5
+        version: 1.0.5
       playwright-core:
         specifier: ^1.60.0
         version: 1.60.0

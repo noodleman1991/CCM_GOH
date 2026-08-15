@@ -1,4 +1,4 @@
-import { sanityFetch } from "@/sanity/lib/live";
+import { cachedFetch as sanityFetch } from "@/sanity/lib/cached-fetch";
 import { SITE_ANNOUNCEMENT_QUERY } from "@/sanity/queries/site-announcement";
 import { ACTIVE_PROFILE_PROMPTS_QUERY } from "@/sanity/queries/profile-prompt";
 import { PAGE_QUERY, PAGES_SLUGS_QUERY } from "@/sanity/queries/page";

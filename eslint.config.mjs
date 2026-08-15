@@ -13,6 +13,12 @@ export default [
       ".next/**",
       "generated/**",
       "node_modules/**",
+      // .claude/ holds agent worktrees — full repo copies with their own
+      // node_modules, which `node_modules/**` (top-level only) does not cover.
+      // Without this, `eslint .` parses ~54k extra files and dies with a V8
+      // heap OOM. Mirrors the same exclude in vitest.config.ts.
+      ".claude/**",
+      "**/node_modules/**",
       ".playwright-mcp/**",
       "public/**",
       "scripts/**",

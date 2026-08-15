@@ -1,7 +1,7 @@
 import { groq } from "next-sanity";
 import { styledBodyProjection } from "@/sanity/queries/shared/styled-body";
 import { RELATED_CONTENT_PROJECTION } from "@/sanity/queries/grid/grid-case-study";
-import { sanityFetch } from "@/sanity/lib/live";
+import { cachedFetch as sanityFetch } from "@/sanity/lib/cached-fetch";
 
 // Shared projection for a researchOutput card/detail. Mirrors the case-study
 // shape so the existing card/detail components can consume it.

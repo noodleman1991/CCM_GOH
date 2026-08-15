@@ -1,5 +1,5 @@
 import { groq } from "next-sanity";
-import { sanityFetch } from "@/sanity/lib/live";
+import { cachedFetch as sanityFetch } from "@/sanity/lib/cached-fetch";
 
 // Shared projection for global news items (newsPost + externalSource).
 // Mirrors REGIONAL_COMMUNITY_NEWS_BY_SLUG_QUERY minus the community filter,

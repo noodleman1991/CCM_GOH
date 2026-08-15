@@ -13,6 +13,36 @@ const projectRoot = dirname(fileURLToPath(import.meta.url));
 const isDev = process.env.NODE_ENV === 'development';
 const clerkDevDomains = isDev ? ' https://*.clerk.accounts.dev' : '';
 
+// Sanity Studio checks https://sanity-cdn.com/v1/modules/... to see whether a
+// newer `sanity` release exists. That host is not covered by `*.sanity.io`, so
+// under the site CSP the fetch is blocked and logs `Failed to fetch version for
+// package "sanity" ... TypeError: Failed to fetch`. Only /studio needs it, so it
+// is granted there rather than site-wide.
+const SANITY_MODULES_HOST = 'https://sanity-cdn.com';
+
+// One CSP definition for both routes so the two can never drift apart. Browsers
+// intersect multiple CSP headers, so a /studio rule cannot loosen a global one —
+// the site rule below has to exclude /studio via a negative lookahead instead.
+const contentSecurityPolicy = ({ studio = false } = {}) =>
+  [
+    "default-src 'self'",
+    `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.clerk.com https://*.clerk.com https://clerk.connectingclimateminds.org${clerkDevDomains} https://challenges.cloudflare.com https://*.algolianet.com https://plausible.io`,
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' data: blob: https://cdn.sanity.io https://img.youtube.com https://img.clerk.com https://images.clerk.dev https://www.gravatar.com",
+    "font-src 'self' data:",
+    `connect-src 'self' https://*.clerk.com https://clerk.connectingclimateminds.org${clerkDevDomains} https://*.algolia.net https://*.algolianet.com https://plausible.io https://*.sanity.io https://*.r2.cloudflarestorage.com https://*.upstash.io https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://*.ingest.de.sentry.io${studio ? ` ${SANITY_MODULES_HOST}` : ''}`,
+    "frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com https://challenges.cloudflare.com https://*.clerk.com",
+    "media-src 'self' https://cdn.sanity.io",
+    "object-src 'none'",
+    "worker-src 'self' blob:",
+    "base-uri 'self'",
+    "form-action 'self'",
+    // Allow same-origin framing so Sanity Studio's Presentation tool
+    // can embed the site for live preview (modern equivalent of the
+    // X-Frame-Options: SAMEORIGIN above).
+    "frame-ancestors 'self'",
+  ].join('; ');
+
 const nextConfig = {
   // The Arabic homepage's static export can exceed the default 60s under slow
   // network conditions (heavy Sanity content). Raise the per-page generation
@@ -49,26 +79,26 @@ const nextConfig = {
             key: 'Strict-Transport-Security',
             value: 'max-age=63072000; includeSubDomains; preload',
           },
+        ],
+      },
+      {
+        // Everything except /studio. Kept separate from the /studio rule below
+        // because two matching rules emit two CSP headers and the browser
+        // enforces the intersection.
+        source: '/((?!studio(?:/|$)).*)',
+        headers: [
           {
             key: 'Content-Security-Policy',
-            value: [
-              "default-src 'self'",
-              `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.clerk.com https://*.clerk.com https://clerk.connectingclimateminds.org${clerkDevDomains} https://challenges.cloudflare.com https://*.algolianet.com https://plausible.io`,
-              "style-src 'self' 'unsafe-inline'",
-              "img-src 'self' data: blob: https://cdn.sanity.io https://img.youtube.com https://img.clerk.com https://images.clerk.dev https://www.gravatar.com",
-              "font-src 'self' data:",
-              `connect-src 'self' https://*.clerk.com https://clerk.connectingclimateminds.org${clerkDevDomains} https://*.algolia.net https://*.algolianet.com https://plausible.io https://*.sanity.io https://*.r2.cloudflarestorage.com https://*.upstash.io https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://*.ingest.de.sentry.io`,
-              "frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com https://challenges.cloudflare.com https://*.clerk.com",
-              "media-src 'self' https://cdn.sanity.io",
-              "object-src 'none'",
-              "worker-src 'self' blob:",
-              "base-uri 'self'",
-              "form-action 'self'",
-              // Allow same-origin framing so Sanity Studio's Presentation tool
-              // can embed the site for live preview (modern equivalent of the
-              // X-Frame-Options: SAMEORIGIN above).
-              "frame-ancestors 'self'",
-            ].join('; '),
+            value: contentSecurityPolicy(),
+          },
+        ],
+      },
+      {
+        source: '/studio/:path*',
+        headers: [
+          {
+            key: 'Content-Security-Policy',
+            value: contentSecurityPolicy({ studio: true }),
           },
         ],
       },
