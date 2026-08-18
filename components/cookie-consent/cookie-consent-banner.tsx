@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -21,28 +21,26 @@ export function CookieConsentBanner() {
     isPreferencesOpen,
     closePreferences,
   } = useCookieConsent()
-  const [showInitialBanner, setShowInitialBanner] = useState(false)
   const [functional, setFunctional] = useState(false)
+  const [analytics, setAnalytics] = useState(true)
 
-  // Sync functional toggle with current consent when preferences open
-  useEffect(() => {
+  // Sync toggles with current consent when the preferences panel opens —
+  // adjust-state-during-render (no effect, no cascading re-render).
+  const [prevPreferencesOpen, setPrevPreferencesOpen] = useState(false)
+  if (isPreferencesOpen !== prevPreferencesOpen) {
+    setPrevPreferencesOpen(isPreferencesOpen)
     if (isPreferencesOpen && consent) {
       setFunctional(consent.functional)
+      setAnalytics(consent.analytics)
     }
-  }, [isPreferencesOpen, consent])
+  }
 
-  // Show initial banner only when user hasn't consented yet. It stays until the
-  // user makes a choice (Accept / Reject / save preferences) — no auto-dismiss.
-  useEffect(() => {
-    if (!hasConsented) {
-      setShowInitialBanner(true)
-    } else {
-      setShowInitialBanner(false)
-    }
-  }, [hasConsented])
+  // Initial banner shows until the user makes a choice (Accept / Reject /
+  // save preferences) — derived, no auto-dismiss.
+  const showInitialBanner = !hasConsented
 
   const handleSavePreferences = () => {
-    updateConsent({ functional, analytics: true })
+    updateConsent({ functional, analytics })
   }
 
   // Preferences panel (shared between initial banner and reopened state)
@@ -78,7 +76,7 @@ export function CookieConsentBanner() {
             <p className="text-xs text-muted-foreground">{t('categories.analytics.description')}</p>
           </div>
         </div>
-        <Switch checked disabled className="data-[state=checked]:bg-ccm-sea opacity-50" />
+        <Switch checked={analytics} onCheckedChange={setAnalytics} />
       </div>
 
       <Button onClick={handleSavePreferences} className="w-full">
