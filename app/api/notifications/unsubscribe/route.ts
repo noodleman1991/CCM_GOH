@@ -35,3 +35,9 @@ export async function GET(req: NextRequest) {
     { headers: { "Content-Type": "text/html" } }
   );
 }
+
+// RFC 8058 one-click unsubscribe: mailbox providers POST to the
+// List-Unsubscribe URL with no body semantics we need — same behavior as GET.
+export async function POST(req: NextRequest) {
+  return GET(req);
+}

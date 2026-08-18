@@ -204,6 +204,7 @@
     "emailReply": "Email me when someone replies",
     "emailMention": "Email me when someone mentions me",
     "emailMessage": "Email me about new messages",
+    "emailWeeklyDigest": "Send me the weekly summary email",
     "messaging": "Messaging",
     "whoCanMessage": "Who can message me",
     "everyone": "Everyone",

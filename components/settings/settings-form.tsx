@@ -79,6 +79,7 @@ export function SettingsForm({ initial, blocked }: { initial: UserSettings; bloc
               ["emailOnReply", t("emailReply")],
               ["emailOnMention", t("emailMention")],
               ["emailOnMessage", t("emailMessage")],
+              ["emailWeeklyDigest", t("emailWeeklyDigest")],
             ] as const).map(([key, label]) => (
               <div key={key} className="flex items-center justify-between gap-4">
                 <Label htmlFor={key}>{label}</Label>
@@ -150,6 +151,7 @@ export function SettingsForm({ initial, blocked }: { initial: UserSettings; bloc
           </CardHeader>
           <CardContent>
             <Button asChild variant="outline">
+              {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- API file download, not a page navigation */}
               <a href="/api/account/export">{t("downloadData")}</a>
             </Button>
           </CardContent>

@@ -33,6 +33,43 @@ export async function GET() {
     }),
   ]);
 
+  // Second batch (Promise.all is capped by connection-pool friendliness).
+  const [messages, notifications, notificationPreference, reactions, follows, rsvps, joinRequests, contactRequests] =
+    await Promise.all([
+      prisma.message.findMany({
+        where: { senderId: userId },
+        select: { id: true, conversationId: true, body: true, createdAt: true },
+      }),
+      prisma.notification.findMany({
+        where: { recipientId: userId },
+        select: { type: true, entityType: true, entityId: true, snippet: true, readAt: true, createdAt: true },
+      }),
+      prisma.notificationPreference.findUnique({
+        where: { userId },
+        select: { emailOnReply: true, emailOnMention: true, emailOnMessage: true, emailWeeklyDigest: true },
+      }),
+      prisma.reaction.findMany({
+        where: { userId },
+        select: { commentId: true, emoji: true, createdAt: true },
+      }),
+      prisma.follow.findMany({
+        where: { userId },
+        select: { targetType: true, targetId: true, createdAt: true },
+      }),
+      prisma.rsvp.findMany({
+        where: { userId },
+        select: { eventId: true, status: true, createdAt: true },
+      }),
+      prisma.joinRequest.findMany({
+        where: { requesterId: userId },
+        select: { collaborationId: true, status: true, createdAt: true },
+      }),
+      prisma.contactRequest.findMany({
+        where: { requesterId: userId },
+        select: { recipientId: true, status: true, createdAt: true },
+      }),
+    ]);
+
   const payload = {
     exportedAt: new Date().toISOString(),
     user,
@@ -42,6 +79,14 @@ export async function GET() {
     collaborationMemberships: memberships,
     downloadHistory: downloads, // IP/user-agent are not stored (privacy)
     conversations: conversations.map((c) => ({ conversationId: c.conversationId, joinedAt: c.joinedAt })),
+    messagesSent: messages,
+    notifications,
+    notificationPreference,
+    reactions,
+    follows,
+    eventRsvps: rsvps,
+    joinRequests,
+    contactRequests,
   };
 
   return new NextResponse(JSON.stringify(payload, null, 2), {

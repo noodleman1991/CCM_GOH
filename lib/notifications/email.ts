@@ -100,7 +100,19 @@ export async function maybeSendNotificationEmail(params: {
 
   try {
     const resend = new Resend(process.env.RESEND_API_KEY);
-    await resend.emails.send({ from: FROM, to: user.email, subject: copy.subject, html, text });
+    await resend.emails.send({
+      from: FROM,
+      to: user.email,
+      subject: copy.subject,
+      html,
+      text,
+      headers: {
+        // RFC 8058 one-click unsubscribe — mailbox providers surface their own
+        // unsubscribe control from these, improving deliverability.
+        "List-Unsubscribe": `<${unsubUrl}>`,
+        "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+      },
+    });
   } catch {
     // best-effort
   }
@@ -164,7 +176,17 @@ export async function sendWeeklyDigestEmail(params: {
 
   try {
     const resend = new Resend(process.env.RESEND_API_KEY);
-    await resend.emails.send({ from: FROM, to: params.email, subject: d.subject, html, text });
+    await resend.emails.send({
+      from: FROM,
+      to: params.email,
+      subject: d.subject,
+      html,
+      text,
+      headers: {
+        "List-Unsubscribe": `<${unsubUrl}>`,
+        "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+      },
+    });
     return true;
   } catch {
     return false;

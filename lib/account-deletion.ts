@@ -47,17 +47,21 @@ export async function eraseUserSanityContent(clerkUserId: string): Promise<{
     { uid: clerkUserId }
   )
 
-  // Non-approved submissions: delete (private, in-review).
+  // Non-approved submissions across every submittable doc type: delete
+  // (private, in-review). The same retain-when-published policy applies to all
+  // of them — livedExperience/researchOutput/event carry submittedBy exactly
+  // like caseStudy does.
+  const SUBMITTABLE_TYPES = ["caseStudy", "livedExperience", "researchOutput", "event"]
   const submissionIds: string[] = await writeClient.fetch(
-    `*[_type == "caseStudy" && submittedBy == $uid && status != "approved"]._id`,
-    { uid: clerkUserId }
+    `*[_type in $types && submittedBy == $uid && status != "approved"]._id`,
+    { uid: clerkUserId, types: SUBMITTABLE_TYPES }
   )
 
-  // Approved (published) case studies: retained as-is — counted only for the
+  // Approved (published) docs: retained as-is — counted only for the
   // audit trail / so the UI can tell the user to email the team about them.
   const publishedCount: number = await writeClient.fetch(
-    `count(*[_type == "caseStudy" && submittedBy == $uid && status == "approved"])`,
-    { uid: clerkUserId }
+    `count(*[_type in $types && submittedBy == $uid && status == "approved"])`,
+    { uid: clerkUserId, types: SUBMITTABLE_TYPES }
   )
 
   let tx = writeClient.transaction()
@@ -132,6 +136,22 @@ async function sweepUserR2Files(userId: string): Promise<void> {
   }
 }
 
+/** Remove the user's contact from the Resend newsletter audience. The
+ *  subscription was keyed by email, so it must go before the Prisma row
+ *  (our last record of that email) is deleted. Best-effort: the contact may
+ *  never have subscribed. */
+async function eraseFromResendAudience(email: string | null | undefined): Promise<void> {
+  const apiKey = process.env.RESEND_API_KEY
+  const audienceId = process.env.RESEND_AUDIENCE_ID
+  if (!apiKey || !audienceId || !email) return
+  try {
+    const { Resend } = await import("resend")
+    await new Resend(apiKey).contacts.remove({ email, audienceId })
+  } catch (err) {
+    console.warn(`Resend contact erasure failed:`, err)
+  }
+}
+
 /** Remove the user's record from the Algolia search index. */
 async function eraseUserFromAlgolia(userId: string): Promise<void> {
   if (!algoliaClient) return
@@ -143,7 +163,14 @@ async function eraseUserFromAlgolia(userId: string): Promise<void> {
 }
 
 export async function deleteUserData(clerkUserId: string): Promise<DeletionResult> {
+  // Grab the email before anything deletes the row that holds it.
+  const user = await prisma.user
+    .findUnique({ where: { id: clerkUserId }, select: { email: true } })
+    .catch(() => null)
+
   const sanity = await eraseUserSanityContent(clerkUserId)
+
+  await eraseFromResendAudience(user?.email)
 
   // Protect multi-person workspaces before the user-delete cascade runs.
   try {
@@ -171,9 +198,9 @@ export async function deleteUserData(clerkUserId: string): Promise<DeletionResul
   try {
     await prisma.user.delete({ where: { id: clerkUserId } })
     prismaDeleted = true
-  } catch (err: any) {
+  } catch (err) {
     // P2025 = record not found; anything else is a real failure.
-    if (err?.code !== "P2025") throw err
+    if ((err as { code?: string })?.code !== "P2025") throw err
   }
 
   // Sweep conversations left with no participants (both sides deleted).

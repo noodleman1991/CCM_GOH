@@ -8,6 +8,7 @@ export type UserSettings = {
   emailOnReply: boolean;
   emailOnMention: boolean;
   emailOnMessage: boolean;
+  emailWeeklyDigest: boolean;
   allowMessagesFrom: "EVERYONE" | "NOBODY";
 };
 
@@ -27,6 +28,7 @@ export async function getUserSettings(): Promise<UserSettings | null> {
     emailOnReply: pref.emailOnReply,
     emailOnMention: pref.emailOnMention,
     emailOnMessage: pref.emailOnMessage,
+    emailWeeklyDigest: pref.emailWeeklyDigest,
     allowMessagesFrom: user?.allowMessagesFrom ?? "EVERYONE",
   };
 }
@@ -35,6 +37,7 @@ const schema = z.object({
   emailOnReply: z.boolean(),
   emailOnMention: z.boolean(),
   emailOnMessage: z.boolean(),
+  emailWeeklyDigest: z.boolean(),
   allowMessagesFrom: z.enum(["EVERYONE", "NOBODY"]),
 });
 
@@ -52,11 +55,13 @@ export async function saveUserSettings(input: UserSettings): Promise<{ ok: boole
         emailOnReply: parsed.data.emailOnReply,
         emailOnMention: parsed.data.emailOnMention,
         emailOnMessage: parsed.data.emailOnMessage,
+        emailWeeklyDigest: parsed.data.emailWeeklyDigest,
       },
       update: {
         emailOnReply: parsed.data.emailOnReply,
         emailOnMention: parsed.data.emailOnMention,
         emailOnMessage: parsed.data.emailOnMessage,
+        emailWeeklyDigest: parsed.data.emailWeeklyDigest,
       },
     }),
     prisma.user.update({

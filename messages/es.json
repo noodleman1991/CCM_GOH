@@ -299,6 +299,7 @@
     "emailReply": "Avísame por correo cuando alguien responda",
     "emailMention": "Avísame por correo cuando me mencionen",
     "emailMessage": "Avísame por correo sobre nuevos mensajes",
+    "emailWeeklyDigest": "Enviarme el resumen semanal por correo",
     "messaging": "Mensajería",
     "whoCanMessage": "Quién puede enviarme mensajes",
     "everyone": "Todos",

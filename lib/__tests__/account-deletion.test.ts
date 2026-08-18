@@ -9,7 +9,7 @@ const transactionMock = vi.fn()
 
 vi.mock('@/sanity/lib/write-client', () => ({
   writeClient: {
-    fetch: (...args: any[]) => fetchMock(...args),
+    fetch: (...args: unknown[]) => fetchMock(...args),
     transaction: () => transactionMock(),
   },
 }))
@@ -17,7 +17,11 @@ vi.mock('@/sanity/lib/write-client', () => ({
 const prismaUserDelete = vi.fn()
 vi.mock('@/lib/prisma', () => ({
   prisma: {
-    user: { delete: (...a: any[]) => prismaUserDelete(...a) },
+    user: {
+      delete: (...a: unknown[]) => prismaUserDelete(...a),
+      findUnique: vi.fn(async () => ({ email: 'user@example.com' })),
+    },
+    notificationPreference: { findUnique: vi.fn(async () => null) },
     // Collaboration sole-owner handling + R2 file sweep + orphan-conversation sweep.
     collaborationMember: { findMany: vi.fn(async () => []), count: vi.fn(async () => 0), update: vi.fn() },
     collaboration: { update: vi.fn() },
@@ -40,7 +44,7 @@ import { eraseUserSanityContent, deleteUserData } from '@/lib/account-deletion'
 
 function makeChainableTx() {
   // tx.delete(id) and tx.patch(id, fn) return the tx for chaining; commit resolves.
-  const tx: any = {
+  const tx: { delete: ReturnType<typeof vi.fn>; patch: ReturnType<typeof vi.fn>; commit: typeof commitMock } = {
     delete: vi.fn(() => tx),
     patch: vi.fn(() => tx),
     commit: commitMock,
