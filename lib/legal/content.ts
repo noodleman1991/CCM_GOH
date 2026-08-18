@@ -78,10 +78,51 @@ export const PRIVACY: Record<Locale, LegalDoc> = {
     intro:
       "Connecting Climate Minds es una comunidad para personas que trabajan en la intersección del cambio climático y la salud mental. Recopilamos los datos mínimos necesarios, no vendemos ni compartimos tus datos con fines publicitarios y no usamos rastreo invasivo.",
     sections: [
-      { heading: "Qué recopilamos", body: ["Los datos de tu cuenta y perfil, el contenido que creas y los datos operativos mínimos. No almacenamos direcciones IP para análisis."] },
-      { heading: "Análisis y rastreo", body: ["Usamos Plausible Analytics, sin cookies y sin datos personales. Solo usamos cookies esenciales."] },
-      { heading: "Tus derechos", body: ["Puedes acceder, descargar, corregir y eliminar tus datos en cualquier momento. Para cualquier solicitud, escribe a " + CONTACT + "."] },
-      { heading: "Contacto", body: [CONTACT] },
+      {
+        heading: "Qué recopilamos",
+        body: [
+          "Datos de cuenta que proporcionas: nombre, correo electrónico, nombre de usuario y lo que decidas añadir a tu perfil (biografía, ubicación, datos de trabajo, enlaces).",
+          "Contenido que creas: estudios de caso, experiencias vividas, comentarios, archivos de espacios de trabajo y mensajes.",
+          "Datos operativos necesarios para prestar el servicio: sesiones de autenticación (mediante Clerk) y recuentos agregados de descargas. No almacenamos direcciones IP ni huellas de dispositivo con fines analíticos.",
+        ],
+      },
+      {
+        heading: "Análisis y rastreo",
+        body: [
+          "Usamos Plausible Analytics, que no utiliza cookies ni recopila datos personales: sin rastreo entre sitios ni perfiles publicitarios. No hay píxeles de publicidad ni de redes sociales de terceros.",
+          "Solo establecemos cookies esenciales (tu sesión, el idioma y tu elección de consentimiento de cookies).",
+        ],
+      },
+      {
+        heading: "Cómo usamos tus datos",
+        body: [
+          "Para operar el Hub: mostrar tu perfil y contenido, entregar comentarios y mensajes, y enviar notificaciones del servicio que no hayas desactivado.",
+          "Nos basamos en tu consentimiento para los correos de notificación opcionales (que puedes desactivar en cualquier momento) y en el interés legítimo para la operación esencial del servicio.",
+        ],
+      },
+      {
+        heading: "Quién procesa tus datos",
+        body: [
+          "Usamos encargados de confianza únicamente para prestar el servicio: Clerk (autenticación), Sanity (contenido), un proveedor de base de datos (Neon/Postgres), Cloudflare R2 (archivos), Algolia (búsqueda), Resend (correo) y Vercel (alojamiento). Cada uno trata los datos solo según nuestras instrucciones.",
+        ],
+      },
+      {
+        heading: "Tus derechos",
+        body: [
+          "Puedes acceder a todos tus datos y descargarlos en cualquier momento (Cuenta → Exportar), corregirlos (tu perfil es editable) y eliminar tu cuenta, lo que borra tus datos personales, comentarios, mensajes, archivos y tu registro de búsqueda. Los estudios de caso publicados se conservan como conocimiento comunitario; contáctanos para solicitar su retirada.",
+          "Puedes oponerte al tratamiento, restringirlo o retirar el consentimiento para los correos. Para ejercer cualquier derecho, usa las herramientas de la aplicación o escribe a " + CONTACT + ".",
+        ],
+      },
+      {
+        heading: "Conservación",
+        body: [
+          "Conservamos tus datos mientras tu cuenta está activa. Al eliminarla se borran con prontitud. Pueden conservarse recuentos agregados no identificativos.",
+        ],
+      },
+      {
+        heading: "Contacto",
+        body: ["Preguntas sobre tus datos: " + CONTACT + "."],
+      },
     ],
   },
   fr: {
@@ -90,10 +131,51 @@ export const PRIVACY: Record<Locale, LegalDoc> = {
     intro:
       "Connecting Climate Minds est une communauté pour les personnes travaillant à l'intersection du changement climatique et de la santé mentale. Nous collectons le minimum de données nécessaires, ne vendons ni ne partageons vos données à des fins publicitaires et n'utilisons aucun suivi invasif.",
     sections: [
-      { heading: "Ce que nous collectons", body: ["Les informations de votre compte et profil, le contenu que vous créez et des données opérationnelles minimales. Nous ne stockons pas d'adresses IP à des fins d'analyse."] },
-      { heading: "Analyse et suivi", body: ["Nous utilisons Plausible Analytics, sans cookies et sans données personnelles. Nous n'utilisons que des cookies essentiels."] },
-      { heading: "Vos droits", body: ["Vous pouvez accéder, télécharger, corriger et supprimer vos données à tout moment. Pour toute demande, écrivez à " + CONTACT + "."] },
-      { heading: "Contact", body: [CONTACT] },
+      {
+        heading: "Ce que nous collectons",
+        body: [
+          "Les informations de compte que vous fournissez : nom, e-mail, nom d'utilisateur et ce que vous choisissez d'ajouter à votre profil (bio, localisation, informations professionnelles, liens).",
+          "Le contenu que vous créez : études de cas, expériences vécues, commentaires, fichiers d'espaces de travail et messages.",
+          "Les données opérationnelles nécessaires au service : sessions d'authentification (via Clerk) et compteurs de téléchargements agrégés. Nous ne stockons ni adresses IP ni empreintes d'appareil à des fins d'analyse.",
+        ],
+      },
+      {
+        heading: "Analyse et suivi",
+        body: [
+          "Nous utilisons Plausible Analytics, sans cookies et sans collecte de données personnelles : pas de suivi inter-sites, pas de profils publicitaires. Aucun pixel publicitaire ou de réseau social tiers.",
+          "Nous ne déposons que des cookies essentiels (votre session, la langue et votre choix de consentement aux cookies).",
+        ],
+      },
+      {
+        heading: "Comment nous utilisons vos données",
+        body: [
+          "Pour faire fonctionner le Hub : afficher votre profil et votre contenu, acheminer commentaires et messages, et envoyer les notifications de service que vous n'avez pas désactivées.",
+          "Nous nous appuyons sur votre consentement pour les e-mails de notification facultatifs (désactivables à tout moment) et sur l'intérêt légitime pour le fonctionnement essentiel du service.",
+        ],
+      },
+      {
+        heading: "Qui traite vos données",
+        body: [
+          "Nous faisons appel à des sous-traitants de confiance uniquement pour faire fonctionner le service : Clerk (authentification), Sanity (contenu), un fournisseur de base de données (Neon/Postgres), Cloudflare R2 (fichiers), Algolia (recherche), Resend (e-mail) et Vercel (hébergement). Chacun ne traite les données que sur nos instructions.",
+        ],
+      },
+      {
+        heading: "Vos droits",
+        body: [
+          "Vous pouvez accéder à toutes vos données et les télécharger à tout moment (Compte → Exporter), les corriger (votre profil est modifiable) et supprimer votre compte — ce qui efface vos données personnelles, commentaires, messages, fichiers et votre fiche de recherche. Les études de cas publiées sont conservées comme savoir communautaire ; contactez-nous pour en demander le retrait.",
+          "Vous pouvez vous opposer au traitement, le restreindre ou retirer votre consentement aux e-mails. Pour exercer un droit, utilisez les outils de l'application ou écrivez à " + CONTACT + ".",
+        ],
+      },
+      {
+        heading: "Conservation",
+        body: [
+          "Nous conservons vos données tant que votre compte est actif. À la suppression, elles sont effacées rapidement. Des compteurs agrégés non identifiants peuvent être conservés.",
+        ],
+      },
+      {
+        heading: "Contact",
+        body: ["Questions sur vos données : " + CONTACT + "."],
+      },
     ],
   },
   ar: {
@@ -102,10 +184,51 @@ export const PRIVACY: Record<Locale, LegalDoc> = {
     intro:
       "Connecting Climate Minds مجتمع للأشخاص العاملين عند تقاطع تغيّر المناخ والصحة النفسية. نجمع الحد الأدنى من البيانات اللازمة، ولا نبيع بياناتك أو نشاركها لأغراض إعلانية، ولا نستخدم تتبعًا تطفليًا.",
     sections: [
-      { heading: "ما الذي نجمعه", body: ["بيانات حسابك وملفك الشخصي، والمحتوى الذي تنشئه، والبيانات التشغيلية الدنيا. لا نخزّن عناوين IP لأغراض التحليل."] },
-      { heading: "التحليلات والتتبع", body: ["نستخدم Plausible Analytics بدون ملفات تعريف ارتباط وبدون بيانات شخصية. نستخدم فقط ملفات تعريف الارتباط الأساسية."] },
-      { heading: "حقوقك", body: ["يمكنك الوصول إلى بياناتك وتنزيلها وتصحيحها وحذفها في أي وقت. لأي طلب راسلنا على " + CONTACT + "."] },
-      { heading: "التواصل", body: [CONTACT] },
+      {
+        heading: "ما الذي نجمعه",
+        body: [
+          "بيانات الحساب التي تقدّمها: الاسم والبريد الإلكتروني واسم المستخدم وما تختار إضافته إلى ملفك الشخصي (نبذة، الموقع، تفاصيل العمل، روابط).",
+          "المحتوى الذي تنشئه: دراسات الحالة والتجارب المعيشة والتعليقات وملفات مساحات العمل والرسائل.",
+          "البيانات التشغيلية اللازمة لتقديم الخدمة: جلسات تسجيل الدخول (عبر Clerk) وأعداد التنزيلات المجمّعة. لا نخزّن عناوين IP أو بصمات الأجهزة لأغراض التحليل.",
+        ],
+      },
+      {
+        heading: "التحليلات والتتبع",
+        body: [
+          "نستخدم Plausible Analytics، وهي خدمة بلا ملفات تعريف ارتباط ولا تجمع بيانات شخصية — لا تتبّع بين المواقع ولا ملفات تعريف إعلانية. لا توجد وحدات بكسل إعلانية أو لتتبع الشبكات الاجتماعية من أطراف ثالثة.",
+          "نضع ملفات تعريف الارتباط الأساسية فقط (جلسة تسجيل دخولك، واللغة، واختيارك بشأن ملفات تعريف الارتباط).",
+        ],
+      },
+      {
+        heading: "كيف نستخدم بياناتك",
+        body: [
+          "لتشغيل المنصة: عرض ملفك الشخصي ومحتواك، وإيصال التعليقات والرسائل، وإرسال إشعارات الخدمة التي لم تقم بإيقافها.",
+          "نستند إلى موافقتك في رسائل الإشعارات الاختيارية (ويمكنك إيقافها في أي وقت)، وإلى المصلحة المشروعة في التشغيل الأساسي للخدمة.",
+        ],
+      },
+      {
+        heading: "من يعالج بياناتك",
+        body: [
+          "نستعين بمعالجين موثوقين فقط لتشغيل الخدمة: Clerk (تسجيل الدخول) وSanity (المحتوى) ومزوّد قاعدة بيانات (Neon/Postgres) وCloudflare R2 (الملفات) وAlgolia (البحث) وResend (البريد) وVercel (الاستضافة). ويعالج كل منهم البيانات وفق تعليماتنا فقط.",
+        ],
+      },
+      {
+        heading: "حقوقك",
+        body: [
+          "يمكنك الوصول إلى جميع بياناتك وتنزيلها في أي وقت (الحساب ← تصدير)، وتصحيحها (ملفك الشخصي قابل للتعديل)، وحذف حسابك — وهو ما يمحو بياناتك الشخصية وتعليقاتك ورسائلك وملفاتك وسجلّك في البحث. تُحتفظ دراسات الحالة المنشورة كمعرفة مجتمعية؛ راسلنا لطلب إزالتها.",
+          "يمكنك الاعتراض على المعالجة أو تقييدها أو سحب موافقتك على الرسائل. لممارسة أي حق، استخدم أدوات التطبيق أو راسلنا على " + CONTACT + ".",
+        ],
+      },
+      {
+        heading: "الاحتفاظ بالبيانات",
+        body: [
+          "نحتفظ ببياناتك ما دام حسابك نشطًا. وعند الحذف تُمحى بياناتك سريعًا. وقد نحتفظ بأعداد مجمّعة لا تحدد الهوية.",
+        ],
+      },
+      {
+        heading: "التواصل",
+        body: ["للأسئلة حول بياناتك: " + CONTACT + "."],
+      },
     ],
   },
 };
@@ -131,9 +254,13 @@ export const TERMS: Record<Locale, LegalDoc> = {
     updated: UPDATED,
     intro: "Estos términos rigen tu uso de Connecting Climate Minds y están redactados para ser justos contigo: conservas la propiedad de lo que creas y solo pedimos lo necesario para gestionar la comunidad.",
     sections: [
-      { heading: "Tu contenido", body: ["Conservas la propiedad de tu contenido y nos otorgas una licencia limitada para mostrarlo dentro del Hub."] },
-      { heading: "Conducta", body: ["Es un espacio respetuoso y orientado a la investigación. No se permite el acoso ni el contenido dañino."] },
-      { heading: "Contacto", body: [CONTACT] },
+      { heading: "Tu cuenta", body: ["Eres responsable de tu cuenta y de mantenerla segura. Debes poder usar el servicio conforme a la ley aplicable."] },
+      { heading: "Tu contenido", body: ["Conservas la propiedad del contenido que creas. Al publicarlo, nos otorgas una licencia limitada para mostrarlo y distribuirlo dentro del Hub para que la comunidad pueda verlo. Puedes eliminar tu contenido; los estudios de caso publicados pueden conservarse como conocimiento comunitario (contáctanos para su retirada)."] },
+      { heading: "Conducta en la comunidad", body: ["Este es un espacio para una comunidad vulnerable y orientada a la investigación. Sé respetuoso/a. No se permiten el acoso, el contenido de odio ni las conductas dañinas, y pueden ser retirados. Los comentarios pueden moderarse; el contenido claramente dañino se bloquea."] },
+      { heading: "Privacidad", body: ["Tu uso también se rige por nuestra Política de Privacidad. No te rastreamos de forma invasiva y te damos control sobre tus datos."] },
+      { heading: "Responsabilidad", body: ["El servicio se ofrece tal cual. En la medida permitida por la ley, limitamos nuestra responsabilidad, pero nada de lo aquí escrito elimina los derechos que te asisten como consumidor/a o titular de datos."] },
+      { heading: "Cambios", body: ["Podemos actualizar estos términos; indicaremos la fecha de la última versión. El uso continuado implica la aceptación de los términos vigentes."] },
+      { heading: "Contacto", body: ["Preguntas: " + CONTACT + "."] },
     ],
   },
   fr: {
@@ -141,9 +268,13 @@ export const TERMS: Record<Locale, LegalDoc> = {
     updated: UPDATED,
     intro: "Ces conditions régissent votre utilisation de Connecting Climate Minds et sont rédigées pour être équitables : vous conservez la propriété de ce que vous créez et nous ne demandons que le nécessaire.",
     sections: [
-      { heading: "Votre contenu", body: ["Vous conservez la propriété de votre contenu et nous accordez une licence limitée pour l'afficher au sein du Hub."] },
-      { heading: "Conduite", body: ["C'est un espace respectueux et axé sur la recherche. Le harcèlement et les contenus nuisibles ne sont pas autorisés."] },
-      { heading: "Contact", body: [CONTACT] },
+      { heading: "Votre compte", body: ["Vous êtes responsable de votre compte et de sa sécurité. Vous devez être en droit d'utiliser le service selon la loi applicable."] },
+      { heading: "Votre contenu", body: ["Vous conservez la propriété du contenu que vous créez. En le publiant, vous nous accordez une licence limitée pour l'afficher et le diffuser au sein du Hub afin que la communauté puisse le voir. Vous pouvez supprimer votre contenu ; les études de cas publiées peuvent être conservées comme savoir communautaire (contactez-nous pour leur retrait)."] },
+      { heading: "Conduite dans la communauté", body: ["C'est un espace destiné à une communauté vulnérable et axée sur la recherche. Soyez respectueux·se. Le harcèlement, les contenus haineux et les comportements nuisibles sont interdits et peuvent être retirés. Les commentaires peuvent être modérés ; les contenus clairement nuisibles sont bloqués."] },
+      { heading: "Confidentialité", body: ["Votre utilisation est également régie par notre Politique de confidentialité. Nous ne vous suivons pas de manière invasive et vous gardez le contrôle de vos données."] },
+      { heading: "Responsabilité", body: ["Le service est fourni tel quel. Dans la mesure permise par la loi, nous limitons notre responsabilité — mais rien ici ne supprime vos droits de consommateur·rice ou de personne concernée."] },
+      { heading: "Modifications", body: ["Nous pouvons mettre à jour ces conditions ; nous indiquerons la date de la dernière version. La poursuite de l'utilisation vaut acceptation des conditions en vigueur."] },
+      { heading: "Contact", body: ["Questions : " + CONTACT + "."] },
     ],
   },
   ar: {
@@ -151,9 +282,13 @@ export const TERMS: Record<Locale, LegalDoc> = {
     updated: UPDATED,
     intro: "تحكم هذه الشروط استخدامك لـ Connecting Climate Minds، وقد صيغت لتكون منصفة لك: تحتفظ بملكية ما تنشئه، ونطلب فقط ما يلزم لإدارة المجتمع.",
     sections: [
-      { heading: "محتواك", body: ["تحتفظ بملكية محتواك وتمنحنا ترخيصًا محدودًا لعرضه داخل المنصة."] },
-      { heading: "السلوك", body: ["هذه مساحة محترمة وموجهة نحو البحث. لا يُسمح بالمضايقة أو المحتوى الضار."] },
-      { heading: "التواصل", body: [CONTACT] },
+      { heading: "حسابك", body: ["أنت مسؤول عن حسابك وعن الحفاظ على أمانه. ويجب أن يكون استخدامك للخدمة جائزًا بموجب القانون المعمول به."] },
+      { heading: "محتواك", body: ["تحتفظ بملكية المحتوى الذي تنشئه. وبنشره تمنحنا ترخيصًا محدودًا لعرضه وتوزيعه داخل المنصة ليراه المجتمع. يمكنك حذف محتواك؛ وقد تُحتفظ دراسات الحالة المنشورة كمعرفة مجتمعية (راسلنا لطلب الإزالة)."] },
+      { heading: "السلوك في المجتمع", body: ["هذه مساحة لمجتمع بحثي قد يضم أشخاصًا في أوضاع هشة. كن محترمًا. لا يُسمح بالمضايقة أو المحتوى الكاره أو السلوك الضار، وقد تتم إزالته. قد تخضع التعليقات للمراجعة؛ ويُحجب المحتوى الضار بوضوح."] },
+      { heading: "الخصوصية", body: ["يخضع استخدامك أيضًا لسياسة الخصوصية الخاصة بنا. لا نتتبعك بشكل تطفلي ونمنحك التحكم في بياناتك."] },
+      { heading: "المسؤولية", body: ["تُقدَّم الخدمة كما هي. وفي الحدود التي يسمح بها القانون نحدّ من مسؤوليتنا — لكن لا شيء هنا يلغي حقوقك كمستهلك أو كصاحب بيانات."] },
+      { heading: "التغييرات", body: ["قد نحدّث هذه الشروط؛ وسنبيّن تاريخ أحدث نسخة. استمرار الاستخدام يعني قبول الشروط السارية."] },
+      { heading: "التواصل", body: ["للأسئلة: " + CONTACT + "."] },
     ],
   },
 };
