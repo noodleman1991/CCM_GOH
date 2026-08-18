@@ -82,6 +82,7 @@ const isProduction = process.env.NEXT_PUBLIC_SITE_ENV === "production";
 
 export const metadata: Metadata = {
     metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL!),
+    manifest: "/site.webmanifest",
     title: {
         template: "%s | Connecting Climate Minds",
         default: "Hub | Connecting Climate Minds",

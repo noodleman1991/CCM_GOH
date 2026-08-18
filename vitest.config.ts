@@ -3,10 +3,12 @@ import { defineConfig, defaultExclude } from "vitest/config";
 
 export default defineConfig({
   test: {
+    // Tests are node-environment by default (the suite is lib-heavy; no jsdom).
+    environment: "node",
     // .claude/ holds agent worktrees (full repo copies incl. their own
     // node_modules); without this exclude `vitest run` sweeps thousands of
-    // dependency test files.
-    exclude: [...defaultExclude, "**/.claude/**"],
+    // dependency test files. generated/ and scripts/ are excluded likewise.
+    exclude: [...defaultExclude, "**/.claude/**", "generated/**", "scripts/**"],
   },
   resolve: {
     // Mirrors tsconfig `"@/*": ["./*"]` (a config file suppresses Vitest's
