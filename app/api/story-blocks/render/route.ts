@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { renderStoryBlock } from "@/lib/story-blocks/render";
+import { rateLimitRequest } from "@/lib/rate-limit-route";
 
 /**
  * POST /api/story-blocks/render (Task E8)
@@ -24,6 +25,9 @@ import { renderStoryBlock } from "@/lib/story-blocks/render";
  * called from the same editor surfaces (case-study form + workspace docs).
  */
 export async function POST(request: NextRequest) {
+  const limited = await rateLimitRequest(request, "story-block:render", { limit: 60, windowSeconds: 60 });
+  if (limited) return limited;
+
   const { userId } = await auth();
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

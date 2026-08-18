@@ -8,6 +8,7 @@ import {
   RO_DOC_MIME_TYPES,
 } from "@/lib/validation/research-output";
 import { addOutput } from "@/lib/actions/workspace-outputs";
+import { rateLimitRequest } from "@/lib/rate-limit-route";
 
 /**
  * Member/project submission of a research output (report / toolkit / dataset
@@ -21,6 +22,9 @@ import { addOutput } from "@/lib/actions/workspace-outputs";
  * page already renders.
  */
 export async function POST(request: NextRequest) {
+  const limited = await rateLimitRequest(request, "research-output:submit", { limit: 5, windowSeconds: 600 });
+  if (limited) return limited;
+
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 

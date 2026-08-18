@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { writeClient } from "@/sanity/lib/write-client";
 import { authorizeCollab } from "@/lib/collaboration/service";
+import { rateLimitRequest } from "@/lib/rate-limit-route";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB — same cap as the case-study featured image.
 const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
@@ -22,6 +23,9 @@ const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif
  * workspace, gating it to members who can already edit docs.
  */
 export async function POST(request: NextRequest) {
+  const limited = await rateLimitRequest(request, "upload:image", { limit: 30, windowSeconds: 600 });
+  if (limited) return limited;
+
   const { userId } = await auth();
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

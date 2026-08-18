@@ -9,6 +9,7 @@ import type {
   UserProfileUpdateData,
   LocalizedQueryOptions
 } from "@/types/prisma"
+import { rateLimitRequest } from "@/lib/rate-limit-route";
 
 const ProfileUpdateSchema = z.object({
     // Clerk-managed fields (read-only from UI, sync only)
@@ -198,7 +199,7 @@ export async function GET(request: NextRequest) {
         // Recent work is already included in getUserById result (no duplicate query needed)
         // Use the recentWork from result.data instead of fetching again
         // Type assertion: transformToLocalizedUser includes relations via spread
-        const recentWork = (result.data as any).recentWork || []
+        const recentWork = (result.data as { recentWork?: unknown[] }).recentWork || []
 
         // Return data at root level (matching working pattern)
         return NextResponse.json({
@@ -221,6 +222,9 @@ export async function GET(request: NextRequest) {
  * Update user profile with type safety and i18n support
  */
 export async function PUT(request: NextRequest) {
+  const limited = await rateLimitRequest(request, "profile:update", { limit: 20, windowSeconds: 300 });
+  if (limited) return limited;
+
     try {
         const { userId } = await auth()
 

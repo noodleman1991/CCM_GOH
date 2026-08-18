@@ -3,6 +3,7 @@ import { authorizeCollab } from "@/lib/collaboration/service";
 import { prisma } from "@/lib/prisma";
 import { r2Configured, buildFileKey, presignUpload } from "@/lib/r2";
 import { isAllowedUpload } from "@/lib/file-policy";
+import { rateLimitRequest } from "@/lib/rate-limit-route";
 
 /**
  * POST /api/collaborations/[id]/files/presign
@@ -13,6 +14,9 @@ import { isAllowedUpload } from "@/lib/file-policy";
  */
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+
+  const limited = await rateLimitRequest(req, "collab-file:presign", { limit: 30, windowSeconds: 600 });
+  if (limited) return limited;
 
   if (!r2Configured()) {
     return NextResponse.json({ error: "File storage is not configured." }, { status: 503 });
