@@ -9,8 +9,15 @@ import { useCookieConsent } from './cookie-consent-provider'
  * actually stop it, otherwise the preferences toggle is a lie.
  */
 export function AnalyticsScripts() {
-  const { consent } = useCookieConsent()
-  if (consent && !consent.analytics) return null
+  const { consent, hasConsented } = useCookieConsent()
+  // Wait for the stored consent to resolve before injecting anything — a
+  // next/script tag can't be un-injected, so rendering during the initial
+  // consent=null frame would override a stored decline. States:
+  //   consent=null + hasConsented=true  → still loading   → render nothing yet
+  //   consent=null + hasConsented=false → no choice stored → load (cookieless)
+  //   consent set                       → analytics flag decides
+  const allowed = consent ? consent.analytics : !hasConsented
+  if (!allowed) return null
 
   return (
     <>
