@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import "../globals.css";
 import { cn } from "@/lib/utils";
 
@@ -15,6 +14,7 @@ import OnboardingRedirectProvider from '@/components/onboarding/onboarding-redir
 import RevisionAlertProvider from '@/components/submissions/revision-alert-provider';
 import { CookieConsentProvider } from '@/components/cookie-consent/cookie-consent-provider';
 import { CookieConsentBanner } from '@/components/cookie-consent/cookie-consent-banner';
+import { AnalyticsScripts } from '@/components/cookie-consent/analytics-scripts';
 
 const poppins = Poppins({
     subsets: ["latin"],
@@ -152,18 +152,6 @@ export default async function LocaleLayout({
                 lato.variable
             )}
         >
-            <Script
-                src="https://plausible.io/js/pa-3hEF5jJ5x-S__sKhqgipY.js"
-                strategy="afterInteractive"
-                async
-            />
-            <Script id="plausible-init" strategy="afterInteractive">
-                {`
-                    window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)};
-                    plausible.init=plausible.init||function(i){plausible.o=i||{}};
-                    plausible.init();
-                `}
-            </Script>
             {/* `dynamic` is required, not optional: without it ClerkProvider
                 resolves its auth-state promise to null during SSR, so every
                 client component that branches on auth (<SignedIn>/<SignedOut>
@@ -182,6 +170,7 @@ export default async function LocaleLayout({
                                 <CookieConsentProvider>
                                     {children}
                                     <CookieConsentBanner />
+                                    <AnalyticsScripts />
                                 </CookieConsentProvider>
                             </RevisionAlertProvider>
                         </OnboardingRedirectProvider>
