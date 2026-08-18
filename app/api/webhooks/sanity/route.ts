@@ -19,7 +19,8 @@ interface SanityWebhookPayload {
   _rev: string
   projectId: string
   dataset: string
-  [key: string]: any
+  slug?: { current?: string }
+  [key: string]: unknown
 }
 
 /**
@@ -248,28 +249,9 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// GET handler for webhook health check
+// GET handler for webhook health check. Deliberately says nothing about
+// configuration — this endpoint is unauthenticated and webhook deliveries are
+// server-to-server (no CORS/preflight involved).
 export async function GET() {
-  return NextResponse.json({
-    status: 'healthy',
-    message: 'Sanity webhook endpoint is active',
-    timestamp: new Date().toISOString(),
-    environment: {
-      hasWebhookSecret: !!process.env.SANITY_WEBHOOK_SECRET,
-      projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
-      dataset: process.env.NEXT_PUBLIC_SANITY_DATASET
-    }
-  })
-}
-
-// OPTIONS handler for CORS
-export async function OPTIONS() {
-  return new NextResponse(null, {
-    status: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': `Content-Type, ${SIGNATURE_HEADER_NAME}`,
-    },
-  })
+  return NextResponse.json({ status: 'healthy' })
 }

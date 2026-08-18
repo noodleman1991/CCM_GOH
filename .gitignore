@@ -75,3 +75,7 @@ verify-*.png
 
 # Brainstorm visual companion (local only)
 .superpowers/
+
+# user data dumps — never commit (PII: emails + password hashes)
+supabase-users.json
+*-users-dump*.json
