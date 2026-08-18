@@ -158,6 +158,11 @@ export interface CaseStudySearchRecord extends Record<string, unknown> {
   organizations: string[]
   language: string
   accessLevel: 'public' | 'registered' | 'members'
+  // Phase 6 fixed taxonomy (region short code + themes/populations) — these
+  // back the attributesForFaceting entries of the same names.
+  region?: string
+  themes?: string[]
+  populations?: string[]
 }
 
 export interface AgendaSearchRecord extends Record<string, unknown> {
@@ -212,6 +217,10 @@ export interface NewsSearchRecord extends Record<string, unknown> {
   }
   accessLevel: 'public'
   language: string
+  // Phase 6 fixed taxonomy (region short code + themes/populations).
+  region?: string
+  themes?: string[]
+  populations?: string[]
 }
 
 export interface ContentSearchRecord {

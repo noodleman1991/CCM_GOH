@@ -1113,7 +1113,11 @@
     "backToGallery": "Back to gallery",
     "viewFull": "View full story",
     "audioTitleFallback": "Lived experience audio",
-    "audioFallback": "Your browser does not support the audio element."
+    "audioFallback": "Your browser does not support the audio element.",
+    "atAGlance": "At a glance",
+    "published": "Published",
+    "author": "Author",
+    "community": "Community"
   },
   "revisionAlert": {
     "title": "Action Required: Revision Needed",
@@ -1972,7 +1976,10 @@
     "type": "Type",
     "published": "Published",
     "organizations": "Organizations",
-    "relatedContent": "Related content"
+    "relatedContent": "Related content",
+    "pageTitle": "Research outputs",
+    "pageDescription": "Reports, toolkits, briefs and other outputs produced across the Connecting Climate Minds community.",
+    "empty": "No research outputs published yet."
   },
   "outputs": {
     "title": "Outputs",

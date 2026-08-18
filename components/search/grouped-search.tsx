@@ -185,12 +185,19 @@ function ContentHits({
           }
           return <TypedCard key={hit.objectID} item={item} variant="row" />
         }
+        // Agendas are download-only docs with no detail page — link each hit
+        // to its type's listing page rather than a dead generic href.
         const hit = raw as unknown as AgendaSearchRecord
+        const AGENDA_HREF: Record<string, string> = {
+          global: '/research-and-action/global-agenda',
+          regional: '/research-and-action/regional-agendas',
+          community: '/research-and-action/community-agendas',
+        }
         const roItem: TypedCardItem = {
           type: 'researchOutput',
           id: hit.objectID,
           title: getLocalizedTitle(hit.title, locale),
-          href: `/research-and-action`,
+          href: AGENDA_HREF[hit.agendaType] ?? '/research-and-action/all-outputs',
           meta: [hit.year, (hit.regionalCommunities || [])[0]].filter(Boolean).join(' · ') || null,
         }
         return <TypedCard key={hit.objectID} item={roItem} variant="row" />

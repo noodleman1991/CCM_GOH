@@ -12,6 +12,9 @@ const NEWS_QUERY = `*[_type == "newsPost" && publishedAt <= now()] | order(publi
   slug,
   publishedAt,
   _updatedAt,
+  region,
+  themes,
+  populations,
   featured,
   author->{_id, name},
   tags[]->{label},
@@ -101,6 +104,9 @@ export async function POST(request: NextRequest) {
           slug,
           publishedAt,
           _updatedAt,
+  region,
+  themes,
+  populations,
           featured,
           author->{_id, name},
           tags[]->{label},
@@ -258,7 +264,10 @@ function transformNewsForIndex(newsPost: any): NewsSearchRecord | null {
         lng: newsPost.location?.lng
       },
       accessLevel: 'public', // News is always public
-      language: newsPost.language || 'en'
+      language: newsPost.language || 'en',
+      region: newsPost.region || undefined,
+      themes: newsPost.themes || [],
+      populations: newsPost.populations || []
     }
   } catch (error) {
     console.warn(`Failed to transform news post ${newsPost._id}:`, error)

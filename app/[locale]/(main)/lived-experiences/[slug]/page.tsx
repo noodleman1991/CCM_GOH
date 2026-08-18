@@ -65,12 +65,22 @@ export default async function LivedExperiencePage({
   const description = getLocalizedValue(le.description, locale);
   const communityName = le.relatedCommunity?.name ? getLocalizedValue(le.relatedCommunity.name, locale) : null;
 
+  type Tag = { _id: string; label?: Record<string, string> | string | null; color?: string };
   const visibleTags = (le.tags ?? []).filter(
-    (tag: any) => tag?.label && tag.color && getLocalizedValue(tag.label, locale)
+    (tag: Tag) => tag?.label && tag.color && getLocalizedValue(tag.label, locale)
   );
 
+  // Detail layout archetype (WIREFRAMES §4.12), mirroring the case-study page:
+  // "story" = centered reading layout (default); "feature" leads with a bold
+  // navy header panel; "report" adds a sticky "At a glance" aside.
+  const layout = (le.layout as "story" | "feature" | "report") || "story";
+
   return (
-    <div className="container max-w-4xl py-8 space-y-8" dir={isRTL ? "rtl" : "ltr"}>
+    <div
+      className={cn("container py-8 space-y-8", layout === "report" ? "max-w-5xl" : "max-w-4xl")}
+      data-layout={layout}
+      dir={isRTL ? "rtl" : "ltr"}
+    >
       <JsonLd
         data={articleJsonLd({
           title: title || "Lived experience",
@@ -83,32 +93,45 @@ export default async function LivedExperiencePage({
       />
       <BackLink href="/lived-experiences" label={t("backToGallery")} />
 
-      {/* Person header — leads, dignity first (matches the modal voice) */}
-      <header className="flex items-start gap-3">
-        <Avatar className="size-12 flex-shrink-0">
-          <AvatarFallback className="bg-ccm-sky/30 text-ccm-sea">
-            <User className="size-6" aria-hidden="true" />
-          </AvatarFallback>
-        </Avatar>
-        <div className="min-w-0">
-          {le.author?.name && (
-            <p className="font-heading font-semibold text-ccm-midnight">
-              <bdi>{le.author.name}</bdi>
+      {/* Person header + title — the Feature archetype wraps both in a bold
+          navy panel; Story/Report use the standard header. */}
+      <div className={cn("space-y-8", layout === "feature" && "rounded-2xl bg-ccm-midnight p-8 md:p-10")}>
+        {/* Person header — leads, dignity first (matches the modal voice) */}
+        <header className="flex items-start gap-3">
+          <Avatar className="size-12 flex-shrink-0">
+            <AvatarFallback className="bg-ccm-sky/30 text-ccm-sea">
+              <User className="size-6" aria-hidden="true" />
+            </AvatarFallback>
+          </Avatar>
+          <div className="min-w-0">
+            {le.author?.name && (
+              <p className={cn("font-heading font-semibold", layout === "feature" ? "text-white" : "text-ccm-midnight")}>
+                <bdi>{le.author.name}</bdi>
+              </p>
+            )}
+            <p className={cn("text-sm", layout === "feature" ? "text-white/70" : "text-muted-foreground")}>
+              {communityName && (
+                <bdi className={layout === "feature" ? "text-ccm-sky" : "text-ccm-water"}>{communityName}</bdi>
+              )}
+              {communityName && le.author?.organizationalAffiliation && <span className="mx-1.5">·</span>}
+              {le.author?.organizationalAffiliation && <bdi>{le.author.organizationalAffiliation}</bdi>}
             </p>
-          )}
-          <p className="text-sm text-muted-foreground">
-            {communityName && <bdi className="text-ccm-water">{communityName}</bdi>}
-            {communityName && le.author?.organizationalAffiliation && <span className="mx-1.5">·</span>}
-            {le.author?.organizationalAffiliation && <bdi>{le.author.organizationalAffiliation}</bdi>}
-          </p>
-        </div>
-      </header>
+          </div>
+        </header>
 
-      {title && (
-        <h1 dir="auto" className={cn("text-balance font-heading font-bold text-ccm-midnight", heading("lg"))}>
-          {title}
-        </h1>
-      )}
+        {title && (
+          <h1
+            dir="auto"
+            className={cn(
+              "text-balance font-heading font-bold",
+              layout === "feature" ? "text-white" : "text-ccm-midnight",
+              heading("lg")
+            )}
+          >
+            {title}
+          </h1>
+        )}
+      </div>
 
       {/* Media — format-aware (video/audio); written stories render no frame.
           Source-aware: YouTube/Vimeo consent-gated embeds or a natively played
@@ -126,29 +149,61 @@ export default async function LivedExperiencePage({
         />
       )}
 
-      {/* Story — quiet noun label, the person's own framing */}
-      {(issue || personContext || description) && (
-        <section className="mx-auto max-w-prose space-y-3">
-          <p className="text-xs font-semibold uppercase tracking-wider text-ccm-sea">{t("storyLabel")}</p>
-          {issue && <p className="text-base leading-relaxed text-foreground/90">{issue}</p>}
-          {personContext && <p className="text-base leading-relaxed text-foreground/75">{personContext}</p>}
-          {!issue && !personContext && description && (
-            <p className="text-base leading-relaxed text-foreground/90">{description}</p>
+      {/* Story + body — the Report archetype pairs the text with a sticky
+          "At a glance" aside; Story/Feature center the reading column. */}
+      <div className={cn(layout === "report" && "grid gap-8 lg:grid-cols-[1fr_280px] lg:items-start")}>
+        <div className={cn("space-y-8", layout === "report" && "min-w-0")}>
+          {/* Story — quiet noun label, the person's own framing */}
+          {(issue || personContext || description) && (
+            <section className={cn("space-y-3", layout === "report" ? "max-w-prose" : "mx-auto max-w-prose")}>
+              <p className="text-xs font-semibold uppercase tracking-wider text-ccm-sea">{t("storyLabel")}</p>
+              {issue && <p className="text-base leading-relaxed text-foreground/90">{issue}</p>}
+              {personContext && <p className="text-base leading-relaxed text-foreground/75">{personContext}</p>}
+              {!issue && !personContext && description && (
+                <p className="text-base leading-relaxed text-foreground/90">{description}</p>
+              )}
+            </section>
           )}
-        </section>
-      )}
 
-      {/* Long-form story body — blog-post feel: rich text + images with
-          captions (shared styled-block-content renderer). */}
-      {Array.isArray(le.body) && le.body.length > 0 && (
-        <section className="mx-auto max-w-prose">
-          <PortableTextRenderer value={le.body} locale={locale} isRTL={isRTL} />
-        </section>
-      )}
+          {/* Long-form story body — blog-post feel: rich text + images with
+              captions (shared styled-block-content renderer). */}
+          {Array.isArray(le.body) && le.body.length > 0 && (
+            <section className={cn(layout === "report" ? "max-w-prose" : "mx-auto max-w-prose")}>
+              <PortableTextRenderer value={le.body} locale={locale} isRTL={isRTL} />
+            </section>
+          )}
+        </div>
+
+        {layout === "report" && (
+          <aside className="lg:sticky lg:top-24 rounded-xl border bg-muted/20 p-5 text-sm">
+            <h2 className="mb-3 font-heading font-semibold text-ccm-midnight">{t("atAGlance")}</h2>
+            <dl className="space-y-2">
+              {le.publishedAt && (
+                <div>
+                  <dt className="text-muted-foreground">{t("published")}</dt>
+                  <dd>{new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(new Date(le.publishedAt))}</dd>
+                </div>
+              )}
+              {le.author?.name && (
+                <div>
+                  <dt className="text-muted-foreground">{t("author")}</dt>
+                  <dd><bdi>{le.author.name}</bdi></dd>
+                </div>
+              )}
+              {communityName && (
+                <div>
+                  <dt className="text-muted-foreground">{t("community")}</dt>
+                  <dd><bdi>{communityName}</bdi></dd>
+                </div>
+              )}
+            </dl>
+          </aside>
+        )}
+      </div>
 
       {visibleTags.length > 0 && (
         <div className="flex flex-wrap gap-2">
-          {visibleTags.map((tag: any) => (
+          {visibleTags.map((tag: Tag) => (
             <span
               key={tag._id}
               className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium"

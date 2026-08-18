@@ -950,7 +950,11 @@
     "backToGallery": "Retour à la galerie",
     "viewFull": "Voir le récit complet",
     "audioTitleFallback": "Audio d’expérience vécue",
-    "audioFallback": "Votre navigateur ne prend pas en charge l’élément audio."
+    "audioFallback": "Votre navigateur ne prend pas en charge l’élément audio.",
+    "atAGlance": "En un coup d'œil",
+    "published": "Publié",
+    "author": "Auteur·e",
+    "community": "Communauté"
   },
   "caseStudyForm": {
     "sections": {
@@ -1972,7 +1976,10 @@
     "type": "Type",
     "published": "Publié",
     "organizations": "Organisations",
-    "relatedContent": "Contenu lié"
+    "relatedContent": "Contenu lié",
+    "pageTitle": "Productions de recherche",
+    "pageDescription": "Rapports, boîtes à outils, synthèses et autres productions de la communauté Connecting Climate Minds.",
+    "empty": "Aucune production de recherche publiée pour le moment."
   },
   "outputs": {
     "title": "Productions",
