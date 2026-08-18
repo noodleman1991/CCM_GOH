@@ -13,6 +13,9 @@ const CASE_STUDIES_QUERY = `*[_type == "caseStudy" && status == "approved"] {
   featured,
   publishedAt,
   _updatedAt,
+  region,
+  themes,
+  populations,
   authors[] {
     name,
     role,
@@ -104,6 +107,9 @@ export async function POST(request: NextRequest) {
           featured,
           publishedAt,
           _updatedAt,
+  region,
+  themes,
+  populations,
           authors[] {
             name,
             role,
@@ -252,7 +258,10 @@ function transformCaseStudyForIndex(caseStudy: any): CaseStudySearchRecord | nul
       } : undefined,
       organizations: (caseStudy.organizations || []).map((org: any) => org.name).filter(Boolean),
       language: 'en', // Default to English, could be enhanced with language detection
-      accessLevel: 'public' // All approved case studies are public for now
+      accessLevel: 'public', // All approved case studies are public for now
+      region: caseStudy.region || undefined,
+      themes: caseStudy.themes || [],
+      populations: caseStudy.populations || []
     }
   } catch (error) {
     console.warn(`Failed to transform case study ${caseStudy._id}:`, error)

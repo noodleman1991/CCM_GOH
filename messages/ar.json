@@ -950,7 +950,11 @@
     "backToGallery": "العودة إلى المعرض",
     "viewFull": "عرض القصة كاملة",
     "audioTitleFallback": "صوت تجربة معيشية",
-    "audioFallback": "متصفحك لا يدعم عنصر الصوت."
+    "audioFallback": "متصفحك لا يدعم عنصر الصوت.",
+    "atAGlance": "لمحة سريعة",
+    "published": "تاريخ النشر",
+    "author": "الكاتب/ة",
+    "community": "المجتمع"
   },
   "caseStudyForm": {
     "sections": {
@@ -1972,7 +1976,10 @@
     "type": "النوع",
     "published": "تاريخ النشر",
     "organizations": "المنظمات",
-    "relatedContent": "محتوى ذو صلة"
+    "relatedContent": "محتوى ذو صلة",
+    "pageTitle": "مخرجات البحث",
+    "pageDescription": "تقارير وأدوات وملخصات ومخرجات أخرى أنتجها مجتمع Connecting Climate Minds.",
+    "empty": "لا توجد مخرجات بحثية منشورة بعد."
   },
   "outputs": {
     "title": "المخرجات",

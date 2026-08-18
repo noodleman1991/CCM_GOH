@@ -15,6 +15,7 @@ export const LIVED_EXPERIENCE_BY_SLUG_QUERY = groq`
     _id,
     title,
     format,
+    layout,
     description,
     issue,
     personContext,
