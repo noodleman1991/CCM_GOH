@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { formatDistanceToNow } from "date-fns";
 import { MessageCircle } from "lucide-react";
 import { postComment, toggleReaction, deleteComment, reportComment } from "@/lib/actions/comments";
+import { TurnstileWidget, TURNSTILE_SITE_KEY } from "@/components/comments/turnstile-widget";
 import type { CommentDTO, CommentPage } from "@/lib/comments/types";
 import type { CommentTargetType } from "@/generated/prisma";
 
@@ -112,32 +113,43 @@ function Composer({
   const [body, setBody] = useState("");
   const [name, setName] = useState("");
   const [pending, setPending] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  // Turnstile tokens are single-use — bump to remount the widget after a post.
+  const [turnstileNonce, setTurnstileNonce] = useState(0);
+
+  const needsTurnstile = !isSignedIn && !!TURNSTILE_SITE_KEY;
 
   const submit = useCallback(async () => {
     if (!body.trim()) return;
     setPending(true);
     try {
-      // Turnstile token would be collected here when configured; the server
-      // fails closed if anonymous + no token.
       const res = await postComment({
         targetType,
         targetId,
         parentId,
         body,
-        ...(isSignedIn ? {} : { authorName: name }),
+        ...(isSignedIn ? {} : { authorName: name, turnstileToken: turnstileToken ?? undefined }),
       });
       if (!res.ok) {
         toast.error(res.error);
+        if (res.code === "TURNSTILE") {
+          setTurnstileToken(null);
+          setTurnstileNonce((n) => n + 1);
+        }
         return;
       }
       setBody("");
       setName("");
+      if (needsTurnstile) {
+        setTurnstileToken(null);
+        setTurnstileNonce((n) => n + 1);
+      }
       toast.success(res.held ? t("heldForReview") : t("posted"));
       onPosted();
     } finally {
       setPending(false);
     }
-  }, [body, name, parentId, targetType, targetId, isSignedIn, onPosted, t]);
+  }, [body, name, parentId, targetType, targetId, isSignedIn, turnstileToken, needsTurnstile, onPosted, t]);
 
   return (
     <div className="space-y-3 rounded-lg border bg-card p-4">
@@ -157,9 +169,16 @@ function Composer({
         rows={3}
         maxLength={4000}
       />
+      {needsTurnstile && (
+        <TurnstileWidget key={turnstileNonce} onToken={setTurnstileToken} />
+      )}
       <div className="flex items-center justify-between gap-2">
         {!isSignedIn && <p className="text-xs text-muted-foreground">{t("anonNotice")}</p>}
-        <Button onClick={submit} disabled={pending || !body.trim()} className="ms-auto">
+        <Button
+          onClick={submit}
+          disabled={pending || !body.trim() || (needsTurnstile && !turnstileToken)}
+          className="ms-auto"
+        >
           {parentId ? t("reply") : t("post")}
         </Button>
       </div>
