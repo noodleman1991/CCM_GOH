@@ -1,5 +1,6 @@
 "use server";
 
+import { createHash } from "crypto";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getActor } from "@/lib/authz";
@@ -12,7 +13,7 @@ import { isCommentTargetType } from "@/lib/comments/types";
 import { parseMentions } from "@/lib/comments/mentions";
 import { createNotification } from "@/lib/notifications/service";
 import { emitLifecycle } from "@/lib/notifications/emit";
-import type { CommentStatus } from "@/generated/prisma";
+import type { CommentStatus, CommentTargetType } from "@/generated/prisma";
 
 /**
  * Best-effort engagement fan-out after a visible comment is created:
@@ -73,9 +74,10 @@ const baseSchema = z.object({
   parentId: z.string().cuid().optional(),
   body: z.string().trim().min(1, "Comment cannot be empty").max(4000),
   page: z.number().int().positive().optional(),
-  // Anonymous-only fields:
+  // Anonymous-only fields. No email is collected: anonymous comments never
+  // notify, the address was never displayed, and holding it would create PII
+  // unreachable by export/erasure (GDPR data minimization).
   authorName: z.string().trim().min(1).max(80).optional(),
-  authorEmail: z.string().email().max(160).optional(),
   turnstileToken: z.string().optional(),
 });
 
@@ -105,7 +107,13 @@ export async function postComment(input: PostCommentInput): Promise<PostCommentR
   const isAnon = !actor;
 
   // 2. rate-limit
-  const actorKey = actor?.id ?? `anon:${(data.authorEmail ?? data.authorName ?? "unknown").toLowerCase()}`;
+  // Anonymous key is a truncated hash so no PII lands in the rate-limit store.
+  const actorKey =
+    actor?.id ??
+    `anon:${createHash("sha256")
+      .update((data.authorName ?? "unknown").toLowerCase())
+      .digest("hex")
+      .slice(0, 16)}`;
   try {
     await assertRateLimit(actorKey, "comment:create", {
       limit: isAnon ? 3 : 20,
@@ -127,7 +135,7 @@ export async function postComment(input: PostCommentInput): Promise<PostCommentR
   }
 
   // 4. target validity
-  const validTarget = await isCommentTargetValid(data.targetType as any, data.targetId);
+  const validTarget = await isCommentTargetValid(data.targetType as CommentTargetType, data.targetId);
   if (!validTarget) return { ok: false, error: "This content is no longer available for comments.", code: "TARGET" };
 
   // 4b. Collaboration targets require membership permission to comment — the
@@ -175,13 +183,12 @@ export async function postComment(input: PostCommentInput): Promise<PostCommentR
 
   const created = await prisma.comment.create({
     data: {
-      targetType: data.targetType as any,
+      targetType: data.targetType as CommentTargetType,
       targetId: data.targetId,
       parentId: data.parentId ?? null,
       depth,
       authorId: actor?.id ?? null,
       authorName: isAnon ? data.authorName : null,
-      authorEmail: isAnon ? data.authorEmail ?? null : null,
       body: data.body,
       status,
       page: data.page ?? null,
@@ -220,7 +227,7 @@ export async function postComment(input: PostCommentInput): Promise<PostCommentR
           select: { title: true, createdById: true, collaborationId: true },
         }),
         prisma.comment.findMany({
-          where: { targetType: "collaborationThread" as any, targetId: data.targetId, authorId: { not: null } },
+          where: { targetType: "collaborationThread", targetId: data.targetId, authorId: { not: null } },
           select: { authorId: true },
           distinct: ["authorId"],
         }),

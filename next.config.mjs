@@ -23,10 +23,16 @@ const SANITY_MODULES_HOST = 'https://sanity-cdn.com';
 // One CSP definition for both routes so the two can never drift apart. Browsers
 // intersect multiple CSP headers, so a /studio rule cannot loosen a global one —
 // the site rule below has to exclude /studio via a negative lookahead instead.
+// Site pages don't need 'unsafe-eval' in production — the only eval-family
+// consumer is pdfium's WASM compile, covered by 'wasm-unsafe-eval'. Dev keeps
+// full eval for Turbopack HMR, and /studio keeps it (Sanity Studio bundle).
+const scriptEval = (studio) =>
+  isDev || studio ? "'unsafe-eval'" : "'wasm-unsafe-eval'";
+
 const contentSecurityPolicy = ({ studio = false } = {}) =>
   [
     "default-src 'self'",
-    `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.clerk.com https://*.clerk.com https://clerk.connectingclimateminds.org${clerkDevDomains} https://challenges.cloudflare.com https://*.algolianet.com https://plausible.io`,
+    `script-src 'self' 'unsafe-inline' ${scriptEval(studio)} https://cdn.clerk.com https://*.clerk.com https://clerk.connectingclimateminds.org${clerkDevDomains} https://challenges.cloudflare.com https://*.algolianet.com https://plausible.io`,
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: blob: https://cdn.sanity.io https://img.youtube.com https://img.clerk.com https://images.clerk.dev https://www.gravatar.com",
     "font-src 'self' data:",
