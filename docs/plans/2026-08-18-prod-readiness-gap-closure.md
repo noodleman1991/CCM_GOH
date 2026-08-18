@@ -11,6 +11,12 @@ isValidSignature + Clerk svix · sitemap incl. researchOutput + hreflang · CDN 
 sole-owner transfer, R2 sweep, Algolia users) · dashboard My-tasks · request-to-join ·
 events iCal · map pin layer · EmbedPDF annotations · DownloadEvent IP/UA dropped.
 
+## Status (2026-08-18)
+All seven slices SHIPPED as commits cc39dc720..04a49956d (security · rate-limit
+rollout · Turnstile widget · GDPR · consent honesty · feature gaps · quality
+debt + legal parity). Gates green per slice: tsc 0, vitest 606/606, eslint
+clean on changed files. Remaining user actions listed at the bottom.
+
 ## Slices
 1. **Security-critical**: untrack supabase-users.json (692 emails+password hashes; history
    rewrite = separate user decision); lock down Sanity webhook debug GET + drop ACAO `*`;
