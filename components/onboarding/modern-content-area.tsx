@@ -2,7 +2,7 @@
 
 import React from "react"
 import { useTranslations, useLocale } from "next-intl"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence } from "motion/react"
 import { ArrowRight, ArrowLeft } from "lucide-react"
 
 import { Button } from "@/components/ui/button"

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { useTranslations, useLocale } from "next-intl"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { motion } from "framer-motion"
+import { motion } from "motion/react"
 import { toast } from "sonner"
 
 import { Form } from "@/components/ui/form"
