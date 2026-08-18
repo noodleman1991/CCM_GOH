@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@clerk/nextjs/server"
 import { prisma } from "@/lib/prisma"
 import { z } from "zod"
+import { rateLimitRequest } from "@/lib/rate-limit-route";
 
 const recentWorkSchema = z.object({
     title: z.string().min(1).max(200),
@@ -40,6 +41,9 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const limited = await rateLimitRequest(request, "profile-work:write", { limit: 20, windowSeconds: 300 });
+  if (limited) return limited;
+
     try {
         const { userId } = await auth()
 

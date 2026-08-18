@@ -7,6 +7,7 @@ import {
   issueReportSchema,
 } from "@/lib/issue-report";
 import { sendIssueReportEmail } from "@/lib/issue-report-email";
+import { rateLimitRequest } from "@/lib/rate-limit-route";
 
 /**
  * Editor-only issue reporting. Gated on the Prisma role (team_editor | admin),
@@ -28,6 +29,9 @@ function base64ByteLength(base64: string): number {
 }
 
 export async function POST(request: Request) {
+  const limited = await rateLimitRequest(request, "issue-report:create", { limit: 10, windowSeconds: 600 });
+  if (limited) return limited;
+
   const actor = await getActor();
   if (!actor || !isStaff(actor)) {
     return Response.json({ error: "Not permitted" }, { status: 403 });

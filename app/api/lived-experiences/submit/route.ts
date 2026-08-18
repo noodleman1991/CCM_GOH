@@ -8,6 +8,7 @@ import {
   LE_VIDEO_MIME_TYPES,
 } from "@/lib/validation/lived-experience";
 import { addOutput } from "@/lib/actions/workspace-outputs";
+import { rateLimitRequest } from "@/lib/rate-limit-route";
 
 /**
  * User submission of a lived experience. Creates a PENDING livedExperience for
@@ -19,6 +20,9 @@ import { addOutput } from "@/lib/actions/workspace-outputs";
  * with a 100MB cap for direct video uploads to Sanity's asset store).
  */
 export async function POST(request: NextRequest) {
+  const limited = await rateLimitRequest(request, "lived-experience:submit", { limit: 5, windowSeconds: 600 });
+  if (limited) return limited;
+
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 

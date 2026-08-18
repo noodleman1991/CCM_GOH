@@ -4,6 +4,7 @@ import { createClient } from "@sanity/client";
 import { v4 as uuidv4 } from "uuid";
 import { caseStudySubmissionSchema, generateCaseStudySlug } from "@/lib/validation/case-study";
 import { addOutput } from "@/lib/actions/workspace-outputs";
+import { rateLimitRequest } from "@/lib/rate-limit-route";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp']
@@ -17,6 +18,9 @@ const sanityClient = createClient({
 });
 
 export async function POST(request: NextRequest) {
+  const limited = await rateLimitRequest(request, "case-study:submit", { limit: 5, windowSeconds: 600 });
+  if (limited) return limited;
+
     try {
         const { userId } = await auth();
 
@@ -84,7 +88,7 @@ export async function POST(request: NextRequest) {
         }
 
         // Prepare the case study document
-        const caseStudyDoc: any = {
+        const caseStudyDoc: { _type: string } & Record<string, unknown> = {
             _type: "caseStudy",
             title: data.title,
             slug: {
@@ -98,7 +102,7 @@ export async function POST(request: NextRequest) {
             submittedAt: new Date().toISOString(),
 
             // Authors with enhanced user data
-            authors: data.authors.map((author: any, index: number) => ({
+            authors: data.authors.map((author: { userId?: string; name?: string; email?: string; role?: string; affiliation?: string }, index: number) => ({
                 _key: uuidv4(),
                 userId: author.userId || (index === 0 ? userId : undefined), // First author is submitter
                 name: author.name,
@@ -254,7 +258,12 @@ export async function POST(request: NextRequest) {
             result = { _id: patched._id, slug: existing.slug, status: "pending" };
         } else {
             // Create the case study document in Sanity
-            result = await sanityClient.create(caseStudyDoc);
+            const created = await sanityClient.create(caseStudyDoc);
+            result = {
+                _id: created._id,
+                slug: created.slug as { current: string },
+                status: created.status as string,
+            };
         }
 
         // Log submission for tracking

@@ -1,5 +1,6 @@
 import { Resend } from "resend";
 import { z } from "zod";
+import { rateLimitRequest } from "@/lib/rate-limit-route";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -8,6 +9,9 @@ const subscribeSchema = z.object({
 });
 
 export const POST = async (request: Request) => {
+  const limited = await rateLimitRequest(request, "newsletter:subscribe", { limit: 5, windowSeconds: 3600 });
+  if (limited) return limited;
+
   try {
     const body = await request.json();
     const { email } = subscribeSchema.parse(body);
@@ -28,7 +32,7 @@ export const POST = async (request: Request) => {
     });
 
     return Response.json({ success: true });
-  } catch (error: any) {
+  } catch (error) {
     if (error instanceof z.ZodError) {
       return Response.json(
         { error: "Invalid email address" },

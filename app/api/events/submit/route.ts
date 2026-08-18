@@ -3,6 +3,7 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 import { writeClient } from "@/sanity/lib/write-client";
 import { eventSubmissionSchema, generateEventSlug } from "@/lib/validation/event";
 import { addOutput } from "@/lib/actions/workspace-outputs";
+import { rateLimitRequest } from "@/lib/rate-limit-route";
 
 /**
  * Member/project submission of an event. Creates a PENDING `event` for editor
@@ -10,6 +11,9 @@ import { addOutput } from "@/lib/actions/workspace-outputs";
  * status is forced to "pending" regardless of input.
  */
 export async function POST(request: NextRequest) {
+  const limited = await rateLimitRequest(request, "event:submit", { limit: 5, windowSeconds: 600 });
+  if (limited) return limited;
+
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
