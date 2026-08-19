@@ -22,6 +22,7 @@ import { fetchNewsBySlug, fetchRelatedNews } from '@/sanity/queries/news-queries
 import { CommentIsland } from '@/components/comments/comment-island'
 import { JsonLd, articleJsonLd } from '@/lib/seo/json-ld'
 import { groq } from 'next-sanity'
+import { FollowButton } from "@/components/follow/follow-button";
 
 // Generate static params for all news posts
 export async function generateStaticParams() {
@@ -142,13 +143,17 @@ export default async function NewsDetailPage({
               </Badge>
             )}
             {newsPost.relatedCommunity && (
-              <Link href={`/news?communities=${newsPost.relatedCommunity.slug}`}>
-                <Badge variant="secondary" className="px-3 py-1 hover:bg-ccm-sea/10 hover:text-ccm-sea transition-colors">
-                  <bdi>{getLocalizedValue(newsPost.relatedCommunity.name, supportedLocale)}</bdi>
-                </Badge>
-              </Link>
+              <>
+                <Link href={`/news?communities=${newsPost.relatedCommunity.slug}`}>
+                  <Badge variant="secondary" className="px-3 py-1 hover:bg-ccm-sea/10 hover:text-ccm-sea transition-colors">
+                    <bdi>{getLocalizedValue(newsPost.relatedCommunity.name, supportedLocale)}</bdi>
+                  </Badge>
+                </Link>
+                {/* Follow the story's region — ISR-safe (self-resolving). */}
+                <FollowButton targetType="REGION" targetId={newsPost.relatedCommunity.slug} />
+              </>
             )}
-            {newsPost.tags?.map((tag: { _id: string; label: any; color?: string }) => {
+            {newsPost.tags?.map((tag: { _id: string; label: Record<string, string> | string; color?: string }) => {
               const tagLabel = getLocalizedValue(tag.label, supportedLocale)
               return (
                 <Badge
@@ -278,7 +283,7 @@ export default async function NewsDetailPage({
                   {newsPost.organizations.length > 1 ? 's' : ''}
                 </h3>
                 <div className="flex flex-wrap gap-2">
-                  {newsPost.organizations.map((org: any) => (
+                  {newsPost.organizations.map((org: { _id: string; name: string }) => (
                     <Badge key={org._id} variant="secondary">
                       {org.name}
                     </Badge>
@@ -294,7 +299,7 @@ export default async function NewsDetailPage({
                   {newsPost.projects.length > 1 ? 's' : ''}
                 </h3>
                 <div className="flex flex-wrap gap-2">
-                  {newsPost.projects.map((project: any) => (
+                  {newsPost.projects.map((project: { _id: string; name: string }) => (
                     <Badge key={project._id} variant="secondary">
                       {project.name}
                     </Badge>
@@ -312,7 +317,7 @@ export default async function NewsDetailPage({
           <CardContent className="p-6 space-y-4">
             <h3 className="font-semibold">{t('sources')}</h3>
             <div className="space-y-3">
-              {newsPost.sources.map((source: any, index: number) => (
+              {newsPost.sources.map((source: { url?: string; title?: string; publisher?: string; date?: string }, index: number) => (
                 <div key={index} className="flex items-start gap-2">
                   <ExternalLink className="w-4 h-4 mt-1 text-muted-foreground flex-shrink-0" />
                   <div className="space-y-1">
@@ -346,7 +351,7 @@ export default async function NewsDetailPage({
           <div className="space-y-6">
             <SectionHeader title={t('relatedNews')} />
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {relatedNews.map((related: any) => {
+              {relatedNews.map((related: { _id: string; slug: string; title?: Record<string, string> | string; excerpt?: Record<string, string> | string; publishedAt?: string; image?: Parameters<typeof urlFor>[0] & { asset?: { url?: string } } }) => {
                 const relatedTitle = getLocalizedValue(related.title, supportedLocale)
                 const relatedExcerpt = getLocalizedValue(related.excerpt, supportedLocale)
                 return (

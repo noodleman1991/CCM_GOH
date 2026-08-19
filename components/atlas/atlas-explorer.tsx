@@ -24,6 +24,7 @@ import { useRouter, usePathname } from '@/i18n/navigation'
 import { COLOR } from '@/lib/ccm-colors'
 import { cn } from '@/lib/utils'
 import { X } from 'lucide-react'
+import { FollowButton } from "@/components/follow/follow-button";
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json())
 
@@ -356,6 +357,17 @@ export function AtlasExplorer({
                 onClick={() => setParams({ theme: theme === th.slug ? null : th.slug })}
               />
             ))}
+            {/* The first (and so far only) THEME follow surface — feeds the
+                dashboard "For you" rail. Renders only with a theme selected;
+                the button is ISR-safe (resolves its own state on mount). */}
+            {theme && (
+              <FollowButton
+                targetType="THEME"
+                targetId={theme}
+                className="ms-1 shrink-0"
+                followLabel={tAtlas('followTheme')}
+              />
+            )}
           </FilterRow>
         )}
         <FilterRow label={tAtlas('when')}>

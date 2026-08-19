@@ -18,6 +18,7 @@ import { CommentIsland } from "@/components/comments/comment-island";
 import { RelatedContent } from "@/components/content/related-content";
 import PortableTextRenderer from "@/components/portable-text-renderer";
 import { JsonLd, articleJsonLd } from "@/lib/seo/json-ld";
+import { FollowButton } from "@/components/follow/follow-button";
 
 export async function generateStaticParams() {
   const slugs = await fetchLivedExperienceSlugs();
@@ -130,6 +131,11 @@ export default async function LivedExperiencePage({
           >
             {title}
           </h1>
+        )}
+
+        {/* Follow the story's region — ISR-safe (self-resolving). */}
+        {communityName && le.relatedCommunity?.slug?.current && (
+          <FollowButton targetType="REGION" targetId={le.relatedCommunity.slug.current} />
         )}
       </div>
 
