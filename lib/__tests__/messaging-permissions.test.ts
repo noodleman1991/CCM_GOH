@@ -21,4 +21,47 @@ describe("canMessage", () => {
   it("blocks when either party blocked the other", () => {
     expect(canMessage({ ...base, blockedEitherWay: true })).toBe(false);
   });
+
+  describe("FOLLOWERS tier", () => {
+    it("allows a sender who follows the recipient", () => {
+      expect(
+        canMessage({ ...base, recipientAllowsMessages: "FOLLOWERS", senderFollowsRecipient: true })
+      ).toBe(true);
+    });
+    it("rejects a non-follower", () => {
+      expect(
+        canMessage({ ...base, recipientAllowsMessages: "FOLLOWERS", senderFollowsRecipient: false })
+      ).toBe(false);
+    });
+    it("fails closed when the relation flag is missing", () => {
+      expect(canMessage({ ...base, recipientAllowsMessages: "FOLLOWERS" })).toBe(false);
+    });
+    it("a block beats a follow", () => {
+      expect(
+        canMessage({
+          ...base,
+          recipientAllowsMessages: "FOLLOWERS",
+          senderFollowsRecipient: true,
+          blockedEitherWay: true,
+        })
+      ).toBe(false);
+    });
+  });
+
+  describe("CONTACTS tier", () => {
+    it("allows accepted contacts", () => {
+      expect(canMessage({ ...base, recipientAllowsMessages: "CONTACTS", areContacts: true })).toBe(true);
+    });
+    it("rejects non-contacts", () => {
+      expect(canMessage({ ...base, recipientAllowsMessages: "CONTACTS", areContacts: false })).toBe(false);
+    });
+    it("fails closed when the relation flag is missing", () => {
+      expect(canMessage({ ...base, recipientAllowsMessages: "CONTACTS" })).toBe(false);
+    });
+    it("a follow does not satisfy CONTACTS", () => {
+      expect(
+        canMessage({ ...base, recipientAllowsMessages: "CONTACTS", senderFollowsRecipient: true })
+      ).toBe(false);
+    });
+  });
 });

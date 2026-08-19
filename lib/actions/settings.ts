@@ -9,7 +9,7 @@ export type UserSettings = {
   emailOnMention: boolean;
   emailOnMessage: boolean;
   emailWeeklyDigest: boolean;
-  allowMessagesFrom: "EVERYONE" | "NOBODY";
+  allowMessagesFrom: "EVERYONE" | "FOLLOWERS" | "CONTACTS" | "NOBODY";
 };
 
 /** Load the current user's notification + messaging settings (creating defaults). */
@@ -38,7 +38,7 @@ const schema = z.object({
   emailOnMention: z.boolean(),
   emailOnMessage: z.boolean(),
   emailWeeklyDigest: z.boolean(),
-  allowMessagesFrom: z.enum(["EVERYONE", "NOBODY"]),
+  allowMessagesFrom: z.enum(["EVERYONE", "FOLLOWERS", "CONTACTS", "NOBODY"]),
 });
 
 export async function saveUserSettings(input: UserSettings): Promise<{ ok: boolean; error?: string }> {

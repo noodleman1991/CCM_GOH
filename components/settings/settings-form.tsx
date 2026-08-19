@@ -104,13 +104,15 @@ export function SettingsForm({ initial, blocked }: { initial: UserSettings; bloc
               <Label>{t("whoCanMessage")}</Label>
               <Select
                 value={s.allowMessagesFrom}
-                onValueChange={(v) => setS({ ...s, allowMessagesFrom: v as "EVERYONE" | "NOBODY" })}
+                onValueChange={(v) => setS({ ...s, allowMessagesFrom: v as "EVERYONE" | "FOLLOWERS" | "CONTACTS" | "NOBODY" })}
               >
                 <SelectTrigger className="w-44">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="EVERYONE">{t("everyone")}</SelectItem>
+                  <SelectItem value="FOLLOWERS">{t("followersOnly")}</SelectItem>
+                  <SelectItem value="CONTACTS">{t("contactsOnly")}</SelectItem>
                   <SelectItem value="NOBODY">{t("nobody")}</SelectItem>
                 </SelectContent>
               </Select>

@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { followTarget, unfollowTarget, isFollowing as isFollowingAction } from "@/lib/actions/follows";
 
-type FollowTargetType = "REGION" | "THEME" | "PROJECT";
+type FollowTargetType = "REGION" | "THEME" | "PROJECT" | "USER";
 
 /**
  * One-click follow toggle for a region / theme / project. Optimistic: flips
