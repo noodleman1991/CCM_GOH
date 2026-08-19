@@ -6,8 +6,10 @@ import { getActor } from "@/lib/authz";
 import { assertRateLimit, RateLimitError } from "@/lib/rate-limit";
 import { createNotification } from "@/lib/notifications/service";
 import { getOrCreateProjectConversation } from "@/lib/messaging/service";
+import { canMessage } from "@/lib/messaging/permissions";
+import { messagingRelations } from "@/lib/messaging/guard";
 
-type Result<T = {}> = ({ ok: true } & T) | { ok: false; error: string };
+type Result<T = unknown> = ({ ok: true } & T) | { ok: false; error: string };
 
 /**
  * Get or create a 1:1 conversation with another user. Returns the id so the UI
@@ -24,10 +26,8 @@ export async function startConversation(otherUserId: string): Promise<Result<{ i
   });
   if (!other) return { ok: false, error: "User not found." };
 
-  // Respect the recipient's inbox privacy + block list.
-  if (other.allowMessagesFrom === "NOBODY") {
-    return { ok: false, error: "This member isn't accepting messages." };
-  }
+  // Respect the recipient's inbox privacy tier + block list (shared rule in
+  // lib/messaging/permissions.ts; relations batched in lib/messaging/guard.ts).
   const blocked = await prisma.userBlock.findFirst({
     where: {
       OR: [
@@ -37,7 +37,16 @@ export async function startConversation(otherUserId: string): Promise<Result<{ i
     },
     select: { blockerId: true },
   });
-  if (blocked) return { ok: false, error: "You can't message this member." };
+  const relations = await messagingRelations(actor.id, [otherUserId]);
+  const permitted = canMessage({
+    senderId: actor.id,
+    recipientId: otherUserId,
+    recipientAllowsMessages: other.allowMessagesFrom,
+    blockedEitherWay: !!blocked,
+    senderFollowsRecipient: relations.followedBySender.has(otherUserId),
+    areContacts: relations.contactsOfSender.has(otherUserId),
+  });
+  if (!permitted) return { ok: false, error: "This member isn't accepting messages from you." };
 
   // Find an existing 1:1 conversation between exactly these two.
   const existing = await prisma.conversation.findFirst({
@@ -104,6 +113,34 @@ export async function sendMessage(input: z.infer<typeof sendSchema>): Promise<Re
       select: { blockerId: true },
     });
     if (block) return { ok: false, error: "Messaging is unavailable in this conversation." };
+  }
+
+  // 1:1 DMs also honour the recipient's CURRENT privacy tier — switching to
+  // NOBODY/FOLLOWERS/CONTACTS closes existing threads too, not just new ones.
+  // Group/project channels rely on participation + blocks only.
+  if (otherIds.length === 1) {
+    const [conv, recipient] = await Promise.all([
+      prisma.conversation.findUnique({
+        where: { id: parsed.data.conversationId },
+        select: { kind: true },
+      }),
+      prisma.user.findUnique({
+        where: { id: otherIds[0] },
+        select: { allowMessagesFrom: true },
+      }),
+    ]);
+    if (conv?.kind === "DIRECT" && recipient) {
+      const relations = await messagingRelations(actor.id, otherIds);
+      const permitted = canMessage({
+        senderId: actor.id,
+        recipientId: otherIds[0],
+        recipientAllowsMessages: recipient.allowMessagesFrom,
+        blockedEitherWay: false, // blocks already rejected above
+        senderFollowsRecipient: relations.followedBySender.has(otherIds[0]),
+        areContacts: relations.contactsOfSender.has(otherIds[0]),
+      });
+      if (!permitted) return { ok: false, error: "This member isn't accepting messages from you." };
+    }
   }
 
   const message = await prisma.message.create({
@@ -220,7 +257,17 @@ export async function startGroupConversation(input: z.infer<typeof groupSchema>)
     select: { blockerId: true, blockedId: true },
   });
   const blockedSet = new Set(blocks.flatMap((b) => [b.blockerId, b.blockedId]));
-  const allowed = invitees.filter((u) => u.allowMessagesFrom === "EVERYONE" && !blockedSet.has(u.id));
+  const relations = await messagingRelations(actor.id, ids);
+  const allowed = invitees.filter((u) =>
+    canMessage({
+      senderId: actor.id,
+      recipientId: u.id,
+      recipientAllowsMessages: u.allowMessagesFrom,
+      blockedEitherWay: blockedSet.has(u.id),
+      senderFollowsRecipient: relations.followedBySender.has(u.id),
+      areContacts: relations.contactsOfSender.has(u.id),
+    })
+  );
   if (allowed.length === 0) return { ok: false, error: "None of those members can be added." };
 
   const convo = await prisma.conversation.create({

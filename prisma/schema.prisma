@@ -360,11 +360,11 @@ model Comment {
   parent      Comment?          @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
   replies     Comment[]         @relation("CommentReplies")
 
-  // Author: nullable for anonymous comments (name/email captured instead).
+  // Author: nullable for anonymous comments (display name captured instead;
+  // no email is collected — GDPR data minimization, 2026-08-18).
   authorId    String?
   author      User?             @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorName  String?
-  authorEmail String?
 
   body        String
   status      CommentStatus     @default(VISIBLE)
@@ -706,8 +706,10 @@ model MessageReport {
 // ─── Messaging privacy ───────────────────────────────────────────────────────
 
 enum MessagePrivacy {
-  EVERYONE // any signed-in member may message
-  NOBODY   // closed inbox
+  EVERYONE  // any signed-in member may message
+  FOLLOWERS // only people who follow me (Follow USER target)
+  CONTACTS  // only accepted contacts (ContactRequest ACCEPTED, either direction)
+  NOBODY    // closed inbox
 }
 
 model UserBlock {
@@ -721,9 +723,10 @@ model UserBlock {
   @@index([blockedId])
 }
 
-// A one-click follow of a region, theme, or project (no approval). `targetId`
-// is the polymorphic key: a regional-community slug (REGION), a theme/tag value
-// (THEME), or a Collaboration id (PROJECT). One row per (user, type, target).
+// A one-click follow of a region, theme, project, or person (no approval).
+// `targetId` is the polymorphic key: a regional-community slug (REGION), a
+// theme/tag value (THEME), a Collaboration id (PROJECT), or a User id (USER).
+// One row per (user, type, target).
 model Follow {
   id         String           @id @default(cuid())
   userId     String
@@ -740,6 +743,7 @@ enum FollowTargetType {
   REGION
   THEME
   PROJECT
+  USER
 }
 
 enum RequestStatus {

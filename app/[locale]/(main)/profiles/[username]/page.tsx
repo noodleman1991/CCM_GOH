@@ -15,6 +15,7 @@ import { RecentWorkOwnerControls } from "@/components/profile/recent-work-owner-
 import { heading } from "@/lib/design-tokens"
 import { MessageCircle } from "lucide-react"
 import { MessageUserButton } from "@/components/messaging/message-user-button"
+import { FollowButton } from "@/components/follow/follow-button"
 import { listPublicWorkspacesForUser } from "@/lib/collaboration/service"
 import { regionLabel, specialCommunityLabel } from "@/lib/labels"
 import { ProfileCompletenessIndicator } from "@/components/ui/profile-completeness-indicator"
@@ -27,6 +28,10 @@ import { Suspense } from "react"
 import { JsonLd, personJsonLd } from "@/lib/seo/json-ld";
 
 const BLUR_FADE_DELAY = 0.04
+
+// Owner-curation flags present on the runtime recentWork rows (the RecentWork
+// table has them) but not yet declared on ProfileData's recentWork item type.
+type WorkCurationFlags = { pinned?: boolean; hidden?: boolean }
 
 interface ProfilePageProps {
     params: Promise<{
@@ -185,7 +190,14 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
 
                         {!isOwnProfile && (
                             <BlurFade delay={BLUR_FADE_DELAY * 4.9} className="mb-3">
-                                <MessageUserButton targetUserId={user.id} />
+                                <div className="flex flex-wrap items-center gap-2">
+                                    <MessageUserButton targetUserId={user.id} />
+                                    {/* Person-follow: powers the "For you" rail and the
+                                        FOLLOWERS messaging tier. Signed-in only. */}
+                                    {currentUserId && (
+                                        <FollowButton targetType="USER" targetId={user.id} />
+                                    )}
+                                </div>
                             </BlurFade>
                         )}
 
@@ -426,9 +438,9 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                                             <BlurFade key={work.id} delay={BLUR_FADE_DELAY * 15 + id * 0.05}>
                                                 <div className={cn(
                                                     "border-s-2 ps-4",
-                                                    (work as any).pinned ? "border-ccm-sea" : "border-muted",
+                                                    (work as WorkCurationFlags).pinned ? "border-ccm-sea" : "border-muted",
                                                     // Hidden items only show to the owner — dim them so it's clear.
-                                                    isOwnProfile && (work as any).hidden && "opacity-50"
+                                                    isOwnProfile && (work as WorkCurationFlags).hidden && "opacity-50"
                                                 )}>
                                                     <div className="flex items-start justify-between gap-2">
                                                         <div>
@@ -453,8 +465,8 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                                                             {isOwnProfile && (
                                                                 <RecentWorkOwnerControls
                                                                     id={work.id}
-                                                                    hidden={Boolean((work as any).hidden)}
-                                                                    pinned={Boolean((work as any).pinned)}
+                                                                    hidden={Boolean((work as WorkCurationFlags).hidden)}
+                                                                    pinned={Boolean((work as WorkCurationFlags).pinned)}
                                                                 />
                                                             )}
                                                             <div className="text-xs text-muted-foreground">

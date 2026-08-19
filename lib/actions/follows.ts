@@ -5,10 +5,10 @@ import { prisma } from "@/lib/prisma";
 import { getActor } from "@/lib/authz";
 import type { FollowTargetType } from "@/generated/prisma";
 
-type Result<T = {}> = ({ ok: true } & T) | { ok: false; error: string };
+type Result<T = unknown> = ({ ok: true } & T) | { ok: false; error: string };
 
 const targetSchema = z.object({
-  targetType: z.enum(["REGION", "THEME", "PROJECT"]),
+  targetType: z.enum(["REGION", "THEME", "PROJECT", "USER"]),
   targetId: z.string().min(1).max(200),
 });
 type FollowTarget = z.infer<typeof targetSchema>;
@@ -23,6 +23,11 @@ export async function followTarget(input: FollowTarget): Promise<Result<{ follow
   if (!actor) return { ok: false, error: "Sign in to follow." };
   const parsed = targetSchema.safeParse(input);
   if (!parsed.success) return { ok: false, error: "Invalid target." };
+  if (parsed.data.targetType === "USER") {
+    if (parsed.data.targetId === actor.id) return { ok: false, error: "You can't follow yourself." };
+    const exists = await prisma.user.findUnique({ where: { id: parsed.data.targetId }, select: { id: true } });
+    if (!exists) return { ok: false, error: "Invalid target." };
+  }
 
   await prisma.follow.upsert({
     where: {
