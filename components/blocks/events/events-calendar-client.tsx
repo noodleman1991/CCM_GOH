@@ -12,6 +12,7 @@ import { buildMonthGrid, eventDayKeys, dayKey, upcomingEvents } from "@/lib/even
 import { isRTL } from "@/i18n/i18n-helpers";
 import { cn } from "@/lib/utils";
 import type { EventListItem } from "@/lib/events";
+import { buildIcs } from "@/lib/ics";
 
 const MODE_ICON = { online: Globe, in_person: MapPin, hybrid: Users } as const;
 
@@ -40,46 +41,20 @@ type Props = {
   locale?: string;
 };
 
-/** Pad a number to 2 digits for the .ics timestamp. */
-const p2 = (n: number) => String(n).padStart(2, "0");
-
-/** UTC `YYYYMMDDTHHMMSSZ` for an iCal DTSTART/DTSTAMP. */
-function icsDate(d: Date): string {
-  return (
-    `${d.getUTCFullYear()}${p2(d.getUTCMonth() + 1)}${p2(d.getUTCDate())}` +
-    `T${p2(d.getUTCHours())}${p2(d.getUTCMinutes())}${p2(d.getUTCSeconds())}Z`
-  );
-}
-
-/** Escape iCal text per RFC 5545 (commas, semicolons, newlines, backslashes). */
-function icsEscape(s: string): string {
-  return s.replace(/\\/g, "\\\\").replace(/\n/g, "\\n").replace(/,/g, "\\,").replace(/;/g, "\\;");
-}
-
-/** Build an .ics calendar string from the approved events (client-side, no network). */
-function buildIcs(events: EventListItem[]): string {
-  const now = icsDate(new Date());
-  const vevents = events
-    .filter((e) => e.startAt)
-    .map((e) => {
-      const start = new Date(e.startAt as string);
-      const end = e.endAt ? new Date(e.endAt) : null;
-      const lines = [
-        "BEGIN:VEVENT",
-        `UID:${e._id}@ccm-hub`,
-        `DTSTAMP:${now}`,
-        `DTSTART:${icsDate(start)}`,
-        ...(end ? [`DTEND:${icsDate(end)}`] : []),
-        `SUMMARY:${icsEscape(e.title || "Event")}`,
-        ...(e.description ? [`DESCRIPTION:${icsEscape(e.description)}`] : []),
-        ...(e.locationName ? [`LOCATION:${icsEscape(e.locationName)}`] : []),
-        ...(e.url ? [`URL:${icsEscape(e.url)}`] : []),
-        "END:VEVENT",
-      ];
-      return lines.join("\r\n");
-    });
-  return ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//CCM Hub//Events//EN", ...vevents, "END:VCALENDAR"].join(
-    "\r\n"
+/** Adapt the fetched events to the shared iCal builder (lib/ics.ts). */
+function buildEventsIcs(events: EventListItem[]): string {
+  return buildIcs(
+    events
+      .filter((e) => e.startAt)
+      .map((e) => ({
+        id: e._id,
+        title: e.title || "Event",
+        description: e.description,
+        startAt: e.startAt as string,
+        endAt: e.endAt,
+        location: e.locationName,
+        url: e.url,
+      }))
   );
 }
 
@@ -131,7 +106,7 @@ export default function EventsCalendarClient({
     });
 
   const onSubscribe = () => {
-    const blob = new Blob([buildIcs(events)], { type: "text/calendar;charset=utf-8" });
+    const blob = new Blob([buildEventsIcs(events)], { type: "text/calendar;charset=utf-8" });
     const href = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = href;
