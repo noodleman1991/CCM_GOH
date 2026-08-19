@@ -34,7 +34,11 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
       size: f.size,
       createdAt: f.createdAt.toISOString(),
       uploadedById: f.uploadedById,
-      url: r2Configured() ? await fileUrl(f.r2Key) : null,
+      // PDFs get a longer-lived URL: the reader dialog holds it open for a
+      // whole session and never refreshes (a 120s link 403s mid-read).
+      url: r2Configured()
+        ? await fileUrl(f.r2Key, f.contentType === "application/pdf" ? 3600 : 120)
+        : null,
       isPdf: f.contentType === "application/pdf",
     }))
   );

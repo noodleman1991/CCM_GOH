@@ -17,7 +17,9 @@ import {
 } from "@/components/ui/dialog";
 import { Link } from "@/i18n/navigation";
 import { FollowButton } from "@/components/follow/follow-button";
-import { requestToJoin, requestContact } from "@/lib/actions/requests";
+import { requestToJoin } from "@/lib/actions/requests";
+import { startConversation } from "@/lib/actions/messaging";
+import { useRouter } from "@/i18n/navigation";
 import { canRequestToJoin } from "@/lib/collaboration/public-access";
 
 export function ProjectCtaBar({
@@ -38,6 +40,7 @@ export function ProjectCtaBar({
   const [message, setMessage] = useState("");
   const [requested, setRequested] = useState(false);
   const [pending, startTransition] = useTransition();
+  const router = useRouter();
 
   const mayJoin = canRequestToJoin({ isSignedIn, isMember });
 
@@ -54,11 +57,13 @@ export function ProjectCtaBar({
     });
   };
 
+  // Opens (or creates) a real 1:1 thread with the lead — the button previously
+  // filed a ContactRequest while being labelled "Message the lead".
   const messageLead = () => {
     if (!isSignedIn) return;
     startTransition(async () => {
-      const res = await requestContact(leadUserId);
-      if (res.ok) toast.success(t("requestSent"));
+      const res = await startConversation(leadUserId);
+      if (res.ok) router.push(`/messages?c=${res.id}`);
       else toast.error(res.error);
     });
   };

@@ -27,9 +27,16 @@ type Props = {
   targetId: string;
   /** Whether the viewer is signed in (drives anon name field + Turnstile). */
   isSignedIn: boolean;
+  /**
+   * Whether the viewer may write here. Content pages leave this unset (anyone
+   * may comment, anonymous included). Workspace threads pass the membership
+   * capability so read-only roles get a notice instead of a composer that
+   * always fails server-side.
+   */
+  canComment?: boolean;
 };
 
-export function CommentSection({ targetType, targetId, isSignedIn }: Props) {
+export function CommentSection({ targetType, targetId, isSignedIn, canComment = true }: Props) {
   const t = useTranslations("comments");
 
   const getKey = (index: number, prev: CommentPage | null) => {
@@ -63,12 +70,18 @@ export function CommentSection({ targetType, targetId, isSignedIn }: Props) {
         {t("heading")}
       </h2>
 
-      <Composer
-        targetType={targetType}
-        targetId={targetId}
-        isSignedIn={isSignedIn}
-        onPosted={() => mutate()}
-      />
+      {canComment ? (
+        <Composer
+          targetType={targetType}
+          targetId={targetId}
+          isSignedIn={isSignedIn}
+          onPosted={() => mutate()}
+        />
+      ) : (
+        <p className="rounded-lg border bg-muted/40 p-4 text-sm text-muted-foreground">
+          {t("readOnly")}
+        </p>
+      )}
 
       <div className="mt-8 space-y-6">
         {isLoading && <p className="text-sm text-muted-foreground">{t("loading")}</p>}
@@ -83,6 +96,7 @@ export function CommentSection({ targetType, targetId, isSignedIn }: Props) {
             targetType={targetType}
             targetId={targetId}
             isSignedIn={isSignedIn}
+            canComment={canComment}
             onChanged={() => mutate()}
           />
         ))}
@@ -192,6 +206,7 @@ function CommentItem({
   targetType,
   targetId,
   isSignedIn,
+  canComment,
   onChanged,
 }: {
   comment: CommentDTO;
@@ -199,6 +214,7 @@ function CommentItem({
   targetType: CommentTargetType;
   targetId: string;
   isSignedIn: boolean;
+  canComment: boolean;
   onChanged: () => void;
 }) {
   const t = useTranslations("comments");
@@ -254,7 +270,7 @@ function CommentItem({
               <button onClick={react} className="hover:text-ccm-sea">
                 👍 {thumbs?.count ? thumbs.count : ""}
               </button>
-              {comment.depth === 0 && (
+              {comment.depth === 0 && canComment && (
                 <button onClick={() => setReplying((v) => !v)} className="hover:text-ccm-sea">
                   {t("reply")}
                 </button>
@@ -299,6 +315,7 @@ function CommentItem({
               targetType={targetType}
               targetId={targetId}
               isSignedIn={isSignedIn}
+              canComment={canComment}
               onChanged={onChanged}
             />
           ))}

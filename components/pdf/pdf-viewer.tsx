@@ -99,33 +99,35 @@ export default function PdfViewer({
     createPluginRegistration(ViewportPluginPackage),
     createPluginRegistration(ScrollPluginPackage),
     createPluginRegistration(RenderPluginPackage),
-    ...(canAnnotate ? [createPluginRegistration(AnnotationPluginPackage)] : []),
+    // Always registered: annotations are a SHARED per-file layer, so read-only
+    // roles (VIEWER, public visitors on PUBLIC workspaces) must still see them.
+    // Editing stays gated: the save handler only attaches when canAnnotate, and
+    // the server rejects non-annotators anyway (collab:annotate).
+    createPluginRegistration(AnnotationPluginPackage),
   ];
 
   return (
     <div className="flex h-[75vh] flex-col">
-      {canAnnotate && (
-        <div className="flex items-center justify-end border-b px-2 py-1.5">
-          <Button
-            variant={notes ? "secondary" : "ghost"}
-            size="sm"
-            onClick={() => setNotes((v) => !v)}
-            aria-pressed={notes}
-          >
-            {notes ? t("notesOn") : t("notesOff")}
-          </Button>
-        </div>
-      )}
+      <div className="flex items-center justify-end border-b px-2 py-1.5">
+        <Button
+          variant={notes ? "secondary" : "ghost"}
+          size="sm"
+          onClick={() => setNotes((v) => !v)}
+          aria-pressed={notes}
+        >
+          {notes ? t("notesOn") : t("notesOff")}
+        </Button>
+      </div>
       <div className="min-h-0 flex-1 bg-muted">
         <EmbedPDF engine={engine} plugins={plugins}>
-          {canAnnotate && <AnnotationPersistence fileId={fileId} canAnnotate={canAnnotate} />}
+          <AnnotationPersistence fileId={fileId} canAnnotate={canAnnotate} />
           <Viewport documentId={DOC_ID} className="h-full w-full">
             <Scroller
               documentId={DOC_ID}
               renderPage={({ pageIndex, width, height }) => (
                 <div style={{ width, height, position: "relative" }}>
                   <RenderLayer documentId={DOC_ID} pageIndex={pageIndex} />
-                  {canAnnotate && notes && <AnnotationLayer documentId={DOC_ID} pageIndex={pageIndex} />}
+                  {notes && <AnnotationLayer documentId={DOC_ID} pageIndex={pageIndex} />}
                 </div>
               )}
             />

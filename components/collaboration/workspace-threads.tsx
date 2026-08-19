@@ -76,7 +76,12 @@ export function WorkspaceThreads({
           <bdi>{open.title}</bdi>
         </h2>
         {/* Reuse the polymorphic comment engine for thread discussion */}
-        <CommentSection targetType="collaborationThread" targetId={open.id} isSignedIn={isSignedIn} />
+        <CommentSection
+          targetType="collaborationThread"
+          targetId={open.id}
+          isSignedIn={isSignedIn}
+          canComment={myRole === "COMMENTER" || myRole === "EDITOR" || myRole === "OWNER"}
+        />
       </div>
     );
   }
