@@ -21,7 +21,7 @@ function makeReviewAction(config: {
   errorLabel: string
   // Returns the fields to patch, or null to skip the mutation entirely
   // (e.g. when the reviewer cancels a prompt/confirm dialog).
-  buildPatch: (doc: Record<string, any> | null) => Record<string, any> | null
+  buildPatch: (doc: Record<string, unknown> | null) => Record<string, unknown> | null
 }): DocumentActionComponent {
   return (props) => {
     const { id, draft, published } = props
@@ -121,7 +121,7 @@ export const previewCaseStudyAction: DocumentActionComponent = (props) => {
   const doc = draft || published
 
   // Only show for approved case studies with a slug
-  if (doc?._type !== 'caseStudy' || doc?.status !== 'approved' || !(doc?.slug as any)?.current) {
+  if (doc?._type !== 'caseStudy' || doc?.status !== 'approved' || !(doc?.slug as { current?: string } | undefined)?.current) {
     return null
   }
 
@@ -131,7 +131,7 @@ export const previewCaseStudyAction: DocumentActionComponent = (props) => {
     onHandle: () => {
       // Open the published case study in a new tab
       const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
-      const url = `${baseUrl}/en/research-and-action/case-studies/${(doc.slug as any).current}`
+      const url = `${baseUrl}/en/research-and-action/case-studies/${(doc.slug as { current?: string }).current}`
       window.open(url, '_blank')
       props.onComplete()
     }

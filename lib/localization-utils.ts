@@ -6,6 +6,7 @@
  */
 
 import type { LocalizedString } from '@/types/case-study'
+import type { PortableTextBlock } from '@portabletext/types'
 
 /**
  * Supported locale codes for the application
@@ -122,7 +123,7 @@ export function getLocaleAwareClassName(locale: string, baseClass: string = ''):
  * @param key - Key to extract localized value from
  * @returns Array of localized values
  */
-export function getLocalizedArrayValues<T extends Record<string, any>>(
+export function getLocalizedArrayValues<T extends Record<string, unknown>>(
   items: T[] | null | undefined,
   locale: string,
   key: keyof T
@@ -133,7 +134,7 @@ export function getLocalizedArrayValues<T extends Record<string, any>>(
 
   return items
     .map(item => {
-      const localizedValue = item[key]
+      const localizedValue = item[key] as Record<string, string> | string | null | undefined
       return getLocalizedText(localizedValue, locale, '')
     })
     .filter(Boolean)
@@ -208,35 +209,37 @@ export const localization = createLocalizationHelper('en')
  * @param locale - Target locale
  * @returns The localized PortableText array or empty array
  */
-export function getLocalizedPortableText(
-  content: any | null | undefined,
+export function getLocalizedPortableText<T = PortableTextBlock>(
+  content: unknown,
   locale: SupportedLocale
-): any[] {
+): T[] {
   if (!content) {
     return []
   }
 
   // If it's already an array, return it (non-localized content)
   if (Array.isArray(content)) {
-    return content
+    return content as T[]
   }
 
   // If it's a localized object {en, es, fr, ar}
   if (typeof content === 'object') {
+    const localized = content as Record<string, unknown>
+
     // Try requested locale first
-    if (content[locale] && Array.isArray(content[locale])) {
-      return content[locale]
+    if (localized[locale] && Array.isArray(localized[locale])) {
+      return localized[locale] as T[]
     }
 
     // Fallback to English
-    if (content.en && Array.isArray(content.en)) {
-      return content.en
+    if (localized.en && Array.isArray(localized.en)) {
+      return localized.en as T[]
     }
 
     // Fallback to any available language
     for (const key of ['es', 'fr', 'ar']) {
-      if (content[key] && Array.isArray(content[key])) {
-        return content[key]
+      if (localized[key] && Array.isArray(localized[key])) {
+        return localized[key] as T[]
       }
     }
   }
@@ -252,7 +255,7 @@ export function getLocalizedPortableText(
  * @returns true if translation exists and is non-empty
  */
 export function hasTranslation(
-  field: LocalizedString | Record<string, any> | null | undefined,
+  field: LocalizedString | Record<string, unknown> | null | undefined,
   locale: SupportedLocale
 ): boolean {
   if (!field || typeof field !== 'object') {
@@ -283,7 +286,7 @@ export function hasTranslation(
  * @param fallback - Optional fallback value
  * @returns The localized value or fallback
  */
-export function getLocalizedField<T = any>(
+export function getLocalizedField<T = unknown>(
   field: Record<string, T> | T | null | undefined,
   locale: SupportedLocale,
   fallback?: T
@@ -329,8 +332,8 @@ export function sortTagsByLabel<T extends { label?: unknown }>(
   if (!Array.isArray(tags)) return []
   const valid = tags.filter((t): t is T => Boolean(t))
   return [...valid].sort((a, b) =>
-    getLocalizedText((a as any).label, locale).localeCompare(
-      getLocalizedText((b as any).label, locale),
+    getLocalizedText(a.label as Record<string, string> | string | null | undefined, locale).localeCompare(
+      getLocalizedText(b.label as Record<string, string> | string | null | undefined, locale),
       locale
     )
   )

@@ -1,28 +1,40 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-const getActorMock = vi.fn<() => any>();
-const isStaffMock = vi.fn<(...a: any[]) => boolean>(() => false);
+// Return type is `unknown` (not Promise) because some tests use mockReturnValue
+// with a plain object — the action `await`s it either way.
+const getActorMock = vi.fn<() => unknown>();
+const isStaffMock = vi.fn<(...a: unknown[]) => boolean>(() => false);
 vi.mock("@/lib/authz", () => ({
   getActor: () => getActorMock(),
-  isStaff: (...a: any[]) => isStaffMock(...a),
+  isStaff: (...a: unknown[]) => isStaffMock(...a),
 }));
 
-const createNotificationMock = vi.fn<(...a: any[]) => Promise<void>>(async () => {});
+const createNotificationMock = vi.fn<(...a: unknown[]) => Promise<void>>(async () => {});
 vi.mock("@/lib/notifications/service", () => ({
-  createNotification: (...a: any[]) => createNotificationMock(...a),
+  createNotification: (...a: unknown[]) => createNotificationMock(...a),
 }));
 
 // requests.ts imports authorizeCollab (which transitively pulls the Sanity
 // client + its env asserts) — stub the whole service module out.
-const authorizeCollabMock = vi.fn<(...a: any[]) => Promise<any>>(async () => ({ actorId: "u1", role: "OWNER" }));
+const authorizeCollabMock = vi.fn<(...a: unknown[]) => Promise<unknown>>(async () => ({ actorId: "u1", role: "OWNER" }));
 vi.mock("@/lib/collaboration/service", () => ({
-  authorizeCollab: (...a: any[]) => authorizeCollabMock(...a),
+  authorizeCollab: (...a: unknown[]) => authorizeCollabMock(...a),
 }));
 
 // Prisma surface used by requests.ts. Built via vi.hoisted so the mock factory
 // (hoisted to top of file) can reference it without a TDZ error.
 const db = vi.hoisted(() => {
-  const d: any = {
+  type MockFn = ReturnType<typeof vi.fn>;
+  const d: {
+    collaboration: Record<string, MockFn>;
+    collaborationMember: Record<string, MockFn>;
+    joinRequest: Record<string, MockFn>;
+    contactRequest: Record<string, MockFn>;
+    collaborationInvite: Record<string, MockFn>;
+    user: Record<string, MockFn>;
+    notification: Record<string, MockFn>;
+    $transaction: MockFn;
+  } = {
     collaboration: { findUnique: vi.fn(async () => null) },
     collaborationMember: {
       findUnique: vi.fn(async () => null),
@@ -46,7 +58,7 @@ const db = vi.hoisted(() => {
     },
     user: { findUnique: vi.fn(async () => ({ id: "u2" })) },
     notification: { updateMany: vi.fn(async () => ({ count: 1 })) },
-    $transaction: vi.fn(async (fn: any) => fn(d)),
+    $transaction: vi.fn(async (fn: (tx: unknown) => unknown) => fn(d)),
   };
   return d;
 });

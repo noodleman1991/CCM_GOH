@@ -10,7 +10,7 @@ import type {
 
 interface Community {
   id: string
-  name: any
+  name: Record<string, string> | string
   type: string
   regionalName: string | null
 }

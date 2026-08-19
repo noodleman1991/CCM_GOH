@@ -115,9 +115,8 @@ export interface CommunityQueryResult extends PaginatedResult<LocalizedCommunity
 }
 
 // Analytics and reporting types
-export interface DownloadAnalytics extends DownloadEvent {
-  // Extended analytics data can be added here as needed
-}
+// Extended analytics data can be added here as needed
+export type DownloadAnalytics = DownloadEvent
 
 export interface UserAnalytics {
   profileViews: number
@@ -189,7 +188,7 @@ export interface CommunityCreateData {
 export type DatabaseError = {
   code: string
   message: string
-  meta?: Record<string, any>
+  meta?: Record<string, unknown>
 }
 
 export type DatabaseResult<T> = {

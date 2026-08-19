@@ -6,7 +6,7 @@
  * Full i18n and RTL support
  */
 
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo } from 'react'
 import { useTranslations } from 'next-intl'
 import { useRouter, Link } from '@/i18n/navigation'
 import { Button } from '@/components/ui/button'
@@ -105,16 +105,21 @@ export function CollaboratePageClient({
   const [filters, setFilters] = useState<CommunityFiltersState>(filtersFromProps)
 
   // Re-sync local state when the URL-derived props change (e.g. back/forward
-  // navigation). Serialize-compare to avoid render loops after router.push.
-  useEffect(() => {
-    setFilters(prev =>
-      JSON.stringify(prev) === JSON.stringify(filtersFromProps) ? prev : filtersFromProps
-    )
-  }, [filtersFromProps])
+  // navigation), adjusting state during render instead of in an effect.
+  // Serialize-compare to avoid render loops after router.push.
+  const [prevFiltersFromProps, setPrevFiltersFromProps] = useState(filtersFromProps)
+  if (prevFiltersFromProps !== filtersFromProps) {
+    setPrevFiltersFromProps(filtersFromProps)
+    if (JSON.stringify(filters) !== JSON.stringify(filtersFromProps)) {
+      setFilters(filtersFromProps)
+    }
+  }
 
-  useEffect(() => {
+  const [prevInitialSearch, setPrevInitialSearch] = useState(initialSearch)
+  if (prevInitialSearch !== initialSearch) {
+    setPrevInitialSearch(initialSearch)
     setSearchInput(initialSearch || '')
-  }, [initialSearch])
+  }
 
   // No local state for community users - always use prop from server
   const communityUsers = initialCommunityUsers

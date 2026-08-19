@@ -37,7 +37,7 @@ interface BlocksProps {
     userId?: string;
 }
 
-const componentMap: Record<string, React.ComponentType<any>> = {
+const componentMap: Record<string, React.ElementType> = {
     "hero-1": Hero1,
     "hero-2": Hero2,
     "section-header": SectionHeader,
@@ -69,11 +69,11 @@ export default function Blocks({ blocks, locale, userId }: BlocksProps) {
     // if one lands in a page's `blocks[]` it's a content-modeling slip in Sanity.
     // We drop it defensively and only warn in development (so prod logs stay clean).
     const pageBlocks = (blocks?.filter(block => {
-        if ((block as any)._type === 'block') {
+        if ((block as { _type: string })._type === 'block') {
             if (process.env.NODE_ENV !== 'production') {
                 console.warn(
                     'PortableText block detected in page blocks array. This should be rendered via PortableTextRenderer, not Blocks component.',
-                    (block as any)._key
+                    (block as { _key?: string })._key
                 );
             }
             return false;

@@ -313,7 +313,7 @@ export const searchCaseStudies = async ({
     const validLocales: SupportedLanguage[] = ['en', 'es', 'fr', 'ar'];
     const safeLocale = validLocales.includes(locale as SupportedLanguage) ? locale : 'en';
 
-    let filters = [`_type == "caseStudy"`, `status == "approved"`];
+    const filters = [`_type == "caseStudy"`, `status == "approved"`];
     const params: Record<string, unknown> = { limit };
 
     if (searchTerm) {

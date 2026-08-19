@@ -208,9 +208,9 @@ export async function POST(request: NextRequest) {
           })
 
           console.log(`✅ Onboarding API: Created user ${userId} successfully`)
-        } catch (createError: any) {
+        } catch (createError) {
           // Handle P2002 (unique constraint) gracefully - webhook likely just created the user
-          if (createError.code === 'P2002') {
+          if ((createError as { code?: string }).code === 'P2002') {
             console.log(`✓ Onboarding API: User ${userId} created by webhook during request - refetching`)
 
             // Try to fetch by user ID first
@@ -296,9 +296,10 @@ export async function POST(request: NextRequest) {
             phoneVerified: null,
           }
         })
-      } catch (upsertError: any) {
+      } catch (upsertError) {
         // Handle email conflict - old user exists with same email but different Clerk ID
-        if (upsertError.code === 'P2002' && upsertError.meta?.target?.includes('email')) {
+        const prismaError = upsertError as { code?: string; meta?: { target?: string[] } }
+        if (prismaError.code === 'P2002' && prismaError.meta?.target?.includes('email')) {
           const email = existingUser?.email || null
           console.log(`⚠️ Onboarding: Email ${email} conflict - cleaning up old user`)
 

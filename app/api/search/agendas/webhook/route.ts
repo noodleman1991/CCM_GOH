@@ -149,24 +149,43 @@ export async function POST(request: NextRequest) {
   }
 }
 
+/** Minimal shape of the Sanity agenda payload consumed by the transform below. */
+interface SanityAgenda {
+  _id: string
+  title?: AgendaSearchRecord['title'] | null
+  subtitle?: NonNullable<AgendaSearchRecord['subtitle']> | null
+  description?: NonNullable<AgendaSearchRecord['description']> | null
+  slug?: { current?: string } | null
+  agendaType?: string | null
+  year?: number | null
+  publishDate?: string | null
+  totalDownloadCount?: number | null
+  featured?: boolean | null
+  accessLevel?: AgendaSearchRecord['accessLevel'] | null
+  organizations?: Array<{ name?: string | null }> | null
+  regionalCommunities?: Array<{ name?: string | null }> | null
+  tags?: Array<{ name?: string | null }> | null
+  files?: Array<{ language?: string; downloadCount?: number }> | null
+}
+
 // Helper function to transform agenda for Algolia indexing
-function transformAgendaForIndex(agenda: any): AgendaSearchRecord | null {
+function transformAgendaForIndex(agenda: SanityAgenda): AgendaSearchRecord | null {
   try {
     return {
       objectID: agenda._id,
       contentId: agenda._id,
       title: agenda.title || { en: 'Untitled Agenda' },
-      subtitle: agenda.subtitle || {},
-      description: agenda.description || {},
+      subtitle: agenda.subtitle || ({} as NonNullable<AgendaSearchRecord['subtitle']>),
+      description: agenda.description || ({} as NonNullable<AgendaSearchRecord['description']>),
       slug: agenda.slug?.current || '',
       agendaType: agenda.agendaType || 'other',
       year: agenda.year || new Date().getFullYear(),
       publishDate: agenda.publishDate ? new Date(agenda.publishDate).getTime() : Date.now(),
       totalDownloadCount: agenda.totalDownloadCount || 0,
       featured: agenda.featured || false,
-      organizations: (agenda.organizations || []).map((org: any) => org.name).filter(Boolean),
-      regionalCommunities: (agenda.regionalCommunities || []).map((community: any) => community.name).filter(Boolean),
-      tags: (agenda.tags || []).map((tag: any) => tag.name).filter(Boolean),
+      organizations: (agenda.organizations || []).map((org) => org.name).filter((name): name is string => Boolean(name)),
+      regionalCommunities: (agenda.regionalCommunities || []).map((community) => community.name).filter((name): name is string => Boolean(name)),
+      tags: (agenda.tags || []).map((tag) => tag.name).filter((name): name is string => Boolean(name)),
       accessLevel: agenda.accessLevel || 'public',
       language: 'en', // deprecated; kept for back-compat
       languages: deriveAgendaLanguages(agenda.files, agenda.title)

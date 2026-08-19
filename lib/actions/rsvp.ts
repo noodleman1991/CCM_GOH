@@ -7,7 +7,7 @@ import { client } from "@/sanity/lib/client";
 import { createNotification } from "@/lib/notifications/service";
 import type { RsvpStatus } from "@/generated/prisma";
 
-type Result<T = {}> = ({ ok: true } & T) | { ok: false; error: string };
+type Result<T = unknown> = ({ ok: true } & T) | { ok: false; error: string };
 
 const statusSchema = z.enum(["GOING", "INTERESTED", "NOT_GOING"]);
 

@@ -19,6 +19,32 @@ type AllPostsProps = Extract<
   locale?: string;
 };
 
+// Minimal shape of a news post as projected by NEWS_POST_FIELDS below.
+type LocalizedText = string | Record<string, string> | null;
+
+type NewsPostItem = {
+  _id: string;
+  title: LocalizedText;
+  excerpt: LocalizedText;
+  slug: string | null;
+  publishedAt: string;
+  image?: {
+    asset?: {
+      _id: string;
+      url: string | null;
+      mimeType?: string | null;
+      metadata?: { lqip?: string | null } | null;
+    } | null;
+    alt?: string | null;
+  } | null;
+  author?: { _id: string; name?: string | null } | null;
+  tags?: Array<{
+    _id: string;
+    label: LocalizedText;
+    color?: string | null;
+  }> | null;
+};
+
 // Shared fragment for news post fields
 const NEWS_POST_FIELDS = groq`
   _id,
@@ -62,7 +88,11 @@ const NEWS_POST_FIELDS = groq`
   language
 `;
 
-async function fetchNewsPosts(mode: string, limit: number, manualPosts?: any[]) {
+async function fetchNewsPosts(
+  mode: string,
+  limit: number,
+  manualPosts?: AllPostsProps["manualPosts"]
+): Promise<NewsPostItem[]> {
   // Manual mode: fetch specific posts
   if (mode === "manual" && manualPosts && manualPosts.length > 0) {
     const manualPostIds = manualPosts.map(ref => ref._ref).filter(Boolean);
@@ -71,7 +101,7 @@ async function fetchNewsPosts(mode: string, limit: number, manualPosts?: any[]) 
       return [];
     }
 
-    return await client.fetch(
+    return await client.fetch<NewsPostItem[]>(
       groq`*[_type == "newsPost" && _id in $ids] {
         ${NEWS_POST_FIELDS}
       }`,
@@ -81,7 +111,7 @@ async function fetchNewsPosts(mode: string, limit: number, manualPosts?: any[]) 
 
   // Featured mode: featured first, then recent to fill quota
   if (mode === "featured") {
-    const featured = await client.fetch(
+    const featured = await client.fetch<NewsPostItem[]>(
       groq`*[_type == "newsPost" &&
         featured == true &&
         publishedAt <= now()
@@ -97,7 +127,7 @@ async function fetchNewsPosts(mode: string, limit: number, manualPosts?: any[]) 
 
     // Otherwise, fetch recent posts to fill the quota
     const remaining = limit - featured.length;
-    const recent = await client.fetch(
+    const recent = await client.fetch<NewsPostItem[]>(
       groq`*[_type == "newsPost" &&
         (!defined(featured) || featured == false) &&
         publishedAt <= now()
@@ -110,7 +140,7 @@ async function fetchNewsPosts(mode: string, limit: number, manualPosts?: any[]) 
   }
 
   // Recent mode: most recent posts only
-  return await client.fetch(
+  return await client.fetch<NewsPostItem[]>(
     groq`*[_type == "newsPost" &&
       publishedAt <= now()
     ] | order(publishedAt desc)[0...${limit}] {
@@ -130,7 +160,7 @@ export default async function AllPosts({
   const displayMode = stegaClean(mode) || "featured";
   const displayLimit = stegaClean(limit) || 6;
 
-  const posts = await fetchNewsPosts(displayMode, displayLimit, manualPosts as any);
+  const posts = await fetchNewsPosts(displayMode, displayLimit, manualPosts);
 
   if (!posts || posts.length === 0) {
     const t = await getTranslations({ locale: supportedLocale, namespace: "blocks" });
@@ -147,11 +177,11 @@ export default async function AllPosts({
   return (
     <SectionContainer padding={padding}>
       <div className="grid grid-cols-1 @content-md/page:grid-cols-2 @content-lg/page:grid-cols-3 gap-6">
-        {posts.map((post: any) => {
+        {posts.map((post) => {
           // Extract localized content
           const title = typeof post.title === 'string'
             ? post.title
-            : getLocalizedField(post.title, supportedLocale, '');
+            : getLocalizedField(post.title, supportedLocale, '') ?? '';
           const excerpt = typeof post.excerpt === 'string'
             ? post.excerpt
             : getLocalizedField(post.excerpt, supportedLocale, '');
@@ -202,7 +232,7 @@ export default async function AllPosts({
                   )}
                   {post.tags && post.tags.length > 0 && (
                     <div className="flex flex-wrap gap-2 mt-3">
-                      {post.tags.slice(0, 3).map((tag: any) => {
+                      {post.tags.slice(0, 3).map((tag) => {
                         const tagLabel = typeof tag.label === 'string'
                           ? tag.label
                           : getLocalizedField(tag.label, supportedLocale, '');

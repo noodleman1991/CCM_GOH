@@ -6,11 +6,23 @@ import { formatDate } from "@/lib/utils";
 import { getLocalizedValue } from '@/i18n/i18n-helpers';
 import { Users, Building2, Calendar, MapPin, Award } from "lucide-react";
 
+/** Minimal Sanity image projection used by cards (urlFor-compatible). */
+interface CardImage {
+    asset?: {
+        _id?: string;
+        url?: string;
+        metadata?: { lqip?: string };
+    };
+    alt?: string;
+    hotspot?: unknown;
+    crop?: unknown;
+}
+
 interface CaseStudyCardProps {
     title: Record<string, string> | string;
     subtitle?: Record<string, string> | string;
     excerpt?: Record<string, string> | string;
-    image?: any;
+    image?: CardImage;
     tags?: Array<{
         title: Record<string, string>;
         color?: string;
@@ -42,7 +54,16 @@ export function CaseStudyCard({
   locale,
   variant = "default"
 }: {
-  caseStudy: any;
+  caseStudy: {
+    slug?: { current?: string };
+    title: Record<string, string> | string;
+    excerpt?: Record<string, string> | string;
+    image?: CardImage;
+    tags?: Array<{ label: string; color?: string }>;
+    authors?: Array<{ name: string; role?: string }>;
+    publishedAt?: string;
+    featured?: boolean;
+  };
   locale: string;
   variant?: "default" | "minimal";
 }) {
@@ -86,7 +107,7 @@ export function CaseStudyCard({
         title={caseStudy.title}
         excerpt={caseStudy.excerpt}
         image={caseStudy.image}
-        tags={caseStudy.tags?.map((tag: any) => ({
+        tags={caseStudy.tags?.map((tag) => ({
           title: { [locale]: tag.label },
           color: tag.color
         }))}

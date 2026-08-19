@@ -1,4 +1,4 @@
-import { defineField, defineType } from "sanity";
+import { defineField, defineType, type PreviewValue } from "sanity";
 import { FileSearch } from "lucide-react";
 import { topicOptions } from "../shared/topic-options";
 import { REGION_OPTIONS, THEME_OPTIONS, POPULATION_OPTIONS } from "../shared/taxonomy-options";
@@ -538,7 +538,7 @@ export default defineType({
         prepare({ title, status, media, featured }: {
             title?: Record<string, string>;
             status?: string;
-            media?: any;
+            media?: PreviewValue["media"];
             featured?: boolean;
         }) {
             const displayTitle = title?.en || "Untitled Case Study";

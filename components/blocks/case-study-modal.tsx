@@ -12,11 +12,48 @@ import { Separator } from "@/components/ui/separator";
 import { useTranslations } from 'next-intl';
 import PortableTextRenderer from "@/components/portable-text-renderer";
 import { getLocalizedText, formatCaseStudyDate, getPrimaryAuthor, getStudyLocationText } from "@/lib/case-study-utils";
+import type { CaseStudy, LocalizedString } from "@/types/case-study";
+
+/**
+ * Minimal case-study shape actually consumed by this modal (and by the grid
+ * card that opens it). The data comes from loosely-typed Sanity projections,
+ * so only the fields rendered here are modeled.
+ */
+export interface CaseStudyModalData {
+  _id?: string;
+  title?: LocalizedString;
+  excerpt?: LocalizedString;
+  featured?: boolean | null;
+  publishedAt?: string | null;
+  topic?: string | null;
+  status?: string | null;
+  authors?: Array<{
+    _id?: string;
+    name?: string;
+    role?: string;
+    affiliation?: string | null;
+  }> | null;
+  tags?: Array<{
+    _id?: string;
+    label?: LocalizedString;
+    color?: string | null;
+  } | null> | null;
+  image?: {
+    asset?: { _id?: string; url?: string | null } | null;
+    alt?: string | null;
+    caption?: string | null;
+  } | null;
+  content?: Array<{ _type: string; _key?: string; [key: string]: unknown }> | null;
+  studyPeriod?: { startDate?: string; endDate?: string } | null;
+  organizations?: Array<{ _id?: string; name?: string | null }> | null;
+  projects?: Array<{ _id?: string; name?: string | null }> | null;
+  studyAreas?: string[] | null;
+}
 
 interface CaseStudyModalProps {
   isOpen: boolean;
   onClose: () => void;
-  caseStudy: any;
+  caseStudy: CaseStudyModalData;
   locale: string;
 }
 
@@ -27,8 +64,10 @@ export function CaseStudyModal({ isOpen, onClose, caseStudy, locale }: CaseStudy
 
   const title = getLocalizedText(caseStudy.title, supportedLocale, 'Case Study');
   const excerpt = getLocalizedText(caseStudy.excerpt, supportedLocale, '');
-  const primaryAuthor = getPrimaryAuthor(caseStudy);
-  const locationText = getStudyLocationText(caseStudy);
+  // The shared utils are typed against the fuller CaseStudy interface but only
+  // read fields present on CaseStudyModalData — bridge the type gap here.
+  const primaryAuthor = getPrimaryAuthor(caseStudy as unknown as CaseStudy);
+  const locationText = getStudyLocationText(caseStudy as unknown as CaseStudy);
   const publishDate = caseStudy.publishedAt ? new Date(caseStudy.publishedAt) : null;
 
   return (
@@ -95,7 +134,7 @@ export function CaseStudyModal({ isOpen, onClose, caseStudy, locale }: CaseStudy
             {/* Tags */}
             {caseStudy.tags && caseStudy.tags.length > 0 && (
               <div className="flex flex-wrap gap-2">
-                {caseStudy.tags.map((tag: any) => {
+                {caseStudy.tags.map((tag) => {
                   // Skip null or incomplete tags
                   if (!tag || !tag.color) return null;
 
@@ -156,7 +195,7 @@ export function CaseStudyModal({ isOpen, onClose, caseStudy, locale }: CaseStudy
                   {t('studyPeriod')}
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  {formatCaseStudyDate(new Date(caseStudy.studyPeriod.startDate), supportedLocale)}
+                  {formatCaseStudyDate(new Date(caseStudy.studyPeriod.startDate ?? NaN), supportedLocale)}
                   {caseStudy.studyPeriod.endDate && (
                     <> – {formatCaseStudyDate(new Date(caseStudy.studyPeriod.endDate), supportedLocale)}</>
                   )}
@@ -171,7 +210,7 @@ export function CaseStudyModal({ isOpen, onClose, caseStudy, locale }: CaseStudy
                   {t('organizations')}
                 </h3>
                 <div className="flex flex-wrap gap-2">
-                  {caseStudy.organizations.map((org: any) => (
+                  {caseStudy.organizations.map((org) => (
                     <Badge key={org._id} variant="outline">
                       {org.name}
                     </Badge>
@@ -187,7 +226,7 @@ export function CaseStudyModal({ isOpen, onClose, caseStudy, locale }: CaseStudy
                   {t('relatedProjects')}
                 </h3>
                 <div className="flex flex-wrap gap-2">
-                  {caseStudy.projects.map((project: any) => (
+                  {caseStudy.projects.map((project) => (
                     <Badge key={project._id} variant="outline">
                       {project.name}
                     </Badge>
@@ -203,7 +242,7 @@ export function CaseStudyModal({ isOpen, onClose, caseStudy, locale }: CaseStudy
                   {t('studyAreas')}
                 </h3>
                 <div className="flex flex-wrap gap-2">
-                  {caseStudy.studyAreas.map((area: any) => (
+                  {caseStudy.studyAreas.map((area) => (
                     <Badge key={area} variant="secondary">
                       {area.replace(/_/g, ' ')}
                     </Badge>
@@ -219,7 +258,7 @@ export function CaseStudyModal({ isOpen, onClose, caseStudy, locale }: CaseStudy
                   {t('allAuthors')}
                 </h3>
                 <div className="space-y-2">
-                  {caseStudy.authors.map((author: any) => (
+                  {caseStudy.authors.map((author) => (
                     <div key={author._id} className="flex items-center gap-2">
                       <div className="text-sm">
                         <p className="font-medium">{author.name}</p>

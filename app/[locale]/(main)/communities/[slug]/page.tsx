@@ -38,7 +38,9 @@ export async function generateStaticParams() {
     }
 
     const locales = ['en', 'es', 'fr', 'ar'];
-    const slugs = [...new Set(data.map((page: any) => page.slug?.current || page.slug))];
+    const slugs = [...new Set(data.map((page: { slug?: { current?: string } | string }) =>
+        typeof page.slug === 'string' ? page.slug : page.slug?.current
+    ))];
     const params = [];
 
     for (const slug of slugs) {

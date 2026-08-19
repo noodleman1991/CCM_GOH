@@ -15,7 +15,7 @@ import type {
 // NOTE: `Prisma` (the value) comes from '@/lib/prisma' above — never from
 // '@/generated/prisma' — so Sql fragments share the executing client's module
 // instance (see lib/prisma.ts's export comment; 42804 jsonb bug 2026-08-05).
-import type { User } from '@/generated/prisma'
+import type { User, UserCommunity, Community, RecentWork, WorkType, ExpertiseArea } from '@/generated/prisma'
 
 export class UserService {
   /**
@@ -212,7 +212,8 @@ export class UserService {
       const { communityIds, recentWork, ...directUserFields } = updateData
 
       // Build the Prisma update data object with proper relation syntax
-      const prismaUpdateData: any = {
+      // (unchecked variant so nested creates can use plain communityId FKs)
+      const prismaUpdateData: Prisma.UserUncheckedUpdateInput = {
         ...directUserFields
       }
 
@@ -237,10 +238,10 @@ export class UserService {
             startDate: new Date(work.startDate),
             endDate: work.endDate ? new Date(work.endDate) : null,
             isOngoing: work.isOngoing || false,
-            role: (work as any).role || null,
-            collaborators: (work as any).collaborators || null,
-            outcome: (work as any).outcome || null,
-            imageUrl: (work as any).imageUrl || null
+            role: work.role || null,
+            collaborators: work.collaborators || null,
+            outcome: work.outcome || null,
+            imageUrl: work.imageUrl || null
           }))
         }
       }
@@ -587,13 +588,13 @@ export class UserService {
       // This makes adding filters narrow results rather than widen them.
       if (filters.workTypes?.length) {
         andConditions.push({
-          workTypes: { hasSome: filters.workTypes as any }
+          workTypes: { hasSome: filters.workTypes as WorkType[] }
         })
       }
 
       if (filters.expertiseAreas?.length) {
         andConditions.push({
-          expertiseAreas: { hasSome: filters.expertiseAreas as any }
+          expertiseAreas: { hasSome: filters.expertiseAreas as ExpertiseArea[] }
         })
       }
 
@@ -773,8 +774,8 @@ export class UserService {
    */
   private static transformToLocalizedUser(
     user: User & {
-      communityMemberships?: any[]
-      recentWork?: any[]
+      communityMemberships?: Array<UserCommunity & { community: Community }>
+      recentWork?: RecentWork[]
     },
     localizedQuery: ReturnType<typeof createLocalizedQuery>
   ): LocalizedUser {

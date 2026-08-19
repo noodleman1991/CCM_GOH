@@ -13,14 +13,37 @@ import Link from "next/link";
 import { Calendar, Tag, Globe, Building, Filter, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CONTAINER_WIDTH, SECTION_SPACING_Y } from "@/lib/design-tokens";
+import type { ComponentProps } from "react";
 import { useTranslations } from 'next-intl';
 
+/** Loosely-typed content item from the page's Sanity queries — only the fields
+ *  this section reads are modeled here; everything else passes through to the
+ *  typed cards (cast at the spread sites below). */
+type ContentItem = {
+    _id: string;
+    publishedAt: string;
+    slug: { current: string };
+    tags?: Array<{ _id: string }> | null;
+    regionalCommunities?: Array<{ _id: string }> | null;
+    organizations?: Array<{ regionalCommunity?: { _id: string } | null }> | null;
+} & Record<string, unknown>;
+
+type TagDoc = {
+    _id: string;
+    label: Record<string, string | undefined>;
+} & Record<string, unknown>;
+
+type RegionDoc = {
+    _id: string;
+    name: Record<string, string | undefined>;
+} & Record<string, unknown>;
+
 interface LatestContentProps {
-    newsPosts: any[];
-    caseStudies: any[];
-    externalSources: any[];
-    tags: any[];
-    regionalCommunities: any[];
+    newsPosts: ContentItem[];
+    caseStudies: ContentItem[];
+    externalSources: ContentItem[];
+    tags: TagDoc[];
+    regionalCommunities: RegionDoc[];
     locale: string;
 }
 
@@ -72,13 +95,13 @@ export default function LatestContentSection({
         }
 
         // Tag filter
-        if (tagFilter && !item.tags?.some((tag: any) => tag._id === tagFilter)) return false;
+        if (tagFilter && !item.tags?.some((tag) => tag._id === tagFilter)) return false;
 
         // Region filter
         if (regionFilter) {
             const hasRegion =
-                item.regionalCommunities?.some((rc: any) => rc._id === regionFilter) ||
-                item.organizations?.some((org: any) => org.regionalCommunity?._id === regionFilter);
+                item.regionalCommunities?.some((rc) => rc._id === regionFilter) ||
+                item.organizations?.some((org) => org.regionalCommunity?._id === regionFilter);
             if (!hasRegion) return false;
         }
 
@@ -92,7 +115,7 @@ export default function LatestContentSection({
                 .flatMap(item => item.tags || [])
                 .map(tag => tag._id)
         )
-    ).map(id => tags.find(tag => tag._id === id)).filter(Boolean);
+    ).map(id => tags.find(tag => tag._id === id)).filter((tag): tag is TagDoc => Boolean(tag));
 
     const clearFilters = () => {
         setDateFilter("all");
@@ -221,18 +244,18 @@ export default function LatestContentSection({
                             if (item.contentType === 'news') {
                                 return (
                                     <Link key={item._id} href={`/news/${item.slug.current}`}>
-                                        <NewsPostCard {...item} locale={locale} />
+                                        <NewsPostCard {...(item as unknown as ComponentProps<typeof NewsPostCard>)} locale={locale} />
                                     </Link>
                                 );
                             } else if (item.contentType === 'case-study') {
                                 return (
                                     <Link key={item._id} href={`/case-studies/${item.slug.current}`}>
-                                        <CaseStudyCard {...item} locale={locale} />
+                                        <CaseStudyCard {...(item as unknown as ComponentProps<typeof CaseStudyCard>)} locale={locale} />
                                     </Link>
                                 );
                             } else {
                                 return (
-                                    <ExternalSourceCard key={item._id} {...item} locale={locale} />
+                                    <ExternalSourceCard key={item._id} {...(item as unknown as ComponentProps<typeof ExternalSourceCard>)} locale={locale} />
                                 );
                             }
                         })}

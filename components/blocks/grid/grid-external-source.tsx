@@ -71,7 +71,10 @@ interface GridExternalSourceComponentProps {
 }
 
 // Helper function to get localized text
-function getLocalizedText(obj: any, locale: string): string {
+function getLocalizedText(
+    obj: string | Record<string, string | undefined> | null | undefined,
+    locale: string
+): string {
     if (!obj) return '';
     if (typeof obj === 'string') return obj;
     return obj[locale] || obj['en'] || '';
@@ -249,7 +252,7 @@ export default function GridExternalSourceComponent({
                         if (tags.length === 0) return null;
                         return (
                         <div className="flex flex-wrap gap-1 mt-3">
-                            {tags.slice(0, 3).map((tag: any) => {
+                            {tags.slice(0, 3).map((tag) => {
                                 const color = normalizeTagColor(tag.color);
                                 return (
                                 <Badge

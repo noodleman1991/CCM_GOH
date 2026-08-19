@@ -1,4 +1,4 @@
-import { defineField, defineType } from "sanity";
+import { defineField, defineType, type SanityDocument } from "sanity";
 import { Database } from "lucide-react";
 import { REGION_OPTIONS, THEME_OPTIONS } from "../shared/taxonomy-options";
 
@@ -29,7 +29,7 @@ export default defineType({
       name: "slug",
       title: "Slug",
       type: "slug",
-      options: { source: (doc: any) => doc?.title?.en || "", maxLength: 96 },
+      options: { source: (doc: SanityDocument) => (doc.title as { en?: string } | undefined)?.en || "", maxLength: 96 },
       validation: (Rule) => Rule.required(),
     }),
     defineField({ name: "description", title: "Description", type: "text", rows: 3 }),

@@ -7,7 +7,7 @@ import { authorizeCollab } from "@/lib/collaboration/service";
 import { objectExists, deleteObject } from "@/lib/r2";
 import { isAllowedUpload } from "@/lib/file-policy";
 
-type Result<T = {}> = ({ ok: true } & T) | { ok: false; error: string };
+type Result<T = unknown> = ({ ok: true } & T) | { ok: false; error: string };
 
 /**
  * Confirm an uploaded file: HEAD the R2 object, then persist the

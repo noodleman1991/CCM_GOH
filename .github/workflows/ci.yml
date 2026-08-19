@@ -34,9 +34,8 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck
 
-      - name: Lint (non-blocking — legacy backlog being burned down)
-        run: pnpm exec eslint . || true
-        continue-on-error: true
+      - name: Lint (blocking — backlog burned down to 0 errors 2026-08-19)
+        run: pnpm exec eslint . --max-warnings 250
 
       - name: Test
         run: pnpm test

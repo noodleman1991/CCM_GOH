@@ -108,8 +108,8 @@ export async function GET(request: NextRequest) {
     ])
 
     // Extract counts from results - Algolia v5 response structure
-    const getCount = (result: any): number => {
-      const firstResult = result?.results?.[0]
+    const getCount = (result: unknown): number => {
+      const firstResult = (result as { results?: Array<{ nbHits?: number; totalHits?: number }> } | undefined)?.results?.[0]
       return firstResult?.nbHits ?? firstResult?.totalHits ?? 0
     }
 

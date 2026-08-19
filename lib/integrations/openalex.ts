@@ -19,8 +19,22 @@ export function normalizeOrcidId(input: string): string | null {
   return `https://orcid.org/${m[1].toUpperCase()}`;
 }
 
+/** Subset of an OpenAlex work object that the mapper reads. */
+interface OpenAlexWork {
+  id?: string | null;
+  title?: string | null;
+  display_name?: string | null;
+  doi?: string | null;
+  publication_year?: number | null;
+  primary_location?: {
+    source?: { display_name?: string | null } | null;
+    landing_page_url?: string | null;
+  } | null;
+  host_venue?: { display_name?: string | null } | null;
+}
+
 /** Map one OpenAlex work object → our ImportedWork. */
-export function mapOpenAlexWork(w: any): ImportedWork | null {
+export function mapOpenAlexWork(w: OpenAlexWork | null | undefined): ImportedWork | null {
   const title: string = w?.title || w?.display_name || "";
   if (!title) return null;
   const venue =
@@ -48,6 +62,6 @@ export async function fetchOpenAlexWorks(orcid: string, limit = 25): Promise<Imp
   const res = await fetch(url, { headers: { Accept: "application/json" } });
   if (!res.ok) return [];
   const json = await res.json();
-  const works: any[] = Array.isArray(json?.results) ? json.results : [];
+  const works: OpenAlexWork[] = Array.isArray(json?.results) ? json.results : [];
   return works.map(mapOpenAlexWork).filter((w): w is ImportedWork => w !== null);
 }

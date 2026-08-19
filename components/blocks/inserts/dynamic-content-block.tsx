@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { ComponentProps } from "react";
 import { useTranslations } from "next-intl";
 import { getQueryMetadata, type QueryType } from "@/lib/dynamic-queries-types";
 import { cn } from "@/lib/utils";
@@ -133,9 +134,9 @@ export function DynamicContentBlock({
         </div>
 
         <div className={getGridClasses(section.displayStyle || "grid")}>
-          {data.map((item: any, index) => (
+          {data.map((item, index) => (
             <ContentCard
-              key={item._id || index}
+              key={(item as { _id?: string })._id || index}
               item={item}
               type={metadata.contentType}
               displayStyle={section.displayStyle || "grid"}
@@ -193,7 +194,7 @@ function ContentCard({
       return (
         <div className={cardClasses}>
           <NewsCard
-            post={item as any}
+            post={item as ComponentProps<typeof NewsCard>["post"]}
             locale={locale}
             variant={displayStyle === "minimal" ? "minimal" : "default"}
           />
@@ -203,7 +204,7 @@ function ContentCard({
       return (
         <div className={cardClasses}>
           <CaseStudyCard
-            caseStudy={item as any}
+            caseStudy={item as ComponentProps<typeof CaseStudyCard>["caseStudy"]}
             locale={locale}
             variant={displayStyle === "minimal" ? "minimal" : "default"}
           />
@@ -213,7 +214,7 @@ function ContentCard({
       return (
         <div className={cardClasses}>
           <LivedExperienceCard
-            experience={item as any}
+            experience={item as ComponentProps<typeof LivedExperienceCard>["experience"]}
             locale={locale}
             variant={displayStyle === "minimal" ? "minimal" : "default"}
           />

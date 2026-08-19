@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import type { PortableTextBlock } from '@portabletext/types';
 
 export interface ReadMoreConfig {
@@ -20,6 +20,52 @@ export interface ReadMoreReturn {
  * Custom hook for managing "Read More" functionality with Portable Text content
  * Finds readMore breaks and manages content truncation state
  */
+// Pure analysis of the content array; hoisted out of the hook so the React
+// Compiler can memoize the call itself (a manual useMemo here could not be
+// preserved by the compiler).
+function analyzeReadMoreContent(content: PortableTextBlock[]) {
+  if (!content || !Array.isArray(content)) {
+    return {
+      hasReadMoreBreak: false,
+      contentBeforeBreak: [],
+      contentAfterBreak: [],
+      readMoreBreak: undefined,
+      readMoreIndex: -1,
+    };
+  }
+
+  // Find the first readMore break
+  const readMoreIndex = content.findIndex(
+    (block) =>
+      block._type === 'break' &&
+      block.style === 'readMore'
+  );
+
+  const hasReadMoreBreak = readMoreIndex !== -1;
+
+  if (!hasReadMoreBreak) {
+    return {
+      hasReadMoreBreak: false,
+      contentBeforeBreak: content,
+      contentAfterBreak: [],
+      readMoreBreak: undefined,
+      readMoreIndex: -1,
+    };
+  }
+
+  const readMoreBreak = content[readMoreIndex];
+  const contentBeforeBreak = content.slice(0, readMoreIndex);
+  const contentAfterBreak = content.slice(readMoreIndex + 1);
+
+  return {
+    hasReadMoreBreak,
+    contentBeforeBreak,
+    contentAfterBreak,
+    readMoreBreak,
+    readMoreIndex,
+  };
+}
+
 export function useReadMore(
   content: PortableTextBlock[],
   config: ReadMoreConfig = {}
@@ -27,48 +73,7 @@ export function useReadMore(
   const { initiallyExpanded = false } = config;
   const [isExpanded, setIsExpanded] = useState(initiallyExpanded);
 
-  const contentAnalysis = useMemo(() => {
-    if (!content || !Array.isArray(content)) {
-      return {
-        hasReadMoreBreak: false,
-        contentBeforeBreak: [],
-        contentAfterBreak: [],
-        readMoreBreak: undefined,
-        readMoreIndex: -1,
-      };
-    }
-
-    // Find the first readMore break
-    const readMoreIndex = content.findIndex(
-      (block) =>
-        block._type === 'break' &&
-        (block as any).style === 'readMore'
-    );
-
-    const hasReadMoreBreak = readMoreIndex !== -1;
-
-    if (!hasReadMoreBreak) {
-      return {
-        hasReadMoreBreak: false,
-        contentBeforeBreak: content,
-        contentAfterBreak: [],
-        readMoreBreak: undefined,
-        readMoreIndex: -1,
-      };
-    }
-
-    const readMoreBreak = content[readMoreIndex];
-    const contentBeforeBreak = content.slice(0, readMoreIndex);
-    const contentAfterBreak = content.slice(readMoreIndex + 1);
-
-    return {
-      hasReadMoreBreak,
-      contentBeforeBreak,
-      contentAfterBreak,
-      readMoreBreak,
-      readMoreIndex,
-    };
-  }, [content]);
+  const contentAnalysis = analyzeReadMoreContent(content);
 
   const toggleExpanded = () => setIsExpanded(prev => !prev);
 

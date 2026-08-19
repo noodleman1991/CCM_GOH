@@ -1,4 +1,4 @@
-import { defineField, defineType } from "sanity";
+import { defineField, defineType, type SanityDocument } from "sanity";
 import { FileText } from "lucide-react";
 import { orderRankField } from "@sanity/orderable-document-list";
 import { REGION_OPTIONS, THEME_OPTIONS, POPULATION_OPTIONS } from "../shared/taxonomy-options";
@@ -43,7 +43,7 @@ export default defineType({
       type: "slug",
       group: "metadata",
       options: {
-        source: (doc: any) => {
+        source: (doc: SanityDocument) => {
           const t = (doc?.title || {}) as Record<string, string>;
           return t.en || t.es || t.fr || t.ar || "";
         },

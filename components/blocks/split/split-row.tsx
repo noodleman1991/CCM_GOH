@@ -40,7 +40,9 @@ export default function SplitRow({
           )}
         >
           {splitColumns?.map((column) => {
-            const Component = componentMap[column._type];
+            // Widen to ElementType: the map is keyed by the column's _type, but
+            // TS can't correlate the union member with its component here.
+            const Component: React.ElementType = componentMap[column._type];
             if (!Component) {
               // Fallback for development/debugging of new component types
               console.warn(
@@ -53,7 +55,7 @@ export default function SplitRow({
               // vertically centred against a taller text column.
               <div key={column._key} className="flex h-full min-w-0 flex-col justify-center">
                 <Component
-                  {...(column as any)}
+                  {...column}
 
                   noGap={noGap}
                   locale={locale}

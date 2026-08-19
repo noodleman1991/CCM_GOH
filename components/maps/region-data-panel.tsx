@@ -91,7 +91,9 @@ export function RegionDataPanel({
       .map(([f, count]) => `${count} ${labelForFacet?.(f) ?? f}`)
       .join(', ')
 
-  const Row = ({ d }: { d: PanelDatum }) =>
+  // Plain render helper (not a component) so no component type is created
+  // during render — same output, stable reconciliation.
+  const renderRow = (d: PanelDatum) =>
     activeFacets && labelForFacet ? (
       <CompositionBar byFacet={d.byFacet ?? {}} activeFacets={activeFacets} srSentence={srSentenceFor(d)} />
     ) : null
@@ -105,7 +107,7 @@ export function RegionDataPanel({
         <div className="mt-2">
           <p className="text-lg font-bold text-ccm-midnight">{labelFor(active.code)}</p>
           <p className="text-3xl font-bold text-[var(--color-ccm-sea)]">{active.value}</p>
-          <Row d={active} />
+          {renderRow(active)}
         </div>
       ) : (
         <ul className="mt-3 space-y-2.5">
@@ -120,7 +122,7 @@ export function RegionDataPanel({
                   <span className="truncate text-foreground/80">{labelFor(d.code)}</span>
                   <span className="shrink-0 font-semibold text-ccm-midnight">{d.value}</span>
                 </span>
-                <Row d={d} />
+                {renderRow(d)}
               </button>
             </li>
           ))}

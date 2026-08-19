@@ -198,14 +198,15 @@ export async function downloadFile(
 /**
  * Validate report data structure
  */
-export function validateReport(report: any): report is Report {
+export function validateReport(report: unknown): report is Report {
     if (!report || typeof report !== 'object') return false;
-    if (!report._id || !report.title || !report.slug) return false;
-    if (!report.files || !Array.isArray(report.files)) return false;
-    if (report.files.length === 0) return false;
+    const candidate = report as Partial<Report>;
+    if (!candidate._id || !candidate.title || !candidate.slug) return false;
+    if (!candidate.files || !Array.isArray(candidate.files)) return false;
+    if (candidate.files.length === 0) return false;
 
     // Validate at least one file has a valid asset
-    const hasValidFile = report.files.some((file: any) =>
+    const hasValidFile = candidate.files.some((file) =>
         file.file?.asset?.url
     );
 

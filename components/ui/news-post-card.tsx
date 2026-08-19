@@ -12,18 +12,30 @@ const INTL_LOCALE: Record<string, string> = {
     en: "en-US", es: "es-ES", fr: "fr-FR", ar: "ar-SA",
 };
 
+/** Minimal Sanity image projection used by cards (urlFor-compatible). */
+interface CardImage {
+    asset?: {
+        _id?: string;
+        url?: string;
+        metadata?: { lqip?: string };
+    };
+    alt?: string;
+    hotspot?: unknown;
+    crop?: unknown;
+}
+
 interface NewsPostCardProps {
     title: Record<string, string> | string;
     subtitle?: Record<string, string> | string;
     excerpt?: Record<string, string> | string;
-    image?: any;
+    image?: CardImage;
     tags?: Array<{
         title: Record<string, string>;
         color?: string;
     }>;
     author?: {
         name: string;
-        image?: any;
+        image?: CardImage;
     };
     organization?: {
         name: string;

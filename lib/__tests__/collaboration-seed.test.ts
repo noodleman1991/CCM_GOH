@@ -16,12 +16,12 @@ describe("workspace seed", () => {
     const stageCreate = vi.fn<(args: { data: { title: string; order: number; planId: string } }) => Promise<{ id: string }>>(
       async () => ({ id: "st" })
     );
-    const tx: any = {
+    const tx = {
       plan: { create: vi.fn(async () => ({ id: "p1" })) },
       planStage: { create: stageCreate },
       collaborationDoc: { create: vi.fn(async () => ({ id: "d1" })) },
     };
-    await seedWorkspace(tx, "c1", "u1");
+    await seedWorkspace(tx as unknown as Parameters<typeof seedWorkspace>[0], "c1", "u1");
 
     expect(tx.plan.create).toHaveBeenCalledWith(
       expect.objectContaining({ data: expect.objectContaining({ collaborationId: "c1" }) })

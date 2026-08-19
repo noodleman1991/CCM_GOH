@@ -110,16 +110,19 @@ export function AdminOnlyKeyInput(props: AdminOnlyKeyInputProps) {
 
 // Helper function to create the input component with admin emails configuration
 export function createAdminOnlyKeyInput(adminEmails?: string[]) {
-  return (props: StringInputProps) => (
-    <AdminOnlyKeyInput
-      {...props}
-      schemaType={{
-        ...props.schemaType,
-        options: {
-          ...props.schemaType.options,
-          adminEmails
-        }
-      }}
-    />
-  )
+  function AdminOnlyKeyInputWithEmails(props: StringInputProps) {
+    return (
+      <AdminOnlyKeyInput
+        {...props}
+        schemaType={{
+          ...props.schemaType,
+          options: {
+            ...props.schemaType.options,
+            adminEmails
+          }
+        }}
+      />
+    )
+  }
+  return AdminOnlyKeyInputWithEmails
 }

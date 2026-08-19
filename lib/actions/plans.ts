@@ -9,7 +9,7 @@ import { parseMentions } from "@/lib/comments/mentions";
 import { authorizeCollab } from "@/lib/collaboration/service";
 import type { TaskStatus } from "@/generated/prisma";
 
-type Result<T = {}> = ({ ok: true } & T) | { ok: false; error: string };
+type Result<T = unknown> = ({ ok: true } & T) | { ok: false; error: string };
 
 const STATUS_CYCLE: Record<TaskStatus, TaskStatus> = {
   TODO: "IN_PROGRESS",

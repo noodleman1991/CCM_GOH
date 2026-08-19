@@ -30,6 +30,7 @@ export default function SearchInterface() {
   // This search is force-dynamic, auth-aware and query-param driven, so there is
   // no SEO value in SSR-ing the results — render a skeleton on the server.
   const [mounted, setMounted] = useState(false)
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- deliberate client-only mount gate (preserves the InstantSearch SSR-hang fix)
   useEffect(() => setMounted(true), [])
 
   // Track hits count per tab from InstantSearch contexts

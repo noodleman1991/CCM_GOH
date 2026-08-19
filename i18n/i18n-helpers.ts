@@ -8,14 +8,15 @@ import { rtlLocales } from '@/i18n/routing';
  * @returns Localized string value
  */
 export function getLocalizedValue(
-    obj: Record<string, any> | string | null | undefined,
+    obj: Record<string, unknown> | string | null | undefined,
     locale: string,
     fallbackLocale = 'en'
 ): string {
     if (!obj) return '';
     if (typeof obj === 'string') return obj;
     if (typeof obj === 'object') {
-        return obj[locale] || obj[fallbackLocale] || '';
+        const v = obj[locale] ?? obj[fallbackLocale];
+        return typeof v === 'string' ? v : '';
     }
     return '';
 }

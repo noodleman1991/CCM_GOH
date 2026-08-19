@@ -50,6 +50,7 @@ export default async function EventPage({
   // Organiser-only attendee list (the action itself enforces submittedBy/staff).
   const attendees = userId ? await listRsvpsForOrganiser(event._id) : { ok: false as const, error: "" };
   const start = event.startAt ? new Date(event.startAt) : null;
+  // eslint-disable-next-line react-hooks/purity -- async server component (force-dynamic): rendered once per request, so reading the clock here is stable for the render
   const isPast = start ? start.getTime() < Date.now() : false;
   const day = start?.toLocaleDateString(locale, { day: "numeric" });
   const month = start?.toLocaleDateString(locale, { month: "short" });

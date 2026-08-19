@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { getActor, isStaff } from "@/lib/authz";
 import { createNotification } from "@/lib/notifications/service";
 
-type Result<T = {}> = ({ ok: true } & T) | { ok: false; error: string };
+type Result<T = unknown> = ({ ok: true } & T) | { ok: false; error: string };
 
 const schema = z.object({
   message: z.string().trim().min(1).max(280),
@@ -47,7 +47,7 @@ export async function broadcastNotification(input: z.infer<typeof schema>): Prom
   } else {
     // region: communities of type REGIONAL with this regionalName.
     const members = await prisma.userCommunity.findMany({
-      where: { community: { type: "REGIONAL", regionalName: target.regionalName as any } },
+      where: { community: { type: "REGIONAL", regionalName: target.regionalName as import("@/generated/prisma").RegionalCommunityName } },
       select: { userId: true },
     });
     recipientIds = [...new Set(members.map((m) => m.userId))];

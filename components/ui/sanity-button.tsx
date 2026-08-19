@@ -101,23 +101,14 @@ export function SanityButton({ link, locale = 'en', isRTL = false, className }: 
   }
 
   // Render as button
-  const ButtonComponent = ({ children, ...props }: any) => (
-    <Button
-      variant={buttonVariant}
-      size={size}
-      className={cn(
-        isRTL && "font-arabic-heading",
-        className
-      )}
-      {...props}
-    >
-      {children}
-    </Button>
+  const buttonClassName = cn(
+    isRTL && "font-arabic-heading",
+    className
   );
 
   if (isExternal) {
     return (
-      <ButtonComponent asChild>
+      <Button asChild variant={buttonVariant} size={size} className={buttonClassName}>
         <a
           href={link.href}
           target={target ? "_blank" : undefined}
@@ -125,16 +116,16 @@ export function SanityButton({ link, locale = 'en', isRTL = false, className }: 
         >
           {link.title}
         </a>
-      </ButtonComponent>
+      </Button>
     );
   }
 
   return (
-    <ButtonComponent asChild>
+    <Button asChild variant={buttonVariant} size={size} className={buttonClassName}>
       <Link href={link.href}>
         {link.title}
       </Link>
-    </ButtonComponent>
+    </Button>
   );
 }
 
@@ -144,7 +135,7 @@ export function SanityButton({ link, locale = 'en', isRTL = false, className }: 
 export function getButtonVariant(buttonVariant?: SanityButtonVariant | string): SanityButtonVariant {
   if (typeof buttonVariant === 'string') {
     // Legacy support for string variants
-    return { variant: buttonVariant as any, size: "default", stroke: "none" };
+    return { variant: buttonVariant as SanityButtonVariant["variant"], size: "default", stroke: "none" };
   }
 
   return {

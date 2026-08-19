@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { heading } from "@/lib/design-tokens";
 import PortableTextRenderer from "@/components/portable-text-renderer";
-import { SanityButton } from "@/components/ui/sanity-button";
+import { SanityButton, type SanityLinkData } from "@/components/ui/sanity-button";
 import { createElement } from "react";
 import { PAGE_QUERY_RESULT } from "@/sanity.types";
 import { getLocalizedField, getLocalizedPortableText } from "@/lib/localization-utils";
@@ -74,7 +74,7 @@ export default function SplitContent({
         )}
         {link?.href && (
           <div className="mt-6 flex flex-col">
-            <SanityButton link={link as any} locale={locale} />
+            <SanityButton link={link as SanityLinkData} locale={locale} />
           </div>
         )}
       </div>

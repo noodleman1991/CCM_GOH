@@ -723,6 +723,7 @@ function SidebarMenuSkeleton({
     const { isRtl } = useSidebar()
     // Random width between 50 to 90%.
     const width = React.useMemo(() => {
+        // eslint-disable-next-line react-hooks/purity -- vendored shadcn skeleton: intentionally random width, computed once per mount
         return `${Math.floor(Math.random() * 40) + 50}%`
     }, [])
 

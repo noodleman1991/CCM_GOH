@@ -65,7 +65,10 @@ export default defineType({
             variant: "variant",
             content: "content",
         },
-        prepare({ variant, content }: { variant?: string; content?: any[] }) {
+        prepare({ variant, content }: {
+            variant?: string;
+            content?: Array<{ children?: Array<{ text?: string }> }>;
+        }) {
             const icons = {
                 info: "ℹ️",
                 warning: "⚠️",

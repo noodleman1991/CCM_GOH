@@ -22,8 +22,8 @@ type ProfileData = {
   personalWebsite?: string | null
   linkedinProfile?: string | null
   phoneNumber?: string | null
-  communityMemberships?: any[] | null
-  recentWork?: any[] | null
+  communityMemberships?: unknown[] | null
+  recentWork?: unknown[] | null
   // Domain-rich fields (K4)
   headline?: string | null
   pronouns?: string | null

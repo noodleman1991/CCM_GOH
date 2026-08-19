@@ -6,6 +6,16 @@ import { fetchUserManagementOptionsWithLocale } from "@/lib/actions/sync-user-ma
 import { prisma } from "@/lib/prisma"
 import { OnboardingClient } from "./onboarding-client"
 import { getRegionalCommunities } from "@/sanity/queries/regional-communities"
+import type { RegionalCommunityName } from "@/generated/prisma"
+
+// The community shape assembled below for the onboarding form.
+interface OnboardingCommunity {
+    id: string
+    slug: string
+    name: Record<string, string> | string
+    type: string
+    regionalName: string | null
+}
 
 // Fallback communities with multilingual names (all 4 languages)
 const FALLBACK_COMMUNITIES = [
@@ -192,7 +202,7 @@ export default async function OnboardingPage({ params }: { params: Promise<{ loc
     ])
 
     // Fetch communities directly from Prisma/Sanity (avoids HTTP self-call issues)
-    let communities: any[] = []
+    let communities: OnboardingCommunity[] = []
     try {
         // Fetch communities from Sanity (source of truth for names and translations)
         const sanityCommunities = await getRegionalCommunities()
@@ -216,8 +226,8 @@ export default async function OnboardingPage({ params }: { params: Promise<{ loc
         if (!sanityCommunities || sanityCommunities.length === 0) {
             console.warn('[Onboarding] ⚠️ No communities in Sanity, using hardcoded fallback')
             communities = FALLBACK_COMMUNITIES
-                .map(community => {
-                    const dbId = regionalNameToId.get(community.regionalName as any)
+                .map((community): OnboardingCommunity | null => {
+                    const dbId = regionalNameToId.get(community.regionalName as RegionalCommunityName)
                     if (!dbId) return null
                     return {
                         id: dbId,
@@ -227,7 +237,7 @@ export default async function OnboardingPage({ params }: { params: Promise<{ loc
                         regionalName: community.regionalName
                     }
                 })
-                .filter(Boolean)
+                .filter((c): c is OnboardingCommunity => Boolean(c))
         } else {
             // Merge Sanity data with database IDs. The DB enum (regionalName) and
             // the Sanity slug don't always transform 1:1 — e.g. slug
@@ -250,10 +260,10 @@ export default async function OnboardingPage({ params }: { params: Promise<{ loc
             )
 
             communities = sanityCommunities
-                .map((community: any) => {
-                    const transformed = community.slug.replace(/-/g, '_').toUpperCase()
+                .map((community: { slug: string; name: Record<string, string> | string }): OnboardingCommunity | null => {
+                    const transformed = community.slug.replace(/-/g, '_').toUpperCase() as RegionalCommunityName
                     // 1) exact transform match, 2) fuzzy normalized match
-                    let match = regionalNameToId.get(transformed)
+                    const match = regionalNameToId.get(transformed)
                         ? { id: regionalNameToId.get(transformed)!, regionalName: transformed }
                         : normalizedDbIds.get(norm(transformed))
 
@@ -269,7 +279,7 @@ export default async function OnboardingPage({ params }: { params: Promise<{ loc
                         regionalName: match.regionalName,
                     }
                 })
-                .filter(Boolean)
+                .filter((c: OnboardingCommunity | null): c is OnboardingCommunity => Boolean(c))
         }
 
         console.log('[Onboarding] Communities loaded:', communities.length)

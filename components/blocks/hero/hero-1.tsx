@@ -1,4 +1,6 @@
-import { SanityButton } from "@/components/ui/sanity-button";
+import { SanityButton, type SanityLinkData } from "@/components/ui/sanity-button";
+import { type BackgroundOptionType } from "@/types/background-option";
+import { type SectionPadding } from "@/sanity.types";
 import Image from "next/image";
 import { urlFor } from "@/sanity/lib/image";
 import { stegaClean } from "next-sanity";
@@ -14,9 +16,9 @@ type Hero1BaseProps = Extract<
     { _type: "hero-1" }
 >;
 
-type Hero1Props = Omit<Hero1BaseProps, 'imagePosition'> & {
+type Hero1Props = Omit<Hero1BaseProps, 'imagePosition' | 'padding'> & {
     locale?: string;
-    padding?: any;
+    padding?: SectionPadding | null;
     imagePosition?: "left" | "right" | string | null;
 };
 
@@ -51,7 +53,7 @@ export default function Hero1({
 
     return (
         <SectionContainer
-            background={background as any}
+            background={background as BackgroundOptionType | null}
             padding={padding}
             spacing="none"
             className="-mt-4 @content-md/page:-mt-8 pt-2"
@@ -132,7 +134,7 @@ export default function Hero1({
                             !hasImage && "justify-center"
                         )}>
                             {links.map((link) => (
-                                <SanityButton key={link.title} link={link as any} locale={locale} isRTL={rtl} />
+                                <SanityButton key={link.title} link={link as SanityLinkData} locale={locale} isRTL={rtl} />
                             ))}
                         </div>
                     )}

@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { getActor } from "@/lib/authz";
 import { authorizeCollab } from "@/lib/collaboration/service";
 
-type Result<T = {}> = ({ ok: true } & T) | { ok: false; error: string };
+type Result<T = unknown> = ({ ok: true } & T) | { ok: false; error: string };
 
 async function canEdit(collaborationId: string): Promise<{ ok: true } | { ok: false; error: string }> {
   try {

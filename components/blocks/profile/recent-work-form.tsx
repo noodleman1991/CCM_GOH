@@ -39,7 +39,7 @@ type RecentWorkFormValues = z.infer<typeof recentWorkSchema>
 
 interface RecentWorkFormProps {
     initialData?: Partial<RecentWorkFormValues>
-    onSubmitAction: (data: any) => Promise<void>
+    onSubmitAction: (data: RecentWorkFormValues) => Promise<void>
     onCancelAction: () => void
 }
 

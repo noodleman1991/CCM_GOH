@@ -1,4 +1,4 @@
-import { defineField, defineType } from "sanity";
+import { defineField, defineType, type PreviewValue } from "sanity";
 import { FolderOpen } from "lucide-react";
 import { orderRankField } from "@sanity/orderable-document-list";
 import { urlRule } from "../shared/validation";
@@ -214,7 +214,7 @@ export default defineType({
                 }: {
             title?: string;
             subtitle?: string;
-            media?: any;
+            media?: PreviewValue["media"];
             status?: "planning" | "active" | "completed" | "on-hold" | "cancelled";
             acronym?: string;
         }) {

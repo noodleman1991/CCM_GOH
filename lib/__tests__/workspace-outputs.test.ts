@@ -1,16 +1,16 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-const getActorMock = vi.fn<() => any>();
+const getActorMock = vi.fn<() => Promise<unknown>>();
 vi.mock("@/lib/authz", () => ({ getActor: () => getActorMock() }));
 
-const authorizeMock = vi.fn<(...a: any[]) => Promise<void>>(async () => {});
-vi.mock("@/lib/collaboration/service", () => ({ authorizeCollab: (...a: any[]) => authorizeMock(...a) }));
+const authorizeMock = vi.fn<(...a: unknown[]) => Promise<void>>(async () => {});
+vi.mock("@/lib/collaboration/service", () => ({ authorizeCollab: (...a: unknown[]) => authorizeMock(...a) }));
 
-const createMock = vi.fn<(...a: any[]) => Promise<any>>(async () => ({ _id: "draft.new" }));
-vi.mock("@/sanity/lib/write-client", () => ({ writeClient: { create: (...a: any[]) => createMock(...a) } }));
+const createMock = vi.fn<(...a: unknown[]) => Promise<unknown>>(async () => ({ _id: "draft.new" }));
+vi.mock("@/sanity/lib/write-client", () => ({ writeClient: { create: (...a: unknown[]) => createMock(...a) } }));
 
 const db = vi.hoisted(() => {
-  const d: any = {
+  const d: Record<string, Record<string, ReturnType<typeof vi.fn>>> = {
     workspaceOutput: {
       create: vi.fn(async () => ({ id: "wo1" })),
       findFirst: vi.fn(async () => ({ id: "wo1", collaborationId: "c1" })),

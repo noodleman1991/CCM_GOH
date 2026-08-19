@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma, safeQuery } from "@/lib/prisma";
+import type { RegionalCommunityName } from "@/generated/prisma";
 import { isRegionCode } from "@/lib/maps/region-codes";
 
 // People widget (WIREFRAMES §4.1): public, searchable members in a region, with
@@ -19,7 +20,7 @@ export async function GET(req: NextRequest) {
         isSearchable: true,
         profileVisibility: "PUBLIC",
         communityMemberships: {
-          some: { community: { type: "REGIONAL", regionalName: region as any } },
+          some: { community: { type: "REGIONAL", regionalName: region as RegionalCommunityName } },
         },
       },
       select: {

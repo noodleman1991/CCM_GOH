@@ -40,6 +40,14 @@ export async function POST(request: NextRequest) {
     }
 }
 
+/** Shape of the agenda file entries we read/update; other fields pass through untouched. */
+interface TrackedAgendaFile {
+    language?: string;
+    downloadCount?: number;
+    lastDownloaded?: string;
+    [key: string]: unknown;
+}
+
 async function updateAgendaAnalytics(agendaId: string, fileLanguage: string) {
     try {
         // Get the current agenda
@@ -58,7 +66,7 @@ async function updateAgendaAnalytics(agendaId: string, fileLanguage: string) {
         }
 
         // Update the specific file's download count
-        const updatedFiles = agenda.files?.map((file: any) => {
+        const updatedFiles = agenda.files?.map((file: TrackedAgendaFile) => {
             if (file.language === fileLanguage) {
                 return {
                     ...file,
@@ -71,7 +79,7 @@ async function updateAgendaAnalytics(agendaId: string, fileLanguage: string) {
 
         // Calculate total download count across all files
         const newTotalCount = updatedFiles.reduce(
-            (total: number, file: any) => total + (file.downloadCount || 0),
+            (total: number, file: TrackedAgendaFile) => total + (file.downloadCount || 0),
             0
         );
 

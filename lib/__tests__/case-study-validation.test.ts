@@ -80,7 +80,8 @@ describe('caseStudySubmissionSchema', () => {
     })
 
     it('rejects missing content', () => {
-        const { content: _content, ...rest } = validPayload
+        const rest: Partial<typeof validPayload> = { ...validPayload }
+        delete rest.content
         const result = caseStudySubmissionSchema.safeParse(rest)
         expect(result.success).toBe(false)
     })

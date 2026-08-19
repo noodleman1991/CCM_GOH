@@ -29,7 +29,7 @@ function makeUser(overrides: Record<string, unknown> = {}) {
     showSocialLinks: false,
     showLivedExperience: false,
     ...overrides
-  } as any
+  } as unknown as Parameters<typeof redactUser>[0]
 }
 
 describe('redactUser', () => {
@@ -68,9 +68,9 @@ describe('redactUser', () => {
 
     it('redacts the lived-experience statement unless opted in (sensitive)', () => {
       const hidden = redactUser(makeUser(), null)
-      expect((hidden as any).livedExperienceStatement).toBeNull()
+      expect((hidden as Record<string, unknown>).livedExperienceStatement).toBeNull()
       const shown = redactUser(makeUser({ showLivedExperience: true }), null)
-      expect((shown as any).livedExperienceStatement).toBe('My lived experience with climate anxiety.')
+      expect((shown as Record<string, unknown>).livedExperienceStatement).toBe('My lived experience with climate anxiety.')
     })
 
     it('does not mutate the input user', () => {
@@ -123,7 +123,7 @@ describe('redactUser', () => {
       expect(result.linkedinProfile).toBe('https://linkedin.com/in/someone')
       expect(result.personalWebsite).toBe('https://example.com')
       expect(result.otherSocialLinks).toEqual(['https://social.example.com'])
-      expect((result as any).livedExperienceStatement).toBe('My lived experience with climate anxiety.')
+      expect((result as Record<string, unknown>).livedExperienceStatement).toBe('My lived experience with climate anxiety.')
     })
   })
 })

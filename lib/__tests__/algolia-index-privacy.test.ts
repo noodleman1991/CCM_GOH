@@ -56,8 +56,8 @@ describe('transformUserForIndex — privacy at index time', () => {
   })
 
   it('treats missing show* flags as "show" (default-true, matches schema defaults)', () => {
-    const { showLocation, showWorkDetails, ...noFlags } = baseUser as any
-    const r = transformUserForIndex(noFlags)
+    // baseUser deliberately omits the show* flags entirely
+    const r = transformUserForIndex({ ...baseUser })
     expect(r.city).toBe('Nairobi')
     expect(r.organization).toBe('Climate Org')
   })

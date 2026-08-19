@@ -7,7 +7,7 @@ import { authorizeCollab } from "@/lib/collaboration/service";
 import { createNotification } from "@/lib/notifications/service";
 import { emitLifecycle } from "@/lib/notifications/emit";
 
-type Result<T = {}> = ({ ok: true } & T) | { ok: false; error: string };
+type Result<T = unknown> = ({ ok: true } & T) | { ok: false; error: string };
 
 const messageSchema = z.string().max(500).optional();
 

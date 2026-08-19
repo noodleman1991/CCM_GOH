@@ -51,8 +51,12 @@ const FALLBACK_EXPERTISE_AREAS = [
 ]
 
 // Helper function to apply locale to fallback data
-function localizeField(item: any, field: string, locale: string) {
-  const translations = item[`${field}Translations`]
+function localizeField(
+  item: Record<string, unknown> & { [key: string]: unknown },
+  field: string,
+  locale: string
+) {
+  const translations = item[`${field}Translations`] as Record<string, string> | undefined
   return translations?.[locale] || translations?.en || item[field]
 }
 
@@ -136,7 +140,7 @@ export async function syncWorkTypesToSanity() {
 
     const existingData = response
     const existingWorkTypeKeys = new Set(
-      existingData.workTypes?.map((wt: any) => wt.key) || []
+      existingData.workTypes?.map((wt: { key: string }) => wt.key) || []
     )
 
     const syncPromises = []
@@ -147,7 +151,7 @@ export async function syncWorkTypesToSanity() {
 
       if (existingWorkTypeKeys.has(key)) {
         // Update existing work type
-        const existing = existingData.workTypes.find((wt: any) => wt.key === key)
+        const existing = existingData.workTypes.find((wt: { key: string }) => wt.key === key)
         if (existing) {
           syncPromises.push(
             sanityClient.patch(existing._id).set({
@@ -204,7 +208,7 @@ export async function syncExpertiseAreasToSanity() {
 
     const existingData = response
     const existingExpertiseKeys = new Set(
-      existingData.expertiseAreas?.map((ea: any) => ea.key) || []
+      existingData.expertiseAreas?.map((ea: { key: string }) => ea.key) || []
     )
 
     const syncPromises = []
@@ -215,7 +219,7 @@ export async function syncExpertiseAreasToSanity() {
 
       if (existingExpertiseKeys.has(key)) {
         // Update existing expertise area
-        const existing = existingData.expertiseAreas.find((ea: any) => ea.key === key)
+        const existing = existingData.expertiseAreas.find((ea: { key: string }) => ea.key === key)
         if (existing) {
           syncPromises.push(
             sanityClient.patch(existing._id).set({
@@ -294,10 +298,10 @@ export async function validateUserManagementSync() {
 
     const sanityData = response
     const sanityWorkTypeKeys = new Set(
-      sanityData.workTypes?.map((wt: any) => wt.key) || []
+      sanityData.workTypes?.map((wt: { key: string }) => wt.key) || []
     )
     const sanityExpertiseKeys = new Set(
-      sanityData.expertiseAreas?.map((ea: any) => ea.key) || []
+      sanityData.expertiseAreas?.map((ea: { key: string }) => ea.key) || []
     )
 
     const missingWorkTypes = Object.keys(PRISMA_WORK_TYPES).filter(
@@ -409,8 +413,8 @@ export async function fetchUserManagementOptionsWithLocale(locale: string = 'en'
     console.log(`[UserManagement] Data source: ${dataSource}`, {
       workTypesCount: finalWorkTypes.length,
       expertiseAreasCount: finalExpertiseAreas.length,
-      workTypeKeys: finalWorkTypes.map((wt: any) => wt.key),
-      expertiseKeys: finalExpertiseAreas.map((ea: any) => ea.key)
+      workTypeKeys: finalWorkTypes.map((wt: { key: string }) => wt.key),
+      expertiseKeys: finalExpertiseAreas.map((ea: { key: string }) => ea.key)
     })
 
     return {

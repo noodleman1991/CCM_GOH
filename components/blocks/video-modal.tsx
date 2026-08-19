@@ -127,7 +127,10 @@ function getEmbedUrl(url: string): string {
   return url;
 }
 
-function getLocalizedText(obj: any, locale: string): string {
+function getLocalizedText(
+  obj: string | Record<string, string | undefined> | null | undefined,
+  locale: string
+): string {
   if (!obj) return "";
   if (typeof obj === "string") return obj;
   return obj[locale] || obj["en"] || "";

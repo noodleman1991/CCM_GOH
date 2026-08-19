@@ -10,13 +10,18 @@ import { Play, Clock, User } from "lucide-react";
 interface LivedExperienceCardProps {
   experience: {
     _id: string;
-    title: any;
+    title: Record<string, string> | string;
     slug: { current: string };
-    description?: any;
+    description?: Record<string, string> | string;
     publishedAt?: string;
     videoLink?: string;
     duration?: string;
-    thumbnail?: any;
+    thumbnail?: {
+      asset?: { _id?: string; url?: string; metadata?: { lqip?: string } };
+      alt?: string;
+      hotspot?: unknown;
+      crop?: unknown;
+    };
     author?: {
       name: string;
       slug?: { current: string };

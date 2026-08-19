@@ -153,25 +153,45 @@ export async function POST(request: NextRequest) {
   }
 }
 
+/** Minimal shape of the Sanity case study payload consumed by the transform below. */
+interface SanityCaseStudy {
+  _id: string
+  title?: CaseStudySearchRecord['title'] | null
+  excerpt?: NonNullable<CaseStudySearchRecord['excerpt']> | null
+  slug?: { current?: string } | null
+  status?: CaseStudySearchRecord['status'] | null
+  featured?: boolean | null
+  publishedAt?: string | null
+  _updatedAt?: string | null
+  authors?: Array<{ name?: string | null; role?: string | null; affiliation?: { name?: string } | null }> | null
+  tags?: Array<{ name?: string | null }> | null
+  studyLocation?: { lat: number; lng: number } | null
+  studyPeriod?: { startDate: string; endDate: string } | null
+  organizations?: Array<{ name?: string | null }> | null
+  region?: string | null
+  themes?: string[] | null
+  populations?: string[] | null
+}
+
 // Helper function to transform case study for Algolia indexing
-function transformCaseStudyForIndex(caseStudy: any): CaseStudySearchRecord | null {
+function transformCaseStudyForIndex(caseStudy: SanityCaseStudy): CaseStudySearchRecord | null {
   try {
     return {
       objectID: caseStudy._id,
       contentId: caseStudy._id,
       title: caseStudy.title || { en: 'Untitled Case Study' },
-      excerpt: caseStudy.excerpt || {},
+      excerpt: caseStudy.excerpt || ({} as NonNullable<CaseStudySearchRecord['excerpt']>),
       slug: caseStudy.slug?.current || '',
       status: caseStudy.status || 'pending',
       featured: caseStudy.featured || false,
       publishedAt: caseStudy.publishedAt ? new Date(caseStudy.publishedAt).getTime() : Date.now(),
       updatedAt: caseStudy._updatedAt ? new Date(caseStudy._updatedAt).getTime() : Date.now(),
-      authors: (caseStudy.authors || []).map((author: any) => ({
+      authors: (caseStudy.authors || []).map((author) => ({
         name: author.name || 'Unknown Author',
         role: author.role || 'author',
         affiliation: author.affiliation?.name
       })),
-      tags: (caseStudy.tags || []).map((tag: any) => tag.name).filter(Boolean),
+      tags: (caseStudy.tags || []).map((tag) => tag.name).filter((name): name is string => Boolean(name)),
       studyLocation: caseStudy.studyLocation ? {
         lat: caseStudy.studyLocation.lat,
         lng: caseStudy.studyLocation.lng,
@@ -181,7 +201,7 @@ function transformCaseStudyForIndex(caseStudy: any): CaseStudySearchRecord | nul
         startDate: caseStudy.studyPeriod.startDate,
         endDate: caseStudy.studyPeriod.endDate
       } : undefined,
-      organizations: (caseStudy.organizations || []).map((org: any) => org.name).filter(Boolean),
+      organizations: (caseStudy.organizations || []).map((org) => org.name).filter((name): name is string => Boolean(name)),
       language: 'en', // Default to English, could be enhanced with language detection
       accessLevel: 'public', // All approved case studies are public for now
       region: caseStudy.region || undefined,

@@ -1,4 +1,4 @@
-import { defineField, defineType } from "sanity";
+import { defineField, defineType, type SanityDocument } from "sanity";
 import { FileText } from "lucide-react";
 import { isUniqueOtherThanLanguage } from '@/sanity/lib/isUniqueOtherThanLanguage';
 import { REGION_OPTIONS, THEME_OPTIONS, POPULATION_OPTIONS } from "../shared/taxonomy-options";
@@ -79,7 +79,11 @@ export default defineType({
             type: "slug",
             group: "settings",
             options: {
-                source: (doc: any) => doc.title?.[doc.language || 'en'] || doc.title?.en,
+                source: (doc: SanityDocument) => {
+                    const title = doc.title as Record<string, string> | undefined;
+                    const language = (doc.language as string | undefined) || 'en';
+                    return title?.[language] || title?.en || '';
+                },
                 maxLength: 96,
                 isUnique: isUniqueOtherThanLanguage,
             },

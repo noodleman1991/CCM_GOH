@@ -41,6 +41,11 @@ clean on changed files. Remaining user actions listed at the bottom.
 ## Explicitly NOT in scope (user-gated / external)
 Prod promotion (runbook exists) · git history rewrite for supabase-users.json ·
 Sanity dataset ACL · Algolia search-key rotation · R2 CORS · Resend domain verification ·
-MessagePrivacy FOLLOWERS/CONTACTS tiers (needs enum migration — batch with next
-migration release) · THEME follow surface (product decision) · nonce-based CSP
-(architectural; unsafe-inline stays until then).
+~~MessagePrivacy FOLLOWERS/CONTACTS tiers~~ (SHIPPED 2026-08-19 with a USER
+follow target; migration file 20260819120000 awaits `migrate deploy` — the
+local DB holds real accounts, so applying it is user-gated) · ~~THEME follow
+surface~~ (SHIPPED: atlas theme row) · nonce-based CSP — RESOLVED AS WON'T-DO:
+per-request nonces force every page dynamic, which is incompatible with this
+site's ISR/static pages (baked HTML can't carry a fresh nonce). 'unsafe-inline'
+for scripts stays by design until the rendering strategy changes; 'unsafe-eval'
+already removed in production.

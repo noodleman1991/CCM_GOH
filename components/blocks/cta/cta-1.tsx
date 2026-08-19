@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
-import { SanityButton } from "@/components/ui/sanity-button";
+import { SanityButton, type SanityLinkData } from "@/components/ui/sanity-button";
+import { type BackgroundOptionType } from "@/types/background-option";
 import SectionContainer from "@/components/ui/section-container";
 import { stegaClean } from "next-sanity";
 import PortableTextRenderer from "@/components/portable-text-renderer";
@@ -43,7 +44,7 @@ export default function Cta1({
     : getLocalizedPortableText(body, supportedLocale);
 
   return (
-    <SectionContainer background={background as any} padding={padding}>
+    <SectionContainer background={background as BackgroundOptionType | null} padding={padding}>
         <div
           className={cn(
             align === "center" ? "max-w-3xl text-center mx-auto" : undefined,
@@ -73,7 +74,7 @@ export default function Cta1({
             {links &&
               links.length > 0 &&
               links.map((link) => (
-                <SanityButton key={link.title} link={link as any} locale={locale} />
+                <SanityButton key={link.title} link={link as SanityLinkData} locale={locale} />
               ))}
           </div>
         )}

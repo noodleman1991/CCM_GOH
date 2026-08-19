@@ -5,11 +5,11 @@ import fr from '@/messages/fr.json'
 import ar from '@/messages/ar.json'
 
 /** Flatten a nested messages object to a set of dotted leaf-key paths. */
-function leafKeys(obj: Record<string, any>, prefix = '', acc = new Set<string>()): Set<string> {
+function leafKeys(obj: Record<string, unknown>, prefix = '', acc = new Set<string>()): Set<string> {
   for (const k of Object.keys(obj)) {
     const key = prefix ? `${prefix}.${k}` : k
     const v = obj[k]
-    if (v && typeof v === 'object' && !Array.isArray(v)) leafKeys(v, key, acc)
+    if (v && typeof v === 'object' && !Array.isArray(v)) leafKeys(v as Record<string, unknown>, key, acc)
     else acc.add(key)
   }
   return acc
@@ -19,7 +19,7 @@ const locales = { en, es, fr, ar } as const
 
 describe('i18n message-file parity', () => {
   const sets = Object.fromEntries(
-    Object.entries(locales).map(([name, msgs]) => [name, leafKeys(msgs as any)])
+    Object.entries(locales).map(([name, msgs]) => [name, leafKeys(msgs as Record<string, unknown>)])
   ) as Record<keyof typeof locales, Set<string>>
 
   const union = new Set<string>()

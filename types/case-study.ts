@@ -103,7 +103,7 @@ export interface CaseStudy {
     _id: string;
     title: LocalizedString; // Field-level localized object
     excerpt?: LocalizedString; // Field-level localized object
-    content?: any; // Portable Text content (styled-block-content)
+    content?: Array<{ _type: string; _key?: string; [key: string]: unknown }>; // Portable Text content (styled-block-content)
     layout?: 'story' | 'feature' | 'report'; // Detail-page archetype (§4.12)
     slug: { current: string };
     status: 'pending' | 'approved' | 'rejected' | 'revision';

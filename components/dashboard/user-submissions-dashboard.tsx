@@ -385,7 +385,7 @@ export default function UserSubmissionsDashboard({
               {filteredSubmissions.length === 0 && selectedStatus !== 'all' && (
                 <Card className="p-8 text-center">
                   <p className="text-muted-foreground">
-                    No submissions with status "{statusConfig[selectedStatus as keyof typeof statusConfig].label}"
+                    No submissions with status &ldquo;{statusConfig[selectedStatus as keyof typeof statusConfig].label}&rdquo;
                   </p>
                 </Card>
               )}

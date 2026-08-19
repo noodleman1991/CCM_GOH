@@ -107,11 +107,11 @@ export function LivedExperienceVideoCard({
         {tags && tags.length > 0 && (() => {
           // Same presentation as every other CMS tag: localized label, stable
           // locale-aware order, on-brand colour via normalizeTagColor.
-          const sorted = sortedTags(tags as any, locale)
+          const sorted = sortedTags(tags, locale)
           if (sorted.length === 0) return null
           return (
             <div className="mt-1.5 flex flex-wrap gap-1">
-              {sorted.slice(0, 2).map((tag: any) => {
+              {sorted.slice(0, 2).map((tag) => {
                 const color = normalizeTagColor(tag.color)
                 return (
                   <Badge

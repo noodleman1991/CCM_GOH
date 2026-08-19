@@ -1,14 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-const getActorMock = vi.fn<() => any>();
-const authorizeCollabMock = vi.fn<(...a: any[]) => Promise<any>>();
+const getActorMock = vi.fn<() => Promise<unknown>>();
+const authorizeCollabMock = vi.fn<(...a: unknown[]) => Promise<unknown>>();
 vi.mock("@/lib/authz", () => ({ getActor: () => getActorMock() }));
 vi.mock("@/lib/collaboration/service", () => ({
-  authorizeCollab: (...a: any[]) => authorizeCollabMock(...a),
+  authorizeCollab: (...a: unknown[]) => authorizeCollabMock(...a),
 }));
 
 const db = vi.hoisted(() => {
-  const d: any = {
+  const d: Record<string, Record<string, ReturnType<typeof vi.fn>>> = {
     collaborationDoc: {
       count: vi.fn(async () => 0),
       create: vi.fn(async () => ({ id: "doc1" })),

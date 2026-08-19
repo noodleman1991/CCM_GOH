@@ -1,3 +1,10 @@
+/** A Sanity block/section object: `_type` plus the block's own fields. */
+export interface HomepageBlock {
+  _type: string;
+  _key?: string;
+  [key: string]: unknown;
+}
+
 export interface HomepageData {
   _id: string;
   title?: string;
@@ -5,18 +12,18 @@ export interface HomepageData {
     current: string;
   };
   language?: string;
-  welcomeHero?: any;
-  globalAgendaSection?: any;
-  howToUseSection?: any;
-  agendasModule?: any;
-  livedExperiencesModule?: any;
-  regionalCommunitiesModule?: any;
-  collaborationSection?: any;
-  newsModule?: any;
-  projectInfoSection?: any;
-  mentalHealthSection?: any;
-  partnerLogos?: any;
-  blocks?: any[];
+  welcomeHero?: HomepageBlock;
+  globalAgendaSection?: HomepageBlock;
+  howToUseSection?: HomepageBlock;
+  agendasModule?: HomepageBlock;
+  livedExperiencesModule?: HomepageBlock;
+  regionalCommunitiesModule?: HomepageBlock;
+  collaborationSection?: HomepageBlock;
+  newsModule?: HomepageBlock;
+  projectInfoSection?: HomepageBlock;
+  mentalHealthSection?: HomepageBlock;
+  partnerLogos?: HomepageBlock;
+  blocks?: HomepageBlock[];
   meta_title?: string;
   meta_description?: string;
   noindex?: boolean;

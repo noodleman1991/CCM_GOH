@@ -6,30 +6,31 @@ import {
   formatFileSize,
   canAccessAgenda,
 } from "../agenda-utils";
+import type { Agenda, AgendaFile } from "@/types/agenda";
 
-const fileEn = { language: "en", file: { asset: { url: "https://cdn/x.pdf", originalFilename: "x.pdf" } } } as any;
-const fileEs = { language: "es", file: { asset: { url: "https://cdn/y.pdf", originalFilename: "y.pdf" } } } as any;
+const fileEn: AgendaFile = { language: "en", file: { asset: { _id: "a-en", url: "https://cdn/x.pdf", originalFilename: "x.pdf" } } };
+const fileEs: AgendaFile = { language: "es", file: { asset: { _id: "a-es", url: "https://cdn/y.pdf", originalFilename: "y.pdf" } } };
 
 describe("agenda-utils", () => {
   it("getAvailableLanguages returns the unique file languages", () => {
-    const agenda = { files: [fileEn, fileEs, fileEn] } as any;
+    const agenda = { files: [fileEn, fileEs, fileEn] } as unknown as Agenda;
     const langs = getAvailableLanguages(agenda);
     expect(langs.sort()).toEqual(["en", "es"]);
   });
 
   it("getAvailableLanguages handles no files", () => {
-    expect(getAvailableLanguages({ files: [] } as any)).toEqual([]);
+    expect(getAvailableLanguages({ files: [] } as unknown as Agenda)).toEqual([]);
   });
 
   it("getFileByLanguage finds the matching-language file", () => {
-    const agenda = { files: [fileEn, fileEs] } as any;
+    const agenda = { files: [fileEn, fileEs] } as unknown as Agenda;
     expect(getFileByLanguage(agenda, "es")).toBe(fileEs);
-    expect(getFileByLanguage(agenda, "fr" as any)).toBeUndefined();
+    expect(getFileByLanguage(agenda, "fr")).toBeUndefined();
   });
 
   it("getFileDownloadUrl appends a download param, null when no asset", () => {
     expect(getFileDownloadUrl(fileEn)).toBe("https://cdn/x.pdf?dl=x.pdf");
-    expect(getFileDownloadUrl({ file: {} } as any)).toBeNull();
+    expect(getFileDownloadUrl({ language: "en", file: {} })).toBeNull();
   });
 
   it("formatFileSize is human-readable", () => {

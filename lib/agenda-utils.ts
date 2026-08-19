@@ -198,14 +198,15 @@ export async function downloadFile(
 /**
  * Validate agenda data structure
  */
-export function validateAgenda(agenda: any): agenda is Agenda {
+export function validateAgenda(agenda: unknown): agenda is Agenda {
     if (!agenda || typeof agenda !== 'object') return false;
-    if (!agenda._id || !agenda.title || !agenda.slug) return false;
-    if (!agenda.files || !Array.isArray(agenda.files)) return false;
-    if (agenda.files.length === 0) return false;
+    const candidate = agenda as Partial<Agenda>;
+    if (!candidate._id || !candidate.title || !candidate.slug) return false;
+    if (!candidate.files || !Array.isArray(candidate.files)) return false;
+    if (candidate.files.length === 0) return false;
 
     // Validate at least one file has a valid asset
-    const hasValidFile = agenda.files.some((file: any) =>
+    const hasValidFile = candidate.files.some((file) =>
         file.file?.asset?.url
     );
 

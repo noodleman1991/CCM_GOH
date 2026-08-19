@@ -37,7 +37,7 @@ export default async function AddRecentWorkPage() {
         select: { username: true }
     })
 
-    async function createRecentWork(data: any) {
+    async function createRecentWork(data: unknown) {
         "use server"
 
         const { userId } = await auth()

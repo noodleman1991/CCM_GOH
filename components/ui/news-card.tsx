@@ -5,11 +5,16 @@ import NewsPostCard from "./news-post-card";
 interface NewsCardProps {
   post: {
     _id: string;
-    title: any;
+    title: Record<string, string> | string;
     slug: { current: string };
-    excerpt?: any;
+    excerpt?: Record<string, string> | string;
     publishedAt?: string;
-    image?: any;
+    image?: {
+      asset?: { _id?: string; url?: string; metadata?: { lqip?: string } };
+      alt?: string;
+      hotspot?: unknown;
+      crop?: unknown;
+    };
     author?: {
       name: string;
       slug?: { current: string };

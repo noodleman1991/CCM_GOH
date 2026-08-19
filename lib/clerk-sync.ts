@@ -1,11 +1,38 @@
 import { clerkClient } from "@clerk/nextjs/server"
 import { prisma } from "@/lib/prisma"
-import type { User } from "@/generated/prisma"
+import type { User, Prisma, AgeGroup, WorkType, ExpertiseArea, ProfileVisibility } from "@/generated/prisma"
 
 interface ClerkSyncOptions {
   userId: string
   direction?: 'to_clerk' | 'from_clerk' | 'bidirectional'
   fields?: string[]
+}
+
+/**
+ * Shape of the app-specific data this service stores in Clerk publicMetadata.
+ * Clerk types publicMetadata as an untyped record, so reads are cast to this.
+ */
+interface ClerkSyncMetadata {
+  bio?: string | null
+  ageGroup?: AgeGroup | null
+  country?: string | null
+  city?: string | null
+  workTypes?: WorkType[]
+  expertiseAreas?: ExpertiseArea[]
+  organization?: string | null
+  position?: string | null
+  workBio?: string | null
+  personalWebsite?: string | null
+  linkedinProfile?: string | null
+  otherSocialLinks?: Prisma.InputJsonValue
+  isSearchable?: boolean
+  profileVisibility?: ProfileVisibility
+  showEmail?: boolean
+  showPhoneNumber?: boolean
+  showWorkDetails?: boolean
+  showSocialLinks?: boolean
+  showLocation?: boolean
+  lastSyncedAt?: string
 }
 
 /**
@@ -27,8 +54,8 @@ export class ClerkSyncService {
         lastName: userData.lastName || undefined,
         username: userData.username || undefined,
         publicMetadata: {
-          onboardingCompleted: (userData as any).onboardingCompleted,
-          preferredLanguage: (userData as any).preferredLanguage,
+          onboardingCompleted: userData.onboardingCompleted,
+          preferredLanguage: userData.preferredLanguage,
           lastSyncedAt: new Date().toISOString(),
           syncedFrom: 'prisma'
         }
@@ -52,8 +79,8 @@ export class ClerkSyncService {
       const clerkClientInstance = await clerkClient()
       const clerkUser = await clerkClientInstance.users.getUser(userId)
       
-      const metadata = clerkUser.publicMetadata as any
-      
+      const metadata = clerkUser.publicMetadata as ClerkSyncMetadata
+
       await prisma.user.upsert({
         where: { id: userId },
         create: {
@@ -171,7 +198,7 @@ export class ClerkSyncService {
       // Both exist - check timestamps to determine sync direction
       const clerkUpdatedAt = new Date(clerkUser.updatedAt)
       const prismaUpdatedAt = prismaUser!.updatedAt
-      const metadata = clerkUser.publicMetadata as any
+      const metadata = clerkUser.publicMetadata as ClerkSyncMetadata
       const clerkSyncedAt = metadata?.lastSyncedAt ? new Date(metadata.lastSyncedAt) : null
       
       if (clerkSyncedAt && clerkSyncedAt > prismaUpdatedAt) {
