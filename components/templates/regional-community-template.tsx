@@ -8,8 +8,11 @@ import { fetchRegionalCommunityAgendas } from '@/sanity/lib/fetch';
 import { fetchRegionalCommunityCaseStudiesBySlug } from '@/sanity/queries/regional-community-case-studies';
 import { fetchRegionalCommunityLivedExperiencesBySlug } from '@/sanity/queries/regional-community-lived-experiences';
 import { fetchRegionalCommunityNewsBySlug } from '@/sanity/queries/regional-community-news';
-import { mergePinnedWithDynamic } from '@/lib/community/grid-items';
+import { mergePinnedWithDynamic, type WithId } from '@/lib/community/grid-items';
 import { RC_SLUG_TO_REGION } from '@/lib/maps/region-codes';
+
+/** A loosely-shaped CMS block config (hero, team grid, logo cloud, …) passed through to Blocks. */
+type CmsBlockConfig = Record<string, unknown>;
 
 interface GridConfig {
   mode?: 'manual' | 'dynamic-featured' | 'dynamic-recent' | 'dynamic-with-pinned';
@@ -20,9 +23,9 @@ interface GridConfig {
   title?: string;
   subtitle?: string;
   showDescription?: boolean;
-  description?: any;
-  headerImage?: any;
-  manualItems?: any[];
+  description?: unknown;
+  headerImage?: unknown;
+  manualItems?: WithId[];
 }
 
 interface CarouselConfig {
@@ -32,19 +35,19 @@ interface CarouselConfig {
   title?: string;
   subtitle?: string;
   showDescription?: boolean;
-  description?: any;
-  background?: any;
-  padding?: any;
-  manualItems?: any[];
+  description?: unknown;
+  background?: unknown;
+  padding?: unknown;
+  manualItems?: WithId[];
 }
 
 interface RegionalCommunity {
   _id: string | null;
-  name: any;
+  name: unknown;
   slug: {
     current: string;
   } | null;
-  coverImage?: any;
+  coverImage?: unknown;
 }
 
 interface RegionalCommunityTemplateProps {
@@ -53,11 +56,11 @@ interface RegionalCommunityTemplateProps {
   newsGrid?: GridConfig;
   caseStudiesGrid?: GridConfig;
   livedExperiencesCarousel?: CarouselConfig;
-  welcomeHero?: any;
-  whyJoinCTA?: any;
-  logoCloud?: any;
-  teamGrid?: any;
-  teamMembers?: any[];
+  welcomeHero?: CmsBlockConfig;
+  whyJoinCTA?: CmsBlockConfig;
+  logoCloud?: CmsBlockConfig;
+  teamGrid?: CmsBlockConfig;
+  teamMembers?: unknown[];
   atlasEmbed?: { enabled?: boolean; showBreakdown?: boolean };
   locale: string;
   userId: string;
@@ -200,8 +203,10 @@ export default async function RegionalCommunityTemplate({
     newsData = mergePinnedWithDynamic(newsGrid?.manualItems, newsData, newsLimit);
   }
 
-  // Create template blocks array for Blocks component
-  const templateBlocks = [];
+  // Create template blocks array for Blocks component. These are synthesized
+  // CMS-shaped block objects; the Blocks renderer dispatches on `_type`.
+  type TemplateBlock = { _type: string; _key: string } & Record<string, unknown>;
+  const templateBlocks: TemplateBlock[] = [];
 
   // Add Welcome Hero if configured
   if (welcomeHero && (welcomeHero.title || welcomeHero.body)) {
@@ -237,9 +242,9 @@ export default async function RegionalCommunityTemplate({
       background: { type: 'none' },
       padding: { top: 'lg', bottom: 'lg' },
       columns: agendasData?.length ? agendasData
-        .filter((agenda: any) => agenda && agenda._id)
+        .filter((agenda: WithId) => agenda && agenda._id)
         .slice(0, agendasLimit)
-        .map((agenda: any) => ({
+        .map((agenda: WithId) => ({
           _type: 'grid-agenda',
           _key: `agenda-${agenda._id}`,
           agenda: agenda,
@@ -264,9 +269,9 @@ export default async function RegionalCommunityTemplate({
       background: { type: 'none' },
       padding: { top: 'lg', bottom: 'lg' },
       columns: caseStudiesData?.length ? caseStudiesData
-        .filter((caseStudy: any) => caseStudy && caseStudy._id)
+        .filter((caseStudy: WithId) => caseStudy && caseStudy._id)
         .slice(0, caseStudiesLimit)
-        .map((caseStudy: any) => ({
+        .map((caseStudy: WithId) => ({
           _type: 'grid-case-study',
           _key: `case-study-${caseStudy._id}`,
           caseStudy: caseStudy,
@@ -291,9 +296,9 @@ export default async function RegionalCommunityTemplate({
       background: { type: 'none' },
       padding: { top: 'lg', bottom: 'lg' },
       columns: newsData?.length ? newsData
-        .filter((news: any) => news && news._id)
+        .filter((news: WithId) => news && news._id)
         .slice(0, newsLimit)
-        .map((news: any) => {
+        .map((news: WithId) => {
           // Check if it's an external source or news post
           if (news._type === 'externalSource') {
             return {
@@ -438,7 +443,9 @@ export default async function RegionalCommunityTemplate({
                 viewport mid-section (and costing CLS). */}
             {blocks.length > 0 && (
               <Suspense fallback={<div className="min-h-[320px]" aria-hidden />}>
-                <Blocks blocks={blocks} locale={locale} userId={userId} />
+                {/* Synthesized blocks match the renderer's `_type` dispatch, not the
+                    generated PAGE_QUERY block union — hence the cast. */}
+                <Blocks blocks={blocks as React.ComponentProps<typeof Blocks>['blocks']} locale={locale} userId={userId} />
               </Suspense>
             )}
             {/* One people surface per section: when the CMS team-grid is

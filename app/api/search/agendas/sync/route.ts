@@ -36,6 +36,31 @@ const AGENDAS_QUERY = `*[_type == "agenda"] {
   _updatedAt
 }`
 
+/** Minimal shape of the Sanity agenda payload consumed by the transform below. */
+interface SanityAgendaFile {
+  language: string
+  downloadCount?: number
+  file?: { asset?: { url?: string; originalFilename?: string } | null } | null
+}
+
+interface SanityAgenda {
+  _id: string
+  title?: AgendaSearchRecord['title'] | null
+  subtitle?: NonNullable<AgendaSearchRecord['subtitle']> | null
+  description?: NonNullable<AgendaSearchRecord['description']> | null
+  slug?: { current?: string } | null
+  agendaType?: string | null
+  year?: number | null
+  publishDate?: string | null
+  totalDownloadCount?: number | null
+  featured?: boolean | null
+  accessLevel?: AgendaSearchRecord['accessLevel'] | null
+  organizations?: Array<{ name?: string | null }> | null
+  regionalCommunities?: Array<{ name?: string | null }> | null
+  tags?: Array<{ name?: string | null }> | null
+  files?: SanityAgendaFile[] | null
+}
+
 export async function POST(request: NextRequest) {
   try {
     // Check internal secret auth or Clerk auth
@@ -69,14 +94,14 @@ export async function POST(request: NextRequest) {
 
       // Transform agendas for indexing
       const records: AgendaSearchRecord[] = agendas
-        .map((agenda: any) => transformAgendaForIndex(agenda))
+        .map((agenda: SanityAgenda) => transformAgendaForIndex(agenda))
         .filter(Boolean)
 
       if (records.length > 0) {
         // Replace all records atomically
         const response = await algoliaClient.replaceAllObjects({
           indexName: ALGOLIA_INDICES.AGENDAS,
-          objects: records as any[]
+          objects: records
         })
 
         // Wait for indexing to complete
@@ -155,7 +180,7 @@ export async function POST(request: NextRequest) {
       if (toIndex.length > 0) {
         await algoliaClient.saveObjects({
           indexName: ALGOLIA_INDICES.AGENDAS,
-          objects: toIndex as any[]
+          objects: toIndex
         })
       }
 
@@ -204,7 +229,7 @@ export async function GET() {
     const stats = { numberOfRecords: 0, updatedAt: new Date().toISOString() }
     try {
       // Try to get actual stats if method exists
-      const actualStats = await (algoliaClient as any).getStats?.({ indexName: ALGOLIA_INDICES.AGENDAS })
+      const actualStats = await (algoliaClient as { getStats?: (args: { indexName: string }) => Promise<Record<string, unknown>> }).getStats?.({ indexName: ALGOLIA_INDICES.AGENDAS })
       if (actualStats) Object.assign(stats, actualStats)
     } catch (error) {
       console.warn('Stats not available:', error)
@@ -238,29 +263,29 @@ export async function GET() {
 }
 
 // Helper function to transform agenda for Algolia indexing
-function transformAgendaForIndex(agenda: any): AgendaSearchRecord | null {
+function transformAgendaForIndex(agenda: SanityAgenda): AgendaSearchRecord | null {
   try {
     return {
       objectID: agenda._id,
       contentId: agenda._id,
       title: agenda.title || { en: 'Untitled Agenda' },
-      subtitle: agenda.subtitle || {},
-      description: agenda.description || {},
+      subtitle: agenda.subtitle || ({} as NonNullable<AgendaSearchRecord['subtitle']>),
+      description: agenda.description || ({} as NonNullable<AgendaSearchRecord['description']>),
       slug: agenda.slug?.current || '',
       agendaType: agenda.agendaType || 'other',
       year: agenda.year || new Date().getFullYear(),
       publishDate: agenda.publishDate ? new Date(agenda.publishDate).getTime() : Date.now(),
       totalDownloadCount: agenda.totalDownloadCount || 0,
       featured: agenda.featured || false,
-      organizations: (agenda.organizations || []).map((org: any) => org.name).filter(Boolean),
-      regionalCommunities: (agenda.regionalCommunities || []).map((community: any) => community.name).filter(Boolean),
-      tags: (agenda.tags || []).map((tag: any) => tag.name).filter(Boolean),
+      organizations: (agenda.organizations || []).map((org) => org.name).filter((name): name is string => Boolean(name)),
+      regionalCommunities: (agenda.regionalCommunities || []).map((community) => community.name).filter((name): name is string => Boolean(name)),
+      tags: (agenda.tags || []).map((tag) => tag.name).filter((name): name is string => Boolean(name)),
       accessLevel: agenda.accessLevel || 'public',
       language: 'en', // deprecated; kept for back-compat
       languages: deriveAgendaLanguages(agenda.files, agenda.title),
       files: (agenda.files || [])
-        .filter((f: any) => f.file?.asset?.url)
-        .map((f: any) => ({
+        .filter((f): f is SanityAgendaFile & { file: { asset: { url: string; originalFilename?: string } } } => Boolean(f.file?.asset?.url))
+        .map((f) => ({
           language: f.language,
           url: f.file.asset.url,
           filename: f.file.asset.originalFilename

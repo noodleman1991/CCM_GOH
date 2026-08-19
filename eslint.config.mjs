@@ -18,6 +18,8 @@ export default [
       // Without this, `eslint .` parses ~54k extra files and dies with a V8
       // heap OOM. Mirrors the same exclude in vitest.config.ts.
       ".claude/**",
+      // Static design-spec snapshot (reference artifacts, not app code).
+      "design_handoff_ccm_hub/**",
       "**/node_modules/**",
       ".playwright-mcp/**",
       "public/**",

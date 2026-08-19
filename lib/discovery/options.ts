@@ -25,11 +25,11 @@ const LANGUAGE_OPTIONS: PillOption[] = [
 
 async function fetchRegionOptions(locale: string): Promise<PillOption[]> {
   try {
-    const rows = await client.fetch<{ slug: string; name: unknown }[]>(
+    const rows = await client.fetch<{ slug: string; name: Record<string, string> | string | null }[]>(
       `*[_type == "regionalCommunity" && defined(slug.current)] | order(name asc){ "slug": slug.current, name }`
     );
     return rows
-      .map((r) => ({ value: r.slug, label: getLocalizedValue(r.name as any, locale) || r.slug }))
+      .map((r) => ({ value: r.slug, label: getLocalizedValue(r.name, locale) || r.slug }))
       .filter((o) => o.label);
   } catch {
     return [];
@@ -38,11 +38,11 @@ async function fetchRegionOptions(locale: string): Promise<PillOption[]> {
 
 async function fetchTagOptions(locale: string): Promise<PillOption[]> {
   try {
-    const rows = await client.fetch<{ value: string; label: unknown }[]>(
+    const rows = await client.fetch<{ value: string; label: Record<string, string> | string | null }[]>(
       `*[_type == "tag" && defined(value)] | order(value asc){ value, label }`
     );
     return rows
-      .map((r) => ({ value: r.value, label: getLocalizedValue(r.label as any, locale) || r.value }))
+      .map((r) => ({ value: r.value, label: getLocalizedValue(r.label, locale) || r.value }))
       .filter((o) => o.label);
   } catch {
     return [];

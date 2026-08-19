@@ -18,6 +18,7 @@ import { ResearchOutputVersions } from "@/components/content/research-output-ver
 import { cn } from "@/lib/utils";
 import { heading } from "@/lib/design-tokens";
 import { sortedTags, normalizeTagColor } from "@/lib/tags";
+import type { LocalizedString, Organization } from "@/types/case-study";
 
 export async function generateStaticParams() {
   const outputs = await fetchResearchOutputsStaticParams();
@@ -82,18 +83,18 @@ export default async function ResearchOutputPage({ params }: { params: Promise<{
           {ro.organizations?.length > 0 && (
             <div className="flex items-center gap-1">
               <Building className="size-4" />
-              <span>{ro.organizations.map((o: any) => o.name).join(", ")}</span>
+              <span>{ro.organizations.map((o: Organization) => o.name).join(", ")}</span>
             </div>
           )}
         </div>
 
         {ro.tags && ro.tags.length > 0 && (
           <div className="flex flex-wrap gap-2">
-            {sortedTags(ro.tags, supportedLocale).map((tag: any) => {
+            {sortedTags(ro.tags, supportedLocale).map((tag) => {
               const color = normalizeTagColor(tag.color);
               return (
                 <Badge key={tag._id} variant="outline" style={{ borderColor: color, color }}>
-                  {getLocalizedText(tag.label, supportedLocale)}
+                  {getLocalizedText(tag.label as LocalizedString | undefined, supportedLocale)}
                 </Badge>
               );
             })}
@@ -128,7 +129,7 @@ export default async function ResearchOutputPage({ params }: { params: Promise<{
                   <div><dt className="text-muted-foreground">{t("published")}</dt><dd>{publishDate.getFullYear()}</dd></div>
                 )}
                 {ro.organizations && ro.organizations.length > 0 && (
-                  <div><dt className="text-muted-foreground">{t("organizations")}</dt><dd>{ro.organizations.map((o: any) => o.name).join(", ")}</dd></div>
+                  <div><dt className="text-muted-foreground">{t("organizations")}</dt><dd>{ro.organizations.map((o: Organization) => o.name).join(", ")}</dd></div>
                 )}
               </dl>
             </aside>

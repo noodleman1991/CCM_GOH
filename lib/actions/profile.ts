@@ -95,14 +95,23 @@ export async function getUserProfile(username: string): Promise<ProfileData | nu
             return null
         }
 
-        const user = result.data as any // Type assertion for relations
+        // The service returns the Prisma row + relations; the page consumes a
+        // ProfileData-shaped object. Derived fields (displayName/initials/…)
+        // are computed below, curation flags ride on recentWork rows.
+        type UserWithRelations = Omit<ProfileData, "recentWork" | "communities" | "displayName" | "fullName" | "initials" | "profileCompleteness"> & {
+            recentWork?: (ProfileData["recentWork"][number] & { hidden?: boolean; pinned?: boolean })[]
+            communityMemberships?: { community: ProfileData["communities"][number] }[]
+            displayName?: string | null
+            initials?: string | null
+        }
+        const user = result.data as unknown as UserWithRelations
 
         // The owner sees their hidden items (so they can manage them); visitors
         // never see items the owner hid. Already ordered pinned-first upstream.
         const isOwner = Boolean(viewerId && viewerId === user.id)
         const recentWork = isOwner
             ? (user.recentWork || [])
-            : (user.recentWork || []).filter((w: any) => !w.hidden)
+            : (user.recentWork || []).filter((w) => !w.hidden)
 
         // Compute derived fields
         const fullName = [user.firstName, user.lastName].filter(Boolean).join(' ')
@@ -133,7 +142,7 @@ export async function getUserProfile(username: string): Promise<ProfileData | nu
             linkedinProfile: user.linkedinProfile, // Already redacted if showSocialLinks=false
             otherSocialLinks: (user.otherSocialLinks as Array<{platform: string, url: string}>) || [],
             role: user.role,
-            profileCompleteness: calculateProfileCompleteness(user),
+            profileCompleteness: calculateProfileCompleteness(user as unknown as Parameters<typeof calculateProfileCompleteness>[0]),
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
             headline: user.headline,
@@ -147,7 +156,7 @@ export async function getUserProfile(username: string): Promise<ProfileData | nu
             livedExperienceStatement: user.livedExperienceStatement, // null if redacted
             orcidId: user.orcidId,
             recentWork,
-            communities: user.communityMemberships?.map((cm: any) => cm.community) || [],
+            communities: user.communityMemberships?.map((cm) => cm.community) || [],
             displayName,
             fullName,
             initials,

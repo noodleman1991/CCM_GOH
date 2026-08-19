@@ -21,6 +21,7 @@ import { getTranslations } from 'next-intl/server'
 import { cn } from '@/lib/utils'
 import { heading } from '@/lib/design-tokens'
 import { sortedTags, normalizeTagColor } from '@/lib/tags'
+import type { CaseStudyAuthor, Organization, Project, Tag } from '@/types/case-study'
 
 export async function generateStaticParams() {
   const caseStudies = await fetchCaseStudiesStaticParams()
@@ -156,7 +157,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ loca
         {/* Tags — sorted + on-brand colours (L2 tag unification) */}
         {caseStudy.tags && caseStudy.tags.length > 0 && (
           <div className="flex flex-wrap gap-2">
-            {sortedTags(caseStudy.tags, supportedLocale).map((tag: any) => {
+            {sortedTags(caseStudy.tags, supportedLocale).map((tag: Tag) => {
               const color = normalizeTagColor(tag.color)
               return (
                 <Badge key={tag._id} variant="outline" style={{ borderColor: color, color }}>
@@ -206,7 +207,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ loca
                   <div><dt className="text-muted-foreground">{t('location')}</dt><dd>{locationText}</dd></div>
                 )}
                 {caseStudy.organizations && caseStudy.organizations.length > 0 && (
-                  <div><dt className="text-muted-foreground">{t('organizations')}</dt><dd>{caseStudy.organizations.map((o: any) => o.name).join(', ')}</dd></div>
+                  <div><dt className="text-muted-foreground">{t('organizations')}</dt><dd>{caseStudy.organizations.map((o: Organization) => o.name).join(', ')}</dd></div>
                 )}
               </dl>
             </aside>
@@ -227,7 +228,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ loca
           </p>
           {caseStudy.authors && caseStudy.authors.length > 0 && (
             <p className="text-sm leading-relaxed text-muted-foreground">
-              {caseStudy.authors.map((author: any, index: number) => (
+              {caseStudy.authors.map((author: CaseStudyAuthor, index: number) => (
                 <span key={index}>
                   {index > 0 && " · "}
                   <span className="font-bold text-foreground"><bdi>{author.name}</bdi></span>
@@ -240,7 +241,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ loca
           {caseStudy.organizations && caseStudy.organizations.length > 0 && (
             <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
               {t('withOrgs')}{" "}
-              {caseStudy.organizations.map((org: any, i: number) => (
+              {caseStudy.organizations.map((org: Organization, i: number) => (
                 <span key={org._id}>
                   {i > 0 && " · "}
                   <bdi>{org.name}</bdi>
@@ -263,7 +264,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ loca
                 {t('producedBy')}
               </h3>
               <div className="flex flex-wrap gap-2">
-                {caseStudy.projects.map((project: any) => (
+                {caseStudy.projects.map((project: Project) => (
                   <span
                     key={project._id}
                     className="inline-flex items-center rounded-full border border-ccm-sea/30 px-3 py-1 text-sm text-ccm-sea"

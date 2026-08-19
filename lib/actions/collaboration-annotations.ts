@@ -5,7 +5,7 @@ import { getActor } from "@/lib/authz";
 import { authorizeCollab } from "@/lib/collaboration/service";
 import type { Prisma } from "@/generated/prisma";
 
-type Result<T = {}> = ({ ok: true } & T) | { ok: false; error: string };
+type Result<T = unknown> = ({ ok: true } & T) | { ok: false; error: string };
 
 /** The collaboration a file belongs to (for authorization). */
 async function fileCollab(fileId: string): Promise<string | null> {

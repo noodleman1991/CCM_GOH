@@ -28,6 +28,28 @@ const NEWS_QUERY = `*[_type == "newsPost" && publishedAt <= now()] | order(publi
   language
 }`
 
+/** Minimal shape of the Sanity news post payload consumed by the transform below. */
+interface SanityNewsPost {
+  _id: string
+  title?: NewsSearchRecord['title'] | null
+  subtitle?: NonNullable<NewsSearchRecord['subtitle']> | null
+  excerpt?: NonNullable<NewsSearchRecord['excerpt']> | null
+  slug?: { current?: string } | null
+  publishedAt?: string | null
+  _updatedAt?: string | null
+  featured?: boolean | null
+  author?: { _id?: string; name?: string } | null
+  tags?: Array<{ label?: { en?: string } | null; name?: string | null }> | null
+  organizations?: Array<{ name?: string | null }> | null
+  projects?: Array<{ name?: string | null }> | null
+  location?: { lat?: number; lng?: number } | null
+  locationDetails?: { city?: string; country?: string } | null
+  language?: string | null
+  region?: string | null
+  themes?: string[] | null
+  populations?: string[] | null
+}
+
 export async function POST(request: NextRequest) {
   try {
     // Check internal secret auth or Clerk auth
@@ -61,14 +83,14 @@ export async function POST(request: NextRequest) {
 
       // Transform news posts for indexing
       const records: NewsSearchRecord[] = newsPosts
-        .map((newsPost: any) => transformNewsForIndex(newsPost))
+        .map((newsPost: SanityNewsPost) => transformNewsForIndex(newsPost))
         .filter(Boolean) as NewsSearchRecord[]
 
       if (records.length > 0) {
         // Replace all records atomically
         const response = await algoliaClient.replaceAllObjects({
           indexName: ALGOLIA_INDICES.NEWS,
-          objects: records as any[]
+          objects: records
         })
 
         // Wait for indexing to complete
@@ -144,7 +166,7 @@ export async function POST(request: NextRequest) {
       if (toIndex.length > 0) {
         await algoliaClient.saveObjects({
           indexName: ALGOLIA_INDICES.NEWS,
-          objects: toIndex as any[]
+          objects: toIndex
         })
       }
 
@@ -192,7 +214,7 @@ export async function GET() {
     const stats = { numberOfRecords: 0, updatedAt: new Date().toISOString() }
     try {
       // Try to get actual stats if method exists
-      const actualStats = await (algoliaClient as any).getStats?.({ indexName: ALGOLIA_INDICES.NEWS })
+      const actualStats = await (algoliaClient as { getStats?: (args: { indexName: string }) => Promise<Record<string, unknown>> }).getStats?.({ indexName: ALGOLIA_INDICES.NEWS })
       if (actualStats) Object.assign(stats, actualStats)
     } catch (error) {
       console.warn('Stats not available:', error)
@@ -226,7 +248,7 @@ export async function GET() {
 }
 
 // Helper function to transform news post for Algolia indexing
-function transformNewsForIndex(newsPost: any): NewsSearchRecord | null {
+function transformNewsForIndex(newsPost: SanityNewsPost): NewsSearchRecord | null {
   try {
     // Ensure required fields exist
     if (!newsPost._id || !newsPost.title || !newsPost.slug) {
@@ -238,8 +260,8 @@ function transformNewsForIndex(newsPost: any): NewsSearchRecord | null {
       objectID: newsPost._id,
       contentId: newsPost._id,
       title: newsPost.title || { en: 'Untitled News Post' },
-      subtitle: newsPost.subtitle || {},
-      excerpt: newsPost.excerpt || {},
+      subtitle: newsPost.subtitle || ({} as NonNullable<NewsSearchRecord['subtitle']>),
+      excerpt: newsPost.excerpt || ({} as NonNullable<NewsSearchRecord['excerpt']>),
       slug: newsPost.slug?.current || '',
       publishedAt: newsPost.publishedAt ? new Date(newsPost.publishedAt).getTime() : Date.now(),
       updatedAt: newsPost._updatedAt ? new Date(newsPost._updatedAt).getTime() : Date.now(),
@@ -249,14 +271,14 @@ function transformNewsForIndex(newsPost: any): NewsSearchRecord | null {
       },
       featured: newsPost.featured || false,
       tags: (newsPost.tags || [])
-        .map((tag: any) => tag.label?.en || tag.name)
-        .filter(Boolean),
+        .map((tag) => tag.label?.en || tag.name)
+        .filter((name): name is string => Boolean(name)),
       organizations: (newsPost.organizations || [])
-        .map((org: any) => org.name)
-        .filter(Boolean),
+        .map((org) => org.name)
+        .filter((name): name is string => Boolean(name)),
       projects: (newsPost.projects || [])
-        .map((project: any) => project.name)
-        .filter(Boolean),
+        .map((project) => project.name)
+        .filter((name): name is string => Boolean(name)),
       location: {
         city: newsPost.locationDetails?.city,
         country: newsPost.locationDetails?.country,

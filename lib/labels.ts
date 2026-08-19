@@ -11,6 +11,7 @@ import { REGION_I18N_KEY, isRegionCode, type RegionCode } from "@/lib/maps/regio
 
 // next-intl translator shape (the `t` returned by useTranslations / getTranslations).
 // Loosened to accept any next-intl translator regardless of its key generics.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- next-intl translators have literal-union key params; `any` here keeps every translator assignable (parameter contravariance would reject them with `string`) while call sites still pass plain strings.
 type T = (key: any, values?: any) => string;
 
 /** RegionalCommunityName enum → localized name via navigation.regions.*. */

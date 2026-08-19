@@ -42,11 +42,15 @@ export function CookieConsentProvider({ children }: { children: ReactNode }) {
   const [hasConsented, setHasConsented] = useState(true)
   const [isPreferencesOpen, setIsPreferencesOpen] = useState(false)
 
+  // Reads localStorage (a client-only external system) once on mount; consent
+  // state can only be known post-hydration, so the synchronous setState here is
+  // deliberate.
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY)
     if (stored) {
       try {
         const parsed = JSON.parse(stored)
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- see note above
         setConsent(parsed)
         setHasConsented(true)
       } catch {

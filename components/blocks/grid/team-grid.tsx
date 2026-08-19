@@ -1,10 +1,13 @@
 import { cn } from "@/lib/utils";
 import { heading } from "@/lib/design-tokens";
+import type { ComponentProps } from "react";
 import Image from "next/image";
 import { urlForCropped } from "@/sanity/lib/image";
 import PortableText from "@/components/portable-text-renderer";
 import { fetchRegionalCommunityTeamMembers } from "@/sanity/queries/regional-community-team";
 import { getTranslations } from "next-intl/server";
+
+type PortableTextValue = ComponentProps<typeof PortableText>["value"];
 
 interface TeamMember {
   _id: string;
@@ -41,14 +44,14 @@ interface TeamGridBlockProps {
   manualMembers?: TeamMember[];
   regionalCommunity?: {
     _id: string;
-    name: any;
+    name: unknown;
     slug: { current: string };
   };
   gridColumns?: string;
   showTitle?: boolean;
   title?: string;
   showDescription?: boolean;
-  description?: any;
+  description?: PortableTextValue;
   displayRole?: boolean;
   displayAffiliation?: boolean;
   locale?: string;
@@ -65,7 +68,7 @@ interface TeamGridTemplateProps {
     showTitle?: boolean;
     title?: string;
     showDescription?: boolean;
-    description?: any;
+    description?: PortableTextValue;
     displayRole?: boolean;
     displayAffiliation?: boolean;
   };
@@ -88,7 +91,7 @@ export default async function TeamGrid(props: TeamGridProps) {
   let showTitle = true;
   let title = "";
   let showDescription = false;
-  let description: any = null;
+  let description: PortableTextValue | null | undefined = null;
   let displayRole = true;
   let displayAffiliation = true;
   let regionalCommunityId: string | undefined;

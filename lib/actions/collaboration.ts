@@ -9,7 +9,7 @@ import { authorizeCollab, getMembershipRole } from "@/lib/collaboration/service"
 import { seedWorkspace } from "@/lib/collaboration/seed";
 import type { CollaborationRole } from "@/generated/prisma";
 
-type Result<T = {}> = ({ ok: true } & T) | { ok: false; error: string };
+type Result<T = unknown> = ({ ok: true } & T) | { ok: false; error: string };
 
 const createSchema = z.object({
   title: z.string().trim().min(1).max(120),

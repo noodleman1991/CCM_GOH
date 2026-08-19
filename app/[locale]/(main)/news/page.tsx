@@ -100,7 +100,10 @@ function toArr(param: string | string[] | undefined): string[] {
   return raw.map((s) => s.trim()).filter(Boolean)
 }
 
-function parseNewsFilters(p: any): NewsFiltersType {
+// The raw (already-awaited) searchParams object for this page.
+type NewsSearchParams = { [key: string]: string | string[] | undefined }
+
+function parseNewsFilters(p: NewsSearchParams): NewsFiltersType {
   return {
     tags: toArr(p.tags),
     communities: toArr(p.communities),
@@ -115,7 +118,7 @@ async function NewsFiltersWrapper({
   currentFilters,
 }: {
   locale: string
-  currentFilters: any
+  currentFilters: NewsSearchParams
 }) {
   const [tags, communities] = await Promise.all([
     fetchNewsTags(),
@@ -207,7 +210,7 @@ async function NewsContent({
   filters,
 }: {
   locale: string
-  filters: any
+  filters: NewsSearchParams
 }) {
   const t = await getTranslations({ locale, namespace: 'news' })
 

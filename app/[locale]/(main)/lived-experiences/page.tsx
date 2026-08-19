@@ -8,8 +8,26 @@ import { REGION_TO_RC_SLUG, isRegionCode } from '@/lib/maps/region-codes'
 import { Skeleton } from '@/components/ui/skeleton'
 import LivedExperiencesPageClient from './page-client'
 
+/** The fields the GROQ projection below returns for a video. */
+interface LivedExperienceVideo {
+  _id: string
+  title?: Record<string, string> | string
+  format?: 'video' | 'audio' | 'written'
+  videoUrl?: string
+  thumbnailUrl?: string
+  tags?: Array<{ _id: string; label?: Record<string, string> | string; value?: string; color?: string }>
+  region?: { _id?: string; name?: Record<string, string> | string; slug?: string } | null
+  rawRegion?: unknown
+}
+
+interface LivedExperienceData {
+  videos: LivedExperienceVideo[]
+  regionalCommunities: Array<{ _id: string; name: Record<string, string> | string; slug: string }>
+  allTags: Array<{ _id: string; label?: Record<string, string> | string; value?: string; color?: string }>
+}
+
 // Fetch lived experience videos grouped by regional community
-async function fetchLivedExperiences() {
+async function fetchLivedExperiences(): Promise<LivedExperienceData> {
   const query = `{
     "videos": *[_type == "livedExperience" && (status == "approved" || !defined(status))] | order(_createdAt desc) {
       _id,
@@ -114,11 +132,11 @@ export default async function LivedExperiencesPage({
   const data = await fetchLivedExperiences()
 
   // Group videos by regional community
-  const communityVideosMap: Record<string, any[]> = {}
+  const communityVideosMap: Record<string, LivedExperienceVideo[]> = {}
 
   for (const community of data.regionalCommunities) {
     const communityName = typeof community.name === 'string' ? community.name : community.name.en
-    const videosInCommunity = data.videos.filter((video: any) =>
+    const videosInCommunity = data.videos.filter((video) =>
       belongsToCommunity(video, community)
     )
 

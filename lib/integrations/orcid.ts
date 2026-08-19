@@ -18,9 +18,43 @@ export function orcidPath(input: string): string | null {
   return m ? m[1].toUpperCase() : null;
 }
 
+/** Subsets of the ORCID Public API payloads that the mappers read. */
+interface OrcidExternalId {
+  "external-id-type"?: string | null;
+  "external-id-value"?: string | null;
+  "external-id-url"?: { value?: string | null } | null;
+}
+
+interface OrcidWorkSummary {
+  "put-code"?: number | string | null;
+  title?: { title?: { value?: string | null } | null } | null;
+  "journal-title"?: { value?: string | null } | null;
+  "publication-date"?: { year?: { value?: string | number | null } | null } | null;
+  "external-ids"?: { "external-id"?: OrcidExternalId[] | null } | null;
+  url?: { value?: string | null } | null;
+}
+
+interface OrcidWorksGroup {
+  group?: Array<{ "work-summary"?: OrcidWorkSummary[] | null } | null> | null;
+}
+
+interface OrcidAffiliationSummary {
+  organization?: { name?: string | null } | null;
+  "role-title"?: string | null;
+}
+
+interface OrcidAffiliationsGroup {
+  "affiliation-group"?: Array<{
+    summaries?: Array<{
+      "employment-summary"?: OrcidAffiliationSummary | null;
+      "education-summary"?: OrcidAffiliationSummary | null;
+    } | null> | null;
+  } | null> | null;
+}
+
 /** Map an ORCID `works` group → ImportedWork[]. */
-export function mapOrcidWorks(worksGroup: any): ImportedWork[] {
-  const groups: any[] = worksGroup?.group || [];
+export function mapOrcidWorks(worksGroup: OrcidWorksGroup | null | undefined): ImportedWork[] {
+  const groups = worksGroup?.group || [];
   const out: ImportedWork[] = [];
   for (const g of groups) {
     const summary = g?.["work-summary"]?.[0];
@@ -32,7 +66,7 @@ export function mapOrcidWorks(worksGroup: any): ImportedWork[] {
       ? Number(summary["publication-date"].year.value)
       : null;
     // Prefer a DOI/URL external id, else the work's url.
-    const extIds: any[] = summary?.["external-ids"]?.["external-id"] || [];
+    const extIds = summary?.["external-ids"]?.["external-id"] || [];
     const doi = extIds.find((e) => String(e?.["external-id-type"]).toLowerCase() === "doi");
     const link =
       doi?.["external-id-url"]?.value ||
@@ -51,8 +85,8 @@ export function mapOrcidWorks(worksGroup: any): ImportedWork[] {
 }
 
 /** Map an ORCID affiliations group (employments/educations) → ImportedAffiliation[]. */
-export function mapOrcidAffiliations(group: any): ImportedAffiliation[] {
-  const summaries: any[] = group?.["affiliation-group"] || [];
+export function mapOrcidAffiliations(group: OrcidAffiliationsGroup | null | undefined): ImportedAffiliation[] {
+  const summaries = group?.["affiliation-group"] || [];
   const out: ImportedAffiliation[] = [];
   for (const ag of summaries) {
     const s = ag?.summaries?.[0];

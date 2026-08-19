@@ -17,7 +17,7 @@ export async function GET() {
 
     // Find a LinkedIn external account (provider id varies: oauth_linkedin /
     // oauth_linkedin_oidc / custom_linkedin).
-    const linkedin = (user.externalAccounts || []).find((a: any) =>
+    const linkedin = (user.externalAccounts || []).find((a) =>
       String(a.provider || "").toLowerCase().includes("linkedin")
     )
 
@@ -27,11 +27,18 @@ export async function GET() {
 
     // Headline isn't a first-class field on every Clerk SDK version; it can land
     // in publicMetadata or the raw verification payload. Probe the common spots.
-    const meta = (linkedin as any).publicMetadata || {}
+    // These fields aren't in Clerk's ExternalAccount type on every SDK version.
+    const linkedinExtras = linkedin as Partial<{
+      publicMetadata: Record<string, unknown>
+      headline: unknown
+      imageUrl: string
+      avatarUrl: string
+    }>
+    const meta: Record<string, unknown> = linkedinExtras.publicMetadata || {}
     const headline =
       meta.headline ||
-      (linkedin as any).headline ||
-      (user.publicMetadata as any)?.linkedinHeadline ||
+      linkedinExtras.headline ||
+      (user.publicMetadata as Record<string, unknown> | undefined)?.linkedinHeadline ||
       null
 
     return NextResponse.json({
@@ -39,7 +46,7 @@ export async function GET() {
       data: {
         firstName: linkedin.firstName || user.firstName || null,
         lastName: linkedin.lastName || user.lastName || null,
-        imageUrl: (linkedin as any).imageUrl || (linkedin as any).avatarUrl || user.imageUrl || null,
+        imageUrl: linkedinExtras.imageUrl || linkedinExtras.avatarUrl || user.imageUrl || null,
         headline: typeof headline === "string" ? headline.slice(0, 120) : null,
       },
     })

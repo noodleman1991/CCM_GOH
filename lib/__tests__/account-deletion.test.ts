@@ -2,8 +2,6 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 // Mock the Sanity write client and Prisma before importing the module under test.
 const fetchMock = vi.fn()
-const deleteMock = vi.fn()
-const patchMock = vi.fn()
 const commitMock = vi.fn().mockResolvedValue({})
 const transactionMock = vi.fn()
 

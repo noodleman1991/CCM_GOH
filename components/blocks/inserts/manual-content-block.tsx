@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { PortableText } from "@portabletext/react";
+import type { PortableTextBlock } from "@portabletext/types";
 import { portableTextComponents } from "@/components/portable-text-renderer";
 import { urlForCropped } from "@/sanity/lib/image";
 import { cn } from "@/lib/utils";
@@ -67,7 +68,7 @@ export function ManualContentBlock({
       )}
       {localizedContent && localizedContent.length > 0 && (
         <PortableText
-          value={localizedContent as any}
+          value={localizedContent as PortableTextBlock[]}
           components={portableTextComponents(locale)}
         />
       )}

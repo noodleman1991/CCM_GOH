@@ -16,9 +16,34 @@ import { ScrollRow } from "@/components/ui/scroll-row";
 import { LivedExperienceVideoCard } from "@/components/lived-experiences/video-card";
 import { ContentFilters } from "@/components/ui/content-filters";
 
+/** Dereferenced tag doc on a lived-experience video (same CMS tag shape). */
+interface LivedVideoTag {
+  _id: string
+  label?: Record<string, string> | string
+  value?: string
+  color?: string
+}
+
+/** The fields of a lived-experience video this page reads. */
+interface LivedVideo {
+  _id: string
+  title?: { en?: string; es?: string; fr?: string; ar?: string } | string
+  format?: 'video' | 'audio' | 'written'
+  videoUrl?: string
+  thumbnailUrl?: string
+  tags?: LivedVideoTag[]
+}
+
+/** Regional community row used for the region filter chips. */
+interface LivedCommunity {
+  _id?: string
+  name: Record<string, string> | string
+  slug: string
+}
+
 interface LivedExperiencesPageClientProps {
-  initialCommunityVideos: Record<string, any[]>
-  communities: any[]
+  initialCommunityVideos: Record<string, LivedVideo[]>
+  communities: LivedCommunity[]
   /** Dereferenced tag docs ({ _id, label, value, color }). */
   allTags: Array<{ _id: string; label?: Record<string, string> | string; value?: string; color?: string }>
   locale: string
@@ -60,7 +85,7 @@ export default function LivedExperiencesPageClient({
 
   // Filter videos. Inclusion: no region/tag selected = no filter on that axis.
   const filteredCommunityVideos = useMemo(() => {
-    const filtered: Record<string, any[]> = {}
+    const filtered: Record<string, LivedVideo[]> = {}
 
     for (const [communityName, videos] of Object.entries(initialCommunityVideos)) {
       const community = communities.find(c => {
@@ -77,8 +102,8 @@ export default function LivedExperiencesPageClient({
         // Tag filter (inclusion): if any tags selected, the video must match one.
         // Tags are now dereferenced docs — match on value (fall back to _id).
         if (selectedTags.length > 0) {
-          const hasMatchingTag = video.tags?.some((tag: any) =>
-            selectedTags.includes(tag?.value) || selectedTags.includes(tag?._id)
+          const hasMatchingTag = video.tags?.some((tag) =>
+            selectedTags.includes(tag?.value as string) || selectedTags.includes(tag?._id)
           )
           if (!hasMatchingTag) return false
         }
@@ -86,10 +111,11 @@ export default function LivedExperiencesPageClient({
         // Check search query
         if (searchQuery) {
           const query = searchQuery.toLowerCase()
-          const titleMatch = video.title?.en?.toLowerCase().includes(query) ||
-            video.title?.es?.toLowerCase().includes(query) ||
-            video.title?.fr?.toLowerCase().includes(query) ||
-            video.title?.ar?.toLowerCase().includes(query)
+          const title = typeof video.title === 'string' ? undefined : video.title
+          const titleMatch = title?.en?.toLowerCase().includes(query) ||
+            title?.es?.toLowerCase().includes(query) ||
+            title?.fr?.toLowerCase().includes(query) ||
+            title?.ar?.toLowerCase().includes(query)
 
           if (!titleMatch) return false
         }
@@ -194,7 +220,7 @@ export default function LivedExperiencesPageClient({
                   value: community.slug,
                   label: typeof community.name === 'string'
                     ? community.name
-                    : getLocalizedText(community.name, locale, community.name),
+                    : getLocalizedText(community.name, locale, community.name as unknown as string),
                 })),
               },
               {
@@ -206,7 +232,7 @@ export default function LivedExperiencesPageClient({
                   .filter((tag) => (tag.value || tag._id) !== 'other')
                   .map((tag) => ({
                     value: tag.value || tag._id,
-                    label: getLocalizedText(tag.label as any, locale, tag.value || tag._id),
+                    label: getLocalizedText(tag.label, locale, tag.value || tag._id),
                   })),
                 onToggle: toggleTag,
               },
@@ -235,7 +261,7 @@ export default function LivedExperiencesPageClient({
               {videos.map((video) => (
                 <LivedExperienceVideoCard
                   key={video._id}
-                  title={getLocalizedText(video.title, locale, video.title)}
+                  title={getLocalizedText(video.title, locale, video.title as string)}
                   videoUrl={video.videoUrl}
                   thumbnailUrl={video.thumbnailUrl}
                   tags={video.tags}

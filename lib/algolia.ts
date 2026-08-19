@@ -1,7 +1,9 @@
-import { algoliasearch } from 'algoliasearch'
+import { algoliasearch, type Algoliasearch } from 'algoliasearch'
+import type { User } from '@/generated/prisma'
 
 // Load environment variables (for Node.js contexts outside Next.js)
 if (typeof window === 'undefined' && !process.env.VERCEL) {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports -- dotenv must load synchronously and only in non-Vercel Node contexts; a static ESM import would run unconditionally (including in client bundles).
   require('dotenv').config()
 }
 
@@ -63,7 +65,7 @@ const baseSearchClient = (() => {
       return {
         search: () => Promise.resolve({ results: [{ hits: [], nbHits: 0 }] }),
         searchForFacetValues: () => Promise.resolve([]),
-      } as any
+      } as unknown as Algoliasearch
     }
     console.log('✅ Algolia search client initialized successfully')
     return algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY)
@@ -73,7 +75,7 @@ const baseSearchClient = (() => {
     return {
       search: () => Promise.resolve({ results: [{ hits: [], nbHits: 0 }] }),
       searchForFacetValues: () => Promise.resolve([]),
-    } as any
+    } as unknown as Algoliasearch
   }
 })()
 
@@ -243,8 +245,38 @@ export interface ContentSearchRecord {
   featured?: boolean
 }
 
+/**
+ * Minimal structural shape transformUserForIndex/shouldIndexUser actually read.
+ * Wide enough for both full Prisma `User` rows (with the communityMemberships
+ * include) and partial fixtures; field types mirror the Prisma column types.
+ */
+export interface IndexableUser {
+  id: string
+  username?: string | null
+  firstName?: string | null
+  lastName?: string | null
+  bio?: string | null
+  image?: string | null
+  city?: string | null
+  country?: string | null
+  organization?: string | null
+  position?: string | null
+  workTypes?: readonly string[] | null
+  expertiseAreas?: readonly string[] | null
+  isSearchable?: boolean | null
+  profileVisibility?: User['profileVisibility']
+  showEmail?: boolean | null
+  showWorkDetails?: boolean | null
+  showSocialLinks?: boolean | null
+  showLocation?: boolean | null
+  createdAt: Date | string
+  updatedAt?: Date | string | null
+  role: string
+  communityMemberships?: ReadonlyArray<{ community: { name: string } }> | null
+}
+
 // Helper function to transform user data for indexing
-export function transformUserForIndex(user: any): UserSearchRecord {
+export function transformUserForIndex(user: IndexableUser): UserSearchRecord {
   // Only index users who have opted in to being searchable
   if (!user.isSearchable) {
     throw new Error('User has opted out of search')
@@ -268,7 +300,10 @@ export function transformUserForIndex(user: any): UserSearchRecord {
   const workTypes = showWorkDetails ? (user.workTypes || []) : []
   const expertiseAreas = showWorkDetails ? (user.expertiseAreas || []) : []
 
-  return {
+  // Values come straight from the (possibly partial / nullable) user row, so
+  // the record is built as-is and cast once — keeps runtime output identical
+  // to what was always indexed while the declared record type stays strict.
+  const record = {
     objectID: user.id,
     userId: user.id,
     username: user.username || '',
@@ -295,15 +330,18 @@ export function transformUserForIndex(user: any): UserSearchRecord {
     joinedAt: new Date(user.createdAt).getTime(),
     lastActiveAt: user.updatedAt ? new Date(user.updatedAt).getTime() : undefined,
     communityCount: user.communityMemberships?.length || 0,
-    communities: user.communityMemberships?.map((membership: any) => 
+    communities: user.communityMemberships?.map((membership) =>
       membership.community.name
     ) || [],
     role: user.role
   }
+  return record as UserSearchRecord
 }
 
 // Helper function to check if user should be included in search
-export function shouldIndexUser(user: any): boolean {
+export function shouldIndexUser(
+  user: Pick<IndexableUser, 'isSearchable' | 'username' | 'firstName' | 'lastName'>
+): boolean {
   // Must be searchable
   if (!user.isSearchable) return false
   

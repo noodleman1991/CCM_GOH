@@ -25,6 +25,7 @@ export function AuthNavUser({ isRTL = false }: { isRTL?: boolean }) {
     const [mounted, setMounted] = useState(false)
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- deliberate mount gate to avoid Clerk auth-state hydration mismatch
         setMounted(true)
     }, [])
 

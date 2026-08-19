@@ -2,16 +2,26 @@
 // NO "use client" directive - this is a server component
 
 import Image from "next/image";
+import type { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
 import { urlFor } from "@/sanity/lib/image";
 import Blocks from "@/components/blocks";
 import { SectionHeader } from "@/components/ui/section-header";
 
+type BlocksList = ComponentProps<typeof Blocks>["blocks"];
+
+/** Minimal image shape the header actually reads (Sanity image projection). */
+export interface GridSectionHeaderImage {
+  asset?: { _id?: string; url?: string | null } | null;
+  alt?: string | null;
+}
+
 interface GridSectionHeaderProps {
   title?: string;
   subtitle?: string;
-  description?: any;
-  headerImage?: any;
+  /** Portable-text-ish block array rendered through Blocks; shape varies by caller. */
+  description?: readonly unknown[] | null;
+  headerImage?: GridSectionHeaderImage | null;
   locale: string;
   isRTL?: boolean;
 }
@@ -51,7 +61,7 @@ export function GridSectionHeader({
         )}
         {description && (
           <div className="mt-4">
-            <Blocks blocks={description} locale={locale} />
+            <Blocks blocks={description as BlocksList} locale={locale} />
           </div>
         )}
       </div>

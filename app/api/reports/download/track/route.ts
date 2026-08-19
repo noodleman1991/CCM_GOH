@@ -40,6 +40,14 @@ export async function POST(request: NextRequest) {
     }
 }
 
+/** Shape of the report file entries we read/update; other fields pass through untouched. */
+interface TrackedReportFile {
+    language?: string;
+    downloadCount?: number;
+    lastDownloaded?: string;
+    [key: string]: unknown;
+}
+
 async function updateReportAnalytics(reportId: string, fileLanguage: string) {
     try {
         // Get the current report
@@ -58,7 +66,7 @@ async function updateReportAnalytics(reportId: string, fileLanguage: string) {
         }
 
         // Update the specific file's download count
-        const updatedFiles = report.files?.map((file: any) => {
+        const updatedFiles = report.files?.map((file: TrackedReportFile) => {
             if (file.language === fileLanguage) {
                 return {
                     ...file,
@@ -71,7 +79,7 @@ async function updateReportAnalytics(reportId: string, fileLanguage: string) {
 
         // Calculate total download count across all files
         const newTotalCount = updatedFiles.reduce(
-            (total: number, file: any) => total + (file.downloadCount || 0),
+            (total: number, file: TrackedReportFile) => total + (file.downloadCount || 0),
             0
         );
 

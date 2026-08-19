@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import type { ComponentProps } from "react"
 import { auth } from "@clerk/nextjs/server"
 import { redirect } from "next/navigation"
 import { getTranslations, getLocale } from 'next-intl/server'
@@ -34,7 +35,12 @@ export default async function ProfileEditPage() {
     const userManagementOptions = await fetchUserManagementOptionsWithLocale(locale)
 
     // Fetch communities directly from Prisma (avoid localhost fetch issues in SSR)
-    let communities: any[] = []
+    let communities: Array<{
+        id: string
+        name: string
+        type: string
+        regionalName: string | null
+    }> = []
     try {
         communities = await prisma.community.findMany({
             select: {
@@ -62,7 +68,10 @@ export default async function ProfileEditPage() {
             {/* Pass Sanity data to form with fallback support */}
             <ProfileEditForm
                 userManagementOptions={userManagementOptions}
-                availableCommunitiesData={communities}
+                // Pre-existing shape gap: the form declares a Sanity-shaped
+                // communities prop while this page has always passed the Prisma
+                // rows (the form handles that shape at runtime).
+                availableCommunitiesData={communities as unknown as NonNullable<ComponentProps<typeof ProfileEditForm>>['availableCommunitiesData']}
                 onImageChangeAction={revalidateDashboard}
             />
         </div>

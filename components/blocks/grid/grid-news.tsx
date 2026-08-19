@@ -48,7 +48,7 @@ interface NewsPost {
     };
     author?: {
         name: string;
-        image?: any;
+        image?: unknown;
     };
     publishedAt?: string;
     organizations?: Array<{
@@ -81,7 +81,7 @@ interface GridNewsComponentProps {
     showAuthor?: boolean;
     showMetadata?: boolean;
     showLocation?: boolean;
-    customExcerpt?: any;
+    customExcerpt?: string | Record<string, string | undefined> | null;
     locale: string;
     userId?: string;
     className?: string;
@@ -91,7 +91,10 @@ interface GridNewsComponentProps {
 }
 
 // Helper function to get localized text
-function getLocalizedText(obj: any, locale: string): string {
+function getLocalizedText(
+    obj: string | Record<string, string | undefined> | null | undefined,
+    locale: string
+): string {
     if (!obj) return '';
     if (typeof obj === 'string') return obj;
     return obj[locale] || obj['en'] || '';
@@ -284,7 +287,7 @@ export default function GridNewsComponent({
                 {/* Tags */}
                 {showTags && sortTagsByLabel(newsPost.tags, supportedLocale).length > 0 && (
                     <div className="flex flex-wrap gap-1 mt-3">
-                        {sortTagsByLabel(newsPost.tags, supportedLocale).slice(0, 3).map((tag: any) => {
+                        {sortTagsByLabel(newsPost.tags, supportedLocale).slice(0, 3).map((tag) => {
                             const color = normalizeTagColor(tag.color);
                             return (
                             <Badge

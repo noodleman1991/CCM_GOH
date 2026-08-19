@@ -1,4 +1,4 @@
-import { defineField, defineType } from "sanity";
+import { defineField, defineType, type PreviewValue, type Rule } from "sanity";
 import { FileSearch } from "lucide-react";
 
 const supportedLanguages = [
@@ -74,7 +74,7 @@ export default defineType({
                 title: `Custom Excerpt (${lang.title})`,
                 type: "text",
                 rows: 2,
-                validation: (Rule: any) => Rule.max(200),
+                validation: (rule: Rule) => rule.max(200),
             })),
         }),
         defineField({
@@ -126,7 +126,7 @@ export default defineType({
             title?: Record<string, string>;
             language?: string;
             status?: string;
-            media?: any;
+            media?: PreviewValue["media"];
             customExcerpt?: Record<string, string>;
             layout?: string;
             priority?: number;

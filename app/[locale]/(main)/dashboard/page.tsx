@@ -100,7 +100,7 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
             </div>
             <h2 className="text-2xl font-bold">Setting up your account...</h2>
             <p className="text-gray-600">
-              We're preparing your dashboard. This usually takes just a few seconds.
+              We&apos;re preparing your dashboard. This usually takes just a few seconds.
             </p>
             <Link
               href={`/dashboard`}

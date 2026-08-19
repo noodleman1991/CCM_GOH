@@ -62,7 +62,16 @@ export default function Carousel2({
         <Carousel>
           <CarouselContent>
             {testimonial.map((item) => {
-              const it = item as any;
+              // Narrow view of the testimonial item for the fields rendered below.
+              // `relatedCommunity.name` is a localized object in the query result,
+              // but the render expression treats it like the org name string — keep
+              // the exact runtime expression and type it accordingly.
+              const it = item as unknown as {
+                title?: string | Record<string, string> | null;
+                quote?: unknown;
+                organization?: { name?: string | null } | null;
+                relatedCommunity?: { name?: string | null } | null;
+              };
               const jobTitle = typeof it.title === 'string'
                 ? it.title
                 : getLocalizedField(it.title, supportedLocale, '');

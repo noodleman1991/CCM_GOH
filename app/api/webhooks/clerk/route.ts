@@ -23,9 +23,9 @@ type UserCreatedEvent = {
         username: string | null
         image_url: string | null
         profile_image_url: string | null
-        public_metadata: Record<string, any>
-        private_metadata: Record<string, any>
-        unsafe_metadata: Record<string, any>
+        public_metadata: { onboardingCompleted?: boolean } & Record<string, unknown>
+        private_metadata: Record<string, unknown>
+        unsafe_metadata: Record<string, unknown>
         created_at: number
         updated_at: number
     }
@@ -49,9 +49,9 @@ type UserUpdatedEvent = {
         username: string | null
         image_url: string | null
         profile_image_url: string | null
-        public_metadata: Record<string, any>
-        private_metadata: Record<string, any>
-        unsafe_metadata: Record<string, any>
+        public_metadata: { onboardingCompleted?: boolean } & Record<string, unknown>
+        private_metadata: Record<string, unknown>
+        unsafe_metadata: Record<string, unknown>
         updated_at: number
     }
     object: 'event'
@@ -80,6 +80,16 @@ type SessionCreatedEvent = {
 
 type ClerkWebhookEvent = UserCreatedEvent | UserUpdatedEvent | UserDeletedEvent | SessionCreatedEvent
 
+/** What the per-event handlers below resolve to (consumed by POST's `result.action`). */
+type WebhookHandlerResult = {
+    action: string
+    userId?: string
+    reason?: string
+    existingUserId?: string
+    newClerkId?: string
+    email?: string
+}
+
 function getPrimaryEmail(emailAddresses: Array<{ email_address: string; verification?: { status: string } }>): string | undefined {
     const verifiedEmail = emailAddresses.find(email => email.verification?.status === 'verified')
     return verifiedEmail?.email_address || emailAddresses[0]?.email_address
@@ -100,7 +110,7 @@ function getProfileImage(imageUrl: string | null, profileImageUrl: string | null
     return profileImageUrl || imageUrl || null
 }
 
-async function handleUserCreated(event: UserCreatedEvent): Promise<any> {
+async function handleUserCreated(event: UserCreatedEvent): Promise<WebhookHandlerResult> {
     const { id, email_addresses, phone_numbers, first_name, last_name, username, image_url, profile_image_url, public_metadata } = event.data
 
     // Move these outside try block so they're accessible in catch (email conflict handler)
@@ -117,7 +127,8 @@ async function handleUserCreated(event: UserCreatedEvent): Promise<any> {
 
         if (existingUser) {
             console.log(`User ${id} already exists, updating instead`)
-            return handleUserUpdated(event as any)
+            // A created event carries the same user payload; only the literal `type` differs.
+            return handleUserUpdated(event as unknown as UserUpdatedEvent)
         }
 
         // Create user with Clerk auth data only
@@ -167,9 +178,10 @@ async function handleUserCreated(event: UserCreatedEvent): Promise<any> {
 
         return { action: 'created', userId: user.id }
 
-    } catch (error: any) {
+    } catch (error) {
         // Handle email conflict (P2002) gracefully
-        if (error.code === 'P2002' && error.meta?.target?.includes('email')) {
+        const prismaError = error as { code?: string; meta?: { target?: string[] } }
+        if (prismaError.code === 'P2002' && prismaError.meta?.target?.includes('email')) {
             const emailAddress = getPrimaryEmail(email_addresses)
             console.log(`⚠️ Email ${emailAddress} already exists, checking for existing user`)
 
@@ -224,7 +236,8 @@ async function handleUserUpdated(event: UserUpdatedEvent) {
 
         if (!existingUser) {
             console.log(`User ${id} doesn't exist, creating...`)
-            return handleUserCreated(event as any)
+            // An updated event carries the same user payload; only the literal `type` differs.
+            return handleUserCreated(event as unknown as UserCreatedEvent)
         }
 
         const phoneData = getPrimaryPhone(phone_numbers || [])
@@ -247,7 +260,7 @@ async function handleUserUpdated(event: UserUpdatedEvent) {
 
         // Only sync essential onboarding metadata from Clerk
         // All user profile data is managed exclusively in Prisma
-        const metadataUpdate: any = {}
+        const metadataUpdate: { onboardingCompleted?: boolean; welcomeMessageSeen?: boolean; onboardingStep?: number } = {}
 
         // Handle onboarding completion status
         if (public_metadata?.onboardingCompleted !== undefined) {

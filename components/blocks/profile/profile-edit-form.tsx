@@ -25,7 +25,7 @@ import { Loader2, Shield, CheckCircle, XCircle, ExternalLink, Plus, Edit, Trash2
 import { cn } from "@/lib/utils"
 
 import ProfilePictureUpload from "@/components/blocks/profile/profile-picture-upload"
-import { CommunitySelector } from "@/components/profile/community-selector"
+import { CommunitySelector, type Community as SelectorCommunity } from "@/components/profile/community-selector"
 
 const profileSchema = z.object({
     // Clerk-managed fields (update Clerk directly)
@@ -101,12 +101,13 @@ const profileSchema = z.object({
     showSocialLinks: z.boolean().default(true),
     showLocation: z.boolean().default(true)
 }).transform((data) => {
-    // Transform null values to undefined
+    // Transform null values to undefined (shape is unchanged — same keys/values)
     return Object.fromEntries(
         Object.entries(data).map(([key, value]) => [key, value === null ? undefined : value])
-    ) as any
+    ) as typeof data
 })
 
+type ProfileFormInput = z.input<typeof profileSchema>
 type ProfileFormValues = z.infer<typeof profileSchema>
 
 interface ProfileEditFormProps {
@@ -156,7 +157,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
     const locale = useLocale() as SupportedLocale
     const router = useRouter()
     const [isSubmitting, setIsSubmitting] = useState(false)
-    const [communities, setCommunities] = useState<any[]>([])
+    const [communities, setCommunities] = useState<SelectorCommunity[]>([])
     const [editingWorkIndex, setEditingWorkIndex] = useState<number | null>(null)
     const [workFormData, setWorkFormData] = useState({
         title: "",
@@ -170,7 +171,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
     // Use the new TypeScript hook with i18n support
     const { user, communities: availableCommunities, recentWork: existingRecentWork, loading, error, updating, updateProfile, refreshProfile, isRTL } = useUserProfile()
 
-    const form = useForm<ProfileFormValues>({
+    const form = useForm<ProfileFormInput, unknown, ProfileFormValues>({
         resolver: zodResolver(profileSchema),
         mode: 'onChange',
         defaultValues: {
@@ -179,7 +180,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
             username: user?.username || initialData?.username || "",
             image: user?.image || initialData?.image || "",
             bio: user?.bio || initialData?.bio || "",
-            ageGroup: user?.ageGroup || initialData?.ageGroup,
+            ageGroup: (user?.ageGroup || initialData?.ageGroup) as ProfileFormInput["ageGroup"],
             country: user?.country || initialData?.country || "",
             city: user?.city || initialData?.city || "",
             workTypes: user?.workTypes || initialData?.workTypes || [],
@@ -189,20 +190,20 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
             workBio: user?.workBio || initialData?.workBio || "",
             personalWebsite: user?.personalWebsite || initialData?.personalWebsite || "",
             linkedinProfile: user?.linkedinProfile || initialData?.linkedinProfile || "",
-            otherSocialLinks: user?.otherSocialLinks || initialData?.otherSocialLinks || [],
+            otherSocialLinks: (user?.otherSocialLinks || initialData?.otherSocialLinks || []) as ProfileFormInput["otherSocialLinks"],
             recentWork: [], // Will be populated by API fetch
             communityIds: [], // Will be populated by API fetch
             // Domain-rich fields (K4)
-            headline: (user as any)?.headline || "",
-            pronouns: (user as any)?.pronouns || "",
-            motivation: (user as any)?.motivation || "",
-            focusTopics: (user as any)?.focusTopics || [],
-            openToCollaboration: (user as any)?.openToCollaboration ?? false,
-            lookingFor: (user as any)?.lookingFor || [],
-            collaborationInterests: (user as any)?.collaborationInterests || "",
-            livedExperienceStatement: (user as any)?.livedExperienceStatement || "",
-            showLivedExperience: (user as any)?.showLivedExperience ?? false,
-            orcidId: (user as any)?.orcidId || "",
+            headline: user?.headline || "",
+            pronouns: user?.pronouns || "",
+            motivation: user?.motivation || "",
+            focusTopics: user?.focusTopics || [],
+            openToCollaboration: user?.openToCollaboration ?? false,
+            lookingFor: user?.lookingFor || [],
+            collaborationInterests: user?.collaborationInterests || "",
+            livedExperienceStatement: user?.livedExperienceStatement || "",
+            showLivedExperience: user?.showLivedExperience ?? false,
+            orcidId: user?.orcidId || "",
             // Privacy Controls
             isSearchable: user?.isSearchable ?? initialData?.isSearchable ?? true,
             profileVisibility: user?.profileVisibility || initialData?.profileVisibility || "PUBLIC",
@@ -225,11 +226,13 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
         if (user && !loading && availableCommunities.length > 0) {
             // Map community memberships to IDs
             // Type assertion: transformToLocalizedUser includes relations via spread
-            const userWithRelations = user as any
-            const communityIds = userWithRelations.communityMemberships?.map((m: any) => m.communityId) || []
+            const userWithRelations = user as typeof user & {
+                communityMemberships?: Array<{ communityId: string }>
+            }
+            const communityIds = userWithRelations.communityMemberships?.map((m) => m.communityId) || []
 
             // Map recent work to form format
-            const recentWorkFormatted = existingRecentWork.map((work: any) => ({
+            const recentWorkFormatted = existingRecentWork.map((work) => ({
                 title: work.title,
                 description: work.description || "",
                 link: work.link || "",
@@ -244,7 +247,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                 username: user.username || "",
                 image: user.image || "",
                 bio: user.bio || "",
-                ageGroup: user.ageGroup,
+                ageGroup: user.ageGroup as ProfileFormInput["ageGroup"],
                 country: user.country || "",
                 city: user.city || "",
                 workTypes: user.workTypes || [],
@@ -254,7 +257,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                 workBio: user.workBio || "",
                 personalWebsite: user.personalWebsite || "",
                 linkedinProfile: user.linkedinProfile || "",
-                otherSocialLinks: user.otherSocialLinks || [],
+                otherSocialLinks: (user.otherSocialLinks || []) as ProfileFormInput["otherSocialLinks"],
                 // Use data from hook
                 recentWork: recentWorkFormatted,
                 communityIds: communityIds,
@@ -283,7 +286,9 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
     // Set available communities for the selector
     useEffect(() => {
         if (availableCommunities.length > 0) {
-            setCommunities(availableCommunities)
+            // The hook's community shape matches the selector's (name may be a
+            // localized record or plain string) — align the nominal types only.
+            setCommunities(availableCommunities as SelectorCommunity[])
         }
     }, [availableCommunities])
 
@@ -316,7 +321,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                 if (!form.getValues('position') && affiliations[0].role) form.setValue('position', affiliations[0].role, { shouldDirty: true })
             }
             // Append works (skip ones already listed by title), up to 5 total.
-            const existingTitles = new Set((form.getValues('recentWork') || []).map((w: any) => (w.title || '').trim().toLowerCase()))
+            const existingTitles = new Set((form.getValues('recentWork') || []).map((w) => (w.title || '').trim().toLowerCase()))
             let added = 0
             for (const w of works || []) {
                 if (workFields.length + added >= 5) break
@@ -376,7 +381,8 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
     }
 
     const handleEditWork = (index: number) => {
-        const item = workFields[index] as any
+        // Type-only view: the field-array item carries exactly the work-form fields.
+        const item = workFields[index] as typeof workFormData
         setWorkFormData({
             title: item.title,
             description: item.description,
@@ -921,14 +927,14 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                                                         >
                                                             <FormControl>
                                                                 <Checkbox
-                                                                    checked={field.value?.includes(option.value as any)}
+                                                                    checked={field.value?.includes(option.value as ProfileFormValues["workTypes"][number])}
                                                                     onCheckedChange={(checked) => {
                                                                         return checked
                                                                             ? field.onChange([...field.value, option.value])
                                                                             : field.onChange(
                                                                                 field.value?.filter(
-                                                                                    (value: any) => value !== option.value
-                                                                                ) //todo: any
+                                                                                    (value) => value !== option.value
+                                                                                )
                                                                             )
                                                                     }}
                                                                 />
@@ -970,14 +976,14 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                                                         >
                                                             <FormControl>
                                                                 <Checkbox
-                                                                    checked={field.value?.includes(option.value as any)}
+                                                                    checked={field.value?.includes(option.value as ProfileFormValues["expertiseAreas"][number])}
                                                                     onCheckedChange={(checked) => {
                                                                         return checked
                                                                             ? field.onChange([...field.value, option.value])
                                                                             : field.onChange(
                                                                                 field.value?.filter(
-                                                                                    (value: any) => value !== option.value
-                                                                                ) //todo: any
+                                                                                    (value) => value !== option.value
+                                                                                )
                                                                             )
                                                                     }}
                                                                 />
@@ -1106,7 +1112,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                         {/* Existing Work Items */}
                         {workFields.length > 0 && (
                             <div className="space-y-4">
-                                {workFields.map((item: any, index: number) => (
+                                {workFields.map((item, index: number) => (
                                     <Card key={item.id}>
                                         <CardHeader className="pb-3">
                                             <div className={cn("flex items-start justify-between", isRTL && "flex-row-reverse")}>

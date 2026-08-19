@@ -39,7 +39,7 @@ export function ProfilePromptsEditor({ className }: { className?: string }) {
       .then(([lib, mine]) => {
         if (!active) return
         setPrompts(lib.prompts || [])
-        setAnswers((mine.answers || []).map((a: any) => ({ promptId: a.promptId, answer: a.answer })))
+        setAnswers((mine.answers || []).map((a: Answer) => ({ promptId: a.promptId, answer: a.answer })))
       })
       .finally(() => active && setLoading(false))
     return () => {

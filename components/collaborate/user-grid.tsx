@@ -46,6 +46,7 @@ export function UserGrid({ users, className, itemsPerPage, locale }: UserGridPro
   // Clamp the page when the users list shrinks (the component instance
   // survives prop changes, so a stale page could render an empty grid)
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional clamp when the users list shrinks; deriving instead would change pagination timing
     setCurrentPage(p => Math.min(p, totalPages))
   }, [totalPages])
 

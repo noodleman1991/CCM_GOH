@@ -1,4 +1,4 @@
-type ClaimsLike = Record<string, any> | null | undefined
+type ClaimsLike = Record<string, unknown> | null | undefined
 
 /**
  * Single source of truth for "has this user finished onboarding".
@@ -12,6 +12,6 @@ type ClaimsLike = Record<string, any> | null | undefined
  */
 export function isOnboardingComplete(claims: ClaimsLike): boolean {
   if (!claims) return false
-  const pm = claims.publicMetadata ?? claims.metadata ?? {}
+  const pm = (claims.publicMetadata ?? claims.metadata ?? {}) as Record<string, unknown>
   return Boolean(pm.onboardingCompleted ?? pm.onboardingComplete ?? false)
 }

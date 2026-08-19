@@ -9,8 +9,9 @@ interface RelatedTarget {
   _type: string;
   _id: string;
   slug?: string;
-  title?: any;
-  excerpt?: any;
+  /** Localized record or plain string, projected loosely from GROQ. */
+  title?: unknown;
+  excerpt?: unknown;
   image?: { asset?: { url?: string }; alt?: string };
   status?: string;
 }
@@ -34,10 +35,10 @@ const TYPE_META: Record<
   regionalCommunity: { href: (s) => `/communities/${s}`, icon: Globe, labelKey: "Community" },
 };
 
-function plainTitle(title: any, locale: string): string {
+function plainTitle(title: unknown, locale: string): string {
   if (!title) return "";
   if (typeof title === "string") return title;
-  return getLocalizedText(title, locale, "");
+  return getLocalizedText(title as Record<string, string>, locale, "");
 }
 
 /**

@@ -1,4 +1,4 @@
-import { defineField, defineType } from "sanity";
+import { defineField, defineType, type SanityDocument } from "sanity";
 import { FileDown } from "lucide-react";
 import { orderRankField } from "@sanity/orderable-document-list";
 
@@ -43,7 +43,7 @@ export default defineType({
             options: {
                 // Fall back to the first available localized title so the slug
                 // can still be generated when there is no English title.
-                source: (doc: any) => {
+                source: (doc: SanityDocument) => {
                     const t = (doc?.title || {}) as Record<string, string>;
                     return t.en || t.es || t.fr || t.ar || "";
                 },

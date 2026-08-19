@@ -1,13 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-const getActorMock = vi.fn<() => any>();
+const getActorMock = vi.fn<() => Promise<unknown>>();
 vi.mock("@/lib/authz", () => ({ getActor: () => getActorMock() }));
 
-const fetchMock = vi.fn<(...a: any[]) => Promise<any>>(async () => "evt1"); // approved by default
-vi.mock("@/sanity/lib/client", () => ({ client: { fetch: (...a: any[]) => fetchMock(...a) } }));
+const fetchMock = vi.fn<(...a: unknown[]) => Promise<unknown>>(async () => "evt1"); // approved by default
+vi.mock("@/sanity/lib/client", () => ({ client: { fetch: (...a: unknown[]) => fetchMock(...a) } }));
 
 const db = vi.hoisted(() => {
-  const d: any = {
+  const d: Record<string, Record<string, ReturnType<typeof vi.fn>>> = {
     rsvp: {
       upsert: vi.fn(async () => ({ id: "r1" })),
       deleteMany: vi.fn(async () => ({ count: 1 })),
@@ -45,7 +45,7 @@ describe("setRsvp", () => {
   });
 
   it("rejects an invalid status", async () => {
-    const res = await setRsvp("evt1", "MAYBE" as any);
+    const res = await setRsvp("evt1", "MAYBE" as never);
     expect(res.ok).toBe(false);
   });
 

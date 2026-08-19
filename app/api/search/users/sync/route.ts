@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { prisma } from '@/lib/prisma'
-import { algoliaClient, ALGOLIA_INDICES, transformUserForIndex, shouldIndexUser } from '@/lib/algolia'
+import { algoliaClient, ALGOLIA_INDICES, transformUserForIndex, shouldIndexUser, type UserSearchRecord } from '@/lib/algolia'
 
 export async function POST(request: NextRequest) {
   try {
@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
         // Replace all records atomically
         const response = await algoliaClient.replaceAllObjects({
           indexName: ALGOLIA_INDICES.USERS,
-          objects: records as any[]
+          objects: records
         })
 
         // Wait for indexing to complete
@@ -115,7 +115,7 @@ export async function POST(request: NextRequest) {
         }
       })
 
-      const toIndex: any[] = []
+      const toIndex: UserSearchRecord[] = []
       const toDelete: string[] = []
 
       for (const user of users) {
@@ -183,7 +183,7 @@ export async function GET() {
     const stats = { numberOfRecords: 0, updatedAt: new Date().toISOString() }
     try {
       // Try to get actual stats if method exists
-      const actualStats = await (algoliaClient as any).getStats?.({ indexName: ALGOLIA_INDICES.USERS })
+      const actualStats = await (algoliaClient as { getStats?: (args: { indexName: string }) => Promise<Record<string, unknown>> }).getStats?.({ indexName: ALGOLIA_INDICES.USERS })
       if (actualStats) Object.assign(stats, actualStats)
     } catch (error) {
       console.warn('Stats not available:', error)

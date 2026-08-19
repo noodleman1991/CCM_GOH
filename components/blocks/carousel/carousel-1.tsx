@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 import { heading } from "@/lib/design-tokens";
 import { PAGE_QUERY_RESULT } from "@/sanity.types";
 import { getLocalizedField } from "@/lib/localization-utils";
+import { type BackgroundOptionType } from "@/types/background-option";
 
 const CAROUSEL_SIZES = {
   one: "basis-full",
@@ -78,7 +79,7 @@ export default function Carousel1({
     : getLocalizedField(description, supportedLocale, '');
 
   return (
-    <SectionContainer padding={padding} background={background as any}>
+    <SectionContainer padding={padding} background={background as BackgroundOptionType | null}>
       <div className="max-w-6xl mx-auto px-4 @content-sm/page:px-6 @content-lg/page:px-8">
         <div className="flex flex-col space-y-6">
           {localizedTitle && (

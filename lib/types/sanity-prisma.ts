@@ -220,7 +220,7 @@ export interface CachedSanityData<T> {
 
 export interface SanityFetchOptions {
   query: string
-  params?: Record<string, any>
+  params?: Record<string, unknown>
   revalidate?: number
   tags?: string[]
 }
@@ -327,7 +327,7 @@ export type SanityDocumentType = 'workType' | 'expertiseArea' | 'onboardingConte
 
 export interface DocumentTemplate {
   _type: SanityDocumentType
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export interface SanityMutationResult {

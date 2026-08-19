@@ -69,7 +69,7 @@ describe("normalizeContributions", () => {
 
   it("skips entries with no id and handles empty input", () => {
     expect(normalizeContributions({ locale: "en" })).toEqual([]);
-    const out = normalizeContributions({ content: [{ title: "no id" } as any], locale: "en" });
+    const out = normalizeContributions({ content: [{ title: "no id" } as never], locale: "en" });
     expect(out).toEqual([]);
   });
 });

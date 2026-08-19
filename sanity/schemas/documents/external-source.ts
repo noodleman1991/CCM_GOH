@@ -1,4 +1,4 @@
-import { defineField, defineType } from "sanity";
+import { defineField, defineType, type PreviewValue } from "sanity";
 import { ExternalLink } from "lucide-react";
 
 type SourceType = 'news' | 'research' | 'blog' | 'report' | 'press' | 'policy' | 'other';
@@ -240,7 +240,7 @@ export default defineType({
                 }: {
             title?: string;
             publisher?: string;
-            media?: any;
+            media?: PreviewValue["media"];
             sourceUrl?: string;
             approved?: boolean;
             sourceType?: SourceType;

@@ -323,8 +323,8 @@ export class CommunityService {
    */
   private static transformToLocalizedCommunity(
     community: Community & {
-      members?: any[]
-      contents?: any[]
+      members?: unknown[]
+      contents?: unknown[]
     },
     localizedQuery: ReturnType<typeof createLocalizedQuery>
   ): LocalizedCommunity {

@@ -26,6 +26,7 @@ export function AnnouncementDismiss({
   const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- deliberate mount gate: render only after localStorage is read to avoid a flash / hydration mismatch
     setMounted(true);
     if (dismissible) {
       try {

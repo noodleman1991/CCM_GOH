@@ -26,7 +26,7 @@ export function splitContentAtReadMore(
   // Find the first readMore break
   const readMoreIndex = content.findIndex(
     (block) =>
-      block._type === 'break' && (block as any).style === 'readMore'
+      block._type === 'break' && (block as { style?: string }).style === 'readMore'
   );
 
   const hasReadMoreBreak = readMoreIndex !== -1;

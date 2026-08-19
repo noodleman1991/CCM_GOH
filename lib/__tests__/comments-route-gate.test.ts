@@ -4,22 +4,22 @@ import { NextRequest } from "next/server";
 const authMock = vi.fn<() => Promise<{ userId: string | null }>>();
 vi.mock("@clerk/nextjs/server", () => ({ auth: () => authMock() }));
 
-const collaborationIdForTargetMock = vi.fn<(...a: any[]) => Promise<string | null>>();
+const collaborationIdForTargetMock = vi.fn<(...a: unknown[]) => Promise<string | null>>();
 vi.mock("@/lib/comments/target", () => ({
-  collaborationIdForTarget: (...a: any[]) => collaborationIdForTargetMock(...a),
+  collaborationIdForTarget: (...a: unknown[]) => collaborationIdForTargetMock(...a),
 }));
 
-const authorizeCollabMock = vi.fn<(...a: any[]) => Promise<any>>();
+const authorizeCollabMock = vi.fn<(...a: unknown[]) => Promise<unknown>>();
 vi.mock("@/lib/collaboration/service", () => ({
-  authorizeCollab: (...a: any[]) => authorizeCollabMock(...a),
+  authorizeCollab: (...a: unknown[]) => authorizeCollabMock(...a),
 }));
 
-const listCommentsMock = vi.fn<(...a: any[]) => Promise<any>>(async () => ({
+const listCommentsMock = vi.fn<(...a: unknown[]) => Promise<unknown>>(async () => ({
   comments: [],
   nextCursor: null,
 }));
 vi.mock("@/lib/comments/queries", () => ({
-  listComments: (...a: any[]) => listCommentsMock(...a),
+  listComments: (...a: unknown[]) => listCommentsMock(...a),
 }));
 
 import { GET } from "@/app/api/comments/route";

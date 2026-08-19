@@ -50,7 +50,7 @@ export default defineType({
   validation: Rule => Rule.custom((value) => {
     if (!value || value.length === 0) return true
 
-    const keys = value.map((item: any) => item._key)
+    const keys = value.map((item) => (item as { _key?: string })._key)
     const uniqueKeys = new Set(keys)
 
     if (keys.length !== uniqueKeys.size) {

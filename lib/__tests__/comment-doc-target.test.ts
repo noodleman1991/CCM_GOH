@@ -10,7 +10,7 @@ const { queryRawUnsafeMock, prismaMock } = vi.hoisted(() => {
 });
 vi.mock("@/lib/prisma", () => ({
   prisma: prismaMock,
-  safeQuery: async (fn: any) => {
+  safeQuery: async (fn: () => Promise<unknown>) => {
     try {
       return { success: true, data: await fn() };
     } catch {

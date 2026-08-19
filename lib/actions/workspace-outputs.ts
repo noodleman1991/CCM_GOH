@@ -7,7 +7,7 @@ import { authorizeCollab } from "@/lib/collaboration/service";
 import { writeClient } from "@/sanity/lib/write-client";
 import { isOutputType } from "@/lib/collaboration/outputs";
 
-type Result<T = {}> = ({ ok: true } & T) | { ok: false; error: string };
+type Result<T = unknown> = ({ ok: true } & T) | { ok: false; error: string };
 
 const addSchema = z.object({
   collaborationId: z.string().min(1),

@@ -3,14 +3,24 @@
  * Provides clean URL routing with ?q= parameter format
  */
 
+// Per-index slice of the InstantSearch UI state that this routing reads/writes.
+// Structural subset of react-instantsearch's IndexUiState (not exported here).
+interface IndexUiState {
+  query?: string
+  refinementList?: Record<string, string[]>
+  page?: number
+  range?: Record<string, string>
+}
+
 // Define UiState type locally since it's not exported by react-instantsearch
-type UiState = Record<string, any>
+type UiState = Record<string, IndexUiState>
 
 interface RouteState {
   q?: string
   refinementList?: Record<string, string[]>
   page?: number
-  [key: string]: any
+  range?: Record<string, string>
+  [key: string]: unknown
 }
 
 interface SearchRoutingConfig {
@@ -67,7 +77,7 @@ export function createSearchRouting(indexName: string): SearchRoutingConfig {
        * Maps from clean URL format → internal state
        */
       routeToState(routeState: RouteState): UiState {
-        const indexState: any = {}
+        const indexState: IndexUiState = {}
 
         // Map 'q' parameter to query
         if (routeState.q) {

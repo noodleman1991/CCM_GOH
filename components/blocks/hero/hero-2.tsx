@@ -1,4 +1,6 @@
-import { SanityButton } from "@/components/ui/sanity-button";
+import { SanityButton, type SanityLinkData } from "@/components/ui/sanity-button";
+import { type BackgroundOptionType } from "@/types/background-option";
+import { type SectionPadding } from "@/sanity.types";
 import { stegaClean } from "next-sanity";
 import PortableTextRenderer from "@/components/portable-text-renderer";
 import { PAGE_QUERY_RESULT } from "@/sanity.types";
@@ -15,7 +17,7 @@ type Hero2Props = Extract<
   locale?: string;
 };
 
-export default function Hero2({ background, tagLine, title, body, links, padding, locale = "en" }: Hero2Props & { padding?: any }) {
+export default function Hero2({ background, tagLine, title, body, links, padding, locale = "en" }: Hero2Props & { padding?: SectionPadding | null }) {
   const rtl = isRTL(locale);
   const supportedLocale = locale as 'en' | 'es' | 'fr' | 'ar';
 
@@ -33,7 +35,7 @@ export default function Hero2({ background, tagLine, title, body, links, padding
     : getLocalizedPortableText(body, supportedLocale);
 
   return (
-    <SectionContainer background={background as any} padding={padding}>
+    <SectionContainer background={background as BackgroundOptionType | null} padding={padding}>
       <div className="text-center">
       {localizedTagLine && (
         <p className="text-sm font-semibold text-ccm-water uppercase tracking-wider">
@@ -53,7 +55,7 @@ export default function Hero2({ background, tagLine, title, body, links, padding
       {links && links.length > 0 && (
         <div className="mt-8 flex flex-wrap gap-4 justify-center">
           {links.map((link) => (
-            <SanityButton key={link.title} link={link as any} locale={locale} />
+            <SanityButton key={link.title} link={link as SanityLinkData} locale={locale} />
           ))}
         </div>
       )}

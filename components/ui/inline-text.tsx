@@ -42,6 +42,7 @@ export function InlineText({
 
   // Keep the draft in sync if the value changes externally while not editing.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional external-value -> draft sync while not editing
     if (!editing) setDraft(value);
   }, [value, editing]);
 

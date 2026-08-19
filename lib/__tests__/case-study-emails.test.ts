@@ -4,19 +4,19 @@ const sendMock = vi.fn().mockResolvedValue({ id: 'email_1' })
 vi.mock('resend', () => ({
   // Must be `new`-able — use a real class so `new Resend()` works.
   Resend: class {
-    emails = { send: (...a: any[]) => sendMock(...a) }
+    emails = { send: (...a: unknown[]) => sendMock(...a) }
   },
 }))
 
 const prismaFindUnique = vi.fn()
 vi.mock('@/lib/prisma', () => ({
-  prisma: { user: { findUnique: (...a: any[]) => prismaFindUnique(...a) } },
+  prisma: { user: { findUnique: (...a: unknown[]) => prismaFindUnique(...a) } },
 }))
 
 const patchSet = vi.fn().mockReturnValue({ commit: vi.fn().mockResolvedValue({}) })
 const patchMock = vi.fn().mockReturnValue({ set: patchSet })
 vi.mock('@/sanity/lib/write-client', () => ({
-  writeClient: { patch: (...a: any[]) => patchMock(...a) },
+  writeClient: { patch: (...a: unknown[]) => patchMock(...a) },
 }))
 
 import { isNotifiableStatus, notifyCaseStudyStatusChange } from '@/lib/case-study-emails'

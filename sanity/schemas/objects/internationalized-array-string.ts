@@ -49,7 +49,7 @@ export default defineType({
   validation: Rule => Rule.required().min(1).custom((value) => {
     if (!value) return true
 
-    const keys = value.map((item: any) => item._key)
+    const keys = value.map((item) => (item as { _key?: string })._key)
     const uniqueKeys = new Set(keys)
 
     if (keys.length !== uniqueKeys.size) {

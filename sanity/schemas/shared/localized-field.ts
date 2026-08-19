@@ -1,4 +1,4 @@
-import { defineField } from "sanity";
+import { defineField, type ObjectRule, type Rule } from "sanity";
 
 /**
  * Shared supported languages for field-level localized objects ({en,es,fr,ar}).
@@ -45,18 +45,18 @@ export function createLocalizedField(
 ) {
   const { group, description, required = false, maxWarn } = options;
   const requireDefault = required
-    ? (Rule: any) => Rule.required()
+    ? (rule: ObjectRule) => rule.required()
     : undefined;
 
   const subValidation = (isDefault: boolean | undefined) => {
     const needsRequired = Boolean(isDefault && required);
     if (!needsRequired && !maxWarn) return undefined;
-    return (Rule: any) => {
+    return (rule: Rule) => {
       const rules = [];
-      if (needsRequired) rules.push(Rule.required());
+      if (needsRequired) rules.push(rule.required());
       if (maxWarn)
         rules.push(
-          Rule.max(maxWarn).warning(
+          rule.max(maxWarn).warning(
             `Keep under ${maxWarn} characters — longer text is cut off on cards.`
           )
         );

@@ -33,13 +33,16 @@ interface LivedExperience {
     ar?: string;
   };
   videoLink?: string;
-  thumbnail?: any;
+  thumbnail?: {
+    asset?: { _id?: string; url?: string | null; mimeType?: string | null } | null;
+    alt?: string | null;
+  } | null;
   duration?: string;
   publishedAt?: string;
   author?: {
     _id: string;
     name: string;
-    image?: any;
+    image?: unknown;
     organizationalAffiliation?: string;
   };
   relatedCommunity?: {

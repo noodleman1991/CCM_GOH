@@ -7,7 +7,7 @@ import { authorizeCollab } from "@/lib/collaboration/service";
 
 import { youtubeId } from "@/lib/youtube";
 
-type Result<T = {}> = ({ ok: true } & T) | { ok: false; error: string };
+type Result<T = unknown> = ({ ok: true } & T) | { ok: false; error: string };
 
 /** Add a YouTube media item (EDITOR+). */
 export async function addMedia(collaborationId: string, url: string, title?: string): Promise<Result<{ id: string }>> {

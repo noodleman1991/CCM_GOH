@@ -270,6 +270,7 @@ export const fetchRegionalCommunityAgendas = async ({
         }
 
         const regionalCommunityId = community._id;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- raw GROQ string query returns untyped data; downstream templates depend on the loose shape (typegen is off-limits here)
         let items: any[] = [];
 
         // First get featured agendas
@@ -354,7 +355,7 @@ export const fetchRegionalCommunityAgendas = async ({
         // If we need more items, get recent non-featured agendas
         if (items.length < limit) {
             const remainingCount = limit - items.length;
-            const featuredIds = items.map((item: any) => item._id);
+            const featuredIds = items.map((item) => item._id);
 
             const { data: recentAgendas } = await sanityFetch({
                 query: `*[_type == "agenda" && !(_id in $featuredIds) && references($regionalCommunityId)] | order(publishDate desc)[0...${remainingCount}]{
@@ -462,6 +463,7 @@ export const fetchDynamicNews = async ({
     maxItems?: number;
 }) => {
     try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- raw GROQ string query returns untyped data; downstream templates depend on the loose shape (typegen is off-limits here)
         let items: any[] = [];
 
         if (mode === "dynamic-featured") {
@@ -520,7 +522,7 @@ export const fetchDynamicNews = async ({
             // If we need more items, get recent non-featured news
             if (items.length < maxItems) {
                 const remainingCount = maxItems - items.length;
-                const featuredIds = items.map((item: any) => item._id);
+                const featuredIds = items.map((item) => item._id);
 
                 const { data: recentNews } = await sanityFetch({
                     query: `*[_type == "newsPost" && !(_id in $featuredIds) && references($regionalCommunityId)] | order(publishedAt desc)[0...${remainingCount}]{
@@ -651,6 +653,7 @@ export const fetchDynamicCaseStudies = async ({
     maxItems?: number;
 }) => {
     try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- raw GROQ string query returns untyped data; downstream templates depend on the loose shape (typegen is off-limits here)
         let items: any[] = [];
 
         if (mode === "dynamic-featured") {
@@ -731,7 +734,7 @@ export const fetchDynamicCaseStudies = async ({
             // If we need more items, get recent non-featured case studies
             if (items.length < maxItems) {
                 const remainingCount = maxItems - items.length;
-                const featuredIds = items.map((item: any) => item._id);
+                const featuredIds = items.map((item) => item._id);
 
                 const { data: recentCaseStudies } = await sanityFetch({
                     query: `*[_type == "caseStudy" && status == "approved" && !(_id in $featuredIds) && references($regionalCommunityId)] | order(publishedAt desc)[0...${remainingCount}]{
@@ -906,6 +909,7 @@ export const fetchDynamicLivedExperiences = async ({
     maxItems?: number;
 }) => {
     try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- raw GROQ string query returns untyped data; downstream templates depend on the loose shape (typegen is off-limits here)
         let items: any[] = [];
 
         if (mode === "dynamic-featured") {
@@ -963,7 +967,7 @@ export const fetchDynamicLivedExperiences = async ({
             // If we need more items, get recent non-featured experiences
             if (items.length < maxItems) {
                 const remainingCount = maxItems - items.length;
-                const featuredIds = items.map((item: any) => item._id);
+                const featuredIds = items.map((item) => item._id);
 
                 const { data: recentExperiences } = await sanityFetch({
                     query: `*[_type == "livedExperience" && !(_id in $featuredIds) && relatedCommunity._ref == $regionalCommunityId] | order(publishedAt desc)[0...${remainingCount}]{
@@ -1428,7 +1432,7 @@ export const searchCaseStudies = async ({
     tags?: string[];
     limit?: number;
 }) => {
-    let filters = [`_type == "caseStudy"`, `status == "approved"`];
+    const filters = [`_type == "caseStudy"`, `status == "approved"`];
     const params: Record<string, unknown> = { limit };
 
     if (language) {

@@ -19,7 +19,7 @@ import { FEATURES } from '@/lib/features'
 import { UserService } from '@/lib/services/user.service'
 import { prisma } from '@/lib/prisma'
 import { decodeFilterParam } from '@/lib/collaborate-filters'
-import type { SupportedLocale } from '@/types/prisma'
+import type { LocalizedUser, SupportedLocale } from '@/types/prisma'
 
 /**
  * Collaborate Page - Server Component
@@ -173,7 +173,7 @@ export default async function CollaboratePage({ params, searchParams }: Collabor
     // Then group them by community on the server side
     // Sliced users for display + the TRUE pre-slice match count per community,
     // so carousel headers never claim a number the slice cap made up.
-    const communityUsersMap: Record<string, { users: any[]; total: number }> = {}
+    const communityUsersMap: Record<string, { users: LocalizedUser[]; total: number }> = {}
 
     // Build single query with the decoded filters (empty array = no filter).
     const result = await UserService.getUsersForCollaborate(
@@ -201,8 +201,10 @@ export default async function CollaboratePage({ params, searchParams }: Collabor
         const communityName = community.regionalName || community.name
         const usersInCommunity = allUsers.filter(user => {
           // Type assertion: transformToLocalizedUser includes relations via spread
-          const userWithRelations = user as any
-          return userWithRelations.communityMemberships?.some((m: any) => m.communityId === community.id)
+          const userWithRelations = user as LocalizedUser & {
+            communityMemberships?: Array<{ communityId: string }>
+          }
+          return userWithRelations.communityMemberships?.some((m) => m.communityId === community.id)
         })
 
         if (usersInCommunity.length > 0) {

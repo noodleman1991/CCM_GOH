@@ -12,7 +12,8 @@ import GridNews from "./grid-news";
 import GridLivedExperience from "./grid-lived-experience";
 import GridExternalSource from "./grid-external-source";
 import PortableTextRenderer from "@/components/portable-text-renderer";
-import { GridSectionHeader } from "./grid-section-header";
+import { GridSectionHeader, type GridSectionHeaderImage } from "./grid-section-header";
+import { type BackgroundOptionType } from "@/types/background-option";
 import { ExpandableGrid } from "./expandable-grid";
 import { getLocalizedField } from "@/lib/localization-utils";
 import { resolveGridColumns } from "@/lib/grid-layout";
@@ -27,20 +28,20 @@ type GridCardType = {
     _key: string;
     title?: string;
     excerpt?: string;
-    image?: any;
-    link?: any;
+    image?: unknown;
+    link?: unknown;
 };
 
 type GridPostType = {
     _type: "grid-post";
     _key: string;
-    post?: any;
+    post?: unknown;
 };
 
 type GridReportType = {
     _type: "grid-report";
     _key: string;
-    report: any;
+    report: unknown;
     showTags?: boolean;
     showDownloadButtons?: boolean;
     showMetadata?: boolean;
@@ -49,7 +50,7 @@ type GridReportType = {
 type GridAgendaType = {
     _type: "grid-agenda";
     _key: string;
-    agenda: any;
+    agenda: unknown;
     showTags?: boolean;
     showDownloadButtons?: boolean;
     showMetadata?: boolean;
@@ -58,7 +59,7 @@ type GridAgendaType = {
 type GridCaseStudyType = {
     _type: "grid-case-study";
     _key: string;
-    caseStudy: any;
+    caseStudy: unknown;
     showTags?: boolean;
     showAuthors?: boolean;
     showMetadata?: boolean;
@@ -69,7 +70,7 @@ type GridCaseStudyType = {
 type ExtendedGridColumn = GridCardType | GridPostType | GridReportType | GridAgendaType | GridCaseStudyType;
 
 // Simplified component map with explicit type union
-const componentMap: Record<string, React.ComponentType<any>> = {
+const componentMap: Record<string, React.ElementType> = {
     "grid-card": GridCard,
     "grid-post": GridPost,
     "grid-report": GridReport,
@@ -113,7 +114,7 @@ interface GridRowProps extends Omit<GridRow, 'initialDisplayCount' | 'headerImag
     locale?: string;
     userId?: string;
     rowId?: string;
-    headerImage?: any;
+    headerImage?: GridSectionHeaderImage | null;
     initialDisplayCount?: number;
 }
 
@@ -166,7 +167,7 @@ export default async function GridRow({
     const columnItems = dedupeGridColumns(columns);
 
     return (
-        <SectionContainer background={background as any} padding={padding}>
+        <SectionContainer background={background as BackgroundOptionType | null} padding={padding}>
             <div className="overflow-x-hidden">
                 {/* Grid Header - using GridSectionHeader component */}
                 <GridSectionHeader
@@ -214,7 +215,7 @@ export default async function GridRow({
                             return (
                                 <div key={uniqueKey} className="min-w-0 h-full flex">
                                     <Component
-                                        {...(column as any)}
+                                        {...column}
                                         locale={locale || 'en'}
                                         userId={userId}
                                         cardVariant={variant}

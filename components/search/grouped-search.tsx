@@ -50,6 +50,7 @@ function GroupedSearchBox({
   const inputRef = useRef<HTMLInputElement>(null)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional prop->draft sync for the debounced input
   useEffect(() => setLocal(value), [value])
   useEffect(() => () => { if (debounceRef.current) clearTimeout(debounceRef.current) }, [])
 
@@ -371,6 +372,7 @@ export default function GroupedSearch() {
   // Mount Algolia widgets only on the client (preserves the SSR-hang fix:
   // several forceMount'd InstantSearch SSR queries can hold the RSC stream open).
   const [mounted, setMounted] = useState(false)
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- deliberate client-only mount gate (preserves the InstantSearch SSR-hang fix)
   useEffect(() => setMounted(true), [])
 
   // Search-only client, minted from /api/search/token (see lib/algolia-client) —
@@ -395,6 +397,7 @@ export default function GroupedSearch() {
     setCounts((prev) => (prev[key] === n ? prev : { ...prev, [key]: n }))
   }, [])
   // Reset counts whenever the query changes so stale counts don't linger.
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional reset of stale per-group counts when the query changes
   useEffect(() => { setCounts({}) }, [query])
 
   // Reflect the query into the URL (?q=) without a full navigation, so it's

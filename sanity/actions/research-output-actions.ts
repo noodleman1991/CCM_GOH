@@ -11,7 +11,7 @@ function makeReviewAction(config: {
   tone?: 'positive' | 'caution' | 'critical'
   visibleWhenStatus: string[]
   errorLabel: string
-  buildPatch: (doc: Record<string, any> | null) => Record<string, any> | null
+  buildPatch: (doc: Record<string, unknown> | null) => Record<string, unknown> | null
 }): DocumentActionComponent {
   return (props) => {
     const { id, draft, published } = props

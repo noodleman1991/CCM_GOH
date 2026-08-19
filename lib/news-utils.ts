@@ -48,7 +48,8 @@ export interface NewsPost {
   author?: {
     _id: string;
     name: string;
-    image?: any;
+    /** Sanity image reference — passed straight to urlFor, never inspected here. */
+    image?: unknown;
     bio?: Record<string, string> | string;
     organizationalAffiliation?: string;
   };
@@ -58,7 +59,8 @@ export interface NewsPost {
     slug?: {
       current: string;
     };
-    logo?: any;
+    /** Sanity image reference — passed straight to urlFor, never inspected here. */
+    logo?: unknown;
   }>;
   projects?: Array<{
     _id: string;
@@ -92,7 +94,7 @@ export interface NewsPost {
     name: Record<string, string> | string;
     slug: string;
   } | null;
-  content?: any; // PortableText content
+  content?: unknown; // PortableText content
   sources?: Array<{
     title: string;
     url: string;
@@ -105,7 +107,8 @@ export interface NewsPost {
   meta_title?: string;
   meta_description?: string;
   noindex?: boolean;
-  ogImage?: any;
+  /** Sanity image reference — passed straight to urlFor, never inspected here. */
+  ogImage?: unknown;
 }
 
 export interface NewsTag {
@@ -198,20 +201,26 @@ export function formatDateRange(
 /**
  * Get reading time estimate (in minutes)
  */
-export function getReadingTime(content: any): number {
+/** Loose PortableText block shape — only what the word/text extractors read. */
+type PortableTextBlockLike = {
+  _type?: string;
+  children?: Array<{ text?: string }>;
+};
+
+export function getReadingTime(content: unknown): number {
   if (!content) return 0;
 
   // Approximate words per minute
   const wordsPerMinute = 200;
 
   // Count words in portable text content
-  const countWords = (blocks: any[]): number => {
+  const countWords = (blocks: unknown): number => {
     if (!Array.isArray(blocks)) return 0;
 
-    return blocks.reduce((count, block) => {
+    return (blocks as PortableTextBlockLike[]).reduce((count, block) => {
       if (block._type === 'block' && block.children) {
         const text = block.children
-          .map((child: any) => child.text || '')
+          .map((child) => child.text || '')
           .join(' ');
         return count + text.split(/\s+/).filter(Boolean).length;
       }
@@ -226,13 +235,13 @@ export function getReadingTime(content: any): number {
 /**
  * Extract plain text from portable text content
  */
-export function extractPlainText(content: any, maxLength?: number): string {
+export function extractPlainText(content: unknown, maxLength?: number): string {
   if (!content || !Array.isArray(content)) return '';
 
-  const text = content
+  const text = (content as PortableTextBlockLike[])
     .filter((block) => block._type === 'block' && block.children)
     .map((block) =>
-      block.children.map((child: any) => child.text || '').join('')
+      (block.children || []).map((child) => child.text || '').join('')
     )
     .join(' ')
     .trim();

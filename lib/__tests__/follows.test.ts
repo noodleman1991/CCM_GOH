@@ -6,15 +6,15 @@ vi.mock("@/lib/authz", () => ({
   getActor: () => getActorMock(),
 }));
 
-const upsertMock = vi.fn<(...a: any[]) => Promise<any>>(async () => ({ id: "f1" }));
-const deleteManyMock = vi.fn<(...a: any[]) => Promise<any>>(async () => ({ count: 1 }));
-const findUniqueMock = vi.fn<(...a: any[]) => Promise<any>>(async () => null);
+const upsertMock = vi.fn<(...a: unknown[]) => Promise<unknown>>(async () => ({ id: "f1" }));
+const deleteManyMock = vi.fn<(...a: unknown[]) => Promise<unknown>>(async () => ({ count: 1 }));
+const findUniqueMock = vi.fn<(...a: unknown[]) => Promise<unknown>>(async () => null);
 vi.mock("@/lib/prisma", () => ({
   prisma: {
     follow: {
-      upsert: (...a: any[]) => upsertMock(...a),
-      deleteMany: (...a: any[]) => deleteManyMock(...a),
-      findUnique: (...a: any[]) => findUniqueMock(...a),
+      upsert: (...a: unknown[]) => upsertMock(...a),
+      deleteMany: (...a: unknown[]) => deleteManyMock(...a),
+      findUnique: (...a: unknown[]) => findUniqueMock(...a),
     },
   },
 }));
@@ -37,7 +37,7 @@ describe("followTarget", () => {
   });
 
   it("rejects an invalid target type", async () => {
-    const res = await followTarget({ targetType: "GALAXY" as any, targetId: "x" });
+    const res = await followTarget({ targetType: "GALAXY" as never, targetId: "x" });
     expect(res.ok).toBe(false);
     expect(upsertMock).not.toHaveBeenCalled();
   });
@@ -51,7 +51,10 @@ describe("followTarget", () => {
     const res = await followTarget({ targetType: "PROJECT", targetId: "collab123" });
     expect(res.ok).toBe(true);
     expect(upsertMock).toHaveBeenCalledTimes(1);
-    const arg = upsertMock.mock.calls[0][0] as any;
+    const arg = upsertMock.mock.calls[0][0] as {
+      where: { userId_targetType_targetId: unknown };
+      update: unknown;
+    };
     expect(arg.where.userId_targetType_targetId).toEqual({
       userId: "u1",
       targetType: "PROJECT",
