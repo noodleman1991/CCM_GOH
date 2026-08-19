@@ -1,9 +1,7 @@
 "use client"
 
 import React from "react"
-import { UseFormReturn } from "react-hook-form"
 import { useTranslations, useLocale } from "next-intl"
-import { format } from "date-fns"
 import { User, Briefcase, Globe, Shield, Calendar, ExternalLink } from "lucide-react"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -12,13 +10,16 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
 import { rtlLocales } from "@/i18n/routing"
-import type { OnboardingFormData } from "@/lib/schemas/onboarding-schema"
+import type { OnboardingContent, OnboardingForm } from "../types"
+
+/** A Sanity label: either an already-resolved string or an internationalized array. */
+type SanityLabel = string | Array<{ _key?: string; value?: string }> | null | undefined
 
 interface ReviewPanelProps {
-  form: any
-  content?: any
-  workTypes?: Array<{ _id: string; label: any }>
-  expertiseAreas?: Array<{ _id: string; label: any }>
+  form: OnboardingForm
+  content?: OnboardingContent | null
+  workTypes?: Array<{ _id: string; label?: SanityLabel }>
+  expertiseAreas?: Array<{ _id: string; label?: SanityLabel }>
   isSubmitting?: boolean
 }
 
@@ -30,16 +31,16 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
 
   const formData = form.watch()
 
-  const getLocalizedText = (labelArray: any, fallback: string) => {
+  const getLocalizedText = (labelArray: SanityLabel, fallback: string) => {
     if (!labelArray) return fallback
     if (typeof labelArray === 'string') return labelArray
 
     // Sanity returns: [{_key: 'en', value: 'Label'}, {_key: 'es', value: 'Etiqueta'}]
     if (Array.isArray(labelArray)) {
-      const localizedItem = labelArray.find((item: any) => item._key === locale)
+      const localizedItem = labelArray.find((item) => item._key === locale)
       if (localizedItem?.value) return localizedItem.value
 
-      const enItem = labelArray.find((item: any) => item._key === 'en')
+      const enItem = labelArray.find((item) => item._key === 'en')
       if (enItem?.value) return enItem.value
 
       if (labelArray[0]?.value) return labelArray[0].value
@@ -48,25 +49,13 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
     return fallback
   }
 
-  const getWorkTypeTitle = (id: any) => {
-    const workType = workTypes.find((wt: any) => wt._id === id)
-    return workType ? getLocalizedText(workType.label, `Work Type ${id}`) : id
-  }
-
-  const getExpertiseAreaTitle = (id: any) => {
-    const area = expertiseAreas.find((ea: any) => ea._id === id)
-    return area ? getLocalizedText(area.label, `Expertise ${id}`) : id
-  }
-
   const formatDate = (dateString: string) => {
-    try {
-      return format(new Date(dateString), "MMM yyyy")
-    } catch {
-      return dateString
-    }
+    const date = new Date(dateString)
+    if (Number.isNaN(date.getTime())) return dateString
+    return new Intl.DateTimeFormat(locale, { month: "short", year: "numeric" }).format(date)
   }
 
-  const getVisibilityText = (visibility: string) => {
+  const getVisibilityText = (visibility: string | undefined) => {
     switch (visibility) {
       case "PUBLIC": return t("visibility.public")
       case "MEMBERS": return t("visibility.members")
@@ -158,15 +147,15 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
               <p className="text-sm font-medium text-gray-500 mb-2">{content?.reviewFieldLabels?.workTypes || t("workTypes")}</p>
               <div className={cn("flex flex-wrap gap-2", isRTL && "flex-row-reverse")}>
                 {[...new Set(formData.workInfo.workTypes)]
-                  .map((id: any, index: number) => {
-                    const workType = workTypes.find((wt: any) => wt._id === id)
+                  .map((id, index) => {
+                    const workType = workTypes.find((wt) => wt._id === id)
                     if (!workType) return null
                     const title = getLocalizedText(workType.label, "")
                     if (!title) return null
                     return { id, title, index }
                   })
-                  .filter(Boolean)
-                  .map((item: any) => (
+                  .filter((item): item is { id: string; title: string; index: number } => Boolean(item))
+                  .map((item) => (
                     <Badge key={`${item.id}-${item.index}`} variant="secondary">
                       {item.title}
                     </Badge>
@@ -180,15 +169,15 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
               <p className="text-sm font-medium text-gray-500 mb-2">{content?.reviewFieldLabels?.expertiseAreas || t("expertiseAreas")}</p>
               <div className={cn("flex flex-wrap gap-2", isRTL && "flex-row-reverse")}>
                 {[...new Set(formData.workInfo.expertiseAreas)]
-                  .map((id: any, index: number) => {
-                    const area = expertiseAreas.find((ea: any) => ea._id === id)
+                  .map((id, index) => {
+                    const area = expertiseAreas.find((ea) => ea._id === id)
                     if (!area) return null
                     const title = getLocalizedText(area.label, "")
                     if (!title) return null
                     return { id, title, index }
                   })
-                  .filter(Boolean)
-                  .map((item: any) => (
+                  .filter((item): item is { id: string; title: string; index: number } => Boolean(item))
+                  .map((item) => (
                     <Badge key={`${item.id}-${item.index}`} variant="outline">
                       {item.title}
                     </Badge>
@@ -248,7 +237,7 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
                       className={cn("flex items-center gap-2 text-primary hover:underline", isRTL && "flex-row-reverse")}
                     >
                       <ExternalLink className="h-4 w-4" />
-                      Website
+                      {t("websiteLink")}
                     </a>
                   )}
                   {formData.workInfo.otherSocialLinks?.map((link: {platform: string, url: string}, index: number) => (
@@ -282,7 +271,7 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {formData.recentWork.map((work: any, index: number) => (
+                {formData.recentWork.map((work, index) => (
                   <div key={index} className="border rounded-lg p-4">
                     <div className={cn("flex items-start justify-between mb-2", isRTL && "flex-row-reverse")}>
                       <h4 className="font-medium">{work.title}</h4>
@@ -396,7 +385,7 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
         {/* No separate confirmation checkbox: pressing the Complete button below
             IS the confirmation. The review above is the user's chance to check. */}
         <p className="text-xs text-muted-foreground">
-          You can always update your profile from the dashboard.
+          {t("updateLater")}
         </p>
       </div>
     </div>

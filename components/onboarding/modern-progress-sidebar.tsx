@@ -12,7 +12,8 @@ import {
   Shield,
   Eye,
   Sparkles,
-  Clock
+  Clock,
+  type LucideIcon
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -22,7 +23,7 @@ interface Step {
   id: string
   title: string
   description: string
-  icon: any
+  icon: LucideIcon
   status: 'completed' | 'current' | 'upcoming'
 }
 
@@ -103,17 +104,17 @@ export function ModernProgressSidebar({
           </div>
           <div>
             <h2 className="font-semibold text-foreground">{t("title")}</h2>
-            <p className="text-sm text-gray-500">Step {currentStep + 1} of {totalSteps}</p>
+            <p className="text-sm text-gray-500">{t("stepOf", { current: currentStep + 1, total: totalSteps })}</p>
           </div>
         </div>
 
         {/* Progress bar */}
         <div className="mt-4">
           <div className="flex justify-between text-sm text-gray-500 mb-2">
-            <span>{Math.round(progress)}% complete</span>
+            <span>{t("percentComplete", { value: Math.round(progress) })}</span>
             <div className={cn("flex items-center gap-1", isRTL && "flex-row-reverse")}>
               <Clock className="h-3 w-3" />
-              <span>~2 min left</span>
+              <span>{t("minutesLeft", { minutes: Math.max(1, totalSteps - 1 - currentStep) })}</span>
             </div>
           </div>
           <div className="w-full bg-muted rounded-full h-2">
@@ -204,7 +205,7 @@ export function ModernProgressSidebar({
       <div className="p-6 border-t border-gray-100">
         <div className="text-center">
           <p className="text-xs text-gray-500">
-            Join thousands of climate minds from around the world
+            {t("footerTagline")}
           </p>
           <div className="flex justify-center mt-2 space-x-1">
             {[1, 2, 3, 4, 5].map((i) => (

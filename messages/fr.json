@@ -181,7 +181,8 @@
     "themeDark": "Sombre",
     "themeSystem": "Système",
     "emailRequired": "Veuillez saisir votre adresse e-mail",
-    "emailInvalid": "Veuillez saisir une adresse e-mail valide"
+    "emailInvalid": "Veuillez saisir une adresse e-mail valide",
+    "untitled": "Sans titre"
   },
   "dashboard": {
     "pageTitle": "Tableau de bord - Connecting Climate Minds Hub",
@@ -310,7 +311,9 @@
     "downloadData": "Télécharger mes données",
     "privacyContact": "Confidentialité et contact",
     "profileEditDescription": "Mettez à jour votre nom, photo, titre et autres informations publiques.",
-    "editProfileCta": "Modifier votre profil"
+    "editProfileCta": "Modifier votre profil",
+    "followersOnly": "Les personnes qui me suivent",
+    "contactsOnly": "Mes contacts acceptés"
   },
   "events": {
     "title": "Événements",
@@ -910,6 +913,62 @@
       "preview": "Aperçu",
       "submit": "Soumettre pour relecture",
       "incomplete": "Renseignez les champs obligatoires pour soumettre"
+    },
+    "validation": {
+      "titleMin": "Veuillez fournir un titre clair en anglais",
+      "excerptMin": "Veuillez fournir une brève description (au moins 100 caractères)",
+      "contentRequired": "Veuillez fournir un contenu détaillé pour votre étude de cas",
+      "topicRequired": "Veuillez sélectionner un sujet",
+      "authorNameMin": "Veuillez saisir le nom complet de l'auteur",
+      "authorEmailInvalid": "Veuillez saisir une adresse e-mail valide",
+      "authorsMin": "Au moins un auteur est requis",
+      "tagsMin": "Veuillez sélectionner au moins un sujet pertinent"
+    },
+    "toasts": {
+      "draftRestored": "Votre brouillon enregistré a été restauré",
+      "previousDraftRestored": "Votre brouillon précédent a été restauré",
+      "imageInvalidType": "Veuillez téléverser une image JPEG, PNG ou WebP",
+      "imageTooLarge": "L'image doit faire moins de 5 Mo",
+      "fixErrors": "Veuillez corriger les erreurs avant d'envoyer",
+      "fixBeforeReview": "Veuillez corriger les points signalés avant de vérifier",
+      "submitFailed": "L'envoi a échoué",
+      "submitErrorGeneric": "Une erreur s'est produite. Veuillez réessayer.",
+      "submitted": "Merci ! Votre étude de cas a été envoyée pour relecture.",
+      "draftSaved": "Brouillon enregistré",
+      "draftSaveFailed": "Impossible d'enregistrer le brouillon",
+      "searchingLocation": "Recherche du lieu…",
+      "locationFound": "Lieu trouvé ! ({lat}, {lng})",
+      "locationNotFound": "Impossible de trouver le lieu"
+    },
+    "successScreen": {
+      "heading": "Merci pour votre contribution !",
+      "submittedLine": "Votre étude de cas a bien été envoyée.",
+      "reviewLine": "Notre équipe la relira et vous enverra un e-mail dès qu'il y aura du nouveau. Vous pouvez aussi suivre son statut à tout moment sur votre page d'envois.",
+      "submitAnother": "Envoyer une autre étude de cas",
+      "viewSubmissions": "Voir mes envois"
+    },
+    "review": {
+      "heading": "Vérifiez votre envoi",
+      "subheading": "Vérifiez que tout est correct avant d'envoyer",
+      "goBack": "Revenir à l'édition",
+      "basicInfo": "Informations de base",
+      "titleLabel": "Titre",
+      "topicLabel": "Sujet",
+      "descriptionLabel": "Description",
+      "authorsHeading": "Auteurs ({count})",
+      "tagsCommunity": "Étiquettes et communauté",
+      "community": "Communauté : {name}",
+      "context": "Contexte",
+      "location": "Lieu : {location}",
+      "period": "Période : {start} – {end}",
+      "ongoing": "En cours",
+      "featuredImage": "Image à la une",
+      "fileSize": "({size} Ko)",
+      "confirmSubmit": "Confirmer et envoyer"
+    },
+    "submittingScreen": {
+      "heading": "Envoi de votre étude de cas",
+      "body": "Veuillez patienter pendant que nous traitons votre envoi…"
     }
   },
   "caseStudy": {
@@ -1036,6 +1095,33 @@
       "loginRequired": "Vous devez être connecté pour soumettre une étude de cas",
       "reviewNote": "Une fois soumise, notre équipe examinera votre étude de cas et vous répondra. Cela prend généralement quelques jours.",
       "multilingualWelcome": "Bienvenue dans notre communauté mondiale ! Soumettez dans n'importe quelle langue et aidez-nous à atteindre les chercheurs du monde entier."
+    },
+    "review": {
+      "heading": "Vérifiez votre envoi",
+      "subheading": "Vérifiez tous les détails avant d'envoyer votre étude de cas",
+      "backToEdit": "Revenir à l'édition",
+      "fixValidation": "Veuillez corriger les erreurs de validation avant d'envoyer",
+      "fixIssues": "Veuillez corriger les problèmes suivants :",
+      "readyAlert": "Votre étude de cas est prête à être envoyée ! Tous les champs obligatoires sont remplis.",
+      "multilingualTitles": "Titres multilingues",
+      "notProvided": "Non renseigné",
+      "excerptsHeading": "Résumés (toutes les langues)",
+      "excerptsDescription": "Ces résumés aideront les chercheurs à découvrir votre travail",
+      "noExcerpt": "Aucun résumé fourni en {language}",
+      "charactersCount": "{count} caractères",
+      "contentHeading": "Contenu de l'étude de cas",
+      "availableIn": "Disponible en :",
+      "richText": "Contenu en texte enrichi",
+      "blocksCount": "{count} blocs",
+      "noContent": "Aucun contenu fourni. Veuillez ajouter un contenu détaillé pour votre étude de cas.",
+      "authorsHeading": "Auteurs ({count})",
+      "studyDetails": "Détails de l'étude",
+      "location": "Lieu : {coords}",
+      "ongoing": "En cours",
+      "tagsCount": "Étiquettes ({count})",
+      "featuredImage": "Image à la une",
+      "imageAlt": "Aperçu de l'image à la une",
+      "readyToSubmit": "Prêt à envoyer ?"
     }
   },
   "search": {
@@ -1106,6 +1192,35 @@
       "author": "Auteur",
       "country": "Pays",
       "accessLevel": "Niveau d'accès"
+    },
+    "featured": "À la une",
+    "authorsLabel": "Auteurs :",
+    "more": "+{count} autres",
+    "downloads": "{count, plural, one {# téléchargement} other {# téléchargements}}",
+    "byAuthor": "Par {name}",
+    "emptyCaseStudies": "Essayez d'autres mots-clés ou revenez plus tard pour découvrir de nouvelles études de cas.",
+    "emptyAgendas": "Essayez d'autres mots-clés ou revenez plus tard pour découvrir de nouveaux agendas.",
+    "emptyNews": "Essayez d'autres mots-clés ou revenez plus tard pour découvrir de nouvelles actualités.",
+    "positionAt": "{position} chez {organization}",
+    "memberOf": "Membre de {communities}",
+    "memberOfMore": "Membre de {communities} et de {count, plural, one {# autre communauté} other {# autres communautés}}",
+    "agendaTypes": {
+      "global": "Agenda mondial",
+      "regional": "Agenda régional",
+      "community": "Agenda communautaire",
+      "annual": "Agenda annuel",
+      "quarterly": "Agenda trimestriel",
+      "meeting": "Ordre du jour de réunion",
+      "actionPlan": "Plan d'action",
+      "strategy": "Plan stratégique",
+      "other": "Autre"
+    },
+    "error": {
+      "title": "Erreur du service de recherche",
+      "description": "Un problème est survenu avec le service de recherche. Cela peut être dû à une configuration manquante.",
+      "genericMessage": "Un problème est survenu avec le service de recherche.",
+      "checkConfig": "Veuillez vérifier que votre configuration Algolia est correcte.",
+      "tryAgain": "Réessayer"
     }
   },
   "collaborate": {
@@ -1198,7 +1313,29 @@
           "step3": "Ajoutez des projets récents pour présenter vos contributions",
           "step4": "Choisissez vos paramètres de confidentialité et de visibilité"
         },
-        "tagline": "Commencez votre parcours"
+        "tagline": "Commencez votre parcours",
+        "hero": {
+          "title": "Bienvenue à Connecting Climate Minds",
+          "description": "Rejoignez une communauté mondiale de leaders, d'experts et de défenseurs du climat qui travaillent ensemble pour lutter contre la crise climatique."
+        },
+        "highlights": {
+          "connect": {
+            "title": "Connectez-vous avec des Leaders du Climat",
+            "description": "Réseautez avec des professionnels, chercheurs et activistes du monde entier."
+          },
+          "share": {
+            "title": "Partagez Votre Expertise",
+            "description": "Contribuez vos connaissances et apprenez de perspectives diverses sur l'action climatique."
+          },
+          "privacy": {
+            "title": "Confidentialité et Sécurité",
+            "description": "Vos données sont protégées. Contrôlez ce que vous partagez et qui peut voir votre profil."
+          }
+        },
+        "gettingStarted": {
+          "title": "Commençons !",
+          "description": "Complétez votre profil pour vous connecter avec les bonnes personnes et opportunités dans le mouvement climatique."
+        }
       },
       "basicInfo": {
         "title": "Informations de Base",
@@ -1284,7 +1421,11 @@
         "platformPlaceholder": "Nom de la plateforme (ex., Twitter, GitHub)",
         "urlPlaceholder": "https://exemple.com/votre-profil",
         "continue": "Continuer",
-        "tagline": "Partagez votre expertise"
+        "tagline": "Partagez votre expertise",
+        "addLink": "Ajouter un lien",
+        "linkedinPlaceholder": "https://linkedin.com/in/username",
+        "workTypeFallback": "Type de travail {key}",
+        "expertiseFallback": "Expertise {key}"
       },
       "recentWork": {
         "title": "Travaux Récents",
@@ -1420,7 +1561,9 @@
         "readyTitle": "Vous êtes prêt !",
         "readyDescription": "Bienvenue dans notre communauté mondiale d'esprits climatiques. Créons un changement significatif ensemble.",
         "completeOnboarding": "Terminer la Configuration",
-        "tagline": "Vérifiez et terminez"
+        "tagline": "Vérifiez et terminez",
+        "websiteLink": "Site web",
+        "updateLater": "Vous pouvez toujours mettre à jour votre profil depuis le tableau de bord."
       }
     },
     "title": "Configurer votre Profil",
@@ -1448,7 +1591,55 @@
       "message": "Pour tirer le meilleur parti de votre expérience, nous vous recommandons de compléter votre profil.",
       "proceed": "Compléter le profil",
       "continue": "Continuer vers Collaborer",
-      "waiver": "Vous pourrez le compléter plus tard"
+      "waiver": "Vous pourrez le compléter plus tard",
+      "processing": "Traitement en cours..."
+    },
+    "stepOf": "Étape {current, number} sur {total, number}",
+    "percentComplete": "{value, number} % terminé",
+    "minutesLeft": "~{minutes, number} min restantes",
+    "footerTagline": "Rejoignez des milliers d'esprits engagés pour le climat du monde entier",
+    "successToast": "Bienvenue ! Votre profil a été configuré avec succès.",
+    "errors": {
+      "networkFailed": "La connexion réseau a échoué. Vérifiez votre connexion internet et réessayez.",
+      "unexpectedResponse": "Le serveur a renvoyé une réponse dans un format inattendu. Réessayez ou contactez l'assistance.",
+      "serverErrorSupport": "Erreur du serveur ({status}). Réessayez ou contactez l'assistance.",
+      "authRequired": "Vous devez être connecté pour terminer la configuration.",
+      "correctFields": "Veuillez corriger les éléments suivants : {details}",
+      "userNotFound": "Votre compte utilisateur est introuvable. Actualisez la page et réessayez.",
+      "serverErrorRetry": "Erreur du serveur ({status}). Réessayez.",
+      "unexpectedSuccess": "La configuration est peut-être terminée, mais nous avons reçu une réponse inattendue. Actualisez la page pour vérifier votre statut.",
+      "submissionFailed": "L'envoi de la configuration a échoué",
+      "submitFailed": "L'envoi de vos informations a échoué. Réessayez."
+    },
+    "validation": {
+      "basicInfo": {
+        "firstName": "Le prénom est requis",
+        "lastName": "Le nom de famille est requis",
+        "username": "Le nom d'utilisateur doit comporter au moins 3 caractères",
+        "usernameMax": "Le nom d'utilisateur doit comporter moins de 30 caractères",
+        "usernamePattern": "Le nom d'utilisateur ne peut contenir que des lettres, des chiffres et des tirets bas",
+        "bio": "La biographie doit comporter moins de 500 caractères",
+        "country": "Le pays est requis",
+        "city": "La ville est requise",
+        "preferredLanguage": "Veuillez choisir votre langue préférée"
+      },
+      "workInfo": {
+        "workTypes": "Veuillez sélectionner au moins un type de travail",
+        "expertiseAreas": "Veuillez sélectionner au moins un domaine d'expertise",
+        "workBio": "La biographie professionnelle doit comporter moins de 1000 caractères",
+        "linkedinUrl": "Veuillez saisir une URL LinkedIn valide",
+        "websiteUrl": "Veuillez saisir une URL de site web valide",
+        "socialLinkUrl": "Veuillez saisir une URL valide",
+        "socialLinkPlatform": "Le nom de la plateforme est requis"
+      },
+      "recentWork": {
+        "title": "Le titre est requis",
+        "titleMax": "Le titre doit comporter moins de 100 caractères",
+        "description": "La description est requise",
+        "descriptionMax": "La description doit comporter moins de 500 caractères",
+        "link": "Veuillez saisir une URL valide",
+        "startDate": "La date de début est requise"
+      }
     }
   },
   "caseStudies": {
@@ -1754,7 +1945,8 @@
       "fileTooLarge": "Ce fichier dépasse la limite de 100 Mo — choisissez-en un plus léger.",
       "fileWrongType": "Veuillez choisir un fichier MP4 ou WebM.",
       "keepExisting": "Votre vidéo actuelle est conservée sauf si vous choisissez un nouveau fichier."
-    }
+    },
+    "submitError": "Nous n'avons pas pu envoyer votre expérience. Veuillez réessayer."
   },
   "comments": {
     "heading": "Discussion",
@@ -1776,7 +1968,8 @@
     "report": "Signaler",
     "reported": "Signalé. Merci.",
     "signInToReact": "Connectez-vous pour réagir.",
-    "signInToReport": "Connectez-vous pour signaler."
+    "signInToReport": "Connectez-vous pour signaler.",
+    "readOnly": "Vous pouvez lire cette discussion, mais seuls les membres autorisés à commenter peuvent publier."
   },
   "discovery": {
     "searchPlaceholder": "Rechercher…",
@@ -1897,7 +2090,14 @@
     "memberRemoved": "Membre retiré.",
     "archiveThread": "Archiver",
     "archiveConfirm": "Confirmer ?",
-    "threadArchived": "Fil archivé."
+    "threadArchived": "Fil archivé.",
+    "leaveWorkspace": "Quitter",
+    "leaveConfirm": "Confirmer le départ",
+    "archiveWorkspace": "Archiver",
+    "archived": "Espace archivé",
+    "readOnlyNotice": "Vous consultez cet espace en lecture seule.",
+    "readOnlyJoinLink": "À propos de ce projet et comment le rejoindre",
+    "fileUnavailable": "Fichier indisponible"
   },
   "messages": {
     "title": "Messages",
@@ -1949,7 +2149,8 @@
     "when_older": "Plus ancien",
     "regionalSpotlight": "Pleins feux sur la région",
     "inThisView": "{count} dans cette vue",
-    "visitCommunity": "Visiter la page de la communauté"
+    "visitCommunity": "Visiter la page de la communauté",
+    "followTheme": "Suivre ce thème"
   },
   "docs": {
     "title": "Documents",
@@ -1997,7 +2198,8 @@
     "remove": "Retirer",
     "removeConfirm": "Retirer cette production de l’espace ? Le brouillon n’est pas supprimé.",
     "pendingHint": "Le lien apparaîtra ici après publication",
-    "continueEditing": "Continuer la rédaction →"
+    "continueEditing": "Continuer la rédaction →",
+    "removeArmed": "Confirmer le retrait"
   },
   "projectPublic": {
     "aboutHeading": "About this project",
@@ -2019,7 +2221,8 @@
     "requestCancel": "Cancel",
     "statusDraft": "Forming",
     "statusActive": "Active",
-    "statusArchived": "Completed"
+    "statusArchived": "Completed",
+    "exploreWorkspace": "Explorer l'espace de travail"
   },
   "placePicker": {
     "searchLabel": "Où ce travail a-t-il eu lieu ?",
@@ -2295,11 +2498,14 @@
       "title": "Contexte"
     },
     "validation": {
-      "titleMin": "Ajoutez un titre"
+      "titleMin": "Ajoutez un titre",
+      "titleMax": "Le titre doit comporter au maximum 200 caractères",
+      "excerptMax": "Le résumé doit comporter au maximum 600 caractères"
     },
     "cancel": "Annuler",
     "submit": "Soumettre pour relecture",
-    "success": "Merci — votre production de recherche a été soumise pour relecture."
+    "success": "Merci — votre production de recherche a été soumise pour relecture.",
+    "submitError": "Nous n'avons pas pu envoyer votre production de recherche. Veuillez réessayer."
   },
   "editorReview": {
     "status": {
@@ -2403,5 +2609,33 @@
     "successTitle": "Signalement envoyé",
     "successBody": "Merci — nous prenons le relais.",
     "errorGeneric": "Votre signalement n'a pas été envoyé. Veuillez réessayer."
+  },
+  "moderation": {
+    "broadcast": {
+      "messageLabel": "Message",
+      "audience": "Audience",
+      "everyone": "Tout le monde",
+      "aCommunity": "Une communauté",
+      "aRegion": "Une région",
+      "community": "Communauté",
+      "region": "Région",
+      "selectPlaceholder": "Sélectionner…",
+      "pickCommunity": "Choisissez une communauté.",
+      "pickRegion": "Choisissez une région.",
+      "sentTo": "{count, plural, one {Envoyé à # membre.} other {Envoyé à # membres.}}",
+      "send": "Envoyer la notification"
+    },
+    "queue": {
+      "tabPending": "En attente (anonymes)",
+      "tabFlagged": "Marqués",
+      "tabReported": "Signalés",
+      "done": "Terminé",
+      "failed": "Échec",
+      "empty": "Rien à examiner ici.",
+      "reports": "{count, plural, one {# signalement} other {# signalements}}",
+      "approve": "Approuver",
+      "remove": "Supprimer",
+      "dismissReport": "Rejeter le signalement"
+    }
   }
 }

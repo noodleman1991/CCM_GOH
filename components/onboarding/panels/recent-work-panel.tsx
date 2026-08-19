@@ -1,25 +1,23 @@
 "use client"
 
 import React, { useState } from "react"
-import { UseFormReturn, useFieldArray } from "react-hook-form"
+import { useFieldArray } from "react-hook-form"
 import { useTranslations, useLocale } from "next-intl"
-import { format } from "date-fns"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Plus, Edit, Trash2, Calendar, ExternalLink } from "lucide-react"
+import { Edit, Trash2, Calendar, ExternalLink } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { rtlLocales } from "@/i18n/routing"
-import type { OnboardingFormData } from "@/lib/schemas/onboarding-schema"
+import type { OnboardingContent, OnboardingForm } from "../types"
 
 interface RecentWorkPanelProps {
-  form: any
-  content?: any
+  form: OnboardingForm
+  content?: OnboardingContent | null
   isSubmitting?: boolean
 }
 
@@ -56,7 +54,7 @@ export function RecentWorkPanel({ form, content }: RecentWorkPanelProps) {
   }
 
   const handleEdit = (index: number) => {
-    const item = fields[index] as any
+    const item = fields[index]
     setFormData({
       title: item.title,
       description: item.description,
@@ -92,11 +90,9 @@ export function RecentWorkPanel({ form, content }: RecentWorkPanelProps) {
   }
 
   const formatDate = (dateString: string) => {
-    try {
-      return format(new Date(dateString), "MMM yyyy")
-    } catch {
-      return dateString
-    }
+    const date = new Date(dateString)
+    if (Number.isNaN(date.getTime())) return dateString
+    return new Intl.DateTimeFormat(locale, { month: "short", year: "numeric" }).format(date)
   }
 
   const isFormValid = formData.title && formData.description && formData.startDate &&
@@ -120,7 +116,7 @@ export function RecentWorkPanel({ form, content }: RecentWorkPanelProps) {
       {fields.length > 0 && (
         <div className="space-y-4">
           <h3 className="text-lg font-medium">{content?.fieldLabels?.recentWork?.yourWork || t("yourWork")}</h3>
-          {fields.map((item: any, index: number) => (
+          {fields.map((item, index) => (
             <Card key={item.id}>
               <CardHeader className="pb-3">
                 <div className={cn("flex items-start justify-between", isRTL && "flex-row-reverse")}>

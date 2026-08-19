@@ -65,7 +65,7 @@ export default function CaseStudyReview({ availableTags, userId }: CaseStudyRevi
 
     const handleSubmit = async () => {
         if (!canSubmit) {
-            toast.error("Please fix the validation errors before submitting")
+            toast.error(t('review.fixValidation'))
             return
         }
 
@@ -127,9 +127,9 @@ export default function CaseStudyReview({ availableTags, userId }: CaseStudyRevi
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold">Review Your Submission</h1>
+                    <h1 className="text-3xl font-bold">{t('review.heading')}</h1>
                     <p className="text-muted-foreground mt-1">
-                        Please review all details before submitting your case study
+                        {t('review.subheading')}
                     </p>
                 </div>
                 <Button
@@ -137,8 +137,8 @@ export default function CaseStudyReview({ availableTags, userId }: CaseStudyRevi
                     onClick={handleBackToForm}
                     className="flex items-center gap-2"
                 >
-                    <ArrowLeft className="w-4 h-4" />
-                    Back to Edit
+                    <ArrowLeft className="w-4 h-4 rtl:-scale-x-100" />
+                    {t('review.backToEdit')}
                 </Button>
             </div>
 
@@ -148,7 +148,7 @@ export default function CaseStudyReview({ availableTags, userId }: CaseStudyRevi
                     <AlertCircle className="h-4 w-4" />
                     <AlertDescription>
                         <div className="space-y-1">
-                            <p className="font-medium">Please fix the following issues:</p>
+                            <p className="font-medium">{t('review.fixIssues')}</p>
                             <ul className="list-disc list-inside space-y-1">
                                 {validationErrors.map((error, index) => (
                                     <li key={index} className="text-sm">{error}</li>
@@ -164,7 +164,7 @@ export default function CaseStudyReview({ availableTags, userId }: CaseStudyRevi
                 <Alert className="border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950/30">
                     <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400" />
                     <AlertDescription className="text-green-800 dark:text-green-200">
-                        Your case study is ready to submit! All required fields have been completed.
+                        {t('review.readyAlert')}
                     </AlertDescription>
                 </Alert>
             )}
@@ -174,7 +174,7 @@ export default function CaseStudyReview({ availableTags, userId }: CaseStudyRevi
                 <CardHeader>
                     <div className="flex items-center gap-2">
                         <Globe className="w-5 h-5" />
-                        <CardTitle>Multilingual Titles</CardTitle>
+                        <CardTitle>{t('review.multilingualTitles')}</CardTitle>
                     </div>
                 </CardHeader>
                 <CardContent>
@@ -185,9 +185,9 @@ export default function CaseStudyReview({ availableTags, userId }: CaseStudyRevi
                                     {lang.label}
                                 </Badge>
                                 <div className="flex-1">
-                                    <p className="font-medium">{formData.title[lang.code] || 'Not provided'}</p>
+                                    <p className="font-medium" dir="auto">{formData.title[lang.code] || t('review.notProvided')}</p>
                                     {formData.excerpt[lang.code] && (
-                                        <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                                        <p className="text-sm text-muted-foreground mt-1 line-clamp-2" dir="auto">
                                             {formData.excerpt[lang.code]}
                                         </p>
                                     )}
@@ -201,9 +201,9 @@ export default function CaseStudyReview({ availableTags, userId }: CaseStudyRevi
             {/* Excerpts */}
             <Card>
                 <CardHeader>
-                    <CardTitle>Excerpts (All Languages)</CardTitle>
+                    <CardTitle>{t('review.excerptsHeading')}</CardTitle>
                     <CardDescription>
-                        These summaries will help researchers discover your work
+                        {t('review.excerptsDescription')}
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -218,12 +218,12 @@ export default function CaseStudyReview({ availableTags, userId }: CaseStudyRevi
                         {languages.map((lang) => (
                             <TabsContent key={lang.code} value={lang.code} className="mt-4">
                                 <div className="bg-muted/50 p-4 rounded-lg">
-                                    <p className="text-sm leading-relaxed">
-                                        {formData.excerpt[lang.code] || `No excerpt provided in ${lang.label}`}
+                                    <p className="text-sm leading-relaxed" dir="auto">
+                                        {formData.excerpt[lang.code] || t('review.noExcerpt', { language: lang.label })}
                                     </p>
                                     <div className="flex justify-between items-center mt-2 text-xs text-muted-foreground">
-                                        <span>{lang.label}</span>
-                                        <span>{formData.excerpt[lang.code]?.length || 0} characters</span>
+                                        <span><bdi>{lang.label}</bdi></span>
+                                        <span>{t('review.charactersCount', { count: formData.excerpt[lang.code]?.length || 0 })}</span>
                                     </div>
                                 </div>
                             </TabsContent>
@@ -237,13 +237,13 @@ export default function CaseStudyReview({ availableTags, userId }: CaseStudyRevi
                 <CardHeader>
                     <div className="flex items-center gap-2">
                         <FileText className="w-5 h-5" />
-                        <CardTitle>Case Study Content</CardTitle>
+                        <CardTitle>{t('review.contentHeading')}</CardTitle>
                     </div>
                 </CardHeader>
                 <CardContent>
                     <div className="space-y-4">
                         <div className="flex items-center gap-2">
-                            <span className="text-sm font-medium">Available in:</span>
+                            <span className="text-sm font-medium">{t('review.availableIn')}</span>
                             {getContentLanguages().map((lang) => (
                                 <Badge key={lang.code} variant="secondary">
                                     {lang.label}
@@ -260,8 +260,8 @@ export default function CaseStudyReview({ availableTags, userId }: CaseStudyRevi
                                             if (block._type === 'block' && block.children) {
                                                 return (
                                                     <span key={index}>
-                                                        {block.children.map((child: any, childIndex: number) => (
-                                                            <span key={childIndex}>{child.text}</span>
+                                                        {block.children.map((child, childIndex) => (
+                                                            <span key={childIndex}>{(child as { text?: string }).text}</span>
                                                         )).slice(0, 3).join(' ')}
                                                         {index < formData.content!.length - 1 ? ' ' : ''}
                                                     </span>
@@ -273,15 +273,15 @@ export default function CaseStudyReview({ availableTags, userId }: CaseStudyRevi
                                     </p>
                                 </div>
                                 <div className="flex justify-between items-center mt-2 text-xs text-muted-foreground border-t pt-2">
-                                    <span>Rich text content</span>
-                                    <span>{formData.content.length} blocks</span>
+                                    <span>{t('review.richText')}</span>
+                                    <span>{t('review.blocksCount', { count: formData.content.length })}</span>
                                 </div>
                             </div>
                         ) : (
                             <Alert variant="destructive">
                                 <AlertCircle className="h-4 w-4" />
                                 <AlertDescription>
-                                    No content provided. Please add detailed content for your case study.
+                                    {t('review.noContent')}
                                 </AlertDescription>
                             </Alert>
                         )}
@@ -296,7 +296,7 @@ export default function CaseStudyReview({ availableTags, userId }: CaseStudyRevi
                     <CardHeader>
                         <div className="flex items-center gap-2">
                             <Users className="w-5 h-5" />
-                            <CardTitle>Authors ({formData.authors.length})</CardTitle>
+                            <CardTitle>{t('review.authorsHeading', { count: formData.authors.length })}</CardTitle>
                         </div>
                     </CardHeader>
                     <CardContent>
@@ -304,10 +304,10 @@ export default function CaseStudyReview({ availableTags, userId }: CaseStudyRevi
                             {formData.authors.map((author, index) => (
                                 <div key={index} className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
                                     <div className="flex-1">
-                                        <p className="font-medium">{author.name}</p>
-                                        <p className="text-sm text-muted-foreground">{author.email}</p>
+                                        <p className="font-medium" dir="auto">{author.name}</p>
+                                        <p className="text-sm text-muted-foreground"><bdi>{author.email}</bdi></p>
                                     </div>
-                                    <Badge variant="outline">{author.role}</Badge>
+                                    <Badge variant="outline">{t(`roles.${author.role}` as never)}</Badge>
                                 </div>
                             ))}
                         </div>
@@ -317,13 +317,13 @@ export default function CaseStudyReview({ availableTags, userId }: CaseStudyRevi
                 {/* Metadata */}
                 <Card>
                     <CardHeader>
-                        <CardTitle>Study Details</CardTitle>
+                        <CardTitle>{t('review.studyDetails')}</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         {formData.organizationName && (
                             <div className="flex items-center gap-2">
                                 <Building className="w-4 h-4 text-muted-foreground" />
-                                <span className="text-sm">{formData.organizationName}</span>
+                                <span className="text-sm"><bdi>{formData.organizationName}</bdi></span>
                             </div>
                         )}
 
@@ -331,7 +331,7 @@ export default function CaseStudyReview({ availableTags, userId }: CaseStudyRevi
                             <div className="flex items-center gap-2">
                                 <MapPin className="w-4 h-4 text-muted-foreground" />
                                 <span className="text-sm">
-                                    Location: {formData.studyLocation.lat?.toFixed(4)}, {formData.studyLocation.lng?.toFixed(4)}
+                                    {t('review.location', { coords: `${formData.studyLocation.lat?.toFixed(4)}, ${formData.studyLocation.lng?.toFixed(4)}` })}
                                 </span>
                             </div>
                         )}
@@ -343,7 +343,7 @@ export default function CaseStudyReview({ availableTags, userId }: CaseStudyRevi
                   {formData.studyPeriod.startDate && new Date(formData.studyPeriod.startDate).toLocaleDateString(locale)}
                                     {formData.studyPeriod.startDate && formData.studyPeriod.endDate && ' - '}
                                     {formData.studyPeriod.endDate ? new Date(formData.studyPeriod.endDate).toLocaleDateString(locale) :
-                                        (formData.studyPeriod.startDate && ' - Ongoing')}
+                                        (formData.studyPeriod.startDate && ` - ${t('review.ongoing')}`)}
                 </span>
                             </div>
                         )}
@@ -352,12 +352,12 @@ export default function CaseStudyReview({ availableTags, userId }: CaseStudyRevi
                             <div>
                                 <div className="flex items-center gap-2 mb-2">
                                     <Tag className="w-4 h-4 text-muted-foreground" />
-                                    <span className="text-sm font-medium">Tags ({formData.tags.length})</span>
+                                    <span className="text-sm font-medium">{t('review.tagsCount', { count: formData.tags.length })}</span>
                                 </div>
                                 <div className="flex flex-wrap gap-1">
                                     {getSelectedTagsInfo().map((tagName, index) => (
                                         <Badge key={index} variant="secondary" className="text-xs">
-                                            {tagName}
+                                            <bdi>{tagName}</bdi>
                                         </Badge>
                                     ))}
                                 </div>
@@ -368,11 +368,11 @@ export default function CaseStudyReview({ availableTags, userId }: CaseStudyRevi
                             <div>
                                 <div className="flex items-center gap-2 mb-2">
                                     <ImageIcon className="w-4 h-4 text-muted-foreground" />
-                                    <span className="text-sm font-medium">Featured Image</span>
+                                    <span className="text-sm font-medium">{t('review.featuredImage')}</span>
                                 </div>
                                 <img
                                     src={formData.imagePreview}
-                                    alt="Featured image preview"
+                                    alt={t('review.imageAlt')}
                                     className="w-full h-32 object-cover rounded-lg border"
                                 />
                             </div>
@@ -388,7 +388,7 @@ export default function CaseStudyReview({ availableTags, userId }: CaseStudyRevi
                 <CardContent className="pt-6">
                     <div className="space-y-4">
                         <div className="text-center">
-                            <h3 className="text-lg font-semibold">Ready to Submit?</h3>
+                            <h3 className="text-lg font-semibold">{t('review.readyToSubmit')}</h3>
                             <p className="text-muted-foreground">
                                 {t('messages.reviewNote')}
                             </p>
@@ -401,7 +401,7 @@ export default function CaseStudyReview({ availableTags, userId }: CaseStudyRevi
                                 disabled={isSubmitting}
                             >
                                 <ArrowLeft className="w-4 h-4 me-2 rtl:-scale-x-100" />
-                                Back to Edit
+                                {t('review.backToEdit')}
                             </Button>
 
                             <Button
@@ -412,11 +412,11 @@ export default function CaseStudyReview({ availableTags, userId }: CaseStudyRevi
                             >
                                 {isSubmitting && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
                                 {isSubmitting ? (
-                                    "Submitting..."
+                                    t('actions.submitting')
                                 ) : (
                                     <>
                                         <Send className="w-4 h-4 me-2" />
-                                        Submit Case Study
+                                        {t('actions.submit')}
                                     </>
                                 )}
                             </Button>

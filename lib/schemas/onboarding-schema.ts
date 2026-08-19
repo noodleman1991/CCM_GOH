@@ -10,7 +10,8 @@ const defaultMessages = {
     usernamePattern: "Username can only contain letters, numbers and underscores",
     bio: "Bio must be less than 500 characters",
     country: "Country is required",
-    city: "City is required"
+    city: "City is required",
+    preferredLanguage: "Please choose your preferred language"
   },
   workInfo: {
     workTypes: "Please select at least one work type",
@@ -18,7 +19,8 @@ const defaultMessages = {
     workBio: "Work bio must be less than 1000 characters",
     linkedinUrl: "Please enter a valid LinkedIn URL",
     websiteUrl: "Please enter a valid website URL",
-    socialLinkUrl: "Please enter a valid URL"
+    socialLinkUrl: "Please enter a valid URL",
+    socialLinkPlatform: "Platform name is required"
   },
   recentWork: {
     title: "Title is required",
@@ -30,8 +32,18 @@ const defaultMessages = {
   }
 }
 
+/**
+ * CMS-supplied overrides for the default validation messages: same sections
+ * and keys as `defaultMessages`, but every entry optional.
+ */
+export type OnboardingValidationMessages = {
+  [Section in keyof typeof defaultMessages]?: Partial<
+    Record<keyof (typeof defaultMessages)[Section], string | null | undefined>
+  > | null
+}
+
 // Factory function to create schema with custom validation messages
-export const createOnboardingSchema = (validationMessages?: any) => {
+export const createOnboardingSchema = (validationMessages?: OnboardingValidationMessages | null) => {
   const messages = validationMessages || defaultMessages
 
   return z.object({
@@ -50,7 +62,7 @@ export const createOnboardingSchema = (validationMessages?: any) => {
       country: z.string().min(1, messages.basicInfo?.country || defaultMessages.basicInfo.country),
       city: z.string().min(1, messages.basicInfo?.city || defaultMessages.basicInfo.city),
       preferredLanguage: z.enum(["EN", "ES", "FR", "AR"], {
-        errorMap: () => ({ message: "Please choose your preferred language" })
+        errorMap: () => ({ message: messages.basicInfo?.preferredLanguage || defaultMessages.basicInfo.preferredLanguage })
       })
     }),
 
@@ -65,7 +77,7 @@ export const createOnboardingSchema = (validationMessages?: any) => {
       linkedinProfile: z.string().url(messages.workInfo?.linkedinUrl || defaultMessages.workInfo.linkedinUrl).optional().or(z.literal("")),
       personalWebsite: z.string().url(messages.workInfo?.websiteUrl || defaultMessages.workInfo.websiteUrl).optional().or(z.literal("")),
       otherSocialLinks: z.array(z.object({
-        platform: z.string().min(1, "Platform name is required"),
+        platform: z.string().min(1, messages.workInfo?.socialLinkPlatform || defaultMessages.workInfo.socialLinkPlatform),
         url: z.string().url(messages.workInfo?.socialLinkUrl || defaultMessages.workInfo.socialLinkUrl)
       })).optional().default([])
     }),

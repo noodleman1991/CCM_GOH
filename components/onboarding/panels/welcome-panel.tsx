@@ -2,94 +2,16 @@
 
 import React from "react"
 import Image from "next/image"
-import { UseFormReturn } from "react-hook-form"
 import { useTranslations, useLocale } from "next-intl"
 import { Users, Globe, Shield } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { rtlLocales } from "@/i18n/routing"
-import type { OnboardingFormData } from "@/lib/schemas/onboarding-schema"
-
-// Fallback content for welcome panel (all 4 languages)
-const FALLBACK_CONTENT = {
-    welcomeTitle: {
-        en: 'Welcome to Connecting Climate Minds',
-        es: 'Bienvenido a Connecting Climate Minds',
-        fr: 'Bienvenue à Connecting Climate Minds',
-        ar: 'مرحبًا بك في Connecting Climate Minds'
-    },
-    welcomeDescription: {
-        en: 'Join a global community of climate leaders, experts, and advocates working together to address the climate crisis.',
-        es: 'Únete a una comunidad global de líderes climáticos, expertos y defensores que trabajan juntos para abordar la crisis climática.',
-        fr: 'Rejoignez une communauté mondiale de leaders, d\'experts et de défenseurs du climat qui travaillent ensemble pour lutter contre la crise climatique.',
-        ar: 'انضم إلى مجتمع عالمي من قادة المناخ والخبراء والمدافعين الذين يعملون معًا لمعالجة أزمة المناخ.'
-    },
-    welcomeFeatures: [
-        {
-            title: {
-                en: 'Connect with Climate Leaders',
-                es: 'Conéctate con Líderes Climáticos',
-                fr: 'Connectez-vous avec des Leaders du Climat',
-                ar: 'تواصل مع قادة المناخ'
-            },
-            description: {
-                en: 'Network with professionals, researchers, and activists from around the world.',
-                es: 'Conecta con profesionales, investigadores y activistas de todo el mundo.',
-                fr: 'Réseautez avec des professionnels, chercheurs et activistes du monde entier.',
-                ar: 'تواصل مع المهنيين والباحثين والناشطين من جميع أنحاء العالم.'
-            }
-        },
-        {
-            title: {
-                en: 'Share Your Expertise',
-                es: 'Comparte tu Experiencia',
-                fr: 'Partagez Votre Expertise',
-                ar: 'شارك خبرتك'
-            },
-            description: {
-                en: 'Contribute your knowledge and learn from diverse perspectives on climate action.',
-                es: 'Contribuye con tu conocimiento y aprende de diversas perspectivas sobre acción climática.',
-                fr: 'Contribuez vos connaissances et apprenez de perspectives diverses sur l\'action climatique.',
-                ar: 'ساهم بمعرفتك وتعلم من وجهات نظر متنوعة حول العمل المناخي.'
-            }
-        },
-        {
-            title: {
-                en: 'Privacy & Security',
-                es: 'Privacidad y Seguridad',
-                fr: 'Confidentialité et Sécurité',
-                ar: 'الخصوصية والأمان'
-            },
-            description: {
-                en: 'Your data is protected. Control what you share and who can see your profile.',
-                es: 'Tus datos están protegidos. Controla lo que compartes y quién puede ver tu perfil.',
-                fr: 'Vos données sont protégées. Contrôlez ce que vous partagez et qui peut voir votre profil.',
-                ar: 'بياناتك محمية. تحكم في ما تشاركه ومن يمكنه رؤية ملفك الشخصي.'
-            }
-        }
-    ],
-    gettingStartedTitle: {
-        en: 'Let\'s get started!',
-        es: '¡Comencemos!',
-        fr: 'Commençons!',
-        ar: 'لنبدأ!'
-    },
-    gettingStartedDescription: {
-        en: 'Complete your profile to connect with the right people and opportunities in the climate movement.',
-        es: 'Completa tu perfil para conectar con las personas y oportunidades adecuadas en el movimiento climático.',
-        fr: 'Complétez votre profil pour vous connecter avec les bonnes personnes et opportunités dans le mouvement climatique.',
-        ar: 'أكمل ملفك الشخصي للتواصل مع الأشخاص والفرص المناسبة في حركة المناخ.'
-    }
-}
-
-function getLocalizedContent(field: any, locale: string): string {
-    if (typeof field === 'string') return field
-    return field?.[locale] || field?.en || ''
-}
+import type { OnboardingContent, OnboardingForm } from "../types"
 
 interface WelcomePanelProps {
-  form: any
-  content?: any
+  form: OnboardingForm
+  content?: OnboardingContent | null
   isSubmitting?: boolean
 }
 
@@ -98,60 +20,52 @@ export function WelcomePanel({ content }: WelcomePanelProps) {
   const locale = useLocale()
   const isRTL = rtlLocales.includes(locale)
 
-  // Use fallback content if Sanity content is missing
-  const hasSanityContent = !!(content?.welcomeTitle && content?.welcomeDescription && content?.welcomeFeatures?.length > 0)
-  const dataSource = hasSanityContent ? 'sanity' : 'fallback'
-
-  console.log(`[WelcomePanel] Data source: ${dataSource}`, {
-    hasContent: !!content,
-    welcomeTitle: content?.welcomeTitle,
-    welcomeFeaturesCount: content?.welcomeFeatures?.length || 0,
-    language: content?.language || locale
-  })
+  // Use localized message-file fallbacks if Sanity content is missing
+  const hasSanityContent = !!(content?.welcomeTitle && content?.welcomeDescription && (content?.welcomeFeatures?.length ?? 0) > 0)
 
   const welcomeTitle = hasSanityContent
-    ? content.welcomeTitle
-    : getLocalizedContent(FALLBACK_CONTENT.welcomeTitle, locale)
+    ? content?.welcomeTitle
+    : t("hero.title")
 
   const welcomeDescription = hasSanityContent
-    ? content.welcomeDescription
-    : getLocalizedContent(FALLBACK_CONTENT.welcomeDescription, locale)
+    ? content?.welcomeDescription
+    : t("hero.description")
 
   const gettingStartedTitle = hasSanityContent
-    ? content.gettingStartedTitle
-    : getLocalizedContent(FALLBACK_CONTENT.gettingStartedTitle, locale)
+    ? content?.gettingStartedTitle
+    : t("gettingStarted.title")
 
   const gettingStartedDescription = hasSanityContent
-    ? content.gettingStartedDescription
-    : getLocalizedContent(FALLBACK_CONTENT.gettingStartedDescription, locale)
+    ? content?.gettingStartedDescription
+    : t("gettingStarted.description")
 
   const features = [
     {
       icon: Users,
       title: hasSanityContent
-        ? content.welcomeFeatures[0]?.title
-        : getLocalizedContent(FALLBACK_CONTENT.welcomeFeatures[0].title, locale),
+        ? content?.welcomeFeatures?.[0]?.title
+        : t("highlights.connect.title"),
       description: hasSanityContent
-        ? content.welcomeFeatures[0]?.description
-        : getLocalizedContent(FALLBACK_CONTENT.welcomeFeatures[0].description, locale),
+        ? content?.welcomeFeatures?.[0]?.description
+        : t("highlights.connect.description"),
     },
     {
       icon: Globe,
       title: hasSanityContent
-        ? content.welcomeFeatures[1]?.title
-        : getLocalizedContent(FALLBACK_CONTENT.welcomeFeatures[1].title, locale),
+        ? content?.welcomeFeatures?.[1]?.title
+        : t("highlights.share.title"),
       description: hasSanityContent
-        ? content.welcomeFeatures[1]?.description
-        : getLocalizedContent(FALLBACK_CONTENT.welcomeFeatures[1].description, locale),
+        ? content?.welcomeFeatures?.[1]?.description
+        : t("highlights.share.description"),
     },
     {
       icon: Shield,
       title: hasSanityContent
-        ? content.welcomeFeatures[2]?.title
-        : getLocalizedContent(FALLBACK_CONTENT.welcomeFeatures[2].title, locale),
+        ? content?.welcomeFeatures?.[2]?.title
+        : t("highlights.privacy.title"),
       description: hasSanityContent
-        ? content.welcomeFeatures[2]?.description
-        : getLocalizedContent(FALLBACK_CONTENT.welcomeFeatures[2].description, locale),
+        ? content?.welcomeFeatures?.[2]?.description
+        : t("highlights.privacy.description"),
     },
   ]
 

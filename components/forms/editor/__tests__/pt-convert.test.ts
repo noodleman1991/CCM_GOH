@@ -32,7 +32,7 @@ describe("pt-convert: paragraph + marks (baseline, still covered)", () => {
     expect(pt).toHaveLength(1);
     expect(pt[0]._type).toBe("block");
     expect(pt[0].style).toBe("normal");
-    expect(pt[0].children.map((c: any) => c.text)).toEqual(["Hello ", "world", "link"]);
+    expect(pt[0].children.map((c: { text: string }) => c.text)).toEqual(["Hello ", "world", "link"]);
 
     const back = portableTextToTiptap(pt);
     const p = back.content[0];
@@ -88,7 +88,7 @@ describe("pt-convert: blockquote", () => {
 
     const pt = tiptapToPortableText(doc);
     expect(pt).toHaveLength(2);
-    expect(pt.every((b: any) => b.style === "blockquote")).toBe(true);
+    expect(pt.every((b: { style?: string }) => b.style === "blockquote")).toBe(true);
 
     const back = portableTextToTiptap(pt);
     expect(back.content).toHaveLength(1);
@@ -98,7 +98,7 @@ describe("pt-convert: blockquote", () => {
 });
 
 describe("pt-convert: image (upload-backed, placement + caption + alt)", () => {
-  const imageNode = (overrides: Partial<Record<string, any>> = {}) => ({
+  const imageNode = (overrides: Record<string, unknown> = {}) => ({
     type: "doc",
     content: [
       {
@@ -562,6 +562,6 @@ describe("pt-convert: unknown/unsupported node passthrough behavior", () => {
     expect(tiptapToPortableText({ type: "doc", content: [] })).toEqual([]);
     expect(tiptapToPortableText({ type: "doc" })).toEqual([]);
     expect(portableTextToTiptap([])).toEqual({ type: "doc", content: [] });
-    expect(portableTextToTiptap(undefined as any)).toEqual({ type: "doc", content: [] });
+    expect(portableTextToTiptap(undefined)).toEqual({ type: "doc", content: [] });
   });
 });

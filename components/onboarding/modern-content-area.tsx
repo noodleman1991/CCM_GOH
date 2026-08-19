@@ -23,12 +23,6 @@ interface ModernContentAreaProps {
   className?: string
 }
 
-// Convert numbers to Arabic-Indic numerals
-const toArabicNumerals = (num: number): string => {
-  const arabicNumerals = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩']
-  return num.toString().split('').map(digit => arabicNumerals[parseInt(digit)]).join('')
-}
-
 export function ModernContentArea({
   children,
   currentStep,
@@ -77,11 +71,9 @@ export function ModernContentArea({
       {/* Main content area */}
       <div className="flex-1 overflow-y-auto">
         <div className="w-full px-4 sm:px-6 md:px-6 lg:max-w-[960px] lg:mx-auto lg:px-0 py-4 sm:py-6 lg:py-8">
-          {/* Step indicator */}
+          {/* Step indicator — {n, number} formats digits per locale (Arabic-Indic for ar) */}
           <div className="mb-4 text-sm text-muted-foreground">
-            {locale === 'ar'
-              ? `خطوة ${toArabicNumerals(currentStep + 1)} من ${toArabicNumerals(totalSteps)}`
-              : `Step ${currentStep + 1} of ${totalSteps}`}
+            {t("stepOf", { current: currentStep + 1, total: totalSteps })}
           </div>
 
           <Card className="shadow-sm border-0 bg-card">

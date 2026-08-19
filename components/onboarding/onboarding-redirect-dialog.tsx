@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { useUser } from '@clerk/nextjs'
 import {
   Dialog,
@@ -33,6 +34,7 @@ export default function OnboardingRedirectDialog({
   content,
   locale
 }: OnboardingRedirectDialogProps) {
+  const t = useTranslations('onboarding.redirectDialog')
   const [isWaiving, setIsWaiving] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
   const router = useRouter()
@@ -114,7 +116,7 @@ export default function OnboardingRedirectDialog({
             disabled={!isWaiving || isProcessing}
             className="w-full sm:w-auto"
           >
-            {isProcessing ? 'Processing...' : content.continueToHubText}
+            {isProcessing ? t('processing') : content.continueToHubText}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -28,6 +28,7 @@ import {
   LE_VIDEO_MIME_TYPES,
 } from "@/lib/validation/lived-experience"
 import type { EditableLivedExperience } from "@/lib/lived-experiences/edit"
+import type { LocalizedString } from "@/types/case-study"
 import { youtubeId } from "@/lib/youtube"
 import { vimeoId } from "@/lib/vimeo"
 import { useMemo } from "react"
@@ -37,8 +38,8 @@ import type { z } from "zod"
 // on input), avoiding the zodResolver input/output generics mismatch.
 type LEFormValues = z.input<typeof livedExperienceSubmissionSchema>
 
-type Tag = { _id: string; label: any; value?: { current: string } }
-type Community = { _id: string; name: any; slug?: { current: string } }
+type Tag = { _id: string; label: LocalizedString | string; value?: { current: string } }
+type Community = { _id: string; name: LocalizedString | string; slug?: { current: string } }
 
 export function LivedExperienceForm({
   availableTags,
@@ -153,12 +154,12 @@ export function LivedExperienceForm({
       })
       if (!res.ok) {
         const err = await res.json().catch(() => ({}))
-        throw new Error(err.error || "Submission failed")
+        throw new Error(err.error || t("submitError"))
       }
       toast.success(t("success"))
       router.push("/lived-experiences")
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Submission failed")
+      toast.error(e instanceof Error ? e.message : t("submitError"))
     } finally {
       setSubmitting(false)
     }
@@ -343,7 +344,7 @@ export function LivedExperienceForm({
                   <FormLabel>{t("fields.body")}</FormLabel>
                   <FormControl>
                     <PortableTextEditor
-                      value={(field.value as any[]) || []}
+                      value={(field.value as unknown[]) || []}
                       onChangeAction={field.onChange}
                       language={locale}
                       placeholder={t("fields.bodyPlaceholder")}

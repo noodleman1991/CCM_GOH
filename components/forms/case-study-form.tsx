@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import * as z from 'zod';
 import { useUser } from '@clerk/nextjs';
 import { useTranslations } from 'next-intl';
@@ -36,16 +36,29 @@ import {
     Clock,
 } from 'lucide-react';
 
+// Localized validation messages (resolved from t() inside the component so the
+// Zod errors show in the user's language — the proven newsletter pattern).
+interface SchemaMessages {
+    titleMin: string;
+    excerptMin: string;
+    contentRequired: string;
+    topicRequired: string;
+    authorNameMin: string;
+    authorEmailInvalid: string;
+    authorsMin: string;
+    tagsMin: string;
+}
+
 // Simplified schema - only essential fields
-const formSchema = z.object({
+const makeFormSchema = (m: SchemaMessages) => z.object({
     title: z.object({
-        en: z.string().min(5, "Please provide a clear title in English"),
+        en: z.string().min(5, m.titleMin),
         es: z.string().optional(),
         fr: z.string().optional(),
         ar: z.string().optional(),
     }),
     excerpt: z.object({
-        en: z.string().min(100, "Please provide a brief description (at least 100 characters)"),
+        en: z.string().min(100, m.excerptMin),
         es: z.string().optional(),
         fr: z.string().optional(),
         ar: z.string().optional(),
@@ -58,22 +71,22 @@ const formSchema = z.object({
         const hasText = val.some(block =>
             block._type === 'block' &&
             block.children &&
-            block.children.some((child: any) => child.text && child.text.trim().length > 0)
+            block.children.some((child: { text?: string }) => child.text && child.text.trim().length > 0)
         );
         return hasText;
-    }, "Please provide detailed content for your case study"),
-    topic: z.string().min(1, "Please select a topic"),
+    }, m.contentRequired),
+    topic: z.string().min(1, m.topicRequired),
     // Task E3 — detail-page layout archetype (parent spec §8a/C1). Presentation
     // only; the pipeline stores it on the caseStudy doc alongside the content.
     layout: z.enum(['story', 'feature', 'report']).default('story'),
     authors: z.array(z.object({
-        name: z.string().min(2, "Please enter the author's full name"),
-        email: z.string().email("Please enter a valid email address").optional().or(z.literal('')),
+        name: z.string().min(2, m.authorNameMin),
+        email: z.string().email(m.authorEmailInvalid).optional().or(z.literal('')),
         role: z.enum(['lead', 'coauthor', 'contributor', 'advisor']),
-    })).min(1, "At least one author is required"),
+    })).min(1, m.authorsMin),
     organizationName: z.string().optional(),
     relatedCommunity: z.string().optional(),
-    tags: z.array(z.string()).min(1, "Please select at least one relevant topic"),
+    tags: z.array(z.string()).min(1, m.tagsMin),
     studyPeriod: z.object({
         startDate: z.string().optional(),
         endDate: z.string().optional(),
@@ -89,7 +102,7 @@ const formSchema = z.object({
     image: z.any().optional(),
 });
 
-type FormData = z.infer<typeof formSchema>;
+type FormData = z.infer<ReturnType<typeof makeFormSchema>>;
 
 const languages = [
     { code: 'en', label: 'English' },
@@ -135,6 +148,18 @@ export default function ImprovedCaseStudyForm({
                                               }: ImprovedCaseStudyFormProps) {
     const { user } = useUser();
     const t = useTranslations('caseStudySubmission');
+    const tCommon = useTranslations('common');
+    // Schema built inside the component so validation messages localize.
+    const formSchema = useMemo(() => makeFormSchema({
+        titleMin: t('validation.titleMin'),
+        excerptMin: t('validation.excerptMin'),
+        contentRequired: t('validation.contentRequired'),
+        topicRequired: t('validation.topicRequired'),
+        authorNameMin: t('validation.authorNameMin'),
+        authorEmailInvalid: t('validation.authorEmailInvalid'),
+        authorsMin: t('validation.authorsMin'),
+        tagsMin: t('validation.tagsMin'),
+    }), [t]);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
     const [selectedCommunity, setSelectedCommunity] = useState<string>('');
@@ -182,11 +207,11 @@ export default function ImprovedCaseStudyForm({
 
     // Apply a stored draft's fields to the form. Shape: form fields spread at
     // the top level (matches what we POST below), plus selectedTags.
-    const applyDraft = (draft: any) => {
+    const applyDraft = (draft: Record<string, unknown> | null | undefined) => {
         if (!draft) return;
         const { _id, _type, _rev, userId, lastSaved, formMetadata, selectedTags: tags, ...fields } = draft;
         if (!fields.contentLanguage) fields.contentLanguage = 'en';
-        setFormData((prev) => ({ ...prev, ...fields }));
+        setFormData((prev) => ({ ...prev, ...(fields as Partial<FormData>) }));
         if (Array.isArray(tags)) setSelectedTags(tags);
         if (typeof fields.relatedCommunity === 'string') setSelectedCommunity(fields.relatedCommunity);
         // Remount the body editor so the restored Portable Text is displayed.
@@ -215,7 +240,7 @@ export default function ImprovedCaseStudyForm({
                 if (serverDraft && !cancelled) {
                     setDraftId(serverDraft._id);
                     applyDraft(serverDraft);
-                    toast.info('Your saved draft has been restored');
+                    toast.info(t('toasts.draftRestored'));
                 } else {
                     // One-time migration of a legacy local draft.
                     const legacy = localStorage.getItem(LEGACY_DRAFT_KEY);
@@ -225,7 +250,7 @@ export default function ImprovedCaseStudyForm({
                             const legacyForm = parsed.state?.formData;
                             if (legacyForm && !cancelled) {
                                 applyDraft({ ...legacyForm, selectedTags: parsed.state?.selectedTags });
-                                toast.info('Your previous draft has been restored');
+                                toast.info(t('toasts.previousDraftRestored'));
                             }
                         } catch { /* ignore malformed legacy draft */ }
                         localStorage.removeItem(LEGACY_DRAFT_KEY);
@@ -250,7 +275,7 @@ export default function ImprovedCaseStudyForm({
         const hasContent = Boolean(
             (formData.title && Object.values(formData.title).some((v) => (v as string)?.trim())) ||
             (formData.excerpt && Object.values(formData.excerpt).some((v) => (v as string)?.trim())) ||
-            (formData.content && (formData.content as any[])?.length) ||
+            (formData.content && (formData.content as unknown[])?.length) ||
             selectedTags.length
         );
         if (editDoc) return; // edit mode: the Sanity doc is canonical — no personal draft writes
@@ -259,7 +284,7 @@ export default function ImprovedCaseStudyForm({
         const timeoutId = setTimeout(async () => {
             setDraftStatus('saving');
             try {
-                const { image, ...draftFields } = formData as Record<string, any>;
+                const { image, ...draftFields } = formData as Record<string, unknown>;
                 const res = await fetch('/api/case-studies/drafts', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -321,7 +346,7 @@ export default function ImprovedCaseStudyForm({
             formData.content.some(block =>
                 block._type === 'block' &&
                 block.children &&
-                block.children.some((child: any) => child.text && child.text.trim().length > 0)
+                block.children.some((child: { text?: string }) => child.text && child.text.trim().length > 0)
             );
         if (hasContent) {
             newCompleted.add('content');
@@ -356,18 +381,19 @@ export default function ImprovedCaseStudyForm({
         setCompletedSections(newCompleted);
     }, [formData, selectedTags]);
 
-    const updateFormData = (field: string, value: any) => {
+    const updateFormData = (field: string, value: unknown) => {
         setFormData(prev => {
             const keys = field.split('.');
             const updated = { ...prev };
-            let current: any = updated;
+            let current = updated as Record<string, unknown>;
 
             for (let i = 0; i < keys.length - 1; i++) {
                 // Deep-clone each nesting level to avoid React state mutation
-                current[keys[i]] = Array.isArray(current[keys[i]])
-                    ? [...current[keys[i]]]
-                    : { ...current[keys[i]] };
-                current = current[keys[i]];
+                const next = current[keys[i]];
+                current[keys[i]] = Array.isArray(next)
+                    ? [...next]
+                    : { ...(next as Record<string, unknown> | undefined) };
+                current = current[keys[i]] as Record<string, unknown>;
             }
 
             current[keys[keys.length - 1]] = value;
@@ -381,12 +407,12 @@ export default function ImprovedCaseStudyForm({
         // Validation
         const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
         if (!validTypes.includes(file.type)) {
-            toast.error('Please upload a JPEG, PNG, or WebP image');
+            toast.error(t('toasts.imageInvalidType'));
             return;
         }
 
         if (file.size > 5 * 1024 * 1024) {
-            toast.error('Image must be smaller than 5MB');
+            toast.error(t('toasts.imageTooLarge'));
             return;
         }
 
@@ -432,7 +458,7 @@ export default function ImprovedCaseStudyForm({
         if (isSubmitting) return;
 
         if (!validateForm()) {
-            toast.error('Please fix the errors before submitting');
+            toast.error(t('toasts.fixErrors'));
             return;
         }
 
@@ -471,7 +497,7 @@ export default function ImprovedCaseStudyForm({
 
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({}));
-                throw new Error(errorData.message || errorData.error || 'Submission failed');
+                throw new Error(errorData.message || errorData.error || t('toasts.submitFailed'));
             }
 
             const result = await response.json();
@@ -489,14 +515,14 @@ export default function ImprovedCaseStudyForm({
             localStorage.removeItem(LEGACY_DRAFT_KEY);
 
             setSubmissionStep('success');
-            toast.success('Thank you! Your case study has been submitted for review.');
+            toast.success(t('toasts.submitted'));
 
             if (onSuccess) {
                 onSuccess(result.id);
             }
 
         } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : 'Something went wrong. Please try again.';
+            const errorMessage = error instanceof Error ? error.message : t('toasts.submitErrorGeneric');
             toast.error(errorMessage);
             setSubmissionStep('form');
         } finally {
@@ -511,10 +537,10 @@ export default function ImprovedCaseStudyForm({
                 <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
                     <CheckCircle className="w-8 h-8 text-green-600" />
                 </div>
-                <h2 className="text-2xl font-bold">Thank You for Your Contribution!</h2>
+                <h2 className="text-2xl font-bold">{t('successScreen.heading')}</h2>
                 <div className="space-y-2 text-muted-foreground">
-                    <p>Your case study has been submitted successfully.</p>
-                    <p>Our team will review it and email you once there&apos;s an update. You can also check its status anytime on your submissions page.</p>
+                    <p>{t('successScreen.submittedLine')}</p>
+                    <p>{t('successScreen.reviewLine')}</p>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
                     <Button
@@ -545,10 +571,10 @@ export default function ImprovedCaseStudyForm({
                         }}
                     >
                         <Plus className="w-4 h-4 me-2" />
-                        Submit Another Case Study
+                        {t('successScreen.submitAnother')}
                     </Button>
                     <Button asChild>
-                        <a href={`/${locale}/dashboard/submissions`}>View My Submissions</a>
+                        <a href={`/${locale}/dashboard/submissions`}>{t('successScreen.viewSubmissions')}</a>
                     </Button>
                 </div>
             </div>
@@ -558,17 +584,18 @@ export default function ImprovedCaseStudyForm({
     // B1: Review step
     if (submissionStep === 'review') {
         const selectedTopicLabel = topicOptions.find(t => t.value === formData.topic)?.title || formData.topic;
+        const formatDate = (value: string) => new Date(value).toLocaleDateString(locale);
         return (
             <div className="max-w-3xl mx-auto space-y-6">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h2 className="text-2xl font-bold">Review Your Submission</h2>
+                        <h2 className="text-2xl font-bold">{t('review.heading')}</h2>
                         <p className="text-muted-foreground mt-1">
-                            Please check everything looks correct before submitting
+                            {t('review.subheading')}
                         </p>
                     </div>
                     <Button variant="outline" onClick={() => setSubmissionStep('form')}>
-                        Go Back to Edit
+                        {t('review.goBack')}
                     </Button>
                 </div>
 
@@ -577,21 +604,21 @@ export default function ImprovedCaseStudyForm({
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                             <FileText className="w-5 h-5" />
-                            Basic Information
+                            {t('review.basicInfo')}
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3">
                         <div>
-                            <p className="text-sm font-medium text-muted-foreground">Title</p>
-                            <p className="font-medium">{formData.title?.en}</p>
+                            <p className="text-sm font-medium text-muted-foreground">{t('review.titleLabel')}</p>
+                            <p className="font-medium" dir="auto">{formData.title?.en}</p>
                         </div>
                         <div>
-                            <p className="text-sm font-medium text-muted-foreground">Topic</p>
-                            <Badge variant="secondary">{selectedTopicLabel}</Badge>
+                            <p className="text-sm font-medium text-muted-foreground">{t('review.topicLabel')}</p>
+                            <Badge variant="secondary"><bdi>{selectedTopicLabel}</bdi></Badge>
                         </div>
                         <div>
-                            <p className="text-sm font-medium text-muted-foreground">Description</p>
-                            <p className="text-sm">{formData.excerpt?.en}</p>
+                            <p className="text-sm font-medium text-muted-foreground">{t('review.descriptionLabel')}</p>
+                            <p className="text-sm" dir="auto">{formData.excerpt?.en}</p>
                         </div>
                     </CardContent>
                 </Card>
@@ -601,7 +628,7 @@ export default function ImprovedCaseStudyForm({
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                             <Users className="w-5 h-5" />
-                            Authors ({(formData.authors || []).length})
+                            {t('review.authorsHeading', { count: (formData.authors || []).length })}
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
@@ -609,10 +636,10 @@ export default function ImprovedCaseStudyForm({
                             {(formData.authors || []).map((author, i) => (
                                 <div key={i} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                                     <div>
-                                        <p className="font-medium">{author.name}</p>
-                                        {author.email && <p className="text-sm text-muted-foreground">{author.email}</p>}
+                                        <p className="font-medium" dir="auto">{author.name}</p>
+                                        {author.email && <p className="text-sm text-muted-foreground"><bdi>{author.email}</bdi></p>}
                                     </div>
-                                    <Badge variant="outline">{author.role}</Badge>
+                                    <Badge variant="outline">{t(`byline.roles.${author.role}`)}</Badge>
                                 </div>
                             ))}
                         </div>
@@ -624,7 +651,7 @@ export default function ImprovedCaseStudyForm({
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                             <Tag className="w-5 h-5" />
-                            Tags &amp; Community
+                            {t('review.tagsCommunity')}
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3">
@@ -633,14 +660,21 @@ export default function ImprovedCaseStudyForm({
                                 const tag = availableTags.find(t => t._id === tagId);
                                 return (
                                     <Badge key={tagId} variant="secondary">
-                                        {tag?.label?.[locale as keyof typeof tag.label] || tag?.label?.en || tagId}
+                                        <bdi>{tag?.label?.[locale as keyof typeof tag.label] || tag?.label?.en || tagId}</bdi>
                                     </Badge>
                                 );
                             })}
                         </div>
                         {selectedCommunity && (
                             <p className="text-sm text-muted-foreground">
-                                Community: {regionalCommunities.find(c => c._id === selectedCommunity)?.name?.en || selectedCommunity}
+                                {t('review.community', {
+                                    name:
+                                        regionalCommunities.find(c => c._id === selectedCommunity)?.name?.[
+                                            locale as keyof Record<string, string>
+                                        ] ||
+                                        regionalCommunities.find(c => c._id === selectedCommunity)?.name?.en ||
+                                        selectedCommunity,
+                                })}
                             </p>
                         )}
                     </CardContent>
@@ -652,23 +686,30 @@ export default function ImprovedCaseStudyForm({
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
                                 <MapPin className="w-5 h-5" />
-                                Context
+                                {t('review.context')}
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-2">
                             {place && (
-                                <p className="text-sm">
-                                    Location: {place.text}
+                                <p className="text-sm" dir="auto">
+                                    {t('review.location', { location: place.text })}
                                 </p>
                             )}
                             {!place && formData.locationText?.country && (
-                                <p className="text-sm">
-                                    Location: {formData.locationText.city && `${formData.locationText.city}, `}{formData.locationText.country}
+                                <p className="text-sm" dir="auto">
+                                    {t('review.location', {
+                                        location: `${formData.locationText.city ? `${formData.locationText.city}, ` : ''}${formData.locationText.country}`,
+                                    })}
                                 </p>
                             )}
                             {formData.studyPeriod?.startDate && (
                                 <p className="text-sm">
-                                    Period: {formData.studyPeriod.startDate}{formData.studyPeriod.endDate ? ` – ${formData.studyPeriod.endDate}` : ' – Ongoing'}
+                                    {t('review.period', {
+                                        start: formatDate(formData.studyPeriod.startDate),
+                                        end: formData.studyPeriod.endDate
+                                            ? formatDate(formData.studyPeriod.endDate)
+                                            : t('review.ongoing'),
+                                    })}
                                 </p>
                             )}
                         </CardContent>
@@ -678,10 +719,12 @@ export default function ImprovedCaseStudyForm({
                 {imageFile && (
                     <Card>
                         <CardHeader>
-                            <CardTitle>Featured Image</CardTitle>
+                            <CardTitle>{t('review.featuredImage')}</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <p className="text-sm text-muted-foreground">{imageFile.name} ({(imageFile.size / 1024).toFixed(0)} KB)</p>
+                            <p className="text-sm text-muted-foreground">
+                                <bdi>{imageFile.name}</bdi> {t('review.fileSize', { size: (imageFile.size / 1024).toFixed(0) })}
+                            </p>
                         </CardContent>
                     </Card>
                 )}
@@ -690,7 +733,7 @@ export default function ImprovedCaseStudyForm({
 
                 <div className="flex justify-center gap-4">
                     <Button variant="outline" onClick={() => setSubmissionStep('form')}>
-                        Go Back to Edit
+                        {t('review.goBack')}
                     </Button>
                     <Button
                         size="lg"
@@ -699,7 +742,7 @@ export default function ImprovedCaseStudyForm({
                         disabled={isSubmitting}
                     >
                         <Send className="w-4 h-4 me-2" />
-                        Confirm &amp; Submit
+                        {t('review.confirmSubmit')}
                     </Button>
                 </div>
             </div>
@@ -713,9 +756,9 @@ export default function ImprovedCaseStudyForm({
                 <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
                     <Clock className="w-8 h-8 text-ccm-water animate-spin" />
                 </div>
-                <h2 className="text-2xl font-bold mb-4">Submitting Your Case Study</h2>
+                <h2 className="text-2xl font-bold mb-4">{t('submittingScreen.heading')}</h2>
                 <p className="text-muted-foreground">
-                    Please wait while we process your submission...
+                    {t('submittingScreen.body')}
                 </p>
             </div>
         );
@@ -729,7 +772,7 @@ export default function ImprovedCaseStudyForm({
     const saveDraftNow = async () => {
         setDraftStatus('saving');
         try {
-            const { image, ...draftFields } = formData as Record<string, any>;
+            const { image, ...draftFields } = formData as Record<string, unknown>;
             const res = await fetch('/api/case-studies/drafts', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -740,10 +783,10 @@ export default function ImprovedCaseStudyForm({
             if (id && !draftId) setDraftId(id);
             setDraftSavedAt(new Date().toLocaleTimeString(locale));
             setDraftStatus('saved');
-            toast.success('Draft saved');
+            toast.success(t('toasts.draftSaved'));
         } catch {
             setDraftStatus('error');
-            toast.error('Could not save draft');
+            toast.error(t('toasts.draftSaveFailed'));
         }
     };
 
@@ -908,7 +951,7 @@ export default function ImprovedCaseStudyForm({
                                     const communityName =
                                         community.name?.[locale as keyof typeof community.name] ||
                                         community.name?.en ||
-                                        'Untitled';
+                                        tCommon('untitled');
                                     return (
                                         <SelectItem key={community._id} value={community._id}>
                                             {communityName}
@@ -942,7 +985,7 @@ export default function ImprovedCaseStudyForm({
                                 const tagLabel =
                                     tag.label?.[locale as keyof typeof tag.label] ||
                                     tag.label?.en ||
-                                    'Untitled';
+                                    tCommon('untitled');
                                 return (
                                     <Button
                                         key={tag._id}
@@ -1010,7 +1053,7 @@ export default function ImprovedCaseStudyForm({
                                     if (!formData.locationText?.country || !formData.locationText?.city) return;
 
                                     setIsGeocoding(true);
-                                    toast.info('Searching for location...');
+                                    toast.info(t('toasts.searchingLocation'));
 
                                     const result = await geocodeLocation(
                                         formData.locationText.city,
@@ -1021,9 +1064,12 @@ export default function ImprovedCaseStudyForm({
 
                                     if (result.success && result.location) {
                                         updateFormData('studyLocation', result.location);
-                                        toast.success(`Location found! (${result.location.lat.toFixed(4)}, ${result.location.lng.toFixed(4)})`);
+                                        toast.success(t('toasts.locationFound', {
+                                            lat: result.location.lat.toFixed(4),
+                                            lng: result.location.lng.toFixed(4),
+                                        }));
                                     } else {
-                                        toast.error(result.error || 'Could not find location');
+                                        toast.error(result.error || t('toasts.locationNotFound'));
                                     }
                                 }}
                             >
@@ -1070,7 +1116,7 @@ export default function ImprovedCaseStudyForm({
                 onSaveDraft={() => void saveDraftNow()}
                 onPreview={() => {
                     if (!validateForm()) {
-                        toast.error('Please fix the highlighted issues before reviewing');
+                        toast.error(t('toasts.fixBeforeReview'));
                         return;
                     }
                     setSubmissionStep('review');
