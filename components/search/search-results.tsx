@@ -2,7 +2,6 @@
 
 import { useHits, usePagination } from 'react-instantsearch'
 import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { MapPin, Briefcase, Building } from 'lucide-react'
@@ -17,6 +16,7 @@ interface SearchResultsProps {
 
 function UserResult({ hit }: { hit: UserSearchRecord }) {
   const locale = useLocale()
+  const t = useTranslations('search')
   const getInitials = (firstName?: string, lastName?: string) => {
     return `${firstName?.[0] || ''}${lastName?.[0] || ''}`.toUpperCase()
   }
@@ -42,7 +42,7 @@ function UserResult({ hit }: { hit: UserSearchRecord }) {
                     href={`/${locale}/profiles/${hit.username}`}
                     className="hover:underline text-primary"
                   >
-                    {hit.fullName || hit.username}
+                    <bdi>{hit.fullName || hit.username}</bdi>
                   </Link>
                 </h3>
                 {hit.username && hit.fullName && (
@@ -59,7 +59,7 @@ function UserResult({ hit }: { hit: UserSearchRecord }) {
 
             {/* Bio */}
             {hit.bio && (
-              <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
+              <p className="text-sm text-muted-foreground mt-2 line-clamp-2" dir="auto">
                 {hit.bio}
               </p>
             )}
@@ -68,9 +68,9 @@ function UserResult({ hit }: { hit: UserSearchRecord }) {
             {hit.showWorkDetails && (hit.organization || hit.position) && (
               <div className="flex items-center gap-2 mt-2">
                 <Building className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm">
-                  {hit.position && hit.organization 
-                    ? `${hit.position} at ${hit.organization}`
+                <span className="text-sm" dir="auto">
+                  {hit.position && hit.organization
+                    ? t('positionAt', { position: hit.position, organization: hit.organization })
                     : hit.position || hit.organization
                   }
                 </span>
@@ -81,7 +81,7 @@ function UserResult({ hit }: { hit: UserSearchRecord }) {
             {hit.showLocation && hit.location && (
               <div className="flex items-center gap-2 mt-1">
                 <MapPin className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm text-muted-foreground">{hit.location}</span>
+                <span className="text-sm text-muted-foreground" dir="auto">{hit.location}</span>
               </div>
             )}
 
@@ -97,7 +97,7 @@ function UserResult({ hit }: { hit: UserSearchRecord }) {
                   ))}
                   {hit.workTypes.length > 3 && (
                     <Badge variant="outline" className="text-xs">
-                      +{hit.workTypes.length - 3} more
+                      {t('more', { count: hit.workTypes.length - 3 })}
                     </Badge>
                   )}
                 </div>
@@ -119,8 +119,12 @@ function UserResult({ hit }: { hit: UserSearchRecord }) {
             {hit.communities.length > 0 && (
               <div className="mt-2">
                 <span className="text-xs text-muted-foreground">
-                  Member of {hit.communities.slice(0, 2).join(', ')}
-                  {hit.communities.length > 2 && ` and ${hit.communities.length - 2} other communities`}
+                  {hit.communities.length > 2
+                    ? t('memberOfMore', {
+                        communities: hit.communities.slice(0, 2).join(', '),
+                        count: hit.communities.length - 2
+                      })
+                    : t('memberOf', { communities: hit.communities.join(', ') })}
                 </span>
               </div>
             )}

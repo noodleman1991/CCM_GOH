@@ -20,18 +20,19 @@ import CaseStudyReview from "./case-study-review"
 
 interface Section {
     id: string
-    title: string
+    /** i18n key under `caseStudyForm.sections` — resolved with t() in the component. */
+    titleKey: string
     icon: React.ReactNode
     required?: boolean
 }
 
 const sections: Section[] = [
-    { id: "basic-info", title: "Basic Information", icon: <FileText className="w-4 h-4" />, required: true },
-    { id: "content", title: "Content & Details", icon: <FileText className="w-4 h-4" />, required: true },
-    { id: "authors", title: "Authors & Contributors", icon: <Users className="w-4 h-4" />, required: true },
-    { id: "classification", title: "Tags & Classification", icon: <Tag className="w-4 h-4" />, required: true },
-    { id: "location", title: "Study Location", icon: <MapPin className="w-4 h-4" /> },
-    { id: "timeline", title: "Study Period", icon: <Calendar className="w-4 h-4" /> },
+    { id: "basic-info", titleKey: "basicInfo", icon: <FileText className="w-4 h-4" />, required: true },
+    { id: "content", titleKey: "content", icon: <FileText className="w-4 h-4" />, required: true },
+    { id: "authors", titleKey: "authors", icon: <Users className="w-4 h-4" />, required: true },
+    { id: "classification", titleKey: "classification", icon: <Tag className="w-4 h-4" />, required: true },
+    { id: "location", titleKey: "location", icon: <MapPin className="w-4 h-4" /> },
+    { id: "timeline", titleKey: "timeline", icon: <Calendar className="w-4 h-4" /> },
 ]
 
 const languages = [

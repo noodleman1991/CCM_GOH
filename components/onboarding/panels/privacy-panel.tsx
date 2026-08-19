@@ -1,20 +1,19 @@
 "use client"
 
 import React from "react"
-import { UseFormReturn } from "react-hook-form"
 import { useTranslations, useLocale } from "next-intl"
-import { Shield, Eye, EyeOff, Users, Globe, Lock } from "lucide-react"
+import { Shield, Users, Globe, Lock } from "lucide-react"
 
 import { Switch } from "@/components/ui/switch"
 import { FormControl, FormDescription, FormField, FormItem, FormLabel } from "@/components/ui/form"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 import { rtlLocales } from "@/i18n/routing"
-import type { OnboardingFormData } from "@/lib/schemas/onboarding-schema"
+import type { OnboardingContent, OnboardingForm } from "../types"
 
 interface PrivacyPanelProps {
-  form: any
-  content?: any
+  form: OnboardingForm
+  content?: OnboardingContent | null
   isSubmitting?: boolean
 }
 

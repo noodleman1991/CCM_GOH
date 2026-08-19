@@ -24,14 +24,20 @@ import { ReviewPanel } from "./panels/review-panel"
 import {
   createOnboardingSchema,
   defaultOnboardingValues,
-  getStepFieldNames,
-  type OnboardingFormData
+  getStepFieldNames
 } from "@/lib/schemas/onboarding-schema"
+import type {
+  OnboardingContent,
+  OnboardingFormValues,
+  OnboardingTaxonomyOption,
+  OnboardingUserData,
+  OnboardingUserManagementOptions
+} from "./types"
 
 interface ModernOnboardingContainerProps {
-  initialData?: any
-  userManagementOptions: any
-  sanityContent: any
+  initialData?: OnboardingUserData | null
+  userManagementOptions: OnboardingUserManagementOptions | null | undefined
+  sanityContent: OnboardingContent | null | undefined
 }
 
 // sessionStorage key for in-progress onboarding state (step + form values).
@@ -57,12 +63,43 @@ export function ModernOnboardingContainer({
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [validationError, setValidationError] = useState<string | null>(null)
 
-  // Create dynamic schema
-  const dynamicSchema = createOnboardingSchema(sanityContent?.validationMessages)
+  // Create dynamic schema — CMS-supplied messages win, otherwise the
+  // localized messages from the onboarding.validation namespace.
+  const cmsValidation = sanityContent?.validationMessages
+  const dynamicSchema = createOnboardingSchema({
+    basicInfo: {
+      firstName: cmsValidation?.basicInfo?.firstName || t("validation.basicInfo.firstName"),
+      lastName: cmsValidation?.basicInfo?.lastName || t("validation.basicInfo.lastName"),
+      username: cmsValidation?.basicInfo?.username || t("validation.basicInfo.username"),
+      usernameMax: cmsValidation?.basicInfo?.usernameMax || t("validation.basicInfo.usernameMax"),
+      usernamePattern: cmsValidation?.basicInfo?.usernamePattern || t("validation.basicInfo.usernamePattern"),
+      bio: cmsValidation?.basicInfo?.bio || t("validation.basicInfo.bio"),
+      country: cmsValidation?.basicInfo?.country || t("validation.basicInfo.country"),
+      city: cmsValidation?.basicInfo?.city || t("validation.basicInfo.city"),
+      preferredLanguage: cmsValidation?.basicInfo?.preferredLanguage || t("validation.basicInfo.preferredLanguage")
+    },
+    workInfo: {
+      workTypes: cmsValidation?.workInfo?.workTypes || t("validation.workInfo.workTypes"),
+      expertiseAreas: cmsValidation?.workInfo?.expertiseAreas || t("validation.workInfo.expertiseAreas"),
+      workBio: cmsValidation?.workInfo?.workBio || t("validation.workInfo.workBio"),
+      linkedinUrl: cmsValidation?.workInfo?.linkedinUrl || t("validation.workInfo.linkedinUrl"),
+      websiteUrl: cmsValidation?.workInfo?.websiteUrl || t("validation.workInfo.websiteUrl"),
+      socialLinkUrl: cmsValidation?.workInfo?.socialLinkUrl || t("validation.workInfo.socialLinkUrl"),
+      socialLinkPlatform: cmsValidation?.workInfo?.socialLinkPlatform || t("validation.workInfo.socialLinkPlatform")
+    },
+    recentWork: {
+      title: cmsValidation?.recentWork?.title || t("validation.recentWork.title"),
+      titleMax: cmsValidation?.recentWork?.titleMax || t("validation.recentWork.titleMax"),
+      description: cmsValidation?.recentWork?.description || t("validation.recentWork.description"),
+      descriptionMax: cmsValidation?.recentWork?.descriptionMax || t("validation.recentWork.descriptionMax"),
+      link: cmsValidation?.recentWork?.link || t("validation.recentWork.link"),
+      startDate: cmsValidation?.recentWork?.startDate || t("validation.recentWork.startDate")
+    }
+  })
 
   // Helper function to map Sanity IDs to enum keys (for submission)
   // Filters out IDs that have no matching key to prevent raw Sanity IDs from reaching the API
-  const mapSanityToEnumKeys = (sanityIds: string[], sanityData: any[]): string[] => {
+  const mapSanityToEnumKeys = (sanityIds: string[], sanityData: OnboardingTaxonomyOption[]): string[] => {
     return sanityIds
       .map(id => {
         const item = sanityData.find(d => d._id === id)
@@ -72,7 +109,7 @@ export function ModernOnboardingContainer({
   }
 
   // Helper function to reverse map enum keys to Sanity IDs (for pre-population)
-  const mapEnumKeysToSanityIds = (enumKeys: string[], sanityData: any[]): string[] => {
+  const mapEnumKeysToSanityIds = (enumKeys: string[], sanityData: OnboardingTaxonomyOption[]): string[] => {
     return enumKeys
       .map(enumKey => {
         const item = sanityData.find(d => d.key === enumKey)
@@ -81,7 +118,7 @@ export function ModernOnboardingContainer({
       .filter(Boolean) as string[] // Remove any undefined values
   }
 
-  const form = useForm({
+  const form = useForm<OnboardingFormValues>({
     resolver: zodResolver(dynamicSchema),
     defaultValues: {
       ...defaultOnboardingValues,
@@ -91,9 +128,9 @@ export function ModernOnboardingContainer({
         firstName: user?.firstName || defaultOnboardingValues.basicInfo.firstName,
         lastName: user?.lastName || defaultOnboardingValues.basicInfo.lastName,
         username: user?.username || defaultOnboardingValues.basicInfo.username,
-        headline: (user as any)?.headline || (defaultOnboardingValues.basicInfo as any).headline || "",
+        headline: user?.headline || defaultOnboardingValues.basicInfo.headline || "",
         bio: user?.bio || defaultOnboardingValues.basicInfo.bio,
-        motivation: (user as any)?.motivation || (defaultOnboardingValues.basicInfo as any).motivation || "",
+        motivation: user?.motivation || defaultOnboardingValues.basicInfo.motivation || "",
         ageGroup: user?.ageGroup || defaultOnboardingValues.basicInfo.ageGroup,
         country: user?.country || defaultOnboardingValues.basicInfo.country,
         city: user?.city || defaultOnboardingValues.basicInfo.city,
@@ -270,7 +307,7 @@ export function ModernOnboardingContainer({
   }, [currentStep])
 
   // Form submission
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: OnboardingFormValues) => {
     setIsSubmitting(true)
     setValidationError(null)
 
@@ -289,9 +326,9 @@ export function ModernOnboardingContainer({
         firstName: data.basicInfo.firstName,
         lastName: data.basicInfo.lastName,
         username: data.basicInfo.username,
-        headline: (data.basicInfo as any).headline,
+        headline: data.basicInfo.headline,
         bio: data.basicInfo.bio,
-        motivation: (data.basicInfo as any).motivation,
+        motivation: data.basicInfo.motivation,
         ageGroup: data.basicInfo.ageGroup,
         country: data.basicInfo.country,
         city: data.basicInfo.city,
@@ -333,7 +370,7 @@ export function ModernOnboardingContainer({
         })
       } catch (networkError) {
         console.error('❌ Network error during onboarding submission:', networkError)
-        throw new Error('Network connection failed. Please check your internet connection and try again.')
+        throw new Error(t("errors.networkFailed"))
       }
 
       // Handle HTTP errors
@@ -346,23 +383,23 @@ export function ModernOnboardingContainer({
           } else {
             const htmlText = await response.text()
             console.error('❌ Received HTML instead of JSON:', htmlText.substring(0, 200))
-            throw new Error('Server returned an unexpected response format. Please try again or contact support.')
+            throw new Error(t("errors.unexpectedResponse"))
           }
         } catch (parseError) {
           console.error('❌ Error parsing error response:', parseError)
-          throw new Error(`Server error (${response.status}). Please try again or contact support.`)
+          throw new Error(t("errors.serverErrorSupport", { status: String(response.status) }))
         }
 
         // Handle specific error codes
         if (errorData.code === 'AUTH_REQUIRED') {
-          throw new Error('You need to be logged in to complete onboarding.')
+          throw new Error(t("errors.authRequired"))
         } else if (errorData.code === 'VALIDATION_ERROR') {
-          const fieldErrors = errorData.details?.map((d: any) => `${d.field}: ${d.message}`).join(', ')
-          throw new Error(`Please correct the following: ${fieldErrors}`)
+          const fieldErrors = errorData.details?.map((d: { field?: string; message?: string }) => `${d.field}: ${d.message}`).join(', ')
+          throw new Error(t("errors.correctFields", { details: fieldErrors || "" }))
         } else if (errorData.code === 'USER_NOT_FOUND') {
-          throw new Error('Your user account was not found. Please refresh and try again.')
+          throw new Error(t("errors.userNotFound"))
         } else {
-          throw new Error(errorData.error || `Server error (${response.status}). Please try again.`)
+          throw new Error(errorData.error || t("errors.serverErrorRetry", { status: String(response.status) }))
         }
       }
 
@@ -372,11 +409,11 @@ export function ModernOnboardingContainer({
         result = await response.json()
       } catch (parseError) {
         console.error('❌ Error parsing success response:', parseError)
-        throw new Error('Onboarding may have completed, but we received an unexpected response. Please refresh to check your status.')
+        throw new Error(t("errors.unexpectedSuccess"))
       }
 
       if (!result.success) {
-        throw new Error(result.error || 'Onboarding submission failed')
+        throw new Error(result.error || t("errors.submissionFailed"))
       }
 
       console.log('✅ Onboarding completed:', result)
@@ -389,7 +426,7 @@ export function ModernOnboardingContainer({
       }
 
       // Show success message
-      toast.success("Welcome! Your profile has been set up successfully.")
+      toast.success(t("successToast"))
 
       // Navigate using Next.js router (NOT window.location)
       // router.refresh() tells Next.js to re-fetch server components with fresh session
@@ -397,7 +434,7 @@ export function ModernOnboardingContainer({
       router.refresh() // This gets fresh session data from Clerk
     } catch (error) {
       console.error("Submission error:", error)
-      setValidationError(error instanceof Error ? error.message : "Failed to submit your information. Please try again.")
+      setValidationError(error instanceof Error ? error.message : t("errors.submitFailed"))
     } finally {
       setIsSubmitting(false)
     }

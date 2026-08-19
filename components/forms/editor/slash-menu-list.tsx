@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
+import { forwardRef, useImperativeHandle, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Heading2, Heading3, Heading4, List, ListOrdered, Image as ImageIcon, Quote, SquarePlay, Info, Minus, Milestone, ChartColumn, Workflow } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -115,7 +115,14 @@ export const SlashMenuList = forwardRef<SlashMenuListHandle, SlashMenuListProps>
   const t = useTranslations("editor");
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  useEffect(() => setSelectedIndex(0), [items]);
+  // Reset the highlight whenever the (filtered) item list changes. Done by
+  // adjusting state during render (React's prev-value pattern) instead of an
+  // effect, so the reset applies in the same render pass with no extra commit.
+  const [prevItems, setPrevItems] = useState(items);
+  if (prevItems !== items) {
+    setPrevItems(items);
+    setSelectedIndex(0);
+  }
 
   const selectItem = (index: number) => {
     const item = items[index];

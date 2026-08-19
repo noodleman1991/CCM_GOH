@@ -1,7 +1,6 @@
 "use client"
 
 import React from "react"
-import { UseFormReturn } from "react-hook-form"
 import { useTranslations, useLocale } from "next-intl"
 
 import { Input } from "@/components/ui/input"
@@ -11,11 +10,11 @@ import { Button } from "@/components/ui/button"
 import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { cn } from "@/lib/utils"
 import { rtlLocales } from "@/i18n/routing"
-import type { OnboardingFormData } from "@/lib/schemas/onboarding-schema"
+import type { OnboardingContent, OnboardingForm } from "../types"
 
 interface WorkInfoPanelProps {
-  form: any
-  content?: any
+  form: OnboardingForm
+  content?: OnboardingContent | null
   workTypes?: Array<{ _id: string; key: string; label: string; description?: string; order?: number }>
   expertiseAreas?: Array<{ _id: string; key: string; label: string; description?: string; order?: number }>
   communities?: Array<{ id: string; name: string; regionalName: string | null; type: string }>
@@ -24,6 +23,7 @@ interface WorkInfoPanelProps {
 
 export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = [], communities = [] }: WorkInfoPanelProps) {
   const t = useTranslations("onboarding.steps.workInfo")
+  const tCommon = useTranslations("onboarding")
   const tNav = useTranslations("navigation")
   const locale = useLocale()
   const isRTL = rtlLocales.includes(locale)
@@ -99,7 +99,7 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
                                   ? field.onChange([...field.value, item._id])
                                   : field.onChange(
                                       field.value?.filter(
-                                        (value: any) => value !== item._id
+                                        (value) => value !== item._id
                                       )
                                     )
                               }}
@@ -107,7 +107,7 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
                           </FormControl>
                           <div className="space-y-1 leading-none flex-1">
                             <FormLabel className="font-medium text-base">
-                              {getLocalizedText(item.label, `Work Type ${item.key || item._id}`)}
+                              {getLocalizedText(item.label, t("workTypeFallback", { key: item.key || item._id }))}
                             </FormLabel>
                             {item.description && (
                               <FormDescription className="text-sm">
@@ -167,7 +167,7 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
                                   ? field.onChange([...field.value, item._id])
                                   : field.onChange(
                                       field.value?.filter(
-                                        (value: any) => value !== item._id
+                                        (value) => value !== item._id
                                       )
                                     )
                               }}
@@ -175,7 +175,7 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
                           </FormControl>
                           <div className="space-y-1 leading-none flex-1">
                             <FormLabel className="font-medium text-base">
-                              {getLocalizedText(item.label, `Expertise ${item.key || item._id}`)}
+                              {getLocalizedText(item.label, t("expertiseFallback", { key: item.key || item._id }))}
                             </FormLabel>
                             {item.description && (
                               <FormDescription className="text-sm">
@@ -231,10 +231,10 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
                               checked={field.value?.includes(community.id)}
                               onCheckedChange={(checked) => {
                                 return checked
-                                  ? field.onChange([...field.value, community.id])
+                                  ? field.onChange([...(field.value ?? []), community.id])
                                   : field.onChange(
                                       field.value?.filter(
-                                        (value: any) => value !== community.id
+                                        (value) => value !== community.id
                                       )
                                     )
                               }}
@@ -319,7 +319,7 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
                 <FormItem>
                   <FormLabel>{content?.fieldLabels?.workInfo?.linkedin || t("linkedin")}</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder={content?.fieldLabels?.workInfo?.linkedinPlaceholder || "https://linkedin.com/in/username"} />
+                    <Input {...field} placeholder={content?.fieldLabels?.workInfo?.linkedinPlaceholder || t("linkedinPlaceholder")} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -332,7 +332,7 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
                 <FormItem>
                   <FormLabel>{content?.fieldLabels?.workInfo?.website || t("website")}</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder={content?.fieldLabels?.workInfo?.websitePlaceholder || "https://yourwebsite.com"} />
+                    <Input {...field} placeholder={content?.fieldLabels?.workInfo?.websitePlaceholder || t("websitePlaceholder")} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -343,7 +343,7 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
           {/* Other Social Links */}
           <div className="space-y-4">
             <div className={cn("flex items-center justify-between", isRTL && "flex-row-reverse")}>
-              <FormLabel>{content?.fieldLabels?.workInfo?.otherLinks || "Other Professional Links"}</FormLabel>
+              <FormLabel>{content?.fieldLabels?.workInfo?.otherLinks || t("otherLinks")}</FormLabel>
               <Button
                 type="button"
                 variant="outline"
@@ -354,7 +354,7 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
                 }}
                 className="text-xs"
               >
-                Add Link
+                {t("addLink")}
               </Button>
             </div>
 
@@ -366,7 +366,7 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
                   render={({ field }) => (
                     <FormItem className="flex-1">
                       <FormControl>
-                        <Input {...field} placeholder="Platform (e.g., Twitter, GitHub)" />
+                        <Input {...field} placeholder={t("platformPlaceholder")} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -378,7 +378,7 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
                   render={({ field }) => (
                     <FormItem className="flex-[2]">
                       <FormControl>
-                        <Input {...field} placeholder="https://..." />
+                        <Input {...field} placeholder={t("urlPlaceholder")} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -394,14 +394,14 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
                   }}
                   className="text-red-500 hover:text-red-700"
                 >
-                  Remove
+                  {tCommon("remove")}
                 </Button>
               </div>
             ))}
 
             {(!form.watch("workInfo.otherSocialLinks") || form.watch("workInfo.otherSocialLinks")?.length === 0) && (
               <p className="text-sm text-gray-500">
-                {content?.fieldLabels?.workInfo?.otherLinksHint || "Add links to your professional profiles (Twitter, GitHub, Portfolio, etc.)"}
+                {content?.fieldLabels?.workInfo?.otherLinksHint || t("otherLinksHint")}
               </p>
             )}
           </div>

@@ -37,8 +37,8 @@ import { uploadEditorImage, ImageUploadError } from '@/components/forms/editor/u
 export { tiptapToPortableText, portableTextToTiptap };
 
 interface PortableTextEditorProps {
-    value: any[]; // Portable Text array
-    onChangeAction: (value: any[]) => void;
+    value: unknown[]; // Portable Text array
+    onChangeAction: (value: unknown[]) => void;
     placeholder?: string;
     language?: string;
     maxLength?: number;

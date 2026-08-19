@@ -181,7 +181,8 @@
     "themeDark": "Dark",
     "themeSystem": "System",
     "emailRequired": "Please enter your email",
-    "emailInvalid": "Please enter a valid email"
+    "emailInvalid": "Please enter a valid email",
+    "untitled": "Untitled"
   },
   "settings": {
     "title": "Settings",
@@ -215,7 +216,9 @@
     "downloadData": "Download my data",
     "privacyContact": "Privacy & contact",
     "profileEditDescription": "Update your name, photo, headline and other public details.",
-    "editProfileCta": "Edit your profile"
+    "editProfileCta": "Edit your profile",
+    "followersOnly": "People who follow me",
+    "contactsOnly": "My accepted contacts"
   },
   "events": {
     "title": "Events",
@@ -815,6 +818,62 @@
       "preview": "Preview",
       "submit": "Submit for review",
       "incomplete": "Complete the required fields to submit"
+    },
+    "validation": {
+      "titleMin": "Please provide a clear title in English",
+      "excerptMin": "Please provide a brief description (at least 100 characters)",
+      "contentRequired": "Please provide detailed content for your case study",
+      "topicRequired": "Please select a topic",
+      "authorNameMin": "Please enter the author's full name",
+      "authorEmailInvalid": "Please enter a valid email address",
+      "authorsMin": "At least one author is required",
+      "tagsMin": "Please select at least one relevant topic"
+    },
+    "toasts": {
+      "draftRestored": "Your saved draft has been restored",
+      "previousDraftRestored": "Your previous draft has been restored",
+      "imageInvalidType": "Please upload a JPEG, PNG, or WebP image",
+      "imageTooLarge": "Image must be smaller than 5MB",
+      "fixErrors": "Please fix the errors before submitting",
+      "fixBeforeReview": "Please fix the highlighted issues before reviewing",
+      "submitFailed": "Submission failed",
+      "submitErrorGeneric": "Something went wrong. Please try again.",
+      "submitted": "Thank you! Your case study has been submitted for review.",
+      "draftSaved": "Draft saved",
+      "draftSaveFailed": "Could not save draft",
+      "searchingLocation": "Searching for location…",
+      "locationFound": "Location found! ({lat}, {lng})",
+      "locationNotFound": "Could not find location"
+    },
+    "successScreen": {
+      "heading": "Thank You for Your Contribution!",
+      "submittedLine": "Your case study has been submitted successfully.",
+      "reviewLine": "Our team will review it and email you once there's an update. You can also check its status anytime on your submissions page.",
+      "submitAnother": "Submit Another Case Study",
+      "viewSubmissions": "View My Submissions"
+    },
+    "review": {
+      "heading": "Review Your Submission",
+      "subheading": "Please check everything looks correct before submitting",
+      "goBack": "Go Back to Edit",
+      "basicInfo": "Basic Information",
+      "titleLabel": "Title",
+      "topicLabel": "Topic",
+      "descriptionLabel": "Description",
+      "authorsHeading": "Authors ({count})",
+      "tagsCommunity": "Tags & Community",
+      "community": "Community: {name}",
+      "context": "Context",
+      "location": "Location: {location}",
+      "period": "Period: {start} – {end}",
+      "ongoing": "Ongoing",
+      "featuredImage": "Featured Image",
+      "fileSize": "({size} KB)",
+      "confirmSubmit": "Confirm & Submit"
+    },
+    "submittingScreen": {
+      "heading": "Submitting Your Case Study",
+      "body": "Please wait while we process your submission…"
     }
   },
   "caseStudy": {
@@ -900,6 +959,33 @@
       "loginRequired": "You must be logged in to submit a case study",
       "reviewNote": "Once you submit, our team will review your case study and get back to you. This usually takes a few days.",
       "multilingualWelcome": "Welcome to our global community! Submit in any language and help us reach researchers worldwide."
+    },
+    "review": {
+      "heading": "Review Your Submission",
+      "subheading": "Please review all details before submitting your case study",
+      "backToEdit": "Back to Edit",
+      "fixValidation": "Please fix the validation errors before submitting",
+      "fixIssues": "Please fix the following issues:",
+      "readyAlert": "Your case study is ready to submit! All required fields have been completed.",
+      "multilingualTitles": "Multilingual Titles",
+      "notProvided": "Not provided",
+      "excerptsHeading": "Excerpts (All Languages)",
+      "excerptsDescription": "These summaries will help researchers discover your work",
+      "noExcerpt": "No excerpt provided in {language}",
+      "charactersCount": "{count} characters",
+      "contentHeading": "Case Study Content",
+      "availableIn": "Available in:",
+      "richText": "Rich text content",
+      "blocksCount": "{count} blocks",
+      "noContent": "No content provided. Please add detailed content for your case study.",
+      "authorsHeading": "Authors ({count})",
+      "studyDetails": "Study Details",
+      "location": "Location: {coords}",
+      "ongoing": "Ongoing",
+      "tagsCount": "Tags ({count})",
+      "featuredImage": "Featured Image",
+      "imageAlt": "Featured image preview",
+      "readyToSubmit": "Ready to Submit?"
     }
   },
   "dashboard": {
@@ -1198,6 +1284,35 @@
       "author": "Author",
       "country": "Country",
       "accessLevel": "Access level"
+    },
+    "featured": "Featured",
+    "authorsLabel": "Authors:",
+    "more": "+{count} more",
+    "downloads": "{count, plural, one {# download} other {# downloads}}",
+    "byAuthor": "By {name}",
+    "emptyCaseStudies": "Try different keywords or check back later for new case studies.",
+    "emptyAgendas": "Try different keywords or check back later for new agendas.",
+    "emptyNews": "Try different keywords or check back later for new news posts.",
+    "positionAt": "{position} at {organization}",
+    "memberOf": "Member of {communities}",
+    "memberOfMore": "Member of {communities} and {count, plural, one {# other community} other {# other communities}}",
+    "agendaTypes": {
+      "global": "Global Agenda",
+      "regional": "Regional Agenda",
+      "community": "Community Agenda",
+      "annual": "Annual Agenda",
+      "quarterly": "Quarterly Agenda",
+      "meeting": "Meeting Agenda",
+      "actionPlan": "Action Plan",
+      "strategy": "Strategic Plan",
+      "other": "Other"
+    },
+    "error": {
+      "title": "Search Service Error",
+      "description": "There was an issue with the search service. This might be due to missing configuration.",
+      "genericMessage": "There was an issue with the search service.",
+      "checkConfig": "Please check that your Algolia configuration is correct.",
+      "tryAgain": "Try Again"
     }
   },
   "collaborate": {
@@ -1290,7 +1405,29 @@
           "step3": "Add recent projects to showcase your contributions",
           "step4": "Choose your privacy and visibility settings"
         },
-        "tagline": "Get started with your journey"
+        "tagline": "Get started with your journey",
+        "hero": {
+          "title": "Welcome to Connecting Climate Minds",
+          "description": "Join a global community of climate leaders, experts, and advocates working together to address the climate crisis."
+        },
+        "highlights": {
+          "connect": {
+            "title": "Connect with Climate Leaders",
+            "description": "Network with professionals, researchers, and activists from around the world."
+          },
+          "share": {
+            "title": "Share Your Expertise",
+            "description": "Contribute your knowledge and learn from diverse perspectives on climate action."
+          },
+          "privacy": {
+            "title": "Privacy & Security",
+            "description": "Your data is protected. Control what you share and who can see your profile."
+          }
+        },
+        "gettingStarted": {
+          "title": "Let's get started!",
+          "description": "Complete your profile to connect with the right people and opportunities in the climate movement."
+        }
       },
       "basicInfo": {
         "title": "Basic Information",
@@ -1376,7 +1513,11 @@
         "platformPlaceholder": "Platform name (e.g., Twitter, GitHub)",
         "urlPlaceholder": "https://example.com/yourprofile",
         "continue": "Continue",
-        "tagline": "Share your expertise"
+        "tagline": "Share your expertise",
+        "addLink": "Add Link",
+        "linkedinPlaceholder": "https://linkedin.com/in/username",
+        "workTypeFallback": "Work type {key}",
+        "expertiseFallback": "Expertise {key}"
       },
       "recentWork": {
         "title": "Recent Work",
@@ -1512,7 +1653,9 @@
         "readyTitle": "You're all set!",
         "readyDescription": "Welcome to our global community of climate minds. Let's create meaningful change together.",
         "completeOnboarding": "Complete Setup",
-        "tagline": "Review and complete"
+        "tagline": "Review and complete",
+        "websiteLink": "Website",
+        "updateLater": "You can always update your profile from the dashboard."
       }
     },
     "title": "Setup Your Profile",
@@ -1540,7 +1683,55 @@
       "message": "To get the most out of your experience, we recommend completing your profile.",
       "proceed": "Complete Profile",
       "continue": "Continue to Collaborate",
-      "waiver": "You can complete this later"
+      "waiver": "You can complete this later",
+      "processing": "Processing..."
+    },
+    "stepOf": "Step {current, number} of {total, number}",
+    "percentComplete": "{value, number}% complete",
+    "minutesLeft": "~{minutes, number} min left",
+    "footerTagline": "Join thousands of climate minds from around the world",
+    "successToast": "Welcome! Your profile has been set up successfully.",
+    "errors": {
+      "networkFailed": "Network connection failed. Please check your internet connection and try again.",
+      "unexpectedResponse": "Server returned an unexpected response format. Please try again or contact support.",
+      "serverErrorSupport": "Server error ({status}). Please try again or contact support.",
+      "authRequired": "You need to be logged in to complete onboarding.",
+      "correctFields": "Please correct the following: {details}",
+      "userNotFound": "Your user account was not found. Please refresh and try again.",
+      "serverErrorRetry": "Server error ({status}). Please try again.",
+      "unexpectedSuccess": "Onboarding may have completed, but we received an unexpected response. Please refresh to check your status.",
+      "submissionFailed": "Onboarding submission failed",
+      "submitFailed": "Failed to submit your information. Please try again."
+    },
+    "validation": {
+      "basicInfo": {
+        "firstName": "First name is required",
+        "lastName": "Last name is required",
+        "username": "Username must be at least 3 characters",
+        "usernameMax": "Username must be less than 30 characters",
+        "usernamePattern": "Username can only contain letters, numbers and underscores",
+        "bio": "Bio must be less than 500 characters",
+        "country": "Country is required",
+        "city": "City is required",
+        "preferredLanguage": "Please choose your preferred language"
+      },
+      "workInfo": {
+        "workTypes": "Please select at least one work type",
+        "expertiseAreas": "Please select at least one expertise area",
+        "workBio": "Work bio must be less than 1000 characters",
+        "linkedinUrl": "Please enter a valid LinkedIn URL",
+        "websiteUrl": "Please enter a valid website URL",
+        "socialLinkUrl": "Please enter a valid URL",
+        "socialLinkPlatform": "Platform name is required"
+      },
+      "recentWork": {
+        "title": "Title is required",
+        "titleMax": "Title must be less than 100 characters",
+        "description": "Description is required",
+        "descriptionMax": "Description must be less than 500 characters",
+        "link": "Please enter a valid URL",
+        "startDate": "Start date is required"
+      }
     }
   },
   "news": {
@@ -1754,7 +1945,8 @@
       "fileTooLarge": "That file is over the 100 MB limit — please choose a smaller one.",
       "fileWrongType": "Please choose an MP4 or WebM file.",
       "keepExisting": "Your current video is kept unless you choose a new file."
-    }
+    },
+    "submitError": "We couldn't submit your experience. Please try again."
   },
   "comments": {
     "heading": "Discussion",
@@ -1776,7 +1968,8 @@
     "report": "Report",
     "reported": "Reported. Thank you.",
     "signInToReact": "Sign in to react.",
-    "signInToReport": "Sign in to report."
+    "signInToReport": "Sign in to report.",
+    "readOnly": "You can read this discussion, but only workspace members with comment access can post."
   },
   "discovery": {
     "searchPlaceholder": "Search…",
@@ -1897,7 +2090,14 @@
     "memberRemoved": "Member removed.",
     "archiveThread": "Archive",
     "archiveConfirm": "Confirm archive?",
-    "threadArchived": "Thread archived."
+    "threadArchived": "Thread archived.",
+    "leaveWorkspace": "Leave",
+    "leaveConfirm": "Confirm leave",
+    "archiveWorkspace": "Archive",
+    "archived": "Workspace archived",
+    "readOnlyNotice": "You're viewing this workspace read-only.",
+    "readOnlyJoinLink": "About this project & how to join",
+    "fileUnavailable": "File unavailable"
   },
   "messages": {
     "title": "Messages",
@@ -1949,7 +2149,8 @@
     "when_older": "Earlier",
     "regionalSpotlight": "Regional spotlight",
     "inThisView": "{count} in this view",
-    "visitCommunity": "Visit the community page"
+    "visitCommunity": "Visit the community page",
+    "followTheme": "Follow this theme"
   },
   "docs": {
     "title": "Documents",
@@ -1997,7 +2198,8 @@
     "remove": "Remove",
     "removeConfirm": "Remove this output from the workspace? The draft itself is not deleted.",
     "pendingHint": "Will link here once published",
-    "continueEditing": "Continue editing →"
+    "continueEditing": "Continue editing →",
+    "removeArmed": "Confirm remove"
   },
   "projectPublic": {
     "aboutHeading": "About this project",
@@ -2019,7 +2221,8 @@
     "requestCancel": "Cancel",
     "statusDraft": "Forming",
     "statusActive": "Active",
-    "statusArchived": "Completed"
+    "statusArchived": "Completed",
+    "exploreWorkspace": "Explore the workspace"
   },
   "placePicker": {
     "searchLabel": "Where did this work take place?",
@@ -2295,11 +2498,14 @@
       "title": "Context"
     },
     "validation": {
-      "titleMin": "Please add a title"
+      "titleMin": "Please add a title",
+      "titleMax": "The title must be 200 characters or fewer",
+      "excerptMax": "The summary must be 600 characters or fewer"
     },
     "cancel": "Cancel",
     "submit": "Submit for review",
-    "success": "Thank you — your research output was submitted for review."
+    "success": "Thank you — your research output was submitted for review.",
+    "submitError": "We couldn't submit your research output. Please try again."
   },
   "editorReview": {
     "status": {
@@ -2403,5 +2609,33 @@
     "successTitle": "Report sent",
     "successBody": "Thanks — we'll take it from here.",
     "errorGeneric": "Your report wasn't sent. Please try again."
+  },
+  "moderation": {
+    "broadcast": {
+      "messageLabel": "Message",
+      "audience": "Audience",
+      "everyone": "Everyone",
+      "aCommunity": "A community",
+      "aRegion": "A region",
+      "community": "Community",
+      "region": "Region",
+      "selectPlaceholder": "Select…",
+      "pickCommunity": "Pick a community.",
+      "pickRegion": "Pick a region.",
+      "sentTo": "{count, plural, one {Sent to # member.} other {Sent to # members.}}",
+      "send": "Send notification"
+    },
+    "queue": {
+      "tabPending": "Pending (anonymous)",
+      "tabFlagged": "Flagged",
+      "tabReported": "Reported",
+      "done": "Done",
+      "failed": "Failed",
+      "empty": "Nothing to review here.",
+      "reports": "{count, plural, one {# report} other {# reports}}",
+      "approve": "Approve",
+      "remove": "Remove",
+      "dismissReport": "Dismiss report"
+    }
   }
 }

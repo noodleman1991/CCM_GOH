@@ -1,7 +1,6 @@
 "use client"
 
 import React, { useEffect, useState, useTransition } from "react"
-import { UseFormReturn } from "react-hook-form"
 import { useTranslations, useLocale } from "next-intl"
 import { useRouter, usePathname } from "@/i18n/navigation"
 import { Check, Loader2 } from "lucide-react"
@@ -12,11 +11,11 @@ import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessa
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { cn } from "@/lib/utils"
 import { rtlLocales } from "@/i18n/routing"
-import type { OnboardingFormData } from "@/lib/schemas/onboarding-schema"
+import type { OnboardingContent, OnboardingForm } from "../types"
 
 interface BasicInfoPanelProps {
-  form: any
-  content?: any
+  form: OnboardingForm
+  content?: OnboardingContent | null
   isSubmitting?: boolean
 }
 
@@ -39,23 +38,33 @@ export function BasicInfoPanel({ form, content }: BasicInfoPanelProps) {
   const usernameValue = form.watch("basicInfo.username")
   // The user's current username (server-provided default) — no need to check it
   const currentUsername: string = form.formState.defaultValues?.basicInfo?.username || ""
-  const [usernameStatus, setUsernameStatus] = useState<"idle" | "checking" | "available" | "taken">("idle")
+  // The last completed check, keyed by the value it checked. The displayed
+  // status is DERIVED during render (no setState inside the effect body):
+  // skip-conditions → "idle"; a stale/absent result → "checking"; otherwise
+  // the recorded result.
+  const [checkResult, setCheckResult] = useState<{
+    value: string
+    status: "idle" | "available" | "taken"
+  } | null>(null)
+
+  const trimmedUsername = (usernameValue || "").trim()
+  // Skip: empty, below min length, invalid format (zod handles those),
+  // or unchanged from the user's current username
+  const shouldCheckUsername = !(
+    trimmedUsername.length < 3 ||
+    !/^[a-zA-Z0-9_]+$/.test(trimmedUsername) ||
+    (currentUsername && trimmedUsername.toLowerCase() === currentUsername.toLowerCase())
+  )
+  const usernameStatus: "idle" | "checking" | "available" | "taken" = !shouldCheckUsername
+    ? "idle"
+    : checkResult?.value === trimmedUsername
+      ? checkResult.status
+      : "checking"
 
   useEffect(() => {
-    const value = (usernameValue || "").trim()
+    if (!shouldCheckUsername) return
 
-    // Skip: empty, below min length, invalid format (zod handles those),
-    // or unchanged from the user's current username
-    if (
-      value.length < 3 ||
-      !/^[a-zA-Z0-9_]+$/.test(value) ||
-      (currentUsername && value.toLowerCase() === currentUsername.toLowerCase())
-    ) {
-      setUsernameStatus("idle")
-      return
-    }
-
-    setUsernameStatus("checking")
+    const value = trimmedUsername
     const controller = new AbortController()
     const timeout = setTimeout(async () => {
       try {
@@ -65,18 +74,18 @@ export function BasicInfoPanel({ form, content }: BasicInfoPanelProps) {
         )
         if (!response.ok) {
           // Auth/server errors: don't block typing, fall back to submit-time check
-          setUsernameStatus("idle")
+          setCheckResult({ value, status: "idle" })
           return
         }
         const data = await response.json()
         if (data.available) {
-          setUsernameStatus("available")
+          setCheckResult({ value, status: "available" })
           // Only clear our own manual error, never zod validation errors
           if (form.formState.errors?.basicInfo?.username?.type === "manual") {
             form.clearErrors("basicInfo.username")
           }
         } else {
-          setUsernameStatus("taken")
+          setCheckResult({ value, status: "taken" })
           form.setError("basicInfo.username", {
             type: "manual",
             message: data.message || t("usernameTaken")
@@ -84,7 +93,7 @@ export function BasicInfoPanel({ form, content }: BasicInfoPanelProps) {
         }
       } catch (error) {
         if (!(error instanceof DOMException && error.name === "AbortError")) {
-          setUsernameStatus("idle")
+          setCheckResult({ value, status: "idle" })
         }
       }
     }, 500)
@@ -93,7 +102,7 @@ export function BasicInfoPanel({ form, content }: BasicInfoPanelProps) {
       clearTimeout(timeout)
       controller.abort()
     }
-  }, [usernameValue, currentUsername, form])
+  }, [trimmedUsername, shouldCheckUsername, currentUsername, form])
 
   return (
     <div className={cn(

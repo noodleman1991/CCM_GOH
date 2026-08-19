@@ -181,7 +181,8 @@
     "themeDark": "داكن",
     "themeSystem": "النظام",
     "emailRequired": "يرجى إدخال بريدك الإلكتروني",
-    "emailInvalid": "يرجى إدخال بريد إلكتروني صحيح"
+    "emailInvalid": "يرجى إدخال بريد إلكتروني صحيح",
+    "untitled": "بدون عنوان"
   },
   "dashboard": {
     "pageTitle": "لوحة التحكم - Connecting Climate Minds Hub",
@@ -310,7 +311,9 @@
     "downloadData": "تنزيل بياناتي",
     "privacyContact": "الخصوصية والتواصل",
     "profileEditDescription": "حدّث اسمك وصورتك وعنوانك الوظيفي وغيرها من التفاصيل العامة.",
-    "editProfileCta": "تعديل ملفك الشخصي"
+    "editProfileCta": "تعديل ملفك الشخصي",
+    "followersOnly": "الأشخاص الذين يتابعونني",
+    "contactsOnly": "جهات الاتصال المقبولة لديّ"
   },
   "events": {
     "title": "الفعاليات",
@@ -910,6 +913,62 @@
       "preview": "معاينة",
       "submit": "إرسال للمراجعة",
       "incomplete": "أكمل الحقول المطلوبة للإرسال"
+    },
+    "validation": {
+      "titleMin": "يرجى تقديم عنوان واضح باللغة الإنجليزية",
+      "excerptMin": "يرجى تقديم وصف موجز (100 حرف على الأقل)",
+      "contentRequired": "يرجى تقديم محتوى مفصل لدراسة الحالة الخاصة بك",
+      "topicRequired": "يرجى اختيار موضوع",
+      "authorNameMin": "يرجى إدخال الاسم الكامل للمؤلف",
+      "authorEmailInvalid": "يرجى إدخال عنوان بريد إلكتروني صالح",
+      "authorsMin": "مطلوب مؤلف واحد على الأقل",
+      "tagsMin": "يرجى اختيار موضوع واحد ذي صلة على الأقل"
+    },
+    "toasts": {
+      "draftRestored": "تمت استعادة مسودتك المحفوظة",
+      "previousDraftRestored": "تمت استعادة مسودتك السابقة",
+      "imageInvalidType": "يرجى رفع صورة بصيغة JPEG أو PNG أو WebP",
+      "imageTooLarge": "يجب أن يكون حجم الصورة أقل من 5 ميغابايت",
+      "fixErrors": "يرجى تصحيح الأخطاء قبل الإرسال",
+      "fixBeforeReview": "يرجى تصحيح المشكلات المحددة قبل المراجعة",
+      "submitFailed": "فشل الإرسال",
+      "submitErrorGeneric": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
+      "submitted": "شكرًا لك! تم إرسال دراسة الحالة الخاصة بك للمراجعة.",
+      "draftSaved": "تم حفظ المسودة",
+      "draftSaveFailed": "تعذر حفظ المسودة",
+      "searchingLocation": "جارٍ البحث عن الموقع…",
+      "locationFound": "تم العثور على الموقع! ({lat}, {lng})",
+      "locationNotFound": "تعذر العثور على الموقع"
+    },
+    "successScreen": {
+      "heading": "شكرًا لمساهمتك!",
+      "submittedLine": "تم إرسال دراسة الحالة الخاصة بك بنجاح.",
+      "reviewLine": "سيراجعها فريقنا ويرسل إليك بريدًا إلكترونيًا عند وجود أي مستجدات. يمكنك أيضًا التحقق من حالتها في أي وقت من صفحة مساهماتك.",
+      "submitAnother": "إرسال دراسة حالة أخرى",
+      "viewSubmissions": "عرض مساهماتي"
+    },
+    "review": {
+      "heading": "راجع مساهمتك",
+      "subheading": "يرجى التأكد من صحة كل شيء قبل الإرسال",
+      "goBack": "العودة إلى التحرير",
+      "basicInfo": "المعلومات الأساسية",
+      "titleLabel": "العنوان",
+      "topicLabel": "الموضوع",
+      "descriptionLabel": "الوصف",
+      "authorsHeading": "المؤلفون ({count})",
+      "tagsCommunity": "الوسوم والمجتمع",
+      "community": "المجتمع: {name}",
+      "context": "السياق",
+      "location": "الموقع: {location}",
+      "period": "الفترة: {start} – {end}",
+      "ongoing": "مستمرة",
+      "featuredImage": "الصورة البارزة",
+      "fileSize": "({size} كيلوبايت)",
+      "confirmSubmit": "التأكيد والإرسال"
+    },
+    "submittingScreen": {
+      "heading": "جارٍ إرسال دراسة الحالة الخاصة بك",
+      "body": "يرجى الانتظار بينما نعالج مساهمتك…"
     }
   },
   "caseStudy": {
@@ -1036,6 +1095,33 @@
       "loginRequired": "يجب تسجيل الدخول لإرسال دراسة حالة",
       "reviewNote": "بعد الإرسال، سيقوم فريقنا بمراجعة دراسة الحالة والرد عليك. يستغرق هذا عادةً بضعة أيام.",
       "multilingualWelcome": "مرحباً بك في مجتمعنا العالمي! أرسل بأي لغة وساعدنا في الوصول إلى الباحثين في جميع أنحاء العالم."
+    },
+    "review": {
+      "heading": "راجع مساهمتك",
+      "subheading": "راجع جميع التفاصيل قبل إرسال دراسة الحالة الخاصة بك",
+      "backToEdit": "العودة إلى التحرير",
+      "fixValidation": "يرجى تصحيح أخطاء التحقق قبل الإرسال",
+      "fixIssues": "يرجى تصحيح المشكلات التالية:",
+      "readyAlert": "دراسة الحالة الخاصة بك جاهزة للإرسال! تم إكمال جميع الحقول المطلوبة.",
+      "multilingualTitles": "العناوين متعددة اللغات",
+      "notProvided": "غير متوفر",
+      "excerptsHeading": "الملخصات (جميع اللغات)",
+      "excerptsDescription": "ستساعد هذه الملخصات الباحثين على اكتشاف عملك",
+      "noExcerpt": "لم يتم تقديم ملخص باللغة {language}",
+      "charactersCount": "{count} من الأحرف",
+      "contentHeading": "محتوى دراسة الحالة",
+      "availableIn": "متاح بـ:",
+      "richText": "محتوى نص منسق",
+      "blocksCount": "{count} من الكتل",
+      "noContent": "لم يتم تقديم أي محتوى. يرجى إضافة محتوى مفصل لدراسة الحالة الخاصة بك.",
+      "authorsHeading": "المؤلفون ({count})",
+      "studyDetails": "تفاصيل الدراسة",
+      "location": "الموقع: {coords}",
+      "ongoing": "مستمرة",
+      "tagsCount": "الوسوم ({count})",
+      "featuredImage": "الصورة البارزة",
+      "imageAlt": "معاينة الصورة البارزة",
+      "readyToSubmit": "جاهز للإرسال؟"
     }
   },
   "search": {
@@ -1106,6 +1192,35 @@
       "author": "المؤلف",
       "country": "البلد",
       "accessLevel": "مستوى الوصول"
+    },
+    "featured": "مميّز",
+    "authorsLabel": "المؤلفون:",
+    "more": "+{count} أخرى",
+    "downloads": "{count, plural, zero {لا تنزيلات} one {تنزيل واحد} two {تنزيلان} few {# تنزيلات} many {# تنزيلًا} other {# تنزيل}}",
+    "byAuthor": "بقلم {name}",
+    "emptyCaseStudies": "جرّب كلمات مفتاحية مختلفة أو عُد لاحقًا للاطلاع على دراسات حالة جديدة.",
+    "emptyAgendas": "جرّب كلمات مفتاحية مختلفة أو عُد لاحقًا للاطلاع على أجندات جديدة.",
+    "emptyNews": "جرّب كلمات مفتاحية مختلفة أو عُد لاحقًا للاطلاع على أخبار جديدة.",
+    "positionAt": "{position} في {organization}",
+    "memberOf": "عضو في {communities}",
+    "memberOfMore": "عضو في {communities} و{count, plural, zero {لا مجتمعات أخرى} one {مجتمع آخر واحد} two {مجتمعين آخرين} few {# مجتمعات أخرى} many {# مجتمعًا آخر} other {# مجتمع آخر}}",
+    "agendaTypes": {
+      "global": "أجندة عالمية",
+      "regional": "أجندة إقليمية",
+      "community": "أجندة مجتمعية",
+      "annual": "أجندة سنوية",
+      "quarterly": "أجندة ربع سنوية",
+      "meeting": "جدول أعمال اجتماع",
+      "actionPlan": "خطة عمل",
+      "strategy": "خطة استراتيجية",
+      "other": "أخرى"
+    },
+    "error": {
+      "title": "خطأ في خدمة البحث",
+      "description": "حدثت مشكلة في خدمة البحث. قد يكون السبب إعدادات مفقودة.",
+      "genericMessage": "حدثت مشكلة في خدمة البحث.",
+      "checkConfig": "يرجى التحقق من صحة إعدادات Algolia.",
+      "tryAgain": "حاول مجددًا"
     }
   },
   "collaborate": {
@@ -1198,7 +1313,29 @@
           "step3": "أضف مشاريع حديثة لإظهار مساهماتك",
           "step4": "اختر إعدادات الخصوصية والرؤية"
         },
-        "tagline": "ابدأ رحلتك"
+        "tagline": "ابدأ رحلتك",
+        "hero": {
+          "title": "مرحبًا بك في Connecting Climate Minds",
+          "description": "انضم إلى مجتمع عالمي من قادة المناخ والخبراء والمدافعين الذين يعملون معًا لمعالجة أزمة المناخ."
+        },
+        "highlights": {
+          "connect": {
+            "title": "تواصل مع قادة المناخ",
+            "description": "تواصل مع المهنيين والباحثين والناشطين من جميع أنحاء العالم."
+          },
+          "share": {
+            "title": "شارك خبرتك",
+            "description": "ساهم بمعرفتك وتعلم من وجهات نظر متنوعة حول العمل المناخي."
+          },
+          "privacy": {
+            "title": "الخصوصية والأمان",
+            "description": "بياناتك محمية. تحكم في ما تشاركه ومن يمكنه رؤية ملفك الشخصي."
+          }
+        },
+        "gettingStarted": {
+          "title": "لنبدأ!",
+          "description": "أكمل ملفك الشخصي للتواصل مع الأشخاص والفرص المناسبة في حركة المناخ."
+        }
       },
       "basicInfo": {
         "title": "المعلومات الأساسية",
@@ -1284,7 +1421,11 @@
         "platformPlaceholder": "اسم المنصة (مثل تويتر، GitHub)",
         "urlPlaceholder": "https://example.com/yourprofile",
         "continue": "متابعة",
-        "tagline": "شارك خبرتك"
+        "tagline": "شارك خبرتك",
+        "addLink": "إضافة رابط",
+        "linkedinPlaceholder": "https://linkedin.com/in/username",
+        "workTypeFallback": "نوع العمل {key}",
+        "expertiseFallback": "الخبرة {key}"
       },
       "recentWork": {
         "title": "الأعمال الحديثة",
@@ -1420,7 +1561,9 @@
         "readyTitle": "أنت جاهز!",
         "readyDescription": "أهلاً بك في مجتمعنا العالمي من العقول المناخية. لنخلق تغييراً هادفاً معاً.",
         "completeOnboarding": "إكمال الإعداد",
-        "tagline": "راجِع وأكمِل"
+        "tagline": "راجِع وأكمِل",
+        "websiteLink": "الموقع الإلكتروني",
+        "updateLater": "يمكنك دائمًا تحديث ملفك الشخصي من لوحة التحكم."
       }
     },
     "title": "إعداد ملفك الشخصي",
@@ -1448,7 +1591,55 @@
       "message": "للاستفادة القصوى من تجربتك، نوصي بإكمال ملفك الشخصي.",
       "proceed": "إكمال الملف الشخصي",
       "continue": "المتابعة إلى التعاون",
-      "waiver": "يمكنك إكمال ذلك لاحقًا"
+      "waiver": "يمكنك إكمال ذلك لاحقًا",
+      "processing": "جارٍ المعالجة..."
+    },
+    "stepOf": "خطوة {current, number} من {total, number}",
+    "percentComplete": "اكتمل {value, number}٪",
+    "minutesLeft": "~{minutes, number} دقيقة متبقية",
+    "footerTagline": "انضم إلى آلاف العقول المناخية من جميع أنحاء العالم",
+    "successToast": "مرحبًا! تم إعداد ملفك الشخصي بنجاح.",
+    "errors": {
+      "networkFailed": "فشل الاتصال بالشبكة. يرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى.",
+      "unexpectedResponse": "أعاد الخادم استجابة بتنسيق غير متوقع. يرجى المحاولة مرة أخرى أو التواصل مع الدعم.",
+      "serverErrorSupport": "خطأ في الخادم ({status}). يرجى المحاولة مرة أخرى أو التواصل مع الدعم.",
+      "authRequired": "يجب تسجيل الدخول لإكمال إعداد الحساب.",
+      "correctFields": "يرجى تصحيح ما يلي: {details}",
+      "userNotFound": "لم يتم العثور على حساب المستخدم الخاص بك. يرجى تحديث الصفحة والمحاولة مرة أخرى.",
+      "serverErrorRetry": "خطأ في الخادم ({status}). يرجى المحاولة مرة أخرى.",
+      "unexpectedSuccess": "ربما اكتمل إعداد الحساب، لكننا تلقينا استجابة غير متوقعة. يرجى تحديث الصفحة للتحقق من حالتك.",
+      "submissionFailed": "فشل إرسال إعداد الحساب",
+      "submitFailed": "تعذر إرسال معلوماتك. يرجى المحاولة مرة أخرى."
+    },
+    "validation": {
+      "basicInfo": {
+        "firstName": "الاسم الأول مطلوب",
+        "lastName": "اسم العائلة مطلوب",
+        "username": "يجب أن يتكون اسم المستخدم من 3 أحرف على الأقل",
+        "usernameMax": "يجب أن يكون اسم المستخدم أقل من 30 حرفًا",
+        "usernamePattern": "يمكن أن يحتوي اسم المستخدم على أحرف وأرقام وشرطات سفلية فقط",
+        "bio": "يجب أن تكون النبذة أقل من 500 حرف",
+        "country": "الدولة مطلوبة",
+        "city": "المدينة مطلوبة",
+        "preferredLanguage": "يرجى اختيار لغتك المفضلة"
+      },
+      "workInfo": {
+        "workTypes": "يرجى اختيار نوع عمل واحد على الأقل",
+        "expertiseAreas": "يرجى اختيار مجال خبرة واحد على الأقل",
+        "workBio": "يجب أن تكون النبذة المهنية أقل من 1000 حرف",
+        "linkedinUrl": "يرجى إدخال رابط LinkedIn صالح",
+        "websiteUrl": "يرجى إدخال رابط موقع إلكتروني صالح",
+        "socialLinkUrl": "يرجى إدخال رابط صالح",
+        "socialLinkPlatform": "اسم المنصة مطلوب"
+      },
+      "recentWork": {
+        "title": "العنوان مطلوب",
+        "titleMax": "يجب أن يكون العنوان أقل من 100 حرف",
+        "description": "الوصف مطلوب",
+        "descriptionMax": "يجب أن يكون الوصف أقل من 500 حرف",
+        "link": "يرجى إدخال رابط صالح",
+        "startDate": "تاريخ البدء مطلوب"
+      }
     }
   },
   "caseStudies": {
@@ -1754,7 +1945,8 @@
       "fileTooLarge": "هذا الملف يتجاوز حد 100 ميغابايت — يرجى اختيار ملف أصغر.",
       "fileWrongType": "يرجى اختيار ملف MP4 أو WebM.",
       "keepExisting": "سيُحتفظ بالفيديو الحالي ما لم تختر ملفًا جديدًا."
-    }
+    },
+    "submitError": "تعذر إرسال تجربتك. يرجى المحاولة مرة أخرى."
   },
   "comments": {
     "heading": "النقاش",
@@ -1776,7 +1968,8 @@
     "report": "إبلاغ",
     "reported": "تم الإبلاغ. شكرًا لك.",
     "signInToReact": "سجّل الدخول للتفاعل.",
-    "signInToReport": "سجّل الدخول للإبلاغ."
+    "signInToReport": "سجّل الدخول للإبلاغ.",
+    "readOnly": "يمكنك قراءة هذا النقاش، لكن النشر متاح فقط لأعضاء مساحة العمل الذين لديهم صلاحية التعليق."
   },
   "discovery": {
     "searchPlaceholder": "بحث…",
@@ -1897,7 +2090,14 @@
     "memberRemoved": "أُزيل العضو.",
     "archiveThread": "أرشفة",
     "archiveConfirm": "تأكيد الأرشفة؟",
-    "threadArchived": "أُرشف النقاش."
+    "threadArchived": "أُرشف النقاش.",
+    "leaveWorkspace": "مغادرة",
+    "leaveConfirm": "تأكيد المغادرة",
+    "archiveWorkspace": "أرشفة",
+    "archived": "تمت أرشفة مساحة العمل",
+    "readOnlyNotice": "أنت تستعرض مساحة العمل هذه للقراءة فقط.",
+    "readOnlyJoinLink": "عن هذا المشروع وكيفية الانضمام",
+    "fileUnavailable": "الملف غير متاح"
   },
   "messages": {
     "title": "الرسائل",
@@ -1949,7 +2149,8 @@
     "when_older": "أقدم",
     "regionalSpotlight": "تسليط الضوء على المنطقة",
     "inThisView": "{count} في هذا العرض",
-    "visitCommunity": "زيارة صفحة المجتمع"
+    "visitCommunity": "زيارة صفحة المجتمع",
+    "followTheme": "متابعة هذا الموضوع"
   },
   "docs": {
     "title": "المستندات",
@@ -1997,7 +2198,8 @@
     "remove": "إزالة",
     "removeConfirm": "إزالة هذا المُخرَج من المساحة؟ لن تُحذف المسودة نفسها.",
     "pendingHint": "سيظهر الرابط هنا بعد النشر",
-    "continueEditing": "متابعة التحرير ←"
+    "continueEditing": "متابعة التحرير ←",
+    "removeArmed": "تأكيد الإزالة"
   },
   "projectPublic": {
     "aboutHeading": "About this project",
@@ -2019,7 +2221,8 @@
     "requestCancel": "Cancel",
     "statusDraft": "Forming",
     "statusActive": "Active",
-    "statusArchived": "Completed"
+    "statusArchived": "Completed",
+    "exploreWorkspace": "استكشاف مساحة العمل"
   },
   "placePicker": {
     "searchLabel": "أين تم هذا العمل؟",
@@ -2295,11 +2498,14 @@
       "title": "السياق"
     },
     "validation": {
-      "titleMin": "أضف عنوانًا"
+      "titleMin": "أضف عنوانًا",
+      "titleMax": "يجب ألا يتجاوز العنوان 200 حرف",
+      "excerptMax": "يجب ألا يتجاوز الملخص 600 حرف"
     },
     "cancel": "إلغاء",
     "submit": "إرسال للمراجعة",
-    "success": "شكرًا — أُرسل ناتجك البحثي للمراجعة."
+    "success": "شكرًا — أُرسل ناتجك البحثي للمراجعة.",
+    "submitError": "تعذر إرسال ناتج البحث الخاص بك. يرجى المحاولة مرة أخرى."
   },
   "editorReview": {
     "status": {
@@ -2403,5 +2609,33 @@
     "successTitle": "تم إرسال البلاغ",
     "successBody": "شكراً — سنتولى الأمر من هنا.",
     "errorGeneric": "لم يتم إرسال بلاغك. يرجى المحاولة مرة أخرى."
+  },
+  "moderation": {
+    "broadcast": {
+      "messageLabel": "الرسالة",
+      "audience": "الجمهور",
+      "everyone": "الجميع",
+      "aCommunity": "مجتمع محدد",
+      "aRegion": "منطقة محددة",
+      "community": "المجتمع",
+      "region": "المنطقة",
+      "selectPlaceholder": "اختر…",
+      "pickCommunity": "اختر مجتمعًا.",
+      "pickRegion": "اختر منطقة.",
+      "sentTo": "{count, plural, zero {لم يُرسل إلى أي عضو.} one {أُرسل إلى عضو واحد.} two {أُرسل إلى عضوين.} few {أُرسل إلى # أعضاء.} many {أُرسل إلى # عضوًا.} other {أُرسل إلى # عضو.}}",
+      "send": "إرسال الإشعار"
+    },
+    "queue": {
+      "tabPending": "قيد الانتظار (مجهول)",
+      "tabFlagged": "معلَّمة",
+      "tabReported": "مُبلَغ عنها",
+      "done": "تم",
+      "failed": "فشل",
+      "empty": "لا يوجد شيء للمراجعة هنا.",
+      "reports": "{count, plural, zero {لا بلاغات} one {بلاغ واحد} two {بلاغان} few {# بلاغات} many {# بلاغًا} other {# بلاغ}}",
+      "approve": "الموافقة",
+      "remove": "إزالة",
+      "dismissReport": "رفض البلاغ"
+    }
   }
 }

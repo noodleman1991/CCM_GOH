@@ -63,9 +63,9 @@ export function ResearchOutputForm({
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const schema = z.object({
-    title: z.string().trim().min(3, t("validation.titleMin")).max(200),
+    title: z.string().trim().min(3, t("validation.titleMin")).max(200, t("validation.titleMax")),
     outputType: z.enum(RO_OUTPUT_TYPES),
-    excerpt: z.string().trim().max(600).optional().or(z.literal("")),
+    excerpt: z.string().trim().max(600, t("validation.excerptMax")).optional().or(z.literal("")),
     body: z.array(z.any()).optional(),
     region: z.string().optional().or(z.literal("")),
     themes: z.array(z.string()).max(8).optional().default([]),
@@ -134,12 +134,12 @@ export function ResearchOutputForm({
       const res = await fetch("/api/research-outputs/submit", { method: "POST", body: formData })
       if (!res.ok) {
         const err = await res.json().catch(() => ({}))
-        throw new Error(err.error || "Submission failed")
+        throw new Error(err.error || t("submitError"))
       }
       toast.success(t("success"))
       router.push(workspaceId ? `/collaborations/${workspaceId}` : "/research-and-action/case-studies")
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Submission failed")
+      toast.error(e instanceof Error ? e.message : t("submitError"))
     } finally {
       setSubmitting(false)
     }
