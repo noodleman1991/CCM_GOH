@@ -55,7 +55,18 @@ export default async function CollaborationDetailPage({
 
   // Non-members (and non-staff) get the PUBLIC project page, not the workspace shell.
   // Members/staff can also preview the public page via ?view=public.
-  if (forcePublic || canShowPublicProject({ membershipRole: myRole, isStaff: isStaff(actor) })) {
+  //
+  // PUBLIC workspaces additionally allow anyone to EXPLORE the workspace
+  // read-only via ?view=workspace (the public page links there). This aligns
+  // the UI with the authz model, where `collab:read`/`collab:readFiles` are
+  // already granted to everyone on PUBLIC — the shell renders with
+  // myRole=null, so every editing affordance is off.
+  const publicReadOnly =
+    sp?.view === "workspace" && collab.visibility === "PUBLIC" && myRole === null;
+  if (
+    forcePublic ||
+    (canShowPublicProject({ membershipRole: myRole, isStaff: isStaff(actor) }) && !publicReadOnly)
+  ) {
     const publicProject = await getPublicProject(id);
     if (!publicProject) notFound();
     const viewerIsMember = myRole !== null;

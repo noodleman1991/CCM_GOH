@@ -25,7 +25,7 @@ import {
 import { LayoutGrid, MessagesSquare, FileText, Film, Users, ListTodo, BookText, Package } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Link } from "@/i18n/navigation";
-import { setMemberRole, removeMember } from "@/lib/actions/collaboration";
+import { setMemberRole, removeMember, leaveCollaboration, archiveCollaboration } from "@/lib/actions/collaboration";
 import type { CollaborationRole } from "@/generated/prisma";
 import { WorkspaceThreads } from "./workspace-threads";
 import { WorkspaceFiles } from "./workspace-files";
@@ -80,6 +80,7 @@ export function WorkspaceShell({
   docs,
   outputs,
   activity,
+  attention,
 }: {
   collaboration: CollabProps;
   myRole: CollaborationRole | null;
@@ -98,6 +99,11 @@ export function WorkspaceShell({
   // Editors+ (and the plan reuses collab:editPlan = EDITOR+).
   const canEdit = myRole === "OWNER" || myRole === "EDITOR";
   const canEditPlan = canEdit;
+  const isMember = myRole !== null;
+  // Read-only exploration: public visitors (PUBLIC workspaces) and staff both
+  // reach the shell without a membership role.
+  const readOnlyVisitor = !isMember;
+  const canArchive = myRole === "OWNER" || isStaff;
 
   // Optimistic local copies so inline edits show immediately.
   const [title, setTitle] = useState(collaboration.title);
@@ -164,7 +170,40 @@ export function WorkspaceShell({
               {t("viewPublicPage")}
             </Link>
           </Button>
+          {isMember && myRole !== "OWNER" && (
+            <LifecycleButton
+              label={t("leaveWorkspace")}
+              confirmLabel={t("leaveConfirm")}
+              onConfirm={async () => {
+                const res = await leaveCollaboration(collaboration.id);
+                if (!res.ok) toast.error(res.error);
+                else window.location.assign("/collaborations");
+              }}
+            />
+          )}
+          {canArchive && collaboration.status !== "ARCHIVED" && (
+            <LifecycleButton
+              label={t("archiveWorkspace")}
+              confirmLabel={t("archiveConfirm")}
+              onConfirm={async () => {
+                const res = await archiveCollaboration(collaboration.id);
+                if (!res.ok) toast.error(res.error);
+                else {
+                  toast.success(t("archived"));
+                  window.location.reload();
+                }
+              }}
+            />
+          )}
         </div>
+        {readOnlyVisitor && (
+          <p className="mt-2 rounded-md bg-muted/60 px-3 py-2 text-sm text-muted-foreground">
+            {t("readOnlyNotice")}{" "}
+            <Link href={`/collaborations/${collaboration.id}?view=public`} className="text-ccm-sea underline-offset-2 hover:underline">
+              {t("readOnlyJoinLink")}
+            </Link>
+          </p>
+        )}
       </header>
 
       {/* Top tabs: a single horizontally-scrollable row (mobile + desktop). */}
@@ -213,6 +252,7 @@ export function WorkspaceShell({
                 planStages={planStages}
                 activity={activity}
                 memberCount={collaboration.counts.members}
+                attention={attention}
                 onGoToTab={(tab) => setSection(tab as Section)}
               />
             </section>
@@ -277,6 +317,41 @@ export function WorkspaceShell({
         />
       )}
     </div>
+  );
+}
+
+/** Two-click destructive header action (arm on first click, run on second). */
+function LifecycleButton({
+  label,
+  confirmLabel,
+  onConfirm,
+}: {
+  label: string;
+  confirmLabel: string;
+  onConfirm: () => Promise<void>;
+}) {
+  const [armed, setArmed] = useState(false);
+  const [busy, setBusy] = useState(false);
+  return (
+    <Button
+      variant={armed ? "destructive" : "ghost"}
+      size="sm"
+      className="shrink-0"
+      disabled={busy}
+      onClick={async () => {
+        if (!armed) return setArmed(true);
+        setBusy(true);
+        try {
+          await onConfirm();
+        } finally {
+          setBusy(false);
+          setArmed(false);
+        }
+      }}
+      onBlur={() => setArmed(false)}
+    >
+      {armed ? confirmLabel : label}
+    </Button>
   );
 }
 

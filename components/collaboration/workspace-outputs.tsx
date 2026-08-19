@@ -32,6 +32,10 @@ export default function WorkspaceOutputs({
   const router = useRouter();
   const [pending, start] = useTransition();
   const [adding, setAdding] = useState(false);
+  // Two-click removal (matches the members/threads pattern — no blocking
+  // confirm dialog) + optimistic hide instead of a full page reload.
+  const [confirmRemove, setConfirmRemove] = useState<string | null>(null);
+  const [gone, setGone] = useState<Set<string>>(new Set());
 
   // Case studies and lived experiences have real submit flows — creating
   // there (with ?workspace=) produces actual content that links back here.
@@ -52,16 +56,22 @@ export default function WorkspaceOutputs({
       const res = await addOutput({ collaborationId, sanityType, mode: "create", title: "Untitled" });
       if (res.ok) {
         setAdding(false);
-        location.reload();
+        router.refresh();
       } else toast.error(res.error);
     });
   };
   const remove = (outputId: string) => {
-    if (!confirm(t("removeConfirm"))) return;
+    if (confirmRemove !== outputId) {
+      setConfirmRemove(outputId);
+      return;
+    }
+    setConfirmRemove(null);
     start(async () => {
       const res = await removeOutput({ collaborationId, outputId });
-      if (res.ok) location.reload();
-      else toast.error(res.error);
+      if (res.ok) {
+        setGone((g) => new Set(g).add(outputId));
+        router.refresh();
+      } else toast.error(res.error);
     });
   };
 
@@ -75,7 +85,7 @@ export default function WorkspaceOutputs({
 
       {outputs.length > 0 && (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {outputs.map((o) => {
+          {outputs.filter((o) => !gone.has(o.id)).map((o) => {
             const def = OUTPUT_TYPES.find((d) => d.type === o.sanityType);
             const badge = STATUS_BADGE[o.status] ?? STATUS_BADGE.draft;
             const published = o.status === "approved" && !!o.slug;
@@ -101,10 +111,15 @@ export default function WorkspaceOutputs({
                   {canEdit && (
                     <button
                       onClick={() => remove(o.id)}
+                      onBlur={() => setConfirmRemove((c) => (c === o.id ? null : c))}
                       disabled={pending}
-                      className="text-xs text-muted-foreground hover:text-destructive"
+                      className={
+                        confirmRemove === o.id
+                          ? "text-xs font-semibold text-destructive"
+                          : "text-xs text-muted-foreground hover:text-destructive"
+                      }
                     >
-                      {t("remove")}
+                      {confirmRemove === o.id ? t("removeArmed") : t("remove")}
                     </button>
                   )}
                 </div>

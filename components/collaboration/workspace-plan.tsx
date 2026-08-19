@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Plus, Circle, CircleDot, CheckCircle2, ChevronLeft, ChevronRight, X, GripVertical, ListTodo } from "lucide-react";
@@ -11,6 +11,7 @@ import {
   KeyboardSensor,
   useSensor,
   useSensors,
+  useDroppable,
   type DragEndEvent,
 } from "@dnd-kit/core";
 import { SortableContext, useSortable, verticalListSortingStrategy, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
@@ -185,26 +186,61 @@ export function WorkspacePlan({
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
 
-  // Within-stage drag-reorder. The dragged task id is `active`, dropped over
-  // `over`; we reorder that stage's tasks and persist the new order.
-  const onDragEnd = (stageId: string) => (e: DragEndEvent) => {
+  // Drag-reorder — one DndContext across the whole board so a task can move
+  // WITHIN its stage (reorder) or ACROSS stages (drop on another stage's task,
+  // or on the column itself via the "stage:<id>" droppable). reorderTasks
+  // re-homes tasks server-side (it writes stageId on every row).
+  const onDragEnd = (e: DragEndEvent) => {
     const { active, over } = e;
     if (!over || active.id === over.id) return;
-    // Compute the reordered task list for the affected stage outside of setState,
-    // so we never call startTransition during render.
-    const stage = stages.find((st) => st.id === stageId);
-    if (!stage) return;
-    const ids = stage.tasks.map((tk) => tk.id);
-    const from = ids.indexOf(active.id as string);
-    const to = ids.indexOf(over.id as string);
-    if (from < 0 || to < 0) return;
-    const nextTasks = [...stage.tasks];
-    const [moved] = nextTasks.splice(from, 1);
-    nextTasks.splice(to, 0, moved);
+    const activeId = active.id as string;
+    const overId = over.id as string;
 
-    setStages((s) => s.map((st) => (st.id === stageId ? { ...st, tasks: nextTasks } : st)));
+    const sourceStage = stages.find((st) => st.tasks.some((tk) => tk.id === activeId));
+    if (!sourceStage) return;
+    const targetStage = overId.startsWith("stage:")
+      ? stages.find((st) => st.id === overId.slice(6))
+      : stages.find((st) => st.tasks.some((tk) => tk.id === overId));
+    if (!targetStage) return;
+
+    if (sourceStage.id === targetStage.id) {
+      if (overId.startsWith("stage:")) return; // dropped on own column — no-op
+      const ids = sourceStage.tasks.map((tk) => tk.id);
+      const from = ids.indexOf(activeId);
+      const to = ids.indexOf(overId);
+      if (from < 0 || to < 0) return;
+      const nextTasks = [...sourceStage.tasks];
+      const [moved] = nextTasks.splice(from, 1);
+      nextTasks.splice(to, 0, moved);
+      setStages((s) => s.map((st) => (st.id === sourceStage.id ? { ...st, tasks: nextTasks } : st)));
+      startTransition(async () => {
+        const res = await reorderTasks(collaborationId, sourceStage.id, nextTasks.map((tk) => tk.id));
+        if (!res.ok) toast.error(res.error);
+      });
+      return;
+    }
+
+    // Cross-stage move: remove from source, insert into target (at the over
+    // task's slot, or appended when dropped on the empty column area).
+    const task = sourceStage.tasks.find((tk) => tk.id === activeId);
+    if (!task) return;
+    const nextSource = sourceStage.tasks.filter((tk) => tk.id !== activeId);
+    const overIndex = overId.startsWith("stage:")
+      ? targetStage.tasks.length
+      : targetStage.tasks.findIndex((tk) => tk.id === overId);
+    const nextTarget = [...targetStage.tasks];
+    nextTarget.splice(overIndex < 0 ? nextTarget.length : overIndex, 0, task);
+    setStages((s) =>
+      s.map((st) =>
+        st.id === sourceStage.id
+          ? { ...st, tasks: nextSource }
+          : st.id === targetStage.id
+            ? { ...st, tasks: nextTarget }
+            : st
+      )
+    );
     startTransition(async () => {
-      const res = await reorderTasks(collaborationId, stageId, nextTasks.map((tk) => tk.id));
+      const res = await reorderTasks(collaborationId, targetStage.id, nextTarget.map((tk) => tk.id));
       if (!res.ok) toast.error(res.error);
     });
   };
@@ -226,6 +262,7 @@ export function WorkspacePlan({
         <WorkspaceEmptyState icon={ListTodo} title={t("emptyTitle")} body={t("emptyBody")} />
       )}
 
+      <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={onDragEnd}>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {stages.map((stage) => {
           const done = stage.tasks.length > 0 && stage.tasks.every((tk) => tk.status === "DONE");
@@ -267,7 +304,7 @@ export function WorkspacePlan({
                   </span>
                 )}
               </div>
-              <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={onDragEnd(stage.id)}>
+              <StageTaskArea stageId={stage.id}>
                 <SortableContext items={stage.tasks.map((tk) => tk.id)} strategy={verticalListSortingStrategy}>
                   <ul className="space-y-1">
                     {stage.tasks.map((task) => (
@@ -293,12 +330,13 @@ export function WorkspacePlan({
                     ))}
                   </ul>
                 </SortableContext>
-              </DndContext>
-              {canEdit && <AddTaskRow onAdd={(title, reset) => onAddTask(stage.id, title, reset)} placeholder={t("addTask")} />}
+              </StageTaskArea>
+              {canEdit && <AddTaskRow onAdd={(title, reset) => onAddTask(stage.id, title, reset)} placeholder={t("addTask")} addLabel={t("addTask")} />}
             </div>
           );
         })}
       </div>
+      </DndContext>
 
       {canEdit && (
         <div className="flex max-w-xs gap-2">
@@ -419,7 +457,17 @@ function SortableTask({
   );
 }
 
-function AddTaskRow({ onAdd, placeholder }: { onAdd: (title: string, reset: () => void) => void; placeholder: string }) {
+/** Droppable column body so tasks can be dropped on an (empty) stage itself. */
+function StageTaskArea({ stageId, children }: { stageId: string; children: ReactNode }) {
+  const { setNodeRef, isOver } = useDroppable({ id: `stage:${stageId}` });
+  return (
+    <div ref={setNodeRef} className={cn("min-h-8 rounded-md transition-shadow", isOver && "ring-1 ring-ccm-water/60")}>
+      {children}
+    </div>
+  );
+}
+
+function AddTaskRow({ onAdd, placeholder, addLabel }: { onAdd: (title: string, reset: () => void) => void; placeholder: string; addLabel: string }) {
   const [val, setVal] = useState("");
   const reset = () => setVal("");
   return (
@@ -431,6 +479,16 @@ function AddTaskRow({ onAdd, placeholder }: { onAdd: (title: string, reset: () =
         className="h-8 text-sm"
         onKeyDown={(e) => e.key === "Enter" && onAdd(val, reset)}
       />
+      <Button
+        size="sm"
+        variant="ghost"
+        className="h-8 shrink-0 px-2"
+        disabled={!val.trim()}
+        onClick={() => onAdd(val, reset)}
+        aria-label={addLabel}
+      >
+        <Plus className="size-4" aria-hidden="true" />
+      </Button>
     </div>
   );
 }

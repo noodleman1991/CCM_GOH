@@ -1,6 +1,7 @@
 import "server-only";
 
 import { prisma, safeQuery } from "@/lib/prisma";
+import { client } from "@/sanity/lib/client";
 import type { PublicProject } from "./public-access";
 
 export type { PublicProject } from "./public-access";
@@ -35,14 +36,30 @@ export async function getPublicProject(id: string): Promise<PublicProject | null
     prisma.workspaceOutput.findMany({
       where: { collaborationId: id, status: "approved" },
       orderBy: { createdAt: "asc" },
-      select: { id: true, sanityType: true, title: true },
+      select: { id: true, sanityId: true, sanityType: true, title: true },
     })
   );
-  const outputs = (or.success ? or.data : []).map((o) => ({
+  const outputRows = or.success ? or.data : [];
+
+  // Resolve real slugs from Sanity (same round-trip getOutputs does) so the
+  // public page links to each output's detail page instead of the type index.
+  let slugById = new Map<string, string | null>();
+  if (outputRows.length > 0) {
+    try {
+      const docs: { _id: string; slug: string | null }[] = await client.fetch(
+        `*[_id in $ids]{ _id, "slug": slug.current }`,
+        { ids: outputRows.map((x) => x.sanityId.replace(/^drafts\./, "")) }
+      );
+      slugById = new Map(docs.map((d) => [d._id, d.slug]));
+    } catch {
+      // Sanity unreachable — fall back to type-index links.
+    }
+  }
+  const outputs = outputRows.map((o) => ({
     id: o.id,
     sanityType: o.sanityType,
     title: o.title,
-    slug: null as string | null,
+    slug: slugById.get(o.sanityId.replace(/^drafts\./, "")) ?? null,
   }));
 
   const leadMember = c.members.find((m) => m.user.id === c.createdById) ?? c.members[0] ?? null;

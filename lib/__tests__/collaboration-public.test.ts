@@ -3,12 +3,18 @@ import { canShowPublicProject, canRequestToJoin } from "@/lib/collaboration/publ
 
 const findUniqueMock = vi.fn();
 const outputsFindManyMock = vi.fn();
+// public.ts resolves output slugs via the Sanity client; stub it so the test
+// stays hermetic (importing the real client asserts env vars at import time).
+vi.mock("@/sanity/lib/client", () => ({
+  client: { fetch: vi.fn(async () => []) },
+}));
+
 vi.mock("@/lib/prisma", () => ({
   prisma: {
-    collaboration: { findUnique: (...a: any[]) => findUniqueMock(...a) },
-    workspaceOutput: { findMany: (...a: any[]) => outputsFindManyMock(...a) },
+    collaboration: { findUnique: (...a: unknown[]) => findUniqueMock(...a) },
+    workspaceOutput: { findMany: (...a: unknown[]) => outputsFindManyMock(...a) },
   },
-  safeQuery: async (fn: () => Promise<any>) => {
+  safeQuery: async (fn: () => Promise<unknown>) => {
     try {
       return { success: true, data: await fn() };
     } catch (e) {
@@ -58,7 +64,7 @@ describe("getPublicProject", () => {
       _count: { members: 2, outputs: 3 },
     });
     outputsFindManyMock.mockResolvedValueOnce([
-      { id: "o1", sanityType: "caseStudy", title: "Published CS", status: "approved" },
+      { id: "o1", sanityId: "cs-1", sanityType: "caseStudy", title: "Published CS", status: "approved" },
     ]);
 
     const p = await getPublicProject("c1");

@@ -161,7 +161,7 @@ export function WorkspaceFiles({
                 </p>
               </div>
               {f.isPdf ? (
-                <Button size="sm" variant="ghost" onClick={() => onOpenPdf(f)}>
+                <Button size="sm" variant="ghost" onClick={() => onOpenPdf(f)} disabled={!f.url} title={!f.url ? t("fileUnavailable") : undefined}>
                   {t("openPdf")}
                 </Button>
               ) : f.url ? (
@@ -170,7 +170,9 @@ export function WorkspaceFiles({
                     {t("download")}
                   </a>
                 </Button>
-              ) : null}
+              ) : (
+                <span className="text-xs text-muted-foreground">{t("fileUnavailable")}</span>
+              )}
               {canUpload && (
                 <button onClick={() => remove(f.id)} className="text-muted-foreground hover:text-destructive" aria-label={t("delete")}>
                   <Trash2 className="size-4" />

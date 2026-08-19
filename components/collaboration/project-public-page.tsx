@@ -65,12 +65,23 @@ export async function ProjectPublicPage({
           isSignedIn={isSignedIn}
           isMember={isMember}
         />
-        {isMember && (
+        {isMember ? (
           <div className="mt-2">
             <Button asChild variant="outline" size="sm">
               <Link href={`/collaborations/${project.id}`}>{t("openWorkspace")}</Link>
             </Button>
           </div>
+        ) : (
+          !gated && (
+            <div className="mt-2">
+              {/* PUBLIC workspaces are explorable read-only by anyone. */}
+              <Button asChild variant="outline" size="sm">
+                <Link href={`/collaborations/${project.id}?view=workspace`}>
+                  {t("exploreWorkspace")}
+                </Link>
+              </Button>
+            </div>
+          )
         )}
       </header>
 
