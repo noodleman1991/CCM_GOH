@@ -2,7 +2,7 @@
 
 import useSWR from "swr";
 import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { markNotificationsRead } from "@/lib/actions/notifications";
 import { respondToJoinByTarget, respondToInviteByTarget, respondToContactByTarget } from "@/lib/actions/requests";
 import { cn } from "@/lib/utils";
+import { parseStructuredSnippet } from "@/lib/notifications/structured";
 
 export type Notif = {
   id: string;
@@ -70,7 +71,26 @@ export function NotificationFeed({
   className?: string;
 }) {
   const t = useTranslations("notifications");
+  const locale = useLocale();
   const verb = useNotificationVerb();
+  // Structured snippets ({"k":...,"p":{...}} JSON from prose emitters) render
+  // localized; plain strings (comment/message excerpts) render verbatim.
+  const renderSnippet = (snippet: string) => {
+    const parsed = parseStructuredSnippet(snippet);
+    if (!parsed) return snippet;
+    const params: Record<string, string> = { ...(parsed.p ?? {}) };
+    if (params.when) {
+      const d = new Date(params.when);
+      params.when = isNaN(d.getTime())
+        ? params.when
+        : new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(d);
+    }
+    try {
+      return t(`snippets.${parsed.k}`, params);
+    } catch {
+      return snippet;
+    }
+  };
   const { data, mutate } = useSWR("/api/notifications", fetcher, {
     refreshInterval: 60_000,
     refreshWhenHidden: false,
@@ -140,7 +160,7 @@ export function NotificationFeed({
               {n.actorName && <span className="font-medium"><bdi>{n.actorName}</bdi></span>}{" "}
               {verb(n.type)}
             </p>
-            {n.snippet && <p className="truncate text-xs text-muted-foreground">{n.snippet}</p>}
+            {n.snippet && <p className="truncate text-xs text-muted-foreground"><bdi>{renderSnippet(n.snippet)}</bdi></p>}
             <p className="mt-0.5 text-xs text-muted-foreground">
               {formatDistanceToNow(new Date(n.createdAt), { addSuffix: true })}
             </p>

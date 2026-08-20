@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { getActor, isStaff } from "@/lib/authz";
 import { authorizeCollab } from "@/lib/collaboration/service";
 import { createNotification } from "@/lib/notifications/service";
+import { structuredSnippet } from "@/lib/notifications/structured";
 import { emitLifecycle } from "@/lib/notifications/emit";
 
 type Result<T = unknown> = ({ ok: true } & T) | { ok: false; error: string };
@@ -137,7 +138,7 @@ export async function respondToJoinRequest(
     actorId: actor.id,
     entityType: "joinRequestResolved",
     entityId: req.collaborationId,
-    snippet: accept ? "accepted your request to join" : "declined your request to join",
+    snippet: structuredSnippet(accept ? "joinAccepted" : "joinDeclined"),
   });
 
   // X3: tell the rest of the team someone new is aboard.
@@ -229,7 +230,7 @@ export async function inviteToCollaboration(
     actorId: actor.id,
     entityType: "collaborationInvite",
     entityId: collaborationId,
-    snippet: `invited you to join "${collab.title}"`,
+    snippet: structuredSnippet("invitedToJoin", { title: collab.title }),
   });
 
   return { ok: true, status: "PENDING" };
@@ -296,9 +297,9 @@ export async function respondToInviteByTarget(
     actorId: actor.id,
     entityType: "collaborationInviteResolved",
     entityId: collaborationId,
-    snippet: accept
-      ? `accepted your invitation to "${invite.collaboration.title}"`
-      : `declined your invitation to "${invite.collaboration.title}"`,
+    snippet: structuredSnippet(accept ? "inviteAccepted" : "inviteDeclined", {
+      title: invite.collaboration.title,
+    }),
   });
 
   if (accept) {
@@ -425,7 +426,7 @@ export async function respondToContactRequest(
     actorId: actor.id,
     entityType: "contactRequestResolved",
     entityId: actor.id,
-    snippet: accept ? "accepted your contact request" : "declined your contact request",
+    snippet: structuredSnippet(accept ? "contactAccepted" : "contactDeclined"),
   });
 
   return { ok: true, status };
