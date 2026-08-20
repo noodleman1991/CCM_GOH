@@ -10,6 +10,7 @@ import { authorizeCollab } from "@/lib/collaboration/service";
 import { moderateBody } from "@/lib/comments/moderation";
 import { verifyTurnstile, turnstileConfigured } from "@/lib/turnstile";
 import { isCommentTargetType } from "@/lib/comments/types";
+import { sanitizeCommentRich, extractPlainText } from "@/lib/comments/rich";
 import { parseMentions } from "@/lib/comments/mentions";
 import { createNotification } from "@/lib/notifications/service";
 import { emitLifecycle } from "@/lib/notifications/emit";
@@ -72,13 +73,16 @@ const baseSchema = z.object({
   targetType: z.string().refine(isCommentTargetType, "Invalid target type"),
   targetId: z.string().min(1).max(256),
   parentId: z.string().cuid().optional(),
-  body: z.string().trim().min(1, "Comment cannot be empty").max(4000),
+  body: z.string().trim().max(4000).default(""),
   page: z.number().int().positive().optional(),
   // Anonymous-only fields. No email is collected: anonymous comments never
   // notify, the address was never displayed, and holding it would create PII
   // unreachable by export/erasure (GDPR data minimization).
   authorName: z.string().trim().min(1).max(80).optional(),
   turnstileToken: z.string().optional(),
+  // Optional rich body (Portable Text). Sanitized server-side; the plain
+  // `body` is re-derived from it so moderation/@mentions never diverge.
+  bodyRich: z.unknown().optional(),
 });
 
 export type PostCommentInput = z.infer<typeof baseSchema>;
@@ -102,6 +106,12 @@ export async function postComment(input: PostCommentInput): Promise<PostCommentR
     return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid input", code: "VALIDATION" };
   }
   const data = parsed.data;
+
+  // Rich bodies: sanitize (text-level marks + safe links only) and make the
+  // plain body the extraction of the rich one — one source of truth.
+  const rich = data.bodyRich !== undefined ? sanitizeCommentRich(data.bodyRich) : null;
+  const body = rich ? extractPlainText(rich) : data.body;
+  if (!body.trim()) return { ok: false, error: "Comment cannot be empty", code: "VALIDATION" };
 
   const actor = await getActor();
   const isAnon = !actor;
@@ -171,7 +181,7 @@ export async function postComment(input: PostCommentInput): Promise<PostCommentR
   }
 
   // 6. moderation
-  const verdict = await moderateBody(data.body);
+  const verdict = await moderateBody(body);
   let status: CommentStatus;
   if (verdict.tier === "block") {
     status = "REMOVED_BY_MOD";
@@ -189,7 +199,8 @@ export async function postComment(input: PostCommentInput): Promise<PostCommentR
       depth,
       authorId: actor?.id ?? null,
       authorName: isAnon ? data.authorName : null,
-      body: data.body,
+      body,
+      bodyRich: rich ?? undefined,
       status,
       page: data.page ?? null,
       flags:
@@ -214,7 +225,7 @@ export async function postComment(input: PostCommentInput): Promise<PostCommentR
     await fanOutEngagement({
       commentId: created.id,
       authorId: actor.id,
-      body: data.body,
+      body,
       parentId: data.parentId ?? null,
     }).catch(() => {});
 

@@ -26,6 +26,8 @@ export type CommentDTO = {
   authorName: string | null;
   authorImage: string | null;
   body: string;
+  /** Sanitized Portable Text version of body (display only). */
+  bodyRich?: unknown;
   status: "PENDING" | "VISIBLE" | "DELETED_BY_AUTHOR" | "REMOVED_BY_MOD";
   page: number | null;
   createdAt: string;
