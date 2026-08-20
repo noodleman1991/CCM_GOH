@@ -15,8 +15,14 @@ const TOKEN = process.env.SANITY_API_EDITOR_TOKEN || process.env.SANITY_API_WRIT
 const DS = process.env.NEXT_PUBLIC_SANITY_DATASET;
 const apply = process.argv.includes("--apply");
 
-if (DS === "production_2") {
-  console.error("Refusing: dataset is production. Run against the development (staging) dataset.");
+// Production is refused unless explicitly acknowledged, so a stray env can
+// never point a staging-intent run at live content.
+const ackProd = process.argv.includes("--i-understand-this-is-production");
+if (DS === "production_2" && !ackProd) {
+  console.error(
+    "Refusing: dataset is production. Run against the development (staging) dataset, or\n" +
+      "pass --i-understand-this-is-production to promote deliberately."
+  );
   process.exit(1);
 }
 
