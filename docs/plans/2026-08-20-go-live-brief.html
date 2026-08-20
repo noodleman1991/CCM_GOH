@@ -1,0 +1,1086 @@
+<title>Hub Go-Live Brief</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Lato:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap">
+
+<style>
+  /* ── Tokens. Complete light palette on bare :root; dark redefines tokens
+        only, in both the media-query and the explicit-stamp form. ── */
+  :root {
+    --ground:      #ffffff;
+    --surface:     #f4f7fb;
+    --surface-2:   #e9f0f8;
+    --line:        #d9e3ee;
+    --line-soft:   #e8eef6;
+
+    --ink:         #0e1a2b;
+    --ink-2:       #43536d;
+    --ink-3:       #6d7f99;
+
+    --midnight:    #0B3160;
+    --sea:         #205596;
+    --water:       #4186C3;
+    --sky:         #9BC6DA;
+    --gold:        #FFBF05;
+
+    --head:        var(--midnight);
+    --link:        var(--sea);
+
+    --ok-fg:       #14612b;  --ok-bg:   #d7f0dc;  --ok-line: #a9d9b6;
+    --warn-fg:     #8a5c08;  --warn-bg: #fdeacb;  --warn-line: #edc887;
+    --stop-fg:     #97231b;  --stop-bg: #fbe1de;  --stop-line: #eeb4ae;
+    --info-fg:     #1d4b7a;  --info-bg: #dceaf6;  --info-line: #b3d0e8;
+
+    --code-bg:     #0e1a2b;
+    --code-ink:    #dfe8f3;
+    --code-dim:    #7f93ad;
+    --code-accent: #9BC6DA;
+
+    --shadow: 0 1px 2px rgba(14,26,43,.05);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:    #08111d;
+      --surface:   #0f1c2e;
+      --surface-2: #16273d;
+      --line:      #23374f;
+      --line-soft: #1a2b41;
+
+      --ink:       #e6edf6;
+      --ink-2:     #adbdd2;
+      --ink-3:     #7f92ab;
+
+      --head:      #bcd8e6;
+      --link:      #7fb2e6;
+      --sky:       #7fa9bd;
+
+      --ok-fg:     #7fd39a;  --ok-bg:   #10301c;  --ok-line: #1f5733;
+      --warn-fg:   #f0c479;  --warn-bg: #322208;  --warn-line: #5d4413;
+      --stop-fg:   #f0a49c;  --stop-bg: #34110e;  --stop-line: #632520;
+      --info-fg:   #9cc6ea;  --info-bg: #0f2438;  --info-line: #22455f;
+
+      --code-bg:   #040c16;
+      --code-ink:  #d6e2ef;
+
+      --shadow: 0 1px 2px rgba(0,0,0,.4);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:    #08111d;
+    --surface:   #0f1c2e;
+    --surface-2: #16273d;
+    --line:      #23374f;
+    --line-soft: #1a2b41;
+
+    --ink:       #e6edf6;
+    --ink-2:     #adbdd2;
+    --ink-3:     #7f92ab;
+
+    --head:      #bcd8e6;
+    --link:      #7fb2e6;
+    --sky:       #7fa9bd;
+
+    --ok-fg:     #7fd39a;  --ok-bg:   #10301c;  --ok-line: #1f5733;
+    --warn-fg:   #f0c479;  --warn-bg: #322208;  --warn-line: #5d4413;
+    --stop-fg:   #f0a49c;  --stop-bg: #34110e;  --stop-line: #632520;
+    --info-fg:   #9cc6ea;  --info-bg: #0f2438;  --info-line: #22455f;
+
+    --code-bg:   #040c16;
+    --code-ink:  #d6e2ef;
+
+    --shadow: 0 1px 2px rgba(0,0,0,.4);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: Lato, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 16.5px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 61rem; margin: 0 auto; padding: 0 1.5rem 6rem; }
+  .prose { max-width: 40rem; }
+
+  h1, h2, h3, h4 {
+    font-family: Poppins, ui-sans-serif, system-ui, sans-serif;
+    color: var(--head);
+    text-wrap: balance;
+    margin: 0;
+  }
+  h1 { font-size: clamp(2.1rem, 1.4rem + 2.6vw, 3.1rem); font-weight: 700; letter-spacing: -.022em; line-height: 1.08; }
+  h2 { font-size: clamp(1.5rem, 1.2rem + 1vw, 1.9rem); font-weight: 700; letter-spacing: -.018em; }
+  h3 { font-size: 1.14rem; font-weight: 600; letter-spacing: -.008em; }
+  h4 { font-size: .95rem; font-weight: 600; }
+  p { margin: 0; }
+
+  a { color: var(--link); text-underline-offset: .18em; text-decoration-thickness: .06em; }
+  a:focus-visible, button:focus-visible, summary:focus-visible {
+    outline: 2px solid var(--water); outline-offset: 3px; border-radius: 2px;
+  }
+
+  .eyebrow {
+    font-family: Poppins, sans-serif; font-size: .69rem; font-weight: 600;
+    letter-spacing: .13em; text-transform: uppercase; color: var(--ink-3);
+  }
+
+  /* ── Masthead ── */
+  header.masthead {
+    border-bottom: 1px solid var(--line);
+    background: linear-gradient(180deg, var(--surface), var(--ground));
+  }
+  .masthead .wrap { padding-top: 3.4rem; padding-bottom: 2.1rem; display: flex; flex-direction: column; gap: 1.1rem; }
+  .masthead p.lede { font-size: 1.12rem; color: var(--ink-2); max-width: 42rem; }
+
+  .gates { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: .3rem; }
+  .gate {
+    display: inline-flex; align-items: baseline; gap: .4rem;
+    font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: .74rem;
+    padding: .26rem .6rem; border-radius: 3px;
+    background: var(--ok-bg); color: var(--ok-fg); border: 1px solid var(--ok-line);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ── Section nav ── */
+  nav.jump {
+    position: sticky; top: 0; z-index: 20;
+    background: color-mix(in srgb, var(--ground) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  nav.jump .wrap { display: flex; gap: 1.4rem; padding-top: .7rem; padding-bottom: .7rem; align-items: center; flex-wrap: wrap; }
+  nav.jump a { font-family: Poppins, sans-serif; font-size: .82rem; font-weight: 500; color: var(--ink-2); text-decoration: none; }
+  nav.jump a:hover { color: var(--link); }
+  nav.jump .prog {
+    margin-inline-start: auto; font-family: "IBM Plex Mono", monospace;
+    font-size: .74rem; color: var(--ink-3); font-variant-numeric: tabular-nums;
+  }
+
+  section.part { padding-top: 3.6rem; }
+  .part-head { display: flex; flex-direction: column; gap: .5rem; margin-bottom: 1.7rem; }
+  .part-head .prose { margin-top: .3rem; color: var(--ink-2); }
+
+  .band {
+    margin: 2.6rem 0 1.1rem;
+    padding-top: 1.1rem;
+    border-top: 1px solid var(--line);
+    display: flex; align-items: baseline; gap: .7rem; flex-wrap: wrap;
+  }
+  .band h3 { color: var(--ink); }
+  .band .band-note { font-size: .86rem; color: var(--ink-3); }
+
+  /* ── Task ── */
+  .task {
+    display: grid;
+    grid-template-columns: 2.6rem 1fr;
+    gap: 0 1rem;
+    padding: 1.25rem 0 1.4rem;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .task:last-child { border-bottom: 0; }
+  .marker {
+    font-family: "IBM Plex Mono", monospace; font-size: .8rem; font-weight: 600;
+    color: var(--ink-3); padding-top: .2rem; font-variant-numeric: tabular-nums;
+  }
+  .task-body { display: flex; flex-direction: column; gap: .7rem; min-width: 0; }
+  .task-title { display: flex; align-items: baseline; gap: .6rem; flex-wrap: wrap; }
+  .task-title h4 { font-size: 1.05rem; }
+
+  .chip {
+    display: inline-block; font-family: Poppins, sans-serif; font-size: .66rem;
+    font-weight: 600; letter-spacing: .07em; text-transform: uppercase;
+    padding: .16rem .46rem; border-radius: 3px; white-space: nowrap;
+  }
+  .chip.you   { background: var(--warn-bg); color: var(--warn-fg); border: 1px solid var(--warn-line); }
+  .chip.risk  { background: var(--stop-bg); color: var(--stop-fg); border: 1px solid var(--stop-line); }
+  .chip.done  { background: var(--ok-bg);   color: var(--ok-fg);   border: 1px solid var(--ok-line); }
+  .chip.info  { background: var(--info-bg); color: var(--info-fg); border: 1px solid var(--info-line); }
+  .chip.plain { background: var(--surface-2); color: var(--ink-2); border: 1px solid var(--line); }
+
+  .symptom {
+    font-size: .93rem; color: var(--ink-2);
+    border-inline-start: 2px solid var(--gold); padding-inline-start: .75rem;
+  }
+  .symptom b { color: var(--ink); font-weight: 700; }
+
+  ol.steps, ul.plain { margin: 0; padding-inline-start: 1.15rem; display: flex; flex-direction: column; gap: .42rem; }
+  ol.steps { font-size: .96rem; color: var(--ink-2); }
+  ol.steps > li::marker { color: var(--ink-3); font-variant-numeric: tabular-nums; }
+  ul.plain { font-size: .96rem; color: var(--ink-2); }
+  li > strong, p > strong { color: var(--ink); }
+
+  code.inline {
+    font-family: "IBM Plex Mono", monospace; font-size: .85em;
+    background: var(--surface-2); border: 1px solid var(--line);
+    padding: .06em .34em; border-radius: 3px; color: var(--ink);
+    overflow-wrap: anywhere;
+  }
+
+  .cmd { position: relative; }
+  .cmd pre {
+    margin: 0; background: var(--code-bg); color: var(--code-ink);
+    border-radius: 5px; padding: .85rem 3.2rem .85rem 1rem;
+    overflow-x: auto; font-family: "IBM Plex Mono", monospace;
+    font-size: .81rem; line-height: 1.7;
+  }
+  .cmd pre .c { color: var(--code-dim); }
+  .cmd pre .k { color: var(--code-accent); }
+  .cmd button.copy {
+    position: absolute; top: .5rem; inset-inline-end: .5rem;
+    font-family: Poppins, sans-serif; font-size: .64rem; font-weight: 600;
+    letter-spacing: .06em; text-transform: uppercase;
+    color: var(--code-dim); background: transparent;
+    border: 1px solid rgba(155,198,218,.28); border-radius: 3px;
+    padding: .2rem .45rem; cursor: pointer;
+  }
+  .cmd button.copy:hover { color: var(--code-accent); border-color: rgba(155,198,218,.6); }
+
+  .verify {
+    font-size: .89rem; color: var(--ink-2);
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 4px; padding: .55rem .8rem;
+  }
+  .verify b { font-family: Poppins, sans-serif; font-size: .68rem; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--ink-3); display: block; margin-bottom: .15rem; font-weight: 600; }
+
+  .caution {
+    font-size: .91rem; color: var(--ink-2);
+    background: var(--warn-bg); border: 1px solid var(--warn-line);
+    border-radius: 4px; padding: .6rem .8rem;
+  }
+  .caution b { color: var(--warn-fg); }
+
+  label.check {
+    display: inline-flex; align-items: center; gap: .45rem; cursor: pointer;
+    font-family: Poppins, sans-serif; font-size: .72rem; font-weight: 500;
+    color: var(--ink-3); user-select: none; align-self: flex-start;
+  }
+  label.check input { accent-color: var(--water); width: .95rem; height: .95rem; margin: 0; }
+  .task.checked .task-body > *:not(.task-title):not(label.check) { opacity: .48; }
+  .task.checked .task-title h4 { text-decoration: line-through; text-decoration-color: var(--ink-3); }
+
+  /* ── Tables ── */
+  .tbl-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 5px; }
+  table { border-collapse: collapse; width: 100%; font-size: .88rem; min-width: 40rem; }
+  th, td { text-align: start; padding: .55rem .75rem; border-bottom: 1px solid var(--line-soft); }
+  thead th {
+    font-family: Poppins, sans-serif; font-size: .68rem; font-weight: 600;
+    letter-spacing: .09em; text-transform: uppercase; color: var(--ink-3);
+    background: var(--surface); border-bottom: 1px solid var(--line); white-space: nowrap;
+  }
+  tbody tr:last-child td { border-bottom: 0; }
+  td.cap { font-family: "IBM Plex Mono", monospace; font-size: .8rem; color: var(--ink); white-space: nowrap; }
+  td.y { color: var(--ok-fg); font-weight: 700; text-align: center; }
+  td.n { color: var(--ink-3); text-align: center; }
+  td.cond { color: var(--warn-fg); text-align: center; font-size: .78rem; font-weight: 700; }
+
+  /* ── Surface rows ── */
+  .surfaces { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 5px; overflow: hidden; }
+  .surface-row {
+    display: grid; grid-template-columns: minmax(9rem, 13rem) 1fr;
+    gap: .3rem 1.2rem; padding: .85rem 1rem; border-bottom: 1px solid var(--line-soft);
+    background: var(--ground);
+  }
+  .surface-row:last-child { border-bottom: 0; }
+  .surface-row:nth-child(odd) { background: var(--surface); }
+  .surface-row .name { display: flex; flex-direction: column; gap: .3rem; }
+  .surface-row .name strong { font-family: Poppins, sans-serif; font-size: .92rem; color: var(--ink); font-weight: 600; }
+  .surface-row .what { font-size: .92rem; color: var(--ink-2); }
+  .surface-row .limit { font-size: .87rem; color: var(--warn-fg); margin-top: .3rem; }
+  .surface-row .path { font-family: "IBM Plex Mono", monospace; font-size: .72rem; color: var(--ink-3); margin-top: .28rem; overflow-wrap: anywhere; }
+
+  /* ── Gaps ── */
+  .gap {
+    display: grid; grid-template-columns: 1.6rem 1fr; gap: 0 .8rem;
+    padding: .95rem 0; border-bottom: 1px solid var(--line-soft);
+  }
+  .gap:last-child { border-bottom: 0; }
+  .gap .dot { font-family: "IBM Plex Mono", monospace; font-size: .78rem; color: var(--ink-3); padding-top: .18rem; }
+  .gap-body { display: flex; flex-direction: column; gap: .35rem; min-width: 0; }
+  .gap-body .hd { display: flex; align-items: baseline; gap: .55rem; flex-wrap: wrap; }
+  .gap-body .hd strong { font-family: Poppins, sans-serif; font-size: .97rem; color: var(--ink); font-weight: 600; }
+  .gap-body .sym { font-size: .92rem; color: var(--ink-2); }
+  .gap-body .sym em { color: var(--ink); font-style: italic; }
+
+  footer.end { margin-top: 4rem; padding-top: 1.4rem; border-top: 1px solid var(--line); font-size: .88rem; color: var(--ink-3); }
+  footer.end code.inline { font-size: .8em; }
+
+  @media (max-width: 640px) {
+    .task { grid-template-columns: 1.9rem 1fr; gap: 0 .7rem; }
+    .surface-row { grid-template-columns: 1fr; }
+    .wrap { padding-inline: 1.1rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+
+<header class="masthead">
+  <div class="wrap">
+    <span class="eyebrow">Connecting Climate Minds Hub · 20 August 2026</span>
+    <h1>Hub Go-Live Brief</h1>
+    <p class="lede">
+      Everything in the codebase is green and committed. What stands between the branch and a
+      live launch is nine pieces of configuration that only you can do — plus one security
+      decision. This is how to do each, and where every workspace capability currently stands.
+    </p>
+    <div class="gates">
+      <span class="gate">tsc 0 errors</span>
+      <span class="gate">eslint 0 errors</span>
+      <span class="gate">629 tests pass</span>
+      <span class="gate">build green</span>
+      <span class="gate">migrations applied (dev)</span>
+    </div>
+  </div>
+</header>
+
+<nav class="jump">
+  <div class="wrap">
+    <a href="#runbook">The nine tasks</a>
+    <a href="#promotion">Promotion sequence</a>
+    <a href="#workspace">Workspace status</a>
+    <a href="#gaps">What's pending</a>
+    <span class="prog" id="prog">0 / 9 done</span>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <!-- ══════════ PART ONE ══════════ -->
+  <section class="part" id="runbook">
+    <div class="part-head">
+      <span class="eyebrow">Part one</span>
+      <h2>The nine things only you can do</h2>
+      <div class="prose">
+        <p>
+          Each one is written the same way: what breaks while it's undone, the exact steps, and a
+          command that proves it worked. Tasks 1&ndash;8 are independent — do them in any order.
+          Task 9 is a sequence where order matters.
+        </p>
+      </div>
+    </div>
+
+    <div class="band">
+      <h3>Vercel environment</h3>
+      <span class="band-note">Project <code class="inline">connecting-climate-minds</code> · Settings → Environment Variables</span>
+    </div>
+
+    <!-- 1 -->
+    <article class="task" id="t1">
+      <div class="marker">01</div>
+      <div class="task-body">
+        <div class="task-title">
+          <h4>Set <code class="inline">CRON_SECRET</code></h4>
+          <span class="chip you">You</span>
+          <span class="chip risk">Blocks 3 jobs</span>
+        </div>
+        <p class="symptom">
+          Until this is set, <b>all three scheduled jobs return 401 and never run</b>: the weekly
+          digest, event reminders, and the GDPR retention purge. They fail closed deliberately —
+          an unset secret must not leave a mail-sending or data-deleting endpoint publicly
+          triggerable. The privacy policy promises retention that nothing is currently enforcing.
+        </p>
+        <ol class="steps">
+          <li>Generate a secret locally (below).</li>
+          <li>In Vercel → Settings → Environment Variables, add <code class="inline">CRON_SECRET</code> to <strong>Production</strong> (add it to Preview too if you want to test there).</li>
+          <li>Redeploy. Vercel sends the value as <code class="inline">Authorization: Bearer …</code> to every path listed under <code class="inline">crons</code> in <code class="inline">vercel.json</code>.</li>
+        </ol>
+        <div class="cmd">
+          <pre><span class="c"># generate</span>
+openssl rand -base64 32</pre>
+          <button class="copy" type="button">Copy</button>
+        </div>
+        <div class="verify">
+          <b>Verify</b>
+          With the header you should get 200; without it, 401.
+          <div class="cmd" style="margin-top:.5rem">
+            <pre>curl -s -o /dev/null -w <span class="k">'%{http_code}\n'</span> \
+  -H <span class="k">"Authorization: Bearer $CRON_SECRET"</span> \
+  https://hub.connectingclimateminds.org/api/cron/retention</pre>
+            <button class="copy" type="button">Copy</button>
+          </div>
+        </div>
+        <label class="check"><input type="checkbox" data-task="t1"> Mark done</label>
+      </div>
+    </article>
+
+    <!-- 2 -->
+    <article class="task" id="t2">
+      <div class="marker">02</div>
+      <div class="task-body">
+        <div class="task-title">
+          <h4>Mint Cloudflare Turnstile keys</h4>
+          <span class="chip you">You</span>
+          <span class="chip risk">Anonymous comments dead</span>
+        </div>
+        <p class="symptom">
+          The server has always verified Turnstile tokens and <b>fails closed</b>, so with no keys
+          every anonymous comment is refused with &ldquo;Anonymous commenting is currently
+          unavailable. Please sign in.&rdquo; The widget is now built and wired — it just needs a
+          site key to render.
+        </p>
+        <ol class="steps">
+          <li>Cloudflare dashboard → <strong>Turnstile</strong> → <strong>Add widget</strong>.</li>
+          <li>Add every hostname that will show the widget: <code class="inline">hub.connectingclimateminds.org</code>, your Vercel preview domain, and <code class="inline">localhost</code> for development.</li>
+          <li>Widget mode <strong>Managed</strong> is the right default.</li>
+          <li>Copy <strong>Site Key</strong> → <code class="inline">NEXT_PUBLIC_TURNSTILE_SITE_KEY</code>, <strong>Secret Key</strong> → <code class="inline">TURNSTILE_SECRET_KEY</code>. Set both in Vercel (all scopes) and in <code class="inline">.env.local</code>.</li>
+          <li>Redeploy — the site key is a <code class="inline">NEXT_PUBLIC_</code> value baked at build time.</li>
+        </ol>
+        <div class="verify">
+          <b>Verify</b>
+          Sign out, open any case study, scroll to the comments. The Turnstile checkbox renders and
+          the <strong>Post</strong> button stays disabled until it passes.
+        </div>
+        <p style="font-size:.87rem;color:var(--ink-3)">
+          No code or CSP change needed — <code class="inline">challenges.cloudflare.com</code> is already
+          allow-listed in <code class="inline">script-src</code> and <code class="inline">frame-src</code>.
+        </p>
+        <label class="check"><input type="checkbox" data-task="t2"> Mark done</label>
+      </div>
+    </article>
+
+    <!-- 3 -->
+    <article class="task" id="t3">
+      <div class="marker">03</div>
+      <div class="task-body">
+        <div class="task-title">
+          <h4>Rotate the Algolia search-only key</h4>
+          <span class="chip you">You</span>
+          <span class="chip risk">All search returns nothing</span>
+        </div>
+        <p class="symptom">
+          The public search key currently <b>403s on every index</b>, so content search, people
+          search, and the command palette all come back empty. The admin key and the indices
+          themselves are fine — the wiring is correct, the key is simply revoked.
+        </p>
+        <ol class="steps">
+          <li>Algolia dashboard → your app → <strong>Settings → API Keys</strong>.</li>
+          <li>Copy the <strong>Search-Only API Key</strong>, or create a new key restricted to the four live indices: <code class="inline">case_studies</code>, <code class="inline">news</code>, <code class="inline">agendas</code>, <code class="inline">users</code>.</li>
+          <li>Set <code class="inline">NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY</code> in Vercel (all scopes) and <code class="inline">.env.local</code>. Confirm <code class="inline">NEXT_PUBLIC_ALGOLIA_APP_ID</code> and the server-only <code class="inline">ALGOLIA_API_KEY</code> (admin) are also present.</li>
+          <li>Redeploy.</li>
+        </ol>
+        <div class="verify">
+          <b>Verify</b>
+          <code class="inline">/en/search?q=climate</code> returns grouped results under Content, People and Regions.
+        </div>
+        <label class="check"><input type="checkbox" data-task="t3"> Mark done</label>
+      </div>
+    </article>
+
+    <!-- 4 -->
+    <article class="task" id="t4">
+      <div class="marker">04</div>
+      <div class="task-body">
+        <div class="task-title">
+          <h4>Decide the engagement flag</h4>
+          <span class="chip you">Decision</span>
+          <span class="chip info">Reversible</span>
+        </div>
+        <p class="symptom">
+          <b>The entire workspace, messaging and notification area is invisible in production
+          today.</b> <code class="inline">NEXT_PUBLIC_FEATURE_ENGAGEMENT</code> is the only live feature
+          flag and it defaults to off, so a forgotten variable can never leak unfinished UI. It is
+          already <code class="inline">true</code> on Preview.
+        </p>
+        <ul class="plain">
+          <li>Flipping it on Production reveals: the sidebar Workspaces entry, Messages and Notifications in the user menu, the header notification bell, the &ldquo;Start a workspace&rdquo; CTA, and the <code class="inline">/collaborations</code>, <code class="inline">/messages</code>, <code class="inline">/collaborate/events</code> and <code class="inline">/moderation/broadcast</code> routes.</li>
+          <li>It gates <strong>UI only</strong> — the database models, API routes and services ship either way.</li>
+          <li>Because it is a <code class="inline">NEXT_PUBLIC_</code> value it is baked at build time: changing it requires a redeploy, not just an env edit.</li>
+        </ul>
+        <div class="caution">
+          <b>Sequence this last.</b> Turn the flag on only after tasks 1, 5 and 6 are done —
+          workspaces without R2 CORS can't accept uploads, and notifications without a verified
+          Resend domain email nobody.
+        </div>
+        <label class="check"><input type="checkbox" data-task="t4"> Mark done</label>
+      </div>
+    </article>
+
+    <div class="band">
+      <h3>External services</h3>
+      <span class="band-note">Cloudflare · Resend · Sanity</span>
+    </div>
+
+    <!-- 5 -->
+    <article class="task" id="t5">
+      <div class="marker">05</div>
+      <div class="task-body">
+        <div class="task-title">
+          <h4>Add a CORS policy to the <code class="inline">ccm-collab</code> bucket</h4>
+          <span class="chip you">You</span>
+          <span class="chip risk">Uploads fail in-browser</span>
+        </div>
+        <p class="symptom">
+          Workspace file uploads fail with <b>&ldquo;Failed to fetch&rdquo; at the browser PUT</b>. It reads
+          like an application bug but it is a CORS preflight rejection — the server-side presign
+          works fine, the browser is simply not allowed to talk to the bucket. This has been on
+          the setup list since June and is the single reason the Files tab looks broken.
+        </p>
+        <ol class="steps">
+          <li>Cloudflare dashboard → <strong>R2</strong> → <code class="inline">ccm-collab</code> → <strong>Settings → CORS Policy</strong>.</li>
+          <li>Paste the policy below, replacing the preview host with your actual Vercel preview domain.</li>
+        </ol>
+        <div class="cmd">
+          <pre>[
+  {
+    <span class="k">"AllowedOrigins"</span>: [
+      "https://hub.connectingclimateminds.org",
+      "https://connecting-climate-minds.vercel.app",
+      "http://localhost:3000"
+    ],
+    <span class="k">"AllowedMethods"</span>: ["PUT", "GET", "HEAD"],
+    <span class="k">"AllowedHeaders"</span>: ["content-type"],
+    <span class="k">"ExposeHeaders"</span>: ["ETag"],
+    <span class="k">"MaxAgeSeconds"</span>: 3600
+  }
+]</pre>
+          <button class="copy" type="button">Copy</button>
+        </div>
+        <div class="verify">
+          <b>Verify</b>
+          Open a workspace → Files → drag a PDF onto the dropzone. It uploads, then appears in the
+          list with an <strong>Open PDF</strong> action.
+        </div>
+        <label class="check"><input type="checkbox" data-task="t5"> Mark done</label>
+      </div>
+    </article>
+
+    <!-- 6 -->
+    <article class="task" id="t6">
+      <div class="marker">06</div>
+      <div class="task-body">
+        <div class="task-title">
+          <h4>Verify a sending domain in Resend</h4>
+          <span class="chip you">You</span>
+          <span class="chip risk">Mail reaches one inbox</span>
+        </div>
+        <p class="symptom">
+          The Resend account has no verified domain, so <b>outbound email only reaches the account
+          owner</b> — every other recipient 403s. Case-study status emails, reply and mention
+          notifications, the weekly digest and issue reports have all been failing silently for
+          everyone else.
+        </p>
+        <ol class="steps">
+          <li><a href="https://resend.com/domains">resend.com/domains</a> → <strong>Add Domain</strong>.</li>
+          <li>Add the DNS records Resend gives you (SPF, DKIM, and a DMARC record) at your registrar. Wait for the status to read <strong>Verified</strong>.</li>
+          <li>Point the three from/to variables at that domain in Vercel:
+            <code class="inline">CASE_STUDY_EMAIL_FROM</code>, <code class="inline">ISSUE_REPORT_EMAIL_FROM</code>, and
+            <code class="inline">ISSUE_REPORT_EMAIL_TO</code> (currently pinned to a personal address as a workaround).</li>
+        </ol>
+        <div class="verify">
+          <b>Verify</b>
+          Submit the in-hub &ldquo;Report a problem&rdquo; widget as an editor, or approve a case study
+          in Studio, and confirm the mail lands somewhere other than the account owner's inbox.
+        </div>
+        <p style="font-size:.87rem;color:var(--ink-3)">
+          Notification emails already carry RFC&nbsp;8058 one-click unsubscribe headers, so
+          deliverability should be good once the domain authenticates.
+        </p>
+        <label class="check"><input type="checkbox" data-task="t6"> Mark done</label>
+      </div>
+    </article>
+
+    <!-- 7 -->
+    <article class="task" id="t7">
+      <div class="marker">07</div>
+      <div class="task-body">
+        <div class="task-title">
+          <h4>Make the <code class="inline">production_2</code> dataset private</h4>
+          <span class="chip you">You</span>
+          <span class="chip risk">Live data exposure</span>
+        </div>
+        <p class="symptom">
+          The Sanity dataset is world-readable, so <b>non-approved case studies and reviewer notes
+          can be read anonymously through the API</b> even though the application filters them out
+          of every page. The app-layer filtering is correct; the datastore is simply open.
+        </p>
+        <ol class="steps">
+          <li><strong>Before flipping:</strong> confirm <code class="inline">SANITY_API_READ_TOKEN</code> is set in <em>all</em> Vercel scopes. A private dataset means every read needs a token — the server client already sends one, but an unset token turns every content page into an error.</li>
+          <li>Test on Preview first: point a preview deployment at a private dataset and load the homepage, a case study, the atlas, and Studio.</li>
+          <li><a href="https://sanity.io/manage">sanity.io/manage</a> → project → <strong>Datasets</strong> → <code class="inline">production_2</code> → set visibility to <strong>Private</strong>.</li>
+          <li>Redeploy production and smoke-test content pages immediately.</li>
+        </ol>
+        <div class="caution">
+          <b>Rollback is instant.</b> If content pages break, set the dataset back to public while you
+          fix the token wiring — the exposure returns, but the site stays up.
+        </div>
+        <label class="check"><input type="checkbox" data-task="t7"> Mark done</label>
+      </div>
+    </article>
+
+    <div class="band">
+      <h3>Security decision</h3>
+      <span class="band-note">Needs a judgement call before it needs work</span>
+    </div>
+
+    <!-- 8 -->
+    <article class="task" id="t8">
+      <div class="marker">08</div>
+      <div class="task-body">
+        <div class="task-title">
+          <h4>Decide what to do about <code class="inline">supabase-users.json</code></h4>
+          <span class="chip risk">692 people</span>
+          <span class="chip info">Decision first</span>
+        </div>
+        <p class="symptom">
+          A 1.3&nbsp;MB Supabase export containing <b>692 email addresses, 692 password hashes, and
+          full profile PII</b> (names, organisations, locations, sign-in timestamps) was committed
+          in <code class="inline">e8cf1bb20</code>. It is untracked as of this work, but it remains in
+          git history — reachable from <strong>master and five other branches</strong>, 557 commits
+          back, and pushed to GitHub.
+        </p>
+        <h4 style="margin-top:.3rem">What the risk actually is</h4>
+        <ul class="plain">
+          <li>These are <strong>legacy Supabase credentials</strong>. The Hub authenticates through Clerk now, so the hashes grant no access to this application.</li>
+          <li>The real exposures are <strong>credential stuffing</strong> (people reuse passwords elsewhere) and the <strong>PII itself</strong> — which is a GDPR matter regardless of whether the passwords are usable.</li>
+          <li>Severity therefore hinges on one question: <strong>is the repository private, and who has had access to it?</strong> If it has always been private and access is limited to you and known collaborators, this is a cleanup. If it was ever public, it is an incident with a notification duty.</li>
+        </ul>
+        <h4 style="margin-top:.4rem">If you purge the history</h4>
+        <ol class="steps">
+          <li>Coordinate first — this rewrites <strong>every commit SHA after <code class="inline">e8cf1bb20</code></strong> on all branches. Everyone must stop pushing, and open pull requests will need to be recreated.</li>
+          <li>Run the rewrite on a fresh mirror clone, then force-push all branches and tags.</li>
+          <li>Everyone re-clones. <strong>Nobody merges from an old clone</strong> — that single act puts the blob straight back.</li>
+          <li>Ask GitHub Support to purge cached views, and check whether any forks exist. Until they do, the blob stays reachable by SHA through the API.</li>
+        </ol>
+        <div class="cmd">
+          <pre><span class="c"># from a scratch directory, never your working clone</span>
+brew install git-filter-repo
+git clone --mirror https://github.com/noodleman1991/CCM_GOH ccm-purge.git
+cd ccm-purge.git
+git filter-repo --path supabase-users.json --invert-paths
+git push --force --all
+git push --force --tags</pre>
+          <button class="copy" type="button">Copy</button>
+        </div>
+        <div class="caution">
+          <b>The alternative is legitimate.</b> If a rewrite is too disruptive, the defensible path is:
+          confirm the repo is private, tighten access, decide on user notification with counsel, and
+          leave history alone. What is <em>not</em> defensible is leaving it undecided.
+        </div>
+        <label class="check"><input type="checkbox" data-task="t8"> Mark done</label>
+      </div>
+    </article>
+  </section>
+
+  <!-- ══════════ PROMOTION ══════════ -->
+  <section class="part" id="promotion">
+    <div class="part-head">
+      <span class="eyebrow">Task 09 · order matters</span>
+      <h2>The promotion sequence</h2>
+      <div class="prose">
+        <p>
+          Deploys for this project are manual. Each step below assumes the previous one succeeded;
+          the dry-run defaults exist so you can look before you write. The full detail lives in
+          <code class="inline">docs/plans/phase-6-promotion-and-cleanup.md</code>.
+        </p>
+      </div>
+    </div>
+
+    <article class="task" id="t9">
+      <div class="marker">09</div>
+      <div class="task-body">
+        <div class="task-title">
+          <h4>Promote to production</h4>
+          <span class="chip you">You</span>
+          <span class="chip plain">~1 hour + soak</span>
+        </div>
+
+        <div class="caution">
+          <b>Start by checking, not assuming.</b> Production's database has drifted from
+          <code class="inline">master</code> before — it once matched the feature branch instead. Run
+          <code class="inline">prisma migrate status</code> against the production URL first and let its
+          answer, not this document, tell you what is pending.
+        </div>
+
+        <ol class="steps">
+          <li><strong>Snapshot.</strong> Take a Neon branch or backup of the production database, and keep the pre-migration Sanity export the scripts write.</li>
+          <li><strong>Database.</strong> Check status, then deploy migrations. This applies everything pending in order, including the region enum rename, the messaging tiers, and the rich-comment column.</li>
+          <li><strong>Sanity content.</strong> Four scripts, each dry-run first, then re-run with the acknowledgement flag. Order matters: the agenda migration creates the documents the backfills then annotate.</li>
+          <li><strong>Search.</strong> Reindex so the new <code class="inline">region</code>, <code class="inline">themes</code> and <code class="inline">populations</code> facets populate — they are configured but empty until content carries them.</li>
+          <li><strong>Deploy.</strong> <code class="inline">vercel --prod</code>.</li>
+          <li><strong>Smoke.</strong> Health, atlas counts, a case-study detail page, search facets, sitemap, and one email path.</li>
+        </ol>
+
+        <div class="cmd">
+          <pre><span class="c"># 2 — database (against the PRODUCTION url)</span>
+pnpm exec prisma migrate status
+pnpm exec prisma migrate deploy
+
+<span class="c"># 3 — Sanity content, dry-run first (drop the flag to preview)</span>
+<span class="k">export</span> NEXT_PUBLIC_SANITY_DATASET=production_2
+node scripts/migrate-agenda-to-research-output.mjs --i-understand-this-is-production
+node scripts/migrate-agenda-to-research-output.mjs --i-understand-this-is-production --apply
+node scripts/backfill-region-codes.mjs --i-understand-this-is-production --apply
+node scripts/backfill-country-codes.mjs --execute
+node scripts/fix-case-study-15-location.mjs --dataset=production_2 --execute
+
+<span class="c"># 4 — search reindex (needs INTERNAL_SYNC_SECRET)</span>
+pnpm run sync:search
+
+<span class="c"># 5 — deploy</span>
+vercel --prod</pre>
+          <button class="copy" type="button">Copy</button>
+        </div>
+
+        <div class="verify">
+          <b>Verify</b>
+          <code class="inline">/api/health</code> returns ok · the atlas shows region counts and content
+          cards · a case-study detail page renders · search facets list regions · the sitemap
+          includes research outputs · one real email arrives.
+        </div>
+
+        <p style="font-size:.87rem;color:var(--ink-3)">
+          A dry run against <code class="inline">production_2</code> today reports seven regional-community
+          documents needing a region code and no case studies or lived experiences outstanding — so
+          the content backfill is small. The two migration scripts refuse production unless you pass
+          the acknowledgement flag, and default to dry-run either way.
+        </p>
+        <label class="check"><input type="checkbox" data-task="t9"> Mark done</label>
+      </div>
+    </article>
+  </section>
+
+  <!-- ══════════ PART TWO ══════════ -->
+  <section class="part" id="workspace">
+    <div class="part-head">
+      <span class="eyebrow">Part two</span>
+      <h2>Where the workspace stands</h2>
+      <div class="prose">
+        <p>
+          Collaboration workspaces are feature-complete for a first release: eight surfaces, a
+          four-role permission model, and a public read-only mode. The honest caveats are in
+          <a href="#gaps">what's pending</a> — one of them (concurrent PDF annotation) can lose a
+          person's work, so read that before inviting a big team in.
+        </p>
+        <p style="margin-top:.7rem">
+          A full audit of this area while writing this brief turned up a
+          <strong>cross-workspace permission hole</strong> — authorization checked the workspace you
+          claimed, not the workspace the task or document actually lived in. That is now fixed and
+          covered by tests, along with three rendering defects. The list below is what remains.
+        </p>
+      </div>
+    </div>
+
+    <div class="band">
+      <h3>Who can do what</h3>
+      <span class="band-note">Source of truth: <code class="inline">lib/collaboration/authz.ts</code></span>
+    </div>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Capability</th><th>Visitor</th><th>Viewer</th><th>Commenter</th><th>Editor</th><th>Owner</th><th>Staff</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="cap">read</td><td class="cond">public&nbsp;only</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td></tr>
+          <tr><td class="cap">readFiles</td><td class="cond">public&nbsp;only</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td><td class="n">—</td></tr>
+          <tr><td class="cap">comment</td><td class="n">—</td><td class="n">—</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td><td class="n">—</td></tr>
+          <tr><td class="cap">annotate</td><td class="n">—</td><td class="n">—</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td><td class="n">—</td></tr>
+          <tr><td class="cap">upload</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="y">✓</td><td class="y">✓</td><td class="n">—</td></tr>
+          <tr><td class="cap">editThread</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="y">✓</td><td class="y">✓</td><td class="n">—</td></tr>
+          <tr><td class="cap">editPlan</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="y">✓</td><td class="y">✓</td><td class="n">—</td></tr>
+          <tr><td class="cap">editDoc</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="y">✓</td><td class="y">✓</td><td class="n">—</td></tr>
+          <tr><td class="cap">editOutputs</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="y">✓</td><td class="y">✓</td><td class="n">—</td></tr>
+          <tr><td class="cap">manageMembers</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="y">✓</td><td class="n">—</td></tr>
+          <tr><td class="cap">archive</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="y">✓</td><td class="y">✓</td></tr>
+          <tr><td class="cap">moderate</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="y">✓</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:.88rem;color:var(--ink-3);margin-top:.6rem;max-width:40rem">
+      Two deliberate asymmetries: global staff are <strong>not</strong> auto-granted file access to a
+      members-only workspace — moderation power does not include reading private material — and a
+      signed-out visitor to a <em>public</em> workspace gets genuine read access, which is what the
+      new read-only exploration mode surfaces in the UI.
+    </p>
+
+    <div class="band">
+      <h3>The eight surfaces</h3>
+      <span class="band-note">All behind <code class="inline">NEXT_PUBLIC_FEATURE_ENGAGEMENT</code> until you flip it</span>
+    </div>
+
+    <div class="surfaces">
+      <div class="surface-row">
+        <div class="name"><strong>Overview</strong><span><span class="chip done">Ready</span></span></div>
+        <div>
+          <div class="what">Editable title and description, a &ldquo;what needs me&rdquo; attention strip drawn from your assigned tasks and unread workspace notifications, an outputs summary, plan progress, and an activity feed.</div>
+          <div class="path">components/collaboration/workspace-home.tsx</div>
+        </div>
+      </div>
+
+      <div class="surface-row">
+        <div class="name"><strong>Outputs</strong><span><span class="chip done">Ready</span></span></div>
+        <div>
+          <div class="what">Link or create real hub content from inside the workspace — case studies, lived experiences, research outputs and events — with review status synced back from Sanity and a continue-editing link while a draft is in review. Published items link to their live detail page.</div>
+          <div class="path">components/collaboration/workspace-outputs.tsx · lib/actions/workspace-outputs.ts</div>
+        </div>
+      </div>
+
+      <div class="surface-row">
+        <div class="name"><strong>Plan</strong><span><span class="chip done">Ready</span></span></div>
+        <div>
+          <div class="what">Stage columns with tasks, assignees, and a click-to-cycle status. Tasks drag within a stage and across stages; stages reorder with arrows (chosen over drag so it works on touch). Stages auto-complete when every task is done, and your tasks surface on the dashboard.</div>
+          <div class="path">components/collaboration/workspace-plan.tsx · lib/actions/plans.ts</div>
+        </div>
+      </div>
+
+      <div class="surface-row">
+        <div class="name"><strong>Docs</strong><span><span class="chip done">Ready</span></span></div>
+        <div>
+          <div class="what">Notion-style documents backed by the same Portable Text editor the hub uses for articles, with debounced autosave. Non-editors get a clean read-only rendering rather than a disabled editor.</div>
+          <div class="path">components/collaboration/workspace-docs.tsx · lib/actions/docs.ts</div>
+        </div>
+      </div>
+
+      <div class="surface-row">
+        <div class="name"><strong>Threads</strong><span><span class="chip done">Ready</span></span></div>
+        <div>
+          <div class="what">Discussion threads running on the same moderated comment engine as public content: one level of nesting, wordlist moderation, reports, reactions and @mentions. Editors create, rename and archive threads; commenters and above can post; read-only roles now see an explanation instead of a composer that would fail.</div>
+          <div class="limit">New: comments accept rich text (paragraphs, lists, bold/italic, links), sanitized server-side.</div>
+          <div class="path">components/collaboration/workspace-threads.tsx · lib/comments/</div>
+        </div>
+      </div>
+
+      <div class="surface-row">
+        <div class="name"><strong>Files</strong><span><span class="chip info">Ready once CORS lands</span></span></div>
+        <div>
+          <div class="what">Drag-to-upload straight to R2 through a presigned PUT, with server-side type and size validation. Keys are prefix-routed by visibility, so members-only files are served through short-lived signed links and never sit on a public URL.</div>
+          <div class="limit">Blocked in the browser until task 05 (bucket CORS) is done.</div>
+          <div class="path">components/collaboration/workspace-files.tsx · lib/r2.ts</div>
+        </div>
+      </div>
+
+      <div class="surface-row">
+        <div class="name"><strong>PDF notes</strong><span><span class="chip done">Ready</span><span class="chip you">Caveat</span></span></div>
+        <div>
+          <div class="what">PDFs open in an in-app reader with a shared annotation layer — every reader sees the team's notes, and commenters and above can add their own. PDF links get an hour-long signed URL so a long reading session doesn't expire mid-document.</div>
+          <div class="limit">Two people annotating the same PDF at once will overwrite each other — see <a href="#gap-1">the first pending item</a>.</div>
+          <div class="path">components/pdf/pdf-viewer.tsx · lib/actions/collaboration-annotations.ts</div>
+        </div>
+      </div>
+
+      <div class="surface-row">
+        <div class="name"><strong>Media &amp; Members</strong><span><span class="chip done">Ready</span></span></div>
+        <div>
+          <div class="what">Paste a YouTube or Vimeo link to embed it (consent-gated, no cookies until the viewer agrees). Members tab handles invitations, role changes and removal; outsiders can request to join and owners accept or decline from their notifications.</div>
+          <div class="path">components/collaboration/workspace-media.tsx · invite-members.tsx · lib/actions/requests.ts</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="band">
+      <h3>Around the workspace</h3>
+    </div>
+    <div class="surfaces">
+      <div class="surface-row">
+        <div class="name"><strong>Public project page</strong><span><span class="chip done">Ready</span></span></div>
+        <div>
+          <div class="what">Every workspace has a visitor-facing page: status, lead, description, team, and published outputs linking to their real detail pages. Private workspaces show only the title and a join path. Public ones now offer &ldquo;Explore the workspace&rdquo; — a genuine read-only walk through every tab, with no editing affordances anywhere.</div>
+          <div class="path">components/collaboration/project-public-page.tsx · lib/collaboration/public.ts</div>
+        </div>
+      </div>
+      <div class="surface-row">
+        <div class="name"><strong>Lifecycle</strong><span><span class="chip done">Ready</span></span></div>
+        <div>
+          <div class="what">Owners can flip a workspace between public and members-only — which safely re-homes every stored file between the public and private prefixes, rolling back if any copy fails. Members can leave; owners and staff can archive.</div>
+          <div class="path">lib/actions/collaboration.ts</div>
+        </div>
+      </div>
+      <div class="surface-row">
+        <div class="name"><strong>Notifications</strong><span><span class="chip done">Ready</span></span></div>
+        <div>
+          <div class="what">Thirteen event types reach the bell, the inbox and (per preference) email — replies, mentions, reactions, join and contact requests, task assignment, output status changes, thread activity, new members, approved comments, and event reminders. Prose snippets are now stored as keys and localised at read time, so a French member sees French.</div>
+          <div class="path">lib/notifications/ · components/notifications/</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ GAPS ══════════ -->
+  <section class="part" id="gaps">
+    <div class="part-head">
+      <span class="eyebrow">Part two, continued</span>
+      <h2>What's pending</h2>
+      <div class="prose">
+        <p>
+          Ordered by what a user would notice first. None of these block a launch; the first one
+          should shape how you introduce the feature to a team.
+        </p>
+      </div>
+    </div>
+
+    <div class="gap" style="border-block-end:1px solid var(--line);padding-block-end:1.1rem">
+      <div class="dot">✓</div>
+      <div class="gap-body">
+        <div class="hd"><strong>Fixed while writing this</strong><span class="chip done">Done</span></div>
+        <p class="sym">A cross-workspace permission hole (any editor could rename, delete or reassign
+        content in another workspace whose ids they knew), tasks assignable to non-members, the
+        attention strip printing raw database enums and JSON, public output links going to the wrong
+        page, and two translation keys that rendered as raw key paths. Four commits, eight new tests.</p>
+      </div>
+    </div>
+
+    <div id="gap-1" class="gap">
+      <div class="dot">01</div>
+      <div class="gap-body">
+        <div class="hd"><strong>Concurrent PDF annotation overwrites</strong><span class="chip risk">Can lose work</span></div>
+        <p class="sym">Annotations are stored as <em>one shared blob per file</em>, saved by exporting the whole document a second after any change. If two people annotate the same PDF at the same time, the second save silently replaces the first person's notes — no conflict, no warning. The fix is per-annotation rows rather than a single JSON document. Until then, treat PDF notes as a one-reader-at-a-time activity.</p>
+      </div>
+    </div>
+
+    <div class="gap">
+      <div class="dot">02</div>
+      <div class="gap-body">
+        <div class="hd"><strong>Nothing updates live</strong><span class="chip plain">By design, for now</span></div>
+        <p class="sym">There are no websockets: notifications poll every sixty seconds and everything else refreshes on navigation. A teammate's new comment, task or file appears when you reload, not as it happens. This was a deliberate v1 decision to avoid running socket infrastructure, and it is the main thing that will make the workspace feel less alive than Notion or Linear.</p>
+      </div>
+    </div>
+
+    <div class="gap">
+      <div class="dot">03</div>
+      <div class="gap-body">
+        <div class="hd"><strong>You can't tell who wrote which note</strong></div>
+        <p class="sym">The annotation record keeps only the <em>last</em> person to save. In a shared reading session you see the notes but not their authors — and the &ldquo;updated by&rdquo; name will often be someone who merely moved a highlight. Same root cause as item 01; the same fix resolves both.</p>
+      </div>
+    </div>
+
+    <div class="gap">
+      <div class="dot">04</div>
+      <div class="gap-body">
+        <div class="hd"><strong>Workspaces don't appear in search</strong></div>
+        <p class="sym">Four indices are live — case studies, news, agendas, people — but collaborations were never added. A public workspace can only be found by following a link or the collaborate listing, never by searching its name. Indexing was scoped in the original plan and deferred.</p>
+      </div>
+    </div>
+
+    <div class="gap">
+      <div class="dot">05</div>
+      <div class="gap-body">
+        <div class="hd"><strong>Ownership transfer is a two-step manoeuvre</strong></div>
+        <p class="sym">There is no &ldquo;transfer ownership&rdquo; button. An owner promotes someone else to owner in the Members tab and then leaves — and a sole owner cannot leave at all until they do. Account deletion handles this automatically (it promotes the longest-standing member, or archives), but the deliberate path is unobvious.</p>
+      </div>
+    </div>
+
+    <div class="gap">
+      <div class="dot">06</div>
+      <div class="gap-body">
+        <div class="hd"><strong>Staff can enter but barely act</strong></div>
+        <p class="sym">Editors and admins reach any workspace shell, but arrive with no membership role — so they see a read-only view whose only staff power is Archive. The <code class="inline">collab:moderate</code> capability exists in the permission model with no interface behind it. Fine while the community is small; thin if you need to act on a report.</p>
+      </div>
+    </div>
+
+    <div class="gap">
+      <div class="dot">07</div>
+      <div class="gap-body">
+        <div class="hd"><strong>No file versions or access log</strong></div>
+        <p class="sym">Re-uploading a document adds a second file rather than a new version of the first, and there is no record of who downloaded what. Separately: if you configure a public bucket hostname, files in <em>public</em> workspaces are served from permanent unguessable URLs rather than expiring signed ones — a deliberate trade for shareability, worth knowing before someone puts something sensitive in a public workspace.</p>
+      </div>
+    </div>
+
+    <div class="gap">
+      <div class="dot">08</div>
+      <div class="gap-body">
+        <div class="hd"><strong>Unvalidated on a real phone</strong><span class="chip plain">Verification gap</span></div>
+        <p class="sym">This is the weakest area against the project's mobile-first standard. The shell header packs title, visibility badge, toggle, public-page link, Leave and Archive into a single non-wrapping row; thread and file rows do the same. There are almost no responsive utilities in these components — only the tab strip scrolls deliberately. Expect horizontal overflow on a phone until this gets a pass.</p>
+      </div>
+    </div>
+    <div class="gap">
+      <div class="dot">09</div>
+      <div class="gap-body">
+        <div class="hd"><strong>Notifications aren't clickable</strong></div>
+        <p class="sym">The feed renders no links. &ldquo;You were assigned a task&rdquo; arrives with no way to reach the task — and because the workspace tab lives in component state rather than the URL, there is no address to link to anyway. Fixing the second makes the first possible, and would also give threads and tasks shareable links.</p>
+      </div>
+    </div>
+
+    <div class="gap">
+      <div class="dot">10</div>
+      <div class="gap-body">
+        <div class="hd"><strong>The project channel has no button</strong></div>
+        <p class="sym">A workspace-wide message channel is implemented and unit-tested, but nothing in the interface calls it, so it can never be created. Members who join after a channel exists are also never added to it. Either wire up &ldquo;Message team&rdquo; or drop the feature — right now it is documented capability that users cannot reach.</p>
+      </div>
+    </div>
+
+    <div class="gap">
+      <div class="dot">11</div>
+      <div class="gap-body">
+        <div class="hd"><strong>Archive is one-way, and doesn't lock anything</strong></div>
+        <p class="sym">There is no unarchive, and the permission model never checks status — an archived workspace disappears from listings while remaining fully editable by its members. An accidental archive currently needs a database write to undo.</p>
+      </div>
+    </div>
+
+    <div class="gap">
+      <div class="dot">12</div>
+      <div class="gap-body">
+        <div class="hd"><strong>English leaks through the server layer</strong></div>
+        <p class="sym">The interface is translated into four languages, but the activity feed templates, the output type labels, the starter content in every new workspace, and every server-side error toast are hardcoded English. A French member gets a French interface and an English workspace.</p>
+      </div>
+    </div>
+
+    <div class="gap">
+      <div class="dot">13</div>
+      <div class="gap-body">
+        <div class="hd"><strong>Output status refreshes on every page view</strong></div>
+        <p class="sym">Each workspace load makes a Sanity round-trip and may write back status changes and fan out notifications — from a read path. Two members opening the page at the same moment after a review can both detect the change and send duplicate &ldquo;output approved&rdquo; notifications, and a slow Sanity makes every workspace slow. This belongs on the webhook that already exists, not on page load.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="end">
+    <p>
+      Branch <code class="inline">feat/redesign-and-comments</code>. Plans and runbooks live in
+      <code class="inline">docs/plans/</code> — the promotion detail in
+      <code class="inline">phase-6-promotion-and-cleanup.md</code>, the closure log in
+      <code class="inline">2026-08-18-prod-readiness-gap-closure.md</code>. Environment variables are
+      documented in <code class="inline">.env.example</code>; no secret values appear in this page.
+    </p>
+  </footer>
+</main>
+
+<script>
+  // Copy buttons — the page is a runbook, so the commands should lift cleanly.
+  document.querySelectorAll('.cmd button.copy').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var pre = btn.parentElement.querySelector('pre');
+      if (!pre) return;
+      navigator.clipboard.writeText(pre.innerText).then(function () {
+        var prev = btn.textContent;
+        btn.textContent = 'Copied';
+        setTimeout(function () { btn.textContent = prev; }, 1400);
+      });
+    });
+  });
+
+  // Check-off state persists — this is a multi-day list, not a single sitting.
+  var KEY = 'ccm-golive-done';
+  var done = {};
+  try { done = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { done = {}; }
+
+  function paint() {
+    var n = 0;
+    document.querySelectorAll('input[data-task]').forEach(function (box) {
+      var id = box.getAttribute('data-task');
+      var on = !!done[id];
+      box.checked = on;
+      var card = document.getElementById(id);
+      if (card) card.classList.toggle('checked', on);
+      if (on) n++;
+    });
+    var prog = document.getElementById('prog');
+    if (prog) prog.textContent = n + ' / 9 done';
+  }
+
+  document.querySelectorAll('input[data-task]').forEach(function (box) {
+    box.addEventListener('change', function () {
+      done[box.getAttribute('data-task')] = box.checked;
+      try { localStorage.setItem(KEY, JSON.stringify(done)); } catch (e) {}
+      paint();
+    });
+  });
+
+  paint();
+</script>
