@@ -187,8 +187,18 @@ function calculateProfileCompleteness(user) {
 // ============ DATA TRANSFORMATION ============
 function transformSupabaseUser(supabaseUser) {
   // Get data from raw_user_meta_data or top-level fields
-  const firstName = supabaseUser.first_name || supabaseUser.raw_user_meta_data?.first_name;
-  const lastName = supabaseUser.last_name || supabaseUser.raw_user_meta_data?.last_name;
+  // Names live in three places across the export; `full_name` was never read,
+  // which is why records carrying only that field failed this instance's
+  // first/last-name requirement.
+  const fullParts = String(
+    supabaseUser.full_name || supabaseUser.raw_user_meta_data?.full_name || ''
+  ).trim().split(/\s+/).filter(Boolean);
+  const firstName =
+    supabaseUser.first_name || supabaseUser.raw_user_meta_data?.first_name || fullParts[0] || null;
+  const lastName =
+    supabaseUser.last_name ||
+    supabaseUser.raw_user_meta_data?.last_name ||
+    (fullParts.length > 1 ? fullParts.slice(1).join(' ') : null);
   const email = supabaseUser.email || supabaseUser.raw_user_meta_data?.email;
 
   return {
@@ -455,7 +465,19 @@ async function sendInvitationEmail(user, retries = 2) {
 }
 
 // ============ CLERK USER CREATION ============
-async function createClerkUser(user, retryCount = 0) {
+/** Derive a Clerk-legal username: ≥4 chars, at least one non-digit. */
+function buildUsername(user, suffix = '') {
+  let base = (user.username || user.email.split('@')[0])
+    .replace(/[^a-zA-Z0-9_]/g, '_')
+    .toLowerCase();
+  if (!/[a-z_]/.test(base)) base = `u_${base}`; // all-digit handles need a letter
+  base = base.slice(0, 64 - suffix.length);
+  let name = `${base}${suffix}`;
+  if (name.length < 4) name = `${name}_${'user'.slice(0, 4 - name.length)}`;
+  return name.slice(0, 64);
+}
+
+async function createClerkUser(user, retryCount = 0, usernameSuffix = '') {
   if (CONFIG.DRY_RUN) {
     console.log(`  👤 [DRY RUN] Would create Clerk user: ${user.email}`);
     return {
@@ -494,14 +516,11 @@ async function createClerkUser(user, retryCount = 0) {
     if (user.firstName) createUserPayload.firstName = user.firstName;
     if (user.lastName) createUserPayload.lastName = user.lastName;
 
-    // Generate username from email if not provided (Clerk requires username)
-    if (user.username) {
-      createUserPayload.username = user.username;
-    } else {
-      // Generate username from email (remove special chars, truncate if needed)
-      const emailUsername = user.email.split('@')[0].replace(/[^a-zA-Z0-9_]/g, '_').toLowerCase();
-      createUserPayload.username = emailUsername.substring(0, 64); // Clerk username max length
-    }
+    // Clerk username rules: 4–64 characters, at least one non-digit. A raw
+    // email local-part often breaks both (short handles, all-numeric ids), and
+    // may already be taken by an earlier migration run — `usernameSuffix` lets
+    // the caller retry with a variant instead of dropping the user.
+    createUserPayload.username = buildUsername(user, usernameSuffix);
 
     // Create user with password hash
     const clerkUser = await clerk.users.createUser(createUserPayload);
@@ -529,11 +548,29 @@ async function createClerkUser(user, retryCount = 0) {
       }
     }
 
-    // Handle duplicate user
-    if (error.status === 422 && error.message?.includes('already exists')) {
-      console.log(`  ⚠️  User already exists in Clerk`);
+    const detail = JSON.stringify(error.errors ?? '');
+
+    // An existing email means an earlier run already migrated this person.
+    // Clerk words that "That email address is taken", not "already exists", so
+    // the old check never matched and re-runs counted skips as failures.
+    if (
+      error.status === 422 &&
+      (error.message?.includes('already exists') || detail.includes('email address is taken'))
+    ) {
+      console.log(`  ⚠️  Already in Clerk — skipping`);
       stats.skipped++;
       return null;
+    }
+
+    // Username rejected (taken / too short / all digits): retry with a suffix.
+    if (
+      error.status === 422 &&
+      detail.toLowerCase().includes('username') &&
+      retryCount < CONFIG.MAX_RETRIES
+    ) {
+      const suffix = String(Math.floor(Math.random() * 9000) + 1000);
+      console.log(`  ↻ Username rejected — retrying with suffix ${suffix}`);
+      return createClerkUser(user, retryCount + 1, suffix);
     }
 
     throw error;

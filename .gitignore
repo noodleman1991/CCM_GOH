@@ -79,3 +79,8 @@ verify-*.png
 # user data dumps — never commit (PII: emails + password hashes)
 supabase-users.json
 *-users-dump*.json
+
+# migration run artifacts — contain emails + user ids (PII). Same class of file
+# as supabase-users.json; never commit these.
+migration-results-*.json
+migration-log-*.json
