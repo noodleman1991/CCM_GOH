@@ -253,15 +253,31 @@
         "drafts": {
           "title": "Aucun brouillon enregistré",
           "description": "Vos brouillons d'études de cas apparaîtront ici automatiquement pendant que vous y travaillez."
-        }
+        },
+        "filtered": "Aucune soumission avec le statut « {status} »"
       },
       "alerts": {
         "revision": {
           "title": "Action Requise",
           "description": "Vous avez {count} étude{plural} de cas qui nécessite{singular} une révision basée sur les commentaires de l'éditeur.",
-          "editorFeedback": "Commentaires de l'éditeur:"
+          "editorFeedback": "Commentaires de l'éditeur:",
+          "body": "{count, plural, one {Vous avez # étude de cas à réviser suite aux commentaires de l'éditeur.} other {Vous avez # études de cas à réviser suite aux commentaires de l'éditeur.}}"
         }
-      }
+      },
+      "untitled": "Sans titre",
+      "untitledDraft": "Brouillon sans titre",
+      "featured": "À la une",
+      "draftBadge": "Brouillon",
+      "dateUnknown": "Date inconnue",
+      "authorCount": "{count, plural, one {# auteur} other {# auteurs}}",
+      "tagFallback": "Étiquette",
+      "moreTags": "+{count}",
+      "noDescription": "Pas encore de description…",
+      "lastSaved": "Dernier enregistrement le {date}",
+      "lastSavedUnknown": "Date du dernier enregistrement inconnue",
+      "step": "Étape : {step}",
+      "withCount": "{label} ({count})",
+      "filterAll": "Toutes"
     },
     "recentSubmissions": "Vos contributions récentes",
     "memberCount": "{count, plural, one {# membre} other {# membres}}",
@@ -277,7 +293,22 @@
     "attentionOpen": "Ouvrir →",
     "forYouTitle": "Pour vous",
     "forYouRegion": "d'une région que vous suivez",
-    "forYouTheme": "sur un thème que vous suivez"
+    "forYouTheme": "sur un thème que vous suivez",
+    "setup": {
+      "title": "Configuration de votre compte…",
+      "description": "Nous préparons votre tableau de bord. Cela ne prend généralement que quelques secondes.",
+      "refreshPage": "Actualiser la page",
+      "support": "Si ce message persiste, veuillez contacter l'assistance."
+    },
+    "notificationTypes": {
+      "TASK_ASSIGNED": "Tâche qui vous est attribuée",
+      "TASK_DUE": "Tâche bientôt à échéance",
+      "OUTPUT_STATUS": "Mise à jour du statut d'un livrable",
+      "THREAD_REPLY": "Nouvelle réponse dans une discussion",
+      "MEMBER_JOINED": "Un nouveau membre a rejoint",
+      "FOLLOWED_PUBLISH": "Nouveauté de quelqu'un que vous suivez",
+      "EVENT_REMINDER": "Rappel d'événement"
+    }
   },
   "settings": {
     "title": "Paramètres",
@@ -414,7 +445,18 @@
     "threadReply": "a répondu dans un fil",
     "memberJoined": "a rejoint l'espace de travail",
     "followedPublish": "a publié du nouveau",
-    "eventReminder": "l'événement commence bientôt"
+    "eventReminder": "l'événement commence bientôt",
+    "snippets": {
+      "joinAccepted": "a accepté votre demande d'adhésion",
+      "joinDeclined": "a refusé votre demande d'adhésion",
+      "invitedToJoin": "vous a invité·e à rejoindre « {title} »",
+      "inviteAccepted": "a accepté votre invitation à « {title} »",
+      "inviteDeclined": "a refusé votre invitation à « {title} »",
+      "contactAccepted": "a accepté votre demande de contact",
+      "contactDeclined": "a refusé votre demande de contact",
+      "removedFromWorkspace": "vous a retiré·e de « {title} »",
+      "rsvpGoing": "Vous participez à « {title} » — {when}"
+    }
   },
   "dates": {
     "today": "Aujourd'hui",
@@ -526,7 +568,33 @@
       "hide": "Masquer du profil",
       "show": "Afficher sur le profil",
       "pin": "Épingler en haut",
-      "unpin": "Désépingler"
+      "unpin": "Désépingler",
+      "form": {
+        "title": "Ajouter un Travail Récent",
+        "description": "Partagez un projet ou une contribution pour montrer aux autres ce sur quoi vous travaillez",
+        "workTitle": "Titre du Projet",
+        "workTitlePlaceholder": "Entrez le titre de votre projet ou travail",
+        "workDescription": "Description",
+        "workDescriptionPlaceholder": "Parlez-nous de ce projet et de son impact...",
+        "workDescriptionHint": "Un court résumé du travail et de son importance",
+        "workLink": "Lien du Projet",
+        "workLinkHint": "Facultatif — un lien pour en savoir plus",
+        "startDate": "Date de Début",
+        "endDate": "Date de Fin",
+        "ongoing": "Ce travail est en cours",
+        "ongoingDescription": "Cochez cette case si vous y travaillez encore",
+        "cancel": "Annuler",
+        "save": "Enregistrer",
+        "saveSuccess": "Travail enregistré avec succès",
+        "saveError": "Impossible d'enregistrer le travail",
+        "validation": {
+          "titleRequired": "Le titre est requis",
+          "descriptionRequired": "La description est requise",
+          "urlInvalid": "Veuillez saisir une URL valide",
+          "startDateRequired": "La date de début est requise",
+          "endDateRule": "La date de fin est requise pour un travail terminé et doit être postérieure à la date de début"
+        }
+      }
     },
     "communities": {
       "title": "Communautés",
@@ -713,7 +781,25 @@
         "help": "Collez votre ORCID iD pour récupérer vos publications et affiliations à vérifier.",
         "needId": "Saisissez d'abord votre ORCID iD.",
         "added": "{count} travaux importés — vérifiez et enregistrez.",
-        "none": "Aucun nouveau travail à importer."
+        "none": "Aucun nouveau travail à importer.",
+        "failed": "L'importation a échoué"
+      },
+      "validation": {
+        "firstNameRequired": "Le prénom est requis",
+        "lastNameRequired": "Le nom de famille est requis",
+        "usernameMin": "Le nom d'utilisateur doit comporter au moins 3 caractères",
+        "usernamePattern": "Le nom d'utilisateur ne peut contenir que des lettres, des chiffres et des tirets bas",
+        "bioMax": "La biographie doit contenir moins de 500 caractères",
+        "workTypesMin": "Veuillez sélectionner au moins un type de travail",
+        "expertiseAreasMin": "Veuillez sélectionner au moins un domaine d'expertise",
+        "workBioMax": "La biographie professionnelle doit contenir moins de 1000 caractères",
+        "urlInvalid": "Veuillez saisir une URL valide",
+        "workTitleRequired": "Le titre est requis",
+        "workDescriptionRequired": "La description est requise",
+        "workStartDateRequired": "La date de début est requise",
+        "headlineMax": "Le titre doit contenir moins de 120 caractères",
+        "keepUnder600": "Ne dépassez pas 600 caractères",
+        "keepUnder1000": "Ne dépassez pas 1000 caractères"
       }
     },
     "account": {
@@ -753,7 +839,9 @@
           "type": "Pour confirmer, tapez",
           "cancel": "Annuler",
           "delete": "Supprimer le Compte",
-          "publishedNote": "Vos études de cas publiées resteront sur le site. Pour faire modifier ou retirer une étude de cas publiée, veuillez contacter l'équipe de Connecting Climate Minds Hub par e-mail."
+          "publishedNote": "Vos études de cas publiées resteront sur le site. Pour faire modifier ou retirer une étude de cas publiée, veuillez contacter l'équipe de Connecting Climate Minds Hub par e-mail.",
+          "typeError": "Veuillez saisir {token} pour confirmer",
+          "typeInstruction": "Pour confirmer, saisissez <strong>{token}</strong> dans le champ ci-dessous."
         }
       },
       "groups": {
@@ -761,6 +849,19 @@
         "accountDescription": "Gérez votre e-mail de connexion et votre mot de passe.",
         "dangerZone": "Zone sensible",
         "dangerZoneDescription": "Actions irréversibles. Soyez certain·e."
+      },
+      "validation": {
+        "emailInvalid": "Veuillez saisir une adresse e-mail valide",
+        "currentPasswordRequired": "Le mot de passe actuel est requis",
+        "newPasswordMin": "Le nouveau mot de passe doit comporter au moins 8 caractères",
+        "confirmPasswordRequired": "Veuillez confirmer votre mot de passe",
+        "passwordsMismatch": "Les mots de passe ne correspondent pas"
+      },
+      "errors": {
+        "loadFailed": "Impossible de charger les informations du compte",
+        "updateEmailFailed": "Impossible de mettre à jour l'adresse e-mail",
+        "changePasswordFailed": "Impossible de modifier le mot de passe",
+        "deleteFailed": "Impossible de supprimer le compte"
       }
     },
     "contributions": {
@@ -821,7 +922,10 @@
     "search": "Rechercher",
     "noResults": "Aucun profil trouvé. Essayez d'ajuster votre recherche.",
     "unnamed": "Utilisateur Sans Nom",
-    "browseProfiles": "Parcourir les Profils"
+    "browseProfiles": "Parcourir les Profils",
+    "metaNotFound": "Profil introuvable",
+    "metaProfileTitle": "{name} - Profil",
+    "metaProfileDescription": "Voir le profil de {name}"
   },
   "caseStudySubmission": {
     "pageTitle": "Soumettre une Étude de Cas",
@@ -1721,7 +1825,9 @@
     "galleryView": "Galerie",
     "mapView": "Carte",
     "writtenBy": "Écrit par",
-    "withOrgs": "Avec"
+    "withOrgs": "Avec",
+    "metaNotFound": "Étude de cas introuvable",
+    "metaFallbackTitle": "Étude de cas"
   },
   "revisionAlert": {
     "title": "Action Requise: Révision Nécessaire",
@@ -1795,7 +1901,8 @@
       "title": "Aucune actualité dans {region} pour l'instant.",
       "description": "Suivez cette région pour être averti dès qu'une actualité est publiée.",
       "cta": "Suivre cette région"
-    }
+    },
+    "metaNotFound": "Actualité introuvable"
   },
   "regional": {
     "noLivedExperiences": "Aucune expérience vécue disponible pour le moment.",
@@ -1823,7 +1930,8 @@
       "partners": "Partenaires"
     },
     "communityMembers": "Membres de la communauté",
-    "contributionCount": "{count, plural, one {# contribution} other {# contributions}}"
+    "contributionCount": "{count, plural, one {# contribution} other {# contributions}}",
+    "downloadFile": "Télécharger {name}"
   },
   "cookieConsent": {
     "title": "Nous respectons votre vie privée",
@@ -1858,7 +1966,10 @@
     "viewAll": "Voir tout",
     "noPostsTitle": "Pas encore de publications",
     "noPostsBody": "Revenez bientôt pour découvrir les nouveautés.",
-    "noContent": "Aucun contenu disponible pour le moment."
+    "noContent": "Aucun contenu disponible pour le moment.",
+    "noQueryType": "Aucun type de requête spécifié",
+    "contentLoadFailed": "Échec du chargement du contenu",
+    "errorLoadingContent": "Erreur lors du chargement du contenu : {error}"
   },
   "map": {
     "title": "Explorer par région",
@@ -2097,7 +2208,12 @@
     "archived": "Espace archivé",
     "readOnlyNotice": "Vous consultez cet espace en lecture seule.",
     "readOnlyJoinLink": "À propos de ce projet et comment le rejoindre",
-    "fileUnavailable": "Fichier indisponible"
+    "fileUnavailable": "Fichier indisponible",
+    "makePublic": "Rendre public",
+    "makePrivate": "Rendre privé",
+    "visibilityConfirm": "Confirmer le changement",
+    "nowPublic": "L'espace est désormais public — chacun peut l'explorer en lecture seule.",
+    "nowPrivate": "L'espace est désormais réservé aux membres."
   },
   "messages": {
     "title": "Messages",
@@ -2180,7 +2296,9 @@
     "relatedContent": "Contenu lié",
     "pageTitle": "Productions de recherche",
     "pageDescription": "Rapports, boîtes à outils, synthèses et autres productions de la communauté Connecting Climate Minds.",
-    "empty": "Aucune production de recherche publiée pour le moment."
+    "empty": "Aucune production de recherche publiée pour le moment.",
+    "metaNotFound": "Production de recherche introuvable",
+    "metaFallbackTitle": "Production de recherche"
   },
   "outputs": {
     "title": "Productions",
@@ -2443,7 +2561,10 @@
     "getInvolved": "Participer",
     "statMembers": "Membres",
     "statCaseStudies": "Études de cas",
-    "statLived": "Expériences vécues"
+    "statLived": "Expériences vécues",
+    "reportsTitle": "Rapports et Ordres du Jour Régionaux",
+    "reportsDescription": "Accédez aux derniers rapports, résultats de recherche et ordres du jour des réunions de notre communauté régionale.",
+    "viewAllReports": "Voir Tous les Rapports"
   },
   "researchOutputSubmission": {
     "pageTitle": "Soumettre une production de recherche",

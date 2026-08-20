@@ -253,15 +253,31 @@
         "drafts": {
           "title": "لا توجد مسودات محفوظة",
           "description": "ستظهر مسودات دراسات الحالة الخاصة بك هنا تلقائياً أثناء العمل عليها."
-        }
+        },
+        "filtered": "لا توجد مساهمات بالحالة «{status}»"
       },
       "alerts": {
         "revision": {
           "title": "مطلوب إجراء",
           "description": "لديك {count} دراسة حالة تحتاج تنقيح بناءً على ملاحظات المحرر.",
-          "editorFeedback": "ملاحظات المحرر:"
+          "editorFeedback": "ملاحظات المحرر:",
+          "body": "{count, plural, zero {ليس لديك دراسات حالة تحتاج إلى مراجعة.} one {لديك دراسة حالة واحدة تحتاج إلى مراجعة بناءً على ملاحظات المحرر.} two {لديك دراستا حالة تحتاجان إلى مراجعة بناءً على ملاحظات المحرر.} few {لديك # دراسات حالة تحتاج إلى مراجعة بناءً على ملاحظات المحرر.} many {لديك # دراسة حالة تحتاج إلى مراجعة بناءً على ملاحظات المحرر.} other {لديك # دراسة حالة تحتاج إلى مراجعة بناءً على ملاحظات المحرر.}}"
         }
-      }
+      },
+      "untitled": "بدون عنوان",
+      "untitledDraft": "مسودة بدون عنوان",
+      "featured": "مميّز",
+      "draftBadge": "مسودة",
+      "dateUnknown": "تاريخ غير معروف",
+      "authorCount": "{count, plural, zero {بدون مؤلفين} one {مؤلف واحد} two {مؤلفان} few {# مؤلفين} many {# مؤلفًا} other {# مؤلف}}",
+      "tagFallback": "وسم",
+      "moreTags": "+{count}",
+      "noDescription": "لا يوجد وصف بعد…",
+      "lastSaved": "آخر حفظ في {date}",
+      "lastSavedUnknown": "تاريخ آخر حفظ غير معروف",
+      "step": "الخطوة: {step}",
+      "withCount": "{label} ({count})",
+      "filterAll": "الكل"
     },
     "recentSubmissions": "مساهماتك الأخيرة",
     "memberCount": "{count, plural, zero {# عضو} one {عضو واحد} two {عضوان} few {# أعضاء} many {# عضوًا} other {# عضو}}",
@@ -277,7 +293,22 @@
     "attentionOpen": "افتح ←",
     "forYouTitle": "لك",
     "forYouRegion": "من منطقة تتابعها",
-    "forYouTheme": "حول موضوع تتابعه"
+    "forYouTheme": "حول موضوع تتابعه",
+    "setup": {
+      "title": "جارٍ إعداد حسابك…",
+      "description": "نقوم بتجهيز لوحة التحكم الخاصة بك. عادةً ما يستغرق ذلك بضع ثوانٍ فقط.",
+      "refreshPage": "تحديث الصفحة",
+      "support": "إذا استمرت هذه الرسالة، يُرجى التواصل مع الدعم."
+    },
+    "notificationTypes": {
+      "TASK_ASSIGNED": "مهمة مُسندة إليك",
+      "TASK_DUE": "مهمة يقترب موعد استحقاقها",
+      "OUTPUT_STATUS": "تحديث حالة أحد المخرجات",
+      "THREAD_REPLY": "رد جديد في نقاش",
+      "MEMBER_JOINED": "انضم عضو جديد",
+      "FOLLOWED_PUBLISH": "جديد من شخص تتابعه",
+      "EVENT_REMINDER": "تذكير بفعالية"
+    }
   },
   "settings": {
     "title": "الإعدادات",
@@ -414,7 +445,18 @@
     "threadReply": "ردّ في نقاش",
     "memberJoined": "انضم إلى مساحة العمل",
     "followedPublish": "نشر شيئًا جديدًا",
-    "eventReminder": "الفعالية تبدأ قريبًا"
+    "eventReminder": "الفعالية تبدأ قريبًا",
+    "snippets": {
+      "joinAccepted": "قبِل طلبك للانضمام",
+      "joinDeclined": "رفض طلبك للانضمام",
+      "invitedToJoin": "دعاك للانضمام إلى «{title}»",
+      "inviteAccepted": "قبِل دعوتك إلى «{title}»",
+      "inviteDeclined": "رفض دعوتك إلى «{title}»",
+      "contactAccepted": "قبِل طلب التواصل الخاص بك",
+      "contactDeclined": "رفض طلب التواصل الخاص بك",
+      "removedFromWorkspace": "أزالك من «{title}»",
+      "rsvpGoing": "ستحضر «{title}» — {when}"
+    }
   },
   "dates": {
     "today": "اليوم",
@@ -526,7 +568,33 @@
       "hide": "إخفاء من الملف",
       "show": "إظهار في الملف",
       "pin": "تثبيت في الأعلى",
-      "unpin": "إلغاء التثبيت"
+      "unpin": "إلغاء التثبيت",
+      "form": {
+        "title": "إضافة عمل حديث",
+        "description": "شارك مشروعًا أو مساهمة ليتعرّف الآخرون على ما تعمل عليه",
+        "workTitle": "عنوان المشروع",
+        "workTitlePlaceholder": "أدخل عنوان مشروعك أو عملك",
+        "workDescription": "الوصف",
+        "workDescriptionPlaceholder": "أخبرنا عن هذا المشروع وتأثيره...",
+        "workDescriptionHint": "ملخص قصير يوضح موضوع العمل وأهميته",
+        "workLink": "رابط المشروع",
+        "workLinkHint": "اختياري — رابط لمن يرغب في معرفة المزيد",
+        "startDate": "تاريخ البداية",
+        "endDate": "تاريخ الانتهاء",
+        "ongoing": "هذا العمل مستمر",
+        "ongoingDescription": "حدّد هذا الخيار إذا كنت لا تزال تعمل عليه",
+        "cancel": "إلغاء",
+        "save": "حفظ",
+        "saveSuccess": "تم حفظ العمل بنجاح",
+        "saveError": "تعذر حفظ العمل",
+        "validation": {
+          "titleRequired": "العنوان مطلوب",
+          "descriptionRequired": "الوصف مطلوب",
+          "urlInvalid": "يرجى إدخال رابط صحيح",
+          "startDateRequired": "تاريخ البداية مطلوب",
+          "endDateRule": "تاريخ الانتهاء مطلوب للأعمال المكتملة ويجب أن يكون بعد تاريخ البداية"
+        }
+      }
     },
     "communities": {
       "title": "المجتمعات",
@@ -713,7 +781,25 @@
         "help": "الصق معرّف ORCID لجلب منشوراتك وانتماءاتك للمراجعة.",
         "needId": "أدخل معرّف ORCID أولًا.",
         "added": "تم استيراد {count} عملًا — راجعها واحفظ.",
-        "none": "لا توجد أعمال جديدة للاستيراد."
+        "none": "لا توجد أعمال جديدة للاستيراد.",
+        "failed": "فشل الاستيراد"
+      },
+      "validation": {
+        "firstNameRequired": "الاسم الأول مطلوب",
+        "lastNameRequired": "اسم العائلة مطلوب",
+        "usernameMin": "يجب أن يتكون اسم المستخدم من 3 أحرف على الأقل",
+        "usernamePattern": "يمكن أن يحتوي اسم المستخدم على أحرف وأرقام وشرطات سفلية فقط",
+        "bioMax": "يجب أن تكون النبذة أقل من 500 حرف",
+        "workTypesMin": "يرجى اختيار نوع عمل واحد على الأقل",
+        "expertiseAreasMin": "يرجى اختيار مجال خبرة واحد على الأقل",
+        "workBioMax": "يجب أن تكون النبذة المهنية أقل من 1000 حرف",
+        "urlInvalid": "يرجى إدخال رابط صحيح",
+        "workTitleRequired": "العنوان مطلوب",
+        "workDescriptionRequired": "الوصف مطلوب",
+        "workStartDateRequired": "تاريخ البداية مطلوب",
+        "headlineMax": "يجب أن يكون العنوان التعريفي أقل من 120 حرفًا",
+        "keepUnder600": "يرجى ألا يتجاوز النص 600 حرف",
+        "keepUnder1000": "يرجى ألا يتجاوز النص 1000 حرف"
       }
     },
     "account": {
@@ -753,7 +839,9 @@
           "type": "للتأكيد، اكتب",
           "cancel": "إلغاء",
           "delete": "حذف الحساب",
-          "publishedNote": "ستبقى دراسات الحالة المنشورة الخاصة بك على الموقع. لتعديل أو إزالة دراسة حالة منشورة، يُرجى التواصل مع فريق Connecting Climate Minds Hub عبر البريد الإلكتروني."
+          "publishedNote": "ستبقى دراسات الحالة المنشورة الخاصة بك على الموقع. لتعديل أو إزالة دراسة حالة منشورة، يُرجى التواصل مع فريق Connecting Climate Minds Hub عبر البريد الإلكتروني.",
+          "typeError": "يرجى كتابة {token} للتأكيد",
+          "typeInstruction": "للتأكيد، اكتب <strong>{token}</strong> في الحقل أدناه."
         }
       },
       "groups": {
@@ -761,6 +849,19 @@
         "accountDescription": "أدر بريد تسجيل الدخول وكلمة المرور.",
         "dangerZone": "منطقة الخطر",
         "dangerZoneDescription": "إجراءات لا يمكن التراجع عنها. تأكد قبل المتابعة."
+      },
+      "validation": {
+        "emailInvalid": "يرجى إدخال بريد إلكتروني صحيح",
+        "currentPasswordRequired": "كلمة المرور الحالية مطلوبة",
+        "newPasswordMin": "يجب أن تتكون كلمة المرور الجديدة من 8 أحرف على الأقل",
+        "confirmPasswordRequired": "يرجى تأكيد كلمة المرور",
+        "passwordsMismatch": "كلمتا المرور غير متطابقتين"
+      },
+      "errors": {
+        "loadFailed": "تعذر تحميل معلومات الحساب",
+        "updateEmailFailed": "تعذر تحديث البريد الإلكتروني",
+        "changePasswordFailed": "تعذر تغيير كلمة المرور",
+        "deleteFailed": "تعذر حذف الحساب"
       }
     },
     "contributions": {
@@ -821,7 +922,10 @@
     "search": "بحث",
     "noResults": "لم يتم العثور على ملفات شخصية. جرب تعديل البحث.",
     "unnamed": "مستخدم بدون اسم",
-    "browseProfiles": "تصفح الملفات الشخصية"
+    "browseProfiles": "تصفح الملفات الشخصية",
+    "metaNotFound": "الملف الشخصي غير موجود",
+    "metaProfileTitle": "{name} - الملف الشخصي",
+    "metaProfileDescription": "عرض الملف الشخصي لـ {name}"
   },
   "caseStudySubmission": {
     "pageTitle": "إرسال دراسة الحالة",
@@ -1721,7 +1825,9 @@
     "galleryView": "المعرض",
     "mapView": "الخريطة",
     "writtenBy": "بقلم",
-    "withOrgs": "بالتعاون مع"
+    "withOrgs": "بالتعاون مع",
+    "metaNotFound": "دراسة الحالة غير موجودة",
+    "metaFallbackTitle": "دراسة حالة"
   },
   "revisionAlert": {
     "title": "مطلوب إجراء: تنقيح مطلوب",
@@ -1795,7 +1901,8 @@
       "title": "لا توجد مستجدات في {region} بعد.",
       "description": "تابع هذه المنطقة لتصلك الأخبار عند نشر أي جديد.",
       "cta": "تابع هذه المنطقة"
-    }
+    },
+    "metaNotFound": "الخبر غير موجود"
   },
   "regional": {
     "noLivedExperiences": "لا تتوفر تجارب حياتية بعد.",
@@ -1823,7 +1930,8 @@
       "partners": "الشركاء"
     },
     "communityMembers": "أعضاء المجتمع",
-    "contributionCount": "{count, plural, zero {# مساهمة} one {# مساهمة} two {# مساهمتان} few {# مساهمات} many {# مساهمة} other {# مساهمة}}"
+    "contributionCount": "{count, plural, zero {# مساهمة} one {# مساهمة} two {# مساهمتان} few {# مساهمات} many {# مساهمة} other {# مساهمة}}",
+    "downloadFile": "تحميل {name}"
   },
   "cookieConsent": {
     "title": "نحن نقدر خصوصيتك",
@@ -1858,7 +1966,10 @@
     "viewAll": "عرض الكل",
     "noPostsTitle": "لا توجد منشورات بعد",
     "noPostsBody": "تحقق مرة أخرى قريباً للاطلاع على التحديثات.",
-    "noContent": "لا يوجد محتوى متاح في الوقت الحالي."
+    "noContent": "لا يوجد محتوى متاح في الوقت الحالي.",
+    "noQueryType": "لم يتم تحديد نوع الاستعلام",
+    "contentLoadFailed": "تعذّر تحميل المحتوى",
+    "errorLoadingContent": "خطأ في تحميل المحتوى: {error}"
   },
   "map": {
     "title": "استكشف حسب المنطقة",
@@ -2097,7 +2208,12 @@
     "archived": "تمت أرشفة مساحة العمل",
     "readOnlyNotice": "أنت تستعرض مساحة العمل هذه للقراءة فقط.",
     "readOnlyJoinLink": "عن هذا المشروع وكيفية الانضمام",
-    "fileUnavailable": "الملف غير متاح"
+    "fileUnavailable": "الملف غير متاح",
+    "makePublic": "جعلها عامة",
+    "makePrivate": "جعلها خاصة",
+    "visibilityConfirm": "تأكيد التغيير",
+    "nowPublic": "أصبحت مساحة العمل عامة — يمكن للجميع استكشافها للقراءة فقط.",
+    "nowPrivate": "أصبحت مساحة العمل مقصورة على الأعضاء."
   },
   "messages": {
     "title": "الرسائل",
@@ -2180,7 +2296,9 @@
     "relatedContent": "محتوى ذو صلة",
     "pageTitle": "مخرجات البحث",
     "pageDescription": "تقارير وأدوات وملخصات ومخرجات أخرى أنتجها مجتمع Connecting Climate Minds.",
-    "empty": "لا توجد مخرجات بحثية منشورة بعد."
+    "empty": "لا توجد مخرجات بحثية منشورة بعد.",
+    "metaNotFound": "الناتج البحثي غير موجود",
+    "metaFallbackTitle": "ناتج بحثي"
   },
   "outputs": {
     "title": "المخرجات",
@@ -2443,7 +2561,10 @@
     "getInvolved": "شارك معنا",
     "statMembers": "الأعضاء",
     "statCaseStudies": "دراسات الحالة",
-    "statLived": "التجارب المعيشة"
+    "statLived": "التجارب المعيشة",
+    "reportsTitle": "التقارير وجداول الأعمال الإقليمية",
+    "reportsDescription": "الوصول إلى أحدث التقارير ونتائج البحوث وجداول أعمال الاجتماعات من مجتمعنا الإقليمي.",
+    "viewAllReports": "عرض جميع التقارير"
   },
   "researchOutputSubmission": {
     "pageTitle": "إرسال ناتج بحثي",

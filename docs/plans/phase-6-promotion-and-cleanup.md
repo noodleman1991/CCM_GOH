@@ -30,6 +30,16 @@ All are additive/nullable except #9 (a value rename via `ALTER TYPE … RENAME
 VALUE`, which preserves rows). Run in a low-traffic window; `prisma migrate
 status` first; keep a DB snapshot.
 
+**2026-08-20 addendum:** later migrations through
+`20260820120000_comment_body_rich` (messaging tiers + USER follows +
+authorEmail drop + bodyRich — all additive except the authorEmail column
+drop, which purges anon-comment emails by design) are APPLIED on the
+lucky-waterfall instance (`.env.local`). At prod promotion run
+`prisma migrate deploy` against the prod `DATABASE_URL` as step 1 — it
+applies everything pending in order. Note the stray empty
+`20260728120000_issue_reports/` dir was removed (issue reporter is
+email-only; the dir broke `migrate deploy` with P3015).
+
 ### Promotion order (recommended)
 1. **Prisma** `migrate deploy` (region enum + the 8 earlier additive migrations).
    The app already reads short codes everywhere (B3); deploying the rename aligns

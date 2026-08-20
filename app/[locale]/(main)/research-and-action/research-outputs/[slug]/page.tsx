@@ -29,9 +29,10 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }): Promise<Metadata> {
   const { locale, slug } = await params;
   const ro = await fetchResearchOutputBySlug({ slug });
-  if (!ro) return { title: "Research Output Not Found" };
+  const t = await getTranslations({ locale, namespace: "researchOutputs" });
+  if (!ro) return { title: t("metaNotFound") };
   const supportedLocale = locale as "en" | "es" | "fr" | "ar";
-  const title = getLocalizedText(ro.title, supportedLocale, "Research Output");
+  const title = getLocalizedText(ro.title, supportedLocale, t("metaFallbackTitle"));
   const description = getLocalizedText(ro.excerpt, supportedLocale, "");
   return {
     title,

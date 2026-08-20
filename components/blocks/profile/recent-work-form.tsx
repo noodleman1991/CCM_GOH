@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { useTranslations } from 'next-intl'
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -15,12 +15,22 @@ import { toast } from "sonner"
 import { Loader2 } from "lucide-react"
 import { format } from "date-fns"
 
-const recentWorkSchema = z.object({
-    title: z.string().min(1, "Title is required").max(200),
-    description: z.string().min(1, "Description is required").max(1000),
-    link: z.string().url("Please enter a valid URL").optional().or(z.literal("")),
+// Localized validation messages (resolved from t() inside the component so the
+// Zod errors show in the user's language — the proven newsletter pattern).
+interface SchemaMessages {
+    titleRequired: string
+    descriptionRequired: string
+    urlInvalid: string
+    startDateRequired: string
+    endDateRule: string
+}
+
+const makeRecentWorkSchema = (m: SchemaMessages) => z.object({
+    title: z.string().min(1, m.titleRequired).max(200),
+    description: z.string().min(1, m.descriptionRequired).max(1000),
+    link: z.string().url(m.urlInvalid).optional().or(z.literal("")),
     isOngoing: z.boolean(),
-    startDate: z.string().min(1, "Start date is required"),
+    startDate: z.string().min(1, m.startDateRequired),
     endDate: z.string().optional()
 }).refine((data) => {
     if (!data.isOngoing && !data.endDate) {
@@ -31,11 +41,11 @@ const recentWorkSchema = z.object({
     }
     return true
 }, {
-    message: "End date is required for completed work and must be after start date",
+    message: m.endDateRule,
     path: ["endDate"]
 })
 
-type RecentWorkFormValues = z.infer<typeof recentWorkSchema>
+type RecentWorkFormValues = z.infer<ReturnType<typeof makeRecentWorkSchema>>
 
 interface RecentWorkFormProps {
     initialData?: Partial<RecentWorkFormValues>
@@ -50,6 +60,16 @@ export default function RecentWorkForm({
                                        }: RecentWorkFormProps) {
     const t = useTranslations('profile.recentWork.form')
     const [isSubmitting, setIsSubmitting] = useState(false)
+
+    // Schema built inside the component so validation messages localize
+    // (newsletter/case-study Zod-closure pattern).
+    const recentWorkSchema = useMemo(() => makeRecentWorkSchema({
+        titleRequired: t('validation.titleRequired'),
+        descriptionRequired: t('validation.descriptionRequired'),
+        urlInvalid: t('validation.urlInvalid'),
+        startDateRequired: t('validation.startDateRequired'),
+        endDateRule: t('validation.endDateRule'),
+    }), [t])
 
     const form = useForm<RecentWorkFormValues>({
         resolver: zodResolver(recentWorkSchema),
@@ -78,7 +98,7 @@ export default function RecentWorkForm({
             await onSubmitAction(formattedData)
             toast.success(t('saveSuccess'))
             form.reset()
-        } catch (error) {
+        } catch {
             toast.error(t('saveError'))
         } finally {
             setIsSubmitting(false)

@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import Image from "next/image";
 import { urlForCropped } from "@/sanity/lib/image";
@@ -45,12 +46,18 @@ interface GridPostProps {
 }
 
 export default function GridPost({ newsPost, featured, locale = "en", userId, imageSizes }: GridPostProps) {
+  // Server component: useTranslations resolves from the request config, no
+  // NextIntlClientProvider needed. Called before the early return to satisfy
+  // the rules-of-hooks lint.
+  const t = useTranslations("common");
+  const tBlocks = useTranslations("blocks");
+
   if (!newsPost) return null;
 
   const { title, slug, subtitle, image, publishedAt, tags } = newsPost;
 
   // Get localized content
-  const localizedTitle = title?.[locale as keyof typeof title] || title?.en || "Untitled";
+  const localizedTitle = title?.[locale as keyof typeof title] || title?.en || t("untitled");
   const localizedSubtitle = subtitle?.[locale as keyof typeof subtitle] || subtitle?.en;
 
   // Format date
@@ -81,7 +88,7 @@ export default function GridPost({ newsPost, featured, locale = "en", userId, im
         {featured && (
           <div className="absolute top-4 end-4 z-10">
             <Badge variant="secondary" className="bg-yellow-500 text-white">
-              Featured
+              {tBlocks("featured")}
             </Badge>
           </div>
         )}

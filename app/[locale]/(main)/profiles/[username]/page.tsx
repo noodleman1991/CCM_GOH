@@ -41,17 +41,18 @@ interface ProfilePageProps {
 }
 
 export async function generateMetadata({ params }: ProfilePageProps): Promise<Metadata> {
-    const { username } = await params
+    const { username, locale } = await params
     const user = await getUserProfile(username)
+    const t = await getTranslations({ locale, namespace: 'profiles' })
 
-    if (!user) return { title: 'Profile Not Found' }
+    if (!user) return { title: t('metaNotFound') }
 
     const fullName = [user.firstName, user.lastName].filter(Boolean).join(' ')
-    const title = fullName || user.username || 'Profile'
+    const title = fullName || user.username || t('unnamed')
 
     return {
-        title: `${title} - Profile`,
-        description: `View ${title}'s profile`
+        title: t('metaProfileTitle', { name: title }),
+        description: t('metaProfileDescription', { name: title })
     }
 }
 

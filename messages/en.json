@@ -319,7 +319,18 @@
     "threadReply": "replied in a thread",
     "memberJoined": "joined the workspace",
     "followedPublish": "published something new",
-    "eventReminder": "event starting soon"
+    "eventReminder": "event starting soon",
+    "snippets": {
+      "joinAccepted": "accepted your request to join",
+      "joinDeclined": "declined your request to join",
+      "invitedToJoin": "invited you to join “{title}”",
+      "inviteAccepted": "accepted your invitation to “{title}”",
+      "inviteDeclined": "declined your invitation to “{title}”",
+      "contactAccepted": "accepted your contact request",
+      "contactDeclined": "declined your contact request",
+      "removedFromWorkspace": "removed you from “{title}”",
+      "rsvpGoing": "You're going to “{title}” — {when}"
+    }
   },
   "dates": {
     "today": "Today",
@@ -431,7 +442,33 @@
       "hide": "Hide from profile",
       "show": "Show on profile",
       "pin": "Pin to top",
-      "unpin": "Unpin"
+      "unpin": "Unpin",
+      "form": {
+        "title": "Add Recent Work",
+        "description": "Share a project or contribution so others can see what you've been working on",
+        "workTitle": "Project Title",
+        "workTitlePlaceholder": "Enter your project or work title",
+        "workDescription": "Description",
+        "workDescriptionPlaceholder": "Tell us about this project and its impact...",
+        "workDescriptionHint": "A short summary of what the work is about and why it matters",
+        "workLink": "Project Link",
+        "workLinkHint": "Optional — a link where people can learn more",
+        "startDate": "Start Date",
+        "endDate": "End Date",
+        "ongoing": "This work is ongoing",
+        "ongoingDescription": "Check this if you're still working on it",
+        "cancel": "Cancel",
+        "save": "Save",
+        "saveSuccess": "Work saved successfully",
+        "saveError": "Failed to save work",
+        "validation": {
+          "titleRequired": "Title is required",
+          "descriptionRequired": "Description is required",
+          "urlInvalid": "Please enter a valid URL",
+          "startDateRequired": "Start date is required",
+          "endDateRule": "End date is required for completed work and must be after the start date"
+        }
+      }
     },
     "communities": {
       "title": "Communities",
@@ -618,7 +655,25 @@
         "help": "Paste your ORCID iD to pull in your publications and affiliations for review.",
         "needId": "Enter your ORCID iD first.",
         "added": "Imported {count} works — review and save.",
-        "none": "No new works found to import."
+        "none": "No new works found to import.",
+        "failed": "Import failed"
+      },
+      "validation": {
+        "firstNameRequired": "First name is required",
+        "lastNameRequired": "Last name is required",
+        "usernameMin": "Username must be at least 3 characters",
+        "usernamePattern": "Username can only contain letters, numbers and underscores",
+        "bioMax": "Bio must be less than 500 characters",
+        "workTypesMin": "Please select at least one work type",
+        "expertiseAreasMin": "Please select at least one expertise area",
+        "workBioMax": "Work bio must be less than 1000 characters",
+        "urlInvalid": "Please enter a valid URL",
+        "workTitleRequired": "Title is required",
+        "workDescriptionRequired": "Description is required",
+        "workStartDateRequired": "Start date is required",
+        "headlineMax": "Headline must be under 120 characters",
+        "keepUnder600": "Keep it under 600 characters",
+        "keepUnder1000": "Keep it under 1000 characters"
       }
     },
     "account": {
@@ -658,7 +713,9 @@
           "type": "To confirm, type",
           "cancel": "Cancel",
           "delete": "Delete Account",
-          "publishedNote": "Your published case studies will remain on the site. To have a published case study changed or removed, please contact the Connecting Climate Minds Hub team by email."
+          "publishedNote": "Your published case studies will remain on the site. To have a published case study changed or removed, please contact the Connecting Climate Minds Hub team by email.",
+          "typeError": "Please type {token} to confirm",
+          "typeInstruction": "To confirm, type <strong>{token}</strong> in the box below."
         }
       },
       "groups": {
@@ -666,6 +723,19 @@
         "accountDescription": "Manage your sign-in email and password.",
         "dangerZone": "Danger zone",
         "dangerZoneDescription": "Irreversible actions. Please be certain."
+      },
+      "validation": {
+        "emailInvalid": "Please enter a valid email address",
+        "currentPasswordRequired": "Current password is required",
+        "newPasswordMin": "New password must be at least 8 characters",
+        "confirmPasswordRequired": "Please confirm your password",
+        "passwordsMismatch": "Passwords don't match"
+      },
+      "errors": {
+        "loadFailed": "Failed to load account information",
+        "updateEmailFailed": "Failed to update email",
+        "changePasswordFailed": "Failed to change password",
+        "deleteFailed": "Failed to delete account"
       }
     },
     "contributions": {
@@ -726,7 +796,10 @@
     "search": "Search",
     "noResults": "No profiles found. Try adjusting your search.",
     "unnamed": "Unnamed User",
-    "browseProfiles": "Browse Profiles"
+    "browseProfiles": "Browse Profiles",
+    "metaNotFound": "Profile Not Found",
+    "metaProfileTitle": "{name} - Profile",
+    "metaProfileDescription": "View {name}'s profile"
   },
   "caseStudySubmission": {
     "pageTitle": "Submit Case Study",
@@ -1057,15 +1130,31 @@
         "drafts": {
           "title": "No drafts saved",
           "description": "Your draft case studies will appear here automatically as you work on them."
-        }
+        },
+        "filtered": "No submissions with status “{status}”"
       },
       "alerts": {
         "revision": {
           "title": "Action Required",
           "description": "You have {count} case stud{plural} that need{singular} revision based on editor feedback.",
-          "editorFeedback": "Editor feedback:"
+          "editorFeedback": "Editor feedback:",
+          "body": "{count, plural, one {You have # case study that needs revision based on editor feedback.} other {You have # case studies that need revision based on editor feedback.}}"
         }
-      }
+      },
+      "untitled": "Untitled",
+      "untitledDraft": "Untitled Draft",
+      "featured": "Featured",
+      "draftBadge": "Draft",
+      "dateUnknown": "Date unknown",
+      "authorCount": "{count, plural, one {# author} other {# authors}}",
+      "tagFallback": "Tag",
+      "moreTags": "+{count}",
+      "noDescription": "No description yet…",
+      "lastSaved": "Last saved {date}",
+      "lastSavedUnknown": "Last saved date unknown",
+      "step": "Step: {step}",
+      "withCount": "{label} ({count})",
+      "filterAll": "All"
     },
     "recentSubmissions": "Your recent submissions",
     "memberCount": "{count, plural, one {# member} other {# members}}",
@@ -1081,7 +1170,22 @@
     "attentionOpen": "Open →",
     "forYouTitle": "For you",
     "forYouRegion": "from a region you follow",
-    "forYouTheme": "on a theme you follow"
+    "forYouTheme": "on a theme you follow",
+    "setup": {
+      "title": "Setting up your account…",
+      "description": "We're preparing your dashboard. This usually takes just a few seconds.",
+      "refreshPage": "Refresh Page",
+      "support": "If this message persists, please contact support."
+    },
+    "notificationTypes": {
+      "TASK_ASSIGNED": "Task assigned to you",
+      "TASK_DUE": "Task due soon",
+      "OUTPUT_STATUS": "Output status update",
+      "THREAD_REPLY": "New reply in a discussion",
+      "MEMBER_JOINED": "New member joined",
+      "FOLLOWED_PUBLISH": "New from someone you follow",
+      "EVENT_REMINDER": "Event reminder"
+    }
   },
   "caseStudies": {
     "title": "Case Studies",
@@ -1162,7 +1266,9 @@
     "galleryView": "Gallery",
     "mapView": "Map",
     "writtenBy": "Written by",
-    "withOrgs": "With"
+    "withOrgs": "With",
+    "metaNotFound": "Case Study Not Found",
+    "metaFallbackTitle": "Case Study"
   },
   "livedExperiences": {
     "relatedContent": "Related",
@@ -1795,7 +1901,8 @@
       "title": "No updates in {region} yet.",
       "description": "Follow this region to hear when something's posted.",
       "cta": "Follow this region"
-    }
+    },
+    "metaNotFound": "News Not Found"
   },
   "regional": {
     "noLivedExperiences": "No lived experiences available yet.",
@@ -1823,7 +1930,8 @@
       "partners": "Partners"
     },
     "communityMembers": "Community members",
-    "contributionCount": "{count, plural, one {# contribution} other {# contributions}}"
+    "contributionCount": "{count, plural, one {# contribution} other {# contributions}}",
+    "downloadFile": "Download {name}"
   },
   "cookieConsent": {
     "title": "We value your privacy",
@@ -1858,7 +1966,10 @@
     "viewAll": "View All",
     "noPostsTitle": "No posts yet",
     "noPostsBody": "Check back soon for updates.",
-    "noContent": "No content available at this time."
+    "noContent": "No content available at this time.",
+    "noQueryType": "No query type specified",
+    "contentLoadFailed": "Failed to load content",
+    "errorLoadingContent": "Error loading content: {error}"
   },
   "map": {
     "title": "Explore by region",
@@ -2097,7 +2208,12 @@
     "archived": "Workspace archived",
     "readOnlyNotice": "You're viewing this workspace read-only.",
     "readOnlyJoinLink": "About this project & how to join",
-    "fileUnavailable": "File unavailable"
+    "fileUnavailable": "File unavailable",
+    "makePublic": "Make public",
+    "makePrivate": "Make private",
+    "visibilityConfirm": "Confirm change",
+    "nowPublic": "Workspace is now public — anyone can explore it read-only.",
+    "nowPrivate": "Workspace is now members-only."
   },
   "messages": {
     "title": "Messages",
@@ -2180,7 +2296,9 @@
     "relatedContent": "Related content",
     "pageTitle": "Research outputs",
     "pageDescription": "Reports, toolkits, briefs and other outputs produced across the Connecting Climate Minds community.",
-    "empty": "No research outputs published yet."
+    "empty": "No research outputs published yet.",
+    "metaNotFound": "Research Output Not Found",
+    "metaFallbackTitle": "Research Output"
   },
   "outputs": {
     "title": "Outputs",
@@ -2443,7 +2561,10 @@
     "getInvolved": "Get involved",
     "statMembers": "Members",
     "statCaseStudies": "Case studies",
-    "statLived": "Lived experiences"
+    "statLived": "Lived experiences",
+    "reportsTitle": "Regional Reports & Agendas",
+    "reportsDescription": "Access the latest reports, research findings, and meeting agendas from our regional community.",
+    "viewAllReports": "View All Reports"
   },
   "researchOutputSubmission": {
     "pageTitle": "Submit a research output",

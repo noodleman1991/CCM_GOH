@@ -54,15 +54,16 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale, slug } = await params
   const newsPost = await fetchNewsBySlug(slug)
+  const t = await getTranslations({ locale, namespace: 'news' })
 
   if (!newsPost) {
     return {
-      title: 'News Not Found',
+      title: t('metaNotFound'),
     }
   }
 
   const supportedLocale = locale as 'en' | 'es' | 'fr' | 'ar'
-  const title = getLocalizedValue(newsPost.title, supportedLocale) || 'News'
+  const title = getLocalizedValue(newsPost.title, supportedLocale) || t('title')
   const description = getLocalizedValue(newsPost.excerpt, supportedLocale) || ''
 
   return {

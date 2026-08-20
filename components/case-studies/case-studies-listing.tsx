@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useLocale } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -59,6 +59,7 @@ export default function CaseStudiesListing({
   className
 }: CaseStudiesListingProps) {
   const locale = useLocale()
+  const t = useTranslations('caseStudies')
   const [scrollPosition, setScrollPosition] = useState(0)
 
   const getTitle = (caseStudy: CaseStudy) => {
@@ -224,10 +225,10 @@ export default function CaseStudiesListing({
       <Card className="p-8 text-center">
         <div className="space-y-2">
           <h3 className="text-lg font-medium text-muted-foreground">
-            No case studies found
+            {t('noResults')}
           </h3>
           <p className="text-sm text-muted-foreground">
-            Try adjusting your filters or check back later for new content.
+            {t('noResultsDescription')}
           </p>
         </div>
       </Card>

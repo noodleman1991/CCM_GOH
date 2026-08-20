@@ -60,7 +60,7 @@ export function DynamicContentBlock({
       <section className="w-full py-12">
         <div className="mx-auto max-w-7xl px-6 @content-lg/page:px-8">
           <div className="text-center">
-            <p className="text-red-600">Error: No query type specified for dynamic content block</p>
+            <p className="text-red-600">{t("errorLoadingContent", { error: t("noQueryType") })}</p>
           </div>
         </div>
       </section>
@@ -79,7 +79,7 @@ export function DynamicContentBlock({
       <section className={cn("w-full", bgClass, paddingClass)}>
         <div className="mx-auto max-w-7xl px-6 @content-lg/page:px-8">
           <div className="text-center">
-            <p className="text-red-600">Error loading content: {error}</p>
+            <p className="text-red-600">{t("errorLoadingContent", { error })}</p>
           </div>
         </div>
       </section>
