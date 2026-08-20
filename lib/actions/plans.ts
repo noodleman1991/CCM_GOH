@@ -17,6 +17,23 @@ const STATUS_CYCLE: Record<TaskStatus, TaskStatus> = {
   DONE: "TODO",
 };
 
+/**
+ * Scope filters. Authorizing the caller against `collaborationId` is only half
+ * the check: every child mutation must also prove the stage/task it targets
+ * BELONGS to that collaboration. Without this, an EDITOR of any workspace
+ * (including one they created) could mutate stages and tasks in any other
+ * workspace whose child ids they knew.
+ */
+const stageScope = (collaborationId: string, stageId: string) => ({
+  id: stageId,
+  plan: { collaborationId },
+});
+const taskScope = (collaborationId: string, taskId: string) => ({
+  id: taskId,
+  stage: { plan: { collaborationId } },
+});
+const OUT_OF_SCOPE = { ok: false as const, error: "Not found in this workspace." };
+
 /** Authorize a plan edit for a collaboration; returns a typed failure if not. */
 async function canEdit(collaborationId: string): Promise<{ ok: true } | { ok: false; error: string }> {
   try {
@@ -66,14 +83,19 @@ export async function renameStage(collaborationId: string, stageId: string, titl
   if (!auth.ok) return auth;
   const parsed = titleSchema.safeParse(title);
   if (!parsed.success) return { ok: false, error: "Enter a stage title." };
-  await prisma.planStage.update({ where: { id: stageId }, data: { title: parsed.data } });
+  const r = await prisma.planStage.updateMany({
+    where: stageScope(collaborationId, stageId),
+    data: { title: parsed.data },
+  });
+  if (r.count === 0) return OUT_OF_SCOPE;
   return { ok: true };
 }
 
 export async function deleteStage(collaborationId: string, stageId: string): Promise<Result> {
   const auth = await canEdit(collaborationId);
   if (!auth.ok) return auth;
-  await prisma.planStage.delete({ where: { id: stageId } }); // cascades tasks
+  const r = await prisma.planStage.deleteMany({ where: stageScope(collaborationId, stageId) }); // cascades tasks
+  if (r.count === 0) return OUT_OF_SCOPE;
   return { ok: true };
 }
 
@@ -82,6 +104,8 @@ export async function addTask(collaborationId: string, stageId: string, title: s
   if (!auth.ok) return auth;
   const parsed = titleSchema.safeParse(title);
   if (!parsed.success) return { ok: false, error: "Enter a task." };
+  const stage = await prisma.planStage.findFirst({ where: stageScope(collaborationId, stageId), select: { id: true } });
+  if (!stage) return OUT_OF_SCOPE;
   const count = await prisma.task.count({ where: { stageId } });
   const task = await prisma.task.create({
     data: { stageId, title: parsed.data, order: count },
@@ -94,8 +118,8 @@ export async function addTask(collaborationId: string, stageId: string, title: s
 export async function cycleTaskStatus(collaborationId: string, taskId: string): Promise<Result<{ status: TaskStatus }>> {
   const auth = await canEdit(collaborationId);
   if (!auth.ok) return auth;
-  const task = await prisma.task.findUnique({ where: { id: taskId }, select: { status: true } });
-  if (!task) return { ok: false, error: "Task not found." };
+  const task = await prisma.task.findFirst({ where: taskScope(collaborationId, taskId), select: { status: true } });
+  if (!task) return OUT_OF_SCOPE;
   const next = STATUS_CYCLE[task.status];
   await prisma.task.update({ where: { id: taskId }, data: { status: next } });
   return { ok: true, status: next };
@@ -105,6 +129,11 @@ export async function cycleTaskStatus(collaborationId: string, taskId: string): 
 export async function moveTask(collaborationId: string, taskId: string, toStageId: string): Promise<Result> {
   const auth = await canEdit(collaborationId);
   if (!auth.ok) return auth;
+  const [task, stage] = await Promise.all([
+    prisma.task.findFirst({ where: taskScope(collaborationId, taskId), select: { id: true } }),
+    prisma.planStage.findFirst({ where: stageScope(collaborationId, toStageId), select: { id: true } }),
+  ]);
+  if (!task || !stage) return OUT_OF_SCOPE;
   const count = await prisma.task.count({ where: { stageId: toStageId } });
   await prisma.task.update({ where: { id: taskId }, data: { stageId: toStageId, order: count } });
   return { ok: true };
@@ -122,9 +151,13 @@ export async function reorderTasks(
 ): Promise<Result> {
   const auth = await canEdit(collaborationId);
   if (!auth.ok) return auth;
+  const stage = await prisma.planStage.findFirst({ where: stageScope(collaborationId, stageId), select: { id: true } });
+  if (!stage) return OUT_OF_SCOPE;
+  // updateMany with the scope filter: a task id from another workspace matches
+  // nothing and is skipped rather than re-homed into this plan.
   await prisma.$transaction(
     taskIds.map((id, index) =>
-      prisma.task.update({ where: { id }, data: { stageId, order: index } })
+      prisma.task.updateMany({ where: taskScope(collaborationId, id), data: { stageId, order: index } })
     )
   );
   return { ok: true };
@@ -135,7 +168,9 @@ export async function reorderStages(collaborationId: string, stageIds: string[])
   const auth = await canEdit(collaborationId);
   if (!auth.ok) return auth;
   await prisma.$transaction(
-    stageIds.map((id, index) => prisma.planStage.update({ where: { id }, data: { order: index } }))
+    stageIds.map((id, index) =>
+      prisma.planStage.updateMany({ where: stageScope(collaborationId, id), data: { order: index } })
+    )
   );
   return { ok: true };
 }
@@ -149,7 +184,11 @@ export async function renameTask(
   if (!auth.ok) return auth;
   const parsed = z.string().trim().min(1).max(300).safeParse(title);
   if (!parsed.success) return { ok: false, error: "Task title can't be empty." };
-  await prisma.task.update({ where: { id: taskId }, data: { title: parsed.data } });
+  const r = await prisma.task.updateMany({
+    where: taskScope(collaborationId, taskId),
+    data: { title: parsed.data },
+  });
+  if (r.count === 0) return OUT_OF_SCOPE;
   return { ok: true };
 }
 
@@ -162,6 +201,8 @@ export async function setTaskDescription(
   if (!auth.ok) return auth;
   const parsed = z.string().max(2000).safeParse(description);
   if (!parsed.success) return { ok: false, error: "Description too long." };
+  const scoped = await prisma.task.findFirst({ where: taskScope(collaborationId, taskId), select: { id: true } });
+  if (!scoped) return OUT_OF_SCOPE;
   const task = await prisma.task.update({
     where: { id: taskId },
     data: { description: parsed.data.trim() || null },
@@ -198,7 +239,8 @@ export async function setTaskDescription(
 export async function deleteTask(collaborationId: string, taskId: string): Promise<Result> {
   const auth = await canEdit(collaborationId);
   if (!auth.ok) return auth;
-  await prisma.task.delete({ where: { id: taskId } });
+  const r = await prisma.task.deleteMany({ where: taskScope(collaborationId, taskId) });
+  if (r.count === 0) return OUT_OF_SCOPE;
   return { ok: true };
 }
 
@@ -210,6 +252,17 @@ export async function assignTask(
 ): Promise<Result> {
   const auth = await canEdit(collaborationId);
   if (!auth.ok) return auth;
+  const scoped = await prisma.task.findFirst({ where: taskScope(collaborationId, taskId), select: { id: true } });
+  if (!scoped) return OUT_OF_SCOPE;
+  // Only actual members can be assigned — otherwise any user id could be
+  // attached to a task (and would receive the notification).
+  if (assigneeId) {
+    const member = await prisma.collaborationMember.findUnique({
+      where: { collaborationId_userId: { collaborationId, userId: assigneeId } },
+      select: { userId: true },
+    });
+    if (!member) return { ok: false, error: "That person isn't a member of this workspace." };
+  }
   const task = await prisma.task.update({
     where: { id: taskId },
     data: { assigneeId },

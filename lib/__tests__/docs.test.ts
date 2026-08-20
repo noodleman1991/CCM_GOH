@@ -14,6 +14,8 @@ const db = vi.hoisted(() => {
       create: vi.fn(async () => ({ id: "doc1" })),
       update: vi.fn(async () => ({})),
       delete: vi.fn(async () => ({})),
+      updateMany: vi.fn(async () => ({ count: 1 })),
+      deleteMany: vi.fn(async () => ({ count: 1 })),
     },
   };
   return d;
@@ -60,7 +62,10 @@ describe("renameDoc", () => {
   it("updates a valid title", async () => {
     const res = await renameDoc("c1", "doc1", "Spec");
     expect(res.ok).toBe(true);
-    expect(db.collaborationDoc.update).toHaveBeenCalledWith({ where: { id: "doc1" }, data: { title: "Spec" } });
+    expect(db.collaborationDoc.updateMany).toHaveBeenCalledWith({
+      where: { id: "doc1", collaborationId: "c1" },
+      data: { title: "Spec" },
+    });
   });
 });
 
@@ -68,13 +73,16 @@ describe("updateDocContent", () => {
   it("rejects non-array content", async () => {
     const res = await updateDocContent("c1", "doc1", { not: "an array" });
     expect(res.ok).toBe(false);
-    expect(db.collaborationDoc.update).not.toHaveBeenCalled();
+    expect(db.collaborationDoc.updateMany).not.toHaveBeenCalled();
   });
   it("persists Portable Text array", async () => {
     const pt = [{ _type: "block", children: [{ _type: "span", text: "hi" }] }];
     const res = await updateDocContent("c1", "doc1", pt);
     expect(res.ok).toBe(true);
-    expect(db.collaborationDoc.update).toHaveBeenCalledWith({ where: { id: "doc1" }, data: { content: pt } });
+    expect(db.collaborationDoc.updateMany).toHaveBeenCalledWith({
+      where: { id: "doc1", collaborationId: "c1" },
+      data: { content: pt },
+    });
   });
 });
 
@@ -82,6 +90,28 @@ describe("deleteDoc", () => {
   it("deletes when authorized", async () => {
     const res = await deleteDoc("c1", "doc1");
     expect(res.ok).toBe(true);
-    expect(db.collaborationDoc.delete).toHaveBeenCalledWith({ where: { id: "doc1" } });
+    expect(db.collaborationDoc.deleteMany).toHaveBeenCalledWith({
+      where: { id: "doc1", collaborationId: "c1" },
+    });
+  });
+});
+
+// Authorizing the caller for a workspace is not enough — the doc must belong to
+// it. A doc id from another workspace matches nothing and is refused.
+describe("cross-workspace scoping", () => {
+  it("refuses to rename a doc that isn't in this workspace", async () => {
+    db.collaborationDoc.updateMany.mockResolvedValueOnce({ count: 0 });
+    const res = await renameDoc("c1", "doc-from-c2", "Hijacked");
+    expect(res.ok).toBe(false);
+  });
+  it("refuses to overwrite content of a doc that isn't in this workspace", async () => {
+    db.collaborationDoc.updateMany.mockResolvedValueOnce({ count: 0 });
+    const res = await updateDocContent("c1", "doc-from-c2", []);
+    expect(res.ok).toBe(false);
+  });
+  it("refuses to delete a doc that isn't in this workspace", async () => {
+    db.collaborationDoc.deleteMany.mockResolvedValueOnce({ count: 0 });
+    const res = await deleteDoc("c1", "doc-from-c2");
+    expect(res.ok).toBe(false);
   });
 });
