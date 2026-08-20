@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import type { QueryType } from "@/lib/dynamic-queries-types";
 import { fetchDynamicContent } from "@/lib/dynamic-queries-client";
 // Remove Blocks import - handle server components in parent
@@ -64,6 +65,7 @@ interface ContentSectionProps {
 }
 
 function ContentSection({ section, locale, userId, communitySlug }: ContentSectionProps) {
+  const t = useTranslations("blocks");
   const [dynamicData, setDynamicData] = useState<unknown[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [fetchError, setFetchError] = useState<string | null>(null);
@@ -73,7 +75,7 @@ function ContentSection({ section, locale, userId, communitySlug }: ContentSecti
   // synchronously from props.
   const error =
     section._type === "dynamicContentInsert" && !section.queryType
-      ? "No query type specified"
+      ? t("noQueryType")
       : fetchError;
 
   // Adjust-state-during-render pattern: when the inputs of the fetch change,
@@ -108,11 +110,11 @@ function ContentSection({ section, locale, userId, communitySlug }: ContentSecti
         })
         .catch((err) => {
           console.error("Error loading dynamic content:", err);
-          setFetchError("Failed to load content");
+          setFetchError(t("contentLoadFailed"));
           setLoading(false);
         });
     }
-  }, [section, communitySlug]);
+  }, [section, communitySlug, t]);
 
   // Handle different section types
   switch (section._type) {

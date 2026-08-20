@@ -15,6 +15,19 @@ import { YouTubeConsentGate } from '@/components/cookie-consent/youtube-consent-
 import { headingId } from "@/lib/portable-text-headings";
 import { ZoomableImage } from "@/components/ui/zoomable-image";
 
+// UI labels for the renderer, keyed by locale. createPortableTextComponents is
+// a plain function (no hooks) consumed by both server pages and client
+// components that may render outside NextIntlClientProvider (see grid-row),
+// so labels live here instead of the next-intl catalog.
+const PT_LABELS: Record<string, { image: string; references: string; source: string; footnote: string }> = {
+  en: { image: "Image", references: "References", source: "Source", footnote: "Footnote" },
+  es: { image: "Imagen", references: "Referencias", source: "Fuente", footnote: "Nota al pie" },
+  fr: { image: "Image", references: "Références", source: "Source", footnote: "Note de bas de page" },
+  ar: { image: "صورة", references: "المراجع", source: "المصدر", footnote: "حاشية" },
+};
+
+const ptLabels = (locale: string) => PT_LABELS[locale] ?? PT_LABELS.en;
+
 interface PortableTextRendererProps extends PortableTextProps {
   locale?: string;
   isRTL?: boolean;
@@ -41,7 +54,7 @@ const createPortableTextComponents = (
         if (!value?.asset) return null;
 
         const imageUrl = value.asset.url || urlFor(value).url();
-        const alt = getLocalizedValue(value.alt, locale) || "Image";
+        const alt = getLocalizedValue(value.alt, locale) || ptLabels(locale).image;
         const caption = getLocalizedValue(value.caption, locale);
         const { metadata } = value.asset;
         const { lqip, dimensions } = metadata || {};
@@ -114,7 +127,7 @@ const createPortableTextComponents = (
         return (
           <section className="mt-12 text-start">
             <h3 className="mb-3 font-heading text-xl font-semibold text-ccm-midnight">
-              {({ en: "References", es: "Referencias", fr: "Références", ar: "المراجع" } as Record<string, string>)[locale] ?? "References"}
+              {ptLabels(locale).references}
             </h3>
             <ol className="grid list-decimal gap-2.5 ps-6 text-sm leading-relaxed text-muted-foreground marker:font-bold marker:text-ccm-sea">
               {items.map((item, i) => (
@@ -313,7 +326,7 @@ const createPortableTextComponents = (
                 {value.caption && <span>{value.caption}</span>}
                 {value.source && (
                   <span>
-                    <span className="font-bold text-foreground/80">Source: </span>
+                    <span className="font-bold text-foreground/80">{ptLabels(locale).source}: </span>
                     {value.sourceUrl ? (
                       <a
                         href={value.sourceUrl}
@@ -507,7 +520,7 @@ const createPortableTextComponents = (
             href={`#footnote-${n}`}
             id={`footnote-ref-${n}`}
             className="align-super text-[0.7em] font-medium text-ccm-water hover:text-ccm-sea no-underline ms-0.5"
-            aria-label={`Footnote ${n}`}
+            aria-label={`${ptLabels(locale).footnote} ${n}`}
           >
             [{n}]
           </a>

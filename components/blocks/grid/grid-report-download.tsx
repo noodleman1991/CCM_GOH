@@ -41,6 +41,7 @@ function DownloadButton({
                             variant = 'default',
                             size = 'sm'
                         }: DownloadButtonProps) {
+    const t = useTranslations('regional');
     const { download, isFileDownloading, error } = useDownloadTracking({
         userId,
         onDownloadError: (error, reportId, language) => {
@@ -74,12 +75,12 @@ function DownloadButton({
                 isDownloading && "animate-pulse",
                 error && "border-red-200 text-red-600"
             )}
-            title={`Download ${languageDisplay}${fileSize ? ` (${fileSize})` : ''}`}
+            title={`${t('downloadFile', { name: languageDisplay })}${fileSize ? ` (${fileSize})` : ''}`}
         >
             {isDownloading ? (
                 <>
                     <div className="h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent shrink-0" />
-                    <span className="truncate">Downloading...</span>
+                    <span className="truncate">{t('downloading')}</span>
                 </>
             ) : (
                 <>
@@ -118,6 +119,7 @@ export function DownloadSection({
                                     userId
                                 }: DownloadSectionProps) {
     const t = useTranslations('common');
+    const tRegional = useTranslations('regional');
     // Download buttons
     if (showDownloadButtons && hasFiles && canAccess) {
         return (
@@ -154,7 +156,7 @@ export function DownloadSection({
         return (
             <div className="w-full text-center text-sm text-muted-foreground">
                 <AlertCircle className="h-4 w-4 mx-auto mb-1" />
-                <span>No files available</span>
+                <span>{tRegional('noFilesAvailable')}</span>
             </div>
         );
     }
@@ -166,8 +168,8 @@ export function DownloadSection({
                 <Lock className="h-4 w-4 mx-auto mb-1" />
                 <span>
                     {report.accessLevel === 'registered'
-                        ? 'Sign in to download'
-                        : 'Members only'
+                        ? tRegional('signInToDownload')
+                        : tRegional('membersOnly')
                     }
                 </span>
             </div>

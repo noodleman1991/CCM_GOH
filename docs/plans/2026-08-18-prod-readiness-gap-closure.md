@@ -17,6 +17,24 @@ rollout · Turnstile widget · GDPR · consent honesty · feature gaps · qualit
 debt + legal parity). Gates green per slice: tsc 0, vitest 606/606, eslint
 clean on changed files. Remaining user actions listed at the bottom.
 
+## Wave 3 status (2026-08-20)
+User authorized DB actions. Migrations APPLIED to the live lucky-waterfall DB
+(tiers/USER-follows/authorEmail-drop + comment bodyRich; stray empty
+issue_reports migration dir removed — it broke deploy with P3015). PUBLIC-
+workspace flow rendered-validated end-to-end via a temporary visibility flip
+(explore link → read-only shell with all tabs, notice, zero edit affordances;
+one leak found+fixed: the overview add-output tile now gates on canEdit).
+SHIPPED: rich comment composer (sanitized Portable Text — text-level marks +
+safe links only, plain body re-derived server-side for moderation/@mentions;
+signed-in only, anon keeps textarea+Turnstile; 7 sanitizer tests) · workspace
+visibility toggle (OWNER; copy-then-flip-then-delete R2 re-homing between
+public/ and members/ prefixes, rollback on copy failure) · notification
+snippets as keys+params (structured JSON snippets localized at render; old
+prose rows still render verbatim) · i18n round 2 (dashboard ~42 strings with
+the hardcoded TOPIC map replaced by CMS-taxonomy translations; profile/account
+~45 incl. Zod factories + a whole missing recent-work namespace; grid/metadata
+leftovers 13 files + dead nav-projects deleted).
+
 ## Slices
 1. **Security-critical**: untrack supabase-users.json (692 emails+password hashes; history
    rewrite = separate user decision); lock down Sanity webhook debug GET + drop ACAO `*`;

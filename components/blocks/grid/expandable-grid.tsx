@@ -10,8 +10,10 @@ interface ExpandableGridProps {
   gridClassName?: string;
   locale: string;
   isRTL?: boolean;
-  expandLabel?: string;
-  collapseLabel?: string;
+  // Required: resolved by the server parent (grid-row) via next-intl so this
+  // client component never depends on NextIntlClientProvider context.
+  expandLabel: string;
+  collapseLabel: string;
 }
 
 export function ExpandableGrid({
@@ -20,8 +22,8 @@ export function ExpandableGrid({
   gridClassName = "grid-cols-3",
   locale,
   isRTL = false,
-  expandLabel = "View More",
-  collapseLabel = "Show Less",
+  expandLabel,
+  collapseLabel,
 }: ExpandableGridProps) {
   // ✅ HYDRATION FIX: Initial state is false (collapsed)
   const [isExpanded, setIsExpanded] = useState(false);

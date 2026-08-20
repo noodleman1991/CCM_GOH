@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { useTranslations } from 'next-intl'
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -13,18 +13,36 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { toast } from "sonner"
 import { Loader2, Mail, Key, Trash2, AlertTriangle } from "lucide-react"
 
-const EmailUpdateSchema = z.object({
-  email: z.string().email("Please enter a valid email address")
+// The confirmation token is deliberately a fixed, untranslated literal — the
+// user must type exactly this in every locale; surrounding copy is localized
+// and references it via interpolation.
+const DELETE_TOKEN = "DELETE"
+
+// Localized validation messages (resolved from t() inside the component so the
+// Zod errors show in the user's language — the proven newsletter pattern).
+interface SchemaMessages {
+  emailInvalid: string
+  currentPasswordRequired: string
+  newPasswordMin: string
+  confirmPasswordRequired: string
+  passwordsMismatch: string
+}
+
+const makeEmailUpdateSchema = (m: SchemaMessages) => z.object({
+  email: z.string().email(m.emailInvalid)
 })
 
-const PasswordChangeSchema = z.object({
-  currentPassword: z.string().min(1, "Current password is required"),
-  newPassword: z.string().min(8, "New password must be at least 8 characters"),
-  confirmPassword: z.string().min(1, "Please confirm your password")
+const makePasswordChangeSchema = (m: SchemaMessages) => z.object({
+  currentPassword: z.string().min(1, m.currentPasswordRequired),
+  newPassword: z.string().min(8, m.newPasswordMin),
+  confirmPassword: z.string().min(1, m.confirmPasswordRequired)
 }).refine((data) => data.newPassword === data.confirmPassword, {
-  message: "Passwords don't match",
+  message: m.passwordsMismatch,
   path: ["confirmPassword"]
 })
+
+type EmailUpdateValues = z.infer<ReturnType<typeof makeEmailUpdateSchema>>
+type PasswordChangeValues = z.infer<ReturnType<typeof makePasswordChangeSchema>>
 
 interface AccountInfo {
   id: string
@@ -49,16 +67,28 @@ export default function AccountManagement({ initialData }: AccountManagementProp
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
   const [deleteConfirmText, setDeleteConfirmText] = useState("")
 
-  const emailForm = useForm<z.infer<typeof EmailUpdateSchema>>({
-    resolver: zodResolver(EmailUpdateSchema),
+  // Schemas built inside the component so validation messages localize
+  // (newsletter/case-study Zod-closure pattern).
+  const schemaMessages = useMemo<SchemaMessages>(() => ({
+    emailInvalid: t('validation.emailInvalid'),
+    currentPasswordRequired: t('validation.currentPasswordRequired'),
+    newPasswordMin: t('validation.newPasswordMin'),
+    confirmPasswordRequired: t('validation.confirmPasswordRequired'),
+    passwordsMismatch: t('validation.passwordsMismatch'),
+  }), [t])
+  const emailUpdateSchema = useMemo(() => makeEmailUpdateSchema(schemaMessages), [schemaMessages])
+  const passwordChangeSchema = useMemo(() => makePasswordChangeSchema(schemaMessages), [schemaMessages])
+
+  const emailForm = useForm<EmailUpdateValues>({
+    resolver: zodResolver(emailUpdateSchema),
     defaultValues: {
       email: accountInfo?.primaryEmailAddress?.emailAddress || ""
     }
   })
 
 
-  const passwordForm = useForm<z.infer<typeof PasswordChangeSchema>>({
-    resolver: zodResolver(PasswordChangeSchema),
+  const passwordForm = useForm<PasswordChangeValues>({
+    resolver: zodResolver(passwordChangeSchema),
     defaultValues: {
       currentPassword: "",
       newPassword: "",
@@ -73,20 +103,20 @@ export default function AccountManagement({ initialData }: AccountManagementProp
       const response = await fetch('/api/account')
       
       if (!response.ok) {
-        throw new Error('Failed to fetch account information')
+        throw new Error(t('errors.loadFailed'))
       }
-      
+
       const data = await response.json()
       setAccountInfo(data)
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to load account information')
+      toast.error(error instanceof Error ? error.message : t('errors.loadFailed'))
     } finally {
       setLoading(false)
     }
   }
 
   // Update email
-  const handleEmailUpdate = async (data: z.infer<typeof EmailUpdateSchema>) => {
+  const handleEmailUpdate = async (data: EmailUpdateValues) => {
     try {
       setLoading(true)
       const response = await fetch('/api/account', {
@@ -101,13 +131,13 @@ export default function AccountManagement({ initialData }: AccountManagementProp
       const result = await response.json()
 
       if (!response.ok) {
-        throw new Error(result.error || 'Failed to update email')
+        throw new Error(result.error || t('errors.updateEmailFailed'))
       }
 
       toast.success(result.message)
       await fetchAccountInfo()
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to update email')
+      toast.error(error instanceof Error ? error.message : t('errors.updateEmailFailed'))
     } finally {
       setLoading(false)
     }
@@ -115,7 +145,7 @@ export default function AccountManagement({ initialData }: AccountManagementProp
 
 
   // Change password
-  const handlePasswordChange = async (data: z.infer<typeof PasswordChangeSchema>) => {
+  const handlePasswordChange = async (data: PasswordChangeValues) => {
     try {
       setLoading(true)
       const response = await fetch('/api/account', {
@@ -131,13 +161,13 @@ export default function AccountManagement({ initialData }: AccountManagementProp
       const result = await response.json()
 
       if (!response.ok) {
-        throw new Error(result.error || 'Failed to change password')
+        throw new Error(result.error || t('errors.changePasswordFailed'))
       }
 
       toast.success(result.message)
       passwordForm.reset()
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to change password')
+      toast.error(error instanceof Error ? error.message : t('errors.changePasswordFailed'))
     } finally {
       setLoading(false)
     }
@@ -145,8 +175,8 @@ export default function AccountManagement({ initialData }: AccountManagementProp
 
   // Delete account
   const handleDeleteAccount = async () => {
-    if (deleteConfirmText !== "DELETE") {
-      toast.error("Please type DELETE to confirm")
+    if (deleteConfirmText !== DELETE_TOKEN) {
+      toast.error(t('delete.confirm.typeError', { token: DELETE_TOKEN }))
       return
     }
 
@@ -163,7 +193,7 @@ export default function AccountManagement({ initialData }: AccountManagementProp
       const result = await response.json()
 
       if (!response.ok) {
-        throw new Error(result.error || 'Failed to delete account')
+        throw new Error(result.error || t('errors.deleteFailed'))
       }
 
       toast.success(result.message)
@@ -171,7 +201,7 @@ export default function AccountManagement({ initialData }: AccountManagementProp
       // client-side auth/session state.
       window.location.href = '/'
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to delete account')
+      toast.error(error instanceof Error ? error.message : t('errors.deleteFailed'))
       setLoading(false)
     }
   }
@@ -213,7 +243,7 @@ export default function AccountManagement({ initialData }: AccountManagementProp
           <div className="space-y-4">
             <div className="text-sm">
               <strong>{t('email.current')}</strong>
-              <p>{accountInfo?.primaryEmailAddress?.emailAddress || t('email.none')}</p>
+              <p><bdi>{accountInfo?.primaryEmailAddress?.emailAddress || t('email.none')}</bdi></p>
             </div>
             
             <Form {...emailForm}>
@@ -345,12 +375,16 @@ export default function AccountManagement({ initialData }: AccountManagementProp
                   {t('delete.confirm.publishedNote')}
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  {t('delete.confirm.type')} <strong>DELETE</strong>
+                  {t.rich('delete.confirm.typeInstruction', {
+                    token: DELETE_TOKEN,
+                    strong: (chunks) => <strong>{chunks}</strong>
+                  })}
                 </p>
                 <Input
                   value={deleteConfirmText}
                   onChange={(e) => setDeleteConfirmText(e.target.value)}
-                  placeholder="DELETE"
+                  placeholder={DELETE_TOKEN}
+                  dir="ltr"
                 />
               </div>
               
@@ -361,7 +395,7 @@ export default function AccountManagement({ initialData }: AccountManagementProp
                 <Button 
                   variant="destructive" 
                   onClick={handleDeleteAccount}
-                  disabled={loading || deleteConfirmText !== "DELETE"}
+                  disabled={loading || deleteConfirmText !== DELETE_TOKEN}
                 >
                   {loading && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
                   {t('delete.confirm.delete')}

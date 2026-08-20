@@ -209,7 +209,16 @@ export function DashboardClient({
               <div>
                 <h2 className="text-2xl font-bold mb-4">{t('attentionTitle')}</h2>
                 <div className="space-y-2">
-                  {attention.map((a) => (
+                  {attention.map((a) => {
+                    // Notification details arrive as raw enum values (e.g.
+                    // TASK_ASSIGNED) — show them in user words via i18n keys.
+                    const detail =
+                      a.kind === "notification" && a.detail
+                        ? t.has(`notificationTypes.${a.detail}`)
+                          ? t(`notificationTypes.${a.detail}`)
+                          : null
+                        : a.detail
+                    return (
                     <Link
                       key={`${a.kind}-${a.id}`}
                       href={a.href}
@@ -224,11 +233,12 @@ export function DashboardClient({
                       />
                       <span className="min-w-0 flex-1 text-foreground">
                         <bdi>{a.title}</bdi>
-                        {a.detail && <span className="ms-2 text-xs text-muted-foreground">{a.detail}</span>}
+                        {detail && <span className="ms-2 text-xs text-muted-foreground"><bdi>{detail}</bdi></span>}
                       </span>
                       <span className="flex-none text-xs font-bold text-[var(--color-ccm-sea)]">{t('attentionOpen')}</span>
                     </Link>
-                  ))}
+                    )
+                  })}
                 </div>
               </div>
             )}

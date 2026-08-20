@@ -45,15 +45,16 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }): Promise<Metadata> {
   const { locale, slug } = await params
   const caseStudy = await fetchCaseStudyBySlug({ slug })
+  const t = await getTranslations({ locale, namespace: 'caseStudies' })
 
   if (!caseStudy) {
     return {
-      title: 'Case Study Not Found'
+      title: t('metaNotFound')
     }
   }
 
   const supportedLocale = locale as 'en' | 'es' | 'fr' | 'ar'
-  const title = getLocalizedText(caseStudy.title, supportedLocale, 'Case Study')
+  const title = getLocalizedText(caseStudy.title, supportedLocale, t('metaFallbackTitle'))
   const description = getLocalizedText(caseStudy.excerpt, supportedLocale, '')
 
   return {

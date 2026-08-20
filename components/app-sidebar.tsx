@@ -29,7 +29,6 @@ import { cn } from "@/lib/utils"
 
 import { FEATURES } from "@/lib/features"
 import { NavMain } from "@/components/nav-main"
-// import { NavProjects } from "@/components/nav-projects"
 import { NavSecondary } from "@/components/nav-secondary"
 import { StaffNav } from "@/components/staff-nav"
 import { LanguageSwitcher } from "@/components/language-switcher"

@@ -253,15 +253,31 @@
         "drafts": {
           "title": "No hay borradores guardados",
           "description": "Tus borradores de estudios de caso aparecerán aquí automáticamente mientras trabajas en ellos."
-        }
+        },
+        "filtered": "No hay envíos con el estado «{status}»"
       },
       "alerts": {
         "revision": {
           "title": "Acción Requerida",
           "description": "Tienes {count} estudio{plural} de caso que necesita{singular} revisión basada en los comentarios del editor.",
-          "editorFeedback": "Comentarios del editor:"
+          "editorFeedback": "Comentarios del editor:",
+          "body": "{count, plural, one {Tienes # estudio de caso que necesita revisión según los comentarios del editor.} other {Tienes # estudios de caso que necesitan revisión según los comentarios del editor.}}"
         }
-      }
+      },
+      "untitled": "Sin título",
+      "untitledDraft": "Borrador sin título",
+      "featured": "Destacado",
+      "draftBadge": "Borrador",
+      "dateUnknown": "Fecha desconocida",
+      "authorCount": "{count, plural, one {# autor} other {# autores}}",
+      "tagFallback": "Etiqueta",
+      "moreTags": "+{count}",
+      "noDescription": "Aún sin descripción…",
+      "lastSaved": "Guardado por última vez el {date}",
+      "lastSavedUnknown": "Fecha del último guardado desconocida",
+      "step": "Paso: {step}",
+      "withCount": "{label} ({count})",
+      "filterAll": "Todos"
     },
     "recentSubmissions": "Tus contribuciones recientes",
     "memberCount": "{count, plural, one {# miembro} other {# miembros}}",
@@ -277,7 +293,22 @@
     "attentionOpen": "Abrir →",
     "forYouTitle": "Para ti",
     "forYouRegion": "de una región que sigues",
-    "forYouTheme": "sobre un tema que sigues"
+    "forYouTheme": "sobre un tema que sigues",
+    "setup": {
+      "title": "Configurando tu cuenta…",
+      "description": "Estamos preparando tu panel. Esto suele tardar solo unos segundos.",
+      "refreshPage": "Actualizar la página",
+      "support": "Si este mensaje persiste, ponte en contacto con el soporte."
+    },
+    "notificationTypes": {
+      "TASK_ASSIGNED": "Tarea asignada a ti",
+      "TASK_DUE": "Tarea próxima a vencer",
+      "OUTPUT_STATUS": "Actualización del estado de un resultado",
+      "THREAD_REPLY": "Nueva respuesta en una conversación",
+      "MEMBER_JOINED": "Nuevo miembro se ha unido",
+      "FOLLOWED_PUBLISH": "Novedad de alguien que sigues",
+      "EVENT_REMINDER": "Recordatorio de evento"
+    }
   },
   "settings": {
     "title": "Configuración",
@@ -414,7 +445,18 @@
     "threadReply": "respondió en un hilo",
     "memberJoined": "se unió al espacio de trabajo",
     "followedPublish": "publicó algo nuevo",
-    "eventReminder": "el evento comienza pronto"
+    "eventReminder": "el evento comienza pronto",
+    "snippets": {
+      "joinAccepted": "aceptó tu solicitud para unirte",
+      "joinDeclined": "rechazó tu solicitud para unirte",
+      "invitedToJoin": "te invitó a unirte a «{title}»",
+      "inviteAccepted": "aceptó tu invitación a «{title}»",
+      "inviteDeclined": "rechazó tu invitación a «{title}»",
+      "contactAccepted": "aceptó tu solicitud de contacto",
+      "contactDeclined": "rechazó tu solicitud de contacto",
+      "removedFromWorkspace": "te eliminó de «{title}»",
+      "rsvpGoing": "Asistirás a «{title}» — {when}"
+    }
   },
   "dates": {
     "today": "Hoy",
@@ -526,7 +568,33 @@
       "hide": "Ocultar del perfil",
       "show": "Mostrar en el perfil",
       "pin": "Fijar arriba",
-      "unpin": "Desfijar"
+      "unpin": "Desfijar",
+      "form": {
+        "title": "Añadir Trabajo Reciente",
+        "description": "Comparte un proyecto o contribución para que otros vean en qué has estado trabajando",
+        "workTitle": "Título del Proyecto",
+        "workTitlePlaceholder": "Ingresa el título de tu proyecto o trabajo",
+        "workDescription": "Descripción",
+        "workDescriptionPlaceholder": "Cuéntanos sobre este proyecto y su impacto...",
+        "workDescriptionHint": "Un breve resumen de en qué consiste el trabajo y por qué es importante",
+        "workLink": "Enlace del Proyecto",
+        "workLinkHint": "Opcional: un enlace donde se puede obtener más información",
+        "startDate": "Fecha de Inicio",
+        "endDate": "Fecha de Fin",
+        "ongoing": "Este trabajo está en curso",
+        "ongoingDescription": "Márcalo si todavía estás trabajando en ello",
+        "cancel": "Cancelar",
+        "save": "Guardar",
+        "saveSuccess": "Trabajo guardado correctamente",
+        "saveError": "No se pudo guardar el trabajo",
+        "validation": {
+          "titleRequired": "El título es obligatorio",
+          "descriptionRequired": "La descripción es obligatoria",
+          "urlInvalid": "Introduce una URL válida",
+          "startDateRequired": "La fecha de inicio es obligatoria",
+          "endDateRule": "La fecha de fin es obligatoria para trabajos finalizados y debe ser posterior a la fecha de inicio"
+        }
+      }
     },
     "communities": {
       "title": "Comunidades",
@@ -713,7 +781,25 @@
         "help": "Pega tu ORCID iD para traer tus publicaciones y afiliaciones para revisar.",
         "needId": "Introduce primero tu ORCID iD.",
         "added": "Se importaron {count} trabajos: revísalos y guarda.",
-        "none": "No se encontraron trabajos nuevos para importar."
+        "none": "No se encontraron trabajos nuevos para importar.",
+        "failed": "La importación falló"
+      },
+      "validation": {
+        "firstNameRequired": "El nombre es obligatorio",
+        "lastNameRequired": "El apellido es obligatorio",
+        "usernameMin": "El nombre de usuario debe tener al menos 3 caracteres",
+        "usernamePattern": "El nombre de usuario solo puede contener letras, números y guiones bajos",
+        "bioMax": "La biografía debe tener menos de 500 caracteres",
+        "workTypesMin": "Selecciona al menos un tipo de trabajo",
+        "expertiseAreasMin": "Selecciona al menos un área de especialización",
+        "workBioMax": "La biografía profesional debe tener menos de 1000 caracteres",
+        "urlInvalid": "Introduce una URL válida",
+        "workTitleRequired": "El título es obligatorio",
+        "workDescriptionRequired": "La descripción es obligatoria",
+        "workStartDateRequired": "La fecha de inicio es obligatoria",
+        "headlineMax": "El titular debe tener menos de 120 caracteres",
+        "keepUnder600": "No debe superar los 600 caracteres",
+        "keepUnder1000": "No debe superar los 1000 caracteres"
       }
     },
     "account": {
@@ -753,7 +839,9 @@
           "type": "Para confirmar, escribe",
           "cancel": "Cancelar",
           "delete": "Eliminar Cuenta",
-          "publishedNote": "Tus estudios de caso publicados permanecerán en el sitio. Para modificar o eliminar un estudio de caso publicado, comunícate por correo electrónico con el equipo de Connecting Climate Minds Hub."
+          "publishedNote": "Tus estudios de caso publicados permanecerán en el sitio. Para modificar o eliminar un estudio de caso publicado, comunícate por correo electrónico con el equipo de Connecting Climate Minds Hub.",
+          "typeError": "Escribe {token} para confirmar",
+          "typeInstruction": "Para confirmar, escribe <strong>{token}</strong> en el campo de abajo."
         }
       },
       "groups": {
@@ -761,6 +849,19 @@
         "accountDescription": "Gestiona tu correo de acceso y tu contraseña.",
         "dangerZone": "Zona de peligro",
         "dangerZoneDescription": "Acciones irreversibles. Asegúrate antes de continuar."
+      },
+      "validation": {
+        "emailInvalid": "Introduce una dirección de correo electrónico válida",
+        "currentPasswordRequired": "La contraseña actual es obligatoria",
+        "newPasswordMin": "La nueva contraseña debe tener al menos 8 caracteres",
+        "confirmPasswordRequired": "Confirma tu contraseña",
+        "passwordsMismatch": "Las contraseñas no coinciden"
+      },
+      "errors": {
+        "loadFailed": "No se pudo cargar la información de la cuenta",
+        "updateEmailFailed": "No se pudo actualizar el correo electrónico",
+        "changePasswordFailed": "No se pudo cambiar la contraseña",
+        "deleteFailed": "No se pudo eliminar la cuenta"
       }
     },
     "contributions": {
@@ -821,7 +922,10 @@
     "search": "Buscar",
     "noResults": "No se encontraron perfiles. Intenta ajustar tu búsqueda.",
     "unnamed": "Usuario Sin Nombre",
-    "browseProfiles": "Explorar Perfiles"
+    "browseProfiles": "Explorar Perfiles",
+    "metaNotFound": "Perfil no encontrado",
+    "metaProfileTitle": "{name} - Perfil",
+    "metaProfileDescription": "Ver el perfil de {name}"
   },
   "caseStudySubmission": {
     "pageTitle": "Enviar Estudio de Caso",
@@ -1721,7 +1825,9 @@
     "galleryView": "Galería",
     "mapView": "Mapa",
     "writtenBy": "Escrito por",
-    "withOrgs": "Con"
+    "withOrgs": "Con",
+    "metaNotFound": "Estudio de caso no encontrado",
+    "metaFallbackTitle": "Estudio de caso"
   },
   "revisionAlert": {
     "title": "Acción Requerida: Revisión Necesaria",
@@ -1795,7 +1901,8 @@
       "title": "Aún no hay novedades en {region}.",
       "description": "Sigue esta región para enterarte cuando se publique algo.",
       "cta": "Seguir esta región"
-    }
+    },
+    "metaNotFound": "Noticia no encontrada"
   },
   "regional": {
     "noLivedExperiences": "Aún no hay experiencias vividas disponibles.",
@@ -1823,7 +1930,8 @@
       "partners": "Colaboradores"
     },
     "communityMembers": "Miembros de la comunidad",
-    "contributionCount": "{count, plural, one {# contribución} other {# contribuciones}}"
+    "contributionCount": "{count, plural, one {# contribución} other {# contribuciones}}",
+    "downloadFile": "Descargar {name}"
   },
   "cookieConsent": {
     "title": "Valoramos tu privacidad",
@@ -1858,7 +1966,10 @@
     "viewAll": "Ver todo",
     "noPostsTitle": "Aún no hay publicaciones",
     "noPostsBody": "Vuelve pronto para ver las novedades.",
-    "noContent": "No hay contenido disponible en este momento."
+    "noContent": "No hay contenido disponible en este momento.",
+    "noQueryType": "No se especificó el tipo de consulta",
+    "contentLoadFailed": "No se pudo cargar el contenido",
+    "errorLoadingContent": "Error al cargar el contenido: {error}"
   },
   "map": {
     "title": "Explorar por región",
@@ -2097,7 +2208,12 @@
     "archived": "Espacio archivado",
     "readOnlyNotice": "Estás viendo este espacio en modo de solo lectura.",
     "readOnlyJoinLink": "Sobre este proyecto y cómo unirte",
-    "fileUnavailable": "Archivo no disponible"
+    "fileUnavailable": "Archivo no disponible",
+    "makePublic": "Hacer público",
+    "makePrivate": "Hacer privado",
+    "visibilityConfirm": "Confirmar cambio",
+    "nowPublic": "El espacio ahora es público: cualquiera puede explorarlo en modo lectura.",
+    "nowPrivate": "El espacio ahora es solo para miembros."
   },
   "messages": {
     "title": "Mensajes",
@@ -2180,7 +2296,9 @@
     "relatedContent": "Contenido relacionado",
     "pageTitle": "Producciones de investigación",
     "pageDescription": "Informes, herramientas, resúmenes y otras producciones de la comunidad de Connecting Climate Minds.",
-    "empty": "Aún no hay producciones de investigación publicadas."
+    "empty": "Aún no hay producciones de investigación publicadas.",
+    "metaNotFound": "Producto de investigación no encontrado",
+    "metaFallbackTitle": "Producto de investigación"
   },
   "outputs": {
     "title": "Resultados",
@@ -2443,7 +2561,10 @@
     "getInvolved": "Participa",
     "statMembers": "Integrantes",
     "statCaseStudies": "Estudios de caso",
-    "statLived": "Experiencias vividas"
+    "statLived": "Experiencias vividas",
+    "reportsTitle": "Informes y Agendas Regionales",
+    "reportsDescription": "Accede a los últimos informes, hallazgos de investigación y agendas de reuniones de nuestra comunidad regional.",
+    "viewAllReports": "Ver Todos los Informes"
   },
   "researchOutputSubmission": {
     "pageTitle": "Enviar un producto de investigación",

@@ -68,10 +68,7 @@ export default async function UserSubmissionsPage({
 }
 
 async function UserSubmissionsContent({ locale, userId }: { locale: string; userId: string }) {
-  const [data, t] = await Promise.all([
-    fetchUserSubmissionsAndDrafts({ userId }),
-    getTranslations({ locale, namespace: 'dashboard' })
-  ])
+  const data = await fetchUserSubmissionsAndDrafts({ userId })
 
   return (
     <UserSubmissionsDashboard

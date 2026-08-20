@@ -1,11 +1,10 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { useRouter } from "next/navigation"
 import { useTranslations, useLocale } from 'next-intl'
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm, useFieldArray } from "react-hook-form"
-import { format } from "date-fns"
 import * as z from "zod"
 import { useUserProfile } from "@/hooks/use-user-profile"
 import type { UserProfileUpdateData, SupportedLocale } from "@/types/prisma"
@@ -27,18 +26,38 @@ import { cn } from "@/lib/utils"
 import ProfilePictureUpload from "@/components/blocks/profile/profile-picture-upload"
 import { CommunitySelector, type Community as SelectorCommunity } from "@/components/profile/community-selector"
 
-const profileSchema = z.object({
+// Localized validation messages (resolved from t() inside the component so the
+// Zod errors show in the user's language — the proven newsletter pattern).
+interface SchemaMessages {
+    firstNameRequired: string
+    lastNameRequired: string
+    usernameMin: string
+    usernamePattern: string
+    bioMax: string
+    workTypesMin: string
+    expertiseAreasMin: string
+    workBioMax: string
+    urlInvalid: string
+    workTitleRequired: string
+    workDescriptionRequired: string
+    workStartDateRequired: string
+    headlineMax: string
+    keepUnder600: string
+    keepUnder1000: string
+}
+
+const makeProfileSchema = (m: SchemaMessages) => z.object({
     // Clerk-managed fields (update Clerk directly)
-    firstName: z.string().min(1, "First name is required").max(50),
-    lastName: z.string().min(1, "Last name is required").max(50),
-    username: z.string().min(3, "Username must be at least 3 characters").max(30)
-        .regex(/^[a-zA-Z0-9_]+$/, "Username can only contain letters, numbers and underscores"),
+    firstName: z.string().min(1, m.firstNameRequired).max(50),
+    lastName: z.string().min(1, m.lastNameRequired).max(50),
+    username: z.string().min(3, m.usernameMin).max(30)
+        .regex(/^[a-zA-Z0-9_]+$/, m.usernamePattern),
 
     // Profile image
     image: z.string().optional(),
 
     // App-managed profile fields
-    bio: z.string().max(500, "Bio must be less than 500 characters").optional(),
+    bio: z.string().max(500, m.bioMax).optional(),
     ageGroup: z.enum(["UNDER_18", "ABOVE_18"]).optional(),
     country: z.string().optional(),
     city: z.string().optional(),
@@ -49,18 +68,18 @@ const profileSchema = z.object({
         "NGO",
         "COMMUNITY_ORGANIZATION",
         "EDUCATION_TEACHING"
-    ])).min(1, "Please select at least one work type"),
+    ])).min(1, m.workTypesMin),
     expertiseAreas: z.array(z.enum([
         "CLIMATE_CHANGE",
         "MENTAL_HEALTH",
         "HEALTH",
         "EDUCATION",
         "SOCIAL_JUSTICE"
-    ])).min(1, "Please select at least one expertise area"),
+    ])).min(1, m.expertiseAreasMin),
     organization: z.string().optional(),
     position: z.string().optional(),
-    workBio: z.string().max(1000, "Work bio must be less than 1000 characters").optional(),
-    personalWebsite: z.string().url("Please enter a valid URL").optional().or(z.literal("")),
+    workBio: z.string().max(1000, m.workBioMax).optional(),
+    personalWebsite: z.string().url(m.urlInvalid).optional().or(z.literal("")),
     linkedinProfile: z.string().optional(),
     otherSocialLinks: z.array(z.object({
         platform: z.string().min(1),
@@ -69,10 +88,10 @@ const profileSchema = z.object({
 
     // Recent Work
     recentWork: z.array(z.object({
-        title: z.string().min(1, "Title is required").max(100),
-        description: z.string().min(1, "Description is required").max(500),
-        link: z.string().url("Please enter a valid URL").optional().or(z.literal("")),
-        startDate: z.string().min(1, "Start date is required"),
+        title: z.string().min(1, m.workTitleRequired).max(100),
+        description: z.string().min(1, m.workDescriptionRequired).max(500),
+        link: z.string().url(m.urlInvalid).optional().or(z.literal("")),
+        startDate: z.string().min(1, m.workStartDateRequired),
         endDate: z.string().optional(),
         isOngoing: z.boolean().optional()
     })).optional().default([]),
@@ -81,14 +100,14 @@ const profileSchema = z.object({
     communityIds: z.array(z.string()).optional().default([]),
 
     // Domain-rich fields (K4)
-    headline: z.string().max(120, "Headline must be under 120 characters").optional().or(z.literal("")),
+    headline: z.string().max(120, m.headlineMax).optional().or(z.literal("")),
     pronouns: z.string().max(40).optional().or(z.literal("")),
-    motivation: z.string().max(600, "Keep it under 600 characters").optional().or(z.literal("")),
+    motivation: z.string().max(600, m.keepUnder600).optional().or(z.literal("")),
     focusTopics: z.array(z.string()).optional().default([]),
     openToCollaboration: z.boolean().optional().default(false),
     lookingFor: z.array(z.string()).optional().default([]),
-    collaborationInterests: z.string().max(600, "Keep it under 600 characters").optional().or(z.literal("")),
-    livedExperienceStatement: z.string().max(1000, "Keep it under 1000 characters").optional().or(z.literal("")),
+    collaborationInterests: z.string().max(600, m.keepUnder600).optional().or(z.literal("")),
+    livedExperienceStatement: z.string().max(1000, m.keepUnder1000).optional().or(z.literal("")),
     showLivedExperience: z.boolean().optional().default(false),
     orcidId: z.string().max(40).optional().or(z.literal("")),
 
@@ -107,8 +126,9 @@ const profileSchema = z.object({
     ) as typeof data
 })
 
-type ProfileFormInput = z.input<typeof profileSchema>
-type ProfileFormValues = z.infer<typeof profileSchema>
+type ProfileSchema = ReturnType<typeof makeProfileSchema>
+type ProfileFormInput = z.input<ProfileSchema>
+type ProfileFormValues = z.infer<ProfileSchema>
 
 interface ProfileEditFormProps {
     initialData?: Partial<ProfileFormValues> & {
@@ -170,6 +190,26 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
 
     // Use the new TypeScript hook with i18n support
     const { user, communities: availableCommunities, recentWork: existingRecentWork, loading, error, updating, updateProfile, refreshProfile, isRTL } = useUserProfile()
+
+    // Schema built inside the component so validation messages localize
+    // (newsletter/case-study Zod-closure pattern).
+    const profileSchema = useMemo(() => makeProfileSchema({
+        firstNameRequired: t('validation.firstNameRequired'),
+        lastNameRequired: t('validation.lastNameRequired'),
+        usernameMin: t('validation.usernameMin'),
+        usernamePattern: t('validation.usernamePattern'),
+        bioMax: t('validation.bioMax'),
+        workTypesMin: t('validation.workTypesMin'),
+        expertiseAreasMin: t('validation.expertiseAreasMin'),
+        workBioMax: t('validation.workBioMax'),
+        urlInvalid: t('validation.urlInvalid'),
+        workTitleRequired: t('validation.workTitleRequired'),
+        workDescriptionRequired: t('validation.workDescriptionRequired'),
+        workStartDateRequired: t('validation.workStartDateRequired'),
+        headlineMax: t('validation.headlineMax'),
+        keepUnder600: t('validation.keepUnder600'),
+        keepUnder1000: t('validation.keepUnder1000'),
+    }), [t])
 
     const form = useForm<ProfileFormInput, unknown, ProfileFormValues>({
         resolver: zodResolver(profileSchema),
@@ -312,7 +352,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
             const res = await fetch(`/api/profile/import/orcid?orcid=${encodeURIComponent(orcid)}`)
             if (!res.ok) {
                 const err = await res.json().catch(() => ({}))
-                throw new Error(err.error || 'Import failed')
+                throw new Error(err.error || t('orcidImport.failed'))
             }
             const { works, affiliations } = await res.json()
             // Prefill org/position from the first affiliation if those are empty.
@@ -340,7 +380,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
             }
             toast.success(added > 0 ? t('orcidImport.added', { count: added }) : t('orcidImport.none'))
         } catch (e) {
-            toast.error(e instanceof Error ? e.message : 'Import failed')
+            toast.error(e instanceof Error ? e.message : t('orcidImport.failed'))
         } finally {
             setOrcidImporting(false)
         }
@@ -419,7 +459,8 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
 
     const formatDate = (dateString: string) => {
         try {
-            return format(new Date(dateString), "MMM yyyy")
+            // Locale-aware month + year (e.g. "Mar 2024" / "مارس ٢٠٢٤")
+            return new Intl.DateTimeFormat(locale, { month: 'short', year: 'numeric' }).format(new Date(dateString))
         } catch {
             return dateString
         }
@@ -520,7 +561,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
 
                 const success = await updateProfile(updateData)
                 if (!success) {
-                    throw new Error('Profile update failed')
+                    throw new Error(t('saveError'))
                 }
             }
             
@@ -595,7 +636,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                         <div className="space-y-2">
                             <label className="text-sm font-medium">{t('email')}</label>
                             <div className="flex items-center gap-2 p-3 bg-muted rounded-md">
-                                <span className="text-sm">{user?.email || initialData?.email || t('noEmail')}</span>
+                                <span className="text-sm"><bdi>{user?.email || initialData?.email || t('noEmail')}</bdi></span>
                                 {(user?.emailVerified || initialData?.emailVerified) && (
                                     <CheckCircle className="h-4 w-4 text-green-500" />
                                 )}
@@ -612,7 +653,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                         <div className="space-y-2">
                             <label className="text-sm font-medium">{t('phoneNumber')}</label>
                             <div className="flex items-center gap-2 p-3 bg-muted rounded-md">
-                                <span className="text-sm">{user?.phoneNumber || initialData?.phoneNumber || t('noPhone')}</span>
+                                <span className="text-sm"><bdi>{user?.phoneNumber || initialData?.phoneNumber || t('noPhone')}</bdi></span>
                                 {(user?.phoneVerified || initialData?.phoneVerified) && (
                                     <CheckCircle className="h-4 w-4 text-green-500" />
                                 )}
@@ -1082,9 +1123,9 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                 {/* Regional Communities */}
                 <Card>
                     <CardHeader>
-                        <CardTitle>{tCommunities('title') || 'Regional Communities'}</CardTitle>
+                        <CardTitle>{tCommunities('title')}</CardTitle>
                         <CardDescription>
-                            {tCommunities('description') || 'Select the regional communities you want to join'}
+                            {tCommunities('description')}
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -1117,7 +1158,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                                         <CardHeader className="pb-3">
                                             <div className={cn("flex items-start justify-between", isRTL && "flex-row-reverse")}>
                                                 <div className="space-y-1">
-                                                    <CardTitle className="text-lg">{item.title}</CardTitle>
+                                                    <CardTitle className="text-lg" dir="auto">{item.title}</CardTitle>
                                                     <div className={cn("flex items-center gap-2 text-sm text-muted-foreground", isRTL && "flex-row-reverse")}>
                                                         <Calendar className="h-4 w-4" />
                                                         <span>
@@ -1149,7 +1190,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                                             </div>
                                         </CardHeader>
                                         <CardContent>
-                                            <p className="text-gray-700 mb-3">{item.description}</p>
+                                            <p className="text-gray-700 mb-3" dir="auto">{item.description}</p>
                                             {item.link && (
                                                 <a
                                                     href={item.link}

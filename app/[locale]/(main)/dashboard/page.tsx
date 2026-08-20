@@ -92,24 +92,25 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
     // If still not found after retry, show setup message
     if (!user) {
       console.log(`⚠️ Dashboard: User ${userId} still not found after retry - webhook may be delayed`)
+      const tSetup = await getTranslations({ locale, namespace: 'dashboard.setup' })
       return (
         <div className="container mx-auto py-16 px-4">
           <div className="max-w-md mx-auto text-center space-y-6">
             <div className="animate-pulse">
               <div className="w-16 h-16 mx-auto mb-4 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
             </div>
-            <h2 className="text-2xl font-bold">Setting up your account...</h2>
+            <h2 className="text-2xl font-bold">{tSetup('title')}</h2>
             <p className="text-gray-600">
-              We&apos;re preparing your dashboard. This usually takes just a few seconds.
+              {tSetup('description')}
             </p>
             <Link
               href={`/dashboard`}
               className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
-              Refresh Page
+              {tSetup('refreshPage')}
             </Link>
             <p className="text-sm text-gray-500">
-              If this message persists, please contact support.
+              {tSetup('support')}
             </p>
           </div>
         </div>
