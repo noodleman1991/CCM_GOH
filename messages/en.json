@@ -2213,7 +2213,14 @@
     "makePrivate": "Make private",
     "visibilityConfirm": "Confirm change",
     "nowPublic": "Workspace is now public — anyone can explore it read-only.",
-    "nowPrivate": "Workspace is now members-only."
+    "nowPrivate": "Workspace is now members-only.",
+    "acceptCookies": "Accept cookies to play",
+    "delete": "Delete",
+    "taskStatus": {
+      "TODO": "To do",
+      "IN_PROGRESS": "In progress",
+      "DONE": "Done"
+    }
   },
   "messages": {
     "title": "Messages",

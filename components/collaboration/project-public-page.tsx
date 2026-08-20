@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Link } from "@/i18n/navigation";
 import { projectColor } from "@/lib/ccm-colors";
-import { OUTPUT_TYPES } from "@/lib/collaboration/outputs";
+import { OUTPUT_TYPES, outputDetailHref } from "@/lib/collaboration/outputs";
 import type { PublicProject } from "@/lib/collaboration/public-access";
 import { ProjectCtaBar } from "./project-cta-bar";
 
@@ -132,7 +132,9 @@ export async function ProjectPublicPage({
               <ul className="grid gap-3 sm:grid-cols-2">
                 {project.outputs.map((o) => {
                   const def = OUTPUT_TYPES.find((d) => d.type === o.sanityType);
-                  const href = def ? def.route : "#"; // slug not stored yet → link to the type index
+                  // Slugs are resolved from Sanity in getPublicProject; fall back
+                  // to the type index only when one is genuinely missing.
+                  const href = o.slug ? outputDetailHref(o.sanityType, o.slug) : def ? def.route : "#";
                   return (
                     <li key={o.id}>
                       <Link href={href} className="group block">
