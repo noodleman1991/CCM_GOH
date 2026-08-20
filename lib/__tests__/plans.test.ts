@@ -13,18 +13,30 @@ const db = vi.hoisted(() => {
     plan: Record<string, MockFn>;
     planStage: Record<string, MockFn>;
     task: Record<string, MockFn>;
+    collaborationMember: Record<string, MockFn>;
     $transaction: MockFn;
   } = {
     plan: { upsert: vi.fn(async () => ({ id: "p1", _count: { stages: 0 } })) },
-    planStage: { create: vi.fn(async () => ({ id: "s1" })), update: vi.fn(async () => ({})), delete: vi.fn(async () => ({})) },
+    planStage: {
+      create: vi.fn(async () => ({ id: "s1" })),
+      update: vi.fn(async () => ({})),
+      delete: vi.fn(async () => ({})),
+      updateMany: vi.fn(async () => ({ count: 1 })),
+      deleteMany: vi.fn(async () => ({ count: 1 })),
+      findFirst: vi.fn(async () => ({ id: "s1" })),
+    },
     task: {
       count: vi.fn(async () => 0),
       create: vi.fn(async () => ({ id: "tk1" })),
       findUnique: vi.fn(async () => ({ status: "TODO" })),
-      update: vi.fn(async () => ({})),
+      findFirst: vi.fn(async () => ({ id: "tk1", status: "TODO", title: "T" })),
+      update: vi.fn(async () => ({ title: "T" })),
       delete: vi.fn(async () => ({})),
+      updateMany: vi.fn(async () => ({ count: 1 })),
+      deleteMany: vi.fn(async () => ({ count: 1 })),
       findMany: vi.fn(async () => []),
     },
+    collaborationMember: { findUnique: vi.fn(async () => ({ userId: "u2" })) },
     $transaction: vi.fn(async (ops: unknown[]) => Promise.all(ops)),
   };
   return d;
@@ -32,7 +44,7 @@ const db = vi.hoisted(() => {
 vi.mock("@/lib/prisma", () => ({ prisma: db }));
 vi.mock("@/lib/notifications/emit", () => ({ emitLifecycle: vi.fn(async () => {}) }));
 
-import { addStage, addTask, cycleTaskStatus, deleteTask, reorderTasks, reorderStages, assignTask } from "@/lib/actions/plans";
+import { addStage, addTask, cycleTaskStatus, deleteTask, reorderTasks, reorderStages, assignTask, renameStage } from "@/lib/actions/plans";
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -78,17 +90,17 @@ describe("addStage / addTask", () => {
 
 describe("cycleTaskStatus", () => {
   it("cycles TODO -> IN_PROGRESS", async () => {
-    db.task.findUnique.mockResolvedValueOnce({ status: "TODO" });
+    db.task.findFirst.mockResolvedValueOnce({ status: "TODO" });
     const res = await cycleTaskStatus("c1", "tk1");
     expect(res.ok && res.status).toBe("IN_PROGRESS");
   });
   it("cycles IN_PROGRESS -> DONE", async () => {
-    db.task.findUnique.mockResolvedValueOnce({ status: "IN_PROGRESS" });
+    db.task.findFirst.mockResolvedValueOnce({ status: "IN_PROGRESS" });
     const res = await cycleTaskStatus("c1", "tk1");
     expect(res.ok && res.status).toBe("DONE");
   });
   it("cycles DONE -> TODO", async () => {
-    db.task.findUnique.mockResolvedValueOnce({ status: "DONE" });
+    db.task.findFirst.mockResolvedValueOnce({ status: "DONE" });
     const res = await cycleTaskStatus("c1", "tk1");
     expect(res.ok && res.status).toBe("TODO");
   });
@@ -98,7 +110,9 @@ describe("deleteTask", () => {
   it("deletes when authorized", async () => {
     const res = await deleteTask("c1", "tk1");
     expect(res.ok).toBe(true);
-    expect(db.task.delete).toHaveBeenCalledWith({ where: { id: "tk1" } });
+    expect(db.task.deleteMany).toHaveBeenCalledWith({
+      where: { id: "tk1", stage: { plan: { collaborationId: "c1" } } },
+    });
   });
 });
 
@@ -108,8 +122,15 @@ describe("reorder (drag persistence)", () => {
     expect(res.ok).toBe(true);
     expect(db.$transaction).toHaveBeenCalledTimes(1);
     // each task updated to its new index + the target stage
-    expect(db.task.update).toHaveBeenCalledWith({ where: { id: "tk3" }, data: { stageId: "s1", order: 0 } });
-    expect(db.task.update).toHaveBeenCalledWith({ where: { id: "tk2" }, data: { stageId: "s1", order: 2 } });
+    // Scoped through the stage→plan relation so a foreign task id matches nothing.
+    expect(db.task.updateMany).toHaveBeenCalledWith({
+      where: { id: "tk3", stage: { plan: { collaborationId: "c1" } } },
+      data: { stageId: "s1", order: 0 },
+    });
+    expect(db.task.updateMany).toHaveBeenCalledWith({
+      where: { id: "tk2", stage: { plan: { collaborationId: "c1" } } },
+      data: { stageId: "s1", order: 2 },
+    });
   });
 
   it("reorderTasks is blocked for non-editors", async () => {
@@ -121,8 +142,47 @@ describe("reorder (drag persistence)", () => {
   it("reorderStages rewrites stage order", async () => {
     const res = await reorderStages("c1", ["s2", "s1"]);
     expect(res.ok).toBe(true);
-    expect(db.planStage.update).toHaveBeenCalledWith({ where: { id: "s2" }, data: { order: 0 } });
-    expect(db.planStage.update).toHaveBeenCalledWith({ where: { id: "s1" }, data: { order: 1 } });
+    expect(db.planStage.updateMany).toHaveBeenCalledWith({
+      where: { id: "s2", plan: { collaborationId: "c1" } },
+      data: { order: 0 },
+    });
+    expect(db.planStage.updateMany).toHaveBeenCalledWith({
+      where: { id: "s1", plan: { collaborationId: "c1" } },
+      data: { order: 1 },
+    });
+  });
+});
+
+// Being authorized for a workspace does not make another workspace's stages and
+// tasks addressable — the scope filter is what enforces that.
+describe("cross-workspace scoping", () => {
+  it("refuses to rename a stage from another workspace", async () => {
+    db.planStage.updateMany.mockResolvedValueOnce({ count: 0 });
+    const res = await renameStage("c1", "stage-from-c2", "Hijacked");
+    expect(res.ok).toBe(false);
+  });
+  it("refuses to delete a task from another workspace", async () => {
+    db.task.deleteMany.mockResolvedValueOnce({ count: 0 });
+    const res = await deleteTask("c1", "task-from-c2");
+    expect(res.ok).toBe(false);
+  });
+  it("refuses to add a task to a stage from another workspace", async () => {
+    db.planStage.findFirst.mockResolvedValueOnce(null);
+    const res = await addTask("c1", "stage-from-c2", "Sneaky");
+    expect(res.ok).toBe(false);
+    expect(db.task.create).not.toHaveBeenCalled();
+  });
+  it("refuses to reorder into a stage from another workspace", async () => {
+    db.planStage.findFirst.mockResolvedValueOnce(null);
+    const res = await reorderTasks("c1", "stage-from-c2", ["tk1"]);
+    expect(res.ok).toBe(false);
+    expect(db.$transaction).not.toHaveBeenCalled();
+  });
+  it("refuses to assign someone who isn't a member", async () => {
+    db.collaborationMember.findUnique.mockResolvedValueOnce(null);
+    const res = await assignTask("c1", "tk1", "outsider");
+    expect(res.ok).toBe(false);
+    expect(db.task.update).not.toHaveBeenCalled();
   });
 });
 

@@ -102,10 +102,12 @@ export async function archiveThread(collaborationId: string, threadId: string): 
   } catch {
     return { ok: false, error: "Not permitted." };
   }
-  await prisma.collaborationThread.update({
-    where: { id: threadId },
+  // Scoped: a thread id from another workspace must not be archivable here.
+  const r = await prisma.collaborationThread.updateMany({
+    where: { id: threadId, collaborationId },
     data: { archivedAt: new Date() },
   });
+  if (r.count === 0) return { ok: false, error: "Not found in this workspace." };
   revalidatePath(`/collaborations/${collaborationId}`);
   return { ok: true };
 }
@@ -218,7 +220,11 @@ export async function renameThread(
   }
   const t = title.trim();
   if (t.length < 1 || t.length > 160) return { ok: false, error: "Invalid title." };
-  await prisma.collaborationThread.update({ where: { id: threadId }, data: { title: t } });
+  const r = await prisma.collaborationThread.updateMany({
+    where: { id: threadId, collaborationId },
+    data: { title: t },
+  });
+  if (r.count === 0) return { ok: false, error: "Not found in this workspace." };
   revalidatePath(`/collaborations/${collaborationId}`);
   return { ok: true };
 }

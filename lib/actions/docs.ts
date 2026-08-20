@@ -31,12 +31,20 @@ export async function createDoc(collaborationId: string): Promise<Result<{ docId
   return { ok: true, docId: doc.id };
 }
 
+/** A doc is only addressable through the collaboration it belongs to — see the
+ *  same note in lib/actions/plans.ts (cross-workspace IDOR). */
+const OUT_OF_SCOPE = { ok: false as const, error: "Not found in this workspace." };
+
 export async function renameDoc(collaborationId: string, docId: string, title: string): Promise<Result> {
   const auth = await canEdit(collaborationId);
   if (!auth.ok) return auth;
   const t = title.trim();
   if (t.length < 1 || t.length > 200) return { ok: false, error: "Title must be 1–200 chars." };
-  await prisma.collaborationDoc.update({ where: { id: docId }, data: { title: t } });
+  const r = await prisma.collaborationDoc.updateMany({
+    where: { id: docId, collaborationId },
+    data: { title: t },
+  });
+  if (r.count === 0) return OUT_OF_SCOPE;
   return { ok: true };
 }
 
@@ -53,13 +61,18 @@ export async function updateDocContent(
   if (!auth.ok) return auth;
   const parsed = contentSchema.safeParse(content);
   if (!parsed.success) return { ok: false, error: "Invalid content." };
-  await prisma.collaborationDoc.update({ where: { id: docId }, data: { content: parsed.data } });
+  const r = await prisma.collaborationDoc.updateMany({
+    where: { id: docId, collaborationId },
+    data: { content: parsed.data },
+  });
+  if (r.count === 0) return OUT_OF_SCOPE;
   return { ok: true };
 }
 
 export async function deleteDoc(collaborationId: string, docId: string): Promise<Result> {
   const auth = await canEdit(collaborationId);
   if (!auth.ok) return auth;
-  await prisma.collaborationDoc.delete({ where: { id: docId } });
+  const r = await prisma.collaborationDoc.deleteMany({ where: { id: docId, collaborationId } });
+  if (r.count === 0) return OUT_OF_SCOPE;
   return { ok: true };
 }
