@@ -1,6 +1,8 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { useNotificationVerb } from "@/components/notifications/notification-feed";
+import { parseStructuredSnippet } from "@/lib/notifications/structured";
 import { Card } from "@/components/ui/card";
 import { SectionHeader } from "@/components/ui/section-header";
 import { OUTPUT_TYPES } from "@/lib/collaboration/outputs";
@@ -43,6 +45,27 @@ export default function WorkspaceHome({
 }) {
   const t = useTranslations("outputs");
   const tCollab = useTranslations("collaboration");
+  const tNotif = useTranslations("notifications");
+  const verb = useNotificationVerb();
+
+  // The strip stores raw tokens server-side (locale-agnostic) and localizes
+  // here: task status enums become words, notification types become verbs, and
+  // structured snippets ({"k":…}) resolve instead of printing as JSON.
+  const attentionDetail = (item: Attention): string | null => {
+    if (item.kind === "task") return item.detail ? tCollab(`taskStatus.${item.detail}`) : null;
+    if (item.kind === "notification") return item.detail ? verb(item.detail) : null;
+    return item.detail;
+  };
+  const attentionTitle = (item: Attention): string => {
+    if (item.kind !== "notification") return item.title;
+    const parsed = parseStructuredSnippet(item.title);
+    if (!parsed) return item.title;
+    try {
+      return tNotif(`snippets.${parsed.k}`, { ...(parsed.p ?? {}) });
+    } catch {
+      return item.title;
+    }
+  };
   const allTasks = planStages.flatMap((s) => s.tasks);
   const done = allTasks.filter((x) => x.status === "DONE").length;
   const total = allTasks.length;
@@ -64,9 +87,11 @@ export default function WorkspaceHome({
               >
                 <span aria-hidden className={`mt-1.5 size-2 flex-none rounded-full ${ATTENTION_DOT[a.kind]}`} />
                 <span className="min-w-0 flex-1 text-ccm-midnight">
-                  <bdi>{a.title}</bdi>
-                  {a.detail && (
-                    <span className="ms-2 text-xs text-muted-foreground">{tCollab(`attention.${a.kind}`, { detail: a.detail })}</span>
+                  <bdi>{attentionTitle(a)}</bdi>
+                  {attentionDetail(a) && (
+                    <span className="ms-2 text-xs text-muted-foreground">
+                      {tCollab(`attention.${a.kind}`, { detail: attentionDetail(a) as string })}
+                    </span>
                   )}
                 </span>
                 <span className="flex-none text-xs font-bold text-ccm-sea">{tCollab("attention.open")}</span>

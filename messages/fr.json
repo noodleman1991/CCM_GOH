@@ -2213,7 +2213,14 @@
     "makePrivate": "Rendre privé",
     "visibilityConfirm": "Confirmer le changement",
     "nowPublic": "L'espace est désormais public — chacun peut l'explorer en lecture seule.",
-    "nowPrivate": "L'espace est désormais réservé aux membres."
+    "nowPrivate": "L'espace est désormais réservé aux membres.",
+    "acceptCookies": "Acceptez les cookies pour lire",
+    "delete": "Supprimer",
+    "taskStatus": {
+      "TODO": "À faire",
+      "IN_PROGRESS": "En cours",
+      "DONE": "Terminé"
+    }
   },
   "messages": {
     "title": "Messages",
