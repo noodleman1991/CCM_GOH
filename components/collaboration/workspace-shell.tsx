@@ -25,7 +25,7 @@ import {
 import { LayoutGrid, MessagesSquare, FileText, Film, Users, ListTodo, BookText, Package } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Link } from "@/i18n/navigation";
-import { setMemberRole, removeMember, leaveCollaboration, archiveCollaboration } from "@/lib/actions/collaboration";
+import { setMemberRole, removeMember, leaveCollaboration, archiveCollaboration, setCollaborationVisibility } from "@/lib/actions/collaboration";
 import type { CollaborationRole } from "@/generated/prisma";
 import { WorkspaceThreads } from "./workspace-threads";
 import { WorkspaceFiles } from "./workspace-files";
@@ -108,6 +108,7 @@ export function WorkspaceShell({
   // Optimistic local copies so inline edits show immediately.
   const [title, setTitle] = useState(collaboration.title);
   const [description, setDescription] = useState(collaboration.description ?? "");
+  const [visibility, setVisibility] = useState(collaboration.visibility);
 
   const saveTitle = async (next: string) => {
     const prev = title;
@@ -162,9 +163,24 @@ export function WorkspaceShell({
             className="flex-1 text-2xl font-heading font-bold text-ccm-midnight"
             inputClassName="text-2xl font-heading font-bold text-ccm-midnight"
           />
-          <Badge variant={collaboration.visibility === "PUBLIC" ? "secondary" : "outline"} className="ms-2 shrink-0">
-            {t(collaboration.visibility === "PUBLIC" ? "public" : "members")}
+          <Badge variant={visibility === "PUBLIC" ? "secondary" : "outline"} className="ms-2 shrink-0">
+            {t(visibility === "PUBLIC" ? "public" : "members")}
           </Badge>
+          {myRole === "OWNER" && (
+            <LifecycleButton
+              label={t(visibility === "PUBLIC" ? "makePrivate" : "makePublic")}
+              confirmLabel={t("visibilityConfirm")}
+              onConfirm={async () => {
+                const next = visibility === "PUBLIC" ? "MEMBERS" : "PUBLIC";
+                const res = await setCollaborationVisibility(collaboration.id, next);
+                if (!res.ok) toast.error(res.error);
+                else {
+                  setVisibility(next);
+                  toast.success(t(next === "PUBLIC" ? "nowPublic" : "nowPrivate"));
+                }
+              }}
+            />
+          )}
           <Button asChild variant="ghost" size="sm">
             <Link href={`/collaborations/${collaboration.id}?view=public`}>
               {t("viewPublicPage")}
@@ -253,6 +269,7 @@ export function WorkspaceShell({
                 activity={activity}
                 memberCount={collaboration.counts.members}
                 attention={attention}
+                canEdit={canEdit}
                 onGoToTab={(tab) => setSection(tab as Section)}
               />
             </section>

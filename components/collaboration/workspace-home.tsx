@@ -29,6 +29,7 @@ export default function WorkspaceHome({
   activity,
   memberCount,
   attention = [],
+  canEdit = true,
   onGoToTab,
 }: {
   outputs: Output[];
@@ -36,6 +37,8 @@ export default function WorkspaceHome({
   activity: Activity[];
   memberCount: number;
   attention?: Attention[];
+  /** Read-only viewers (VIEWER role, public visitors) get no add affordance. */
+  canEdit?: boolean;
   onGoToTab: (tab: string) => void;
 }) {
   const t = useTranslations("outputs");
@@ -91,12 +94,14 @@ export default function WorkspaceHome({
               </Card>
             );
           })}
-          <button
-            onClick={() => onGoToTab("outputs")}
-            className="flex items-center justify-center rounded-lg border border-dashed border-ccm-sea/40 p-4 text-sm font-semibold text-ccm-sea"
-          >
-            + {t("addOutput")}
-          </button>
+          {canEdit && (
+            <button
+              onClick={() => onGoToTab("outputs")}
+              className="flex items-center justify-center rounded-lg border border-dashed border-ccm-sea/40 p-4 text-sm font-semibold text-ccm-sea"
+            >
+              + {t("addOutput")}
+            </button>
+          )}
         </div>
       </section>
 
