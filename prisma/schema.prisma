@@ -367,6 +367,10 @@ model Comment {
   authorName  String?
 
   body        String
+  // Optional rich version of the same content (sanitized Portable Text).
+  // `body` stays the plain-text source of truth for moderation, @mention
+  // parsing, and notification snippets; bodyRich only affects display.
+  bodyRich    Json?
   status      CommentStatus     @default(VISIBLE)
 
   // Optional page anchor for PDF (collaborationFile) comments.

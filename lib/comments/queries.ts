@@ -83,6 +83,7 @@ export async function listComments(params: {
         authorName: displayName,
         authorImage: c.author?.image ?? null,
         body: c.status === "VISIBLE" || c.authorId === viewerId ? c.body : "",
+        bodyRich: c.status === "VISIBLE" || c.authorId === viewerId ? c.bodyRich : null,
         status: c.status,
         page: c.page,
         createdAt: c.createdAt.toISOString(),

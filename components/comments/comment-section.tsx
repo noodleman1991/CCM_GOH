@@ -12,6 +12,27 @@ import { formatDistanceToNow } from "date-fns";
 import { MessageCircle } from "lucide-react";
 import { postComment, toggleReaction, deleteComment, reportComment } from "@/lib/actions/comments";
 import { TurnstileWidget, TURNSTILE_SITE_KEY } from "@/components/comments/turnstile-widget";
+import dynamic from "next/dynamic";
+import { PortableText } from "@portabletext/react";
+import type { PortableTextBlock } from "@portabletext/types";
+
+// TipTap-backed Portable Text editor, loaded only for signed-in composers
+// (anonymous commenters keep the light plain textarea + Turnstile).
+const PortableTextEditor = dynamic(() => import("@/components/forms/portable-text-editor"), {
+  ssr: false,
+  loading: () => <div className="h-24 animate-pulse rounded-md bg-muted/40" />,
+});
+
+/** Plain-text extraction mirroring the server (lib/comments/rich.ts). */
+function richToPlain(blocks: unknown[]): string {
+  return blocks
+    .map((b) => {
+      const block = b as { _type?: string; children?: { text?: string }[] };
+      if (block._type !== "block" || !Array.isArray(block.children)) return "";
+      return block.children.map((c) => c.text ?? "").join("");
+    })
+    .join("\n");
+}
 import type { CommentDTO, CommentPage } from "@/lib/comments/types";
 import type { CommentTargetType } from "@/generated/prisma";
 
@@ -125,6 +146,10 @@ function Composer({
 }) {
   const t = useTranslations("comments");
   const [body, setBody] = useState("");
+  // Rich composer (signed-in only): Portable Text value + a remount key so
+  // the editor clears after posting (it is uncontrolled after mount).
+  const [rich, setRich] = useState<unknown[]>([]);
+  const [editorNonce, setEditorNonce] = useState(0);
   const [name, setName] = useState("");
   const [pending, setPending] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
@@ -132,17 +157,18 @@ function Composer({
   const [turnstileNonce, setTurnstileNonce] = useState(0);
 
   const needsTurnstile = !isSignedIn && !!TURNSTILE_SITE_KEY;
+  const plain = isSignedIn ? richToPlain(rich) : body;
 
   const submit = useCallback(async () => {
-    if (!body.trim()) return;
+    if (!plain.trim()) return;
     setPending(true);
     try {
       const res = await postComment({
         targetType,
         targetId,
         parentId,
-        body,
-        ...(isSignedIn ? {} : { authorName: name, turnstileToken: turnstileToken ?? undefined }),
+        body: plain,
+        ...(isSignedIn ? { bodyRich: rich } : { authorName: name, turnstileToken: turnstileToken ?? undefined }),
       });
       if (!res.ok) {
         toast.error(res.error);
@@ -153,6 +179,8 @@ function Composer({
         return;
       }
       setBody("");
+      setRich([]);
+      setEditorNonce((n) => n + 1);
       setName("");
       if (needsTurnstile) {
         setTurnstileToken(null);
@@ -163,7 +191,7 @@ function Composer({
     } finally {
       setPending(false);
     }
-  }, [body, name, parentId, targetType, targetId, isSignedIn, turnstileToken, needsTurnstile, onPosted, t]);
+  }, [plain, rich, name, parentId, targetType, targetId, isSignedIn, turnstileToken, needsTurnstile, onPosted, t]);
 
   return (
     <div className="space-y-3 rounded-lg border bg-card p-4">
@@ -176,13 +204,24 @@ function Composer({
           aria-label={t("namePlaceholder")}
         />
       )}
-      <Textarea
-        value={body}
-        onChange={(e) => setBody(e.target.value)}
-        placeholder={parentId ? t("replyPlaceholder") : t("placeholder")}
-        rows={3}
-        maxLength={4000}
-      />
+      {isSignedIn ? (
+        <PortableTextEditor
+          key={editorNonce}
+          value={rich}
+          onChangeAction={setRich}
+          placeholder={parentId ? t("replyPlaceholder") : t("placeholder")}
+          maxLength={4000}
+          enabledBlocks={[]}
+        />
+      ) : (
+        <Textarea
+          value={body}
+          onChange={(e) => setBody(e.target.value)}
+          placeholder={parentId ? t("replyPlaceholder") : t("placeholder")}
+          rows={3}
+          maxLength={4000}
+        />
+      )}
       {needsTurnstile && (
         <TurnstileWidget key={turnstileNonce} onToken={setTurnstileToken} />
       )}
@@ -190,7 +229,7 @@ function Composer({
         {!isSignedIn && <p className="text-xs text-muted-foreground">{t("anonNotice")}</p>}
         <Button
           onClick={submit}
-          disabled={pending || !body.trim() || (needsTurnstile && !turnstileToken)}
+          disabled={pending || !plain.trim() || (needsTurnstile && !turnstileToken)}
           className="ms-auto"
         >
           {parentId ? t("reply") : t("post")}
@@ -262,9 +301,15 @@ function CommentItem({
               </span>
             )}
           </p>
-          <p className="mt-1 whitespace-pre-wrap break-words text-sm text-foreground/90">
-            {isTombstone ? <span className="italic text-muted-foreground">{t("deleted")}</span> : comment.body}
-          </p>
+          {isTombstone ? (
+            <p className="mt-1 text-sm italic text-muted-foreground">{t("deleted")}</p>
+          ) : Array.isArray(comment.bodyRich) && comment.bodyRich.length > 0 ? (
+            <div className="prose prose-sm mt-1 max-w-none break-words text-foreground/90 [&_a]:text-ccm-sea [&_blockquote]:border-s-2 [&_blockquote]:ps-3">
+              <PortableText value={comment.bodyRich as PortableTextBlock[]} />
+            </div>
+          ) : (
+            <p className="mt-1 whitespace-pre-wrap break-words text-sm text-foreground/90">{comment.body}</p>
+          )}
           {!isTombstone && (
             <div className="mt-1 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
               <button onClick={react} className="hover:text-ccm-sea">
