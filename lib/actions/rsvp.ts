@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { getActor, isStaff } from "@/lib/authz";
 import { client } from "@/sanity/lib/client";
 import { createNotification } from "@/lib/notifications/service";
+import { structuredSnippet } from "@/lib/notifications/structured";
 import type { RsvpStatus } from "@/generated/prisma";
 
 type Result<T = unknown> = ({ ok: true } & T) | { ok: false; error: string };
@@ -52,16 +53,15 @@ export async function setRsvp(
   // GOING only — status flip-flops don't spam). actorId stays null so the
   // self-notification guard doesn't swallow it.
   if (parsed.data === "GOING" && previous?.status !== "GOING") {
-    const when = event.startAt
-      ? new Date(event.startAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })
-      : null;
+    // The feed formats this per viewer locale — store the ISO, not prose.
+    const when = event.startAt ?? null;
     await createNotification({
       recipientId: actor.id,
       type: "EVENT_REMINDER",
       actorId: null,
       entityType: "event",
       entityId: event.slug ?? eventId,
-      snippet: `You're going to "${event.title ?? "an event"}"${when ? ` — ${when}` : ""}`,
+      snippet: structuredSnippet("rsvpGoing", { title: event.title ?? "", ...(when ? { when } : {}) }),
     });
   }
   return { ok: true, status: parsed.data as RsvpStatus };
