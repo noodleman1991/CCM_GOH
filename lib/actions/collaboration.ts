@@ -5,9 +5,11 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { createNotification } from "@/lib/notifications/service";
 import { getActor } from "@/lib/authz";
+import { structuredSnippet } from "@/lib/notifications/structured";
 import { authorizeCollab, getMembershipRole } from "@/lib/collaboration/service";
 import { seedWorkspace } from "@/lib/collaboration/seed";
 import type { CollaborationRole } from "@/generated/prisma";
+import { r2Configured, copyObject, deleteObject, rekeyForVisibility } from "@/lib/r2";
 
 type Result<T = unknown> = ({ ok: true } & T) | { ok: false; error: string };
 
@@ -140,7 +142,7 @@ export async function removeMember(collaborationId: string, userId: string): Pro
     actorId: actor.id,
     entityType: "collaboration",
     entityId: collaborationId,
-    snippet: `removed you from "${collab?.title ?? "a workspace"}"`,
+    snippet: structuredSnippet("removedFromWorkspace", { title: collab?.title ?? "" }),
   });
   revalidatePath(`/collaborations/${collaborationId}`);
   return { ok: true };
@@ -238,4 +240,67 @@ export async function createThread(collaborationId: string, title: string): Prom
   });
   revalidatePath(`/collaborations/${collaborationId}`);
   return { ok: true, id: thread.id };
+}
+
+
+/**
+ * Flip a workspace between PUBLIC and MEMBERS (OWNER only). File keys are
+ * prefix-routed at upload time (public/ vs members/), so the flip must
+ * re-home every R2 object or MEMBERS files would stay world-readable (and
+ * vice versa). Order is roll-forward-safe:
+ *   1. copy every object to the new prefix (abort on any failure),
+ *   2. update the DB rows + the visibility in one transaction,
+ *   3. best-effort delete the old objects.
+ */
+export async function setCollaborationVisibility(
+  collaborationId: string,
+  visibility: "PUBLIC" | "MEMBERS"
+): Promise<Result> {
+  const actor = await getActor();
+  if (!actor) return { ok: false, error: "Sign in." };
+  const role = await getMembershipRole(collaborationId, actor.id);
+  if (role !== "OWNER") return { ok: false, error: "Only an owner can change visibility." };
+
+  const collab = await prisma.collaboration.findUnique({
+    where: { id: collaborationId },
+    select: { visibility: true },
+  });
+  if (!collab) return { ok: false, error: "Not found." };
+  if (collab.visibility === visibility) return { ok: true };
+
+  const files = await prisma.collaborationFile.findMany({
+    where: { collaborationId },
+    select: { id: true, r2Key: true },
+  });
+
+  const moved: { id: string; from: string; to: string }[] = [];
+  if (files.length > 0) {
+    if (!r2Configured()) {
+      return { ok: false, error: "File storage is unavailable — try again later." };
+    }
+    for (const f of files) {
+      const to = rekeyForVisibility(f.r2Key, visibility);
+      if (to === f.r2Key) continue;
+      try {
+        await copyObject(f.r2Key, to);
+        moved.push({ id: f.id, from: f.r2Key, to });
+      } catch {
+        // Roll back the copies we made; visibility stays unchanged.
+        for (const m of moved) await deleteObject(m.to);
+        return { ok: false, error: "Couldn't move the workspace files — visibility unchanged." };
+      }
+    }
+  }
+
+  await prisma.$transaction([
+    ...moved.map((m) =>
+      prisma.collaborationFile.update({ where: { id: m.id }, data: { r2Key: m.to } })
+    ),
+    prisma.collaboration.update({ where: { id: collaborationId }, data: { visibility } }),
+  ]);
+
+  for (const m of moved) await deleteObject(m.from);
+
+  revalidatePath(`/collaborations/${collaborationId}`);
+  return { ok: true };
 }

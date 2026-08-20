@@ -1,5 +1,5 @@
 import "server-only";
-import { S3Client, PutObjectCommand, GetObjectCommand, HeadObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, GetObjectCommand, HeadObjectCommand, DeleteObjectCommand, CopyObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 /**
@@ -93,6 +93,29 @@ export async function objectExists(key: string): Promise<boolean> {
 }
 
 /** Delete an object (GDPR sweep / file deletion). */
+/**
+ * Copy an object to a new key within the bucket (visibility flips re-home
+ * files between the public/ and members/ prefixes). Throws on failure —
+ * callers must not flip visibility if a copy failed.
+ */
+export async function copyObject(fromKey: string, toKey: string): Promise<void> {
+  if (!r2Configured()) throw new Error("R2 not configured");
+  await client().send(
+    new CopyObjectCommand({
+      Bucket: BUCKET,
+      // CopySource is bucket/key, URL-encoded per the S3 API.
+      CopySource: `${BUCKET}/${encodeURIComponent(fromKey).replace(/%2F/g, "/")}`,
+      Key: toKey,
+    })
+  );
+}
+
+/** Swap the visibility prefix on an existing collaboration-file key. */
+export function rekeyForVisibility(key: string, visibility: "PUBLIC" | "MEMBERS"): string {
+  const prefix = visibility === "PUBLIC" ? "public" : "members";
+  return key.replace(/^(public|members)\//, `${prefix}/`);
+}
+
 export async function deleteObject(key: string): Promise<void> {
   if (!r2Configured()) return;
   try {
