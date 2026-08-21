@@ -333,10 +333,38 @@
       <span class="gate">eslint 0 errors</span>
       <span class="gate">629 tests pass</span>
       <span class="gate">build green</span>
-      <span class="gate">migrations applied (dev)</span>
+      <span class="gate">migrations applied (prod)</span>
     </div>
   </div>
 </header>
+
+<section style="border-bottom:1px solid var(--line);background:var(--surface)">
+  <div class="wrap" style="padding-block:1.6rem">
+    <span class="eyebrow">Verified against production · 21 August 2026</span>
+    <h2 style="font-size:1.25rem;margin-top:.5rem">Where the nine actually stand</h2>
+    <p style="font-size:.93rem;color:var(--ink-2);margin-top:.4rem;max-width:40rem">
+      Checked by testing production directly, not by assuming. Three are genuinely done, two were
+      misdiagnosed in the first version of this page, and one turns out to be blocked by something
+      bigger than the task described.
+    </p>
+    <div class="tbl-wrap" style="margin-top:1rem">
+      <table>
+        <thead><tr><th>#</th><th>Task</th><th>Verified state</th><th>Evidence</th></tr></thead>
+        <tbody>
+          <tr><td class="cap">01</td><td>Cron secret</td><td class="y">Done</td><td>Set in Vercel 21h ago; both deployed cron routes return 401 unauthenticated</td></tr>
+          <tr><td class="cap">02</td><td>Turnstile</td><td class="y">Done</td><td>Both keys set 21h ago — but the widget ships with the new code, so it stays dark until you deploy</td></tr>
+          <tr><td class="cap">03</td><td>Algolia key</td><td class="n">Not done</td><td>Search-only key still returns <code class="inline">403</code></td></tr>
+          <tr><td class="cap">04</td><td>Engagement flag</td><td class="n">Not set</td><td>Absent from production env — correct, it belongs last</td></tr>
+          <tr><td class="cap">05</td><td>R2 / files</td><td class="cond">Blocked</td><td><strong>Zero R2 variables in production</strong> — credentials come before CORS</td></tr>
+          <tr><td class="cap">06</td><td>Email</td><td class="cond">One variable</td><td>Domain verified since Mar 2024; sender falls back to Resend's sandbox address</td></tr>
+          <tr><td class="cap">07</td><td>Sanity ACL</td><td class="y">Done (prod)</td><td>production_2 returns 0 docs anonymously — but <code class="inline">development</code> still returns 1068</td></tr>
+          <tr><td class="cap">08</td><td>Clerk / export</td><td class="cond">666 of 692</td><td>26 users left; file untracked but still in 2 history commits</td></tr>
+          <tr><td class="cap">09</td><td>Promotion</td><td class="cond">Data done</td><td>Migrations + content applied; production still serves the old build</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
 
 <nav class="jump">
   <div class="wrap">
@@ -520,7 +548,16 @@ openssl rand -base64 32</pre>
           works fine, the browser is simply not allowed to talk to the bucket. This has been on
           the setup list since June and is the single reason the Files tab looks broken.
         </p>
+        <div class="caution">
+          <b>There is a bigger blocker first: production has no R2 credentials at all.</b> The Vercel
+          production environment contains zero <code class="inline">R2_*</code> variables, so the Files
+          tab will show &ldquo;storage not configured&rdquo; no matter what the bucket's CORS policy says.
+          Add <code class="inline">R2_ENDPOINT</code>, <code class="inline">R2_ACCESS_KEY_ID</code>,
+          <code class="inline">R2_SECRET_ACCESS_KEY</code> and <code class="inline">R2_BUCKET</code> to
+          Production first, then set the CORS policy below.
+        </div>
         <ol class="steps">
+          <li>Add the four R2 variables to Vercel (Production + Preview).</li>
           <li>Cloudflare dashboard → <strong>R2</strong> → <code class="inline">ccm-collab</code> → <strong>Settings → CORS Policy</strong>.</li>
           <li>Paste the policy below, replacing the preview host with your actual Vercel preview domain.</li>
         </ol>
@@ -554,38 +591,33 @@ openssl rand -base64 32</pre>
       <div class="marker">06</div>
       <div class="task-body">
         <div class="task-title">
-          <h4>Verify a sending domain in Resend</h4>
-          <span class="chip you">You</span>
-          <span class="chip risk">Mail reaches one inbox</span>
+          <h4>Point email at the domain you already verified</h4>
+          <span class="chip you">One variable</span>
+          <span class="chip done">DNS already done</span>
         </div>
         <p class="symptom">
-          The Resend account has no verified domain, so <b>outbound email only reaches the account
-          owner</b> — every other recipient 403s. Case-study status emails, reply and mention
-          notifications, the weekly digest and issue reports have all been failing silently for
-          everyone else.
+          <b>This was misdiagnosed.</b> The domain <code class="inline">connectingclimateminds.org</code>
+          has been verified in Resend since March 2024 — sending is enabled. The actual fault is that
+          <code class="inline">CASE_STUDY_EMAIL_FROM</code> was never set in production, so the code falls
+          back to <code class="inline">onboarding@resend.dev</code> — Resend's shared sandbox sender,
+          which <b>only ever delivers to the account owner</b>. That is the entire reason mail appeared
+          to reach one inbox.
         </p>
         <ol class="steps">
-          <li><a href="https://resend.com/domains">resend.com/domains</a> → <strong>Add Domain</strong>.</li>
-          <li>Add the DNS records Resend gives you (SPF, DKIM, and a DMARC record) at your registrar. Wait for the status to read <strong>Verified</strong>.</li>
-          <li>Point the three from/to variables at that domain in Vercel:
-            <code class="inline">CASE_STUDY_EMAIL_FROM</code>, <code class="inline">ISSUE_REPORT_EMAIL_FROM</code>, and
-            <code class="inline">ISSUE_REPORT_EMAIL_TO</code> (currently pinned to a personal address as a workaround).</li>
+          <li>Set <code class="inline">CASE_STUDY_EMAIL_FROM</code> in Vercel (Production + Preview) to an address on the verified domain — it drives status emails, notifications and the weekly digest.</li>
+          <li>Set <code class="inline">ISSUE_REPORT_EMAIL_FROM</code> to the same domain and <code class="inline">ISSUE_REPORT_EMAIL_TO</code> to wherever problem reports should land.</li>
+          <li>Redeploy.</li>
         </ol>
+        <div class="cmd">
+          <pre>CASE_STUDY_EMAIL_FROM="Connecting Climate Minds &lt;noreply@connectingclimateminds.org&gt;"
+ISSUE_REPORT_EMAIL_FROM="CCM Hub &lt;noreply@connectingclimateminds.org&gt;"
+ISSUE_REPORT_EMAIL_TO="hello@connectingclimateminds.org"</pre>
+          <button class="copy" type="button">Copy</button>
+        </div>
         <div class="verify">
           <b>Verify</b>
-          Submit the in-hub &ldquo;Report a problem&rdquo; widget as an editor, or approve a case study
-          in Studio, and confirm the mail lands somewhere other than the account owner's inbox.
-        </div>
-        <p style="font-size:.87rem;color:var(--ink-3)">
-          Notification emails already carry RFC&nbsp;8058 one-click unsubscribe headers, so
-          deliverability should be good once the domain authenticates.
-        </p>
-        <div class="caution">
-          <b>Does it block anything?</b> Nothing structural — no feature refuses to work, and no other
-          task waits on it. What it costs is every <em>outbound</em> message: status emails to people
-          who submit content, reply and mention notifications, the weekly digest, and the welcome
-          note for newly imported members. Those all fail silently for anyone who isn't the account
-          owner. The Hub works; it just can't talk to anyone. Do it before you invite people in.
+          Approve a case study in Studio, or submit the in-hub problem report, and confirm it arrives
+          at an address that isn't the Resend account owner's.
         </div>
         <label class="check"><input type="checkbox" data-task="t6"> Mark done</label>
       </div>
@@ -596,24 +628,25 @@ openssl rand -base64 32</pre>
       <div class="marker">07</div>
       <div class="task-body">
         <div class="task-title">
-          <h4>Make the <code class="inline">production_2</code> dataset private</h4>
-          <span class="chip you">You</span>
-          <span class="chip risk">Live data exposure</span>
+          <h4>Close the <code class="inline">development</code> dataset too</h4>
+          <span class="chip done">Production fixed</span>
+          <span class="chip risk">Staging still open</span>
         </div>
         <p class="symptom">
-          The Sanity dataset is world-readable, so <b>non-approved case studies and reviewer notes
-          can be read anonymously through the API</b> even though the application filters them out
-          of every page. The app-layer filtering is correct; the datastore is simply open.
+          You closed <code class="inline">production_2</code> — an anonymous query now returns 0
+          documents where a token returns 858. <b>But the exposure moved rather than closed.</b> The
+          <code class="inline">development</code> dataset is a full clone of production and is still
+          world-readable: anonymous queries return 1068 documents, including
+          <b>13 non-approved case studies, a draft, and a document carrying reviewer notes</b> — the
+          precise content the original finding was about.
         </p>
         <ol class="steps">
-          <li><strong>Before flipping:</strong> confirm <code class="inline">SANITY_API_READ_TOKEN</code> is set in <em>all</em> Vercel scopes. A private dataset means every read needs a token — the server client already sends one, but an unset token turns every content page into an error.</li>
-          <li>Test on Preview first: point a preview deployment at a private dataset and load the homepage, a case study, the atlas, and Studio.</li>
-          <li><a href="https://sanity.io/manage">sanity.io/manage</a> → project → <strong>Datasets</strong> → <code class="inline">production_2</code> → set visibility to <strong>Private</strong>.</li>
-          <li>Redeploy production and smoke-test content pages immediately.</li>
+          <li><a href="https://sanity.io/manage">sanity.io/manage</a> → project → <strong>Datasets</strong> → <code class="inline">development</code> → set to <strong>Private</strong>.</li>
+          <li>Local development already sends <code class="inline">SANITY_API_READ_TOKEN</code>, so your own workflow is unaffected — but check a preview deployment afterwards, since Preview points at this dataset.</li>
         </ol>
-        <div class="caution">
-          <b>Rollback is instant.</b> If content pages break, set the dataset back to public while you
-          fix the token wiring — the exposure returns, but the site stays up.
+        <div class="verify">
+          <b>Verify</b>
+          The same query that returns 1068 today should return 0 without a token.
         </div>
         <label class="check"><input type="checkbox" data-task="t7"> Mark done</label>
       </div>
