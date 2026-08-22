@@ -347,6 +347,12 @@
       misdiagnosed in the first version of this page, and one turns out to be blocked by something
       bigger than the task described.
     </p>
+    <div class="caution" style="margin-top:1rem;max-width:44rem">
+      <b>Do email before the Clerk import.</b> The migration script sends each person their welcome
+      note only at the moment their account is created — a user it skips returns before the email
+      step. So if the 26 are imported while mail is still broken, re-running later will skip all of
+      them and tell nobody. Fix the sender first, then import with mail on.
+    </div>
     <div class="tbl-wrap" style="margin-top:1rem">
       <table>
         <thead><tr><th>#</th><th>Task</th><th>Verified state</th><th>Evidence</th></tr></thead>
@@ -372,6 +378,7 @@
     <a href="#promotion">Promotion sequence</a>
     <a href="#workspace">Workspace status</a>
     <a href="#gaps">What's pending</a>
+    <a href="#env">Env vars</a>
     <span class="prog" id="prog">0 / 9 done</span>
   </div>
 </nav>
@@ -1087,6 +1094,81 @@ curl -s https://hub.connectingclimateminds.org/api/health</pre>
         <div class="hd"><strong>Output status refreshes on every page view</strong></div>
         <p class="sym">Each workspace load makes a Sanity round-trip and may write back status changes and fan out notifications — from a read path. Two members opening the page at the same moment after a review can both detect the change and send duplicate &ldquo;output approved&rdquo; notifications, and a slow Sanity makes every workspace slow. This belongs on the webhook that already exists, not on page load.</p>
       </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════ ENV ══════════ -->
+  <section class="part" id="env">
+    <div class="part-head">
+      <span class="eyebrow">Reference</span>
+      <h2>Environment variables, sorted</h2>
+      <div class="prose">
+        <p>
+          Every variable the code reads, cross-referenced against Vercel and your two local files.
+          <code class="inline">D</code>/<code class="inline">P</code>/<code class="inline">R</code> mark
+          Development, Preview and Production in Vercel.
+        </p>
+      </div>
+    </div>
+
+    <div class="band"><h3>Add these</h3><span class="band-note">Each one is a feature that silently does nothing today</span></div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Variable</th><th>Add to</th><th>What it fixes</th></tr></thead>
+        <tbody>
+          <tr><td class="cap">CASE_STUDY_EMAIL_FROM</td><td>D P R</td><td>All outbound mail. Drives four modules; without it the sender falls back to Resend's sandbox address, which only delivers to the account owner</td></tr>
+          <tr><td class="cap">INTERNAL_SYNC_SECRET</td><td>P R</td><td>The search reindex. Four sync routes check it, and <code class="inline">sync:search</code> currently sends <code class="inline">Bearer undefined</code> → 401</td></tr>
+          <tr><td class="cap">R2_ENDPOINT<br>R2_ACCESS_KEY_ID<br>R2_SECRET_ACCESS_KEY<br>R2_BUCKET</td><td>R<br><span style="color:var(--ink-3)">(already in P)</span></td><td>Workspace files. Copy the Preview values — the same credentials are in your local <code class="inline">.env</code> and are verified working against <code class="inline">ccm-collab</code></td></tr>
+          <tr><td class="cap">NEXT_PUBLIC_SENTRY_DSN</td><td>P R</td><td>Error monitoring. The SDK is installed and wired but inert without a DSN, so production currently reports nothing</td></tr>
+          <tr><td class="cap">RESEND_AUDIENCE_ID</td><td>P R</td><td>Newsletter signup, which returns a 500 &ldquo;service not configured&rdquo; in production today</td></tr>
+          <tr><td class="cap">ISSUE_REPORT_EMAIL_TO</td><td>P R</td><td>Where problem reports land; defaults to a personal address in code</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="band"><h3>Rotate</h3></div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Variable</th><th>Scopes</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td class="cap">NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY</td><td>D P R</td><td>Present everywhere and <strong>dead</strong> — returns 403 on every index. The admin key still works and all 8 indices are healthy, so this key alone needs replacing</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="band"><h3>Redundant</h3><span class="band-note">Safe to remove once you've confirmed nothing local depends on them</span></div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Variable</th><th>Why it's redundant</th></tr></thead>
+        <tbody>
+          <tr><td class="cap">ALGOLIA_APP_ID</td><td>The code prefers <code class="inline">NEXT_PUBLIC_ALGOLIA_APP_ID</code> and only falls back to this. Both are set in all three scopes</td></tr>
+          <tr><td class="cap">NEXT_PUBLIC_APP_URL<br>NEXT_PUBLIC_BASE_URL</td><td>Three variables describe one site address. <code class="inline">NEXT_PUBLIC_SITE_URL</code> is the one used by metadata, sitemap, robots and emails — consolidate on it</td></tr>
+          <tr><td class="cap">CLOUDFLARE_R2_* (5)</td><td>Legacy names kept only as a fallback. Nothing sets them; documented in <code class="inline">.env.example</code> where they mislead</td></tr>
+          <tr><td class="cap">NEON_DEV_DB_STRING</td><td>In your local <code class="inline">.env</code>, read by nothing</td></tr>
+          <tr><td class="cap">SANITY_API_WRITE_TOKEN</td><td>Correctly absent from Vercel — it is used only by maintenance scripts. Runtime writes use <code class="inline">SANITY_API_EDITOR_TOKEN</code>, which is set</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="band"><h3>The local-file trap</h3></div>
+    <div class="prose">
+      <p style="color:var(--ink-2)">
+        <code class="inline">.env</code> holds <strong>production</strong> values — live Clerk keys, the
+        production database, <code class="inline">production_2</code>. <code class="inline">.env.local</code>
+        holds development ones and takes precedence. That means any variable present in
+        <code class="inline">.env</code> but <em>absent</em> from <code class="inline">.env.local</code>
+        silently falls through to production while you work locally. Today that is true of:
+      </p>
+      <ul class="plain" style="margin-top:.6rem">
+        <li><code class="inline">R2_ENDPOINT</code>, <code class="inline">R2_ACCESS_KEY_ID</code>, <code class="inline">R2_SECRET_ACCESS_KEY</code>, <code class="inline">R2_BUCKET</code> — <strong>local development is pointed at the production bucket.</strong> No damage so far only because browser uploads have never worked</li>
+        <li><code class="inline">SEARCH_WEBHOOK_SECRET</code>, <code class="inline">NEXT_PUBLIC_APP_URL</code></li>
+      </ul>
+      <p style="color:var(--ink-2);margin-top:.7rem">
+        The durable fix is to stop treating <code class="inline">.env</code> as the production file:
+        keep shared, non-secret defaults there and move every production secret into Vercel only,
+        pulling them deliberately when you genuinely need to act on production.
+      </p>
     </div>
   </section>
 
