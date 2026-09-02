@@ -284,8 +284,12 @@ Run and save the output somewhere you can diff against:
 ```bash
 pnpm typecheck 2>&1 | tail -20
 pnpm test 2>&1 | tail -20
-pnpm build 2>&1 | tail -30
+node scripts/create-all-outputs-pages.mjs && pnpm exec next build 2>&1 | tail -30
 ```
+
+Do NOT run `pnpm build` here. It fires the `postbuild` hook, which runs `sync:search`
+and pushes records to the **live Algolia index** — an external side effect with no place
+in a verification step. The two commands above reproduce the same build without it.
 
 Expected: `typecheck` clean, tests green, build succeeds. **If any is already red, fix or
 document that before upgrading** — otherwise you cannot tell what the upgrade broke.
@@ -318,8 +322,10 @@ accept blind rewrites of app code.
 ```bash
 pnpm typecheck
 pnpm test
-pnpm build
+node scripts/create-all-outputs-pages.mjs && pnpm exec next build
 ```
+
+Again: not `pnpm build` — see Step 1.
 
 Expected: all three match the Step 1 baseline. Common breakages at this boundary are
 `next/headers` async APIs, `params`/`searchParams` promise shapes, and Turbopack
