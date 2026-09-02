@@ -1,8 +1,10 @@
 export const revalidate = 120;
 
 import type { Metadata } from 'next';
+import type { ComponentProps } from 'react';
 // todo: userId may be undefined? (no-!)
-import { fetchSanityRCPageBySlug, fetchSanityRCPagesStaticParams } from '@/sanity/lib/fetch';
+import { getRegionalCommunityPage, getRegionalCommunityPageSlugs } from '@/lib/content/pages';
+import type { Locale } from '@/lib/content/types';
 import { getAgendasByRegion } from '@/lib/content/outputs';
 import { fetchRegionalCommunityTeamMembers } from '@/sanity/queries/regional-community-team';
 import RegionalAgendasGrid from '@/components/blocks/grid/regional-agendas-grid';
@@ -23,7 +25,7 @@ export async function generateMetadata({
     params: Promise<{ locale: string; slug: string }>;
 }): Promise<Metadata> {
     const { locale, slug } = await params;
-    const pageData = await fetchSanityRCPageBySlug({ slug, locale });
+    const pageData = await getRegionalCommunityPage(slug, locale as Locale);
     // RC page documents are per-language, so `title` is already a plain string.
     // Guard against a localized-object fallback rendering as "[object Object]".
     const name = pageData?.regionalCommunity?.name;
@@ -33,16 +35,14 @@ export async function generateMetadata({
 }
 
 export async function generateStaticParams() {
-    const data = await fetchSanityRCPagesStaticParams();
+    const data = await getRegionalCommunityPageSlugs();
 
     if (!data || data.length === 0) {
         return [];
     }
 
     const locales = ['en', 'es', 'fr', 'ar'];
-    const slugs = [...new Set(data.map((page: { slug?: { current?: string } | string }) =>
-        typeof page.slug === 'string' ? page.slug : page.slug?.current
-    ))];
+    const slugs = [...new Set(data.map((page) => page.slug))];
     const params = [];
 
     for (const slug of slugs) {
@@ -67,7 +67,7 @@ export default async function RegionalCommunityPage({
     }
 
     // Fetch page data
-    const pageData = await fetchSanityRCPageBySlug({ slug, locale });
+    const pageData = await getRegionalCommunityPage(slug, locale as Locale);
 
     // If no page data found, show 404
     if (!pageData) {
@@ -103,8 +103,12 @@ export default async function RegionalCommunityPage({
                 <RegionHero slug={slug} locale={locale} />
             ) : (
                 <>
-                    {pageData.titleHero && (
-                        <Blocks blocks={[pageData.titleHero]} locale={locale} userId={userId!} />
+                    {!!pageData.titleHero && (
+                        <Blocks
+                            blocks={[pageData.titleHero] as unknown as ComponentProps<typeof Blocks>["blocks"]}
+                            locale={locale}
+                            userId={userId!}
+                        />
                     )}
                     {userId && (
                         <div className="container relative z-10 flex justify-end py-3">
@@ -114,32 +118,41 @@ export default async function RegionalCommunityPage({
                 </>
             )}
 
-            {/* Template Mode - New structured template with dynamic content */}
+            {/* Template Mode - New structured template with dynamic content.
+                RegionalCommunityTemplate's own prop types (RegionalCommunity/
+                GridConfig/CarouselConfig/CmsBlockConfig) predate the
+                content-layer migration and were never satisfied precisely by
+                this loosely-typed CMS data even before this conversion (the
+                original fetch was implicitly `any`) — cast once at this seam
+                rather than loosen the component's own types, same precedent
+                as RegionalAgendasGrid's `as unknown as Report[]` cast below. */}
             {pageData.useTemplate && pageData.regionalCommunity?._id && (
                 <RegionalCommunityTemplate
-                    regionalCommunity={pageData.regionalCommunity}
-                    agendasGrid={pageData.agendasGrid}
-                    newsGrid={pageData.newsGrid}
-                    caseStudiesGrid={pageData.caseStudiesGrid}
-                    livedExperiencesCarousel={pageData.livedExperiencesCarousel}
-                    welcomeHero={hasRegionHero ? null : pageData.welcomeHero}
-                    // RegionHero already carries the Get-involved + Follow CTAs —
-                    // stacking the CMS "why join" hero under it reads as a
-                    // duplicate hero on the seven canonical regions.
-                    whyJoinCTA={hasRegionHero ? null : pageData.whyJoinCTA}
-                    logoCloud={pageData.logoCloud}
-                    teamGrid={pageData.teamGrid}
-                    teamMembers={teamMembers}
-                    atlasEmbed={pageData.atlasEmbed}
+                    {...({
+                        regionalCommunity: pageData.regionalCommunity,
+                        agendasGrid: pageData.agendasGrid,
+                        newsGrid: pageData.newsGrid,
+                        caseStudiesGrid: pageData.caseStudiesGrid,
+                        livedExperiencesCarousel: pageData.livedExperiencesCarousel,
+                        welcomeHero: hasRegionHero ? null : pageData.welcomeHero,
+                        // RegionHero already carries the Get-involved + Follow CTAs —
+                        // stacking the CMS "why join" hero under it reads as a
+                        // duplicate hero on the seven canonical regions.
+                        whyJoinCTA: hasRegionHero ? null : pageData.whyJoinCTA,
+                        logoCloud: pageData.logoCloud,
+                        teamGrid: pageData.teamGrid,
+                        teamMembers,
+                        atlasEmbed: pageData.atlasEmbed,
+                    } as unknown as Omit<Parameters<typeof RegionalCommunityTemplate>[0], "locale" | "userId">)}
                     locale={locale}
                     userId={userId!}
                 />
             )}
 
             {/* Custom Content Flow Mode - New content flow with strategic inserts */}
-            {!pageData.useTemplate && pageData.contentFlow && (
+            {!pageData.useTemplate && !!pageData.contentFlow && (
                 <HybridContentFlow
-                    sections={pageData.contentFlow}
+                    sections={pageData.contentFlow as unknown as Parameters<typeof HybridContentFlow>[0]["sections"]}
                     locale={locale}
                     userId={userId!}
                     communitySlug={slug}
@@ -152,7 +165,7 @@ export default async function RegionalCommunityPage({
                     {/* First two blocks */}
                     {pageData.blocks.slice(0, 2) && (
                         <Blocks
-                            blocks={pageData.blocks.slice(0, 2)}
+                            blocks={pageData.blocks.slice(0, 2) as unknown as ComponentProps<typeof Blocks>["blocks"]}
                             locale={locale}
                             userId={userId!}
                         />
@@ -179,7 +192,7 @@ export default async function RegionalCommunityPage({
                     {/* Remaining blocks */}
                     {pageData.blocks.slice(2) && (
                         <Blocks
-                            blocks={pageData.blocks.slice(2)}
+                            blocks={pageData.blocks.slice(2) as unknown as ComponentProps<typeof Blocks>["blocks"]}
                             locale={locale}
                             userId={userId!}
                         />
@@ -188,9 +201,9 @@ export default async function RegionalCommunityPage({
             )}
 
             {/* Your existing listHero */}
-            {pageData.listHero && (
+            {!!pageData.listHero && (
                 <Blocks
-                    blocks={[pageData.listHero]}
+                    blocks={[pageData.listHero] as unknown as ComponentProps<typeof Blocks>["blocks"]}
                     locale={locale}
                     userId={userId!}
                 />

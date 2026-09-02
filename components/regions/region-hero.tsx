@@ -4,7 +4,7 @@ import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { Blob } from "@/components/ui/blob";
 import { FollowButton } from "@/components/follow/follow-button";
-import { client } from "@/sanity/lib/client";
+import { getRegionStats } from "@/lib/content/pages";
 import { prisma, safeQuery } from "@/lib/prisma";
 import { slugToShortCode, REGION_I18N_KEY } from "@/lib/maps/region-codes";
 
@@ -26,21 +26,7 @@ export async function RegionHero({ slug, locale }: { slug: string; locale: strin
   const regionName = tRegions(REGION_I18N_KEY[code]);
 
   // Live stats — same matching semantics as the atlas (code OR community ref).
-  let caseStudies = 0;
-  let livedExperiences = 0;
-  try {
-    const counts = await client.fetch<{ cs: number; le: number }>(
-      `{
-        "cs": count(*[_type == "caseStudy" && status == "approved" && (region == $code || relatedCommunity->slug.current == $slug)]),
-        "le": count(*[_type == "livedExperience" && (status == "approved" || !defined(status)) && (region == $code || relatedCommunity->slug.current == $slug)])
-      }`,
-      { code, slug }
-    );
-    caseStudies = counts.cs ?? 0;
-    livedExperiences = counts.le ?? 0;
-  } catch {
-    /* stats are decorative — the hero renders without them */
-  }
+  const { caseStudies, livedExperiences } = await getRegionStats(code, slug);
   const membersR = await safeQuery(() =>
     prisma.community.findFirst({
       where: { type: "REGIONAL", regionalName: code },

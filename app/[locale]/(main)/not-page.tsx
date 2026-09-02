@@ -71,8 +71,10 @@ import type { Metadata } from "next"
 //         </>
 //     );
 // }
+import type { ComponentProps } from "react";
 import Blocks from "@/components/blocks";
-import { fetchSanityPageBySlug } from "@/sanity/lib/fetch";
+import { getPageBySlug } from "@/lib/content/pages";
+import type { Locale } from "@/lib/content/types";
 import { generatePageMetadata } from "@/sanity/lib/metadata";
 import MissingSanityPage from "@/components/ui/missing-sanity-page";
 import { routing } from '@/i18n/routing';
@@ -84,8 +86,9 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-    const page = await fetchSanityPageBySlug({ slug: "index" });
-    return generatePageMetadata({ page, slug: "index" });
+    const page = await getPageBySlug("index", "en");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- crossing into an unconverted Task 10b consumer still typed against @/sanity.types
+    return generatePageMetadata({ page: page as any, slug: "index" });
 }
 
 interface IndexPageProps {
@@ -95,10 +98,7 @@ interface IndexPageProps {
 export default async function IndexPage({ params }: IndexPageProps) {
     const { locale } = await params;
 
-    const page = await fetchSanityPageBySlug({
-        slug: "index",
-        locale,
-    });
+    const page = await getPageBySlug("index", locale as Locale);
 
     if (!page) {
         return MissingSanityPage({ document: "page", slug: "index" });
@@ -107,7 +107,7 @@ export default async function IndexPage({ params }: IndexPageProps) {
     return (
         <>
             <Blocks
-                blocks={page?.blocks ?? []}
+                blocks={(page?.blocks ?? []) as unknown as ComponentProps<typeof Blocks>["blocks"]}
                 locale={locale}
             />
         </>

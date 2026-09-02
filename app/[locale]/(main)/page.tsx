@@ -1,34 +1,30 @@
 import type { Metadata } from "next"
+import type { ComponentProps } from "react";
 import Blocks from "@/components/blocks";
 import Homepage from "@/components/pages/homepage";
 import {
-  fetchSanityPageBySlug,
-  fetchSanityHomepageBySlug,
-  fetchTranslationsForPage,
-  fetchSanityHomepageStaticParams
-} from "@/sanity/lib/fetch";
+  getPageBySlug,
+  getHomepage,
+  getPageTranslations,
+  getHomepageSlugs,
+} from "@/lib/content/pages";
+import type { Locale } from "@/lib/content/types";
 import { generatePageMetadata } from "@/sanity/lib/metadata";
 import MissingSanityPage from "@/components/ui/missing-sanity-page";
 import { routing } from '@/i18n/routing';
 import { isRTL } from "@/i18n/i18n-helpers";
 
 export async function generateStaticParams() {
-    const homepages = await fetchSanityHomepageStaticParams();
+    const homepages = await getHomepageSlugs();
     const params = [];
 
     for (const homepage of homepages) {
-        if (homepage.language) {
-            params.push({
-                locale: homepage.language,
-            });
-        } else {
-            params.push({
-                locale: "en",
-            });
-        }
+        params.push({
+            locale: homepage.locale,
+        });
 
         try {
-            const translations = homepage?._id ? await fetchTranslationsForPage(homepage._id) : [];
+            const translations = homepage?.id ? await getPageTranslations(homepage.id) : [];
             if (translations?.length > 0) {
                 for (const translation of translations) {
                     if (translation && translation.language && translation.slug?.current) {
@@ -39,7 +35,7 @@ export async function generateStaticParams() {
                 }
             }
         } catch (e) {
-            console.error(`Error fetching translations for ${homepage._id}:`, e);
+            console.error(`Error fetching translations for ${homepage.id}:`, e);
         }
     }
 
@@ -59,13 +55,18 @@ export async function generateMetadata({
 }): Promise<Metadata> {
     const { locale } = await params;
 
-    let page = await fetchSanityHomepageBySlug({ slug: "index", locale });
+    let page: unknown = await getHomepage(locale as Locale);
 
     if (!page) {
-        page = await fetchSanityPageBySlug({ slug: "index", locale });
+        page = await getPageBySlug("index", locale as Locale);
     }
 
-    return generatePageMetadata({ page, slug: "index" });
+    // generatePageMetadata is still typed against the generated @/sanity.types
+    // PAGE_QUERY_RESULT — Task 10b's file, not converted here. getHomepage /
+    // getPageBySlug keep meta_title/meta_description/noindex/ogImage as
+    // top-level fields specifically so this call keeps working unchanged.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- crossing into an unconverted Task 10b consumer still typed against @/sanity.types
+    return generatePageMetadata({ page: page as any, slug: "index" });
 }
 
 interface IndexPageProps {
@@ -84,7 +85,7 @@ export default async function IndexPage({ params }: IndexPageProps) {
     let homepage = null;
     for (let attempt = 0; attempt < 3; attempt++) {
         try {
-            homepage = await fetchSanityHomepageBySlug({ slug: "index", locale });
+            homepage = await getHomepage(locale as Locale);
             break;
         } catch (error) {
             if (attempt === 2) throw error;
@@ -93,14 +94,17 @@ export default async function IndexPage({ params }: IndexPageProps) {
     }
 
     if (homepage) {
-        return <Homepage homepage={homepage} locale={locale} />;
+        // Homepage (lib/content/pages.ts) is a loose pass-through of
+        // HOMEPAGE_QUERY's result; components/pages/homepage.tsx's own
+        // HomepageDoc type is stricter (each slot typed as the block
+        // component's own props). Cast at this seam rather than loosen
+        // either side's types — same precedent as the [...slug] catch-all's
+        // Blocks casts.
+        return <Homepage homepage={homepage as unknown as Parameters<typeof Homepage>[0]["homepage"]} locale={locale} />;
     }
 
     // Fallback to regular page
-    const page = await fetchSanityPageBySlug({
-        slug: "index",
-        locale,
-    });
+    const page = await getPageBySlug("index", locale as Locale);
 
     if (!page) {
         return MissingSanityPage({ document: "homepage or page", slug: "index" });
@@ -109,7 +113,7 @@ export default async function IndexPage({ params }: IndexPageProps) {
     return (
         <main dir={rtl ? 'rtl' : 'ltr'}>
             <Blocks
-                blocks={page?.blocks ?? []}
+                blocks={(page?.blocks ?? []) as unknown as ComponentProps<typeof Blocks>["blocks"]}
                 locale={locale}
             />
         </main>
