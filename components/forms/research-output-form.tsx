@@ -28,7 +28,7 @@ import {
   RO_DOC_MAX_BYTES,
   RO_DOC_MIME_TYPES,
 } from "@/lib/validation/research-output"
-import { REGION_OPTIONS, THEME_OPTIONS } from "@/sanity/schemas/shared/taxonomy-options"
+import { REGION_OPTIONS, THEME_OPTIONS } from "@/lib/content/taxonomy-options"
 import type { EditableResearchOutput } from "@/lib/content/outputs"
 
 type Tag = { _id: string; label: Record<string, string>; value?: { current: string } }

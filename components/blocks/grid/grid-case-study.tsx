@@ -26,7 +26,7 @@ import {
 } from '@/lib/case-study-utils';
 import { cn } from '@/lib/utils';
 import { CaseStudyModal, type CaseStudyModalData } from '@/components/blocks/case-study-modal';
-import { topicOptions } from '@/sanity/schemas/shared/topic-options';
+import { topicOptions } from '@/lib/content/taxonomy-options';
 import type { CaseStudy, LocalizedString } from '@/types/case-study';
 
 // Map a stored topic value to its human label so the card badge reflects the

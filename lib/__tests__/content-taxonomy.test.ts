@@ -13,6 +13,7 @@ import {
   getTags,
   getWorkTypes,
 } from "@/lib/content/taxonomy";
+import { REGION_OPTIONS, THEME_OPTIONS, POPULATION_OPTIONS, topicOptions } from "@/lib/content/taxonomy-options";
 
 const mockQuery = vi.mocked(query);
 
@@ -168,5 +169,68 @@ describe("getOrganizations", () => {
   it("returns [] when the source resolves nothing", async () => {
     mockQuery.mockResolvedValue(null);
     await expect(getOrganizations()).resolves.toEqual([]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Static taxonomy option lists (lib/content/taxonomy-options.ts), moved
+// verbatim from sanity/schemas/shared/{topic,taxonomy}-options.ts and now the
+// single definition both the Studio schemas and these frontend components
+// import — no CMS access, so pinned here rather than in
+// content-sanity-source.test.ts. `value`s are stored on documents: this test
+// exists to catch an accidental value/order change, not just a missing one.
+// ---------------------------------------------------------------------------
+
+describe("taxonomy-options (static, shared with the Sanity schemas)", () => {
+  it("topicOptions is the exact, ordered vocabulary stored on caseStudy.topic", () => {
+    expect(topicOptions).toEqual([
+      { title: "Climate Change & Environment", value: "climate-environment" },
+      { title: "Mental Health & Wellbeing", value: "mental-health" },
+      { title: "Community Health & Social Care", value: "community-health" },
+      { title: "Youth Engagement & Education", value: "youth-education" },
+      { title: "Policy Research & Governance", value: "policy-governance" },
+      { title: "Technology & Innovation", value: "technology-innovation" },
+      { title: "Economic Development", value: "economic-development" },
+      { title: "Cultural Heritage & Arts", value: "cultural-arts" },
+      { title: "Food Security & Agriculture", value: "food-agriculture" },
+      { title: "Urban Planning & Infrastructure", value: "urban-planning" },
+      { title: "Human Rights & Social Justice", value: "human-rights" },
+      { title: "Migration & Displacement", value: "migration" },
+      { title: "Gender Equality", value: "gender-equality" },
+      { title: "Disaster Risk & Resilience", value: "disaster-resilience" },
+      { title: "Digital Inclusion", value: "digital-inclusion" },
+      { title: "Other", value: "other" },
+    ]);
+  });
+
+  it("REGION_OPTIONS is the exact, ordered vocabulary stored on region fields", () => {
+    expect(REGION_OPTIONS).toEqual([
+      { title: "Sub-Saharan Africa", value: "ssa" },
+      { title: "Northern Africa & Western Asia", value: "nawa" },
+      { title: "Central & Southern Asia", value: "csa" },
+      { title: "Eastern & South-Eastern Asia", value: "esea" },
+      { title: "Latin America & the Caribbean", value: "lac" },
+      { title: "Oceania", value: "oce" },
+      { title: "Europe & Northern America", value: "enam" },
+    ]);
+  });
+
+  it("THEME_OPTIONS is the exact, ordered vocabulary stored on themes fields", () => {
+    expect(THEME_OPTIONS).toEqual([
+      { title: "Displacement", value: "displacement" },
+      { title: "Livelihoods", value: "livelihoods" },
+      { title: "Youth", value: "youth" },
+      { title: "Indigenous", value: "indigenous" },
+    ]);
+  });
+
+  it("POPULATION_OPTIONS is the exact, ordered vocabulary stored on populations fields", () => {
+    expect(POPULATION_OPTIONS).toEqual([
+      { title: "Children & youth", value: "youth" },
+      { title: "Women", value: "women" },
+      { title: "Indigenous peoples", value: "indigenous" },
+      { title: "Farmers & rural livelihoods", value: "farmers" },
+      { title: "Displaced & migrants", value: "displaced" },
+    ]);
   });
 });

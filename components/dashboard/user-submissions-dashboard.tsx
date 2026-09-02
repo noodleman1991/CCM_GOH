@@ -89,7 +89,7 @@ export default function UserSubmissionsDashboard({
   locale
 }: UserSubmissionsDashboardProps) {
   const t = useTranslations('dashboard.submissions')
-  // Topics are a fixed CMS-schema vocabulary (sanity/schemas/shared/topic-options.ts);
+  // Topics are a fixed CMS-schema vocabulary (lib/content/taxonomy-options.ts);
   // their display labels live in the shared `caseStudies.topics` i18n namespace,
   // the same source the case-study filters use — no hardcoded vocabulary here.
   const tTopics = useTranslations('caseStudies.topics')

@@ -3,7 +3,7 @@ import * as z from 'zod';
 import { useUser } from '@clerk/nextjs';
 import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
-import { topicOptions } from '@/sanity/schemas/shared/topic-options';
+import { topicOptions } from '@/lib/content/taxonomy-options';
 import PortableTextEditor from '@/components/forms/portable-text-editor';
 import { geocodeLocation } from '@/lib/geocoding';
 import { PlacePicker, type PlaceValue } from '@/components/forms/place-picker';

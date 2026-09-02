@@ -1,7 +1,7 @@
 import { defineField, defineType, type SanityDocument } from "sanity";
 import { FileText } from "lucide-react";
 import { isUniqueOtherThanLanguage } from '@/sanity/lib/isUniqueOtherThanLanguage';
-import { REGION_OPTIONS, THEME_OPTIONS, POPULATION_OPTIONS } from "../shared/taxonomy-options";
+import { REGION_OPTIONS, THEME_OPTIONS, POPULATION_OPTIONS } from "@/lib/content/taxonomy-options";
 
 export default defineType({
     name: "newsPost",

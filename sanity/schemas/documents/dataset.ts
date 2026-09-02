@@ -1,6 +1,6 @@
 import { defineField, defineType, type SanityDocument } from "sanity";
 import { Database } from "lucide-react";
-import { REGION_OPTIONS, THEME_OPTIONS } from "../shared/taxonomy-options";
+import { REGION_OPTIONS, THEME_OPTIONS } from "@/lib/content/taxonomy-options";
 
 /**
  * dataset — an INTERNAL, never-public data resource (SANITY_SCHEMA §6.2 / TAXONOMY).

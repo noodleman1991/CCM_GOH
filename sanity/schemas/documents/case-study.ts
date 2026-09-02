@@ -1,7 +1,6 @@
 import { defineField, defineType, type PreviewValue } from "sanity";
 import { FileSearch } from "lucide-react";
-import { topicOptions } from "../shared/topic-options";
-import { REGION_OPTIONS, THEME_OPTIONS, POPULATION_OPTIONS } from "../shared/taxonomy-options";
+import { topicOptions, REGION_OPTIONS, THEME_OPTIONS, POPULATION_OPTIONS } from "@/lib/content/taxonomy-options";
 import { createLocalizedField as createSharedLocalizedField } from "../shared/localized-field";
 
 // Role configuration

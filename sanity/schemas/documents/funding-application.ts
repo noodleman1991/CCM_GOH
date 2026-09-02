@@ -1,6 +1,6 @@
 import { defineField, defineType, type SanityDocument } from "sanity";
 import { Banknote } from "lucide-react";
-import { REGION_OPTIONS } from "../shared/taxonomy-options";
+import { REGION_OPTIONS } from "@/lib/content/taxonomy-options";
 
 /**
  * fundingApplication — an INTERNAL, never-public document (SANITY_SCHEMA §6.2 /

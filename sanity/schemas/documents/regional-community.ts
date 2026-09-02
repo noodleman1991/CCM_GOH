@@ -1,5 +1,5 @@
  import { defineField, defineType } from "sanity";
-import { REGION_OPTIONS } from "../shared/taxonomy-options";
+import { REGION_OPTIONS } from "@/lib/content/taxonomy-options";
 import { Globe } from "lucide-react";
 import { orderRankField } from "@sanity/orderable-document-list";
 

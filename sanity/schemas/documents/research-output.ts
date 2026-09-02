@@ -1,7 +1,7 @@
 import { defineField, defineType, type SanityDocument } from "sanity";
 import { FileText } from "lucide-react";
 import { orderRankField } from "@sanity/orderable-document-list";
-import { REGION_OPTIONS, THEME_OPTIONS, POPULATION_OPTIONS } from "../shared/taxonomy-options";
+import { REGION_OPTIONS, THEME_OPTIONS, POPULATION_OPTIONS } from "@/lib/content/taxonomy-options";
 
 /**
  * researchOutput — the redesign's primary published-output type (SANITY_SCHEMA

@@ -4,7 +4,7 @@ import { useRouter, usePathname, useSearchParams } from 'next/navigation'
 import { useLocale, useTranslations } from 'next-intl'
 import { useState, useEffect, useTransition, useMemo } from 'react'
 import { ContentFilters, type FilterGroup } from '@/components/ui/content-filters'
-import { topicOptions } from '@/sanity/schemas/shared/topic-options'
+import { topicOptions } from '@/lib/content/taxonomy-options'
 
 interface Filters {
   topics?: string[]
