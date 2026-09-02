@@ -1,10 +1,14 @@
 /**
  * Fix Lived Experience Tags Script
  *
- * 33/35 livedExperience docs hold `tags` as plain strings (a legacy backfill
- * from populate-lived-experience-videos.mjs) while the schema expects an array
- * of references to `tag` documents. The malformed data breaks the Studio tag
- * input on exactly those documents.
+ * Originally written because 33/35 livedExperience docs held `tags` as plain
+ * strings (a legacy backfill from populate-lived-experience-videos.mjs) while
+ * the schema expects an array of references to `tag` documents, which broke
+ * the Studio tag input on those documents. As of the 2026-09 audit that defect
+ * is resolved — 0 of 56 current docs are malformed. The script is retained
+ * for its production-write guard (see below) and to catch any future
+ * regression of the same shape; a clean run is expected to report nothing to
+ * fix.
  *
  * Modes:
  *   map (default)   — convert each string to a reference to the closest
