@@ -820,6 +820,17 @@ Everything else follows the standing rules: GROQ character-exact including comme
 - Modify: `lib/sanity/hub-illustrations.ts` → move to `lib/content/illustrations.ts`
 - Modify: `lib/algolia.ts`, `lib/docs.ts`
 - Modify: `sanity/lib/fetch.ts` — move `fetchSiteAnnouncement` out; the file should now be empty and is deleted
+- **Modify (added mid-phase — orphaned files no other brief claimed):**
+  `app/[locale]/(main)/reader/[[...slug]]/page.tsx` (imports `@/sanity/queries/docs-reader`),
+  `app/api/communities/route.ts` (`@/sanity/queries/regional-communities`),
+  `lib/cards/fresh-items.ts` and `lib/community/region-data.ts` (both import the client directly)
+- **Delete:** `app/[locale]/(main)/not-page.tsx` — confirmed to have zero importers. Prove it with a grep before deleting.
+
+A full-tree scan mid-phase found 30 files still importing the Sanity client or query
+modules directly, and 10 of them were named in no brief. Five turned out to be consumers of
+helpers Tasks 8 and 10 already own — those get fixed when their helper moves, and `tsc` will
+find them. The five listed above had no owner at all. This is the third coverage gap in this
+plan; all three were found by checking a coverage claim rather than trusting it.
 - Test: `lib/__tests__/content-system.test.ts`
 
 **Interfaces:**
@@ -977,6 +988,10 @@ const ALLOWED = [
   "app/studio/[[...tool]]/page.tsx",
   "app/api/draft-mode/enable/route.ts",
   "components/disable-draft-mode.tsx",
+  // <SanityLive/> is rendered ONLY behind `isDraftMode` — it opens the
+  // per-visitor live-events stream for the Presentation tool. Draft plumbing,
+  // not a content read.
+  "app/[locale]/(main)/layout.tsx",
   // Inbound-webhook HMAC verification (`isValidSignature`), not content access.
   // These two routes are replaced wholesale by in-process afterChange hooks in
   // Phase 3 (spec §2, "Search + cache"), so insulating them would be work on
