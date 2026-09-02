@@ -776,11 +776,22 @@ import { execFileSync } from "node:child_process";
  * If this test fails, someone reached around lib/content/ and Phase 3's
  * backend swap just got more expensive.
  */
+/**
+ * Match IMPORT STATEMENTS only, not any mention of the string "sanity".
+ *
+ * A plain substring grep flags lib/content/types.ts for the doc comment that
+ * explains this very rule — the test would fail on correct code. Anchor on
+ * `from "...sanity..."` / `require("...sanity...")` instead.
+ */
 const grepSanityImports = (paths: string[]): string[] => {
   try {
     const out = execFileSync(
       "grep",
-      ["-rln", "-e", "@/sanity", "-e", "@sanity/", "-e", "next-sanity", ...paths],
+      [
+        "-rlnE",
+        String.raw`(from|require\()\s*['"][^'"]*(@/sanity|@sanity/|next-sanity)`,
+        ...paths,
+      ],
       { encoding: "utf8" },
     );
     return out.split("\n").filter(Boolean);
