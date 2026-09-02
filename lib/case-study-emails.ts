@@ -1,6 +1,6 @@
 import { Resend } from "resend"
 import { prisma } from "@/lib/prisma"
-import { writeClient } from "@/sanity/lib/write-client"
+import { updateCaseStudy } from "@/lib/content/case-studies"
 
 /**
  * Sends a transactional email to a case-study submitter when their submission's
@@ -178,7 +178,10 @@ export async function notifyCaseStudyStatusChange(input: NotifyInput): Promise<s
   await resend.emails.send({ from: FROM, to: user.email, subject, html, text })
 
   // Mark as notified so subsequent edits don't re-send for the same status.
-  await writeClient.patch(caseStudyId).set({ notifiedStatus: status }).commit({ visibility: "async" })
+  // Note: the seam's updateDocument commits synchronously (no `visibility:
+  // "async"` option) — a slightly slower webhook response than before, not a
+  // behaviour change to anything rendered or read.
+  await updateCaseStudy(caseStudyId, { notifiedStatus: status })
 
   return `sent: ${status} -> ${user.email}`
 }

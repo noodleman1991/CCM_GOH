@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { auth } from "@clerk/nextjs/server"
-import { writeClient } from "@/sanity/lib/write-client"
+import { getCaseStudyRevisions } from "@/lib/content/case-studies"
 
 /**
  * Returns the authenticated user's case-study submissions that need revision.
@@ -18,16 +18,7 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const submissions = await writeClient.fetch(
-      `*[_type == "caseStudy" && submittedBy == $userId && status == "revision"]{
-        _id,
-        title,
-        status,
-        reviewNotes,
-        submittedAt
-      }`,
-      { userId }
-    )
+    const submissions = await getCaseStudyRevisions(userId)
 
     return NextResponse.json({ submissions })
   } catch (error) {

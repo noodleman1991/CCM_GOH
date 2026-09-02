@@ -4,7 +4,7 @@ import type { Metadata } from "next"
 import { notFound } from 'next/navigation'
 //import { getTranslations } from 'next-intl/server'
 import { SafeCoverImage } from '@/components/content/safe-cover-image'
-import { fetchCaseStudyBySlug, fetchCaseStudiesStaticParams } from '@/sanity/queries/grid/grid-case-study'
+import { getCaseStudyBySlug, getCaseStudySlugs } from '@/lib/content/case-studies'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
@@ -21,20 +21,19 @@ import { getTranslations } from 'next-intl/server'
 import { cn } from '@/lib/utils'
 import { heading } from '@/lib/design-tokens'
 import { sortedTags, normalizeTagColor } from '@/lib/tags'
-import type { CaseStudyAuthor, Organization, Project, Tag } from '@/types/case-study'
 
 export async function generateStaticParams() {
-  const caseStudies = await fetchCaseStudiesStaticParams()
+  const slugs = await getCaseStudySlugs()
 
   // Generate params for all supported locales
   const locales = ['en', 'es', 'fr', 'ar']
   const params = []
 
-  for (const caseStudy of caseStudies) {
+  for (const slug of slugs) {
     for (const locale of locales) {
       params.push({
         locale,
-        slug: caseStudy.slug
+        slug
       })
     }
   }
@@ -44,7 +43,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }): Promise<Metadata> {
   const { locale, slug } = await params
-  const caseStudy = await fetchCaseStudyBySlug({ slug })
+  const caseStudy = await getCaseStudyBySlug(slug)
   const t = await getTranslations({ locale, namespace: 'caseStudies' })
 
   if (!caseStudy) {
@@ -77,7 +76,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
 export default async function CaseStudyPage({ params }: { params: Promise<{ locale: string; slug: string }> }) {
   const { locale, slug } = await params
-  const caseStudy = await fetchCaseStudyBySlug({ slug })
+  const caseStudy = await getCaseStudyBySlug(slug)
 
   if (!caseStudy) {
     notFound()
@@ -87,8 +86,12 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ loca
   const t = await getTranslations('caseStudies')
   const title = getLocalizedText(caseStudy.title, supportedLocale, 'Case Study')
   const excerpt = getLocalizedText(caseStudy.excerpt, supportedLocale, '')
-  const primaryAuthor = getPrimaryAuthor(caseStudy)
-  const locationText = getStudyLocationText(caseStudy)
+  // getPrimaryAuthor/getStudyLocationText are typed against the legacy
+  // @/types/case-study shape (structurally the same data, different nominal
+  // type — e.g. required vs optional fields); cast rather than widening
+  // either type, matching the lived-experiences precedent.
+  const primaryAuthor = getPrimaryAuthor(caseStudy as never)
+  const locationText = getStudyLocationText(caseStudy as never)
   const publishDate = caseStudy.publishedAt ? new Date(caseStudy.publishedAt) : null
 
   // Detail layout archetype (WIREFRAMES §4.12). "story" = the centered reading
@@ -158,7 +161,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ loca
         {/* Tags — sorted + on-brand colours (L2 tag unification) */}
         {caseStudy.tags && caseStudy.tags.length > 0 && (
           <div className="flex flex-wrap gap-2">
-            {sortedTags(caseStudy.tags, supportedLocale).map((tag: Tag) => {
+            {sortedTags(caseStudy.tags, supportedLocale).map((tag) => {
               const color = normalizeTagColor(tag.color)
               return (
                 <Badge key={tag._id} variant="outline" style={{ borderColor: color, color }}>
@@ -193,7 +196,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ loca
         layout === 'report' ? (
           <div className="grid gap-8 lg:grid-cols-[1fr_280px] lg:items-start">
             <article className="min-w-0 text-base md:text-lg leading-relaxed">
-              <PortableTextRenderer value={caseStudy.content} locale={supportedLocale} isRTL={supportedLocale === 'ar'} />
+              <PortableTextRenderer value={caseStudy.content as never} locale={supportedLocale} isRTL={supportedLocale === 'ar'} />
             </article>
             <aside className="lg:sticky lg:top-24 rounded-xl border bg-muted/20 p-5 text-sm">
               <h3 className="mb-3 font-heading font-semibold text-ccm-midnight">{t('atAGlance')}</h3>
@@ -208,14 +211,14 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ loca
                   <div><dt className="text-muted-foreground">{t('location')}</dt><dd>{locationText}</dd></div>
                 )}
                 {caseStudy.organizations && caseStudy.organizations.length > 0 && (
-                  <div><dt className="text-muted-foreground">{t('organizations')}</dt><dd>{caseStudy.organizations.map((o: Organization) => o.name).join(', ')}</dd></div>
+                  <div><dt className="text-muted-foreground">{t('organizations')}</dt><dd>{caseStudy.organizations.map((o) => o.name).join(', ')}</dd></div>
                 )}
               </dl>
             </aside>
           </div>
         ) : (
           <article className="mx-auto max-w-prose text-base md:text-lg leading-relaxed">
-            <PortableTextRenderer value={caseStudy.content} locale={supportedLocale} isRTL={supportedLocale === 'ar'} />
+            <PortableTextRenderer value={caseStudy.content as never} locale={supportedLocale} isRTL={supportedLocale === 'ar'} />
           </article>
         )
       )}
@@ -229,7 +232,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ loca
           </p>
           {caseStudy.authors && caseStudy.authors.length > 0 && (
             <p className="text-sm leading-relaxed text-muted-foreground">
-              {caseStudy.authors.map((author: CaseStudyAuthor, index: number) => (
+              {caseStudy.authors.map((author, index) => (
                 <span key={index}>
                   {index > 0 && " · "}
                   <span className="font-bold text-foreground"><bdi>{author.name}</bdi></span>
@@ -242,7 +245,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ loca
           {caseStudy.organizations && caseStudy.organizations.length > 0 && (
             <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
               {t('withOrgs')}{" "}
-              {caseStudy.organizations.map((org: Organization, i: number) => (
+              {caseStudy.organizations.map((org, i) => (
                 <span key={org._id}>
                   {i > 0 && " · "}
                   <bdi>{org.name}</bdi>
@@ -265,7 +268,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ loca
                 {t('producedBy')}
               </h3>
               <div className="flex flex-wrap gap-2">
-                {caseStudy.projects.map((project: Project) => (
+                {caseStudy.projects.map((project) => (
                   <span
                     key={project._id}
                     className="inline-flex items-center rounded-full border border-ccm-sea/30 px-3 py-1 text-sm text-ccm-sea"
@@ -294,7 +297,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ loca
 
       {/* Related content — content-type-aware strip (lived experiences, news…) */}
       <RelatedContent
-        items={caseStudy.relatedContent}
+        items={caseStudy.relatedContent as never}
         locale={locale}
         heading={t('relatedContent')}
       />

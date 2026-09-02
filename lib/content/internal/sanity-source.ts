@@ -77,3 +77,9 @@ export async function updateDocument(id: string, data: Record<string, unknown>):
   if (unset.length > 0) patch = patch.unset(unset);
   await patch.commit();
 }
+
+/** Delete a document outright (not a soft-delete/unpublish). Payload's Local
+ *  API has the same delete-by-id shape, so this survives the Phase 3 swap. */
+export async function deleteDocument(id: string): Promise<void> {
+  await writeClient.delete(id);
+}

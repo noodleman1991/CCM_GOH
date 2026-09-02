@@ -13,10 +13,9 @@ vi.mock('@/lib/prisma', () => ({
   prisma: { user: { findUnique: (...a: unknown[]) => prismaFindUnique(...a) } },
 }))
 
-const patchSet = vi.fn().mockReturnValue({ commit: vi.fn().mockResolvedValue({}) })
-const patchMock = vi.fn().mockReturnValue({ set: patchSet })
-vi.mock('@/sanity/lib/write-client', () => ({
-  writeClient: { patch: (...a: unknown[]) => patchMock(...a) },
+const updateCaseStudyMock = vi.fn().mockResolvedValue(undefined)
+vi.mock('@/lib/content/case-studies', () => ({
+  updateCaseStudy: (...a: unknown[]) => updateCaseStudyMock(...a),
 }))
 
 import { isNotifiableStatus, notifyCaseStudyStatusChange } from '@/lib/case-study-emails'
@@ -49,8 +48,7 @@ describe('notifyCaseStudyStatusChange — idempotency & guards', () => {
   it('sends and records notifiedStatus on a fresh terminal status', async () => {
     const r = await notifyCaseStudyStatusChange(base)
     expect(sendMock).toHaveBeenCalledTimes(1)
-    expect(patchMock).toHaveBeenCalledWith('cs1')
-    expect(patchSet).toHaveBeenCalledWith({ notifiedStatus: 'approved' })
+    expect(updateCaseStudyMock).toHaveBeenCalledWith('cs1', { notifiedStatus: 'approved' })
     expect(r).toMatch(/^sent: approved/)
   })
 
@@ -82,7 +80,7 @@ describe('notifyCaseStudyStatusChange — idempotency & guards', () => {
   it('re-sends when the status changes to a different terminal value', async () => {
     const r = await notifyCaseStudyStatusChange({ ...base, status: 'revision', notifiedStatus: 'approved' })
     expect(sendMock).toHaveBeenCalledTimes(1)
-    expect(patchSet).toHaveBeenCalledWith({ notifiedStatus: 'revision' })
+    expect(updateCaseStudyMock).toHaveBeenCalledWith('cs1', { notifiedStatus: 'revision' })
     expect(r).toMatch(/^sent: revision/)
   })
 })

@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@clerk/nextjs/server"
-import { writeClient } from "@/sanity/lib/write-client"
+import {
+    CaseStudyDraftNotFoundError,
+    deleteCaseStudyDraft,
+    getLatestCaseStudyDraft,
+    saveCaseStudyDraft,
+} from "@/lib/content/case-studies"
 
 /**
  * Returns the authenticated user's most recently saved case-study draft (if any).
@@ -14,10 +19,7 @@ export async function GET() {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
         }
 
-        const draft = await writeClient.fetch(
-            `*[_type == "caseStudyDraft" && userId == $userId] | order(lastSaved desc)[0]`,
-            { userId }
-        )
+        const draft = await getLatestCaseStudyDraft(userId)
 
         return NextResponse.json({ draft: draft ?? null })
     } catch (error) {
@@ -35,31 +37,13 @@ export async function POST(request: NextRequest) {
 
         const { draftId, draftData } = await request.json()
 
-        // Ensure the draft belongs to the requesting user
-        const data = {
-            ...draftData,
-            _type: 'caseStudyDraft',
-            userId,
-            lastSaved: new Date().toISOString(),
-        }
+        const result = await saveCaseStudyDraft(userId, draftId, draftData)
 
-        let result
-        if (draftId) {
-            // Verify ownership before updating
-            const existing = await writeClient.fetch(
-                `*[_type == "caseStudyDraft" && _id == $draftId && userId == $userId][0]._id`,
-                { draftId, userId }
-            )
-            if (!existing) {
-                return NextResponse.json({ error: "Draft not found" }, { status: 404 })
-            }
-            result = await writeClient.patch(draftId).set(data).commit()
-        } else {
-            result = await writeClient.create(data)
-        }
-
-        return NextResponse.json({ id: result._id })
+        return NextResponse.json({ id: result.id })
     } catch (error) {
+        if (error instanceof CaseStudyDraftNotFoundError) {
+            return NextResponse.json({ error: "Draft not found" }, { status: 404 })
+        }
         console.error("Failed to save draft:", error)
         return NextResponse.json(
             { error: "Failed to save draft" },
@@ -80,18 +64,12 @@ export async function DELETE(request: NextRequest) {
             return NextResponse.json({ error: "Draft ID required" }, { status: 400 })
         }
 
-        // Verify ownership before deleting
-        const existing = await writeClient.fetch(
-            `*[_type == "caseStudyDraft" && _id == $draftId && userId == $userId][0]._id`,
-            { draftId, userId }
-        )
-        if (!existing) {
-            return NextResponse.json({ error: "Draft not found" }, { status: 404 })
-        }
-
-        await writeClient.delete(draftId)
+        await deleteCaseStudyDraft(userId, draftId)
         return NextResponse.json({ success: true })
     } catch (error) {
+        if (error instanceof CaseStudyDraftNotFoundError) {
+            return NextResponse.json({ error: "Draft not found" }, { status: 404 })
+        }
         console.error("Failed to delete draft:", error)
         return NextResponse.json(
             { error: "Failed to delete draft" },

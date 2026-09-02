@@ -2,31 +2,8 @@ import type { Metadata } from "next"
 import { auth } from "@clerk/nextjs/server"
 import { redirect } from "next/navigation"
 import { getTranslations } from 'next-intl/server'
-import { client } from "@/sanity/lib/client"
 import CaseStudySubmissionLayout from "@/components/forms/case-study-submission-layout"
-import { loadEditableCaseStudy } from "@/lib/case-studies/edit"
-
-// Fetch available tags for the form
-async function fetchAvailableTags() {
-    return await client.fetch(`
-    *[_type == "tag"] | order(label.en asc) {
-      _id,
-      label,
-      value
-    }
-  `)
-}
-
-// Fetch available regional communities
-async function fetchRegionalCommunities() {
-    return await client.fetch(`
-    *[_type == "regionalCommunity" && active == true] | order(name.en asc) {
-      _id,
-      name,
-      slug
-    }
-  `)
-}
+import { getAvailableCaseStudyTags, getActiveCaseStudyCommunities, loadEditableCaseStudy } from "@/lib/content/case-studies"
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
     const { locale } = await params
@@ -53,8 +30,8 @@ export default async function CaseStudySubmitPage({
     }
 
     const [availableTags, regionalCommunities] = await Promise.all([
-        fetchAvailableTags(),
-        fetchRegionalCommunities()
+        getAvailableCaseStudyTags(),
+        getActiveCaseStudyCommunities()
     ])
 
     // X7 edit mode: load the author's own draft/pending doc into the form.
@@ -68,8 +45,8 @@ export default async function CaseStudySubmitPage({
     return (
         <div className="container max-w-7xl py-8">
             <CaseStudySubmissionLayout
-                availableTags={availableTags}
-                regionalCommunities={regionalCommunities}
+                availableTags={availableTags as never}
+                regionalCommunities={regionalCommunities as never}
                 locale={locale}
                 userId={userId}
                 workspaceId={workspace ?? null}
