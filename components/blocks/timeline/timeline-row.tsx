@@ -1,16 +1,15 @@
-import SectionContainer from "@/components/ui/section-container";
-import Timeline1 from "@/components/blocks/timeline/timeline-1";
-import { PAGE_QUERY_RESULT } from "@/sanity.types";
+import SectionContainer, { type SectionPadding } from "@/components/ui/section-container";
+import Timeline1, { type Timeline1Fields } from "@/components/blocks/timeline/timeline-1";
 
-type TimelineRow = Extract<
-  NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number],
-  { _type: "timeline-row" }
->;
+interface TimelineRowProps {
+  padding?: SectionPadding | null;
+  timelines?: Timeline1Fields[] | null;
+}
 
 export default function TimelineRow({
   padding,
   timelines,
-}: TimelineRow) {
+}: TimelineRowProps) {
 
   return (
     <SectionContainer padding={padding}>

@@ -2,13 +2,18 @@
 import PortableTextRenderer from "@/components/portable-text-renderer";
 import { motion, useInView } from "motion/react";
 import { useRef } from "react";
-import { PAGE_QUERY_RESULT } from "@/sanity.types";
+import type { PortableTextBlock } from "@portabletext/types";
 
-type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
-type TimelineRow = Extract<Block, { _type: "timeline-row" }>;
-type Timeline1 = NonNullable<NonNullable<TimelineRow["timelines"]>>[number];
+/** Fields one timeline entry carries. Exported so timeline-row.tsx (the array
+ *  owner) can type its `timelines` prop against the same shape rather than
+ *  redeclaring it. */
+export interface Timeline1Fields {
+  title?: string | null;
+  tagLine?: string | null;
+  body?: PortableTextBlock[] | null;
+}
 
-interface Timeline1Props extends Timeline1 {
+interface Timeline1Props extends Timeline1Fields {
   locale?: string;
 }
 
