@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import { urlFor } from "@/sanity/lib/image";
+import { imageUrl } from "@/lib/content/images";
 import { formatDateShort } from "@/lib/utils";
 import { getLocalizedValue } from '@/i18n/i18n-helpers';
 import { CARD_ASPECT } from "@/lib/design-tokens";
@@ -10,7 +10,7 @@ const INTL_LOCALE: Record<string, string> = {
     en: "en-US", es: "es-ES", fr: "fr-FR", ar: "ar-SA",
 };
 
-/** Minimal Sanity image projection used by cards (urlFor-compatible). */
+/** Minimal Sanity image projection used by cards (imageUrl-compatible). */
 interface CardImage {
     asset?: {
         _id?: string;
@@ -68,7 +68,7 @@ export default function ExternalSourceCard({
             <div className={cn("relative overflow-hidden bg-gradient-to-br from-ccm-sky/30 to-ccm-water/20", CARD_ASPECT.wide)}>
                 {image?.asset?._id && (
                     <Image
-                        src={urlFor(image).url()}
+                        src={imageUrl(image)}
                         alt={localizedImageAlt || localizedTitle || ""}
                         fill
                         className="object-cover transition-transform duration-300 group-hover:scale-105"

@@ -12,7 +12,7 @@ import {
     Lock,
     AlertCircle
 } from 'lucide-react';
-import { urlForCropped } from '@/sanity/lib/image';
+import { imageUrl } from '@/lib/content/images';
 import {
     Agenda,
     SupportedLanguage
@@ -94,7 +94,7 @@ export default function GridAgendaComponent({
             {agenda.coverImage?.asset?.url && (
                 <div className={cn("mb-4 relative rounded-2xl overflow-hidden w-full max-w-full min-w-0", aspectRatioClass)}>
                     <Image
-                        src={urlForCropped(agenda.coverImage, 800, isWide ? 450 : 533).url()}
+                        src={imageUrl(agenda.coverImage, { width: 800, height: isWide ? 450 : 533, crop: true })}
                         alt={agenda.coverImage.alt || title}
                         fill
                         className="object-cover transition-transform duration-200 group-hover:scale-105"

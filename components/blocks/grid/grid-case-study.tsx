@@ -15,7 +15,7 @@ import {
     Star,
     BookMarked,
 } from 'lucide-react';
-import { urlForCropped } from '@/sanity/lib/image';
+import { imageUrl as getImageUrl } from '@/lib/content/images';
 import { normalizeTagColor, sortedTags } from '@/lib/tags';
 import {
     getLocalizedText,
@@ -123,7 +123,7 @@ export default function GridCaseStudyComponent({
         <div className={cn("relative overflow-hidden bg-gradient-to-br from-ccm-sky/40 to-ccm-water/30", imgWrapClass)}>
             {imageUrl && caseStudy.image ? (
                 <Image
-                    src={urlForCropped(caseStudy.image, imageW, imageH).url()}
+                    src={getImageUrl(caseStudy.image, { width: imageW, height: imageH, crop: true })}
                     alt={caseStudy.image.alt || title}
                     fill
                     className="object-cover transition-transform duration-200 group-hover:scale-105"

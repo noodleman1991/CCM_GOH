@@ -4,7 +4,7 @@
 import Image from "next/image";
 import type { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
-import { urlFor } from "@/sanity/lib/image";
+import { imageUrl } from "@/lib/content/images";
 import Blocks from "@/components/blocks";
 import { SectionHeader } from "@/components/ui/section-header";
 
@@ -75,7 +75,7 @@ export function GridSectionHeader({
           )}
         >
           <Image
-            src={urlFor(headerImage).url()}
+            src={imageUrl(headerImage)}
             alt={headerImage.alt || title || "Section header image"}
             fill
             className="object-cover"

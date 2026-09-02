@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import { urlFor } from "@/sanity/lib/image";
+import { imageUrl } from "@/lib/content/images";
 import { ChevronRight } from "lucide-react";
 import { POSTS_QUERY_RESULT } from "@/sanity.types";
 
@@ -27,7 +27,7 @@ export default function PostCard({
         {image && image.asset?._id && (
           <div className="mb-4 relative h-[15rem] sm:h-[20rem] md:h-[25rem] lg:h-[9.5rem] xl:h-[12rem] rounded-2xl overflow-hidden">
             <Image
-              src={urlFor(image).url()}
+              src={imageUrl(image)}
               alt={image.alt || ""}
               placeholder={image?.asset?.metadata?.lqip ? "blur" : undefined}
               blurDataURL={image?.asset?.metadata?.lqip || ""}

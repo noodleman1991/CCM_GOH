@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { urlFor } from "@/sanity/lib/image";
+import { imageUrl } from "@/lib/content/images";
 import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/lib/utils";
 import { getLocalizedValue } from '@/i18n/i18n-helpers';
@@ -57,7 +57,7 @@ export function LivedExperienceCard({ experience, locale, variant = "default" }:
           <div className="aspect-video bg-muted rounded-md overflow-hidden relative">
             {experience.thumbnail?.asset ? (
               <Image
-                src={urlFor(experience.thumbnail).width(400).height(225).url()}
+                src={imageUrl(experience.thumbnail, { width: 400, height: 225 })}
                 alt={experience.thumbnail.alt || localizedTitle || ""}
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -103,7 +103,7 @@ export function LivedExperienceCard({ experience, locale, variant = "default" }:
         <div className="relative h-48 sm:h-56 lg:h-64 overflow-hidden bg-muted">
           {experience.thumbnail?.asset ? (
             <Image
-              src={urlFor(experience.thumbnail).width(600).height(400).url()}
+              src={imageUrl(experience.thumbnail, { width: 600, height: 400 })}
               alt={experience.thumbnail.alt || localizedTitle || ""}
               fill
               className="object-cover transition-transform duration-300 group-hover:scale-105"

@@ -11,7 +11,7 @@ import {
     Lock,
     AlertCircle
 } from 'lucide-react';
-import { urlForCropped } from '@/sanity/lib/image';
+import { imageUrl } from '@/lib/content/images';
 import {
     Report,
     SupportedLanguage
@@ -92,7 +92,7 @@ export default function GridReportComponent({
             {report.coverImage?.asset?.url && (
                 <div className={cn("mb-4 relative rounded-2xl overflow-hidden w-full max-w-full min-w-0", aspectRatioClass)}>
                     <Image
-                        src={urlForCropped(report.coverImage, 800, isWide ? 450 : 533).url()}
+                        src={imageUrl(report.coverImage, { width: 800, height: isWide ? 450 : 533, crop: true })}
                         alt={report.coverImage.alt || title}
                         fill
                         className="object-cover transition-transform duration-200 group-hover:scale-105"

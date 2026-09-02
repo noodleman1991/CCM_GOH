@@ -9,7 +9,7 @@ import {
     ExternalLink,
     MapPin
 } from 'lucide-react';
-import { urlForCropped } from '@/sanity/lib/image';
+import { imageUrl } from '@/lib/content/images';
 import { cn } from '@/lib/utils';
 import { normalizeTagColor, sortedTags } from '@/lib/tags';
 
@@ -170,7 +170,7 @@ export default function GridExternalSourceComponent({
                 {externalSource.image?.asset?.url && (
                     <div className={cn("mb-4 relative rounded-2xl overflow-hidden w-full max-w-full min-w-0", aspectRatioClass)}>
                         <Image
-                            src={urlForCropped(externalSource.image, 800, isWide ? 450 : 533).url()}
+                            src={imageUrl(externalSource.image, { width: 800, height: isWide ? 450 : 533, crop: true })}
                             alt={externalSource.image.alt || title}
                             fill
                             className="object-cover transition-transform duration-200 group-hover:scale-105"

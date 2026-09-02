@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { heading } from "@/lib/design-tokens";
 import type { ComponentProps } from "react";
 import Image from "next/image";
-import { urlForCropped } from "@/sanity/lib/image";
+import { imageUrl } from "@/lib/content/images";
 import PortableText from "@/components/portable-text-renderer";
 import { getRegionalCommunityTeamMembers } from "@/lib/content/pages";
 import { getTranslations } from "next-intl/server";
@@ -205,7 +205,7 @@ export default async function TeamGrid(props: TeamGridProps) {
                   <div className="w-32 h-32 @content-sm/page:w-40 @content-sm/page:h-40 rounded-full overflow-hidden bg-muted ring-4 ring-background shadow-lg transition-all duration-300 group-hover:ring-primary group-hover:shadow-xl">
                     {member.image?.asset?._id ? (
                       <Image
-                        src={urlForCropped(member.image, 320, 320).url()}
+                        src={imageUrl(member.image, { width: 320, height: 320, crop: true })}
                         alt={member.image.alt || member.name}
                         placeholder={member.image?.asset?.metadata?.lqip ? "blur" : undefined}
                         blurDataURL={member.image?.asset?.metadata?.lqip || ""}

@@ -1,12 +1,12 @@
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import { urlFor } from "@/sanity/lib/image";
+import { imageUrl } from "@/lib/content/images";
 import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/lib/utils";
 import { getLocalizedValue } from '@/i18n/i18n-helpers';
 import { Users, Building2, Calendar, MapPin, Award } from "lucide-react";
 
-/** Minimal Sanity image projection used by cards (urlFor-compatible). */
+/** Minimal Sanity image projection used by cards (imageUrl-compatible). */
 interface CardImage {
     asset?: {
         _id?: string;
@@ -78,7 +78,7 @@ export function CaseStudyCard({
           {caseStudy.image && (
             <div className="aspect-video bg-muted rounded-md overflow-hidden">
               <Image
-                src={urlFor(caseStudy.image).width(400).height(225).url()}
+                src={imageUrl(caseStudy.image, { width: 400, height: 225 })}
                 alt={caseStudy.image.alt || ""}
                 width={400}
                 height={225}
@@ -162,7 +162,7 @@ export default function CaseStudyCardComponent({
             {image?.asset?._id && (
                 <div className="relative h-48 sm:h-56 lg:h-64 overflow-hidden bg-muted">
                     <Image
-                        src={urlFor(image).url()}
+                        src={imageUrl(image)}
                         alt={localizedImageAlt || localizedTitle || ""}
                         fill
                         className="object-cover transition-transform duration-500 group-hover:scale-110"

@@ -12,7 +12,7 @@ import {
     Play,
     Clock
 } from 'lucide-react';
-import { urlFor } from '@/sanity/lib/image';
+import { imageUrl } from '@/lib/content/images';
 import { cn } from '@/lib/utils';
 import { normalizeTagColor, sortedTags } from '@/lib/tags';
 
@@ -192,7 +192,7 @@ export default function GridLivedExperienceComponent({
                 <div className={cn("mb-4 relative rounded-2xl overflow-hidden w-full max-w-full min-w-0", aspectRatioClass)}>
                     {livedExperience.thumbnail?.asset?.url ? (
                         <Image
-                            src={urlFor(livedExperience.thumbnail).width(400).height(225).url()}
+                            src={imageUrl(livedExperience.thumbnail, { width: 400, height: 225 })}
                             alt={livedExperience.thumbnail.alt || title}
                             fill
                             className="object-cover transition-transform duration-200 group-hover:scale-105"

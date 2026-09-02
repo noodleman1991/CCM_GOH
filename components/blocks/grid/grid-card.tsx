@@ -5,7 +5,7 @@ import { stegaClean } from "next-sanity";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import Image from "next/image";
-import { urlForCropped } from "@/sanity/lib/image";
+import { imageUrl } from "@/lib/content/images";
 import { PAGE_QUERY_RESULT } from "@/sanity.types";
 
 type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
@@ -48,7 +48,7 @@ export default function GridCard({
           {image && image.asset?._id && (
             <div className={cn("mb-4 relative rounded-2xl overflow-hidden w-full max-w-full", aspectRatioClass)}>
               <Image
-                src={urlForCropped(image, 800, isWide ? 450 : 533).url()}
+                src={imageUrl(image, { width: 800, height: isWide ? 450 : 533, crop: true })}
                 alt={image.alt || ""}
                 placeholder={image?.asset?.metadata?.lqip ? "blur" : undefined}
                 blurDataURL={image?.asset?.metadata?.lqip || ""}

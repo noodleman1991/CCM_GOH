@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import Image from "next/image";
-import { urlForCropped } from "@/sanity/lib/image";
+import { imageUrl } from "@/lib/content/images";
 import { ChevronRight, Calendar } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { PAGE_QUERY_RESULT } from "@/sanity.types";
@@ -98,7 +98,7 @@ export default function GridPost({ newsPost, featured, locale = "en", userId, im
           {image && image.asset?._id && (
             <div className="mb-3 @content-sm/page:mb-4 relative aspect-[3/2] w-full rounded-xl overflow-hidden">
               <Image
-                src={urlForCropped(image, 800, 533).url()}
+                src={imageUrl(image, { width: 800, height: 533, crop: true })}
                 alt={image.alt || localizedTitle}
                 placeholder={image?.asset?.metadata?.lqip ? "blur" : undefined}
                 blurDataURL={image?.asset?.metadata?.lqip || ""}
