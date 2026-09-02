@@ -3,9 +3,28 @@ import { useTranslations } from "next-intl";
 import PostDate from "@/components/post-date";
 import { Mail } from "lucide-react";
 import { imageUrl } from "@/lib/content/images";
-import { POST_QUERY_RESULT } from "@/sanity.types";
 
-type PostHeroProps = NonNullable<POST_QUERY_RESULT>;
+interface PostHeroImage {
+  alt?: string | null;
+  asset?: {
+    _id?: string;
+    metadata?: {
+      lqip?: string | null;
+      dimensions?: { width?: number | null; height?: number | null } | null;
+    } | null;
+  } | null;
+}
+
+interface PostHeroProps {
+  title?: string | null;
+  author?: {
+    name?: string | null;
+    image?: PostHeroImage | null;
+  } | null;
+  image?: PostHeroImage | null;
+  slug?: { current?: string | null } | null;
+  _createdAt?: string | null;
+}
 
 export default function PostHero({
   title,

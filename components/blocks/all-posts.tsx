@@ -6,17 +6,18 @@ import Link from "next/link";
 import { Calendar, User } from "lucide-react";
 import { stegaClean } from "next-sanity";
 import { getTranslations } from "next-intl/server";
-import { PAGE_QUERY_RESULT } from "@/sanity.types";
 import { imageUrl as getImageUrl } from "@/lib/content/images";
 import { getLocalizedField } from "@/lib/localization-utils";
 import { getNewsPostsForBlock, type NewsPostBlockItem } from "@/lib/content/discovery";
+import type { SectionPadding } from "@/components/ui/section-container";
 
-type AllPostsProps = Extract<
-  NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number],
-  { _type: "all-posts" }
-> & {
+interface AllPostsProps {
+  padding?: SectionPadding | null;
+  mode?: string | null;
+  limit?: number | null;
+  manualPosts?: Array<{ _ref?: string | null }> | null;
   locale?: string;
-};
+}
 
 // Minimal shape of a news post as projected by NEWS_POST_FIELDS below.
 type NewsPostItem = NewsPostBlockItem;
@@ -28,12 +29,8 @@ async function fetchNewsPosts(
 ): Promise<NewsPostItem[]> {
   // Manual mode: fetch specific posts
   if (mode === "manual" && manualPosts && manualPosts.length > 0) {
-    // sanity.types.ts's generated PAGE_QUERY_RESULT types this block's
-    // manualPosts._ref as the literal `null` (a known typegen quirk for
-    // un-dereferenced reference arrays — see CLAUDE.md); it is always a
-    // string document id at runtime, as the original code already assumed.
     const manualPostIds = manualPosts
-      .map(ref => ref._ref as unknown as string)
+      .map(ref => ref._ref)
       .filter((id): id is string => typeof id === "string" && id.length > 0);
 
     if (manualPostIds.length === 0) {

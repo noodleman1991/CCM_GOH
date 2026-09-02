@@ -2,12 +2,23 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { imageUrl } from "@/lib/content/images";
 import { ChevronRight } from "lucide-react";
-import { POSTS_QUERY_RESULT } from "@/sanity.types";
 
-type PostCard = NonNullable<POSTS_QUERY_RESULT[number]>;
+interface PostCardImage {
+  alt?: string | null;
+  asset?: {
+    _id?: string;
+    metadata?: {
+      lqip?: string | null;
+      dimensions?: { width?: number | null; height?: number | null } | null;
+    } | null;
+  } | null;
+}
 
-interface PostCardProps extends Omit<PostCard, "slug"> {
+interface PostCardProps {
   className?: string;
+  title?: string | null;
+  excerpt?: string | null;
+  image?: PostCardImage | null;
 }
 
 export default function PostCard({
