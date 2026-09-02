@@ -11,7 +11,7 @@ import { Separator } from '@/components/ui/separator'
 import { Calendar, Users, Building, MapPin, FolderKanban } from 'lucide-react'
 import { BackLink } from '@/components/ui/back-link'
 import { Link } from '@/i18n/navigation'
-import { urlFor } from '@/sanity/lib/image'
+import { imageUrl } from '@/lib/content/images'
 import { JsonLd, articleJsonLd } from '@/lib/seo/json-ld'
 import { getLocalizedText, formatCaseStudyDate, getPrimaryAuthor, getStudyLocationText } from '@/lib/case-study-utils'
 import PortableTextRenderer from '@/components/portable-text-renderer'
@@ -179,7 +179,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ loca
       {caseStudy.image?.asset?.url && (
         <figure>
           <SafeCoverImage
-            src={urlFor(caseStudy.image).width(1200).height(675).url()}
+            src={imageUrl(caseStudy.image, { width: 1200, height: 675 })}
             alt={caseStudy.image.alt || title}
           />
           {caseStudy.image.caption && (

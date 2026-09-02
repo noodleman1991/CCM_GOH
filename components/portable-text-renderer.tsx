@@ -7,7 +7,7 @@ import { Highlight, themes } from "prism-react-renderer";
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CopyButton } from "@/components/ui/copy-button";
-import { urlFor } from "@/sanity/lib/image";
+import { imageUrl as getImageUrl } from "@/lib/content/images";
 import { getLocalizedValue } from '@/i18n/i18n-helpers';
 import { splitContentAtReadMore } from "@/lib/portable-text-utils";
 import { PortableTextWithReadMore } from "@/components/portable-text-with-read-more";
@@ -53,7 +53,7 @@ const createPortableTextComponents = (
       image: ({ value }) => {
         if (!value?.asset) return null;
 
-        const imageUrl = value.asset.url || urlFor(value).url();
+        const imageUrl = value.asset.url || getImageUrl(value);
         const alt = getLocalizedValue(value.alt, locale) || ptLabels(locale).image;
         const caption = getLocalizedValue(value.caption, locale);
         const { metadata } = value.asset;

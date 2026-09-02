@@ -2,7 +2,7 @@ import Image from 'next/image'
 import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { Calendar } from 'lucide-react'
-import { urlFor } from '@/sanity/lib/image'
+import { imageUrl } from '@/lib/content/images'
 import { getLocalizedValue } from '@/i18n/i18n-helpers'
 import { formatNewsDate } from '@/lib/news-utils'
 import { normalizeTagColor } from '@/lib/tags'
@@ -44,7 +44,7 @@ export default function FeaturedNewsCard({
 
   const image = news.image?.asset?.url ? (
     <Image
-      src={urlFor(news.image).width(isLead ? 1200 : w).height(isLead ? 675 : h).url()}
+      src={imageUrl(news.image, { width: isLead ? 1200 : w, height: isLead ? 675 : h })}
       alt={imageAlt || title || ''}
       fill
       className="object-cover transition-transform duration-500 group-hover:scale-105"

@@ -1,13 +1,12 @@
 /**
- * Moved from lib/sanity/hub-illustrations.ts (Task 10). `urlFor` stays a
- * direct `@/sanity/lib/image` import deliberately — Task 10a owns turning
- * that chainable builder into a plain function project-wide; converting it
- * here alone would just create a second image-URL pattern for 10a to
- * reconcile.
+ * Moved from lib/sanity/hub-illustrations.ts (Task 10). Task 10a converted
+ * the direct `@/sanity/lib/image` `urlFor` import here to the plain
+ * `imageUrl` function (`@/lib/content/images`), same as every other call
+ * site project-wide.
  */
 import { safe } from "@/lib/content/internal/safe";
 import { query } from "@/lib/content/internal/sanity-source";
-import { urlFor } from "@/sanity/lib/image";
+import { imageUrl } from "@/lib/content/images";
 
 /** Minimal shape of a Sanity `image` field with alt text, as stored on the
  *  `hubIllustrations` singleton. GROQ's `asset->{...}` dereferences the
@@ -57,7 +56,7 @@ function mapImage(image: RawIllustrationImage | null | undefined): HubIllustrati
   if (!image?.asset?._id || !width || !height) return undefined;
 
   return {
-    url: urlFor(image).width(width).height(height).url(),
+    url: imageUrl(image, { width, height }),
     alt: image.alt ?? "",
     width,
     height,

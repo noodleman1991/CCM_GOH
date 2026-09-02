@@ -13,7 +13,7 @@ import { BackLink } from '@/components/ui/back-link'
 import { SectionHeader } from '@/components/ui/section-header'
 import { CARD_ASPECT, CARD_ASPECT_SOURCE } from '@/lib/design-tokens'
 import { cn } from '@/lib/utils'
-import { urlFor } from '@/sanity/lib/image'
+import { imageUrl } from '@/lib/content/images'
 import { getLocalizedValue } from '@/i18n/i18n-helpers'
 import { formatNewsDate, getReadingTime } from '@/lib/news-utils'
 import { PortableText } from '@portabletext/react'
@@ -225,7 +225,7 @@ export default async function NewsDetailPage({
         <div className="space-y-2">
           <div className="relative aspect-video rounded-lg overflow-hidden">
             <Image
-              src={urlFor(newsPost.image).width(1200).height(675).url()}
+              src={imageUrl(newsPost.image, { width: 1200, height: 675 })}
               alt={imageAlt || title}
               fill
               className="object-cover"
@@ -346,7 +346,7 @@ export default async function NewsDetailPage({
           <div className="space-y-6">
             <SectionHeader title={t('relatedNews')} />
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {relatedNews.map((related: { _id: string; slug: string; title?: Record<string, string> | string; excerpt?: Record<string, string> | string; publishedAt?: string; image?: Parameters<typeof urlFor>[0] & { asset?: { url?: string } } }) => {
+              {relatedNews.map((related: { _id: string; slug: string; title?: Record<string, string> | string; excerpt?: Record<string, string> | string; publishedAt?: string; image?: { asset?: { url?: string } } }) => {
                 const relatedTitle = getLocalizedValue(related.title, supportedLocale)
                 const relatedExcerpt = getLocalizedValue(related.excerpt, supportedLocale)
                 return (
@@ -359,10 +359,10 @@ export default async function NewsDetailPage({
                     <div className={cn("relative overflow-hidden bg-gradient-to-br from-ccm-sky/40 to-ccm-water/30", CARD_ASPECT.wide)}>
                       {related.image?.asset?.url && (
                         <Image
-                          src={urlFor(related.image)
-                            .width(CARD_ASPECT_SOURCE.wide.w)
-                            .height(CARD_ASPECT_SOURCE.wide.h)
-                            .url()}
+                          src={imageUrl(related.image, {
+                            width: CARD_ASPECT_SOURCE.wide.w,
+                            height: CARD_ASPECT_SOURCE.wide.h,
+                          })}
                           alt={relatedTitle || ''}
                           fill
                           className="object-cover group-hover:scale-105 transition-transform duration-300"

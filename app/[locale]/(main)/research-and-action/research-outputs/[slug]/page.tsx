@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Calendar, Building } from "lucide-react";
 import { BackLink } from "@/components/ui/back-link";
-import { urlFor } from "@/sanity/lib/image";
+import { imageUrl } from "@/lib/content/images";
 import { getLocalizedText } from "@/lib/case-study-utils";
 import PortableTextRenderer from "@/components/portable-text-renderer";
 import { CommentIsland } from "@/components/comments/comment-island";
@@ -107,7 +107,7 @@ export default async function ResearchOutputPage({ params }: { params: Promise<{
 
       {/* Cover image */}
       {ro.image?.asset?.url && (
-        <SafeCoverImage src={urlFor(ro.image).width(1200).height(675).url()} alt={ro.image.alt || title} />
+        <SafeCoverImage src={imageUrl(ro.image, { width: 1200, height: 675 })} alt={ro.image.alt || title} />
       )}
 
       {/* Documents (version × language switcher) */}
