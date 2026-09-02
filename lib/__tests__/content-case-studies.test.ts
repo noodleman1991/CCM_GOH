@@ -60,6 +60,8 @@ import {
   deleteCaseStudyDraft,
   getCaseStudySearchRecords,
   getCaseStudyOgData,
+  getApprovedCaseStudyCountsBySubmitter,
+  getApprovedCaseStudiesByContributor,
   CaseStudyEditNotAllowedError,
   CaseStudyDraftNotFoundError,
 } from "@/lib/content/case-studies";
@@ -662,5 +664,47 @@ describe("getCaseStudySearchRecords", () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
     mockQuery.mockRejectedValue(new Error("network error"));
     await expect(getCaseStudySearchRecords()).resolves.toEqual([]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// getApprovedCaseStudyCountsBySubmitter / getApprovedCaseStudiesByContributor
+// — added for lib/community/region-data.ts (Task 8's found-during-audit call
+// site, unclaimed by any brief; that file may not import Sanity directly).
+// ---------------------------------------------------------------------------
+
+describe("getApprovedCaseStudyCountsBySubmitter", () => {
+  it("counts approved case studies per submitter id", async () => {
+    mockQuery.mockResolvedValue([{ uid: "u1" }, { uid: "u1" }, { uid: "u2" }]);
+    await expect(getApprovedCaseStudyCountsBySubmitter(["u1", "u2"])).resolves.toEqual({ u1: 2, u2: 1 });
+  });
+
+  it("short-circuits to {} without querying when userIds is empty", async () => {
+    await expect(getApprovedCaseStudyCountsBySubmitter([])).resolves.toEqual({});
+    expect(mockQuery).not.toHaveBeenCalled();
+  });
+
+  it("degrades to {} when the source fails", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    mockQuery.mockRejectedValue(new Error("network error"));
+    await expect(getApprovedCaseStudyCountsBySubmitter(["u1"])).resolves.toEqual({});
+  });
+});
+
+describe("getApprovedCaseStudiesByContributor", () => {
+  it("returns the rows the source resolves", async () => {
+    mockQuery.mockResolvedValue([
+      { _id: "cs1", title: { en: "A study" }, slug: { current: "a-study" }, publishedAt: "2026-01-01" },
+    ]);
+    await expect(getApprovedCaseStudiesByContributor("u1")).resolves.toEqual([
+      { _id: "cs1", title: { en: "A study" }, slug: { current: "a-study" }, publishedAt: "2026-01-01" },
+    ]);
+    expect(mockQuery).toHaveBeenCalledWith(expect.any(String), { uid: "u1" });
+  });
+
+  it("degrades to [] when the source fails", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    mockQuery.mockRejectedValue(new Error("network error"));
+    await expect(getApprovedCaseStudiesByContributor("u1")).resolves.toEqual([]);
   });
 });

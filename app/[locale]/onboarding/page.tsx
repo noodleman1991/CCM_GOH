@@ -1,11 +1,10 @@
 import { auth, clerkClient } from "@clerk/nextjs/server"
 import { redirect } from "next/navigation"
-import { client } from "@/sanity/lib/client"
-import { onboardingContentQueryWithFallback } from "@/sanity/queries/onboarding-content"
+import { getOnboardingCommunities, getOnboardingContent } from "@/lib/content/onboarding"
+import type { Locale } from "@/lib/content/types"
 import { fetchUserManagementOptionsWithLocale } from "@/lib/actions/sync-user-management"
 import { prisma } from "@/lib/prisma"
 import { OnboardingClient } from "./onboarding-client"
-import { getRegionalCommunities } from "@/sanity/queries/regional-communities"
 import type { RegionalCommunityName } from "@/generated/prisma"
 
 // The community shape assembled below for the onboarding form.
@@ -197,7 +196,7 @@ export default async function OnboardingPage({ params }: { params: Promise<{ loc
 
     // Load Sanity content and user management options
     const [content, userManagement] = await Promise.all([
-        client.fetch(onboardingContentQueryWithFallback, { locale }),
+        getOnboardingContent(locale as Locale),
         fetchUserManagementOptionsWithLocale(locale)
     ])
 
@@ -205,7 +204,7 @@ export default async function OnboardingPage({ params }: { params: Promise<{ loc
     let communities: OnboardingCommunity[] = []
     try {
         // Fetch communities from Sanity (source of truth for names and translations)
-        const sanityCommunities = await getRegionalCommunities()
+        const sanityCommunities = await getOnboardingCommunities()
 
         // Fetch from database to get IDs for joining with user profiles
         const dbCommunities = await prisma.community.findMany({
@@ -260,7 +259,7 @@ export default async function OnboardingPage({ params }: { params: Promise<{ loc
             )
 
             communities = sanityCommunities
-                .map((community: { slug: string; name: Record<string, string> | string }): OnboardingCommunity | null => {
+                .map((community): OnboardingCommunity | null => {
                     const transformed = community.slug.replace(/-/g, '_').toUpperCase() as RegionalCommunityName
                     // 1) exact transform match, 2) fuzzy normalized match
                     const match = regionalNameToId.get(transformed)
@@ -274,7 +273,7 @@ export default async function OnboardingPage({ params }: { params: Promise<{ loc
                     return {
                         id: match.id,
                         slug: community.slug,
-                        name: community.name,
+                        name: community.name as Record<string, string>,
                         type: 'REGIONAL',
                         regionalName: match.regionalName,
                     }

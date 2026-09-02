@@ -1413,3 +1413,56 @@ export async function getCaseStudySearchRecords(): Promise<SearchRecord[]> {
     });
   });
 }
+
+// ---------------------------------------------------------------------------
+// Community contribution rows (lib/community/region-data.ts) — call sites
+// found while auditing lib/community for Task 8's mandated
+// app/[locale]/onboarding + app/api/onboarding + app/api/profile +
+// lib/utils/sanity-prisma-sync.ts + lib/actions/sync-user-management.ts +
+// lib/community grep. Not onboarding/taxonomy content itself, but genuinely
+// unclaimed by any task-*.md brief (grepped every one) and case-study-domain
+// reads (`_type == "caseStudy"`), so they live here rather than in
+// onboarding.ts/taxonomy.ts. lib/community/region-data.ts may not import
+// Sanity directly (Task 11's boundary test covers all of `lib`), so these
+// small, purpose-built projections are exposed here for it to call.
+//
+// Both originals called `client.fetch` directly, each with their own
+// try/catch swallowing to a fixed empty fallback → query() + safe().
+// ---------------------------------------------------------------------------
+
+/** Approved case-study counts keyed by submitter Clerk id, for a set of users. */
+export async function getApprovedCaseStudyCountsBySubmitter(userIds: string[]): Promise<Record<string, number>> {
+  if (userIds.length === 0) return {};
+  return safe("case-study-counts-by-submitter", {}, async () => {
+    const rows = await query<{ uid: string }[]>(
+      `*[_type == "caseStudy" && status == "approved" && submittedBy in $ids]{ "uid": submittedBy }`,
+      { ids: userIds },
+    );
+    const counts: Record<string, number> = {};
+    for (const r of rows) if (r.uid) counts[r.uid] = (counts[r.uid] ?? 0) + 1;
+    return counts;
+  });
+}
+
+export interface CaseStudyContributionRow {
+  _id: string;
+  title?: Localized | string;
+  slug?: { current: string };
+  publishedAt?: string | null;
+}
+
+/**
+ * A user's approved case studies (submitted by them, or where they're a
+ * listed author), newest first, capped at 50 — feeds the public
+ * Contributions block on region/profile pages.
+ */
+export async function getApprovedCaseStudiesByContributor(userId: string): Promise<CaseStudyContributionRow[]> {
+  return safe("case-studies-by-contributor", [], async () => {
+    const rows = await query<CaseStudyContributionRow[]>(
+      `*[_type == "caseStudy" && status == "approved" && (submittedBy == $uid || $uid in authors[].userId)]
+        | order(publishedAt desc)[0...50]{ _id, title, slug, publishedAt }`,
+      { uid: userId },
+    );
+    return rows ?? [];
+  });
+}

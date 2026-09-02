@@ -1,6 +1,5 @@
 import { cachedFetch as sanityFetch } from "@/sanity/lib/cached-fetch";
 import { SITE_ANNOUNCEMENT_QUERY } from "@/sanity/queries/site-announcement";
-import { ACTIVE_PROFILE_PROMPTS_QUERY } from "@/sanity/queries/profile-prompt";
 
 /** The singleton site announcement (or null). Locale-agnostic fetch; the bar
  *  component resolves the localized message itself. */
@@ -9,14 +8,6 @@ export const fetchSiteAnnouncement = async () => {
         query: SITE_ANNOUNCEMENT_QUERY,
     });
     return data;
-};
-
-/** Active, editor-ordered profile prompts. Components resolve the localized text. */
-export const fetchActiveProfilePrompts = async () => {
-    const { data } = await sanityFetch({
-        query: ACTIVE_PROFILE_PROMPTS_QUERY,
-    });
-    return (data || []) as Array<{ id: string; prompt: Record<string, string>; category?: string }>;
 };
 
 // ===== TEMPLATE-SPECIFIC DYNAMIC FETCH FUNCTIONS =====
@@ -469,7 +460,8 @@ export const fetchDynamicLivedExperiences = async ({
 // from sanity/queries/regional-community-*.ts) are gone: zero consumers ever
 // imported these names from "@/sanity/lib/fetch" (grepped repo-wide — Task
 // 6b's report has the evidence), and their three source files are deleted as
-// part of that task, having been converted into lib/content/pages.ts. This
-// file's own four live helpers above (fetchSiteAnnouncement,
-// fetchActiveProfilePrompts, fetchDynamicCaseStudies,
-// fetchDynamicLivedExperiences) are untouched.
+// part of that task, having been converted into lib/content/pages.ts.
+// fetchActiveProfilePrompts moved to lib/content/onboarding.ts's
+// getActiveProfilePrompts (Task 8; queryPreviewable — a draft-aware helper).
+// This file's three remaining live helpers (fetchSiteAnnouncement,
+// fetchDynamicCaseStudies, fetchDynamicLivedExperiences) are untouched.

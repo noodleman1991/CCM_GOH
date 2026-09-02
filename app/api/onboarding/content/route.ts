@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
-import { client } from "@/sanity/lib/client"
-import { onboardingContentQueryWithFallback } from "@/sanity/queries/onboarding-content"
+import { getOnboardingContent } from "@/lib/content/onboarding"
+import type { Locale } from "@/lib/content/types"
 
 /**
  * Returns localized onboarding-dialog copy from Sanity.
@@ -12,8 +12,8 @@ import { onboardingContentQueryWithFallback } from "@/sanity/queries/onboarding-
  */
 export async function GET(request: NextRequest) {
   try {
-    const locale = request.nextUrl.searchParams.get("locale") || "en"
-    const data = await client.fetch(onboardingContentQueryWithFallback, { locale })
+    const locale = (request.nextUrl.searchParams.get("locale") || "en") as Locale
+    const data = await getOnboardingContent(locale)
     return NextResponse.json({ content: data ?? null })
   } catch (error) {
     console.error("Failed to fetch onboarding content:", error)

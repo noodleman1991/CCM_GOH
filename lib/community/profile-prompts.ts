@@ -1,6 +1,6 @@
 import "server-only"
 import { prisma } from "@/lib/prisma"
-import { fetchActiveProfilePrompts } from "@/sanity/lib/fetch"
+import { getActiveProfilePrompts } from "@/lib/content/onboarding"
 import { getLocalizedField } from "@/lib/localization-utils"
 
 export type AnsweredPrompt = {
@@ -27,11 +27,11 @@ export async function getAnsweredPrompts(
       orderBy: { order: "asc" },
       select: { promptId: true, answer: true },
     }),
-    fetchActiveProfilePrompts(),
+    getActiveProfilePrompts(),
   ])
 
   const textById = new Map(
-    prompts.map((p) => [p.id, getLocalizedField(p.prompt, supported, "") || ""])
+    prompts.map((p) => [p.id, getLocalizedField(p.prompt as Record<string, string>, supported, "") || ""])
   )
 
   return answers

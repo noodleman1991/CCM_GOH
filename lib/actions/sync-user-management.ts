@@ -1,8 +1,48 @@
 "use server"
 
-import { writeClient as sanityClient } from "@/sanity/lib/write-client"
-import { allUserManagementOptionsQuery } from "@/sanity/queries/work-types"
+import { createDocument, queryRaw, updateDocument } from "@/lib/content/internal/sanity-source"
 import { getActor, isStaff } from "@/lib/authz"
+
+/**
+ * All work types / expertise areas (active AND inactive), for the sync +
+ * validation tooling below. Moved verbatim from
+ * sanity/queries/work-types.ts's allUserManagementOptionsQuery — this file
+ * used the authenticated write client (`writeClient.fetch`) for every read,
+ * not the public read client, so every read here maps to queryRaw().
+ */
+const ALL_USER_MANAGEMENT_OPTIONS_QUERY = `
+{
+  "workTypes": *[_type == "workType"] | order(order asc, key asc) {
+    _id,
+    key,
+    label,
+    description,
+    order,
+    isActive
+  },
+  "expertiseAreas": *[_type == "expertiseArea"] | order(order asc, key asc) {
+    _id,
+    key,
+    label,
+    description,
+    order,
+    isActive
+  }
+}`;
+
+interface AllUserManagementOptionsRow {
+  _id: string
+  key: string
+  label: unknown
+  description: unknown
+  order: number
+  isActive: boolean
+}
+
+interface AllUserManagementOptionsResult {
+  workTypes: AllUserManagementOptionsRow[]
+  expertiseAreas: AllUserManagementOptionsRow[]
+}
 
 /** These actions WRITE to the CMS — restrict to staff (team_editor | admin). */
 async function assertAdmin(): Promise<void> {
@@ -55,9 +95,9 @@ function localizeField(
   item: Record<string, unknown> & { [key: string]: unknown },
   field: string,
   locale: string
-) {
+): string {
   const translations = item[`${field}Translations`] as Record<string, string> | undefined
-  return translations?.[locale] || translations?.en || item[field]
+  return (translations?.[locale] || translations?.en || item[field]) as string
 }
 
 // Map of existing Prisma enum values to their user-friendly labels
@@ -136,9 +176,7 @@ export async function syncWorkTypesToSanity() {
     console.log('Starting work types sync to Sanity...')
 
     // Get existing work types from Sanity
-    const response = await sanityClient.fetch(allUserManagementOptionsQuery)
-
-    const existingData = response
+    const existingData = await queryRaw<AllUserManagementOptionsResult>(ALL_USER_MANAGEMENT_OPTIONS_QUERY)
     const existingWorkTypeKeys = new Set(
       existingData.workTypes?.map((wt: { key: string }) => wt.key) || []
     )
@@ -154,7 +192,7 @@ export async function syncWorkTypesToSanity() {
         const existing = existingData.workTypes.find((wt: { key: string }) => wt.key === key)
         if (existing) {
           syncPromises.push(
-            sanityClient.patch(existing._id).set({
+            updateDocument(existing._id, {
               label: createInternationalArrayFromLabels(labels),
               description: createInternationalArrayFromLabels({
                 en: `Work in ${labels.en.toLowerCase()}`,
@@ -164,13 +202,13 @@ export async function syncWorkTypesToSanity() {
               }),
               order,
               isActive: true
-            }).commit()
+            })
           )
         }
       } else {
         // Create new work type
         syncPromises.push(
-          sanityClient.create({
+          createDocument({
             _type: 'workType',
             key,
             label: createInternationalArrayFromLabels(labels),
@@ -204,9 +242,7 @@ export async function syncExpertiseAreasToSanity() {
     console.log('Starting expertise areas sync to Sanity...')
 
     // Get existing expertise areas from Sanity
-    const response = await sanityClient.fetch(allUserManagementOptionsQuery)
-
-    const existingData = response
+    const existingData = await queryRaw<AllUserManagementOptionsResult>(ALL_USER_MANAGEMENT_OPTIONS_QUERY)
     const existingExpertiseKeys = new Set(
       existingData.expertiseAreas?.map((ea: { key: string }) => ea.key) || []
     )
@@ -222,7 +258,7 @@ export async function syncExpertiseAreasToSanity() {
         const existing = existingData.expertiseAreas.find((ea: { key: string }) => ea.key === key)
         if (existing) {
           syncPromises.push(
-            sanityClient.patch(existing._id).set({
+            updateDocument(existing._id, {
               label: createInternationalArrayFromLabels(labels),
               description: createInternationalArrayFromLabels({
                 en: `Expertise in ${labels.en.toLowerCase()}`,
@@ -232,13 +268,13 @@ export async function syncExpertiseAreasToSanity() {
               }),
               order,
               isActive: true
-            }).commit()
+            })
           )
         }
       } else {
         // Create new expertise area
         syncPromises.push(
-          sanityClient.create({
+          createDocument({
             _type: 'expertiseArea',
             key,
             label: createInternationalArrayFromLabels(labels),
@@ -294,9 +330,8 @@ export async function validateUserManagementSync() {
   try {
     console.log('Validating user management sync...')
 
-    const response = await sanityClient.fetch(allUserManagementOptionsQuery)
+    const sanityData = await queryRaw<AllUserManagementOptionsResult>(ALL_USER_MANAGEMENT_OPTIONS_QUERY)
 
-    const sanityData = response
     const sanityWorkTypeKeys = new Set(
       sanityData.workTypes?.map((wt: { key: string }) => wt.key) || []
     )
@@ -343,7 +378,7 @@ export async function validateUserManagementSync() {
 // Fetch user management options for onboarding
 export async function fetchUserManagementOptions() {
   try {
-    const response = await sanityClient.fetch(allUserManagementOptionsQuery)
+    const response = await queryRaw<AllUserManagementOptionsResult>(ALL_USER_MANAGEMENT_OPTIONS_QUERY)
 
     return {
       workTypes: response?.workTypes || [],
@@ -363,8 +398,12 @@ export async function fetchUserManagementOptionsWithLocale(locale: string = 'en'
   try {
     console.log(`[UserManagement] Fetching work types and expertise for locale: ${locale}`)
 
-    // Use client.fetch instead of sanityFetch - works in server actions
-    const response = await sanityClient.fetch(
+    // Raw perspective, authenticated write client — matches every other read
+    // in this file (see ALL_USER_MANAGEMENT_OPTIONS_QUERY's comment above).
+    const response = await queryRaw<{
+      workTypes: Array<{ _id: string; key: string; label: string; description: string; order: number }>
+      expertiseAreas: Array<{ _id: string; key: string; label: string; description: string; order: number }>
+    }>(
       `{
         "workTypes": *[_type == "workType" && isActive == true] | order(order asc, key asc) {
           _id,

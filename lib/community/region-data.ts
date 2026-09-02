@@ -5,7 +5,10 @@
  * privacy-filtered for public display (the dataset is public).
  */
 import { prisma, safeQuery } from "@/lib/prisma";
-import { client } from "@/sanity/lib/client";
+import {
+  getApprovedCaseStudiesByContributor,
+  getApprovedCaseStudyCountsBySubmitter,
+} from "@/lib/content/case-studies";
 import { RC_SLUG_TO_REGION, type RegionCode } from "@/lib/maps/region-codes";
 import {
   normalizeContributions,
@@ -67,18 +70,7 @@ export async function getRegionMembers(slug: string): Promise<RegionMember[]> {
 
 /** Approved case-study counts keyed by submitter Clerk id, for a set of users. */
 async function caseStudyCountsByUser(userIds: string[]): Promise<Record<string, number>> {
-  if (userIds.length === 0) return {};
-  try {
-    const rows: { uid: string }[] = await client.fetch(
-      `*[_type == "caseStudy" && status == "approved" && submittedBy in $ids]{ "uid": submittedBy }`,
-      { ids: userIds }
-    );
-    const counts: Record<string, number> = {};
-    for (const r of rows) if (r.uid) counts[r.uid] = (counts[r.uid] ?? 0) + 1;
-    return counts;
-  } catch {
-    return {};
-  }
+  return getApprovedCaseStudyCountsBySubmitter(userIds);
 }
 
 /**
@@ -89,16 +81,7 @@ export async function getUserContributions(
   userId: string,
   locale: string
 ): Promise<Contribution[]> {
-  let caseStudies: unknown[] = [];
-  try {
-    caseStudies = await client.fetch(
-      `*[_type == "caseStudy" && status == "approved" && (submittedBy == $uid || $uid in authors[].userId)]
-        | order(publishedAt desc)[0...50]{ _id, title, slug, publishedAt }`,
-      { uid: userId }
-    );
-  } catch {
-    caseStudies = [];
-  }
+  const caseStudies = await getApprovedCaseStudiesByContributor(userId);
 
   const prismaRes = await safeQuery(() =>
     prisma.user.findUnique({
@@ -112,7 +95,7 @@ export async function getUserContributions(
   );
 
   return normalizeContributions({
-    caseStudies: caseStudies as never,
+    caseStudies,
     recentWork: prismaRes.success ? prismaRes.data?.recentWork : [],
     content: prismaRes.success ? prismaRes.data?.createdContent : [],
     locale,

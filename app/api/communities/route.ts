@@ -1,14 +1,7 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
-import { getRegionalCommunities } from "@/sanity/queries/regional-communities"
+import { getOnboardingCommunities, type OnboardingRegionalCommunity } from "@/lib/content/onboarding"
 import { slugToShortCode, type RegionCode } from "@/lib/maps/region-codes"
-
-interface SanityRegionalCommunity {
-    _id: string
-    slug: string
-    name: { en?: string; es?: string; fr?: string; ar?: string }
-    active: boolean
-}
 
 // Fallback communities with multilingual names (all 4 languages)
 const FALLBACK_COMMUNITIES: Array<{
@@ -99,7 +92,7 @@ export async function GET() {
         console.log('[API /communities] Fetching communities...')
 
         // Fetch communities from Sanity (source of truth for names and translations)
-        const sanityCommunities = await getRegionalCommunities()
+        const sanityCommunities = await getOnboardingCommunities()
         console.log('[API /communities] Sanity returned:', sanityCommunities?.length || 0, 'communities')
 
         // Fetch from database to get IDs for joining with user profiles
@@ -156,7 +149,7 @@ export async function GET() {
 
         // Merge Sanity data with database IDs
         const communities = sanityCommunities
-            .map((community: SanityRegionalCommunity) => {
+            .map((community: OnboardingRegionalCommunity) => {
                 // Map Sanity slug to database regionalName enum
                 // e.g., "sub-saharan-africa" -> "ssa"
                 const regionalName = slugToShortCode(community.slug)

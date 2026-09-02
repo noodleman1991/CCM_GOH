@@ -5,9 +5,8 @@
  * and help maintain referential integrity between the content management system and database.
  */
 
-import { cachedFetch as sanityFetch } from "@/sanity/lib/cached-fetch";
+import { queryPreviewable } from "@/lib/content/internal/sanity-source"
 import { WorkType, ExpertiseArea } from '../../generated/prisma'
-import { groq } from 'next-sanity'
 
 // Type definitions for Sanity content
 interface SanityWorkType {
@@ -24,8 +23,11 @@ interface SanityExpertiseArea {
   isActive: boolean
 }
 
-// Queries to fetch active Sanity content
-const workTypesQuery = groq`
+// Queries to fetch active Sanity content. Original calls (below) went
+// through `cachedFetch` with ONLY `query` — no `perspective`/`stega` — so
+// each maps to queryPreviewable(), not query(); see
+// lib/content/internal/sanity-source.ts's doc comment on that distinction.
+const workTypesQuery = `
   *[_type == "workType" && isActive == true] {
     _id,
     key,
@@ -34,7 +36,7 @@ const workTypesQuery = groq`
   }
 `
 
-const expertiseAreasQuery = groq`
+const expertiseAreasQuery = `
   *[_type == "expertiseArea" && isActive == true] {
     _id,
     key,
@@ -55,8 +57,8 @@ export async function validatePrismaEnumsWithSanity() {
   try {
     // Fetch active Sanity content
     const [sanityWorkTypes, sanityExpertiseAreas] = await Promise.all([
-      sanityFetch({ query: workTypesQuery }),
-      sanityFetch({ query: expertiseAreasQuery })
+      queryPreviewable<SanityWorkType[]>(workTypesQuery),
+      queryPreviewable<SanityExpertiseArea[]>(expertiseAreasQuery)
     ])
 
     // Get Prisma enum values
@@ -64,7 +66,7 @@ export async function validatePrismaEnumsWithSanity() {
     const prismaExpertiseAreas = Object.values(ExpertiseArea)
 
     // Validate WorkTypes
-    const sanityWorkTypeKeys = sanityWorkTypes.data.map((wt: SanityWorkType) => wt.key)
+    const sanityWorkTypeKeys = sanityWorkTypes.map((wt: SanityWorkType) => wt.key)
     for (const prismaKey of prismaWorkTypes) {
       if (!sanityWorkTypeKeys.includes(prismaKey)) {
         validation.workTypes.valid = false
@@ -81,7 +83,7 @@ export async function validatePrismaEnumsWithSanity() {
     }
 
     // Validate ExpertiseAreas
-    const sanityExpertiseKeys = sanityExpertiseAreas.data.map((ea: SanityExpertiseArea) => ea.key)
+    const sanityExpertiseKeys = sanityExpertiseAreas.map((ea: SanityExpertiseArea) => ea.key)
     for (const prismaKey of prismaExpertiseAreas) {
       if (!sanityExpertiseKeys.includes(prismaKey)) {
         validation.expertiseAreas.valid = false
@@ -113,15 +115,15 @@ export async function validatePrismaEnumsWithSanity() {
 export async function getMissingSanityContent() {
   try {
     const [sanityWorkTypes, sanityExpertiseAreas] = await Promise.all([
-      sanityFetch({ query: workTypesQuery }),
-      sanityFetch({ query: expertiseAreasQuery })
+      queryPreviewable<SanityWorkType[]>(workTypesQuery),
+      queryPreviewable<SanityExpertiseArea[]>(expertiseAreasQuery)
     ])
 
     const prismaWorkTypes = Object.values(WorkType)
     const prismaExpertiseAreas = Object.values(ExpertiseArea)
 
-    const sanityWorkTypeKeys = sanityWorkTypes.data.map((wt: SanityWorkType) => wt.key)
-    const sanityExpertiseKeys = sanityExpertiseAreas.data.map((ea: SanityExpertiseArea) => ea.key)
+    const sanityWorkTypeKeys = sanityWorkTypes.map((wt: SanityWorkType) => wt.key)
+    const sanityExpertiseKeys = sanityExpertiseAreas.map((ea: SanityExpertiseArea) => ea.key)
 
     return {
       missingWorkTypes: prismaWorkTypes.filter(key => !sanityWorkTypeKeys.includes(key)),
@@ -211,12 +213,12 @@ export async function syncHealthCheck() {
 export async function generateTypeScriptDefinitions() {
   try {
     const [sanityWorkTypes, sanityExpertiseAreas] = await Promise.all([
-      sanityFetch({ query: workTypesQuery }),
-      sanityFetch({ query: expertiseAreasQuery })
+      queryPreviewable<SanityWorkType[]>(workTypesQuery),
+      queryPreviewable<SanityExpertiseArea[]>(expertiseAreasQuery)
     ])
 
-    const workTypeKeys = sanityWorkTypes.data.map((wt: SanityWorkType) => wt.key)
-    const expertiseKeys = sanityExpertiseAreas.data.map((ea: SanityExpertiseArea) => ea.key)
+    const workTypeKeys = sanityWorkTypes.map((wt: SanityWorkType) => wt.key)
+    const expertiseKeys = sanityExpertiseAreas.map((ea: SanityExpertiseArea) => ea.key)
 
     return {
       workTypes: `export type WorkTypeKey = ${workTypeKeys.map((k: string) => `'${k}'`).join(' | ')}`,
