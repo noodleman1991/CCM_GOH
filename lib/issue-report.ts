@@ -27,7 +27,6 @@ export const AREA_VALUES = [
   "collaborations",
   "events",
   "news",
-  "blog",
   "reader",
   "search",
   "profiles",
