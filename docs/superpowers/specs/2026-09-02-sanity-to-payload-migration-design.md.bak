@@ -150,7 +150,7 @@ The cost is no cross-database SQL joins. With only 8 loose references, and Paylo
 ### Phase 0 — Prerequisites
 
 1. **Upgrade Next.js `16.1.1` → `≥16.2.6`.** Payload's supported range is `15.2.9–15.4.x` and `16.2.6+`; 16.1.x is excluded. Hard blocker, and its own shippable slice.
-2. **Full archival export.** `sanity dataset export` — all 479 documents (468 content, plus translation metadata and preview secrets) and 620 MB of assets — to R2, with a manifest committed to the repo. This is the rollback floor for everything that follows.
+2. **Full archival export.** `sanity dataset export` — 479 documents plus 620 MB of assets — to R2, with a manifest committed to the repo. This is the rollback floor for everything that follows.
 3. **Fix the four data defects** (§7). Item D4.3 blocks the import outright.
 
 Nothing is deleted before Phase 4.
