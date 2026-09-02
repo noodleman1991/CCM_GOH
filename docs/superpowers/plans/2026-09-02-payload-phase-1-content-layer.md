@@ -105,6 +105,28 @@ it fails loudly if any file remains unclaimed.
   - `interface SearchRecord { objectID: string; kind: ContentKind; title: string; excerpt?: string; url: string; locale: Locale }`
   - `safe<T>(label: string, fallback: T, fn: () => Promise<T>): Promise<T>`
   - `query<T>(groq: string, params?: Record<string, unknown>): Promise<T>`
+  - `queryPreviewable<T>(groq: string, params?: Record<string, unknown>): Promise<T>`
+
+**Three read primitives, and picking the wrong one is this phase's most repeated defect.**
+It has caused four separate real bugs so far, none of which `tsc`, the test suite, or a
+rendered check would catch:
+
+| Primitive | Perspective | Cache | Use when the original called… |
+|---|---|---|---|
+| `query` | forced `published` | 1-hour revalidate | `client.fetch`, or `cachedFetch`/`sanityFetch` **with** an explicit `perspective` |
+| `queryPreviewable` | omits `perspective`/`stega`, so `cachedFetch` consults `draftMode()` | 1-hour when not previewing | `sanityFetch`/`cachedFetch` **without** `perspective`/`stega` |
+| `queryRaw` | `raw`, authenticated | none | `writeClient.fetch`, or any read feeding a write |
+
+`sanity/lib/cached-fetch.ts` only consults `draftMode()` when **both** `perspective` and
+`stega` are absent. Passing them — as `query` always does — pins the read to published
+forever. Thirteen of the original helpers omitted them, which is what made editors in the
+Presentation tool see their own drafts. Converting those to `query` silently ends draft
+preview for pages, regional community pages, the homepage, and the moderation dashboards.
+
+**Do not reach for `queryPreviewable` everywhere.** `draftMode()` is a Next dynamic API;
+calling it on a statically-rendered route throws `draftMode was called outside a request
+scope`. That is precisely why the seam's default forces `published`. Use it only where the
+original omitted the fields.
 
 - [ ] **Step 1: Write the failing test**
 
