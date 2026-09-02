@@ -7,13 +7,14 @@
 //   node scripts/sync-prod-to-staging-sanity.mjs --apply    # actually write
 //
 // Idempotent: uses createOrReplace so re-runs converge. Skips system docs.
-import path from "node:path";
-import { createRequire } from "node:module";
-const require = createRequire(import.meta.url);
-const { loadEnvConfig } = require(
-  path.resolve("node_modules/.pnpm/@next+env@16.1.1/node_modules/@next/env/dist/index.js")
-);
-loadEnvConfig(process.cwd(), true);
+import dotenv from "dotenv";
+
+// dotenv is a direct dependency; @next/env is not, and pnpm's strict layout
+// means it is not reliably resolvable from a script. Matches next/env's
+// loadEnvConfig(cwd, true) precedence for this repo: .env.local (dev) wins,
+// .env fills any gaps.
+dotenv.config({ path: ".env.local" });
+dotenv.config({ path: ".env" });
 
 const PID = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
 const API = process.env.NEXT_PUBLIC_SANITY_API_VERSION || "2021-06-07";
