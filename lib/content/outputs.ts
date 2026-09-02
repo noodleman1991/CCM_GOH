@@ -406,6 +406,18 @@ export async function getAgendaBySlug(slug: string): Promise<Agenda | null> {
 // designed; the download itself was never gated on this write succeeding,
 // so no user-facing flow changes, only the count catches up with reality.
 // Flagged explicitly here and in the report rather than silently ignored.
+//
+// The READ must be `queryRaw`, not `query`, even though it maps from a
+// plain `client.fetch` elsewhere in this file. `query()` routes through
+// `cachedFetch` with a 1-hour revalidate; `client.fetch` on Next 16.3.4 has
+// no such caching — it's genuinely live. This read feeds a read-modify-write
+// counter (fetch current counts, increment one, recompute the total, write
+// the whole array back). A cached read means every download inside the same
+// hour reads identical stale counts and writes back identical numbers —
+// only the first download per hour would actually move the counter, silently
+// undoing the write-side fix above. `queryRaw` (uncached, editor-token)
+// restores the original's uncached read semantics exactly, and is the
+// correct primitive for a write-adjacent path regardless.
 // ---------------------------------------------------------------------------
 
 interface TrackedAgendaFile {
@@ -416,7 +428,7 @@ interface TrackedAgendaFile {
 }
 
 export async function trackAgendaDownload(agendaId: string, fileLanguage: string): Promise<void> {
-  const agenda = await query<{ _id: string; files?: TrackedAgendaFile[]; totalDownloadCount?: number } | null>(
+  const agenda = await queryRaw<{ _id: string; files?: TrackedAgendaFile[]; totalDownloadCount?: number } | null>(
     `*[_type == "agenda" && _id == $agendaId][0]{
                 _id,
                 files,
@@ -457,7 +469,7 @@ interface TrackedReportFile {
 }
 
 export async function trackReportDownload(reportId: string, fileLanguage: string): Promise<void> {
-  const report = await query<{ _id: string; files?: TrackedReportFile[]; totalDownloadCount?: number } | null>(
+  const report = await queryRaw<{ _id: string; files?: TrackedReportFile[]; totalDownloadCount?: number } | null>(
     `*[_type == "report" && _id == $reportId][0]{
                 _id,
                 files,

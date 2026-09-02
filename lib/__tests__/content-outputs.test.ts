@@ -142,7 +142,7 @@ describe("getAgendas / getAgendaBySlug", () => {
 
 describe("trackAgendaDownload / trackReportDownload", () => {
   it("increments the matching file's download count and the total", async () => {
-    mockQuery.mockResolvedValue({
+    mockQueryRaw.mockResolvedValue({
       _id: "a1",
       files: [
         { language: "en", downloadCount: 2 },
@@ -164,21 +164,21 @@ describe("trackAgendaDownload / trackReportDownload", () => {
 
   it("no-ops (does not throw or write) when the agenda doesn't exist", async () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
-    mockQuery.mockResolvedValue(null);
+    mockQueryRaw.mockResolvedValue(null);
 
     await expect(trackAgendaDownload("missing", "en")).resolves.toBeUndefined();
     expect(mockUpdateDocument).not.toHaveBeenCalled();
   });
 
   it("throws (does not swallow) when the write fails — the route keeps its own catch", async () => {
-    mockQuery.mockResolvedValue({ _id: "a1", files: [], totalDownloadCount: 0 });
+    mockQueryRaw.mockResolvedValue({ _id: "a1", files: [], totalDownloadCount: 0 });
     mockUpdateDocument.mockRejectedValue(new Error("write failed"));
 
     await expect(trackAgendaDownload("a1", "en")).rejects.toThrow("write failed");
   });
 
   it("trackReportDownload increments the matching report file", async () => {
-    mockQuery.mockResolvedValue({
+    mockQueryRaw.mockResolvedValue({
       _id: "r1",
       files: [{ language: "fr", downloadCount: 0 }],
       totalDownloadCount: 0,
@@ -190,6 +190,29 @@ describe("trackAgendaDownload / trackReportDownload", () => {
       files: [expect.objectContaining({ language: "fr", downloadCount: 1 })],
       totalDownloadCount: 1,
     });
+  });
+
+  // Pins the fix for a regression: the read inside a read-modify-write
+  // counter must use the raw/uncached primitive (matching the original
+  // client.fetch(), which has no caching on Next 16.3.4), not the cached
+  // `query()` used elsewhere in this module. `query()` routes through
+  // cachedFetch with an hour-long revalidate — every download inside the
+  // same hour would then read identical stale counts and write back
+  // identical numbers, silently undoing the write-side fix (client ->
+  // writeClient) right next to it. If either function slips back to
+  // `query`, these tests must fail.
+  it("trackAgendaDownload uses the raw/uncached primitive, not the cached one", async () => {
+    mockQueryRaw.mockResolvedValue({ _id: "a1", files: [], totalDownloadCount: 0 });
+    await trackAgendaDownload("a1", "en");
+    expect(mockQueryRaw).toHaveBeenCalledTimes(1);
+    expect(mockQuery).not.toHaveBeenCalled();
+  });
+
+  it("trackReportDownload uses the raw/uncached primitive, not the cached one", async () => {
+    mockQueryRaw.mockResolvedValue({ _id: "r1", files: [], totalDownloadCount: 0 });
+    await trackReportDownload("r1", "en");
+    expect(mockQueryRaw).toHaveBeenCalledTimes(1);
+    expect(mockQuery).not.toHaveBeenCalled();
   });
 });
 
