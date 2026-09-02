@@ -5,8 +5,10 @@
  * Sanity builder — call sites did `urlFor(img).width(800).height(450).url()`.
  * That builder API is Sanity-specific and cannot survive the Phase 3 backend
  * swap, so every call site now goes through `imageUrl` instead. This module
- * imports the builder from the seam only (`@/sanity/lib/image`) — no
- * `@sanity/image-url` type appears in its exported signature.
+ * imports the builder from lib/content/internal/image-source.ts — the seam
+ * re-export of `@/sanity/lib/image`, not that module directly, since only
+ * lib/content/internal/ may import Sanity — no `@sanity/image-url` type
+ * appears in this file's own exported signature.
  *
  * Behaviour mirrors the two builders exactly, including their load-bearing
  * special cases:
@@ -18,7 +20,7 @@
  *    `.fit("crop").auto("format")` (AVIF/WebP per browser). This function
  *    does not unify them — `opts.crop` selects which one runs.
  */
-import { urlFor, urlForCropped } from "@/sanity/lib/image";
+import { urlFor, urlForCropped } from "./internal/image-source";
 import type { ContentImage } from "./types";
 
 type SanitySource = Parameters<typeof urlFor>[0];

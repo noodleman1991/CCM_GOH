@@ -21,7 +21,6 @@ import FreshContent from "@/components/blocks/fresh-content";
 import SubmitStoryBanner from "@/components/blocks/cta/submit-story-banner";
 import { BlockReveal } from "@/components/blocks/block-reveal";
 import { isRTL } from "@/i18n/i18n-helpers";
-// import gridReport from "@/sanity/schemas/blocks/grid/grid-report"; //todo: what is the diff between reportsgrid and gridreports in schemas???
 
 /** A page block, in its raw CMS shape (`_type`/`_key` discriminant plus
  *  whatever fields that block type carries). Loose by design — Blocks just
