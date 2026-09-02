@@ -4,23 +4,27 @@ import Image from "next/image";
 import { imageUrl } from "@/lib/content/images";
 import { Fragment } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { PAGE_QUERY_RESULT } from "@/sanity.types";
 import { getLocalizedField } from "@/lib/localization-utils";
 import { useTranslations } from "next-intl";
 import { isRTL } from "@/i18n/i18n-helpers";
 import { cn } from "@/lib/utils";
 import { heading, gridGap } from "@/lib/design-tokens";
+import type { SectionPadding } from "@/components/ui/section-container";
 
-// The new fields (layout/motionSpeed + per-image label/orgType) aren't in the
-// generated PAGE_QUERY types yet, so widen here.
-type LogoCloud1Props = Extract<
-  NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number],
-  { _type: "logo-cloud-1" }
-> & {
+/** A field that carries either a plain string or a `{en, es, fr, ar}` map —
+ *  the shape `getLocalizedField` resolves. Matches the precedent already
+ *  used for this exact pattern in lib/content/discovery.ts's LocalizedText. */
+type LocalizedText = string | Record<string, string> | null;
+
+interface LogoCloud1Props {
+  padding?: SectionPadding | null;
+  title?: LocalizedText;
+  description?: LocalizedText;
+  images?: LogoImage[] | null;
   locale?: string;
   layout?: "marquee" | "grid";
   motionSpeed?: "default" | "slow";
-};
+}
 
 type LogoImage = {
   asset?: { _id?: string; mimeType?: string; metadata?: { lqip?: string; dimensions?: { width?: number; height?: number } } };
