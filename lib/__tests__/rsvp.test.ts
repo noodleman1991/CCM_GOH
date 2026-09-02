@@ -4,7 +4,9 @@ const getActorMock = vi.fn<() => Promise<unknown>>();
 vi.mock("@/lib/authz", () => ({ getActor: () => getActorMock() }));
 
 const fetchMock = vi.fn<(...a: unknown[]) => Promise<unknown>>(async () => "evt1"); // approved by default
-vi.mock("@/sanity/lib/client", () => ({ client: { fetch: (...a: unknown[]) => fetchMock(...a) } }));
+vi.mock("@/lib/content/discovery", () => ({
+  getApprovedEventForRsvp: (...a: unknown[]) => fetchMock(...a),
+}));
 
 const db = vi.hoisted(() => {
   const d: Record<string, Record<string, ReturnType<typeof vi.fn>>> = {

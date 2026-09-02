@@ -1,253 +1,17 @@
-import { groq } from "next-sanity";
-import { cachedFetch as sanityFetch } from "@/sanity/lib/cached-fetch";
-
-// Predefined query mapping for dynamic content inserts
-const QUERY_MAPPING = {
-  // Recent content queries
-  recentNews: groq`
-    *[_type == "newsPost" &&
-      defined(relatedCommunity) &&
-      relatedCommunity->slug.current == $communitySlug
-    ] | order(publishedAt desc)[0...$count] {
-      _id,
-      title,
-      slug,
-      excerpt,
-      publishedAt,
-      image {
-        asset->{
-          _id,
-          url,
-          metadata {
-            lqip,
-            dimensions {
-              width,
-              height
-            }
-          }
-        },
-        alt
-      },
-      author->{
-        name,
-        slug
-      },
-      tags[]->{
-        _id,
-        label,
-        value,
-        color
-      }
-    }
-  `,
-
-  recentCaseStudies: groq`
-    *[_type == "caseStudy" &&
-      status == "approved" &&
-      references(*[_type == "regionalCommunity" && slug.current == $communitySlug][0]._id)
-    ] | order(publishedAt desc)[0...$count] {
-      _id,
-      title,
-      slug,
-      excerpt,
-      publishedAt,
-      image {
-        asset->{
-          _id,
-          url,
-          metadata {
-            lqip,
-            dimensions {
-              width,
-              height
-            }
-          }
-        },
-        alt
-      },
-      authors[]{
-        name,
-        affiliation->{
-          name,
-          slug
-        }
-      },
-      tags[]->{
-        _id,
-        label,
-        value,
-        color
-      }
-    }
-  `,
-
-  recentLivedExperiences: groq`
-    *[_type == "livedExperience" &&
-      (status == "approved" || !defined(status)) &&
-      defined(relatedCommunity) &&
-      relatedCommunity->slug.current == $communitySlug
-    ] | order(publishedAt desc)[0...$count] {
-      _id,
-      title,
-      slug,
-      description,
-      issue,
-      personContext,
-      publishedAt,
-      videoLink,
-      duration,
-      thumbnail {
-        asset->{
-          _id,
-          url,
-          metadata {
-            lqip,
-            dimensions {
-              width,
-              height
-            }
-          }
-        },
-        alt
-      },
-      author->{
-        name,
-        slug
-      },
-      tags[]->{
-        _id,
-        label,
-        value,
-        color
-      }
-    }
-  `,
-
-  // Featured content queries (featured first, then recent)
-  featuredNews: groq`
-    *[_type == "newsPost" &&
-      defined(relatedCommunity) &&
-      relatedCommunity->slug.current == $communitySlug
-    ] | order(featured desc, publishedAt desc)[0...$count] {
-      _id,
-      title,
-      slug,
-      excerpt,
-      publishedAt,
-      featured,
-      image {
-        asset->{
-          _id,
-          url,
-          metadata {
-            lqip,
-            dimensions {
-              width,
-              height
-            }
-          }
-        },
-        alt
-      },
-      author->{
-        name,
-        slug
-      },
-      tags[]->{
-        _id,
-        label,
-        value,
-        color
-      }
-    }
-  `,
-
-  featuredCaseStudies: groq`
-    *[_type == "caseStudy" &&
-      status == "approved" &&
-      references(*[_type == "regionalCommunity" && slug.current == $communitySlug][0]._id)
-    ] | order(featured desc, publishedAt desc)[0...$count] {
-      _id,
-      title,
-      slug,
-      excerpt,
-      publishedAt,
-      featured,
-      image {
-        asset->{
-          _id,
-          url,
-          metadata {
-            lqip,
-            dimensions {
-              width,
-              height
-            }
-          }
-        },
-        alt
-      },
-      authors[]{
-        name,
-        affiliation->{
-          name,
-          slug
-        }
-      },
-      tags[]->{
-        _id,
-        label,
-        value,
-        color
-      }
-    }
-  `,
-
-  featuredLivedExperiences: groq`
-    *[_type == "livedExperience" &&
-      (status == "approved" || !defined(status)) &&
-      defined(relatedCommunity) &&
-      relatedCommunity->slug.current == $communitySlug
-    ] | order(featured desc, publishedAt desc)[0...$count] {
-      _id,
-      title,
-      slug,
-      description,
-      issue,
-      personContext,
-      publishedAt,
-      featured,
-      videoLink,
-      duration,
-      thumbnail {
-        asset->{
-          _id,
-          url,
-          metadata {
-            lqip,
-            dimensions {
-              width,
-              height
-            }
-          }
-        },
-        alt
-      },
-      author->{
-        name,
-        slug
-      },
-      tags[]->{
-        _id,
-        label,
-        value,
-        color
-      }
-    }
-  `,
-} as const;
-
+import { getDynamicContent } from "@/lib/content/discovery";
+import type { ContentKind } from "@/lib/content/types";
 import type { QueryType, DynamicQueryParams } from "./dynamic-queries-types";
+
+/** Maps each predefined query name to the (kind, mode) pair
+ *  lib/content/discovery.ts's getDynamicContent dispatches on. */
+const QUERY_TYPE_MAP: Record<QueryType, { kind: ContentKind; mode: "recent" | "featured" }> = {
+  recentNews: { kind: "newsPost", mode: "recent" },
+  recentCaseStudies: { kind: "caseStudy", mode: "recent" },
+  recentLivedExperiences: { kind: "livedExperience", mode: "recent" },
+  featuredNews: { kind: "newsPost", mode: "featured" },
+  featuredCaseStudies: { kind: "caseStudy", mode: "featured" },
+  featuredLivedExperiences: { kind: "livedExperience", mode: "featured" },
+};
 
 /**
  * Execute a predefined query for dynamic content inserts
@@ -258,22 +22,19 @@ import type { QueryType, DynamicQueryParams } from "./dynamic-queries-types";
 export async function executePredefinedQuery(
   queryType: QueryType,
   params: DynamicQueryParams
-) {
-  const query = QUERY_MAPPING[queryType];
-  if (!query) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- the caller's own consumers (dashboard/page.tsx, /api/dynamic-content) treat this as loosely-typed content-kind-specific data, exactly as the original raw-GROQ `sanityFetch` call did (its type never resolved past `any` either).
+): Promise<any> {
+  const mapping = QUERY_TYPE_MAP[queryType];
+  if (!mapping) {
     console.warn(`Unknown query type: ${queryType}`);
     return null;
   }
 
   try {
-    const { data } = await sanityFetch({
-      query,
-      params: {
-        communitySlug: params.communitySlug,
-        count: params.count - 1, // GROQ array slice is 0-indexed
-      },
-      perspective: "published",
-      stega: false,
+    const data = await getDynamicContent(mapping.kind, {
+      communitySlug: params.communitySlug,
+      count: params.count - 1, // GROQ array slice is 0-indexed
+      mode: mapping.mode,
     });
 
     return data;

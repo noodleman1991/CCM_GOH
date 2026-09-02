@@ -3,10 +3,11 @@ import { canShowPublicProject, canRequestToJoin } from "@/lib/collaboration/publ
 
 const findUniqueMock = vi.fn();
 const outputsFindManyMock = vi.fn();
-// public.ts resolves output slugs via the Sanity client; stub it so the test
-// stays hermetic (importing the real client asserts env vars at import time).
-vi.mock("@/sanity/lib/client", () => ({
-  client: { fetch: vi.fn(async () => []) },
+// public.ts resolves output slugs via lib/content/discovery.ts; stub it so
+// the test stays hermetic (importing the real seam asserts env vars at
+// import time).
+vi.mock("@/lib/content/discovery", () => ({
+  getDocSlugs: vi.fn(async () => []),
 }));
 
 vi.mock("@/lib/prisma", () => ({

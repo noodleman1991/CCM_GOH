@@ -6,8 +6,10 @@ vi.mock("@/lib/authz", () => ({ getActor: () => getActorMock() }));
 const authorizeMock = vi.fn<(...a: unknown[]) => Promise<void>>(async () => {});
 vi.mock("@/lib/collaboration/service", () => ({ authorizeCollab: (...a: unknown[]) => authorizeMock(...a) }));
 
-const createMock = vi.fn<(...a: unknown[]) => Promise<unknown>>(async () => ({ _id: "draft.new" }));
-vi.mock("@/sanity/lib/write-client", () => ({ writeClient: { create: (...a: unknown[]) => createMock(...a) } }));
+const createMock = vi.fn<(...a: unknown[]) => Promise<unknown>>(async () => ({ id: "draft.new" }));
+vi.mock("@/lib/content/discovery", () => ({
+  createWorkspaceOutputDraft: (...a: unknown[]) => createMock(...a),
+}));
 
 const db = vi.hoisted(() => {
   const d: Record<string, Record<string, ReturnType<typeof vi.fn>>> = {

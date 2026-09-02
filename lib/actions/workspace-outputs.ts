@@ -4,7 +4,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getActor } from "@/lib/authz";
 import { authorizeCollab } from "@/lib/collaboration/service";
-import { writeClient } from "@/sanity/lib/write-client";
+import { createWorkspaceOutputDraft } from "@/lib/content/discovery";
 import { isOutputType } from "@/lib/collaboration/outputs";
 
 type Result<T = unknown> = ({ ok: true } & T) | { ok: false; error: string };
@@ -38,13 +38,8 @@ export async function addOutput(input: z.infer<typeof addSchema>): Promise<Resul
   if (mode === "create") {
     // Create a Sanity DRAFT of the chosen output type. It enters the existing
     // review pipeline (status pending by default for the moderated types).
-    const draft = await writeClient.create({
-      _type: sanityType,
-      _id: `drafts.${crypto.randomUUID()}`,
-      title: { en: resolvedTitle },
-      status: "pending",
-    } as Parameters<typeof writeClient.create>[0]);
-    resolvedId = draft._id;
+    const draft = await createWorkspaceOutputDraft(sanityType, resolvedTitle);
+    resolvedId = draft.id;
   } else {
     if (!sanityId) return { ok: false, error: "Pick a draft to link." };
     resolvedId = sanityId;

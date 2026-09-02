@@ -2,7 +2,7 @@ import "server-only";
 import type { DiscoveryConfig } from "./registry";
 import type { PillOption } from "@/components/ui/pill-filter-group";
 import type { DiscoveryOptions } from "@/components/discovery/discovery-bar";
-import { client } from "@/sanity/lib/client";
+import { getDiscoveryOptions as fetchDiscoveryFacets } from "@/lib/content/discovery";
 import { getLocalizedValue } from "@/i18n/i18n-helpers";
 
 /**
@@ -23,30 +23,16 @@ const LANGUAGE_OPTIONS: PillOption[] = [
   { value: "ar", label: "العربية" },
 ];
 
-async function fetchRegionOptions(locale: string): Promise<PillOption[]> {
-  try {
-    const rows = await client.fetch<{ slug: string; name: Record<string, string> | string | null }[]>(
-      `*[_type == "regionalCommunity" && defined(slug.current)] | order(name asc){ "slug": slug.current, name }`
-    );
-    return rows
-      .map((r) => ({ value: r.slug, label: getLocalizedValue(r.name, locale) || r.slug }))
-      .filter((o) => o.label);
-  } catch {
-    return [];
-  }
+function toRegionOptions(rows: { slug: string; name: Record<string, string> | string | null }[], locale: string): PillOption[] {
+  return rows
+    .map((r) => ({ value: r.slug, label: getLocalizedValue(r.name, locale) || r.slug }))
+    .filter((o) => o.label);
 }
 
-async function fetchTagOptions(locale: string): Promise<PillOption[]> {
-  try {
-    const rows = await client.fetch<{ value: string; label: Record<string, string> | string | null }[]>(
-      `*[_type == "tag" && defined(value)] | order(value asc){ value, label }`
-    );
-    return rows
-      .map((r) => ({ value: r.value, label: getLocalizedValue(r.label, locale) || r.value }))
-      .filter((o) => o.label);
-  } catch {
-    return [];
-  }
+function toTagOptions(rows: { value: string; label: Record<string, string> | string | null }[], locale: string): PillOption[] {
+  return rows
+    .map((r) => ({ value: r.value, label: getLocalizedValue(r.label, locale) || r.value }))
+    .filter((o) => o.label);
 }
 
 export async function resolveDiscoveryOptions(
@@ -54,14 +40,19 @@ export async function resolveDiscoveryOptions(
   locale: string
 ): Promise<DiscoveryOptions> {
   const out: DiscoveryOptions = {};
+  // Both facets' rows come from one lib/content/discovery.ts read (regions +
+  // tags degrade independently there, matching this function's original
+  // per-facet try/catch behaviour) rather than a separate Sanity round-trip
+  // per facet.
+  const facets = await fetchDiscoveryFacets();
 
   for (const facet of config.facets) {
     if (facet.id === "language") {
       out[facet.id] = LANGUAGE_OPTIONS;
     } else if (facet.id === "region" && facet.source === "taxonomy") {
-      out[facet.id] = await fetchRegionOptions(locale);
+      out[facet.id] = toRegionOptions(facets.regions, locale);
     } else if (facet.id === "tags") {
-      out[facet.id] = await fetchTagOptions(locale);
+      out[facet.id] = toTagOptions(facets.tags, locale);
     } else {
       // enum/static/algolia facets are resolved by the consuming page (it has
       // the enum label maps / Algolia facet counts). Default to empty so the

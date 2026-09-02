@@ -2,7 +2,7 @@ import "server-only";
 import { prisma, safeQuery } from "@/lib/prisma";
 import { getActor, isStaff } from "@/lib/authz";
 import { canInCollab, type CollabAction } from "./authz";
-import { client } from "@/sanity/lib/client";
+import { getOutputSummaries, getOutputStatuses } from "@/lib/content/discovery";
 import { mapSanityStatus, mergeOutputDocs, type EnrichedOutput, type OutputDoc } from "@/lib/collaboration/outputs";
 import { emitLifecycle } from "@/lib/notifications/emit";
 import type { CollaborationRole } from "@/generated/prisma";
@@ -177,10 +177,7 @@ export async function getOutputs(collaborationId: string): Promise<EnrichedOutpu
   const rows = r.data;
   let docs: OutputDoc[] = [];
   try {
-    docs = await client.fetch(
-      `*[_id in $ids || ("drafts." + _id) in $ids]{ _id, "title": coalesce(title.en, title), status, "slug": slug.current }`,
-      { ids: rows.map((x) => x.sanityId.replace(/^drafts\./, "")) }
-    );
+    docs = await getOutputSummaries(rows.map((x) => x.sanityId.replace(/^drafts\./, "")));
   } catch {
     // Sanity unreachable — cached row values still render.
   }
@@ -200,10 +197,7 @@ export async function refreshOutputStatuses(collaborationId: string): Promise<vo
   const rows = r.data;
   const ids = rows.map((x) => x.sanityId);
   try {
-    const docs: { _id: string; title?: string; status?: string }[] = await client.fetch(
-      `*[_id in $ids || ("drafts." + _id) in $ids]{ _id, "title": coalesce(title.en, title), status }`,
-      { ids }
-    );
+    const docs = await getOutputStatuses(ids);
     const byId = new Map(docs.map((d) => [d._id.replace(/^drafts\./, ""), d]));
     const changed: { title: string; status: string; sanityId: string }[] = [];
     await Promise.all(

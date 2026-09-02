@@ -17,12 +17,14 @@ export function outputDetailHref(type: string, slug: string): string {
 }
 
 const STATUSES = new Set(["draft", "pending", "revision", "approved"]);
-export function mapSanityStatus(status: string | undefined): "draft" | "pending" | "revision" | "approved" {
+export function mapSanityStatus(status: string | null | undefined): "draft" | "pending" | "revision" | "approved" {
   return status && STATUSES.has(status) ? (status as "draft" | "pending" | "revision" | "approved") : "draft";
 }
 
 export type OutputRow = { id: string; sanityId: string; sanityType: string; title: string; status: string };
-export type OutputDoc = { _id: string; title?: string; status?: string; slug?: string | null };
+// title/status are GROQ-projected scalars: Sanity emits `null` (not an
+// omitted key) for a missing field, so both are nullable as well as optional.
+export type OutputDoc = { _id: string; title?: string | null; status?: string | null; slug?: string | null };
 export type EnrichedOutput = OutputRow & { slug: string | null };
 
 /** Merge live Sanity docs onto cached workspace-output rows (drafts.-prefix

@@ -1,6 +1,6 @@
 import "server-only";
 import { prisma, safeQuery } from "@/lib/prisma";
-import { client } from "@/sanity/lib/client";
+import { getForYouCandidates } from "@/lib/content/discovery";
 import { slugToShortCode } from "@/lib/maps/region-codes";
 
 /**
@@ -34,31 +34,7 @@ export async function getForYou(userId: string, limit = 6): Promise<ForYouItem[]
   if (regionCodes.length === 0 && regionSlugs.length === 0 && themeSlugs.length === 0) return [];
 
   try {
-    const rows: Array<{
-      _id: string;
-      _type: string;
-      title: string | null;
-      slug: string | null;
-      region: string | null;
-      rcSlug: string | null;
-      tagSlugs: (string | null)[] | null;
-    }> = await client.fetch(
-      `*[_type in ["caseStudy", "livedExperience", "newsPost"]
-         && (status == "approved" || (!defined(status) && _type == "newsPost"))
-         && defined(slug.current)
-         && (region in $regionCodes
-             || relatedCommunity->slug.current in $regionSlugs
-             || count((tags[]->value.current)[@ in $themeSlugs]) > 0)
-       ] | order(coalesce(publishedAt, publishDate, _createdAt) desc)[0...$limit]{
-         _id, _type,
-         "title": coalesce(title.en, title),
-         "slug": slug.current,
-         region,
-         "rcSlug": relatedCommunity->slug.current,
-         "tagSlugs": tags[]->value.current
-       }`,
-      { regionCodes, regionSlugs, themeSlugs, limit }
-    );
+    const rows = await getForYouCandidates({ regionCodes, regionSlugs, themeSlugs, limit });
     return rows
       .filter((r) => r.title && r.slug)
       .map((r) => ({

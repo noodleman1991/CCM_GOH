@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth, currentUser } from "@clerk/nextjs/server";
-import { writeClient } from "@/sanity/lib/write-client";
-import { eventSubmissionSchema, generateEventSlug } from "@/lib/validation/event";
+import { eventSubmissionSchema } from "@/lib/validation/event";
+import { getEventEditGate, submitEvent, updateEvent, type EventInput } from "@/lib/content/discovery";
 import { addOutput } from "@/lib/actions/workspace-outputs";
 import { rateLimitRequest } from "@/lib/rate-limit-route";
 
@@ -36,37 +36,26 @@ export async function POST(request: NextRequest) {
   }
   const data = parsed.data;
 
-  const doc: { _type: string; [key: string]: unknown } = {
-    _type: "event",
-    status: "pending", // never trust client; always pending on submit
-    submittedBy: userId,
+  const fields: Omit<EventInput, "submittedBy"> = {
     title: data.title,
-    slug: { _type: "slug", current: generateEventSlug(data.title) },
-    description: data.description || undefined,
+    description: data.description || null,
     scope: data.scope,
     startAt: data.startAt,
-    endAt: data.endAt || undefined,
+    endAt: data.endAt || null,
     mode: data.mode,
-    locationName: data.locationName || undefined,
-    url: data.url || undefined,
-    linkedProject: data.scope === "project" ? data.linkedProject || undefined : undefined,
+    locationName: data.locationName || null,
+    url: data.url || null,
+    linkedProject: data.scope === "project" ? data.linkedProject || null : null,
+    regionalCommunityId: data.regionalCommunityId || undefined,
+    relatedCollaboration: data.collaborationId || undefined,
   };
-  if (data.regionalCommunityId) {
-    doc.relatedCommunity = { _type: "reference", _ref: data.regionalCommunityId };
-  }
 
   try {
-    if (data.collaborationId) doc.relatedCollaboration = data.collaborationId;
-
     // X7 edit mode: resubmit an existing draft/pending event — verify the
     // caller may edit it, then patch (status returns to pending for
     // re-review). Slug and submittedBy are preserved.
     if (data.editId) {
-      const existing = await writeClient
-        .withConfig({ perspective: "raw" })
-        .fetch(`*[_type == "event" && _id == $id][0]{ _id, submittedBy, status }`, {
-          id: data.editId,
-        });
+      const existing = await getEventEditGate(data.editId);
       const editable = existing && ["pending", "revision", "draft", null].includes(existing.status ?? null);
       const isSubmitter = existing?.submittedBy === userId;
       let isWorkspaceMember = false;
@@ -84,22 +73,13 @@ export async function POST(request: NextRequest) {
       if (!existing || !editable || (!isSubmitter && !isWorkspaceMember)) {
         return NextResponse.json({ error: "You can't edit this submission." }, { status: 403 });
       }
-      const { _type: _t, slug: _slug, submittedBy: _sb, ...updatable } = doc;
-      // JSON drops undefined, so cleared optional fields must be unset explicitly.
-      const cleared = Object.keys(updatable).filter(
-        (k) => updatable[k as keyof typeof updatable] === undefined
-      );
-      const set = Object.fromEntries(
-        Object.entries(updatable).filter(([, v]) => v !== undefined)
-      );
-      let patch = writeClient.patch(existing._id).set({ ...set, status: "pending" });
-      if (cleared.length > 0) patch = patch.unset(cleared);
-      await patch.commit();
+
+      await updateEvent(existing._id, fields);
       // The workspace-output row (if any) already exists — no link-back.
       return NextResponse.json({ success: true, id: existing._id });
     }
 
-    const created = await writeClient.create(doc);
+    const created = await submitEvent({ ...fields, submittedBy: userId });
 
     // Submitted from a workspace: link the event as a workspace output.
     // addOutput enforces collab authz; a failed link never fails submission.
@@ -108,13 +88,13 @@ export async function POST(request: NextRequest) {
         collaborationId: data.collaborationId,
         sanityType: "event",
         mode: "link",
-        sanityId: created._id,
+        sanityId: created.id,
         title: data.title,
       });
-      if (!linked.ok) console.warn(`Workspace link failed for ${created._id}: ${linked.error}`);
+      if (!linked.ok) console.warn(`Workspace link failed for ${created.id}: ${linked.error}`);
     }
 
-    return NextResponse.json({ success: true, id: created._id });
+    return NextResponse.json({ success: true, id: created.id });
   } catch (error) {
     console.error("Event submission failed:", error);
     return NextResponse.json({ error: "Submission failed" }, { status: 500 });

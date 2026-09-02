@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma, safeQuery } from "@/lib/prisma";
-import { client } from "@/sanity/lib/client";
+import { getEventsStartingWithin } from "@/lib/content/discovery";
 import { emitLifecycle } from "@/lib/notifications/emit";
 
 /**
@@ -20,10 +20,7 @@ export async function GET(req: NextRequest) {
 
   let events: { _id: string; title: string | null }[] = [];
   try {
-    events = await client.fetch(
-      `*[_type == "event" && status == "approved" && dateTime(startAt) > dateTime($now) && dateTime(startAt) < dateTime($end)]{ _id, title }`,
-      { now: now.toISOString(), end: windowEnd.toISOString() }
-    );
+    events = await getEventsStartingWithin(now.toISOString(), windowEnd.toISOString());
   } catch (error) {
     console.error("[event-reminders] Sanity fetch failed:", error);
     return NextResponse.json({ error: "Upstream unavailable" }, { status: 502 });

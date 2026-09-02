@@ -1,5 +1,5 @@
 import "server-only";
-import { writeClient } from "@/sanity/lib/write-client";
+import { getEditableEventDoc } from "@/lib/content/discovery";
 import { prisma, safeQuery } from "@/lib/prisma";
 
 /**
@@ -29,15 +29,9 @@ export async function loadEditableEvent(
   userId: string
 ): Promise<EditableEvent | null> {
   const id = sanityId.replace(/^drafts\./, "");
-  // Token client with a raw perspective: drafts.* docs are invisible to the
-  // public read client, and edit mode is exactly about reopening drafts.
-  const doc = await writeClient.withConfig({ perspective: "raw" }).fetch(
-    `*[_type == "event" && (_id == $id || _id == "drafts." + $id)][0]{
-      _id, title, description, scope, startAt, endAt, mode, locationName, url,
-      submittedBy, status, reviewNotes
-    }`,
-    { id }
-  );
+  // Raw perspective: drafts.* docs are invisible to the public read client,
+  // and edit mode is exactly about reopening drafts.
+  const doc = await getEditableEventDoc(id);
   if (!doc) return null;
   if (!["pending", "revision", "draft", null, undefined].includes(doc.status)) return null;
 

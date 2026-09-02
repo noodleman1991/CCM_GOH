@@ -1,5 +1,5 @@
 import "server-only";
-import { client } from "@/sanity/lib/client";
+import { resolveCommentTarget } from "@/lib/content/discovery";
 import { prisma, safeQuery } from "@/lib/prisma";
 import type { CommentTargetType } from "@/generated/prisma";
 
@@ -21,14 +21,6 @@ type CacheEntry = { ok: boolean; at: number };
 const cache = new Map<string, CacheEntry>();
 const TTL_MS = 30_000;
 
-const SANITY_PREDICATE: Partial<Record<CommentTargetType, string>> = {
-  caseStudy: '_type == "caseStudy" && status == "approved"',
-  newsPost: '_type == "newsPost"',
-  livedExperience: '_type == "livedExperience" && (status == "approved" || !defined(status))',
-  researchOutput: '_type == "researchOutput" && status == "approved"',
-  event: '_type == "event" && status == "approved"',
-};
-
 /** Postgres table name for each workspace (membership-gated) target type. */
 const WORKSPACE_TARGET_TABLE: Record<
   "collaborationThread" | "collaborationFile" | "collaborationDoc",
@@ -49,18 +41,7 @@ export async function isCommentTargetValid(
 
   let ok = false;
 
-  const predicate = SANITY_PREDICATE[targetType];
-  if (predicate) {
-    try {
-      const count: number = await client.fetch(
-        `count(*[${predicate} && _id == $id])`,
-        { id: targetId }
-      );
-      ok = count > 0;
-    } catch {
-      ok = false;
-    }
-  } else if (
+  if (
     targetType === "collaborationThread" ||
     targetType === "collaborationFile" ||
     targetType === "collaborationDoc"
@@ -81,6 +62,11 @@ export async function isCommentTargetValid(
       }
     });
     ok = r.success && r.data > 0;
+  } else {
+    // Sanity-backed target types (caseStudy/newsPost/livedExperience/
+    // researchOutput/event) — resolveCommentTarget re-asserts the public
+    // predicate and degrades to null on failure, so no try/catch needed here.
+    ok = (await resolveCommentTarget(targetType, targetId)) !== null;
   }
 
   cache.set(cacheKey, { ok, at: Date.now() });

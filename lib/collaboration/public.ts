@@ -1,7 +1,7 @@
 import "server-only";
 
 import { prisma, safeQuery } from "@/lib/prisma";
-import { client } from "@/sanity/lib/client";
+import { getDocSlugs } from "@/lib/content/discovery";
 import type { PublicProject } from "./public-access";
 
 export type { PublicProject } from "./public-access";
@@ -46,10 +46,7 @@ export async function getPublicProject(id: string): Promise<PublicProject | null
   let slugById = new Map<string, string | null>();
   if (outputRows.length > 0) {
     try {
-      const docs: { _id: string; slug: string | null }[] = await client.fetch(
-        `*[_id in $ids]{ _id, "slug": slug.current }`,
-        { ids: outputRows.map((x) => x.sanityId.replace(/^drafts\./, "")) }
-      );
+      const docs = await getDocSlugs(outputRows.map((x) => x.sanityId.replace(/^drafts\./, "")));
       slugById = new Map(docs.map((d) => [d._id, d.slug]));
     } catch {
       // Sanity unreachable — fall back to type-index links.

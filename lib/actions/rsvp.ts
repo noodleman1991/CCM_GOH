@@ -3,7 +3,7 @@
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getActor, isStaff } from "@/lib/authz";
-import { client } from "@/sanity/lib/client";
+import { getApprovedEventForRsvp } from "@/lib/content/discovery";
 import { createNotification } from "@/lib/notifications/service";
 import { structuredSnippet } from "@/lib/notifications/structured";
 import type { RsvpStatus } from "@/generated/prisma";
@@ -17,12 +17,7 @@ const statusSchema = z.enum(["GOING", "INTERESTED", "NOT_GOING"]);
 async function approvedEventMeta(
   eventId: string
 ): Promise<{ _id: string; title: string | null; startAt: string | null; slug: string | null; submittedBy: string | null } | null> {
-  return client.fetch(
-    `*[_type == "event" && _id == $id && status == "approved"][0]{
-      _id, title, startAt, "slug": slug.current, submittedBy
-    }`,
-    { id: eventId }
-  );
+  return getApprovedEventForRsvp(eventId);
 }
 
 /** RSVP to an event (idempotent on (user, event)). */

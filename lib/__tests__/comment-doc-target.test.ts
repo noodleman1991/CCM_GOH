@@ -1,8 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-// lib/comments/target.ts also imports the Sanity client for the Sanity-backed
-// target types; stub it so this test doesn't need NEXT_PUBLIC_SANITY_DATASET.
-vi.mock("@/sanity/lib/client", () => ({ client: { fetch: vi.fn() } }));
+// lib/comments/target.ts resolves Sanity-backed target types through
+// lib/content/discovery.ts's resolveCommentTarget; stub it so this test
+// doesn't need NEXT_PUBLIC_SANITY_DATASET.
+const resolveCommentTargetMock = vi.fn();
+vi.mock("@/lib/content/discovery", () => ({
+  resolveCommentTarget: (...a: unknown[]) => resolveCommentTargetMock(...a),
+}));
 
 const { queryRawUnsafeMock, prismaMock } = vi.hoisted(() => {
   const queryRawUnsafeMock = vi.fn();
@@ -19,23 +23,19 @@ vi.mock("@/lib/prisma", () => ({
   },
 }));
 
-import { client } from "@/sanity/lib/client";
 import { collaborationIdForTarget, isCommentTargetValid } from "@/lib/comments/target";
 
 describe("isCommentTargetValid(researchOutput)", () => {
   beforeEach(() => vi.clearAllMocks());
 
-  it("uses the researchOutput predicate (approved-only) and validates existing ids", async () => {
-    (client.fetch as ReturnType<typeof vi.fn>).mockResolvedValue(1);
+  it("delegates to resolveCommentTarget and validates existing ids", async () => {
+    resolveCommentTargetMock.mockResolvedValue({ type: "researchOutput", id: "ro1" });
     expect(await isCommentTargetValid("researchOutput", "ro1")).toBe(true);
-    expect(client.fetch).toHaveBeenCalledWith(
-      expect.stringContaining('_type == "researchOutput" && status == "approved"'),
-      { id: "ro1" }
-    );
+    expect(resolveCommentTargetMock).toHaveBeenCalledWith("researchOutput", "ro1");
   });
 
-  it("returns false when no matching document exists", async () => {
-    (client.fetch as ReturnType<typeof vi.fn>).mockResolvedValue(0);
+  it("returns false when resolveCommentTarget finds no matching document", async () => {
+    resolveCommentTargetMock.mockResolvedValue(null);
     expect(await isCommentTargetValid("researchOutput", "missing")).toBe(false);
   });
 });
@@ -55,5 +55,15 @@ describe("collaborationIdForTarget(collaborationDoc)", () => {
   it("returns null for a missing doc", async () => {
     queryRawUnsafeMock.mockResolvedValue([]);
     expect(await collaborationIdForTarget("collaborationDoc", "nope")).toBeNull();
+  });
+});
+
+describe("isCommentTargetValid(collaborationThread) — never calls resolveCommentTarget", () => {
+  beforeEach(() => vi.clearAllMocks());
+
+  it("checks Postgres directly for a workspace target type, bypassing content resolution", async () => {
+    queryRawUnsafeMock.mockResolvedValue([{ n: BigInt(1) }]);
+    expect(await isCommentTargetValid("collaborationThread", "th1")).toBe(true);
+    expect(resolveCommentTargetMock).not.toHaveBeenCalled();
   });
 });

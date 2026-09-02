@@ -7,10 +7,9 @@ import { Calendar, User } from "lucide-react";
 import { stegaClean } from "next-sanity";
 import { getTranslations } from "next-intl/server";
 import { PAGE_QUERY_RESULT } from "@/sanity.types";
-import { client } from "@/sanity/lib/client";
-import { groq } from "next-sanity";
 import { urlFor } from "@/sanity/lib/image";
 import { getLocalizedField } from "@/lib/localization-utils";
+import { getNewsPostsForBlock, type NewsPostBlockItem } from "@/lib/content/discovery";
 
 type AllPostsProps = Extract<
   NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number],
@@ -20,73 +19,7 @@ type AllPostsProps = Extract<
 };
 
 // Minimal shape of a news post as projected by NEWS_POST_FIELDS below.
-type LocalizedText = string | Record<string, string> | null;
-
-type NewsPostItem = {
-  _id: string;
-  title: LocalizedText;
-  excerpt: LocalizedText;
-  slug: string | null;
-  publishedAt: string;
-  image?: {
-    asset?: {
-      _id: string;
-      url: string | null;
-      mimeType?: string | null;
-      metadata?: { lqip?: string | null } | null;
-    } | null;
-    alt?: string | null;
-  } | null;
-  author?: { _id: string; name?: string | null } | null;
-  tags?: Array<{
-    _id: string;
-    label: LocalizedText;
-    color?: string | null;
-  }> | null;
-};
-
-// Shared fragment for news post fields
-const NEWS_POST_FIELDS = groq`
-  _id,
-  _type,
-  title,
-  subtitle,
-  excerpt,
-  "slug": slug.current,
-  publishedAt,
-  _updatedAt,
-  featured,
-  image{
-    asset->{
-      _id,
-      url,
-      mimeType,
-      metadata {
-        lqip,
-        dimensions {
-          width,
-          height
-        }
-      }
-    },
-    alt,
-    caption
-  },
-  author->{
-    _id,
-    name,
-    image,
-    bio
-  },
-  tags[]->{
-    _id,
-    label,
-    value,
-    color,
-    category
-  },
-  language
-`;
+type NewsPostItem = NewsPostBlockItem;
 
 async function fetchNewsPosts(
   mode: string,
@@ -95,58 +28,28 @@ async function fetchNewsPosts(
 ): Promise<NewsPostItem[]> {
   // Manual mode: fetch specific posts
   if (mode === "manual" && manualPosts && manualPosts.length > 0) {
-    const manualPostIds = manualPosts.map(ref => ref._ref).filter(Boolean);
+    // sanity.types.ts's generated PAGE_QUERY_RESULT types this block's
+    // manualPosts._ref as the literal `null` (a known typegen quirk for
+    // un-dereferenced reference arrays — see CLAUDE.md); it is always a
+    // string document id at runtime, as the original code already assumed.
+    const manualPostIds = manualPosts
+      .map(ref => ref._ref as unknown as string)
+      .filter((id): id is string => typeof id === "string" && id.length > 0);
 
     if (manualPostIds.length === 0) {
       return [];
     }
 
-    return await client.fetch<NewsPostItem[]>(
-      groq`*[_type == "newsPost" && _id in $ids] {
-        ${NEWS_POST_FIELDS}
-      }`,
-      { ids: manualPostIds }
-    );
+    return getNewsPostsForBlock("manual", limit, manualPostIds);
   }
 
   // Featured mode: featured first, then recent to fill quota
   if (mode === "featured") {
-    const featured = await client.fetch<NewsPostItem[]>(
-      groq`*[_type == "newsPost" &&
-        featured == true &&
-        publishedAt <= now()
-      ] | order(publishedAt desc)[0...${limit}] {
-        ${NEWS_POST_FIELDS}
-      }`
-    );
-
-    // If we have enough featured posts, return them
-    if (featured.length >= limit) {
-      return featured.slice(0, limit);
-    }
-
-    // Otherwise, fetch recent posts to fill the quota
-    const remaining = limit - featured.length;
-    const recent = await client.fetch<NewsPostItem[]>(
-      groq`*[_type == "newsPost" &&
-        (!defined(featured) || featured == false) &&
-        publishedAt <= now()
-      ] | order(publishedAt desc)[0...${remaining}] {
-        ${NEWS_POST_FIELDS}
-      }`
-    );
-
-    return [...featured, ...recent];
+    return getNewsPostsForBlock("featured", limit);
   }
 
   // Recent mode: most recent posts only
-  return await client.fetch<NewsPostItem[]>(
-    groq`*[_type == "newsPost" &&
-      publishedAt <= now()
-    ] | order(publishedAt desc)[0...${limit}] {
-      ${NEWS_POST_FIELDS}
-    }`
-  );
+  return getNewsPostsForBlock("recent", limit);
 }
 
 export default async function AllPosts({

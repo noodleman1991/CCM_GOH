@@ -1,8 +1,6 @@
 import "server-only";
-import { client } from "@/sanity/lib/client";
+import { getModerationSettings as fetchModerationSettings } from "@/lib/content/discovery";
 import { classify, type Tier } from "@/lib/moderation/normalize";
-
-const MODERATION_QUERY = `*[_type == "moderationSettings"][0]{ enabled, blockTerms, reviewTerms }`;
 
 type ModerationSettings = {
   enabled: boolean;
@@ -15,20 +13,7 @@ const TTL_MS = 60_000;
 
 async function getSettings(): Promise<ModerationSettings> {
   if (cached && Date.now() - cached.at < TTL_MS) return cached.value;
-  let value: ModerationSettings = { enabled: true, blockTerms: [], reviewTerms: [] };
-  try {
-    const raw = await client.fetch<Partial<ModerationSettings> | null>(MODERATION_QUERY);
-    if (raw) {
-      value = {
-        enabled: raw.enabled ?? true,
-        blockTerms: Array.isArray(raw.blockTerms) ? raw.blockTerms : [],
-        reviewTerms: Array.isArray(raw.reviewTerms) ? raw.reviewTerms : [],
-      };
-    }
-  } catch {
-    // keep defaults (filtering effectively off) — fail open for availability,
-    // anonymous comments are still held for review regardless.
-  }
+  const value = await fetchModerationSettings();
   cached = { value, at: Date.now() };
   return value;
 }
