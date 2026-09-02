@@ -224,31 +224,38 @@ describe("createWorkspaceOutputDraft", () => {
 });
 
 describe("resolveCommentTarget", () => {
-  it("returns null for a non-Sanity-backed type without calling query", async () => {
+  it("returns null for a non-Sanity-backed type without calling queryRaw", async () => {
     const result = await resolveCommentTarget("collaborationThread", "t1");
     expect(result).toBeNull();
-    expect(mockQuery).not.toHaveBeenCalled();
+    expect(mockQueryRaw).not.toHaveBeenCalled();
   });
 
   it("returns the target when the predicate count is > 0", async () => {
-    mockQuery.mockResolvedValue(1);
+    mockQueryRaw.mockResolvedValue(1);
     const result = await resolveCommentTarget("researchOutput", "ro1");
     expect(result).toEqual({ type: "researchOutput", id: "ro1" });
-    expect(mockQuery).toHaveBeenCalledWith(
+    expect(mockQueryRaw).toHaveBeenCalledWith(
       expect.stringContaining('_type == "researchOutput" && status == "approved"'),
       { id: "ro1" },
     );
   });
 
   it("returns null when the predicate count is 0", async () => {
-    mockQuery.mockResolvedValue(0);
+    mockQueryRaw.mockResolvedValue(0);
     expect(await resolveCommentTarget("caseStudy", "missing")).toBeNull();
   });
 
-  it("degrades to null on a query failure", async () => {
+  it("degrades to null on a queryRaw failure", async () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
-    mockQuery.mockRejectedValue(new Error("boom"));
+    mockQueryRaw.mockRejectedValue(new Error("boom"));
     expect(await resolveCommentTarget("newsPost", "n1")).toBeNull();
+  });
+
+  it("uses queryRaw, not query — this is a write-time authorization gate and must not be cached", async () => {
+    mockQueryRaw.mockResolvedValue(1);
+    await resolveCommentTarget("caseStudy", "cs1");
+    expect(mockQueryRaw).toHaveBeenCalledTimes(1);
+    expect(mockQuery).not.toHaveBeenCalled();
   });
 });
 

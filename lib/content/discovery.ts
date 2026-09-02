@@ -609,6 +609,12 @@ const SANITY_COMMENT_PREDICATE: Partial<Record<CommentTargetType, string>> = {
  * `Comment.targetId` reaches content through — Phase 3 swaps the backend
  * beneath it, so its signature must not change.
  *
+ * Uses `queryRaw`, not the cached `query()`: this is a write-time
+ * authorization gate (it decides whether a comment write is allowed), so a
+ * document withdrawn or un-approved must stop validating immediately, not up
+ * to an hour later via `query()`'s cache. Same reasoning as
+ * `getApprovedEventForRsvp`.
+ *
  * Degrades to null on failure (mirrors the original's try/catch → ok=false),
  * matching every other public-facing existence check.
  */
@@ -619,7 +625,7 @@ export async function resolveCommentTarget(
   const predicate = SANITY_COMMENT_PREDICATE[type];
   if (!predicate) return null;
   return safe(`comment-target-${type}`, null, async () => {
-    const count = await query<number>(`count(*[${predicate} && _id == $id])`, { id });
+    const count = await queryRaw<number>(`count(*[${predicate} && _id == $id])`, { id });
     return count > 0 ? { type, id } : null;
   });
 }
