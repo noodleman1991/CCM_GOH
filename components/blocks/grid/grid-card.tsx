@@ -6,14 +6,24 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import Image from "next/image";
 import { imageUrl } from "@/lib/content/images";
-import { PAGE_QUERY_RESULT } from "@/sanity.types";
+import type { SanityLinkData } from "@/components/ui/sanity-button";
 
-type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
-type GridRow = Extract<Block, { _type: "grid-row" }>;
-type GridColumn = NonNullable<NonNullable<GridRow["columns"]>>[number];
-type GridCard = Extract<GridColumn, { _type: "grid-card" }>;
+interface GridCardImage {
+  alt?: string | null;
+  asset?: {
+    _id?: string;
+    metadata?: {
+      lqip?: string | null;
+      dimensions?: { width?: number | null; height?: number | null } | null;
+    } | null;
+  } | null;
+}
 
-interface GridCardProps extends Omit<GridCard, "_type" | "_key"> {
+interface GridCardProps {
+  title?: string | null;
+  excerpt?: string | null;
+  image?: GridCardImage | null;
+  link?: SanityLinkData | null;
   cardVariant?: string;
   imageSizes?: string;
 }

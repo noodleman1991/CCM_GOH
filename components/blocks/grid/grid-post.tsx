@@ -5,12 +5,6 @@ import Image from "next/image";
 import { imageUrl } from "@/lib/content/images";
 import { ChevronRight, Calendar } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { PAGE_QUERY_RESULT } from "@/sanity.types";
-
-type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
-type GridRow = Extract<Block, { _type: "grid-row" }>;
-type GridColumn = NonNullable<NonNullable<GridRow["columns"]>>[number];
-type GridPost = Extract<GridColumn, { _type: "grid-post" }>;
 
 interface NewsPost {
   _id: string;

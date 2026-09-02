@@ -1,7 +1,6 @@
 import { cn } from "@/lib/utils";
-import SectionContainer from "@/components/ui/section-container";
+import SectionContainer, { type SectionPadding } from "@/components/ui/section-container";
 import { stegaClean } from "next-sanity";
-import { PAGE_QUERY_RESULT } from "@/sanity.types";
 import GridCard from "./grid-card";
 import GridPost from "./grid-post";
 // import PricingCard from "./pricing-card";
@@ -20,8 +19,11 @@ import { resolveGridColumns } from "@/lib/grid-layout";
 import { gridGap } from "@/lib/design-tokens";
 import { getTranslations } from "next-intl/server";
 
-type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
-type GridRow = Extract<Block, { _type: "grid-row" }>;
+/** A grid column, in its raw CMS shape (`_type`/`_key` discriminant plus
+ *  whatever fields that column type carries). Loose by design — GridRow just
+ *  dispatches on `_type` and spreads the rest into the matching child
+ *  component, which owns its own precise prop type. */
+type RawGridColumn = { _type: string; _key: string } & Record<string, unknown>;
 
 type GridCardType = {
     _type: "grid-card";
@@ -110,7 +112,15 @@ function sizesForColumns(cols: number): string {
     return `(min-width: 1152px) ${capped}px, (min-width: 1024px) ${Math.round(100 / cols)}vw, (min-width: 768px) 50vw, 100vw`;
 }
 
-interface GridRowProps extends Omit<GridRow, 'initialDisplayCount' | 'headerImage'> {
+interface GridRowProps {
+    padding?: SectionPadding | null;
+    background?: unknown;
+    description?: unknown[] | null;
+    title?: string | Record<string, string> | null;
+    subtitle?: string | Record<string, string> | null;
+    gridColumns?: string | null;
+    cardVariant?: string | null;
+    columns?: RawGridColumn[] | null;
     locale?: string;
     userId?: string;
     rowId?: string;
