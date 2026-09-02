@@ -3,10 +3,9 @@ export const revalidate = 120;
 import type { Metadata } from 'next';
 import type { ComponentProps } from 'react';
 // todo: userId may be undefined? (no-!)
-import { getRegionalCommunityPage, getRegionalCommunityPageSlugs } from '@/lib/content/pages';
+import { getRegionalCommunityPage, getRegionalCommunityPageSlugs, getRegionalCommunityTeamMembers } from '@/lib/content/pages';
 import type { Locale } from '@/lib/content/types';
 import { getAgendasByRegion } from '@/lib/content/outputs';
-import { fetchRegionalCommunityTeamMembers } from '@/sanity/queries/regional-community-team';
 import RegionalAgendasGrid from '@/components/blocks/grid/regional-agendas-grid';
 import type { Report } from '@/types/report';
 import { auth } from '@clerk/nextjs/server';
@@ -79,7 +78,7 @@ export default async function RegionalCommunityPage({
 
     // Fetch team members if in dynamic mode and regional community exists
     const teamMembers = pageData?.teamGrid?.mode === 'dynamic' && pageData?.regionalCommunity?._id
-        ? await fetchRegionalCommunityTeamMembers({
+        ? await getRegionalCommunityTeamMembers({
             communityId: pageData.regionalCommunity._id,
             limit: 20
           })

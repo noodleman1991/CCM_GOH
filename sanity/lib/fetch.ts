@@ -464,18 +464,12 @@ export const fetchDynamicLivedExperiences = async ({
     }
 };
 
-// Re-export the new regional community query functions
-export {
-    fetchRegionalCommunityCaseStudiesBySlug,
-    fetchRegionalCommunityCaseStudies
-} from "@/sanity/queries/regional-community-case-studies";
-
-export {
-    fetchRegionalCommunityNewsBySlug,
-    fetchRegionalCommunityNews
-} from "@/sanity/queries/regional-community-news";
-
-export {
-    fetchRegionalCommunityLivedExperiencesBySlug,
-    fetchRegionalCommunityLivedExperiences
-} from "@/sanity/queries/regional-community-lived-experiences";
+// The three dead re-export barrels that used to sit here (forwarding
+// fetchRegionalCommunityCaseStudies(BySlug)/-News(BySlug)/-LivedExperiences(BySlug)
+// from sanity/queries/regional-community-*.ts) are gone: zero consumers ever
+// imported these names from "@/sanity/lib/fetch" (grepped repo-wide — Task
+// 6b's report has the evidence), and their three source files are deleted as
+// part of that task, having been converted into lib/content/pages.ts. This
+// file's own four live helpers above (fetchSiteAnnouncement,
+// fetchActiveProfilePrompts, fetchDynamicCaseStudies,
+// fetchDynamicLivedExperiences) are untouched.

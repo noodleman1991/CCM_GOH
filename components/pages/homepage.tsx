@@ -8,9 +8,9 @@ import Blocks from "@/components/blocks";
 import type { ComponentProps } from "react";
 import { isRTL } from "@/i18n/i18n-helpers";
 import {
-  fetchHomepageAgendas,
-  fetchHomepageNews,
-} from "@/sanity/queries/homepage-dynamic";
+  getHomepageAgendas,
+  getHomepageNews,
+} from "@/lib/content/pages";
 
 type DynamicMode = "dynamic-recent" | "dynamic-featured";
 
@@ -108,7 +108,7 @@ async function resolveNewsSection(
     const items = await fetchDynamicItems(
       mode,
       limit,
-      fetchHomepageNews
+      getHomepageNews
     );
     if (items.length === 0) return section; // fall back to manual columns
 
@@ -164,7 +164,7 @@ async function resolveAgendasSection(
     const items = await fetchDynamicItems(
       mode,
       limit,
-      fetchHomepageAgendas
+      getHomepageAgendas
     );
     if (items.length === 0) return section;
 

@@ -4,7 +4,7 @@ import type { ComponentProps } from "react";
 import Image from "next/image";
 import { urlForCropped } from "@/sanity/lib/image";
 import PortableText from "@/components/portable-text-renderer";
-import { fetchRegionalCommunityTeamMembers } from "@/sanity/queries/regional-community-team";
+import { getRegionalCommunityTeamMembers } from "@/lib/content/pages";
 import { getTranslations } from "next-intl/server";
 
 type PortableTextValue = ComponentProps<typeof PortableText>["value"];
@@ -116,7 +116,7 @@ export default async function TeamGrid(props: TeamGridProps) {
     } else if (mode === 'dynamic' && props.regionalCommunity?._id) {
       // Fetch dynamic members (Server Component - Next.js 15)
       try {
-        const dynamicMembers = await fetchRegionalCommunityTeamMembers({
+        const dynamicMembers = await getRegionalCommunityTeamMembers({
           communityId: props.regionalCommunity._id,
           limit: 20
         });

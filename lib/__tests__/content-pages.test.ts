@@ -18,6 +18,12 @@ import {
   getIndexHomepage,
   getHomepageTranslations,
   getHomepageSlugs,
+  getRegionalCommunityTeamMembers,
+  getRegionalCommunityCaseStudiesBySlug,
+  getRegionalCommunityLivedExperiencesBySlug,
+  getRegionalCommunityNewsBySlug,
+  getHomepageNews,
+  getHomepageAgendas,
 } from "@/lib/content/pages";
 
 const mockQuery = vi.mocked(query);
@@ -310,5 +316,210 @@ describe("getHomepageSlugs", () => {
   it("returns an empty array when the source returns null", async () => {
     mockQuery.mockResolvedValueOnce(null);
     await expect(getHomepageSlugs()).resolves.toEqual([]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Task 6b — the five page-domain query files Task 6 could not reach.
+// ---------------------------------------------------------------------------
+
+describe("getRegionalCommunityTeamMembers", () => {
+  it("queries by communityId with a default limit of 20", async () => {
+    mockQueryPreviewable.mockResolvedValueOnce([{ _id: "a1", name: "Ada" }]);
+
+    const result = await getRegionalCommunityTeamMembers({ communityId: "rc1" });
+
+    expect(result).toEqual([{ _id: "a1", name: "Ada" }]);
+    expect(mockQueryPreviewable).toHaveBeenCalledWith(expect.any(String), {
+      communityId: "rc1",
+      limit: 20,
+    });
+  });
+
+  it("honours an explicit limit", async () => {
+    mockQueryPreviewable.mockResolvedValueOnce([]);
+    await getRegionalCommunityTeamMembers({ communityId: "rc1", limit: 5 });
+    expect(mockQueryPreviewable).toHaveBeenCalledWith(expect.any(String), {
+      communityId: "rc1",
+      limit: 5,
+    });
+  });
+
+  it("throws (does not degrade) when the source fails, as the original unwrapped fetch did", async () => {
+    mockQueryPreviewable.mockRejectedValue(new Error("upstream 500"));
+    await expect(getRegionalCommunityTeamMembers({ communityId: "rc1" })).rejects.toThrow("upstream 500");
+  });
+
+  // Pins the fix for a regression: fetchRegionalCommunityTeamMembers's
+  // original sanityFetch call omitted both perspective/stega — see the note
+  // on getPageBySlug's own pinning test above.
+  it("uses queryPreviewable, not query", async () => {
+    mockQueryPreviewable.mockResolvedValue([]);
+    await getRegionalCommunityTeamMembers({ communityId: "rc1" });
+    expect(mockQueryPreviewable).toHaveBeenCalled();
+    expect(mockQuery).not.toHaveBeenCalled();
+  });
+});
+
+describe("getRegionalCommunityCaseStudiesBySlug", () => {
+  it("queries by slug with default limit/featured", async () => {
+    mockQuery.mockResolvedValueOnce([{ _id: "cs1", title: { en: "Study" } }]);
+
+    const result = await getRegionalCommunityCaseStudiesBySlug({ slug: "oceania" });
+
+    expect(result).toEqual([{ _id: "cs1", title: { en: "Study" } }]);
+    expect(mockQuery).toHaveBeenCalledWith(expect.any(String), {
+      slug: "oceania",
+      limit: 6,
+      featured: false,
+    });
+  });
+
+  it("passes featured/limit through", async () => {
+    mockQuery.mockResolvedValueOnce([]);
+    await getRegionalCommunityCaseStudiesBySlug({ slug: "oceania", limit: 3, featured: true });
+    expect(mockQuery).toHaveBeenCalledWith(expect.any(String), {
+      slug: "oceania",
+      limit: 3,
+      featured: true,
+    });
+  });
+
+  it("throws (does not degrade) when the source fails — the original had no try/catch", async () => {
+    mockQuery.mockRejectedValue(new Error("upstream 500"));
+    await expect(getRegionalCommunityCaseStudiesBySlug({ slug: "oceania" })).rejects.toThrow("upstream 500");
+  });
+
+  // Pins the read primitive: the original explicitly passed perspective:
+  // "published", stega: false, so this maps to `query`, not `queryPreviewable`.
+  it("uses query, not queryPreviewable", async () => {
+    mockQuery.mockResolvedValue([]);
+    await getRegionalCommunityCaseStudiesBySlug({ slug: "oceania" });
+    expect(mockQuery).toHaveBeenCalled();
+    expect(mockQueryPreviewable).not.toHaveBeenCalled();
+  });
+});
+
+describe("getRegionalCommunityLivedExperiencesBySlug", () => {
+  it("queries by slug with a default limit of 10", async () => {
+    mockQuery.mockResolvedValueOnce([{ _id: "le1", title: { en: "Story" } }]);
+
+    const result = await getRegionalCommunityLivedExperiencesBySlug({ slug: "sub-saharan-africa" });
+
+    expect(result).toEqual([{ _id: "le1", title: { en: "Story" } }]);
+    expect(mockQuery).toHaveBeenCalledWith(expect.any(String), {
+      slug: "sub-saharan-africa",
+      limit: 10,
+      featured: false,
+    });
+  });
+
+  it("throws (does not degrade) when the source fails — the original had no try/catch", async () => {
+    mockQuery.mockRejectedValue(new Error("upstream 500"));
+    await expect(getRegionalCommunityLivedExperiencesBySlug({ slug: "oceania" })).rejects.toThrow("upstream 500");
+  });
+
+  it("uses query, not queryPreviewable", async () => {
+    mockQuery.mockResolvedValue([]);
+    await getRegionalCommunityLivedExperiencesBySlug({ slug: "oceania" });
+    expect(mockQuery).toHaveBeenCalled();
+    expect(mockQueryPreviewable).not.toHaveBeenCalled();
+  });
+});
+
+describe("getRegionalCommunityNewsBySlug", () => {
+  it("queries by slug with a default limit of 6, combining newsPost + externalSource", async () => {
+    mockQuery.mockResolvedValueOnce([{ _id: "n1", _type: "newsPost" }, { _id: "n2", _type: "externalSource" }]);
+
+    const result = await getRegionalCommunityNewsBySlug({ slug: "oceania" });
+
+    expect(result).toEqual([{ _id: "n1", _type: "newsPost" }, { _id: "n2", _type: "externalSource" }]);
+    expect(mockQuery).toHaveBeenCalledWith(expect.any(String), {
+      slug: "oceania",
+      limit: 6,
+      featured: false,
+    });
+  });
+
+  it("throws (does not degrade) when the source fails — the original had no try/catch", async () => {
+    mockQuery.mockRejectedValue(new Error("upstream 500"));
+    await expect(getRegionalCommunityNewsBySlug({ slug: "oceania" })).rejects.toThrow("upstream 500");
+  });
+
+  it("uses query, not queryPreviewable", async () => {
+    mockQuery.mockResolvedValue([]);
+    await getRegionalCommunityNewsBySlug({ slug: "oceania" });
+    expect(mockQuery).toHaveBeenCalled();
+    expect(mockQueryPreviewable).not.toHaveBeenCalled();
+  });
+});
+
+describe("getHomepageNews", () => {
+  it("queries the recent-news query when featured is false (default)", async () => {
+    mockQuery.mockResolvedValueOnce([{ _id: "n1" }]);
+
+    const result = await getHomepageNews({ limit: 3 });
+
+    expect(result).toEqual([{ _id: "n1" }]);
+    expect(mockQuery).toHaveBeenCalledWith(expect.any(String), { limit: 3 });
+  });
+
+  it("queries the featured-news query when featured is true", async () => {
+    mockQuery.mockResolvedValueOnce([]);
+    await getHomepageNews({ limit: 3, featured: true });
+
+    const [calledQuery] = mockQuery.mock.calls[0];
+    expect(calledQuery).toContain("featured == true");
+  });
+
+  it("defaults limit to 3", async () => {
+    mockQuery.mockResolvedValueOnce([]);
+    await getHomepageNews({});
+    expect(mockQuery).toHaveBeenCalledWith(expect.any(String), { limit: 3 });
+  });
+
+  it("throws (does not degrade) when the source fails — the original had no try/catch of its own; homepage.tsx's resolveNewsSection wraps the call", async () => {
+    mockQuery.mockRejectedValue(new Error("upstream 500"));
+    await expect(getHomepageNews({ limit: 3 })).rejects.toThrow("upstream 500");
+  });
+
+  // Pins the read primitive: the original explicitly passed perspective:
+  // "published", stega: false, so this maps to `query`, not `queryPreviewable`.
+  it("uses query, not queryPreviewable", async () => {
+    mockQuery.mockResolvedValue([]);
+    await getHomepageNews({ limit: 3 });
+    expect(mockQuery).toHaveBeenCalled();
+    expect(mockQueryPreviewable).not.toHaveBeenCalled();
+  });
+});
+
+describe("getHomepageAgendas", () => {
+  it("queries the recent-agendas query when featured is false (default)", async () => {
+    mockQuery.mockResolvedValueOnce([{ _id: "ag1" }]);
+
+    const result = await getHomepageAgendas({ limit: 3 });
+
+    expect(result).toEqual([{ _id: "ag1" }]);
+    expect(mockQuery).toHaveBeenCalledWith(expect.any(String), { limit: 3 });
+  });
+
+  it("queries the featured-agendas query when featured is true", async () => {
+    mockQuery.mockResolvedValueOnce([]);
+    await getHomepageAgendas({ limit: 3, featured: true });
+
+    const [calledQuery] = mockQuery.mock.calls[0];
+    expect(calledQuery).toContain('_type == "agenda" && featured == true');
+  });
+
+  it("throws (does not degrade) when the source fails — the original had no try/catch of its own; homepage.tsx's resolveAgendasSection wraps the call", async () => {
+    mockQuery.mockRejectedValue(new Error("upstream 500"));
+    await expect(getHomepageAgendas({ limit: 3 })).rejects.toThrow("upstream 500");
+  });
+
+  it("uses query, not queryPreviewable", async () => {
+    mockQuery.mockResolvedValue([]);
+    await getHomepageAgendas({ limit: 3 });
+    expect(mockQuery).toHaveBeenCalled();
+    expect(mockQueryPreviewable).not.toHaveBeenCalled();
   });
 });

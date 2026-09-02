@@ -5,9 +5,11 @@ import { RegionMembersBlock } from '@/components/blocks/community/region-members
 import { RegionSectionSpine } from '@/components/regions/region-section-spine';
 import { getTranslations } from 'next-intl/server';
 import { getAgendasByRegion } from '@/lib/content/outputs';
-import { fetchRegionalCommunityCaseStudiesBySlug } from '@/sanity/queries/regional-community-case-studies';
-import { fetchRegionalCommunityLivedExperiencesBySlug } from '@/sanity/queries/regional-community-lived-experiences';
-import { fetchRegionalCommunityNewsBySlug } from '@/sanity/queries/regional-community-news';
+import {
+  getRegionalCommunityCaseStudiesBySlug,
+  getRegionalCommunityLivedExperiencesBySlug,
+  getRegionalCommunityNewsBySlug,
+} from '@/lib/content/pages';
 import { mergePinnedWithDynamic, type WithId } from '@/lib/community/grid-items';
 import { RC_SLUG_TO_REGION } from '@/lib/maps/region-codes';
 
@@ -121,21 +123,21 @@ export default async function RegionalCommunityTemplate({
       : getAgendasByRegion(communitySlug, agendasLimit),
     caseStudiesGrid?.mode === 'manual' && caseStudiesGrid?.manualItems?.length
       ? Promise.resolve(caseStudiesGrid.manualItems)
-      : fetchRegionalCommunityCaseStudiesBySlug({
+      : getRegionalCommunityCaseStudiesBySlug({
           slug: communitySlug,
           limit: caseStudiesLimit,
           featured: caseStudiesMode === 'dynamic-featured'
         }),
     livedExperiencesCarousel?.mode === 'manual' && livedExperiencesCarousel?.manualItems?.length
       ? Promise.resolve(livedExperiencesCarousel.manualItems)
-      : fetchRegionalCommunityLivedExperiencesBySlug({
+      : getRegionalCommunityLivedExperiencesBySlug({
           slug: communitySlug,
           limit: livedExpLimit,
           featured: livedExpMode === 'dynamic-featured'
         }),
     newsGrid?.mode === 'manual' && newsGrid?.manualItems?.length
       ? Promise.resolve(newsGrid.manualItems)
-      : fetchRegionalCommunityNewsBySlug({
+      : getRegionalCommunityNewsBySlug({
           slug: communitySlug,
           limit: newsLimit,
           featured: newsMode === 'dynamic-featured'
@@ -148,7 +150,7 @@ export default async function RegionalCommunityTemplate({
   // Fallback for lived experiences
   if (livedExpMode === 'dynamic-featured' && (!livedExperiencesData || livedExperiencesData.length === 0)) {
     console.log('No featured lived experiences found, falling back to recent');
-    livedExperiencesData = await fetchRegionalCommunityLivedExperiencesBySlug({
+    livedExperiencesData = await getRegionalCommunityLivedExperiencesBySlug({
       slug: communitySlug,
       limit: livedExpLimit,
       featured: false
@@ -158,7 +160,7 @@ export default async function RegionalCommunityTemplate({
   // Fallback for case studies
   if (caseStudiesMode === 'dynamic-featured' && (!caseStudiesData || caseStudiesData.length === 0)) {
     console.log('No featured case studies found, falling back to recent');
-    caseStudiesData = await fetchRegionalCommunityCaseStudiesBySlug({
+    caseStudiesData = await getRegionalCommunityCaseStudiesBySlug({
       slug: communitySlug,
       limit: caseStudiesLimit,
       featured: false
@@ -168,7 +170,7 @@ export default async function RegionalCommunityTemplate({
   // Fallback for news
   if (newsMode === 'dynamic-featured' && (!newsData || newsData.length === 0)) {
     console.log('No featured news found, falling back to recent');
-    newsData = await fetchRegionalCommunityNewsBySlug({
+    newsData = await getRegionalCommunityNewsBySlug({
       slug: communitySlug,
       limit: newsLimit,
       featured: false
