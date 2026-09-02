@@ -951,6 +951,31 @@ The `groq` tag can simply be deleted at its single call site: it returns its arg
 
 ---
 
+### Task 10d: Two write paths and the shared taxonomy constants
+
+Task 10 found four files no brief claimed. They are not reads, which is why every earlier coverage sweep — all of which hunted for query calls — missed them.
+
+**Two write paths importing `@/sanity/lib/write-client` directly:**
+- `app/api/uploads/image/route.ts` — uploads an image asset
+- `lib/account-deletion.ts` — GDPR erasure, deleting a member's content
+
+Both belong behind the seam. `uploadFileAsset` and `deleteDocument` already exist in `lib/content/internal/sanity-source.ts`; add a primitive only if neither fits, and say why. **Writes always throw** — never wrap either in `safe()`. Account deletion in particular must fail loudly: a GDPR erasure that silently no-ops is a compliance problem, not a UX one.
+
+**Five components importing static option constants** from `sanity/schemas/shared/topic-options.ts` and `taxonomy-options.ts`: `components/blocks/grid/grid-case-study.tsx`, `components/forms/research-output-form.tsx`, `components/forms/case-study-form.tsx`, `components/case-studies/case-studies-filters.tsx`, `components/dashboard/user-submissions-dashboard.tsx`.
+
+These are plain arrays — `REGION_OPTIONS`, `THEME_OPTIONS`, `POPULATION_OPTIONS`, topic lists — shared as a vocabulary between the Studio schema and the frontend. They are not CMS access, but they do live inside the Studio's directory, so they vanish with it.
+
+Move them to `lib/content/taxonomy-options.ts` and have **both** the frontend and the Sanity schemas import from there. Do not duplicate them: two copies of a controlled vocabulary drift, and the Studio's dropdown silently stops matching the frontend's filter. The schemas may import from `lib/` — the dependency only has to point away from the CMS.
+
+**Files:**
+- Create: `lib/content/taxonomy-options.ts`
+- Modify: the two write-path files, the five component importers, and the Sanity schema files that currently define or import these constants
+- Test: extend `lib/__tests__/content-taxonomy.test.ts`
+
+Everything else follows the standing rules: preserve failure behaviour, seam primitives only, no Sanity types in exported signatures.
+
+---
+
 ### Task 11: Enforce the boundary
 
 This is what makes "insulated" verifiable, and it is the gate for starting Phase 2.
