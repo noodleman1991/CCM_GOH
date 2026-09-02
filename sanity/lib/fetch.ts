@@ -10,20 +10,12 @@ import {
     APPROVED_CASE_STUDIES_BY_RC_QUERY,
 } from "@/sanity/queries/grid/grid-case-study";
 import {
-    POST_QUERY,
-    POSTS_QUERY,
-    POSTS_SLUGS_QUERY,
-} from "@/sanity/queries/post";
-import {
   HOMEPAGE_QUERY,
   INDEX_HOMEPAGE_QUERY,
 } from "@/sanity/queries/homepage";
 import {
     PAGE_QUERY_RESULT,
     // PAGES_SLUGS_QUERY_RESULT,
-    POST_QUERY_RESULT,
-    POSTS_QUERY_RESULT,
-    POSTS_SLUGS_QUERY_RESULT,
 } from "@/sanity.types";
 
 // export const fetchSanityPageBySlug = async ({
@@ -195,53 +187,6 @@ export const fetchTranslationsForPage = async (pageId: string) => {
         return [];
     }
 };
-
-export const fetchSanityPosts = async (): Promise<POSTS_QUERY_RESULT> => {
-    const { data } = await sanityFetch({
-        query: POSTS_QUERY,
-    });
-
-    return data;
-};
-
-export const fetchSanityPostBySlug = async ({
-                                                slug,
-                                                locale = 'en',
-                                            }: {
-    slug: string;
-    locale?: string;
-}): Promise<POST_QUERY_RESULT> => {
-    const { data } = await sanityFetch({
-        query: POST_QUERY,
-        params: {
-            slug,
-            language: locale
-        },
-    });
-
-    // Fall back to English when this locale has no translation, so a missing
-    // translation degrades to English instead of a 404.
-    if (!data && locale !== 'en') {
-        const { data: fallbackData } = await sanityFetch({
-            query: POST_QUERY,
-            params: { slug, language: 'en' },
-        });
-        return fallbackData;
-    }
-
-    return data;
-};
-
-export const fetchSanityPostsStaticParams =
-    async (): Promise<POSTS_SLUGS_QUERY_RESULT> => {
-        const { data } = await sanityFetch({
-            query: POSTS_SLUGS_QUERY,
-            perspective: "published",
-            stega: false,
-        });
-
-        return data;
-    };
 
 /**
  * Fetch agendas for a regional community using featured-first then recent logic

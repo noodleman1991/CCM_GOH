@@ -231,7 +231,7 @@ export interface ContentSearchRecord {
   title: string
   excerpt?: string
   content: string
-  contentType: 'report' | 'post' | 'case-study'
+  contentType: 'report' | 'case-study'
   publishedAt: number
   updatedAt: number
   author?: {

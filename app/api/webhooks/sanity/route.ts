@@ -97,7 +97,6 @@ function handleCacheInvalidation(payload: SanityWebhookPayload) {
       break
 
     case 'page':
-    case 'post':
     case 'homepage':
       // Handle other content types if needed
       tagsToRevalidate.push('general-content')

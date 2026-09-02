@@ -25,26 +25,6 @@ async function getPagesSitemap(): Promise<MetadataRoute.Sitemap[]> {
   return data;
 }
 
-async function getPostsSitemap(): Promise<MetadataRoute.Sitemap[]> {
-  const postsQuery = groq`
-    *[_type == 'post'] | order(_updatedAt desc) {
-      'url': $baseUrl + '/blog/' + slug.current,
-      'lastModified': _updatedAt,
-      'changeFrequency': 'weekly',
-      'priority': 0.7
-    }
-  `;
-
-  const { data } = await sanityFetch({
-    query: postsQuery,
-    params: {
-      baseUrl: process.env.NEXT_PUBLIC_SITE_URL,
-    },
-  });
-
-  return data;
-}
-
 const LOCALES = ["en", "es", "fr", "ar"] as const;
 const BASE = process.env.NEXT_PUBLIC_SITE_URL || "https://connectingclimateminds.org";
 
@@ -77,10 +57,9 @@ async function getContentSitemap(
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [pages, posts, caseStudies, news, livedExp, agendas, reports, researchOutputs, communities, events] =
+  const [pages, caseStudies, news, livedExp, agendas, reports, researchOutputs, communities, events] =
     await Promise.all([
       getPagesSitemap(),
-      getPostsSitemap(),
       getContentSitemap('_type == "caseStudy" && status == "approved"', "/research-and-action/case-studies", "monthly", 0.8),
       getContentSitemap('_type == "newsPost"', "/news", "weekly", 0.7),
       getContentSitemap('_type == "livedExperience" && (status == "approved" || !defined(status))', "/lived-experiences", "monthly", 0.7),
@@ -128,7 +107,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     ...staticRoutes,
     ...(pages as unknown as MetadataRoute.Sitemap),
-    ...(posts as unknown as MetadataRoute.Sitemap),
     ...caseStudies,
     ...news,
     ...livedExp,

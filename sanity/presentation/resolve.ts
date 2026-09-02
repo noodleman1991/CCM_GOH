@@ -35,21 +35,6 @@ export const resolve: PresentationPluginOptions["resolve"] = {
         ],
       }),
     }),
-    post: defineLocations({
-      select: {
-        title: "title",
-        slug: "slug.current",
-      },
-      resolve: (doc) => ({
-        locations: [
-          {
-            title: doc?.title || "Untitled",
-            href: `/blog/${doc?.slug}`,
-          },
-          { title: "Blog", href: `/blog` },
-        ],
-      }),
-    }),
   },
   mainDocuments: defineDocuments([
     {
@@ -59,10 +44,6 @@ export const resolve: PresentationPluginOptions["resolve"] = {
     {
       route: "/:slug",
       filter: `_type == 'page' && slug.current == $slug`,
-    },
-    {
-      route: "/blog/:slug",
-      filter: `_type == 'post' && slug.current == $slug`,
     },
   ]),
 };

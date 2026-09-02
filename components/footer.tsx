@@ -10,7 +10,7 @@ export default function Footer() {
   const tCommon = useTranslations("common");
   const navItems = [
     { label: t("home"), href: "/" },
-    { label: t("blog"), href: "/blog" },
+    { label: t("news"), href: "/news" },
     { label: t("about"), href: "/about" },
     { label: t("readAgenda"), href: "/reader" },
     { label: t("privacy"), href: "/legal/privacy" },

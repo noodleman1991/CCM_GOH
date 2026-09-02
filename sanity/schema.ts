@@ -9,7 +9,6 @@ import docsChapter from "./schemas/documents/docs-chapter";
 import profilePrompt from "./schemas/documents/profile-prompt";
 import page from "./schemas/documents/page";
 import regionalCommunityPage from "./schemas/documents/regional-community-page"; //hub
-import post from "./schemas/documents/post";
 import report from "./schemas/documents/report";
 import agenda from "./schemas/documents/agenda";
 import author from "./schemas/documents/author";
@@ -118,7 +117,6 @@ export const schema: { types: SchemaTypeDefinition[] } = {
         docsChapter,
         profilePrompt,
         page,
-        post,
         author,
         category,
         faq,

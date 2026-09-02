@@ -12,8 +12,8 @@ const navItems = [
     target: false,
   },
   {
-    label: "Blog",
-    href: "/blog",
+    label: "News",
+    href: "/news",
     target: false,
   },
   {
