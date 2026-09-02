@@ -239,10 +239,17 @@ console.log(`Content:  ${manifest.totals.published} published + ${manifest.total
 
 Run: `npx tsx scripts/export-sanity-archive.ts --prod`
 
-Expected: an archive in `backups/` of roughly 620 MB, and a manifest reporting
-`438 published + 30 drafts`. **If the totals differ from those numbers, stop** — the
-dataset changed since the design was measured, and §2 of the spec needs re-checking
-before anything is migrated.
+Expected: an archive in `backups/` of roughly 620-640 MB, and a manifest reporting
+**`446 published + 30 drafts`**.
+
+That 446 breaks down as **438 migratable content documents + 8 `translation.metadata`**.
+`buildManifest` excludes only `sanity.*` and `system.*`, so Sanity's translation-grouping
+documents are counted here even though §6 of the spec does not migrate them. Both numbers
+are correct for their own purpose: 446 is what the archive contains, 438 is what Phase 2
+imports.
+
+**If the totals differ from those numbers, stop** — the dataset changed since the design
+was measured, and §2 of the spec needs re-checking before anything is migrated.
 
 - [ ] **Step 7: Verify the archive is readable**
 
@@ -677,7 +684,7 @@ Before starting Phase 1, all of these must hold:
 - [ ] `pnpm list next --depth 0` reports `>=16.2.6`
 - [ ] `pnpm typecheck` clean, `pnpm test` green
 - [ ] `backups/sanity-production_2-*.tar.gz` exists, passes `tar -tzf`, and its checksum matches `docs/migration/sanity-archive-manifest.json`
-- [ ] The manifest reports 438 published + 30 draft content documents
+- [ ] The manifest reports 446 published (438 migratable + 8 `translation.metadata`) + 30 drafts
 - [ ] `array::unique(*[_type=="regionalCommunityPage"].whyJoinCTA._type)` returns exactly `["cta-1"]`
 - [ ] No `livedExperience` document has a non-reference tag
 - [ ] `/en/blog` 404s; header and footer link to `/news`

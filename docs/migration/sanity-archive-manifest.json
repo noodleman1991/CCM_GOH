@@ -1,0 +1,104 @@
+{
+  "generatedAt": "2026-09-02T09:59:19.087Z",
+  "dataset": "production_2",
+  "totals": {
+    "documents": 476,
+    "published": 446,
+    "drafts": 30
+  },
+  "byType": {
+    "tag": {
+      "published": 67,
+      "drafts": 1
+    },
+    "author": {
+      "published": 95,
+      "drafts": 4
+    },
+    "testimonial": {
+      "published": 20,
+      "drafts": 1
+    },
+    "translation.metadata": {
+      "published": 8,
+      "drafts": 0
+    },
+    "agenda": {
+      "published": 29,
+      "drafts": 0
+    },
+    "organization": {
+      "published": 24,
+      "drafts": 0
+    },
+    "caseStudy": {
+      "published": 27,
+      "drafts": 1
+    },
+    "caseStudyDraft": {
+      "published": 1,
+      "drafts": 0
+    },
+    "newsPost": {
+      "published": 4,
+      "drafts": 1
+    },
+    "externalSource": {
+      "published": 1,
+      "drafts": 0
+    },
+    "expertiseArea": {
+      "published": 5,
+      "drafts": 0
+    },
+    "workType": {
+      "published": 6,
+      "drafts": 0
+    },
+    "docsChapter": {
+      "published": 12,
+      "drafts": 0
+    },
+    "livedExperience": {
+      "published": 35,
+      "drafts": 21
+    },
+    "regionalCommunityPage": {
+      "published": 28,
+      "drafts": 1
+    },
+    "page": {
+      "published": 36,
+      "drafts": 0
+    },
+    "homepage": {
+      "published": 4,
+      "drafts": 0
+    },
+    "onboardingContent": {
+      "published": 4,
+      "drafts": 0
+    },
+    "profilePrompt": {
+      "published": 3,
+      "drafts": 0
+    },
+    "regionalCommunity": {
+      "published": 7,
+      "drafts": 0
+    },
+    "researchOutput": {
+      "published": 29,
+      "drafts": 0
+    },
+    "siteAnnouncement": {
+      "published": 1,
+      "drafts": 0
+    }
+  },
+  "archive": {
+    "file": "sanity-production_2-2026-09-02.tar.gz",
+    "bytes": 634083151,
+    "sha256": "9bac9301cda26005f33a41f3e1a29907af0094979b3c17cbdacf23085096faf3"
+  }
+}

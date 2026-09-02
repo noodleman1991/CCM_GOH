@@ -45,6 +45,11 @@ Published counts by type:
 Not migrated: 8 `translation.metadata` documents (a Sanity mechanism with no Payload
 equivalent — see §6), 3 `sanity.previewUrlSecret`, and the `system.*` documents.
 
+Note for anyone reconciling counts against the archive manifest: that manifest reports
+**446** published, because it excludes only `sanity.*` and `system.*` and therefore counts
+the 8 `translation.metadata` documents. 446 is what the archive holds; 438 is what Phase 2
+imports.
+
 Zero documents (10): `post`, `event`, `dataset`, `project`, `report`, `category`, `faq`,
 `fundingApplication`, `moderationSettings`, `hubIllustrations`.
 
