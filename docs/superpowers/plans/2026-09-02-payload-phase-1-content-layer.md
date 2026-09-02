@@ -928,6 +928,29 @@ Where a generated type is used only to type a prop the component immediately des
 
 ---
 
+### Task 10c: The `next-sanity` display utilities
+
+Sixteen files import from `next-sanity` directly — eleven use `stegaClean`, one uses `groq`, and the rest are Studio/draft plumbing already on the ALLOWED list. Task 11's boundary matcher includes `next-sanity`, so every one of these fails the gate today.
+
+`stegaClean` strips Sanity's stega encoding — invisible metadata embedded in strings so the Presentation tool can offer click-to-edit. It is display-only, and once Sanity is gone there is no stega to strip, so it becomes the identity function. `groq` is a template-literal tag that exists purely for editor syntax highlighting and returns its input unchanged.
+
+Neither is a content read, but both couple a component to the CMS for no structural reason. Wrapping them is the cheapest possible insulation and spares Phase 3 from touching eleven block components.
+
+**Files:**
+- Modify: `lib/content/internal/sanity-source.ts` — or a sibling `lib/content/text.ts`, your call; state which and why
+- Modify: the eleven `stegaClean` importers — `components/blocks/section-header.tsx`, `all-posts.tsx`, `carousel/lived-experiences-carousel.tsx`, `carousel/carousel-1.tsx`, `split/split-row.tsx`, `cta/cta-1.tsx`, `hero/hero-2.tsx`, `hero/hero-1.tsx`, `events/events-calendar.tsx`, `grid/grid-row.tsx`, `grid/grid-card.tsx`
+- Modify: the one `groq` importer (`app/sitemap.ts`)
+- Test: `lib/__tests__/content-text.test.ts`
+
+**Interfaces:**
+- Produces: `cleanText(value: string | undefined | null): string` — delegates to `stegaClean` today; becomes the identity function in Phase 3. Handle `undefined`/`null` exactly as the current call sites do, which means checking each one rather than assuming.
+
+**Do not change what any component renders.** This is an import swap. If a call site passes something other than a string — `stegaClean` accepts objects and cleans them recursively — do not silently narrow it; either widen `cleanText` to match or leave that call site and say why.
+
+The `groq` tag can simply be deleted at its single call site: it returns its argument unchanged, so the template literal stands alone.
+
+---
+
 ### Task 11: Enforce the boundary
 
 This is what makes "insulated" verifiable, and it is the gate for starting Phase 2.
