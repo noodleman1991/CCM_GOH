@@ -27,7 +27,7 @@ import {
   LE_VIDEO_MAX_BYTES,
   LE_VIDEO_MIME_TYPES,
 } from "@/lib/validation/lived-experience"
-import type { EditableLivedExperience } from "@/lib/lived-experiences/edit"
+import type { EditableLivedExperience } from "@/lib/content/lived-experiences"
 import type { LocalizedString } from "@/types/case-study"
 import { youtubeId } from "@/lib/youtube"
 import { vimeoId } from "@/lib/vimeo"

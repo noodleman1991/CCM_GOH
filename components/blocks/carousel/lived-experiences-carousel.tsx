@@ -16,62 +16,9 @@ import { SectionPadding } from "@/sanity.types";
 import { VideoModal } from "@/components/blocks/video-modal";
 import { getLocalizedField } from "@/lib/localization-utils";
 import { normalizeTagColor, sortedTags } from "@/lib/tags";
+import type { LivedExperienceCarouselItem } from "@/lib/content/lived-experiences";
 
-interface LivedExperience {
-  _id: string;
-  _type: string;
-  title?: {
-    en?: string;
-    es?: string;
-    fr?: string;
-    ar?: string;
-  };
-  description?: {
-    en?: string;
-    es?: string;
-    fr?: string;
-    ar?: string;
-  };
-  videoLink?: string;
-  thumbnail?: {
-    asset?: { _id?: string; url?: string | null; mimeType?: string | null } | null;
-    alt?: string | null;
-  } | null;
-  duration?: string;
-  publishedAt?: string;
-  author?: {
-    _id: string;
-    name: string;
-    image?: unknown;
-    organizationalAffiliation?: string;
-  };
-  relatedCommunity?: {
-    _id: string;
-    name?: {
-      en?: string;
-      es?: string;
-      fr?: string;
-      ar?: string;
-    };
-    slug?: {
-      current: string;
-    };
-  };
-  tags?: Array<{
-    _id: string;
-    label?: {
-      en?: string;
-      es?: string;
-      fr?: string;
-      ar?: string;
-    };
-    color?: string;
-  }>;
-  featured?: boolean;
-  slug?: {
-    current: string;
-  };
-}
+type LivedExperience = LivedExperienceCarouselItem;
 
 interface LivedExperiencesCarouselProps {
   title?: string;

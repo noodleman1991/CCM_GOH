@@ -1,12 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth, currentUser } from "@clerk/nextjs/server";
-import { writeClient } from "@/sanity/lib/write-client";
 import {
   livedExperienceSubmissionSchema,
-  generateLivedExperienceSlug,
   LE_VIDEO_MAX_BYTES,
   LE_VIDEO_MIME_TYPES,
 } from "@/lib/validation/lived-experience";
+import {
+  LivedExperienceEditNotAllowedError,
+  LivedExperienceMissingVideoError,
+  submitLivedExperience,
+} from "@/lib/content/lived-experiences";
 import { addOutput } from "@/lib/actions/workspace-outputs";
 import { rateLimitRequest } from "@/lib/rate-limit-route";
 
@@ -90,122 +93,54 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  // Localized objects with the submitter's language populated.
-  const localized = (value: string) => (value ? { [lang]: value } : undefined);
-
-  const doc: { _type: string; [key: string]: unknown } = {
-    _type: "livedExperience",
-    language: lang,
-    status: "pending", // never trust client; always pending on submit
-    submittedBy: userId,
-    publishedAt: new Date().toISOString(),
-    slug: { _type: "slug", current: generateLivedExperienceSlug(data.title) },
-    title: { [lang]: data.title },
-    description: localized(data.description),
-    issue: localized(data.issue),
-    personContext: localized(data.personContext || ""),
-    featured: false,
-  };
-
-  if (data.videoSource) doc.videoSource = data.videoSource;
-  if (data.videoSource !== "upload" && data.videoLink) doc.videoLink = data.videoLink;
-
-  // Long-form body — already Portable Text from the shared editor.
-  if (Array.isArray(data.body) && data.body.length > 0) doc.body = data.body;
-
-  if (data.regionalCommunityId) {
-    doc.relatedCommunity = { _type: "reference", _ref: data.regionalCommunityId };
-  }
-  if (data.tagIds && data.tagIds.length > 0) {
-    doc.tags = data.tagIds.map((id) => ({ _type: "reference", _ref: id, _key: id }));
+  // The video file travels outside the validated JSON — sanitize + buffer it
+  // here (Web File API, not a content-layer concern) before handing off.
+  let videoFilePayload: { buffer: Buffer; filename: string; contentType: string } | null = null;
+  if (data.videoSource === "upload" && videoFile) {
+    const sanitizedFilename = videoFile.name.replace(/[^a-zA-Z0-9._-]/g, "_").substring(0, 255);
+    const buffer = Buffer.from(await videoFile.arrayBuffer());
+    videoFilePayload = { buffer, filename: sanitizedFilename, contentType: videoFile.type };
   }
 
   try {
-    // Upload the video to Sanity's asset store first (same pipeline as the
-    // case-study image), then reference it from the document.
-    if (data.videoSource === "upload" && videoFile) {
-      const sanitizedFilename = videoFile.name.replace(/[^a-zA-Z0-9._-]/g, "_").substring(0, 255);
-      const buffer = await videoFile.arrayBuffer();
-      const asset = await writeClient.assets.upload("file", Buffer.from(buffer), {
-        filename: sanitizedFilename,
-        contentType: videoFile.type,
-      });
-      doc.videoFile = { _type: "file", asset: { _type: "reference", _ref: asset._id } };
-    }
+    const result = await submitLivedExperience({
+      userId,
+      language: lang,
+      title: data.title,
+      description: data.description,
+      issue: data.issue,
+      personContext: data.personContext,
+      videoSource: data.videoSource,
+      videoLink: data.videoLink,
+      body: data.body,
+      regionalCommunityId: data.regionalCommunityId,
+      tagIds: data.tagIds,
+      editId: data.editId,
+      videoFile: videoFilePayload,
+    });
 
-    // X7 edit mode: resubmit an existing draft/pending doc — verify the
-    // caller may edit it, then patch (status returns to pending for
-    // re-review). Slug, submittedBy and publishedAt are preserved.
-    if (data.editId) {
-      const existing = await writeClient
-        .withConfig({ perspective: "raw" })
-        .fetch(
-          `*[_type == "livedExperience" && _id == $id][0]{
-            _id, submittedBy, status, "hasVideoFile": defined(videoFile.asset)
-          }`,
-          { id: data.editId }
-        );
-      const editable = existing && ["pending", "revision", "draft", null].includes(existing.status ?? null);
-      const isSubmitter = existing?.submittedBy === userId;
-      let isWorkspaceMember = false;
-      if (existing && !isSubmitter) {
-        const { prisma } = await import("@/lib/prisma");
-        const row = await prisma.workspaceOutput.findFirst({
-          where: {
-            sanityId: { in: [existing._id, existing._id.replace(/^drafts\./, "")] },
-            collaboration: { members: { some: { userId } } },
-          },
-          select: { id: true },
-        });
-        isWorkspaceMember = !!row;
-      }
-      if (!existing || !editable || (!isSubmitter && !isWorkspaceMember)) {
-        return NextResponse.json({ error: "You can't edit this submission." }, { status: 403 });
-      }
-      if (data.videoSource === "upload" && !videoFile && !existing.hasVideoFile) {
-        return NextResponse.json({ error: "No video file provided" }, { status: 400 });
-      }
-
-      const { _type: _t, slug: _slug, submittedBy: _sb, publishedAt: _pa, ...updatable } = doc;
-      // JSON drops undefined, so cleared optional fields must be unset explicitly;
-      // a video-source switch also has to drop the now-stale counterpart field.
-      const cleared = Object.keys(updatable).filter(
-        (k) => updatable[k as keyof typeof updatable] === undefined
-      );
-      if (data.videoSource === "upload") cleared.push("videoLink");
-      else cleared.push("videoFile");
-      if (!Array.isArray(data.body) || data.body.length === 0) cleared.push("body");
-      if (!data.regionalCommunityId) cleared.push("relatedCommunity");
-      if (!data.tagIds || data.tagIds.length === 0) cleared.push("tags");
-      const set = Object.fromEntries(
-        Object.entries(updatable).filter(([, v]) => v !== undefined)
-      );
-      // Keeping the existing upload: videoFile isn't in `set`, and must not be unset.
-      const unsets = cleared.filter((k) => !(k === "videoFile" && data.videoSource === "upload"));
-      let patch = writeClient.patch(existing._id).set({ ...set, status: "pending" });
-      if (unsets.length > 0) patch = patch.unset(unsets);
-      await patch.commit();
-      // The workspace-output row (if any) already exists — no link-back.
-      return NextResponse.json({ success: true, id: existing._id });
-    }
-
-    const created = await writeClient.create(doc);
-
-    // Submitted from a workspace: link the new doc as a workspace output.
-    // addOutput enforces collab authz itself; a failed link never fails the submission.
-    if (data.collaborationId) {
+    // Submitted from a workspace (create-mode only — edit mode's link-back
+    // already exists): link the new doc as a workspace output. addOutput
+    // enforces collab authz itself; a failed link never fails the submission.
+    if (!data.editId && data.collaborationId) {
       const linked = await addOutput({
         collaborationId: data.collaborationId,
         sanityType: "livedExperience",
         mode: "link",
-        sanityId: created._id,
+        sanityId: result.id,
         title: data.title,
       });
-      if (!linked.ok) console.warn(`Workspace link failed for ${created._id}: ${linked.error}`);
+      if (!linked.ok) console.warn(`Workspace link failed for ${result.id}: ${linked.error}`);
     }
 
-    return NextResponse.json({ success: true, id: created._id });
+    return NextResponse.json({ success: true, id: result.id });
   } catch (error) {
+    if (error instanceof LivedExperienceEditNotAllowedError) {
+      return NextResponse.json({ error: error.message }, { status: 403 });
+    }
+    if (error instanceof LivedExperienceMissingVideoError) {
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
     console.error("Lived experience submission failed:", error);
     return NextResponse.json({ error: "Submission failed" }, { status: 500 });
   }

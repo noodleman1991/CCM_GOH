@@ -10,9 +10,9 @@ import { getLocalizedValue } from "@/i18n/i18n-helpers";
 import { heading } from "@/lib/design-tokens";
 import { cn } from "@/lib/utils";
 import {
-  fetchLivedExperienceBySlug,
-  fetchLivedExperienceSlugs,
-} from "@/sanity/queries/lived-experience-detail";
+  getLivedExperienceBySlug,
+  getLivedExperienceSlugs,
+} from "@/lib/content/lived-experiences";
 import { LivedExperiencePlayer } from "@/components/lived-experiences/lived-experience-player";
 import { CommentIsland } from "@/components/comments/comment-island";
 import { RelatedContent } from "@/components/content/related-content";
@@ -21,7 +21,7 @@ import { JsonLd, articleJsonLd } from "@/lib/seo/json-ld";
 import { FollowButton } from "@/components/follow/follow-button";
 
 export async function generateStaticParams() {
-  const slugs = await fetchLivedExperienceSlugs();
+  const slugs = await getLivedExperienceSlugs();
   const locales = ["en", "es", "fr", "ar"];
   return locales.flatMap((locale) => slugs.map((s) => ({ locale, slug: s.slug })));
 }
@@ -32,7 +32,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string; slug: string }>;
 }): Promise<Metadata> {
   const { locale, slug } = await params;
-  const le = await fetchLivedExperienceBySlug(slug);
+  const le = await getLivedExperienceBySlug(slug);
   if (!le) return {};
   const title = getLocalizedValue(le.title, locale) || "Lived experience";
   const description = getLocalizedValue(le.description, locale) || getLocalizedValue(le.issue, locale) || "";
@@ -54,7 +54,7 @@ export default async function LivedExperiencePage({
   params: Promise<{ locale: string; slug: string }>;
 }) {
   const { locale, slug } = await params;
-  const le = await fetchLivedExperienceBySlug(slug);
+  const le = await getLivedExperienceBySlug(slug);
   if (!le) notFound();
 
   const t = await getTranslations("livedExperiences");
@@ -175,7 +175,10 @@ export default async function LivedExperiencePage({
               captions (shared styled-block-content renderer). */}
           {Array.isArray(le.body) && le.body.length > 0 && (
             <section className={cn(layout === "report" ? "max-w-prose" : "mx-auto max-w-prose")}>
-              <PortableTextRenderer value={le.body} locale={locale} isRTL={isRTL} />
+              {/* RichText is intentionally opaque outside the content layer
+                  (Portable Text today, Lexical after Phase 3) — cast at the
+                  renderer boundary rather than widen the content layer's type. */}
+              <PortableTextRenderer value={le.body as never} locale={locale} isRTL={isRTL} />
             </section>
           )}
         </div>
@@ -221,8 +224,10 @@ export default async function LivedExperiencePage({
         </div>
       )}
 
-      {/* Related content — content-type-aware strip */}
-      <RelatedContent items={le.relatedContent} locale={locale} heading={t('relatedContent')} />
+      {/* Related content — content-type-aware strip. RelatedContent's item
+          type isn't exported, so this cast bridges the raw RELATED_CONTENT_
+          PROJECTION shape (unchanged) into it, as before. */}
+      <RelatedContent items={le.relatedContent as never} locale={locale} heading={t('relatedContent')} />
 
       {/* Discussion */}
       {le._id && <CommentIsland targetType="livedExperience" targetId={le._id} />}

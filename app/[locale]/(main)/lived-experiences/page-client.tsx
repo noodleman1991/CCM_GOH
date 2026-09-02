@@ -15,37 +15,13 @@ import SectionContainer from "@/components/ui/section-container";
 import { ScrollRow } from "@/components/ui/scroll-row";
 import { LivedExperienceVideoCard } from "@/components/lived-experiences/video-card";
 import { ContentFilters } from "@/components/ui/content-filters";
-
-/** Dereferenced tag doc on a lived-experience video (same CMS tag shape). */
-interface LivedVideoTag {
-  _id: string
-  label?: Record<string, string> | string
-  value?: string
-  color?: string
-}
-
-/** The fields of a lived-experience video this page reads. */
-interface LivedVideo {
-  _id: string
-  title?: { en?: string; es?: string; fr?: string; ar?: string } | string
-  format?: 'video' | 'audio' | 'written'
-  videoUrl?: string
-  thumbnailUrl?: string
-  tags?: LivedVideoTag[]
-}
-
-/** Regional community row used for the region filter chips. */
-interface LivedCommunity {
-  _id?: string
-  name: Record<string, string> | string
-  slug: string
-}
+import type { LivedExperience } from "@/lib/content/lived-experiences";
+import type { ContentRegion, ContentTag } from "@/lib/content/types";
 
 interface LivedExperiencesPageClientProps {
-  initialCommunityVideos: Record<string, LivedVideo[]>
-  communities: LivedCommunity[]
-  /** Dereferenced tag docs ({ _id, label, value, color }). */
-  allTags: Array<{ _id: string; label?: Record<string, string> | string; value?: string; color?: string }>
+  initialCommunityVideos: Record<string, LivedExperience[]>
+  communities: ContentRegion[]
+  allTags: ContentTag[]
   locale: string
   initialSearch: string
   initialFilters: {
@@ -85,7 +61,7 @@ export default function LivedExperiencesPageClient({
 
   // Filter videos. Inclusion: no region/tag selected = no filter on that axis.
   const filteredCommunityVideos = useMemo(() => {
-    const filtered: Record<string, LivedVideo[]> = {}
+    const filtered: Record<string, LivedExperience[]> = {}
 
     for (const [communityName, videos] of Object.entries(initialCommunityVideos)) {
       const community = communities.find(c => {
@@ -103,7 +79,7 @@ export default function LivedExperiencesPageClient({
         // Tags are now dereferenced docs — match on value (fall back to _id).
         if (selectedTags.length > 0) {
           const hasMatchingTag = video.tags?.some((tag) =>
-            selectedTags.includes(tag?.value as string) || selectedTags.includes(tag?._id)
+            selectedTags.includes(tag?.value as string) || selectedTags.includes(tag?.id)
           )
           if (!hasMatchingTag) return false
         }
@@ -229,10 +205,10 @@ export default function LivedExperiencesPageClient({
                 selected: selectedTags,
                 // De-surface the 'Other' tag from the chips.
                 options: allTags
-                  .filter((tag) => (tag.value || tag._id) !== 'other')
+                  .filter((tag) => (tag.value || tag.id) !== 'other')
                   .map((tag) => ({
-                    value: tag.value || tag._id,
-                    label: getLocalizedText(tag.label, locale, tag.value || tag._id),
+                    value: tag.value || tag.id,
+                    label: getLocalizedText(tag.label, locale, tag.value || tag.id),
                   })),
                 onToggle: toggleTag,
               },
@@ -260,11 +236,19 @@ export default function LivedExperiencesPageClient({
             >
               {videos.map((video) => (
                 <LivedExperienceVideoCard
-                  key={video._id}
+                  key={video.id}
                   title={getLocalizedText(video.title, locale, video.title as string)}
                   videoUrl={video.videoUrl}
                   thumbnailUrl={video.thumbnailUrl}
-                  tags={video.tags}
+                  // LivedExperienceVideoCard still speaks the raw CMS tag
+                  // shape (`_id`) — adapt at this one boundary rather than
+                  // change that component's (out of scope) prop type.
+                  tags={video.tags.map((tag) => ({
+                    _id: tag.id,
+                    label: tag.label,
+                    value: tag.value,
+                    color: tag.color,
+                  }))}
                   format={video.format}
                 />
               ))}

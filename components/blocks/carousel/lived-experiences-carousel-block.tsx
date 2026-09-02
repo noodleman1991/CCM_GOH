@@ -1,5 +1,4 @@
-import { cachedFetch as sanityFetch } from "@/sanity/lib/cached-fetch";
-import { livedExperiencesCarouselQuery } from "@/sanity/queries/carousel/lived-experiences-carousel";
+import { getLivedExperiencesCarousel } from "@/lib/content/lived-experiences";
 import LivedExperiencesCarousel from "./lived-experiences-carousel";
 
 type CarouselProps = React.ComponentProps<typeof LivedExperiencesCarousel>;
@@ -17,26 +16,15 @@ export default async function LivedExperiencesCarouselBlock(props: CarouselProps
     return <LivedExperiencesCarousel {...props} />;
   }
 
-  let experiences: CarouselProps["experiences"] = [];
-  try {
-    const { data } = await sanityFetch({
-      query: livedExperiencesCarouselQuery,
-      params: {
-        // GROQ guards each facet with !defined($x) — absent filters bind null.
-        // The CMS block stores reference objects; the query compares raw ids.
-        communities: props.filterBy?.communities?.length ? props.filterBy.communities.map((r) => r._ref) : null,
-        tags: props.filterBy?.tags?.length ? props.filterBy.tags.map((r) => r._ref) : null,
-        authors: props.filterBy?.authors?.length ? props.filterBy.authors.map((r) => r._ref) : null,
-        featured: props.featured ?? false,
-        maxItems: props.maxItems ?? 10,
-      },
-    });
-    experiences = data ?? [];
-  } catch {
-    // The carousel renders nothing on an empty set — the right failure mode
-    // for a homepage strip (never a broken section).
-    experiences = [];
-  }
+  // GROQ guards each facet with !defined($x) — absent filters bind null.
+  // The CMS block stores reference objects; the query compares raw ids.
+  const experiences = await getLivedExperiencesCarousel({
+    communities: props.filterBy?.communities?.length ? props.filterBy.communities.map((r) => r._ref) : null,
+    tags: props.filterBy?.tags?.length ? props.filterBy.tags.map((r) => r._ref) : null,
+    authors: props.filterBy?.authors?.length ? props.filterBy.authors.map((r) => r._ref) : null,
+    featured: props.featured ?? false,
+    maxItems: props.maxItems ?? 10,
+  });
 
   return <LivedExperiencesCarousel {...props} experiences={experiences} />;
 }
