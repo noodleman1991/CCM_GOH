@@ -16,7 +16,22 @@
 
 - **The site must be byte-identical at every commit.** This phase moves code; it changes no behaviour. Any rendered difference is a bug, not an improvement.
 - **No Sanity types in any `lib/content/` public signature.** Not `sanity.types.ts` imports, not `SanityDocument`, not `PortableTextBlock` from `@portabletext/types` in exported types. Portable Text bodies are typed as `RichText` (see Task 1) so Phase 3 can redefine that one alias.
-- **Reads degrade, they do not throw.** The 2026-07-28 quota outage took every content page down. Every read wraps in `safe()` and returns an empty value on failure. Writes throw — a failed submission must not silently succeed.
+- **Preserve each call site's existing failure behaviour exactly.** A read that already
+  degraded (had a `try/catch` returning an empty state) keeps degrading, via `safe()`. A read
+  that threw **keeps throwing** — do not wrap it in `safe()` as a drive-by improvement.
+
+  This resolves a contradiction in an earlier draft, which said "every read wraps in
+  `safe()`" while also demanding the site be byte-identical. Those conflict for any call
+  site that previously threw, and byte-identical wins — for a substantive reason, not just
+  process purity. Silently converting a throw into an empty render turns a loud 500 into a
+  page that renders a blank section and looks fine. That is *worse* than the outage it
+  imitates fixing: nobody notices the content is gone.
+
+  Where a throwing read arguably *should* degrade, list it in the task report. Converting it
+  is a deliberate resilience change and gets its own commit after Phase 1, where it can be
+  reviewed as the behaviour change it is.
+
+  Writes always throw — a failed submission must not silently succeed.
 - **Never run `sanity typegen generate`.** It renames exported types and breaks `tsc`.
 - **`pnpm lint` is not a gate** (~656 pre-existing errors). Lint only changed files: `pnpm exec eslint <paths>`.
 - **`pnpm typecheck` and `pnpm test` are gates** and must be green before every commit.
@@ -321,6 +336,10 @@ Tasks 3–10 repeat this shape. Read this one first.
 
 **Interfaces:**
 - Consumes: `safe`, `query` (Task 1); `Localized`, `ContentTag`, `ContentRegion`, `Locale` from `@/lib/content/types`.
+- Also produces, for every later task: `toTag()` and `toRegion()` live in
+  `lib/content/internal/normalize.ts`, not in this module. They map a raw reference
+  projection onto `ContentTag` / `ContentRegion` and would otherwise be re-typed near-verbatim
+  in most of the remaining eight domains.
 - Produces:
   - `interface LivedExperience { id: string; title: Localized | string; format?: "video" | "audio" | "written"; videoUrl?: string; thumbnailUrl?: string; tags: ContentTag[]; region: ContentRegion | null; rawRegion?: unknown }`
   - `interface LivedExperienceIndex { videos: LivedExperience[]; regionalCommunities: ContentRegion[]; allTags: ContentTag[] }`
@@ -587,6 +606,16 @@ No lived-experience file imports Sanity any more."
 Each follows Task 2 exactly: write the failing test, create `lib/content/<domain>.ts`,
 move each query verbatim, convert the call sites, prove no file in the domain imports
 Sanity, verify `typecheck` + `test` + a rendered check, commit.
+
+**"Verbatim" means character-exact, including comments.** Task 2's review character-checked
+all eight moved queries; the only deviations were two dropped GROQ comments, and those came
+from an example in this plan rather than from the implementer. GROQ comments explain why a
+projection is shaped the way it is — `rawRegion` exists because legacy documents stored a
+bare short code — and that reasoning is exactly what a later reader needs. Move the comments
+with the query.
+
+**Reuse `toTag` / `toRegion` from `lib/content/internal/normalize.ts`.** Do not re-declare
+them per domain.
 
 Every task below lists its exact file inventory and the exact function signatures it must
 produce. Together they partition all 43 direct callers and the 27 remaining
