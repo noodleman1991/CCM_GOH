@@ -1,4 +1,5 @@
 import { safe } from "@/lib/content/internal/safe";
+import { toRegion, toTag, type RawRegion, type RawTag } from "@/lib/content/internal/normalize";
 import { createDocument, query, queryRaw, updateDocument, uploadFileAsset } from "@/lib/content/internal/sanity-source";
 import type { ContentRegion, ContentTag, Localized, RichText } from "@/lib/content/types";
 import { prisma, safeQuery } from "@/lib/prisma";
@@ -51,31 +52,6 @@ const INDEX_QUERY = `{
     "allTags": *[_type == "tag" && count(*[_type == "livedExperience" && references(^._id)]) > 0]
       | order(label.en asc) { _id, label, value, color }
   }`;
-
-interface RawTag {
-  _id: string;
-  label?: Localized;
-  value?: string;
-  color?: string;
-}
-interface RawRegion {
-  _id: string;
-  name?: Localized;
-  slug?: string;
-}
-
-const toTag = (t: RawTag): ContentTag => ({
-  id: t._id,
-  label: t.label ?? {},
-  value: t.value,
-  color: t.color,
-});
-
-const toRegion = (r: RawRegion): ContentRegion => ({
-  id: r._id,
-  name: r.name ?? {},
-  slug: r.slug ?? "",
-});
 
 export async function getLivedExperienceIndex(): Promise<LivedExperienceIndex> {
   return safe("lived-experiences", EMPTY_INDEX, async () => {

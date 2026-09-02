@@ -248,7 +248,7 @@ describe("submitLivedExperience", () => {
     );
   });
 
-  it("patches the existing doc on an allowed edit resubmission", async () => {
+  it("patches the existing doc on an allowed edit resubmission, pinning exactly which fields are set vs. nulled", async () => {
     mockQueryRaw.mockResolvedValue({ _id: "le1", submittedBy: "user1", status: "pending", hasVideoFile: false });
 
     const result = await submitLivedExperience({
@@ -259,11 +259,70 @@ describe("submitLivedExperience", () => {
     });
 
     expect(result).toEqual({ id: "le1" });
-    expect(mockUpdateDocument).toHaveBeenCalledWith(
-      "le1",
-      expect.objectContaining({ status: "pending" }),
-    );
+    // A minimal resubmission (no description/issue/personContext/video/body/
+    // region/tags): those fields must come back as explicit null (unset),
+    // not be silently dropped from the patch, and everything actually
+    // provided must land as a real value, not null.
+    expect(mockUpdateDocument).toHaveBeenCalledWith("le1", {
+      language: "en",
+      status: "pending",
+      title: { en: "Updated story" },
+      featured: false,
+      description: null,
+      issue: null,
+      personContext: null,
+      videoFile: null,
+      body: null,
+      relatedCommunity: null,
+      tags: null,
+    });
     expect(mockCreateDocument).not.toHaveBeenCalled();
+  });
+
+  it("sets provided edit fields (body, region, tags) instead of nulling them", async () => {
+    mockQueryRaw.mockResolvedValue({ _id: "le1", submittedBy: "user1", status: "pending", hasVideoFile: false });
+
+    await submitLivedExperience({
+      userId: "user1",
+      language: "en",
+      title: "Updated story",
+      description: "A fuller description",
+      body: [{ _type: "block" }],
+      regionalCommunityId: "r1",
+      tagIds: ["t1", "t2"],
+      editId: "le1",
+    });
+
+    const [, patch] = mockUpdateDocument.mock.calls[0];
+    expect(patch.description).toEqual({ en: "A fuller description" });
+    expect(patch.body).toEqual([{ _type: "block" }]);
+    expect(patch.relatedCommunity).toEqual({ _type: "reference", _ref: "r1" });
+    expect(patch.tags).toEqual([
+      { _type: "reference", _ref: "t1", _key: "t1" },
+      { _type: "reference", _ref: "t2", _key: "t2" },
+    ]);
+    // Still unset: nothing was provided for these.
+    expect(patch.issue).toBeNull();
+    expect(patch.personContext).toBeNull();
+  });
+
+  it("keeps the existing upload (does not null videoFile) when switching to upload with no new file", async () => {
+    mockQueryRaw.mockResolvedValue({ _id: "le1", submittedBy: "user1", status: "pending", hasVideoFile: true });
+
+    await submitLivedExperience({
+      userId: "user1",
+      language: "en",
+      title: "Updated story",
+      videoSource: "upload",
+      editId: "le1",
+    });
+
+    const [, patch] = mockUpdateDocument.mock.calls[0];
+    // videoLink is stale for an upload-sourced doc, so it's nulled...
+    expect(patch.videoLink).toBeNull();
+    // ...but videoFile must be absent from the patch entirely (kept as-is),
+    // not nulled — nulling it would delete the existing upload.
+    expect(patch).not.toHaveProperty("videoFile");
   });
 
   it("throws LivedExperienceEditNotAllowedError when the caller may not edit the doc", async () => {
