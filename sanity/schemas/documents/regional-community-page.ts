@@ -104,6 +104,12 @@ export default defineType({
       },
     }),
 
+    // NOTE: stored documents carry _type: "cta-1" while this field is declared
+    // hero-1. The declaration is correct and must NOT be "fixed" to cta-1 —
+    // the stored field set is hero-1's, including `image` (24 docs) and
+    // `imagePosition` (20 docs), which cta-1 does not declare. Sanity strips
+    // undeclared fields on save, so redeclaring would drop those images.
+    // The stored _type is normalised in the Payload importer. See spec §7.1.
     defineField({
       name: "whyJoinCTA",
       title: "Why Join Regional Community Hero",
