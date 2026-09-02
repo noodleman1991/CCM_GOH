@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import SectionContainer, { type SectionPadding } from "@/components/ui/section-container";
-import { stegaClean } from "next-sanity";
+import { cleanText } from "@/lib/content/text";
 import { getLocalizedField } from "@/lib/localization-utils";
 import { heading } from "@/lib/design-tokens";
 import { SectionHeader as UISectionHeader } from "@/components/ui/section-header";
@@ -29,8 +29,8 @@ export default function SectionHeader({
   description,
   locale = "en",
 }: SectionHeaderProps) {
-  const isNarrow = stegaClean(sectionWidth) === "narrow";
-  const align = stegaClean(stackAlign);
+  const isNarrow = cleanText(sectionWidth) === "narrow";
+  const align = cleanText(stackAlign);
 
   const supportedLocale = (locale || "en") as 'en' | 'es' | 'fr' | 'ar';
 

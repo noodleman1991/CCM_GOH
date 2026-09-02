@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import SectionContainer, { type SectionPadding } from "@/components/ui/section-container";
-import { stegaClean } from "next-sanity";
+import { cleanText } from "@/lib/content/text";
 import GridCard from "./grid-card";
 import GridPost from "./grid-post";
 // import PricingCard from "./pricing-card";
@@ -143,12 +143,12 @@ export default async function GridRow({
                                     rowId,
                                     initialDisplayCount,
                                 }: GridRowProps) {
-    const variant = (stegaClean(cardVariant) as "classic" | "wide" | null) || "classic";
+    const variant = (cleanText(cardVariant) as "classic" | "wide" | null) || "classic";
     const isRTL = locale === "ar";
 
     // Single source of truth for column count: wide cards max out at 2 columns.
     // Class literals live in lib/grid-layout.ts (scanned by Tailwind).
-    const cleanedColumns = stegaClean(gridColumns);
+    const cleanedColumns = cleanText(gridColumns);
     const { cols, className: gridColumnsClass } = resolveGridColumns(cleanedColumns, variant);
     const imageSizes = sizesForColumns(cols);
 

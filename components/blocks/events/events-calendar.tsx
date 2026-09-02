@@ -1,6 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
 import { getTranslations } from "next-intl/server";
-import { stegaClean } from "next-sanity";
+import { cleanText } from "@/lib/content/text";
 import SectionContainer, { type SectionPadding } from "@/components/ui/section-container";
 import { fetchApprovedEvents } from "@/lib/events";
 import EventsCalendarClient, { type EventsCalendarLabels } from "./events-calendar-client";
@@ -54,9 +54,9 @@ export default async function EventsCalendar({
         events={events}
         signedIn={!!userId}
         labels={labels}
-        title={stegaClean(title)}
-        description={stegaClean(description)}
-        upcomingLimit={stegaClean(upcomingLimit)}
+        title={cleanText(title)}
+        description={cleanText(description)}
+        upcomingLimit={cleanText(upcomingLimit)}
         locale={supportedLocale}
       />
     </SectionContainer>

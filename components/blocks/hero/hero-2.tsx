@@ -1,6 +1,5 @@
 import { SanityButton, type SanityLinkData } from "@/components/ui/sanity-button";
 import { type BackgroundOptionType } from "@/types/background-option";
-import { stegaClean } from "next-sanity";
 import PortableTextRenderer from "@/components/portable-text-renderer";
 import SectionContainer, { type SectionPadding } from "@/components/ui/section-container";
 import { cn } from "@/lib/utils";

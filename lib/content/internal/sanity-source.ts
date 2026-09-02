@@ -1,13 +1,14 @@
 /**
  * The single seam between the content layer and Sanity.
  *
- * This is the ONLY file under lib/content/ permitted to import from @/sanity
- * or @sanity/*; lib/__tests__/content-layer-boundary.test.ts enforces that.
- * Phase 3 adds payload-source.ts beside this file and switches the domain
- * modules over one at a time.
+ * This is the ONLY file under lib/content/ permitted to import from @/sanity,
+ * @sanity/*, or next-sanity; lib/__tests__/content-layer-boundary.test.ts
+ * enforces that. Phase 3 adds payload-source.ts beside this file and
+ * switches the domain modules over one at a time.
  */
 import { cachedFetch } from "@/sanity/lib/cached-fetch";
 import { writeClient } from "@/sanity/lib/write-client";
+import { stegaClean } from "next-sanity";
 
 /**
  * Run a GROQ query. Callers pass a plain string rather than a `defineQuery`
@@ -159,4 +160,22 @@ export async function deleteDocuments(ids: string[]): Promise<void> {
   let tx = writeClient.transaction();
   for (const id of ids) tx = tx.delete(id);
   await tx.commit({ visibility: "async" });
+}
+
+/**
+ * Strip Sanity's stega encoding — invisible metadata embedded in strings so
+ * the Presentation tool can offer click-to-edit. Delegates to next-sanity's
+ * `stegaClean` today; once Sanity is gone (Phase 3) there is no stega left to
+ * strip and this becomes the identity function, so call sites never change.
+ *
+ * Generic rather than string-only: `stegaClean` itself is (`<Result =
+ * unknown>(result: Result): Result`) and cleans recursively through whatever
+ * it is given, not just strings — call sites in this codebase pass numbers
+ * and `null`/`undefined` through it too (e.g. a numeric `limit` field), and
+ * `cleanText` must return those unchanged exactly as `stegaClean` does,
+ * rather than narrowing to a string signature that would silently misfit
+ * those callers.
+ */
+export function cleanText<T>(value: T): T {
+  return stegaClean(value);
 }

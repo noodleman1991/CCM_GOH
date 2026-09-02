@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Play, Calendar, User } from "lucide-react";
 import Image from "next/image";
 import { imageUrl } from "@/lib/content/images";
-import { stegaClean } from "next-sanity";
 import { BackgroundOptionType } from "@/types/background-option";
 import { SectionPadding } from "@/components/ui/section-container";
 import { VideoModal } from "@/components/blocks/video-modal";

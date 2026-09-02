@@ -1,5 +1,5 @@
 import SectionContainer from "@/components/ui/section-container";
-import { stegaClean } from "next-sanity";
+import { cleanText } from "@/lib/content/text";
 import {
   Carousel,
   CarouselContent,
@@ -80,8 +80,8 @@ export default function Carousel1({
   images,
   locale = "en",
 }: Carousel1Props) {
-  const stegaIndicators = stegaClean(indicators);
-  const stegaSize = stegaClean(size) as CarouselSize;
+  const stegaIndicators = cleanText(indicators);
+  const stegaSize = cleanText(size) as CarouselSize;
 
   const supportedLocale = (locale || "en") as 'en' | 'es' | 'fr' | 'ar';
 

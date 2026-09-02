@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import type { ComponentProps } from "react";
-import { stegaClean } from "next-sanity";
+import { cleanText } from "@/lib/content/text";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import Image from "next/image";
@@ -79,9 +79,9 @@ export default function GridCard({
         </div>
         <Button
           className="mt-6"
-          variant={stegaClean(link?.buttonVariant?.variant) as ButtonProps["variant"]}
-          size={(stegaClean(link?.buttonVariant?.size) || "default") as ButtonProps["size"]}
-          stroke={stegaClean(link?.buttonVariant?.stroke)}
+          variant={cleanText(link?.buttonVariant?.variant) as ButtonProps["variant"]}
+          size={(cleanText(link?.buttonVariant?.size) || "default") as ButtonProps["size"]}
+          stroke={cleanText(link?.buttonVariant?.stroke)}
           asChild
         >
           <div>{link?.title ?? t("learnMore")}</div>

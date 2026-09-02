@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { SanityButton, type SanityLinkData } from "@/components/ui/sanity-button";
 import { type BackgroundOptionType } from "@/types/background-option";
 import SectionContainer, { type SectionPadding } from "@/components/ui/section-container";
-import { stegaClean } from "next-sanity";
+import { cleanText } from "@/lib/content/text";
 import PortableTextRenderer from "@/components/portable-text-renderer";
 import { getLocalizedField, getLocalizedPortableText } from "@/lib/localization-utils";
 import { heading } from "@/lib/design-tokens";
@@ -36,8 +36,8 @@ export default function Cta1({
   links,
   locale = "en",
 }: Cta1Props) {
-  const isNarrow = stegaClean(sectionWidth) === "narrow";
-  const align = stegaClean(stackAlign);
+  const isNarrow = cleanText(sectionWidth) === "narrow";
+  const align = cleanText(stackAlign);
 
   const supportedLocale = (locale || "en") as 'en' | 'es' | 'fr' | 'ar';
 

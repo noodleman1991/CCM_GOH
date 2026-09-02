@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import Link from "next/link";
 import { Calendar, User } from "lucide-react";
-import { stegaClean } from "next-sanity";
+import { cleanText } from "@/lib/content/text";
 import { getTranslations } from "next-intl/server";
 import { imageUrl as getImageUrl } from "@/lib/content/images";
 import { getLocalizedField } from "@/lib/localization-utils";
@@ -57,8 +57,8 @@ export default async function AllPosts({
   locale = "en",
 }: AllPostsProps) {
   const supportedLocale = locale as 'en' | 'es' | 'fr' | 'ar';
-  const displayMode = stegaClean(mode) || "featured";
-  const displayLimit = stegaClean(limit) || 6;
+  const displayMode = cleanText(mode) || "featured";
+  const displayLimit = cleanText(limit) || 6;
 
   const posts = await fetchNewsPosts(displayMode, displayLimit, manualPosts);
 
