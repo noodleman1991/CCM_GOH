@@ -9,7 +9,7 @@ import { revalidatePath, revalidateTag } from 'next/cache'
 import { NextRequest, NextResponse } from 'next/server'
 import { headers } from 'next/headers'
 import { isValidSignature, SIGNATURE_HEADER_NAME } from '@sanity/webhook'
-import { writeClient } from '@/sanity/lib/write-client'
+import { queryRaw } from '@/lib/content/internal/sanity-source'
 import { notifyCaseStudyStatusChange, isNotifiableStatus } from '@/lib/case-study-emails'
 
 // Types for webhook payload
@@ -130,6 +130,15 @@ function handleCacheInvalidation(payload: SanityWebhookPayload) {
   return [...tagsToRevalidate, ...pathsToRevalidate]
 }
 
+interface CaseStudyNotificationDoc {
+  title?: string
+  status: string
+  notifiedStatus?: string
+  submittedBy?: string
+  reviewNotes?: string
+  locale: string
+}
+
 /**
  * Resolve the fields needed to email the submitter and send (idempotently).
  * The Sanity webhook projection may not include everything, so we fetch the
@@ -145,7 +154,9 @@ async function handleCaseStudyNotification(payload: SanityWebhookPayload): Promi
 
   // Fetch the authoritative fields (status may have just changed; submittedBy /
   // notifiedStatus / title are often not projected into the webhook payload).
-  const doc = await writeClient.fetch(
+  // Raw/authenticated, not the cached/published read: a status change may not
+  // yet be reflected in the CDN-cached published perspective.
+  const doc = await queryRaw<CaseStudyNotificationDoc | null>(
     `*[_type == "caseStudy" && _id == $id][0]{
       "title": title.en,
       status,

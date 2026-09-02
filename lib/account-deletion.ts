@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma"
-import { writeClient } from "@/sanity/lib/write-client"
+import { deleteDocuments, queryRaw } from "@/lib/content/internal/sanity-source"
 import { r2Configured, deleteObject } from "@/lib/r2"
 import { algoliaClient, ALGOLIA_INDICES } from "@/lib/algolia"
 
@@ -42,7 +42,7 @@ export async function eraseUserSanityContent(clerkUserId: string): Promise<{
   publishedRetained: number
 }> {
   // Drafts: always delete (private, never public).
-  const draftIds: string[] = await writeClient.fetch(
+  const draftIds = await queryRaw<string[]>(
     `*[_type == "caseStudyDraft" && userId == $uid]._id`,
     { uid: clerkUserId }
   )
@@ -52,25 +52,19 @@ export async function eraseUserSanityContent(clerkUserId: string): Promise<{
   // of them — livedExperience/researchOutput/event carry submittedBy exactly
   // like caseStudy does.
   const SUBMITTABLE_TYPES = ["caseStudy", "livedExperience", "researchOutput", "event"]
-  const submissionIds: string[] = await writeClient.fetch(
+  const submissionIds = await queryRaw<string[]>(
     `*[_type in $types && submittedBy == $uid && status != "approved"]._id`,
     { uid: clerkUserId, types: SUBMITTABLE_TYPES }
   )
 
   // Approved (published) docs: retained as-is — counted only for the
   // audit trail / so the UI can tell the user to email the team about them.
-  const publishedCount: number = await writeClient.fetch(
+  const publishedCount = await queryRaw<number>(
     `count(*[_type in $types && submittedBy == $uid && status == "approved"])`,
     { uid: clerkUserId, types: SUBMITTABLE_TYPES }
   )
 
-  let tx = writeClient.transaction()
-  for (const id of [...draftIds, ...submissionIds]) {
-    tx = tx.delete(id)
-  }
-  if (draftIds.length + submissionIds.length > 0) {
-    await tx.commit({ visibility: "async" })
-  }
+  await deleteDocuments([...draftIds, ...submissionIds])
 
   return {
     draftsDeleted: draftIds.length,

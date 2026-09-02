@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
-import { writeClient } from "@/sanity/lib/write-client";
+import { uploadImageAsset } from "@/lib/content/internal/sanity-source";
 import { authorizeCollab } from "@/lib/collaboration/service";
 import { rateLimitRequest } from "@/lib/rate-limit-route";
 
@@ -68,16 +68,16 @@ export async function POST(request: NextRequest) {
 
   try {
     const buffer = await file.arrayBuffer();
-    const asset = await writeClient.assets.upload("image", Buffer.from(buffer), {
+    const asset = await uploadImageAsset(Buffer.from(buffer), {
       filename: sanitizedFilename,
     });
 
     return NextResponse.json({
-      assetRef: asset._id,
+      assetRef: asset.id,
       url: asset.url,
-      width: asset.metadata?.dimensions?.width,
-      height: asset.metadata?.dimensions?.height,
-      lqip: asset.metadata?.lqip,
+      width: asset.width,
+      height: asset.height,
+      lqip: asset.lqip,
     });
   } catch (error) {
     console.error("[uploads/image] Sanity asset upload failed:", error);

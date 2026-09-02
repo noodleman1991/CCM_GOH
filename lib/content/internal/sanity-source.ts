@@ -82,6 +82,35 @@ export async function uploadFileAsset(
   return { id: asset._id };
 }
 
+/**
+ * Upload an image to the asset store, returning what a caller needs to
+ * render it immediately without a separate URL-resolution step: the asset
+ * id, its CDN url, pixel dimensions when the store could read them, and a
+ * blurred placeholder to paint before the full image loads.
+ *
+ * Distinct from `uploadFileAsset`: that primitive fixes the asset kind to
+ * "file" and returns only `{ id }`, which fits every existing lib/content/
+ * call site (the id is embedded as an image/file reference on a document,
+ * nothing else is needed). This route hands the asset straight to a
+ * client-side renderer, so it needs the richer, image-specific shape —
+ * neither existing primitive covers that, hence the addition. Payload's
+ * Local API upload returns the same id/url/width/height/... shape for
+ * media, so this survives the Phase 3 swap.
+ */
+export async function uploadImageAsset(
+  buffer: Buffer,
+  options: { filename: string },
+): Promise<{ id: string; url: string; width?: number; height?: number; lqip?: string }> {
+  const asset = await writeClient.assets.upload("image", buffer, options);
+  return {
+    id: asset._id,
+    url: asset.url,
+    width: asset.metadata?.dimensions?.width,
+    height: asset.metadata?.dimensions?.height,
+    lqip: asset.metadata?.lqip,
+  };
+}
+
 /** Create a document. Returns just the new document's id. */
 export async function createDocument(doc: Record<string, unknown>): Promise<{ id: string }> {
   const created = await writeClient.create(doc as never);
@@ -114,4 +143,20 @@ export async function updateDocument(id: string, data: Record<string, unknown>):
  *  API has the same delete-by-id shape, so this survives the Phase 3 swap. */
 export async function deleteDocument(id: string): Promise<void> {
   await writeClient.delete(id);
+}
+
+/**
+ * Delete a batch of documents as a single all-or-nothing operation — either
+ * every id is gone or, on failure, none are. A no-op (no store round-trip)
+ * for an empty list. Distinct from looping `deleteDocument`: a loop of
+ * separate deletes could fail partway through and leave a mix of deleted and
+ * retained documents, which is the wrong failure mode for a bulk erasure.
+ * Payload's Local API deletes the same way — `payload.delete({ collection,
+ * where: { id: { in: ids } } })` — so this survives the Phase 3 swap.
+ */
+export async function deleteDocuments(ids: string[]): Promise<void> {
+  if (ids.length === 0) return;
+  let tx = writeClient.transaction();
+  for (const id of ids) tx = tx.delete(id);
+  await tx.commit({ visibility: "async" });
 }
