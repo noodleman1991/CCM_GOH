@@ -6,17 +6,31 @@ import { imageUrl } from "@/lib/content/images";
 import { motion, useInView } from "motion/react";
 import { useRef } from "react";
 import { cn } from "@/lib/utils";
-import { PAGE_QUERY_RESULT } from "@/sanity.types";
+import type { PortableTextBlock } from "@portabletext/types";
 
-type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
-type SplitRow = Extract<Block, { _type: "split-row" }>;
-type SplitInfoList = Extract<
-  NonNullable<SplitRow["splitColumns"]>[number],
-  { _type: "split-info-list" }
->;
-type SplitInfoItem = NonNullable<SplitInfoList["list"]>[number];
+interface SplitInfoItemImage {
+  alt?: string | null;
+  asset?: {
+    _id?: string;
+    mimeType?: string | null;
+    metadata?: {
+      lqip?: string | null;
+      dimensions?: { width?: number | null; height?: number | null } | null;
+    } | null;
+  } | null;
+}
 
-interface SplitInfoItemProps extends SplitInfoItem {
+/** Fields one split-info-list entry carries. Exported so split-info-list.tsx
+ *  (the array owner) can type its `list` prop against the same shape rather
+ *  than redeclaring it. */
+export interface SplitInfoItemFields {
+  image?: SplitInfoItemImage | null;
+  title?: string | null;
+  body?: PortableTextBlock[] | null;
+  tags?: string[] | null;
+}
+
+interface SplitInfoItemProps extends SplitInfoItemFields {
   locale?: string;
 }
 

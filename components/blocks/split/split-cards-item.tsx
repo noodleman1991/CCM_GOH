@@ -3,17 +3,18 @@ import PortableTextRenderer from "@/components/portable-text-renderer";
 import { cn } from "@/lib/utils";
 import { motion, useInView } from "motion/react";
 import { useRef } from "react";
-import { PAGE_QUERY_RESULT } from "@/sanity.types";
+import type { PortableTextBlock } from "@portabletext/types";
 
-type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
-type SplitRow = Extract<Block, { _type: "split-row" }>;
-type SplitCardsList = Extract<
-  NonNullable<SplitRow["splitColumns"]>[number],
-  { _type: "split-cards-list" }
->;
-type SplitCardItem = NonNullable<NonNullable<SplitCardsList["list"]>[number]>;
+/** Fields one split-cards-list entry carries. Exported so split-cards-list.tsx
+ *  (the array owner) can type its `list` prop against the same shape rather
+ *  than redeclaring it. */
+export interface SplitCardItemFields {
+  tagLine?: string | null;
+  title?: string | null;
+  body?: PortableTextBlock[] | null;
+}
 
-interface SplitCardsItemProps extends SplitCardItem {
+interface SplitCardsItemProps extends SplitCardItemFields {
   locale?: string;
 }
 

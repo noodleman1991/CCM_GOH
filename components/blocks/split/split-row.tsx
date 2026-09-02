@@ -1,21 +1,26 @@
 import { cn } from "@/lib/utils";
-import SectionContainer from "@/components/ui/section-container";
+import SectionContainer, { type SectionPadding } from "@/components/ui/section-container";
 import { stegaClean } from "next-sanity";
-import { PAGE_QUERY_RESULT } from "@/sanity.types";
 import SplitContent from "./split-content";
 import SplitCardsList from "./split-cards-list";
 import SplitImage from "./split-image";
 import SplitInfoList from "./split-info-list";
 
-type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
-type SplitRow = Extract<Block, { _type: "split-row" }>;
-type SplitColumn = NonNullable<NonNullable<SplitRow["splitColumns"]>[number]>;
+/** A split column, in its raw CMS shape (`_type`/`_key` discriminant plus
+ *  whatever fields that column type carries). Loose by design — SplitRow just
+ *  dispatches on `_type` and spreads the rest into the matching child
+ *  component, which owns its own precise prop type. Same pattern as
+ *  GridRow's column dispatch (components/blocks/grid/grid-row.tsx). */
+type SplitColumn = { _type: string; _key: string } & Record<string, unknown>;
 
-const componentMap: {
-  [K in SplitColumn["_type"]]: React.ComponentType<
-    Extract<SplitColumn, { _type: K }> & { locale?: string }
-  >;
-} = {
+interface SplitRowProps {
+  padding?: SectionPadding | null;
+  noGap?: boolean;
+  splitColumns?: SplitColumn[] | null;
+  locale?: string;
+}
+
+const componentMap: Record<string, React.ElementType> = {
   "split-content": SplitContent,
   "split-cards-list": SplitCardsList,
   "split-image": SplitImage,
@@ -27,7 +32,7 @@ export default function SplitRow({
   noGap,
   splitColumns,
   locale = "en",
-}: SplitRow & { locale?: string }) {
+}: SplitRowProps) {
 
   return (
     <SectionContainer padding={padding}>

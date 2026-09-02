@@ -1,14 +1,10 @@
-import SplitInfoItem from "@/components/blocks/split/split-info-item";
-import { PAGE_QUERY_RESULT } from "@/sanity.types";
+import SplitInfoItem, { type SplitInfoItemFields } from "@/components/blocks/split/split-info-item";
 
-type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
-type SplitRow = Extract<Block, { _type: "split-row" }>;
-type SplitInfoList = Extract<
-  NonNullable<SplitRow["splitColumns"]>[number],
-  { _type: "split-info-list" }
->;
+interface SplitInfoListProps {
+  list?: SplitInfoItemFields[] | null;
+}
 
-export default function SplitInfoList({ list }: SplitInfoList) {
+export default function SplitInfoList({ list }: SplitInfoListProps) {
   return (
     <div className="flex items-center justify-center">
       <div className="grid grid-cols-1 @content-md/page:grid-cols-2 @content-lg/page:grid-cols-1 gap-8">

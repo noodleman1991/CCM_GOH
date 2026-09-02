@@ -1,14 +1,8 @@
-import SplitCardsItem from "@/components/blocks/split/split-cards-item";
-import { PAGE_QUERY_RESULT } from "@/sanity.types";
+import SplitCardsItem, { type SplitCardItemFields } from "@/components/blocks/split/split-cards-item";
 
-type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
-type SplitRow = Extract<Block, { _type: "split-row" }>;
-type SplitCardsList = Extract<
-  NonNullable<SplitRow["splitColumns"]>[number],
-  { _type: "split-cards-list" }
->;
-
-type SplitCardsListProps = SplitCardsList;
+interface SplitCardsListProps {
+  list?: SplitCardItemFields[] | null;
+}
 
 export default function SplitCardsList({ list }: SplitCardsListProps) {
   return (

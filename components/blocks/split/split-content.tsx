@@ -3,17 +3,22 @@ import { heading } from "@/lib/design-tokens";
 import PortableTextRenderer from "@/components/portable-text-renderer";
 import { SanityButton, type SanityLinkData } from "@/components/ui/sanity-button";
 import { createElement } from "react";
-import { PAGE_QUERY_RESULT } from "@/sanity.types";
 import { getLocalizedField, getLocalizedPortableText } from "@/lib/localization-utils";
+import type { SectionPadding } from "@/components/ui/section-container";
+import type { PortableTextBlock } from "@portabletext/types";
 
-type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
-type SplitRow = Extract<Block, { _type: "split-row" }>;
-type SplitContent = Extract<
-  NonNullable<SplitRow["splitColumns"]>[number],
-  { _type: "split-content" }
->;
+/** A field that carries either a plain string or a `{en, es, fr, ar}` map —
+ *  the shape `getLocalizedField` resolves. Matches the precedent already
+ *  used for this exact pattern in lib/content/discovery.ts's LocalizedText. */
+type LocalizedText = string | Record<string, string> | null;
 
-interface SplitContentProps extends SplitContent {
+interface SplitContentProps {
+  sticky?: boolean;
+  padding?: SectionPadding | null;
+  tagLine?: LocalizedText;
+  title?: LocalizedText;
+  body?: PortableTextBlock[] | Record<string, unknown> | null;
+  link?: SanityLinkData | null;
   noGap?: boolean;
   locale?: string;
 }
