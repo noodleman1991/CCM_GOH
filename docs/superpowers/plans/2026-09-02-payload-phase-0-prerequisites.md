@@ -30,7 +30,7 @@
 | `scripts/export-sanity-archive.ts` | Create + verify the full dataset export; emit a manifest |
 | `docs/migration/sanity-archive-manifest.json` | Committed record of what the archive contains (the archive itself is gitignored) |
 | `sanity/schemas/documents/regional-community-page.ts` | Warning comment only — the declaration is correct and must not change |
-| `scripts/fix-lived-experience-tags.mjs` | Already exists — run it |
+| `scripts/fix-lived-experience-tags.mjs` | Add the missing production guard; the data defect is already resolved |
 | `app/[locale]/(main)/blog/` | Deleted |
 | `components/header/index.tsx`, `components/footer.tsx` | Nav links repointed to `/news` |
 | `app/sitemap.ts`, `app/api/webhooks/sanity/route.ts`, `lib/algolia.ts` | `post` branches removed |
@@ -541,80 +541,152 @@ the wrong way. The stored _type is normalised in the Payload importer."
 
 ---
 
-### Task 4: Fix malformed lived-experience tags
+### Task 4: Verify tags are clean, and close a production footgun
 
-33 of 35 published documents hold string tags where the schema declares a reference array — legacy backfill residue that would import as unresolvable references.
+**This task was rewritten after investigation. The defect it was written to fix no longer
+exists, and the task no longer writes to production.**
+
+Verified against the live dataset on 2026-09-02:
+
+```
+livedExperience total (incl drafts): 56
+with a tags field        : 56
+MALFORMED (non-reference): 0
+```
+
+The spec's claim that 33 of 35 documents held string tags came from a July note, not a
+live query. It was true on 2026-07-28 and has since been fixed. `node
+scripts/fix-lived-experience-tags.mjs` (dry-run) independently agrees: "Would patch 0/56
+documents."
+
+What IS still true is a hazard worth closing while we are here. `scripts/fix-lived-experience-tags.mjs`
+**defaults to `DATASET = "production_2"`** and gates writes only behind `--execute`. There
+is no production confirmation. `node scripts/fix-lived-experience-tags.mjs --execute`
+rewrites tags on live content with nothing to stop it — and in `map` mode, unmapped strings
+are silently dropped. That violates this plan's Global Constraint that every script must
+refuse `production_2` unless explicitly told otherwise.
 
 **Files:**
-- Modify: `scripts/fix-lived-experience-tags.mjs` (exists; verify before running)
+- Modify: `scripts/fix-lived-experience-tags.mjs`
+- Test: `lib/__tests__/lived-experience-tags-guard.test.ts`
 
 **Interfaces:**
-- Consumes: `buildManifest` from Task 1, to prove document counts are unchanged.
-- Produces: a dataset where every `livedExperience.tags` entry is a reference.
+- Consumes: `resolveDataset` shape from Task 1 is the precedent to mirror, but this script
+  is `.mjs` and standalone — do not import across them.
+- Produces: nothing later tasks depend on.
 
-- [ ] **Step 1: Read the existing script before running it**
-
-Run: `cat scripts/fix-lived-experience-tags.mjs`
-
-Confirm it is dry-run by default, that it maps string values onto existing `tag`
-documents rather than creating duplicates, and that it refuses `production_2` without an
-explicit flag. **If any of those is missing, fix the script before running it.**
-
-- [ ] **Step 2: Measure the defect**
+- [ ] **Step 1: Confirm the defect is still absent**
 
 ```bash
 set -a; . ./.env; set +a
 curl -s -G "https://${NEXT_PUBLIC_SANITY_PROJECT_ID}.api.sanity.io/v${NEXT_PUBLIC_SANITY_API_VERSION}/data/query/${NEXT_PUBLIC_SANITY_DATASET}" \
-  --data-urlencode 'query={"malformed": count(*[_type=="livedExperience" && count(tags[!defined(_ref)]) > 0]), "total": count(*[_type=="livedExperience"])}' \
+  --data-urlencode 'query={"total":count(*[_type=="livedExperience"]),"malformed":count(*[_type=="livedExperience" && count(tags[!defined(_ref)])>0])}' \
   -H "Authorization: Bearer ${SANITY_API_READ_TOKEN}"
 ```
 
-Expected: roughly `{"malformed": 33, "total": 35}` (the total includes drafts, so it may
-read 56). Record the exact number — Step 5 checks it reaches zero.
+Expected: `{"total":56,"malformed":0}`.
 
-- [ ] **Step 3: Dry-run against the development dataset**
+**If `malformed` is greater than 0, STOP and report.** The defect has returned, which means
+something is still writing string tags, and that root cause matters more than the cleanup.
 
-Run: `node scripts/fix-lived-experience-tags.mjs`
+- [ ] **Step 2: Write the failing test**
 
-Review the proposed patches. Every string value must map to an existing `tag` document;
-any unmapped value needs a decision (create the tag, or drop the value) before proceeding.
+Create `lib/__tests__/lived-experience-tags-guard.test.ts`:
 
-- [ ] **Step 4: Apply**
+```ts
+import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
 
-Run: `node scripts/fix-lived-experience-tags.mjs --prod --apply`
+/**
+ * scripts/fix-lived-experience-tags.mjs writes to whichever dataset it resolves,
+ * and that default is production_2. A --execute run with no further ceremony
+ * rewrites live content, dropping unmapped tag strings. The plan's global
+ * constraint requires production to be opt-in for every script.
+ */
+const script = () =>
+  readFileSync("scripts/fix-lived-experience-tags.mjs", "utf8");
 
-- [ ] **Step 5: Verify the defect is gone and nothing was lost**
+describe("fix-lived-experience-tags production guard", () => {
+  it("requires an explicit production acknowledgement flag", () => {
+    expect(script()).toContain("--i-understand-this-is-production");
+  });
 
-Re-run the Step 2 query. Expected: `malformed: 0`, `total` unchanged.
+  it("refuses rather than warns — it must exit non-zero", () => {
+    const src = script();
+    const guardIndex = src.indexOf("--i-understand-this-is-production");
+    expect(guardIndex).toBeGreaterThan(-1);
+    // The refusal must terminate the process, not merely log.
+    expect(src.slice(guardIndex, guardIndex + 600)).toMatch(/process\.exit\(1\)/);
+  });
 
-Then re-run the manifest and diff it:
-
-```bash
-npx tsx scripts/export-sanity-archive.ts --prod
-git diff docs/migration/sanity-archive-manifest.json
+  it("still prints the dataset it is about to touch", () => {
+    expect(script()).toMatch(/dataset \$\{?DATASET/);
+  });
+});
 ```
 
-Expected: only `generatedAt` and the archive checksum change. **Any change to
-`totals` or `byType` means the fix created or destroyed documents — investigate before
-committing.**
+- [ ] **Step 3: Run the test to verify it fails**
 
-- [ ] **Step 6: Verify the rendered page**
+Run: `pnpm exec vitest run lib/__tests__/lived-experience-tags-guard.test.ts`
+Expected: FAIL on the first two assertions — the flag does not exist yet.
 
-Run `pnpm dev` and load `/en/lived-experiences`. Tag filter chips must still populate and
-filtering must still work — the tags are now references, which is what the query already
-dereferences.
+- [ ] **Step 4: Add the guard**
+
+In `scripts/fix-lived-experience-tags.mjs`, immediately after the existing `MODE`
+validation block, add:
+
+```js
+// Writing to production must be deliberate. This script defaults to
+// production_2 and, in map mode, DROPS unmapped tag strings — so an
+// accidental --execute is destructive. Mirrors the refusal in
+// scripts/backfill-region-codes.mjs.
+const ackProd = args.includes('--i-understand-this-is-production');
+if (EXECUTE && DATASET === 'production_2' && !ackProd) {
+  console.error(
+    'Refusing: --execute against production_2 without acknowledgement.\n' +
+      'Dry-run first, then pass --i-understand-this-is-production to apply.'
+  );
+  process.exit(1);
+}
+```
+
+Dry-runs stay unguarded — they are read-only and are how you inspect the change.
+
+Also correct the usage comment at the top of the file to document the new flag.
+
+- [ ] **Step 5: Run the test to verify it passes**
+
+Run: `pnpm exec vitest run lib/__tests__/lived-experience-tags-guard.test.ts`
+Expected: PASS, 3 tests.
+
+- [ ] **Step 6: Verify both paths behave**
+
+```bash
+node scripts/fix-lived-experience-tags.mjs                      # dry-run: still works
+node scripts/fix-lived-experience-tags.mjs --execute            # must refuse, exit 1
+echo "exit=$?"
+```
+
+Expected: the dry-run prints "Would patch 0/56 documents"; the `--execute` run refuses and
+exits 1. **Do not pass `--i-understand-this-is-production`.** There is nothing to fix, so
+there is no reason to write to production at all.
 
 - [ ] **Step 7: Commit**
 
 ```bash
-git add docs/migration/sanity-archive-manifest.json scripts/fix-lived-experience-tags.mjs
-git commit -m "fix(cms): normalise lived-experience tags to references
+git add scripts/fix-lived-experience-tags.mjs \
+        lib/__tests__/lived-experience-tags-guard.test.ts
+git commit -m "fix(scripts): require acknowledgement before writing tags to production
 
-33 of 35 published lived experiences stored tags as bare strings where the
-schema declares a reference array, from a legacy backfill. Payload would
-import these as unresolvable references.
+fix-lived-experience-tags.mjs defaults to dataset production_2 and gates
+writes only behind --execute. In map mode it drops unmapped tag strings,
+so an accidental --execute silently destroys data on live content.
 
-Manifest totals unchanged: no documents created or destroyed."
+Adds the same refusal used by backfill-region-codes.mjs. Dry-runs stay
+unguarded since they are read-only.
+
+The malformed-tag defect this script was written for is already resolved:
+0 of 56 lived experiences hold non-reference tags as of 2026-09-02."
 ```
 
 ---
@@ -760,5 +832,5 @@ Before starting Phase 1, all of these must hold:
 - [ ] `backups/sanity-production_2-*.tar.gz` exists, passes `tar -tzf`, and its checksum matches `docs/migration/sanity-archive-manifest.json`
 - [ ] The manifest reports 446 published (438 migratable + 8 `translation.metadata`) + 30 drafts
 - [ ] `whyJoinCTA` is still declared `hero-1`, with the mismatch pinned by a test
-- [ ] No `livedExperience` document has a non-reference tag
+- [ ] No `livedExperience` document has a non-reference tag (verified: 0 of 56)
 - [ ] `/en/blog` 404s; header and footer link to `/news`

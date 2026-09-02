@@ -267,7 +267,9 @@ Resolve in Phase 0, before export.
 
    **Resolution:** leave Sanity untouched. The Phase 2 importer maps `whyJoinCTA._type === "cta-1"` onto the hero-1 Payload block. Rewriting `_type` on 28 production documents to tidy a system being decommissioned is risk without benefit. Phase 0 pins the mismatch with a test and a schema comment so nobody reconciles it the wrong way.
 
-2. **Malformed lived-experience tags.** 33 of the 35 published documents hold string tags where the schema declares a reference array — legacy backfill residue. Patch script already queued.
+2. ~~**Malformed lived-experience tags.**~~ **Already resolved — verified 2026-09-02.** All 56 lived-experience documents (published and draft) hold correctly shaped reference tags; `malformed: 0`. The "33 of 35" figure in an earlier draft of this spec came from a 2026-07-28 note rather than a live query, and the fix has since been applied. `scripts/fix-lived-experience-tags.mjs` confirms independently: "Would patch 0/56 documents."
+
+   Phase 0 still hardens that script, which defaults to `production_2` and gates writes only behind `--execute`, dropping unmapped tag strings in `map` mode — an accidental run is destructive.
 
 3. **Missing translation metadata.** Only 1 of 9 `page` groups has a `translation.metadata` document, and it links 2 of 4 languages. *Mitigated by design* — grouping keys on slug, which is complete for every group (§6). No data fix needed.
 
