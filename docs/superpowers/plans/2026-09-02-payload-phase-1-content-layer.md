@@ -936,6 +936,12 @@ Sixteen files import from `next-sanity` directly — eleven use `stegaClean`, on
 
 Neither is a content read, but both couple a component to the CMS for no structural reason. Wrapping them is the cheapest possible insulation and spares Phase 3 from touching eleven block components.
 
+**Two extra fixes belong to this task**, both found by running the Task 11 gate early:
+
+1. **`lib/content/images.ts:21` imports `@/sanity/lib/image` directly**, breaking the rule that only `lib/content/internal/` may import Sanity. This is a defect in Task 10a's brief, not the implementer's work — it said "import the builder from the seam only", and "the seam" was reasonably read as Sanity's own image module. Move the Sanity import into `lib/content/internal/` (a sibling `image-source.ts` re-exporting `urlFor`/`urlForCropped` is the obvious shape) and have `images.ts` import from there. **Change no behaviour** — `imageUrl`'s output was verified byte-identical against the real builder across nine call shapes, and that must stay true.
+
+2. **`components/blocks/index.tsx:24` carries a commented-out `@/sanity/schemas/...` import** — a stale TODO asking what the difference is between two grid schemas. The boundary gate greps whole files, so a comment naming a Sanity path fails it forever. Delete the dead comment line; do not act on the TODO.
+
 **Files:**
 - Modify: `lib/content/internal/sanity-source.ts` — or a sibling `lib/content/text.ts`, your call; state which and why
 - Modify: the eleven `stegaClean` importers — `components/blocks/section-header.tsx`, `all-posts.tsx`, `carousel/lived-experiences-carousel.tsx`, `carousel/carousel-1.tsx`, `split/split-row.tsx`, `cta/cta-1.tsx`, `hero/hero-2.tsx`, `hero/hero-1.tsx`, `events/events-calendar.tsx`, `grid/grid-row.tsx`, `grid/grid-card.tsx`
