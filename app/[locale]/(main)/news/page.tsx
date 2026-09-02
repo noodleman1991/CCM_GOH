@@ -11,13 +11,13 @@ import NewsHeroSection from '@/components/news/news-hero-section'
 import NewsPostCard from '@/components/ui/news-post-card'
 import { SectionHeader } from '@/components/ui/section-header'
 import {
-  fetchFeaturedNews,
-  fetchRegularNews,
-  fetchAllNews,
-  fetchNewsTags,
-  fetchRegionalCommunities,
-  fetchApprovedExternalSources,
-} from '@/sanity/queries/news-queries'
+  getFeaturedNews,
+  getRegularNews,
+  getAllNews,
+  getNewsTags,
+  getRegionalCommunities,
+  getApprovedExternalSources,
+} from '@/lib/content/news'
 import ExternalSourceCard from '@/components/ui/external-source-card'
 import { FollowButton } from '@/components/follow/follow-button'
 import { hasActiveFilters, GLOBAL_REGION } from '@/lib/news-utils'
@@ -121,8 +121,8 @@ async function NewsFiltersWrapper({
   currentFilters: NewsSearchParams
 }) {
   const [tags, communities] = await Promise.all([
-    fetchNewsTags(),
-    fetchRegionalCommunities(),
+    getNewsTags(),
+    getRegionalCommunities(),
   ])
 
   return (
@@ -153,7 +153,7 @@ async function NewsEmptyState({
   const regionSlugs = (filters.communities || []).filter((c) => c !== GLOBAL_REGION)
   const regionSlug = regionSlugs[0]
   const region = regionSlug
-    ? (await fetchRegionalCommunities()).find(
+    ? (await getRegionalCommunities()).find(
         (c: { slug: string }) => c.slug === regionSlug
       )
     : undefined
@@ -221,8 +221,8 @@ async function NewsContent({
   // If filters are active, show all matching news (including featured) + external sources
   if (hasFilters) {
     const [allNews, externalSources] = await Promise.all([
-      fetchAllNews(filterObj),
-      fetchApprovedExternalSources({
+      getAllNews(filterObj),
+      getApprovedExternalSources({
         tags: filterObj.tags,
         communities: filterObj.communities,
         search: filterObj.search,
@@ -293,9 +293,9 @@ async function NewsContent({
 
   // No filters - show hero section + a single merged feed (CCM + external)
   const [featuredNews, regularNews, externalSources] = await Promise.all([
-    fetchFeaturedNews(3),
-    fetchRegularNews({ limit: 50 }),
-    fetchApprovedExternalSources({ limit: 12 }),
+    getFeaturedNews(3),
+    getRegularNews({ limit: 50 }),
+    getApprovedExternalSources({ limit: 12 }),
   ])
   const feed = mergeNewsFeed(regularNews, externalSources)
 

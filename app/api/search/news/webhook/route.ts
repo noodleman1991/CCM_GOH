@@ -1,37 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { isValidSignature, SIGNATURE_HEADER_NAME } from '@sanity/webhook'
 import { algoliaClient, ALGOLIA_INDICES, NewsSearchRecord } from '@/lib/algolia'
-import { cachedFetch as sanityFetch } from "@/sanity/lib/cached-fetch";
+import { getNewsIndexDocById, type NewsIndexDoc } from '@/lib/content/news'
 
 const secret = process.env.SANITY_WEBHOOK_SECRET
 const SEARCH_WEBHOOK_SECRET = process.env.SEARCH_WEBHOOK_SECRET
 
-/** Minimal shape of the Sanity news post payload consumed by the transform below. */
-interface SanityNewsPost {
-  _id: string
-  title?: NewsSearchRecord['title'] | null
-  subtitle?: NonNullable<NewsSearchRecord['subtitle']> | null
-  excerpt?: NonNullable<NewsSearchRecord['excerpt']> | null
-  slug?: { current?: string } | null
-  publishedAt?: string | null
-  _updatedAt?: string | null
-  featured?: boolean | null
-  author?: { _id?: string; name?: string } | null
-  tags?: Array<{ label?: { en?: string } | null; name?: string | null }> | null
-  organizations?: Array<{ name?: string | null }> | null
-  projects?: Array<{ name?: string | null }> | null
-  location?: { lat?: number; lng?: number } | null
-  locationDetails?: { city?: string; country?: string } | null
-  language?: string | null
-  region?: string | null
-  themes?: string[] | null
-  populations?: string[] | null
-}
-
 /**
  * Transform news post for Algolia indexing
  */
-function transformNewsForIndex(newsPost: SanityNewsPost): NewsSearchRecord | null {
+function transformNewsForIndex(newsPost: NewsIndexDoc): NewsSearchRecord | null {
   try {
     // Ensure required fields exist
     if (!newsPost._id || !newsPost.title || !newsPost.slug) {
@@ -154,35 +132,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Fetch the full news post from Sanity
-    const result = await sanityFetch({
-      query: `*[_type == "newsPost" && _id == $id][0] {
-        _id,
-        title,
-        subtitle,
-        excerpt,
-        slug,
-        publishedAt,
-        _updatedAt,
-  region,
-  themes,
-  populations,
-        featured,
-        author->{_id, name},
-        tags[]->{label},
-        organizations[]->{name},
-        projects[]->{name},
-        location,
-        locationDetails {
-          city,
-          country
-        },
-        language
-      }`,
-      params: { id: _id },
-      tags: ['newsPost']
-    })
-
-    const newsPost = result.data
+    const newsPost = await getNewsIndexDocById(_id)
 
     if (!newsPost) {
       // News post doesn't exist, remove from index if present

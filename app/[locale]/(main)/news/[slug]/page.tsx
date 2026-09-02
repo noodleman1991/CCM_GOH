@@ -17,29 +17,23 @@ import { urlFor } from '@/sanity/lib/image'
 import { getLocalizedValue } from '@/i18n/i18n-helpers'
 import { formatNewsDate, getReadingTime } from '@/lib/news-utils'
 import { PortableText } from '@portabletext/react'
-import { client } from '@/sanity/lib/client'
-import { fetchNewsBySlug, fetchRelatedNews } from '@/sanity/queries/news-queries'
+import { getNewsPostBySlug, getRelatedNews, getNewsSlugs } from '@/lib/content/news'
 import { CommentIsland } from '@/components/comments/comment-island'
 import { JsonLd, articleJsonLd } from '@/lib/seo/json-ld'
-import { groq } from 'next-sanity'
 import { FollowButton } from "@/components/follow/follow-button";
 
 // Generate static params for all news posts
 export async function generateStaticParams() {
-  const newsPosts = await client.fetch(
-    groq`*[_type == "newsPost" && defined(slug.current)]{
-      "slug": slug.current
-    }`
-  )
+  const slugs = await getNewsSlugs()
 
   const locales = ['en', 'es', 'fr', 'ar']
   const params = []
 
-  for (const post of newsPosts) {
+  for (const slug of slugs) {
     for (const locale of locales) {
       params.push({
         locale,
-        slug: post.slug,
+        slug,
       })
     }
   }
@@ -53,7 +47,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string; slug: string }>
 }): Promise<Metadata> {
   const { locale, slug } = await params
-  const newsPost = await fetchNewsBySlug(slug)
+  const newsPost = await getNewsPostBySlug(slug)
   const t = await getTranslations({ locale, namespace: 'news' })
 
   if (!newsPost) {
@@ -78,7 +72,7 @@ export async function generateMetadata({
       images: [
         `${process.env.NEXT_PUBLIC_SITE_URL}/${locale}/news/${slug}/og.png`,
         ...(newsPost.ogImage?.asset?.url || newsPost.image?.asset?.url
-          ? [newsPost.ogImage?.asset?.url || newsPost.image?.asset?.url]
+          ? [(newsPost.ogImage?.asset?.url || newsPost.image?.asset?.url) as string]
           : []),
       ],
     },
@@ -91,7 +85,7 @@ export default async function NewsDetailPage({
   params: Promise<{ locale: string; slug: string }>
 }) {
   const { locale, slug } = await params
-  const newsPost = await fetchNewsBySlug(slug)
+  const newsPost = await getNewsPostBySlug(slug)
 
   if (!newsPost) {
     notFound()
@@ -113,7 +107,7 @@ export default async function NewsDetailPage({
   // Fetch related news if tags exist
   const tagIds = newsPost.tags?.map((tag: { _id: string }) => tag._id) || []
   const relatedNews = tagIds.length > 0
-    ? await fetchRelatedNews(newsPost._id, tagIds, 3)
+    ? await getRelatedNews(newsPost._id, tagIds, 3)
     : []
 
   return (
@@ -261,7 +255,7 @@ export default async function NewsDetailPage({
       {newsPost.content && (
         <Card>
           <CardContent className="prose prose-lg mx-auto max-w-prose pt-6 dark:prose-invert">
-            <PortableText value={newsPost.content} />
+            <PortableText value={newsPost.content as never} />
           </CardContent>
         </Card>
       )}

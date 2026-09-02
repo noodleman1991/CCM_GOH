@@ -1,54 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { algoliaClient, ALGOLIA_INDICES, NewsSearchRecord } from '@/lib/algolia'
-import { cachedFetch as sanityFetch } from "@/sanity/lib/cached-fetch";
-
-// Sanity query to get all published news posts
-const NEWS_QUERY = `*[_type == "newsPost" && publishedAt <= now()] | order(publishedAt desc) {
-  _id,
-  title,
-  subtitle,
-  excerpt,
-  slug,
-  publishedAt,
-  _updatedAt,
-  region,
-  themes,
-  populations,
-  featured,
-  author->{_id, name},
-  tags[]->{label},
-  organizations[]->{name},
-  projects[]->{name},
-  location,
-  locationDetails {
-    city,
-    country
-  },
-  language
-}`
-
-/** Minimal shape of the Sanity news post payload consumed by the transform below. */
-interface SanityNewsPost {
-  _id: string
-  title?: NewsSearchRecord['title'] | null
-  subtitle?: NonNullable<NewsSearchRecord['subtitle']> | null
-  excerpt?: NonNullable<NewsSearchRecord['excerpt']> | null
-  slug?: { current?: string } | null
-  publishedAt?: string | null
-  _updatedAt?: string | null
-  featured?: boolean | null
-  author?: { _id?: string; name?: string } | null
-  tags?: Array<{ label?: { en?: string } | null; name?: string | null }> | null
-  organizations?: Array<{ name?: string | null }> | null
-  projects?: Array<{ name?: string | null }> | null
-  location?: { lat?: number; lng?: number } | null
-  locationDetails?: { city?: string; country?: string } | null
-  language?: string | null
-  region?: string | null
-  themes?: string[] | null
-  populations?: string[] | null
-}
+import {
+  getPublishedNewsIndexDocs,
+  getNewsIndexDocsByIds,
+  getPublishedNewsCount,
+  type NewsIndexDoc,
+} from '@/lib/content/news'
 
 export async function POST(request: NextRequest) {
   try {
@@ -73,17 +31,13 @@ export async function POST(request: NextRequest) {
 
     if (type === 'full') {
       // Full sync - get all published news posts
-      const result = await sanityFetch({
-        query: NEWS_QUERY,
-        tags: ['newsPost']
-      })
-      const newsPosts = result.data || []
+      const newsPosts = await getPublishedNewsIndexDocs()
 
       console.log(`Starting full sync of ${newsPosts.length} news posts to Algolia`)
 
       // Transform news posts for indexing
       const records: NewsSearchRecord[] = newsPosts
-        .map((newsPost: SanityNewsPost) => transformNewsForIndex(newsPost))
+        .map((newsPost: NewsIndexDoc) => transformNewsForIndex(newsPost))
         .filter(Boolean) as NewsSearchRecord[]
 
       if (records.length > 0) {
@@ -117,34 +71,7 @@ export async function POST(request: NextRequest) {
 
     } else if (type === 'partial' && newsIds.length > 0) {
       // Partial sync - specific news posts
-      const result = await sanityFetch({
-        query: `*[_type == "newsPost" && _id in $ids] {
-          _id,
-          title,
-          subtitle,
-          excerpt,
-          slug,
-          publishedAt,
-          _updatedAt,
-  region,
-  themes,
-  populations,
-          featured,
-          author->{_id, name},
-          tags[]->{label},
-          organizations[]->{name},
-          projects[]->{name},
-          location,
-          locationDetails {
-            city,
-            country
-          },
-          language
-        }`,
-        params: { ids: newsIds },
-        tags: ['newsPost']
-      })
-      const newsPosts = result.data || []
+      const newsPosts = await getNewsIndexDocsByIds(newsIds)
 
       const toIndex: NewsSearchRecord[] = []
       const toDelete: string[] = []
@@ -221,11 +148,7 @@ export async function GET() {
     }
 
     // Get total published news posts from Sanity
-    const result = await sanityFetch({
-      query: `count(*[_type == "newsPost" && publishedAt <= now()])`,
-      tags: ['newsPost']
-    })
-    const publishedNewsPosts = result.data || 0
+    const publishedNewsPosts = await getPublishedNewsCount()
 
     return NextResponse.json({
       indexStats: {
@@ -248,7 +171,7 @@ export async function GET() {
 }
 
 // Helper function to transform news post for Algolia indexing
-function transformNewsForIndex(newsPost: SanityNewsPost): NewsSearchRecord | null {
+function transformNewsForIndex(newsPost: NewsIndexDoc): NewsSearchRecord | null {
   try {
     // Ensure required fields exist
     if (!newsPost._id || !newsPost.title || !newsPost.slug) {
