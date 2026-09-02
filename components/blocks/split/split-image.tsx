@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { urlFor } from "@/sanity/lib/image";
+import { imageUrl } from "@/lib/content/images";
 import { PAGE_QUERY_RESULT } from "@/sanity.types";
 
 type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
@@ -22,7 +22,7 @@ export default function SplitImage({ image }: SplitImage) {
   return (
     <div className="relative mx-auto w-full max-w-[82%] min-w-0">
       <Image
-        src={urlFor(image).width(1100).url()}
+        src={imageUrl(image, { width: 1100 })}
         alt={image.alt || ""}
         width={width}
         height={height}

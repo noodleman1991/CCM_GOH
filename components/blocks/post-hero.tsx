@@ -2,7 +2,7 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import PostDate from "@/components/post-date";
 import { Mail } from "lucide-react";
-import { urlFor } from "@/sanity/lib/image";
+import { imageUrl } from "@/lib/content/images";
 import { POST_QUERY_RESULT } from "@/sanity.types";
 
 type PostHeroProps = NonNullable<POST_QUERY_RESULT>;
@@ -21,7 +21,7 @@ export default function PostHero({
       {image && image.asset?._id && (
         <div className="my-4 @content-md/page:my-6 rounded-2xl overflow-hidden">
           <Image
-            src={urlFor(image).url()}
+            src={imageUrl(image)}
             alt={image.alt || ""}
             placeholder={image?.asset?.metadata?.lqip ? "blur" : undefined}
             blurDataURL={image.asset?.metadata?.lqip || undefined}
@@ -36,7 +36,7 @@ export default function PostHero({
             {author?.image && author.image.asset?._id && (
               <div className="relative w-6 h-6 @content-md/page:w-10 @content-md/page:h-10">
                 <Image
-                  src={urlFor(author.image).url()}
+                  src={imageUrl(author.image)}
                   alt={author.image.alt ? author.image.alt : ""}
                   fill
                   style={{

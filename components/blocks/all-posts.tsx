@@ -7,7 +7,7 @@ import { Calendar, User } from "lucide-react";
 import { stegaClean } from "next-sanity";
 import { getTranslations } from "next-intl/server";
 import { PAGE_QUERY_RESULT } from "@/sanity.types";
-import { urlFor } from "@/sanity/lib/image";
+import { imageUrl as getImageUrl } from "@/lib/content/images";
 import { getLocalizedField } from "@/lib/localization-utils";
 import { getNewsPostsForBlock, type NewsPostBlockItem } from "@/lib/content/discovery";
 
@@ -89,7 +89,7 @@ export default async function AllPosts({
             ? post.excerpt
             : getLocalizedField(post.excerpt, supportedLocale, '');
           const imageUrl = post.image?.asset?._id
-            ? urlFor(post.image).width(800).url()
+            ? getImageUrl(post.image, { width: 800 })
             : post.image?.asset?.url || null;
 
           return (

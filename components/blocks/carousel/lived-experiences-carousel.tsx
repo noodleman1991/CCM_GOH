@@ -9,7 +9,7 @@ import { SectionHeader } from "@/components/ui/section-header";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Play, Calendar, User } from "lucide-react";
 import Image from "next/image";
-import { urlFor } from "@/sanity/lib/image";
+import { imageUrl } from "@/lib/content/images";
 import { stegaClean } from "next-sanity";
 import { BackgroundOptionType } from "@/types/background-option";
 import { SectionPadding } from "@/sanity.types";
@@ -81,7 +81,7 @@ function LivedExperienceCard({
   };
 
   const thumbnailUrl = experience.thumbnail?.asset?._id
-    ? urlFor(experience.thumbnail).width(800).url()
+    ? imageUrl(experience.thumbnail, { width: 800 })
     : getYouTubeThumbnail(experience.videoLink);
 
   return (

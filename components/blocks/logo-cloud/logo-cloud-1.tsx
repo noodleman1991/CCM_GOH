@@ -1,7 +1,7 @@
 "use client";
 import SectionContainer from "@/components/ui/section-container";
 import Image from "next/image";
-import { urlFor } from "@/sanity/lib/image";
+import { imageUrl } from "@/lib/content/images";
 import { Fragment } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { PAGE_QUERY_RESULT } from "@/sanity.types";
@@ -39,7 +39,7 @@ function LogoTile({ image, label }: { image: LogoImage; label?: string }) {
     <figure className="flex flex-col items-center justify-center gap-2 text-center">
       <div className="flex h-20 w-full items-center justify-center">
         <Image
-          src={urlFor(image as never).url()}
+          src={imageUrl(image)}
           alt={image.alt || label || ""}
           className="max-h-20 w-auto object-contain"
           placeholder={
@@ -145,7 +145,7 @@ export default function LogoCloud1({
                   className="flex h-24 w-24 shrink-0 items-center justify-center"
                 >
                   <Image
-                    src={urlFor(image as never).url()}
+                    src={imageUrl(image)}
                     alt={image.alt || image.label || ""}
                     className="max-h-24 w-auto object-contain"
                     priority={arrayIndex === 0 && index < 3}

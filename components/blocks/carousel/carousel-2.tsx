@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/carousel";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
-import { urlForCropped } from "@/sanity/lib/image";
+import { imageUrl } from "@/lib/content/images";
 import { StarRating } from "@/components/ui/star-rating";
 import PortableTextRenderer from "@/components/portable-text-renderer";
 import { PAGE_QUERY_RESULT } from "@/sanity.types";
@@ -90,7 +90,7 @@ export default function Carousel2({
                         <Avatar className="w-10 h-10 me-3">
                           {item.image && (
                             <AvatarImage
-                              src={urlForCropped(item.image, 80, 80).url()}
+                              src={imageUrl(item.image, { width: 80, height: 80, crop: true })}
                               alt={item.name ?? ""}
                             />
                           )}

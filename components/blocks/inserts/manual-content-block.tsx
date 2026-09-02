@@ -2,7 +2,7 @@ import Image from "next/image";
 import { PortableText } from "@portabletext/react";
 import type { PortableTextBlock } from "@portabletext/types";
 import { portableTextComponents } from "@/components/portable-text-renderer";
-import { urlForCropped } from "@/sanity/lib/image";
+import { imageUrl } from "@/lib/content/images";
 import { cn } from "@/lib/utils";
 import { getLocalizedField, getLocalizedPortableText, type SupportedLocale } from "@/lib/localization-utils";
 
@@ -88,7 +88,7 @@ export function ManualContentBlock({
     return (
       <div className="relative">
         <Image
-          src={urlForCropped(image, 800, 600).url()}
+          src={imageUrl(image, { width: 800, height: 600, crop: true })}
           alt={image.alt || localizedTitle || ""}
           width={800}
           height={600}

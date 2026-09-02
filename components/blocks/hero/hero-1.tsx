@@ -2,7 +2,7 @@ import { SanityButton, type SanityLinkData } from "@/components/ui/sanity-button
 import { type BackgroundOptionType } from "@/types/background-option";
 import { type SectionPadding } from "@/sanity.types";
 import Image from "next/image";
-import { urlFor } from "@/sanity/lib/image";
+import { imageUrl } from "@/lib/content/images";
 import { stegaClean } from "next-sanity";
 import PortableTextRenderer from "@/components/portable-text-renderer";
 import { PAGE_QUERY_RESULT } from "@/sanity.types";
@@ -149,7 +149,7 @@ export default function Hero1({
                         <div className="relative mx-auto w-full max-w-[82%] min-w-0">
                             <Image
                                 className="rounded-xl w-full h-auto object-contain"
-                                src={urlFor(image!).width(1100).url()}
+                                src={imageUrl(image, { width: 1100 })}
                                 alt={image!.alt || ""}
                                 width={image!.asset?.metadata?.dimensions?.width || 800}
                                 height={image!.asset?.metadata?.dimensions?.height || 800}

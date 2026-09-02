@@ -10,7 +10,7 @@ import {
   CarouselCounter,
 } from "@/components/ui/carousel";
 import Image from "next/image";
-import { urlFor } from "@/sanity/lib/image";
+import { imageUrl } from "@/lib/content/images";
 import { cn } from "@/lib/utils";
 import { heading } from "@/lib/design-tokens";
 import { PAGE_QUERY_RESULT } from "@/sanity.types";
@@ -112,7 +112,7 @@ export default function Carousel1({
                   >
                     <Image
                       className="object-cover"
-                      src={urlFor(image).url()}
+                      src={imageUrl(image)}
                       alt={image.alt || ""}
                       fill
                       placeholder={

@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
-import { urlFor } from "@/sanity/lib/image";
+import { imageUrl } from "@/lib/content/images";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { useTranslations } from 'next-intl';
@@ -161,7 +161,7 @@ export function CaseStudyModal({ isOpen, onClose, caseStudy, locale }: CaseStudy
           {caseStudy.image?.asset?.url && (
             <div className="relative aspect-video rounded-lg overflow-hidden">
               <Image
-                src={urlFor(caseStudy.image).width(1200).height(675).url()}
+                src={imageUrl(caseStudy.image, { width: 1200, height: 675 })}
                 alt={caseStudy.image.alt || title}
                 fill
                 className="object-cover"
