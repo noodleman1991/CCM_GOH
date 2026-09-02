@@ -1,4 +1,4 @@
-import { client } from '@/sanity/lib/client'
+import { getCaseStudyOgData } from '@/lib/content/case-studies'
 import { contentOgCard } from '@/lib/seo/og-card'
 
 export const revalidate = 3600
@@ -13,12 +13,7 @@ export async function GET(
   { params }: { params: Promise<{ locale: string; slug: string }> }
 ) {
   const { locale, slug } = await params
-  const doc = await client
-    .fetch<{ title: Record<string, string> | string | null; region: string | null } | null>(
-      `*[_type == "caseStudy" && slug.current == $slug][0]{ title, "region": relatedCommunity->name.en }`,
-      { slug }
-    )
-    .catch(() => null)
+  const doc = await getCaseStudyOgData(slug)
   const t = doc?.title
   const title =
     (typeof t === 'string' ? t : t?.[locale] || t?.en || Object.values(t ?? {})[0]) || 'Case study'

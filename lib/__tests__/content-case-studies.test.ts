@@ -57,6 +57,7 @@ import {
   saveCaseStudyDraft,
   deleteCaseStudyDraft,
   getCaseStudySearchRecords,
+  getCaseStudyOgData,
   CaseStudyEditNotAllowedError,
   CaseStudyDraftNotFoundError,
 } from "@/lib/content/case-studies";
@@ -106,6 +107,22 @@ describe("getCaseStudySlugs", () => {
   it("throws (does not degrade) when the source fails", async () => {
     mockQuery.mockRejectedValue(new Error("upstream 500"));
     await expect(getCaseStudySlugs()).rejects.toThrow("upstream 500");
+  });
+});
+
+describe("getCaseStudyOgData", () => {
+  it("returns the title and region from the source", async () => {
+    mockQuery.mockResolvedValue({ title: { en: "My Study" }, region: "Oceania" });
+    await expect(getCaseStudyOgData("my-study")).resolves.toEqual({
+      title: { en: "My Study" },
+      region: "Oceania",
+    });
+  });
+
+  it("degrades to null when the source fails", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    mockQuery.mockRejectedValue(new Error("network error"));
+    await expect(getCaseStudyOgData("x")).resolves.toBeNull();
   });
 });
 

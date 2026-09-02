@@ -281,6 +281,31 @@ export async function getCaseStudySlugs(): Promise<string[]> {
 }
 
 // ---------------------------------------------------------------------------
+// OG card (app/[locale]/(main)/research-and-action/case-studies/[slug]/og.png/route.tsx)
+// — another call site the brief didn't list, found on review (the
+// lived-experiences equivalent of this route was converted in Task 2). The
+// original wrapped its fetch in `.catch(() => null)`; this degrades via
+// `safe()` the same way, per Task 2's precedent for the same pattern.
+// ---------------------------------------------------------------------------
+
+export interface CaseStudyOgData {
+  // Kept as a plain indexable record (not `Localized`) — the og route indexes
+  // it with a runtime locale string, which needs a string index signature.
+  title: Record<string, string> | string | null;
+  region: string | null;
+}
+
+export async function getCaseStudyOgData(slug: string): Promise<CaseStudyOgData | null> {
+  return safe("case-study-og", null, async () => {
+    const doc = await query<CaseStudyOgData | null>(
+      `*[_type == "caseStudy" && slug.current == $slug][0]{ title, "region": relatedCommunity->name.en }`,
+      { slug },
+    );
+    return doc ?? null;
+  });
+}
+
+// ---------------------------------------------------------------------------
 // sanity/lib/fetch.ts's fetchApprovedCaseStudies / fetchApprovedCaseStudiesByLocale
 // / fetchFeaturedCaseStudies — dead code (zero call sites; grepped app/lib/
 // components), but named in the brief's 11-helper move list, so implemented
