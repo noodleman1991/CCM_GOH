@@ -1,26 +1,42 @@
 import { SanityButton, type SanityLinkData } from "@/components/ui/sanity-button";
 import { type BackgroundOptionType } from "@/types/background-option";
-import { type SectionPadding } from "@/sanity.types";
 import Image from "next/image";
 import { imageUrl } from "@/lib/content/images";
 import { stegaClean } from "next-sanity";
 import PortableTextRenderer from "@/components/portable-text-renderer";
-import { PAGE_QUERY_RESULT } from "@/sanity.types";
-import SectionContainer from "@/components/ui/section-container";
+import SectionContainer, { type SectionPadding } from "@/components/ui/section-container";
 import { cn } from "@/lib/utils";
 import { isRTL } from "@/i18n/i18n-helpers";
 import { getLocalizedField, getLocalizedPortableText } from "@/lib/localization-utils";
+import type { PortableTextBlock } from "@portabletext/types";
 
-type Hero1BaseProps = Extract<
-    NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number],
-    { _type: "hero-1" }
->;
+/** A field that carries either a plain string or a `{en, es, fr, ar}` map —
+ *  the shape `getLocalizedField` resolves. Matches the precedent already
+ *  used for this exact pattern in lib/content/discovery.ts's LocalizedText. */
+type LocalizedText = string | Record<string, string> | null;
 
-type Hero1Props = Omit<Hero1BaseProps, 'imagePosition' | 'padding'> & {
-    locale?: string;
+interface Hero1Image {
+    alt?: string | null;
+    asset?: {
+        _id?: string;
+        metadata?: {
+            lqip?: string | null;
+            dimensions?: { width?: number | null; height?: number | null } | null;
+        } | null;
+    } | null;
+}
+
+interface Hero1Props {
+    background?: unknown;
+    tagLine?: LocalizedText;
+    title?: LocalizedText;
+    body?: PortableTextBlock[] | Record<string, unknown> | null;
+    image?: Hero1Image | null;
+    links?: SanityLinkData[] | null;
     padding?: SectionPadding | null;
     imagePosition?: "left" | "right" | string | null;
-};
+    locale?: string;
+}
 
 export default function Hero1({
                                   background,

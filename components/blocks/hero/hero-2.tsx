@@ -1,23 +1,30 @@
 import { SanityButton, type SanityLinkData } from "@/components/ui/sanity-button";
 import { type BackgroundOptionType } from "@/types/background-option";
-import { type SectionPadding } from "@/sanity.types";
 import { stegaClean } from "next-sanity";
 import PortableTextRenderer from "@/components/portable-text-renderer";
-import { PAGE_QUERY_RESULT } from "@/sanity.types";
-import SectionContainer from "@/components/ui/section-container";
+import SectionContainer, { type SectionPadding } from "@/components/ui/section-container";
 import { cn } from "@/lib/utils";
 import { heading } from "@/lib/design-tokens";
 import { isRTL } from "@/i18n/i18n-helpers";
 import { getLocalizedField, getLocalizedPortableText } from "@/lib/localization-utils";
+import type { PortableTextBlock } from "@portabletext/types";
 
-type Hero2Props = Extract<
-  NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number],
-  { _type: "hero-2" }
-> & {
+/** A field that carries either a plain string or a `{en, es, fr, ar}` map —
+ *  the shape `getLocalizedField` resolves. Matches the precedent already
+ *  used for this exact pattern in lib/content/discovery.ts's LocalizedText. */
+type LocalizedText = string | Record<string, string> | null;
+
+interface Hero2Props {
+  background?: unknown;
+  tagLine?: LocalizedText;
+  title?: LocalizedText;
+  body?: PortableTextBlock[] | Record<string, unknown> | null;
+  links?: SanityLinkData[] | null;
+  padding?: SectionPadding | null;
   locale?: string;
-};
+}
 
-export default function Hero2({ background, tagLine, title, body, links, padding, locale = "en" }: Hero2Props & { padding?: SectionPadding | null }) {
+export default function Hero2({ background, tagLine, title, body, links, padding, locale = "en" }: Hero2Props) {
   const rtl = isRTL(locale);
   const supportedLocale = locale as 'en' | 'es' | 'fr' | 'ar';
 
