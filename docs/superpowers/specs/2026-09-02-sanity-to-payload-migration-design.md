@@ -53,6 +53,11 @@ imports.
 Zero documents (10): `post`, `event`, `dataset`, `project`, `report`, `category`, `faq`,
 `fundingApplication`, `moderationSettings`, `hubIllustrations`.
 
+**Update (Phase 0 executed):** `post` has since been deleted from the schema along with the
+`/blog` routes (§7.4), so the registered count is now **30**, with 9 empty types remaining.
+The figures above are the pre-migration measurement and are kept as the baseline the
+migration is verified against.
+
 Of the 21 types holding data, 19 become Payload collections and 2 (`homepage`,
 `onboardingContent`) become globals.
 
@@ -263,7 +268,7 @@ Resolve in Phase 0, before export.
 
 1. **`whyJoinCTA` type mismatch — normalised at import, not in Sanity.** The field is declared `type: "hero-1"`; every `regionalCommunityPage` document stores `_type: "cta-1"`. Sanity tolerates this and the frontend works because renderers read the stored `_type`, not the declared one. Payload cannot: a field typed as one block cannot hold another.
 
-   **The declaration is the correct half.** The stored field set is hero-1's: `image` in 24 of 28 documents and `imagePosition` in 20, neither of which `cta-1` declares. `sanity.types.ts` also generates `whyJoinCTA?: Hero1`, and the GROQ projection selects hero-1 fields. Redeclaring the field as `cta-1` would hide `image` and `imagePosition` in the Studio, and Sanity strips undeclared fields on save — so the first editor to open and save a regional page would silently drop its hero image.
+   **The declaration is the correct half.** The stored field set is hero-1's: `image` in 24 of 28 documents and `imagePosition` in 20, neither of which `cta-1` declares. `sanity.types.ts` also generates `whyJoinCTA?: Hero1`, and the GROQ projection selects hero-1 fields. Redeclaring the field as `cta-1` would hide `image` and `imagePosition` from the Studio's editing UI for those documents. (A precision, verified in review: Sanity does not silently auto-drop unknown fields on save — the Studio surfaces them with a remove affordance. The exposure is an editor being invited to delete data they can no longer see in context, not an automatic strip. The conclusion is unchanged; the mechanism is stated accurately here so nobody dismisses the warning after checking it.)
 
    **Resolution:** leave Sanity untouched. The Phase 2 importer maps `whyJoinCTA._type === "cta-1"` onto the hero-1 Payload block. Rewriting `_type` on 28 production documents to tidy a system being decommissioned is risk without benefit. Phase 0 pins the mismatch with a test and a schema comment so nobody reconciles it the wrong way.
 
