@@ -825,6 +825,21 @@ Everything else follows the standing rules: GROQ character-exact including comme
   `app/api/communities/route.ts` (`@/sanity/queries/regional-communities`),
   `lib/cards/fresh-items.ts` and `lib/community/region-data.ts` (both import the client directly)
 - **Delete:** `app/[locale]/(main)/not-page.tsx` — confirmed to have zero importers. Prove it with a grep before deleting.
+- **Delete the entire `sanity/queries/` tree — all 46 files.**
+
+  As of this task, 45 of the 46 already have zero importers anywhere in `app/`, `components/`
+  or `lib/`; they survive only by importing each other. The single exception is
+  `docs-reader.ts`, which this task converts. The only reference from outside the tree is
+  `sanity/lib/fetch.ts` importing `SITE_ANNOUNCEMENT_QUERY` — also this task's, via
+  `fetchSiteAnnouncement`.
+
+  Verified: neither `sanity.config.ts`, `sanity/structure.ts`, `sanity/schema.ts` nor
+  `sanity/presentation/resolve.ts` references the query tree. The Studio does not need it —
+  GROQ queries are a frontend concern, and the Studio is driven by the schema.
+
+  Do this **last**, after `fetch.ts` is deleted, and prove it: `pnpm typecheck` must stay
+  clean and the full suite must stay green. If anything still imports the tree, that import
+  is an unconverted call site — convert it rather than keeping the file.
 
 A full-tree scan mid-phase found 30 files still importing the Sanity client or query
 modules directly, and 10 of them were named in no brief. Five turned out to be consumers of
