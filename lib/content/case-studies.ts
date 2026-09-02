@@ -69,8 +69,9 @@ export interface CaseStudyTagRef {
  * grid, detail, admin) — fields a given query doesn't select are simply
  * absent, not wrong. Two of the eleven moved helpers (getCaseStudiesByRegion,
  * searchCaseStudies) project `tags` as raw un-dereferenced references rather
- * than this shape; those two cast their result rather than bending this type
- * (see the ambiguity note at each).
+ * than this shape; those two return their own dedicated type
+ * (CaseStudyRegionListItem / CaseStudySearchResult) rather than bending this
+ * type or casting into it (see the note at each).
  */
 export interface CaseStudy {
   _id: string;
@@ -480,9 +481,42 @@ export async function getCaseStudyTranslations(caseStudyId: string): Promise<Cas
 // fetchRegionalCommunityCaseStudies, a different function/file, untouched).
 // `tags` here is a raw, un-dereferenced reference array (no `->`) — the
 // original's own projection, not this module's usual dereferenced
-// CaseStudyTagRef[] shape — so the result is cast rather than widening
-// CaseStudy.tags for one dead call path.
+// CaseStudyTagRef[] shape — so this gets its own return type (below) rather
+// than widening CaseStudy.tags for one dead call path.
 // ---------------------------------------------------------------------------
+
+/** A tag field left un-dereferenced by GROQ (no `->`) — a plain Sanity
+ *  reference, not the `{ label, value, color }` shape CaseStudyTagRef promises. */
+export interface CaseStudyRawTagRef {
+  _type: "reference";
+  _ref: string;
+  _key?: string;
+}
+
+/** The shape getCaseStudiesByRegion's query actually returns — identical to
+ *  CaseStudy except `tags`, which this query leaves un-dereferenced. */
+export interface CaseStudyRegionListItem {
+  _id: string;
+  language?: string;
+  title?: Localized;
+  excerpt?: Localized;
+  slug?: { current: string };
+  status?: CaseStudyStatus;
+  publishedAt?: string;
+  featured?: boolean;
+  image?: CaseStudyImage;
+  authors?: CaseStudyAuthor[];
+  organizations?: CaseStudyOrganization[];
+  projects?: CaseStudyProject[];
+  tags?: CaseStudyRawTagRef[];
+  studyPeriod?: { startDate?: string; endDate?: string };
+  studyLocation?: { lat: number; lng: number; alt?: number };
+  studyAreas?: Array<{
+    location: { lat: number; lng: number; alt?: number };
+    name?: string;
+    description?: string;
+  }>;
+}
 
 const APPROVED_CASE_STUDIES_BY_RC_QUERY_TEMPLATE = (orderDirection: "asc" | "desc") => `*[_type == "caseStudy" && status == "approved" && references(*[_type == "regionalCommunity" && slug.current == $slug][0]._id)] | order(publishedAt ${orderDirection}, featured desc)[0...$limit]{
   _id,
@@ -556,23 +590,28 @@ const APPROVED_CASE_STUDIES_BY_RC_QUERY_TEMPLATE = (orderDirection: "asc" | "des
   }
 }`;
 
-export async function getCaseStudiesByRegion(rcSlug: string, locale: Locale = "en", limit = 12): Promise<CaseStudy[]> {
+export async function getCaseStudiesByRegion(
+  rcSlug: string,
+  locale: Locale = "en",
+  limit = 12,
+): Promise<CaseStudyRegionListItem[]> {
   // SAFETY: orderDirection is derived from a boolean check and can only be 'asc' or 'desc'.
   // GROQ parameters cannot be used for sort directions — string interpolation is required here.
   const isRTL = locale === "ar";
   const orderDirection = isRTL ? "asc" : "desc";
-  const rows = await query<unknown[] | null>(APPROVED_CASE_STUDIES_BY_RC_QUERY_TEMPLATE(orderDirection), {
+  const rows = await query<CaseStudyRegionListItem[] | null>(APPROVED_CASE_STUDIES_BY_RC_QUERY_TEMPLATE(orderDirection), {
     slug: rcSlug,
     limit,
   });
-  return (rows ?? []) as unknown as CaseStudy[];
+  return rows ?? [];
 }
 
 // ---------------------------------------------------------------------------
 // sanity/lib/fetch.ts's searchCaseStudies — dead code (zero call sites; the
 // client-side search UI at components/search/search-interface.tsx uses
 // Algolia InstantSearch, an unrelated pipeline). `tags` is again a raw
-// reference array — same cast rationale as getCaseStudiesByRegion above.
+// reference array — same rationale as getCaseStudiesByRegion above, so this
+// gets its own return type too.
 // ---------------------------------------------------------------------------
 
 export interface CaseStudySearchOptions {
@@ -581,10 +620,29 @@ export interface CaseStudySearchOptions {
   limit?: number;
 }
 
+/** The shape searchCaseStudies' query actually returns — a narrower
+ *  projection than CaseStudy (no status; authors/tags shaped differently). */
+export interface CaseStudySearchResult {
+  _id: string;
+  language?: string;
+  title?: Localized;
+  excerpt?: Localized;
+  slug?: { current: string };
+  publishedAt?: string;
+  featured?: boolean;
+  image?: CaseStudyImage;
+  authors?: Array<{
+    name?: string;
+    role?: string;
+    affiliation?: { name?: string; acronym?: string };
+  }>;
+  tags?: CaseStudyRawTagRef[];
+}
+
 export async function searchCaseStudies(
   term?: string,
   options: CaseStudySearchOptions = {},
-): Promise<CaseStudy[]> {
+): Promise<CaseStudySearchResult[]> {
   const { language, tags, limit = 20 } = options;
   const filters = [`_type == "caseStudy"`, `status == "approved"`];
   const params: Record<string, unknown> = { limit };
@@ -619,7 +677,7 @@ export async function searchCaseStudies(
     params.tags = tags;
   }
 
-  const rows = await query<unknown[] | null>(
+  const rows = await query<CaseStudySearchResult[] | null>(
     `*[${filters.join(" && ")}] | order(featured desc, publishedAt desc)[0...$limit]{
       _id,
       language,
@@ -656,7 +714,7 @@ export async function searchCaseStudies(
     }`,
     params,
   );
-  return (rows ?? []) as unknown as CaseStudy[];
+  return rows ?? [];
 }
 
 // ---------------------------------------------------------------------------
@@ -919,6 +977,14 @@ export async function getUserSubmissionsAndDrafts(userId: string): Promise<UserS
 // try/catch, which mapped any failure to an explicit 500 JSON response, not
 // a silent empty-and-looks-fine state) — the route's own try/catch is
 // unchanged, so it reproduces the same 500 on a thrown error.
+//
+// Uses queryRaw, not query: the original called writeClient.fetch() directly
+// (uncached, tokened, raw perspective). A revision-status case study may
+// exist only as a draft document, which the cached/published-perspective
+// `query()` cannot see, and `query()`'s hour-long CDN cache would also show a
+// member stale moderation feedback. Both regressions are gated — see
+// lib/__tests__/content-case-studies.test.ts's "uses the raw/authenticated
+// primitive" test, which pins this.
 // ---------------------------------------------------------------------------
 
 export interface CaseStudyRevision {
@@ -930,7 +996,7 @@ export interface CaseStudyRevision {
 }
 
 export async function getCaseStudyRevisions(userId: string): Promise<CaseStudyRevision[]> {
-  return query<CaseStudyRevision[]>(
+  return queryRaw<CaseStudyRevision[]>(
     `*[_type == "caseStudy" && submittedBy == $userId && status == "revision"]{
       _id,
       title,

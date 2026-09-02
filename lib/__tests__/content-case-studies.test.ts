@@ -348,13 +348,27 @@ describe("getUserSubmissionsAndDrafts", () => {
 
 describe("getCaseStudyRevisions", () => {
   it("returns revision-status submissions from the source", async () => {
-    mockQuery.mockResolvedValue([{ _id: "cs1", status: "revision" }]);
+    mockQueryRaw.mockResolvedValue([{ _id: "cs1", status: "revision" }]);
     await expect(getCaseStudyRevisions("user1")).resolves.toEqual([{ _id: "cs1", status: "revision" }]);
   });
 
   it("throws (matching the original's un-degraded try/catch, which mapped failures to an explicit 500)", async () => {
-    mockQuery.mockRejectedValue(new Error("network error"));
+    mockQueryRaw.mockRejectedValue(new Error("network error"));
     await expect(getCaseStudyRevisions("user1")).rejects.toThrow("network error");
+  });
+
+  // Pins the fix for a regression: this must use the raw/authenticated
+  // primitive (uncached, raw perspective — matching the original
+  // writeClient.fetch() call), not the cached `query()` used elsewhere in
+  // this module. `query()` routes through cachedFetch with
+  // perspective:"published" and an hour-long revalidate, so it can (a) show
+  // stale moderation feedback and (b) miss a revision that exists only as a
+  // draft document. If this slips back to `query`, this test must fail.
+  it("uses the raw/authenticated primitive, not the cached one", async () => {
+    mockQueryRaw.mockResolvedValue([]);
+    await getCaseStudyRevisions("user1");
+    expect(mockQueryRaw).toHaveBeenCalledTimes(1);
+    expect(mockQuery).not.toHaveBeenCalled();
   });
 });
 
