@@ -16,7 +16,10 @@
  * Usage:
  *   node scripts/fix-lived-experience-tags.mjs                # dry-run, map
  *   node scripts/fix-lived-experience-tags.mjs --mode=strip   # dry-run, strip
- *   node scripts/fix-lived-experience-tags.mjs --execute      # apply (map)
+ *   node scripts/fix-lived-experience-tags.mjs --execute      # apply (map, requires acknowledgement flag for production)
+ *
+ * Production writes require an explicit acknowledgement flag to prevent
+ * accidental data loss; this script drops unmapped tag strings in map mode.
  *
  * Reads go through the API CDN so dry-runs work even while the live API is
  * over quota; --execute needs the live API (mutations) and will fail with
@@ -42,6 +45,19 @@ const DATASET = (args.find(a => a.startsWith('--dataset='))?.split('=')[1]) || '
 
 if (!['strip', 'map'].includes(MODE)) {
   console.error(`Unknown --mode=${MODE} (use strip or map)`);
+  process.exit(1);
+}
+
+// Writing to production must be deliberate. This script defaults to
+// production_2 and, in map mode, DROPS unmapped tag strings — so an
+// accidental --execute is destructive. Mirrors the refusal in
+// scripts/backfill-region-codes.mjs.
+const ackProd = args.includes('--i-understand-this-is-production');
+if (EXECUTE && DATASET === 'production_2' && !ackProd) {
+  console.error(
+    'Refusing: --execute against production_2 without acknowledgement.\n' +
+      'Dry-run first, then pass --i-understand-this-is-production to apply.'
+  );
   process.exit(1);
 }
 
