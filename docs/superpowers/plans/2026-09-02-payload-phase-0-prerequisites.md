@@ -180,17 +180,32 @@ import path from "node:path";
 import dotenv from "dotenv";
 import { buildManifest, type Manifest } from "./lib/sanity-archive-manifest";
 
+const prod = process.argv.includes("--prod");
+
 // dotenv is a direct dependency; @next/env is not, and pnpm's strict layout
 // means it is not reliably resolvable from a script.
-dotenv.config({ path: ".env" });
+//
+// .env holds PRODUCTION credentials, .env.local holds development. Load the file
+// matching the run's intent — hardcoding ".env" would make the development path
+// unreachable and silently point every no-flag run at production.
+dotenv.config({ path: prod ? ".env" : ".env.local" });
 
-const prod = process.argv.includes("--prod");
-const dataset = prod ? "production_2" : process.env.NEXT_PUBLIC_SANITY_DATASET;
+const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET;
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
 const token = process.env.SANITY_API_READ_TOKEN;
 
 if (!dataset || !projectId || !token) {
   console.error("Missing NEXT_PUBLIC_SANITY_DATASET / _PROJECT_ID / SANITY_API_READ_TOKEN");
+  process.exit(1);
+}
+
+// Production is opt-in, never a default. Mirrors the refusal in
+// scripts/backfill-region-codes.mjs and scripts/localize-hero-ctas.mjs.
+if (dataset === "production_2" && !prod) {
+  console.error(
+    'Refusing: the resolved dataset is "production_2" but --prod was not passed.\n' +
+      "Re-run with --prod to export production deliberately.",
+  );
   process.exit(1);
 }
 
