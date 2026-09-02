@@ -5,7 +5,7 @@ import { getTranslations } from "next-intl/server";
 import { BackLink } from "@/components/ui/back-link";
 import { TypedCard } from "@/components/cards/typed-card";
 import type { TypedCardItem } from "@/lib/cards/type-style";
-import { fetchApprovedResearchOutputs } from "@/sanity/queries/research-output";
+import { getResearchOutputs } from "@/lib/content/outputs";
 import { getLocalizedValue } from "@/i18n/i18n-helpers";
 
 /**
@@ -41,7 +41,7 @@ export default async function ResearchOutputsPage({
 }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "researchOutputs" });
-  const outputs: OutputRow[] = await fetchApprovedResearchOutputs();
+  const outputs: OutputRow[] = (await getResearchOutputs()) as unknown as OutputRow[];
 
   const items: TypedCardItem[] = outputs
     .filter((o) => o.slug)

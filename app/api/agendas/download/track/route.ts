@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 // import { auth } from '@clerk/nextjs/server';
-import { client } from '@/sanity/lib/client';
+import { trackAgendaDownload } from '@/lib/content/outputs';
 
 interface DownloadEvent {
     agendaId: string;
@@ -23,8 +23,15 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Update agenda analytics in Sanity
-        await updateAgendaAnalytics(body.agendaId, body.fileLanguage);
+        // Update agenda analytics in Sanity. A failed analytics update never
+        // fails the tracking request — matches the original's own local
+        // try/catch (see lib/content/outputs.ts's trackAgendaDownload for why
+        // this write can genuinely fail).
+        try {
+            await trackAgendaDownload(body.agendaId, body.fileLanguage);
+        } catch (error) {
+            console.error('Failed to update agenda analytics:', error);
+        }
 
         return NextResponse.json({
             success: true,
@@ -37,64 +44,5 @@ export async function POST(request: NextRequest) {
             { error: 'Failed to track download' },
             { status: 500 }
         );
-    }
-}
-
-/** Shape of the agenda file entries we read/update; other fields pass through untouched. */
-interface TrackedAgendaFile {
-    language?: string;
-    downloadCount?: number;
-    lastDownloaded?: string;
-    [key: string]: unknown;
-}
-
-async function updateAgendaAnalytics(agendaId: string, fileLanguage: string) {
-    try {
-        // Get the current agenda
-        const agenda = await client.fetch(
-            `*[_type == "agenda" && _id == $agendaId][0]{
-                _id,
-                files,
-                totalDownloadCount
-            }`,
-            { agendaId }
-        );
-
-        if (!agenda) {
-            console.error('Agenda not found:', agendaId);
-            return;
-        }
-
-        // Update the specific file's download count
-        const updatedFiles = agenda.files?.map((file: TrackedAgendaFile) => {
-            if (file.language === fileLanguage) {
-                return {
-                    ...file,
-                    downloadCount: (file.downloadCount || 0) + 1,
-                    lastDownloaded: new Date().toISOString(),
-                };
-            }
-            return file;
-        }) || [];
-
-        // Calculate total download count across all files
-        const newTotalCount = updatedFiles.reduce(
-            (total: number, file: TrackedAgendaFile) => total + (file.downloadCount || 0),
-            0
-        );
-
-        // Update the agenda with new analytics
-        await client
-            .patch(agendaId)
-            .set({
-                files: updatedFiles,
-                totalDownloadCount: newTotalCount,
-            })
-            .commit();
-
-        console.log(`Updated download count for agenda ${agendaId}, language ${fileLanguage}`);
-
-    } catch (error) {
-        console.error('Failed to update agenda analytics:', error);
     }
 }

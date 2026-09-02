@@ -4,7 +4,7 @@ import TeamGrid from '@/components/blocks/grid/team-grid';
 import { RegionMembersBlock } from '@/components/blocks/community/region-members-block';
 import { RegionSectionSpine } from '@/components/regions/region-section-spine';
 import { getTranslations } from 'next-intl/server';
-import { fetchRegionalCommunityAgendas } from '@/sanity/lib/fetch';
+import { getAgendasByRegion } from '@/lib/content/outputs';
 import { fetchRegionalCommunityCaseStudiesBySlug } from '@/sanity/queries/regional-community-case-studies';
 import { fetchRegionalCommunityLivedExperiencesBySlug } from '@/sanity/queries/regional-community-lived-experiences';
 import { fetchRegionalCommunityNewsBySlug } from '@/sanity/queries/regional-community-news';
@@ -118,10 +118,7 @@ export default async function RegionalCommunityTemplate({
   ] = await Promise.all([
     agendasGrid?.mode === 'manual' && agendasGrid?.manualItems?.length
       ? Promise.resolve(agendasGrid.manualItems)
-      : fetchRegionalCommunityAgendas({
-          slug: communitySlug,
-          limit: agendasLimit
-        }),
+      : getAgendasByRegion(communitySlug, agendasLimit),
     caseStudiesGrid?.mode === 'manual' && caseStudiesGrid?.manualItems?.length
       ? Promise.resolve(caseStudiesGrid.manualItems)
       : fetchRegionalCommunityCaseStudiesBySlug({
@@ -181,10 +178,7 @@ export default async function RegionalCommunityTemplate({
   // Fallback for agendas (if it uses featured mode)
   if (agendasMode === 'dynamic-featured' && (!agendasData || agendasData.length === 0)) {
     console.log('No featured agendas found, falling back to recent');
-    agendasData = await fetchRegionalCommunityAgendas({
-      slug: communitySlug,
-      limit: agendasLimit
-    });
+    agendasData = await getAgendasByRegion(communitySlug, agendasLimit);
   }
 
   // Hybrid "dynamic-with-pinned": editor-pinned manualItems render first, then

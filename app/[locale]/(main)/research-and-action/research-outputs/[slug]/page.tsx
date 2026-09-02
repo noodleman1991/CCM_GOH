@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { SafeCoverImage } from "@/components/content/safe-cover-image";
 import { getTranslations } from "next-intl/server";
-import { fetchResearchOutputBySlug, fetchResearchOutputsStaticParams } from "@/sanity/queries/research-output";
+import { getResearchOutputBySlug, getResearchOutputSlugs } from "@/lib/content/outputs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Calendar, Building } from "lucide-react";
@@ -18,17 +18,17 @@ import { ResearchOutputVersions } from "@/components/content/research-output-ver
 import { cn } from "@/lib/utils";
 import { heading } from "@/lib/design-tokens";
 import { sortedTags, normalizeTagColor } from "@/lib/tags";
-import type { LocalizedString, Organization } from "@/types/case-study";
+import type { LocalizedString } from "@/types/case-study";
 
 export async function generateStaticParams() {
-  const outputs = await fetchResearchOutputsStaticParams();
+  const outputs = await getResearchOutputSlugs();
   const locales = ["en", "es", "fr", "ar"];
   return outputs.flatMap((o) => locales.map((locale) => ({ locale, slug: o.slug })));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }): Promise<Metadata> {
   const { locale, slug } = await params;
-  const ro = await fetchResearchOutputBySlug({ slug });
+  const ro = await getResearchOutputBySlug(slug);
   const t = await getTranslations({ locale, namespace: "researchOutputs" });
   if (!ro) return { title: t("metaNotFound") };
   const supportedLocale = locale as "en" | "es" | "fr" | "ar";
@@ -43,7 +43,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
 export default async function ResearchOutputPage({ params }: { params: Promise<{ locale: string; slug: string }> }) {
   const { locale, slug } = await params;
-  const ro = await fetchResearchOutputBySlug({ slug });
+  const ro = await getResearchOutputBySlug(slug);
   if (!ro) notFound();
 
   const supportedLocale = locale as "en" | "es" | "fr" | "ar";
@@ -81,10 +81,10 @@ export default async function ResearchOutputPage({ params }: { params: Promise<{
               <span>{publishDate.toLocaleDateString(supportedLocale, { year: "numeric", month: "long" })}</span>
             </div>
           )}
-          {ro.organizations?.length > 0 && (
+          {(ro.organizations?.length ?? 0) > 0 && (
             <div className="flex items-center gap-1">
               <Building className="size-4" />
-              <span>{ro.organizations.map((o: Organization) => o.name).join(", ")}</span>
+              <span>{ro.organizations!.map((o) => o.name).join(", ")}</span>
             </div>
           )}
         </div>
@@ -111,14 +111,14 @@ export default async function ResearchOutputPage({ params }: { params: Promise<{
       )}
 
       {/* Documents (version × language switcher) */}
-      <ResearchOutputVersions versions={ro.versions || []} />
+      <ResearchOutputVersions versions={(ro.versions || []) as never} />
 
       {/* In-hub body, archetype-aware (Report = sticky "At a glance" sidebar). */}
       {ro.content && (
         layout === "report" ? (
           <div className="grid gap-8 lg:grid-cols-[1fr_280px] lg:items-start">
             <article className="min-w-0 text-base md:text-lg leading-relaxed">
-              <PortableTextRenderer value={ro.content} locale={supportedLocale} isRTL={supportedLocale === "ar"} />
+              <PortableTextRenderer value={ro.content as never} locale={supportedLocale} isRTL={supportedLocale === "ar"} />
             </article>
             <aside className="rounded-xl border bg-muted/20 p-5 text-sm lg:sticky lg:top-24">
               <h3 className="mb-3 font-heading font-semibold text-ccm-midnight">{t("atAGlance")}</h3>
@@ -130,20 +130,20 @@ export default async function ResearchOutputPage({ params }: { params: Promise<{
                   <div><dt className="text-muted-foreground">{t("published")}</dt><dd>{publishDate.getFullYear()}</dd></div>
                 )}
                 {ro.organizations && ro.organizations.length > 0 && (
-                  <div><dt className="text-muted-foreground">{t("organizations")}</dt><dd>{ro.organizations.map((o: Organization) => o.name).join(", ")}</dd></div>
+                  <div><dt className="text-muted-foreground">{t("organizations")}</dt><dd>{ro.organizations.map((o) => o.name).join(", ")}</dd></div>
                 )}
               </dl>
             </aside>
           </div>
         ) : (
           <article className="mx-auto max-w-prose text-base md:text-lg leading-relaxed">
-            <PortableTextRenderer value={ro.content} locale={supportedLocale} isRTL={supportedLocale === "ar"} />
+            <PortableTextRenderer value={ro.content as never} locale={supportedLocale} isRTL={supportedLocale === "ar"} />
           </article>
         )
       )}
 
       {/* Related content + discussion */}
-      <RelatedContent items={ro.relatedContent} locale={locale} heading={t("relatedContent")} />
+      <RelatedContent items={ro.relatedContent as never} locale={locale} heading={t("relatedContent")} />
       {ro._id && <CommentIsland targetType="researchOutput" targetId={ro._id} />}
     </div>
   );

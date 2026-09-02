@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { algoliaClient, ALGOLIA_INDICES, AgendaSearchRecord } from '@/lib/algolia'
 import { deriveAgendaLanguages } from '@/lib/agenda-languages'
-import { cachedFetch as sanityFetch } from "@/sanity/lib/cached-fetch";
+import { getAgendaIndexDocById, type AgendaIndexDoc } from '@/lib/content/outputs'
 
 const SEARCH_WEBHOOK_SECRET = process.env.SEARCH_WEBHOOK_SECRET
 
@@ -53,35 +53,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get updated agenda data
-    const result = await sanityFetch({
-      query: `*[_type == "agenda" && _id == $id][0] {
-        _id,
-        title,
-        subtitle,
-        description,
-        slug,
-        agendaType,
-        year,
-        publishDate,
-        totalDownloadCount,
-        featured,
-        accessLevel,
-        organizations[]->{name},
-        regionalCommunities[]->{name},
-        tags[]->{name},
-        coverImage {
-          asset->{url}
-        },
-        files[] {
-          language,
-          downloadCount
-        },
-        _updatedAt
-      }`,
-      params: { id: _id },
-      tags: ['agenda']
-    })
-    const agenda = result.data
+    const agenda = await getAgendaIndexDocById(_id)
 
     if (!agenda) {
       // Agenda doesn't exist, remove from index if present
@@ -150,23 +122,7 @@ export async function POST(request: NextRequest) {
 }
 
 /** Minimal shape of the Sanity agenda payload consumed by the transform below. */
-interface SanityAgenda {
-  _id: string
-  title?: AgendaSearchRecord['title'] | null
-  subtitle?: NonNullable<AgendaSearchRecord['subtitle']> | null
-  description?: NonNullable<AgendaSearchRecord['description']> | null
-  slug?: { current?: string } | null
-  agendaType?: string | null
-  year?: number | null
-  publishDate?: string | null
-  totalDownloadCount?: number | null
-  featured?: boolean | null
-  accessLevel?: AgendaSearchRecord['accessLevel'] | null
-  organizations?: Array<{ name?: string | null }> | null
-  regionalCommunities?: Array<{ name?: string | null }> | null
-  tags?: Array<{ name?: string | null }> | null
-  files?: Array<{ language?: string; downloadCount?: number }> | null
-}
+type SanityAgenda = AgendaIndexDoc
 
 // Helper function to transform agenda for Algolia indexing
 function transformAgendaForIndex(agenda: SanityAgenda): AgendaSearchRecord | null {

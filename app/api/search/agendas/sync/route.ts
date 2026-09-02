@@ -2,39 +2,12 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { algoliaClient, ALGOLIA_INDICES, AgendaSearchRecord } from '@/lib/algolia'
 import { deriveAgendaLanguages } from '@/lib/agenda-languages'
-import { cachedFetch as sanityFetch } from "@/sanity/lib/cached-fetch";
-
-// Sanity query to get all agendas
-const AGENDAS_QUERY = `*[_type == "agenda"] {
-  _id,
-  title,
-  subtitle,
-  description,
-  slug,
-  agendaType,
-  year,
-  publishDate,
-  totalDownloadCount,
-  featured,
-  accessLevel,
-  organizations[]->{name},
-  regionalCommunities[]->{name},
-  tags[]->{name},
-  coverImage {
-    asset->{url}
-  },
-  files[] {
-    language,
-    downloadCount,
-    file {
-      asset->{
-        url,
-        originalFilename
-      }
-    }
-  },
-  _updatedAt
-}`
+import {
+  getPublishedAgendaIndexDocs,
+  getAgendaIndexDocsByIds,
+  getAgendaCount,
+  type AgendaIndexDoc,
+} from '@/lib/content/outputs'
 
 /** Minimal shape of the Sanity agenda payload consumed by the transform below. */
 interface SanityAgendaFile {
@@ -43,23 +16,7 @@ interface SanityAgendaFile {
   file?: { asset?: { url?: string; originalFilename?: string } | null } | null
 }
 
-interface SanityAgenda {
-  _id: string
-  title?: AgendaSearchRecord['title'] | null
-  subtitle?: NonNullable<AgendaSearchRecord['subtitle']> | null
-  description?: NonNullable<AgendaSearchRecord['description']> | null
-  slug?: { current?: string } | null
-  agendaType?: string | null
-  year?: number | null
-  publishDate?: string | null
-  totalDownloadCount?: number | null
-  featured?: boolean | null
-  accessLevel?: AgendaSearchRecord['accessLevel'] | null
-  organizations?: Array<{ name?: string | null }> | null
-  regionalCommunities?: Array<{ name?: string | null }> | null
-  tags?: Array<{ name?: string | null }> | null
-  files?: SanityAgendaFile[] | null
-}
+type SanityAgenda = AgendaIndexDoc
 
 export async function POST(request: NextRequest) {
   try {
@@ -84,18 +41,14 @@ export async function POST(request: NextRequest) {
 
     if (type === 'full') {
       // Full sync - get all agendas
-      const result = await sanityFetch({
-        query: AGENDAS_QUERY,
-        tags: ['agenda']
-      })
-      const agendas = result.data || []
+      const agendas = await getPublishedAgendaIndexDocs()
 
       console.log(`Starting full sync of ${agendas.length} agendas to Algolia`)
 
       // Transform agendas for indexing
       const records: AgendaSearchRecord[] = agendas
         .map((agenda: SanityAgenda) => transformAgendaForIndex(agenda))
-        .filter(Boolean)
+        .filter((r): r is AgendaSearchRecord => r !== null)
 
       if (records.length > 0) {
         // Replace all records atomically
@@ -128,41 +81,7 @@ export async function POST(request: NextRequest) {
 
     } else if (type === 'partial' && agendaIds.length > 0) {
       // Partial sync - specific agendas
-      const result = await sanityFetch({
-        query: `*[_type == "agenda" && _id in $ids] {
-          _id,
-          title,
-          subtitle,
-          description,
-          slug,
-          agendaType,
-          year,
-          publishDate,
-          totalDownloadCount,
-          featured,
-          accessLevel,
-          organizations[]->{name},
-          regionalCommunities[]->{name},
-          tags[]->{name},
-          coverImage {
-            asset->{url}
-          },
-          files[] {
-            language,
-            downloadCount,
-            file {
-              asset->{
-                url,
-                originalFilename
-              }
-            }
-          },
-          _updatedAt
-        }`,
-        params: { ids: agendaIds },
-        tags: ['agenda']
-      })
-      const agendas = result.data || []
+      const agendas = await getAgendaIndexDocsByIds(agendaIds)
 
       const toIndex: AgendaSearchRecord[] = []
       const toDelete: string[] = []
@@ -236,11 +155,7 @@ export async function GET() {
     }
 
     // Get total agendas from Sanity
-    const result = await sanityFetch({
-      query: `count(*[_type == "agenda"])`,
-      tags: ['agenda']
-    })
-    const totalAgendas = result.data || 0
+    const totalAgendas = await getAgendaCount()
 
     return NextResponse.json({
       indexStats: {

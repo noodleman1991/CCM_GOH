@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth, currentUser } from "@clerk/nextjs/server";
-import { writeClient } from "@/sanity/lib/write-client";
 import {
   researchOutputSubmissionSchema,
-  generateResearchOutputSlug,
   RO_DOC_MAX_BYTES,
   RO_DOC_MIME_TYPES,
 } from "@/lib/validation/research-output";
+import { ResearchOutputEditNotAllowedError, submitResearchOutput } from "@/lib/content/outputs";
 import { addOutput } from "@/lib/actions/workspace-outputs";
 import { rateLimitRequest } from "@/lib/rate-limit-route";
 
@@ -71,7 +70,6 @@ export async function POST(request: NextRequest) {
     );
   }
   const data = parsed.data;
-  const lang = data.language;
 
   // Every declared document needs its file, and every file its declaration.
   if (files.length !== data.newVersions.length) {
@@ -89,122 +87,60 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  // Localized objects: English is the schema-required key; the submission
-  // language keeps its own copy when it isn't English.
-  const localized = (value: string | undefined) =>
-    value ? { en: value, ...(lang !== "en" ? { [lang]: value } : {}) } : undefined;
-
-  const doc: { _type: string; [key: string]: unknown } = {
-    _type: "researchOutput",
-    status: "pending", // never trust client; always pending on submit
-    submittedBy: userId,
-    title: localized(data.title),
-    slug: { _type: "slug", current: generateResearchOutputSlug(data.title) },
-    outputType: data.outputType,
-    excerpt: localized(data.excerpt || undefined),
-    region: data.region || undefined,
-    themes: data.themes.length > 0 ? data.themes : undefined,
-    year: new Date().getFullYear(),
-  };
-  if (Array.isArray(data.body) && data.body.length > 0) doc.body = data.body;
-  if (data.tagIds.length > 0) {
-    doc.tags = data.tagIds.map((id) => ({ _type: "reference", _ref: id, _key: id }));
-  }
-  if (data.communityIds.length > 0) {
-    doc.relatedCommunities = data.communityIds.map((id) => ({ _type: "reference", _ref: id, _key: id }));
-  }
-
   try {
-    // Upload the documents first, then reference them as version items.
-    const newVersionItems: Record<string, unknown>[] = [];
-    for (let i = 0; i < files.length; i++) {
-      const f = files[i];
-      const meta = data.newVersions[i];
-      const sanitizedFilename = f.name.replace(/[^a-zA-Z0-9._-]/g, "_").substring(0, 255);
-      const buffer = await f.arrayBuffer();
-      const asset = await writeClient.assets.upload("file", Buffer.from(buffer), {
-        filename: sanitizedFilename,
-        contentType: f.type,
-      });
-      newVersionItems.push({
-        _type: "documentVersion",
-        _key: crypto.randomUUID(),
-        kind: meta.kind,
-        lang: meta.lang,
-        file: { _type: "file", asset: { _type: "reference", _ref: asset._id } },
-      });
-    }
+    // Every declared version pairs positionally with its uploaded file.
+    const newVersions = await Promise.all(
+      files.map(async (f, i) => {
+        const meta = data.newVersions[i];
+        const sanitizedFilename = f.name.replace(/[^a-zA-Z0-9._-]/g, "_").substring(0, 255);
+        const buffer = await f.arrayBuffer();
+        return {
+          kind: meta.kind,
+          lang: meta.lang,
+          buffer: Buffer.from(buffer),
+          filename: sanitizedFilename,
+          contentType: f.type,
+        };
+      })
+    );
 
-    // X7 edit mode: resubmit an existing draft/pending doc — verify the
-    // caller may edit it, then patch (status returns to pending for
-    // re-review). Slug and submittedBy are preserved; versions become
-    // kept-existing + newly-uploaded.
-    if (data.editId) {
-      const existing = await writeClient
-        .withConfig({ perspective: "raw" })
-        .fetch(
-          `*[_type == "researchOutput" && _id == $id][0]{ _id, submittedBy, status, versions }`,
-          { id: data.editId }
-        );
-      const editable = existing && ["pending", "revision", "draft", null].includes(existing.status ?? null);
-      const isSubmitter = existing?.submittedBy === userId;
-      let isWorkspaceMember = false;
-      if (existing && !isSubmitter) {
-        const { prisma } = await import("@/lib/prisma");
-        const row = await prisma.workspaceOutput.findFirst({
-          where: {
-            sanityId: { in: [existing._id, existing._id.replace(/^drafts\./, "")] },
-            collaboration: { members: { some: { userId } } },
-          },
-          select: { id: true },
-        });
-        isWorkspaceMember = !!row;
-      }
-      if (!existing || !editable || (!isSubmitter && !isWorkspaceMember)) {
-        return NextResponse.json({ error: "You can't edit this submission." }, { status: 403 });
-      }
-
-      const kept = Array.isArray(existing.versions)
-        ? existing.versions.filter((v: { _key?: string }) => v._key && data.keptVersionKeys.includes(v._key))
-        : [];
-      const versions = [...kept, ...newVersionItems];
-
-      const { _type: _t, slug: _slug, submittedBy: _sb, year: _y, ...updatable } = doc;
-      // JSON drops undefined, so cleared optional fields must be unset explicitly.
-      const cleared = Object.keys(updatable).filter(
-        (k) => updatable[k as keyof typeof updatable] === undefined
-      );
-      if (!Array.isArray(data.body) || data.body.length === 0) cleared.push("body");
-      if (data.tagIds.length === 0) cleared.push("tags");
-      if (data.communityIds.length === 0) cleared.push("relatedCommunities");
-      const set = Object.fromEntries(Object.entries(updatable).filter(([, v]) => v !== undefined));
-      let patch = writeClient
-        .patch(existing._id)
-        .set({ ...set, versions, status: "pending" });
-      if (cleared.length > 0) patch = patch.unset(cleared);
-      await patch.commit();
-      // The workspace-output row (if any) already exists — no link-back.
-      return NextResponse.json({ success: true, id: existing._id });
-    }
-
-    if (newVersionItems.length > 0) doc.versions = newVersionItems;
-    const created = await writeClient.create(doc);
+    const result = await submitResearchOutput({
+      userId,
+      title: data.title,
+      outputType: data.outputType,
+      excerpt: data.excerpt,
+      body: data.body,
+      region: data.region,
+      themes: data.themes,
+      tagIds: data.tagIds,
+      communityIds: data.communityIds,
+      language: data.language,
+      editId: data.editId,
+      keptVersionKeys: data.keptVersionKeys,
+      newVersions,
+    });
 
     // Submitted from a workspace: link the new doc as a workspace output.
     // addOutput enforces collab authz; a failed link never fails submission.
-    if (data.collaborationId) {
+    // Skipped on edit — the output row already exists, and addOutput
+    // doesn't dedupe.
+    if (data.collaborationId && !data.editId) {
       const linked = await addOutput({
         collaborationId: data.collaborationId,
         sanityType: "researchOutput",
         mode: "link",
-        sanityId: created._id,
+        sanityId: result.id,
         title: data.title,
       });
-      if (!linked.ok) console.warn(`Workspace link failed for ${created._id}: ${linked.error}`);
+      if (!linked.ok) console.warn(`Workspace link failed for ${result.id}: ${linked.error}`);
     }
 
-    return NextResponse.json({ success: true, id: created._id });
+    return NextResponse.json({ success: true, id: result.id });
   } catch (error) {
+    if (error instanceof ResearchOutputEditNotAllowedError) {
+      return NextResponse.json({ error: error.message }, { status: 403 });
+    }
+
     console.error("Research output submission failed:", error);
     return NextResponse.json({ error: "Submission failed" }, { status: 500 });
   }

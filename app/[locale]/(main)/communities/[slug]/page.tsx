@@ -2,9 +2,11 @@ export const revalidate = 120;
 
 import type { Metadata } from 'next';
 // todo: userId may be undefined? (no-!)
-import { fetchSanityRCPageBySlug, fetchRegionalCommunityAgendas, fetchSanityRCPagesStaticParams } from '@/sanity/lib/fetch';
+import { fetchSanityRCPageBySlug, fetchSanityRCPagesStaticParams } from '@/sanity/lib/fetch';
+import { getAgendasByRegion } from '@/lib/content/outputs';
 import { fetchRegionalCommunityTeamMembers } from '@/sanity/queries/regional-community-team';
 import RegionalAgendasGrid from '@/components/blocks/grid/regional-agendas-grid';
+import type { Report } from '@/types/report';
 import { auth } from '@clerk/nextjs/server';
 import Blocks from '@/components/blocks/index'
 import HybridContentFlow from '@/components/blocks/hybrid-content-flow';
@@ -73,7 +75,7 @@ export default async function RegionalCommunityPage({
     }
 
     // Fetch agendas for the regional community (legacy mode support)
-    const reportsData = await fetchRegionalCommunityAgendas({ slug, limit: 6 });
+    const reportsData = await getAgendasByRegion(slug, 6);
 
     // Fetch team members if in dynamic mode and regional community exists
     const teamMembers = pageData?.teamGrid?.mode === 'dynamic' && pageData?.regionalCommunity?._id
@@ -156,8 +158,16 @@ export default async function RegionalCommunityPage({
                         />
                     )}
 
+                    {/* RegionalAgendasGrid's prop type (types/report.ts's `Report[]`, with a
+                        required `reportType` field) predates the content-layer migration and
+                        was never actually satisfied by this agenda data — a pre-existing
+                        type-name mismatch (agendaType vs reportType), not something this
+                        migration introduces. reportsData is genuinely Agenda-shaped
+                        (lib/content/outputs.ts); cast at this seam rather than loosen either
+                        side's types, same precedent as the lived-experience/research-output
+                        submit pages' `as never` casts. */}
                     <RegionalAgendasGrid
-                        reports={reportsData || []}
+                        reports={(reportsData || []) as unknown as Report[]}
                         regionalCommunitySlug={slug}
                         locale={locale.toString()}
                         userId={userId!}

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 // import { auth } from '@clerk/nextjs/server';
-import { client } from '@/sanity/lib/client';
+import { trackReportDownload } from '@/lib/content/outputs';
 
 interface DownloadEvent {
     reportId: string;
@@ -23,8 +23,15 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Update report analytics in Sanity
-        await updateReportAnalytics(body.reportId, body.fileLanguage);
+        // Update report analytics in Sanity. A failed analytics update never
+        // fails the tracking request — matches the original's own local
+        // try/catch (see lib/content/outputs.ts's trackReportDownload for why
+        // this write can genuinely fail).
+        try {
+            await trackReportDownload(body.reportId, body.fileLanguage);
+        } catch (error) {
+            console.error('Failed to update report analytics:', error);
+        }
 
         return NextResponse.json({
             success: true,
@@ -37,64 +44,5 @@ export async function POST(request: NextRequest) {
             { error: 'Failed to track download' },
             { status: 500 }
         );
-    }
-}
-
-/** Shape of the report file entries we read/update; other fields pass through untouched. */
-interface TrackedReportFile {
-    language?: string;
-    downloadCount?: number;
-    lastDownloaded?: string;
-    [key: string]: unknown;
-}
-
-async function updateReportAnalytics(reportId: string, fileLanguage: string) {
-    try {
-        // Get the current report
-        const report = await client.fetch(
-            `*[_type == "report" && _id == $reportId][0]{
-                _id,
-                files,
-                totalDownloadCount
-            }`,
-            { reportId }
-        );
-
-        if (!report) {
-            console.error('Report not found:', reportId);
-            return;
-        }
-
-        // Update the specific file's download count
-        const updatedFiles = report.files?.map((file: TrackedReportFile) => {
-            if (file.language === fileLanguage) {
-                return {
-                    ...file,
-                    downloadCount: (file.downloadCount || 0) + 1,
-                    lastDownloaded: new Date().toISOString(),
-                };
-            }
-            return file;
-        }) || [];
-
-        // Calculate total download count across all files
-        const newTotalCount = updatedFiles.reduce(
-            (total: number, file: TrackedReportFile) => total + (file.downloadCount || 0),
-            0
-        );
-
-        // Update the report with new analytics
-        await client
-            .patch(reportId)
-            .set({
-                files: updatedFiles,
-                totalDownloadCount: newTotalCount,
-            })
-            .commit();
-
-        console.log(`Updated download count for report ${reportId}, language ${fileLanguage}`);
-
-    } catch (error) {
-        console.error('Failed to update report analytics:', error);
     }
 }
