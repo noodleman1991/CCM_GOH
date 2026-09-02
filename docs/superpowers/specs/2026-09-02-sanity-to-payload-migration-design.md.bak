@@ -150,7 +150,7 @@ The cost is no cross-database SQL joins. With only 8 loose references, and Paylo
 ### Phase 0 — Prerequisites
 
 1. **Upgrade Next.js `16.1.1` → `≥16.2.6`.** Payload's supported range is `15.2.9–15.4.x` and `16.2.6+`; 16.1.x is excluded. Hard blocker, and its own shippable slice.
-2. **Full archival export.** `sanity dataset export` — 479 documents plus 620 MB of assets — to R2, with a manifest committed to the repo. This is the rollback floor for everything that follows.
+2. **Full archival export.** `sanity dataset export` — all 479 documents (468 content, plus translation metadata and preview secrets) and 620 MB of assets — to R2, with a manifest committed to the repo. This is the rollback floor for everything that follows.
 3. **Fix the four data defects** (§7). Item D4.3 blocks the import outright.
 
 Nothing is deleted before Phase 4.
@@ -211,7 +211,9 @@ Drop the 33 unauthored block *schemas*, in three groups:
 
 - **Keep the component, drop the block registration (4).** `region-map`, `atlas-embed`, `people-widget`, `events-calendar` — these render via their own routes, not as blocks.
 - **Delete entirely (24).** `hero-2`, `split-card`, `split-info`, `split-info-list`, `split-cards-list`, `grid-post`, `grid-report`, `grid-case-study`, `grid-lived-experience`, `timeline-row`, `timelines-1`, `carousel-1`, `lived-experiences-carousel`, `team-grid`, `faqs`, `form-newsletter`, `all-posts`, `fresh-content`, `submit-story-banner`, `manual-content-insert`, `dynamic-content-insert`, `separator-block`, `regional-community-list`, `document-reference-list`.
-- **Confirm before deleting (5).** `break`, `info-box`, `story-timeline`, `story-chart`, `story-mermaid` are registered as Portable Text embeds but appear in **zero** documents — real data uses only `block`, `image` and `youtube`. The three `story-*` blocks were recent deliberate work ("Data & story", task E8), so this is a feature built and never authored rather than legacy residue. Worth an explicit call rather than a silent drop.
+**Ported despite zero usage (5).** `break`, `info-box`, `story-timeline`, `story-chart` and `story-mermaid` are registered as Portable Text embeds but appear in **zero** documents — real data uses only `block`, `image` and `youtube`. The three `story-*` blocks were recent deliberate work ("Data & story", task E8): a feature built and not yet authored, not legacy residue. They carry across as Lexical blocks via `BlocksFeature`, which the converter needs anyway for `image` and `youtube`.
+
+This means the Lexical converter must handle **8** embedded types, not 3 — the 3 in real data plus these 5, which have no documents to test against. Their converters are therefore verified by unit test and by authoring one of each in the Payload admin, not by comparison against migrated content.
 
 ### Localization
 
@@ -260,7 +262,7 @@ Resolve in Phase 0, before export.
 
 3. **Missing translation metadata.** Only 1 of 9 `page` groups has a `translation.metadata` document, and it links 2 of 4 languages. *Mitigated by design* — grouping keys on slug, which is complete for every group (§6). No data fix needed.
 
-4. **`/blog` is a live route to an empty type — needs sign-off.** `/blog` queries `post` (0 documents) and **is linked from both the header and the footer**. Recommendation: delete `post`, drop `app/[locale]/(main)/blog/`, and repoint the header and footer links to `/news`. User-visible, so requires explicit approval before execution.
+4. **`/blog` is a live route to an empty type.** `/blog` queries `post` (0 documents) and **is linked from both the header and the footer** — a dead navigation link in production today, independent of this migration. **Approved 2026-09-02:** delete the `post` type, drop `app/[locale]/(main)/blog/`, and repoint the header (`components/header/index.tsx`) and footer (`components/footer.tsx`) links to `/news`. Also remove the `post` branches in `app/sitemap.ts`, `app/api/webhooks/sanity/route.ts` and the `contentType` union in `lib/algolia.ts`. User-visible, so it ships as its own slice with a rendered check.
 
 ### Withdrawn
 
@@ -275,15 +277,20 @@ requirement in §6.
 
 ## 8. Out of scope
 
-- Reviving the unlaunched Events feature (`event` / `project`) as a product. The types and their submission code are carried across; launching them is separate work.
+- Launching the Events feature as a product. The types, submission route, moderation actions and RSVP wiring are all carried across (§9), but shipping the feature — content, editorial process, announcement — is separate work.
 - Any redesign of page templates beyond the structural remodel in §6.
 - Migrating `Comment.bodyRich`, which stores sanitized Portable Text in Postgres. It is Prisma-side, unaffected by the CMS swap, and only relevant if comment rendering is later unified on Lexical.
 
 ---
 
-## 9. Open questions
+## 9. Resolved questions
 
-1. **§7.4** — approve deleting `post` and repointing `/blog` navigation to `/news`?
-2. **§6** — port or drop the five unused Portable Text embeds (`break`, `info-box`, `story-timeline`, `story-chart`, `story-mermaid`)? Built deliberately, never authored into a single document.
-3. Confirm the Next.js 16.2.6+ upgrade is acceptable as a Phase 0 prerequisite, given it touches the whole app ahead of any Payload work.
-4. **§6, dormant types** — `event` and `project` are carried across as empty collections on the strength of their live submission code. Confirm the Events feature is still intended, or they join the delete list.
+All resolved 2026-09-02. No open questions remain; this design is ready for an
+implementation plan.
+
+| Question | Resolution |
+|---|---|
+| `/blog` and the empty `post` type | **Delete.** Repoint header and footer to `/news` (§7.4) |
+| Five never-authored Portable Text embeds | **Port all five.** The `story-*` blocks are an unlaunched feature, not residue (§6) |
+| Next.js 16.1.1 → 16.2.6+ | **Phase 0, shipped independently** of any Payload work, so a Next regression is diagnosable on its own (§5) |
+| Events feature (`event` / `project`) | **Carry across in full** — collections plus submission route, moderation actions and RSVP wiring — so launching needs no second migration |
