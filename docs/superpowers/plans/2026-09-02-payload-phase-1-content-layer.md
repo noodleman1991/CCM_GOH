@@ -654,7 +654,11 @@ The largest task. Also the one whose output Phase 2 remodels, so keep the return
 - Produces: `getPageBySlug(slug: string, locale: Locale): Promise<Page | null>`, `getPageSlugs(): Promise<Array<{ slug: string; locale: Locale }>>`, `getRegionalCommunityPage(slug: string, locale: Locale): Promise<RegionalCommunityPage | null>`, `getRegionalCommunityPageSlugs(): Promise<Array<{ slug: string; locale: Locale }>>`, `getHomepage(locale: Locale): Promise<Homepage | null>`.
 - `interface Page { id: string; slug: string; locale: Locale; title: string; blocks: ContentBlock[]; seo: { metaTitle?: string; metaDescription?: string; noindex?: boolean } }`
 - `type ContentBlock = { type: string; key: string } & Record<string, unknown>` — deliberately loose. Phase 2 narrows it to the 12 live block types once they are modelled in Payload.
-- **`getHomepage` returns `blocks`, not the 11 fixed slots.** Call `blocksFromFields` from `@/lib/homepage/blocks-from-fields` inside this module to derive them. This is the runtime half of spec decision D9 and makes Phase 2's import a data change only.
+- **`getHomepage` returns the homepage in its CURRENT fixed-slot shape.** Do not call `blocksFromFields` here.
+
+  An earlier draft of this plan had it return a `blocks` array. That was wrong for this phase: `app/[locale]/(main)/page.tsx` renders `<Homepage homepage={homepage} />`, and `components/pages/homepage.tsx` reads the 11 named slots directly. Returning blocks would force that component to be rewritten — a behaviour change, which this phase's first Global Constraint forbids. It is also ahead of spec decision D9, which places the remodel in the **Phase 2 importer**, where `blocksFromFields` runs once over the data rather than on every render.
+
+  Phase 1 moves code. Phase 2 remodels data. Keep them separate, or a rendering regression and a data regression become indistinguishable — the exact failure the insulate-then-swap sequencing exists to prevent.
 
 **Rendered check:** `/en`, `/ar` (RTL), `/en/about`, `/en/communities/oceania`, and the language switcher on each — this task touches every localized route.
 
