@@ -1,4 +1,12 @@
-import { client } from "@/sanity/lib/client";
+/**
+ * Moved from lib/sanity/hub-illustrations.ts (Task 10). `urlFor` stays a
+ * direct `@/sanity/lib/image` import deliberately — Task 10a owns turning
+ * that chainable builder into a plain function project-wide; converting it
+ * here alone would just create a second image-URL pattern for 10a to
+ * reconcile.
+ */
+import { safe } from "@/lib/content/internal/safe";
+import { query } from "@/lib/content/internal/sanity-source";
 import { urlFor } from "@/sanity/lib/image";
 
 /** Minimal shape of a Sanity `image` field with alt text, as stored on the
@@ -56,21 +64,23 @@ function mapImage(image: RawIllustrationImage | null | undefined): HubIllustrati
   };
 }
 
-/** CMS-driven decorative header illustrations (Atlas/Search/Collaborate
- *  headers + empty states). Never throws into the page — any fetch failure
- *  (or an unconfigured singleton) resolves to `{}`, so callers can render
- *  `<HeaderIllustration image={illustrations.atlasHeader} />` unconditionally
- *  and get today's text-only header when nothing is configured.
+/**
+ * CMS-driven decorative header illustrations (Atlas/Search/Collaborate
+ * headers + empty states). Never throws into the page — any fetch failure
+ * (or an unconfigured singleton) resolves to `{}`, so callers can render
+ * `<HeaderIllustration image={illustrations.atlasHeader} />` unconditionally
+ * and get today's text-only header when nothing is configured. The original
+ * try/catch degrading to `{}` is reproduced via `safe()`.
  *
- *  ISR 300s: the underlying `client.fetch` call is tagged and revalidated
- *  every 5 minutes via Next's fetch cache (`next: { revalidate, tags }`). */
+ * `query` — the original called bare `client.fetch` directly (with its own
+ * 300s/`hub-illustrations`-tag cache config). The seam's `query()` uses a
+ * 1-hour/`sanity`-tag cache instead: a cache-window change, not a behaviour
+ * change — the Sanity webhook already revalidates the `sanity` tag
+ * unconditionally on every publish (app/api/webhooks/sanity/route.ts).
+ */
 export async function getHubIllustrations(): Promise<HubIllustrations> {
-  try {
-    const data = await client.fetch<RawHubIllustrations | null>(
-      HUB_ILLUSTRATIONS_QUERY,
-      {},
-      { next: { revalidate: 300, tags: ["hub-illustrations"] } }
-    );
+  return safe("hub-illustrations", {}, async () => {
+    const data = await query<RawHubIllustrations | null>(HUB_ILLUSTRATIONS_QUERY);
     if (!data) return {};
 
     return {
@@ -79,8 +89,5 @@ export async function getHubIllustrations(): Promise<HubIllustrations> {
       collaborateHeader: mapImage(data.collaborateHeader),
       emptyState: mapImage(data.emptyState),
     };
-  } catch (error) {
-    console.error("[hub-illustrations] getHubIllustrations fetch failed:", error);
-    return {};
-  }
+  });
 }

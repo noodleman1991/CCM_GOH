@@ -1,15 +1,20 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
-const { fetchMock, urlForMock } = vi.hoisted(() => ({
-  fetchMock: vi.fn(),
+const { urlForMock } = vi.hoisted(() => ({
   urlForMock: vi.fn(),
 }));
-vi.mock("@/sanity/lib/client", () => ({ client: { fetch: fetchMock } }));
+
+vi.mock("@/lib/content/internal/sanity-source", () => ({
+  query: vi.fn(),
+}));
 vi.mock("@/sanity/lib/image", () => ({
   urlFor: urlForMock,
 }));
 
-import { getHubIllustrations } from "../hub-illustrations";
+import { query } from "@/lib/content/internal/sanity-source";
+import { getHubIllustrations } from "@/lib/content/illustrations";
+
+const mockQuery = vi.mocked(query);
 
 function stubUrlForBuilder(url: string) {
   const builder = {
@@ -22,10 +27,12 @@ function stubUrlForBuilder(url: string) {
 
 describe("getHubIllustrations", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    mockQuery.mockReset();
+    urlForMock.mockReset();
   });
+  afterEach(() => vi.restoreAllMocks());
 
-  it("maps configured slots to {url, alt, width, height}", async () => {
+  it("maps configured slots to {url, alt, width, height}, reading via query", async () => {
     // GROQ's `asset->{...}` dereferences the reference into the asset
     // document, whose id field is `_id` (not `_ref` — that only exists on
     // the un-dereferenced reference). Mirrors the real query shape.
@@ -34,7 +41,7 @@ describe("getHubIllustrations", () => {
       return stubUrlForBuilder(`https://cdn.sanity.io/images/${asset?._id ?? "unknown"}.webp`);
     });
 
-    fetchMock.mockResolvedValue({
+    mockQuery.mockResolvedValue({
       atlasHeader: {
         asset: {
           _id: "image-atlas",
@@ -55,6 +62,7 @@ describe("getHubIllustrations", () => {
 
     const result = await getHubIllustrations();
 
+    expect(mockQuery).toHaveBeenCalledTimes(1);
     expect(result.atlasHeader).toEqual({
       url: "https://cdn.sanity.io/images/image-atlas.webp",
       alt: "Atlas illustration",
@@ -72,18 +80,19 @@ describe("getHubIllustrations", () => {
   });
 
   it("returns {} when the singleton document does not exist", async () => {
-    fetchMock.mockResolvedValue(null);
+    mockQuery.mockResolvedValue(null);
     const result = await getHubIllustrations();
     expect(result).toEqual({});
   });
 
   it("returns {} when the fetch throws — never throws into the page", async () => {
-    fetchMock.mockRejectedValue(new Error("network down"));
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    mockQuery.mockRejectedValue(new Error("network down"));
     await expect(getHubIllustrations()).resolves.toEqual({});
   });
 
   it("omits a slot whose image has no asset (unresolved reference)", async () => {
-    fetchMock.mockResolvedValue({
+    mockQuery.mockResolvedValue({
       atlasHeader: { alt: "Missing asset" },
     });
     const result = await getHubIllustrations();
