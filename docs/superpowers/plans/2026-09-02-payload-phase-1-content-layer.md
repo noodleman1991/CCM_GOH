@@ -25,14 +25,25 @@
 
 ## Starting inventory
 
-Measured 2026-09-02. Tasks 3–10 partition this exactly; nothing is left over.
+Re-measured 2026-09-02 after Phase 0, by matching **import statements** rather than call
+expressions. The original figure in this plan counted only files calling `cachedFetch` /
+`client.fetch` and undercounted the real surface by roughly a third.
 
 | | Count |
 |---|---|
-| Files already using `sanity/lib/fetch.ts` | 11 |
-| Files calling `cachedFetch` / `client.fetch` **directly** | 43 |
-| Named fetch functions already in `sanity/lib/fetch.ts` | 30 (27 after Phase 0 removed the three `post` helpers) |
+| **Files importing Sanity outside the seam** | **128** |
+| — of those, importing the image builder (`urlFor`) | 30 |
+| — importing generated types from `sanity.types.ts` | 28 |
+| — importing the client / fetch layer | 15 |
+| — Studio, draft-mode and Presentation plumbing | 11 |
+| Named fetch helpers left in `sanity/lib/fetch.ts` | 27 (verified: all 27 are claimed by Tasks 3–10, none orphaned) |
 | Write paths (submissions, uploads, moderation) | 16 |
+
+**Tasks 3–10 cover reads and writes only.** The image builder and the generated types are
+separate surfaces, and they must be insulated too — otherwise Phase 3's backend swap still
+has to touch 30 image call sites and 28 typed components, which defeats the point. Tasks
+10a and 10b cover them. Run the coverage check in Task 11 Step 0 before starting Task 11:
+it fails loudly if any file remains unclaimed.
 
 ---
 
@@ -752,6 +763,66 @@ Expected: clean. Any error names a call site Tasks 3–10 missed.
 
 ---
 
+### Task 10a: Image URLs
+
+`urlFor` returns a **chainable Sanity builder** — call sites do `urlFor(img).width(800).height(450).url()`. That builder API is Sanity-specific and cannot survive the swap, so it has to become a plain function before Phase 3, not during it.
+
+**Files:**
+- Create: `lib/content/images.ts`
+- Modify: the 30 files importing `@/sanity/lib/image` (enumerate with the command below)
+- Test: `lib/__tests__/content-images.test.ts`
+
+Enumerate them with:
+
+```bash
+grep -rlE "from ['\"]@/sanity/lib/image" app components lib --include="*.ts" --include="*.tsx"
+```
+
+**Interfaces:**
+- Consumes: `ContentImage` from `@/lib/content/types`; the existing `urlFor` / `urlForCropped` internally, via the seam.
+- Produces:
+  - `imageUrl(image: ContentImage | unknown, opts?: { width?: number; height?: number; crop?: boolean }): string`
+  - Returns `""` for a null or unresolvable image rather than throwing — an image is never worth a 500.
+
+Behaviour must match the current builders exactly, including their two special cases, both of which are load-bearing:
+- **SVGs bypass the transform pipeline entirely** (they rasterize otherwise). `urlFor` returns the untouched builder when `asset.mimeType === "image/svg+xml"`.
+- `imageUrl` without `crop` mirrors `urlFor`: `.format("webp").fit("max")`. With `crop` and both dimensions, it mirrors `urlForCropped`: `.width().height().fit("crop").auto("format")` — note `auto("format")` there versus forced `webp` in the uncropped path. Do not unify them; that difference is deliberate.
+
+`lib/content/images.ts` imports the builder from the seam only. No `@sanity/image-url` type may appear in its exported signature.
+
+**Rendered check:** a case-study card (cropped 800×450), a hero (uncropped), and an SVG partner logo in `logo-cloud-1`. Compare the generated URLs before and after — they must be identical strings.
+
+---
+
+### Task 10b: Generated types
+
+28 files import from `sanity.types.ts`, a 15,156-line generated artifact that disappears when Sanity does. Every one must move to a type we own.
+
+**Files:**
+- Modify: the 28 files importing `@/sanity.types` (enumerate with the command below)
+- Extend: `lib/content/types.ts` and the domain modules, as needed
+- Test: extend `lib/__tests__/content-layer-boundary.test.ts`
+
+Enumerate them with:
+
+```bash
+grep -rlE "from ['\"]@/sanity\.types" app components lib --include="*.ts" --include="*.tsx"
+```
+
+**Interfaces:**
+- Consumes: everything Tasks 1–10 defined.
+- Produces: no new runtime API. The deliverable is that no file outside the seam imports `sanity.types.ts`.
+
+Most of these are block components typed against generated block types (`Hero1`, `SplitRow`, `GridRow`, …). Define the block prop types in the module that owns them — a block's props belong beside its renderer, not in `lib/content/types.ts`, which is for content shapes shared across domains.
+
+Where a generated type is used only to type a prop the component immediately destructures, prefer a small local interface naming just the fields actually read. Do not transcribe generated types wholesale; that would recreate the coupling in a new location.
+
+**Do not run `sanity typegen generate`.** `sanity.types.ts` stays on disk, untouched and unread, until Phase 4 deletes it.
+
+**Rendered check:** every block type that carries data — `hero-1`, `split-row`, `cta-1`, `section-header`, `logo-cloud-1`, `grid-row`, `carousel-2` — on the homepage and one regional community page, in `en` and `ar`.
+
+---
+
 ### Task 11: Enforce the boundary
 
 This is what makes "insulated" verifiable, and it is the gate for starting Phase 2.
@@ -762,6 +833,20 @@ This is what makes "insulated" verifiable, and it is the gate for starting Phase
 **Interfaces:**
 - Consumes: the completed `lib/content/` directory.
 - Produces: a failing test the moment anyone reintroduces a Sanity import outside the seam.
+
+- [ ] **Step 0: Run the coverage check first**
+
+Before writing the test, confirm every Sanity importer has actually been converted:
+
+```bash
+grep -rlE "(from|require\()\s*['\"][^'\"]*(@/sanity|@sanity/|next-sanity)" \
+  app components lib --include="*.ts" --include="*.tsx" \
+  | grep -v "^lib/content/internal/" | grep -v "^lib/__tests__/"
+```
+
+Every path it prints must be either converted or on the ALLOWED list below. If it prints
+anything else, the earlier tasks are not finished — go back and finish them rather than
+widening ALLOWED. Widening ALLOWED to make this pass defeats the entire phase.
 
 - [ ] **Step 1: Write the test**
 
@@ -800,11 +885,19 @@ const grepSanityImports = (paths: string[]): string[] => {
   }
 };
 
+/**
+ * The only files permitted to import Sanity. Everything here is Sanity's own
+ * plumbing — the Studio and its preview machinery — not application code.
+ *
+ * Do NOT add a file here to make the test pass. If a content file appears in
+ * the failure list, convert it; that is the work this phase exists to do.
+ */
 const ALLOWED = [
   "lib/content/internal/sanity-source.ts",
-  // The Studio itself and its schemas legitimately import Sanity.
-  "sanity.config.ts",
-  "sanity.cli.ts",
+  // The embedded Studio route and its Presentation/draft-mode plumbing.
+  "app/studio/[[...tool]]/page.tsx",
+  "app/api/draft-mode/enable/route.ts",
+  "components/disable-draft-mode.tsx",
 ];
 
 describe("content layer boundary", () => {
@@ -817,7 +910,15 @@ describe("content layer boundary", () => {
 
   it("no app route or component imports Sanity directly", () => {
     const offenders = grepSanityImports(["app", "components"]).filter(
-      (f) => !f.startsWith("app/studio/") && !ALLOWED.includes(f),
+      (f) => !ALLOWED.includes(f),
+    );
+    expect(offenders).toEqual([]);
+  });
+
+  it("nothing imports the generated sanity.types.ts", () => {
+    // The 15,156-line generated artifact disappears with Sanity (Task 10b).
+    const offenders = grepSanityImports(["app", "components", "lib"]).filter(
+      (f) => !ALLOWED.includes(f) && !f.startsWith("lib/__tests__/"),
     );
     expect(offenders).toEqual([]);
   });
