@@ -17,10 +17,14 @@ describe("fix-lived-experience-tags production guard", () => {
 
   it("refuses rather than warns — it must exit non-zero", () => {
     const src = script();
-    const guardIndex = src.indexOf("--i-understand-this-is-production");
-    expect(guardIndex).toBeGreaterThan(-1);
+    // Anchor on the guard's actual structure — the `if` that tests
+    // `!ackProd` — rather than the flag name's first textual occurrence.
+    // The flag name alone can appear earlier (e.g. a header/usage comment)
+    // without moving the guard, which would break an indexOf-based window.
+    const guardBlock = src.match(/if\s*\([^)]*!ackProd[^)]*\)\s*\{([\s\S]*?)\n\}/);
+    expect(guardBlock).not.toBeNull();
     // The refusal must terminate the process, not merely log.
-    expect(src.slice(guardIndex, guardIndex + 600)).toMatch(/process\.exit\(1\)/);
+    expect(guardBlock![1]).toMatch(/process\.exit\(1\)/);
   });
 
   it("still prints the dataset it is about to touch", () => {
