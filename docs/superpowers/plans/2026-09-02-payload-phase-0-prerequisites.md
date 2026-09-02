@@ -440,6 +440,8 @@ Create `lib/__tests__/regional-community-page-schema.test.ts`:
 ```ts
 import { describe, expect, it } from "vitest";
 import regionalCommunityPage from "@/sanity/schemas/documents/regional-community-page";
+import hero1 from "@/sanity/schemas/blocks/hero/hero-1";
+import cta1 from "@/sanity/schemas/blocks/cta/cta-1";
 
 const fieldNamed = (name: string) =>
   (regionalCommunityPage.fields as Array<{ name: string; type: string }>).find(
@@ -465,13 +467,20 @@ describe("regionalCommunityPage schema", () => {
     expect(fieldNamed("welcomeHero")?.type).toBe("hero-1");
   });
 
-  it("keeps image and imagePosition available on hero-1", () => {
-    // The two fields the cta-1 redeclaration would have destroyed.
-    const heroFields = ["image", "imagePosition"];
-    for (const f of heroFields) {
-      expect(fieldNamed("whyJoinCTA")?.type).toBe("hero-1");
-      expect(f).toBeTruthy();
-    }
+  it("hero-1 still declares the fields the stored data depends on", () => {
+    // image (24 of 28 docs) and imagePosition (20 of 28) live in stored
+    // whyJoinCTA objects. cta-1 declares neither. If hero-1 ever stops
+    // declaring them, that data becomes unreachable in the Studio and is
+    // stripped on the next save — so pin them here, not just the field type.
+    const hero1Fields = (hero1.fields as Array<{ name: string }>).map((f) => f.name);
+    expect(hero1Fields).toContain("image");
+    expect(hero1Fields).toContain("imagePosition");
+  });
+
+  it("cta-1 does NOT declare those fields, which is why the swap is unsafe", () => {
+    const cta1Fields = (cta1.fields as Array<{ name: string }>).map((f) => f.name);
+    expect(cta1Fields).not.toContain("image");
+    expect(cta1Fields).not.toContain("imagePosition");
   });
 });
 ```
