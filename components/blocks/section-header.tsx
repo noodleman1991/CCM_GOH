@@ -1,17 +1,24 @@
 import { cn } from "@/lib/utils";
-import SectionContainer from "@/components/ui/section-container";
+import SectionContainer, { type SectionPadding } from "@/components/ui/section-container";
 import { stegaClean } from "next-sanity";
 import { getLocalizedField } from "@/lib/localization-utils";
-import { PAGE_QUERY_RESULT } from "@/sanity.types";
 import { heading } from "@/lib/design-tokens";
 import { SectionHeader as UISectionHeader } from "@/components/ui/section-header";
 
-type SectionHeaderProps = Extract<
-  NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number],
-  { _type: "section-header" }
-> & {
+/** A field that carries either a plain string or a `{en, es, fr, ar}` map —
+ *  the shape `getLocalizedField` resolves. Matches the precedent already
+ *  used for this exact pattern in lib/content/discovery.ts's LocalizedText. */
+type LocalizedText = string | Record<string, string> | null;
+
+interface SectionHeaderProps {
+  padding?: SectionPadding | null;
+  sectionWidth?: "default" | "narrow" | string | null;
+  stackAlign?: "left" | "center" | string | null;
+  tagLine?: LocalizedText;
+  title?: LocalizedText;
+  description?: LocalizedText;
   locale?: string;
-};
+}
 
 export default function SectionHeader({
   padding,
