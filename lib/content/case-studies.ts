@@ -5,6 +5,7 @@ import {
   createDocument,
   deleteDocument,
   query,
+  queryPreviewable,
   queryRaw,
   updateDocument,
   uploadFileAsset,
@@ -273,7 +274,11 @@ const CASE_STUDIES_STATIC_PARAMS_QUERY = `
 `;
 
 export async function getCaseStudyBySlug(slug: string): Promise<CaseStudy | null> {
-  return query<CaseStudy | null>(CASE_STUDY_BY_SLUG_QUERY, { slug });
+  // fetchCaseStudyBySlug's original sanityFetch call omitted both
+  // perspective/stega, so cachedFetch's own draftMode() check decided draft
+  // vs. published — that is what let an editor previewing this case study in
+  // Sanity's Presentation tool see their unpublished draft.
+  return queryPreviewable<CaseStudy | null>(CASE_STUDY_BY_SLUG_QUERY, { slug });
 }
 
 export async function getCaseStudySlugs(): Promise<string[]> {
@@ -376,7 +381,9 @@ const CASE_STUDIES_BY_USER_QUERY = `*[_type == "caseStudy" && submittedBy == $us
 }`;
 
 export async function getCaseStudiesByUser(userId: string, limit = 12): Promise<CaseStudy[]> {
-  const rows = await query<CaseStudy[] | null>(CASE_STUDIES_BY_USER_QUERY, { userId, limit });
+  // fetchCaseStudiesByUser's original sanityFetch call omitted both
+  // perspective/stega — same draft-preview requirement as getCaseStudyBySlug above.
+  const rows = await queryPreviewable<CaseStudy[] | null>(CASE_STUDIES_BY_USER_QUERY, { userId, limit });
   return rows ?? [];
 }
 
@@ -424,7 +431,9 @@ const CASE_STUDIES_BY_STATUS_QUERY = `*[_type == "caseStudy" && status == $statu
 }`;
 
 export async function getCaseStudiesByStatus(status: CaseStudyStatus, limit = 50): Promise<CaseStudy[]> {
-  const rows = await query<CaseStudy[] | null>(CASE_STUDIES_BY_STATUS_QUERY, { status, limit });
+  // fetchCaseStudiesByStatus's original sanityFetch call omitted both
+  // perspective/stega — same draft-preview requirement as getCaseStudyBySlug above.
+  const rows = await queryPreviewable<CaseStudy[] | null>(CASE_STUDIES_BY_STATUS_QUERY, { status, limit });
   return rows ?? [];
 }
 
@@ -951,7 +960,12 @@ const EMPTY_SUBMISSIONS_AND_DRAFTS: UserSubmissionsAndDrafts = { submissions: []
 
 export async function getUserSubmissionsAndDrafts(userId: string): Promise<UserSubmissionsAndDrafts> {
   return safe("case-study-user-submissions", EMPTY_SUBMISSIONS_AND_DRAFTS, async () => {
-    const data = await query<UserSubmissionsAndDrafts | null>(
+    // fetchUserSubmissionsAndDrafts's original sanityFetch call omitted both
+    // perspective/stega — same draft-preview requirement as getCaseStudyBySlug above
+    // (the dashboard route's own "authenticated, no CDN" comment on the original
+    // notwithstanding: the original never actually passed a raw/authenticated
+    // perspective, just the omitted fields that route draftMode() decides).
+    const data = await queryPreviewable<UserSubmissionsAndDrafts | null>(
       `{
         "submissions": *[_type == "caseStudy" && submittedBy == $userId] | order(submittedAt desc) {
           _id, title, excerpt, topic, status, featured,

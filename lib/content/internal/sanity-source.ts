@@ -28,6 +28,38 @@ export async function query<T>(
 }
 
 /**
+ * Run a GROQ query WITHOUT deciding `perspective`/`stega` up front — unlike
+ * `query()`, this omits both fields from the `cachedFetch` call so
+ * `cachedFetch` falls through to its own `draftMode()` check (see
+ * sanity/lib/cached-fetch.ts's `decidedUpFront` branch). That is what lets
+ * an editor previewing a draft in Sanity's Presentation tool see their own
+ * unpublished changes on a page that otherwise reads the published
+ * perspective: a `draftMode()` cookie flips this read to drafts + stega
+ * automatically, with no caller-side branching.
+ *
+ * This is deliberately NOT the default. `draftMode()` is a Next.js dynamic
+ * API — calling it during a statically-rendered request (build-time
+ * generation, `generateStaticParams`, anything outside an active request)
+ * throws `draftMode was called outside a request scope`. `query()` avoids
+ * that by always deciding `perspective`/`stega` up front (forcing
+ * `published`), which is the right default for the many callers that must
+ * still work outside a request. Use `queryPreviewable` only for reads that
+ * back an editor-facing, always-in-request page where draft preview is a
+ * requirement — the original sanity/lib/fetch.ts helpers that omitted
+ * `perspective`/`stega` are exactly that set.
+ */
+export async function queryPreviewable<T>(
+  groq: string,
+  params: Record<string, unknown> = {},
+): Promise<T> {
+  const { data } = await cachedFetch({
+    query: groq as never,
+    params,
+  });
+  return data as T;
+}
+
+/**
  * Run a GROQ query against the raw perspective with an authenticated
  * (editor-token) client, so drafts and unpublished documents are visible.
  * Used by gated reads such as "load my own draft to re-edit" — those must

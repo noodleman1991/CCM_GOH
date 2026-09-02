@@ -2,9 +2,10 @@ import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 
 vi.mock("@/lib/content/internal/sanity-source", () => ({
   query: vi.fn(),
+  queryPreviewable: vi.fn(),
 }));
 
-import { query } from "@/lib/content/internal/sanity-source";
+import { query, queryPreviewable } from "@/lib/content/internal/sanity-source";
 import {
   getPageBySlug,
   getPageSlugs,
@@ -20,15 +21,17 @@ import {
 } from "@/lib/content/pages";
 
 const mockQuery = vi.mocked(query);
+const mockQueryPreviewable = vi.mocked(queryPreviewable);
 
 beforeEach(() => {
   mockQuery.mockReset();
+  mockQueryPreviewable.mockReset();
 });
 afterEach(() => vi.restoreAllMocks());
 
 describe("getPageBySlug", () => {
   it("returns the page for the requested locale", async () => {
-    mockQuery.mockResolvedValueOnce({ blocks: [{ _type: "hero-1", _key: "a" }], meta_title: "About" });
+    mockQueryPreviewable.mockResolvedValueOnce({ blocks: [{ _type: "hero-1", _key: "a" }], meta_title: "About" });
 
     const result = await getPageBySlug("about", "en");
 
@@ -41,43 +44,56 @@ describe("getPageBySlug", () => {
       noindex: undefined,
       ogImage: undefined,
     });
-    expect(mockQuery).toHaveBeenCalledWith(expect.any(String), { slug: "about", language: "en" });
-    expect(mockQuery).toHaveBeenCalledTimes(1);
+    expect(mockQueryPreviewable).toHaveBeenCalledWith(expect.any(String), { slug: "about", language: "en" });
+    expect(mockQueryPreviewable).toHaveBeenCalledTimes(1);
   });
 
   it("falls back to English when the requested locale has no translation", async () => {
-    mockQuery
+    mockQueryPreviewable
       .mockResolvedValueOnce(null) // fr miss
       .mockResolvedValueOnce({ blocks: [] }); // en fallback
 
     const result = await getPageBySlug("about", "fr");
 
     expect(result?.slug).toBe("about");
-    expect(mockQuery).toHaveBeenNthCalledWith(1, expect.any(String), { slug: "about", language: "fr" });
-    expect(mockQuery).toHaveBeenNthCalledWith(2, expect.any(String), { slug: "about", language: "en" });
+    expect(mockQueryPreviewable).toHaveBeenNthCalledWith(1, expect.any(String), { slug: "about", language: "fr" });
+    expect(mockQueryPreviewable).toHaveBeenNthCalledWith(2, expect.any(String), { slug: "about", language: "en" });
   });
 
   it("does not fall back when the request was already English", async () => {
-    mockQuery.mockResolvedValueOnce(null);
+    mockQueryPreviewable.mockResolvedValueOnce(null);
 
     const result = await getPageBySlug("missing", "en");
 
     expect(result).toBeNull();
-    expect(mockQuery).toHaveBeenCalledTimes(1);
+    expect(mockQueryPreviewable).toHaveBeenCalledTimes(1);
   });
 
   it("returns null when neither the locale nor the English fallback exist", async () => {
-    mockQuery.mockResolvedValueOnce(null).mockResolvedValueOnce(null);
+    mockQueryPreviewable.mockResolvedValueOnce(null).mockResolvedValueOnce(null);
 
     const result = await getPageBySlug("missing", "ar");
 
     expect(result).toBeNull();
-    expect(mockQuery).toHaveBeenCalledTimes(2);
+    expect(mockQueryPreviewable).toHaveBeenCalledTimes(2);
   });
 
   it("throws (does not degrade) when the source fails, as the original unwrapped fetch did", async () => {
-    mockQuery.mockRejectedValue(new Error("upstream 500"));
+    mockQueryPreviewable.mockRejectedValue(new Error("upstream 500"));
     await expect(getPageBySlug("about", "en")).rejects.toThrow("upstream 500");
+  });
+
+  // Pins the fix for a regression: fetchSanityPageBySlug's original
+  // sanityFetch call omitted both perspective/stega, which is what let an
+  // editor previewing a draft page in Sanity's Presentation tool see their
+  // own unpublished changes. Converting this to the cached, published-only
+  // `query()` primitive silently ended that draft preview. If this slips
+  // back to `query`, this test must fail.
+  it("uses queryPreviewable, not query", async () => {
+    mockQueryPreviewable.mockResolvedValue(null);
+    await getPageBySlug("about", "en");
+    expect(mockQueryPreviewable).toHaveBeenCalled();
+    expect(mockQuery).not.toHaveBeenCalled();
   });
 });
 
@@ -129,33 +145,43 @@ describe("getPageTranslations", () => {
 
 describe("getRegionalCommunityPage", () => {
   it("returns the page for the requested locale", async () => {
-    mockQuery.mockResolvedValueOnce({ _id: "rc1", title: "Oceania", useTemplate: true });
+    mockQueryPreviewable.mockResolvedValueOnce({ _id: "rc1", title: "Oceania", useTemplate: true });
 
     const result = await getRegionalCommunityPage("oceania", "en");
 
     expect(result).toEqual({ _id: "rc1", title: "Oceania", useTemplate: true });
-    expect(mockQuery).toHaveBeenCalledWith(expect.any(String), { slug: "oceania", language: "en" });
-    expect(mockQuery).toHaveBeenCalledTimes(1);
+    expect(mockQueryPreviewable).toHaveBeenCalledWith(expect.any(String), { slug: "oceania", language: "en" });
+    expect(mockQueryPreviewable).toHaveBeenCalledTimes(1);
   });
 
   it("falls back to English when the requested locale has no translation", async () => {
-    mockQuery.mockResolvedValueOnce(null).mockResolvedValueOnce({ _id: "rc1", title: "Oceania" });
+    mockQueryPreviewable.mockResolvedValueOnce(null).mockResolvedValueOnce({ _id: "rc1", title: "Oceania" });
 
     const result = await getRegionalCommunityPage("oceania", "ar");
 
     expect(result?._id).toBe("rc1");
-    expect(mockQuery).toHaveBeenNthCalledWith(1, expect.any(String), { slug: "oceania", language: "ar" });
-    expect(mockQuery).toHaveBeenNthCalledWith(2, expect.any(String), { slug: "oceania", language: "en" });
+    expect(mockQueryPreviewable).toHaveBeenNthCalledWith(1, expect.any(String), { slug: "oceania", language: "ar" });
+    expect(mockQueryPreviewable).toHaveBeenNthCalledWith(2, expect.any(String), { slug: "oceania", language: "en" });
   });
 
   it("returns null when there's no match in either locale", async () => {
-    mockQuery.mockResolvedValueOnce(null).mockResolvedValueOnce(null);
+    mockQueryPreviewable.mockResolvedValueOnce(null).mockResolvedValueOnce(null);
     await expect(getRegionalCommunityPage("nowhere", "fr")).resolves.toBeNull();
   });
 
   it("throws (does not degrade) when the source fails, as the original unwrapped fetch did", async () => {
-    mockQuery.mockRejectedValue(new Error("upstream 500"));
+    mockQueryPreviewable.mockRejectedValue(new Error("upstream 500"));
     await expect(getRegionalCommunityPage("oceania", "en")).rejects.toThrow("upstream 500");
+  });
+
+  // Pins the fix for a regression: fetchSanityRCPageBySlug's original
+  // sanityFetch call omitted both perspective/stega — see the note on
+  // getPageBySlug's own pinning test above.
+  it("uses queryPreviewable, not query", async () => {
+    mockQueryPreviewable.mockResolvedValue(null);
+    await getRegionalCommunityPage("oceania", "en");
+    expect(mockQueryPreviewable).toHaveBeenCalled();
+    expect(mockQuery).not.toHaveBeenCalled();
   });
 });
 
@@ -192,39 +218,69 @@ describe("getRegionStats", () => {
 
 describe("getHomepage", () => {
   it("fetches the 'index' homepage for the given locale", async () => {
-    mockQuery.mockResolvedValueOnce({ heroWelcome: { title: "Welcome" } });
+    mockQueryPreviewable.mockResolvedValueOnce({ heroWelcome: { title: "Welcome" } });
 
     const result = await getHomepage("en");
 
     expect(result).toEqual({ heroWelcome: { title: "Welcome" } });
-    expect(mockQuery).toHaveBeenCalledWith(expect.any(String), { slug: "index", language: "en" });
+    expect(mockQueryPreviewable).toHaveBeenCalledWith(expect.any(String), { slug: "index", language: "en" });
   });
 
   it("returns null with no English fallback (original has none)", async () => {
-    mockQuery.mockResolvedValueOnce(null);
+    mockQueryPreviewable.mockResolvedValueOnce(null);
     await expect(getHomepage("ar")).resolves.toBeNull();
-    expect(mockQuery).toHaveBeenCalledTimes(1);
+    expect(mockQueryPreviewable).toHaveBeenCalledTimes(1);
   });
 
   it("throws (does not degrade) when the source fails, as the original unwrapped fetch did", async () => {
-    mockQuery.mockRejectedValue(new Error("upstream 500"));
+    mockQueryPreviewable.mockRejectedValue(new Error("upstream 500"));
     await expect(getHomepage("en")).rejects.toThrow("upstream 500");
+  });
+
+  // Pins the fix for a regression: fetchSanityHomepageBySlug's original
+  // sanityFetch call omitted both perspective/stega — see the note on
+  // getPageBySlug's own pinning test above.
+  it("uses queryPreviewable, not query", async () => {
+    mockQueryPreviewable.mockResolvedValue(null);
+    await getHomepage("en");
+    expect(mockQueryPreviewable).toHaveBeenCalled();
+    expect(mockQuery).not.toHaveBeenCalled();
   });
 });
 
 describe("getHomepageBySlug (dead code, implemented per signature)", () => {
   it("queries the given slug/locale", async () => {
-    mockQuery.mockResolvedValueOnce({ heroWelcome: {} });
+    mockQueryPreviewable.mockResolvedValueOnce({ heroWelcome: {} });
     await getHomepageBySlug("index", "es");
-    expect(mockQuery).toHaveBeenCalledWith(expect.any(String), { slug: "index", language: "es" });
+    expect(mockQueryPreviewable).toHaveBeenCalledWith(expect.any(String), { slug: "index", language: "es" });
+  });
+
+  // Pins the fix for a regression: fetchHomepageBySlug's original sanityFetch
+  // call omitted both perspective/stega — see the note on getPageBySlug's
+  // own pinning test above.
+  it("uses queryPreviewable, not query", async () => {
+    mockQueryPreviewable.mockResolvedValue(null);
+    await getHomepageBySlug("index", "es");
+    expect(mockQueryPreviewable).toHaveBeenCalled();
+    expect(mockQuery).not.toHaveBeenCalled();
   });
 });
 
 describe("getIndexHomepage (dead code, implemented per signature)", () => {
   it("queries with only a language param", async () => {
-    mockQuery.mockResolvedValueOnce({ heroWelcome: {} });
+    mockQueryPreviewable.mockResolvedValueOnce({ heroWelcome: {} });
     await getIndexHomepage("fr");
-    expect(mockQuery).toHaveBeenCalledWith(expect.any(String), { language: "fr" });
+    expect(mockQueryPreviewable).toHaveBeenCalledWith(expect.any(String), { language: "fr" });
+  });
+
+  // Pins the fix for a regression: fetchIndexHomepage's original sanityFetch
+  // call omitted both perspective/stega — see the note on getPageBySlug's
+  // own pinning test above.
+  it("uses queryPreviewable, not query", async () => {
+    mockQueryPreviewable.mockResolvedValue(null);
+    await getIndexHomepage("fr");
+    expect(mockQueryPreviewable).toHaveBeenCalled();
+    expect(mockQuery).not.toHaveBeenCalled();
   });
 });
 

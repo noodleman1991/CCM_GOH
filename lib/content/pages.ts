@@ -1,6 +1,6 @@
 import "server-only";
 import { safe } from "@/lib/content/internal/safe";
-import { query } from "@/lib/content/internal/sanity-source";
+import { query, queryPreviewable } from "@/lib/content/internal/sanity-source";
 import type { Locale } from "@/lib/content/types";
 
 /**
@@ -1074,9 +1074,13 @@ const PAGE_QUERY = `
 `;
 
 export async function getPageBySlug(slug: string, locale: Locale): Promise<Page | null> {
-  let raw = await query<RawPageDoc | null>(PAGE_QUERY, { slug, language: locale });
+  // fetchSanityPageBySlug's original sanityFetch call omitted both
+  // perspective/stega, so cachedFetch's own draftMode() check decided
+  // draft vs. published — that is what let an editor previewing this page
+  // in Sanity's Presentation tool see their unpublished draft.
+  let raw = await queryPreviewable<RawPageDoc | null>(PAGE_QUERY, { slug, language: locale });
   if (!raw && locale !== "en") {
-    raw = await query<RawPageDoc | null>(PAGE_QUERY, { slug, language: "en" });
+    raw = await queryPreviewable<RawPageDoc | null>(PAGE_QUERY, { slug, language: "en" });
   }
   if (!raw) return null;
   return toPage(raw, slug, locale);
@@ -2661,9 +2665,11 @@ export async function getRegionalCommunityPage(
   slug: string,
   locale: Locale,
 ): Promise<RegionalCommunityPage | null> {
-  let raw = await query<RegionalCommunityPage | null>(REGIONAL_COMMUNITY_PAGE_QUERY, { slug, language: locale });
+  // fetchSanityRCPageBySlug's original sanityFetch call omitted both
+  // perspective/stega — same draft-preview requirement as getPageBySlug above.
+  let raw = await queryPreviewable<RegionalCommunityPage | null>(REGIONAL_COMMUNITY_PAGE_QUERY, { slug, language: locale });
   if (!raw && locale !== "en") {
-    raw = await query<RegionalCommunityPage | null>(REGIONAL_COMMUNITY_PAGE_QUERY, { slug, language: "en" });
+    raw = await queryPreviewable<RegionalCommunityPage | null>(REGIONAL_COMMUNITY_PAGE_QUERY, { slug, language: "en" });
   }
   return raw ?? null;
 }
@@ -5687,7 +5693,9 @@ const HOMEPAGE_QUERY = `
  * fallback, so none is added here either.
  */
 export async function getHomepage(locale: Locale): Promise<Homepage | null> {
-  return query<Homepage | null>(HOMEPAGE_QUERY, { slug: "index", language: locale });
+  // fetchSanityHomepageBySlug's original sanityFetch call omitted both
+  // perspective/stega — same draft-preview requirement as getPageBySlug above.
+  return queryPreviewable<Homepage | null>(HOMEPAGE_QUERY, { slug: "index", language: locale });
 }
 
 /**
@@ -5698,7 +5706,9 @@ export async function getHomepage(locale: Locale): Promise<Homepage | null> {
  * function is that `slug` isn't hardcoded.
  */
 export async function getHomepageBySlug(slug: string, locale: Locale = "en"): Promise<Homepage | null> {
-  return query<Homepage | null>(HOMEPAGE_QUERY, { slug, language: locale });
+  // fetchHomepageBySlug's original sanityFetch call omitted both
+  // perspective/stega — same draft-preview requirement as getPageBySlug above.
+  return queryPreviewable<Homepage | null>(HOMEPAGE_QUERY, { slug, language: locale });
 }
 
 // ---------------------------------------------------------------------------
@@ -7672,7 +7682,9 @@ const INDEX_HOMEPAGE_QUERY = `
 `;
 
 export async function getIndexHomepage(locale: Locale = "en"): Promise<Homepage | null> {
-  return query<Homepage | null>(INDEX_HOMEPAGE_QUERY, { language: locale });
+  // fetchIndexHomepage's original sanityFetch call omitted both
+  // perspective/stega — same draft-preview requirement as getPageBySlug above.
+  return queryPreviewable<Homepage | null>(INDEX_HOMEPAGE_QUERY, { language: locale });
 }
 
 // ---------------------------------------------------------------------------

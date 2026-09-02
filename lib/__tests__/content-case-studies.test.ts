@@ -2,6 +2,7 @@ import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 
 vi.mock("@/lib/content/internal/sanity-source", () => ({
   query: vi.fn(),
+  queryPreviewable: vi.fn(),
   queryRaw: vi.fn(),
   uploadFileAsset: vi.fn(),
   createDocument: vi.fn(),
@@ -26,6 +27,7 @@ vi.mock("@/lib/prisma", () => ({
 
 import {
   query,
+  queryPreviewable,
   queryRaw,
   uploadFileAsset,
   createDocument,
@@ -63,6 +65,7 @@ import {
 } from "@/lib/content/case-studies";
 
 const mockQuery = vi.mocked(query);
+const mockQueryPreviewable = vi.mocked(queryPreviewable);
 const mockQueryRaw = vi.mocked(queryRaw);
 const mockUploadFileAsset = vi.mocked(uploadFileAsset);
 const mockCreateDocument = vi.mocked(createDocument);
@@ -72,6 +75,7 @@ const mockFindFirst = vi.mocked(prisma.workspaceOutput.findFirst);
 
 beforeEach(() => {
   mockQuery.mockReset();
+  mockQueryPreviewable.mockReset();
   mockQueryRaw.mockReset();
   mockUploadFileAsset.mockReset();
   mockCreateDocument.mockReset();
@@ -83,18 +87,31 @@ afterEach(() => vi.restoreAllMocks());
 
 describe("getCaseStudyBySlug", () => {
   it("returns the detail doc from the source", async () => {
-    mockQuery.mockResolvedValue({ _id: "cs1", title: { en: "My Study" } });
+    mockQueryPreviewable.mockResolvedValue({ _id: "cs1", title: { en: "My Study" } });
     await expect(getCaseStudyBySlug("my-study")).resolves.toEqual({ _id: "cs1", title: { en: "My Study" } });
   });
 
   it("returns null when there's no match", async () => {
-    mockQuery.mockResolvedValue(null);
+    mockQueryPreviewable.mockResolvedValue(null);
     await expect(getCaseStudyBySlug("missing")).resolves.toBeNull();
   });
 
   it("throws (does not degrade) when the source fails, as the original unwrapped fetch did", async () => {
-    mockQuery.mockRejectedValue(new Error("timeout"));
+    mockQueryPreviewable.mockRejectedValue(new Error("timeout"));
     await expect(getCaseStudyBySlug("x")).rejects.toThrow("timeout");
+  });
+
+  // Pins the fix for a regression: fetchCaseStudyBySlug's original sanityFetch
+  // call omitted both perspective/stega, which is what let an editor
+  // previewing a draft case study in Sanity's Presentation tool see their own
+  // unpublished changes. Converting this to the cached, published-only
+  // `query()` primitive silently ended that draft preview. If this slips
+  // back to `query`, this test must fail.
+  it("uses queryPreviewable, not query", async () => {
+    mockQueryPreviewable.mockResolvedValue(null);
+    await getCaseStudyBySlug("my-study");
+    expect(mockQueryPreviewable).toHaveBeenCalledTimes(1);
+    expect(mockQuery).not.toHaveBeenCalled();
   });
 });
 
@@ -150,19 +167,30 @@ describe("getApprovedCaseStudies / getFeaturedCaseStudies", () => {
 
 describe("getCaseStudiesByUser / getCaseStudiesByStatus", () => {
   it("returns a user's case studies from the source", async () => {
-    mockQuery.mockResolvedValue([{ _id: "cs1", submittedBy: "user1" }]);
+    mockQueryPreviewable.mockResolvedValue([{ _id: "cs1", submittedBy: "user1" }]);
     await expect(getCaseStudiesByUser("user1")).resolves.toEqual([{ _id: "cs1", submittedBy: "user1" }]);
   });
 
   it("returns case studies by status from the source", async () => {
-    mockQuery.mockResolvedValue([{ _id: "cs1", status: "pending" }]);
+    mockQueryPreviewable.mockResolvedValue([{ _id: "cs1", status: "pending" }]);
     await expect(getCaseStudiesByStatus("pending")).resolves.toEqual([{ _id: "cs1", status: "pending" }]);
   });
 
   it("throws (does not degrade) when the source fails", async () => {
-    mockQuery.mockRejectedValue(new Error("boom"));
+    mockQueryPreviewable.mockRejectedValue(new Error("boom"));
     await expect(getCaseStudiesByUser("user1")).rejects.toThrow("boom");
     await expect(getCaseStudiesByStatus("approved")).rejects.toThrow("boom");
+  });
+
+  // Pins the fix for a regression: both fetchCaseStudiesByUser and
+  // fetchCaseStudiesByStatus originally omitted perspective/stega — see the
+  // note on getCaseStudyBySlug's own pinning test above.
+  it("both use queryPreviewable, not query", async () => {
+    mockQueryPreviewable.mockResolvedValue([]);
+    await getCaseStudiesByUser("user1");
+    await getCaseStudiesByStatus("pending");
+    expect(mockQueryPreviewable).toHaveBeenCalledTimes(2);
+    expect(mockQuery).not.toHaveBeenCalled();
   });
 });
 
@@ -324,7 +352,7 @@ describe("getAvailableCaseStudyTags / getActiveCaseStudyCommunities", () => {
 
 describe("getUserSubmissionsAndDrafts", () => {
   it("returns submissions and drafts from the source", async () => {
-    mockQuery.mockResolvedValue({
+    mockQueryPreviewable.mockResolvedValue({
       submissions: [{ _id: "cs1", title: { en: "A study" } }],
       drafts: [{ _id: "d1", title: { en: "A draft" } }],
     });
@@ -335,14 +363,24 @@ describe("getUserSubmissionsAndDrafts", () => {
 
   it("degrades to empty lists when the source fails", async () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
-    mockQuery.mockRejectedValue(new Error("402 plan_limit_reached"));
+    mockQueryPreviewable.mockRejectedValue(new Error("402 plan_limit_reached"));
     await expect(getUserSubmissionsAndDrafts("user1")).resolves.toEqual({ submissions: [], drafts: [] });
   });
 
   it("degrades when the source returns null rather than an object", async () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
-    mockQuery.mockResolvedValue(null);
+    mockQueryPreviewable.mockResolvedValue(null);
     await expect(getUserSubmissionsAndDrafts("user1")).resolves.toEqual({ submissions: [], drafts: [] });
+  });
+
+  // Pins the fix for a regression: fetchUserSubmissionsAndDrafts's original
+  // sanityFetch call omitted both perspective/stega — see the note on
+  // getCaseStudyBySlug's own pinning test above.
+  it("uses queryPreviewable, not query", async () => {
+    mockQueryPreviewable.mockResolvedValue({ submissions: [], drafts: [] });
+    await getUserSubmissionsAndDrafts("user1");
+    expect(mockQueryPreviewable).toHaveBeenCalledTimes(1);
+    expect(mockQuery).not.toHaveBeenCalled();
   });
 });
 
