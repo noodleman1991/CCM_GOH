@@ -1,17 +1,17 @@
 import { auth } from "@clerk/nextjs/server";
 import { getTranslations } from "next-intl/server";
 import { stegaClean } from "next-sanity";
-import SectionContainer from "@/components/ui/section-container";
+import SectionContainer, { type SectionPadding } from "@/components/ui/section-container";
 import { fetchApprovedEvents } from "@/lib/events";
-import { PAGE_QUERY_RESULT } from "@/sanity.types";
 import EventsCalendarClient, { type EventsCalendarLabels } from "./events-calendar-client";
 
-type EventsCalendarProps = Extract<
-  NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number],
-  { _type: "events-calendar" }
-> & {
+interface EventsCalendarProps {
+  padding?: SectionPadding | null;
+  title?: string | null;
+  description?: string | null;
+  upcomingLimit?: number | null;
   locale?: string;
-};
+}
 
 /**
  * Events calendar homepage block (server). Fetches approved events

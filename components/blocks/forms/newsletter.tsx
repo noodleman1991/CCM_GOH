@@ -9,19 +9,20 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import SectionContainer from "@/components/ui/section-container";
+import SectionContainer, { type SectionPadding } from "@/components/ui/section-container";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { toast } from "sonner";
 import { useCallback } from "react";
 import { Loader2 } from "lucide-react";
-import { PAGE_QUERY_RESULT } from "@/sanity.types";
 
-type FormNewsletterProps = Extract<
-  NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number],
-  { _type: "form-newsletter" }
->;
+interface FormNewsletterProps {
+  padding?: SectionPadding | null;
+  consentText?: string | null;
+  buttonText?: string | null;
+  successMessage?: string | null;
+}
 
 export default function FormNewsletter({
   padding,

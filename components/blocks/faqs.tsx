@@ -1,4 +1,4 @@
-import SectionContainer from "@/components/ui/section-container";
+import SectionContainer, { type SectionPadding } from "@/components/ui/section-container";
 import {
   Accordion,
   AccordionContent,
@@ -6,15 +6,25 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import PortableTextRenderer from "@/components/portable-text-renderer";
-import { PAGE_QUERY_RESULT } from "@/sanity.types";
 import { getLocalizedField, getLocalizedPortableText } from "@/lib/localization-utils";
+import type { PortableTextBlock } from "@portabletext/types";
 
-type FAQProps = Extract<
-  NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number],
-  { _type: "faqs" }
-> & {
+/** A field that carries either a plain string or a `{en, es, fr, ar}` map —
+ *  the shape `getLocalizedField` resolves. Matches the precedent already
+ *  used for this exact pattern in lib/content/discovery.ts's LocalizedText. */
+type LocalizedText = string | Record<string, string> | null;
+
+interface FAQItem {
+  _id: string;
+  title?: LocalizedText;
+  body?: PortableTextBlock[] | Record<string, unknown> | null;
+}
+
+interface FAQProps {
+  padding?: SectionPadding | null;
+  faqs?: FAQItem[] | null;
   locale?: string;
-};
+}
 
 export default function FAQs({ padding, faqs, locale = "en" }: FAQProps) {
 
