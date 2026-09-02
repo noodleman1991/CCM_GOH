@@ -12,7 +12,7 @@ import {
 } from "@/lib/content/pages";
 import type { Locale } from "@/lib/content/types";
 import { notFound, redirect } from "next/navigation";
-import { generatePageMetadata } from "@/sanity/lib/metadata";
+import { generatePageMetadata, type MetadataSource } from "@/lib/content/metadata";
 import { isRTL } from "@/i18n/i18n-helpers";
 
 export async function generateStaticParams() {
@@ -71,14 +71,11 @@ export async function generateMetadata({
         notFound();
     }
 
-    // generatePageMetadata (sanity/lib/metadata.ts) is still typed against the
-    // generated @/sanity.types PAGE_QUERY_RESULT — Task 10b's file, not
-    // converted here. Both getRegionalCommunityPage and getPageBySlug keep
-    // meta_title/meta_description/noindex/ogImage as top-level fields
-    // specifically so this call keeps working unchanged (see lib/content/
-    // pages.ts's comment on `Page`).
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- crossing into an unconverted Task 10b consumer still typed against @/sanity.types
-    return generatePageMetadata({ page: page as any, slug: slug });
+    // Both getRegionalCommunityPage and getPageBySlug keep meta_title/
+    // meta_description/noindex/ogImage as top-level fields, matching
+    // generatePageMetadata's MetadataSource — see lib/content/pages.ts's
+    // comment on `Page` for why.
+    return generatePageMetadata({ page: page as MetadataSource, slug: slug });
 }
 
 export default async function Page({

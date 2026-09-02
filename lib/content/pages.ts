@@ -60,12 +60,12 @@ interface RawOgImage {
  *    and `title` are left off rather than invented.
  * 2. `meta_title`/`meta_description`/`noindex`/`ogImage` stay top-level
  *    (not nested under `seo`) because the one live consumer of this data,
- *    `generatePageMetadata` (sanity/lib/metadata.ts — Task 10b's file,
- *    still typed against `@/sanity.types` and therefore untouched here)
- *    reads `page.meta_title` / `page.ogImage.asset.metadata.dimensions...`
+ *    `generatePageMetadata` (now lib/content/metadata.ts, moved off
+ *    sanity/lib/metadata.ts and @/sanity.types by Task 10b), reads
+ *    `page.meta_title` / `page.ogImage.asset.metadata.dimensions...`
  *    directly. Nesting them under `seo` the way the brief sketches would
  *    silently break Open Graph images and page titles site-wide unless
- *    `generatePageMetadata` were also converted — out of scope for this task.
+ *    `generatePageMetadata` were also restructured — out of scope for this task.
  *
  * This is the same category of correction as the `getHomepage`-must-not-
  * return-blocks ruling: the brief's interface sketch is Phase 2's target
@@ -1155,7 +1155,7 @@ export async function getPageTranslations(pageId: string): Promise<PageTranslati
 // object directly (regionalCommunity, welcomeHero, whyJoinCTA, teamGrid,
 // agendasGrid, newsGrid, caseStudiesGrid, livedExperiencesCarousel,
 // atlasEmbed, logoCloud, contentFlow, useTemplate, plus SEO fields consumed
-// by the same untouched `generatePageMetadata` as generic pages above) — an
+// by the same `generatePageMetadata` as generic pages above) — an
 // index signature is kept for anything else those call sites read, the same
 // judgment call outputs.ts made for `Agenda` (that module's own comment:
 // "reshaping the projection... would silently break rendering without

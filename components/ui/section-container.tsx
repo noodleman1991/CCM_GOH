@@ -1,9 +1,19 @@
 import { cn } from "@/lib/utils";
 import { BackgroundOptionType } from "@/types/background-option";
 import { getBackgroundStyles } from "@/lib/background-utils";
-import { SectionPadding } from "@/sanity.types";
 import { spacingY, containerWidth, type SpacingToken, type WidthToken } from "@/lib/design-tokens";
 import { Blob, type BlobColor } from "@/components/ui/blob";
+
+/**
+ * A block's top/bottom inner padding toggle. Owned here (not
+ * lib/content/types.ts) because SectionContainer is the only thing that
+ * reads it — every block just carries it through from its CMS query result.
+ * Import this instead of the generated `@/sanity.types` SectionPadding.
+ */
+export interface SectionPadding {
+  top?: boolean | null;
+  bottom?: boolean | null;
+}
 
 interface SectionContainerProps {
   padding?: SectionPadding | null;

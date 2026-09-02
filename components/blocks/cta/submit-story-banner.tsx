@@ -3,7 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import type { SectionPadding } from "@/sanity.types";
+import type { SectionPadding } from "@/components/ui/section-container";
 
 interface SubmitStoryBannerProps {
   _key?: string;

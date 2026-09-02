@@ -9,7 +9,7 @@ import {
   getHomepageSlugs,
 } from "@/lib/content/pages";
 import type { Locale } from "@/lib/content/types";
-import { generatePageMetadata } from "@/sanity/lib/metadata";
+import { generatePageMetadata, type MetadataSource } from "@/lib/content/metadata";
 import MissingSanityPage from "@/components/ui/missing-sanity-page";
 import { routing } from '@/i18n/routing';
 import { isRTL } from "@/i18n/i18n-helpers";
@@ -61,12 +61,10 @@ export async function generateMetadata({
         page = await getPageBySlug("index", locale as Locale);
     }
 
-    // generatePageMetadata is still typed against the generated @/sanity.types
-    // PAGE_QUERY_RESULT — Task 10b's file, not converted here. getHomepage /
-    // getPageBySlug keep meta_title/meta_description/noindex/ogImage as
-    // top-level fields specifically so this call keeps working unchanged.
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- crossing into an unconverted Task 10b consumer still typed against @/sanity.types
-    return generatePageMetadata({ page: page as any, slug: "index" });
+    // getHomepage / getPageBySlug keep meta_title/meta_description/noindex/
+    // ogImage as top-level fields, matching generatePageMetadata's
+    // MetadataSource — see lib/content/pages.ts's comment on why.
+    return generatePageMetadata({ page: page as MetadataSource, slug: "index" });
 }
 
 interface IndexPageProps {

@@ -121,4 +121,25 @@ describe("imageUrl", () => {
     expect(after).not.toContain("w=80");
     expect(after).toContain(".svg");
   });
+
+  // Task 10b: lib/content/metadata.ts's generatePageMetadata needs the OG
+  // image at a fixed quality (the original called urlFor(img).quality(100)
+  // directly) — added here rather than left unreachable through the wrapper.
+  it("matches urlFor(img).quality(n).url() exactly — uncropped", () => {
+    const before = urlFor(jpegImage).quality(100).url();
+    const after = imageUrl(jpegImage, { quality: 100 });
+    expect(after).toBe(before);
+    expect(after).toContain("q=100");
+  });
+
+  it("matches urlForCropped(img, w, h).quality(n).url() exactly — cropped", () => {
+    const before = urlForCropped(jpegImage, 800, 450).quality(90).url();
+    const after = imageUrl(jpegImage, { width: 800, height: 450, crop: true, quality: 90 });
+    expect(after).toBe(before);
+    expect(after).toContain("q=90");
+  });
+
+  it("omits the quality param when not passed", () => {
+    expect(imageUrl(jpegImage)).not.toContain("q=");
+  });
 });

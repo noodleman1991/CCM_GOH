@@ -41,7 +41,7 @@ export default async function RegionalAgendasGrid({
     }
 
     return (
-        <SectionContainer padding={{ _type: 'section-padding', top: true, bottom: true }}>
+        <SectionContainer padding={{ top: true, bottom: true }}>
             {showHeader && (
                 <div className="text-center mb-12">
                     <div className="flex items-center justify-center gap-2 mb-4">

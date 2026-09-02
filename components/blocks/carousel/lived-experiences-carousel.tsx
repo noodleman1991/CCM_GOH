@@ -12,7 +12,7 @@ import Image from "next/image";
 import { imageUrl } from "@/lib/content/images";
 import { stegaClean } from "next-sanity";
 import { BackgroundOptionType } from "@/types/background-option";
-import { SectionPadding } from "@/sanity.types";
+import { SectionPadding } from "@/components/ui/section-container";
 import { VideoModal } from "@/components/blocks/video-modal";
 import { getLocalizedField } from "@/lib/localization-utils";
 import { normalizeTagColor, sortedTags } from "@/lib/tags";

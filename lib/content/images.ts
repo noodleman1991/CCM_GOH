@@ -28,6 +28,10 @@ export interface ImageUrlOptions {
   height?: number;
   /** Hotspot-aware crop via urlForCropped. Requires both width and height. */
   crop?: boolean;
+  /** Sanity CDN quality (0-100). Omitted by default, matching the builders'
+   *  own default; pass explicitly for a use case that needs to override it
+   *  (e.g. Open Graph images, which want the ceiling). */
+  quality?: number;
 }
 
 /**
@@ -46,16 +50,19 @@ export function imageUrl(image: ContentImage | unknown, opts: ImageUrlOptions = 
   if (!image) return "";
 
   try {
-    const { width, height, crop } = opts;
+    const { width, height, crop, quality } = opts;
     const source = image as SanitySource;
 
     if (crop && width && height) {
-      return urlForCropped(source, width, height).url() || "";
+      let builder = urlForCropped(source, width, height);
+      if (quality) builder = builder.quality(quality);
+      return builder.url() || "";
     }
 
     let builder = urlFor(source);
     if (width) builder = builder.width(width);
     if (height) builder = builder.height(height);
+    if (quality) builder = builder.quality(quality);
     return builder.url() || "";
   } catch {
     return "";
