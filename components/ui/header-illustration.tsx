@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import type { HubIllustration } from "@/lib/sanity/hub-illustrations";
+import type { HubIllustration } from "@/lib/content/illustrations";
 
 interface HeaderIllustrationProps {
   /** Resolved CMS illustration, or undefined when the slot isn't configured

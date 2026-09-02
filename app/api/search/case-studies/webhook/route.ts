@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { algoliaClient, ALGOLIA_INDICES, CaseStudySearchRecord } from '@/lib/algolia'
-import { cachedFetch as sanityFetch } from "@/sanity/lib/cached-fetch";
+import { getCaseStudyIndexDocById, type CaseStudyIndexDoc } from '@/lib/content/case-studies'
 
 const SEARCH_WEBHOOK_SECRET = process.env.SEARCH_WEBHOOK_SECRET
 
@@ -52,36 +52,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get updated case study data
-    const result = await sanityFetch({
-      query: `*[_type == "caseStudy" && _id == $id][0] {
-        _id,
-        title,
-        slug,
-        excerpt,
-        status,
-        featured,
-        publishedAt,
-        _updatedAt,
-        region,
-        themes,
-        populations,
-        authors[] {
-          name,
-          role,
-          affiliation->{name}
-        },
-        tags[]->{name},
-        studyLocation,
-        studyPeriod,
-        organizations[]->{name},
-        image {
-          asset->{url}
-        }
-      }`,
-      params: { id: _id },
-      tags: ['caseStudy']
-    })
-    const caseStudy = result.data
+    const caseStudy = await getCaseStudyIndexDocById(_id)
 
     if (!caseStudy) {
       // Case study doesn't exist, remove from index if present
@@ -154,24 +125,7 @@ export async function POST(request: NextRequest) {
 }
 
 /** Minimal shape of the Sanity case study payload consumed by the transform below. */
-interface SanityCaseStudy {
-  _id: string
-  title?: CaseStudySearchRecord['title'] | null
-  excerpt?: NonNullable<CaseStudySearchRecord['excerpt']> | null
-  slug?: { current?: string } | null
-  status?: CaseStudySearchRecord['status'] | null
-  featured?: boolean | null
-  publishedAt?: string | null
-  _updatedAt?: string | null
-  authors?: Array<{ name?: string | null; role?: string | null; affiliation?: { name?: string } | null }> | null
-  tags?: Array<{ name?: string | null }> | null
-  studyLocation?: { lat: number; lng: number } | null
-  studyPeriod?: { startDate: string; endDate: string } | null
-  organizations?: Array<{ name?: string | null }> | null
-  region?: string | null
-  themes?: string[] | null
-  populations?: string[] | null
-}
+type SanityCaseStudy = CaseStudyIndexDoc
 
 // Helper function to transform case study for Algolia indexing
 function transformCaseStudyForIndex(caseStudy: SanityCaseStudy): CaseStudySearchRecord | null {

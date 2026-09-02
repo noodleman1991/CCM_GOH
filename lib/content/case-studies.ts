@@ -1415,6 +1415,99 @@ export async function getCaseStudySearchRecords(): Promise<SearchRecord[]> {
 }
 
 // ---------------------------------------------------------------------------
+// Algolia search-index sync (app/api/search/case-studies/sync/route.ts,
+// app/api/search/case-studies/webhook/route.ts) — a raw index-shaped doc
+// distinct from CaseStudy above: the Algolia transform needs
+// region/themes/populations/studyLocation/studyPeriod, which the page-facing
+// projection doesn't select. The three original queries (full sync,
+// partial-by-ids sync, single-by-id webhook) selected an IDENTICAL field
+// list, just re-indented by copy-paste at each of the three call sites (see
+// news.ts's NewsIndexDoc for the same pattern); consolidated into one
+// fragment here (content character-identical, whitespace normalized). Both
+// routes already wrap their whole handler body in try/catch, so these keep
+// throwing (no safe()) — the route's existing catch is the original failure
+// behaviour.
+// ---------------------------------------------------------------------------
+
+export interface CaseStudyIndexDoc {
+  _id: string;
+  title?: { en: string; es?: string; fr?: string; ar?: string };
+  slug?: { current?: string };
+  excerpt?: { en: string; es?: string; fr?: string; ar?: string };
+  status?: "approved" | "pending" | "rejected";
+  featured?: boolean;
+  publishedAt?: string;
+  _updatedAt?: string;
+  region?: string;
+  themes?: string[];
+  populations?: string[];
+  authors?: Array<{ name?: string; role?: string; affiliation?: { name?: string } }>;
+  tags?: Array<{ name?: string }>;
+  studyLocation?: { lat: number; lng: number };
+  studyPeriod?: { startDate: string; endDate: string };
+  organizations?: Array<{ name?: string }>;
+  image?: { asset?: { url?: string } };
+}
+
+const CASE_STUDY_INDEX_FIELDS = `
+  _id,
+  title,
+  slug,
+  excerpt,
+  status,
+  featured,
+  publishedAt,
+  _updatedAt,
+  region,
+  themes,
+  populations,
+  authors[] {
+    name,
+    role,
+    affiliation->{name}
+  },
+  tags[]->{name},
+  studyLocation,
+  studyPeriod,
+  organizations[]->{name},
+  image {
+    asset->{url}
+  }
+`;
+
+export async function getApprovedCaseStudyIndexDocs(): Promise<CaseStudyIndexDoc[]> {
+  const rows = await query<CaseStudyIndexDoc[] | null>(
+    `*[_type == "caseStudy" && status == "approved"] {
+      ${CASE_STUDY_INDEX_FIELDS}
+    }`,
+  );
+  return rows ?? [];
+}
+
+export async function getCaseStudyIndexDocsByIds(ids: string[]): Promise<CaseStudyIndexDoc[]> {
+  const rows = await query<CaseStudyIndexDoc[] | null>(
+    `*[_type == "caseStudy" && _id in $ids] {
+      ${CASE_STUDY_INDEX_FIELDS}
+    }`,
+    { ids },
+  );
+  return rows ?? [];
+}
+
+export async function getCaseStudyIndexDocById(id: string): Promise<CaseStudyIndexDoc | null> {
+  return query<CaseStudyIndexDoc | null>(
+    `*[_type == "caseStudy" && _id == $id][0] {
+      ${CASE_STUDY_INDEX_FIELDS}
+    }`,
+    { id },
+  );
+}
+
+export async function getApprovedCaseStudyCount(): Promise<number> {
+  return query<number>(`count(*[_type == "caseStudy" && status == "approved"])`);
+}
+
+// ---------------------------------------------------------------------------
 // Community contribution rows (lib/community/region-data.ts) — call sites
 // found while auditing lib/community for Task 8's mandated
 // app/[locale]/onboarding + app/api/onboarding + app/api/profile +

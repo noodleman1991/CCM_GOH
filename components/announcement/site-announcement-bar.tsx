@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import { fetchSiteAnnouncement } from "@/sanity/lib/fetch";
+import { getSiteAnnouncement } from "@/lib/content/system";
 import { getLocalizedField } from "@/lib/localization-utils";
 import { announcementStyles, shouldShowAnnouncement, announcementKey } from "@/lib/announcement";
 import { AnnouncementDismiss } from "./announcement-dismiss";
@@ -13,12 +13,12 @@ type SupportedLocale = "en" | "es" | "fr" | "ar";
  * bar. Returns null when there's nothing to show.
  */
 export async function SiteAnnouncementBar({ locale }: { locale: string }) {
-  const announcement = await fetchSiteAnnouncement();
+  const announcement = await getSiteAnnouncement();
 
   if (!shouldShowAnnouncement(announcement)) return null;
 
   const supported = (["en", "es", "fr", "ar"].includes(locale) ? locale : "en") as SupportedLocale;
-  const message = getLocalizedField(announcement!.message, supported, "")?.trim();
+  const message = getLocalizedField(announcement!.message as never, supported, "")?.trim();
   if (!message) return null;
 
   const t = await getTranslations("announcement");
@@ -26,7 +26,7 @@ export async function SiteAnnouncementBar({ locale }: { locale: string }) {
   const key = announcementKey(message, announcement!.variant);
 
   const url = announcement!.link?.url;
-  const linkLabel = getLocalizedField(announcement!.link?.label, supported, "")?.trim();
+  const linkLabel = getLocalizedField(announcement!.link?.label as never, supported, "")?.trim();
 
   const inner = (
     <div className={cn("w-full px-4 py-2 text-center text-sm font-medium", styles.bar)}>

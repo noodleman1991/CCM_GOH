@@ -3,7 +3,7 @@ import { Suspense } from 'react'
 import { getTranslations } from 'next-intl/server'
 import GroupedSearch from '@/components/search/grouped-search'
 import { Skeleton } from '@/components/ui/skeleton'
-import { getHubIllustrations } from '@/lib/sanity/hub-illustrations'
+import { getHubIllustrations } from '@/lib/content/illustrations'
 import { HeaderIllustration } from '@/components/ui/header-illustration'
 
 // Force dynamic rendering to prevent SSR caching issues with search state

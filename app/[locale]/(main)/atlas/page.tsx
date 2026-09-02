@@ -4,7 +4,7 @@ import { getTranslations } from "next-intl/server";
 import { AtlasExplorer } from "@/components/atlas/atlas-explorer";
 import { getRegionArt } from "@/lib/maps/region-art";
 import { getThemeOptions } from "@/lib/maps/themes";
-import { getHubIllustrations } from "@/lib/sanity/hub-illustrations";
+import { getHubIllustrations } from "@/lib/content/illustrations";
 import { HeaderIllustration } from "@/components/ui/header-illustration";
 
 export async function generateMetadata({

@@ -18,7 +18,7 @@ import {
 import { heading } from "@/lib/design-tokens";
 import { cn } from "@/lib/utils";
 import PortableTextRenderer from "@/components/portable-text-renderer";
-import { fetchDocsChapters, fetchDocsChapter } from "@/sanity/queries/docs-reader";
+import { getDocsChapters, getDocsChapter } from "@/lib/content/system";
 import { ReaderNav } from "@/components/reader/reader-nav";
 import { ReaderToc } from "@/components/reader/reader-toc";
 import { ReaderFootnotes } from "@/components/reader/reader-footnotes";
@@ -34,7 +34,7 @@ export async function generateMetadata({
   const { slug } = await params;
   const current = slug?.[0];
   if (!current) return { title: "Global Research and Action Agenda" };
-  const chapter = await fetchDocsChapter(COLLECTION, current);
+  const chapter = await getDocsChapter(COLLECTION, current);
   return { title: chapter?.title ?? "Reader" };
 }
 
@@ -46,7 +46,7 @@ export default async function ReaderPage({
   const { locale, slug } = await params;
   const isRTL = locale === "ar";
 
-  const chapters = await fetchDocsChapters(COLLECTION);
+  const chapters = await getDocsChapters(COLLECTION);
   if (chapters.length === 0) {
     // Content not yet imported — show a calm placeholder rather than a 404.
     return (
@@ -68,7 +68,7 @@ export default async function ReaderPage({
   const idx = chapters.findIndex((c) => c.slug === currentSlug);
   if (idx === -1) notFound();
 
-  const chapter = await fetchDocsChapter(COLLECTION, currentSlug);
+  const chapter = await getDocsChapter(COLLECTION, currentSlug);
   if (!chapter) notFound();
 
   const prev = idx > 0 ? chapters[idx - 1] : null;

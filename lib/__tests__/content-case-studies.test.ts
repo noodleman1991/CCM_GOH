@@ -62,6 +62,10 @@ import {
   getCaseStudyOgData,
   getApprovedCaseStudyCountsBySubmitter,
   getApprovedCaseStudiesByContributor,
+  getApprovedCaseStudyIndexDocs,
+  getCaseStudyIndexDocsByIds,
+  getCaseStudyIndexDocById,
+  getApprovedCaseStudyCount,
   CaseStudyEditNotAllowedError,
   CaseStudyDraftNotFoundError,
 } from "@/lib/content/case-studies";
@@ -664,6 +668,50 @@ describe("getCaseStudySearchRecords", () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
     mockQuery.mockRejectedValue(new Error("network error"));
     await expect(getCaseStudySearchRecords()).resolves.toEqual([]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Algolia index docs (Task 10's case-studies/sync + case-studies/webhook
+// conversion) — mirrors news.ts's getPublishedNewsIndexDocs family.
+// ---------------------------------------------------------------------------
+
+describe("Algolia index docs", () => {
+  it("getApprovedCaseStudyIndexDocs returns approved docs from the source", async () => {
+    mockQuery.mockResolvedValue([{ _id: "cs1" }]);
+    await expect(getApprovedCaseStudyIndexDocs()).resolves.toEqual([{ _id: "cs1" }]);
+  });
+
+  it("getApprovedCaseStudyIndexDocs returns an empty list when the source resolves null", async () => {
+    mockQuery.mockResolvedValue(null);
+    await expect(getApprovedCaseStudyIndexDocs()).resolves.toEqual([]);
+  });
+
+  it("getCaseStudyIndexDocsByIds passes the id list through as a query param", async () => {
+    mockQuery.mockResolvedValue([{ _id: "cs1" }, { _id: "cs2" }]);
+    const result = await getCaseStudyIndexDocsByIds(["cs1", "cs2"]);
+    expect(result).toEqual([{ _id: "cs1" }, { _id: "cs2" }]);
+    expect(mockQuery).toHaveBeenCalledWith(expect.any(String), { ids: ["cs1", "cs2"] });
+  });
+
+  it("getCaseStudyIndexDocById returns the single doc from the source", async () => {
+    mockQuery.mockResolvedValue({ _id: "cs1" });
+    await expect(getCaseStudyIndexDocById("cs1")).resolves.toEqual({ _id: "cs1" });
+  });
+
+  it("getCaseStudyIndexDocById returns null when there's no match", async () => {
+    mockQuery.mockResolvedValue(null);
+    await expect(getCaseStudyIndexDocById("missing")).resolves.toBeNull();
+  });
+
+  it("getApprovedCaseStudyCount returns the count from the source", async () => {
+    mockQuery.mockResolvedValue(7);
+    await expect(getApprovedCaseStudyCount()).resolves.toBe(7);
+  });
+
+  it("throws (does not degrade) when the source fails — the sync/webhook routes' own try/catch is the original failure behaviour", async () => {
+    mockQuery.mockRejectedValue(new Error("upstream 500"));
+    await expect(getApprovedCaseStudyIndexDocs()).rejects.toThrow("upstream 500");
   });
 });
 

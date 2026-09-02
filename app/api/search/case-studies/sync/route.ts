@@ -1,54 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { algoliaClient, ALGOLIA_INDICES, CaseStudySearchRecord } from '@/lib/algolia'
-import { cachedFetch as sanityFetch } from "@/sanity/lib/cached-fetch";
-
-// Sanity query to get approved case studies
-const CASE_STUDIES_QUERY = `*[_type == "caseStudy" && status == "approved"] {
-  _id,
-  title,
-  slug,
-  excerpt,
-  status,
-  featured,
-  publishedAt,
-  _updatedAt,
-  region,
-  themes,
-  populations,
-  authors[] {
-    name,
-    role,
-    affiliation->{name}
-  },
-  tags[]->{name},
-  studyLocation,
-  studyPeriod,
-  organizations[]->{name},
-  image {
-    asset->{url}
-  }
-}`
+import {
+  getApprovedCaseStudyIndexDocs,
+  getCaseStudyIndexDocsByIds,
+  getApprovedCaseStudyCount,
+  type CaseStudyIndexDoc,
+} from '@/lib/content/case-studies'
 
 /** Minimal shape of the Sanity case study payload consumed by the transform below. */
-interface SanityCaseStudy {
-  _id: string
-  title?: CaseStudySearchRecord['title'] | null
-  excerpt?: NonNullable<CaseStudySearchRecord['excerpt']> | null
-  slug?: { current?: string } | null
-  status?: CaseStudySearchRecord['status'] | null
-  featured?: boolean | null
-  publishedAt?: string | null
-  _updatedAt?: string | null
-  authors?: Array<{ name?: string | null; role?: string | null; affiliation?: { name?: string } | null }> | null
-  tags?: Array<{ name?: string | null }> | null
-  studyLocation?: { lat: number; lng: number } | null
-  studyPeriod?: { startDate: string; endDate: string } | null
-  organizations?: Array<{ name?: string | null }> | null
-  region?: string | null
-  themes?: string[] | null
-  populations?: string[] | null
-}
+type SanityCaseStudy = CaseStudyIndexDoc
 
 export async function POST(request: NextRequest) {
   try {
@@ -73,18 +34,14 @@ export async function POST(request: NextRequest) {
 
     if (type === 'full') {
       // Full sync - get all approved case studies
-      const result = await sanityFetch({
-        query: CASE_STUDIES_QUERY,
-        tags: ['caseStudy']
-      })
-      const caseStudies = result.data || []
+      const caseStudies = await getApprovedCaseStudyIndexDocs()
 
       console.log(`Starting full sync of ${caseStudies.length} case studies to Algolia`)
 
       // Transform case studies for indexing
       const records: CaseStudySearchRecord[] = caseStudies
         .map((caseStudy: SanityCaseStudy) => transformCaseStudyForIndex(caseStudy))
-        .filter(Boolean)
+        .filter((r): r is CaseStudySearchRecord => r !== null)
 
       if (records.length > 0) {
         // Replace all records atomically
@@ -117,36 +74,7 @@ export async function POST(request: NextRequest) {
 
     } else if (type === 'partial' && caseStudyIds.length > 0) {
       // Partial sync - specific case studies
-      const result = await sanityFetch({
-        query: `*[_type == "caseStudy" && _id in $ids] {
-          _id,
-          title,
-          slug,
-          excerpt,
-          status,
-          featured,
-          publishedAt,
-          _updatedAt,
-  region,
-  themes,
-  populations,
-          authors[] {
-            name,
-            role,
-            affiliation->{name}
-          },
-          tags[]->{name},
-          studyLocation,
-          studyPeriod,
-          organizations[]->{name},
-          image {
-            asset->{url}
-          }
-        }`,
-        params: { ids: caseStudyIds },
-        tags: ['caseStudy']
-      })
-      const caseStudies = result.data || []
+      const caseStudies = await getCaseStudyIndexDocsByIds(caseStudyIds)
 
       const toIndex: CaseStudySearchRecord[] = []
       const toDelete: string[] = []
@@ -222,11 +150,7 @@ export async function GET() {
     }
 
     // Get total approved case studies from Sanity
-    const result = await sanityFetch({
-      query: `count(*[_type == "caseStudy" && status == "approved"])`,
-      tags: ['caseStudy']
-    })
-    const approvedCaseStudies = result.data || 0
+    const approvedCaseStudies = await getApprovedCaseStudyCount()
 
     return NextResponse.json({
       indexStats: {
