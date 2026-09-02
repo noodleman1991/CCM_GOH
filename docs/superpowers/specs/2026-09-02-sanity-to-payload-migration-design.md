@@ -261,7 +261,11 @@ Also dropped: the six `divider_*` fields (Studio-only spacers rendering `input: 
 
 Resolve in Phase 0, before export.
 
-1. **`whyJoinCTA` type mismatch — blocks the import.** The field is declared `type: "hero-1"`; every `regionalCommunityPage` document stores `_type: "cta-1"`. Sanity tolerates this and the frontend works because renderers read the stored `_type`, not the declared one. Payload cannot: a field typed as one block cannot hold another. Not deferrable.
+1. **`whyJoinCTA` type mismatch — normalised at import, not in Sanity.** The field is declared `type: "hero-1"`; every `regionalCommunityPage` document stores `_type: "cta-1"`. Sanity tolerates this and the frontend works because renderers read the stored `_type`, not the declared one. Payload cannot: a field typed as one block cannot hold another.
+
+   **The declaration is the correct half.** The stored field set is hero-1's: `image` in 24 of 28 documents and `imagePosition` in 20, neither of which `cta-1` declares. `sanity.types.ts` also generates `whyJoinCTA?: Hero1`, and the GROQ projection selects hero-1 fields. Redeclaring the field as `cta-1` would hide `image` and `imagePosition` in the Studio, and Sanity strips undeclared fields on save — so the first editor to open and save a regional page would silently drop its hero image.
+
+   **Resolution:** leave Sanity untouched. The Phase 2 importer maps `whyJoinCTA._type === "cta-1"` onto the hero-1 Payload block. Rewriting `_type` on 28 production documents to tidy a system being decommissioned is risk without benefit. Phase 0 pins the mismatch with a test and a schema comment so nobody reconciles it the wrong way.
 
 2. **Malformed lived-experience tags.** 33 of the 35 published documents hold string tags where the schema declares a reference array — legacy backfill residue. Patch script already queued.
 

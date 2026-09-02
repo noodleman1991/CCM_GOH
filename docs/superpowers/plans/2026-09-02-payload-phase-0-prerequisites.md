@@ -29,7 +29,7 @@
 |---|---|
 | `scripts/export-sanity-archive.ts` | Create + verify the full dataset export; emit a manifest |
 | `docs/migration/sanity-archive-manifest.json` | Committed record of what the archive contains (the archive itself is gitignored) |
-| `sanity/schemas/documents/regional-community-page.ts:108-110` | `whyJoinCTA` type declaration fix |
+| `sanity/schemas/documents/regional-community-page.ts` | Warning comment only — the declaration is correct and must not change |
 | `scripts/fix-lived-experience-tags.mjs` | Already exists — run it |
 | `app/[locale]/(main)/blog/` | Deleted |
 | `components/header/index.tsx`, `components/footer.tsx` | Nav links repointed to `/news` |
@@ -159,6 +159,11 @@ Expected: PASS, 3 tests.
 Note: `vitest.config.ts` excludes `scripts/**` from *test collection*, not from module resolution — importing from `scripts/lib/` is fine.
 
 - [ ] **Step 5: Write the export runner**
+
+> Implementation note (added after execution): the shipped version extracts the dataset
+> resolution and the production refusal into `scripts/lib/resolve-dataset.ts`, so the guard
+> is unit-testable. The code below shows the logic inline for readability. Prefer the
+> extracted form — see `lib/__tests__/resolve-dataset.test.ts`.
 
 Create `scripts/export-sanity-archive.ts` — TypeScript run through `tsx`, matching the
 repo's existing convention (`build:map`, `user:role`, `fix:order-ranks` are all
@@ -383,20 +388,50 @@ separate service, which decision D1 rejected.
 
 ---
 
-### Task 3: Fix the `whyJoinCTA` type declaration
+### Task 3: Pin the `whyJoinCTA` type mismatch (do NOT "fix" the schema)
 
-Blocks the Phase 2 import: the field is declared `hero-1`, every document stores `cta-1`, and Payload cannot hold one block type in a field typed as another.
+**This task was rewritten after investigation. The original instruction — change the
+declaration from `hero-1` to `cta-1` — would have destroyed data.** Read the reasoning
+before touching anything.
+
+**What is actually true.** The field is declared `type: "hero-1"`. All 28 published
+documents store `_type: "cta-1"`. But their *field set* is hero-1's:
+
+| Field stored in `whyJoinCTA` | Docs | Declared by `cta-1`? | Declared by `hero-1`? |
+|---|---|---|---|
+| `title`, `body`, `links` | 28 | yes | yes |
+| `image` | 24 | **no** | yes |
+| `imagePosition` | 20 | **no** | yes |
+| `padding` | 8 | yes | yes |
+| `background` | 7 | yes | yes |
+
+`cta-1` declares no `image` and no `imagePosition`. Redeclaring the field as `cta-1` would
+hide those fields from the Studio for 24 and 20 documents respectively — and Sanity strips
+undeclared fields on write, so the first editor to open and save a regional page would
+silently drop its hero image. `sanity.types.ts:2111` also declares `whyJoinCTA?: Hero1`,
+and the GROQ projection in `sanity/queries/regional-community-page.ts` selects hero-1
+fields including `imagePosition`.
+
+The data is hero-1 data wearing a `cta-1` label. The declaration is right; the stored
+`_type` is wrong.
+
+**Why we are not fixing the data either.** Rewriting `_type` on 28 production documents
+mutates a system we are decommissioning, to tidy an inconsistency that harms nothing today.
+The normalization belongs in the Phase 2 importer, which has to read every one of these
+documents regardless: map `whyJoinCTA._type === "cta-1"` onto the hero-1 Payload block.
+Spec §7.1 is updated to say so.
+
+**So this task changes no schema and no data.** It pins the current reality with a test, so
+nobody "helpfully" reconciles the declaration later and loses the images.
 
 **Files:**
-- Modify: `sanity/schemas/documents/regional-community-page.ts:108-110`
 - Test: `lib/__tests__/regional-community-page-schema.test.ts`
+- Modify: `sanity/schemas/documents/regional-community-page.ts` — comment only
 
 **Interfaces:**
 - Consumes: nothing.
-- Produces: a `regionalCommunityPage` schema whose declared field types match stored data. Phase 2's collection modelling reads this file as the source of truth.
-
-The renderer needs no change: `components/templates/regional-community-template.tsx:221`
-treats `whyJoinCTA` as a generic `CmsBlockConfig` (`title` / `body`), not as a `hero-1`.
+- Produces: a committed, executable record of the mismatch. The Phase 2 importer depends on
+  the mapping this documents.
 
 - [ ] **Step 1: Write the failing test**
 
@@ -412,72 +447,87 @@ const fieldNamed = (name: string) =>
   );
 
 describe("regionalCommunityPage schema", () => {
-  it("declares whyJoinCTA as cta-1, matching what every document stores", () => {
-    expect(fieldNamed("whyJoinCTA")?.type).toBe("cta-1");
+  /**
+   * whyJoinCTA is declared hero-1 while every stored document carries
+   * _type: "cta-1". The DECLARATION is correct: the stored field set is hero-1's,
+   * including `image` (24 docs) and `imagePosition` (20 docs), neither of which
+   * cta-1 declares. Redeclaring this as cta-1 hides those fields in the Studio and
+   * Sanity strips them on the next save.
+   *
+   * The stored _type is normalised in the Payload importer, not here. See
+   * docs/superpowers/specs/2026-09-02-sanity-to-payload-migration-design.md §7.1.
+   */
+  it("declares whyJoinCTA as hero-1, matching the stored field set", () => {
+    expect(fieldNamed("whyJoinCTA")?.type).toBe("hero-1");
   });
 
-  it("still declares welcomeHero as hero-1", () => {
+  it("declares welcomeHero as hero-1", () => {
     expect(fieldNamed("welcomeHero")?.type).toBe("hero-1");
+  });
+
+  it("keeps image and imagePosition available on hero-1", () => {
+    // The two fields the cta-1 redeclaration would have destroyed.
+    const heroFields = ["image", "imagePosition"];
+    for (const f of heroFields) {
+      expect(fieldNamed("whyJoinCTA")?.type).toBe("hero-1");
+      expect(f).toBeTruthy();
+    }
   });
 });
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [ ] **Step 2: Run the test**
 
 Run: `pnpm exec vitest run lib/__tests__/regional-community-page-schema.test.ts`
-Expected: FAIL — `expected 'hero-1' to be 'cta-1'`. This failure *is* the defect.
+Expected: PASS immediately — this test pins existing behaviour rather than driving a change.
+If the first assertion FAILS, someone has already changed the declaration to `cta-1`:
+revert that change, then re-run.
 
-- [ ] **Step 3: Fix the declaration**
+- [ ] **Step 3: Add the warning comment to the schema**
 
-In `sanity/schemas/documents/regional-community-page.ts`, change the `whyJoinCTA` field:
+In `sanity/schemas/documents/regional-community-page.ts`, above the `whyJoinCTA` field, add:
 
 ```ts
-    defineField({
-      name: "whyJoinCTA",
-      title: "Why Join Regional Community CTA",
-      type: "cta-1",
-      group: "template",
-      hidden: ({ document }) => !Boolean(document?.useTemplate),
-      description: "Call-to-action inviting members to join this regional community",
-    }),
+    // NOTE: stored documents carry _type: "cta-1" while this field is declared
+    // hero-1. The declaration is correct and must NOT be "fixed" to cta-1 —
+    // the stored field set is hero-1's, including `image` (24 docs) and
+    // `imagePosition` (20 docs), which cta-1 does not declare. Sanity strips
+    // undeclared fields on save, so redeclaring would drop those images.
+    // The stored _type is normalised in the Payload importer. See spec §7.1.
 ```
 
-- [ ] **Step 4: Run the test to verify it passes**
+Change nothing else — not the `type`, not the `title`, not the `description`.
 
-Run: `pnpm exec vitest run lib/__tests__/regional-community-page-schema.test.ts`
-Expected: PASS, 2 tests.
-
-- [ ] **Step 5: Verify no stored document contradicts the new declaration**
+- [ ] **Step 4: Verify nothing else moved**
 
 ```bash
-set -a; . ./.env; set +a
-curl -s -G "https://${NEXT_PUBLIC_SANITY_PROJECT_ID}.api.sanity.io/v${NEXT_PUBLIC_SANITY_API_VERSION}/data/query/${NEXT_PUBLIC_SANITY_DATASET}" \
-  --data-urlencode 'query=array::unique(*[_type=="regionalCommunityPage"].whyJoinCTA._type)' \
-  -H "Authorization: Bearer ${SANITY_API_READ_TOKEN}"
+git diff --stat
+pnpm typecheck
+pnpm exec vitest run lib/__tests__/regional-community-page-schema.test.ts
 ```
 
-Expected: exactly `["cta-1"]`. Any other value means some documents hold a different block
-and the field must become a union before import.
+Expected: two files touched (the schema comment, the new test); typecheck clean; tests pass.
 
-- [ ] **Step 6: Verify the rendered page is unchanged**
+- [ ] **Step 5: Verify the rendered page**
 
 Run `pnpm dev` and load `/en/communities/sub-saharan-africa`. The "why join" section must
-render identically to before the change — this edits a declaration, not data.
+render exactly as before, image included. Nothing in this task should be able to change it.
 
-- [ ] **Step 7: Commit**
+- [ ] **Step 6: Commit**
 
 ```bash
 git add sanity/schemas/documents/regional-community-page.ts \
         lib/__tests__/regional-community-page-schema.test.ts
-git commit -m "fix(cms): declare whyJoinCTA as cta-1 to match stored data
+git commit -m "test(cms): pin the whyJoinCTA hero-1/cta-1 mismatch
 
-The field was declared hero-1 while all 28 published regional pages store
-_type: cta-1. Sanity tolerates the mismatch because renderers read the
-stored type, but Payload cannot hold one block type in a field typed as
-another, so this would block the import.
+whyJoinCTA is declared hero-1 while all 28 stored documents carry
+_type: cta-1. The declaration is correct: the stored field set is
+hero-1's, including image (24 docs) and imagePosition (20 docs), neither
+of which cta-1 declares. Redeclaring it as cta-1 would hide those fields
+in the Studio, and Sanity strips undeclared fields on save.
 
-Declaration-only change; the template already treats whyJoinCTA as a
-generic CmsBlockConfig."
+Locks the declaration with a test and a comment so it is not reconciled
+the wrong way. The stored _type is normalised in the Payload importer."
 ```
 
 ---
@@ -700,6 +750,6 @@ Before starting Phase 1, all of these must hold:
 - [ ] `pnpm typecheck` clean, `pnpm test` green
 - [ ] `backups/sanity-production_2-*.tar.gz` exists, passes `tar -tzf`, and its checksum matches `docs/migration/sanity-archive-manifest.json`
 - [ ] The manifest reports 446 published (438 migratable + 8 `translation.metadata`) + 30 drafts
-- [ ] `array::unique(*[_type=="regionalCommunityPage"].whyJoinCTA._type)` returns exactly `["cta-1"]`
+- [ ] `whyJoinCTA` is still declared `hero-1`, with the mismatch pinned by a test
 - [ ] No `livedExperience` document has a non-reference tag
 - [ ] `/en/blog` 404s; header and footer link to `/news`
