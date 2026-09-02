@@ -13,9 +13,9 @@ import Image from "next/image";
 import { imageUrl } from "@/lib/content/images";
 import { cn } from "@/lib/utils";
 import { heading } from "@/lib/design-tokens";
-import { PAGE_QUERY_RESULT } from "@/sanity.types";
 import { getLocalizedField } from "@/lib/localization-utils";
 import { type BackgroundOptionType } from "@/types/background-option";
+import type { SectionPadding } from "@/components/ui/section-container";
 
 const CAROUSEL_SIZES = {
   one: "basis-full",
@@ -43,13 +43,28 @@ const SIZES_ATTR = {
 
 type CarouselSize = keyof typeof CAROUSEL_SIZES;
 
-type Carousel1 = Extract<
-  NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number],
-  { _type: "carousel-1" }
->;
+/** A field that carries either a plain string or a `{en, es, fr, ar}` map —
+ *  the shape `getLocalizedField` resolves. Matches the precedent already
+ *  used for this exact pattern in lib/content/discovery.ts's LocalizedText. */
+type LocalizedText = string | Record<string, string> | null;
 
-interface Carousel1Props
-  extends Omit<NonNullable<Carousel1>, "_type" | "_key"> {
+interface Carousel1Image {
+  alt?: string | null;
+  asset?: {
+    _id?: string;
+    metadata?: {
+      lqip?: string | null;
+      dimensions?: { width?: number | null; height?: number | null } | null;
+    } | null;
+  } | null;
+}
+
+interface Carousel1Props {
+  title?: LocalizedText;
+  description?: LocalizedText;
+  background?: unknown;
+  padding?: SectionPadding | null;
+  images?: Carousel1Image[] | null;
   size: CarouselSize | null;
   indicators: "none" | "dots" | "count" | null;
   locale?: string;

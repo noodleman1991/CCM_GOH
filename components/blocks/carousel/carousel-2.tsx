@@ -12,17 +12,42 @@ import { Card, CardContent } from "@/components/ui/card";
 import { imageUrl } from "@/lib/content/images";
 import { StarRating } from "@/components/ui/star-rating";
 import PortableTextRenderer from "@/components/portable-text-renderer";
-import { PAGE_QUERY_RESULT } from "@/sanity.types";
 import { getLocalizedField, getLocalizedPortableText } from "@/lib/localization-utils";
 import { cn } from "@/lib/utils";
 import { heading } from "@/lib/design-tokens";
+import type { SectionPadding } from "@/components/ui/section-container";
 
-type Carousel2Props = Extract<
-  NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number],
-  { _type: "carousel-2" }
-> & {
+/** A field that carries either a plain string or a `{en, es, fr, ar}` map —
+ *  the shape `getLocalizedField` resolves. Matches the precedent already
+ *  used for this exact pattern in lib/content/discovery.ts's LocalizedText. */
+type LocalizedText = string | Record<string, string> | null;
+
+interface Carousel2Testimonial {
+  _id: string;
+  name?: string | null;
+  image?: {
+    asset?: {
+      _id?: string;
+      metadata?: {
+        lqip?: string | null;
+        dimensions?: { width?: number | null; height?: number | null } | null;
+      } | null;
+    } | null;
+  } | null;
+  rating?: number | null;
+  title?: LocalizedText;
+  quote?: unknown;
+  organization?: { name?: string | null } | null;
+  relatedCommunity?: { name?: string | null } | null;
+}
+
+interface Carousel2Props {
+  title?: LocalizedText;
+  description?: LocalizedText;
+  padding?: SectionPadding | null;
+  testimonial?: Carousel2Testimonial[] | null;
   locale?: string;
-};
+}
 
 export default function Carousel2({
   title,
