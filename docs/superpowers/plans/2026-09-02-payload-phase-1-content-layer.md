@@ -927,6 +927,12 @@ const ALLOWED = [
   "app/studio/[[...tool]]/page.tsx",
   "app/api/draft-mode/enable/route.ts",
   "components/disable-draft-mode.tsx",
+  // Inbound-webhook HMAC verification (`isValidSignature`), not content access.
+  // These two routes are replaced wholesale by in-process afterChange hooks in
+  // Phase 3 (spec §2, "Search + cache"), so insulating them would be work on
+  // code already slated for deletion.
+  "app/api/webhooks/sanity/route.ts",
+  "app/api/search/news/webhook/route.ts",
 ];
 
 describe("content layer boundary", () => {
