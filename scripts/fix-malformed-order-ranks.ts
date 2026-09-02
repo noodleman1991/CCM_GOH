@@ -45,6 +45,19 @@ const args = process.argv.slice(2);
 const EXECUTE = args.includes("--execute");
 const DATASET = args.find((a) => a.startsWith("--dataset="))?.split("=")[1] || "production_2";
 
+// Writing to production must be deliberate. This script defaults to
+// production_2 and, when executed, patches orderRank on production
+// documents — so an accidental --execute is destructive. Mirrors the
+// refusal in scripts/fix-lived-experience-tags.mjs.
+const ackProd = args.includes("--i-understand-this-is-production");
+if (EXECUTE && DATASET === "production_2" && !ackProd) {
+  console.error(
+    "Refusing: --execute against production_2 without acknowledgement.\n" +
+      "Dry-run first, then pass --i-understand-this-is-production to apply."
+  );
+  process.exit(1);
+}
+
 const client = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
   dataset: DATASET,

@@ -28,6 +28,19 @@ dotenv.config({ path: join(__dirname, "../.env") });
 const EXECUTE = process.argv.includes("--execute");
 const DATASET = process.argv.find((a) => a.startsWith("--dataset="))?.split("=")[1] || "production_2";
 
+// Writing to production must be deliberate. This script defaults to
+// production_2 and, when executed, patches approved case study documents —
+// so an accidental --execute is destructive. Mirrors the refusal in
+// scripts/fix-lived-experience-tags.mjs.
+const ackProd = process.argv.includes("--i-understand-this-is-production");
+if (EXECUTE && DATASET === "production_2" && !ackProd) {
+  console.error(
+    "Refusing: --execute against production_2 without acknowledgement.\n" +
+      "Dry-run first, then pass --i-understand-this-is-production to apply."
+  );
+  process.exit(1);
+}
+
 const client = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
   dataset: DATASET,
