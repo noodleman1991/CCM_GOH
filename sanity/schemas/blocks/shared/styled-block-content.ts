@@ -71,7 +71,6 @@ export default defineType({
                                 name: "reference",
                                 type: "reference",
                                 to: [
-                                    { type: "post" },
                                     { type: "page" },
                                     { type: "caseStudy" },
                                     { type: "agenda" },

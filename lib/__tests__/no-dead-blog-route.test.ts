@@ -9,11 +9,11 @@ describe("the dead /blog route is gone", () => {
   });
 
   it("does not link to /blog from the header", () => {
-    expect(readFileSync("components/header/index.tsx", "utf8")).not.toContain('"/blog"');
+    expect(readFileSync("components/header/index.tsx", "utf8")).not.toMatch(/["'`]\/blog/);
   });
 
   it("does not link to /blog from the footer", () => {
-    expect(readFileSync("components/footer.tsx", "utf8")).not.toContain('"/blog"');
+    expect(readFileSync("components/footer.tsx", "utf8")).not.toMatch(/["'`]\/blog/);
   });
 
   it("does not emit /blog URLs in the sitemap", () => {
