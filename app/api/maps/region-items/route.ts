@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { client } from "@/sanity/lib/client";
 import { isRegionCode, RC_SLUG_TO_REGION, REGION_CODES as REGION_CODES_ORDER, REGION_TO_RC_SLUG } from "@/lib/maps/region-codes";
 import { parseWhen, whenFilter } from "@/lib/maps/date-filter";
-import { qFilter, regionMatchFilter, statusFilter, themeFilter } from "@/lib/maps/content-filter";
 import { alpha3sForRegion } from "@/lib/maps/iso-to-region";
+import { getRegionFacetItems, getRegionHighlightItems, getRegionRecentItems, type RegionHighlightItemRow } from "@/lib/content/regions";
 
 // Content for a selected region/facet(s), as cards for the Atlas panel (D2, E1).
 // `?region=<code>&facet=caseStudyCount|livedExpCount|newsCount|agendaCount` —
@@ -48,28 +47,9 @@ function typesForFacetParam(facetParam: string | null): string[] {
 const MAX_RECENT_LIMIT = 12;
 const DEFAULT_RECENT_LIMIT = 6;
 
-// Image + LQIP projection: caseStudy/newsPost use `image`, researchOutput uses
-// `coverImage`, livedExperience has neither general field (thumbnail is
-// video-only) — `image` resolves to null for it, and the card falls back to
-// the LocaleMap/tinted placeholder (spec E1).
-const IMAGE_PROJECTION = `"image": coalesce(image.asset->url, coverImage.asset->url), "imageLqip": coalesce(image.asset->metadata.lqip, coverImage.asset->metadata.lqip)`;
-
-// Place text + ISO alpha-3, per type's actual schema fields (verified against
-// sanity/schemas/documents/{case-study,lived-experience,news-post}.ts):
-//   - caseStudy: legacy scalar fields `locationDisplayText` (preferred) or
-//     `locationText.city`/`.country`, `locationCountryCode`.
-//   - livedExperience / newsPost: the shared `place` object (`place.text`,
-//     `place.countryCode`).
-//   - researchOutput: no place fields — always null (card omits the line).
-const PLACE_PROJECTION = (type: string) =>
-  type === "caseStudy"
-    ? `"place": coalesce(locationDisplayText, locationText.city, locationText.country), "countryCode3": locationCountryCode`
-    : type === "livedExperience" || type === "newsPost"
-      ? `"place": place.text, "countryCode3": place.countryCode`
-      : `"place": null, "countryCode3": null`;
-
-// Status/theme/q/region predicates come from lib/maps/content-filter — the
-// shared trust-contract fragments (counts = cards = pins).
+// The IMAGE_PROJECTION/PLACE_PROJECTION fragments and the status/theme/q/region
+// predicates (lib/maps/content-filter) now live alongside the actual fetches in
+// lib/content/regions.ts (Phase 1 content-layer migration, Task 7).
 
 export async function GET(req: NextRequest) {
   const region = req.nextUrl.searchParams.get("region") || "";
@@ -88,24 +68,10 @@ export async function GET(req: NextRequest) {
     const hlTypes = typesForFacetParam(req.nextUrl.searchParams.get("facet"));
     try {
       const perType = await Promise.all(
-        hlTypes.map((type) =>
-          client.fetch(
-            `*[_type == $type${statusFilter(type)}${themeFilter(hlTheme)}${qFilter(hlQ)}${hlWhen.filter} && defined(coalesce(studyLocation, place.point, locationCountryCode, place.countryCode))] | order(coalesce(publishedAt, publishDate, _createdAt) desc)[0...30]{
-              "id": _id,
-              "type": _type,
-              "title": coalesce(title.en, title, ""),
-              "slug": slug.current,
-              ${IMAGE_PROJECTION},
-              ${PLACE_PROJECTION(type)},
-              "date": coalesce(publishedAt, publishDate, _createdAt),
-              "regionKey": coalesce(region, relatedCommunity->slug.current, relatedCommunities[0]->slug.current)
-            }`,
-            { type, theme: hlTheme, q: hlQ, ...hlWhen.params }
-          )
-        )
+        hlTypes.map((type) => getRegionHighlightItems(type, { theme: hlTheme, q: hlQ, when: hlWhen }))
       );
-      const byRegion = new Map<string, Record<string, unknown> & { date: string | null }>();
-      for (const item of perType.flat() as Array<Record<string, unknown> & { date: string | null; regionKey?: string | null }>) {
+      const byRegion = new Map<string, RegionHighlightItemRow & { region: string }>();
+      for (const item of perType.flat()) {
         const key = item.regionKey ?? "";
         const code = isRegionCode(key) ? key : RC_SLUG_TO_REGION[key];
         if (!code) continue;
@@ -143,20 +109,7 @@ export async function GET(req: NextRequest) {
 
     try {
       const perType = await Promise.all(
-        recentTypes.map((type) =>
-          client.fetch(
-            `*[_type == $type${statusFilter(type)}${themeFilter(recentTheme)}${qFilter(recentQ)}${recentWhen.filter} && defined(coalesce(studyLocation, place.point, locationCountryCode, place.countryCode))] | order(coalesce(publishedAt, publishDate, _createdAt) desc)[0...${limit}]{
-              "id": _id,
-              "type": _type,
-              "title": coalesce(title.en, title, ""),
-              "slug": slug.current,
-              ${IMAGE_PROJECTION},
-              ${PLACE_PROJECTION(type)},
-              "date": coalesce(publishedAt, publishDate, _createdAt)
-            }`,
-            { type, theme: recentTheme, q: recentQ, ...recentWhen.params }
-          )
-        )
+        recentTypes.map((type) => getRegionRecentItems(type, { theme: recentTheme, q: recentQ, when: recentWhen, limit }))
       );
       const items = perType
         .flat()
@@ -199,20 +152,7 @@ export async function GET(req: NextRequest) {
 
   try {
     const perType = await Promise.all(
-      types.map((type) =>
-        client.fetch(
-          `*[_type == $type${statusFilter(type)}${regionMatchFilter()}${themeFilter(theme)}${qFilter(q)}${when.filter}] | order(coalesce(publishedAt, publishDate, _createdAt) desc)[0...12]{
-            "id": _id,
-            "type": _type,
-            "title": coalesce(title.en, title, ""),
-            "slug": slug.current,
-            ${IMAGE_PROJECTION},
-            ${PLACE_PROJECTION(type)},
-            "date": coalesce(publishedAt, publishDate, _createdAt)
-          }`,
-          { type, region, slug, regionCountries, themeSlug: theme, q, ...when.params }
-        )
-      )
+      types.map((type) => getRegionFacetItems(type, { region, slug, regionCountries, theme, q, when }))
     );
     // Single facet: preserve the original per-type-query order (newest first
     // within that type). Multiple: merge + re-sort by date so the strip reads

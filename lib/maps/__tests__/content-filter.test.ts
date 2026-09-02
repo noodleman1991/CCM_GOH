@@ -48,22 +48,32 @@ describe("content-filter fragments (atlas trust contract)", () => {
 });
 
 describe("map routes compose ONLY the shared fragments (no inline drift)", () => {
+  // The GROQ itself (and so the status/theme/q/region predicate composition)
+  // moved from these three route files into lib/content/regions.ts as part of
+  // the Sanity→Payload content-layer migration (Phase 1, Task 7) — the routes
+  // now call getRegion{Items,FacetItems,PinRows,FacetCounts,HighlightItems}
+  // instead of building GROQ strings themselves. The trust contract this
+  // guards — counts = cards = pins, one shared source of the predicates — is
+  // unchanged; only which file imports lib/maps/content-filter moved.
   const routes = ["region-data", "region-items", "region-pins"].map((name) =>
     join(process.cwd(), "app", "api", "maps", name, "route.ts")
   );
+  const regionsModule = join(process.cwd(), "lib", "content", "regions.ts");
 
-  for (const route of routes) {
+  it("lib/content/regions.ts imports lib/maps/content-filter", () => {
+    const src = readFileSync(regionsModule, "utf8");
+    expect(src).toContain('from "@/lib/maps/content-filter"');
+  });
+
+  for (const route of [...routes, regionsModule]) {
     const src = readFileSync(route, "utf8");
     const name = route.split("/").slice(-2)[0];
 
-    it(`${name} imports lib/maps/content-filter`, () => {
-      expect(src).toContain('from "@/lib/maps/content-filter"');
-    });
-
     it(`${name} has no inline status/theme/q/region predicate literals`, () => {
-      // Any of these literals appearing in a route means someone re-inlined a
-      // predicate instead of extending lib/maps/content-filter — the exact
-      // drift that breaks counts = cards = pins.
+      // Any of these literals appearing outside content-filter.ts means
+      // someone re-inlined a predicate instead of extending
+      // lib/maps/content-filter — the exact drift that breaks
+      // counts = cards = pins.
       expect(src).not.toMatch(/status == "approved"/);
       expect(src).not.toMatch(/\$themeSlug in tags\[\]->value\.current/);
       expect(src).not.toMatch(/match \$q \+ "\*"/);

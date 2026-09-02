@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { client } from "@/sanity/lib/client";
 import { prisma, safeQuery } from "@/lib/prisma";
 import { REGION_CODES, RC_SLUG_TO_REGION, isRegionCode, type RegionCode } from "@/lib/maps/region-codes";
 import { aggregateRegionData, FACET_TO_CONTENT_TYPE, parseLayers, type FacetId } from "@/lib/maps/region-facets";
 import { getThemeOptions } from "@/lib/maps/themes";
 import { parseWhen, whenFilter, type WhenFilter } from "@/lib/maps/date-filter";
-import { qFilter, statusFilter, themeFilter } from "@/lib/maps/content-filter";
 import { isoToRegion } from "@/lib/maps/iso-to-region";
+import { getRegionFacetCounts } from "@/lib/content/regions";
 
 // Counts change slowly; cache for 5 minutes.
 export const revalidate = 300;
@@ -30,33 +29,20 @@ async function countsForFacet(
   const type = FACET_TO_CONTENT_TYPE[facet];
   let total = 0;
   if (type) {
-    // Shared predicates (lib/maps/content-filter) — the trust contract:
-    // counts, cards and pins compose the SAME fragments.
-    const filters = statusFilter(type) + themeFilter(theme) + qFilter(q);
-    // Region attribution mirrors region-items'/region-pins' regionMatchFilter:
-    // a doc belongs to a region via its `region` short code, any referenced
-    // community (singular `relatedCommunity` or plural `relatedCommunities[]`),
-    // OR — country-derived branch, 2026-08-05 — a country code that implies a
+    // The GROQ itself (shared status/theme/q predicates, no region predicate —
+    // `rows.length` doubles as the facet's GLOBAL total, L2, the chip total
+    // that must include region-less docs no bucket sums) now lives in
+    // `getRegionFacetCounts` (lib/content/regions.ts, Phase 1 content-layer
+    // migration, Task 7). Region attribution mirrors region-items'/
+    // region-pins' regionMatchFilter: a doc belongs to a region via its
+    // `region` short code, any referenced community (singular
+    // `relatedCommunity` or plural `relatedCommunities[]`), OR —
+    // country-derived branch, 2026-08-05 — a country code that implies a
     // region via `isoToRegion` when the doc carries no ref at all (the 35
     // livedExperience docs backfilled with a country but never given a
     // `relatedCommunity`). A doc counting in several regions appears in each
-    // region's cards, so it counts in each; this query itself has NO region
-    // predicate, so `rows.length` doubles as the facet's GLOBAL total (L2 —
-    // the chip total that must include region-less docs no bucket sums).
-    const rows: {
-      code: string | null;
-      rcSlug: string | null;
-      rcSlugs: (string | null)[] | null;
-      countryCode3: string | null;
-    }[] = await client.fetch(
-      `*[_type == "${type}"${filters}${when.filter}]{
-           "code": region,
-           "rcSlug": relatedCommunity->slug.current,
-           "rcSlugs": relatedCommunities[]->slug.current,
-           "countryCode3": coalesce(locationCountryCode, place.countryCode)
-         }`,
-      { q, themeSlug: theme ?? "", ...when.params }
-    );
+    // region's cards, so it counts in each.
+    const rows = await getRegionFacetCounts(type, { theme, q, when });
     total = rows.length;
     for (const r of rows) {
       const regions = new Set<RegionCode>();

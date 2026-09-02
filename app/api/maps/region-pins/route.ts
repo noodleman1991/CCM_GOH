@@ -1,16 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import countriesLib from "i18n-iso-countries";
 import enLocale from "i18n-iso-countries/langs/en.json";
-import { client } from "@/sanity/lib/client";
 import { isRegionCode, REGION_TO_RC_SLUG, type RegionCode } from "@/lib/maps/region-codes";
 import { parseLayers, FACET_TO_CONTENT_TYPE } from "@/lib/maps/region-facets";
 import { getThemeOptions } from "@/lib/maps/themes";
 import { parseWhen, whenFilter, type WhenFilter } from "@/lib/maps/date-filter";
-import { qFilter, regionMatchFilter, statusFilter, themeFilter } from "@/lib/maps/content-filter";
 import { alpha3sForRegion } from "@/lib/maps/iso-to-region";
 import { projectPoint } from "@/lib/maps/project-point";
 import { countryCentroid } from "@/lib/maps/country-geometry";
 import { clusterPins, type FacetContentType, type PinItem } from "@/lib/maps/cluster-pins";
+import { getRegionPinRows, type RegionPinRow } from "@/lib/content/regions";
 
 export const revalidate = 300;
 
@@ -23,28 +22,14 @@ countriesLib.registerLocale(enLocale);
 // a research output has been geotagged (see backfill-country-codes.mjs).
 const FACET_TO_TYPE = FACET_TO_CONTENT_TYPE;
 
-type RawPinRow = {
-  _id: string;
-  title: string | null;
-  slug: string | null;
-  point: { lat: number; lng: number } | null;
-  precision: string | null;
-  countryCode3: string | null;
-};
-
 /**
  * Fetch geotagged rows for a single content type — one query per requested
  * facet, so a multi-layer selection queries each pin-capable type in the set
- * and the results get clustered together (clusters may mix types).
- *
- * Per-type place fields (verified against each document schema — see
- * sanity/schemas/documents/{case-study,lived-experience,news-post,research-output}.ts):
- *   - caseStudy: legacy scalar fields — `studyLocation` (geopoint),
- *     `locationPrecision` (default "city"), `locationCountryCode` (alpha-3).
- *   - livedExperience / newsPost / researchOutput: the shared `place` object —
- *     `place.point` / `place.precision` / `place.countryCode`.
- *   - Legacy `agenda`/`report` types (superseded by researchOutput, not
- *     wired to any facet — see FACET_TO_CONTENT_TYPE) are never queried here.
+ * and the results get clustered together (clusters may mix types). The GROQ
+ * itself (per-type place-field projection, status/theme/q/region predicates)
+ * now lives in `getRegionPinRows` (lib/content/regions.ts, Phase 1
+ * content-layer migration, Task 7) — this wrapper keeps just the
+ * region/country resolution that isn't part of the query.
  *
  * Region matching mirrors `region-items`'s tolerant OR (works whether a doc
  * has the singular `relatedCommunity` ref (caseStudy/livedExperience/newsPost)
@@ -59,29 +44,13 @@ async function fetchRowsForType(
   themeSlug: string | null,
   q: string,
   when: WhenFilter
-): Promise<RawPinRow[]> {
-  // caseStudy stores legacy scalar location fields; livedExperience/newsPost/
-  // researchOutput all use the shared `place` object.
-  const placeProjection =
-    type === "caseStudy"
-      ? `"point": studyLocation, "precision": coalesce(locationPrecision, "city"), "countryCode3": locationCountryCode`
-      : type === "livedExperience" || type === "newsPost" || type === "researchOutput"
-        ? `"point": place.point, "precision": coalesce(place.precision, "city"), "countryCode3": place.countryCode`
-        : `"point": null, "precision": null, "countryCode3": null`;
-
-  // Status/theme/q/region predicates come from lib/maps/content-filter — the
-  // shared trust-contract fragments (counts = cards = pins). `region=all`
-  // (the global map view) drops the region predicate via the shared fragment.
-  // `regionCountries` feeds regionMatchFilter's country-derived branch — []
-  // when scope is "all" (the fragment is empty there anyway, so the param is
-  // simply unused, never a query error).
+): Promise<RegionPinRow[]> {
+  // `region=all` (the global map view) drops the region predicate via the
+  // shared fragment. `regionCountries` feeds regionMatchFilter's
+  // country-derived branch — [] when scope is "all" (the fragment is empty
+  // there anyway, so the param is simply unused, never a query error).
   const regionCountries = region === "all" ? [] : alpha3sForRegion(region as RegionCode);
-  return client.fetch<RawPinRow[]>(
-    `*[_type == $type${statusFilter(type)}${regionMatchFilter(region === "all" ? "all" : "region")}${themeFilter(themeSlug)}${qFilter(q)}${when.filter}]{
-      _id, "title": coalesce(title.en, title), "slug": slug.current, ${placeProjection}
-    }`,
-    { type, region, slug, regionCountries, q, themeSlug: themeSlug ?? "", ...when.params }
-  );
+  return getRegionPinRows(type, { region, slug, regionCountries, themeSlug, q, when });
 }
 
 /**
