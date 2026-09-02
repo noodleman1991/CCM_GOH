@@ -1,4 +1,3 @@
-import { PAGE_QUERY_RESULT } from "@/sanity.types";
 import Hero1 from "@/components/blocks/hero/hero-1";
 import Hero2 from "@/components/blocks/hero/hero-2";
 import SectionHeader from "@/components/blocks/section-header";
@@ -24,7 +23,13 @@ import { BlockReveal } from "@/components/blocks/block-reveal";
 import { isRTL } from "@/i18n/i18n-helpers";
 // import gridReport from "@/sanity/schemas/blocks/grid/grid-report"; //todo: what is the diff between reportsgrid and gridreports in schemas???
 
-type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
+/** A page block, in its raw CMS shape (`_type`/`_key` discriminant plus
+ *  whatever fields that block type carries). Loose by design — Blocks just
+ *  dispatches on `_type` and spreads the rest into the matching component,
+ *  which owns its own precise prop type. Matches lib/content/pages.ts's
+ *  `ContentBlock` comment: the raw values here use `_type`/`_key`, not the
+ *  `type`/`key` that alias's own label uses. */
+type Block = { _type: string; _key: string } & Record<string, unknown>;
 
 interface BlocksProps {
     blocks: Block[];
