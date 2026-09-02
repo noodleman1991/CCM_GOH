@@ -726,6 +726,34 @@ The largest task. Also the one whose output Phase 2 remodels, so keep the return
 
 ---
 
+### Task 6b: The page-domain query files Task 6 could not reach
+
+Task 6 converted the ten `sanity/lib/fetch.ts` helpers it owned, then found five more page-domain files importing Sanity that **no task brief claimed**. Its reviewer confirmed the gap: zero mentions across all 13 briefs, each file substantive (99–212 lines), and all five will fail Task 11's boundary gate.
+
+This is the second coverage gap found in this plan, after the original inventory undercounted the Sanity surface by a third. Both were found by checking a coverage claim rather than trusting it.
+
+**Files:**
+- Modify: `lib/content/pages.ts` (extend — do not duplicate what Task 6 built)
+- Modify: `app/[locale]/(main)/communities/[slug]/page.tsx` — imports `@/sanity/queries/regional-community-team`
+- Modify: `components/pages/homepage.tsx` — imports `@/sanity/queries/homepage-dynamic`
+- Modify: `components/templates/regional-community-template.tsx` — imports `regional-community-case-studies`, `regional-community-lived-experiences`, `regional-community-news`
+- Delete once orphaned: the five `sanity/queries/regional-community-*.ts` / `homepage-dynamic.ts` files
+- Test: extend `lib/__tests__/content-pages.test.ts`
+
+**Interfaces:**
+- Consumes: everything Task 6 established in `lib/content/pages.ts`.
+- Produces: exported functions for each converted query, named for what they fetch — the regional community's team, its case studies, its lived experiences, its news, and the homepage's dynamic sections.
+
+**Two cautions specific to this task.**
+
+`components/pages/homepage.tsx` is the component the `getHomepage` ruling protects. Convert its *data fetching* only. Do not touch how it consumes the 11 fixed slots, and do not let a blocks-shaped refactor in through this door.
+
+`components/templates/regional-community-template.tsx` was already partly converted by Task 5, which routed its agenda query through `lib/content/outputs.ts`. Read what is already there before adding to it.
+
+Everything else follows the standing rules: GROQ character-exact including comments, the three-primitive table above for each read, preserve existing failure behaviour, writes throw.
+
+---
+
 ### Task 7: Regions and maps
 
 **Files:**
