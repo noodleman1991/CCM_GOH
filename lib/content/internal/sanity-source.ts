@@ -56,13 +56,24 @@ export async function createDocument(doc: Record<string, unknown>): Promise<{ id
   return { id: created._id };
 }
 
-/** Patch a document: set some fields, unset others, commit. */
-export async function patchDocument(
-  id: string,
-  ops: { set?: Record<string, unknown>; unset?: string[] },
-): Promise<void> {
+/**
+ * Update a document. `null` means "unset this field" — everything else is
+ * set. This is the seam's own update vocabulary, not Sanity's: internally it
+ * splits `data` into a set/unset patch, but no caller needs to know that.
+ * Payload's update takes a plain data object with the same null-clears
+ * convention, so Phase 3 rewrites the body here and leaves every call site
+ * alone.
+ */
+export async function updateDocument(id: string, data: Record<string, unknown>): Promise<void> {
+  const set: Record<string, unknown> = {};
+  const unset: string[] = [];
+  for (const [key, value] of Object.entries(data)) {
+    if (value === null) unset.push(key);
+    else set[key] = value;
+  }
+
   let patch = writeClient.patch(id);
-  if (ops.set) patch = patch.set(ops.set);
-  if (ops.unset && ops.unset.length > 0) patch = patch.unset(ops.unset);
+  if (Object.keys(set).length > 0) patch = patch.set(set);
+  if (unset.length > 0) patch = patch.unset(unset);
   await patch.commit();
 }

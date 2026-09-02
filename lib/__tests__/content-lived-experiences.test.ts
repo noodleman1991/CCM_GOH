@@ -5,7 +5,7 @@ vi.mock("@/lib/content/internal/sanity-source", () => ({
   queryRaw: vi.fn(),
   uploadFileAsset: vi.fn(),
   createDocument: vi.fn(),
-  patchDocument: vi.fn(),
+  updateDocument: vi.fn(),
 }));
 
 vi.mock("@/lib/prisma", () => ({
@@ -28,7 +28,7 @@ import {
   queryRaw,
   uploadFileAsset,
   createDocument,
-  patchDocument,
+  updateDocument,
 } from "@/lib/content/internal/sanity-source";
 import { prisma } from "@/lib/prisma";
 import {
@@ -50,7 +50,7 @@ const mockQuery = vi.mocked(query);
 const mockQueryRaw = vi.mocked(queryRaw);
 const mockUploadFileAsset = vi.mocked(uploadFileAsset);
 const mockCreateDocument = vi.mocked(createDocument);
-const mockPatchDocument = vi.mocked(patchDocument);
+const mockUpdateDocument = vi.mocked(updateDocument);
 const mockFindFirst = vi.mocked(prisma.workspaceOutput.findFirst);
 
 beforeEach(() => {
@@ -58,7 +58,7 @@ beforeEach(() => {
   mockQueryRaw.mockReset();
   mockUploadFileAsset.mockReset();
   mockCreateDocument.mockReset();
-  mockPatchDocument.mockReset();
+  mockUpdateDocument.mockReset();
   mockFindFirst.mockReset();
 });
 afterEach(() => vi.restoreAllMocks());
@@ -259,9 +259,9 @@ describe("submitLivedExperience", () => {
     });
 
     expect(result).toEqual({ id: "le1" });
-    expect(mockPatchDocument).toHaveBeenCalledWith(
+    expect(mockUpdateDocument).toHaveBeenCalledWith(
       "le1",
-      expect.objectContaining({ set: expect.objectContaining({ status: "pending" }) }),
+      expect.objectContaining({ status: "pending" }),
     );
     expect(mockCreateDocument).not.toHaveBeenCalled();
   });

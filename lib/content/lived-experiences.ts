@@ -1,5 +1,5 @@
 import { safe } from "@/lib/content/internal/safe";
-import { createDocument, patchDocument, query, queryRaw, uploadFileAsset } from "@/lib/content/internal/sanity-source";
+import { createDocument, query, queryRaw, updateDocument, uploadFileAsset } from "@/lib/content/internal/sanity-source";
 import type { ContentRegion, ContentTag, Localized, RichText } from "@/lib/content/types";
 import { prisma, safeQuery } from "@/lib/prisma";
 import { generateLivedExperienceSlug } from "@/lib/validation/lived-experience";
@@ -487,7 +487,11 @@ export async function submitLivedExperience(
     // Keeping the existing upload: videoFile isn't in `set`, and must not be unset.
     const unsets = cleared.filter((k) => !(k === "videoFile" && input.videoSource === "upload"));
 
-    await patchDocument(existing._id, { set: { ...set, status: "pending" }, unset: unsets });
+    await updateDocument(existing._id, {
+      ...set,
+      status: "pending",
+      ...Object.fromEntries(unsets.map((k) => [k, null])),
+    });
     return { id: existing._id };
   }
 
