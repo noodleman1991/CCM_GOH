@@ -26,6 +26,7 @@
 - **Never write to the Sanity `production_2` dataset.** This phase reads Sanity and writes Payload.
 - **Never include Claude/AI attribution or a Co-Authored-By trailer in commit messages** (`CLAUDE.md`).
 - Locales: `en` (default), `es`, `fr`, `ar` (RTL).
+- **Anonymous read requires published AND approved.** Payload's `_status` alone is not the gate: two *published* case studies carry `moderationStatus: "pending"`, and Sanity's GROQ filters on `status == "approved"` today. Gating only on `_status` re-opens a vulnerability this project has already had once — non-approved case studies, with their `reviewNotes` and `submittedBy`, readable anonymously.
 
 ## What is being imported
 
@@ -653,6 +654,14 @@ Source the assets from the **Phase 0 archive** (`backups/sanity-production_2-*.t
 4. **Locale-collapsing.** The four `page` documents sharing a slug become one document with four locales. **Group by slug, not by `translation.metadata`** — only 1 of 9 page groups has that metadata, and it links 2 of 4 languages. Slug grouping is complete: all 9 page slugs and all 7 region slugs have a full `ar/en/es/fr` set.
 
 Write localized fields by calling `payload.update` once per locale after the initial create, or by passing `locale` per call — **verify which the installed version supports before building on it**.
+
+**Five obligations carried into this task from earlier reviews** (each one measured, not guessed):
+
+1. **Sanity's `status` is written into `moderationStatus`.** The field could not keep the name `status` — it collides with Payload's `_status` enum. `lib/content/case-studies.ts` still exposes `status?: CaseStudyStatus` publicly, so the *reader* maps back the other way.
+2. **`image.alt` stays `localized`; the importer writes the bare Sanity string into the `en` locale.** Real Sanity data stores a plain string, not an `{en,…}` lane. Payload's `fallback: true` then covers `es`/`fr`/`ar`. An importer that assumes the localized lane writes null.
+3. **Coerce empty strings to null.** The single `caseStudyDraft` holds `studyPeriod: {startDate: "", endDate: ""}` and `studyLocation: {}` against `date` and `point` fields. Empty string is not a date.
+4. **`livedExperience.region` is a `regionalCommunity` reference, not a region code** — 42/56 populated, 42 references, 0 strings, every one dereferencing to `_type: "regionalCommunity"`. The schema's declared fixed-7 code is fiction. `relatedCommunity` is 0/56.
+5. **`livedExperience.videoUrl` is 56/56 populated and undeclared in the Sanity schema**, and read by five `lib/content/*.ts` modules. It must be carried across or five modules break.
 
 - [ ] Steps: failing tests for id preservation, idempotency (run twice, assert `created` then `updated`), and slug-grouping → implement → dry-run → real run → commit.
 
