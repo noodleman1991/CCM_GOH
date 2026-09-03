@@ -1,5 +1,5 @@
 import type { CollectionConfig } from "payload";
-import { isEditor } from "@/payload/access";
+import { isEditor, ownerOrEditor } from "@/payload/access";
 import { relationshipField, uploadField } from "@/payload/blocks/shared";
 import { localizedText, localizedTextarea } from "@/payload/fields/localized";
 
@@ -18,10 +18,24 @@ import { localizedText, localizedTextarea } from "@/payload/fields/localized";
  * server-side; there is no public listing. Exposing every user's
  * in-progress submission to any signed-in visitor would recreate the
  * dataset-wide exposure class the spec's §1 access-control fix (`isAnyone`
- * vs `publishedOnly`) already addressed for public content. The per-user
- * scoping itself belongs at the application layer (a server action calling
- * Payload's local API with an explicit owner filter), same as it does in
- * Sanity today — not modelled as a collection-level access function here.
+ * vs `publishedOnly`) already addressed for public content. `read` is kept
+ * editor-only (rather than owner-or-editor, below) so staff can browse the
+ * full in-progress queue for moderation/cleanup — the same reason
+ * `lib/content/case-studies.ts` never exposed a public per-user listing
+ * endpoint either.
+ *
+ * `create`/`update`/`delete` use `ownerOrEditor`
+ * (`payload/access/index.ts`), NOT `isEditor` alone — these are documents a
+ * `community_member` writes themselves through the case-study submission
+ * form's autosave, the same way `saveCaseStudyDraft`/`deleteCaseStudyDraft`
+ * work against Sanity today (scoped to `userId` server-side, not gated by a
+ * Sanity role). An editor-only write gate would work today only because
+ * nothing calls Payload's authenticated API yet; the moment Phase 3 routes
+ * autosave through it rather than the local API with `overrideAccess: true`,
+ * no member could save their own draft. `ownerOrEditor` matches the
+ * collection's `userId` field (a Clerk id) against the signed-in user's own
+ * `clerkId`, so a member can create/update/delete only their own draft, and
+ * editors keep full access on top.
  *
  * **The one real document diverges from its schema more than any other
  * collection in this migration**, because `saveCaseStudyDraft()` writes
@@ -49,9 +63,9 @@ export const CaseStudyDrafts: CollectionConfig = {
   },
   access: {
     read: isEditor,
-    create: isEditor,
-    update: isEditor,
-    delete: isEditor,
+    create: ownerOrEditor,
+    update: ownerOrEditor,
+    delete: ownerOrEditor,
   },
   fields: [
     {

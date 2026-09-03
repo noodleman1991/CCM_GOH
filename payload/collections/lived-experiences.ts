@@ -1,5 +1,5 @@
 import type { CollectionConfig } from "payload";
-import { isEditor, publishedOnly } from "@/payload/access";
+import { isEditor, publishedAndApproved } from "@/payload/access";
 import { imageField, relationshipField, uploadField } from "@/payload/blocks/shared";
 import { localizedRichText, localizedText, localizedTextarea } from "@/payload/fields/localized";
 
@@ -32,7 +32,12 @@ import { localizedRichText, localizedText, localizedTextarea } from "@/payload/f
  *    importer should leave `status` unset on these 56 records, matching
  *    live behaviour, not synthesize a value. Modelled as `moderationStatus`,
  *    not `status` — see the field's own comment below for why the name has
- *    to differ from Sanity's.
+ *    to differ from Sanity's. `read` uses `publishedAndApproved`
+ *    (`payload/access/index.ts`), not `publishedOnly` — its
+ *    `moderationStatus: { exists: false }` fallback is what keeps these 56
+ *    real, unset-status documents anonymously readable at all; without it
+ *    a moderation gate would make every one of them invisible, not just the
+ *    unapproved ones.
  * 2. **`region` is stored as a reference to `regionalCommunity` on every
  *    populated document (42/56), not the fixed-7 string code the schema
  *    declares** (`type: "string", options: {list: REGION_OPTIONS}`).
@@ -69,7 +74,7 @@ export const LivedExperiences: CollectionConfig = {
     defaultColumns: ["title", "featured", "publishedAt"],
   },
   access: {
-    read: publishedOnly,
+    read: publishedAndApproved,
     create: isEditor,
     update: isEditor,
     delete: isEditor,

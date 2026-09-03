@@ -1,5 +1,14 @@
 import { describe, expect, it } from "vitest";
 import type { CollectionConfig, Field } from "payload";
+import {
+  approvedOnly,
+  isAnyone,
+  isEditor,
+  moderationApprovedOnly,
+  ownerOrEditor,
+  publishedAndApproved,
+  publishedOnly,
+} from "@/payload/access";
 import { CaseStudies } from "@/payload/collections/case-studies";
 import { LivedExperiences } from "@/payload/collections/lived-experiences";
 import { ResearchOutputs } from "@/payload/collections/research-outputs";
@@ -123,7 +132,15 @@ describe("payload content collections", () => {
   });
 
   it("restricts caseStudyDrafts read access to editors — private per-user autosave data, not public content like the other nine collections", () => {
-    expect(CaseStudyDrafts.access?.read).toBe(CaseStudyDrafts.access?.create);
+    expect(CaseStudyDrafts.access?.read).toBe(isEditor);
+  });
+
+  it("gives caseStudyDrafts owner-or-editor write access, not editor-only — members must be able to save their own draft", () => {
+    expect(CaseStudyDrafts.access?.create).toBe(ownerOrEditor);
+    expect(CaseStudyDrafts.access?.update).toBe(ownerOrEditor);
+    expect(CaseStudyDrafts.access?.delete).toBe(ownerOrEditor);
+    // Not editor-only — that would be indistinguishable from the (wrong) old shape.
+    expect(CaseStudyDrafts.access?.create).not.toBe(isEditor);
   });
 
   it("does not port 'projects'/'project' relationship fields — the target document type has zero live documents in production_2", () => {
@@ -145,14 +162,61 @@ describe("payload content collections", () => {
   });
 
   it("models docsChapter's title/body as plain, non-localized fields — the only collection with no localized fields in its Sanity schema", () => {
+    // toMatchObject is a subset match: a localized field (localized: true)
+    // would satisfy {name, type} identically, so the localized:true check
+    // has to be explicit or this test cannot detect the mistake it names.
     const title = findField(DocsChapters.fields, "title");
     expect(title).toMatchObject({ name: "title", type: "text" });
+    expect(title).not.toHaveProperty("localized");
     const body = findField(DocsChapters.fields, "body");
     expect(body).toMatchObject({ name: "body", type: "richText" });
+    expect(body).not.toHaveProperty("localized");
   });
 
   it("agendas.files requires at least one file, mirroring the schema's Rule.required().min(1)", () => {
     const files = findField(Agendas.fields, "files");
     expect(files).toMatchObject({ name: "files", type: "array", required: true, minRows: 1 });
+  });
+
+  // Pins the exact read-access function per collection so a regression like
+  // "publishedOnly gates only _status, never moderationStatus" (the
+  // published-but-pending caseStudies 2U42vBhgRaBYxnTE6w726U/
+  // pbVPtgVbwyH6oOhWZ3wD3a were anonymously readable through this gap) can't
+  // silently reappear. caseStudies/livedExperiences need BOTH _status and
+  // moderationStatus gated (publishedAndApproved); researchOutputs has no
+  // _status field at all (no versions.drafts) so moderationStatus alone
+  // gates it (moderationApprovedOnly); externalSources gates on its own
+  // `approved` boolean (approvedOnly); newsPosts/testimonials have _status
+  // but no moderationStatus, so publishedOnly is correct as-is;
+  // agendas/docsChapters/profilePrompts have neither, so isAnyone is
+  // correct; caseStudyDrafts is private, editor-only for reads.
+  it("pins each collection's read access to the correct function — the one axis with a security consequence", () => {
+    const expected: Array<[CollectionConfig, unknown]> = [
+      [CaseStudies, publishedAndApproved],
+      [LivedExperiences, publishedAndApproved],
+      [ResearchOutputs, moderationApprovedOnly],
+      [Agendas, isAnyone],
+      [NewsPosts, publishedOnly],
+      [DocsChapters, isAnyone],
+      [Testimonials, publishedOnly],
+      [ProfilePrompts, isAnyone],
+      [ExternalSources, approvedOnly],
+      [CaseStudyDrafts, isEditor],
+    ];
+    for (const [collection, accessFn] of expected) {
+      expect(collection.access?.read, `${collection.slug}.access.read`).toBe(accessFn);
+    }
+  });
+
+  it("never lets a plain publishedOnly/isAnyone gate a collection that also carries a moderation field", () => {
+    // caseStudies/livedExperiences/researchOutputs all declare
+    // moderationStatus; none of them may use publishedOnly or isAnyone for
+    // read — both would skip the moderation check entirely.
+    for (const c of [CaseStudies, LivedExperiences, ResearchOutputs]) {
+      expect(c.access?.read).not.toBe(publishedOnly);
+      expect(c.access?.read).not.toBe(isAnyone);
+    }
+    // externalSources declares its own `approved` boolean; isAnyone would skip it.
+    expect(ExternalSources.access?.read).not.toBe(isAnyone);
   });
 });

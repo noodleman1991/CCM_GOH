@@ -1,5 +1,5 @@
 import type { CollectionConfig } from "payload";
-import { isAnyone, isEditor } from "@/payload/access";
+import { approvedOnly, isEditor } from "@/payload/access";
 import { imageField, relationshipField } from "@/payload/blocks/shared";
 import { localizedText, localizedTextarea } from "@/payload/fields/localized";
 
@@ -20,6 +20,11 @@ import { localizedText, localizedTextarea } from "@/payload/fields/localized";
  * parity. `projects` references a `project` type with 0 live documents in
  * production_2, same reasoning as the other content collections, but
  * `projects` here is genuinely unused (0/1) either way.
+ *
+ * `read` uses `approvedOnly` (`payload/access/index.ts`), not `isAnyone` —
+ * gated on the schema's own `approved` boolean (defaulting to `true`, the
+ * only real document has it `true`). `isAnyone` would have made a future
+ * `approved: false` source public from the moment it's created.
  */
 export const ExternalSources: CollectionConfig = {
   slug: "externalSources",
@@ -28,7 +33,7 @@ export const ExternalSources: CollectionConfig = {
     defaultColumns: ["title", "publisher", "sourceType", "approved"],
   },
   access: {
-    read: isAnyone,
+    read: approvedOnly,
     create: isEditor,
     update: isEditor,
     delete: isEditor,

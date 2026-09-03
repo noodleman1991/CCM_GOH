@@ -1,5 +1,5 @@
 import type { CollectionConfig } from "payload";
-import { isAnyone, isEditor } from "@/payload/access";
+import { isEditor, moderationApprovedOnly } from "@/payload/access";
 import { imageField, relationshipField, uploadField } from "@/payload/blocks/shared";
 import { localizedRichText, localizedText, localizedTextarea } from "@/payload/fields/localized";
 
@@ -18,6 +18,12 @@ import { localizedRichText, localizedText, localizedTextarea } from "@/payload/f
  * Named consistently here so enabling drafts on this collection later, or
  * building shared moderation-queue UI across all three, never has to
  * special-case one of the three field names.
+ *
+ * `read` uses `moderationApprovedOnly` (`payload/access/index.ts`), not
+ * `isAnyone` — this collection has no `_status` field to gate on (no
+ * `versions.drafts`), so `moderationStatus` alone is the visibility gate.
+ * `isAnyone` would have made a future `pending`/`rejected` output public
+ * from the moment it's created.
  *
  * `region` here IS stored as the fixed-7 string code (14/29, e.g. "csa") —
  * unlike `livedExperience.region` (see payload/collections/lived-experiences.ts),
@@ -40,7 +46,7 @@ export const ResearchOutputs: CollectionConfig = {
     defaultColumns: ["title", "outputType", "moderationStatus", "featured"],
   },
   access: {
-    read: isAnyone,
+    read: moderationApprovedOnly,
     create: isEditor,
     update: isEditor,
     delete: isEditor,

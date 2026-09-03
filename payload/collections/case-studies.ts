@@ -1,5 +1,5 @@
 import type { CollectionConfig } from "payload";
-import { isEditor, publishedOnly } from "@/payload/access";
+import { isEditor, publishedAndApproved } from "@/payload/access";
 import { relationshipField, uploadField } from "@/payload/blocks/shared";
 import { localizedRichText, localizedText, localizedTextarea } from "@/payload/fields/localized";
 
@@ -19,7 +19,14 @@ import { localizedRichText, localizedText, localizedTextarea } from "@/payload/f
  * Conflating them would make it impossible to hold, e.g., a
  * `pending`-review document that is nonetheless a published `_status`
  * version (or vice versa) — exactly the moderation queue this collection's
- * real data (status: "approved" on 27, "pending" on 1) depends on.
+ * real data depends on: **approved on 25, pending on 3 — and two of those
+ * three pending documents are themselves published (non-draft), not
+ * drafts** (`2U42vBhgRaBYxnTE6w726U`,
+ * `pbVPtgVbwyH6oOhWZ3wD3a`). That combination — published AND pending — is
+ * exactly why `read` uses `publishedAndApproved` below rather than
+ * `publishedOnly`: `_status` alone would have served both of those
+ * documents, plus their `reviewNotes`/`submittedBy`, to any anonymous
+ * caller.
  *
  * **The name had to change, not just the concept.** A field literally named
  * `status` collides with Payload's internal `_status` at the Postgres
@@ -60,7 +67,7 @@ export const CaseStudies: CollectionConfig = {
     defaultColumns: ["title", "moderationStatus", "topic", "featured"],
   },
   access: {
-    read: publishedOnly,
+    read: publishedAndApproved,
     create: isEditor,
     update: isEditor,
     delete: isEditor,
