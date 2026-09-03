@@ -656,6 +656,10 @@ Source the assets from the **Phase 0 archive** (`backups/sanity-production_2-*.t
 1. **`lqip` must be copied across — Payload has no equivalent.** All 347 Sanity image assets carry `metadata.lqip`, and **25 components render it as `blurDataURL`**. Nothing regenerates it on the Payload side, so if the import skips it, 25 components silently lose their blur-up placeholders. `media.lqip` exists for this; fill it.
 2. **Roughly 3,800 derivatives.** 11 `imageSizes` × 347 images. Budget for it, and make the run resumable — a failure at image 300 must not restart from zero.
 3. **Three upload fields now point at `files`, not `media`.** `media` is images-only. `agendas.files[].file`, `researchOutputs.files[].file` and `livedExperiences.videoFile` were moved onto the new `files` collection, so the importer must resolve those three to `files` ids.
+5. **Filenames collide, and the index is UNIQUE — this will fail the import if unhandled.** `media_filename_idx` and `files_filename_idx` are unique, but the dataset has 347 images with only **283 distinct `originalFilename`s (64 collisions)** and 48 files with 47 (**1 collision**). Measured against `production_2` with a control.
+
+   **Disambiguate deterministically, derived from the Sanity asset id** — do not let Payload auto-suffix. Auto-suffixing is order-dependent, so a re-run could produce `foo-1.jpg` where the first run produced `foo-2.jpg`, which silently breaks the idempotency this phase requires. Keep `originalFilename` where it is already unique; on collision, append a stable token from the asset id. The same input must always yield the same filename.
+
 4. **Media's `down()` migration is only valid while `media` is empty.** Once assets land, do not rely on rolling that migration back.
 
 - [ ] Steps: failing test on the id-mapping and skip-if-exists logic → implement → run against the real archive → verify 347 + 48 uploads exist and byte sizes match the manifest → commit.
