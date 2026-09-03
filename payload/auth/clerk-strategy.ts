@@ -1,5 +1,4 @@
 import type { AuthStrategy } from "payload";
-import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 
 /**
@@ -15,6 +14,19 @@ import { prisma } from "@/lib/prisma";
  *   2. The role comes from Prisma's `User.role`, not the Clerk session claim.
  *      The vocabularies diverge and utils/roles.ts must not back new authz.
  *
+ * `@clerk/nextjs/server` is imported lazily, INSIDE the try below, rather than
+ * at module top level. Its ESM build resolves a Next.js app-router-only
+ * subpath internally, which ERR_MODULE_NOT_FOUNDs in a plain Node process —
+ * exactly the process the Payload CLI and the standalone import scripts run
+ * in (they call the Local API via getPayload({ config}), never through
+ * Next). A top-level import would make payload.config.ts itself unloadable
+ * outside Next, breaking `payload migrate`, `generate:types`, and every
+ * import script. Because the import is inside this try/catch, a failed
+ * *import* is caught the same way a failed `auth()` call is: read as
+ * anonymous, never thrown. The admin panel itself always runs inside Next,
+ * where this import resolves normally, so request-time behaviour is
+ * unchanged.
+ *
  * Returning `{ user: null }` denies access; it must never throw.
  */
 export const clerkStrategy: AuthStrategy = {
@@ -22,6 +34,7 @@ export const clerkStrategy: AuthStrategy = {
   authenticate: async ({ payload }) => {
     let userId: string | null = null;
     try {
+      const { auth } = await import("@clerk/nextjs/server");
       ({ userId } = await auth());
     } catch {
       return { user: null };
