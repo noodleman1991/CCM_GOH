@@ -200,11 +200,24 @@ describe("getOutputSummaries", () => {
 });
 
 describe("getOutputStatuses", () => {
-  it("queries title/status for the given ids via queryRaw (feeds a Prisma write)", async () => {
-    mockQueryRaw.mockResolvedValue([{ _id: "cs1", title: "T", status: "approved" }]);
+  it("queries title/status for the given ids via queryLive (feeds a Prisma write)", async () => {
+    mockQueryLive.mockResolvedValue([{ _id: "cs1", title: "T", status: "approved" }]);
     const result = await getOutputStatuses(["cs1"]);
     expect(result).toEqual([{ _id: "cs1", title: "T", status: "approved" }]);
-    expect(mockQueryRaw).toHaveBeenCalledWith(expect.any(String), { ids: ["cs1"] });
+    expect(mockQueryLive).toHaveBeenCalledWith(expect.any(String), { ids: ["cs1"] });
+    expect(mockQuery).not.toHaveBeenCalled();
+  });
+
+  // Pins the fix for a regression: the original (lib/collaboration/service.ts's
+  // refreshOutputStatuses, per `git show 87ef869bc`) called `client.fetch`
+  // directly — published perspective. `queryRaw` fixes the caching half but
+  // switches to the raw perspective, which would let a still-unpublished
+  // draft's title/status leak into Postgres. Must be queryLive, not queryRaw.
+  it("uses queryLive, not queryRaw or query", async () => {
+    mockQueryLive.mockResolvedValue([]);
+    await getOutputStatuses(["cs1"]);
+    expect(mockQueryLive).toHaveBeenCalledTimes(1);
+    expect(mockQueryRaw).not.toHaveBeenCalled();
     expect(mockQuery).not.toHaveBeenCalled();
   });
 });
@@ -460,24 +473,52 @@ describe("updateEvent", () => {
 });
 
 describe("getApprovedEventForRsvp", () => {
-  it("uses queryRaw — the read feeds the RSVP write", async () => {
-    mockQueryRaw.mockResolvedValue({ _id: "e1", title: "T", startAt: null, slug: "t", submittedBy: "u1" });
+  it("uses queryLive — the read feeds the RSVP write", async () => {
+    mockQueryLive.mockResolvedValue({ _id: "e1", title: "T", startAt: null, slug: "t", submittedBy: "u1" });
     const result = await getApprovedEventForRsvp("e1");
     expect(result).toEqual({ _id: "e1", title: "T", startAt: null, slug: "t", submittedBy: "u1" });
-    expect(mockQueryRaw).toHaveBeenCalledWith(expect.stringContaining('status == "approved"'), { id: "e1" });
+    expect(mockQueryLive).toHaveBeenCalledWith(expect.stringContaining('status == "approved"'), { id: "e1" });
+    expect(mockQuery).not.toHaveBeenCalled();
+  });
+
+  // Pins the fix for a regression: `eventId` is client-supplied (setRsvp
+  // takes it straight from the caller). The original (lib/actions/rsvp.ts,
+  // per `git show 87ef869bc`) called `client.fetch` directly — published
+  // perspective. `queryRaw`'s raw perspective would let a `drafts.`-prefixed
+  // id match an unpublished event whose draft says status: "approved" — the
+  // same authorization-bypass shape already fixed in resolveCommentTarget.
+  // Must be queryLive, not queryRaw.
+  it("uses queryLive, not queryRaw or query", async () => {
+    mockQueryLive.mockResolvedValue(null);
+    await getApprovedEventForRsvp("e1");
+    expect(mockQueryLive).toHaveBeenCalledTimes(1);
+    expect(mockQueryRaw).not.toHaveBeenCalled();
     expect(mockQuery).not.toHaveBeenCalled();
   });
 });
 
 describe("getEventsStartingWithin", () => {
-  it("uses queryRaw with the now/end window — feeds the reminder notification write", async () => {
-    mockQueryRaw.mockResolvedValue([{ _id: "e1", title: "T" }]);
+  it("uses queryLive with the now/end window — feeds the reminder notification write", async () => {
+    mockQueryLive.mockResolvedValue([{ _id: "e1", title: "T" }]);
     const result = await getEventsStartingWithin("2026-09-01T00:00:00Z", "2026-09-02T00:00:00Z");
     expect(result).toEqual([{ _id: "e1", title: "T" }]);
-    expect(mockQueryRaw).toHaveBeenCalledWith(expect.stringContaining("dateTime(startAt)"), {
+    expect(mockQueryLive).toHaveBeenCalledWith(expect.stringContaining("dateTime(startAt)"), {
       now: "2026-09-01T00:00:00Z",
       end: "2026-09-02T00:00:00Z",
     });
+    expect(mockQuery).not.toHaveBeenCalled();
+  });
+
+  // Pins the fix for a regression: the original (lib/events.ts, per
+  // `git show 87ef869bc`) called `client.fetch` directly — published
+  // perspective, never cached. `queryRaw` would fix the caching but flip to
+  // the raw perspective, surfacing unpublished drafts into the reminder
+  // fan-out. Must be queryLive, not queryRaw.
+  it("uses queryLive, not queryRaw or query", async () => {
+    mockQueryLive.mockResolvedValue([]);
+    await getEventsStartingWithin("2026-09-01T00:00:00Z", "2026-09-02T00:00:00Z");
+    expect(mockQueryLive).toHaveBeenCalledTimes(1);
+    expect(mockQueryRaw).not.toHaveBeenCalled();
     expect(mockQuery).not.toHaveBeenCalled();
   });
 });

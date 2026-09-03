@@ -547,14 +547,22 @@ export async function getOutputSummaries(
  * Live title/status for a workspace's linked outputs, used to REFRESH the
  * cached Prisma rows (lib/collaboration/service.ts's `refreshOutputStatuses`)
  * — a read that feeds a write (and drives notification fan-out), so this
- * uses `queryRaw` rather than the cached `query()` the sibling read above
+ * uses `queryLive` rather than the cached `query()` the sibling read above
  * uses: a stale cached title/status here would persist a stale value into
  * Postgres and could fire (or skip) an X3/X5 notification on phantom data.
+ *
+ * NOT `queryRaw`: the original (`lib/collaboration/service.ts`'s
+ * `refreshOutputStatuses`, per `git show 87ef869bc`) called `client.fetch`
+ * directly — read client, published perspective. `queryRaw`'s `raw`
+ * perspective would let a still-unpublished draft's title/status leak into
+ * Postgres (and drive a phantom X3/X5 notification) before the output is
+ * actually approved. `queryLive` keeps the read live (no `query()` cache)
+ * without granting draft visibility, matching `client.fetch` exactly.
  */
 export async function getOutputStatuses(
   ids: string[],
 ): Promise<{ _id: string; title?: string; status?: string }[]> {
-  return queryRaw<{ _id: string; title?: string; status?: string }[]>(
+  return queryLive<{ _id: string; title?: string; status?: string }[]>(
     `*[_id in $ids || ("drafts." + _id) in $ids]{ _id, "title": coalesce(title.en, title), status }`,
     { ids },
   );
@@ -891,10 +899,19 @@ export interface EventRsvpMeta {
 /**
  * The approved event's receipt fields — only approved events take RSVPs.
  * A read that feeds a write (`setRsvp`'s upsert is gated on this existing),
- * so this uses `queryRaw` rather than the cached `query()`.
+ * so this uses `queryLive` rather than the cached `query()`.
+ *
+ * NOT `queryRaw`: `eventId` is client-supplied (`lib/actions/rsvp.ts`'s
+ * `setRsvp` takes it straight from the caller), so `queryRaw`'s `raw`
+ * perspective would let a `drafts.`-prefixed id match an unpublished
+ * event whose draft says `status: "approved"` — an authorization bypass the
+ * original `client.fetch` (published perspective, per
+ * `git show 87ef869bc:lib/actions/rsvp.ts`) could not have had. Same bypass
+ * shape as `resolveCommentTarget`. `queryLive` is both live (no cache) and
+ * published-only (no draft visibility), the faithful restoration.
  */
 export async function getApprovedEventForRsvp(eventId: string): Promise<EventRsvpMeta | null> {
-  return queryRaw<EventRsvpMeta | null>(
+  return queryLive<EventRsvpMeta | null>(
     `*[_type == "event" && _id == $id && status == "approved"][0]{
       _id, title, startAt, "slug": slug.current, submittedBy
     }`,
@@ -914,14 +931,20 @@ export interface UpcomingReminderEvent {
 /**
  * Approved events starting within [now, windowEnd) — feeds the T-24h
  * reminder cron's RSVP notification fan-out (a Prisma write), so this uses
- * `queryRaw`: the original bare `client.fetch` was never cached, and a
- * cached read here could send reminders against a stale event-time window.
+ * `queryLive`: the original bare `client.fetch` (per
+ * `git show 87ef869bc:lib/events.ts`) was never cached, and a cached read
+ * here could send reminders against a stale event-time window.
+ *
+ * NOT `queryRaw`: there's no client-supplied id here, but `raw` would still
+ * (incorrectly) surface unpublished drafts into the reminder fan-out — an
+ * unapproved event could fire RSVP reminders. `queryLive` keeps it live
+ * (no cache) and published-only, matching the original exactly.
  */
 export async function getEventsStartingWithin(
   nowIso: string,
   endIso: string,
 ): Promise<UpcomingReminderEvent[]> {
-  return queryRaw<UpcomingReminderEvent[]>(
+  return queryLive<UpcomingReminderEvent[]>(
     `*[_type == "event" && status == "approved" && dateTime(startAt) > dateTime($now) && dateTime(startAt) < dateTime($end)]{ _id, title }`,
     { now: nowIso, end: endIso },
   );

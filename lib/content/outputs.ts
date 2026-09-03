@@ -1,6 +1,6 @@
 import "server-only";
 import { safe } from "@/lib/content/internal/safe";
-import { createDocument, query, queryRaw, updateDocument, uploadFileAsset } from "@/lib/content/internal/sanity-source";
+import { createDocument, query, queryLive, queryRaw, updateDocument, uploadFileAsset } from "@/lib/content/internal/sanity-source";
 import type { Locale, Localized, RichText, SearchRecord } from "@/lib/content/types";
 import { localize } from "@/lib/content/types";
 import { prisma, safeQuery } from "@/lib/prisma";
@@ -407,7 +407,7 @@ export async function getAgendaBySlug(slug: string): Promise<Agenda | null> {
 // so no user-facing flow changes, only the count catches up with reality.
 // Flagged explicitly here and in the report rather than silently ignored.
 //
-// The READ must be `queryRaw`, not `query`, even though it maps from a
+// The READ must be `queryLive`, not `query`, even though it maps from a
 // plain `client.fetch` elsewhere in this file. `query()` routes through
 // `cachedFetch` with a 1-hour revalidate; `client.fetch` on Next 16.3.4 has
 // no such caching — it's genuinely live. This read feeds a read-modify-write
@@ -415,9 +415,21 @@ export async function getAgendaBySlug(slug: string): Promise<Agenda | null> {
 // the whole array back). A cached read means every download inside the same
 // hour reads identical stale counts and writes back identical numbers —
 // only the first download per hour would actually move the counter, silently
-// undoing the write-side fix above. `queryRaw` (uncached, editor-token)
-// restores the original's uncached read semantics exactly, and is the
-// correct primitive for a write-adjacent path regardless.
+// undoing the write-side fix above.
+//
+// NOT `queryRaw`: an earlier revision used `queryRaw` to fix exactly that
+// caching problem, but `queryRaw` also switches to the write client's `raw`
+// perspective, which sees drafts — a mismatch from the original
+// (`app/api/agendas/download/track/route.ts` and
+// `app/api/reports/download/track/route.ts`, per `git show 87ef869bc`),
+// which called `client.fetch` directly (read client, published
+// perspective). `agendaId`/`reportId` come straight from the request body
+// (client-supplied), so `queryRaw` would let a caller increment the
+// download counter — and read back file/status fields — of an unpublished
+// draft agenda/report with no published counterpart. `queryLive` restores
+// the original's exact semantics: uncached (fixing the read-modify-write
+// race above) AND published-only (no draft visibility), matching
+// `client.fetch`.
 // ---------------------------------------------------------------------------
 
 interface TrackedAgendaFile {
@@ -428,7 +440,7 @@ interface TrackedAgendaFile {
 }
 
 export async function trackAgendaDownload(agendaId: string, fileLanguage: string): Promise<void> {
-  const agenda = await queryRaw<{ _id: string; files?: TrackedAgendaFile[]; totalDownloadCount?: number } | null>(
+  const agenda = await queryLive<{ _id: string; files?: TrackedAgendaFile[]; totalDownloadCount?: number } | null>(
     `*[_type == "agenda" && _id == $agendaId][0]{
                 _id,
                 files,
@@ -469,7 +481,7 @@ interface TrackedReportFile {
 }
 
 export async function trackReportDownload(reportId: string, fileLanguage: string): Promise<void> {
-  const report = await queryRaw<{ _id: string; files?: TrackedReportFile[]; totalDownloadCount?: number } | null>(
+  const report = await queryLive<{ _id: string; files?: TrackedReportFile[]; totalDownloadCount?: number } | null>(
     `*[_type == "report" && _id == $reportId][0]{
                 _id,
                 files,

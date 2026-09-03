@@ -2,6 +2,7 @@ import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 
 vi.mock("@/lib/content/internal/sanity-source", () => ({
   query: vi.fn(),
+  queryLive: vi.fn(),
   queryRaw: vi.fn(),
   uploadFileAsset: vi.fn(),
   createDocument: vi.fn(),
@@ -25,6 +26,7 @@ vi.mock("@/lib/prisma", () => ({
 
 import {
   query,
+  queryLive,
   queryRaw,
   uploadFileAsset,
   createDocument,
@@ -55,6 +57,7 @@ import {
 } from "@/lib/content/outputs";
 
 const mockQuery = vi.mocked(query);
+const mockQueryLive = vi.mocked(queryLive);
 const mockQueryRaw = vi.mocked(queryRaw);
 const mockUploadFileAsset = vi.mocked(uploadFileAsset);
 const mockCreateDocument = vi.mocked(createDocument);
@@ -63,6 +66,7 @@ const mockFindFirst = vi.mocked(prisma.workspaceOutput.findFirst);
 
 beforeEach(() => {
   mockQuery.mockReset();
+  mockQueryLive.mockReset();
   mockQueryRaw.mockReset();
   mockUploadFileAsset.mockReset();
   mockCreateDocument.mockReset();
@@ -142,7 +146,7 @@ describe("getAgendas / getAgendaBySlug", () => {
 
 describe("trackAgendaDownload / trackReportDownload", () => {
   it("increments the matching file's download count and the total", async () => {
-    mockQueryRaw.mockResolvedValue({
+    mockQueryLive.mockResolvedValue({
       _id: "a1",
       files: [
         { language: "en", downloadCount: 2 },
@@ -164,21 +168,21 @@ describe("trackAgendaDownload / trackReportDownload", () => {
 
   it("no-ops (does not throw or write) when the agenda doesn't exist", async () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
-    mockQueryRaw.mockResolvedValue(null);
+    mockQueryLive.mockResolvedValue(null);
 
     await expect(trackAgendaDownload("missing", "en")).resolves.toBeUndefined();
     expect(mockUpdateDocument).not.toHaveBeenCalled();
   });
 
   it("throws (does not swallow) when the write fails — the route keeps its own catch", async () => {
-    mockQueryRaw.mockResolvedValue({ _id: "a1", files: [], totalDownloadCount: 0 });
+    mockQueryLive.mockResolvedValue({ _id: "a1", files: [], totalDownloadCount: 0 });
     mockUpdateDocument.mockRejectedValue(new Error("write failed"));
 
     await expect(trackAgendaDownload("a1", "en")).rejects.toThrow("write failed");
   });
 
   it("trackReportDownload increments the matching report file", async () => {
-    mockQueryRaw.mockResolvedValue({
+    mockQueryLive.mockResolvedValue({
       _id: "r1",
       files: [{ language: "fr", downloadCount: 0 }],
       totalDownloadCount: 0,
@@ -193,26 +197,32 @@ describe("trackAgendaDownload / trackReportDownload", () => {
   });
 
   // Pins the fix for a regression: the read inside a read-modify-write
-  // counter must use the raw/uncached primitive (matching the original
-  // client.fetch(), which has no caching on Next 16.3.4), not the cached
-  // `query()` used elsewhere in this module. `query()` routes through
-  // cachedFetch with an hour-long revalidate — every download inside the
-  // same hour would then read identical stale counts and write back
-  // identical numbers, silently undoing the write-side fix (client ->
-  // writeClient) right next to it. If either function slips back to
-  // `query`, these tests must fail.
-  it("trackAgendaDownload uses the raw/uncached primitive, not the cached one", async () => {
-    mockQueryRaw.mockResolvedValue({ _id: "a1", files: [], totalDownloadCount: 0 });
+  // counter must use the live/uncached-but-published-perspective primitive
+  // (matching the original bare client.fetch(), which has no caching on
+  // Next 16.3.4 and never saw drafts), not the cached `query()` used
+  // elsewhere in this module. `query()` routes through cachedFetch with an
+  // hour-long revalidate — every download inside the same hour would then
+  // read identical stale counts and write back identical numbers, silently
+  // undoing the write-side fix (client -> writeClient) right next to it.
+  // NOT `queryRaw` either: `agendaId`/`reportId` come straight from the
+  // request body (client-supplied), and queryRaw's raw perspective would
+  // let a caller increment the counter — and read back fields — of an
+  // unpublished draft agenda/report with no published counterpart. If
+  // either function slips to `query` or `queryRaw`, these tests must fail.
+  it("trackAgendaDownload uses queryLive, not query or queryRaw", async () => {
+    mockQueryLive.mockResolvedValue({ _id: "a1", files: [], totalDownloadCount: 0 });
     await trackAgendaDownload("a1", "en");
-    expect(mockQueryRaw).toHaveBeenCalledTimes(1);
+    expect(mockQueryLive).toHaveBeenCalledTimes(1);
     expect(mockQuery).not.toHaveBeenCalled();
+    expect(mockQueryRaw).not.toHaveBeenCalled();
   });
 
-  it("trackReportDownload uses the raw/uncached primitive, not the cached one", async () => {
-    mockQueryRaw.mockResolvedValue({ _id: "r1", files: [], totalDownloadCount: 0 });
+  it("trackReportDownload uses queryLive, not query or queryRaw", async () => {
+    mockQueryLive.mockResolvedValue({ _id: "r1", files: [], totalDownloadCount: 0 });
     await trackReportDownload("r1", "en");
-    expect(mockQueryRaw).toHaveBeenCalledTimes(1);
+    expect(mockQueryLive).toHaveBeenCalledTimes(1);
     expect(mockQuery).not.toHaveBeenCalled();
+    expect(mockQueryRaw).not.toHaveBeenCalled();
   });
 });
 
