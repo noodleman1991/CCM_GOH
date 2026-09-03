@@ -15,10 +15,39 @@ import { localizedText, localizedTextarea } from "@/payload/fields/localized";
  * projection beside it — the contract Phase 3 has to keep serving — checked
  * field-by-field against the Sanity schema and against what the four real
  * documents populate. Every one of the 48 top-level fields in that interface
- * is present below, and every one is populated on all 4 documents except
- * `communityInfoTitle`/`communityInfoDescription`/`communityInfoFieldHints`
- * (0/4 — declared by the schema and read by the interface, never authored;
- * kept for parity) and `slug` (1/4, dropped: a global has no slug).
+ * is present below, and every one is *present by name* on all 4 documents
+ * except `communityInfoTitle`/`communityInfoDescription`/
+ * `communityInfoFieldHints` (0/4 — declared by the schema and read by the
+ * interface, never authored; kept for parity) and `slug` (1/4, dropped: a
+ * global has no slug).
+ *
+ * ## Present by name is not present by shape — and the stored values are dead
+ *
+ * Six of those fields carry a **scalar** in `production_2` where both the
+ * Sanity schema and this global declare a container, on all 4 documents:
+ *
+ *   - `basicInfoFieldHints`, `workInfoFieldHints`, `recentWorkFieldHints`,
+ *     `privacyFieldHints`, `visibilityOptions` — a plain string, not the
+ *     object of named sub-labels declared for them.
+ *   - `welcomeSteps` — a plain string, not a list (see "The one shape change"
+ *     below for the array-of-`{ step }` form it is declared as here).
+ *
+ * **None of those six stored values is imported, and nothing is lost by that.**
+ * They are already unreachable in production: every consumer reaches through
+ * the container for a named member, e.g.
+ * `components/onboarding/panels/basic-info-panel.tsx:184`
+ *
+ *     content?.basicInfoFieldHints?.usernameHint || t("usernameHint")
+ *
+ * A string has no `usernameHint` property, so that read has always been
+ * `undefined` and the flow has always fallen through to the i18n translation.
+ * The copy users actually see comes from `messages/*.json`, not from these
+ * documents.
+ *
+ * So this global deliberately keeps the **declared container shape** — the
+ * shape the components actually ask for — rather than degrading to the scalar
+ * that happens to be stored. Authoring these fields in Payload will therefore
+ * work, and take effect on the page, in a way it never did in Sanity.
  *
  * ## Localization
  *
@@ -29,12 +58,12 @@ import { localizedText, localizedTextarea } from "@/payload/fields/localized";
  * is localized, so declaring it twice would be noise that reads as meaning
  * something.
  *
- * ## The one shape change
+ * ## The one shape change against the Sanity *schema*
  *
- * `welcomeSteps` is `array of string` in Sanity. Payload has no scalar array,
- * so it becomes an array of `{ step }` — the same treatment
- * `moderationSettings`' wordlists get. `welcomeFeatures` was already an array
- * of objects and is unchanged.
+ * (Distinct from the stored-data divergences above.) `welcomeSteps` is
+ * `array of string` in Sanity. Payload has no scalar array, so it becomes an
+ * array of `{ step }` — the same treatment `moderationSettings`' wordlists
+ * get. `welcomeFeatures` was already an array of objects and is unchanged.
  */
 
 const text = (name: string): Field => ({ name, type: "text" });

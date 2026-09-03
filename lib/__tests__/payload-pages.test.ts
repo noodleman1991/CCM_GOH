@@ -125,7 +125,7 @@ describe("regionalCommunityPages collection", () => {
     expect(names.filter((n) => n.startsWith("divider"))).toEqual([]);
   });
 
-  it("has no useTemplate field — true on all 28 documents, so it encodes nothing", () => {
+  it("has no useTemplate field — true on all 29 documents, so it encodes nothing", () => {
     expect(allFieldNames(RegionalCommunityPages.fields)).not.toContain("useTemplate");
   });
 
