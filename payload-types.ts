@@ -75,6 +75,16 @@ export interface Config {
     authors: Author;
     organizations: Organization;
     regionalCommunities: RegionalCommunity;
+    caseStudies: CaseStudy;
+    livedExperiences: LivedExperience;
+    researchOutputs: ResearchOutput;
+    agendas: Agenda;
+    newsPosts: NewsPost;
+    docsChapters: DocsChapter;
+    testimonials: Testimonial;
+    profilePrompts: ProfilePrompt;
+    externalSources: ExternalSource;
+    caseStudyDrafts: CaseStudyDraft;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -90,6 +100,16 @@ export interface Config {
     authors: AuthorsSelect<false> | AuthorsSelect<true>;
     organizations: OrganizationsSelect<false> | OrganizationsSelect<true>;
     regionalCommunities: RegionalCommunitiesSelect<false> | RegionalCommunitiesSelect<true>;
+    caseStudies: CaseStudiesSelect<false> | CaseStudiesSelect<true>;
+    livedExperiences: LivedExperiencesSelect<false> | LivedExperiencesSelect<true>;
+    researchOutputs: ResearchOutputsSelect<false> | ResearchOutputsSelect<true>;
+    agendas: AgendasSelect<false> | AgendasSelect<true>;
+    newsPosts: NewsPostsSelect<false> | NewsPostsSelect<true>;
+    docsChapters: DocsChaptersSelect<false> | DocsChaptersSelect<true>;
+    testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
+    profilePrompts: ProfilePromptsSelect<false> | ProfilePromptsSelect<true>;
+    externalSources: ExternalSourcesSelect<false> | ExternalSourcesSelect<true>;
+    caseStudyDrafts: CaseStudyDraftsSelect<false> | CaseStudyDraftsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -444,6 +464,797 @@ export interface Organization {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "caseStudies".
+ */
+export interface CaseStudy {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt?: string | null;
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  image?: {
+    asset?: (number | null) | Media;
+    alt?: string | null;
+    caption?: string | null;
+  };
+  tags?: (string | Tag)[] | null;
+  topic:
+    | 'climate-environment'
+    | 'mental-health'
+    | 'community-health'
+    | 'youth-education'
+    | 'policy-governance'
+    | 'technology-innovation'
+    | 'economic-development'
+    | 'cultural-arts'
+    | 'food-agriculture'
+    | 'urban-planning'
+    | 'human-rights'
+    | 'migration'
+    | 'gender-equality'
+    | 'disaster-resilience'
+    | 'digital-inclusion'
+    | 'other';
+  /**
+   * 0/28 real documents have this set — Sanity's initialValue never backfilled existing docs.
+   */
+  layout?: ('story' | 'feature' | 'report') | null;
+  /**
+   * Fixed-7 region code, backfilled from the related community.
+   */
+  region?: ('ssa' | 'nawa' | 'csa' | 'esea' | 'lac' | 'oce' | 'enam') | null;
+  themes?: ('displacement' | 'livelihoods' | 'youth' | 'indigenous')[] | null;
+  populations?: ('youth' | 'women' | 'indigenous' | 'farmers' | 'displaced')[] | null;
+  /**
+   * Clerk User ID of the submitter.
+   */
+  submittedBy?: string | null;
+  submittedAt?: string | null;
+  authors?:
+    | {
+        /**
+         * Clerk User ID (if registered).
+         */
+        userId?: string | null;
+        name: string;
+        email?: string | null;
+        role: 'lead' | 'coauthor' | 'contributor' | 'advisor';
+        affiliation?: (string | null) | Organization;
+        /**
+         * Not in the Sanity schema — real submission-form data (3/28 entries).
+         */
+        clerkUserId?: string | null;
+        clerkUsername?: string | null;
+        clerkImageUrl?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  studyPeriod?: {
+    startDate?: string | null;
+    endDate?: string | null;
+  };
+  locationText?: {
+    country?: string | null;
+    city?: string | null;
+  };
+  /**
+   * @minItems 2
+   * @maxItems 2
+   */
+  studyLocation?: [number, number] | null;
+  locationDisplayText?: string | null;
+  locationPrecision?: ('exact' | 'city' | 'country' | 'region') | null;
+  locationCountryCode?: string | null;
+  studyAreas?:
+    | {
+        /**
+         * @minItems 2
+         * @maxItems 2
+         */
+        location: [number, number];
+        name: string;
+        description?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Associated organizations.
+   */
+  organizations?: (string | Organization)[] | null;
+  relatedCommunity?: (string | null) | RegionalCommunity;
+  /**
+   * Editorial review state — NOT Payload's _status (publish state, set by versions.drafts). Only 'Approved' case studies are meant to be publicly visible.
+   */
+  moderationStatus: 'pending' | 'rejected' | 'revision' | 'approved';
+  featured?: boolean | null;
+  /**
+   * Set by the Approve action when the case study goes live.
+   */
+  publishedAt?: string | null;
+  reviewNotes?: string | null;
+  reviewedBy?: (string | null) | Author;
+  reviewedAt?: string | null;
+  /**
+   * System field — the last status the submitter was emailed about.
+   */
+  notifiedStatus?: string | null;
+  seoTitle?: string | null;
+  seoDescription?: string | null;
+  /**
+   * If this case study was published elsewhere first.
+   */
+  canonicalUrl?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "livedExperiences".
+ */
+export interface LivedExperience {
+  id: string;
+  /**
+   * 0/56 real documents have this set — every existing document is a video by default.
+   */
+  format?: ('video' | 'audio' | 'written') | null;
+  title: string;
+  slug: string;
+  description?: string | null;
+  issue?: string | null;
+  personContext?: string | null;
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Optional. When empty, the source is derived from videoLink/videoUrl.
+   */
+  videoSource?: ('youtube' | 'vimeo' | 'upload') | null;
+  videoLink?: string | null;
+  /**
+   * NOT in the Sanity schema — real data (56/56), written by scripts/populate-lived-experience-videos.mjs and read throughout lib/content/*.ts. See collection header note.
+   */
+  videoUrl?: string | null;
+  videoFile?: (number | null) | Media;
+  thumbnail?: {
+    asset?: (number | null) | Media;
+    alt?: string | null;
+  };
+  /**
+   * e.g. '5:30', '1:45:00'.
+   */
+  duration?: string | null;
+  publishedAt?: string | null;
+  author: string | Author;
+  /**
+   * The schema's own reference field for this — 0/56 real documents populate it. See 'region' below.
+   */
+  relatedCommunity?: (string | null) | RegionalCommunity;
+  /**
+   * Modelled as a relationship, NOT the fixed-7 select the schema declares — 100% of real data (42/56) stores a regionalCommunity reference here, 0% a string code. See collection header note.
+   */
+  region?: (string | null) | RegionalCommunity;
+  layout?: ('story' | 'feature' | 'report') | null;
+  themes?: ('displacement' | 'livelihoods' | 'youth' | 'indigenous')[] | null;
+  populations?: ('youth' | 'women' | 'indigenous' | 'farmers' | 'displaced')[] | null;
+  /**
+   * @minItems 2
+   * @maxItems 2
+   */
+  location?: [number, number] | null;
+  place?: {
+    /**
+     * @minItems 2
+     * @maxItems 2
+     */
+    point?: [number, number] | null;
+    /**
+     * Human-readable place, e.g. "Nakuru, Kenya".
+     */
+    text?: string | null;
+    precision?: ('exact' | 'city' | 'country' | 'region') | null;
+    /**
+     * ISO alpha-3, e.g. KEN.
+     */
+    countryCode?: string | null;
+  };
+  organizations?: (string | Organization)[] | null;
+  tags?: (string | Tag)[] | null;
+  featured?: boolean | null;
+  /**
+   * Editorial review state — NOT Payload's _status. 0/56 real documents have this set; the live app treats an unset status as approved. See collection header note.
+   */
+  moderationStatus?: ('pending' | 'rejected' | 'revision' | 'approved') | null;
+  /**
+   * Clerk User ID of the submitter (in-app form submissions).
+   */
+  submittedBy?: string | null;
+  reviewNotes?: string | null;
+  meta_title?: string | null;
+  meta_description?: string | null;
+  noindex?: boolean | null;
+  ogImage?: {
+    asset?: (number | null) | Media;
+    alt?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "researchOutputs".
+ */
+export interface ResearchOutput {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt?: string | null;
+  outputType: 'report' | 'toolkit' | 'dataset-brief' | 'guideline';
+  layout?: ('report' | 'story' | 'feature') | null;
+  coverImage?: {
+    asset?: (number | null) | Media;
+    alt?: string | null;
+  };
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Each version is a kind (summary/full/…) × language, as a file or in-hub body.
+   */
+  versions?:
+    | {
+        kind: 'summary' | 'full' | 'brief' | 'deck';
+        lang: 'en' | 'es' | 'fr' | 'ar';
+        /**
+         * Optional display label; auto-derived from kind + language if blank.
+         */
+        label?: string | null;
+        file?: (number | null) | Media;
+        /**
+         * In-hub content. Use this OR an uploaded file.
+         */
+        body?: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        pages?: number | null;
+        downloadCount?: number | null;
+        lastDownloaded?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  region?: ('ssa' | 'nawa' | 'csa' | 'esea' | 'lac' | 'oce' | 'enam') | null;
+  themes?: ('displacement' | 'livelihoods' | 'youth' | 'indigenous')[] | null;
+  populations?: ('youth' | 'women' | 'indigenous' | 'farmers' | 'displaced')[] | null;
+  relatedCommunities?: (string | RegionalCommunity)[] | null;
+  organizations?: (string | Organization)[] | null;
+  tags?: (string | Tag)[] | null;
+  /**
+   * Editorial review state, distinct from Payload's _status. 29/29 real documents are 'approved'.
+   */
+  moderationStatus?: ('pending' | 'rejected' | 'revision' | 'approved') | null;
+  submittedBy?: string | null;
+  reviewNotes?: string | null;
+  place?: {
+    /**
+     * @minItems 2
+     * @maxItems 2
+     */
+    point?: [number, number] | null;
+    text?: string | null;
+    precision?: ('exact' | 'city' | 'country' | 'region') | null;
+    countryCode?: string | null;
+  };
+  publishDate?: string | null;
+  year?: number | null;
+  featured?: boolean | null;
+  totalDownloadCount?: number | null;
+  /**
+   * Carries the legacy report _id through the A3 migration (provenance + dedupe). 29/29 real documents set.
+   */
+  migratedFromReport?: string | null;
+  /**
+   * Sanity's LexoRank orderRank string, preserved for editorial ordering.
+   */
+  orderRank?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "agendas".
+ */
+export interface Agenda {
+  id: string;
+  title: string;
+  slug: string;
+  subtitle?: string | null;
+  description?: string | null;
+  coverImage?: {
+    asset?: (number | null) | Media;
+    alt?: string | null;
+  };
+  files: {
+    language: 'en' | 'es' | 'fr' | 'ar';
+    file: number | Media;
+    downloadCount?: number | null;
+    lastDownloaded?: string | null;
+    id?: string | null;
+  }[];
+  agendaType:
+    | 'annual'
+    | 'research'
+    | 'policy'
+    | 'technical'
+    | 'case-study'
+    | 'whitepaper'
+    | 'guidelines'
+    | 'agenda'
+    | 'minutes'
+    | 'other';
+  publishDate: string;
+  year: number;
+  organizations?: (string | Organization)[] | null;
+  regionalCommunities?: (string | RegionalCommunity)[] | null;
+  tags?: (string | Tag)[] | null;
+  totalDownloadCount?: number | null;
+  featured?: boolean | null;
+  accessLevel?: ('public' | 'registered' | 'members') | null;
+  /**
+   * Sanity's LexoRank orderRank string, preserved for editorial ordering.
+   */
+  orderRank?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "newsPosts".
+ */
+export interface NewsPost {
+  id: string;
+  title: string;
+  subtitle?: string | null;
+  slug: string;
+  excerpt?: string | null;
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  author: string | Author;
+  publishedAt?: string | null;
+  image?: {
+    asset?: (number | null) | Media;
+    alt?: string | null;
+  };
+  organizations?: (string | Organization)[] | null;
+  relatedCommunity?: (string | null) | RegionalCommunity;
+  /**
+   * Optional for news, unlike other content types.
+   */
+  region?: ('ssa' | 'nawa' | 'csa' | 'esea' | 'lac' | 'oce' | 'enam') | null;
+  themes?: ('displacement' | 'livelihoods' | 'youth' | 'indigenous')[] | null;
+  populations?: ('youth' | 'women' | 'indigenous' | 'farmers' | 'displaced')[] | null;
+  /**
+   * @minItems 2
+   * @maxItems 2
+   */
+  location?: [number, number] | null;
+  place?: {
+    /**
+     * @minItems 2
+     * @maxItems 2
+     */
+    point?: [number, number] | null;
+    text?: string | null;
+    precision?: ('exact' | 'city' | 'country' | 'region') | null;
+    countryCode?: string | null;
+  };
+  locationDetails?: {
+    city?: string | null;
+    country?: string | null;
+    region?: string | null;
+  };
+  tags?: (string | Tag)[] | null;
+  sources?:
+    | {
+        title: string;
+        url: string;
+        publisher?: string | null;
+        date?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  featured?: boolean | null;
+  meta_title?: string | null;
+  meta_description?: string | null;
+  noindex?: boolean | null;
+  ogImage?: {
+    asset?: (number | null) | Media;
+    alt?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "docsChapters".
+ */
+export interface DocsChapter {
+  id: string;
+  /**
+   * Which long-form document this chapter belongs to (e.g. 'global-agenda').
+   */
+  collection: string;
+  title: string;
+  slug: string;
+  /**
+   * Position in the chapter list (Cover = 1).
+   */
+  order: number;
+  /**
+   * The chapter content — headings, figures, links, callouts.
+   */
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "testimonials".
+ */
+export interface Testimonial {
+  id: string;
+  name: string;
+  /**
+   * Role/title, in each language.
+   */
+  jobTitle?: string | null;
+  /**
+   * Deprecated — use the localized Job Title field above.
+   */
+  title?: string | null;
+  image?: {
+    asset?: (number | null) | Media;
+    alt?: string | null;
+  };
+  /**
+   * The testimonial quote (rich text), in each language.
+   */
+  quote?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Deprecated — use the localized Testimonial field above.
+   */
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Rating from 1 to 5 stars.
+   */
+  rating?: number | null;
+  relatedCommunity?: (string | null) | RegionalCommunity;
+  organization?: (string | null) | Organization;
+  featured?: boolean | null;
+  /**
+   * Sanity's LexoRank orderRank string, preserved for editorial ordering.
+   */
+  orderRank?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "profilePrompts".
+ */
+export interface ProfilePrompt {
+  id: string;
+  /**
+   * A conversational prompt members answer, e.g. 'Climate change feels personal to me because…'. Keep it open and inviting.
+   */
+  prompt: string;
+  category?: ('about' | 'collaboration' | 'lived-experience' | 'research') | null;
+  /**
+   * Only active prompts are offered to members. Turn off to retire a prompt without losing existing answers.
+   */
+  active?: boolean | null;
+  /**
+   * Sanity's LexoRank orderRank string, preserved for editorial ordering.
+   */
+  orderRank?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "externalSources".
+ */
+export interface ExternalSource {
+  id: string;
+  /**
+   * Title of the external article (translate if needed).
+   */
+  title: string;
+  sourceUrl: string;
+  publisher: string;
+  publishedAt?: string | null;
+  excerpt?: string | null;
+  image?: {
+    asset?: (number | null) | Media;
+    alt?: string | null;
+  };
+  tags?: (string | Tag)[] | null;
+  organizations?: (string | Organization)[] | null;
+  relatedCommunity?: (string | null) | RegionalCommunity;
+  /**
+   * Authors of the original article.
+   */
+  authors?:
+    | {
+        name?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  language?: ('en' | 'es' | 'fr' | 'ar' | 'multi' | 'other') | null;
+  sourceType?: ('news' | 'research' | 'blog' | 'report' | 'press' | 'policy' | 'other') | null;
+  featured?: boolean | null;
+  /**
+   * Whether this external source has been approved for display.
+   */
+  approved?: boolean | null;
+  /**
+   * Editor who added this external source.
+   */
+  addedBy?: (string | null) | Author;
+  addedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "caseStudyDrafts".
+ */
+export interface CaseStudyDraft {
+  id: string;
+  /**
+   * Clerk User ID of the draft owner.
+   */
+  userId: string;
+  lastSaved: string;
+  title?: string | null;
+  excerpt?: string | null;
+  topic?:
+    | (
+        | 'climate-environment'
+        | 'mental-health'
+        | 'community-health'
+        | 'youth-education'
+        | 'policy-governance'
+        | 'technology-innovation'
+        | 'economic-development'
+        | 'cultural-arts'
+        | 'food-agriculture'
+        | 'urban-planning'
+        | 'human-rights'
+        | 'migration'
+        | 'gender-equality'
+        | 'disaster-resilience'
+        | 'digital-inclusion'
+        | 'other'
+      )
+    | null;
+  /**
+   * Not in the Sanity schema — real data (the one draft sets 'en').
+   */
+  contentLanguage?: string | null;
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  image?: {
+    asset?: (number | null) | Media;
+    alt?: string | null;
+    caption?: string | null;
+  };
+  /**
+   * Plain tag id strings, not references — matches what the form actually saves. See collection header note.
+   */
+  tags?:
+    | {
+        value?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Not in the Sanity schema — a real duplicate of 'tags' the form also saves.
+   */
+  selectedTags?:
+    | {
+        value?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  authors?:
+    | {
+        userId?: string | null;
+        name?: string | null;
+        email?: string | null;
+        role?: ('lead' | 'coauthor' | 'contributor' | 'advisor') | null;
+        affiliation?: (string | null) | Organization;
+        id?: string | null;
+      }[]
+    | null;
+  studyPeriod?: {
+    startDate?: string | null;
+    endDate?: string | null;
+  };
+  /**
+   * Not in the Sanity schema — real data (the one draft has both fields).
+   */
+  locationText?: {
+    country?: string | null;
+    city?: string | null;
+  };
+  /**
+   * @minItems 2
+   * @maxItems 2
+   */
+  studyLocation?: [number, number] | null;
+  studyAreas?:
+    | {
+        /**
+         * @minItems 2
+         * @maxItems 2
+         */
+        location?: [number, number] | null;
+        name?: string | null;
+        description?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  organizations?: (string | Organization)[] | null;
+  /**
+   * A plain regionalCommunity id string, not a relationship — matches what the form actually saves. See collection header note.
+   */
+  relatedCommunity?: string | null;
+  /**
+   * Additional form state information.
+   */
+  formMetadata?: {
+    currentStep?: string | null;
+    completedSections?:
+      | {
+          value?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * 0/1 populated here — see the top-level organizationName field.
+     */
+    organizationName?: string | null;
+  };
+  /**
+   * Not in the Sanity schema at this location — the real document stores it top-level, not nested under formMetadata.
+   */
+  organizationName?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -497,6 +1308,46 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'regionalCommunities';
         value: string | RegionalCommunity;
+      } | null)
+    | ({
+        relationTo: 'caseStudies';
+        value: string | CaseStudy;
+      } | null)
+    | ({
+        relationTo: 'livedExperiences';
+        value: string | LivedExperience;
+      } | null)
+    | ({
+        relationTo: 'researchOutputs';
+        value: string | ResearchOutput;
+      } | null)
+    | ({
+        relationTo: 'agendas';
+        value: string | Agenda;
+      } | null)
+    | ({
+        relationTo: 'newsPosts';
+        value: string | NewsPost;
+      } | null)
+    | ({
+        relationTo: 'docsChapters';
+        value: string | DocsChapter;
+      } | null)
+    | ({
+        relationTo: 'testimonials';
+        value: string | Testimonial;
+      } | null)
+    | ({
+        relationTo: 'profilePrompts';
+        value: string | ProfilePrompt;
+      } | null)
+    | ({
+        relationTo: 'externalSources';
+        value: string | ExternalSource;
+      } | null)
+    | ({
+        relationTo: 'caseStudyDrafts';
+        value: string | CaseStudyDraft;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -739,6 +1590,471 @@ export interface RegionalCommunitiesSelect<T extends boolean = true> {
   featured?: T;
   active?: T;
   orderRank?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "caseStudies_select".
+ */
+export interface CaseStudiesSelect<T extends boolean = true> {
+  id?: T;
+  title?: T;
+  slug?: T;
+  excerpt?: T;
+  content?: T;
+  image?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+        caption?: T;
+      };
+  tags?: T;
+  topic?: T;
+  layout?: T;
+  region?: T;
+  themes?: T;
+  populations?: T;
+  submittedBy?: T;
+  submittedAt?: T;
+  authors?:
+    | T
+    | {
+        userId?: T;
+        name?: T;
+        email?: T;
+        role?: T;
+        affiliation?: T;
+        clerkUserId?: T;
+        clerkUsername?: T;
+        clerkImageUrl?: T;
+        id?: T;
+      };
+  studyPeriod?:
+    | T
+    | {
+        startDate?: T;
+        endDate?: T;
+      };
+  locationText?:
+    | T
+    | {
+        country?: T;
+        city?: T;
+      };
+  studyLocation?: T;
+  locationDisplayText?: T;
+  locationPrecision?: T;
+  locationCountryCode?: T;
+  studyAreas?:
+    | T
+    | {
+        location?: T;
+        name?: T;
+        description?: T;
+        id?: T;
+      };
+  organizations?: T;
+  relatedCommunity?: T;
+  moderationStatus?: T;
+  featured?: T;
+  publishedAt?: T;
+  reviewNotes?: T;
+  reviewedBy?: T;
+  reviewedAt?: T;
+  notifiedStatus?: T;
+  seoTitle?: T;
+  seoDescription?: T;
+  canonicalUrl?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "livedExperiences_select".
+ */
+export interface LivedExperiencesSelect<T extends boolean = true> {
+  id?: T;
+  format?: T;
+  title?: T;
+  slug?: T;
+  description?: T;
+  issue?: T;
+  personContext?: T;
+  body?: T;
+  videoSource?: T;
+  videoLink?: T;
+  videoUrl?: T;
+  videoFile?: T;
+  thumbnail?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+      };
+  duration?: T;
+  publishedAt?: T;
+  author?: T;
+  relatedCommunity?: T;
+  region?: T;
+  layout?: T;
+  themes?: T;
+  populations?: T;
+  location?: T;
+  place?:
+    | T
+    | {
+        point?: T;
+        text?: T;
+        precision?: T;
+        countryCode?: T;
+      };
+  organizations?: T;
+  tags?: T;
+  featured?: T;
+  moderationStatus?: T;
+  submittedBy?: T;
+  reviewNotes?: T;
+  meta_title?: T;
+  meta_description?: T;
+  noindex?: T;
+  ogImage?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "researchOutputs_select".
+ */
+export interface ResearchOutputsSelect<T extends boolean = true> {
+  id?: T;
+  title?: T;
+  slug?: T;
+  excerpt?: T;
+  outputType?: T;
+  layout?: T;
+  coverImage?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+      };
+  body?: T;
+  versions?:
+    | T
+    | {
+        kind?: T;
+        lang?: T;
+        label?: T;
+        file?: T;
+        body?: T;
+        pages?: T;
+        downloadCount?: T;
+        lastDownloaded?: T;
+        id?: T;
+      };
+  region?: T;
+  themes?: T;
+  populations?: T;
+  relatedCommunities?: T;
+  organizations?: T;
+  tags?: T;
+  moderationStatus?: T;
+  submittedBy?: T;
+  reviewNotes?: T;
+  place?:
+    | T
+    | {
+        point?: T;
+        text?: T;
+        precision?: T;
+        countryCode?: T;
+      };
+  publishDate?: T;
+  year?: T;
+  featured?: T;
+  totalDownloadCount?: T;
+  migratedFromReport?: T;
+  orderRank?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "agendas_select".
+ */
+export interface AgendasSelect<T extends boolean = true> {
+  id?: T;
+  title?: T;
+  slug?: T;
+  subtitle?: T;
+  description?: T;
+  coverImage?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+      };
+  files?:
+    | T
+    | {
+        language?: T;
+        file?: T;
+        downloadCount?: T;
+        lastDownloaded?: T;
+        id?: T;
+      };
+  agendaType?: T;
+  publishDate?: T;
+  year?: T;
+  organizations?: T;
+  regionalCommunities?: T;
+  tags?: T;
+  totalDownloadCount?: T;
+  featured?: T;
+  accessLevel?: T;
+  orderRank?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "newsPosts_select".
+ */
+export interface NewsPostsSelect<T extends boolean = true> {
+  id?: T;
+  title?: T;
+  subtitle?: T;
+  slug?: T;
+  excerpt?: T;
+  content?: T;
+  author?: T;
+  publishedAt?: T;
+  image?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+      };
+  organizations?: T;
+  relatedCommunity?: T;
+  region?: T;
+  themes?: T;
+  populations?: T;
+  location?: T;
+  place?:
+    | T
+    | {
+        point?: T;
+        text?: T;
+        precision?: T;
+        countryCode?: T;
+      };
+  locationDetails?:
+    | T
+    | {
+        city?: T;
+        country?: T;
+        region?: T;
+      };
+  tags?: T;
+  sources?:
+    | T
+    | {
+        title?: T;
+        url?: T;
+        publisher?: T;
+        date?: T;
+        id?: T;
+      };
+  featured?: T;
+  meta_title?: T;
+  meta_description?: T;
+  noindex?: T;
+  ogImage?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "docsChapters_select".
+ */
+export interface DocsChaptersSelect<T extends boolean = true> {
+  id?: T;
+  collection?: T;
+  title?: T;
+  slug?: T;
+  order?: T;
+  body?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "testimonials_select".
+ */
+export interface TestimonialsSelect<T extends boolean = true> {
+  id?: T;
+  name?: T;
+  jobTitle?: T;
+  title?: T;
+  image?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+      };
+  quote?: T;
+  body?: T;
+  rating?: T;
+  relatedCommunity?: T;
+  organization?: T;
+  featured?: T;
+  orderRank?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "profilePrompts_select".
+ */
+export interface ProfilePromptsSelect<T extends boolean = true> {
+  id?: T;
+  prompt?: T;
+  category?: T;
+  active?: T;
+  orderRank?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "externalSources_select".
+ */
+export interface ExternalSourcesSelect<T extends boolean = true> {
+  id?: T;
+  title?: T;
+  sourceUrl?: T;
+  publisher?: T;
+  publishedAt?: T;
+  excerpt?: T;
+  image?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+      };
+  tags?: T;
+  organizations?: T;
+  relatedCommunity?: T;
+  authors?:
+    | T
+    | {
+        name?: T;
+        id?: T;
+      };
+  language?: T;
+  sourceType?: T;
+  featured?: T;
+  approved?: T;
+  addedBy?: T;
+  addedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "caseStudyDrafts_select".
+ */
+export interface CaseStudyDraftsSelect<T extends boolean = true> {
+  id?: T;
+  userId?: T;
+  lastSaved?: T;
+  title?: T;
+  excerpt?: T;
+  topic?: T;
+  contentLanguage?: T;
+  content?: T;
+  image?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+        caption?: T;
+      };
+  tags?:
+    | T
+    | {
+        value?: T;
+        id?: T;
+      };
+  selectedTags?:
+    | T
+    | {
+        value?: T;
+        id?: T;
+      };
+  authors?:
+    | T
+    | {
+        userId?: T;
+        name?: T;
+        email?: T;
+        role?: T;
+        affiliation?: T;
+        id?: T;
+      };
+  studyPeriod?:
+    | T
+    | {
+        startDate?: T;
+        endDate?: T;
+      };
+  locationText?:
+    | T
+    | {
+        country?: T;
+        city?: T;
+      };
+  studyLocation?: T;
+  studyAreas?:
+    | T
+    | {
+        location?: T;
+        name?: T;
+        description?: T;
+        id?: T;
+      };
+  organizations?: T;
+  relatedCommunity?: T;
+  formMetadata?:
+    | T
+    | {
+        currentStep?: T;
+        completedSections?:
+          | T
+          | {
+              value?: T;
+              id?: T;
+            };
+        organizationName?: T;
+      };
+  organizationName?: T;
   updatedAt?: T;
   createdAt?: T;
 }

@@ -12,6 +12,16 @@ import { ExpertiseAreas } from "./payload/collections/expertise-areas";
 import { Authors } from "./payload/collections/authors";
 import { Organizations } from "./payload/collections/organizations";
 import { RegionalCommunities } from "./payload/collections/regional-communities";
+import { CaseStudies } from "./payload/collections/case-studies";
+import { LivedExperiences } from "./payload/collections/lived-experiences";
+import { ResearchOutputs } from "./payload/collections/research-outputs";
+import { Agendas } from "./payload/collections/agendas";
+import { NewsPosts } from "./payload/collections/news-posts";
+import { DocsChapters } from "./payload/collections/docs-chapters";
+import { Testimonials } from "./payload/collections/testimonials";
+import { ProfilePrompts } from "./payload/collections/profile-prompts";
+import { ExternalSources } from "./payload/collections/external-sources";
+import { CaseStudyDrafts } from "./payload/collections/case-study-drafts";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -35,7 +45,26 @@ export default buildConfig({
     pool: { connectionString: process.env.PAYLOAD_DATABASE_URL || "" },
   }),
   editor: lexicalEditor(),
-  collections: [Users, Media, Tags, WorkTypes, ExpertiseAreas, Authors, Organizations, RegionalCommunities],
+  collections: [
+    Users,
+    Media,
+    Tags,
+    WorkTypes,
+    ExpertiseAreas,
+    Authors,
+    Organizations,
+    RegionalCommunities,
+    CaseStudies,
+    LivedExperiences,
+    ResearchOutputs,
+    Agendas,
+    NewsPosts,
+    DocsChapters,
+    Testimonials,
+    ProfilePrompts,
+    ExternalSources,
+    CaseStudyDrafts,
+  ],
   globals: [],
   localization: {
     locales: [
