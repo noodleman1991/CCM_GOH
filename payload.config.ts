@@ -28,8 +28,8 @@ import { RegionalCommunityPages } from "./payload/collections/regional-community
 import { Events } from "./payload/collections/events";
 import { Projects } from "./payload/collections/projects";
 import { globals } from "./payload/globals";
-import { payloadR2Bucket } from "./payload/storage/r2-bucket";
-import { r2Storage } from "@payloadcms/storage-r2";
+import { payloadR2BucketName, payloadR2ClientConfig } from "./payload/storage/r2";
+import { s3Storage } from "@payloadcms/storage-s3";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -81,20 +81,38 @@ export default buildConfig({
   globals,
   plugins: [
     // Uploads live in Cloudflare R2, the object store this app already uses
-    // (lib/r2.ts). `bucket` is an S3-backed implementation of the Workers
-    // `R2Bucket` binding this plugin expects — see payload/storage/r2-bucket.ts
-    // for why that indirection is needed and why it cannot just import lib/r2.ts.
+    // (lib/r2.ts), reached through R2's S3-compatible API.
+    //
+    // `s3Storage`, not `@payloadcms/storage-r2`: that package's `bucket` is the
+    // Cloudflare *Workers binding* (`env.MY_BUCKET`), which exists only inside
+    // a Worker. This app deploys to Vercel on Node, so using it here means
+    // hand-writing an S3-backed stand-in for a Workers runtime object — code
+    // that would carry every upload in the CMS and could only ever be verified
+    // against the live bucket. R2 is S3-compatible and `lib/r2.ts` already
+    // drives it with `@aws-sdk/client-s3` on exactly this configuration
+    // (`region: "auto"`, the account R2 endpoint, path-style addressing), so
+    // the officially supported S3 adapter is both the smaller and the better
+    // tested path. Every call it makes — headObject, ranged getObject,
+    // putObject / multipart via @aws-sdk/lib-storage, deleteObject — is
+    // supported by R2's S3 API.
+    //
+    // No `acl`: R2 has no object ACLs, and leaving it unset means no
+    // `x-amz-acl` header is sent. No `signedDownloads` and no
+    // `disablePayloadAccessControl`, so files keep being served through
+    // Payload's own static handler on `/payload-api/...` — the same serving
+    // path the R2 adapter gave us, which never exposed a bucket URL either.
     //
     // Left permanently enabled rather than gated on whether R2 env vars are
-    // present: the adapter touches nothing until a file is actually uploaded,
-    // and `enabled: false` would silently fall back to writing uploads to the
+    // present: the S3 client is built lazily on the first upload, and
+    // `enabled: false` would silently fall back to writing uploads to the
     // local disk. With it always on, a missing credential is a loud error on
     // the upload instead of a file quietly stored somewhere ephemeral.
     //
     // The `cms/` prefixes keep CMS assets clear of the collaboration-file key
     // layout (`public/…`, `members/…`) in case both share one bucket.
-    r2Storage({
-      bucket: payloadR2Bucket(),
+    s3Storage({
+      bucket: payloadR2BucketName(),
+      config: payloadR2ClientConfig(),
       collections: {
         media: { prefix: "cms/media" },
         files: { prefix: "cms/files" },

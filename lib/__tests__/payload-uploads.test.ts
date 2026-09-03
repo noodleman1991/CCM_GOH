@@ -5,6 +5,11 @@ import type { Field, ImageSize } from "payload";
 import config from "@payload-config";
 import { MEDIA_IMAGE_SIZES, Media, RESIZABLE_IMAGE_MIME_TYPES } from "@/payload/collections/media";
 import { Files } from "@/payload/collections/files";
+import {
+  payloadR2BucketName,
+  payloadR2ClientConfig,
+  payloadR2Configured,
+} from "@/payload/storage/r2";
 
 const uploadCollections = [Media, Files];
 
@@ -168,18 +173,108 @@ describe("SVG transform bypass", () => {
   });
 });
 
-describe("r2Storage wiring", () => {
-  it("stores both upload collections on R2 rather than the local disk", async () => {
+/**
+ * Uploads go to Cloudflare R2 over its S3-compatible API, via the official
+ * `@payloadcms/storage-s3` adapter (`payload.config.ts` explains why that and
+ * not `@payloadcms/storage-r2`, whose `bucket` is a Cloudflare Workers binding
+ * this Node/Vercel deployment does not have).
+ *
+ * These assertions read the *built* config, so they fail if the plugin stops
+ * claiming a collection, if a prefix changes, or if the adapter is swapped for
+ * one that serves files straight from the bucket instead of through Payload.
+ */
+const EXPECTED_PREFIXES: Record<string, string> = {
+  media: "cms/media",
+  files: "cms/files",
+};
+
+describe("s3Storage wiring", () => {
+  it("hands both upload collections to the s3 adapter rather than the local disk", async () => {
     const c = await config;
-    for (const slug of ["media", "files"]) {
+    for (const slug of Object.keys(EXPECTED_PREFIXES)) {
       const collection = c.collections.find((x) => x.slug === slug);
       expect(collection, `${slug} must be registered`).toBeTruthy();
-      const upload = collection!.upload as { disableLocalStorage?: boolean };
-      // Set by r2Storage() on every collection it adopts — its presence is
-      // proof the plugin ran and claimed this collection.
+      const upload = collection!.upload as {
+        adapter?: string;
+        disableLocalStorage?: boolean;
+        handlers?: unknown[];
+      };
+      // `adapter` is set to the GeneratedAdapter's `name` by
+      // @payloadcms/plugin-cloud-storage. "s3" is createS3Adapter's name — the
+      // proof that this collection is on the officially supported adapter and
+      // not on a hand-written stand-in.
+      expect(upload.adapter, `${slug} must be on the s3 adapter`).toBe("s3");
       expect(upload.disableLocalStorage, `${slug} must not fall back to disk`).toBe(true);
-      // The cloud-storage plugin adds this field to collections it manages.
-      expect(findField(collection!.fields as Field[], "prefix")).toBeTruthy();
+      // The static handler the plugin pushes so files are streamed out through
+      // Payload's own access-controlled route. Its presence is what keeps
+      // `url` on /payload-api/... instead of a bucket URL.
+      expect(upload.handlers?.length, `${slug} must have a static handler`).toBeGreaterThan(0);
+    }
+  });
+
+  it("namespaces each collection under its own `cms/` prefix", async () => {
+    const c = await config;
+    for (const [slug, prefix] of Object.entries(EXPECTED_PREFIXES)) {
+      const collection = c.collections.find((x) => x.slug === slug);
+      // The cloud-storage plugin adds this field to collections it manages and
+      // defaults it to the configured prefix; every stored key starts with it,
+      // which is what keeps CMS assets clear of lib/r2.ts's `public/` and
+      // `members/` collaboration layout in a shared bucket.
+      const prefixField = findField(collection!.fields as Field[], "prefix");
+      expect(prefixField, `${slug} must carry a prefix field`).toBeTruthy();
+      expect((prefixField as { defaultValue?: string }).defaultValue).toBe(prefix);
+    }
+  });
+
+  it("builds an R2 S3 client config from the same env vars lib/r2.ts uses", () => {
+    const env = process.env;
+    process.env = {
+      ...env,
+      R2_ENDPOINT: "https://acct.r2.cloudflarestorage.com",
+      R2_ACCESS_KEY_ID: "key",
+      R2_SECRET_ACCESS_KEY: "secret",
+      PAYLOAD_R2_BUCKET: "",
+      R2_BUCKET: "ccm-collab",
+    };
+    delete process.env.PAYLOAD_R2_BUCKET;
+    try {
+      expect(payloadR2Configured()).toBe(true);
+      expect(payloadR2BucketName()).toBe("ccm-collab");
+      expect(payloadR2ClientConfig()).toEqual({
+        // R2 has no regions; "auto" + a path-style custom endpoint is exactly
+        // the working configuration in lib/r2.ts.
+        region: "auto",
+        endpoint: "https://acct.r2.cloudflarestorage.com",
+        forcePathStyle: true,
+        credentials: { accessKeyId: "key", secretAccessKey: "secret" },
+      });
+    } finally {
+      process.env = env;
+    }
+  });
+
+  it("omits credentials entirely when R2 is unconfigured, so config load never throws", () => {
+    const env = process.env;
+    process.env = { ...env };
+    for (const k of [
+      "R2_ENDPOINT",
+      "R2_ACCESS_KEY_ID",
+      "R2_SECRET_ACCESS_KEY",
+      "CLOUDFLARE_R2_ENDPOINT",
+      "CLOUDFLARE_R2_ACCESS_KEY_ID",
+      "CLOUDFLARE_R2_SECRET_ACCESS_KEY",
+    ]) {
+      delete process.env[k];
+    }
+    try {
+      expect(payloadR2Configured()).toBe(false);
+      const clientConfig = payloadR2ClientConfig();
+      // An explicit `credentials` with empty members would suppress the AWS
+      // SDK's provider chain and turn a missing key into a signing error.
+      expect(clientConfig).not.toHaveProperty("credentials");
+      expect(clientConfig.endpoint).toBeUndefined();
+    } finally {
+      process.env = env;
     }
   });
 });
