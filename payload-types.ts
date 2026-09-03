@@ -87,6 +87,8 @@ export interface Config {
     caseStudyDrafts: CaseStudyDraft;
     pages: Page;
     regionalCommunityPages: RegionalCommunityPage;
+    events: Event;
+    projects: Project;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -114,6 +116,8 @@ export interface Config {
     caseStudyDrafts: CaseStudyDraftsSelect<false> | CaseStudyDraftsSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
     regionalCommunityPages: RegionalCommunityPagesSelect<false> | RegionalCommunityPagesSelect<true>;
+    events: EventsSelect<false> | EventsSelect<true>;
+    projects: ProjectsSelect<false> | ProjectsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -2225,6 +2229,150 @@ export interface GridCaseStudyBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "events".
+ */
+export interface Event {
+  id: string;
+  title: string;
+  slug: string;
+  description?: string | null;
+  scope?: ('community' | 'project') | null;
+  startAt: string;
+  endAt?: string | null;
+  mode?: ('online' | 'in_person' | 'hybrid') | null;
+  /**
+   * Venue name or city (for in-person/hybrid). Not localized — venue names are proper nouns.
+   */
+  locationName?: string | null;
+  /**
+   * The reusable geotag (spec A2).
+   */
+  place?: {
+    /**
+     * @minItems 2
+     * @maxItems 2
+     */
+    point?: [number, number] | null;
+    /**
+     * Human-readable place, e.g. "Nakuru, Kenya".
+     */
+    text?: string | null;
+    precision?: ('exact' | 'city' | 'country' | 'region') | null;
+    /**
+     * ISO alpha-3, e.g. KEN.
+     */
+    countryCode?: string | null;
+  };
+  url?: string | null;
+  coverImage?: {
+    asset?: (number | null) | Media;
+    alt?: string | null;
+  };
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Posted after the event — flips the public page into recap mode.
+   */
+  recordingUrl?: string | null;
+  /**
+   * Prisma Collaboration id of the organising workspace, set by the app.
+   */
+  relatedCollaboration?: string | null;
+  /**
+   * If scope = project: the Collaboration id this event belongs to.
+   */
+  linkedProject?: string | null;
+  relatedCommunity?: (string | null) | RegionalCommunity;
+  /**
+   * Only 'Approved' events are public. Member/project submissions start as 'Pending Review'. Sanity's `status`.
+   */
+  moderationStatus?: ('pending' | 'rejected' | 'revision' | 'approved') | null;
+  /**
+   * Clerk User ID of the submitter (set on in-app submission).
+   */
+  submittedBy?: string | null;
+  /**
+   * Internal notes / feedback to the submitter.
+   */
+  reviewNotes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects".
+ */
+export interface Project {
+  id: string;
+  name: string;
+  slug: string;
+  /**
+   * Short form or acronym of the project name.
+   */
+  acronym?: string | null;
+  description?: string | null;
+  type?: ('research' | 'implementation' | 'pilot' | 'community' | 'policy' | 'technology' | 'other') | null;
+  /**
+   * Project lifecycle, NOT a moderation gate. See the note at the top of this file.
+   */
+  status?: ('planning' | 'active' | 'completed' | 'on-hold' | 'cancelled') | null;
+  leadOrganization?: (string | null) | Organization;
+  partnerOrganizations?: (string | Organization)[] | null;
+  startDate?: string | null;
+  endDate?: string | null;
+  website?: string | null;
+  logo?: {
+    asset?: (number | null) | Media;
+    alt?: string | null;
+  };
+  /**
+   * Primary location or headquarters of the project.
+   *
+   * @minItems 2
+   * @maxItems 2
+   */
+  location?: [number, number] | null;
+  /**
+   * Areas where the project is active.
+   */
+  coverageArea?:
+    | {
+        /**
+         * @minItems 2
+         * @maxItems 2
+         */
+        location?: [number, number] | null;
+        name?: string | null;
+        description?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * 3–4 focused tags work best (6 max).
+   */
+  tags?: (string | Tag)[] | null;
+  /**
+   * Sanity's LexoRank orderRank string, preserved for editorial ordering.
+   */
+  orderRank?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -2326,6 +2474,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'regionalCommunityPages';
         value: string | RegionalCommunityPage;
+      } | null)
+    | ({
+        relationTo: 'events';
+        value: string | Event;
+      } | null)
+    | ({
+        relationTo: 'projects';
+        value: string | Project;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -3655,6 +3811,83 @@ export interface GridCaseStudyBlockSelect<T extends boolean = true> {
   priority?: T;
   id?: T;
   blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "events_select".
+ */
+export interface EventsSelect<T extends boolean = true> {
+  id?: T;
+  title?: T;
+  slug?: T;
+  description?: T;
+  scope?: T;
+  startAt?: T;
+  endAt?: T;
+  mode?: T;
+  locationName?: T;
+  place?:
+    | T
+    | {
+        point?: T;
+        text?: T;
+        precision?: T;
+        countryCode?: T;
+      };
+  url?: T;
+  coverImage?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+      };
+  body?: T;
+  recordingUrl?: T;
+  relatedCollaboration?: T;
+  linkedProject?: T;
+  relatedCommunity?: T;
+  moderationStatus?: T;
+  submittedBy?: T;
+  reviewNotes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects_select".
+ */
+export interface ProjectsSelect<T extends boolean = true> {
+  id?: T;
+  name?: T;
+  slug?: T;
+  acronym?: T;
+  description?: T;
+  type?: T;
+  status?: T;
+  leadOrganization?: T;
+  partnerOrganizations?: T;
+  startDate?: T;
+  endDate?: T;
+  website?: T;
+  logo?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+      };
+  location?: T;
+  coverageArea?:
+    | T
+    | {
+        location?: T;
+        name?: T;
+        description?: T;
+        id?: T;
+      };
+  tags?: T;
+  orderRank?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

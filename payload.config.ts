@@ -24,6 +24,8 @@ import { ExternalSources } from "./payload/collections/external-sources";
 import { CaseStudyDrafts } from "./payload/collections/case-study-drafts";
 import { Pages } from "./payload/collections/pages";
 import { RegionalCommunityPages } from "./payload/collections/regional-community-pages";
+import { Events } from "./payload/collections/events";
+import { Projects } from "./payload/collections/projects";
 import { globals } from "./payload/globals";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -69,6 +71,8 @@ export default buildConfig({
     CaseStudyDrafts,
     Pages,
     RegionalCommunityPages,
+    Events,
+    Projects,
   ],
   globals,
   localization: {
