@@ -143,23 +143,20 @@ export interface PayloadKv {
  */
 export interface User {
   id: number;
+  /**
+   * Mirrored from Prisma's User.email (or a placeholder) on sign-in.
+   */
+  email: string;
+  /**
+   * Clerk user id (also the Prisma User.id). Set by the Clerk auth strategy.
+   */
+  clerkId: string;
+  /**
+   * Mirrored from Prisma's User.role on every sign-in; not editable here.
+   */
+  role: 'community_member' | 'community_editor' | 'team_editor' | 'admin';
   updatedAt: string;
   createdAt: string;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
-  sessions?:
-    | {
-        id: string;
-        createdAt?: string | null;
-        expiresAt: string;
-      }[]
-    | null;
-  password?: string | null;
   collection: 'users';
 }
 /**
@@ -227,22 +224,11 @@ export interface PayloadKvSelect<T extends boolean = true> {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  email?: T;
+  clerkId?: T;
+  role?: T;
   updatedAt?: T;
   createdAt?: T;
-  email?: T;
-  resetPasswordToken?: T;
-  resetPasswordExpiration?: T;
-  salt?: T;
-  hash?: T;
-  loginAttempts?: T;
-  lockUntil?: T;
-  sessions?:
-    | T
-    | {
-        id?: T;
-        createdAt?: T;
-        expiresAt?: T;
-      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

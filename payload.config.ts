@@ -4,11 +4,18 @@ import { buildConfig } from "payload";
 import { postgresAdapter } from "@payloadcms/db-postgres";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import sharp from "sharp";
+import { Users } from "./payload/collections/users";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default buildConfig({
-  admin: { importMap: { baseDir: path.resolve(dirname) } },
+  admin: {
+    // Explicit rather than relying on sanitize's auto-detection of the first
+    // auth-enabled collection — Users is the only one, but this is the
+    // authoritative wiring for who can sign into /admin.
+    user: Users.slug,
+    importMap: { baseDir: path.resolve(dirname) },
+  },
   // The REST API must not mount at /api — this app already has 71 route
   // files under app/api/, and Payload's default catch-all would answer every
   // unmatched /api/* path with a Payload error instead of a 404.
@@ -21,7 +28,7 @@ export default buildConfig({
     pool: { connectionString: process.env.PAYLOAD_DATABASE_URL || "" },
   }),
   editor: lexicalEditor(),
-  collections: [],
+  collections: [Users],
   globals: [],
   localization: {
     locales: [

@@ -39,6 +39,17 @@ const isOnboardingRoute = createRouteMatcher([withLocale('/onboarding')])
 const intlMiddleware = createIntlMiddleware(routing)
 
 export const proxy = clerkMiddleware(async (auth, req: NextRequest) => {
+    // Payload's admin panel + REST/GraphQL API own their own routing (like
+    // Sanity Studio) and must not be locale-prefixed or hit this app's route
+    // protection. Unlike Studio, though, they DO need to be matched below so
+    // clerkMiddleware wraps the request — Payload's Clerk auth strategy
+    // (payload/auth/clerk-strategy.ts) calls `auth()`, which throws outside a
+    // clerkMiddleware request context. Returning early here just skips
+    // next-intl and this app's own checks; it does not skip Clerk.
+    if (req.nextUrl.pathname.startsWith('/admin') || req.nextUrl.pathname.startsWith('/payload-api')) {
+        return NextResponse.next()
+    }
+
     // Skip middleware for webhook routes
     if (req.nextUrl.pathname.startsWith('/api/webhooks/')) {
         return NextResponse.next()
@@ -111,15 +122,19 @@ export const config = {
          * Match all paths EXCEPT:
          * - _next, _vercel
          * - static assets
-         * - studio and all its subroutes (Sanity Studio owns its own routing)
-         * - admin and payload-api (Payload owns its own routing the same way
-         *   studio does — locale-prefixing /admin or /payload-api sends
-         *   Payload's admin panel and REST/GraphQL API to a path that
-         *   doesn't exist)
+         * - studio and all its subroutes (Sanity Studio owns its own routing
+         *   AND its own auth — it never needs Clerk's `auth()`, so it stays
+         *   fully excluded)
+         *
+         * admin and payload-api ARE matched (unlike studio) so
+         * clerkMiddleware wraps them and `auth()` works inside Payload's
+         * Clerk auth strategy. The early return above keeps next-intl and
+         * this app's route protection off both paths — Payload still owns
+         * its own routing the same way studio does.
          */
         // xml/txt cover sitemap.xml + robots.txt — without them the locale
         // redirect sent crawlers to /en/sitemap.xml, which 404s (B7 fix).
-        '/((?!studio|guide-to-editors|admin|payload-api|_next|_vercel|[^?]*\\.(?:html?|css|js(?!on)|jpg|jpeg|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest|xml|txt)).*)',
+        '/((?!studio|guide-to-editors|_next|_vercel|[^?]*\\.(?:html?|css|js(?!on)|jpg|jpeg|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest|xml|txt)).*)',
         '/(api|trpc)(.*)',
     ]
 }
