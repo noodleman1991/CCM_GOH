@@ -2,7 +2,6 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { buildConfig } from "payload";
 import { postgresAdapter } from "@payloadcms/db-postgres";
-import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import sharp from "sharp";
 import { Users } from "./payload/collections/users";
 import { Media } from "./payload/collections/media";
@@ -28,6 +27,7 @@ import { RegionalCommunityPages } from "./payload/collections/regional-community
 import { Events } from "./payload/collections/events";
 import { Projects } from "./payload/collections/projects";
 import { globals } from "./payload/globals";
+import { richTextEditor } from "./payload/blocks/rich-text-embeds";
 import { payloadR2BucketName, payloadR2ClientConfig } from "./payload/storage/r2";
 import { s3Storage } from "@payloadcms/storage-s3";
 
@@ -52,7 +52,15 @@ export default buildConfig({
   db: postgresAdapter({
     pool: { connectionString: process.env.PAYLOAD_DATABASE_URL || "" },
   }),
-  editor: lexicalEditor(),
+  // The default lexical feature set PLUS the Portable Text embed vocabulary
+  // (image / youtube / break / infoBox / story*) and the footnote inline
+  // block, so a field that holds content converted by
+  // lib/content/internal/lexical.ts can actually be opened in the admin. Set
+  // here so bare `type: "richText"` fields (docsChapters.body,
+  // researchOutputs.body, caseStudyDrafts.content, testimonials.quote)
+  // inherit it; payload/fields/localized.ts sets the same editor for every
+  // localizedRichText field. Adds no tables: richText is one jsonb column.
+  editor: richTextEditor(),
   collections: [
     Users,
     Media,

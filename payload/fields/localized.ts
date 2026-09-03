@@ -1,5 +1,5 @@
 import type { RichTextField, TextareaField, TextField } from "payload";
-import { lexicalEditor } from "@payloadcms/richtext-lexical";
+import { richTextEditor } from "@/payload/blocks/rich-text-embeds";
 
 /**
  * Sanity had two i18n lanes: document-level (one `page`/`regionalCommunityPage`
@@ -43,7 +43,11 @@ export function localizedRichText(name: string, opts: LocalizedRichTextOptions =
     name,
     type: "richText",
     localized: true,
-    editor: lexicalEditor(),
+    // The embed-aware editor (payload/blocks/rich-text-embeds.ts), not a bare
+    // lexicalEditor(): every localizedRichText field is a destination for
+    // converted Portable Text, and gridRow.description in particular was
+    // explicitly deferred to Task 9 for exactly this feature set.
+    editor: richTextEditor(),
     ...opts,
   } as RichTextField;
 }

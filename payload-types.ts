@@ -5876,6 +5876,213 @@ export interface CollectionsWidget {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RichTextImageBlock".
+ */
+export interface RichTextImageBlock {
+  /**
+   * The image. Populated by the Sanity import from `sanityAssetId`.
+   */
+  media?: (string | null) | Media;
+  /**
+   * Source Sanity asset `_ref`. Kept so the import stays idempotent and reversible.
+   */
+  sanityAssetId?: string | null;
+  alt?: string | null;
+  caption?: string | null;
+  /**
+   * Who took or provided the image (shown after the caption).
+   */
+  credit?: string | null;
+  placement?: ('full' | 'start' | 'end' | 'center') | null;
+  /**
+   * Sanity crop/hotspot geometry, carried verbatim (2 documents use it).
+   */
+  hotspot?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  crop?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'image';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RichTextYoutubeBlock".
+ */
+export interface RichTextYoutubeBlock {
+  /**
+   * YouTube video id (2 of the 36 stored embeds have none).
+   */
+  videoId?: string | null;
+  caption?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'youtube';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RichTextBreakBlock".
+ */
+export interface RichTextBreakBlock {
+  style: 'hr' | 'readMore' | 'section' | 'chapter';
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'break';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RichTextInfoBoxBlock".
+ */
+export interface RichTextInfoBoxBlock {
+  variant: 'info' | 'warning' | 'success';
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'infoBox';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RichTextStoryTimelineBlock".
+ */
+export interface RichTextStoryTimelineBlock {
+  items?:
+    | {
+        /**
+         * Free-form: a year, a month, or a full date.
+         */
+        date?: string | null;
+        title?: string | null;
+        text?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'storyTimeline';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RichTextStoryChartBlock".
+ */
+export interface RichTextStoryChartBlock {
+  chartType: 'bar' | 'groupedBar' | 'stackedBar' | 'line' | 'area' | 'pie' | 'donut' | 'regionMap';
+  title?: string | null;
+  /**
+   * e.g. %, households, °C — shown under the title.
+   */
+  unit?: string | null;
+  data?:
+    | {
+        label?: string | null;
+        value?: number | null;
+        id?: string | null;
+      }[]
+    | null;
+  labels?: string[] | null;
+  series?:
+    | {
+        name?: string | null;
+        values?: number[] | null;
+        highlight?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  annotations?:
+    | {
+        atLabel?: string | null;
+        text?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  threshold?: {
+    value?: number | null;
+    label?: string | null;
+  };
+  caption?: string | null;
+  source?: string | null;
+  sourceUrl?: string | null;
+  /**
+   * What the chart shows, for screen readers.
+   */
+  alt?: string | null;
+  /**
+   * Sanitized SVG produced by the render API at save time. Do not edit.
+   */
+  renderedSvg?: string | null;
+  /**
+   * Blocks whose status is not "ok" are withheld from the public page.
+   */
+  renderStatus?: ('ok' | 'failed') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'storyChart';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RichTextStoryMermaidBlock".
+ */
+export interface RichTextStoryMermaidBlock {
+  /**
+   * Mermaid diagram source, e.g. `graph TD; A-->B`.
+   */
+  code?: string | null;
+  renderedSvg?: string | null;
+  renderStatus?: ('ok' | 'failed') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'storyMermaid';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RichTextFootnoteBlock".
+ */
+export interface RichTextFootnoteBlock {
+  /**
+   * The footnote content (shown in the footnotes accordion).
+   */
+  text: string;
+  /**
+   * The words the footnote was attached to; rendered as the superscript marker.
+   */
+  marker?: string | null;
+  /**
+   * Lexical text-format bitmask the marker text carried (bold 1, italic 2, …).
+   */
+  markerFormat?: number | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'footnote';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "auth".
  */
 export interface Auth {
