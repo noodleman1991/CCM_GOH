@@ -50,13 +50,18 @@ Measured against `production_2`:
 | File | Responsibility |
 |---|---|
 | `payload.config.ts` | Root config — db, collections, globals, localization, editor, plugins |
-| `src/payload/collections/*.ts` | One file per collection |
-| `src/payload/globals/*.ts` | One file per global |
-| `src/payload/blocks/*.ts` | The 12 live block definitions, shared between page-builder fields |
-| `src/payload/fields/localized.ts` | The `localized: true` helpers mirroring Sanity's two i18n lanes |
-| `src/payload/access/index.ts` | Access-control functions keyed on Prisma's `User.role` enum |
-| `src/payload/auth/clerk-strategy.ts` | The custom auth strategy |
+| `payload/collections/*.ts` | One file per collection |
+| `payload/globals/*.ts` | One file per global |
+| `payload/blocks/*.ts` | The 12 live block definitions, shared between page-builder fields |
+| `payload/fields/localized.ts` | The `localized: true` helpers mirroring Sanity's two i18n lanes |
+| `payload/access/index.ts` | Access-control functions keyed on Prisma's `User.role` enum |
+| `payload/auth/clerk-strategy.ts` | The custom auth strategy |
 | `app/(payload)/**` | Payload's own route group — admin UI, REST, GraphQL |
+
+**Two layout facts this repo imposes, both found in pre-flight:**
+
+1. **There is no `src/` directory.** The repo puts `app/`, `components/` and `lib/` at the root. Payload's own code goes in `payload/` at the root, imported as `@/payload/…`.
+2. **Payload's REST API must NOT mount at `/api`.** There are **71 existing route files under `app/api/`**. Payload's default is a catch-all at `/api/[...slug]`, which would sit on top of all of them and answer every unmatched `/api/*` path with a Payload error instead of a 404. Set explicit routes in the config (Task 1) and move the template's route folder to match.
 | `lib/content/internal/lexical.ts` | Portable Text → Lexical converter, and the Lexical → Portable Text render adapter |
 | `scripts/payload-import/*.ts` | The import: assets, documents, drafts, verification |
 | `payload-types.ts` | Generated; committed |
@@ -130,6 +135,11 @@ const dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default buildConfig({
   admin: { importMap: { baseDir: path.resolve(dirname) } },
+  // The REST API must not mount at /api — this app already has 71 route
+  // files under app/api/, and Payload's default catch-all would answer every
+  // unmatched /api/* path with a Payload error instead of a 404.
+  // /admin is free: Sanity's Studio lives at /studio.
+  routes: { api: "/payload-api", admin: "/admin" },
   // Deliberately NOT idType: "uuid" — 310 of 446 Sanity ids are slug-like
   // (`tag-farmers`, `regional-community-page-oceania`), and uuid would reject
   // every one. Each collection declares its own custom text id field instead.
@@ -165,6 +175,20 @@ Copy `app/(payload)/**` from Payload's blank template at the matching version:
 `https://github.com/payloadcms/payload/tree/v3.88.0/templates/blank/src/app/(payload)`.
 Do not hand-write these files; they are generated glue.
 
+**Then rename the template's API folder to match `routes.api`.** The template ships
+`app/(payload)/api/[...slug]/route.ts`, resolving to `/api/[...slug]` — which collides with
+this app's 71 existing `/api/*` routes. Move it (and the GraphQL routes beside it) to
+`app/(payload)/payload-api/…` so it resolves to `/payload-api/*`.
+
+**Verify before moving on:**
+
+```bash
+curl -s -o /dev/null -w "%{http_code}\n" http://localhost:3000/api/health
+curl -s -o /dev/null -w "%{http_code}\n" http://localhost:3000/api/nonexistent-path
+```
+The first must return its existing status; the second must be a **404 from Next**, not a
+Payload error body. If Payload answers unmatched `/api/*` paths, the move did not take.
+
 - [ ] **Step 6: Run the test**
 
 Run: `pnpm exec vitest run lib/__tests__/payload-config.test.ts`
@@ -183,6 +207,12 @@ Expected: it connects and reports no migrations. **If it errors, stop** — ever
 pnpm typecheck
 pnpm exec vitest run
 ```
+
+Then start `pnpm dev` and spot-check three existing API routes still answer — `/api/health`,
+`/api/communities`, `/api/maps/region-pins`. There are 71 of them and they are the app's
+backend; a route collision breaks them at runtime while `typecheck` and the unit suite stay
+green.
+
 Expected: clean, and **1087 tests still passing plus your 2** — the `withPayload` wrapper and a new route group must not disturb the running site.
 
 - [ ] **Step 9: Commit**
@@ -205,7 +235,7 @@ preserve every _id verbatim."
 ### Task 2: Clerk authentication and access control
 
 **Files:**
-- Create: `src/payload/auth/clerk-strategy.ts`, `src/payload/collections/users.ts`, `src/payload/access/index.ts`
+- Create: `payload/auth/clerk-strategy.ts`, `payload/collections/users.ts`, `payload/access/index.ts`
 - Modify: `payload.config.ts`
 - Test: `lib/__tests__/payload-access.test.ts`
 
@@ -221,7 +251,7 @@ Create `lib/__tests__/payload-access.test.ts`:
 
 ```ts
 import { describe, expect, it } from "vitest";
-import { isAdmin, isEditor, publishedOnly } from "@/src/payload/access";
+import { isAdmin, isEditor, publishedOnly } from "@/payload/access";
 
 const req = (role?: string) => ({ user: role ? { role } : null }) as never;
 
@@ -262,7 +292,7 @@ Expected: FAIL — module not found.
 
 - [ ] **Step 3: Write the access functions**
 
-Create `src/payload/access/index.ts`:
+Create `payload/access/index.ts`:
 
 ```ts
 import type { Access } from "payload";
@@ -307,7 +337,7 @@ Expected: PASS, 4 tests.
 
 - [ ] **Step 5: Write the Clerk strategy and users collection**
 
-Create `src/payload/auth/clerk-strategy.ts`. It reads the Clerk session from the incoming request headers and maps the Clerk user onto a Payload user. Use `@clerk/backend`'s `verifyToken` or `authenticateRequest` — **read the installed version's API rather than assuming**; `@clerk/backend` is already a dependency at `^2.22.0`.
+Create `payload/auth/clerk-strategy.ts`. It reads the Clerk session from the incoming request headers and maps the Clerk user onto a Payload user. Use `@clerk/backend`'s `verifyToken` or `authenticateRequest` — **read the installed version's API rather than assuming**; `@clerk/backend` is already a dependency at `^2.22.0`.
 
 ```ts
 import type { AuthStrategy } from "payload";
@@ -380,7 +410,7 @@ export const clerkStrategy: AuthStrategy = {
 
 **Add three tests for this**: no Clerk session yields `{ user: null }`; an `auth()` that throws yields `{ user: null }` rather than propagating; and a signed-in user with no Prisma row yields `{ user: null }` rather than a partially-formed user.
 
-Create `src/payload/collections/users.ts` with `auth: { disableLocalStrategy: true, strategies: [clerkStrategy] }`, a `role` select field whose options are exactly Prisma's enum — `community_member`, `community_editor`, `team_editor`, `admin` — and a unique `clerkId` text field.
+Create `payload/collections/users.ts` with `auth: { disableLocalStrategy: true, strategies: [clerkStrategy] }`, a `role` select field whose options are exactly Prisma's enum — `community_member`, `community_editor`, `team_editor`, `admin` — and a unique `clerkId` text field.
 
 - [ ] **Step 6: Verify in the running admin**
 
@@ -390,7 +420,7 @@ Register `Users` in `payload.config.ts`, run `pnpm dev`, and load `/admin`. Conf
 
 ```bash
 pnpm typecheck && pnpm exec vitest run
-git add src/payload payload.config.ts lib/__tests__/payload-access.test.ts
+git add payload payload.config.ts lib/__tests__/payload-access.test.ts
 git commit -m "feat(payload): authenticate the admin through Clerk
 
 Clerk stays the sole identity system: disableLocalStrategy plus a custom
@@ -407,7 +437,7 @@ migration."
 ### Task 3: Shared field helpers and the twelve blocks
 
 **Files:**
-- Create: `src/payload/fields/localized.ts`, `src/payload/blocks/index.ts` and one file per block
+- Create: `payload/fields/localized.ts`, `payload/blocks/index.ts` and one file per block
 - Test: `lib/__tests__/payload-blocks.test.ts`
 
 **Interfaces:**
@@ -421,7 +451,7 @@ Build **only the twelve blocks that carry data**. The other ~28 registered Sanit
 
 ```ts
 import { describe, expect, it } from "vitest";
-import { blocks } from "@/src/payload/blocks";
+import { blocks } from "@/payload/blocks";
 
 describe("payload blocks", () => {
   it("defines exactly the twelve blocks that carry data", () => {
@@ -446,7 +476,7 @@ describe("payload blocks", () => {
 
 ### Task 4: Taxonomy collections
 
-**Files:** `src/payload/collections/{tags,work-types,expertise-areas,authors,organizations,regional-communities}.ts`; test `lib/__tests__/payload-taxonomy-collections.test.ts`
+**Files:** `payload/collections/{tags,work-types,expertise-areas,authors,organizations,regional-communities}.ts`; test `lib/__tests__/payload-taxonomy-collections.test.ts`
 
 **Interfaces:** Produces six collections whose slugs are `tags`, `workTypes`, `expertiseAreas`, `authors`, `organizations`, `regionalCommunities`.
 
@@ -473,7 +503,7 @@ Live counts: 67 tags, 6 work types, 5 expertise areas, 95 authors, 24 organizati
 
 ### Task 5: Content collections
 
-**Files:** `src/payload/collections/{case-studies,lived-experiences,research-outputs,agendas,news-posts,docs-chapters,testimonials,profile-prompts,external-sources,case-study-drafts}.ts`; test `lib/__tests__/payload-content-collections.test.ts`
+**Files:** `payload/collections/{case-studies,lived-experiences,research-outputs,agendas,news-posts,docs-chapters,testimonials,profile-prompts,external-sources,case-study-drafts}.ts`; test `lib/__tests__/payload-content-collections.test.ts`
 
 Live counts: 27 case studies, 35 lived experiences, 29 research outputs, 29 agendas, 4 news posts, 12 docs chapters, 20 testimonials, 3 profile prompts, 1 external source, 1 case-study draft.
 
@@ -489,7 +519,7 @@ Live counts: 27 case studies, 35 lived experiences, 29 research outputs, 29 agen
 
 ### Task 6: Page collections and globals
 
-**Files:** `src/payload/collections/{pages,regional-community-pages}.ts`, `src/payload/globals/{homepage,onboarding-content,site-announcement,moderation-settings,hub-illustrations}.ts`; test `lib/__tests__/payload-pages.test.ts`
+**Files:** `payload/collections/{pages,regional-community-pages}.ts`, `payload/globals/{homepage,onboarding-content,site-announcement,moderation-settings,hub-illustrations}.ts`; test `lib/__tests__/payload-pages.test.ts`
 
 **This is where the remodel happens (D9), and it is the one place this phase deliberately does not preserve the Sanity shape.**
 
@@ -505,7 +535,7 @@ Live counts: 27 case studies, 35 lived experiences, 29 research outputs, 29 agen
 
 ### Task 7: The empty-but-wired collections
 
-**Files:** `src/payload/collections/{events,projects}.ts`
+**Files:** `payload/collections/{events,projects}.ts`
 
 `event` and `project` hold **zero documents** but have live submission and moderation code (17 and 7 references). The spec (§9) carries them across in full so launching needs no second migration. Build them; import nothing.
 
@@ -515,7 +545,7 @@ Live counts: 27 case studies, 35 lived experiences, 29 research outputs, 29 agen
 
 ### Task 8: Uploads on R2
 
-**Files:** `src/payload/collections/{media,files}.ts`; modify `payload.config.ts`; test `lib/__tests__/payload-uploads.test.ts`
+**Files:** `payload/collections/{media,files}.ts`; modify `payload.config.ts`; test `lib/__tests__/payload-uploads.test.ts`
 
 **Interfaces:** Produces `media` (images) and `files` (PDFs and documents) upload collections, stored on Cloudflare R2 via `@payloadcms/storage-r2`.
 
