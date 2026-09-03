@@ -665,6 +665,36 @@ The 21 lived-experience drafts are in-flight moderation work. **Losing them is t
 - [ ] **The public site is byte-identical and still served entirely by Sanity.** Nothing in `app/`, `components/` or `lib/content/`'s domain modules changed in this phase
 - [ ] `payload-types.ts` generated and committed
 
+## Phase 3 prerequisites this phase must leave in place
+
+Two things Phase 3 needs that Phase 2 does not itself require. Both are recorded here so
+they are scheduled rather than discovered.
+
+**1. A production Payload database does not exist yet.** Phase 2 builds and imports against
+`payload_cms` on the **dev** Neon branch, which is right — the import is re-run many times
+while the schema settles, and it must not touch anything production depends on. Before Phase
+3 can swap a single domain module, a production Payload database is needed:
+
+- Create a second database — also inside the existing Neon project, also **not** Prisma's —
+  on the production branch.
+- Set `PAYLOAD_DATABASE_URL` for the production environment (Vercel), leaving the dev value
+  in `.env.local`.
+- Run the committed migrations against it, then the import, then `verifyImport`.
+- The import is idempotent by design (Task 12), so this is a re-run rather than new work.
+
+Do **not** create it during Phase 2. An empty production database that drifts from the dev
+schema for weeks is worse than no database at all.
+
+**2. A Sanity request timeout is unset, and that is a live exposure.** `sanity/lib/client.ts`
+configures no `timeout`, and `@sanity/client` supports `timeout?: number`. A hung upstream
+therefore blocks server rendering with no ceiling. The 2026-07-28 quota outage took every
+content page down; a timeout would have turned that into fast, degraded responses via the
+content layer's `safe()` wrappers instead.
+
+This is a **behaviour change**, so it does not belong in Phase 2, whose whole premise is that
+nothing user-facing changes. It belongs in its own reviewable commit — either before Phase 3
+or alongside it, but deliberately, not folded into a refactor.
+
 ## What Phase 3 inherits
 
 A populated Payload with the same document ids as Sanity, and `lib/content/internal/sanity-source.ts` gaining a `payload-source.ts` sibling. The domain modules' tests become the contract both backends must satisfy.
