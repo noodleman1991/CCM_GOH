@@ -600,13 +600,28 @@ Plus five registered-but-unauthored embeds the spec chose to port: `break`, `inf
 
 - [ ] **Step 1: Establish the target shapes empirically — do not write Lexical JSON from documentation.**
 
-In the running admin, create one throwaway document containing: a paragraph with bold/italic/link text, an h2, a blockquote, a bulleted list, and one embedded block. Then read the stored JSON back:
+Derive them **headlessly, in Node**. `@payloadcms/richtext-lexical` exports `./lexical/headless`, so this needs no browser, no running admin, and no Clerk sign-in — which matters, because the admin sign-in is a manual step still owed and would otherwise block this task.
 
-```bash
-psql "$PAYLOAD_DATABASE_URL" -c "select <richtext column> from <table> limit 1;"
+I have already run this probe; the shapes below are measured, not documented (`.superpowers/sdd/2026-09-03-payload-phase-2-build/lexical-probe.mjs` reproduces them):
+
+```
+text        {detail:0, format:<bitmask>, mode:"normal", style:"", text, type:"text", version:1}
+paragraph   {children, direction:null, format:"", indent:0, type:"paragraph", version:1, textFormat:0, textStyle:""}
+heading     {children, direction:null, format:"", indent:0, type:"heading", version:1, tag:"h2"}
+quote       {children, direction:null, format:"", indent:0, type:"quote", version:1}
+list        {children, direction:null, format:"", indent:0, type:"list", version:1, listType:"bullet", start:1, tag:"ul"}
+link        {children, direction:null, format:"", indent:0, type:"link", version:1, rel, target, title, url}
+root        {children, direction:null, format:"", indent:0, type:"root", version:1}
 ```
 
-Record the exact node shapes — including the `format` bitmask values for bold/italic and the shape Payload uses for an embedded block — in your report. **These shapes are the specification for the converter.** Payload's docs describe the structure loosely; the database is the ground truth, and a converter written against a guess produces documents the editor cannot open.
+**The `format` bitmask, measured:** bold `1`, italic `2`, bold+italic `3`. (Lexical's full set continues strikethrough `4`, underline `8`, code `16`.)
+
+Two things the probe above does NOT settle, because they depend on this project's own editor configuration rather than on bare Lexical — establish these yourself before converting:
+
+1. **The embedded-block node.** Build the editor from the project's actual config (`editorConfigFactory` and `getEnabledNodes` are exported alongside `lexicalEditor`) with `BlocksFeature` carrying the real blocks, then serialize one. Do not guess this shape.
+2. **The link node.** Bare Lexical serializes a plain `type: "link"` as shown. Payload's `LinkFeature` may add a `fields` object. Confirm which one this project's config produces.
+
+`convertMarkdownToLexical` and `convertHTMLToLexical` are also exported and are the cleanest way to generate fixtures; `convertLexicalToHTML` gives Task 10 a rendering oracle for its round-trip assertion.
 
 - [ ] **Step 2–5:** failing test → converter → pass → commit. Test against **real fixtures**: pull three genuine Portable Text bodies from Sanity (a case study, a lived experience, a docs chapter) and assert the converted output round-trips through the adapter in Task 10 to the same rendered text.
 
