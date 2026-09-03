@@ -509,7 +509,19 @@ Live counts: 27 case studies, 35 lived experiences, 29 research outputs, 29 agen
 
 **Three things matter here beyond field mapping:**
 
-1. **`versions: { drafts: true }` on every collection that has Sanity drafts** — `livedExperience` (21), `author` (3), `caseStudy`, `newsPost`, `regionalCommunityPage` (1 each). Task 12 imports those as draft versions.
+1. **`versions: { drafts: true }` on every collection that has Sanity drafts.** The complete live census — verified against `production_2`, 30 content drafts in total:
+
+   | Collection | Drafts | Kind | Owned by |
+   |---|---|---|---|
+   | `livedExperience` | 21 | edits of published | Task 5 |
+   | `author` | 4 | 3 edits + **1 never published** | Task 4 (done) |
+   | `caseStudy` | 1 | edit | Task 5 |
+   | `newsPost` | 1 | edit | Task 5 |
+   | `regionalCommunityPage` | 1 | edit | Task 6 |
+   | `tag` | 1 | **never published** | Task 4 (done) |
+   | `testimonial` | 1 | **never published** | Task 5 |
+
+   An earlier version of this line listed only the "edit of published" drafts and omitted `tag` and `testimonial` entirely. Task 4's implementer found the stray `tag` draft itself and enabled versions on `tags` and `authors` accordingly — but **`testimonials` is yours**, and a collection without `versions.drafts` forces Task 13 either to discard that draft or publish an incomplete record.
 2. **The moderation workflow's `status` field** (`pending` / `rejected` / `revision` / `approved`) is *not* Payload's `_status`. Keep both: `_status` is publish state, `status` is editorial review state. Conflating them breaks the moderation queue.
 3. **Rich text fields use `lexicalEditor()`** and are typed as Lexical, not Portable Text. Task 9 produces the conversion.
 
