@@ -623,7 +623,7 @@ Two things the probe above does NOT settle, because they depend on this project'
 
 `convertMarkdownToLexical` and `convertHTMLToLexical` are also exported and are the cleanest way to generate fixtures; `convertLexicalToHTML` gives Task 10 a rendering oracle for its round-trip assertion.
 
-- [ ] **Step 2–5:** failing test → converter → pass → commit. Test against **real fixtures**: pull three genuine Portable Text bodies from Sanity (a case study, a lived experience, a docs chapter) and assert the converted output round-trips through the adapter in Task 10 to the same rendered text.
+- [ ] **Step 2–5:** failing test → converter → pass → commit. Test against **real fixtures**. Note a correction to this plan's earlier assumption: **`livedExperience` carries no Portable Text at all** — `body` is 0/56 and `description` is a plain localized string (measured against `production_2` with a control). Use a case study, two docs chapters, a news post (the only real `blockquote`) and a testimonial (the only real `youtube`) instead, and assert the converted output round-trips through the adapter in Task 10 to the same rendered text.
 
 ---
 
