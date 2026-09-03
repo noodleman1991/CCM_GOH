@@ -2,9 +2,10 @@
  * Fixed taxonomy option lists shared by the Studio schema and the frontend.
  *
  * Moved verbatim from sanity/schemas/shared/topic-options.ts and
- * taxonomy-options.ts, which the schemas re-export from here rather than
- * defining a second copy — these `value`s are stored on documents, so a
- * changed value orphans every document already holding the old one.
+ * taxonomy-options.ts; the eight Studio schema files that used these now
+ * import them from here rather than each holding its own copy — these
+ * `value`s are stored on documents, so a changed value orphans every
+ * document already holding the old one.
  *
  * Nothing here imports from sanity.types.ts or @sanity/*: these are plain
  * controlled-vocabulary arrays, not CMS access, so they live in lib/content/
