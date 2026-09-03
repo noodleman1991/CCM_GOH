@@ -54,7 +54,7 @@ Measured against `production_2`:
 | `src/payload/globals/*.ts` | One file per global |
 | `src/payload/blocks/*.ts` | The 12 live block definitions, shared between page-builder fields |
 | `src/payload/fields/localized.ts` | The `localized: true` helpers mirroring Sanity's two i18n lanes |
-| `src/payload/access/index.ts` | Access-control functions keyed on Clerk roles |
+| `src/payload/access/index.ts` | Access-control functions keyed on Prisma's `User.role` enum |
 | `src/payload/auth/clerk-strategy.ts` | The custom auth strategy |
 | `app/(payload)/**` | Payload's own route group — admin UI, REST, GraphQL |
 | `lib/content/internal/lexical.ts` | Portable Text → Lexical converter, and the Lexical → Portable Text render adapter |
