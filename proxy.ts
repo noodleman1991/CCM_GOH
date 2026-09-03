@@ -111,11 +111,15 @@ export const config = {
          * Match all paths EXCEPT:
          * - _next, _vercel
          * - static assets
-         * - studio and all its subroutes
+         * - studio and all its subroutes (Sanity Studio owns its own routing)
+         * - admin and payload-api (Payload owns its own routing the same way
+         *   studio does — locale-prefixing /admin or /payload-api sends
+         *   Payload's admin panel and REST/GraphQL API to a path that
+         *   doesn't exist)
          */
         // xml/txt cover sitemap.xml + robots.txt — without them the locale
         // redirect sent crawlers to /en/sitemap.xml, which 404s (B7 fix).
-        '/((?!studio|guide-to-editors|_next|_vercel|[^?]*\\.(?:html?|css|js(?!on)|jpg|jpeg|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest|xml|txt)).*)',
+        '/((?!studio|guide-to-editors|admin|payload-api|_next|_vercel|[^?]*\\.(?:html?|css|js(?!on)|jpg|jpeg|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest|xml|txt)).*)',
         '/(api|trpc)(.*)',
     ]
 }
