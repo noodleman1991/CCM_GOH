@@ -6,6 +6,7 @@ import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import sharp from "sharp";
 import { Users } from "./payload/collections/users";
 import { Media } from "./payload/collections/media";
+import { Files } from "./payload/collections/files";
 import { Tags } from "./payload/collections/tags";
 import { WorkTypes } from "./payload/collections/work-types";
 import { ExpertiseAreas } from "./payload/collections/expertise-areas";
@@ -27,6 +28,8 @@ import { RegionalCommunityPages } from "./payload/collections/regional-community
 import { Events } from "./payload/collections/events";
 import { Projects } from "./payload/collections/projects";
 import { globals } from "./payload/globals";
+import { payloadR2Bucket } from "./payload/storage/r2-bucket";
+import { r2Storage } from "@payloadcms/storage-r2";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -53,6 +56,7 @@ export default buildConfig({
   collections: [
     Users,
     Media,
+    Files,
     Tags,
     WorkTypes,
     ExpertiseAreas,
@@ -75,6 +79,28 @@ export default buildConfig({
     Projects,
   ],
   globals,
+  plugins: [
+    // Uploads live in Cloudflare R2, the object store this app already uses
+    // (lib/r2.ts). `bucket` is an S3-backed implementation of the Workers
+    // `R2Bucket` binding this plugin expects — see payload/storage/r2-bucket.ts
+    // for why that indirection is needed and why it cannot just import lib/r2.ts.
+    //
+    // Left permanently enabled rather than gated on whether R2 env vars are
+    // present: the adapter touches nothing until a file is actually uploaded,
+    // and `enabled: false` would silently fall back to writing uploads to the
+    // local disk. With it always on, a missing credential is a loud error on
+    // the upload instead of a file quietly stored somewhere ephemeral.
+    //
+    // The `cms/` prefixes keep CMS assets clear of the collaboration-file key
+    // layout (`public/…`, `members/…`) in case both share one bucket.
+    r2Storage({
+      bucket: payloadR2Bucket(),
+      collections: {
+        media: { prefix: "cms/media" },
+        files: { prefix: "cms/files" },
+      },
+    }),
+  ],
   localization: {
     locales: [
       { label: "English", code: "en" },

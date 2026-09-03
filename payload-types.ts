@@ -69,6 +69,7 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    files: File;
     tags: Tag;
     workTypes: WorkType;
     expertiseAreas: ExpertiseArea;
@@ -98,6 +99,7 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    files: FilesSelect<false> | FilesSelect<true>;
     tags: TagsSelect<false> | TagsSelect<true>;
     workTypes: WorkTypesSelect<false> | WorkTypesSelect<true>;
     expertiseAreas: ExpertiseAreasSelect<false> | ExpertiseAreasSelect<true>;
@@ -201,7 +203,129 @@ export interface User {
  * via the `definition` "media".
  */
 export interface Media {
-  id: number;
+  id: string;
+  /**
+   * The originating sanity.imageAsset _id. Unique, so Task 11 can re-run its import without creating a second copy of an asset.
+   */
+  sanityAssetId?: string | null;
+  /**
+   * Sanity's metadata.lqip base64 data URI, copied at import. Live, load-bearing data: 347/347 assets have one and 25 components pass it to next/image as blurDataURL. Payload generates no equivalent, so it has to be carried.
+   */
+  lqip?: string | null;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+  sizes?: {
+    crop80x80?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    crop320x320?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    crop800x450?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    crop800x533?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    crop800x600?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    max400x225?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    max600x400?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    max800x450?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    max800?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    max1100?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    max1200x675?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "files".
+ */
+export interface File {
+  id: string;
+  /**
+   * The originating sanity.fileAsset _id. Unique, so Task 11 can re-run its import without creating a second copy of an asset.
+   */
+  sanityAssetId?: string | null;
+  prefix?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -298,7 +422,7 @@ export interface Author {
   name: string;
   slug: string;
   image?: {
-    asset?: (number | null) | Media;
+    asset?: (string | null) | Media;
     alt?: string | null;
   };
   /**
@@ -343,7 +467,7 @@ export interface RegionalCommunity {
    */
   region?: ('ssa' | 'nawa' | 'csa' | 'esea' | 'lac' | 'oce' | 'enam') | null;
   coverImage?: {
-    asset?: (number | null) | Media;
+    asset?: (string | null) | Media;
     alt?: string | null;
   };
   /**
@@ -411,7 +535,7 @@ export interface Organization {
     | 'other';
   description?: string | null;
   logo?: {
-    asset?: (number | null) | Media;
+    asset?: (string | null) | Media;
     alt?: string | null;
   };
   /**
@@ -507,7 +631,7 @@ export interface CaseStudy {
     [k: string]: unknown;
   };
   image?: {
-    asset?: (number | null) | Media;
+    asset?: (string | null) | Media;
     alt?: string | null;
     caption?: string | null;
   };
@@ -661,9 +785,9 @@ export interface LivedExperience {
    * NOT in the Sanity schema — real data (56/56), written by scripts/populate-lived-experience-videos.mjs and read throughout lib/content/*.ts. See collection header note.
    */
   videoUrl?: string | null;
-  videoFile?: (number | null) | Media;
+  videoFile?: (string | null) | File;
   thumbnail?: {
-    asset?: (number | null) | Media;
+    asset?: (string | null) | Media;
     alt?: string | null;
   };
   /**
@@ -720,7 +844,7 @@ export interface LivedExperience {
   meta_description?: string | null;
   noindex?: boolean | null;
   ogImage?: {
-    asset?: (number | null) | Media;
+    asset?: (string | null) | Media;
     alt?: string | null;
   };
   updatedAt: string;
@@ -739,7 +863,7 @@ export interface ResearchOutput {
   outputType: 'report' | 'toolkit' | 'dataset-brief' | 'guideline';
   layout?: ('report' | 'story' | 'feature') | null;
   coverImage?: {
-    asset?: (number | null) | Media;
+    asset?: (string | null) | Media;
     alt?: string | null;
   };
   body?: {
@@ -768,7 +892,7 @@ export interface ResearchOutput {
          * Optional display label; auto-derived from kind + language if blank.
          */
         label?: string | null;
-        file?: (number | null) | Media;
+        file?: (string | null) | File;
         /**
          * In-hub content. Use this OR an uploaded file.
          */
@@ -841,12 +965,12 @@ export interface Agenda {
   subtitle?: string | null;
   description?: string | null;
   coverImage?: {
-    asset?: (number | null) | Media;
+    asset?: (string | null) | Media;
     alt?: string | null;
   };
   files: {
     language: 'en' | 'es' | 'fr' | 'ar';
-    file: number | Media;
+    file: string | File;
     downloadCount?: number | null;
     lastDownloaded?: string | null;
     id?: string | null;
@@ -905,7 +1029,7 @@ export interface NewsPost {
   author: string | Author;
   publishedAt?: string | null;
   image?: {
-    asset?: (number | null) | Media;
+    asset?: (string | null) | Media;
     alt?: string | null;
   };
   organizations?: (string | Organization)[] | null;
@@ -951,7 +1075,7 @@ export interface NewsPost {
   meta_description?: string | null;
   noindex?: boolean | null;
   ogImage?: {
-    asset?: (number | null) | Media;
+    asset?: (string | null) | Media;
     alt?: string | null;
   };
   updatedAt: string;
@@ -1011,7 +1135,7 @@ export interface Testimonial {
    */
   title?: string | null;
   image?: {
-    asset?: (number | null) | Media;
+    asset?: (string | null) | Media;
     alt?: string | null;
   };
   /**
@@ -1102,7 +1226,7 @@ export interface ExternalSource {
   publishedAt?: string | null;
   excerpt?: string | null;
   image?: {
-    asset?: (number | null) | Media;
+    asset?: (string | null) | Media;
     alt?: string | null;
   };
   tags?: (string | Tag)[] | null;
@@ -1185,7 +1309,7 @@ export interface CaseStudyDraft {
     [k: string]: unknown;
   } | null;
   image?: {
-    asset?: (number | null) | Media;
+    asset?: (string | null) | Media;
     alt?: string | null;
     caption?: string | null;
   };
@@ -1294,7 +1418,7 @@ export interface Page {
   meta_description?: string | null;
   noindex?: boolean | null;
   ogImage?: {
-    asset?: (number | null) | Media;
+    asset?: (string | null) | Media;
     alt?: string | null;
   };
   /**
@@ -1321,9 +1445,9 @@ export interface Hero1Block {
       startColor?: string | null;
       endColor?: string | null;
     };
-    svgPattern?: (number | null) | Media;
+    svgPattern?: (string | null) | Media;
     image?: {
-      asset?: (number | null) | Media;
+      asset?: (string | null) | Media;
       alt?: string | null;
     };
     lightText?: boolean | null;
@@ -1347,7 +1471,7 @@ export interface Hero1Block {
     [k: string]: unknown;
   } | null;
   image?: {
-    asset?: (number | null) | Media;
+    asset?: (string | null) | Media;
     alt?: string | null;
   };
   links?:
@@ -1506,7 +1630,7 @@ export interface SplitContentBlock {
  */
 export interface SplitImageBlock {
   image?: {
-    asset?: (number | null) | Media;
+    asset?: (string | null) | Media;
     alt?: string | null;
   };
   id?: string | null;
@@ -1537,9 +1661,9 @@ export interface GridRowBlock {
       startColor?: string | null;
       endColor?: string | null;
     };
-    svgPattern?: (number | null) | Media;
+    svgPattern?: (string | null) | Media;
     image?: {
-      asset?: (number | null) | Media;
+      asset?: (string | null) | Media;
       alt?: string | null;
     };
     lightText?: boolean | null;
@@ -1572,7 +1696,7 @@ export interface GridRowBlock {
     [k: string]: unknown;
   } | null;
   headerImage?: {
-    asset?: (number | null) | Media;
+    asset?: (string | null) | Media;
     alt?: string | null;
   };
   /**
@@ -1611,7 +1735,7 @@ export interface GridCardBlock {
    */
   excerpt?: string | null;
   image?: {
-    asset?: (number | null) | Media;
+    asset?: (string | null) | Media;
     alt?: string | null;
   };
   link?: {
@@ -1744,9 +1868,9 @@ export interface Cta1Block {
       startColor?: string | null;
       endColor?: string | null;
     };
-    svgPattern?: (number | null) | Media;
+    svgPattern?: (string | null) | Media;
     image?: {
-      asset?: (number | null) | Media;
+      asset?: (string | null) | Media;
       alt?: string | null;
     };
     lightText?: boolean | null;
@@ -1830,7 +1954,7 @@ export interface LogoCloud1Block {
   motionSpeed?: ('default' | 'slow') | null;
   images?:
     | {
-        asset?: (number | null) | Media;
+        asset?: (string | null) | Media;
         alt?: string | null;
         /**
          * Shown under the logo in grid layout.
@@ -1890,9 +2014,9 @@ export interface RegionalCommunityPage {
         startColor?: string | null;
         endColor?: string | null;
       };
-      svgPattern?: (number | null) | Media;
+      svgPattern?: (string | null) | Media;
       image?: {
-        asset?: (number | null) | Media;
+        asset?: (string | null) | Media;
         alt?: string | null;
       };
       lightText?: boolean | null;
@@ -1916,7 +2040,7 @@ export interface RegionalCommunityPage {
       [k: string]: unknown;
     } | null;
     image?: {
-      asset?: (number | null) | Media;
+      asset?: (string | null) | Media;
       alt?: string | null;
     };
     links?:
@@ -1975,9 +2099,9 @@ export interface RegionalCommunityPage {
         startColor?: string | null;
         endColor?: string | null;
       };
-      svgPattern?: (number | null) | Media;
+      svgPattern?: (string | null) | Media;
       image?: {
-        asset?: (number | null) | Media;
+        asset?: (string | null) | Media;
         alt?: string | null;
       };
       lightText?: boolean | null;
@@ -2001,7 +2125,7 @@ export interface RegionalCommunityPage {
       [k: string]: unknown;
     } | null;
     image?: {
-      asset?: (number | null) | Media;
+      asset?: (string | null) | Media;
       alt?: string | null;
     };
     links?:
@@ -2081,7 +2205,7 @@ export interface RegionalCommunityPage {
     motionSpeed?: ('default' | 'slow') | null;
     images?:
       | {
-          asset?: (number | null) | Media;
+          asset?: (string | null) | Media;
           alt?: string | null;
           /**
            * Shown under the logo in grid layout.
@@ -2111,7 +2235,7 @@ export interface RegionalCommunityPage {
   meta_description?: string | null;
   noindex?: boolean | null;
   ogImage?: {
-    asset?: (number | null) | Media;
+    asset?: (string | null) | Media;
     alt?: string | null;
   };
   /**
@@ -2161,7 +2285,7 @@ export interface ContentGridBlock {
     [k: string]: unknown;
   } | null;
   headerImage?: {
-    asset?: (number | null) | Media;
+    asset?: (string | null) | Media;
     alt?: string | null;
   };
   /**
@@ -2265,7 +2389,7 @@ export interface Event {
   };
   url?: string | null;
   coverImage?: {
-    asset?: (number | null) | Media;
+    asset?: (string | null) | Media;
     alt?: string | null;
   };
   body?: {
@@ -2335,7 +2459,7 @@ export interface Project {
   endDate?: string | null;
   website?: string | null;
   logo?: {
-    asset?: (number | null) | Media;
+    asset?: (string | null) | Media;
     alt?: string | null;
   };
   /**
@@ -2401,7 +2525,11 @@ export interface PayloadLockedDocument {
       } | null)
     | ({
         relationTo: 'media';
-        value: number | Media;
+        value: string | Media;
+      } | null)
+    | ({
+        relationTo: 'files';
+        value: string | File;
       } | null)
     | ({
         relationTo: 'tags';
@@ -2541,6 +2669,144 @@ export interface UsersSelect<T extends boolean = true> {
  * via the `definition` "media_select".
  */
 export interface MediaSelect<T extends boolean = true> {
+  id?: T;
+  sanityAssetId?: T;
+  lqip?: T;
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+  sizes?:
+    | T
+    | {
+        crop80x80?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        crop320x320?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        crop800x450?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        crop800x533?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        crop800x600?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        max400x225?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        max600x400?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        max800x450?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        max800?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        max1100?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        max1200x675?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+      };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "files_select".
+ */
+export interface FilesSelect<T extends boolean = true> {
+  id?: T;
+  sanityAssetId?: T;
+  prefix?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -3952,9 +4218,9 @@ export interface Homepage {
         startColor?: string | null;
         endColor?: string | null;
       };
-      svgPattern?: (number | null) | Media;
+      svgPattern?: (string | null) | Media;
       image?: {
-        asset?: (number | null) | Media;
+        asset?: (string | null) | Media;
         alt?: string | null;
       };
       lightText?: boolean | null;
@@ -3978,7 +4244,7 @@ export interface Homepage {
       [k: string]: unknown;
     } | null;
     image?: {
-      asset?: (number | null) | Media;
+      asset?: (string | null) | Media;
       alt?: string | null;
     };
     links?:
@@ -4075,9 +4341,9 @@ export interface Homepage {
         startColor?: string | null;
         endColor?: string | null;
       };
-      svgPattern?: (number | null) | Media;
+      svgPattern?: (string | null) | Media;
       image?: {
-        asset?: (number | null) | Media;
+        asset?: (string | null) | Media;
         alt?: string | null;
       };
       lightText?: boolean | null;
@@ -4110,7 +4376,7 @@ export interface Homepage {
       [k: string]: unknown;
     } | null;
     headerImage?: {
-      asset?: (number | null) | Media;
+      asset?: (string | null) | Media;
       alt?: string | null;
     };
     /**
@@ -4164,9 +4430,9 @@ export interface Homepage {
         startColor?: string | null;
         endColor?: string | null;
       };
-      svgPattern?: (number | null) | Media;
+      svgPattern?: (string | null) | Media;
       image?: {
-        asset?: (number | null) | Media;
+        asset?: (string | null) | Media;
         alt?: string | null;
       };
       lightText?: boolean | null;
@@ -4199,7 +4465,7 @@ export interface Homepage {
       [k: string]: unknown;
     } | null;
     headerImage?: {
-      asset?: (number | null) | Media;
+      asset?: (string | null) | Media;
       alt?: string | null;
     };
     /**
@@ -4255,9 +4521,9 @@ export interface Homepage {
         startColor?: string | null;
         endColor?: string | null;
       };
-      svgPattern?: (number | null) | Media;
+      svgPattern?: (string | null) | Media;
       image?: {
-        asset?: (number | null) | Media;
+        asset?: (string | null) | Media;
         alt?: string | null;
       };
       lightText?: boolean | null;
@@ -4290,7 +4556,7 @@ export interface Homepage {
       [k: string]: unknown;
     } | null;
     headerImage?: {
-      asset?: (number | null) | Media;
+      asset?: (string | null) | Media;
       alt?: string | null;
     };
     /**
@@ -4346,9 +4612,9 @@ export interface Homepage {
         startColor?: string | null;
         endColor?: string | null;
       };
-      svgPattern?: (number | null) | Media;
+      svgPattern?: (string | null) | Media;
       image?: {
-        asset?: (number | null) | Media;
+        asset?: (string | null) | Media;
         alt?: string | null;
       };
       lightText?: boolean | null;
@@ -4425,7 +4691,7 @@ export interface Homepage {
     motionSpeed?: ('default' | 'slow') | null;
     images?:
       | {
-          asset?: (number | null) | Media;
+          asset?: (string | null) | Media;
           alt?: string | null;
           /**
            * Shown under the logo in grid layout.
@@ -4455,7 +4721,7 @@ export interface Homepage {
   meta_description?: string | null;
   noindex?: boolean | null;
   ogImage?: {
-    asset?: (number | null) | Media;
+    asset?: (string | null) | Media;
     alt?: string | null;
   };
   updatedAt?: string | null;
@@ -4545,28 +4811,28 @@ export interface HubIllustration {
    * Decorative illustration shown at the end (RTL-safe) of the Atlas page header.
    */
   atlasHeader?: {
-    asset?: (number | null) | Media;
+    asset?: (string | null) | Media;
     alt?: string | null;
   };
   /**
    * Decorative illustration shown at the end (RTL-safe) of the Search page header.
    */
   searchHeader?: {
-    asset?: (number | null) | Media;
+    asset?: (string | null) | Media;
     alt?: string | null;
   };
   /**
    * Decorative illustration shown at the end (RTL-safe) of the Collaborate page header.
    */
   collaborateHeader?: {
-    asset?: (number | null) | Media;
+    asset?: (string | null) | Media;
     alt?: string | null;
   };
   /**
    * Decorative illustration shown alongside empty-state messaging.
    */
   emptyState?: {
-    asset?: (number | null) | Media;
+    asset?: (string | null) | Media;
     alt?: string | null;
   };
   updatedAt?: string | null;

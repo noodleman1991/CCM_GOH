@@ -123,7 +123,10 @@ export const LivedExperiences: CollectionConfig = {
           "NOT in the Sanity schema — real data (56/56), written by scripts/populate-lived-experience-videos.mjs and read throughout lib/content/*.ts. See collection header note.",
       },
     },
-    uploadField("videoFile", "media", { label: "Video File" }),
+    // `files`, not `media` — a video is not an image and `media` is now
+    // images-only (Task 8). 0/56 populated; the schema restricts it to
+    // video/mp4 + video/webm, which `files` allows.
+    uploadField("videoFile", "files", { label: "Video File" }),
     imageField("thumbnail"),
     { name: "duration", type: "text", admin: { description: "e.g. '5:30', '1:45:00'." } },
     { name: "publishedAt", type: "date" },

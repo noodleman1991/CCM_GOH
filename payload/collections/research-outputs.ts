@@ -113,7 +113,9 @@ export const ResearchOutputs: CollectionConfig = {
           ],
         },
         { name: "label", type: "text", admin: { description: "Optional display label; auto-derived from kind + language if blank." } },
-        uploadField("file", "media"),
+        // Report PDFs live in `files`, not `media` — `media` is images-only
+        // (Task 8).
+        uploadField("file", "files"),
         { name: "body", type: "richText", admin: { description: "In-hub content. Use this OR an uploaded file." } },
         { name: "pages", type: "number" },
         { name: "downloadCount", type: "number", defaultValue: 0, admin: { readOnly: true } },

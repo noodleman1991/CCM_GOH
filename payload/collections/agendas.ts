@@ -64,7 +64,9 @@ export const Agendas: CollectionConfig = {
             { label: "العربية", value: "ar" },
           ],
         },
-        uploadField("file", "media", { required: true }),
+        // Agenda PDFs live in `files`, not `media` — `media` is images-only
+        // (Task 8). 29/29 agendas carry at least one, all application/pdf.
+        uploadField("file", "files", { required: true }),
         { name: "downloadCount", type: "number", defaultValue: 0, admin: { readOnly: true } },
         { name: "lastDownloaded", type: "date", admin: { readOnly: true } },
       ],
