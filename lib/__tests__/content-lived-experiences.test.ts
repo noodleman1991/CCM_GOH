@@ -2,6 +2,7 @@ import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 
 vi.mock("@/lib/content/internal/sanity-source", () => ({
   query: vi.fn(),
+  queryPreviewable: vi.fn(),
   queryRaw: vi.fn(),
   uploadFileAsset: vi.fn(),
   createDocument: vi.fn(),
@@ -25,6 +26,7 @@ vi.mock("@/lib/prisma", () => ({
 
 import {
   query,
+  queryPreviewable,
   queryRaw,
   uploadFileAsset,
   createDocument,
@@ -47,6 +49,7 @@ import {
 } from "@/lib/content/lived-experiences";
 
 const mockQuery = vi.mocked(query);
+const mockQueryPreviewable = vi.mocked(queryPreviewable);
 const mockQueryRaw = vi.mocked(queryRaw);
 const mockUploadFileAsset = vi.mocked(uploadFileAsset);
 const mockCreateDocument = vi.mocked(createDocument);
@@ -55,6 +58,7 @@ const mockFindFirst = vi.mocked(prisma.workspaceOutput.findFirst);
 
 beforeEach(() => {
   mockQuery.mockReset();
+  mockQueryPreviewable.mockReset();
   mockQueryRaw.mockReset();
   mockUploadFileAsset.mockReset();
   mockCreateDocument.mockReset();
@@ -119,12 +123,12 @@ describe("getLivedExperiencesByRegion", () => {
 
 describe("getLivedExperiencesCarousel", () => {
   it("returns items from the source, defaulting unset filters", async () => {
-    mockQuery.mockResolvedValue([{ _id: "v1", _type: "livedExperience", title: { en: "A story" } }]);
+    mockQueryPreviewable.mockResolvedValue([{ _id: "v1", _type: "livedExperience", title: { en: "A story" } }]);
 
     const result = await getLivedExperiencesCarousel({});
 
     expect(result).toHaveLength(1);
-    expect(mockQuery).toHaveBeenCalledWith(
+    expect(mockQueryPreviewable).toHaveBeenCalledWith(
       expect.any(String),
       expect.objectContaining({ communities: null, tags: null, authors: null, featured: false, maxItems: 10 }),
     );
@@ -132,9 +136,16 @@ describe("getLivedExperiencesCarousel", () => {
 
   it("degrades to an empty list when the source fails", async () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
-    mockQuery.mockRejectedValue(new Error("network error"));
+    mockQueryPreviewable.mockRejectedValue(new Error("network error"));
 
     await expect(getLivedExperiencesCarousel({})).resolves.toEqual([]);
+  });
+
+  it("uses queryPreviewable, not query — the original inline sanityFetch omitted perspective/stega so draft preview keeps working", async () => {
+    mockQueryPreviewable.mockResolvedValue([]);
+    await getLivedExperiencesCarousel({});
+    expect(mockQueryPreviewable).toHaveBeenCalledTimes(1);
+    expect(mockQuery).not.toHaveBeenCalled();
   });
 });
 

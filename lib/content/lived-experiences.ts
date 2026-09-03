@@ -1,6 +1,6 @@
 import { safe } from "@/lib/content/internal/safe";
 import { toRegion, toTag, type RawRegion, type RawTag } from "@/lib/content/internal/normalize";
-import { createDocument, query, queryRaw, updateDocument, uploadFileAsset } from "@/lib/content/internal/sanity-source";
+import { createDocument, query, queryPreviewable, queryRaw, updateDocument, uploadFileAsset } from "@/lib/content/internal/sanity-source";
 import type { ContentRegion, ContentTag, Localized, RichText } from "@/lib/content/types";
 import { prisma, safeQuery } from "@/lib/prisma";
 import { generateLivedExperienceSlug } from "@/lib/validation/lived-experience";
@@ -175,11 +175,19 @@ const CAROUSEL_QUERY = `
   }
 `;
 
+// `queryPreviewable`, not `query` — the original
+// `components/blocks/carousel/lived-experiences-carousel-block.tsx` called
+// `sanityFetch({ query: livedExperiencesCarouselQuery, params: {...} })`
+// (`git show 87ef869bc:components/blocks/carousel/lived-experiences-carousel-block.tsx`)
+// with no `perspective`/`stega`, so it fell through to cachedFetch's own
+// draftMode() check. `query()` would silently end draft preview for this
+// carousel in Sanity's Presentation tool, inconsistent with the page it sits
+// on (getHomepage/getRegionalCommunityPage are both queryPreviewable).
 export async function getLivedExperiencesCarousel(
   filters: LivedExperienceCarouselFilters,
 ): Promise<LivedExperienceCarouselItem[]> {
   return safe("lived-experiences-carousel", [], async () => {
-    const result = await query<LivedExperienceCarouselItem[] | null>(CAROUSEL_QUERY, {
+    const result = await queryPreviewable<LivedExperienceCarouselItem[] | null>(CAROUSEL_QUERY, {
       communities: filters.communities?.length ? filters.communities : null,
       tags: filters.tags?.length ? filters.tags : null,
       authors: filters.authors?.length ? filters.authors : null,
