@@ -22,6 +22,9 @@ import { Testimonials } from "./payload/collections/testimonials";
 import { ProfilePrompts } from "./payload/collections/profile-prompts";
 import { ExternalSources } from "./payload/collections/external-sources";
 import { CaseStudyDrafts } from "./payload/collections/case-study-drafts";
+import { Pages } from "./payload/collections/pages";
+import { RegionalCommunityPages } from "./payload/collections/regional-community-pages";
+import { globals } from "./payload/globals";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -64,8 +67,10 @@ export default buildConfig({
     ProfilePrompts,
     ExternalSources,
     CaseStudyDrafts,
+    Pages,
+    RegionalCommunityPages,
   ],
-  globals: [],
+  globals,
   localization: {
     locales: [
       { label: "English", code: "en" },

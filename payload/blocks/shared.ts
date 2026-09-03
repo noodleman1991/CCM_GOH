@@ -53,6 +53,7 @@ export function backgroundOptionField(name = "background"): GroupField {
         name: "type",
         type: "select",
         defaultValue: "none",
+        enumName: "enum_bg_type",
         options: [
           { label: "None (inherit)", value: "none" },
           { label: "CCM Color Palette", value: "ccm-palette" },
@@ -65,6 +66,7 @@ export function backgroundOptionField(name = "background"): GroupField {
       {
         name: "ccmColor",
         type: "select",
+        enumName: "enum_bg_ccm_color",
         options: [
           { label: "CCM Sky", value: "ccm-sky" },
           { label: "CCM Water", value: "ccm-water" },
@@ -91,6 +93,7 @@ export function backgroundOptionField(name = "background"): GroupField {
             name: "direction",
             type: "select",
             defaultValue: "to-r",
+            enumName: "enum_bg_gradient_direction",
             options: [
               { label: "To Right", value: "to-r" },
               { label: "To Left", value: "to-l" },
@@ -134,6 +137,7 @@ function buttonVariantField(name = "buttonVariant"): GroupField {
         name: "variant",
         type: "select",
         defaultValue: "default",
+        enumName: "enum_btn_variant",
         // "default"/"secondary"/"outline"/"ghost" are the current curated
         // set (sanity/schemas/blocks/shared/button-variant.ts). "link",
         // "invert", "light-invert" and "destructive" are legacy values a
@@ -157,12 +161,14 @@ function buttonVariantField(name = "buttonVariant"): GroupField {
         name: "size",
         type: "select",
         defaultValue: "default",
+        enumName: "enum_btn_size",
         options: ["default", "lg", "wide", "sm", "thick"].map((value) => ({ label: value, value })),
       },
       {
         name: "stroke",
         type: "select",
         defaultValue: "none",
+        enumName: "enum_btn_stroke",
         options: ["none", "light", "midnight"].map((value) => ({ label: value, value })),
       },
     ],

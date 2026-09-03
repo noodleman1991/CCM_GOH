@@ -85,6 +85,8 @@ export interface Config {
     profilePrompts: ProfilePrompt;
     externalSources: ExternalSource;
     caseStudyDrafts: CaseStudyDraft;
+    pages: Page;
+    regionalCommunityPages: RegionalCommunityPage;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -110,6 +112,8 @@ export interface Config {
     profilePrompts: ProfilePromptsSelect<false> | ProfilePromptsSelect<true>;
     externalSources: ExternalSourcesSelect<false> | ExternalSourcesSelect<true>;
     caseStudyDrafts: CaseStudyDraftsSelect<false> | CaseStudyDraftsSelect<true>;
+    pages: PagesSelect<false> | PagesSelect<true>;
+    regionalCommunityPages: RegionalCommunityPagesSelect<false> | RegionalCommunityPagesSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -124,8 +128,20 @@ export interface Config {
     | null
     | ('en' | 'es' | 'fr' | 'ar')
     | ('en' | 'es' | 'fr' | 'ar')[];
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    homepage: Homepage;
+    siteAnnouncement: SiteAnnouncement;
+    moderationSettings: ModerationSetting;
+    hubIllustrations: HubIllustration;
+    onboardingContent: OnboardingContent;
+  };
+  globalsSelect: {
+    homepage: HomepageSelect<false> | HomepageSelect<true>;
+    siteAnnouncement: SiteAnnouncementSelect<false> | SiteAnnouncementSelect<true>;
+    moderationSettings: ModerationSettingsSelect<false> | ModerationSettingsSelect<true>;
+    hubIllustrations: HubIllustrationsSelect<false> | HubIllustrationsSelect<true>;
+    onboardingContent: OnboardingContentSelect<false> | OnboardingContentSelect<true>;
+  };
   locale: 'en' | 'es' | 'fr' | 'ar';
   widgets: {
     collections: CollectionsWidget;
@@ -1255,6 +1271,960 @@ export interface CaseStudyDraft {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages".
+ */
+export interface Page {
+  id: string;
+  title?: string | null;
+  /**
+   * Shared by all four languages of this page — it is what groups them into one document.
+   */
+  slug: string;
+  /**
+   * Compose the page from reusable blocks (drag to reorder). Each language has its own list.
+   */
+  blocks?:
+    | (Hero1Block | SectionHeaderBlock | SplitRowBlock | GridRowBlock | Carousel2Block | Cta1Block | LogoCloud1Block)[]
+    | null;
+  meta_title?: string | null;
+  meta_description?: string | null;
+  noindex?: boolean | null;
+  ogImage?: {
+    asset?: (number | null) | Media;
+    alt?: string | null;
+  };
+  /**
+   * Sanity's LexoRank orderRank string, preserved for editorial ordering.
+   */
+  orderRank?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Hero1Block".
+ */
+export interface Hero1Block {
+  background?: {
+    type?: ('none' | 'ccm-palette' | 'color' | 'gradient' | 'svg' | 'image') | null;
+    ccmColor?: ('ccm-sky' | 'ccm-water' | 'ccm-sea' | 'ccm-midnight') | null;
+    /**
+     * Hex color code (e.g. #205596)
+     */
+    color?: string | null;
+    gradient?: {
+      direction?: ('to-r' | 'to-l' | 'to-b' | 'to-t' | 'to-br' | 'to-bl' | 'to-tr' | 'to-tl') | null;
+      startColor?: string | null;
+      endColor?: string | null;
+    };
+    svgPattern?: (number | null) | Media;
+    image?: {
+      asset?: (number | null) | Media;
+      alt?: string | null;
+    };
+    lightText?: boolean | null;
+    blobAccent?: boolean | null;
+  };
+  tagLine?: string | null;
+  title?: string | null;
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  image?: {
+    asset?: (number | null) | Media;
+    alt?: string | null;
+  };
+  links?:
+    | {
+        /**
+         * Button text.
+         */
+        title?: string | null;
+        /**
+         * Full URL (https://…) or an internal path starting with /
+         */
+        href?: string | null;
+        target?: boolean | null;
+        buttonVariant?: {
+          variant?:
+            | (
+                | 'default'
+                | 'secondary'
+                | 'outline'
+                | 'ghost'
+                | 'link'
+                | 'invert'
+                | 'light-invert'
+                | 'destructive'
+                | 'primary'
+              )
+            | null;
+          size?: ('default' | 'lg' | 'wide' | 'sm' | 'thick') | null;
+          stroke?: ('none' | 'light' | 'midnight') | null;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Add padding to the section.
+   */
+  padding?: {
+    top?: boolean | null;
+    bottom?: boolean | null;
+  };
+  imagePosition?: ('right' | 'left') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'hero1';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SectionHeaderBlock".
+ */
+export interface SectionHeaderBlock {
+  /**
+   * Add padding to the section.
+   */
+  padding?: {
+    top?: boolean | null;
+    bottom?: boolean | null;
+  };
+  sectionWidth?: ('default' | 'narrow') | null;
+  stackAlign?: ('left' | 'center') | null;
+  tagLine?: string | null;
+  title?: string | null;
+  description?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'sectionHeader';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SplitRowBlock".
+ */
+export interface SplitRowBlock {
+  /**
+   * Add padding to the section.
+   */
+  padding?: {
+    top?: boolean | null;
+    bottom?: boolean | null;
+  };
+  /**
+   * Remove gap between columns
+   */
+  noGap?: boolean | null;
+  splitColumns?: (SplitContentBlock | SplitImageBlock)[] | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'splitRow';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SplitContentBlock".
+ */
+export interface SplitContentBlock {
+  /**
+   * Sticky column on desktop
+   */
+  sticky?: boolean | null;
+  /**
+   * Add padding to the section.
+   */
+  padding?: {
+    top?: boolean | null;
+    bottom?: boolean | null;
+  };
+  tagLine?: string | null;
+  title?: string | null;
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  link?: {
+    /**
+     * Button text.
+     */
+    title?: string | null;
+    /**
+     * Full URL (https://…) or an internal path starting with /
+     */
+    href?: string | null;
+    target?: boolean | null;
+    buttonVariant?: {
+      variant?:
+        | (
+            | 'default'
+            | 'secondary'
+            | 'outline'
+            | 'ghost'
+            | 'link'
+            | 'invert'
+            | 'light-invert'
+            | 'destructive'
+            | 'primary'
+          )
+        | null;
+      size?: ('default' | 'lg' | 'wide' | 'sm' | 'thick') | null;
+      stroke?: ('none' | 'light' | 'midnight') | null;
+    };
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'splitContent';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SplitImageBlock".
+ */
+export interface SplitImageBlock {
+  image?: {
+    asset?: (number | null) | Media;
+    alt?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'splitImage';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "GridRowBlock".
+ */
+export interface GridRowBlock {
+  /**
+   * Add padding to the section.
+   */
+  padding?: {
+    top?: boolean | null;
+    bottom?: boolean | null;
+  };
+  background?: {
+    type?: ('none' | 'ccm-palette' | 'color' | 'gradient' | 'svg' | 'image') | null;
+    ccmColor?: ('ccm-sky' | 'ccm-water' | 'ccm-sea' | 'ccm-midnight') | null;
+    /**
+     * Hex color code (e.g. #205596)
+     */
+    color?: string | null;
+    gradient?: {
+      direction?: ('to-r' | 'to-l' | 'to-b' | 'to-t' | 'to-br' | 'to-bl' | 'to-tr' | 'to-tl') | null;
+      startColor?: string | null;
+      endColor?: string | null;
+    };
+    svgPattern?: (number | null) | Media;
+    image?: {
+      asset?: (number | null) | Media;
+      alt?: string | null;
+    };
+    lightText?: boolean | null;
+    blobAccent?: boolean | null;
+  };
+  /**
+   * Optional title for the grid section
+   */
+  title?: string | null;
+  /**
+   * Optional subtitle shown below the title
+   */
+  subtitle?: string | null;
+  /**
+   * Optional description text that supports rich formatting and styling
+   */
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  headerImage?: {
+    asset?: (number | null) | Media;
+    alt?: string | null;
+  };
+  /**
+   * How many cards per row on desktop screens. Note: the 'Wide (16:9)' card style always shows at most 2 per row.
+   */
+  gridColumns?: ('grid-cols-2' | 'grid-cols-3' | 'grid-cols-4' | 'grid-cols-5') | null;
+  /**
+   * Card shape. 'Classic (3:2)' fits 2-4 per row; 'Wide (16:9)' is panoramic and overrides the columns setting to max 2 per row.
+   */
+  cardVariant?: ('classic' | 'wide') | null;
+  /**
+   * Dynamic modes keep this section automatically up to date with the latest published content.
+   */
+  mode?: ('manual' | 'dynamic-recent' | 'dynamic-featured') | null;
+  maxItems?: number | null;
+  /**
+   * How many cards to show before the Show More button. Leave empty to always show all.
+   */
+  initialDisplayCount?: number | null;
+  columns?: (GridCardBlock | GridAgendaBlock | GridNewsBlock)[] | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'gridRow';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "GridCardBlock".
+ */
+export interface GridCardBlock {
+  /**
+   * Keep under ~60 characters.
+   */
+  title?: string | null;
+  /**
+   * Up to 3 lines.
+   */
+  excerpt?: string | null;
+  image?: {
+    asset?: (number | null) | Media;
+    alt?: string | null;
+  };
+  link?: {
+    /**
+     * Button text.
+     */
+    title?: string | null;
+    /**
+     * Full URL (https://…) or an internal path starting with /
+     */
+    href?: string | null;
+    target?: boolean | null;
+    buttonVariant?: {
+      variant?:
+        | (
+            | 'default'
+            | 'secondary'
+            | 'outline'
+            | 'ghost'
+            | 'link'
+            | 'invert'
+            | 'light-invert'
+            | 'destructive'
+            | 'primary'
+          )
+        | null;
+      size?: ('default' | 'lg' | 'wide' | 'sm' | 'thick') | null;
+      stroke?: ('none' | 'light' | 'midnight') | null;
+    };
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'gridCard';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "GridAgendaBlock".
+ */
+export interface GridAgendaBlock {
+  /**
+   * Select an agenda to display in the grid.
+   */
+  agenda: string | Agenda;
+  /**
+   * Display agenda tags on the card
+   */
+  showTags?: boolean | null;
+  /**
+   * Display download buttons for each language
+   */
+  showDownloadButtons?: boolean | null;
+  /**
+   * Display agenda type, year, and other metadata
+   */
+  showMetadata?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'gridAgenda';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "GridNewsBlock".
+ */
+export interface GridNewsBlock {
+  newsPost: string | NewsPost;
+  /**
+   * Display tags associated with the news post
+   */
+  showTags?: boolean | null;
+  /**
+   * Display the author information
+   */
+  showAuthor?: boolean | null;
+  /**
+   * Display publication date, author, and organizations
+   */
+  showMetadata?: boolean | null;
+  /**
+   * Display location information if available
+   */
+  showLocation?: boolean | null;
+  /**
+   * Override the default excerpt with custom text
+   */
+  customExcerpt?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'gridNews';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Carousel2Block".
+ */
+export interface Carousel2Block {
+  title?: string | null;
+  description?: string | null;
+  /**
+   * Add padding to the section.
+   */
+  padding?: {
+    top?: boolean | null;
+    bottom?: boolean | null;
+  };
+  testimonial?: (string | Testimonial)[] | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'carousel2';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Cta1Block".
+ */
+export interface Cta1Block {
+  /**
+   * Add padding to the section.
+   */
+  padding?: {
+    top?: boolean | null;
+    bottom?: boolean | null;
+  };
+  background?: {
+    type?: ('none' | 'ccm-palette' | 'color' | 'gradient' | 'svg' | 'image') | null;
+    ccmColor?: ('ccm-sky' | 'ccm-water' | 'ccm-sea' | 'ccm-midnight') | null;
+    /**
+     * Hex color code (e.g. #205596)
+     */
+    color?: string | null;
+    gradient?: {
+      direction?: ('to-r' | 'to-l' | 'to-b' | 'to-t' | 'to-br' | 'to-bl' | 'to-tr' | 'to-tl') | null;
+      startColor?: string | null;
+      endColor?: string | null;
+    };
+    svgPattern?: (number | null) | Media;
+    image?: {
+      asset?: (number | null) | Media;
+      alt?: string | null;
+    };
+    lightText?: boolean | null;
+    blobAccent?: boolean | null;
+  };
+  sectionWidth?: ('default' | 'narrow') | null;
+  stackAlign?: ('left' | 'center') | null;
+  tagLine?: string | null;
+  title?: string | null;
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  links?:
+    | {
+        /**
+         * Button text.
+         */
+        title?: string | null;
+        /**
+         * Full URL (https://…) or an internal path starting with /
+         */
+        href?: string | null;
+        target?: boolean | null;
+        buttonVariant?: {
+          variant?:
+            | (
+                | 'default'
+                | 'secondary'
+                | 'outline'
+                | 'ghost'
+                | 'link'
+                | 'invert'
+                | 'light-invert'
+                | 'destructive'
+                | 'primary'
+              )
+            | null;
+          size?: ('default' | 'lg' | 'wide' | 'sm' | 'thick') | null;
+          stroke?: ('none' | 'light' | 'midnight') | null;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'cta1';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "LogoCloud1Block".
+ */
+export interface LogoCloud1Block {
+  /**
+   * Add padding to the section.
+   */
+  padding?: {
+    top?: boolean | null;
+    bottom?: boolean | null;
+  };
+  title?: string | null;
+  description?: string | null;
+  /**
+   * Grid gives the logos more space and dignity (recommended for partners/institutions). Marquee is the scrolling strip.
+   */
+  layout?: ('grid' | 'marquee') | null;
+  /**
+   * Only applies to the marquee layout.
+   */
+  motionSpeed?: ('default' | 'slow') | null;
+  images?:
+    | {
+        asset?: (number | null) | Media;
+        alt?: string | null;
+        /**
+         * Shown under the logo in grid layout.
+         */
+        label?: string | null;
+        /**
+         * If set on logos, the grid groups them under type headings.
+         */
+        orgType?:
+          | (
+              | 'ngo'
+              | 'research'
+              | 'university'
+              | 'government'
+              | 'international'
+              | 'company'
+              | 'community'
+              | 'foundation'
+              | 'other'
+            )
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'logoCloud1';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "regionalCommunityPages".
+ */
+export interface RegionalCommunityPage {
+  id: string;
+  title: string;
+  /**
+   * Shared by all four languages of this page — it is what groups them into one document.
+   */
+  slug: string;
+  /**
+   * Link to the regional community for dynamic content filtering
+   */
+  regionalCommunity: string | RegionalCommunity;
+  /**
+   * Welcome hero section
+   */
+  welcomeHero?: {
+    background?: {
+      type?: ('none' | 'ccm-palette' | 'color' | 'gradient' | 'svg' | 'image') | null;
+      ccmColor?: ('ccm-sky' | 'ccm-water' | 'ccm-sea' | 'ccm-midnight') | null;
+      /**
+       * Hex color code (e.g. #205596)
+       */
+      color?: string | null;
+      gradient?: {
+        direction?: ('to-r' | 'to-l' | 'to-b' | 'to-t' | 'to-br' | 'to-bl' | 'to-tr' | 'to-tl') | null;
+        startColor?: string | null;
+        endColor?: string | null;
+      };
+      svgPattern?: (number | null) | Media;
+      image?: {
+        asset?: (number | null) | Media;
+        alt?: string | null;
+      };
+      lightText?: boolean | null;
+      blobAccent?: boolean | null;
+    };
+    tagLine?: string | null;
+    title?: string | null;
+    body?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    image?: {
+      asset?: (number | null) | Media;
+      alt?: string | null;
+    };
+    links?:
+      | {
+          /**
+           * Button text.
+           */
+          title?: string | null;
+          /**
+           * Full URL (https://…) or an internal path starting with /
+           */
+          href?: string | null;
+          target?: boolean | null;
+          buttonVariant?: {
+            variant?:
+              | (
+                  | 'default'
+                  | 'secondary'
+                  | 'outline'
+                  | 'ghost'
+                  | 'link'
+                  | 'invert'
+                  | 'light-invert'
+                  | 'destructive'
+                  | 'primary'
+                )
+              | null;
+            size?: ('default' | 'lg' | 'wide' | 'sm' | 'thick') | null;
+            stroke?: ('none' | 'light' | 'midnight') | null;
+          };
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Add padding to the section.
+     */
+    padding?: {
+      top?: boolean | null;
+      bottom?: boolean | null;
+    };
+    imagePosition?: ('right' | 'left') | null;
+  };
+  /**
+   * Hero section with image support for joining the regional community (supports buttons and image positioning)
+   */
+  whyJoinCTA?: {
+    background?: {
+      type?: ('none' | 'ccm-palette' | 'color' | 'gradient' | 'svg' | 'image') | null;
+      ccmColor?: ('ccm-sky' | 'ccm-water' | 'ccm-sea' | 'ccm-midnight') | null;
+      /**
+       * Hex color code (e.g. #205596)
+       */
+      color?: string | null;
+      gradient?: {
+        direction?: ('to-r' | 'to-l' | 'to-b' | 'to-t' | 'to-br' | 'to-bl' | 'to-tr' | 'to-tl') | null;
+        startColor?: string | null;
+        endColor?: string | null;
+      };
+      svgPattern?: (number | null) | Media;
+      image?: {
+        asset?: (number | null) | Media;
+        alt?: string | null;
+      };
+      lightText?: boolean | null;
+      blobAccent?: boolean | null;
+    };
+    tagLine?: string | null;
+    title?: string | null;
+    body?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    image?: {
+      asset?: (number | null) | Media;
+      alt?: string | null;
+    };
+    links?:
+      | {
+          /**
+           * Button text.
+           */
+          title?: string | null;
+          /**
+           * Full URL (https://…) or an internal path starting with /
+           */
+          href?: string | null;
+          target?: boolean | null;
+          buttonVariant?: {
+            variant?:
+              | (
+                  | 'default'
+                  | 'secondary'
+                  | 'outline'
+                  | 'ghost'
+                  | 'link'
+                  | 'invert'
+                  | 'light-invert'
+                  | 'destructive'
+                  | 'primary'
+                )
+              | null;
+            size?: ('default' | 'lg' | 'wide' | 'sm' | 'thick') | null;
+            stroke?: ('none' | 'light' | 'midnight') | null;
+          };
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Add padding to the section.
+     */
+    padding?: {
+      top?: boolean | null;
+      bottom?: boolean | null;
+    };
+    imagePosition?: ('right' | 'left') | null;
+  };
+  /**
+   * The region's content sections, in the order they appear on the page. Each one picks what it shows and how it fills.
+   */
+  sections?: ContentGridBlock[] | null;
+  /**
+   * Embed the region-locked Atlas explorer on this page
+   */
+  atlasEmbed?: {
+    /**
+     * Leave unset to show it (the seven canonical regions show it by default).
+     */
+    enabled?: boolean | null;
+    showBreakdown?: boolean | null;
+  };
+  /**
+   * Partner organizations logo cloud
+   */
+  logoCloud?: {
+    /**
+     * Add padding to the section.
+     */
+    padding?: {
+      top?: boolean | null;
+      bottom?: boolean | null;
+    };
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Grid gives the logos more space and dignity (recommended for partners/institutions). Marquee is the scrolling strip.
+     */
+    layout?: ('grid' | 'marquee') | null;
+    /**
+     * Only applies to the marquee layout.
+     */
+    motionSpeed?: ('default' | 'slow') | null;
+    images?:
+      | {
+          asset?: (number | null) | Media;
+          alt?: string | null;
+          /**
+           * Shown under the logo in grid layout.
+           */
+          label?: string | null;
+          /**
+           * If set on logos, the grid groups them under type headings.
+           */
+          orgType?:
+            | (
+                | 'ngo'
+                | 'research'
+                | 'university'
+                | 'government'
+                | 'international'
+                | 'company'
+                | 'community'
+                | 'foundation'
+                | 'other'
+              )
+            | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  meta_title?: string | null;
+  meta_description?: string | null;
+  noindex?: boolean | null;
+  ogImage?: {
+    asset?: (number | null) | Media;
+    alt?: string | null;
+  };
+  /**
+   * Sanity's LexoRank orderRank string, preserved for editorial ordering.
+   */
+  orderRank?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ContentGridBlock".
+ */
+export interface ContentGridBlock {
+  /**
+   * Which kind of content fills this section.
+   */
+  contentType: 'agendas' | 'caseStudies' | 'news' | 'livedExperiences' | 'team' | 'testimonials';
+  /**
+   * How this section is filled. Dynamic modes update automatically as new content is published for this region — you don't have to touch the page. 'Dynamic + pinned' lets you feature a few hand-picked items at the top while the rest auto-fill.
+   */
+  mode?: ('manual' | 'dynamic-featured' | 'dynamic-recent' | 'dynamic-with-pinned' | 'dynamic') | null;
+  gridColumns?: ('grid-cols-2' | 'grid-cols-3' | 'grid-cols-4' | 'grid-cols-5') | null;
+  maxItems?: number | null;
+  /**
+   * Number of items to show initially (rest shown on 'View More')
+   */
+  initialDisplayCount?: number | null;
+  showTitle?: boolean | null;
+  title?: string | null;
+  subtitle?: string | null;
+  showDescription?: boolean | null;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  headerImage?: {
+    asset?: (number | null) | Media;
+    alt?: string | null;
+  };
+  /**
+   * In 'Manual' mode these are the only items shown. In 'Dynamic + pinned' mode they are featured first and the regional feed fills the rest.
+   */
+  manualItems?: (GridAgendaBlock | GridCaseStudyBlock | GridNewsBlock)[] | null;
+  manualMembers?: (string | Author)[] | null;
+  manualTestimonials?: (string | Testimonial)[] | null;
+  /**
+   * Show a member's role in the community
+   */
+  displayRole?: boolean | null;
+  /**
+   * Show a member's organizational affiliation
+   */
+  displayAffiliation?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'contentGrid';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "GridCaseStudyBlock".
+ */
+export interface GridCaseStudyBlock {
+  /**
+   * Select a case study to display in the grid.
+   */
+  caseStudy: string | CaseStudy;
+  /**
+   * Display case study tags on the card
+   */
+  showTags?: boolean | null;
+  /**
+   * Display case study authors on the card
+   */
+  showAuthors?: boolean | null;
+  /**
+   * Display publication date, location, and other metadata
+   */
+  showMetadata?: boolean | null;
+  /**
+   * Display the study period dates on the card
+   */
+  showStudyPeriod?: boolean | null;
+  /**
+   * Display the primary study location on the card
+   */
+  showLocation?: boolean | null;
+  /**
+   * Optional custom excerpt to override the case study's own excerpt in this grid
+   */
+  customExcerpt?: string | null;
+  /**
+   * Choose how this case study card should be displayed
+   */
+  customLayout?: ('default' | 'compact' | 'featured' | 'minimal') | null;
+  /**
+   * Higher numbers appear first in the grid (optional)
+   */
+  priority?: number | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'gridCaseStudy';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -1348,6 +2318,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'caseStudyDrafts';
         value: string | CaseStudyDraft;
+      } | null)
+    | ({
+        relationTo: 'pages';
+        value: string | Page;
+      } | null)
+    | ({
+        relationTo: 'regionalCommunityPages';
+        value: string | RegionalCommunityPage;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -2060,6 +3038,626 @@ export interface CaseStudyDraftsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages_select".
+ */
+export interface PagesSelect<T extends boolean = true> {
+  id?: T;
+  title?: T;
+  slug?: T;
+  blocks?:
+    | T
+    | {
+        hero1?: T | Hero1BlockSelect<T>;
+        sectionHeader?: T | SectionHeaderBlockSelect<T>;
+        splitRow?: T | SplitRowBlockSelect<T>;
+        gridRow?: T | GridRowBlockSelect<T>;
+        carousel2?: T | Carousel2BlockSelect<T>;
+        cta1?: T | Cta1BlockSelect<T>;
+        logoCloud1?: T | LogoCloud1BlockSelect<T>;
+      };
+  meta_title?: T;
+  meta_description?: T;
+  noindex?: T;
+  ogImage?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+      };
+  orderRank?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Hero1Block_select".
+ */
+export interface Hero1BlockSelect<T extends boolean = true> {
+  background?:
+    | T
+    | {
+        type?: T;
+        ccmColor?: T;
+        color?: T;
+        gradient?:
+          | T
+          | {
+              direction?: T;
+              startColor?: T;
+              endColor?: T;
+            };
+        svgPattern?: T;
+        image?:
+          | T
+          | {
+              asset?: T;
+              alt?: T;
+            };
+        lightText?: T;
+        blobAccent?: T;
+      };
+  tagLine?: T;
+  title?: T;
+  body?: T;
+  image?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+      };
+  links?:
+    | T
+    | {
+        title?: T;
+        href?: T;
+        target?: T;
+        buttonVariant?:
+          | T
+          | {
+              variant?: T;
+              size?: T;
+              stroke?: T;
+            };
+        id?: T;
+      };
+  padding?:
+    | T
+    | {
+        top?: T;
+        bottom?: T;
+      };
+  imagePosition?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SectionHeaderBlock_select".
+ */
+export interface SectionHeaderBlockSelect<T extends boolean = true> {
+  padding?:
+    | T
+    | {
+        top?: T;
+        bottom?: T;
+      };
+  sectionWidth?: T;
+  stackAlign?: T;
+  tagLine?: T;
+  title?: T;
+  description?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SplitRowBlock_select".
+ */
+export interface SplitRowBlockSelect<T extends boolean = true> {
+  padding?:
+    | T
+    | {
+        top?: T;
+        bottom?: T;
+      };
+  noGap?: T;
+  splitColumns?:
+    | T
+    | {
+        splitContent?: T | SplitContentBlockSelect<T>;
+        splitImage?: T | SplitImageBlockSelect<T>;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SplitContentBlock_select".
+ */
+export interface SplitContentBlockSelect<T extends boolean = true> {
+  sticky?: T;
+  padding?:
+    | T
+    | {
+        top?: T;
+        bottom?: T;
+      };
+  tagLine?: T;
+  title?: T;
+  body?: T;
+  link?:
+    | T
+    | {
+        title?: T;
+        href?: T;
+        target?: T;
+        buttonVariant?:
+          | T
+          | {
+              variant?: T;
+              size?: T;
+              stroke?: T;
+            };
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SplitImageBlock_select".
+ */
+export interface SplitImageBlockSelect<T extends boolean = true> {
+  image?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "GridRowBlock_select".
+ */
+export interface GridRowBlockSelect<T extends boolean = true> {
+  padding?:
+    | T
+    | {
+        top?: T;
+        bottom?: T;
+      };
+  background?:
+    | T
+    | {
+        type?: T;
+        ccmColor?: T;
+        color?: T;
+        gradient?:
+          | T
+          | {
+              direction?: T;
+              startColor?: T;
+              endColor?: T;
+            };
+        svgPattern?: T;
+        image?:
+          | T
+          | {
+              asset?: T;
+              alt?: T;
+            };
+        lightText?: T;
+        blobAccent?: T;
+      };
+  title?: T;
+  subtitle?: T;
+  description?: T;
+  headerImage?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+      };
+  gridColumns?: T;
+  cardVariant?: T;
+  mode?: T;
+  maxItems?: T;
+  initialDisplayCount?: T;
+  columns?:
+    | T
+    | {
+        gridCard?: T | GridCardBlockSelect<T>;
+        gridAgenda?: T | GridAgendaBlockSelect<T>;
+        gridNews?: T | GridNewsBlockSelect<T>;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "GridCardBlock_select".
+ */
+export interface GridCardBlockSelect<T extends boolean = true> {
+  title?: T;
+  excerpt?: T;
+  image?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+      };
+  link?:
+    | T
+    | {
+        title?: T;
+        href?: T;
+        target?: T;
+        buttonVariant?:
+          | T
+          | {
+              variant?: T;
+              size?: T;
+              stroke?: T;
+            };
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "GridAgendaBlock_select".
+ */
+export interface GridAgendaBlockSelect<T extends boolean = true> {
+  agenda?: T;
+  showTags?: T;
+  showDownloadButtons?: T;
+  showMetadata?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "GridNewsBlock_select".
+ */
+export interface GridNewsBlockSelect<T extends boolean = true> {
+  newsPost?: T;
+  showTags?: T;
+  showAuthor?: T;
+  showMetadata?: T;
+  showLocation?: T;
+  customExcerpt?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Carousel2Block_select".
+ */
+export interface Carousel2BlockSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  padding?:
+    | T
+    | {
+        top?: T;
+        bottom?: T;
+      };
+  testimonial?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "Cta1Block_select".
+ */
+export interface Cta1BlockSelect<T extends boolean = true> {
+  padding?:
+    | T
+    | {
+        top?: T;
+        bottom?: T;
+      };
+  background?:
+    | T
+    | {
+        type?: T;
+        ccmColor?: T;
+        color?: T;
+        gradient?:
+          | T
+          | {
+              direction?: T;
+              startColor?: T;
+              endColor?: T;
+            };
+        svgPattern?: T;
+        image?:
+          | T
+          | {
+              asset?: T;
+              alt?: T;
+            };
+        lightText?: T;
+        blobAccent?: T;
+      };
+  sectionWidth?: T;
+  stackAlign?: T;
+  tagLine?: T;
+  title?: T;
+  body?: T;
+  links?:
+    | T
+    | {
+        title?: T;
+        href?: T;
+        target?: T;
+        buttonVariant?:
+          | T
+          | {
+              variant?: T;
+              size?: T;
+              stroke?: T;
+            };
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "LogoCloud1Block_select".
+ */
+export interface LogoCloud1BlockSelect<T extends boolean = true> {
+  padding?:
+    | T
+    | {
+        top?: T;
+        bottom?: T;
+      };
+  title?: T;
+  description?: T;
+  layout?: T;
+  motionSpeed?: T;
+  images?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+        label?: T;
+        orgType?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "regionalCommunityPages_select".
+ */
+export interface RegionalCommunityPagesSelect<T extends boolean = true> {
+  id?: T;
+  title?: T;
+  slug?: T;
+  regionalCommunity?: T;
+  welcomeHero?:
+    | T
+    | {
+        background?:
+          | T
+          | {
+              type?: T;
+              ccmColor?: T;
+              color?: T;
+              gradient?:
+                | T
+                | {
+                    direction?: T;
+                    startColor?: T;
+                    endColor?: T;
+                  };
+              svgPattern?: T;
+              image?:
+                | T
+                | {
+                    asset?: T;
+                    alt?: T;
+                  };
+              lightText?: T;
+              blobAccent?: T;
+            };
+        tagLine?: T;
+        title?: T;
+        body?: T;
+        image?:
+          | T
+          | {
+              asset?: T;
+              alt?: T;
+            };
+        links?:
+          | T
+          | {
+              title?: T;
+              href?: T;
+              target?: T;
+              buttonVariant?:
+                | T
+                | {
+                    variant?: T;
+                    size?: T;
+                    stroke?: T;
+                  };
+              id?: T;
+            };
+        padding?:
+          | T
+          | {
+              top?: T;
+              bottom?: T;
+            };
+        imagePosition?: T;
+      };
+  whyJoinCTA?:
+    | T
+    | {
+        background?:
+          | T
+          | {
+              type?: T;
+              ccmColor?: T;
+              color?: T;
+              gradient?:
+                | T
+                | {
+                    direction?: T;
+                    startColor?: T;
+                    endColor?: T;
+                  };
+              svgPattern?: T;
+              image?:
+                | T
+                | {
+                    asset?: T;
+                    alt?: T;
+                  };
+              lightText?: T;
+              blobAccent?: T;
+            };
+        tagLine?: T;
+        title?: T;
+        body?: T;
+        image?:
+          | T
+          | {
+              asset?: T;
+              alt?: T;
+            };
+        links?:
+          | T
+          | {
+              title?: T;
+              href?: T;
+              target?: T;
+              buttonVariant?:
+                | T
+                | {
+                    variant?: T;
+                    size?: T;
+                    stroke?: T;
+                  };
+              id?: T;
+            };
+        padding?:
+          | T
+          | {
+              top?: T;
+              bottom?: T;
+            };
+        imagePosition?: T;
+      };
+  sections?:
+    | T
+    | {
+        contentGrid?: T | ContentGridBlockSelect<T>;
+      };
+  atlasEmbed?:
+    | T
+    | {
+        enabled?: T;
+        showBreakdown?: T;
+      };
+  logoCloud?:
+    | T
+    | {
+        padding?:
+          | T
+          | {
+              top?: T;
+              bottom?: T;
+            };
+        title?: T;
+        description?: T;
+        layout?: T;
+        motionSpeed?: T;
+        images?:
+          | T
+          | {
+              asset?: T;
+              alt?: T;
+              label?: T;
+              orgType?: T;
+              id?: T;
+            };
+      };
+  meta_title?: T;
+  meta_description?: T;
+  noindex?: T;
+  ogImage?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+      };
+  orderRank?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ContentGridBlock_select".
+ */
+export interface ContentGridBlockSelect<T extends boolean = true> {
+  contentType?: T;
+  mode?: T;
+  gridColumns?: T;
+  maxItems?: T;
+  initialDisplayCount?: T;
+  showTitle?: T;
+  title?: T;
+  subtitle?: T;
+  showDescription?: T;
+  description?: T;
+  headerImage?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+      };
+  manualItems?:
+    | T
+    | {
+        gridAgenda?: T | GridAgendaBlockSelect<T>;
+        gridCaseStudy?: T | GridCaseStudyBlockSelect<T>;
+        gridNews?: T | GridNewsBlockSelect<T>;
+      };
+  manualMembers?: T;
+  manualTestimonials?: T;
+  displayRole?: T;
+  displayAffiliation?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "GridCaseStudyBlock_select".
+ */
+export interface GridCaseStudyBlockSelect<T extends boolean = true> {
+  caseStudy?: T;
+  showTags?: T;
+  showAuthors?: T;
+  showMetadata?: T;
+  showStudyPeriod?: T;
+  showLocation?: T;
+  customExcerpt?: T;
+  customLayout?: T;
+  priority?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
@@ -2097,6 +3695,1675 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "homepage".
+ */
+export interface Homepage {
+  id: number;
+  title?: string | null;
+  /**
+   * Welcome to Connecting Climate Minds Hub section
+   */
+  heroWelcome?: {
+    background?: {
+      type?: ('none' | 'ccm-palette' | 'color' | 'gradient' | 'svg' | 'image') | null;
+      ccmColor?: ('ccm-sky' | 'ccm-water' | 'ccm-sea' | 'ccm-midnight') | null;
+      /**
+       * Hex color code (e.g. #205596)
+       */
+      color?: string | null;
+      gradient?: {
+        direction?: ('to-r' | 'to-l' | 'to-b' | 'to-t' | 'to-br' | 'to-bl' | 'to-tr' | 'to-tl') | null;
+        startColor?: string | null;
+        endColor?: string | null;
+      };
+      svgPattern?: (number | null) | Media;
+      image?: {
+        asset?: (number | null) | Media;
+        alt?: string | null;
+      };
+      lightText?: boolean | null;
+      blobAccent?: boolean | null;
+    };
+    tagLine?: string | null;
+    title?: string | null;
+    body?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    image?: {
+      asset?: (number | null) | Media;
+      alt?: string | null;
+    };
+    links?:
+      | {
+          /**
+           * Button text.
+           */
+          title?: string | null;
+          /**
+           * Full URL (https://…) or an internal path starting with /
+           */
+          href?: string | null;
+          target?: boolean | null;
+          buttonVariant?: {
+            variant?:
+              | (
+                  | 'default'
+                  | 'secondary'
+                  | 'outline'
+                  | 'ghost'
+                  | 'link'
+                  | 'invert'
+                  | 'light-invert'
+                  | 'destructive'
+                  | 'primary'
+                )
+              | null;
+            size?: ('default' | 'lg' | 'wide' | 'sm' | 'thick') | null;
+            stroke?: ('none' | 'light' | 'midnight') | null;
+          };
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Add padding to the section.
+     */
+    padding?: {
+      top?: boolean | null;
+      bottom?: boolean | null;
+    };
+    imagePosition?: ('right' | 'left') | null;
+  };
+  /**
+   * Prioritizing Global Research and Action section
+   */
+  globalAgenda?: {
+    /**
+     * Add padding to the section.
+     */
+    padding?: {
+      top?: boolean | null;
+      bottom?: boolean | null;
+    };
+    /**
+     * Remove gap between columns
+     */
+    noGap?: boolean | null;
+    splitColumns?: (SplitContentBlock | SplitImageBlock)[] | null;
+  };
+  /**
+   * Collaborative space for ideas, dialogue, and connection
+   */
+  howToUse?: {
+    /**
+     * Add padding to the section.
+     */
+    padding?: {
+      top?: boolean | null;
+      bottom?: boolean | null;
+    };
+    /**
+     * Remove gap between columns
+     */
+    noGap?: boolean | null;
+    splitColumns?: (SplitContentBlock | SplitImageBlock)[] | null;
+  };
+  agendasModule?: {
+    /**
+     * Add padding to the section.
+     */
+    padding?: {
+      top?: boolean | null;
+      bottom?: boolean | null;
+    };
+    background?: {
+      type?: ('none' | 'ccm-palette' | 'color' | 'gradient' | 'svg' | 'image') | null;
+      ccmColor?: ('ccm-sky' | 'ccm-water' | 'ccm-sea' | 'ccm-midnight') | null;
+      /**
+       * Hex color code (e.g. #205596)
+       */
+      color?: string | null;
+      gradient?: {
+        direction?: ('to-r' | 'to-l' | 'to-b' | 'to-t' | 'to-br' | 'to-bl' | 'to-tr' | 'to-tl') | null;
+        startColor?: string | null;
+        endColor?: string | null;
+      };
+      svgPattern?: (number | null) | Media;
+      image?: {
+        asset?: (number | null) | Media;
+        alt?: string | null;
+      };
+      lightText?: boolean | null;
+      blobAccent?: boolean | null;
+    };
+    /**
+     * Optional title for the grid section
+     */
+    title?: string | null;
+    /**
+     * Optional subtitle shown below the title
+     */
+    subtitle?: string | null;
+    /**
+     * Optional description text that supports rich formatting and styling
+     */
+    description?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    headerImage?: {
+      asset?: (number | null) | Media;
+      alt?: string | null;
+    };
+    /**
+     * How many cards per row on desktop screens. Note: the 'Wide (16:9)' card style always shows at most 2 per row.
+     */
+    gridColumns?: ('grid-cols-2' | 'grid-cols-3' | 'grid-cols-4' | 'grid-cols-5') | null;
+    /**
+     * Card shape. 'Classic (3:2)' fits 2-4 per row; 'Wide (16:9)' is panoramic and overrides the columns setting to max 2 per row.
+     */
+    cardVariant?: ('classic' | 'wide') | null;
+    /**
+     * Dynamic modes keep this section automatically up to date with the latest published content.
+     */
+    mode?: ('manual' | 'dynamic-recent' | 'dynamic-featured') | null;
+    maxItems?: number | null;
+    /**
+     * How many cards to show before the Show More button. Leave empty to always show all.
+     */
+    initialDisplayCount?: number | null;
+    columns?: (GridCardBlock | GridAgendaBlock | GridNewsBlock)[] | null;
+  };
+  livedExperiences?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Add padding to the section.
+     */
+    padding?: {
+      top?: boolean | null;
+      bottom?: boolean | null;
+    };
+    testimonial?: (string | Testimonial)[] | null;
+  };
+  regionalCommunities?: {
+    /**
+     * Add padding to the section.
+     */
+    padding?: {
+      top?: boolean | null;
+      bottom?: boolean | null;
+    };
+    background?: {
+      type?: ('none' | 'ccm-palette' | 'color' | 'gradient' | 'svg' | 'image') | null;
+      ccmColor?: ('ccm-sky' | 'ccm-water' | 'ccm-sea' | 'ccm-midnight') | null;
+      /**
+       * Hex color code (e.g. #205596)
+       */
+      color?: string | null;
+      gradient?: {
+        direction?: ('to-r' | 'to-l' | 'to-b' | 'to-t' | 'to-br' | 'to-bl' | 'to-tr' | 'to-tl') | null;
+        startColor?: string | null;
+        endColor?: string | null;
+      };
+      svgPattern?: (number | null) | Media;
+      image?: {
+        asset?: (number | null) | Media;
+        alt?: string | null;
+      };
+      lightText?: boolean | null;
+      blobAccent?: boolean | null;
+    };
+    /**
+     * Optional title for the grid section
+     */
+    title?: string | null;
+    /**
+     * Optional subtitle shown below the title
+     */
+    subtitle?: string | null;
+    /**
+     * Optional description text that supports rich formatting and styling
+     */
+    description?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    headerImage?: {
+      asset?: (number | null) | Media;
+      alt?: string | null;
+    };
+    /**
+     * How many cards per row on desktop screens. Note: the 'Wide (16:9)' card style always shows at most 2 per row.
+     */
+    gridColumns?: ('grid-cols-2' | 'grid-cols-3' | 'grid-cols-4' | 'grid-cols-5') | null;
+    /**
+     * Card shape. 'Classic (3:2)' fits 2-4 per row; 'Wide (16:9)' is panoramic and overrides the columns setting to max 2 per row.
+     */
+    cardVariant?: ('classic' | 'wide') | null;
+    /**
+     * Dynamic modes keep this section automatically up to date with the latest published content.
+     */
+    mode?: ('manual' | 'dynamic-recent' | 'dynamic-featured') | null;
+    maxItems?: number | null;
+    /**
+     * How many cards to show before the Show More button. Leave empty to always show all.
+     */
+    initialDisplayCount?: number | null;
+    columns?: (GridCardBlock | GridAgendaBlock | GridNewsBlock)[] | null;
+  };
+  collaboration?: {
+    /**
+     * Add padding to the section.
+     */
+    padding?: {
+      top?: boolean | null;
+      bottom?: boolean | null;
+    };
+    /**
+     * Remove gap between columns
+     */
+    noGap?: boolean | null;
+    splitColumns?: (SplitContentBlock | SplitImageBlock)[] | null;
+  };
+  news?: {
+    /**
+     * Add padding to the section.
+     */
+    padding?: {
+      top?: boolean | null;
+      bottom?: boolean | null;
+    };
+    background?: {
+      type?: ('none' | 'ccm-palette' | 'color' | 'gradient' | 'svg' | 'image') | null;
+      ccmColor?: ('ccm-sky' | 'ccm-water' | 'ccm-sea' | 'ccm-midnight') | null;
+      /**
+       * Hex color code (e.g. #205596)
+       */
+      color?: string | null;
+      gradient?: {
+        direction?: ('to-r' | 'to-l' | 'to-b' | 'to-t' | 'to-br' | 'to-bl' | 'to-tr' | 'to-tl') | null;
+        startColor?: string | null;
+        endColor?: string | null;
+      };
+      svgPattern?: (number | null) | Media;
+      image?: {
+        asset?: (number | null) | Media;
+        alt?: string | null;
+      };
+      lightText?: boolean | null;
+      blobAccent?: boolean | null;
+    };
+    /**
+     * Optional title for the grid section
+     */
+    title?: string | null;
+    /**
+     * Optional subtitle shown below the title
+     */
+    subtitle?: string | null;
+    /**
+     * Optional description text that supports rich formatting and styling
+     */
+    description?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    headerImage?: {
+      asset?: (number | null) | Media;
+      alt?: string | null;
+    };
+    /**
+     * How many cards per row on desktop screens. Note: the 'Wide (16:9)' card style always shows at most 2 per row.
+     */
+    gridColumns?: ('grid-cols-2' | 'grid-cols-3' | 'grid-cols-4' | 'grid-cols-5') | null;
+    /**
+     * Card shape. 'Classic (3:2)' fits 2-4 per row; 'Wide (16:9)' is panoramic and overrides the columns setting to max 2 per row.
+     */
+    cardVariant?: ('classic' | 'wide') | null;
+    /**
+     * Dynamic modes keep this section automatically up to date with the latest published content.
+     */
+    mode?: ('manual' | 'dynamic-recent' | 'dynamic-featured') | null;
+    maxItems?: number | null;
+    /**
+     * How many cards to show before the Show More button. Leave empty to always show all.
+     */
+    initialDisplayCount?: number | null;
+    columns?: (GridCardBlock | GridAgendaBlock | GridNewsBlock)[] | null;
+  };
+  projectInfo?: {
+    /**
+     * Add padding to the section.
+     */
+    padding?: {
+      top?: boolean | null;
+      bottom?: boolean | null;
+    };
+    /**
+     * Remove gap between columns
+     */
+    noGap?: boolean | null;
+    splitColumns?: (SplitContentBlock | SplitImageBlock)[] | null;
+  };
+  mentalHealthDefinition?: {
+    /**
+     * Add padding to the section.
+     */
+    padding?: {
+      top?: boolean | null;
+      bottom?: boolean | null;
+    };
+    background?: {
+      type?: ('none' | 'ccm-palette' | 'color' | 'gradient' | 'svg' | 'image') | null;
+      ccmColor?: ('ccm-sky' | 'ccm-water' | 'ccm-sea' | 'ccm-midnight') | null;
+      /**
+       * Hex color code (e.g. #205596)
+       */
+      color?: string | null;
+      gradient?: {
+        direction?: ('to-r' | 'to-l' | 'to-b' | 'to-t' | 'to-br' | 'to-bl' | 'to-tr' | 'to-tl') | null;
+        startColor?: string | null;
+        endColor?: string | null;
+      };
+      svgPattern?: (number | null) | Media;
+      image?: {
+        asset?: (number | null) | Media;
+        alt?: string | null;
+      };
+      lightText?: boolean | null;
+      blobAccent?: boolean | null;
+    };
+    sectionWidth?: ('default' | 'narrow') | null;
+    stackAlign?: ('left' | 'center') | null;
+    tagLine?: string | null;
+    title?: string | null;
+    body?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    links?:
+      | {
+          /**
+           * Button text.
+           */
+          title?: string | null;
+          /**
+           * Full URL (https://…) or an internal path starting with /
+           */
+          href?: string | null;
+          target?: boolean | null;
+          buttonVariant?: {
+            variant?:
+              | (
+                  | 'default'
+                  | 'secondary'
+                  | 'outline'
+                  | 'ghost'
+                  | 'link'
+                  | 'invert'
+                  | 'light-invert'
+                  | 'destructive'
+                  | 'primary'
+                )
+              | null;
+            size?: ('default' | 'lg' | 'wide' | 'sm' | 'thick') | null;
+            stroke?: ('none' | 'light' | 'midnight') | null;
+          };
+          id?: string | null;
+        }[]
+      | null;
+  };
+  partnerLogos?: {
+    /**
+     * Add padding to the section.
+     */
+    padding?: {
+      top?: boolean | null;
+      bottom?: boolean | null;
+    };
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Grid gives the logos more space and dignity (recommended for partners/institutions). Marquee is the scrolling strip.
+     */
+    layout?: ('grid' | 'marquee') | null;
+    /**
+     * Only applies to the marquee layout.
+     */
+    motionSpeed?: ('default' | 'slow') | null;
+    images?:
+      | {
+          asset?: (number | null) | Media;
+          alt?: string | null;
+          /**
+           * Shown under the logo in grid layout.
+           */
+          label?: string | null;
+          /**
+           * If set on logos, the grid groups them under type headings.
+           */
+          orgType?:
+            | (
+                | 'ngo'
+                | 'research'
+                | 'university'
+                | 'government'
+                | 'international'
+                | 'company'
+                | 'community'
+                | 'foundation'
+                | 'other'
+              )
+            | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  meta_title?: string | null;
+  meta_description?: string | null;
+  noindex?: boolean | null;
+  ogImage?: {
+    asset?: (number | null) | Media;
+    alt?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "siteAnnouncement".
+ */
+export interface SiteAnnouncement {
+  id: number;
+  /**
+   * Master switch. Turn off to hide the bar everywhere instantly.
+   */
+  enabled?: boolean | null;
+  /**
+   * The announcement text. Keep it short — it sits in a single top bar.
+   */
+  message: string;
+  /**
+   * Colour treatment. Brand = the CCM blue (general news); Info = light blue; Success = green; Warning = amber (time-sensitive / heads-up).
+   */
+  variant?: ('brand' | 'info' | 'success' | 'warning') | null;
+  /**
+   * Make the bar clickable — e.g. link to an event or article.
+   */
+  link?: {
+    url?: string | null;
+    /**
+     * The call-to-action text, e.g. 'Read more' / 'Register'.
+     */
+    label?: string | null;
+  };
+  /**
+   * If on, a visitor can close the bar and it stays closed for them (until you change the message).
+   */
+  dismissible?: boolean | null;
+  /**
+   * Optional. Leave empty to show immediately when enabled.
+   */
+  startsAt?: string | null;
+  /**
+   * Optional. Leave empty to show until you turn it off.
+   */
+  endsAt?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "moderationSettings".
+ */
+export interface ModerationSetting {
+  id: number;
+  /**
+   * Master switch. Off = no wordlist filtering (anonymous comments are still held for review).
+   */
+  enabled?: boolean | null;
+  /**
+   * Clearly harmful terms (slurs, threats). A comment containing one is rejected and never appears.
+   */
+  blockTerms?:
+    | {
+        term: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Borderline terms. A comment containing one is held PENDING for review rather than blocked.
+   */
+  reviewTerms?:
+    | {
+        term: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "hubIllustrations".
+ */
+export interface HubIllustration {
+  id: number;
+  /**
+   * Decorative illustration shown at the end (RTL-safe) of the Atlas page header.
+   */
+  atlasHeader?: {
+    asset?: (number | null) | Media;
+    alt?: string | null;
+  };
+  /**
+   * Decorative illustration shown at the end (RTL-safe) of the Search page header.
+   */
+  searchHeader?: {
+    asset?: (number | null) | Media;
+    alt?: string | null;
+  };
+  /**
+   * Decorative illustration shown at the end (RTL-safe) of the Collaborate page header.
+   */
+  collaborateHeader?: {
+    asset?: (number | null) | Media;
+    alt?: string | null;
+  };
+  /**
+   * Decorative illustration shown alongside empty-state messaging.
+   */
+  emptyState?: {
+    asset?: (number | null) | Media;
+    alt?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Every piece of copy the onboarding flow shows, in all four languages.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "onboardingContent".
+ */
+export interface OnboardingContent {
+  id: number;
+  /**
+   * Internal title for this content (e.g., "Onboarding Content")
+   */
+  title?: string | null;
+  welcomeTitle?: string | null;
+  welcomeSubtitle?: string | null;
+  welcomeDescription?: string | null;
+  welcomeFeatures?:
+    | {
+        title?: string | null;
+        description?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * One step per row. Sanity stored these as bare strings; each is a `step` here.
+   */
+  welcomeSteps?:
+    | {
+        step?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  gettingStartedTitle?: string | null;
+  gettingStartedDescription?: string | null;
+  getStartedText?: string | null;
+  timeEstimate?: string | null;
+  basicInfoTitle?: string | null;
+  basicInfoDescription?: string | null;
+  basicInfoFieldHints?: {
+    usernameHint?: string | null;
+    headlineHint?: string | null;
+    bioHint?: string | null;
+    motivationHint?: string | null;
+    languageHint?: string | null;
+  };
+  workInfoTitle?: string | null;
+  workInfoDescription?: string | null;
+  workInfoFieldHints?: {
+    workTypesDescription?: string | null;
+    expertiseDescription?: string | null;
+    workBioHint?: string | null;
+    socialLinksDescription?: string | null;
+    communitiesDescription?: string | null;
+  };
+  communityInfoTitle?: string | null;
+  communityInfoDescription?: string | null;
+  communityInfoFieldHints?: {
+    communitiesDescription?: string | null;
+    communitiesHint?: string | null;
+    optionalNote?: string | null;
+  };
+  recentWorkTitle?: string | null;
+  recentWorkDescription?: string | null;
+  recentWorkFieldHints?: {
+    workLinkHint?: string | null;
+    isOngoingHint?: string | null;
+    noWorkDescription?: string | null;
+  };
+  privacyTitle?: string | null;
+  privacyDescription?: string | null;
+  searchabilityTitle?: string | null;
+  searchabilityDescription?: string | null;
+  searchabilityHint?: string | null;
+  visibilityTitle?: string | null;
+  visibilityDescription?: string | null;
+  visibilityOptions?: {
+    publicTitle?: string | null;
+    publicDescription?: string | null;
+    membersTitle?: string | null;
+    membersDescription?: string | null;
+    privateTitle?: string | null;
+    privateDescription?: string | null;
+  };
+  profileInfoTitle?: string | null;
+  profileInfoDescription?: string | null;
+  privacyFieldHints?: {
+    emailHint?: string | null;
+    phoneHint?: string | null;
+    workHint?: string | null;
+    socialHint?: string | null;
+    locationHint?: string | null;
+  };
+  reviewTitle?: string | null;
+  reviewDescription?: string | null;
+  reviewReadyTitle?: string | null;
+  reviewReadyDescription?: string | null;
+  completeOnboardingText?: string | null;
+  redirectDialogTitle?: string | null;
+  redirectDialogMessage?: string | null;
+  proceedToOnboardingText?: string | null;
+  continueToHubText?: string | null;
+  oneTimeWaiverText?: string | null;
+  navigationTexts?: {
+    continue?: string | null;
+    back?: string | null;
+    submit?: string | null;
+    submitting?: string | null;
+  };
+  validationMessages?: {
+    basicInfo?: {
+      firstNameRequired?: string | null;
+      firstNameTooLong?: string | null;
+      lastNameRequired?: string | null;
+      lastNameTooLong?: string | null;
+      usernameRequired?: string | null;
+      usernameTooShort?: string | null;
+      usernameTooLong?: string | null;
+      usernameInvalidFormat?: string | null;
+      bioTooLong?: string | null;
+      countryRequired?: string | null;
+      cityRequired?: string | null;
+    };
+    workInfo?: {
+      workTypesRequired?: string | null;
+      expertiseAreasRequired?: string | null;
+      workBioTooLong?: string | null;
+      invalidLinkedInUrl?: string | null;
+      invalidWebsiteUrl?: string | null;
+      invalidSocialLinkUrl?: string | null;
+      socialLinkPlatformRequired?: string | null;
+    };
+    recentWork?: {
+      titleRequired?: string | null;
+      titleTooLong?: string | null;
+      descriptionRequired?: string | null;
+      descriptionTooLong?: string | null;
+      invalidUrl?: string | null;
+      startDateRequired?: string | null;
+      endDateRequired?: string | null;
+    };
+    general?: {
+      pleaseCompleteRequired?: string | null;
+      validationError?: string | null;
+      submissionError?: string | null;
+    };
+  };
+  fieldLabels?: {
+    basicInfo?: {
+      firstName?: string | null;
+      lastName?: string | null;
+      username?: string | null;
+      headline?: string | null;
+      headlinePlaceholder?: string | null;
+      bio?: string | null;
+      bioPlaceholder?: string | null;
+      motivation?: string | null;
+      motivationPlaceholder?: string | null;
+      ageGroup?: string | null;
+      selectAge?: string | null;
+      under18?: string | null;
+      above18?: string | null;
+      country?: string | null;
+      city?: string | null;
+      preferredLanguage?: string | null;
+      firstNamePlaceholder?: string | null;
+      lastNamePlaceholder?: string | null;
+      usernamePlaceholder?: string | null;
+      countryPlaceholder?: string | null;
+      cityPlaceholder?: string | null;
+    };
+    workInfo?: {
+      workTypes?: string | null;
+      expertiseAreas?: string | null;
+      regionalCommunities?: string | null;
+      regionalCommunitiesHint?: string | null;
+      organization?: string | null;
+      organizationPlaceholder?: string | null;
+      position?: string | null;
+      positionPlaceholder?: string | null;
+      workBio?: string | null;
+      workBioPlaceholder?: string | null;
+      socialLinks?: string | null;
+      linkedin?: string | null;
+      linkedinPlaceholder?: string | null;
+      otherLinks?: string | null;
+      otherLinksHint?: string | null;
+      website?: string | null;
+      websitePlaceholder?: string | null;
+    };
+    recentWork?: {
+      yourWork?: string | null;
+      addWork?: string | null;
+      editWork?: string | null;
+      updateWork?: string | null;
+      workTitle?: string | null;
+      workTitlePlaceholder?: string | null;
+      description?: string | null;
+      descriptionPlaceholder?: string | null;
+      projectLink?: string | null;
+      startDate?: string | null;
+      endDate?: string | null;
+      ongoingProject?: string | null;
+      ongoing?: string | null;
+      viewProject?: string | null;
+      cancel?: string | null;
+      noWorkAdded?: string | null;
+      addWorkHint?: string | null;
+    };
+    review?: {
+      basicInfo?: string | null;
+      workInfo?: string | null;
+      recentWork?: string | null;
+      privacySettings?: string | null;
+      name?: string | null;
+      username?: string | null;
+      location?: string | null;
+      language?: string | null;
+      ageGroup?: string | null;
+      bio?: string | null;
+      workTypes?: string | null;
+      expertiseAreas?: string | null;
+      regionalCommunities?: string | null;
+      organization?: string | null;
+      position?: string | null;
+      workBio?: string | null;
+      socialLinks?: string | null;
+      profileVisibility?: string | null;
+      searchable?: string | null;
+      showEmail?: string | null;
+      showPhone?: string | null;
+      showWork?: string | null;
+      showSocial?: string | null;
+      showLocation?: string | null;
+      yes?: string | null;
+      no?: string | null;
+      under18?: string | null;
+      above18?: string | null;
+      readyToSubmit?: string | null;
+      submissionNote?: string | null;
+    };
+  };
+  privacyFieldLabels?: {
+    allowSearch?: string | null;
+    searchHint?: string | null;
+    showEmail?: string | null;
+    emailHint?: string | null;
+    showPhone?: string | null;
+    phoneHint?: string | null;
+    showWork?: string | null;
+    workHint?: string | null;
+    showSocial?: string | null;
+    socialHint?: string | null;
+    showLocation?: string | null;
+    locationHint?: string | null;
+  };
+  visibilityLabels?: {
+    public?: string | null;
+    members?: string | null;
+    private?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "homepage_select".
+ */
+export interface HomepageSelect<T extends boolean = true> {
+  title?: T;
+  heroWelcome?:
+    | T
+    | {
+        background?:
+          | T
+          | {
+              type?: T;
+              ccmColor?: T;
+              color?: T;
+              gradient?:
+                | T
+                | {
+                    direction?: T;
+                    startColor?: T;
+                    endColor?: T;
+                  };
+              svgPattern?: T;
+              image?:
+                | T
+                | {
+                    asset?: T;
+                    alt?: T;
+                  };
+              lightText?: T;
+              blobAccent?: T;
+            };
+        tagLine?: T;
+        title?: T;
+        body?: T;
+        image?:
+          | T
+          | {
+              asset?: T;
+              alt?: T;
+            };
+        links?:
+          | T
+          | {
+              title?: T;
+              href?: T;
+              target?: T;
+              buttonVariant?:
+                | T
+                | {
+                    variant?: T;
+                    size?: T;
+                    stroke?: T;
+                  };
+              id?: T;
+            };
+        padding?:
+          | T
+          | {
+              top?: T;
+              bottom?: T;
+            };
+        imagePosition?: T;
+      };
+  globalAgenda?:
+    | T
+    | {
+        padding?:
+          | T
+          | {
+              top?: T;
+              bottom?: T;
+            };
+        noGap?: T;
+        splitColumns?:
+          | T
+          | {
+              splitContent?: T | SplitContentBlockSelect<T>;
+              splitImage?: T | SplitImageBlockSelect<T>;
+            };
+      };
+  howToUse?:
+    | T
+    | {
+        padding?:
+          | T
+          | {
+              top?: T;
+              bottom?: T;
+            };
+        noGap?: T;
+        splitColumns?:
+          | T
+          | {
+              splitContent?: T | SplitContentBlockSelect<T>;
+              splitImage?: T | SplitImageBlockSelect<T>;
+            };
+      };
+  agendasModule?:
+    | T
+    | {
+        padding?:
+          | T
+          | {
+              top?: T;
+              bottom?: T;
+            };
+        background?:
+          | T
+          | {
+              type?: T;
+              ccmColor?: T;
+              color?: T;
+              gradient?:
+                | T
+                | {
+                    direction?: T;
+                    startColor?: T;
+                    endColor?: T;
+                  };
+              svgPattern?: T;
+              image?:
+                | T
+                | {
+                    asset?: T;
+                    alt?: T;
+                  };
+              lightText?: T;
+              blobAccent?: T;
+            };
+        title?: T;
+        subtitle?: T;
+        description?: T;
+        headerImage?:
+          | T
+          | {
+              asset?: T;
+              alt?: T;
+            };
+        gridColumns?: T;
+        cardVariant?: T;
+        mode?: T;
+        maxItems?: T;
+        initialDisplayCount?: T;
+        columns?:
+          | T
+          | {
+              gridCard?: T | GridCardBlockSelect<T>;
+              gridAgenda?: T | GridAgendaBlockSelect<T>;
+              gridNews?: T | GridNewsBlockSelect<T>;
+            };
+      };
+  livedExperiences?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        padding?:
+          | T
+          | {
+              top?: T;
+              bottom?: T;
+            };
+        testimonial?: T;
+      };
+  regionalCommunities?:
+    | T
+    | {
+        padding?:
+          | T
+          | {
+              top?: T;
+              bottom?: T;
+            };
+        background?:
+          | T
+          | {
+              type?: T;
+              ccmColor?: T;
+              color?: T;
+              gradient?:
+                | T
+                | {
+                    direction?: T;
+                    startColor?: T;
+                    endColor?: T;
+                  };
+              svgPattern?: T;
+              image?:
+                | T
+                | {
+                    asset?: T;
+                    alt?: T;
+                  };
+              lightText?: T;
+              blobAccent?: T;
+            };
+        title?: T;
+        subtitle?: T;
+        description?: T;
+        headerImage?:
+          | T
+          | {
+              asset?: T;
+              alt?: T;
+            };
+        gridColumns?: T;
+        cardVariant?: T;
+        mode?: T;
+        maxItems?: T;
+        initialDisplayCount?: T;
+        columns?:
+          | T
+          | {
+              gridCard?: T | GridCardBlockSelect<T>;
+              gridAgenda?: T | GridAgendaBlockSelect<T>;
+              gridNews?: T | GridNewsBlockSelect<T>;
+            };
+      };
+  collaboration?:
+    | T
+    | {
+        padding?:
+          | T
+          | {
+              top?: T;
+              bottom?: T;
+            };
+        noGap?: T;
+        splitColumns?:
+          | T
+          | {
+              splitContent?: T | SplitContentBlockSelect<T>;
+              splitImage?: T | SplitImageBlockSelect<T>;
+            };
+      };
+  news?:
+    | T
+    | {
+        padding?:
+          | T
+          | {
+              top?: T;
+              bottom?: T;
+            };
+        background?:
+          | T
+          | {
+              type?: T;
+              ccmColor?: T;
+              color?: T;
+              gradient?:
+                | T
+                | {
+                    direction?: T;
+                    startColor?: T;
+                    endColor?: T;
+                  };
+              svgPattern?: T;
+              image?:
+                | T
+                | {
+                    asset?: T;
+                    alt?: T;
+                  };
+              lightText?: T;
+              blobAccent?: T;
+            };
+        title?: T;
+        subtitle?: T;
+        description?: T;
+        headerImage?:
+          | T
+          | {
+              asset?: T;
+              alt?: T;
+            };
+        gridColumns?: T;
+        cardVariant?: T;
+        mode?: T;
+        maxItems?: T;
+        initialDisplayCount?: T;
+        columns?:
+          | T
+          | {
+              gridCard?: T | GridCardBlockSelect<T>;
+              gridAgenda?: T | GridAgendaBlockSelect<T>;
+              gridNews?: T | GridNewsBlockSelect<T>;
+            };
+      };
+  projectInfo?:
+    | T
+    | {
+        padding?:
+          | T
+          | {
+              top?: T;
+              bottom?: T;
+            };
+        noGap?: T;
+        splitColumns?:
+          | T
+          | {
+              splitContent?: T | SplitContentBlockSelect<T>;
+              splitImage?: T | SplitImageBlockSelect<T>;
+            };
+      };
+  mentalHealthDefinition?:
+    | T
+    | {
+        padding?:
+          | T
+          | {
+              top?: T;
+              bottom?: T;
+            };
+        background?:
+          | T
+          | {
+              type?: T;
+              ccmColor?: T;
+              color?: T;
+              gradient?:
+                | T
+                | {
+                    direction?: T;
+                    startColor?: T;
+                    endColor?: T;
+                  };
+              svgPattern?: T;
+              image?:
+                | T
+                | {
+                    asset?: T;
+                    alt?: T;
+                  };
+              lightText?: T;
+              blobAccent?: T;
+            };
+        sectionWidth?: T;
+        stackAlign?: T;
+        tagLine?: T;
+        title?: T;
+        body?: T;
+        links?:
+          | T
+          | {
+              title?: T;
+              href?: T;
+              target?: T;
+              buttonVariant?:
+                | T
+                | {
+                    variant?: T;
+                    size?: T;
+                    stroke?: T;
+                  };
+              id?: T;
+            };
+      };
+  partnerLogos?:
+    | T
+    | {
+        padding?:
+          | T
+          | {
+              top?: T;
+              bottom?: T;
+            };
+        title?: T;
+        description?: T;
+        layout?: T;
+        motionSpeed?: T;
+        images?:
+          | T
+          | {
+              asset?: T;
+              alt?: T;
+              label?: T;
+              orgType?: T;
+              id?: T;
+            };
+      };
+  meta_title?: T;
+  meta_description?: T;
+  noindex?: T;
+  ogImage?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "siteAnnouncement_select".
+ */
+export interface SiteAnnouncementSelect<T extends boolean = true> {
+  enabled?: T;
+  message?: T;
+  variant?: T;
+  link?:
+    | T
+    | {
+        url?: T;
+        label?: T;
+      };
+  dismissible?: T;
+  startsAt?: T;
+  endsAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "moderationSettings_select".
+ */
+export interface ModerationSettingsSelect<T extends boolean = true> {
+  enabled?: T;
+  blockTerms?:
+    | T
+    | {
+        term?: T;
+        id?: T;
+      };
+  reviewTerms?:
+    | T
+    | {
+        term?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "hubIllustrations_select".
+ */
+export interface HubIllustrationsSelect<T extends boolean = true> {
+  atlasHeader?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+      };
+  searchHeader?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+      };
+  collaborateHeader?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+      };
+  emptyState?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "onboardingContent_select".
+ */
+export interface OnboardingContentSelect<T extends boolean = true> {
+  title?: T;
+  welcomeTitle?: T;
+  welcomeSubtitle?: T;
+  welcomeDescription?: T;
+  welcomeFeatures?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        id?: T;
+      };
+  welcomeSteps?:
+    | T
+    | {
+        step?: T;
+        id?: T;
+      };
+  gettingStartedTitle?: T;
+  gettingStartedDescription?: T;
+  getStartedText?: T;
+  timeEstimate?: T;
+  basicInfoTitle?: T;
+  basicInfoDescription?: T;
+  basicInfoFieldHints?:
+    | T
+    | {
+        usernameHint?: T;
+        headlineHint?: T;
+        bioHint?: T;
+        motivationHint?: T;
+        languageHint?: T;
+      };
+  workInfoTitle?: T;
+  workInfoDescription?: T;
+  workInfoFieldHints?:
+    | T
+    | {
+        workTypesDescription?: T;
+        expertiseDescription?: T;
+        workBioHint?: T;
+        socialLinksDescription?: T;
+        communitiesDescription?: T;
+      };
+  communityInfoTitle?: T;
+  communityInfoDescription?: T;
+  communityInfoFieldHints?:
+    | T
+    | {
+        communitiesDescription?: T;
+        communitiesHint?: T;
+        optionalNote?: T;
+      };
+  recentWorkTitle?: T;
+  recentWorkDescription?: T;
+  recentWorkFieldHints?:
+    | T
+    | {
+        workLinkHint?: T;
+        isOngoingHint?: T;
+        noWorkDescription?: T;
+      };
+  privacyTitle?: T;
+  privacyDescription?: T;
+  searchabilityTitle?: T;
+  searchabilityDescription?: T;
+  searchabilityHint?: T;
+  visibilityTitle?: T;
+  visibilityDescription?: T;
+  visibilityOptions?:
+    | T
+    | {
+        publicTitle?: T;
+        publicDescription?: T;
+        membersTitle?: T;
+        membersDescription?: T;
+        privateTitle?: T;
+        privateDescription?: T;
+      };
+  profileInfoTitle?: T;
+  profileInfoDescription?: T;
+  privacyFieldHints?:
+    | T
+    | {
+        emailHint?: T;
+        phoneHint?: T;
+        workHint?: T;
+        socialHint?: T;
+        locationHint?: T;
+      };
+  reviewTitle?: T;
+  reviewDescription?: T;
+  reviewReadyTitle?: T;
+  reviewReadyDescription?: T;
+  completeOnboardingText?: T;
+  redirectDialogTitle?: T;
+  redirectDialogMessage?: T;
+  proceedToOnboardingText?: T;
+  continueToHubText?: T;
+  oneTimeWaiverText?: T;
+  navigationTexts?:
+    | T
+    | {
+        continue?: T;
+        back?: T;
+        submit?: T;
+        submitting?: T;
+      };
+  validationMessages?:
+    | T
+    | {
+        basicInfo?:
+          | T
+          | {
+              firstNameRequired?: T;
+              firstNameTooLong?: T;
+              lastNameRequired?: T;
+              lastNameTooLong?: T;
+              usernameRequired?: T;
+              usernameTooShort?: T;
+              usernameTooLong?: T;
+              usernameInvalidFormat?: T;
+              bioTooLong?: T;
+              countryRequired?: T;
+              cityRequired?: T;
+            };
+        workInfo?:
+          | T
+          | {
+              workTypesRequired?: T;
+              expertiseAreasRequired?: T;
+              workBioTooLong?: T;
+              invalidLinkedInUrl?: T;
+              invalidWebsiteUrl?: T;
+              invalidSocialLinkUrl?: T;
+              socialLinkPlatformRequired?: T;
+            };
+        recentWork?:
+          | T
+          | {
+              titleRequired?: T;
+              titleTooLong?: T;
+              descriptionRequired?: T;
+              descriptionTooLong?: T;
+              invalidUrl?: T;
+              startDateRequired?: T;
+              endDateRequired?: T;
+            };
+        general?:
+          | T
+          | {
+              pleaseCompleteRequired?: T;
+              validationError?: T;
+              submissionError?: T;
+            };
+      };
+  fieldLabels?:
+    | T
+    | {
+        basicInfo?:
+          | T
+          | {
+              firstName?: T;
+              lastName?: T;
+              username?: T;
+              headline?: T;
+              headlinePlaceholder?: T;
+              bio?: T;
+              bioPlaceholder?: T;
+              motivation?: T;
+              motivationPlaceholder?: T;
+              ageGroup?: T;
+              selectAge?: T;
+              under18?: T;
+              above18?: T;
+              country?: T;
+              city?: T;
+              preferredLanguage?: T;
+              firstNamePlaceholder?: T;
+              lastNamePlaceholder?: T;
+              usernamePlaceholder?: T;
+              countryPlaceholder?: T;
+              cityPlaceholder?: T;
+            };
+        workInfo?:
+          | T
+          | {
+              workTypes?: T;
+              expertiseAreas?: T;
+              regionalCommunities?: T;
+              regionalCommunitiesHint?: T;
+              organization?: T;
+              organizationPlaceholder?: T;
+              position?: T;
+              positionPlaceholder?: T;
+              workBio?: T;
+              workBioPlaceholder?: T;
+              socialLinks?: T;
+              linkedin?: T;
+              linkedinPlaceholder?: T;
+              otherLinks?: T;
+              otherLinksHint?: T;
+              website?: T;
+              websitePlaceholder?: T;
+            };
+        recentWork?:
+          | T
+          | {
+              yourWork?: T;
+              addWork?: T;
+              editWork?: T;
+              updateWork?: T;
+              workTitle?: T;
+              workTitlePlaceholder?: T;
+              description?: T;
+              descriptionPlaceholder?: T;
+              projectLink?: T;
+              startDate?: T;
+              endDate?: T;
+              ongoingProject?: T;
+              ongoing?: T;
+              viewProject?: T;
+              cancel?: T;
+              noWorkAdded?: T;
+              addWorkHint?: T;
+            };
+        review?:
+          | T
+          | {
+              basicInfo?: T;
+              workInfo?: T;
+              recentWork?: T;
+              privacySettings?: T;
+              name?: T;
+              username?: T;
+              location?: T;
+              language?: T;
+              ageGroup?: T;
+              bio?: T;
+              workTypes?: T;
+              expertiseAreas?: T;
+              regionalCommunities?: T;
+              organization?: T;
+              position?: T;
+              workBio?: T;
+              socialLinks?: T;
+              profileVisibility?: T;
+              searchable?: T;
+              showEmail?: T;
+              showPhone?: T;
+              showWork?: T;
+              showSocial?: T;
+              showLocation?: T;
+              yes?: T;
+              no?: T;
+              under18?: T;
+              above18?: T;
+              readyToSubmit?: T;
+              submissionNote?: T;
+            };
+      };
+  privacyFieldLabels?:
+    | T
+    | {
+        allowSearch?: T;
+        searchHint?: T;
+        showEmail?: T;
+        emailHint?: T;
+        showPhone?: T;
+        phoneHint?: T;
+        showWork?: T;
+        workHint?: T;
+        showSocial?: T;
+        socialHint?: T;
+        showLocation?: T;
+        locationHint?: T;
+      };
+  visibilityLabels?:
+    | T
+    | {
+        public?: T;
+        members?: T;
+        private?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
