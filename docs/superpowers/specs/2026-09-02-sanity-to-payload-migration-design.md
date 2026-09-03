@@ -130,7 +130,16 @@ How much of Postgres points at Sanity document IDs:
 
 **Eight rows.** Engagement data has not yet accumulated against content. Migrating now is dramatically cheaper than migrating later.
 
-All Sanity document IDs are valid UUIDs (26/26 sampled).
+**Sanity document IDs are mixed, and this corrects an earlier error in this spec.** A 26-document sample suggested they were all UUIDs. A full census says otherwise:
+
+| Shape | Count |
+|---|---|
+| UUID (`0f917694-2050-…`) | 136 |
+| Slug-like (`tag-farmers`, `regional-community-page-oceania`) | **310** |
+| `drafts.*` | 30 |
+| Containing `/` or `.` outside the `drafts.` prefix | **0** |
+
+An earlier draft of this spec specified `idType: 'uuid'` on the Postgres adapter. **That would have rejected 310 of the 446 published documents** on the first import run. Payload's custom text ID field accepts both shapes; its only constraint is that a text ID must not contain `/` or `.`, and none of them do. The 30 `drafts.*` ids never become Payload ids — drafts import as draft *versions* of their published document (§6, Drafts), so the dot in that prefix is stripped, not stored.
 
 ---
 
@@ -140,7 +149,7 @@ All Sanity document IDs are valid UUIDs (26/26 sampled).
 |---|---|---|
 | D1 | Payload 3.85.x installed **into this Next.js app**, `(payload)` route group, `withPayload()` on `next.config.mjs` | Payload is Next-native; no separate service to deploy or secure |
 | D2 | **Separate Postgres database in the same Neon project** | See §4 |
-| D3 | `idType: 'uuid'`, **Sanity `_id` preserved verbatim as the Payload ID** | Import becomes idempotent and re-runnable; the 8 existing cross-references survive untouched; document IDs in URLs and logs stay valid |
+| D3 | **Custom text ID field on every collection** (`{ name: 'id', type: 'text' }`), with the Sanity `_id` preserved verbatim | Import becomes idempotent and re-runnable; the 8 existing cross-references survive untouched; document IDs in URLs and logs stay valid |
 | D4 | **Clerk remains the sole identity system.** Payload admin authenticates via a custom strategy reading the Clerk session | One identity system; the 3 promoted `team_editor` users work immediately; no second credential set to provision or revoke |
 | D5 | Assets to **Cloudflare R2** via `@payloadcms/storage-r2` | R2 is already in use (`lib/r2.ts`) |
 | D6 | **Insulate first, then swap** (§5) | Every phase independently shippable and reversible; matches the established slice-with-checkpoints cadence |
