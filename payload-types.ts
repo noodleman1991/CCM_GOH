@@ -67,16 +67,30 @@ export interface Config {
   };
   blocks: {};
   collections: {
-    'payload-kv': PayloadKv;
     users: User;
+    media: Media;
+    tags: Tag;
+    workTypes: WorkType;
+    expertiseAreas: ExpertiseArea;
+    authors: Author;
+    organizations: Organization;
+    regionalCommunities: RegionalCommunity;
+    'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
   collectionsJoins: {};
   collectionsSelect: {
-    'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
+    media: MediaSelect<false> | MediaSelect<true>;
+    tags: TagsSelect<false> | TagsSelect<true>;
+    workTypes: WorkTypesSelect<false> | WorkTypesSelect<true>;
+    expertiseAreas: ExpertiseAreasSelect<false> | ExpertiseAreasSelect<true>;
+    authors: AuthorsSelect<false> | AuthorsSelect<true>;
+    organizations: OrganizationsSelect<false> | OrganizationsSelect<true>;
+    regionalCommunities: RegionalCommunitiesSelect<false> | RegionalCommunitiesSelect<true>;
+    'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -122,23 +136,6 @@ export interface UserAuthOperations {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "payload-kv".
- */
-export interface PayloadKv {
-  id: number;
-  key: string;
-  data:
-    | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
@@ -161,14 +158,346 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: number;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags".
+ */
+export interface Tag {
+  id: string;
+  label: string;
+  /**
+   * The tag's slug (Sanity's value.current). Used as its stable reference value.
+   */
+  value: string;
+  description?: string | null;
+  category?: ('topic' | 'location' | 'method' | 'audience' | 'impact' | 'other') | null;
+  /**
+   * Hex color. The Studio curates a 6-value palette, but 60% of real tags store a legacy hex value outside it — kept as free text, not a constrained select, so import doesn't reject real data.
+   */
+  color?: string | null;
+  /**
+   * Show this tag as a Theme filter on the Atlas and other discovery surfaces.
+   */
+  useAsTheme?: boolean | null;
+  /**
+   * Sanity's LexoRank orderRank string, preserved for editorial ordering.
+   */
+  orderRank?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "workTypes".
+ */
+export interface WorkType {
+  id: string;
+  /**
+   * Uppercase with underscores (e.g. RESEARCH, NGO). Must match Prisma's WorkType enum values exactly.
+   */
+  key: string;
+  label: string;
+  description?: string | null;
+  /**
+   * Display order in forms (lower numbers first).
+   */
+  order?: number | null;
+  /**
+   * Whether this work type is available for selection.
+   */
+  isActive?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "expertiseAreas".
+ */
+export interface ExpertiseArea {
+  id: string;
+  /**
+   * Uppercase with underscores (e.g. CLIMATE_CHANGE, MENTAL_HEALTH). Must match Prisma's ExpertiseArea enum values exactly.
+   */
+  key: string;
+  label: string;
+  description?: string | null;
+  /**
+   * Display order in forms (lower numbers first).
+   */
+  order?: number | null;
+  /**
+   * Whether this expertise area is available for selection.
+   */
+  isActive?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "authors".
+ */
+export interface Author {
+  id: string;
+  name: string;
+  slug: string;
+  image?: {
+    asset?: (number | null) | Media;
+    alt?: string | null;
+  };
+  /**
+   * The organization this person is affiliated with.
+   */
+  organizationalAffiliation?: string | null;
+  /**
+   * Optional reverse link to a hub member (Clerk/Prisma User id). 0/99 real authors populate this today — the live tie runs the other way, via Prisma's User.sanityPersonId.
+   */
+  userId?: string | null;
+  /**
+   * Communities this person is a member of, and their role in each.
+   */
+  communityMemberships?:
+    | {
+        community: string | RegionalCommunity;
+        /**
+         * Their role or position within this community.
+         */
+        role?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Sanity's LexoRank orderRank string, preserved for editorial ordering.
+   */
+  orderRank?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "regionalCommunities".
+ */
+export interface RegionalCommunity {
+  id: string;
+  name: string;
+  slug: string;
+  /**
+   * Fixed-7 region short code.
+   */
+  region?: ('ssa' | 'nawa' | 'csa' | 'esea' | 'lac' | 'oce' | 'enam') | null;
+  coverImage?: {
+    asset?: (number | null) | Media;
+    alt?: string | null;
+  };
+  /**
+   * Geographic boundary points.
+   */
+  boundaries?:
+    | {
+        /**
+         * @minItems 2
+         * @maxItems 2
+         */
+        point?: [number, number] | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Members and authors associated with this community.
+   */
+  members?:
+    | {
+        person: string | Author;
+        /**
+         * Their role or position within this community.
+         */
+        role?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  contact?: {
+    name?: string | null;
+    email?: string | null;
+    phone?: string | null;
+    organization?: (string | null) | Organization;
+  };
+  featured?: boolean | null;
+  active?: boolean | null;
+  /**
+   * Sanity's LexoRank orderRank string, preserved for editorial ordering.
+   */
+  orderRank?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "organizations".
+ */
+export interface Organization {
+  id: string;
+  name: string;
+  slug: string;
+  /**
+   * e.g. WHO, UN.
+   */
+  acronym?: string | null;
+  type:
+    | 'ngo'
+    | 'research'
+    | 'university'
+    | 'government'
+    | 'international'
+    | 'company'
+    | 'community'
+    | 'foundation'
+    | 'other';
+  description?: string | null;
+  logo?: {
+    asset?: (number | null) | Media;
+    alt?: string | null;
+  };
+  /**
+   * Full URL, e.g. https://example.org.
+   */
+  website?: string | null;
+  email?: string | null;
+  /**
+   * Headquarters location.
+   *
+   * @minItems 2
+   * @maxItems 2
+   */
+  headquarters?: [number, number] | null;
+  /**
+   * The reusable geotag (spec A2).
+   */
+  place?: {
+    /**
+     * @minItems 2
+     * @maxItems 2
+     */
+    point?: [number, number] | null;
+    /**
+     * Human-readable place, e.g. "Nakuru, Kenya".
+     */
+    text?: string | null;
+    precision?: ('exact' | 'city' | 'country' | 'region') | null;
+    /**
+     * ISO alpha-3, e.g. KEN.
+     */
+    countryCode?: string | null;
+  };
+  offices?:
+    | {
+        /**
+         * @minItems 2
+         * @maxItems 2
+         */
+        location?: [number, number] | null;
+        name?: string | null;
+        address?: string | null;
+        isPrimary?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  locationDetails?: {
+    country?: string | null;
+    city?: string | null;
+    region?: string | null;
+  };
+  /**
+   * Which regional community does this organization belong to?
+   */
+  regionalCommunity?: (string | null) | RegionalCommunity;
+  socialMedia?: {
+    twitter?: string | null;
+    linkedin?: string | null;
+    facebook?: string | null;
+    instagram?: string | null;
+  };
+  tags?: (string | Tag)[] | null;
+  verified?: boolean | null;
+  /**
+   * Sanity's LexoRank orderRank string, preserved for editorial ordering.
+   */
+  orderRank?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-kv".
+ */
+export interface PayloadKv {
+  id: number;
+  key: string;
+  data:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
   id: number;
-  document?: {
-    relationTo: 'users';
-    value: number | User;
-  } | null;
+  document?:
+    | ({
+        relationTo: 'users';
+        value: number | User;
+      } | null)
+    | ({
+        relationTo: 'media';
+        value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'tags';
+        value: string | Tag;
+      } | null)
+    | ({
+        relationTo: 'workTypes';
+        value: string | WorkType;
+      } | null)
+    | ({
+        relationTo: 'expertiseAreas';
+        value: string | ExpertiseArea;
+      } | null)
+    | ({
+        relationTo: 'authors';
+        value: string | Author;
+      } | null)
+    | ({
+        relationTo: 'organizations';
+        value: string | Organization;
+      } | null)
+    | ({
+        relationTo: 'regionalCommunities';
+        value: string | RegionalCommunity;
+      } | null);
   globalSlug?: string | null;
   user: {
     relationTo: 'users';
@@ -213,14 +542,6 @@ export interface PayloadMigration {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "payload-kv_select".
- */
-export interface PayloadKvSelect<T extends boolean = true> {
-  key?: T;
-  data?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
@@ -229,6 +550,205 @@ export interface UsersSelect<T extends boolean = true> {
   role?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media_select".
+ */
+export interface MediaSelect<T extends boolean = true> {
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags_select".
+ */
+export interface TagsSelect<T extends boolean = true> {
+  id?: T;
+  label?: T;
+  value?: T;
+  description?: T;
+  category?: T;
+  color?: T;
+  useAsTheme?: T;
+  orderRank?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "workTypes_select".
+ */
+export interface WorkTypesSelect<T extends boolean = true> {
+  id?: T;
+  key?: T;
+  label?: T;
+  description?: T;
+  order?: T;
+  isActive?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "expertiseAreas_select".
+ */
+export interface ExpertiseAreasSelect<T extends boolean = true> {
+  id?: T;
+  key?: T;
+  label?: T;
+  description?: T;
+  order?: T;
+  isActive?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "authors_select".
+ */
+export interface AuthorsSelect<T extends boolean = true> {
+  id?: T;
+  name?: T;
+  slug?: T;
+  image?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+      };
+  organizationalAffiliation?: T;
+  userId?: T;
+  communityMemberships?:
+    | T
+    | {
+        community?: T;
+        role?: T;
+        id?: T;
+      };
+  orderRank?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "organizations_select".
+ */
+export interface OrganizationsSelect<T extends boolean = true> {
+  id?: T;
+  name?: T;
+  slug?: T;
+  acronym?: T;
+  type?: T;
+  description?: T;
+  logo?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+      };
+  website?: T;
+  email?: T;
+  headquarters?: T;
+  place?:
+    | T
+    | {
+        point?: T;
+        text?: T;
+        precision?: T;
+        countryCode?: T;
+      };
+  offices?:
+    | T
+    | {
+        location?: T;
+        name?: T;
+        address?: T;
+        isPrimary?: T;
+        id?: T;
+      };
+  locationDetails?:
+    | T
+    | {
+        country?: T;
+        city?: T;
+        region?: T;
+      };
+  regionalCommunity?: T;
+  socialMedia?:
+    | T
+    | {
+        twitter?: T;
+        linkedin?: T;
+        facebook?: T;
+        instagram?: T;
+      };
+  tags?: T;
+  verified?: T;
+  orderRank?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "regionalCommunities_select".
+ */
+export interface RegionalCommunitiesSelect<T extends boolean = true> {
+  id?: T;
+  name?: T;
+  slug?: T;
+  region?: T;
+  coverImage?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+      };
+  boundaries?:
+    | T
+    | {
+        point?: T;
+        id?: T;
+      };
+  members?:
+    | T
+    | {
+        person?: T;
+        role?: T;
+        id?: T;
+      };
+  contact?:
+    | T
+    | {
+        name?: T;
+        email?: T;
+        phone?: T;
+        organization?: T;
+      };
+  featured?: T;
+  active?: T;
+  orderRank?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-kv_select".
+ */
+export interface PayloadKvSelect<T extends boolean = true> {
+  key?: T;
+  data?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

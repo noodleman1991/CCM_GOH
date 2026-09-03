@@ -5,6 +5,13 @@ import { postgresAdapter } from "@payloadcms/db-postgres";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import sharp from "sharp";
 import { Users } from "./payload/collections/users";
+import { Media } from "./payload/collections/media";
+import { Tags } from "./payload/collections/tags";
+import { WorkTypes } from "./payload/collections/work-types";
+import { ExpertiseAreas } from "./payload/collections/expertise-areas";
+import { Authors } from "./payload/collections/authors";
+import { Organizations } from "./payload/collections/organizations";
+import { RegionalCommunities } from "./payload/collections/regional-communities";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -28,7 +35,7 @@ export default buildConfig({
     pool: { connectionString: process.env.PAYLOAD_DATABASE_URL || "" },
   }),
   editor: lexicalEditor(),
-  collections: [Users],
+  collections: [Users, Media, Tags, WorkTypes, ExpertiseAreas, Authors, Organizations, RegionalCommunities],
   globals: [],
   localization: {
     locales: [
