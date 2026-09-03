@@ -522,7 +522,19 @@ Live counts: 27 case studies, 35 lived experiences, 29 research outputs, 29 agen
    | `testimonial` | 1 | **never published** | Task 5 |
 
    An earlier version of this line listed only the "edit of published" drafts and omitted `tag` and `testimonial` entirely. Task 4's implementer found the stray `tag` draft itself and enabled versions on `tags` and `authors` accordingly — but **`testimonials` is yours**, and a collection without `versions.drafts` forces Task 13 either to discard that draft or publish an incomplete record.
-2. **The moderation workflow's `status` field** (`pending` / `rejected` / `revision` / `approved`) is *not* Payload's `_status`. Keep both: `_status` is publish state, `status` is editorial review state. Conflating them breaks the moderation queue.
+2. **The moderation field must be named `moderationStatus`, not `status`** — this was discovered the hard way and is not optional.
+
+   Sanity's editorial review state (`pending` / `rejected` / `revision` / `approved`) is a different thing from Payload's `_status` publish state, and both must exist. But a Payload field literally named `status` **collides with `_status` at the Postgres enum-type level** once `versions.drafts` is enabled. Task 5's first migration attempt failed with:
+
+   ```
+   invalid input value for enum enum_case_studies_status: "pending"
+   ```
+
+   Renamed to `moderationStatus` on `caseStudies`, `livedExperiences` and `researchOutputs`.
+
+   **This is a general trap**: any future Payload collection that pairs `versions.drafts` with a field named `status` will hit it.
+
+   **And it creates an obligation for Phase 3.** `lib/content/case-studies.ts` exposes `status?: CaseStudyStatus` and `getCaseStudiesByStatus(status)` as its public contract — the shape Phase 3 must keep serving. So the Payload-backed implementation has to map `moderationStatus` (storage) onto `status` (the content layer's public shape). Task 12's importer must write Sanity's `status` into `moderationStatus`.
 3. **Rich text fields use `lexicalEditor()`** and are typed as Lexical, not Portable Text. Task 9 produces the conversion.
 
 - [ ] Steps: failing test → implement → pass → migration → commit.
