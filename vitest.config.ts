@@ -15,6 +15,8 @@ export default defineConfig({
     // automatic tsconfig-paths resolution).
     alias: {
       "@": fileURLToPath(new URL(".", import.meta.url)).replace(/\/$/, ""),
+      // Mirrors tsconfig `"@payload-config": ["./payload.config.ts"]`.
+      "@payload-config": fileURLToPath(new URL("./payload.config.ts", import.meta.url)),
       // `server-only` ships only a react-server export; stub it under vitest.
       "server-only": fileURLToPath(new URL("./lib/__tests__/stubs/server-only.ts", import.meta.url)),
     },

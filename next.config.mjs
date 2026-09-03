@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 import createNextIntlPlugin from 'next-intl/plugin';
+import { withPayload } from '@payloadcms/next/withPayload';
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 const withNextIntl = createNextIntlPlugin();
@@ -156,13 +157,17 @@ const nextConfig = {
 
 const withIntl = withNextIntl(nextConfig);
 
+// withPayload goes outside withNextIntl: it wires up Payload's own routes
+// and admin bundle, which don't need next-intl's locale handling.
+const withIntlAndPayload = withPayload(withIntl);
+
 // Wrap with Sentry only when a DSN is configured, so local/CI builds (and any
 // environment without monitoring) are unaffected. Source-map upload happens
 // only when SENTRY_AUTH_TOKEN is present.
-let finalConfig = withIntl;
+let finalConfig = withIntlAndPayload;
 if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
   const { withSentryConfig } = await import('@sentry/nextjs');
-  finalConfig = withSentryConfig(withIntl, {
+  finalConfig = withSentryConfig(withIntlAndPayload, {
     silent: true,
     org: process.env.SENTRY_ORG,
     project: process.env.SENTRY_PROJECT,
