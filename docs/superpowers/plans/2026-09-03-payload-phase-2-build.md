@@ -651,6 +651,13 @@ Source the assets from the **Phase 0 archive** (`backups/sanity-production_2-*.t
 
 **Idempotency:** before creating an upload, look for an existing one with the same source asset id. Store that id on the upload document (`sanityAssetId`, unique) — that is what makes a re-run a no-op instead of a duplicate.
 
+**Four obligations Task 8 discovered while building the upload collections:**
+
+1. **`lqip` must be copied across — Payload has no equivalent.** All 347 Sanity image assets carry `metadata.lqip`, and **25 components render it as `blurDataURL`**. Nothing regenerates it on the Payload side, so if the import skips it, 25 components silently lose their blur-up placeholders. `media.lqip` exists for this; fill it.
+2. **Roughly 3,800 derivatives.** 11 `imageSizes` × 347 images. Budget for it, and make the run resumable — a failure at image 300 must not restart from zero.
+3. **Three upload fields now point at `files`, not `media`.** `media` is images-only. `agendas.files[].file`, `researchOutputs.files[].file` and `livedExperiences.videoFile` were moved onto the new `files` collection, so the importer must resolve those three to `files` ids.
+4. **Media's `down()` migration is only valid while `media` is empty.** Once assets land, do not rely on rolling that migration back.
+
 - [ ] Steps: failing test on the id-mapping and skip-if-exists logic → implement → run against the real archive → verify 347 + 48 uploads exist and byte sizes match the manifest → commit.
 
 ---
