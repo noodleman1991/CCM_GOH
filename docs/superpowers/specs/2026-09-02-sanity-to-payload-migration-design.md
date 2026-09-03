@@ -6,7 +6,7 @@
 | Phase | Plan | State |
 |---|---|---|
 | 0 — Prerequisites | `docs/superpowers/plans/2026-09-02-payload-phase-0-prerequisites.md` | **Complete.** 5 tasks, all reviewed clean, final whole-branch review clean after one fix wave |
-| 1 — Content layer | `docs/superpowers/plans/2026-09-02-payload-phase-1-content-layer.md` | **In progress.** 15 tasks (11 planned + 4 added mid-phase as coverage gaps surfaced); 12 complete |
+| 1 — Content layer | `docs/superpowers/plans/2026-09-02-payload-phase-1-content-layer.md` | **Complete.** 17 tasks (11 planned + 6 added as coverage gaps surfaced), all reviewed clean; final whole-branch review clean after one fix wave |
 | 2 — Build Payload | not yet written | Blocked on Phase 1 |
 | 3 — Swap | not yet written | Blocked on Phase 2 |
 | 4 — Decommission | not yet written | Blocked on Phase 3 |
