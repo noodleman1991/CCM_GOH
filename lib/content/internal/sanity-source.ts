@@ -7,6 +7,7 @@
  * switches the domain modules over one at a time.
  */
 import { cachedFetch } from "@/sanity/lib/cached-fetch";
+import { client } from "@/sanity/lib/client";
 import { writeClient } from "@/sanity/lib/write-client";
 import { stegaClean } from "next-sanity";
 
@@ -72,6 +73,30 @@ export async function queryRaw<T>(
   params: Record<string, unknown> = {},
 ): Promise<T> {
   return writeClient.withConfig({ perspective: "raw" }).fetch(groq as never, params) as Promise<T>;
+}
+
+/**
+ * Run a GROQ query against the published perspective with the read client,
+ * with NO Next.js data cache entry — the exact equivalent of a bare
+ * `client.fetch(groq)` call, which is what every original of this shape did.
+ *
+ * Neither of the other two read primitives fits that shape: `query()` adds
+ * `next: { revalidate: 3600 }` on top of published, and `queryRaw` trades
+ * away the cache but also switches to the write client's `raw` perspective,
+ * which sees drafts. `queryLive` is for reads that must be both
+ * *live* (no hour-long cache sitting on top of the call site's own
+ * freshness contract) and *published-only* (never draft-visible) —
+ * typically a permission or moderation gate whose staleness budget is
+ * already spoken for by an in-process TTL or a per-request cache, and which
+ * must never validate against an unpublished document. Use `queryRaw`
+ * instead when the read is drafts-visible on purpose (a write-time
+ * authorization check against the author's own unpublished content).
+ */
+export async function queryLive<T>(
+  groq: string,
+  params: Record<string, unknown> = {},
+): Promise<T> {
+  return client.fetch(groq as never, params) as Promise<T>;
 }
 
 /** Upload a file to the asset store. Returns just the new asset's id. */

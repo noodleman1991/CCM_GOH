@@ -12,15 +12,17 @@ import { stegaClean } from "next-sanity";
  * cases still need to hold true then.
  *
  * `cleanText` lives behind lib/content/internal/sanity-source.ts alongside
- * the query/write helpers, which import `@/sanity/lib/cached-fetch` and
- * `@/sanity/lib/write-client` — both assert Sanity env vars at import time
- * (vitest doesn't load `.env.local`). `cleanText` itself touches neither, so
- * mocking those two submodules (same precedent as
- * lib/__tests__/content-sanity-source.test.ts) sidesteps the env
- * requirement entirely while leaving `stegaClean`'s own behaviour real and
- * unmocked — which is what makes the equality assertions below meaningful.
+ * the query/write helpers, which import `@/sanity/lib/cached-fetch`,
+ * `@/sanity/lib/client`, and `@/sanity/lib/write-client` — all three assert
+ * Sanity env vars at import time (vitest doesn't load `.env.local`).
+ * `cleanText` itself touches none of them, so mocking those three submodules
+ * (same precedent as lib/__tests__/content-sanity-source.test.ts) sidesteps
+ * the env requirement entirely while leaving `stegaClean`'s own behaviour
+ * real and unmocked — which is what makes the equality assertions below
+ * meaningful.
  */
 vi.mock("@/sanity/lib/cached-fetch", () => ({ cachedFetch: vi.fn() }));
+vi.mock("@/sanity/lib/client", () => ({ client: { fetch: vi.fn() } }));
 vi.mock("@/sanity/lib/write-client", () => ({ writeClient: {} }));
 
 import { cleanText } from "@/lib/content/text";

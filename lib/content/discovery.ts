@@ -1,5 +1,5 @@
 import { safe } from "@/lib/content/internal/safe";
-import { createDocument, query, queryRaw, updateDocument } from "@/lib/content/internal/sanity-source";
+import { createDocument, query, queryLive, queryRaw, updateDocument } from "@/lib/content/internal/sanity-source";
 import type { ContentKind } from "@/lib/content/types";
 import type { SanityPlace } from "@/types/case-study";
 import type { CommentTargetType } from "@/generated/prisma";
@@ -609,11 +609,25 @@ const SANITY_COMMENT_PREDICATE: Partial<Record<CommentTargetType, string>> = {
  * `Comment.targetId` reaches content through — Phase 3 swaps the backend
  * beneath it, so its signature must not change.
  *
- * Uses `queryRaw`, not the cached `query()`: this is a write-time
- * authorization gate (it decides whether a comment write is allowed), so a
- * document withdrawn or un-approved must stop validating immediately, not up
- * to an hour later via `query()`'s cache. Same reasoning as
- * `getApprovedEventForRsvp`.
+ * Uses `queryLive`, not `query`: this is a write-time authorization gate
+ * (it decides whether a comment write is allowed), and `id` is
+ * client-supplied (`lib/comments/target.ts`'s own doc comment: this guards
+ * against "a client aiming the polymorphic targetId at an arbitrary
+ * document"), so a document withdrawn or un-approved must stop validating
+ * immediately, not up to an hour later via `query()`'s cache. Same
+ * caching reasoning as `getApprovedEventForRsvp`.
+ *
+ * NOT `queryRaw`: an earlier revision used `queryRaw` to fix exactly that
+ * caching problem, but `queryRaw` also switches to the write client's `raw`
+ * perspective, which sees documents that only exist as unpublished drafts
+ * (`drafts.<id>`). Because `id` here is attacker-controllable, that let a
+ * client submit a `drafts.`-prefixed target id for a document whose *draft*
+ * satisfies the predicate (e.g. a draft edit with `status: "approved"`) even
+ * though nothing with that id has ever been published — an authorization
+ * bypass the original `client.fetch` (published perspective, per
+ * `git show 87ef869bc:lib/comments/target.ts`) could not have had. `queryLive`
+ * is both live (no cache) and published-only (no draft visibility), so it is
+ * the more faithful restoration of the original, not just a caching fix.
  *
  * Degrades to null on failure (mirrors the original's try/catch → ok=false),
  * matching every other public-facing existence check.
@@ -625,7 +639,7 @@ export async function resolveCommentTarget(
   const predicate = SANITY_COMMENT_PREDICATE[type];
   if (!predicate) return null;
   return safe(`comment-target-${type}`, null, async () => {
-    const count = await queryRaw<number>(`count(*[${predicate} && _id == $id])`, { id });
+    const count = await queryLive<number>(`count(*[${predicate} && _id == $id])`, { id });
     return count > 0 ? { type, id } : null;
   });
 }
@@ -642,12 +656,21 @@ export interface ModerationSettings {
 
 const DEFAULT_MODERATION_SETTINGS: ModerationSettings = { enabled: true, blockTerms: [], reviewTerms: [] };
 
-/** The CMS-managed comment wordlists. Fails open (filtering effectively off)
- *  for availability — anonymous comments are still held for review
- *  regardless, per the original's own comment. */
+/**
+ * The CMS-managed comment wordlists. Fails open (filtering effectively off)
+ * for availability — anonymous comments are still held for review
+ * regardless, per the original's own comment.
+ *
+ * `queryLive`, not `query` — the original (`lib/comments/moderation.ts`) was
+ * a bare `client.fetch`, with no `next.revalidate`: the only staleness was
+ * the module's own 60-second in-process TTL below. `moderateBody()` is the
+ * gate that decides whether a comment is blocked, held, or published; a
+ * `query()`-style hour-long cache stacked on top of that TTL would mean an
+ * admin's new blocklist term might not take effect for up to an hour.
+ */
 export async function getModerationSettings(): Promise<ModerationSettings> {
   return safe("moderation-settings", DEFAULT_MODERATION_SETTINGS, async () => {
-    const raw = await query<Partial<ModerationSettings> | null>(
+    const raw = await queryLive<Partial<ModerationSettings> | null>(
       `*[_type == "moderationSettings"][0]{ enabled, blockTerms, reviewTerms }`,
     );
     if (!raw) return DEFAULT_MODERATION_SETTINGS;

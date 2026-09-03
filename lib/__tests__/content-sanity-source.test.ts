@@ -9,8 +9,14 @@ const mockTxDelete = vi.fn();
 const mockTxCommit = vi.fn();
 const mockTransaction = vi.fn();
 
+const mockClientFetch = vi.fn();
+
 vi.mock("@/sanity/lib/cached-fetch", () => ({
   cachedFetch: vi.fn(),
+}));
+
+vi.mock("@/sanity/lib/client", () => ({
+  client: { fetch: (...args: unknown[]) => mockClientFetch(...args) },
 }));
 
 vi.mock("@/sanity/lib/write-client", () => ({
@@ -21,7 +27,7 @@ vi.mock("@/sanity/lib/write-client", () => ({
   },
 }));
 
-import { updateDocument, uploadImageAsset, deleteDocuments } from "@/lib/content/internal/sanity-source";
+import { updateDocument, uploadImageAsset, deleteDocuments, queryLive } from "@/lib/content/internal/sanity-source";
 
 beforeEach(() => {
   mockCommit.mockReset().mockResolvedValue(undefined);
@@ -35,6 +41,23 @@ beforeEach(() => {
     const tx = { delete: mockTxDelete, commit: mockTxCommit };
     mockTxDelete.mockReturnValue(tx);
     return tx;
+  });
+  mockClientFetch.mockReset();
+});
+
+describe("queryLive", () => {
+  it("delegates to the read client's fetch with no extra options — no perspective override, no next cache config", async () => {
+    mockClientFetch.mockResolvedValue({ enabled: true });
+    const result = await queryLive("*[_type == \"moderationSettings\"][0]{enabled}", {});
+
+    expect(result).toEqual({ enabled: true });
+    expect(mockClientFetch).toHaveBeenCalledTimes(1);
+    expect(mockClientFetch).toHaveBeenCalledWith("*[_type == \"moderationSettings\"][0]{enabled}", {});
+  });
+
+  it("throws through on failure — no safe() at this layer", async () => {
+    mockClientFetch.mockRejectedValue(new Error("network error"));
+    await expect(queryLive("count(*)", {})).rejects.toThrow("network error");
   });
 });
 

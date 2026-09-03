@@ -2,12 +2,13 @@ import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 
 vi.mock("@/lib/content/internal/sanity-source", () => ({
   query: vi.fn(),
+  queryLive: vi.fn(),
   queryRaw: vi.fn(),
   createDocument: vi.fn(),
   updateDocument: vi.fn(),
 }));
 
-import { query, queryRaw, createDocument, updateDocument } from "@/lib/content/internal/sanity-source";
+import { query, queryLive, queryRaw, createDocument, updateDocument } from "@/lib/content/internal/sanity-source";
 import {
   getDynamicContent,
   getDiscoveryOptions,
@@ -31,12 +32,14 @@ import {
 } from "@/lib/content/discovery";
 
 const mockQuery = vi.mocked(query);
+const mockQueryLive = vi.mocked(queryLive);
 const mockQueryRaw = vi.mocked(queryRaw);
 const mockCreateDocument = vi.mocked(createDocument);
 const mockUpdateDocument = vi.mocked(updateDocument);
 
 beforeEach(() => {
   mockQuery.mockReset();
+  mockQueryLive.mockReset();
   mockQueryRaw.mockReset();
   mockCreateDocument.mockReset();
   mockUpdateDocument.mockReset();
@@ -224,57 +227,65 @@ describe("createWorkspaceOutputDraft", () => {
 });
 
 describe("resolveCommentTarget", () => {
-  it("returns null for a non-Sanity-backed type without calling queryRaw", async () => {
+  it("returns null for a non-Sanity-backed type without calling queryLive", async () => {
     const result = await resolveCommentTarget("collaborationThread", "t1");
     expect(result).toBeNull();
-    expect(mockQueryRaw).not.toHaveBeenCalled();
+    expect(mockQueryLive).not.toHaveBeenCalled();
   });
 
   it("returns the target when the predicate count is > 0", async () => {
-    mockQueryRaw.mockResolvedValue(1);
+    mockQueryLive.mockResolvedValue(1);
     const result = await resolveCommentTarget("researchOutput", "ro1");
     expect(result).toEqual({ type: "researchOutput", id: "ro1" });
-    expect(mockQueryRaw).toHaveBeenCalledWith(
+    expect(mockQueryLive).toHaveBeenCalledWith(
       expect.stringContaining('_type == "researchOutput" && status == "approved"'),
       { id: "ro1" },
     );
   });
 
   it("returns null when the predicate count is 0", async () => {
-    mockQueryRaw.mockResolvedValue(0);
+    mockQueryLive.mockResolvedValue(0);
     expect(await resolveCommentTarget("caseStudy", "missing")).toBeNull();
   });
 
-  it("degrades to null on a queryRaw failure", async () => {
+  it("degrades to null on a queryLive failure", async () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
-    mockQueryRaw.mockRejectedValue(new Error("boom"));
+    mockQueryLive.mockRejectedValue(new Error("boom"));
     expect(await resolveCommentTarget("newsPost", "n1")).toBeNull();
   });
 
-  it("uses queryRaw, not query — this is a write-time authorization gate and must not be cached", async () => {
-    mockQueryRaw.mockResolvedValue(1);
+  it("uses queryLive, not query or queryRaw — this is a write-time authorization gate against a client-supplied id, so it must be both live (no cache) and published-only (raw would let a drafts.-prefixed id validate an unapproved document)", async () => {
+    mockQueryLive.mockResolvedValue(1);
     await resolveCommentTarget("caseStudy", "cs1");
-    expect(mockQueryRaw).toHaveBeenCalledTimes(1);
+    expect(mockQueryLive).toHaveBeenCalledTimes(1);
     expect(mockQuery).not.toHaveBeenCalled();
+    expect(mockQueryRaw).not.toHaveBeenCalled();
   });
 });
 
 describe("getModerationSettings", () => {
   it("returns the fetched settings, guarding non-array wordlists", async () => {
-    mockQuery.mockResolvedValue({ enabled: false, blockTerms: ["x"], reviewTerms: null });
+    mockQueryLive.mockResolvedValue({ enabled: false, blockTerms: ["x"], reviewTerms: null });
     const settings = await getModerationSettings();
     expect(settings).toEqual({ enabled: false, blockTerms: ["x"], reviewTerms: [] });
   });
 
   it("returns the default (enabled, empty lists) when the doc is missing", async () => {
-    mockQuery.mockResolvedValue(null);
+    mockQueryLive.mockResolvedValue(null);
     expect(await getModerationSettings()).toEqual({ enabled: true, blockTerms: [], reviewTerms: [] });
   });
 
   it("fails open to the default on a query failure", async () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
-    mockQuery.mockRejectedValue(new Error("boom"));
+    mockQueryLive.mockRejectedValue(new Error("boom"));
     expect(await getModerationSettings()).toEqual({ enabled: true, blockTerms: [], reviewTerms: [] });
+  });
+
+  it("uses queryLive, not query — the original was a bare client.fetch with no next.revalidate; query()'s hour-long cache would sit on top of the comment gate's own 60s in-process TTL", async () => {
+    mockQueryLive.mockResolvedValue(null);
+    await getModerationSettings();
+    expect(mockQueryLive).toHaveBeenCalledTimes(1);
+    expect(mockQuery).not.toHaveBeenCalled();
   });
 });
 
