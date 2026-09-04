@@ -730,6 +730,18 @@ The 21 lived-experience drafts are in-flight moderation work. **Losing them is t
 - [ ] **The public site is byte-identical and still served entirely by Sanity.** Nothing in `app/`, `components/` or `lib/content/`'s domain modules changed in this phase
 - [ ] `payload-types.ts` generated and committed
 
+## The one thing that does not round-trip: heading anchor ids
+
+Task 10's adapter is render-identical except here, and this is **decided, not open**.
+
+`headingId` (`lib/portable-text-headings.ts`) is `${slug}-${block._key}`. The `_key` suffix is not decoration — it exists to keep two headings with identical text (two "Executive Summary") distinguishable, because a slug alone collides and breaks both React keys and anchor targets. Sanity's random `_key`s cannot survive Lexical: an extra property on a heading node does not survive `parseEditorState` (measured, not assumed).
+
+So heading anchors change once, at cutover. **Keying off the slug alone is not an alternative** — the codebase already rejected it for the collision reason above.
+
+The adapter mints replacements that are *content*-derived (FNV-1a of style + text) and collision-suffixed, which is strictly better than what Sanity had: an anchor no longer moves when a heading above it is edited, only when its own text changes. In-page TOC links keep working, because the renderer and the TOC call the same function on the same blocks. The 51 stored `#fragment` hrefs in the dataset are bare slugs that already do not match `headingId`, so they are unaffected.
+
+What breaks is externally bookmarked `#slug-<sanitykey>` URLs. Fragments are never sent to the server, so a redirect cannot repair them; only a client-side mapping could, and that is not worth carrying. **Accept the one-time churn.**
+
 ## Phase 3 prerequisites this phase must leave in place
 
 Two things Phase 3 needs that Phase 2 does not itself require. Both are recorded here so
