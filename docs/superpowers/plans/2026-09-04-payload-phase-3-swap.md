@@ -196,6 +196,28 @@ Two behaviours are load-bearing and were preserved in the Payload schema: **SVGs
 
 ---
 
+## Known friction, measured by Phase 2's final review
+
+None of this makes Phase 3 impossible. All of it costs a surprise if discovered mid-task.
+
+**1. `imageUrl()` is parametric; `imageSizes` is a fixed eleven.** The eleven cover today's 36 call sites, but two things fall outside them: `quality` — `lib/content/metadata.ts:72` calls `imageUrl(page.ogImage, { quality: 100 })` for Open Graph — and any *new* width a future caller asks for. Task 4 must decide what happens on a miss: nearest-size-up, an on-demand transform, or a loud failure. Silently returning the original is the one option that is not acceptable, because of the next item.
+
+**2. Every non-SVG image is WebP on the wire today, and Payload will serve the stored original.** `sanity/lib/image.ts:19` returns `imageBuilder.format("webp").fit("max")` **unconditionally** for non-SVGs. So the ~13 dimension-less `imageUrl()` call sites are being served WebP right now; after cutover they get the stored PNG/JPEG. **This is a user-facing transfer-size regression, not a storage detail.** (Phase 2's ledger parked this as LOW on the grounds it was "bytes in R2, not on-wire". That was wrong — corrected here.)
+
+**3. Four GROQ constructs need mechanical rewrites**, and each is a place a subtle behaviour change hides:
+- `references()` — used for reverse lookups
+- the one cross-type union at `lib/content/discovery.ts:367`
+- `match` full-text search
+- `drafts.`-prefixed id handling, which is how draft-awareness is expressed today
+
+**4. Both remodels need explicit reconstruction code.** The homepage's eleven fixed slots and `regionalCommunityPage`'s single parameterised `contentGrid` are deliberate divergences from Sanity's shape, so the readers must rebuild what the components expect. The `contentGrid.contentType` discriminator makes the regional one lossless.
+
+**5. The Postgres 100-argument cap is guarded per-target, not phase-wide.** Two globals hit SQLSTATE 54023 in Phase 2 because a localized table exceeded 100 columns. Nothing stops a third. **Add one generic test** asserting no `*_locales` table exceeds the cap, rather than fixing each occurrence as it appears.
+
+**6. Four things are genuinely unanswerable from Payload** and must be accepted or removed, not worked around: `author.bio` (2/95, projected but rendered nowhere), `newsPost`/`livedExperience.language` (the only reader passes no language; the `caseStudy` equivalent is documented dead code), `onboarding._rev`, and the `report` sitemap line (0 documents).
+
+---
+
 ## Task 5: The parity harness
 
 **Files:** Create `scripts/parity/render-diff.ts`, `scripts/parity/routes.ts`; test `lib/__tests__/parity-harness.test.ts`
