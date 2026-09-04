@@ -36,7 +36,15 @@ export const splitRow: Block = {
     {
       name: "splitColumns",
       type: "blocks",
-      maxRows: 2,
+      // Sanity declares `rule.max(2)`; **three real documents store three
+      // columns** — `page-toolkits-{ar,es,fr}`, whose split-row is the
+      // three-toolkit grid that renders on the live site today. Sanity's rule
+      // never blocked the write and the renderer lays out whatever it is
+      // given, so the declaration is the half that is wrong. Payload's
+      // `maxRows` IS enforced, and at 2 it cost those three documents their
+      // whole block list on import (Task 12 measured it). `maxRows` is
+      // validation only — no column, no table, no migration.
+      maxRows: 3,
       blocks: [splitContent, splitImage],
     },
   ],
