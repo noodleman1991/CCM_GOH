@@ -202,7 +202,13 @@ None of this makes Phase 3 impossible. All of it costs a surprise if discovered 
 
 **1. `imageUrl()` is parametric; `imageSizes` is a fixed eleven.** The eleven cover today's 36 call sites, but two things fall outside them: `quality` — `lib/content/metadata.ts:72` calls `imageUrl(page.ogImage, { quality: 100 })` for Open Graph — and any *new* width a future caller asks for. Task 4 must decide what happens on a miss: nearest-size-up, an on-demand transform, or a loud failure. Silently returning the original is the one option that is not acceptable, because of the next item.
 
-**2. Every non-SVG image is WebP on the wire today, and Payload will serve the stored original.** `sanity/lib/image.ts:19` returns `imageBuilder.format("webp").fit("max")` **unconditionally** for non-SVGs. So the ~13 dimension-less `imageUrl()` call sites are being served WebP right now; after cutover they get the stored PNG/JPEG. **This is a user-facing transfer-size regression, not a storage detail.** (Phase 2's ledger parked this as LOW on the grounds it was "bytes in R2, not on-wire". That was wrong — corrected here.)
+**2. The WebP regression is real, but at exactly one site — not the thirteen first feared.** `sanity/lib/image.ts:19` returns `imageBuilder.format("webp").fit("max")` **unconditionally** for non-SVGs, so every image is WebP on the wire today. Phase 2's ledger first parked this as "bytes in R2, not on-wire" (wrong), and the final review then called it a regression across ~13 dimension-less call sites (right in principle, too broad in fact).
+
+Measured in Task 4: **all 12 dimension-less component call sites render through `next/image`** with the default loader, none passes `unoptimized`, and `next.config.mjs` sets `images.formats: ['image/avif','image/webp']`. The browser therefore gets AVIF/WebP whatever the stored format is.
+
+The one site that genuinely regresses is **`lib/content/metadata.ts:72`** — the Open Graph image. Crawlers fetch that URL directly, so it never touches `next/image`, and it is also the only caller passing `quality`. It needs a deliberate decision in Task 7 (see below).
+
+**A constraint that follows:** `next.config.mjs`'s `images.remotePatterns` lists `cdn.sanity.io` but **no Payload or R2 host**. Payload image URLs must therefore stay same-origin and relative (`/payload-api/media/file/…`) or the twelve `next/image` sites break. Absolutising a URL for Open Graph — which Open Graph requires — cannot be done globally; it is a per-caller decision.
 
 **3. Four GROQ constructs need mechanical rewrites**, and each is a place a subtle behaviour change hides:
 - `references()` — used for reverse lookups
@@ -251,7 +257,7 @@ Each task follows the identical shape below. They are ordered smallest-and-most-
 | Task | Module(s) | Lines | Notes |
 |---|---|---|---|
 | 6 | `taxonomy.ts`, `taxonomy-options.ts`, `regions.ts` | ~350 | Foundational; everything references tags and regions. **Fix `ContentTag.value`'s type here** — it is declared `string` but holds a slug object. |
-| 7 | `system.ts`, `metadata.ts`, `illustrations.ts`, `text.ts` | ~360 | `system.ts` holds the sitemap filters that read `status == "approved"` — they become `moderationStatus`. |
+| 7 | `system.ts`, `metadata.ts`, `illustrations.ts`, `text.ts` | ~360 | `system.ts` holds the sitemap filters that read `status == "approved"` — they become `moderationStatus`. **`metadata.ts:72` needs an explicit decision:** the OG image is the one true WebP regression, needs `quality`, and needs an *absolute* URL — which the twelve `next/image` sites must not get, since no Payload host is in `remotePatterns`. A full-size PNG as OG also risks crawler size ceilings. `illustrations.ts:59` passes arbitrary natural dimensions and will land on the nearest-size-up path per asset. |
 | 8 | `onboarding.ts` | 283 | Composes **six** globals via `composeOnboardingContent`. Decide the 46 unserved component chains: serve or delete, not leave. |
 | 9 | `lived-experiences.ts` | 630 | `region` is a `regionalCommunity` reference; `videoUrl` is undeclared in Sanity but real; unset moderation means approved. |
 | 10 | `news.ts` | 964 | |
