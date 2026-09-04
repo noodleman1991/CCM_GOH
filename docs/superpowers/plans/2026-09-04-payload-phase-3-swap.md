@@ -1,0 +1,365 @@
+# Payload Phase 3 — Swap Implementation Plan
+
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+
+**Goal:** Move every one of `lib/content/`'s 138 exported functions from Sanity to Payload, one domain module at a time behind a flag, without the public site changing.
+
+**Architecture:** Phase 1 put a seam under `lib/content/`; Phase 2 filled Payload behind it. Phase 3 adds `payload-source.ts` beside `sanity-source.ts`, then flips modules across one at a time — each verified by rendering the same route on both backends and diffing the HTML. Write paths, moderation workflows and Algolia sync move last, once reads are proven.
+
+**Tech Stack:** Payload 3.88.0 local API, Next.js 16.3.4, Postgres (Neon), Clerk, Cloudflare R2, Algolia.
+
+**Spec:** `docs/superpowers/specs/2026-09-02-sanity-to-payload-migration-design.md` (§5 Phase 3)
+
+**Inherited from Phase 2:** a populated Payload with the same document ids as Sanity — 347 media, 48 files, 381 published documents, 30 documents carrying a draft version, six migrations, `verifyImport` at 13 database checks + 6 archive-only. `lib/content/internal/` already holds `sanity-source.ts`, `image-source.ts`, `safe.ts`, `normalize.ts`, and the Lexical converter pair.
+
+---
+
+## Global Constraints
+
+- **The public site's rendered output must not change.** This phase swaps a backend, not a design. Every checkpoint is a rendered-HTML comparison, not a green build — a green build is not validation.
+- **One domain module at a time**, each behind `CONTENT_BACKEND`, each independently revertible.
+- **Payload 3.88.0**, all `@payloadcms/*` pinned to it. Next.js `>=16.2.6`.
+- **Clerk stays the sole identity system.** Payload holds content only; Prisma holds users. Roles come from the Prisma `User.role` enum: `community_member | community_editor | team_editor | admin`. Never from a Clerk session claim.
+- **Locales: `en` (default), `es`, `fr`, `ar` (RTL).** Four, not two.
+- **Never run `sanity typegen generate`** — it renames exported types and breaks `tsc`.
+- **Do NOT run `pnpm build`** — its `postbuild` hook runs `sync:search`, which pushes to a **live Algolia index**. Use `node scripts/create-all-outputs-pages.mjs && pnpm exec next build`.
+- **`pnpm lint` is not a gate** (~656 pre-existing errors). Lint changed files only.
+- **`pnpm typecheck` and `pnpm exec vitest run` are gates.** Baseline entering this phase: **111 test files / 1549 tests**.
+- **Sanity stays readable and read-only all phase.** It is the fallback and the oracle. Decommissioning is Phase 4.
+- **`printf 'y\n' | pnpm payload migrate`** — a stale dev-push marker makes plain `migrate` stop on an interactive prompt and hang. Never `migrate:fresh`: `payload_cms` carries PostGIS (`spatial_ref_sys`, 8,500 rows).
+- **Never include Claude/AI attribution or a `Co-Authored-By` trailer in commit messages** (`CLAUDE.md`).
+
+## The contract being preserved
+
+| | |
+|---|---|
+| Modules | 16 |
+| Callable exports | 138 |
+| Exported interfaces / types | 113 / 13 |
+| Largest module | `lib/content/pages.ts` at **8,550 lines** — more than half the layer |
+| Files performing writes or write-feeding reads | **9** (measured; see below) |
+| Studio moderation workflows | 4 (`case-study`, `event`, `lived-experience`, `research-output`) |
+| Algolia route groups | 5 (`agendas`, `case-studies`, `counts`, `news`, `users`) + `token` |
+
+**The acceptance test is not "does the schema look like Sanity's" but "can it answer every question `lib/content/` asks".**
+
+## Obligations carried in from Phase 2
+
+Each was measured. Each costs a bug if forgotten.
+
+1. **`moderationStatus` → `status`.** Payload stores `moderationStatus` (the name `status` collides with Payload's `_status` enum). `lib/content/case-studies.ts` exposes `status?: CaseStudyStatus` and `getCaseStudiesByStatus()` as its **public contract**. The Payload reader maps back.
+2. **`query` and `queryPreviewable` differ only inside draft mode.** Someone will try to merge them. Six Phase-1 bugs came from this.
+3. **A read feeding a write must not be cached.** Use `queryLive` for read-client originals and `queryRaw` only for write-client originals — conflating them caused an authorization bypass.
+4. **`ContentTag.value` is typed `string` but holds `{_type:"slug",current:…}` at runtime.** Fix the type when Payload models it; do not carry the lie forward.
+5. **`lqip` → `blurDataURL`.** 347/347 media rows carry it and 25 components render it. The Payload image source must expose it.
+6. **`image.alt` lives in the `en` locale**, with `fallback: true` covering es/fr/ar.
+7. **Heading anchors change once**, and this is decided: `headingId` is `${slug}-${_key}`, Sanity's random keys cannot survive Lexical, and the minted replacements are content-derived and collision-suffixed. In-page TOC keeps working; externally bookmarked fragments break. Accepted.
+8. **`onboardingContent` is six globals**, composed by `composeOnboardingContent`. 46 component read chains resolve against none of them — they were equally unserved before the split, coming from a drifted local type. Not a regression; decide in Task 9 whether to serve or delete them.
+9. **`author.bio` is not modelled** — Portable Text on 2 of 95 authors, preserved in the archive only.
+10. **`livedExperience.region` holds a `regionalCommunity` reference**, not a region code; `videoUrl` is real and undeclared; `status` is 0/56 populated and unset means approved.
+11. **`internalLink` carries a raw `_ref` with no `relationTo`** — Phase 3 resolves references at read time.
+12. **The homepage keeps its eleven fixed slots**; `regionalCommunityPage`'s six grid slots are one parameterised `contentGrid`.
+
+---
+
+## File Structure
+
+**Created**
+- `lib/content/internal/payload-source.ts` — the four read primitives against Payload's local API, mirroring `sanity-source.ts`'s exports exactly.
+- `lib/content/internal/payload-image-source.ts` — `imageUrl()`/`blurDataURL` against `media`, honouring the 11 `imageSizes`.
+- `lib/content/internal/backend.ts` — reads `CONTENT_BACKEND`, exposes `activeBackend()` and a per-module override.
+- `scripts/parity/render-diff.ts` — renders a route on both backends and diffs the HTML.
+- `lib/content/internal/payload/<domain>.ts` — one Payload reader per domain module.
+
+**Modified**
+- `lib/content/<domain>.ts` × 16 — each gains a backend branch; **their exported signatures do not change**.
+- The 14 write-path files.
+- `sanity/actions/*` → Payload hooks + admin components.
+- `app/api/search/*` — sync moves in-process.
+
+**Untouched**
+- `app/`, `components/` — nothing user-facing changes in this phase.
+- `sanity/schemas/**` — Sanity stays readable until Phase 4.
+
+---
+
+## Task 1: Give Sanity a request timeout
+
+**Files:** Modify `sanity/lib/client.ts`; test `lib/__tests__/sanity-client-timeout.test.ts`
+
+**This is a behaviour change and ships alone**, before any swap. `@sanity/client` supports `timeout?: number` and none is set, so a hung upstream blocks server rendering with no ceiling. The 2026-07-28 quota outage took every content page down; a timeout turns that into fast degraded responses through `safe()`.
+
+- [ ] **Step 1: Write the failing test**
+
+```ts
+import { describe, expect, it } from "vitest";
+import { client } from "@/sanity/lib/client";
+
+describe("the Sanity client", () => {
+  it("sets a request timeout, so a hung upstream cannot block rendering forever", () => {
+    expect(client.config().timeout).toBe(10_000);
+  });
+});
+```
+
+- [ ] **Step 2: Run it and watch it fail**
+
+Run: `pnpm exec vitest run lib/__tests__/sanity-client-timeout.test.ts`
+Expected: FAIL — `undefined` is not `10000`.
+
+- [ ] **Step 3: Add the timeout**
+
+In `sanity/lib/client.ts`, add `timeout: 10_000` to the `createClient({...})` call, with a comment naming the 2026-07-28 outage as the reason.
+
+- [ ] **Step 4: Run it and watch it pass**
+
+- [ ] **Step 5: Commit** — `fix(sanity): cap request time so a hung upstream cannot block rendering`
+
+---
+
+## Task 2: Stand up the production Payload database
+
+**Files:** Create `docs/migration/payload-production-runbook.md`
+
+No code. This is the prerequisite that must exist before a single module swaps, and it is deliberately **not** done during Phase 2 — an empty production database drifting from dev for weeks is worse than none.
+
+- [ ] **Step 1:** Create a second database inside the existing Neon project, on the **production** branch, named `payload_cms`. It must not be Prisma's database (`goh`) — `prisma migrate reset` drops the schema it manages.
+- [ ] **Step 2:** Set `PAYLOAD_DATABASE_URL` in the Vercel production environment. Leave the dev value in `.env.local`.
+- [ ] **Step 3:** Run the six committed migrations: `printf 'y\n' | pnpm payload migrate`, then confirm `migrate:status` reads Ran for all six.
+- [ ] **Step 4:** Run the import in order — `pnpm import:assets`, `pnpm import:documents`, `pnpm import:drafts`. The ordering matters: `importDocuments` refuses to run after drafts exist unless flagged, because a published save takes the `latest` flag and would bury every pending edit.
+- [ ] **Step 5:** Run `pnpm verify:import`. Require 13/13 database checks and 6/6 archive-only. Record the numbers in the runbook.
+- [ ] **Step 6: Commit** the runbook.
+
+---
+
+## Task 3: The Payload read primitives
+
+**Files:** Create `lib/content/internal/payload-source.ts`, `lib/content/internal/backend.ts`; test `lib/__tests__/payload-source.test.ts`
+
+**Interfaces:**
+- Consumes: Payload's local API (`getPayload`), `payload.config.ts` at repo root.
+- Produces: `query`, `queryPreviewable`, `queryRaw`, `queryLive` with **the same signatures** `sanity-source.ts` exports, plus `activeBackend(domain?: string): "sanity" | "payload"`.
+
+The four primitives are not interchangeable and their differences are load-bearing:
+
+| primitive | perspective | cache | used for |
+|---|---|---|---|
+| `query` | published | 1 hour | ordinary reads |
+| `queryPreviewable` | decided by `draftMode()` | conditional | anything a preview can show |
+| `queryRaw` | raw, write client | none | reads feeding a write |
+| `queryLive` | published, read client | none | fresh reads that must not see drafts |
+
+- [ ] **Step 1: Write the failing test**
+
+```ts
+import { describe, expect, it } from "vitest";
+import * as sanitySource from "@/lib/content/internal/sanity-source";
+import * as payloadSource from "@/lib/content/internal/payload-source";
+
+describe("payload-source mirrors sanity-source", () => {
+  it("exports every read primitive the seam defines", () => {
+    for (const name of ["query", "queryPreviewable", "queryRaw", "queryLive"]) {
+      expect(typeof (payloadSource as Record<string, unknown>)[name]).toBe("function");
+    }
+  });
+
+  it("does not drop any export the Sanity source provides", () => {
+    const missing = Object.keys(sanitySource).filter((k) => !(k in payloadSource));
+    expect(missing).toEqual([]);
+  });
+});
+```
+
+- [ ] **Step 2: Run it and watch it fail** — the module does not exist.
+- [ ] **Step 3: Implement `payload-source.ts`.** Each primitive takes a typed query descriptor rather than a GROQ string; keep `queryPreviewable` consulting `draftMode()` and `queryRaw`/`queryLive` uncached. Do **not** collapse the four into fewer.
+- [ ] **Step 4: Implement `backend.ts`** — `CONTENT_BACKEND` defaults to `sanity`; `CONTENT_BACKEND_<DOMAIN>` overrides per module so one domain can flip alone.
+- [ ] **Step 5: Run the tests and watch them pass.**
+- [ ] **Step 6: Commit** — `feat(content): add the Payload read primitives beside the Sanity ones`
+
+---
+
+## Task 4: The Payload image source
+
+**Files:** Create `lib/content/internal/payload-image-source.ts`; test `lib/__tests__/payload-image-source.test.ts`
+
+**Interfaces:** Produces `imageUrl(image, opts)` and `blurDataURL(image)` matching `lib/content/images.ts`'s existing shape.
+
+Two behaviours are load-bearing and were preserved in the Payload schema: **SVGs bypass transforms** (Payload's `canResizeImage` excludes them), and the cropped path uses `auto("format")` while the uncropped path forces `webp`. The 11 `imageSizes` on `media` were derived from `imageUrl()`'s real call sites — read `payload/collections/media.ts`'s header for the mapping.
+
+`blurDataURL` reads `media.lqip`, which is populated 347/347. Nothing regenerates it; if this returns null, 25 components silently lose their placeholders.
+
+- [ ] **Step 1: Write the failing test** asserting `blurDataURL` returns the stored `lqip` and that an SVG returns its original URL unmodified.
+- [ ] **Step 2: Run it and watch it fail.**
+- [ ] **Step 3: Implement**, mapping each requested `(width,height,crop)` onto the matching named size.
+- [ ] **Step 4: Run and watch it pass.**
+- [ ] **Step 5: Commit** — `feat(content): add the Payload image source`
+
+---
+
+## Task 5: The parity harness
+
+**Files:** Create `scripts/parity/render-diff.ts`, `scripts/parity/routes.ts`; test `lib/__tests__/parity-harness.test.ts`
+
+**This task exists before any module swaps, because it is how every later task is verified.** The spec requires a rendered-page comparison at each checkpoint, and a green build is not validation.
+
+**Interfaces:** Produces `compareRoute(path: string): Promise<{ equal: boolean; diff: string }>` — renders `path` twice, once per backend, and diffs the HTML after normalising away known-volatile output (nonces, timestamps, React ids).
+
+`routes.ts` enumerates a representative route per domain: a case study, a lived experience, a docs chapter, a news post, an agenda index, a regional community page, the homepage, `/atlas`, and one route in each of `es`/`fr`/`ar`.
+
+- [ ] **Step 1: Write the failing test** — `compareRoute` on a route rendered identically twice reports `equal: true`; on deliberately differing HTML it reports the differing element.
+- [ ] **Step 2: Run it and watch it fail.**
+- [ ] **Step 3: Implement.** Normalise only provably volatile output; **never** normalise away content differences. A harness that cannot fail is worse than none — this phase has already had one verifier that passed while every string in the database said `"WRONG"`.
+- [ ] **Step 4: Prove it discriminates** — mutate one heading in the Payload copy and confirm the diff names it.
+- [ ] **Step 5: Commit** — `feat(parity): render the same route on both backends and diff it`
+
+---
+
+## Tasks 6–14: swap the domain modules
+
+Each task follows the identical shape below. They are ordered smallest-and-most-foundational first, so the harness and the primitives are exercised early on cheap surfaces.
+
+**The shape, for every domain task:**
+
+- [ ] **Step 1:** Write the Payload reader at `lib/content/internal/payload/<domain>.ts`.
+- [ ] **Step 2:** Add the backend branch inside `lib/content/<domain>.ts`. **Exported signatures do not change** — that is the whole point of the seam.
+- [ ] **Step 3:** Run the module's existing tests against **both** backends. They are the contract both must satisfy; if a test passes on Sanity and fails on Payload, the reader is wrong, not the test.
+- [ ] **Step 4:** Run `compareRoute` on that domain's routes in all four locales. Rendered HTML must match.
+- [ ] **Step 5:** Commit, one module per commit, revertible alone.
+
+| Task | Module(s) | Lines | Notes |
+|---|---|---|---|
+| 6 | `taxonomy.ts`, `taxonomy-options.ts`, `regions.ts` | ~350 | Foundational; everything references tags and regions. **Fix `ContentTag.value`'s type here** — it is declared `string` but holds a slug object. |
+| 7 | `system.ts`, `metadata.ts`, `illustrations.ts`, `text.ts` | ~360 | `system.ts` holds the sitemap filters that read `status == "approved"` — they become `moderationStatus`. |
+| 8 | `onboarding.ts` | 283 | Composes **six** globals via `composeOnboardingContent`. Decide the 46 unserved component chains: serve or delete, not leave. |
+| 9 | `lived-experiences.ts` | 630 | `region` is a `regionalCommunity` reference; `videoUrl` is undeclared in Sanity but real; unset moderation means approved. |
+| 10 | `news.ts` | 964 | |
+| 11 | `outputs.ts` | 1,167 | |
+| 12 | `case-studies.ts` | 1,561 | **Maps `moderationStatus` → the public `status`.** `getCaseStudiesByStatus()` must keep working unchanged. |
+| 13 | `discovery.ts` | 1,399 | Cross-type search and filtering; the six `status == "approved"` event filters live here. |
+| 14 | `pages.ts` | **8,550** | See below — this one does not fit the shape. |
+
+### Task 14 is different
+
+`pages.ts` is more than half the content layer. **Split it before swapping it**: its bulk is per-block projections, and those are what change. Sub-steps:
+
+- [ ] **14a:** Split `pages.ts` by responsibility — one module per block family, re-exported from `pages.ts` so no caller changes. Commit; no behaviour change.
+- [ ] **14b:** Swap the page/document readers.
+- [ ] **14c:** Swap the block projections, family by family, `compareRoute` after each.
+- [ ] **14d:** Swap the homepage (eleven fixed slots) and `regionalCommunityPage` (one parameterised `contentGrid`).
+
+---
+
+## Task 15: Re-point the five external write paths
+
+**The spec says "16 write paths"; the measured figure is 9 files, and only 5 belong to this task.** The other four — `outputs.ts`, `case-studies.ts`, `lived-experiences.ts`, `discovery.ts` — are domain modules, so **their writes move with their own swap** in Tasks 9–13, not here. Splitting a module's reads from its writes across two tasks is what makes a half-moved path write to one backend and read from the other.
+
+**Files:** Modify `app/api/uploads/image/route.ts`, `lib/account-deletion.ts`, `lib/rate-limit.ts`, `lib/actions/sync-user-management.ts`. **Do not touch `app/api/webhooks/sanity/route.ts`** — it is the Sanity webhook receiver and dies in Phase 4; re-pointing it at Payload is meaningless.
+
+**The rule that caused an authorization bypass in Phase 1, restated:** a read feeding a write must not be cached, and `queryRaw` (raw perspective, write client) is not interchangeable with `queryLive` (published, read client). A `drafts.`-prefixed id matching a draft that says `status: "approved"` is exactly how that bypass happened. `queryLive` has 5 call sites today, all inside `outputs.ts` and `discovery.ts`; preserve that distinction when those modules swap.
+
+- [ ] **Step 1: Write the failing test** for `lib/actions/sync-user-management.ts`, the only external `queryRaw` caller:
+
+```ts
+it("reads through the uncached primitive, so a stale read cannot drive a write", async () => {
+  const calls: string[] = [];
+  await syncUserManagement({ onPrimitive: (name) => calls.push(name) });
+  expect(calls).toContain("queryRaw");
+  expect(calls).not.toContain("query");
+});
+```
+
+- [ ] **Step 2: Run it and watch it fail.**
+- [ ] **Step 3:** Re-point that file's read and write to Payload behind the backend flag.
+- [ ] **Step 4:** Repeat Steps 1–3 for `app/api/uploads/image/route.ts` (asserting the upload lands in `media` with `sanityAssetId` unset for new uploads), `lib/account-deletion.ts` (asserting every submittable type is covered — `caseStudy`, `livedExperience`, `researchOutput`, `event`), and `lib/rate-limit.ts`.
+- [ ] **Step 5:** Run the full suite against both backends.
+- [ ] **Step 6: Commit** — one commit per file, each revertible alone.
+
+---
+
+## Task 16: Moderation workflows → Payload
+
+**Files:** Create `payload/hooks/moderation.ts` and admin components; delete `sanity/actions/{case-study,event,lived-experience,research-output}-actions.ts` in Phase 4, not here.
+
+Four Studio actions become Payload `afterChange` hooks plus admin buttons. Preserve the existing email side effects (`lib/case-study-emails.ts`) and the `moderationStatus` vocabulary (`pending`/`rejected`/`revision`/`approved`).
+
+**Anonymous read requires published AND approved.** Gating on `_status` alone was a real security finding in Phase 2 and must not return. Field-level access must also survive: `submittedBy` and `reviewNotes` are editor-only, and Payload **field** access must return a plain boolean — a `Where`-returning helper is truthy there and silently makes the field public.
+
+- [ ] **Step 1: Write the failing test** for `caseStudy`, the richest workflow:
+
+```ts
+it("moves a case study pending -> approved and emails the submitter once", async () => {
+  const sent: string[] = [];
+  const doc = await approveCaseStudy(pendingCaseStudyId, { sendEmail: (to) => sent.push(to) });
+  expect(doc.moderationStatus).toBe("approved");
+  expect(sent).toHaveLength(1);
+});
+
+it("does not email when the status did not change", async () => {
+  const sent: string[] = [];
+  await approveCaseStudy(alreadyApprovedId, { sendEmail: (to) => sent.push(to) });
+  expect(sent).toEqual([]);
+});
+```
+
+- [ ] **Step 2: Run it and watch it fail.**
+- [ ] **Step 3:** Implement the `afterChange` hook, reading the previous value from `previousDoc` so the no-change case is detectable. Preserve `lib/case-study-emails.ts`'s existing templates.
+- [ ] **Step 4:** Repeat for `event`, `livedExperience` and `researchOutput`, porting each from its `sanity/actions/*-actions.ts` counterpart.
+- [ ] **Step 5:** Add the admin buttons, then move one real document through every state (`pending` → `revision` → `pending` → `approved`, and `pending` → `rejected`).
+- [ ] **Step 6: Commit** — one workflow per commit.
+
+---
+
+## Task 17: Algolia sync → in-process hooks
+
+**Files:** Modify `app/api/search/{agendas,case-studies,counts,news,users}/**`; create `payload/hooks/search-sync.ts`.
+
+Sync moves from Sanity webhooks to Payload `afterChange`/`afterDelete` hooks.
+
+**Two live hazards:** `pnpm build`'s `postbuild` pushes to the **live** index — never run it. And the public `NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY` currently returns 403 on all indices; the admin key works. That key rotation is the user's to do and is a prerequisite for validating search end-to-end.
+
+- [ ] **Step 1: Write the failing test** against a fake index client:
+
+```ts
+it("indexes an approved case study and removes a rejected one", async () => {
+  const ops: {op: string; id: string}[] = [];
+  await onCaseStudyChange({ doc: approved, previousDoc: pending }, fakeIndex(ops));
+  await onCaseStudyChange({ doc: rejected, previousDoc: approved }, fakeIndex(ops));
+  expect(ops).toEqual([
+    { op: "save", id: approved.id },
+    { op: "delete", id: rejected.id },
+  ]);
+});
+```
+
+- [ ] **Step 2: Run it and watch it fail.**
+- [ ] **Step 3:** Implement `payload/hooks/search-sync.ts` with `afterChange` and `afterDelete`, mapping each indexed type onto its existing record shape so the index schema does not change.
+- [ ] **Step 4:** Point `ALGOLIA_INDEX_PREFIX` at a scratch index, run the five sync routes, and diff the resulting records against the live index's current contents. They must match field for field.
+- [ ] **Step 5:** Leave the webhook routes in place, returning 410, until Phase 4 deletes them.
+- [ ] **Step 6: Commit.**
+
+---
+
+## Task 18: Flip the default and validate
+
+- [ ] **Step 1:** Set `CONTENT_BACKEND=payload` as the default.
+- [ ] **Step 2:** Run the full parity suite across every route and all four locales.
+- [ ] **Step 3:** Deploy to a Vercel **preview** and validate rendered pages there — the `setRequestLocale` incident proved local probes miss production-only failures, and the proof came from `vercel logs`.
+- [ ] **Step 4:** Leave the flag in place for one release as the rollback, then remove it in Phase 4.
+- [ ] **Step 5: Commit.**
+
+---
+
+## Phase 3 exit criteria
+
+- [ ] All 138 exports served by Payload; all 111+ test files green against both backends
+- [ ] `compareRoute` reports no difference on every enumerated route in `en`/`es`/`fr`/`ar`
+- [ ] The 14 write paths write to Payload; the 4 moderation workflows run as hooks
+- [ ] Algolia stays in sync through hooks, verified against a non-production index
+- [ ] Sanity is still readable and still untouched — Phase 4 decommissions it
+- [ ] A production Payload database exists, migrated, imported and verified
+
+## Out of scope
+
+- Deleting Sanity, its schemas, or its Studio (Phase 4)
+- Removing the Portable Text renderers in favour of native Lexical (Phase 4)
+- The homepage and regional-page remodels — the fixed slots and `contentGrid` are preserved deliberately
