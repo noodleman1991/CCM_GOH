@@ -718,7 +718,7 @@ Confirmed against `production_2`, and confirmed against the built collections: t
 The 21 lived-experience drafts are in-flight moderation work. **Losing them is the single most damaging thing this phase could do**, and it would be invisible — the published documents would all look fine.
 
 **`verifyImport` must check, and fail loudly on any mismatch:**
-- Per-type document counts against `docs/migration/sanity-archive-manifest.json`
+- Per-type document counts against `docs/migration/sanity-archive-manifest.json` (it does carry `byType` with per-type `published`/`drafts` — checked). **Reconcile the two totals before comparing:** the manifest says **446** published, this plan's exit criteria say **438**, and the difference is exactly the **8 `translation.metadata`** documents. Those are Sanity's i18n plumbing and are deliberately not imported — locale collapsing groups by slug instead — so 438 is the number that must land and 446 is the number in the manifest. Comparing the wrong pair fails a correct import.
 - Every Sanity `_id` present as a Payload id
 - All four locales populated on every localized document that had them in Sanity
 - 30 draft versions present
