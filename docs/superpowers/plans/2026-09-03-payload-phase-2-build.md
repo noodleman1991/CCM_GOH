@@ -721,7 +721,9 @@ The 21 lived-experience drafts are in-flight moderation work. **Losing them is t
 - Per-type document counts against `docs/migration/sanity-archive-manifest.json` (it does carry `byType` with per-type `published`/`drafts` — checked). **Reconcile the two totals before comparing:** the manifest says **446** published, this plan's exit criteria say **438**, and the difference is exactly the **8 `translation.metadata`** documents. Those are Sanity's i18n plumbing and are deliberately not imported — locale collapsing groups by slug instead — so 438 is the number that must land and 446 is the number in the manifest. Comparing the wrong pair fails a correct import.
 - Every Sanity `_id` present as a Payload id
 - All four locales populated on every localized document that had them in Sanity
-- 30 draft versions present
+- 30 draft versions present — **count by status, not by row.** The `_*_v` version tables already hold hundreds of rows before any draft is imported: every idempotent re-run of Task 12 writes a fresh *published* version snapshot, so `_case_studies_v` is at 216 for 27 documents, `_lived_experiences_v` at 70, `_regional_pages_v` at 56 — **342 rows, all `published`, zero drafts** (measured). A verifier that counts rows in `_*_v` reports hundreds instead of 30 and fails a correct import. Filter on the version's own status.
+
+  (The accumulation is harmless but worth knowing: versions grow by one per document per import run, so re-running the import repeatedly inflates these tables.)
 - Every image and file reference resolves to a real upload
 - No rich-text field is empty where Sanity had content
 
