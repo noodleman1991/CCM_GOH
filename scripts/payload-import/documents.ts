@@ -8,7 +8,8 @@
  *   pnpm import:documents                 # import (idempotent; safe to re-run)
  *   pnpm import:documents -- --dry-run    # transform everything, write nothing
  *   pnpm import:documents -- --resume     # skip documents that already exist
- *   pnpm import:documents -- --only tag,agenda
+ *   pnpm import:documents -- --only=tag,agenda
+ *   pnpm import:documents -- --allow-after-drafts   # see the ordering rule below
  *
  * ## The four properties, and how each is obtained
  *
@@ -41,6 +42,15 @@
  *   clearing tables; the 395 uploads Task 11 created are only ever read.
  * - **Progress is printed per document**, because a long run behind a
  *   no-output watchdog looks like a hang.
+ * - **It refuses to run after `pnpm import:drafts`.** Payload bases every
+ *   edit on the version flagged `latest`, and a published save takes that
+ *   flag — so a document import that follows a draft import leaves all 30
+ *   draft rows in place while burying every pending edit behind a published
+ *   snapshot, silently. `importDocumentTargets` counts the draft-`latest`
+ *   versions before it writes anything and throws `DraftsWouldBeBuried`
+ *   unless `--allow-after-drafts` says the caller means it (and will re-run
+ *   `pnpm import:drafts` afterwards). 21 of those drafts are in-flight
+ *   moderation work on lived experiences; a docstring is not a guard.
  */
 
 import path from "node:path";
@@ -74,6 +84,12 @@ export interface ImportSummary {
 export interface DocumentClient {
   /** Every id already present in a collection. One query, for resumability. */
   existingIds(collection: string): Promise<Set<string>>;
+  /**
+   * The documents in `collection` whose newest version is a draft — i.e. the
+   * pending edits a published write would bury. Empty for a collection with
+   * no drafts enabled.
+   */
+  latestDraftDocuments(collection: string): Promise<string[]>;
   /** Whether a global has ever been written. */
   globalExists(slug: string): Promise<boolean>;
   create(args: { collection: string; data: PayloadData; locale: Locale }): Promise<void>;
@@ -85,6 +101,12 @@ export interface DocumentImportOptions {
   client: DocumentClient;
   /** Skip documents that already exist instead of updating them. */
   resume?: boolean;
+  /**
+   * Write even though draft versions are the newest ones. The caller is
+   * saying it accepts that every pending edit is buried and that it will
+   * re-run `pnpm import:drafts` afterwards to restore them.
+   */
+  allowAfterDrafts?: boolean;
   /** Total tries per document, including the first. Default 3. */
   attempts?: number;
   retryDelayMs?: number;
@@ -128,27 +150,48 @@ export async function importDocumentTargets(
   targets: DocumentTarget[],
   options: DocumentImportOptions,
 ): Promise<ImportSummary> {
-  const { client, resume = false, attempts = 3, retryDelayMs = 1000, concurrency = 4, onProgress } = options;
+  const {
+    client,
+    resume = false,
+    attempts = 3,
+    retryDelayMs = 1000,
+    concurrency = 4,
+    allowAfterDrafts = false,
+    onProgress,
+  } = options;
+
+  const collections = [...new Set(targets.filter((t) => t.kind === "collection").map((t) => t.slug))];
+
+  // The ordering guard, before the first write. See the module header: a
+  // published save takes the `latest` flag, so writing over a document whose
+  // newest version is a draft buries that draft without deleting it — the row
+  // survives, the pending edit stops being what an editor sees, and no count
+  // can tell. Refusing is cheap; noticing afterwards is not.
+  if (!allowAfterDrafts) {
+    const buried: string[] = [];
+    for (const collection of collections) {
+      for (const id of await client.latestDraftDocuments(collection)) buried.push(`${collection}/${id}`);
+    }
+    if (buried.length > 0) throw new DraftsWouldBeBuried(buried);
+  }
 
   // One read-back per collection before anything is written. This is what
   // makes a re-run an upsert rather than a duplicate-key crash, and what makes
   // a killed run cost one document rather than the whole run.
   const existing = new Map<string, Set<string>>();
-  for (const collection of new Set(targets.filter((t) => t.kind === "collection").map((t) => t.slug))) {
+  for (const collection of collections) {
     existing.set(collection, await client.existingIds(collection));
   }
   const globalsPresent = new Map<string, boolean>();
   for (const slug of new Set(targets.filter((t) => t.kind === "global").map((t) => t.slug))) {
-    // Tolerant on purpose. `onboardingContent` currently cannot be READ at all
-    // — its locales table has 197 columns and Payload's Postgres adapter
-    // selects them through `json_build_array(...)`, which Postgres caps at 100
-    // arguments (SQLSTATE 54023). A probe that threw here would abort the run
-    // before a single one of the other 383 documents was written.
-    try {
-      globalsPresent.set(slug, await client.globalExists(slug));
-    } catch {
-      globalsPresent.set(slug, false);
-    }
+    // Errors surface. This probe used to swallow them, because
+    // `onboardingContent` could not be READ at all — its locales table had 197
+    // columns and Payload's Postgres adapter selects them through
+    // `json_build_array(...)`, which Postgres caps at 100 arguments (SQLSTATE
+    // 54023). `bac71666d` split that global into six and the read works, so
+    // the catch would now only turn a connection or permission failure into
+    // "this global does not exist yet" and create a second copy on top.
+    globalsPresent.set(slug, await client.globalExists(slug));
   }
 
   const summary: ImportSummary = { created: 0, updated: 0, skipped: 0, byType: {} };
@@ -232,6 +275,28 @@ export async function importDocumentTargets(
  * difference between "the import failed" and "the import wrote 383 of 384 and
  * here is the one that is broken".
  */
+/**
+ * The document import was asked to run after the draft import.
+ *
+ * Recoverable, and deliberately raised before anything is written: the draft
+ * *rows* survive a published save, so the fix is either to run the imports in
+ * the documented order or to pass `--allow-after-drafts` and re-run
+ * `pnpm import:drafts` afterwards, which restores the `latest` flag.
+ */
+export class DraftsWouldBeBuried extends Error {
+  constructor(readonly documents: string[]) {
+    super(
+      `${documents.length} document(s) have a draft as their newest version, and a published write would ` +
+        `bury every one of them:\n` +
+        documents.slice(0, 12).map((d) => `  - ${d}`).join("\n") +
+        (documents.length > 12 ? `\n  … and ${documents.length - 12} more` : "") +
+        `\n\nRun the imports in order (\`pnpm import:documents\` then \`pnpm import:drafts\`), or pass ` +
+        `--allow-after-drafts and re-run \`pnpm import:drafts\` afterwards to restore them.`,
+    );
+    this.name = "DraftsWouldBeBuried";
+  }
+}
+
 export class ImportFailure extends Error {
   constructor(
     readonly failures: { target: DocumentTarget; error: unknown }[],
@@ -361,6 +426,21 @@ function payloadDocumentClient(payload: PayloadInstance): DocumentClient {
       });
       return new Set(found.docs.map((doc) => String(doc.id)));
     },
+    async latestDraftDocuments(collection) {
+      // A collection without `versions.drafts` has no version table to query;
+      // asking anyway is an error, not an empty answer.
+      const config = payload.collections[collection as keyof typeof payload.collections]?.config;
+      if (!config?.versions || !config.versions.drafts) return [];
+      const found = await payload.findVersions({
+        collection: collection as Parameters<typeof payload.findVersions>[0]["collection"],
+        depth: 0,
+        limit: 0,
+        pagination: false,
+        overrideAccess: true,
+        where: { and: [{ "version._status": { equals: "draft" } }, { latest: { equals: true } }] },
+      });
+      return [...new Set(found.docs.map((row) => String((row as { parent?: unknown }).parent ?? "")))];
+    },
     async globalExists(slug) {
       const found = (await payload.findGlobal({
         slug: slug as Parameters<typeof payload.findGlobal>[0]["slug"],
@@ -406,6 +486,9 @@ function dryRunClient(): DocumentClient {
     async existingIds() {
       return new Set();
     },
+    async latestDraftDocuments() {
+      return [];
+    },
     async globalExists() {
       return false;
     },
@@ -419,6 +502,8 @@ export interface ImportDocumentsOptions {
   dryRun?: boolean;
   resume?: boolean;
   quiet?: boolean;
+  /** Write even though drafts are the newest versions — see the module header. */
+  allowAfterDrafts?: boolean;
   /** Restrict the run to these Sanity `_type`s. */
   only?: string[];
   /** Documents written at once within one type. Default 4. */
@@ -451,6 +536,9 @@ export async function importDocuments(options: ImportDocumentsOptions = {}): Pro
     if (options.only?.length) console.log(`only:       ${options.only.join(", ")} (${selected.length} documents)`);
     if (options.dryRun) console.log("mode:       DRY RUN — nothing will be written");
     if (options.resume) console.log("mode:       RESUME — existing documents are skipped, not updated");
+    if (options.allowAfterDrafts) {
+      console.log("mode:       ALLOW-AFTER-DRAFTS — pending drafts will be buried; re-run `pnpm import:drafts`");
+    }
   }
 
   const client = payload ? payloadDocumentClient(payload) : dryRunClient();
@@ -458,8 +546,9 @@ export async function importDocuments(options: ImportDocumentsOptions = {}): Pro
   let summary: ImportSummary;
   try {
     summary = await importDocumentTargets(selected, {
-    client,
+      client,
       resume: options.resume,
+      allowAfterDrafts: options.allowAfterDrafts,
       concurrency: options.concurrency,
       onProgress: options.quiet
         ? undefined
@@ -523,6 +612,7 @@ if (invokedDirectly) {
   importDocuments({
     dryRun: argv.includes("--dry-run"),
     resume: argv.includes("--resume"),
+    allowAfterDrafts: argv.includes("--allow-after-drafts"),
     only: onlyFlag ? onlyFlag.slice("--only=".length).split(",").filter(Boolean) : undefined,
     concurrency: concurrencyFlag ? Number(concurrencyFlag.slice("--concurrency=".length)) : undefined,
   })

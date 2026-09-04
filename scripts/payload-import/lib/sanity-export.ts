@@ -326,7 +326,14 @@ export async function readExportAssets(exportDir: string): Promise<SanityExportA
     let names: string[];
     try {
       names = await readdir(path.join(exportDir, dir));
-    } catch {
+    } catch (error) {
+      // A missing directory is legitimate — an export with no files at all
+      // has no `files/`. Anything else (permissions, a truncated unpack) is
+      // not: swallowing it silently would produce a run that imports 48 files
+      // and 0 images and still reports success.
+      if ((error as NodeJS.ErrnoException)?.code !== "ENOENT") {
+        throw new Error(`Cannot read ${path.join(exportDir, dir)} in the Sanity export`, { cause: error });
+      }
       continue;
     }
     for (const name of names) {

@@ -7,6 +7,7 @@ import {
   IMPORT_ORDER,
   LOCALES,
   localizedValue,
+  perFieldLocale,
   dateOf,
   pointOf,
   slugOf,
@@ -349,6 +350,83 @@ describe("locale collapsing by slug", () => {
   });
 });
 
+/* ------------------------------------------------- per-field locale writes */
+
+describe("a locale holds only what Sanity translates", () => {
+  it("does not copy English into a field the locale has no translation for", () => {
+    // `workType.description` is `[{_key:"en"}]` only; `label` has all four. The
+    // whole-document collapse this replaces wrote the entire `es` payload the
+    // moment `label` differed — and by then the English description had
+    // already been substituted for `es`. Measured over the archive: 112
+    // (document, locale, field) triples held a hard copy of English in a row
+    // Sanity never translated, invisible to every count and frozen against
+    // future English edits.
+    const target = buildTarget("workType", single(WORK_TYPE), context());
+    expect(target.data.en!.description).toBe("Educational programs");
+    expect(target.data.es!.label).toBe("Educación y Enseñanza");
+    expect(target.data.es!.description).toBeNull();
+    expect(target.data.fr!.description).toBeNull();
+    expect(target.data.ar!.description).toBeNull();
+  });
+
+  it("writes a locale whose translation is spelled exactly like English", () => {
+    // The mirror of the same bug: `tag-adaptation.label.fr` is literally
+    // "Adaptation", so a difference test saw nothing to write and the `fr` row
+    // was never created. Presence is decided by whether Sanity holds a value,
+    // never by whether it differs.
+    const sameWord: SanityDoc = { ...TAG, label: { en: "Adaptation", fr: "Adaptation" } };
+    const target = buildTarget("tag", single(sameWord), context());
+    expect(Object.keys(target.data).sort()).toEqual(["en", "fr"]);
+    expect(target.data.fr!.label).toBe("Adaptation");
+  });
+
+  it("keeps English on a required localized field, because Payload rejects a null there", () => {
+    // `tags.label` is `localized` **and** `required`. Payload validates the
+    // incoming value for the operation's locale, and `required && !value` is a
+    // hard error — so the one class of field that cannot be cleared keeps the
+    // fallback, deliberately and on the record.
+    const translatedDescription: SanityDoc = {
+      ...TAG,
+      label: { en: "Climate Anxiety" },
+      description: { en: "About climate anxiety", es: "Sobre la ansiedad climática" },
+    };
+    const target = buildTarget("tag", single(translatedDescription), context());
+    expect(target.data.es!.description).toBe("Sobre la ansiedad climática");
+    expect(target.data.es!.label).toBe("Climate Anxiety");
+  });
+
+  it("reports what it cleared and what the schema forced it to keep", () => {
+    // The two outcomes named explicitly, so the required-field exception can
+    // never grow silently.
+    const localized = new Map([
+      ["label", { path: "label", required: true }],
+      ["description", { path: "description", required: false }],
+      ["image.alt", { path: "image.alt", required: false }],
+    ]);
+    // `built` is the ordinary build, which already carries the translation
+    // wherever Sanity has one and the English fallback wherever it does not;
+    // `translated` is the same build with the fallback off.
+    const built = { label: "English", description: "Español", image: { asset: "a", alt: "English" } };
+    const translated = { label: null, description: "Español", image: { asset: "a", alt: null } };
+    const result = perFieldLocale(built, translated, localized);
+    expect(result.cleared).toEqual(["image.alt"]);
+    expect(result.keptEnglish).toEqual(["label"]);
+    expect(result.payload).toEqual({
+      label: "English",
+      description: "Español",
+      image: { asset: "a", alt: null },
+    });
+    // The input is untouched — `buildTarget` compares it against `en`.
+    expect(built.image.alt).toBe("English");
+  });
+
+  it("still writes nothing but `en` for a document with no translations at all", () => {
+    // The floor: a bare value is one value for every language, so it is not a
+    // translation and must not conjure three more locale rows.
+    expect(Object.keys(buildTarget("tag", single(TAG), context()).data)).toEqual(["en"]);
+  });
+});
+
 /* ------------------------------------------------------- reference ordering */
 
 describe("reference order", () => {
@@ -639,6 +717,9 @@ function memoryClient(): { store: Store; client: DocumentClient } {
       async existingIds(slug) {
         return new Set(collection(slug).keys());
       },
+      async latestDraftDocuments() {
+        return [];
+      },
       async globalExists(slug) {
         return globals.has(slug);
       },
@@ -710,6 +791,41 @@ describe("write loop", () => {
         maxFailures: 3,
       }),
     ).rejects.toThrow(/more than 3 documents failed; stopping early/);
+  });
+
+  it("refuses to run when a draft is the newest version, before writing anything", async () => {
+    // Payload bases every edit on the version flagged `latest`, and a
+    // published save takes that flag. Running this importer after
+    // `pnpm import:drafts` therefore leaves all 30 draft rows in place while
+    // burying every pending edit — 21 of them in-flight moderation work on
+    // lived experiences — with nothing in the output to say so.
+    const { store, client } = memoryClient();
+    const afterDrafts: DocumentClient = {
+      ...client,
+      async latestDraftDocuments(collection) {
+        return collection === "tags" ? ["tag-under-review"] : [];
+      },
+    };
+    const targets = documentTargets([TAG, WORK_TYPE], context()).targets;
+    await expect(importDocumentTargets(targets, { client: afterDrafts })).rejects.toThrow(
+      /have a draft as their newest version[\s\S]*tags\/tag-under-review[\s\S]*--allow-after-drafts/,
+    );
+    // Nothing was written: the guard runs before the first create.
+    expect(store.size).toBe(0);
+  });
+
+  it("writes anyway when the caller passes --allow-after-drafts", async () => {
+    const { store, client } = memoryClient();
+    const afterDrafts: DocumentClient = {
+      ...client,
+      async latestDraftDocuments() {
+        return ["tag-under-review"];
+      },
+    };
+    const targets = documentTargets([TAG, WORK_TYPE], context()).targets;
+    await importDocumentTargets(targets, { client: afterDrafts, allowAfterDrafts: true });
+    expect(store.get("tags")?.size).toBe(1);
+    expect(store.get("workTypes")?.size).toBe(1);
   });
 
   it("overlaps siblings but keeps a barrier between types", async () => {

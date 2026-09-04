@@ -47,6 +47,7 @@
 
 import { portableTextToLexical } from "@/lib/content/internal/lexical";
 import { ONBOARDING_CONTENT_FIELDS, ONBOARDING_GLOBALS } from "@/payload/globals/onboarding-content";
+import { localizedFieldsFor } from "./localized-fields";
 import { assetIdFromSanityAssetRef } from "./sanity-export";
 
 export const LOCALES = ["en", "es", "fr", "ar"] as const;
@@ -84,6 +85,51 @@ export function slugOf(value: unknown): string | undefined {
 }
 
 /**
+ * Whether the cross-locale fallback in `localizedValue` is switched off.
+ *
+ * Module state rather than a parameter because `localizedValue` sits under
+ * `text()`, `richText()` and `image()`, which every one of the ~40 builders
+ * calls dozens of times — threading a flag through all of them would be a
+ * thousand-line diff for a two-line behaviour. The whole build is synchronous
+ * and single-threaded, and `withStrictLocale` restores the previous value in a
+ * `finally`, so the window cannot leak into another build.
+ */
+let strictLocale = false;
+
+/** How many locale-partitioned values the current strict build found. */
+let strictLocaleHits = 0;
+
+/**
+ * Runs `fn` with the cross-locale fallback disabled: a field Sanity does not
+ * translate into the requested locale comes back `undefined` (and therefore
+ * `null` through the builders' `?? null`) instead of the English value.
+ *
+ * This only disables the fallback for values that are *locale-partitioned in
+ * Sanity* — an `{en, es, …}` object or an `internationalizedArray`. A bare
+ * value is one value for every language by construction, so it is returned
+ * unchanged; there is no English for it to fall back from.
+ *
+ * `localeValues` counts the locale-partitioned values that answered for a
+ * language other than `en`. It is the honest test of "does Sanity translate
+ * this document into this language at all" — a bare value would answer for
+ * every language and so says nothing, and comparing against the English build
+ * would miss a translation that happens to be spelled the same
+ * (`tag-adaptation.label.fr` is literally `"Adaptation"`).
+ */
+export function withStrictLocale<T>(fn: () => T): { value: T; localeValues: number } {
+  const previousFlag = strictLocale;
+  const previousHits = strictLocaleHits;
+  strictLocale = true;
+  strictLocaleHits = 0;
+  try {
+    return { value: fn(), localeValues: strictLocaleHits };
+  } finally {
+    strictLocale = previousFlag;
+    strictLocaleHits = previousHits;
+  }
+}
+
+/**
  * The three localized shapes the real data uses, collapsed to one lane.
  *
  * - `{en, es, fr, ar}` (often partial — `tag.label` is `{en}` on 27 of 67)
@@ -97,19 +143,30 @@ export function slugOf(value: unknown): string | undefined {
  * Payload are `required` — writing `null` into the `es` lane of
  * `caseStudies.content` would fail validation, and Payload's own
  * `fallback: true` only covers reads.
+ *
+ * Under `withStrictLocale` the fallback is switched off and an untranslated
+ * field reports absence instead. That is how `buildTarget` tells a genuine
+ * translation apart from an inherited English string.
  */
 export function localizedValue(value: unknown, locale: Locale): unknown {
   if (Array.isArray(value) && value.length > 0 && value.every(isInternationalizedEntry)) {
     const entries = value as { _key: string; value?: unknown }[];
-    const hit =
-      entries.find((e) => e._key === locale && present(e.value)) ??
-      entries.find((e) => e._key === "en" && present(e.value)) ??
-      entries.find((e) => present(e.value));
+    const own = entries.find((e) => e._key === locale && present(e.value));
+    if (own) {
+      if (strictLocale && locale !== "en") strictLocaleHits += 1;
+      return own.value;
+    }
+    if (strictLocale) return undefined;
+    const hit = entries.find((e) => e._key === "en" && present(e.value)) ?? entries.find((e) => present(e.value));
     return hit?.value;
   }
   if (isLocaleObject(value)) {
     const map = value as Record<string, unknown>;
-    if (present(map[locale])) return map[locale];
+    if (present(map[locale])) {
+      if (strictLocale && locale !== "en") strictLocaleHits += 1;
+      return map[locale];
+    }
+    if (strictLocale) return undefined;
     if (present(map.en)) return map.en;
     return Object.values(map).find(present);
   }
@@ -1828,6 +1885,77 @@ export function documentTargets(docs: SanityDoc[], ctx: TransformContext): {
   return { targets, skipped };
 }
 
+/**
+ * Decides, **field by field**, what a non-English locale's payload should say.
+ *
+ * The bug this replaces was that the decision was whole-document: the payload
+ * for `es` was written in full the moment any one field differed, and by then
+ * `localizedValue` had already substituted the English string for every field
+ * `es` does not translate. 112 (document, locale, field) triples ended up
+ * holding a hard copy of English in an `es`/`fr`/`ar` row Sanity had never
+ * translated — invisible to any count, and frozen against future English
+ * edits.
+ *
+ * The rule now:
+ *
+ * - a localized leaf Sanity translates into this locale keeps its value;
+ * - a localized leaf it does not is written as **`null`**, so Payload's
+ *   `fallback: true` serves English on read and the row tracks English
+ *   forever after. `null` rather than "omit the key" is deliberate: Payload's
+ *   `beforeChange` only writes the locales present in the incoming data
+ *   (`mergeLocaleActions` skips `undefined`), so an omitted key would leave an
+ *   already-written English copy in place and this repair would never happen;
+ * - a **required** localized leaf keeps the English fallback, because
+ *   Payload validates the incoming value for the operation's locale and
+ *   `required && !value` is a hard error. Recorded here rather than hidden:
+ *   clearing those needs a schema change, not an importer trick;
+ * - everything else — unlocalized fields, and localized `array`/`blocks`
+ *   containers, which have no per-row fallback — is written exactly as before.
+ */
+export function perFieldLocale(
+  built: PayloadData,
+  translated: PayloadData,
+  localized: ReadonlyMap<string, { path: string; required: boolean }>,
+): { payload: PayloadData; cleared: string[]; keptEnglish: string[] } {
+  let payload = built;
+  const cleared: string[] = [];
+  const keptEnglish: string[] = [];
+
+  for (const [path, field] of localized) {
+    const segments = path.split(".");
+    // `!= null` on purpose: the builders end in `?? null`, so an untranslated
+    // leaf reaches here as `null`, not as a missing key.
+    if (valueAt(built, segments) == null) continue;
+    if (valueAt(translated, segments) != null) continue;
+    if (field.required) {
+      keptEnglish.push(path);
+      continue;
+    }
+    payload = withValueAt(payload, segments, null);
+    cleared.push(path);
+  }
+
+  return { payload, cleared, keptEnglish };
+}
+
+function valueAt(data: PayloadData, segments: string[]): unknown {
+  let node: unknown = data;
+  for (const segment of segments) {
+    if (!isRecord(node)) return undefined;
+    node = node[segment];
+  }
+  return node;
+}
+
+/** A copy of `data` with `segments` set to `value`; `data` is never mutated. */
+function withValueAt(data: PayloadData, segments: string[], value: unknown): PayloadData {
+  const [head, ...rest] = segments;
+  if (rest.length === 0) return { ...data, [head]: value };
+  const child = data[head];
+  if (!isRecord(child)) return data;
+  return { ...data, [head]: withValueAt(child as PayloadData, rest, value) };
+}
+
 export function buildTarget(type: string, group: SourceGroup, ctx: TransformContext): DocumentTarget {
   const spec = TYPE_SPECS[type];
   if (!spec) throw new ImportTransformError(`No Payload target for Sanity type "${type}"`);
@@ -1844,13 +1972,22 @@ export function buildTarget(type: string, group: SourceGroup, ctx: TransformCont
     const base = { ...spec.build(canonical, canonical, "en", ctx, unplaced), ...timestamps(canonical), ...status };
     data.en = base;
     const baseline = JSON.stringify(base);
+    const localized = localizedFieldsFor(spec.slug);
     for (const locale of LOCALES) {
       if (locale === "en") continue;
       const built = { ...spec.build(canonical, canonical, locale, ctx, unplaced), ...timestamps(canonical), ...status };
-      // Only locales that actually differ are written. A Lane-B document whose
-      // fields are all `{en}` gets one write, not four — and Payload's
-      // `fallback: true` serves es/fr/ar from `en` exactly as Sanity did.
-      if (JSON.stringify(built) !== baseline) data[locale] = built;
+      // The same build with the cross-locale fallback off: every localized
+      // leaf it still holds is one Sanity genuinely translates into `locale`.
+      // `unplaced` is deliberately thrown away here — the inventory is a
+      // property of the document, not of the language, and counting it twice
+      // more per document would treble it.
+      const strict = withStrictLocale(() => spec.build(canonical, canonical, locale, ctx, []));
+      const forLocale = perFieldLocale(built, strict.value as PayloadData, localized).payload;
+      // A locale is written when Sanity holds a value of its own for it — even
+      // one byte-identical to English, which must still produce a row — and,
+      // as a floor, whenever the built document differs from `en` at all, so a
+      // difference in a field this module cannot classify is never lost.
+      if (strict.localeValues > 0 || JSON.stringify(built) !== baseline) data[locale] = forLocale;
     }
   } else {
     for (const locale of LOCALES) {
