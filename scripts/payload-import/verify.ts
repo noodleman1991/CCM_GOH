@@ -30,11 +30,34 @@
  * ## What the transform output is used for
  *
  * The archive is re-transformed in memory and the result is the oracle: the
- * expected id set, the expected per-collection counts, the expected upload
- * references and the expected non-empty rich text all come from it. That is
- * deliberate — it makes this a check of *the database*, using the same pure
- * function Task 12's unit tests pin down, rather than a second hand-written
- * model of the schema that could drift.
+ * expected id set, the expected per-collection counts, the expected values,
+ * the expected upload references and the expected rich text all come from it.
+ * That is deliberate — it makes this a check of *the database*, using the same
+ * pure function Task 12's unit tests pin down, rather than a second
+ * hand-written model of the schema that could drift. The limit is real and
+ * worth stating: a defect in the transform itself is invisible to the three
+ * content checks, because they compare the transform to itself.
+ * `richtext/sanity-coverage` is the one that goes back to the archive.
+ *
+ * ## Values, not presence
+ *
+ * Every content check compares **what the database holds against what the
+ * transform says it should hold**. It did not always: `collectValues` was read
+ * only for whether a path was populated, so replacing every localized string
+ * in every document with the literal `"WRONG"` passed all nineteen checks, and
+ * an `ar`/`fr` mix-up on `pages` was invisible. Both now fail — see the
+ * `verifyImport, driven through a fake client` tests.
+ *
+ * ## Archive checks are counted apart from database checks
+ *
+ * Six of the nineteen — the five `manifest/*` and
+ * `documents/every-sanity-id-accounted` — compare the export, the manifest and
+ * the transform's own output to each other. They catch a drifted manifest,
+ * which is worth catching, but they **cannot fail for any state of
+ * `payload_cms`**. Summing them into one headline spent a third of its
+ * credibility on checks the import cannot influence, so every check carries a
+ * `scope` and the two totals are reported separately. `VerifyOptions.archive`
+ * is the injection point that lets the archive-scoped six be tested at all.
  */
 
 import path from "node:path";
@@ -59,8 +82,22 @@ import {
 // Report
 // ---------------------------------------------------------------------------
 
+/**
+ * Where a check gets its "actual" from.
+ *
+ * `database` checks read `payload_cms` and can fail for a bad import.
+ * `archive` checks compare the Phase 0 export, the manifest and the
+ * transform's own output to each other — worth having, because they catch a
+ * drifted manifest, but they **cannot fail for any state of the database**.
+ * Summing the two produced a headline ("19/19") that spent a third of its
+ * credibility on checks the import could not influence, so they are counted
+ * and reported apart.
+ */
+export type CheckScope = "archive" | "database";
+
 export interface VerificationCheck {
   name: string;
+  scope: CheckScope;
   ok: boolean;
   expected: string;
   actual: string;
@@ -77,6 +114,7 @@ export interface VerificationReport {
 const MAX_FAILURES_LISTED = 12;
 
 function check(
+  scope: CheckScope,
   name: string,
   expected: string | number,
   actual: string | number,
@@ -84,6 +122,7 @@ function check(
 ): VerificationCheck {
   return {
     name,
+    scope,
     ok: String(expected) === String(actual) && failures.length === 0,
     expected: String(expected),
     actual: String(actual),
@@ -280,6 +319,32 @@ export function collectValues(value: unknown, uploads: ReadonlySet<string>): Col
 }
 
 /**
+ * An ISO-8601 date, with or without a time — the two spellings the data uses:
+ * `agenda.publishDate` is a bare `2024-03-18`, `livedExperience.publishedAt`
+ * a full `2025-11-10T13:09:46.029Z`.
+ */
+const ISO_DATE = /^\d{4}-\d{2}-\d{2}(?:T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:?\d{2})?)?$/;
+
+/**
+ * Exact string equality, with exactly one allowance.
+ *
+ * `dateOf()` carries Sanity's own string through — `2024-03-18` on the 29
+ * agendas — and Postgres stores it as a `timestamp`, which Payload reads back
+ * as `2024-03-18T00:00:00.000Z`. Same instant, different spelling, on 124 of
+ * the 13,566 values compared; treating those as mismatches would bury the real
+ * ones. Both sides must *look* like an ISO date before the lenient path is
+ * taken, so a string that merely happens to parse as one — `"2024"` — is still
+ * compared byte for byte.
+ */
+export function sameText(expected: string, actual: string): boolean {
+  if (expected === actual) return true;
+  if (!ISO_DATE.test(expected) || !ISO_DATE.test(actual)) return false;
+  const a = Date.parse(expected);
+  const b = Date.parse(actual);
+  return Number.isFinite(a) && a === b;
+}
+
+/**
  * Portable Text arrays in a Sanity document, counted per locale lane.
  *
  * The shapes in the dataset are a bare array of blocks and an `{en, es, …}`
@@ -331,12 +396,23 @@ export interface VerifyClient {
   draftVersions(collection: string): Promise<DraftVersionRow[]>;
   countUploads(collection: "media" | "files"): Promise<number>;
   uploadIds(): Promise<Set<string>>;
+  /** One global in one locale, read with **no** fallback — see section 8. */
   global(slug: string, locale: Locale): Promise<Record<string, unknown> | null>;
 }
 
 export interface VerifyOptions {
   client?: VerifyClient;
   quiet?: boolean;
+  /**
+   * The archive side of every comparison, injected instead of read off disk.
+   *
+   * Without this the six archive-scoped checks have no failure mode anything
+   * can exercise — `verifyImport` would always unpack the real 220 MB export
+   * and read the committed manifest — so they were unproven by construction.
+   * With it, a test can hand in a three-document archive and a manifest that
+   * disagrees with it, and watch the right check go red.
+   */
+  archive?: { docs: SanityDoc[]; manifest: ArchiveManifest };
 }
 
 /** Globals that have a Sanity source and must therefore read back populated. */
@@ -376,14 +452,22 @@ export const RICH_TEXT_NOT_MODELLED: Readonly<Record<string, number>> = {
 
 export async function verifyImport(options: VerifyOptions = {}): Promise<VerificationReport> {
   await loadEnv();
-  const database = assertPayloadDatabase(process.env.PAYLOAD_DATABASE_URL);
+  // The database name is a label here — the verifier only reads — but the
+  // guard stays on for every real run. An injected client with no
+  // `PAYLOAD_DATABASE_URL` is a test, and says so in the report.
+  const database =
+    options.client && !process.env.PAYLOAD_DATABASE_URL
+      ? "(injected client)"
+      : assertPayloadDatabase(process.env.PAYLOAD_DATABASE_URL);
   const log = options.quiet ? () => {} : (msg: string) => console.log(msg);
 
-  const exportDir = await extractArchive({ verifyChecksum: false });
-  const docs = (await readExportDocuments(exportDir)) as SanityDoc[];
-  const manifest = JSON.parse(
-    await readFile(path.join(REPO_ROOT, "docs/migration/sanity-archive-manifest.json"), "utf8"),
-  ) as ArchiveManifest;
+  const docs =
+    options.archive?.docs ?? ((await readExportDocuments(await extractArchive({ verifyChecksum: false }))) as SanityDoc[]);
+  const manifest =
+    options.archive?.manifest ??
+    (JSON.parse(
+      await readFile(path.join(REPO_ROOT, "docs/migration/sanity-archive-manifest.json"), "utf8"),
+    ) as ArchiveManifest);
 
   const payload = options.client ? undefined : await getPayloadInstance();
   const client = options.client ?? payloadVerifyClient(payload!);
@@ -398,7 +482,8 @@ export async function verifyImport(options: VerifyOptions = {}): Promise<Verific
   const checks: VerificationCheck[] = [];
   const push = (c: VerificationCheck) => {
     checks.push(c);
-    log(`${c.ok ? "PASS" : "FAIL"}  ${c.name.padEnd(38)} expected ${c.expected} · actual ${c.actual}`);
+    const tag = c.scope === "archive" ? "archive " : "database";
+    log(`${c.ok ? "PASS" : "FAIL"}  ${tag}  ${c.name.padEnd(38)} expected ${c.expected} · actual ${c.actual}`);
     for (const failure of c.failures) log(`        ${failure}`);
   };
 
@@ -417,13 +502,14 @@ export async function verifyImport(options: VerifyOptions = {}): Promise<Verific
     }
   }
   const typeCount = Object.keys(expectations.publishedByType).length;
-  push(check("manifest/published-by-type", typeCount, typeCount - perTypeFailures.length, perTypeFailures));
+  push(check("archive", "manifest/published-by-type", typeCount, typeCount - perTypeFailures.length, perTypeFailures));
   // 446 - 8 translation.metadata = 438. This is the reconciliation itself: if
   // the manifest's own total and its per-type breakdown ever disagree, every
   // count below is measured against the wrong number.
   const excludedTotal = Object.values(expectations.excluded).reduce((a, b) => a + b, 0);
   push(
     check(
+      "archive",
       "manifest/438-reconciles-with-446",
       expectations.publishedInManifest - excludedTotal,
       expectations.publishedImported,
@@ -431,17 +517,18 @@ export async function verifyImport(options: VerifyOptions = {}): Promise<Verific
   );
   push(
     check(
+      "archive",
       "manifest/published-total",
       expectations.publishedImported,
       Object.values(counted.published).reduce((a, b) => a + b, 0) - excludedTotal,
     ),
   );
-  push(check("manifest/content-drafts", expectations.drafts, drafts.targets.length));
-  push(check("manifest/system-drafts-filtered", 3, drafts.system.length));
+  push(check("archive", "manifest/content-drafts", expectations.drafts, drafts.targets.length));
+  push(check("archive", "manifest/system-drafts-filtered", 3, drafts.system.length));
 
   // ---- 2. uploads survived ----------------------------------------------
   for (const collection of ["media", "files"] as const) {
-    push(check(`uploads/${collection}`, EXPECTED_UPLOADS[collection], await client.countUploads(collection)));
+    push(check("database", `uploads/${collection}`, EXPECTED_UPLOADS[collection], await client.countUploads(collection)));
   }
 
   // ---- 3. every Sanity id is a Payload id --------------------------------
@@ -470,7 +557,7 @@ export async function verifyImport(options: VerifyOptions = {}): Promise<Verific
     for (const id of expected) if (!actual.has(id)) idFailures.push(`${slug}: missing ${id}`);
     for (const id of actual) if (!expected.has(id)) idFailures.push(`${slug}: unexpected ${id}`);
   }
-  push(check("documents/ids", expectedTotal, actualTotal, idFailures));
+  push(check("database", "documents/ids", expectedTotal, actualTotal, idFailures));
 
   const countFailures: string[] = [];
   for (const [slug, expected] of expectedIds) {
@@ -478,7 +565,7 @@ export async function verifyImport(options: VerifyOptions = {}): Promise<Verific
     if (actual !== expected.size) countFailures.push(`${slug}: expected ${expected.size}, got ${actual}`);
   }
   push(
-    check("documents/per-collection", expectedIds.size, expectedIds.size - countFailures.length, countFailures),
+    check("database", "documents/per-collection", expectedIds.size, expectedIds.size - countFailures.length, countFailures),
   );
 
   // Every published Sanity `_id` must be accounted for — either as a Payload
@@ -486,16 +573,14 @@ export async function verifyImport(options: VerifyOptions = {}): Promise<Verific
   const accounted = new Set<string>();
   for (const target of published.targets) for (const source of target.sources) accounted.add(source);
   const unaccounted = docs
-    .map((d) => String(d._id ?? ""))
     .filter(
-      (id) =>
-        !id.startsWith("drafts.") &&
-        !accounted.has(id) &&
-        !(NOT_IMPORTED_TYPES as readonly string[]).includes(
-          String(docs.find((d) => d._id === id)?._type ?? ""),
-        ),
-    );
-  push(check("documents/every-sanity-id-accounted", 0, unaccounted.length, unaccounted.map((id) => `orphan ${id}`)));
+      (doc) =>
+        !String(doc._id ?? "").startsWith("drafts.") &&
+        !accounted.has(String(doc._id ?? "")) &&
+        !(NOT_IMPORTED_TYPES as readonly string[]).includes(String(doc._type ?? "")),
+    )
+    .map((doc) => String(doc._id ?? ""));
+  push(check("archive", "documents/every-sanity-id-accounted", 0, unaccounted.length, unaccounted.map((id) => `orphan ${id}`)));
 
   // ---- 4. draft versions, by status --------------------------------------
   const draftParents = new Map<string, Set<string>>();
@@ -523,9 +608,10 @@ export async function verifyImport(options: VerifyOptions = {}): Promise<Verific
     }
   }
   for (const set of draftParents.values()) draftTotal += set.size;
-  push(check("drafts/documents-with-a-draft-version", drafts.targets.length, draftTotal, draftFailures));
+  push(check("database", "drafts/documents-with-a-draft-version", drafts.targets.length, draftTotal, draftFailures));
   push(
     check(
+      "database",
       "drafts/draft-is-the-newest-version",
       drafts.targets.length,
       drafts.targets.length - latestFailures.length,
@@ -534,13 +620,17 @@ export async function verifyImport(options: VerifyOptions = {}): Promise<Verific
   );
   push(
     check(
+      "database",
       "drafts/lived-experiences",
-      expectations.draftsByType.livedExperience ?? 21,
+      // No `?? 21`. A manifest that lost the key must fail this check, not
+      // pass it against a literal typed into the verifier.
+      expectations.draftsByType.livedExperience ?? "livedExperience missing from the manifest",
       draftsByType.livedExperience ?? 0,
     ),
   );
   push(
     check(
+      "database",
       "drafts/by-type",
       Object.entries(expectations.draftsByType)
         .sort()
@@ -589,6 +679,14 @@ export async function verifyImport(options: VerifyOptions = {}): Promise<Verific
           const actual = got.text.get(at);
           if (actual === undefined) {
             localeFailures.push(`${slug}/${id} [${locale}] ${at}: expected ${JSON.stringify(value.slice(0, 40))}, empty`);
+          } else if (!sameText(value, actual)) {
+            // The line that makes this a content check rather than a presence
+            // check. Without it, replacing every string in every document with
+            // the literal "WRONG" passes every check in this file.
+            localeFailures.push(
+              `${slug}/${id} [${locale}] ${at}: expected ${JSON.stringify(value.slice(0, 40))}, ` +
+                `got ${JSON.stringify(actual.slice(0, 40))}`,
+            );
           }
         }
         for (const [at, assetId] of want.uploads) {
@@ -603,6 +701,10 @@ export async function verifyImport(options: VerifyOptions = {}): Promise<Verific
           const actual = got.richText.get(at);
           if (actual === undefined || actual === 0) {
             richTextFailures.push(`${slug}/${id} [${locale}] ${at}: ${children} blocks in Sanity, empty in Payload`);
+          } else if (actual !== children) {
+            richTextFailures.push(
+              `${slug}/${id} [${locale}] ${at}: ${children} top-level blocks expected, ${actual} in Payload`,
+            );
           }
         }
 
@@ -631,11 +733,12 @@ export async function verifyImport(options: VerifyOptions = {}): Promise<Verific
     log(`      read back ${slug} in 4 locales`);
   }
 
-  push(check("locales/all-four-populated", localeChecked, localeChecked - localeFailures.length, localeFailures));
-  push(check("uploads/references-resolve", uploadChecked, uploadChecked - uploadFailures.length, uploadFailures));
-  push(check("richtext/non-empty", richTextChecked, richTextChecked - richTextFailures.length, richTextFailures));
+  push(check("database", "locales/all-four-populated", localeChecked, localeChecked - localeFailures.length, localeFailures));
+  push(check("database", "uploads/references-resolve", uploadChecked, uploadChecked - uploadFailures.length, uploadFailures));
+  push(check("database", "richtext/non-empty", richTextChecked, richTextChecked - richTextFailures.length, richTextFailures));
   push(
     check(
+      "database",
       "richtext/sanity-coverage",
       coverageChecked,
       coverageChecked - coverageFailures.length,
@@ -644,9 +747,31 @@ export async function verifyImport(options: VerifyOptions = {}): Promise<Verific
   );
 
   // ---- 8. globals --------------------------------------------------------
+  //
+  // Read with the fallback **off**. The previous version asked for each global
+  // with `fallbackLocale: "en"`, which serves the English value in every lane
+  // — so "populated in four locales" was true by construction for a global
+  // with no translations at all, and the check could not fail.
+  //
+  // With the fallback off, the honest expectation is not "four locales" but
+  // "exactly the locales the archive has content for": `homepage` is four
+  // Sanity documents and must read back in four, while `siteAnnouncement` and
+  // the onboarding globals are single documents whose further locales exist
+  // only where Sanity translates them.
+  const globalLocales = new Map<string, Set<Locale>>();
+  for (const target of published.targets) {
+    if (target.kind !== "global") continue;
+    const wanted = globalLocales.get(target.slug) ?? new Set<Locale>();
+    for (const locale of LOCALES) if (target.data[locale] !== undefined) wanted.add(locale);
+    globalLocales.set(target.slug, wanted);
+  }
+
   const globalFailures: string[] = [];
+  let globalsChecked = 0;
   for (const slug of SOURCED_GLOBALS) {
     for (const locale of LOCALES) {
+      globalsChecked += 1;
+      const expectedPopulated = globalLocales.get(slug)?.has(locale) === true;
       let value: Record<string, unknown> | null = null;
       try {
         value = await client.global(slug, locale);
@@ -658,14 +783,20 @@ export async function verifyImport(options: VerifyOptions = {}): Promise<Verific
       const populated =
         collected !== undefined &&
         collected.text.size + collected.richText.size + collected.uploads.size > 0;
-      if (!populated) globalFailures.push(`${slug} [${locale}]: empty`);
+      if (populated === expectedPopulated) continue;
+      globalFailures.push(
+        expectedPopulated
+          ? `${slug} [${locale}]: the archive has content for this locale, the database has none`
+          : `${slug} [${locale}]: the database has content the archive does not — an inherited copy?`,
+      );
     }
   }
   push(
     check(
-      "globals/populated-in-four-locales",
-      SOURCED_GLOBALS.length * LOCALES.length,
-      SOURCED_GLOBALS.length * LOCALES.length - globalFailures.length,
+      "database",
+      "globals/locales-match-the-archive",
+      globalsChecked,
+      globalsChecked - globalFailures.length,
       globalFailures,
     ),
   );
@@ -673,8 +804,17 @@ export async function verifyImport(options: VerifyOptions = {}): Promise<Verific
   const report: VerificationReport = { ok: checks.every((c) => c.ok), database, checks };
   if (!options.quiet) {
     const failed = checks.filter((c) => !c.ok);
+    const score = (scope: CheckScope) => {
+      const of = checks.filter((c) => c.scope === scope);
+      return `${of.filter((c) => c.ok).length}/${of.length}`;
+    };
+    // Reported apart, never summed: the archive-only checks cannot fail for
+    // any state of `payload_cms`, so adding them to the headline would inflate
+    // it with checks the import cannot influence.
     log(
-      `\n${checks.length - failed.length}/${checks.length} checks passed` +
+      `\n${score("database")} database checks passed` +
+        `\n${score("archive")} archive-only checks passed (these compare the export and the manifest ` +
+        `to each other; they cannot fail for a bad import)` +
         (failed.length ? `\nFAILED: ${failed.map((c) => c.name).join(", ")}` : ""),
     );
   }
@@ -754,7 +894,9 @@ function payloadVerifyClient(payload: PayloadInstance): VerifyClient {
         depth: 0,
         overrideAccess: true,
         locale,
-        fallbackLocale: "en",
+        // No fallback: this read must be able to come back empty, or the
+        // check it feeds cannot fail. See section 8.
+        fallbackLocale: "null",
       });
       return found as unknown as Record<string, unknown> | null;
     },

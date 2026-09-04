@@ -15,11 +15,21 @@ import {
   countPortableTextFields,
   lexicalChildCount,
   reconcileManifest,
+  sameText,
+  verifyImport,
   EXPECTED_UPLOADS,
   NOT_IMPORTED_TYPES,
   RICH_TEXT_NOT_MODELLED,
+  type ArchiveManifest,
+  type VerifyClient,
 } from "@/scripts/payload-import/verify";
-import type { PayloadData, SanityDoc, TransformContext } from "@/scripts/payload-import/lib/transform";
+import { documentTargets } from "@/scripts/payload-import/lib/transform";
+import type {
+  DocumentTarget,
+  PayloadData,
+  SanityDoc,
+  TransformContext,
+} from "@/scripts/payload-import/lib/transform";
 
 /**
  * The fixtures below are verbatim slices of the Phase 0 archive
@@ -518,5 +528,264 @@ describe("the recorded exceptions", () => {
 
   it("pins Task 11's asset counts, which Tasks 12 and 13 may only read", () => {
     expect(EXPECTED_UPLOADS).toEqual({ media: 347, files: 48 });
+  });
+});
+
+/* ------------------------------------------------ verifyImport, end to end */
+
+/**
+ * The checks above cover the pure helpers. These drive `verifyImport()`
+ * itself through its own injection points — a fake `VerifyClient` for the
+ * database side, a fixture archive and manifest for the other — and apply one
+ * mutation at a time to what is read back.
+ *
+ * This is the test that was missing. Before it, `verifyImport` compared
+ * *presence*: replacing every localized string in every document with the
+ * literal "WRONG" passed all nineteen checks, and the six archive-only checks
+ * had no injection point at all, so their failure modes were unproven by
+ * construction.
+ */
+
+/** A tag with genuinely different `fr` and `ar` values, so a swap is visible. */
+const TAG_TRANSLATED: SanityDoc = {
+  _id: "tag-anxiety",
+  _type: "tag",
+  label: { en: "Anxiety", fr: "Anxiété", ar: "قلق" },
+  orderRank: "0|1000ih:",
+  useAsTheme: false,
+  value: { _type: "slug", current: "anxiety" },
+};
+
+const BODY_BLOCKS = [
+  { _type: "block", _key: "b1", style: "normal", children: [{ _type: "span", _key: "s1", text: "One" }] },
+  { _type: "block", _key: "b2", style: "normal", children: [{ _type: "span", _key: "s2", text: "Two" }] },
+  { _type: "block", _key: "b3", style: "normal", children: [{ _type: "span", _key: "s3", text: "Three" }] },
+];
+
+function verifyDocs(): SanityDoc[] {
+  const lived = { ...livedExperience("lived-experience-1", "A story"), body: BODY_BLOCKS };
+  return [
+    TAG,
+    TAG_TRANSLATED,
+    REGIONAL_COMMUNITY,
+    AUTHOR,
+    lived,
+    { ...lived, _id: "drafts.lived-experience-1", title: { en: "An edit" } },
+    SYSTEM_DRAFT,
+    { ...SYSTEM_DRAFT, _id: "drafts.sanity-previewUrlSecret-def" },
+    { ...SYSTEM_DRAFT, _id: "drafts.sanity-previewUrlSecret-ghi" },
+  ];
+}
+
+/** The manifest that agrees with `verifyDocs()`. */
+function verifyManifest(): ArchiveManifest {
+  return {
+    totals: { documents: 9, published: 5, drafts: 1 },
+    byType: {
+      tag: { published: 2 },
+      regionalCommunity: { published: 1 },
+      author: { published: 1 },
+      livedExperience: { published: 1, drafts: 1 },
+    },
+  };
+}
+
+/** A client that answers from the transform's own output — a faithful import. */
+function fakeVerifyClient(docs: SanityDoc[], overrides: Partial<VerifyClient> = {}): VerifyClient {
+  const published = documentTargets(docs, context());
+  const drafts = draftTargets(docs, context());
+  const ids = new Map<string, Set<string>>();
+  const rows = new Map<string, Map<string, DocumentTarget>>();
+  for (const target of published.targets) {
+    if (target.kind !== "collection") continue;
+    if (!ids.has(target.slug)) ids.set(target.slug, new Set());
+    ids.get(target.slug)!.add(target.id);
+    if (!rows.has(target.slug)) rows.set(target.slug, new Map());
+    rows.get(target.slug)!.set(target.id, target);
+  }
+  for (const target of drafts.targets) {
+    if (target.overPublished) continue;
+    if (!ids.has(target.slug)) ids.set(target.slug, new Set());
+    ids.get(target.slug)!.add(target.id);
+  }
+  return {
+    async ids(collection) {
+      return new Set(ids.get(collection) ?? []);
+    },
+    async docs(collection, locale) {
+      // `en` fallback, exactly as the Payload-backed client reads.
+      return [...(rows.get(collection)?.values() ?? [])].map((target) => ({
+        ...((target.data[locale] ?? target.data.en) as PayloadData),
+        id: target.id,
+      }));
+    },
+    async draftVersions(collection) {
+      return drafts.targets
+        .filter((t) => t.slug === collection)
+        .map((t) => ({ parent: t.id, status: "draft", latest: true }));
+    },
+    async countUploads(collection) {
+      return EXPECTED_UPLOADS[collection];
+    },
+    async uploadIds() {
+      return new Set<string>();
+    },
+    async global() {
+      return null;
+    },
+    ...overrides,
+  };
+}
+
+async function runVerify(overrides: Partial<VerifyClient> = {}, manifest = verifyManifest()) {
+  const docs = verifyDocs();
+  return verifyImport({
+    quiet: true,
+    client: fakeVerifyClient(docs, overrides),
+    archive: { docs, manifest },
+  });
+}
+
+const failed = (report: Awaited<ReturnType<typeof runVerify>>) =>
+  report.checks.filter((c) => !c.ok).map((c) => c.name);
+
+describe("verifyImport, driven through a fake client", () => {
+  it("passes every check against a faithful import", async () => {
+    const report = await runVerify();
+    expect(failed(report)).toEqual([]);
+    expect(report.ok).toBe(true);
+  });
+
+  it("fails when every string is replaced, which the presence-only version passed", async () => {
+    // The finding this test exists for. `collectValues` only asked whether the
+    // path was present, never what it held, so "WRONG" everywhere was a pass.
+    const report = await runVerify({
+      async docs(collection, locale) {
+        const real = await fakeVerifyClient(verifyDocs()).docs(collection, locale);
+        const wrong = (value: unknown): unknown => {
+          if (typeof value === "string") return "WRONG";
+          if (Array.isArray(value)) return value.map(wrong);
+          if (value && typeof value === "object") {
+            return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, k === "id" ? v : wrong(v)]));
+          }
+          return value;
+        };
+        return real.map((doc) => wrong(doc) as Record<string, unknown>);
+      },
+    });
+    expect(failed(report)).toContain("locales/all-four-populated");
+  });
+
+  it("fails when two locales are swapped on the way back", async () => {
+    // `tag-anxiety` is "Anxiété" in fr and "قلق" in ar. A presence check
+    // cannot see the difference; a value check must.
+    const report = await runVerify({
+      async docs(collection, locale) {
+        const swapped = locale === "fr" ? "ar" : locale === "ar" ? "fr" : locale;
+        return fakeVerifyClient(verifyDocs()).docs(collection, swapped);
+      },
+    });
+    expect(failed(report)).toContain("locales/all-four-populated");
+  });
+
+  it("fails when a rich-text field comes back with fewer blocks than it went in with", async () => {
+    // Truncation, not emptiness: the previous check only asked whether the
+    // Lexical root had any children at all, so losing two of three was a pass.
+    const report = await runVerify({
+      async docs(collection, locale) {
+        const real = await fakeVerifyClient(verifyDocs()).docs(collection, locale);
+        return real.map((doc) => {
+          const body = doc.body as { root?: { children?: unknown[] } } | undefined;
+          if (!body?.root?.children) return doc;
+          return { ...doc, body: { ...body, root: { ...body.root, children: body.root.children.slice(0, 1) } } };
+        });
+      },
+    });
+    expect(failed(report)).toContain("richtext/non-empty");
+  });
+
+  it("fails when a document is missing, and when one is unexpected", async () => {
+    const missing = await runVerify({
+      async ids(collection) {
+        const real = await fakeVerifyClient(verifyDocs()).ids(collection);
+        real.delete("tag-anxiety");
+        return real;
+      },
+    });
+    expect(failed(missing)).toContain("documents/ids");
+    expect(failed(missing)).toContain("documents/per-collection");
+  });
+
+  it("fails when an upload count moves", async () => {
+    const report = await runVerify({
+      async countUploads(collection) {
+        return collection === "media" ? 346 : EXPECTED_UPLOADS.files;
+      },
+    });
+    expect(failed(report)).toEqual(["uploads/media"]);
+  });
+
+  it("fails when a published version is newer than the draft", async () => {
+    // The documents-after-drafts hazard: the rows survive, so the count of
+    // documents carrying a draft is unchanged and only `latest` moves.
+    const report = await runVerify({
+      async draftVersions(collection) {
+        const real = await fakeVerifyClient(verifyDocs()).draftVersions(collection);
+        return real.map((row) => ({ ...row, latest: false }));
+      },
+    });
+    expect(failed(report)).toEqual(["drafts/draft-is-the-newest-version"]);
+  });
+
+  it("fails when a global holds content the archive has none of", async () => {
+    // With the fallback off, an empty read is a real outcome — which is what
+    // makes this check able to fail at all. Read with `fallbackLocale: "en"`,
+    // as it was, every global reported "populated in four locales" by
+    // construction.
+    const report = await runVerify({
+      async global(slug, locale) {
+        return slug === "homepage" && locale === "ar" ? { title: "Inherited" } : null;
+      },
+    });
+    expect(failed(report)).toEqual(["globals/locales-match-the-archive"]);
+  });
+
+  it("fails when the manifest and the archive disagree", async () => {
+    // An archive-scoped check, exercised through the archive injection point
+    // the verifier previously did not have.
+    const manifest = verifyManifest();
+    manifest.byType!.tag = { published: 7 };
+    const report = await runVerify({}, manifest);
+    expect(failed(report)).toContain("manifest/published-by-type");
+  });
+
+  it("counts the archive-only checks apart from the database ones", async () => {
+    const report = await runVerify();
+    const archive = report.checks.filter((c) => c.scope === "archive").map((c) => c.name);
+    expect(archive.sort()).toEqual([
+      "documents/every-sanity-id-accounted",
+      "manifest/438-reconciles-with-446",
+      "manifest/content-drafts",
+      "manifest/published-by-type",
+      "manifest/published-total",
+      "manifest/system-drafts-filtered",
+    ]);
+    expect(report.checks.filter((c) => c.scope === "database")).toHaveLength(13);
+  });
+});
+
+describe("sameText", () => {
+  it("is exact on ordinary strings", () => {
+    expect(sameText("Adaptation", "Adaptation")).toBe(true);
+    expect(sameText("Adaptation", "adaptation")).toBe(false);
+    expect(sameText("2024", "2024-01-01T00:00:00.000Z")).toBe(false);
+  });
+
+  it("accepts the one spelling difference Postgres introduces", () => {
+    // 124 of the 13,566 values compared are dates Sanity stores as
+    // `2024-03-18` and Payload reads back as `2024-03-18T00:00:00.000Z`.
+    expect(sameText("2024-03-18", "2024-03-18T00:00:00.000Z")).toBe(true);
+    expect(sameText("2025-11-10T13:09:46Z", "2025-11-10T13:09:46.000Z")).toBe(true);
+    expect(sameText("2024-03-18", "2024-03-19T00:00:00.000Z")).toBe(false);
   });
 });
