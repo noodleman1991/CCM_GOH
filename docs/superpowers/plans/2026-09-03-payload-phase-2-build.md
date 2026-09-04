@@ -709,6 +709,10 @@ Related: `assets.json` is keyed by `<kind>-<sha1hash>`, **not** by Sanity `_id` 
 
 **Interfaces:** Produces `importDrafts()` and `verifyImport(): Promise<VerificationReport>`.
 
+**Filter `sanity.*` first — the raw draft count is 33, not 30.** Three of the `drafts.*` records are `sanity.previewUrlSecret`, a system type, not content. Content drafts are exactly 30. A verifier asserting "30 draft versions present" against the raw count either fails or imports three junk documents. Verified with a control (agenda = 29).
+
+Confirmed against `production_2`, and confirmed against the built collections: the 30 split as `livedExperience` 21, `author` 4, `caseStudy` 1, `newsPost` 1, `regionalCommunityPage` 1, `tag` 1, `testimonial` 1. Exactly 3 have no published counterpart — one `testimonial`, one `tag`, one `author` — so 27 do. **All seven of those collections have `versions: { drafts: true }` in Payload**, so every draft has somewhere to land; this was checked rather than assumed, because `author`, `tag` and `regionalCommunityPage` are not in this plan's earlier drafts-enabled list.
+
 **Drafts are not documents.** Sanity's 30 `drafts.*` records are unpublished edits, 27 of which have a published counterpart. They import as Payload **draft versions**: publish the `_id` document first, then apply the `drafts.<id>` content as a draft version on top (`payload.update({ ..., draft: true })`). The three never-published ones (`author`, `tag`, `testimonial`) import directly as `_status: 'draft'`.
 
 The 21 lived-experience drafts are in-flight moderation work. **Losing them is the single most damaging thing this phase could do**, and it would be invisible — the published documents would all look fine.
