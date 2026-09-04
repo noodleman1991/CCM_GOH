@@ -255,10 +255,18 @@ Each task follows the identical shape below. They are ordered smallest-and-most-
 | 8 | `onboarding.ts` | 283 | Composes **six** globals via `composeOnboardingContent`. Decide the 46 unserved component chains: serve or delete, not leave. |
 | 9 | `lived-experiences.ts` | 630 | `region` is a `regionalCommunity` reference; `videoUrl` is undeclared in Sanity but real; unset moderation means approved. |
 | 10 | `news.ts` | 964 | |
-| 11 | `outputs.ts` | 1,167 | |
+| 11 | `outputs.ts` | 1,167 | Holds 2 of the 5 `queryLive` call sites. **Assert the primitive, not just the result** — see below. |
 | 12 | `case-studies.ts` | 1,561 | **Maps `moderationStatus` → the public `status`.** `getCaseStudiesByStatus()` must keep working unchanged. |
-| 13 | `discovery.ts` | 1,399 | Cross-type search and filtering; the six `status == "approved"` event filters live here. |
+| 13 | `discovery.ts` | 1,399 | Cross-type search and filtering; the six `status == "approved"` event filters live here. Holds 3 of the 5 `queryLive` call sites. |
 | 14 | `pages.ts` | **8,550** | See below — this one does not fit the shape. |
+
+### Tasks 11 and 13 carry the bypass risk
+
+The five `queryLive` call sites all live in these two modules, and **nothing currently asserts they keep choosing `queryLive` after the swap**. That is the exact gap the Phase-1 authorization bypass fell through: `queryLive` and `queryRaw` return the same shape, so a reader that picks the wrong one is invisible to a result-based test.
+
+Both tasks must add a test that asserts **which primitive was called**, not merely what came back — a spy on the source module, or an injected primitive set. A test that only checks the returned documents cannot fail for this.
+
+Related, and now measured: in Payload, `draft: false` is **not** a published-only filter. The main collection tables carry `_status: 'draft'` rows (`tags`, `authors` and `testimonials` each hold one — the never-published drafts), and a `find` with `draft` falsy applies no status filter at all. A published read needs `draft: false` **and** `where: { _status: { equals: "published" } }`. `payload.count` has no `draft` option, so its distinction rides entirely on that filter.
 
 ### Task 14 is different
 
