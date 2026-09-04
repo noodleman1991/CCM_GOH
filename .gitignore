@@ -84,3 +84,7 @@ supabase-users.json
 # as supabase-users.json; never commit these.
 migration-results-*.json
 migration-log-*.json
+
+# Unpacked Phase 0 Sanity archive (payload import working copy; regenerate with
+# `pnpm import:assets`, which re-extracts backups/sanity-production_2-*.tar.gz)
+/.sanity-export-cache/

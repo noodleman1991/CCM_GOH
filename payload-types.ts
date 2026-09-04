@@ -2485,7 +2485,7 @@ export interface Project {
       }[]
     | null;
   /**
-   * 3–4 focused tags work best (6 max).
+   * 3–4 focused tags work best (6 max). Hard limit here; a soft warning in Sanity.
    */
   tags?: (string | Tag)[] | null;
   /**
