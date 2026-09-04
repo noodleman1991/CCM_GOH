@@ -683,6 +683,10 @@ Write localized fields by calling `payload.update` once per locale after the ini
 
 **Five obligations carried into this task from earlier reviews** (each one measured, not guessed):
 
+**Before any of the below: the archive does not contain `_ref`s.** `@sanity/export` rewrote every asset reference in `data.ndjson` into a string — `"_sanityAsset": "image@file://./images/<basename>"` — **759 occurrences, 284 distinct, and zero `asset._ref`**. An importer written against `_ref` will resolve nothing and silently produce documents with no images. Resolve these strings instead; `scripts/payload-import/lib/sanity-export.ts` exposes `assetIdFromSanityAssetRef()` for exactly this, and `readExportDocuments()` to read the file.
+
+Related: `assets.json` is keyed by `<kind>-<sha1hash>`, **not** by Sanity `_id` — the `_id` is reconstructed from the tar member name (`images/<sha1>-<w>x<h>.<ext>` → `image-<sha1>-<w>x<h>-<ext>`). And it carries no `mimeType`; that is derived from the extension.
+
 1. **Sanity's `status` is written into `moderationStatus`.** The field could not keep the name `status` — it collides with Payload's `_status` enum. `lib/content/case-studies.ts` still exposes `status?: CaseStudyStatus` publicly, so the *reader* maps back the other way.
 2. **`image.alt` stays `localized`; the importer writes the bare Sanity string into the `en` locale.** Real Sanity data stores a plain string, not an `{en,…}` lane. Payload's `fallback: true` then covers `es`/`fr`/`ar`. An importer that assumes the localized lane writes null.
 3. **Coerce empty strings to null.** The single `caseStudyDraft` holds `studyPeriod: {startDate: "", endDate: ""}` and `studyLocation: {}` against `date` and `point` fields. Empty string is not a date.
