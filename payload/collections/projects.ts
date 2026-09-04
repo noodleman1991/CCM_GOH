@@ -2,6 +2,7 @@ import type { CollectionConfig } from "payload";
 import { isAnyone, isEditor } from "@/payload/access";
 import { imageField, relationshipField } from "@/payload/blocks/shared";
 import { localizedText, localizedTextarea } from "@/payload/fields/localized";
+import { SLUG_MAX_LENGTH, urlValidate } from "@/payload/fields/validation";
 
 /**
  * Mirrors sanity/schemas/documents/project.ts.
@@ -35,6 +36,17 @@ import { localizedText, localizedTextarea } from "@/payload/fields/localized";
  *
  * `description` is Sanity's explicit four-language object ({en, es, fr, ar}),
  * so it maps directly onto a Payload localized field rather than a group.
+ *
+ * Sanity's validation rules are ported alongside the fields (slug
+ * `maxLength: 96`, `urlRule` on `website`) — see
+ * `payload/fields/validation.ts`. One could not be ported faithfully:
+ * Sanity's `tags` rule is `Rule.max(6).warning("Aim for 3–4 tags; more than 6
+ * dilutes them.")`, a SOFT warning that still saves. Payload's `Validate`
+ * returns `string | true` only — a string blocks the save — and there is no
+ * warning severity anywhere in its field config, so there is no way to
+ * express "hint, but allow". `maxRows: 6` below is therefore a deliberate
+ * hardening of a Sanity warning, recorded here rather than left to look like
+ * a faithful port.
  */
 export const Projects: CollectionConfig = {
   slug: "projects",
@@ -51,7 +63,7 @@ export const Projects: CollectionConfig = {
   fields: [
     { name: "id", type: "text", required: true, admin: { hidden: true } },
     localizedText("name", { required: true, label: "Project Name" }),
-    { name: "slug", type: "text", required: true, unique: true },
+    { name: "slug", type: "text", required: true, unique: true, maxLength: SLUG_MAX_LENGTH },
     { name: "acronym", type: "text", admin: { description: "Short form or acronym of the project name." } },
     localizedTextarea("description"),
     {
@@ -89,7 +101,7 @@ export const Projects: CollectionConfig = {
     }),
     { name: "startDate", type: "date", admin: { date: { pickerAppearance: "dayOnly" } } },
     { name: "endDate", type: "date", admin: { date: { pickerAppearance: "dayOnly" } } },
-    { name: "website", type: "text", label: "Project Website" },
+    { name: "website", type: "text", label: "Project Website", validate: urlValidate },
     imageField("logo"),
     {
       name: "location",
@@ -110,8 +122,11 @@ export const Projects: CollectionConfig = {
     },
     relationshipField("tags", "tags", {
       hasMany: true,
+      // Sanity's rule is `Rule.max(6).warning(…)` — a soft hint that still
+      // saves. Payload has no warning outcome (see the header note), so this
+      // is a hard cap: the only alternative was to drop the rule entirely.
       maxRows: 6,
-      admin: { description: "3–4 focused tags work best (6 max)." },
+      admin: { description: "3–4 focused tags work best (6 max). Hard limit here; a soft warning in Sanity." },
     }),
     {
       name: "orderRank",

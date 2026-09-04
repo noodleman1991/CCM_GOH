@@ -1,5 +1,5 @@
 import type { CollectionConfig } from "payload";
-import { isEditor, publishedOnly } from "@/payload/access";
+import { isEditor, isEditorField, publishedOnly } from "@/payload/access";
 import { imageField, relationshipField } from "@/payload/blocks/shared";
 
 /**
@@ -78,6 +78,10 @@ export const Authors: CollectionConfig = {
         description:
           "Optional reverse link to a hub member (Clerk/Prisma User id). 0/99 real authors populate this today — the live tie runs the other way, via Prisma's User.sanityPersonId.",
       },
+      // Editor-only at FIELD level: a Clerk/Prisma user id on a public
+      // document. No GROQ projection in lib/content/ selects it, so gating it
+      // keeps the migration from publishing an identity link Sanity never did.
+      access: { read: isEditorField },
     },
     {
       name: "communityMemberships",

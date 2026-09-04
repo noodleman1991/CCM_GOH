@@ -16,6 +16,14 @@ import { isAnyone, isEditor } from "@/payload/access";
  *     field; `sanity/schemas/documents/lived-experience.ts:229` restricts it to
  *     `video/mp4,video/webm`, which is why those two types are allowed below.
  *
+ * Sanity declares a fifth `type: "file"` field —
+ * `backgroundOption.svgPattern` (accept `.svg`) — which deliberately does NOT
+ * point here: an SVG is an image, `media` already admits it via
+ * `mimeTypes: ["image/*"]`, and routing it here would have meant admitting an
+ * image type into the non-image collection and skipping Payload's SVG safety
+ * check. The reasoning is recorded in full at the field itself
+ * (`payload/blocks/shared.ts`'s `backgroundOptionField`).
+ *
  * `read: isAnyone` — same reasoning as `media`: an asset has no
  * `moderationStatus` and no draft state to gate on, and agenda/report PDFs are
  * already public downloads today. The documents that *reference* these files

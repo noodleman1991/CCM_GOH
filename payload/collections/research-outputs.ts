@@ -1,5 +1,5 @@
 import type { CollectionConfig } from "payload";
-import { isEditor, moderationApprovedOnly } from "@/payload/access";
+import { isEditor, isEditorField, moderationApprovedOnly } from "@/payload/access";
 import { imageField, relationshipField, uploadField } from "@/payload/blocks/shared";
 import { localizedRichText, localizedText, localizedTextarea } from "@/payload/fields/localized";
 
@@ -23,7 +23,16 @@ import { localizedRichText, localizedText, localizedTextarea } from "@/payload/f
  * `isAnyone` — this collection has no `_status` field to gate on (no
  * `versions.drafts`), so `moderationStatus` alone is the visibility gate.
  * `isAnyone` would have made a future `pending`/`rejected` output public
- * from the moment it's created.
+ * from the moment it's created. That helper is now STRICT — approved and
+ * nothing else — matching every live GROQ filter on this type
+ * (`lib/content/system.ts:142`, `:289`, `discovery.ts:608`,
+ * `outputs.ts:639`, `:647`, `:653`, `:1144`), none of which admits an unset
+ * status. It previously mirrored `publishedAndApproved`'s `exists: false`
+ * fallback, which belongs to `livedExperience` alone.
+ *
+ * `submittedBy` and `reviewNotes` additionally carry field-level
+ * `access.read: isEditorField`: the collection gate says which documents are
+ * public, not what an approved one may carry in its body.
  *
  * `region` here IS stored as the fixed-7 string code (14/29, e.g. "csa") —
  * unlike `livedExperience.region` (see payload/collections/lived-experiences.ts),
@@ -171,8 +180,12 @@ export const ResearchOutputs: CollectionConfig = {
       ],
       admin: { description: "Editorial review state, distinct from Payload's _status. 29/29 real documents are 'approved'." },
     },
-    { name: "submittedBy", type: "text", admin: { readOnly: true } },
-    { name: "reviewNotes", type: "textarea" },
+    // Internal review data, editor-only at FIELD level: the collection gate
+    // decides which documents are public, not what an approved one carries.
+    // `lib/content/outputs.ts` selects `submittedBy` only in the gated
+    // ownership check at :909, never in a public projection.
+    { name: "submittedBy", type: "text", admin: { readOnly: true }, access: { read: isEditorField } },
+    { name: "reviewNotes", type: "textarea", access: { read: isEditorField } },
     {
       name: "place",
       type: "group",

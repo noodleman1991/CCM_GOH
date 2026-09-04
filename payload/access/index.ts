@@ -1,4 +1,4 @@
-import type { Access, Where } from "payload";
+import type { Access, FieldAccess, Where } from "payload";
 
 /**
  * Roles come from Prisma's `User.role` enum — community_member,
@@ -17,14 +17,48 @@ import type { Access, Where } from "payload";
 type WithRole = { role?: string | null } | null | undefined;
 type WithRoleAndClerkId = { role?: string | null; clerkId?: string | null } | null | undefined;
 
-export const isAdmin: Access = ({ req }) => (req.user as WithRole)?.role === "admin";
-
-export const isEditor: Access = ({ req }) => {
-  const role = (req.user as WithRole)?.role;
+/** The one role predicate `isEditor` and `isEditorField` both read from, so
+ * the document-level and field-level gates can never drift apart. */
+const hasEditorRole = (user: unknown): boolean => {
+  const role = (user as WithRole)?.role;
   return role === "admin" || role === "team_editor";
 };
 
+export const isAdmin: Access = ({ req }) => (req.user as WithRole)?.role === "admin";
+
+export const isEditor: Access = ({ req }) => hasEditorRole(req.user);
+
 export const isAnyone: Access = () => true;
+
+/**
+ * `isEditor` at FIELD level — the gate for fields that must never leave the
+ * server for an anonymous caller even on a document that is itself public.
+ *
+ * A separate export rather than a reuse of `isEditor` because Payload's
+ * `FieldAccess` must return a plain `boolean`, while `Access` may also return
+ * a `Where`; both delegate to `hasEditorRole`, so there is exactly one
+ * definition of "editor" in this file. **Never pass a `Where`-returning
+ * helper (`ownerOrEditor`, `publishedAndApproved`, …) as field access**:
+ * `payload/dist/fields/hooks/afterRead/promise.js` only checks the result for
+ * truthiness at field level, so a `Where` object would read as `true` and
+ * grant the field to everyone.
+ *
+ * Used for internal review state, submitter identity and moderation
+ * commentary — `submittedBy`, `reviewNotes`, `reviewedBy`/`reviewedAt`,
+ * `notifiedStatus`, the Clerk ids/emails inside `caseStudies.authors[]`,
+ * `authors.userId` and `externalSources.addedBy`/`addedAt`. Sanity never
+ * exposed those to an anonymous caller (its dataset is private and no public
+ * GROQ projection renders them); `/payload-api` is public by construction, so
+ * without this the migration would introduce the leak rather than inherit it.
+ *
+ * Only `read` is gated at field level in this phase — `create`/`update` are
+ * already editor-only at collection level on every collection that carries
+ * one of these fields. The owner-facing reads that legitimately show a
+ * submitter their own `reviewNotes` (the edit forms, the submissions
+ * dashboard) run server-side, and Payload's Local API defaults to
+ * `overrideAccess: true`, so they are unaffected by this gate.
+ */
+export const isEditorField: FieldAccess = ({ req }) => hasEditorRole(req.user);
 
 /**
  * Anonymous callers see only published documents; editors see everything.
@@ -64,12 +98,21 @@ export const publishedOnly: Access = (args) => {
  * `status == "approved"` — so this closes a real regression, not a
  * theoretical one.
  *
- * The `moderationStatus: { exists: false }` arm matters for
- * `livedExperiences` specifically: the field is 0/56 populated in real data,
- * and the live Sanity app already treats an unset value as approved
- * (`status == "approved" || !defined(status)`, `lib/content/
- * lived-experiences.ts`) — without this arm, every real lived experience
- * would become anonymously unreadable, not just the unapproved ones.
+ * The `moderationStatus: { exists: false }` arm belongs to `livedExperiences`
+ * ALONE: the field is 0/56 populated in real data, and the live Sanity app
+ * already treats an unset value as approved (`status == "approved" ||
+ * !defined(status)`, `lib/content/lived-experiences.ts:…`, `system.ts:136`,
+ * `discovery.ts:608`) — without this arm, every real lived experience would
+ * become anonymously unreadable, not just the unapproved ones. No other
+ * collection's GROQ carries that fallback, which is why
+ * `moderationApprovedOnly` below is strict.
+ *
+ * `caseStudies` also uses this helper and its own GROQ *is* strict
+ * (`status == "approved"`, no `!defined` arm), but the loose arm cannot fire
+ * there: `caseStudies.moderationStatus` is `required: true` with
+ * `defaultValue: "pending"`, so no case study can exist without a value —
+ * 28/28 are populated in production_2 (25 approved, 3 pending). The one
+ * helper therefore matches both collections' live behaviour exactly.
  */
 export const publishedAndApproved: Access = (args) => {
   if (isEditor(args)) return true;
@@ -83,17 +126,29 @@ export const publishedAndApproved: Access = (args) => {
 };
 
 /**
- * For `researchOutputs`: no `versions.drafts` (no `_status` field exists at
- * all on this collection — every document is simply live), so only the
- * `moderationStatus` gate applies. Mirrors the same fallback
- * `publishedAndApproved` uses (real data is 29/29 "approved" today, but an
- * unset value is treated the same way for consistency, not stricter).
+ * For `events` and `researchOutputs`: neither enables `versions.drafts` (no
+ * `_status` field exists on either — every document is simply live), so
+ * `moderationStatus` alone is the public gate.
+ *
+ * **Strict — approved and nothing else.** This deliberately does NOT carry
+ * `publishedAndApproved`'s `exists: false` arm, because no live GROQ filter
+ * on either type carries one either. All six event filters are exactly
+ * `_type == "event" && status == "approved"` (`lib/content/system.ts:144`,
+ * `lib/content/discovery.ts:609`, `:723`, `:728`, `:915`, `:948`) and every
+ * researchOutput filter is exactly `status == "approved"`
+ * (`lib/content/system.ts:142`, `:289`, `discovery.ts:608`,
+ * `outputs.ts:639`, `:647`, `:653`, `:1144`). The `!defined(status)` fallback
+ * exists in this codebase for `livedExperience` only — see
+ * `publishedAndApproved`. An earlier version of this helper mirrored that
+ * fallback "for consistency"; that made an unset `moderationStatus`
+ * anonymously readable on two collections where Sanity hides it, so it is
+ * gone. Both fields carry `defaultValue: "approved"`, so a normal write is
+ * unaffected; only a value-less row written around Payload is now hidden,
+ * which is the same thing GROQ does.
  */
 export const moderationApprovedOnly: Access = (args) => {
   if (isEditor(args)) return true;
-  const where: Where = {
-    or: [{ moderationStatus: { equals: "approved" } }, { moderationStatus: { exists: false } }],
-  };
+  const where: Where = { moderationStatus: { equals: "approved" } };
   return where;
 };
 

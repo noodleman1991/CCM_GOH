@@ -1,5 +1,5 @@
 import type { CollectionConfig } from "payload";
-import { isEditor, publishedAndApproved } from "@/payload/access";
+import { isEditor, isEditorField, publishedAndApproved } from "@/payload/access";
 import { relationshipField, uploadField } from "@/payload/blocks/shared";
 import { localizedRichText, localizedText, localizedTextarea } from "@/payload/fields/localized";
 
@@ -37,6 +37,23 @@ import { localizedRichText, localizedText, localizedTextarea } from "@/payload/f
  * value for enum enum_case_studies_status: "pending"` before this field was
  * renamed to `moderationStatus` — proof the "keep them distinct" guidance
  * is a database-level requirement here, not just a naming convention.
+ *
+ * **Field-level read access.** `publishedAndApproved` decides which
+ * DOCUMENTS an anonymous caller sees; it does not stop an approved, published
+ * document from carrying internal data in its own body. `submittedBy`,
+ * `reviewNotes`, `reviewedBy`, `reviewedAt`, `notifiedStatus` and the
+ * identity sub-fields of `authors[]` (`userId`, `email`, `clerkUserId`,
+ * `clerkUsername`, `clerkImageUrl`) therefore each carry
+ * `access: { read: isEditorField }`. None of them is rendered on the public
+ * case-study page — `reviewNotes`/`reviewedBy`/`reviewedAt` appear only in
+ * the editor review form and the submitter's own dashboard
+ * (`components/forms/review-context.tsx`,
+ * `components/dashboard/user-submissions-dashboard.tsx`), and `authors[].email`
+ * only in `case-study-review.tsx`/`case-study-form.tsx` — but
+ * `CASE_STUDY_DETAIL_PROJECTION_FRAGMENT` does select them, so without a
+ * field gate `/payload-api/caseStudies` would hand every one of them to an
+ * anonymous caller. Owner-facing reads run server-side through the Local API,
+ * which defaults to `overrideAccess: true` and is unaffected.
  *
  * Schema-vs-data disagreements found:
  * - `authors[]` real entries carry three fields the schema never declares —
@@ -162,15 +179,26 @@ export const CaseStudies: CollectionConfig = {
         { label: "Displaced & migrants", value: "displaced" },
       ],
     },
-    { name: "submittedBy", type: "text", admin: { readOnly: true, description: "Clerk User ID of the submitter." } },
+    {
+      name: "submittedBy",
+      type: "text",
+      admin: { readOnly: true, description: "Clerk User ID of the submitter." },
+      access: { read: isEditorField },
+    },
     { name: "submittedAt", type: "date" },
     {
       name: "authors",
       type: "array",
       fields: [
-        { name: "userId", type: "text", admin: { description: "Clerk User ID (if registered)." } },
+        {
+          name: "userId",
+          type: "text",
+          admin: { description: "Clerk User ID (if registered)." },
+          access: { read: isEditorField },
+        },
+        // `name` and `affiliation` are the public byline and stay readable.
         { name: "name", type: "text", required: true },
-        { name: "email", type: "text" },
+        { name: "email", type: "text", access: { read: isEditorField } },
         {
           name: "role",
           type: "select",
@@ -186,9 +214,14 @@ export const CaseStudies: CollectionConfig = {
         relationshipField("affiliation", "organizations"),
         // Real submitter data not in the Sanity schema — written directly by
         // the case-study submission form (3/28 real entries). See header note.
-        { name: "clerkUserId", type: "text", admin: { description: "Not in the Sanity schema — real submission-form data (3/28 entries)." } },
-        { name: "clerkUsername", type: "text" },
-        { name: "clerkImageUrl", type: "text" },
+        {
+          name: "clerkUserId",
+          type: "text",
+          admin: { description: "Not in the Sanity schema — real submission-form data (3/28 entries)." },
+          access: { read: isEditorField },
+        },
+        { name: "clerkUsername", type: "text", access: { read: isEditorField } },
+        { name: "clerkImageUrl", type: "text", access: { read: isEditorField } },
       ],
     },
     {
@@ -264,10 +297,16 @@ export const CaseStudies: CollectionConfig = {
     },
     { name: "featured", type: "checkbox", defaultValue: false },
     { name: "publishedAt", type: "date", admin: { readOnly: true, description: "Set by the Approve action when the case study goes live." } },
-    { name: "reviewNotes", type: "textarea" },
-    relationshipField("reviewedBy", "authors"),
-    { name: "reviewedAt", type: "date" },
-    { name: "notifiedStatus", type: "text", admin: { hidden: true, description: "System field — the last status the submitter was emailed about." } },
+    // The review block — internal editorial state, editor-only at field level.
+    { name: "reviewNotes", type: "textarea", access: { read: isEditorField } },
+    relationshipField("reviewedBy", "authors", { access: { read: isEditorField } }),
+    { name: "reviewedAt", type: "date", access: { read: isEditorField } },
+    {
+      name: "notifiedStatus",
+      type: "text",
+      admin: { hidden: true, description: "System field — the last status the submitter was emailed about." },
+      access: { read: isEditorField },
+    },
     { name: "seoTitle", type: "text" },
     { name: "seoDescription", type: "textarea" },
     { name: "canonicalUrl", type: "text", admin: { description: "If this case study was published elsewhere first." } },

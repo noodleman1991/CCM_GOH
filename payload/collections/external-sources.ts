@@ -1,5 +1,5 @@
 import type { CollectionConfig } from "payload";
-import { approvedOnly, isEditor } from "@/payload/access";
+import { approvedOnly, isEditor, isEditorField } from "@/payload/access";
 import { imageField, relationshipField } from "@/payload/blocks/shared";
 import { localizedText, localizedTextarea } from "@/payload/fields/localized";
 
@@ -95,7 +95,13 @@ export const ExternalSources: CollectionConfig = {
       defaultValue: true,
       admin: { description: "Whether this external source has been approved for display." },
     },
-    relationshipField("addedBy", "authors", { admin: { description: "Editor who added this external source." } }),
-    { name: "addedAt", type: "date" },
+    // Internal editorial bookkeeping — which staff member added the source and
+    // when. No GROQ projection in lib/content/ selects either field and nothing
+    // renders them, so both are editor-only at FIELD level.
+    relationshipField("addedBy", "authors", {
+      admin: { description: "Editor who added this external source." },
+      access: { read: isEditorField },
+    }),
+    { name: "addedAt", type: "date", access: { read: isEditorField } },
   ],
 };

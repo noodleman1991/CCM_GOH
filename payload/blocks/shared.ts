@@ -109,6 +109,28 @@ export function backgroundOptionField(name = "background"): GroupField {
           { name: "endColor", type: "text" },
         ],
       },
+      // `svgPattern` stays on `media`, even though its Sanity source is a
+      // `sanity.fileAsset` (`sanity/schemas/blocks/shared/background-option.ts`
+      // declares it `type: "file"`, accept `.svg`). Decided here rather than at
+      // import time, because 0 of the 188 real background instances use it —
+      // there is no data to be led by, only a rule to pick.
+      //
+      // `media` is the right home: an SVG *is* an image, `media`'s
+      // `mimeTypes: ["image/*"]` already admits it (Payload's
+      // `utilities/validateMimeType.js` strips the `*` and prefix-matches, so
+      // `image/svg+xml` passes), and `uploads/checkFileRestrictions.js` has a
+      // purpose-built SVG path — it recognises SVGs declared as `application/xml`
+      // and runs `validateSvg()` against them, rejecting scripts, event
+      // handlers, `<foreignObject>` and the rest. Payload's `canResizeImage`
+      // omits `image/svg+xml`, so the file is stored verbatim with no derived
+      // `sizes`, which is exactly Phase 1's load-bearing rule ("SVGs must
+      // bypass the CDN transform pipeline or they get rasterized/cropped").
+      //
+      // Repointing at `files` would have meant adding an image mime type to a
+      // collection whose whole reason to exist is that it holds no images
+      // (`payload/collections/files.ts`), losing that SVG safety check, and
+      // filing a logo/pattern away from every other logo and pattern. Task 11
+      // should map this one Sanity `fileAsset` field to `media`, not `files`.
       uploadField("svgPattern", "media", { admin: { condition: (_, siblingData) => siblingData?.type === "svg" } }),
       imageField("image", { condition: (_, siblingData) => siblingData?.type === "image" }),
       {

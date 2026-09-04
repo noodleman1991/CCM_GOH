@@ -16,7 +16,11 @@ import { isAnyone, isEditor } from "@/payload/access";
  *
  * Files (PDFs, documents, the lived-experience video field) live in the
  * sibling `files` collection: `mimeTypes` here is images-only, so a PDF
- * cannot be uploaded to `media` at all.
+ * cannot be uploaded to `media` at all. "Images-only" still includes SVG —
+ * `image/*` prefix-matches `image/svg+xml` — which is why
+ * `backgroundOption.svgPattern` points here rather than at `files` despite
+ * being a `sanity.fileAsset`; see `payload/blocks/shared.ts` for that
+ * decision in full.
  *
  * `read: isAnyone` — there is no moderation field on an asset and no
  * `versions.drafts`, so there is no published/approved pair to gate on. This

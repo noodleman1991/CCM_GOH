@@ -1,5 +1,5 @@
 import type { CollectionConfig } from "payload";
-import { isEditor, publishedAndApproved } from "@/payload/access";
+import { isEditor, isEditorField, publishedAndApproved } from "@/payload/access";
 import { imageField, relationshipField, uploadField } from "@/payload/blocks/shared";
 import { localizedRichText, localizedText, localizedTextarea } from "@/payload/fields/localized";
 
@@ -212,8 +212,17 @@ export const LivedExperiences: CollectionConfig = {
           "Editorial review state — NOT Payload's _status. 0/56 real documents have this set; the live app treats an unset status as approved. See collection header note.",
       },
     },
-    { name: "submittedBy", type: "text", admin: { readOnly: true, description: "Clerk User ID of the submitter (in-app form submissions)." } },
-    { name: "reviewNotes", type: "textarea" },
+    // Internal review data, editor-only at FIELD level: `publishedAndApproved`
+    // decides which documents are public, not what an approved one may carry
+    // in its body. `lib/content/lived-experiences.ts` selects both only in the
+    // gated `loadEditableLivedExperience`, never in a public projection.
+    {
+      name: "submittedBy",
+      type: "text",
+      admin: { readOnly: true, description: "Clerk User ID of the submitter (in-app form submissions)." },
+      access: { read: isEditorField },
+    },
+    { name: "reviewNotes", type: "textarea", access: { read: isEditorField } },
     { name: "meta_title", type: "text" },
     { name: "meta_description", type: "textarea" },
     { name: "noindex", type: "checkbox", defaultValue: false },

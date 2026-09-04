@@ -37,6 +37,13 @@ import { localizedText, localizedTextarea } from "@/payload/fields/localized";
  * `clerkId`, so a member can create/update/delete only their own draft, and
  * editors keep full access on top.
  *
+ * **No field-level `access` is needed here**, unlike the moderated
+ * collections. This collection's identity data (`userId`, `authors[].userId`,
+ * `authors[].email`) is already unreachable anonymously because `read` is
+ * `isEditor` at DOCUMENT level — an anonymous caller gets no document at all,
+ * not a document with fields stripped. A field gate would add nothing and
+ * would only hide a draft's own owner id from an editor reading it.
+ *
  * **The one real document diverges from its schema more than any other
  * collection in this migration**, because `saveCaseStudyDraft()` writes
  * `{...draftData, _type, userId, lastSaved}` directly — whatever shape the

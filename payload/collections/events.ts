@@ -1,7 +1,13 @@
 import type { CollectionConfig } from "payload";
-import { isEditor, moderationApprovedOnly } from "@/payload/access";
+import { isEditor, isEditorField, moderationApprovedOnly } from "@/payload/access";
 import { imageField, relationshipField } from "@/payload/blocks/shared";
 import { localizedRichText, localizedText, localizedTextarea } from "@/payload/fields/localized";
+import {
+  SLUG_MAX_LENGTH,
+  countryCodeValidate,
+  endAfterStartValidate,
+  urlValidate,
+} from "@/payload/fields/validation";
 
 /**
  * Mirrors sanity/schemas/documents/event.ts.
@@ -30,9 +36,23 @@ import { localizedRichText, localizedText, localizedTextarea } from "@/payload/f
  * that `lib/content/` exposes publicly.
  *
  * Read access is `moderationApprovedOnly`: there is no `_status` here (no
- * drafts), so approval alone is the public gate — which is exactly what the
- * two GROQ filters above do today. Gating on publish state alone was a real
- * security finding earlier in this phase and is not repeated.
+ * drafts), so approval alone is the public gate — strictly
+ * `moderationStatus == "approved"`, matching all six live GROQ filters
+ * (`lib/content/system.ts:144`, `lib/content/discovery.ts:609`, `:723`,
+ * `:728`, `:915`, `:948`), none of which admits an unset status. Gating on
+ * publish state alone was a real security finding earlier in this phase and
+ * is not repeated.
+ *
+ * `submittedBy` and `reviewNotes` additionally carry field-level
+ * `access.read: isEditorField`. They are a Clerk user id and internal
+ * editorial feedback; the public GROQ projections
+ * (`APPROVED_EVENTS_QUERY`, `EVENT_BY_SLUG_QUERY`) select neither, and only
+ * the gated, drafts-visible `getEditableEventDoc` does. `/payload-api` would
+ * otherwise return both on every approved event.
+ *
+ * Sanity's own validation rules are ported alongside the fields — see
+ * `payload/fields/validation.ts`, which also records which of them were
+ * `.warning()` in Sanity and are necessarily hard errors here.
  */
 export const Events: CollectionConfig = {
   slug: "events",
@@ -49,7 +69,7 @@ export const Events: CollectionConfig = {
   fields: [
     { name: "id", type: "text", required: true, admin: { hidden: true } },
     localizedText("title", { required: true }),
-    { name: "slug", type: "text", required: true, unique: true },
+    { name: "slug", type: "text", required: true, unique: true, maxLength: SLUG_MAX_LENGTH },
     localizedTextarea("description"),
     {
       name: "scope",
@@ -61,7 +81,12 @@ export const Events: CollectionConfig = {
       ],
     },
     { name: "startAt", type: "date", required: true, admin: { date: { pickerAppearance: "dayAndTime" } } },
-    { name: "endAt", type: "date", admin: { date: { pickerAppearance: "dayAndTime" } } },
+    {
+      name: "endAt",
+      type: "date",
+      admin: { date: { pickerAppearance: "dayAndTime" } },
+      validate: endAfterStartValidate,
+    },
     {
       name: "mode",
       type: "select",
@@ -95,16 +120,22 @@ export const Events: CollectionConfig = {
             { label: "Region only (no pin)", value: "region" },
           ],
         },
-        { name: "countryCode", type: "text", admin: { description: "ISO alpha-3, e.g. KEN." } },
+        {
+          name: "countryCode",
+          type: "text",
+          admin: { description: "ISO alpha-3, e.g. KEN." },
+          validate: countryCodeValidate,
+        },
       ],
     },
-    { name: "url", type: "text", label: "Joining / details URL" },
+    { name: "url", type: "text", label: "Joining / details URL", validate: urlValidate },
     imageField("coverImage"),
     localizedRichText("body", { label: "Page body" }),
     {
       name: "recordingUrl",
       type: "text",
       admin: { description: "Posted after the event — flips the public page into recap mode." },
+      validate: urlValidate,
     },
     {
       name: "relatedCollaboration",
@@ -139,7 +170,16 @@ export const Events: CollectionConfig = {
       name: "submittedBy",
       type: "text",
       admin: { readOnly: true, description: "Clerk User ID of the submitter (set on in-app submission)." },
+      // Editor-only at FIELD level: a Clerk user id on an otherwise-public
+      // document. No public GROQ projection selects it.
+      access: { read: isEditorField },
     },
-    { name: "reviewNotes", type: "textarea", admin: { description: "Internal notes / feedback to the submitter." } },
+    {
+      name: "reviewNotes",
+      type: "textarea",
+      admin: { description: "Internal notes / feedback to the submitter." },
+      // Editor-only at FIELD level: internal editorial commentary.
+      access: { read: isEditorField },
+    },
   ],
 };

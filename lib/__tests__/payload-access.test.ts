@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { isAdmin, isEditor, publishedOnly } from "@/payload/access";
+import { isAdmin, isEditor, moderationApprovedOnly, publishedAndApproved, publishedOnly } from "@/payload/access";
 
 const req = (role?: string) => ({ user: role ? { role } : null }) as never;
 
@@ -32,5 +32,30 @@ describe("payload access control", () => {
   it("returns a published-only constraint for anonymous reads, true for editors", () => {
     expect(publishedOnly({ req: req("team_editor") })).toBe(true);
     expect(publishedOnly({ req: req() })).toEqual({ _status: { equals: "published" } });
+  });
+
+  it("gates events/researchOutputs on approval STRICTLY — an unset status is not public", () => {
+    // All six live event filters and all seven researchOutput filters are
+    // exactly `status == "approved"`; neither admits `!defined(status)`. An
+    // earlier version of this helper carried an `exists: false` arm "for
+    // consistency" with publishedAndApproved, which made a value-less
+    // moderationStatus anonymously readable on two collections where Sanity
+    // hides it. If an `or` ever reappears here, that hole is back.
+    expect(moderationApprovedOnly({ req: req("team_editor") })).toBe(true);
+    expect(moderationApprovedOnly({ req: req() })).toEqual({ moderationStatus: { equals: "approved" } });
+  });
+
+  it("keeps the unset-is-approved arm only where livedExperiences needs it", () => {
+    // lib/content/lived-experiences.ts filters
+    // `status == "approved" || !defined(status)` and the field is 0/56
+    // populated, so dropping this arm would hide every real lived experience.
+    // caseStudies shares the helper but cannot reach the arm: its
+    // moderationStatus is required with a default.
+    expect(publishedAndApproved({ req: req() })).toEqual({
+      and: [
+        { _status: { equals: "published" } },
+        { or: [{ moderationStatus: { equals: "approved" } }, { moderationStatus: { exists: false } }] },
+      ],
+    });
   });
 });
