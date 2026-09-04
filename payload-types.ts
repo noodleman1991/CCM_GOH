@@ -140,6 +140,11 @@ export interface Config {
     moderationSettings: ModerationSetting;
     hubIllustrations: HubIllustration;
     onboardingContent: OnboardingContent;
+    onboardingBasicInfo: OnboardingBasicInfo;
+    onboardingWorkInfo: OnboardingWorkInfo;
+    onboardingRecentWork: OnboardingRecentWork;
+    onboardingPrivacy: OnboardingPrivacy;
+    onboardingReview: OnboardingReview;
   };
   globalsSelect: {
     homepage: HomepageSelect<false> | HomepageSelect<true>;
@@ -147,6 +152,11 @@ export interface Config {
     moderationSettings: ModerationSettingsSelect<false> | ModerationSettingsSelect<true>;
     hubIllustrations: HubIllustrationsSelect<false> | HubIllustrationsSelect<true>;
     onboardingContent: OnboardingContentSelect<false> | OnboardingContentSelect<true>;
+    onboardingBasicInfo: OnboardingBasicInfoSelect<false> | OnboardingBasicInfoSelect<true>;
+    onboardingWorkInfo: OnboardingWorkInfoSelect<false> | OnboardingWorkInfoSelect<true>;
+    onboardingRecentWork: OnboardingRecentWorkSelect<false> | OnboardingRecentWorkSelect<true>;
+    onboardingPrivacy: OnboardingPrivacySelect<false> | OnboardingPrivacySelect<true>;
+    onboardingReview: OnboardingReviewSelect<false> | OnboardingReviewSelect<true>;
   };
   locale: 'en' | 'es' | 'fr' | 'ar';
   widgets: {
@@ -4839,7 +4849,7 @@ export interface HubIllustration {
   createdAt?: string | null;
 }
 /**
- * Every piece of copy the onboarding flow shows, in all four languages.
+ * The welcome step, the redirect prompt, and the buttons shown on every step.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "onboardingContent".
@@ -4873,67 +4883,6 @@ export interface OnboardingContent {
   gettingStartedDescription?: string | null;
   getStartedText?: string | null;
   timeEstimate?: string | null;
-  basicInfoTitle?: string | null;
-  basicInfoDescription?: string | null;
-  basicInfoFieldHints?: {
-    usernameHint?: string | null;
-    headlineHint?: string | null;
-    bioHint?: string | null;
-    motivationHint?: string | null;
-    languageHint?: string | null;
-  };
-  workInfoTitle?: string | null;
-  workInfoDescription?: string | null;
-  workInfoFieldHints?: {
-    workTypesDescription?: string | null;
-    expertiseDescription?: string | null;
-    workBioHint?: string | null;
-    socialLinksDescription?: string | null;
-    communitiesDescription?: string | null;
-  };
-  communityInfoTitle?: string | null;
-  communityInfoDescription?: string | null;
-  communityInfoFieldHints?: {
-    communitiesDescription?: string | null;
-    communitiesHint?: string | null;
-    optionalNote?: string | null;
-  };
-  recentWorkTitle?: string | null;
-  recentWorkDescription?: string | null;
-  recentWorkFieldHints?: {
-    workLinkHint?: string | null;
-    isOngoingHint?: string | null;
-    noWorkDescription?: string | null;
-  };
-  privacyTitle?: string | null;
-  privacyDescription?: string | null;
-  searchabilityTitle?: string | null;
-  searchabilityDescription?: string | null;
-  searchabilityHint?: string | null;
-  visibilityTitle?: string | null;
-  visibilityDescription?: string | null;
-  visibilityOptions?: {
-    publicTitle?: string | null;
-    publicDescription?: string | null;
-    membersTitle?: string | null;
-    membersDescription?: string | null;
-    privateTitle?: string | null;
-    privateDescription?: string | null;
-  };
-  profileInfoTitle?: string | null;
-  profileInfoDescription?: string | null;
-  privacyFieldHints?: {
-    emailHint?: string | null;
-    phoneHint?: string | null;
-    workHint?: string | null;
-    socialHint?: string | null;
-    locationHint?: string | null;
-  };
-  reviewTitle?: string | null;
-  reviewDescription?: string | null;
-  reviewReadyTitle?: string | null;
-  reviewReadyDescription?: string | null;
-  completeOnboardingText?: string | null;
   redirectDialogTitle?: string | null;
   redirectDialogMessage?: string | null;
   proceedToOnboardingText?: string | null;
@@ -4945,43 +4894,25 @@ export interface OnboardingContent {
     submit?: string | null;
     submitting?: string | null;
   };
-  validationMessages?: {
-    basicInfo?: {
-      firstNameRequired?: string | null;
-      firstNameTooLong?: string | null;
-      lastNameRequired?: string | null;
-      lastNameTooLong?: string | null;
-      usernameRequired?: string | null;
-      usernameTooShort?: string | null;
-      usernameTooLong?: string | null;
-      usernameInvalidFormat?: string | null;
-      bioTooLong?: string | null;
-      countryRequired?: string | null;
-      cityRequired?: string | null;
-    };
-    workInfo?: {
-      workTypesRequired?: string | null;
-      expertiseAreasRequired?: string | null;
-      workBioTooLong?: string | null;
-      invalidLinkedInUrl?: string | null;
-      invalidWebsiteUrl?: string | null;
-      invalidSocialLinkUrl?: string | null;
-      socialLinkPlatformRequired?: string | null;
-    };
-    recentWork?: {
-      titleRequired?: string | null;
-      titleTooLong?: string | null;
-      descriptionRequired?: string | null;
-      descriptionTooLong?: string | null;
-      invalidUrl?: string | null;
-      startDateRequired?: string | null;
-      endDateRequired?: string | null;
-    };
-    general?: {
-      pleaseCompleteRequired?: string | null;
-      validationError?: string | null;
-      submissionError?: string | null;
-    };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Step 1: name, username, headline, bio and location — labels, hints and validation messages.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "onboardingBasicInfo".
+ */
+export interface OnboardingBasicInfo {
+  id: number;
+  basicInfoTitle?: string | null;
+  basicInfoDescription?: string | null;
+  basicInfoFieldHints?: {
+    usernameHint?: string | null;
+    headlineHint?: string | null;
+    bioHint?: string | null;
+    motivationHint?: string | null;
+    languageHint?: string | null;
   };
   fieldLabels?: {
     basicInfo?: {
@@ -5007,6 +4938,50 @@ export interface OnboardingContent {
       countryPlaceholder?: string | null;
       cityPlaceholder?: string | null;
     };
+  };
+  validationMessages?: {
+    basicInfo?: {
+      firstNameRequired?: string | null;
+      firstNameTooLong?: string | null;
+      lastNameRequired?: string | null;
+      lastNameTooLong?: string | null;
+      usernameRequired?: string | null;
+      usernameTooShort?: string | null;
+      usernameTooLong?: string | null;
+      usernameInvalidFormat?: string | null;
+      bioTooLong?: string | null;
+      countryRequired?: string | null;
+      cityRequired?: string | null;
+    };
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Step 2: work types, expertise, organization, links and the community picker.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "onboardingWorkInfo".
+ */
+export interface OnboardingWorkInfo {
+  id: number;
+  workInfoTitle?: string | null;
+  workInfoDescription?: string | null;
+  workInfoFieldHints?: {
+    workTypesDescription?: string | null;
+    expertiseDescription?: string | null;
+    workBioHint?: string | null;
+    socialLinksDescription?: string | null;
+    communitiesDescription?: string | null;
+  };
+  communityInfoTitle?: string | null;
+  communityInfoDescription?: string | null;
+  communityInfoFieldHints?: {
+    communitiesDescription?: string | null;
+    communitiesHint?: string | null;
+    optionalNote?: string | null;
+  };
+  fieldLabels?: {
     workInfo?: {
       workTypes?: string | null;
       expertiseAreas?: string | null;
@@ -5026,6 +5001,37 @@ export interface OnboardingContent {
       website?: string | null;
       websitePlaceholder?: string | null;
     };
+  };
+  validationMessages?: {
+    workInfo?: {
+      workTypesRequired?: string | null;
+      expertiseAreasRequired?: string | null;
+      workBioTooLong?: string | null;
+      invalidLinkedInUrl?: string | null;
+      invalidWebsiteUrl?: string | null;
+      invalidSocialLinkUrl?: string | null;
+      socialLinkPlatformRequired?: string | null;
+    };
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Step 3: the recent-work list and the form that adds to it.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "onboardingRecentWork".
+ */
+export interface OnboardingRecentWork {
+  id: number;
+  recentWorkTitle?: string | null;
+  recentWorkDescription?: string | null;
+  recentWorkFieldHints?: {
+    workLinkHint?: string | null;
+    isOngoingHint?: string | null;
+    noWorkDescription?: string | null;
+  };
+  fieldLabels?: {
     recentWork?: {
       yourWork?: string | null;
       addWork?: string | null;
@@ -5045,6 +5051,89 @@ export interface OnboardingContent {
       noWorkAdded?: string | null;
       addWorkHint?: string | null;
     };
+  };
+  validationMessages?: {
+    recentWork?: {
+      titleRequired?: string | null;
+      titleTooLong?: string | null;
+      descriptionRequired?: string | null;
+      descriptionTooLong?: string | null;
+      invalidUrl?: string | null;
+      startDateRequired?: string | null;
+      endDateRequired?: string | null;
+    };
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Step 4: searchability, profile visibility and the per-field privacy toggles.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "onboardingPrivacy".
+ */
+export interface OnboardingPrivacy {
+  id: number;
+  privacyTitle?: string | null;
+  privacyDescription?: string | null;
+  searchabilityTitle?: string | null;
+  searchabilityDescription?: string | null;
+  searchabilityHint?: string | null;
+  visibilityTitle?: string | null;
+  visibilityDescription?: string | null;
+  visibilityOptions?: {
+    publicTitle?: string | null;
+    publicDescription?: string | null;
+    membersTitle?: string | null;
+    membersDescription?: string | null;
+    privateTitle?: string | null;
+    privateDescription?: string | null;
+  };
+  profileInfoTitle?: string | null;
+  profileInfoDescription?: string | null;
+  privacyFieldHints?: {
+    emailHint?: string | null;
+    phoneHint?: string | null;
+    workHint?: string | null;
+    socialHint?: string | null;
+    locationHint?: string | null;
+  };
+  privacyFieldLabels?: {
+    allowSearch?: string | null;
+    searchHint?: string | null;
+    showEmail?: string | null;
+    emailHint?: string | null;
+    showPhone?: string | null;
+    phoneHint?: string | null;
+    showWork?: string | null;
+    workHint?: string | null;
+    showSocial?: string | null;
+    socialHint?: string | null;
+    showLocation?: string | null;
+    locationHint?: string | null;
+  };
+  visibilityLabels?: {
+    public?: string | null;
+    members?: string | null;
+    private?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Step 5: the review summary labels and the submit button.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "onboardingReview".
+ */
+export interface OnboardingReview {
+  id: number;
+  reviewTitle?: string | null;
+  reviewDescription?: string | null;
+  reviewReadyTitle?: string | null;
+  reviewReadyDescription?: string | null;
+  completeOnboardingText?: string | null;
+  fieldLabels?: {
     review?: {
       basicInfo?: string | null;
       workInfo?: string | null;
@@ -5078,24 +5167,12 @@ export interface OnboardingContent {
       submissionNote?: string | null;
     };
   };
-  privacyFieldLabels?: {
-    allowSearch?: string | null;
-    searchHint?: string | null;
-    showEmail?: string | null;
-    emailHint?: string | null;
-    showPhone?: string | null;
-    phoneHint?: string | null;
-    showWork?: string | null;
-    workHint?: string | null;
-    showSocial?: string | null;
-    socialHint?: string | null;
-    showLocation?: string | null;
-    locationHint?: string | null;
-  };
-  visibilityLabels?: {
-    public?: string | null;
-    members?: string | null;
-    private?: string | null;
+  validationMessages?: {
+    general?: {
+      pleaseCompleteRequired?: string | null;
+      validationError?: string | null;
+      submissionError?: string | null;
+    };
   };
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -5598,79 +5675,6 @@ export interface OnboardingContentSelect<T extends boolean = true> {
   gettingStartedDescription?: T;
   getStartedText?: T;
   timeEstimate?: T;
-  basicInfoTitle?: T;
-  basicInfoDescription?: T;
-  basicInfoFieldHints?:
-    | T
-    | {
-        usernameHint?: T;
-        headlineHint?: T;
-        bioHint?: T;
-        motivationHint?: T;
-        languageHint?: T;
-      };
-  workInfoTitle?: T;
-  workInfoDescription?: T;
-  workInfoFieldHints?:
-    | T
-    | {
-        workTypesDescription?: T;
-        expertiseDescription?: T;
-        workBioHint?: T;
-        socialLinksDescription?: T;
-        communitiesDescription?: T;
-      };
-  communityInfoTitle?: T;
-  communityInfoDescription?: T;
-  communityInfoFieldHints?:
-    | T
-    | {
-        communitiesDescription?: T;
-        communitiesHint?: T;
-        optionalNote?: T;
-      };
-  recentWorkTitle?: T;
-  recentWorkDescription?: T;
-  recentWorkFieldHints?:
-    | T
-    | {
-        workLinkHint?: T;
-        isOngoingHint?: T;
-        noWorkDescription?: T;
-      };
-  privacyTitle?: T;
-  privacyDescription?: T;
-  searchabilityTitle?: T;
-  searchabilityDescription?: T;
-  searchabilityHint?: T;
-  visibilityTitle?: T;
-  visibilityDescription?: T;
-  visibilityOptions?:
-    | T
-    | {
-        publicTitle?: T;
-        publicDescription?: T;
-        membersTitle?: T;
-        membersDescription?: T;
-        privateTitle?: T;
-        privateDescription?: T;
-      };
-  profileInfoTitle?: T;
-  profileInfoDescription?: T;
-  privacyFieldHints?:
-    | T
-    | {
-        emailHint?: T;
-        phoneHint?: T;
-        workHint?: T;
-        socialHint?: T;
-        locationHint?: T;
-      };
-  reviewTitle?: T;
-  reviewDescription?: T;
-  reviewReadyTitle?: T;
-  reviewReadyDescription?: T;
-  completeOnboardingText?: T;
   redirectDialogTitle?: T;
   redirectDialogMessage?: T;
   proceedToOnboardingText?: T;
@@ -5684,53 +5688,25 @@ export interface OnboardingContentSelect<T extends boolean = true> {
         submit?: T;
         submitting?: T;
       };
-  validationMessages?:
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "onboardingBasicInfo_select".
+ */
+export interface OnboardingBasicInfoSelect<T extends boolean = true> {
+  basicInfoTitle?: T;
+  basicInfoDescription?: T;
+  basicInfoFieldHints?:
     | T
     | {
-        basicInfo?:
-          | T
-          | {
-              firstNameRequired?: T;
-              firstNameTooLong?: T;
-              lastNameRequired?: T;
-              lastNameTooLong?: T;
-              usernameRequired?: T;
-              usernameTooShort?: T;
-              usernameTooLong?: T;
-              usernameInvalidFormat?: T;
-              bioTooLong?: T;
-              countryRequired?: T;
-              cityRequired?: T;
-            };
-        workInfo?:
-          | T
-          | {
-              workTypesRequired?: T;
-              expertiseAreasRequired?: T;
-              workBioTooLong?: T;
-              invalidLinkedInUrl?: T;
-              invalidWebsiteUrl?: T;
-              invalidSocialLinkUrl?: T;
-              socialLinkPlatformRequired?: T;
-            };
-        recentWork?:
-          | T
-          | {
-              titleRequired?: T;
-              titleTooLong?: T;
-              descriptionRequired?: T;
-              descriptionTooLong?: T;
-              invalidUrl?: T;
-              startDateRequired?: T;
-              endDateRequired?: T;
-            };
-        general?:
-          | T
-          | {
-              pleaseCompleteRequired?: T;
-              validationError?: T;
-              submissionError?: T;
-            };
+        usernameHint?: T;
+        headlineHint?: T;
+        bioHint?: T;
+        motivationHint?: T;
+        languageHint?: T;
       };
   fieldLabels?:
     | T
@@ -5760,6 +5736,58 @@ export interface OnboardingContentSelect<T extends boolean = true> {
               countryPlaceholder?: T;
               cityPlaceholder?: T;
             };
+      };
+  validationMessages?:
+    | T
+    | {
+        basicInfo?:
+          | T
+          | {
+              firstNameRequired?: T;
+              firstNameTooLong?: T;
+              lastNameRequired?: T;
+              lastNameTooLong?: T;
+              usernameRequired?: T;
+              usernameTooShort?: T;
+              usernameTooLong?: T;
+              usernameInvalidFormat?: T;
+              bioTooLong?: T;
+              countryRequired?: T;
+              cityRequired?: T;
+            };
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "onboardingWorkInfo_select".
+ */
+export interface OnboardingWorkInfoSelect<T extends boolean = true> {
+  workInfoTitle?: T;
+  workInfoDescription?: T;
+  workInfoFieldHints?:
+    | T
+    | {
+        workTypesDescription?: T;
+        expertiseDescription?: T;
+        workBioHint?: T;
+        socialLinksDescription?: T;
+        communitiesDescription?: T;
+      };
+  communityInfoTitle?: T;
+  communityInfoDescription?: T;
+  communityInfoFieldHints?:
+    | T
+    | {
+        communitiesDescription?: T;
+        communitiesHint?: T;
+        optionalNote?: T;
+      };
+  fieldLabels?:
+    | T
+    | {
         workInfo?:
           | T
           | {
@@ -5781,6 +5809,43 @@ export interface OnboardingContentSelect<T extends boolean = true> {
               website?: T;
               websitePlaceholder?: T;
             };
+      };
+  validationMessages?:
+    | T
+    | {
+        workInfo?:
+          | T
+          | {
+              workTypesRequired?: T;
+              expertiseAreasRequired?: T;
+              workBioTooLong?: T;
+              invalidLinkedInUrl?: T;
+              invalidWebsiteUrl?: T;
+              invalidSocialLinkUrl?: T;
+              socialLinkPlatformRequired?: T;
+            };
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "onboardingRecentWork_select".
+ */
+export interface OnboardingRecentWorkSelect<T extends boolean = true> {
+  recentWorkTitle?: T;
+  recentWorkDescription?: T;
+  recentWorkFieldHints?:
+    | T
+    | {
+        workLinkHint?: T;
+        isOngoingHint?: T;
+        noWorkDescription?: T;
+      };
+  fieldLabels?:
+    | T
+    | {
         recentWork?:
           | T
           | {
@@ -5802,6 +5867,99 @@ export interface OnboardingContentSelect<T extends boolean = true> {
               noWorkAdded?: T;
               addWorkHint?: T;
             };
+      };
+  validationMessages?:
+    | T
+    | {
+        recentWork?:
+          | T
+          | {
+              titleRequired?: T;
+              titleTooLong?: T;
+              descriptionRequired?: T;
+              descriptionTooLong?: T;
+              invalidUrl?: T;
+              startDateRequired?: T;
+              endDateRequired?: T;
+            };
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "onboardingPrivacy_select".
+ */
+export interface OnboardingPrivacySelect<T extends boolean = true> {
+  privacyTitle?: T;
+  privacyDescription?: T;
+  searchabilityTitle?: T;
+  searchabilityDescription?: T;
+  searchabilityHint?: T;
+  visibilityTitle?: T;
+  visibilityDescription?: T;
+  visibilityOptions?:
+    | T
+    | {
+        publicTitle?: T;
+        publicDescription?: T;
+        membersTitle?: T;
+        membersDescription?: T;
+        privateTitle?: T;
+        privateDescription?: T;
+      };
+  profileInfoTitle?: T;
+  profileInfoDescription?: T;
+  privacyFieldHints?:
+    | T
+    | {
+        emailHint?: T;
+        phoneHint?: T;
+        workHint?: T;
+        socialHint?: T;
+        locationHint?: T;
+      };
+  privacyFieldLabels?:
+    | T
+    | {
+        allowSearch?: T;
+        searchHint?: T;
+        showEmail?: T;
+        emailHint?: T;
+        showPhone?: T;
+        phoneHint?: T;
+        showWork?: T;
+        workHint?: T;
+        showSocial?: T;
+        socialHint?: T;
+        showLocation?: T;
+        locationHint?: T;
+      };
+  visibilityLabels?:
+    | T
+    | {
+        public?: T;
+        members?: T;
+        private?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "onboardingReview_select".
+ */
+export interface OnboardingReviewSelect<T extends boolean = true> {
+  reviewTitle?: T;
+  reviewDescription?: T;
+  reviewReadyTitle?: T;
+  reviewReadyDescription?: T;
+  completeOnboardingText?: T;
+  fieldLabels?:
+    | T
+    | {
         review?:
           | T
           | {
@@ -5837,28 +5995,16 @@ export interface OnboardingContentSelect<T extends boolean = true> {
               submissionNote?: T;
             };
       };
-  privacyFieldLabels?:
+  validationMessages?:
     | T
     | {
-        allowSearch?: T;
-        searchHint?: T;
-        showEmail?: T;
-        emailHint?: T;
-        showPhone?: T;
-        phoneHint?: T;
-        showWork?: T;
-        workHint?: T;
-        showSocial?: T;
-        socialHint?: T;
-        showLocation?: T;
-        locationHint?: T;
-      };
-  visibilityLabels?:
-    | T
-    | {
-        public?: T;
-        members?: T;
-        private?: T;
+        general?:
+          | T
+          | {
+              pleaseCompleteRequired?: T;
+              validationError?: T;
+              submissionError?: T;
+            };
       };
   updatedAt?: T;
   createdAt?: T;

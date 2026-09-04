@@ -5,6 +5,15 @@ import { localizedText, localizedTextarea } from "@/payload/fields/localized";
 import { blockSlot } from "@/payload/fields/block-slot";
 import { carousel2, cta1, gridRow, hero1, logoCloud1, splitRow } from "@/payload/blocks";
 
+/** Every homepage slot: the block's own field list, localized per field. */
+function homepageSlot(
+  name: string,
+  block: Parameters<typeof blockSlot>[1],
+  opts: { label?: string; description?: string } = {},
+) {
+  return blockSlot(name, block, { ...opts, localized: false });
+}
+
 /**
  * Mirrors sanity/schemas/documents/homepage.ts. Verified against
  * production_2 (2026-09-03): **4 documents** (`homepage-en`, `-es`, `-fr`,
@@ -55,6 +64,33 @@ import { carousel2, cta1, gridRow, hero1, logoCloud1, splitRow } from "@/payload
  *
  * `slug` ("index" on all four) and `language` are dropped: a global has no
  * slug, and Payload's locales replace `language`.
+ *
+ * ## The eleven slots are localized **field by field, not container by
+ * container** — `localized: false` on every `homepageSlot`.
+ *
+ * Localizing the containers put 135 columns in `homepage_locales`, and
+ * Payload reads a localized table through `json_agg(json_build_array(<every
+ * column>))` against Postgres's hard 100-argument function limit, so the
+ * global could not be read at all (SQLSTATE 54023 on `findGlobal`,
+ * `updateGlobal`, `/admin`; task-12-report.md). Unlocalizing the container
+ * hands each field back its own declaration: the blocks already mark
+ * translatable copy with `localizedText`/`localizedTextarea`/
+ * `localizedRichText` (plus `image.alt`) and leave presentation settings —
+ * padding checkboxes, `imagePosition`, `background.type`/`ccmColor`/
+ * `lightText`, the hex colours, `maxItems` — as plain fields.
+ *
+ * **Measured before de-localizing anything** (all four production_2 homepage
+ * documents, flattened to 387 leaf paths and compared value by value):
+ * 308 paths agree across `homepage-{en,es,fr,ar}` and 79 differ. Every one of
+ * the 79 is either translatable copy that stays localized (`title`, `body`,
+ * `meta_*`, the slot titles/descriptions) or lives inside a row list —
+ * `heroWelcome.links[0]`, `*.splitColumns[*]`, `*.columns[*]` — which
+ * `blockSlot` keeps localized. **No field this global de-localizes disagrees
+ * across the four documents**, including every `image.asset` reference. Two
+ * differences would have been lost by a blunter cut and are worth naming:
+ * `heroWelcome.links[0].buttonVariant.size` is `lg` in English and `default`
+ * in the other three, and `news.columns[1..2].newsPost` points at a different
+ * news post in English. Both sit in row lists, so both survive.
  */
 export const Homepage: GlobalConfig = {
   slug: "homepage",
@@ -65,26 +101,26 @@ export const Homepage: GlobalConfig = {
   },
   fields: [
     localizedText("title", { label: "Page Title" }),
-    blockSlot("heroWelcome", hero1, {
+    homepageSlot("heroWelcome", hero1, {
       label: "Hero Welcome Section",
       description: "Welcome to Connecting Climate Minds Hub section",
     }),
-    blockSlot("globalAgenda", splitRow, {
+    homepageSlot("globalAgenda", splitRow, {
       label: "Global Research & Action Section",
       description: "Prioritizing Global Research and Action section",
     }),
-    blockSlot("howToUse", splitRow, {
+    homepageSlot("howToUse", splitRow, {
       label: "Your collaborative space section",
       description: "Collaborative space for ideas, dialogue, and connection",
     }),
-    blockSlot("agendasModule", gridRow, { label: "Research Agendas" }),
-    blockSlot("livedExperiences", carousel2, { label: "Lived Experiences Stories" }),
-    blockSlot("regionalCommunities", gridRow, { label: "Regional Communities" }),
-    blockSlot("collaboration", splitRow, { label: "Collaboration Section" }),
-    blockSlot("news", gridRow, { label: "Latest News Section" }),
-    blockSlot("projectInfo", splitRow, { label: "Project Information" }),
-    blockSlot("mentalHealthDefinition", cta1, { label: "Mental Health Definition" }),
-    blockSlot("partnerLogos", logoCloud1, { label: "Partner Logos" }),
+    homepageSlot("agendasModule", gridRow, { label: "Research Agendas" }),
+    homepageSlot("livedExperiences", carousel2, { label: "Lived Experiences Stories" }),
+    homepageSlot("regionalCommunities", gridRow, { label: "Regional Communities" }),
+    homepageSlot("collaboration", splitRow, { label: "Collaboration Section" }),
+    homepageSlot("news", gridRow, { label: "Latest News Section" }),
+    homepageSlot("projectInfo", splitRow, { label: "Project Information" }),
+    homepageSlot("mentalHealthDefinition", cta1, { label: "Mental Health Definition" }),
+    homepageSlot("partnerLogos", logoCloud1, { label: "Partner Logos" }),
     localizedText("meta_title", { label: "Meta Title" }),
     localizedTextarea("meta_description", { label: "Meta Description" }),
     { name: "noindex", type: "checkbox", defaultValue: false, label: "No Index" },

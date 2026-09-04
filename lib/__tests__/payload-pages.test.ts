@@ -6,11 +6,19 @@ import { Homepage } from "@/payload/globals/homepage";
 import { SiteAnnouncement } from "@/payload/globals/site-announcement";
 import { ModerationSettings } from "@/payload/globals/moderation-settings";
 import { HubIllustrations } from "@/payload/globals/hub-illustrations";
-import { OnboardingContent } from "@/payload/globals/onboarding-content";
+import {
+  ONBOARDING_CONTENT_FIELDS,
+  ONBOARDING_GLOBALS,
+  ONBOARDING_GLOBAL_SLUGS,
+  OnboardingBasicInfo,
+  OnboardingPrivacy,
+  OnboardingContent,
+  composeOnboardingContent,
+} from "@/payload/globals/onboarding-content";
 import { globals } from "@/payload/globals";
 import { contentGrid } from "@/payload/blocks/content-grid";
 import { gridCaseStudy } from "@/payload/blocks/grid-case-study";
-import { blocks as theTwelve } from "@/payload/blocks";
+import { blocks as theTwelve, hero1 } from "@/payload/blocks";
 
 function findField(fields: Field[], name: string): Field | undefined {
   return fields.find((f) => "name" in f && f.name === name);
@@ -24,6 +32,58 @@ function blocksField(fields: Field[], name: string): Extract<Field, { type: "blo
 function groupField(fields: Field[], name: string): Extract<Field, { type: "group" }> | undefined {
   const f = findField(fields, name);
   return f && f.type === "group" ? f : undefined;
+}
+
+const HOMEPAGE_SLOTS = [
+  "heroWelcome",
+  "globalAgenda",
+  "howToUse",
+  "agendasModule",
+  "livedExperiences",
+  "regionalCommunities",
+  "collaboration",
+  "news",
+  "projectInfo",
+  "mentalHealthDefinition",
+  "partnerLogos",
+];
+
+/**
+ * The leaves that end up as columns in a `*_locales` table — the ones
+ * Postgres's 100-argument `json_build_array` limit is counted against.
+ * `array`/`blocks` rows live in their own tables, so the walk stops there.
+ */
+function localizedLeaves(fields: Field[], inherited = false, prefix = ""): string[] {
+  const out: string[] = [];
+  for (const f of fields) {
+    if (!("name" in f) || typeof f.name !== "string") continue;
+    const path = prefix ? `${prefix}.${f.name}` : f.name;
+    const localized = inherited || (f as { localized?: boolean }).localized === true;
+    if (f.type === "array" || f.type === "blocks") continue;
+    if (f.type === "group") {
+      out.push(...localizedLeaves(f.fields as Field[], localized, path));
+      continue;
+    }
+    if (localized) out.push(path);
+  }
+  return out;
+}
+
+/** Every `array`/`blocks`/`hasMany` row container in a field tree. */
+function rowLists(fields: Field[]): Field[] {
+  const out: Field[] = [];
+  for (const f of fields) {
+    if (f.type === "array" || f.type === "blocks") {
+      out.push(f);
+      continue;
+    }
+    if (f.type === "relationship" && (f as { hasMany?: boolean }).hasMany) {
+      out.push(f);
+      continue;
+    }
+    if ("fields" in f && Array.isArray(f.fields)) out.push(...rowLists(f.fields as Field[]));
+  }
+  return out;
 }
 
 /** Every field name reachable from a field tree, at any depth. */
@@ -46,7 +106,13 @@ function allFieldNames(fields: Field[]): string[] {
 }
 
 const pageCollections: CollectionConfig[] = [Pages, RegionalCommunityPages];
-const allGlobals: GlobalConfig[] = [Homepage, SiteAnnouncement, ModerationSettings, HubIllustrations, OnboardingContent];
+const allGlobals: GlobalConfig[] = [
+  Homepage,
+  SiteAnnouncement,
+  ModerationSettings,
+  HubIllustrations,
+  ...ONBOARDING_GLOBALS,
+];
 
 describe("payload page collections", () => {
   it("defines exactly the two page collection slugs", () => {
@@ -245,14 +311,20 @@ describe("gridCaseStudy block", () => {
 });
 
 describe("payload globals", () => {
-  it("registers exactly the five globals the spec names", () => {
+  it("registers the five singletons the spec names — onboardingContent as its six step globals", () => {
     expect(globals.map((g) => g.slug).sort()).toEqual([
       "homepage",
       "hubIllustrations",
       "moderationSettings",
+      "onboardingBasicInfo",
       "onboardingContent",
+      "onboardingPrivacy",
+      "onboardingRecentWork",
+      "onboardingReview",
+      "onboardingWorkInfo",
       "siteAnnouncement",
     ]);
+    expect(ONBOARDING_GLOBAL_SLUGS).toHaveLength(6);
   });
 
   it("has no duplicate slugs", () => {
@@ -290,21 +362,51 @@ describe("payload globals", () => {
     expect(allFieldNames(partners!.fields)).toContain("images");
   });
 
-  it("localizes every homepage slot at the slot level — the four Sanity homepage documents are one per language", () => {
-    for (const name of [
-      "heroWelcome",
-      "globalAgenda",
-      "howToUse",
-      "agendasModule",
-      "livedExperiences",
-      "regionalCommunities",
-      "collaboration",
-      "news",
-      "projectInfo",
-      "mentalHealthDefinition",
-      "partnerLogos",
-    ]) {
-      expect(groupField(Homepage.fields, name)?.localized, `${name} must be localized`).toBe(true);
+  it("localizes the homepage field by field, NOT slot by slot — 135 localized columns broke Postgres's 100-argument cap", () => {
+    for (const name of HOMEPAGE_SLOTS) {
+      expect(groupField(Homepage.fields, name)?.localized, `${name} must not localize its container`).toBe(false);
+    }
+    // Translatable copy still is localized, because the blocks declare it so.
+    const hero = groupField(Homepage.fields, "heroWelcome")!;
+    for (const name of ["tagLine", "title", "body"]) {
+      expect((findField(hero.fields, name) as { localized?: boolean }).localized, name).toBe(true);
+    }
+    expect((findField(groupField(hero.fields, "image")!.fields, "alt") as { localized?: boolean }).localized).toBe(true);
+    // Presentation settings are not.
+    expect((findField(hero.fields, "imagePosition") as { localized?: boolean }).localized).toBeUndefined();
+    expect((findField(groupField(hero.fields, "padding")!.fields, "top") as { localized?: boolean }).localized).toBeUndefined();
+    const background = groupField(hero.fields, "background")!;
+    for (const name of ["type", "ccmColor", "color", "lightText"]) {
+      expect((findField(background.fields, name) as { localized?: boolean }).localized, name).toBeUndefined();
+    }
+  });
+
+  it("keeps every row list inside a homepage slot localized — the four documents differ inside them", () => {
+    // heroWelcome.links[0].buttonVariant.size is `lg` in English and `default`
+    // in es/fr/ar, and news.columns[1..2].newsPost points at a different news
+    // post in English. Both live in row lists, so both survive de-localizing
+    // the slot container — and cost nothing against the cap, because rows live
+    // in their own tables with their own _locale column.
+    for (const name of HOMEPAGE_SLOTS) {
+      const slot = groupField(Homepage.fields, name)!;
+      for (const field of rowLists(slot.fields)) {
+        expect((field as { localized?: boolean }).localized, `${name}.${(field as { name: string }).name}`).toBe(true);
+      }
+    }
+  });
+
+  it("keeps homepage_locales far below Postgres's 100-argument function limit", () => {
+    expect(localizedLeaves(Homepage.fields).length).toBeLessThan(80);
+  });
+
+  it("gives each homepage slot its own cloned field list — sanitize MUTATES shared field objects", () => {
+    // page.blocks[] is localized, so Payload deletes `localized` from the
+    // shared block field objects. An unlocalized slot pointing at the same
+    // objects would silently lose its per-language text.
+    const heroSlot = groupField(Homepage.fields, "heroWelcome")!;
+    expect(heroSlot.fields).not.toBe(hero1.fields);
+    for (const field of heroSlot.fields) {
+      expect(hero1.fields).not.toContain(field);
     }
   });
 
@@ -341,7 +443,7 @@ describe("payload globals", () => {
   });
 
   it("serves every field lib/content/onboarding.ts's OnboardingContent interface projects", () => {
-    const names = OnboardingContent.fields.filter((f) => "name" in f).map((f) => (f as { name: string }).name);
+    const names = ONBOARDING_CONTENT_FIELDS.filter((f) => "name" in f).map((f) => (f as { name: string }).name);
     for (const f of [
       "title",
       "welcomeTitle",
@@ -398,13 +500,52 @@ describe("payload globals", () => {
 
   it("localizes onboardingContent's copy — the four Sanity documents are one per language", () => {
     expect((findField(OnboardingContent.fields, "welcomeTitle") as { localized?: boolean }).localized).toBe(true);
-    expect(groupField(OnboardingContent.fields, "fieldLabels")?.localized).toBe(true);
+    expect(groupField(OnboardingBasicInfo.fields, "fieldLabels")?.localized).toBe(true);
+  });
+
+  it("splits onboardingContent into six globals, each far below the 100-argument cap", () => {
+    // 194 of its 197 columns are varchar UI strings, so de-localizing (the
+    // homepage's fix) is not available — the split is the fix.
+    expect(ONBOARDING_GLOBALS).toHaveLength(6);
+    for (const g of ONBOARDING_GLOBALS) {
+      expect(localizedLeaves(g.fields).length, g.slug).toBeLessThan(80);
+    }
+    expect(ONBOARDING_GLOBALS.reduce((n, g) => n + localizedLeaves(g.fields).length, 0)).toBe(
+      localizedLeaves(ONBOARDING_CONTENT_FIELDS).length,
+    );
+  });
+
+  it("keeps the declared container shape across the split — fieldLabels.basicInfo.firstName still lives there", () => {
+    const labels = groupField(OnboardingBasicInfo.fields, "fieldLabels")!;
+    expect(allFieldNames(groupField(labels.fields, "basicInfo")!.fields)).toContain("firstName");
+    // and the same container, holding a different step, in another global
+    expect(groupField(OnboardingPrivacy.fields, "fieldLabels")).toBeUndefined();
+    const composed = groupField(ONBOARDING_CONTENT_FIELDS, "fieldLabels")!;
+    expect(composed.fields.map((f) => ("name" in f ? f.name : ""))).toEqual([
+      "basicInfo",
+      "workInfo",
+      "recentWork",
+      "review",
+    ]);
+  });
+
+  it("composes the six parts back into one object, merging the two shared containers", () => {
+    const composed = composeOnboardingContent([
+      { welcomeTitle: "Hi", fieldLabels: { basicInfo: { firstName: "First" } } },
+      { basicInfoTitle: "About you", fieldLabels: { workInfo: { workTypes: "Work" } } },
+      null,
+    ]);
+    expect(composed).toEqual({
+      welcomeTitle: "Hi",
+      basicInfoTitle: "About you",
+      fieldLabels: { basicInfo: { firstName: "First" }, workInfo: { workTypes: "Work" } },
+    });
   });
 
   it("drops the Lane-A `language` and `slug` fields from both Lane-A globals", () => {
-    for (const g of [Homepage, OnboardingContent]) {
-      expect(findField(g.fields, "language")).toBeUndefined();
-      expect(findField(g.fields, "slug")).toBeUndefined();
+    for (const g of [Homepage, ...ONBOARDING_GLOBALS]) {
+      expect(findField(g.fields, "language"), g.slug).toBeUndefined();
+      expect(findField(g.fields, "slug"), g.slug).toBeUndefined();
     }
   });
 });

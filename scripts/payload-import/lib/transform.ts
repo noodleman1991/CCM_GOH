@@ -46,7 +46,7 @@
  */
 
 import { portableTextToLexical } from "@/lib/content/internal/lexical";
-import { OnboardingContent } from "@/payload/globals/onboarding-content";
+import { ONBOARDING_CONTENT_FIELDS, ONBOARDING_GLOBALS } from "@/payload/globals/onboarding-content";
 import { assetIdFromSanityAssetRef } from "./sanity-export";
 
 export const LOCALES = ["en", "es", "fr", "ar"] as const;
@@ -883,6 +883,13 @@ interface TypeSpec {
   /** Collections with `versions.drafts` need an explicit published status. */
   drafts?: boolean;
   build: DocBuilder;
+  /**
+   * One Sanity type, several Payload globals. `onboardingContent` is built
+   * once against its whole declared tree — so `unplaced` stays the complete
+   * inventory it was — and then projected onto each global's own field list.
+   * See payload/globals/onboarding-content.ts for why it is six globals.
+   */
+  split?: readonly { slug: string; fields: readonly unknown[] }[];
 }
 
 /** Common trailer: Sanity's own timestamps, kept so ordering survives. */
@@ -1664,10 +1671,11 @@ const TYPE_SPECS: Record<string, TypeSpec> = {
   siteAnnouncement: { kind: "global", slug: "siteAnnouncement", lane: "single", build: buildSiteAnnouncement },
   onboardingContent: {
     kind: "global",
-    slug: "onboardingContent",
+    slug: ONBOARDING_GLOBALS[0].slug,
     lane: "perLocale",
     build: (doc, _canonical, locale, _ctx, unplaced) =>
-      buildOnboardingContent(doc, locale, OnboardingContent.fields, unplaced),
+      buildOnboardingContent(doc, locale, ONBOARDING_CONTENT_FIELDS, unplaced),
+    split: ONBOARDING_GLOBALS.map((g) => ({ slug: g.slug, fields: g.fields })),
   },
   homepage: { kind: "global", slug: "homepage", lane: "perLocale", build: buildHomepage },
 };
@@ -1804,9 +1812,12 @@ export function documentTargets(docs: SanityDoc[], ctx: TransformContext): {
   // filled type by type below to enforce exactly that.
   for (const type of IMPORT_ORDER) {
     for (const group of groups.get(type) ?? []) {
-      targets.push(buildTarget(type, group, ctx));
-      const last = targets[targets.length - 1];
-      if (last.id) ctx.known.add(last.id);
+      const built = buildTarget(type, group, ctx);
+      const split = TYPE_SPECS[type]?.split;
+      for (const target of split ? splitTarget(built, split) : [built]) {
+        targets.push(target);
+        if (target.id) ctx.known.add(target.id);
+      }
     }
   }
 
@@ -1851,4 +1862,53 @@ export function buildTarget(type: string, group: SourceGroup, ctx: TransformCont
   }
 
   return { kind: spec.kind, slug: spec.slug, id, sanityType: type, sources, data, unplaced };
+}
+
+/**
+ * Fans one built target out across the several globals its content is stored
+ * in, by projecting each locale's data onto each global's own field list.
+ *
+ * The build itself is unsplit — `buildOnboardingContent` fills against the
+ * whole declared tree — so the `unplaced` inventory is exactly what it was
+ * before the split. It rides on the first partition rather than being
+ * repeated six times.
+ *
+ * `createdAt`/`updatedAt` are carried through explicitly: they are Sanity's
+ * own timestamps, not declared fields, so the projection would drop them.
+ */
+export function splitTarget(
+  target: DocumentTarget,
+  partitions: readonly { slug: string; fields: readonly unknown[] }[],
+): DocumentTarget[] {
+  return partitions.map((partition, i) => {
+    const data: Partial<Record<Locale, PayloadData>> = {};
+    for (const locale of LOCALES) {
+      const source = target.data[locale];
+      if (source === undefined) continue;
+      data[locale] = {
+        ...projectOntoFields(source, partition.fields),
+        ...(source.createdAt !== undefined ? { createdAt: source.createdAt } : {}),
+        ...(source.updatedAt !== undefined ? { updatedAt: source.updatedAt } : {}),
+      };
+    }
+    return { ...target, slug: partition.slug, data, unplaced: i === 0 ? target.unplaced : [] };
+  });
+}
+
+/** Keeps only the keys a field list declares, recursing into `group`s. */
+export function projectOntoFields(data: PayloadData, fields: readonly unknown[]): PayloadData {
+  const out: PayloadData = {};
+  for (const raw of fields) {
+    const field = raw as { name?: string; type?: string; fields?: unknown[] };
+    if (!field.name) continue;
+    const value = data[field.name];
+    if (value === undefined) continue;
+    if (field.type === "group" && isRecord(value)) {
+      const nested = projectOntoFields(value as PayloadData, field.fields ?? []);
+      if (Object.keys(nested).length > 0) out[field.name] = nested;
+      continue;
+    }
+    out[field.name] = value;
+  }
+  return out;
 }
