@@ -738,6 +738,8 @@ Task 10's adapter is render-identical except here, and this is **decided, not op
 
 So heading anchors change once, at cutover. **Keying off the slug alone is not an alternative** — the codebase already rejected it for the collision reason above.
 
+**Scale:** 212 headings actually change — the h2/h3 the renderer assigns ids to. (Task 10's report says "239"; that figure counts h1–h4, and h1/h4 get no id. 37 of 343 Portable Text arrays are affected.)
+
 The adapter mints replacements that are *content*-derived (FNV-1a of style + text) and collision-suffixed, which is strictly better than what Sanity had: an anchor no longer moves when a heading above it is edited, only when its own text changes. In-page TOC links keep working, because the renderer and the TOC call the same function on the same blocks. The 51 stored `#fragment` hrefs in the dataset are bare slugs that already do not match `headingId`, so they are unaffected.
 
 What breaks is externally bookmarked `#slug-<sanitykey>` URLs. Fragments are never sent to the server, so a redirect cannot repair them; only a client-side mapping could, and that is not worth carrying. **Accept the one-time churn.**
