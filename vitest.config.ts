@@ -16,7 +16,16 @@ export default defineConfig({
     // files that import the config need a value here. Deliberately not a real
     // bucket name: nothing under test performs an upload, and a fake name
     // makes that obvious if one ever tries.
-    env: { R2_BUCKET: "vitest-no-such-bucket" },
+    // Same reasoning for Sanity: `sanity/env.ts` asserts dataset and project
+    // id at import, so a test that imports the real `sanity/lib/client` (to
+    // check how it is *configured*, rather than to mock it away) cannot load
+    // without them. Deliberately fake — nothing under test issues a request,
+    // and a fake project id makes that obvious if one ever tries.
+    env: {
+      R2_BUCKET: "vitest-no-such-bucket",
+      NEXT_PUBLIC_SANITY_DATASET: "vitest-no-such-dataset",
+      NEXT_PUBLIC_SANITY_PROJECT_ID: "vitestnosuchproject",
+    },
   },
   resolve: {
     // Mirrors tsconfig `"@/*": ["./*"]` (a config file suppresses Vitest's

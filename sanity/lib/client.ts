@@ -21,6 +21,17 @@ export const client = createClient({
   useCdn,
   token,
   perspective: "published",
+  // Cap request time. @sanity/client applies no default, so a hung upstream
+  // blocks server rendering with no ceiling — the render waits as long as
+  // Sanity does. On 2026-07-28 a quota outage (402 plan_limit_reached) took
+  // every content page down; with a ceiling that becomes a fast failure the
+  // content layer's `safe()` wrappers can degrade around, instead of a
+  // hanging render.
+  //
+  // 10s is well above the p99 for these queries (a warm CDN read is tens of
+  // milliseconds) while staying comfortably inside Vercel's function budget,
+  // so it only ever fires on a genuinely stuck upstream.
+  timeout: 10_000,
   stega: {
     studioUrl: process.env.NEXT_PUBLIC_SITE_URL + "/studio",
   },
