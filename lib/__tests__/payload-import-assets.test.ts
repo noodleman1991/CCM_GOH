@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   assetIdFromSanityAssetRef,
+  effectiveMimeType,
   mimeTypeForExtension,
   parseExportAssets,
   sanityAssetIdFromExportPath,
@@ -364,5 +365,41 @@ describe("importAssetRecords", () => {
       onProgress: (p) => seen.push(p.index),
     });
     expect(seen).toEqual([1, 2, 3]);
+  });
+});
+
+describe("effectiveMimeType", () => {
+  /**
+   * ISO-BMFF: 4-byte box size, "ftyp", then the brand at bytes 8..12.
+   * The archive holds one asset named `.heif` whose bytes are AVIF; Payload's
+   * canResizeImage accepts image/avif but not image/heif, so trusting the
+   * extension silently costs that asset every derivative and its dimensions.
+   */
+  const isoBmff = (brand: string): Buffer =>
+    Buffer.concat([
+      Buffer.from([0, 0, 0, 32]),
+      Buffer.from("ftyp", "ascii"),
+      Buffer.from(brand, "ascii"),
+      Buffer.alloc(20),
+    ]);
+
+  it("upgrades a mislabelled heif to avif when the brand says avif", () => {
+    expect(effectiveMimeType("image/heif", isoBmff("avif"))).toBe("image/avif");
+    expect(effectiveMimeType("image/heic", isoBmff("avis"))).toBe("image/avif");
+  });
+
+  it("leaves a genuine heif alone", () => {
+    expect(effectiveMimeType("image/heif", isoBmff("heic"))).toBe("image/heif");
+    expect(effectiveMimeType("image/heif", isoBmff("mif1"))).toBe("image/heif");
+  });
+
+  it("never touches a non-heif declaration, even if the bytes look like avif", () => {
+    expect(effectiveMimeType("image/png", isoBmff("avif"))).toBe("image/png");
+    expect(effectiveMimeType("application/pdf", isoBmff("avif"))).toBe("application/pdf");
+  });
+
+  it("falls back to the declaration on short or non-ftyp input", () => {
+    expect(effectiveMimeType("image/heif", Buffer.alloc(4))).toBe("image/heif");
+    expect(effectiveMimeType("image/heif", Buffer.from("not an iso bmff header"))).toBe("image/heif");
   });
 });

@@ -58,6 +58,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import {
+  effectiveMimeType,
   loadSanityExport,
   readAssetBytes as readAssetBytesFromDir,
   REPO_ROOT,
@@ -276,7 +277,7 @@ export async function importAssetRecords(
           data,
           file: {
             data: bytes,
-            mimetype: asset.mimeType,
+            mimetype: effectiveMimeType(asset.mimeType, bytes),
             name: filenames.get(asset.id)!,
             size: bytes.byteLength,
           },

@@ -100,6 +100,28 @@ export function mimeTypeForExtension(extension: string): string {
 }
 
 /**
+ * The declared mime type, corrected against the file's own bytes.
+ *
+ * One archive asset is named `.heif` and is recorded by Sanity as `image/heif`,
+ * but its bytes are AVIF (`ftyp` brand `avif`, AV1-compressed). That matters
+ * because Payload's `canResizeImage` accepts `image/avif` and does **not**
+ * accept `image/heif`, so trusting the extension costs that asset all of its
+ * `imageSizes` derivatives *and* its stored width/height — silently, since an
+ * unresizable upload is not an error. sharp reads the file fine either way.
+ *
+ * ISO-BMFF puts a 4-byte box size, then `ftyp`, then the brand, so the brand is
+ * bytes 8..12. Only the HEIF family is checked: every other extension in the
+ * archive is unambiguous, and a broad sniffer would be a larger surface than
+ * the one wrong label justifies.
+ */
+export function effectiveMimeType(declared: string, bytes: Buffer): string {
+  if (declared !== "image/heif" && declared !== "image/heic") return declared;
+  if (bytes.length < 12 || bytes.toString("ascii", 4, 8) !== "ftyp") return declared;
+  const brand = bytes.toString("ascii", 8, 12);
+  return brand === "avif" || brand === "avis" ? "image/avif" : declared;
+}
+
+/**
  * `images/<sha1>-<w>x<h>.<ext>` -> `image-<sha1>-<w>x<h>-<ext>`
  * `files/<sha1>.<ext>`          -> `file-<sha1>-<ext>`
  *
