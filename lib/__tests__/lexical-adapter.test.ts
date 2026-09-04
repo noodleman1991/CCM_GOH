@@ -7,7 +7,7 @@ import config from "@payload-config";
 import { editorConfigFactory, getEnabledNodes } from "@payloadcms/richtext-lexical";
 import { createHeadlessEditor } from "@payloadcms/richtext-lexical/lexical/headless";
 import { richTextEditor } from "@/payload/blocks/rich-text-embeds";
-import { portableTextToLexical } from "@/lib/content/internal/lexical";
+import { portableTextToLexical, type SerializedEditorState } from "@/lib/content/internal/lexical";
 import { lexicalToPortableText } from "@/lib/content/internal/lexical-to-portable-text";
 import { extractFootnotes, extractToc, headingId } from "@/lib/portable-text-headings";
 import { splitContentAtReadMore } from "@/lib/portable-text-utils";
@@ -552,10 +552,11 @@ describe("lexicalToPortableText — embeds", () => {
     expect(roundTrip(odd)).toEqual(odd);
   });
 
-  it("does not let a block's `id`/`blockType` fields shadow a real Sanity property", () => {
+  it("strips Payload's three reserved `fields` members on the way back", () => {
     // No stored embed carries a property called `id`, `blockType` or
     // `blockName` (measured across all 886 documents), so those three names
-    // belong to Payload and are stripped on the way back.
+    // belong to Payload and are stripped on the way back. The collision case —
+    // a Sanity property that DOES use one of the names — is the test below.
     const state = {
       root: {
         children: [
@@ -660,5 +661,299 @@ describe("what does NOT round-trip — pinned, not hidden", () => {
     const empty = [block({ children: [span(""), span("text")] })];
     expect((roundTrip(empty) as { children: unknown[] }[])[0].children).toHaveLength(1);
     expect(render(roundTrip(empty))).toBe(render(empty));
+  });
+});
+
+/* ===================================================================== */
+/* The review round's seven findings. All 0-occurrence in production_2   */
+/* and reachable only from the admin Phase 3 turns on, so the Lexical    */
+/* states below are authored directly rather than round-tripped from a   */
+/* Sanity fixture.                                                       */
+/* ===================================================================== */
+
+/** The other direction: a state authored in the admin, out to Portable Text and back. */
+const lexicalRoundTrip = (state: unknown): SerializedEditorState =>
+  portableTextToLexical(lexicalToPortableText(state));
+
+const rootOf = (children: unknown[]) => ({
+  root: { children, direction: null, format: "", indent: 0, type: "root", version: 1 },
+});
+const textNode = (text: string, format = 0) => ({
+  detail: 0,
+  format,
+  mode: "normal",
+  style: "",
+  text,
+  type: "text",
+  version: 1,
+});
+const linkNode = (id: string, url: string, children: unknown[]) => ({
+  children,
+  direction: null,
+  format: "",
+  indent: 0,
+  type: "link",
+  version: 3,
+  id,
+  fields: { linkType: "custom", newTab: false, url },
+});
+
+describe("lexicalToPortableText — alignment and indent (finding 1)", () => {
+  it("brings a centred, indented paragraph back with both facts on the block", () => {
+    const state = rootOf([
+      { type: "paragraph", version: 1, format: "center", indent: 2, children: [textNode("centred")] },
+    ]);
+    expect(lexicalToPortableText(state)).toMatchObject([{ _type: "block", textAlign: "center", indent: 2 }]);
+  });
+
+  it("does the same for a heading, a quote and a list item", () => {
+    const state = rootOf([
+      { type: "heading", version: 1, tag: "h2", format: "right", indent: 1, children: [textNode("h")] },
+      { type: "quote", version: 1, format: "justify", indent: 0, children: [textNode("q")] },
+      {
+        type: "list",
+        version: 1,
+        listType: "bullet",
+        tag: "ul",
+        start: 1,
+        format: "",
+        indent: 0,
+        children: [
+          { type: "listitem", version: 1, value: 1, format: "center", indent: 0, children: [textNode("i")] },
+        ],
+      },
+    ]);
+    expect(lexicalToPortableText(state)).toMatchObject([
+      { style: "h2", textAlign: "right", indent: 1 },
+      { style: "blockquote", textAlign: "justify" },
+      { listItem: "bullet", textAlign: "center" },
+    ]);
+  });
+
+  it("survives the whole trip back into Lexical, which is what an editor would see", () => {
+    const state = rootOf([
+      { type: "paragraph", version: 1, format: "center", indent: 2, children: [textNode("centred")] },
+    ]);
+    const back = lexicalRoundTrip(state).root.children[0] as { format: string; indent: number };
+    expect([back.format, back.indent]).toEqual(["center", 2]);
+  });
+
+  it("keeps an embedded block's alignment across the round trip", () => {
+    const state = rootOf([
+      { type: "block", version: 2, format: "center", fields: { blockName: "", blockType: "youtube", id: "y1", videoId: "v" } },
+    ]);
+    expect(lexicalToPortableText(state)).toMatchObject([{ _type: "youtube", textAlign: "center", videoId: "v" }]);
+    expect((lexicalRoundTrip(state).root.children[0] as { format: string }).format).toBe("center");
+  });
+
+  it("writes neither property for an unaligned element, so no Sanity body gains one", () => {
+    const { blocks } = FIXTURES.docsChapterActionAgenda;
+    const keys = new Set(roundTrip(blocks).flatMap((b) => Object.keys(b as Record<string, unknown>)));
+    expect(keys.has("textAlign")).toBe(false);
+    expect(keys.has("indent")).toBe(false);
+  });
+});
+
+describe("lexicalToPortableText — a decorator leaf inside an element (finding 2)", () => {
+  const image = {
+    type: "block",
+    version: 2,
+    format: "",
+    fields: { blockName: "", blockType: "image", id: "i9", asset: { _ref: "image-a" }, alt: "A" },
+  };
+
+  it("carries an embedded block that sits inside a list item", () => {
+    const state = rootOf([
+      {
+        type: "list",
+        version: 1,
+        listType: "bullet",
+        tag: "ul",
+        start: 1,
+        format: "",
+        indent: 0,
+        children: [
+          { type: "listitem", version: 1, value: 1, format: "", indent: 0, children: [textNode("item"), image] },
+        ],
+      },
+    ]);
+    const [item] = lexicalToPortableText(state) as { children: Record<string, unknown>[] }[];
+    expect(item.children.map((c) => c._type)).toEqual(["span", "image"]);
+    expect(item.children[1]).toMatchObject({ _key: "i9", asset: { _ref: "image-a" }, alt: "A" });
+  });
+
+  it("carries one that sits inside a quote", () => {
+    const state = rootOf([
+      { type: "quote", version: 1, format: "", indent: 0, children: [textNode("q"), { ...image, fields: { ...image.fields, blockType: "youtube", id: "y1", videoId: "dQw4" } }] },
+    ]);
+    const [quote] = lexicalToPortableText(state) as { children: Record<string, unknown>[] }[];
+    expect(quote.children.map((c) => c._type)).toEqual(["span", "youtube"]);
+    expect(quote.children[1]).toMatchObject({ _key: "y1", videoId: "dQw4" });
+  });
+
+  it("carries an upload and a relationship the same way, rather than deleting them", () => {
+    const state = rootOf([
+      {
+        type: "paragraph",
+        version: 1,
+        format: "",
+        indent: 0,
+        children: [
+          textNode("see "),
+          { type: "upload", version: 3, relationTo: "media", value: "abc" },
+          { type: "relationship", version: 2, relationTo: "case-studies", value: "cs-1" },
+        ],
+      },
+    ]);
+    const [p] = lexicalToPortableText(state) as { children: Record<string, unknown>[] }[];
+    expect(p.children.map((c) => c._type)).toEqual(["span", "upload", "relationship"]);
+    expect(p.children[1]).toMatchObject({ relationTo: "media", value: "abc" });
+    expect(p.children[2]).toMatchObject({ relationTo: "case-studies", value: "cs-1" });
+  });
+
+  it("renders it — a Portable Text renderer is handed the node, not a hole", () => {
+    const state = rootOf([
+      { type: "quote", version: 1, format: "", indent: 0, children: [textNode("q"), image] },
+    ]);
+    expect(render(lexicalToPortableText(state))).toContain('data-type="image"');
+  });
+});
+
+describe("lexicalToPortableText — overlapping annotations (finding 3)", () => {
+  it("round-trips a span carrying a link AND a footnote, render included", () => {
+    const both = [
+      block({
+        markDefs: [
+          { _key: "m1", _type: "link", href: "https://a.example" },
+          { _key: "f1", _type: "footnote", text: "the note" },
+        ],
+        children: [span("claim", ["m1", "f1"])],
+      }),
+    ];
+    const [out] = roundTrip(both) as { markDefs: unknown[]; children: { text: string; marks: string[] }[] }[];
+    expect(out.markDefs).toEqual([
+      { _key: "m1", _type: "link", href: "https://a.example" },
+      { _key: "f1", _type: "footnote", text: "the note" },
+    ]);
+    expect(out.children[0].marks.sort()).toEqual(["f1", "m1"]);
+    expect(render(roundTrip(both))).toBe(render(both));
+  });
+
+  it("round-trips a span carrying two links, render included", () => {
+    const both = [
+      block({
+        markDefs: [
+          { _key: "m1", _type: "link", href: "https://a.example" },
+          { _key: "m2", _type: "link", href: "https://b.example" },
+        ],
+        children: [span("both", ["m1", "m2"])],
+      }),
+    ];
+    const [out] = roundTrip(both) as { markDefs: { href: string }[]; children: { marks: string[] }[] }[];
+    expect(out.markDefs.map((d) => d.href)).toEqual(["https://a.example", "https://b.example"]);
+    expect(out.children[0].marks.sort()).toEqual(["m1", "m2"]);
+    expect(render(roundTrip(both))).toBe(render(both));
+  });
+
+  it("keeps both footnote defs when two sit on one span", () => {
+    const both = [
+      block({
+        markDefs: [
+          { _key: "f1", _type: "footnote", text: "first note" },
+          { _key: "f2", _type: "footnote", text: "second note" },
+        ],
+        children: [span("claim", ["f1", "f2"])],
+      }),
+    ];
+    const [out] = roundTrip(both) as { markDefs: unknown[]; children: { text: string; marks: string[] }[] }[];
+    expect(out.markDefs).toEqual([
+      { _key: "f1", _type: "footnote", text: "first note" },
+      { _key: "f2", _type: "footnote", text: "second note" },
+    ]);
+    expect(out.children.map((c) => c.text)).toEqual(["claim", ""]);
+    // Both numbers survive `extractFootnotes`, which is what the renderer prints.
+    expect(extractFootnotes(roundTrip(both) as Parameters<typeof extractFootnotes>[0]).footnotes).toHaveLength(2);
+  });
+});
+
+describe("lexicalToPortableText — two annotations sharing an id (finding 6)", () => {
+  it("keeps both hrefs instead of collapsing them onto the first", () => {
+    const state = rootOf([
+      {
+        type: "paragraph",
+        version: 1,
+        format: "",
+        indent: 0,
+        children: [
+          linkNode("same", "https://a.example", [textNode("a")]),
+          textNode(" and "),
+          linkNode("same", "https://b.example", [textNode("b")]),
+        ],
+      },
+    ]);
+    const [p] = lexicalToPortableText(state) as { markDefs: { _key: string; href: string }[]; children: { text: string; marks: string[] }[] }[];
+    expect(p.markDefs.map((d) => d.href)).toEqual(["https://a.example", "https://b.example"]);
+    expect(p.markDefs.map((d) => d._key)).toEqual(["same", "same-2"]);
+    expect(p.children.filter((c) => c.marks.length > 0).map((c) => c.marks)).toEqual([["same"], ["same-2"]]);
+    expect(render(lexicalToPortableText(state))).toContain("https://b.example");
+  });
+
+  it("still collapses one Sanity annotation that arrives as two link nodes", () => {
+    // Task 9 merges only CONSECUTIVE spans, so a link split by an unlinked word
+    // produces two link nodes with the same id and the same href — one markDef.
+    const split = [
+      block({
+        markDefs: [{ _key: "m1", _type: "link", href: "https://example.org" }],
+        children: [span("one", ["m1"]), span(" gap "), span("two", ["m1"])],
+      }),
+    ];
+    const [out] = roundTrip(split) as { markDefs: unknown[] }[];
+    expect(out.markDefs).toEqual([{ _key: "m1", _type: "link", href: "https://example.org" }]);
+    expect(render(roundTrip(split))).toBe(render(split));
+  });
+});
+
+describe("lexicalToPortableText — an ordered list's start (finding 7)", () => {
+  const ol = (start: number) =>
+    rootOf([
+      {
+        type: "list",
+        version: 1,
+        listType: "number",
+        tag: "ol",
+        start,
+        format: "",
+        indent: 0,
+        children: [
+          { type: "listitem", version: 1, value: 1, format: "", indent: 0, children: [textNode("five")] },
+          { type: "listitem", version: 1, value: 2, format: "", indent: 0, children: [textNode("six")] },
+        ],
+      },
+    ]);
+
+  it("puts `start` on the block that opens the run, and only that one", () => {
+    const back = lexicalToPortableText(ol(5)) as Record<string, unknown>[];
+    expect(back.map((b) => b.listStart)).toEqual([5, undefined]);
+  });
+
+  it("survives back into Lexical", () => {
+    expect((lexicalRoundTrip(ol(5)).root.children[0] as { start: number }).start).toBe(5);
+  });
+
+  it("writes nothing for the default start of 1, which is every list in the dataset", () => {
+    const back = lexicalToPortableText(ol(1)) as Record<string, unknown>[];
+    expect(back.some((b) => "listStart" in b)).toBe(false);
+  });
+});
+
+describe("lexicalToPortableText — a Sanity property using a reserved name (finding 5)", () => {
+  it("keeps the real `_key` when an embed also carries a property called `id`", () => {
+    const source = [{ _type: "storyChart", _key: "sanitykey", id: "chart-7", caption: "C" }];
+    expect(roundTrip(source)).toMatchObject([{ _type: "storyChart", _key: "sanitykey", caption: "C" }]);
+  });
+
+  it("keeps the real `_type` when an embed carries a property called `blockType`", () => {
+    const source = [{ _type: "image", _key: "i1", blockType: "youtube", alt: "A" }];
+    expect(roundTrip(source)).toMatchObject([{ _type: "image", _key: "i1", alt: "A" }]);
   });
 });

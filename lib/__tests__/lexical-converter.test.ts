@@ -556,3 +556,235 @@ describe("what Task 10 must reconstruct rather than read back", () => {
     ]);
   });
 });
+
+/* ===================================================================== */
+/* The review round's seven findings. Every one is 0-occurrence in       */
+/* production_2 and reachable only once Phase 3 turns the admin on, so   */
+/* the Lexical shapes below are authored directly — there is no Sanity   */
+/* fixture to take them from — and each is checked against the editor    */
+/* built from this project's own config where the claim is "the admin    */
+/* can produce this".                                                    */
+/* ===================================================================== */
+
+describe("portableTextToLexical — alignment and indent (finding 1)", () => {
+  it("carries a block's alignment onto the element's format", () => {
+    const [p] = portableTextToLexical([block({ textAlign: "center" })]).root.children as SerializedParagraphNode[];
+    expect(p.format).toBe("center");
+  });
+
+  it("carries a block's indent", () => {
+    const [p] = portableTextToLexical([block({ indent: 2 })]).root.children as SerializedParagraphNode[];
+    expect(p.indent).toBe(2);
+  });
+
+  it("carries both onto a heading and a quote", () => {
+    const [h] = portableTextToLexical([block({ style: "h2", textAlign: "right", indent: 1 })])
+      .root.children as SerializedHeadingNode[];
+    expect([h.format, h.indent]).toEqual(["right", 1]);
+    const [q] = portableTextToLexical([block({ style: "blockquote", textAlign: "justify" })]).root.children;
+    expect(q.format).toBe("justify");
+  });
+
+  it("carries the alignment onto a list item", () => {
+    const list = portableTextToLexical([
+      block({ listItem: "bullet", level: 1, textAlign: "end", children: [span("x")] }),
+    ]).root.children[0] as SerializedListNode;
+    expect(list.children[0].format).toBe("end");
+  });
+
+  it("aligns an embedded block too — a DecoratorBlockNode carries a format", () => {
+    const [node] = portableTextToLexical([{ _type: "image", _key: "i1", asset: {}, textAlign: "center" }])
+      .root.children as SerializedBlockNode[];
+    expect(node.format).toBe("center");
+    // …and it is not left behind as a field as well.
+    expect(node.fields.textAlign).toBeUndefined();
+  });
+
+  it("ignores a value that is not one of Lexical's alignments", () => {
+    const [p] = portableTextToLexical([block({ textAlign: "sideways", indent: -3 })])
+      .root.children as SerializedParagraphNode[];
+    expect([p.format, p.indent]).toEqual(["", 0]);
+    // On an embed, an unrecognised value stays a Sanity property rather than
+    // being eaten by a feature it does not belong to.
+    const [node] = portableTextToLexical([{ _type: "image", _key: "i1", textAlign: "sideways" }])
+      .root.children as SerializedBlockNode[];
+    expect(node.fields.textAlign).toBe("sideways");
+  });
+
+  it("the editor built from this project's config keeps both", async () => {
+    const editor = await buildEditor();
+    const state = portableTextToLexical([block({ style: "h2", textAlign: "center", indent: 2 })]);
+    const back = editor.parseEditorState(state as never).toJSON().root.children[0] as unknown as {
+      format: string;
+      indent: number;
+    };
+    expect([back.format, back.indent]).toEqual(["center", 2]);
+  });
+});
+
+describe("portableTextToLexical — overlapping annotations (finding 3)", () => {
+  const two = (marks: string[]) =>
+    portableTextToLexical([
+      block({
+        markDefs: [
+          { _key: "m1", _type: "link", href: "https://a.example" },
+          { _key: "f1", _type: "footnote", text: "the note" },
+        ],
+        children: [span("claim", marks)],
+      }),
+    ]);
+
+  it("keeps BOTH a link and a footnote that sit on one span", () => {
+    const [p] = two(["m1", "f1"]).root.children as SerializedParagraphNode[];
+    const link = p.children[0] as SerializedLinkNode;
+    expect(link.type).toBe("link");
+    expect(link.id).toBe("m1");
+    const footnote = link.children[0] as unknown as { type: string; fields: Record<string, unknown> };
+    expect(footnote.type).toBe("inlineBlock");
+    expect(footnote.fields).toMatchObject({ blockType: "footnote", id: "f1", text: "the note", marker: "claim" });
+  });
+
+  it("nests two link annotations rather than dropping the second", () => {
+    const [p] = portableTextToLexical([
+      block({
+        markDefs: [
+          { _key: "m1", _type: "link", href: "https://a.example" },
+          { _key: "m2", _type: "link", href: "https://b.example" },
+        ],
+        children: [span("both", ["m1", "m2"])],
+      }),
+    ]).root.children as SerializedParagraphNode[];
+    const outer = p.children[0] as SerializedLinkNode;
+    const inner = outer.children[0] as SerializedLinkNode;
+    expect([outer.id, inner.id]).toEqual(["m1", "m2"]);
+    expect(outer.fields.url).toBe("https://a.example");
+    expect(inner.fields.url).toBe("https://b.example");
+    expect((inner.children[0] as { text: string }).text).toBe("both");
+  });
+
+  it("gives each footnote its own inline block; only the first can hold the marker text", () => {
+    const [p] = portableTextToLexical([
+      block({
+        markDefs: [
+          { _key: "f1", _type: "footnote", text: "first note" },
+          { _key: "f2", _type: "footnote", text: "second note" },
+        ],
+        children: [span("claim", ["f1", "f2", "strong"])],
+      }),
+    ]).root.children as SerializedParagraphNode[];
+    const fields = p.children.map((c) => (c as unknown as { fields: Record<string, unknown> }).fields);
+    expect(fields.map((f) => f.id)).toEqual(["f1", "f2"]);
+    expect(fields.map((f) => f.marker)).toEqual(["claim", ""]);
+    expect(fields.map((f) => f.markerFormat)).toEqual([TEXT_FORMAT.bold, 0]);
+  });
+
+  it("the editor accepts the nested link — the shape is storable, not invented", async () => {
+    const editor = await buildEditor();
+    const state = portableTextToLexical([
+      block({
+        markDefs: [
+          { _key: "m1", _type: "link", href: "https://a.example" },
+          { _key: "m2", _type: "link", href: "https://b.example" },
+        ],
+        children: [span("both", ["m1", "m2"])],
+      }),
+    ]);
+    const ids = collect(editor.parseEditorState(state as never).toJSON() as never, "link").map(
+      (l) => (l as SerializedLinkNode).id,
+    );
+    expect(ids).toEqual(["m1", "m2"]);
+  });
+
+  it("still merges consecutive spans that share the whole annotation stack", () => {
+    const [p] = two(["m1"]).root.children as SerializedParagraphNode[];
+    expect(p.children).toHaveLength(1);
+  });
+});
+
+describe("portableTextToLexical — the losses are reported, not silent (finding 4)", () => {
+  const issuesOf = (blocks: unknown[]) => {
+    const seen: { kind: string; detail: string }[] = [];
+    portableTextToLexical(blocks, { onIssue: (i) => seen.push(i) });
+    return seen;
+  };
+
+  it("reports a decorator it has no bit for", () => {
+    expect(issuesOf([block({ children: [span("x", ["smallCaps"])] })]).map((i) => i.kind)).toEqual(["unknown-mark"]);
+  });
+
+  it("reports a markDef with no _key, which no span could reference", () => {
+    expect(
+      issuesOf([block({ markDefs: [{ _type: "link", href: "https://x" }], children: [span("x")] })]).map((i) => i.kind),
+    ).toEqual(["keyless-mark-def"]);
+  });
+
+  it("reports a mark referencing a def its block does not declare", () => {
+    expect(issuesOf([block({ markDefs: [], children: [span("x", ["ghost"])] })]).map((i) => i.kind)).toEqual([
+      "unknown-mark",
+    ]);
+  });
+
+  it("reports an embed property colliding with one of Payload's three reserved names", () => {
+    const issues = issuesOf([{ _type: "storyChart", _key: "k1", id: "chart-7" }]);
+    expect(issues.map((i) => i.kind)).toEqual(["reserved-field-collision"]);
+    expect(issues[0].detail).toContain("id");
+  });
+
+  it("maps `sub` and `sup`, the two bits Task 10 emits that had no way back", () => {
+    const [p] = portableTextToLexical([block({ children: [span("a", ["sub"]), span("b", ["sup"])] })])
+      .root.children as SerializedParagraphNode[];
+    expect(p.children.map((c) => (c as { format: number }).format)).toEqual([
+      TEXT_FORMAT.subscript,
+      TEXT_FORMAT.superscript,
+    ]);
+  });
+
+  it.each(Object.keys(FIXTURES))("%s: a real body reports nothing at all", (name) => {
+    expect(issuesOf(FIXTURES[name].blocks)).toEqual([]);
+  });
+});
+
+describe("portableTextToLexical — reserved fields win over Sanity props (finding 5)", () => {
+  it("a Sanity property named `id` cannot destroy the embed's _key", () => {
+    const [node] = portableTextToLexical([
+      { _type: "storyChart", _key: "sanitykey", id: "chart-7", caption: "C" },
+    ]).root.children as SerializedBlockNode[];
+    expect(node.fields.id).toBe("sanitykey");
+    expect(node.fields.caption).toBe("C");
+  });
+
+  it("a Sanity property named `blockType` cannot rewrite the node's type", () => {
+    const [node] = portableTextToLexical([{ _type: "image", _key: "i1", blockType: "youtube" }])
+      .root.children as SerializedBlockNode[];
+    expect(node.fields.blockType).toBe("image");
+  });
+
+  it("the same guard covers an inline object and a footnote def", () => {
+    const [p] = portableTextToLexical([
+      block({
+        markDefs: [{ _key: "f1", _type: "footnote", text: "n", id: "not-the-key" }],
+        children: [span("x", ["f1"]), { _type: "chip", _key: "c1", blockType: "hijack" } as never],
+      }),
+    ]).root.children as SerializedParagraphNode[];
+    const fields = p.children.map((c) => (c as unknown as { fields: Record<string, unknown> }).fields);
+    expect(fields[0].id).toBe("f1");
+    expect(fields[1]).toMatchObject({ blockType: "chip", id: "c1" });
+  });
+});
+
+describe("portableTextToLexical — an ordered list's start (finding 7)", () => {
+  it("reads `listStart` back onto the list node", () => {
+    const list = portableTextToLexical([
+      block({ listItem: "number", level: 1, listStart: 5, children: [span("five")] }),
+      block({ listItem: "number", level: 1, children: [span("six")] }),
+    ]).root.children[0] as SerializedListNode;
+    expect(list.start).toBe(5);
+    expect(list.children).toHaveLength(2);
+  });
+
+  it("defaults to 1 when there is none, which is every list in the dataset", () => {
+    const list = portableTextToLexical([block({ listItem: "number", level: 1, children: [span("one")] })])
+      .root.children[0] as SerializedListNode;
+    expect(list.start).toBe(1);
+  });
+});

@@ -59,7 +59,7 @@
  * mark *set*, so two spans with the same set always nest identically.
  */
 
-import { TEXT_FORMAT } from "./lexical";
+import { ALIGN_PROP, INDENT_PROP, LIST_START_PROP, TEXT_FORMAT } from "./lexical";
 
 /**
  * Lexical's format bitmask -> the Sanity decorator name, the inverse of
@@ -94,6 +94,9 @@ const HEADING_TAGS = new Set(["h1", "h2", "h3", "h4", "h5", "h6"]);
 /** The three `fields` members Payload owns; everything else is Sanity's. */
 const RESERVED_FIELDS = ["blockName", "blockType", "id"];
 
+/** Lexical's element alignments, the values `AlignFeature` can set. */
+const ELEMENT_FORMATS = new Set(["left", "center", "right", "justify", "start", "end"]);
+
 /* --------------------------------------------------------------- helpers */
 
 const isRecord = (v: unknown): v is Record<string, unknown> =>
@@ -112,6 +115,27 @@ function sanityProps(fields: Record<string, unknown>, alsoSkip: string[] = []): 
   const skip = new Set([...RESERVED_FIELDS, ...alsoSkip, "_type", "_key"]);
   const out: Record<string, unknown> = {};
   for (const [k, v] of Object.entries(fields)) if (!skip.has(k)) out[k] = v;
+  return out;
+}
+
+/**
+ * An element's alignment and indent, as the two Portable Text properties Task 9
+ * reads back. Portable Text has no slot for either, and `AlignFeature` /
+ * `IndentFeature` are both in `defaultEditorFeatures` — so a paragraph centred
+ * in the admin used to render left-aligned with no error and no trace. No
+ * Sanity block carries either property (measured over every Portable-Text-shaped
+ * array in `production_2`, 401 of them), so writing them cannot collide with
+ * stored content.
+ *
+ * `indent` is skipped for a list item: there, Lexical's indent IS the nesting
+ * depth, which `flattenList` already expresses as `level`.
+ */
+function elementAttrs(node: Record<string, unknown>, opts: { indent?: boolean } = {}): Record<string, unknown> {
+  const out: Record<string, unknown> = {};
+  const format = asString(node.format);
+  if (format && ELEMENT_FORMATS.has(format)) out[ALIGN_PROP] = format;
+  const indent = node.indent;
+  if (opts.indent !== false && typeof indent === "number" && indent > 0) out[INDENT_PROP] = Math.floor(indent);
   return out;
 }
 
@@ -190,7 +214,7 @@ function convertInline(
   out: InlineResult,
   keys: Keys,
 ): void {
-  /** markDef keys are Sanity's, reused verbatim; this only breaks a tie. */
+  /** markDef keys are Sanity's, reused verbatim; this only mints a missing one. */
   const defKey = (id: unknown, seed: string): string => {
     const taken = new Set(out.markDefs.map((d) => String(d._key)));
     const existing = asString(id);
@@ -200,8 +224,39 @@ function convertInline(
     for (let n = 2; taken.has(key); n += 1) key = `${base}-${n}`;
     return key;
   };
-  const pushDef = (def: Record<string, unknown>) => {
-    if (!out.markDefs.some((d) => d._key === def._key)) out.markDefs.push(def);
+
+  /** A def's identity, ignoring the key it is filed under. */
+  const signature = (def: Record<string, unknown>): string =>
+    JSON.stringify(
+      Object.keys(def)
+        .filter((k) => k !== "_key")
+        .sort()
+        .map((k) => [k, def[k]]),
+    );
+
+  /**
+   * Files a markDef and returns the key it ended up under.
+   *
+   * De-duplication is load-bearing: Task 9 merges only CONSECUTIVE spans, so
+   * one Sanity annotation split by an unlinked word arrives as two link nodes
+   * with the same `id`, and both spans must end up marked with one def or the
+   * render gains a second `<a>`. But two DIFFERENT annotations sharing an id —
+   * only producible in the admin, where nothing guarantees `id` is unique —
+   * are two annotations: collapsing them silently lost the second href. Those
+   * get a suffixed key instead.
+   */
+  const pushDef = (def: Record<string, unknown>): string => {
+    const key = String(def._key);
+    const sig = signature(def);
+    for (let n = 1; ; n += 1) {
+      const candidate = n === 1 ? key : `${key}-${n}`;
+      const existing = out.markDefs.find((d) => d._key === candidate);
+      if (!existing) {
+        out.markDefs.push({ ...def, _key: candidate });
+        return candidate;
+      }
+      if (signature(existing) === sig) return candidate;
+    }
   };
   const pushSpan = (text: string, marks: string[]) => {
     out.children.push({ _type: "span", _key: "", text, marks });
@@ -229,11 +284,12 @@ function convertInline(
     if (type === "link" || type === "autolink") {
       const fields = fieldsOf(node);
       const key = defKey(node.id, `link:${asString(fields.url) ?? ""}`);
+      let filed: string;
       if (fields.linkType === "internal") {
         // Zero occurrences in production_2. `doc` holds the raw Sanity `_ref`
         // Task 9 put there; only Task 12's id map knows the collection.
         const ref = isRecord(fields.doc) ? fields.doc.value : fields.doc;
-        pushDef({ _key: key, _type: "internalLink", reference: { _type: "reference", _ref: ref ?? null } });
+        filed = pushDef({ _key: key, _type: "internalLink", reference: { _type: "reference", _ref: ref ?? null } });
       } else {
         const def: Record<string, unknown> = {
           _key: key,
@@ -244,9 +300,9 @@ function convertInline(
         // boolean `true`; the renderer ignores it (it decides `_blank` from the
         // href), so writing it only when true keeps the JSON honest.
         if (fields.newTab === true) def.target = true;
-        pushDef(def);
+        filed = pushDef(def);
       }
-      convertInline(childrenOf(node), [...inherited, key], out, keys);
+      convertInline(childrenOf(node), [...inherited, filed], out, keys);
       continue;
     }
 
@@ -260,8 +316,8 @@ function convertInline(
         // decorators that span also carried (3 of the 80 stored footnotes are
         // on a `strong` span).
         const key = defKey(fields.id, `footnote:${asString(fields.text) ?? ""}`);
-        pushDef({ _key: key, _type: "footnote", ...sanityProps(fields, ["marker", "markerFormat"]) });
-        pushSpan(asString(fields.marker) ?? "", [...decorators(fields.markerFormat), ...inherited, key]);
+        const filed = pushDef({ _key: key, _type: "footnote", ...sanityProps(fields, ["marker", "markerFormat"]) });
+        pushSpan(asString(fields.marker) ?? "", [...decorators(fields.markerFormat), ...inherited, filed]);
         continue;
       }
 
@@ -278,8 +334,23 @@ function convertInline(
 
     // An unrecognised inline node. Keep its text rather than dropping it.
     const nested = childrenOf(node);
-    if (nested.length > 0) convertInline(nested, inherited, out, keys);
-    else if (typeof node.text === "string") pushSpan(node.text, [...inherited]);
+    if (nested.length > 0) {
+      convertInline(nested, inherited, out, keys);
+      continue;
+    }
+    if (typeof node.text === "string") {
+      pushSpan(node.text, [...inherited]);
+      continue;
+    }
+    if (!type) continue;
+
+    // A decorator LEAF: an embedded `block`, an `upload` or a `relationship`
+    // dropped into a list item or a quote in the admin. It has neither
+    // children nor a `text`, so both branches above miss it and it used to
+    // fall off the end of the loop and be DELETED — the one thing the
+    // root-level `default` branch was written to prevent. Same escape hatch
+    // here: carry it as the inline object Portable Text uses for one.
+    out.children.push(type === "block" ? embedBlock(node, keys) : passthrough(node, type, keys));
   }
 }
 
@@ -299,7 +370,12 @@ function textBlock(
   convertInline(nodes, [], result, keys);
   const key = mintKey(`${style}|${JSON.stringify(extra)}|${seedText(result.children)}`, keys);
   result.children.forEach((child, i) => {
-    child._key = `${key}s${i}`;
+    // Spans get a minted, block-derived key. An inline OBJECT keeps the one it
+    // arrived with — Task 9 parked the Sanity `_key` in `fields.id`, and
+    // overwriting it here would throw away a key Payload had a slot for.
+    if (child._type === "span" || typeof child._key !== "string" || child._key === "") {
+      child._key = `${key}s${i}`;
+    }
   });
   return { _type: "block", _key: key, style, ...extra, markDefs: result.markDefs, children: result.children };
 }
@@ -317,8 +393,25 @@ function embedBlock(node: Record<string, unknown>, keys: Keys): Record<string, u
   return {
     _type: blockType,
     _key: reuseKey(fields.id, `${blockType}|${JSON.stringify(props)}`, keys),
+    // A `DecoratorBlockNode` carries an alignment too, and it is not inside
+    // `fields`; without this an embed centred in the admin comes back
+    // unaligned. `alignFormat` on the way back only consumes the value when it
+    // is one of Lexical's keywords, so a same-named Sanity property survives.
+    ...elementAttrs(node, { indent: false }),
     ...props,
   };
+}
+
+/**
+ * A node this adapter has no mapping for, carried across as an object of its
+ * own `_type` so a renderer — or a Phase 3 log — can see what arrived instead
+ * of it being silently dropped. `upload` and `relationship` land here; mapping
+ * them needs the media/id map Phase 3 owns, not this adapter.
+ */
+function passthrough(node: Record<string, unknown>, type: string, keys: Keys): Record<string, unknown> {
+  const props: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(node)) if (k !== "type" && k !== "version") props[k] = v;
+  return { _type: type, _key: mintKey(`${type}|${JSON.stringify(props)}`, keys), ...props };
 }
 
 /**
@@ -338,6 +431,10 @@ function flattenList(
   keys: Keys,
 ): void {
   const listItem = LIST_ITEM_BY_TYPE[asString(list.listType) ?? ""] ?? "bullet";
+  // `<ol start="5">`. Portable Text has no slot, and `nestLists` renumbers from
+  // 1, so it rides on the block that opens the run and Task 9 reads it back.
+  const start = typeof list.start === "number" && list.start > 1 ? Math.floor(list.start) : undefined;
+  let opensRun = true;
 
   for (const child of childrenOf(list)) {
     if (asString(child.type) === "list") {
@@ -351,8 +448,10 @@ function flattenList(
     for (const c of childrenOf(child)) (asString(c.type) === "list" ? nested : inline).push(c);
 
     if (inline.length > 0 || nested.length === 0) {
-      const extra: Record<string, unknown> = { listItem, level };
+      const extra: Record<string, unknown> = { listItem, level, ...elementAttrs(child, { indent: false }) };
+      if (start !== undefined && opensRun) extra[LIST_START_PROP] = start;
       if (listItem === "checkbox") extra.checked = child.checked === true;
+      opensRun = false;
       out.push(textBlock(inline, "normal", keys, extra));
     }
     for (const n of nested) flattenList(n, level + 1, out, keys);
@@ -382,15 +481,15 @@ export function lexicalToPortableText(state: unknown): unknown[] {
 
     switch (type) {
       case "paragraph":
-        out.push(textBlock(childrenOf(node), "normal", keys));
+        out.push(textBlock(childrenOf(node), "normal", keys, elementAttrs(node)));
         break;
       case "heading": {
         const tag = asString(node.tag) ?? "";
-        out.push(textBlock(childrenOf(node), HEADING_TAGS.has(tag) ? tag : "normal", keys));
+        out.push(textBlock(childrenOf(node), HEADING_TAGS.has(tag) ? tag : "normal", keys, elementAttrs(node)));
         break;
       }
       case "quote":
-        out.push(textBlock(childrenOf(node), "blockquote", keys));
+        out.push(textBlock(childrenOf(node), "blockquote", keys, elementAttrs(node)));
         break;
       case "list":
         flattenList(node, 1, out, keys);
@@ -407,20 +506,14 @@ export function lexicalToPortableText(state: unknown): unknown[] {
         break;
       default: {
         // Anything else: keep the text if it has children (an unrecognised
-        // element), otherwise carry the node across as an object of that
-        // `_type` so a renderer — or a Phase 3 log — can see what arrived
-        // instead of it being silently dropped. `upload` and `relationship`
-        // land here; mapping them needs the media/id map Phase 3 owns, not
-        // this adapter.
+        // element), otherwise carry the node across through `passthrough`.
         if (!type) break;
         const nested = childrenOf(node);
         if (nested.length > 0) {
-          out.push(textBlock(nested, "normal", keys));
+          out.push(textBlock(nested, "normal", keys, elementAttrs(node)));
           break;
         }
-        const props: Record<string, unknown> = {};
-        for (const [k, v] of Object.entries(node)) if (k !== "type" && k !== "version") props[k] = v;
-        out.push({ _type: type, _key: mintKey(`${type}|${out.length}`, keys), ...props });
+        out.push(passthrough(node, type, keys));
       }
     }
   }
@@ -451,9 +544,23 @@ export function lexicalToPortableText(state: unknown): unknown[] {
  * 5. **Empty spans** (6 in the dataset) are dropped by Task 9 and not restored.
  *    They render nothing either way.
  * 6. **`upload` / `relationship` nodes** — insertable in the Payload admin,
- *    never produced by the import — pass through as objects of that `_type`.
+ *    never produced by the import — pass through as objects of that `_type`,
+ *    at the root AND (since the review round) inside a list item or a quote.
  *    A Portable Text renderer has no component for them.
+ * 7. **A second footnote on one span renders differently, not worse.** Sanity
+ *    nests overlapping marks, and the renderer's `footnote` component discards
+ *    its children, so a span carrying two footnotes shows only the outer
+ *    marker; here the second footnote becomes its own (empty-marker) span, so
+ *    both `[n]` markers print. The data is complete either way — this is the
+ *    one place the round trip is deliberately more faithful than the original
+ *    render. 0 spans in the dataset carry two annotations.
+ * 8. **A Sanity property colliding with `blockName`/`blockType`/`id`** cannot
+ *    be stored beside Payload's own, so the reserved value wins and the Sanity
+ *    property is dropped — reported through Task 9's `onIssue`, never silent.
+ *    0 collisions in the dataset.
  *
- * Everything else is reversible field-for-field, and the adapter test asserts
- * it by rendering both sides through `@portabletext/react`.
+ * Everything else is reversible field-for-field — including element alignment
+ * and indent, an ordered list's `start`, overlapping annotations, and a
+ * decorator leaf nested inside an element — and the adapter test asserts it by
+ * rendering both sides through `@portabletext/react`.
  */
