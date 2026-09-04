@@ -9,6 +9,14 @@ export default defineConfig({
     // node_modules); without this exclude `vitest run` sweeps thousands of
     // dependency test files. generated/ and scripts/ are excluded likewise.
     exclude: [...defaultExclude, "**/.claude/**", "generated/**", "scripts/**"],
+    // `payload.config.ts` resolves the R2 bucket eagerly and throws when none
+    // is configured, so that a deployment missing the variable fails at boot
+    // instead of writing 618 MB somewhere nobody chose
+    // (payload/storage/r2.ts). Vitest loads no .env file, so the ~14 test
+    // files that import the config need a value here. Deliberately not a real
+    // bucket name: nothing under test performs an upload, and a fake name
+    // makes that obvious if one ever tries.
+    env: { R2_BUCKET: "vitest-no-such-bucket" },
   },
   resolve: {
     // Mirrors tsconfig `"@/*": ["./*"]` (a config file suppresses Vitest's

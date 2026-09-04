@@ -8,7 +8,6 @@ import { Files } from "@/payload/collections/files";
 import {
   payloadR2BucketName,
   payloadR2ClientConfig,
-  payloadR2Configured,
 } from "@/payload/storage/r2";
 
 const uploadCollections = [Media, Files];
@@ -238,7 +237,6 @@ describe("s3Storage wiring", () => {
     };
     delete process.env.PAYLOAD_R2_BUCKET;
     try {
-      expect(payloadR2Configured()).toBe(true);
       expect(payloadR2BucketName()).toBe("ccm-collab");
       expect(payloadR2ClientConfig()).toEqual({
         // R2 has no regions; "auto" + a path-style custom endpoint is exactly
@@ -248,6 +246,31 @@ describe("s3Storage wiring", () => {
         forcePathStyle: true,
         credentials: { accessKeyId: "key", secretAccessKey: "secret" },
       });
+    } finally {
+      process.env = env;
+    }
+  });
+
+  it("refuses to guess a bucket, instead of falling back to a live one", () => {
+    // It used to end `?? "ccm-collab"` — the member-collaboration bucket. An
+    // environment that configured no bucket at all still wrote CMS media into
+    // a live production bucket, which is the one mistake an idempotent re-run
+    // cannot undo. A missing deployment variable belongs at boot, loudly.
+    const env = process.env;
+    process.env = { ...env };
+    for (const k of ["PAYLOAD_R2_BUCKET", "R2_BUCKET", "CLOUDFLARE_R2_BUCKET_NAME"]) delete process.env[k];
+    try {
+      expect(() => payloadR2BucketName()).toThrow(/No R2 bucket configured/);
+    } finally {
+      process.env = env;
+    }
+  });
+
+  it("prefers a CMS-only bucket when one is named", () => {
+    const env = process.env;
+    process.env = { ...env, PAYLOAD_R2_BUCKET: "ccm-cms", R2_BUCKET: "ccm-collab" };
+    try {
+      expect(payloadR2BucketName()).toBe("ccm-cms");
     } finally {
       process.env = env;
     }
@@ -267,7 +290,6 @@ describe("s3Storage wiring", () => {
       delete process.env[k];
     }
     try {
-      expect(payloadR2Configured()).toBe(false);
       const clientConfig = payloadR2ClientConfig();
       // An explicit `credentials` with empty members would suppress the AWS
       // SDK's provider chain and turn a missing key into a signing error.
