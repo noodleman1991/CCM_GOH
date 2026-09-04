@@ -51,6 +51,19 @@ export default buildConfig({
   // every one. Each collection declares its own custom text id field instead.
   db: postgresAdapter({
     pool: { connectionString: process.env.PAYLOAD_DATABASE_URL || "" },
+    // Never auto-push drizzle's schema at this database.
+    //
+    // @payloadcms/db-postgres runs pushDevSchema whenever
+    // `NODE_ENV !== "production" && PAYLOAD_MIGRATING !== "true" && push !== false`
+    // (dist/connect.js). All three hold for `pnpm dev` and for every import
+    // script, so without this flag an ordinary dev server rewrites the schema
+    // of a database that holds real content -- including 21 in-flight
+    // moderation drafts. It has fired here before: payload_migrations still
+    // carries drizzle's `{name:"dev",batch:"-1"}` marker from an earlier push.
+    //
+    // Schema changes go through `payload migrate:create` + `payload migrate`,
+    // which set PAYLOAD_MIGRATING themselves and are unaffected by this.
+    push: false,
   }),
   // The default lexical feature set PLUS the Portable Text embed vocabulary
   // (image / youtube / break / infoBox / story*) and the footnote inline
