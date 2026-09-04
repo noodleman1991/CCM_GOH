@@ -3,6 +3,7 @@ import { isAnyone, isEditor } from "@/payload/access";
 import { imageField } from "@/payload/blocks/shared";
 import { localizedText, localizedTextarea } from "@/payload/fields/localized";
 import { carousel2, cta1, gridRow, hero1, logoCloud1, sectionHeader, splitRow } from "@/payload/blocks";
+import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
 
 /**
  * Mirrors sanity/schemas/documents/page.ts. Verified against production_2
@@ -79,6 +80,7 @@ export const Pages: CollectionConfig = {
       required: true,
       admin: { hidden: true },
     },
+    sanityUpdatedAt,
     localizedText("title"),
     {
       name: "slug",

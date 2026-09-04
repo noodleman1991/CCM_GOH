@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { Field, PayloadRequest, SanitizedCollectionConfig } from "payload";
 import config from "@payload-config";
-import { isAdmin, isEditor, isEditorField } from "@/payload/access";
+import { isAdmin, isEditor, isEditorField, ownerOrEditor } from "@/payload/access";
 
 /**
  * Field-level read access — the second half of the exposure fix this phase
@@ -80,12 +80,21 @@ const INTERNAL_FIELD_NAMES = [
 ];
 
 /**
- * Collections whose DOCUMENT-level read already excludes anonymous callers
- * outright: `caseStudyDrafts` (`isEditor`) and `users` (`isAdmin`). Nothing
- * leaks from a document nobody can fetch, so a field gate would add nothing
- * there.
+ * Collections whose DOCUMENT-level read already keeps the document away from
+ * anyone who should not see its internal fields: `users` (`isAdmin`) and
+ * `caseStudyDrafts` (`ownerOrEditor`). Nothing leaks from a document nobody
+ * can fetch, so a field gate would add nothing there.
+ *
+ * `ownerOrEditor` belongs in this set even though it is not a flat boolean.
+ * At DOCUMENT level Payload merges the returned `Where` into the query, so an
+ * anonymous caller (no `clerkId` — the helper returns `false`) gets nothing at
+ * all, and a signed-in member gets only rows whose persisted `userId` is their
+ * own: the identity fields they can then read (`userId`, `authors[].userId`)
+ * are their own. That is a property of document-level access only — the same
+ * helper passed as FIELD access would read as truthy and grant the field to
+ * everyone, which is why `isEditorField` exists separately.
  */
-const DOCUMENT_GATED_READ = new Set<unknown>([isEditor, isAdmin]);
+const DOCUMENT_GATED_READ = new Set<unknown>([isEditor, isAdmin, ownerOrEditor]);
 
 describe("field-level read access", () => {
   it("isEditorField admits only team_editor and admin", () => {

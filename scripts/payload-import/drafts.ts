@@ -57,9 +57,9 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { assertPayloadDatabase } from "./assets";
 import { readAssetMap } from "./documents";
-import { extractArchive, readExportDocuments, REPO_ROOT } from "./lib/sanity-export";
+import { assertPayloadDatabase, getPayloadInstance, loadEnv, type PayloadInstance } from "./lib/runtime";
+import { extractArchive, readExportDocuments } from "./lib/sanity-export";
 import {
   buildTarget,
   documentTargets,
@@ -346,22 +346,6 @@ export async function importDraftTargets(
 // Real run
 // ---------------------------------------------------------------------------
 
-async function loadEnv(): Promise<void> {
-  const { default: dotenv } = await import("dotenv");
-  dotenv.config({ path: path.join(REPO_ROOT, ".env.local"), quiet: true });
-  dotenv.config({ path: path.join(REPO_ROOT, ".env"), quiet: true });
-}
-
-type PayloadInstance = Awaited<ReturnType<typeof import("payload").getPayload>>;
-
-export async function getPayloadInstance(): Promise<PayloadInstance> {
-  const [{ getPayload }, { default: config }] = await Promise.all([
-    import("payload"),
-    import("@payload-config"),
-  ]);
-  return getPayload({ config });
-}
-
 function payloadDraftClient(payload: PayloadInstance): DraftClient {
   type Collection = Parameters<typeof payload.find>[0]["collection"];
   return {
@@ -414,6 +398,8 @@ function dryRunClient(present: Set<string>): DraftClient {
 export interface ImportDraftsOptions {
   dryRun?: boolean;
   quiet?: boolean;
+  /** The run means the production CMS database, and says so. See `assertPayloadDatabase`. */
+  allowProduction?: boolean;
 }
 
 /**
@@ -423,7 +409,10 @@ export interface ImportDraftsOptions {
  */
 export async function importDrafts(options: ImportDraftsOptions = {}): Promise<DraftImportSummary> {
   await loadEnv();
-  const database = assertPayloadDatabase(process.env.PAYLOAD_DATABASE_URL);
+  const database = assertPayloadDatabase(process.env.PAYLOAD_DATABASE_URL, {
+    allowProduction: options.allowProduction,
+    action: "write drafts to it",
+  });
 
   const exportDir = await extractArchive({ verifyChecksum: false });
   const docs = (await readExportDocuments(exportDir)) as SanityDoc[];
@@ -487,7 +476,10 @@ const invokedDirectly =
 
 if (invokedDirectly) {
   const argv = process.argv.slice(2);
-  importDrafts({ dryRun: argv.includes("--dry-run") })
+  importDrafts({
+    dryRun: argv.includes("--dry-run"),
+    allowProduction: argv.includes("--allow-production"),
+  })
     .then(() => process.exit(0))
     .catch((error) => {
       console.error(error);

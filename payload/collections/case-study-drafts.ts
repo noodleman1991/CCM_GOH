@@ -1,7 +1,8 @@
 import type { CollectionConfig } from "payload";
-import { isEditor, ownerOrEditor } from "@/payload/access";
+import { ownerOrEditor } from "@/payload/access";
 import { relationshipField, uploadField } from "@/payload/blocks/shared";
 import { localizedText, localizedTextarea } from "@/payload/fields/localized";
+import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
 
 /**
  * Mirrors sanity/schemas/documents/case-study-draft.ts. Verified against
@@ -11,18 +12,29 @@ import { localizedText, localizedTextarea } from "@/payload/fields/localized";
  * form's in-progress state), not a document that separately participates in
  * Sanity's own draft/published versioning.
  *
- * `read` access is `isEditor`, not `isAnyone`/`publishedOnly` like the
- * other nine collections. These are private, per-user autosave scratch
- * documents — `lib/content/case-studies.ts`'s `saveCaseStudyDraft`/
- * `getLatestCaseStudyDraft` always scope reads to the authenticated owner
- * server-side; there is no public listing. Exposing every user's
- * in-progress submission to any signed-in visitor would recreate the
- * dataset-wide exposure class the spec's §1 access-control fix (`isAnyone`
- * vs `publishedOnly`) already addressed for public content. `read` is kept
- * editor-only (rather than owner-or-editor, below) so staff can browse the
- * full in-progress queue for moderation/cleanup — the same reason
- * `lib/content/case-studies.ts` never exposed a public per-user listing
- * endpoint either.
+ * **All four operations use `ownerOrEditor`.** These are private, per-user
+ * autosave scratch documents — `lib/content/case-studies.ts`'s
+ * `saveCaseStudyDraft`/`getLatestCaseStudyDraft` always scope reads to the
+ * authenticated owner server-side, and there is no public listing. Exposing
+ * every user's in-progress submission to any signed-in visitor would recreate
+ * the dataset-wide exposure class the spec's §1 access-control fix (`isAnyone`
+ * vs `publishedOnly`) already addressed for public content, and `ownerOrEditor`
+ * does not: it returns a `Where` matching the draft's persisted `userId`
+ * against the caller's own `clerkId`, so a member sees their own draft and
+ * nobody else's, while an editor still gets `true` and can browse the whole
+ * in-progress queue for moderation.
+ *
+ * `read` was `isEditor` while the three write operations were `ownerOrEditor`,
+ * which left an owner able to write a document they could not read back — the
+ * asymmetry the final review flagged. `read: ownerOrEditor` is the half that
+ * changed, rather than tightening the writes to `isEditor`, because the writes
+ * are the ones with a live requirement: a `community_member` autosaving their
+ * own submission is what this collection is FOR (see below), so editor-only
+ * writes would be wrong on their own terms. Widening `read` to the same
+ * predicate grants exactly one new thing — an owner reading their own draft —
+ * which `getLatestCaseStudyDraft` already does today against Sanity, and it
+ * leaves anonymous callers with nothing (`ownerOrEditor` returns `false`
+ * without a `clerkId`).
  *
  * `create`/`update`/`delete` use `ownerOrEditor`
  * (`payload/access/index.ts`), NOT `isEditor` alone — these are documents a
@@ -40,9 +52,10 @@ import { localizedText, localizedTextarea } from "@/payload/fields/localized";
  * **No field-level `access` is needed here**, unlike the moderated
  * collections. This collection's identity data (`userId`, `authors[].userId`,
  * `authors[].email`) is already unreachable anonymously because `read` is
- * `isEditor` at DOCUMENT level — an anonymous caller gets no document at all,
- * not a document with fields stripped. A field gate would add nothing and
- * would only hide a draft's own owner id from an editor reading it.
+ * owner-or-editor at DOCUMENT level — an anonymous caller gets no document at
+ * all, not a document with fields stripped. A field gate would add nothing and
+ * would only hide a draft's own owner id from its owner, or from an editor
+ * reading it.
  *
  * **The one real document diverges from its schema more than any other
  * collection in this migration**, because `saveCaseStudyDraft()` writes
@@ -69,7 +82,7 @@ export const CaseStudyDrafts: CollectionConfig = {
     defaultColumns: ["title", "userId", "lastSaved"],
   },
   access: {
-    read: isEditor,
+    read: ownerOrEditor,
     create: ownerOrEditor,
     update: ownerOrEditor,
     delete: ownerOrEditor,
@@ -81,6 +94,7 @@ export const CaseStudyDrafts: CollectionConfig = {
       required: true,
       admin: { hidden: true },
     },
+    sanityUpdatedAt,
     { name: "userId", type: "text", required: true, admin: { description: "Clerk User ID of the draft owner." } },
     { name: "lastSaved", type: "date", required: true },
     localizedText("title"),

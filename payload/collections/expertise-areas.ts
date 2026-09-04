@@ -1,6 +1,7 @@
 import type { CollectionConfig } from "payload";
 import { isAnyone, isEditor } from "@/payload/access";
 import { localizedText, localizedTextarea } from "@/payload/fields/localized";
+import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
 
 /**
  * Mirrors sanity/schemas/documents/expertise-area.ts — structurally
@@ -32,6 +33,7 @@ export const ExpertiseAreas: CollectionConfig = {
       // Sanity's _id, preserved verbatim so the import is idempotent and the
       // handful of Prisma rows referencing content ids keep working.
     },
+    sanityUpdatedAt,
     {
       name: "key",
       type: "text",

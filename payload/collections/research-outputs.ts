@@ -2,6 +2,7 @@ import type { CollectionConfig } from "payload";
 import { isEditor, isEditorField, moderationApprovedOnly } from "@/payload/access";
 import { imageField, relationshipField, uploadField } from "@/payload/blocks/shared";
 import { localizedRichText, localizedText, localizedTextarea } from "@/payload/fields/localized";
+import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
 
 /**
  * Mirrors sanity/schemas/documents/research-output.ts. Verified against
@@ -67,6 +68,7 @@ export const ResearchOutputs: CollectionConfig = {
       required: true,
       admin: { hidden: true },
     },
+    sanityUpdatedAt,
     localizedText("title", { required: true }),
     { name: "slug", type: "text", required: true, unique: true },
     localizedTextarea("excerpt"),

@@ -2,6 +2,7 @@ import type { CollectionConfig } from "payload";
 import { isEditor, isEditorField, publishedAndApproved } from "@/payload/access";
 import { imageField, relationshipField, uploadField } from "@/payload/blocks/shared";
 import { localizedRichText, localizedText, localizedTextarea } from "@/payload/fields/localized";
+import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
 
 /**
  * Mirrors sanity/schemas/documents/lived-experience.ts. Verified against
@@ -87,6 +88,7 @@ export const LivedExperiences: CollectionConfig = {
       admin: { hidden: true },
       // Sanity's _id, preserved verbatim so the import is idempotent.
     },
+    sanityUpdatedAt,
     {
       name: "format",
       type: "select",

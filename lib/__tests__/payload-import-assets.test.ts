@@ -8,7 +8,6 @@ import {
   type SanityExportAsset,
 } from "@/scripts/payload-import/lib/sanity-export";
 import {
-  assertPayloadDatabase,
   assetImportToken,
   assignUploadFilenames,
   importAssetRecords,
@@ -195,20 +194,6 @@ describe("deterministic filename disambiguation", () => {
     expect(assetImportToken(IMAGE_A)).toBe(assetImportToken(IMAGE_A));
     expect(assetImportToken(IMAGE_A)).not.toBe(assetImportToken(IMAGE_B));
     expect(assetImportToken(IMAGE_A)).toMatch(/^[0-9a-f]{8}$/);
-  });
-});
-
-describe("database guard", () => {
-  it("only ever writes to payload_cms", () => {
-    // This import writes to R2 and to a real Postgres database. `payload_cms`
-    // is a separate database from Prisma's precisely so a dev reset cannot take
-    // the content with it; pointing this script anywhere else is a mistake, not
-    // an option.
-    expect(assertPayloadDatabase("postgresql://u:p@host.neon.tech/payload_cms?sslmode=require")).toBe(
-      "payload_cms",
-    );
-    expect(() => assertPayloadDatabase("postgresql://u:p@host.neon.tech/neondb")).toThrow(/payload_cms/);
-    expect(() => assertPayloadDatabase(undefined)).toThrow(/PAYLOAD_DATABASE_URL/);
   });
 });
 

@@ -2,6 +2,7 @@ import type { CollectionConfig } from "payload";
 import { isAnyone, isEditor } from "@/payload/access";
 import { imageField, relationshipField } from "@/payload/blocks/shared";
 import { localizedText } from "@/payload/fields/localized";
+import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
 
 /**
  * Mirrors sanity/schemas/documents/regional-community.ts. Verified against
@@ -56,6 +57,7 @@ export const RegionalCommunities: CollectionConfig = {
       // Sanity's _id, preserved verbatim so the import is idempotent and the
       // handful of Prisma rows referencing content ids keep working.
     },
+    sanityUpdatedAt,
     localizedText("name", { required: true }),
     { name: "slug", type: "text", required: true, unique: true },
     {

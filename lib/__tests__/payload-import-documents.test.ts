@@ -452,6 +452,41 @@ describe("reference order", () => {
     const memberships = target.data.en!.communityMemberships as PayloadData[];
     expect(memberships[0].community).toBe("regional-community-oceania");
   });
+
+  it("refuses a reference-shaped field holding something that is not a reference", () => {
+    // The last silent drop in a file whose doctrine is hard errors: an entry
+    // with no `_ref` used to resolve to undefined and be filtered out, so a
+    // list of bare id strings became a null field with no trace. Zero
+    // occurrences in today's archive — but this is exactly the shape the
+    // malformed lived-experience tags had.
+    const author = {
+      ...AUTHOR,
+      communityMemberships: [{ _key: "m1", community: "regional-community-oceania", role: "member" }],
+    };
+    expect(() => buildTarget("author", single(author), context(["regional-community-oceania"]))).toThrow(
+      /is not a Sanity reference/,
+    );
+  });
+
+  it("refuses a reference list of bare id strings", () => {
+    // What `caseStudy.tags` would look like if the malformed-tag defect
+    // recurred: a list of plain ids where references belong. It used to become
+    // `tags: []`, indistinguishable from a case study with no tags at all.
+    const caseStudy = { ...CASE_STUDY, tags: ["tag-farmers"] };
+    expect(() => buildTarget("caseStudy", single(caseStudy), context(["tag-farmers"]))).toThrow(
+      /is not a Sanity reference/,
+    );
+  });
+
+  it("refuses a hole in the middle of a reference list", () => {
+    const caseStudy = {
+      ...CASE_STUDY,
+      tags: [{ _ref: "tag-farmers", _type: "reference" }, null],
+    };
+    expect(() => buildTarget("caseStudy", single(caseStudy), context(["tag-farmers"]))).toThrow(
+      /may not contain a hole/,
+    );
+  });
 });
 
 /* ---------------------------------------------- the seven measured obligations */

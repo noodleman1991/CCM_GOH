@@ -193,7 +193,7 @@ export interface UserAuthOperations {
 export interface User {
   id: number;
   /**
-   * Mirrored from Prisma's User.email (or a placeholder) on sign-in.
+   * Mirrored from Prisma's User.email (or a placeholder); the Clerk auth strategy rewrites it whenever Prisma's differs.
    */
   email: string;
   /**
@@ -201,7 +201,7 @@ export interface User {
    */
   clerkId: string;
   /**
-   * Mirrored from Prisma's User.role on every sign-in; not editable here.
+   * Mirrored from Prisma's User.role; the Clerk auth strategy rewrites it whenever Prisma's differs. Prisma stays the source of truth for authz — not editable here.
    */
   role: 'community_member' | 'community_editor' | 'team_editor' | 'admin';
   updatedAt: string;
@@ -354,6 +354,10 @@ export interface File {
  */
 export interface Tag {
   id: string;
+  /**
+   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
+   */
+  sanityUpdatedAt?: string | null;
   label: string;
   /**
    * The tag's slug (Sanity's value.current). Used as its stable reference value.
@@ -384,6 +388,10 @@ export interface Tag {
 export interface WorkType {
   id: string;
   /**
+   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
+   */
+  sanityUpdatedAt?: string | null;
+  /**
    * Uppercase with underscores (e.g. RESEARCH, NGO). Must match Prisma's WorkType enum values exactly.
    */
   key: string;
@@ -407,6 +415,10 @@ export interface WorkType {
 export interface ExpertiseArea {
   id: string;
   /**
+   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
+   */
+  sanityUpdatedAt?: string | null;
+  /**
    * Uppercase with underscores (e.g. CLIMATE_CHANGE, MENTAL_HEALTH). Must match Prisma's ExpertiseArea enum values exactly.
    */
   key: string;
@@ -429,6 +441,10 @@ export interface ExpertiseArea {
  */
 export interface Author {
   id: string;
+  /**
+   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
+   */
+  sanityUpdatedAt?: string | null;
   name: string;
   slug: string;
   image?: {
@@ -470,6 +486,10 @@ export interface Author {
  */
 export interface RegionalCommunity {
   id: string;
+  /**
+   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
+   */
+  sanityUpdatedAt?: string | null;
   name: string;
   slug: string;
   /**
@@ -527,6 +547,10 @@ export interface RegionalCommunity {
  */
 export interface Organization {
   id: string;
+  /**
+   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
+   */
+  sanityUpdatedAt?: string | null;
   name: string;
   slug: string;
   /**
@@ -622,6 +646,10 @@ export interface Organization {
  */
 export interface CaseStudy {
   id: string;
+  /**
+   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
+   */
+  sanityUpdatedAt?: string | null;
   title: string;
   slug: string;
   excerpt?: string | null;
@@ -763,6 +791,10 @@ export interface CaseStudy {
 export interface LivedExperience {
   id: string;
   /**
+   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
+   */
+  sanityUpdatedAt?: string | null;
+  /**
    * 0/56 real documents have this set — every existing document is a video by default.
    */
   format?: ('video' | 'audio' | 'written') | null;
@@ -867,6 +899,10 @@ export interface LivedExperience {
  */
 export interface ResearchOutput {
   id: string;
+  /**
+   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
+   */
+  sanityUpdatedAt?: string | null;
   title: string;
   slug: string;
   excerpt?: string | null;
@@ -970,6 +1006,10 @@ export interface ResearchOutput {
  */
 export interface Agenda {
   id: string;
+  /**
+   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
+   */
+  sanityUpdatedAt?: string | null;
   title: string;
   slug: string;
   subtitle?: string | null;
@@ -1017,6 +1057,10 @@ export interface Agenda {
  */
 export interface NewsPost {
   id: string;
+  /**
+   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
+   */
+  sanityUpdatedAt?: string | null;
   title: string;
   subtitle?: string | null;
   slug: string;
@@ -1099,6 +1143,10 @@ export interface NewsPost {
 export interface DocsChapter {
   id: string;
   /**
+   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
+   */
+  sanityUpdatedAt?: string | null;
+  /**
    * Which long-form document this chapter belongs to (e.g. 'global-agenda').
    */
   collection: string;
@@ -1135,6 +1183,10 @@ export interface DocsChapter {
  */
 export interface Testimonial {
   id: string;
+  /**
+   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
+   */
+  sanityUpdatedAt?: string | null;
   name: string;
   /**
    * Role/title, in each language.
@@ -1206,6 +1258,10 @@ export interface Testimonial {
 export interface ProfilePrompt {
   id: string;
   /**
+   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
+   */
+  sanityUpdatedAt?: string | null;
+  /**
    * A conversational prompt members answer, e.g. 'Climate change feels personal to me because…'. Keep it open and inviting.
    */
   prompt: string;
@@ -1227,6 +1283,10 @@ export interface ProfilePrompt {
  */
 export interface ExternalSource {
   id: string;
+  /**
+   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
+   */
+  sanityUpdatedAt?: string | null;
   /**
    * Title of the external article (translate if needed).
    */
@@ -1272,6 +1332,10 @@ export interface ExternalSource {
  */
 export interface CaseStudyDraft {
   id: string;
+  /**
+   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
+   */
+  sanityUpdatedAt?: string | null;
   /**
    * Clerk User ID of the draft owner.
    */
@@ -1413,6 +1477,10 @@ export interface CaseStudyDraft {
  */
 export interface Page {
   id: string;
+  /**
+   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
+   */
+  sanityUpdatedAt?: string | null;
   title?: string | null;
   /**
    * Shared by all four languages of this page — it is what groups them into one document.
@@ -1999,6 +2067,10 @@ export interface LogoCloud1Block {
  */
 export interface RegionalCommunityPage {
   id: string;
+  /**
+   * Sanity's own _updatedAt, preserved at import. Payload owns `updatedAt` itself.
+   */
+  sanityUpdatedAt?: string | null;
   title: string;
   /**
    * Shared by all four languages of this page — it is what groups them into one document.
@@ -2835,6 +2907,7 @@ export interface FilesSelect<T extends boolean = true> {
  */
 export interface TagsSelect<T extends boolean = true> {
   id?: T;
+  sanityUpdatedAt?: T;
   label?: T;
   value?: T;
   description?: T;
@@ -2852,6 +2925,7 @@ export interface TagsSelect<T extends boolean = true> {
  */
 export interface WorkTypesSelect<T extends boolean = true> {
   id?: T;
+  sanityUpdatedAt?: T;
   key?: T;
   label?: T;
   description?: T;
@@ -2866,6 +2940,7 @@ export interface WorkTypesSelect<T extends boolean = true> {
  */
 export interface ExpertiseAreasSelect<T extends boolean = true> {
   id?: T;
+  sanityUpdatedAt?: T;
   key?: T;
   label?: T;
   description?: T;
@@ -2880,6 +2955,7 @@ export interface ExpertiseAreasSelect<T extends boolean = true> {
  */
 export interface AuthorsSelect<T extends boolean = true> {
   id?: T;
+  sanityUpdatedAt?: T;
   name?: T;
   slug?: T;
   image?:
@@ -2908,6 +2984,7 @@ export interface AuthorsSelect<T extends boolean = true> {
  */
 export interface OrganizationsSelect<T extends boolean = true> {
   id?: T;
+  sanityUpdatedAt?: T;
   name?: T;
   slug?: T;
   acronym?: T;
@@ -2967,6 +3044,7 @@ export interface OrganizationsSelect<T extends boolean = true> {
  */
 export interface RegionalCommunitiesSelect<T extends boolean = true> {
   id?: T;
+  sanityUpdatedAt?: T;
   name?: T;
   slug?: T;
   region?: T;
@@ -3009,6 +3087,7 @@ export interface RegionalCommunitiesSelect<T extends boolean = true> {
  */
 export interface CaseStudiesSelect<T extends boolean = true> {
   id?: T;
+  sanityUpdatedAt?: T;
   title?: T;
   slug?: T;
   excerpt?: T;
@@ -3087,6 +3166,7 @@ export interface CaseStudiesSelect<T extends boolean = true> {
  */
 export interface LivedExperiencesSelect<T extends boolean = true> {
   id?: T;
+  sanityUpdatedAt?: T;
   format?: T;
   title?: T;
   slug?: T;
@@ -3146,6 +3226,7 @@ export interface LivedExperiencesSelect<T extends boolean = true> {
  */
 export interface ResearchOutputsSelect<T extends boolean = true> {
   id?: T;
+  sanityUpdatedAt?: T;
   title?: T;
   slug?: T;
   excerpt?: T;
@@ -3203,6 +3284,7 @@ export interface ResearchOutputsSelect<T extends boolean = true> {
  */
 export interface AgendasSelect<T extends boolean = true> {
   id?: T;
+  sanityUpdatedAt?: T;
   title?: T;
   slug?: T;
   subtitle?: T;
@@ -3241,6 +3323,7 @@ export interface AgendasSelect<T extends boolean = true> {
  */
 export interface NewsPostsSelect<T extends boolean = true> {
   id?: T;
+  sanityUpdatedAt?: T;
   title?: T;
   subtitle?: T;
   slug?: T;
@@ -3305,6 +3388,7 @@ export interface NewsPostsSelect<T extends boolean = true> {
  */
 export interface DocsChaptersSelect<T extends boolean = true> {
   id?: T;
+  sanityUpdatedAt?: T;
   collection?: T;
   title?: T;
   slug?: T;
@@ -3319,6 +3403,7 @@ export interface DocsChaptersSelect<T extends boolean = true> {
  */
 export interface TestimonialsSelect<T extends boolean = true> {
   id?: T;
+  sanityUpdatedAt?: T;
   name?: T;
   jobTitle?: T;
   title?: T;
@@ -3345,6 +3430,7 @@ export interface TestimonialsSelect<T extends boolean = true> {
  */
 export interface ProfilePromptsSelect<T extends boolean = true> {
   id?: T;
+  sanityUpdatedAt?: T;
   prompt?: T;
   category?: T;
   active?: T;
@@ -3358,6 +3444,7 @@ export interface ProfilePromptsSelect<T extends boolean = true> {
  */
 export interface ExternalSourcesSelect<T extends boolean = true> {
   id?: T;
+  sanityUpdatedAt?: T;
   title?: T;
   sourceUrl?: T;
   publisher?: T;
@@ -3393,6 +3480,7 @@ export interface ExternalSourcesSelect<T extends boolean = true> {
  */
 export interface CaseStudyDraftsSelect<T extends boolean = true> {
   id?: T;
+  sanityUpdatedAt?: T;
   userId?: T;
   lastSaved?: T;
   title?: T;
@@ -3474,6 +3562,7 @@ export interface CaseStudyDraftsSelect<T extends boolean = true> {
  */
 export interface PagesSelect<T extends boolean = true> {
   id?: T;
+  sanityUpdatedAt?: T;
   title?: T;
   slug?: T;
   blocks?:
@@ -3869,6 +3958,7 @@ export interface LogoCloud1BlockSelect<T extends boolean = true> {
  */
 export interface RegionalCommunityPagesSelect<T extends boolean = true> {
   id?: T;
+  sanityUpdatedAt?: T;
   title?: T;
   slug?: T;
   regionalCommunity?: T;

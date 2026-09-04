@@ -1,6 +1,7 @@
 import type { CollectionConfig } from "payload";
 import { isAnyone, isEditor } from "@/payload/access";
 import { localizedText } from "@/payload/fields/localized";
+import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
 
 /**
  * Mirrors sanity/schemas/documents/profile-prompt.ts. Verified against
@@ -31,6 +32,7 @@ export const ProfilePrompts: CollectionConfig = {
       required: true,
       admin: { hidden: true },
     },
+    sanityUpdatedAt,
     localizedText("prompt", {
       required: true,
       admin: {

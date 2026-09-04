@@ -131,16 +131,31 @@ describe("payload content collections", () => {
     expect(relatedCommunity).toMatchObject({ name: "relatedCommunity", type: "text" });
   });
 
-  it("restricts caseStudyDrafts read access to editors — private per-user autosave data, not public content like the other nine collections", () => {
-    expect(CaseStudyDrafts.access?.read).toBe(isEditor);
+  it("gates every caseStudyDrafts operation on owner-or-editor — an owner must not be able to write what it cannot read", () => {
+    // Private per-user autosave data, not public content like the other nine
+    // collections; and `read` used to be `isEditor` while the three writes
+    // were `ownerOrEditor`, so an owner could save a draft and then be denied
+    // it back. `ownerOrEditor` is a `Where` on the persisted `userId`, so this
+    // still hides one member's draft from another and still gives editors the
+    // whole in-progress queue.
+    for (const op of ["read", "create", "update", "delete"] as const) {
+      expect(CaseStudyDrafts.access?.[op], op).toBe(ownerOrEditor);
+      // Not editor-only — that would be indistinguishable from the (wrong) old shape.
+      expect(CaseStudyDrafts.access?.[op], op).not.toBe(isEditor);
+    }
   });
 
-  it("gives caseStudyDrafts owner-or-editor write access, not editor-only — members must be able to save their own draft", () => {
-    expect(CaseStudyDrafts.access?.create).toBe(ownerOrEditor);
-    expect(CaseStudyDrafts.access?.update).toBe(ownerOrEditor);
-    expect(CaseStudyDrafts.access?.delete).toBe(ownerOrEditor);
-    // Not editor-only — that would be indistinguishable from the (wrong) old shape.
-    expect(CaseStudyDrafts.access?.create).not.toBe(isEditor);
+  it("gives an anonymous caller nothing on caseStudyDrafts", () => {
+    // `ownerOrEditor` is looser than `isEditor`, so the widening has to be
+    // shown to stop at the owner: with no signed-in user there is no clerkId,
+    // and the helper returns false rather than an unscoped query.
+    expect(CaseStudyDrafts.access!.read!({ req: { user: null } } as never)).toBe(false);
+    expect(
+      CaseStudyDrafts.access!.read!({ req: { user: { role: "community_member", clerkId: "u1" } } } as never),
+    ).toEqual({ userId: { equals: "u1" } });
+    expect(
+      CaseStudyDrafts.access!.read!({ req: { user: { role: "team_editor", clerkId: "e1" } } } as never),
+    ).toBe(true);
   });
 
   it("does not port 'projects'/'project' relationship fields — the target document type has zero live documents in production_2", () => {
@@ -189,7 +204,8 @@ describe("payload content collections", () => {
   // `approved` boolean (approvedOnly); newsPosts/testimonials have _status
   // but no moderationStatus, so publishedOnly is correct as-is;
   // agendas/docsChapters/profilePrompts have neither, so isAnyone is
-  // correct; caseStudyDrafts is private, editor-only for reads.
+  // correct; caseStudyDrafts is private per-user autosave data, read by its
+  // owner or an editor and nobody else.
   it("pins each collection's read access to the correct function — the one axis with a security consequence", () => {
     const expected: Array<[CollectionConfig, unknown]> = [
       [CaseStudies, publishedAndApproved],
@@ -201,7 +217,7 @@ describe("payload content collections", () => {
       [Testimonials, publishedOnly],
       [ProfilePrompts, isAnyone],
       [ExternalSources, approvedOnly],
-      [CaseStudyDrafts, isEditor],
+      [CaseStudyDrafts, ownerOrEditor],
     ];
     for (const [collection, accessFn] of expected) {
       expect(collection.access?.read, `${collection.slug}.access.read`).toBe(accessFn);

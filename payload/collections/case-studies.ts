@@ -2,6 +2,7 @@ import type { CollectionConfig } from "payload";
 import { isEditor, isEditorField, publishedAndApproved } from "@/payload/access";
 import { relationshipField, uploadField } from "@/payload/blocks/shared";
 import { localizedRichText, localizedText, localizedTextarea } from "@/payload/fields/localized";
+import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
 
 /**
  * Mirrors sanity/schemas/documents/case-study.ts. Verified against
@@ -98,6 +99,7 @@ export const CaseStudies: CollectionConfig = {
       // Sanity's _id, preserved verbatim so the import is idempotent and the
       // handful of Prisma rows referencing content ids keep working.
     },
+    sanityUpdatedAt,
     localizedText("title", { required: true }),
     { name: "slug", type: "text", required: true, unique: true },
     localizedTextarea("excerpt"),

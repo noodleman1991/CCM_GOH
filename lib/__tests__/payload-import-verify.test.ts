@@ -546,10 +546,19 @@ describe("the recorded exceptions", () => {
  * construction.
  */
 
-/** A tag with genuinely different `fr` and `ar` values, so a swap is visible. */
+/**
+ * A tag with genuinely different `fr` and `ar` values, so a swap is visible.
+ *
+ * It also carries a `_updatedAt` distinct from `_createdAt` — the pair the
+ * `timestamps/sanity-updated-at` check reads. Payload overwrites its own
+ * `updatedAt` on every write, so a document whose two timestamps are equal
+ * cannot tell a preserved value from a discarded one.
+ */
 const TAG_TRANSLATED: SanityDoc = {
   _id: "tag-anxiety",
   _type: "tag",
+  _createdAt: "2025-10-09T08:00:00.000Z",
+  _updatedAt: "2025-11-12T14:32:07.000Z",
   label: { en: "Anxiety", fr: "Anxiété", ar: "قلق" },
   orderRank: "0|1000ih:",
   useAsTheme: false,
@@ -704,6 +713,37 @@ describe("verifyImport, driven through a fake client", () => {
     expect(failed(report)).toContain("richtext/non-empty");
   });
 
+  it("fails when Sanity's _updatedAt is dropped, the way writing `updatedAt` drops it", async () => {
+    // The final review's finding 3. `timestamps()` wrote `updatedAt`, which
+    // payload/dist/collections/operations/utilities/update.js overwrites
+    // unconditionally, so every row came back stamped with the import date
+    // (measured: 29 of 29 agendas) while typechecking and passing every other
+    // check here. Simulated by returning the document without the column.
+    const report = await runVerify({
+      async docs(collection, locale) {
+        const real = await fakeVerifyClient(verifyDocs()).docs(collection, locale);
+        return real.map((doc) => {
+          const withoutStamp = { ...doc };
+          delete withoutStamp.sanityUpdatedAt;
+          return withoutStamp;
+        });
+      },
+    });
+    expect(failed(report)).toContain("timestamps/sanity-updated-at");
+  });
+
+  it("fails when the preserved timestamp is the import date rather than Sanity's", async () => {
+    const report = await runVerify({
+      async docs(collection, locale) {
+        const real = await fakeVerifyClient(verifyDocs()).docs(collection, locale);
+        return real.map((doc) =>
+          doc.sanityUpdatedAt === undefined ? doc : { ...doc, sanityUpdatedAt: new Date().toISOString() },
+        );
+      },
+    });
+    expect(failed(report)).toContain("timestamps/sanity-updated-at");
+  });
+
   it("fails when a document is missing, and when one is unexpected", async () => {
     const missing = await runVerify({
       async ids(collection) {
@@ -770,7 +810,7 @@ describe("verifyImport, driven through a fake client", () => {
       "manifest/published-total",
       "manifest/system-drafts-filtered",
     ]);
-    expect(report.checks.filter((c) => c.scope === "database")).toHaveLength(13);
+    expect(report.checks.filter((c) => c.scope === "database")).toHaveLength(14);
   });
 });
 

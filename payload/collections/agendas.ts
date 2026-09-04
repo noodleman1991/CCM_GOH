@@ -2,6 +2,7 @@ import type { CollectionConfig } from "payload";
 import { isAnyone, isEditor } from "@/payload/access";
 import { imageField, relationshipField, uploadField } from "@/payload/blocks/shared";
 import { localizedText, localizedTextarea } from "@/payload/fields/localized";
+import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
 
 /**
  * Mirrors sanity/schemas/documents/agenda.ts. Verified against production_2
@@ -41,6 +42,7 @@ export const Agendas: CollectionConfig = {
       required: true,
       admin: { hidden: true },
     },
+    sanityUpdatedAt,
     localizedText("title", { required: true }),
     { name: "slug", type: "text", required: true, unique: true },
     localizedText("subtitle"),

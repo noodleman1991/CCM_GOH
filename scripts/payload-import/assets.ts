@@ -45,9 +45,11 @@
  *    passes `overwriteExistingFiles: true` so Payload takes it verbatim.
  *
  * 5. **It writes to R2 and to `payload_cms`, both real.** The run refuses to
- *    start unless `PAYLOAD_DATABASE_URL` names the `payload_cms` database.
- *    Nothing here ever deletes an R2 object: a re-run is made safe by being
- *    idempotent, not by clearing the bucket.
+ *    start unless `PAYLOAD_DATABASE_URL` names the `payload_cms` database **on
+ *    the recorded dev endpoint**; a production run has to say
+ *    `--allow-production` (`lib/runtime.ts`). Nothing here ever deletes an R2
+ *    object: a re-run is made safe by being idempotent, not by clearing the
+ *    bucket.
  *
  * Media's `down()` migration is only valid while `media` is empty. Once this
  * script has run, do not roll it back.
@@ -57,11 +59,11 @@ import { createHash } from "node:crypto";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { assertPayloadDatabase, getPayloadInstance, loadEnv } from "./lib/runtime";
 import {
   effectiveMimeType,
   loadSanityExport,
   readAssetBytes as readAssetBytesFromDir,
-  REPO_ROOT,
   type SanityExportAsset,
 } from "./lib/sanity-export";
 
@@ -310,36 +312,9 @@ export async function importAssetRecords(
 // Real run
 // ---------------------------------------------------------------------------
 
-/** Refuses to run against anything but the CMS database. */
-export function assertPayloadDatabase(connectionString: string | undefined): string {
-  if (!connectionString) {
-    throw new Error("PAYLOAD_DATABASE_URL is not set. Refusing to guess which database to write to.");
-  }
-  const name = new URL(connectionString).pathname.replace(/^\//, "").split("?")[0];
-  if (name !== "payload_cms") {
-    throw new Error(
-      `PAYLOAD_DATABASE_URL points at "${name}", not "payload_cms". Refusing to write assets to it.`,
-    );
-  }
-  return name;
-}
-
-async function loadEnv(): Promise<void> {
-  const { default: dotenv } = await import("dotenv");
-  // `.env.local` first: dotenv does not overwrite an already-set variable, so
-  // its PAYLOAD_DATABASE_URL (the dev CMS database) wins. `.env` then supplies
-  // the R2 credentials, which live only there.
-  dotenv.config({ path: path.join(REPO_ROOT, ".env.local"), quiet: true });
-  dotenv.config({ path: path.join(REPO_ROOT, ".env"), quiet: true });
-}
-
 /** Payload's local API, narrowed to `UploadClient`. */
 async function payloadUploadClient(): Promise<UploadClient> {
-  const [{ getPayload }, { default: config }] = await Promise.all([
-    import("payload"),
-    import("@payload-config"),
-  ]);
-  const payload = await getPayload({ config });
+  const payload = await getPayloadInstance();
 
   return {
     async find({ collection }) {
@@ -377,6 +352,8 @@ export interface ImportAssetsOptions {
   dryRun?: boolean;
   verifyChecksum?: boolean;
   quiet?: boolean;
+  /** The run means the production CMS database, and says so. See `assertPayloadDatabase`. */
+  allowProduction?: boolean;
   /** Populated with the run's counts, for a caller that wants more than the map. */
   onResult?: (result: AssetImportResult) => void;
 }
@@ -388,7 +365,10 @@ export interface ImportAssetsOptions {
  */
 export async function importAssets(options: ImportAssetsOptions = {}): Promise<Map<string, string>> {
   await loadEnv();
-  const database = assertPayloadDatabase(process.env.PAYLOAD_DATABASE_URL);
+  const database = assertPayloadDatabase(process.env.PAYLOAD_DATABASE_URL, {
+    allowProduction: options.allowProduction,
+    action: "write assets to it",
+  });
 
   const { exportDir, assets } = await loadSanityExport({ verifyChecksum: options.verifyChecksum });
   const images = assets.filter((a) => a.kind === "image").length;
@@ -448,6 +428,7 @@ if (invokedDirectly) {
   importAssets({
     dryRun: argv.includes("--dry-run"),
     verifyChecksum: argv.includes("--verify-checksum"),
+    allowProduction: argv.includes("--allow-production"),
   })
     .then((map) => {
       console.log(`asset map: ${map.size} entries`);

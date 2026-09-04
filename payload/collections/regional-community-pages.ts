@@ -5,6 +5,7 @@ import { localizedText, localizedTextarea } from "@/payload/fields/localized";
 import { blockSlot } from "@/payload/fields/block-slot";
 import { hero1, logoCloud1 } from "@/payload/blocks";
 import { contentGrid } from "@/payload/blocks/content-grid";
+import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
 
 /**
  * Mirrors sanity/schemas/documents/regional-community-page.ts — **the one
@@ -98,6 +99,7 @@ export const RegionalCommunityPages: CollectionConfig = {
       required: true,
       admin: { hidden: true },
     },
+    sanityUpdatedAt,
     localizedText("title", { required: true }),
     {
       name: "slug",

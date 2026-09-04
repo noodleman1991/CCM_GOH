@@ -10,6 +10,7 @@
  *   pnpm import:documents -- --resume     # skip documents that already exist
  *   pnpm import:documents -- --only=tag,agenda
  *   pnpm import:documents -- --allow-after-drafts   # see the ordering rule below
+ *   pnpm import:documents -- --allow-production     # target the PRODUCTION CMS database
  *
  * ## The four properties, and how each is obtained
  *
@@ -56,8 +57,8 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { assertPayloadDatabase } from "./assets";
-import { extractArchive, readExportDocuments, REPO_ROOT } from "./lib/sanity-export";
+import { assertPayloadDatabase, getPayloadInstance, loadEnv, type PayloadInstance } from "./lib/runtime";
+import { extractArchive, readExportDocuments } from "./lib/sanity-export";
 import {
   documentTargets,
   LOCALES,
@@ -367,24 +368,6 @@ async function writeTarget(
 // Real run
 // ---------------------------------------------------------------------------
 
-async function loadEnv(): Promise<void> {
-  const { default: dotenv } = await import("dotenv");
-  // `.env.local` first: dotenv does not overwrite an already-set variable, so
-  // its PAYLOAD_DATABASE_URL (the dev CMS database) wins.
-  dotenv.config({ path: path.join(REPO_ROOT, ".env.local"), quiet: true });
-  dotenv.config({ path: path.join(REPO_ROOT, ".env"), quiet: true });
-}
-
-type PayloadInstance = Awaited<ReturnType<typeof import("payload").getPayload>>;
-
-async function getPayloadInstance(): Promise<PayloadInstance> {
-  const [{ getPayload }, { default: config }] = await Promise.all([
-    import("payload"),
-    import("@payload-config"),
-  ]);
-  return getPayload({ config });
-}
-
 /**
  * The asset map Task 11 produced, read back off Payload rather than by
  * re-running the asset import: every upload stores its source `sanityAssetId`,
@@ -504,6 +487,8 @@ export interface ImportDocumentsOptions {
   quiet?: boolean;
   /** Write even though drafts are the newest versions — see the module header. */
   allowAfterDrafts?: boolean;
+  /** The run means the production CMS database, and says so. See `assertPayloadDatabase`. */
+  allowProduction?: boolean;
   /** Restrict the run to these Sanity `_type`s. */
   only?: string[];
   /** Documents written at once within one type. Default 4. */
@@ -516,7 +501,10 @@ export interface ImportDocumentsOptions {
  */
 export async function importDocuments(options: ImportDocumentsOptions = {}): Promise<ImportSummary> {
   await loadEnv();
-  const database = assertPayloadDatabase(process.env.PAYLOAD_DATABASE_URL);
+  const database = assertPayloadDatabase(process.env.PAYLOAD_DATABASE_URL, {
+    allowProduction: options.allowProduction,
+    action: "write documents to it",
+  });
 
   const exportDir = await extractArchive({ verifyChecksum: false });
   const docs = (await readExportDocuments(exportDir)) as SanityDoc[];
@@ -613,6 +601,7 @@ if (invokedDirectly) {
     dryRun: argv.includes("--dry-run"),
     resume: argv.includes("--resume"),
     allowAfterDrafts: argv.includes("--allow-after-drafts"),
+    allowProduction: argv.includes("--allow-production"),
     only: onlyFlag ? onlyFlag.slice("--only=".length).split(",").filter(Boolean) : undefined,
     concurrency: concurrencyFlag ? Number(concurrencyFlag.slice("--concurrency=".length)) : undefined,
   })

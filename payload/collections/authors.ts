@@ -1,6 +1,7 @@
 import type { CollectionConfig } from "payload";
 import { isEditor, isEditorField, publishedOnly } from "@/payload/access";
 import { imageField, relationshipField } from "@/payload/blocks/shared";
+import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
 
 /**
  * Mirrors sanity/schemas/documents/author.ts. **The only cross-system tie in
@@ -58,6 +59,7 @@ export const Authors: CollectionConfig = {
       // Sanity's _id, preserved verbatim — the cross-system tie Prisma's
       // User.sanityPersonId depends on. Do not regenerate this on import.
     },
+    sanityUpdatedAt,
     { name: "name", type: "text", required: true },
     {
       name: "slug",

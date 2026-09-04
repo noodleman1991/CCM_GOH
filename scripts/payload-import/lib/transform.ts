@@ -252,8 +252,23 @@ function refTarget(value: unknown): string | undefined {
  * a `hasMany` list would silently lose the member.
  */
 export function reference(value: unknown, ctx: TransformContext, where: string): string | undefined {
+  // An absent field is absent — that is the null case, and it is legitimate.
+  if (value === undefined || value === null) return undefined;
   const ref = refTarget(value);
-  if (ref === undefined) return undefined;
+  if (ref === undefined) {
+    // A value that is PRESENT but is not a reference is a shape this importer
+    // does not understand, and the doctrine of this file (`assertHandled`) is
+    // that such a thing is a hard error. It used to return undefined here, so
+    // a reference array of bare id strings resolved to nothing and the field
+    // was written null, silently — which is precisely the shape the
+    // malformed-lived-experience-tag defect had (0/56 today, confirmed
+    // 2026-09-02, and it was not always).
+    throw new ImportTransformError(
+      `${where} holds ${JSON.stringify(value).slice(0, 120)}, which is not a Sanity reference ` +
+        `({_ref}). Model the field on what is actually stored, as caseStudyDrafts.tags does, ` +
+        `rather than letting it become a null.`,
+    );
+  }
   if (!ctx.known.has(ref)) {
     throw new ImportTransformError(
       `${where} references "${ref}", which has not been imported yet. ` +
@@ -263,11 +278,24 @@ export function reference(value: unknown, ctx: TransformContext, where: string):
   return ref;
 }
 
+/**
+ * A list of references. Every member must resolve — a hole in the middle of a
+ * list is a lost relationship, not an empty field, and nothing downstream can
+ * tell the two apart once the row is written.
+ */
 export function references(value: unknown, ctx: TransformContext, where: string): string[] | undefined {
   if (!Array.isArray(value)) return undefined;
-  const out = value
-    .map((entry, i) => reference(entry, ctx, `${where}[${i}]`))
-    .filter((id): id is string => id !== undefined);
+  const out: string[] = [];
+  value.forEach((entry, i) => {
+    const id = reference(entry, ctx, `${where}[${i}]`);
+    if (id === undefined) {
+      throw new ImportTransformError(
+        `${where}[${i}] is empty. A reference list may be absent, but it may not contain a hole — ` +
+          `dropping the member would lose a relationship with no trace.`,
+      );
+    }
+    out.push(id);
+  });
   return out.length > 0 ? out : undefined;
 }
 
@@ -949,11 +977,32 @@ interface TypeSpec {
   split?: readonly { slug: string; fields: readonly unknown[] }[];
 }
 
-/** Common trailer: Sanity's own timestamps, kept so ordering survives. */
-function timestamps(canonical: SanityDoc): PayloadData {
+/**
+ * Common trailer: Sanity's own timestamps.
+ *
+ * `createdAt` goes to Payload's own column, which honours a supplied value.
+ * `_updatedAt` does **not**: `payload/dist/collections/operations/utilities/
+ * update.js` ends every update with an unconditional
+ * `dataToUpdate.updatedAt = new Date().toISOString()`, so writing `updatedAt`
+ * here carried nothing — measured, 29 of 29 agendas held the import date while
+ * their `createdAt` spanned Sanity's real 2025-10/2025-11 dates. It is written
+ * to the dedicated `sanityUpdatedAt` column instead
+ * (`payload/fields/sanity-timestamps.ts`), which Payload does not own and
+ * therefore cannot overwrite, and which Phase 3's moderation queue and sitemap
+ * order by in place of GROQ's `_updatedAt`. `verifyImport`'s
+ * `timestamps/sanity-updated-at` check compares it back against the archive.
+ *
+ * Collections only. `sanityUpdatedAt` is declared on the eighteen collections
+ * the importer writes and on no global — no reader orders a global by
+ * `_updatedAt`, and a global is a single row whose Payload `updatedAt` is a
+ * truthful record of the last write to it.
+ */
+function timestamps(canonical: SanityDoc, kind: TypeSpec["kind"]): PayloadData {
   return {
     ...(typeof canonical._createdAt === "string" ? { createdAt: canonical._createdAt } : {}),
-    ...(typeof canonical._updatedAt === "string" ? { updatedAt: canonical._updatedAt } : {}),
+    ...(kind === "collection" && typeof canonical._updatedAt === "string"
+      ? { sanityUpdatedAt: canonical._updatedAt }
+      : {}),
   };
 }
 
@@ -1738,6 +1787,21 @@ const TYPE_SPECS: Record<string, TypeSpec> = {
 };
 
 /**
+ * The Payload collections this importer writes into, derived from `TYPE_SPECS`
+ * rather than listed, so it cannot fall behind it.
+ *
+ * Exported for one purpose: `lib/__tests__/payload-sanity-updated-at.test.ts`
+ * asserts that every slug here declares the `sanityUpdatedAt` field. Adding a
+ * nineteenth imported collection therefore fails a test rather than silently
+ * losing that collection's Sanity `_updatedAt` — the defect the final review
+ * found on all eighteen.
+ */
+export const IMPORTED_COLLECTION_SLUGS: readonly string[] = Object.values(TYPE_SPECS)
+  .filter((spec) => spec.kind === "collection")
+  .map((spec) => spec.slug)
+  .sort();
+
+/**
  * Dependency order. Every reference in the dataset was traced (21 distinct
  * reference paths, 0 dangling) and this order satisfies all of them:
  * taxonomy and places first, then authors (which reference communities),
@@ -1969,13 +2033,13 @@ export function buildTarget(type: string, group: SourceGroup, ctx: TransformCont
 
   if (group.kind === "single") {
     sources.push(String(canonical._id));
-    const base = { ...spec.build(canonical, canonical, "en", ctx, unplaced), ...timestamps(canonical), ...status };
+    const base = { ...spec.build(canonical, canonical, "en", ctx, unplaced), ...timestamps(canonical, spec.kind), ...status };
     data.en = base;
     const baseline = JSON.stringify(base);
     const localized = localizedFieldsFor(spec.slug);
     for (const locale of LOCALES) {
       if (locale === "en") continue;
-      const built = { ...spec.build(canonical, canonical, locale, ctx, unplaced), ...timestamps(canonical), ...status };
+      const built = { ...spec.build(canonical, canonical, locale, ctx, unplaced), ...timestamps(canonical, spec.kind), ...status };
       // The same build with the cross-locale fallback off: every localized
       // leaf it still holds is one Sanity genuinely translates into `locale`.
       // `unplaced` is deliberately thrown away here — the inventory is a
@@ -1994,7 +2058,7 @@ export function buildTarget(type: string, group: SourceGroup, ctx: TransformCont
       const source = group.docs[locale];
       if (!source) continue;
       sources.push(String(source._id));
-      data[locale] = { ...spec.build(source, canonical, locale, ctx, unplaced), ...timestamps(canonical), ...status };
+      data[locale] = { ...spec.build(source, canonical, locale, ctx, unplaced), ...timestamps(canonical, spec.kind), ...status };
     }
   }
 
@@ -2010,8 +2074,10 @@ export function buildTarget(type: string, group: SourceGroup, ctx: TransformCont
  * before the split. It rides on the first partition rather than being
  * repeated six times.
  *
- * `createdAt`/`updatedAt` are carried through explicitly: they are Sanity's
- * own timestamps, not declared fields, so the projection would drop them.
+ * `createdAt` is carried through explicitly: it is Sanity's own timestamp, not
+ * a declared field, so the projection would drop it. It is the only one — the
+ * partitions here are globals, and `timestamps()` writes `sanityUpdatedAt` on
+ * collections alone.
  */
 export function splitTarget(
   target: DocumentTarget,
@@ -2025,7 +2091,6 @@ export function splitTarget(
       data[locale] = {
         ...projectOntoFields(source, partition.fields),
         ...(source.createdAt !== undefined ? { createdAt: source.createdAt } : {}),
-        ...(source.updatedAt !== undefined ? { updatedAt: source.updatedAt } : {}),
       };
     }
     return { ...target, slug: partition.slug, data, unplaced: i === 0 ? target.unplaced : [] };

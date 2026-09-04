@@ -1,5 +1,6 @@
 import type { CollectionConfig } from "payload";
 import { isAnyone, isEditor } from "@/payload/access";
+import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
 
 /**
  * Mirrors sanity/schemas/documents/docs-chapter.ts. Verified against
@@ -38,6 +39,7 @@ export const DocsChapters: CollectionConfig = {
       required: true,
       admin: { hidden: true },
     },
+    sanityUpdatedAt,
     {
       name: "collection",
       type: "text",

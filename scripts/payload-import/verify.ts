@@ -64,9 +64,9 @@ import path from "node:path";
 import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 
-import { assertPayloadDatabase } from "./assets";
 import { readAssetMap } from "./documents";
-import { draftTargets, getPayloadInstance, type DraftTarget } from "./drafts";
+import { draftTargets, type DraftTarget } from "./drafts";
+import { assertPayloadDatabase, getPayloadInstance, loadEnv, type PayloadInstance } from "./lib/runtime";
 import { extractArchive, readExportDocuments, REPO_ROOT } from "./lib/sanity-export";
 import {
   documentTargets,
@@ -266,7 +266,19 @@ interface CollectedValues {
   uploads: Map<string, string>;
 }
 
-const SKIPPED_KEYS = new Set(["id", "createdAt", "updatedAt", "_status", "sanityAssetId", "blockType"]);
+// `sanityUpdatedAt` is skipped here and checked on its own
+// (`timestamps/sanity-updated-at`): Postgres returns it as a normalised
+// timestamp, so a string comparison against Sanity's own spelling would report
+// a difference where there is none. Its check compares instants instead.
+const SKIPPED_KEYS = new Set([
+  "id",
+  "createdAt",
+  "updatedAt",
+  "sanityUpdatedAt",
+  "_status",
+  "sanityAssetId",
+  "blockType",
+]);
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -404,6 +416,13 @@ export interface VerifyOptions {
   client?: VerifyClient;
   quiet?: boolean;
   /**
+   * Verify the PRODUCTION CMS database. This script only reads, but it still
+   * takes the flag: without it a production `PAYLOAD_DATABASE_URL` would be
+   * refused, and the operator would learn that from the importer instead —
+   * after deciding the verifier had already vouched for the target.
+   */
+  allowProduction?: boolean;
+  /**
    * The archive side of every comparison, injected instead of read off disk.
    *
    * Without this the six archive-scoped checks have no failure mode anything
@@ -458,7 +477,10 @@ export async function verifyImport(options: VerifyOptions = {}): Promise<Verific
   const database =
     options.client && !process.env.PAYLOAD_DATABASE_URL
       ? "(injected client)"
-      : assertPayloadDatabase(process.env.PAYLOAD_DATABASE_URL);
+      : assertPayloadDatabase(process.env.PAYLOAD_DATABASE_URL, {
+          allowProduction: options.allowProduction,
+          action: "report on it",
+        });
   const log = options.quiet ? () => {} : (msg: string) => console.log(msg);
 
   const docs =
@@ -653,6 +675,8 @@ export async function verifyImport(options: VerifyOptions = {}): Promise<Verific
   const uploadFailures: string[] = [];
   const richTextFailures: string[] = [];
   const coverageFailures: string[] = [];
+  const timestampFailures: string[] = [];
+  let timestampChecked = 0;
   let localeChecked = 0;
   let uploadChecked = 0;
   let richTextChecked = 0;
@@ -670,6 +694,37 @@ export async function verifyImport(options: VerifyOptions = {}): Promise<Verific
         const expectedData = (target.data[locale] ?? target.data.en) as PayloadData | undefined;
         const actualDoc = found.get(id);
         if (!expectedData || !actualDoc) continue;
+
+        // Sanity's `_updatedAt`, in the one column Payload does not overwrite.
+        //
+        // `collectValues` cannot see this: it walks localized content, and
+        // `sanityUpdatedAt` is a single unlocalized date. Checked here, once
+        // per document, because the field exists for exactly one reason — the
+        // moderation queue and every sitemap `lastModified` order by it in
+        // Phase 3 — and the failure it guards against is silent: writing
+        // `updatedAt` instead compiles, imports, and leaves every row stamped
+        // with the import date (measured: 29 of 29 agendas).
+        if (locale === "en") {
+          const wantStamp = expectedData.sanityUpdatedAt;
+          if (typeof wantStamp === "string") {
+            timestampChecked += 1;
+            const gotStamp = actualDoc.sanityUpdatedAt;
+            const gotTime =
+              typeof gotStamp === "string" || gotStamp instanceof Date
+                ? new Date(gotStamp).getTime()
+                : Number.NaN;
+            if (!Number.isFinite(gotTime)) {
+              timestampFailures.push(
+                `${slug}/${id} sanityUpdatedAt: expected ${wantStamp}, empty — ` +
+                  `Sanity's _updatedAt was not preserved`,
+              );
+            } else if (gotTime !== new Date(wantStamp).getTime()) {
+              timestampFailures.push(
+                `${slug}/${id} sanityUpdatedAt: expected ${wantStamp}, got ${new Date(gotTime).toISOString()}`,
+              );
+            }
+          }
+        }
 
         const want = collectValues(expectedData, uploads);
         const got = collectValues(actualDoc, uploads);
@@ -733,6 +788,15 @@ export async function verifyImport(options: VerifyOptions = {}): Promise<Verific
     log(`      read back ${slug} in 4 locales`);
   }
 
+  push(
+    check(
+      "database",
+      "timestamps/sanity-updated-at",
+      timestampChecked,
+      timestampChecked - timestampFailures.length,
+      timestampFailures,
+    ),
+  );
   push(check("database", "locales/all-four-populated", localeChecked, localeChecked - localeFailures.length, localeFailures));
   push(check("database", "uploads/references-resolve", uploadChecked, uploadChecked - uploadFailures.length, uploadFailures));
   push(check("database", "richtext/non-empty", richTextChecked, richTextChecked - richTextFailures.length, richTextFailures));
@@ -825,8 +889,6 @@ export async function verifyImport(options: VerifyOptions = {}): Promise<Verific
 // Payload-backed client
 // ---------------------------------------------------------------------------
 
-type PayloadInstance = Awaited<ReturnType<typeof import("payload").getPayload>>;
-
 function payloadVerifyClient(payload: PayloadInstance): VerifyClient {
   type Collection = Parameters<typeof payload.find>[0]["collection"];
   return {
@@ -903,20 +965,15 @@ function payloadVerifyClient(payload: PayloadInstance): VerifyClient {
   };
 }
 
-async function loadEnv(): Promise<void> {
-  const { default: dotenv } = await import("dotenv");
-  dotenv.config({ path: path.join(REPO_ROOT, ".env.local"), quiet: true });
-  dotenv.config({ path: path.join(REPO_ROOT, ".env"), quiet: true });
-}
-
 const invokedDirectly =
   typeof process !== "undefined" &&
   process.argv[1] !== undefined &&
   path.resolve(process.argv[1]) === path.resolve(fileURLToPath(import.meta.url));
 
 if (invokedDirectly) {
-  const json = process.argv.slice(2).includes("--json");
-  verifyImport({ quiet: json })
+  const argv = process.argv.slice(2);
+  const json = argv.includes("--json");
+  verifyImport({ quiet: json, allowProduction: argv.includes("--allow-production") })
     .then((report) => {
       if (json) console.log(JSON.stringify(report, null, 2));
       process.exit(report.ok ? 0 : 1);

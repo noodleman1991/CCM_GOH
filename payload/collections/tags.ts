@@ -1,6 +1,7 @@
 import type { CollectionConfig } from "payload";
 import { isEditor, publishedOnly } from "@/payload/access";
 import { localizedText, localizedTextarea } from "@/payload/fields/localized";
+import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
 
 /**
  * Mirrors sanity/schemas/documents/tag.ts. Verified against production_2
@@ -57,6 +58,7 @@ export const Tags: CollectionConfig = {
       // Sanity's _id, preserved verbatim so the import is idempotent and the
       // handful of Prisma rows referencing content ids keep working.
     },
+    sanityUpdatedAt,
     localizedText("label", { required: true }),
     {
       name: "value",
