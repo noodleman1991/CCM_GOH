@@ -326,7 +326,7 @@ async function getPayloadInstance(): Promise<PayloadInstance> {
  * and the map is what `transform.ts` resolves `_sanityAsset` strings through.
  * A missing asset becomes a named error, not a null image.
  */
-async function readAssetMap(payload: PayloadInstance): Promise<Map<string, string>> {
+export async function readAssetMap(payload: PayloadInstance): Promise<Map<string, string>> {
   const map = new Map<string, string>();
   for (const collection of ["media", "files"] as const) {
     const found = await payload.find({

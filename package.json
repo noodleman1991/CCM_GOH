@@ -33,7 +33,9 @@
     "user:role": "tsx scripts/set-user-role.ts",
     "import:assets": "tsx scripts/payload-import/assets.ts",
     "typegen": "sanity schema extract && sanity typegen generate",
-    "import:documents": "tsx scripts/payload-import/documents.ts"
+    "import:documents": "tsx scripts/payload-import/documents.ts",
+    "import:drafts": "tsx scripts/payload-import/drafts.ts",
+    "verify:import": "tsx scripts/payload-import/verify.ts"
   },
   "prisma": {
     "seed": "node prisma/seed.ts"
