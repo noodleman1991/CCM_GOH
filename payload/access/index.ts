@@ -17,9 +17,16 @@ import type { Access, FieldAccess, Where } from "payload";
 type WithRole = { role?: string | null } | null | undefined;
 type WithRoleAndClerkId = { role?: string | null; clerkId?: string | null } | null | undefined;
 
-/** The one role predicate `isEditor` and `isEditorField` both read from, so
- * the document-level and field-level gates can never drift apart. */
-const hasEditorRole = (user: unknown): boolean => {
+/**
+ * The one role predicate `isEditor` and `isEditorField` both read from, so
+ * the document-level and field-level gates can never drift apart.
+ *
+ * Exported for `payload/auth/clerk-strategy.ts`, which decides whether a
+ * signed-in Clerk user is mirrored into the `users` collection at all. That
+ * decision must mean exactly what `/admin` access means — one predicate, so
+ * "who gets a Payload user" and "who may use the admin" cannot diverge.
+ */
+export const hasEditorRole = (user: unknown): boolean => {
   const role = (user as WithRole)?.role;
   return role === "admin" || role === "team_editor";
 };

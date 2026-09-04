@@ -1,5 +1,6 @@
 import type { AuthStrategy } from "payload";
-import { prisma } from "@/lib/prisma";
+import { prisma, safeQuery } from "@/lib/prisma";
+import { hasEditorRole } from "@/payload/access";
 
 /**
  * Clerk is the sole identity system (spec D4). Nobody signs up in Payload —
@@ -43,27 +44,60 @@ export const clerkStrategy: AuthStrategy = {
 
     // Prisma's User has no `name` field (firstName/lastName instead) — select
     // only what the Payload users collection actually stores.
-    const actor = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { id: true, role: true, email: true },
-    });
+    //
+    // Through `safeQuery`, not bare, for the same reason `getActor()` in
+    // lib/authz.ts does: Neon suspends its compute when idle, and the first
+    // query after that can fail before the server accepts connections
+    // (P1001/P1002, pre-execution — safe to retry). Bare, that cold start
+    // denies a legitimate editor with `{ user: null }` and no second attempt;
+    // the retry is bounded at one, after 250ms, and only for connection-level
+    // failures. A read is idempotent, so retrying it cannot double-apply
+    // anything.
+    const lookup = await safeQuery(() =>
+      prisma.user.findUnique({
+        where: { id: userId },
+        select: { id: true, role: true, email: true },
+      }),
+    );
+    if (!lookup.success) {
+      // Deny — but say so. Silent denial on an unreachable database is
+      // indistinguishable from "you are not an editor", which is the failure
+      // the final review named.
+      console.warn(`[payload/clerk-strategy] denying ${userId}: ${lookup.error.message}`);
+      return { user: null };
+    }
+    const actor = lookup.data;
     // A signed-in Clerk user with no Prisma row (never synced / removed) is
     // not a partially-formed Payload user — deny rather than guess a role.
     if (!actor) return { user: null };
 
-    // Mirror into Payload's users collection so relationships and the admin
-    // UI have a real document to point at. Keyed on the Clerk id, so this is
-    // idempotent across sessions.
+    // The mirror in Payload's `users` collection, keyed on the Clerk id.
     const existing = await payload.find({
       collection: "users",
       where: { clerkId: { equals: actor.id } },
       limit: 1,
       overrideAccess: true,
     });
+    let doc = existing.docs[0];
 
-    const doc =
-      existing.docs[0] ??
-      (await payload.create({
+    if (!doc) {
+      // **Create only for editors.** This runs on every authenticated request
+      // to /admin and /payload-api, so creating a row for any signed-in Clerk
+      // user is an unbounded write on a read path — 674 accounts exist, and
+      // Phase 3 exposes /payload-api publicly. `hasEditorRole` is the same
+      // predicate `isEditor` uses, so the set of people who get a Payload user
+      // is exactly the set who may use the admin.
+      //
+      // A non-editor therefore authenticates as nobody and is served by the
+      // anonymous access rules, which is what the public read surface is
+      // designed around. The one place that would notice is
+      // `caseStudyDrafts`' `ownerOrEditor`, if Phase 3 ever routes member
+      // autosave through the authenticated REST API rather than the Local API
+      // with `overrideAccess: true`. It does not today; if it ever does, this
+      // is the line to revisit, and it should be revisited deliberately rather
+      // than by leaving the write-on-read open.
+      if (!hasEditorRole(actor)) return { user: null };
+      doc = await payload.create({
         collection: "users",
         data: {
           clerkId: actor.id,
@@ -74,12 +108,32 @@ export const clerkStrategy: AuthStrategy = {
           email: actor.email ?? `${actor.id}@no-email.clerk.local`,
         },
         overrideAccess: true,
-      }));
+      });
+    } else {
+      // Persist the mirror when Prisma has moved on. Without this the stored
+      // `role`/`email` were written once, at creation, and never again —
+      // while payload/collections/users.ts documented them as "mirrored from
+      // Prisma on every sign-in". Runtime authz was unaffected (the returned
+      // user carries the fresh role either way), but the admin's Users list,
+      // and anything in Phase 3 reading the persisted document, saw a role
+      // that could be years old. Written only on a real difference, so an
+      // ordinary request stays a read.
+      const email = actor.email ?? `${actor.id}@no-email.clerk.local`;
+      if (doc.role !== actor.role || doc.email !== email) {
+        doc = await payload.update({
+          collection: "users",
+          id: doc.id,
+          data: { role: actor.role, email },
+          overrideAccess: true,
+        });
+      }
+    }
 
-    // Prisma is the source of truth for role — refresh it on every request so
-    // a revoked role takes effect immediately rather than at next signup.
-    // `doc` already carries `collection: "users"` (Payload's generated type
-    // for the config.admin.user collection includes it).
+    // Prisma is the source of truth for role — carried through on every
+    // request so a revoked role takes effect immediately, even if the write
+    // above were to fail. `doc` already carries `collection: "users"`
+    // (Payload's generated type for the config.admin.user collection
+    // includes it).
     return { user: { ...doc, role: actor.role } };
   },
 };

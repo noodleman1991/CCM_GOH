@@ -8,6 +8,13 @@ import { isAdmin, isEditor } from "@/payload/access";
  * session to; `disableLocalStrategy` removes email/password signup and login,
  * and `clerkStrategy` populates documents from an existing Clerk session
  * (see payload/auth/clerk-strategy.ts).
+ *
+ * **A row exists only for editors** (`team_editor`/`admin`). The strategy runs
+ * on every authenticated request to /admin and /payload-api, so mirroring
+ * every signed-in Clerk user would be an unbounded write on a read path across
+ * 674 accounts. A non-editor authenticates as nobody and is served by the
+ * anonymous access rules; this table is therefore a roster of CMS users, not a
+ * copy of the user base.
  */
 export const Users: CollectionConfig = {
   slug: "users",
@@ -50,7 +57,7 @@ export const Users: CollectionConfig = {
       unique: true,
       admin: {
         readOnly: true,
-        description: "Mirrored from Prisma's User.email (or a placeholder) on sign-in.",
+        description: "Mirrored from Prisma's User.email (or a placeholder); the Clerk auth strategy rewrites it whenever Prisma's differs.",
       },
     },
     {
@@ -78,7 +85,7 @@ export const Users: CollectionConfig = {
       ],
       admin: {
         readOnly: true,
-        description: "Mirrored from Prisma's User.role on every sign-in; not editable here.",
+        description: "Mirrored from Prisma's User.role; the Clerk auth strategy rewrites it whenever Prisma's differs. Prisma stays the source of truth for authz — not editable here.",
       },
     },
   ],
