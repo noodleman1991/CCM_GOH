@@ -88,3 +88,6 @@ migration-log-*.json
 # Unpacked Phase 0 Sanity archive (payload import working copy; regenerate with
 # `pnpm import:assets`, which re-extracts backups/sanity-production_2-*.tar.gz)
 /.sanity-export-cache/
+
+# Parity harness dist dirs (scripts/parity/render-diff.ts)
+/.next-parity-*/

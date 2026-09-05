@@ -51,6 +51,15 @@ const contentSecurityPolicy = ({ studio = false } = {}) =>
   ].join('; ');
 
 const nextConfig = {
+  // Where the build output goes. Overridable so the Phase-3 parity harness
+  // (scripts/parity/render-diff.ts) can run its own `next dev` — one per
+  // content backend — without fighting the developer's server for `.next`.
+  // Two dev servers sharing a dist dir corrupt each other's Turbopack cache,
+  // and a poisoned `.next/dev/cache` in this repo shows up as existing routes
+  // 404ing with an HTML body. Unset (every build, every ordinary `next dev`)
+  // this is exactly `.next`, so nothing changes for anyone not running the
+  // harness.
+  distDir: process.env.NEXT_DIST_DIR || '.next',
   // The Arabic homepage's static export can exceed the default 60s under slow
   // network conditions (heavy Sanity content). Raise the per-page generation
   // budget so static export doesn't fail on a single slow locale.
