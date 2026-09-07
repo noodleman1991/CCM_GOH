@@ -23,12 +23,13 @@
  * in storage, and running it again would key the object by locale codes it
  * would have to invent.
  *
- * **2. A localized field read at `locale: "all"` can carry explicit nulls.**
- * Sanity omits an unset field from its projection; Payload returns the locale
- * key with `null` (`description: {en: null}` on most tags). Left as-is those
- * two are different objects for the same content, so `localized()` strips
- * null/undefined values and returns `undefined` for an object that ends up
- * empty — which is what a Sanity projection of an unset field produces.
+ * **2. A localized field read at `locale: "all"` can carry explicit nulls, and
+ * its keys arrive in the wrong order.** Sanity omits an unset field from its
+ * projection and serializes an object's keys alphabetically; Payload returns
+ * the locale key with `null` (`description: {en: null}` on most tags) in
+ * `payload.config.ts`'s locale order. Both are handled by the shared
+ * `localized()` in `lib/content/internal/localized.ts` — see that file's header
+ * for why key order is load-bearing and why the rule lives in one place.
  *
  * **3. Sorting a localized field cannot be delegated to Payload at
  * `locale: "all"`.** `sort: "label"` with every locale requested does not sort
@@ -50,6 +51,8 @@
  * because inventing an order here would be a behaviour change, not parity.
  */
 import "server-only";
+import { localized } from "@/lib/content/internal/localized";
+import type { LocalizedRaw } from "@/lib/content/internal/localized";
 import { query } from "@/lib/content/internal/payload-source";
 import { imageUrl } from "@/lib/content/internal/payload-image-source";
 import type { Author, Organization, TaxonomyOption } from "@/lib/content/taxonomy";
@@ -58,25 +61,6 @@ import type { ContentTag, Localized } from "@/lib/content/types";
 /** Payload's `find` result, narrowed to the part every reader here uses. */
 interface Paginated<T> {
   docs: T[];
-}
-
-/** A localized field read at `locale: "all"`. */
-type LocalizedRaw = Partial<Record<keyof Localized & string, string | null>> | null | undefined;
-
-/**
- * A Payload localized field, as a Sanity projection of the same field.
- *
- * Drops the locale keys Payload spells out as `null` and collapses an object
- * with nothing left to `undefined`, so an unset field reads the same through
- * both backends. See note 2 above.
- */
-function localized(value: LocalizedRaw): Localized | undefined {
-  if (!value || typeof value !== "object") return undefined;
-  const out: Record<string, string> = {};
-  for (const [locale, text] of Object.entries(value)) {
-    if (typeof text === "string" && text.length > 0) out[locale] = text;
-  }
-  return Object.keys(out).length > 0 ? (out as Localized) : undefined;
 }
 
 /** GROQ's string ordering: by code point, not by locale collation. */

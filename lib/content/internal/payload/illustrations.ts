@@ -53,6 +53,7 @@
  * now. The mapping below is covered by unit tests only, and says so.
  */
 import "server-only";
+import type { LocalizedRaw } from "@/lib/content/internal/localized";
 import { imageUrl } from "@/lib/content/internal/payload-image-source";
 import { query } from "@/lib/content/internal/payload-source";
 import type { HubIllustration, HubIllustrations } from "@/lib/content/illustrations";
@@ -69,7 +70,12 @@ interface MediaRow {
 
 interface IllustrationSlot {
   asset?: MediaRow | string | null;
-  alt?: Partial<Record<PayloadLocale, string | null>> | string | null;
+  /* `LocalizedRaw` is shared (`internal/localized.ts`), but the `localized()`
+   * beside it does not apply here: `HubIllustration.alt` is a `string`, not a
+   * locale map, so there is no key order to canonicalise. `altText` picks one
+   * locale; the Sanity twin picks `image.alt ?? ""`. The declared `string` arm
+   * covers a Sanity-shaped bare alt reaching this type. */
+  alt?: LocalizedRaw | string;
 }
 
 interface HubIllustrationsGlobal {

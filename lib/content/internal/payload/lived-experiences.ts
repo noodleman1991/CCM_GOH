@@ -145,6 +145,8 @@
 import "server-only";
 import type { Where } from "payload";
 import { portableTextToLexical } from "@/lib/content/internal/lexical";
+import { localized, orNull } from "@/lib/content/internal/localized";
+import type { LocalizedRaw } from "@/lib/content/internal/localized";
 import { portableText } from "@/lib/content/internal/payload/rich-text";
 import {
   createDocument,
@@ -169,50 +171,10 @@ interface Paginated<T> {
   docs: T[];
 }
 
-/** A localized field read at `locale: "all"`. */
-type LocalizedRaw = Partial<Record<keyof Localized & string, string | null>> | null | undefined;
-
-/**
- * A Payload localized field, as a Sanity projection of the same field.
- *
- * Sanity omits an unset field; Payload spells the locale key out with `null`
- * (`issue: {en: null}` on all 56). Left in, those are two different objects for
- * the same content and every one is a parity difference that means nothing.
- * Same rule as `payload/taxonomy.ts`'s `localized()`, for the same reason.
- */
-function localized(value: LocalizedRaw): Localized | undefined {
-  if (!value || typeof value !== "object") return undefined;
-  const out: Record<string, string> = {};
-  // Alphabetical, because that is the order Sanity's Content Lake serializes an
-  // object's keys in — measured across tags, regionalCommunities and pages, all
-  // `ar,en,es,fr` — while Payload returns them in `payload.config.ts`'s locale
-  // order, `en,es,fr,ar`. Nothing reads key order, but a localized object
-  // handed to a client component is serialized into the RSC flight payload
-  // verbatim, so the two orders are a byte difference the parity harness
-  // reports on every localized field. Canonicalising here costs nothing and
-  // makes the two stores agree; the alternative is a harness normaliser, and a
-  // normaliser that reorders object keys could hide a moved value.
-  for (const locale of Object.keys(value).sort()) {
-    const string = value[locale as keyof Localized & string];
-    if (typeof string === "string" && string.length > 0) out[locale] = string;
-  }
-  return Object.keys(out).length > 0 ? (out as Localized) : undefined;
-}
-
-/**
- * `undefined` as the `null` a GROQ projection actually returns.
- *
- * An explicit GROQ projection emits every key it names, with `null` for a field
- * the document does not set — measured: a lived experience with no region
- * projects `{"format":null,"rawRegion":null,"thumbnailUrl":null,...}`, not a
- * shorter object. Payload's reader naturally produces `undefined` for the same
- * fields, and React serializes that into the flight payload as `"$undefined"`,
- * which is a different byte string from `null`. Every projected-but-unset field
- * below therefore goes through this.
- */
-function orNull<T>(value: T | undefined): T | null {
-  return value ?? null;
-}
+/* `localized()`, `orNull()` and `LocalizedRaw` are shared — see
+ * `lib/content/internal/localized.ts`. Both rules were discovered in this
+ * module, by comparing the RSC flight payload rather than the DOM; they were
+ * lifted out at Task 10 so the other readers could not disagree with them. */
 
 function text(value: unknown): string | undefined {
   return typeof value === "string" && value.length > 0 ? value : undefined;

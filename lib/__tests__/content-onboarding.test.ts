@@ -305,12 +305,15 @@ describe("getActiveProfilePrompts, answered by Payload", () => {
         },
       ],
     } as never);
+    // The input above is what Payload really hands back at `locale: "all"`:
+    // every configured locale spelled out, `null` for the three nobody
+    // translated. The expectation is the SANITY arm's shape (see the twin at
+    // the top of this file) — a bare GROQ `prompt` returns only the authored
+    // locales. This assertion previously pinned Payload's raw object, which
+    // made the two arms of the same contract disagree; `internal/localized.ts`
+    // now normalises it, so they agree.
     await expect(getActiveProfilePrompts()).resolves.toEqual([
-      {
-        id: "p1",
-        prompt: { en: "What drew you to this work?", es: null, fr: null, ar: null },
-        category: "motivation",
-      },
+      { id: "p1", prompt: { en: "What drew you to this work?" }, category: "motivation" },
     ]);
     expect(mockQueryPreviewable).not.toHaveBeenCalled();
   });

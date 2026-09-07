@@ -93,6 +93,7 @@
 import "server-only";
 import type { CollectionSlug, Where } from "payload";
 import { blurDataURL, imageUrl } from "@/lib/content/internal/payload-image-source";
+import type { LocalizedRaw } from "@/lib/content/internal/localized";
 import { query, queryPreviewable } from "@/lib/content/internal/payload-source";
 import type { PayloadLocale } from "@/lib/content/internal/payload-source";
 import type { WhenFilter } from "@/lib/maps/date-filter";
@@ -114,7 +115,12 @@ interface Paginated<T> {
 
 const LOCALES: PayloadLocale[] = ["en", "es", "fr", "ar"];
 
-type LocalizedRaw = Partial<Record<PayloadLocale, string | null>> | null | undefined;
+/* `LocalizedRaw` is shared (`internal/localized.ts`); the `localized()` beside
+ * it deliberately is NOT used here. This module's one localized output,
+ * `getThemeOptions`, rebuilds the object key by key as `{en,es,fr,ar}` — and
+ * its Sanity twin in `lib/content/regions.ts` does exactly the same, in the
+ * same order, with the same `undefined` arms. The two backends already agree;
+ * canonicalising one of them to alphabetical order would make them disagree. */
 
 function text(value: unknown): string | null {
   return typeof value === "string" && value.length > 0 ? value : null;

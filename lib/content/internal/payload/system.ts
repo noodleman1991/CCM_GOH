@@ -84,6 +84,8 @@
  */
 import "server-only";
 import type { CollectionSlug, Where } from "payload";
+import { localized } from "@/lib/content/internal/localized";
+import type { LocalizedRaw } from "@/lib/content/internal/localized";
 import { blurDataURL, imageUrl } from "@/lib/content/internal/payload-image-source";
 import { query, queryPreviewable } from "@/lib/content/internal/payload-source";
 import { portableText } from "@/lib/content/internal/payload/rich-text";
@@ -94,33 +96,13 @@ import type {
   SiteAnnouncement,
   SitemapEntry,
 } from "@/lib/content/system";
-import type { Localized } from "@/lib/content/types";
 
 interface Paginated<T> {
   docs: T[];
 }
 
-type LocalizedRaw = Partial<Record<keyof Localized & string, string | null>> | null | undefined;
-
 function text(value: unknown): string | null {
   return typeof value === "string" && value.length > 0 ? value : null;
-}
-
-/**
- * A Payload localized field, as a Sanity projection of the same field.
- *
- * Drops the locale keys Payload spells out as `null` and collapses an object
- * with nothing left to `undefined`, so an unset field reads the same through
- * both backends. The same rule `payload/taxonomy.ts` applies, for the same
- * reason.
- */
-function localized(value: LocalizedRaw): Localized | undefined {
-  if (!value || typeof value !== "object") return undefined;
-  const out: Record<string, string> = {};
-  for (const [locale, string] of Object.entries(value)) {
-    if (typeof string === "string" && string.length > 0) out[locale] = string;
-  }
-  return Object.keys(out).length > 0 ? (out as Localized) : undefined;
 }
 
 /** GROQ's string ordering: by code point, not by locale collation. This is the

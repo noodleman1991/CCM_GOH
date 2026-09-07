@@ -107,6 +107,8 @@
  */
 import "server-only";
 import type { GlobalSlug } from "payload";
+import { localized } from "@/lib/content/internal/localized";
+import type { LocalizedRaw } from "@/lib/content/internal/localized";
 import { query, queryPreviewable } from "@/lib/content/internal/payload-source";
 import { ONBOARDING_GLOBAL_SLUGS, composeOnboardingContent } from "@/payload/globals/onboarding-content";
 import type {
@@ -114,7 +116,7 @@ import type {
   OnboardingRegionalCommunity,
   ProfilePrompt,
 } from "@/lib/content/onboarding";
-import type { Locale, Localized } from "@/lib/content/types";
+import type { Locale } from "@/lib/content/types";
 
 /** Payload's own bookkeeping on a `findGlobal` result — see note 2 above. */
 const HOUSEKEEPING = new Set(["id", "globalType", "createdAt", "updatedAt"]);
@@ -177,7 +179,9 @@ export async function getOnboardingContent(locale: Locale): Promise<OnboardingCo
 
 interface RawProfilePrompt {
   id?: unknown;
-  prompt?: Localized | null;
+  /** Read at `locale: "all"`, so every configured locale is present and the
+   *  ones nobody translated are `null` — see `internal/localized.ts`. */
+  prompt?: LocalizedRaw;
   category?: string | null;
 }
 
@@ -214,7 +218,13 @@ export async function getActiveProfilePrompts(): Promise<ProfilePrompt[]> {
 
   return (result?.docs ?? []).map((doc) => ({
     id: String(doc.id),
-    prompt: doc.prompt ?? {},
+    // `localized()`, not `doc.prompt` verbatim: at `locale: "all"` Payload
+    // spells out every configured locale, `null` for the ones nobody
+    // translated, in `payload.config.ts`'s order — where the Sanity twin's
+    // bare `prompt` returns only the authored locales, alphabetically. The
+    // prompt object is handed to the profile-prompt picker, a client
+    // component, so both differences travel into the RSC flight payload.
+    prompt: localized(doc.prompt) ?? {},
     category: doc.category ?? undefined,
   }));
 }
@@ -222,7 +232,9 @@ export async function getActiveProfilePrompts(): Promise<ProfilePrompt[]> {
 interface RawRegionalCommunity {
   id?: unknown;
   slug?: string | null;
-  name?: Localized | null;
+  /** Same as `RawProfilePrompt.prompt` — `locale: "all"`, so null arms and
+   *  Payload's key order both have to be normalised away. */
+  name?: LocalizedRaw;
   active?: boolean | null;
 }
 
@@ -260,7 +272,7 @@ export async function getOnboardingCommunities(): Promise<OnboardingRegionalComm
   return (result?.docs ?? []).map((doc) => ({
     id: String(doc.id),
     slug: doc.slug ?? "",
-    name: doc.name ?? {},
+    name: localized(doc.name) ?? {},
     active: Boolean(doc.active),
   }));
 }
