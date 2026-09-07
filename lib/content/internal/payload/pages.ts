@@ -194,7 +194,23 @@ function ogImageProjection(group: unknown): unknown {
  * drafts — so today the two perspectives hold the same row. The primitive is
  * chosen for the contract, not for the current data.)
  *
- * `depth: 1` so `ogImage.asset` resolves to its `media` row rather than an id.
+ * `depth: 3`, and each of the three hops is load-bearing. Payload counts only
+ * relationships and uploads, not the blocks/arrays/groups they sit inside:
+ *
+ *   1. `ogImage.asset`, `hero-1.image.asset`, `grid-agenda.agenda`,
+ *      `grid-news.newsPost`, `carousel-2.testimonial`.
+ *   2. the **agenda's own** `coverImage.asset`, `files[].file`, `tags`,
+ *      `organizations` and `regionalCommunities`; the news post's image and
+ *      author; the testimonial's image.
+ *   3. `grid-news`'s `author.image.asset`, one hop further in — the same reason
+ *      `payload/news.ts` reads a news post at `NEWS_POST_DEPTH = 2` rather
+ *      than 1.
+ *
+ * 14b read at `depth: 1`, which was right for a document with no blocks. Task
+ * 14c's grid parity run caught the difference in the rendered DOM: every
+ * `grid-agenda` card lost its cover image, its type badge and the file size on
+ * each download button, because `agenda.coverImage` and `agenda.files[].file`
+ * were still bare ids.
  */
 export async function findPage(slug: string, locale: Locale): Promise<RawPayloadPage | null> {
   const result = await queryPreviewable<Paginated<PageRow>>({
@@ -202,7 +218,7 @@ export async function findPage(slug: string, locale: Locale): Promise<RawPayload
     collection: "pages",
     where: { slug: { equals: slug } },
     locale: "all",
-    depth: 1,
+    depth: 3,
     limit: 1,
     pagination: false,
   });
