@@ -1019,22 +1019,216 @@ describe("pages, answered by Payload", () => {
     });
   });
 
-  // 14b wrote a test here pinning the readers it deliberately left behind, so
-  // that "a later task cannot half-move them without a failure". 14d is that
-  // task. Until its last two swaps land, the pin names what is still on Sanity.
-  it("leaves the homepage pair and the feeds on Sanity with the flag set", async () => {
-    mockQueryPreviewable.mockResolvedValue(null);
-    mockQuery.mockResolvedValue([]);
-    mockPayloadQuery.mockResolvedValue({ docs: [] } as never);
-    mockPayloadQueryPreviewable.mockResolvedValue({ docs: [] } as never);
+  describe("the homepage pair", () => {
+    beforeEach(() => {
+      process.env.CONTENT_BACKEND_PAGES = "payload";
+    });
 
+    /** The homepage global at `locale: "all"`: the slot containers are NOT
+     *  localized (eleven of them would overrun Postgres's 100-argument cap), so
+     *  the locale maps sit at the leaves. */
+    function payloadHomepageGlobal(over: Record<string, unknown> = {}) {
+      return {
+        id: 1,
+        createdAt: "2025-10-09T06:31:08.000Z",
+        updatedAt: "2026-09-04T11:17:44.058Z",
+        title: { en: "Home", es: "Home", fr: "Home", ar: "Home" },
+        heroWelcome: { title: { en: "Welcome", fr: "Bienvenue" }, background: { type: "none" } },
+        news: {
+          mode: null,
+          maxItems: null,
+          title: { en: "Latest news" },
+          background: { type: "none" },
+          columns: {
+            en: [
+              {
+                blockType: "gridNews",
+                id: "homepage-en:news.columns:news-2",
+                newsPost: {
+                  id: "news-climate-distress-study",
+                  // A populated relationship document, read at the same
+                  // `locale: "all"` — its own localized fields stay locale maps,
+                  // which is what GRID_NEWS_PROJECTION returns.
+                  createdAt: "2024-05-10T00:00:00.000Z",
+                  title: { en: "Study shows climate distress" },
+                  slug: "climate-distress",
+                },
+              },
+            ],
+          },
+        },
+        meta_title: { en: "Connecting Climate Minds Hub" },
+        meta_description: { en: null, es: null, fr: null, ar: null },
+        noindex: false,
+        ogImage: { asset: null, alt: { en: null } },
+        ...over,
+      };
+    }
+
+    it("reads the eleven slots and keeps them slots, with blocks null", async () => {
+      mockPayloadQueryPreviewable.mockResolvedValueOnce(payloadHomepageGlobal() as never);
+      const page = await getHomepage("en");
+      expect(page?.heroWelcome).toMatchObject({ _type: "hero-1", _key: null, title: "Welcome" });
+      // The freeform array is null on all four Sanity documents and was not
+      // ported; `components/pages/homepage.tsx` therefore takes the slot path.
+      expect(page?.blocks).toBeNull();
+    });
+
+    it("keeps a populated relationship's locale map whole", async () => {
+      mockPayloadQueryPreviewable.mockResolvedValueOnce(payloadHomepageGlobal() as never);
+      const page = await getHomepage("en");
+      const columns = (page?.news as { columns?: Array<Record<string, unknown>> })?.columns ?? [];
+      const newsPost = columns[0]?.newsPost as { title?: unknown };
+      expect(newsPost?.title).toEqual({ en: "Study shows climate distress" });
+    });
+
+    it("adds mode and maxItems to the two slots whose projection names them", async () => {
+      mockPayloadQueryPreviewable.mockResolvedValueOnce(payloadHomepageGlobal() as never);
+      const page = await getHomepage("en");
+      expect(page?.news).toHaveProperty("mode", null);
+      expect(page?.news).toHaveProperty("maxItems", null);
+      // `regionalCommunities` interpolates the same projection with neither.
+      expect(page?.regionalCommunities).toBeNull();
+    });
+
+    it("picks the requested locale's arm, and leaves an empty arm empty", async () => {
+      mockPayloadQueryPreviewable.mockResolvedValue(payloadHomepageGlobal() as never);
+      await expect(getHomepage("fr")).resolves.toMatchObject({
+        language: "fr",
+        heroWelcome: { title: "Bienvenue" },
+        meta_title: null,
+      });
+    });
+
+    it("answers null for any slug but index, as the GROQ filter does", async () => {
+      await expect(getHomepageBySlug("about", "en")).resolves.toBeNull();
+      expect(mockPayloadQueryPreviewable).not.toHaveBeenCalled();
+    });
+
+    it("omits blocks entirely for getIndexHomepage, whose query never projects it", async () => {
+      mockPayloadQueryPreviewable.mockResolvedValueOnce(payloadHomepageGlobal() as never);
+      const page = await getIndexHomepage("en");
+      expect(page).not.toHaveProperty("blocks");
+    });
+
+    it("lists one slug row per locale", async () => {
+      mockPayloadQuery.mockResolvedValueOnce(payloadHomepageGlobal() as never);
+      await expect(getHomepageSlugs()).resolves.toEqual([
+        { id: "homepage-en", slug: "index", locale: "en" },
+        { id: "homepage-es", slug: "index", locale: "es" },
+        { id: "homepage-fr", slug: "index", locale: "fr" },
+        { id: "homepage-ar", slug: "index", locale: "ar" },
+      ]);
+    });
+
+    it("keeps getHomepageTranslations' null path for an id that is not a homepage", async () => {
+      mockPayloadQuery.mockResolvedValue(payloadHomepageGlobal() as never);
+      await expect(getHomepageTranslations("page-about-en")).resolves.toBeNull();
+      await expect(getHomepageTranslations("homepage-en")).resolves.toHaveLength(4);
+    });
+  });
+
+  describe("the six feeds", () => {
+    beforeEach(() => {
+      process.env.CONTENT_BACKEND_PAGES = "payload";
+    });
+
+    it("scopes the lived-experience feed on `region`, which is where the reference lives", async () => {
+      mockPayloadQuery.mockResolvedValue({ docs: [{ id: "regional-community-oceania" }] } as never);
+      await getRegionalCommunityLivedExperiencesBySlug({ slug: "oceania" });
+      const find = mockPayloadQuery.mock.calls
+        .map(([d]) => d as { collection?: string })
+        .find((d) => d.collection === "livedExperiences");
+      // `relatedCommunity` is 0/35 populated; matching only it returns nothing.
+      expect(JSON.stringify(find)).toContain('"region"');
+    });
+
+    it("returns the list of nulls the `[_id != null]` projections really produce", async () => {
+      mockPayloadQuery.mockImplementation(async (descriptor: unknown) => {
+        const d = descriptor as { collection?: string };
+        if (d.collection === "regionalCommunities") {
+          return { docs: [{ id: "regional-community-oceania" }] } as never;
+        }
+        return {
+          docs: [
+            {
+              id: "case-study-33",
+              moderationStatus: "approved",
+              tags: [{ id: "tag-flooding" }, { id: "tag-trauma" }],
+              organizations: [{ id: "org-1" }],
+            },
+          ],
+        } as never;
+      });
+
+      const [study] = await getRegionalCommunityCaseStudiesBySlug({ slug: "oceania" });
+      expect(study.tags).toEqual([null, null]);
+      expect(study.organizations).toEqual([null]);
+    });
+
+    it("unions news posts and external sources, tagging each with its _type", async () => {
+      mockPayloadQuery.mockImplementation(async (descriptor: unknown) => {
+        const d = descriptor as { collection?: string };
+        if (d.collection === "regionalCommunities") {
+          return { docs: [{ id: "regional-community-oceania" }] } as never;
+        }
+        if (d.collection === "newsPosts") {
+          return { docs: [{ id: "news-1", publishedAt: "2024-05-10T00:00:00.000Z" }] } as never;
+        }
+        return { docs: [{ id: "ext-1", publishedAt: "2026-03-25T09:46:00.000Z" }] } as never;
+      });
+
+      const rows = await getRegionalCommunityNewsBySlug({ slug: "oceania" });
+      expect(rows.map((row) => [row._id, row._type])).toEqual([
+        ["ext-1", "externalSource"],
+        ["news-1", "newsPost"],
+      ]);
+    });
+
+    it("orders the team by name, breaking a tie on id", async () => {
+      mockPayloadQueryPreviewable.mockResolvedValueOnce({
+        docs: [
+          { id: "f629bae6", name: "Dr. Duha Al Omari" },
+          { id: "author-duha-al-omari", name: "Dr. Duha Al Omari" },
+          { id: "a1", name: "Alaa AbdelGawad" },
+        ],
+      } as never);
+
+      const rows = await getRegionalCommunityTeamMembers({ communityId: "regional-community-oceania" });
+      expect(rows.map((row) => row._id)).toEqual(["a1", "author-duha-al-omari", "f629bae6"]);
+    });
+  });
+
+  // 14b wrote this test to pin the readers it deliberately left behind, so that
+  // "a later task cannot half-move them without a failure". 14d is that task
+  // and it moved every one of them, so the thing worth pinning is now the
+  // opposite: with the flag set, **no** page-domain read reaches Sanity. That
+  // is what makes `CONTENT_BACKEND_PAGES=payload` a whole domain rather than a
+  // half-moved one, and it is the assertion an eighteenth function added to
+  // `lib/content/pages.ts` without a Payload arm would fail.
+  it("leaves nothing in the domain on Sanity with the flag set", async () => {
+    mockPayloadQueryPreviewable.mockResolvedValue({ docs: [] } as never);
+    mockPayloadQuery.mockResolvedValue({ docs: [], totalDocs: 0 } as never);
+
+    await getPageBySlug("about", "en");
+    await getPageSlugs();
+    await getPageTranslations("page-about-en");
+    await getRegionalCommunityPage("oceania", "en");
+    await getRegionalCommunityPageSlugs();
+    await getRegionStats("oce", "oceania");
     await getHomepage("en");
+    await getHomepageBySlug("index", "en");
     await getIndexHomepage("en");
+    await getHomepageTranslations("homepage-en");
+    await getHomepageSlugs();
+    await getRegionalCommunityTeamMembers({ communityId: "oceania" });
+    await getRegionalCommunityCaseStudiesBySlug({ slug: "oceania" });
+    await getRegionalCommunityLivedExperiencesBySlug({ slug: "oceania" });
+    await getRegionalCommunityNewsBySlug({ slug: "oceania" });
     await getHomepageNews({ limit: 3 });
     await getHomepageAgendas({ limit: 3 });
-    await getRegionalCommunityTeamMembers({ communityId: "oceania" });
 
-    expect(mockQueryPreviewable).toHaveBeenCalled();
-    expect(mockQuery).toHaveBeenCalled();
+    expect(mockQuery).not.toHaveBeenCalled();
+    expect(mockQueryPreviewable).not.toHaveBeenCalled();
   });
 });

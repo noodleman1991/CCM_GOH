@@ -1,6 +1,8 @@
 import "server-only";
+import * as payloadFeeds from "@/lib/content/internal/payload/page-feeds";
 import { query, queryPreviewable } from "@/lib/content/internal/sanity-source";
 import type { Localized } from "@/lib/content/types";
+import { onPayload } from "./shared";
 
 // ---------------------------------------------------------------------------
 // Task 6b — the five page-domain query files Task 6 could not reach: five
@@ -120,6 +122,10 @@ export async function getRegionalCommunityTeamMembers(params: {
   limit?: number;
 }): Promise<RegionalCommunityTeamMember[]> {
   const { communityId, limit = 20 } = params;
+  // Task 14d.
+  if (onPayload()) {
+    return (await payloadFeeds.regionalCommunityTeamMembers({ communityId, limit })) as unknown as RegionalCommunityTeamMember[];
+  }
   return queryPreviewable<RegionalCommunityTeamMember[]>(REGIONAL_COMMUNITY_TEAM_QUERY, {
     communityId,
     limit,
@@ -279,6 +285,10 @@ export async function getRegionalCommunityCaseStudiesBySlug(params: {
   featured?: boolean;
 }): Promise<RegionalCommunityCaseStudyItem[]> {
   const { slug, limit = 6, featured = false } = params;
+  // Task 14d.
+  if (onPayload()) {
+    return (await payloadFeeds.regionalCommunityCaseStudies({ slug, limit, featured })) as unknown as RegionalCommunityCaseStudyItem[];
+  }
   return query<RegionalCommunityCaseStudyItem[]>(REGIONAL_COMMUNITY_CASE_STUDIES_BY_SLUG_QUERY, {
     slug,
     limit,
@@ -381,6 +391,10 @@ export async function getRegionalCommunityLivedExperiencesBySlug(params: {
   featured?: boolean;
 }): Promise<RegionalCommunityLivedExperienceItem[]> {
   const { slug, limit = 10, featured = false } = params;
+  // Task 14d.
+  if (onPayload()) {
+    return (await payloadFeeds.regionalCommunityLivedExperiences({ slug, limit, featured })) as unknown as RegionalCommunityLivedExperienceItem[];
+  }
   return query<RegionalCommunityLivedExperienceItem[]>(REGIONAL_COMMUNITY_LIVED_EXPERIENCES_BY_SLUG_QUERY, {
     slug,
     limit,
@@ -517,6 +531,10 @@ export async function getRegionalCommunityNewsBySlug(params: {
   featured?: boolean;
 }): Promise<RegionalCommunityNewsItem[]> {
   const { slug, limit = 6, featured = false } = params;
+  // Task 14d.
+  if (onPayload()) {
+    return (await payloadFeeds.regionalCommunityNews({ slug, limit, featured })) as unknown as RegionalCommunityNewsItem[];
+  }
   return query<RegionalCommunityNewsItem[]>(REGIONAL_COMMUNITY_NEWS_BY_SLUG_QUERY, {
     slug,
     limit,
@@ -684,6 +702,12 @@ export async function getHomepageNews(params: {
   featured?: boolean;
 }): Promise<HomepageDynamicNewsItem[]> {
   const { limit = 3, featured = false } = params;
+  // Task 14d. The homepage's News module really does call this on every render:
+  // `mode` is null on all four documents, so `resolveNewsSection` reads it as
+  // "dynamic-recent" and replaces the section's hand-picked columns.
+  if (onPayload()) {
+    return (await payloadFeeds.homepageNews({ limit, featured })) as unknown as HomepageDynamicNewsItem[];
+  }
   return query<HomepageDynamicNewsItem[]>(
     featured ? HOMEPAGE_FEATURED_NEWS_QUERY : HOMEPAGE_RECENT_NEWS_QUERY,
     { limit },
@@ -821,6 +845,10 @@ export async function getHomepageAgendas(params: {
   featured?: boolean;
 }): Promise<HomepageDynamicAgendaItem[]> {
   const { limit = 3, featured = false } = params;
+  // Task 14d. Same as the News module above.
+  if (onPayload()) {
+    return (await payloadFeeds.homepageAgendas({ limit, featured })) as unknown as HomepageDynamicAgendaItem[];
+  }
   return query<HomepageDynamicAgendaItem[]>(
     featured ? HOMEPAGE_FEATURED_AGENDAS_QUERY : HOMEPAGE_RECENT_AGENDAS_QUERY,
     { limit },

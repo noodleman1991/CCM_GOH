@@ -403,7 +403,7 @@ export function toRegionalCommunityPage(row: Row, locale: Locale): Row | null {
     // documents that never set it — the same difference `pages.ts` records in
     // its note 4, and equally falsy everywhere it is read.
     noindex: row.noindex ?? null,
-    ogImage: imageGroup(row.ogImage, { asset: ["_id", "url", "dimensions"] }),
+    ogImage: imageGroup(row.ogImage, { asset: ["_id", "url", "dimensions"], keys: ["alt"] }),
     regionalCommunity: regionalCommunity(row.regionalCommunity),
     slug: slugObject(row.slug),
     teamGrid: teamSection(sections.team),

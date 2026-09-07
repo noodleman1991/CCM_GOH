@@ -1,4 +1,5 @@
 import "server-only";
+import * as payloadHomepage from "@/lib/content/internal/payload/homepage";
 import { query, queryPreviewable } from "@/lib/content/internal/sanity-source";
 import type { Locale } from "@/lib/content/types";
 import {
@@ -22,6 +23,7 @@ import {
   TIMELINE_ROW_PROJECTION,
 } from "./fragments/standalone";
 import {
+  onPayload,
   toSlugRows,
   type ContentBlock,
   type PageTranslation,
@@ -188,6 +190,11 @@ export const HOMEPAGE_QUERY = `
 ${HOMEPAGE_FIXED_SLOTS}`;
 
 export async function getHomepage(locale: Locale): Promise<Homepage | null> {
+  // Task 14d. `internal/payload/homepage.ts` reads the four Sanity documents'
+  // successor — one global with four locales — and rebuilds the eleven fixed
+  // slots. It does NOT synthesize a `blocks` array from them; that ruling is
+  // Phase 2's and is restated in the comment at the top of this file.
+  if (onPayload()) return (await payloadHomepage.findHomepage(locale, "index")) as Homepage | null;
   // fetchSanityHomepageBySlug's original sanityFetch call omitted both
   // perspective/stega — same draft-preview requirement as getPageBySlug (./page.ts).
   return queryPreviewable<Homepage | null>(HOMEPAGE_QUERY, { slug: "index", language: locale });
@@ -201,6 +208,10 @@ export async function getHomepage(locale: Locale): Promise<Homepage | null> {
  * function is that `slug` isn't hardcoded.
  */
 export async function getHomepageBySlug(slug: string, locale: Locale = "en"): Promise<Homepage | null> {
+  // Task 14d. A global has no slug, and all four Sanity documents carry
+  // `"index"`, so any other slug answers `null` — which is what the GROQ
+  // filter `slug.current == $slug` answers for it too.
+  if (onPayload()) return (await payloadHomepage.findHomepage(locale, slug)) as Homepage | null;
   // fetchHomepageBySlug's original sanityFetch call omitted both
   // perspective/stega — same draft-preview requirement as getPageBySlug (./page.ts).
   return queryPreviewable<Homepage | null>(HOMEPAGE_QUERY, { slug, language: locale });
@@ -225,6 +236,12 @@ export const INDEX_HOMEPAGE_QUERY = `
 ${HOMEPAGE_FIXED_SLOTS}`;
 
 export async function getIndexHomepage(locale: Locale = "en"): Promise<Homepage | null> {
+  // Task 14d. `blocks: false` because INDEX_HOMEPAGE_QUERY does not project
+  // `blocks[]` at all — see the comment above the query — and a projection
+  // emits the keys it names and no others.
+  if (onPayload()) {
+    return (await payloadHomepage.findHomepage(locale, "index", { blocks: false })) as Homepage | null;
+  }
   // fetchIndexHomepage's original sanityFetch call omitted both
   // perspective/stega — same draft-preview requirement as getPageBySlug (./page.ts).
   return queryPreviewable<Homepage | null>(INDEX_HOMEPAGE_QUERY, { language: locale });
@@ -249,6 +266,9 @@ export const HOMEPAGE_TRANSLATIONS_QUERY = `
       }.translations`;
 
 export async function getHomepageTranslations(homepageId: string): Promise<PageTranslation[] | null> {
+  // Task 14d. Payload has no `translation.metadata`; see the reader for what it
+  // answers instead and why nothing depends on the difference.
+  if (onPayload()) return payloadHomepage.homepageTranslations(homepageId);
   return query<PageTranslation[] | null>(HOMEPAGE_TRANSLATIONS_QUERY, { homepageId });
 }
 
@@ -263,5 +283,6 @@ export const HOMEPAGE_SLUGS_QUERY = `*[_type == "homepage" && defined(slug)]{
     }`;
 
 export async function getHomepageSlugs(): Promise<Array<{ id: string; slug: string; locale: Locale }>> {
+  if (onPayload()) return toSlugRows(await payloadHomepage.homepageSlugs());
   return toSlugRows(await query<RawSlugRow[] | null>(HOMEPAGE_SLUGS_QUERY));
 }
