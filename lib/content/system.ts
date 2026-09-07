@@ -9,12 +9,24 @@
  * domain data still lives in its own module (case-studies.ts, news.ts, …);
  * this file only adds the cross-cutting glue.
  */
+import { activeBackend } from "@/lib/content/internal/backend";
 import { safe } from "@/lib/content/internal/safe";
 import { query, queryPreviewable } from "@/lib/content/internal/sanity-source";
+import * as payloadSystem from "@/lib/content/internal/payload/system";
 import type { ContentKind, Localized, RichText, SearchRecord } from "@/lib/content/types";
 import { getCaseStudySearchRecords } from "@/lib/content/case-studies";
 import { getNewsSearchRecords } from "@/lib/content/news";
 import { getAgendaSearchRecords, getResearchOutputSearchRecords } from "@/lib/content/outputs";
+
+/**
+ * Which store answers, read per call rather than at module load so a test, a
+ * script or a preview deployment can flip it after this module is imported.
+ *
+ * `getSearchIndexRecords` deliberately does not consult it: it holds no query
+ * of its own and delegates to three domain modules that each carry their own
+ * flag, so an opinion here would override theirs.
+ */
+const onPayload = (): boolean => activeBackend("system") === "payload";
 
 // ---------------------------------------------------------------------------
 // Site announcement bar (components/announcement/site-announcement-bar.tsx)
@@ -64,6 +76,7 @@ const SITE_ANNOUNCEMENT_QUERY = `
  * one caller) — failures propagate rather than degrade.
  */
 export async function getSiteAnnouncement(): Promise<SiteAnnouncement | null> {
+  if (onPayload()) return payloadSystem.getSiteAnnouncement();
   return queryPreviewable<SiteAnnouncement | null>(SITE_ANNOUNCEMENT_QUERY);
 }
 
@@ -113,6 +126,7 @@ const PAGES_SITEMAP_QUERY = `
  * degrade to `[]` on their own.
  */
 async function getPagesSitemapEntries(): Promise<SitemapEntry[]> {
+  if (onPayload()) return payloadSystem.getPagesSitemapEntries();
   return queryPreviewable<SitemapEntry[]>(PAGES_SITEMAP_QUERY, {
     baseUrl: process.env.NEXT_PUBLIC_SITE_URL,
   });
@@ -154,9 +168,11 @@ const CONTENT_SITEMAP_SPECS: ContentSitemapSpec[] = [
  */
 async function getContentSitemapEntries(spec: ContentSitemapSpec): Promise<SitemapEntry[]> {
   return safe("sitemap-content", [], async () => {
-    const rows = await queryPreviewable<RawContentSitemapRow[] | null>(
-      `*[${spec.filter} && defined(slug.current)]{ "slug": slug.current, "lastModified": _updatedAt }`,
-    );
+    const rows = onPayload()
+      ? await payloadSystem.getContentSitemapRows(spec.pathPrefix)
+      : await queryPreviewable<RawContentSitemapRow[] | null>(
+          `*[${spec.filter} && defined(slug.current)]{ "slug": slug.current, "lastModified": _updatedAt }`,
+        );
     const base = process.env.NEXT_PUBLIC_SITE_URL || "https://connectingclimateminds.org";
     return (rows ?? []).flatMap((r) =>
       SITEMAP_LOCALES.map((locale) => ({
@@ -254,6 +270,7 @@ const DOCS_CHAPTER_QUERY = `
  * failures propagate.
  */
 export async function getDocsChapters(collection: string): Promise<DocsChapter[]> {
+  if (onPayload()) return payloadSystem.getDocsChapters(collection);
   return query<DocsChapter[]>(DOCS_CHAPTERS_QUERY, { collection });
 }
 
@@ -263,6 +280,7 @@ export async function getDocsChapters(collection: string): Promise<DocsChapter[]
  * `client.fetch` directly. Same failure behaviour as `getDocsChapters`.
  */
 export async function getDocsChapter(collection: string, slug: string): Promise<DocsChapterDetail | null> {
+  if (onPayload()) return payloadSystem.getDocsChapter(collection, slug);
   return query<DocsChapterDetail | null>(DOCS_CHAPTER_QUERY, { collection, slug });
 }
 
@@ -297,14 +315,27 @@ const FRESH_CONTENT_STATUS: Record<string, string> = {
  * `client.fetch` in `.catch(() => [] as Row[])`; reproduced per-type via
  * `safe()`, so one type failing still lets the others populate the bento.
  * `fresh-items.ts` keeps the cross-type sort/slice/`TypedCardItem` mapping —
- * this only owns the Sanity read.
+ * this only owns the read.
+ *
+ * **The `, _id asc` tie-break is new, and it changes nothing.** The primary key
+ * is a near-total tie — 25 of 28 case studies carry the same backfilled
+ * `publishedAt` (`2024-01-01T00:00:00Z`) and all 29 research outputs carry
+ * `2024-03-18T00:00:00.000Z` — so `order(… desc)` alone is unordered in
+ * practice, and GROQ and Postgres are free to pick different representatives.
+ * Measured against `production_2` at the published perspective on 2026-09-07
+ * (control `count(*[_type=="agenda"])` = 29), with each type's real filter and
+ * the real cap: adding `, _id asc` returns **the identical list** for all four
+ * types, while `, _id desc` and `, _createdAt asc` both reorder case studies.
+ * So this makes explicit the order Sanity was already serving, and gives the
+ * Payload reader the same rule to reproduce instead of an unspecified one.
  */
 export async function getFreshContentRows(cap: number): Promise<FreshContentRow[]> {
   const perType = await Promise.all(
     FRESH_CONTENT_TYPES.map((type) =>
       safe("fresh-content-rows", [] as FreshContentRow[], async () => {
+        if (onPayload()) return payloadSystem.getFreshContentRowsForType(type, cap);
         const rows = await query<FreshContentRow[] | null>(
-          `*[_type == $type ${FRESH_CONTENT_STATUS[type]} && defined(slug.current)] | order(coalesce(publishedAt, publishDate, _createdAt) desc)[0...${cap}]{
+          `*[_type == $type ${FRESH_CONTENT_STATUS[type]} && defined(slug.current)] | order(coalesce(publishedAt, publishDate, _createdAt) desc, _id asc)[0...${cap}]{
             "id": _id,
             "type": _type,
             "title": coalesce(title.en, title, ""),
