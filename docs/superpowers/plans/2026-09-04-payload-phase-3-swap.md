@@ -399,7 +399,16 @@ So the natural seam is **document type**, not "block family" — the block proje
 - [ ] **14c:** Swap the block projections, family by family, `compareRoute` after each.
 - [ ] **14d:** Swap the homepage (eleven fixed slots — **not** a block array) and `regionalCommunityPage` (six grid slots collapsed into one parameterised `contentGrid`, whose `contentType` discriminator makes the reconstruction lossless).
 
-**Settle first, before 14b:** the image group currently carries a Payload media row beside a **Sanity-shaped `asset`** wrapper, so components gating on `asset._id` keep working — `resolveMedia` recurses into `object.asset` and `isSanityShaped` tests `_id`/`_ref`/`_type`. That is fine for the handful of image fields in the modules swapped so far. `pages.ts` has many more, across every block. **Confirm the approach scales before swapping, or fix it in `payload-image-source` first — not per reader, and not midway through 14c.**
+**14b's hard prerequisite: extract a shared image-shape helper first.** Measured 2026-09-07, and the case is now conclusive rather than cautionary:
+
+- The six existing Payload readers build an asset shape in **20 separate places**, with **no shared helper**.
+- They already emit **two competing shapes** — a full one (`{asset:{_id,url,mimeType,metadata:{lqip,dimensions}}, alt, …}`) and an abbreviated one (`{asset:{_id,url}, url, mimeType, width, height, lqip}`) — in the same file.
+- **They have already drifted once:** Task 13 found `metadata.dimensions` emitted as `{width,height}` where Sanity emits `{height,width}` — invisible in the DOM, caught only by comparing an API response.
+- **`pages.ts` carries 234 `asset->` dereferences and 197 `metadata` references.** Hand-writing the shape per block would multiply 20 drifting copies into hundreds.
+
+This is precisely the locale-key defect again: repeated per reader, silently divergent, and visible only in the flight payload. It was fixed there by extracting `lib/content/internal/localized.ts`. **Do the same for the image shape before 14b swaps anything**, and route the existing 20 sites through it so there is one implementation, not one per block.
+
+The wrapper itself is deliberate and stays: readers emit a Sanity-shaped `asset` so components gating on `asset._id` keep working, and `payload-image-source`'s `resolveMedia` recurses into `object.asset` while `isSanityShaped` tests `_id`/`_ref`/`_type`.
 
 ---
 
