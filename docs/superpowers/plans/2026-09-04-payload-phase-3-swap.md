@@ -263,7 +263,7 @@ Each task follows the identical shape below. They are ordered smallest-and-most-
 | 6 | `taxonomy.ts`, `taxonomy-options.ts`, `regions.ts` | ~350 | Foundational; everything references tags and regions. Owns the **declaration** of `ContentTag.value` — see below; its own path is already honest. |
 | 7 | `system.ts`, `metadata.ts`, `illustrations.ts`, `text.ts` | ~360 | `system.ts` holds the sitemap filters that read `status == "approved"` — they become `moderationStatus`. **`metadata.ts:72` needs an explicit decision:** the OG image is the one true WebP regression, needs `quality`, and needs an *absolute* URL — which the twelve `next/image` sites must not get, since no Payload host is in `remotePatterns`. A full-size PNG as OG also risks crawler size ceilings. `illustrations.ts:59` passes arbitrary natural dimensions and will land on the nearest-size-up path per asset. |
 | 8 | `onboarding.ts` | 283 | Composes **six** globals via `composeOnboardingContent`. The 46 unserved component chains are settled in obligation 8 — record as dead, neither serve nor delete. |
-| 9 | `lived-experiences.ts` | 630 | `region` is a `regionalCommunity` reference; `videoUrl` is undeclared in Sanity but real; unset moderation means approved. |
+| 9 | `lived-experiences.ts` | 630 | The hardest of the small modules — it **writes**. See below. |
 | 10 | `news.ts` | 964 | |
 | 11 | `outputs.ts` | 1,167 | Holds 2 of the 5 `queryLive` call sites. **Assert the primitive, not just the result** — see below. |
 | 12 | `case-studies.ts` | 1,561 | **Maps `moderationStatus` → the public `status`.** `getCaseStudiesByStatus()` must keep working unchanged. |
@@ -288,6 +288,19 @@ An `order(publishedAt desc)` is therefore unordered in practice, and Sanity and 
 So: add an explicit secondary sort to **both** backends, and **prefer a tie-break that reproduces what Sanity returns today** — try `_id`/`id` ascending first, then descending, then `_createdAt`. If one reproduces the current output, the phase's "nothing user-facing changes" premise holds exactly and the harness gains determinism for free.
 
 If none reproduces it, say so and stop: choosing an order that changes which case studies appear in the region strips is a visible change and needs a human decision, not an implementer's judgment. Record which tie-break you used and the evidence it matches.
+
+### Task 9 carries writes and a write-time authorization gate
+
+`lived-experiences.ts` is one of the four domain modules that write, so its writes move with it (not with Task 15). It uses `queryRaw` ×2, `uploadFileAsset`, `updateDocument` and `createDocument`.
+
+**`loadEditableLivedExperience` is a write-time authorization gate fed by `queryRaw`** — the exact shape of the Phase-1 bypass. Translate it deliberately:
+
+- It strips a `drafts.` prefix and matches both `$id` and `"drafts." + $id`. **Payload has no `drafts.`-prefixed ids** — a draft is a version of the same id — so that id-juggling collapses into one lookup with drafts visible.
+- Its status list is `["pending","revision","draft",null,undefined]`. Sanity's `status` here **conflates a moderation state with a draft state**, which Payload splits into `moderationStatus` and `_status`. Do not map `"draft"` onto `moderationStatus`.
+- **Measured, so do not re-derive:** `status` is **0/56 populated** — 0 of 35 published, 0 of 21 drafts, only value `null`. The gate therefore always passes today and its real work is the ownership check that follows. The `"draft"` literal is vestigial.
+- **The import carried that faithfully**: `lived_experiences.moderation_status` is `null` on all 35 rows and `_lived_experiences_v.version_moderation_status` is `null` on all 84 draft-version rows. No `defaultValue` was applied — so the gate does **not** flip closed. Preserve that: if a future editor sets `moderationStatus`, an approved document must still be non-reopenable.
+
+Other specifics: `region` holds a `regionalCommunity` **reference**, not the fixed-7 code the Sanity schema declares (42/56 populated, 42 references, 0 strings); `videoUrl` is **56/56 populated and undeclared** in the Sanity schema, read by five modules; `videoFile` uploads resolve to the **`files`** collection, not `media`; and lines 38 and 53 are two of the three bare-`value` tag projections, so this is the module that actually produces a mis-shaped `ContentTag`.
 
 ### Tasks 11 and 13 carry the bypass risk
 
