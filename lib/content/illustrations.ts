@@ -4,8 +4,10 @@
  * `imageUrl` function (`@/lib/content/images`), same as every other call
  * site project-wide.
  */
+import { activeBackend } from "@/lib/content/internal/backend";
 import { safe } from "@/lib/content/internal/safe";
 import { query } from "@/lib/content/internal/sanity-source";
+import { getHubIllustrations as payloadGetHubIllustrations } from "@/lib/content/internal/payload/illustrations";
 import { imageUrl } from "@/lib/content/images";
 
 /** Minimal shape of a Sanity `image` field with alt text, as stored on the
@@ -79,6 +81,11 @@ function mapImage(image: RawIllustrationImage | null | undefined): HubIllustrati
  */
 export async function getHubIllustrations(): Promise<HubIllustrations> {
   return safe("hub-illustrations", {}, async () => {
+    // Inside `safe()`, not above it: a Payload failure must degrade to `{}` in
+    // exactly the place a Sanity one does, or the page that renders
+    // `<HeaderIllustration image={illustrations.atlasHeader} />`
+    // unconditionally starts throwing on one backend and not the other.
+    if (activeBackend("illustrations") === "payload") return payloadGetHubIllustrations();
     const data = await query<RawHubIllustrations | null>(HUB_ILLUSTRATIONS_QUERY);
     if (!data) return {};
 
