@@ -1,5 +1,6 @@
 import type { Block } from "payload";
 import { BlocksFeature, lexicalEditor } from "@payloadcms/richtext-lexical";
+import { featuresWithSafeLinks } from "@/payload/fields/link";
 
 /**
  * The embed vocabulary of Sanity's Portable Text, registered as Payload
@@ -143,7 +144,10 @@ export const richTextInfoBox: Block = {
       name: "content",
       type: "richText",
       required: true,
-      editor: lexicalEditor(),
+      // Defaults, minus the stock link feature: a nested editor resolves its
+      // own feature set, so bare `lexicalEditor()` would reinstate the
+      // URL-mangling hook payload/fields/link.ts exists to remove.
+      editor: lexicalEditor({ features: ({ defaultFeatures }) => featuresWithSafeLinks(defaultFeatures) }),
     },
   ],
 };
@@ -315,11 +319,16 @@ export const richTextInlineBlocks: Block[] = [richTextFootnote];
  * field such as `docsChapters.body` inherits it) and once in
  * `payload/fields/localized.ts` (so every `localizedRichText` field does too,
  * including `gridRow.description`, which Task 6 explicitly deferred to here).
+ *
+ * `featuresWithSafeLinks` rather than `defaultFeatures` directly: the stock
+ * link feature percent-encodes any href its narrow `validateUrl` rejects,
+ * which destroyed 7 of the 72 in-page anchors in `docsChapters`. See
+ * payload/fields/link.ts.
  */
 export const richTextEditor = () =>
   lexicalEditor({
     features: ({ defaultFeatures }) => [
-      ...defaultFeatures,
+      ...featuresWithSafeLinks(defaultFeatures),
       BlocksFeature({ blocks: richTextEmbedBlocks, inlineBlocks: richTextInlineBlocks }),
     ],
   });
