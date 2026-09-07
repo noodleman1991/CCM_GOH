@@ -355,6 +355,14 @@ The cause is that `livedExperience.status` is **0/56 populated**, and the unset-
 
 Task 13 also holds **five `queryLive` sites** (`:565`, `:650`, `:681`, `:914`, `:947`) — more than the three the earlier count implied — plus `queryRaw` ×2, `createDocument` ×2 and `updateDocument`. Its writes move with it.
 
+### The parity harness keeps a persistent cache, and it can serve stale content
+
+Task 14a's before/after comparison showed one route moving that its refactor could not have touched — `/en/reader/background-context`, domain `system`, which does not import `lib/content/pages` at all. Its Payload arm had converged *towards* Sanity on a link href: the percent-encoding defect fixed in `a1cb62994`, **served stale from the harness's persistent dist cache in the "before" run**. A third targeted run reproduced the "after" hunk byte for byte.
+
+So the harness's `.next-parity-sanity` / `.next-parity-payload` directories survive between runs, and a comparison taken shortly after a code or data fix can show **pre-fix content on one side**.
+
+That cuts both ways: it can invent a difference that is already fixed, and it can hide one that is newly introduced. **When a parity result is surprising, re-run the single route before believing it** — a targeted re-run is cheap and settles it. Task 14a did exactly that, which is why its 40/41 result is trustworthy rather than merely reported.
+
 ### Filtering a Payload `select` field with an unknown value throws; GROQ shrugs
 
 Task 13 found this on `region` and it is **not specific to that field**. Payload backs every `select` with a **Postgres enum** — there are **140 enum types** in `payload_cms`, and the region ones hold exactly their 7 declared values. Filtering one with a value outside its set raises at the database, where the equivalent GROQ simply matches nothing and returns an empty list.
