@@ -177,11 +177,17 @@ describe("hero-1", () => {
     });
   });
 
-  it("keeps `_type: \"image\"` on the image group, because that projection spreads", () => {
+  it("leaves `_type` OFF the image group, or payload-image-source refuses the row", () => {
+    // `image{ ..., asset->{…}, alt }` spreads, so Sanity's answer carries
+    // `_type: "image"`. Emitting it made `resolveMedia` decline the group —
+    // it treats `_id`/`_ref`/`_type` as "this is a Sanity image, not mine" —
+    // and the first hero parity run rendered an <img> with no `src`.
     const image = one(row).image as Record<string, unknown>;
-    expect(image._type).toBe("image");
+    expect(image).not.toHaveProperty("_type");
     expect(image.alt).toBeNull();
     expect((image.asset as Record<string, unknown>)._id).toBe(MEDIA.id);
+    // The flattened media row is what makes it resolvable at all.
+    expect(image.url).toBe(MEDIA.url);
   });
 
   it("answers null for an image whose upload is unset", () => {
@@ -219,5 +225,84 @@ describe("hero-1", () => {
 
   it("answers null for a body that was never filled in", () => {
     expect(one(row).body).toBeNull();
+  });
+});
+
+describe("split-row", () => {
+  const content = {
+    id: "ff814faa-a4ab-4385-9d9d-38bde416e6fe:blocks[1].splitColumns:4cd823f5eaec",
+    blockType: "splitContent",
+    sticky: false,
+    tagLine: null,
+    title: "How Can We Help You?",
+    body: null,
+    padding: { top: null, bottom: null },
+    link: { title: null, href: null, target: false, buttonVariant: { variant: "default", size: "default", stroke: "none" } },
+  };
+  const row = {
+    id: "ff814faa-a4ab-4385-9d9d-38bde416e6fe:blocks:66cd0cff9baf",
+    blockType: "splitRow",
+    noGap: false,
+    padding: { top: null, bottom: null },
+    splitColumns: [content],
+  };
+
+  it("emits SPLIT_ROW_PROJECTION's keys in Sanity's order", () => {
+    expect(Object.keys(one(row))).toEqual(["_key", "_type", "noGap", "padding", "splitColumns"]);
+    expect(one(row)._type).toBe("split-row");
+  });
+
+  it("emits SPLIT_CONTENT_PROJECTION's keys in Sanity's order", () => {
+    const column = (one(row).splitColumns as Record<string, unknown>[])[0];
+    expect(Object.keys(column)).toEqual([
+      "_key",
+      "_type",
+      "body",
+      "link",
+      "padding",
+      "sticky",
+      "tagLine",
+      "title",
+    ]);
+    expect(column._type).toBe("split-content");
+    expect(column._key).toBe("4cd823f5eaec");
+  });
+
+  it("answers null for a link holding nothing but its default buttonVariant", () => {
+    // 22 of the 26 split-contents in the corpus have no `link` at all, which
+    // GROQ answers `null`; Payload's group is always there.
+    expect((one(row).splitColumns as Record<string, unknown>[])[0].link).toBeNull();
+  });
+
+  it("projects a link that carries an href", () => {
+    const withHref = {
+      ...row,
+      splitColumns: [{ ...content, link: { ...content.link, href: "/toolkits", title: "Toolkits" } }],
+    };
+    expect((one(withHref).splitColumns as Record<string, unknown>[])[0].link).toEqual({
+      buttonVariant: { size: "default", stroke: "none", variant: "default" },
+      href: "/toolkits",
+      target: null,
+      title: "Toolkits",
+    });
+  });
+
+  it("maps a split-image column with no `_type` on its image group", () => {
+    const image = {
+      id: "homepage:blocks[0].splitColumns:abc",
+      blockType: "splitImage",
+      image: { asset: MEDIA, alt: "A photo" },
+    };
+    const column = (one({ ...row, splitColumns: [image] }).splitColumns as Record<string, unknown>[])[0];
+    expect(Object.keys(column)).toEqual(["_key", "_type", "image"]);
+    expect(column._type).toBe("split-image");
+    expect(column.image).not.toHaveProperty("_type");
+  });
+
+  it("drops a column type Phase 2 never ported, as at the page level", () => {
+    // `split-cards-list` and `split-info-list` are the projection's other two
+    // arms and were authored zero times.
+    const dropped = one({ ...row, splitColumns: [{ id: "x:y:z", blockType: "splitCardsList" }] });
+    expect(dropped.splitColumns).toEqual([]);
   });
 });

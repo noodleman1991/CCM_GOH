@@ -62,16 +62,36 @@
  *    there.
  *
  * ---------------------------------------------------------------------------
- * Two spellings of an image, and both are the projection's own
+ * `_type: "image"` is deliberately NOT emitted, and the parity harness is why
  * ---------------------------------------------------------------------------
  *
- * The block projections read images two ways, and the difference is not
- * cosmetic: `image{ ..., asset->{…}, alt }` spreads the stored object first, so
- * its result carries `_type: "image"` (and would carry a `hotspot`/`crop` if
- * one were ever stored — measured, none is), while `headerImage{ asset->{…},
- * alt }` names its keys and so carries no `_type`. Both spellings appear below,
- * and both build the asset itself through `internal/image-shape.ts` — the one
- * implementation, guarded by a ratchet.
+ * Half these projections spread the stored object before naming their keys
+ * (`image{ ..., asset->{…}, alt }`), so Sanity's answer carries the stored
+ * `_type: "image"` alongside `alt` and `asset`; the other half name their keys
+ * (`headerImage{ asset->{…}, alt }`) and carry none. Reproducing the spread's
+ * `_type` looks free and is not: `payload-image-source`'s `resolveMedia`
+ * **refuses any object carrying `_id`, `_ref` or `_type`**, because that is how
+ * it tells a Sanity image from a Payload one — a distinction its own header
+ * records as found by this same harness, and one the thirteen not-yet-swapped
+ * modules still depend on.
+ *
+ * Emitting `_type` therefore made `imageUrl()` return `""`, and the first hero
+ * parity run rendered `<img>` with a blur placeholder and **no `src` at all**.
+ * So the key is left off, and every image group here is the named spelling.
+ *
+ * That is a deviation, and it is the same one already accepted for the six
+ * flattened media keys `image-shape.ts` emits beside `asset` (Task 10's concern
+ * 5, Task 11's note 6, the plan's Task-18 blocker 2): both are visible only in
+ * the flight payload, and both are owned by the tidier fix in
+ * `payload-image-source` rather than by a per-reader workaround. Narrowing
+ * `isSanityShaped` to ignore a `_type` on an object that also carries a Payload
+ * `url` would let the key come back; it is a change to a file with nineteen
+ * call sites and thirteen unswapped callers, so it is written down here rather
+ * than made here.
+ *
+ * Nothing rendered depends on it: no renderer reads an image group's `_type`
+ * (grepped `components/blocks/`; the only `_type` reads are the two block
+ * dispatchers).
  */
 import "server-only";
 import { createHash } from "node:crypto";
@@ -233,11 +253,40 @@ function linksArray(rows: unknown): Row[] | null {
 /** The five-field asset every block-level image projection asks for. */
 const FULL_ASSET = ["_id", "url", "mimeType", "lqip", "dimensions"] as const;
 
-/** `image{ ..., asset->{…}, alt }` — the spread keeps the stored object's own
- *  `_type`, which is why this and `namedImage` are two functions. */
-function spreadImage(group: unknown, asset: readonly ("_id" | "url" | "mimeType" | "lqip" | "dimensions")[] = FULL_ASSET): Row | null {
-  const projected = imageGroup(group, { asset, keys: ["alt"] });
-  return projected ? groqObject({ _type: "image", ...projected }) : null;
+
+
+/**
+ * `link{title, href, target, buttonVariant{…}}`.
+ *
+ * `null` unless the link carries a title or an href, because Payload's group is
+ * always present and Sanity's field usually is not: measured, 22 of the 26
+ * `split-content`s in the corpus have no `link` at all (GROQ: `null`) and the
+ * other 4 have one holding nothing but a default `buttonVariant`, while all 16
+ * `grid-card`s have a real one. Emitting the object always would be right 20
+ * times and wrong 22; this is right 38 times and wrong on those 4 empty ones.
+ */
+function linkObject(group: unknown): Row | null {
+  if (!isRow(group)) return null;
+  const title = text(group.title);
+  const href = text(group.href);
+  if (!title && !href) return null;
+  return groqObject({
+    buttonVariant: buttonVariantObject(group.buttonVariant),
+    href: orNull(href),
+    target: checkbox(group.target),
+    title: orNull(title),
+  });
+}
+
+/** `image{ asset->{…}, alt }`. Both spellings of the projection land here — see
+ *  the header for why the spread's `_type` is left off. Nothing else the
+ *  document stores comes along: `hotspot` and `crop` are unset on every image
+ *  group in the corpus, so a spread has nothing else to carry. */
+function projectedImage(
+  group: unknown,
+  asset: readonly ("_id" | "url" | "mimeType" | "lqip" | "dimensions")[] = FULL_ASSET,
+): Row | null {
+  return imageGroup(group, { asset, keys: ["alt"] });
 }
 
 /** `body[]{…}` — Payload's Lexical column as the Portable Text the renderers
@@ -259,13 +308,71 @@ function hero1Block(row: Row): Row {
     _type: "hero-1",
     background: backgroundObject(row.background),
     body: richText(row.body),
-    image: spreadImage(row.image),
+    image: projectedImage(row.image),
     imagePosition: orNull(text(row.imagePosition)),
     links: linksArray(row.links),
     padding: paddingObject(row.padding),
     tagLine: orNull(text(row.tagLine)),
     title: orNull(text(row.title)),
   });
+}
+
+/** `SPLIT_ROW_PROJECTION`. `splitColumns` is emitted as the array Payload
+ *  holds, empty included: every split-row in the corpus has columns, and an
+ *  array field that exists is not the unset field `links` is. */
+function splitRowBlock(row: Row): Row {
+  return groqObject({
+    _key: blockKey(row),
+    _type: "split-row",
+    noGap: checkbox(row.noGap),
+    padding: paddingObject(row.padding),
+    splitColumns: Array.isArray(row.splitColumns)
+      ? row.splitColumns.map(mapSplitColumn).filter((column): column is Row => column !== undefined)
+      : null,
+  });
+}
+
+/** `SPLIT_CONTENT_PROJECTION`. `image` and `links` are stored on 18 and 22 of
+ *  the 26 real instances and named by neither the projection nor the Payload
+ *  block — dead in production on both sides (`transform.ts`'s
+ *  `SPLIT_CONTENT_DROPPED`). */
+function splitContentColumn(row: Row): Row {
+  return groqObject({
+    _key: blockKey(row),
+    _type: "split-content",
+    body: richText(row.body),
+    link: linkObject(row.link),
+    padding: paddingObject(row.padding),
+    sticky: checkbox(row.sticky),
+    tagLine: orNull(text(row.tagLine)),
+    title: orNull(text(row.title)),
+  });
+}
+
+/** `SPLIT_IMAGE_PROJECTION` — the image's keys are named, so no `_type`.
+ *  Zero instances live inside `page.blocks` (all 16 are the homepage's split-row
+ *  slots, i.e. 14d's); mapped here because `splitRow.splitColumns` offers it. */
+function splitImageColumn(row: Row): Row {
+  return groqObject({
+    _key: blockKey(row),
+    _type: "split-image",
+    image: projectedImage(row.image),
+  });
+}
+
+/** `split-cards-list` and `split-info-list` are the projection's other two arms
+ *  and were never authored — 0 instances, and Phase 2 ported no block for
+ *  either. An entry of an unported type is dropped, as at the page level. */
+function mapSplitColumn(row: unknown): Row | undefined {
+  if (!isRow(row)) return undefined;
+  switch (row.blockType) {
+    case "splitContent":
+      return splitContentColumn(row);
+    case "splitImage":
+      return splitImageColumn(row);
+    default:
+      return undefined;
+  }
 }
 
 /**
@@ -283,6 +390,8 @@ function mapBlock(row: unknown): Row | undefined {
   switch (row.blockType) {
     case "hero1":
       return hero1Block(row);
+    case "splitRow":
+      return splitRowBlock(row);
     default:
       return undefined;
   }
