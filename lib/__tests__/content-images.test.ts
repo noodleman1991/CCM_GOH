@@ -1,4 +1,4 @@
-import { beforeAll, describe, expect, it } from "vitest";
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 /**
  * `sanity/env.ts` asserts NEXT_PUBLIC_SANITY_PROJECT_ID / _DATASET at import
@@ -23,6 +23,19 @@ beforeAll(async () => {
   process.env.NEXT_PUBLIC_SANITY_DATASET = DATASET;
   ({ urlFor, urlForCropped } = await import("@/sanity/lib/image"));
   ({ imageUrl } = await import("@/lib/content/images"));
+});
+
+beforeEach(() => {
+  // `activeBackend()` reads the environment per call, so an override left
+  // behind by the Payload section at the bottom would silently redirect the
+  // Sanity assertions above it.
+  delete process.env.CONTENT_BACKEND_IMAGES;
+  delete process.env.NEXT_PUBLIC_CONTENT_BACKEND_IMAGES;
+});
+afterEach(() => {
+  delete process.env.CONTENT_BACKEND_IMAGES;
+  delete process.env.NEXT_PUBLIC_CONTENT_BACKEND_IMAGES;
+  vi.restoreAllMocks();
 });
 
 // A real dereferenced Sanity image (GROQ's `asset->{...}` shape), sampled
@@ -141,5 +154,88 @@ describe("imageUrl", () => {
 
   it("omits the quality param when not passed", () => {
     expect(imageUrl(jpegImage)).not.toContain("q=");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// The same wrapper, answered by Payload
+// ---------------------------------------------------------------------------
+//
+// `imageUrl` is the component-facing path — 35 call sites — and its two arms
+// answer different stores, not two shapes of one store. The Payload arm
+// delegates wholesale to `lib/content/internal/payload-image-source.ts`, whose
+// four-tier policy has its own test file; what is asserted here is that the
+// wrapper reaches it, keeps its contract (`""` rather than a throw), and does
+// not touch Sanity's builder on the way.
+// ---------------------------------------------------------------------------
+
+/** A `media` row as Payload serialises it, with two of the eleven sizes. */
+const payloadMedia = {
+  asset: {
+    id: "image-270ae998fd4b397584bdcc5aac573c8e6f371e01-1920x1080-jpg",
+    url: "/payload-api/media/file/cover.jpg?prefix=cms%2Fmedia",
+    mimeType: "image/jpeg",
+    lqip: "data:image/webp;base64,QQ",
+    width: 1920,
+    height: 1080,
+    sizes: {
+      max800x450: { url: "/payload-api/media/file/cover-800x450.webp", width: 800, height: 450 },
+      crop800x450: { url: "/payload-api/media/file/cover-crop-800x450.jpg", width: 800, height: 450 },
+    },
+  },
+  alt: "A case study cover",
+};
+
+describe("imageUrl, answered by Payload", () => {
+  beforeEach(() => {
+    process.env.CONTENT_BACKEND_IMAGES = "payload";
+    process.env.NEXT_PUBLIC_CONTENT_BACKEND_IMAGES = "payload";
+  });
+
+  it("resolves a dimensioned request to the stored derivative, not to a Sanity CDN URL", () => {
+    expect(imageUrl(payloadMedia, { width: 800, height: 450 })).toBe(
+      "/payload-api/media/file/cover-800x450.webp",
+    );
+  });
+
+  it("keeps the cropped and uncropped families apart, as the two Sanity builders do", () => {
+    expect(imageUrl(payloadMedia, { width: 800, height: 450, crop: true })).toBe(
+      "/payload-api/media/file/cover-crop-800x450.jpg",
+    );
+  });
+
+  it("returns a same-origin relative URL — no Payload host is in images.remotePatterns", () => {
+    const url = imageUrl(payloadMedia, { width: 800, height: 450 });
+    expect(url.startsWith("/")).toBe(true);
+    expect(url).not.toContain("cdn.sanity.io");
+  });
+
+  it("resolves a dimension-less request to the original, deliberately", () => {
+    expect(imageUrl(payloadMedia)).toBe("/payload-api/media/file/cover.jpg?prefix=cms%2Fmedia");
+  });
+
+  it("returns '' for a null or unresolvable image — an image is never worth a 500", () => {
+    expect(imageUrl(null)).toBe("");
+    expect(imageUrl(undefined)).toBe("");
+    expect(imageUrl({ asset: { _ref: "image-abc-100x100-png" } })).toBe("");
+  });
+
+  it("does not fall through to the Sanity builder for a Payload row", () => {
+    // The Sanity builder would happily produce a cdn.sanity.io URL from this
+    // row's id, because `media.id` IS the Sanity asset id — which is exactly
+    // why "it returned a URL" is not evidence the right arm ran.
+    expect(imageUrl(payloadMedia, { width: 800, height: 450 })).not.toContain("cdn.sanity.io");
+  });
+
+  it("warns once when the server and the browser would disagree", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    // Server says payload; the browser sees only NEXT_PUBLIC_*, and there is
+    // none — so it would answer sanity and build a different src on hydration.
+    delete process.env.NEXT_PUBLIC_CONTENT_BACKEND_IMAGES;
+    imageUrl(payloadMedia, { width: 800, height: 450 });
+    imageUrl(payloadMedia, { width: 800, height: 450 });
+    const split = warn.mock.calls.filter(([message]) => String(message).includes("[content/images]"));
+    // Once per process, not once per image: a page renders dozens.
+    expect(split.length).toBeLessThanOrEqual(1);
   });
 });

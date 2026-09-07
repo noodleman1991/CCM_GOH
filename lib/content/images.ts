@@ -19,8 +19,48 @@
  *    uncropped forces `.format("webp").fit("max")`; cropped uses
  *    `.fit("crop").auto("format")` (AVIF/WebP per browser). This function
  *    does not unify them — `opts.crop` selects which one runs.
+ *
+ * ---------------------------------------------------------------------------
+ * Phase 3: which builder runs
+ * ---------------------------------------------------------------------------
+ *
+ * `activeBackend("images")` decides, exactly as it does for the sixteen domain
+ * modules, and the two arms answer different stores rather than different
+ * shapes of the same one:
+ *
+ *   sanity   `@/sanity/lib/image`'s parametric URL builder — any width, any
+ *            height, any quality, computed by the CDN at request time.
+ *   payload  `lib/content/internal/payload-image-source.ts`, which turns that
+ *            parametric request into a choice among the eleven derivatives
+ *            `media` writes at upload time, and is loud when none of them fits.
+ *
+ * The Payload arm is **not** reimplemented here. Its four tiers — the exact
+ * size key, then the smallest *covering* derivative, then "a dimension-less
+ * request resolves to the original, deliberately", then a recorded and warned
+ * fall-through — are the whole substance of that module, and a second copy of
+ * that policy is a second thing to keep in step.
+ *
+ * ---------------------------------------------------------------------------
+ * Five of the call sites are client components, and that is a hazard
+ * ---------------------------------------------------------------------------
+ *
+ * `case-study-modal`, `split-info-item`, `lived-experiences-carousel`,
+ * `logo-cloud-1` and `grid-section-header` all carry `"use client"` and all
+ * call `imageUrl()` in their render bodies. A client component renders twice —
+ * once on the server, once on hydration — and Next inlines only
+ * `NEXT_PUBLIC_*` into the browser bundle, so a deployment that sets
+ * `CONTENT_BACKEND=payload` and nothing else has a server answering `payload`
+ * and a browser answering `sanity` for the same image. That is a hydration
+ * mismatch producing two different `src` values, not a graceful fallback.
+ *
+ * `backend.ts` therefore reads a public twin (`NEXT_PUBLIC_CONTENT_BACKEND`,
+ * `NEXT_PUBLIC_CONTENT_BACKEND_IMAGES`) when the server-only variable says
+ * nothing, and `warnOnSplitBackend()` below says so once, on the server, when
+ * the two disagree. Task 18's flip must set both.
  */
+import { activeBackend, publicBackend } from "./internal/backend";
 import { urlFor, urlForCropped } from "./internal/image-source";
+import { imageUrl as payloadImageUrl } from "./internal/payload-image-source";
 import type { ContentImage } from "./types";
 
 type SanitySource = Parameters<typeof urlFor>[0];
@@ -48,8 +88,35 @@ export interface ImageUrlOptions {
  * Never throws: a null, missing, or otherwise unresolvable image resolves
  * to `""` — an image is never worth a 500.
  */
+/**
+ * Warned once per process, on the server only.
+ *
+ * The browser cannot detect this — it has only its own half of the answer —
+ * so the server, which can see both, is the only place the disagreement is
+ * observable at all. Once rather than per image: a page renders dozens.
+ */
+let warnedSplitBackend = false;
+
+function warnOnSplitBackend(server: "sanity" | "payload"): void {
+  if (warnedSplitBackend || typeof window !== "undefined") return;
+  const browser = publicBackend("images");
+  if (browser === server) return;
+  warnedSplitBackend = true;
+  console.warn(
+    `[content/images] the server builds image URLs from "${server}" but a browser would build them from "${browser}". ` +
+      `Five "use client" components call imageUrl() and will re-render with the browser's answer on hydration. ` +
+      `Set NEXT_PUBLIC_CONTENT_BACKEND (or NEXT_PUBLIC_CONTENT_BACKEND_IMAGES) to "${server}" as well.`,
+  );
+}
+
 export function imageUrl(image: ContentImage | unknown, opts: ImageUrlOptions = {}): string {
   if (!image) return "";
+
+  const backend = activeBackend("images");
+  warnOnSplitBackend(backend);
+  // Never throws either: `payload-image-source` carries the same `catch`
+  // returning `""`, for the same reason — an image is never worth a 500.
+  if (backend === "payload") return payloadImageUrl(image, opts);
 
   try {
     const { width, height, crop, quality } = opts;
