@@ -1,8 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
+import { activeBackend } from "@/lib/content/internal/backend";
 import { uploadImageAsset } from "@/lib/content/internal/sanity-source";
+import { uploadImageAsset as uploadPayloadImageAsset } from "@/lib/content/internal/payload-source";
 import { authorizeCollab } from "@/lib/collaboration/service";
 import { rateLimitRequest } from "@/lib/rate-limit-route";
+
+/** `CONTENT_BACKEND_UPLOADS` (or the process-wide `CONTENT_BACKEND`). */
+const UPLOADS_DOMAIN = "uploads";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB — same cap as the case-study featured image.
 const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
@@ -10,11 +15,27 @@ const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif
 /**
  * POST /api/uploads/image
  * Shared in-body image upload for the slash-menu editor (workspace docs +
- * case-study form). Uploads to Sanity's asset store (same pipeline the
- * case-study featured image already uses) so the returned shape is exactly
- * what components/portable-text-renderer.tsx expects: a CDN url plus
- * metadata (dimensions/lqip) that lets the renderer skip Sanity's `urlFor`
- * resolution entirely.
+ * case-study form). Uploads to the active backend's asset store (same
+ * pipeline the case-study featured image already uses) so the returned shape
+ * is exactly what components/portable-text-renderer.tsx expects: a url plus
+ * metadata (dimensions/lqip) that lets the renderer skip any separate
+ * URL-resolution step.
+ *
+ * The store is Sanity's asset library or Payload's `media` collection,
+ * decided per request by `activeBackend("uploads")` — never by the caller.
+ * The response body is identical either way; the only visible difference is
+ * that a Payload url is same-origin and relative (`/payload-api/media/file/…`)
+ * where Sanity's is a `cdn.sanity.io` absolute, which is what
+ * `next.config.mjs`'s `images.remotePatterns` requires (it lists Sanity and no
+ * Payload/R2 host).
+ *
+ * Two things the Payload arm gets that Sanity's could not:
+ *   - `contentType` comes from the browser's own `file.type`, already
+ *     validated against ALLOWED_IMAGE_TYPES above, so `media` (which declares
+ *     `mimeTypes: ["image/*"]`) is never asked to infer one from a filename.
+ *   - No `sanityAssetId`. That column exists to make the Phase-2 import
+ *     idempotent; a genuinely new upload has no Sanity original, and setting
+ *     it would claim one.
  *
  * Auth: any signed-in user may upload for the case-study form (matches
  * /api/case-studies/submit's model — the case study itself is moderated
@@ -68,9 +89,15 @@ export async function POST(request: NextRequest) {
 
   try {
     const buffer = await file.arrayBuffer();
-    const asset = await uploadImageAsset(Buffer.from(buffer), {
-      filename: sanitizedFilename,
-    });
+    const asset =
+      activeBackend(UPLOADS_DOMAIN) === "payload"
+        ? await uploadPayloadImageAsset(Buffer.from(buffer), {
+            filename: sanitizedFilename,
+            contentType: file.type,
+          })
+        : await uploadImageAsset(Buffer.from(buffer), {
+            filename: sanitizedFilename,
+          });
 
     return NextResponse.json({
       assetRef: asset.id,
@@ -80,7 +107,7 @@ export async function POST(request: NextRequest) {
       lqip: asset.lqip,
     });
   } catch (error) {
-    console.error("[uploads/image] Sanity asset upload failed:", error);
+    console.error("[uploads/image] Asset upload failed:", error);
     return NextResponse.json({ error: "Upload failed. Please try again." }, { status: 502 });
   }
 }
