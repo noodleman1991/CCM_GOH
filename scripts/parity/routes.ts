@@ -257,6 +257,23 @@ export const PARITY_ROUTES: ParityRoute[] = [
       "flight payload verbatim, which is the only place a `_key` or a key " +
       "order difference can show.",
   })),
+  ...(["en", "es", "fr", "ar"] as const).map((locale) => ({
+    path: `/${locale}/collaborate/events`,
+    domain: "discovery",
+    why:
+      "The ONLY rendered HTML surface `discovery.ts` has. `getEvents()`'s list " +
+      "mode is the one export of the nineteen that reaches a page a signed-out " +
+      "visitor can load, and `events` is **0 documents in both stores** " +
+      "(measured: `count(*[_type==\"event\"])` = 0 on the published " +
+      "perspective, `payload.count({collection:\"events\"})` = 0). So what " +
+      "this route proves is narrow and worth having anyway: both backends " +
+      "answer the same empty list rather than one of them 500ing, and they " +
+      "render the identical empty-state card. All four locales, because the " +
+      "page's chrome is localized and `ar` is the RTL one. The module's other " +
+      "eighteen exports are covered by `scripts/parity/discovery-check.ts` " +
+      "(the /api/dynamic-content JSON route) and by unit tests; see that " +
+      "script's header for which is which.",
+  })),
   {
     path: "/es/communities/central-and-southern-asia",
     domain: "pages",

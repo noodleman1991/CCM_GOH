@@ -1,9 +1,32 @@
+import { activeBackend } from "@/lib/content/internal/backend";
+import * as payloadDiscovery from "@/lib/content/internal/payload/discovery";
 import { safe } from "@/lib/content/internal/safe";
 import { createDocument, query, queryLive, queryRaw, updateDocument } from "@/lib/content/internal/sanity-source";
 import type { ContentKind } from "@/lib/content/types";
 import type { SanityPlace } from "@/types/case-study";
 import type { CommentTargetType } from "@/generated/prisma";
 import { generateEventSlug } from "@/lib/validation/event";
+
+/**
+ * The module's own name, as `CONTENT_BACKEND_DISCOVERY` spells it.
+ *
+ * Every export below keeps its signature and gains one `if (onPayload())`
+ * line; the Payload half lives in `lib/content/internal/payload/discovery.ts`,
+ * whose header carries the measurements and the eight decisions this swap
+ * rests on — chief among them that the cross-type union at `:366` returns ZERO
+ * lived experiences today and is REPRODUCED rather than fixed, because
+ * admitting the 35 that have slugs into "For You" is a user-visible product
+ * change and not an implementer's call.
+ *
+ * The two `safe()`-wrapped reads (`getDiscoveryOptions`, `getModerationSettings`)
+ * branch INSIDE their `safe()` callback rather than around it, so each keeps
+ * its own log label and its own independent degrade on either backend.
+ */
+const DOMAIN = "discovery";
+
+function onPayload(): boolean {
+  return activeBackend(DOMAIN) === "payload";
+}
 
 // ---------------------------------------------------------------------------
 // Dynamic content inserts (lib/dynamic-queries.ts)
@@ -289,6 +312,7 @@ export async function getDynamicContent(
   kind: ContentKind,
   options: DynamicOptions,
 ): Promise<DiscoveryItem[]> {
+  if (onPayload()) return payloadDiscovery.getDynamicContent(kind, options);
   const groq = DYNAMIC_CONTENT_QUERIES[kind]?.[options.mode];
   if (!groq) return [];
   const result = await query<DiscoveryItem[] | null>(groq, {
@@ -325,14 +349,18 @@ export interface DiscoveryFacets {
 export async function getDiscoveryOptions(): Promise<DiscoveryFacets> {
   const [regions, tags] = await Promise.all([
     safe("discovery-regions", [] as DiscoveryRegionOption[], () =>
-      query<DiscoveryRegionOption[]>(
-        `*[_type == "regionalCommunity" && defined(slug.current)] | order(name asc){ "slug": slug.current, name }`,
-      ),
+      onPayload()
+        ? payloadDiscovery.getDiscoveryRegions()
+        : query<DiscoveryRegionOption[]>(
+            `*[_type == "regionalCommunity" && defined(slug.current)] | order(name asc){ "slug": slug.current, name }`,
+          ),
     ),
     safe("discovery-tags", [] as DiscoveryTagOption[], () =>
-      query<DiscoveryTagOption[]>(
-        `*[_type == "tag" && defined(value)] | order(value asc){ value, label }`,
-      ),
+      onPayload()
+        ? payloadDiscovery.getDiscoveryTags()
+        : query<DiscoveryTagOption[]>(
+            `*[_type == "tag" && defined(value)] | order(value asc){ value, label }`,
+          ),
     ),
   ]);
   return { regions, tags };
@@ -363,6 +391,7 @@ export async function getForYouCandidates(input: {
   themeSlugs: string[];
   limit: number;
 }): Promise<ForYouCandidateRow[]> {
+  if (onPayload()) return payloadDiscovery.getForYouCandidates(input);
   return query<ForYouCandidateRow[]>(
     `*[_type in ["caseStudy", "livedExperience", "newsPost"]
          && (status == "approved" || (!defined(status) && _type == "newsPost"))
@@ -470,6 +499,7 @@ export async function getNewsPostsForBlock(
   limit: number,
   manualIds?: string[],
 ): Promise<NewsPostBlockItem[]> {
+  if (onPayload()) return payloadDiscovery.getNewsPostsForBlock(mode, limit, manualIds);
   if (mode === "manual") {
     if (!manualIds || manualIds.length === 0) return [];
     return query<NewsPostBlockItem[]>(
@@ -524,6 +554,7 @@ export async function getNewsPostsForBlock(
  *  Read-only display enrichment; the call site's own try/catch degrades to an
  *  empty map on failure, so this is left unwrapped. */
 export async function getDocSlugs(ids: string[]): Promise<{ _id: string; slug: string | null }[]> {
+  if (onPayload()) return payloadDiscovery.getDocSlugs(ids);
   return query<{ _id: string; slug: string | null }[]>(
     `*[_id in $ids]{ _id, "slug": slug.current }`,
     { ids },
@@ -537,6 +568,7 @@ export async function getDocSlugs(ids: string[]): Promise<{ _id: string; slug: s
 export async function getOutputSummaries(
   ids: string[],
 ): Promise<{ _id: string; title: string | null; status: string | null; slug: string | null }[]> {
+  if (onPayload()) return payloadDiscovery.getOutputSummaries(ids);
   return query<{ _id: string; title: string | null; status: string | null; slug: string | null }[]>(
     `*[_id in $ids || ("drafts." + _id) in $ids]{ _id, "title": coalesce(title.en, title), status, "slug": slug.current }`,
     { ids },
@@ -562,6 +594,7 @@ export async function getOutputSummaries(
 export async function getOutputStatuses(
   ids: string[],
 ): Promise<{ _id: string; title?: string; status?: string }[]> {
+  if (onPayload()) return payloadDiscovery.getOutputStatuses(ids);
   return queryLive<{ _id: string; title?: string; status?: string }[]>(
     `*[_id in $ids || ("drafts." + _id) in $ids]{ _id, "title": coalesce(title.en, title), status }`,
     { ids },
@@ -581,6 +614,7 @@ export async function createWorkspaceOutputDraft(
   sanityType: string,
   title: string,
 ): Promise<{ id: string }> {
+  if (onPayload()) return payloadDiscovery.createWorkspaceOutputDraft(sanityType, title);
   return createDocument({
     _type: sanityType,
     _id: `drafts.${crypto.randomUUID()}`,
@@ -644,6 +678,7 @@ export async function resolveCommentTarget(
   type: CommentTargetType,
   id: string,
 ): Promise<CommentTarget | null> {
+  if (onPayload()) return payloadDiscovery.resolveCommentTarget(type, id);
   const predicate = SANITY_COMMENT_PREDICATE[type];
   if (!predicate) return null;
   return safe(`comment-target-${type}`, null, async () => {
@@ -678,6 +713,7 @@ const DEFAULT_MODERATION_SETTINGS: ModerationSettings = { enabled: true, blockTe
  */
 export async function getModerationSettings(): Promise<ModerationSettings> {
   return safe("moderation-settings", DEFAULT_MODERATION_SETTINGS, async () => {
+    if (onPayload()) return payloadDiscovery.getModerationSettings();
     const raw = await queryLive<Partial<ModerationSettings> | null>(
       `*[_type == "moderationSettings"][0]{ enabled, blockTerms, reviewTerms }`,
     );
@@ -744,6 +780,7 @@ const EVENT_BY_SLUG_QUERY = `*[_type == "event" && status == "approved" && slug.
  * letting failures throw to their callers.
  */
 export async function getEvents(filter: EventFilter = {}): Promise<ContentEvent[]> {
+  if (onPayload()) return payloadDiscovery.getEvents(filter);
   if (filter.slug) {
     const event = await query<ContentEvent | null>(EVENT_BY_SLUG_QUERY, { slug: filter.slug });
     return event ? [event] : [];
@@ -779,6 +816,7 @@ export interface RawEditableEventDoc {
  * lived-experiences.ts's `loadEditableLivedExperience`).
  */
 export async function getEditableEventDoc(id: string): Promise<RawEditableEventDoc | null> {
+  if (onPayload()) return payloadDiscovery.getEditableEventDoc(id);
   return queryRaw<RawEditableEventDoc | null>(
     `*[_type == "event" && (_id == $id || _id == "drafts." + $id)][0]{
       _id, title, description, scope, startAt, endAt, mode, locationName, url,
@@ -820,6 +858,7 @@ export interface EventInput {
 export async function getEventEditGate(
   id: string,
 ): Promise<{ _id: string; submittedBy: string | null; status: string | null } | null> {
+  if (onPayload()) return payloadDiscovery.getEventEditGate(id);
   return queryRaw<{ _id: string; submittedBy: string | null; status: string | null } | null>(
     `*[_type == "event" && _id == $id][0]{ _id, submittedBy, status }`,
     { id },
@@ -829,6 +868,7 @@ export async function getEventEditGate(
 /** Create a PENDING `event` doc (brand-new submission). Status is forced to
  *  "pending" regardless of input — never trust the client. */
 export async function submitEvent(input: EventInput): Promise<{ id: string }> {
+  if (onPayload()) return payloadDiscovery.submitEvent(input);
   const doc: Record<string, unknown> = {
     _type: "event",
     status: "pending",
@@ -861,6 +901,7 @@ export async function submitEvent(input: EventInput): Promise<{ id: string }> {
  * omitted — same asymmetry as `submitEvent` and the original route.
  */
 export async function updateEvent(id: string, patch: Partial<EventInput>): Promise<void> {
+  if (onPayload()) return payloadDiscovery.updateEvent(id, patch);
   const fields: Record<string, unknown> = {
     title: patch.title,
     description: patch.description ?? undefined,
@@ -911,6 +952,7 @@ export interface EventRsvpMeta {
  * published-only (no draft visibility), the faithful restoration.
  */
 export async function getApprovedEventForRsvp(eventId: string): Promise<EventRsvpMeta | null> {
+  if (onPayload()) return payloadDiscovery.getApprovedEventForRsvp(eventId);
   return queryLive<EventRsvpMeta | null>(
     `*[_type == "event" && _id == $id && status == "approved"][0]{
       _id, title, startAt, "slug": slug.current, submittedBy
@@ -944,6 +986,7 @@ export async function getEventsStartingWithin(
   nowIso: string,
   endIso: string,
 ): Promise<UpcomingReminderEvent[]> {
+  if (onPayload()) return payloadDiscovery.getEventsStartingWithin(nowIso, endIso);
   return queryLive<UpcomingReminderEvent[]>(
     `*[_type == "event" && status == "approved" && dateTime(startAt) > dateTime($now) && dateTime(startAt) < dateTime($end)]{ _id, title }`,
     { now: nowIso, end: endIso },
@@ -981,6 +1024,7 @@ export const fetchDynamicCaseStudies = async ({
     mode = "dynamic-featured",
     maxItems = 6
 }: DynamicTemplateFetchOptions) => {
+    if (onPayload()) return payloadDiscovery.fetchDynamicCaseStudies({ regionalCommunityId, mode, maxItems });
     try {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any -- raw GROQ string query returns untyped data; downstream templates depend on the loose shape (typegen is off-limits here)
         let items: any[] = [];
@@ -1230,6 +1274,7 @@ export const fetchDynamicLivedExperiences = async ({
     mode = "dynamic-featured",
     maxItems = 10
 }: DynamicTemplateFetchOptions) => {
+    if (onPayload()) return payloadDiscovery.fetchDynamicLivedExperiences({ regionalCommunityId, mode, maxItems });
     try {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any -- raw GROQ string query returns untyped data; downstream templates depend on the loose shape (typegen is off-limits here)
         let items: any[] = [];
