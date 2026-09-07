@@ -631,6 +631,14 @@ async function startServer(backend: Backend): Promise<Server> {
     env: {
       ...process.env,
       CONTENT_BACKEND: backend,
+      // The public twin, because a client component sees nothing else.
+      // `lib/content/images.ts`'s `imageUrl()` is called inside five
+      // `"use client"` components, which render once on the server and once on
+      // hydration; without this the two halves of a Payload render would build
+      // Sanity URLs on the client and the harness would be comparing a page
+      // the site will never serve. Same class of fix as the dataset pin below:
+      // pin what the render actually reads, on BOTH servers.
+      NEXT_PUBLIC_CONTENT_BACKEND: backend,
       NEXT_PUBLIC_SANITY_DATASET: PARITY_SANITY_DATASET,
       NEXT_DIST_DIR: `.next-parity-${backend}`,
       NEXT_TELEMETRY_DISABLED: "1",
