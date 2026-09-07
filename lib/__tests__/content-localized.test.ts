@@ -9,7 +9,7 @@
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { localized, orNull } from "@/lib/content/internal/localized";
+import { groqObject, localized, orNull } from "@/lib/content/internal/localized";
 
 const REPO_ROOT = path.resolve(__dirname, "../..");
 
@@ -46,6 +46,28 @@ describe("localized()", () => {
     expect(localized({})).toBeUndefined();
     expect(localized(null)).toBeUndefined();
     expect(localized(undefined)).toBeUndefined();
+  });
+});
+
+describe("groqObject()", () => {
+  it("emits every key alphabetically, which is how Sanity serializes an object", () => {
+    // Measured on `/news`: `getNewsTags()` returns
+    // `{_id, category, color, label, newsCount, value}` from Sanity — the
+    // projection's own order is `_id, label, value, color, category, newsCount`,
+    // so the Content Lake sorted them. That array is a prop of the
+    // `NewsFilters` client component, so the order is in the flight payload.
+    const fromPayload = { _id: "t1", label: { en: "Climate" }, value: "climate", color: "#3b82f6", newsCount: 1 };
+    expect(Object.keys(groqObject(fromPayload))).toEqual(["_id", "color", "label", "newsCount", "value"]);
+  });
+
+  it("keeps every value, including null and nested objects, untouched", () => {
+    expect(groqObject({ b: null, a: { z: 1, y: 2 } })).toEqual({ a: { z: 1, y: 2 }, b: null });
+  });
+
+  it("is shallow — a nested object's own keys are its own projection's business", () => {
+    // `localized()` sorts the locale map; rich text and arrays carry the key
+    // order of the stored document, which is not the serializer's choice.
+    expect(Object.keys(groqObject({ a: { z: 1, y: 2 } }).a)).toEqual(["z", "y"]);
   });
 });
 

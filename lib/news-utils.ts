@@ -83,9 +83,12 @@ export interface NewsPost {
   tags?: Array<{
     _id: string;
     label: Record<string, string> | string;
-    value: {
-      current: string;
-    };
+    /** A slug string. This declared `{current: string}` while every other tag
+     *  shape in the codebase declared a string, because `NEWS_POST_FIELDS`
+     *  bound a bare `value` and `tag.value` is a Sanity `slug`. The projection
+     *  now flattens it — which is also Payload's shape — so the type follows.
+     *  Nothing reads this field on the news surfaces (grepped). */
+    value: string;
     color?: string;
     category?: string;
   }>;

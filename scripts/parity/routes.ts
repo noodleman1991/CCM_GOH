@@ -124,15 +124,57 @@ export const PARITY_ROUTES: ParityRoute[] = [
   {
     path: "/en/news/cop28-centring-mental-health",
     domain: "news",
-    why: "A single news post — body rich text, author, date and hero image.",
+    why:
+      "A single news post — body rich text, author and date. Also the only " +
+      "route in the set that renders `article:published_time` and " +
+      "`article:modified_time` from a raw date string, which is where the two " +
+      "stores' ISO spellings would diverge if the reader did not reconcile them.",
+  },
+  {
+    path: "/es/news/cop28-centring-mental-health",
+    domain: "news",
+    why:
+      "es. The detail page reads every localized field through " +
+      "`getLocalizedValue`, and this document populates only `en` — so this is " +
+      "where a locale-fallback difference between the two stores would show.",
+  },
+  {
+    path: "/fr/news/cop28-centring-mental-health",
+    domain: "news",
+    why: "fr, same document — the third locale, so a fallback regression shows as a difference between locales rather than between pages.",
+  },
+  {
+    path: "/ar/news/cop28-centring-mental-health",
+    domain: "news",
+    why: "ar, same document, and the RTL locale — `dir` and the logical start/end utility classes are part of the compared output.",
   },
   {
     path: "/en/news",
     domain: "news",
     why:
-      "The news index: a featured selection and a listing, i.e. two different " +
-      "queries over the same collection. A reader that gets ordering or the " +
-      "featured filter wrong renders the same cards in the wrong section.",
+      "The news index: a featured selection, a regular listing and the merged " +
+      "external-source feed, i.e. three different queries over two collections. " +
+      "A reader that gets ordering or the featured filter wrong renders the " +
+      "same cards in the wrong section. It is also the only news route with a " +
+      "CLIENT component — `NewsFilters` — so `getNewsTags`'s and " +
+      "`getRegionalCommunities`'s localized `label`/`name` objects travel " +
+      "through the RSC flight payload here and nowhere else. That is exactly " +
+      "the surface the shared locale-key sort was extracted for.",
+  },
+  {
+    path: "/es/news",
+    domain: "news",
+    why: "es. The same index, so a locale difference cannot hide behind a structural one.",
+  },
+  {
+    path: "/fr/news",
+    domain: "news",
+    why: "fr, same index — the third locale on the same three queries, so a translation-fallback regression shows as a difference between locales rather than between pages.",
+  },
+  {
+    path: "/ar/news",
+    domain: "news",
+    why: "ar, same index — the RTL locale, and the one where a mis-sorted Arabic tag label would show.",
   },
   {
     path: "/en/research-and-action/regional-agendas",

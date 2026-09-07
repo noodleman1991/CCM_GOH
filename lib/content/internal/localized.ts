@@ -7,7 +7,7 @@
  * wrong.
  *
  * ---------------------------------------------------------------------------
- * 1. Locale key order
+ * 1. Object key order
  * ---------------------------------------------------------------------------
  *
  * Sanity's Content Lake serializes an object's keys **alphabetically**. Measured
@@ -25,6 +25,14 @@
  * The alternative — a harness normaliser that reorders object keys — was
  * rejected: a normaliser that sorts keys could hide a value that moved from one
  * key to another.
+ *
+ * **This is not only about locales.** Task 10 measured it on the `/news` index,
+ * where `getNewsTags()`'s result is a prop of the `NewsFilters` client
+ * component: Sanity returned `{_id, category, color, label, newsCount, value}`
+ * — alphabetical, ignoring the order the GROQ projection wrote — and the
+ * Payload reader returned its own declaration order. The locale map is the
+ * special case; `groqObject` is the general rule, and `localized` is written in
+ * terms of it.
  *
  * ---------------------------------------------------------------------------
  * 2. Unset keys
@@ -90,11 +98,23 @@ export type LocalizedRaw =
 export function localized(value: LocalizedRaw): Localized | undefined {
   if (!value || typeof value !== "object") return undefined;
   const out: Record<string, string> = {};
-  for (const locale of Object.keys(value).sort()) {
-    const string = value[locale as keyof Localized & string];
+  for (const [locale, string] of Object.entries(value)) {
     if (typeof string === "string" && string.length > 0) out[locale] = string;
   }
-  return Object.keys(out).length > 0 ? (out as Localized) : undefined;
+  return Object.keys(out).length > 0 ? (groqObject(out) as Localized) : undefined;
+}
+
+/**
+ * One object's keys, in the order Sanity's Content Lake serializes them.
+ *
+ * Shallow on purpose: it is the object a reader hands back that becomes a prop,
+ * and its nested values are built by their own projections — each of which
+ * passes through here or through `localized` in turn. A deep sort would also
+ * have to decide what to do inside arrays and rich text, where key order is
+ * part of the stored document rather than the serializer's choice.
+ */
+export function groqObject<T extends Record<string, unknown>>(value: T): T {
+  return Object.fromEntries(Object.entries(value).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))) as T;
 }
 
 /**

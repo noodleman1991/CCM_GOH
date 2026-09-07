@@ -333,7 +333,20 @@ describe("the parity route list", () => {
   });
 
   it("filters by domain", () => {
-    expect(routesForDomain("news").map((r) => r.path)).toEqual(["/en/news/cop28-centring-mental-health", "/en/news"]);
+    // `news` grew from two routes to eight in Task 10 — the detail page and the
+    // index in all four locales, which is what the domain-task shape asks for.
+    // The assertion still pins the exact list rather than a count, so a route
+    // that quietly disappears is still a failure.
+    expect(routesForDomain("news").map((r) => r.path)).toEqual([
+      "/en/news/cop28-centring-mental-health",
+      "/es/news/cop28-centring-mental-health",
+      "/fr/news/cop28-centring-mental-health",
+      "/ar/news/cop28-centring-mental-health",
+      "/en/news",
+      "/es/news",
+      "/fr/news",
+      "/ar/news",
+    ]);
     expect(routesForDomain("nothing-here")).toEqual([]);
   });
 

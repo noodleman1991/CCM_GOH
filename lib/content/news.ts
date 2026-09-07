@@ -1,8 +1,46 @@
 import "server-only";
+import { activeBackend } from "@/lib/content/internal/backend";
+import * as payloadNews from "@/lib/content/internal/payload/news";
 import { safe } from "@/lib/content/internal/safe";
 import { query } from "@/lib/content/internal/sanity-source";
 import type { Locale, Localized, RichText, SearchRecord } from "@/lib/content/types";
 import { localize } from "@/lib/content/types";
+
+// ---------------------------------------------------------------------------
+// Which store answers
+//
+// Phase 3 moves this module to Payload behind `CONTENT_BACKEND` (or
+// `CONTENT_BACKEND_NEWS` for this module alone). Every export below keeps the
+// signature it already had: the branch is one line at the top of each
+// function, and the GROQ underneath it is untouched, so reverting this module
+// is deleting seventeen lines. `activeBackend()` is read per call, never
+// cached in a module constant, so a test or a preview deployment can flip it
+// after import.
+//
+// Two things below changed on the SANITY path as part of this swap, and both
+// are deliberate:
+//
+//   * `NEWS_POST_FIELDS` and `getApprovedExternalSources` bound a bare `value`
+//     inside `tags[]->{…}`. `tag.value` is a Sanity `slug`, so those two
+//     projections handed consumers `{_type:"slug", current:"…"}` while
+//     `NewsPostTag.value` and `NewsExternalSource.tags[].value` promise a
+//     string and Payload's column IS a string. Both now project
+//     `"value": value.current`. Nothing on the news surfaces reads either one
+//     (grepped) — the tag filter is fed by `getNewsTags()`, which has always
+//     projected `value.current` — so unlike `/lived-experiences` this changes
+//     no rendering. See `internal/payload/news.ts`, note 2.
+//
+//   * every `order(...)` gained `_id asc` as a final tie-break, matching
+//     Task 7's decision. `publishedAt` is 4/4 distinct today, so it reorders
+//     nothing; it is here so a future duplicate timestamp cannot make the two
+//     backends disagree silently.
+// ---------------------------------------------------------------------------
+
+const DOMAIN = "news";
+
+function onPayload(): boolean {
+  return activeBackend(DOMAIN) === "payload";
+}
 
 // ---------------------------------------------------------------------------
 // Shared fragments, inlined verbatim from sanity/queries/shared/styled-body.ts
@@ -78,7 +116,14 @@ export interface NewsPostProject {
 export interface NewsPostTag {
   _id: string;
   label: Localized;
-  value: { current: string };
+  /** A slug string, not a slug object. `NEWS_POST_FIELDS` used to bind a bare
+   *  `value` — and `tag.value` is a Sanity `slug` — so this really did hand
+   *  consumers `{_type:"slug", current:"…"}` while every other tag projection
+   *  in `lib/content/` returned the string. The projection now flattens it,
+   *  which is also the shape Payload's flat `text` column has. Nothing on the
+   *  news surfaces reads it (grepped); the tag filter uses `NewsFilterTag`,
+   *  which has always been a string. */
+  value: string;
   color?: string;
   category?: string;
 }
@@ -186,7 +231,7 @@ const NEWS_POST_FIELDS = `
   tags[]->{
     _id,
     label,
-    value,
+    "value": value.current,
     color,
     category
   },
@@ -209,14 +254,15 @@ const NEWS_POST_FIELDS = `
 // ---------------------------------------------------------------------------
 
 export async function getFeaturedNews(limit: number = 3, language?: string): Promise<NewsPost[]> {
+  if (onPayload()) return payloadNews.getFeaturedNews(limit, language);
   const conditions = [
     '_type == "newsPost"',
     'featured == true',
     'publishedAt <= now()',
   ];
   const orderClause = language
-    ? `order(language == $language desc, publishedAt desc)`
-    : `order(publishedAt desc)`;
+    ? `order(language == $language desc, publishedAt desc, _id asc)`
+    : `order(publishedAt desc, _id asc)`;
   const rows = await query<NewsPost[] | null>(
     `
       *[${conditions.join(' && ')}] | ${orderClause}[0...${limit}] {
@@ -239,6 +285,7 @@ export interface NewsListFilters {
 }
 
 export async function getRegularNews(filters?: NewsListFilters): Promise<NewsPost[]> {
+  if (onPayload()) return payloadNews.getRegularNews(filters);
   const conditions: string[] = [
     '_type == "newsPost"',
     'publishedAt <= now()',
@@ -283,8 +330,8 @@ export async function getRegularNews(filters?: NewsListFilters): Promise<NewsPos
 
   const limit = filters?.limit || 50;
   const orderClause = filters?.language
-    ? `order(language == $language desc, publishedAt desc)`
-    : `order(publishedAt desc)`;
+    ? `order(language == $language desc, publishedAt desc, _id asc)`
+    : `order(publishedAt desc, _id asc)`;
 
   if (filters?.language) {
     params.language = filters.language;
@@ -302,6 +349,7 @@ export async function getRegularNews(filters?: NewsListFilters): Promise<NewsPos
 }
 
 export async function getAllNews(filters?: NewsListFilters): Promise<NewsPost[]> {
+  if (onPayload()) return payloadNews.getAllNews(filters);
   const conditions: string[] = [
     '_type == "newsPost"',
     'publishedAt <= now()',
@@ -345,8 +393,8 @@ export async function getAllNews(filters?: NewsListFilters): Promise<NewsPost[]>
 
   const limit = filters?.limit || 50;
   const orderClause = filters?.language
-    ? `order(language == $language desc, featured desc, publishedAt desc)`
-    : `order(featured desc, publishedAt desc)`;
+    ? `order(language == $language desc, featured desc, publishedAt desc, _id asc)`
+    : `order(featured desc, publishedAt desc, _id asc)`;
 
   if (filters?.language) {
     params.language = filters.language;
@@ -392,6 +440,7 @@ const NEWS_POST_DETAIL_QUERY = `
 `;
 
 export async function getNewsPostBySlug(slug: string): Promise<NewsPost | null> {
+  if (onPayload()) return payloadNews.getNewsPostBySlug(slug);
   return query<NewsPost | null>(NEWS_POST_DETAIL_QUERY, { slug });
 }
 
@@ -402,12 +451,14 @@ export async function getNewsPostBySlug(slug: string): Promise<NewsPost | null> 
 // interface it does name.
 // ---------------------------------------------------------------------------
 
-const NEWS_SLUGS_QUERY = `*[_type == "newsPost" && defined(slug.current)]{
+const NEWS_SLUGS_QUERY = `*[_type == "newsPost" && defined(slug.current)] | order(_id asc) {
   "slug": slug.current
 }`;
 
 export async function getNewsSlugs(): Promise<string[]> {
-  const rows = await query<{ slug: string }[]>(NEWS_SLUGS_QUERY);
+  const rows = onPayload()
+    ? await payloadNews.getNewsSlugs()
+    : await query<{ slug: string }[]>(NEWS_SLUGS_QUERY);
   return (rows ?? []).map((r) => r.slug);
 }
 
@@ -441,13 +492,15 @@ export async function getRelatedNews(
     return [];
   }
 
+  if (onPayload()) return payloadNews.getRelatedNews(newsId, tags, limit);
+
   const rows = await query<RelatedNewsItem[] | null>(
     `
       *[_type == "newsPost" &&
         _id != $newsId &&
         publishedAt <= now() &&
         count((tags[]->_id)[@ in $tags]) > 0
-      ] | order(publishedAt desc)[0...${limit}] {
+      ] | order(publishedAt desc, _id asc)[0...${limit}] {
         _id,
         title,
         subtitle,
@@ -497,10 +550,11 @@ export interface NewsFilterTag {
 }
 
 export async function getNewsTags(): Promise<NewsFilterTag[]> {
+  if (onPayload()) return payloadNews.getNewsTags();
   const rows = await query<NewsFilterTag[] | null>(
     `
       *[_type == "tag" && count(*[_type == "newsPost" && references(^._id)]) > 0]
-      | order(label.en asc) {
+      | order(label.en asc, _id asc) {
         _id,
         label,
         "value": value.current,
@@ -521,10 +575,11 @@ export interface NewsFilterCommunity {
 }
 
 export async function getRegionalCommunities(): Promise<NewsFilterCommunity[]> {
+  if (onPayload()) return payloadNews.getRegionalCommunities();
   const rows = await query<NewsFilterCommunity[] | null>(
     `
       *[_type == "regionalCommunity"]
-      | order(order asc, name.en asc) {
+      | order(order asc, name.en asc, _id asc) {
         _id,
         name,
         "slug": slug.current,
@@ -583,6 +638,8 @@ export interface NewsExternalSourceFilters {
 export async function getApprovedExternalSources(
   filters?: NewsExternalSourceFilters
 ): Promise<NewsExternalSource[]> {
+  if (onPayload()) return payloadNews.getApprovedExternalSources(filters);
+
   const conditions: string[] = [
     '_type == "externalSource"',
     'approved == true',
@@ -617,7 +674,7 @@ export async function getApprovedExternalSources(
 
   const rows = await query<NewsExternalSource[] | null>(
     `
-      *[${conditions.join(' && ')}] | order(publishedAt desc)[0...${limit}] {
+      *[${conditions.join(' && ')}] | order(publishedAt desc, _id asc)[0...${limit}] {
         _id,
         _type,
         title,
@@ -651,7 +708,7 @@ export async function getApprovedExternalSources(
           _id,
           label,
           title,
-          value,
+          "value": value.current,
           color,
           category
         }
@@ -671,6 +728,7 @@ export async function getApprovedExternalSources(
 // ---------------------------------------------------------------------------
 
 export async function getNewsPosts(locale?: Locale, limit: number = 10): Promise<NewsPost[]> {
+  if (onPayload()) return payloadNews.getNewsPosts(locale, limit);
   const conditions = [
     '_type == "newsPost"',
     'publishedAt <= now()',
@@ -681,7 +739,7 @@ export async function getNewsPosts(locale?: Locale, limit: number = 10): Promise
   const rows = await query<NewsPost[] | null>(
     `
       *[${conditions.join(' && ')}]
-      | order(publishedAt desc)[0...${limit}] {
+      | order(publishedAt desc, _id asc)[0...${limit}] {
         ${NEWS_POST_FIELDS}
       }
     `,
@@ -756,12 +814,14 @@ export async function getDynamicNews({
   maxItems = 6,
 }: DynamicNewsOptions): Promise<NewsPost[]> {
   return safe("dynamic-news", [], async () => {
+    if (onPayload()) return payloadNews.getDynamicNews({ regionalCommunityId, mode, maxItems });
+
     let items: NewsPost[] = [];
 
     if (mode === "dynamic-featured") {
       // First get featured news
       const featuredNews = await query<NewsPost[] | null>(
-        `*[_type == "newsPost" && featured == true && references($regionalCommunityId)] | order(publishedAt desc)[0...${maxItems}]{
+        `*[_type == "newsPost" && featured == true && references($regionalCommunityId)] | order(publishedAt desc, _id asc)[0...${maxItems}]{
           ${DYNAMIC_NEWS_FIELDS}
         }`,
         { regionalCommunityId }
@@ -775,7 +835,7 @@ export async function getDynamicNews({
         const featuredIds = items.map((item) => item._id);
 
         const recentNews = await query<NewsPost[] | null>(
-          `*[_type == "newsPost" && !(_id in $featuredIds) && references($regionalCommunityId)] | order(publishedAt desc)[0...${remainingCount}]{
+          `*[_type == "newsPost" && !(_id in $featuredIds) && references($regionalCommunityId)] | order(publishedAt desc, _id asc)[0...${remainingCount}]{
             ${DYNAMIC_NEWS_FIELDS}
           }`,
           { featuredIds, regionalCommunityId }
@@ -786,7 +846,7 @@ export async function getDynamicNews({
     } else {
       // Just get recent news
       const data = await query<NewsPost[] | null>(
-        `*[_type == "newsPost" && references($regionalCommunityId)] | order(publishedAt desc)[0...${maxItems}]{
+        `*[_type == "newsPost" && references($regionalCommunityId)] | order(publishedAt desc, _id asc)[0...${maxItems}]{
           ${DYNAMIC_NEWS_FIELDS}
         }`,
         { regionalCommunityId }
@@ -816,6 +876,8 @@ export interface NewsOgData {
 
 export async function getNewsOgData(slug: string): Promise<NewsOgData | null> {
   return safe("news-og", null, async () => {
+    if (onPayload()) return payloadNews.getNewsOgData(slug);
+
     const doc = await query<NewsOgData | null>(
       `*[_type == "newsPost" && slug.current == $slug][0]{ title, "region": relatedCommunity->name.en }`,
       { slug }
@@ -888,8 +950,9 @@ const NEWS_INDEX_FIELDS = `
 `;
 
 export async function getPublishedNewsIndexDocs(): Promise<NewsIndexDoc[]> {
+  if (onPayload()) return payloadNews.getPublishedNewsIndexDocs();
   const rows = await query<NewsIndexDoc[] | null>(
-    `*[_type == "newsPost" && publishedAt <= now()] | order(publishedAt desc) {
+    `*[_type == "newsPost" && publishedAt <= now()] | order(publishedAt desc, _id asc) {
       ${NEWS_INDEX_FIELDS}
     }`
   );
@@ -897,8 +960,9 @@ export async function getPublishedNewsIndexDocs(): Promise<NewsIndexDoc[]> {
 }
 
 export async function getNewsIndexDocsByIds(ids: string[]): Promise<NewsIndexDoc[]> {
+  if (onPayload()) return payloadNews.getNewsIndexDocsByIds(ids);
   const rows = await query<NewsIndexDoc[] | null>(
-    `*[_type == "newsPost" && _id in $ids] {
+    `*[_type == "newsPost" && _id in $ids] | order(_id asc) {
       ${NEWS_INDEX_FIELDS}
     }`,
     { ids }
@@ -907,6 +971,7 @@ export async function getNewsIndexDocsByIds(ids: string[]): Promise<NewsIndexDoc
 }
 
 export async function getNewsIndexDocById(id: string): Promise<NewsIndexDoc | null> {
+  if (onPayload()) return payloadNews.getNewsIndexDocById(id);
   return query<NewsIndexDoc | null>(
     `*[_type == "newsPost" && _id == $id][0] {
       ${NEWS_INDEX_FIELDS}
@@ -916,6 +981,7 @@ export async function getNewsIndexDocById(id: string): Promise<NewsIndexDoc | nu
 }
 
 export async function getPublishedNewsCount(): Promise<number> {
+  if (onPayload()) return payloadNews.getPublishedNewsCount();
   return query<number>(`count(*[_type == "newsPost" && publishedAt <= now()])`);
 }
 
@@ -937,7 +1003,7 @@ interface RawNewsSearchRecordDoc {
 }
 
 const NEWS_SEARCH_RECORDS_QUERY = `
-  *[_type == "newsPost" && defined(slug.current) && publishedAt <= now()]{
+  *[_type == "newsPost" && defined(slug.current) && publishedAt <= now()] | order(_id asc) {
     _id,
     language,
     title,
@@ -948,7 +1014,9 @@ const NEWS_SEARCH_RECORDS_QUERY = `
 
 export async function getNewsSearchRecords(): Promise<SearchRecord[]> {
   return safe("news-search-records", [], async () => {
-    const docs = await query<RawNewsSearchRecordDoc[] | null>(NEWS_SEARCH_RECORDS_QUERY);
+    const docs = onPayload()
+      ? await payloadNews.getNewsSearchRecords()
+      : await query<RawNewsSearchRecordDoc[] | null>(NEWS_SEARCH_RECORDS_QUERY);
     return (docs ?? []).map((d) => {
       const locale = (["en", "es", "fr", "ar"].includes(d.language ?? "") ? d.language : "en") as Locale;
       return {
