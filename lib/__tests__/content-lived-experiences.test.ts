@@ -548,7 +548,10 @@ describe("getLivedExperienceIndex, on Payload", () => {
     const result = await getLivedExperienceIndex();
     // It is a prop of a client component, so it reaches the RSC flight payload
     // and is part of the output the parity harness compares.
-    expect(result.videos[0].rawRegion).toEqual({ _type: "reference", _ref: "r1" });
+    expect(result.videos[0].rawRegion).toEqual({ _ref: "r1", _type: "reference" });
+    // Key ORDER too: Sanity serializes object keys alphabetically and the
+    // flight payload carries the serialized bytes, not the object.
+    expect(JSON.stringify(result.videos[0].rawRegion)).toBe('{"_ref":"r1","_type":"reference"}');
   });
 
   it("uses the loose moderation filter, because an unset status means approved here", async () => {
@@ -992,9 +995,12 @@ describe("the detail, slugs and OG reads, on Payload", () => {
     const result = await getLivedExperienceBySlug("my-story");
     expect(result?._id).toBe("le1");
     expect(result?.tags?.[0].value).toBe("anxiety");
-    // No Payload field and 0/56 populated in Sanity — answered as absent
-    // rather than reconstructed.
-    expect(result?.relatedContent).toBeUndefined();
+    // No Payload field and 0/56 populated in Sanity — answered as `null`,
+    // which is what `relatedContent[]{…}` projects on a document that has
+    // none, rather than reconstructed. `null` and not `undefined` because an
+    // explicit GROQ projection emits every key it names, and React writes an
+    // absent prop into the flight payload as "$undefined".
+    expect(result?.relatedContent).toBeNull();
   });
 
   it("returns null when there is no match", async () => {

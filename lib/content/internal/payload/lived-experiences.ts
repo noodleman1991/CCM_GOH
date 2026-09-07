@@ -183,10 +183,35 @@ type LocalizedRaw = Partial<Record<keyof Localized & string, string | null>> | n
 function localized(value: LocalizedRaw): Localized | undefined {
   if (!value || typeof value !== "object") return undefined;
   const out: Record<string, string> = {};
-  for (const [locale, string] of Object.entries(value)) {
+  // Alphabetical, because that is the order Sanity's Content Lake serializes an
+  // object's keys in — measured across tags, regionalCommunities and pages, all
+  // `ar,en,es,fr` — while Payload returns them in `payload.config.ts`'s locale
+  // order, `en,es,fr,ar`. Nothing reads key order, but a localized object
+  // handed to a client component is serialized into the RSC flight payload
+  // verbatim, so the two orders are a byte difference the parity harness
+  // reports on every localized field. Canonicalising here costs nothing and
+  // makes the two stores agree; the alternative is a harness normaliser, and a
+  // normaliser that reorders object keys could hide a moved value.
+  for (const locale of Object.keys(value).sort()) {
+    const string = value[locale as keyof Localized & string];
     if (typeof string === "string" && string.length > 0) out[locale] = string;
   }
   return Object.keys(out).length > 0 ? (out as Localized) : undefined;
+}
+
+/**
+ * `undefined` as the `null` a GROQ projection actually returns.
+ *
+ * An explicit GROQ projection emits every key it names, with `null` for a field
+ * the document does not set — measured: a lived experience with no region
+ * projects `{"format":null,"rawRegion":null,"thumbnailUrl":null,...}`, not a
+ * shorter object. Payload's reader naturally produces `undefined` for the same
+ * fields, and React serializes that into the flight payload as `"$undefined"`,
+ * which is a different byte string from `null`. Every projected-but-unset field
+ * below therefore goes through this.
+ */
+function orNull<T>(value: T | undefined): T | null {
+  return value ?? null;
 }
 
 function text(value: unknown): string | undefined {
@@ -259,10 +284,12 @@ function tagProjection(rows: unknown): { _id: string; label?: Localized; value?:
     const tag = row as unknown as TagRow;
     return {
       _id: String(tag.id),
-      label: localized(tag.label),
-      value: text(tag.value),
-      color: text(tag.color),
-    };
+      // `orNull` on all three: the GROQ names them, so an unset one is `null`
+      // in the projection, not absent. See `orNull`.
+      label: orNull(localized(tag.label)),
+      value: orNull(text(tag.value)),
+      color: orNull(text(tag.color)),
+    } as { _id: string; label?: Localized; value?: string; color?: string };
   });
 }
 
@@ -271,6 +298,12 @@ function communityProjection(row: unknown): { _id: string; name?: Localized; slu
   if (!isRow(row)) return null;
   const community = row as unknown as CommunityRow;
   return { _id: String(community.id), name: localized(community.name), slug: text(community.slug) };
+}
+
+/** GROQ's bare `slug`, which is the whole slug object, not `slug.current`. */
+function slugObject(value: unknown): { _type: string; current: string } | null {
+  const current = text(value);
+  return current ? { _type: "slug", current } : null;
 }
 
 /** The id behind a relationship, whatever depth it came back at. */
@@ -369,17 +402,23 @@ export async function getLivedExperienceIndex(): Promise<LivedExperienceIndex> {
     videos: videoRows.map((row) => {
       const region = communityProjection(row.region);
       const asset = isRow(row.thumbnail?.asset) ? (row.thumbnail.asset as AssetRow) : undefined;
+      // Every one of these is a key the GROQ projects, so an unset field is
+      // `null` and not absent — see `orNull`. `title` too: it is required on
+      // all 56 documents, and matching the projection matters more than
+      // matching the optional type.
       return {
         id: String(row.id),
-        title: localized(row.title),
-        format: (text(row.format) as LivedExperienceIndex["videos"][number]["format"]) ?? undefined,
-        videoUrl: text(row.videoUrl),
-        thumbnailUrl: text(asset?.url),
+        title: orNull(localized(row.title)),
+        format: orNull(text(row.format) as LivedExperienceIndex["videos"][number]["format"]),
+        videoUrl: orNull(text(row.videoUrl)),
+        thumbnailUrl: orNull(text(asset?.url)),
         tags: tagProjection(row.tags).map((t) => ({ id: t._id, label: t.label ?? {}, value: t.value, color: t.color })),
         region: region ? { id: region._id, name: region.name ?? {}, slug: region.slug ?? "" } : null,
-        // The undereferenced field, in the shape Sanity emits it in. See header.
-        rawRegion: relationId(row.region) ? { _type: "reference", _ref: relationId(row.region) } : undefined,
-      };
+        // The undereferenced field, in the shape Sanity emits it in — including
+        // its key ORDER, which Sanity serializes alphabetically (`_ref` before
+        // `_type`) and which reaches the flight payload verbatim. See header.
+        rawRegion: relationId(row.region) ? { _ref: relationId(row.region), _type: "reference" } : null,
+      } as LivedExperienceIndex["videos"][number];
     }),
     regionalCommunities: (communities?.docs ?? []).map((row) => ({
       id: String(row.id),
@@ -510,30 +549,30 @@ export async function getLivedExperiencesCarousel(
       description: localized(row.description),
       issue: localized(row.issue),
       personContext: localized(row.personContext),
-      videoLink: text(row.videoLink),
+      videoLink: orNull(text(row.videoLink)),
       thumbnail: asset
         ? {
             asset: { _id: String(asset.id), url: asset.url ?? null, mimeType: asset.mimeType ?? null },
             alt: localized(row.thumbnail?.alt)?.en ?? null,
           }
         : null,
-      duration: text(row.duration),
-      publishedAt: isoDate(row.publishedAt),
+      duration: orNull(text(row.duration)),
+      publishedAt: orNull(isoDate(row.publishedAt)),
       author: author
         ? {
             _id: String(author.id),
             name: author.name ?? "",
-            image: author.image ?? undefined,
-            organizationalAffiliation: text(author.organizationalAffiliation),
+            image: orNull(author.image),
+            organizationalAffiliation: orNull(text(author.organizationalAffiliation)),
           }
-        : undefined,
+        : null,
       relatedCommunity: community
-        ? { _id: community._id, name: community.name, slug: community.slug ? { current: community.slug } : undefined }
-        : undefined,
+        ? { _id: community._id, name: orNull(community.name), slug: slugObject(community.slug) }
+        : null,
       tags: tagProjection(row.tags).map((t) => ({ _id: t._id, label: t.label, color: t.color })),
-      featured: row.featured ?? undefined,
-      slug: text(row.slug) ? { current: String(row.slug) } : undefined,
-    };
+      featured: orNull(row.featured),
+      slug: slugObject(row.slug),
+    } as unknown as LivedExperienceCarouselItem;
   });
 }
 
@@ -913,63 +952,74 @@ export async function getLivedExperienceBySlug(slug: string): Promise<LivedExper
   const videoFile = isRow(row.videoFile) ? (row.videoFile as AssetRow) : undefined;
   const body = row.body?.en ?? row.body?.[LOCALES.find((l) => row.body?.[l]) ?? "en"];
 
+  // `orNull` throughout, for the reason `orNull` gives: DETAIL_QUERY names every
+  // one of these, so on a document that does not set one GROQ emits the key
+  // with `null` — and React writes an absent prop into the flight payload as
+  // `"$undefined"`, which is a different byte string. Measured on this very
+  // route: `author.organizationalAffiliation` is unset on all 56 documents, and
+  // the detail page renders it as the third child of a `<p>`, where `null` and
+  // `"$undefined"` were the whole of the remaining diff.
   return {
     _id: String(row.id),
-    title: localized(row.title),
-    format: (text(row.format) as LivedExperienceDetail["format"]) ?? undefined,
-    layout: (text(row.layout) as LivedExperienceDetail["layout"]) ?? undefined,
-    description: localized(row.description),
-    issue: localized(row.issue),
-    personContext: localized(row.personContext),
-    slug: text(row.slug) ? { current: String(row.slug) } : undefined,
-    videoLink: text(row.videoLink),
-    videoSource: (text(row.videoSource) as LivedExperienceDetail["videoSource"]) ?? undefined,
-    videoFileUrl: text(videoFile?.url),
-    body: portableText(body),
-    duration: text(row.duration),
-    publishedAt: isoDate(row.publishedAt),
+    title: orNull(localized(row.title)),
+    format: orNull(text(row.format) as LivedExperienceDetail["format"]),
+    layout: orNull(text(row.layout) as LivedExperienceDetail["layout"]),
+    description: orNull(localized(row.description)),
+    issue: orNull(localized(row.issue)),
+    personContext: orNull(localized(row.personContext)),
+    slug: slugObject(row.slug),
+    videoLink: orNull(text(row.videoLink)),
+    videoSource: orNull(text(row.videoSource) as LivedExperienceDetail["videoSource"]),
+    videoFileUrl: orNull(text(videoFile?.url)),
+    // `body[]{…}` on an unset body is `null`, not `[]` — and `portableText`
+    // answers `[]`, which `PortableTextRenderer` treats identically but which
+    // is not the same bytes. 0/56 documents carry a body.
+    body: orNull(body === undefined || body === null ? undefined : portableText(body)),
+    duration: orNull(text(row.duration)),
+    publishedAt: orNull(isoDate(row.publishedAt)),
     thumbnail: thumbnailAsset
       ? {
           asset: {
             _id: String(thumbnailAsset.id),
             url: thumbnailAsset.url ?? "",
-            mimeType: thumbnailAsset.mimeType ?? undefined,
+            mimeType: orNull(text(thumbnailAsset.mimeType)),
             metadata: {
-              lqip: thumbnailAsset.lqip ?? undefined,
+              lqip: orNull(text(thumbnailAsset.lqip)),
               dimensions:
                 typeof thumbnailAsset.width === "number" && typeof thumbnailAsset.height === "number"
                   ? { width: thumbnailAsset.width, height: thumbnailAsset.height }
-                  : undefined,
+                  : null,
             },
           },
-          alt: localized(row.thumbnail?.alt)?.en,
+          alt: orNull(localized(row.thumbnail?.alt)?.en),
         }
       : null,
     author: author
       ? {
           _id: String(author.id),
-          name: text(author.name),
-          organizationalAffiliation: text(author.organizationalAffiliation),
+          name: orNull(text(author.name)),
+          organizationalAffiliation: orNull(text(author.organizationalAffiliation)),
         }
       : null,
     relatedCommunity: community
-      ? { _id: community._id, name: community.name, slug: community.slug ? { current: community.slug } : undefined }
+      ? { _id: community._id, name: orNull(community.name), slug: slugObject(community.slug) }
       : null,
-    organizations: Array.isArray(row.organizations)
+    organizations: Array.isArray(row.organizations) && row.organizations.length > 0
       ? row.organizations.filter(isRow).map((org) => {
           const organization = org as unknown as OrganizationRow;
           return {
             _id: String(organization.id),
-            name: localized(organization.name),
-            slug: text(organization.slug) ? { current: String(organization.slug) } : undefined,
-            acronym: text(organization.acronym),
+            name: orNull(localized(organization.name)),
+            slug: slugObject(organization.slug),
+            acronym: orNull(text(organization.acronym)),
           };
         })
-      : undefined,
+      : null,
     tags: tagProjection(row.tags),
-    // No Payload field, 0/56 populated in Sanity. See the header.
-    relatedContent: undefined,
-  };
+    // No Payload field, 0/56 populated in Sanity — so `null`, which is what
+    // `relatedContent[]{…}` projects on a document that has none. See the header.
+    relatedContent: null,
+  } as unknown as LivedExperienceDetail;
 }
 
 /** Every published, approved slug — `generateStaticParams`'s whole input. */

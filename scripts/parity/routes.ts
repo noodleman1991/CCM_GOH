@@ -67,6 +67,52 @@ export const PARITY_ROUTES: ParityRoute[] = [
       "obligation 10). Also exercises the unset-means-approved moderation rule.",
   },
   {
+    path: "/en/lived-experiences",
+    domain: "lived-experiences",
+    why:
+      "The index, and the only surface `getLivedExperienceIndex` has. It is the " +
+      "route that exercises all three of that read's sub-queries at once — the " +
+      "35 videos, the seven communities and the tags any of them use — and it " +
+      "hands every one of them to a client component, so the whole result also " +
+      "travels through the RSC flight payload. `rawRegion` and `ContentTag.value` " +
+      "are visible nowhere else.",
+  },
+  {
+    path: "/es/lived-experiences",
+    domain: "lived-experiences",
+    why: "es. The same index, so a locale difference cannot hide behind a structural one.",
+  },
+  {
+    path: "/fr/lived-experiences",
+    domain: "lived-experiences",
+    why: "fr, same index — three locales on one route, so a translation-fallback regression shows up as a difference between locales rather than between pages.",
+  },
+  {
+    path: "/ar/lived-experiences",
+    domain: "lived-experiences",
+    why:
+      "ar, same index — the RTL locale, where `dir` and the logical start/end " +
+      "utility classes are part of the rendered output being compared.",
+  },
+  {
+    path: "/es/lived-experiences/lived-experience-3VTei68Svww",
+    domain: "lived-experiences",
+    why:
+      "es. The detail page reads every localized field through " +
+      "`getLocalizedValue`, and this document populates only `en` — so this is " +
+      "where a locale-fallback difference between the two stores would show.",
+  },
+  {
+    path: "/fr/lived-experiences/lived-experience-3VTei68Svww",
+    domain: "lived-experiences",
+    why: "fr, same detail page — the third locale on the same document, for the same reason the index carries three.",
+  },
+  {
+    path: "/ar/lived-experiences/lived-experience-3VTei68Svww",
+    domain: "lived-experiences",
+    why: "ar, same detail page, and the RTL locale — `dir` and the logical start/end utility classes are part of the compared output.",
+  },
+  {
     path: "/en/reader/background-context",
     domain: "system",
     why:
