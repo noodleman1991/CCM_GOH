@@ -355,6 +355,22 @@ The cause is that `livedExperience.status` is **0/56 populated**, and the unset-
 
 Task 13 also holds **five `queryLive` sites** (`:565`, `:650`, `:681`, `:914`, `:947`) — more than the three the earlier count implied — plus `queryRaw` ×2, `createDocument` ×2 and `updateDocument`. Its writes move with it.
 
+### Filtering a Payload `select` field with an unknown value throws; GROQ shrugs
+
+Task 13 found this on `region` and it is **not specific to that field**. Payload backs every `select` with a **Postgres enum** — there are **140 enum types** in `payload_cms`, and the region ones hold exactly their 7 declared values. Filtering one with a value outside its set raises at the database, where the equivalent GROQ simply matches nothing and returns an empty list.
+
+So a reader that passes user input, a URL parameter, or a legacy code straight into a `select` filter turns a quiet empty state into a **500**. Task 13 guarded its own path with `isRegionCode`, but **nothing else in the layer checks for this**, and `pages.ts` (Task 14) filters many select-backed fields — `backgroundType`, `gridColumns`, `contentType`, `mode`, `buttonVariant`, paddings.
+
+**Validate against the declared option set before filtering, in every remaining reader.** An unknown value must produce the empty result GROQ produces, not an exception.
+
+### No write path has been executed against Payload
+
+Tasks 9, 11, 12 and 13 each moved their module's writes and each verified them **with mocked primitives only** — correctly, since the database holds 21 in-flight moderation drafts and I told every agent not to write to it. But the gap is now cumulative: `submitLivedExperience`, the two download trackers, the case-study submission and draft-save paths, and `createWorkspaceOutputDraft` have **never run against Payload**.
+
+Two are known to need shapes Sanity never wrote: `createWorkspaceOutputDraft` must mint an `id` and a unique `slug` (`draft-<uuid>`), and `saveCaseStudyDraft` narrows from Sanity's any-shape storage to 17 declared columns.
+
+**Task 18 must exercise the write paths against a database it is safe to write to** — the production Payload database from Task 2 before it carries traffic, or a throwaway copy — and must not claim the writes are verified on the strength of mocked tests.
+
 ### Tasks 11 and 13 carry the bypass risk
 
 The five `queryLive` call sites all live in these two modules, and **nothing currently asserts they keep choosing `queryLive` after the swap**. That is the exact gap the Phase-1 authorization bypass fell through: `queryLive` and `queryRaw` return the same shape, so a reader that picks the wrong one is invisible to a result-based test.
