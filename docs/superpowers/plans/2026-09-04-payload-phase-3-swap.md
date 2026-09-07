@@ -579,6 +579,20 @@ They return aggregates only, never a case-study field, so the two pending docume
 
 **2. Lived experiences have never appeared in "For You" recommendations.** See the Task 13 section above: the union explicitly lists the type and returns zero of them, because the unset-status branch is news-post-only. Reproduced rather than fixed. Admitting all 56 would be visible.
 
+## A visible change the locale collapse creates: `ogImage` on three URLs
+
+**Measured:** Sanity holds **36 `page` documents and exactly one has an `ogImage`** — `page-toolkits-en`. Payload collapsed those 36 into 9 documents × 4 locales, and **`ogImage` is a single non-localized column**, so the English toolkits image now applies to `es`, `fr` and `ar` too.
+
+At cutover, `/{es,fr,ar}/research-and-action/toolkits` change six `<meta>` tags each: the site default (1200×630) becomes the real image (1200×675). 14b could not have seen this — it verified `/about`, which has no `ogImage` at all.
+
+Three URLs, and arguably an improvement: localized pages gain a real social card instead of a generic fallback. But it **is** a user-visible change, and this phase's premise is that there are none. **Accept it or make `ogImage` localized in Payload (which needs a migration) — the user's call, not an implementer's.**
+
+## Depth is a relationship count, not a nesting count
+
+14c found that 14b's `depth: 1` left every grid-agenda card missing its cover image, type badge and file size. **Payload counts only relationships toward `depth`**, so a page whose blocks reference documents that themselves carry uploads needs **`depth: 3`**.
+
+This is invisible to a unit test — the query succeeds and returns a document, just a hollow one. It surfaced only in the render. **14d inherits it:** the homepage's eleven slots and `regionalCommunityPage`'s `contentGrid` reference the same document types through the same block shapes.
+
 ## Phase 3 exit criteria
 
 - [ ] All 138 exports served by Payload; all 111+ test files green against both backends
