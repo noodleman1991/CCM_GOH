@@ -145,7 +145,13 @@
 import "server-only";
 import type { Where } from "payload";
 import { portableTextToLexical } from "@/lib/content/internal/lexical";
-import { localized, orNull } from "@/lib/content/internal/localized";
+import {
+  altString,
+  assetShape,
+  mediaOf,
+  type PayloadMediaRow,
+} from "@/lib/content/internal/image-shape";
+import { groqObject, localized, orNull } from "@/lib/content/internal/localized";
 import type { LocalizedRaw } from "@/lib/content/internal/localized";
 import { portableText } from "@/lib/content/internal/payload/rich-text";
 import {
@@ -226,14 +232,6 @@ interface CommunityRow {
 }
 
 /** A `media` or `files` row behind an upload field, populated to depth >= 1. */
-interface AssetRow {
-  id?: unknown;
-  url?: string | null;
-  mimeType?: string | null;
-  width?: number | null;
-  height?: number | null;
-  lqip?: string | null;
-}
 
 function isRow(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === "object";
@@ -363,7 +361,7 @@ export async function getLivedExperienceIndex(): Promise<LivedExperienceIndex> {
   return {
     videos: videoRows.map((row) => {
       const region = communityProjection(row.region);
-      const asset = isRow(row.thumbnail?.asset) ? (row.thumbnail.asset as AssetRow) : undefined;
+      const asset = mediaOf(row.thumbnail);
       // Every one of these is a key the GROQ projects, so an unset field is
       // `null` and not absent — see `orNull`. `title` too: it is required on
       // all 56 documents, and matching the projection matters more than
@@ -501,7 +499,7 @@ export async function getLivedExperiencesCarousel(
   return (result?.docs ?? []).map((row) => {
     const author = isRow(row.author) ? (row.author as unknown as AuthorRow) : undefined;
     const community = communityProjection(row.relatedCommunity);
-    const asset = isRow(row.thumbnail?.asset) ? (row.thumbnail.asset as AssetRow) : undefined;
+    const asset = mediaOf(row.thumbnail);
     return {
       _id: String(row.id),
       // The GROQ projects `_type` verbatim; Payload has no `_type` column, and
@@ -513,10 +511,10 @@ export async function getLivedExperiencesCarousel(
       personContext: localized(row.personContext),
       videoLink: orNull(text(row.videoLink)),
       thumbnail: asset
-        ? {
-            asset: { _id: String(asset.id), url: asset.url ?? null, mimeType: asset.mimeType ?? null },
-            alt: localized(row.thumbnail?.alt)?.en ?? null,
-          }
+        ? groqObject({
+            asset: assetShape(asset, ["_id", "url", "mimeType"]),
+            alt: orNull(altString(row.thumbnail?.alt)),
+          })
         : null,
       duration: orNull(text(row.duration)),
       publishedAt: orNull(isoDate(row.publishedAt)),
@@ -910,8 +908,8 @@ export async function getLivedExperienceBySlug(slug: string): Promise<LivedExper
 
   const author = isRow(row.author) ? (row.author as unknown as AuthorRow) : undefined;
   const community = communityProjection(row.relatedCommunity);
-  const thumbnailAsset = isRow(row.thumbnail?.asset) ? (row.thumbnail.asset as AssetRow) : undefined;
-  const videoFile = isRow(row.videoFile) ? (row.videoFile as AssetRow) : undefined;
+  const thumbnailAsset = mediaOf(row.thumbnail);
+  const videoFile = isRow(row.videoFile) ? (row.videoFile as PayloadMediaRow) : undefined;
   const body = row.body?.en ?? row.body?.[LOCALES.find((l) => row.body?.[l]) ?? "en"];
 
   // `orNull` throughout, for the reason `orNull` gives: DETAIL_QUERY names every
@@ -940,21 +938,17 @@ export async function getLivedExperienceBySlug(slug: string): Promise<LivedExper
     duration: orNull(text(row.duration)),
     publishedAt: orNull(isoDate(row.publishedAt)),
     thumbnail: thumbnailAsset
-      ? {
-          asset: {
-            _id: String(thumbnailAsset.id),
-            url: thumbnailAsset.url ?? "",
-            mimeType: orNull(text(thumbnailAsset.mimeType)),
-            metadata: {
-              lqip: orNull(text(thumbnailAsset.lqip)),
-              dimensions:
-                typeof thumbnailAsset.width === "number" && typeof thumbnailAsset.height === "number"
-                  ? { width: thumbnailAsset.width, height: thumbnailAsset.height }
-                  : null,
-            },
-          },
-          alt: orNull(localized(row.thumbnail?.alt)?.en),
-        }
+      ? groqObject({
+          // `urlWhenMissing: ""` because `LivedExperienceDetail` declares
+          // `asset.url` a non-nullable string. No media row in either store
+          // carries a null url, so the two spellings never differ in the data.
+          asset: assetShape(
+            thumbnailAsset,
+            ["_id", "url", "mimeType", "lqip", "dimensions"],
+            { urlWhenMissing: "" },
+          ),
+          alt: orNull(altString(row.thumbnail?.alt)),
+        })
       : null,
     author: author
       ? {

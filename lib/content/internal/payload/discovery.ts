@@ -163,6 +163,12 @@ import {
   updateDocument,
   type PayloadFindQuery,
 } from "@/lib/content/internal/payload-source";
+import {
+  altString,
+  assetShape,
+  imageGroup,
+  mediaOf,
+} from "@/lib/content/internal/image-shape";
 import { groqObject, localized, orNull, type LocalizedRaw } from "@/lib/content/internal/localized";
 import { portableText } from "@/lib/content/internal/payload/rich-text";
 import { safe } from "@/lib/content/internal/safe";
@@ -286,80 +292,31 @@ const APPROVED_OR_UNSET: Where = {
 // Sub-projections
 // ---------------------------------------------------------------------------
 
-interface MediaRow {
-  id?: unknown;
-  url?: string | null;
-  mimeType?: string | null;
-  lqip?: string | null;
-  width?: number | null;
-  height?: number | null;
-  sizes?: unknown;
-}
-
 /**
- * `image{ asset->{_id, url, [mimeType,] metadata{lqip, dimensions{width,height}}}, alt[, caption] }`.
+ * `image{ asset->{_id, url, [mimeType,] metadata{lqip, dimensions{…}}}, alt[, caption] }`.
  *
- * The media row is flattened onto the group alongside `asset`, exactly as
- * `payload/news.ts` does it, so `payload-image-source` can unwrap it without
- * ever reaching `asset._id` (Task 18's blocker 2 owns the tidier fix).
- *
- * `alt` is collapsed to a bare string: Sanity declares it `type: "string"` on
- * every image type this module reads, so a GROQ read of it is a string rather
- * than a locale object.
+ * The shape, the flattened media row emitted beside it and the reason both are
+ * emitted at once all live in `internal/image-shape.ts`.
  */
 function imageProjection(
   group: unknown,
   opts: { mimeType?: boolean; caption?: boolean } = {},
 ): Row | null {
-  if (!isRow(group)) return null;
-  const media = isRow(group.asset) ? (group.asset as MediaRow) : undefined;
-  const url = text(media?.url);
-  if (!media || !url) return null;
-
-  const width = typeof media.width === "number" ? media.width : undefined;
-  const height = typeof media.height === "number" ? media.height : undefined;
-
-  const asset: Row = {
-    _id: String(media.id ?? ""),
-    metadata: groqObject({
-      dimensions: width !== undefined && height !== undefined ? groqObject({ height, width }) : null,
-      lqip: orNull(text(media.lqip)),
-    }),
-    url,
-  };
-  if (opts.mimeType) asset.mimeType = orNull(text(media.mimeType));
-
-  const projection: Row = {
-    alt: orNull(enArm(group.alt) ?? text(group.alt)),
-    asset: groqObject(asset),
-    // The flattened media row. Not part of the GROQ shape; see the note above.
-    ...flattenedMedia(media),
-  };
-  if (opts.caption) projection.caption = null;
-  return groqObject(projection);
-}
-
-/** The media row itself, flattened onto the image group. Kept as its own
- *  function so the six keys are declared once, the way `payload/case-studies.ts`
- *  declares them. */
-function flattenedMedia(media: MediaRow): Row {
-  return {
-    url: media.url ?? null,
-    mimeType: media.mimeType ?? null,
-    width: media.width ?? null,
-    height: media.height ?? null,
-    lqip: media.lqip ?? null,
-    sizes: media.sizes ?? null,
-  };
+  return imageGroup(group, {
+    asset: opts.mimeType
+      ? ["_id", "url", "mimeType", "lqip", "dimensions"]
+      : ["_id", "url", "lqip", "dimensions"],
+    keys: opts.caption ? ["alt", "caption"] : ["alt"],
+  });
 }
 
 /** `coverImage{ asset->{ url } }` — the narrowest asset projection in the
- *  module, and the only one that names neither `_id` nor `metadata`. */
+ *  module, and the only one that names neither `_id` nor `metadata`. It never
+ *  reaches `imageUrl()`, so no flattened media row is emitted. */
 function coverImageProjection(group: unknown): Row | null {
   if (!isRow(group)) return null;
-  const media = isRow(group.asset) ? (group.asset as MediaRow) : undefined;
-  if (!media) return { asset: null };
-  return { asset: groqObject({ url: orNull(text(media.url)) }) };
+  const media = mediaOf(group);
+  return { asset: media ? assetShape(media, ["url"]) : null };
 }
 
 interface TagRow {
@@ -464,15 +421,12 @@ function organizationsProjection(rows: unknown, opts: { logo: boolean }): Row[] 
       acronym: orNull(text(org.acronym)),
     };
     if (opts.logo) {
-      projected.logo = isRow(org.logo)
+      const logo = isRow(org.logo) ? org.logo : undefined;
+      const logoMedia = mediaOf(logo);
+      projected.logo = logo
         ? groqObject({
-            asset: isRow(org.logo.asset)
-              ? groqObject({
-                  _id: String((org.logo.asset as MediaRow).id ?? ""),
-                  url: orNull(text((org.logo.asset as MediaRow).url)),
-                })
-              : null,
-            alt: orNull(enArm(org.logo.alt) ?? text(org.logo.alt)),
+            asset: logoMedia ? assetShape(logoMedia, ["_id", "url"]) : null,
+            alt: orNull(altString(logo.alt)),
           })
         : null;
     }

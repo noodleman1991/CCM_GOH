@@ -155,6 +155,12 @@
  * what Sanity really returns.
  */
 import "server-only";
+import {
+  assetShape,
+  imageGroup,
+  mediaOf,
+  type PayloadMediaRow,
+} from "@/lib/content/internal/image-shape";
 import { groqObject, localized, orNull } from "@/lib/content/internal/localized";
 import type { LocalizedRaw } from "@/lib/content/internal/localized";
 import { portableText } from "@/lib/content/internal/payload/rich-text";
@@ -251,59 +257,19 @@ function relationId(value: unknown): string | undefined {
 // Sub-projections
 // ---------------------------------------------------------------------------
 
-interface MediaRow {
-  id?: unknown;
-  url?: string | null;
-  mimeType?: string | null;
-  lqip?: string | null;
-  width?: number | null;
-  height?: number | null;
-  sizes?: unknown;
-  filename?: string | null;
-  filesize?: number | null;
-}
 
 /**
  * `coverImage{ asset->{_id,url,mimeType,metadata{lqip,dimensions{…}}}, hotspot, crop, alt }`.
  *
  * `alt` collapses to a bare string: Sanity declares it `type: "string"` on
- * `agenda` and on `researchOutput`, so a GROQ read of it is a string. `hotspot`
- * and `crop` are projected by the GROQ and unset on every document in both
- * stores (Payload models focal points as `focalX`/`focalY` on the media row,
- * not as a Sanity hotspot), so they are `null`. See note 6 for the flattened
- * media row.
+ * `agenda` and on `researchOutput`, so a GROQ read of it is a string. The
+ * shape, the flattened media row emitted beside it and why `hotspot`/`crop` are
+ * `null` all live in `internal/image-shape.ts`.
  */
 function coverImageProjection(group: unknown): Agenda["coverImage"] {
-  if (!isRow(group)) return null;
-  const media = isRow(group.asset) ? (group.asset as MediaRow) : undefined;
-  const url = text(media?.url);
-  if (!media || !url) return null;
-
-  const width = num(media.width);
-  const height = num(media.height);
-
-  return groqObject({
-    alt: orNull(localized(group.alt as LocalizedRaw)?.en ?? text(group.alt)),
-    asset: groqObject({
-      _id: String(media.id ?? ""),
-      url,
-      mimeType: orNull(text(media.mimeType)),
-      metadata: groqObject({
-        lqip: orNull(text(media.lqip)),
-        dimensions:
-          width !== undefined && height !== undefined ? groqObject({ width, height }) : null,
-      }),
-    }),
-    crop: null,
-    hotspot: null,
-    // The media row, flattened onto the group so `payload-image-source` can
-    // unwrap it without ever reaching `asset._id`. Note 6.
-    url,
-    mimeType: media.mimeType ?? null,
-    width: width ?? null,
-    height: height ?? null,
-    lqip: media.lqip ?? null,
-    sizes: media.sizes ?? null,
+  return imageGroup(group, {
+    asset: ["_id", "url", "mimeType", "lqip", "dimensions"],
+    keys: ["alt", "crop", "hotspot"],
   }) as unknown as Agenda["coverImage"];
 }
 
@@ -312,20 +278,9 @@ function coverImageProjection(group: unknown): Agenda["coverImage"] {
  *  flattened media row for the same reason. `caption` is projected by the GROQ
  *  and declared by neither schema, so it is `null` on every document. */
 function researchOutputImage(group: unknown): ResearchOutput["image"] {
-  if (!isRow(group)) return null;
-  const media = isRow(group.asset) ? (group.asset as MediaRow) : undefined;
-  const url = text(media?.url);
-  if (!media || !url) return null;
-  return groqObject({
-    alt: orNull(localized(group.alt as LocalizedRaw)?.en ?? text(group.alt)),
-    asset: groqObject({ _id: String(media.id ?? ""), url }),
-    caption: null,
-    url,
-    mimeType: media.mimeType ?? null,
-    width: media.width ?? null,
-    height: media.height ?? null,
-    lqip: media.lqip ?? null,
-    sizes: media.sizes ?? null,
+  return imageGroup(group, {
+    asset: ["_id", "url"],
+    keys: ["alt", "caption"],
   }) as unknown as ResearchOutput["image"];
 }
 
@@ -345,20 +300,14 @@ function fileAttachments(rows: unknown): Agenda["files"] | null {
   if (!Array.isArray(rows)) return null;
   const files = rows.filter(isRow).map((raw) => {
     const row = raw as FileRow;
-    const asset = isRow(row.file) ? (row.file as MediaRow) : undefined;
+    const asset = isRow(row.file) ? (row.file as PayloadMediaRow) : undefined;
     const url = text(asset?.url);
     return groqObject({
       downloadCount: orNull(num(row.downloadCount)),
       file: groqObject({
         asset:
           asset && url
-            ? groqObject({
-                _id: String(asset.id ?? ""),
-                url,
-                originalFilename: orNull(text(asset.filename)),
-                size: orNull(num(asset.filesize)),
-                mimeType: orNull(text(asset.mimeType)),
-              })
+            ? assetShape(asset, ["_id", "url", "originalFilename", "size", "mimeType"])
             : null,
       }),
       language: orNull(text(row.language)),
@@ -414,27 +363,12 @@ function organizationProjection(rows: unknown, fields: readonly string[]): Row[]
   if (!Array.isArray(rows)) return null;
   const orgs = rows.filter(isRow).map((raw) => {
     const org = raw as OrganizationRow;
-    const logoGroup = isRow(org.logo) ? org.logo : undefined;
-    const logoAsset = logoGroup && isRow(logoGroup.asset) ? (logoGroup.asset as MediaRow) : undefined;
-    const logoUrl = text(logoAsset?.url);
     const all: Row = {
       _id: String(org.id ?? ""),
       name: orNull(text(org.name)),
       slug: orNull(slugObject(org.slug)),
       acronym: orNull(text(org.acronym)),
-      logo:
-        logoAsset && logoUrl
-          ? groqObject({
-              alt: orNull(localized(logoGroup?.alt as LocalizedRaw)?.en ?? text(logoGroup?.alt)),
-              asset: groqObject({ _id: String(logoAsset.id ?? ""), url: logoUrl }),
-              url: logoUrl,
-              mimeType: logoAsset.mimeType ?? null,
-              width: logoAsset.width ?? null,
-              height: logoAsset.height ?? null,
-              lqip: logoAsset.lqip ?? null,
-              sizes: logoAsset.sizes ?? null,
-            })
-          : null,
+      logo: imageGroup(org.logo, { asset: ["_id", "url"], keys: ["alt"] }),
     };
     return groqObject(Object.fromEntries(fields.map((key) => [key, all[key]])));
   });
@@ -753,7 +687,7 @@ function versionProjection(rows: unknown): ResearchOutput["versions"] | null {
   if (!Array.isArray(rows)) return null;
   const versions = rows.filter(isRow).map((raw) => {
     const row = raw as VersionRow;
-    const file = isRow(row.file) ? (row.file as MediaRow) : undefined;
+    const file = isRow(row.file) ? (row.file as PayloadMediaRow) : undefined;
     return groqObject({
       _key: versionKey(row.id),
       body: orNull(row.body ? portableText(row.body) : undefined),
@@ -1017,7 +951,7 @@ export async function loadEditableResearchOutputDoc(
     versions: Array.isArray(row.versions)
       ? row.versions.filter(isRow).map((raw) => {
           const version = raw as VersionRow;
-          const file = isRow(version.file) ? (version.file as MediaRow) : undefined;
+          const file = isRow(version.file) ? (version.file as PayloadMediaRow) : undefined;
           return {
             _key: versionKey(version.id),
             kind: text(version.kind),
@@ -1223,7 +1157,7 @@ function agendaIndexProjection(row: AgendaRow, opts: { dereferenceFiles: boolean
   const files = Array.isArray(row.files)
     ? row.files.filter(isRow).map((raw) => {
         const file = raw as FileRow;
-        const asset = isRow(file.file) ? (file.file as MediaRow) : undefined;
+        const asset = isRow(file.file) ? (file.file as PayloadMediaRow) : undefined;
         const base = {
           language: text(file.language) ?? "",
           downloadCount: orNull(num(file.downloadCount)),
@@ -1233,17 +1167,14 @@ function agendaIndexProjection(row: AgendaRow, opts: { dereferenceFiles: boolean
         return groqObject({
           ...base,
           file: groqObject({
-            asset:
-              asset && url
-                ? groqObject({ url, originalFilename: orNull(text(asset.filename)) })
-                : null,
+            asset: asset && url ? assetShape(asset, ["url", "originalFilename"]) : null,
           }),
         });
       })
     : null;
 
   const cover = isRow(row.coverImage) ? row.coverImage : undefined;
-  const coverAsset = cover && isRow(cover.asset) ? (cover.asset as MediaRow) : undefined;
+  const coverAsset = mediaOf(cover);
   const coverUrl = text(coverAsset?.url);
 
   return groqObject({
@@ -1252,7 +1183,7 @@ function agendaIndexProjection(row: AgendaRow, opts: { dereferenceFiles: boolean
     accessLevel: orNull(text(row.accessLevel)),
     agendaType: orNull(text(row.agendaType)),
     coverImage: cover
-      ? groqObject({ asset: coverUrl ? groqObject({ url: coverUrl }) : null })
+      ? groqObject({ asset: coverAsset && coverUrl ? assetShape(coverAsset, ["url"]) : null })
       : null,
     description: orNull(localized(row.description)),
     featured: row.featured ?? null,

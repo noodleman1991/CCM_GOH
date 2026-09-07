@@ -65,24 +65,19 @@
  * instead of quietly pointing at nothing.
  */
 import "server-only";
+import { assetShape, type PayloadMediaRow } from "@/lib/content/internal/image-shape";
 import { lexicalToPortableText } from "@/lib/content/internal/lexical-to-portable-text";
 import type { RichText } from "@/lib/content/types";
-
-/** The parts of a `media` row this file reads. Deliberately not
- *  `payload-types.ts`'s `Media`: a reader may hand in a `select`ed subset. */
-interface MediaLike {
-  id?: unknown;
-  url?: string | null;
-  mimeType?: string | null;
-  lqip?: string | null;
-  width?: number | null;
-  height?: number | null;
-}
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
 
 /** Sanity's `asset->{…}` projection, rebuilt from a `media` row.
+ *
+ *  The shape itself is `internal/image-shape.ts`'s, so this file cannot drift
+ *  from the other six readers the way `{width, height}` once drifted from
+ *  `{height, width}`. `unset: "omit"` is this file's own rule and only this
+ *  file's: see "Why nulls are dropped" above.
  *
  *  `undefined` when the relationship is unpopulated — at `depth: 0` Payload
  *  leaves it as a bare id string, and an id is not a picture. The renderer's
@@ -90,21 +85,9 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
  *  it does for a Sanity image whose asset reference does not resolve. */
 function assetFrom(media: unknown): Record<string, unknown> | undefined {
   if (!isRecord(media)) return undefined;
-  const row = media as MediaLike;
+  const row = media as PayloadMediaRow;
   if (typeof row.url !== "string" || row.url.length === 0) return undefined;
-
-  const dimensions: Record<string, unknown> = {};
-  if (typeof row.width === "number") dimensions.width = row.width;
-  if (typeof row.height === "number") dimensions.height = row.height;
-
-  const metadata: Record<string, unknown> = {};
-  if (typeof row.lqip === "string" && row.lqip.length > 0) metadata.lqip = row.lqip;
-  if (Object.keys(dimensions).length > 0) metadata.dimensions = dimensions;
-
-  const asset: Record<string, unknown> = { _id: String(row.id ?? ""), url: row.url };
-  if (typeof row.mimeType === "string" && row.mimeType.length > 0) asset.mimeType = row.mimeType;
-  if (Object.keys(metadata).length > 0) asset.metadata = metadata;
-  return asset;
+  return assetShape(row, ["_id", "url", "mimeType", "lqip", "dimensions"], { unset: "omit" });
 }
 
 /** The block's own properties, minus the two that are Payload bookkeeping and

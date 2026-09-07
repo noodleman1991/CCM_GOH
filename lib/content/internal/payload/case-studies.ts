@@ -235,6 +235,12 @@
 import "server-only";
 import type { Where } from "payload";
 import { portableTextToLexical } from "@/lib/content/internal/lexical";
+import {
+  imageGroup,
+  mediaOf,
+  type AssetField,
+  type ImageGroupKey,
+} from "@/lib/content/internal/image-shape";
 import { groqObject, localized, orNull } from "@/lib/content/internal/localized";
 import type { LocalizedRaw } from "@/lib/content/internal/localized";
 import { portableText } from "@/lib/content/internal/payload/rich-text";
@@ -280,10 +286,6 @@ const APPROVED: Where = { moderationStatus: { equals: "approved" } };
 
 function text(value: unknown): string | undefined {
   return typeof value === "string" && value.length > 0 ? value : undefined;
-}
-
-function num(value: unknown): number | undefined {
-  return typeof value === "number" ? value : undefined;
 }
 
 /** GROQ's string ordering: by code point, not by locale collation. */
@@ -358,97 +360,26 @@ function stringList(rows: unknown): string[] | undefined {
 // Sub-projections
 // ---------------------------------------------------------------------------
 
-interface MediaRow {
-  id?: unknown;
-  url?: string | null;
-  mimeType?: string | null;
-  lqip?: string | null;
-  width?: number | null;
-  height?: number | null;
-  sizes?: unknown;
-}
+/** How much of `asset->{…}` a given projection asks for, as the field lists
+ *  `internal/image-shape.ts` speaks. */
+const ASSET_SHAPES = {
+  full: ["_id", "url", "mimeType", "lqip", "dimensions"],
+  idUrl: ["_id", "url"],
+  url: ["url"],
+} as const satisfies Record<string, readonly AssetField[]>;
 
-/**
- * The `media` row, flattened onto the image group.
- *
- * `payload-image-source.resolveMedia` refuses any object carrying an `_id`
- * (it is how it tells a Payload media row from one of the thirteen Sanity
- * shapes still reaching the seam), so an image emitted only as Sanity's
- * `asset->{_id, url, …}` resolves to `""` and every picture disappears. The
- * group therefore carries **both** shapes: `asset` for the renderers that read
- * `caseStudy.image.asset.url`, and the media row's own fields for
- * `resolveMedia`, which unwraps them first and never reaches `asset._id`.
- *
- * The same divergence Task 10 recorded as its concern 5 and Task 11 as its
- * note 6: those extra keys are visible in the RSC flight payload wherever the
- * group reaches a client component — here, the list page's gallery view. The
- * plan's Task-18 blocker 2 owns the fix, in `payload-image-source` rather than
- * per reader.
- */
-function flattenedMedia(media: MediaRow): Row {
-  return {
-    url: media.url ?? null,
-    mimeType: media.mimeType ?? null,
-    width: media.width ?? null,
-    height: media.height ?? null,
-    lqip: media.lqip ?? null,
-    sizes: media.sizes ?? null,
-  };
-}
-
-/** How much of `asset->{…}` a given projection asks for. */
-type AssetShape = "full" | "idUrl" | "url";
+type AssetShape = keyof typeof ASSET_SHAPES;
 
 /** `image{ asset->{…}, alt, caption[, hotspot, crop] }`. `keys` names exactly
  *  what the caller's GROQ projects — a key a projection does not name must be
- *  absent, not null. */
+ *  absent, not null. The shape itself, the flattened media row beside it and
+ *  the reason both are emitted at once all live in `internal/image-shape.ts`. */
 function imageProjection(
   group: unknown,
   shape: AssetShape,
-  keys: readonly ("alt" | "caption" | "hotspot" | "crop")[],
+  keys: readonly ImageGroupKey[],
 ): Row | null {
-  if (!isRow(group)) return null;
-  const media = isRow(group.asset) ? (group.asset as MediaRow) : undefined;
-  const url = text(media?.url);
-  if (!media || !url) return null;
-
-  const width = num(media.width);
-  const height = num(media.height);
-
-  let asset: Row;
-  if (shape === "url") {
-    asset = groqObject({ url });
-  } else if (shape === "idUrl") {
-    asset = groqObject({ _id: String(media.id ?? ""), url });
-  } else {
-    asset = groqObject({
-      _id: String(media.id ?? ""),
-      metadata: groqObject({
-        dimensions:
-          width !== undefined && height !== undefined ? groqObject({ height, width }) : null,
-        lqip: orNull(text(media.lqip)),
-      }),
-      mimeType: orNull(text(media.mimeType)),
-      url,
-    });
-  }
-
-  const all: Row = {
-    // `caseStudy.image.alt` is a plain `string` in the Sanity schema; Payload
-    // models it localized, so the `en` arm is the value. See note 6.
-    alt: orNull(localized(group.alt as LocalizedRaw)?.en ?? text(group.alt)),
-    caption: orNull(text(group.caption)),
-    // Payload models a focal point as `focalX`/`focalY` on the media row, not
-    // as a Sanity hotspot; both are unset on every document in both stores.
-    crop: null,
-    hotspot: null,
-  };
-
-  return groqObject({
-    asset,
-    ...Object.fromEntries(keys.map((key) => [key, all[key]])),
-    ...flattenedMedia(media),
-  });
+  return imageGroup(group, { asset: ASSET_SHAPES[shape], keys });
 }
 
 interface TagRow {
@@ -1294,7 +1225,7 @@ export async function getUserSubmissionsAndDrafts(userId: string): Promise<UserS
 
   return {
     submissions: orderedSubmissions.map((row) => {
-      const media = isRow(row.image) && isRow((row.image as Row).asset) ? ((row.image as Row).asset as MediaRow) : undefined;
+      const media = mediaOf(row.image);
       return groqObject({
         _id: String(row.id ?? ""),
         authors: authorProjection(row.authors, ["name", "role"]),

@@ -58,18 +58,12 @@ import { imageUrl } from "@/lib/content/internal/payload-image-source";
 import { query } from "@/lib/content/internal/payload-source";
 import type { HubIllustration, HubIllustrations } from "@/lib/content/illustrations";
 import type { PayloadLocale } from "@/lib/content/internal/payload-source";
+import type { PayloadMediaRow } from "@/lib/content/internal/image-shape";
 
 const LOCALES: PayloadLocale[] = ["en", "es", "fr", "ar"];
 
-interface MediaRow {
-  id?: unknown;
-  url?: string | null;
-  width?: number | null;
-  height?: number | null;
-}
-
 interface IllustrationSlot {
-  asset?: MediaRow | string | null;
+  asset?: PayloadMediaRow | string | null;
   /* `LocalizedRaw` is shared (`internal/localized.ts`), but the `localized()`
    * beside it does not apply here: `HubIllustration.alt` is a `string`, not a
    * locale map, so there is no key order to canonicalise. `altText` picks one

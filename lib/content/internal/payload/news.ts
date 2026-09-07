@@ -186,6 +186,7 @@
  * GROQ's codepoint ordering for the `id` tie-break.
  */
 import "server-only";
+import { imageGroup } from "@/lib/content/internal/image-shape";
 import { groqObject, localized, orNull } from "@/lib/content/internal/localized";
 import type { LocalizedRaw } from "@/lib/content/internal/localized";
 import { portableText } from "@/lib/content/internal/payload/rich-text";
@@ -314,57 +315,21 @@ function searchableText(row: Row): (string | undefined)[] {
 // Sub-projections
 // ---------------------------------------------------------------------------
 
-interface MediaRow {
-  id?: unknown;
-  url?: string | null;
-  mimeType?: string | null;
-  lqip?: string | null;
-  width?: number | null;
-  height?: number | null;
-  sizes?: unknown;
-}
-
 /**
- * `image{ asset->{…}, alt, caption }`, plus the media row itself. See note 3.
+ * `image{ asset->{…}, alt, caption }`, plus the media row itself.
  *
- * `alt` is collapsed to a bare string because Sanity declares it
- * `type: "string"` on `newsPost` (and `externalSource`), so a GROQ read of it
- * is a string, not a locale object — the import spread the one authored value
- * across the locales the document populates. `caption` is projected by the
- * GROQ and declared by **neither** schema, so it is `null` on every document in
- * both stores.
+ * The shape, the flattened media row emitted beside it and the reason both are
+ * emitted at once all live in `internal/image-shape.ts` — which is also where
+ * `alt` collapsing to a bare string is explained (Sanity declares it
+ * `type: "string"` on `newsPost` and on `externalSource`). `caption` is
+ * projected by the GROQ and declared by **neither** schema, so it is `null` on
+ * every document in both stores.
  */
 function imageProjection(group: unknown, opts: { caption: boolean }): NewsPostImage | null {
-  if (!isRow(group)) return null;
-  const media = isRow(group.asset) ? (group.asset as MediaRow) : undefined;
-  const url = text(media?.url);
-  if (!media || !url) return null;
-
-  const width = typeof media.width === "number" ? media.width : undefined;
-  const height = typeof media.height === "number" ? media.height : undefined;
-
-  const projection: Record<string, unknown> = {
-    asset: {
-      _id: String(media.id ?? ""),
-      url,
-      mimeType: orNull(text(media.mimeType)),
-      metadata: {
-        lqip: orNull(text(media.lqip)),
-        dimensions: width !== undefined && height !== undefined ? { width, height } : null,
-      },
-    },
-    alt: orNull(localized(group.alt as LocalizedRaw)?.en ?? text(group.alt)),
-    // The media row, flattened onto the group so `payload-image-source` can
-    // unwrap it without ever reaching `asset._id`. Note 3.
-    url,
-    mimeType: media.mimeType ?? null,
-    width: width ?? null,
-    height: height ?? null,
-    lqip: media.lqip ?? null,
-    sizes: media.sizes ?? null,
-  };
-  if (opts.caption) projection.caption = null;
-  return projection as unknown as NewsPostImage;
+  return imageGroup(group, {
+    asset: ["_id", "url", "mimeType", "lqip", "dimensions"],
+    keys: opts.caption ? ["alt", "caption"] : ["alt"],
+  }) as unknown as NewsPostImage | null;
 }
 
 /** `ogImage{ asset->{_id, url} }` — a narrower asset projection than the one
@@ -373,19 +338,7 @@ function imageProjection(group: unknown, opts: { caption: boolean }): NewsPostIm
  *  directly, but a future caller passing it to `imageUrl` must not silently
  *  fall through to Sanity. */
 function ogImageProjection(group: unknown): NewsPost["ogImage"] | null {
-  if (!isRow(group)) return null;
-  const media = isRow(group.asset) ? (group.asset as MediaRow) : undefined;
-  const url = text(media?.url);
-  if (!media || !url) return null;
-  return {
-    asset: { _id: String(media.id ?? ""), url },
-    url,
-    mimeType: media.mimeType ?? null,
-    width: media.width ?? null,
-    height: media.height ?? null,
-    lqip: media.lqip ?? null,
-    sizes: media.sizes ?? null,
-  } as unknown as NewsPost["ogImage"];
+  return imageGroup(group, { asset: ["_id", "url"] }) as unknown as NewsPost["ogImage"] | null;
 }
 
 /** Sanity's `slug` field, as the object a bare `slug` projection returns. */
@@ -794,20 +747,7 @@ export async function getRelatedNews(newsId: string, tags: string[], limit: numb
 }
 
 function relatedImageProjection(group: unknown): Row | null {
-  if (!isRow(group)) return null;
-  const media = isRow(group.asset) ? (group.asset as MediaRow) : undefined;
-  const url = text(media?.url);
-  if (!media || !url) return null;
-  return {
-    asset: { _id: String(media.id ?? ""), url, metadata: { lqip: orNull(text(media.lqip)) } },
-    alt: orNull(localized(group.alt as LocalizedRaw)?.en ?? text(group.alt)),
-    url,
-    mimeType: media.mimeType ?? null,
-    width: media.width ?? null,
-    height: media.height ?? null,
-    lqip: media.lqip ?? null,
-    sizes: media.sizes ?? null,
-  };
+  return imageGroup(group, { asset: ["_id", "url", "lqip"], keys: ["alt"] });
 }
 
 // ---------------------------------------------------------------------------
@@ -978,29 +918,7 @@ export async function getApprovedExternalSources(
 }
 
 function externalImageProjection(group: unknown): Row | null {
-  if (!isRow(group)) return null;
-  const media = isRow(group.asset) ? (group.asset as MediaRow) : undefined;
-  const url = text(media?.url);
-  if (!media || !url) return null;
-  const width = typeof media.width === "number" ? media.width : undefined;
-  const height = typeof media.height === "number" ? media.height : undefined;
-  return {
-    asset: {
-      _id: String(media.id ?? ""),
-      url,
-      metadata: {
-        lqip: orNull(text(media.lqip)),
-        dimensions: width !== undefined && height !== undefined ? { width, height } : null,
-      },
-    },
-    alt: orNull(localized(group.alt as LocalizedRaw)?.en ?? text(group.alt)),
-    url,
-    mimeType: media.mimeType ?? null,
-    width: width ?? null,
-    height: height ?? null,
-    lqip: media.lqip ?? null,
-    sizes: media.sizes ?? null,
-  };
+  return imageGroup(group, { asset: ["_id", "url", "lqip", "dimensions"], keys: ["alt"] });
 }
 
 function externalTagProjection(rows: unknown): Row[] | null {
