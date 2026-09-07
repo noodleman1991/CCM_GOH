@@ -275,6 +275,16 @@ Measured, so the work lands in the right place. `ContentTag.value` is declared `
 
 So Task 6 owns the type declaration and Tasks 10 and 11 must flatten their projections. **Expect the swap to change runtime shape on those two paths** — Payload returns the flat string either way, so a consumer reading `value.current` breaks, and a consumer rendering `value` directly stops emitting `[object Object]`. The parity harness will show it as a diff; treat that diff as the finding, not as harness noise.
 
+### Ordering ties must be broken deterministically, and the tie-break must reproduce Sanity
+
+`publishedAt` on case studies is a near-total tie: **25 of 28 share `2024-01-01T00:00:00Z`**, and there are only **2 distinct values** across all 28 (measured against `production_2`, control agenda = 29). That timestamp is a backfill default, not an editorial date.
+
+An `order(publishedAt desc)` is therefore unordered in practice, and Sanity and Payload pick different — equally valid — representatives. Task 6 hit this on the homepage region strip. **Left alone it blinds the parity harness on every date-ordered surface**, which is most of case studies, news and outputs.
+
+So: add an explicit secondary sort to **both** backends, and **prefer a tie-break that reproduces what Sanity returns today** — try `_id`/`id` ascending first, then descending, then `_createdAt`. If one reproduces the current output, the phase's "nothing user-facing changes" premise holds exactly and the harness gains determinism for free.
+
+If none reproduces it, say so and stop: choosing an order that changes which case studies appear in the region strips is a visible change and needs a human decision, not an implementer's judgment. Record which tie-break you used and the evidence it matches.
+
 ### Tasks 11 and 13 carry the bypass risk
 
 The five `queryLive` call sites all live in these two modules, and **nothing currently asserts they keep choosing `queryLive` after the swap**. That is the exact gap the Phase-1 authorization bypass fell through: `queryLive` and `queryRaw` return the same shape, so a reader that picks the wrong one is invisible to a result-based test.
