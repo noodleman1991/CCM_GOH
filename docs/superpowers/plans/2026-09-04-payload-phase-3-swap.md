@@ -337,6 +337,24 @@ So the Payload arm has nothing to write to. Make it an **explicit, documented no
 
 `caseStudyDrafts` is a **separate collection** (1 row) with owner-based access — `read` and `create`/`update`/`delete` are both `ownerOrEditor`, deliberately widened in Phase 2 so a `community_member` can autosave and reopen their own submission. Preserve that; it is the collection's whole purpose.
 
+### Task 13: the cross-type union silently excludes an entire content type
+
+`discovery.ts:366` asks for `_type in ["caseStudy", "livedExperience", "newsPost"]` and gates on:
+
+```
+(status == "approved" || (!defined(status) && _type == "newsPost"))
+```
+
+**Measured on the published perspective (what the app actually reads): 29 rows — 25 `caseStudy`, 4 `newsPost`, and ZERO `livedExperience`**, while 56 lived experiences have slugs. Control: agenda = 29.
+
+The cause is that `livedExperience.status` is **0/56 populated**, and the unset-status branch is restricted to `newsPost`. So no lived experience can ever match, and the "For You" candidates have silently never included that type. That is a pre-existing production defect, not something the swap introduces.
+
+**This must not be quietly fixed during the swap, and it is not the implementer's call.** Payload's `publishedAndApproved` applies exists-or-approved to `livedExperiences` — using it here would suddenly admit 56 documents into a recommendation surface that has never shown any, which is user-visible. **Reproduce today's behaviour exactly, report the defect, and leave the decision to the user.**
+
+(A first measurement of mine appeared to show a draft leaking into this union. It was an artifact of querying without `perspective=published`; the app's `query()` pins that perspective and the draft does not appear. Recorded so the false positive is not rediscovered.)
+
+Task 13 also holds **five `queryLive` sites** (`:565`, `:650`, `:681`, `:914`, `:947`) — more than the three the earlier count implied — plus `queryRaw` ×2, `createDocument` ×2 and `updateDocument`. Its writes move with it.
+
 ### Tasks 11 and 13 carry the bypass risk
 
 The five `queryLive` call sites all live in these two modules, and **nothing currently asserts they keep choosing `queryLive` after the swap**. That is the exact gap the Phase-1 authorization bypass fell through: `queryLive` and `queryRaw` return the same shape, so a reader that picks the wrong one is invisible to a result-based test.
