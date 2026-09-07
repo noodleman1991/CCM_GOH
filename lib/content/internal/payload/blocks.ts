@@ -366,6 +366,163 @@ function splitImageColumn(row: Row): Row {
 }
 
 /**
+ * `CAROUSEL_2_PROJECTION`.
+ *
+ * **Unexercised on both sides.** `carousel-2` is offered by the `pages`
+ * collection and authored zero times on a page — its four real instances are the
+ * homepage's `livedExperiences` slot, i.e. 14d's — and even there `testimonial`
+ * is empty on all four, so the site renders this carousel with no cards today.
+ * Mapped against the schema so 14d inherits it and so an editor adding one gets
+ * a rendered block rather than a dropped one.
+ *
+ * The two `coalesce`s are the projection's own, and both are legacy fallbacks
+ * Payload models as separate columns: `jobTitle` (localized) falls back to
+ * `title` (the deprecated single-language one) wrapped as `{en: …}`, and
+ * `quote` (localized rich text) falls back to `body` the same way.
+ *
+ * `project->{_id, name}` has no Payload counterpart — the `project` document
+ * type has 0 live documents and was not ported — so it is `null`, which is also
+ * what Sanity answers for the 21 testimonials that never set it.
+ */
+function carousel2Block(row: Row): Row {
+  return groqObject({
+    _key: blockKey(row),
+    _type: "carousel-2",
+    description: orNull(text(row.description)),
+    padding: paddingObject(row.padding),
+    testimonial: Array.isArray(row.testimonial)
+      ? listOrNull(row.testimonial.filter(isRow).map(testimonialCard))
+      : null,
+    title: orNull(text(row.title)),
+  });
+}
+
+function testimonialCard(row: Row): Row {
+  return groqObject({
+    _id: String(row.id ?? ""),
+    featured: row.featured ?? null,
+    image: imageGroup(row.image, {
+      asset: ["_id", "url", "mimeType", "lqip", "dimensions"],
+      keys: ["alt", "crop", "hotspot"],
+    }),
+    name: orNull(text(row.name)),
+    organization: namedReference(row.organization),
+    project: null,
+    quote: orNull(localizedRichText(row.quote, row.body)),
+    rating: orNull(num(row.rating)),
+    relatedCommunity: namedReference(row.relatedCommunity),
+    title: orNull(localized(row.jobTitle as LocalizedRaw) ?? wrapEn(text(row.title))),
+  });
+}
+
+/** `coalesce(quote, {"en": body})` — the localized rich text, or the legacy
+ *  single-language column wrapped as its English arm. */
+function localizedRichText(value: unknown, legacy: unknown): Record<string, unknown> | undefined {
+  if (isRow(value)) {
+    const arms = Object.entries(value)
+      .filter(([, state]) => state != null)
+      .map(([locale, state]) => [locale, portableText(state)] as const);
+    if (arms.length > 0) return groqObject(Object.fromEntries(arms));
+  }
+  return legacy == null ? undefined : groqObject({ en: portableText(legacy) });
+}
+
+function wrapEn(value: string | undefined): Record<string, string> | undefined {
+  return value === undefined ? undefined : { en: value };
+}
+
+/** `x->{_id, name}` — the two-key dereference `carousel-2` uses three times. */
+function namedReference(value: unknown): Row | null {
+  if (!isRow(value)) return null;
+  return groqObject({
+    _id: String(value.id ?? ""),
+    name: orNull(localized(value.name as LocalizedRaw) ?? text(value.name)),
+  });
+}
+
+/** `[]` is Payload's spelling of an array field nobody filled in; GROQ answers
+ *  `null` for the same field. */
+function listOrNull(rows: Row[]): Row[] | null {
+  return rows.length > 0 ? rows : null;
+}
+
+/** `CTA_1_PROJECTION`. `sectionWidth: "full"` cannot come back — see note 3 in
+ *  the header. */
+function cta1Block(row: Row): Row {
+  return groqObject({
+    _key: blockKey(row),
+    _type: "cta-1",
+    background: backgroundObject(row.background),
+    body: richText(row.body),
+    links: linksArray(row.links),
+    padding: paddingObject(row.padding),
+    sectionWidth: orNull(text(row.sectionWidth)),
+    stackAlign: orNull(text(row.stackAlign)),
+    tagLine: orNull(text(row.tagLine)),
+    title: orNull(text(row.title)),
+  });
+}
+
+/**
+ * `SECTION_HEADER_PROJECTION`.
+ *
+ * `link` is projected by the GROQ and declared by neither the Sanity schema nor
+ * the Payload block, so it is `null` on all three instances in both stores —
+ * the same "projected, undeclared" shape `caption` has on an image group.
+ */
+function sectionHeaderBlock(row: Row): Row {
+  return groqObject({
+    _key: blockKey(row),
+    _type: "section-header",
+    description: orNull(text(row.description)),
+    link: null,
+    padding: paddingObject(row.padding),
+    sectionWidth: orNull(text(row.sectionWidth)),
+    stackAlign: orNull(text(row.stackAlign)),
+    tagLine: orNull(text(row.tagLine)),
+    title: orNull(text(row.title)),
+  });
+}
+
+/**
+ * `LOGO_CLOUD_1_PROJECTION`.
+ *
+ * `images[]{ ..., label, orgType, asset->{…}, alt }` spreads, so each entry is
+ * an image group in its own right rather than a wrapper around one: `asset` and
+ * `alt` sit directly on the array row, beside the two keys the projection adds.
+ * The entry's `_key` comes from the array row's id the same way a block's does.
+ *
+ * `logo-cloud-1.tsx` is a **client** component, so these entries reach the RSC
+ * flight payload — which is exactly where the `_type` decision in the header
+ * would have been visible, and where the flattened media keys are.
+ */
+function logoCloud1Block(row: Row): Row {
+  return groqObject({
+    _key: blockKey(row),
+    _type: "logo-cloud-1",
+    description: orNull(text(row.description)),
+    images: Array.isArray(row.images)
+      ? listOrNull(row.images.filter(isRow).map(logoCloudImage).filter((i): i is Row => i !== null))
+      : null,
+    layout: orNull(text(row.layout)),
+    motionSpeed: orNull(text(row.motionSpeed)),
+    padding: paddingObject(row.padding),
+    title: orNull(text(row.title)),
+  });
+}
+
+function logoCloudImage(row: Row): Row | null {
+  const projected = projectedImage(row);
+  if (!projected) return null;
+  return groqObject({
+    _key: blockKey(row),
+    ...projected,
+    label: orNull(text(row.label)),
+    orgType: orNull(text(row.orgType)),
+  });
+}
+
+/**
  * `GRID_ROW_PROJECTION`.
  *
  * `headerImage`'s asset projection is the one that does **not** name
@@ -600,6 +757,14 @@ function mapBlock(row: unknown): Row | undefined {
       return splitRowBlock(row);
     case "gridRow":
       return gridRowBlock(row);
+    case "carousel2":
+      return carousel2Block(row);
+    case "cta1":
+      return cta1Block(row);
+    case "sectionHeader":
+      return sectionHeaderBlock(row);
+    case "logoCloud1":
+      return logoCloud1Block(row);
     default:
       return undefined;
   }

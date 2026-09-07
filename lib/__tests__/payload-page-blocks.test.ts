@@ -435,3 +435,192 @@ describe("grid-row", () => {
     );
   });
 });
+
+describe("cta-1", () => {
+  const row = {
+    id: "ff814faa-a4ab-4385-9d9d-38bde416e6fe:blocks:8962257964bc",
+    blockType: "cta1",
+    sectionWidth: "default",
+    stackAlign: "left",
+    tagLine: null,
+    title: "Built by Spiro-Spero",
+    body: null,
+    links: [],
+    padding: { top: null, bottom: null },
+    background: BACKGROUND,
+  };
+
+  it("emits CTA_1_PROJECTION's keys in Sanity's order", () => {
+    expect(Object.keys(one(row))).toEqual([
+      "_key",
+      "_type",
+      "background",
+      "body",
+      "links",
+      "padding",
+      "sectionWidth",
+      "stackAlign",
+      "tagLine",
+      "title",
+    ]);
+    expect(one(row)._type).toBe("cta-1");
+  });
+
+  it("has no `image` or `imagePosition`, which hero-1 has and this block does not", () => {
+    // 29 documents store `_type: "cta-1"` carrying hero-1's field set; spec
+    // §7.1 rules the declaration right and the stored tag wrong, and the
+    // importer maps those onto hero1. Nothing here should reintroduce them.
+    expect(one(row)).not.toHaveProperty("image");
+    expect(one(row)).not.toHaveProperty("imagePosition");
+  });
+});
+
+describe("section-header", () => {
+  const row = {
+    id: "page-about-es:blocks:fd5b8e24ee7d",
+    blockType: "sectionHeader",
+    sectionWidth: "default",
+    stackAlign: "left",
+    tagLine: null,
+    title: "El Viaje de Connecting Climate Minds",
+    description: "A continuación encontrarás la historia…",
+    padding: { top: null, bottom: null },
+  };
+
+  it("emits SECTION_HEADER_PROJECTION's keys in Sanity's order", () => {
+    expect(Object.keys(one(row))).toEqual([
+      "_key",
+      "_type",
+      "description",
+      "link",
+      "padding",
+      "sectionWidth",
+      "stackAlign",
+      "tagLine",
+      "title",
+    ]);
+    expect(one(row)._type).toBe("section-header");
+  });
+
+  it("answers null for `link`, which the GROQ projects and neither schema declares", () => {
+    expect(one(row).link).toBeNull();
+  });
+});
+
+describe("logo-cloud-1", () => {
+  const row = {
+    id: "page-about-en:blocks:c84d22b75df2",
+    blockType: "logoCloud1",
+    title: "Who is involved",
+    description: "We are a Wellcome funded project…",
+    layout: null,
+    motionSpeed: null,
+    padding: { top: null, bottom: null },
+    images: [
+      {
+        id: "page-about-en:blocks[2].images:ba4effaf07d3",
+        asset: MEDIA,
+        alt: "Climate Cares Logo",
+        label: null,
+        orgType: null,
+      },
+    ],
+  };
+
+  it("emits LOGO_CLOUD_1_PROJECTION's keys in Sanity's order", () => {
+    expect(Object.keys(one(row))).toEqual([
+      "_key",
+      "_type",
+      "description",
+      "images",
+      "layout",
+      "motionSpeed",
+      "padding",
+      "title",
+    ]);
+    expect(one(row)._type).toBe("logo-cloud-1");
+  });
+
+  it("treats each images[] row as an image group in its own right", () => {
+    // `images[]{ ..., label, orgType, asset->{…}, alt }` spreads, so `asset`
+    // and `alt` sit ON the array row rather than inside a nested group — and
+    // the row's own `_key` comes from its id, as a block's does.
+    const image = (one(row).images as Record<string, unknown>[])[0];
+    expect(image._key).toBe("ba4effaf07d3");
+    expect(image.alt).toBe("Climate Cares Logo");
+    expect(image.label).toBeNull();
+    expect(image.orgType).toBeNull();
+    expect((image.asset as Record<string, unknown>)._id).toBe(MEDIA.id);
+    // Same reason as hero-1's: logo-cloud-1 is a client component and calls
+    // imageUrl() on each of these.
+    expect(image).not.toHaveProperty("_type");
+  });
+
+  it("answers null for an images array Payload spells empty", () => {
+    expect(one({ ...row, images: [] }).images).toBeNull();
+  });
+});
+
+describe("carousel-2", () => {
+  const row = {
+    id: "homepage:livedExperiences:c1",
+    blockType: "carousel2",
+    title: "What people say",
+    description: null,
+    padding: { top: null, bottom: null },
+    testimonial: [],
+  };
+
+  it("emits CAROUSEL_2_PROJECTION's keys in Sanity's order", () => {
+    expect(Object.keys(one(row))).toEqual([
+      "_key",
+      "_type",
+      "description",
+      "padding",
+      "testimonial",
+      "title",
+    ]);
+    expect(one(row)._type).toBe("carousel-2");
+    // Empty on all four real instances — the carousel renders no cards today.
+    expect(one(row).testimonial).toBeNull();
+  });
+
+  it("coalesces the two legacy single-language columns the projection names", () => {
+    const withCard = {
+      ...row,
+      testimonial: [
+        {
+          id: "testimonial-1",
+          name: "A name",
+          jobTitle: null,
+          title: "Researcher",
+          image: { asset: null, alt: null },
+          quote: null,
+          body: null,
+          rating: 5,
+          featured: false,
+          relatedCommunity: { id: "rc-1", name: { en: "Oceania" } },
+          organization: null,
+        },
+      ],
+    };
+    const card = (one(withCard).testimonial as Record<string, unknown>[])[0];
+    expect(Object.keys(card)).toEqual([
+      "_id",
+      "featured",
+      "image",
+      "name",
+      "organization",
+      "project",
+      "quote",
+      "rating",
+      "relatedCommunity",
+      "title",
+    ]);
+    // `coalesce(jobTitle, {"en": title})`.
+    expect(card.title).toEqual({ en: "Researcher" });
+    // `project` has no Payload counterpart — 0 live documents, never ported.
+    expect(card.project).toBeNull();
+    expect(card.relatedCommunity).toEqual({ _id: "rc-1", name: { en: "Oceania" } });
+  });
+});
