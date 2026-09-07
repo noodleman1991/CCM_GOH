@@ -10,6 +10,22 @@ vi.mock("@/lib/content/internal/sanity-source", () => ({
   deleteDocument: vi.fn(),
 }));
 
+// `payload-source`, not the reader: `query`, `queryPreviewable` and `queryRaw`
+// all return the same shape, so a reader that picks the wrong one is invisible
+// to a result-based test. Mocking the source leaves the real reader running and
+// makes its primitive choice observable — which is the whole point on this
+// module, whose six write-feeding reads all have to stay on `queryRaw`.
+vi.mock("@/lib/content/internal/payload-source", () => ({
+  query: vi.fn(),
+  queryPreviewable: vi.fn(),
+  queryRaw: vi.fn(),
+  queryLive: vi.fn(),
+  uploadFileAsset: vi.fn(),
+  createDocument: vi.fn(),
+  updateDocument: vi.fn(),
+  deleteDocument: vi.fn(),
+}));
+
 vi.mock("@/lib/prisma", () => ({
   prisma: {
     workspaceOutput: {
@@ -34,6 +50,16 @@ import {
   updateDocument,
   deleteDocument,
 } from "@/lib/content/internal/sanity-source";
+import {
+  query as payloadQuery,
+  queryPreviewable as payloadQueryPreviewable,
+  queryRaw as payloadQueryRaw,
+  queryLive as payloadQueryLive,
+  uploadFileAsset as payloadUploadFileAsset,
+  createDocument as payloadCreateDocument,
+  updateDocument as payloadUpdateDocument,
+  deleteDocument as payloadDeleteDocument,
+} from "@/lib/content/internal/payload-source";
 import { prisma } from "@/lib/prisma";
 import {
   getCaseStudyBySlug,
@@ -78,6 +104,14 @@ const mockCreateDocument = vi.mocked(createDocument);
 const mockUpdateDocument = vi.mocked(updateDocument);
 const mockDeleteDocument = vi.mocked(deleteDocument);
 const mockFindFirst = vi.mocked(prisma.workspaceOutput.findFirst);
+const mockPayloadQuery = vi.mocked(payloadQuery);
+const mockPayloadQueryPreviewable = vi.mocked(payloadQueryPreviewable);
+const mockPayloadQueryRaw = vi.mocked(payloadQueryRaw);
+const mockPayloadQueryLive = vi.mocked(payloadQueryLive);
+const mockPayloadUpload = vi.mocked(payloadUploadFileAsset);
+const mockPayloadCreate = vi.mocked(payloadCreateDocument);
+const mockPayloadUpdate = vi.mocked(payloadUpdateDocument);
+const mockPayloadDelete = vi.mocked(payloadDeleteDocument);
 
 beforeEach(() => {
   mockQuery.mockReset();
@@ -88,8 +122,20 @@ beforeEach(() => {
   mockUpdateDocument.mockReset();
   mockDeleteDocument.mockReset();
   mockFindFirst.mockReset();
+  mockPayloadQuery.mockReset();
+  mockPayloadQueryPreviewable.mockReset();
+  mockPayloadQueryRaw.mockReset();
+  mockPayloadQueryLive.mockReset();
+  mockPayloadUpload.mockReset();
+  mockPayloadCreate.mockReset();
+  mockPayloadUpdate.mockReset();
+  mockPayloadDelete.mockReset();
+  delete process.env.CONTENT_BACKEND_CASE_STUDIES;
 });
-afterEach(() => vi.restoreAllMocks());
+afterEach(() => {
+  vi.restoreAllMocks();
+  delete process.env.CONTENT_BACKEND_CASE_STUDIES;
+});
 
 describe("getCaseStudyBySlug", () => {
   it("returns the detail doc from the source", async () => {
@@ -754,5 +800,661 @@ describe("getApprovedCaseStudiesByContributor", () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
     mockQuery.mockRejectedValue(new Error("network error"));
     await expect(getApprovedCaseStudiesByContributor("u1")).resolves.toEqual([]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// The Payload arm
+//
+// Nothing above this line was edited except the shared mock/reset block: the 85
+// tests are the Sanity contract and they are what both backends have to
+// satisfy. Everything below sets `CONTENT_BACKEND_CASE_STUDIES=payload`, mocks
+// `payload-source` rather than the reader, and asserts the same contract plus
+// the four things only the primitive choice, the status mapping or the flight
+// payload can show.
+// ---------------------------------------------------------------------------
+
+/** One approved, published case study, as Payload really hands it back at
+ *  `locale: "all"` and `depth: 2`: every locale spelled out with `null` for the
+ *  untranslated arms, `[]` for the unset relationships, a full ISO instant for
+ *  a `datetime` column, a `[lng, lat]` array for a `point`, a group spelled out
+ *  even when empty, and the media row nested under `image.asset`. */
+function payloadCaseStudyRow(over: Record<string, unknown> = {}) {
+  return {
+    id: "case-study-15",
+    slug: "japan-s-shinrin-yoku",
+    sanityUpdatedAt: "2026-07-29T11:16:26.000Z",
+    updatedAt: "2026-09-04T11:13:07.424Z",
+    title: { en: "Shinrin-yoku", es: "Shinrin-yoku ES", fr: null, ar: null },
+    excerpt: { en: "An excerpt.", es: null, fr: null, ar: null },
+    content: { en: null, es: null, fr: null, ar: null },
+    topic: "mental-health",
+    layout: null,
+    region: "esea",
+    themes: [],
+    populations: [],
+    moderationStatus: "approved",
+    // Sanity returns `2024-01-01T00:00:00Z`; Postgres always emits the millis.
+    publishedAt: "2024-01-01T00:00:00.000Z",
+    submittedAt: null,
+    submittedBy: null,
+    featured: false,
+    image: {
+      asset: {
+        id: "image-a282930-5760x3240-jpg",
+        url: "/payload-api/media/file/case-study-15.jpg?prefix=cms%2Fmedia",
+        mimeType: "image/jpeg",
+        lqip: "data:image/jpeg;base64,AAAA",
+        width: 5760,
+        height: 3240,
+        sizes: { crop800x450: { url: "/payload-api/media/file/case-study-15-800x450.jpg", width: 800, height: 450 } },
+      },
+      alt: { en: "A forest", es: null, fr: null, ar: null },
+      caption: null,
+    },
+    authors: [
+      {
+        id: "case-study-15:authors:author-1",
+        userId: null,
+        name: "CCM Community",
+        email: null,
+        role: "lead",
+        affiliation: null,
+        clerkUserId: null,
+        clerkUsername: null,
+        clerkImageUrl: null,
+      },
+    ],
+    organizations: [],
+    tags: [
+      {
+        id: "tag-connection-to-nature",
+        label: { en: "Connection to Nature", es: null, fr: null, ar: null },
+        value: "connection-to-nature",
+        color: "#8b5cf6",
+        category: "topic",
+      },
+    ],
+    relatedCommunity: {
+      id: "regional-community-eastern-and-south-eastern-asia",
+      name: { en: "Eastern and South Eastern Asia Regional Community", es: null, fr: null, ar: null },
+      slug: "eastern-and-south-eastern-asia",
+    },
+    // A Payload `group` is spelled out even when nothing inside it is set.
+    studyPeriod: { startDate: null, endDate: null },
+    locationText: { country: "Japan", city: "" },
+    // A Payload `point` is [lng, lat].
+    studyLocation: [138.25, 36.2],
+    locationDisplayText: "Japan",
+    locationPrecision: "country",
+    locationCountryCode: "JPN",
+    studyAreas: [],
+    seoTitle: null,
+    seoDescription: null,
+    canonicalUrl: null,
+    reviewNotes: null,
+    reviewedBy: null,
+    reviewedAt: null,
+    ...over,
+  };
+}
+
+describe("case studies, answered by Payload", () => {
+  beforeEach(() => {
+    process.env.CONTENT_BACKEND_CASE_STUDIES = "payload";
+  });
+
+  // -------------------------------------------------------------------------
+  // The primitive, not just the result
+  //
+  // This is the gap the Phase-1 authorization bypass fell through: `query`,
+  // `queryPreviewable` and `queryRaw` return the same shape, so a reader that
+  // picks the wrong one cannot fail a test that only looks at what came back.
+  // -------------------------------------------------------------------------
+  describe("the primitive, not just the result", () => {
+    it("reads every public list through `query` and never through a draft-aware one", async () => {
+      mockPayloadQuery.mockResolvedValue({ docs: [] } as never);
+      await getCaseStudySlugs();
+      await getApprovedCaseStudies();
+      await getFeaturedCaseStudies();
+      await getFilteredCaseStudies({});
+      await getCaseStudyFilterTags();
+      await getCaseStudyFilterCommunities();
+      await getAvailableCaseStudyTags();
+      await getActiveCaseStudyCommunities();
+      await getApprovedCaseStudyIndexDocs();
+
+      expect(mockPayloadQuery).toHaveBeenCalled();
+      expect(mockPayloadQueryRaw).not.toHaveBeenCalled();
+      expect(mockPayloadQueryLive).not.toHaveBeenCalled();
+      // And the Sanity source is never touched once the flag is set.
+      expect(mockQuery).not.toHaveBeenCalled();
+    });
+
+    it("keeps the detail page on `queryPreviewable`, so an editor's draft preview survives", async () => {
+      mockPayloadQueryPreviewable.mockResolvedValue({ docs: [] } as never);
+      await getCaseStudyBySlug("x");
+      expect(mockPayloadQueryPreviewable).toHaveBeenCalledTimes(1);
+      expect(mockPayloadQuery).not.toHaveBeenCalled();
+      expect(mockPayloadQueryRaw).not.toHaveBeenCalled();
+    });
+
+    it("getCaseStudyRevisions reads through payload `queryRaw` — not `query`, not `queryLive`", async () => {
+      mockPayloadQueryRaw.mockResolvedValue({ docs: [] } as never);
+      await getCaseStudyRevisions("u1");
+      expect(mockPayloadQueryRaw).toHaveBeenCalledWith(
+        expect.objectContaining({ type: "find", collection: "caseStudies" }),
+      );
+      expect(mockPayloadQuery).not.toHaveBeenCalled();
+      expect(mockPayloadQueryLive).not.toHaveBeenCalled();
+      expect(mockPayloadQueryPreviewable).not.toHaveBeenCalled();
+    });
+
+    it("loadEditableCaseStudy's gate reads through payload `queryRaw`, by id, drafts visible", async () => {
+      mockPayloadQueryRaw.mockResolvedValue({
+        id: "cs1",
+        title: { en: "A study" },
+        submittedBy: "u1",
+        moderationStatus: "pending",
+      } as never);
+      await loadEditableCaseStudy("cs1", "u1");
+      expect(mockPayloadQueryRaw).toHaveBeenCalledWith(
+        expect.objectContaining({ type: "findByID", collection: "caseStudies", id: "cs1" }),
+      );
+      expect(mockPayloadQuery).not.toHaveBeenCalled();
+      expect(mockPayloadQueryLive).not.toHaveBeenCalled();
+    });
+
+    it("submitCaseStudy's edit gate reads through payload `queryRaw`", async () => {
+      mockPayloadQueryRaw.mockResolvedValue({ id: "cs1", submittedBy: "u1", moderationStatus: "pending" } as never);
+      await submitCaseStudy({
+        userId: "u1",
+        title: { en: "T" },
+        content: [],
+        authors: [{ name: "A" }],
+        tags: [],
+        editId: "cs1",
+      });
+      expect(mockPayloadQueryRaw).toHaveBeenCalledWith(
+        expect.objectContaining({ type: "findByID", collection: "caseStudies", id: "cs1" }),
+      );
+      expect(mockPayloadQueryLive).not.toHaveBeenCalled();
+      expect(mockPayloadQuery).not.toHaveBeenCalled();
+    });
+
+    it("the find-or-create organization lookup reads through payload `queryRaw`", async () => {
+      mockPayloadQueryRaw.mockResolvedValue({ docs: [] } as never);
+      mockPayloadCreate.mockResolvedValue({ id: "new" } as never);
+      await submitCaseStudy({
+        userId: "u1",
+        title: { en: "T" },
+        content: [],
+        authors: [{ name: "A" }],
+        tags: [],
+        organizationName: "Universiti Putra Malaysia",
+      });
+      expect(mockPayloadQueryRaw).toHaveBeenCalledWith(
+        expect.objectContaining({ type: "find", collection: "organizations" }),
+      );
+      expect(mockPayloadQuery).not.toHaveBeenCalled();
+    });
+
+    it("both draft ownership checks read through payload `queryRaw`", async () => {
+      mockPayloadQueryRaw.mockResolvedValue({ docs: [{ id: "d1" }] } as never);
+      await saveCaseStudyDraft("u1", "d1", { title: { en: "T" } });
+      await deleteCaseStudyDraft("u1", "d1");
+      expect(mockPayloadQueryRaw).toHaveBeenCalledTimes(2);
+      for (const call of mockPayloadQueryRaw.mock.calls) {
+        expect(call[0]).toMatchObject({ type: "find", collection: "caseStudyDrafts" });
+      }
+      expect(mockPayloadQuery).not.toHaveBeenCalled();
+      expect(mockPayloadQueryLive).not.toHaveBeenCalled();
+    });
+
+    it("getLatestCaseStudyDraft reads through payload `queryRaw`, so a stale autosave is never overwritten", async () => {
+      mockPayloadQueryRaw.mockResolvedValue({ docs: [] } as never);
+      await getLatestCaseStudyDraft("u1");
+      expect(mockPayloadQueryRaw).toHaveBeenCalledWith(
+        expect.objectContaining({ type: "find", collection: "caseStudyDrafts" }),
+      );
+      expect(mockPayloadQuery).not.toHaveBeenCalled();
+    });
+  });
+
+  // -------------------------------------------------------------------------
+  // Approved AND published — the two pending documents stay non-public
+  // -------------------------------------------------------------------------
+  describe("the moderation gate", () => {
+    const approvedClause = { moderationStatus: { equals: "approved" } };
+
+    it("requires approved on every read that returns a case study to a public surface", async () => {
+      mockPayloadQuery.mockResolvedValue({ docs: [] } as never);
+      mockPayloadQueryPreviewable.mockResolvedValue({ docs: [] } as never);
+
+      await getCaseStudyBySlug("x");
+      await getCaseStudySlugs();
+      await getApprovedCaseStudies();
+      await getFeaturedCaseStudies();
+      await getFilteredCaseStudies({});
+      await getCaseStudiesByRegion("oceania");
+      await searchCaseStudies("forest");
+      await getCaseStudySearchRecords();
+      await getApprovedCaseStudyIndexDocs();
+      await getApprovedCaseStudiesByContributor("u1");
+      await getApprovedCaseStudyCountsBySubmitter(["u1"]);
+
+      const descriptors = [
+        ...mockPayloadQuery.mock.calls.map((c) => c[0]),
+        ...mockPayloadQueryPreviewable.mock.calls.map((c) => c[0]),
+      ] as unknown as Array<Record<string, unknown>>;
+      // `publishedCaseStudyReferences` (the two filter-count reads) is the
+      // documented exception and is not exercised here.
+      const caseStudyReads = descriptors.filter((d) => d.collection === "caseStudies");
+      expect(caseStudyReads.length).toBeGreaterThan(0);
+      for (const descriptor of caseStudyReads) {
+        expect(JSON.stringify(descriptor.where)).toContain(JSON.stringify(approvedClause));
+      }
+    });
+
+    it("counts approved case studies, not merely published ones", async () => {
+      mockPayloadQuery.mockResolvedValue(25 as never);
+      await expect(getApprovedCaseStudyCount()).resolves.toBe(25);
+      expect(mockPayloadQuery).toHaveBeenCalledWith(
+        expect.objectContaining({ type: "count", collection: "caseStudies", where: approvedClause }),
+      );
+    });
+
+    it("drops a pending case study from the approved list even when Payload returns one", async () => {
+      // Defence in depth: the `where` above is the real gate, but a reader that
+      // projected a pending row would hand `status: "pending"` to a public
+      // surface. Nothing here should ever be reachable.
+      mockPayloadQuery.mockResolvedValue({
+        docs: [payloadCaseStudyRow({ moderationStatus: "approved" })],
+      } as never);
+      const [cs] = await getApprovedCaseStudies();
+      expect(cs.status).toBe("approved");
+    });
+  });
+
+  // -------------------------------------------------------------------------
+  // The status mapping, both directions
+  // -------------------------------------------------------------------------
+  describe("moderationStatus <-> status", () => {
+    it("reads Payload's moderationStatus back out as the public `status`", async () => {
+      mockPayloadQueryPreviewable.mockResolvedValue({
+        docs: [payloadCaseStudyRow({ moderationStatus: "approved" })],
+      } as never);
+      const doc = await getCaseStudyBySlug("japan-s-shinrin-yoku");
+      expect(doc?.status).toBe("approved");
+      expect(doc).not.toHaveProperty("moderationStatus");
+    });
+
+    it("getCaseStudiesByStatus filters on moderationStatus while keeping its public parameter", async () => {
+      mockPayloadQueryPreviewable.mockResolvedValue({ docs: [] } as never);
+      await getCaseStudiesByStatus("revision");
+      expect(mockPayloadQueryPreviewable).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { moderationStatus: { equals: "revision" } } }),
+      );
+    });
+
+    it("a resubmission writes moderationStatus: pending — never a `status` key Payload would drop", async () => {
+      mockPayloadQueryRaw.mockResolvedValue({ id: "cs1", submittedBy: "u1", moderationStatus: "revision" } as never);
+      await submitCaseStudy({
+        userId: "u1",
+        title: { en: "Updated" },
+        content: [],
+        authors: [{ name: "A" }],
+        tags: [],
+        editId: "cs1",
+      });
+      expect(mockPayloadUpdate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          collection: "caseStudies",
+          id: "cs1",
+          data: expect.objectContaining({ moderationStatus: "pending" }),
+        }),
+      );
+      const [{ data }] = mockPayloadUpdate.mock.calls[0] as [{ data: Record<string, unknown> }];
+      expect(data).not.toHaveProperty("status");
+      // Slug and submittedBy are preserved on this arm too.
+      expect(data).not.toHaveProperty("slug");
+      expect(data).not.toHaveProperty("submittedBy");
+    });
+
+    it("a new submission is created pending, published, with the seam's own id", async () => {
+      mockPayloadCreate.mockResolvedValue({ id: "new-id" } as never);
+      const result = await submitCaseStudy({
+        userId: "u1",
+        title: { en: "A brand new study" },
+        content: [],
+        authors: [{ name: "A" }],
+        tags: ["tag-1"],
+      });
+      expect(result.status).toBe("pending");
+      expect(mockPayloadCreate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          collection: "caseStudies",
+          draft: false,
+          data: expect.objectContaining({ moderationStatus: "pending", submittedBy: "u1" }),
+        }),
+      );
+    });
+
+    it("updateCaseStudy renames a `status` patch key rather than writing a column Payload lacks", async () => {
+      await updateCaseStudy("cs1", { notifiedStatus: "approved" } as never);
+      expect(mockPayloadUpdate).toHaveBeenCalledWith(
+        expect.objectContaining({ id: "cs1", data: { notifiedStatus: "approved" } }),
+      );
+      mockPayloadUpdate.mockClear();
+      await updateCaseStudy("cs1", { status: "approved" } as never);
+      const [{ data }] = mockPayloadUpdate.mock.calls[0] as [{ data: Record<string, unknown> }];
+      expect(data).toEqual({ moderationStatus: "approved" });
+    });
+  });
+
+  // -------------------------------------------------------------------------
+  // Ordering — `_id asc` reproduces Sanity's total tie
+  // -------------------------------------------------------------------------
+  describe("ordering", () => {
+    it("breaks the total publishedAt tie by `_id` ascending", async () => {
+      mockPayloadQuery.mockResolvedValue({
+        docs: [
+          payloadCaseStudyRow({ id: "case-study-37" }),
+          payloadCaseStudyRow({ id: "case-study-11" }),
+          payloadCaseStudyRow({ id: "case-study-23" }),
+        ],
+      } as never);
+      const rows = await getApprovedCaseStudies();
+      expect(rows.map((r) => r._id)).toEqual(["case-study-11", "case-study-23", "case-study-37"]);
+    });
+
+    it("still puts a newer publishedAt first, and only then falls back to the id", async () => {
+      mockPayloadQuery.mockResolvedValue({
+        docs: [
+          payloadCaseStudyRow({ id: "case-study-11", publishedAt: "2023-01-01T00:00:00.000Z" }),
+          payloadCaseStudyRow({ id: "case-study-37", publishedAt: "2025-01-01T00:00:00.000Z" }),
+        ],
+      } as never);
+      const rows = await getApprovedCaseStudies();
+      expect(rows.map((r) => r._id)).toEqual(["case-study-37", "case-study-11"]);
+    });
+
+    it("reverses for the RTL locale, as the region strip's `order(publishedAt asc)` does", async () => {
+      mockPayloadQuery.mockResolvedValue({
+        docs: [
+          payloadCaseStudyRow({ id: "case-study-11", publishedAt: "2023-01-01T00:00:00.000Z" }),
+          payloadCaseStudyRow({ id: "case-study-37", publishedAt: "2025-01-01T00:00:00.000Z" }),
+        ],
+      } as never);
+      const rows = await getCaseStudiesByRegion("oceania", "ar");
+      expect(rows.map((r) => r._id)).toEqual(["case-study-11", "case-study-37"]);
+    });
+  });
+
+  // -------------------------------------------------------------------------
+  // The shapes only the flight payload reveals
+  // -------------------------------------------------------------------------
+  describe("the projection", () => {
+    it("emits a GROQ-shaped detail document — sorted keys, nulls for unset fields", async () => {
+      mockPayloadQueryPreviewable.mockResolvedValue({ docs: [payloadCaseStudyRow()] } as never);
+      const doc = (await getCaseStudyBySlug("x")) as unknown as Record<string, unknown>;
+
+      // Sanity alphabetises the keys of every object it returns.
+      expect(Object.keys(doc)).toEqual([...Object.keys(doc)].sort());
+      expect(Object.keys(doc.title as Record<string, string>)).toEqual(["en", "es"]);
+      // A projected-but-unset field is `null`, never absent.
+      for (const key of ["seoTitle", "seoDescription", "canonicalUrl", "reviewNotes", "reviewedBy", "reviewedAt", "layout", "projects", "relatedContent", "studyAreas", "studyPeriod", "submittedAt", "submittedBy"]) {
+        expect(doc[key]).toBeNull();
+      }
+      // Sanity omits a zero-millisecond suffix; Postgres does not.
+      expect(doc.publishedAt).toBe("2024-01-01T00:00:00Z");
+      // A Payload `point` becomes a Sanity geopoint.
+      expect(doc.studyLocation).toEqual({ _type: "geopoint", lat: 36.2, lng: 138.25 });
+      // A bare `slug` projection is the slug object.
+      expect(doc.slug).toEqual({ _type: "slug", current: "japan-s-shinrin-yoku" });
+    });
+
+    it("rebuilds Sanity's `asset->{…}` projection and leaves the media row for the image source", async () => {
+      mockPayloadQueryPreviewable.mockResolvedValue({ docs: [payloadCaseStudyRow()] } as never);
+      const doc = await getCaseStudyBySlug("x");
+      expect(doc?.image?.asset).toEqual({
+        _id: "image-a282930-5760x3240-jpg",
+        metadata: { dimensions: { height: 3240, width: 5760 }, lqip: "data:image/jpeg;base64,AAAA" },
+        mimeType: "image/jpeg",
+        url: "/payload-api/media/file/case-study-15.jpg?prefix=cms%2Fmedia",
+      });
+      // `image.alt` is a plain string in the Sanity schema, localized in Payload.
+      expect(doc?.image?.alt).toBe("A forest");
+      // And the flattened row `payload-image-source.resolveMedia` unwraps.
+      expect((doc?.image as unknown as Record<string, unknown>).url).toBe(
+        "/payload-api/media/file/case-study-15.jpg?prefix=cms%2Fmedia",
+      );
+    });
+
+    it("binds a BARE tag `value` as the slug object, matching what Sanity returns", async () => {
+      mockPayloadQueryPreviewable.mockResolvedValue({ docs: [payloadCaseStudyRow()] } as never);
+      const doc = await getCaseStudyBySlug("x");
+      expect(doc?.tags?.[0]).toEqual({
+        _id: "tag-connection-to-nature",
+        color: "#8b5cf6",
+        label: { en: "Connection to Nature" },
+        value: { _type: "slug", current: "connection-to-nature" },
+      });
+    });
+
+    it("flattens the tag value where the GROQ writes `\"value\": value.current`", async () => {
+      mockPayloadQuery
+        .mockResolvedValueOnce({ docs: [payloadCaseStudyRow()] } as never)
+        .mockResolvedValueOnce({
+          docs: [
+            {
+              id: "tag-connection-to-nature",
+              label: { en: "Connection to Nature", es: null, fr: null, ar: null },
+              value: "connection-to-nature",
+              color: "#8b5cf6",
+              category: "topic",
+            },
+          ],
+        } as never);
+      const [tag] = await getCaseStudyFilterTags();
+      expect(tag.value).toBe("connection-to-nature");
+      expect(tag.caseStudyCount).toBe(1);
+    });
+
+    it("projects `authors` with every named key, and binds it bare with only the stored ones", async () => {
+      mockPayloadQueryPreviewable.mockResolvedValue({ docs: [payloadCaseStudyRow()] } as never);
+      const detail = await getCaseStudyBySlug("x");
+      expect(detail?.authors?.[0]).toEqual({
+        affiliation: null,
+        email: null,
+        name: "CCM Community",
+        role: "lead",
+        userId: null,
+      });
+
+      mockPayloadQuery.mockResolvedValue({ docs: [payloadCaseStudyRow()] } as never);
+      const [listItem] = await getFilteredCaseStudies({});
+      // Bound bare, so the stored object: `_key`, and no key for a field the
+      // document never set.
+      expect(listItem.authors).toEqual([{ _key: "author-1", name: "CCM Community", role: "lead" }]);
+    });
+
+    it("collapses an empty Payload group to the null GROQ returns", async () => {
+      mockPayloadQuery.mockResolvedValue({
+        docs: [payloadCaseStudyRow({ studyPeriod: { startDate: "2024-11-21T00:00:00.000Z", endDate: null } })],
+      } as never);
+      const [withPeriod] = await getApprovedCaseStudies();
+      expect(withPeriod.studyPeriod).toEqual({ endDate: null, startDate: "2024-11-21" });
+
+      mockPayloadQuery.mockResolvedValue({ docs: [payloadCaseStudyRow()] } as never);
+      const [withoutPeriod] = await getApprovedCaseStudies();
+      expect(withoutPeriod.studyPeriod).toBeNull();
+    });
+
+    it("returns the list page's community name and slug the way its GROQ aliases them", async () => {
+      mockPayloadQuery.mockResolvedValue({ docs: [payloadCaseStudyRow()] } as never);
+      const [item] = await getFilteredCaseStudies({});
+      expect(item.relatedCommunity).toEqual({ en: "Eastern and South Eastern Asia Regional Community" });
+      expect(item.communitySlug).toBe("eastern-and-south-eastern-asia");
+      expect(item.slug).toBe("japan-s-shinrin-yoku");
+    });
+
+    it("filters the list in the reader, across all four locales", async () => {
+      mockPayloadQuery.mockResolvedValue({
+        docs: [
+          payloadCaseStudyRow({ id: "a", title: { en: "Forests", es: null, fr: null, ar: null } }),
+          payloadCaseStudyRow({ id: "b", title: { en: null, es: "Bosques", fr: null, ar: null } }),
+        ],
+      } as never);
+      const spanish = await getFilteredCaseStudies({ search: "bosq" });
+      expect(spanish.map((r) => r._id)).toEqual(["b"]);
+
+      mockPayloadQuery.mockResolvedValue({
+        docs: [payloadCaseStudyRow({ id: "a" }), payloadCaseStudyRow({ id: "b", tags: [] })],
+      } as never);
+      const tagged = await getFilteredCaseStudies({ tags: ["connection-to-nature"] });
+      expect(tagged.map((r) => r._id)).toEqual(["a"]);
+    });
+
+    it("answers the OG card's two fields", async () => {
+      mockPayloadQuery.mockResolvedValue({ docs: [payloadCaseStudyRow()] } as never);
+      await expect(getCaseStudyOgData("x")).resolves.toEqual({
+        region: "Eastern and South Eastern Asia Regional Community",
+        title: { en: "Shinrin-yoku", es: "Shinrin-yoku ES" },
+      });
+    });
+  });
+
+  // -------------------------------------------------------------------------
+  // The drafts collection, whose whole purpose is owner access
+  // -------------------------------------------------------------------------
+  describe("caseStudyDrafts", () => {
+    it("refuses to update a draft the caller does not own, and writes nothing", async () => {
+      mockPayloadQueryRaw.mockResolvedValue({ docs: [] } as never);
+      await expect(saveCaseStudyDraft("u2", "d1", {})).rejects.toBeInstanceOf(CaseStudyDraftNotFoundError);
+      expect(mockPayloadUpdate).not.toHaveBeenCalled();
+    });
+
+    it("refuses to delete a draft the caller does not own, and deletes nothing", async () => {
+      mockPayloadQueryRaw.mockResolvedValue({ docs: [] } as never);
+      await expect(deleteCaseStudyDraft("u2", "d1")).rejects.toBeInstanceOf(CaseStudyDraftNotFoundError);
+      expect(mockPayloadDelete).not.toHaveBeenCalled();
+    });
+
+    it("scopes the ownership lookup to the caller's own id", async () => {
+      mockPayloadQueryRaw.mockResolvedValue({ docs: [{ id: "d1" }] } as never);
+      await deleteCaseStudyDraft("u1", "d1");
+      expect(mockPayloadQueryRaw).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { and: [{ id: { equals: "d1" } }, { userId: { equals: "u1" } }] },
+        }),
+      );
+      expect(mockPayloadDelete).toHaveBeenCalledWith({ collection: "caseStudyDrafts", id: "d1" });
+    });
+
+    it("creates a draft carrying the owner's id and a fresh lastSaved", async () => {
+      mockPayloadCreate.mockResolvedValue({ id: "d-new" } as never);
+      await saveCaseStudyDraft("u1", undefined, { topic: "mental-health" });
+      expect(mockPayloadCreate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          collection: "caseStudyDrafts",
+          data: expect.objectContaining({ userId: "u1", topic: "mental-health" }),
+        }),
+      );
+    });
+
+    it("returns the newest draft with the shape the submission form reads", async () => {
+      mockPayloadQueryRaw.mockResolvedValue({
+        docs: [
+          { id: "d-old", userId: "u1", lastSaved: "2026-01-01T00:00:00.000Z", title: { en: "Old", es: null } },
+          { id: "d-new", userId: "u1", lastSaved: "2026-08-11T10:54:47.530Z", title: { en: "New", es: null }, tags: [{ value: "t1" }] },
+        ],
+      } as never);
+      const draft = await getLatestCaseStudyDraft("u1");
+      expect(draft?._id).toBe("d-new");
+      expect(draft?._type).toBe("caseStudyDraft");
+      expect(draft?.lastSaved).toBe("2026-08-11T10:54:47.530Z");
+      expect(draft?.tags).toEqual(["t1"]);
+    });
+  });
+
+  // -------------------------------------------------------------------------
+  // The remaining writes
+  // -------------------------------------------------------------------------
+  describe("the submission's other writes", () => {
+    it("uploads a featured image through the Payload asset store, not Sanity's", async () => {
+      mockPayloadUpload.mockResolvedValue({ id: "media-1" } as never);
+      mockPayloadCreate.mockResolvedValue({ id: "cs-new" } as never);
+      await submitCaseStudy({
+        userId: "u1",
+        title: { en: "T" },
+        content: [],
+        authors: [{ name: "A" }],
+        tags: [],
+        image: { buffer: Buffer.from("x"), filename: "a.jpg", contentType: "image/jpeg" },
+      });
+      expect(mockPayloadUpload).toHaveBeenCalledTimes(1);
+      expect(mockUploadFileAsset).not.toHaveBeenCalled();
+      const [{ data }] = mockPayloadCreate.mock.calls[0] as [{ data: Record<string, unknown> }];
+      expect(data.image).toEqual({ asset: "media-1", alt: "Featured image for T" });
+    });
+
+    it("reuses an existing organization rather than creating a second one", async () => {
+      mockPayloadQueryRaw.mockResolvedValue({ docs: [{ id: "org-1" }] } as never);
+      mockPayloadCreate.mockResolvedValue({ id: "cs-new" } as never);
+      await submitCaseStudy({
+        userId: "u1",
+        title: { en: "T" },
+        content: [],
+        authors: [{ name: "A" }],
+        tags: [],
+        organizationName: "Universiti Putra Malaysia",
+      });
+      const creates = mockPayloadCreate.mock.calls.map((c) => (c[0] as { collection: string }).collection);
+      expect(creates).toEqual(["caseStudies"]);
+      const [{ data }] = mockPayloadCreate.mock.calls[0] as [{ data: Record<string, unknown> }];
+      expect(data.organizations).toEqual(["org-1"]);
+    });
+
+    it("throws CaseStudyEditNotAllowedError for an approved document, and writes nothing", async () => {
+      mockPayloadQueryRaw.mockResolvedValue({ id: "cs1", submittedBy: "u1", moderationStatus: "approved" } as never);
+      mockFindFirst.mockResolvedValue(null as never);
+      await expect(
+        submitCaseStudy({
+          userId: "u1",
+          title: { en: "T" },
+          content: [],
+          authors: [{ name: "A" }],
+          tags: [],
+          editId: "cs1",
+        }),
+      ).rejects.toBeInstanceOf(CaseStudyEditNotAllowedError);
+      expect(mockPayloadUpdate).not.toHaveBeenCalled();
+    });
+
+    it("does not synthesise `draft` onto moderationStatus in the edit gate", async () => {
+      // `loadEditableCaseStudy`'s allow-list contains the literal "draft",
+      // which is Sanity conflating a moderation state with a draft state. An
+      // approved document must stay non-reopenable.
+      mockPayloadQueryRaw.mockResolvedValue({
+        id: "cs1",
+        submittedBy: "u1",
+        moderationStatus: "approved",
+      } as never);
+      await expect(loadEditableCaseStudy("cs1", "u1")).resolves.toBeNull();
+    });
+
+    it("reopens a pending document for its own submitter", async () => {
+      mockPayloadQueryRaw.mockResolvedValue({
+        id: "cs1",
+        submittedBy: "u1",
+        moderationStatus: "pending",
+        title: { en: "A study", es: null, fr: null, ar: null },
+        topic: "mental-health",
+      } as never);
+      const doc = await loadEditableCaseStudy("cs1", "u1");
+      expect(doc?._sanityId).toBe("cs1");
+      expect(doc?._review).toEqual({ status: "pending", reviewNotes: null });
+    });
   });
 });

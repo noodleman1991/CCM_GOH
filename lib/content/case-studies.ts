@@ -1,5 +1,8 @@
 import "server-only";
 import { v4 as uuidv4 } from "uuid";
+import { activeBackend } from "@/lib/content/internal/backend";
+import * as payloadCaseStudies from "@/lib/content/internal/payload/case-studies";
+import { uploadFileAsset as uploadPayloadFileAsset } from "@/lib/content/internal/payload-source";
 import { safe } from "@/lib/content/internal/safe";
 import {
   createDocument,
@@ -14,6 +17,23 @@ import type { Locale, Localized, RichText, SearchRecord } from "@/lib/content/ty
 import { localize } from "@/lib/content/types";
 import { prisma, safeQuery } from "@/lib/prisma";
 import { generateCaseStudySlug } from "@/lib/validation/case-study";
+
+/**
+ * The module's own name, as `CONTENT_BACKEND_CASE_STUDIES` spells it.
+ *
+ * Every export below keeps its signature and gains one `if (onPayload())`
+ * line; the Payload half lives in `lib/content/internal/payload/case-studies.ts`,
+ * whose header carries the measurements and the eight decisions this swap rests
+ * on — the bidirectional `status`/`moderationStatus` mapping, the two published
+ * documents that make the approved filter load-bearing, the `_id asc` tie-break
+ * that reproduces Sanity's order, and which read primitive each of the six
+ * write-feeding reads must call.
+ */
+const DOMAIN = "case-studies";
+
+function onPayload(): boolean {
+  return activeBackend(DOMAIN) === "payload";
+}
 
 export type CaseStudyStatus = "pending" | "rejected" | "revision" | "approved";
 
@@ -274,6 +294,7 @@ const CASE_STUDIES_STATIC_PARAMS_QUERY = `
 `;
 
 export async function getCaseStudyBySlug(slug: string): Promise<CaseStudy | null> {
+  if (onPayload()) return payloadCaseStudies.getCaseStudyBySlug(slug);
   // fetchCaseStudyBySlug's original sanityFetch call omitted both
   // perspective/stega, so cachedFetch's own draftMode() check decided draft
   // vs. published — that is what let an editor previewing this case study in
@@ -282,6 +303,7 @@ export async function getCaseStudyBySlug(slug: string): Promise<CaseStudy | null
 }
 
 export async function getCaseStudySlugs(): Promise<string[]> {
+  if (onPayload()) return payloadCaseStudies.getCaseStudySlugs();
   const rows = await query<{ slug: string }[]>(CASE_STUDIES_STATIC_PARAMS_QUERY);
   return (rows ?? []).map((r) => r.slug);
 }
@@ -303,6 +325,7 @@ export interface CaseStudyOgData {
 
 export async function getCaseStudyOgData(slug: string): Promise<CaseStudyOgData | null> {
   return safe("case-study-og", null, async () => {
+    if (onPayload()) return payloadCaseStudies.getCaseStudyOgData(slug);
     const doc = await query<CaseStudyOgData | null>(
       `*[_type == "caseStudy" && slug.current == $slug][0]{ title, "region": relatedCommunity->name.en }`,
       { slug },
@@ -335,11 +358,13 @@ const FEATURED_CASE_STUDIES_QUERY = `
 
 export async function getApprovedCaseStudies(locale?: Locale, limit = 12): Promise<CaseStudy[]> {
   void locale; // inert — preserved from the original dead helper, which never filtered on it
+  if (onPayload()) return payloadCaseStudies.getApprovedCaseStudies(limit);
   const rows = await query<CaseStudy[] | null>(APPROVED_CASE_STUDIES_QUERY, { limit });
   return rows ?? [];
 }
 
 export async function getFeaturedCaseStudies(limit = 3): Promise<CaseStudy[]> {
+  if (onPayload()) return payloadCaseStudies.getFeaturedCaseStudies(limit);
   const rows = await query<CaseStudy[] | null>(FEATURED_CASE_STUDIES_QUERY, { limit });
   return rows ?? [];
 }
@@ -381,6 +406,7 @@ const CASE_STUDIES_BY_USER_QUERY = `*[_type == "caseStudy" && submittedBy == $us
 }`;
 
 export async function getCaseStudiesByUser(userId: string, limit = 12): Promise<CaseStudy[]> {
+  if (onPayload()) return payloadCaseStudies.getCaseStudiesByUser(userId, limit);
   // fetchCaseStudiesByUser's original sanityFetch call omitted both
   // perspective/stega — same draft-preview requirement as getCaseStudyBySlug above.
   const rows = await queryPreviewable<CaseStudy[] | null>(CASE_STUDIES_BY_USER_QUERY, { userId, limit });
@@ -431,6 +457,10 @@ const CASE_STUDIES_BY_STATUS_QUERY = `*[_type == "caseStudy" && status == $statu
 }`;
 
 export async function getCaseStudiesByStatus(status: CaseStudyStatus, limit = 50): Promise<CaseStudy[]> {
+  // The public vocabulary is `status`; Payload stores `moderationStatus`. The
+  // reader maps the filter, so this signature — and this value set — is
+  // unchanged on both backends.
+  if (onPayload()) return payloadCaseStudies.getCaseStudiesByStatus(status, limit);
   // fetchCaseStudiesByStatus's original sanityFetch call omitted both
   // perspective/stega — same draft-preview requirement as getCaseStudyBySlug above.
   const rows = await queryPreviewable<CaseStudy[] | null>(CASE_STUDIES_BY_STATUS_QUERY, { status, limit });
@@ -481,6 +511,7 @@ const CASE_STUDY_TRANSLATIONS_QUERY = `*[_type == "caseStudy" && _id == $caseStu
 }`;
 
 export async function getCaseStudyTranslations(caseStudyId: string): Promise<CaseStudyTranslations | null> {
+  if (onPayload()) return payloadCaseStudies.getCaseStudyTranslations(caseStudyId);
   return query<CaseStudyTranslations | null>(CASE_STUDY_TRANSLATIONS_QUERY, { caseStudyId });
 }
 
@@ -608,6 +639,7 @@ export async function getCaseStudiesByRegion(
   // GROQ parameters cannot be used for sort directions — string interpolation is required here.
   const isRTL = locale === "ar";
   const orderDirection = isRTL ? "asc" : "desc";
+  if (onPayload()) return payloadCaseStudies.getCaseStudiesByRegion(rcSlug, orderDirection, limit);
   const rows = await query<CaseStudyRegionListItem[] | null>(APPROVED_CASE_STUDIES_BY_RC_QUERY_TEMPLATE(orderDirection), {
     slug: rcSlug,
     limit,
@@ -652,6 +684,7 @@ export async function searchCaseStudies(
   term?: string,
   options: CaseStudySearchOptions = {},
 ): Promise<CaseStudySearchResult[]> {
+  if (onPayload()) return payloadCaseStudies.searchCaseStudies(term, options);
   const { language, tags, limit = 20 } = options;
   const filters = [`_type == "caseStudy"`, `status == "approved"`];
   const params: Record<string, unknown> = { limit };
@@ -759,6 +792,7 @@ export interface CaseStudyListItem {
 }
 
 export async function getFilteredCaseStudies(filters: CaseStudyListFilters): Promise<CaseStudyListItem[]> {
+  if (onPayload()) return payloadCaseStudies.getFilteredCaseStudies(filters);
   const conditions: string[] = ['_type == "caseStudy"', 'status == "approved"'];
   const params: Record<string, unknown> = {};
 
@@ -850,6 +884,7 @@ export interface CaseStudyFilterCommunity {
 }
 
 export async function getCaseStudyFilterTags(): Promise<CaseStudyFilterTag[]> {
+  if (onPayload()) return payloadCaseStudies.getCaseStudyFilterTags();
   return query<CaseStudyFilterTag[]>(`
       *[_type == "tag" && count(*[_type == "caseStudy" && references(^._id)]) > 0]
       | order(label.en asc) {
@@ -864,6 +899,7 @@ export async function getCaseStudyFilterTags(): Promise<CaseStudyFilterTag[]> {
 }
 
 export async function getCaseStudyFilterCommunities(): Promise<CaseStudyFilterCommunity[]> {
+  if (onPayload()) return payloadCaseStudies.getCaseStudyFilterCommunities();
   return query<CaseStudyFilterCommunity[]>(`
       *[_type == "regionalCommunity"]
       | order(order asc, name.en asc) {
@@ -895,6 +931,7 @@ export interface CaseStudyCommunityOption {
 }
 
 export async function getAvailableCaseStudyTags(): Promise<CaseStudyTagOption[]> {
+  if (onPayload()) return payloadCaseStudies.getAvailableCaseStudyTags();
   return query<CaseStudyTagOption[]>(`
     *[_type == "tag"] | order(label.en asc) {
       _id,
@@ -905,6 +942,7 @@ export async function getAvailableCaseStudyTags(): Promise<CaseStudyTagOption[]>
 }
 
 export async function getActiveCaseStudyCommunities(): Promise<CaseStudyCommunityOption[]> {
+  if (onPayload()) return payloadCaseStudies.getActiveCaseStudyCommunities();
   return query<CaseStudyCommunityOption[]>(`
     *[_type == "regionalCommunity" && active == true] | order(name.en asc) {
       _id,
@@ -960,6 +998,7 @@ const EMPTY_SUBMISSIONS_AND_DRAFTS: UserSubmissionsAndDrafts = { submissions: []
 
 export async function getUserSubmissionsAndDrafts(userId: string): Promise<UserSubmissionsAndDrafts> {
   return safe("case-study-user-submissions", EMPTY_SUBMISSIONS_AND_DRAFTS, async () => {
+    if (onPayload()) return payloadCaseStudies.getUserSubmissionsAndDrafts(userId);
     // fetchUserSubmissionsAndDrafts's original sanityFetch call omitted both
     // perspective/stega — same draft-preview requirement as getCaseStudyBySlug above
     // (the dashboard route's own "authenticated, no CDN" comment on the original
@@ -1010,6 +1049,7 @@ export interface CaseStudyRevision {
 }
 
 export async function getCaseStudyRevisions(userId: string): Promise<CaseStudyRevision[]> {
+  if (onPayload()) return payloadCaseStudies.getCaseStudyRevisions(userId);
   return queryRaw<CaseStudyRevision[]>(
     `*[_type == "caseStudy" && submittedBy == $userId && status == "revision"]{
       _id,
@@ -1055,17 +1095,25 @@ export async function loadEditableCaseStudy(
 ): Promise<(Record<string, unknown> & { _sanityId: string }) | null> {
   const id = sanityId.replace(/^drafts\./, "");
   // Raw perspective: drafts.* docs are invisible to the public read client,
-  // and edit mode is exactly about reopening drafts.
-  const doc = await queryRaw<RawEditableCaseStudyDoc | null>(
-    `*[_type == "caseStudy" && (_id == $id || _id == "drafts." + $id)][0]{
+  // and edit mode is exactly about reopening drafts. On Payload the same
+  // requirement is `queryRaw`'s `draft: true` — there are no `drafts.`-prefixed
+  // ids there, a draft is a version of the same id, so the id-juggling above
+  // collapses into one lookup. The `status` returned by the Payload arm is
+  // `moderationStatus`, verbatim: the "draft" literal in the allow-list below
+  // is Sanity conflating a moderation state with a draft state, and nothing
+  // synthesises it onto Payload's field.
+  const doc = onPayload()
+    ? await payloadCaseStudies.loadEditableCaseStudyDoc(id)
+    : await queryRaw<RawEditableCaseStudyDoc | null>(
+        `*[_type == "caseStudy" && (_id == $id || _id == "drafts." + $id)][0]{
       _id, title, excerpt, content, topic, layout, submittedBy, status, reviewNotes,
       studyPeriod, locationText, locationDisplayText,
       "relatedCommunity": relatedCommunity._ref,
       "tags": tags[]._ref,
       organizationName
     }`,
-    { id },
-  );
+        { id },
+      );
   if (!doc) return null;
   if (!["pending", "revision", "draft", null, undefined].includes(doc.status)) return null;
 
@@ -1230,47 +1278,115 @@ export async function submitCaseStudy(
     doc.relatedCommunity = { _type: "reference", _ref: input.relatedCommunity };
   }
 
-  // If organization name is provided, try to find or create it
+  // If organization name is provided, try to find or create it. The read is
+  // `queryRaw` on both backends: a cached miss on a find-or-create makes a
+  // duplicate organization, and the answer feeds a write.
+  const organizationIds: string[] = [];
   if (input.organizationName) {
-    const existingOrg = await queryRaw<{ _id: string } | null>(
-      `*[_type == "organization" && name == $name][0]`,
-      { name: input.organizationName },
-    );
+    const orgSlug = generateCaseStudySlug(input.organizationName);
+    const existingOrg = onPayload()
+      ? await payloadCaseStudies.findOrganizationByName(input.organizationName)
+      : await queryRaw<{ _id: string } | null>(
+          `*[_type == "organization" && name == $name][0]`,
+          { name: input.organizationName },
+        );
 
     if (existingOrg) {
+      organizationIds.push(existingOrg._id);
       doc.organizations = [{ _type: "reference", _ref: existingOrg._id }];
+    } else if (onPayload()) {
+      const newOrg = await payloadCaseStudies.createOrganization({
+        id: uuidv4(),
+        name: input.organizationName,
+        slug: orgSlug,
+      });
+      organizationIds.push(newOrg.id);
     } else {
       const newOrg = await createDocument({
         _type: "organization",
         name: input.organizationName,
-        slug: { current: generateCaseStudySlug(input.organizationName) },
+        slug: { current: orgSlug },
         type: "other",
       });
+      organizationIds.push(newOrg.id);
       doc.organizations = [{ _type: "reference", _ref: newOrg.id }];
     }
   }
 
-  // Handle image upload if provided (size/type validated by the route)
+  // Handle image upload if provided (size/type validated by the route). The
+  // upload is the one primitive whose two implementations agree on a signature,
+  // so only the asset store differs.
+  let imageAssetId: string | undefined;
+  const imageAlt = `Featured image for ${input.title.en}`;
   if (input.image) {
-    const asset = await uploadFileAsset(input.image.buffer, {
+    const upload = onPayload() ? uploadPayloadFileAsset : uploadFileAsset;
+    const asset = await upload(input.image.buffer, {
       filename: input.image.filename,
       contentType: input.image.contentType,
     });
+    imageAssetId = asset.id;
     doc.image = {
       _type: "image",
       asset: { _type: "reference", _ref: asset.id },
-      alt: `Featured image for ${input.title.en}`,
+      alt: imageAlt,
     };
   }
+
+  // The field values, in neither store's vocabulary. Computed once so the two
+  // backends cannot disagree about what a submission carries — the same split
+  // Tasks 9 and 11 established. `status` appears nowhere in it: the Payload arm
+  // sets `moderationStatus: "pending"` itself rather than being handed a field
+  // name that would silently write a column Payload does not have.
+  const draft: payloadCaseStudies.CaseStudyDraft = {
+    title: input.title,
+    excerpt: input.excerpt,
+    content: input.content,
+    topic: input.topic || "other",
+    layout: input.layout ?? "story",
+    tagIds: input.tags,
+    relatedCommunity: input.relatedCommunity && input.relatedCommunity !== "" ? input.relatedCommunity : undefined,
+    organizationIds: organizationIds.length > 0 ? organizationIds : undefined,
+    studyPeriod: input.studyPeriod,
+    locationText: input.locationText,
+    studyLocation: input.place
+      ? { lat: input.place.lat, lng: input.place.lng }
+      : input.studyLocation?.lat != null && input.studyLocation?.lng != null
+        ? { lat: input.studyLocation.lat, lng: input.studyLocation.lng }
+        : undefined,
+    locationDisplayText: input.place?.text,
+    locationPrecision: input.place?.precision,
+    locationCountryCode: input.place?.countryCode3 ?? undefined,
+    imageAssetId,
+    imageAlt: imageAssetId ? imageAlt : undefined,
+    authors: input.authors.map((author, index) => ({
+      userId: author.userId || (index === 0 ? input.userId : undefined),
+      name: author.name,
+      email: author.email,
+      role: author.role,
+      ...(index === 0
+        ? {
+            clerkUserId: input.userId,
+            clerkImageUrl: input.clerkImageUrl,
+            clerkUsername: input.clerkUsername,
+          }
+        : {}),
+    })),
+  };
 
   // X7 edit mode: resubmit an existing draft/pending doc — verify the
   // caller may edit it, then patch (status returns to pending for
   // re-review). Slug and submittedBy are preserved.
   if (input.editId) {
-    const existing = await queryRaw<RawExistingCaseStudy | null>(
-      `*[_id == $id][0]{ _id, submittedBy, status, slug }`,
-      { id: input.editId },
-    );
+    // `queryRaw` on both backends: this read decides an authorization question
+    // about the very document about to be written. `queryLive` returns the same
+    // shape and is the wrong answer — that swap is how the Phase-1 bypass
+    // happened.
+    const existing = onPayload()
+      ? await payloadCaseStudies.loadExistingCaseStudy(input.editId)
+      : await queryRaw<RawExistingCaseStudy | null>(
+          `*[_id == $id][0]{ _id, submittedBy, status, slug }`,
+          { id: input.editId },
+        );
     const editable = !!existing && ["pending", "revision", "draft", null].includes(existing.status ?? null);
     const isSubmitter = existing?.submittedBy === input.userId;
     let isWorkspaceMember = false;
@@ -1288,6 +1404,15 @@ export async function submitCaseStudy(
       throw new CaseStudyEditNotAllowedError();
     }
 
+    if (onPayload()) {
+      // The write direction of the status mapping: `{...updatable, status:
+      // "pending"}` below becomes `moderationStatus: "pending"`, set inside the
+      // reader. Slug and submittedBy are preserved on this arm too — neither is
+      // in the data the reader writes.
+      await payloadCaseStudies.updateCaseStudySubmission(existing._id, draft);
+      return { id: existing._id, slug: existing.slug?.current ?? slug, status: "pending" };
+    }
+
     const { slug: _slug, submittedBy: _sb, ...updatable } = doc;
     void _slug;
     void _sb;
@@ -1296,6 +1421,18 @@ export async function submitCaseStudy(
     // optional fields; keys not present in `updatable` are simply left untouched.
     await updateDocument(existing._id, { ...updatable, status: "pending" });
     return { id: existing._id, slug: existing.slug?.current ?? slug, status: "pending" };
+  }
+
+  if (onPayload()) {
+    const created = await payloadCaseStudies.createCaseStudy(draft, {
+      // Sanity mints its own `_id`; Payload's `id` is a text column carrying
+      // Sanity's, so a new document needs one.
+      id: uuidv4(),
+      slug,
+      submittedBy: input.userId,
+      submittedAt: doc.submittedAt as string,
+    });
+    return { id: created.id, slug, status: "pending" };
   }
 
   const created = await createDocument(doc);
@@ -1309,6 +1446,14 @@ export async function submitCaseStudy(
  * lib/case-study-emails.ts's notifiedStatus bookkeeping patch.
  */
 export async function updateCaseStudy(id: string, patch: Partial<CaseStudyInput>): Promise<void> {
+  if (onPayload()) {
+    // The write half of the status mapping again: a caller passing the public
+    // `status` (lib/case-study-emails.ts's notifiedStatus bookkeeping does not,
+    // but the signature allows it) gets it renamed to `moderationStatus` rather
+    // than silently writing a column Payload does not have.
+    await payloadCaseStudies.patchCaseStudy(id, patch as Record<string, unknown>);
+    return;
+  }
   await updateDocument(id, patch as Record<string, unknown>);
 }
 
@@ -1329,6 +1474,7 @@ export class CaseStudyDraftNotFoundError extends Error {
 }
 
 export async function getLatestCaseStudyDraft(userId: string): Promise<Record<string, unknown> | null> {
+  if (onPayload()) return payloadCaseStudies.getLatestCaseStudyDraft(userId);
   const draft = await queryRaw<Record<string, unknown> | null>(
     `*[_type == "caseStudyDraft" && userId == $userId] | order(lastSaved desc)[0]`,
     { userId },
@@ -1341,35 +1487,54 @@ export async function saveCaseStudyDraft(
   draftId: string | undefined,
   draftData: Record<string, unknown>,
 ): Promise<{ id: string }> {
+  const lastSaved = new Date().toISOString();
   const data = {
     ...draftData,
     _type: "caseStudyDraft",
     userId,
-    lastSaved: new Date().toISOString(),
+    lastSaved,
   };
 
   if (draftId) {
-    // Verify ownership before updating
-    const existing = await queryRaw<string | null>(
-      `*[_type == "caseStudyDraft" && _id == $draftId && userId == $userId][0]._id`,
-      { draftId, userId },
-    );
+    // Verify ownership before updating. `queryRaw` on both backends: the answer
+    // authorizes a write, and a cached read must never be what decides it.
+    const existing = onPayload()
+      ? await payloadCaseStudies.findOwnedDraftId(userId, draftId)
+      : await queryRaw<string | null>(
+          `*[_type == "caseStudyDraft" && _id == $draftId && userId == $userId][0]._id`,
+          { draftId, userId },
+        );
     if (!existing) throw new CaseStudyDraftNotFoundError();
+    if (onPayload()) {
+      await payloadCaseStudies.updateCaseStudyDraft(draftId, draftData, lastSaved);
+      return { id: draftId };
+    }
     await updateDocument(draftId, data);
     return { id: draftId };
   }
 
+  if (onPayload()) {
+    // Sanity mints its own `_id`; Payload's `id` is a text column carrying
+    // Sanity's, so a new document needs one.
+    return payloadCaseStudies.createCaseStudyDraft(userId, uuidv4(), draftData, lastSaved);
+  }
   const created = await createDocument(data);
   return { id: created.id };
 }
 
 export async function deleteCaseStudyDraft(userId: string, draftId: string): Promise<void> {
-  // Verify ownership before deleting
-  const existing = await queryRaw<string | null>(
-    `*[_type == "caseStudyDraft" && _id == $draftId && userId == $userId][0]._id`,
-    { draftId, userId },
-  );
+  // Verify ownership before deleting — `queryRaw` on both backends, same reason.
+  const existing = onPayload()
+    ? await payloadCaseStudies.findOwnedDraftId(userId, draftId)
+    : await queryRaw<string | null>(
+        `*[_type == "caseStudyDraft" && _id == $draftId && userId == $userId][0]._id`,
+        { draftId, userId },
+      );
   if (!existing) throw new CaseStudyDraftNotFoundError();
+  if (onPayload()) {
+    await payloadCaseStudies.deleteCaseStudyDraft(draftId);
+    return;
+  }
   await deleteDocument(draftId);
 }
 
@@ -1399,7 +1564,9 @@ const SEARCH_RECORDS_QUERY = `
 
 export async function getCaseStudySearchRecords(): Promise<SearchRecord[]> {
   return safe("case-study-search-records", [], async () => {
-    const docs = await query<RawSearchRecordDoc[] | null>(SEARCH_RECORDS_QUERY);
+    const docs = onPayload()
+      ? await payloadCaseStudies.getCaseStudySearchRecordDocs()
+      : await query<RawSearchRecordDoc[] | null>(SEARCH_RECORDS_QUERY);
     return (docs ?? []).map((d) => {
       const locale = (["en", "es", "fr", "ar"].includes(d.language ?? "") ? d.language : "en") as Locale;
       return {
@@ -1476,6 +1643,7 @@ const CASE_STUDY_INDEX_FIELDS = `
 `;
 
 export async function getApprovedCaseStudyIndexDocs(): Promise<CaseStudyIndexDoc[]> {
+  if (onPayload()) return payloadCaseStudies.getApprovedCaseStudyIndexDocs();
   const rows = await query<CaseStudyIndexDoc[] | null>(
     `*[_type == "caseStudy" && status == "approved"] {
       ${CASE_STUDY_INDEX_FIELDS}
@@ -1485,6 +1653,7 @@ export async function getApprovedCaseStudyIndexDocs(): Promise<CaseStudyIndexDoc
 }
 
 export async function getCaseStudyIndexDocsByIds(ids: string[]): Promise<CaseStudyIndexDoc[]> {
+  if (onPayload()) return payloadCaseStudies.getCaseStudyIndexDocsByIds(ids);
   const rows = await query<CaseStudyIndexDoc[] | null>(
     `*[_type == "caseStudy" && _id in $ids] {
       ${CASE_STUDY_INDEX_FIELDS}
@@ -1495,6 +1664,7 @@ export async function getCaseStudyIndexDocsByIds(ids: string[]): Promise<CaseStu
 }
 
 export async function getCaseStudyIndexDocById(id: string): Promise<CaseStudyIndexDoc | null> {
+  if (onPayload()) return payloadCaseStudies.getCaseStudyIndexDocById(id);
   return query<CaseStudyIndexDoc | null>(
     `*[_type == "caseStudy" && _id == $id][0] {
       ${CASE_STUDY_INDEX_FIELDS}
@@ -1504,6 +1674,7 @@ export async function getCaseStudyIndexDocById(id: string): Promise<CaseStudyInd
 }
 
 export async function getApprovedCaseStudyCount(): Promise<number> {
+  if (onPayload()) return payloadCaseStudies.getApprovedCaseStudyCount();
   return query<number>(`count(*[_type == "caseStudy" && status == "approved"])`);
 }
 
@@ -1527,6 +1698,7 @@ export async function getApprovedCaseStudyCount(): Promise<number> {
 export async function getApprovedCaseStudyCountsBySubmitter(userIds: string[]): Promise<Record<string, number>> {
   if (userIds.length === 0) return {};
   return safe("case-study-counts-by-submitter", {}, async () => {
+    if (onPayload()) return payloadCaseStudies.getApprovedCaseStudyCountsBySubmitter(userIds);
     const rows = await query<{ uid: string }[]>(
       `*[_type == "caseStudy" && status == "approved" && submittedBy in $ids]{ "uid": submittedBy }`,
       { ids: userIds },
@@ -1551,6 +1723,11 @@ export interface CaseStudyContributionRow {
  */
 export async function getApprovedCaseStudiesByContributor(userId: string): Promise<CaseStudyContributionRow[]> {
   return safe("case-studies-by-contributor", [], async () => {
+    if (onPayload()) {
+      return payloadCaseStudies.getApprovedCaseStudiesByContributor(userId) as Promise<
+        CaseStudyContributionRow[]
+      >;
+    }
     const rows = await query<CaseStudyContributionRow[]>(
       `*[_type == "caseStudy" && status == "approved" && (submittedBy == $uid || $uid in authors[].userId)]
         | order(publishedAt desc)[0...50]{ _id, title, slug, publishedAt }`,

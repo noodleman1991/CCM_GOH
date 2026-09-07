@@ -59,6 +59,50 @@ export const PARITY_ROUTES: ParityRoute[] = [
       "this is the richest body there is. Revisit if an embedded case study lands.",
   },
   {
+    path:
+      "/es/research-and-action/case-studies/" +
+      "japan-s-shinrin-yoku-forest-bathing-as-a-mental-health-intervention-in-an-era-of-climate-change",
+    domain: "case-studies",
+    why:
+      "es. The same document, which populates all four locales for `title` and " +
+      "`excerpt` — so a locale-map difference between the two stores shows here " +
+      "rather than hiding behind an untranslated field.",
+  },
+  {
+    path:
+      "/fr/research-and-action/case-studies/" +
+      "japan-s-shinrin-yoku-forest-bathing-as-a-mental-health-intervention-in-an-era-of-climate-change",
+    domain: "case-studies",
+    why: "fr, same document — the third locale, for the same reason.",
+  },
+  {
+    path:
+      "/ar/research-and-action/case-studies/" +
+      "japan-s-shinrin-yoku-forest-bathing-as-a-mental-health-intervention-in-an-era-of-climate-change",
+    domain: "case-studies",
+    why:
+      "ar, same document, and the RTL locale — `dir` and the logical start/end " +
+      "utility classes are part of the compared output.",
+  },
+  {
+    path: "/en/research-and-action/case-studies",
+    domain: "case-studies",
+    why:
+      "The list page, and the only surface the module's three widest reads have: " +
+      "`getFilteredCaseStudies`, `getCaseStudyFilterTags` and " +
+      "`getCaseStudyFilterCommunities`. It is where the `approved`-vs-published " +
+      "count difference would show (the two filter reads count every PUBLISHED " +
+      "case study, approved or not — see the Task 12 report), and where the " +
+      "`_id asc` tie-break decides which of 25 equally-dated case studies come " +
+      "first. Its default view is the map, so the whole result also travels " +
+      "through the RSC flight payload as `CasesMapItem[]`.",
+  },
+  {
+    path: "/ar/research-and-action/case-studies",
+    domain: "case-studies",
+    why: "ar, same list — the RTL locale on the surface that renders 25 cards and a choropleth.",
+  },
+  {
     path: "/en/lived-experiences/lived-experience-3VTei68Svww",
     domain: "lived-experiences",
     why:
