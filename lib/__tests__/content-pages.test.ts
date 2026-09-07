@@ -823,19 +823,218 @@ describe("pages, answered by Payload", () => {
     });
   });
 
-  it("leaves 14c's and 14d's readers on Sanity with the flag set", async () => {
+  // ---------------------------------------------------------------------------
+  // The Payload arm — Task 14d
+  // ---------------------------------------------------------------------------
+
+  /** One `regionalCommunityPages` row as Payload hands it back at
+   *  `locale: "all"`: `slug`, `atlasEmbed` and `noindex` plain, everything
+   *  editorial localized at the container level, and `sections` the ordered
+   *  array the six grid slots collapsed into. */
+  function payloadRcRow(over: Record<string, unknown> = {}) {
+    return {
+      id: "regional-community-page-oceania",
+      slug: "oceania",
+      title: { en: "Oceania", es: "Oceanía", fr: "Océanie", ar: "أوقيانوسيا" },
+      regionalCommunity: { id: "regional-community-oceania", name: { en: "Oceania" }, slug: "oceania" },
+      welcomeHero: { en: { title: "Welcome", background: { type: "none" } } },
+      whyJoinCTA: { en: { title: "Why join", background: { type: "none" } } },
+      // Deliberately not in the Sanity slot order, to prove the reader reads
+      // `contentType` rather than the array position.
+      sections: {
+        en: [
+          { blockType: "contentGrid", contentType: "news", mode: "dynamic-recent", showTitle: false, showDescription: false },
+          { blockType: "contentGrid", contentType: "agendas", mode: "manual", showTitle: true, showDescription: true, manualItems: [{ blockType: "gridAgenda" }, { blockType: "gridAgenda" }] },
+          { blockType: "contentGrid", contentType: "team", mode: "manual", showTitle: true, displayRole: true, manualMembers: [] },
+        ],
+      },
+      atlasEmbed: { enabled: false, showBreakdown: true },
+      logoCloud: { en: { padding: null, title: null, images: [] } },
+      meta_title: { en: null, es: null, fr: null, ar: null },
+      meta_description: { en: null, es: null, fr: null, ar: null },
+      noindex: false,
+      ogImage: { asset: null, alt: { en: null } },
+      ...over,
+    };
+  }
+
+  describe("getRegionalCommunityPage", () => {
+    beforeEach(() => {
+      process.env.CONTENT_BACKEND_PAGES = "payload";
+    });
+
+    it("rebuilds the six named slots out of `contentGrid.contentType`", async () => {
+      mockPayloadQueryPreviewable.mockResolvedValueOnce({ docs: [payloadRcRow()] } as never);
+
+      const page = await getRegionalCommunityPage("oceania", "en");
+
+      expect(page?.agendasGrid).toMatchObject({ mode: "manual", showTitle: true });
+      expect(page?.newsGrid).toMatchObject({ mode: "dynamic-recent" });
+      expect(page?.teamGrid).toMatchObject({ mode: "manual", displayRole: true });
+      // The three `contentType`s this row does not carry are the three slots
+      // Sanity answers `null` for.
+      expect(page?.caseStudiesGrid).toBeNull();
+      expect(page?.livedExperiencesCarousel).toBeNull();
+      expect(page?.testimonialsBlock).toBeNull();
+    });
+
+    it("projects manualItems as a list of nulls, because the GROQ dereferences objects", async () => {
+      mockPayloadQueryPreviewable.mockResolvedValueOnce({ docs: [payloadRcRow()] } as never);
+      const page = await getRegionalCommunityPage("oceania", "en");
+      expect(page?.agendasGrid?.manualItems).toEqual([null, null]);
+    });
+
+    it("keeps showTitle/showDescription as the booleans Sanity stores, not the checkbox rule", async () => {
+      mockPayloadQueryPreviewable.mockResolvedValueOnce({ docs: [payloadRcRow()] } as never);
+      const page = await getRegionalCommunityPage("oceania", "en");
+      // `showTitle !== false` gates the whole news section in the template, so
+      // a `false` mapped to `null` would add a section to 20 of the 28 pages.
+      expect(page?.newsGrid?.showTitle).toBe(false);
+      expect(page?.newsGrid?.showDescription).toBe(false);
+    });
+
+    it("never lets a Payload `enabled: false` turn the atlas embed off", async () => {
+      mockPayloadQueryPreviewable.mockResolvedValueOnce({ docs: [payloadRcRow()] } as never);
+      const page = await getRegionalCommunityPage("oceania", "en");
+      // The template reads this as opt-OUT: `atlasEmbed?.enabled !== false`.
+      expect(page?.atlasEmbed?.enabled).not.toBe(false);
+    });
+
+    it("answers null for a slot no editor filled in", async () => {
+      mockPayloadQueryPreviewable.mockResolvedValueOnce({ docs: [payloadRcRow()] } as never);
+      const page = await getRegionalCommunityPage("oceania", "en");
+      expect(page?.logoCloud).toBeNull();
+    });
+
+    it("keeps whyJoinCTA's stored `cta-1` type, which its hero-1 field set contradicts", async () => {
+      mockPayloadQueryPreviewable.mockResolvedValueOnce({ docs: [payloadRcRow()] } as never);
+      const page = await getRegionalCommunityPage("oceania", "en");
+      expect(page?.welcomeHero?._type).toBe("hero-1");
+      expect(page?.whyJoinCTA?._type).toBe("cta-1");
+      expect(page?.welcomeHero?._key).toBeNull();
+    });
+
+    it("re-emits useTemplate true and contentFlow null, the two the remodel dropped", async () => {
+      mockPayloadQueryPreviewable.mockResolvedValueOnce({ docs: [payloadRcRow()] } as never);
+      const page = await getRegionalCommunityPage("oceania", "en");
+      expect(page?.useTemplate).toBe(true);
+      expect(page?.contentFlow).toBeNull();
+    });
+
+    it("reads the requested locale's own section list", async () => {
+      mockPayloadQueryPreviewable.mockResolvedValueOnce({
+        docs: [
+          payloadRcRow({
+            title: { en: "Oceania", es: "Oceanía", fr: null, ar: null },
+            sections: {
+              en: [{ blockType: "contentGrid", contentType: "agendas" }],
+              es: [
+                { blockType: "contentGrid", contentType: "agendas" },
+                { blockType: "contentGrid", contentType: "testimonials", title: "Voces" },
+              ],
+            },
+          }),
+        ],
+      } as never);
+
+      const page = await getRegionalCommunityPage("oceania", "es");
+      expect(page?.testimonialsBlock).toEqual({ showSection: true, title: "Voces" });
+    });
+
+    it("falls back to English when the requested locale carries no document", async () => {
+      mockPayloadQueryPreviewable.mockResolvedValueOnce({
+        docs: [payloadRcRow({ title: { en: "Oceania", es: null, fr: null, ar: null } })],
+      } as never);
+
+      const page = await getRegionalCommunityPage("oceania", "fr");
+      expect(page?.language).toBe("en");
+      // One read, not two: Payload holds one row per slug.
+      expect(mockPayloadQueryPreviewable).toHaveBeenCalledTimes(1);
+    });
+
+    it("returns null when no row carries the slug", async () => {
+      mockPayloadQueryPreviewable.mockResolvedValueOnce({ docs: [] } as never);
+      await expect(getRegionalCommunityPage("nowhere", "en")).resolves.toBeNull();
+    });
+
+    it("uses queryPreviewable, not query — the collection carries a draft", async () => {
+      mockPayloadQueryPreviewable.mockResolvedValueOnce({ docs: [] } as never);
+      await getRegionalCommunityPage("oceania", "en");
+      expect(mockPayloadQueryPreviewable).toHaveBeenCalledWith(
+        expect.objectContaining({ collection: "regionalCommunityPages", depth: 3, locale: "all" }),
+      );
+      expect(mockPayloadQuery).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("getRegionStats", () => {
+    beforeEach(() => {
+      process.env.CONTENT_BACKEND_PAGES = "payload";
+      mockPayloadQuery.mockImplementation(async (descriptor: unknown) => {
+        const d = descriptor as { type: string; collection: string };
+        if (d.type === "find") return { docs: [{ id: "regional-community-oceania" }] } as never;
+        return (d.collection === "caseStudies" ? { totalDocs: 4 } : { totalDocs: 2 }) as never;
+      });
+    });
+
+    it("counts both types for the community", async () => {
+      await expect(getRegionStats("oce", "oceania")).resolves.toEqual({
+        caseStudies: 4,
+        livedExperiences: 2,
+      });
+    });
+
+    it("filters case studies by region only when the code is one Postgres knows", async () => {
+      await getRegionStats("oce", "oceania");
+      const counts = mockPayloadQuery.mock.calls
+        .map(([d]) => d as { type: string; collection?: string; where?: unknown })
+        .filter((d) => d.type === "count");
+      expect(JSON.stringify(counts.find((d) => d.collection === "caseStudies"))).toContain('"region"');
+
+      mockPayloadQuery.mockClear();
+      // A slug that is not one of the seven codes would raise at the Postgres
+      // enum; GROQ merely matches nothing, so the clause is dropped.
+      await getRegionStats("not-a-region", "oceania");
+      const after = mockPayloadQuery.mock.calls
+        .map(([d]) => d as { type: string; collection?: string })
+        .filter((d) => d.type === "count");
+      expect(JSON.stringify(after.find((d) => d.collection === "caseStudies"))).not.toContain('"region"');
+    });
+
+    it("never filters lived experiences by region — the field holds a reference", async () => {
+      await getRegionStats("oce", "oceania");
+      const le = mockPayloadQuery.mock.calls
+        .map(([d]) => d as { type: string; collection?: string })
+        .find((d) => d.type === "count" && d.collection === "livedExperiences");
+      expect(JSON.stringify(le)).not.toContain('"region"');
+    });
+
+    it("degrades to zero counts when the read fails, as `safe()` already made it", async () => {
+      vi.spyOn(console, "error").mockImplementation(() => {});
+      mockPayloadQuery.mockRejectedValue(new Error("payload down") as never);
+      await expect(getRegionStats("oce", "oceania")).resolves.toEqual({
+        caseStudies: 0,
+        livedExperiences: 0,
+      });
+    });
+  });
+
+  // 14b wrote a test here pinning the readers it deliberately left behind, so
+  // that "a later task cannot half-move them without a failure". 14d is that
+  // task. Until its last two swaps land, the pin names what is still on Sanity.
+  it("leaves the homepage pair and the feeds on Sanity with the flag set", async () => {
     mockQueryPreviewable.mockResolvedValue(null);
     mockQuery.mockResolvedValue([]);
+    mockPayloadQuery.mockResolvedValue({ docs: [] } as never);
+    mockPayloadQueryPreviewable.mockResolvedValue({ docs: [] } as never);
 
-    await getRegionalCommunityPage("oceania", "en");
-    await getRegionStats("oceania", "oceania");
     await getHomepage("en");
     await getIndexHomepage("en");
     await getHomepageNews({ limit: 3 });
     await getHomepageAgendas({ limit: 3 });
     await getRegionalCommunityTeamMembers({ communityId: "oceania" });
 
-    expect(mockPayloadQuery).not.toHaveBeenCalled();
-    expect(mockPayloadQueryPreviewable).not.toHaveBeenCalled();
+    expect(mockQueryPreviewable).toHaveBeenCalled();
+    expect(mockQuery).toHaveBeenCalled();
   });
 });

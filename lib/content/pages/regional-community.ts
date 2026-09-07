@@ -1,5 +1,6 @@
 import "server-only";
 import * as payloadPages from "@/lib/content/internal/payload/pages";
+import * as payloadRegionalCommunity from "@/lib/content/internal/payload/regional-community";
 import { safe } from "@/lib/content/internal/safe";
 import { query, queryPreviewable } from "@/lib/content/internal/sanity-source";
 import type { Locale } from "@/lib/content/types";
@@ -549,6 +550,16 @@ export async function getRegionalCommunityPage(
   slug: string,
   locale: Locale,
 ): Promise<RegionalCommunityPage | null> {
+  // Task 14d. `internal/payload/regional-community.ts` rebuilds the six grid
+  // slots out of the one parameterised `contentGrid` Phase 2 collapsed them
+  // into, and performs the same English fallback in one read rather than two —
+  // Payload holds one row per slug with a localized arm per language, so
+  // "this language has no document" is answerable without a second query.
+  if (onPayload()) {
+    return (await payloadRegionalCommunity.findRegionalCommunityPage(slug, locale)) as
+      | RegionalCommunityPage
+      | null;
+  }
   // fetchSanityRCPageBySlug's original sanityFetch call omitted both
   // perspective/stega — same draft-preview requirement as getPageBySlug (./page.ts).
   let raw = await queryPreviewable<RegionalCommunityPage | null>(REGIONAL_COMMUNITY_PAGE_QUERY, { slug, language: locale });
@@ -569,10 +580,8 @@ export const RC_PAGE_SLUGS_QUERY = `*[_type == "regionalCommunityPage" && define
 
 
 /**
- * Task 14b swapped this one. `getRegionalCommunityPage` above and
- * `getRegionStats` below stay on Sanity: the document itself is 14d's, because
- * Payload collapses its six grid slots into one parameterised `contentGrid`
- * and rebuilding the six is the remodel that task owns.
+ * Task 14b swapped this one; 14d swapped the two around it, so the whole file
+ * answers from the same store now.
  */
 export async function getRegionalCommunityPageSlugs(): Promise<
   Array<{ id: string; slug: string; locale: Locale }>
@@ -611,6 +620,11 @@ const EMPTY_REGION_STATS: RegionStats = { caseStudies: 0, livedExperiences: 0 };
 
 export async function getRegionStats(code: string, slug: string): Promise<RegionStats> {
   return safe("region-stats", EMPTY_REGION_STATS, async () => {
+    // Task 14d. Two counts rather than one round trip's two sub-queries; see
+    // `internal/payload/regional-community.ts` for why the lived-experience
+    // region clause is dropped rather than translated, and why `code` is
+    // checked against the declared option set before it reaches a Postgres enum.
+    if (onPayload()) return payloadRegionalCommunity.regionStats(code, slug);
     const counts = await query<{ cs: number; le: number } | null>(REGION_STATS_QUERY, { code, slug });
     return { caseStudies: counts?.cs ?? 0, livedExperiences: counts?.le ?? 0 };
   });

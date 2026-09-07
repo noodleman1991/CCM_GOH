@@ -302,15 +302,55 @@ function richText(state: unknown): unknown[] | null {
   return state == null ? null : portableText(state);
 }
 
+/**
+ * Rich text a projection names as a **bare field reference** rather than as a
+ * `[]{…}` projection — `grid-row.description` and the six regional grid slots'
+ * `description`.
+ *
+ * GROQ returns the stored value untouched for a bare field, so an image inside
+ * it keeps its **undereferenced** `{_type: "image", asset: {_ref, _type:
+ * "reference"}}` — the same shape `backgroundObject` already reproduces for
+ * `background.image`, and for the same reason: a spread does not follow a
+ * reference. `lib/content/images.ts` resolves such a reference through the
+ * Sanity builder on either backend, which is what keeps the rendered `<img>`
+ * identical.
+ *
+ * Measured across the whole corpus (2026-09-07): exactly **one** stored
+ * description contains an image — `central-and-southern-asia`'s `agendasGrid`,
+ * in all four locales — and Sanity returns it as `{_key, _type, asset}` and
+ * nothing else. Dereferencing it instead handed the renderer real dimensions
+ * and an `lqip`, where Sanity's undereferenced asset has neither and
+ * `portable-text-renderer.tsx` falls back to 800x450 with no blur placeholder.
+ * That is a visible layout difference on one figure, which is why this exists
+ * rather than the simpler `richText` above. The other 35 page descriptions and
+ * every homepage grid description hold text only, so the two behave identically
+ * there.
+ */
+function storedRichText(state: unknown): unknown[] | null {
+  if (state == null) return null;
+  return portableText(state).map(unresolveImage);
+}
+
+function unresolveImage(node: unknown): unknown {
+  if (!isRow(node) || node._type !== "image") return node;
+  // `portableText` has already run, so `asset` is the shaped projection rather
+  // than a raw media row and its `_id` is the media row id — which is the
+  // Sanity asset id verbatim (`payload/collections/media.ts` preserves it), so
+  // the reference it goes back into still resolves.
+  const id = isRow(node.asset) ? text(node.asset._id) : undefined;
+  if (!id) return node;
+  return groqObject({ _key: node._key, _type: "image", asset: referenced(id) });
+}
+
 // ---------------------------------------------------------------------------
 // The families
 // ---------------------------------------------------------------------------
 
 /** `HERO_1_PROJECTION`, key for key. */
-function hero1Block(row: Row): Row {
+function hero1Block(row: Row, key: string | null = blockKey(row), type = "hero-1"): Row {
   return groqObject({
-    _key: blockKey(row),
-    _type: "hero-1",
+    _key: key,
+    _type: type,
     background: backgroundObject(row.background),
     body: richText(row.body),
     image: projectedImage(row.image),
@@ -325,9 +365,9 @@ function hero1Block(row: Row): Row {
 /** `SPLIT_ROW_PROJECTION`. `splitColumns` is emitted as the array Payload
  *  holds, empty included: every split-row in the corpus has columns, and an
  *  array field that exists is not the unset field `links` is. */
-function splitRowBlock(row: Row): Row {
+function splitRowBlock(row: Row, key: string | null = blockKey(row)): Row {
   return groqObject({
-    _key: blockKey(row),
+    _key: key,
     _type: "split-row",
     noGap: checkbox(row.noGap),
     padding: paddingObject(row.padding),
@@ -384,9 +424,9 @@ function splitImageColumn(row: Row): Row {
  * type has 0 live documents and was not ported — so it is `null`, which is also
  * what Sanity answers for the 21 testimonials that never set it.
  */
-function carousel2Block(row: Row): Row {
+function carousel2Block(row: Row, key: string | null = blockKey(row)): Row {
   return groqObject({
-    _key: blockKey(row),
+    _key: key,
     _type: "carousel-2",
     description: orNull(text(row.description)),
     padding: paddingObject(row.padding),
@@ -448,9 +488,9 @@ function listOrNull(rows: Row[]): Row[] | null {
 
 /** `CTA_1_PROJECTION`. `sectionWidth: "full"` cannot come back — see note 3 in
  *  the header. */
-function cta1Block(row: Row): Row {
+function cta1Block(row: Row, key: string | null = blockKey(row)): Row {
   return groqObject({
-    _key: blockKey(row),
+    _key: key,
     _type: "cta-1",
     background: backgroundObject(row.background),
     body: richText(row.body),
@@ -496,9 +536,9 @@ function sectionHeaderBlock(row: Row): Row {
  * flight payload — which is exactly where the `_type` decision in the header
  * would have been visible, and where the flattened media keys are.
  */
-function logoCloud1Block(row: Row): Row {
+function logoCloud1Block(row: Row, key: string | null = blockKey(row)): Row {
   return groqObject({
-    _key: blockKey(row),
+    _key: key,
     _type: "logo-cloud-1",
     description: orNull(text(row.description)),
     images: Array.isArray(row.images)
@@ -536,16 +576,16 @@ function logoCloudImage(row: Row): Row | null {
  * `_type: "block"`), so `portableText()`'s dereferencing has nothing to change;
  * if one ever appears, this is the projection that will disagree.
  */
-function gridRowBlock(row: Row): Row {
+function gridRowBlock(row: Row, key: string | null = blockKey(row)): Row {
   return groqObject({
-    _key: blockKey(row),
+    _key: key,
     _type: "grid-row",
     background: backgroundObject(row.background),
     cardVariant: orNull(text(row.cardVariant)),
     columns: Array.isArray(row.columns)
       ? row.columns.map(mapGridColumn).filter((column): column is Row => column !== undefined)
       : null,
-    description: richText(row.description),
+    description: storedRichText(row.description),
     gridColumns: orNull(text(row.gridColumns)),
     headerImage: projectedImage(row.headerImage, ["_id", "url", "lqip", "dimensions"]),
     initialDisplayCount: orNull(num(row.initialDisplayCount)),
@@ -779,4 +819,138 @@ function mapBlock(row: unknown): Row | undefined {
 export function pageBlocks(rows: unknown): unknown[] | null {
   if (!Array.isArray(rows)) return null;
   return rows.map(mapBlock).filter((block): block is Row => block !== undefined);
+}
+
+// ---------------------------------------------------------------------------
+// Named slots — Task 14d
+// ---------------------------------------------------------------------------
+
+/**
+ * The block types a **named slot** can hold.
+ *
+ * `homepage` and `regionalCommunityPage` do not compose from a block array:
+ * they declare fixed, named fields whose *type* is a block, and Payload models
+ * each as a `group` carrying that block's own field list
+ * (`payload/fields/block-slot.ts`). So the same six family mappers above serve
+ * them — 14d writes no second mapper — with two differences a slot forces.
+ */
+export type SlotBlock = "hero1" | "splitRow" | "gridRow" | "carousel2" | "cta1" | "logoCloud1";
+
+export interface SlotOptions {
+  /**
+   * The stored `_type`, when the slot holds a block of a different declared
+   * type than the one whose field list it carries.
+   *
+   * One real case, and it is the reason this is a parameter rather than a
+   * constant: `regionalCommunityPage.whyJoinCTA` stores `_type: "cta-1"` on all
+   * 28 published documents while storing **hero-1's** field set (`image` on
+   * 25, `imagePosition` on 20 — neither declared by cta-1). Sanity tolerates
+   * it because the renderers dispatch on the stored `_type`;
+   * `payload/collections/regional-community-pages.ts` types the slot on hero1
+   * so the images survive, and records "do not fix this to cta1". The GROQ
+   * projects `_type` as a plain field reference, so it returns the stored
+   * `"cta-1"` — which is what the page renders as today, and what this
+   * reproduces.
+   */
+  type?: string;
+  /** Keys the slot's own projection names beside the block's own — only
+   *  `agendasModule` and `news` on the homepage, which prefix `mode, maxItems`
+   *  to `GRID_ROW_PROJECTION`. */
+  extra?: Record<string, unknown>;
+}
+
+/**
+ * One named slot, as the object its GROQ projection returns — or `null` for a
+ * slot no editor ever filled in.
+ *
+ * ---------------------------------------------------------------------------
+ * `_key` is `null`, and that is measured rather than assumed
+ * ---------------------------------------------------------------------------
+ *
+ * Every one of these projections names `_key`, and a slot is a field rather
+ * than an array row, so Sanity has never had one to return. Measured on
+ * `production_2` at the published perspective (control
+ * `count(*[_type=="agenda"])` = 29): `_key` is `null` on all eleven homepage
+ * slots across all four documents and on `welcomeHero`/`whyJoinCTA` across all
+ * 28 regional community pages. Payload agrees structurally — a `group` has no
+ * row id — so nothing is lost and nothing has to be minted.
+ *
+ * ---------------------------------------------------------------------------
+ * An all-null slot is the field GROQ answers `null` for
+ * ---------------------------------------------------------------------------
+ *
+ * Payload's group always exists: `logoCloud` on a page that never had one still
+ * arrives as `{padding: null, title: null, …, images: []}`, where GROQ answers
+ * `null` for the whole field. The two are not the same to a renderer —
+ * `regional-community-template.tsx` gates the logo section on `logoCloud &&
+ * (logoCloud.images || logoCloud.showTitle !== false)`, and an always-present
+ * object would **add** an empty logo cloud to every page that has none.
+ *
+ * So a mapped slot whose every projected key is null is reported as the unset
+ * field. `background` is excluded from that test because
+ * `backgroundObject` always answers with an object (see note 2 in the header),
+ * and `_key`/`_type` because they are this function's own.
+ *
+ * Measured against Sanity, all four locales: `logoCloud` is non-null on 16 of
+ * the 28 (slug, language) pairs and this rule reproduces exactly those 16.
+ * `welcomeHero`, `whyJoinCTA` and all eleven homepage slots are authored
+ * everywhere, so the rule never fires on them.
+ */
+export function slotBlock(row: unknown, block: SlotBlock, options: SlotOptions = {}): Row | null {
+  if (!isRow(row)) return null;
+  const mapped = mapSlot(row, block, options.type);
+  if (!mapped) return null;
+  const merged = groqObject({ ...mapped, ...(options.extra ?? {}) });
+  return isAuthored(merged) ? merged : null;
+}
+
+function mapSlot(row: Row, block: SlotBlock, type: string | undefined): Row | undefined {
+  switch (block) {
+    case "hero1":
+      return hero1Block(row, null, type ?? "hero-1");
+    case "splitRow":
+      return splitRowBlock(row, null);
+    case "gridRow":
+      return gridRowBlock(row, null);
+    case "carousel2":
+      return carousel2Block(row, null);
+    case "cta1":
+      return cta1Block(row, null);
+    case "logoCloud1":
+      return logoCloud1Block(row, null);
+    default:
+      return undefined;
+  }
+}
+
+/** Did an editor fill anything into this slot? See the note above. */
+function isAuthored(mapped: Row): boolean {
+  return Object.entries(mapped).some(
+    ([key, value]) => value !== null && key !== "_key" && key !== "_type" && key !== "background",
+  );
+}
+
+/**
+ * `contentGrid.manualItems[]` as the six regional grid slots project it.
+ *
+ * The projection is `manualItems[]->{…}` — a **dereference** — and the stored
+ * entries are `grid-agenda` / `grid-case-study` / `grid-news` *objects*, not
+ * references. GROQ's `->` on a non-reference is `null`, so the live query
+ * returns one `null` per stored item and has done since the field was
+ * authored: measured across all 28 published documents, every one of the 48
+ * agenda, 76 case-study and 4 news entries projects as `null`, and
+ * `regional-community-template.tsx` consequently renders a manual grid of
+ * nulls that `mergePinnedWithDynamic` and the card components skip.
+ *
+ * Reproducing that is the whole job here. Emitting the mapped blocks instead
+ * would be *better* data and a visible change — hand-picked cards would appear
+ * on pages that show none today — which this phase's premise forbids.
+ * `payload/blocks/content-grid.ts` keeps the real items, so a future task can
+ * fix the projection deliberately.
+ */
+export { storedRichText };
+
+export function dereferencedItems(rows: unknown): null[] | null {
+  if (!Array.isArray(rows) || rows.length === 0) return null;
+  return rows.map(() => null);
 }
