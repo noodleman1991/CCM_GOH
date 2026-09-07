@@ -593,6 +593,21 @@ Three URLs, and arguably an improvement: localized pages gain a real social card
 
 This is invisible to a unit test — the query succeeds and returns a document, just a hollow one. It surfaced only in the render. **14d inherits it:** the homepage's eleven slots and `regionalCommunityPage`'s `contentGrid` reference the same document types through the same block shapes.
 
+## A GROQ spelling bug that Payload silently fixes
+
+`outputs.ts` uses `tags[]->{…}[_id != null]` in **six places**. That subscript does not filter the array — it applies a boolean to each *projected object*, so GROQ answers `[null, …]`. Verified directly:
+
+```
+regionalCommunities[]->{_id,name}[_id != null]  ->  [null]
+regionalCommunities[]->{_id,name}               ->  [{_id: "regional-community-…", name: {…}}]
+```
+
+So those six sites have silently returned nulls in production. Harmless where the field is unpopulated (tags and organizations are 0/29 on agendas), but **14 of 29 agendas carry `regionalCommunities`**, and those have been dropping real data.
+
+**Payload's arm returns the documents**, so the swap *fixes* it — which makes this a user-visible change at cutover, in the direction of showing content that was being lost. Task 14d fixed it inside `homepageAgendas`; **`getAgendasByRegion` still needs checking, and Task 11's `outputs.ts` arm may already diverge here.**
+
+**Decide before cutover:** accept the fix (content appears where it was silently dropped) or reproduce the nulls to keep the swap invisible. The first is almost certainly right, but it is a behaviour change and belongs to the user.
+
 ## Phase 3 exit criteria
 
 - [ ] All 138 exports served by Payload; all 111+ test files green against both backends
