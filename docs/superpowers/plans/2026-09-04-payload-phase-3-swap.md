@@ -54,7 +54,11 @@ Each was measured. Each costs a bug if forgotten.
 5. **`lqip` → `blurDataURL`.** 347/347 media rows carry it and 25 components render it. The Payload image source must expose it.
 6. **`image.alt` lives in the `en` locale**, with `fallback: true` covering es/fr/ar.
 7. **Heading anchors change once**, and this is decided: `headingId` is `${slug}-${_key}`, Sanity's random keys cannot survive Lexical, and the minted replacements are content-derived and collision-suffixed. In-page TOC keeps working; externally bookmarked fragments break. Accepted.
-8. **`onboardingContent` is six globals**, composed by `composeOnboardingContent`. 46 component read chains resolve against none of them — they were equally unserved before the split, coming from a drifted local type. Not a regression; decide in Task 9 whether to serve or delete them.
+8. **`onboardingContent` is six globals**, composed by `composeOnboardingContent` — a deep merge where `fieldLabels` and `validationMessages` arrive from several parts and are merged rather than overwritten. Iterate `ONBOARDING_GLOBAL_SLUGS`; `getOnboardingContent(locale)` is that compose over six `findGlobal` calls.
+
+   46 component read chains resolve against none of them, and this is **decided, not open**: they come from `components/onboarding/types.ts`, which declares `fieldPlaceholders`, `privacyFieldLabels` and `reviewFieldLabels` as **optional** keys that **Sanity never held either** — verified. So they are dead on arrival, not a regression.
+
+   **Task 8 neither serves nor deletes them.** Adding them to the globals would invent content no editor ever wrote; deleting them touches `components/`, which this phase does not change. Record them as dead for Phase 4's cleanup and move on.
 9. **`author.bio` is not modelled** — Portable Text on 2 of 95 authors, preserved in the archive only.
 10. **`livedExperience.region` holds a `regionalCommunity` reference**, not a region code; `videoUrl` is real and undeclared; `status` is 0/56 populated and unset means approved.
 11. **`internalLink` carries a raw `_ref` with no `relationTo`** — Phase 3 resolves references at read time.
@@ -258,7 +262,7 @@ Each task follows the identical shape below. They are ordered smallest-and-most-
 |---|---|---|---|
 | 6 | `taxonomy.ts`, `taxonomy-options.ts`, `regions.ts` | ~350 | Foundational; everything references tags and regions. Owns the **declaration** of `ContentTag.value` — see below; its own path is already honest. |
 | 7 | `system.ts`, `metadata.ts`, `illustrations.ts`, `text.ts` | ~360 | `system.ts` holds the sitemap filters that read `status == "approved"` — they become `moderationStatus`. **`metadata.ts:72` needs an explicit decision:** the OG image is the one true WebP regression, needs `quality`, and needs an *absolute* URL — which the twelve `next/image` sites must not get, since no Payload host is in `remotePatterns`. A full-size PNG as OG also risks crawler size ceilings. `illustrations.ts:59` passes arbitrary natural dimensions and will land on the nearest-size-up path per asset. |
-| 8 | `onboarding.ts` | 283 | Composes **six** globals via `composeOnboardingContent`. Decide the 46 unserved component chains: serve or delete, not leave. |
+| 8 | `onboarding.ts` | 283 | Composes **six** globals via `composeOnboardingContent`. The 46 unserved component chains are settled in obligation 8 — record as dead, neither serve nor delete. |
 | 9 | `lived-experiences.ts` | 630 | `region` is a `regionalCommunity` reference; `videoUrl` is undeclared in Sanity but real; unset moderation means approved. |
 | 10 | `news.ts` | 964 | |
 | 11 | `outputs.ts` | 1,167 | Holds 2 of the 5 `queryLive` call sites. **Assert the primitive, not just the result** — see below. |
