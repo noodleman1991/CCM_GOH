@@ -82,8 +82,14 @@ function findsReturn(workTypes: unknown[], expertiseAreas: unknown[]) {
   });
 }
 
+/** Cleared per test, so these assert the module's default, not the ambient env. */
+const FLAGS = ["CONTENT_BACKEND", "CONTENT_BACKEND_USER_MANAGEMENT"] as const;
+let ambient: Record<string, string | undefined> = {};
+
 beforeEach(() => {
   vi.clearAllMocks();
+  ambient = Object.fromEntries(FLAGS.map((f) => [f, process.env[f]]));
+  for (const flag of FLAGS) delete process.env[flag];
   vi.spyOn(console, "log").mockImplementation(() => undefined);
   vi.spyOn(console, "error").mockImplementation(() => undefined);
   payloadQueryRaw.mockImplementation(findsReturn(WORK_TYPE_ROWS, EXPERTISE_ROWS));
@@ -96,8 +102,10 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.restoreAllMocks();
-  delete process.env.CONTENT_BACKEND;
-  delete process.env.CONTENT_BACKEND_USER_MANAGEMENT;
+  for (const flag of FLAGS) {
+    if (ambient[flag] === undefined) delete process.env[flag];
+    else process.env[flag] = ambient[flag];
+  }
 });
 
 describe("the backend flag", () => {

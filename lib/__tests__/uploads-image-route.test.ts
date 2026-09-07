@@ -53,15 +53,28 @@ function upload(filename = "photo.jpg", type = "image/jpeg"): NextRequest {
   }) as unknown as NextRequest;
 }
 
+/**
+ * Both flags are cleared per test and restored after, so these assert the
+ * MODULE's default rather than the ambient environment's. Without this a suite
+ * run under `CONTENT_BACKEND=payload` would report the default-arm cases as
+ * failures when the module is behaving correctly.
+ */
+const FLAGS = ["CONTENT_BACKEND", "CONTENT_BACKEND_UPLOADS"] as const;
+let ambient: Record<string, string | undefined> = {};
+
 beforeEach(() => {
   vi.clearAllMocks();
+  ambient = Object.fromEntries(FLAGS.map((f) => [f, process.env[f]]));
+  for (const flag of FLAGS) delete process.env[flag];
   sanityUpload.mockResolvedValue({ ...ASSET, id: "image-abc" });
   payloadUpload.mockResolvedValue(ASSET);
 });
 
 afterEach(() => {
-  delete process.env.CONTENT_BACKEND;
-  delete process.env.CONTENT_BACKEND_UPLOADS;
+  for (const flag of FLAGS) {
+    if (ambient[flag] === undefined) delete process.env[flag];
+    else process.env[flag] = ambient[flag];
+  }
 });
 
 describe("POST /api/uploads/image", () => {

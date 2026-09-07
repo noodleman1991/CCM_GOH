@@ -54,9 +54,22 @@ vi.mock('@/lib/algolia', () => ({
 
 import { eraseUserSanityContent, deleteUserData } from '@/lib/account-deletion'
 
+/** Cleared per test, so these assert the module's default, not the ambient env. */
+const BACKEND_FLAGS = ['CONTENT_BACKEND', 'CONTENT_BACKEND_ACCOUNT_DELETION'] as const
+let ambientFlags: Record<string, string | undefined> = {}
+
 beforeEach(() => {
   vi.clearAllMocks()
+  ambientFlags = Object.fromEntries(BACKEND_FLAGS.map((f) => [f, process.env[f]]))
+  for (const flag of BACKEND_FLAGS) delete process.env[flag]
   deleteDocumentsMock.mockResolvedValue(undefined)
+})
+
+afterEach(() => {
+  for (const flag of BACKEND_FLAGS) {
+    if (ambientFlags[flag] === undefined) delete process.env[flag]
+    else process.env[flag] = ambientFlags[flag]
+  }
 })
 
 describe('eraseUserSanityContent', () => {
@@ -197,11 +210,6 @@ describe('eraseUserSanityContent on Payload', () => {
     process.env.CONTENT_BACKEND_ACCOUNT_DELETION = 'payload'
     payloadDeleteDocumentsMock.mockResolvedValue(undefined)
     payloadStore({})
-  })
-
-  afterEach(() => {
-    delete process.env.CONTENT_BACKEND_ACCOUNT_DELETION
-    delete process.env.CONTENT_BACKEND
   })
 
   it('never touches Sanity once the flag is set', async () => {
