@@ -181,8 +181,38 @@ export const PARITY_ROUTES: ParityRoute[] = [
     domain: "outputs",
     why:
       "The agenda index. 29 agendas is the dataset's known-nonzero control, so " +
-      "an empty listing here is unmistakable rather than plausible.",
+      "an empty listing here is unmistakable rather than plausible. NOTE, added " +
+      "in Task 11: this page is a page-builder document served by the Sanity " +
+      "catch-all, so its agenda grid comes from `pages.ts`'s embedded " +
+      "grid-agenda projection, NOT from `outputs.ts`. It stays here because it " +
+      "is still the agenda surface a reader would look at, but the route that " +
+      "actually exercises `outputs.ts`'s agenda path is " +
+      "`/[locale]/communities/[slug]`, through `getAgendasByRegion`.",
   },
+  ...(["en", "es", "fr", "ar"] as const).map((locale) => ({
+    path: `/${locale}/research-and-action/research-outputs`,
+    domain: "outputs",
+    why:
+      "The research-output index — `getResearchOutputs`, the module's only " +
+      "unfiltered public list, and the surface where the strict " +
+      "`moderationStatus == \"approved\"` gate has to hold: 29/29 are approved " +
+      "today, so a reader that gated on publish state alone would look " +
+      "identical here and leak the moment one is not. All four locales, " +
+      "because the card titles and excerpts are localized objects and `ar` is " +
+      "the RTL one.",
+  })),
+  ...(["en", "es", "fr", "ar"] as const).map((locale) => ({
+    path: `/${locale}/research-and-action/research-outputs/oceania-regional-agenda-summary`,
+    domain: "outputs",
+    why:
+      "The research-output detail page — `getResearchOutputBySlug`, plus " +
+      "`getResearchOutputSlugs` through `generateStaticParams`. Pinned to a " +
+      "document that carries a cover image, a `relatedCommunities` reference " +
+      "and a `versions` row with a real PDF, because `ResearchOutputVersions` " +
+      "is a CLIENT component: the versions array is serialized into the RSC " +
+      "flight payload verbatim, which is the only place a `_key` or a key " +
+      "order difference can show.",
+  })),
   {
     path: "/es/communities/central-and-southern-asia",
     domain: "pages",

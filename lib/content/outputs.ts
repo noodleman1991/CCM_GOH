@@ -1,10 +1,29 @@
 import "server-only";
+import { activeBackend } from "@/lib/content/internal/backend";
+import * as payloadOutputs from "@/lib/content/internal/payload/outputs";
+import { uploadFileAsset as uploadPayloadFileAsset } from "@/lib/content/internal/payload-source";
 import { safe } from "@/lib/content/internal/safe";
 import { createDocument, query, queryLive, queryRaw, updateDocument, uploadFileAsset } from "@/lib/content/internal/sanity-source";
 import type { Locale, Localized, RichText, SearchRecord } from "@/lib/content/types";
 import { localize } from "@/lib/content/types";
 import { prisma, safeQuery } from "@/lib/prisma";
 import { generateResearchOutputSlug } from "@/lib/validation/research-output";
+
+/**
+ * The module's own name, as `CONTENT_BACKEND_OUTPUTS` spells it.
+ *
+ * Every export below keeps its signature and gains one `if (onPayload())`
+ * line; the Payload half lives in `lib/content/internal/payload/outputs.ts`,
+ * whose header carries the measurements and the four decisions this swap
+ * rests on — the `report` dead end, the download counter that starts working,
+ * which read primitive each write-feeding read must call, and the total
+ * `publishDate` tie that `_id asc` breaks.
+ */
+const DOMAIN = "outputs";
+
+function onPayload(): boolean {
+  return activeBackend(DOMAIN) === "payload";
+}
 
 // ---------------------------------------------------------------------------
 // Agenda — shared shape for getAgendas / getAgendasByRegion / getAgendaBySlug.
@@ -119,6 +138,7 @@ export interface Agenda {
 
 export async function getAgendasByRegion(rcSlug: string, limit: number = 6): Promise<Agenda[]> {
   return safe("agendas-by-region", [], async () => {
+    if (onPayload()) return payloadOutputs.getAgendasByRegion(rcSlug, limit);
     const community = await query<{ _id: string } | null>(
       `*[_type == "regionalCommunity" && slug.current == $slug][0]{_id}`,
       { slug: rcSlug },
@@ -132,7 +152,7 @@ export async function getAgendasByRegion(rcSlug: string, limit: number = 6): Pro
     let items: Agenda[] = [];
 
     const featuredAgendas = await query<Agenda[] | null>(
-      `*[_type == "agenda" && featured == true && references($regionalCommunityId)] | order(publishDate desc)[0...${limit}]{
+      `*[_type == "agenda" && featured == true && references($regionalCommunityId)] | order(publishDate desc, _id asc)[0...${limit}]{
                 _id,
                 title,
                 subtitle,
@@ -178,7 +198,7 @@ export async function getAgendasByRegion(rcSlug: string, limit: number = 6): Pro
                 tags[]->{
                     _id,
                     label,
-                    value,
+                    "value": value.current,
                     color,
                     category
                 }[_id != null],
@@ -212,7 +232,7 @@ export async function getAgendasByRegion(rcSlug: string, limit: number = 6): Pro
       const featuredIds = items.map((item) => item._id);
 
       const recentAgendas = await query<Agenda[] | null>(
-        `*[_type == "agenda" && !(_id in $featuredIds) && references($regionalCommunityId)] | order(publishDate desc)[0...${remainingCount}]{
+        `*[_type == "agenda" && !(_id in $featuredIds) && references($regionalCommunityId)] | order(publishDate desc, _id asc)[0...${remainingCount}]{
                     _id,
                     title,
                     subtitle,
@@ -258,7 +278,7 @@ export async function getAgendasByRegion(rcSlug: string, limit: number = 6): Pro
                     tags[]->{
                         _id,
                         label,
-                        value,
+                        "value": value.current,
                         color,
                         category
                     }[_id != null],
@@ -345,7 +365,7 @@ const AGENDA_FIELDS = `
   tags[]->{
     _id,
     label,
-    value,
+    "value": value.current,
     color,
     category
   },
@@ -369,13 +389,15 @@ const AGENDA_FIELDS = `
 
 export async function getAgendas(locale?: Locale): Promise<Agenda[]> {
   void locale; // inert — agenda has no per-document language field
+  if (onPayload()) return payloadOutputs.getAgendas();
   const rows = await query<Agenda[] | null>(
-    `*[_type == "agenda"] | order(publishDate desc){ ${AGENDA_FIELDS} }`,
+    `*[_type == "agenda"] | order(publishDate desc, _id asc){ ${AGENDA_FIELDS} }`,
   );
   return rows ?? [];
 }
 
 export async function getAgendaBySlug(slug: string): Promise<Agenda | null> {
+  if (onPayload()) return payloadOutputs.getAgendaBySlug(slug);
   return query<Agenda | null>(
     `*[_type == "agenda" && slug.current == $slug][0]{ ${AGENDA_FIELDS} }`,
     { slug },
@@ -440,14 +462,21 @@ interface TrackedAgendaFile {
 }
 
 export async function trackAgendaDownload(agendaId: string, fileLanguage: string): Promise<void> {
-  const agenda = await queryLive<{ _id: string; files?: TrackedAgendaFile[]; totalDownloadCount?: number } | null>(
-    `*[_type == "agenda" && _id == $agendaId][0]{
+  // The read-modify-write arithmetic below is single-sourced on purpose: only
+  // the read and the write have a backend, and two copies of "increment this
+  // file, then recompute the total" would be two chances for the two backends
+  // to count differently. The Payload read is `queryLive` for exactly the
+  // reasons stated above — see `payload/outputs.ts`'s note 3.
+  const agenda = onPayload()
+    ? await payloadOutputs.loadTrackedAgenda(agendaId)
+    : await queryLive<{ _id: string; files?: TrackedAgendaFile[]; totalDownloadCount?: number } | null>(
+        `*[_type == "agenda" && _id == $agendaId][0]{
                 _id,
                 files,
                 totalDownloadCount
             }`,
-    { agendaId },
-  );
+        { agendaId },
+      );
 
   if (!agenda) {
     console.error("Agenda not found:", agendaId);
@@ -467,6 +496,11 @@ export async function trackAgendaDownload(agendaId: string, fileLanguage: string
 
   const newTotalCount = updatedFiles.reduce((total, file) => total + (file.downloadCount || 0), 0);
 
+  if (onPayload()) {
+    await payloadOutputs.writeAgendaDownloadCounts(agendaId, updatedFiles, newTotalCount);
+    return;
+  }
+
   await updateDocument(agendaId, {
     files: updatedFiles,
     totalDownloadCount: newTotalCount,
@@ -480,7 +514,25 @@ interface TrackedReportFile {
   [key: string]: unknown;
 }
 
+/**
+ * DEAD END — delete in Phase 4, together with
+ * `app/api/reports/download/track/route.ts`, its only caller.
+ *
+ * The legacy `report` type left **0 documents** in Sanity and every one of them
+ * was migrated into `researchOutput` (29/29 carry `migratedFromReport`), so
+ * Payload models no `reports` collection at all — 23 collections, none of them
+ * this one. The Payload arm therefore **throws** rather than resolving: a
+ * tracker that returns having written nothing is indistinguishable from one
+ * that worked, and this one can never work. The route's own try/catch keeps the
+ * download working, exactly as it does on Sanity, where this call has always
+ * fallen into the "Report not found" branch below and written nothing either.
+ *
+ * The in-code comment above claiming `downloadCount` "renders publicly in
+ * grid-report.tsx" is **stale**: neither `grid-report.tsx` nor `grid-agenda.tsx`
+ * references `downloadCount` any more.
+ */
 export async function trackReportDownload(reportId: string, fileLanguage: string): Promise<void> {
+  if (onPayload()) payloadOutputs.refuseReportDownloadTracking(reportId);
   const report = await queryLive<{ _id: string; files?: TrackedReportFile[]; totalDownloadCount?: number } | null>(
     `*[_type == "report" && _id == $reportId][0]{
                 _id,
@@ -644,7 +696,7 @@ const RESEARCH_OUTPUT_BY_SLUG_QUERY = `
 `;
 
 const APPROVED_RESEARCH_OUTPUTS_QUERY = `
-  *[_type == "researchOutput" && status == "approved"] | order(coalesce(publishDate, _createdAt) desc){
+  *[_type == "researchOutput" && status == "approved"] | order(coalesce(publishDate, _createdAt) desc, _id asc){
     ${RESEARCH_OUTPUT_FRAGMENT}
   }
 `;
@@ -654,16 +706,19 @@ const RESEARCH_OUTPUTS_STATIC_PARAMS_QUERY = `
 `;
 
 export async function getResearchOutputBySlug(slug: string): Promise<ResearchOutput | null> {
+  if (onPayload()) return payloadOutputs.getResearchOutputBySlug(slug);
   return query<ResearchOutput | null>(RESEARCH_OUTPUT_BY_SLUG_QUERY, { slug });
 }
 
 export async function getResearchOutputs(locale?: Locale): Promise<ResearchOutput[]> {
   void locale; // inert — mirrors the original fetchApprovedResearchOutputs, which never filtered on it
+  if (onPayload()) return payloadOutputs.getResearchOutputs();
   const rows = await query<ResearchOutput[] | null>(APPROVED_RESEARCH_OUTPUTS_QUERY);
   return rows ?? [];
 }
 
 export async function getResearchOutputSlugs(): Promise<{ slug: string }[]> {
+  if (onPayload()) return payloadOutputs.getResearchOutputSlugs();
   const rows = await query<{ slug: string }[] | null>(RESEARCH_OUTPUTS_STATIC_PARAMS_QUERY);
   return rows ?? [];
 }
@@ -691,12 +746,14 @@ export interface ResearchOutputCommunityOption {
 }
 
 export async function getResearchOutputTags(): Promise<ResearchOutputTagOption[]> {
+  if (onPayload()) return payloadOutputs.getResearchOutputTags();
   return query<ResearchOutputTagOption[]>(
     `*[_type == "tag"] | order(label.en asc) { _id, label, value }`,
   );
 }
 
 export async function getResearchOutputRegionalCommunities(): Promise<ResearchOutputCommunityOption[]> {
+  if (onPayload()) return payloadOutputs.getResearchOutputRegionalCommunities();
   return query<ResearchOutputCommunityOption[]>(
     `*[_type == "regionalCommunity" && active == true] | order(name.en asc) { _id, name, slug }`,
   );
@@ -751,17 +808,21 @@ export async function loadEditableResearchOutput(
 ): Promise<EditableResearchOutput | null> {
   const id = sanityId.replace(/^drafts\./, "");
   // Raw perspective: drafts.* docs are invisible to the public read client,
-  // and edit mode is exactly about reopening drafts.
-  const doc = await queryRaw<RawEditableResearchOutputDoc | null>(
-    `*[_type == "researchOutput" && (_id == $id || _id == "drafts." + $id)][0]{
+  // and edit mode is exactly about reopening drafts. On Payload there is no
+  // `drafts.` id to match — a draft is a version of the same id — so the
+  // id-juggling collapses into one lookup, still through `queryRaw`.
+  const doc = onPayload()
+    ? await payloadOutputs.loadEditableResearchOutputDoc(id)
+    : await queryRaw<RawEditableResearchOutputDoc | null>(
+        `*[_type == "researchOutput" && (_id == $id || _id == "drafts." + $id)][0]{
       _id, title, outputType, excerpt, body, region, themes,
       submittedBy, status, reviewNotes,
       "tagIds": tags[]._ref,
       "communityIds": relatedCommunities[]._ref,
       "versions": versions[]{ _key, kind, lang, "fileName": file.asset->originalFilename }
     }`,
-    { id },
-  );
+        { id },
+      );
   if (!doc) return null;
   if (!["pending", "revision", "draft", null, undefined].includes(doc.status)) return null;
 
@@ -868,12 +929,17 @@ export async function submitResearchOutput(input: ResearchOutputInput): Promise<
   const localized = (value: string | undefined) =>
     value ? { en: value, ...(lang !== "en" ? { [lang]: value } : {}) } : undefined;
 
+  // Minted once: `generateResearchOutputSlug` appends a random suffix, so
+  // calling it twice would give the Sanity document and the Payload document
+  // two different slugs for the same submission.
+  const slug = generateResearchOutputSlug(input.title);
+
   const doc: { _type: string; [key: string]: unknown } = {
     _type: "researchOutput",
     status: "pending", // never trust client; always pending on submit
     submittedBy: input.userId,
     title: localized(input.title),
-    slug: { _type: "slug", current: generateResearchOutputSlug(input.title) },
+    slug: { _type: "slug", current: slug },
     outputType: input.outputType,
     excerpt: localized(input.excerpt || undefined),
     region: input.region || undefined,
@@ -888,27 +954,53 @@ export async function submitResearchOutput(input: ResearchOutputInput): Promise<
     doc.relatedCommunities = input.communityIds.map((id) => ({ _type: "reference", _ref: id, _key: id }));
   }
 
-  // Upload the documents first, then reference them as version items.
-  const newVersionItems: Record<string, unknown>[] = [];
+  // Upload the documents first, then reference them as version items. The
+  // upload is the one primitive whose two implementations agree on a
+  // signature, so only the asset store differs: Sanity's `file` assets, or
+  // Payload's `files` collection (never `media`, which is images-only).
+  const uploaded: { kind: string; lang: string; assetId: string }[] = [];
   for (const version of input.newVersions ?? []) {
-    const asset = await uploadFileAsset(version.buffer, {
-      filename: version.filename,
-      contentType: version.contentType,
-    });
-    newVersionItems.push({
-      _type: "documentVersion",
-      _key: crypto.randomUUID(),
-      kind: version.kind,
-      lang: version.lang,
-      file: { _type: "file", asset: { _type: "reference", _ref: asset.id } },
-    });
+    const asset = onPayload()
+      ? await uploadPayloadFileAsset(version.buffer, {
+          filename: version.filename,
+          contentType: version.contentType,
+        })
+      : await uploadFileAsset(version.buffer, {
+          filename: version.filename,
+          contentType: version.contentType,
+        });
+    uploaded.push({ kind: version.kind, lang: version.lang, assetId: asset.id });
   }
+  const newVersionItems: Record<string, unknown>[] = uploaded.map((version) => ({
+    _type: "documentVersion",
+    _key: crypto.randomUUID(),
+    kind: version.kind,
+    lang: version.lang,
+    file: { _type: "file", asset: { _type: "reference", _ref: version.assetId } },
+  }));
+
+  // The field values, in neither store's vocabulary. Computed once so the two
+  // backends cannot disagree about what a resubmission keeps and what it
+  // clears — the same split Task 9 established for lived experiences.
+  const draft: payloadOutputs.ResearchOutputDraft = {
+    language: lang,
+    title: input.title,
+    outputType: input.outputType,
+    excerpt: input.excerpt || undefined,
+    body: Array.isArray(input.body) && input.body.length > 0 ? input.body : undefined,
+    region: input.region || undefined,
+    themes: input.themes && input.themes.length > 0 ? input.themes : undefined,
+    tagIds: input.tagIds,
+    communityIds: input.communityIds,
+  };
 
   if (input.editId) {
-    const existing = await queryRaw<RawExistingResearchOutput | null>(
-      `*[_type == "researchOutput" && _id == $id][0]{ _id, submittedBy, status, versions }`,
-      { id: input.editId },
-    );
+    const existing = onPayload()
+      ? await payloadOutputs.loadExistingResearchOutput(input.editId)
+      : await queryRaw<RawExistingResearchOutput | null>(
+          `*[_type == "researchOutput" && _id == $id][0]{ _id, submittedBy, status, versions }`,
+          { id: input.editId },
+        );
     const editable = !!existing && ["pending", "revision", "draft", null].includes(existing.status ?? null);
     const isSubmitter = existing?.submittedBy === input.userId;
     let isWorkspaceMember = false;
@@ -930,7 +1022,6 @@ export async function submitResearchOutput(input: ResearchOutputInput): Promise<
     const kept = Array.isArray(existing.versions)
       ? existing.versions.filter((v) => v._key && keptVersionKeys.includes(v._key))
       : [];
-    const versions = [...kept, ...newVersionItems];
 
     const { _type: _t, slug: _slug, submittedBy: _sb, year: _y, ...updatable } = doc;
     // JSON drops undefined, so cleared optional fields must be unset explicitly.
@@ -940,6 +1031,21 @@ export async function submitResearchOutput(input: ResearchOutputInput): Promise<
     if (!Array.isArray(input.body) || input.body.length === 0) cleared.push("body");
     if (!input.tagIds || input.tagIds.length === 0) cleared.push("tags");
     if (!input.communityIds || input.communityIds.length === 0) cleared.push("relatedCommunities");
+
+    if (onPayload()) {
+      // Every name in `cleared` — excerpt, region, themes, body, tags,
+      // relatedCommunities — is spelled identically on the Payload collection.
+      // The one field that is NOT is `status`, which is `moderationStatus`
+      // there; the Payload arm sets it itself rather than being handed a name
+      // that would silently write a column Payload does not have.
+      await payloadOutputs.updateResearchOutputSubmission(existing._id, draft, cleared, [
+        ...kept,
+        ...uploaded,
+      ]);
+      return { id: existing._id };
+    }
+
+    const versions = [...kept, ...newVersionItems];
     const set = Object.fromEntries(Object.entries(updatable).filter(([, v]) => v !== undefined));
 
     await updateDocument(existing._id, {
@@ -950,6 +1056,14 @@ export async function submitResearchOutput(input: ResearchOutputInput): Promise<
     });
     // The workspace-output row (if any) already exists — no link-back.
     return { id: existing._id };
+  }
+
+  if (onPayload()) {
+    return payloadOutputs.createResearchOutput(
+      draft,
+      { id: slug, slug, submittedBy: input.userId, year: new Date().getFullYear() },
+      uploaded,
+    );
   }
 
   if (newVersionItems.length > 0) doc.versions = newVersionItems;
@@ -967,6 +1081,10 @@ export async function submitResearchOutput(input: ResearchOutputInput): Promise<
  * plays for lib/case-study-emails.ts).
  */
 export async function updateResearchOutput(id: string, patch: Partial<ResearchOutputInput>): Promise<void> {
+  if (onPayload()) {
+    await payloadOutputs.patchResearchOutput(id, patch as Record<string, unknown>);
+    return;
+  }
   await updateDocument(id, patch as Record<string, unknown>);
 }
 
@@ -1043,11 +1161,13 @@ const AGENDA_INDEX_FIELDS = `
 `;
 
 export async function getPublishedAgendaIndexDocs(): Promise<AgendaIndexDoc[]> {
+  if (onPayload()) return payloadOutputs.getPublishedAgendaIndexDocs();
   const rows = await query<AgendaIndexDoc[] | null>(`*[_type == "agenda"] { ${AGENDA_INDEX_FIELDS} }`);
   return rows ?? [];
 }
 
 export async function getAgendaIndexDocsByIds(ids: string[]): Promise<AgendaIndexDoc[]> {
+  if (onPayload()) return payloadOutputs.getAgendaIndexDocsByIds(ids);
   const rows = await query<AgendaIndexDoc[] | null>(
     `*[_type == "agenda" && _id in $ids] { ${AGENDA_INDEX_FIELDS} }`,
     { ids },
@@ -1081,6 +1201,7 @@ const AGENDA_WEBHOOK_INDEX_FIELDS = `
 `;
 
 export async function getAgendaIndexDocById(id: string): Promise<AgendaIndexDoc | null> {
+  if (onPayload()) return payloadOutputs.getAgendaIndexDocById(id);
   return query<AgendaIndexDoc | null>(
     `*[_type == "agenda" && _id == $id][0] { ${AGENDA_WEBHOOK_INDEX_FIELDS} }`,
     { id },
@@ -1088,6 +1209,7 @@ export async function getAgendaIndexDocById(id: string): Promise<AgendaIndexDoc 
 }
 
 export async function getAgendaCount(): Promise<number> {
+  if (onPayload()) return payloadOutputs.getAgendaCount();
   return query<number>(`count(*[_type == "agenda"])`);
 }
 
@@ -1118,7 +1240,9 @@ const AGENDA_SEARCH_RECORDS_QUERY = `
 
 export async function getAgendaSearchRecords(): Promise<SearchRecord[]> {
   return safe("agenda-search-records", [], async () => {
-    const docs = await query<RawAgendaSearchRecordDoc[] | null>(AGENDA_SEARCH_RECORDS_QUERY);
+    const docs = onPayload()
+      ? await payloadOutputs.getAgendaSearchRecordDocs()
+      : await query<RawAgendaSearchRecordDoc[] | null>(AGENDA_SEARCH_RECORDS_QUERY);
     return (docs ?? []).map((d) => {
       const locale: Locale = "en";
       return {
@@ -1151,7 +1275,9 @@ const RESEARCH_OUTPUT_SEARCH_RECORDS_QUERY = `
 
 export async function getResearchOutputSearchRecords(): Promise<SearchRecord[]> {
   return safe("research-output-search-records", [], async () => {
-    const docs = await query<RawResearchOutputSearchRecordDoc[] | null>(RESEARCH_OUTPUT_SEARCH_RECORDS_QUERY);
+    const docs = onPayload()
+      ? await payloadOutputs.getResearchOutputSearchRecordDocs()
+      : await query<RawResearchOutputSearchRecordDoc[] | null>(RESEARCH_OUTPUT_SEARCH_RECORDS_QUERY);
     return (docs ?? []).map((d) => {
       const locale: Locale = "en";
       return {
