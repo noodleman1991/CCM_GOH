@@ -1,6 +1,12 @@
 import "server-only";
+import { activeBackend } from "@/lib/content/internal/backend";
 import { safe } from "@/lib/content/internal/safe";
 import { query, queryPreviewable } from "@/lib/content/internal/sanity-source";
+import {
+  getActiveProfilePrompts as payloadGetActiveProfilePrompts,
+  getOnboardingCommunities as payloadGetOnboardingCommunities,
+  getOnboardingContent as payloadGetOnboardingContent,
+} from "@/lib/content/internal/payload/onboarding";
 import type { Localized } from "@/lib/content/types";
 import type { Locale } from "@/lib/content/types";
 
@@ -180,6 +186,10 @@ const ONBOARDING_CONTENT_QUERY_WITH_FALLBACK = `
 `;
 
 export async function getOnboardingContent(locale: Locale): Promise<OnboardingContent | null> {
+  // Above the read, not inside a wrapper: this function has no `safe()` on
+  // either arm, so a Payload failure must reach page.tsx's error boundary
+  // exactly as a Sanity one does.
+  if (activeBackend("onboarding") === "payload") return payloadGetOnboardingContent(locale);
   const data = await query<OnboardingContent | null>(ONBOARDING_CONTENT_QUERY_WITH_FALLBACK, { locale });
   return data ?? null;
 }
@@ -216,6 +226,7 @@ const ACTIVE_PROFILE_PROMPTS_QUERY = `
 `;
 
 export async function getActiveProfilePrompts(): Promise<ProfilePrompt[]> {
+  if (activeBackend("onboarding") === "payload") return payloadGetActiveProfilePrompts();
   const data = await queryPreviewable<ProfilePrompt[] | null>(ACTIVE_PROFILE_PROMPTS_QUERY);
   return data || [];
 }
@@ -277,6 +288,12 @@ const ONBOARDING_REGIONAL_COMMUNITIES_QUERY = `
 
 export async function getOnboardingCommunities(): Promise<OnboardingRegionalCommunity[]> {
   return safe("onboarding-communities", [], async () => {
+    // Inside `safe()`, not above it: the original getRegionalCommunities()
+    // swallowed its own errors into `[]`, and both call sites then treat an
+    // empty list as "the CMS has nothing" and fall back to their hardcoded
+    // seven. A Payload failure has to land in the same place or one backend
+    // starts throwing into a page the other degrades.
+    if (activeBackend("onboarding") === "payload") return payloadGetOnboardingCommunities();
     const rows = await query<RawOnboardingRegionalCommunity[]>(ONBOARDING_REGIONAL_COMMUNITIES_QUERY);
     return (rows ?? []).map((r) => ({ id: r._id, slug: r.slug, name: r.name, active: r.active }));
   });
