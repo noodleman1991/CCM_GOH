@@ -9,6 +9,16 @@ vi.mock("@/lib/content/internal/sanity-source", () => ({
   updateDocument: vi.fn(),
 }));
 
+vi.mock("@/lib/content/internal/payload-source", () => ({
+  query: vi.fn(),
+  queryPreviewable: vi.fn(),
+  queryRaw: vi.fn(),
+  queryLive: vi.fn(),
+  uploadFileAsset: vi.fn(),
+  createDocument: vi.fn(),
+  updateDocument: vi.fn(),
+}));
+
 vi.mock("@/lib/prisma", () => ({
   prisma: {
     workspaceOutput: {
@@ -32,6 +42,15 @@ import {
   createDocument,
   updateDocument,
 } from "@/lib/content/internal/sanity-source";
+import {
+  query as payloadQuery,
+  queryPreviewable as payloadQueryPreviewable,
+  queryRaw as payloadQueryRaw,
+  queryLive as payloadQueryLive,
+  uploadFileAsset as payloadUploadFileAsset,
+  createDocument as payloadCreateDocument,
+  updateDocument as payloadUpdateDocument,
+} from "@/lib/content/internal/payload-source";
 import { prisma } from "@/lib/prisma";
 import {
   getLivedExperienceIndex,
@@ -55,6 +74,13 @@ const mockUploadFileAsset = vi.mocked(uploadFileAsset);
 const mockCreateDocument = vi.mocked(createDocument);
 const mockUpdateDocument = vi.mocked(updateDocument);
 const mockFindFirst = vi.mocked(prisma.workspaceOutput.findFirst);
+const mockPayloadQuery = vi.mocked(payloadQuery);
+const mockPayloadQueryPreviewable = vi.mocked(payloadQueryPreviewable);
+const mockPayloadQueryRaw = vi.mocked(payloadQueryRaw);
+const mockPayloadQueryLive = vi.mocked(payloadQueryLive);
+const mockPayloadUploadFileAsset = vi.mocked(payloadUploadFileAsset);
+const mockPayloadCreateDocument = vi.mocked(payloadCreateDocument);
+const mockPayloadUpdateDocument = vi.mocked(payloadUpdateDocument);
 
 beforeEach(() => {
   mockQuery.mockReset();
@@ -64,8 +90,23 @@ beforeEach(() => {
   mockCreateDocument.mockReset();
   mockUpdateDocument.mockReset();
   mockFindFirst.mockReset();
+  mockPayloadQuery.mockReset();
+  mockPayloadQueryPreviewable.mockReset();
+  mockPayloadQueryRaw.mockReset();
+  mockPayloadQueryLive.mockReset();
+  mockPayloadUploadFileAsset.mockReset();
+  mockPayloadCreateDocument.mockReset();
+  mockPayloadUpdateDocument.mockReset();
+  // Every `describe` above the two-backend section is the SANITY contract, and
+  // `activeBackend()` reads the environment per call — so an override left
+  // behind by the Payload section would silently redirect them and they would
+  // pass while proving nothing.
+  delete process.env.CONTENT_BACKEND_LIVED_EXPERIENCES;
 });
-afterEach(() => vi.restoreAllMocks());
+afterEach(() => {
+  delete process.env.CONTENT_BACKEND_LIVED_EXPERIENCES;
+  vi.restoreAllMocks();
+});
 
 describe("getLivedExperienceIndex", () => {
   it("returns videos, regional communities and tags from the source", async () => {
@@ -210,6 +251,16 @@ describe("loadEditableLivedExperience", () => {
     mockFindFirst.mockResolvedValue(null);
 
     await expect(loadEditableLivedExperience("le1", "user1")).resolves.toBeNull();
+  });
+
+  it("refuses to reopen an approved or rejected doc, even for its own submitter", async () => {
+    // The gate is inert on today's data — `status` is 0/56 populated on both
+    // stores — and this is the property it has the moment an editor sets it.
+    // Pinned on Sanity as well as Payload so the two cannot drift.
+    for (const status of ["approved", "rejected"]) {
+      mockQueryRaw.mockResolvedValue({ _id: "le1", submittedBy: "user1", status });
+      await expect(loadEditableLivedExperience("le1", "user1")).resolves.toBeNull();
+    }
   });
 
   it("throws (does not degrade) when the source fails", async () => {
@@ -403,5 +454,586 @@ describe("getLivedExperienceOgData", () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
     mockQuery.mockRejectedValue(new Error("network error"));
     await expect(getLivedExperienceOgData("x")).resolves.toBeNull();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// The same contract, on Payload
+// ---------------------------------------------------------------------------
+//
+// Everything above is the Sanity contract and none of it was edited. Every
+// assertion in it that describes *behaviour* (rather than a GROQ string) is
+// restated here against Payload, plus the assertions that only make sense on a
+// store that splits `moderationStatus` from `_status`.
+//
+// The two write-feeding reads get a class of test nothing else in this suite
+// needs: **which primitive was called**. `queryRaw` and `queryLive` return the
+// same shape, so a reader that picks the wrong one is invisible to any test
+// that inspects only the result — which is exactly how the Phase-1
+// authorization bypass survived review. These mock `payload-source` rather than
+// the reader, so the real `lib/content/internal/payload/lived-experiences.ts`
+// runs and its primitive choice is what is observed.
+
+const onPayload = () => {
+  process.env.CONTENT_BACKEND_LIVED_EXPERIENCES = "payload";
+};
+
+/** Answer a `find`/`findByID` descriptor by collection. */
+const byCollection = (answers: Record<string, unknown>) => async (descriptor: unknown) => {
+  const { collection } = descriptor as { collection: string };
+  return answers[collection] ?? { docs: [] };
+};
+
+describe("getLivedExperienceIndex, on Payload", () => {
+  const videos = {
+    docs: [
+      {
+        id: "v1",
+        title: { en: "A story", es: null },
+        format: null,
+        videoUrl: "https://youtube.com/watch?v=x",
+        tags: [{ id: "t1", label: { en: "Anxiety" }, value: "anxiety", color: "#fff" }],
+        thumbnail: { asset: null },
+        region: { id: "r1", name: { en: "Oceania" }, slug: "oceania" },
+        createdAt: "2025-11-10T13:10:20.000Z",
+      },
+    ],
+  };
+  const communities = { docs: [{ id: "r1", name: { en: "Oceania" }, slug: "oceania" }] };
+  const tags = { docs: [{ id: "t1", label: { en: "Anxiety" }, value: "anxiety", color: "#fff" }] };
+
+  it("returns videos, regional communities and tags from Payload", async () => {
+    onPayload();
+    mockPayloadQuery.mockImplementation(
+      byCollection({ livedExperiences: videos, regionalCommunities: communities, tags }) as never,
+    );
+
+    const result = await getLivedExperienceIndex();
+
+    expect(result.videos).toHaveLength(1);
+    expect(result.videos[0].id).toBe("v1");
+    expect(result.regionalCommunities[0].slug).toBe("oceania");
+    expect(result.allTags[0].value).toBe("anxiety");
+    expect(mockQuery).not.toHaveBeenCalled();
+  });
+
+  it("carries videoUrl, which is real data the Sanity schema never declared", async () => {
+    onPayload();
+    mockPayloadQuery.mockImplementation(
+      byCollection({ livedExperiences: videos, regionalCommunities: communities, tags }) as never,
+    );
+    const result = await getLivedExperienceIndex();
+    // 56/56 populated and read by five lib/content modules. Dropping it breaks
+    // all five silently.
+    expect(result.videos[0].videoUrl).toBe("https://youtube.com/watch?v=x");
+  });
+
+  it("gives ContentTag.value the flat string the type has always promised", async () => {
+    onPayload();
+    mockPayloadQuery.mockImplementation(
+      byCollection({ livedExperiences: videos, regionalCommunities: communities, tags }) as never,
+    );
+    const result = await getLivedExperienceIndex();
+    // Sanity stored `{_type:"slug", current:"anxiety"}` here until this task
+    // flattened the projection. Both backends now answer a string.
+    expect(result.videos[0].tags[0].value).toBe("anxiety");
+    expect(result.allTags[0].value).toBe("anxiety");
+  });
+
+  it("keeps rawRegion in the reference shape the page's legacy fallback reads", async () => {
+    onPayload();
+    mockPayloadQuery.mockImplementation(
+      byCollection({ livedExperiences: videos, regionalCommunities: communities, tags }) as never,
+    );
+    const result = await getLivedExperienceIndex();
+    // It is a prop of a client component, so it reaches the RSC flight payload
+    // and is part of the output the parity harness compares.
+    expect(result.videos[0].rawRegion).toEqual({ _type: "reference", _ref: "r1" });
+  });
+
+  it("uses the loose moderation filter, because an unset status means approved here", async () => {
+    onPayload();
+    mockPayloadQuery.mockImplementation(
+      byCollection({ livedExperiences: videos, regionalCommunities: communities, tags }) as never,
+    );
+    await getLivedExperienceIndex();
+    const [descriptor] = mockPayloadQuery.mock.calls[0] as unknown as [Record<string, unknown>];
+    // `publishedAndApproved`'s shape, NOT `moderationApprovedOnly`'s. The
+    // strict variant would empty the page: all 35 rows carry a null status.
+    expect(descriptor.where).toEqual({
+      or: [{ moderationStatus: { equals: "approved" } }, { moderationStatus: { exists: false } }],
+    });
+    expect(descriptor.sort).toBe("-createdAt");
+  });
+
+  it("degrades to an empty index when Payload fails", async () => {
+    onPayload();
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    mockPayloadQuery.mockRejectedValue(new Error("connection refused"));
+
+    expect(mockQuery).not.toHaveBeenCalled();
+    await expect(getLivedExperienceIndex()).resolves.toEqual({
+      videos: [],
+      regionalCommunities: [],
+      allTags: [],
+    });
+  });
+
+  it("filters by region through the same index", async () => {
+    onPayload();
+    mockPayloadQuery.mockImplementation(
+      byCollection({ livedExperiences: videos, regionalCommunities: communities, tags }) as never,
+    );
+    await expect(getLivedExperiencesByRegion("oceania")).resolves.toHaveLength(1);
+    await expect(getLivedExperiencesByRegion("sahel")).resolves.toEqual([]);
+  });
+});
+
+describe("getLivedExperiencesCarousel, on Payload", () => {
+  it("uses queryPreviewable, not query, so draft preview keeps working", async () => {
+    onPayload();
+    mockPayloadQueryPreviewable.mockResolvedValue({ docs: [] });
+    await getLivedExperiencesCarousel({});
+    expect(mockPayloadQueryPreviewable).toHaveBeenCalledTimes(1);
+    expect(mockPayloadQuery).not.toHaveBeenCalled();
+    expect(mockQueryPreviewable).not.toHaveBeenCalled();
+  });
+
+  it("returns items and applies the maxItems cap", async () => {
+    onPayload();
+    mockPayloadQueryPreviewable.mockResolvedValue({
+      docs: [{ id: "v1", title: { en: "A story" }, tags: [] }],
+    });
+    const result = await getLivedExperiencesCarousel({ maxItems: 3 });
+    expect(result).toHaveLength(1);
+    expect(result[0]._id).toBe("v1");
+    // The GROQ projects `_type` verbatim; the carousel keys its links off it.
+    expect(result[0]._type).toBe("livedExperience");
+    const [descriptor] = mockPayloadQueryPreviewable.mock.calls[0] as unknown as [Record<string, unknown>];
+    expect(descriptor.limit).toBe(3);
+    expect(descriptor.sort).toBe("-publishedAt");
+  });
+
+  it("adds a featured filter only when featured is true", async () => {
+    onPayload();
+    mockPayloadQueryPreviewable.mockResolvedValue({ docs: [] });
+    await getLivedExperiencesCarousel({ featured: false });
+    expect(JSON.stringify(mockPayloadQueryPreviewable.mock.calls[0][0])).not.toContain("featured");
+    mockPayloadQueryPreviewable.mockClear();
+    await getLivedExperiencesCarousel({ featured: true });
+    expect(JSON.stringify(mockPayloadQueryPreviewable.mock.calls[0][0])).toContain('"featured"');
+  });
+
+  it("degrades to an empty list when Payload fails", async () => {
+    onPayload();
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    mockPayloadQueryPreviewable.mockRejectedValue(new Error("connection refused"));
+    await expect(getLivedExperiencesCarousel({})).resolves.toEqual([]);
+    expect(mockPayloadQueryPreviewable).toHaveBeenCalledTimes(1);
+    expect(mockQueryPreviewable).not.toHaveBeenCalled();
+  });
+});
+
+describe("the submit-form option lists, on Payload", () => {
+  it("returns tags ordered by the English label, with a flat value", async () => {
+    onPayload();
+    mockPayloadQuery.mockResolvedValue({
+      docs: [
+        { id: "t2", label: { en: "Drought" }, value: "drought" },
+        { id: "t1", label: { en: "Anxiety" }, value: "anxiety" },
+      ],
+    });
+    await expect(getAvailableLivedExperienceTags()).resolves.toEqual([
+      { _id: "t1", label: { en: "Anxiety" }, value: "anxiety" },
+      { _id: "t2", label: { en: "Drought" }, value: "drought" },
+    ]);
+  });
+
+  it("returns only active regional communities", async () => {
+    onPayload();
+    mockPayloadQuery.mockResolvedValue({ docs: [{ id: "r1", name: { en: "Oceania" }, slug: "oceania" }] });
+    await expect(getActiveRegionalCommunities()).resolves.toEqual([
+      { _id: "r1", name: { en: "Oceania" }, slug: { current: "oceania" } },
+    ]);
+    const [descriptor] = mockPayloadQuery.mock.calls[0] as unknown as [Record<string, unknown>];
+    expect(descriptor.where).toEqual({ active: { equals: true } });
+  });
+
+  it("throws through when Payload fails, as the Sanity path does", async () => {
+    onPayload();
+    mockPayloadQuery.mockRejectedValue(new Error("connection refused"));
+    await expect(getAvailableLivedExperienceTags()).rejects.toThrow("connection refused");
+  });
+});
+
+describe("loadEditableLivedExperience, on Payload — the authorization gate", () => {
+  const doc = (over: Record<string, unknown> = {}) => ({
+    id: "le1",
+    title: { en: "My story", es: null, fr: null, ar: null },
+    description: { en: "Desc" },
+    issue: { en: null },
+    personContext: { en: null },
+    videoSource: "youtube",
+    videoLink: "https://youtube.com/watch?v=abc",
+    body: null,
+    submittedBy: "user1",
+    moderationStatus: null,
+    reviewNotes: null,
+    relatedCommunity: "r1",
+    tags: ["t1"],
+    videoFile: null,
+    ...over,
+  });
+
+  it("reads through queryRaw — not queryLive, not query", async () => {
+    onPayload();
+    mockPayloadQueryRaw.mockResolvedValue(doc());
+    await loadEditableLivedExperience("le1", "user1");
+    // The whole point of this test: the three primitives return the same
+    // shape, so only the CHOICE distinguishes a correct reader from the
+    // Phase-1 bypass. `queryLive` would make reopening your own unpublished
+    // submission impossible; `query` would answer a permission question from
+    // an hour-old cache.
+    expect(mockPayloadQueryRaw).toHaveBeenCalledTimes(1);
+    expect(mockPayloadQueryLive).not.toHaveBeenCalled();
+    expect(mockPayloadQuery).not.toHaveBeenCalled();
+    expect(mockQueryRaw).not.toHaveBeenCalled();
+  });
+
+  it("looks the document up once, by id, with no drafts. prefix to match", async () => {
+    onPayload();
+    mockPayloadQueryRaw.mockResolvedValue(doc());
+    await loadEditableLivedExperience("drafts.le1", "user1");
+    expect(mockPayloadQueryRaw).toHaveBeenCalledTimes(1);
+    const [descriptor] = mockPayloadQueryRaw.mock.calls[0] as unknown as [Record<string, unknown>];
+    // In Payload a draft is a version of the same document, so Sanity's
+    // `_id == $id || _id == "drafts." + $id` collapses to one findByID. The
+    // prefix is still stripped, for ids minted while Sanity was the backend.
+    expect(descriptor).toMatchObject({ type: "findByID", collection: "livedExperiences", id: "le1" });
+    // Without this, Payload's `fallback: true` fills every locale from `en`
+    // and the submission language can never be read back off the content.
+    expect(descriptor.fallbackLocale).toBe(false);
+  });
+
+  it("returns the mapped doc when the submitter matches", async () => {
+    onPayload();
+    mockPayloadQueryRaw.mockResolvedValue(doc());
+    const result = await loadEditableLivedExperience("le1", "user1");
+    expect(result?.title).toBe("My story");
+    expect(result?.language).toBe("en");
+    expect(result?.regionalCommunityId).toBe("r1");
+    expect(result?.tagIds).toEqual(["t1"]);
+    expect(result?.hasVideoFile).toBe(false);
+    // Sanity's `status` conflates moderation and draft state; Payload's
+    // `moderationStatus` is null on all 56 real documents, and the mapped
+    // value falls back to "draft" exactly as it does on Sanity.
+    expect(result?.status).toBe("draft");
+  });
+
+  it("reads the submission language off the locale that carries the title", async () => {
+    onPayload();
+    mockPayloadQueryRaw.mockResolvedValue(
+      doc({ title: { en: null, es: "Mi historia", fr: null, ar: null } }),
+    );
+    const result = await loadEditableLivedExperience("le1", "user1");
+    // Payload models no `language` column — its locale mechanism IS that fact.
+    expect(result?.language).toBe("es");
+    expect(result?.title).toBe("Mi historia");
+  });
+
+  it("returns null when the document does not exist", async () => {
+    onPayload();
+    mockPayloadQueryRaw.mockResolvedValue(null);
+    await expect(loadEditableLivedExperience("missing", "user1")).resolves.toBeNull();
+    expect(mockQueryRaw).not.toHaveBeenCalled();
+  });
+
+  it("returns null when the caller is neither the submitter nor a workspace member", async () => {
+    onPayload();
+    mockPayloadQueryRaw.mockResolvedValue(doc({ submittedBy: "someone-else" }));
+    mockFindFirst.mockResolvedValue(null);
+    await expect(loadEditableLivedExperience("le1", "user1")).resolves.toBeNull();
+    expect(mockQueryRaw).not.toHaveBeenCalled();
+  });
+
+  it("refuses to reopen an approved document, even for its own submitter", async () => {
+    onPayload();
+    mockPayloadQueryRaw.mockResolvedValue(doc({ moderationStatus: "approved" }));
+    // The gate is inert on today's data (0/56 populated, no defaultValue
+    // imported) and this is the property it has the moment an editor sets the
+    // field. Approved content changes go through the editorial team.
+    await expect(loadEditableLivedExperience("le1", "user1")).resolves.toBeNull();
+    mockPayloadQueryRaw.mockResolvedValue(doc({ moderationStatus: "rejected" }));
+    await expect(loadEditableLivedExperience("le1", "user1")).resolves.toBeNull();
+    expect(mockQueryRaw).not.toHaveBeenCalled();
+    expect(mockPayloadQueryRaw).toHaveBeenCalledTimes(2);
+  });
+
+  it("still admits pending and revision", async () => {
+    onPayload();
+    for (const moderationStatus of ["pending", "revision"]) {
+      mockPayloadQueryRaw.mockResolvedValue(doc({ moderationStatus }));
+      await expect(loadEditableLivedExperience("le1", "user1")).resolves.not.toBeNull();
+    }
+  });
+
+  it("does not read Payload's _status as the moderation status", async () => {
+    onPayload();
+    // A published document with no moderation decision is reopenable; if
+    // `_status` were mistaken for the gate's `status`, "published" would fail
+    // the list and lock every submitter out of their own work.
+    mockPayloadQueryRaw.mockResolvedValue(doc({ _status: "published", moderationStatus: null }));
+    await expect(loadEditableLivedExperience("le1", "user1")).resolves.not.toBeNull();
+  });
+
+  it("throws (does not degrade) when Payload fails", async () => {
+    onPayload();
+    mockPayloadQueryRaw.mockRejectedValue(new Error("connection refused"));
+    await expect(loadEditableLivedExperience("le1", "user1")).rejects.toThrow("connection refused");
+  });
+});
+
+describe("submitLivedExperience, on Payload", () => {
+  it("creates a pending document in the livedExperiences collection", async () => {
+    onPayload();
+    mockPayloadCreateDocument.mockResolvedValue({ id: "new-id" });
+
+    const result = await submitLivedExperience({
+      userId: "user1",
+      language: "en",
+      title: "My story",
+      description: "A description long enough",
+      issue: "An issue",
+    });
+
+    expect(result).toEqual({ id: "new-id" });
+    const [input] = mockPayloadCreateDocument.mock.calls[0] as unknown as [Record<string, unknown>];
+    expect(input.collection).toBe("livedExperiences");
+    expect(input.locale).toBe("en");
+    // Published, not a draft: the Sanity original creates a live document whose
+    // invisibility comes entirely from the moderation filter.
+    expect(input.draft).toBe(false);
+    expect(input.data).toMatchObject({
+      moderationStatus: "pending",
+      submittedBy: "user1",
+      title: "My story",
+      description: "A description long enough",
+      issue: "An issue",
+      featured: false,
+    });
+    expect(mockCreateDocument).not.toHaveBeenCalled();
+  });
+
+  it("uploads the video to files, not media, and references it", async () => {
+    onPayload();
+    mockPayloadUploadFileAsset.mockResolvedValue({ id: "asset1" });
+    mockPayloadCreateDocument.mockResolvedValue({ id: "new-id" });
+
+    await submitLivedExperience({
+      userId: "user1",
+      language: "en",
+      title: "My story",
+      videoSource: "upload",
+      videoFile: { buffer: Buffer.from("x"), filename: "clip.mp4", contentType: "video/mp4" },
+    });
+
+    // `media` is images-only; the Payload primitive targets `files`.
+    expect(mockPayloadUploadFileAsset).toHaveBeenCalledWith(
+      expect.any(Buffer),
+      expect.objectContaining({ filename: "clip.mp4", contentType: "video/mp4" }),
+    );
+    expect(mockUploadFileAsset).not.toHaveBeenCalled();
+    const [input] = mockPayloadCreateDocument.mock.calls[0] as unknown as [{ data: Record<string, unknown> }];
+    expect(input.data.videoFile).toBe("asset1");
+  });
+
+  it("reads the existing document through queryRaw before allowing an edit", async () => {
+    onPayload();
+    mockPayloadQueryRaw.mockResolvedValue({ id: "le1", submittedBy: "user1", moderationStatus: null, videoFile: null });
+    await submitLivedExperience({ userId: "user1", language: "en", title: "Updated story", editId: "le1" });
+    expect(mockPayloadQueryRaw).toHaveBeenCalledTimes(1);
+    expect(mockPayloadQueryLive).not.toHaveBeenCalled();
+    expect(mockPayloadQuery).not.toHaveBeenCalled();
+  });
+
+  it("patches the existing document, pinning exactly which fields are set and which are nulled", async () => {
+    onPayload();
+    mockPayloadQueryRaw.mockResolvedValue({ id: "le1", submittedBy: "user1", moderationStatus: null, videoFile: null });
+
+    const result = await submitLivedExperience({
+      userId: "user1",
+      language: "en",
+      title: "Updated story",
+      editId: "le1",
+    });
+
+    expect(result).toEqual({ id: "le1" });
+    const [input] = mockPayloadUpdateDocument.mock.calls[0] as unknown as [Record<string, unknown>];
+    expect(input).toMatchObject({ collection: "livedExperiences", id: "le1", locale: "en", draft: true });
+    // The same decision the Sanity arm makes, in Payload's field names — one
+    // computation of "set vs cleared", two namings of it.
+    expect(input.data).toEqual({
+      title: "Updated story",
+      featured: false,
+      moderationStatus: "pending",
+      description: null,
+      issue: null,
+      personContext: null,
+      videoFile: null,
+      body: null,
+      relatedCommunity: null,
+      tags: null,
+    });
+  });
+
+  it("sets provided edit fields instead of nulling them", async () => {
+    onPayload();
+    mockPayloadQueryRaw.mockResolvedValue({ id: "le1", submittedBy: "user1", moderationStatus: null, videoFile: null });
+
+    await submitLivedExperience({
+      userId: "user1",
+      language: "en",
+      title: "Updated story",
+      description: "A fuller description",
+      regionalCommunityId: "r1",
+      tagIds: ["t1", "t2"],
+      editId: "le1",
+    });
+
+    const [input] = mockPayloadUpdateDocument.mock.calls[0] as unknown as [{ data: Record<string, unknown> }];
+    expect(input.data.description).toBe("A fuller description");
+    // Relationships are ids in Payload, not `{_type:"reference"}` wrappers.
+    expect(input.data.relatedCommunity).toBe("r1");
+    expect(input.data.tags).toEqual(["t1", "t2"]);
+    expect(input.data.issue).toBeNull();
+  });
+
+  it("keeps the existing upload rather than deleting it", async () => {
+    onPayload();
+    mockPayloadQueryRaw.mockResolvedValue({ id: "le1", submittedBy: "user1", moderationStatus: null, videoFile: "asset1" });
+
+    await submitLivedExperience({
+      userId: "user1",
+      language: "en",
+      title: "Updated story",
+      videoSource: "upload",
+      editId: "le1",
+    });
+
+    const [input] = mockPayloadUpdateDocument.mock.calls[0] as unknown as [{ data: Record<string, unknown> }];
+    // videoLink is stale for an upload-sourced document, so it is nulled...
+    expect(input.data.videoLink).toBeNull();
+    // ...and videoFile must be absent entirely, not nulled.
+    expect(input.data).not.toHaveProperty("videoFile");
+  });
+
+  it("refuses an edit the caller may not make", async () => {
+    onPayload();
+    mockPayloadQueryRaw.mockResolvedValue({ id: "le1", submittedBy: "someone-else", moderationStatus: null });
+    mockFindFirst.mockResolvedValue(null);
+    await expect(
+      submitLivedExperience({ userId: "user1", language: "en", title: "x", editId: "le1" }),
+    ).rejects.toBeInstanceOf(LivedExperienceEditNotAllowedError);
+    expect(mockPayloadUpdateDocument).not.toHaveBeenCalled();
+    expect(mockQueryRaw).not.toHaveBeenCalled();
+  });
+
+  it("refuses to reopen an approved document", async () => {
+    onPayload();
+    mockPayloadQueryRaw.mockResolvedValue({ id: "le1", submittedBy: "user1", moderationStatus: "approved" });
+    await expect(
+      submitLivedExperience({ userId: "user1", language: "en", title: "x", editId: "le1" }),
+    ).rejects.toBeInstanceOf(LivedExperienceEditNotAllowedError);
+    expect(mockPayloadQueryRaw).toHaveBeenCalledTimes(1);
+    expect(mockQueryRaw).not.toHaveBeenCalled();
+  });
+
+  it("refuses an upload edit with no file and no existing upload", async () => {
+    onPayload();
+    mockPayloadQueryRaw.mockResolvedValue({ id: "le1", submittedBy: "user1", moderationStatus: null, videoFile: null });
+    await expect(
+      submitLivedExperience({
+        userId: "user1",
+        language: "en",
+        title: "x",
+        editId: "le1",
+        videoSource: "upload",
+        videoFile: null,
+      }),
+    ).rejects.toBeInstanceOf(LivedExperienceMissingVideoError);
+  });
+
+  it("throws (does not degrade) when the write fails", async () => {
+    onPayload();
+    mockPayloadCreateDocument.mockRejectedValue(new Error("Payload write failed"));
+    await expect(
+      submitLivedExperience({ userId: "user1", language: "en", title: "x" }),
+    ).rejects.toThrow("Payload write failed");
+  });
+});
+
+describe("the detail, slugs and OG reads, on Payload", () => {
+  it("returns the detail document for a published, approved slug", async () => {
+    onPayload();
+    mockPayloadQuery.mockResolvedValue({
+      docs: [
+        {
+          id: "le1",
+          title: { en: "My story" },
+          slug: "my-story",
+          videoLink: "https://youtube.com/watch?v=x",
+          tags: [{ id: "t1", label: { en: "Anxiety" }, value: "anxiety", color: "#fff" }],
+          thumbnail: null,
+          author: null,
+          relatedCommunity: null,
+        },
+      ],
+    });
+    const result = await getLivedExperienceBySlug("my-story");
+    expect(result?._id).toBe("le1");
+    expect(result?.tags?.[0].value).toBe("anxiety");
+    // No Payload field and 0/56 populated in Sanity — answered as absent
+    // rather than reconstructed.
+    expect(result?.relatedContent).toBeUndefined();
+  });
+
+  it("returns null when there is no match", async () => {
+    onPayload();
+    mockPayloadQuery.mockResolvedValue({ docs: [] });
+    await expect(getLivedExperienceBySlug("missing")).resolves.toBeNull();
+  });
+
+  it("returns slugs, filtered by the same loose moderation rule", async () => {
+    onPayload();
+    mockPayloadQuery.mockResolvedValue({ docs: [{ slug: "my-story" }, { slug: null }] });
+    await expect(getLivedExperienceSlugs()).resolves.toEqual([{ slug: "my-story" }]);
+    const [descriptor] = mockPayloadQuery.mock.calls[0] as unknown as [Record<string, unknown>];
+    expect(JSON.stringify(descriptor.where)).toContain('"exists":false');
+  });
+
+  it("throws (does not degrade) when the detail read fails", async () => {
+    onPayload();
+    mockPayloadQuery.mockRejectedValue(new Error("connection refused"));
+    await expect(getLivedExperienceBySlug("x")).rejects.toThrow("connection refused");
+  });
+
+  it("answers the OG card from relatedCommunity, which is the field the GROQ names", async () => {
+    onPayload();
+    mockPayloadQuery.mockResolvedValue({
+      docs: [{ title: { en: "My story" }, relatedCommunity: { id: "r1", name: { en: "Oceania" } } }],
+    });
+    await expect(getLivedExperienceOgData("my-story")).resolves.toEqual({
+      title: { en: "My story" },
+      region: "Oceania",
+    });
+  });
+
+  it("degrades the OG card to null when Payload fails", async () => {
+    onPayload();
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    mockPayloadQuery.mockRejectedValue(new Error("connection refused"));
+    await expect(getLivedExperienceOgData("x")).resolves.toBeNull();
+    expect(mockPayloadQuery).toHaveBeenCalledTimes(1);
+    expect(mockQuery).not.toHaveBeenCalled();
   });
 });

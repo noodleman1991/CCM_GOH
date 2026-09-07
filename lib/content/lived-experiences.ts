@@ -1,9 +1,18 @@
+import { activeBackend } from "@/lib/content/internal/backend";
 import { safe } from "@/lib/content/internal/safe";
 import { toRegion, toTag, type RawRegion, type RawTag } from "@/lib/content/internal/normalize";
 import { createDocument, query, queryPreviewable, queryRaw, updateDocument, uploadFileAsset } from "@/lib/content/internal/sanity-source";
+import {
+  uploadFileAsset as payloadUploadFileAsset,
+} from "@/lib/content/internal/payload-source";
+import * as payloadLivedExperiences from "@/lib/content/internal/payload/lived-experiences";
+import type { SubmissionDraft, SubmissionField } from "@/lib/content/internal/payload/lived-experiences";
 import type { ContentRegion, ContentTag, Localized, RichText } from "@/lib/content/types";
 import { prisma, safeQuery } from "@/lib/prisma";
 import { generateLivedExperienceSlug } from "@/lib/validation/lived-experience";
+
+/** The module's own name, as `CONTENT_BACKEND_LIVED_EXPERIENCES` spells it. */
+const onPayload = (): boolean => activeBackend("lived-experiences") === "payload";
 
 export interface LivedExperience {
   id: string;
@@ -29,13 +38,24 @@ const EMPTY_INDEX: LivedExperienceIndex = {
   allTags: [],
 };
 
+// `"value": value.current`, not a bare `value`. A tag's `value` is a slug
+// OBJECT in Sanity (`{_type:"slug", current:"climate-change"}`) and a flat
+// string in Payload, while `ContentTag.value` has always been declared
+// `string` — so the bare binding here was the lie Phase-2 obligation 4 names,
+// and this module (not `taxonomy.ts`, which already projects `value.current`)
+// is where it is actually produced. Two consumers read it:
+// `page-client.tsx:82` compares it against a URL filter param — which an
+// object can never equal, so tag filtering on `/lived-experiences` has never
+// worked — and `:210` uses it as a `ContentFilters` option value and React
+// key. Flattening makes both correct AND makes the two backends agree; without
+// it, the swap alone would change the shape under those two lines.
 const INDEX_QUERY = `{
     "videos": *[_type == "livedExperience" && (status == "approved" || !defined(status))] | order(_createdAt desc) {
       _id,
       title,
       format,
       videoUrl,
-      tags[]->{ _id, label, value, color },
+      tags[]->{ _id, label, "value": value.current, color },
       "thumbnailUrl": thumbnail.asset->url,
       "region": region->{
         _id,
@@ -50,11 +70,15 @@ const INDEX_QUERY = `{
       "slug": slug.current
     },
     "allTags": *[_type == "tag" && count(*[_type == "livedExperience" && references(^._id)]) > 0]
-      | order(label.en asc) { _id, label, value, color }
+      | order(label.en asc) { _id, label, "value": value.current, color }
   }`;
 
 export async function getLivedExperienceIndex(): Promise<LivedExperienceIndex> {
   return safe("lived-experiences", EMPTY_INDEX, async () => {
+    // Inside `safe()`: a Payload failure has to degrade to the same empty index
+    // the Sanity one does, or the page throws on one backend and renders an
+    // empty state on the other.
+    if (onPayload()) return payloadLivedExperiences.getLivedExperienceIndex();
     const raw = await query<{
       videos?: Array<Record<string, unknown>>;
       regionalCommunities?: RawRegion[];
@@ -187,6 +211,7 @@ export async function getLivedExperiencesCarousel(
   filters: LivedExperienceCarouselFilters,
 ): Promise<LivedExperienceCarouselItem[]> {
   return safe("lived-experiences-carousel", [], async () => {
+    if (onPayload()) return payloadLivedExperiences.getLivedExperiencesCarousel(filters);
     const result = await queryPreviewable<LivedExperienceCarouselItem[] | null>(CAROUSEL_QUERY, {
       communities: filters.communities?.length ? filters.communities : null,
       tags: filters.tags?.length ? filters.tags : null,
@@ -215,12 +240,19 @@ export interface LivedExperienceCommunityOption {
 }
 
 export async function getAvailableLivedExperienceTags(): Promise<LivedExperienceTagOption[]> {
+  if (onPayload()) return payloadLivedExperiences.getAvailableLivedExperienceTags();
+  // `"value": value.current` for the same reason INDEX_QUERY flattens it:
+  // `LivedExperienceTagOption.value` is declared `string` and Sanity stores a
+  // slug object. `components/forms/lived-experience-form.tsx` types its own
+  // copy as `{current: string}` and never reads it — grepped — so nothing
+  // depends on the object shape.
   return query<LivedExperienceTagOption[]>(
-    `*[_type == "tag"] | order(label.en asc) { _id, label, value }`,
+    `*[_type == "tag"] | order(label.en asc) { _id, label, "value": value.current }`,
   );
 }
 
 export async function getActiveRegionalCommunities(): Promise<LivedExperienceCommunityOption[]> {
+  if (onPayload()) return payloadLivedExperiences.getActiveRegionalCommunities();
   return query<LivedExperienceCommunityOption[]>(
     `*[_type == "regionalCommunity" && active == true] | order(name.en asc) { _id, name, slug }`,
   );
@@ -284,19 +316,39 @@ export async function loadEditableLivedExperience(
   userId: string,
 ): Promise<EditableLivedExperience | null> {
   const id = sanityId.replace(/^drafts\./, "");
-  // Raw perspective: drafts.* docs are invisible to the public read client,
-  // and edit mode is exactly about reopening drafts.
-  const doc = await queryRaw<RawEditableDoc | null>(
-    `*[_type == "livedExperience" && (_id == $id || _id == "drafts." + $id)][0]{
+  // Only the READ is chosen by backend. Everything below this line — the status
+  // test, the ownership test, the workspace-membership test and the mapping —
+  // is written once and runs identically on both. This is a write-time
+  // authorization gate of exactly the shape the Phase-1 bypass had, and a gate
+  // implemented twice is a gate that can disagree with itself.
+  //
+  // On Payload there is no `drafts.` id to match: a draft is a version of this
+  // same id, and `queryRaw` (draft: true) is what overlays it. The prefix is
+  // still stripped above, because an id minted while Sanity was the backend can
+  // still be sitting in a bookmarked `?edit=` URL.
+  const doc = onPayload()
+    ? await payloadLivedExperiences.loadEditableDoc(id)
+    : // Raw perspective: drafts.* docs are invisible to the public read client,
+      // and edit mode is exactly about reopening drafts.
+      await queryRaw<RawEditableDoc | null>(
+        `*[_type == "livedExperience" && (_id == $id || _id == "drafts." + $id)][0]{
       _id, language, title, description, issue, personContext,
       videoSource, videoLink, body, submittedBy, status, reviewNotes,
       "regionalCommunityId": relatedCommunity._ref,
       "tagIds": tags[]._ref,
       "hasVideoFile": defined(videoFile.asset)
     }`,
-    { id },
-  );
+        { id },
+      );
   if (!doc) return null;
+  // Sanity's `status` conflates a moderation state with a draft state; Payload
+  // splits them into `moderationStatus` and `_status`, and `doc.status` is
+  // `moderationStatus` on BOTH backends. `"draft"` is therefore vestigial —
+  // 0/56 documents carry any status at all, on either store, so this test
+  // always passes today and the real work is the ownership check below. It is
+  // left inert rather than "fixed": the property worth keeping is that IF an
+  // editor ever sets the field, an approved or rejected document stops being
+  // reopenable. No `defaultValue` was imported, so the gate does not flip shut.
   if (!["pending", "revision", "draft", null, undefined].includes(doc.status)) return null;
 
   let allowed = doc.submittedBy === userId;
@@ -390,52 +442,96 @@ export class LivedExperienceMissingVideoError extends Error {
   }
 }
 
+/**
+ * The Sanity document shape, built from the neutral draft.
+ *
+ * The intricate part of a resubmission is not either store's field names — it
+ * is deciding which fields carry a value and which are cleared. That decision
+ * is made once, below, in this module's own vocabulary (`SubmissionDraft`),
+ * and each backend then does nothing but name its own fields. Two copies of
+ * the decision would be two chances to disagree about whether an edit deletes
+ * someone's uploaded video.
+ */
+function sanitySubmissionDoc(draft: SubmissionDraft): Record<string, unknown> {
+  const lang = draft.language;
+  const localized = (value?: string) => (value ? { [lang]: value } : undefined);
+  const doc: Record<string, unknown> = {
+    language: lang,
+    status: "pending", // never trust client; always pending on submit
+    title: { [lang]: draft.title },
+    description: localized(draft.description),
+    issue: localized(draft.issue),
+    personContext: localized(draft.personContext),
+    featured: false,
+  };
+  if (draft.videoSource) doc.videoSource = draft.videoSource;
+  if (draft.videoLink) doc.videoLink = draft.videoLink;
+  if (draft.body) doc.body = draft.body;
+  if (draft.community) doc.relatedCommunity = { _type: "reference", _ref: draft.community };
+  if (draft.tags) doc.tags = draft.tags.map((id) => ({ _type: "reference", _ref: id, _key: id }));
+  if (draft.videoAsset) doc.videoFile = { _type: "file", asset: { _type: "reference", _ref: draft.videoAsset } };
+  return doc;
+}
+
+/** The neutral field names, as Sanity's own. */
+const SANITY_SUBMISSION_FIELD: Record<SubmissionField, string> = {
+  description: "description",
+  issue: "issue",
+  personContext: "personContext",
+  videoSource: "videoSource",
+  videoLink: "videoLink",
+  body: "body",
+  community: "relatedCommunity",
+  tags: "tags",
+  videoAsset: "videoFile",
+};
+
 export async function submitLivedExperience(
   input: LivedExperienceSubmissionInput,
 ): Promise<{ id: string }> {
-  const lang = input.language;
-  const localized = (value?: string) => (value ? { [lang]: value } : undefined);
-
-  const doc: { _type: string; [key: string]: unknown } = {
-    _type: "livedExperience",
-    language: lang,
-    status: "pending", // never trust client; always pending on submit
-    submittedBy: input.userId,
-    publishedAt: new Date().toISOString(),
-    slug: { _type: "slug", current: generateLivedExperienceSlug(input.title) },
-    title: { [lang]: input.title },
-    description: localized(input.description),
-    issue: localized(input.issue),
-    personContext: localized(input.personContext || ""),
-    featured: false,
-  };
-
-  if (input.videoSource) doc.videoSource = input.videoSource;
-  if (input.videoSource !== "upload" && input.videoLink) doc.videoLink = input.videoLink;
-  if (Array.isArray(input.body) && input.body.length > 0) doc.body = input.body;
-  if (input.regionalCommunityId) {
-    doc.relatedCommunity = { _type: "reference", _ref: input.regionalCommunityId };
-  }
-  if (input.tagIds && input.tagIds.length > 0) {
-    doc.tags = input.tagIds.map((id) => ({ _type: "reference", _ref: id, _key: id }));
-  }
-
-  // Upload the video to the asset store first, then reference it.
+  // Upload the video to the asset store first, then reference it. On Payload
+  // this lands in `files`, not `media` — `media` is images-only and a video is
+  // not an image.
+  let videoAsset: string | undefined;
   if (input.videoSource === "upload" && input.videoFile) {
-    const asset = await uploadFileAsset(input.videoFile.buffer, {
+    const upload = onPayload() ? payloadUploadFileAsset : uploadFileAsset;
+    const asset = await upload(input.videoFile.buffer, {
       filename: input.videoFile.filename,
       contentType: input.videoFile.contentType,
     });
-    doc.videoFile = { _type: "file", asset: { _type: "reference", _ref: asset.id } };
+    videoAsset = asset.id;
   }
 
+  const draft: SubmissionDraft = {
+    language: input.language,
+    title: input.title,
+    description: input.description || undefined,
+    issue: input.issue || undefined,
+    // The original wrapped `input.personContext || ""`, so an empty string has
+    // always meant "unset" here rather than "an empty value".
+    personContext: input.personContext || undefined,
+    videoSource: input.videoSource,
+    videoLink: input.videoSource !== "upload" && input.videoLink ? input.videoLink : undefined,
+    body: Array.isArray(input.body) && input.body.length > 0 ? input.body : undefined,
+    community: input.regionalCommunityId || undefined,
+    tags: input.tagIds && input.tagIds.length > 0 ? input.tagIds : undefined,
+    videoAsset,
+  };
+
   if (input.editId) {
-    const existing = await queryRaw<RawExistingSubmission | null>(
-      `*[_type == "livedExperience" && _id == $id][0]{
+    const existing = onPayload()
+      ? await payloadLivedExperiences.loadExistingSubmission(input.editId)
+      // `queryRaw`, not `queryLive` and not `query`: this read decides whether
+      // a write is allowed, so it must see the caller's own unpublished
+      // document and must not be answered from an hour-old cache. The two
+      // return the same shape, which is why the tests assert the primitive
+      // rather than the result.
+      : await queryRaw<RawExistingSubmission | null>(
+          `*[_type == "livedExperience" && _id == $id][0]{
         _id, submittedBy, status, "hasVideoFile": defined(videoFile.asset)
       }`,
-      { id: input.editId },
-    );
+          { id: input.editId },
+        );
     const editable = !!existing && ["pending", "revision", "draft", null].includes(existing.status ?? null);
     const isSubmitter = existing?.submittedBy === input.userId;
     let isWorkspaceMember = false;
@@ -456,30 +552,50 @@ export async function submitLivedExperience(
       throw new LivedExperienceMissingVideoError();
     }
 
-    const { _type: _t, slug: _slug, submittedBy: _sb, publishedAt: _pa, ...updatable } = doc;
     // JSON drops undefined, so cleared optional fields must be unset explicitly;
     // a video-source switch also has to drop the now-stale counterpart field.
-    const cleared = Object.keys(updatable).filter(
-      (k) => updatable[k as keyof typeof updatable] === undefined,
-    );
-    if (input.videoSource === "upload") cleared.push("videoLink");
-    else cleared.push("videoFile");
-    if (!Array.isArray(input.body) || input.body.length === 0) cleared.push("body");
-    if (!input.regionalCommunityId) cleared.push("relatedCommunity");
-    if (!input.tagIds || input.tagIds.length === 0) cleared.push("tags");
-    const set = Object.fromEntries(Object.entries(updatable).filter(([, v]) => v !== undefined));
-    // Keeping the existing upload: videoFile isn't in `set`, and must not be unset.
-    const unsets = cleared.filter((k) => !(k === "videoFile" && input.videoSource === "upload"));
+    // Note what is NOT here: `videoAsset` is only cleared when the submission
+    // is no longer an upload, so keeping an existing upload (upload source, no
+    // new file) leaves `videoFile` out of both halves of the patch — set to
+    // nothing, unset by nothing.
+    const unset: SubmissionField[] = [];
+    if (!draft.description) unset.push("description");
+    if (!draft.issue) unset.push("issue");
+    if (!draft.personContext) unset.push("personContext");
+    if (input.videoSource === "upload") unset.push("videoLink");
+    else unset.push("videoAsset");
+    if (!draft.body) unset.push("body");
+    if (!draft.community) unset.push("community");
+    if (!draft.tags) unset.push("tags");
 
+    if (onPayload()) {
+      await payloadLivedExperiences.updateSubmission(existing._id, draft, unset);
+      return { id: existing._id };
+    }
+
+    const doc = sanitySubmissionDoc(draft);
+    const set = Object.fromEntries(Object.entries(doc).filter(([, v]) => v !== undefined));
     await updateDocument(existing._id, {
       ...set,
-      status: "pending",
-      ...Object.fromEntries(unsets.map((k) => [k, null])),
+      ...Object.fromEntries(unset.map((field) => [SANITY_SUBMISSION_FIELD[field], null])),
     });
     return { id: existing._id };
   }
 
-  const created = await createDocument(doc);
+  const meta = {
+    slug: generateLivedExperienceSlug(input.title),
+    submittedBy: input.userId,
+    publishedAt: new Date().toISOString(),
+  };
+  if (onPayload()) return payloadLivedExperiences.createSubmission(draft, meta);
+
+  const created = await createDocument({
+    _type: "livedExperience",
+    ...sanitySubmissionDoc(draft),
+    submittedBy: meta.submittedBy,
+    publishedAt: meta.publishedAt,
+    slug: { _type: "slug", current: meta.slug },
+  });
   return { id: created.id };
 }
 
@@ -588,7 +704,7 @@ const DETAIL_QUERY = `
     author->{ _id, name, organizationalAffiliation },
     relatedCommunity->{ _id, name, slug },
     organizations[]->{ _id, name, slug, acronym },
-    tags[]->{ _id, label, value, color },
+    tags[]->{ _id, label, "value": value.current, color },
     ${RELATED_CONTENT_PROJECTION}
   }
 `;
@@ -600,10 +716,12 @@ const SLUGS_QUERY = `
 `;
 
 export async function getLivedExperienceBySlug(slug: string): Promise<LivedExperienceDetail | null> {
+  if (onPayload()) return payloadLivedExperiences.getLivedExperienceBySlug(slug);
   return query<LivedExperienceDetail | null>(DETAIL_QUERY, { slug });
 }
 
 export async function getLivedExperienceSlugs(): Promise<{ slug: string }[]> {
+  if (onPayload()) return payloadLivedExperiences.getLivedExperienceSlugs();
   return query<{ slug: string }[]>(SLUGS_QUERY);
 }
 
@@ -621,6 +739,7 @@ export interface LivedExperienceOgData {
 
 export async function getLivedExperienceOgData(slug: string): Promise<LivedExperienceOgData | null> {
   return safe("lived-experience-og", null, async () => {
+    if (onPayload()) return payloadLivedExperiences.getLivedExperienceOgData(slug);
     const doc = await query<LivedExperienceOgData | null>(
       `*[_type == "livedExperience" && slug.current == $slug][0]{ title, "region": relatedCommunity->name.en }`,
       { slug },
