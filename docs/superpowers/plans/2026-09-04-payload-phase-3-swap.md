@@ -363,14 +363,27 @@ Both tasks must add a test that asserts **which primitive was called**, not mere
 
 Related, and now measured: in Payload, `draft: false` is **not** a published-only filter. The main collection tables carry `_status: 'draft'` rows (`tags`, `authors` and `testimonials` each hold one — the never-published drafts), and a `find` with `draft` falsy applies no status filter at all. A published read needs `draft: false` **and** `where: { _status: { equals: "published" } }`. `payload.count` has no `draft` option, so its distinction rides entirely on that filter.
 
-### Task 14 is different
+### Task 14 is different — and the split axis is document type, not block family
 
-`pages.ts` is more than half the content layer. **Split it before swapping it**: its bulk is per-block projections, and those are what change. Sub-steps:
+`pages.ts` is 8,550 lines for **17 exported functions and 11 interfaces**; the bulk is 21 GROQ fragments. **Measured, so 14a does not start by guessing:**
 
-- [ ] **14a:** Split `pages.ts` by responsibility — one module per block family, re-exported from `pages.ts` so no caller changes. Commit; no behaviour change.
+| group | lines | holds |
+|---|---|---|
+| page | 113–1207 | `PAGE_QUERY` (~980), slugs, translations |
+| regional community page | 1208–2770 | `REGIONAL_COMMUNITY_PAGE_QUERY` (~1470), slugs, `getRegionStats` |
+| **homepage** | 2771–7792 | **`HOMEPAGE_QUERY` (2,951) + `INDEX_HOMEPAGE_QUERY` (1,977)**, translations, slugs |
+| feeds | 7793–8550 | regional team / case studies / lived experiences / news, homepage news + agendas |
+
+So the natural seam is **document type**, not "block family" — the block projections are inlined inside each document's query rather than living apart.
+
+**The biggest single win is the homepage pair: 87% of `INDEX_HOMEPAGE_QUERY`'s substantive lines appear verbatim in `HOMEPAGE_QUERY`.** Extracting those shared projections is most of the 5,000 lines, and doing it first makes 14c tractable.
+
+- [ ] **14a:** Split by document type into four modules, extracting the shared homepage projections into fragments both queries use. Re-export from `pages.ts` so **no caller changes**. Commit with **no behaviour change** — `compareRoute` must be identical before and after.
 - [ ] **14b:** Swap the page/document readers.
 - [ ] **14c:** Swap the block projections, family by family, `compareRoute` after each.
-- [ ] **14d:** Swap the homepage (eleven fixed slots) and `regionalCommunityPage` (one parameterised `contentGrid`).
+- [ ] **14d:** Swap the homepage (eleven fixed slots — **not** a block array) and `regionalCommunityPage` (six grid slots collapsed into one parameterised `contentGrid`, whose `contentType` discriminator makes the reconstruction lossless).
+
+**Settle first, before 14b:** the image group currently carries a Payload media row beside a **Sanity-shaped `asset`** wrapper, so components gating on `asset._id` keep working — `resolveMedia` recurses into `object.asset` and `isSanityShaped` tests `_id`/`_ref`/`_type`. That is fine for the handful of image fields in the modules swapped so far. `pages.ts` has many more, across every block. **Confirm the approach scales before swapping, or fix it in `payload-image-source` first — not per reader, and not midway through 14c.**
 
 ---
 
