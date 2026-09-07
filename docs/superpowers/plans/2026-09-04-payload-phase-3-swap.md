@@ -363,6 +363,19 @@ So the harness's `.next-parity-sanity` / `.next-parity-payload` directories surv
 
 That cuts both ways: it can invent a difference that is already fixed, and it can hide one that is newly introduced. **When a parity result is surprising, re-run the single route before believing it** — a targeted re-run is cheap and settles it. Task 14a did exactly that, which is why its 40/41 result is trustworthy rather than merely reported.
 
+### The `pages` domain is deliberately incomplete until 14c
+
+14b swapped the page and document readers and **left `blocks[]` empty on the Payload arm on purpose** — mapping Payload blocks into the `_type`/`_key` shape the renderers expect is 14c's job. A test pins that 14c's and 14d's readers stay on Sanity.
+
+**So `CONTENT_BACKEND_PAGES=payload` must not be set until 14c lands.** 14b verified this honestly rather than reporting a false green: on `/{en,es,fr,ar}/about`, every content difference is a **deletion with zero `+` lines**, and no `<title>`, `<meta>` or status differs in any locale — the envelope matches and only `blocks[]` is missing.
+
+Two smaller things it found and correctly declined to fix in someone else's file:
+
+- **`payload/regions.ts`'s `regionArt` map is not key-sorted.** The `groqObject` rule applies to non-locale maps too; it shows as a reversed key order in the flight payload on the four community routes. One call settles it.
+- **`metadata.ts` reads `activeBackend("metadata")`, not `"pages"`.** Override **both** when flipping, or the one page carrying an `ogImage` silently loses it.
+
+Also noted and not papered over: `noindex` is a single non-localized boolean in Payload (`false`) where Sanity holds `null` across nine locale arms. Both falsy, rendered `robots` identical.
+
 ### Filtering a Payload `select` field with an unknown value throws; GROQ shrugs
 
 Task 13 found this on `region` and it is **not specific to that field**. Payload backs every `select` with a **Postgres enum** — there are **140 enum types** in `payload_cms`, and the region ones hold exactly their 7 declared values. Filtering one with a value outside its set raises at the database, where the equivalent GROQ simply matches nothing and returns an empty list.
