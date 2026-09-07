@@ -265,7 +265,7 @@ Each task follows the identical shape below. They are ordered smallest-and-most-
 | 8 | `onboarding.ts` | 283 | Composes **six** globals via `composeOnboardingContent`. The 46 unserved component chains are settled in obligation 8 — record as dead, neither serve nor delete. |
 | 9 | `lived-experiences.ts` | 630 | The hardest of the small modules — it **writes**. See below. |
 | 10 | `news.ts` | 964 | 21 exports, **no writes**. Big because of projection breadth, not data: measured 4 published newsPosts (4 **distinct** `publishedAt`, so no ties) and 1 externalSource (approved). Two real hazards: `language` is `"en"` **or `null`**, and six queries sort `order(language == $language desc, …)` — confirm GROQ's and Payload's null handling agree, or the language-preference ordering silently differs. Also holds one of the three bare-`value` tag projections (`news.ts:189`), so flatten it to match Payload's flat string. |
-| 11 | `outputs.ts` | 1,167 | Holds 2 of the 5 `queryLive` call sites. **Assert the primitive, not just the result** — see below. |
+| 11 | `outputs.ts` | 1,167 | **Writes**, and holds **both** remaining `queryLive` call sites. **Assert the primitive, not just the result.** Also carries the `report` dead end and the download-counter behaviour change — see below. |
 | 12 | `case-studies.ts` | 1,561 | **Maps `moderationStatus` → the public `status`.** `getCaseStudiesByStatus()` must keep working unchanged. |
 | 13 | `discovery.ts` | 1,399 | Cross-type search and filtering; the six `status == "approved"` event filters live here. Holds 3 of the 5 `queryLive` call sites. |
 | 14 | `pages.ts` | **8,550** | See below — this one does not fit the shape. |
@@ -312,6 +312,18 @@ Task 9 found both by comparing the RSC flight payload, not the DOM. **Every rema
 **Audited 2026-09-07:** only `lib/content/internal/payload/lived-experiences.ts` sorts. `taxonomy`, `regions`, `system`, `illustrations` and `onboarding` all build locale maps **without** sorting. It has not surfaced because those routes' flight payloads do not carry a `Localized` object into a client component — latent, not benign.
 
 **Fix it once, in a shared helper under `lib/content/internal/`, not five times.** Five private copies is how the next reader gets it wrong again.
+
+### Task 11: `report` is a dead end, and the download counter changes behaviour
+
+Both measured before dispatch (control `count(*[_type=="tag"])` = 68).
+
+**`report` has 0 documents and no Payload collection.** Payload has 23 collections and none is `reports`. Yet `trackReportDownload` is live — `app/api/reports/download/track/route.ts` calls it — and `components/blocks/grid/grid-report.tsx` no longer references `downloadCount` at all, so the Phase-1 comment claiming it renders publicly is **stale**.
+
+So the Payload arm has nothing to write to. Make it an **explicit, documented no-op or a clear "not modelled" failure — never a silent pretend-success**, and record the route and function for Phase 4 deletion. Do not invent a `reports` collection to satisfy it.
+
+**The download counter starts working, and that is a deliberate, already-documented change.** `outputs.ts:396` records that Sanity's `.patch().commit()` ran against a **read-token** client and its own try/catch swallowed the failure — so `totalDownloadCount` and `file.downloadCount` have **likely never incremented in production**. The seam's `updateDocument` goes through the editor token, so routing through it *fixes* the counter. The download was never gated on that write succeeding, so no user flow changes; the count simply starts reflecting reality. Carry the same behaviour on the Payload arm and say so in the report.
+
+**Both remaining `queryLive` call sites are here** (`outputs.ts:443` and `:484`, the two trackers). They are reads feeding writes, and `queryLive` is not interchangeable with `queryRaw` — conflating them caused the Phase-1 bypass. Assert **which primitive is called**, not merely what it returns.
 
 ### Tasks 11 and 13 carry the bypass risk
 
