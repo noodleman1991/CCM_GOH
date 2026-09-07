@@ -395,6 +395,16 @@ So the natural seam is **document type**, not "block family" — the block proje
 
 **The rule that caused an authorization bypass in Phase 1, restated:** a read feeding a write must not be cached, and `queryRaw` (raw perspective, write client) is not interchangeable with `queryLive` (published, read client). A `drafts.`-prefixed id matching a draft that says `status: "approved"` is exactly how that bypass happened. `queryLive` has 5 call sites today, all inside `outputs.ts` and `discovery.ts`; preserve that distinction when those modules swap.
 
+**`lib/account-deletion.ts` is the highest-risk file in this phase — it is the only code that deletes.** It performs synchronous GDPR erasure: it counts approved submissions (retained, with an audit trail so the UI can tell the user to email the team), then `deleteDocuments([...draftIds, ...submissionIds])`, and also clears R2 objects and Algolia records.
+
+Three things make its translation structural rather than mechanical:
+
+1. **Payload has no `drafts.`-prefixed ids.** A Sanity draft is a separate document; a Payload draft is a *version* of the same id. So `draftIds` has no direct equivalent — deleting a "draft" means deleting a draft **version**, or the document itself when it was never published. Get this wrong and erasure either misses data (a GDPR failure) or removes a published document it should have retained.
+2. **`status == "approved"` becomes `moderationStatus`**, and the retention rule depends on it: approved submissions are *kept*. A mis-mapped field that reads as unset would flip retained content into deleted content.
+3. **`SUBMITTABLE_TYPES` spans four collections** — `caseStudy`, `livedExperience`, `researchOutput`, `event`. Payload deletes per collection, so one call becomes four, and a partial failure must not leave erasure half-done.
+
+**Do not test this by deleting.** Exercise it against mocks and verify the id/collection resolution by reading. If a real deletion seems necessary to prove it, stop and ask — the database holds 21 in-flight moderation drafts, which are exactly the shape this code removes.
+
 - [ ] **Step 1: Write the failing test** for `lib/actions/sync-user-management.ts`, the only external `queryRaw` caller:
 
 ```ts
