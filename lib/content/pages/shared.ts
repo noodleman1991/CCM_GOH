@@ -6,7 +6,27 @@
  * before Task 14a split the file; the rest stayed private then and stays
  * private now.
  */
+import { activeBackend } from "@/lib/content/internal/backend";
 import type { Locale } from "@/lib/content/types";
+
+/**
+ * Which store answers this domain's reads.
+ *
+ * `CONTENT_BACKEND`, or `CONTENT_BACKEND_PAGES` for this module alone. Read at
+ * call time, never cached in a module constant, so a test or a preview
+ * deployment can flip it after import.
+ *
+ * The page domain is four files rather than one, which is why the switch lives
+ * here instead of beside the first function that branches on it — `page.ts`,
+ * `regional-community.ts`, `homepage.ts` and `feeds.ts` must all answer the
+ * same way, and two copies of the domain string is how one of them ends up
+ * reading the other store.
+ */
+export const DOMAIN = "pages";
+
+export function onPayload(): boolean {
+  return activeBackend(DOMAIN) === "payload";
+}
 
 /**
  * `{ type, key } & Record<string, unknown>` per the Task 6 brief — deliberately

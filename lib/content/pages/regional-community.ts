@@ -1,4 +1,5 @@
 import "server-only";
+import * as payloadPages from "@/lib/content/internal/payload/pages";
 import { safe } from "@/lib/content/internal/safe";
 import { query, queryPreviewable } from "@/lib/content/internal/sanity-source";
 import type { Locale } from "@/lib/content/types";
@@ -26,7 +27,7 @@ import {
   TEAM_GRID_PROJECTION,
   TIMELINE_ROW_PROJECTION,
 } from "./fragments/standalone";
-import { toSlugRows, type RawOgImage, type RawSlugRow } from "./shared";
+import { onPayload, toSlugRows, type RawOgImage, type RawSlugRow } from "./shared";
 
 // ---------------------------------------------------------------------------
 // Regional community pages (app/[locale]/(main)/communities/[slug]/page.tsx,
@@ -567,9 +568,16 @@ export const RC_PAGE_SLUGS_QUERY = `*[_type == "regionalCommunityPage" && define
     }`;
 
 
+/**
+ * Task 14b swapped this one. `getRegionalCommunityPage` above and
+ * `getRegionStats` below stay on Sanity: the document itself is 14d's, because
+ * Payload collapses its six grid slots into one parameterised `contentGrid`
+ * and rebuilding the six is the remodel that task owns.
+ */
 export async function getRegionalCommunityPageSlugs(): Promise<
   Array<{ id: string; slug: string; locale: Locale }>
 > {
+  if (onPayload()) return toSlugRows(await payloadPages.regionalCommunityPageSlugs());
   return toSlugRows(await query<RawSlugRow[] | null>(RC_PAGE_SLUGS_QUERY));
 }
 

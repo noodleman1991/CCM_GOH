@@ -1,4 +1,5 @@
 import "server-only";
+import * as payloadPages from "@/lib/content/internal/payload/pages";
 import { safe } from "@/lib/content/internal/safe";
 import { query, queryPreviewable } from "@/lib/content/internal/sanity-source";
 import type { Locale } from "@/lib/content/types";
@@ -18,6 +19,7 @@ import {
   TIMELINE_ROW_PROJECTION,
 } from "./fragments/standalone";
 import {
+  onPayload,
   toSlugRows,
   type ContentBlock,
   type PageTranslation,
@@ -159,7 +161,21 @@ export const PAGE_QUERY = `
   }
 `;
 
+/**
+ * Task 14b swapped the three functions below; `blocks[]` is still 14c's.
+ *
+ * `internal/payload/pages.ts` reproduces the document envelope — the SEO
+ * fields, `ogImage`, the English fallback and the null semantics — and returns
+ * `blocks: null`, which `toPage` turns into the empty list. So a page on the
+ * Payload arm renders its chrome and none of its blocks today, and the pages
+ * domain must not be flipped until 14c maps the block families. That is a
+ * visible, deliberate gap, not a silent one.
+ */
 export async function getPageBySlug(slug: string, locale: Locale): Promise<Page | null> {
+  if (onPayload()) {
+    const raw = await payloadPages.findPage(slug, locale);
+    return raw ? toPage(raw as RawPageDoc, slug, locale) : null;
+  }
   // fetchSanityPageBySlug's original sanityFetch call omitted both
   // perspective/stega, so cachedFetch's own draftMode() check decided
   // draft vs. published — that is what let an editor previewing this page
@@ -184,6 +200,7 @@ export const PAGE_SLUGS_QUERY = `*[_type == "page" && defined(slug)]{
     }`;
 
 export async function getPageSlugs(): Promise<Array<{ id: string; slug: string; locale: Locale }>> {
+  if (onPayload()) return toSlugRows(await payloadPages.pageSlugs());
   return toSlugRows(await query<RawSlugRow[] | null>(PAGE_SLUGS_QUERY));
 }
 
@@ -203,6 +220,7 @@ export const PAGE_TRANSLATIONS_QUERY = `
 
 export async function getPageTranslations(pageId: string): Promise<PageTranslation[]> {
   return safe("page-translations", [], async () => {
+    if (onPayload()) return payloadPages.pageTranslations(pageId);
     const rows = await query<PageTranslation[] | null>(PAGE_TRANSLATIONS_QUERY, { pageId });
     return rows ?? [];
   });
