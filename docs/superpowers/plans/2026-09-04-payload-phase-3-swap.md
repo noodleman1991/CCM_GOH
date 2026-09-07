@@ -608,6 +608,22 @@ So those six sites have silently returned nulls in production. Harmless where th
 
 **Decide before cutover:** accept the fix (content appears where it was silently dropped) or reproduce the nulls to keep the swap invisible. The first is almost certainly right, but it is a behaviour change and belongs to the user.
 
+## The near-miss: one read would have deleted 22 published documents
+
+Task 15 translated GDPR erasure and found the `drafts.` id problem is not theoretical. Sanity's raw perspective returns `X` and `drafts.X` as **two ids**; Payload has **one id and a version history**. So a single drafts-visible read cannot tell "this user has an unpublished draft" from "this user has a published document with newer edits pending".
+
+**Measured: 22 rows are `_status=published` with a `latest` draft version on top — 21 lived experiences and 1 case study.** A `queryRaw` read reports all 22 as `"draft"`. Classifying retention from that one read would have **deleted 22 published documents**, including the published parents of the 21 in-flight moderation drafts.
+
+The fix is to split Sanity's single read into **two, each answering its own question**: `queryRaw` (drafts visible) enumerates what the user authored; `queryLive` (published-only) decides what is retained. Using `queryRaw` for the retention decision is the Phase-1 authorization bypass exactly — the wrong primitive for a decision, invisible in the result shape.
+
+Retention was proved three ways and **none of them by deleting**: unit tests on the partition; a read-only replay of the reader's real descriptors against the live database, where the two reads were observed **disagreeing on a live document**; and the same queries against `production_2`, giving identical erasure sets on both backends.
+
+## Two corrections and a gap from Task 15
+
+- **`lib/rate-limit.ts` was a phantom in my list.** Its only `queryRaw` is `prisma.$queryRaw` — raw SQL against the `RateLimit` table. It never imports the seam. My file list came from a textual grep that matched the name. Three files changed, not four.
+- **8 pre-existing test files fail under `CONTENT_BACKEND=payload`** — `content-{case-studies,discovery,illustrations,lived-experiences,onboarding,regions,system,taxonomy}` — because they assert their Sanity arm by leaving the flag *unset* and reading the ambient env. That is **184 failures Task 18 must not read as regressions**; they need per-test flag pinning, not fixes to the readers.
+- **`lib/utils/sanity-prisma-sync.ts` is an unswapped external reader in no task's list.** Found by Task 15, owned by nobody. Assign it before cutover.
+
 ## Phase 3 exit criteria
 
 - [ ] All 138 exports served by Payload; all 111+ test files green against both backends
