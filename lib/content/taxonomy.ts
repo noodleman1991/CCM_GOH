@@ -1,8 +1,27 @@
 import "server-only";
+import { activeBackend } from "@/lib/content/internal/backend";
 import { toTag } from "@/lib/content/internal/normalize";
 import type { RawTag } from "@/lib/content/internal/normalize";
+import * as payloadTaxonomy from "@/lib/content/internal/payload/taxonomy";
 import { query } from "@/lib/content/internal/sanity-source";
 import type { ContentTag, Localized } from "@/lib/content/types";
+
+// ---------------------------------------------------------------------------
+// Which store answers
+//
+// Phase 3 moves this module to Payload behind `CONTENT_BACKEND` (or
+// `CONTENT_BACKEND_TAXONOMY` for this module alone). Every export below keeps
+// the signature it already had: the branch is one line at the top of each
+// function, and the GROQ underneath it is untouched, so reverting this module
+// is deleting six lines. `activeBackend()` is read per call, never cached in a
+// module constant, so a test or a preview deployment can flip it after import.
+// ---------------------------------------------------------------------------
+
+const DOMAIN = "taxonomy";
+
+function onPayload(): boolean {
+  return activeBackend(DOMAIN) === "payload";
+}
 
 // ---------------------------------------------------------------------------
 // Tags — a general-purpose "all tags" list. No single call site to copy
@@ -31,6 +50,7 @@ import type { ContentTag, Localized } from "@/lib/content/types";
 const TAGS_QUERY = `*[_type == "tag"] | order(label.en asc) { _id, label, "value": value.current, color }`;
 
 export async function getTags(): Promise<ContentTag[]> {
+  if (onPayload()) return payloadTaxonomy.getTags();
   const rows = await query<RawTag[]>(TAGS_QUERY);
   return (rows ?? []).map(toTag);
 }
@@ -90,6 +110,7 @@ const WORK_TYPES_QUERY = `*[_type == "workType" && isActive == true] | order(ord
 }`;
 
 export async function getWorkTypes(): Promise<TaxonomyOption[]> {
+  if (onPayload()) return payloadTaxonomy.getWorkTypes();
   const rows = await query<RawTaxonomyOption[]>(WORK_TYPES_QUERY);
   return (rows ?? []).map(toTaxonomyOption);
 }
@@ -101,6 +122,7 @@ const EXPERTISE_AREAS_QUERY = `*[_type == "expertiseArea" && isActive == true] |
 }`;
 
 export async function getExpertiseAreas(): Promise<TaxonomyOption[]> {
+  if (onPayload()) return payloadTaxonomy.getExpertiseAreas();
   const rows = await query<RawTaxonomyOption[]>(EXPERTISE_AREAS_QUERY);
   return (rows ?? []).map(toTaxonomyOption);
 }
@@ -161,6 +183,7 @@ const AUTHOR_PROJECTION = `
 const AUTHORS_QUERY = `*[_type == "author"] | order(orderRank asc) {${AUTHOR_PROJECTION}}`;
 
 export async function getAuthors(): Promise<Author[]> {
+  if (onPayload()) return payloadTaxonomy.getAuthors();
   const rows = await query<RawAuthor[]>(AUTHORS_QUERY);
   return (rows ?? []).map(toAuthor);
 }
@@ -168,6 +191,7 @@ export async function getAuthors(): Promise<Author[]> {
 const AUTHOR_BY_ID_QUERY = `*[_type == "author" && _id == $id][0]{${AUTHOR_PROJECTION}}`;
 
 export async function getAuthorBySanityId(id: string): Promise<Author | null> {
+  if (onPayload()) return payloadTaxonomy.getAuthorBySanityId(id);
   const row = await query<RawAuthor | null>(AUTHOR_BY_ID_QUERY, { id });
   return row ? toAuthor(row) : null;
 }
@@ -228,6 +252,7 @@ const ORGANIZATIONS_QUERY = `*[_type == "organization"] | order(orderRank asc) {
 }`;
 
 export async function getOrganizations(): Promise<Organization[]> {
+  if (onPayload()) return payloadTaxonomy.getOrganizations();
   const rows = await query<RawOrganization[]>(ORGANIZATIONS_QUERY);
   return (rows ?? []).map(toOrganization);
 }
