@@ -460,6 +460,13 @@ it("indexes an approved case study and removes a rejected one", async () => {
 
 **1. JSON-LD gets a relative image URL under Payload.** `app/[locale]/(main)/news/[slug]/page.tsx:120` passes `newsPost.image?.asset?.url` straight into `articleJsonLd`. Under Sanity that is an absolute `cdn.sanity.io` URL; under Payload it is a relative `/payload-api/media/…`. Next absolutises `openGraph.images` but **not** raw JSON-LD, so `Article.image` becomes unusable to crawlers. The same file absolutises `url` one line above via `NEXT_PUBLIC_SITE_URL`, so the pattern is already there. The fix is in `app/`, which Tasks 6–14 do not touch — Task 18 owns it.
 
+**3. Raw `asset.url` bypasses the OG sizing decision in at least two `app/` files.** Task 7 decided the Open Graph image should be the `max1200x675` WebP derivative, because the one document with an `ogImage` is a 3840×2160 PNG that risks crawler size ceilings. But that decision lives in `metadata.ts`'s `generatePageMetadata`, and other routes bypass it:
+
+- `research-outputs/[slug]/page.tsx:40` — `images: ro.image?.asset?.url ? [ro.image.asset.url] : []`
+- `news/[slug]/page.tsx:120` — the JSON-LD case in blocker 1 above
+
+Verified **not a regression**: both backends serve the full-size original there, and Next absolutises `openGraph.images` (the parity run shows `http://localhost:3000/payload-api/media/file/oceaniajpg.jpg`). But it means those routes emit a full-size original as their social card on either backend. Task 18 owns whether to route them through the sizing decision; the fixes are in `app/`, which Tasks 6–14 do not touch.
+
 **2. The image group carries a Payload media row beside a Sanity-shaped `asset`.** Task 4's `resolveMedia` refuses an `_id`, and the news card gates on `asset._id`. Task 14 will meet this on every page surface, and the cleaner fix belongs in `payload-image-source` rather than per reader. Settle it before `pages.ts`, not during.
 
 ## Phase 3 exit criteria
