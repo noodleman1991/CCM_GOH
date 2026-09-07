@@ -430,6 +430,14 @@ it("indexes an approved case study and removes a rejected one", async () => {
 - [ ] Sanity is still readable and still untouched — Phase 4 decommissions it
 - [ ] A production Payload database exists, migrated, imported and verified
 
+## Owed to Phase 4, discovered during Phase 3
+
+**38 authored onboarding leaves will be lost at decommission, and that is a decision rather than a discovery.** Sanity's English `onboardingContent` populates **104** leaves; the six Payload globals populate **66**. Measured in Task 8: every one of the 38 differences is read by nothing — scalars stored where the schema declares containers, keys no component asks for (`navigationTexts.{finish,next,previous,skip}` has zero readers repo-wide), and three names the components read under a different spelling. **For every path a component actually reads, both backends resolve to the same string, or both to nothing.**
+
+So nothing regresses at cutover. But those 38 leaves are real authored text that exists only in Sanity and in the Phase 0 archive, and deleting the dataset ends them. Confirm that is intended before Phase 4 drops it.
+
+**Dead read chains to clean up:** `fieldPlaceholders` and `reviewFieldLabels` are confirmed absent from **both** stores, which backs the 46 dead read chains in `components/onboarding/types.ts`. Phase 3 neither serves nor deletes them (obligation 8); Phase 4 should delete them from that type.
+
 ## Out of scope
 
 - Deleting Sanity, its schemas, or its Studio (Phase 4)
