@@ -585,6 +585,32 @@ export function restoreTsconfig(path = "tsconfig.json"): void {
  * not touch. The warning carries the same fields `recordMiss` records — the
  * reason and the requested box — because it is emitted by that same function.
  */
+/**
+ * The Sanity dataset both servers read.
+ *
+ * **Without this the harness compares two different corpora and calls the
+ * result a parity failure.** Payload's development database was imported from
+ * the Phase-0 archive of `production_2`
+ * (`scripts/payload-import/lib/sanity-export.ts`), while `.env.local` — which
+ * `next dev` loads ahead of `.env` — sets `NEXT_PUBLIC_SANITY_DATASET` to
+ * `development`. Those two datasets are not the same content: measured on
+ * 2026-09-07, at the published perspective, `development` holds 39 case
+ * studies / 40 tags / 4 tags flagged `useAsTheme`, and `production_2` holds
+ * 27 / 67 / 0. A comparison across them reports a difference for every route
+ * that renders content, whatever the reader does, and the first thing it
+ * reported was four theme chips that exist in one dataset and not the other.
+ *
+ * So both servers are pinned to the dataset Payload actually mirrors. It goes
+ * on BOTH: the Payload server still answers thirteen unswapped domains out of
+ * Sanity, and those halves have to match too.
+ *
+ * `@next/env` does not overwrite a variable already present in the
+ * environment, so this wins over `.env.local` without editing it. Override
+ * with `PARITY_SANITY_DATASET` if the Payload database is ever re-imported
+ * from somewhere else — and if it is, this default is what has to change.
+ */
+export const PARITY_SANITY_DATASET = process.env.PARITY_SANITY_DATASET ?? "production_2";
+
 export const IMAGE_MISS_MARKER = "[payload-image-source]";
 
 export function isImageSizeMissLine(line: string): boolean {
@@ -605,6 +631,7 @@ async function startServer(backend: Backend): Promise<Server> {
     env: {
       ...process.env,
       CONTENT_BACKEND: backend,
+      NEXT_PUBLIC_SANITY_DATASET: PARITY_SANITY_DATASET,
       NEXT_DIST_DIR: `.next-parity-${backend}`,
       NEXT_TELEMETRY_DISABLED: "1",
       FORCE_COLOR: "0",
