@@ -576,7 +576,15 @@ function payloadPageRow(over: Record<string, unknown> = {}) {
     id: "page-global-agenda-en",
     slug: "research-and-action/global-agenda",
     title: { en: "Global Agenda", es: "Agenda Global", fr: "Agenda mondial", ar: "الأجندة العالمية" },
-    blocks: { en: [{ blockType: "hero1" }], es: [{ blockType: "hero1" }], fr: [], ar: [] },
+    // `blocks` is localized at the ARRAY level, and each row's id carries the
+    // Sanity `_key` the importer preserved (`rowId()`), which is where
+    // `internal/payload/blocks.ts` reads `_key` back from.
+    blocks: {
+      en: [{ id: "page-global-agenda-en:blocks:one", blockType: "hero1" }],
+      es: [{ id: "page-global-agenda-es:blocks:one", blockType: "hero1" }],
+      fr: [],
+      ar: [],
+    },
     // Measured on this very page: the English document carries a meta_title
     // and the other three do not, and GROQ answers `null` for them.
     meta_title: { en: "Global Agenda | Connecting Climate Minds", es: null, fr: null, ar: null },
@@ -686,10 +694,19 @@ describe("pages, answered by Payload", () => {
       expect(page?.meta_title).toBe("English title");
     });
 
-    it("emits blocks as the empty list, because mapping them is 14c's", async () => {
+    it("maps the requested locale's own block list, not another locale's", async () => {
+      // 14b returned `[]` here on purpose. 14c fills it, and the thing worth
+      // pinning is that `blocks` is localized at the ARRAY level: `about` has
+      // three blocks in `en` and four in the other three, so reading the wrong
+      // arm is a whole missing section rather than a wrong string.
       mockPayloadQueryPreviewable.mockResolvedValue({ docs: [payloadPageRow()] } as never);
-      const page = await getPageBySlug("research-and-action/global-agenda", "en");
-      expect(page?.blocks).toEqual([]);
+      const en = await getPageBySlug("research-and-action/global-agenda", "en");
+      expect(en?.blocks).toHaveLength(1);
+      expect(en?.blocks[0]).toMatchObject({ _type: "hero-1", _key: "one" });
+
+      mockPayloadQueryPreviewable.mockResolvedValue({ docs: [payloadPageRow()] } as never);
+      const fr = await getPageBySlug("research-and-action/global-agenda", "fr");
+      expect(fr?.blocks).toEqual([]);
     });
 
     it("projects ogImage as PAGE_QUERY writes it — no alt, no lqip", async () => {

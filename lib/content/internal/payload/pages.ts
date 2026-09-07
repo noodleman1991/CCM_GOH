@@ -2,9 +2,11 @@
  * The page domain's **document** readers, against Payload.
  *
  * Task 14 is split four ways and this file is 14b's half of it: the document
- * envelope and the two slug/translation readers. The block projections are
- * 14c's, and the homepage's eleven fixed slots and `regionalCommunityPage`'s
- * parameterised `contentGrid` are 14d's. Nothing here maps a block.
+ * envelope and the two slug/translation readers. The homepage's eleven fixed
+ * slots and `regionalCommunityPage`'s parameterised `contentGrid` are 14d's.
+ * The block projections are 14c's and live next door in
+ * `internal/payload/blocks.ts`; this file calls into it and shapes nothing
+ * about a block itself.
  *
  * ---------------------------------------------------------------------------
  * 1. Four Sanity documents are one Payload document, and the English id wins
@@ -106,6 +108,7 @@
  */
 import "server-only";
 import { imageGroup } from "@/lib/content/internal/image-shape";
+import { pageBlocks } from "@/lib/content/internal/payload/blocks";
 import { localized, type LocalizedRaw } from "@/lib/content/internal/localized";
 import { query, queryPreviewable } from "@/lib/content/internal/payload-source";
 import type { PageTranslation, RawSlugRow } from "@/lib/content/pages/shared";
@@ -211,12 +214,12 @@ export async function findPage(slug: string, locale: Locale): Promise<RawPayload
   if (!carriesLocale(row, chosen)) return null;
 
   return {
-    // 14c's. See the header: mapping a Payload block into the `_type`/`_key`
-    // shape `components/blocks/index.tsx` dispatches on is the block-family
-    // work, and handing the renderer unmapped rows would put objects it cannot
-    // dispatch on into the flight payload. `null` is what `toPage` turns into
-    // the empty list, so a page renders its chrome and no blocks until 14c.
-    blocks: null,
+    // 14c. `internal/payload/blocks.ts` maps one family at a time and drops a
+    // block type it has not reached yet, so a page renders the families that
+    // have landed and the parity harness reports the rest as deletions —
+    // rather than handing the renderer an object it cannot dispatch on, which
+    // is why 14b left this empty.
+    blocks: pageBlocks(row.blocks?.[chosen]),
     meta_title: arm(row.meta_title, chosen),
     meta_description: arm(row.meta_description, chosen),
     // Not localized in Payload; see note 4.
