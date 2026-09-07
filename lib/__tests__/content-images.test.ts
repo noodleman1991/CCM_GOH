@@ -217,7 +217,29 @@ describe("imageUrl, answered by Payload", () => {
   it("returns '' for a null or unresolvable image — an image is never worth a 500", () => {
     expect(imageUrl(null)).toBe("");
     expect(imageUrl(undefined)).toBe("");
-    expect(imageUrl({ asset: { _ref: "image-abc-100x100-png" } })).toBe("");
+    expect(imageUrl({ asset: {} })).toBe("");
+  });
+
+  // This is the transition window, and it is measured rather than assumed.
+  // Thirteen domain modules — `pages.ts` above all — do not swap until Task 14,
+  // so with the flag set this wrapper is still handed Sanity images by most of
+  // its 35 call sites. The parity harness caught what happened before the
+  // Payload source refused them: a dereferenced Sanity asset looked enough
+  // like a media row to be accepted, found no `sizes`, and came back as its
+  // CDN URL stripped of `?fm=webp&fit=max` — 56 silently un-transformed lines
+  // on `/en`. Returning `""` instead would have blanked them.
+  it("hands a Sanity-shaped image back to the Sanity builder, transform intact", () => {
+    vi.spyOn(console, "warn").mockImplementation(() => {});
+    const url = imageUrl(jpegImage, { width: 800 });
+    expect(url).toBe(urlFor(jpegImage).width(800).url());
+    expect(url).toContain("fm=webp");
+    expect(url).toContain("fit=max");
+  });
+
+  it("does not resolve a Sanity reference as a media row — `_ref` is Sanity's spelling", async () => {
+    const { imageUrl: payloadOnly } = await import("@/lib/content/internal/payload-image-source");
+    expect(payloadOnly({ asset: { _ref: "image-abc-100x100-png" } })).toBe("");
+    expect(payloadOnly(jpegImage, { width: 800 })).toBe("");
   });
 
   it("does not fall through to the Sanity builder for a Payload row", () => {

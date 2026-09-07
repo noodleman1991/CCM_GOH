@@ -109,14 +109,51 @@ function warnOnSplitBackend(server: "sanity" | "payload"): void {
   );
 }
 
+/**
+ * Warned once per process. Expected for the whole of Tasks 7-13 and a bug from
+ * Task 14 on, which is why it names the module that has to move.
+ */
+let warnedSanityShapedImage = false;
+
+function warnOnSanityShapedImage(): void {
+  if (warnedSanityShapedImage) return;
+  warnedSanityShapedImage = true;
+  console.warn(
+    "[content/images] the image backend is \"payload\" but an image arrived in Sanity's shape, " +
+      "so the Sanity URL builder answered it. Expected while lib/content/pages.ts still reads Sanity (Task 14); " +
+      "a bug once it does not.",
+  );
+}
+
 export function imageUrl(image: ContentImage | unknown, opts: ImageUrlOptions = {}): string {
   if (!image) return "";
 
   const backend = activeBackend("images");
   warnOnSplitBackend(backend);
-  // Never throws either: `payload-image-source` carries the same `catch`
-  // returning `""`, for the same reason — an image is never worth a 500.
-  if (backend === "payload") return payloadImageUrl(image, opts);
+  if (backend === "payload") {
+    // Never throws either: `payload-image-source` carries the same `catch`
+    // returning `""`, for the same reason — an image is never worth a 500.
+    const url = payloadImageUrl(image, opts);
+    if (url) return url;
+    // Falling through is not a hedge, it is the transition window. Thirteen
+    // domain modules — `pages.ts` above all — do not swap until Task 14, so
+    // with the flag set this wrapper is still handed *Sanity* images by most
+    // of its 35 call sites. `payload-image-source` identifies those
+    // positively (`_id`/`_ref`/`_type` are Sanity's spelling and a `media` row
+    // has none of them) and refuses them, which is what makes this branch
+    // unambiguous rather than a guess: it runs only for an image Payload
+    // could not have produced.
+    //
+    // The alternative was measured, not imagined. Before the refusal existed,
+    // a dereferenced Sanity asset looked enough like a media row to be
+    // accepted, and every homepage image came back as its CDN URL stripped of
+    // `?fm=webp&fit=max` — 56 differing lines on `/en`, silently un-transformed.
+    // Returning `""` here instead would blank them altogether.
+    //
+    // No store is read on either side of this: both arms format a string.
+    // The branch dies with Task 14.
+    warnOnSanityShapedImage();
+  }
 
   try {
     const { width, height, crop, quality } = opts;

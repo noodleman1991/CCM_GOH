@@ -109,6 +109,28 @@ interface MediaLike {
 }
 
 /**
+ * Sanity's spelling. `_id` / `_ref` / `_type` are underscore-prefixed by
+ * convention in every Sanity document and reference, and Payload's `media`
+ * row carries none of them — its id field is `id`.
+ *
+ * This distinction is load-bearing, and it was found by the parity harness
+ * rather than reasoned out in advance. A *dereferenced* Sanity image is
+ * `{asset: {_id, url: "https://cdn.sanity.io/…", mimeType}}` — it has a `url`,
+ * so the unwrap below happily accepted it as a media row. It then found no
+ * `sizes` (Sanity has none), took the "an asset with no derivatives resolves
+ * to its original" branch meant for SVGs, and returned the CDN URL **stripped
+ * of its `?fm=webp&fit=max` transform**. Measured on the homepage with
+ * `CONTENT_BACKEND=payload`: 56 differing lines, every one of them a
+ * `cdn.sanity.io` URL that had silently lost its transform. Thirteen domain
+ * modules still hand this seam Sanity shapes until Task 14, so refusing them
+ * outright — rather than half-answering — is what keeps the fall-through in
+ * `lib/content/images.ts` able to do its job.
+ */
+function isSanityShaped(object: Record<string, unknown>): boolean {
+  return "_id" in object || "_ref" in object || "_type" in object;
+}
+
+/**
  * Unwrap whatever a domain reader passes to the media document underneath.
  *
  * Three shapes reach here, and all three are real: a bare `media` document; an
@@ -118,10 +140,15 @@ interface MediaLike {
  * type. A fourth is real too and is not resolvable: at `depth: 0` Payload
  * leaves `asset` as a bare id string, and there is no URL to be built from an
  * id — that resolves to `""` like any other unresolvable input.
+ *
+ * A fifth is real for as long as the swap is in progress, and is refused
+ * rather than half-answered: a Sanity image, from one of the thirteen domain
+ * modules that has not moved yet. See `isSanityShaped`.
  */
 function resolveMedia(image: unknown): MediaLike | undefined {
   if (!image || typeof image !== "object") return undefined;
   const object = image as Record<string, unknown>;
+  if (isSanityShaped(object)) return undefined;
   if (typeof object.url === "string" && object.url.length > 0) return object as MediaLike;
   if (object.asset && typeof object.asset === "object") return resolveMedia(object.asset);
   return undefined;
