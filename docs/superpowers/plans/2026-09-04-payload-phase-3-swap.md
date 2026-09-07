@@ -487,6 +487,14 @@ Verified **not a regression**: both backends serve the full-size original there,
 
 **2. The image group carries a Payload media row beside a Sanity-shaped `asset`.** Task 4's `resolveMedia` refuses an `_id`, and the news card gates on `asset._id`. Task 14 will meet this on every page surface, and the cleaner fix belongs in `payload-image-source` rather than per reader. Settle it before `pages.ts`, not during.
 
+## Open questions for the user, raised by the swap but not caused by it
+
+**1. Case-study filter chips count published-but-unapproved documents.** `getCaseStudyFilterTags` and `getCaseStudyFilterCommunities` count *published* case studies regardless of approval — that is Sanity's `references()` semantics, and Task 12 preserved it. Restricting them to approved would drop the list page from **29 tag chips to 24**, `mental-health-support` from 18 to 16, and the ESEA community from 5 to 4.
+
+They return aggregates only, never a case-study field, so the two pending documents' *content* stays private either way — this is a count that reflects them, not an exposure. **Preserving today's behaviour is correct for this phase**, whose premise is that nothing user-facing changes. Whether to tighten it afterwards is a product decision, not a migration one.
+
+**2. Lived experiences have never appeared in "For You" recommendations.** See the Task 13 section above: the union explicitly lists the type and returns zero of them, because the unset-status branch is news-post-only. Reproduced rather than fixed. Admitting all 56 would be visible.
+
 ## Phase 3 exit criteria
 
 - [ ] All 138 exports served by Payload; all 111+ test files green against both backends
