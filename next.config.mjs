@@ -156,6 +156,29 @@ const nextConfig = {
         hostname: "www.gravatar.com"
       },
     ],
+    // Same-origin images. Declaring this REPLACES Next's default, so the
+    // default is restated first, verbatim.
+    //
+    // The second entry is Phase 3's, and it is not optional. Payload serves
+    // media from its own route and signs the object-store prefix into the
+    // query string (`/payload-api/media/file/<name>.png?prefix=cms%2Fmedia`),
+    // while Next 16's default local pattern is `{ pathname: '/**', search: '' }`
+    // — no query string at all. Without this entry `next/image` does not
+    // degrade: it **throws**, and the page 500s. Measured on
+    // `/en/reader/background-context` with CONTENT_BACKEND=payload, whose
+    // rich-text body renders an embedded figure through `ZoomableImage`:
+    //
+    //   Error: Image with src "/payload-api/media/file/iBook-…png?prefix=cms%2Fmedia"
+    //   is using a query string which is not configured in images.localPatterns.
+    //
+    // Every component image goes the same way once `pages.ts` swaps, so this
+    // is the local-URL half of the constraint `remotePatterns` already
+    // documents: a Payload image URL must stay same-origin and relative,
+    // AND its query string has to be admitted here.
+    localPatterns: [
+      { pathname: '/**', search: '' },
+      { pathname: '/payload-api/media/**' },
+    ],
     formats: ['image/avif', 'image/webp'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
