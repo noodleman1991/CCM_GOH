@@ -306,3 +306,132 @@ describe("split-row", () => {
     expect(dropped.splitColumns).toEqual([]);
   });
 });
+
+describe("grid-row", () => {
+  const card = {
+    id: "page-impact-reports-en:blocks[1].columns:c1",
+    blockType: "gridCard",
+    title: "Impact report",
+    excerpt: "What we learned",
+    image: { asset: MEDIA, alt: null },
+    link: {
+      title: "Read it",
+      href: "https://example.org/report.pdf",
+      target: true,
+      buttonVariant: { variant: "default", size: "default", stroke: "none" },
+    },
+  };
+  const agenda = {
+    id: "page-community-agendas-en:blocks[1].columns:eed8197d0eb8",
+    blockType: "gridAgenda",
+    agenda: null,
+    showTags: false,
+    showDownloadButtons: true,
+    showMetadata: false,
+  };
+  const row = {
+    id: "page-community-agendas-en:blocks:dff352d69b34",
+    blockType: "gridRow",
+    title: "Youth Research and Action Agenda",
+    subtitle: null,
+    description: null,
+    gridColumns: "grid-cols-3",
+    cardVariant: "classic",
+    mode: null,
+    maxItems: null,
+    initialDisplayCount: null,
+    padding: { top: null, bottom: null },
+    background: BACKGROUND,
+    headerImage: { asset: null, alt: null },
+    columns: [card, agenda],
+  };
+
+  it("emits GRID_ROW_PROJECTION's keys in Sanity's order", () => {
+    expect(Object.keys(one(row))).toEqual([
+      "_key",
+      "_type",
+      "background",
+      "cardVariant",
+      "columns",
+      "description",
+      "gridColumns",
+      "headerImage",
+      "initialDisplayCount",
+      "padding",
+      "subtitle",
+      "title",
+    ]);
+    expect(one(row)._type).toBe("grid-row");
+  });
+
+  it("drops `mode` and `maxItems`, which the page projection never names", () => {
+    // Both are declared by the Payload block and by the Sanity schema, and
+    // neither appears in GRID_ROW_PROJECTION — a projection emits the keys it
+    // names and no others.
+    expect(one(row)).not.toHaveProperty("mode");
+    expect(one(row)).not.toHaveProperty("maxItems");
+  });
+
+  it("emits GRID_CARD_PROJECTION's keys in Sanity's order", () => {
+    const column = (one(row).columns as Record<string, unknown>[])[0];
+    expect(Object.keys(column)).toEqual(["_key", "_type", "excerpt", "image", "link", "title"]);
+    expect(column._type).toBe("grid-card");
+    expect((column.link as Record<string, unknown>).target).toBe(true);
+  });
+
+  it("passes grid-agenda's three booleans through, unlike every other checkbox", () => {
+    // The documented exception: Sanity stores all three explicitly on all 182
+    // instances, so `false` here really is Sanity's `false`.
+    const column = (one(row).columns as Record<string, unknown>[])[1];
+    expect(Object.keys(column)).toEqual([
+      "_key",
+      "_type",
+      "agenda",
+      "showDownloadButtons",
+      "showMetadata",
+      "showTags",
+    ]);
+    expect(column.showTags).toBe(false);
+    expect(column.showMetadata).toBe(false);
+    expect(column.showDownloadButtons).toBe(true);
+  });
+
+  it("asks headerImage for the asset projection that omits mimeType", () => {
+    const header = one({ ...row, headerImage: { asset: MEDIA, alt: "Header" } })
+      .headerImage as Record<string, unknown>;
+    expect(Object.keys(header.asset as object)).toEqual(["_id", "metadata", "url"]);
+  });
+
+  it("emits GRID_NEWS_PROJECTION's keys, though no page carries one", () => {
+    const news = {
+      id: "homepage:blocks[0].columns:n1",
+      blockType: "gridNews",
+      newsPost: null,
+      showTags: true,
+      showAuthor: true,
+      showMetadata: true,
+      showLocation: false,
+      customExcerpt: null,
+    };
+    const column = (one({ ...row, columns: [news] }).columns as Record<string, unknown>[])[0];
+    expect(Object.keys(column)).toEqual([
+      "_key",
+      "_type",
+      "customExcerpt",
+      "newsPost",
+      "showAuthor",
+      "showLocation",
+      "showMetadata",
+      "showTags",
+    ]);
+    expect(column.showLocation).toBeNull();
+  });
+
+  it("drops a column type `gridRow.columns` does not offer", () => {
+    // grid-post, grid-case-study and grid-lived-experience are the
+    // projection's other three arms; none is authored inside a grid-row.
+    expect(one({ ...row, columns: [{ id: "a:b:c", blockType: "gridCaseStudy" }] }).columns).toEqual(
+      [],
+    );
+  });
+});

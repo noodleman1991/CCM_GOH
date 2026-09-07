@@ -460,6 +460,28 @@ function agendaProjection(row: AgendaRow): Agenda {
   }) as unknown as Agenda;
 }
 
+/**
+ * `AGENDA_FIELDS` for a caller outside this module.
+ *
+ * Task 14c's `grid-agenda` block dereferences an agenda with **the same sixteen
+ * keys in the same order** — compared field by field against
+ * `lib/content/pages/fragments/grid.ts`'s `GRID_AGENDA_PROJECTION`, the two
+ * projections differ in exactly one character: `AGENDA_FIELDS` writes
+ * `"value": value.current` on a tag and the grid's writes a bare `value`, which
+ * GROQ answers with the raw `{_type: "slug", current}` object (Phase-2
+ * obligation 4's declared-string-that-is-really-a-slug).
+ *
+ * That difference is **latent, not live**: `count(*[_type=="agenda" &&
+ * count(tags)>0])` is **0/29** on `production_2` at the published perspective
+ * (control `count(*[_type=="agenda"])` = 29), so `tags` is `null` on every
+ * agenda either projection can reach today. Exported as-is rather than
+ * parameterised, because a `value` shape option would be a branch nothing
+ * exercises; the day an editor tags an agenda, this is where it is fixed.
+ */
+export function agendaCardProjection(row: unknown): Agenda | null {
+  return isRow(row) ? agendaProjection(row as AgendaRow) : null;
+}
+
 /** Every agenda, ordered as note 4 decided. Payload cannot sort by an instant
  *  and a code-point id in one `sort` the way GROQ's `order()` composes them, so
  *  the read is unpaginated and the ordering is applied here. */

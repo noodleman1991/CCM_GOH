@@ -96,7 +96,8 @@
 import "server-only";
 import { createHash } from "node:crypto";
 import { imageGroup, mediaOf } from "@/lib/content/internal/image-shape";
-import { groqObject, orNull } from "@/lib/content/internal/localized";
+import { groqObject, localized, orNull, type LocalizedRaw } from "@/lib/content/internal/localized";
+import { agendaCardProjection } from "@/lib/content/internal/payload/outputs";
 import { portableText } from "@/lib/content/internal/payload/rich-text";
 
 type Row = Record<string, unknown>;
@@ -106,6 +107,10 @@ const isRow = (value: unknown): value is Row =>
 
 function text(value: unknown): string | undefined {
   return typeof value === "string" && value.length > 0 ? value : undefined;
+}
+
+function num(value: unknown): number | undefined {
+  return typeof value === "number" && Number.isFinite(value) ? value : undefined;
 }
 
 // ---------------------------------------------------------------------------
@@ -360,6 +365,207 @@ function splitImageColumn(row: Row): Row {
   });
 }
 
+/**
+ * `GRID_ROW_PROJECTION`.
+ *
+ * `headerImage`'s asset projection is the one that does **not** name
+ * `mimeType` — `{_id, url, metadata{lqip, dimensions}}` — so it is passed
+ * explicitly rather than defaulted.
+ *
+ * `description` is read by GROQ as a bare field reference, not as a `[]{…}`
+ * projection, so Sanity returns the stored Portable Text verbatim — including,
+ * in principle, an image block still holding its undereferenced `_ref`. Zero of
+ * the 36 stored descriptions contain an image (measured: every entry is
+ * `_type: "block"`), so `portableText()`'s dereferencing has nothing to change;
+ * if one ever appears, this is the projection that will disagree.
+ */
+function gridRowBlock(row: Row): Row {
+  return groqObject({
+    _key: blockKey(row),
+    _type: "grid-row",
+    background: backgroundObject(row.background),
+    cardVariant: orNull(text(row.cardVariant)),
+    columns: Array.isArray(row.columns)
+      ? row.columns.map(mapGridColumn).filter((column): column is Row => column !== undefined)
+      : null,
+    description: richText(row.description),
+    gridColumns: orNull(text(row.gridColumns)),
+    headerImage: projectedImage(row.headerImage, ["_id", "url", "lqip", "dimensions"]),
+    initialDisplayCount: orNull(num(row.initialDisplayCount)),
+    padding: paddingObject(row.padding),
+    subtitle: orNull(text(row.subtitle)),
+    title: orNull(text(row.title)),
+  });
+}
+
+/** `GRID_CARD_PROJECTION`. 16 instances, all carrying a real link. */
+function gridCardColumn(row: Row): Row {
+  return groqObject({
+    _key: blockKey(row),
+    _type: "grid-card",
+    excerpt: orNull(text(row.excerpt)),
+    image: projectedImage(row.image),
+    link: linkObject(row.link),
+    title: orNull(text(row.title)),
+  });
+}
+
+/**
+ * `GRID_AGENDA_PROJECTION` — the corpus's single biggest block, 182 instances.
+ *
+ * The three booleans are the documented exception to the `false` -> `null` rule
+ * in the header: Sanity stores all three **explicitly** on all 182
+ * (`showTags` false, `showMetadata` false, `showDownloadButtons` true), so
+ * Payload's value is Sanity's value and passing it through is exact.
+ *
+ * The dereferenced agenda is `outputs.ts`'s own `AGENDA_FIELDS` projection,
+ * reused rather than rebuilt — see `agendaCardProjection` there for the one
+ * latent difference between the two GROQ spellings.
+ */
+function gridAgendaColumn(row: Row): Row {
+  return groqObject({
+    _key: blockKey(row),
+    _type: "grid-agenda",
+    agenda: agendaCardProjection(row.agenda),
+    showDownloadButtons: row.showDownloadButtons === true,
+    showMetadata: row.showMetadata === true,
+    showTags: row.showTags === true,
+  });
+}
+
+/**
+ * `GRID_NEWS_PROJECTION`.
+ *
+ * **Zero instances inside `page.blocks`** — all 16 real ones are the homepage's,
+ * i.e. 14d's — so this is written against the schema rather than against data,
+ * the same treatment `outputs.ts` gives `organizations` (0/29). It is here
+ * because `gridRow.columns` offers `gridNews` to an editor today, and a column
+ * this file dropped would vanish silently.
+ *
+ * Its `newsPost` projection is **not** `news.ts`'s `NEWS_POST_FIELDS`: it takes
+ * a narrower set, keeps `slug` as the raw slug object rather than
+ * `"slug": slug.current`, and asks organizations for `acronym` instead of
+ * `logo`. Reusing that reader's helpers would have meant giving each of them a
+ * field list for a shape nothing exercises.
+ *
+ * The five booleans follow the header's rule rather than `grid-agenda`'s: with
+ * no page instance to measure, the schema default is the only evidence, and
+ * `x === true` is what the importer wrote.
+ */
+function gridNewsColumn(row: Row): Row {
+  return groqObject({
+    _key: blockKey(row),
+    _type: "grid-news",
+    customExcerpt: orNull(text(row.customExcerpt)),
+    newsPost: newsPostCard(row.newsPost),
+    showAuthor: checkbox(row.showAuthor),
+    showLocation: checkbox(row.showLocation),
+    showMetadata: checkbox(row.showMetadata),
+    showTags: checkbox(row.showTags),
+  });
+}
+
+/** `newsPost->{…}` as `GRID_NEWS_PROJECTION` names it. */
+function newsPostCard(value: unknown): Row | null {
+  if (!isRow(value)) return null;
+  return groqObject({
+    _id: String(value.id ?? ""),
+    author: newsAuthor(value.author),
+    excerpt: orNull(localized(value.excerpt as LocalizedRaw)),
+    featured: value.featured ?? null,
+    image: imageGroup(value.image, {
+      asset: ["_id", "url", "mimeType", "lqip", "dimensions"],
+      keys: ["alt", "crop", "hotspot"],
+    }),
+    locationDetails: locationDetails(value.locationDetails),
+    organizations: referencedList(value.organizations, ["_id", "acronym", "name", "slug"]),
+    publishedAt: orNull(text(value.publishedAt)),
+    slug: orNull(slugObject(value.slug)),
+    subtitle: orNull(localized(value.subtitle as LocalizedRaw)),
+    tags: referencedList(value.tags, ["_id", "color", "label", "value"]),
+    title: orNull(localized(value.title as LocalizedRaw)),
+  });
+}
+
+/** `author->{_id, name, image{asset->{_id, url}, alt}}`. */
+function newsAuthor(value: unknown): Row | null {
+  if (!isRow(value)) return null;
+  return groqObject({
+    _id: String(value.id ?? ""),
+    image: projectedImage(value.image, ["_id", "url"]),
+    name: orNull(text(value.name)),
+  });
+}
+
+/**
+ * A dereferenced list, holding exactly the keys the projection names.
+ *
+ * `name`/`label` are localized in Payload and plain strings in the Sanity
+ * schemas these two projections read, so the `en` arm is what both stores
+ * answer — the same split `image.alt` has. `slug` is the raw slug object,
+ * because these projections write a bare `slug` rather than `slug.current`.
+ */
+function referencedList(rows: unknown, fields: readonly string[]): Row[] | null {
+  if (!Array.isArray(rows)) return null;
+  const list = rows.filter(isRow).map((row) => {
+    const all: Row = {
+      _id: String(row.id ?? ""),
+      acronym: orNull(text(row.acronym)),
+      color: orNull(text(row.color)),
+      label: orNull(localized(row.label as LocalizedRaw)),
+      name: orNull(localized(row.name as LocalizedRaw)?.en ?? text(row.name)),
+      slug: orNull(slugObject(row.slug)),
+      value: orNull(text(row.value)),
+    };
+    return groqObject(Object.fromEntries(fields.map((key) => [key, all[key]])));
+  });
+  return list.length > 0 ? list : null;
+}
+
+/** `slug` as the object Sanity stores, for the projections that name the field
+ *  rather than `slug.current`. */
+function slugObject(value: unknown): Row | undefined {
+  const current = text(value);
+  return current ? groqObject({ _type: "slug", current }) : undefined;
+}
+
+/** `locationDetails{city, country, region, coordinates}` — Payload's group
+ *  always answers with a null per field where GROQ returns `null` for a group
+ *  nobody filled in. `coordinates` is projected and declared by neither schema.
+ *  Same shape `news.ts` builds for the same GROQ. */
+function locationDetails(value: unknown): Row | null {
+  if (!isRow(value)) return null;
+  const city = orNull(text(value.city));
+  const country = orNull(text(value.country));
+  const region = orNull(text(value.region));
+  if (city === null && country === null && region === null) return null;
+  return groqObject({ city, coordinates: null, country, region });
+}
+
+/**
+ * `grid-post`, `grid-case-study` and `grid-lived-experience` are the
+ * projection's other three arms.
+ *
+ * None is offered by `gridRow.columns` in Payload and none was ever authored
+ * inside one — measured, `grid-row.columns[]` holds only `grid-agenda` (182),
+ * `grid-card` (16) and, elsewhere in the corpus, `grid-news`.
+ * `grid-case-study` is real but lives in `regionalCommunityPage`'s
+ * `contentGrid.manualItems[]`, which is 14d's.
+ */
+function mapGridColumn(row: unknown): Row | undefined {
+  if (!isRow(row)) return undefined;
+  switch (row.blockType) {
+    case "gridCard":
+      return gridCardColumn(row);
+    case "gridAgenda":
+      return gridAgendaColumn(row);
+    case "gridNews":
+      return gridNewsColumn(row);
+    default:
+      return undefined;
+  }
+}
+
 /** `split-cards-list` and `split-info-list` are the projection's other two arms
  *  and were never authored — 0 instances, and Phase 2 ported no block for
  *  either. An entry of an unported type is dropped, as at the page level. */
@@ -392,6 +598,8 @@ function mapBlock(row: unknown): Row | undefined {
       return hero1Block(row);
     case "splitRow":
       return splitRowBlock(row);
+    case "gridRow":
+      return gridRowBlock(row);
     default:
       return undefined;
   }
