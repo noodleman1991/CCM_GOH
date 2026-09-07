@@ -197,6 +197,39 @@ describe("the normalisers hide only what they claim to", () => {
     expect(rows[0]).not.toContain("$1a2");
   });
 
+  it("collapses the harness's own two dist directory names, which differ by construction", () => {
+    // The row Task 8 measured: an identical NEXT_REDIRECT on both backends,
+    // whose dev stack frame names the dist directory the server was started
+    // with. `.next-parity-<backend>` is set by the harness itself.
+    const frame = (dir: string) =>
+      `<script>self.__next_f.push([1,${JSON.stringify(
+        `1:{"digest":"NEXT_REDIRECT;replace;/en/sign-in;307;","stack":"at r (/repo/${dir}/server/chunks/ssr/page.js:12:34)"}\n`,
+      )}])</script>`;
+    expect(extractFlight(frame(".next-parity-sanity"))).toEqual(
+      extractFlight(frame(".next-parity-payload")),
+    );
+  });
+
+  it("does not let the dist-directory normaliser swallow a real change in the same row", () => {
+    const row = (dir: string, target: string) =>
+      `<script>self.__next_f.push([1,${JSON.stringify(
+        `1:{"digest":"NEXT_REDIRECT;replace;${target};307;","stack":"at r (/repo/${dir}/server/chunks/ssr/page.js:12:34)"}\n`,
+      )}])</script>`;
+    // Same hidden difference as above, plus one that matters: the redirect
+    // target. The row must still differ.
+    const diff = diffLines(
+      extractFlight(row(".next-parity-sanity", "/en/sign-in")),
+      extractFlight(row(".next-parity-payload", "/en/onboarding")),
+      "flight",
+    );
+    expect(diff).toContain("/en/onboarding");
+    // And it collapses only the two names it claims: a third dist directory,
+    // or any other path segment in the frame, is left exactly as it is.
+    const other = extractFlight(row(".next-parity-sanity", "/en/sign-in")).join("\n");
+    expect(other).toContain("/repo/.next-parity-*/server/chunks/ssr/page.js:12:34");
+    expect(extractFlight(row(".next", "/en/sign-in")).join("\n")).toContain("/repo/.next/server");
+  });
+
   it("still reports a flight row that disappeared entirely", () => {
     const full = extractFlight(
       `<script>self.__next_f.push([1,${JSON.stringify('1:{"a":1}\n2:{"drawerItems":["kept","dropped"]}\n')}])</script>`,

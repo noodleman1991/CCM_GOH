@@ -123,6 +123,27 @@
  * rendered tree in full document order, and this view exists only to cover the
  * props view 1 cannot see.
  *
+ * **6. The harness's own two dist directory names are collapsed in the flight
+ * payload.** Measured in Task 8 on `/en/onboarding` (and the same one hunk in
+ * `es`/`fr`/`ar`): both backends returned the identical `NEXT_REDIRECT`, and
+ * the single differing flight row was that error's dev stack frame, naming
+ * `.next-parity-sanity` on one server and `.next-parity-payload` on the other.
+ * Those two directories exist **only because the harness runs two servers** —
+ * `NEXT_DIST_DIR` is set per backend so the two Turbopack caches cannot
+ * corrupt each other (see the header above). So this is the harness's own
+ * footprint appearing in its own output, and it will recur on every route that
+ * emits a dev stack frame, burying real diffs under it.
+ *
+ * Exactly the two literal names are collapsed, and nothing else about the
+ * frame — not the file path after it, not the line and column, not the message.
+ * It cannot mask a content difference, because it cannot rewrite content: no
+ * value that comes out of either store contains the string
+ * `.next-parity-sanity` or `.next-parity-payload`, and a difference *between*
+ * the two names is the one thing this replacement can erase. Applied only to
+ * the flight payload, which is where it was observed; the DOM view is left
+ * alone, so a dist directory that somehow reached rendered text would still
+ * diff.
+ *
  * ---------------------------------------------------------------------------
  * Settling, and why a single render is not enough
  * ---------------------------------------------------------------------------
@@ -271,7 +292,12 @@ export function extractFlight(html: string): string[] {
         // content, and they were measured renumbering between two renders of
         // the same route on the same server.
         .replace(/^[0-9a-f]*:/, "#:")
-        .replace(/\$L?[0-9a-f]{1,8}(?![0-9a-zA-Z_])/g, "$$#"),
+        .replace(/\$L?[0-9a-f]{1,8}(?![0-9a-zA-Z_])/g, "$$#")
+        // Normaliser 6. The harness's own two dist directories, which exist
+        // only because it runs two servers, and which surface in dev stack
+        // frames. Only the two literal names; the rest of the frame is
+        // untouched. See the header.
+        .replace(/\.next-parity-(?:sanity|payload)\b/g, ".next-parity-*"),
     )
     .sort();
 }
