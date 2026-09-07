@@ -309,7 +309,9 @@ Task 9 found both by comparing the RSC flight payload, not the DOM. **Every rema
 1. **Locale key order.** Sanity returns a localized object's keys **alphabetically** (`ar,en,es,fr`); Payload returns them in `payload.config.ts`'s locale order (`en,es,fr,ar`). Key order is visible once the object is serialized into the flight payload, so any `Localized` value reaching a client component diffs. Sort the keys.
 2. **Unset keys.** GROQ emits `null` for a projected key with no value; Payload omits the key entirely. A projection that names a field must therefore emit `null`, not nothing.
 
-**Audited 2026-09-07:** only `lib/content/internal/payload/lived-experiences.ts` sorts. `taxonomy`, `regions`, `system`, `illustrations` and `onboarding` all build locale maps **without** sorting. It has not surfaced because those routes' flight payloads do not carry a `Localized` object into a client component — latent, not benign.
+**Audited 2026-09-07, then corrected by Task 10 on measurement.** Affected: `taxonomy`, `system`, `onboarding` (plus `lived-experiences`, which already sorted). **`regions` and `illustrations` were false positives** in my audit — they build no locale map at all: `regions.getThemeOptions` rebuilds `{en,es,fr,ar}` exactly as its Sanity twin does, and `illustrations` emits a string. And `onboarding` was **a live defect, not a latent one** — its two arms already disagreed.
+
+Task 10 also found the rule is broader than locales: **Sanity alphabetises the keys of *every* object it returns, not just a locale map's.** The shared helper therefore exposes `groqObject()` alongside `localized()`.
 
 **Fix it once, in a shared helper under `lib/content/internal/`, not five times.** Five private copies is how the next reader gets it wrong again.
 
@@ -453,6 +455,12 @@ it("indexes an approved case study and removes a rejected one", async () => {
 - [ ] **Step 5: Commit.**
 
 ---
+
+## Blockers Task 18 must clear before flipping the default
+
+**1. JSON-LD gets a relative image URL under Payload.** `app/[locale]/(main)/news/[slug]/page.tsx:120` passes `newsPost.image?.asset?.url` straight into `articleJsonLd`. Under Sanity that is an absolute `cdn.sanity.io` URL; under Payload it is a relative `/payload-api/media/…`. Next absolutises `openGraph.images` but **not** raw JSON-LD, so `Article.image` becomes unusable to crawlers. The same file absolutises `url` one line above via `NEXT_PUBLIC_SITE_URL`, so the pattern is already there. The fix is in `app/`, which Tasks 6–14 do not touch — Task 18 owns it.
+
+**2. The image group carries a Payload media row beside a Sanity-shaped `asset`.** Task 4's `resolveMedia` refuses an `_id`, and the news card gates on `asset._id`. Task 14 will meet this on every page surface, and the cleaner fix belongs in `payload-image-source` rather than per reader. Settle it before `pages.ts`, not during.
 
 ## Phase 3 exit criteria
 
