@@ -256,7 +256,7 @@ Each task follows the identical shape below. They are ordered smallest-and-most-
 
 | Task | Module(s) | Lines | Notes |
 |---|---|---|---|
-| 6 | `taxonomy.ts`, `taxonomy-options.ts`, `regions.ts` | ~350 | Foundational; everything references tags and regions. **Fix `ContentTag.value`'s type here** — it is declared `string` but holds a slug object. |
+| 6 | `taxonomy.ts`, `taxonomy-options.ts`, `regions.ts` | ~350 | Foundational; everything references tags and regions. Owns the **declaration** of `ContentTag.value` — see below; its own path is already honest. |
 | 7 | `system.ts`, `metadata.ts`, `illustrations.ts`, `text.ts` | ~360 | `system.ts` holds the sitemap filters that read `status == "approved"` — they become `moderationStatus`. **`metadata.ts:72` needs an explicit decision:** the OG image is the one true WebP regression, needs `quality`, and needs an *absolute* URL — which the twelve `next/image` sites must not get, since no Payload host is in `remotePatterns`. A full-size PNG as OG also risks crawler size ceilings. `illustrations.ts:59` passes arbitrary natural dimensions and will land on the nearest-size-up path per asset. |
 | 8 | `onboarding.ts` | 283 | Composes **six** globals via `composeOnboardingContent`. Decide the 46 unserved component chains: serve or delete, not leave. |
 | 9 | `lived-experiences.ts` | 630 | `region` is a `regionalCommunity` reference; `videoUrl` is undeclared in Sanity but real; unset moderation means approved. |
@@ -265,6 +265,15 @@ Each task follows the identical shape below. They are ordered smallest-and-most-
 | 12 | `case-studies.ts` | 1,561 | **Maps `moderationStatus` → the public `status`.** `getCaseStudiesByStatus()` must keep working unchanged. |
 | 13 | `discovery.ts` | 1,399 | Cross-type search and filtering; the six `status == "approved"` event filters live here. Holds 3 of the 5 `queryLive` call sites. |
 | 14 | `pages.ts` | **8,550** | See below — this one does not fit the shape. |
+
+### `ContentTag.value`: the declaration is Task 6's, the violations are Tasks 10 and 11's
+
+Measured, so the work lands in the right place. `ContentTag.value` is declared `string`. In Sanity a tag's `value` is `{_type: "slug", current: "healthcare-systems"}`; in Payload it is a flat `text` column holding what Sanity called `value.current`.
+
+- **`taxonomy.ts` is already honest** — `TAGS_QUERY` projects `"value": value.current`, so `getTags()` really does return a string. Task 6 changes no behaviour here.
+- **`news.ts:189` and `outputs.ts:181` bind bare `value`** inside `tags[]->{…}`, so those paths hand consumers the slug *object* while the type promises a string. That is the lie.
+
+So Task 6 owns the type declaration and Tasks 10 and 11 must flatten their projections. **Expect the swap to change runtime shape on those two paths** — Payload returns the flat string either way, so a consumer reading `value.current` breaks, and a consumer rendering `value` directly stops emitting `[object Object]`. The parity harness will show it as a diff; treat that diff as the finding, not as harness noise.
 
 ### Tasks 11 and 13 carry the bypass risk
 
