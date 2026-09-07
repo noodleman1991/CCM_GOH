@@ -266,7 +266,7 @@ Each task follows the identical shape below. They are ordered smallest-and-most-
 | 9 | `lived-experiences.ts` | 630 | The hardest of the small modules — it **writes**. See below. |
 | 10 | `news.ts` | 964 | 21 exports, **no writes**. Big because of projection breadth, not data: measured 4 published newsPosts (4 **distinct** `publishedAt`, so no ties) and 1 externalSource (approved). Two real hazards: `language` is `"en"` **or `null`**, and six queries sort `order(language == $language desc, …)` — confirm GROQ's and Payload's null handling agree, or the language-preference ordering silently differs. Also holds one of the three bare-`value` tag projections (`news.ts:189`), so flatten it to match Payload's flat string. |
 | 11 | `outputs.ts` | 1,167 | **Writes**, and holds **both** remaining `queryLive` call sites. **Assert the primitive, not just the result.** Also carries the `report` dead end and the download-counter behaviour change — see below. |
-| 12 | `case-studies.ts` | 1,561 | **Maps `moderationStatus` → the public `status`.** `getCaseStudiesByStatus()` must keep working unchanged. |
+| 12 | `case-studies.ts` | 1,561 | The largest non-`pages` module: **30 exports** and heavy writes. The `status` mapping is **bidirectional**, and 2 published case studies are `pending`. See below. |
 | 13 | `discovery.ts` | 1,399 | Cross-type search and filtering; the six `status == "approved"` event filters live here. Holds 3 of the 5 `queryLive` call sites. |
 | 14 | `pages.ts` | **8,550** | See below — this one does not fit the shape. |
 
@@ -324,6 +324,16 @@ So the Payload arm has nothing to write to. Make it an **explicit, documented no
 **The download counter starts working, and that is a deliberate, already-documented change.** `outputs.ts:396` records that Sanity's `.patch().commit()` ran against a **read-token** client and its own try/catch swallowed the failure — so `totalDownloadCount` and `file.downloadCount` have **likely never incremented in production**. The seam's `updateDocument` goes through the editor token, so routing through it *fixes* the counter. The download was never gated on that write succeeding, so no user flow changes; the count simply starts reflecting reality. Carry the same behaviour on the Payload arm and say so in the report.
 
 **Both remaining `queryLive` call sites are here** (`outputs.ts:443` and `:484`, the two trackers). They are reads feeding writes, and `queryLive` is not interchangeable with `queryRaw` — conflating them caused the Phase-1 bypass. Assert **which primitive is called**, not merely what it returns.
+
+### Task 12: the status mapping runs both ways, and two documents make it load-bearing
+
+**The mapping is bidirectional, and the write direction is the one that gets forgotten.** Reads map Payload's `moderationStatus` onto the public `status` that `CaseStudyStatus` and `getCaseStudiesByStatus()` expose. But `case-studies.ts:1297` also *writes* `{ ...updatable, status: "pending" }` — that must become `moderationStatus` on the Payload arm, or a resubmission silently writes a field Payload does not have.
+
+**Measured in Payload (2026-09-07): 25 case studies are `approved` + `published`, and 2 are `pending` + `published`.** Those 2 are why gating on publish state alone is a leak, and they are exactly the pair Phase 2's review caught. Any query this module issues must require **approved as well as published** — `publishedAndApproved`, never `publishedOnly`. A reader that filters on `_status` alone exposes them along with their `reviewNotes` and `submittedBy`, which are separately field-gated to editors.
+
+**Six `queryRaw` sites** (`:1013`, `:1059`, `:1235`, `:1270`, `:1332`, `:1353`, `:1368`) plus `createDocument` ×3, `updateDocument` ×3, `deleteDocument` and `uploadFileAsset`. Writes move with this module. **Assert which primitive each write-feeding read calls** — `queryRaw` and `queryLive` return the same shape, so a wrong choice is invisible to a result-based test.
+
+`caseStudyDrafts` is a **separate collection** (1 row) with owner-based access — `read` and `create`/`update`/`delete` are both `ownerOrEditor`, deliberately widened in Phase 2 so a `community_member` can autosave and reopen their own submission. Preserve that; it is the collection's whole purpose.
 
 ### Tasks 11 and 13 carry the bypass risk
 
