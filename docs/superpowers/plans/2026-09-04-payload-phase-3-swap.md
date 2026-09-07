@@ -302,6 +302,17 @@ If none reproduces it, say so and stop: choosing an order that changes which cas
 
 Other specifics: `region` holds a `regionalCommunity` **reference**, not the fixed-7 code the Sanity schema declares (42/56 populated, 42 references, 0 strings); `videoUrl` is **56/56 populated and undeclared** in the Sanity schema, read by five modules; `videoFile` uploads resolve to the **`files`** collection, not `media`; and lines 38 and 53 are two of the three bare-`value` tag projections, so this is the module that actually produces a mis-shaped `ContentTag`.
 
+### Two cross-backend differences only the flight payload reveals
+
+Task 9 found both by comparing the RSC flight payload, not the DOM. **Every remaining reader must handle them, and five existing ones do not.**
+
+1. **Locale key order.** Sanity returns a localized object's keys **alphabetically** (`ar,en,es,fr`); Payload returns them in `payload.config.ts`'s locale order (`en,es,fr,ar`). Key order is visible once the object is serialized into the flight payload, so any `Localized` value reaching a client component diffs. Sort the keys.
+2. **Unset keys.** GROQ emits `null` for a projected key with no value; Payload omits the key entirely. A projection that names a field must therefore emit `null`, not nothing.
+
+**Audited 2026-09-07:** only `lib/content/internal/payload/lived-experiences.ts` sorts. `taxonomy`, `regions`, `system`, `illustrations` and `onboarding` all build locale maps **without** sorting. It has not surfaced because those routes' flight payloads do not carry a `Localized` object into a client component — latent, not benign.
+
+**Fix it once, in a shared helper under `lib/content/internal/`, not five times.** Five private copies is how the next reader gets it wrong again.
+
 ### Tasks 11 and 13 carry the bypass risk
 
 The five `queryLive` call sites all live in these two modules, and **nothing currently asserts they keep choosing `queryLive` after the swap**. That is the exact gap the Phase-1 authorization bypass fell through: `queryLive` and `queryRaw` return the same shape, so a reader that picks the wrong one is invisible to a result-based test.
