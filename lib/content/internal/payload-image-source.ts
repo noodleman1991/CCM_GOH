@@ -280,11 +280,6 @@ export function clearImageSizeMisses(): void {
 // The two exports the seam promises
 // ---------------------------------------------------------------------------
 
-function derivativeUrl(media: MediaLike, name: string): string | undefined {
-  const url = media.sizes?.[name]?.url;
-  return typeof url === "string" && url.length > 0 ? url : undefined;
-}
-
 /** Does this asset carry any derivative at all? An SVG does not (Payload's
  *  `canResizeImage` excludes it), nor does a flat `ContentImage`, and neither
  *  is a gap worth reporting — having no derivatives is the rule for them. */
@@ -292,6 +287,29 @@ function hasDerivatives(media: MediaLike): boolean {
   const sizes = media.sizes;
   if (!sizes) return false;
   return Object.values(sizes).some((size) => typeof size?.url === "string" && size.url.length > 0);
+}
+
+/**
+ * A resolved image: the URL, and the pixel box the thing behind it actually
+ * occupies when that is knowable.
+ *
+ * The dimensions exist for exactly one caller. `lib/content/metadata.ts`
+ * declares `og:image:width`/`height` beside the URL, and on Sanity those two
+ * numbers come from the asset's own metadata and describe the bytes, because
+ * `fit("max")` with no width serves the asset at full size. Under Payload the
+ * OG image resolves to a *derivative* — a bounded box, not the original — so
+ * reading the source's metadata would declare 3840x2160 while serving
+ * 1200x675. Reporting what was chosen is what keeps the declaration honest.
+ *
+ * `undefined` where the answer is not knowable: a `select` may omit the size's
+ * width/height, and an original (an SVG, a dimension-less request) is whatever
+ * was uploaded. A caller that has its own dimensions keeps using them.
+ */
+export interface ResolvedImage {
+  /** `""` for a null, missing or otherwise unresolvable image. */
+  url: string;
+  width?: number;
+  height?: number;
 }
 
 /**
@@ -303,15 +321,32 @@ function hasDerivatives(media: MediaLike): boolean {
  * an image is never worth a 500.
  */
 export function imageUrl(image: ContentImage | unknown, opts: ImageUrlOptions = {}): string {
-  if (!image) return "";
+  return imageSource(image, opts).url;
+}
+
+/**
+ * `imageUrl`, plus the chosen derivative's own pixel box.
+ *
+ * The two share one body rather than one calling the other twice: picking a
+ * derivative and reporting which one was picked must not be able to disagree.
+ */
+export function imageSource(image: ContentImage | unknown, opts: ImageUrlOptions = {}): ResolvedImage {
+  if (!image) return { url: "" };
 
   try {
     const media = resolveMedia(image);
     const original = typeof media?.url === "string" ? media.url : "";
-    if (!media || !original) return "";
+    if (!media || !original) return { url: "" };
+
+    /** The original's own box, for the tiers that resolve to it. */
+    const source: ResolvedImage = {
+      url: original,
+      width: typeof (media as { width?: unknown }).width === "number" ? (media as { width: number }).width : undefined,
+      height: typeof (media as { height?: unknown }).height === "number" ? (media as { height: number }).height : undefined,
+    };
 
     // The SVG rule, and everything that shares its shape.
-    if (!hasDerivatives(media)) return original;
+    if (!hasDerivatives(media)) return source;
 
     // `quality` is recorded whether or not a size is found: the caller asked
     // for something no stored derivative carries, and that stays true even
@@ -324,7 +359,7 @@ export function imageUrl(image: ContentImage | unknown, opts: ImageUrlOptions = 
 
     // Tier 3: nothing was asked for, so the original is the answer. Sanity's
     // `fit("max")` with no width returns the asset at full size.
-    if (!opts.width && !opts.height) return original;
+    if (!opts.width && !opts.height) return source;
 
     const request: Derivative = {
       name: "",
@@ -340,15 +375,22 @@ export function imageUrl(image: ContentImage | unknown, opts: ImageUrlOptions = 
     // `withoutEnlargement` change could emit one.)
     const names = [sizeKey(crop, request.width, request.height), ...candidatesFor(request).map((c) => c.name)];
     for (const name of names) {
-      const url = derivativeUrl(media, name);
-      if (url) return url;
+      const size = media.sizes?.[name];
+      const url = typeof size?.url === "string" && size.url.length > 0 ? size.url : undefined;
+      if (url) {
+        return {
+          url,
+          width: typeof size?.width === "number" ? size.width : undefined,
+          height: typeof size?.height === "number" ? size.height : undefined,
+        };
+      }
     }
 
     // Tier 4.
     recordMiss("no-covering-size", opts, crop);
-    return original;
+    return source;
   } catch {
-    return "";
+    return { url: "" };
   }
 }
 
