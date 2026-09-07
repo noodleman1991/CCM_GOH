@@ -418,7 +418,22 @@ So the natural seam is **document type**, not "block family" — the block proje
 - [ ] **14a:** Split by document type into four modules, extracting the shared homepage projections into fragments both queries use. Re-export from `pages.ts` so **no caller changes**. Commit with **no behaviour change** — `compareRoute` must be identical before and after.
 - [ ] **14b:** Swap the page/document readers.
 - [ ] **14c:** Swap the block projections, family by family, `compareRoute` after each.
-- [ ] **14d:** Swap the homepage (eleven fixed slots — **not** a block array) and `regionalCommunityPage` (six grid slots collapsed into one parameterised `contentGrid`, whose `contentType` discriminator makes the reconstruction lossless).
+- [ ] **14d:** Swap the homepage and `regionalCommunityPage`. **14d reuses 14c's block mappers rather than writing new ones** — every slot's block type is one 14c already handles.
+
+  **The eleven homepage slots, measured from `payload/globals/homepage.ts`** (a `blockSlot` per slot, de-localized for presentation fields, **not** a generic `blocks` array — that ruling is binding):
+
+  | slot | block | | slot | block |
+  |---|---|---|---|---|
+  | `heroWelcome` | `hero1` | | `collaboration` | `splitRow` |
+  | `globalAgenda` | `splitRow` | | `news` | `gridRow` |
+  | `howToUse` | `splitRow` | | `projectInfo` | `splitRow` |
+  | `agendasModule` | `gridRow` | | `mentalHealthDefinition` | `cta1` |
+  | `livedExperiences` | `carousel2` | | `partnerLogos` | `logoCloud1` |
+  | `regionalCommunities` | `gridRow` | | | |
+
+  Plus `title`, `meta_title`, `meta_description` (localized), `noindex`, `ogImage`.
+
+  **`regionalCommunityPage`'s six grid slots are one parameterised `contentGrid`**, discriminated by `contentType` with exactly six values — `agendas`, `caseStudies`, `news`, `livedExperiences`, `team`, `testimonials`. That discriminator is what makes the reconstruction lossless: read it to rebuild which slot each grid was.
 
 **14b's hard prerequisite: extract a shared image-shape helper first.** Measured 2026-09-07, and the case is now conclusive rather than cautionary:
 
