@@ -624,6 +624,26 @@ Retention was proved three ways and **none of them by deleting**: unit tests on 
 - **8 pre-existing test files fail under `CONTENT_BACKEND=payload`** — `content-{case-studies,discovery,illustrations,lived-experiences,onboarding,regions,system,taxonomy}` — because they assert their Sanity arm by leaving the flag *unset* and reading the ambient env. That is **184 failures Task 18 must not read as regressions**; they need per-test flag pinning, not fixes to the readers.
 - **`lib/utils/sanity-prisma-sync.ts` is an unswapped external reader in no task's list.** Found by Task 15, owned by nobody. Assign it before cutover.
 
+## Writing to the dev Payload database is allowed — the earlier blanket ban was too broad
+
+Tasks 9–16 were each told not to write to the database. That was over-cautious, and it created a real gap: **no write path had ever executed against Payload**, so every write moved in this phase rests on mocked primitives.
+
+The reasoning that justifies relaxing it:
+
+- `payload_cms` on the **dev** Neon branch is **entirely derived**. Sanity is read-only for the whole phase and remains the system of record; the Phase 0 archive is on disk and checksummed.
+- The imports are **idempotent and proven** — repeated runs report `created: 0, skipped: 395` for assets and `created: 0, updated: 382` for documents.
+- So the 21 in-flight moderation drafts are a *copy*, not unique work. Worst case is re-running `pnpm import:documents` and `pnpm import:drafts`, which takes minutes.
+
+**The policy, from here:**
+
+- **Writing to the dev Payload database is allowed** when it verifies something mocks cannot — a create that must satisfy real column constraints, a minted `id`/`slug`, an `afterChange` hook actually firing.
+- **Prefer a document the test creates and removes** over mutating imported rows.
+- **Before a destructive test** (anything that deletes), confirm the affected rows are reproducible by import, and record the counts to restore to: 347 media · 48 files · 381 documents · 30 draft-latest (21 lived experiences · 4 authors · 1 each of caseStudy/tag/newsPost/testimonial/regionalCommunityPage).
+- **Still never:** write to Sanity; `migrate:fresh` (PostGIS `spatial_ref_sys`, 8,500 rows); or touch a production Payload database (which does not exist yet — Task 2).
+- **Restore and verify afterwards**, and report the counts.
+
+This closes the gap in-phase rather than deferring all write verification to Task 18.
+
 ## Phase 3 exit criteria
 
 - [ ] All 138 exports served by Payload; all 111+ test files green against both backends
