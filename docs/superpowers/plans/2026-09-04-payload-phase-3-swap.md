@@ -644,6 +644,21 @@ The reasoning that justifies relaxing it:
 
 This closes the gap in-phase rather than deferring all write verification to Task 18.
 
+## What the first real writes found, within an hour of lifting the ban
+
+Task 16 was the first task permitted to write. Four findings **no mock could have produced**:
+
+1. **`draft: false` does not publish.** `_status` defaults to `"draft"` and Payload never forces `"published"`, so an approval **read back as approved and stayed invisible to every anonymous caller**. Editors would have approved content that never appeared. This is the single most consequential defect found in Phase 3, and it was invisible to 2,263 passing tests.
+2. **An outbound email inside `afterChange` held the write's transaction open** until Neon killed it with `25P03`. Now bounded by a 10s ceiling — **bounded, not fixed**; moving the send out of the transaction is a design decision left to the user.
+3. `overrideAccess: false` is genuinely enforced (403 without a user).
+4. `revalidateTag` throws outside a request context.
+
+**Task 9's open question, answered: the two resubmission paths disagree.** `updateSubmission` (lived experiences) passes `draft: true`; `updateCaseStudySubmission` passes **no** `draft` flag, so it publishes. Harmless today only because the same write sets `moderationStatus: "pending"`, which fails the public gate. The asymmetry belongs to Tasks 9 and 12 — **Task 18 must decide whether it is intended.**
+
+**`livedExperiences` has no reachable moderation actions.** The field is 0/56 populated and the Studio gate matched nothing, so the Payload port is faithful — but the workflow is **dead today**, on both backends. Worth knowing before anyone reports it as a migration regression.
+
+**A near-miss worth recording:** one real `emails.send` was attempted against a real user's address, because booting Payload re-runs `dotenv` and restored the `RESEND_API_KEY` the script had deleted. The request never completed (that was the transaction hang) and the domain is unverified, so nothing was delivered. The agent disclosed it unprompted and hardened the script — it now deletes the key *after* boot and gives probes a submitter matching no Prisma user. **Any future live test that can send must assume env is restored at boot.**
+
 ## Phase 3 exit criteria
 
 - [ ] All 138 exports served by Payload; all 111+ test files green against both backends
