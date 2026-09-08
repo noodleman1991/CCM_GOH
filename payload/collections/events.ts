@@ -1,5 +1,6 @@
 import type { CollectionConfig } from "payload";
 import { isEditor, isEditorField, moderationApprovedOnly } from "@/payload/access";
+import { moderationAfterChange } from "@/payload/hooks/moderation";
 import { imageField, relationshipField } from "@/payload/blocks/shared";
 import { localizedRichText, localizedText, localizedTextarea } from "@/payload/fields/localized";
 import {
@@ -66,6 +67,11 @@ export const Events: CollectionConfig = {
     update: isEditor,
     delete: isEditor,
   },
+  // Studio patched a status and left everything else to a Sanity webhook —
+  // cache revalidation and the submitter's email — eventually, over the
+  // network, and only if delivery succeeded. Here it is the same process and
+  // the same call stack. See payload/hooks/moderation.ts.
+  hooks: { afterChange: [moderationAfterChange("events")] },
   fields: [
     { name: "id", type: "text", required: true, admin: { hidden: true } },
     localizedText("title", { required: true }),
@@ -151,6 +157,15 @@ export const Events: CollectionConfig = {
       admin: { description: "If scope = project: the Collaboration id this event belongs to." },
     },
     relationshipField("relatedCommunity", "regionalCommunities", { label: "Regional community" }),
+    {
+      // Studio's approve / request-revision / reject document actions, as
+      // buttons inside the document. A `ui` field has no database column, so
+      // this needs no migration. The gate and the transition table live in
+      // payload/hooks/moderation.ts and are shared with the server action.
+      name: "moderationActions",
+      type: "ui",
+      admin: { components: { Field: "@/payload/components/moderation-actions#ModerationActions" } },
+    },
     {
       name: "moderationStatus",
       type: "select",

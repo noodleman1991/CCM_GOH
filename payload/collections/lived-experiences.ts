@@ -1,5 +1,6 @@
 import type { CollectionConfig } from "payload";
 import { isEditor, isEditorField, publishedAndApproved } from "@/payload/access";
+import { moderationAfterChange } from "@/payload/hooks/moderation";
 import { imageField, relationshipField, uploadField } from "@/payload/blocks/shared";
 import { localizedRichText, localizedText, localizedTextarea } from "@/payload/fields/localized";
 import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
@@ -80,6 +81,11 @@ export const LivedExperiences: CollectionConfig = {
     update: isEditor,
     delete: isEditor,
   },
+  // Studio patched a status and left everything else to a Sanity webhook —
+  // cache revalidation and the submitter's email — eventually, over the
+  // network, and only if delivery succeeded. Here it is the same process and
+  // the same call stack. See payload/hooks/moderation.ts.
+  hooks: { afterChange: [moderationAfterChange("livedExperiences")] },
   fields: [
     {
       name: "id",
@@ -194,6 +200,15 @@ export const LivedExperiences: CollectionConfig = {
     relationshipField("organizations", "organizations", { hasMany: true }),
     relationshipField("tags", "tags", { hasMany: true }),
     { name: "featured", type: "checkbox", defaultValue: false },
+    {
+      // Studio's approve / request-revision / reject document actions, as
+      // buttons inside the document. A `ui` field has no database column, so
+      // this needs no migration. The gate and the transition table live in
+      // payload/hooks/moderation.ts and are shared with the server action.
+      name: "moderationActions",
+      type: "ui",
+      admin: { components: { Field: "@/payload/components/moderation-actions#ModerationActions" } },
+    },
     {
       // Named "moderationStatus", NOT "status" — a field literally named
       // `status` collides with Payload's internal `_status` at the Postgres
