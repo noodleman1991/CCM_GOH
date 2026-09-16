@@ -190,7 +190,7 @@ import { imageGroup } from "@/lib/content/internal/image-shape";
 import { groqObject, localized, orNull } from "@/lib/content/internal/localized";
 import type { LocalizedRaw } from "@/lib/content/internal/localized";
 import { portableText } from "@/lib/content/internal/payload/rich-text";
-import { query } from "@/lib/content/internal/payload-source";
+import { query, queryLive } from "@/lib/content/internal/payload-source";
 import type { PayloadFindQuery } from "@/lib/content/internal/payload-source";
 import type {
   DynamicNewsOptions,
@@ -599,9 +599,10 @@ function compareNewsRows(a: Row, b: Row, opts: SortOptions): number {
  *  cannot express, then the order, then GROQ's slice. */
 async function listNewsPosts(
   where: PayloadFindQuery["where"],
-  opts: SortOptions & { limit: number; searchPattern?: string; depth?: number },
+  opts: SortOptions & { limit: number; searchPattern?: string; depth?: number; fresh?: boolean },
 ): Promise<Row[]> {
-  const result = await query<Paginated<Row> | null>({
+  const read = opts.fresh ? queryLive : query;
+  const result = await read<Paginated<Row> | null>({
     type: "find",
     collection: "newsPosts",
     locale: "all",
@@ -1085,14 +1086,25 @@ function newsIndexProjection(row: Row): NewsIndexDoc {
   } as unknown as NewsIndexDoc;
 }
 
-export async function getPublishedNewsIndexDocs(): Promise<NewsIndexDoc[]> {
-  const rows = await listNewsPosts(publishedByNow(), { limit: Number.MAX_SAFE_INTEGER, depth: 1 });
+/** See `getApprovedCaseStudyIndexDocs` for what `fresh` is for. */
+export async function getPublishedNewsIndexDocs(
+  options: { fresh?: boolean } = {},
+): Promise<NewsIndexDoc[]> {
+  const rows = await listNewsPosts(publishedByNow(), {
+    limit: Number.MAX_SAFE_INTEGER,
+    depth: 1,
+    fresh: options.fresh,
+  });
   return rows.map(newsIndexProjection);
 }
 
-export async function getNewsIndexDocsByIds(ids: string[]): Promise<NewsIndexDoc[]> {
+export async function getNewsIndexDocsByIds(
+  ids: string[],
+  options: { fresh?: boolean } = {},
+): Promise<NewsIndexDoc[]> {
   // No order in the GROQ; `id asc` for determinism, as everywhere else here.
-  const result = await query<Paginated<Row> | null>({
+  const read = options.fresh ? queryLive : query;
+  const result = await read<Paginated<Row> | null>({
     type: "find",
     collection: "newsPosts",
     locale: "all",

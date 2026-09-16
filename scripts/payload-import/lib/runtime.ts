@@ -13,7 +13,12 @@
  */
 
 import { createHash } from "node:crypto";
+import { readFile } from "node:fs/promises";
 import path from "node:path";
+
+import { SKIP_MODERATION_SIDE_EFFECTS } from "@/payload/hooks/moderation";
+import { SKIP_CONTENT_REVALIDATION } from "@/payload/hooks/revalidate-content";
+import { SKIP_SEARCH_SYNC } from "@/payload/hooks/search-sync";
 
 import { REPO_ROOT } from "./sanity-export";
 
@@ -22,21 +27,94 @@ import { REPO_ROOT } from "./sanity-export";
 // ---------------------------------------------------------------------------
 
 /**
- * `.env.local` first, then `.env`.
+ * The only variables the PRODUCTION env file may supply to an import.
+ *
+ * `.env` is this repo's production environment file; `.env.local` is dev.
+ * The asset import needs R2 credentials, and those live only in `.env` — so
+ * `loadEnv` used to load `.env` wholesale as a fallback for anything
+ * `.env.local` omitted. That handed every script the live Algolia admin key,
+ * the Resend key and the production Sanity tokens as well, and through the
+ * collection hooks (see `IMPORT_WRITE_CONTEXT`) gave a dev import production
+ * reach. The fallback is now this list and nothing else.
+ *
+ * Both spellings of the R2 set are here because `payload/storage/r2.ts`
+ * accepts both. `PAYLOAD_DATABASE_URL` is deliberately absent: a production
+ * import must be pointed at production explicitly, on the command line, and
+ * then say `--allow-production` — `assertPayloadDatabase` below checks the
+ * second half.
+ */
+export const PRODUCTION_ENV_FALLBACK_KEYS: ReadonlySet<string> = new Set([
+  "R2_ENDPOINT",
+  "R2_ACCESS_KEY_ID",
+  "R2_SECRET_ACCESS_KEY",
+  "R2_BUCKET",
+  "PAYLOAD_R2_BUCKET",
+  "CLOUDFLARE_R2_ENDPOINT",
+  "CLOUDFLARE_R2_ACCESS_KEY_ID",
+  "CLOUDFLARE_R2_SECRET_ACCESS_KEY",
+  "CLOUDFLARE_R2_BUCKET_NAME",
+]);
+
+/**
+ * The subset of a parsed `.env` that `loadEnv` may apply: allowlisted keys
+ * that `current` (the process env after `.env.local`) has not already set.
+ * Pure, so the rule is testable without touching the filesystem.
+ */
+export function productionEnvFallback(
+  parsed: Record<string, string>,
+  current: Record<string, string | undefined>,
+): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const [key, value] of Object.entries(parsed)) {
+    if (!PRODUCTION_ENV_FALLBACK_KEYS.has(key)) continue;
+    if (current[key] !== undefined) continue;
+    out[key] = value;
+  }
+  return out;
+}
+
+/**
+ * `.env.local` in full, then the allowlisted slice of `.env`.
  *
  * dotenv does not overwrite an already-set variable, so `.env.local`'s
- * `PAYLOAD_DATABASE_URL` — the **dev** CMS database — wins over anything `.env`
- * declares. `.env` then supplies the R2 credentials, which live only there.
- * This ordering is itself part of the production guard below: `.env` is this
- * repo's production environment file (see the production-environment ledger
- * note), so a `PAYLOAD_DATABASE_URL` that can only have come from `.env` is a
- * production URL.
+ * `PAYLOAD_DATABASE_URL` — the **dev** CMS database — is what a script sees
+ * unless the shell set one first. `.env` is read but not loaded: only the
+ * keys in `PRODUCTION_ENV_FALLBACK_KEYS` are copied across, and only where
+ * `.env.local` said nothing. A missing `.env` is not an error — CI has none.
  */
 export async function loadEnv(): Promise<void> {
   const { default: dotenv } = await import("dotenv");
   dotenv.config({ path: path.join(REPO_ROOT, ".env.local"), quiet: true });
-  dotenv.config({ path: path.join(REPO_ROOT, ".env"), quiet: true });
+  let production: string;
+  try {
+    production = await readFile(path.join(REPO_ROOT, ".env"), "utf8");
+  } catch {
+    return;
+  }
+  Object.assign(process.env, productionEnvFallback(dotenv.parse(production), process.env));
 }
+
+/**
+ * The `context` every import write carries.
+ *
+ * Payload runs a collection's hooks on a Local API write exactly as on an
+ * admin save. Two of this project's hooks have consequences outside the
+ * database — `search-sync` schedules an Algolia write, `moderation` sends the
+ * submitter an email, `revalidate-content` evicts the site's cache — and all
+ * three honour a per-write `context` flag to stand down. An import is a copy of content that already had those consequences
+ * when it was first published, so every create and update in
+ * `documents.ts`, `drafts.ts` and `assets.ts` passes this. The keys are the
+ * hooks' own exports, so a rename there fails the import's type-check rather
+ * than silently re-enabling the side effect.
+ */
+export const IMPORT_WRITE_CONTEXT = {
+  [SKIP_SEARCH_SYNC]: true,
+  [SKIP_MODERATION_SIDE_EFFECTS]: true,
+  // Hundreds of writes, outside any request scope where `revalidateTag`
+  // could work anyway. The operator revalidates once afterwards through
+  // `POST /api/cache/revalidate` with the `payload` tag.
+  [SKIP_CONTENT_REVALIDATION]: true,
+} as const;
 
 // ---------------------------------------------------------------------------
 // Payload

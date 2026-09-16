@@ -59,7 +59,13 @@ import { createHash } from "node:crypto";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { assertPayloadDatabase, getPayloadInstance, loadEnv } from "./lib/runtime";
+import {
+  IMPORT_WRITE_CONTEXT,
+  assertPayloadDatabase,
+  getPayloadInstance,
+  loadEnv,
+  type PayloadInstance,
+} from "./lib/runtime";
 import {
   effectiveMimeType,
   loadSanityExport,
@@ -313,9 +319,7 @@ export async function importAssetRecords(
 // ---------------------------------------------------------------------------
 
 /** Payload's local API, narrowed to `UploadClient`. */
-async function payloadUploadClient(): Promise<UploadClient> {
-  const payload = await getPayloadInstance();
-
+export function payloadUploadClient(payload: PayloadInstance): UploadClient {
   return {
     async find({ collection }) {
       const found = await payload.find({
@@ -338,6 +342,7 @@ async function payloadUploadClient(): Promise<UploadClient> {
         data: data as never,
         file,
         overrideAccess: true,
+        context: IMPORT_WRITE_CONTEXT,
         // Take our filename verbatim. Without this Payload runs
         // getSafeFileName, whose `-1`/`-2` suffixes are order-dependent and
         // would break the idempotency the whole phase rests on.
@@ -380,7 +385,7 @@ export async function importAssets(options: ImportAssetsOptions = {}): Promise<M
     if (options.dryRun) console.log("mode:       DRY RUN — nothing will be written");
   }
 
-  const client = options.dryRun ? dryRunClient() : await payloadUploadClient();
+  const client = options.dryRun ? dryRunClient() : payloadUploadClient(await getPayloadInstance());
 
   const result = await importAssetRecords(assets, {
     client,

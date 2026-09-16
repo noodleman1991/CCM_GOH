@@ -57,7 +57,13 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { assertPayloadDatabase, getPayloadInstance, loadEnv, type PayloadInstance } from "./lib/runtime";
+import {
+  IMPORT_WRITE_CONTEXT,
+  assertPayloadDatabase,
+  getPayloadInstance,
+  loadEnv,
+  type PayloadInstance,
+} from "./lib/runtime";
 import { extractArchive, readExportDocuments } from "./lib/sanity-export";
 import {
   documentTargets,
@@ -393,7 +399,7 @@ export async function readAssetMap(payload: PayloadInstance): Promise<Map<string
   return map;
 }
 
-function payloadDocumentClient(payload: PayloadInstance): DocumentClient {
+export function payloadDocumentClient(payload: PayloadInstance): DocumentClient {
   return {
     async existingIds(collection) {
       const found = await payload.find({
@@ -439,6 +445,7 @@ function payloadDocumentClient(payload: PayloadInstance): DocumentClient {
         locale,
         depth: 0,
         overrideAccess: true,
+        context: IMPORT_WRITE_CONTEXT,
       });
     },
     async update({ collection, id, data, locale }) {
@@ -449,6 +456,7 @@ function payloadDocumentClient(payload: PayloadInstance): DocumentClient {
         locale,
         depth: 0,
         overrideAccess: true,
+        context: IMPORT_WRITE_CONTEXT,
       });
     },
     async updateGlobal({ slug, data, locale }) {
@@ -458,6 +466,7 @@ function payloadDocumentClient(payload: PayloadInstance): DocumentClient {
         locale,
         depth: 0,
         overrideAccess: true,
+        context: IMPORT_WRITE_CONTEXT,
       });
     },
   };

@@ -58,7 +58,13 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { readAssetMap } from "./documents";
-import { assertPayloadDatabase, getPayloadInstance, loadEnv, type PayloadInstance } from "./lib/runtime";
+import {
+  IMPORT_WRITE_CONTEXT,
+  assertPayloadDatabase,
+  getPayloadInstance,
+  loadEnv,
+  type PayloadInstance,
+} from "./lib/runtime";
 import { extractArchive, readExportDocuments } from "./lib/sanity-export";
 import {
   buildTarget,
@@ -346,7 +352,7 @@ export async function importDraftTargets(
 // Real run
 // ---------------------------------------------------------------------------
 
-function payloadDraftClient(payload: PayloadInstance): DraftClient {
+export function payloadDraftClient(payload: PayloadInstance): DraftClient {
   type Collection = Parameters<typeof payload.find>[0]["collection"];
   return {
     async existingIds(collection) {
@@ -369,6 +375,7 @@ function payloadDraftClient(payload: PayloadInstance): DraftClient {
         depth: 0,
         draft: true,
         overrideAccess: true,
+        context: IMPORT_WRITE_CONTEXT,
       });
     },
     async updateDraft({ collection, id, data, locale }) {
@@ -380,6 +387,7 @@ function payloadDraftClient(payload: PayloadInstance): DraftClient {
         depth: 0,
         draft: true,
         overrideAccess: true,
+        context: IMPORT_WRITE_CONTEXT,
       });
     },
   };

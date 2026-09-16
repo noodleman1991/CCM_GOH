@@ -248,6 +248,7 @@ import {
   createDocument,
   deleteDocument,
   query,
+  queryLive,
   queryPreviewable,
   queryRaw,
   updateDocument,
@@ -1820,8 +1821,19 @@ function caseStudyIndexProjection(row: CaseStudyRow): CaseStudyIndexDoc {
   }) as unknown as CaseStudyIndexDoc;
 }
 
-export async function getApprovedCaseStudyIndexDocs(): Promise<CaseStudyIndexDoc[]> {
-  const result = await query<Paginated<CaseStudyRow>>({
+/**
+ * `fresh` bypasses the hour-long `query()` cache in favour of `queryLive` —
+ * same read, published-only, uncached. The Algolia sync hook needs it: it runs
+ * immediately after a write and a cached projection would index the document as
+ * it was before the edit. `unstable_cache` also throws outside a request
+ * (`Invariant: incrementalCache missing`), so `fresh` is what makes these
+ * readers callable from a script at all.
+ */
+export async function getApprovedCaseStudyIndexDocs(
+  options: { fresh?: boolean } = {},
+): Promise<CaseStudyIndexDoc[]> {
+  const read = options.fresh ? queryLive : query;
+  const result = await read<Paginated<CaseStudyRow>>({
     type: "find",
     collection: "caseStudies",
     where: APPROVED,
@@ -1833,9 +1845,13 @@ export async function getApprovedCaseStudyIndexDocs(): Promise<CaseStudyIndexDoc
   return result.docs.map(caseStudyIndexProjection);
 }
 
-export async function getCaseStudyIndexDocsByIds(ids: string[]): Promise<CaseStudyIndexDoc[]> {
+export async function getCaseStudyIndexDocsByIds(
+  ids: string[],
+  options: { fresh?: boolean } = {},
+): Promise<CaseStudyIndexDoc[]> {
   if (ids.length === 0) return [];
-  const result = await query<Paginated<CaseStudyRow>>({
+  const read = options.fresh ? queryLive : query;
+  const result = await read<Paginated<CaseStudyRow>>({
     type: "find",
     collection: "caseStudies",
     where: { id: { in: ids } },

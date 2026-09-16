@@ -1222,8 +1222,12 @@ function agendaIndexProjection(row: AgendaRow, opts: { dereferenceFiles: boolean
   }) as unknown as AgendaIndexDoc;
 }
 
-export async function getPublishedAgendaIndexDocs(): Promise<AgendaIndexDoc[]> {
-  const result = await query<Paginated<AgendaRow>>({
+/** See `getApprovedCaseStudyIndexDocs` for what `fresh` is for. */
+export async function getPublishedAgendaIndexDocs(
+  options: { fresh?: boolean } = {},
+): Promise<AgendaIndexDoc[]> {
+  const read = options.fresh ? queryLive : query;
+  const result = await read<Paginated<AgendaRow>>({
     type: "find",
     collection: "agendas",
     pagination: false,
@@ -1234,9 +1238,13 @@ export async function getPublishedAgendaIndexDocs(): Promise<AgendaIndexDoc[]> {
   return result.docs.map((row) => agendaIndexProjection(row, { dereferenceFiles: true }));
 }
 
-export async function getAgendaIndexDocsByIds(ids: string[]): Promise<AgendaIndexDoc[]> {
+export async function getAgendaIndexDocsByIds(
+  ids: string[],
+  options: { fresh?: boolean } = {},
+): Promise<AgendaIndexDoc[]> {
   if (ids.length === 0) return [];
-  const result = await query<Paginated<AgendaRow>>({
+  const read = options.fresh ? queryLive : query;
+  const result = await read<Paginated<AgendaRow>>({
     type: "find",
     collection: "agendas",
     where: { id: { in: ids } },
