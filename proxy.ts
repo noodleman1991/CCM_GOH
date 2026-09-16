@@ -15,6 +15,7 @@ import createIntlMiddleware from 'next-intl/middleware'
 import { routing } from './i18n/routing'
 import { NextRequest, NextResponse } from 'next/server'
 import { isOnboardingComplete } from './lib/onboarding-status'
+import { PAYLOAD_API_ANONYMOUS_RATE_LIMIT, shouldRateLimitPayloadApi } from './lib/payload-api-guard'
 
 const withLocale = (path: string) => `/:locale${path.startsWith('/') ? '' : '/'}${path}`
 
@@ -47,6 +48,19 @@ export const proxy = clerkMiddleware(async (auth, req: NextRequest) => {
     // clerkMiddleware request context. Returning early here just skips
     // next-intl and this app's own checks; it does not skip Clerk.
     if (req.nextUrl.pathname.startsWith('/admin') || req.nextUrl.pathname.startsWith('/payload-api')) {
+        // The REST API is reachable without a session and nothing public in
+        // this app calls it, so anonymous requests get the same limiter every
+        // other public route has. Static files are excluded — see
+        // lib/payload-api-guard.ts. Imported lazily so only these requests
+        // pay for the limiter's Prisma/Upstash client.
+        if (shouldRateLimitPayloadApi(req.nextUrl.pathname)) {
+            const { userId } = await auth()
+            if (!userId) {
+                const { rateLimitRequest } = await import('./lib/rate-limit-route')
+                const limited = await rateLimitRequest(req, 'payload-api:anonymous', PAYLOAD_API_ANONYMOUS_RATE_LIMIT)
+                if (limited) return limited
+            }
+        }
         return NextResponse.next()
     }
 
