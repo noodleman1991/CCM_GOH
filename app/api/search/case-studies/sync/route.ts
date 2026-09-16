@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
-import { algoliaClient, ALGOLIA_INDICES, CaseStudySearchRecord } from '@/lib/algolia'
+import { algoliaClient, ALGOLIA_INDICES, CaseStudySearchRecord, writeIndexName } from '@/lib/algolia'
 import {
   getApprovedCaseStudyIndexDocs,
   getCaseStudyIndexDocsByIds,
   getApprovedCaseStudyCount,
   type CaseStudyIndexDoc,
 } from '@/lib/content/case-studies'
+import { transformCaseStudyForIndex } from '@/payload/hooks/search-sync'
 
 /** Minimal shape of the Sanity case study payload consumed by the transform below. */
 type SanityCaseStudy = CaseStudyIndexDoc
@@ -46,13 +47,13 @@ export async function POST(request: NextRequest) {
       if (records.length > 0) {
         // Replace all records atomically
         const response = await algoliaClient.replaceAllObjects({
-          indexName: ALGOLIA_INDICES.CASE_STUDIES,
+          indexName: writeIndexName(ALGOLIA_INDICES.CASE_STUDIES),
           objects: records
         })
 
         // Wait for indexing to complete
         if (Array.isArray(response) && response[0]?.taskID) {
-          await algoliaClient.waitForTask({ indexName: ALGOLIA_INDICES.CASE_STUDIES, taskID: response[0].taskID })
+          await algoliaClient.waitForTask({ indexName: writeIndexName(ALGOLIA_INDICES.CASE_STUDIES), taskID: response[0].taskID })
         }
 
         console.log(`✅ Successfully indexed ${records.length} case studies`)
@@ -93,7 +94,7 @@ export async function POST(request: NextRequest) {
       // Index approved case studies
       if (toIndex.length > 0) {
         await algoliaClient.saveObjects({
-          indexName: ALGOLIA_INDICES.CASE_STUDIES,
+          indexName: writeIndexName(ALGOLIA_INDICES.CASE_STUDIES),
           objects: toIndex
         })
       }
@@ -101,7 +102,7 @@ export async function POST(request: NextRequest) {
       // Remove non-approved case studies
       if (toDelete.length > 0) {
         await algoliaClient.deleteObjects({
-          indexName: ALGOLIA_INDICES.CASE_STUDIES,
+          indexName: writeIndexName(ALGOLIA_INDICES.CASE_STUDIES),
           objectIDs: toDelete
         })
       }
@@ -143,7 +144,7 @@ export async function GET() {
     const stats = { numberOfRecords: 0, updatedAt: new Date().toISOString() }
     try {
       // Try to get actual stats if method exists
-      const actualStats = await (algoliaClient as { getStats?: (args: { indexName: string }) => Promise<Record<string, unknown>> }).getStats?.({ indexName: ALGOLIA_INDICES.CASE_STUDIES })
+      const actualStats = await (algoliaClient as { getStats?: (args: { indexName: string }) => Promise<Record<string, unknown>> }).getStats?.({ indexName: writeIndexName(ALGOLIA_INDICES.CASE_STUDIES) })
       if (actualStats) Object.assign(stats, actualStats)
     } catch (error) {
       console.warn('Stats not available:', error)
@@ -172,43 +173,3 @@ export async function GET() {
   }
 }
 
-// Helper function to transform case study for Algolia indexing
-function transformCaseStudyForIndex(caseStudy: SanityCaseStudy): CaseStudySearchRecord | null {
-  try {
-    return {
-      objectID: caseStudy._id,
-      contentId: caseStudy._id,
-      title: caseStudy.title || { en: 'Untitled Case Study' },
-      excerpt: caseStudy.excerpt || ({} as NonNullable<CaseStudySearchRecord['excerpt']>),
-      slug: caseStudy.slug?.current || '',
-      status: caseStudy.status || 'pending',
-      featured: caseStudy.featured || false,
-      publishedAt: caseStudy.publishedAt ? new Date(caseStudy.publishedAt).getTime() : Date.now(),
-      updatedAt: caseStudy._updatedAt ? new Date(caseStudy._updatedAt).getTime() : Date.now(),
-      authors: (caseStudy.authors || []).map((author) => ({
-        name: author.name || 'Unknown Author',
-        role: author.role || 'author',
-        affiliation: author.affiliation?.name
-      })),
-      tags: (caseStudy.tags || []).map((tag) => tag.name).filter((name): name is string => Boolean(name)),
-      studyLocation: caseStudy.studyLocation ? {
-        lat: caseStudy.studyLocation.lat,
-        lng: caseStudy.studyLocation.lng,
-        name: `${caseStudy.studyLocation.lat}, ${caseStudy.studyLocation.lng}`
-      } : undefined,
-      studyPeriod: caseStudy.studyPeriod ? {
-        startDate: caseStudy.studyPeriod.startDate,
-        endDate: caseStudy.studyPeriod.endDate
-      } : undefined,
-      organizations: (caseStudy.organizations || []).map((org) => org.name).filter((name): name is string => Boolean(name)),
-      language: 'en', // Default to English, could be enhanced with language detection
-      accessLevel: 'public', // All approved case studies are public for now
-      region: caseStudy.region || undefined,
-      themes: caseStudy.themes || [],
-      populations: caseStudy.populations || []
-    }
-  } catch (error) {
-    console.warn(`Failed to transform case study ${caseStudy._id}:`, error)
-    return null
-  }
-}

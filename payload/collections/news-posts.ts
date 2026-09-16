@@ -3,6 +3,7 @@ import { isEditor, publishedOnly } from "@/payload/access";
 import { imageField, relationshipField } from "@/payload/blocks/shared";
 import { localizedRichText, localizedText, localizedTextarea } from "@/payload/fields/localized";
 import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
+import { searchSyncAfterChange, searchSyncAfterDelete } from "@/payload/hooks/search-sync";
 
 /**
  * Mirrors sanity/schemas/documents/news-post.ts. Verified against
@@ -45,6 +46,13 @@ export const NewsPosts: CollectionConfig = {
     create: isEditor,
     update: isEditor,
     delete: isEditor,
+  },
+  // What the Sanity search webhook used to do, in-process. Scheduling only —
+  // the Algolia write runs after this transaction commits, never inside it.
+  // See payload/hooks/search-sync.ts.
+  hooks: {
+    afterChange: [searchSyncAfterChange("newsPosts")],
+    afterDelete: [searchSyncAfterDelete("newsPosts")],
   },
   fields: [
     {

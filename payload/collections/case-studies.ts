@@ -1,6 +1,7 @@
 import type { CollectionConfig } from "payload";
 import { isEditor, isEditorField, publishedAndApproved } from "@/payload/access";
 import { moderationAfterChange } from "@/payload/hooks/moderation";
+import { searchSyncAfterChange, searchSyncAfterDelete } from "@/payload/hooks/search-sync";
 import { relationshipField, uploadField } from "@/payload/blocks/shared";
 import { localizedRichText, localizedText, localizedTextarea } from "@/payload/fields/localized";
 import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
@@ -95,7 +96,13 @@ export const CaseStudies: CollectionConfig = {
   // cache revalidation and the submitter's email — eventually, over the
   // network, and only if delivery succeeded. Here it is the same process and
   // the same call stack. See payload/hooks/moderation.ts.
-  hooks: { afterChange: [moderationAfterChange("caseStudies")] },
+  // Algolia sync joins the moderation side effects here. It only *schedules*
+  // its work — the index write runs after this transaction commits, never
+  // inside it. See payload/hooks/search-sync.ts.
+  hooks: {
+    afterChange: [moderationAfterChange("caseStudies"), searchSyncAfterChange("caseStudies")],
+    afterDelete: [searchSyncAfterDelete("caseStudies")],
+  },
   fields: [
     {
       name: "id",

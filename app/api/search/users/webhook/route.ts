@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { algoliaClient, ALGOLIA_INDICES, transformUserForIndex, shouldIndexUser } from '@/lib/algolia'
+import { algoliaClient, ALGOLIA_INDICES, transformUserForIndex, shouldIndexUser, writeIndexName } from '@/lib/algolia'
 
 const SEARCH_WEBHOOK_SECRET = process.env.SEARCH_WEBHOOK_SECRET
 
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
     if (action === 'delete') {
       // Remove user from search index
       await algoliaClient.deleteObject({
-        indexName: ALGOLIA_INDICES.USERS,
+        indexName: writeIndexName(ALGOLIA_INDICES.USERS),
         objectID: userId
       })
       console.log(`🗑️ Removed user ${userId} from search index`)
@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
     if (!user) {
       // User doesn't exist, remove from index if present
       await algoliaClient.deleteObject({
-        indexName: ALGOLIA_INDICES.USERS,
+        indexName: writeIndexName(ALGOLIA_INDICES.USERS),
         objectID: userId
       })
       return NextResponse.json({
@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
       try {
         const record = transformUserForIndex(user)
         await algoliaClient.saveObjects({
-          indexName: ALGOLIA_INDICES.USERS,
+          indexName: writeIndexName(ALGOLIA_INDICES.USERS),
           objects: [record]
         })
 
@@ -95,7 +95,7 @@ export async function POST(request: NextRequest) {
         console.warn(`Failed to index user ${userId}: ${error}`)
         // Remove from index if transformation failed
         await algoliaClient.deleteObject({
-          indexName: ALGOLIA_INDICES.USERS,
+          indexName: writeIndexName(ALGOLIA_INDICES.USERS),
           objectID: userId
         })
         
@@ -109,7 +109,7 @@ export async function POST(request: NextRequest) {
     } else {
       // User should not be indexed, remove if present
       await algoliaClient.deleteObject({
-        indexName: ALGOLIA_INDICES.USERS,
+        indexName: writeIndexName(ALGOLIA_INDICES.USERS),
         objectID: userId
       })
       

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { prisma } from '@/lib/prisma'
-import { algoliaClient, ALGOLIA_INDICES, transformUserForIndex, shouldIndexUser, type UserSearchRecord } from '@/lib/algolia'
+import { algoliaClient, ALGOLIA_INDICES, transformUserForIndex, shouldIndexUser, type UserSearchRecord, writeIndexName } from '@/lib/algolia'
 
 export async function POST(request: NextRequest) {
   try {
@@ -69,13 +69,13 @@ export async function POST(request: NextRequest) {
       if (records.length > 0) {
         // Replace all records atomically
         const response = await algoliaClient.replaceAllObjects({
-          indexName: ALGOLIA_INDICES.USERS,
+          indexName: writeIndexName(ALGOLIA_INDICES.USERS),
           objects: records
         })
 
         // Wait for indexing to complete
         if (Array.isArray(response) && response[0]?.taskID) {
-          await algoliaClient.waitForTask({ indexName: ALGOLIA_INDICES.USERS, taskID: response[0].taskID })
+          await algoliaClient.waitForTask({ indexName: writeIndexName(ALGOLIA_INDICES.USERS), taskID: response[0].taskID })
         }
         
         console.log(`✅ Successfully indexed ${records.length} users`)
@@ -134,7 +134,7 @@ export async function POST(request: NextRequest) {
       // Index users who should be searchable
       if (toIndex.length > 0) {
         await algoliaClient.saveObjects({
-          indexName: ALGOLIA_INDICES.USERS,
+          indexName: writeIndexName(ALGOLIA_INDICES.USERS),
           objects: toIndex
         })
       }
@@ -142,7 +142,7 @@ export async function POST(request: NextRequest) {
       // Remove users who shouldn't be searchable
       if (toDelete.length > 0) {
         await algoliaClient.deleteObjects({
-          indexName: ALGOLIA_INDICES.USERS,
+          indexName: writeIndexName(ALGOLIA_INDICES.USERS),
           objectIDs: toDelete
         })
       }
@@ -183,7 +183,7 @@ export async function GET() {
     const stats = { numberOfRecords: 0, updatedAt: new Date().toISOString() }
     try {
       // Try to get actual stats if method exists
-      const actualStats = await (algoliaClient as { getStats?: (args: { indexName: string }) => Promise<Record<string, unknown>> }).getStats?.({ indexName: ALGOLIA_INDICES.USERS })
+      const actualStats = await (algoliaClient as { getStats?: (args: { indexName: string }) => Promise<Record<string, unknown>> }).getStats?.({ indexName: writeIndexName(ALGOLIA_INDICES.USERS) })
       if (actualStats) Object.assign(stats, actualStats)
     } catch (error) {
       console.warn('Stats not available:', error)

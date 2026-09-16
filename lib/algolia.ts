@@ -1,6 +1,12 @@
 import { algoliasearch, type Algoliasearch } from 'algoliasearch'
 import type { User } from '@/generated/prisma'
 
+// Index names and the write-time prefix live in a side-effect-free module, so a
+// Payload hook or a `tsx` script can name an index without constructing a
+// client (or hitting this file's `require('dotenv')`). Re-exported so every
+// existing `from '@/lib/algolia'` import keeps working.
+export { ALGOLIA_INDICES, writeIndexName } from '@/lib/algolia-indices'
+
 // Load environment variables (for Node.js contexts outside Next.js)
 if (typeof window === 'undefined' && !process.env.VERCEL) {
   // eslint-disable-next-line @typescript-eslint/no-require-imports -- dotenv must load synchronously and only in non-Vercel Node contexts; a static ESM import would run unconditionally (including in client bundles).
@@ -42,15 +48,6 @@ export const algoliaClient = (() => {
   }
 })()
 
-// Index names
-export const ALGOLIA_INDICES = {
-  USERS: 'users',
-  SANITY_CONTENT: 'sanity_content',
-  AGENDAS: 'agendas',
-  POSTS: 'posts',
-  CASE_STUDIES: 'case_studies',
-  NEWS: 'news'
-} as const
 
 // Search client for frontend (uses search-only API key)
 // Create the base search client (without debouncing)

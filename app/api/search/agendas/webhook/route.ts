@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { algoliaClient, ALGOLIA_INDICES, AgendaSearchRecord } from '@/lib/algolia'
-import { deriveAgendaLanguages } from '@/lib/agenda-languages'
-import { getAgendaIndexDocById, type AgendaIndexDoc } from '@/lib/content/outputs'
+import { algoliaClient, ALGOLIA_INDICES, writeIndexName } from '@/lib/algolia'
+import { getAgendaIndexDocsByIds } from '@/lib/content/outputs'
+import { transformAgendaForIndex } from '@/payload/hooks/search-sync'
 
 const SEARCH_WEBHOOK_SECRET = process.env.SEARCH_WEBHOOK_SECRET
 
@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
     if (action === 'delete') {
       // Remove agenda from search index
       await algoliaClient.deleteObject({
-        indexName: ALGOLIA_INDICES.AGENDAS,
+        indexName: writeIndexName(ALGOLIA_INDICES.AGENDAS),
         objectID: _id
       })
       console.log(`🗑️ Removed agenda ${_id} from search index`)
@@ -52,13 +52,21 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    // Get updated agenda data
-    const agenda = await getAgendaIndexDocById(_id)
+    // Get updated agenda data.
+    //
+    // `...ByIds([_id])` rather than `...ById(_id)`: on the Payload arm those two
+    // readers differ — `ByIds` dereferences `files` and `ById` does not — and the
+    // record this route emits must be the one the live index holds, which is the
+    // full sync's (with `files`). Before, this route's own transform dropped
+    // `files` and `saveObjects` replaces the whole object, so every webhook
+    // delivery stripped them off the record until the next full sync put them
+    // back. One shape now: payload/hooks/search-sync.ts.
+    const agenda = (await getAgendaIndexDocsByIds([_id]))[0] ?? null
 
     if (!agenda) {
       // Agenda doesn't exist, remove from index if present
       await algoliaClient.deleteObject({
-        indexName: ALGOLIA_INDICES.AGENDAS,
+        indexName: writeIndexName(ALGOLIA_INDICES.AGENDAS),
         objectID: _id
       })
       return NextResponse.json({
@@ -72,7 +80,7 @@ export async function POST(request: NextRequest) {
       const record = transformAgendaForIndex(agenda)
       if (record) {
         await algoliaClient.saveObjects({
-          indexName: ALGOLIA_INDICES.AGENDAS,
+          indexName: writeIndexName(ALGOLIA_INDICES.AGENDAS),
           objects: [record]
         })
 
@@ -86,7 +94,7 @@ export async function POST(request: NextRequest) {
       } else {
         // Remove from index if transformation failed
         await algoliaClient.deleteObject({
-          indexName: ALGOLIA_INDICES.AGENDAS,
+          indexName: writeIndexName(ALGOLIA_INDICES.AGENDAS),
           objectID: _id
         })
 
@@ -100,7 +108,7 @@ export async function POST(request: NextRequest) {
       console.warn(`Failed to index agenda ${_id}: ${error}`)
       // Remove from index if indexing failed
       await algoliaClient.deleteObject({
-        indexName: ALGOLIA_INDICES.AGENDAS,
+        indexName: writeIndexName(ALGOLIA_INDICES.AGENDAS),
         objectID: _id
       })
 
@@ -121,33 +129,4 @@ export async function POST(request: NextRequest) {
   }
 }
 
-/** Minimal shape of the Sanity agenda payload consumed by the transform below. */
-type SanityAgenda = AgendaIndexDoc
 
-// Helper function to transform agenda for Algolia indexing
-function transformAgendaForIndex(agenda: SanityAgenda): AgendaSearchRecord | null {
-  try {
-    return {
-      objectID: agenda._id,
-      contentId: agenda._id,
-      title: agenda.title || { en: 'Untitled Agenda' },
-      subtitle: agenda.subtitle || ({} as NonNullable<AgendaSearchRecord['subtitle']>),
-      description: agenda.description || ({} as NonNullable<AgendaSearchRecord['description']>),
-      slug: agenda.slug?.current || '',
-      agendaType: agenda.agendaType || 'other',
-      year: agenda.year || new Date().getFullYear(),
-      publishDate: agenda.publishDate ? new Date(agenda.publishDate).getTime() : Date.now(),
-      totalDownloadCount: agenda.totalDownloadCount || 0,
-      featured: agenda.featured || false,
-      organizations: (agenda.organizations || []).map((org) => org.name).filter((name): name is string => Boolean(name)),
-      regionalCommunities: (agenda.regionalCommunities || []).map((community) => community.name).filter((name): name is string => Boolean(name)),
-      tags: (agenda.tags || []).map((tag) => tag.name).filter((name): name is string => Boolean(name)),
-      accessLevel: agenda.accessLevel || 'public',
-      language: 'en', // deprecated; kept for back-compat
-      languages: deriveAgendaLanguages(agenda.files, agenda.title)
-    }
-  } catch (error) {
-    console.warn(`Failed to transform agenda ${agenda._id}:`, error)
-    return null
-  }
-}

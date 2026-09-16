@@ -1,62 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { isValidSignature, SIGNATURE_HEADER_NAME } from '@sanity/webhook'
-import { algoliaClient, ALGOLIA_INDICES, NewsSearchRecord } from '@/lib/algolia'
-import { getNewsIndexDocById, type NewsIndexDoc } from '@/lib/content/news'
+import { algoliaClient, ALGOLIA_INDICES, writeIndexName } from '@/lib/algolia'
+import { getNewsIndexDocById } from '@/lib/content/news'
+import { transformNewsForIndex } from '@/payload/hooks/search-sync'
 
 const secret = process.env.SANITY_WEBHOOK_SECRET
 const SEARCH_WEBHOOK_SECRET = process.env.SEARCH_WEBHOOK_SECRET
-
-/**
- * Transform news post for Algolia indexing
- */
-function transformNewsForIndex(newsPost: NewsIndexDoc): NewsSearchRecord | null {
-  try {
-    // Ensure required fields exist
-    if (!newsPost._id || !newsPost.title || !newsPost.slug) {
-      console.warn(`Skipping news post: missing required fields`)
-      return null
-    }
-
-    return {
-      objectID: newsPost._id,
-      contentId: newsPost._id,
-      title: newsPost.title || { en: 'Untitled News Post' },
-      subtitle: newsPost.subtitle || ({} as NonNullable<NewsSearchRecord['subtitle']>),
-      excerpt: newsPost.excerpt || ({} as NonNullable<NewsSearchRecord['excerpt']>),
-      slug: newsPost.slug?.current || '',
-      publishedAt: newsPost.publishedAt ? new Date(newsPost.publishedAt).getTime() : Date.now(),
-      updatedAt: newsPost._updatedAt ? new Date(newsPost._updatedAt).getTime() : Date.now(),
-      author: {
-        name: newsPost.author?.name || 'Unknown Author',
-        id: newsPost.author?._id || ''
-      },
-      featured: newsPost.featured || false,
-      tags: (newsPost.tags || [])
-        .map((tag) => tag.label?.en || tag.name)
-        .filter((name): name is string => Boolean(name)),
-      organizations: (newsPost.organizations || [])
-        .map((org) => org.name)
-        .filter((name): name is string => Boolean(name)),
-      projects: (newsPost.projects || [])
-        .map((project) => project.name)
-        .filter((name): name is string => Boolean(name)),
-      location: {
-        city: newsPost.locationDetails?.city,
-        country: newsPost.locationDetails?.country,
-        lat: newsPost.location?.lat,
-        lng: newsPost.location?.lng
-      },
-      accessLevel: 'public', // News is always public
-      language: newsPost.language || 'en',
-      region: newsPost.region || undefined,
-      themes: newsPost.themes || [],
-      populations: newsPost.populations || []
-    }
-  } catch (error) {
-    console.warn(`Failed to transform news post ${newsPost._id}:`, error)
-    return null
-  }
-}
 
 /**
  * Webhook handler for Sanity news post updates
@@ -119,7 +68,7 @@ export async function POST(request: NextRequest) {
     // Handle delete action
     if (action === 'delete') {
       await algoliaClient.deleteObject({
-        indexName: ALGOLIA_INDICES.NEWS,
+        indexName: writeIndexName(ALGOLIA_INDICES.NEWS),
         objectID: _id
       })
       console.log(`🗑️  Removed news post ${_id} from search index`)
@@ -137,7 +86,7 @@ export async function POST(request: NextRequest) {
     if (!newsPost) {
       // News post doesn't exist, remove from index if present
       await algoliaClient.deleteObject({
-        indexName: ALGOLIA_INDICES.NEWS,
+        indexName: writeIndexName(ALGOLIA_INDICES.NEWS),
         objectID: _id
       })
       return NextResponse.json({
@@ -156,14 +105,14 @@ export async function POST(request: NextRequest) {
         const record = transformNewsForIndex(newsPost)
         if (record) {
           const response = await algoliaClient.saveObjects({
-            indexName: ALGOLIA_INDICES.NEWS,
+            indexName: writeIndexName(ALGOLIA_INDICES.NEWS),
             objects: [record]
           })
 
           // Wait for indexing to complete
           if (Array.isArray(response) && response[0]?.taskID) {
             await algoliaClient.waitForTask({
-              indexName: ALGOLIA_INDICES.NEWS,
+              indexName: writeIndexName(ALGOLIA_INDICES.NEWS),
               taskID: response[0].taskID
             })
           }
@@ -178,7 +127,7 @@ export async function POST(request: NextRequest) {
         } else {
           // Remove from index if transformation failed
           await algoliaClient.deleteObject({
-            indexName: ALGOLIA_INDICES.NEWS,
+            indexName: writeIndexName(ALGOLIA_INDICES.NEWS),
             objectID: _id
           })
 
@@ -192,7 +141,7 @@ export async function POST(request: NextRequest) {
         console.warn(`Failed to index news post ${_id}:`, error)
         // Remove from index if indexing failed
         await algoliaClient.deleteObject({
-          indexName: ALGOLIA_INDICES.NEWS,
+          indexName: writeIndexName(ALGOLIA_INDICES.NEWS),
           objectID: _id
         })
 
@@ -206,7 +155,7 @@ export async function POST(request: NextRequest) {
     } else {
       // News post is not published, remove if present
       await algoliaClient.deleteObject({
-        indexName: ALGOLIA_INDICES.NEWS,
+        indexName: writeIndexName(ALGOLIA_INDICES.NEWS),
         objectID: _id
       })
 

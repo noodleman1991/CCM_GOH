@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
-import { algoliaClient, ALGOLIA_INDICES, NewsSearchRecord } from '@/lib/algolia'
+import { algoliaClient, ALGOLIA_INDICES, NewsSearchRecord, writeIndexName } from '@/lib/algolia'
 import {
   getPublishedNewsIndexDocs,
   getNewsIndexDocsByIds,
   getPublishedNewsCount,
   type NewsIndexDoc,
 } from '@/lib/content/news'
+import { transformNewsForIndex } from '@/payload/hooks/search-sync'
 
 export async function POST(request: NextRequest) {
   try {
@@ -43,13 +44,13 @@ export async function POST(request: NextRequest) {
       if (records.length > 0) {
         // Replace all records atomically
         const response = await algoliaClient.replaceAllObjects({
-          indexName: ALGOLIA_INDICES.NEWS,
+          indexName: writeIndexName(ALGOLIA_INDICES.NEWS),
           objects: records
         })
 
         // Wait for indexing to complete
         if (Array.isArray(response) && response[0]?.taskID) {
-          await algoliaClient.waitForTask({ indexName: ALGOLIA_INDICES.NEWS, taskID: response[0].taskID })
+          await algoliaClient.waitForTask({ indexName: writeIndexName(ALGOLIA_INDICES.NEWS), taskID: response[0].taskID })
         }
 
         console.log(`✅ Successfully indexed ${records.length} news posts`)
@@ -92,7 +93,7 @@ export async function POST(request: NextRequest) {
       // Index published news posts
       if (toIndex.length > 0) {
         await algoliaClient.saveObjects({
-          indexName: ALGOLIA_INDICES.NEWS,
+          indexName: writeIndexName(ALGOLIA_INDICES.NEWS),
           objects: toIndex
         })
       }
@@ -100,7 +101,7 @@ export async function POST(request: NextRequest) {
       // Remove unpublished news posts
       if (toDelete.length > 0) {
         await algoliaClient.deleteObjects({
-          indexName: ALGOLIA_INDICES.NEWS,
+          indexName: writeIndexName(ALGOLIA_INDICES.NEWS),
           objectIDs: toDelete
         })
       }
@@ -141,7 +142,7 @@ export async function GET() {
     const stats = { numberOfRecords: 0, updatedAt: new Date().toISOString() }
     try {
       // Try to get actual stats if method exists
-      const actualStats = await (algoliaClient as { getStats?: (args: { indexName: string }) => Promise<Record<string, unknown>> }).getStats?.({ indexName: ALGOLIA_INDICES.NEWS })
+      const actualStats = await (algoliaClient as { getStats?: (args: { indexName: string }) => Promise<Record<string, unknown>> }).getStats?.({ indexName: writeIndexName(ALGOLIA_INDICES.NEWS) })
       if (actualStats) Object.assign(stats, actualStats)
     } catch (error) {
       console.warn('Stats not available:', error)
@@ -170,52 +171,3 @@ export async function GET() {
   }
 }
 
-// Helper function to transform news post for Algolia indexing
-function transformNewsForIndex(newsPost: NewsIndexDoc): NewsSearchRecord | null {
-  try {
-    // Ensure required fields exist
-    if (!newsPost._id || !newsPost.title || !newsPost.slug) {
-      console.warn(`Skipping news post: missing required fields`)
-      return null
-    }
-
-    return {
-      objectID: newsPost._id,
-      contentId: newsPost._id,
-      title: newsPost.title || { en: 'Untitled News Post' },
-      subtitle: newsPost.subtitle || ({} as NonNullable<NewsSearchRecord['subtitle']>),
-      excerpt: newsPost.excerpt || ({} as NonNullable<NewsSearchRecord['excerpt']>),
-      slug: newsPost.slug?.current || '',
-      publishedAt: newsPost.publishedAt ? new Date(newsPost.publishedAt).getTime() : Date.now(),
-      updatedAt: newsPost._updatedAt ? new Date(newsPost._updatedAt).getTime() : Date.now(),
-      author: {
-        name: newsPost.author?.name || 'Unknown Author',
-        id: newsPost.author?._id || ''
-      },
-      featured: newsPost.featured || false,
-      tags: (newsPost.tags || [])
-        .map((tag) => tag.label?.en || tag.name)
-        .filter((name): name is string => Boolean(name)),
-      organizations: (newsPost.organizations || [])
-        .map((org) => org.name)
-        .filter((name): name is string => Boolean(name)),
-      projects: (newsPost.projects || [])
-        .map((project) => project.name)
-        .filter((name): name is string => Boolean(name)),
-      location: {
-        city: newsPost.locationDetails?.city,
-        country: newsPost.locationDetails?.country,
-        lat: newsPost.location?.lat,
-        lng: newsPost.location?.lng
-      },
-      accessLevel: 'public', // News is always public
-      language: newsPost.language || 'en',
-      region: newsPost.region || undefined,
-      themes: newsPost.themes || [],
-      populations: newsPost.populations || []
-    }
-  } catch (error) {
-    console.warn(`Failed to transform news post ${newsPost._id}:`, error)
-    return null
-  }
-}
