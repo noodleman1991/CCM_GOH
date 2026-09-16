@@ -28,6 +28,7 @@ import { Events } from "./payload/collections/events";
 import { Projects } from "./payload/collections/projects";
 import { globals } from "./payload/globals";
 import { withContentRevalidation, withGlobalRevalidation } from "./payload/hooks/revalidate-content";
+import { withAnonymousReadCap } from "./payload/hooks/anonymous-read-cap";
 import { richTextEditor } from "./payload/blocks/rich-text-embeds";
 import { payloadR2BucketName, payloadR2ClientConfig } from "./payload/storage/r2";
 import { s3Storage } from "@payloadcms/storage-s3";
@@ -121,8 +122,19 @@ export default buildConfig({
     RegionalCommunityPages,
     Events,
     Projects,
-  ].map(withContentRevalidation),
+  ]
+    .map(withContentRevalidation)
+    .map(withAnonymousReadCap),
   globals: globals.map(withGlobalRevalidation),
+  // Nothing in this app reads Payload over GraphQL — the readers use the Local
+  // API — and an unused endpoint that accepts arbitrary queries from anonymous
+  // callers is only attack surface and cold-start work. The two generated
+  // route files under app/(payload)/payload-api/graphql* are deleted with it.
+  graphQL: { disable: true },
+  // The deepest read the site makes is 3 (pages, homepage, regional community
+  // pages: block -> referenced document -> its upload). Payload's default of
+  // 10 let an anonymous REST caller ask for far more population per request.
+  maxDepth: 3,
   plugins: [
     // Uploads live in Cloudflare R2, the object store this app already uses
     // (lib/r2.ts), reached through R2's S3-compatible API.

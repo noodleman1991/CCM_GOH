@@ -239,6 +239,10 @@ describe("wiring — no content collection or global can be forgotten", () => {
     expect(caseStudies.hooks?.afterChange?.slice(0, declared.length)).toEqual(declared);
     expect(caseStudies.hooks?.afterChange?.length).toBe(declared.length + 1);
     const media = (resolved.collections as CollectionConfig[]).find((c) => c.slug === "media")!;
-    expect(media.hooks?.beforeOperation).toEqual(Media.hooks?.beforeOperation);
+    // Other config-level wrappers (the anonymous read cap) may add hooks too;
+    // what matters is that nothing the collection declared was dropped.
+    for (const declared of Media.hooks?.beforeOperation ?? []) {
+      expect(media.hooks?.beforeOperation).toContain(declared);
+    }
   });
 });
