@@ -1,6 +1,7 @@
 import type { CollectionConfig, ImageSize } from "payload";
 import { editorOrStaticFile, isEditor } from "@/payload/access";
 import { randomizeUploadFilename } from "@/payload/hooks/upload-filename";
+import { uploadResponseHeaders } from "@/payload/hooks/upload-headers";
 
 /**
  * Images. Mirrors Sanity's `sanity.imageAsset` — 347 of them in production_2
@@ -225,6 +226,8 @@ export const Media: CollectionConfig = {
     // asset); Payload's own SVG safety check (`validateSvg`) runs on upload
     // precisely because `mimeTypes` is set. PDFs and documents belong to the
     // `files` collection.
+    // SVG sandboxing and Cache-Control — see payload/hooks/upload-headers.ts.
+    modifyResponseHeaders: uploadResponseHeaders,
     mimeTypes: ["image/*"],
     // Sanity's hotspot, ported: the crop* sizes above are extracted around it.
     focalPoint: true,

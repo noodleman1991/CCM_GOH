@@ -1,6 +1,7 @@
 import type { CollectionConfig } from "payload";
 import { editorOrStaticFile, isEditor } from "@/payload/access";
 import { randomizeUploadFilename } from "@/payload/hooks/upload-filename";
+import { uploadResponseHeaders } from "@/payload/hooks/upload-headers";
 
 /**
  * Non-image uploads. Mirrors Sanity's `sanity.fileAsset` — 48 of them in
@@ -59,6 +60,8 @@ export const Files: CollectionConfig = {
     // "documents" means for an editor uploading to an agenda or report; the two
     // video types exist solely for `livedExperiences.videoFile`, matching that
     // field's own `accept` list rather than a broad `video/*`.
+    // SVG sandboxing and Cache-Control — see payload/hooks/upload-headers.ts.
+    modifyResponseHeaders: uploadResponseHeaders,
     mimeTypes: [
       "application/pdf",
       "application/msword",
