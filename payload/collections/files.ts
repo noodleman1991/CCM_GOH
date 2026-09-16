@@ -1,5 +1,6 @@
 import type { CollectionConfig } from "payload";
-import { isAnyone, isEditor } from "@/payload/access";
+import { editorOrStaticFile, isEditor } from "@/payload/access";
+import { randomizeUploadFilename } from "@/payload/hooks/upload-filename";
 
 /**
  * Non-image uploads. Mirrors Sanity's `sanity.fileAsset` — 48 of them in
@@ -24,11 +25,17 @@ import { isAnyone, isEditor } from "@/payload/access";
  * check. The reasoning is recorded in full at the field itself
  * (`payload/blocks/shared.ts`'s `backgroundOptionField`).
  *
- * `read: isAnyone` — same reasoning as `media`: an asset has no
+ * `read: editorOrStaticFile` — same reasoning as `media`: an asset has no
  * `moderationStatus` and no draft state to gate on, and agenda/report PDFs are
- * already public downloads today. The documents that *reference* these files
- * carry their own access control (`agendas.accessLevel`,
- * `publishedAndApproved` on the moderated collections).
+ * already public downloads today, so the file route stays open. The LISTING
+ * does not: until 2026-09-16 this was `isAnyone`, and `/payload-api/files?limit=0`
+ * handed an anonymous caller the URL of every PDF and video — including the
+ * report attached to a pending or rejected research output, which
+ * `moderationApprovedOnly` correctly hides on the parent. The documents that
+ * *reference* these files carry their own access control
+ * (`agendas.accessLevel`, `publishedAndApproved` on the moderated
+ * collections); the file itself is protected only by an unguessable name,
+ * which `randomizeUploadFilename` provides for every new upload.
  *
  * No `imageSizes`, no `focalPoint`: nothing here is an image.
  */
@@ -39,10 +46,13 @@ export const Files: CollectionConfig = {
     defaultColumns: ["filename", "mimeType", "filesize"],
   },
   access: {
-    read: isAnyone,
+    read: editorOrStaticFile,
     create: isEditor,
     update: isEditor,
     delete: isEditor,
+  },
+  hooks: {
+    beforeOperation: [randomizeUploadFilename],
   },
   upload: {
     // All 48 real assets are PDFs. The office/text types are the rest of what

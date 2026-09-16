@@ -38,6 +38,36 @@ export const isEditor: Access = ({ req }) => hasEditorRole(req.user);
 export const isAnyone: Access = () => true;
 
 /**
+ * For the two upload collections, `media` and `files`.
+ *
+ * Payload asks one `read` function two different questions. For a request to
+ * `/payload-api/<slug>/file/<name>` (`payload/dist/uploads/checkFileAccess.js`)
+ * it passes `isReadingStaticFile: true` and a `true` answer means "stream the
+ * object, no lookup". For every other read — the REST list at
+ * `/payload-api/<slug>`, `findByID`, GraphQL, and relationship population on
+ * an anonymous REST read of another collection — it passes nothing extra.
+ *
+ * `isAnyone` answered `true` to both, which made `/payload-api/files?limit=0`
+ * an anonymous index of every PDF, video and image in the CMS, including
+ * assets whose parent document is hidden as pending or rejected and images
+ * uploaded into private collaboration workspaces. Sanity's CDN never had a
+ * listing, so this was a regression the migration introduced.
+ *
+ * This helper keeps the file route open (a rendered page still needs its
+ * images without a session) and closes everything else to non-editors. The
+ * file route stays safe because `randomizeUploadFilename`
+ * (`payload/hooks/upload-filename.ts`) makes every new filename unguessable;
+ * Sanity-imported assets keep their original names and are the residual
+ * exposure — 395 files whose names are ordinary words, reachable by anyone
+ * who can guess one.
+ *
+ * The site's own readers are unaffected: they use the Local API, which
+ * defaults to `overrideAccess: true`.
+ */
+export const editorOrStaticFile: Access = ({ req, isReadingStaticFile }) =>
+  isReadingStaticFile === true || hasEditorRole(req.user);
+
+/**
  * `isEditor` at FIELD level — the gate for fields that must never leave the
  * server for an anonymous caller even on a document that is itself public.
  *

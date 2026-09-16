@@ -1,5 +1,6 @@
 import type { CollectionConfig, ImageSize } from "payload";
-import { isAnyone, isEditor } from "@/payload/access";
+import { editorOrStaticFile, isEditor } from "@/payload/access";
+import { randomizeUploadFilename } from "@/payload/hooks/upload-filename";
 
 /**
  * Images. Mirrors Sanity's `sanity.imageAsset` — 347 of them in production_2
@@ -22,12 +23,16 @@ import { isAnyone, isEditor } from "@/payload/access";
  * being a `sanity.fileAsset`; see `payload/blocks/shared.ts` for that
  * decision in full.
  *
- * `read: isAnyone` — there is no moderation field on an asset and no
- * `versions.drafts`, so there is no published/approved pair to gate on. This
- * matches the live site, where every Sanity asset URL is already public and
- * unguessable-by-hash rather than access-controlled. (The global rule about
- * "published AND approved" applies to collections that carry a
- * `moderationStatus` — see payload/access/index.ts.)
+ * `read: editorOrStaticFile` — there is no moderation field on an asset and
+ * no `versions.drafts`, so there is no published/approved pair to gate on,
+ * and the file route itself stays open to anonymous callers as Sanity's CDN
+ * was. What is NOT open is the listing: this collection was `isAnyone` until
+ * 2026-09-16, which made `/payload-api/media?limit=0` an anonymous index of
+ * every image, including ones uploaded into private collaboration
+ * workspaces. Sanity never offered a listing and named files by content
+ * hash; Payload names them after the original, so `randomizeUploadFilename`
+ * restores the unguessability for every new upload. Both decisions are
+ * argued at `editorOrStaticFile` in payload/access/index.ts.
  */
 
 /**
@@ -205,10 +210,15 @@ export const Media: CollectionConfig = {
     defaultColumns: ["filename", "mimeType", "filesize", "width", "height"],
   },
   access: {
-    read: isAnyone,
+    read: editorOrStaticFile,
     create: isEditor,
     update: isEditor,
     delete: isEditor,
+  },
+  hooks: {
+    // Runs before generateFileData reads req.file.name, so the derived
+    // imageSizes carry the randomised stem too.
+    beforeOperation: [randomizeUploadFilename],
   },
   upload: {
     // Images only. `image/*` admits `image/svg+xml` (and the one `image/heif`
