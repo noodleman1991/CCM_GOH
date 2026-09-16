@@ -26,7 +26,6 @@ import {
   MODERATION_WORKFLOWS,
   ModerationActionNotAvailableError,
   ModerationNotesRequiredError,
-  PAYLOAD_CONTENT_CACHE_TAG,
   runModerationSideEffects,
   SKIP_MODERATION_SIDE_EFFECTS,
   takedownsThatWouldNotReachThePublicCopy,
@@ -37,7 +36,6 @@ import {
   type ModerationSideEffectDeps,
   type ModerationStatus,
 } from "@/payload/hooks/moderation";
-import { CONTENT_CACHE_TAG } from "@/lib/content/internal/payload-source";
 import { CaseStudies } from "@/payload/collections/case-studies";
 import { Events } from "@/payload/collections/events";
 import { LivedExperiences } from "@/payload/collections/lived-experiences";
@@ -119,14 +117,13 @@ describe("the moderation transition table", () => {
     expect(MODERATION_WORKFLOWS.researchOutputs.notifies).toBe(false);
   });
 
-  it("revalidates the same tag the Payload read primitives cache under", () => {
-    expect(PAYLOAD_CONTENT_CACHE_TAG).toBe(CONTENT_CACHE_TAG);
-  });
-
   it("wires the hook and the buttons onto all four moderated collections", () => {
     const configs = [CaseStudies, Events, LivedExperiences, ResearchOutputs];
     for (const config of configs) {
-      expect(config.hooks?.afterChange).toHaveLength(1);
+      // At least one, not exactly one: Task 17 added a second `afterChange`
+      // to `caseStudies` for the Algolia sync. What this asserts is that the
+      // moderation hook is still wired, not that it is alone.
+      expect(config.hooks?.afterChange?.length).toBeGreaterThanOrEqual(1);
       const ui = config.fields.find(
         (field) => "name" in field && field.name === "moderationActions",
       );
@@ -449,7 +446,7 @@ function change(partial: Partial<ModerationChange> & { doc: Doc }): ModerationCh
 }
 
 describe("runModerationSideEffects", () => {
-  it("revalidates the blanket tag and the case-study paths the webhook revalidated", async () => {
+  it("revalidates the case-study paths the webhook revalidated — and no tags, which the generic hook owns", async () => {
     const { deps, revalidated } = sideEffectDeps();
     const result = await runModerationSideEffects(
       change({
@@ -460,7 +457,10 @@ describe("runModerationSideEffects", () => {
     );
 
     expect(revalidated).toHaveLength(1);
-    expect(revalidated[0].tags).toEqual(["payload"]);
+    // payload/hooks/revalidate-content.ts fires the blanket and per-collection
+    // tags after commit on every content write, this one included. Firing the
+    // blanket tag here as well evicted the whole site twice per approval.
+    expect(revalidated[0].tags).toEqual([]);
     // The webhook pushed a listing page and a detail page per locale.
     expect(revalidated[0].paths).toEqual([
       "/en/research-and-action/case-studies",
@@ -472,7 +472,7 @@ describe("runModerationSideEffects", () => {
       "/ar/research-and-action/case-studies",
       "/ar/research-and-action/case-studies/a-study",
     ]);
-    expect(result.revalidated).toHaveLength(9);
+    expect(result.revalidated).toHaveLength(8);
   });
 
   it("revalidates even when the status did not change — the webhook fired on every edit", async () => {
@@ -572,7 +572,7 @@ describe("runModerationSideEffects", () => {
       expect(result.email).toBe("skipped: collection does not notify");
       // They still revalidate: the webhook pushed the blanket tag for every
       // document type it saw.
-      expect(revalidated[0].tags).toEqual(["payload"]);
+      expect(revalidated[0].tags).toEqual([]);
       expect(revalidated[0].paths).toEqual([]);
     }
   });

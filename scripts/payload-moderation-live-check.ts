@@ -200,8 +200,14 @@ async function readProbe(payload: PayloadInstance, id: string, draft: boolean): 
   })) as unknown as Doc;
 }
 
-function hookResult(context: Doc): ModerationSideEffectResult | undefined {
-  return context.moderationSideEffects as ModerationSideEffectResult | undefined;
+/**
+ * Since 2026-09-16 the hook runs its side effects after the write's
+ * transaction commits and leaves a PROMISE of the result on the context, so
+ * this awaits it. `undefined` still means the hook never fired.
+ */
+async function hookResult(context: Doc): Promise<ModerationSideEffectResult | undefined> {
+  const pending = context.moderationSideEffects as Promise<ModerationSideEffectResult> | undefined;
+  return pending ? await pending : undefined;
 }
 
 // ---------------------------------------------------------------------------
@@ -282,14 +288,15 @@ async function main(): Promise<void> {
     const a = await createProbe(payload, "a", NO_SUCH_SUBMITTER);
     created.push(a.id);
 
-    check("afterChange fired on create", hookResult(a.context) !== undefined, a.context);
-    equal("create is a transition from nothing", hookResult(a.context)?.from, undefined);
-    equal("create's status", hookResult(a.context)?.to, "pending");
-    equal("pending is not notifiable", hookResult(a.context)?.email, "skipped: status not notifiable");
+    const aHook = await hookResult(a.context);
+    check("afterChange fired on create", aHook !== undefined, a.context);
+    equal("create is a transition from nothing", aHook?.from, undefined);
+    equal("create's status", aHook?.to, "pending");
+    equal("pending is not notifiable", aHook?.email, "skipped: status not notifiable");
     check(
       "the blanket tag and the eight case-study paths were revalidated",
-      hookResult(a.context)?.revalidated.length === 9,
-      hookResult(a.context)?.revalidated,
+      aHook?.revalidated.length === 9,
+      aHook?.revalidated,
     );
 
     const revisionContext: Doc = {};
@@ -303,14 +310,15 @@ async function main(): Promise<void> {
     });
     equal("revision transition", [revision.from, revision.to], ["pending", "revision"]);
     equal("revision did not publish", revision.published, false);
-    equal("afterChange saw the transition", hookResult(revisionContext)?.from, "pending");
-    equal("afterChange saw the new status", hookResult(revisionContext)?.to, "revision");
+    const revisionHook = await hookResult(revisionContext);
+    equal("afterChange saw the transition", revisionHook?.from, "pending");
+    equal("afterChange saw the new status", revisionHook?.to, "revision");
     // The hook reached the notifier, which got past "notifiable", past
     // "already notified" and past "no submitter", and queried Prisma for the
     // submitter's address. Nothing could have been sent.
     equal(
       "the hook ran the notifier, which resolved no address and sent nothing",
-      hookResult(revisionContext)?.email,
+      revisionHook?.email,
       "skipped: submitter has no email on file",
     );
 
@@ -345,7 +353,8 @@ async function main(): Promise<void> {
     });
     equal("approve transition", [approve.from, approve.to], ["pending", "approved"]);
     equal("approve publishes", approve.published, true);
-    equal("afterChange saw pending -> approved", [hookResult(approveContext)?.from, hookResult(approveContext)?.to], [
+    const approveHook = await hookResult(approveContext);
+    equal("afterChange saw pending -> approved", [approveHook?.from, approveHook?.to], [
       "pending",
       "approved",
     ]);
@@ -455,7 +464,8 @@ async function main(): Promise<void> {
     });
     equal("reject transition", [reject.from, reject.to], ["pending", "rejected"]);
     equal("reject did not publish", reject.published, false);
-    equal("afterChange saw pending -> rejected", [hookResult(rejectContext)?.from, hookResult(rejectContext)?.to], [
+    const rejectHook = await hookResult(rejectContext);
+    equal("afterChange saw pending -> rejected", [rejectHook?.from, rejectHook?.to], [
       "pending",
       "rejected",
     ]);

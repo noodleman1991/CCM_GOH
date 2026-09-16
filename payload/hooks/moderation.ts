@@ -19,10 +19,10 @@
  *     from those four files. `applyModerationAction` is the patch+commit half,
  *     and `payload/components/moderation-actions.tsx` is the button half.
  *   - `moderationAfterChange` is the webhook half — cache revalidation and the
- *     submitter email — running **in-process and synchronously** inside the same
- *     transaction-adjacent request that made the change, rather than arriving
- *     later over the network, best-effort, and only if Sanity's delivery
- *     succeeded.
+ *     submitter email — running **in-process, in the same request that made
+ *     the change, once its transaction has committed** (see "After the
+ *     commit, not inside it" below), rather than arriving later over the
+ *     network, best-effort, and only if Sanity's delivery succeeded.
  *
  * `sanity/actions/**` and the webhook route are deliberately left in place and
  * working. Phase 4 deletes them.
@@ -73,7 +73,7 @@
  */
 import type { CollectionAfterChangeHook } from "payload";
 
-import { CONTENT_CACHE_TAG } from "@/lib/cache/payload-tags";
+import { flushDeferred, runAfterCommit, withTimeout } from "@/payload/hooks/after-commit";
 
 // ---------------------------------------------------------------------------
 // The vocabulary
@@ -117,8 +117,7 @@ export const SKIP_MODERATION_SIDE_EFFECTS = "skipModerationSideEffects";
  *  `payload.config.ts`, and importing the content seam here would drag the
  *  whole of `lib/content/` into every config load, including the migration
  *  CLI's. The tests assert the two stay equal. */
-/** One definition, shared with the read primitives and the revalidation hook. */
-export const PAYLOAD_CONTENT_CACHE_TAG = CONTENT_CACHE_TAG;
+
 
 // ---------------------------------------------------------------------------
 // The transition table — ported verbatim from sanity/actions/*
@@ -559,13 +558,15 @@ export interface ModerationSideEffectDeps {
   /**
    * A ceiling on the notification step. Default 10s; `0` disables it.
    *
-   * Not defensive decoration — this was **observed**. Payload runs
-   * `afterChange` inside the write's own Postgres transaction, and the notifier
-   * makes an outbound HTTPS call to Resend. In `scripts/payload-moderation-live-check.ts`
-   * that call hung (no outbound network), the transaction stayed open behind it,
-   * and Neon killed the connection with `25P03 idle-in-transaction` after five
-   * minutes — taking the write down with it. The Sanity webhook could not fail
-   * this way because it ran outside any transaction.
+   * Not defensive decoration — this was **observed**. When this hook still ran
+   * inside the write's Postgres transaction, the notifier's outbound HTTPS call
+   * to Resend hung in `scripts/payload-moderation-live-check.ts` (no outbound
+   * network), the transaction stayed open behind it, and Neon killed the
+   * connection with `25P03 idle-in-transaction` after five minutes — taking
+   * the write down with it. The side effects now run after the commit (see
+   * `moderationAfterChange`), so a hung transport can no longer touch the
+   * write; the ceiling stays because it can still pin a Vercel invocation,
+   * which `after()` keeps alive until the work settles.
    *
    * The email is best-effort by design (the whole `notify` call is already
    * inside a `try`, so a failure cannot roll back an editorial decision that has
@@ -575,25 +576,6 @@ export interface ModerationSideEffectDeps {
 }
 
 const DEFAULT_NOTIFY_TIMEOUT_MS = 10_000;
-
-class NotifyTimeoutError extends Error {
-  constructor(ms: number) {
-    super(`the notification did not settle within ${ms}ms`);
-    this.name = "NotifyTimeoutError";
-  }
-}
-
-function withTimeout<T>(work: Promise<T>, ms: number): Promise<T> {
-  if (ms <= 0) return work;
-  let timer: ReturnType<typeof setTimeout>;
-  return Promise.race([
-    work,
-    new Promise<never>((_resolve, reject) => {
-      timer = setTimeout(() => reject(new NotifyTimeoutError(ms)), ms);
-    }),
-    // Node keeps the process alive for a pending timer; clear it either way.
-  ]).finally(() => clearTimeout(timer!));
-}
 
 export interface ModerationSideEffectResult {
   transitioned: boolean;
@@ -624,18 +606,21 @@ function asString(value: unknown): string | undefined {
 /**
  * Everything the webhook route did, minus the network.
  *
- * **Revalidation is unconditional**, matching the route: it pushed the blanket
- * content tag on every delivery regardless of what changed, and only
- * `caseStudy` added paths. **The email is transition-gated**, and this is where
- * `notifiedStatus`' duplicate suppression is preserved — see the three brakes
- * below.
+ * **Path revalidation is unconditional**, matching the route: it fired on
+ * every delivery regardless of what changed, and only `caseStudy` has paths.
+ * The blanket cache TAG the route also pushed is no longer fired from here:
+ * `payload/hooks/revalidate-content.ts` fires the blanket and per-collection
+ * tags after commit on every content write, this one included, and firing it
+ * twice evicted the whole site twice per approval. **The email is
+ * transition-gated**, and this is where `notifiedStatus`' duplicate
+ * suppression is preserved — see the three brakes below.
  */
 export async function runModerationSideEffects(
   change: ModerationChange,
   deps: ModerationSideEffectDeps,
 ): Promise<ModerationSideEffectResult> {
   const workflow = MODERATION_WORKFLOWS[change.collection];
-  const tags = [PAYLOAD_CONTENT_CACHE_TAG];
+  const tags: string[] = [];
   const paths = workflow.paths(change.doc);
 
   try {
@@ -701,6 +686,7 @@ export async function runModerationSideEffects(
         { markNotified: deps.markNotified },
       ),
       deps.notifyTimeoutMs ?? DEFAULT_NOTIFY_TIMEOUT_MS,
+      "the moderation notification",
     );
   } catch (error) {
     deps.onError?.("moderation notification failed", error);
@@ -713,13 +699,43 @@ export async function runModerationSideEffects(
 /**
  * The collection hook. One per moderated collection.
  *
- * Everything heavy is imported dynamically, inside the hook: `next/cache` is a
- * request-scoped API, and `lib/case-study-emails.ts` pulls in Resend, Prisma
- * and the whole content layer. `payload.config.ts` is loaded by `payload
- * migrate`, by `tsx` import scripts and by the Next build, none of which should
- * pay for either.
+ * ---------------------------------------------------------------------------
+ * After the commit, not inside it
+ * ---------------------------------------------------------------------------
+ *
+ * Payload runs `afterChange` BEFORE `commitTransaction`
+ * (`payload/dist/collections/operations/updateByID.js`). Until 2026-09-16 this
+ * hook awaited `runModerationSideEffects` right here, which meant three things
+ * happened inside the editor's open transaction: the Resend call (up to the
+ * 10s ceiling); the `notifiedStatus` bookkeeping write — a second Local API
+ * update with no `req`, so a second transaction on a second connection that
+ * had to wait on the first's row lock while the first waited on it, every
+ * approval paying the full ceiling; and `revalidateTag`, early enough that a
+ * concurrent request could refill the cache with the pre-commit row. The
+ * email also went out before the commit, so a rollback would still have
+ * notified.
+ *
+ * Now the hook decides nothing and awaits nothing. It hands the whole run to
+ * `payload/hooks/after-commit.ts` — `after()` inside a request, detached
+ * outside one — and returns `doc`. The three brakes are unchanged, and
+ * `runModerationSideEffects` is unchanged; only *when* it runs moved.
+ *
+ * `req.context.moderationSideEffects` is therefore a **promise** of the result
+ * rather than the result. Payload hands the Local API caller's own `context`
+ * object straight through (`utilities/createLocalReq.js`), so a caller —
+ * notably `scripts/payload-moderation-live-check.ts` — awaits it after its
+ * `payload.update` resolves to see what the hook actually did.
+ *
+ * Everything heavy is imported dynamically, inside the deferred run:
+ * `next/cache` is a request-scoped API, and `lib/case-study-emails.ts` pulls
+ * in Resend, Prisma and the whole content layer. `payload.config.ts` is loaded
+ * by `payload migrate`, by `tsx` import scripts and by the Next build, none of
+ * which should pay for either. `overrides` exist for the hook's own tests.
  */
-export function moderationAfterChange(collection: ModeratedCollection): CollectionAfterChangeHook {
+export function moderationAfterChange(
+  collection: ModeratedCollection,
+  overrides: Partial<ModerationSideEffectDeps> = {},
+): CollectionAfterChangeHook {
   return async ({ doc, previousDoc, req, operation }) => {
     // Brake 3 — the explicit context flag on the bookkeeping write. Cheapest
     // and most direct of the three; the other two hold even if a future caller
@@ -728,51 +744,66 @@ export function moderationAfterChange(collection: ModeratedCollection): Collecti
     if (operation !== "create" && operation !== "update") return doc;
 
     const payload = req?.payload;
-    const result = await runModerationSideEffects(
-      {
-        collection,
-        doc: doc as Doc,
-        previousDoc: previousDoc as Doc | undefined,
-        operation,
+    const deps: ModerationSideEffectDeps = {
+      notify: async (input, notifyDeps) => {
+        const { notifyCaseStudyStatusChange } = await import("@/lib/case-study-emails");
+        return notifyCaseStudyStatusChange(input, notifyDeps);
       },
-      {
-        notify: async (input, notifyDeps) => {
-          const { notifyCaseStudyStatusChange } = await import("@/lib/case-study-emails");
-          return notifyCaseStudyStatusChange(input, notifyDeps);
-        },
-        markNotified: async (id, status) => {
-          if (!payload) return;
-          await payload.update({
-            collection,
-            id,
-            data: { notifiedStatus: status } as never,
-            // Brake 3's other half.
-            context: { [SKIP_MODERATION_SIDE_EFFECTS]: true },
-            overrideAccess: true,
-            // Bookkeeping only — it must never publish an in-flight draft as a
-            // side effect of recording that an email went out.
-            draft: MODERATION_WORKFLOWS[collection].hasDrafts,
-          });
-        },
-        revalidate: async ({ tags, paths }) => {
-          const { revalidatePath, revalidateTag } = await import("next/cache");
-          for (const tag of tags) revalidateTag(tag, "max");
-          for (const path of paths) revalidatePath(path);
-        },
-        siteUrl: process.env.NEXT_PUBLIC_SITE_URL || undefined,
-        onError: (message, error) => {
-          console.error(`[moderation:${collection}] ${message}:`, error);
-        },
+      markNotified: async (id, status) => {
+        if (!payload) return;
+        // Runs after the trigger's transaction committed, so this is an
+        // ordinary write on its own connection with nothing to wait on.
+        await payload.update({
+          collection,
+          id,
+          data: { notifiedStatus: status } as never,
+          // Brake 3's other half.
+          context: { [SKIP_MODERATION_SIDE_EFFECTS]: true },
+          overrideAccess: true,
+          // Bookkeeping only — it must never publish an in-flight draft as a
+          // side effect of recording that an email went out.
+          draft: MODERATION_WORKFLOWS[collection].hasDrafts,
+        });
       },
-    );
+      revalidate: async ({ tags, paths }) => {
+        const { revalidatePath, revalidateTag } = await import("next/cache");
+        for (const tag of tags) revalidateTag(tag, "max");
+        for (const path of paths) revalidatePath(path);
+      },
+      siteUrl: process.env.NEXT_PUBLIC_SITE_URL || undefined,
+      onError: (message, error) => {
+        console.error(`[moderation:${collection}] ${message}:`, error);
+      },
+      ...overrides,
+    };
 
-    // Payload hands the Local API caller's own `context` object straight
-    // through (`utilities/createLocalReq.js` returns it by identity when the
-    // request carries none), so writing the decision here is how a caller —
-    // notably `scripts/payload-moderation-live-check.ts` — observes what this
-    // hook actually did against a real database, rather than inferring it.
-    if (req?.context) req.context.moderationSideEffects = result;
+    const change: ModerationChange = {
+      collection,
+      doc: doc as Doc,
+      previousDoc: previousDoc as Doc | undefined,
+      operation,
+    };
+
+    let settle!: (result: ModerationSideEffectResult) => void;
+    const outcome = new Promise<ModerationSideEffectResult>((resolve) => {
+      settle = resolve;
+    });
+    runAfterCommit(async () => {
+      try {
+        settle(await runModerationSideEffects(change, deps));
+      } catch (error) {
+        // runModerationSideEffects catches its own failures; this is the
+        // backstop so `outcome` can never hang a caller that awaits it.
+        deps.onError?.("moderation side effects failed", error);
+        settle({ transitioned: false, revalidated: [], email: "error" });
+      }
+    });
+
+    if (req?.context) req.context.moderationSideEffects = outcome;
 
     return doc;
   };
 }
+
+/** For tests and scripts: await every moderation side effect scheduled so far. */
+export const flushModerationSideEffects = flushDeferred;
