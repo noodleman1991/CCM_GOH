@@ -73,6 +73,8 @@
  */
 import type { CollectionAfterChangeHook } from "payload";
 
+import { CONTENT_CACHE_TAG } from "@/lib/cache/payload-tags";
+
 // ---------------------------------------------------------------------------
 // The vocabulary
 // ---------------------------------------------------------------------------
@@ -115,7 +117,8 @@ export const SKIP_MODERATION_SIDE_EFFECTS = "skipModerationSideEffects";
  *  `payload.config.ts`, and importing the content seam here would drag the
  *  whole of `lib/content/` into every config load, including the migration
  *  CLI's. The tests assert the two stay equal. */
-export const PAYLOAD_CONTENT_CACHE_TAG = "payload";
+/** One definition, shared with the read primitives and the revalidation hook. */
+export const PAYLOAD_CONTENT_CACHE_TAG = CONTENT_CACHE_TAG;
 
 // ---------------------------------------------------------------------------
 // The transition table — ported verbatim from sanity/actions/*

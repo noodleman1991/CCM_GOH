@@ -27,6 +27,7 @@ import { RegionalCommunityPages } from "./payload/collections/regional-community
 import { Events } from "./payload/collections/events";
 import { Projects } from "./payload/collections/projects";
 import { globals } from "./payload/globals";
+import { withContentRevalidation, withGlobalRevalidation } from "./payload/hooks/revalidate-content";
 import { richTextEditor } from "./payload/blocks/rich-text-embeds";
 import { payloadR2BucketName, payloadR2ClientConfig } from "./payload/storage/r2";
 import { s3Storage } from "@payloadcms/storage-s3";
@@ -94,6 +95,8 @@ export default buildConfig({
   // inherit it; payload/fields/localized.ts sets the same editor for every
   // localizedRichText field. Adds no tables: richText is one jsonb column.
   editor: richTextEditor(),
+  // Every collection and global gets the cache-revalidation hooks here, by
+  // mapping, so none can be forgotten — see payload/hooks/revalidate-content.ts.
   collections: [
     Users,
     Media,
@@ -118,8 +121,8 @@ export default buildConfig({
     RegionalCommunityPages,
     Events,
     Projects,
-  ],
-  globals,
+  ].map(withContentRevalidation),
+  globals: globals.map(withGlobalRevalidation),
   plugins: [
     // Uploads live in Cloudflare R2, the object store this app already uses
     // (lib/r2.ts), reached through R2's S3-compatible API.

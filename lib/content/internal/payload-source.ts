@@ -63,6 +63,7 @@
  * editor-facing read.
  */
 import { unstable_cache } from "next/cache";
+import { CONTENT_CACHE_TAG, collectionCacheTag, globalCacheTag } from "@/lib/cache/payload-tags";
 import { draftMode } from "next/headers";
 import type { CollectionSlug, GlobalSlug, SelectType, Sort, Where } from "payload";
 
@@ -281,8 +282,13 @@ async function execute<T>(descriptor: PayloadQuery, draft: boolean): Promise<T> 
 // Caching
 // ---------------------------------------------------------------------------
 
-/** The blanket revalidation tag, mirroring `cachedFetch`'s `"sanity"`. */
-export const CONTENT_CACHE_TAG = "payload";
+/**
+ * The blanket revalidation tag, mirroring `cachedFetch`'s `"sanity"`. Defined
+ * in `lib/cache/payload-tags.ts` so the Payload hooks that fire it can name
+ * it without crossing the content-layer boundary; re-exported here for the
+ * callers that already import it from the source.
+ */
+export { CONTENT_CACHE_TAG };
 
 const DEFAULT_REVALIDATE = 3600;
 
@@ -314,9 +320,14 @@ async function executeCached<T>(descriptor: PayloadQuery): Promise<T> {
   // The descriptor is in `keyParts`, so the cached callback needs no
   // arguments of its own: two different reads already land on two different
   // cache entries.
+  // Every entry carries the blanket tag AND its own collection/global tag.
+  // `payload/hooks/revalidate-content.ts` fires both on every write today;
+  // the specific tag is there so a narrower policy needs no reader change.
+  const own =
+    descriptor.type === "global" ? globalCacheTag(descriptor.slug) : collectionCacheTag(descriptor.collection);
   const run = unstable_cache(async () => execute<unknown>(descriptor, false), ["payload-source", key], {
     revalidate: revalidateSeconds(),
-    tags: [CONTENT_CACHE_TAG],
+    tags: [CONTENT_CACHE_TAG, own],
   });
   return (await run()) as T;
 }

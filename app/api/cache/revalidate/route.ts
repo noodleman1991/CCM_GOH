@@ -7,17 +7,12 @@
 
 import { revalidateTag, revalidatePath } from 'next/cache'
 import { NextRequest, NextResponse } from 'next/server'
+import { REVALIDATABLE_CACHE_TAGS, type RevalidatableCacheTag } from '@/lib/cache/revalidatable-tags'
 
-// Available cache tags that can be revalidated
-const AVAILABLE_TAGS = [
-  'onboarding-content',
-  'work-types',
-  'expertise-areas',
-  'user-management',
-  'general-content'
-] as const
+// Available cache tags that can be revalidated — lib/cache/revalidatable-tags.ts
+const AVAILABLE_TAGS = REVALIDATABLE_CACHE_TAGS
 
-type CacheTag = typeof AVAILABLE_TAGS[number]
+type CacheTag = RevalidatableCacheTag
 
 // Verify admin access (basic implementation)
 function verifyAdminAccess(request: NextRequest) {

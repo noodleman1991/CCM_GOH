@@ -161,7 +161,9 @@ describe("query", () => {
       where: { and: [PUBLISHED, { slug: { equals: "farmers" } }] },
     });
     expect(cacheCalls).toHaveLength(1);
-    expect(cacheCalls[0]!.options).toEqual({ revalidate: 3600, tags: [CONTENT_CACHE_TAG] });
+    // The blanket tag plus the collection's own, so a write to `tags` can
+    // evict its readers without (in future) evicting the whole site.
+    expect(cacheCalls[0]!.options).toEqual({ revalidate: 3600, tags: [CONTENT_CACHE_TAG, "payload:tags"] });
   });
 
   it("keys the cache on the descriptor, so two different reads cannot share an entry", async () => {
