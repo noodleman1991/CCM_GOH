@@ -14,8 +14,7 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "(node scripts/create-all-outputs-pages.mjs || echo 'WARN: create-all-outputs-pages failed - continuing build') && next build",
-    "postbuild": "npm run sync:search || echo 'WARN: search sync failed - continuing (index may be stale)'",
+    "build": "next build",
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
@@ -25,6 +24,7 @@
     "sanity:sync": "node scripts/sync-prisma-sanity.js",
     "sanity:populate": "node scripts/migrate-onboarding-to-sanity.mjs",
     "sync:search": "node scripts/sync-all-search.js",
+    "sanity:outputs-pages": "node scripts/create-all-outputs-pages.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "build:map": "tsx scripts/build-region-map.ts",
