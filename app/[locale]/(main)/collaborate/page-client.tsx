@@ -20,6 +20,7 @@ import { SearchInput } from '@/components/ui/search-input'
 import { FolderKanban } from 'lucide-react'
 import { FEATURES } from '@/lib/features'
 import type { SupportedLocale, LocalizedUser } from '@/types/prisma'
+import type { RequestStatus } from '@/generated/prisma'
 
 // All possible filter values (workTypes and expertiseAreas are static enums)
 const ALL_WORK_TYPES = [
@@ -58,6 +59,9 @@ interface CollaboratePageClientProps {
     regionalName: string | null
   }>
   userCommunityIds: string[]
+  /** Viewer's contact-request status by member id (server-read); threaded to
+   *  each card so "Requested"/"Connected" survives a reload. */
+  contactStatuses?: Record<string, RequestStatus>
   locale: SupportedLocale
   initialSearch?: string
   /**
@@ -78,6 +82,7 @@ export function CollaboratePageClient({
   initialCommunityUsers,
   communities,
   userCommunityIds,
+  contactStatuses,
   locale,
   initialSearch,
   initialFilters,
@@ -257,6 +262,7 @@ export function CollaboratePageClient({
                 title={translatedTitle}
                 users={communityUsers[communityName]?.users || []}
                 total={communityUsers[communityName]?.total}
+                contactStatuses={contactStatuses}
               />
             )
           })}

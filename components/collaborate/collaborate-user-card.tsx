@@ -21,8 +21,15 @@ import { MapPin, Briefcase, Clock, FileText, MessageCircle, UserPlus } from 'luc
 import { startConversation } from '@/lib/actions/messaging'
 import { requestContact } from '@/lib/actions/requests'
 import type { LocalizedUser } from '@/types/prisma'
+import type { RequestStatus } from '@/generated/prisma'
 
 interface CollaborateUserCardProps {
+  /**
+   * The viewer's existing contact request with this member, read on the
+   * server (lib/requests/contact-status.ts) so a reload keeps showing
+   * "Requested" / "Connected" instead of a fresh Connect button.
+   */
+  contactStatus?: RequestStatus | null
   user: LocalizedUser & {
     lastLoginAt?: Date | null
     headline?: string | null
@@ -51,9 +58,12 @@ const subscribeNoop = () => () => {}
 const snapshotTrue = () => true
 const snapshotFalse = () => false
 
-export function CollaborateUserCard({ user, className }: CollaborateUserCardProps) {
+export function CollaborateUserCard({ user, contactStatus, className }: CollaborateUserCardProps) {
   const t = useTranslations('collaborate.userCard')
   const tCollab = useTranslations('collabSpace')
+  // Root-scoped: server actions return message-catalogue keys (with a `code`)
+  // for expected outcomes such as the decline cooldown.
+  const tRoot = useTranslations()
   const tWorkTypes = useTranslations('profile.work.types')
   const tExpertise = useTranslations('profile.work.expertise')
   const locale = useLocale()
@@ -61,7 +71,12 @@ export function CollaborateUserCard({ user, className }: CollaborateUserCardProp
   const router = useRouter()
   const { isSignedIn } = useUser()
   const [pending, startAction] = useTransition()
-  const [requested, setRequested] = useState(false)
+  // Seeded from the server-read status. A DECLINED request deliberately shows
+  // a fresh button: the action enforces the cooldown and answers with a
+  // translatable key, so the member is told why rather than silently blocked.
+  const [contactState, setContactState] = useState<'PENDING' | 'ACCEPTED' | null>(
+    contactStatus === 'PENDING' || contactStatus === 'ACCEPTED' ? contactStatus : null
+  )
   // Auth-dependent UI mounts client-only: this card streams inside a Suspense
   // boundary where the SSR pass has rendered signed-out while the client
   // hydrates signed-in (observed 2026-08-05), producing a structural hydration
@@ -86,8 +101,9 @@ export function CollaborateUserCard({ user, className }: CollaborateUserCardProp
     e.stopPropagation()
     startAction(async () => {
       const res = await requestContact(user.id)
-      if (res.ok) setRequested(true)
-      else toast.error(res.error)
+      if (res.ok) setContactState(res.status)
+      // `code` marks `error` as a catalogue key; legacy failures are sentences.
+      else toast.error(res.code ? tRoot(res.error) : res.error)
     })
   }
 
@@ -277,11 +293,15 @@ export function CollaborateUserCard({ user, className }: CollaborateUserCardProp
                   size="sm"
                   variant="ghost"
                   className="min-h-[44px] flex-1 gap-1.5"
-                  disabled={pending || requested}
+                  disabled={pending || contactState !== null}
                   onClick={handleConnect}
                 >
                   <UserPlus className="size-3.5" aria-hidden />
-                  {requested ? tCollab('requested') : tCollab('connect')}
+                  {contactState === 'ACCEPTED'
+                    ? tCollab('connected')
+                    : contactState === 'PENDING'
+                      ? tCollab('requested')
+                      : tCollab('connect')}
                 </Button>
               </div>
             )}
