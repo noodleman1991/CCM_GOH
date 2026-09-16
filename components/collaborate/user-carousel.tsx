@@ -14,6 +14,7 @@ import { cn } from '@/lib/utils'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { SectionHeader } from '@/components/ui/section-header'
 import type { LocalizedUser } from '@/types/prisma'
+import type { RequestStatus } from '@/generated/prisma'
 
 interface UserCarouselProps {
   title: string
@@ -26,10 +27,13 @@ interface UserCarouselProps {
   /** True match count for this community (pre-slice); falls back to the
    *  visible list length when absent. */
   total?: number
+  /** Viewer's contact-request status by member id, read server-side so each
+   *  card's Connect button survives a reload. */
+  contactStatuses?: Record<string, RequestStatus>
   className?: string
 }
 
-export function UserCarousel({ title, users, total, className }: UserCarouselProps) {
+export function UserCarousel({ title, users, total, contactStatuses, className }: UserCarouselProps) {
   const t = useTranslations('collaborate.carousel')
   const tStats = useTranslations('collaborate.stats')
   const locale = useLocale()
@@ -81,7 +85,7 @@ export function UserCarousel({ title, users, total, className }: UserCarouselPro
       >
         {users.map(user => (
           <div key={user.id} className="w-[280px] shrink-0 snap-start sm:w-[300px]">
-            <CollaborateUserCard user={user} />
+            <CollaborateUserCard user={user} contactStatus={contactStatuses?.[user.id]} />
           </div>
         ))}
       </div>

@@ -7,10 +7,24 @@ import { authorizeCollab } from "@/lib/collaboration/service";
 import { createNotification } from "@/lib/notifications/service";
 import { structuredSnippet } from "@/lib/notifications/structured";
 import { emitLifecycle } from "@/lib/notifications/emit";
+import { assertRateLimit, RateLimitError } from "@/lib/rate-limit";
+import { nextContactRequestState } from "@/lib/requests/contact-state";
 
-type Result<T = unknown> = ({ ok: true } & T) | { ok: false; error: string };
+/**
+ * Machine-readable failure kinds. When `code` is set, `error` carries a
+ * message-catalogue key (e.g. `requests.errors.cooldown`) for the UI to
+ * translate with a root `useTranslations()`, not an English sentence — these
+ * failures are expected user-facing outcomes, not developer-facing faults.
+ */
+type RequestErrorCode = "RATE_LIMIT" | "COOLDOWN";
+type Result<T = unknown> = ({ ok: true } & T) | { ok: false; error: string; code?: RequestErrorCode };
 
 const messageSchema = z.string().max(500).optional();
+
+/** Prisma's unique-constraint error, matched on the code rather than the message. */
+function isUniqueViolation(e: unknown): boolean {
+  return typeof e === "object" && e !== null && (e as { code?: unknown }).code === "P2002";
+}
 
 /* ---------------------------------------------------------------- join ----- */
 
@@ -328,24 +342,68 @@ export async function respondToInviteByTarget(
 
 /* ------------------------------------------------------------- contact ----- */
 
-/** Request to connect with another member. The recipient is notified (REQUEST). */
+/**
+ * Request to connect with another member. The recipient is notified (REQUEST).
+ *
+ * Not an upsert: the transition is decided by `nextContactRequestState` so a
+ * re-request can never re-open a fresh DECLINED or downgrade an ACCEPTED row
+ * (audit M7). Returns the status that stands afterwards — `ACCEPTED` when the
+ * two are already connected — so the UI can render the right label.
+ */
 export async function requestContact(
   recipientId: string,
   message?: string
-): Promise<Result<{ status: "PENDING" }>> {
+): Promise<Result<{ status: "PENDING" | "ACCEPTED" }>> {
   const actor = await getActor();
   if (!actor) return { ok: false, error: "Sign in to send a request." };
   if (recipientId === actor.id) return { ok: false, error: "That's you." };
-  const recipient = await prisma.user.findUnique({ where: { id: recipientId }, select: { id: true } });
-  if (!recipient) return { ok: false, error: "Member not found." };
   const msg = messageSchema.safeParse(message);
   if (!msg.success) return { ok: false, error: "Message too long." };
 
-  await prisma.contactRequest.upsert({
-    where: { requesterId_recipientId: { requesterId: actor.id, recipientId } },
-    create: { requesterId: actor.id, recipientId, message: msg.data ?? null },
-    update: { status: "PENDING", message: msg.data ?? null, resolvedAt: null },
+  // Per-requester cap, keyed on the user id (which is the Clerk user id — see
+  // getActor). Counted before any lookup so a burst cannot fan out into reads.
+  try {
+    await assertRateLimit(actor.id, "contact:request", { limit: 20, windowSeconds: 3600 });
+  } catch (e) {
+    if (e instanceof RateLimitError) return { ok: false, error: "requests.errors.rateLimit", code: "RATE_LIMIT" };
+    throw e;
+  }
+
+  const recipient = await prisma.user.findUnique({ where: { id: recipientId }, select: { id: true } });
+  if (!recipient) return { ok: false, error: "Member not found." };
+
+  const pair = { requesterId_recipientId: { requesterId: actor.id, recipientId } };
+  const existing = await prisma.contactRequest.findUnique({
+    where: pair,
+    select: { status: true, createdAt: true, resolvedAt: true },
   });
+  const transition = nextContactRequestState(existing, new Date());
+
+  switch (transition.kind) {
+    case "noop":
+      // Idempotent: nothing written, and no second notification for the recipient.
+      return { ok: true, status: transition.status };
+    case "cooldown":
+      return { ok: false, error: "requests.errors.cooldown", code: "COOLDOWN" };
+    case "create":
+      try {
+        await prisma.contactRequest.create({
+          data: { requesterId: actor.id, recipientId, message: msg.data ?? null },
+        });
+      } catch (e) {
+        // Two clicks raced past the read above: the other insert won and the
+        // request is PENDING, which is exactly the idempotent outcome.
+        if (isUniqueViolation(e)) return { ok: true, status: "PENDING" };
+        throw e;
+      }
+      break;
+    case "reopen":
+      await prisma.contactRequest.update({
+        where: pair,
+        data: { status: "PENDING", message: msg.data ?? null, resolvedAt: null },
+      });
+      break;
+  }
 
   await createNotification({
     recipientId,

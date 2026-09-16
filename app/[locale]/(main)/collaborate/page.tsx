@@ -19,6 +19,7 @@ import { FEATURES } from '@/lib/features'
 import { UserService } from '@/lib/services/user.service'
 import { prisma } from '@/lib/prisma'
 import { decodeFilterParam } from '@/lib/collaborate-filters'
+import { getContactStatuses } from '@/lib/requests/contact-status'
 import type { LocalizedUser, SupportedLocale } from '@/types/prisma'
 
 /**
@@ -247,12 +248,25 @@ export default async function CollaboratePage({ params, searchParams }: Collabor
       }
     }
 
+    // Seed each card's Connect button with the viewer's existing request so a
+    // reload does not offer a fresh button (M7). One query over the visible
+    // members; a failure here must not take the page down, so it degrades to
+    // "no known status" and the action remains the source of truth on click.
+    const contactStatuses = await getContactStatuses(
+      userId,
+      Object.values(communityUsersMap).flatMap((group) => group.users.map((u) => u.id))
+    ).catch((error: unknown) => {
+      console.error('Collaborate page contact-status fetch error:', error)
+      return {}
+    })
+
     return shell(
       <Suspense fallback={<CollaborateSkeleton />}>
         <CollaboratePageClient
           initialCommunityUsers={communityUsersMap}
           communities={sortedCommunities}
           userCommunityIds={userCommunityIds}
+          contactStatuses={contactStatuses}
           locale={locale}
           initialSearch={search}
           initialFilters={{

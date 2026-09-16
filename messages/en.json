@@ -2560,7 +2560,8 @@
     "noProjects": "No public projects yet — start one and invite collaborators.",
     "message": "Message",
     "connect": "Connect",
-    "requested": "Requested ✓"
+    "requested": "Requested ✓",
+    "connected": "Connected ✓"
   },
   "regionalCommunity": {
     "kicker": "Regional Community of Practice",
@@ -2764,6 +2765,12 @@
       "approve": "Approve",
       "remove": "Remove",
       "dismissReport": "Dismiss report"
+    }
+  },
+  "requests": {
+    "errors": {
+      "cooldown": "This member recently declined your request. Please wait a while before asking again.",
+      "rateLimit": "You've sent a lot of requests in a short time. Please try again in a little while."
     }
   }
 }
