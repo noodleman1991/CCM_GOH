@@ -321,6 +321,12 @@ async function handleSoleOwnedCollaborations(userId: string): Promise<void> {
         where: { collaborationId_userId: { collaborationId, userId: heir.userId } },
         data: { role: "OWNER" },
       })
+      // The creator column is SET NULL on delete; point it at the heir so the
+      // public project page keeps naming a real lead.
+      await prisma.collaboration.update({
+        where: { id: collaborationId },
+        data: { createdById: heir.userId },
+      })
     } else {
       // No one else to inherit — archive so content isn't lost on cascade.
       await prisma.collaboration.update({

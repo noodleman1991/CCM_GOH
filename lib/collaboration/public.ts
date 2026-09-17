@@ -67,7 +67,7 @@ export async function getPublicProject(id: string): Promise<PublicProject | null
         username: leadMember.user.username,
         image: leadMember.user.image,
       }
-    : { id: c.createdById, name: "Lead", username: null, image: null };
+    : { id: c.createdById ?? c.id, name: "Lead", username: null, image: null };
 
   return {
     id: c.id,
