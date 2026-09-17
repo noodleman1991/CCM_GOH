@@ -49,6 +49,22 @@ export async function GET(req: NextRequest) {
     rateLimits: rateLimits.success ? rateLimits.data.count : -1,
     notifications: notifications.success ? notifications.data.count : -1,
   };
+  // A sweep that failed is a retention promise that lapsed, not a success
+  // with a -1 in it: say so with the status code, so the cron dashboard and
+  // any alert on it notice. Until 2026-09-17 this returned ok:true regardless.
+  const failed = (
+    [
+      ["downloadEvents", downloadEvents],
+      ["rateLimits", rateLimits],
+      ["notifications", notifications],
+    ] as const
+  )
+    .filter(([, r]) => !r.success)
+    .map(([name]) => name);
+  if (failed.length > 0) {
+    console.error("[retention] failed sweeps", failed, result);
+    return NextResponse.json({ ok: false, purged: result, failed }, { status: 500 });
+  }
   console.log("[retention] purged", result);
   return NextResponse.json({ ok: true, purged: result });
 }

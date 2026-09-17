@@ -84,3 +84,30 @@ describe('notifyCaseStudyStatusChange — idempotency & guards', () => {
     expect(r).toMatch(/^sent: revision/)
   })
 })
+
+describe('notifyCaseStudyStatusChange — the provider result is read', () => {
+  it('does not mark notified when Resend rejects the message, and says so', async () => {
+    // Resend 4.x resolves `{ data: null, error }` on a 403 — it does not throw.
+    // Until 2026-09-17 this path returned "sent:" and burned notifiedStatus, so
+    // the submitter was never told and could never be told again.
+    sendMock.mockResolvedValueOnce({ data: null, error: { message: 'sandbox sender', name: 'validation_error' } })
+    const r = await notifyCaseStudyStatusChange(base)
+    expect(r).toBe('failed: sandbox sender')
+    expect(updateCaseStudyMock).not.toHaveBeenCalled()
+  })
+
+  it('does not mark notified when the transport throws', async () => {
+    sendMock.mockRejectedValueOnce(new Error('fetch failed'))
+    const r = await notifyCaseStudyStatusChange(base)
+    expect(r).toBe('failed: fetch failed')
+    expect(updateCaseStudyMock).not.toHaveBeenCalled()
+  })
+
+  it('an injected sendEmail that reports an error is a failure too', async () => {
+    const r = await notifyCaseStudyStatusChange(base, {
+      sendEmail: async () => ({ data: null, error: { message: 'nope', name: 'validation_error' } }) as never,
+    })
+    expect(r).toBe('failed: nope')
+    expect(updateCaseStudyMock).not.toHaveBeenCalled()
+  })
+})

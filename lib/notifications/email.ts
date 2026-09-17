@@ -1,9 +1,8 @@
 import "server-only";
-import { Resend } from "resend";
 import { prisma } from "@/lib/prisma";
+import { escapeHtml, sendEmail, type SendEmailResult } from "@/lib/email/send";
 import type { NotificationType } from "@/generated/prisma";
 
-const FROM = process.env.CASE_STUDY_EMAIL_FROM || "Connecting Climate Minds <onboarding@resend.dev>";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://connectingclimateminds.org";
 
 type Locale = "en" | "es" | "fr" | "ar";
@@ -98,24 +97,21 @@ export async function maybeSendNotificationEmail(params: {
   </body></html>`;
   const text = `${copy.body}\n\n${c.cta}: ${SITE_URL}\n\n${c.unsubscribe}: ${unsubUrl}`;
 
-  try {
-    const resend = new Resend(process.env.RESEND_API_KEY);
-    await resend.emails.send({
-      from: FROM,
-      to: user.email,
-      subject: copy.subject,
-      html,
-      text,
-      headers: {
-        // RFC 8058 one-click unsubscribe — mailbox providers surface their own
-        // unsubscribe control from these, improving deliverability.
-        "List-Unsubscribe": `<${unsubUrl}>`,
-        "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
-      },
-    });
-  } catch {
-    // best-effort
-  }
+  // Best-effort for the caller, but no longer silent: sendEmail reads the
+  // provider's result and reports a rejection.
+  await sendEmail({
+    kind: `notification:${kind}`,
+    to: user.email,
+    subject: copy.subject,
+    html,
+    text,
+    headers: {
+      // RFC 8058 one-click unsubscribe — mailbox providers surface their own
+      // unsubscribe control from these, improving deliverability.
+      "List-Unsubscribe": `<${unsubUrl}>`,
+      "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+    },
+  });
 }
 
 const DIGEST_COPY: Record<Locale, DigestLocaleCopy> = {
@@ -144,7 +140,9 @@ const DIGEST_COPY: Record<Locale, DigestLocaleCopy> = {
 /**
  * The weekly digest email (cron-driven; caller has already checked the
  * emailWeeklyDigest preference). Localized; one-click unsubscribe with
- * kind=digest. Best-effort — never throws.
+ * kind=digest. Never throws; the caller stamps `digestSentAt` only when the
+ * result is `ok` — until 2026-09-17 a rejected message returned `true` and
+ * the person was marked as digested for the week without receiving anything.
  */
 export async function sendWeeklyDigestEmail(params: {
   email: string;
@@ -152,8 +150,7 @@ export async function sendWeeklyDigestEmail(params: {
   unread: number;
   highlights: string[];
   unsubscribeToken: string;
-}): Promise<boolean> {
-  if (!process.env.RESEND_API_KEY) return false;
+}): Promise<SendEmailResult> {
   const locale = ((params.locale ?? "en").toLowerCase() as Locale) || "en";
   const c = COPY[locale] ?? COPY.en;
   const d = DIGEST_COPY[locale] ?? DIGEST_COPY.en;
@@ -174,25 +171,15 @@ export async function sendWeeklyDigestEmail(params: {
   const lines = params.highlights.slice(0, 6).map((h) => `- ${h}`).join("\n");
   const text = `${d.intro}\n\n${lines}\n\n${unreadLine}\n\n${c.cta}: ${SITE_URL}\n\n${c.unsubscribe}: ${unsubUrl}`;
 
-  try {
-    const resend = new Resend(process.env.RESEND_API_KEY);
-    await resend.emails.send({
-      from: FROM,
-      to: params.email,
-      subject: d.subject,
-      html,
-      text,
-      headers: {
-        "List-Unsubscribe": `<${unsubUrl}>`,
-        "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
-      },
-    });
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-function escapeHtml(s: string): string {
-  return s.replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch] as string));
+  return sendEmail({
+    kind: "digest",
+    to: params.email,
+    subject: d.subject,
+    html,
+    text,
+    headers: {
+      "List-Unsubscribe": `<${unsubUrl}>`,
+      "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+    },
+  });
 }

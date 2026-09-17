@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma, safeQuery } from "@/lib/prisma";
 import { sendWeeklyDigestEmail } from "@/lib/notifications/email";
 import { bearerMatches } from "@/lib/auth/bearer";
+import { reportError } from "@/lib/errors/report";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
@@ -61,55 +62,68 @@ export async function GET(req: NextRequest) {
 
   let sent = 0;
   let skipped = 0;
+  let failed = 0;
   for (const [userId, counts] of byUser) {
-    // Preference row (created lazily) is also the idempotency marker.
-    const pref = await prisma.notificationPreference.upsert({
-      where: { userId },
-      create: { userId },
-      update: {},
-    });
-    if (!pref.emailWeeklyDigest) {
-      skipped++;
-      continue;
-    }
-    if (pref.digestSentAt && pref.digestSentAt > sixDaysAgo) {
-      skipped++;
-      continue;
-    }
-
-    const [user, unread] = await Promise.all([
-      prisma.user.findUnique({
-        where: { id: userId },
-        select: { email: true, preferredLanguage: true },
-      }),
-      prisma.notification.count({ where: { recipientId: userId, readAt: null } }),
-    ]);
-    if (!user?.email) {
-      skipped++;
-      continue;
-    }
-
-    const highlights = counts
-      .sort((a, b) => b.count - a.count)
-      .map((c) => `${c.count} ${TYPE_LINE[c.type] ?? "notifications"}`);
-
-    const ok = await sendWeeklyDigestEmail({
-      email: user.email,
-      locale: user.preferredLanguage,
-      unread,
-      highlights,
-      unsubscribeToken: pref.unsubscribeToken,
-    });
-    if (ok) {
-      await prisma.notificationPreference.update({
+    // One person's failure — a rejected message, a thrown transport, a DB
+    // hiccup — must not end the run for everyone after them, and must be
+    // counted as a failure rather than folded into "skipped".
+    try {
+      // Preference row (created lazily) is also the idempotency marker.
+      const pref = await prisma.notificationPreference.upsert({
         where: { userId },
-        data: { digestSentAt: new Date() },
+        create: { userId },
+        update: {},
       });
-      sent++;
-    } else {
-      skipped++;
+      if (!pref.emailWeeklyDigest) {
+        skipped++;
+        continue;
+      }
+      if (pref.digestSentAt && pref.digestSentAt > sixDaysAgo) {
+        skipped++;
+        continue;
+      }
+
+      const [user, unread] = await Promise.all([
+        prisma.user.findUnique({
+          where: { id: userId },
+          select: { email: true, preferredLanguage: true },
+        }),
+        prisma.notification.count({ where: { recipientId: userId, readAt: null } }),
+      ]);
+      if (!user?.email) {
+        skipped++;
+        continue;
+      }
+
+      const highlights = counts
+        .sort((a, b) => b.count - a.count)
+        .map((c) => `${c.count} ${TYPE_LINE[c.type] ?? "notifications"}`);
+
+      const result = await sendWeeklyDigestEmail({
+        email: user.email,
+        locale: user.preferredLanguage,
+        unread,
+        highlights,
+        unsubscribeToken: pref.unsubscribeToken,
+      });
+      if (result.ok) {
+        // Stamped only on an accepted message: a stamped-but-rejected digest
+        // silenced the person for a week.
+        await prisma.notificationPreference.update({
+          where: { userId },
+          data: { digestSentAt: new Date() },
+        });
+        sent++;
+      } else {
+        failed++;
+      }
+    } catch (error) {
+      failed++;
+      reportError(error, { route: "cron/weekly-digest", tags: { userId } });
     }
   }
 
-  return NextResponse.json({ users: byUser.size, sent, skipped });
+  const summary = { users: byUser.size, sent, skipped, failed };
+  console.log("[weekly-digest]", summary);
+  return NextResponse.json(summary);
 }

@@ -1,5 +1,5 @@
-import { Resend } from "resend"
 import { prisma } from "@/lib/prisma"
+import { escapeHtml, sendEmail, type TransportResult } from "@/lib/email/send"
 
 /**
  * Sends a transactional email to a case-study submitter when their submission's
@@ -14,9 +14,10 @@ import { prisma } from "@/lib/prisma"
  * every edit, so without this we'd spam the submitter.
  */
 
-// Resend requires a verified sender. Falls back to onboarding@resend.dev for
-// local/dev where no custom domain is configured.
-const FROM = process.env.CASE_STUDY_EMAIL_FROM || "Connecting Climate Minds <onboarding@resend.dev>"
+// The sender address and the provider result both live in lib/email/send.ts:
+// `emailFrom()` (CASE_STUDY_EMAIL_FROM, else Resend's sandbox address, which
+// delivers only to the account owner) and `sendEmail()`, which reads Resend's
+// `{ error }` result instead of assuming a resolved promise means delivered.
 
 type NotifiableStatus = "approved" | "rejected" | "revision"
 
@@ -130,12 +131,6 @@ function buildStatusEmail({ locale = "en", title, status, reviewNotes, siteUrl }
   return { subject: c.subject, html, text }
 }
 
-function escapeHtml(s: string): string {
-  return s.replace(/[&<>"']/g, (ch) =>
-    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch] as string)
-  )
-}
-
 interface NotifyInput {
   caseStudyId: string
   status: string
@@ -175,7 +170,7 @@ export interface StatusEmailMessage {
  * a Payload-local writer.
  */
 export interface NotifyDeps {
-  sendEmail?: (message: StatusEmailMessage) => Promise<unknown>
+  sendEmail?: (message: StatusEmailMessage) => Promise<TransportResult>
   markNotified?: (caseStudyId: string, status: NotifiableStatus) => Promise<void>
 }
 
@@ -224,11 +219,17 @@ export async function notifyCaseStudyStatusChange(input: NotifyInput, deps: Noti
     siteUrl,
   })
 
-  const sendEmail =
-    deps.sendEmail ??
-    // Instantiate lazily so importing this module never constructs a client.
-    ((message: StatusEmailMessage) => new Resend(process.env.RESEND_API_KEY).emails.send(message))
-  await sendEmail({ from: FROM, to: user.email, subject, html, text })
+  // An injected sender (tests, the fake-store harness) is the transport; the
+  // default is Resend, constructed lazily inside sendEmail. Either way the
+  // result is read: a rejected message returns `failed:` and does NOT mark the
+  // document notified, so the next status write can try again.
+  const result = await sendEmail(
+    { kind: "case-study-status", to: user.email, subject, html, text },
+    deps.sendEmail
+      ? { transport: (message) => deps.sendEmail!({ from: message.from, to: message.to, subject: message.subject, html: message.html, text: message.text }) }
+      : {},
+  )
+  if (!result.ok) return `failed: ${result.reason}`
 
   // Mark as notified so subsequent edits don't re-send for the same status.
   // Note: the seam's updateDocument commits synchronously (no `visibility:

@@ -1,4 +1,5 @@
 import "server-only";
+import { escapeHtml } from "@/lib/email/send";
 import { Resend } from "resend";
 import type { IssueReportInput } from "@/lib/issue-report";
 
@@ -68,14 +69,6 @@ export type SendResult = { ok: true } | { ok: false; reason: string };
 
 function label(map: Record<string, string>, value: string): string {
   return map[value] ?? value;
-}
-
-function escapeHtml(s: string): string {
-  return s.replace(
-    /[&<>"']/g,
-    (ch) =>
-      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[ch] as string
-  );
 }
 
 /** Preserve the reporter's line breaks without trusting their markup. */

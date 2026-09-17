@@ -237,14 +237,20 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Return success response
-    return NextResponse.json({
-      success: true,
-      message: 'Webhook processed successfully',
-      revalidated: revalidatedTags,
-      emailResult,
-      timestamp: new Date().toISOString()
-    })
+    // A failed status email is a failed delivery: answer 5xx so Sanity retries.
+    // Revalidation already ran and is idempotent, and the notifier's
+    // notifiedStatus brake stops a duplicate once a send succeeds.
+    const emailFailed = emailResult === 'error' || (emailResult?.startsWith('failed:') ?? false)
+    return NextResponse.json(
+      {
+        success: !emailFailed,
+        message: emailFailed ? 'Webhook processed; status email failed' : 'Webhook processed successfully',
+        revalidated: revalidatedTags,
+        emailResult,
+        timestamp: new Date().toISOString()
+      },
+      { status: emailFailed ? 500 : 200 }
+    )
 
   } catch (error) {
     console.error('❌ Error processing Sanity webhook:', error)
