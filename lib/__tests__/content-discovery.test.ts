@@ -82,7 +82,11 @@ beforeEach(() => {
   // The Sanity arm is the default and every test above this line depends on
   // it, so the flag is cleared before each test and set only inside the
   // Payload describe below.
-  delete process.env.CONTENT_BACKEND_DISCOVERY;
+  // Pin the Sanity arm explicitly: these suites assert Sanity behaviour and
+  // must not read the ambient CONTENT_BACKEND (184 false failures under
+  // `CONTENT_BACKEND=payload` before 2026-09-17). The Payload describes below
+  // set the override to "payload" themselves.
+  process.env.CONTENT_BACKEND_DISCOVERY = "sanity";
 });
 afterEach(() => {
   delete process.env.CONTENT_BACKEND_DISCOVERY;

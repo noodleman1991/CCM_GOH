@@ -101,7 +101,11 @@ beforeEach(() => {
   // `activeBackend()` reads the environment per call — so an override left
   // behind by the Payload section would silently redirect them and they would
   // pass while proving nothing.
-  delete process.env.CONTENT_BACKEND_LIVED_EXPERIENCES;
+  // Pin the Sanity arm explicitly: these suites assert Sanity behaviour and
+  // must not read the ambient CONTENT_BACKEND (184 false failures under
+  // `CONTENT_BACKEND=payload` before 2026-09-17). The Payload describes below
+  // set the override to "payload" themselves.
+  process.env.CONTENT_BACKEND_LIVED_EXPERIENCES = "sanity";
 });
 afterEach(() => {
   delete process.env.CONTENT_BACKEND_LIVED_EXPERIENCES;

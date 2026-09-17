@@ -30,7 +30,11 @@ beforeEach(() => {
   // Every `describe` above this file's two-backend section is the Sanity
   // contract, and `activeBackend()` reads the environment per call, so an
   // override left behind by the Payload section would silently redirect them.
-  delete process.env.CONTENT_BACKEND_TAXONOMY;
+  // Pin the Sanity arm explicitly: these suites assert Sanity behaviour and
+  // must not read the ambient CONTENT_BACKEND (184 false failures under
+  // `CONTENT_BACKEND=payload` before 2026-09-17). The Payload describes below
+  // set the override to "payload" themselves.
+  process.env.CONTENT_BACKEND_TAXONOMY = "sanity";
 });
 afterEach(() => {
   delete process.env.CONTENT_BACKEND_TAXONOMY;
