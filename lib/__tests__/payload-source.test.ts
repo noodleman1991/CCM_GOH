@@ -554,3 +554,44 @@ describe("activeBackend", () => {
     expect(() => activeBackend("news")).toThrow(/CONTENT_BACKEND_NEWS/);
   });
 });
+
+describe("push-down support (2026-09-17)", () => {
+  it("passes `populate` through to Payload so a card read can trim populated rows", async () => {
+    find.mockResolvedValue({ docs: [] });
+    await query({
+      type: "find",
+      collection: "caseStudies",
+      depth: 1,
+      populate: { media: { url: true, lqip: true } },
+    });
+    expect(argsOf(find)).toMatchObject({ populate: { media: { url: true, lqip: true } } });
+  });
+
+  it("omits `populate` from the Payload call when the descriptor does not set it", async () => {
+    find.mockResolvedValue({ docs: [] });
+    await query({ type: "find", collection: "caseStudies" });
+    expect(argsOf(find)).not.toHaveProperty("populate");
+  });
+
+  it("nowMinute() is stable within a minute, so a `publishedAt <= now` clause keys one cache entry", () => {
+    // Three readers embedded `new Date().toISOString()` (millisecond precision)
+    // in the descriptor, and the descriptor is the unstable_cache key — every
+    // call was a miss and a new hour-long entry.
+    vi.useFakeTimers();
+    try {
+      vi.setSystemTime(new Date("2026-09-17T10:15:42.913Z"));
+      expect(payloadSource.nowMinute()).toBe("2026-09-17T10:15:00.000Z");
+      vi.setSystemTime(new Date("2026-09-17T10:15:59.999Z"));
+      expect(payloadSource.nowMinute()).toBe("2026-09-17T10:15:00.000Z");
+      vi.setSystemTime(new Date("2026-09-17T10:16:00.000Z"));
+      expect(payloadSource.nowMinute()).toBe("2026-09-17T10:16:00.000Z");
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("escapeContains() neutralises the ILIKE wildcards a search term may carry", () => {
+    expect(payloadSource.escapeContains("50% off_the\\top")).toBe("50\\% off\\_the\\\\top");
+    expect(payloadSource.escapeContains("plain")).toBe("plain");
+  });
+});

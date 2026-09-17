@@ -15,6 +15,8 @@ vi.mock("@/lib/content/internal/sanity-source", () => ({
 // source leaves the real reader running and makes its primitive choice
 // observable.
 vi.mock("@/lib/content/internal/payload-source", () => ({
+  nowMinute: () => "2026-09-17T10:00:00.000Z",
+  escapeContains: (s: string) => s.replace(/[\\%_]/g, (c) => `\\${c}`),
   query: vi.fn(),
   queryPreviewable: vi.fn(),
   queryLive: vi.fn(),

@@ -8,6 +8,8 @@ vi.mock("@/lib/content/internal/sanity-source", () => ({
   query: vi.fn(),
 }));
 vi.mock("@/lib/content/internal/payload-source", () => ({
+  nowMinute: () => "2026-09-17T10:00:00.000Z",
+  escapeContains: (s: string) => s.replace(/[\\%_]/g, (c) => `\\${c}`),
   query: vi.fn(),
 }));
 vi.mock("@/sanity/lib/image", () => ({

@@ -21,6 +21,8 @@ vi.mock("@/lib/content/internal/sanity-source", () => ({
   uploadImageAsset: (...args: unknown[]) => sanityUpload(...args),
 }));
 vi.mock("@/lib/content/internal/payload-source", () => ({
+  nowMinute: () => "2026-09-17T10:00:00.000Z",
+  escapeContains: (s: string) => s.replace(/[\\%_]/g, (c) => `\\${c}`),
   uploadImageAsset: (...args: unknown[]) => payloadUpload(...args),
 }));
 

@@ -252,6 +252,7 @@ import {
   queryPreviewable,
   queryRaw,
   updateDocument,
+  escapeContains,
 } from "@/lib/content/internal/payload-source";
 import type {
   CaseStudy,
@@ -679,17 +680,94 @@ function caseStudyDetail(row: CaseStudyRow): CaseStudy {
 // Reads: the detail page
 // ---------------------------------------------------------------------------
 
-/** Every approved, published case study, ordered as note 3 decided. */
-async function allApproved(): Promise<CaseStudyRow[]> {
-  const result = await query<Paginated<CaseStudyRow>>({
-    type: "find",
-    collection: "caseStudies",
-    where: APPROVED,
-    pagination: false,
-    locale: "all",
-    depth: 2,
-  });
-  return byPublishedAt(result.docs);
+// ---------------------------------------------------------------------------
+// Push-down (2026-09-17)
+// ---------------------------------------------------------------------------
+//
+// Every list reader below used to fetch the whole collection at depth 2 in all
+// four locales with no `select` — about 2 MB of Lexical `content` per read on
+// a table where no card renders it — and then filter, sort and slice in
+// JavaScript. Each reader now names the rows, the order, the slice and the
+// columns it renders.
+//
+// Ordering: `sort: ["-publishedAt", …, "id"]`. The `id` tie-break is explicit
+// because Payload's adapter otherwise appends `-createdAt`, which is not
+// Sanity's `_id asc`. Whether `ORDER BY id` is code-point order depends on the
+// database collation (`C.UTF-8` on dev, where it is; unverified on prod) —
+// scripts/parity/order-check.ts proves SQL order == the previous JavaScript
+// order on the real rows, and must be re-run against production before the
+// flag flips there.
+//
+// `select` is include-mode and pushed to SQL columns, including the `_locales`
+// join, so leaving `content` out really avoids reading it.
+
+/** `CASE_STUDY_PROJECTION_FRAGMENT`'s inputs — everything `caseStudyFragment` reads. */
+const FRAGMENT_SELECT = {
+  title: true,
+  excerpt: true,
+  slug: true,
+  featured: true,
+  publishedAt: true,
+  moderationStatus: true,
+  submittedAt: true,
+  submittedBy: true,
+  image: true,
+  authors: true,
+  organizations: true,
+  tags: true,
+  studyAreas: true,
+  studyLocation: true,
+  studyPeriod: true,
+} as const;
+
+/** What the list page's item projection reads. */
+const LIST_SELECT = {
+  title: true,
+  excerpt: true,
+  slug: true,
+  featured: true,
+  publishedAt: true,
+  topic: true,
+  image: true,
+  authors: true,
+  organizations: true,
+  relatedCommunity: true,
+  tags: true,
+} as const;
+
+/** `CASE_STUDY_INDEX_FIELDS`'s inputs — everything `caseStudyIndexProjection` reads. */
+const INDEX_SELECT = {
+  title: true,
+  excerpt: true,
+  slug: true,
+  featured: true,
+  publishedAt: true,
+  moderationStatus: true,
+  region: true,
+  themes: true,
+  populations: true,
+  image: true,
+  authors: true,
+  organizations: true,
+  tags: true,
+  studyLocation: true,
+  studyPeriod: true,
+  sanityUpdatedAt: true,
+  updatedAt: true,
+} as const;
+
+/** `title match $q || excerpt match $q`, approximated as GROQ did: a
+ *  case-insensitive substring over every locale arm (`contains` at
+ *  `locale: "all"` joins `_locales` without a locale predicate, so it matches
+ *  any arm). Wildcards in the term are escaped. */
+function searchClause(term: string): Where {
+  const needle = escapeContains(term);
+  return { or: [{ title: { contains: needle } }, { excerpt: { contains: needle } }] };
+}
+
+function andAll(...clauses: (Where | null | undefined | false)[]): Where {
+  const kept = clauses.filter((c): c is Where => Boolean(c));
+  return kept.length === 1 ? kept[0] : { and: kept };
 }
 
 /**
@@ -758,12 +836,34 @@ export async function getCaseStudyOgData(slug: string): Promise<CaseStudyOgData 
 // ---------------------------------------------------------------------------
 
 export async function getApprovedCaseStudies(limit: number): Promise<CaseStudy[]> {
-  return (await allApproved()).slice(0, limit).map((row) => groqObject(caseStudyFragment(row)) as unknown as CaseStudy);
+  // GROQ: `order(publishedAt desc, featured desc)[0...$limit]`.
+  const result = await query<Paginated<CaseStudyRow>>({
+    type: "find",
+    collection: "caseStudies",
+    where: APPROVED,
+    sort: ["-publishedAt", "-featured", "id"],
+    limit,
+    pagination: false,
+    locale: "all",
+    depth: 1,
+    select: FRAGMENT_SELECT,
+  });
+  return result.docs.map((row) => groqObject(caseStudyFragment(row)) as unknown as CaseStudy);
 }
 
 export async function getFeaturedCaseStudies(limit: number): Promise<CaseStudy[]> {
-  const rows = (await allApproved()).filter((row) => row.featured === true);
-  return rows.slice(0, limit).map((row) => groqObject(caseStudyFragment(row)) as unknown as CaseStudy);
+  const result = await query<Paginated<CaseStudyRow>>({
+    type: "find",
+    collection: "caseStudies",
+    where: andAll(APPROVED, { featured: { equals: true } }),
+    sort: ["-publishedAt", "id"],
+    limit,
+    pagination: false,
+    locale: "all",
+    depth: 1,
+    select: FRAGMENT_SELECT,
+  });
+  return result.docs.map((row) => groqObject(caseStudyFragment(row)) as unknown as CaseStudy);
 }
 
 /** The narrower projection `getCaseStudiesByUser` and `getCaseStudiesByStatus`
@@ -863,16 +963,20 @@ export async function getCaseStudiesByRegion(
   orderDirection: "asc" | "desc",
   limit: number,
 ): Promise<CaseStudyRegionListItem[]> {
+  // GROQ: `order(publishedAt ${dir}, featured desc)[0...$limit]`. Depth 2 stays
+  // because `organizations[].logo` is a second hop; `content` stays out.
   const result = await query<Paginated<CaseStudyRow>>({
     type: "find",
     collection: "caseStudies",
     where: { and: [APPROVED, { "relatedCommunity.slug": { equals: rcSlug } }] },
+    sort: [orderDirection === "desc" ? "-publishedAt" : "publishedAt", "-featured", "id"],
+    limit,
     pagination: false,
     locale: "all",
     depth: 2,
+    select: FRAGMENT_SELECT,
   });
-  return byPublishedAt(result.docs, orderDirection)
-    .slice(0, limit)
+  return result.docs
     .map((row) => {
       return groqObject({
         _id: String(row.id ?? ""),
@@ -911,41 +1015,31 @@ export async function searchCaseStudies(
   options: CaseStudySearchOptions,
 ): Promise<CaseStudySearchResult[]> {
   const { language, tags, limit = 20 } = options;
+  // `language` is 0/27 populated in Sanity and has no Payload column, so a
+  // caller passing one gets nothing on either backend — reproduced, not fixed,
+  // and now answered before the query rather than after reading everything.
+  if (language) return [];
+
+  // `count((tags.<locale>[]->value.current)[@ in $tags]) > 0` — `tags` is not
+  // a localized field in either store, so all four arms of the original ask
+  // the same question. Depth 2 stays for `authors[].affiliation` (narrow).
   const result = await query<Paginated<CaseStudyRow>>({
     type: "find",
     collection: "caseStudies",
-    where: APPROVED,
+    where: andAll(
+      APPROVED,
+      term ? searchClause(term) : null,
+      tags && tags.length > 0 ? { "tags.value": { in: tags } } : null,
+    ),
+    sort: ["-featured", "-publishedAt", "id"],
+    limit,
     pagination: false,
     locale: "all",
     depth: 2,
+    select: { title: true, excerpt: true, slug: true, featured: true, publishedAt: true, image: true, authors: true, tags: true },
   });
 
-  let rows = result.docs;
-  // `language` is 0/27 populated in Sanity and has no Payload column, so a
-  // caller passing one gets nothing on either backend — reproduced, not fixed.
-  if (language) rows = [];
-  if (term) {
-    const needle = term.toLowerCase();
-    rows = rows.filter((row) => matchesAnyLocale(row.title, needle) || matchesAnyLocale(row.excerpt, needle));
-  }
-  if (tags && tags.length > 0) {
-    // `count((tags.<locale>[]->value.current)[@ in $tags]) > 0` — `tags` is not
-    // a localized field in either store, so all four arms of the original ask
-    // the same question, which is the one asked here.
-    const wanted = new Set(tags);
-    rows = rows.filter((row) =>
-      Array.isArray(row.tags) &&
-      row.tags.some((tag) => {
-        const value = isRow(tag) ? text((tag as TagRow).value) : undefined;
-        return value !== undefined && wanted.has(value);
-      }),
-    );
-  }
-
-  // `order(featured desc, publishedAt desc)` — `featured` is false on all 27,
-  // so this is the same total tie note 3 measured.
-  return byPublishedAt(rows)
-    .slice(0, limit)
+  return result.docs
     .map((row) =>
       groqObject({
         _id: String(row.id ?? ""),
@@ -967,48 +1061,29 @@ export async function searchCaseStudies(
 // ---------------------------------------------------------------------------
 
 export async function getFilteredCaseStudies(filters: CaseStudyListFilters): Promise<CaseStudyListItem[]> {
+  // GROQ: `order(featured desc, publishedAt desc)[0...50]`, every filter in
+  // the `where`. The list item reads one hop of each relationship, so depth 1.
   const result = await query<Paginated<CaseStudyRow>>({
     type: "find",
     collection: "caseStudies",
-    where: APPROVED,
+    where: andAll(
+      APPROVED,
+      filters.topics && filters.topics.length > 0 ? { topic: { in: filters.topics } } : null,
+      filters.tags && filters.tags.length > 0 ? { "tags.value": { in: filters.tags } } : null,
+      filters.communities && filters.communities.length > 0
+        ? { "relatedCommunity.slug": { in: filters.communities } }
+        : null,
+      filters.search ? searchClause(filters.search) : null,
+    ),
+    sort: ["-featured", "-publishedAt", "id"],
+    limit: 50,
     pagination: false,
     locale: "all",
-    depth: 2,
+    depth: 1,
+    select: LIST_SELECT,
   });
 
-  let rows = result.docs;
-  if (filters.topics && filters.topics.length > 0) {
-    const wanted = new Set(filters.topics);
-    rows = rows.filter((row) => {
-      const topic = text(row.topic);
-      return topic !== undefined && wanted.has(topic);
-    });
-  }
-  if (filters.tags && filters.tags.length > 0) {
-    const wanted = new Set(filters.tags);
-    rows = rows.filter(
-      (row) =>
-        Array.isArray(row.tags) &&
-        row.tags.some((tag) => {
-          const value = isRow(tag) ? text((tag as TagRow).value) : undefined;
-          return value !== undefined && wanted.has(value);
-        }),
-    );
-  }
-  if (filters.communities && filters.communities.length > 0) {
-    const wanted = new Set(filters.communities);
-    rows = rows.filter((row) => {
-      const slug = isRow(row.relatedCommunity) ? text((row.relatedCommunity as CommunityRow).slug) : undefined;
-      return slug !== undefined && wanted.has(slug);
-    });
-  }
-  if (filters.search) {
-    const needle = filters.search.toLowerCase();
-    rows = rows.filter((row) => matchesAnyLocale(row.title, needle) || matchesAnyLocale(row.excerpt, needle));
-  }
-
-  return byPublishedAt(rows)
-    .slice(0, 50)
+  return result.docs
     .map((row) => {
       const community = isRow(row.relatedCommunity) ? (row.relatedCommunity as CommunityRow) : undefined;
       return groqObject({
@@ -1049,6 +1124,9 @@ async function publishedCaseStudyReferences(): Promise<{ tags: Map<string, numbe
     pagination: false,
     locale: "all",
     depth: 0,
+    // Only the two relationship columns are counted; the per-request memo in
+    // payload-source dedupes the second caller on the same page.
+    select: { tags: true, relatedCommunity: true },
   });
   const tags = new Map<string, number>();
   const communities = new Map<string, number>();
@@ -1802,6 +1880,7 @@ export async function getCaseStudySearchRecordDocs(): Promise<CaseStudySearchRec
     pagination: false,
     locale: "all",
     depth: 0,
+    select: { title: true, excerpt: true, slug: true },
   });
   return result.docs
     .filter((row) => text(row.slug))
@@ -1864,6 +1943,7 @@ export async function getApprovedCaseStudyIndexDocs(
     pagination: false,
     locale: "all",
     depth: 2,
+    select: INDEX_SELECT,
   });
   // The GROQ names no `order()`, so neither does this.
   return result.docs.map(caseStudyIndexProjection);
@@ -1882,6 +1962,7 @@ export async function getCaseStudyIndexDocsByIds(
     pagination: false,
     locale: "all",
     depth: 2,
+    select: INDEX_SELECT,
   });
   return result.docs.map(caseStudyIndexProjection);
 }
@@ -1937,14 +2018,21 @@ export interface CaseStudyContributionDoc {
  * same choice note 4 makes for the four-locale search.
  */
 export async function getApprovedCaseStudiesByContributor(userId: string): Promise<CaseStudyContributionDoc[]> {
-  const rows = (await allApproved()).filter((row) => {
-    if (text(row.submittedBy) === userId) return true;
-    return (
-      Array.isArray(row.authors) &&
-      row.authors.some((author) => isRow(author) && text((author as AuthorRow).userId) === userId)
-    );
+  // The live path with the biggest win: from the whole collection at depth 2
+  // to four columns at depth 0. `authors.userId` is an array sub-field path,
+  // which the adapter joins through `case_studies_authors`.
+  const result = await query<Paginated<CaseStudyRow>>({
+    type: "find",
+    collection: "caseStudies",
+    where: andAll(APPROVED, { or: [{ submittedBy: { equals: userId } }, { "authors.userId": { equals: userId } }] }),
+    sort: ["-publishedAt", "id"],
+    limit: 50,
+    pagination: false,
+    locale: "all",
+    depth: 0,
+    select: { title: true, slug: true, publishedAt: true },
   });
-  return rows.slice(0, 50).map((row) =>
+  return result.docs.map((row) =>
     groqObject({
       _id: String(row.id ?? ""),
       publishedAt: orNull(isoDate(row.publishedAt)),

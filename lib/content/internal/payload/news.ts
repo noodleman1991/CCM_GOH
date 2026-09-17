@@ -190,7 +190,7 @@ import { imageGroup } from "@/lib/content/internal/image-shape";
 import { groqObject, localized, orNull } from "@/lib/content/internal/localized";
 import type { LocalizedRaw } from "@/lib/content/internal/localized";
 import { portableText } from "@/lib/content/internal/payload/rich-text";
-import { query, queryLive } from "@/lib/content/internal/payload-source";
+import { query, queryLive, nowMinute } from "@/lib/content/internal/payload-source";
 import type { PayloadFindQuery } from "@/lib/content/internal/payload-source";
 import type {
   DynamicNewsOptions,
@@ -534,7 +534,7 @@ const NEWS_POST_DEPTH = 2;
 /** `publishedAt <= now()`. A row with no `publishedAt` fails the comparison in
  *  GROQ and is excluded by Payload's `less_than_equal` for the same reason. */
 function publishedByNow(): PayloadFindQuery["where"] {
-  return { publishedAt: { less_than_equal: new Date().toISOString() } };
+  return { publishedAt: { less_than_equal: nowMinute() } };
 }
 
 /** `&&`, flattened. A nested `{and:[{and:[…]}, …]}` means the same thing to

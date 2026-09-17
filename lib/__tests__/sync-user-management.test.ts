@@ -31,6 +31,8 @@ vi.mock("@/lib/content/internal/sanity-source", () => ({
   updateDocument: (...a: unknown[]) => sanityUpdate(...a),
 }));
 vi.mock("@/lib/content/internal/payload-source", () => ({
+  nowMinute: () => "2026-09-17T10:00:00.000Z",
+  escapeContains: (s: string) => s.replace(/[\\%_]/g, (c) => `\\${c}`),
   query: (...a: unknown[]) => payloadQuery(...a),
   queryRaw: (...a: unknown[]) => payloadQueryRaw(...a),
   createDocument: (...a: unknown[]) => payloadCreate(...a),

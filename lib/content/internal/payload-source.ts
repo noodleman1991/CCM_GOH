@@ -63,9 +63,10 @@
  * editor-facing read.
  */
 import { unstable_cache } from "next/cache";
+import { cache } from "react";
 import { CONTENT_CACHE_TAG, collectionCacheTag, globalCacheTag } from "@/lib/cache/payload-tags";
 import { draftMode } from "next/headers";
-import type { CollectionSlug, GlobalSlug, SelectType, Sort, Where } from "payload";
+import type { CollectionSlug, GlobalSlug, SelectType, Sort, Where, PopulateType } from "payload";
 
 // ---------------------------------------------------------------------------
 // The Payload instance
@@ -128,6 +129,8 @@ export interface PayloadFindQuery extends CommonQuery {
   /** `false` returns every match and skips the count query. */
   pagination?: boolean;
   select?: SelectType;
+  /** Trim the populated rows of each related collection (`{ media: { url: true } }`). */
+  populate?: PopulateType;
 }
 
 export interface PayloadFindByIDQuery extends CommonQuery {
@@ -215,6 +218,7 @@ async function execute<T>(descriptor: PayloadQuery, draft: boolean): Promise<T> 
           pagination: descriptor.pagination,
           depth: descriptor.depth,
           select: descriptor.select,
+          populate: descriptor.populate,
         }),
       );
       return result as T;
@@ -333,6 +337,63 @@ async function executeCached<T>(descriptor: PayloadQuery): Promise<T> {
 }
 
 // ---------------------------------------------------------------------------
+// Push-down helpers
+// ---------------------------------------------------------------------------
+
+/**
+ * "Now", truncated to the minute, as an ISO string for a `publishedAt <= now`
+ * clause. The descriptor is the `unstable_cache` key, so a millisecond
+ * timestamp in it made every call a miss and a new hour-long entry; within a
+ * minute this value is constant, so the reads share one entry.
+ */
+export function nowMinute(): string {
+  const d = new Date();
+  d.setUTCSeconds(0, 0);
+  return d.toISOString();
+}
+
+/**
+ * Escape a search term for Payload's `contains` operator, which becomes
+ * `ILIKE '%term%'` without escaping (`@payloadcms/drizzle` `operatorMap`).
+ */
+export function escapeContains(term: string): string {
+  return term.replace(/[\\%_]/g, (c) => `\\${c}`);
+}
+
+/**
+ * Per-request memoisation of the cached reads.
+ *
+ * `unstable_cache` runs its callback for every concurrent miss and is
+ * bypassed entirely in draft mode, so two identical reads in one render —
+ * the case-studies list page reads the reference counts twice, a regional
+ * page resolves its community three times — were two Postgres round trips on
+ * every cold hour and always in preview. React's `cache()` scopes a Map to
+ * the request; outside a request (build, scripts, vitest) it yields a fresh
+ * Map per call, so nothing is memoised and nothing can leak across requests.
+ *
+ * Only `query` and `queryPreviewable` go through it, under different
+ * prefixes: `queryRaw` feeds find-or-create and ownership checks that are
+ * followed by writes in the same request, and `queryLive` is the moderation
+ * gates' fresh read. Neither may return a memoised answer.
+ */
+const requestScope = cache(() => new Map<string, Promise<unknown>>());
+
+function memoised<T>(prefix: string, descriptor: PayloadQuery, run: () => Promise<T>): Promise<T> {
+  let scope: Map<string, Promise<unknown>>;
+  try {
+    scope = requestScope();
+  } catch {
+    return run();
+  }
+  const key = `${prefix}:${stableKey(descriptor)}`;
+  const hit = scope.get(key);
+  if (hit) return hit as Promise<T>;
+  const pending = run();
+  scope.set(key, pending);
+  return pending;
+}
+
+// ---------------------------------------------------------------------------
 // The four reads
 // ---------------------------------------------------------------------------
 
@@ -346,7 +407,7 @@ async function executeCached<T>(descriptor: PayloadQuery): Promise<T> {
  * be able to see their unpublished changes.
  */
 export async function query<T>(descriptor: PayloadQuery): Promise<T> {
-  return executeCached<T>(descriptor);
+  return memoised<T>("query", descriptor, () => executeCached<T>(descriptor));
 }
 
 /**
@@ -367,7 +428,9 @@ export async function queryPreviewable<T>(descriptor: PayloadQuery): Promise<T> 
   } catch {
     isDraft = false;
   }
-  return isDraft ? execute<T>(descriptor, true) : executeCached<T>(descriptor);
+  return isDraft
+    ? memoised<T>("preview:draft", descriptor, () => execute<T>(descriptor, true))
+    : memoised<T>("preview", descriptor, () => executeCached<T>(descriptor));
 }
 
 /**

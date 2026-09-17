@@ -16,6 +16,8 @@ vi.mock("@/lib/content/internal/sanity-source", () => ({
 // makes its primitive choice observable — which is the whole point on this
 // module, whose six write-feeding reads all have to stay on `queryRaw`.
 vi.mock("@/lib/content/internal/payload-source", () => ({
+  nowMinute: () => "2026-09-17T10:00:00.000Z",
+  escapeContains: (s: string) => s.replace(/[\\%_]/g, (c) => `\\${c}`),
   query: vi.fn(),
   queryPreviewable: vi.fn(),
   queryRaw: vi.fn(),
@@ -1199,7 +1201,12 @@ describe("case studies, answered by Payload", () => {
   // Ordering — `_id asc` reproduces Sanity's total tie
   // -------------------------------------------------------------------------
   describe("ordering", () => {
-    it("breaks the total publishedAt tie by `_id` ascending", async () => {
+    // Since the push-down (2026-09-17) the ORDER is the database's: the reader
+    // asks for `publishedAt desc, featured desc, id asc` and trusts what comes
+    // back. These assert the descriptor and that nothing re-sorts in JS;
+    // scripts/parity/order-check.ts proves SQL order equals the old JS order
+    // on the real rows.
+    it("asks the database for `publishedAt desc, featured desc, id asc` and keeps that order", async () => {
       mockPayloadQuery.mockResolvedValue({
         docs: [
           payloadCaseStudyRow({ id: "case-study-37" }),
@@ -1208,10 +1215,13 @@ describe("case studies, answered by Payload", () => {
         ],
       } as never);
       const rows = await getApprovedCaseStudies();
-      expect(rows.map((r) => r._id)).toEqual(["case-study-11", "case-study-23", "case-study-37"]);
+      expect(mockPayloadQuery).toHaveBeenCalledWith(
+        expect.objectContaining({ collection: "caseStudies", sort: ["-publishedAt", "-featured", "id"], limit: 12 }),
+      );
+      expect(rows.map((r) => r._id)).toEqual(["case-study-37", "case-study-11", "case-study-23"]);
     });
 
-    it("still puts a newer publishedAt first, and only then falls back to the id", async () => {
+    it("does not re-order rows in JavaScript — the database already did", async () => {
       mockPayloadQuery.mockResolvedValue({
         docs: [
           payloadCaseStudyRow({ id: "case-study-11", publishedAt: "2023-01-01T00:00:00.000Z" }),
@@ -1219,7 +1229,7 @@ describe("case studies, answered by Payload", () => {
         ],
       } as never);
       const rows = await getApprovedCaseStudies();
-      expect(rows.map((r) => r._id)).toEqual(["case-study-37", "case-study-11"]);
+      expect(rows.map((r) => r._id)).toEqual(["case-study-11", "case-study-37"]);
     });
 
     it("reverses for the RTL locale, as the region strip's `order(publishedAt asc)` does", async () => {
@@ -1230,6 +1240,11 @@ describe("case studies, answered by Payload", () => {
         ],
       } as never);
       const rows = await getCaseStudiesByRegion("oceania", "ar");
+      // The reversal is pushed into the sort; the fixture is already in that
+      // order, so the returned order is the database's, untouched.
+      expect(mockPayloadQuery).toHaveBeenCalledWith(
+        expect.objectContaining({ collection: "caseStudies", sort: ["publishedAt", "-featured", "id"] }),
+      );
       expect(rows.map((r) => r._id)).toEqual(["case-study-11", "case-study-37"]);
     });
   });
@@ -1342,21 +1357,18 @@ describe("case studies, answered by Payload", () => {
       expect(item.slug).toBe("japan-s-shinrin-yoku");
     });
 
-    it("filters the list in the reader, across all four locales", async () => {
-      mockPayloadQuery.mockResolvedValue({
-        docs: [
-          payloadCaseStudyRow({ id: "a", title: { en: "Forests", es: null, fr: null, ar: null } }),
-          payloadCaseStudyRow({ id: "b", title: { en: null, es: "Bosques", fr: null, ar: null } }),
-        ],
-      } as never);
-      const spanish = await getFilteredCaseStudies({ search: "bosq" });
-      expect(spanish.map((r) => r._id)).toEqual(["b"]);
+    it("pushes the search and tag filters into the query — across all four locales, in the database", async () => {
+      // `contains` at `locale: "all"` joins `_locales` with no locale predicate,
+      // so it matches any arm, which is what the JS four-locale disjunction did.
+      mockPayloadQuery.mockResolvedValue({ docs: [] } as never);
+      await getFilteredCaseStudies({ search: "bosq" });
+      const search = JSON.stringify(mockPayloadQuery.mock.calls.at(-1)?.[0]);
+      expect(search).toContain('"title":{"contains":"bosq"}');
+      expect(search).toContain('"excerpt":{"contains":"bosq"}');
 
-      mockPayloadQuery.mockResolvedValue({
-        docs: [payloadCaseStudyRow({ id: "a" }), payloadCaseStudyRow({ id: "b", tags: [] })],
-      } as never);
-      const tagged = await getFilteredCaseStudies({ tags: ["connection-to-nature"] });
-      expect(tagged.map((r) => r._id)).toEqual(["a"]);
+      await getFilteredCaseStudies({ tags: ["connection-to-nature"] });
+      const tagged = JSON.stringify(mockPayloadQuery.mock.calls.at(-1)?.[0]);
+      expect(tagged).toContain('"tags.value":{"in":["connection-to-nature"]}');
     });
 
     it("answers the OG card's two fields", async () => {

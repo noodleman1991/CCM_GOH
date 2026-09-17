@@ -15,6 +15,8 @@ vi.mock("@/lib/content/internal/sanity-source", () => ({
 // makes its primitive choice observable — which is the whole point on this
 // module, whose two `queryLive` sites are the two download trackers.
 vi.mock("@/lib/content/internal/payload-source", () => ({
+  nowMinute: () => "2026-09-17T10:00:00.000Z",
+  escapeContains: (s: string) => s.replace(/[\\%_]/g, (c) => `\\${c}`),
   query: vi.fn(),
   queryPreviewable: vi.fn(),
   queryRaw: vi.fn(),

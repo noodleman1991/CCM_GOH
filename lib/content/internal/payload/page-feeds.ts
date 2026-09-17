@@ -90,7 +90,7 @@ import type { Where } from "payload";
 import { imageGroup } from "@/lib/content/internal/image-shape";
 import { groqObject, localized, orNull, type LocalizedRaw } from "@/lib/content/internal/localized";
 import { agendaCardProjection } from "@/lib/content/internal/payload/outputs";
-import { query, queryPreviewable } from "@/lib/content/internal/payload-source";
+import { query, queryPreviewable, nowMinute } from "@/lib/content/internal/payload-source";
 
 type Row = Record<string, unknown>;
 
@@ -455,7 +455,7 @@ export async function regionalCommunityLivedExperiences(params: {
     where: and(
       { or: [{ region: { equals: id } }, { relatedCommunity: { equals: id } }] },
       { or: [{ moderationStatus: { equals: "approved" } }, { moderationStatus: { exists: false } }] },
-      { publishedAt: { less_than_equal: new Date().toISOString() } },
+      { publishedAt: { less_than_equal: nowMinute() } },
       featured ? { featured: { equals: true } } : null,
     ),
     locale: "all",
@@ -531,7 +531,7 @@ async function newsUnion(scope: Where | null, featured: Where | null): Promise<R
     query<Paginated<Row>>({
       type: "find",
       collection: "newsPosts",
-      where: and(scope, featured, { publishedAt: { less_than_equal: new Date().toISOString() } }),
+      where: and(scope, featured, { publishedAt: { less_than_equal: nowMinute() } }),
       locale: "all",
       depth: 2,
       pagination: false,

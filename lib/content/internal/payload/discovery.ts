@@ -162,6 +162,7 @@ import {
   queryRaw,
   updateDocument,
   type PayloadFindQuery,
+  nowMinute,
 } from "@/lib/content/internal/payload-source";
 import {
   altString,
@@ -788,7 +789,7 @@ function newsPostBlockProjection(row: Row): NewsPostBlockItem {
 
 /** `publishedAt <= now()`. */
 function publishedByNow(): Where {
-  return { publishedAt: { less_than_equal: new Date().toISOString() } };
+  return { publishedAt: { less_than_equal: nowMinute() } };
 }
 
 async function findNewsPosts(where: Where | undefined): Promise<Row[]> {
