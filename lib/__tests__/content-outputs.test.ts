@@ -202,7 +202,7 @@ describe("trackAgendaDownload / trackReportDownload", () => {
       totalDownloadCount: 7,
     });
 
-    await trackAgendaDownload("a1", "en");
+    await expect(trackAgendaDownload("a1", "en")).resolves.toBe("tracked");
 
     expect(mockUpdateDocument).toHaveBeenCalledWith("a1", {
       files: [
@@ -213,16 +213,28 @@ describe("trackAgendaDownload / trackReportDownload", () => {
     });
   });
 
-  it("no-ops (does not throw or write) when the agenda doesn't exist", async () => {
-    vi.spyOn(console, "error").mockImplementation(() => {});
+  it("reports `agenda-not-found` (does not throw or write) when the agenda doesn't exist", async () => {
     mockQueryLive.mockResolvedValue(null);
 
-    await expect(trackAgendaDownload("missing", "en")).resolves.toBeUndefined();
+    await expect(trackAgendaDownload("missing", "en")).resolves.toBe("agenda-not-found");
+    expect(mockUpdateDocument).not.toHaveBeenCalled();
+  });
+
+  it("reports `language-not-found` and writes NOTHING when no file has that language", async () => {
+    // Before this contract the tracker wrote the unchanged file list back —
+    // a pointless CMS write per hit, and an unbounded one from a public route.
+    mockQueryLive.mockResolvedValue({
+      _id: "a1",
+      files: [{ language: "en", downloadCount: 2 }],
+      totalDownloadCount: 2,
+    });
+
+    await expect(trackAgendaDownload("a1", "fr")).resolves.toBe("language-not-found");
     expect(mockUpdateDocument).not.toHaveBeenCalled();
   });
 
   it("throws (does not swallow) when the write fails — the route keeps its own catch", async () => {
-    mockQueryLive.mockResolvedValue({ _id: "a1", files: [], totalDownloadCount: 0 });
+    mockQueryLive.mockResolvedValue({ _id: "a1", files: [{ language: "en", downloadCount: 0 }], totalDownloadCount: 0 });
     mockUpdateDocument.mockRejectedValue(new Error("write failed"));
 
     await expect(trackAgendaDownload("a1", "en")).rejects.toThrow("write failed");
@@ -817,7 +829,7 @@ describe("outputs, answered by Payload", () => {
         totalDownloadCount: 7,
       } as never);
 
-      await trackAgendaDownload("a1", "en");
+      await expect(trackAgendaDownload("a1", "en")).resolves.toBe("tracked");
 
       expect(mockPayloadUpdate).toHaveBeenCalledWith({
         collection: "agendas",
@@ -832,16 +844,26 @@ describe("outputs, answered by Payload", () => {
       });
     });
 
-    it("no-ops (does not throw or write) when the agenda doesn't exist", async () => {
-      vi.spyOn(console, "error").mockImplementation(() => {});
+    it("reports `agenda-not-found` (does not throw or write) when the agenda doesn't exist", async () => {
       mockPayloadQueryLive.mockResolvedValue(null as never);
 
-      await expect(trackAgendaDownload("missing", "en")).resolves.toBeUndefined();
+      await expect(trackAgendaDownload("missing", "en")).resolves.toBe("agenda-not-found");
+      expect(mockPayloadUpdate).not.toHaveBeenCalled();
+    });
+
+    it("reports `language-not-found` and writes NOTHING when no file has that language", async () => {
+      mockPayloadQueryLive.mockResolvedValue({
+        id: "a1",
+        files: [{ id: "a1:files:k1", language: "en", downloadCount: 2 }],
+        totalDownloadCount: 2,
+      } as never);
+
+      await expect(trackAgendaDownload("a1", "ar")).resolves.toBe("language-not-found");
       expect(mockPayloadUpdate).not.toHaveBeenCalled();
     });
 
     it("throws (does not swallow) when the write fails — the route keeps its own catch", async () => {
-      mockPayloadQueryLive.mockResolvedValue({ id: "a1", files: [], totalDownloadCount: 0 } as never);
+      mockPayloadQueryLive.mockResolvedValue({ id: "a1", files: [{ language: "en", downloadCount: 0 }], totalDownloadCount: 0 } as never);
       mockPayloadUpdate.mockRejectedValue(new Error("write failed"));
 
       await expect(trackAgendaDownload("a1", "en")).rejects.toThrow("write failed");

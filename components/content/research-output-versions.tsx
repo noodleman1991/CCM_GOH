@@ -59,6 +59,13 @@ export function ResearchOutputVersions({ versions }: { versions: Version[] }) {
               </p>
             </div>
           </div>
+          {/* TODO(downloads): this anchor is untracked. `versions[].downloadCount`
+              is projected by lib/content/outputs.ts but nothing writes it — there
+              is no `trackResearchOutputDownload(outputId, versionKey)` in the
+              content layer (neither arm) and no route for it. When one exists,
+              route this button through hooks/use-download-tracking.ts with a
+              `researchOutput` adapter in lib/download-adapters.ts rather than
+              adding a bespoke fetch here. */}
           <Button asChild size="sm">
             <a href={active.fileUrl} target="_blank" rel="noopener noreferrer">
               <Download className="size-4" />

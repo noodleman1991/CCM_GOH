@@ -13,6 +13,7 @@ import { generatePageMetadata, type MetadataSource } from "@/lib/content/metadat
 import MissingSanityPage from "@/components/ui/missing-sanity-page";
 import { routing } from '@/i18n/routing';
 import { isRTL } from "@/i18n/i18n-helpers";
+import { getViewerUserId } from "@/lib/authz";
 
 export async function generateStaticParams() {
     const homepages = await getHomepageSlugs();
@@ -98,7 +99,15 @@ export default async function IndexPage({ params }: IndexPageProps) {
         // component's own props). Cast at this seam rather than loosen
         // either side's types — same precedent as the [...slug] catch-all's
         // Blocks casts.
-        return <Homepage homepage={homepage as unknown as Parameters<typeof Homepage>[0]["homepage"]} locale={locale} />;
+        // `userId` reaches the agenda download buttons (see [...slug]/page.tsx
+        // for why); the (main) layout already reads the session.
+        return (
+            <Homepage
+                homepage={homepage as unknown as Parameters<typeof Homepage>[0]["homepage"]}
+                locale={locale}
+                userId={await getViewerUserId()}
+            />
+        );
     }
 
     // Fallback to regular page
@@ -113,6 +122,7 @@ export default async function IndexPage({ params }: IndexPageProps) {
             <Blocks
                 blocks={(page?.blocks ?? []) as unknown as ComponentProps<typeof Blocks>["blocks"]}
                 locale={locale}
+                userId={await getViewerUserId()}
             />
         </main>
     );

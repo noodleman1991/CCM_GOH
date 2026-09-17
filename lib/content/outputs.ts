@@ -461,7 +461,22 @@ interface TrackedAgendaFile {
   [key: string]: unknown;
 }
 
-export async function trackAgendaDownload(agendaId: string, fileLanguage: string): Promise<void> {
+/**
+ * What `trackAgendaDownload` did. The route maps these to 200 / 404 / 400;
+ * a thrown error (the write failed) is still the caller's to catch.
+ *
+ * `language-not-found` exists so that a public, client-supplied
+ * `(agendaId, fileLanguage)` pair can be checked against the document's real
+ * file list BEFORE anything is written: previously an unknown language still
+ * wrote the unchanged file array back — one pointless CMS write per hit, from
+ * an unauthenticated route.
+ */
+export type TrackAgendaDownloadResult = "tracked" | "agenda-not-found" | "language-not-found";
+
+export async function trackAgendaDownload(
+  agendaId: string,
+  fileLanguage: string,
+): Promise<TrackAgendaDownloadResult> {
   // The read-modify-write arithmetic below is single-sourced on purpose: only
   // the read and the write have a backend, and two copies of "increment this
   // file, then recompute the total" would be two chances for the two backends
@@ -478,12 +493,12 @@ export async function trackAgendaDownload(agendaId: string, fileLanguage: string
         { agendaId },
       );
 
-  if (!agenda) {
-    console.error("Agenda not found:", agendaId);
-    return;
-  }
+  if (!agenda) return "agenda-not-found";
 
-  const updatedFiles = (agenda.files ?? []).map((file) => {
+  const files = agenda.files ?? [];
+  if (!files.some((file) => file.language === fileLanguage)) return "language-not-found";
+
+  const updatedFiles = files.map((file) => {
     if (file.language === fileLanguage) {
       return {
         ...file,
@@ -498,13 +513,14 @@ export async function trackAgendaDownload(agendaId: string, fileLanguage: string
 
   if (onPayload()) {
     await payloadOutputs.writeAgendaDownloadCounts(agendaId, updatedFiles, newTotalCount);
-    return;
+    return "tracked";
   }
 
   await updateDocument(agendaId, {
     files: updatedFiles,
     totalDownloadCount: newTotalCount,
   });
+  return "tracked";
 }
 
 interface TrackedReportFile {
