@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma, safeQuery } from "@/lib/prisma";
 import { getEventsStartingWithin } from "@/lib/content/discovery";
 import { emitLifecycle } from "@/lib/notifications/emit";
+import { bearerMatches } from "@/lib/auth/bearer";
 
 /**
  * GET /api/cron/event-reminders (X6): T-24h reminders to RSVP'd attendees.
@@ -10,8 +11,9 @@ import { emitLifecycle } from "@/lib/notifications/emit";
  * Protected by CRON_SECRET (Vercel cron sends it as a bearer token).
  */
 export async function GET(req: NextRequest) {
-  const secret = process.env.CRON_SECRET;
-  if (secret && req.headers.get("authorization") !== `Bearer ${secret}`) {
+  // Fail CLOSED like retention and weekly-digest. This was `if (secret && …)`,
+  // so with CRON_SECRET unset anyone could fire it (hub audit 2026-09-16, Low).
+  if (!bearerMatches(req.headers.get("authorization"), process.env.CRON_SECRET)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

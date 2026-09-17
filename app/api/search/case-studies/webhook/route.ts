@@ -2,19 +2,19 @@ import { NextRequest, NextResponse } from 'next/server'
 import { algoliaClient, ALGOLIA_INDICES, writeIndexName } from '@/lib/algolia'
 import { getCaseStudyIndexDocById } from '@/lib/content/case-studies'
 import { transformCaseStudyForIndex } from '@/payload/hooks/search-sync'
-
-const SEARCH_WEBHOOK_SECRET = process.env.SEARCH_WEBHOOK_SECRET
+import { authorizeSearchWebhook } from '@/app/api/search/_lib/webhook-gate'
 
 // This webhook will be called when case study data changes in Sanity
 export async function POST(request: NextRequest) {
-  // Verify internal webhook secret
-  const authHeader = request.headers.get('authorization')
-  if (!SEARCH_WEBHOOK_SECRET || authHeader !== `Bearer ${SEARCH_WEBHOOK_SECRET}`) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+  // Sanity HMAC signature or the internal bearer — app/api/search/_lib/webhook-gate.
+  // This route used to accept the bearer only, while SANITY_WEBHOOK_SETUP.md
+  // configures Sanity to send its signature header, so every documented
+  // delivery 401'd (hub audit 2026-09-16, M20).
+  const authz = await authorizeSearchWebhook(request)
+  if (!authz.ok) return authz.response
 
   try {
-    const body = await request.json()
+    const body = JSON.parse(authz.body)
     const { _id, action = 'update', _type } = body
 
     // Only process case study documents

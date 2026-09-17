@@ -1,15 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { algoliaClient, ALGOLIA_INDICES, transformUserForIndex, shouldIndexUser, writeIndexName } from '@/lib/algolia'
-
-const SEARCH_WEBHOOK_SECRET = process.env.SEARCH_WEBHOOK_SECRET
+import { bearerMatches } from '@/lib/auth/bearer'
 
 // This webhook will be called whenever user data changes
 // It can be triggered from profile updates, Clerk webhooks, etc.
+// Internal callers only (no Sanity leg for users), so the bearer is the one
+// credential. bearerMatches() refuses when the secret is unset and compares
+// in constant time (hub audit 2026-09-16, H3 family).
 export async function POST(request: NextRequest) {
-  // Verify internal webhook secret
-  const authHeader = request.headers.get('authorization')
-  if (!SEARCH_WEBHOOK_SECRET || authHeader !== `Bearer ${SEARCH_WEBHOOK_SECRET}`) {
+  if (!bearerMatches(request.headers.get('authorization'), process.env.SEARCH_WEBHOOK_SECRET)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 

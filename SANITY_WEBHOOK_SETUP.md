@@ -25,7 +25,9 @@ Replace `https://your-domain.com` with your actual production domain.
 
 ### Step 2: Create Webhooks
 
-You need to create **3 separate webhooks** (one for each content type):
+You need to create **3 separate webhooks** (one for each content type).
+
+**Every webhook must have its Secret field set to the value of `SANITY_WEBHOOK_SECRET`** (the same secret `/api/webhooks/sanity` uses). Sanity then signs each delivery with the `sanity-webhook-signature` header, which is the credential these endpoints verify — a webhook without a secret sends no signature and is rejected with `401`. Do not add an `Authorization` header in Sanity; the bearer is for our own internal callers only (see Authentication below).
 
 #### Webhook 1: Case Studies
 - **Name**: `Algolia - Case Studies`
@@ -170,6 +172,13 @@ View logs in your hosting platform (Vercel, etc.)
 ## Important Notes
 
 ### Authentication
+All three Sanity-fed endpoints share one gate (`app/api/search/_lib/webhook-gate.ts`) and accept **either** credential:
+
+1. **Sanity's HMAC signature** — the `sanity-webhook-signature` header Sanity sends when the webhook has a **Secret** set (Step 2 above). Verified with `@sanity/webhook` against `SANITY_WEBHOOK_SECRET`. This is what a webhook configured per this document uses.
+2. **The internal bearer** — `Authorization: Bearer <SEARCH_WEBHOOK_SECRET>`, used by our own code (Clerk webhook, profile route, scripts).
+
+A request with neither, or with a signature made with a different secret, gets `401`. Until 2026-09-16 the case-study and agenda endpoints accepted the bearer only, so a webhook set up as this document describes was rejected on every delivery; the news endpoint accepted the signature but did not `await` the check, so any signature passed. Both are fixed and covered by `lib/__tests__/search-webhook-auth.test.ts`.
+
 - Webhooks bypass Clerk authentication (handled in `proxy.ts`)
 - Each endpoint validates the document type
 - Only processes documents matching expected `_type`
