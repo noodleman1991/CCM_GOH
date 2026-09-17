@@ -11,6 +11,9 @@ import { normalizeOrcidId } from "./openalex";
  */
 
 const ORCID_PUBLIC_BASE = process.env.ORCID_API_BASE || "https://pub.orcid.org/v3.0";
+/** Per-request cap (audit M8: none before). A timeout throws like any other
+ *  network failure; the import route maps that to its 500 "Import failed". */
+const ORCID_TIMEOUT_MS = 10_000;
 
 /** Bare 0000-0000-0000-0000 form for path use. */
 export function orcidPath(input: string): string | null {
@@ -105,10 +108,17 @@ export async function fetchOrcid(orcid: string): Promise<ImportResult> {
   if (!path) return { works: [], affiliations: [] };
 
   const headers = { Accept: "application/json" };
+  // One signal per request: a shared signal would abort all three the moment
+  // the first one timed out, which is the same outcome but a worse trace.
+  const get = (segment: string) =>
+    fetch(`${ORCID_PUBLIC_BASE}/${path}/${segment}`, {
+      headers,
+      signal: AbortSignal.timeout(ORCID_TIMEOUT_MS),
+    });
   const [worksRes, empRes, eduRes] = await Promise.all([
-    fetch(`${ORCID_PUBLIC_BASE}/${path}/works`, { headers }),
-    fetch(`${ORCID_PUBLIC_BASE}/${path}/employments`, { headers }),
-    fetch(`${ORCID_PUBLIC_BASE}/${path}/educations`, { headers }),
+    get("works"),
+    get("employments"),
+    get("educations"),
   ]);
 
   const works = worksRes.ok ? mapOrcidWorks(await worksRes.json()) : [];

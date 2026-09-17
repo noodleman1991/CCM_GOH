@@ -1,11 +1,17 @@
 "use client";
 
 import { useEffect } from "react";
+import { reportError } from "@/lib/errors/report";
 
 /**
  * Top-level error boundary — catches errors in the root layout that the
- * per-locale error.tsx can't. Reports to the monitoring hook if present.
- * Must render its own <html>/<body>.
+ * per-locale error.tsx can't. Must render its own <html>/<body>.
+ *
+ * Reports through `reportError`: `onRequestError` (instrumentation.ts) only
+ * sees server-side request errors, and the client SDK's global handlers do
+ * not see errors a React boundary has already caught, so without this call a
+ * root-layout crash reached nobody in production (2026-09-16 audit, "Error /
+ * not-found pages — no captureException").
  */
 export default function GlobalError({
   error,
@@ -15,12 +21,7 @@ export default function GlobalError({
   reset: () => void;
 }) {
   useEffect(() => {
-    // Sentry (or any monitor) picks this up via the instrumentation hook; this
-    // is a belt-and-braces client log.
-    if (typeof window !== "undefined") {
-      // eslint-disable-next-line no-console
-      console.error("Global error:", error);
-    }
+    reportError(error, { route: "global-error", extra: { digest: error.digest } });
   }, [error]);
 
   return (
