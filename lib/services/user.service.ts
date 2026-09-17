@@ -16,6 +16,7 @@ import type {
 // '@/generated/prisma' — so Sql fragments share the executing client's module
 // instance (see lib/prisma.ts's export comment; 42804 jsonb bug 2026-08-05).
 import type { User, UserCommunity, Community, RecentWork, WorkType, ExpertiseArea } from '@/generated/prisma'
+import { planRecentWorkSync, recentWorkNestedWrite } from '@/lib/profile/recent-work-sync'
 
 export class UserService {
   /**
@@ -227,23 +228,15 @@ export class UserService {
         }
       }
 
-      // Handle recent work if provided
+      // Handle recent work if provided: update in place, create the new rows,
+      // delete only the removed ones — so `pinned`/`hidden` and the row ids
+      // survive a save (lib/profile/recent-work-sync.ts).
       if (recentWork !== undefined) {
-        prismaUpdateData.recentWork = {
-          deleteMany: {}, // Clear existing
-          create: recentWork.map(work => ({
-            title: work.title,
-            description: work.description,
-            link: work.link || null,
-            startDate: new Date(work.startDate),
-            endDate: work.endDate ? new Date(work.endDate) : null,
-            isOngoing: work.isOngoing || false,
-            role: work.role || null,
-            collaborators: work.collaborators || null,
-            outcome: work.outcome || null,
-            imageUrl: work.imageUrl || null
-          }))
-        }
+        const existingRows = await prisma.recentWork.findMany({
+          where: { userId },
+          select: { id: true, pinned: true, hidden: true },
+        })
+        prismaUpdateData.recentWork = recentWorkNestedWrite(planRecentWorkSync(existingRows, recentWork))
       }
 
       const updatedUser = await prisma.user.update({

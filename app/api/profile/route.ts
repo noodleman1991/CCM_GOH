@@ -57,6 +57,9 @@ const ProfileUpdateSchema = z.object({
 
     // Recent Work
     recentWork: z.array(z.object({
+        // The row's id when it already exists, so the save updates it in place
+        // and keeps the owner's pinned/hidden curation.
+        id: z.string().optional(),
         title: z.string().min(1, "Title is required").max(100),
         description: z.string().min(1, "Description is required").max(500),
         link: z.string().url("Please enter a valid URL").optional().or(z.literal("")),

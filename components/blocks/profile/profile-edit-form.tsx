@@ -88,6 +88,7 @@ const makeProfileSchema = (m: SchemaMessages) => z.object({
 
     // Recent Work
     recentWork: z.array(z.object({
+        id: z.string().optional(),
         title: z.string().min(1, m.workTitleRequired).max(100),
         description: z.string().min(1, m.workDescriptionRequired).max(500),
         link: z.string().url(m.urlInvalid).optional().or(z.literal("")),
@@ -277,6 +278,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
 
             // Map recent work to form format
             const recentWorkFormatted = existingRecentWork.map((work) => ({
+                id: work.id,
                 title: work.title,
                 description: work.description || "",
                 link: work.link || "",

@@ -151,6 +151,7 @@ export interface UserProfileUpdateData {
   showLocation?: boolean
   communityIds?: string[]
   recentWork?: Array<{
+    id?: string
     title: string
     description: string
     link?: string
