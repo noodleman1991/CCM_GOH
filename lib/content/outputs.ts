@@ -1135,7 +1135,7 @@ export interface AgendaIndexDoc {
   accessLevel?: "public" | "registered" | "members" | null;
   organizations?: Array<{ name?: string | null }> | null;
   regionalCommunities?: Array<{ name?: string | null }> | null;
-  tags?: Array<{ name?: string | null }> | null;
+  tags?: Array<{ _id?: string; label?: Localized | null; value?: string | null }> | null;
   coverImage?: { asset?: { url?: string } | null } | null;
   files?: Array<{
     language: string;
@@ -1159,7 +1159,7 @@ const AGENDA_INDEX_FIELDS = `
   accessLevel,
   organizations[]->{name},
   regionalCommunities[]->{name},
-  tags[]->{name},
+  tags[]->{ _id, label, "value": value.current },
   coverImage {
     asset->{url}
   },

@@ -145,6 +145,10 @@ export interface CaseStudySearchRecord extends Record<string, unknown> {
     affiliation?: string
   }>
   tags: string[]
+  /** Every language's label — searchable, not faceted (tag audit 2026-09-17). */
+  tagLabels?: string[]
+  /** The tags' stable `value` slugs — filterOnly, for ?tags= deep links. */
+  tagSlugs?: string[]
   studyLocation?: {
     lat: number
     lng: number
@@ -179,6 +183,8 @@ export interface AgendaSearchRecord extends Record<string, unknown> {
   organizations: string[]
   regionalCommunities: string[]
   tags: string[]
+  tagLabels?: string[]
+  tagSlugs?: string[]
   accessLevel: 'public' | 'registered' | 'members'
   /** @deprecated single language was always 'en' — use `languages`. */
   language: string
@@ -206,6 +212,8 @@ export interface NewsSearchRecord extends Record<string, unknown> {
   }
   featured: boolean
   tags: string[]
+  tagLabels?: string[]
+  tagSlugs?: string[]
   organizations: string[]
   projects: string[]
   location?: {
@@ -419,6 +427,7 @@ export const INDEX_SETTINGS = {
       'unordered(excerpt.en,excerpt.es,excerpt.fr,excerpt.ar)',
       'unordered(authors.name)',
       'unordered(tags)',
+      'unordered(tagLabels)',
       'unordered(organizations)'
     ],
     attributesForFaceting: [
@@ -426,6 +435,7 @@ export const INDEX_SETTINGS = {
       'filterOnly(accessLevel)',
       'featured',
       'tags',
+      'filterOnly(tagSlugs)',
       'organizations',
       'language',
       'authors.role',
@@ -462,6 +472,7 @@ export const INDEX_SETTINGS = {
       'unordered(description.en,description.es,description.fr,description.ar)',
       'unordered(organizations)',
       'unordered(tags)',
+      'unordered(tagLabels)',
       'unordered(agendaType)'
     ],
     attributesForFaceting: [
@@ -470,6 +481,7 @@ export const INDEX_SETTINGS = {
       'year',
       'featured',
       'tags',
+      'filterOnly(tagSlugs)',
       'organizations',
       'regionalCommunities',
       'language',
@@ -504,6 +516,7 @@ export const INDEX_SETTINGS = {
       'unordered(excerpt.en,excerpt.es,excerpt.fr,excerpt.ar)',
       'unordered(author.name)',
       'unordered(tags)',
+      'unordered(tagLabels)',
       'unordered(organizations)',
       'unordered(projects)'
     ],
@@ -511,6 +524,7 @@ export const INDEX_SETTINGS = {
       'filterOnly(accessLevel)',
       'featured',
       'tags',
+      'filterOnly(tagSlugs)',
       'organizations',
       'projects',
       'language',

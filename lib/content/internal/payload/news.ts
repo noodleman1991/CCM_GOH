@@ -1076,7 +1076,7 @@ function newsIndexProjection(row: Row): NewsIndexDoc {
     author: isRow(row.author)
       ? { _id: String(row.author.id ?? ""), name: orNull(text(row.author.name)) }
       : null,
-    tags: tagProjection(row.tags, ["label"]),
+    tags: tagProjection(row.tags, ["_id", "label", "value"]),
     organizations: organizationsProjection(row.organizations, { full: false })?.map((organization) => ({
       name: organization.name,
     })) ?? null,

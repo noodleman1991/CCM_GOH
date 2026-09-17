@@ -1916,9 +1916,17 @@ function caseStudyIndexProjection(row: CaseStudyRow): CaseStudyIndexDoc {
       endDate: orNull(isoDay(row.studyPeriod?.endDate)),
       startDate: orNull(isoDay(row.studyPeriod?.startDate)),
     }),
-    // `tags[]->{name}` projects a field a `tag` does not have; GROQ emits null
-    // for it, and so does this.
-    tags: Array.isArray(row.tags) ? listOrNull(row.tags.filter(isRow).map(() => groqObject({ name: null }))) : null,
+    // Every language's label plus the slug, so the search record can carry
+    // them all (tag audit 2026-09-17; the old `tags[]->{name}` projected a
+    // field a tag never had and the live index held no tags at all).
+    tags: Array.isArray(row.tags)
+      ? listOrNull(
+          row.tags.filter(isRow).map((raw) => {
+            const tag = raw as TagRow;
+            return groqObject({ _id: String(tag.id ?? ""), label: orNull(localized(tag.label)), value: orNull(text(tag.value)) });
+          }),
+        )
+      : null,
     themes: orNull(listOrNull(row.themes ?? undefined)),
     title: orNull(localized(row.title)),
   }) as unknown as CaseStudyIndexDoc;

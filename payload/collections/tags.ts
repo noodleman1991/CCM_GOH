@@ -2,6 +2,8 @@ import type { CollectionConfig } from "payload";
 import { isEditor, publishedOnly } from "@/payload/access";
 import { localizedText, localizedTextarea } from "@/payload/fields/localized";
 import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
+import { SKIP_SEARCH_SYNC, scheduleTagReindex } from "@/payload/hooks/search-sync";
+import { tagSearchTextChanged, tagSlug } from "@/lib/tags/slug";
 
 /**
  * Mirrors sanity/schemas/documents/tag.ts. Verified against production_2
@@ -48,6 +50,33 @@ export const Tags: CollectionConfig = {
     create: isEditor,
     update: isEditor,
     delete: isEditor,
+  },
+  hooks: {
+    // `value` was a slug field with `source: label.en` in Sanity; here it is
+    // derived the same way when left empty, and normalised when typed, so
+    // every tag an editor creates gets one stable, well-formed reference
+    // value (tag audit 2026-09-17; lib/tags/slug.ts).
+    beforeValidate: [
+      ({ data }) => {
+        if (!data) return data;
+        const label = typeof data.label === "string" ? data.label : (data.label as { en?: string } | undefined)?.en;
+        const typed = typeof data.value === "string" ? data.value.trim() : "";
+        if (typed) data.value = tagSlug(typed);
+        else if (label) data.value = tagSlug(label);
+        return data;
+      },
+    ],
+    // A renamed tag is copied into the search record of every document that
+    // carries it; fan the re-index out after this write commits.
+    afterChange: [
+      ({ doc, previousDoc, operation, req }) => {
+        if (operation !== "update") return doc;
+        if (req?.context?.[SKIP_SEARCH_SYNC]) return doc;
+        if (!tagSearchTextChanged(previousDoc as never, doc as never)) return doc;
+        scheduleTagReindex(String(doc.id), req?.payload as never);
+        return doc;
+      },
+    ],
   },
   fields: [
     {

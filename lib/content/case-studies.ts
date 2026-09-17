@@ -1628,7 +1628,8 @@ export interface CaseStudyIndexDoc {
   themes?: string[];
   populations?: string[];
   authors?: Array<{ name?: string; role?: string; affiliation?: { name?: string } }>;
-  tags?: Array<{ name?: string }>;
+  /** `{ _id, label, value }` per tag — the index carries every language (tag audit 2026-09-17). */
+  tags?: Array<{ _id?: string; label?: Localized | null; value?: string | null }>;
   studyLocation?: { lat: number; lng: number };
   studyPeriod?: { startDate: string; endDate: string };
   organizations?: Array<{ name?: string }>;
@@ -1652,7 +1653,7 @@ const CASE_STUDY_INDEX_FIELDS = `
     role,
     affiliation->{name}
   },
-  tags[]->{name},
+  tags[]->{ _id, label, "value": value.current },
   studyLocation,
   studyPeriod,
   organizations[]->{name},

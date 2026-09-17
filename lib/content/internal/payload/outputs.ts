@@ -1230,7 +1230,7 @@ function agendaIndexProjection(row: AgendaRow, opts: { dereferenceFiles: boolean
     regionalCommunities: communityProjection(row.regionalCommunities, "indexName"),
     slug: orNull(slugObject(row.slug)),
     subtitle: orNull(localized(row.subtitle)),
-    tags: tagProjection(row.tags, ["name"]),
+    tags: tagProjection(row.tags, ["_id", "label", "value"]),
     title: orNull(localized(row.title)),
     totalDownloadCount: orNull(num(row.totalDownloadCount)),
     year: orNull(num(row.year)),

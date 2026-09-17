@@ -113,7 +113,7 @@
 
 import type { CollectionAfterChangeHook, CollectionAfterDeleteHook } from "payload";
 
-import { defer, flushDeferred, pendingDeferredCount, track, withTimeout } from "@/payload/hooks/after-commit";
+import { defer, flushDeferred, pendingDeferredCount, runAfterCommit, track, withTimeout } from "@/payload/hooks/after-commit";
 
 import { deriveAgendaLanguages } from "@/lib/agenda-languages";
 import type {
@@ -124,6 +124,7 @@ import type {
 import type { CaseStudyIndexDoc } from "@/lib/content/case-studies";
 import type { NewsIndexDoc } from "@/lib/content/news";
 import type { AgendaIndexDoc } from "@/lib/content/outputs";
+import { tagSearchFields } from "@/lib/search/tag-search-fields";
 
 // ---------------------------------------------------------------------------
 // The three collections that feed an index
@@ -176,9 +177,7 @@ export function transformAgendaForIndex(agenda: AgendaIndexDoc): AgendaSearchRec
       regionalCommunities: (agenda.regionalCommunities || [])
         .map((community) => community.name)
         .filter((name): name is string => Boolean(name)),
-      tags: (agenda.tags || [])
-        .map((tag) => tag.name)
-        .filter((name): name is string => Boolean(name)),
+      ...tagSearchFields(agenda.tags),
       accessLevel: agenda.accessLevel || "public",
       language: "en", // deprecated; kept for back-compat
       languages: deriveAgendaLanguages(agenda.files, agenda.title),
@@ -215,9 +214,7 @@ export function transformCaseStudyForIndex(
         role: author.role || "author",
         affiliation: author.affiliation?.name,
       })),
-      tags: (caseStudy.tags || [])
-        .map((tag) => tag.name)
-        .filter((name): name is string => Boolean(name)),
+      ...tagSearchFields(caseStudy.tags),
       studyLocation: caseStudy.studyLocation
         ? {
             lat: caseStudy.studyLocation.lat,
@@ -268,9 +265,7 @@ export function transformNewsForIndex(newsPost: NewsIndexDoc): NewsSearchRecord 
         id: newsPost.author?._id || "",
       },
       featured: newsPost.featured || false,
-      tags: (newsPost.tags || [])
-        .map((tag) => tag.label?.en || tag.name)
-        .filter((name): name is string => Boolean(name)),
+      ...tagSearchFields(newsPost.tags),
       organizations: (newsPost.organizations || [])
         .map((org) => org.name)
         .filter((name): name is string => Boolean(name)),
@@ -585,6 +580,54 @@ async function readIndexDoc(
   }
   const { getAgendaIndexDocsByIds } = await import("@/lib/content/internal/payload/outputs");
   return (await getAgendaIndexDocsByIds([id], { fresh: true }))[0] ?? null;
+}
+
+// ---------------------------------------------------------------------------
+// Tag fan-out (tag audit 2026-09-17)
+// ---------------------------------------------------------------------------
+
+/**
+ * A tag's labels and slug are copied into every search record of the content
+ * that carries it, so a rename has to re-index that content. Bounded: no tag
+ * is on more than a few dozen documents today, and the ceiling keeps a
+ * runaway from pinning an invocation.
+ */
+export const TAG_FANOUT_LIMIT = 500;
+
+export async function findTagReferences(
+  payload: PayloadReader,
+  tagId: string,
+): Promise<Array<{ collection: SearchSyncedCollection; id: string }>> {
+  const refs: Array<{ collection: SearchSyncedCollection; id: string }> = [];
+  for (const collection of SEARCH_SYNCED_COLLECTIONS) {
+    const found = await payload.find({
+      collection,
+      where: { tags: { in: [tagId] } },
+      select: { id: true },
+      depth: 0,
+      limit: TAG_FANOUT_LIMIT,
+      pagination: false,
+      overrideAccess: true,
+    });
+    for (const row of found.docs) {
+      const id = (row as { id?: unknown }).id;
+      if (typeof id === "string" || typeof id === "number") refs.push({ collection, id: String(id) });
+    }
+  }
+  return refs;
+}
+
+/** After the tag's own write commits: find what carries it and queue each sync. */
+export function scheduleTagReindex(
+  tagId: string,
+  payload: PayloadReader | undefined,
+  options: { deps?: SearchSyncDeps | null } = {},
+): void {
+  if (!payload) return;
+  runAfterCommit(async () => {
+    const refs = await findTagReferences(payload, tagId);
+    for (const ref of refs) scheduleSearchSync(ref.collection, ref.id, { payload, deps: options.deps });
+  });
 }
 
 function queueKey(collection: SearchSyncedCollection, id: string): string {

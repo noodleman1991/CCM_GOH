@@ -914,7 +914,7 @@ export interface NewsIndexDoc {
   _updatedAt?: string;
   featured?: boolean;
   author?: { _id?: string; name?: string };
-  tags?: Array<{ label?: { en?: string }; name?: string }>;
+  tags?: Array<{ _id?: string; label?: Localized | null; value?: string | null }>;
   organizations?: Array<{ name?: string }>;
   projects?: Array<{ name?: string }>;
   location?: { lat?: number; lng?: number };
@@ -938,7 +938,7 @@ const NEWS_INDEX_FIELDS = `
   populations,
   featured,
   author->{_id, name},
-  tags[]->{label},
+  tags[]->{ _id, label, "value": value.current },
   organizations[]->{name},
   projects[]->{name},
   location,
