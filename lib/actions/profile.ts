@@ -2,7 +2,6 @@
 
 import { prisma } from "@/lib/prisma"
 import { auth } from '@clerk/nextjs/server'
-import { unstable_cache } from 'next/cache'
 import { UserService } from '@/lib/services/user.service'
 import { calculateProfileCompleteness } from '@/lib/profile-completeness'
 import { getLocale } from 'next-intl/server'

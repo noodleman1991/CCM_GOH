@@ -1,8 +1,8 @@
 import "server-only";
-import { createHash } from "crypto";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { assertRateLimit, RateLimitError, type RateLimitOptions } from "@/lib/rate-limit";
+import { ipActorKey } from "@/lib/rate-limit-actor";
 
 /**
  * Route-handler rate limiting. Resolves an actor key (Clerk userId when signed
@@ -26,11 +26,7 @@ export async function rateLimitRequest(
   } catch {
     // Outside clerkMiddleware context — fall through to the IP-derived key.
   }
-  if (!key) {
-    const forwarded = request.headers.get("x-forwarded-for");
-    const ip = forwarded?.split(",")[0]?.trim() || request.headers.get("x-real-ip") || "unknown";
-    key = `ip:${createHash("sha256").update(ip).digest("hex").slice(0, 16)}`;
-  }
+  if (!key) key = ipActorKey(request.headers);
 
   try {
     await assertRateLimit(key, action, opts);

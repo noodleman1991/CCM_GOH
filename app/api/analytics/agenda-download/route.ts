@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
+import { getActor, isStaff } from '@/lib/authz';
 import { prisma } from '@/lib/prisma';
 
 interface DownloadEvent {
@@ -7,15 +7,20 @@ interface DownloadEvent {
     reportId: string; // reportId field contains agenda IDs
 }
 
+/**
+ * Agenda download analytics. Staff only (team_editor | admin): until the
+ * 2026-09-16 audit any signed-in member could read every agenda's download
+ * counts, unique-user totals and per-day series. Same gate as
+ * app/api/issue-reports/route.ts.
+ */
 export async function GET(request: NextRequest) {
     try {
-        const { userId } = await auth();
-
-        if (!userId) {
-            return NextResponse.json(
-                { error: 'Unauthorized' },
-                { status: 401 }
-            );
+        const actor = await getActor();
+        if (!actor) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+        if (!isStaff(actor)) {
+            return NextResponse.json({ error: 'Not permitted' }, { status: 403 });
         }
 
         const { searchParams } = new URL(request.url);

@@ -82,6 +82,31 @@ describe("unfollowTarget", () => {
   });
 });
 
+describe("follow/unfollow rate limit", () => {
+  // The prisma mock has no `$queryRaw`, so the real limiter degrades to its
+  // in-process bucket — the fixed-window behaviour under test, with no DB.
+  it("refuses follow/unfollow past the per-user budget and says so", async () => {
+    getActorMock.mockResolvedValue({ id: "u-rate-limited", role: "community_member" as const });
+    let refused: { ok: boolean } | null = null;
+    let writesBeforeRefusal = 0;
+    for (let i = 0; i < 500; i++) {
+      const res =
+        i % 2 === 0
+          ? await followTarget({ targetType: "REGION", targetId: `r${i}` })
+          : await unfollowTarget({ targetType: "REGION", targetId: `r${i}` });
+      if (!res.ok) {
+        refused = res;
+        break;
+      }
+      writesBeforeRefusal++;
+    }
+    expect(refused).not.toBeNull();
+    expect((refused as { ok: false; error: string }).error).toMatch(/too many/i);
+    expect(upsertMock.mock.calls.length + deleteManyMock.mock.calls.length).toBe(writesBeforeRefusal);
+    expect(writesBeforeRefusal).toBeLessThan(500);
+  });
+});
+
 describe("isFollowing", () => {
   it("is false for anonymous", async () => {
     getActorMock.mockResolvedValueOnce(null);
