@@ -1,5 +1,5 @@
 import * as Sentry from "@sentry/nextjs";
-import { assertEnv, checkEnv } from "@/lib/env";
+import { assertEnv, checkEnv, describeMissing } from "@/lib/env";
 
 /**
  * Server/edge instrumentation. Sentry only initializes when a DSN is configured,
@@ -13,9 +13,10 @@ export async function register() {
     if (process.env.NODE_ENV === "production") {
       assertEnv();
     } else {
-      const { missingRequired, disabledFeatures } = checkEnv();
+      const report = checkEnv();
+      const { missingRequired, disabledFeatures } = report;
       if (missingRequired.length > 0) {
-        console.warn(`[env] Missing required vars: ${missingRequired.join(", ")}`);
+        console.warn(`[env] ${describeMissing(report)}`);
       }
       if (disabledFeatures.length > 0) {
         console.warn(`[env] Features disabled by missing vars: ${disabledFeatures.join(", ")}`);
