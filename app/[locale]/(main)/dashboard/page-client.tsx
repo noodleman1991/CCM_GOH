@@ -406,7 +406,7 @@ export function DashboardClient({
                 <div className="mb-6">
                   <SectionHeader
                     title={t('recentWork')}
-                    action={{ label: t('viewAll'), href: '/dashboard/profile/edit/work' }}
+                    action={{ label: t('viewAll'), href: '/dashboard/profile/edit?tab=recentWork' }}
                   />
                 </div>
                 <div className="space-y-4">

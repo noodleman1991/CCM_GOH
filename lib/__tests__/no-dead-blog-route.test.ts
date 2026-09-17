@@ -8,12 +8,10 @@ describe("the dead /blog route is gone", () => {
     expect(names).not.toContain("post");
   });
 
-  it("does not link to /blog from the header", () => {
-    expect(readFileSync("components/header/index.tsx", "utf8")).not.toMatch(/["'`]\/blog/);
-  });
-
-  it("does not link to /blog from the footer", () => {
-    expect(readFileSync("components/footer.tsx", "utf8")).not.toMatch(/["'`]\/blog/);
+  it("does not link to /blog from the app shell", () => {
+    // The legacy header/footer components were deleted in Slice 3a; the
+    // sidebar is the shell now.
+    expect(readFileSync("components/app-sidebar.tsx", "utf8")).not.toMatch(/["'`]\/blog/);
   });
 
   it("does not emit /blog URLs in the sitemap", () => {

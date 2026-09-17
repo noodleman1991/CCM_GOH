@@ -22,7 +22,7 @@ export default async function NotFound() {
                 <CardContent className="pt-6">
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                         <Button asChild variant="default">
-                            <Link href="/profiles">
+                            <Link href="/collaborate">
                                 {t('browseProfiles')}
                             </Link>
                         </Button>

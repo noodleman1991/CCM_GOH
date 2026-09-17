@@ -22,9 +22,16 @@ async function revalidateDashboard() {
     revalidatePath('/dashboard', 'layout')
 }
 
-export default async function ProfileEditPage() {
+export default async function ProfileEditPage({
+    searchParams,
+}: {
+    searchParams: Promise<{ tab?: string }>
+}) {
     const t = await getTranslations('profile.edit')
     const { userId } = await auth()
+    // `?tab=recentWork` is how the dashboard and the public profile deep-link
+    // into one section since the separate add-work pages were removed.
+    const { tab } = await searchParams
 
     if (!userId) {
         redirect('/sign-in')
@@ -67,6 +74,7 @@ export default async function ProfileEditPage() {
 
             {/* Pass Sanity data to form with fallback support */}
             <ProfileEditForm
+                initialTab={tab}
                 userManagementOptions={userManagementOptions}
                 // Pre-existing shape gap: the form declares a Sanity-shaped
                 // communities prop while this page has always passed the Prisma

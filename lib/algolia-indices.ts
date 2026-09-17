@@ -28,7 +28,7 @@ export const ALGOLIA_INDICES = {
  * `case_studies`, so a parity run can build the real records and push them at a
  * scratch index without going anywhere near the live one.
  *
- * **Reads deliberately ignore it** — the search UI, `/api/search/counts` and
+ * **Reads deliberately ignore it** — the search UI and
  * `/api/search/token` all keep naming the real indices. That asymmetry is the
  * safety property: a prefix left set by accident writes somewhere harmless
  * rather than silently pointing the whole site at an empty index.

@@ -130,7 +130,11 @@ type ProfileSchema = ReturnType<typeof makeProfileSchema>
 type ProfileFormInput = z.input<ProfileSchema>
 type ProfileFormValues = z.infer<ProfileSchema>
 
+const TAB_VALUES = ["basic", "collaboration", "work", "communities", "recentWork", "social", "privacy"] as const
+
 interface ProfileEditFormProps {
+    /** Which tab opens first; unknown values fall back to "basic". */
+    initialTab?: string
     initialData?: Partial<ProfileFormValues> & {
         // Read-only Clerk data for display
         email?: string | null
@@ -607,7 +611,10 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                     onImageChangeAction={onImageChangeAction}
                 />
 
-                <Tabs defaultValue="basic" className="w-full">
+                <Tabs
+                    defaultValue={(TAB_VALUES as readonly string[]).includes(props.initialTab ?? "") ? props.initialTab : "basic"}
+                    className="w-full"
+                >
                     <TabsList className="flex w-full flex-wrap h-auto justify-start gap-1">
                         <TabsTrigger value="basic">{t('tabs.basic')}<TabErrorDot tab="basic" /></TabsTrigger>
                         <TabsTrigger value="collaboration">{t('tabs.collaboration')}<TabErrorDot tab="collaboration" /></TabsTrigger>

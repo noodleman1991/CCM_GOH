@@ -74,16 +74,6 @@ export const proxy = clerkMiddleware(async (auth, req: NextRequest) => {
         return NextResponse.next()
     }
 
-    // Public API routes — no auth, no i18n
-    if (req.nextUrl.pathname.startsWith('/api/communities')) {
-        return NextResponse.next()
-    }
-
-    // Search counts — public endpoint
-    if (req.nextUrl.pathname === '/api/search/counts') {
-        return NextResponse.next()
-    }
-
     // Protected API routes — require auth, no i18n
     if (isProtectedApiRoute(req)) {
         const authResult = await auth()

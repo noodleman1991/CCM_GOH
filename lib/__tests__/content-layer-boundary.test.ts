@@ -195,7 +195,6 @@ const INTERNAL_SEAM_ALLOWED = [
   // ZERO importers anywhere in app/components/lib — dead code kept
   // (per this phase's "convert dead code, don't delete" rule) rather than
   // given a domain-module home it would never actually use.
-  "lib/utils/sanity-prisma-sync.ts",
   // Uploads an image asset for a client-side renderer. No GROQ — just calls
   // `uploadImageAsset`, one of the seam's ten primitives directly, the same
   // way any lib/content/ domain module would.
