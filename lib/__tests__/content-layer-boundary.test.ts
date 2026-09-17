@@ -150,11 +150,15 @@ const ALLOWED: Record<string, true | string[]> = {
   // Inbound webhook receivers: they verify Sanity's HMAC signature via
   // @sanity/webhook before trusting the payload. That verification is
   // Sanity-specific by definition and has nothing to convert to — but
-  // everything else in these two files is app business logic (revalidation,
+  // everything else in these files is app business logic (revalidation,
   // Algolia sync, email notification), so the exemption is scoped to the
-  // one import, not the whole file.
+  // one import, not the whole file. The three search webhooks
+  // (news, case-studies, agendas) share the check through
+  // app/api/search/_lib/webhook-gate.ts since 2026-09-16 (hub audit H2/M20), so
+  // the exemption moved there with it; the routes themselves import nothing
+  // from Sanity any more.
   "app/api/webhooks/sanity/route.ts": ["@sanity/webhook"],
-  "app/api/search/news/webhook/route.ts": ["@sanity/webhook"],
+  "app/api/search/_lib/webhook-gate.ts": ["@sanity/webhook"],
 };
 
 /**

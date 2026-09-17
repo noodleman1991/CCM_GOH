@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma, safeQuery } from "@/lib/prisma";
+import { bearerMatches } from "@/lib/auth/bearer";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
@@ -23,8 +24,8 @@ const days = (v: string | undefined, fallback: number) => {
 
 export async function GET(req: NextRequest) {
   // Fail closed like the digest cron: destructive route, secret required.
-  const secret = process.env.CRON_SECRET;
-  if (!secret || req.headers.get("authorization") !== `Bearer ${secret}`) {
+  // bearerMatches() refuses an unset secret and compares in constant time.
+  if (!bearerMatches(req.headers.get("authorization"), process.env.CRON_SECRET)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

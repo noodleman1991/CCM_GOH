@@ -8,6 +8,7 @@
 import { revalidateTag, revalidatePath } from 'next/cache'
 import { NextRequest, NextResponse } from 'next/server'
 import { REVALIDATABLE_CACHE_TAGS, type RevalidatableCacheTag } from '@/lib/cache/revalidatable-tags'
+import { bearerMatches } from '@/lib/auth/bearer'
 
 // Available cache tags that can be revalidated — lib/cache/revalidatable-tags.ts
 const AVAILABLE_TAGS = REVALIDATABLE_CACHE_TAGS
@@ -16,7 +17,6 @@ type CacheTag = RevalidatableCacheTag
 
 // Verify admin access (basic implementation)
 function verifyAdminAccess(request: NextRequest) {
-  const authHeader = request.headers.get('authorization')
   const apiKey = process.env.ADMIN_API_KEY
 
   // Skip verification in development if no API key is set
@@ -24,11 +24,10 @@ function verifyAdminAccess(request: NextRequest) {
     return true
   }
 
-  if (!apiKey || !authHeader) {
-    return false
-  }
-
-  return authHeader === `Bearer ${apiKey}`
+  // bearerMatches() already refuses an unset key; kept on the shared helper so
+  // this route gets the same constant-time compare as every other secret-keyed
+  // route (hub audit 2026-09-16, H3 family).
+  return bearerMatches(request.headers.get('authorization'), apiKey)
 }
 
 // POST handler for cache revalidation

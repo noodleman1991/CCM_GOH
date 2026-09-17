@@ -1,11 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { isValidSignature, SIGNATURE_HEADER_NAME } from '@sanity/webhook'
 import { algoliaClient, ALGOLIA_INDICES, writeIndexName } from '@/lib/algolia'
 import { getNewsIndexDocById } from '@/lib/content/news'
 import { transformNewsForIndex } from '@/payload/hooks/search-sync'
-
-const secret = process.env.SANITY_WEBHOOK_SECRET
-const SEARCH_WEBHOOK_SECRET = process.env.SEARCH_WEBHOOK_SECRET
+import { authorizeSearchWebhook } from '@/app/api/search/_lib/webhook-gate'
 
 /**
  * Webhook handler for Sanity news post updates
@@ -13,30 +10,12 @@ const SEARCH_WEBHOOK_SECRET = process.env.SEARCH_WEBHOOK_SECRET
  */
 export async function POST(request: NextRequest) {
   try {
-    // Check for internal Bearer token auth first
-    const authHeader = request.headers.get('authorization')
-    const hasValidBearerToken = SEARCH_WEBHOOK_SECRET && authHeader === `Bearer ${SEARCH_WEBHOOK_SECRET}`
-
-    // Verify webhook signature for security (Sanity webhook or Bearer token)
-    const signature = request.headers.get(SIGNATURE_HEADER_NAME)
-    const body = await request.text()
-
-    if (!hasValidBearerToken) {
-      // Fall back to Sanity signature verification
-      if (secret && signature) {
-        const validSignature = isValidSignature(body, signature, secret)
-        if (!validSignature) {
-          console.warn('Invalid webhook signature')
-          return NextResponse.json({ error: 'Invalid signature' }, { status: 401 })
-        }
-      } else if (secret) {
-        console.warn('Missing webhook signature')
-        return NextResponse.json({ error: 'Missing signature' }, { status: 401 })
-      } else {
-        // No Sanity secret configured and no Bearer token - reject
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-      }
-    }
+    // Sanity HMAC signature or the internal bearer — app/api/search/_lib/webhook-gate.
+    // The inline check this replaced did not `await` isValidSignature(), so a
+    // Promise (always truthy) let any signature through (hub audit 2026-09-16, H2).
+    const authz = await authorizeSearchWebhook(request)
+    if (!authz.ok) return authz.response
+    const body = authz.body
 
     // Parse the webhook payload
     const payload = JSON.parse(body)
@@ -180,11 +159,12 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// GET endpoint for webhook verification
+// GET endpoint for webhook verification. Deliberately says nothing about
+// configuration: it used to return `webhookSecret: !!secret`, telling any
+// anonymous caller whether signature checking was on (hub audit 2026-09-16).
 export async function GET() {
   return NextResponse.json({
     message: 'News webhook endpoint',
-    status: 'active',
-    webhookSecret: !!secret
+    status: 'active'
   })
 }

@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@clerk/nextjs/server'
 import { algoliaClient, ALGOLIA_INDICES, AgendaSearchRecord, writeIndexName } from '@/lib/algolia'
 import {
   getPublishedAgendaIndexDocs,
@@ -8,20 +7,17 @@ import {
   type AgendaIndexDoc,
 } from '@/lib/content/outputs'
 import { transformAgendaForIndex } from '@/payload/hooks/search-sync'
+import { authorizeSearchSync, refuseUnlessLiveIndexWritesAllowed } from '@/lib/auth/search-sync-gate'
 
 type SanityAgenda = AgendaIndexDoc
 
 export async function POST(request: NextRequest) {
   try {
-    // Check internal secret auth or Clerk auth
-    const authHeader = request.headers.get('authorization')
-    const internalSecret = process.env.INTERNAL_SYNC_SECRET
-    const { userId } = await auth()
-
-    // Allow if either internal secret matches OR user is authenticated
-    if (authHeader !== `Bearer ${internalSecret}` && !userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    // Internal bearer or staff actor; 401 anonymous, 403 member. The check this
+    // replaced let any signed-in user re-index and matched `Bearer undefined`
+    // when the secret was unset (hub audit 2026-09-16, H3).
+    const denied = await authorizeSearchSync(request)
+    if (denied) return denied
 
     // Check if Algolia client is available
     if (!algoliaClient) {
@@ -29,6 +25,10 @@ export async function POST(request: NextRequest) {
         error: 'Search service not available - missing Algolia configuration'
       }, { status: 503 })
     }
+
+    // Never write to the live index from dev, preview or CI.
+    const refused = refuseUnlessLiveIndexWritesAllowed()
+    if (refused) return refused
 
     const { type = 'full', agendaIds = [] } = await request.json()
 
@@ -127,8 +127,13 @@ export async function POST(request: NextRequest) {
 }
 
 // GET endpoint to check sync status
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    // Same gate as POST: this used to return CMS/index counts to anyone
+    // (hub audit 2026-09-16, H3c).
+    const denied = await authorizeSearchSync(request)
+    if (denied) return denied
+
     // Check if Algolia client is available
     if (!algoliaClient) {
       return NextResponse.json({

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma, safeQuery } from "@/lib/prisma";
 import { sendWeeklyDigestEmail } from "@/lib/notifications/email";
+import { bearerMatches } from "@/lib/auth/bearer";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
@@ -30,11 +31,11 @@ const TYPE_LINE: Record<string, string> = {
  * kind=digest unsubscribe. Trigger: vercel.json cron, Mondays 08:00 UTC.
  */
 export async function GET(req: NextRequest) {
-  // Fail CLOSED: this route sends real email, so no secret means no run —
-  // unlike the notification-only crons, an unset CRON_SECRET must not leave
-  // it publicly triggerable (learned the hard way in dev, 2026-07-14).
-  const secret = process.env.CRON_SECRET;
-  if (!secret || req.headers.get("authorization") !== `Bearer ${secret}`) {
+  // Fail CLOSED: this route sends real email, so no secret means no run — an
+  // unset CRON_SECRET must not leave it publicly triggerable (learned the hard
+  // way in dev, 2026-07-14). bearerMatches() refuses an unset secret and
+  // compares in constant time; all three crons share it since 2026-09-16.
+  if (!bearerMatches(req.headers.get("authorization"), process.env.CRON_SECRET)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
