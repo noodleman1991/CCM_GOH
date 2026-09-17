@@ -1,10 +1,11 @@
 "use server";
 
-import { createHash } from "crypto";
+import { headers } from "next/headers";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getActor } from "@/lib/authz";
 import { assertRateLimit, RateLimitError } from "@/lib/rate-limit";
+import { ipActorKey } from "@/lib/rate-limit-actor";
 import { isCommentTargetValid, collaborationIdForTarget } from "@/lib/comments/target";
 import { authorizeCollab } from "@/lib/collaboration/service";
 import { moderateBody } from "@/lib/comments/moderation";
@@ -117,13 +118,11 @@ export async function postComment(input: PostCommentInput): Promise<PostCommentR
   const isAnon = !actor;
 
   // 2. rate-limit
-  // Anonymous key is a truncated hash so no PII lands in the rate-limit store.
-  const actorKey =
-    actor?.id ??
-    `anon:${createHash("sha256")
-      .update((data.authorName ?? "unknown").toLowerCase())
-      .digest("hex")
-      .slice(0, 16)}`;
+  // Anonymous key is the hashed client IP (audit M5): it used to be a hash of
+  // `authorName`, which the caller picks, so every new display name was a fresh
+  // 3-per-10-minutes budget. The IP is the one thing a browser cannot rotate
+  // per request; hashing keeps the raw address out of the rate-limit store.
+  const actorKey = actor?.id ?? ipActorKey(await headers());
   try {
     await assertRateLimit(actorKey, "comment:create", {
       limit: isAnon ? 3 : 20,
@@ -324,6 +323,16 @@ export async function toggleReaction(
   if (!actor) return { ok: false, error: "Sign in to react." };
   if (emoji.length > 8) return { ok: false, error: "Invalid." };
 
+  // Every new reaction writes a row and a notification to the comment author;
+  // a loop over toggleReaction was an unbounded notification cannon. 60 per 5
+  // minutes is far above a human clicking, far below a script.
+  try {
+    await assertRateLimit(actor.id, "comment:react", { limit: 60, windowSeconds: 300 });
+  } catch (e) {
+    if (e instanceof RateLimitError) return { ok: false, error: "Too many reactions — please slow down." };
+    throw e;
+  }
+
   const existing = await prisma.reaction.findUnique({
     where: { commentId_userId_emoji: { commentId, userId: actor.id, emoji } },
   });
@@ -352,12 +361,25 @@ export async function reportComment(
 ): Promise<{ ok: boolean; error?: string }> {
   const actor = await getActor();
   if (!actor) return { ok: false, error: "Sign in to report." };
+
+  // Reports land in the staff moderation queue; a script could bury it. A
+  // genuine reporter files a handful per session, not ten a minute.
+  try {
+    await assertRateLimit(actor.id, "comment:report", { limit: 10, windowSeconds: 600 });
+  } catch (e) {
+    if (e instanceof RateLimitError) return { ok: false, error: "Too many reports — please slow down." };
+    throw e;
+  }
+
   try {
     await prisma.commentReport.create({
       data: { commentId, reporterId: actor.id, reason: reason.slice(0, 500) },
     });
-  } catch {
+  } catch (err) {
     // unique [commentId, reporterId] — already reported; treat as success.
+    // Only that case (Prisma P2002): a bare catch also swallowed connection
+    // errors and told the reporter their report was filed when it was not.
+    if ((err as { code?: string }).code !== "P2002") throw err;
   }
   return { ok: true };
 }

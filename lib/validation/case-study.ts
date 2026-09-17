@@ -118,3 +118,60 @@ export const caseStudySubmissionSchema = z
     .passthrough()
 
 export type CaseStudySubmission = z.infer<typeof caseStudySubmissionSchema>
+
+const localizedDraftText = z
+    .object({ en: optionalString, es: optionalString, fr: optionalString, ar: optionalString })
+    .passthrough()
+
+/**
+ * Autosave schema for /api/case-studies/drafts (audit M6). The submission
+ * schema with its "required" rules relaxed — a draft is a half-typed form,
+ * so `title.en` may be "", `content` `[]`, `authors` empty and an author's
+ * name blank (that is exactly what the form's initial state sends) — but the
+ * TYPES still hold, so a number where an object belongs, or prose where the
+ * Portable Text array belongs, is refused before it reaches the CMS.
+ * `passthrough` keeps the form's extra keys (`selectedTags`, `formMetadata`,
+ * `contentLanguage`); `stripServerOwnedDraftKeys` removes the ones the server
+ * assigns.
+ */
+export const caseStudyDraftSchema = caseStudySubmissionSchema
+    .partial()
+    .extend({
+        title: localizedDraftText.optional(),
+        excerpt: localizedDraftText.optional(),
+        content: z.array(z.record(z.unknown())).optional(),
+        authors: z
+            .array(
+                z
+                    .object({
+                        name: optionalString,
+                        email: optionalString,
+                        role: optionalString,
+                        userId: optionalString,
+                    })
+                    .passthrough()
+            )
+            .optional(),
+        tags: z.array(z.string()).optional(),
+        selectedTags: z.array(z.string()).optional(),
+        // The picker sets the whole value at once, but tolerate a partial
+        // one: a draft that fails to save over a half-filled place is worse
+        // than a draft carrying one.
+        place: caseStudySubmissionSchema.shape.place.unwrap().partial().nullable().optional(),
+    })
+    .passthrough()
+
+/**
+ * Keys a draft author must never set. The Sanity arm's `createDocument` is
+ * `writeClient.create(doc)`, which honours a caller-supplied `_id`/`_type`;
+ * `userId` is the ownership column both arms filter on; `status` /
+ * `moderationStatus` decide what the public sees once the draft is promoted.
+ * All of them are assigned server-side in `saveCaseStudyDraft`.
+ */
+const SERVER_OWNED_DRAFT_KEYS = ['_id', '_type', '_rev', 'id', 'userId', 'status', 'moderationStatus', 'lastSaved'] as const
+
+export function stripServerOwnedDraftKeys<T extends Record<string, unknown>>(draft: T): Omit<T, (typeof SERVER_OWNED_DRAFT_KEYS)[number]> {
+    const copy: Record<string, unknown> = { ...draft }
+    for (const key of SERVER_OWNED_DRAFT_KEYS) delete copy[key]
+    return copy as Omit<T, (typeof SERVER_OWNED_DRAFT_KEYS)[number]>
+}

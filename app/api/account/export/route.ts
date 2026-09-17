@@ -1,15 +1,23 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
+import { rateLimitRequest } from "@/lib/rate-limit-route";
 
 /**
  * GDPR data export (Articles 15/20). Returns the signed-in user's personal data
  * as a JSON download: their profile, authored content, prompt answers, recent
  * work, comments, collaboration memberships, and (PII-light) download history.
+ *
+ * Fifteen table scans per call, so it is limited to 3 per hour per user
+ * (audit Low list): a person exports once; a loop over this route is the
+ * cheapest way to load the database from one account.
  */
-export async function GET() {
+export async function GET(request: NextRequest) {
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const limited = await rateLimitRequest(request, "account:export", { limit: 3, windowSeconds: 3600 });
+  if (limited) return limited;
 
   const [user, recentWork, promptAnswers, comments, memberships, downloads, conversations] = await Promise.all([
     prisma.user.findUnique({ where: { id: userId } }),
