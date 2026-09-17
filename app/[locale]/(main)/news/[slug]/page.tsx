@@ -1,5 +1,3 @@
-export const revalidate = 300;
-
 import type { Metadata } from "next"
 import { notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
@@ -17,31 +15,13 @@ import { imageUrl } from '@/lib/content/images'
 import { getLocalizedValue } from '@/i18n/i18n-helpers'
 import { formatNewsDate, getReadingTime } from '@/lib/news-utils'
 import { PortableText } from '@portabletext/react'
-import { getNewsPostBySlug, getRelatedNews, getNewsSlugs } from '@/lib/content/news'
+import { getNewsPostBySlug, getRelatedNews } from '@/lib/content/news'
 import { CommentIsland } from '@/components/comments/comment-island'
 import { JsonLd, articleJsonLd } from '@/lib/seo/json-ld'
 import { FollowButton } from "@/components/follow/follow-button";
 import { absoluteUrl } from "@/lib/seo/site-url"
 
 // Generate static params for all news posts
-export async function generateStaticParams() {
-  const slugs = await getNewsSlugs()
-
-  const locales = ['en', 'es', 'fr', 'ar']
-  const params = []
-
-  for (const slug of slugs) {
-    for (const locale of locales) {
-      params.push({
-        locale,
-        slug,
-      })
-    }
-  }
-
-  return params
-}
-
 export async function generateMetadata({
   params,
 }: {

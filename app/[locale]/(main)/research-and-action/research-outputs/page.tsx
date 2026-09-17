@@ -1,5 +1,3 @@
-export const revalidate = 300;
-
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { BackLink } from "@/components/ui/back-link";

@@ -1,10 +1,8 @@
-export const revalidate = 300;
-
 import type { Metadata } from "next"
 import { notFound } from 'next/navigation'
 //import { getTranslations } from 'next-intl/server'
 import { SafeCoverImage } from '@/components/content/safe-cover-image'
-import { getCaseStudyBySlug, getCaseStudySlugs } from '@/lib/content/case-studies'
+import { getCaseStudyBySlug } from '@/lib/content/case-studies'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
@@ -21,25 +19,6 @@ import { getTranslations } from 'next-intl/server'
 import { cn } from '@/lib/utils'
 import { heading } from '@/lib/design-tokens'
 import { sortedTags, normalizeTagColor } from '@/lib/tags'
-
-export async function generateStaticParams() {
-  const slugs = await getCaseStudySlugs()
-
-  // Generate params for all supported locales
-  const locales = ['en', 'es', 'fr', 'ar']
-  const params = []
-
-  for (const slug of slugs) {
-    for (const locale of locales) {
-      params.push({
-        locale,
-        slug
-      })
-    }
-  }
-
-  return params
-}
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }): Promise<Metadata> {
   const { locale, slug } = await params

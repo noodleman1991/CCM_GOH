@@ -1,5 +1,3 @@
-export const revalidate = 300;
-
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
@@ -11,7 +9,6 @@ import { heading } from "@/lib/design-tokens";
 import { cn } from "@/lib/utils";
 import {
   getLivedExperienceBySlug,
-  getLivedExperienceSlugs,
 } from "@/lib/content/lived-experiences";
 import { LivedExperiencePlayer } from "@/components/lived-experiences/lived-experience-player";
 import { CommentIsland } from "@/components/comments/comment-island";
@@ -19,12 +16,6 @@ import { RelatedContent } from "@/components/content/related-content";
 import PortableTextRenderer from "@/components/portable-text-renderer";
 import { JsonLd, articleJsonLd } from "@/lib/seo/json-ld";
 import { FollowButton } from "@/components/follow/follow-button";
-
-export async function generateStaticParams() {
-  const slugs = await getLivedExperienceSlugs();
-  const locales = ["en", "es", "fr", "ar"];
-  return locales.flatMap((locale) => slugs.map((s) => ({ locale, slug: s.slug })));
-}
 
 export async function generateMetadata({
   params,

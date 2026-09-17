@@ -1,10 +1,8 @@
-export const revalidate = 300;
-
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { SafeCoverImage } from "@/components/content/safe-cover-image";
 import { getTranslations } from "next-intl/server";
-import { getResearchOutputBySlug, getResearchOutputSlugs } from "@/lib/content/outputs";
+import { getResearchOutputBySlug } from "@/lib/content/outputs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Calendar, Building } from "lucide-react";
@@ -20,12 +18,6 @@ import { heading } from "@/lib/design-tokens";
 import { sortedTags, normalizeTagColor } from "@/lib/tags";
 import type { LocalizedString } from "@/types/case-study";
 import { absoluteUrl } from "@/lib/seo/site-url";
-
-export async function generateStaticParams() {
-  const outputs = await getResearchOutputSlugs();
-  const locales = ["en", "es", "fr", "ar"];
-  return outputs.flatMap((o) => locales.map((locale) => ({ locale, slug: o.slug })));
-}
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }): Promise<Metadata> {
   const { locale, slug } = await params;

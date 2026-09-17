@@ -13,6 +13,7 @@ import { getUserContributions, getRegionMembers } from '@/lib/community/region-d
 import { myTasks } from '@/lib/actions/plans'
 import { getForYou, forYouHref } from '@/lib/follows/for-you'
 import { safeQuery } from '@/lib/prisma'
+import { ensureUserRow } from "@/lib/user-bootstrap";
 
 /**
  * Dashboard Page - Server Component
@@ -66,10 +67,10 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
 
   // If user doesn't exist, webhook is still processing - wait and retry once
   if (!user) {
-    console.log(`⏳ Dashboard: User ${userId} not in Prisma yet - waiting for webhook...`)
+    console.log(`Dashboard: User ${userId} not in Prisma yet - bootstrapping from Clerk`)
 
-    // Wait 1 second for webhook to complete
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    // Create the row from Clerk instead of sleeping (lib/user-bootstrap.ts).
+    await ensureUserRow(userId)
 
     // Retry fetch
     user = await prisma.user.findUnique({

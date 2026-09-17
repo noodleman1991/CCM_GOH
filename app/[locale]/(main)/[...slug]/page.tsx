@@ -1,57 +1,15 @@
-export const revalidate = 120;
-
 import type { Metadata } from "next"
 import type { ComponentProps } from "react";
 import Blocks from "@/components/blocks";
 import {
   getPageBySlug,
-  getPageSlugs,
-  getPageTranslations,
   getRegionalCommunityPage,
-  getRegionalCommunityPageSlugs,
 } from "@/lib/content/pages";
 import type { Locale } from "@/lib/content/types";
 import { notFound, redirect } from "next/navigation";
 import { generatePageMetadata, type MetadataSource } from "@/lib/content/metadata";
 import { isRTL } from "@/i18n/i18n-helpers";
 import { getViewerUserId } from "@/lib/authz";
-
-export async function generateStaticParams() {
-    // Fetch both regional community pages AND generic pages
-    const rcPages = await getRegionalCommunityPageSlugs();
-    const genericPages = await getPageSlugs();
-    const allPages = [...rcPages, ...genericPages];
-    const params = [];
-
-    for (const page of allPages) {
-        // Split slug into segments for catch-all route [...slug]
-        const slugSegments = page.slug.split('/');
-
-        params.push({
-            locale: page.locale,
-            slug: slugSegments, // Array for catch-all route
-        });
-
-        try {
-            const translations = page?.id ? await getPageTranslations(page.id) : [];
-            if (translations?.length > 0) {
-                for (const translation of translations) {
-                    if (translation.language && translation.slug?.current) {
-                        const translationSlugSegments = translation.slug.current.split('/');
-                        params.push({
-                            locale: translation.language,
-                            slug: translationSlugSegments, // Array for catch-all route
-                        });
-                    }
-                }
-            }
-        } catch (e) {
-            console.error(`Error fetching translations for ${page.id}:`, e);
-        }
-    }
-
-    return params;
-}
 
 export async function generateMetadata({
     params

@@ -12,7 +12,11 @@ import { getRegionFacetItems, getRegionHighlightItems, getRegionRecentItems, typ
 // `?region=all&limit=6` — lightweight cross-region "recent" mode (E1's
 // no-selection invitation row): the most recently published geotagged items
 // across every region/type, no single facet required.
-export const revalidate = 300;
+// `export const revalidate` on a route handler that reads `searchParams` is
+// dead — the request is dynamic — so nothing was cached and no Cache-Control
+// was sent. The CDN caches these for five minutes now, serving stale for ten
+// more while it refreshes.
+const PUBLIC_CACHE = { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" };
 
 const FACET_TYPE: Record<string, string> = {
   caseStudyCount: "caseStudy",
@@ -82,10 +86,10 @@ export async function GET(req: NextRequest) {
       }
       // Stable presentation order: the canonical region order, not fetch order.
       const items = REGION_CODES_ORDER.filter((c) => byRegion.has(c)).map((c) => byRegion.get(c));
-      return NextResponse.json({ items });
+      return NextResponse.json({ items }, { headers: PUBLIC_CACHE });
     } catch (e) {
       console.error("[region-items] highlights fetch failed:", e);
-      return NextResponse.json({ items: [] });
+      return NextResponse.json({ items: [] }, { headers: PUBLIC_CACHE });
     }
   }
 
@@ -117,10 +121,10 @@ export async function GET(req: NextRequest) {
           (b.date ?? "").localeCompare(a.date ?? "")
         )
         .slice(0, limit);
-      return NextResponse.json({ items });
+      return NextResponse.json({ items }, { headers: PUBLIC_CACHE });
     } catch (e) {
       console.error("[region-items] recent fetch failed:", e);
-      return NextResponse.json({ items: [] });
+      return NextResponse.json({ items: [] }, { headers: PUBLIC_CACHE });
     }
   }
 
@@ -136,7 +140,7 @@ export async function GET(req: NextRequest) {
     ),
   ];
   if (!isRegionCode(region) || types.length === 0) {
-    return NextResponse.json({ items: [] });
+    return NextResponse.json({ items: [] }, { headers: PUBLIC_CACHE });
   }
   const slug = REGION_TO_RC_SLUG[region];
   // Country-derived region membership (content-filter's regionMatchFilter
@@ -165,9 +169,9 @@ export async function GET(req: NextRequest) {
             (b.date ?? "").localeCompare(a.date ?? "")
           )
           .slice(0, 12);
-    return NextResponse.json({ items });
+    return NextResponse.json({ items }, { headers: PUBLIC_CACHE });
   } catch (e) {
     console.error("[region-items] fetch failed:", e);
-    return NextResponse.json({ items: [] });
+    return NextResponse.json({ items: [] }, { headers: PUBLIC_CACHE });
   }
 }

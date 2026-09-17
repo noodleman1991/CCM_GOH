@@ -1,5 +1,3 @@
-export const revalidate = 300;
-
 import type { Metadata } from "next";
 import type { PortableTextBlock } from "@portabletext/types";
 import { notFound } from "next/navigation";

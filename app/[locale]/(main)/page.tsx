@@ -5,49 +5,12 @@ import Homepage from "@/components/pages/homepage";
 import {
   getPageBySlug,
   getHomepage,
-  getPageTranslations,
-  getHomepageSlugs,
 } from "@/lib/content/pages";
 import type { Locale } from "@/lib/content/types";
 import { generatePageMetadata, type MetadataSource } from "@/lib/content/metadata";
 import MissingSanityPage from "@/components/ui/missing-sanity-page";
-import { routing } from '@/i18n/routing';
 import { isRTL } from "@/i18n/i18n-helpers";
 import { getViewerUserId } from "@/lib/authz";
-
-export async function generateStaticParams() {
-    const homepages = await getHomepageSlugs();
-    const params = [];
-
-    for (const homepage of homepages) {
-        params.push({
-            locale: homepage.locale,
-        });
-
-        try {
-            const translations = homepage?.id ? await getPageTranslations(homepage.id) : [];
-            if (translations?.length > 0) {
-                for (const translation of translations) {
-                    if (translation && translation.language && translation.slug?.current) {
-                        params.push({
-                            locale: translation.language,
-                        });
-                    }
-                }
-            }
-        } catch (e) {
-            console.error(`Error fetching translations for ${homepage.id}:`, e);
-        }
-    }
-
-    if (params.length === 0) {
-        return routing.locales.map((locale) => ({
-            locale,
-        }));
-    }
-
-    return params;
-}
 
 export async function generateMetadata({
     params

@@ -63,7 +63,6 @@ const nextConfig = {
   // The Arabic homepage's static export can exceed the default 60s under slow
   // network conditions (heavy Sanity content). Raise the per-page generation
   // budget so static export doesn't fail on a single slow locale.
-  staticPageGenerationTimeout: 180,
   // Next 16.3+ appends an agent-rules block to CLAUDE.md on every `next dev`
   // start (config-shared.d.ts: agentRules, default true). CLAUDE.md here is
   // hand-maintained, and a dev-server start should not rewrite tracked files.

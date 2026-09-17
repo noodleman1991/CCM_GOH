@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
+import { ensureUserRow } from "@/lib/user-bootstrap";
 
 export default async function SettingsLayout({
                                                  children,
@@ -27,26 +28,12 @@ export default async function SettingsLayout({
         where: { id: userId }
     });
 
-    // If user not found, webhook may still be processing - wait and retry
+    // The webhook that writes the row can lag a first sign-in; create it
+    // from Clerk now instead of sleeping in the render (lib/user-bootstrap.ts).
     if (!dbUser) {
-        console.log(`⏳ User ${userId} not found in database - webhook may be processing. Waiting 3s...`)
-
-        // Wait for webhook to complete (3s accounts for Vercel cold starts + DB latency)
-        await new Promise(resolve => setTimeout(resolve, 3000))
-
-        // Retry fetch
-        dbUser = await prisma.user.findUnique({
-            where: { id: userId }
-        })
-
-        if (!dbUser) {
-            // Webhook still hasn't created user - redirect to onboarding
-            // Onboarding's upsert will create user as fallback
-            console.log(`⚠️ User ${userId} still not found after retry - redirecting to onboarding`)
-            redirect("/onboarding")
-        }
-
-        console.log(`✅ User ${userId} found after retry`)
+        await ensureUserRow(userId)
+        dbUser = await prisma.user.findUnique({ where: { id: userId } })
+        if (!dbUser) redirect("/onboarding")
     }
 
     return (

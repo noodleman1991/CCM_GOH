@@ -11,7 +11,11 @@ import { countryCentroid } from "@/lib/maps/country-geometry";
 import { clusterPins, type FacetContentType, type PinItem } from "@/lib/maps/cluster-pins";
 import { getRegionPinRows, type RegionPinRow } from "@/lib/content/regions";
 
-export const revalidate = 300;
+// `export const revalidate` on a route handler that reads `searchParams` is
+// dead — the request is dynamic — so nothing was cached and no Cache-Control
+// was sent. The CDN caches these for five minutes now, serving stale for ten
+// more while it refreshes.
+const PUBLIC_CACHE = { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" };
 
 countriesLib.registerLocale(enLocale);
 
@@ -145,5 +149,5 @@ export async function GET(req: NextRequest) {
         name: countriesLib.getName(countryCode3, "en") ?? countryCode3,
       }))
       .sort((a, b) => b.count - a.count),
-  });
+  }, { headers: PUBLIC_CACHE });
 }

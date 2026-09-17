@@ -8,7 +8,11 @@ import { isoToRegion } from "@/lib/maps/iso-to-region";
 import { getRegionFacetCounts } from "@/lib/content/regions";
 
 // Counts change slowly; cache for 5 minutes.
-export const revalidate = 300;
+// `export const revalidate` on a route handler that reads `searchParams` is
+// dead — the request is dynamic — so nothing was cached and no Cache-Control
+// was sent. The CDN caches these for five minutes now, serving stale for ten
+// more while it refreshes.
+const PUBLIC_CACHE = { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" };
 
 function emptyCounts(): Record<string, number> {
   return Object.fromEntries(REGION_CODES.map((c) => [c, 0]));
@@ -158,5 +162,5 @@ export async function GET(req: NextRequest) {
     facets,
     data,
     totals: byFacetTotals as Record<FacetId, number>,
-  });
+  }, { headers: PUBLIC_CACHE });
 }

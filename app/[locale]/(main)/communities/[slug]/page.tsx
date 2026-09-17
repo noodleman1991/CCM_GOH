@@ -1,5 +1,3 @@
-export const revalidate = 120;
-
 import type { Metadata } from 'next';
 import type { ComponentProps } from 'react';
 // todo: userId may be undefined? (no-!)
@@ -31,26 +29,6 @@ export async function generateMetadata({
     const title =
         pageData?.title || (typeof name === "string" ? name : undefined);
     return title ? { title } : {};
-}
-
-export async function generateStaticParams() {
-    const data = await getRegionalCommunityPageSlugs();
-
-    if (!data || data.length === 0) {
-        return [];
-    }
-
-    const locales = ['en', 'es', 'fr', 'ar'];
-    const slugs = [...new Set(data.map((page) => page.slug))];
-    const params = [];
-
-    for (const slug of slugs) {
-        for (const locale of locales) {
-            params.push({ locale, slug });
-        }
-    }
-
-    return params;
 }
 
 export default async function RegionalCommunityPage({
