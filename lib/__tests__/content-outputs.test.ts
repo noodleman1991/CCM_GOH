@@ -545,7 +545,7 @@ describe("getAgendaSearchRecords / getResearchOutputSearchRecords", () => {
         kind: "agenda",
         title: "My agenda",
         excerpt: undefined,
-        url: "/en/research-and-action/agendas/my-agenda",
+        url: "/en/research-and-action/regional-agendas",
         locale: "en",
       },
     ]);
@@ -1458,7 +1458,7 @@ describe("outputs, answered by Payload", () => {
           kind: "agenda",
           title: "My agenda",
           excerpt: undefined,
-          url: "/en/research-and-action/agendas/my-agenda",
+          url: "/en/research-and-action/regional-agendas",
           locale: "en",
         },
       ]);

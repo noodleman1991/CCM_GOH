@@ -148,8 +148,10 @@ const CONTENT_SITEMAP_SPECS: ContentSitemapSpec[] = [
   { filter: '_type == "caseStudy" && status == "approved"', pathPrefix: "/research-and-action/case-studies", changeFrequency: "monthly", priority: 0.8 },
   { filter: '_type == "newsPost"', pathPrefix: "/news", changeFrequency: "weekly", priority: 0.7 },
   { filter: '_type == "livedExperience" && (status == "approved" || !defined(status))', pathPrefix: "/lived-experiences", changeFrequency: "monthly", priority: 0.7 },
-  { filter: '_type == "agenda"', pathPrefix: "/research-and-action/agendas", changeFrequency: "monthly", priority: 0.6 },
-  { filter: '_type == "report"', pathPrefix: "/research-and-action/reports", changeFrequency: "monthly", priority: 0.6 },
+  // No `agenda` or `report` spec: neither type has a detail route (agendas
+  // live on the section pages, e.g. /research-and-action/regional-agendas),
+  // so listing them produced 116 dead URLs. Decision 11 of the 2026-09-16
+  // hardening plan dropped the specs; next.config.mjs redirects the prefix.
   // B7 additions: the researchOutput successor type, the seven regional
   // community pages, and approved events — all public detail routes that
   // were invisible to crawlers.

@@ -69,7 +69,7 @@ export function CaseStudyCard({
 }) {
   if (!caseStudy) return null;
 
-  const href = `/${locale}/case-studies/${caseStudy.slug?.current}`;
+  const href = `/${locale}/research-and-action/case-studies/${caseStudy.slug?.current}`;
 
   if (variant === "minimal") {
     return (

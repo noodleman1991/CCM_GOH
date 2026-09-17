@@ -131,6 +131,22 @@ const nextConfig = {
         destination: '/',
         permanent: true,
       },
+      // Two prefixes shipped in links, cards and the sitemap without ever
+      // having a route (2026-09-16 audit). The code no longer emits either;
+      // these catch copies already in the wild. `:locale` is constrained so
+      // the first rule cannot match `/research-and-action/case-studies/<slug>`
+      // itself and bounce the live page.
+      {
+        source: '/:locale(en|es|fr|ar)/case-studies/:slug',
+        destination: '/:locale/research-and-action/case-studies/:slug',
+        permanent: true,
+      },
+      // Agendas have no detail page (Decision 11); the section page is home.
+      {
+        source: '/:locale(en|es|fr|ar)/research-and-action/agendas/:slug*',
+        destination: '/:locale/research-and-action/regional-agendas',
+        permanent: true,
+      },
     ]
   },
   images: {

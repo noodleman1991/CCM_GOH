@@ -19,10 +19,10 @@ export default async function CaseStudySubmitPage({
                                                       searchParams
                                                   }: {
     params: Promise<{ locale: string }>
-    searchParams: Promise<{ workspace?: string; edit?: string }>
+    searchParams: Promise<{ workspace?: string; edit?: string; draft?: string }>
 }) {
     const { locale } = await params
-    const { workspace, edit } = await searchParams
+    const { workspace, edit, draft } = await searchParams
     const { userId } = await auth()
 
     if (!userId) {
@@ -51,6 +51,9 @@ export default async function CaseStudySubmitPage({
                 userId={userId}
                 workspaceId={workspace ?? null}
                 editDoc={editDoc}
+                // Continue from the submissions dashboard: reopen this draft,
+                // not the latest one. The form fetches it by id, owner-scoped.
+                draftId={draft ?? null}
             />
         </div>
     )

@@ -1482,6 +1482,25 @@ export async function getLatestCaseStudyDraft(userId: string): Promise<Record<st
   return draft ?? null;
 }
 
+/**
+ * One draft by id, scoped to its owner — the submissions dashboard lists every
+ * draft with a Continue button, so the form must be able to reopen a specific
+ * one rather than only the latest. `queryRaw` on both backends for the same
+ * reason as `getLatestCaseStudyDraft`: the answer feeds the autosave update.
+ * A guessed id belonging to someone else is simply null.
+ */
+export async function getCaseStudyDraftById(
+  userId: string,
+  draftId: string,
+): Promise<Record<string, unknown> | null> {
+  if (onPayload()) return payloadCaseStudies.getCaseStudyDraftById(userId, draftId);
+  const draft = await queryRaw<Record<string, unknown> | null>(
+    `*[_type == "caseStudyDraft" && _id == $draftId && userId == $userId][0]`,
+    { draftId, userId },
+  );
+  return draft ?? null;
+}
+
 export async function saveCaseStudyDraft(
   userId: string,
   draftId: string | undefined,

@@ -4,6 +4,7 @@ import { z } from "zod"
 import {
     CaseStudyDraftNotFoundError,
     deleteCaseStudyDraft,
+    getCaseStudyDraftById,
     getLatestCaseStudyDraft,
     saveCaseStudyDraft,
 } from "@/lib/content/case-studies"
@@ -26,15 +27,26 @@ const saveBodySchema = z.object({
 })
 
 /**
- * Returns the authenticated user's most recently saved case-study draft (if any).
- * Read happens server-side with the tokened client — the dataset is public, so
- * a browser-side `userId` filter would not be a security boundary.
+ * Returns one of the authenticated user's case-study drafts: the one named by
+ * `?id=` (the dashboard's Continue button), else the most recently saved (the
+ * form's resume-on-mount). Both lookups are scoped to the caller server-side —
+ * the dataset is public, so a browser-side `userId` filter would not be a
+ * security boundary — and an id the caller does not own is a 404.
  */
-export async function GET() {
+export async function GET(request: NextRequest) {
     try {
         const { userId } = await auth()
         if (!userId) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+        }
+
+        const id = request.nextUrl.searchParams.get("id")
+        if (id) {
+            const draft = await getCaseStudyDraftById(userId, id)
+            if (!draft) {
+                return NextResponse.json({ error: "Draft not found" }, { status: 404 })
+            }
+            return NextResponse.json({ draft })
         }
 
         const draft = await getLatestCaseStudyDraft(userId)

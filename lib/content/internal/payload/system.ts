@@ -237,12 +237,9 @@ const SITEMAP_SOURCES: Record<string, SitemapSource> = {
   "/research-and-action/case-studies": { collections: ["caseStudies"], moderation: "approved", lastModified: "sanityUpdatedAt" },
   "/news": { collections: ["newsPosts"], moderation: "none", lastModified: "sanityUpdatedAt" },
   "/lived-experiences": { collections: ["livedExperiences"], moderation: "approved-or-unset", lastModified: "sanityUpdatedAt" },
-  "/research-and-action/agendas": { collections: ["agendas"], moderation: "none", lastModified: "sanityUpdatedAt" },
-  // `report` has no Payload collection and zero Sanity documents — one of the
-  // four things the plan names as genuinely unanswerable. An empty source, not
-  // a missing one: the spec still runs and still returns nothing, exactly as
-  // the GROQ does.
-  "/research-and-action/reports": { collections: [], moderation: "none", lastModified: "sanityUpdatedAt" },
+  // No agenda or report source: `lib/content/system.ts` dropped both specs
+  // (no detail route for either — Decision 11), and a source with no spec
+  // would only hide that a dead prefix had crept back in.
   "/research-and-action/research-outputs": { collections: ["researchOutputs"], moderation: "approved", lastModified: "sanityUpdatedAt" },
   "/communities": { collections: ["regionalCommunityPages", "regionalCommunities"], moderation: "none", lastModified: "sanityUpdatedAt" },
   "/collaborate/events": { collections: ["events"], moderation: "approved", lastModified: "updatedAt" },

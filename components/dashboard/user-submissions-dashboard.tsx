@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useTranslations } from 'next-intl'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import Image from 'next/image'
 
 import { Button } from '@/components/ui/button'
@@ -222,15 +222,19 @@ export default function UserSubmissionsDashboard({
           {/* Action buttons */}
           <div className="flex gap-2">
             {submission.status === 'revision' && (
-              <Button size="sm" className="flex items-center gap-1">
-                <Edit className="w-3 h-3" />
-                {t('actions.edit')}
+              // The submit page's `?edit=<id>` mode: loads the author's own
+              // revision-status doc into the form and resubmits in place.
+              <Button size="sm" className="flex items-center gap-1" asChild>
+                <Link href={`/research-and-action/case-studies/submit?edit=${submission._id}`}>
+                  <Edit className="w-3 h-3" />
+                  {t('actions.edit')}
+                </Link>
               </Button>
             )}
 
             {submission.status === 'approved' && submission.slug && (
               <Button size="sm" variant="outline" asChild>
-                <Link href={`/${locale}/case-studies/${submission.slug}`}>
+                <Link href={`/research-and-action/case-studies/${submission.slug}`}>
                   <Eye className="w-3 h-3 me-1" />
                   {t('actions.view')}
                 </Link>
@@ -292,9 +296,12 @@ export default function UserSubmissionsDashboard({
           )}
         </div>
 
-        <Button size="sm" className="w-full">
-          <Edit className="w-3 h-3 me-1" />
-          {t('actions.continue')}
+        {/* `?draft=<id>`: the form reopens this draft rather than the latest. */}
+        <Button size="sm" className="w-full" asChild>
+          <Link href={`/research-and-action/case-studies/submit?draft=${draft._id}`}>
+            <Edit className="w-3 h-3 me-1" />
+            {t('actions.continue')}
+          </Link>
         </Button>
       </CardContent>
     </Card>
@@ -312,7 +319,7 @@ export default function UserSubmissionsDashboard({
         </div>
 
         <Button asChild className="flex items-center gap-2">
-          <Link href={`/${locale}/research-and-action/case-studies/submit`}>
+          <Link href="/research-and-action/case-studies/submit">
             <Plus className="w-4 h-4" />
             {t('newCaseStudy')}
           </Link>
@@ -401,7 +408,7 @@ export default function UserSubmissionsDashboard({
                   </p>
                 </div>
                 <Button asChild>
-                  <Link href={`/${locale}/research-and-action/case-studies/submit`}>
+                  <Link href="/research-and-action/case-studies/submit">
                     <Plus className="w-4 h-4 me-2" />
                     {t('empty.submissions.action')}
                   </Link>

@@ -29,8 +29,8 @@ export function getCaseStudyExcerpt(
 export function getCaseStudyUrl(caseStudy: CaseStudy, locale: SupportedLanguage): string {
     const slug = caseStudy.slug.current;
     return locale === 'en'
-        ? `/case-studies/${slug}`
-        : `/${locale}/case-studies/${slug}`;
+        ? `/research-and-action/case-studies/${slug}`
+        : `/${locale}/research-and-action/case-studies/${slug}`;
 }
 
 export function getPrimaryAuthor(caseStudy: CaseStudy): CaseStudyAuthor | null {

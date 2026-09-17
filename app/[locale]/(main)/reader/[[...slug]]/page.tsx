@@ -58,7 +58,7 @@ export default async function ReaderPage({
           The chapter-by-chapter reader is being prepared.
         </p>
         <Button asChild className="mt-6">
-          <Link href="/research-and-action/agendas">Browse the agendas</Link>
+          <Link href="/research-and-action/regional-agendas">Browse the agendas</Link>
         </Button>
       </div>
     );

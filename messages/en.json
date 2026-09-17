@@ -289,7 +289,8 @@
     "contract": {
       "PROJECT": "Get notified when this project publishes an output or schedules an event",
       "REGION": "New content from this region appears in your For-you strip and weekly digest",
-      "THEME": "New content on this theme appears in your For-you strip and weekly digest"
+      "THEME": "New content on this theme appears in your For-you strip and weekly digest",
+      "USER": "New outputs and activity from this person appear in your For-you strip and weekly digest"
     }
   },
   "notifications": {
