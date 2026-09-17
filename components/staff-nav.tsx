@@ -11,6 +11,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { FEATURES } from "@/lib/features";
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json() as Promise<{ isStaff: boolean }>);
 
@@ -35,14 +36,16 @@ export function StaffNav() {
             </Link>
           </SidebarMenuButton>
         </SidebarMenuItem>
-        <SidebarMenuItem>
-          <SidebarMenuButton asChild tooltip={t("broadcast")}>
-            <Link href="/moderation/broadcast">
-              <Megaphone />
-              <span className="group-data-[collapsible=icon]:hidden">{t("broadcast")}</span>
-            </Link>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
+        {FEATURES.engagement && (
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild tooltip={t("broadcast")}>
+              <Link href="/moderation/broadcast">
+                <Megaphone />
+                <span className="group-data-[collapsible=icon]:hidden">{t("broadcast")}</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        )}
       </SidebarMenu>
     </SidebarGroup>
   );

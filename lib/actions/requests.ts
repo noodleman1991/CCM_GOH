@@ -9,6 +9,7 @@ import { structuredSnippet } from "@/lib/notifications/structured";
 import { emitLifecycle } from "@/lib/notifications/emit";
 import { assertRateLimit, RateLimitError } from "@/lib/rate-limit";
 import { nextContactRequestState } from "@/lib/requests/contact-state";
+import { FEATURES } from "@/lib/features";
 
 /**
  * Machine-readable failure kinds. When `code` is set, `error` carries a
@@ -16,7 +17,7 @@ import { nextContactRequestState } from "@/lib/requests/contact-state";
  * translate with a root `useTranslations()`, not an English sentence — these
  * failures are expected user-facing outcomes, not developer-facing faults.
  */
-type RequestErrorCode = "RATE_LIMIT" | "COOLDOWN";
+type RequestErrorCode = "RATE_LIMIT" | "COOLDOWN" | "FEATURE_DISABLED";
 type Result<T = unknown> = ({ ok: true } & T) | { ok: false; error: string; code?: RequestErrorCode };
 
 const messageSchema = z.string().max(500).optional();
@@ -62,8 +63,19 @@ export async function requestToJoin(
     update: { status: "PENDING", message: msg.data ?? null, resolvedAt: null },
   });
 
-  await createNotification({
-    recipientId: collab.createdById,
+  // The creator can be null since the FK became SET NULL; fall back to the
+  // current owner member so the request is not silently unnotified.
+  const recipientId =
+    collab.createdById ??
+    (
+      await prisma.collaborationMember.findFirst({
+        where: { collaborationId, role: "OWNER" },
+        orderBy: { joinedAt: "asc" },
+        select: { userId: true },
+      })
+    )?.userId;
+  if (recipientId) await createNotification({
+    recipientId,
     type: "REQUEST",
     actorId: actor.id,
     entityType: "joinRequest",
@@ -354,6 +366,7 @@ export async function requestContact(
   recipientId: string,
   message?: string
 ): Promise<Result<{ status: "PENDING" | "ACCEPTED" }>> {
+  if (!FEATURES.engagement) return { ok: false, error: "requests.errors.unavailable", code: "FEATURE_DISABLED" };
   const actor = await getActor();
   if (!actor) return { ok: false, error: "Sign in to send a request." };
   if (recipientId === actor.id) return { ok: false, error: "That's you." };

@@ -8,6 +8,7 @@ import { createNotification } from "@/lib/notifications/service";
 import { getOrCreateProjectConversation } from "@/lib/messaging/service";
 import { canMessage } from "@/lib/messaging/permissions";
 import { messagingRelations } from "@/lib/messaging/guard";
+import { FEATURES } from "@/lib/features";
 
 type Result<T = unknown> = ({ ok: true } & T) | { ok: false; error: string };
 
@@ -16,6 +17,7 @@ type Result<T = unknown> = ({ ok: true } & T) | { ok: false; error: string };
  * can open the thread.
  */
 export async function startConversation(otherUserId: string): Promise<Result<{ id: string }>> {
+  if (!FEATURES.engagement) return { ok: false, error: "This feature isn't available yet." };
   const actor = await getActor();
   if (!actor) return { ok: false, error: "Sign in." };
   if (otherUserId === actor.id) return { ok: false, error: "You can't message yourself." };

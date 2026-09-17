@@ -2771,7 +2771,8 @@
   "requests": {
     "errors": {
       "cooldown": "This member recently declined your request. Please wait a while before asking again.",
-      "rateLimit": "You've sent a lot of requests in a short time. Please try again in a little while."
+      "rateLimit": "You've sent a lot of requests in a short time. Please try again in a little while.",
+      "unavailable": "This feature isn't available yet."
     }
   }
 }

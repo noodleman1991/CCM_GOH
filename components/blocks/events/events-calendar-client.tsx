@@ -13,6 +13,7 @@ import { isRTL } from "@/i18n/i18n-helpers";
 import { cn } from "@/lib/utils";
 import type { EventListItem } from "@/lib/events";
 import { buildIcs } from "@/lib/ics";
+import { FEATURES } from "@/lib/features";
 
 const MODE_ICON = { online: Globe, in_person: MapPin, hybrid: Users } as const;
 
@@ -234,7 +235,7 @@ export default function EventsCalendarClient({
                         </span>
                       )}
                     </div>
-                    {e.slug ? (
+                    {e.slug && FEATURES.engagement ? (
                       <Link
                         href={`/collaborate/events/${e.slug}`}
                         className="block truncate font-heading font-semibold text-ccm-midnight underline-offset-2 hover:underline"
@@ -248,7 +249,7 @@ export default function EventsCalendarClient({
                       {start && start.toLocaleString(locale, { dateStyle: "medium", timeStyle: "short" })}
                       {e.locationName ? ` · ${e.locationName}` : ""}
                     </p>
-                    {signedIn && (
+                    {signedIn && FEATURES.engagement && (
                       <div className="mt-3">
                         <RsvpButton eventId={e._id} />
                       </div>

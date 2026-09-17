@@ -103,14 +103,16 @@ export default async function CollaboratePage({ params, searchParams }: Collabor
 
   const eventsPanel = (
     <div className="space-y-4">
-      <div className="flex justify-end">
-        <Button asChild variant="outline" className="gap-2">
-          <Link href="/collaborate/events/new">
-            <Plus className="size-4" />
-            {tEvents('submit')}
-          </Link>
-        </Button>
-      </div>
+      {FEATURES.engagement && (
+        <div className="flex justify-end">
+          <Button asChild variant="outline" className="gap-2">
+            <Link href="/collaborate/events/new">
+              <Plus className="size-4" />
+              {tEvents('submit')}
+            </Link>
+          </Button>
+        </div>
+      )}
       {events.length === 0 ? (
         <Card className="p-10 text-center text-sm text-muted-foreground">{tEvents('empty')}</Card>
       ) : (
@@ -127,7 +129,7 @@ export default async function CollaboratePage({ params, searchParams }: Collabor
             {tCollab('header')}
           </h1>
         </div>
-        <CreateCollaborationButton />
+        {FEATURES.engagement && <CreateCollaborationButton />}
       </div>
       <CollabTabs projects={projectsPanel} people={peoplePanel} events={eventsPanel} />
     </PageContainer>

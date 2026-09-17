@@ -2771,7 +2771,8 @@
   "requests": {
     "errors": {
       "cooldown": "Este miembro rechazó tu solicitud hace poco. Espera un tiempo antes de volver a intentarlo.",
-      "rateLimit": "Has enviado muchas solicitudes en poco tiempo. Inténtalo de nuevo dentro de un rato."
+      "rateLimit": "Has enviado muchas solicitudes en poco tiempo. Inténtalo de nuevo dentro de un rato.",
+      "unavailable": "Esta función aún no está disponible."
     }
   }
 }

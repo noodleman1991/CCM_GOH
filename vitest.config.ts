@@ -25,6 +25,13 @@ export default defineConfig({
       R2_BUCKET: "vitest-no-such-bucket",
       NEXT_PUBLIC_SANITY_DATASET: "vitest-no-such-dataset",
       NEXT_PUBLIC_SANITY_PROJECT_ID: "vitestnosuchproject",
+      // The engagement program (workspaces, messages, contact requests,
+      // RSVPs) is behind this flag and its server actions refuse when it is
+      // off (Slice 6, 2026-09-17). The suites for those actions test the
+      // behaviour behind the gate, so the runner's default is ON; the gate
+      // itself is covered by engagement-flag-gates.test.ts, which mocks the
+      // flag off explicitly.
+      NEXT_PUBLIC_FEATURE_ENGAGEMENT: "true",
     },
   },
   resolve: {

@@ -4,6 +4,7 @@ import { eventSubmissionSchema } from "@/lib/validation/event";
 import { getEventEditGate, submitEvent, updateEvent, type EventInput } from "@/lib/content/discovery";
 import { addOutput } from "@/lib/actions/workspace-outputs";
 import { rateLimitRequest } from "@/lib/rate-limit-route";
+import { FEATURES } from "@/lib/features";
 
 /**
  * Member/project submission of an event. Creates a PENDING `event` for editor
@@ -11,6 +12,7 @@ import { rateLimitRequest } from "@/lib/rate-limit-route";
  * status is forced to "pending" regardless of input.
  */
 export async function POST(request: NextRequest) {
+  if (!FEATURES.engagement) return NextResponse.json({ error: "feature_disabled" }, { status: 403 });
   const limited = await rateLimitRequest(request, "event:submit", { limit: 5, windowSeconds: 600 });
   if (limited) return limited;
 

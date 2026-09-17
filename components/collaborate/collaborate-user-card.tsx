@@ -22,6 +22,7 @@ import { startConversation } from '@/lib/actions/messaging'
 import { requestContact } from '@/lib/actions/requests'
 import type { LocalizedUser } from '@/types/prisma'
 import type { RequestStatus } from '@/generated/prisma'
+import { FEATURES } from '@/lib/features'
 
 interface CollaborateUserCardProps {
   /**
@@ -277,7 +278,7 @@ export function CollaborateUserCard({ user, contactStatus, className }: Collabor
             )}
 
             {/* Actions: Message + Connect (§4.6) — signed-in only */}
-            {mounted && isSignedIn && (
+            {mounted && isSignedIn && FEATURES.engagement && (
               <div className="flex gap-2 border-t pt-3">
                 <Button
                   size="sm"

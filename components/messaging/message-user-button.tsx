@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { MessageCircle } from "lucide-react";
 import { startConversation } from "@/lib/actions/messaging";
+import { FEATURES } from "@/lib/features";
 
 /** "Message" button on a public profile — opens (or creates) a 1:1 thread. */
 export function MessageUserButton({ targetUserId }: { targetUserId: string }) {
@@ -16,7 +17,9 @@ export function MessageUserButton({ targetUserId }: { targetUserId: string }) {
   const { isSignedIn, userId } = useAuth();
   const [pending, setPending] = useState(false);
 
-  if (!isSignedIn || userId === targetUserId) return null;
+  // Direct messages are behind the engagement flag; with it off the target
+  // page redirects home, so the button must not exist at all.
+  if (!FEATURES.engagement || !isSignedIn || userId === targetUserId) return null;
 
   const open = async () => {
     setPending(true);
