@@ -1,6 +1,7 @@
 import { Resend } from "resend";
 import { z } from "zod";
 import { rateLimitRequest } from "@/lib/rate-limit-route";
+import { captureAfterResponse } from "@/lib/analytics/server";
 
 const subscribeSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -43,6 +44,8 @@ export const POST = async (request: Request) => {
       unsubscribed: false,
       audienceId: config.audienceId,
     });
+    // Anonymous by design: the address is never an analytics property.
+    captureAfterResponse({ event: "newsletter_subscribed", properties: { source: "footer" } });
 
     return Response.json({ success: true });
   } catch (error) {

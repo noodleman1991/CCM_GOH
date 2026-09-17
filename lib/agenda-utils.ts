@@ -8,6 +8,7 @@ import {
     AGENDA_TYPE_LABELS,
     DownloadTrackingData
 } from '@/types/agenda';
+import { track } from '@/lib/analytics/events';
 
 /**
  * Get localized text from a LocalizedString object
@@ -174,6 +175,7 @@ export async function downloadFile(
     };
 
     trackDownload(trackingData).catch(console.error);
+    void track('report_downloaded', { kind: 'agenda', content_id: agendaId, file_language: file.language });
 
     // Start download by opening URL
     const fileName = getFileName(file);

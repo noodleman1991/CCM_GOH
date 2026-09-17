@@ -64,6 +64,7 @@ const OPTIONAL_FEATURES: Record<string, readonly FeatureKey[]> = {
   "Anonymous comments (Turnstile)": ["TURNSTILE_SECRET_KEY"],
   "Rate limiting (Upstash)": ["UPSTASH_REDIS_REST_URL", "UPSTASH_REDIS_REST_TOKEN"],
   "Error monitoring (Sentry)": ["NEXT_PUBLIC_SENTRY_DSN"],
+  "Product analytics (PostHog)": ["NEXT_PUBLIC_POSTHOG_KEY"],
 };
 
 type Env = Record<string, string | undefined>;

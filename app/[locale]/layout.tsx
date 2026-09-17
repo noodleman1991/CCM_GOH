@@ -19,6 +19,7 @@ import { absoluteUrl, siteUrl } from "@/lib/seo/site-url";
 import { ogLocale } from "@/lib/seo/alternates";
 import { hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
+import { PostHogProvider } from "@/components/analytics/posthog-provider";
 
 const poppins = Poppins({
     subsets: ["latin"],
@@ -183,6 +184,7 @@ export default async function LocaleLayout({
                                     {children}
                                     <CookieConsentBanner />
                                     <AnalyticsScripts />
+                                    <PostHogProvider />
                                 </CookieConsentProvider>
                             </RevisionAlertProvider>
                         </OnboardingRedirectProvider>

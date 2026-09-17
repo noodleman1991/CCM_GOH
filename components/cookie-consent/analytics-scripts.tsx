@@ -2,6 +2,7 @@
 
 import Script from 'next/script'
 import { useCookieConsent } from './cookie-consent-provider'
+import { plausibleAllowed } from '@/lib/analytics/consent'
 
 /**
  * Plausible, gated on the analytics consent category. Plausible is cookieless,
@@ -16,7 +17,7 @@ export function AnalyticsScripts() {
   //   consent=null + hasConsented=true  → still loading   → render nothing yet
   //   consent=null + hasConsented=false → no choice stored → load (cookieless)
   //   consent set                       → analytics flag decides
-  const allowed = consent ? consent.analytics : !hasConsented
+  const allowed = plausibleAllowed({ consent, hasConsented })
   if (!allowed) return null
 
   return (

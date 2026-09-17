@@ -122,7 +122,7 @@ const isReadIn = (key: string, index: Map<string, Set<string>>, excludeFile?: st
   Array.from(index.get(key) ?? []).some((file) => file !== excludeFile);
 
 /** Variables set by the platform or runtime, never by us, so never in `.env.example`. */
-const RUNTIME_BUILT_INS = [/^NODE_ENV$/, /^VERCEL$/, /^VERCEL_ENV$/, /^VERCEL_URL$/, /^CI$/, /^PORT$/, /^NEXT_RUNTIME$/, /^npm_/];
+const RUNTIME_BUILT_INS = [/^NODE_ENV$/, /^VERCEL$/, /^VERCEL_ENV$/, /^NEXT_PUBLIC_VERCEL_ENV$/, /^VERCEL_URL$/, /^CI$/, /^PORT$/, /^NEXT_RUNTIME$/, /^npm_/];
 const isRuntimeBuiltIn = (key: string): boolean => RUNTIME_BUILT_INS.some((re) => re.test(key));
 
 /**

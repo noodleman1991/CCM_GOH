@@ -29,6 +29,7 @@ import { getLocalizedTitle, getLocalizedExcerpt } from '@/lib/localization-utils
 import { REGION_CODES, REGION_I18N_KEY, REGION_TO_RC_SLUG, REGION_COLOR } from '@/lib/maps/region-codes'
 import { COLOR, regionColor } from '@/lib/ccm-colors'
 import { cn } from '@/lib/utils'
+import { track } from '@/lib/analytics/events'
 
 /** How many hits each group previews before "See all". */
 const PREVIEW_COUNT = 4
@@ -424,6 +425,24 @@ export default function GroupedSearch() {
     : 'isSearchable:true AND profileVisibility:PUBLIC'
 
   const hasQuery = query.trim().length > 0
+
+  // Product analytics (Slice 11): one `search_performed` per settled query.
+  // Length and counts only — never the text; members disclose mental-health
+  // context and the search box is free text.
+  useEffect(() => {
+    if (!hasQuery) return
+    const handle = setTimeout(() => {
+      const total = Object.values(counts).reduce((sum, n) => sum + n, 0)
+      void track('search_performed', {
+        scope: 'all',
+        query_length: query.trim().length,
+        results_count: total,
+        zero_results: total === 0,
+        filters_count: activeFilter === 'all' ? 0 : 1,
+      })
+    }, 1200)
+    return () => clearTimeout(handle)
+  }, [hasQuery, query, counts, activeFilter])
 
   // Region matches are computed client-side (no Algolia index); include them in
   // the aggregate so the empty state only shows when EVERYTHING is empty.

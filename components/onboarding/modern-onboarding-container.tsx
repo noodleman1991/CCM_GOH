@@ -33,6 +33,16 @@ import type {
   OnboardingUserData,
   OnboardingUserManagementOptions
 } from "./types"
+import { track } from "@/lib/analytics/events"
+
+const ONBOARDING_STEP_NAMES: Record<string, "welcome" | "basic_info" | "work_info" | "recent_work" | "privacy" | "review"> = {
+  welcome: "welcome",
+  basicInfo: "basic_info",
+  workInfo: "work_info",
+  recentWork: "recent_work",
+  privacy: "privacy",
+  review: "review",
+}
 
 interface ModernOnboardingContainerProps {
   initialData?: OnboardingUserData | null
@@ -212,6 +222,14 @@ export function ModernOnboardingContainer({
   const totalSteps = steps.length
   const currentStepRef = useRef(currentStep)
   currentStepRef.current = currentStep
+
+  // Product analytics (Slice 11): the onboarding funnel, one event per panel
+  // shown. Step index and name only.
+  const currentStepId = steps[currentStep]?.id
+  useEffect(() => {
+    if (!currentStepId) return
+    void track("onboarding_step_viewed", { step_index: currentStep, step_name: ONBOARDING_STEP_NAMES[currentStepId] ?? "welcome" })
+  }, [currentStep, currentStepId])
 
   // Restore saved progress on mount (ignore malformed payloads)
   const restoredRef = useRef(false)

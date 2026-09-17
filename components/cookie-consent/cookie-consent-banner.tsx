@@ -50,33 +50,33 @@ export function CookieConsentBanner() {
         <div className="flex items-start gap-3">
           <Shield className="h-5 w-5 text-ccm-sea flex-shrink-0 mt-0.5" />
           <div>
-            <p className="font-medium text-sm">{t('categories.essential.title')}</p>
+            <p id="cookie-category-essential" className="font-medium text-sm">{t('categories.essential.title')}</p>
             <p className="text-xs text-muted-foreground">{t('categories.essential.description')}</p>
           </div>
         </div>
-        <Switch checked disabled className="data-[state=checked]:bg-ccm-sea" />
+        <Switch checked disabled className="data-[state=checked]:bg-ccm-sea" aria-labelledby="cookie-category-essential" />
       </div>
 
       <div className="flex items-start justify-between gap-4 p-3 rounded-lg bg-muted/50">
         <div className="flex items-start gap-3">
           <Video className="h-5 w-5 text-ccm-water flex-shrink-0 mt-0.5" />
           <div>
-            <p className="font-medium text-sm">{t('categories.functional.title')}</p>
+            <p id="cookie-category-functional" className="font-medium text-sm">{t('categories.functional.title')}</p>
             <p className="text-xs text-muted-foreground">{t('categories.functional.description')}</p>
           </div>
         </div>
-        <Switch checked={functional} onCheckedChange={setFunctional} />
+        <Switch checked={functional} onCheckedChange={setFunctional} aria-labelledby="cookie-category-functional" />
       </div>
 
       <div className="flex items-start justify-between gap-4 p-3 rounded-lg bg-muted/50">
         <div className="flex items-start gap-3">
           <BarChart3 className="h-5 w-5 text-ccm-water flex-shrink-0 mt-0.5" />
           <div>
-            <p className="font-medium text-sm">{t('categories.analytics.title')}</p>
+            <p id="cookie-category-analytics" className="font-medium text-sm">{t('categories.analytics.title')}</p>
             <p className="text-xs text-muted-foreground">{t('categories.analytics.description')}</p>
           </div>
         </div>
-        <Switch checked={analytics} onCheckedChange={setAnalytics} />
+        <Switch checked={analytics} onCheckedChange={setAnalytics} aria-labelledby="cookie-category-analytics" />
       </div>
 
       <Button onClick={handleSavePreferences} className="w-full">

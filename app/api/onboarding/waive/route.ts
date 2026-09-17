@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { auth, clerkClient } from "@clerk/nextjs/server"
 import { prisma } from "@/lib/prisma"
+import { captureAfterResponse } from "@/lib/analytics/server"
 
 export const runtime = 'nodejs'
 
@@ -40,6 +41,13 @@ export async function POST() {
         preferredLanguage: preferredLanguage
       }
     })
+
+    captureAfterResponse({
+        event: "onboarding_completed",
+        distinctId: userId,
+        properties: { waived: true },
+        set: { onboarding_completed: true },
+      })
 
     console.log(`✅ Onboarding waived for user ${userId}`)
 

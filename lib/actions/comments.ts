@@ -16,6 +16,7 @@ import { parseMentions } from "@/lib/comments/mentions";
 import { createNotification } from "@/lib/notifications/service";
 import { emitLifecycle } from "@/lib/notifications/emit";
 import type { CommentStatus, CommentTargetType } from "@/generated/prisma";
+import { captureAfterResponse } from "@/lib/analytics/server";
 
 /**
  * Best-effort engagement fan-out after a visible comment is created:
@@ -254,6 +255,17 @@ export async function postComment(input: PostCommentInput): Promise<PostCommentR
       }
     }
   }
+
+  captureAfterResponse({
+      event: "comment_posted",
+      distinctId: actor?.id,
+      properties: {
+        target_kind: data.targetType,
+        anonymous: isAnon,
+        has_mentions: parseMentions(body).length > 0,
+        is_reply: Boolean(data.parentId),
+      },
+    });
 
   return {
     ok: true,

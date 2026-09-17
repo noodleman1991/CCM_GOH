@@ -1936,7 +1936,7 @@
   },
   "cookieConsent": {
     "title": "Valoramos tu privacidad",
-    "description": "Usamos cookies esenciales para que todo funcione correctamente, y cookies opcionales para mejorar tu experiencia. Plausible, nuestra herramienta de análisis, no utiliza cookies en absoluto.",
+    "description": "Usamos cookies esenciales para que todo funcione correctamente, y cookies opcionales para mejorar tu experiencia. Plausible, nuestro contador de visitas, no utiliza cookies. Con tu permiso, PostHog nos ayuda a entender qué funciones usa la comunidad.",
     "acceptAll": "Aceptar Todo",
     "rejectNonEssential": "Solo Esenciales",
     "managePreferences": "Gestionar Preferencias",
@@ -1954,7 +1954,7 @@
       },
       "analytics": {
         "title": "Analíticas",
-        "description": "Usamos Plausible Analytics, que es completamente sin cookies. ¡No se necesita consentimiento aquí!"
+        "description": "Plausible cuenta las visitas sin cookies ni datos personales. Si activas esta opción, PostHog (alojado en la UE) registra además qué páginas y funciones usas — vinculado a tu cuenta cuando has iniciado sesión, nunca el contenido que escribes, y sin grabaciones de sesión. Puedes desactivarlo cuando quieras."
       }
     }
   },

@@ -50,7 +50,27 @@ const contentSecurityPolicy = ({ studio = false } = {}) =>
     "frame-ancestors 'self'",
   ].join('; ');
 
+// PostHog reverse proxy (Slice 11): same-origin, so the CSP stays 'self' and
+// blocklists keyed on *.posthog.com do not drop the events. The prefix is one
+// constant shared with lib/analytics/client.ts; change both if a blocklist
+// ever learns "/ingest". EU cloud by default — the audience is European-led
+// and the privacy policy names Frankfurt.
+const POSTHOG_PROXY_PREFIX = '/ingest';
+const POSTHOG_HOST = process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://eu.i.posthog.com';
+const POSTHOG_ASSETS_HOST = POSTHOG_HOST.replace('://eu.i.', '://eu-assets.i.').replace('://us.i.', '://us-assets.i.');
+
 const nextConfig = {
+  // PostHog's endpoints end in a trailing slash (/e/, /decide/) and Next's
+  // slash-normalising 308 would bounce them. This flag is app-wide, so the
+  // redirect pages relied on is re-issued from proxy.ts for everything
+  // outside the ingest prefix.
+  skipTrailingSlashRedirect: true,
+  async rewrites() {
+    return [
+      { source: `${POSTHOG_PROXY_PREFIX}/static/:path*`, destination: `${POSTHOG_ASSETS_HOST}/static/:path*` },
+      { source: `${POSTHOG_PROXY_PREFIX}/:path*`, destination: `${POSTHOG_HOST}/:path*` },
+    ];
+  },
   // Where the build output goes. Overridable so the Phase-3 parity harness
   // (scripts/parity/render-diff.ts) can run its own `next dev` — one per
   // content backend — without fighting the developer's server for `.next`.

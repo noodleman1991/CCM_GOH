@@ -530,6 +530,19 @@ export interface ModerationChange {
   doc: Doc;
   previousDoc: Doc | undefined;
   operation: "create" | "update";
+  /** The moderator (`req.user.id`, a Clerk id); undefined for a script or import. */
+  actorId?: string;
+}
+
+/** What the analytics event about a moderation transition may carry. Closed on
+ *  purpose: ids and statuses, never the title or the reviewer's notes. */
+export interface ModerationAnalyticsEvent {
+  collection: ModeratedCollection;
+  docId: string;
+  from: string | null;
+  to: string;
+  moderatorId: string | null;
+  submitterId: string | null;
 }
 
 export interface ModerationNotifyInput {
@@ -553,6 +566,10 @@ export interface ModerationSideEffectDeps {
    *  its bookkeeping into Sanity. */
   markNotified: (id: string, status: string) => Promise<void>;
   revalidate: (targets: { tags: string[]; paths: string[] }) => void | Promise<void>;
+  /** `submission_moderated` (Slice 11). Optional: scripts and the parity
+   *  harness run the hook without analytics. Failures are reported through
+   *  `onError` and never reach the write. */
+  analytics?: (event: ModerationAnalyticsEvent) => Promise<void>;
   siteUrl?: string;
   onError?: (message: string, error: unknown) => void;
   /**
@@ -576,6 +593,14 @@ export interface ModerationSideEffectDeps {
 }
 
 const DEFAULT_NOTIFY_TIMEOUT_MS = 10_000;
+
+/** The funnel step a target status means, for `submission_moderated.action`. */
+export function moderationAction(to: string): "approve" | "revision" | "reject" | "other" {
+  if (to === "approved" || to === "published") return "approve";
+  if (to === "revision" || to === "needs_revision" || to === "changes_requested") return "revision";
+  if (to === "rejected") return "reject";
+  return "other";
+}
 
 export interface ModerationSideEffectResult {
   transitioned: boolean;
@@ -644,6 +669,23 @@ export async function runModerationSideEffects(
     revalidated: [...tags, ...paths],
     email: "skipped: collection does not notify",
   };
+
+  // The analytics event fires for every moderated collection on a real
+  // transition, whether or not the collection notifies by email.
+  if (result.transitioned && deps.analytics) {
+    try {
+      await deps.analytics({
+        collection: change.collection,
+        docId: asString(change.doc.id) ?? "",
+        from: result.from ?? null,
+        to: result.to ?? "",
+        moderatorId: change.actorId ?? null,
+        submitterId: asString(change.doc.submittedBy) ?? null,
+      });
+    } catch (error) {
+      deps.onError?.("moderation analytics failed", error);
+    }
+  }
 
   if (!workflow.notifies) return result;
 
@@ -770,6 +812,25 @@ export function moderationAfterChange(
         for (const tag of tags) revalidateTag(tag, "max");
         for (const path of paths) revalidatePath(path);
       },
+      analytics: async (event) => {
+        const { captureServer } = await import("@/lib/analytics/server");
+        await withTimeout(
+          captureServer({
+            event: "submission_moderated",
+            distinctId: event.moderatorId,
+            properties: {
+              kind: event.collection,
+              from: event.from,
+              to: event.to,
+              action: moderationAction(event.to),
+              doc_id: event.docId,
+              submitter_id: event.submitterId,
+            },
+          }),
+          3_000,
+          "the analytics capture",
+        );
+      },
       siteUrl: process.env.NEXT_PUBLIC_SITE_URL || undefined,
       onError: (message, error) => {
         console.error(`[moderation:${collection}] ${message}:`, error);
@@ -782,6 +843,7 @@ export function moderationAfterChange(
       doc: doc as Doc,
       previousDoc: previousDoc as Doc | undefined,
       operation,
+      actorId: asString((req as { user?: { id?: unknown } } | undefined)?.user?.id),
     };
 
     let settle!: (result: ModerationSideEffectResult) => void;

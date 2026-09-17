@@ -8,6 +8,7 @@ import { createNotification } from "@/lib/notifications/service";
 import { structuredSnippet } from "@/lib/notifications/structured";
 import type { RsvpStatus } from "@/generated/prisma";
 import { FEATURES } from "@/lib/features";
+import { captureAfterResponse } from "@/lib/analytics/server";
 
 type Result<T = unknown> = ({ ok: true } & T) | { ok: false; error: string };
 
@@ -45,6 +46,11 @@ export async function setRsvp(
     create: { userId: actor.id, eventId, status: parsed.data as RsvpStatus },
     update: { status: parsed.data as RsvpStatus },
   });
+  captureAfterResponse({
+      event: "rsvp_set",
+      distinctId: actor.id,
+      properties: { event_id: eventId, status: parsed.data, previous_status: previous?.status ?? null },
+    });
 
   // Receipt: confirm the spot in the attendee's own feed (fires on the first
   // GOING only — status flip-flops don't spam). actorId stays null so the

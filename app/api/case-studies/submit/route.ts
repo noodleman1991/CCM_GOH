@@ -4,6 +4,7 @@ import { caseStudySubmissionSchema } from "@/lib/validation/case-study";
 import { addOutput } from "@/lib/actions/workspace-outputs";
 import { rateLimitRequest } from "@/lib/rate-limit-route";
 import { CaseStudyEditNotAllowedError, submitCaseStudy } from "@/lib/content/case-studies";
+import { captureAfterResponse } from "@/lib/analytics/server";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp']
@@ -121,6 +122,12 @@ export async function POST(request: NextRequest) {
 
         // Log submission for tracking
         console.log(`Case study submitted by user ${userId} (${clerkUser.emailAddresses[0]?.emailAddress}): ${result.id}`);
+
+        captureAfterResponse({
+                event: "submission_submitted",
+                distinctId: userId,
+                properties: { kind: "case_study", is_resubmission: Boolean(data.editId), has_image: Boolean(imagePayload) },
+            });
 
         // Submitted from a workspace: link the new doc as a workspace output.
         // addOutput enforces collab authz itself; a failed link never fails the

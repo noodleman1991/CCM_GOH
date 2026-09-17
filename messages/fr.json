@@ -1936,7 +1936,7 @@
   },
   "cookieConsent": {
     "title": "Nous respectons votre vie privée",
-    "description": "Nous utilisons des cookies essentiels pour le bon fonctionnement, et des cookies optionnels pour améliorer votre expérience. Plausible, notre outil d'analyse, est entièrement sans cookies.",
+    "description": "Nous utilisons des cookies essentiels pour le bon fonctionnement, et des cookies optionnels pour améliorer votre expérience. Plausible, notre compteur de visites, est sans cookies. Avec votre accord, PostHog nous aide à comprendre quelles fonctionnalités sont utilisées.",
     "acceptAll": "Tout Accepter",
     "rejectNonEssential": "Essentiels Uniquement",
     "managePreferences": "Gérer les Préférences",
@@ -1954,7 +1954,7 @@
       },
       "analytics": {
         "title": "Analytiques",
-        "description": "Nous utilisons Plausible Analytics, qui est entièrement sans cookies. Aucun consentement nécessaire ici !"
+        "description": "Plausible compte les visites sans cookies ni données personnelles. Si vous activez cette option, PostHog (hébergé dans l'UE) enregistre aussi les pages et fonctionnalités que vous utilisez — lié à votre compte lorsque vous êtes connecté, jamais le contenu que vous écrivez, et sans enregistrement de session. Vous pouvez le désactiver à tout moment."
       }
     }
   },

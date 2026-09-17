@@ -1936,7 +1936,7 @@
   },
   "cookieConsent": {
     "title": "We value your privacy",
-    "description": "We use essential cookies to keep things running smoothly, and optional cookies to make your experience better. Plausible, our analytics tool, is completely cookieless — it never tracks you personally.",
+    "description": "We use essential cookies to keep things running smoothly, and optional cookies to make your experience better. Plausible, our visit counter, is cookieless. With your permission, PostHog helps us understand which features people use.",
     "acceptAll": "Accept All",
     "rejectNonEssential": "Essential Only",
     "managePreferences": "Manage Preferences",
@@ -1954,7 +1954,7 @@
       },
       "analytics": {
         "title": "Analytics",
-        "description": "We use Plausible Analytics, which is completely cookieless — no tracking cookies are ever set. No consent needed here!"
+        "description": "Plausible counts visits without cookies or personal data. If you turn this on, PostHog (hosted in the EU) also records which pages and features you use — linked to your account when signed in, never the content you write, and no session recordings. You can switch it off at any time."
       }
     }
   },

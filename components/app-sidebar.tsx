@@ -43,6 +43,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { CookiePreferencesButton } from "@/components/cookie-consent/cookie-preferences-button"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const { userData } = useClerkUser();
@@ -301,6 +302,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     there (it's one click away once the rail is expanded). */}
                 <div className="p-2 pt-0 group-data-[collapsible=icon]:hidden">
                     <LanguageSwitcher />
+                    {/* The footer that used to carry this link is gone (Slice 3a);
+                        consent has to stay re-enterable from every page. */}
+                    <div className="mt-2 px-1">
+                        <CookiePreferencesButton />
+                    </div>
                 </div>
             </SidebarFooter>
         </Sidebar>

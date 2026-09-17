@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma'
 import { NextResponse, after } from 'next/server'
 import { deleteUserData } from '@/lib/account-deletion'
 import { syncUserSearchRecord } from '@/lib/algolia-user-sync'
+import { captureAfterResponse } from '@/lib/analytics/server'
 
 /**
  * Update the user's search record after the response has been sent, and log
@@ -182,6 +183,12 @@ async function handleUserCreated(event: UserCreatedEvent): Promise<WebhookHandle
         console.log(`✅ Created user: ${user.id}`)
 
         scheduleSearchIndexUpdate(user.id)
+        captureAfterResponse({
+                event: "sign_up_completed",
+                distinctId: user.id,
+                properties: {},
+                set: { role: "community_member", onboarding_completed: false },
+            })
 
         return { action: 'created', userId: user.id }
 

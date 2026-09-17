@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma"
 import { z } from "zod"
 import type { ExpertiseArea, WorkType } from "@/generated/prisma"
 import { syncUserSearchRecord } from "@/lib/algolia-user-sync"
+import { captureServer } from "@/lib/analytics/server"
 
 // Force Node.js runtime for Prisma and Clerk compatibility with Fluid Compute
 export const runtime = 'nodejs'
@@ -329,6 +330,7 @@ export async function POST(request: NextRequest) {
 
     // Wrap all DB operations in a transaction for atomicity
     const upsertData = buildUpsertData(validatedData)
+    let joinedCommunities: { id: string; type: string }[] = []
     const updatedUser = await prisma.$transaction(async (tx) => {
       // Update user in Prisma with onboarding data - use upsert for race condition safety
       let user
@@ -403,6 +405,7 @@ export async function POST(request: NextRequest) {
           console.log(`✓ Found ${communities.length} valid communities:`, communities.map(c => `${c.name} (${c.type})`))
         }
 
+        joinedCommunities = communities.map((community) => ({ id: community.id, type: String(community.type) }))
         if (communities.length > 0) {
           await tx.userCommunity.createMany({
             data: communities.map(community => ({
@@ -446,6 +449,23 @@ export async function POST(request: NextRequest) {
         await syncUserSearchRecord(userId, 'update')
       } catch (error) {
         console.error(`❌ Onboarding: search index update failed for ${userId}:`, error)
+      }
+      // Product analytics (Slice 11): the funnel's end, plus one join event per
+      // community so the `community` group carries the membership. Person
+      // properties are role and state only — never name, email or location.
+      await captureServer({
+        event: "onboarding_completed",
+        distinctId: userId,
+        properties: { waived: false },
+        set: { onboarding_completed: true, role: updatedUser.role, community_kinds: joinedCommunities.map((c) => c.type) },
+      })
+      for (const community of joinedCommunities) {
+        await captureServer({
+          event: "community_joined",
+          distinctId: userId,
+          properties: { community_id: community.id, community_kind: community.type === "special" ? "special" : "regional" },
+          groups: { community: community.id },
+        })
       }
     })
 

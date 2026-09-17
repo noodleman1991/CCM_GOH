@@ -8,6 +8,7 @@ import {
 import { ResearchOutputEditNotAllowedError, submitResearchOutput } from "@/lib/content/outputs";
 import { addOutput } from "@/lib/actions/workspace-outputs";
 import { rateLimitRequest } from "@/lib/rate-limit-route";
+import { captureAfterResponse } from "@/lib/analytics/server";
 
 /**
  * Member/project submission of a research output (report / toolkit / dataset
@@ -119,6 +120,12 @@ export async function POST(request: NextRequest) {
       keptVersionKeys: data.keptVersionKeys,
       newVersions,
     });
+
+    captureAfterResponse({
+        event: "submission_submitted",
+        distinctId: userId,
+        properties: { kind: "research_output", is_resubmission: Boolean(data.editId), has_image: false },
+      });
 
     // Submitted from a workspace: link the new doc as a workspace output.
     // addOutput enforces collab authz; a failed link never fails submission.

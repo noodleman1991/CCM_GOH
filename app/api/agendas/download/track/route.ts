@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { trackAgendaDownload } from '@/lib/content/outputs';
 import { rateLimitRequest } from '@/lib/rate-limit-route';
+import { captureAfterResponse } from '@/lib/analytics/server';
 
 /**
  * Counts one agenda download. Anonymous on purpose — the PDFs are public and
@@ -66,6 +67,12 @@ export async function POST(request: NextRequest) {
                 { status: 400 }
             );
         }
+        // Anonymous product-analytics event; the Prisma/CMS counter above stays
+        // the source of truth for the public number.
+        captureAfterResponse({
+                event: 'report_downloaded',
+                properties: { kind: 'agenda', content_id: agendaId, file_language: fileLanguage },
+            });
         return NextResponse.json({ success: true, timestamp: new Date().toISOString() });
     } catch (error) {
         console.error('Failed to update agenda analytics:', error);

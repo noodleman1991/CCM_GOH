@@ -40,6 +40,21 @@ const isOnboardingRoute = createRouteMatcher([withLocale('/onboarding')])
 const intlMiddleware = createIntlMiddleware(routing)
 
 export const proxy = clerkMiddleware(async (auth, req: NextRequest) => {
+    // PostHog's reverse proxy (next.config.mjs rewrites). Rewrites run after
+    // middleware, so without this next-intl would 307 `/ingest/e/` to
+    // `/en/ingest/e/`. Returning here also skips Clerk's auth() per beacon.
+    if (req.nextUrl.pathname.startsWith('/ingest/')) {
+        return NextResponse.next()
+    }
+    // next.config sets skipTrailingSlashRedirect for the ingest prefix; this
+    // keeps the 308 every other path had before (one canonical URL per page).
+    if (req.nextUrl.pathname.length > 1 && req.nextUrl.pathname.endsWith('/')) {
+        // A plain URL, not `nextUrl.clone()`: NextURL's pathname setter puts
+        // the slash back (verified on `next dev`, 2026-09-17).
+        const target = new URL(req.url)
+        target.pathname = target.pathname.replace(/\/+$/, '')
+        return NextResponse.redirect(target, 308)
+    }
     // Payload's admin panel + REST/GraphQL API own their own routing (like
     // Sanity Studio) and must not be locale-prefixed or hit this app's route
     // protection. Unlike Studio, though, they DO need to be matched below so

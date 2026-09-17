@@ -12,6 +12,7 @@ import {
 } from "@/lib/content/lived-experiences";
 import { addOutput } from "@/lib/actions/workspace-outputs";
 import { rateLimitRequest } from "@/lib/rate-limit-route";
+import { captureAfterResponse } from "@/lib/analytics/server";
 
 /**
  * User submission of a lived experience. Creates a PENDING livedExperience for
@@ -118,6 +119,12 @@ export async function POST(request: NextRequest) {
       editId: data.editId,
       videoFile: videoFilePayload,
     });
+
+    captureAfterResponse({
+        event: "submission_submitted",
+        distinctId: userId,
+        properties: { kind: "lived_experience", is_resubmission: Boolean(data.editId), has_image: Boolean(videoFilePayload) },
+      });
 
     // Submitted from a workspace (create-mode only — edit mode's link-back
     // already exists): link the new doc as a workspace output. addOutput

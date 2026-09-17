@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PRIVACY, TERMS, type LegalDoc } from "@/lib/legal/content";
+import { CookiePreferencesButton } from "@/components/cookie-consent/cookie-preferences-button";
 
 export const dynamic = "force-static";
 
@@ -56,6 +57,11 @@ export default async function LegalPage({
           </section>
         ))}
       </div>
+      {doc === "privacy" && (
+        <div className="mt-10 border-t pt-6">
+          <CookiePreferencesButton />
+        </div>
+      )}
     </div>
   );
 }

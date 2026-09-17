@@ -5,6 +5,7 @@ import { getEventEditGate, submitEvent, updateEvent, type EventInput } from "@/l
 import { addOutput } from "@/lib/actions/workspace-outputs";
 import { rateLimitRequest } from "@/lib/rate-limit-route";
 import { FEATURES } from "@/lib/features";
+import { captureAfterResponse } from "@/lib/analytics/server";
 
 /**
  * Member/project submission of an event. Creates a PENDING `event` for editor
@@ -77,11 +78,22 @@ export async function POST(request: NextRequest) {
       }
 
       await updateEvent(existing._id, fields);
+      captureAfterResponse({
+          event: "submission_submitted",
+          distinctId: userId,
+          properties: { kind: "event", is_resubmission: true, has_image: false },
+        });
       // The workspace-output row (if any) already exists — no link-back.
       return NextResponse.json({ success: true, id: existing._id });
     }
 
     const created = await submitEvent({ ...fields, submittedBy: userId });
+
+    captureAfterResponse({
+        event: "submission_submitted",
+        distinctId: userId,
+        properties: { kind: "event", is_resubmission: false, has_image: false },
+      });
 
     // Submitted from a workspace: link the event as a workspace output.
     // addOutput enforces collab authz; a failed link never fails submission.

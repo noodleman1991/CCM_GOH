@@ -15,7 +15,7 @@ export type LegalSection = { heading: string; body: string[] };
 export type LegalDoc = { title: string; updated: string; intro: string; sections: LegalSection[] };
 type Locale = "en" | "es" | "fr" | "ar";
 
-const UPDATED = "2026-06-18";
+const UPDATED = "2026-09-17";
 const CONTACT = "privacy@connectingclimateminds.org";
 
 export const PRIVACY: Record<Locale, LegalDoc> = {
@@ -36,8 +36,9 @@ export const PRIVACY: Record<Locale, LegalDoc> = {
       {
         heading: "Analytics and tracking",
         body: [
-          "We use Plausible Analytics, which is cookie-free and collects no personal data — no cross-site tracking, no advertising profiles. There are no third-party advertising or social tracking pixels.",
-          "We set only essential cookies (your login session, language, and cookie-consent choice).",
+          "We use Plausible Analytics for visit counts. It is cookie-free and collects no personal data — no cross-site tracking, no advertising profiles. There are no third-party advertising or social tracking pixels.",
+          "If you accept analytics in the cookie banner, we also use PostHog (hosted in the European Union, Frankfurt) to understand which pages and features people use. It runs only after you accept, it is linked to your account id when you are signed in, it never records the content you write or your session on screen, and IP addresses are discarded on receipt. You can withdraw at any time via “Cookie preferences” in the sidebar or at the foot of this page.",
+          "We set only essential cookies (your login session, language, and cookie-consent choice) and, if you accept analytics, PostHog's first-party analytics cookie.",
         ],
       },
       {
@@ -50,7 +51,7 @@ export const PRIVACY: Record<Locale, LegalDoc> = {
       {
         heading: "Who processes your data",
         body: [
-          "We use trusted processors solely to run the service: Clerk (authentication), Sanity (content), a database provider (Neon/Postgres), Cloudflare R2 (files), Algolia (search), Resend (email), and Vercel (hosting). Each handles data only on our instructions.",
+          "We use trusted processors solely to run the service: Clerk (authentication), Sanity (content), a database provider (Neon/Postgres), Cloudflare R2 (files), Algolia (search), Resend (email), PostHog (product analytics, only with your consent), and Vercel (hosting). Each handles data only on our instructions.",
         ],
       },
       {
@@ -89,8 +90,9 @@ export const PRIVACY: Record<Locale, LegalDoc> = {
       {
         heading: "Análisis y rastreo",
         body: [
-          "Usamos Plausible Analytics, que no utiliza cookies ni recopila datos personales: sin rastreo entre sitios ni perfiles publicitarios. No hay píxeles de publicidad ni de redes sociales de terceros.",
-          "Solo establecemos cookies esenciales (tu sesión, el idioma y tu elección de consentimiento de cookies).",
+          "Usamos Plausible Analytics para contar visitas. No utiliza cookies ni recopila datos personales: sin rastreo entre sitios ni perfiles publicitarios. No hay píxeles de publicidad ni de redes sociales de terceros.",
+          "Si aceptas las analíticas en el aviso de cookies, también usamos PostHog (alojado en la Unión Europea, Fráncfort) para entender qué páginas y funciones usa la comunidad. Solo se activa tras tu aceptación, se vincula al identificador de tu cuenta cuando has iniciado sesión, nunca registra el contenido que escribes ni tu sesión en pantalla, y las direcciones IP se descartan al recibirse. Puedes retirar tu consentimiento en cualquier momento en «Preferencias de cookies», en la barra lateral o al final de esta página.",
+          "Solo establecemos cookies esenciales (tu sesión, el idioma y tu elección de consentimiento de cookies) y, si aceptas las analíticas, la cookie analítica propia de PostHog.",
         ],
       },
       {
@@ -103,7 +105,7 @@ export const PRIVACY: Record<Locale, LegalDoc> = {
       {
         heading: "Quién procesa tus datos",
         body: [
-          "Usamos encargados de confianza únicamente para prestar el servicio: Clerk (autenticación), Sanity (contenido), un proveedor de base de datos (Neon/Postgres), Cloudflare R2 (archivos), Algolia (búsqueda), Resend (correo) y Vercel (alojamiento). Cada uno trata los datos solo según nuestras instrucciones.",
+          "Usamos encargados de confianza únicamente para prestar el servicio: Clerk (autenticación), Sanity (contenido), un proveedor de base de datos (Neon/Postgres), Cloudflare R2 (archivos), Algolia (búsqueda), Resend (correo), PostHog (analítica de producto, solo con tu consentimiento) y Vercel (alojamiento). Cada uno trata los datos solo según nuestras instrucciones.",
         ],
       },
       {
@@ -142,8 +144,9 @@ export const PRIVACY: Record<Locale, LegalDoc> = {
       {
         heading: "Analyse et suivi",
         body: [
-          "Nous utilisons Plausible Analytics, sans cookies et sans collecte de données personnelles : pas de suivi inter-sites, pas de profils publicitaires. Aucun pixel publicitaire ou de réseau social tiers.",
-          "Nous ne déposons que des cookies essentiels (votre session, la langue et votre choix de consentement aux cookies).",
+          "Nous utilisons Plausible Analytics pour compter les visites : sans cookies et sans collecte de données personnelles, pas de suivi inter-sites, pas de profils publicitaires. Aucun pixel publicitaire ou de réseau social tiers.",
+          "Si vous acceptez les analyses dans le bandeau de cookies, nous utilisons aussi PostHog (hébergé dans l'Union européenne, à Francfort) pour comprendre quelles pages et fonctionnalités sont utilisées. Il ne s'active qu'après votre accord, est lié à l'identifiant de votre compte lorsque vous êtes connecté, n'enregistre jamais le contenu que vous écrivez ni votre écran, et les adresses IP sont écartées à la réception. Vous pouvez retirer votre accord à tout moment via « Préférences de cookies », dans la barre latérale ou au bas de cette page.",
+          "Nous ne déposons que des cookies essentiels (votre session, la langue et votre choix de consentement aux cookies) et, si vous acceptez les analyses, le cookie analytique propre de PostHog.",
         ],
       },
       {
@@ -156,7 +159,7 @@ export const PRIVACY: Record<Locale, LegalDoc> = {
       {
         heading: "Qui traite vos données",
         body: [
-          "Nous faisons appel à des sous-traitants de confiance uniquement pour faire fonctionner le service : Clerk (authentification), Sanity (contenu), un fournisseur de base de données (Neon/Postgres), Cloudflare R2 (fichiers), Algolia (recherche), Resend (e-mail) et Vercel (hébergement). Chacun ne traite les données que sur nos instructions.",
+          "Nous faisons appel à des sous-traitants de confiance uniquement pour faire fonctionner le service : Clerk (authentification), Sanity (contenu), un fournisseur de base de données (Neon/Postgres), Cloudflare R2 (fichiers), Algolia (recherche), Resend (e-mail), PostHog (analyse produit, uniquement avec votre accord) et Vercel (hébergement). Chacun ne traite les données que sur nos instructions.",
         ],
       },
       {
@@ -195,8 +198,9 @@ export const PRIVACY: Record<Locale, LegalDoc> = {
       {
         heading: "التحليلات والتتبع",
         body: [
-          "نستخدم Plausible Analytics، وهي خدمة بلا ملفات تعريف ارتباط ولا تجمع بيانات شخصية — لا تتبّع بين المواقع ولا ملفات تعريف إعلانية. لا توجد وحدات بكسل إعلانية أو لتتبع الشبكات الاجتماعية من أطراف ثالثة.",
-          "نضع ملفات تعريف الارتباط الأساسية فقط (جلسة تسجيل دخولك، واللغة، واختيارك بشأن ملفات تعريف الارتباط).",
+          "نستخدم Plausible Analytics لإحصاء الزيارات، وهي خدمة بلا ملفات تعريف ارتباط ولا تجمع بيانات شخصية — لا تتبّع بين المواقع ولا ملفات تعريف إعلانية. لا توجد وحدات بكسل إعلانية أو لتتبع الشبكات الاجتماعية من أطراف ثالثة.",
+          "إذا وافقت على التحليلات في إشعار ملفات تعريف الارتباط، نستخدم أيضًا PostHog (مستضاف في الاتحاد الأوروبي، فرانكفورت) لفهم الصفحات والميزات التي يستخدمها المجتمع. لا يعمل إلا بعد موافقتك، ويُربط بمعرّف حسابك عند تسجيل الدخول، ولا يسجّل أبدًا المحتوى الذي تكتبه ولا شاشتك، وتُستبعد عناوين IP عند الاستلام. يمكنك سحب موافقتك في أي وقت عبر «تفضيلات ملفات تعريف الارتباط» في الشريط الجانبي أو في أسفل هذه الصفحة.",
+          "نضع ملفات تعريف الارتباط الأساسية فقط (جلسة تسجيل دخولك، واللغة، واختيارك بشأن ملفات تعريف الارتباط)، وإذا وافقت على التحليلات، ملف تعريف الارتباط التحليلي الخاص بـ PostHog.",
         ],
       },
       {
@@ -209,7 +213,7 @@ export const PRIVACY: Record<Locale, LegalDoc> = {
       {
         heading: "من يعالج بياناتك",
         body: [
-          "نستعين بمعالجين موثوقين فقط لتشغيل الخدمة: Clerk (تسجيل الدخول) وSanity (المحتوى) ومزوّد قاعدة بيانات (Neon/Postgres) وCloudflare R2 (الملفات) وAlgolia (البحث) وResend (البريد) وVercel (الاستضافة). ويعالج كل منهم البيانات وفق تعليماتنا فقط.",
+          "نستعين بمعالجين موثوقين فقط لتشغيل الخدمة: Clerk (تسجيل الدخول) وSanity (المحتوى) ومزوّد قاعدة بيانات (Neon/Postgres) وCloudflare R2 (الملفات) وAlgolia (البحث) وResend (البريد) وPostHog (تحليلات المنتج، بموافقتك فقط) وVercel (الاستضافة). ويعالج كل منهم البيانات وفق تعليماتنا فقط.",
         ],
       },
       {
