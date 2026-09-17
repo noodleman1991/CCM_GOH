@@ -21,6 +21,7 @@ import { getNewsPostBySlug, getRelatedNews, getNewsSlugs } from '@/lib/content/n
 import { CommentIsland } from '@/components/comments/comment-island'
 import { JsonLd, articleJsonLd } from '@/lib/seo/json-ld'
 import { FollowButton } from "@/components/follow/follow-button";
+import { absoluteUrl } from "@/lib/seo/site-url"
 
 // Generate static params for all news posts
 export async function generateStaticParams() {
@@ -117,7 +118,9 @@ export default async function NewsDetailPage({
           title,
           description: excerpt || subtitle || undefined,
           url: `${process.env.NEXT_PUBLIC_SITE_URL}/${locale}/news/${slug}`,
-          image: newsPost.image?.asset?.url ?? null,
+          // Absolute: Next absolutises `openGraph.images` but not raw JSON-LD,
+          // and under Payload this url is a relative `/payload-api/…` path.
+          image: absoluteUrl(newsPost.image?.asset?.url),
           datePublished: newsPost.publishedAt ?? null,
           authorName: newsPost.author?.name ?? null,
           inLanguage: locale,

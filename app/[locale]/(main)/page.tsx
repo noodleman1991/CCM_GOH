@@ -65,7 +65,7 @@ export async function generateMetadata({
     // getHomepage / getPageBySlug keep meta_title/meta_description/noindex/
     // ogImage as top-level fields, matching generatePageMetadata's
     // MetadataSource — see lib/content/pages.ts's comment on why.
-    return generatePageMetadata({ page: page as MetadataSource, slug: "index" });
+    return generatePageMetadata({ page: page as MetadataSource, slug: "index", locale });
 }
 
 interface IndexPageProps {

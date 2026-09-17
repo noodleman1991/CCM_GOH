@@ -86,6 +86,8 @@
 import { activeBackend } from "@/lib/content/internal/backend";
 import { imageSource } from "@/lib/content/internal/payload-image-source";
 import { imageUrl } from "@/lib/content/images";
+import { absoluteUrl } from "@/lib/seo/site-url";
+import { localizedAlternates, ogLocale } from "@/lib/seo/alternates";
 
 /**
  * The fields this formatter actually reads, duck-typed against the three
@@ -192,14 +194,17 @@ export function generatePageMetadata({
   }
 
   const og = page?.ogImage ? openGraphImage(page.ogImage) : undefined;
+  const path = slug === "index" ? "" : `/${slug}`;
 
   return {
-    title,
+    // An empty CMS title must not reach the layout's `%s | …` template, which
+    // rendered " | Connecting Climate Minds"; `undefined` lets the default apply.
+    title: title || undefined,
     description: page?.meta_description || "",
     openGraph: {
       images: [
         {
-          url: og ? og.url : `${process.env.NEXT_PUBLIC_SITE_URL}/images/og-image.jpg`,
+          url: og ? og.url : absoluteUrl("/images/og-image.jpg")!,
           // The resolved derivative's own box first (Payload), then the
           // source's metadata (Sanity), then the Open Graph default. The
           // declaration has to describe the file that is actually served.
@@ -207,7 +212,7 @@ export function generatePageMetadata({
           height: og?.height || page?.ogImage?.asset?.metadata?.dimensions?.height || 630,
         },
       ],
-      locale: "en_US",
+      locale: ogLocale(locale),
       type: "website",
     },
     robots: !isProduction
@@ -215,8 +220,6 @@ export function generatePageMetadata({
       : page?.noindex
         ? "noindex"
         : "index, follow",
-    alternates: {
-      canonical: `/${slug === "index" ? "" : slug}`,
-    },
+    alternates: localizedAlternates(path, locale),
   };
 }

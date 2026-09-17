@@ -1,5 +1,6 @@
 import { getNewsOgData } from '@/lib/content/news'
 import { contentOgCard } from '@/lib/seo/og-card'
+import { getTranslations } from 'next-intl/server'
 
 export const revalidate = 3600
 
@@ -13,9 +14,11 @@ export async function GET(
   { params }: { params: Promise<{ locale: string; slug: string }> }
 ) {
   const { locale, slug } = await params
+  // The share card is localised like the page it fronts (Slice 10a).
+  const tType = await getTranslations({ locale, namespace: 'typedCards' })
   const doc = await getNewsOgData(slug)
   const t = doc?.title
   const title =
-    (typeof t === 'string' ? t : t?.[locale] || t?.en || Object.values(t ?? {})[0]) || 'News'
-  return contentOgCard({ title, typeLabel: 'News', type: 'newsPost', regionLabel: doc?.region })
+    (typeof t === 'string' ? t : t?.[locale] || t?.en || Object.values(t ?? {})[0]) || tType('type.newsPost')
+  return contentOgCard({ title, typeLabel: tType('type.newsPost'), type: 'newsPost', regionLabel: doc?.region })
 }

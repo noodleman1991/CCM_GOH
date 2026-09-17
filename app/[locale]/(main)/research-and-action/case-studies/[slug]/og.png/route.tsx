@@ -1,5 +1,6 @@
 import { getCaseStudyOgData } from '@/lib/content/case-studies'
 import { contentOgCard } from '@/lib/seo/og-card'
+import { getTranslations } from 'next-intl/server'
 
 export const revalidate = 3600
 
@@ -13,9 +14,11 @@ export async function GET(
   { params }: { params: Promise<{ locale: string; slug: string }> }
 ) {
   const { locale, slug } = await params
+  // The share card is localised like the page it fronts (Slice 10a).
+  const tType = await getTranslations({ locale, namespace: 'typedCards' })
   const doc = await getCaseStudyOgData(slug)
   const t = doc?.title
   const title =
-    (typeof t === 'string' ? t : t?.[locale] || t?.en || Object.values(t ?? {})[0]) || 'Case study'
-  return contentOgCard({ title, typeLabel: 'Case study', type: 'caseStudy', regionLabel: doc?.region })
+    (typeof t === 'string' ? t : t?.[locale] || t?.en || Object.values(t ?? {})[0]) || tType('type.caseStudy')
+  return contentOgCard({ title, typeLabel: tType('type.caseStudy'), type: 'caseStudy', regionLabel: doc?.region })
 }

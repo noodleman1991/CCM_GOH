@@ -19,6 +19,7 @@ import { cn } from "@/lib/utils";
 import { heading } from "@/lib/design-tokens";
 import { sortedTags, normalizeTagColor } from "@/lib/tags";
 import type { LocalizedString } from "@/types/case-study";
+import { absoluteUrl } from "@/lib/seo/site-url";
 
 export async function generateStaticParams() {
   const outputs = await getResearchOutputSlugs();
@@ -37,7 +38,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return {
     title,
     description,
-    openGraph: { title, description, type: "article", images: ro.image?.asset?.url ? [ro.image.asset.url] : [] },
+    openGraph: { title, description, type: "article", images: absoluteUrl(ro.image?.asset?.url) ? [absoluteUrl(ro.image?.asset?.url)!] : [] },
   };
 }
 

@@ -1,5 +1,6 @@
 import { getLivedExperienceOgData } from '@/lib/content/lived-experiences'
 import { contentOgCard } from '@/lib/seo/og-card'
+import { getTranslations } from 'next-intl/server'
 
 export const revalidate = 3600
 
@@ -13,10 +14,12 @@ export async function GET(
   { params }: { params: Promise<{ locale: string; slug: string }> }
 ) {
   const { locale, slug } = await params
+  // The share card is localised like the page it fronts (Slice 10a).
+  const tType = await getTranslations({ locale, namespace: 'typedCards' })
   const doc = await getLivedExperienceOgData(slug)
   const t = doc?.title
   const title =
     (typeof t === 'string' ? t : t?.[locale] || t?.en || Object.values(t ?? {})[0]) ||
     'Lived experience'
-  return contentOgCard({ title, typeLabel: 'Lived experience', type: 'livedExperience', regionLabel: doc?.region })
+  return contentOgCard({ title, typeLabel: tType('type.livedExperience'), type: 'livedExperience', regionLabel: doc?.region })
 }

@@ -76,7 +76,7 @@ export async function generateMetadata({
     // meta_description/noindex/ogImage as top-level fields, matching
     // generatePageMetadata's MetadataSource — see lib/content/pages.ts's
     // comment on `Page` for why.
-    return generatePageMetadata({ page: page as MetadataSource, slug: slug });
+    return generatePageMetadata({ page: page as MetadataSource, slug: slug, locale });
 }
 
 export default async function Page({

@@ -1,4 +1,5 @@
 import { MetadataRoute } from "next";
+import { absoluteUrl } from "@/lib/seo/site-url";
 
 // Private / authenticated / staff areas — never index, never crawl.
 const DISALLOW = [
@@ -30,6 +31,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: DISALLOW,
       },
     ],
-    sitemap: [`${process.env.NEXT_PUBLIC_SITE_URL}/sitemap.xml`],
+    sitemap: [absoluteUrl("/sitemap.xml")!],
   };
 }
