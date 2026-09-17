@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import { Suspense } from 'react'
 import { getTranslations } from 'next-intl/server'
 import { auth } from '@clerk/nextjs/server'
-import { redirect } from 'next/navigation'
+import { redirect } from '@/i18n/navigation'
 import { CollaboratePageClient } from './page-client'
 import { CollabTabs } from '@/components/collaborate/collab-tabs'
 import { ProjectCard } from '@/components/collaborate/project-card'
@@ -63,11 +63,11 @@ export default async function CollaboratePage({ params, searchParams }: Collabor
   } catch (error) {
     if (typeof error === 'object' && error !== null && 'digest' in error) throw error
     console.error('Collaborate page auth error:', error)
-    redirect(`/${locale}/sign-in?redirect=/collaborate`)
+    redirect({ href: "/sign-in?redirect=/collaborate", locale })
   }
 
   if (!userId) {
-    redirect(`/${locale}/sign-in?redirect=/collaborate`)
+    redirect({ href: "/sign-in?redirect=/collaborate", locale })
   }
 
   // §4.6 collab space: Projects and Events panels (People keeps its own

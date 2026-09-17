@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import NewsPostCard from "@/components/ui/news-post-card";
 import CaseStudyCard from "@/components/ui/case-study-card";
 import ExternalSourceCard from "@/components/ui/external-source-card";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { Calendar, Tag, Globe, Building, Filter, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CONTAINER_WIDTH, SECTION_SPACING_Y } from "@/lib/design-tokens";

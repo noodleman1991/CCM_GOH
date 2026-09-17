@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
+import { redirect } from "@/i18n/navigation";
 import { auth } from "@clerk/nextjs/server";
 import { getTranslations } from "next-intl/server";
 import { CalendarPlus, Share2, Video } from "lucide-react";
@@ -37,8 +38,8 @@ export default async function EventPage({
 }: {
   params: Promise<{ locale: string; slug: string }>;
 }) {
-  if (!FEATURES.engagement) redirect("/");
   const { locale, slug } = await params;
+  if (!FEATURES.engagement) redirect({ href: "/", locale });
   const [event, { userId }, t] = await Promise.all([
     fetchEventBySlug(slug),
     auth(),

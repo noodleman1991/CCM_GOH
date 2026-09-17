@@ -24,6 +24,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import { Link } from "@/i18n/navigation"
 import { cn } from '@/lib/utils';
 import {
     FileText,
@@ -585,7 +586,7 @@ export default function ImprovedCaseStudyForm({
                         {t('successScreen.submitAnother')}
                     </Button>
                     <Button asChild>
-                        <a href={`/${locale}/dashboard/submissions`}>{t('successScreen.viewSubmissions')}</a>
+                        <Link href="/dashboard/submissions">{t('successScreen.viewSubmissions')}</Link>
                     </Button>
                 </div>
             </div>

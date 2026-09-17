@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { auth } from "@clerk/nextjs/server"
-import { redirect } from "next/navigation"
+import { redirect } from "@/i18n/navigation"
 import { getTranslations } from 'next-intl/server'
 import { getUserSubmissionsAndDrafts } from "@/lib/content/case-studies"
 import UserSubmissionsDashboard from "@/components/dashboard/user-submissions-dashboard"
@@ -55,7 +55,7 @@ export default async function UserSubmissionsPage({
   const { userId } = await auth()
 
   if (!userId) {
-    redirect('/sign-in')
+    redirect({ href: '/sign-in', locale })
   }
 
   return (

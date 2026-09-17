@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { auth } from "@clerk/nextjs/server"
-import { redirect } from "next/navigation"
-import { getTranslations } from "next-intl/server"
+import { redirect } from "@/i18n/navigation"
+import { getTranslations, getLocale } from "next-intl/server"
 import { PageContainer } from "@/components/ui/page-container"
 import { ResearchOutputForm } from "@/components/forms/research-output-form"
 import {
@@ -23,10 +23,11 @@ export default async function SubmitResearchOutputPage({
   params: Promise<{ locale: string }>
   searchParams: Promise<{ workspace?: string; edit?: string }>
 }) {
+  const locale = await getLocale();
   await params
   const { workspace, edit } = await searchParams
   const { userId } = await auth()
-  if (!userId) redirect("/sign-in")
+  if (!userId) redirect({ href: "/sign-in", locale })
 
   const [availableTags, regionalCommunities] = await Promise.all([
     getResearchOutputTags(),
@@ -37,7 +38,7 @@ export default async function SubmitResearchOutputPage({
   let editDoc = null
   if (edit) {
     editDoc = await loadEditableResearchOutput(edit, userId)
-    if (!editDoc) redirect("/research-and-action/research-outputs/submit")
+    if (!editDoc) redirect({ href: "/research-and-action/research-outputs/submit", locale })
   }
 
   return (

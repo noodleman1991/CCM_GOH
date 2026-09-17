@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
+import { redirect } from "@/i18n/navigation";
 import { FEATURES } from "@/lib/features";
 import { auth } from "@clerk/nextjs/server";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, getLocale } from "next-intl/server";
 import { getCollaboration, getMembershipRole, getPlan, getDocs, getOutputs, refreshOutputStatuses, getActivity } from "@/lib/collaboration/service";
 import { getActor, isStaff } from "@/lib/authz";
 import { r2Configured } from "@/lib/r2";
@@ -35,7 +36,8 @@ export default async function CollaborationDetailPage({
   params: Promise<{ id: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  if (!FEATURES.engagement) redirect("/");
+  const locale = await getLocale();
+  if (!FEATURES.engagement) redirect({ href: "/", locale });
   const { id } = await params;
   const sp = await searchParams;
   const forcePublic = sp?.view === "public";

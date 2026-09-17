@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
+import { redirect } from "@/i18n/navigation";
 import { auth } from "@clerk/nextjs/server";
 import { getTranslations } from "next-intl/server";
 import { BackLink } from "@/components/ui/back-link";
@@ -26,18 +26,18 @@ export default async function NewEventPage({
   params: Promise<{ locale: string }>;
   searchParams: Promise<{ workspace?: string; edit?: string }>;
 }) {
-  if (!FEATURES.engagement) redirect("/");
   const { locale } = await params;
+  if (!FEATURES.engagement) redirect({ href: "/", locale });
   const { workspace, edit } = await searchParams;
   const { userId } = await auth();
-  if (!userId) redirect("/sign-in");
+  if (!userId) redirect({ href: "/sign-in", locale });
   const t = await getTranslations({ locale, namespace: "events" });
 
   // X7 edit mode: reopen your own (or your workspace's) draft/pending event.
   let editDoc = null;
   if (edit) {
     editDoc = await loadEditableEvent(edit, userId);
-    if (!editDoc) redirect("/collaborate/events/new");
+    if (!editDoc) redirect({ href: "/collaborate/events/new", locale });
   }
 
   return (

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
+import { redirect } from "@/i18n/navigation";
 import { auth } from "@clerk/nextjs/server";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, getLocale } from "next-intl/server";
 import { Inbox } from "@/components/messaging/inbox";
 import { FEATURES } from "@/lib/features";
 
@@ -18,9 +18,10 @@ export async function generateMetadata({
 }
 
 export default async function MessagesPage() {
-  if (!FEATURES.engagement) redirect("/");
+  const locale = await getLocale();
+  if (!FEATURES.engagement) redirect({ href: "/", locale });
   const { userId } = await auth();
-  if (!userId) redirect("/sign-in");
+  if (!userId) redirect({ href: "/sign-in", locale });
   return (
     <div className="container max-w-5xl py-6">
       <Inbox currentUserId={userId} />

@@ -6,7 +6,8 @@ import {
   getRegionalCommunityPage,
 } from "@/lib/content/pages";
 import type { Locale } from "@/lib/content/types";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
+import { redirect } from "@/i18n/navigation";
 import { generatePageMetadata, type MetadataSource } from "@/lib/content/metadata";
 import { isRTL } from "@/i18n/i18n-helpers";
 import { getViewerUserId } from "@/lib/authz";
@@ -50,7 +51,7 @@ export default async function Page({
     // redirect RC slugs to the canonical URL instead of rendering them empty.
     const rcPage = await getRegionalCommunityPage(slug, locale as Locale);
     if (rcPage) {
-        redirect(`/${locale}/communities/${slug}`);
+        redirect({ href: `/communities/${slug}`, locale });
     }
 
     const page = await getPageBySlug(slug, locale as Locale);

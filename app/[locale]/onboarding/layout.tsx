@@ -1,13 +1,15 @@
 import { auth } from '@clerk/nextjs/server'
-import { redirect } from 'next/navigation'
+import { redirect } from '@/i18n/navigation'
 import { prisma } from '@/lib/prisma'
 import { isOnboardingComplete } from '@/lib/onboarding-status'
+import { getLocale } from "next-intl/server";
 
 export default async function OnboardingLayout({ children }: { children: React.ReactNode }) {
+    const locale = await getLocale();
     const { userId } = await auth()
 
     if (!userId) {
-        redirect('/sign-in')
+        redirect({ href: '/sign-in', locale })
     }
 
     // Check if user has completed onboarding in our database
@@ -21,7 +23,7 @@ export default async function OnboardingLayout({ children }: { children: React.R
     const clerkOnboardingComplete = isOnboardingComplete(sessionClaims)
 
     if (user?.onboardingCompleted || clerkOnboardingComplete) {
-        redirect('/dashboard')
+        redirect({ href: '/dashboard', locale })
     }
 
     return <>{children}</>

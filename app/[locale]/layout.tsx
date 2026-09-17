@@ -8,7 +8,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from "next-intl/server";
 import { ClerkProvider } from '@clerk/nextjs';
 import { arSA, esES, frFR, enGB } from '@clerk/localizations';
-import { rtlLocales } from '@/i18n/routing';
+import { routing, rtlLocales } from '@/i18n/routing';
 import { Poppins, Lato, Lalezar, Tajawal } from "next/font/google";
 import OnboardingRedirectProvider from '@/components/onboarding/onboarding-redirect-provider';
 import RevisionAlertProvider from '@/components/submissions/revision-alert-provider';
@@ -17,6 +17,8 @@ import { CookieConsentBanner } from '@/components/cookie-consent/cookie-consent-
 import { AnalyticsScripts } from '@/components/cookie-consent/analytics-scripts';
 import { absoluteUrl, siteUrl } from "@/lib/seo/site-url";
 import { ogLocale } from "@/lib/seo/alternates";
+import { hasLocale } from "next-intl";
+import { notFound } from "next/navigation";
 
 const poppins = Poppins({
     subsets: ["latin"],
@@ -116,6 +118,9 @@ export default async function LocaleLayout({
 }) {
     const resolvedParams = await params;
     const { locale } = resolvedParams;
+    // An unknown segment must 404, not render the English shell under a
+    // made-up locale (and feed it to Clerk's localisation map).
+    if (!hasLocale(routing.locales, locale)) notFound();
     const isRtl = rtlLocales.includes(locale);
     const messages = await getMessages();
     const baseClerkLocalization = clerkLocalizationsMap[locale as keyof typeof clerkLocalizationsMap] || enGB;

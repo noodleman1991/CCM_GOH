@@ -34,6 +34,17 @@ export default [
     // existing "Loading..."-style literals; new code should not add any.
     files: ["components/**/*.tsx", "app/**/*.tsx"],
     rules: {
+      // Every public route lives under /{locale}; next-intl's Link/redirect
+      // from @/i18n/navigation carry it. The bare primitives drop it (Slice 10c).
+      "no-restricted-imports": [
+        "error",
+        {
+          paths: [
+            { name: "next/link", message: "Use { Link } from '@/i18n/navigation' — it carries the locale." },
+            { name: "next/navigation", importNames: ["redirect"], message: "Use { redirect } from '@/i18n/navigation' with { href, locale }." },
+          ],
+        },
+      ],
       "no-restricted-syntax": [
         "warn",
         {

@@ -1,7 +1,7 @@
 import { PortableText, PortableTextComponents, PortableTextProps } from "@portabletext/react";
 import type { PortableTextBlock } from '@portabletext/types';
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { YouTubeEmbed } from "@next/third-parties/google";
 import { Highlight, themes } from "prism-react-renderer";
 import { Check } from "lucide-react";

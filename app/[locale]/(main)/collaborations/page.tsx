@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
-import { getTranslations } from "next-intl/server";
+import { redirect } from "@/i18n/navigation";
+import { getTranslations, getLocale } from "next-intl/server";
 import { auth } from "@clerk/nextjs/server";
 import { FEATURES } from "@/lib/features";
 import { Link } from "@/i18n/navigation";
@@ -24,7 +24,8 @@ export async function generateMetadata({
 }
 
 export default async function CollaborationsPage() {
-  if (!FEATURES.engagement) redirect("/");
+  const locale = await getLocale();
+  if (!FEATURES.engagement) redirect({ href: "/", locale });
   const { userId } = await auth();
   const t = await getTranslations("collaboration");
   const collabs = await listVisibleCollaborations(userId ?? null);

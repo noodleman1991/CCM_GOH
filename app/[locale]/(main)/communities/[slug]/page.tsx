@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import type { ComponentProps } from 'react';
 // todo: userId may be undefined? (no-!)
-import { getRegionalCommunityPage, getRegionalCommunityPageSlugs, getRegionalCommunityTeamMembers } from '@/lib/content/pages';
+import { getRegionalCommunityPage, getRegionalCommunityTeamMembers } from '@/lib/content/pages';
 import type { Locale } from '@/lib/content/types';
 import { getAgendasByRegion } from '@/lib/content/outputs';
 import RegionalAgendasGrid from '@/components/blocks/grid/regional-agendas-grid';

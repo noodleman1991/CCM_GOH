@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Calendar, Users, MapPin, ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import Image from "next/image";
 import { imageUrl } from "@/lib/content/images";
 import { Badge } from "@/components/ui/badge";
@@ -275,7 +275,7 @@ export function CaseStudyModal({ isOpen, onClose, caseStudy, locale }: CaseStudy
 
           {/* Link back to case studies listing */}
           <div className="flex justify-center pt-4 border-t">
-            <Link href={`/${locale}/research-and-action/case-studies`}>
+            <Link href="/research-and-action/case-studies">
               <Button className="gap-2" variant="outline">
                 {isRTL ? (
                   <>

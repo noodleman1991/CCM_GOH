@@ -48,9 +48,10 @@ describe("generatePageMetadata", () => {
     expect(meta.title).toBe("About us");
   });
 
-  it("defaults title to '' when meta_title is absent", () => {
-    expect(generatePageMetadata({ page: {}, slug: "about" }).title).toBe("");
-    expect(generatePageMetadata({ page: null, slug: "about" }).title).toBe("");
+  it("omits the title when meta_title is absent, so the layout default applies instead of ' | Connecting Climate Minds'", () => {
+    // Slice 10a: an empty title used to render through the template as a bare suffix.
+    expect(generatePageMetadata({ page: {}, slug: "about" }).title).toBeUndefined();
+    expect(generatePageMetadata({ page: null, slug: "about" }).title).toBeUndefined();
   });
 
   it("defaults description to '' when meta_description is absent", () => {
@@ -62,9 +63,11 @@ describe("generatePageMetadata", () => {
     expect(meta.description).toBe("A page about us.");
   });
 
-  it("builds the canonical alternate from slug, treating 'index' as the root", () => {
-    expect(generatePageMetadata({ page: {}, slug: "about" }).alternates.canonical).toBe("/about");
-    expect(generatePageMetadata({ page: {}, slug: "index" }).alternates.canonical).toBe("/");
+  it("builds the locale-prefixed canonical from slug, treating 'index' as the root", () => {
+    // Slice 10a: canonicals carry the locale; the default locale is English.
+    expect(generatePageMetadata({ page: {}, slug: "about" }).alternates.canonical).toBe("/en/about");
+    expect(generatePageMetadata({ page: {}, slug: "index" }).alternates.canonical).toBe("/en");
+    expect(generatePageMetadata({ page: {}, slug: "about", locale: "fr" }).alternates.canonical).toBe("/fr/about");
   });
 
   it("falls back to the site OG image and 1200x630 when there's no ogImage", () => {

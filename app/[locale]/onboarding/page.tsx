@@ -1,5 +1,5 @@
 import { auth, clerkClient } from "@clerk/nextjs/server"
-import { redirect } from "next/navigation"
+import { redirect } from "@/i18n/navigation"
 import { getOnboardingCommunities, getOnboardingContent } from "@/lib/content/onboarding"
 import type { Locale } from "@/lib/content/types"
 import { fetchUserManagementOptionsWithLocale } from "@/lib/actions/sync-user-management"
@@ -96,7 +96,7 @@ export default async function OnboardingPage({ params }: { params: Promise<{ loc
 
     // Require authentication
     if (!userId) {
-        redirect(`/${locale}/sign-in`)
+        redirect({ href: "/sign-in", locale })
     }
 
     console.log(`[Onboarding] Loading page for user ${userId}`)

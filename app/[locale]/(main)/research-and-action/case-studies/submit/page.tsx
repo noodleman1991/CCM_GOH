@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { auth } from "@clerk/nextjs/server"
-import { redirect } from "next/navigation"
+import { redirect } from "@/i18n/navigation"
 import { getTranslations } from 'next-intl/server'
 import CaseStudySubmissionLayout from "@/components/forms/case-study-submission-layout"
 import { getAvailableCaseStudyTags, getActiveCaseStudyCommunities, loadEditableCaseStudy } from "@/lib/content/case-studies"
@@ -26,7 +26,7 @@ export default async function CaseStudySubmitPage({
     const { userId } = await auth()
 
     if (!userId) {
-        redirect('/sign-in')
+        redirect({ href: '/sign-in', locale })
     }
 
     const [availableTags, regionalCommunities] = await Promise.all([
@@ -39,7 +39,7 @@ export default async function CaseStudySubmitPage({
     let editDoc: (Record<string, unknown> & { _sanityId: string }) | null = null
     if (edit) {
         editDoc = await loadEditableCaseStudy(edit, userId)
-        if (!editDoc) redirect('/research-and-action/case-studies/submit')
+        if (!editDoc) redirect({ href: '/research-and-action/case-studies/submit', locale })
     }
 
     return (

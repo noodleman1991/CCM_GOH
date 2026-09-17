@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import type { ComponentProps } from "react"
 import { auth } from "@clerk/nextjs/server"
-import { redirect } from "next/navigation"
+import { redirect } from "@/i18n/navigation"
 import { getTranslations, getLocale } from 'next-intl/server'
 import ProfileEditForm from "@/components/blocks/profile/profile-edit-form"
 import { PageBreadcrumb } from "@/components/ui/page-breadcrumb"
@@ -27,6 +27,7 @@ export default async function ProfileEditPage({
 }: {
     searchParams: Promise<{ tab?: string }>
 }) {
+    const locale = await getLocale();
     const t = await getTranslations('profile.edit')
     const { userId } = await auth()
     // `?tab=recentWork` is how the dashboard and the public profile deep-link
@@ -34,11 +35,10 @@ export default async function ProfileEditPage({
     const { tab } = await searchParams
 
     if (!userId) {
-        redirect('/sign-in')
+        redirect({ href: '/sign-in', locale })
     }
 
     // Fetch user management options from Sanity (with fallback)
-    const locale = await getLocale()
     const userManagementOptions = await fetchUserManagementOptionsWithLocale(locale)
 
     // Fetch communities directly from Prisma (avoid localhost fetch issues in SSR)

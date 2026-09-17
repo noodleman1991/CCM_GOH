@@ -1,5 +1,5 @@
 import React from 'react';
-import Link from 'next/link';
+import { Link } from "@/i18n/navigation";
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
@@ -185,7 +185,7 @@ export default function GridNewsComponent({
     };
 
     return (
-        <Link href={`/${locale}/news/${newsPost.slug.current}`} className="block h-full">
+        <Link href={`/news/${newsPost.slug.current}`} className="block h-full">
         <Card className={cn(
             "flex w-full h-full flex-col justify-between overflow-hidden transition ease-in-out group border rounded-3xl p-6 hover:border-primary",
             className

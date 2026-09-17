@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
+import { redirect } from "@/i18n/navigation";
 import { auth } from "@clerk/nextjs/server";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, getLocale } from "next-intl/server";
 import { getUserSettings, listBlockedUsers } from "@/lib/actions/settings";
 import { SettingsForm } from "@/components/settings/settings-form";
 
@@ -18,12 +18,13 @@ export async function generateMetadata({
 }
 
 export default async function SettingsPage() {
+  const locale = await getLocale();
   const { userId } = await auth();
-  if (!userId) redirect("/sign-in");
+  if (!userId) redirect({ href: "/sign-in", locale });
 
   const t = await getTranslations("settings");
   const [settings, blocked] = await Promise.all([getUserSettings(), listBlockedUsers()]);
-  if (!settings) redirect("/sign-in");
+  if (!settings) redirect({ href: "/sign-in", locale });
 
   return (
     <div className="container max-w-2xl py-8">

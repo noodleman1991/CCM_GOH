@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import Image from "next/image";
 import { imageUrl } from "@/lib/content/images";
 import { ChevronRight, Calendar } from "lucide-react";

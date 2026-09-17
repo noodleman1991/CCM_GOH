@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
+import { redirect } from "@/i18n/navigation";
 import { auth } from "@clerk/nextjs/server";
 import { getTranslations } from "next-intl/server";
 import { Plus } from "lucide-react";
@@ -23,8 +23,8 @@ export async function generateMetadata({
 }
 
 export default async function EventsPage({ params }: { params: Promise<{ locale: string }> }) {
-  if (!FEATURES.engagement) redirect("/");
   const { locale } = await params;
+  if (!FEATURES.engagement) redirect({ href: "/", locale });
   const { userId } = await auth();
   const t = await getTranslations({ locale, namespace: "events" });
 

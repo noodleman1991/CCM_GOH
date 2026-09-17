@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
-import { getTranslations } from "next-intl/server";
+import { redirect } from "@/i18n/navigation";
+import { getTranslations, getLocale } from "next-intl/server";
 import { getActor, isStaff } from "@/lib/authz";
 import { getQueue, getQueueCounts, type QueueTab } from "@/lib/comments/moderation-queue";
 import { ModerationQueue } from "@/components/comments/moderation-queue";
@@ -27,9 +27,10 @@ export default async function ModerationPage({
 }: {
   searchParams: Promise<{ tab?: string }>;
 }) {
+  const locale = await getLocale();
   const actor = await getActor();
   if (!isStaff(actor)) {
-    redirect("/");
+    redirect({ href: "/", locale });
   }
 
   const { tab: rawTab } = await searchParams;

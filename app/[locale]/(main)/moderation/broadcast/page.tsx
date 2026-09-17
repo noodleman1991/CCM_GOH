@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
-import { getTranslations } from "next-intl/server";
+import { redirect } from "@/i18n/navigation";
+import { getTranslations, getLocale } from "next-intl/server";
 import { getActor, isStaff } from "@/lib/authz";
 import { FEATURES } from "@/lib/features";
 import { prisma } from "@/lib/prisma";
@@ -19,9 +19,10 @@ export async function generateMetadata({
 }
 
 export default async function BroadcastPage() {
-  if (!FEATURES.engagement) redirect("/");
+  const locale = await getLocale();
+  if (!FEATURES.engagement) redirect({ href: "/", locale });
   const actor = await getActor();
-  if (!isStaff(actor)) redirect("/");
+  if (!isStaff(actor)) redirect({ href: "/", locale });
 
   const communities = await prisma.community.findMany({
     select: { id: true, name: true, type: true, regionalName: true },

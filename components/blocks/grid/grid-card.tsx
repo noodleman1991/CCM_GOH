@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import type { ComponentProps } from "react";
 import { cleanText } from "@/lib/content/text";
 import { useTranslations } from "next-intl";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import Image from "next/image";
 import { imageUrl } from "@/lib/content/images";
 import type { SanityLinkData } from "@/components/ui/sanity-button";

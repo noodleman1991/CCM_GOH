@@ -1,5 +1,5 @@
 import React from 'react';
-import Link from 'next/link';
+import { Link } from "@/i18n/navigation";
 import { getTranslations } from 'next-intl/server';
 import { Button } from '@/components/ui/button';
 import SectionContainer from '@/components/ui/section-container';
@@ -79,7 +79,7 @@ export default async function RegionalAgendasGrid({
             {showViewAllButton && reports.length > maxReports && (
                 <div className="text-center">
                     <Button asChild size="lg" variant="outline">
-                        <Link href={`/${locale}/communities/${regionalCommunitySlug}/reports`}>
+                        <Link href={`/communities/${regionalCommunitySlug}/reports`}>
                             {t('viewAllReports')}
                         </Link>
                     </Button>

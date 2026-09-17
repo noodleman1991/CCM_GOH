@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import type { ComponentProps } from "react";
 import { useTranslations } from "next-intl";
 import { getQueryMetadata, type QueryType } from "@/lib/dynamic-queries-types";

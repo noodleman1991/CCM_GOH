@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { auth } from "@clerk/nextjs/server"
-import { redirect } from "next/navigation"
-import { getTranslations } from 'next-intl/server'
+import { redirect } from "@/i18n/navigation"
+import { getTranslations, getLocale } from 'next-intl/server'
 import AccountManagement from "@/components/blocks/profile/account-management"
 import { PageBreadcrumb } from "@/components/ui/page-breadcrumb"
 
@@ -14,11 +14,12 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function AccountManagementPage() {
+    const locale = await getLocale();
     const t = await getTranslations('profile.account')
     const { userId } = await auth()
 
     if (!userId) {
-        redirect('/sign-in')
+        redirect({ href: '/sign-in', locale })
     }
 
     return (

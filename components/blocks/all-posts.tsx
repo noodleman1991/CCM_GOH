@@ -2,7 +2,7 @@ import SectionContainer from "@/components/ui/section-container";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { Calendar, User } from "lucide-react";
 import { cleanText } from "@/lib/content/text";
 import { getTranslations } from "next-intl/server";

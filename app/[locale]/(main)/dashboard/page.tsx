@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import { auth, clerkClient } from '@clerk/nextjs/server'
-import { redirect } from 'next/navigation'
+import { redirect } from '@/i18n/navigation'
 import { Link } from '@/i18n/navigation'
 import { DashboardClient } from './page-client'
 import { prisma } from '@/lib/prisma'
@@ -44,7 +44,7 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
   const { userId } = await auth()
 
   if (!userId) {
-    redirect(`/${locale}/sign-in?redirect=/dashboard`)
+    redirect({ href: "/sign-in?redirect=/dashboard", locale })
   }
 
   // Fetch user with all relevant data
