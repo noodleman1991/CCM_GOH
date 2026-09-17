@@ -11,6 +11,7 @@ import type { ImportedWork } from "./types";
 const OPENALEX_BASE = "https://api.openalex.org";
 // OpenAlex asks callers to identify themselves via a mailto for the polite pool.
 const MAILTO = process.env.OPENALEX_MAILTO || "hello@connectingclimateminds.org";
+const OPENALEX_TIMEOUT_MS = 10_000;
 
 /** Normalise an ORCID iD to the canonical https URL OpenAlex expects. */
 export function normalizeOrcidId(input: string): string | null {
@@ -59,7 +60,12 @@ export async function fetchOpenAlexWorks(orcid: string, limit = 25): Promise<Imp
     `${OPENALEX_BASE}/works?filter=author.orcid:${encodeURIComponent(id)}` +
     `&per_page=${Math.min(limit, 50)}&sort=publication_date:desc&mailto=${encodeURIComponent(MAILTO)}`;
 
-  const res = await fetch(url, { headers: { Accept: "application/json" } });
+  // Audit M8: no timeout before. OpenAlex is the optional supplement, so the
+  // import route turns a thrown timeout into "ORCID works only" and reports it.
+  const res = await fetch(url, {
+    headers: { Accept: "application/json" },
+    signal: AbortSignal.timeout(OPENALEX_TIMEOUT_MS),
+  });
   if (!res.ok) return [];
   const json = await res.json();
   const works: OpenAlexWork[] = Array.isArray(json?.results) ? json.results : [];

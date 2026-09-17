@@ -4,6 +4,16 @@
  */
 
 import countriesLib from "i18n-iso-countries";
+import { reportError } from "@/lib/errors/report";
+
+/**
+ * Every Nominatim call carries this timeout. Before it, none did (audit
+ * finding M8), so a stalled upstream held the calling route — or the
+ * case-study form's geocode button — until the platform killed it. 10 s is
+ * generous for Nominatim's usual sub-second answer, and short enough that the
+ * caller's existing "unavailable" path runs while the user is still there.
+ */
+const NOMINATIM_TIMEOUT_MS = 10_000;
 
 export interface GeoPoint {
     lat: number;
@@ -51,7 +61,8 @@ export async function geocodeLocation(
         const response = await fetch(url, {
             headers: {
                 'User-Agent': 'ConnectingClimateMinds/1.0 (case study submission)'
-            }
+            },
+            signal: AbortSignal.timeout(NOMINATIM_TIMEOUT_MS),
         });
 
         if (!response.ok) {
@@ -82,7 +93,9 @@ export async function geocodeLocation(
         };
 
     } catch (error) {
-        console.error('Geocoding error:', error);
+        // Network failure or the 10 s timeout above: same "unavailable" answer
+        // either way, now reported rather than console-only.
+        reportError(error, { route: 'geocoding', tags: { fn: 'geocodeLocation' } });
         return {
             success: false,
             error: error instanceof Error ? error.message : 'Unknown geocoding error'
@@ -114,7 +127,8 @@ export async function reverseGeocode(
         const response = await fetch(url, {
             headers: {
                 'User-Agent': 'ConnectingClimateMinds/1.0 (case study submission)'
-            }
+            },
+            signal: AbortSignal.timeout(NOMINATIM_TIMEOUT_MS),
         });
 
         if (!response.ok) {
@@ -139,7 +153,7 @@ export async function reverseGeocode(
         };
 
     } catch (error) {
-        console.error('Reverse geocoding error:', error);
+        reportError(error, { route: 'geocoding', tags: { fn: 'reverseGeocode' } });
         return {
             success: false,
             error: error instanceof Error ? error.message : 'Unknown error'
@@ -170,7 +184,10 @@ export async function geocodeQuery(query: string): Promise<GeocodeSuggestion[]> 
         });
         const response = await fetch(
             `https://nominatim.openstreetmap.org/search?${params.toString()}`,
-            { headers: { 'User-Agent': 'ConnectingClimateMinds/1.0 (place picker)' } }
+            {
+                headers: { 'User-Agent': 'ConnectingClimateMinds/1.0 (place picker)' },
+                signal: AbortSignal.timeout(NOMINATIM_TIMEOUT_MS),
+            }
         );
         if (!response.ok) return [];
         const rows = (await response.json()) as Array<{
@@ -188,7 +205,10 @@ export async function geocodeQuery(query: string): Promise<GeocodeSuggestion[]> 
                 kind: r.type,
             };
         }).filter((r) => Number.isFinite(r.lat) && Number.isFinite(r.lng));
-    } catch {
+    } catch (error) {
+        // The picker degrades to "no suggestions" — but a dead or slow
+        // Nominatim used to be invisible from here. Report, then degrade.
+        reportError(error, { route: 'geocoding', tags: { fn: 'geocodeQuery' } });
         return [];
     }
 }
