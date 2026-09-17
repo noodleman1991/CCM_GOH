@@ -107,9 +107,14 @@ const routes = [
   },
 ] as const;
 
+// `describe.each` over a heterogeneous tuple widens `handler` to a union whose
+// call signature TypeScript cannot resolve; every handler returns a Response.
+const call = (route: (typeof routes)[number], req: Parameters<typeof route.handler>[0]) =>
+  route.handler(req) as Promise<Response>;
+
 describe.each(routes)("POST /api/search/$name/webhook — Sanity signature or internal bearer", (route) => {
   it("401s a garbage Sanity signature and does not touch the index (H2)", async () => {
-    const res = await route.handler(
+    const res = await call(route, 
       post(route.url, route.body, { [SIGNATURE_HEADER_NAME]: "t=1,v1=garbage" })
     );
     expect(res.status).toBe(401);
@@ -118,33 +123,33 @@ describe.each(routes)("POST /api/search/$name/webhook — Sanity signature or in
 
   it("401s a signature made with the wrong secret", async () => {
     const sig = await encodeSignatureHeader(route.body, Date.now(), "not-the-secret");
-    const res = await route.handler(post(route.url, route.body, { [SIGNATURE_HEADER_NAME]: sig }));
+    const res = await call(route, post(route.url, route.body, { [SIGNATURE_HEADER_NAME]: sig }));
     expect(res.status).toBe(401);
     expect(deleteObject).not.toHaveBeenCalled();
   });
 
   it("401s when neither header is present", async () => {
-    const res = await route.handler(post(route.url, route.body, {}));
+    const res = await call(route, post(route.url, route.body, {}));
     expect(res.status).toBe(401);
     expect(deleteObject).not.toHaveBeenCalled();
   });
 
   it("401s `Bearer undefined` when the bearer secret is unset (H3)", async () => {
     delete process.env.SEARCH_WEBHOOK_SECRET;
-    const res = await route.handler(post(route.url, route.body, { authorization: "Bearer undefined" }));
+    const res = await call(route, post(route.url, route.body, { authorization: "Bearer undefined" }));
     expect(res.status).toBe(401);
     expect(deleteObject).not.toHaveBeenCalled();
   });
 
   it("accepts a valid Sanity signature (M20 for case-studies/agendas)", async () => {
     const sig = await encodeSignatureHeader(route.body, Date.now(), SANITY_SECRET);
-    const res = await route.handler(post(route.url, route.body, { [SIGNATURE_HEADER_NAME]: sig }));
+    const res = await call(route, post(route.url, route.body, { [SIGNATURE_HEADER_NAME]: sig }));
     expect(res.status).toBe(200);
     expect(deleteObject).toHaveBeenCalledTimes(1);
   });
 
   it("accepts the internal bearer", async () => {
-    const res = await route.handler(
+    const res = await call(route, 
       post(route.url, route.body, { authorization: `Bearer ${BEARER_SECRET}` })
     );
     expect(res.status).toBe(200);
@@ -154,7 +159,7 @@ describe.each(routes)("POST /api/search/$name/webhook — Sanity signature or in
   it("401s a Sanity signature when SANITY_WEBHOOK_SECRET is unset (no silent bypass)", async () => {
     delete process.env.SANITY_WEBHOOK_SECRET;
     const sig = await encodeSignatureHeader(route.body, Date.now(), SANITY_SECRET);
-    const res = await route.handler(post(route.url, route.body, { [SIGNATURE_HEADER_NAME]: sig }));
+    const res = await call(route, post(route.url, route.body, { [SIGNATURE_HEADER_NAME]: sig }));
     expect(res.status).toBe(401);
     expect(deleteObject).not.toHaveBeenCalled();
   });

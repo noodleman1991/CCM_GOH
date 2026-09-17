@@ -50,7 +50,7 @@ vi.mock('@/lib/r2', () => ({
 // A recording client (rather than `null`) so the index the erasure targets is
 // observable. The index-name helper is the real one from the side-effect-free
 // `@/lib/algolia-indices`, which is not mocked.
-const algoliaDeleteObject = vi.fn(async () => undefined)
+const algoliaDeleteObject = vi.fn(async (..._args: unknown[]) => undefined)
 vi.mock('@/lib/algolia', () => ({
   algoliaClient: { deleteObject: (...a: unknown[]) => algoliaDeleteObject(...a) },
   ALGOLIA_INDICES: { USERS: 'users' },

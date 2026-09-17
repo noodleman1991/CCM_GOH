@@ -44,7 +44,7 @@ describe("reportError — fallback path (Sentry not initialised)", () => {
     expect(args[0]).toContain("geo/search");
     expect(args).toContain(err);
     // The structured context rides along as one object, so log drains keep it.
-    const ctx = args.find((a) => typeof a === "object" && a !== null && !(a instanceof Error)) as
+    const ctx = args.find((a: unknown) => typeof a === "object" && a !== null && !(a instanceof Error)) as
       | { tags?: Record<string, string>; extra?: Record<string, unknown> }
       | undefined;
     expect(ctx?.tags).toEqual({ source: "nominatim", route: "geo/search" });
