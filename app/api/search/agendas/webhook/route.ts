@@ -75,50 +75,47 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    // Transform and index the agenda
+    // Build first, save second, and answer differently: a record that cannot
+    // be built is removed (no stale rows); a save that fails is 5xx with the
+    // index untouched, so Sanity retries. See the case-studies webhook.
+    let record: ReturnType<typeof transformAgendaForIndex>
     try {
-      const record = transformAgendaForIndex(agenda)
-      if (record) {
-        await algoliaClient.saveObjects({
-          indexName: writeIndexName(ALGOLIA_INDICES.AGENDAS),
-          objects: [record]
-        })
-
-        console.log(`✅ Updated agenda ${_id} in search index`)
-
-        return NextResponse.json({
-          success: true,
-          message: 'Agenda updated in search index',
-          action: 'indexed'
-        })
-      } else {
-        // Remove from index if transformation failed
-        await algoliaClient.deleteObject({
-          indexName: writeIndexName(ALGOLIA_INDICES.AGENDAS),
-          objectID: _id
-        })
-
-        return NextResponse.json({
-          success: true,
-          message: 'Agenda removed from search index due to transformation error',
-          action: 'removed'
-        })
-      }
+      record = transformAgendaForIndex(agenda)
     } catch (error) {
-      console.warn(`Failed to index agenda ${_id}: ${error}`)
-      // Remove from index if indexing failed
+      console.warn(`Could not build the search record for agenda ${_id}: ${error}`)
+      record = null
+    }
+    if (!record) {
       await algoliaClient.deleteObject({
         indexName: writeIndexName(ALGOLIA_INDICES.AGENDAS),
         objectID: _id
       })
-
       return NextResponse.json({
         success: true,
-        message: 'Agenda removed from search index due to indexing error',
-        action: 'removed',
-        reason: error instanceof Error ? error.message : 'Unknown error'
+        message: 'Agenda removed from search index: record could not be built',
+        action: 'removed'
       })
     }
+    try {
+      await algoliaClient.saveObjects({
+        indexName: writeIndexName(ALGOLIA_INDICES.AGENDAS),
+        objects: [record]
+      })
+    } catch (error) {
+      console.error(`Failed to save agenda ${_id} to the search index:`, error)
+      return NextResponse.json(
+        { success: false, message: 'Search index write failed; retry', reason: error instanceof Error ? error.message : 'Unknown error' },
+        { status: 503 }
+      )
+    }
+
+    console.log(`✅ Updated agenda ${_id} in search index`)
+
+    return NextResponse.json({
+      success: true,
+      message: 'Agenda updated in search index',
+      action: 'indexed'
+    })
 
   } catch (error) {
     console.error('Agenda search webhook failed:', error)

@@ -31,6 +31,8 @@ export async function POST(request: NextRequest) {
       const users = await prisma.user.findMany({
         where: {
           isSearchable: true,
+          // Only PUBLIC profiles are indexed (lib/algolia.ts shouldIndexUser).
+          profileVisibility: 'PUBLIC',
           username: { not: null },
           OR: [
             { firstName: { not: null } },

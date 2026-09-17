@@ -118,7 +118,10 @@ export function SearchDialogResults({
     const handle = setTimeout(async () => {
       try {
         const peopleFilter = isSignedIn
-          ? "isSearchable:true AND (profileVisibility:PUBLIC OR profileVisibility:MEMBERS)"
+          // Only PUBLIC profiles are indexed since 2026-09-17; the filter is
+          // belt-and-braces, not the gate. Members-only people search is the
+          // Prisma-backed endpoint.
+          ? "isSearchable:true AND profileVisibility:PUBLIC"
           : "isSearchable:true AND profileVisibility:PUBLIC";
         const { results } = await searchClient.search([
           { indexName: ALGOLIA_INDICES.CASE_STUDIES, params: { query: q, hitsPerPage: PER_GROUP, filters: "status:approved AND accessLevel:public" } },

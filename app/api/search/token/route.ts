@@ -1,4 +1,5 @@
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
+import { rateLimitRequest } from "@/lib/rate-limit-route";
 import { algoliasearch } from "algoliasearch";
 import { ALGOLIA_INDICES } from "@/lib/algolia";
 
@@ -83,12 +84,18 @@ async function mintToken(): Promise<SearchToken> {
   };
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   const now = Math.floor(Date.now() / 1000);
 
   if (cached && cached.validUntil - now > REFRESH_MARGIN_SECONDS) {
     return NextResponse.json(cached, { headers: { "Cache-Control": "private, max-age=1800" } });
   }
+
+  // The cold path is a real `addApiKey` against Algolia's admin API plus a
+  // propagation wait, and this route is anonymous. Bound it per actor before
+  // minting; the cached fast path above stays free.
+  const limited = await rateLimitRequest(request, "search:token", { limit: 30, windowSeconds: 60 });
+  if (limited) return limited;
 
   try {
     if (!inflight) {

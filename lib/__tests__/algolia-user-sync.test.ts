@@ -125,3 +125,15 @@ describe("syncUserSearchRecord", () => {
     await expect(syncUserSearchRecord("user_1")).rejects.toThrow("algolia down");
   });
 });
+
+describe("syncUserSearchRecord — profile visibility", () => {
+  it("removes the record when the profile is MEMBERS or PRIVATE, even though the user is searchable", async () => {
+    for (const profileVisibility of ["MEMBERS", "PRIVATE"] as const) {
+      saveObjects.mockClear();
+      findUnique.mockResolvedValue({ ...INDEXABLE_USER, profileVisibility });
+      const outcome = await syncUserSearchRecord("user_1", "update");
+      expect(outcome, profileVisibility).toBe("removed");
+      expect(saveObjects, profileVisibility).not.toHaveBeenCalled();
+    }
+  });
+});

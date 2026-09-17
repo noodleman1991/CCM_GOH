@@ -79,58 +79,54 @@ export async function POST(request: NextRequest) {
     const isPublished = newsPost.publishedAt && new Date(newsPost.publishedAt) <= new Date()
 
     if (isPublished) {
-      // Transform and index the news post
+      // Build first, save second, and answer differently: a record that cannot
+      // be built is removed (no stale rows); a save that fails is 5xx with the
+      // index untouched, so Sanity retries. See the case-studies webhook.
+      let record: ReturnType<typeof transformNewsForIndex>
       try {
-        const record = transformNewsForIndex(newsPost)
-        if (record) {
-          const response = await algoliaClient.saveObjects({
-            indexName: writeIndexName(ALGOLIA_INDICES.NEWS),
-            objects: [record]
-          })
-
-          // Wait for indexing to complete
-          if (Array.isArray(response) && response[0]?.taskID) {
-            await algoliaClient.waitForTask({
-              indexName: writeIndexName(ALGOLIA_INDICES.NEWS),
-              taskID: response[0].taskID
-            })
-          }
-
-          console.log(`✅ Updated news post ${_id} in search index`)
-
-          return NextResponse.json({
-            success: true,
-            message: 'News post updated in search index',
-            action: 'indexed'
-          })
-        } else {
-          // Remove from index if transformation failed
-          await algoliaClient.deleteObject({
-            indexName: writeIndexName(ALGOLIA_INDICES.NEWS),
-            objectID: _id
-          })
-
-          return NextResponse.json({
-            success: true,
-            message: 'News post removed from search index due to transformation error',
-            action: 'removed'
-          })
-        }
+        record = transformNewsForIndex(newsPost)
       } catch (error) {
-        console.warn(`Failed to index news post ${_id}:`, error)
-        // Remove from index if indexing failed
+        console.warn(`Could not build the search record for news post ${_id}:`, error)
+        record = null
+      }
+      if (!record) {
         await algoliaClient.deleteObject({
           indexName: writeIndexName(ALGOLIA_INDICES.NEWS),
           objectID: _id
         })
-
         return NextResponse.json({
           success: true,
-          message: 'News post removed from search index due to indexing error',
-          action: 'removed',
-          reason: error instanceof Error ? error.message : 'Unknown error'
+          message: 'News post removed from search index: record could not be built',
+          action: 'removed'
         })
       }
+      try {
+        const response = await algoliaClient.saveObjects({
+          indexName: writeIndexName(ALGOLIA_INDICES.NEWS),
+          objects: [record]
+        })
+        // Wait for indexing to complete
+        if (Array.isArray(response) && response[0]?.taskID) {
+          await algoliaClient.waitForTask({
+            indexName: writeIndexName(ALGOLIA_INDICES.NEWS),
+            taskID: response[0].taskID
+          })
+        }
+      } catch (error) {
+        console.error(`Failed to save news post ${_id} to the search index:`, error)
+        return NextResponse.json(
+          { success: false, message: 'Search index write failed; retry', reason: error instanceof Error ? error.message : 'Unknown error' },
+          { status: 503 }
+        )
+      }
+
+      console.log(`✅ Updated news post ${_id} in search index`)
+
+      return NextResponse.json({
+        success: true,
+        message: 'News post updated in search index',
+        action: 'indexed'
+      })
     } else {
       // News post is not published, remove if present
       await algoliaClient.deleteObject({

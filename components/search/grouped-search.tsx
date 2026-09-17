@@ -418,7 +418,9 @@ export default function GroupedSearch() {
   // at index time. Respect profileVisibility for the viewer: anonymous sees only
   // PUBLIC profiles; signed-in members also see MEMBERS profiles.
   const peopleFilter = isSignedIn
-    ? 'isSearchable:true AND (profileVisibility:PUBLIC OR profileVisibility:MEMBERS)'
+    // Only PUBLIC profiles are indexed since 2026-09-17 (lib/algolia.ts); this
+    // filter is belt-and-braces, not the gate.
+    ? 'isSearchable:true AND profileVisibility:PUBLIC'
     : 'isSearchable:true AND profileVisibility:PUBLIC'
 
   const hasQuery = query.trim().length > 0

@@ -278,6 +278,13 @@ export function transformUserForIndex(user: IndexableUser): UserSearchRecord {
   if (!user.isSearchable) {
     throw new Error('User has opted out of search')
   }
+  // Only PUBLIC profiles reach the index at all. The browser key can read
+  // every record in the index, so a MEMBERS/PRIVATE row was one query away
+  // from anyone; the client-side filter was the only thing hiding it.
+  // Members-only people search is the Prisma-backed endpoint, not Algolia.
+  if (user.profileVisibility !== 'PUBLIC') {
+    throw new Error('Only public profiles are indexed')
+  }
 
   const fullName = `${user.firstName || ''} ${user.lastName || ''}`.trim()
 
@@ -337,16 +344,18 @@ export function transformUserForIndex(user: IndexableUser): UserSearchRecord {
 
 // Helper function to check if user should be included in search
 export function shouldIndexUser(
-  user: Pick<IndexableUser, 'isSearchable' | 'username' | 'firstName' | 'lastName'>
+  user: Pick<IndexableUser, 'isSearchable' | 'username' | 'firstName' | 'lastName' | 'profileVisibility'>
 ): boolean {
   // Must be searchable
   if (!user.isSearchable) return false
-  
+
   // Must have minimum required fields
   if (!user.username || (!user.firstName && !user.lastName)) return false
-  
-  // Profile visibility check will be handled at search time via filters
-  return true
+
+  // Must be PUBLIC. Until 2026-09-17 this said "visibility is handled at
+  // search time via filters" — but the filter lived in the browser, next to a
+  // key that could read the whole index. An unset visibility is not public.
+  return user.profileVisibility === 'PUBLIC'
 }
 
 // Configuration for search indices
@@ -365,6 +374,10 @@ export const INDEX_SETTINGS = {
       'unordered(expertiseAreas)',
       'unordered(communities)'
     ],
+    // Never returned in a hit, whatever key asks: the privacy flags are for
+    // the indexer, not the browser. showWorkDetails stays retrievable because
+    // grouped-search reads it to decide whether to show position/organisation.
+    unretrievableAttributes: ['isSearchable', 'showEmail', 'showSocialLinks', 'showLocation'],
     attributesForFaceting: [
       'filterOnly(isSearchable)',
       'filterOnly(profileVisibility)',

@@ -69,35 +69,48 @@ export async function POST(request: NextRequest) {
 
     // Check if case study should be indexed (only approved ones)
     if (caseStudy.status === 'approved') {
+      // Two failures, two answers. A record that cannot be BUILT is removed,
+      // so the index never keeps a stale row. A record that cannot be SAVED
+      // (Algolia down, key rejected) is left alone and answered with 5xx so
+      // Sanity retries — until 2026-09-17 both paths deleted the document and
+      // returned 200, so a transient outage on an approved case study took it
+      // out of search until the next full sync.
+      let record: ReturnType<typeof transformCaseStudyForIndex>
       try {
-        const record = transformCaseStudyForIndex(caseStudy)
-        if (record) {
-          await algoliaClient.saveObjects({
-            indexName: writeIndexName(ALGOLIA_INDICES.CASE_STUDIES),
-            objects: [record]
-          })
-
-          console.log(`✅ Updated case study ${_id} in search index`)
-
-          return NextResponse.json({
-            success: true,
-            message: 'Case study updated in search index',
-            action: 'indexed'
-          })
-        }
+        record = transformCaseStudyForIndex(caseStudy)
       } catch (error) {
-        console.warn(`Failed to index case study ${_id}: ${error}`)
-        // Remove from index if transformation failed
+        console.warn(`Could not build the search record for case study ${_id}: ${error}`)
         await algoliaClient.deleteObject({
           indexName: writeIndexName(ALGOLIA_INDICES.CASE_STUDIES),
           objectID: _id
         })
+        return NextResponse.json({
+          success: true,
+          message: 'Case study removed from search index: record could not be built',
+          action: 'removed',
+          reason: error instanceof Error ? error.message : 'Unknown error'
+        })
+      }
+      if (record) {
+        try {
+          await algoliaClient.saveObjects({
+            indexName: writeIndexName(ALGOLIA_INDICES.CASE_STUDIES),
+            objects: [record]
+          })
+        } catch (error) {
+          console.error(`Failed to save case study ${_id} to the search index:`, error)
+          return NextResponse.json(
+            { success: false, message: 'Search index write failed; retry', reason: error instanceof Error ? error.message : 'Unknown error' },
+            { status: 503 }
+          )
+        }
+
+        console.log(`✅ Updated case study ${_id} in search index`)
 
         return NextResponse.json({
           success: true,
-          message: 'Case study removed from search index due to indexing error',
-          action: 'removed',
-          reason: error instanceof Error ? error.message : 'Unknown error'
+          message: 'Case study updated in search index',
+          action: 'indexed'
         })
       }
     } else {
