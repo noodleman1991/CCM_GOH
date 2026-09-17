@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { youtubeId } from "@/lib/youtube";
 import { vimeoId } from "@/lib/vimeo";
+import { LIMITS } from "@/lib/validation/limits";
 
 /**
  * Validation messages, keyed so they can be localized at the call site. The
@@ -10,6 +11,10 @@ import { vimeoId } from "@/lib/vimeo";
  */
 export type LEValidationMessages = {
   titleMin: string;
+  titleMax: string;
+  descriptionMax: string;
+  issueMax: string;
+  personContextMax: string;
   descriptionMin: string;
   issueMin: string;
   videoUrl: string;
@@ -19,6 +24,10 @@ export type LEValidationMessages = {
 
 export const LE_DEFAULT_MESSAGES: LEValidationMessages = {
   titleMin: "Please add a title",
+  titleMax: `Keep the title under ${LIMITS.livedExperience.title} characters`,
+  descriptionMax: `Keep the description under ${LIMITS.livedExperience.description} characters`,
+  issueMax: `Keep this under ${LIMITS.livedExperience.issue} characters`,
+  personContextMax: `Keep this under ${LIMITS.livedExperience.personContext} characters`,
   descriptionMin: "Please describe the experience",
   issueMin: "What issue does this speak to?",
   videoUrl: "Please paste a valid video link",
@@ -44,16 +53,16 @@ export const LE_VIDEO_MIME_TYPES = ["video/mp4", "video/webm"];
 export function makeLivedExperienceSchema(m: LEValidationMessages = LE_DEFAULT_MESSAGES) {
   return z
     .object({
-      title: z.string().trim().min(3, m.titleMin).max(160),
+      title: z.string().trim().min(3, m.titleMin).max(LIMITS.livedExperience.title, m.titleMax),
       // Present when submitting from a workspace (?workspace=) — the route
       // links the created doc back as a workspace output.
       collaborationId: z.string().optional(),
       // X7 edit mode: the Sanity _id of an existing draft/pending doc being
       // resubmitted. The route verifies the caller may edit it, then patches.
       editId: z.string().optional(),
-      description: z.string().trim().min(10, m.descriptionMin).max(800),
-      issue: z.string().trim().min(5, m.issueMin).max(400),
-      personContext: z.string().trim().max(400).optional().or(z.literal("")),
+      description: z.string().trim().min(10, m.descriptionMin).max(LIMITS.livedExperience.description, m.descriptionMax),
+      issue: z.string().trim().min(5, m.issueMin).max(LIMITS.livedExperience.issue, m.issueMax),
+      personContext: z.string().trim().max(LIMITS.livedExperience.personContext, m.personContextMax).optional().or(z.literal("")),
       videoSource: z.enum(["youtube", "vimeo", "upload"]).optional(),
       videoLink: z.string().trim().optional().or(z.literal("")),
       // Portable Text body from the shared editor (blog-post feel). Validated

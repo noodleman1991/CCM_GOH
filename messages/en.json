@@ -182,7 +182,9 @@
     "themeSystem": "System",
     "emailRequired": "Please enter your email",
     "emailInvalid": "Please enter a valid email",
-    "untitled": "Untitled"
+    "untitled": "Untitled",
+    "charCount": "{count} / {max}",
+    "charCountSr": "{count} of {max} characters"
   },
   "settings": {
     "title": "Settings",
@@ -901,7 +903,11 @@
       "authorNameMin": "Please enter the author's full name",
       "authorEmailInvalid": "Please enter a valid email address",
       "authorsMin": "At least one author is required",
-      "tagsMin": "Please select at least one relevant topic"
+      "tagsMin": "Please select at least one relevant topic",
+      "titleMax": "Keep the title under {max} characters",
+      "excerptMax": "Keep the summary under {max} characters",
+      "authorNameMax": "Keep the author's name under {max} characters",
+      "organizationMax": "Keep the organisation name under {max} characters"
     },
     "toasts": {
       "draftRestored": "Your saved draft has been restored",
@@ -2038,7 +2044,11 @@
       "issueMin": "What issue does this speak to?",
       "videoUrl": "Please paste a valid video link",
       "youtubeUrl": "Please paste a valid YouTube link",
-      "vimeoUrl": "Please paste a valid Vimeo link"
+      "vimeoUrl": "Please paste a valid Vimeo link",
+      "titleMax": "Keep the title under {max} characters",
+      "descriptionMax": "Keep the description under {max} characters",
+      "issueMax": "Keep this under {max} characters",
+      "personContextMax": "Keep this under {max} characters"
     },
     "submit": "Submit for review",
     "cancel": "Cancel",
@@ -2221,6 +2231,10 @@
       "TODO": "To do",
       "IN_PROGRESS": "In progress",
       "DONE": "Done"
+    },
+    "errors": {
+      "tooLong": "Keep this under {max} characters.",
+      "empty": "This can't be empty."
     }
   },
   "messages": {

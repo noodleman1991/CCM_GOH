@@ -182,7 +182,9 @@
     "themeSystem": "Système",
     "emailRequired": "Veuillez saisir votre adresse e-mail",
     "emailInvalid": "Veuillez saisir une adresse e-mail valide",
-    "untitled": "Sans titre"
+    "untitled": "Sans titre",
+    "charCount": "{count} / {max}",
+    "charCountSr": "{count} caractères sur {max}"
   },
   "dashboard": {
     "pageTitle": "Tableau de bord - Connecting Climate Minds Hub",
@@ -1027,7 +1029,11 @@
       "authorNameMin": "Veuillez saisir le nom complet de l'auteur",
       "authorEmailInvalid": "Veuillez saisir une adresse e-mail valide",
       "authorsMin": "Au moins un auteur est requis",
-      "tagsMin": "Veuillez sélectionner au moins un sujet pertinent"
+      "tagsMin": "Veuillez sélectionner au moins un sujet pertinent",
+      "titleMax": "Le titre doit faire moins de {max} caractères",
+      "excerptMax": "Le résumé doit faire moins de {max} caractères",
+      "authorNameMax": "Le nom de l'auteur·ice doit faire moins de {max} caractères",
+      "organizationMax": "Le nom de l'organisation doit faire moins de {max} caractères"
     },
     "toasts": {
       "draftRestored": "Votre brouillon enregistré a été restauré",
@@ -2038,7 +2044,11 @@
       "issueMin": "Quel sujet cela aborde-t-il ?",
       "videoUrl": "Veuillez coller un lien vidéo valide",
       "youtubeUrl": "Veuillez coller un lien YouTube valide",
-      "vimeoUrl": "Veuillez coller un lien Vimeo valide"
+      "vimeoUrl": "Veuillez coller un lien Vimeo valide",
+      "titleMax": "Le titre doit faire moins de {max} caractères",
+      "descriptionMax": "La description doit faire moins de {max} caractères",
+      "issueMax": "Ce champ doit faire moins de {max} caractères",
+      "personContextMax": "Ce champ doit faire moins de {max} caractères"
     },
     "submit": "Soumettre pour révision",
     "cancel": "Annuler",
@@ -2221,6 +2231,10 @@
       "TODO": "À faire",
       "IN_PROGRESS": "En cours",
       "DONE": "Terminé"
+    },
+    "errors": {
+      "tooLong": "Ce champ doit faire moins de {max} caractères.",
+      "empty": "Ce champ ne peut pas être vide."
     }
   },
   "messages": {

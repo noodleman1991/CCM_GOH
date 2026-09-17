@@ -8,6 +8,8 @@ import { createNotification } from "@/lib/notifications/service";
 import { parseMentions } from "@/lib/comments/mentions";
 import { authorizeCollab } from "@/lib/collaboration/service";
 import type { TaskStatus } from "@/generated/prisma";
+import { LIMITS } from "@/lib/validation/limits";
+import { lengthError, lengthProblem } from "@/lib/collaboration/errors";
 
 type Result<T = unknown> = ({ ok: true } & T) | { ok: false; error: string };
 
@@ -57,7 +59,7 @@ export async function ensurePlan(collaborationId: string): Promise<Result<{ plan
   return { ok: true, planId: plan.id };
 }
 
-const titleSchema = z.string().trim().min(1).max(200);
+const titleSchema = z.string().trim().min(1).max(LIMITS.collaboration.stage);
 
 export async function addStage(collaborationId: string, title: string): Promise<Result<{ stageId: string }>> {
   const auth = await canEdit(collaborationId);
@@ -182,8 +184,8 @@ export async function renameTask(
 ): Promise<Result> {
   const auth = await canEdit(collaborationId);
   if (!auth.ok) return auth;
-  const parsed = z.string().trim().min(1).max(300).safeParse(title);
-  if (!parsed.success) return { ok: false, error: "Task title can't be empty." };
+  const parsed = z.string().trim().min(1).max(LIMITS.collaboration.task).safeParse(title);
+  if (!parsed.success) return (await lengthProblem(title.trim(), LIMITS.collaboration.task)) ?? { ok: false, error: await lengthError("empty") };
   const r = await prisma.task.updateMany({
     where: taskScope(collaborationId, taskId),
     data: { title: parsed.data },
@@ -199,8 +201,8 @@ export async function setTaskDescription(
 ): Promise<Result> {
   const auth = await canEdit(collaborationId);
   if (!auth.ok) return auth;
-  const parsed = z.string().max(2000).safeParse(description);
-  if (!parsed.success) return { ok: false, error: "Description too long." };
+  const parsed = z.string().max(LIMITS.collaboration.taskDescription).safeParse(description);
+  if (!parsed.success) return { ok: false, error: await lengthError("tooLong", LIMITS.collaboration.taskDescription) };
   const scoped = await prisma.task.findFirst({ where: taskScope(collaborationId, taskId), select: { id: true } });
   if (!scoped) return OUT_OF_SCOPE;
   const task = await prisma.task.update({

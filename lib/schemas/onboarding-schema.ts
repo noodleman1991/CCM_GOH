@@ -1,4 +1,5 @@
 import * as z from "zod"
+import { LIMITS } from "@/lib/validation/limits";
 
 // Default validation messages as fallback
 const defaultMessages = {
@@ -49,15 +50,15 @@ export const createOnboardingSchema = (validationMessages?: OnboardingValidation
   return z.object({
     // Basic Info Step (Step 1)
     basicInfo: z.object({
-      firstName: z.string().min(1, messages.basicInfo?.firstName || defaultMessages.basicInfo.firstName).max(50),
-      lastName: z.string().min(1, messages.basicInfo?.lastName || defaultMessages.basicInfo.lastName).max(50),
+      firstName: z.string().min(1, messages.basicInfo?.firstName || defaultMessages.basicInfo.firstName).max(LIMITS.profile.firstName),
+      lastName: z.string().min(1, messages.basicInfo?.lastName || defaultMessages.basicInfo.lastName).max(LIMITS.profile.lastName),
       username: z.string()
         .min(3, messages.basicInfo?.username || defaultMessages.basicInfo.username)
-        .max(30, messages.basicInfo?.usernameMax || defaultMessages.basicInfo.usernameMax)
+        .max(LIMITS.profile.username, messages.basicInfo?.usernameMax || defaultMessages.basicInfo.usernameMax)
         .regex(/^[a-zA-Z0-9_]+$/, messages.basicInfo?.usernamePattern || defaultMessages.basicInfo.usernamePattern),
-      headline: z.string().max(120).optional(),
-      bio: z.string().max(500, messages.basicInfo?.bio || defaultMessages.basicInfo.bio).optional(),
-      motivation: z.string().max(600).optional(),
+      headline: z.string().max(LIMITS.profile.headline).optional(),
+      bio: z.string().max(LIMITS.profile.bio, messages.basicInfo?.bio || defaultMessages.basicInfo.bio).optional(),
+      motivation: z.string().max(LIMITS.profile.motivation).optional(),
       ageGroup: z.enum(["UNDER_18", "ABOVE_18"]).optional(),
       country: z.string().min(1, messages.basicInfo?.country || defaultMessages.basicInfo.country),
       city: z.string().min(1, messages.basicInfo?.city || defaultMessages.basicInfo.city),
@@ -73,7 +74,7 @@ export const createOnboardingSchema = (validationMessages?: OnboardingValidation
       communityIds: z.array(z.string()).max(10).optional().default([]),
       organization: z.string().optional(),
       position: z.string().optional(),
-      workBio: z.string().max(1000, messages.workInfo?.workBio || defaultMessages.workInfo.workBio).optional(),
+      workBio: z.string().max(LIMITS.profile.workBio, messages.workInfo?.workBio || defaultMessages.workInfo.workBio).optional(),
       linkedinProfile: z.string().url(messages.workInfo?.linkedinUrl || defaultMessages.workInfo.linkedinUrl).optional().or(z.literal("")),
       personalWebsite: z.string().url(messages.workInfo?.websiteUrl || defaultMessages.workInfo.websiteUrl).optional().or(z.literal("")),
       otherSocialLinks: z.array(z.object({
@@ -86,10 +87,10 @@ export const createOnboardingSchema = (validationMessages?: OnboardingValidation
     recentWork: z.array(z.object({
       title: z.string()
         .min(1, messages.recentWork?.title || defaultMessages.recentWork.title)
-        .max(100, messages.recentWork?.titleMax || defaultMessages.recentWork.titleMax),
+        .max(LIMITS.recentWork.title, messages.recentWork?.titleMax || defaultMessages.recentWork.titleMax),
       description: z.string()
         .min(1, messages.recentWork?.description || defaultMessages.recentWork.description)
-        .max(500, messages.recentWork?.descriptionMax || defaultMessages.recentWork.descriptionMax),
+        .max(LIMITS.recentWork.description, messages.recentWork?.descriptionMax || defaultMessages.recentWork.descriptionMax),
       link: z.string().url(messages.recentWork?.link || defaultMessages.recentWork.link).optional().or(z.literal("")),
       isOngoing: z.boolean(),
       startDate: z.string().min(1, messages.recentWork?.startDate || defaultMessages.recentWork.startDate),

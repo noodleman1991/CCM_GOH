@@ -14,6 +14,8 @@ import { Edit, Trash2, Calendar, ExternalLink } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { rtlLocales } from "@/i18n/routing"
 import type { OnboardingContent, OnboardingForm } from "../types"
+import { LIMITS } from "@/lib/validation/limits"
+import { CharCounter } from "@/components/ui/char-counter"
 
 interface RecentWorkPanelProps {
   form: OnboardingForm
@@ -189,8 +191,8 @@ export function RecentWorkPanel({ form, content }: RecentWorkPanelProps) {
                 id="work-title"
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                placeholder={content?.fieldPlaceholders?.workTitle || t("workTitlePlaceholder")}
-              />
+                placeholder={content?.fieldPlaceholders?.workTitle || t("workTitlePlaceholder")} maxLength={LIMITS.recentWork.title} />
+              <CharCounter value={formData.title} max={LIMITS.recentWork.title} />
             </div>
             <div>
               <label htmlFor="work-link" className="text-sm font-medium">{content?.fieldLabels?.recentWork?.projectLink || t("projectLink")}</label>
@@ -214,8 +216,8 @@ export function RecentWorkPanel({ form, content }: RecentWorkPanelProps) {
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               placeholder={content?.fieldPlaceholders?.description || t("descriptionPlaceholder")}
-              rows={3}
-            />
+              rows={3} maxLength={LIMITS.recentWork.description} />
+            <CharCounter value={formData.description} max={LIMITS.recentWork.description} />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">

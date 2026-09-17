@@ -19,6 +19,7 @@ export function InlineText({
   placeholder,
   className,
   inputClassName,
+  maxLength,
 }: {
   value: string;
   onCommit: (next: string) => void | Promise<void>;
@@ -28,6 +29,8 @@ export function InlineText({
   placeholder?: string;
   className?: string;
   inputClassName?: string;
+  /** The cap from lib/validation/limits.ts; enforced by the browser here and by the action on commit. */
+  maxLength?: number;
 }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(value);
@@ -87,6 +90,7 @@ export function InlineText({
     ref: ref as never,
     value: draft,
     placeholder,
+    maxLength,
     onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setDraft(e.target.value),
     onBlur: commit,
     className: cn(

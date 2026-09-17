@@ -12,6 +12,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { cn } from "@/lib/utils"
 import { rtlLocales } from "@/i18n/routing"
 import type { OnboardingContent, OnboardingForm } from "../types"
+import { LIMITS } from "@/lib/validation/limits"
+import { CharCounter } from "@/components/ui/char-counter"
 
 interface BasicInfoPanelProps {
   form: OnboardingForm
@@ -196,8 +198,9 @@ export function BasicInfoPanel({ form, content }: BasicInfoPanelProps) {
             <FormItem>
               <FormLabel>{content?.fieldLabels?.basicInfo?.headline || t("headline")}</FormLabel>
               <FormControl>
-                <Input {...field} value={field.value || ""} placeholder={content?.fieldLabels?.basicInfo?.headlinePlaceholder || t("headlinePlaceholder")} />
+                <Input {...field} value={field.value || ""} placeholder={content?.fieldLabels?.basicInfo?.headlinePlaceholder || t("headlinePlaceholder")} maxLength={LIMITS.profile.headline} />
               </FormControl>
+                <CharCounter value={field.value} max={LIMITS.profile.headline} />
               <FormDescription>
                 {content?.basicInfoFieldHints?.headlineHint || t("headlineHint")}
               </FormDescription>
@@ -214,8 +217,9 @@ export function BasicInfoPanel({ form, content }: BasicInfoPanelProps) {
             <FormItem>
               <FormLabel>{content?.fieldLabels?.basicInfo?.bio || t("bio")}</FormLabel>
               <FormControl>
-                <Textarea {...field} rows={3} placeholder={content?.fieldLabels?.basicInfo?.bioPlaceholder || t("bioPlaceholder")} />
+                <Textarea {...field} rows={3} placeholder={content?.fieldLabels?.basicInfo?.bioPlaceholder || t("bioPlaceholder")} maxLength={LIMITS.profile.bio} />
               </FormControl>
+                <CharCounter value={field.value} max={LIMITS.profile.bio} />
               <FormDescription>
                 {content?.basicInfoFieldHints?.bioHint || t("bioHint")}
               </FormDescription>
@@ -232,8 +236,9 @@ export function BasicInfoPanel({ form, content }: BasicInfoPanelProps) {
             <FormItem>
               <FormLabel>{content?.fieldLabels?.basicInfo?.motivation || t("motivation")}</FormLabel>
               <FormControl>
-                <Textarea {...field} value={field.value || ""} rows={3} placeholder={content?.fieldLabels?.basicInfo?.motivationPlaceholder || t("motivationPlaceholder")} />
+                <Textarea {...field} value={field.value || ""} rows={3} placeholder={content?.fieldLabels?.basicInfo?.motivationPlaceholder || t("motivationPlaceholder")} maxLength={LIMITS.profile.motivation} />
               </FormControl>
+                <CharCounter value={field.value} max={LIMITS.profile.motivation} />
               <FormDescription>
                 {content?.basicInfoFieldHints?.motivationHint || t("motivationHint")}
               </FormDescription>

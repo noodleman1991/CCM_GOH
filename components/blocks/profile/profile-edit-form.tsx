@@ -25,6 +25,8 @@ import { cn } from "@/lib/utils"
 
 import ProfilePictureUpload from "@/components/blocks/profile/profile-picture-upload"
 import { CommunitySelector, type Community as SelectorCommunity } from "@/components/profile/community-selector"
+import { LIMITS } from "@/lib/validation/limits";
+import { CharCounter } from "@/components/ui/char-counter"
 
 // Localized validation messages (resolved from t() inside the component so the
 // Zod errors show in the user's language — the proven newsletter pattern).
@@ -48,16 +50,16 @@ interface SchemaMessages {
 
 const makeProfileSchema = (m: SchemaMessages) => z.object({
     // Clerk-managed fields (update Clerk directly)
-    firstName: z.string().min(1, m.firstNameRequired).max(50),
-    lastName: z.string().min(1, m.lastNameRequired).max(50),
-    username: z.string().min(3, m.usernameMin).max(30)
+    firstName: z.string().min(1, m.firstNameRequired).max(LIMITS.profile.firstName),
+    lastName: z.string().min(1, m.lastNameRequired).max(LIMITS.profile.lastName),
+    username: z.string().min(3, m.usernameMin).max(LIMITS.profile.username)
         .regex(/^[a-zA-Z0-9_]+$/, m.usernamePattern),
 
     // Profile image
     image: z.string().optional(),
 
     // App-managed profile fields
-    bio: z.string().max(500, m.bioMax).optional(),
+    bio: z.string().max(LIMITS.profile.bio, m.bioMax).optional(),
     ageGroup: z.enum(["UNDER_18", "ABOVE_18"]).optional(),
     country: z.string().optional(),
     city: z.string().optional(),
@@ -78,7 +80,7 @@ const makeProfileSchema = (m: SchemaMessages) => z.object({
     ])).min(1, m.expertiseAreasMin),
     organization: z.string().optional(),
     position: z.string().optional(),
-    workBio: z.string().max(1000, m.workBioMax).optional(),
+    workBio: z.string().max(LIMITS.profile.workBio, m.workBioMax).optional(),
     personalWebsite: z.string().url(m.urlInvalid).optional().or(z.literal("")),
     linkedinProfile: z.string().optional(),
     otherSocialLinks: z.array(z.object({
@@ -89,8 +91,8 @@ const makeProfileSchema = (m: SchemaMessages) => z.object({
     // Recent Work
     recentWork: z.array(z.object({
         id: z.string().optional(),
-        title: z.string().min(1, m.workTitleRequired).max(100),
-        description: z.string().min(1, m.workDescriptionRequired).max(500),
+        title: z.string().min(1, m.workTitleRequired).max(LIMITS.recentWork.title),
+        description: z.string().min(1, m.workDescriptionRequired).max(LIMITS.recentWork.description),
         link: z.string().url(m.urlInvalid).optional().or(z.literal("")),
         startDate: z.string().min(1, m.workStartDateRequired),
         endDate: z.string().optional(),
@@ -101,16 +103,16 @@ const makeProfileSchema = (m: SchemaMessages) => z.object({
     communityIds: z.array(z.string()).optional().default([]),
 
     // Domain-rich fields (K4)
-    headline: z.string().max(120, m.headlineMax).optional().or(z.literal("")),
-    pronouns: z.string().max(40).optional().or(z.literal("")),
-    motivation: z.string().max(600, m.keepUnder600).optional().or(z.literal("")),
+    headline: z.string().max(LIMITS.profile.headline, m.headlineMax).optional().or(z.literal("")),
+    pronouns: z.string().max(LIMITS.profile.pronouns).optional().or(z.literal("")),
+    motivation: z.string().max(LIMITS.profile.motivation, m.keepUnder600).optional().or(z.literal("")),
     focusTopics: z.array(z.string()).optional().default([]),
     openToCollaboration: z.boolean().optional().default(false),
     lookingFor: z.array(z.string()).optional().default([]),
-    collaborationInterests: z.string().max(600, m.keepUnder600).optional().or(z.literal("")),
-    livedExperienceStatement: z.string().max(1000, m.keepUnder1000).optional().or(z.literal("")),
+    collaborationInterests: z.string().max(LIMITS.profile.collaborationInterests, m.keepUnder600).optional().or(z.literal("")),
+    livedExperienceStatement: z.string().max(LIMITS.profile.livedExperienceStatement, m.keepUnder1000).optional().or(z.literal("")),
     showLivedExperience: z.boolean().optional().default(false),
-    orcidId: z.string().max(40).optional().or(z.literal("")),
+    orcidId: z.string().max(LIMITS.profile.orcidId).optional().or(z.literal("")),
 
     // Privacy Controls
     isSearchable: z.boolean().default(true),
@@ -736,8 +738,9 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                                     <FormItem>
                                         <FormLabel>{t('headline.label')}</FormLabel>
                                         <FormControl>
-                                            <Input {...field} value={field.value || ""} placeholder={t('headline.placeholder')} />
+                                            <Input {...field} value={field.value || ""} placeholder={t('headline.placeholder')} maxLength={LIMITS.profile.headline} />
                                         </FormControl>
+                                            <CharCounter value={field.value} max={LIMITS.profile.headline} />
                                         <FormDescription>{t('headline.help')}</FormDescription>
                                         <FormMessage />
                                     </FormItem>
@@ -778,8 +781,9 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                                 <FormItem>
                                     <FormLabel>{t('bio')}</FormLabel>
                                     <FormControl>
-                                        <Textarea {...field} rows={4} />
+                                        <Textarea {...field} rows={4} maxLength={LIMITS.profile.bio} />
                                     </FormControl>
+                                    <CharCounter value={field.value} max={LIMITS.profile.bio} />
                                     <FormMessage />
                                 </FormItem>
                             )}
@@ -1088,8 +1092,9 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                                 <FormItem>
                                     <FormLabel>{t('workBio')}</FormLabel>
                                     <FormControl>
-                                        <Textarea {...field} rows={4} />
+                                        <Textarea {...field} rows={4} maxLength={LIMITS.profile.workBio} />
                                     </FormControl>
+                                    <CharCounter value={field.value} max={LIMITS.profile.workBio} />
                                     <FormMessage />
                                 </FormItem>
                             )}

@@ -42,6 +42,7 @@ import {
   assignTask,
   setTaskDescription,
 } from "@/lib/actions/plans";
+import { LIMITS } from "@/lib/validation/limits";
 
 type TaskStatus = "TODO" | "IN_PROGRESS" | "DONE";
 type Task = { id: string; title: string; description: string | null; status: TaskStatus; assigneeId: string | null };
@@ -270,7 +271,7 @@ export function WorkspacePlan({
             <div key={stage.id} className="rounded-lg border bg-muted/20 p-3">
               <div className="mb-2 flex items-center justify-between gap-2">
                 <span className="flex min-w-0 items-center gap-1">
-                  <InlineText
+                  <InlineText maxLength={LIMITS.collaboration.stage}
                     value={stage.title}
                     canEdit={canEdit}
                     as="h3"
@@ -404,7 +405,7 @@ function SortableTask({
         <Icon className="size-4" />
       </button>
       <span className="min-w-0 flex-1">
-        <InlineText
+        <InlineText maxLength={LIMITS.collaboration.task}
           value={task.title}
           canEdit={canEdit}
           as="span"
@@ -412,7 +413,7 @@ function SortableTask({
           className={cn("block truncate", task.status === "DONE" && "text-muted-foreground line-through")}
         />
         {(canEdit || task.description) && (
-          <InlineText
+          <InlineText maxLength={LIMITS.collaboration.taskDescription}
             value={task.description ?? ""}
             canEdit={canEdit}
             as="p"

@@ -5,6 +5,7 @@ import { z } from "zod"
 import type { ExpertiseArea, WorkType } from "@/generated/prisma"
 import { syncUserSearchRecord } from "@/lib/algolia-user-sync"
 import { captureServer } from "@/lib/analytics/server"
+import { LIMITS } from "@/lib/validation/limits";
 
 // Force Node.js runtime for Prisma and Clerk compatibility with Fluid Compute
 export const runtime = 'nodejs'
@@ -52,15 +53,15 @@ class EmailConflictError extends Error {
 
 const OnboardingSchema = z.object({
   // Basic Info
-  firstName: z.string().min(1).max(50),
-  lastName: z.string().min(1).max(50),
-  username: z.string().min(3).max(30).regex(/^[a-zA-Z0-9_]+$/),
-  headline: z.string().max(120).optional(),
-  bio: z.string().max(500).optional(),
-  motivation: z.string().max(600).optional(),
+  firstName: z.string().min(1).max(LIMITS.profile.firstName),
+  lastName: z.string().min(1).max(LIMITS.profile.lastName),
+  username: z.string().min(3).max(LIMITS.profile.username).regex(/^[a-zA-Z0-9_]+$/),
+  headline: z.string().max(LIMITS.profile.headline).optional(),
+  bio: z.string().max(LIMITS.profile.bio).optional(),
+  motivation: z.string().max(LIMITS.profile.motivation).optional(),
   ageGroup: z.enum(["UNDER_18", "ABOVE_18"]).optional(),
-  country: z.string().max(100).optional(),
-  city: z.string().max(100).optional(),
+  country: z.string().max(LIMITS.profile.country).optional(),
+  city: z.string().max(LIMITS.profile.city).optional(),
   preferredLanguage: z.enum(["EN", "ES", "FR", "AR"], {
     errorMap: () => ({ message: "Please choose your preferred language" })
   }).optional(),
@@ -73,11 +74,11 @@ const OnboardingSchema = z.object({
     errorMap: () => ({ message: "Please select valid expertise areas" })
   })).default([]),
   communityIds: z.array(z.string()).max(10).default([]),
-  organization: z.string().max(200).optional(),
-  position: z.string().max(200).optional(),
-  workBio: z.string().max(1000).optional(),
+  organization: z.string().max(LIMITS.profile.organization).optional(),
+  position: z.string().max(LIMITS.profile.position).optional(),
+  workBio: z.string().max(LIMITS.profile.workBio).optional(),
   personalWebsite: z.string().url().optional().or(z.literal("")),
-  linkedinProfile: z.string().max(100).optional(),
+  linkedinProfile: z.string().max(LIMITS.profile.linkedinProfile).optional(),
   otherSocialLinks: z.array(z.object({
     platform: z.string().min(1),
     url: z.string().url()
@@ -85,8 +86,8 @@ const OnboardingSchema = z.object({
 
   // Recent Work
   recentWork: z.array(z.object({
-    title: z.string().min(1).max(100),
-    description: z.string().min(1).max(500),
+    title: z.string().min(1).max(LIMITS.recentWork.title),
+    description: z.string().min(1).max(LIMITS.recentWork.description),
     link: z.string().url().optional().or(z.literal("")),
     isOngoing: z.boolean(),
     startDate: z.string(),

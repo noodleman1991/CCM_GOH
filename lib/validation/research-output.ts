@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { LIMITS } from "@/lib/validation/limits";
 
 /**
  * Validation for a member/project-submitted research output (report, toolkit,
@@ -28,9 +29,9 @@ export const RO_DOC_MIME_TYPES = [
 ];
 
 export const researchOutputSubmissionSchema = z.object({
-  title: z.string().trim().min(3, "Please add a title").max(200),
+  title: z.string().trim().min(3, "Please add a title").max(LIMITS.researchOutput.title),
   outputType: z.enum(RO_OUTPUT_TYPES).default("report"),
-  excerpt: z.string().trim().max(600).optional().or(z.literal("")),
+  excerpt: z.string().trim().max(LIMITS.researchOutput.excerpt).optional().or(z.literal("")),
   // Portable Text body from the shared editor. Optional — a research output
   // may be documents-only.
   body: z.array(z.record(z.unknown())).optional(),

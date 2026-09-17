@@ -37,6 +37,7 @@ import WorkspaceHome from "./workspace-home";
 import { InlineText } from "@/components/ui/inline-text";
 import { updateCollaboration } from "@/lib/actions/collaboration";
 import { CollaborationPdfDialog } from "./collaboration-pdf-dialog";
+import { LIMITS } from "@/lib/validation/limits";
 
 type Member = {
   userId: string;
@@ -154,7 +155,7 @@ export function WorkspaceShell({
           </BreadcrumbList>
         </Breadcrumb>
         <div className="flex items-center gap-2">
-          <InlineText
+          <InlineText maxLength={LIMITS.collaboration.title}
             value={title}
             onCommit={saveTitle}
             canEdit={canEdit}
@@ -253,7 +254,7 @@ export function WorkspaceShell({
           {section === "overview" && (
             <section className="space-y-4">
               {(canEdit || description) && (
-                <InlineText
+                <InlineText maxLength={LIMITS.collaboration.description}
                   value={description}
                   onCommit={saveDescription}
                   canEdit={canEdit}

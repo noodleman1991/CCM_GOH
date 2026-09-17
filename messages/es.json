@@ -182,7 +182,9 @@
     "themeSystem": "Sistema",
     "emailRequired": "Por favor, introduce tu correo electrónico",
     "emailInvalid": "Por favor, introduce un correo electrónico válido",
-    "untitled": "Sin título"
+    "untitled": "Sin título",
+    "charCount": "{count} / {max}",
+    "charCountSr": "{count} de {max} caracteres"
   },
   "dashboard": {
     "pageTitle": "Panel - Connecting Climate Minds Hub",
@@ -1027,7 +1029,11 @@
       "authorNameMin": "Introduzca el nombre completo del autor",
       "authorEmailInvalid": "Introduzca una dirección de correo electrónico válida",
       "authorsMin": "Se requiere al menos un autor",
-      "tagsMin": "Seleccione al menos un tema relevante"
+      "tagsMin": "Seleccione al menos un tema relevante",
+      "titleMax": "El título debe tener menos de {max} caracteres",
+      "excerptMax": "El resumen debe tener menos de {max} caracteres",
+      "authorNameMax": "El nombre de la persona autora debe tener menos de {max} caracteres",
+      "organizationMax": "El nombre de la organización debe tener menos de {max} caracteres"
     },
     "toasts": {
       "draftRestored": "Se ha restaurado su borrador guardado",
@@ -2038,7 +2044,11 @@
       "issueMin": "¿De qué tema trata?",
       "videoUrl": "Pega un enlace de vídeo válido",
       "youtubeUrl": "Pega un enlace válido de YouTube",
-      "vimeoUrl": "Pega un enlace válido de Vimeo"
+      "vimeoUrl": "Pega un enlace válido de Vimeo",
+      "titleMax": "El título debe tener menos de {max} caracteres",
+      "descriptionMax": "La descripción debe tener menos de {max} caracteres",
+      "issueMax": "Debe tener menos de {max} caracteres",
+      "personContextMax": "Debe tener menos de {max} caracteres"
     },
     "submit": "Enviar para revisión",
     "cancel": "Cancelar",
@@ -2221,6 +2231,10 @@
       "TODO": "Por hacer",
       "IN_PROGRESS": "En curso",
       "DONE": "Hecho"
+    },
+    "errors": {
+      "tooLong": "Debe tener menos de {max} caracteres.",
+      "empty": "Este campo no puede estar vacío."
     }
   },
   "messages": {

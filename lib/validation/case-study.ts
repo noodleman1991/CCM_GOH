@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { LIMITS } from '@/lib/validation/limits'
 
 /**
  * Generates a URL slug from a case study title.
@@ -37,7 +38,7 @@ export const caseStudySubmissionSchema = z
     .object({
         title: z
             .object({
-                en: z.string().min(1, 'English title is required'),
+                en: z.string().min(1, 'English title is required').max(LIMITS.caseStudy.title),
                 es: optionalString,
                 fr: optionalString,
                 ar: optionalString,
@@ -45,7 +46,7 @@ export const caseStudySubmissionSchema = z
             .passthrough(),
         excerpt: z
             .object({
-                en: optionalString,
+                en: z.string().max(LIMITS.caseStudy.excerpt).optional(),
                 es: optionalString,
                 fr: optionalString,
                 ar: optionalString,
@@ -68,7 +69,7 @@ export const caseStudySubmissionSchema = z
             .array(
                 z
                     .object({
-                        name: z.string().min(1, 'Author name is required'),
+                        name: z.string().min(1, 'Author name is required').max(LIMITS.caseStudy.authorName),
                         email: optionalString,
                         role: optionalString,
                         userId: optionalString,
@@ -77,7 +78,7 @@ export const caseStudySubmissionSchema = z
             )
             .min(1, 'At least one author is required'),
         tags: z.array(z.string().min(1)).min(1, 'At least one tag is required'),
-        organizationName: optionalString,
+        organizationName: z.string().max(LIMITS.caseStudy.organizationName).optional(),
         relatedCommunity: optionalString,
         studyPeriod: z
             .object({
@@ -106,7 +107,7 @@ export const caseStudySubmissionSchema = z
             .object({
                 lat: z.number().gte(-90).lte(90),
                 lng: z.number().gte(-180).lte(180),
-                text: z.string().min(1).max(200),
+                text: z.string().min(1).max(LIMITS.caseStudy.placeText),
                 precision: z.enum(['exact', 'city', 'country', 'region']),
                 countryCode3: z
                     .string()

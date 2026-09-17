@@ -30,6 +30,8 @@ import {
 } from "@/lib/validation/research-output"
 import { REGION_OPTIONS, THEME_OPTIONS } from "@/lib/content/taxonomy-options"
 import type { EditableResearchOutput } from "@/lib/content/outputs"
+import { LIMITS } from "@/lib/validation/limits";
+import { CharCounter } from "@/components/ui/char-counter"
 
 type Tag = { _id: string; label: Record<string, string>; value?: { current: string } }
 type Community = { _id: string; name: Record<string, string>; slug?: { current: string } }
@@ -63,9 +65,9 @@ export function ResearchOutputForm({
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const schema = z.object({
-    title: z.string().trim().min(3, t("validation.titleMin")).max(200, t("validation.titleMax")),
+    title: z.string().trim().min(3, t("validation.titleMin")).max(LIMITS.researchOutput.title, t("validation.titleMax")),
     outputType: z.enum(RO_OUTPUT_TYPES),
-    excerpt: z.string().trim().max(600, t("validation.excerptMax")).optional().or(z.literal("")),
+    excerpt: z.string().trim().max(LIMITS.researchOutput.excerpt, t("validation.excerptMax")).optional().or(z.literal("")),
     body: z.array(z.any()).optional(),
     region: z.string().optional().or(z.literal("")),
     themes: z.array(z.string()).max(8).optional().default([]),
@@ -172,7 +174,8 @@ export function ResearchOutputForm({
               <FormField control={form.control} name="title" render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t("fields.title")}</FormLabel>
-                  <FormControl><Input {...field} placeholder={t("fields.titlePlaceholder")} /></FormControl>
+                  <FormControl><Input {...field} placeholder={t("fields.titlePlaceholder")} maxLength={LIMITS.researchOutput.title} /></FormControl>
+<CharCounter value={field.value} max={LIMITS.researchOutput.title} />
                   <FormMessage />
                 </FormItem>
               )} />
@@ -216,7 +219,8 @@ export function ResearchOutputForm({
               <FormField control={form.control} name="excerpt" render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t("fields.excerpt")}</FormLabel>
-                  <FormControl><Textarea {...field} value={field.value || ""} rows={3} placeholder={t("fields.excerptPlaceholder")} /></FormControl>
+                  <FormControl><Textarea {...field} value={field.value || ""} rows={3} placeholder={t("fields.excerptPlaceholder")} maxLength={LIMITS.researchOutput.excerpt} /></FormControl>
+<CharCounter value={field.value} max={LIMITS.researchOutput.excerpt} />
                   <FormDescription>{t("fields.excerptHelp")}</FormDescription>
                   <FormMessage />
                 </FormItem>

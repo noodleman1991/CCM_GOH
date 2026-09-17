@@ -4,6 +4,8 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getActor } from "@/lib/authz";
 import { authorizeCollab } from "@/lib/collaboration/service";
+import { LIMITS } from "@/lib/validation/limits";
+import { lengthProblem } from "@/lib/collaboration/errors";
 
 type Result<T = unknown> = ({ ok: true } & T) | { ok: false; error: string };
 
@@ -39,7 +41,8 @@ export async function renameDoc(collaborationId: string, docId: string, title: s
   const auth = await canEdit(collaborationId);
   if (!auth.ok) return auth;
   const t = title.trim();
-  if (t.length < 1 || t.length > 200) return { ok: false, error: "Title must be 1–200 chars." };
+  const problem = await lengthProblem(t, LIMITS.collaboration.doc);
+  if (problem) return problem;
   const r = await prisma.collaborationDoc.updateMany({
     where: { id: docId, collaborationId },
     data: { title: t },

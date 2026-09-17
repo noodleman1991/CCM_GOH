@@ -11,12 +11,14 @@ import { seedWorkspace } from "@/lib/collaboration/seed";
 import type { CollaborationRole } from "@/generated/prisma";
 import { r2Configured, copyObject, deleteObject, rekeyForVisibility } from "@/lib/r2";
 import { FEATURES } from "@/lib/features";
+import { LIMITS } from "@/lib/validation/limits";
+import { lengthProblem } from "@/lib/collaboration/errors";
 
 type Result<T = unknown> = ({ ok: true } & T) | { ok: false; error: string };
 
 const createSchema = z.object({
-  title: z.string().trim().min(1).max(120),
-  description: z.string().trim().max(2000).optional(),
+  title: z.string().trim().min(1).max(LIMITS.collaboration.title),
+  description: z.string().trim().max(LIMITS.collaboration.description).optional(),
   visibility: z.enum(["PUBLIC", "MEMBERS"]).default("MEMBERS"),
 });
 
@@ -199,7 +201,8 @@ export async function updateCollaboration(
   const data: { title?: string; description?: string } = {};
   if (patch.title !== undefined) {
     const t = patch.title.trim();
-    if (t.length < 1 || t.length > 200) return { ok: false, error: "Title must be 1–200 chars." };
+    const problem = await lengthProblem(t, LIMITS.collaboration.title);
+    if (problem) return problem;
     data.title = t;
   }
   if (patch.description !== undefined) {
@@ -223,7 +226,8 @@ export async function renameThread(
     return { ok: false, error: "Not permitted." };
   }
   const t = title.trim();
-  if (t.length < 1 || t.length > 160) return { ok: false, error: "Invalid title." };
+  const problem = await lengthProblem(t, LIMITS.collaboration.thread);
+  if (problem) return problem;
   const r = await prisma.collaborationThread.updateMany({
     where: { id: threadId, collaborationId },
     data: { title: t },
@@ -242,7 +246,8 @@ export async function createThread(collaborationId: string, title: string): Prom
     return { ok: false, error: "Not permitted." };
   }
   const t = title.trim();
-  if (t.length < 1 || t.length > 160) return { ok: false, error: "Invalid title." };
+  const problem = await lengthProblem(t, LIMITS.collaboration.thread);
+  if (problem) return problem;
 
   const thread = await prisma.collaborationThread.create({
     data: { collaborationId, title: t, createdById: actor.id },

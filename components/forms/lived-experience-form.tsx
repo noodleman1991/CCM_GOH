@@ -33,6 +33,8 @@ import { youtubeId } from "@/lib/youtube"
 import { vimeoId } from "@/lib/vimeo"
 import { useMemo } from "react"
 import type { z } from "zod"
+import { LIMITS } from "@/lib/validation/limits"
+import { CharCounter } from "@/components/ui/char-counter"
 
 // Use the schema's INPUT type for the form (fields with .default are optional
 // on input), avoiding the zodResolver input/output generics mismatch.
@@ -69,6 +71,10 @@ export function LivedExperienceForm({
     () =>
       makeLivedExperienceSchema({
         titleMin: t("validation.titleMin"),
+        titleMax: t("validation.titleMax", { max: LIMITS.livedExperience.title }),
+        descriptionMax: t("validation.descriptionMax", { max: LIMITS.livedExperience.description }),
+        issueMax: t("validation.issueMax", { max: LIMITS.livedExperience.issue }),
+        personContextMax: t("validation.personContextMax", { max: LIMITS.livedExperience.personContext }),
         descriptionMin: t("validation.descriptionMin"),
         issueMin: t("validation.issueMin"),
         videoUrl: t("validation.videoUrl"),
@@ -185,7 +191,8 @@ export function LivedExperienceForm({
               <FormField control={form.control} name="title" render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t("fields.title")}</FormLabel>
-                  <FormControl><Input {...field} placeholder={t("fields.titlePlaceholder")} /></FormControl>
+                  <FormControl><Input {...field} placeholder={t("fields.titlePlaceholder")} maxLength={LIMITS.livedExperience.title} /></FormControl>
+<CharCounter value={field.value} max={LIMITS.livedExperience.title} />
                   <FormMessage />
                 </FormItem>
               )} />
@@ -314,7 +321,8 @@ export function LivedExperienceForm({
               <FormField control={form.control} name="description" render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t("fields.description")}</FormLabel>
-                  <FormControl><Textarea {...field} rows={4} placeholder={t("fields.descriptionPlaceholder")} /></FormControl>
+                  <FormControl><Textarea {...field} rows={4} placeholder={t("fields.descriptionPlaceholder")} maxLength={LIMITS.livedExperience.description} /></FormControl>
+<CharCounter value={field.value} max={LIMITS.livedExperience.description} />
                   <FormMessage />
                 </FormItem>
               )} />
@@ -322,7 +330,8 @@ export function LivedExperienceForm({
               <FormField control={form.control} name="issue" render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t("fields.issue")}</FormLabel>
-                  <FormControl><Textarea {...field} rows={2} placeholder={t("fields.issuePlaceholder")} /></FormControl>
+                  <FormControl><Textarea {...field} rows={2} placeholder={t("fields.issuePlaceholder")} maxLength={LIMITS.livedExperience.issue} /></FormControl>
+<CharCounter value={field.value} max={LIMITS.livedExperience.issue} />
                   <FormDescription>{t("fields.issueHelp")}</FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -331,7 +340,8 @@ export function LivedExperienceForm({
               <FormField control={form.control} name="personContext" render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t("fields.personContext")}</FormLabel>
-                  <FormControl><Textarea {...field} value={field.value || ""} rows={2} placeholder={t("fields.personContextPlaceholder")} /></FormControl>
+                  <FormControl><Textarea {...field} value={field.value || ""} rows={2} placeholder={t("fields.personContextPlaceholder")} maxLength={LIMITS.livedExperience.personContext} /></FormControl>
+<CharCounter value={field.value} max={LIMITS.livedExperience.personContext} />
                   <FormDescription>{t("fields.personContextHelp")}</FormDescription>
                   <FormMessage />
                 </FormItem>

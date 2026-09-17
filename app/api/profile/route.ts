@@ -11,21 +11,22 @@ import type {
   LocalizedQueryOptions
 } from "@/types/prisma"
 import { rateLimitRequest } from "@/lib/rate-limit-route";
+import { LIMITS } from "@/lib/validation/limits";
 
 const ProfileUpdateSchema = z.object({
     // Clerk-managed fields (read-only from UI, sync only)
-    firstName: z.string().min(1, "First name is required").max(50),
-    lastName: z.string().min(1, "Last name is required").max(50),
-    username: z.string().min(3, "Username must be at least 3 characters").max(30)
+    firstName: z.string().min(1, "First name is required").max(LIMITS.profile.firstName),
+    lastName: z.string().min(1, "Last name is required").max(LIMITS.profile.lastName),
+    username: z.string().min(3, "Username must be at least 3 characters").max(LIMITS.profile.username)
         .regex(/^[a-zA-Z0-9_]+$/, "Username can only contain letters, numbers and underscores"),
     
     // App-managed profile fields - handle null values properly
-    bio: z.string().max(500, "Bio must be less than 500 characters").optional().or(z.literal("")).or(z.null()),
+    bio: z.string().max(LIMITS.profile.bio, "Bio must be less than 500 characters").optional().or(z.literal("")).or(z.null()),
     ageGroup: z.enum(["UNDER_18", "ABOVE_18"], {
         errorMap: () => ({ message: "Please select your age group" })
     }).optional().or(z.null()),
-    country: z.string().max(100).optional().or(z.literal("")).or(z.null()),
-    city: z.string().max(100).optional().or(z.literal("")).or(z.null()),
+    country: z.string().max(LIMITS.profile.country).optional().or(z.literal("")).or(z.null()),
+    city: z.string().max(LIMITS.profile.city).optional().or(z.literal("")).or(z.null()),
     workTypes: z.array(z.enum([
         "RESEARCH",
         "POLICY",
@@ -45,11 +46,11 @@ const ProfileUpdateSchema = z.object({
     ], {
         errorMap: () => ({ message: "Please select valid expertise areas" })
     })).default([]),
-    organization: z.string().max(200).optional().or(z.literal("")).or(z.null()),
-    position: z.string().max(200).optional().or(z.literal("")).or(z.null()),
-    workBio: z.string().max(1000, "Work bio must be less than 1000 characters").optional().or(z.literal("")).or(z.null()),
+    organization: z.string().max(LIMITS.profile.organization).optional().or(z.literal("")).or(z.null()),
+    position: z.string().max(LIMITS.profile.position).optional().or(z.literal("")).or(z.null()),
+    workBio: z.string().max(LIMITS.profile.workBio, "Work bio must be less than 1000 characters").optional().or(z.literal("")).or(z.null()),
     personalWebsite: z.string().url("Please enter a valid URL").optional().or(z.literal("")).or(z.null()),
-    linkedinProfile: z.string().max(100).optional().or(z.literal("")).or(z.null()),
+    linkedinProfile: z.string().max(LIMITS.profile.linkedinProfile).optional().or(z.literal("")).or(z.null()),
     otherSocialLinks: z.array(z.object({
         platform: z.string().min(1),
         url: z.string().url()
@@ -60,8 +61,8 @@ const ProfileUpdateSchema = z.object({
         // The row's id when it already exists, so the save updates it in place
         // and keeps the owner's pinned/hidden curation.
         id: z.string().optional(),
-        title: z.string().min(1, "Title is required").max(100),
-        description: z.string().min(1, "Description is required").max(500),
+        title: z.string().min(1, "Title is required").max(LIMITS.recentWork.title),
+        description: z.string().min(1, "Description is required").max(LIMITS.recentWork.description),
         link: z.string().url("Please enter a valid URL").optional().or(z.literal("")),
         startDate: z.string().min(1, "Start date is required"),
         endDate: z.string().optional().or(z.literal("")),
@@ -83,17 +84,17 @@ const ProfileUpdateSchema = z.object({
     showLocation: z.boolean().default(true),
 
     // Domain-rich fields (K4) — all optional
-    headline: z.string().max(120).optional().or(z.literal("")).or(z.null()),
-    pronouns: z.string().max(40).optional().or(z.literal("")).or(z.null()),
-    languages: z.array(z.string().max(40)).optional().default([]),
-    focusTopics: z.array(z.string().max(60)).optional().default([]),
-    motivation: z.string().max(600).optional().or(z.literal("")).or(z.null()),
+    headline: z.string().max(LIMITS.profile.headline).optional().or(z.literal("")).or(z.null()),
+    pronouns: z.string().max(LIMITS.profile.pronouns).optional().or(z.literal("")).or(z.null()),
+    languages: z.array(z.string().max(LIMITS.profile.language)).optional().default([]),
+    focusTopics: z.array(z.string().max(LIMITS.profile.focusTopic)).optional().default([]),
+    motivation: z.string().max(LIMITS.profile.motivation).optional().or(z.literal("")).or(z.null()),
     openToCollaboration: z.boolean().optional().default(false),
-    lookingFor: z.array(z.string().max(40)).optional().default([]),
-    collaborationInterests: z.string().max(600).optional().or(z.literal("")).or(z.null()),
-    livedExperienceStatement: z.string().max(1000).optional().or(z.literal("")).or(z.null()),
+    lookingFor: z.array(z.string().max(LIMITS.profile.lookingFor)).optional().default([]),
+    collaborationInterests: z.string().max(LIMITS.profile.collaborationInterests).optional().or(z.literal("")).or(z.null()),
+    livedExperienceStatement: z.string().max(LIMITS.profile.livedExperienceStatement).optional().or(z.literal("")).or(z.null()),
     showLivedExperience: z.boolean().optional().default(false),
-    orcidId: z.string().max(40).optional().or(z.literal("")).or(z.null()),
+    orcidId: z.string().max(LIMITS.profile.orcidId).optional().or(z.literal("")).or(z.null()),
 }).transform((data) => ({
     // Transform empty strings and null values to null for database storage
     ...data,

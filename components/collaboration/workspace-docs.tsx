@@ -10,6 +10,7 @@ import PortableTextRenderer from "@/components/portable-text-renderer";
 import PortableTextEditor from "@/components/forms/portable-text-editor";
 import { createDoc, renameDoc, updateDocContent, deleteDoc } from "@/lib/actions/docs";
 import { WorkspaceEmptyState } from "./workspace-empty-state";
+import { LIMITS } from "@/lib/validation/limits";
 
 type Doc = { id: string; title: string; content: unknown; updatedAt: string };
 
@@ -76,7 +77,7 @@ export function WorkspaceDocs({
           <ArrowLeft className="size-4 me-2 rtl:-scale-x-100" />
           {t("backToDocs")}
         </Button>
-        <InlineText
+        <InlineText maxLength={LIMITS.collaboration.doc}
           value={open.title}
           onCommit={(next) => rename(open.id, next)}
           canEdit={canEdit}

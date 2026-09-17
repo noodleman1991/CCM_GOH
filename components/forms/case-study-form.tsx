@@ -36,6 +36,8 @@ import {
     CheckCircle,
     Clock,
 } from 'lucide-react';
+import { LIMITS } from '@/lib/validation/limits';
+import { CharCounter } from '@/components/ui/char-counter';
 
 // Localized validation messages (resolved from t() inside the component so the
 // Zod errors show in the user's language — the proven newsletter pattern).
@@ -48,18 +50,22 @@ interface SchemaMessages {
     authorEmailInvalid: string;
     authorsMin: string;
     tagsMin: string;
+    titleMax: string;
+    excerptMax: string;
+    authorNameMax: string;
+    organizationMax: string;
 }
 
 // Simplified schema - only essential fields
 const makeFormSchema = (m: SchemaMessages) => z.object({
     title: z.object({
-        en: z.string().min(5, m.titleMin),
+        en: z.string().min(5, m.titleMin).max(LIMITS.caseStudy.title, m.titleMax),
         es: z.string().optional(),
         fr: z.string().optional(),
         ar: z.string().optional(),
     }),
     excerpt: z.object({
-        en: z.string().min(100, m.excerptMin),
+        en: z.string().min(100, m.excerptMin).max(LIMITS.caseStudy.excerpt, m.excerptMax),
         es: z.string().optional(),
         fr: z.string().optional(),
         ar: z.string().optional(),
@@ -81,11 +87,11 @@ const makeFormSchema = (m: SchemaMessages) => z.object({
     // only; the pipeline stores it on the caseStudy doc alongside the content.
     layout: z.enum(['story', 'feature', 'report']).default('story'),
     authors: z.array(z.object({
-        name: z.string().min(2, m.authorNameMin),
+        name: z.string().min(2, m.authorNameMin).max(LIMITS.caseStudy.authorName, m.authorNameMax),
         email: z.string().email(m.authorEmailInvalid).optional().or(z.literal('')),
         role: z.enum(['lead', 'coauthor', 'contributor', 'advisor']),
     })).min(1, m.authorsMin),
-    organizationName: z.string().optional(),
+    organizationName: z.string().max(LIMITS.caseStudy.organizationName, m.organizationMax).optional(),
     relatedCommunity: z.string().optional(),
     tags: z.array(z.string()).min(1, m.tagsMin),
     studyPeriod: z.object({
@@ -164,6 +170,10 @@ export default function ImprovedCaseStudyForm({
         authorEmailInvalid: t('validation.authorEmailInvalid'),
         authorsMin: t('validation.authorsMin'),
         tagsMin: t('validation.tagsMin'),
+        titleMax: t('validation.titleMax', { max: LIMITS.caseStudy.title }),
+        excerptMax: t('validation.excerptMax', { max: LIMITS.caseStudy.excerpt }),
+        authorNameMax: t('validation.authorNameMax', { max: LIMITS.caseStudy.authorName }),
+        organizationMax: t('validation.organizationMax', { max: LIMITS.caseStudy.organizationName }),
     }), [t]);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -853,8 +863,8 @@ export default function ImprovedCaseStudyForm({
                     value={formData.title?.[activeLang] || ''}
                     onChange={(e) => updateFormData(`title.${activeLang}`, e.target.value)}
                     placeholder={t('canvas.titlePlaceholder')}
-                    className="mt-4 w-full border-0 border-b-2 border-transparent bg-transparent pb-1 font-heading text-3xl font-bold leading-tight text-ccm-midnight outline-none transition-colors placeholder:text-muted-foreground/40 focus:border-ccm-water/50 sm:text-4xl md:text-5xl"
-                />
+                    className="mt-4 w-full border-0 border-b-2 border-transparent bg-transparent pb-1 font-heading text-3xl font-bold leading-tight text-ccm-midnight outline-none transition-colors placeholder:text-muted-foreground/40 focus:border-ccm-water/50 sm:text-4xl md:text-5xl" maxLength={LIMITS.caseStudy.title} />
+                <CharCounter value={formData.title?.[activeLang] || ''} max={LIMITS.caseStudy.title} />
                 {errors['title.en'] && (
                     <p className="mt-2 text-sm text-destructive">{errors['title.en']}</p>
                 )}
@@ -869,8 +879,8 @@ export default function ImprovedCaseStudyForm({
                     value={formData.excerpt?.[activeLang] || ''}
                     onChange={(e) => updateFormData(`excerpt.${activeLang}`, e.target.value)}
                     placeholder={t('canvas.excerptPlaceholder')}
-                    className="mt-4 w-full resize-none border-0 bg-transparent text-lg leading-relaxed outline-none placeholder:text-muted-foreground/40"
-                />
+                    className="mt-4 w-full resize-none border-0 bg-transparent text-lg leading-relaxed outline-none placeholder:text-muted-foreground/40" maxLength={LIMITS.caseStudy.excerpt} />
+                <CharCounter value={formData.excerpt?.[activeLang] || ''} max={LIMITS.caseStudy.excerpt} />
                 <p className="text-xs text-muted-foreground">{t('canvas.excerptHint')}</p>
                 {errors['excerpt.en'] && (
                     <p className="mt-1 text-sm text-destructive">{errors['excerpt.en']}</p>
@@ -1024,8 +1034,8 @@ export default function ImprovedCaseStudyForm({
                             value={formData.organizationName || ''}
                             onChange={(e) => updateFormData('organizationName', e.target.value)}
                             placeholder={t('byline.organizationPlaceholder')}
-                            className="mt-2"
-                        />
+                            className="mt-2" maxLength={LIMITS.caseStudy.organizationName} />
+                        <CharCounter value={formData.organizationName || ''} max={LIMITS.caseStudy.organizationName} />
                     </div>
 
                     <div className="md:col-span-2">

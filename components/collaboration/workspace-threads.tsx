@@ -13,6 +13,7 @@ import { InlineText } from "@/components/ui/inline-text";
 import { CommentSection } from "@/components/comments/comment-section";
 import { WorkspaceEmptyState } from "./workspace-empty-state";
 import type { CollaborationRole } from "@/generated/prisma";
+import { LIMITS } from "@/lib/validation/limits";
 
 type Thread = { id: string; title: string; createdAt: string };
 const fetcher = (url: string) => fetch(url).then((r) => r.json() as Promise<{ threads: Thread[] }>);
@@ -101,7 +102,7 @@ export function WorkspaceThreads({
               <MessagesSquare className="size-4 flex-shrink-0 text-ccm-sea" aria-hidden="true" />
               {/* Inline rename for editors; click-to-open via the chevron/title area. */}
               {canEdit ? (
-                <InlineText
+                <InlineText maxLength={LIMITS.collaboration.thread}
                   value={th.title}
                   onCommit={(next) => rename(th.id, next)}
                   canEdit
