@@ -22,7 +22,13 @@ import { encodeSignatureHeader, SIGNATURE_HEADER_NAME } from "@sanity/webhook";
 
 // `vi.mock` factories are hoisted above module-level `const`s, so anything a
 // factory references directly must be hoisted with it.
-const { deleteObject } = vi.hoisted(() => ({ deleteObject: vi.fn(async () => ({ taskID: 1 })) }));
+const { deleteObject, syncUserSearchRecord } = vi.hoisted(() => ({
+  deleteObject: vi.fn(async () => ({ taskID: 1 })),
+  syncUserSearchRecord: vi.fn(async () => "removed" as const),
+}));
+// The users webhook no longer talks to Algolia itself; it hands the id to the
+// shared user-sync function (Slice 5), which is what must be reached.
+vi.mock("@/lib/algolia-user-sync", () => ({ syncUserSearchRecord }));
 vi.mock("@/lib/algolia", async () => {
   const indices = await vi.importActual<typeof import("@/lib/algolia-indices")>("@/lib/algolia-indices");
   return {
@@ -183,6 +189,6 @@ describe("POST /api/search/users/webhook — internal bearer only", () => {
   it("accepts the right bearer", async () => {
     const res = await usersPOST(post(url, body, { authorization: `Bearer ${BEARER_SECRET}` }));
     expect(res.status).toBe(200);
-    expect(deleteObject).toHaveBeenCalledTimes(1);
+    expect(syncUserSearchRecord).toHaveBeenCalledTimes(1);
   });
 });
