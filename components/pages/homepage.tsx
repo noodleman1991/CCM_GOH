@@ -44,6 +44,9 @@ interface HomepageDoc {
 interface HomepageProps {
   homepage: HomepageDoc | null;
   locale: string;
+  /** Signed-in viewer, threaded to the agenda download buttons so a
+   *  non-public `accessLevel` can see who is asking (audit M4). */
+  userId?: string;
 }
 
 /** The fields the dynamic-section fetchers' items are read by below. */
@@ -190,7 +193,7 @@ async function resolveAgendasSection(
   }
 }
 
-export default async function Homepage({ homepage, locale }: HomepageProps) {
+export default async function Homepage({ homepage, locale, userId }: HomepageProps) {
   const rtl = isRTL(locale);
 
   if (!homepage) {
@@ -204,7 +207,7 @@ export default async function Homepage({ homepage, locale }: HomepageProps) {
   if (homepage.blocks && homepage.blocks.length > 0) {
     return (
       <div dir={rtl ? "rtl" : "ltr"}>
-        <Blocks blocks={homepage.blocks} locale={locale} />
+        <Blocks blocks={homepage.blocks} locale={locale} userId={userId} />
       </div>
     );
   }
@@ -245,6 +248,7 @@ export default async function Homepage({ homepage, locale }: HomepageProps) {
         <GridRow
           {...agendasModule}
           locale={locale}
+          userId={userId}
         />
       )}
 

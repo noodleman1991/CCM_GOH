@@ -14,6 +14,7 @@ import type { Locale } from "@/lib/content/types";
 import { notFound, redirect } from "next/navigation";
 import { generatePageMetadata, type MetadataSource } from "@/lib/content/metadata";
 import { isRTL } from "@/i18n/i18n-helpers";
+import { getViewerUserId } from "@/lib/authz";
 
 export async function generateStaticParams() {
     // Fetch both regional community pages AND generic pages
@@ -103,6 +104,12 @@ export default async function Page({
     // Determine text direction for RTL languages
     const rtl = isRTL(locale);
 
+    // Who is looking: agenda blocks gate their download buttons on
+    // `accessLevel`, and without this every non-public agenda locked for
+    // everyone, signed in or not (audit M4). The (main) layout already reads
+    // the session, so this adds no new dynamic dependency.
+    const userId = await getViewerUserId();
+
     return (
         <main dir={rtl ? 'rtl' : 'ltr'}>
             {/* Generic page: render its block array. (RC pages are redirected
@@ -113,6 +120,7 @@ export default async function Page({
             <Blocks
                 blocks={page.blocks as unknown as ComponentProps<typeof Blocks>["blocks"]}
                 locale={locale}
+                userId={userId}
             />
         </main>
     );

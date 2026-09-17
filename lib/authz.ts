@@ -41,3 +41,20 @@ export async function getActor(): Promise<Actor> {
   if (!result.success || !result.data) return null;
   return { id: result.data.id, role: result.data.role };
 }
+
+/**
+ * The signed-in Clerk user id, or `undefined` for anonymous callers — no DB
+ * lookup, no role. For server pages that only need to hand an identity down
+ * (e.g. `<Blocks userId>` so an agenda's `registered` access level can see
+ * the viewer), not for authorization: use `getActor()` / `can()` for that.
+ * Never throws: outside a clerkMiddleware request context (static prerender)
+ * anonymous is the correct answer.
+ */
+export async function getViewerUserId(): Promise<string | undefined> {
+  try {
+    const { userId } = await auth();
+    return userId ?? undefined;
+  } catch {
+    return undefined;
+  }
+}

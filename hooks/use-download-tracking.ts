@@ -1,17 +1,17 @@
 'use client'
 
-import { useState, useCallback } from 'react';
-import type { ReportFile, Report } from '@/types/report';
-import type { AgendaFile, Agenda } from '@/types/agenda';
-import { downloadFile, validateReport } from '@/lib/report-utils';
-
-// Generic file type that works for both Report and Agenda
-type DownloadableFile = ReportFile | AgendaFile;
-
-// Generic content type that works for both Report and Agenda
-type DownloadableContent = Report | Agenda;
+import { useState, useCallback, useMemo } from 'react';
+import {
+    fileBelongsToContent,
+    getDownloadAdapter,
+    type DownloadKind,
+    type DownloadableContent,
+    type DownloadableFile,
+} from '@/lib/download-adapters';
 
 interface UseDownloadTrackingOptions {
+    /** Which tracker to post to. Defaults to `agenda`, the only live one. */
+    kind?: DownloadKind;
     userId?: string;
     onDownloadStart?: (contentId: string, language: string) => void;
     onDownloadComplete?: (contentId: string, language: string) => void;
@@ -31,7 +31,8 @@ export function useDownloadTracking(options: UseDownloadTrackingOptions = {}) {
         error: null,
     });
 
-    const { userId, onDownloadStart, onDownloadComplete, onDownloadError } = options;
+    const { kind = 'agenda', userId, onDownloadStart, onDownloadComplete, onDownloadError } = options;
+    const adapter = useMemo(() => getDownloadAdapter(kind), [kind]);
 
     const download = useCallback(async (
         file: DownloadableFile,
@@ -51,11 +52,19 @@ export function useDownloadTracking(options: UseDownloadTrackingOptions = {}) {
             throw error;
         }
 
-        // if (!validateReport(report)) {
-        //     const error = new Error('Invalid report data structure');
-        //     onDownloadError?.(error, report._id, file.language);
-        //     throw error;
-        // } //todo: !!uncomment!!
+        if (!adapter.validate(content)) {
+            const error = new Error(`Invalid ${kind} data structure`);
+            onDownloadError?.(error, content._id, file.language);
+            throw error;
+        }
+
+        // Mirrors the server's check: the track route now answers 400 for a
+        // language the document does not carry, so don't send one.
+        if (!fileBelongsToContent(file, content)) {
+            const error = new Error(`No ${file.language} file on this ${kind}`);
+            onDownloadError?.(error, content._id, file.language);
+            throw error;
+        }
 
         const fileKey = `${content._id}-${file.language}`;
 
@@ -70,7 +79,7 @@ export function useDownloadTracking(options: UseDownloadTrackingOptions = {}) {
         onDownloadStart?.(content._id, file.language);
 
         try {
-            await downloadFile(file, content._id, userId);
+            await adapter.downloadFile(file, content._id, userId);
             onDownloadComplete?.(content._id, file.language);
 
         } catch (error) {
@@ -99,7 +108,7 @@ export function useDownloadTracking(options: UseDownloadTrackingOptions = {}) {
                 };
             });
         }
-    }, [userId, onDownloadStart, onDownloadComplete, onDownloadError]);
+    }, [adapter, kind, userId, onDownloadStart, onDownloadComplete, onDownloadError]);
 
     const isFileDownloading = useCallback((contentId: string, language: string): boolean => {
         const fileKey = `${contentId}-${language}`;

@@ -43,6 +43,8 @@ function DownloadButton({
                         }: DownloadButtonProps) {
     const t = useTranslations('regional');
     const { download, isFileDownloading, error } = useDownloadTracking({
+        // Legacy `report` tracker; this component and the arm go with Slice 3a.
+        kind: 'report',
         userId,
         onDownloadError: (error, reportId, language) => {
             console.error(`Download failed for ${reportId} (${language}):`, error);
