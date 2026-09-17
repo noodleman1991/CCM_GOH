@@ -47,8 +47,12 @@ vi.mock('@/lib/r2', () => ({
   r2Configured: () => false,
   deleteObject: vi.fn(),
 }))
+// A recording client (rather than `null`) so the index the erasure targets is
+// observable. The index-name helper is the real one from the side-effect-free
+// `@/lib/algolia-indices`, which is not mocked.
+const algoliaDeleteObject = vi.fn(async () => undefined)
 vi.mock('@/lib/algolia', () => ({
-  algoliaClient: null,
+  algoliaClient: { deleteObject: (...a: unknown[]) => algoliaDeleteObject(...a) },
   ALGOLIA_INDICES: { USERS: 'users' },
 }))
 
@@ -159,6 +163,28 @@ describe('deleteUserData', () => {
 
     await expect(deleteUserData('user_y')).rejects.toThrow('Sanity read failed')
     expect(prismaUserDelete).not.toHaveBeenCalled()
+  })
+
+  it('removes the Algolia record from the WRITE-prefixed users index, like every user-record write', async () => {
+    // Every write to a user's search record goes through `writeIndexName`
+    // (the users webhook, `syncUserSearchRecord`). The erasure used the bare
+    // name, so with `ALGOLIA_INDEX_PREFIX` set — a verification run — it
+    // deleted from the LIVE index instead of the scratch one. Now that the
+    // Clerk `user.deleted` webhook routes through `deleteUserData`, the two
+    // must agree.
+    const ambientPrefix = process.env.ALGOLIA_INDEX_PREFIX
+    process.env.ALGOLIA_INDEX_PREFIX = 'vitest_'
+    try {
+      queryRawMock.mockResolvedValueOnce([]).mockResolvedValueOnce([]).mockResolvedValueOnce(0)
+      prismaUserDelete.mockResolvedValueOnce({})
+
+      await deleteUserData('user_1')
+
+      expect(algoliaDeleteObject).toHaveBeenCalledWith({ indexName: 'vitest_users', objectID: 'user_1' })
+    } finally {
+      if (ambientPrefix === undefined) delete process.env.ALGOLIA_INDEX_PREFIX
+      else process.env.ALGOLIA_INDEX_PREFIX = ambientPrefix
+    }
   })
 })
 

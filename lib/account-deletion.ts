@@ -9,6 +9,7 @@ import {
 import type { CollectionSlug, Where } from "payload"
 import { r2Configured, deleteObject } from "@/lib/r2"
 import { algoliaClient, ALGOLIA_INDICES } from "@/lib/algolia"
+import { writeIndexName } from "@/lib/algolia-indices"
 
 /**
  * GDPR account erasure.
@@ -362,11 +363,14 @@ async function eraseFromResendAudience(email: string | null | undefined): Promis
   }
 }
 
-/** Remove the user's record from the Algolia search index. */
+/** Remove the user's record from the Algolia search index — the same
+ *  write-prefixed index every user-record WRITE targets (`writeIndexName`),
+ *  so a verification run with `ALGOLIA_INDEX_PREFIX` set erases from its
+ *  scratch index and not from the live one. Unprefixed in production. */
 async function eraseUserFromAlgolia(userId: string): Promise<void> {
   if (!algoliaClient) return
   try {
-    await algoliaClient.deleteObject({ indexName: ALGOLIA_INDICES.USERS, objectID: userId })
+    await algoliaClient.deleteObject({ indexName: writeIndexName(ALGOLIA_INDICES.USERS), objectID: userId })
   } catch (err) {
     console.warn(`Algolia erasure failed for ${userId}:`, err)
   }

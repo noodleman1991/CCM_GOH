@@ -1,5 +1,6 @@
-import { NextRequest, NextResponse } from "next/server"
+import { NextRequest, NextResponse, after } from "next/server"
 import { auth, clerkClient } from "@clerk/nextjs/server"
+import { syncUserSearchRecord } from "@/lib/algolia-user-sync"
 import { UserService } from "@/lib/services/user.service"
 import { calculateProfileCompleteness } from "@/lib/profile-completeness"
 import { prisma } from "@/lib/prisma"
@@ -323,22 +324,21 @@ export async function PUT(request: NextRequest) {
 
         // STEP 1.6: Recent work and community memberships are now handled in the main update above
 
-        // STEP 2: Background sync to Clerk (fire and forget)
-        const { ClerkSyncService } = await import('../../../lib/clerk-sync')
-        ClerkSyncService.syncToClerk(userId, result.data!).catch(() => {
-            // Silent fail - already logged in sync service
-        })
-
-        // STEP 3: Update search index (fire and forget)
-        fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/search/users/webhook`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${process.env.SEARCH_WEBHOOK_SECRET}`
-            },
-            body: JSON.stringify({ userId, action: 'update' })
-        }).catch((error) => {
-            console.warn(`Search index update failed for user ${userId}:`, error)
+        // STEP 2 + 3: Clerk sync and the search-index write run after the
+        // response. The index update used to be an un-awaited fetch to
+        // `${NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/search/users/webhook`
+        // with no `res.ok` check, so a 401/404 from that hop looked like
+        // success (audit finding H5); it is now a direct call, logged on
+        // failure. `syncToClerk` logs its own failures and never throws.
+        const updatedProfile = result.data!
+        after(async () => {
+            const { ClerkSyncService } = await import('@/lib/clerk-sync')
+            await ClerkSyncService.syncToClerk(userId, updatedProfile)
+            try {
+                await syncUserSearchRecord(userId, 'update')
+            } catch (error) {
+                console.error(`❌ Search index update failed for user ${userId}:`, error)
+            }
         })
 
         // STEP 4: Return localized response
