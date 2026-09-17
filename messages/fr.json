@@ -415,7 +415,8 @@
     "contract": {
       "PROJECT": "Soyez averti quand ce projet publie ou planifie un événement",
       "REGION": "Les nouveautés de cette région alimentent votre fil Pour vous et le résumé hebdomadaire",
-      "THEME": "Les nouveautés de ce thème alimentent votre fil Pour vous et le résumé hebdomadaire"
+      "THEME": "Les nouveautés de ce thème alimentent votre fil Pour vous et le résumé hebdomadaire",
+      "USER": "Les nouveautés de cette personne alimentent votre fil Pour vous et le résumé hebdomadaire"
     }
   },
   "notifications": {

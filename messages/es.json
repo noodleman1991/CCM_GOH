@@ -415,7 +415,8 @@
     "contract": {
       "PROJECT": "Recibe avisos cuando este proyecto publique o programe un evento",
       "REGION": "Lo nuevo de esta región aparece en tu sección Para ti y el resumen semanal",
-      "THEME": "Lo nuevo de este tema aparece en tu sección Para ti y el resumen semanal"
+      "THEME": "Lo nuevo de este tema aparece en tu sección Para ti y el resumen semanal",
+      "USER": "Lo nuevo de esta persona aparece en tu sección Para ti y el resumen semanal"
     }
   },
   "notifications": {

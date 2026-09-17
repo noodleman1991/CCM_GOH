@@ -131,6 +131,9 @@ interface ImprovedCaseStudyFormProps {
     /** X7 edit mode: an existing Sanity doc (mapped to form shape server-side).
      *  Present → the form edits + resubmits instead of creating. */
     editDoc?: (Record<string, unknown> & { _sanityId: string }) | null;
+    /** Resume this draft (dashboard Continue) instead of the latest one.
+     *  Ignored in edit mode, where the submitted doc is the source of truth. */
+    draftId?: string | null;
 }
 
 // The four required completeness gates (formerly the accordion's required
@@ -144,7 +147,8 @@ export default function ImprovedCaseStudyForm({
                                                   regionalCommunities,
                                                   onSuccess,
                                                   workspaceId,
-                                                  editDoc
+                                                  editDoc,
+                                                  draftId: requestedDraftId
                                               }: ImprovedCaseStudyFormProps) {
     const { user } = useUser();
     const t = useTranslations('caseStudySubmission');
@@ -234,7 +238,14 @@ export default function ImprovedCaseStudyForm({
                 return;
             }
             try {
-                const res = await fetch('/api/case-studies/drafts');
+                // A specific draft when the dashboard asked for one (owner-scoped
+                // server-side; an id that is not ours is a 404 and we start fresh),
+                // else the latest autosave.
+                const res = await fetch(
+                    requestedDraftId
+                        ? `/api/case-studies/drafts?id=${encodeURIComponent(requestedDraftId)}`
+                        : '/api/case-studies/drafts',
+                );
                 const serverDraft = res.ok ? (await res.json()).draft : null;
 
                 if (serverDraft && !cancelled) {

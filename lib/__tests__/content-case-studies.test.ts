@@ -82,6 +82,7 @@ import {
   submitCaseStudy,
   updateCaseStudy,
   getLatestCaseStudyDraft,
+  getCaseStudyDraftById,
   saveCaseStudyDraft,
   deleteCaseStudyDraft,
   getCaseStudySearchRecords,
@@ -630,6 +631,23 @@ describe("getLatestCaseStudyDraft", () => {
   });
 });
 
+describe("getCaseStudyDraftById", () => {
+  it("returns the draft only when it belongs to the caller — the lookup is scoped by userId", async () => {
+    mockQueryRaw.mockResolvedValue({ _id: "d1", title: { en: "Draft" } });
+    await expect(getCaseStudyDraftById("user1", "d1")).resolves.toEqual({ _id: "d1", title: { en: "Draft" } });
+    expect(mockQueryRaw).toHaveBeenCalledTimes(1);
+    const [groq, params] = mockQueryRaw.mock.calls[0];
+    expect(String(groq)).toContain('_type == "caseStudyDraft"');
+    expect(String(groq)).toContain("userId == $userId");
+    expect(params).toEqual({ draftId: "d1", userId: "user1" });
+  });
+
+  it("returns null when no such draft is owned by the caller", async () => {
+    mockQueryRaw.mockResolvedValue(null);
+    await expect(getCaseStudyDraftById("user1", "not-mine")).resolves.toBeNull();
+  });
+});
+
 describe("saveCaseStudyDraft", () => {
   it("creates a new draft when no draftId is given", async () => {
     mockCreateDocument.mockResolvedValue({ id: "new-draft-id" });
@@ -1018,6 +1036,27 @@ describe("case studies, answered by Payload", () => {
         expect.objectContaining({ type: "find", collection: "caseStudyDrafts" }),
       );
       expect(mockPayloadQuery).not.toHaveBeenCalled();
+    });
+
+    it("getCaseStudyDraftById reads through payload `queryRaw`, scoped to the caller, and maps the row to the Sanity shape", async () => {
+      mockPayloadQueryRaw.mockResolvedValue({
+        docs: [{ id: "d1", userId: "u1", topic: "mental-health", lastSaved: "2024-01-01T00:00:00.000Z" }],
+      } as never);
+      const draft = await getCaseStudyDraftById("u1", "d1");
+      expect(mockPayloadQueryRaw).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: "find",
+          collection: "caseStudyDrafts",
+          where: { and: [{ id: { equals: "d1" } }, { userId: { equals: "u1" } }] },
+        }),
+      );
+      expect(draft).toMatchObject({ _id: "d1", _type: "caseStudyDraft", topic: "mental-health", userId: "u1" });
+      expect(mockPayloadQuery).not.toHaveBeenCalled();
+    });
+
+    it("getCaseStudyDraftById returns null for a draft the caller does not own", async () => {
+      mockPayloadQueryRaw.mockResolvedValue({ docs: [] } as never);
+      await expect(getCaseStudyDraftById("u2", "d1")).resolves.toBeNull();
     });
   });
 

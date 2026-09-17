@@ -249,7 +249,7 @@ export default function LatestContentSection({
                                 );
                             } else if (item.contentType === 'case-study') {
                                 return (
-                                    <Link key={item._id} href={`/case-studies/${item.slug.current}`}>
+                                    <Link key={item._id} href={`/research-and-action/case-studies/${item.slug.current}`}>
                                         <CaseStudyCard {...(item as unknown as ComponentProps<typeof CaseStudyCard>)} locale={locale} />
                                     </Link>
                                 );

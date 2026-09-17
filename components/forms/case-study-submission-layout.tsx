@@ -57,6 +57,8 @@ interface CaseStudySubmissionLayoutProps {
     userId: string
     workspaceId?: string | null
     editDoc?: (Record<string, unknown> & { _sanityId: string }) | null
+    /** A specific draft to resume (dashboard Continue); otherwise the latest. */
+    draftId?: string | null
 }
 
 export default function CaseStudySubmissionLayout({
@@ -65,7 +67,8 @@ export default function CaseStudySubmissionLayout({
                                                       locale,
                                                       userId,
                                                       workspaceId,
-                                                      editDoc
+                                                      editDoc,
+                                                      draftId
                                                   }: CaseStudySubmissionLayoutProps) {
     const t = useTranslations('caseStudySubmission')
     const [activeSection, setActiveSection] = useState("basic-info")
@@ -163,6 +166,7 @@ export default function CaseStudySubmissionLayout({
                     regionalCommunities={regionalCommunities}
                     workspaceId={workspaceId}
                     editDoc={editDoc}
+                    draftId={draftId}
                 />
             </div>
         </div>

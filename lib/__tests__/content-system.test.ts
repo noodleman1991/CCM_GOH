@@ -157,6 +157,21 @@ describe("getSitemapEntries", () => {
     expect(entries.some((e) => e.url.includes("/news/"))).toBe(false);
     expect(entries.some((e) => e.url.includes("/case-studies/study-1"))).toBe(true);
   });
+
+  it("emits no agenda or report entries — neither has a detail route (Decision 11)", async () => {
+    mockQueryPreviewable.mockImplementation(async (groq: string) => {
+      if (groq.includes("_type == 'page'")) return [];
+      if (groq.includes('_type == "agenda"') || groq.includes('_type == "report"')) {
+        return [{ slug: "africa", lastModified: "2024-01-01T00:00:00Z" }];
+      }
+      return [];
+    });
+    const entries = await getSitemapEntries();
+    expect(entries.some((e) => e.url.includes("/research-and-action/agendas/"))).toBe(false);
+    expect(entries.some((e) => e.url.includes("/research-and-action/reports/"))).toBe(false);
+    const groqs = mockQueryPreviewable.mock.calls.map(([groq]) => String(groq));
+    expect(groqs.some((g) => g.includes('_type == "agenda"') || g.includes('_type == "report"'))).toBe(false);
+  });
 });
 
 describe("getDocsChapters", () => {
@@ -508,7 +523,9 @@ describe("getSitemapEntries, answered by Payload", () => {
       ],
     });
     expect(whereFor("newsPosts")).toEqual(slugged);
-    expect(whereFor("agendas")).toEqual(slugged);
+    // Decision 11: `agenda` and `report` have no detail route, so the sitemap
+    // never asks either collection for rows.
+    expect(whereFor("agendas")).toBeUndefined();
   });
 
   it("reads both collections the regionalCommunity filter admits, not just the page one", async () => {
@@ -523,14 +540,18 @@ describe("getSitemapEntries, answered by Payload", () => {
     expect(entries.filter((e) => e.url.endsWith("/communities/oceania"))).toHaveLength(8);
   });
 
-  it("returns nothing for the report spec, which has zero documents and no Payload collection", async () => {
+  it("emits no agenda or report entries — neither has a detail route (Decision 11)", async () => {
     onPayload();
-    respond({});
+    respond({
+      agendas: { docs: [{ id: "a1", slug: "africa", sanityUpdatedAt: "2024-01-01T00:00:00Z" }] },
+    });
     const entries = await getSitemapEntries();
-    expect(entries.some((e) => e.url.includes("/reports/"))).toBe(false);
+    expect(entries.some((e) => e.url.includes("/research-and-action/agendas/"))).toBe(false);
+    expect(entries.some((e) => e.url.includes("/research-and-action/reports/"))).toBe(false);
     const collections = mockPayloadQueryPreviewable.mock.calls.map(
       ([descriptor]) => (descriptor as { collection?: string }).collection,
     );
+    expect(collections).not.toContain("agendas");
     expect(collections).not.toContain("reports");
   });
 });

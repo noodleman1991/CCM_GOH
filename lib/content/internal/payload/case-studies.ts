@@ -1674,7 +1674,31 @@ export async function getLatestCaseStudyDraft(userId: string): Promise<Record<st
     ),
   )[0];
   if (!row) return null;
+  return draftDocument(row);
+}
 
+/** One draft by id, **`queryRaw`** and scoped to `userId` — the dashboard's
+ *  Continue button reopens a specific draft, and the answer feeds the same
+ *  autosave update as `getLatestCaseStudyDraft`. A guessed id owned by
+ *  someone else yields null, exactly as the Sanity GROQ does. */
+export async function getCaseStudyDraftById(
+  userId: string,
+  draftId: string,
+): Promise<Record<string, unknown> | null> {
+  const result = await queryRaw<Paginated<DraftRow>>({
+    type: "find",
+    collection: "caseStudyDrafts",
+    where: { and: [{ id: { equals: draftId } }, { userId: { equals: userId } }] },
+    limit: 1,
+    locale: "all",
+    depth: 0,
+  });
+  const row = result.docs[0];
+  return row ? draftDocument(row) : null;
+}
+
+/** A `caseStudyDraft` row in the whole-document shape the Sanity arm returns. */
+function draftDocument(row: DraftRow): Record<string, unknown> {
   const body = row.content;
   return groqObject({
     // `_rev` is a Sanity mutation id and has no Payload equivalent. See note 7.

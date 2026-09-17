@@ -1250,7 +1250,8 @@ export async function getAgendaSearchRecords(): Promise<SearchRecord[]> {
         kind: "agenda" as const,
         title: localize(d.title, locale),
         excerpt: d.description ? localize(d.description, locale) : undefined,
-        url: `/${locale}/research-and-action/agendas/${d.slug}`,
+        // Agendas have no detail route; the section page is where they live.
+        url: `/${locale}/research-and-action/regional-agendas`,
         locale,
       };
     });
