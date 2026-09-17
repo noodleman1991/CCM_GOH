@@ -86,7 +86,7 @@ export const Events: CollectionConfig = {
         { label: "Project", value: "project" },
       ],
     },
-    { name: "startAt", type: "date", required: true, admin: { date: { pickerAppearance: "dayAndTime" } } },
+    { name: "startAt", type: "date", index: true, required: true, admin: { date: { pickerAppearance: "dayAndTime" } } },
     {
       name: "endAt",
       type: "date",
@@ -168,6 +168,7 @@ export const Events: CollectionConfig = {
     },
     {
       name: "moderationStatus",
+      index: true,
       type: "select",
       defaultValue: "approved",
       options: [

@@ -137,7 +137,7 @@ export const LivedExperiences: CollectionConfig = {
     uploadField("videoFile", "files", { label: "Video File" }),
     imageField("thumbnail"),
     { name: "duration", type: "text", admin: { description: "e.g. '5:30', '1:45:00'." } },
-    { name: "publishedAt", type: "date" },
+    { name: "publishedAt", type: "date", index: true },
     relationshipField("author", "authors", { required: true }),
     relationshipField("relatedCommunity", "regionalCommunities", {
       admin: { description: "The schema's own reference field for this — 0/56 real documents populate it. See 'region' below." },
@@ -199,7 +199,7 @@ export const LivedExperiences: CollectionConfig = {
     },
     relationshipField("organizations", "organizations", { hasMany: true }),
     relationshipField("tags", "tags", { hasMany: true }),
-    { name: "featured", type: "checkbox", defaultValue: false },
+    { name: "featured", type: "checkbox", index: true, defaultValue: false },
     {
       // Studio's approve / request-revision / reject document actions, as
       // buttons inside the document. A `ui` field has no database column, so
@@ -217,6 +217,7 @@ export const LivedExperiences: CollectionConfig = {
       // failed migration on caseStudies before this was renamed — see that
       // collection's header comment for the exact error.
       name: "moderationStatus",
+      index: true,
       type: "select",
       options: [
         { label: "Pending Review", value: "pending" },

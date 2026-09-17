@@ -5,6 +5,7 @@ import * as migration_20260903_224806_empty_wired_collections from './20260903_2
 import * as migration_20260903_231949_uploads_on_r2 from './20260903_231949_uploads_on_r2';
 import * as migration_20260904_075324_globals_under_pg_arg_limit from './20260904_075324_globals_under_pg_arg_limit';
 import * as migration_20260904_105415_sanity_updated_at from './20260904_105415_sanity_updated_at';
+import * as migration_20260917_050259_push_down_indexes from './20260917_050259_push_down_indexes';
 
 export const migrations = [
   {
@@ -40,6 +41,11 @@ export const migrations = [
   {
     up: migration_20260904_105415_sanity_updated_at.up,
     down: migration_20260904_105415_sanity_updated_at.down,
-    name: '20260904_105415_sanity_updated_at'
+    name: '20260904_105415_sanity_updated_at',
+  },
+  {
+    up: migration_20260917_050259_push_down_indexes.up,
+    down: migration_20260917_050259_push_down_indexes.down,
+    name: '20260917_050259_push_down_indexes'
   },
 ];

@@ -187,6 +187,7 @@ export const ResearchOutputs: CollectionConfig = {
       // livedExperiences, which MUST use this name to avoid a Postgres enum
       // collision with Payload's internal `_status` — see case-studies.ts.
       name: "moderationStatus",
+      index: true,
       type: "select",
       defaultValue: "approved",
       options: [
@@ -223,7 +224,7 @@ export const ResearchOutputs: CollectionConfig = {
         { name: "countryCode", type: "text" },
       ],
     },
-    { name: "publishDate", type: "date", admin: { date: { pickerAppearance: "dayOnly" } } },
+    { name: "publishDate", type: "date", index: true, admin: { date: { pickerAppearance: "dayOnly" } } },
     { name: "year", type: "number" },
     { name: "featured", type: "checkbox", defaultValue: false },
     { name: "totalDownloadCount", type: "number", defaultValue: 0, admin: { readOnly: true } },

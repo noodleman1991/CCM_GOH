@@ -364,6 +364,11 @@ export async function regionalCommunityCaseStudies(params: {
   const { slug, limit = 6, featured = false } = params;
   const id = await communityId(slug);
   if (!id) return [];
+  // Push-down (2026-09-17): the order and the slice are asked of the database
+// (`sort` with an explicit `id` tie-break; `limit`), and the rich-text column
+// is excluded. The JavaScript comparator below is kept as a documented no-op
+// safety net for rows with a NULL date (none admitted today — see
+// scripts/parity/order-check.ts), not as the ordering mechanism.
   const result = await query<Paginated<Row>>({
     type: "find",
     collection: "caseStudies",
@@ -375,6 +380,9 @@ export async function regionalCommunityCaseStudies(params: {
     locale: "all",
     depth: 2,
     pagination: false,
+    sort: ["-featured", "-publishedAt", "id"],
+    limit,
+    select: { content: false },
   });
   return byFeaturedThenDate(result?.docs ?? [])
     .slice(0, limit)
@@ -461,6 +469,9 @@ export async function regionalCommunityLivedExperiences(params: {
     locale: "all",
     depth: 2,
     pagination: false,
+    sort: ["-featured", "-publishedAt", "id"],
+    limit,
+    select: { body: false },
   });
   return byFeaturedThenDate(result?.docs ?? [])
     .slice(0, limit)
@@ -521,12 +532,15 @@ export async function regionalCommunityNews(params: {
   const rows = await newsUnion(
     { relatedCommunity: { equals: id } },
     featured ? { featured: { equals: true } } : null,
+    limit,
   );
   return byFeaturedThenDate(rows).slice(0, limit).map(newsCard);
 }
 
-/** The `newsPost` + `externalSource` union both news feeds read. */
-async function newsUnion(scope: Where | null, featured: Where | null): Promise<Row[]> {
+/** The `newsPost` + `externalSource` union both news feeds read. Each arm is
+ *  bounded to `limit` — the top-N of a union is contained in the union of the
+ *  per-arm top-Ns — and the merge is ordered once, in JavaScript, as before. */
+async function newsUnion(scope: Where | null, featured: Where | null, limit?: number): Promise<Row[]> {
   const [posts, sources] = await Promise.all([
     query<Paginated<Row>>({
       type: "find",
@@ -535,6 +549,9 @@ async function newsUnion(scope: Where | null, featured: Where | null): Promise<R
       locale: "all",
       depth: 2,
       pagination: false,
+      sort: ["-featured", "-publishedAt", "id"],
+      limit,
+      select: { content: false },
     }),
     query<Paginated<Row>>({
       type: "find",
@@ -543,6 +560,8 @@ async function newsUnion(scope: Where | null, featured: Where | null): Promise<R
       locale: "all",
       depth: 2,
       pagination: false,
+      sort: ["-featured", "-publishedAt", "id"],
+      limit,
     }),
   ]);
   return [
@@ -591,7 +610,7 @@ function newsCard(row: Row): Row {
  */
 export async function homepageNews(params: { limit?: number; featured?: boolean }): Promise<Row[]> {
   const { limit = 3, featured = false } = params;
-  const rows = await newsUnion(null, featured ? { featured: { equals: true } } : null);
+  const rows = await newsUnion(null, featured ? { featured: { equals: true } } : null, limit);
   return byDate(rows, "publishedAt").slice(0, limit).map(newsCard);
 }
 
@@ -612,6 +631,8 @@ export async function homepageAgendas(params: { limit?: number; featured?: boole
     locale: "all",
     depth: 2,
     pagination: false,
+    sort: ["-publishDate", "id"],
+    limit,
   });
   return byDate(result?.docs ?? [], "publishDate")
     .slice(0, limit)

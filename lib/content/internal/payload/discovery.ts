@@ -570,6 +570,12 @@ export async function getDynamicContent(
 ): Promise<DiscoveryItem[]> {
   const spec = DYNAMIC_KINDS[kind];
   if (!spec) return [];
+  const featured = options.mode === "featured";
+  // Push-down (2026-09-17): the order and the slice are asked of the database
+// (`sort` with an explicit `id` tie-break; `limit`), and the rich-text column
+// is excluded. The JavaScript comparator below is kept as a documented no-op
+// safety net for rows with a NULL date (none admitted today — see
+// scripts/parity/order-check.ts), not as the ordering mechanism.
   const result = await query<Paginated<Row>>({
     type: "find",
     collection: spec.collection,
@@ -577,8 +583,10 @@ export async function getDynamicContent(
     pagination: false,
     locale: "all",
     depth: DEPTH,
+    sort: featured ? ["-featured", "-publishedAt", "id"] : ["-publishedAt", "id"],
+    limit: options.count,
+    select: spec.collection === "livedExperiences" ? { body: false } : { content: false },
   });
-  const featured = options.mode === "featured";
   return sortCards(result.docs, options.mode)
     .slice(0, options.count)
     .map((row) => spec.project(row, featured));
@@ -700,6 +708,8 @@ export async function getForYouCandidates(input: {
       }
       if (matches.length === 0) return [];
 
+      // Each arm bounded to the union's limit: the global top-N is contained
+      // in the union of the per-arm top-Ns. The merge sort below still runs.
       const result = await query<Paginated<Row>>({
         type: "find",
         collection: arm.collection,
@@ -707,6 +717,9 @@ export async function getForYouCandidates(input: {
         pagination: false,
         locale: "all",
         depth: 1,
+        sort: ["-publishedAt", "id"],
+        limit: input.limit,
+        select: arm.collection === "livedExperiences" ? { body: false } : { content: false },
       });
       return result.docs.map((row) => ({ arm, row }));
     }),
@@ -792,7 +805,15 @@ function publishedByNow(): Where {
   return { publishedAt: { less_than_equal: nowMinute() } };
 }
 
-async function findNewsPosts(where: Where | undefined): Promise<Row[]> {
+async function findNewsPosts(
+  where: Where | undefined,
+  bound: { sort: string[]; limit?: number } = { sort: ["-publishedAt", "id"] },
+): Promise<Row[]> {
+  // Push-down (2026-09-17): the order and the slice are asked of the database
+// (`sort` with an explicit `id` tie-break; `limit`), and the rich-text column
+// is excluded. The JavaScript comparator below is kept as a documented no-op
+// safety net for rows with a NULL date (none admitted today — see
+// scripts/parity/order-check.ts), not as the ordering mechanism.
   const result = await query<Paginated<Row>>({
     type: "find",
     collection: "newsPosts",
@@ -800,6 +821,9 @@ async function findNewsPosts(where: Where | undefined): Promise<Row[]> {
     pagination: false,
     locale: "all",
     depth: DEPTH,
+    sort: bound.sort,
+    limit: bound.limit,
+    select: { content: false },
   });
   return result.docs;
 }
@@ -812,31 +836,39 @@ export async function getNewsPostsForBlock(
   if (mode === "manual") {
     if (!manualIds || manualIds.length === 0) return [];
     // No `order(…)` in the GROQ, so document order — `_id` ascending.
-    const docs = await findNewsPosts({ id: { in: manualIds } });
+    const docs = await findNewsPosts({ id: { in: manualIds } }, { sort: ["id"] });
     return [...docs].sort((a, b) => byCodePoint(docId(a), docId(b))).map(newsPostBlockProjection);
   }
 
   if (mode === "featured") {
+    // Featured page first, bounded; the fill runs only when it comes up short
+    // and excludes what the first page returned.
     const featured = sortCards(
-      await findNewsPosts(and({ featured: { equals: true } }, publishedByNow())),
+      await findNewsPosts(and({ featured: { equals: true } }, publishedByNow()), {
+        sort: ["-publishedAt", "id"],
+        limit,
+      }),
       "recent",
     );
     if (featured.length >= limit) return featured.slice(0, limit).map(newsPostBlockProjection);
 
     const remaining = limit - featured.length;
+    const featuredIds = featured.map(docId);
     const recent = sortCards(
       await findNewsPosts(
         and(
           { or: [{ featured: { exists: false } }, { featured: { equals: false } }] },
+          featuredIds.length > 0 ? { id: { not_in: featuredIds } } : null,
           publishedByNow(),
         ),
+        { sort: ["-publishedAt", "id"], limit: remaining },
       ),
       "recent",
     );
     return [...featured, ...recent.slice(0, remaining)].map(newsPostBlockProjection);
   }
 
-  return sortCards(await findNewsPosts(publishedByNow()), "recent")
+  return sortCards(await findNewsPosts(publishedByNow(), { sort: ["-publishedAt", "id"], limit }), "recent")
     .slice(0, limit)
     .map(newsPostBlockProjection);
 }
@@ -1131,6 +1163,11 @@ export async function getEvents(filter: EventFilter = {}): Promise<ContentEvent[
     return row ? [eventDetailProjection(row)] : [];
   }
 
+  // Push-down (2026-09-17): the order and the slice are asked of the database
+// (`sort` with an explicit `id` tie-break; `limit`), and the rich-text column
+// is excluded. The JavaScript comparator below is kept as a documented no-op
+// safety net for rows with a NULL date (none admitted today — see
+// scripts/parity/order-check.ts), not as the ordering mechanism.
   const result = await query<Paginated<Row>>({
     type: "find",
     collection: "events",
@@ -1138,6 +1175,8 @@ export async function getEvents(filter: EventFilter = {}): Promise<ContentEvent[
     pagination: false,
     locale: "all",
     depth: 1,
+    sort: ["startAt", "id"],
+    limit: filter.limit ?? 50,
   });
   return [...result.docs]
     .sort((a, b) => {
@@ -1403,7 +1442,16 @@ function templateAuthors(rows: unknown): any[] | null {
   return listOrNull(authors);
 }
 
-async function findTemplateRows(collection: CollectionSlug, where: Where | undefined): Promise<Row[]> {
+async function findTemplateRows(
+  collection: CollectionSlug,
+  where: Where | undefined,
+  bound: { limit?: number } = {},
+): Promise<Row[]> {
+  // Push-down (2026-09-17): the order and the slice are asked of the database
+// (`sort` with an explicit `id` tie-break; `limit`), and the rich-text column
+// is excluded. The JavaScript comparator below is kept as a documented no-op
+// safety net for rows with a NULL date (none admitted today — see
+// scripts/parity/order-check.ts), not as the ordering mechanism.
   const result = await query<Paginated<Row>>({
     type: "find",
     collection,
@@ -1411,6 +1459,9 @@ async function findTemplateRows(collection: CollectionSlug, where: Where | undef
     pagination: false,
     locale: "all",
     depth: DEPTH,
+    sort: ["-publishedAt", "id"],
+    limit: bound.limit,
+    select: collection === "livedExperiences" ? { body: false } : { content: false },
   });
   return result.docs;
 }
@@ -1427,6 +1478,7 @@ export async function fetchDynamicCaseStudies({
         await findTemplateRows(
           "caseStudies",
           and(APPROVED, { featured: { equals: true } }, inCommunity),
+          { limit: maxItems },
         ),
         "recent",
       ).slice(0, maxItems);
@@ -1442,6 +1494,7 @@ export async function fetchDynamicCaseStudies({
               featuredIds.length > 0 ? { id: { not_in: featuredIds } } : null,
               inCommunity,
             ),
+            { limit: remaining },
           ),
           "recent",
         ).slice(0, remaining);
@@ -1449,7 +1502,7 @@ export async function fetchDynamicCaseStudies({
       }
       return items;
     }
-    return sortCards(await findTemplateRows("caseStudies", and(APPROVED, inCommunity)), "recent")
+    return sortCards(await findTemplateRows("caseStudies", and(APPROVED, inCommunity), { limit: maxItems }), "recent")
       .slice(0, maxItems)
       .map(templateCaseStudyProjection);
   } catch (error) {

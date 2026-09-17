@@ -540,6 +540,12 @@ export async function getFreshContentRowsForType(type: string, cap: number): Pro
     pagination: false,
     where: and(MODERATION[shape.moderation], { slug: { exists: true } }),
     select: selectFor(shape),
+    // Push-down (2026-09-17): every shape has exactly one date arm, so the
+    // three-way coalesce the GROQ orders by is two-way here; the database
+    // orders and caps, and the JavaScript sort below stays as the createdAt
+    // fallback for a row without that date (none admitted today).
+    sort: [`-${shape.dates[0]}`, "id"],
+    limit: cap,
   });
 
   return (result?.docs ?? [])

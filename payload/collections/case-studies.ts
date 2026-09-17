@@ -305,6 +305,7 @@ export const CaseStudies: CollectionConfig = {
       // eliminates the collision entirely; `researchOutputs.moderationStatus`
       // (no drafts today) is named the same for consistency.
       name: "moderationStatus",
+      index: true,
       type: "select",
       required: true,
       defaultValue: "pending",
@@ -319,8 +320,8 @@ export const CaseStudies: CollectionConfig = {
           "Editorial review state — NOT Payload's _status (publish state, set by versions.drafts). Only 'Approved' case studies are meant to be publicly visible.",
       },
     },
-    { name: "featured", type: "checkbox", defaultValue: false },
-    { name: "publishedAt", type: "date", admin: { readOnly: true, description: "Set by the Approve action when the case study goes live." } },
+    { name: "featured", type: "checkbox", index: true, defaultValue: false },
+    { name: "publishedAt", type: "date", index: true, admin: { readOnly: true, description: "Set by the Approve action when the case study goes live." } },
     // The review block — internal editorial state, editor-only at field level.
     { name: "reviewNotes", type: "textarea", access: { read: isEditorField } },
     relationshipField("reviewedBy", "authors", { access: { read: isEditorField } }),

@@ -486,12 +486,18 @@ export function agendaCardProjection(row: unknown): Agenda | null {
  *  and a code-point id in one `sort` the way GROQ's `order()` composes them, so
  *  the read is unpaginated and the ordering is applied here. */
 async function allAgendas(): Promise<AgendaRow[]> {
+  // Push-down (2026-09-17): the order and the slice are asked of the database
+// (`sort` with an explicit `id` tie-break; `limit`), and the rich-text column
+// is excluded. The JavaScript comparator below is kept as a documented no-op
+// safety net for rows with a NULL date (none admitted today — see
+// scripts/parity/order-check.ts), not as the ordering mechanism.
   const result = await query<Paginated<AgendaRow>>({
     type: "find",
     collection: "agendas",
     pagination: false,
     locale: "all",
     depth: 2,
+    sort: ["-publishDate", "id"],
   });
   return [...result.docs].sort((a, b) =>
     byDateThenId(
@@ -548,6 +554,8 @@ export async function getAgendasByRegion(rcSlug: string, limit: number): Promise
       pagination: false,
       locale: "all",
       depth: 2,
+      sort: ["-publishDate", "id"],
+      limit: take,
     });
     return [...result.docs]
       .sort((a, b) =>
@@ -810,6 +818,11 @@ export async function getResearchOutputBySlug(slug: string): Promise<ResearchOut
 }
 
 export async function getResearchOutputs(): Promise<ResearchOutput[]> {
+  // Push-down (2026-09-17): the order and the slice are asked of the database
+// (`sort` with an explicit `id` tie-break; `limit`), and the rich-text column
+// is excluded. The JavaScript comparator below is kept as a documented no-op
+// safety net for rows with a NULL date (none admitted today — see
+// scripts/parity/order-check.ts), not as the ordering mechanism.
   const result = await query<Paginated<ResearchOutputRow>>({
     type: "find",
     collection: "researchOutputs",
@@ -817,6 +830,8 @@ export async function getResearchOutputs(): Promise<ResearchOutput[]> {
     pagination: false,
     locale: "all",
     depth: 2,
+    sort: ["-publishDate", "id"],
+    select: { body: false },
   });
   // `order(coalesce(publishDate, _createdAt) desc, _id asc)`. `publishDate` is
   // 29/29 populated, so the coalesce never reaches `_createdAt`; `createdAt` is

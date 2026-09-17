@@ -602,6 +602,14 @@ async function listNewsPosts(
   opts: SortOptions & { limit: number; searchPattern?: string; depth?: number; fresh?: boolean },
 ): Promise<Row[]> {
   const read = opts.fresh ? queryLive : query;
+  // Push-down (2026-09-17): the order and the slice are asked of the database
+// (`sort` with an explicit `id` tie-break; `limit`), and the rich-text column
+// is excluded. The JavaScript comparator below is kept as a documented no-op
+// safety net for rows with a NULL date (none admitted today — see
+// scripts/parity/order-check.ts), not as the ordering mechanism.
+  // A search pattern is matched here (GROQ `match` is token-based, not ILIKE),
+  // so the slice cannot be pushed together with it; every other read is
+  // bounded in the database.
   const result = await read<Paginated<Row> | null>({
     type: "find",
     collection: "newsPosts",
@@ -609,6 +617,9 @@ async function listNewsPosts(
     depth: opts.depth ?? NEWS_POST_DEPTH,
     pagination: false,
     where,
+    sort: opts.featuredFirst ? ["-featured", "-publishedAt", "id"] : ["-publishedAt", "id"],
+    ...(opts.searchPattern ? {} : { limit: opts.limit }),
+    select: { content: false },
   });
   const rows = (result?.docs ?? []).filter((row) =>
     opts.searchPattern ? matchesSearch(searchableText(row), opts.searchPattern) : true,
@@ -986,6 +997,9 @@ export async function getDynamicNews({
       depth: NEWS_POST_DEPTH,
       pagination: false,
       where,
+      sort: ["-publishedAt", "id"],
+      limit,
+      select: { content: false },
     });
     return (result?.docs ?? []).sort((a, b) => compareNewsRows(a, b, {})).slice(0, limit);
   };
