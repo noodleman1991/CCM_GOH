@@ -85,8 +85,63 @@ function candidateVariables(domain?: string): string[] {
  * two backends: a typo like `CONTENT_BACKEND=payl0ad` silently serving Sanity
  * is how a rollout gets declared finished while nothing moved.
  */
+/**
+ * Every domain that owns a switch. The list exists for the table below: a
+ * browser bundle only sees a NEXT_PUBLIC variable that is spelled out as a
+ * literal `process.env.NAME`, never one reached through `process.env[name]`.
+ * `lib/__tests__/backend-public-twins.test.ts` keeps it complete.
+ */
+export const CONTENT_DOMAINS = [
+  "account-deletion",
+  "case-studies",
+  "discovery",
+  "illustrations",
+  "images",
+  "lived-experiences",
+  "metadata",
+  "news",
+  "onboarding",
+  "outputs",
+  "pages",
+  "regions",
+  "system",
+  "taxonomy",
+  "text",
+  "uploads",
+  "user-management",
+] as const;
+
+/**
+ * The public twins, read as literals so Next inlines them into the client
+ * bundle. Without this the browser answered `undefined` for every twin, the
+ * server said `payload`, and `imageUrl()` in a client component built an
+ * empty `src` on hydration (agenda grid on the flipped homepage, 2026-09-21).
+ */
+export const PUBLIC_TWIN_VALUES: Record<string, string | undefined> = {
+  NEXT_PUBLIC_CONTENT_BACKEND: process.env.NEXT_PUBLIC_CONTENT_BACKEND,
+  NEXT_PUBLIC_CONTENT_BACKEND_ACCOUNT_DELETION: process.env.NEXT_PUBLIC_CONTENT_BACKEND_ACCOUNT_DELETION,
+  NEXT_PUBLIC_CONTENT_BACKEND_CASE_STUDIES: process.env.NEXT_PUBLIC_CONTENT_BACKEND_CASE_STUDIES,
+  NEXT_PUBLIC_CONTENT_BACKEND_DISCOVERY: process.env.NEXT_PUBLIC_CONTENT_BACKEND_DISCOVERY,
+  NEXT_PUBLIC_CONTENT_BACKEND_ILLUSTRATIONS: process.env.NEXT_PUBLIC_CONTENT_BACKEND_ILLUSTRATIONS,
+  NEXT_PUBLIC_CONTENT_BACKEND_IMAGES: process.env.NEXT_PUBLIC_CONTENT_BACKEND_IMAGES,
+  NEXT_PUBLIC_CONTENT_BACKEND_LIVED_EXPERIENCES: process.env.NEXT_PUBLIC_CONTENT_BACKEND_LIVED_EXPERIENCES,
+  NEXT_PUBLIC_CONTENT_BACKEND_METADATA: process.env.NEXT_PUBLIC_CONTENT_BACKEND_METADATA,
+  NEXT_PUBLIC_CONTENT_BACKEND_NEWS: process.env.NEXT_PUBLIC_CONTENT_BACKEND_NEWS,
+  NEXT_PUBLIC_CONTENT_BACKEND_ONBOARDING: process.env.NEXT_PUBLIC_CONTENT_BACKEND_ONBOARDING,
+  NEXT_PUBLIC_CONTENT_BACKEND_OUTPUTS: process.env.NEXT_PUBLIC_CONTENT_BACKEND_OUTPUTS,
+  NEXT_PUBLIC_CONTENT_BACKEND_PAGES: process.env.NEXT_PUBLIC_CONTENT_BACKEND_PAGES,
+  NEXT_PUBLIC_CONTENT_BACKEND_REGIONS: process.env.NEXT_PUBLIC_CONTENT_BACKEND_REGIONS,
+  NEXT_PUBLIC_CONTENT_BACKEND_SYSTEM: process.env.NEXT_PUBLIC_CONTENT_BACKEND_SYSTEM,
+  NEXT_PUBLIC_CONTENT_BACKEND_TAXONOMY: process.env.NEXT_PUBLIC_CONTENT_BACKEND_TAXONOMY,
+  NEXT_PUBLIC_CONTENT_BACKEND_TEXT: process.env.NEXT_PUBLIC_CONTENT_BACKEND_TEXT,
+  NEXT_PUBLIC_CONTENT_BACKEND_UPLOADS: process.env.NEXT_PUBLIC_CONTENT_BACKEND_UPLOADS,
+  NEXT_PUBLIC_CONTENT_BACKEND_USER_MANAGEMENT: process.env.NEXT_PUBLIC_CONTENT_BACKEND_USER_MANAGEMENT,
+};
+
 function readBackend(name: string): ContentBackend | undefined {
-  const raw = process.env[name];
+  // The live environment first (server, tests that set a variable after
+  // import); the inlined table is what remains in a browser bundle.
+  const raw = process.env[name] ?? PUBLIC_TWIN_VALUES[name];
   if (raw === undefined) return undefined;
   const value = raw.trim().toLowerCase();
   if (value === "") return undefined;
