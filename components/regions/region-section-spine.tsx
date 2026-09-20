@@ -62,10 +62,12 @@ export function RegionSectionSpine({
     if (!active || !nav) return;
     const el = nav.querySelector<HTMLElement>(`[data-spine-id="${active}"]`);
     if (!el) return;
-    const start = el.offsetLeft;
-    const end = start + el.offsetWidth;
-    if (start < nav.scrollLeft) nav.scrollLeft = start - 8;
-    else if (end > nav.scrollLeft + nav.clientWidth) nav.scrollLeft = end - nav.clientWidth + 8;
+    // Viewport-relative deltas work in both directions; offsetLeft/scrollLeft
+    // arithmetic assumed a left-to-right scroll origin and broke under dir=rtl.
+    const navRect = nav.getBoundingClientRect();
+    const rect = el.getBoundingClientRect();
+    if (rect.left < navRect.left) nav.scrollBy({ left: rect.left - navRect.left - 8 });
+    else if (rect.right > navRect.right) nav.scrollBy({ left: rect.right - navRect.right + 8 });
   }, [active]);
 
   return (

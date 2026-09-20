@@ -86,7 +86,7 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
         {/* Basic Information */}
         <Card>
           <CardHeader>
-            <CardTitle className={cn("flex items-center gap-2", isRTL && "flex-row-reverse")}>
+            <CardTitle className={cn("flex items-center gap-2")}>
               <User className="h-5 w-5 text-primary" />
               {content?.reviewFieldLabels?.basicInfo || t("basicInfo")}
             </CardTitle>
@@ -136,7 +136,7 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
         {/* Work Information */}
         <Card>
           <CardHeader>
-            <CardTitle className={cn("flex items-center gap-2", isRTL && "flex-row-reverse")}>
+            <CardTitle className={cn("flex items-center gap-2")}>
               <Briefcase className="h-5 w-5 text-primary" />
               {content?.reviewFieldLabels?.workInfo || t("workInfo")}
             </CardTitle>
@@ -145,7 +145,7 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
             {/* Work Types */}
             <div>
               <p className="text-sm font-medium text-gray-500 mb-2">{content?.reviewFieldLabels?.workTypes || t("workTypes")}</p>
-              <div className={cn("flex flex-wrap gap-2", isRTL && "flex-row-reverse")}>
+              <div className={cn("flex flex-wrap gap-2")}>
                 {[...new Set(formData.workInfo.workTypes)]
                   .map((id, index) => {
                     const workType = workTypes.find((wt) => wt._id === id)
@@ -167,7 +167,7 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
             {/* Expertise Areas */}
             <div>
               <p className="text-sm font-medium text-gray-500 mb-2">{content?.reviewFieldLabels?.expertiseAreas || t("expertiseAreas")}</p>
-              <div className={cn("flex flex-wrap gap-2", isRTL && "flex-row-reverse")}>
+              <div className={cn("flex flex-wrap gap-2")}>
                 {[...new Set(formData.workInfo.expertiseAreas)]
                   .map((id, index) => {
                     const area = expertiseAreas.find((ea) => ea._id === id)
@@ -223,7 +223,7 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
                       href={formData.workInfo.linkedinProfile}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={cn("flex items-center gap-2 text-primary hover:underline", isRTL && "flex-row-reverse")}
+                      className={cn("flex items-center gap-2 text-primary hover:underline")}
                     >
                       <ExternalLink className="h-4 w-4" />
                       LinkedIn
@@ -234,7 +234,7 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
                       href={formData.workInfo.personalWebsite}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={cn("flex items-center gap-2 text-primary hover:underline", isRTL && "flex-row-reverse")}
+                      className={cn("flex items-center gap-2 text-primary hover:underline")}
                     >
                       <ExternalLink className="h-4 w-4" />
                       {t("websiteLink")}
@@ -247,7 +247,7 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
                         href={link.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className={cn("flex items-center gap-2 text-primary hover:underline", isRTL && "flex-row-reverse")}
+                        className={cn("flex items-center gap-2 text-primary hover:underline")}
                       >
                         <ExternalLink className="h-4 w-4" />
                         {link.platform}
@@ -264,7 +264,7 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
         {formData.recentWork && formData.recentWork.length > 0 && (
           <Card>
             <CardHeader>
-              <CardTitle className={cn("flex items-center gap-2", isRTL && "flex-row-reverse")}>
+              <CardTitle className={cn("flex items-center gap-2")}>
                 <Globe className="h-5 w-5 text-primary" />
                 {content?.reviewFieldLabels?.recentWork || t("recentWork")}
               </CardTitle>
@@ -273,9 +273,9 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
               <div className="space-y-4">
                 {formData.recentWork.map((work, index) => (
                   <div key={index} className="border rounded-lg p-4">
-                    <div className={cn("flex items-start justify-between mb-2", isRTL && "flex-row-reverse")}>
+                    <div className={cn("flex items-start justify-between mb-2")}>
                       <h4 className="font-medium">{work.title}</h4>
-                      <div className={cn("flex items-center gap-2 text-sm text-muted-foreground", isRTL && "flex-row-reverse")}>
+                      <div className={cn("flex items-center gap-2 text-sm text-muted-foreground")}>
                         <Calendar className="h-4 w-4" />
                         <span>
                           {formatDate(work.startDate)} - {work.isOngoing ? (content?.reviewFieldLabels?.ongoing || t("ongoing")) : formatDate(work.endDate || "")}
@@ -288,7 +288,7 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
                         href={work.link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className={cn("inline-flex items-center gap-1 text-primary hover:underline", isRTL && "flex-row-reverse")}
+                        className={cn("inline-flex items-center gap-1 text-primary hover:underline")}
                       >
                         <ExternalLink className="h-4 w-4" />
                         {content?.reviewFieldLabels?.viewProject || t("viewProject")}
@@ -304,7 +304,7 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
         {/* Privacy Settings */}
         <Card>
           <CardHeader>
-            <CardTitle className={cn("flex items-center gap-2", isRTL && "flex-row-reverse")}>
+            <CardTitle className={cn("flex items-center gap-2")}>
               <Shield className="h-5 w-5 text-primary" />
               {content?.reviewFieldLabels?.privacySettings || t("privacySettings")}
             </CardTitle>
@@ -324,35 +324,35 @@ export function ReviewPanel({ form, content, workTypes = [], expertiseAreas = []
             <Separator />
 
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              <div className={cn("flex items-center gap-2", isRTL && "flex-row-reverse")}>
+              <div className={cn("flex items-center gap-2")}>
                 <div className={cn(
                   "w-2 h-2 rounded-full",
                   formData.privacy.showEmail ? "bg-green-500" : "bg-gray-300"
                 )} />
                 <span className="text-sm">{content?.reviewFieldLabels?.showEmail || t("showEmail")}</span>
               </div>
-              <div className={cn("flex items-center gap-2", isRTL && "flex-row-reverse")}>
+              <div className={cn("flex items-center gap-2")}>
                 <div className={cn(
                   "w-2 h-2 rounded-full",
                   formData.privacy.showPhoneNumber ? "bg-green-500" : "bg-gray-300"
                 )} />
                 <span className="text-sm">{content?.reviewFieldLabels?.showPhone || t("showPhone")}</span>
               </div>
-              <div className={cn("flex items-center gap-2", isRTL && "flex-row-reverse")}>
+              <div className={cn("flex items-center gap-2")}>
                 <div className={cn(
                   "w-2 h-2 rounded-full",
                   formData.privacy.showWorkDetails ? "bg-green-500" : "bg-gray-300"
                 )} />
                 <span className="text-sm">{content?.reviewFieldLabels?.showWork || t("showWork")}</span>
               </div>
-              <div className={cn("flex items-center gap-2", isRTL && "flex-row-reverse")}>
+              <div className={cn("flex items-center gap-2")}>
                 <div className={cn(
                   "w-2 h-2 rounded-full",
                   formData.privacy.showSocialLinks ? "bg-green-500" : "bg-gray-300"
                 )} />
                 <span className="text-sm">{content?.reviewFieldLabels?.showSocial || t("showSocial")}</span>
               </div>
-              <div className={cn("flex items-center gap-2", isRTL && "flex-row-reverse")}>
+              <div className={cn("flex items-center gap-2")}>
                 <div className={cn(
                   "w-2 h-2 rounded-full",
                   formData.privacy.showLocation ? "bg-green-500" : "bg-gray-300"

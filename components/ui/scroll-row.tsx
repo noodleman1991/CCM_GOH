@@ -77,7 +77,7 @@ export function ScrollRow({
             onClick={() => scrollByPage('start')}
             className="absolute start-0 top-1/2 z-10 hidden -translate-y-1/2 rounded-full bg-background/90 p-1.5 shadow-md ring-1 ring-border transition-opacity hover:bg-background md:block opacity-0 group-hover/row:opacity-100"
           >
-            <ChevronLeft className={cn('h-5 w-5', isRTL && 'rotate-180')} />
+            <ChevronLeft className="h-5 w-5 rtl:-scale-x-100" />
           </button>
         )}
 
@@ -96,7 +96,7 @@ export function ScrollRow({
             onClick={() => scrollByPage('end')}
             className="absolute end-0 top-1/2 z-10 hidden -translate-y-1/2 rounded-full bg-background/90 p-1.5 shadow-md ring-1 ring-border transition-opacity hover:bg-background md:block opacity-0 group-hover/row:opacity-100"
           >
-            <ChevronRight className={cn('h-5 w-5', isRTL && 'rotate-180')} />
+            <ChevronRight className="h-5 w-5 rtl:-scale-x-100" />
           </button>
         )}
       </div>

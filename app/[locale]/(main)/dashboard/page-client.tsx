@@ -268,7 +268,7 @@ export function DashboardClient({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Card className="group hover:shadow-lg transition-shadow min-h-[220px] flex flex-col">
                   <CardHeader>
-                    <div className={cn("flex items-center gap-3", rtl && "flex-row-reverse")}>
+                    <div className={cn("flex items-center gap-3")}>
                       <div className="p-3 rounded-lg bg-[var(--color-ccm-sea)]/10 flex-shrink-0">
                         <User className="w-6 h-6 text-[var(--color-ccm-sea)]" />
                       </div>
@@ -290,7 +290,7 @@ export function DashboardClient({
 
                 <Card className="group hover:shadow-lg transition-shadow min-h-[220px] flex flex-col">
                   <CardHeader>
-                    <div className={cn("flex items-center gap-3", rtl && "flex-row-reverse")}>
+                    <div className={cn("flex items-center gap-3")}>
                       <div className="p-3 rounded-lg bg-[var(--color-ccm-water)]/10 flex-shrink-0">
                         <Upload className="w-6 h-6 text-[var(--color-ccm-water)]" />
                       </div>
@@ -312,7 +312,7 @@ export function DashboardClient({
 
                 <Card className="group hover:shadow-lg transition-shadow min-h-[220px] flex flex-col">
                   <CardHeader>
-                    <div className={cn("flex items-center gap-3", rtl && "flex-row-reverse")}>
+                    <div className={cn("flex items-center gap-3")}>
                       <div className="p-3 rounded-lg bg-[var(--color-ccm-sky)]/25 flex-shrink-0">
                         <Users className="w-6 h-6 text-[var(--color-ccm-sea)]" />
                       </div>
@@ -324,7 +324,7 @@ export function DashboardClient({
                       {t('collaborateDescription')}
                     </CardDescription>
                     <Button asChild variant="outline" className="w-full mt-auto">
-                      <Link href={`/collaborate`} className={cn("flex items-center justify-center gap-2", rtl && "flex-row-reverse")}>
+                      <Link href={`/collaborate`} className={cn("flex items-center justify-center gap-2")}>
                         <span>{t('findCollaborators')}</span>
                         <ArrowRight className="w-4 h-4" />
                       </Link>
@@ -334,7 +334,7 @@ export function DashboardClient({
 
                 <Card className="group hover:shadow-lg transition-shadow min-h-[220px] flex flex-col">
                   <CardHeader>
-                    <div className={cn("flex items-center gap-3", rtl && "flex-row-reverse")}>
+                    <div className={cn("flex items-center gap-3")}>
                       <div className="p-3 rounded-lg bg-[var(--color-ccm-midnight)]/10 flex-shrink-0">
                         <Settings className="w-6 h-6 text-[var(--color-ccm-midnight)]" />
                       </div>
@@ -346,7 +346,7 @@ export function DashboardClient({
                       {t('accountSettingsDescription')}
                     </CardDescription>
                     <Button asChild variant="outline" className="w-full mt-auto">
-                      <Link href={`/dashboard/account`} className={cn("flex items-center justify-center gap-2", rtl && "flex-row-reverse")}>
+                      <Link href={`/dashboard/account`} className={cn("flex items-center justify-center gap-2")}>
                         <span>{t('manageAccount')}</span>
                         <ArrowRight className="w-4 h-4 rtl:-scale-x-100" />
                       </Link>
@@ -356,7 +356,7 @@ export function DashboardClient({
 
                 <Card className="group hover:shadow-lg transition-shadow min-h-[220px] flex flex-col">
                   <CardHeader>
-                    <div className={cn("flex items-center gap-3", rtl && "flex-row-reverse")}>
+                    <div className={cn("flex items-center gap-3")}>
                       <div className="p-3 rounded-lg bg-[var(--color-ccm-sea)]/10 flex-shrink-0">
                         <FolderKanban className="w-6 h-6 text-[var(--color-ccm-sea)]" />
                       </div>
@@ -378,7 +378,7 @@ export function DashboardClient({
 
                 <Card className="group hover:shadow-lg transition-shadow min-h-[220px] flex flex-col">
                   <CardHeader>
-                    <div className={cn("flex items-center gap-3", rtl && "flex-row-reverse")}>
+                    <div className={cn("flex items-center gap-3")}>
                       <div className="p-3 rounded-lg bg-[var(--color-ccm-water)]/10 flex-shrink-0">
                         <MessageSquare className="w-6 h-6 text-[var(--color-ccm-water)]" />
                       </div>

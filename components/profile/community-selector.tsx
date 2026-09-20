@@ -91,8 +91,7 @@ export function CommunitySelector({
             <div
               key={community.id}
               className={cn(
-                'flex items-center space-x-3 rtl:space-x-reverse',
-                isRTL && 'flex-row-reverse justify-end'
+                'flex items-center space-x-3 rtl:space-x-reverse'
               )}
             >
               <Checkbox

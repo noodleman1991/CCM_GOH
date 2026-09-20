@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { X, User, Video } from "lucide-react";
+import { X, User, Video, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from '@/components/ui/button';
 import { Link } from '@/i18n/navigation';
@@ -320,7 +320,7 @@ export function VideoModal({
                 className="inline-flex items-center gap-1 text-sm font-medium text-ccm-sea hover:underline"
               >
                 {t("viewFull")}
-                <span aria-hidden="true" className="rtl:-scale-x-100">→</span>
+                <ArrowRight className="size-4 rtl:-scale-x-100" aria-hidden="true" />
               </Link>
             )}
           </div>

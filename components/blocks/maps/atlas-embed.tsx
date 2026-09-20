@@ -1,4 +1,5 @@
 import { getTranslations } from 'next-intl/server'
+import { ArrowRight } from 'lucide-react'
 import { SectionHeader } from '@/components/ui/section-header'
 import SectionContainer from '@/components/ui/section-container'
 import { AtlasExplorer } from '@/components/atlas/atlas-explorer'
@@ -33,7 +34,8 @@ export default async function AtlasEmbedBlock({
             href={`/atlas?region=${region}`}
             className="font-heading text-sm font-semibold text-primary"
           >
-            {t('openFullAtlas')} →
+            {t('openFullAtlas')}
+            <ArrowRight className="ms-1 inline size-4 rtl:-scale-x-100" aria-hidden="true" />
           </Link>
         </div>
         <AtlasExplorer lockedRegion={region as RegionCode} themes={themes} regionArt={regionArt} showBreakdown={showBreakdown} />

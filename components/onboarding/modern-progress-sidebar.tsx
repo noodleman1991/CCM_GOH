@@ -98,7 +98,7 @@ export function ModernProgressSidebar({
     )} dir={isRTL ? "rtl" : "ltr"}>
       {/* Header */}
       <div className="p-6 border-b border-gray-100">
-        <div className={cn("flex items-center gap-3", isRTL && "flex-row-reverse")}>
+        <div className={cn("flex items-center gap-3")}>
           <div className="bg-primary/10 p-2 rounded-lg">
             <Sparkles className="h-5 w-5 text-primary" />
           </div>
@@ -112,7 +112,7 @@ export function ModernProgressSidebar({
         <div className="mt-4">
           <div className="flex justify-between text-sm text-gray-500 mb-2">
             <span>{t("percentComplete", { value: Math.round(progress) })}</span>
-            <div className={cn("flex items-center gap-1", isRTL && "flex-row-reverse")}>
+            <div className={cn("flex items-center gap-1")}>
               <Clock className="h-3 w-3" />
               <span>{t("minutesLeft", { minutes: Math.max(1, totalSteps - 1 - currentStep) })}</span>
             </div>
@@ -142,7 +142,6 @@ export function ModernProgressSidebar({
                 key={step.id}
                 className={cn(
                   "relative flex items-center gap-3 p-3 rounded-lg transition-all duration-200",
-                  isRTL && "flex-row-reverse",
                   isActive && "bg-primary/5 border border-primary/20",
                   isCompleted && "bg-green-50 border border-green-200",
                   isUpcoming && "hover:bg-gray-50"

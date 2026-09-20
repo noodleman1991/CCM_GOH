@@ -84,8 +84,7 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
                         <FormItem
                           key={item._id}
                           className={cn(
-                            "flex flex-row items-start gap-3 space-y-0 p-4 rounded-lg border-2 transition-all hover:bg-gray-50",
-                            isRTL && "flex-row-reverse"
+                            "flex flex-row items-start gap-3 space-y-0 p-4 rounded-lg border-2 transition-all hover:bg-gray-50"
                           )}
                           style={{
                             borderColor: field.value?.includes(item._id) ? 'rgb(59 130 246)' : 'rgb(229 231 235)'
@@ -152,8 +151,7 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
                         <FormItem
                           key={item._id}
                           className={cn(
-                            "flex flex-row items-start gap-3 space-y-0 p-4 rounded-lg border-2 transition-all hover:bg-gray-50",
-                            isRTL && "flex-row-reverse"
+                            "flex flex-row items-start gap-3 space-y-0 p-4 rounded-lg border-2 transition-all hover:bg-gray-50"
                           )}
                           style={{
                             borderColor: field.value?.includes(item._id) ? 'rgb(59 130 246)' : 'rgb(229 231 235)'
@@ -219,8 +217,7 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
                         <FormItem
                           key={community.id}
                           className={cn(
-                            "flex flex-row items-start gap-3 space-y-0 p-4 rounded-lg border-2 transition-all hover:bg-gray-50",
-                            isRTL && "flex-row-reverse"
+                            "flex flex-row items-start gap-3 space-y-0 p-4 rounded-lg border-2 transition-all hover:bg-gray-50"
                           )}
                           style={{
                             borderColor: field.value?.includes(community.id) ? 'rgb(59 130 246)' : 'rgb(229 231 235)'
@@ -342,7 +339,7 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
 
           {/* Other Social Links */}
           <div className="space-y-4">
-            <div className={cn("flex items-center justify-between", isRTL && "flex-row-reverse")}>
+            <div className={cn("flex items-center justify-between")}>
               <FormLabel>{content?.fieldLabels?.workInfo?.otherLinks || t("otherLinks")}</FormLabel>
               <Button
                 type="button"
@@ -359,7 +356,7 @@ export function WorkInfoPanel({ form, content, workTypes = [], expertiseAreas = 
             </div>
 
             {form.watch("workInfo.otherSocialLinks")?.map((_: {platform: string, url: string}, index: number) => (
-              <div key={index} className={cn("flex gap-2 items-start", isRTL && "flex-row-reverse")}>
+              <div key={index} className={cn("flex gap-2 items-start")}>
                 <FormField
                   control={form.control}
                   name={`workInfo.otherSocialLinks.${index}.platform`}

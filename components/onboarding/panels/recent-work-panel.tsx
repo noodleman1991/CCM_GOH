@@ -121,10 +121,10 @@ export function RecentWorkPanel({ form, content }: RecentWorkPanelProps) {
           {fields.map((item, index) => (
             <Card key={item.id}>
               <CardHeader className="pb-3">
-                <div className={cn("flex items-start justify-between", isRTL && "flex-row-reverse")}>
+                <div className={cn("flex items-start justify-between")}>
                   <div className="space-y-1">
                     <CardTitle className="text-lg">{item.title}</CardTitle>
-                    <div className={cn("flex items-center gap-2 text-sm text-muted-foreground", isRTL && "flex-row-reverse")}>
+                    <div className={cn("flex items-center gap-2 text-sm text-muted-foreground")}>
                       <Calendar className="h-4 w-4" />
                       <span>
                         {formatDate(item.startDate)} - {item.isOngoing ? t("ongoing") : formatDate(item.endDate || "")}
@@ -134,7 +134,7 @@ export function RecentWorkPanel({ form, content }: RecentWorkPanelProps) {
                       )}
                     </div>
                   </div>
-                  <div className={cn("flex gap-2", isRTL && "flex-row-reverse")}>
+                  <div className={cn("flex gap-2")}>
                     <Button
                       type="button"
                       variant="outline"
@@ -161,7 +161,7 @@ export function RecentWorkPanel({ form, content }: RecentWorkPanelProps) {
                     href={item.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={cn("inline-flex items-center gap-1 text-primary hover:underline", isRTL && "flex-row-reverse")}
+                    className={cn("inline-flex items-center gap-1 text-primary hover:underline")}
                   >
                     <ExternalLink className="h-4 w-4" />
                     {t("viewProject")}
@@ -248,7 +248,7 @@ export function RecentWorkPanel({ form, content }: RecentWorkPanelProps) {
             </div>
           </div>
 
-          <div className={cn("flex items-center gap-2", isRTL && "flex-row-reverse")}>
+          <div className={cn("flex items-center gap-2")}>
             <Checkbox
               id="ongoing"
               checked={formData.isOngoing}
@@ -263,7 +263,7 @@ export function RecentWorkPanel({ form, content }: RecentWorkPanelProps) {
             </label>
           </div>
 
-          <div className={cn("flex gap-2 pt-4", isRTL && "flex-row-reverse")}>
+          <div className={cn("flex gap-2 pt-4")}>
             <Button
               type="button"
               onClick={handleSave}

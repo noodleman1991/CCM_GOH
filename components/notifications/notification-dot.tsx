@@ -30,7 +30,7 @@ export function NotificationDot({ children }: { children: React.ReactNode }) {
       {unread > 0 && (
         <span
           aria-label={`${unread} unread notifications`}
-          className="absolute -right-0.5 -top-0.5 size-2.5 rounded-full bg-ccm-sea ring-2 ring-sidebar"
+          className="absolute -end-0.5 -top-0.5 size-2.5 rounded-full bg-ccm-sea ring-2 ring-sidebar"
         />
       )}
     </span>

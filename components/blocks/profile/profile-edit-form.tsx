@@ -1170,10 +1170,10 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                                 {workFields.map((item, index: number) => (
                                     <Card key={item.id}>
                                         <CardHeader className="pb-3">
-                                            <div className={cn("flex items-start justify-between", isRTL && "flex-row-reverse")}>
+                                            <div className={cn("flex items-start justify-between")}>
                                                 <div className="space-y-1">
                                                     <CardTitle className="text-lg" dir="auto">{item.title}</CardTitle>
-                                                    <div className={cn("flex items-center gap-2 text-sm text-muted-foreground", isRTL && "flex-row-reverse")}>
+                                                    <div className={cn("flex items-center gap-2 text-sm text-muted-foreground")}>
                                                         <Calendar className="h-4 w-4" />
                                                         <span>
                                                             {formatDate(item.startDate)} - {item.isOngoing ? tRecentWork('ongoing') : formatDate(item.endDate || "")}
@@ -1183,7 +1183,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                                                         )}
                                                     </div>
                                                 </div>
-                                                <div className={cn("flex gap-2", isRTL && "flex-row-reverse")}>
+                                                <div className={cn("flex gap-2")}>
                                                     <Button
                                                         type="button"
                                                         variant="outline"
@@ -1210,7 +1210,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                                                     href={item.link}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className={cn("inline-flex items-center gap-1 text-primary hover:underline", isRTL && "flex-row-reverse")}
+                                                    className={cn("inline-flex items-center gap-1 text-primary hover:underline")}
                                                 >
                                                     <ExternalLink className="h-4 w-4" />
                                                     {tRecentWork('viewProject')}
@@ -1297,7 +1297,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                                     </div>
                                 </div>
 
-                                <div className={cn("flex items-center gap-2", isRTL && "flex-row-reverse")}>
+                                <div className={cn("flex items-center gap-2")}>
                                     <Checkbox
                                         id="ongoing"
                                         checked={workFormData.isOngoing}
@@ -1312,7 +1312,7 @@ export default function ProfileEditForm(props: ProfileEditFormProps = {}) {
                                     </label>
                                 </div>
 
-                                <div className={cn("flex gap-2 pt-4", isRTL && "flex-row-reverse")}>
+                                <div className={cn("flex gap-2 pt-4")}>
                                     <Button
                                         type="button"
                                         onClick={handleSaveWork}

@@ -76,7 +76,7 @@ export function WelcomePanel({ content }: WelcomePanelProps) {
     )} dir={isRTL ? "rtl" : "ltr"}>
       {/* Hero Section */}
       <div className="text-center space-y-3">
-        <div className={cn("flex justify-center", isRTL && "flex-row-reverse")}>
+        <div className={cn("flex justify-center")}>
           <Image
             src="/connecting-climate-minds-logo.png"
             alt="Connecting Climate Minds"
@@ -100,7 +100,7 @@ export function WelcomePanel({ content }: WelcomePanelProps) {
             key={index}
             className="text-center space-y-2 p-4 rounded-lg bg-gradient-to-br from-gray-50 to-gray-100 hover:from-primary/5 hover:to-primary/10 transition-colors"
           >
-            <div className={cn("flex justify-center", isRTL && "flex-row-reverse")}>
+            <div className={cn("flex justify-center")}>
               <div className="bg-card p-2.5 rounded-full shadow-sm">
                 <feature.icon className="h-5 w-5 text-primary" />
               </div>

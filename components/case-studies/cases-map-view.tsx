@@ -1,5 +1,6 @@
 "use client";
 
+import { ArrowRight } from "lucide-react";
 import { useCallback } from "react";
 import useSWR from "swr";
 import { useSearchParams } from "next/navigation";
@@ -108,7 +109,8 @@ export function CasesMapView({
             href={`/research-and-action/case-studies${galleryQS}`}
             className="font-heading text-sm font-semibold text-[var(--color-ccm-water)] hover:underline"
           >
-            {galleryLabel} →
+            {galleryLabel}
+            <ArrowRight className="ms-1 inline size-4 rtl:-scale-x-100" aria-hidden="true" />
           </Link>
         </div>
         {items.length === 0 ? (

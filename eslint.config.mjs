@@ -46,11 +46,27 @@ export default [
         },
       ],
       "no-restricted-syntax": [
-        "warn",
+        "error",
         {
           selector: "JSXText[value=/\\.\\.\\.|\\u2026/]",
           message:
             "No literal ellipsis in JSX — clamp with line-clamp (full text in title/aria) or use an i18n string without '…'.",
+        },
+        // The document sets `dir`, so the browser mirrors every flex row; a
+        // locale-gated flex-row-reverse mirrors it back. Directional arrows
+        // are icons with rtl:-scale-x-100, never a literal glyph (Slice 13c).
+        {
+          selector: "Literal[value=/flex-row-reverse/], TemplateElement[value.raw=/flex-row-reverse/]",
+          message:
+            "Do not reverse rows for RTL — the document's dir already mirrors flex rows. Use logical utilities (ms-/me-/ps-/pe-/start/end).",
+        },
+        {
+          selector: "Literal[value=/(^|[^:])space-x-reverse/]",
+          message: "Use the rtl:space-x-reverse variant, not a locale flag.",
+        },
+        {
+          selector: "JSXText[value=/[→←]/]",
+          message: "Draw arrows with an icon and rtl:-scale-x-100 so they flip with the reading direction.",
         },
       ],
     },

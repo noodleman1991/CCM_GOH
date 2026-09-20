@@ -474,8 +474,7 @@ const createPortableTextComponents = (
 
         return (
           <li className={cn(
-            "flex items-start gap-2 mb-2",
-            shouldUseRTL && "flex-row-reverse"
+            "flex items-start gap-2 mb-2"
           )}>
             <div
               className={cn(

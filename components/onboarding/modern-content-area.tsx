@@ -120,81 +120,40 @@ export function ModernContentArea({
           </div>
 
           <div className="flex items-center justify-between">
-            {isRTL ? (
-              <>
-                {/* RTL: Next button on the left */}
-                <Button
-                  type={isLastStep ? "submit" : "button"}
-                  onClick={isLastStep ? undefined : handleNext}
-                  disabled={!canGoNext || isSubmitting || (isLastStep && !isConfirmed)}
-                  className="flex items-center gap-2 min-w-[120px] flex-row-reverse"
-                >
-                  {isSubmitting && (
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
-                  )}
-                  <span>
-                    {isSubmitting
-                      ? t("submitting")
-                      : isLastStep
-                        ? t("steps.review.completeOnboarding")
-                        : t("next")
-                    }
-                  </span>
-                  {!isSubmitting && (
-                    <ArrowRight className="h-4 w-4 rotate-180" />
-                  )}
-                </Button>
+            {/* One order for every locale: the document's dir mirrors the row,
+                and the arrows flip with rtl:-scale-x-100 (Slice 13c). */}
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onPreviousAction}
+              disabled={!canGoPrevious || currentStep === 0}
+              className="flex items-center gap-2"
+            >
+              <ArrowLeft className="h-4 w-4 rtl:-scale-x-100" />
+              {t("back")}
+            </Button>
 
-                {/* RTL: Back button on the right */}
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={onPreviousAction}
-                  disabled={!canGoPrevious || currentStep === 0}
-                  className="flex items-center gap-2 flex-row-reverse"
-                >
-                  <ArrowLeft className="h-4 w-4 rotate-180" />
-                  {t("back")}
-                </Button>
-              </>
-            ) : (
-              <>
-                {/* LTR: Back button on the left */}
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={onPreviousAction}
-                  disabled={!canGoPrevious || currentStep === 0}
-                  className="flex items-center gap-2"
-                >
-                  <ArrowLeft className="h-4 w-4" />
-                  {t("back")}
-                </Button>
-
-                {/* LTR: Next button on the right */}
-                <Button
-                  type={isLastStep ? "submit" : "button"}
-                  onClick={isLastStep ? undefined : handleNext}
-                  disabled={!canGoNext || isSubmitting || (isLastStep && !isConfirmed)}
-                  className="flex items-center gap-2 min-w-[120px]"
-                >
-                  {isSubmitting && (
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
-                  )}
-                  <span>
-                    {isSubmitting
-                      ? t("submitting")
-                      : isLastStep
-                        ? t("steps.review.completeOnboarding")
-                        : t("next")
-                    }
-                  </span>
-                  {!isSubmitting && (
-                    <ArrowRight className="h-4 w-4" />
-                  )}
-                </Button>
-              </>
-            )}
+            <Button
+              type={isLastStep ? "submit" : "button"}
+              onClick={isLastStep ? undefined : handleNext}
+              disabled={!canGoNext || isSubmitting || (isLastStep && !isConfirmed)}
+              className="flex items-center gap-2 min-w-[120px]"
+            >
+              {isSubmitting && (
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+              )}
+              <span>
+                {isSubmitting
+                  ? t("submitting")
+                  : isLastStep
+                    ? t("steps.review.completeOnboarding")
+                    : t("next")
+                }
+              </span>
+              {!isSubmitting && (
+                <ArrowRight className="h-4 w-4 rtl:-scale-x-100" />
+              )}
+            </Button>
           </div>
         </div>
       </div>

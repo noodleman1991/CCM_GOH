@@ -47,8 +47,7 @@ export function ExpandableGrid({
           <button
             onClick={() => setIsExpanded(!isExpanded)}
             className={cn(
-              "inline-flex items-center gap-2 rounded-md border border-input bg-background px-6 py-3 text-sm font-medium text-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
-              isRTL && "flex-row-reverse"
+              "inline-flex items-center gap-2 rounded-md border border-input bg-background px-6 py-3 text-sm font-medium text-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
             )}
             aria-expanded={isExpanded}
           >

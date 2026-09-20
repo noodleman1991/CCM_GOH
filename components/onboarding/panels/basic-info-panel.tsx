@@ -171,13 +171,13 @@ export function BasicInfoPanel({ form, content }: BasicInfoPanelProps) {
                 <Input {...field} placeholder={content?.fieldLabels?.basicInfo?.usernamePlaceholder || t("usernamePlaceholder")} />
               </FormControl>
               {usernameStatus === "checking" && (
-                <p className={cn("flex items-center gap-1.5 text-sm text-muted-foreground", isRTL && "flex-row-reverse")}>
+                <p className={cn("flex items-center gap-1.5 text-sm text-muted-foreground")}>
                   <Loader2 className="h-3.5 w-3.5 animate-spin" />
                   {t("usernameChecking")}
                 </p>
               )}
               {usernameStatus === "available" && (
-                <p className={cn("flex items-center gap-1.5 text-sm text-green-600", isRTL && "flex-row-reverse")}>
+                <p className={cn("flex items-center gap-1.5 text-sm text-green-600")}>
                   <Check className="h-3.5 w-3.5" />
                   {t("usernameAvailable")}
                 </p>
@@ -334,7 +334,7 @@ export function BasicInfoPanel({ form, content }: BasicInfoPanelProps) {
                     <SelectItem
                       key={option.value}
                       value={option.value}
-                      className={cn(option.isRTL && "flex-row-reverse text-right")}
+                      className={cn(option.isRTL && "text-right")}
                       dir={option.isRTL ? "rtl" : "ltr"}
                     >
                       {option.label}

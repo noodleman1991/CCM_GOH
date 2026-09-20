@@ -1,5 +1,6 @@
 "use client";
 
+import { ArrowRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useNotificationVerb } from "@/components/notifications/notification-feed";
 import { parseStructuredSnippet } from "@/lib/notifications/structured";
@@ -169,7 +170,8 @@ export default function WorkspaceHome({
             )}
           </div>
           <button onClick={() => onGoToTab("members")} className="mt-4 text-sm text-ccm-sea">
-            {memberCount} {tCollab("nav.members")} →
+            {memberCount} {tCollab("nav.members")}
+            <ArrowRight className="ms-1 inline size-4 rtl:-scale-x-100" aria-hidden="true" />
           </button>
         </section>
       </div>
