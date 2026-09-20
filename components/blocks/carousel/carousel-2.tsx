@@ -123,9 +123,9 @@ export default function Carousel2({
                             {item.name?.slice(0, 2)}
                           </AvatarFallback>
                         </Avatar>
-                        <div>
-                          <h3 className="text-sm font-semibold">{item.name}</h3>
-                          <p className="text-xs text-muted-foreground">
+                        <div className="min-w-0">
+                          <h3 className="truncate text-sm font-semibold" title={item.name ?? undefined}>{item.name}</h3>
+                          <p className="truncate text-xs text-muted-foreground" title={jobTitle ?? undefined}>
                             {jobTitle}
                           </p>
                           {(it.organization?.name || it.relatedCommunity?.name) && (

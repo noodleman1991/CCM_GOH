@@ -70,7 +70,7 @@ export default function PostHero({
                 />
               </div>
             )}
-            {author?.name && <div>{author.name}</div>}
+            {author?.name && <div className="min-w-0 truncate"><bdi>{author.name}</bdi></div>}
             <div className="hidden @content-md/page:block">•</div>
           </div>
           <PostDate date={_createdAt as string} />

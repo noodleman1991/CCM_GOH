@@ -107,11 +107,11 @@ export function WorkspaceThreads({
                   onCommit={(next) => rename(th.id, next)}
                   canEdit
                   as="span"
-                  className="flex-1 font-medium"
+                  className="min-w-0 flex-1 break-words font-medium"
                   placeholder={t("threadTitlePlaceholder")}
                 />
               ) : (
-                <button onClick={() => setOpen(th)} className="flex-1 text-start font-medium">
+                <button onClick={() => setOpen(th)} className="min-w-0 flex-1 truncate text-start font-medium" title={th.title}>
                   <bdi>{th.title}</bdi>
                 </button>
               )}

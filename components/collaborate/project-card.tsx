@@ -13,7 +13,7 @@ export async function ProjectCard({ project }: { project: PublicProjectCard }) {
   return (
     <Card className="flex h-full flex-col gap-3 p-5">
       <div className="flex items-start justify-between gap-2">
-        <h3 className="font-heading text-lg font-semibold text-ccm-midnight">
+        <h3 className="min-w-0 flex-1 break-words line-clamp-2 font-heading text-lg font-semibold text-ccm-midnight" title={project.title}>
           <bdi>{project.title}</bdi>
         </h3>
         <span className="shrink-0 rounded-full bg-ccm-sky/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-ccm-sea">

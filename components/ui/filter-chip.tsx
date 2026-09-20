@@ -41,9 +41,9 @@ export function FilterChip({
       onClick={disabled ? undefined : onClick}
       aria-pressed={active}
       aria-disabled={disabled || undefined}
-      title={title}
+      title={title ?? label}
       className={cn(
-        'inline-flex flex-none items-center gap-1.5 whitespace-nowrap rounded-full border px-3 py-1.5 text-sm font-medium transition-colors',
+        'inline-flex max-w-full flex-none items-center gap-1.5 whitespace-nowrap rounded-full border px-3 py-1.5 text-sm font-medium transition-colors',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
         active
           ? 'border-transparent bg-[var(--color-ccm-sea)] text-white shadow-sm'
@@ -52,7 +52,8 @@ export function FilterChip({
         className
       )}
     >
-      <span className="text-start">{label}</span>
+      {/* A CMS tag label can run to a sentence; clip it rather than the row (Slice 13b). */}
+      <span className="min-w-0 max-w-[min(100%,18rem)] truncate text-start">{label}</span>
       {count !== undefined && (
         <span
           aria-hidden="true"
@@ -86,15 +87,16 @@ export function RemovableChip({
   const removeText = removeLabel ?? t('removeFilter')
   return (
     <span
+      title={label}
       className={cn(
         // Same geometry as FilterChip (px-3 py-1.5 text-sm rounded-full) so
         // applied-filter summaries line up with the pickers above them.
-        'inline-flex flex-none items-center gap-1.5 whitespace-nowrap rounded-full bg-[var(--color-ccm-sea)]/10 px-3 py-1.5 text-sm font-medium text-[var(--color-ccm-sea)]',
+        'inline-flex max-w-full flex-none items-center gap-1.5 whitespace-nowrap rounded-full bg-[var(--color-ccm-sea)]/10 px-3 py-1.5 text-sm font-medium text-[var(--color-ccm-sea)]',
         className
       )}
     >
       {Icon && <Icon className="h-3.5 w-3.5 shrink-0" />}
-      <span className="text-start">{label}</span>
+      <span className="min-w-0 max-w-[min(100%,18rem)] truncate text-start">{label}</span>
       <button
         type="button"
         onClick={onRemove}

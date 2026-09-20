@@ -413,9 +413,9 @@ export function DashboardClient({
                   {recentWork.map((work) => (
                     <Card key={work.id}>
                       <CardHeader>
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <CardTitle className="text-lg">{work.title}</CardTitle>
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="min-w-0 flex-1">
+                            <CardTitle className="break-words text-lg">{work.title}</CardTitle>
                             <div className="flex items-center gap-2 text-sm text-muted-foreground mt-2">
                               <Calendar className="w-4 h-4" />
                               <span>

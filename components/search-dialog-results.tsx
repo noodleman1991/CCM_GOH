@@ -286,7 +286,7 @@ export function SearchDialogResults({
 
       {/* Genuinely nothing (not an error, no regions, no hits). */}
       {!loading && !errored && !hasResults && (
-        <div className="px-4 py-8 text-center text-sm text-muted-foreground">
+        <div className="break-words px-4 py-8 text-center text-sm text-muted-foreground [overflow-wrap:anywhere]">
           {t("nothingFound", { q: query })}
         </div>
       )}
@@ -297,8 +297,8 @@ export function SearchDialogResults({
         onClick={onNavigate}
         className="flex items-center justify-between gap-2 border-t px-4 py-3 text-sm font-medium text-ccm-water hover:bg-muted"
       >
-        {t("seeAllResults", { q: query })}
-        <ArrowRight className="size-4 rtl:-scale-x-100" />
+        <span className="min-w-0 break-words [overflow-wrap:anywhere]">{t("seeAllResults", { q: query })}</span>
+        <ArrowRight className="size-4 shrink-0 rtl:-scale-x-100" />
       </Link>
     </div>
   );

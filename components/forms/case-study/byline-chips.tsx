@@ -77,8 +77,8 @@ export function BylineChips({ authors, onAdd, onUpdate, onRemove, error }: Bylin
                             >
                                 {initials(author.name)}
                             </span>
-                            <span className="text-start">
-                                <span className="block text-sm font-medium text-ccm-midnight">
+                            <span className="min-w-0 text-start">
+                                <span className="block truncate text-sm font-medium text-ccm-midnight">
                                     {author.name.trim() || t('unnamed')}
                                 </span>
                                 <span className="block text-xs text-muted-foreground">

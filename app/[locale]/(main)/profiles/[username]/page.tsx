@@ -444,8 +444,8 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                                                     isOwnProfile && (work as WorkCurationFlags).hidden && "opacity-50"
                                                 )}>
                                                     <div className="flex items-start justify-between gap-2">
-                                                        <div>
-                                                            <h3 className="font-medium">{work.title}</h3>
+                                                        <div className="min-w-0">
+                                                            <h3 className="break-words font-medium">{work.title}</h3>
                                                             <div className="prose max-w-full text-pretty font-sans text-xs text-muted-foreground dark:prose-invert">
                                                                 <Markdown>
                                                                     {work.description}

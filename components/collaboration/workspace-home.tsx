@@ -143,9 +143,9 @@ export default function WorkspaceHome({
               planStages.map((s) => {
                 const d = s.tasks.filter((x) => x.status === "DONE").length;
                 return (
-                  <div key={s.id} className="flex justify-between border-b py-1 text-muted-foreground">
-                    <span>{s.title}</span>
-                    <span>
+                  <div key={s.id} className="flex justify-between gap-3 border-b py-1 text-muted-foreground">
+                    <span className="min-w-0 flex-1 truncate" title={s.title}>{s.title}</span>
+                    <span className="shrink-0 tabular-nums">
                       {d}/{s.tasks.length}
                     </span>
                   </div>

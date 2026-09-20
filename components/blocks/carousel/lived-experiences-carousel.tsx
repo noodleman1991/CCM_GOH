@@ -150,9 +150,9 @@ function LivedExperienceCard({
         {/* Metadata */}
         <div className="space-y-2 text-sm text-muted-foreground flex-grow">
           {experience.author && (
-            <div className="flex items-center gap-2">
-              <User className="w-4 h-4" />
-              <span>{experience.author.name}</span>
+            <div className="flex min-w-0 items-center gap-2">
+              <User className="w-4 h-4 shrink-0" />
+              <span className="min-w-0 truncate">{experience.author.name}</span>
               {experience.author.organizationalAffiliation && (
                 <span className="text-muted-foreground">
                   • {experience.author.organizationalAffiliation}

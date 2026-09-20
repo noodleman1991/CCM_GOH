@@ -82,7 +82,7 @@ export function ContentFilters({
                   : "border-border bg-background text-foreground/80 hover:bg-muted"
               )}
             >
-              <span>{group.label}</span>
+              <span className="min-w-0 max-w-[18rem] truncate" title={group.label}>{group.label}</span>
               {count > 0 && (
                 <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-ccm-sea px-1.5 text-xs font-semibold text-white">
                   {count}

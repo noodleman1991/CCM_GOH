@@ -181,9 +181,9 @@ export function LivedExperienceCard({ experience, locale, variant = "default" }:
             <div className="flex items-center justify-between">
               {/* Author */}
               {experience.author && (
-                <div className="flex items-center gap-2">
-                  <User className="w-4 h-4" />
-                  <span className="font-medium">{experience.author.name}</span>
+                <div className="flex min-w-0 items-center gap-2">
+                  <User className="w-4 h-4 shrink-0" />
+                  <span className="min-w-0 truncate font-medium">{experience.author.name}</span>
                 </div>
               )}
 

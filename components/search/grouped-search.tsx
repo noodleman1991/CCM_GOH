@@ -471,7 +471,7 @@ export default function GroupedSearch() {
 
       {/* Heading reflecting the active query (WIREFRAMES §4.18). */}
       {hasQuery && (
-        <p className="text-center text-sm text-muted-foreground">
+        <p className="break-words text-center text-sm text-muted-foreground [overflow-wrap:anywhere]">
           {t('resultsFor', { q: query })}
         </p>
       )}
@@ -534,7 +534,7 @@ export default function GroupedSearch() {
         <>
           {nothingFound && (
             <div className="py-16 text-center">
-              <p className="font-heading text-lg font-semibold text-ccm-midnight">
+              <p className="break-words font-heading text-lg font-semibold text-ccm-midnight [overflow-wrap:anywhere]">
                 {t('nothingFound', { q: query })}
               </p>
               <p className="mt-1 text-sm text-muted-foreground">

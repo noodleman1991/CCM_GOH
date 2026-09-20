@@ -42,12 +42,12 @@ export default function ProfileHeaderBlock({
                                     className="h-24 w-24 @content-sm/page:h-32 @content-sm/page:w-32">
                     </EnhancedAvatar>
                     <div className="flex-1 text-center @content-sm/page:text-start">
-                        <div className="flex flex-col @content-sm/page:flex-row @content-sm/page:items-center gap-2 @content-sm/page:gap-4 mb-2">
-                            <h1 className="text-2xl @content-sm/page:text-3xl font-bold">
+                        <div className="flex min-w-0 flex-col @content-sm/page:flex-row @content-sm/page:items-center gap-2 @content-sm/page:gap-4 mb-2">
+                            <h1 className="min-w-0 break-words line-clamp-2 text-2xl @content-sm/page:text-3xl font-bold" title={fullName || undefined}>
                                 {fullName || t('noName')}
                             </h1>
                             {isOwnProfile && (
-                                <Button size="sm" variant="outline" asChild>
+                                <Button size="sm" variant="outline" asChild className="shrink-0">
                                     <Link href="/dashboard/profile/edit">
                                         <Edit className="h-4 w-4 me-2" />
                                         {t('editProfile')}
