@@ -31,7 +31,7 @@ import {
   isModeratedCollection,
   MODERATION_WORKFLOWS,
   type ModerationAction,
-} from "@/payload/hooks/moderation";
+} from "@/payload/moderation/workflows";
 import { runModerationAction } from "./moderation-actions-server";
 
 const TONE: Record<ModerationAction, "primary" | "secondary" | "error"> = {

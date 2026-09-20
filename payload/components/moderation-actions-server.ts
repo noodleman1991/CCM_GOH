@@ -29,7 +29,7 @@ import {
   MODERATION_WORKFLOWS,
   ModerationActionNotAvailableError,
   ModerationNotesRequiredError,
-} from "@/payload/hooks/moderation";
+} from "@/payload/moderation/workflows";
 
 export interface ModerationActionRequest {
   collection: string;
