@@ -1,15 +1,9 @@
 import { CaseStudy, LocalizedString, SupportedLanguage, CaseStudyAuthor } from '@/types/case-study';
 
-export function getLocalizedText(
-    text: LocalizedString | undefined,
-    locale: SupportedLanguage,
-    fallback: string = ''
-): string {
-    if (!text) return fallback;
-
-    const supportedLocale = locale as SupportedLanguage;
-    return text[supportedLocale] || text.en || fallback;
-}
+// One implementation for the whole app (Slice 15): lib/localization-utils.ts.
+// It also falls back to any available language before the fallback text.
+import { getLocalizedText } from '@/lib/localization-utils';
+export { getLocalizedText };
 
 export function getCaseStudyTitle(caseStudy: CaseStudy, locale: SupportedLanguage): string {
     return getLocalizedText(caseStudy.title, locale, 'Untitled Case Study');

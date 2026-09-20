@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 import { Link } from "@/i18n/navigation";
 import { TypedCard } from "@/components/cards/typed-card";
 import { isTypedCardType, type TypedCardItem } from "@/lib/cards/type-style";
+import { jsonFetcher } from "@/lib/swr";
 
 /** Atlas drill-in shows a PREVIEW of a region's content, capped per type; the
  *  full set lives on each type's listing page, reached via the view-all link
@@ -28,7 +29,6 @@ type Item = {
   countryCode3?: string | null;
   date: string | null;
 };
-const fetcher = (url: string) => fetch(url).then((r) => r.json() as Promise<{ items: Item[] }>);
 
 // Map a content type + slug to its public detail route.
 function hrefFor(type: string, slug: string): string {
@@ -316,9 +316,9 @@ export function RegionContentCards({
   // Theme/q/when ride along so the cards always show the same filtered set the
   // choropleth counts describe (count↔cards consistency).
   const filterQS = `${theme ? `&theme=${encodeURIComponent(theme)}` : ""}${q ? `&q=${encodeURIComponent(q)}` : ""}${when ? `&when=${encodeURIComponent(when)}` : ""}`;
-  const { data, isLoading } = useSWR(
+  const { data, isLoading } = useSWR<{ items: Item[] }>(
     `/api/maps/region-items?region=${region}&facet=${facet}${filterQS}`,
-    fetcher,
+    jsonFetcher,
     { revalidateOnFocus: false, dedupingInterval: 60000 }
   );
   const items = data?.items ?? [];
@@ -350,9 +350,9 @@ export function RegionHighlightsCards({
   const tRegions = useTranslations("navigation.regions");
   // Theme/q/when/facets ride along — same trust contract as RecentEverywhereCards.
   const fq = `${theme ? `&theme=${encodeURIComponent(theme)}` : ""}${q ? `&q=${encodeURIComponent(q)}` : ""}${when ? `&when=${when}` : ""}${facets ? `&facet=${encodeURIComponent(facets)}` : ""}`;
-  const { data, isLoading } = useSWR(
+  const { data, isLoading } = useSWR<{ items: Item[] }>(
     `/api/maps/region-items?mode=highlights${fq}`,
-    fetcher,
+    jsonFetcher,
     { revalidateOnFocus: false, dedupingInterval: 60000 }
   );
   const items = (data?.items ?? []) as (Item & { region?: string })[];
@@ -410,9 +410,9 @@ export function RecentEverywhereCards({
   // Theme/q/when/facets ride along so the strip lists exactly what the counts
   // and pins describe (trust contract — it previously ignored active filters).
   const fq = `${theme ? `&theme=${encodeURIComponent(theme)}` : ""}${q ? `&q=${encodeURIComponent(q)}` : ""}${when ? `&when=${when}` : ""}${facets ? `&facet=${encodeURIComponent(facets)}` : ""}`;
-  const { data, isLoading } = useSWR(
+  const { data, isLoading } = useSWR<{ items: Item[] }>(
     `/api/maps/region-items?region=all&limit=${limit}${fq}`,
-    fetcher,
+    jsonFetcher,
     { revalidateOnFocus: false, dedupingInterval: 60000 }
   );
   const items = data?.items ?? [];

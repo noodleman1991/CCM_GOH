@@ -13,6 +13,7 @@ import { imageUrl } from '@/lib/content/images';
 import { cn } from '@/lib/utils';
 import { normalizeTagColor, sortedTags } from '@/lib/tags';
 import { useTranslations } from 'next-intl';
+import { getLocalizedText } from '@/lib/localization-utils';
 
 // Define the external source type based on the schema
 interface ExternalSource {
@@ -72,14 +73,6 @@ interface GridExternalSourceComponentProps {
 }
 
 // Helper function to get localized text
-function getLocalizedText(
-    obj: string | Record<string, string | undefined> | null | undefined,
-    locale: string
-): string {
-    if (!obj) return '';
-    if (typeof obj === 'string') return obj;
-    return obj[locale] || obj['en'] || '';
-}
 
 // Helper function to format date
 function formatNewsDate(date: Date, locale: string): string {

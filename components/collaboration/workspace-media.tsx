@@ -11,9 +11,9 @@ import { addMedia, deleteMedia } from "@/lib/actions/collaboration-media";
 import { useCookieConsent } from "@/components/cookie-consent/cookie-consent-provider";
 import { WorkspaceEmptyState } from "./workspace-empty-state";
 import type { CollaborationRole } from "@/generated/prisma";
+import { jsonFetcher } from "@/lib/swr";
 
 type Media = { id: string; url: string; title: string | null; createdAt: string };
-const fetcher = (url: string) => fetch(url).then((r) => r.json() as Promise<{ media: Media[] }>);
 
 export function WorkspaceMedia({
   collaborationId,
@@ -25,7 +25,7 @@ export function WorkspaceMedia({
 }) {
   const t = useTranslations("collaboration");
   const { consent, hasConsented, acceptAll } = useCookieConsent();
-  const { data, mutate } = useSWR(`/api/collaborations/${collaborationId}/media`, fetcher, {
+  const { data, mutate } = useSWR<{ media: Media[] }>(`/api/collaborations/${collaborationId}/media`, jsonFetcher, {
     revalidateOnFocus: false,
   });
   const [url, setUrl] = useState("");

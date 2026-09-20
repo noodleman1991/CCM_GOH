@@ -8,8 +8,8 @@ import { Link } from '@/i18n/navigation'
 import { initials, type RegionMember } from '@/lib/community/contributions'
 import { REGION_TO_RC_SLUG, type RegionCode } from '@/lib/maps/region-codes'
 import { COLOR } from '@/lib/ccm-colors'
+import { jsonFetcher } from "@/lib/swr";
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json())
 
 /**
  * Members strip for the atlas spotlight — members ARE content: each card links
@@ -30,7 +30,7 @@ export function RegionMembersStrip({
 }) {
   const { data, error } = useSWR<{ total: number; members: RegionMember[] }>(
     `/api/maps/region-members?region=${region}`,
-    fetcher,
+    jsonFetcher,
     { revalidateOnFocus: false, dedupingInterval: 60000 }
   )
   if (error) return null

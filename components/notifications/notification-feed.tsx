@@ -11,6 +11,7 @@ import { respondToJoinByTarget, respondToInviteByTarget, respondToContactByTarge
 import { cn } from "@/lib/utils";
 import { parseStructuredSnippet } from "@/lib/notifications/structured";
 import { RelativeTime } from "@/components/ui/relative-time";
+import { jsonFetcher } from "@/lib/swr";
 
 export type Notif = {
   id: string;
@@ -31,8 +32,6 @@ function isActionableRequest(n: Notif): boolean {
   return n.type === "REQUEST" && !!n.entityType && ACTIONABLE_ENTITY.has(n.entityType);
 }
 
-const fetcher = (url: string) =>
-  fetch(url).then((r) => r.json() as Promise<{ unread: number; notifications: Notif[] }>);
 
 /** Human verb for a notification type (shared by the bell + the inbox tab). */
 export function useNotificationVerb() {
@@ -91,7 +90,7 @@ export function NotificationFeed({
       return snippet;
     }
   };
-  const { data, mutate } = useSWR("/api/notifications", fetcher, {
+  const { data, mutate } = useSWR<{ unread: number; notifications: Notif[] }>("/api/notifications", jsonFetcher, {
     refreshInterval: 60_000,
     refreshWhenHidden: false,
   });

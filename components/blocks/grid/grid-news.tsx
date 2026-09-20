@@ -10,7 +10,7 @@ import {
     MapPin
 } from 'lucide-react';
 import { imageUrl } from '@/lib/content/images';
-import { sortTagsByLabel } from '@/lib/localization-utils';
+import { sortTagsByLabel, getLocalizedText } from '@/lib/localization-utils';
 import { cn } from '@/lib/utils';
 import { normalizeTagColor } from '@/lib/tags';
 import { useTranslations } from 'next-intl';
@@ -92,14 +92,6 @@ interface GridNewsComponentProps {
 }
 
 // Helper function to get localized text
-function getLocalizedText(
-    obj: string | Record<string, string | undefined> | null | undefined,
-    locale: string
-): string {
-    if (!obj) return '';
-    if (typeof obj === 'string') return obj;
-    return obj[locale] || obj['en'] || '';
-}
 
 // Helper function to format date
 function formatNewsDate(date: Date, locale: string): string {

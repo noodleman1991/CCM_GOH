@@ -25,8 +25,8 @@ import { COLOR } from '@/lib/ccm-colors'
 import { cn } from '@/lib/utils'
 import { X } from 'lucide-react'
 import { FollowButton } from "@/components/follow/follow-button";
+import { jsonFetcher } from "@/lib/swr";
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json())
 
 const CARD_FACETS: ReadonlySet<FacetId> = new Set([
   'caseStudyCount', 'livedExpCount', 'newsCount', 'researchOutputCount',
@@ -177,7 +177,7 @@ export function AtlasExplorer({
   // ── Data ───────────────────────────────────────────────────────────────────
   const facetsQS = layers.join(',')
   const dataKey = `/api/maps/region-data?facets=${facetsQS}${theme ? `&theme=${theme}` : ''}${q ? `&q=${encodeURIComponent(q)}` : ''}${whenQS}`
-  const { data } = useSWR<{ facets: FacetId[]; data: RegionDatumWithBreakdown[] }>(dataKey, fetcher, {
+  const { data } = useSWR<{ facets: FacetId[]; data: RegionDatumWithBreakdown[] }>(dataKey, jsonFetcher, {
     revalidateOnFocus: false, dedupingInterval: 60000,
   })
   const regionData = data?.data ?? []
@@ -193,7 +193,7 @@ export function AtlasExplorer({
      *  region/community ref AND no mappable country, which summing the
      *  per-region `data` buckets misses (LE counter trust fix, 2026-08-05). */
     totals?: Partial<Record<FacetId, number>>
-  }>(totalsKey, fetcher, {
+  }>(totalsKey, jsonFetcher, {
     revalidateOnFocus: false, dedupingInterval: 120000,
   })
   const facetTotals = useMemo(() => {
@@ -228,7 +228,7 @@ export function AtlasExplorer({
   const { data: pinsData } = useSWR<{
     pins: PinCluster[]
     countries?: Array<{ countryCode3: string; count: number; name?: string }>
-  }>(pinsKey, fetcher, {
+  }>(pinsKey, jsonFetcher, {
     revalidateOnFocus: false, dedupingInterval: 60000,
   })
 

@@ -12,13 +12,13 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { FEATURES } from "@/lib/features";
+import { jsonFetcher } from "@/lib/swr";
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json() as Promise<{ isStaff: boolean }>);
 
 /** Staff-only sidebar group (Moderation + Broadcast). Hidden for non-staff. */
 export function StaffNav() {
   const t = useTranslations("navigation");
-  const { data } = useSWR("/api/me/role", fetcher, { revalidateOnFocus: false });
+  const { data } = useSWR<{ isStaff: boolean }>("/api/me/role", jsonFetcher, { revalidateOnFocus: false });
   if (!data?.isStaff) return null;
 
   return (

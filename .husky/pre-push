@@ -1,0 +1,3 @@
+# Type-check before anything leaves the machine (Slice 15). Tests and lint
+# run in CI on every branch; this is the one gate cheap enough for every push.
+pnpm typecheck

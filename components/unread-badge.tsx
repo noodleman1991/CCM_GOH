@@ -2,13 +2,13 @@
 
 import useSWR from "swr";
 import { useUser } from "@clerk/nextjs";
+import { jsonFetcher } from "@/lib/swr";
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
 /** Live unread count pill for the Messages nav item (both breakpoints). */
 export function UnreadBadge() {
   const { isSignedIn } = useUser();
-  const { data } = useSWR<{ unread: number }>(isSignedIn ? "/api/notifications" : null, fetcher, {
+  const { data } = useSWR<{ unread: number }>(isSignedIn ? "/api/notifications" : null, jsonFetcher, {
     revalidateOnFocus: false,
     dedupingInterval: 30000,
   });

@@ -12,8 +12,8 @@ import { RC_SLUG_TO_REGION, REGION_TO_RC_SLUG, type RegionCode } from "@/lib/map
 import type { RegionDatum } from "@/lib/maps/region-facets";
 import type { PinCluster } from "@/lib/maps/cluster-pins";
 import { useLocale } from "next-intl";
+import { jsonFetcher } from "@/lib/swr";
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
 export type CasesMapItem = {
   id: string;
@@ -59,7 +59,7 @@ export function CasesMapView({
   const activeRegion = communitiesParam.length === 1 ? RC_SLUG_TO_REGION[communitiesParam[0]] : undefined;
   const { data: pinsData } = useSWR<{ pins: PinCluster[] }>(
     activeRegion ? `/api/maps/region-pins?region=${activeRegion}&locale=${locale}&facets=caseStudyCount` : null,
-    fetcher,
+    jsonFetcher,
     { revalidateOnFocus: false, dedupingInterval: 60000 }
   );
 

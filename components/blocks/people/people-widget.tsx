@@ -11,6 +11,7 @@ import { FilterChip } from "@/components/ui/filter-chip";
 import { FilterRow, FilterRowGroup } from "@/components/atlas/atlas-filters";
 import { cn } from "@/lib/utils";
 import SectionContainer from "@/components/ui/section-container";
+import { jsonFetcher } from "@/lib/swr";
 
 type Person = {
   id: string;
@@ -21,7 +22,6 @@ type Person = {
   role: string;
   lookingFor: string[];
 };
-const fetcher = (url: string) => fetch(url).then((r) => r.json() as Promise<{ people: Person[] }>);
 
 /**
  * People widget (WIREFRAMES §4.1) — a live cut of public members in a region,
@@ -48,9 +48,9 @@ export default function PeopleWidget(props: {
     props.region || (urlRegion && isRegionCode(urlRegion) ? urlRegion : REGION_CODES[0])
   );
 
-  const { data, isLoading } = useSWR(
+  const { data, isLoading } = useSWR<{ people: Person[] }>(
     `/api/home/people?region=${region}&limit=${props.limit || 6}`,
-    fetcher,
+    jsonFetcher,
     { revalidateOnFocus: false, dedupingInterval: 60000 }
   );
   const people = data?.people ?? [];

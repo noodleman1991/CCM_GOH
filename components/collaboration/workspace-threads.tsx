@@ -14,9 +14,9 @@ import { WorkspaceEmptyState } from "./workspace-empty-state";
 import type { CollaborationRole } from "@/generated/prisma";
 import { LIMITS } from "@/lib/validation/limits";
 import { RelativeTime } from "@/components/ui/relative-time";
+import { jsonFetcher } from "@/lib/swr";
 
 type Thread = { id: string; title: string; createdAt: string };
-const fetcher = (url: string) => fetch(url).then((r) => r.json() as Promise<{ threads: Thread[] }>);
 
 export function WorkspaceThreads({
   collaborationId,
@@ -28,7 +28,7 @@ export function WorkspaceThreads({
   isSignedIn: boolean;
 }) {
   const t = useTranslations("collaboration");
-  const { data, mutate } = useSWR(`/api/collaborations/${collaborationId}/threads`, fetcher, {
+  const { data, mutate } = useSWR<{ threads: Thread[] }>(`/api/collaborations/${collaborationId}/threads`, jsonFetcher, {
     revalidateOnFocus: false,
   });
   const [open, setOpen] = useState<Thread | null>(null);

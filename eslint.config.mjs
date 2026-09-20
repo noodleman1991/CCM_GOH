@@ -10,7 +10,12 @@ export default [
   ...(Array.isArray(nextTs) ? nextTs : [nextTs]),
   {
     ignores: [
-      ".next/**",
+      // Every Next build output: `.next` and the `.next-parity-*` dist dirs the
+      // parity harness sets through NEXT_DIST_DIR (2,600 files that made
+      // `eslint .` run past ten minutes, Slice 15).
+      ".next*/**",
+      "coverage/**",
+      ".vercel/**",
       "generated/**",
       "node_modules/**",
       // .claude/ holds agent worktrees — full repo copies with their own

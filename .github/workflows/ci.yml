@@ -2,7 +2,8 @@ name: CI
 
 on:
   push:
-    branches: [master, main]
+    branches:
+      - "**"
   pull_request:
 
 # Cancel superseded runs on the same ref.
@@ -34,8 +35,12 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck
 
-      - name: Lint (blocking — backlog burned down to 0 errors 2026-08-19)
-        run: pnpm exec eslint . --max-warnings 250
+      - name: Lint (blocking — 0 errors; the warning ceiling ratchets down, never up)
+        run: pnpm lint --max-warnings 209
+
+      - name: Unused files and exports (knip, informational)
+        continue-on-error: true
+        run: pnpm knip
 
       - name: Test
         run: pnpm test

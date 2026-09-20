@@ -8,6 +8,7 @@ import { Link } from '@/i18n/navigation';
 import { useCookieConsent } from '@/components/cookie-consent/cookie-consent-provider';
 import { ResponsiveDialog } from "@/components/ui/responsive-dialog";
 import { useTranslations } from "next-intl";
+import { getLocalizedText } from '@/lib/localization-utils';
 
 interface LivedExperience {
   _id: string;
@@ -122,14 +123,6 @@ function getEmbedUrl(url: string): string {
   return url;
 }
 
-function getLocalizedText(
-  obj: string | Record<string, string | undefined> | null | undefined,
-  locale: string
-): string {
-  if (!obj) return "";
-  if (typeof obj === "string") return obj;
-  return obj[locale] || obj["en"] || "";
-}
 
 export function VideoModal({
   isOpen,

@@ -13,18 +13,10 @@ import { track } from '@/lib/analytics/events';
 /**
  * Get localized text from a LocalizedString object
  */
-export function getLocalizedText(
-    text: LocalizedString | string | undefined,
-    locale: string, // Changed from SupportedLanguage to string
-    fallback: string = ''
-): string {
-    if (!text) return fallback;
-    if (typeof text === 'string') return text;
-
-    // Cast locale to SupportedLanguage for indexing, with fallback
-    const supportedLocale = locale as SupportedLanguage;
-    return text[supportedLocale] || text.en || fallback;
-}
+// One implementation for the whole app (Slice 15): lib/localization-utils.ts.
+// It also falls back to any available language before the fallback text.
+import { getLocalizedText } from '@/lib/localization-utils';
+export { getLocalizedText };
 
 /**
  * Get available file languages for an agenda
