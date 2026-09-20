@@ -30,14 +30,19 @@ const SANITY_MODULES_HOST = 'https://sanity-cdn.com';
 const scriptEval = (studio) =>
   isDev || studio ? "'unsafe-eval'" : "'wasm-unsafe-eval'";
 
-const contentSecurityPolicy = ({ studio = false } = {}) =>
+// The Payload admin's code/JSON fields use Monaco, which @payloadcms/ui loads
+// from jsDelivr (monaco-editor/min/vs). Only /admin gets that host; the
+// blocked loader logged "Monaco initialization: error" on every admin page.
+const MONACO_CDN = 'https://cdn.jsdelivr.net';
+
+const contentSecurityPolicy = ({ studio = false, admin = false } = {}) =>
   [
     "default-src 'self'",
-    `script-src 'self' 'unsafe-inline' ${scriptEval(studio)} https://cdn.clerk.com https://*.clerk.com https://clerk.connectingclimateminds.org${clerkDevDomains} https://challenges.cloudflare.com https://*.algolianet.com https://plausible.io`,
-    "style-src 'self' 'unsafe-inline'",
+    `script-src 'self' 'unsafe-inline' ${scriptEval(studio)} https://cdn.clerk.com https://*.clerk.com https://clerk.connectingclimateminds.org${clerkDevDomains} https://challenges.cloudflare.com https://*.algolianet.com https://plausible.io${admin ? ` ${MONACO_CDN}` : ''}`,
+    `style-src 'self' 'unsafe-inline'${admin ? ` ${MONACO_CDN}` : ''}`,
     "img-src 'self' data: blob: https://cdn.sanity.io https://img.youtube.com https://img.clerk.com https://images.clerk.dev https://www.gravatar.com",
-    "font-src 'self' data:",
-    `connect-src 'self' https://*.clerk.com https://clerk.connectingclimateminds.org${clerkDevDomains} https://*.algolia.net https://*.algolianet.com https://plausible.io https://*.sanity.io https://*.r2.cloudflarestorage.com https://*.upstash.io https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://*.ingest.de.sentry.io${studio ? ` ${SANITY_MODULES_HOST}` : ''}`,
+    `font-src 'self' data:${admin ? ` ${MONACO_CDN}` : ''}`,
+    `connect-src 'self' https://*.clerk.com https://clerk.connectingclimateminds.org${clerkDevDomains} https://*.algolia.net https://*.algolianet.com https://plausible.io https://*.sanity.io https://*.r2.cloudflarestorage.com https://*.upstash.io https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://*.ingest.de.sentry.io${studio ? ` ${SANITY_MODULES_HOST}` : ''}${admin ? ` ${MONACO_CDN}` : ''}`,
     "frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com https://challenges.cloudflare.com https://*.clerk.com",
     "media-src 'self' https://cdn.sanity.io",
     "object-src 'none'",
@@ -124,7 +129,7 @@ const nextConfig = {
         // Everything except /studio. Kept separate from the /studio rule below
         // because two matching rules emit two CSP headers and the browser
         // enforces the intersection.
-        source: '/((?!studio(?:/|$)).*)',
+        source: '/((?!studio(?:/|$)|admin(?:/|$)).*)',
         headers: [
           {
             key: 'Content-Security-Policy',
@@ -138,6 +143,24 @@ const nextConfig = {
           {
             key: 'Content-Security-Policy',
             value: contentSecurityPolicy({ studio: true }),
+          },
+        ],
+      },
+      {
+        source: '/admin/:path*',
+        headers: [
+          {
+            key: 'Content-Security-Policy',
+            value: contentSecurityPolicy({ admin: true }),
+          },
+        ],
+      },
+      {
+        source: '/admin',
+        headers: [
+          {
+            key: 'Content-Security-Policy',
+            value: contentSecurityPolicy({ admin: true }),
           },
         ],
       },
