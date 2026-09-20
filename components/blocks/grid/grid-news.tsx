@@ -13,6 +13,7 @@ import { imageUrl } from '@/lib/content/images';
 import { sortTagsByLabel } from '@/lib/localization-utils';
 import { cn } from '@/lib/utils';
 import { normalizeTagColor } from '@/lib/tags';
+import { useTranslations } from 'next-intl';
 
 // Define the news post type based on the schema
 interface NewsPost {
@@ -129,6 +130,8 @@ export default function GridNewsComponent({
                                              cardVariant = "classic",
                                              imageSizes,
                                          }: GridNewsComponentProps) {
+    const tCommon = useTranslations('common');
+    const tType = useTranslations('typedCards');
     if (!newsPost) return null;
 
     const isWide = cardVariant === "wide";
@@ -147,35 +150,11 @@ export default function GridNewsComponent({
     const publishDate = newsPost.publishedAt ? new Date(newsPost.publishedAt) : null;
 
     // Localized text helpers
-    const getMoreText = (count: number) => {
-        const moreTexts = {
-            en: 'more',
-            es: 'más',
-            fr: 'autres',
-            ar: 'آخرين'
-        };
-        return `+${count} ${moreTexts[supportedLocale] || 'more'}`;
-    };
+    const getMoreText = (count: number) => tCommon('moreCount', { count });
 
-    const getNewsTypeText = () => {
-        const typeTexts = {
-            en: 'News',
-            es: 'Noticias',
-            fr: 'Actualités',
-            ar: 'أخبار'
-        };
-        return typeTexts[supportedLocale] || 'News';
-    };
+    const getNewsTypeText = () => tType('type.newsPost');
 
-    const getFeaturedText = () => {
-        const featuredTexts = {
-            en: 'Featured',
-            es: 'Destacado',
-            fr: 'En vedette',
-            ar: 'مميز'
-        };
-        return featuredTexts[supportedLocale] || 'Featured';
-    };
+    const getFeaturedText = () => tCommon('featured');
 
     const getLocationText = () => {
         if (!newsPost.locationDetails) return '';

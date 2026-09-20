@@ -10,11 +10,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ArrowLeft, Send } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
 import { cn } from "@/lib/utils";
 import { sendMessage, markConversationRead, deleteMessage, reportMessage } from "@/lib/actions/messaging";
 import type { ConversationSummary } from "@/lib/messaging/service";
 import { NotificationFeed } from "@/components/notifications/notification-feed";
+import { RelativeTime } from "@/components/ui/relative-time";
 
 type Msg = { id: string; senderId: string; body: string; createdAt: string; deleted?: boolean };
 const listFetcher = (url: string) => fetch(url).then((r) => r.json() as Promise<{ conversations: ConversationSummary[] }>);
@@ -181,7 +181,7 @@ function Thread({
               >
                 <p className="whitespace-pre-wrap break-words">{m.deleted ? t("messageDeleted") : m.body}</p>
                 <p className={cn("mt-0.5 text-[10px]", mine && !m.deleted ? "text-white/70" : "text-muted-foreground")}>
-                  {formatDistanceToNow(new Date(m.createdAt), { addSuffix: true })}
+                  <RelativeTime date={m.createdAt} />
                 </p>
               </div>
               {!mine && !m.deleted && (

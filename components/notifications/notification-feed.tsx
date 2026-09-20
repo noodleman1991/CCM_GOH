@@ -4,13 +4,13 @@ import useSWR from "swr";
 import { useEffect, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { toast } from "sonner";
-import { formatDistanceToNow } from "date-fns";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { markNotificationsRead } from "@/lib/actions/notifications";
 import { respondToJoinByTarget, respondToInviteByTarget, respondToContactByTarget } from "@/lib/actions/requests";
 import { cn } from "@/lib/utils";
 import { parseStructuredSnippet } from "@/lib/notifications/structured";
+import { RelativeTime } from "@/components/ui/relative-time";
 
 export type Notif = {
   id: string;
@@ -162,7 +162,7 @@ export function NotificationFeed({
             </p>
             {n.snippet && <p className="truncate text-xs text-muted-foreground"><bdi>{renderSnippet(n.snippet)}</bdi></p>}
             <p className="mt-0.5 text-xs text-muted-foreground">
-              {formatDistanceToNow(new Date(n.createdAt), { addSuffix: true })}
+              <RelativeTime date={n.createdAt} />
             </p>
             {actionable && (
               decided ? (

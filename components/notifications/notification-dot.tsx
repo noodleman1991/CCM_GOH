@@ -4,6 +4,7 @@ import useSWR from "swr";
 import { useAuth } from "@clerk/nextjs";
 import { useHydrated } from "@/hooks/use-hydrated";
 import { FEATURES } from "@/lib/features";
+import { useTranslations } from "next-intl";
 
 const countFetcher = (url: string) =>
   fetch(url).then((r) => r.json() as Promise<{ unread: number }>);
@@ -15,6 +16,7 @@ const countFetcher = (url: string) =>
  * the engagement feature + client hydration to avoid an SSR/auth mismatch.
  */
 export function NotificationDot({ children }: { children: React.ReactNode }) {
+  const t = useTranslations('notifications');
   const { isSignedIn } = useAuth();
   const hydrated = useHydrated();
   const { data } = useSWR(
@@ -29,7 +31,7 @@ export function NotificationDot({ children }: { children: React.ReactNode }) {
       {children}
       {unread > 0 && (
         <span
-          aria-label={`${unread} unread notifications`}
+          aria-label={t('unreadCount', { count: unread })}
           className="absolute -end-0.5 -top-0.5 size-2.5 rounded-full bg-ccm-sea ring-2 ring-sidebar"
         />
       )}

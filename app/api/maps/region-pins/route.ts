@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import countriesLib from "i18n-iso-countries";
 import enLocale from "i18n-iso-countries/langs/en.json";
+import esLocale from "i18n-iso-countries/langs/es.json";
+import frLocale from "i18n-iso-countries/langs/fr.json";
+import arLocale from "i18n-iso-countries/langs/ar.json";
 import { isRegionCode, REGION_TO_RC_SLUG, type RegionCode } from "@/lib/maps/region-codes";
 import { parseLayers, FACET_TO_CONTENT_TYPE } from "@/lib/maps/region-facets";
 import { getThemeOptions } from "@/lib/maps/themes";
@@ -18,6 +21,11 @@ import { getRegionPinRows, type RegionPinRow } from "@/lib/content/regions";
 const PUBLIC_CACHE = { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" };
 
 countriesLib.registerLocale(enLocale);
+countriesLib.registerLocale(esLocale);
+countriesLib.registerLocale(frLocale);
+countriesLib.registerLocale(arLocale);
+
+const COUNTRY_NAME_LOCALES = new Set(["en", "es", "fr", "ar"]);
 
 // agendaCount/reportCount resolve to `researchOutput` via the shared
 // FACET_TO_CONTENT_TYPE (canonical mapping 2026-07-04 — all three map routes
@@ -65,6 +73,8 @@ async function fetchRowsForType(
  */
 export async function GET(req: NextRequest) {
   const sp = req.nextUrl.searchParams;
+  const requestedLocale = sp.get("locale") ?? "en";
+  const nameLocale = COUNTRY_NAME_LOCALES.has(requestedLocale) ? requestedLocale : "en";
   const region = sp.get("region") ?? "";
   const facetsParam = sp.get("facets");
   const legacyFacet = sp.get("facet");
@@ -144,9 +154,8 @@ export async function GET(req: NextRequest) {
       .map(([countryCode3, count]) => ({
         countryCode3,
         count,
-        // en-only for now; ar/es/fr localization is a follow-up (locale
-        // bundles beyond en add bundle weight not yet justified for this task).
-        name: countriesLib.getName(countryCode3, "en") ?? countryCode3,
+        // The caller's locale (?locale=), falling back to English (Slice 14a).
+        name: countriesLib.getName(countryCode3, nameLocale) ?? countriesLib.getName(countryCode3, "en") ?? countryCode3,
       }))
       .sort((a, b) => b.count - a.count),
   }, { headers: PUBLIC_CACHE });

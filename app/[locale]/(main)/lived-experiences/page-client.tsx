@@ -216,7 +216,7 @@ export default function LivedExperiencesPageClient({
           />
 
           <span className="text-sm text-muted-foreground">
-            {totalVideos} {totalVideos === 1 ? t('video') : t('videos')}
+            {t('videoCount', { count: totalVideos })}
           </span>
         </div>
 
@@ -232,7 +232,7 @@ export default function LivedExperiencesPageClient({
               key={communityName}
               isRTL={isRTL}
               title={communityName}
-              subtitle={`${videos.length} ${videos.length === 1 ? t('video') : t('videos')}`}
+              subtitle={t('videoCount', { count: videos.length })}
             >
               {videos.map((video) => (
                 <LivedExperienceVideoCard

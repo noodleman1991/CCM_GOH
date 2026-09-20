@@ -3,6 +3,8 @@ import Image from "next/image";
 import { getLocalizedText } from "@/lib/localization-utils";
 import { SectionHeader } from "@/components/ui/section-header";
 import { BookOpen, Heart, Newspaper, FileText, FolderKanban, Globe } from "lucide-react";
+import { useTranslations } from 'next-intl';
+import { enumLabel } from "@/lib/i18n/labels";
 
 /** A resolved connection target (from RELATED_CONTENT_PROJECTION). */
 interface RelatedTarget {
@@ -27,12 +29,12 @@ const TYPE_META: Record<
   string,
   { href: (slug?: string) => string; icon: typeof BookOpen; labelKey: string }
 > = {
-  caseStudy: { href: (s) => `/research-and-action/case-studies/${s}`, icon: BookOpen, labelKey: "Case study" },
-  livedExperience: { href: (s) => `/lived-experiences/${s}`, icon: Heart, labelKey: "Lived experience" },
-  newsPost: { href: (s) => `/news/${s}`, icon: Newspaper, labelKey: "News" },
-  report: { href: (s) => `/research-and-action/impact-reports`, icon: FileText, labelKey: "Report" },
-  project: { href: (s) => `/collaborations/${s}`, icon: FolderKanban, labelKey: "Project" },
-  regionalCommunity: { href: (s) => `/communities/${s}`, icon: Globe, labelKey: "Community" },
+  caseStudy: { href: (s) => `/research-and-action/case-studies/${s}`, icon: BookOpen, labelKey: "caseStudy" },
+  livedExperience: { href: (s) => `/lived-experiences/${s}`, icon: Heart, labelKey: "livedExperience" },
+  newsPost: { href: (s) => `/news/${s}`, icon: Newspaper, labelKey: "newsPost" },
+  report: { href: (s) => `/research-and-action/impact-reports`, icon: FileText, labelKey: "report" },
+  project: { href: (s) => `/collaborations/${s}`, icon: FolderKanban, labelKey: "project" },
+  regionalCommunity: { href: (s) => `/communities/${s}`, icon: Globe, labelKey: "region" },
 };
 
 function plainTitle(title: unknown, locale: string): string {
@@ -55,6 +57,8 @@ export function RelatedContent({
   locale: string;
   heading: string;
 }) {
+  const tType = useTranslations('typedCards');
+  const tEvents = useTranslations('events');
   const valid = (items || []).filter(
     (c): c is Connection & { target: RelatedTarget } =>
       Boolean(c?.target && TYPE_META[c.target._type])
@@ -89,13 +93,13 @@ export function RelatedContent({
                 )}
                 <span className="absolute inset-x-3 top-3 inline-flex w-fit items-center gap-1 rounded-full bg-white/90 px-2.5 py-1 text-xs font-medium text-ccm-midnight">
                   <Icon className="size-3" />
-                  {meta.labelKey}
+                  {tType(`type.${meta.labelKey}`)}
                 </span>
               </div>
               <div className="flex flex-1 flex-col gap-1.5 p-4">
                 {relation && relation !== "related" && (
                   <span className="text-[11px] font-semibold uppercase tracking-wide text-ccm-water">
-                    {relation.replace(/-/g, " ")}
+                    {enumLabel(tEvents, relation, 'relation')}
                   </span>
                 )}
                 <h3 className="font-heading text-base font-semibold leading-snug text-balance line-clamp-2 text-ccm-midnight group-hover:text-primary">

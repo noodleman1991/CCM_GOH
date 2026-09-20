@@ -1,4 +1,5 @@
-/** The hub output types a workspace can produce/link (Sanity documents). */
+/** The hub output types a workspace can produce/link (Sanity documents).
+ *  `label` is a developer-facing name; the UI renders `typedCards.type.<type>` (Slice 14). */
 export const OUTPUT_TYPES = [
   { type: "caseStudy", label: "Case study", route: "/research-and-action/case-studies" },
   { type: "livedExperience", label: "Lived experience", route: "/lived-experiences" },

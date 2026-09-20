@@ -38,6 +38,7 @@ import {
 } from 'lucide-react';
 import { LIMITS } from '@/lib/validation/limits';
 import { CharCounter } from '@/components/ui/char-counter';
+import { enumLabel } from '@/lib/i18n/labels';
 
 // Localized validation messages (resolved from t() inside the component so the
 // Zod errors show in the user's language — the proven newsletter pattern).
@@ -160,6 +161,7 @@ export default function ImprovedCaseStudyForm({
     const { user } = useUser();
     const t = useTranslations('caseStudySubmission');
     const tCommon = useTranslations('common');
+    const tCS = useTranslations('caseStudies');
     // Schema built inside the component so validation messages localize.
     const formSchema = useMemo(() => makeFormSchema({
         titleMin: t('validation.titleMin'),
@@ -605,7 +607,7 @@ export default function ImprovedCaseStudyForm({
 
     // B1: Review step
     if (submissionStep === 'review') {
-        const selectedTopicLabel = topicOptions.find(t => t.value === formData.topic)?.title || formData.topic;
+        const selectedTopicLabel = formData.topic ? enumLabel(tCS, formData.topic, 'topics') : '';
         const formatDate = (value: string) => new Date(value).toLocaleDateString(locale);
         return (
             <div className="max-w-3xl mx-auto space-y-6">
@@ -946,7 +948,7 @@ export default function ImprovedCaseStudyForm({
                             <SelectContent>
                                 {topicOptions.map((option) => (
                                     <SelectItem key={option.value} value={option.value}>
-                                        {option.title}
+                                        {enumLabel(tCS, option.value, 'topics')}
                                     </SelectItem>
                                 ))}
                             </SelectContent>

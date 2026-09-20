@@ -7,12 +7,10 @@ import { useTranslations, useLocale } from "next-intl";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { formatDistanceToNow, type Locale } from "date-fns";
-import { es as esLocale, fr as frLocale, ar as arLocale } from "date-fns/locale";
 import { approveComment, removeComment, dismissReports } from "@/lib/actions/moderation";
 import type { QueueItem, QueueTab } from "@/lib/comments/moderation-queue";
+import { RelativeTime } from "@/components/ui/relative-time";
 
-const DATE_LOCALES: Record<string, Locale> = { es: esLocale, fr: frLocale, ar: arLocale };
 
 const TABS: { id: QueueTab; labelKey: string }[] = [
   { id: "pending", labelKey: "tabPending" },
@@ -84,7 +82,7 @@ export function ModerationQueue({
                   </span>
                   <span>· {item.targetType}</span>
                   <span>
-                    · {formatDistanceToNow(new Date(item.createdAt), { addSuffix: true, locale: DATE_LOCALES[locale] })}
+                    · <RelativeTime date={item.createdAt} />
                   </span>
                   {item.reason && (
                     <span className="rounded-full bg-amber-100 px-2 py-0.5 text-amber-700">{item.reason}</span>

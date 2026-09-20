@@ -184,7 +184,14 @@
     "emailInvalid": "يرجى إدخال بريد إلكتروني صحيح",
     "untitled": "بدون عنوان",
     "charCount": "{count} / {max}",
-    "charCountSr": "{count} من {max} حرفًا"
+    "charCountSr": "{count} من {max} حرفًا",
+    "moreCount": "+{count} آخرين",
+    "featured": "مميز",
+    "present": "حتى الآن",
+    "goToSlide": "الانتقال إلى الشريحة {index}",
+    "slideOf": "الشريحة {index} من {count}",
+    "resultsCount": "{count, plural, zero {لا نتائج} one {نتيجة واحدة} two {نتيجتان} few {# نتائج} many {# نتيجة} other {# نتيجة}}",
+    "external": "خارجي"
   },
   "dashboard": {
     "pageTitle": "لوحة التحكم - Connecting Climate Minds Hub",
@@ -389,7 +396,13 @@
     "theProject": "المشروع المنظِّم",
     "attendeesHeading": "من سيحضر · {count}",
     "attendeesNone": "لا توجد تأكيدات بعد — شارك الفعالية لنشر الخبر.",
-    "attendeesInterested": "{count} آخرون مهتمون"
+    "attendeesInterested": "{count} آخرون مهتمون",
+    "relation": {
+      "hosts": "الجهة المنظِّمة",
+      "co-hosts": "شركاء التنظيم",
+      "partners": "الشركاء",
+      "related": "ذو صلة"
+    }
   },
   "plan": {
     "empty": "لا توجد خطة بعد.",
@@ -459,7 +472,8 @@
       "contactDeclined": "رفض طلب التواصل الخاص بك",
       "removedFromWorkspace": "أزالك من «{title}»",
       "rsvpGoing": "ستحضر «{title}» — {when}"
-    }
+    },
+    "unreadCount": "{count, plural, zero {لا إشعارات غير مقروءة} one {إشعار واحد غير مقروء} two {إشعاران غير مقروءين} few {# إشعارات غير مقروءة} many {# إشعارًا غير مقروء} other {# إشعار غير مقروء}}"
   },
   "dates": {
     "today": "اليوم",
@@ -1083,7 +1097,9 @@
     }
   },
   "caseStudy": {
-    "backToCaseStudies": "العودة إلى دراسات الحالة"
+    "backToCaseStudies": "العودة إلى دراسات الحالة",
+    "coAuthorsCount": "+{count, plural, one {مؤلف واحد} two {مؤلفان} few {# مؤلفين} many {# مؤلفًا} other {# مؤلف}}",
+    "publishedOn": "نُشر في {date}"
   },
   "livedExperiences": {
     "relatedContent": "ذات صلة",
@@ -1124,7 +1140,8 @@
     "atAGlance": "لمحة سريعة",
     "published": "تاريخ النشر",
     "author": "الكاتب/ة",
-    "community": "المجتمع"
+    "community": "المجتمع",
+    "videoCount": "{count, plural, zero {لا مقاطع} one {مقطع فيديو واحد} two {مقطعا فيديو} few {# مقاطع فيديو} many {# مقطع فيديو} other {# مقطع فيديو}}"
   },
   "caseStudyForm": {
     "sections": {
@@ -1834,11 +1851,12 @@
     "writtenBy": "بقلم",
     "withOrgs": "بالتعاون مع",
     "metaNotFound": "دراسة الحالة غير موجودة",
-    "metaFallbackTitle": "دراسة حالة"
+    "metaFallbackTitle": "دراسة حالة",
+    "resultsCount": "{count, plural, zero {لا نتائج} one {نتيجة واحدة} two {نتيجتان} few {# نتائج} many {# نتيجة} other {# نتيجة}}"
   },
   "revisionAlert": {
     "title": "مطلوب إجراء: تنقيح مطلوب",
-    "description": "لديك {count} دراسة حالة تحتاج تنقيح بناءً على ملاحظات المحرر.",
+    "description": "{count, plural, one {لديك دراسة حالة واحدة تحتاج إلى تنقيح بناءً على ملاحظات المحرر.} two {لديك دراستا حالة تحتاجان إلى تنقيح بناءً على ملاحظات المحرر.} other {لديك # دراسات حالة تحتاج إلى تنقيح بناءً على ملاحظات المحرر.}}",
     "editorFeedback": "ملاحظات المحرر:",
     "actions": {
       "remindLater": "تذكيرني لاحقاً",
@@ -1899,7 +1917,9 @@
       "organization": "المنظمة",
       "project": "المشروع",
       "location": "الموقع",
-      "publishDate": "تاريخ النشر"
+      "publishDate": "تاريخ النشر",
+      "projects": "{count, plural, one {المشروع} other {المشاريع}}",
+      "organizations": "{count, plural, one {المنظمة} other {المنظمات}}"
     },
     "siteBadge": "CCM",
     "featuredBadge": "مميز",
@@ -1909,7 +1929,8 @@
       "description": "تابع هذه المنطقة لتصلك الأخبار عند نشر أي جديد.",
       "cta": "تابع هذه المنطقة"
     },
-    "metaNotFound": "الخبر غير موجود"
+    "metaNotFound": "الخبر غير موجود",
+    "resultsCount": "{count, plural, zero {لا نتائج} one {نتيجة واحدة} two {نتيجتان} few {# نتائج} many {# نتيجة} other {# نتيجة}}"
   },
   "regional": {
     "noLivedExperiences": "لا تتوفر تجارب حياتية بعد.",
@@ -1976,7 +1997,17 @@
     "noContent": "لا يوجد محتوى متاح في الوقت الحالي.",
     "noQueryType": "لم يتم تحديد نوع الاستعلام",
     "contentLoadFailed": "تعذّر تحميل المحتوى",
-    "errorLoadingContent": "خطأ في تحميل المحتوى: {error}"
+    "errorLoadingContent": "خطأ في تحميل المحتوى: {error}",
+    "downloadsCount": "{count, plural, zero {لا تنزيلات} one {تنزيل واحد} two {تنزيلان} few {# تنزيلات} many {# تنزيلًا} other {# تنزيل}}",
+    "sourceKind": {
+      "news": "أخبار",
+      "research": "بحث",
+      "blog": "مدونة",
+      "report": "تقرير",
+      "press": "صحافة",
+      "policy": "سياسة",
+      "other": "خارجي"
+    }
   },
   "map": {
     "title": "استكشف حسب المنطقة",
@@ -2255,7 +2286,10 @@
   "reader": {
     "chapters": "الفصول",
     "onThisPage": "في هذه الصفحة",
-    "footnotes": "الحواشي"
+    "footnotes": "الحواشي",
+    "backToReference": "العودة إلى المرجع {number}",
+    "documentTitle": "الأجندة العالمية للبحث والعمل",
+    "title": "القارئ"
   },
   "atlas": {
     "title": "الأطلس",
@@ -2649,7 +2683,22 @@
     "cancel": "إلغاء",
     "submit": "إرسال للمراجعة",
     "success": "شكرًا — أُرسل ناتجك البحثي للمراجعة.",
-    "submitError": "تعذر إرسال ناتج البحث الخاص بك. يرجى المحاولة مرة أخرى."
+    "submitError": "تعذر إرسال ناتج البحث الخاص بك. يرجى المحاولة مرة أخرى.",
+    "regions": {
+      "ssa": "أفريقيا جنوب الصحراء",
+      "nawa": "شمال أفريقيا وغرب آسيا",
+      "csa": "وسط وجنوب آسيا",
+      "esea": "شرق وجنوب شرق آسيا",
+      "lac": "أمريكا اللاتينية ومنطقة البحر الكاريبي",
+      "oce": "أوقيانوسيا",
+      "enam": "أوروبا وأمريكا الشمالية"
+    },
+    "themes": {
+      "displacement": "النزوح",
+      "livelihoods": "سبل العيش",
+      "youth": "الشباب",
+      "indigenous": "الشعوب الأصلية"
+    }
   },
   "editorReview": {
     "status": {
@@ -2671,7 +2720,9 @@
       "researchOutput": "ناتج بحثي",
       "event": "فعالية",
       "person": "عضو",
-      "region": "مجتمع إقليمي"
+      "region": "مجتمع إقليمي",
+      "report": "تقرير",
+      "project": "مشروع"
     },
     "untitled": "بدون عنوان",
     "new": "جديد",
@@ -2767,7 +2818,9 @@
       "pickCommunity": "اختر مجتمعًا.",
       "pickRegion": "اختر منطقة.",
       "sentTo": "{count, plural, zero {لم يُرسل إلى أي عضو.} one {أُرسل إلى عضو واحد.} two {أُرسل إلى عضوين.} few {أُرسل إلى # أعضاء.} many {أُرسل إلى # عضوًا.} other {أُرسل إلى # عضو.}}",
-      "send": "إرسال الإشعار"
+      "send": "إرسال الإشعار",
+      "title": "إرسال إشعار",
+      "description": "أرسل إشعارًا إلى عضو واحد أو مجتمع أو منطقة أو الجميع. يتلقى المستلمون إشعارًا داخل التطبيق (ورسالة بريد إلكتروني ما لم يوقفوا ذلك)."
     },
     "queue": {
       "tabPending": "قيد الانتظار (مجهول)",
@@ -2779,7 +2832,8 @@
       "reports": "{count, plural, zero {لا بلاغات} one {بلاغ واحد} two {بلاغان} few {# بلاغات} many {# بلاغًا} other {# بلاغ}}",
       "approve": "الموافقة",
       "remove": "إزالة",
-      "dismissReport": "رفض البلاغ"
+      "dismissReport": "رفض البلاغ",
+      "title": "الإشراف"
     }
   },
   "requests": {

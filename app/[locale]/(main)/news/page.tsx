@@ -240,7 +240,7 @@ async function NewsContent({
             <h2 className={cn("font-semibold text-ccm-midnight", heading('sm'))}>{t('searchResults')}</h2>
           </div>
           <p className="text-sm text-muted-foreground">
-            {totalResults} {t('resultsFound')}
+            {t('resultsCount', { count: totalResults })}
           </p>
         </div>
 
@@ -315,7 +315,7 @@ async function NewsContent({
         <section className="space-y-6">
           <SectionHeader
             title={t('latest')}
-            subtitle={`${feed.length} ${t('resultsFound')}`}
+            subtitle={t('resultsCount', { count: feed.length })}
           />
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

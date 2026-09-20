@@ -74,6 +74,7 @@ export default function GridCaseStudyComponent({
                                                }: GridCaseStudyComponentProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const t = useTranslations('regional');
+    const tCommon = useTranslations('common');
 
     if (!caseStudy) return null;
 
@@ -101,10 +102,7 @@ export default function GridCaseStudyComponent({
     const locationText = getStudyLocationText(caseStudy as unknown as CaseStudy);
     const canAccess = true; // all approved case studies are public
 
-    const getMoreText = (count: number) => {
-        const moreTexts = { en: 'more', es: 'más', fr: 'autres', ar: 'آخرين' };
-        return `+${count} ${moreTexts[supportedLocale] || 'more'}`;
-    };
+    const getMoreText = (count: number) => tCommon('moreCount', { count });
 
     // The badge reflects the study's topic when set; otherwise the generic label.
     const typeLabel = (caseStudy.topic && TOPIC_LABELS[caseStudy.topic]) || t('caseStudy');

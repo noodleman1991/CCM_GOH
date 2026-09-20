@@ -40,6 +40,7 @@ export async function ProjectPublicPage({
   isMember: boolean;
 }) {
   const t = await getTranslations("projectPublic");
+  const tType = await getTranslations("typedCards");
   const gated = project.visibility === "MEMBERS"; // non-member viewing a private workspace
   const status = statusMeta(project.status, t);
 
@@ -140,7 +141,7 @@ export async function ProjectPublicPage({
                       <Link href={href} className="group block">
                         <Card className="h-full transition-shadow hover:shadow-md">
                           <CardContent className="space-y-1 p-4">
-                            {def && <Badge variant="outline">{def.label}</Badge>}
+                            {def && <Badge variant="outline">{tType(`type.${def.type}`)}</Badge>}
                             <p className="font-medium text-ccm-midnight group-hover:text-ccm-sea">
                               <bdi>{o.title}</bdi>
                             </p>

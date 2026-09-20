@@ -13,6 +13,7 @@ import { useTranslations } from 'next-intl';
 import PortableTextRenderer from "@/components/portable-text-renderer";
 import { getLocalizedText, formatCaseStudyDate, getPrimaryAuthor, getStudyLocationText } from "@/lib/case-study-utils";
 import type { CaseStudy, LocalizedString } from "@/types/case-study";
+import { enumLabel } from "@/lib/i18n/labels";
 
 /**
  * Minimal case-study shape actually consumed by this modal (and by the grid
@@ -239,7 +240,7 @@ export function CaseStudyModal({ isOpen, onClose, caseStudy, locale }: CaseStudy
                 <div className="flex flex-wrap gap-2">
                   {caseStudy.studyAreas.map((area) => (
                     <Badge key={area} variant="secondary">
-                      {area.replace(/_/g, ' ')}
+                      {enumLabel(t, area, 'studyAreaLabels')}
                     </Badge>
                   ))}
                 </div>

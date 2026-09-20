@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from 'next-intl'
 import { useState, useEffect, useTransition, useMemo } from 'react'
 import { ContentFilters, type FilterGroup } from '@/components/ui/content-filters'
 import { topicOptions } from '@/lib/content/taxonomy-options'
+import { enumLabel } from '@/lib/i18n/labels'
 
 interface Filters {
   topics?: string[]
@@ -27,6 +28,7 @@ interface CaseStudiesFiltersProps {
 export default function CaseStudiesFilters({ currentFilters, tags = [], communities = [] }: CaseStudiesFiltersProps) {
   const locale = useLocale()
   const t = useTranslations('caseStudies.filters')
+  const tCS = useTranslations('caseStudies')
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -68,8 +70,8 @@ export default function CaseStudiesFilters({ currentFilters, tags = [], communit
   )
   // 'Other' topic de-surfaced from the chips (sporadic fallback only).
   const topicGroupOptions = useMemo(
-    () => topicOptions.filter((o) => o.value !== 'other').map((o) => ({ value: o.value, label: o.title })),
-    []
+    () => topicOptions.filter((o) => o.value !== 'other').map((o) => ({ value: o.value, label: enumLabel(tCS, o.value, 'topics') })),
+    [tCS]
   )
   const tagOptions = useMemo(
     () => tags.filter((tag) => tag.value !== 'other').map((tag) => ({ value: tag.value, label: localized(tag.label) })),

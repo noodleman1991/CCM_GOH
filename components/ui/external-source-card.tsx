@@ -5,6 +5,7 @@ import { formatDateShort } from "@/lib/utils";
 import { getLocalizedValue } from '@/i18n/i18n-helpers';
 import { CARD_ASPECT } from "@/lib/design-tokens";
 import { ExternalLink } from "lucide-react";
+import { useTranslations } from 'next-intl';
 
 const INTL_LOCALE: Record<string, string> = {
     en: "en-US", es: "es-ES", fr: "fr-FR", ar: "ar-SA",
@@ -50,6 +51,7 @@ export default function ExternalSourceCard({
     publishedAt,
     locale = 'en',
 }: ExternalSourceCardProps) {
+    const tCommon = useTranslations('common');
     const localizedTitle = getLocalizedValue(title, locale);
     const localizedExcerpt = getLocalizedValue(excerpt, locale);
     const localizedImageAlt = image?.alt ? getLocalizedValue(image.alt, locale) : "";
@@ -79,7 +81,7 @@ export default function ExternalSourceCard({
                 )}
                 <span className="absolute top-2 start-2 flex items-center gap-1 rounded-full bg-background/90 px-3 py-1 text-xs font-medium backdrop-blur-sm">
                     <ExternalLink className="size-3" />
-                    External
+                    {tCommon('external')}
                 </span>
             </div>
 

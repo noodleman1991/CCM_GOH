@@ -6,6 +6,7 @@ import { getLocalizedValue } from '@/i18n/i18n-helpers';
 import { normalizeTagColor } from "@/lib/tags";
 import { CARD_ASPECT } from "@/lib/design-tokens";
 import { Calendar, MapPin, Building2 } from "lucide-react";
+import { useTranslations } from 'next-intl';
 
 // next-intl locale -> Intl locale tag, so dates read correctly per language.
 const INTL_LOCALE: Record<string, string> = {
@@ -64,6 +65,7 @@ export default function NewsPostCard({
                                          featured = false,
                                          featuredLabel,
                                      }: NewsPostCardProps) {
+    const tCommon = useTranslations('common');
     const localizedTitle = getLocalizedValue(title, locale);
     const localizedSubtitle = getLocalizedValue(subtitle, locale);
     const localizedExcerpt = getLocalizedValue(excerpt, locale);
@@ -91,7 +93,7 @@ export default function NewsPostCard({
                 )}
                 {featured && (
                     <div className="absolute top-2 end-2 bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-medium">
-                        {featuredLabel || "Featured"}
+                        {featuredLabel || tCommon('featured')}
                     </div>
                 )}
                 {/* No site badge: on our own site, the absence of a source badge

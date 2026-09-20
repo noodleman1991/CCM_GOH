@@ -32,6 +32,7 @@ import { REGION_OPTIONS, THEME_OPTIONS } from "@/lib/content/taxonomy-options"
 import type { EditableResearchOutput } from "@/lib/content/outputs"
 import { LIMITS } from "@/lib/validation/limits";
 import { CharCounter } from "@/components/ui/char-counter"
+import { enumLabel } from "@/lib/i18n/labels"
 
 type Tag = { _id: string; label: Record<string, string>; value?: { current: string } }
 type Community = { _id: string; name: Record<string, string>; slug?: { current: string } }
@@ -207,7 +208,7 @@ export function ResearchOutputForm({
                       </FormControl>
                       <SelectContent>
                         {REGION_OPTIONS.filter((r) => (RO_REGIONS as readonly string[]).includes(r.value)).map((r) => (
-                          <SelectItem key={r.value} value={r.value}>{r.title}</SelectItem>
+                          <SelectItem key={r.value} value={r.value}>{enumLabel(t, r.value, "regions")}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
@@ -354,7 +355,7 @@ export function ResearchOutputForm({
                   {THEME_OPTIONS.map((th) => (
                     <FilterChip
                       key={th.value}
-                      label={th.title}
+                      label={enumLabel(t, th.value, "themes")}
                       active={selectedThemes.includes(th.value)}
                       onClick={() => toggle("themes", th.value, 8)}
                     />

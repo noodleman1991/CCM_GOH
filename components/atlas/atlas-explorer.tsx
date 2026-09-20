@@ -223,7 +223,7 @@ export function AtlasExplorer({
   // world map read as an empty atlas).
   const pinFacets = layers.filter((l) => CARD_FACETS.has(l))
   const pinsKey = pinFacets.length > 0
-    ? `/api/maps/region-pins?region=${effectiveRegion ?? 'all'}&facets=${pinFacets.join(',')}${theme ? `&theme=${theme}` : ''}${q ? `&q=${encodeURIComponent(q)}` : ''}${whenQS}`
+    ? `/api/maps/region-pins?region=${effectiveRegion ?? 'all'}&locale=${locale}&facets=${pinFacets.join(',')}${theme ? `&theme=${theme}` : ''}${q ? `&q=${encodeURIComponent(q)}` : ''}${whenQS}`
     : null
   const { data: pinsData } = useSWR<{
     pins: PinCluster[]

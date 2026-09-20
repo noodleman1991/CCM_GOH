@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { MapPin, Globe, Users } from "lucide-react";
 import { RsvpButton } from "@/components/events/rsvp-button";
 import type { EventListItem } from "@/lib/events";
+import { useLocale } from "next-intl";
 
 const MODE_ICON = { online: Globe, in_person: MapPin, hybrid: Users } as const;
 
@@ -22,6 +23,7 @@ export function EventCard({
   signedIn: boolean;
   labels: { community: string; project: string; modeOnline: string; modeInPerson: string; modeHybrid: string };
 }) {
+  const locale = useLocale();
   const start = event.startAt ? new Date(event.startAt) : null;
   const Mode = event.mode ? MODE_ICON[event.mode] : null;
   const modeLabel =
@@ -34,7 +36,7 @@ export function EventCard({
         {start ? (
           <>
             <span className="text-xs font-medium uppercase">
-              {start.toLocaleString(undefined, { month: "short" })}
+              {start.toLocaleString(locale, { month: "short" })}
             </span>
             <span className="text-xl font-bold leading-none">{start.getDate()}</span>
           </>
@@ -66,7 +68,7 @@ export function EventCard({
           <h3 className="truncate font-heading font-semibold text-ccm-midnight">{event.title}</h3>
         )}
         <p className="mt-0.5 text-xs text-muted-foreground">
-          {start && start.toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })}
+          {start && start.toLocaleString(locale, { dateStyle: "medium", timeStyle: "short" })}
           {event.locationName ? ` · ${event.locationName}` : ""}
         </p>
         {event.description && (

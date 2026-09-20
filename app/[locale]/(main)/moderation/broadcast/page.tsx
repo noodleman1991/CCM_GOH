@@ -20,6 +20,7 @@ export async function generateMetadata({
 
 export default async function BroadcastPage() {
   const locale = await getLocale();
+  const tMod = await getTranslations("moderation");
   if (!FEATURES.engagement) redirect({ href: "/", locale });
   const actor = await getActor();
   if (!isStaff(actor)) redirect({ href: "/", locale });
@@ -31,11 +32,8 @@ export default async function BroadcastPage() {
 
   return (
     <div className="container max-w-2xl py-8">
-      <h1 className="mb-2 text-3xl font-heading font-bold text-ccm-midnight">Send a notification</h1>
-      <p className="mb-6 text-muted-foreground">
-        Notify a single member, a community, a region, or everyone. Recipients get an in-app
-        notification (and an email if they haven&apos;t opted out).
-      </p>
+      <h1 className="mb-2 text-3xl font-heading font-bold text-ccm-midnight">{tMod("broadcast.title")}</h1>
+      <p className="mb-6 text-muted-foreground">{tMod("broadcast.description")}</p>
       <BroadcastForm
         communities={communities.map((c) => ({ id: c.id, name: c.name, type: c.type, regionalName: c.regionalName }))}
       />

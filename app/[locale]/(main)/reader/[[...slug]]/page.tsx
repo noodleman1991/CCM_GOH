@@ -29,11 +29,12 @@ export async function generateMetadata({
 }: {
   params: Promise<{ locale: string; slug?: string[] }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
+  const { locale, slug } = await params;
   const current = slug?.[0];
-  if (!current) return { title: "Global Research and Action Agenda" };
+  const tReader = await getTranslations({ locale, namespace: "reader" });
+  if (!current) return { title: tReader("documentTitle") };
   const chapter = await getDocsChapter(COLLECTION, current);
-  return { title: chapter?.title ?? "Reader" };
+  return { title: chapter?.title ?? tReader("title") };
 }
 
 export default async function ReaderPage({
@@ -80,7 +81,8 @@ export default async function ReaderPage({
   const toc = extractToc(body);
   const { footnotes, numberByKey } = extractFootnotes(body);
   const tNav = await getTranslations("navigation");
-  const documentTitle = "Global Research and Action Agenda";
+  const tReader = await getTranslations({ locale, namespace: "reader" });
+  const documentTitle = tReader("documentTitle");
 
   return (
     <div className="container max-w-7xl py-6" dir={isRTL ? "rtl" : "ltr"}>
@@ -113,7 +115,7 @@ export default async function ReaderPage({
         <article className="min-w-0">
           <div className="mx-auto max-w-prose">
             <p className="text-xs font-semibold uppercase tracking-wider text-ccm-water">
-              {chapter.order}. <span className="capitalize">{COLLECTION.replace(/-/g, " ")}</span>
+              {chapter.order}. <span>{documentTitle}</span>
             </p>
             <h1 className={cn("mt-1 mb-6 text-balance font-heading font-bold text-ccm-midnight", heading("lg"))}>
               {chapter.title}

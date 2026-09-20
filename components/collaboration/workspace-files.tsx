@@ -6,11 +6,11 @@ import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { FileText, Upload, Trash2, FileType } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
 import { confirmFileUpload, deleteFile } from "@/lib/actions/collaboration-files";
 import { cn } from "@/lib/utils";
 import { WorkspaceEmptyState } from "./workspace-empty-state";
 import type { CollaborationRole } from "@/generated/prisma";
+import { RelativeTime } from "@/components/ui/relative-time";
 
 type FileRow = {
   id: string;
@@ -157,7 +157,7 @@ export function WorkspaceFiles({
                   <bdi>{f.fileName}</bdi>
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  {humanSize(f.size)} · {formatDistanceToNow(new Date(f.createdAt), { addSuffix: true })}
+                  {humanSize(f.size)} · <RelativeTime date={f.createdAt} />
                 </p>
               </div>
               {f.isPdf ? (

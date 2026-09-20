@@ -267,7 +267,7 @@ async function CaseStudiesContent({
         items={items}
         regionLabels={regionLabels}
         emptyLabel={t('noResults')}
-        countLabel={`${caseStudies.length} ${t('resultsFound')}`}
+        countLabel={t('resultsCount', { count: caseStudies.length })}
         galleryLabel={t('openAsGallery')}
       />
     )
@@ -278,7 +278,7 @@ async function CaseStudiesContent({
   return (
     <div className="space-y-6">
       <p className="text-sm text-muted-foreground">
-        {caseStudies.length} {t('resultsFound')}
+        {t('resultsCount', { count: caseStudies.length })}
       </p>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-6">
         {(caseStudies as unknown as Array<Record<string, unknown>>).map((caseStudy, index) => {

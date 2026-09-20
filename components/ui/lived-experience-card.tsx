@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/lib/utils";
 import { getLocalizedValue } from '@/i18n/i18n-helpers';
 import { Play, Clock, User } from "lucide-react";
+import { useTranslations } from 'next-intl';
 
 interface LivedExperienceCardProps {
   experience: {
@@ -38,12 +39,9 @@ interface LivedExperienceCardProps {
   variant?: "default" | "minimal";
 }
 
-/** "Featured" in the 4 supported locales (this card is a sync server component,
- *  so we localize via the same getLocalizedValue helper used for titles rather
- *  than pulling in async getTranslations). */
-const FEATURED_LABEL = { en: "Featured", es: "Destacado", fr: "À la une", ar: "مميز" };
 
 export function LivedExperienceCard({ experience, locale, variant = "default" }: LivedExperienceCardProps) {
+  const tCommon = useTranslations('common');
   if (!experience) return null;
 
   const href = `/${locale}/lived-experiences/${experience.slug?.current}`;
@@ -134,7 +132,7 @@ export function LivedExperienceCard({ experience, locale, variant = "default" }:
           {/* Featured badge */}
           {experience.featured && (
             <div className="absolute top-3 end-3 bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-medium">
-              {getLocalizedValue(FEATURED_LABEL, locale)}
+              {tCommon('featured')}
             </div>
           )}
         </div>
@@ -190,7 +188,7 @@ export function LivedExperienceCard({ experience, locale, variant = "default" }:
               {/* Published date */}
               {experience.publishedAt && (
                 <time dateTime={experience.publishedAt}>
-                  {formatDate(experience.publishedAt)}
+                  {formatDate(experience.publishedAt, locale)}
                 </time>
               )}
             </div>

@@ -45,6 +45,7 @@ export default function WorkspaceHome({
   onGoToTab: (tab: string) => void;
 }) {
   const t = useTranslations("outputs");
+  const tType = useTranslations("typedCards");
   const tCollab = useTranslations("collaboration");
   const tNotif = useTranslations("notifications");
   const verb = useNotificationVerb();
@@ -111,7 +112,7 @@ export default function WorkspaceHome({
             return (
               <Card key={o.id} className="space-y-2 p-4">
                 <span className="inline-block rounded-full bg-ccm-sky/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-ccm-sea">
-                  {def?.label ?? o.sanityType}
+                  {def ? tType(`type.${def.type}`) : o.sanityType}
                 </span>
                 <p className="font-medium text-ccm-midnight">{o.title}</p>
                 <span className={`inline-block rounded-full px-2 py-0.5 text-[10px] font-bold ${badge.cls}`}>

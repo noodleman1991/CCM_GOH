@@ -184,7 +184,14 @@
     "emailInvalid": "Please enter a valid email",
     "untitled": "Untitled",
     "charCount": "{count} / {max}",
-    "charCountSr": "{count} of {max} characters"
+    "charCountSr": "{count} of {max} characters",
+    "moreCount": "+{count} more",
+    "featured": "Featured",
+    "present": "Present",
+    "goToSlide": "Go to slide {index}",
+    "slideOf": "Slide {index} of {count}",
+    "resultsCount": "{count, plural, one {# result found} other {# results found}}",
+    "external": "External"
   },
   "settings": {
     "title": "Settings",
@@ -263,7 +270,13 @@
     "theProject": "the organising project",
     "attendeesHeading": "Who's coming · {count}",
     "attendeesNone": "No RSVPs yet — share the event to get the word out.",
-    "attendeesInterested": "{count} more interested"
+    "attendeesInterested": "{count} more interested",
+    "relation": {
+      "hosts": "Hosts",
+      "co-hosts": "Co-hosts",
+      "partners": "Partners",
+      "related": "Related"
+    }
   },
   "plan": {
     "empty": "No plan yet.",
@@ -333,7 +346,8 @@
       "contactDeclined": "declined your contact request",
       "removedFromWorkspace": "removed you from “{title}”",
       "rsvpGoing": "You're going to “{title}” — {when}"
-    }
+    },
+    "unreadCount": "{count, plural, one {# unread notification} other {# unread notifications}}"
   },
   "dates": {
     "today": "Today",
@@ -957,7 +971,9 @@
     }
   },
   "caseStudy": {
-    "backToCaseStudies": "Back to Case Studies"
+    "backToCaseStudies": "Back to Case Studies",
+    "coAuthorsCount": "+{count, plural, one {# author} other {# authors}}",
+    "publishedOn": "Published {date}"
   },
   "caseStudyForm": {
     "sections": {
@@ -1275,7 +1291,8 @@
     "writtenBy": "Written by",
     "withOrgs": "With",
     "metaNotFound": "Case Study Not Found",
-    "metaFallbackTitle": "Case Study"
+    "metaFallbackTitle": "Case Study",
+    "resultsCount": "{count, plural, one {# result found} other {# results found}}"
   },
   "livedExperiences": {
     "relatedContent": "Related",
@@ -1316,11 +1333,12 @@
     "atAGlance": "At a glance",
     "published": "Published",
     "author": "Author",
-    "community": "Community"
+    "community": "Community",
+    "videoCount": "{count, plural, one {# video} other {# videos}}"
   },
   "revisionAlert": {
     "title": "Action Required: Revision Needed",
-    "description": "You have {count} case stud{plural} that need{singular} revision based on editor feedback.",
+    "description": "{count, plural, one {You have # case study that needs revision based on editor feedback.} other {You have # case studies that need revision based on editor feedback.}}",
     "editorFeedback": "Editor feedback:",
     "actions": {
       "remindLater": "Remind Me Later",
@@ -1899,7 +1917,9 @@
       "organization": "Organization",
       "project": "Project",
       "location": "Location",
-      "publishDate": "Published"
+      "publishDate": "Published",
+      "projects": "{count, plural, one {Project} other {Projects}}",
+      "organizations": "{count, plural, one {Organization} other {Organizations}}"
     },
     "siteBadge": "CCM",
     "featuredBadge": "Featured",
@@ -1909,7 +1929,8 @@
       "description": "Follow this region to hear when something's posted.",
       "cta": "Follow this region"
     },
-    "metaNotFound": "News Not Found"
+    "metaNotFound": "News Not Found",
+    "resultsCount": "{count, plural, one {# result found} other {# results found}}"
   },
   "regional": {
     "noLivedExperiences": "No lived experiences available yet.",
@@ -1976,7 +1997,17 @@
     "noContent": "No content available at this time.",
     "noQueryType": "No query type specified",
     "contentLoadFailed": "Failed to load content",
-    "errorLoadingContent": "Error loading content: {error}"
+    "errorLoadingContent": "Error loading content: {error}",
+    "downloadsCount": "{count, plural, one {# download} other {# downloads}}",
+    "sourceKind": {
+      "news": "News",
+      "research": "Research",
+      "blog": "Blog",
+      "report": "Report",
+      "press": "Press",
+      "policy": "Policy",
+      "other": "External"
+    }
   },
   "map": {
     "title": "Explore by region",
@@ -2255,7 +2286,10 @@
   "reader": {
     "chapters": "Chapters",
     "onThisPage": "On this page",
-    "footnotes": "Footnotes"
+    "footnotes": "Footnotes",
+    "backToReference": "Back to reference {number}",
+    "documentTitle": "Global Research and Action Agenda",
+    "title": "Reader"
   },
   "atlas": {
     "title": "Atlas",
@@ -2649,7 +2683,22 @@
     "cancel": "Cancel",
     "submit": "Submit for review",
     "success": "Thank you — your research output was submitted for review.",
-    "submitError": "We couldn't submit your research output. Please try again."
+    "submitError": "We couldn't submit your research output. Please try again.",
+    "regions": {
+      "ssa": "Sub-Saharan Africa",
+      "nawa": "Northern Africa & Western Asia",
+      "csa": "Central & Southern Asia",
+      "esea": "Eastern & South-Eastern Asia",
+      "lac": "Latin America & the Caribbean",
+      "oce": "Oceania",
+      "enam": "Europe & Northern America"
+    },
+    "themes": {
+      "displacement": "Displacement",
+      "livelihoods": "Livelihoods",
+      "youth": "Youth",
+      "indigenous": "Indigenous"
+    }
   },
   "editorReview": {
     "status": {
@@ -2671,7 +2720,9 @@
       "researchOutput": "Research output",
       "event": "Event",
       "person": "Member",
-      "region": "Regional community"
+      "region": "Regional community",
+      "report": "Report",
+      "project": "Project"
     },
     "untitled": "Untitled",
     "new": "New",
@@ -2767,7 +2818,9 @@
       "pickCommunity": "Pick a community.",
       "pickRegion": "Pick a region.",
       "sentTo": "{count, plural, one {Sent to # member.} other {Sent to # members.}}",
-      "send": "Send notification"
+      "send": "Send notification",
+      "title": "Send a notification",
+      "description": "Notify a single member, a community, a region, or everyone. Recipients get an in-app notification (and an email if they haven't opted out)."
     },
     "queue": {
       "tabPending": "Pending (anonymous)",
@@ -2779,7 +2832,8 @@
       "reports": "{count, plural, one {# report} other {# reports}}",
       "approve": "Approve",
       "remove": "Remove",
-      "dismissReport": "Dismiss report"
+      "dismissReport": "Dismiss report",
+      "title": "Moderation"
     }
   },
   "requests": {

@@ -40,9 +40,10 @@ export default function RevisionAlertDialog({
   const [isProcessing, setIsProcessing] = useState(false)
   const router = useRouter()
   const t = useTranslations('revisionAlert')
+  const tCommon = useTranslations('common')
 
   const getTitle = (submission: RevisionSubmission) => {
-    return submission.title[locale] || submission.title.en || 'Untitled'
+    return submission.title[locale] || submission.title.en || tCommon('untitled')
   }
 
   const handleViewSubmissions = () => {
@@ -65,11 +66,7 @@ export default function RevisionAlertDialog({
             {t('title')}
           </DialogTitle>
           <DialogDescription className="text-sm text-muted-foreground">
-            {t('description', {
-              count: submissions.length,
-              plural: submissions.length === 1 ? 'y' : 'ies',
-              singular: submissions.length === 1 ? 's' : ''
-            })}
+            {t('description', { count: submissions.length })}
           </DialogDescription>
         </DialogHeader>
 
@@ -118,7 +115,7 @@ export default function RevisionAlertDialog({
             className="w-full sm:w-auto"
           >
             {isProcessing ? (
-              'Loading...'
+              tCommon('loading')
             ) : (
               <>
                 <Edit className="w-4 h-4 me-2" />

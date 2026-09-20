@@ -7,13 +7,13 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowLeft, Plus, MessagesSquare } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
 import { archiveThread, createThread, renameThread } from "@/lib/actions/collaboration";
 import { InlineText } from "@/components/ui/inline-text";
 import { CommentSection } from "@/components/comments/comment-section";
 import { WorkspaceEmptyState } from "./workspace-empty-state";
 import type { CollaborationRole } from "@/generated/prisma";
 import { LIMITS } from "@/lib/validation/limits";
+import { RelativeTime } from "@/components/ui/relative-time";
 
 type Thread = { id: string; title: string; createdAt: string };
 const fetcher = (url: string) => fetch(url).then((r) => r.json() as Promise<{ threads: Thread[] }>);
@@ -116,7 +116,7 @@ export function WorkspaceThreads({
                 </button>
               )}
               <span className="text-xs text-muted-foreground">
-                {formatDistanceToNow(new Date(th.createdAt), { addSuffix: true })}
+                <RelativeTime date={th.createdAt} />
               </span>
               <Button variant="ghost" size="sm" onClick={() => setOpen(th)}>
                 {t("open")}

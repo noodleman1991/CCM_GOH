@@ -41,7 +41,7 @@ export function ReaderFootnotes({ footnotes }: { footnotes: Footnote[] }) {
               <a
                 href={`#footnote-ref-${fn.number}`}
                 className="shrink-0 font-medium text-ccm-water hover:text-ccm-sea no-underline tabular-nums"
-                aria-label={`Back to reference ${fn.number}`}
+                aria-label={t("backToReference", { number: fn.number })}
               >
                 {fn.number}.
               </a>

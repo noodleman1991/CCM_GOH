@@ -257,8 +257,7 @@ export default async function NewsDetailPage({
               <div className="space-y-2">
                 <h3 className="font-semibold flex items-center gap-2">
                   <Building2 className="w-4 h-4" />
-                  {t('metadata.organization')}
-                  {newsPost.organizations.length > 1 ? 's' : ''}
+                  {t('metadata.organizations', { count: newsPost.organizations.length })}
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {newsPost.organizations.map((org: { _id: string; name: string }) => (
@@ -273,8 +272,7 @@ export default async function NewsDetailPage({
             {newsPost.projects && newsPost.projects.length > 0 && (
               <div className="space-y-2">
                 <h3 className="font-semibold flex items-center gap-2">
-                  {t('metadata.project')}
-                  {newsPost.projects.length > 1 ? 's' : ''}
+                  {t('metadata.projects', { count: newsPost.projects.length })}
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {newsPost.projects.map((project: { _id: string; name: string }) => (

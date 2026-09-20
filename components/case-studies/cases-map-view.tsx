@@ -11,6 +11,7 @@ import type { TypedCardItem } from "@/lib/cards/type-style";
 import { RC_SLUG_TO_REGION, REGION_TO_RC_SLUG, type RegionCode } from "@/lib/maps/region-codes";
 import type { RegionDatum } from "@/lib/maps/region-facets";
 import type { PinCluster } from "@/lib/maps/cluster-pins";
+import { useLocale } from "next-intl";
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
@@ -46,6 +47,7 @@ export function CasesMapView({
   galleryLabel: string;
 }) {
   const router = useRouter();
+  const locale = useLocale();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -56,7 +58,7 @@ export function CasesMapView({
   const communitiesParam = (searchParams.get("communities") ?? "").split(",").map((v) => v.trim()).filter(Boolean);
   const activeRegion = communitiesParam.length === 1 ? RC_SLUG_TO_REGION[communitiesParam[0]] : undefined;
   const { data: pinsData } = useSWR<{ pins: PinCluster[] }>(
-    activeRegion ? `/api/maps/region-pins?region=${activeRegion}&facets=caseStudyCount` : null,
+    activeRegion ? `/api/maps/region-pins?region=${activeRegion}&locale=${locale}&facets=caseStudyCount` : null,
     fetcher,
     { revalidateOnFocus: false, dedupingInterval: 60000 }
   );

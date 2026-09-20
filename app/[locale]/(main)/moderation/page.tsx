@@ -37,11 +37,12 @@ export default async function ModerationPage({
   const tab: QueueTab =
     rawTab === "flagged" || rawTab === "reported" ? rawTab : "pending";
 
+  const tMod = await getTranslations("moderation");
   const [items, counts] = await Promise.all([getQueue(tab), getQueueCounts()]);
 
   return (
     <div className="container max-w-4xl py-8">
-      <h1 className="mb-6 text-3xl font-heading font-bold text-ccm-midnight">Moderation</h1>
+      <h1 className="mb-6 text-3xl font-heading font-bold text-ccm-midnight">{tMod("queue.title")}</h1>
       <ModerationQueue tab={tab} items={items} counts={counts} />
     </div>
   );

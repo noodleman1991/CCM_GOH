@@ -4,11 +4,9 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { MapPin, Users, Briefcase, Award, Clock } from "lucide-react"
 import { useTranslations, useLocale } from 'next-intl'
-import { formatDistanceToNow, type Locale } from 'date-fns'
-import { es as esLocale, fr as frLocale, ar as arLocale } from 'date-fns/locale'
 import { BlurFade } from "@/components/magicui/blur-fade"
+import { relativeTime } from '@/lib/date-locales'
 
-const DATE_LOCALES: Record<string, Locale> = { es: esLocale, fr: frLocale, ar: arLocale }
 
 const BLUR_FADE_DELAY = 0.04
 
@@ -29,10 +27,7 @@ export function ProfileStatistics({ user, className }: ProfileStatisticsProps) {
     const t = useTranslations('profile.statistics')
     const locale = useLocale()
 
-    const memberSince = formatDistanceToNow(user.createdAt, {
-        addSuffix: false,
-        locale: DATE_LOCALES[locale],
-    })
+    const memberSince = relativeTime(user.createdAt, locale, false)
     const location = [user.city, user.country].filter(Boolean).join(', ')
 
     const stats = [

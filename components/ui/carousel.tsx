@@ -241,6 +241,7 @@ function CarouselDots({
 }: React.HTMLAttributes<HTMLDivElement> & {
   size?: "sm" | "lg";
 }) {
+  const t = useTranslations("common");
   const { api } = useCarousel();
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const [slideCount, setSlideCount] = React.useState(0);
@@ -280,7 +281,7 @@ function CarouselDots({
             "hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
             "disabled:pointer-events-none disabled:opacity-50"
           )}
-          aria-label={`Go to slide ${index + 1}`}
+          aria-label={t("goToSlide", { index: index + 1 })}
         >
           <span
             className={cn(
@@ -302,6 +303,7 @@ function CarouselCounter({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
+  const t = useTranslations("common");
   const { api } = useCarousel();
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const [slideCount, setSlideCount] = React.useState(0);
@@ -328,7 +330,7 @@ function CarouselCounter({
       )}
       {...props}
     >
-      Slide {selectedIndex + 1} of {slideCount}
+      {t("slideOf", { index: selectedIndex + 1, count: slideCount })}
     </div>
   );
 }

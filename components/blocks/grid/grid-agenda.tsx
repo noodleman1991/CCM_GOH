@@ -55,6 +55,7 @@ export default function GridAgendaComponent({
                                             }: GridAgendaComponentProps) {
     const t = useTranslations('regional');
     const tBlocks = useTranslations('blocks');
+    const tCommon = useTranslations('common');
 
     if (!agenda) return null;
 
@@ -164,7 +165,7 @@ export default function GridAgendaComponent({
                         {totalDownloads > 0 && (
                             <div className="flex items-center gap-1">
                                 <Eye className="h-3 w-3" />
-                                <span>{totalDownloads} {tBlocks('downloads')}</span>
+                                <span>{tBlocks('downloadsCount', { count: totalDownloads })}</span>
                             </div>
                         )}
                     </div>
@@ -191,7 +192,7 @@ export default function GridAgendaComponent({
                         })}
                         {tags.length > 3 && (
                             <Badge variant="outline" className="text-xs">
-                                +{tags.length - 3} more
+                                {tCommon('moreCount', { count: tags.length - 3 })}
                             </Badge>
                         )}
                     </div>

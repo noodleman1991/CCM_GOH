@@ -29,6 +29,8 @@ export default function WorkspaceOutputs({
   canEdit: boolean;
 }) {
   const t = useTranslations("outputs");
+  const tType = useTranslations("typedCards");
+  const tCommon = useTranslations("common");
   const router = useRouter();
   const [pending, start] = useTransition();
   const [adding, setAdding] = useState(false);
@@ -53,7 +55,7 @@ export default function WorkspaceOutputs({
       return;
     }
     start(async () => {
-      const res = await addOutput({ collaborationId, sanityType, mode: "create", title: "Untitled" });
+      const res = await addOutput({ collaborationId, sanityType, mode: "create", title: tCommon("untitled") });
       if (res.ok) {
         setAdding(false);
         router.refresh();
@@ -92,7 +94,7 @@ export default function WorkspaceOutputs({
             return (
               <Card key={o.id} className="space-y-2 p-4">
                 <span className="inline-block rounded-full bg-ccm-sky/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-ccm-sea">
-                  {def?.label ?? o.sanityType}
+                  {def ? tType(`type.${def.type}`) : o.sanityType}
                 </span>
                 {published ? (
                   <Link
@@ -147,7 +149,7 @@ export default function WorkspaceOutputs({
             <div className="flex flex-wrap gap-2">
               {OUTPUT_TYPES.map((d) => (
                 <Button key={d.type} size="sm" variant="outline" disabled={pending} onClick={() => create(d.type)}>
-                  {d.label}
+                  {tType(`type.${d.type}`)}
                 </Button>
               ))}
             </div>

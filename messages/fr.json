@@ -184,7 +184,14 @@
     "emailInvalid": "Veuillez saisir une adresse e-mail valide",
     "untitled": "Sans titre",
     "charCount": "{count} / {max}",
-    "charCountSr": "{count} caractères sur {max}"
+    "charCountSr": "{count} caractères sur {max}",
+    "moreCount": "+{count} autres",
+    "featured": "À la une",
+    "present": "Aujourd'hui",
+    "goToSlide": "Aller à la diapositive {index}",
+    "slideOf": "Diapositive {index} sur {count}",
+    "resultsCount": "{count, plural, one {# résultat trouvé} other {# résultats trouvés}}",
+    "external": "Externe"
   },
   "dashboard": {
     "pageTitle": "Tableau de bord - Connecting Climate Minds Hub",
@@ -389,7 +396,13 @@
     "theProject": "le projet organisateur",
     "attendeesHeading": "Qui vient · {count}",
     "attendeesNone": "Pas encore de réponses — partagez l'événement pour le faire connaître.",
-    "attendeesInterested": "{count} autres intéressé·es"
+    "attendeesInterested": "{count} autres intéressé·es",
+    "relation": {
+      "hosts": "Organise",
+      "co-hosts": "Co-organise",
+      "partners": "Partenaires",
+      "related": "En lien"
+    }
   },
   "plan": {
     "empty": "Pas encore de plan.",
@@ -459,7 +472,8 @@
       "contactDeclined": "a refusé votre demande de contact",
       "removedFromWorkspace": "vous a retiré·e de « {title} »",
       "rsvpGoing": "Vous participez à « {title} » — {when}"
-    }
+    },
+    "unreadCount": "{count, plural, one {# notification non lue} other {# notifications non lues}}"
   },
   "dates": {
     "today": "Aujourd'hui",
@@ -1083,7 +1097,9 @@
     }
   },
   "caseStudy": {
-    "backToCaseStudies": "Retour aux Études de Cas"
+    "backToCaseStudies": "Retour aux Études de Cas",
+    "coAuthorsCount": "+{count, plural, one {# auteur·ice} other {# auteur·ices}}",
+    "publishedOn": "Publié le {date}"
   },
   "livedExperiences": {
     "relatedContent": "Associé",
@@ -1124,7 +1140,8 @@
     "atAGlance": "En un coup d'œil",
     "published": "Publié",
     "author": "Auteur·e",
-    "community": "Communauté"
+    "community": "Communauté",
+    "videoCount": "{count, plural, one {# vidéo} other {# vidéos}}"
   },
   "caseStudyForm": {
     "sections": {
@@ -1834,11 +1851,12 @@
     "writtenBy": "Écrit par",
     "withOrgs": "Avec",
     "metaNotFound": "Étude de cas introuvable",
-    "metaFallbackTitle": "Étude de cas"
+    "metaFallbackTitle": "Étude de cas",
+    "resultsCount": "{count, plural, one {# résultat trouvé} other {# résultats trouvés}}"
   },
   "revisionAlert": {
     "title": "Action Requise: Révision Nécessaire",
-    "description": "Vous avez {count} étude{plural} de cas qui nécessite{singular} une révision basée sur les commentaires de l'éditeur.",
+    "description": "{count, plural, one {Vous avez # étude de cas à réviser d'après les commentaires de l'équipe éditoriale.} other {Vous avez # études de cas à réviser d'après les commentaires de l'équipe éditoriale.}}",
     "editorFeedback": "Commentaires de l'éditeur:",
     "actions": {
       "remindLater": "Me Rappeler Plus Tard",
@@ -1899,7 +1917,9 @@
       "organization": "Organisation",
       "project": "Projet",
       "location": "Emplacement",
-      "publishDate": "Publié"
+      "publishDate": "Publié",
+      "projects": "{count, plural, one {Projet} other {Projets}}",
+      "organizations": "{count, plural, one {Organisation} other {Organisations}}"
     },
     "siteBadge": "CCM",
     "featuredBadge": "À la une",
@@ -1909,7 +1929,8 @@
       "description": "Suivez cette région pour être averti dès qu'une actualité est publiée.",
       "cta": "Suivre cette région"
     },
-    "metaNotFound": "Actualité introuvable"
+    "metaNotFound": "Actualité introuvable",
+    "resultsCount": "{count, plural, one {# résultat trouvé} other {# résultats trouvés}}"
   },
   "regional": {
     "noLivedExperiences": "Aucune expérience vécue disponible pour le moment.",
@@ -1976,7 +1997,17 @@
     "noContent": "Aucun contenu disponible pour le moment.",
     "noQueryType": "Aucun type de requête spécifié",
     "contentLoadFailed": "Échec du chargement du contenu",
-    "errorLoadingContent": "Erreur lors du chargement du contenu : {error}"
+    "errorLoadingContent": "Erreur lors du chargement du contenu : {error}",
+    "downloadsCount": "{count, plural, one {# téléchargement} other {# téléchargements}}",
+    "sourceKind": {
+      "news": "Actualités",
+      "research": "Recherche",
+      "blog": "Blog",
+      "report": "Rapport",
+      "press": "Presse",
+      "policy": "Politique",
+      "other": "Externe"
+    }
   },
   "map": {
     "title": "Explorer par région",
@@ -2255,7 +2286,10 @@
   "reader": {
     "chapters": "Chapitres",
     "onThisPage": "Sur cette page",
-    "footnotes": "Notes de bas de page"
+    "footnotes": "Notes de bas de page",
+    "backToReference": "Retour à la référence {number}",
+    "documentTitle": "Agenda mondial de recherche et d'action",
+    "title": "Lecteur"
   },
   "atlas": {
     "title": "Atlas",
@@ -2649,7 +2683,22 @@
     "cancel": "Annuler",
     "submit": "Soumettre pour relecture",
     "success": "Merci — votre production de recherche a été soumise pour relecture.",
-    "submitError": "Nous n'avons pas pu envoyer votre production de recherche. Veuillez réessayer."
+    "submitError": "Nous n'avons pas pu envoyer votre production de recherche. Veuillez réessayer.",
+    "regions": {
+      "ssa": "Afrique subsaharienne",
+      "nawa": "Afrique du Nord et Asie occidentale",
+      "csa": "Asie centrale et du Sud",
+      "esea": "Asie de l'Est et du Sud-Est",
+      "lac": "Amérique latine et Caraïbes",
+      "oce": "Océanie",
+      "enam": "Europe et Amérique du Nord"
+    },
+    "themes": {
+      "displacement": "Déplacements",
+      "livelihoods": "Moyens de subsistance",
+      "youth": "Jeunesse",
+      "indigenous": "Peuples autochtones"
+    }
   },
   "editorReview": {
     "status": {
@@ -2671,7 +2720,9 @@
       "researchOutput": "Production de recherche",
       "event": "Événement",
       "person": "Membre",
-      "region": "Communauté régionale"
+      "region": "Communauté régionale",
+      "report": "Rapport",
+      "project": "Projet"
     },
     "untitled": "Sans titre",
     "new": "Nouveau",
@@ -2767,7 +2818,9 @@
       "pickCommunity": "Choisissez une communauté.",
       "pickRegion": "Choisissez une région.",
       "sentTo": "{count, plural, one {Envoyé à # membre.} other {Envoyé à # membres.}}",
-      "send": "Envoyer la notification"
+      "send": "Envoyer la notification",
+      "title": "Envoyer une notification",
+      "description": "Prévenez une personne, une communauté, une région ou tout le monde. Les destinataires reçoivent une notification dans l'application (et un e-mail s'ils ne l'ont pas désactivé)."
     },
     "queue": {
       "tabPending": "En attente (anonymes)",
@@ -2779,7 +2832,8 @@
       "reports": "{count, plural, one {# signalement} other {# signalements}}",
       "approve": "Approuver",
       "remove": "Supprimer",
-      "dismissReport": "Rejeter le signalement"
+      "dismissReport": "Rejeter le signalement",
+      "title": "Modération"
     }
   },
   "requests": {

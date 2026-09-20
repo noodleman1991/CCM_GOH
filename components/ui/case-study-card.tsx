@@ -92,7 +92,7 @@ export function CaseStudyCard({
             </h3>
             {caseStudy.publishedAt && (
               <p className="text-xs text-muted-foreground mt-1">
-                {formatDate(caseStudy.publishedAt)}
+                {formatDate(caseStudy.publishedAt, locale)}
               </p>
             )}
           </div>
@@ -121,6 +121,7 @@ export function CaseStudyCard({
 }
 
 import { Link } from "@/i18n/navigation";
+import { useTranslations } from 'next-intl';
 
 export default function CaseStudyCardComponent({
                                           title,
@@ -136,6 +137,8 @@ export default function CaseStudyCardComponent({
                                           featured = false,
                                           locale = 'en',
                                       }: CaseStudyCardProps) {
+  const tCommon = useTranslations('common');
+  const tCS = useTranslations('caseStudy');
     const localizedTitle = getLocalizedValue(title, locale);
     const localizedSubtitle = getLocalizedValue(subtitle, locale);
     const localizedExcerpt = getLocalizedValue(excerpt, locale);
@@ -147,7 +150,7 @@ export default function CaseStudyCardComponent({
     const formatStudyPeriod = () => {
         if (!studyPeriod?.startDate) return null;
         const start = new Date(studyPeriod.startDate).getFullYear();
-        const end = studyPeriod.endDate ? new Date(studyPeriod.endDate).getFullYear() : "Present";
+        const end = studyPeriod.endDate ? new Date(studyPeriod.endDate).getFullYear() : tCommon('present');
         return start === end ? start : `${start} - ${end}`;
     };
 
@@ -173,7 +176,7 @@ export default function CaseStudyCardComponent({
                     {featured && (
                         <div className="absolute top-3 end-3 bg-primary text-primary-foreground px-3 py-1.5 rounded-full flex items-center gap-1">
                             <Award className="w-3 h-3" />
-                            <span className="text-xs font-medium">Featured</span>
+                            <span className="text-xs font-medium">{tCommon('featured')}</span>
                         </div>
                     )}
                     {studyPeriod && (
@@ -238,7 +241,7 @@ export default function CaseStudyCardComponent({
                 {leadAuthor?.name}
                                 {coAuthorsCount > 0 && (
                                     <span className="text-xs ms-1">
-                    +{coAuthorsCount} {coAuthorsCount === 1 ? 'author' : 'authors'}
+                    {tCS('coAuthorsCount', { count: coAuthorsCount })}
                   </span>
                                 )}
               </span>
@@ -268,7 +271,7 @@ export default function CaseStudyCardComponent({
                         <div className="flex items-center gap-1 text-muted-foreground">
                             <Calendar className="w-3 h-3" />
                             <time dateTime={publishedAt} className="text-xs">
-                                Published {formatDate(publishedAt)}
+                                {tCS('publishedOn', { date: formatDate(publishedAt, locale) })}
                             </time>
                         </div>
                     )}

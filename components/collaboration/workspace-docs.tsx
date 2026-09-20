@@ -29,6 +29,7 @@ export function WorkspaceDocs({
   canEdit: boolean;
 }) {
   const t = useTranslations("docs");
+  const tCommon = useTranslations("common");
   const tc = useTranslations("collaboration");
   const [docs, setDocs] = useState<Doc[]>(initialDocs);
   const [openId, setOpenId] = useState<string | null>(null);
@@ -39,7 +40,7 @@ export function WorkspaceDocs({
   const create = async () => {
     const res = await createDoc(collaborationId);
     if (!res.ok) { toast.error(res.error); return; }
-    const doc: Doc = { id: res.docId, title: "Untitled", content: [], updatedAt: new Date().toISOString() };
+    const doc: Doc = { id: res.docId, title: tCommon("untitled"), content: [], updatedAt: new Date().toISOString() };
     setDocs((d) => [...d, doc]);
     setOpenId(doc.id);
   };

@@ -12,6 +12,7 @@ import {
 import { imageUrl } from '@/lib/content/images';
 import { cn } from '@/lib/utils';
 import { normalizeTagColor, sortedTags } from '@/lib/tags';
+import { useTranslations } from 'next-intl';
 
 // Define the external source type based on the schema
 interface ExternalSource {
@@ -105,6 +106,8 @@ export default function GridExternalSourceComponent({
     cardVariant = "classic",
     imageSizes,
 }: GridExternalSourceComponentProps) {
+    const tCommon = useTranslations('common');
+    const tBlocks = useTranslations('blocks');
     if (!externalSource) return null;
 
     const isWide = cardVariant === "wide";
@@ -120,40 +123,14 @@ export default function GridExternalSourceComponent({
     const publishDate = externalSource.publishedAt ? new Date(externalSource.publishedAt) : null;
 
     // Localized text helpers
-    const getMoreText = (count: number) => {
-        const moreTexts = {
-            en: 'more',
-            es: 'más',
-            fr: 'autres',
-            ar: 'آخرين'
-        };
-        return `+${count} ${moreTexts[supportedLocale] || 'more'}`;
-    };
+    const getMoreText = (count: number) => tCommon('moreCount', { count });
 
     const getSourceTypeText = () => {
-        const typeTexts: Record<string, Record<string, string>> = {
-            news: { en: 'News', es: 'Noticias', fr: 'Actualités', ar: 'أخبار' },
-            research: { en: 'Research', es: 'Investigación', fr: 'Recherche', ar: 'بحث' },
-            blog: { en: 'Blog', es: 'Blog', fr: 'Blog', ar: 'مدونة' },
-            report: { en: 'Report', es: 'Informe', fr: 'Rapport', ar: 'تقرير' },
-            press: { en: 'Press', es: 'Prensa', fr: 'Presse', ar: 'صحافة' },
-            policy: { en: 'Policy', es: 'Política', fr: 'Politique', ar: 'سياسة' },
-            other: { en: 'External', es: 'Externo', fr: 'Externe', ar: 'خارجي' },
-        };
-
-        const sourceType = externalSource.sourceType || 'other';
-        return typeTexts[sourceType]?.[supportedLocale] || typeTexts['other'][supportedLocale];
+        const kind = externalSource.sourceType || 'other';
+        return tBlocks.has(`sourceKind.${kind}`) ? tBlocks(`sourceKind.${kind}`) : tBlocks('sourceKind.other');
     };
 
-    const getFeaturedText = () => {
-        const featuredTexts = {
-            en: 'Featured',
-            es: 'Destacado',
-            fr: 'En vedette',
-            ar: 'مميز'
-        };
-        return featuredTexts[supportedLocale] || 'Featured';
-    };
+    const getFeaturedText = () => tCommon('featured');
 
     return (
         <Link

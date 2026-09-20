@@ -132,6 +132,8 @@ export default function GridLivedExperienceComponent({
                                                         cardVariant = "classic",
                                                     }: GridLivedExperienceProps) {
     const t = useTranslations('regional');
+    const tCommon = useTranslations('common');
+    const tType = useTranslations('typedCards');
 
     if (!livedExperience) return null;
 
@@ -151,35 +153,11 @@ export default function GridLivedExperienceComponent({
     const videoInfo = getVideoInfo(livedExperience.videoUrl);
 
     // Localized text helpers
-    const getMoreText = (count: number) => {
-        const moreTexts = {
-            en: 'more',
-            es: 'más',
-            fr: 'autres',
-            ar: 'آخرين'
-        };
-        return `+${count} ${moreTexts[supportedLocale] || 'more'}`;
-    };
+    const getMoreText = (count: number) => tCommon('moreCount', { count });
 
-    const getExperienceTypeText = () => {
-        const typeTexts = {
-            en: 'Lived Experience',
-            es: 'Experiencia Vivida',
-            fr: 'Expérience Vécue',
-            ar: 'تجربة معيشة'
-        };
-        return typeTexts[supportedLocale] || 'Lived Experience';
-    };
+    const getExperienceTypeText = () => tType('type.livedExperience');
 
-    const getFeaturedText = () => {
-        const featuredTexts = {
-            en: 'Featured',
-            es: 'Destacado',
-            fr: 'En vedette',
-            ar: 'مميز'
-        };
-        return featuredTexts[supportedLocale] || 'Featured';
-    };
+    const getFeaturedText = () => tCommon('featured');
 
     return (
         <Card className={cn(

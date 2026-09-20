@@ -8,7 +8,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
-import { formatDistanceToNow } from "date-fns";
 import { MessageCircle } from "lucide-react";
 import { postComment, toggleReaction, deleteComment, reportComment } from "@/lib/actions/comments";
 import { TurnstileWidget, TURNSTILE_SITE_KEY } from "@/components/comments/turnstile-widget";
@@ -35,6 +34,7 @@ function richToPlain(blocks: unknown[]): string {
 }
 import type { CommentDTO, CommentPage } from "@/lib/comments/types";
 import type { CommentTargetType } from "@/generated/prisma";
+import { RelativeTime } from "@/components/ui/relative-time";
 
 const fetcher = (url: string) =>
   fetch(url).then((r) =>
@@ -293,7 +293,7 @@ function CommentItem({
               <bdi>{comment.authorName ?? t("anonymous")}</bdi>
             </span>
             <span className="ms-2 text-xs text-muted-foreground">
-              {formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true })}
+              <RelativeTime date={comment.createdAt} />
             </span>
             {isPending && (
               <span className="ms-2 rounded-full bg-amber-100 px-2 py-0.5 text-xs text-amber-700">
