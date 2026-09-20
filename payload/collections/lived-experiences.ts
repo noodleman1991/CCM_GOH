@@ -199,6 +199,20 @@ export const LivedExperiences: CollectionConfig = {
     },
     relationshipField("organizations", "organizations", { hasMany: true }),
     relationshipField("tags", "tags", { hasMany: true }),
+    {
+      // Free-text tags the submitter proposed and no existing tag matched
+      // (lib/tags/fuzzy.ts). Editors only: create the tag in Tags, attach it
+      // above, then clear this list. Never rendered publicly.
+      name: "suggestedTags",
+      type: "text",
+      hasMany: true,
+      maxRows: 3,
+      access: { read: isEditorField },
+      admin: {
+        position: "sidebar",
+        description: "Suggested by the submitter. Create the tag in Tags, attach it, then clear this list.",
+      },
+    },
     { name: "featured", type: "checkbox", index: true, defaultValue: false },
     {
       // Studio's approve / request-revision / reject document actions, as

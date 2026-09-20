@@ -390,7 +390,18 @@
     "address": "Address",
     "phone": "Phone number",
     "submit": "Submit",
-    "reset": "Reset"
+    "reset": "Reset",
+    "tagSuggestions": {
+      "label": "Suggest a tag",
+      "hint": "Can't find the right tag? Suggest up to {max}. Our editors review suggestions and create the ones the community needs.",
+      "placeholder": "e.g. Eco-anxiety",
+      "add": "Add",
+      "didYouMean": "Did you mean:",
+      "alreadyExists": "That tag already exists — pick it above.",
+      "limitReached": "You've suggested {max} tags, the maximum.",
+      "yourSuggestions": "Your suggested tags",
+      "remove": "Remove suggestion {tag}"
+    }
   },
   "profile": {
     "noName": "No name",

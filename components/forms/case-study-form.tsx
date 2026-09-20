@@ -39,6 +39,7 @@ import {
 import { LIMITS } from '@/lib/validation/limits';
 import { CharCounter } from '@/components/ui/char-counter';
 import { enumLabel } from '@/lib/i18n/labels';
+import { TagSuggestions } from '@/components/forms/tag-suggestions';
 
 // Localized validation messages (resolved from t() inside the component so the
 // Zod errors show in the user's language — the proven newsletter pattern).
@@ -179,6 +180,7 @@ export default function ImprovedCaseStudyForm({
     }), [t]);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
+    const [suggestedTags, setSuggestedTags] = useState<string[]>([]);
     const [selectedCommunity, setSelectedCommunity] = useState<string>('');
     const [isGeocoding, setIsGeocoding] = useState(false);
     const [place, setPlace] = useState<PlaceValue | null>(null);
@@ -495,6 +497,7 @@ export default function ImprovedCaseStudyForm({
                 ...formData,
                 topic: formData.topic,
                 tags: selectedTags,
+                suggestedTags,
                 submittedBy: userId,
                 submittedAt: new Date().toISOString(),
                 authors: (formData.authors || []).map((author, index) => ({
@@ -1027,6 +1030,15 @@ export default function ImprovedCaseStudyForm({
                         {errors['tags'] && (
                             <p className="mt-2 text-sm text-destructive">{errors['tags']}</p>
                         )}
+                        <TagSuggestions
+                            availableTags={availableTags.map((tag) => ({ id: tag._id, label: tag.label, value: tag.value }))}
+                            selectedTagIds={selectedTags}
+                            onPickExisting={(id) => {
+                                if (!selectedTags.includes(id)) handleTagToggle(id);
+                            }}
+                            value={suggestedTags}
+                            onChange={setSuggestedTags}
+                        />
                     </div>
 
                     <div className="md:col-span-2">

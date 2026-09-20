@@ -8,6 +8,9 @@ import type { Locale, Localized, RichText, SearchRecord } from "@/lib/content/ty
 import { localize } from "@/lib/content/types";
 import { prisma, safeQuery } from "@/lib/prisma";
 import { generateResearchOutputSlug } from "@/lib/validation/research-output";
+import { cleanSuggestions } from "@/lib/tags/fuzzy";
+import { getTags } from "@/lib/content/taxonomy";
+import { LIMITS } from "@/lib/validation/limits";
 
 /**
  * The module's own name, as `CONTENT_BACKEND_OUTPUTS` spells it.
@@ -911,6 +914,8 @@ export interface ResearchOutputInput {
   region?: string;
   themes?: string[];
   tagIds?: string[];
+  /** Free-text tag suggestions (cleaned against existing tags before storing). */
+  suggestedTags?: string[];
   communityIds?: string[];
   language: "en" | "es" | "fr" | "ar";
   /** X7 edit mode: resubmit an existing draft/pending/revision doc. */
@@ -1007,6 +1012,7 @@ export async function submitResearchOutput(input: ResearchOutputInput): Promise<
     region: input.region || undefined,
     themes: input.themes && input.themes.length > 0 ? input.themes : undefined,
     tagIds: input.tagIds,
+    suggestedTags: cleanSuggestions(input.suggestedTags ?? [], await getTags(), { max: LIMITS.tags.suggestions, maxLength: LIMITS.tags.suggestion }),
     communityIds: input.communityIds,
   };
 

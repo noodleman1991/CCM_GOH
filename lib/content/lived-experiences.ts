@@ -10,6 +10,9 @@ import type { SubmissionDraft, SubmissionField } from "@/lib/content/internal/pa
 import type { ContentRegion, ContentTag, Localized, RichText } from "@/lib/content/types";
 import { prisma, safeQuery } from "@/lib/prisma";
 import { generateLivedExperienceSlug } from "@/lib/validation/lived-experience";
+import { cleanSuggestions } from "@/lib/tags/fuzzy";
+import { getTags } from "@/lib/content/taxonomy";
+import { LIMITS } from "@/lib/validation/limits";
 
 /** The module's own name, as `CONTENT_BACKEND_LIVED_EXPERIENCES` spells it. */
 const onPayload = (): boolean => activeBackend("lived-experiences") === "payload";
@@ -408,6 +411,8 @@ export interface LivedExperienceSubmissionInput {
   body?: RichText;
   regionalCommunityId?: string;
   tagIds?: string[];
+  /** Free-text tag suggestions (cleaned against existing tags before storing). */
+  suggestedTags?: string[];
   /** X7 edit mode: resubmit an existing draft/pending/revision doc. */
   editId?: string;
   videoFile?: { buffer: Buffer; filename: string; contentType: string } | null;
@@ -483,6 +488,7 @@ const SANITY_SUBMISSION_FIELD: Record<SubmissionField, string> = {
   body: "body",
   community: "relatedCommunity",
   tags: "tags",
+  suggestedTags: "suggestedTags",
   videoAsset: "videoFile",
 };
 
@@ -515,6 +521,7 @@ export async function submitLivedExperience(
     body: Array.isArray(input.body) && input.body.length > 0 ? input.body : undefined,
     community: input.regionalCommunityId || undefined,
     tags: input.tagIds && input.tagIds.length > 0 ? input.tagIds : undefined,
+    suggestedTags: cleanSuggestions(input.suggestedTags ?? [], await getTags(), { max: LIMITS.tags.suggestions, maxLength: LIMITS.tags.suggestion }),
     videoAsset,
   };
 

@@ -1055,6 +1055,7 @@ export interface ResearchOutputDraft {
   region?: string;
   themes?: string[];
   tagIds?: string[];
+  suggestedTags?: string[];
   communityIds?: string[];
 }
 
@@ -1074,6 +1075,7 @@ function payloadData(draft: ResearchOutputDraft): Record<string, unknown> {
   if (draft.themes && draft.themes.length > 0) data.themes = draft.themes;
   if (draft.body && draft.body.length > 0) data.body = draft.body;
   if (draft.tagIds && draft.tagIds.length > 0) data.tags = draft.tagIds;
+  if (draft.suggestedTags && draft.suggestedTags.length > 0) data.suggestedTags = draft.suggestedTags;
   if (draft.communityIds && draft.communityIds.length > 0) {
     data.relatedCommunities = draft.communityIds;
   }

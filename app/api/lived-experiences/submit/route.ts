@@ -116,6 +116,7 @@ export async function POST(request: NextRequest) {
       body: data.body,
       regionalCommunityId: data.regionalCommunityId,
       tagIds: data.tagIds,
+      suggestedTags: data.suggestedTags,
       editId: data.editId,
       videoFile: videoFilePayload,
     });

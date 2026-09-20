@@ -1518,6 +1518,7 @@ export interface CaseStudyDraft {
   topic: string;
   layout: string;
   tagIds: string[];
+  suggestedTags?: string[];
   relatedCommunity?: string;
   organizationIds?: string[];
   studyPeriod?: { startDate?: string; endDate?: string };
@@ -1577,6 +1578,7 @@ function payloadData(draft: CaseStudyDraft): Record<string, unknown> {
     featured: false,
   };
   if (draft.excerpt?.en) data.excerpt = draft.excerpt.en;
+  if (draft.suggestedTags && draft.suggestedTags.length > 0) data.suggestedTags = draft.suggestedTags;
   if (draft.studyPeriod) data.studyPeriod = draft.studyPeriod;
   if (draft.locationText) data.locationText = draft.locationText;
   const point = toPoint(draft.studyLocation);

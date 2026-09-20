@@ -753,6 +753,7 @@ export interface SubmissionDraft {
   community?: string;
   /** `tag` ids. */
   tags?: string[];
+  suggestedTags?: string[];
   /** An already-uploaded asset's id. */
   videoAsset?: string;
 }
@@ -770,6 +771,7 @@ const PAYLOAD_FIELD: Record<SubmissionField, string> = {
   body: "body",
   community: "relatedCommunity",
   tags: "tags",
+  suggestedTags: "suggestedTags",
   videoAsset: "videoFile",
 };
 
@@ -802,6 +804,7 @@ function payloadData(draft: SubmissionDraft): Record<string, unknown> {
   if (draft.body) data.body = portableTextToLexical(draft.body);
   if (draft.community) data.relatedCommunity = draft.community;
   if (draft.tags) data.tags = draft.tags;
+  if (draft.suggestedTags && draft.suggestedTags.length > 0) data.suggestedTags = draft.suggestedTags;
   if (draft.videoAsset) data.videoFile = draft.videoAsset;
   return data;
 }

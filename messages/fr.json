@@ -516,7 +516,18 @@
     "address": "Adresse",
     "phone": "Numéro de téléphone",
     "submit": "Envoyer",
-    "reset": "Réinitialiser"
+    "reset": "Réinitialiser",
+    "tagSuggestions": {
+      "label": "Proposer un mot-clé",
+      "hint": "Vous ne trouvez pas le bon mot-clé ? Proposez-en jusqu'à {max}. L'équipe éditoriale examine les propositions et crée celles dont la communauté a besoin.",
+      "placeholder": "ex. Éco-anxiété",
+      "add": "Ajouter",
+      "didYouMean": "Vouliez-vous dire :",
+      "alreadyExists": "Ce mot-clé existe déjà : sélectionnez-le ci-dessus.",
+      "limitReached": "Vous avez proposé {max} mots-clés, le maximum.",
+      "yourSuggestions": "Vos mots-clés proposés",
+      "remove": "Retirer la proposition {tag}"
+    }
   },
   "profile": {
     "noName": "Sans nom",

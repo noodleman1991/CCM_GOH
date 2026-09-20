@@ -44,6 +44,8 @@ export function ModerationActions() {
   const { id, collectionSlug } = useDocumentInfo();
   const router = useRouter();
   const status = useFormFields(([fields]) => fields?.moderationStatus?.value);
+  const suggestedTags = useFormFields(([fields]) => fields?.suggestedTags?.value) as unknown;
+  const suggestions = Array.isArray(suggestedTags) ? suggestedTags.filter((s): s is string => typeof s === "string" && s.length > 0) : [];
   const [pending, setPending] = useState<ModerationAction | null>(null);
   const [notesFor, setNotesFor] = useState<ModerationAction | null>(null);
   const [notes, setNotes] = useState("");
@@ -99,6 +101,15 @@ export function ModerationActions() {
 
   return (
     <div className="field-type moderation-actions" style={{ marginBottom: "1.5rem" }}>
+      {suggestions.length > 0 ? (
+        <p style={{ margin: "0 0 0.75rem" }}>
+          <strong>Suggested tags from the submitter:</strong> {suggestions.join(", ")}.{" "}
+          <a href="/admin/collections/tags/create" target="_blank" rel="noreferrer">
+            Create a tag
+          </a>
+          , attach it in the Tags field, then clear the suggestions in the sidebar.
+        </p>
+      ) : null}
       <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", alignItems: "center" }}>
         {actions.map((action) => (
           <Button

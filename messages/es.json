@@ -516,7 +516,18 @@
     "address": "Dirección",
     "phone": "Número de teléfono",
     "submit": "Enviar",
-    "reset": "Restablecer"
+    "reset": "Restablecer",
+    "tagSuggestions": {
+      "label": "Sugerir una etiqueta",
+      "hint": "¿No encuentras la etiqueta adecuada? Sugiere hasta {max}. El equipo editorial revisa las sugerencias y crea las que la comunidad necesita.",
+      "placeholder": "p. ej. Ecoansiedad",
+      "add": "Añadir",
+      "didYouMean": "¿Quisiste decir:",
+      "alreadyExists": "Esa etiqueta ya existe: selecciónala arriba.",
+      "limitReached": "Ya has sugerido {max} etiquetas, el máximo.",
+      "yourSuggestions": "Tus etiquetas sugeridas",
+      "remove": "Quitar la sugerencia {tag}"
+    }
   },
   "profile": {
     "noName": "Sin nombre",

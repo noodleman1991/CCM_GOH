@@ -114,6 +114,7 @@ export async function POST(request: NextRequest) {
       region: data.region,
       themes: data.themes,
       tagIds: data.tagIds,
+      suggestedTags: data.suggestedTags,
       communityIds: data.communityIds,
       language: data.language,
       editId: data.editId,

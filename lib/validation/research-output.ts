@@ -38,6 +38,7 @@ export const researchOutputSubmissionSchema = z.object({
   region: z.enum(RO_REGIONS).optional().or(z.literal("")),
   themes: z.array(z.string()).max(8).optional().default([]),
   tagIds: z.array(z.string()).max(6).optional().default([]),
+  suggestedTags: z.array(z.string().trim().min(1).max(LIMITS.tags.suggestion)).max(LIMITS.tags.suggestions).optional().default([]),
   communityIds: z.array(z.string()).max(7).optional().default([]),
   // New documents: one entry per multipart `version-<i>` file, in order.
   newVersions: z

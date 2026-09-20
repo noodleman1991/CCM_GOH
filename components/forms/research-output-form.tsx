@@ -33,6 +33,7 @@ import type { EditableResearchOutput } from "@/lib/content/outputs"
 import { LIMITS } from "@/lib/validation/limits";
 import { CharCounter } from "@/components/ui/char-counter"
 import { enumLabel } from "@/lib/i18n/labels"
+import { TagSuggestions } from "@/components/forms/tag-suggestions"
 
 type Tag = { _id: string; label: Record<string, string>; value?: { current: string } }
 type Community = { _id: string; name: Record<string, string>; slug?: { current: string } }
@@ -73,6 +74,7 @@ export function ResearchOutputForm({
     region: z.string().optional().or(z.literal("")),
     themes: z.array(z.string()).max(8).optional().default([]),
     tagIds: z.array(z.string()).max(6).optional().default([]),
+    suggestedTags: z.array(z.string().trim().min(1).max(LIMITS.tags.suggestion)).max(LIMITS.tags.suggestions).optional().default([]),
     communityIds: z.array(z.string()).max(7).optional().default([]),
   })
   type Values = z.input<typeof schema>
@@ -375,6 +377,16 @@ export function ResearchOutputForm({
                     />
                   ))}
                 </div>
+                <TagSuggestions
+                  availableTags={availableTags.map((tag) => ({ id: tag._id, label: tag.label, value: tag.value }))}
+                  selectedTagIds={selectedTags}
+                  onPickExisting={(id) => {
+                    if (!selectedTags.includes(id)) toggle("tagIds", id, 6)
+                  }}
+                  value={form.watch("suggestedTags") ?? []}
+                  onChange={(next) => form.setValue("suggestedTags", next, { shouldDirty: true })}
+                  idPrefix="ro-tag-suggestion"
+                />
                 <FormDescription>{t("fields.tagsHelp")}</FormDescription>
               </FormItem>
 

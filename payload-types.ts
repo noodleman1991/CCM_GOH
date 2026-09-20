@@ -674,6 +674,10 @@ export interface CaseStudy {
     caption?: string | null;
   };
   tags?: (string | Tag)[] | null;
+  /**
+   * Suggested by the submitter. Create the tag in Tags, attach it, then clear this list.
+   */
+  suggestedTags?: string[] | null;
   topic:
     | 'climate-environment'
     | 'mental-health'
@@ -872,6 +876,10 @@ export interface LivedExperience {
   };
   organizations?: (string | Organization)[] | null;
   tags?: (string | Tag)[] | null;
+  /**
+   * Suggested by the submitter. Create the tag in Tags, attach it, then clear this list.
+   */
+  suggestedTags?: string[] | null;
   featured?: boolean | null;
   /**
    * Editorial review state — NOT Payload's _status. 0/56 real documents have this set; the live app treats an unset status as approved. See collection header note.
@@ -969,6 +977,10 @@ export interface ResearchOutput {
   relatedCommunities?: (string | RegionalCommunity)[] | null;
   organizations?: (string | Organization)[] | null;
   tags?: (string | Tag)[] | null;
+  /**
+   * Suggested by the submitter. Create the tag in Tags, attach it, then clear this list.
+   */
+  suggestedTags?: string[] | null;
   /**
    * Editorial review state, distinct from Payload's _status. 29/29 real documents are 'approved'.
    */
@@ -3100,6 +3112,7 @@ export interface CaseStudiesSelect<T extends boolean = true> {
         caption?: T;
       };
   tags?: T;
+  suggestedTags?: T;
   topic?: T;
   layout?: T;
   region?: T;
@@ -3203,6 +3216,7 @@ export interface LivedExperiencesSelect<T extends boolean = true> {
       };
   organizations?: T;
   tags?: T;
+  suggestedTags?: T;
   featured?: T;
   moderationStatus?: T;
   submittedBy?: T;
@@ -3258,6 +3272,7 @@ export interface ResearchOutputsSelect<T extends boolean = true> {
   relatedCommunities?: T;
   organizations?: T;
   tags?: T;
+  suggestedTags?: T;
   moderationStatus?: T;
   submittedBy?: T;
   reviewNotes?: T;

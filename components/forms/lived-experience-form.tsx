@@ -35,6 +35,7 @@ import { useMemo } from "react"
 import type { z } from "zod"
 import { LIMITS } from "@/lib/validation/limits"
 import { CharCounter } from "@/components/ui/char-counter"
+import { TagSuggestions } from "@/components/forms/tag-suggestions"
 
 // Use the schema's INPUT type for the form (fields with .default are optional
 // on input), avoiding the zodResolver input/output generics mismatch.
@@ -404,6 +405,16 @@ export function LivedExperienceForm({
                     />
                   ))}
                 </div>
+                <TagSuggestions
+                  availableTags={availableTags.map((tag) => ({ id: tag._id, label: tag.label, value: tag.value }))}
+                  selectedTagIds={selectedTags}
+                  onPickExisting={(id) => {
+                    if (!selectedTags.includes(id)) toggleTag(id)
+                  }}
+                  value={form.watch("suggestedTags") ?? []}
+                  onChange={(next) => form.setValue("suggestedTags", next, { shouldDirty: true })}
+                  idPrefix="le-tag-suggestion"
+                />
                 <FormDescription>{t("fields.tagsHelp")}</FormDescription>
               </FormItem>
             </CardContent>

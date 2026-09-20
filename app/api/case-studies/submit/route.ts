@@ -108,6 +108,7 @@ export async function POST(request: NextRequest) {
             layout: data.layout,
             authors: data.authors,
             tags: data.tags,
+            suggestedTags: data.suggestedTags,
             organizationName: data.organizationName,
             relatedCommunity: data.relatedCommunity,
             studyPeriod: data.studyPeriod,

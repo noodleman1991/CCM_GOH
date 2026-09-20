@@ -61,6 +61,12 @@ export const LIMITS = {
     title: 100,
     description: 500,
   },
+  tags: {
+    /** One free-text tag suggestion on a submission. */
+    suggestion: 40,
+    /** How many a submission may carry. */
+    suggestions: 3,
+  },
   collaboration: {
     title: 200,
     description: 2000,

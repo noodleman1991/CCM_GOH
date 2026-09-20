@@ -17,6 +17,9 @@ import type { Locale, Localized, RichText, SearchRecord } from "@/lib/content/ty
 import { localize } from "@/lib/content/types";
 import { prisma, safeQuery } from "@/lib/prisma";
 import { generateCaseStudySlug } from "@/lib/validation/case-study";
+import { cleanSuggestions } from "@/lib/tags/fuzzy";
+import { getTags } from "@/lib/content/taxonomy";
+import { LIMITS } from "@/lib/validation/limits";
 
 /**
  * The module's own name, as `CONTENT_BACKEND_CASE_STUDIES` spells it.
@@ -1165,6 +1168,8 @@ export interface CaseStudyInput {
   layout?: "story" | "feature" | "report";
   authors: Array<{ userId?: string; name: string; email?: string; role?: string }>;
   tags: string[];
+  /** Free-text tag suggestions (cleaned against existing tags before storing). */
+  suggestedTags?: string[];
   organizationName?: string;
   relatedCommunity?: string;
   studyPeriod?: { startDate?: string; endDate?: string };
@@ -1344,6 +1349,7 @@ export async function submitCaseStudy(
     topic: input.topic || "other",
     layout: input.layout ?? "story",
     tagIds: input.tags,
+    suggestedTags: cleanSuggestions(input.suggestedTags ?? [], await getTags(), { max: LIMITS.tags.suggestions, maxLength: LIMITS.tags.suggestion }),
     relatedCommunity: input.relatedCommunity && input.relatedCommunity !== "" ? input.relatedCommunity : undefined,
     organizationIds: organizationIds.length > 0 ? organizationIds : undefined,
     studyPeriod: input.studyPeriod,

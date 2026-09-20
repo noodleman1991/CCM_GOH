@@ -70,6 +70,7 @@ export function makeLivedExperienceSchema(m: LEValidationMessages = LE_DEFAULT_M
       body: z.array(z.any()).optional(),
       regionalCommunityId: z.string().optional().or(z.literal("")),
       tagIds: z.array(z.string()).max(6).optional().default([]),
+      suggestedTags: z.array(z.string().trim().min(1).max(LIMITS.tags.suggestion)).max(LIMITS.tags.suggestions).optional().default([]),
       language: z.enum(["en", "es", "fr", "ar"]).default("en"),
     })
     .superRefine((data, ctx) => {

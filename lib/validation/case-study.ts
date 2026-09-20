@@ -78,6 +78,8 @@ export const caseStudySubmissionSchema = z
             )
             .min(1, 'At least one author is required'),
         tags: z.array(z.string().min(1)).min(1, 'At least one tag is required'),
+        // Free-text tag suggestions; the route de-duplicates them against existing tags.
+        suggestedTags: z.array(z.string().trim().min(1).max(LIMITS.tags.suggestion)).max(LIMITS.tags.suggestions).optional().default([]),
         organizationName: z.string().max(LIMITS.caseStudy.organizationName).optional(),
         relatedCommunity: optionalString,
         studyPeriod: z
