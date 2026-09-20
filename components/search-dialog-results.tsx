@@ -22,6 +22,7 @@ import {
 } from "@/lib/maps/region-codes";
 import { regionColor } from "@/lib/ccm-colors";
 import { cn } from "@/lib/utils";
+import { readIndexName } from "@/lib/algolia-indices"
 
 /** A flat, keyboard-navigable command-palette result. */
 type Item = {
@@ -124,9 +125,9 @@ export function SearchDialogResults({
           ? "isSearchable:true AND profileVisibility:PUBLIC"
           : "isSearchable:true AND profileVisibility:PUBLIC";
         const { results } = await searchClient.search([
-          { indexName: ALGOLIA_INDICES.CASE_STUDIES, params: { query: q, hitsPerPage: PER_GROUP, filters: "status:approved AND accessLevel:public" } },
-          { indexName: ALGOLIA_INDICES.NEWS, params: { query: q, hitsPerPage: PER_GROUP, filters: isSignedIn ? "accessLevel:public OR accessLevel:registered" : "accessLevel:public" } },
-          { indexName: ALGOLIA_INDICES.USERS, params: { query: q, hitsPerPage: PER_GROUP, filters: peopleFilter } },
+          { indexName: readIndexName(ALGOLIA_INDICES.CASE_STUDIES), params: { query: q, hitsPerPage: PER_GROUP, filters: "status:approved AND accessLevel:public" } },
+          { indexName: readIndexName(ALGOLIA_INDICES.NEWS), params: { query: q, hitsPerPage: PER_GROUP, filters: isSignedIn ? "accessLevel:public OR accessLevel:registered" : "accessLevel:public" } },
+          { indexName: readIndexName(ALGOLIA_INDICES.USERS), params: { query: q, hitsPerPage: PER_GROUP, filters: peopleFilter } },
         ] as Parameters<SearchClient["search"]>[0]);
         if (cancelled) return;
         const [cs, news, users] = results as unknown as [

@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { rateLimitRequest } from "@/lib/rate-limit-route";
 import { algoliasearch } from "algoliasearch";
 import { ALGOLIA_INDICES } from "@/lib/algolia";
+import { readIndexName } from "@/lib/algolia-indices";
 
 // Mints a short-lived, search-only, index-restricted Algolia key for the
 // browser — so the client never needs a standing NEXT_PUBLIC_* search key.
@@ -36,8 +37,11 @@ const APP_ID = process.env.ALGOLIA_APP_ID || process.env.NEXT_PUBLIC_ALGOLIA_APP
 const ADMIN_KEY = process.env.ALGOLIA_API_KEY;
 
 // Every index the frontend is allowed to query directly — single source of
-// truth shared with the admin/sync side (lib/algolia.ts).
-const PUBLIC_INDICES = Object.values(ALGOLIA_INDICES);
+// truth shared with the admin/sync side (lib/algolia.ts). Prefixed the same
+// way the search UI reads (readIndexName): with ALGOLIA_INDEX_PREFIX=dev_ the
+// key must allow dev_case_studies, or every query answers 403. Computed at
+// mint time so a test or a preview can set the prefix after import.
+const publicIndices = () => Object.values(ALGOLIA_INDICES).map(readIndexName);
 
 const KEY_VALIDITY_SECONDS = 60 * 60; // ~1h
 // Mint a replacement once the cached key has less than this much life left,
@@ -62,7 +66,7 @@ async function mintToken(): Promise<SearchToken> {
 
   const created = await client.addApiKey({
     acl: ["search"],
-    indexes: PUBLIC_INDICES,
+    indexes: publicIndices(),
     validity: KEY_VALIDITY_SECONDS,
     description: "hub-frontend-search (auto-minted by /api/search/token, self-expiring)",
   });

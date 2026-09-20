@@ -51,5 +51,8 @@ describe("GET /api/search/token", () => {
     expect(args.acl).toEqual(["search"]);
     expect(args.indexes).toContain("users");
     expect(args.indexes).toContain("case_studies");
+    // With a scratch prefix the key must cover the prefixed indices the UI reads,
+    // not the live names — the mismatch answered every local query with 403.
+    expect(args.indexes).not.toContain("dev_case_studies");
   });
 });

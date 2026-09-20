@@ -30,6 +30,7 @@ import { REGION_CODES, REGION_I18N_KEY, REGION_TO_RC_SLUG, REGION_COLOR } from '
 import { COLOR, regionColor } from '@/lib/ccm-colors'
 import { cn } from '@/lib/utils'
 import { track } from '@/lib/analytics/events'
+import { readIndexName } from '@/lib/algolia-indices'
 
 /** How many hits each group previews before "See all". */
 const PREVIEW_COUNT = 4
@@ -554,7 +555,7 @@ export default function GroupedSearch() {
                 <AlgoliaGroup
                   searchClient={searchClient}
                   groupKey="caseStudies"
-                  indexName={ALGOLIA_INDICES.CASE_STUDIES}
+                  indexName={readIndexName(ALGOLIA_INDICES.CASE_STUDIES)}
                   query={query}
                   filters="status:approved AND accessLevel:public"
                   dotColor={COLOR.layer.cases}
@@ -567,7 +568,7 @@ export default function GroupedSearch() {
                 <AlgoliaGroup
                   searchClient={searchClient}
                   groupKey="news"
-                  indexName={ALGOLIA_INDICES.NEWS}
+                  indexName={readIndexName(ALGOLIA_INDICES.NEWS)}
                   query={query}
                   filters={contentFilter}
                   dotColor={COLOR.layer.projects}
@@ -580,7 +581,7 @@ export default function GroupedSearch() {
                 <AlgoliaGroup
                   searchClient={searchClient}
                   groupKey="agendas"
-                  indexName={ALGOLIA_INDICES.AGENDAS}
+                  indexName={readIndexName(ALGOLIA_INDICES.AGENDAS)}
                   query={query}
                   filters={contentFilter}
                   dotColor={COLOR.layer.projects}
@@ -593,7 +594,7 @@ export default function GroupedSearch() {
                 <AlgoliaGroup
                   searchClient={searchClient}
                   groupKey="people"
-                  indexName={ALGOLIA_INDICES.USERS}
+                  indexName={readIndexName(ALGOLIA_INDICES.USERS)}
                   query={query}
                   filters={peopleFilter}
                   dotColor={COLOR.layer.people}

@@ -35,6 +35,17 @@ export const ALGOLIA_INDICES = {
  *
  * Unset in every environment, so in production `writeIndexName(x) === x`.
  */
+/**
+ * The index the site SEARCHES. Mirrors `writeIndexName` on the read side so a
+ * prefixed environment searches what it just indexed. The NEXT_PUBLIC twin is
+ * what a browser can see; the server falls back to the write prefix so the
+ * two never disagree in one process.
+ */
+export function readIndexName(indexName: string): string {
+  const prefix = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_PREFIX ?? process.env.ALGOLIA_INDEX_PREFIX ?? ''
+  return `${prefix}${indexName}`
+}
+
 export function writeIndexName(indexName: string): string {
   return `${process.env.ALGOLIA_INDEX_PREFIX ?? ''}${indexName}`
 }

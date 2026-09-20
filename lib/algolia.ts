@@ -8,7 +8,9 @@ import type { User } from '@/generated/prisma'
 export { ALGOLIA_INDICES, writeIndexName } from '@/lib/algolia-indices'
 
 // Load environment variables (for Node.js contexts outside Next.js)
-if (typeof window === 'undefined' && !process.env.VERCEL) {
+// `require` exists under Next's bundling and under CommonJS scripts; an ESM
+// `tsx` script (scripts/algolia/*) has none and loads its own env first.
+if (typeof window === 'undefined' && !process.env.VERCEL && typeof require === 'function') {
   // eslint-disable-next-line @typescript-eslint/no-require-imports -- dotenv must load synchronously and only in non-Vercel Node contexts; a static ESM import would run unconditionally (including in client bundles).
   require('dotenv').config()
 }
