@@ -450,6 +450,15 @@ export default defineType({
             description: "Clerk User ID of the submitter (set when submitted via the in-app form).",
         }),
         defineField({
+            name: "suggestedTags",
+            title: "Suggested tags",
+            type: "array",
+            of: [{ type: "string" }],
+            group: "review",
+            readOnly: true,
+            description: "Free-text tags the submitter proposed and no existing tag matched. Create the tag, attach it above, then clear this list.",
+        }),
+        defineField({
             name: "reviewNotes",
             title: "Review Notes",
             type: "text",

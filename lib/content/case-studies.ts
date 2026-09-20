@@ -1222,6 +1222,10 @@ export async function submitCaseStudy(
     studyLocation = { _type: "geopoint", lat: input.studyLocation.lat, lng: input.studyLocation.lng };
   }
 
+  // Free-text tag suggestions, cleaned once and written to whichever store
+  // takes the submission (both schemas carry the field).
+  const suggestedTags = cleanSuggestions(input.suggestedTags ?? [], await getTags(), { max: LIMITS.tags.suggestions, maxLength: LIMITS.tags.suggestion });
+
   const doc: { _type: string } & Record<string, unknown> = {
     _type: "caseStudy",
     title: input.title,
@@ -1256,6 +1260,7 @@ export async function submitCaseStudy(
       _ref: tagId,
       _key: uuidv4(), // A2: Sanity arrays require _key
     })),
+    suggestedTags: suggestedTags.length > 0 ? suggestedTags : undefined,
 
     studyPeriod: input.studyPeriod,
     locationText: input.locationText,
@@ -1349,7 +1354,7 @@ export async function submitCaseStudy(
     topic: input.topic || "other",
     layout: input.layout ?? "story",
     tagIds: input.tags,
-    suggestedTags: cleanSuggestions(input.suggestedTags ?? [], await getTags(), { max: LIMITS.tags.suggestions, maxLength: LIMITS.tags.suggestion }),
+    suggestedTags,
     relatedCommunity: input.relatedCommunity && input.relatedCommunity !== "" ? input.relatedCommunity : undefined,
     organizationIds: organizationIds.length > 0 ? organizationIds : undefined,
     studyPeriod: input.studyPeriod,

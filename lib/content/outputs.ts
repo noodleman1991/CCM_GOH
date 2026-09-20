@@ -955,6 +955,10 @@ export async function submitResearchOutput(input: ResearchOutputInput): Promise<
   // two different slugs for the same submission.
   const slug = generateResearchOutputSlug(input.title);
 
+  // Free-text tag suggestions, cleaned once and written to whichever store
+  // takes the submission (both schemas carry the field).
+  const suggestedTags = cleanSuggestions(input.suggestedTags ?? [], await getTags(), { max: LIMITS.tags.suggestions, maxLength: LIMITS.tags.suggestion });
+
   const doc: { _type: string; [key: string]: unknown } = {
     _type: "researchOutput",
     status: "pending", // never trust client; always pending on submit
@@ -971,6 +975,7 @@ export async function submitResearchOutput(input: ResearchOutputInput): Promise<
   if (input.tagIds && input.tagIds.length > 0) {
     doc.tags = input.tagIds.map((id) => ({ _type: "reference", _ref: id, _key: id }));
   }
+  if (suggestedTags.length > 0) doc.suggestedTags = suggestedTags;
   if (input.communityIds && input.communityIds.length > 0) {
     doc.relatedCommunities = input.communityIds.map((id) => ({ _type: "reference", _ref: id, _key: id }));
   }
@@ -1012,7 +1017,7 @@ export async function submitResearchOutput(input: ResearchOutputInput): Promise<
     region: input.region || undefined,
     themes: input.themes && input.themes.length > 0 ? input.themes : undefined,
     tagIds: input.tagIds,
-    suggestedTags: cleanSuggestions(input.suggestedTags ?? [], await getTags(), { max: LIMITS.tags.suggestions, maxLength: LIMITS.tags.suggestion }),
+    suggestedTags,
     communityIds: input.communityIds,
   };
 

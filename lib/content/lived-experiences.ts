@@ -474,6 +474,7 @@ function sanitySubmissionDoc(draft: SubmissionDraft): Record<string, unknown> {
   if (draft.body) doc.body = draft.body;
   if (draft.community) doc.relatedCommunity = { _type: "reference", _ref: draft.community };
   if (draft.tags) doc.tags = draft.tags.map((id) => ({ _type: "reference", _ref: id, _key: id }));
+  if (draft.suggestedTags && draft.suggestedTags.length > 0) doc.suggestedTags = draft.suggestedTags;
   if (draft.videoAsset) doc.videoFile = { _type: "file", asset: { _type: "reference", _ref: draft.videoAsset } };
   return doc;
 }

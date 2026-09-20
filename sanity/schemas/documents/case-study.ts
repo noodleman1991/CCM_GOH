@@ -454,6 +454,15 @@ export default defineType({
         }),
 
         defineField({
+            name: "suggestedTags",
+            title: "Suggested tags",
+            type: "array",
+            of: [{ type: "string" }],
+            group: "review",
+            readOnly: true,
+            description: "Free-text tags the submitter proposed and no existing tag matched. Create the tag, attach it above, then clear this list.",
+        }),
+        defineField({
             name: "reviewNotes",
             title: "Editorial Notes",
             type: "text",

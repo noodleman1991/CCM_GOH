@@ -190,6 +190,15 @@ export default defineType({
       description: "Only 'Approved' research outputs appear on the public site.",
     }),
     defineField({ name: "submittedBy", title: "Submitted By", type: "string", group: "review", readOnly: true }),
+    defineField({
+      name: "suggestedTags",
+      title: "Suggested tags",
+      type: "array",
+      of: [{ type: "string" }],
+      group: "review",
+      readOnly: true,
+      description: "Free-text tags the submitter proposed and no existing tag matched. Create the tag, attach it above, then clear this list.",
+    }),
     defineField({ name: "reviewNotes", title: "Review Notes", type: "text", group: "review", rows: 3 }),
 
     // Reusable geotag (spec A2, extended to researchOutput 2026-08-05) — the
