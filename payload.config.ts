@@ -53,7 +53,10 @@ export default buildConfig({
   // (`tag-farmers`, `regional-community-page-oceania`), and uuid would reject
   // every one. Each collection declares its own custom text id field instead.
   db: postgresAdapter({
-    pool: { connectionString: process.env.PAYLOAD_DATABASE_URL || "" },
+    // `sslmode=require` already means verify-full in today's `pg`, which warns
+    // on every boot that a future major will weaken it. Saying verify-full
+    // keeps the behaviour and silences the warning (2026-09-20).
+    pool: { connectionString: (process.env.PAYLOAD_DATABASE_URL || "").replace(/([?&])sslmode=(require|prefer|verify-ca)\b/, "$1sslmode=verify-full") },
     // Never auto-push drizzle's schema at this database.
     //
     // @payloadcms/db-postgres runs pushDevSchema whenever
