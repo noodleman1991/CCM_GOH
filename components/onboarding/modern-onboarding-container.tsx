@@ -463,7 +463,7 @@ export function ModernOnboardingContainer({
 
   return (
     <div className={cn(
-      "h-screen bg-gray-50",
+      "h-dvh bg-gray-50",
       isRTL && "font-arabic"
     )} dir={isRTL ? "rtl" : "ltr"}>
       {/* Main Content */}

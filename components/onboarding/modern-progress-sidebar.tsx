@@ -92,7 +92,7 @@ export function ModernProgressSidebar({
   return (
     <div className={cn(
       "bg-card border-e border-border flex flex-col",
-      "w-64 h-screen overflow-y-auto",
+      "w-64 h-dvh overflow-y-auto",
       "shadow-sm lg:shadow-none", // Add subtle shadow on mobile
       className
     )} dir={isRTL ? "rtl" : "ltr"}>

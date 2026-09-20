@@ -47,7 +47,7 @@ export function ReaderNav({ chapters, currentSlug }: { chapters: Chapter[]; curr
             </Button>
           </DrawerTrigger>
           <DrawerContent>
-            <div className="max-h-[70vh] overflow-y-auto p-4">
+            <div className="max-h-[70dvh] overflow-y-auto p-4">
               <ChapterList chapters={chapters} currentSlug={currentSlug} />
             </div>
           </DrawerContent>

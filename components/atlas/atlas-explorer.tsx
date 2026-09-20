@@ -417,7 +417,7 @@ export function AtlasExplorer({
             unambiguously the selected region's spotlight. Clicking a chip
             when >1 layer is active toggles that layer off; the last layer
             is informational-only ("at least one layer stays selected"). */}
-        <div className="pointer-events-none absolute bottom-3 start-3 z-10 flex max-w-[75%] flex-wrap gap-1.5">
+        <div className="pointer-events-none z-10 mt-2 flex max-w-full flex-wrap gap-1.5 px-1 sm:absolute sm:bottom-3 sm:start-3 sm:mt-0 sm:max-w-[75%] sm:px-0">
           {activeFacetDefs.map((f) => {
             const isOnlyLayer = layerSet.size === 1
             return (

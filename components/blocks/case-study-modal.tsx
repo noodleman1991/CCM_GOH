@@ -1,6 +1,6 @@
 "use client";
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { ResponsiveDialog } from "@/components/ui/responsive-dialog";
 import { Calendar, Users, MapPin, ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -61,6 +61,7 @@ export function CaseStudyModal({ isOpen, onClose, caseStudy, locale }: CaseStudy
   const isRTL = locale === 'ar';
   const supportedLocale = locale as 'en' | 'es' | 'fr' | 'ar';
   const t = useTranslations('caseStudies');
+  const tType = useTranslations('typedCards');
 
   const title = getLocalizedText(caseStudy.title, supportedLocale, 'Case Study');
   const excerpt = getLocalizedText(caseStudy.excerpt, supportedLocale, '');
@@ -71,24 +72,18 @@ export function CaseStudyModal({ isOpen, onClose, caseStudy, locale }: CaseStudy
   const publishDate = caseStudy.publishedAt ? new Date(caseStudy.publishedAt) : null;
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent
-        className={cn(
-          "w-[95vw] max-w-sm sm:max-w-lg md:max-w-2xl lg:max-w-3xl xl:max-w-4xl",
-          "h-[95vh]",
-          "flex flex-col",
-          "p-0",
-          isRTL && "rtl"
-        )}
-        dir={isRTL ? "rtl" : "ltr"}
-      >
-        {/* Add DialogHeader with sr-only title for accessibility */}
-        <DialogHeader className="sr-only">
-          <DialogTitle>{title || "Case Study"}</DialogTitle>
-        </DialogHeader>
-
-        {/* Case Study Content */}
-        <div className="overflow-y-auto flex-1 p-8 space-y-6">
+    <ResponsiveDialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) onClose();
+      }}
+      title={title || tType('type.caseStudy')}
+      titleHidden
+      className={cn("sm:max-w-lg md:max-w-2xl lg:max-w-3xl xl:max-w-4xl", isRTL && "rtl")}
+      dir={isRTL ? "rtl" : "ltr"}
+    >
+        {/* Case Study Content — the surface scrolls and pads (ResponsiveDialog) */}
+        <div className="space-y-6">
           {/* Header */}
           <div className="space-y-4">
             {/* Featured badge */}
@@ -292,7 +287,6 @@ export function CaseStudyModal({ isOpen, onClose, caseStudy, locale }: CaseStudy
             </Link>
           </div>
         </div>
-      </DialogContent>
-    </Dialog>
+    </ResponsiveDialog>
   );
 }

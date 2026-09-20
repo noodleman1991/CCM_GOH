@@ -57,7 +57,7 @@ export function ZoomableImage({
         <DialogContent
           className={cn(
             "max-w-[95vw] sm:max-w-[90vw] w-fit p-2 sm:p-4",
-            "max-h-[92vh] overflow-auto"
+            "max-h-[92dvh] overflow-auto"
           )}
         >
           <DialogTitle className="sr-only">{alt}</DialogTitle>

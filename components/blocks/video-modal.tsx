@@ -6,12 +6,7 @@ import { cn } from "@/lib/utils";
 import { Button } from '@/components/ui/button';
 import { Link } from '@/i18n/navigation';
 import { useCookieConsent } from '@/components/cookie-consent/cookie-consent-provider';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { ResponsiveDialog } from "@/components/ui/responsive-dialog";
 import { useTranslations } from "next-intl";
 
 interface LivedExperience {
@@ -223,18 +218,16 @@ export function VideoModal({
   );
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent
-        className={cn(
-          "w-[95vw] max-w-sm sm:max-w-2xl lg:max-w-4xl",
-          "max-h-[92vh] overflow-y-auto p-6",
-          isRTL && "font-arabic"
-        )}
-        dir={isRTL ? "rtl" : "ltr"}
-      >
-        <DialogHeader className="sr-only">
-          <DialogTitle>{displayTitle || t("videoTitleFallback")}</DialogTitle>
-        </DialogHeader>
+    <ResponsiveDialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) onClose();
+      }}
+      title={displayTitle || t("videoTitleFallback")}
+      titleHidden
+      className={cn("sm:max-w-2xl lg:max-w-4xl", isRTL && "font-arabic")}
+      dir={isRTL ? "rtl" : "ltr"}
+    >
 
         {/* Person header — leads the modal, dignity first */}
         {experience && (authorName || communityName) && (
@@ -334,7 +327,6 @@ export function VideoModal({
         >
           <X className="h-5 w-5" />
         </button>
-      </DialogContent>
-    </Dialog>
+    </ResponsiveDialog>
   );
 }

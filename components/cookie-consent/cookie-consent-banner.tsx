@@ -7,10 +7,10 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Switch } from '@/components/ui/switch'
 import { Cookie, Shield, Video, BarChart3 } from 'lucide-react'
 import { useCookieConsent } from './cookie-consent-provider'
+import { ResponsiveDialog } from '@/components/ui/responsive-dialog'
 
 export function CookieConsentBanner() {
   const t = useTranslations('cookieConsent')
-  const tCommon = useTranslations('common')
   const {
     consent,
     hasConsented,
@@ -93,33 +93,19 @@ export function CookieConsentBanner() {
   if (hasConsented) {
     return (
       <>
-        {/* Preferences panel (reopened from the footer link) */}
-        {isPreferencesOpen && (
-          <div className="fixed bottom-0 inset-x-0 z-50 p-4 sm:p-6">
-            <Card className="mx-auto max-w-2xl shadow-2xl border-2">
-              <CardContent className="p-6">
-                <div className="flex items-start gap-3 mb-4">
-                  <Cookie className="h-6 w-6 text-ccm-water flex-shrink-0 mt-0.5" />
-                  <div className="flex-1">
-                    <h2 className="font-heading font-semibold text-lg">{t('title')}</h2>
-                    <p className="text-sm text-muted-foreground mt-1">{t('description')}</p>
-                  </div>
-                  <button
-                    onClick={closePreferences}
-                    className="text-muted-foreground hover:text-foreground transition-colors"
-                    aria-label={tCommon('close')}
-                  >
-                    <span className="sr-only">{tCommon('close')}</span>
-                    <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </div>
-                {preferencesPanel}
-              </CardContent>
-            </Card>
-          </div>
-        )}
+        {/* Preferences panel (reopened from the sidebar or the privacy page):
+            a drawer below sm, a dialog above, capped at 92dvh so Save is
+            always reachable (Slice 13d). */}
+        <ResponsiveDialog
+          open={isPreferencesOpen}
+          onOpenChange={(open) => {
+            if (!open) closePreferences()
+          }}
+          title={t('title')}
+          description={t('description')}
+        >
+          {preferencesPanel}
+        </ResponsiveDialog>
       </>
     )
   }
@@ -128,8 +114,10 @@ export function CookieConsentBanner() {
   if (!showInitialBanner) return null
 
   return (
-    <div className="fixed bottom-0 inset-x-0 z-50 p-4 sm:p-6">
-      <Card className="mx-auto max-w-2xl shadow-2xl border-2">
+    <div className="fixed bottom-0 inset-x-0 z-50 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] sm:p-6">
+      {/* Capped and scrollable so the expanded preferences' Save button stays
+          reachable on a landscape phone (Slice 13d). */}
+      <Card className="mx-auto max-h-[92dvh] max-w-2xl overflow-y-auto shadow-2xl border-2">
         <CardContent className="p-6">
           <div className="flex items-start gap-3 mb-4">
             <Cookie className="h-6 w-6 text-ccm-water flex-shrink-0 mt-0.5" />

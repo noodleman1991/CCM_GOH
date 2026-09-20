@@ -65,7 +65,7 @@ export function ModernContentArea({
 
   return (
     <div className={cn(
-      "flex-1 flex flex-col h-screen bg-muted",
+      "flex-1 flex flex-col h-dvh bg-muted",
       className
     )} dir={isRTL ? "rtl" : "ltr"}>
       {/* Main content area */}

@@ -1,11 +1,15 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { ResponsiveDialog } from "@/components/ui/responsive-dialog";
 
 const PdfViewer = dynamic(() => import("@/components/pdf/pdf-viewer"), {
   ssr: false,
-  loading: () => <div className="flex h-[70vh] items-center justify-center text-sm text-muted-foreground">…</div>,
+  loading: () => (
+    <div className="flex h-[70dvh] items-center justify-center" aria-busy="true">
+      <span className="size-5 animate-spin rounded-full border-2 border-muted-foreground/40 border-t-transparent" />
+    </div>
+  ),
 });
 
 export function CollaborationPdfDialog({
@@ -25,15 +29,14 @@ export function CollaborationPdfDialog({
   isSignedIn: boolean;
 }) {
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-5xl p-0">
-        <DialogHeader className="border-b px-4 py-3">
-          <DialogTitle className="truncate text-base">
-            <bdi>{fileName}</bdi>
-          </DialogTitle>
-        </DialogHeader>
-        <PdfViewer url={url} fileId={fileId} canAnnotate={canAnnotate} />
-      </DialogContent>
-    </Dialog>
+    <ResponsiveDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={<span className="block truncate text-base"><bdi>{fileName}</bdi></span>}
+      className="sm:max-w-5xl"
+      bodyClassName="p-0 sm:p-0 [&>[data-slot=drawer-header]]:border-b [&>[data-slot=drawer-header]]:px-4 [&>[data-slot=dialog-header]]:border-b [&>[data-slot=dialog-header]]:px-4 [&>[data-slot=dialog-header]]:py-3"
+    >
+      <PdfViewer url={url} fileId={fileId} canAnnotate={canAnnotate} />
+    </ResponsiveDialog>
   );
 }

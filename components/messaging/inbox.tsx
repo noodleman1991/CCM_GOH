@@ -41,7 +41,7 @@ export function Inbox({ currentUserId }: { currentUserId: string }) {
       </TabsList>
 
       <TabsContent value="messages">
-        <div className="grid h-[75vh] gap-4 lg:grid-cols-[300px_1fr]">
+        <div className="grid h-[75dvh] gap-4 lg:grid-cols-[300px_1fr]">
           {/* Conversation list — hidden on mobile when a thread is open */}
           <aside className={cn("min-h-0 overflow-y-auto rounded-lg border", active && "hidden lg:block")}>
             <div className="border-b px-4 py-3 font-semibold">{t("title")}</div>
@@ -95,7 +95,7 @@ export function Inbox({ currentUserId }: { currentUserId: string }) {
       </TabsContent>
 
       <TabsContent value="notifications">
-        <div className="h-[75vh] min-h-0 overflow-y-auto rounded-lg border">
+        <div className="h-[75dvh] min-h-0 overflow-y-auto rounded-lg border">
           <NotificationFeed markReadOnMount />
         </div>
       </TabsContent>

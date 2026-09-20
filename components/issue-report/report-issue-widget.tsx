@@ -438,7 +438,7 @@ export function ReportIssueWidget() {
     return (
       <Drawer open={open} onOpenChange={setOpen}>
         <DrawerTrigger asChild>{trigger}</DrawerTrigger>
-        <DrawerContent className="max-h-[92vh] overflow-y-auto">
+        <DrawerContent className="max-h-[92dvh] overflow-y-auto">
           <DrawerHeader className="text-start">
             <DrawerTitle>{t("title")}</DrawerTitle>
             <DrawerDescription>{t("description")}</DrawerDescription>
@@ -452,7 +452,7 @@ export function ReportIssueWidget() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="max-h-[88vh] gap-4 overflow-y-auto sm:max-w-xl">
+      <DialogContent className="max-h-[88dvh] gap-4 overflow-y-auto sm:max-w-xl">
         <DialogHeader className="text-start">
           <DialogTitle>{t("title")}</DialogTitle>
           <DialogDescription>{t("description")}</DialogDescription>

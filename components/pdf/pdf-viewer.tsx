@@ -88,7 +88,7 @@ export default function PdfViewer({
   const [notes, setNotes] = useState(false);
 
   if (isLoading || !engine) {
-    return <div className="flex h-[70vh] items-center justify-center text-sm text-muted-foreground">{t("loadingPdf")}</div>;
+    return <div className="flex h-[70dvh] items-center justify-center text-sm text-muted-foreground">{t("loadingPdf")}</div>;
   }
 
   const DOC_ID = "doc";
@@ -107,7 +107,7 @@ export default function PdfViewer({
   ];
 
   return (
-    <div className="flex h-[75vh] flex-col">
+    <div className="flex h-[75dvh] flex-col">
       <div className="flex items-center justify-end border-b px-2 py-1.5">
         <Button
           variant={notes ? "secondary" : "ghost"}
