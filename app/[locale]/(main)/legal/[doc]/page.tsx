@@ -3,18 +3,15 @@ import { notFound } from "next/navigation";
 import { PRIVACY, TERMS, type LegalDoc } from "@/lib/legal/content";
 import { CookiePreferencesButton } from "@/components/cookie-consent/cookie-preferences-button";
 
-export const dynamic = "force-static";
-
+// Request-dynamic like the rest of the (main) tree. It was force-static, and
+// next-intl then rendered the layout's client messages in the default locale:
+// the Cookie Preferences control on /ar/legal/privacy hydrated in English
+// (seen in Playwright, 2026-09-20). The tagged Data Cache does the caching.
 function resolve(doc: string, locale: string): LegalDoc | null {
   const l = (["en", "es", "fr", "ar"].includes(locale) ? locale : "en") as "en" | "es" | "fr" | "ar";
   if (doc === "privacy") return PRIVACY[l];
   if (doc === "terms") return TERMS[l];
   return null;
-}
-
-export function generateStaticParams() {
-  const locales = ["en", "es", "fr", "ar"];
-  return locales.flatMap((locale) => ["privacy", "terms"].map((doc) => ({ locale, doc })));
 }
 
 export async function generateMetadata({

@@ -49,10 +49,14 @@ export function ResponsiveDialog({
   if (isPhone) {
     return (
       <Drawer open={open} onOpenChange={onOpenChange}>
-        <DrawerContent dir={dir} className={cn("max-h-[92dvh]", className)}>
+        {/* `!`: the drawer primitive caps bottom drawers at 80dvh through a
+            data-attribute class of equal specificity; this surface owns its
+            cap. The body is the flex child that scrolls (min-h-0 flex-1), so
+            the last button is reachable however tall the content is. */}
+        <DrawerContent dir={dir} className={cn("max-h-[92dvh]!", className)}>
           <div
             data-slot="responsive-dialog-body"
-            className={cn("max-h-[92dvh] overflow-y-auto p-4", safeBottom, bodyClassName)}
+            className={cn("min-h-0 flex-1 max-h-[92dvh] overflow-y-auto p-4", safeBottom, bodyClassName)}
           >
             <DrawerHeader className={cn("px-0 pt-0", titleHidden && "sr-only")}>
               <DrawerTitle>{title}</DrawerTitle>
