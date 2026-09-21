@@ -20,7 +20,7 @@ Steps 1 to 6 below are also one command, `pnpm prod:prepare` (scripts/production
 
 ## 1. Production Payload database (Neon, manual)
 
-- [ ] In the existing Neon project, on the **production** branch, create a second database named `payload_cms`. Not Prisma's `goh`: a Prisma reset drops whatever schema it manages.
+- [x] (done 2026-09-21 via `pnpm prod:prepare --only=db`) In the existing Neon project, on the **production** branch, create a second database named `payload_cms`. Not Prisma's `goh`: a Prisma reset drops whatever schema it manages.
 - [ ] Take the pooled connection string and change `sslmode=require` to `sslmode=verify-full`.
 
 ## 2. Vercel production variables
@@ -45,19 +45,19 @@ Already present: `CRON_SECRET`, `SEARCH_WEBHOOK_SECRET`, `NEXT_PUBLIC_SITE_URL`,
 
 Run these locally with the production URL in the environment for the command only.
 
-- [ ] Payload migrations (nine, including `push_down_indexes` and `tag_suggestions`):
+- [x] (done 2026-09-21: nine applied, `migrate:status` all Yes) Payload migrations (nine, including `push_down_indexes` and `tag_suggestions`):
   ```
   PAYLOAD_DATABASE_URL=<prod> PAYLOAD_SECRET=<prod> pnpm exec payload migrate
   PAYLOAD_DATABASE_URL=<prod> PAYLOAD_SECRET=<prod> pnpm exec payload migrate:status
   ```
-- [ ] Import, in this order (documents refuse to run after drafts exist):
+- [x] (done 2026-09-21 from `sanity-production_2-2026-09-21.tar.gz`: 395 assets, 389 documents, 31 drafts) Import, in this order (documents refuse to run after drafts exist):
   ```
   PAYLOAD_DATABASE_URL=<prod> pnpm import:assets -- --allow-production
   PAYLOAD_DATABASE_URL=<prod> pnpm import:documents -- --allow-production
   PAYLOAD_DATABASE_URL=<prod> pnpm import:drafts -- --allow-production
   PAYLOAD_DATABASE_URL=<prod> pnpm verify:import -- --allow-production
   ```
-  Record the verify numbers here: ___ database checks, ___ archive-only.
+  Record the verify numbers here: 14/14 database checks, 6/6 archive-only (2026-09-21).
   Gotcha found 2026-09-21: before commit 3bb945381 the importers reused any export directory already unpacked under `.sanity-export-cache/`, so a newer archive was silently ignored. Each archive now unpacks into its own directory; if in doubt, delete the cache folder before importing. To re-apply a newer archive over an earlier run: `pnpm prod:prepare -- --only=import --allow-after-drafts`.
 - [ ] Read-only order check (proves SQL order equals the old JavaScript order on this database):
   ```
@@ -66,21 +66,21 @@ Run these locally with the production URL in the environment for the command onl
 
 ## 4. Prisma production migration
 
-- [ ] One migration from this branch is pending in production (`20260917120000_collaboration_creator_set_null`):
+- [x] (done 2026-09-21) One migration from this branch is pending in production (`20260917120000_collaboration_creator_set_null`):
   ```
   DATABASE_URL=<prod> pnpm exec prisma migrate deploy
   ```
 
 ## 5. Preview deploy with the flag on
 
-- [ ] In the Vercel **preview** environment set `CONTENT_BACKEND=payload` and `NEXT_PUBLIC_CONTENT_BACKEND=payload`, plus the same Payload/R2 variables as production (pointing at the production Payload database, which carries no traffic yet).
+- [x] (done 2026-09-21 via `pnpm prod:prepare --only=env`; production has every variable except the two CONTENT_BACKEND switches) In the Vercel **preview** environment set `CONTENT_BACKEND=payload` and `NEXT_PUBLIC_CONTENT_BACKEND=payload`, plus the same Payload/R2 variables as production (pointing at the production Payload database, which carries no traffic yet).
 - [ ] `vercel` (preview deploy of the branch).
 - [ ] Walk `/en` and `/ar`: home, news, case studies list and one detail, lived experiences, research outputs, communities, about, search. Sign in, open `/dashboard`, open `/admin`.
 - [ ] `vercel logs <preview-url>` for the walk: no 500s, no `next/headers` or locale errors.
 
 ## 6. Search
 
-- [ ] Push the index settings (adds the tag fields):
+- [x] (done 2026-09-21) Push the index settings (adds the tag fields):
   ```
   pnpm tsx scripts/algolia/push-index-settings.ts --allow-production
   ```
