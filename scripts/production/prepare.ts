@@ -6,6 +6,7 @@
  *
  *   pnpm prod:prepare                         # all steps, in order
  *   pnpm prod:prepare -- --only=db,env        # a subset
+ *   pnpm prod:prepare -- --only=import --allow-after-drafts   # re-import from a newer archive
  *   pnpm prod:prepare -- --admins=a@x.org --editors=b@x.org,c@x.org   # also set roles
  *
  * Steps (each idempotent; a re-run skips what is already done):
@@ -131,7 +132,11 @@ const steps: Record<Step, () => Promise<void> | void> = {
   import() {
     heading(`import: Sanity archive into ${hostOf(env.PAYLOAD_DATABASE_URL)} and bucket ${env.PAYLOAD_R2_BUCKET ?? env.R2_BUCKET}`);
     run("pnpm", ["import:assets", "--", "--allow-production"]);
-    run("pnpm", ["import:documents", "--", "--allow-production"]);
+    // `--allow-after-drafts` re-applies the published documents after a draft
+    // import (an upsert; the drafts step right after re-applies the drafts).
+    // Needed when the archive changed between two runs.
+    const afterDrafts = args.includes("--allow-after-drafts") ? ["--allow-after-drafts"] : [];
+    run("pnpm", ["import:documents", "--", "--allow-production", ...afterDrafts]);
     run("pnpm", ["import:drafts", "--", "--allow-production"]);
     run("pnpm", ["verify:import", "--", "--allow-production"]);
     run("pnpm", ["tsx", "scripts/parity/order-check.ts", "--allow-production"]);

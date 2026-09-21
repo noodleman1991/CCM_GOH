@@ -279,11 +279,25 @@ export async function verifyArchive(archivePath: string, verifyChecksum = false)
  * unpacked it — this is what makes a resumed import cheap rather than a second
  * 634 MB decompression.
  */
+/**
+ * The directory one archive unpacks into: `<cacheRoot>/<archive basename>`.
+ *
+ * Keyed on the archive so a newer export is never shadowed by an older
+ * extraction. Before 2026-09-21 every archive unpacked into the cache root and
+ * `extractArchive` reused whatever export directory it found there first, so
+ * the production import ran from the 2 September export while the 21
+ * September archive sat unused beside it (verify: 30 drafts where the
+ * manifest said 31).
+ */
+export function archiveCacheDir(cacheRoot: string, archivePath: string): string {
+  return path.join(cacheRoot, path.basename(archivePath).replace(/\.tar\.gz$/, ""));
+}
+
 export async function extractArchive(options: { verifyChecksum?: boolean } = {}): Promise<string> {
   if (process.env.SANITY_EXPORT_DIR) return path.resolve(process.env.SANITY_EXPORT_DIR);
 
   const archivePath = await resolveArchivePath();
-  const cacheRoot = exportCacheRoot();
+  const cacheRoot = archiveCacheDir(exportCacheRoot(), archivePath);
   const existing = await findExportDir(cacheRoot);
   if (existing) return existing;
 
