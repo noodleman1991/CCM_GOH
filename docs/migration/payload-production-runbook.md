@@ -110,9 +110,9 @@ Today every CMS image and PDF is fetched through Payload's handler at `/payload-
 
 CMS uploads currently live in the shared `ccm-collab` bucket under `cms/` (verified 2026-09-21: the bucket holds nothing else yet, but its `members/` prefix is designed to stay private). Public access on R2 is per bucket, so give the CMS its own bucket first.
 
-- [ ] Cloudflare dashboard, R2: create bucket `ccm-cms` in the same account (EU jurisdiction like the existing one).
-- [ ] On `ccm-cms`, Settings, add a **custom domain** on a hostname that is not the hub's own (for example `cdn.connectingclimateminds.org`; the zone has to be on Cloudflare DNS). The `r2.dev` hostname works for a preview but is rate-limited and not for production.
-- [ ] Extend the R2 API token used by `R2_ACCESS_KEY_ID` to cover `ccm-cms` (object read and write).
+- [x] (done 2026-09-21) Cloudflare dashboard, R2: create bucket `ccm-cms` in the same account (EU jurisdiction like the existing one).
+- [x] (done 2026-09-21, `cdn.connectingclimateminds.org`, TLS live) On `ccm-cms`, Settings, add a **custom domain** on a hostname that is not the hub's own (for example `cdn.connectingclimateminds.org`; the zone has to be on Cloudflare DNS). The `r2.dev` hostname works for a preview but is rate-limited and not for production.
+- [x] (done 2026-09-21, token "R2 ccm-collab Token" now covers both buckets) Extend the R2 API token used by `R2_ACCESS_KEY_ID` to cover `ccm-cms` (object read and write).
 - [ ] Copy the objects across (server-side, re-runnable, nothing deleted):
   ```
   pnpm r2:copy-cms -- --to=ccm-cms
