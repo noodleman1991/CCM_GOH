@@ -41,6 +41,7 @@ export const Authors: CollectionConfig = {
   slug: "authors",
   versions: { drafts: true },
   admin: {
+    group: "Community",
     useAsTitle: "name",
     defaultColumns: ["name", "organizationalAffiliation", "slug"],
   },

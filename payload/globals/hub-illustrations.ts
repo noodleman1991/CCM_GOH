@@ -18,6 +18,7 @@ import { imageField } from "@/payload/blocks/shared";
  */
 export const HubIllustrations: GlobalConfig = {
   slug: "hubIllustrations",
+  admin: { group: "Site pages" },
   label: "Hub Illustrations",
   access: {
     read: isAnyone,

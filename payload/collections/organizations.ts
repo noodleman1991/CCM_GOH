@@ -26,6 +26,7 @@ import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
 export const Organizations: CollectionConfig = {
   slug: "organizations",
   admin: {
+    group: "Community",
     useAsTitle: "name",
     defaultColumns: ["name", "acronym", "type", "verified"],
   },

@@ -30,6 +30,7 @@ import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
 export const ExternalSources: CollectionConfig = {
   slug: "externalSources",
   admin: {
+    group: "Content",
     useAsTitle: "title",
     defaultColumns: ["title", "publisher", "sourceType", "approved"],
   },

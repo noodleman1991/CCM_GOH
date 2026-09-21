@@ -83,6 +83,7 @@ export const RegionalCommunityPages: CollectionConfig = {
   dbName: "regional_pages",
   versions: { drafts: true },
   admin: {
+    group: "Site pages",
     useAsTitle: "title",
     defaultColumns: ["title", "slug"],
   },

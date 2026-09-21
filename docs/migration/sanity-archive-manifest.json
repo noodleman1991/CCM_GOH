@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-09-02T09:59:19.087Z",
+  "generatedAt": "2026-09-21T09:57:29.429Z",
   "dataset": "production_2",
   "totals": {
-    "documents": 476,
+    "documents": 477,
     "published": 446,
-    "drafts": 30
+    "drafts": 31
   },
   "byType": {
     "tag": {
@@ -33,7 +33,7 @@
     },
     "caseStudy": {
       "published": 27,
-      "drafts": 1
+      "drafts": 2
     },
     "caseStudyDraft": {
       "published": 1,
@@ -97,8 +97,8 @@
     }
   },
   "archive": {
-    "file": "sanity-production_2-2026-09-02.tar.gz",
-    "bytes": 634083151,
-    "sha256": "9bac9301cda26005f33a41f3e1a29907af0094979b3c17cbdacf23085096faf3"
+    "file": "sanity-production_2-2026-09-21.tar.gz",
+    "bytes": 634094715,
+    "sha256": "fb6d36bccf78956769d4886c56a9926f19fc5b0f6c979f28b8be1a2235d38bed"
   }
 }

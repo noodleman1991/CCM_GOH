@@ -43,6 +43,7 @@ import { uploadResponseHeaders } from "@/payload/hooks/upload-headers";
 export const Files: CollectionConfig = {
   slug: "files",
   admin: {
+    group: "Files",
     useAsTitle: "filename",
     defaultColumns: ["filename", "mimeType", "filesize"],
   },

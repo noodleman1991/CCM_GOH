@@ -45,7 +45,11 @@ export default buildConfig({
     importMap: { baseDir: path.resolve(dirname) },
     // No local login form (Clerk is the only identity system), so the login
     // view explains itself: a sign-in button, or why this account can't enter.
-    components: { beforeLogin: ["@/payload/components/clerk-sign-in#ClerkSignIn"] },
+    components: {
+      beforeLogin: ["@/payload/components/clerk-sign-in#ClerkSignIn"],
+      // The review queue above the collection list (payload/components/editor-dashboard.tsx).
+      beforeDashboard: ["@/payload/components/editor-dashboard#EditorDashboard"],
+    },
   },
   // The REST API must not mount at /api — this app already has 71 route
   // files under app/api/, and Payload's default catch-all would answer every

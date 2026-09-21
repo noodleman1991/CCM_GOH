@@ -22,6 +22,7 @@ import { localizedText } from "@/payload/fields/localized";
  */
 export const SiteAnnouncement: GlobalConfig = {
   slug: "siteAnnouncement",
+  admin: { group: "Site pages" },
   label: "Site Announcement",
   access: {
     read: isAnyone,

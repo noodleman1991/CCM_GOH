@@ -27,6 +27,7 @@ import { searchSyncAfterChange, searchSyncAfterDelete } from "@/payload/hooks/se
 export const Agendas: CollectionConfig = {
   slug: "agendas",
   admin: {
+    group: "Content",
     useAsTitle: "title",
     defaultColumns: ["title", "agendaType", "year", "featured"],
   },

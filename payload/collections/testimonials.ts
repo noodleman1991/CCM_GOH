@@ -34,6 +34,7 @@ export const Testimonials: CollectionConfig = {
   slug: "testimonials",
   versions: { drafts: true },
   admin: {
+    group: "Community",
     useAsTitle: "name",
     defaultColumns: ["name", "jobTitle", "featured"],
   },

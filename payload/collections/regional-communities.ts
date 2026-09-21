@@ -39,6 +39,7 @@ const REGION_OPTIONS = [
 export const RegionalCommunities: CollectionConfig = {
   slug: "regionalCommunities",
   admin: {
+    group: "Community",
     useAsTitle: "name",
     defaultColumns: ["name", "region", "active", "featured"],
   },

@@ -38,6 +38,7 @@ export const NewsPosts: CollectionConfig = {
   slug: "newsPosts",
   versions: { drafts: true },
   admin: {
+    group: "Content",
     useAsTitle: "title",
     defaultColumns: ["title", "publishedAt", "featured"],
   },

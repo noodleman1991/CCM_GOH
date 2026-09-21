@@ -78,6 +78,9 @@ import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
 export const CaseStudyDrafts: CollectionConfig = {
   slug: "caseStudyDrafts",
   admin: {
+    group: "System",
+    // Not an editorial surface: hidden from the nav for everyone but admins.
+    hidden: ({ user }) => (user as { role?: string } | null)?.role !== "admin",
     useAsTitle: "title",
     defaultColumns: ["title", "userId", "lastSaved"],
   },

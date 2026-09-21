@@ -94,6 +94,7 @@ function homepageSlot(
  */
 export const Homepage: GlobalConfig = {
   slug: "homepage",
+  admin: { group: "Site pages" },
   label: "Homepage",
   access: {
     read: isAnyone,

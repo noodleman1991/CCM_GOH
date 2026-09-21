@@ -64,6 +64,7 @@ import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
 export const Pages: CollectionConfig = {
   slug: "pages",
   admin: {
+    group: "Site pages",
     useAsTitle: "title",
     defaultColumns: ["title", "slug"],
   },

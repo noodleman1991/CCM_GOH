@@ -32,6 +32,7 @@ import { isEditor } from "@/payload/access";
  */
 export const ModerationSettings: GlobalConfig = {
   slug: "moderationSettings",
+  admin: { group: "System" },
   label: "Comment Moderation",
   access: {
     read: isEditor,

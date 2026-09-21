@@ -83,6 +83,7 @@ export const CaseStudies: CollectionConfig = {
   slug: "caseStudies",
   versions: { drafts: true },
   admin: {
+    group: "Content",
     useAsTitle: "title",
     defaultColumns: ["title", "moderationStatus", "topic", "featured"],
   },

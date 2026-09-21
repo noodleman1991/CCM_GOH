@@ -16,6 +16,7 @@ import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
 export const ProfilePrompts: CollectionConfig = {
   slug: "profilePrompts",
   admin: {
+    group: "Community",
     useAsTitle: "prompt",
     defaultColumns: ["prompt", "category", "active"],
   },
