@@ -2,7 +2,7 @@
 # upload endpoint failed on it (2026-09-21). None of this is read by the build.
 .git
 node_modules
-.next
+.next*
 downloads
 docs
 backups
