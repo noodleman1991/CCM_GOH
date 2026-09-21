@@ -30,6 +30,7 @@ interface UploadSize {
 }
 
 interface UploadLike {
+  sanityAssetId?: string | null;
   filename?: string | null;
   mimeType?: string | null;
   prefix?: string | null;
@@ -53,12 +54,19 @@ export function uploadObjectKeys(doc: UploadLike): UploadObject[] {
   return out;
 }
 
-/** Create, or an update that swapped the file. A caption edit is neither. */
+/**
+ * Create, or an update that swapped the file. A caption edit is neither, and
+ * neither is a Sanity-imported asset: the import creates hundreds of rows in
+ * a burst, twelve copies per row on top of its own uploads exhausted the S3
+ * connection pool and stalled it (measured 2026-09-21, stuck at 261/395), and
+ * `pnpm r2:cache-control` stamps imported objects afterwards in one pass.
+ */
 export function uploadNeedsCacheControl(
   operation: string,
   doc: UploadLike,
   previousDoc: UploadLike | undefined,
 ): boolean {
+  if (doc.sanityAssetId) return false;
   if (operation === "create") return true;
   if (operation !== "update") return false;
   return Boolean(doc.filename) && doc.filename !== previousDoc?.filename;
@@ -81,20 +89,20 @@ export async function applyUploadCacheControl(objects: UploadObject[]): Promise<
   ]);
   const Bucket = payloadR2BucketName();
   const client = new S3Client(payloadR2ClientConfig());
-  await Promise.all(
-    objects.map((object) =>
-      client.send(
-        new CopyObjectCommand({
-          Bucket,
-          Key: object.key,
-          CopySource: `${Bucket}/${object.key.split("/").map(encodeURIComponent).join("/")}`,
-          MetadataDirective: "REPLACE",
-          CacheControl: UPLOAD_CACHE_CONTROL,
-          ContentType: object.contentType,
-        }),
-      ),
-    ),
-  );
+  // One at a time: a row has at most twelve objects, and a burst of parallel
+  // copies competes with the upload that just happened for the same pool.
+  for (const object of objects) {
+    await client.send(
+      new CopyObjectCommand({
+        Bucket,
+        Key: object.key,
+        CopySource: `${Bucket}/${object.key.split("/").map(encodeURIComponent).join("/")}`,
+        MetadataDirective: "REPLACE",
+        CacheControl: UPLOAD_CACHE_CONTROL,
+        ContentType: object.contentType,
+      }),
+    );
+  }
 }
 
 export const setUploadCacheControl: CollectionAfterChangeHook = ({ doc, previousDoc, operation }) => {

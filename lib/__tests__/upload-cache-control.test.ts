@@ -45,4 +45,9 @@ describe("upload-cache-control", () => {
     const captionEdit = { ...doc, alt: "x" };
     expect(uploadNeedsCacheControl("update", doc, captionEdit)).toBe(false);
   });
+
+  it("stays out of the Sanity import's way; the backfill script stamps those objects afterwards", () => {
+    const imported = { ...doc, sanityAssetId: "image-abc-800x600-jpg" };
+    expect(uploadNeedsCacheControl("create", imported, undefined)).toBe(false);
+  });
 });
