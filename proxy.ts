@@ -16,6 +16,7 @@ import { routing } from './i18n/routing'
 import { NextRequest, NextResponse } from 'next/server'
 import { isOnboardingComplete } from './lib/onboarding-status'
 import { PAYLOAD_API_ANONYMOUS_RATE_LIMIT, shouldRateLimitPayloadApi } from './lib/payload-api-guard'
+import { legacyUploadRedirect } from '@/lib/uploads/legacy-upload-redirect'
 
 const withLocale = (path: string) => `/:locale${path.startsWith('/') ? '' : '/'}${path}`
 
@@ -45,6 +46,17 @@ export const proxy = clerkMiddleware(async (auth, req: NextRequest) => {
     // `/en/ingest/e/`. Returning here also skips Clerk's auth() per beacon.
     if (req.nextUrl.pathname.startsWith('/ingest/')) {
         return NextResponse.next()
+    }
+    // Uploads served from the bucket: an old /payload-api/<slug>/file/ URL (email,
+    // shared preview, cached page) becomes a 308 to the same object on the
+    // public hostname. No-op while the host is unset.
+    const uploadTarget = legacyUploadRedirect(
+        req.nextUrl.pathname,
+        req.nextUrl.searchParams,
+        process.env.NEXT_PUBLIC_PAYLOAD_MEDIA_PUBLIC_URL,
+    )
+    if (uploadTarget) {
+        return NextResponse.redirect(uploadTarget, 308)
     }
     // next.config sets skipTrailingSlashRedirect for the ingest prefix; this
     // keeps the 308 every other path had before (one canonical URL per page).
@@ -155,5 +167,8 @@ export const config = {
         // redirect sent crawlers to /en/sitemap.xml, which 404s (B7 fix).
         '/((?!studio(?:/|$)|guide-to-editors(?:/|$)|_next|_vercel|[^?]*\\.(?:html?|css|js(?!on)|jpg|jpeg|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest|xml|txt)).*)',
         '/(api|trpc)(.*)',
+        // Old upload URLs carry an image extension the pattern above excludes;
+        // they are matched explicitly so the 308 to the public host can run.
+        '/payload-api/(media|files)/file/:path*',
     ]
 }

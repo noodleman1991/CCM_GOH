@@ -35,16 +35,24 @@ const scriptEval = (studio) =>
 // blocked loader logged "Monaco initialization: error" on every admin page.
 const MONACO_CDN = 'https://cdn.jsdelivr.net';
 
+// Where CMS uploads are served from when the bucket has a public hostname
+// (payload/storage/public-url.ts). Images, videos and the PDF viewer's fetches
+// all need it; unset, uploads are same-origin and 'self' already covers them.
+const MEDIA_ORIGIN = process.env.NEXT_PUBLIC_PAYLOAD_MEDIA_PUBLIC_URL
+  ? new URL(process.env.NEXT_PUBLIC_PAYLOAD_MEDIA_PUBLIC_URL).origin
+  : '';
+const mediaHost = MEDIA_ORIGIN ? ` ${MEDIA_ORIGIN}` : '';
+
 const contentSecurityPolicy = ({ studio = false, admin = false } = {}) =>
   [
     "default-src 'self'",
     `script-src 'self' 'unsafe-inline' ${scriptEval(studio)} https://cdn.clerk.com https://*.clerk.com https://clerk.connectingclimateminds.org${clerkDevDomains} https://challenges.cloudflare.com https://*.algolianet.com https://plausible.io${admin ? ` ${MONACO_CDN}` : ''}`,
     `style-src 'self' 'unsafe-inline'${admin ? ` ${MONACO_CDN}` : ''}`,
-    "img-src 'self' data: blob: https://cdn.sanity.io https://img.youtube.com https://img.clerk.com https://images.clerk.dev https://www.gravatar.com",
+    `img-src 'self' data: blob: https://cdn.sanity.io https://img.youtube.com https://img.clerk.com https://images.clerk.dev https://www.gravatar.com${mediaHost}`,
     `font-src 'self' data:${admin ? ` ${MONACO_CDN}` : ''}`,
-    `connect-src 'self' https://*.clerk.com https://clerk.connectingclimateminds.org${clerkDevDomains} https://*.algolia.net https://*.algolianet.com https://plausible.io https://*.sanity.io https://*.r2.cloudflarestorage.com https://*.upstash.io https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://*.ingest.de.sentry.io${studio ? ` ${SANITY_MODULES_HOST}` : ''}${admin ? ` ${MONACO_CDN}` : ''}`,
+    `connect-src 'self' https://*.clerk.com https://clerk.connectingclimateminds.org${clerkDevDomains} https://*.algolia.net https://*.algolianet.com https://plausible.io https://*.sanity.io https://*.r2.cloudflarestorage.com https://*.upstash.io https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://*.ingest.de.sentry.io${studio ? ` ${SANITY_MODULES_HOST}` : ''}${admin ? ` ${MONACO_CDN}` : ''}${mediaHost}`,
     "frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com https://challenges.cloudflare.com https://*.clerk.com",
-    "media-src 'self' https://cdn.sanity.io",
+    `media-src 'self' https://cdn.sanity.io${mediaHost}`,
     "object-src 'none'",
     "worker-src 'self' blob:",
     "base-uri 'self'",

@@ -23,6 +23,10 @@ export default defineConfig({
     // and a fake project id makes that obvious if one ever tries.
     env: {
       R2_BUCKET: "vitest-no-such-bucket",
+      // Uploads are served through Payload's handler in the suite; a developer's
+      // .env may set the public host, which would drop the handler
+      // (payload/storage/public-url.ts) and flip payload-uploads.test.ts.
+      NEXT_PUBLIC_PAYLOAD_MEDIA_PUBLIC_URL: "",
       NEXT_PUBLIC_SANITY_DATASET: "vitest-no-such-dataset",
       NEXT_PUBLIC_SANITY_PROJECT_ID: "vitestnosuchproject",
       // The engagement program (workspaces, messages, contact requests,

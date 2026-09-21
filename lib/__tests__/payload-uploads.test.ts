@@ -206,7 +206,9 @@ describe("s3Storage wiring", () => {
       expect(upload.disableLocalStorage, `${slug} must not fall back to disk`).toBe(true);
       // The static handler the plugin pushes so files are streamed out through
       // Payload's own access-controlled route. Its presence is what keeps
-      // `url` on /payload-api/... instead of a bucket URL.
+      // `url` on /payload-api/... instead of a bucket URL. With
+      // NEXT_PUBLIC_PAYLOAD_MEDIA_PUBLIC_URL set the handler is deliberately
+      // absent (payload/storage/public-url.ts); vitest.config pins it unset.
       expect(upload.handlers?.length, `${slug} must have a static handler`).toBeGreaterThan(0);
     }
   });

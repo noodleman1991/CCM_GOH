@@ -113,23 +113,25 @@ CMS uploads currently live in the shared `ccm-collab` bucket under `cms/` (verif
 - [x] (done 2026-09-21) Cloudflare dashboard, R2: create bucket `ccm-cms` in the same account (EU jurisdiction like the existing one).
 - [x] (done 2026-09-21, `cdn.connectingclimateminds.org`, TLS live) On `ccm-cms`, Settings, add a **custom domain** on a hostname that is not the hub's own (for example `cdn.connectingclimateminds.org`; the zone has to be on Cloudflare DNS). The `r2.dev` hostname works for a preview but is rate-limited and not for production.
 - [x] (done 2026-09-21, token "R2 ccm-collab Token" now covers both buckets) Extend the R2 API token used by `R2_ACCESS_KEY_ID` to cover `ccm-cms` (object read and write).
-- [ ] Copy the objects across (server-side, re-runnable, nothing deleted):
+- [x] (done 2026-09-21: 3759 objects, 0 failed, all carrying the one-year immutable Cache-Control) Copy the objects across (server-side, re-runnable, nothing deleted):
   ```
   pnpm r2:copy-cms -- --to=ccm-cms
   pnpm r2:copy-cms -- --to=ccm-cms --execute
   ```
-- [ ] Point Payload at the new bucket and switch on direct serving, in Vercel production (and preview):
+- [ ] Point Payload at the new bucket and switch on direct serving, in Vercel production (and preview). Both local env files already carry these two lines (2026-09-21); the Vercel side still needs them:
   ```
   PAYLOAD_R2_BUCKET=ccm-cms
   NEXT_PUBLIC_PAYLOAD_MEDIA_PUBLIC_URL=https://cdn.connectingclimateminds.org
   ```
 - [ ] Deploy. Open a content page: image `src` attributes now start with the public hostname and the network panel shows no `/_next/image` or `/payload-api/media` requests for CMS images.
-- [ ] Stamp the cache policy on the copied objects (new uploads get it automatically):
+- [x] (done 2026-09-21 by the copy itself; the dry run reports 3759 already carrying the policy) Stamp the cache policy on the copied objects (new uploads get it automatically):
   ```
   PAYLOAD_R2_BUCKET=ccm-cms pnpm r2:cache-control
   PAYLOAD_R2_BUCKET=ccm-cms pnpm r2:cache-control -- --execute
   ```
 - [ ] After a week with no missing images, delete the `cms/` prefix from `ccm-collab` by hand.
+
+Old URLs keep working: with the host set, proxy.ts answers `/payload-api/<media|files>/file/<name>` with a 308 to the same object on the public hostname (lib/uploads/legacy-upload-redirect.ts), and the Content Security Policy lists the host under img-src, media-src and connect-src. One deploy-time caveat: pages cached before the switch keep old URLs until they revalidate, which the redirect covers.
 
 SVG note: on the hub's origin, SVGs were served with a sandboxing header. On the bucket's hostname a script inside an SVG would run on that hostname instead, which holds no session; Payload's own SVG validation still runs on upload. Keep the public hostname off the hub's cookie domain if that ever changes.
 
