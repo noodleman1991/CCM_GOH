@@ -14,6 +14,10 @@ Every command runs from the repo root. `<prod>` means the production value. Comm
 - [ ] Decide whether the branch is promoted as-is or merged to `master` first. Production's database already matches this branch's Prisma migrations, not `master`'s.
 - [ ] Decide whether the engagement features stay hidden at launch (`NEXT_PUBLIC_FEATURE_ENGAGEMENT` unset = hidden).
 
+## Shortcut: `pnpm prod:prepare`
+
+Steps 1 to 6 below are also one command, `pnpm prod:prepare` (scripts/production/prepare.ts): it creates the database, pushes the variables from `.env` to Vercel, runs the Payload migrations, the import, `prisma migrate deploy` and the Algolia settings, in that order, and is safe to re-run. `--only=db,env` picks steps; `--admins=` and `--editors=` set the staff roles. It never sets the production `CONTENT_BACKEND` switches and never deploys: steps 5 and 7 stay by hand. The local `.env` already holds `PAYLOAD_DATABASE_URL`, `PAYLOAD_SECRET` and `INTERNAL_SYNC_SECRET` (generated 2026-09-21).
+
 ## 1. Production Payload database (Neon, manual)
 
 - [ ] In the existing Neon project, on the **production** branch, create a second database named `payload_cms`. Not Prisma's `goh`: a Prisma reset drops whatever schema it manages.
