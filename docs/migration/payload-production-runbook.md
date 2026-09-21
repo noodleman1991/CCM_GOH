@@ -58,6 +58,7 @@ Run these locally with the production URL in the environment for the command onl
   PAYLOAD_DATABASE_URL=<prod> pnpm verify:import -- --allow-production
   ```
   Record the verify numbers here: ___ database checks, ___ archive-only.
+  Gotcha found 2026-09-21: before commit 3bb945381 the importers reused any export directory already unpacked under `.sanity-export-cache/`, so a newer archive was silently ignored. Each archive now unpacks into its own directory; if in doubt, delete the cache folder before importing. To re-apply a newer archive over an earlier run: `pnpm prod:prepare -- --only=import --allow-after-drafts`.
 - [ ] Read-only order check (proves SQL order equals the old JavaScript order on this database):
   ```
   PAYLOAD_DATABASE_URL=<prod> pnpm tsx scripts/parity/order-check.ts --allow-production
