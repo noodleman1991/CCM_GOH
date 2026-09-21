@@ -88,7 +88,7 @@ function candidateVariables(domain?: string): string[] {
 /**
  * Every domain that owns a switch. The list exists for the table below: a
  * browser bundle only sees a NEXT_PUBLIC variable that is spelled out as a
- * literal `process.env.NAME`, never one reached through `process.env[name]`.
+ * literal property access, never one reached through a computed key.
  * `lib/__tests__/backend-public-twins.test.ts` keeps it complete.
  */
 export const CONTENT_DOMAINS = [
