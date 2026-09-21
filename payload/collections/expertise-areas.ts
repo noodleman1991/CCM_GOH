@@ -15,7 +15,7 @@ import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
 export const ExpertiseAreas: CollectionConfig = {
   slug: "expertiseAreas",
   admin: {
-    group: "Taxonomy",
+    group: "Tags & vocabularies",
     useAsTitle: "key",
     defaultColumns: ["key", "label", "order", "isActive"],
   },

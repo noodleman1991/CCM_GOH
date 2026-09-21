@@ -207,7 +207,7 @@ export const MEDIA_IMAGE_SIZES: ImageSize[] = [
 export const Media: CollectionConfig = {
   slug: "media",
   admin: {
-    group: "Files",
+    group: "Media",
     useAsTitle: "filename",
     defaultColumns: ["filename", "mimeType", "filesize", "width", "height"],
   },

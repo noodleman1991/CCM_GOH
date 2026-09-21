@@ -53,7 +53,7 @@ import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
 export const ResearchOutputs: CollectionConfig = {
   slug: "researchOutputs",
   admin: {
-    group: "Content",
+    group: "Publish",
     useAsTitle: "title",
     defaultColumns: ["title", "outputType", "moderationStatus", "featured"],
   },

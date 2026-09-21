@@ -90,6 +90,13 @@ Run these locally with the production URL in the environment for the command onl
 ## 7. Cutover
 
 - [ ] Editorial freeze begins. If the export in step 0 is older than an hour, redo steps 0 and 3.
+- [ ] Give the editors their roles in the **production** hub database. Verified 2026-09-21: production has **zero** `team_editor` or `admin` accounts, so until this runs nobody can open `/admin`. Two admins, everyone else team editor:
+  ```
+  pnpm user:role -- --email=<you> --role=admin --execute --env=.env
+  pnpm user:role -- --email=<second admin> --role=admin --execute --env=.env
+  pnpm user:role -- --email=<editor> --role=team_editor --execute --env=.env
+  pnpm user:role -- --list --env=.env
+  ```
 - [ ] Set `CONTENT_BACKEND=payload` and `NEXT_PUBLIC_CONTENT_BACKEND=payload` in the Vercel **production** environment.
 - [ ] `vercel --prod` (production deploys are manual by repo rule).
 - [ ] Repeat the step 5 walk on the production URL; run step 6's rebuild; open `/admin` as an editor and save one document, confirm it appears on the site.
@@ -105,7 +112,7 @@ Run these locally with the production URL in the environment for the command onl
 
 ## Who can enter /admin
 
-Role comes from the hub database (`User.role`): `admin` and `team_editor` may use the admin and the moderation queue; `community_editor` and `community_member` may not, and see an explanation at `/admin/login`. Sign-in is Clerk's; there are no Payload passwords. Change a role with:
+Role comes from the hub database (`User.role`): `admin` and `team_editor` may use the admin and the moderation queue; `community_editor` and `community_member` may not, and see an explanation at `/admin/login`. The only difference between the two staff roles: `admin` also sees the **System** group (Users, raw case-study drafts). The dev database has three team editors (amit2@pm.me, e.lawrance@imperial.ac.uk, nikita.nalawade@kcl.ac.uk) and no admin; production has none of either until step 7 runs. Sign-in is Clerk's; there are no Payload passwords. Change a role with:
 
 ```
 pnpm user:role -- --list
@@ -113,3 +120,19 @@ pnpm user:role -- --email=someone@example.org --role=team_editor --execute --env
 ```
 
 (`--env=.env` targets production; without it the script uses the dev database.)
+
+## Where things live in /admin (2026-09-21 arrangement)
+
+The nav is grouped by task, in this order. Team editors see the first six groups; admins also see System.
+
+| Group | What is in it |
+|---|---|
+| **Publish** | Case studies, Lived experiences, Research outputs, Events, News posts, Agendas. Member submissions land here; the dashboard's review queue links straight into the pending ones. |
+| **Site pages** | Pages, Community pages, Reader chapters, Testimonials, and the Homepage, Site announcement and Hub illustrations singletons. |
+| **People & places** | Authors, Organizations, Regional communities, Projects, External sources. |
+| **Tags & vocabularies** | Tags, Work types, Expertise areas, Profile prompts. New tags are created here only, never as free text. |
+| **Media** | Media (images), Files (PDFs and other downloads). |
+| **Onboarding** | The six onboarding copy singletons: Welcome & navigation, then Steps 1–5. |
+| **System** | Comment moderation wordlists (all editors); Users and raw case-study drafts (admins only). |
+
+The editing routine, in five steps: clear the review queue on the dashboard first (approve, request revision with a note, or reject; check the submitter's suggested tags against existing ones); for new editorial content create the English document, fill the required fields, pick existing tags, save as draft; switch locale and translate at least title and summary (untranslated fields fall back to English on the site); publish and check the page, which updates within seconds; suggest new tags only through the Tags collection.

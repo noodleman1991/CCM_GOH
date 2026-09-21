@@ -25,7 +25,7 @@ import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
 export const WorkTypes: CollectionConfig = {
   slug: "workTypes",
   admin: {
-    group: "Taxonomy",
+    group: "Tags & vocabularies",
     useAsTitle: "key",
     defaultColumns: ["key", "label", "order", "isActive"],
   },

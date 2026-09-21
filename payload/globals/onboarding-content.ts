@@ -447,7 +447,7 @@ function onboardingGlobal(slug: string, label: string, description: string, fiel
       read: isAnyone,
       update: isEditor,
     },
-    admin: { description, group: "Onboarding Content" },
+    admin: { description, group: "Onboarding" },
     fields,
   };
 }
@@ -461,42 +461,42 @@ function onboardingGlobal(slug: string, label: string, description: string, fiel
  */
 export const OnboardingContent = onboardingGlobal(
   "onboardingContent",
-  "Onboarding — Welcome & Navigation",
+  "Welcome & navigation",
   "The welcome step, the redirect prompt, and the buttons shown on every step.",
   welcomeFields(),
 );
 
 export const OnboardingBasicInfo = onboardingGlobal(
   "onboardingBasicInfo",
-  "Onboarding — Basic Info",
+  "Step 1: Basic info",
   "Step 1: name, username, headline, bio and location — labels, hints and validation messages.",
   basicInfoFields(),
 );
 
 export const OnboardingWorkInfo = onboardingGlobal(
   "onboardingWorkInfo",
-  "Onboarding — Work & Communities",
+  "Step 2: Work & communities",
   "Step 2: work types, expertise, organization, links and the community picker.",
   workInfoFields(),
 );
 
 export const OnboardingRecentWork = onboardingGlobal(
   "onboardingRecentWork",
-  "Onboarding — Recent Work",
+  "Step 3: Recent work",
   "Step 3: the recent-work list and the form that adds to it.",
   recentWorkFields(),
 );
 
 export const OnboardingPrivacy = onboardingGlobal(
   "onboardingPrivacy",
-  "Onboarding — Privacy & Visibility",
+  "Step 4: Privacy & visibility",
   "Step 4: searchability, profile visibility and the per-field privacy toggles.",
   privacyFields(),
 );
 
 export const OnboardingReview = onboardingGlobal(
   "onboardingReview",
-  "Onboarding — Review & Submit",
+  "Step 5: Review & submit",
   "Step 5: the review summary labels and the submit button.",
   reviewFields(),
 );

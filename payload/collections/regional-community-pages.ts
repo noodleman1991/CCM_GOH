@@ -74,6 +74,7 @@ import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
  */
 export const RegionalCommunityPages: CollectionConfig = {
   slug: "regionalCommunityPages",
+  labels: { singular: "Community page", plural: "Community pages" },
   // Postgres caps table and enum identifiers at 63 characters, and Payload
   // builds them by concatenating the whole path. `regional_community_pages`
   // (24) plus the versions prefix plus a nested block plus a select field

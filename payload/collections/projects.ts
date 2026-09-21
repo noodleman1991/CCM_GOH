@@ -51,7 +51,7 @@ import { SLUG_MAX_LENGTH, urlValidate } from "@/payload/fields/validation";
 export const Projects: CollectionConfig = {
   slug: "projects",
   admin: {
-    group: "Community",
+    group: "People & places",
     useAsTitle: "name",
     defaultColumns: ["name", "acronym", "type", "status"],
   },

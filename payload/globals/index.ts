@@ -45,9 +45,12 @@ export {
  * because live code reads them (spec §6, "Keep").
  */
 export const globals: GlobalConfig[] = [
+  // Site pages
   Homepage,
   SiteAnnouncement,
-  ModerationSettings,
   HubIllustrations,
+  // Onboarding (its own nav group; globals-only groups list after collection groups)
   ...ONBOARDING_GLOBALS,
+  // System
+  ModerationSettings,
 ];

@@ -109,29 +109,36 @@ export default buildConfig({
   // Every collection and global gets the cache-revalidation hooks here, by
   // mapping, so none can be forgotten — see payload/hooks/revalidate-content.ts.
   collections: [
-    Users,
-    Media,
-    Files,
-    Tags,
-    WorkTypes,
-    ExpertiseAreas,
-    Authors,
-    Organizations,
-    RegionalCommunities,
+    // Nav groups appear in order of first appearance here (Payload groupNavItems).
+    // Publish
     CaseStudies,
     LivedExperiences,
     ResearchOutputs,
-    Agendas,
+    Events,
     NewsPosts,
-    DocsChapters,
-    Testimonials,
-    ProfilePrompts,
-    ExternalSources,
-    CaseStudyDrafts,
+    Agendas,
+    // Site pages
     Pages,
     RegionalCommunityPages,
-    Events,
+    DocsChapters,
+    Testimonials,
+    // People & places
+    Authors,
+    Organizations,
+    RegionalCommunities,
     Projects,
+    ExternalSources,
+    // Tags & vocabularies
+    Tags,
+    WorkTypes,
+    ExpertiseAreas,
+    ProfilePrompts,
+    // Media
+    Media,
+    Files,
+    // System (admin only)
+    Users,
+    CaseStudyDrafts,
   ]
     .map(withContentRevalidation)
     .map(withAnonymousReadCap),

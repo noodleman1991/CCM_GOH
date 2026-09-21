@@ -72,7 +72,7 @@ export const LivedExperiences: CollectionConfig = {
   slug: "livedExperiences",
   versions: { drafts: true },
   admin: {
-    group: "Content",
+    group: "Publish",
     useAsTitle: "title",
     defaultColumns: ["title", "featured", "publishedAt"],
   },

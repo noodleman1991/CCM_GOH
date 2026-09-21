@@ -22,8 +22,9 @@ import { sanityUpdatedAt } from "@/payload/fields/sanity-timestamps";
  */
 export const DocsChapters: CollectionConfig = {
   slug: "docsChapters",
+  labels: { singular: "Reader chapter", plural: "Reader chapters" },
   admin: {
-    group: "Content",
+    group: "Site pages",
     useAsTitle: "title",
     defaultColumns: ["title", "collection", "order"],
   },

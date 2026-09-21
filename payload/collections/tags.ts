@@ -42,7 +42,7 @@ export const Tags: CollectionConfig = {
   slug: "tags",
   versions: { drafts: true },
   admin: {
-    group: "Taxonomy",
+    group: "Tags & vocabularies",
     useAsTitle: "label",
     defaultColumns: ["label", "category", "value", "color"],
   },

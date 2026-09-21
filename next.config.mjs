@@ -238,10 +238,17 @@ const nextConfig = {
       { pathname: '/payload-api/media/**' },
     ],
     formats: ['image/avif', 'image/webp'],
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    // Cost controls (2026-09-21). Every width × quality × format the browser
+    // asks for is a billed transformation on Vercel, and the optimizer keeps
+    // a variant for max(minimumCacheTTL, upstream max-age). Sanity's CDN and
+    // the Payload media route (one day) already send a max-age; the floor
+    // here covers YouTube, Clerk and Gravatar thumbnails, which do not. The
+    // 2048/3840 widths were only ever requested by 2× displays over 1024px
+    // wide and 1920 serves them well; quality 100 was never used.
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    minimumCacheTTL: 60,
-    qualities: [75, 85, 90, 100],
+    minimumCacheTTL: 60 * 60 * 24 * 7,
+    qualities: [75, 85, 90],
   },
 };
 
